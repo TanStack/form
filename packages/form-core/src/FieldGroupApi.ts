@@ -7,7 +7,7 @@ import type {
   FormAsyncValidateOrFn,
   FormValidateOrFn,
 } from './FormApi'
-import type { AnyFieldMetaBase, FieldOptions } from './FieldApi'
+import type { AnyFieldLikeMetaBase, FieldOptions } from './FieldApi'
 import type {
   DeepKeys,
   DeepKeysOfType,
@@ -15,7 +15,7 @@ import type {
   FieldsMap,
 } from './util-types'
 import type {
-  FieldManipulator,
+  FormLikeAPI,
   UpdateMetaOptions,
   ValidationCause,
 } from './types'
@@ -127,7 +127,7 @@ export class FieldGroupApi<
   in out TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TSubmitMeta = never,
-> implements FieldManipulator<TFieldGroupData, TSubmitMeta> {
+> implements FormLikeAPI<TFieldGroupData, TSubmitMeta> {
   /**
    * The form that called this field group.
    */

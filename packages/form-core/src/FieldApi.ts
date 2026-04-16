@@ -12,29 +12,32 @@ import {
   mergeOpts,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
+import type {
+  FieldInfo,
+  FieldLikeAPI,
+  FieldLikeApiOptions,
+  FieldLikeMetaBase,
+  FieldLikeOptions,
+  FieldLikeState,
+  ListenerCause,
+  UpdateMetaOptions,
+  ValidationCause,
+  ValidationError,
+  ValidationErrorMap,
+} from './types'
 import type { ReadonlyStore } from '@tanstack/store'
-import type { DeepKeys, DeepValue, UnwrapOneLevelOfArray } from './util-types'
+import type { DeepKeys, DeepValue } from './util-types'
 import type {
   StandardSchemaV1,
   StandardSchemaV1Issue,
   TStandardSchemaValidatorValue,
 } from './standardSchemaValidator'
 import type {
-  FieldInfo,
-  FormApi,
   FormAsyncValidateOrFn,
   FormValidateAsyncFn,
   FormValidateFn,
   FormValidateOrFn,
 } from './FormApi'
-import type {
-  ListenerCause,
-  UpdateMetaOptions,
-  ValidationCause,
-  ValidationError,
-  ValidationErrorMap,
-  ValidationErrorMapSource,
-} from './types'
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
 
 /**
@@ -387,6 +390,52 @@ export interface FieldListeners<
   onGroupSubmit?: FieldListenerFn<TParentData, TName, TData>
 }
 
+interface FieldExtraOptions<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName>,
+  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChangeAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnBlurAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnSubmitAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnDynamicAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+> {
+  /**
+   * A list of validators to pass to the field
+   */
+  validators?: FieldValidators<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync
+  >
+
+  /**
+   * A list of listeners which attach to the corresponding events
+   */
+  listeners?: FieldListeners<TParentData, TName, TData>
+}
+
 /**
  * An object type representing the options for a field in a form.
  */
@@ -411,45 +460,9 @@ export interface FieldOptions<
   TOnDynamicAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-> {
-  /**
-   * The field name. The type will be `DeepKeys<TParentData>` to ensure your name is a deep key of the parent dataset.
-   */
-  name: TName
-  /**
-   * An optional default value for the field.
-   */
-  defaultValue?: NoInfer<TData>
-  /**
-   * The default time to debounce async validation if there is not a more specific debounce time passed.
-   */
-  asyncDebounceMs?: number
-  /**
-   * If `true`, always run async validation, even if there are errors emitted during synchronous validation.
-   */
-  asyncAlways?: boolean
-  /**
-   * A list of validators to pass to the field
-   */
-  validators?: FieldValidators<
-    TParentData,
-    TName,
-    TData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync
-  >
-  /**
-   * An optional object with default metadata for the field.
-   */
-  defaultMeta?: Partial<
-    FieldMeta<
+>
+  extends
+    FieldExtraOptions<
       TParentData,
       TName,
       TData,
@@ -461,32 +474,24 @@ export interface FieldOptions<
       TOnSubmit,
       TOnSubmitAsync,
       TOnDynamic,
-      TOnDynamicAsync,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any
-    >
-  >
-  /**
-   * A list of listeners which attach to the corresponding events
-   */
-  listeners?: FieldListeners<TParentData, TName, TData>
-  /**
-   * Disable the `flat(1)` operation on `field.errors`. This is useful if you want to keep the error structure as is. Not suggested for most use-cases.
-   */
-  disableErrorFlat?: boolean
-}
+      TOnDynamicAsync
+    >,
+    FieldLikeOptions<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync
+    > {}
 
-/**
- * An object type representing the required options for the FieldApi class.
- */
-export interface FieldApiOptions<
+interface FieldApiOptions<
   in out TParentData,
   in out TName extends DeepKeys<TParentData>,
   in out TData extends DeepValue<TParentData, TName>,
@@ -536,402 +541,47 @@ export interface FieldApiOptions<
     | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   in out TParentSubmitMeta,
-> extends FieldOptions<
-  TParentData,
-  TName,
-  TData,
-  TOnMount,
-  TOnChange,
-  TOnChangeAsync,
-  TOnBlur,
-  TOnBlurAsync,
-  TOnSubmit,
-  TOnSubmitAsync,
-  TOnDynamic,
-  TOnDynamicAsync
-> {
-  form: FormApi<
-    TParentData,
-    TFormOnMount,
-    TFormOnChange,
-    TFormOnChangeAsync,
-    TFormOnBlur,
-    TFormOnBlurAsync,
-    TFormOnSubmit,
-    TFormOnSubmitAsync,
-    TFormOnDynamic,
-    TFormOnDynamicAsync,
-    TFormOnServer,
-    TParentSubmitMeta
-  >
-}
-
-export type FieldMetaBase<
-  TParentData,
-  TName extends DeepKeys<TParentData>,
-  TData extends DeepValue<TParentData, TName>,
-  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChangeAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnBlurAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnSubmitAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnDynamicAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-> = {
-  /**
-   * A flag indicating whether the field has been touched.
-   */
-  isTouched: boolean
-  /**
-   * A flag indicating whether the field has been blurred.
-   */
-  isBlurred: boolean
-  /**
-   * A flag that is `true` if the field's value has been modified by the user. Opposite of `isPristine`.
-   */
-  isDirty: boolean
-  /**
-   * A map of errors related to the field value.
-   */
-  errorMap: ValidationErrorMap<
-    UnwrapFieldValidateOrFn<TName, TOnMount, TFormOnMount>,
-    UnwrapFieldValidateOrFn<TName, TOnChange, TFormOnChange>,
-    UnwrapFieldAsyncValidateOrFn<TName, TOnChangeAsync, TFormOnChangeAsync>,
-    UnwrapFieldValidateOrFn<TName, TOnBlur, TFormOnBlur>,
-    UnwrapFieldAsyncValidateOrFn<TName, TOnBlurAsync, TFormOnBlurAsync>,
-    UnwrapFieldValidateOrFn<TName, TOnSubmit, TFormOnSubmit>,
-    UnwrapFieldAsyncValidateOrFn<TName, TOnSubmitAsync, TFormOnSubmitAsync>,
-    UnwrapFieldValidateOrFn<TName, TOnDynamic, TFormOnDynamic>,
-    UnwrapFieldAsyncValidateOrFn<TName, TOnDynamicAsync, TFormOnDynamicAsync>
-  >
-
-  /**
-   * @private allows tracking the source of the errors in the error map
-   */
-  errorSourceMap: ValidationErrorMapSource
-  /**
-   * A flag indicating whether the field is currently being validated.
-   */
-  isValidating: boolean
-}
-
-export type AnyFieldMetaBase = FieldMetaBase<
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any
 >
-
-export type FieldMetaDerived<
-  TParentData,
-  TName extends DeepKeys<TParentData>,
-  TData extends DeepValue<TParentData, TName>,
-  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChangeAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnBlurAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnSubmitAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnDynamicAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-> = {
-  /**
-   * An array of errors related to the field value.
-   */
-  errors: Array<
-    | UnwrapOneLevelOfArray<
-        UnwrapFieldValidateOrFn<TName, TOnMount, TFormOnMount>
-      >
-    | UnwrapOneLevelOfArray<
-        UnwrapFieldValidateOrFn<TName, TOnChange, TFormOnChange>
-      >
-    | UnwrapOneLevelOfArray<
-        UnwrapFieldAsyncValidateOrFn<TName, TOnChangeAsync, TFormOnChangeAsync>
-      >
-    | UnwrapOneLevelOfArray<
-        UnwrapFieldValidateOrFn<TName, TOnBlur, TFormOnBlur>
-      >
-    | UnwrapOneLevelOfArray<
-        UnwrapFieldAsyncValidateOrFn<TName, TOnBlurAsync, TFormOnBlurAsync>
-      >
-    | UnwrapOneLevelOfArray<
-        UnwrapFieldValidateOrFn<TName, TOnSubmit, TFormOnSubmit>
-      >
-    | UnwrapOneLevelOfArray<
-        UnwrapFieldAsyncValidateOrFn<TName, TOnSubmitAsync, TFormOnSubmitAsync>
-      >
-    | UnwrapOneLevelOfArray<
-        UnwrapFieldValidateOrFn<TName, TOnDynamic, TFormOnDynamic>
-      >
-    | UnwrapOneLevelOfArray<
-        UnwrapFieldAsyncValidateOrFn<
-          TName,
-          TOnDynamicAsync,
-          TFormOnDynamicAsync
-        >
-      >
-  >
-  /**
-   * A flag that is `true` if the field's value has not been modified by the user. Opposite of `isDirty`.
-   */
-  isPristine: boolean
-  /**
-   * A boolean indicating if the field is valid. Evaluates `true` if there are no field errors.
-   */
-  isValid: boolean
-  /**
-   * A flag indicating whether the field's current value is the default value
-   */
-  isDefaultValue: boolean
-}
-
-export type AnyFieldMetaDerived = FieldMetaDerived<
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any
->
-
-/**
- * An object type representing the metadata of a field in a form.
- */
-export type FieldMeta<
-  TParentData,
-  TName extends DeepKeys<TParentData>,
-  TData extends DeepValue<TParentData, TName>,
-  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChangeAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnBlurAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnSubmitAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnDynamicAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-> = FieldMetaBase<
-  TParentData,
-  TName,
-  TData,
-  TOnMount,
-  TOnChange,
-  TOnChangeAsync,
-  TOnBlur,
-  TOnBlurAsync,
-  TOnSubmit,
-  TOnSubmitAsync,
-  TOnDynamic,
-  TOnDynamicAsync,
-  TFormOnMount,
-  TFormOnChange,
-  TFormOnChangeAsync,
-  TFormOnBlur,
-  TFormOnBlurAsync,
-  TFormOnSubmit,
-  TFormOnSubmitAsync,
-  TFormOnDynamic,
-  TFormOnDynamicAsync
-> &
-  FieldMetaDerived<
-    TParentData,
-    TName,
-    TData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync,
-    TFormOnMount,
-    TFormOnChange,
-    TFormOnChangeAsync,
-    TFormOnBlur,
-    TFormOnBlurAsync,
-    TFormOnSubmit,
-    TFormOnSubmitAsync,
-    TFormOnDynamic,
-    TFormOnDynamicAsync
-  >
-
-export type AnyFieldMeta = FieldMeta<
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any
->
-
-/**
- * An object type representing the state of a field.
- */
-export type FieldState<
-  TParentData,
-  TName extends DeepKeys<TParentData>,
-  TData extends DeepValue<TParentData, TName>,
-  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChangeAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnBlurAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnSubmitAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnDynamicAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-> = {
-  /**
-   * The current value of the field.
-   */
-  value: TData
-  /**
-   * The current metadata of the field.
-   */
-  meta: FieldMeta<
-    TParentData,
-    TName,
-    TData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync,
-    TFormOnMount,
-    TFormOnChange,
-    TFormOnChangeAsync,
-    TFormOnBlur,
-    TFormOnBlurAsync,
-    TFormOnSubmit,
-    TFormOnSubmitAsync,
-    TFormOnDynamic,
-    TFormOnDynamicAsync
-  >
-}
+  extends
+    FieldLikeApiOptions<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync,
+      TFormOnServer,
+      TParentSubmitMeta
+    >,
+    FieldExtraOptions<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync
+    > {}
 
 /**
  * @public
@@ -1028,6 +678,44 @@ export class FieldApi<
     | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   in out TParentSubmitMeta,
+> implements FieldLikeAPI<
+  TParentData,
+  TName,
+  TData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
+  TFormOnMount,
+  TFormOnChange,
+  TFormOnChangeAsync,
+  TFormOnBlur,
+  TFormOnBlurAsync,
+  TFormOnSubmit,
+  TFormOnSubmitAsync,
+  TFormOnDynamic,
+  TFormOnDynamicAsync,
+  TFormOnServer,
+  TParentSubmitMeta,
+  FieldExtraOptions<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync
+  >
 > {
   /**
    * A reference to the form API instance.
@@ -1093,7 +781,7 @@ export class FieldApi<
    * The field state store.
    */
   store!: ReadonlyStore<
-    FieldState<
+    FieldLikeState<
       TParentData,
       TName,
       TData,
@@ -1172,7 +860,7 @@ export class FieldApi<
     this.store = createStore(
       (
         prevVal:
-          | FieldState<
+          | FieldLikeState<
               TParentData,
               TName,
               TData,
@@ -1222,7 +910,7 @@ export class FieldApi<
         return {
           value,
           meta,
-        } as FieldState<
+        } as FieldLikeState<
           TParentData,
           TName,
           TData,
@@ -1491,7 +1179,7 @@ export class FieldApi<
    */
   setMeta = (
     updater: Updater<
-      FieldMetaBase<
+      FieldLikeMetaBase<
         TParentData,
         TName,
         TData,
@@ -1654,6 +1342,10 @@ export class FieldApi<
     const linkedFields: AnyFieldApi[] = []
     for (const field of fields) {
       if (!field.instance) continue
+      // TODO: How to handle FieldGroups? Do we need to? IDK.
+      if (!(field.instance instanceof FieldApi)) {
+        continue
+      }
       const { onChangeListenTo, onBlurListenTo } =
         field.instance.options.validators || {}
       if (cause === 'change' && onChangeListenTo?.includes(this.name)) {
@@ -2172,6 +1864,16 @@ export class FieldApi<
         fieldApi: this,
       })
     }
+  }
+
+  /**
+   * @private
+   */
+  triggerOnSubmitListener() {
+    this.options.listeners?.onSubmit?.({
+      value: this.state.value,
+      fieldApi: this,
+    })
   }
 }
 
