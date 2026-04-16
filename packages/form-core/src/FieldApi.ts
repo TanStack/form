@@ -13,13 +13,18 @@ import {
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
 import type {
+  FieldAsyncValidateOrFn,
+  FieldErrorMapFromValidator,
   FieldInfo,
   FieldLikeAPI,
   FieldLikeApiOptions,
   FieldLikeMetaBase,
   FieldLikeOptions,
   FieldLikeState,
+  FieldValidateOrFn,
   ListenerCause,
+  UnwrapFieldAsyncValidateOrFn,
+  UnwrapFieldValidateOrFn,
   UpdateMetaOptions,
   ValidationCause,
   ValidationError,
@@ -29,52 +34,10 @@ import type { ReadonlyStore } from '@tanstack/store'
 import type { DeepKeys, DeepValue } from './util-types'
 import type {
   StandardSchemaV1,
-  StandardSchemaV1Issue,
   TStandardSchemaValidatorValue,
 } from './standardSchemaValidator'
-import type {
-  FormAsyncValidateOrFn,
-  FormValidateAsyncFn,
-  FormValidateFn,
-  FormValidateOrFn,
-} from './FormApi'
+import type { FormAsyncValidateOrFn, FormValidateOrFn } from './FormApi'
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
-
-/**
- * @private
- */
-// TODO: Add the `Unwrap` type to the errors
-type FieldErrorMapFromValidator<
-  TFormData,
-  TName extends DeepKeys<TFormData>,
-  TData extends DeepValue<TFormData, TName>,
-  TOnMount extends undefined | FieldValidateOrFn<TFormData, TName, TData>,
-  TOnChange extends undefined | FieldValidateOrFn<TFormData, TName, TData>,
-  TOnChangeAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TFormData, TName, TData>,
-  TOnBlur extends undefined | FieldValidateOrFn<TFormData, TName, TData>,
-  TOnBlurAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TFormData, TName, TData>,
-  TOnSubmit extends undefined | FieldValidateOrFn<TFormData, TName, TData>,
-  TOnSubmitAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TFormData, TName, TData>,
-> = Partial<
-  Record<
-    DeepKeys<TFormData>,
-    ValidationErrorMap<
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync
-    >
-  >
->
 
 /**
  * @private
@@ -117,55 +80,6 @@ export type FieldValidateFn<
 /**
  * @private
  */
-export type FieldValidateOrFn<
-  TParentData,
-  TName extends DeepKeys<TParentData>,
-  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-> =
-  | FieldValidateFn<TParentData, TName, TData>
-  | StandardSchemaV1<TData, unknown>
-
-type StandardBrandedSchemaV1<T> = T & { __standardSchemaV1: true }
-
-type UnwrapFormValidateOrFnForInner<
-  TValidateOrFn extends undefined | FormValidateOrFn<any>,
-> = [TValidateOrFn] extends [FormValidateFn<any>]
-  ? ReturnType<TValidateOrFn>
-  : [TValidateOrFn] extends [StandardSchemaV1<infer TOut, any>]
-    ? StandardBrandedSchemaV1<TOut>
-    : undefined
-
-export type UnwrapFieldValidateOrFn<
-  TName extends string,
-  TValidateOrFn extends undefined | FieldValidateOrFn<any, any, any>,
-  TFormValidateOrFn extends undefined | FormValidateOrFn<any>,
-> =
-  | ([TFormValidateOrFn] extends [StandardSchemaV1<any, infer TStandardOut>]
-      ? TName extends keyof TStandardOut
-        ? StandardSchemaV1Issue[]
-        : undefined
-      : undefined)
-  | (UnwrapFormValidateOrFnForInner<TFormValidateOrFn> extends infer TFormValidateVal
-      ? TFormValidateVal extends { __standardSchemaV1: true }
-        ? [DeepValue<TFormValidateVal, TName>] extends [never]
-          ? undefined
-          : StandardSchemaV1Issue[]
-        : TFormValidateVal extends { fields: any }
-          ? TName extends keyof TFormValidateVal['fields']
-            ? TFormValidateVal['fields'][TName]
-            : undefined
-          : undefined
-      : never)
-  | ([TValidateOrFn] extends [FieldValidateFn<any, any, any>]
-      ? ReturnType<TValidateOrFn>
-      : [TValidateOrFn] extends [StandardSchemaV1<any, any>]
-        ? // TODO: Check if `disableErrorFlat` is enabled, if so, return StandardSchemaV1Issue[][]
-          StandardSchemaV1Issue[]
-        : undefined)
-
-/**
- * @private
- */
 export type FieldValidateAsyncFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
@@ -201,53 +115,6 @@ export type FieldValidateAsyncFn<
   >
   signal: AbortSignal
 }) => unknown | Promise<unknown>
-
-/**
- * @private
- */
-export type FieldAsyncValidateOrFn<
-  TParentData,
-  TName extends DeepKeys<TParentData>,
-  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-> =
-  | FieldValidateAsyncFn<TParentData, TName, TData>
-  | StandardSchemaV1<TData, unknown>
-
-type UnwrapFormAsyncValidateOrFnForInner<
-  TValidateOrFn extends undefined | FormAsyncValidateOrFn<any>,
-> = [TValidateOrFn] extends [FormValidateAsyncFn<any>]
-  ? Awaited<ReturnType<TValidateOrFn>>
-  : [TValidateOrFn] extends [StandardSchemaV1<infer TOut, any>]
-    ? StandardBrandedSchemaV1<TOut>
-    : undefined
-
-export type UnwrapFieldAsyncValidateOrFn<
-  TName extends string,
-  TValidateOrFn extends undefined | FieldAsyncValidateOrFn<any, any, any>,
-  TFormValidateOrFn extends undefined | FormAsyncValidateOrFn<any>,
-> =
-  | ([TFormValidateOrFn] extends [StandardSchemaV1<any, infer TStandardOut>]
-      ? TName extends keyof TStandardOut
-        ? StandardSchemaV1Issue[]
-        : undefined
-      : undefined)
-  | (UnwrapFormAsyncValidateOrFnForInner<TFormValidateOrFn> extends infer TFormValidateVal
-      ? TFormValidateVal extends { __standardSchemaV1: true }
-        ? [DeepValue<TFormValidateVal, TName>] extends [never]
-          ? undefined
-          : StandardSchemaV1Issue[]
-        : TFormValidateVal extends { fields: any }
-          ? TName extends keyof TFormValidateVal['fields']
-            ? TFormValidateVal['fields'][TName]
-            : undefined
-          : undefined
-      : never)
-  | ([TValidateOrFn] extends [FieldValidateAsyncFn<any, any, any>]
-      ? Awaited<ReturnType<TValidateOrFn>>
-      : [TValidateOrFn] extends [StandardSchemaV1<any, any>]
-        ? // TODO: Check if `disableErrorFlat` is enabled, if so, return StandardSchemaV1Issue[][]
-          StandardSchemaV1Issue[]
-        : undefined)
 
 /**
  * @private

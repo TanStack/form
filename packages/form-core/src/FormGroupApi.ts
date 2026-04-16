@@ -1,136 +1,98 @@
 import { batch, createStore } from '@tanstack/store'
-import { getSyncValidatorArray } from './utils'
+import { evaluate, getSyncValidatorArray, mergeOpts } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
 import {
   isStandardSchemaValidator,
   standardSchemaValidators,
 } from './standardSchemaValidator'
-import type { ValidationLogicFn } from './ValidationLogic'
-import type { TStandardSchemaValidatorValue } from './standardSchemaValidator'
+import { defaultFieldMeta } from './metaHelper'
+import type { Updater } from './utils'
+import type { ReadonlyStore } from '@tanstack/store'
 import type {
-  FieldValidators,
-  UnwrapFieldAsyncValidateOrFn,
-  UnwrapFieldValidateOrFn,
-} from './FieldApi'
+  StandardSchemaV1,
+  StandardSchemaV1Issue,
+  TStandardSchemaValidatorValue,
+} from './standardSchemaValidator'
 import type {
+  FieldLikeAPI,
+  FieldLikeApiOptions,
+  FieldLikeMetaBase,
+  FieldLikeOptions,
+  FieldLikeState,
+  ListenerCause,
+  UpdateMetaOptions,
   ValidationCause,
   ValidationError,
   ValidationErrorMap,
 } from './types'
 import type {
   AnyFormApi,
-  FormApi,
   FormAsyncValidateOrFn,
-  FormListeners,
+  FormValidateAsyncFn,
   FormValidateFn,
   FormValidateOrFn,
 } from './FormApi'
-import type { Store } from '@tanstack/store'
+import type { DeepKeys, DeepValue } from './util-types'
 
 /**
- * TODO: Add derived state for `errors` array derived from `errorMap`
+ * @private
  */
-
-/**
- * An object representing the current state of the form group.
- */
-type BaseFormGroupState = {
-  /**
-   * The error map for the group itself.
-   */
-  errorMap: ValidationErrorMap<
-    UnwrapFieldValidateOrFn</* TName, TOnMount, TFormOnMount */ any, any, any>,
-    UnwrapFieldValidateOrFn<
-      /* TName, TOnChange, TFormOnChange */ any,
-      any,
-      any
-    >,
-    UnwrapFieldAsyncValidateOrFn<
-      /* TName, TOnChangeAsync, TFormOnChangeAsync */ any,
-      any,
-      any
-    >,
-    UnwrapFieldValidateOrFn</* TName, TOnBlur, TFormOnBlur */ any, any, any>,
-    UnwrapFieldAsyncValidateOrFn<
-      /* TName, TOnBlurAsync, TFormOnBlurAsync */ any,
-      any,
-      any
-    >,
-    UnwrapFieldValidateOrFn<
-      /* TName, TOnSubmit, TFormOnSubmit */ any,
-      any,
-      any
-    >,
-    UnwrapFieldAsyncValidateOrFn<
-      /* TName, TOnSubmitAsync, TFormOnSubmitAsync */ any,
-      any,
-      any
-    >,
-    UnwrapFieldValidateOrFn<
-      /* TName, TOnDynamic, TFormOnDynamic */ any,
-      any,
-      any
-    >,
-    UnwrapFieldAsyncValidateOrFn<
-      /* TName, TOnDynamicAsync, TFormOnDynamicAsync */ any,
-      any,
-      any
+// TODO: Add the `Unwrap` type to the errors
+type FormGroupErrorMapFromValidator<
+  TFormData,
+  TName extends DeepKeys<TFormData>,
+  TData extends DeepValue<TFormData, TName>,
+  TOnMount extends undefined | FormGroupValidateOrFn<TFormData, TName, TData>,
+  TOnChange extends undefined | FormGroupValidateOrFn<TFormData, TName, TData>,
+  TOnChangeAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TFormData, TName, TData>,
+  TOnBlur extends undefined | FormGroupValidateOrFn<TFormData, TName, TData>,
+  TOnBlurAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TFormData, TName, TData>,
+  TOnSubmit extends undefined | FormGroupValidateOrFn<TFormData, TName, TData>,
+  TOnSubmitAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TFormData, TName, TData>,
+> = Partial<
+  Record<
+    DeepKeys<TFormData>,
+    ValidationErrorMap<
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync
     >
   >
-  isSubmitting: boolean
-  /**
-   * A boolean indicating if the `onSubmit` function has completed successfully.
-   *
-   * Goes back to `false` at each new submission attempt.
-   *
-   * Note: you can use isSubmitting to check if the form is currently submitting.
-   */
-  isSubmitted: boolean
-  /**
-   * A boolean indicating if the form or any of its fields are currently validating.
-   */
-  isValidating: boolean
-  /**
-   * A counter for tracking the number of submission attempts.
-   */
-  submissionAttempts: number
-  /**
-   * A boolean indicating if the last submission was successful.
-   */
-  isSubmitSuccessful: boolean
-}
+>
 
-function getDefaultFormGroupState(
-  defaultState: Partial<BaseFormGroupState>,
-): BaseFormGroupState {
-  return {
-    // TODO: I think we need to handle the scenario where a Group is rendered for the first time and needs to inherit errors from the initial state of the fields...
-    //  Maybe?
-    //
-    // TODO: Wait, but that doesn't make sense, because in JSX it would render the form group before the fields initialize and generate errors from the initial state of the fields...
-    //  So we might need to use another derived state for errorMaps to merge with the form + fields? Ugh. I can't wait for v2 to simplify our error handling drastically.
-    errorMap: defaultState.errorMap ?? {},
-    isSubmitted: defaultState.isSubmitted ?? false,
-    isSubmitting: defaultState.isSubmitting ?? false,
-    isValidating: defaultState.isValidating ?? false,
-    submissionAttempts: defaultState.submissionAttempts ?? 0,
-    isSubmitSuccessful: defaultState.isSubmitSuccessful ?? false,
-  }
-}
-
-interface FormGroupOptions<TName> {
-  name: TName
-  onGroupSubmit?: (props: {
-    value: unknown
-    formApi: FormApi<any, any, any, any, any, any, any, any, any, any, any>
-    meta: unknown
-  }) => any | Promise<any>
-  onGroupSubmitInvalid?: (props: {
-    value: unknown
-    formApi: FormApi<any, any, any, any, any, any, any, any, any, any, any>
-    meta: unknown
-  }) => void
-  validators?: FieldValidators<
+/**
+ * @private
+ */
+export type FormGroupValidateFn<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> = (props: {
+  value: TData
+  groupApi: FormGroupApi<
+    TParentData,
+    TName,
+    TData,
+    // This is technically an edge-type; which we try to keep non-`any`, but in this case
+    // It's referring to an inaccessible type from the group validate function inner types, so it's not a big deal
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
     any,
     any,
     any,
@@ -144,67 +106,914 @@ interface FormGroupOptions<TName> {
     any,
     any
   >
+}) => unknown
 
-  validationLogic?: ValidationLogicFn
+/**
+ * @private
+ */
+export type FormGroupValidateOrFn<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> =
+  | FormGroupValidateFn<TParentData, TName, TData>
+  | StandardSchemaV1<TData, unknown>
+
+type StandardBrandedSchemaV1<T> = T & { __standardSchemaV1: true }
+
+type UnwrapFormValidateOrFnForInner<
+  TValidateOrFn extends undefined | FormValidateOrFn<any>,
+> = [TValidateOrFn] extends [FormValidateFn<any>]
+  ? ReturnType<TValidateOrFn>
+  : [TValidateOrFn] extends [StandardSchemaV1<infer TOut, any>]
+    ? StandardBrandedSchemaV1<TOut>
+    : undefined
+
+export type UnwrapFormGroupValidateOrFn<
+  TName extends string,
+  TValidateOrFn extends undefined | FormGroupValidateOrFn<any, any, any>,
+  TFormValidateOrFn extends undefined | FormValidateOrFn<any>,
+> =
+  | ([TFormValidateOrFn] extends [StandardSchemaV1<any, infer TStandardOut>]
+      ? TName extends keyof TStandardOut
+        ? StandardSchemaV1Issue[]
+        : undefined
+      : undefined)
+  | (UnwrapFormValidateOrFnForInner<TFormValidateOrFn> extends infer TFormValidateVal
+      ? TFormValidateVal extends { __standardSchemaV1: true }
+        ? [DeepValue<TFormValidateVal, TName>] extends [never]
+          ? undefined
+          : StandardSchemaV1Issue[]
+        : TFormValidateVal extends { fields: any }
+          ? TName extends keyof TFormValidateVal['fields']
+            ? TFormValidateVal['fields'][TName]
+            : undefined
+          : undefined
+      : never)
+  | ([TValidateOrFn] extends [FormGroupValidateFn<any, any, any>]
+      ? ReturnType<TValidateOrFn>
+      : [TValidateOrFn] extends [StandardSchemaV1<any, any>]
+        ? // TODO: Check if `disableErrorFlat` is enabled, if so, return StandardSchemaV1Issue[][]
+          StandardSchemaV1Issue[]
+        : undefined)
+
+/**
+ * @private
+ */
+export type FormGroupValidateAsyncFn<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> = (options: {
+  value: TData
+  groupApi: FormGroupApi<
+    TParentData,
+    TName,
+    TData,
+    // This is technically an edge-type; which we try to keep non-`any`, but in this case
+    // It's referring to an inaccessible type from the group validate function inner types, so it's not a big deal
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+  >
+  signal: AbortSignal
+}) => unknown | Promise<unknown>
+
+/**
+ * @private
+ */
+export type FormGroupAsyncValidateOrFn<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> =
+  | FormGroupValidateAsyncFn<TParentData, TName, TData>
+  | StandardSchemaV1<TData, unknown>
+
+type UnwrapFormAsyncValidateOrFnForInner<
+  TValidateOrFn extends undefined | FormAsyncValidateOrFn<any>,
+> = [TValidateOrFn] extends [FormValidateAsyncFn<any>]
+  ? Awaited<ReturnType<TValidateOrFn>>
+  : [TValidateOrFn] extends [StandardSchemaV1<infer TOut, any>]
+    ? StandardBrandedSchemaV1<TOut>
+    : undefined
+
+export type UnwrapFormGroupAsyncValidateOrFn<
+  TName extends string,
+  TValidateOrFn extends undefined | FormGroupAsyncValidateOrFn<any, any, any>,
+  TFormValidateOrFn extends undefined | FormAsyncValidateOrFn<any>,
+> =
+  | ([TFormValidateOrFn] extends [StandardSchemaV1<any, infer TStandardOut>]
+      ? TName extends keyof TStandardOut
+        ? StandardSchemaV1Issue[]
+        : undefined
+      : undefined)
+  | (UnwrapFormAsyncValidateOrFnForInner<TFormValidateOrFn> extends infer TFormValidateVal
+      ? TFormValidateVal extends { __standardSchemaV1: true }
+        ? [DeepValue<TFormValidateVal, TName>] extends [never]
+          ? undefined
+          : StandardSchemaV1Issue[]
+        : TFormValidateVal extends { fields: any }
+          ? TName extends keyof TFormValidateVal['fields']
+            ? TFormValidateVal['fields'][TName]
+            : undefined
+          : undefined
+      : never)
+  | ([TValidateOrFn] extends [FormGroupValidateAsyncFn<any, any, any>]
+      ? Awaited<ReturnType<TValidateOrFn>>
+      : [TValidateOrFn] extends [StandardSchemaV1<any, any>]
+        ? // TODO: Check if `disableErrorFlat` is enabled, if so, return StandardSchemaV1Issue[][]
+          StandardSchemaV1Issue[]
+        : undefined)
+
+/**
+ * @private
+ */
+export type FormGroupListenerFn<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> = (props: {
+  value: TData
+  groupApi: FormGroupApi<
+    TParentData,
+    TName,
+    TData,
+    // This is technically an edge-type; which we try to keep non-`any`, but in this case
+    // It's referring to an inaccessible type from the group listener function inner types, so it's not a big deal
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+  >
+}) => void
+
+export interface FormGroupValidators<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName>,
+  TOnMount extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnChangeAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnBlurAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnSubmitAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnDynamic extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnDynamicAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+> {
+  /**
+   * An optional function, that runs on the mount event of input.
+   */
+  onMount?: TOnMount
+  /**
+   * An optional function, that runs on the change event of input.
+   *
+   * @example z.string().min(1)
+   */
+  onChange?: TOnChange
+  /**
+   * An optional property similar to `onChange` but async validation
+   *
+   * @example z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })
+   */
+  onChangeAsync?: TOnChangeAsync
+  /**
+   * An optional number to represent how long the `onChangeAsync` should wait before running
+   *
+   * If set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds
+   */
+  onChangeAsyncDebounceMs?: number
+  /**
+   * An optional list of field names that should trigger this field's `onChange` and `onChangeAsync` events when its value changes
+   */
+  onChangeListenTo?: DeepKeys<TParentData>[]
+  /**
+   * An optional function, that runs on the blur event of input.
+   *
+   * @example z.string().min(1)
+   */
+  onBlur?: TOnBlur
+  /**
+   * An optional property similar to `onBlur` but async validation.
+   *
+   * @example z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })
+   */
+  onBlurAsync?: TOnBlurAsync
+
+  /**
+   * An optional number to represent how long the `onBlurAsync` should wait before running
+   *
+   * If set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds
+   */
+  onBlurAsyncDebounceMs?: number
+  /**
+   * An optional list of field names that should trigger this field's `onBlur` and `onBlurAsync` events when its value changes
+   */
+  onBlurListenTo?: DeepKeys<TParentData>[]
+  /**
+   * An optional function, that runs on the submit event of form.
+   *
+   * @example z.string().min(1)
+   */
+  onSubmit?: TOnSubmit
+  /**
+   * An optional property similar to `onSubmit` but async validation.
+   *
+   * @example z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })
+   */
+  onSubmitAsync?: TOnSubmitAsync
+  onDynamic?: TOnDynamic
+  onDynamicAsync?: TOnDynamicAsync
+  onDynamicAsyncDebounceMs?: number
+}
+
+export interface FormGroupListeners<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> {
+  onChange?: FormGroupListenerFn<TParentData, TName, TData>
+  onChangeDebounceMs?: number
+  onBlur?: FormGroupListenerFn<TParentData, TName, TData>
+  onBlurDebounceMs?: number
+  onMount?: FormGroupListenerFn<TParentData, TName, TData>
+  onUnmount?: FormGroupListenerFn<TParentData, TName, TData>
+  onSubmit?: FormGroupListenerFn<TParentData, TName, TData>
+  onGroupSubmit?: FormGroupListenerFn<TParentData, TName, TData>
+}
+
+interface FormGroupExtraOptions<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName>,
+  TOnMount extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnChangeAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnBlurAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnSubmitAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnDynamic extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnDynamicAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+> {
+  /**
+   * A list of validators to pass to the field
+   */
+  validators?: FormGroupValidators<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync
+  >
 
   /**
    * A list of listeners which attach to the corresponding events
    */
-  listeners?: FormListeners<
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any
+  listeners?: FormGroupListeners<TParentData, TName, TData>
+}
+
+/**
+ * An object type representing the options for a field in a form.
+ */
+export interface FieldOptions<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName>,
+  TOnMount extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnChangeAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnBlurAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnSubmitAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnDynamic extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnDynamicAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+>
+  extends
+    FormGroupExtraOptions<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync
+    >,
+    FieldLikeOptions<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync
+    > {}
+
+interface FormGroupApiOptions<
+  in out TParentData,
+  in out TName extends DeepKeys<TParentData>,
+  in out TData extends DeepValue<TParentData, TName>,
+  in out TOnMount extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnChange extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnChangeAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TOnBlur extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnBlurAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TOnSubmit extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnSubmitAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TOnDynamic extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnDynamicAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnChangeAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnBlurAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnSubmitAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnDynamicAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TParentSubmitMeta,
+>
+  extends
+    FieldLikeApiOptions<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync,
+      TFormOnServer,
+      TParentSubmitMeta
+    >,
+    FormGroupExtraOptions<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync
+    > {}
+
+export class FormGroupApi<
+  in out TParentData,
+  in out TName extends DeepKeys<TParentData>,
+  in out TData extends DeepValue<TParentData, TName>,
+  in out TOnMount extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnChange extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnChangeAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TOnBlur extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnBlurAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TOnSubmit extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnSubmitAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TOnDynamic extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnDynamicAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnChangeAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnBlurAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnSubmitAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnDynamicAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TParentSubmitMeta,
+> implements FieldLikeAPI<
+  TParentData,
+  TName,
+  TData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
+  TFormOnMount,
+  TFormOnChange,
+  TFormOnChangeAsync,
+  TFormOnBlur,
+  TFormOnBlurAsync,
+  TFormOnSubmit,
+  TFormOnSubmitAsync,
+  TFormOnDynamic,
+  TFormOnDynamicAsync,
+  TFormOnServer,
+  TParentSubmitMeta,
+  FormGroupExtraOptions<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync
   >
-
-  // TODO: Does this even make sense to be here given that fields should inform the default state of a group?
+> {
   /**
-   * The default state for the form group.
+   * A reference to the form API instance.
    */
-  defaultState?: Partial<BaseFormGroupState>
-}
-
-interface FormGroupApiOptions<TName> extends FormGroupOptions<TName> {
-  form: FormApi<any, any, any, any, any, any, any, any, any, any, any>
-}
-
-export class FormGroupApi {
-  options!: FormGroupApiOptions<string>
-
-  baseStore!: Store<BaseFormGroupState>
-
+  form: FormGroupApiOptions<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
+    TFormOnServer,
+    TParentSubmitMeta
+  >['form']
+  /**
+   * The field name.
+   */
+  name: TName
+  /**
+   * The field options.
+   */
+  options: FormGroupApiOptions<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
+    TFormOnServer,
+    TParentSubmitMeta
+  > = {} as any
+  /**
+   * The field state store.
+   */
+  store!: ReadonlyStore<
+    FieldLikeState<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync
+    >
+  >
+  /**
+   * The current field state.
+   */
   get state() {
-    return this.baseStore.state
+    return this.store.state
+  }
+  timeoutIds: {
+    validations: Record<ValidationCause, ReturnType<typeof setTimeout> | null>
+    listeners: Record<ListenerCause, ReturnType<typeof setTimeout> | null>
+    formListeners: Record<ListenerCause, ReturnType<typeof setTimeout> | null>
   }
 
-  constructor(opts?: FormGroupApiOptions<string>) {
+  constructor(
+    opts: FormGroupApiOptions<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync,
+      TFormOnServer,
+      TParentSubmitMeta
+    >,
+  ) {
+    this.form = opts.form
+    this.name = opts.name
+    this.options = opts
+
+    this.timeoutIds = {
+      validations: {} as Record<ValidationCause, never>,
+      listeners: {} as Record<ListenerCause, never>,
+      formListeners: {} as Record<ListenerCause, never>,
+    }
+
+    this.store = createStore(
+      (
+        prevVal:
+          | FieldLikeState<
+              TParentData,
+              TName,
+              TData,
+              TOnMount,
+              TOnChange,
+              TOnChangeAsync,
+              TOnBlur,
+              TOnBlurAsync,
+              TOnSubmit,
+              TOnSubmitAsync,
+              TOnDynamic,
+              TOnDynamicAsync,
+              TFormOnMount,
+              TFormOnChange,
+              TFormOnChangeAsync,
+              TFormOnBlur,
+              TFormOnBlurAsync,
+              TFormOnSubmit,
+              TFormOnSubmitAsync,
+              TFormOnDynamic,
+              TFormOnDynamicAsync
+            >
+          | undefined,
+      ) => {
+        // Temp hack to subscribe to form.store
+        this.form.store.get()
+
+        const meta = this.form.getFieldMeta(this.name) ?? {
+          ...defaultFieldMeta,
+          ...opts.defaultMeta,
+        }
+
+        let value = this.form.getFieldValue(this.name)
+        if (
+          !meta.isTouched &&
+          (value as unknown) === undefined &&
+          this.options.defaultValue !== undefined &&
+          !evaluate(value, this.options.defaultValue)
+        ) {
+          value = this.options.defaultValue
+        }
+
+        if (prevVal && prevVal.value === value && prevVal.meta === meta) {
+          return prevVal
+        }
+
+        return {
+          value,
+          meta,
+        } as FieldLikeState<
+          TParentData,
+          TName,
+          TData,
+          TOnMount,
+          TOnChange,
+          TOnChangeAsync,
+          TOnBlur,
+          TOnBlurAsync,
+          TOnSubmit,
+          TOnSubmitAsync,
+          TOnDynamic,
+          TOnDynamicAsync,
+          TFormOnMount,
+          TFormOnChange,
+          TFormOnChangeAsync,
+          TFormOnBlur,
+          TFormOnBlurAsync,
+          TFormOnSubmit,
+          TFormOnSubmitAsync,
+          TFormOnDynamic,
+          TFormOnDynamicAsync
+        >
+      },
+    )
+
     this.handleSubmit = this.handleSubmit.bind(this)
-
-    const baseStoreVal: BaseFormGroupState = getDefaultFormGroupState({
-      ...(opts?.defaultState as any),
-    })
-
-    this.baseStore = createStore(baseStoreVal) as never
-
-    this.update(opts)
   }
 
-  update = (options?: FormGroupApiOptions<string>) => {
-    if (!options) return
+  /**
+   * Updates the field instance with new options.
+   */
+  update = (
+    opts: FormGroupApiOptions<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync,
+      TFormOnServer,
+      TParentSubmitMeta
+    >,
+  ) => {
+    this.options = opts
+    this.name = opts.name
 
-    this.options = options
+    // Default Value
+    if (!this.state.meta.isTouched && this.options.defaultValue !== undefined) {
+      const formField = this.form.getFieldValue(this.name)
+      if (!evaluate(formField, opts.defaultValue)) {
+        this.form.setFieldValue(this.name, opts.defaultValue as never, {
+          dontUpdateMeta: true,
+          dontValidate: true,
+          dontRunListeners: true,
+        })
+      }
+    }
+
+    if (!this.form.getFieldMeta(this.name)) {
+      this.form.setFieldMeta(this.name, this.state.meta)
+    }
   }
 
   mount() {
+    // TODO: Absorb from FieldApi
     return () => {}
   }
+
+  /**
+   * Sets the field value and run the `change` validator.
+   */
+  setValue = (updater: Updater<TData>, options?: UpdateMetaOptions) => {
+    this.form.setFieldValue(
+      this.name,
+      updater as never,
+      mergeOpts(options, { dontRunListeners: true, dontValidate: true }),
+    )
+
+    if (!options?.dontRunListeners) {
+      this.triggerOnChangeListener()
+    }
+
+    if (!options?.dontValidate) {
+      this.validate('change')
+    }
+  }
+
+  getMeta = () => this.store.state.meta
+
+  /**
+   * Sets the field metadata.
+   */
+  setMeta = (
+    updater: Updater<
+      FieldLikeMetaBase<
+        TParentData,
+        TName,
+        TData,
+        TOnMount,
+        TOnChange,
+        TOnChangeAsync,
+        TOnBlur,
+        TOnBlurAsync,
+        TOnSubmit,
+        TOnSubmitAsync,
+        TOnDynamic,
+        TOnDynamicAsync,
+        TFormOnMount,
+        TFormOnChange,
+        TFormOnChangeAsync,
+        TFormOnBlur,
+        TFormOnBlurAsync,
+        TFormOnSubmit,
+        TFormOnSubmitAsync,
+        TFormOnDynamic,
+        TFormOnDynamicAsync
+      >
+    >,
+  ) => this.form.setFieldMeta(this.name, updater)
+
+  /**
+   * Gets the field information object.
+   */
+  getInfo = () => this.form.getFieldInfo(this.name)
 
   _isFieldNamePartOfGroup = (fieldName: string) => {
     // TODO: Does this `startWith` capture sub-field names properly? Probably not. :(
@@ -399,6 +1208,60 @@ export class FormGroupApi {
 
     // No error? Attempt async validation
     return this.validateAsync(cause)
+  }
+
+  /**
+   * @private
+   */
+  triggerOnChangeListener = () => {
+    // // TODO: Solve typings with formListener getting a fieldApi vs a groupApi
+    // const formDebounceMs = this.form.options.listeners?.onChangeDebounceMs
+    // if (formDebounceMs && formDebounceMs > 0) {
+    //   if (this.timeoutIds.formListeners.change) {
+    //     clearTimeout(this.timeoutIds.formListeners.change)
+    //   }
+    //
+    //   this.timeoutIds.formListeners.change = setTimeout(() => {
+    //     this.form.options.listeners?.onChange?.({
+    //       formApi: this.form,
+    //       groupApi: this,
+    //     })
+    //   }, formDebounceMs)
+    // } else {
+    //   this.form.options.listeners?.onChange?.({
+    //     formApi: this.form,
+    //     groupApi: this,
+    //   })
+    // }
+
+    const fieldDebounceMs = this.options.listeners?.onChangeDebounceMs
+    if (fieldDebounceMs && fieldDebounceMs > 0) {
+      if (this.timeoutIds.listeners.change) {
+        clearTimeout(this.timeoutIds.listeners.change)
+      }
+
+      this.timeoutIds.listeners.change = setTimeout(() => {
+        this.options.listeners?.onChange?.({
+          value: this.state.value,
+          groupApi: this,
+        })
+      }, fieldDebounceMs)
+    } else {
+      this.options.listeners?.onChange?.({
+        value: this.state.value,
+        groupApi: this,
+      })
+    }
+  }
+
+  /**
+   * @private
+   */
+  triggerOnSubmitListener() {
+    this.options.listeners?.onSubmit?.({
+      value: this.state.value,
+      groupApi: this,
+    })
   }
 
   _handleSubmit = async (): Promise<void> => {
