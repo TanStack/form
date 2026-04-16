@@ -186,7 +186,45 @@ describe('form group api', () => {
     expect(onSubmit).not.toHaveBeenCalled()
     expect(step1Group.state.meta.errorMap.onSubmit).toBe('Name is required')
   })
-  it.todo('Should handle submit meta args')
+  it('Should handle submit meta args', async () => {
+    const onSubmit = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        step1: { name: 'test' },
+        step2: { name: 'test2' },
+      },
+      onSubmit,
+    })
+
+    const onGroupSubmit = vi.fn()
+
+    const step1Group = new FormGroupApi({
+      name: 'step1',
+      form,
+      onGroupSubmit,
+      onSubmitMeta: {} as { source: string },
+    })
+
+    const step1NameField = new FieldApi({
+      name: 'step1.name',
+      form,
+    })
+
+    form.mount()
+    step1Group.mount()
+    step1NameField.mount()
+
+    await step1Group.handleSubmit({ source: 'button' })
+
+    expect(onGroupSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: { name: 'test' },
+        meta: { source: 'button' },
+      }),
+    )
+    expect(onSubmit).not.toHaveBeenCalled()
+  })
   it.todo('Should handle onXListenTo from fields')
   it.todo('Should handle onXListenTo from other groups')
 })
