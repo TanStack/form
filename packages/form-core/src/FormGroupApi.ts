@@ -1,13 +1,82 @@
 import { batch, createStore } from '@tanstack/store'
-import type { FormApi, FormListeners } from './FormApi'
+import { getSyncValidatorArray } from './utils'
+import { defaultValidationLogic } from './ValidationLogic'
+import {
+  isStandardSchemaValidator,
+  standardSchemaValidators,
+} from './standardSchemaValidator'
+import type { ValidationLogicFn } from './ValidationLogic'
+import type { TStandardSchemaValidatorValue } from './standardSchemaValidator'
+import type {
+  FieldValidators,
+  UnwrapFieldAsyncValidateOrFn,
+  UnwrapFieldValidateOrFn,
+} from './FieldApi'
+import type {
+  ValidationCause,
+  ValidationError,
+  ValidationErrorMap,
+} from './types'
+import type {
+  AnyFormApi,
+  FormApi,
+  FormAsyncValidateOrFn,
+  FormListeners,
+  FormValidateFn,
+  FormValidateOrFn,
+} from './FormApi'
 import type { Store } from '@tanstack/store'
-import type { FieldValidators } from './FieldApi'
-import type { ValidationCause, ValidationError } from './types'
+
+/**
+ * TODO: Add derived state for `errors` array derived from `errorMap`
+ */
 
 /**
  * An object representing the current state of the form group.
  */
 type BaseFormGroupState = {
+  /**
+   * The error map for the group itself.
+   */
+  errorMap: ValidationErrorMap<
+    UnwrapFieldValidateOrFn</* TName, TOnMount, TFormOnMount */ any, any, any>,
+    UnwrapFieldValidateOrFn<
+      /* TName, TOnChange, TFormOnChange */ any,
+      any,
+      any
+    >,
+    UnwrapFieldAsyncValidateOrFn<
+      /* TName, TOnChangeAsync, TFormOnChangeAsync */ any,
+      any,
+      any
+    >,
+    UnwrapFieldValidateOrFn</* TName, TOnBlur, TFormOnBlur */ any, any, any>,
+    UnwrapFieldAsyncValidateOrFn<
+      /* TName, TOnBlurAsync, TFormOnBlurAsync */ any,
+      any,
+      any
+    >,
+    UnwrapFieldValidateOrFn<
+      /* TName, TOnSubmit, TFormOnSubmit */ any,
+      any,
+      any
+    >,
+    UnwrapFieldAsyncValidateOrFn<
+      /* TName, TOnSubmitAsync, TFormOnSubmitAsync */ any,
+      any,
+      any
+    >,
+    UnwrapFieldValidateOrFn<
+      /* TName, TOnDynamic, TFormOnDynamic */ any,
+      any,
+      any
+    >,
+    UnwrapFieldAsyncValidateOrFn<
+      /* TName, TOnDynamicAsync, TFormOnDynamicAsync */ any,
+      any,
+      any
+    >
+  >
   isSubmitting: boolean
   /**
    * A boolean indicating if the `onSubmit` function has completed successfully.
@@ -35,6 +104,12 @@ function getDefaultFormGroupState(
   defaultState: Partial<BaseFormGroupState>,
 ): BaseFormGroupState {
   return {
+    // TODO: I think we need to handle the scenario where a Group is rendered for the first time and needs to inherit errors from the initial state of the fields...
+    //  Maybe?
+    //
+    // TODO: Wait, but that doesn't make sense, because in JSX it would render the form group before the fields initialize and generate errors from the initial state of the fields...
+    //  So we might need to use another derived state for errorMaps to merge with the form + fields? Ugh. I can't wait for v2 to simplify our error handling drastically.
+    errorMap: defaultState.errorMap ?? {},
     isSubmitted: defaultState.isSubmitted ?? false,
     isSubmitting: defaultState.isSubmitting ?? false,
     isValidating: defaultState.isValidating ?? false,
@@ -70,6 +145,8 @@ interface FormGroupOptions<TName> {
     any
   >
 
+  validationLogic?: ValidationLogicFn
+
   /**
    * A list of listeners which attach to the corresponding events
    */
@@ -102,6 +179,10 @@ export class FormGroupApi {
   options!: FormGroupApiOptions<string>
 
   baseStore!: Store<BaseFormGroupState>
+
+  get state() {
+    return this.baseStore.state
+  }
 
   constructor(opts?: FormGroupApiOptions<string>) {
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -174,6 +255,150 @@ export class FormGroupApi {
 
     const fieldErrorMapMap = await Promise.all(fieldValidationPromises)
     return fieldErrorMapMap.flat()
+  }
+
+  /**
+   * @private
+   */
+  runValidator<
+    TValue extends TStandardSchemaValidatorValue<any /* TFormData */> & {
+      formApi: AnyFormApi
+    },
+    TType extends 'validate' | 'validateAsync',
+  >(props: {
+    validate: TType extends 'validate'
+      ? FormValidateOrFn<any /* TFormData */>
+      : FormAsyncValidateOrFn<any /* TFormData */>
+    value: TValue
+    type: TType
+  }): unknown {
+    if (isStandardSchemaValidator(props.validate)) {
+      return standardSchemaValidators[props.type](
+        props.value,
+        props.validate,
+      ) as never
+    }
+
+    return (props.validate as FormValidateFn<any>)(props.value) as never
+  }
+
+  /**
+   * TODO: This code is mostly copied from FormApi, we should refactor to share
+   *
+   * This does not need to validate fields or the base form, as that's done elsewhere
+   *
+   * @private
+   */
+  validateSync = (cause: ValidationCause) => {
+    const validates = getSyncValidatorArray(cause, {
+      ...this.options,
+      form: this,
+      validationLogic: this.options.validationLogic || defaultValidationLogic,
+    })
+
+    let hasErrored = false as boolean
+
+    batch(() => {
+      for (const validateObj of validates) {
+        if (!validateObj.validate) continue
+
+        const rawError = this.runValidator({
+          validate: validateObj.validate,
+          value: {
+            value: 0 /* this.state.values */,
+            formApi: this.options.form as never,
+            validationSource: 'field',
+          },
+          type: 'validate',
+        })
+
+        // TODO: Support form group error maps like so:
+        /*
+        {
+          group: "Error on group",
+          fields: {
+            firstName: "Other error"
+          }
+        }
+         */
+        // const { formError, fieldErrors } = normalizeError<TFormData>(rawError)
+
+        const groupError = normalizeError(rawError)
+        const errorMapKey = getErrorMapKey(validateObj.cause)
+
+        if (this.state.errorMap[errorMapKey] !== groupError) {
+          this.baseStore.setState((prev) => ({
+            ...prev,
+            errorMap: {
+              ...prev.errorMap,
+              [errorMapKey]: groupError,
+            },
+          }))
+        }
+
+        if (groupError /* || fieldErrors */) {
+          hasErrored = true
+        }
+      }
+
+      /**
+       *  when we have an error for onSubmit in the state, we want
+       *  to clear the error as soon as the user enters a valid value in the field
+       */
+      const submitErrKey = getErrorMapKey('submit')
+      if (
+        this.state.errorMap[submitErrKey] &&
+        cause !== 'submit' &&
+        !hasErrored
+      ) {
+        this.baseStore.setState((prev) => ({
+          ...prev,
+          errorMap: {
+            ...prev.errorMap,
+            [submitErrKey]: undefined,
+          },
+        }))
+      }
+
+      /**
+       *  when we have an error for onServer in the state, we want
+       *  to clear the error as soon as the user enters a valid value in the field
+       */
+      const serverErrKey = getErrorMapKey('server')
+      if (
+        this.state.errorMap[serverErrKey] &&
+        cause !== 'server' &&
+        !hasErrored
+      ) {
+        this.baseStore.setState((prev) => ({
+          ...prev,
+          errorMap: {
+            ...prev.errorMap,
+            [serverErrKey]: undefined,
+          },
+        }))
+      }
+    })
+
+    return { hasErrored }
+  }
+
+  /**
+   * @private
+   */
+  validate = (
+    cause: ValidationCause,
+    // TODO: Handle return type?
+  ) => {
+    // Attempt to sync validate first
+    const { hasErrored /* fieldsErrorMap */ } = this.validateSync(cause)
+
+    if (hasErrored && !this.options.asyncAlways) {
+      return fieldsErrorMap
+    }
+
+    // No error? Attempt async validation
+    return this.validateAsync(cause)
   }
 
   _handleSubmit = async (): Promise<void> => {
@@ -307,5 +532,31 @@ export class FormGroupApi {
 
   handleSubmit(): Promise<void> {
     return this._handleSubmit()
+  }
+}
+
+function normalizeError(rawError?: ValidationError) {
+  if (rawError) {
+    return rawError
+  }
+
+  return undefined
+}
+
+function getErrorMapKey(cause: ValidationCause) {
+  switch (cause) {
+    case 'submit':
+      return 'onSubmit'
+    case 'blur':
+      return 'onBlur'
+    case 'mount':
+      return 'onMount'
+    case 'server':
+      return 'onServer'
+    case 'dynamic':
+      return 'onDynamic'
+    case 'change':
+    default:
+      return 'onChange'
   }
 }
