@@ -4,6 +4,7 @@ import {
   evaluate,
   getAsyncValidatorArray,
   getSyncValidatorArray,
+  isGlobalFormValidationError,
   mergeOpts,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
@@ -13,7 +14,14 @@ import {
 } from './standardSchemaValidator'
 import { defaultFieldMeta } from './metaHelper'
 import { FieldApi } from './FieldApi'
-import type { FormAsyncValidateOrFn, FormValidateOrFn } from './FormApi'
+import {
+  BaseFormState,
+  FormAsyncValidateOrFn,
+  FormState,
+  FormValidateOrFn,
+  UnwrapFormAsyncValidateOrFn,
+  UnwrapFormValidateOrFn,
+} from './FormApi'
 import type { AnyFieldApi } from './FieldApi'
 import type {
   StandardSchemaV1,
@@ -21,7 +29,8 @@ import type {
 } from './standardSchemaValidator'
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
 import type { ReadonlyStore, Store } from '@tanstack/store'
-import type {
+import {
+  AnyFieldLikeMeta,
   FieldErrorMapFromValidator,
   FieldInfo,
   FieldLikeAPI,
@@ -30,6 +39,8 @@ import type {
   FieldLikeOptions,
   FieldLikeState,
   ListenerCause,
+  UnwrapFieldAsyncValidateOrFn,
+  UnwrapFieldValidateOrFn,
   UpdateMetaOptions,
   ValidationCause,
   ValidationError,
@@ -355,6 +366,11 @@ interface FormGroupExtraOptions<
     TOnDynamic,
     TOnDynamicAsync
   >
+
+  /**
+   * If true, allows the form to be submitted in an invalid state i.e. canSubmit will remain true regardless of validation errors. Defaults to undefined.
+   */
+  canSubmitWhenInvalid?: boolean
 
   /**
    * A list of listeners which attach to the corresponding events
@@ -717,6 +733,13 @@ export type AnyFormGroupApi = FormGroupApi<
   any
 >
 
+interface FormGroupStoreState extends AnyFieldLikeMeta {
+  isFieldsValidating: boolean
+  isFieldsValid: boolean
+  isGroupValid: boolean
+  canSubmit: boolean
+}
+
 export class FormGroupApi<
   in out TParentData,
   in out TName extends DeepKeys<TParentData>,
@@ -972,32 +995,35 @@ export class FormGroupApi<
 
     this.formStateStore = createStore(formStateStoreVal) as never
 
+    let prevMeta: AnyFieldLikeMeta | undefined = undefined
+
     this.store = createStore(
       (
         prevVal:
-          | FieldLikeState<
-              TParentData,
-              TName,
-              TData,
-              TOnMount,
-              TOnChange,
-              TOnChangeAsync,
-              TOnBlur,
-              TOnBlurAsync,
-              TOnSubmit,
-              TOnSubmitAsync,
-              TOnDynamic,
-              TOnDynamicAsync,
-              TFormOnMount,
-              TFormOnChange,
-              TFormOnChangeAsync,
-              TFormOnBlur,
-              TFormOnBlurAsync,
-              TFormOnSubmit,
-              TFormOnSubmitAsync,
-              TFormOnDynamic,
-              TFormOnDynamicAsync
-            >
+          | (FormGroupStoreState &
+              FieldLikeState<
+                TParentData,
+                TName,
+                TData,
+                TOnMount,
+                TOnChange,
+                TOnChangeAsync,
+                TOnBlur,
+                TOnBlurAsync,
+                TOnSubmit,
+                TOnSubmitAsync,
+                TOnDynamic,
+                TOnDynamicAsync,
+                TFormOnMount,
+                TFormOnChange,
+                TFormOnChangeAsync,
+                TFormOnBlur,
+                TFormOnBlurAsync,
+                TFormOnSubmit,
+                TFormOnSubmitAsync,
+                TFormOnDynamic,
+                TFormOnDynamicAsync
+              >)
           | undefined,
       ) => {
         // Temp hack to subscribe to form.store
@@ -1018,36 +1044,152 @@ export class FormGroupApi<
           value = this.options.defaultValue
         }
 
-        if (prevVal && prevVal.value === value && prevVal.meta === meta) {
+        const relatedFieldMeta = this.getRelatedFieldMetasDerived()
+
+        const isFieldsValidating = relatedFieldMeta.some(
+          (field) => field.isValidating,
+        )
+
+        const isFieldsValid = relatedFieldMeta.every((field) => field.isValid)
+
+        const isTouched = relatedFieldMeta.some((field) => field.isTouched)
+        const isBlurred = relatedFieldMeta.some((field) => field.isBlurred)
+        const isDefaultValue = relatedFieldMeta.every(
+          (field) => field.isDefaultValue,
+        )
+
+        const isDirty = relatedFieldMeta.some((field) => field.isDirty)
+        const isPristine = !isDirty
+
+        const isValidating = !!isFieldsValidating
+
+        // As `errors` is not a primitive, we need to aggressively persist the same referencial value for performance reasons
+        let errors = prevVal?.errors ?? []
+        if (!prevMeta || meta.errorMap !== prevMeta.errorMap) {
+          errors = Object.values(meta.errorMap).reduce<
+            Array<
+              | UnwrapFieldValidateOrFn<TName, TOnMount, TFormOnMount>
+              | UnwrapFieldValidateOrFn<TName, TOnChange, TFormOnChange>
+              | UnwrapFieldAsyncValidateOrFn<
+                  TName,
+                  TOnChangeAsync,
+                  TFormOnChangeAsync
+                >
+              | UnwrapFieldValidateOrFn<TName, TOnBlur, TFormOnBlur>
+              | UnwrapFieldAsyncValidateOrFn<
+                  TName,
+                  TOnBlurAsync,
+                  TFormOnBlurAsync
+                >
+              | UnwrapFieldValidateOrFn<TName, TOnSubmit, TFormOnSubmit>
+              | UnwrapFieldAsyncValidateOrFn<
+                  TName,
+                  TOnSubmitAsync,
+                  TFormOnSubmitAsync
+                >
+            >
+          >((prev, curr) => {
+            if (curr === undefined) return prev
+
+            if (curr && isGlobalFormValidationError(curr)) {
+              prev.push(curr.form as never)
+              return prev
+            }
+            prev.push(curr as never)
+            return prev
+          }, [])
+        }
+
+        const isGroupValid = errors.length === 0
+        const isValid = isFieldsValid && isGroupValid
+        const submitInvalid = this.options.canSubmitWhenInvalid ?? false
+        const canSubmit =
+          (this.formStateStore.state.submissionAttempts === 0 &&
+            !isTouched) /* &&
+            !hasOnMountError */ ||
+          (!isValidating &&
+            !this.formStateStore.state.isSubmitting &&
+            isValid) ||
+          submitInvalid
+
+        const errorMap = meta.errorMap
+        // TODO: Handle this
+        /*
+        if (shouldInvalidateOnMount) {
+          errors = errors.filter(
+            (err) => err !== currBaseStore.errorMap.onMount,
+          )
+          errorMap = Object.assign(errorMap, { onMount: undefined })
+        }
+         */
+
+        if (
+          prevVal &&
+          prevMeta &&
+          prevVal.value === value &&
+          prevVal.meta === meta &&
+          prevVal.errorMap === errorMap &&
+          prevVal.errors === errors &&
+          prevVal.isFieldsValidating === isFieldsValidating &&
+          prevVal.isFieldsValid === isFieldsValid &&
+          prevVal.isGroupValid === isGroupValid &&
+          prevVal.isValid === isValid &&
+          prevVal.canSubmit === canSubmit &&
+          prevVal.isTouched === isTouched &&
+          prevVal.isBlurred === isBlurred &&
+          prevVal.isPristine === isPristine &&
+          prevVal.isDefaultValue === isDefaultValue &&
+          prevVal.isDirty === isDirty &&
+          evaluate(prevMeta, meta)
+        ) {
           return prevVal
         }
 
-        return {
+        const state = {
+          ...this.formStateStore.state,
           value,
           meta,
-        } as FieldLikeState<
-          TParentData,
-          TName,
-          TData,
-          TOnMount,
-          TOnChange,
-          TOnChangeAsync,
-          TOnBlur,
-          TOnBlurAsync,
-          TOnSubmit,
-          TOnSubmitAsync,
-          TOnDynamic,
-          TOnDynamicAsync,
-          TFormOnMount,
-          TFormOnChange,
-          TFormOnChangeAsync,
-          TFormOnBlur,
-          TFormOnBlurAsync,
-          TFormOnSubmit,
-          TFormOnSubmitAsync,
-          TFormOnDynamic,
-          TFormOnDynamicAsync
-        >
+          errorMap,
+          errors,
+          canSubmit,
+          isFieldsValidating,
+          isFieldsValid,
+          isGroupValid,
+          isValid,
+          isTouched,
+          isBlurred,
+          isPristine,
+          isDefaultValue,
+          isDirty,
+          errorSourceMap: {},
+        } as FormGroupStoreState &
+          FieldLikeState<
+            TParentData,
+            TName,
+            TData,
+            TOnMount,
+            TOnChange,
+            TOnChangeAsync,
+            TOnBlur,
+            TOnBlurAsync,
+            TOnSubmit,
+            TOnSubmitAsync,
+            TOnDynamic,
+            TOnDynamicAsync,
+            TFormOnMount,
+            TFormOnChange,
+            TFormOnChangeAsync,
+            TFormOnBlur,
+            TFormOnBlurAsync,
+            TFormOnSubmit,
+            TFormOnSubmitAsync,
+            TFormOnDynamic,
+            TFormOnDynamicAsync
+          >
+
+        prevMeta = meta
+
+        return state
       },
     )
 
@@ -1212,6 +1354,24 @@ export class FormGroupApi<
     }
 
     return relatedFields
+  }
+  /**
+   * @private
+   */
+  getRelatedFieldMetasDerived = () => {
+    const fields = Object.entries(this.form.fieldMetaDerived) as [
+      string,
+      AnyFieldLikeMeta,
+    ][]
+
+    const relatedFieldMetas: (AnyFieldLikeMeta & { name: string })[] = []
+    for (const [fieldName, fieldMeta] of fields) {
+      if (fieldName.startsWith(this.name)) {
+        relatedFieldMetas.push({ ...fieldMeta, name: fieldName })
+      }
+    }
+
+    return relatedFieldMetas
   }
 
   /**
