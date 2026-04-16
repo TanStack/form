@@ -1359,7 +1359,7 @@ export class FormGroupApi<
    * @private
    */
   getRelatedFieldMetasDerived = () => {
-    const fields = Object.entries(this.form.fieldMetaDerived) as [
+    const fields = Object.entries(this.form.fieldMetaDerived.state) as [
       string,
       AnyFieldLikeMeta,
     ][]
@@ -1757,9 +1757,6 @@ export class FormGroupApi<
       skipRelatedFieldValidation?: boolean
     },
   ): ValidationError[] | Promise<ValidationError[]> => {
-    // If the field is pristine, do not validate
-    if (!this.state.meta.isTouched) return []
-
     // Attempt to sync validate first
     const { fieldsErrorMap } = opts?.skipFormValidation
       ? { fieldsErrorMap: {} as never }
