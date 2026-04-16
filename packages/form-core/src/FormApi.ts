@@ -31,7 +31,7 @@ import type {
   TStandardSchemaValidatorValue,
 } from './standardSchemaValidator'
 import type { AnyFieldApi } from './FieldApi'
-import type {
+import {
   AnyFieldLikeMeta,
   AnyFieldLikeMetaBase,
   ExtractGlobalFormError,
@@ -810,6 +810,13 @@ export type AnyFormApi = FormApi<
   any,
   any
 >
+
+interface ValidateOpts<TFormData> {
+  // Useful in FormGroup where validation doesn't update form error map
+  dontUpdateFormErrorMap?: boolean
+  // Filter which field names to validate, useful for FormGroup validation to filter out fields that don't start with the FormGroup name
+  filterFieldNames?: (fieldName: DeepKeys<TFormData>) => boolean
+}
 
 /**
  * We cannot use methods and must use arrow functions. Otherwise, our React adapters
@@ -1613,6 +1620,7 @@ export class FormApi<
    */
   validateSync = (
     cause: ValidationCause,
+    validateOpts?: ValidateOpts<TFormData>,
   ): {
     hasErrored: boolean
     fieldsErrorMap: FormErrorMapFromValidator<
@@ -1668,10 +1676,16 @@ export class FormApi<
 
         const errorMapKey = getErrorMapKey(validateObj.cause)
 
-        const allFieldsToProcess = new Set([
+        let allFieldsToProcess = new Set([
           ...Object.keys(this.state.fieldMeta),
           ...Object.keys(fieldErrors || {}),
         ] as DeepKeys<TFormData>[])
+
+        if (validateOpts?.filterFieldNames) {
+          allFieldsToProcess = new Set(
+            [...allFieldsToProcess].filter(validateOpts.filterFieldNames),
+          )
+        }
 
         for (const field of allFieldsToProcess) {
           if (
@@ -1724,20 +1738,26 @@ export class FormApi<
           }
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (this.state.errorMap?.[errorMapKey] !== formError) {
-          this.baseStore.setState((prev) => ({
-            ...prev,
-            errorMap: {
-              ...prev.errorMap,
-              [errorMapKey]: formError,
-            },
-          }))
+        if (!validateOpts?.dontUpdateFormErrorMap) {
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          if (this.state.errorMap?.[errorMapKey] !== formError) {
+            this.baseStore.setState((prev) => ({
+              ...prev,
+              errorMap: {
+                ...prev.errorMap,
+                [errorMapKey]: formError,
+              },
+            }))
+          }
         }
 
         if (formError || fieldErrors) {
           hasErrored = true
         }
+      }
+
+      if (validateOpts?.dontUpdateFormErrorMap) {
+        return
       }
 
       /**
@@ -1789,6 +1809,7 @@ export class FormApi<
    */
   validateAsync = async (
     cause: ValidationCause,
+    validateOpts?: ValidateOpts<TFormData>,
   ): Promise<
     FormErrorMapFromValidator<
       TFormData,
@@ -1879,9 +1900,13 @@ export class FormApi<
           }
           const errorMapKey = getErrorMapKey(validateObj.cause)
 
-          for (const field of Object.keys(
-            this.state.fieldMeta,
-          ) as DeepKeys<TFormData>[]) {
+          let fields: DeepKeys<TFormData>[] = Object.keys(this.state.fieldMeta)
+
+          if (validateOpts?.filterFieldNames) {
+            fields = fields.filter(validateOpts.filterFieldNames)
+          }
+
+          for (const field of fields) {
             if (this.baseStore.state.fieldMetaBase[field] === undefined) {
               continue
             }
@@ -1906,10 +1931,8 @@ export class FormApi<
                 previousErrorValue: currentErrorMap?.[errorMapKey],
               })
 
-            if (
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-              currentErrorMap?.[errorMapKey] !== newErrorValue
-            ) {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            if (currentErrorMap?.[errorMapKey] !== newErrorValue) {
               this.setFieldMeta(field, (prev) => ({
                 ...prev,
                 errorMap: {
@@ -1924,13 +1947,15 @@ export class FormApi<
             }
           }
 
-          this.baseStore.setState((prev) => ({
-            ...prev,
-            errorMap: {
-              ...prev.errorMap,
-              [errorMapKey]: formError,
-            },
-          }))
+          if (!validateOpts?.dontUpdateFormErrorMap) {
+            this.baseStore.setState((prev) => ({
+              ...prev,
+              errorMap: {
+                ...prev.errorMap,
+                [errorMapKey]: formError,
+              },
+            }))
+          }
 
           resolve(
             fieldErrorsFromFormValidators
@@ -1989,6 +2014,7 @@ export class FormApi<
    */
   validate = (
     cause: ValidationCause,
+    validateOpts?: ValidateOpts<TFormData>,
   ):
     | FormErrorMapFromValidator<
         TFormData,
@@ -2017,14 +2043,17 @@ export class FormApi<
         >
       > => {
     // Attempt to sync validate first
-    const { hasErrored, fieldsErrorMap } = this.validateSync(cause)
+    const { hasErrored, fieldsErrorMap } = this.validateSync(
+      cause,
+      validateOpts,
+    )
 
     if (hasErrored && !this.options.asyncAlways) {
       return fieldsErrorMap
     }
 
     // No error? Attempt async validation
-    return this.validateAsync(cause)
+    return this.validateAsync(cause, validateOpts)
   }
 
   // Needs to edgecase in the React adapter specifically to avoid type errors
