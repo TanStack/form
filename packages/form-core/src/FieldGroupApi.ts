@@ -14,11 +14,7 @@ import type {
   DeepValue,
   FieldsMap,
 } from './util-types'
-import type {
-  FormLikeAPI,
-  UpdateMetaOptions,
-  ValidationCause,
-} from './types'
+import type { FormLikeAPI, UpdateMetaOptions, ValidationCause } from './types'
 
 export type AnyFieldGroupApi = FieldGroupApi<
   any,
