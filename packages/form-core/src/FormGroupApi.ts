@@ -1313,9 +1313,9 @@ export class FormGroupApi<
       for (const validateObj of validates) {
         validateFieldOrGroupFn(this, validateObj)
       }
-      for (const fieldValitateObj of relatedFieldValidates) {
-        if (!fieldValitateObj.validate) continue
-        validateFieldOrGroupFn(fieldValitateObj.field, fieldValitateObj)
+      for (const fieldValidateObj of relatedFieldValidates) {
+        if (!fieldValidateObj.validate) continue
+        validateFieldOrGroupFn(fieldValidateObj.field, fieldValidateObj)
       }
     })
 
@@ -1713,17 +1713,14 @@ export class FormGroupApi<
     const submitMetaArg =
       submitMeta ?? (this.options.onSubmitMeta as TSubmitMeta)
 
-    // TODO: Handle this
-    /*
-    if (!this.formState.canSubmit) {
-      this.options.onSubmitInvalid?.({
+    if (!this.state.meta.isValid) {
+      this.options.onGroupSubmitInvalid?.({
         value: this.state.value,
-        formApi: this,
+        groupApi: this,
         meta: submitMetaArg,
       })
       return
     }
-     */
 
     this.formStateStore.setState((d) => ({ ...d, isSubmitting: true }))
 
@@ -1751,8 +1748,8 @@ export class FormGroupApi<
       skipRelatedFieldValidation: true,
     })
 
-    // Form is invalid, do not submit
-    if (!this.options.form.state.isValid) {
+    // Group is invalid, do not submit
+    if (!this.state.meta.isValid) {
       done()
 
       this.options.onGroupSubmitInvalid?.({
@@ -1779,12 +1776,6 @@ export class FormGroupApi<
     })
 
     try {
-      await this.options.onGroupSubmit?.({
-        value: this.state.value,
-        groupApi: this,
-        meta: submitMetaArg,
-      })
-
       // Run the submit code
       await this.options.onGroupSubmit?.({
         value: this.state.value,
