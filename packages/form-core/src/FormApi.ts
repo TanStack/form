@@ -1605,7 +1605,15 @@ export class FormApi<
     batch(() => {
       fieldsToValidate.forEach((nestedField) => {
         fieldValidationPromises.push(
-          Promise.resolve().then(() => this.validateField(nestedField, cause)),
+          Promise.resolve().then(() => {
+            // If the field instance already exists, call validate directly
+            // to avoid auto-touching shifted siblings
+            const fieldInstance = this.fieldInfo[nestedField]?.instance
+            if (fieldInstance) {
+              return fieldInstance.validate(cause)
+            }
+            return this.validateField(nestedField, cause)
+          }),
         )
       })
     })
