@@ -240,6 +240,76 @@ describe('custom validation', () => {
     expect(field.state.meta.errorMap.onDynamic).toBe(undefined)
   })
 
+  it('should pass field name to revalidate logic', async () => {
+    const changeTarget: (string | undefined)[] = []
+    const blurTarget: (string | undefined)[] = []
+    const submitTarget: (string | undefined)[] = []
+    const mountTarget: (string | undefined)[] = []
+
+    const validationLogic: ValidationLogicFn = (props) => {
+      if (props.event.type === 'mount') {
+        mountTarget.push(props.event.fieldName)
+      } else if (props.event.type === 'change') {
+        changeTarget.push(props.event.fieldName)
+      } else if (props.event.type === 'blur') {
+        blurTarget.push(props.event.fieldName)
+      } else if (props.event.type === 'submit') {
+        submitTarget.push(props.event.fieldName)
+      }
+
+      const validatorNames = Object.keys(props.validators ?? {})
+      if (validatorNames.length === 0) {
+        // No validators is a valid case, just return
+        return props.runValidation({
+          validators: [],
+          form: props.form,
+        })
+      }
+
+      return props.runValidation({
+        validators: [
+          {
+            fn: props.event.async
+              ? props.validators!['onDynamicAsync']
+              : props.validators!['onDynamic'],
+            cause: 'dynamic',
+          },
+        ],
+        form: props.form,
+      })
+    }
+
+    const form = new FormApi({
+      defaultValues: {
+        one: '',
+        two: '',
+      },
+      validationLogic,
+    })
+
+    form.mount()
+
+    const fieldOne = new FieldApi({
+      form,
+      name: 'one',
+    })
+
+    fieldOne.mount()
+    expect(mountTarget).toEqual([])
+
+    fieldOne.setValue('test')
+    expect(changeTarget).toEqual(expect.arrayContaining(['one']))
+
+    fieldOne.handleBlur()
+    expect(blurTarget).toEqual(expect.arrayContaining(['one']))
+
+    await form.handleSubmit()
+    expect(submitTarget).toEqual(
+      // validate is called twice on submit (validateAllFields, validate)
+      expect.arrayContaining(['one', 'one', undefined, undefined]),
+    )
+  })
+
   describe('customised field-level validation logic', () => {
     const validationLogic: ValidationLogicFn = (props) => {
       const validatorNames = Object.keys(props.validators ?? {})
