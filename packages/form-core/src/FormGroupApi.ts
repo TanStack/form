@@ -14,14 +14,7 @@ import {
 } from './standardSchemaValidator'
 import { defaultFieldMeta } from './metaHelper'
 import { FieldApi } from './FieldApi'
-import {
-  BaseFormState,
-  FormAsyncValidateOrFn,
-  FormState,
-  FormValidateOrFn,
-  UnwrapFormAsyncValidateOrFn,
-  UnwrapFormValidateOrFn,
-} from './FormApi'
+import type { FormAsyncValidateOrFn, FormValidateOrFn } from './FormApi'
 import type { AnyFieldApi } from './FieldApi'
 import type {
   StandardSchemaV1,
@@ -31,6 +24,7 @@ import type { AsyncValidator, SyncValidator, Updater } from './utils'
 import type { ReadonlyStore, Store } from '@tanstack/store'
 import {
   AnyFieldLikeMeta,
+  AnyFieldLikeMetaBase,
   FieldErrorMapFromValidator,
   FieldInfo,
   FieldLikeAPI,
@@ -38,6 +32,7 @@ import {
   FieldLikeMetaBase,
   FieldLikeOptions,
   FieldLikeState,
+  FormLikeAPI,
   ListenerCause,
   UnwrapFieldAsyncValidateOrFn,
   UnwrapFieldValidateOrFn,
@@ -46,7 +41,7 @@ import {
   ValidationError,
   ValidationErrorMap,
 } from './types'
-import type { DeepKeys, DeepValue } from './util-types'
+import type { DeepKeys, DeepKeysOfType, DeepValue } from './util-types'
 
 /**
  * @private
@@ -791,57 +786,61 @@ export class FormGroupApi<
     | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   in out TParentSubmitMeta,
-> implements FieldLikeAPI<
-  TParentData,
-  TName,
-  TData,
-  TOnMount,
-  TOnChange,
-  TOnChangeAsync,
-  TOnBlur,
-  TOnBlurAsync,
-  TOnSubmit,
-  TOnSubmitAsync,
-  TOnDynamic,
-  TOnDynamicAsync,
-  TFormOnMount,
-  TFormOnChange,
-  TFormOnChangeAsync,
-  TFormOnBlur,
-  TFormOnBlurAsync,
-  TFormOnSubmit,
-  TFormOnSubmitAsync,
-  TFormOnDynamic,
-  TFormOnDynamicAsync,
-  TFormOnServer,
-  TParentSubmitMeta,
-  FormGroupExtraOptions<
-    TParentData,
-    TName,
-    TData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync,
-    TSubmitMeta,
-    TFormOnMount,
-    TFormOnChange,
-    TFormOnChangeAsync,
-    TFormOnBlur,
-    TFormOnBlurAsync,
-    TFormOnSubmit,
-    TFormOnSubmitAsync,
-    TFormOnDynamic,
-    TFormOnDynamicAsync,
-    TFormOnServer,
-    TParentSubmitMeta
-  >
-> {
+>
+  implements
+    FormLikeAPI<TParentData, TSubmitMeta>,
+    FieldLikeAPI<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync,
+      TFormOnServer,
+      TParentSubmitMeta,
+      FormGroupExtraOptions<
+        TParentData,
+        TName,
+        TData,
+        TOnMount,
+        TOnChange,
+        TOnChangeAsync,
+        TOnBlur,
+        TOnBlurAsync,
+        TOnSubmit,
+        TOnSubmitAsync,
+        TOnDynamic,
+        TOnDynamicAsync,
+        TSubmitMeta,
+        TFormOnMount,
+        TFormOnChange,
+        TFormOnChangeAsync,
+        TFormOnBlur,
+        TFormOnBlurAsync,
+        TFormOnSubmit,
+        TFormOnSubmitAsync,
+        TFormOnDynamic,
+        TFormOnDynamicAsync,
+        TFormOnServer,
+        TParentSubmitMeta
+      >
+    >
+{
   /**
    * A reference to the form API instance.
    */
@@ -1741,6 +1740,113 @@ export class FormGroupApi<
     return fieldErrorMapMap.flat()
   }
 
+  validateArrayFieldsStartingFrom = <
+    TField extends DeepKeysOfType<TParentData, any[]>,
+  >(
+    field: TField,
+    index: number,
+    cause: ValidationCause,
+  ) => {
+    return this.form.validateArrayFieldsStartingFrom(field, index, cause)
+  }
+
+  validateField = <TField extends DeepKeysOfType<TParentData, any>>(
+    field: TField,
+    cause: ValidationCause,
+  ) => {
+    return this.form.validateField(field, cause)
+  }
+
+  getFieldValue = <TField extends DeepKeysOfType<TParentData, any>>(
+    field: TField,
+  ) => {
+    return this.form.getFieldValue(field)
+  }
+
+  getFieldMeta = <TField extends DeepKeysOfType<TParentData, any>>(
+    field: TField,
+  ) => {
+    return this.form.getFieldMeta(field)
+  }
+
+  setFieldMeta = <TField extends DeepKeysOfType<TParentData, any>>(
+    field: TField,
+    updater: Updater<AnyFieldLikeMetaBase>,
+  ) => {
+    return this.form.setFieldMeta(field, updater)
+  }
+
+  setFieldValue = <TField extends DeepKeysOfType<TParentData, any>>(
+    field: TField,
+    value: any,
+  ) => {
+    return this.form.setFieldValue(field, value)
+  }
+
+  deleteField = <TField extends DeepKeysOfType<TParentData, any>>(
+    field: TField,
+  ) => {
+    return this.form.deleteField(field)
+  }
+
+  pushFieldValue = <TField extends DeepKeysOfType<TParentData, any[]>>(
+    field: TField,
+    value: any,
+  ) => {
+    return this.form.pushFieldValue(field, value)
+  }
+
+  insertFieldValue = <TField extends DeepKeysOfType<TParentData, any[]>>(
+    field: TField,
+    index: number,
+    value: any,
+  ) => {
+    return this.form.insertFieldValue(field, index, value)
+  }
+
+  replaceFieldValue = <TField extends DeepKeysOfType<TParentData, any[]>>(
+    field: TField,
+    index: number,
+    value: any,
+  ) => {
+    return this.form.replaceFieldValue(field, index, value)
+  }
+
+  swapFieldValues = <TField extends DeepKeysOfType<TParentData, any[]>>(
+    field: TField,
+    index1: number,
+    index2: number,
+  ) => {
+    return this.form.swapFieldValues(field, index1, index2)
+  }
+
+  moveFieldValues = <TField extends DeepKeysOfType<TParentData, any[]>>(
+    field: TField,
+    fromIndex: number,
+    toIndex: number,
+  ) => {
+    return this.form.moveFieldValues(field, fromIndex, toIndex)
+  }
+
+  clearFieldValues = <TField extends DeepKeysOfType<TParentData, any[]>>(
+    field: TField,
+  ) => {
+    return this.form.clearFieldValues(field)
+  }
+
+  resetField = <TField extends DeepKeysOfType<TParentData, any>>(
+    field: TField,
+  ) => {
+    return this.form.resetField(field)
+  }
+
+  removeFieldValue = <TField extends DeepKeysOfType<TParentData, any[]>>(
+    field: TField,
+    index: number,
+  ) => {
+    return this.form.removeFieldValue(field, index)
+  }
+
   areRelatedFieldsValid = () => {
     return Object.values(this.getRelatedFields()).every(
       (field) => field.state.meta.isValid,
@@ -1912,6 +2018,7 @@ export class FormGroupApi<
     })
 
     // Group is invalid, do not submit
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!this.state.meta.isValid) {
       done()
 
