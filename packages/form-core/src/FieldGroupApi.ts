@@ -110,6 +110,14 @@ export interface FieldGroupOptions<
   onSubmitMeta?: TSubmitMeta
 }
 
+function isFieldInStringGroup(fieldName: string, groupPath: string) {
+  return (
+    fieldName !== groupPath &&
+    fieldName.startsWith(groupPath) &&
+    (fieldName[groupPath.length] === '.' || fieldName[groupPath.length] === '[')
+  )
+}
+
 export class FieldGroupApi<
   in out TFormData,
   in out TFieldGroupData,
@@ -396,6 +404,36 @@ export class FieldGroupApi<
   }
 
   /**
+   * Delete all fields that belong to this field group.
+   */
+  deleteAllFields = () => {
+    if (typeof this.fieldsMap === 'string') {
+      const groupPath = this.fieldsMap.toString()
+      const currentValue = this.form.getFieldValue(groupPath)
+
+      const fieldsToDelete = Object.keys(this.form.fieldInfo).filter(
+        (fieldName) => isFieldInStringGroup(fieldName, groupPath),
+      )
+
+      fieldsToDelete.forEach((field) => {
+        this.form.deleteField(field)
+      })
+
+      const emptyValue = Array.isArray(currentValue) ? [] : {}
+      this.form.setFieldValue(groupPath, emptyValue as never, {
+        dontUpdateMeta: true,
+      })
+
+      return
+    }
+
+    const fieldsMap = this.fieldsMap as FieldsMap<TFormData, TFieldGroupData>
+    for (const key in fieldsMap) {
+      this.deleteField(key)
+    }
+  }
+
+  /**
    * Pushes a value into an array field.
    */
   pushFieldValue = <TField extends DeepKeysOfType<TFieldGroupData, any[]>>(
@@ -458,6 +496,20 @@ export class FieldGroupApi<
   }
 
   /**
+   * Replaces all field values in this field group with the provided values.
+   */
+  replaceAllFields = (fields: TFieldGroupData) => {
+    for (const fieldName of Object.keys(
+      fields as object,
+    ) as (keyof TFieldGroupData)[]) {
+      this.setFieldValue(
+        fieldName as unknown as DeepKeys<TFieldGroupData>,
+        fields[fieldName] as never,
+      )
+    }
+  }
+
+  /**
    * Removes a value from an array field at the specified index.
    */
   removeFieldValue = async <
@@ -512,10 +564,39 @@ export class FieldGroupApi<
   }
 
   /**
-   * Resets the field value and meta to default state
+   * Resets the field value and meta to default state.
    */
   resetField = <TField extends DeepKeys<TFieldGroupData>>(field: TField) => {
     return this.form.resetField(this.getFormFieldName(field))
+  }
+
+  /**
+   * Resets all field values and meta within this field group.
+   */
+  resetAllFields = () => {
+    if (typeof this.fieldsMap === 'string') {
+      const groupPath = this.fieldsMap.toString()
+
+      const fieldsToReset = Object.keys(this.form.fieldInfo).filter(
+        (fieldName) => isFieldInStringGroup(fieldName, groupPath),
+      )
+
+      fieldsToReset.forEach((field) => this.form.resetField(field))
+
+      if (this.form.options.defaultValues !== undefined) {
+        const resetValue = getBy(this.form.options.defaultValues, groupPath)
+        this.form.setFieldValue(groupPath, resetValue as never, {
+          dontUpdateMeta: true,
+        })
+      }
+      return
+    }
+
+    const fieldsMap = this.fieldsMap as FieldsMap<TFormData, TFieldGroupData>
+
+    for (const key in fieldsMap) {
+      this.resetField(key)
+    }
   }
 
   validateAllFields = (cause: ValidationCause) =>
