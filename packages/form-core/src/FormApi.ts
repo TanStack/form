@@ -1582,6 +1582,7 @@ export class FormApi<
     field: TField,
     index: number,
     cause: ValidationCause,
+    options?: { avoidTouch?: boolean },
   ) => {
     const currentValue = this.getFieldValue(field)
 
@@ -1605,12 +1606,29 @@ export class FormApi<
     batch(() => {
       fieldsToValidate.forEach((nestedField) => {
         fieldValidationPromises.push(
-          Promise.resolve().then(() => {
-            // If the field instance already exists, call validate directly
-            // to avoid auto-touching shifted siblings
-            const fieldInstance = this.fieldInfo[nestedField]?.instance
-            if (fieldInstance) {
-              return fieldInstance.validate(cause)
+          Promise.resolve().then(async () => {
+            // If avoidTouch is set and the field instance already exists,
+            // run validation without permanently marking the field as touched
+            if (options?.avoidTouch) {
+              const fieldInstance = this.fieldInfo[nestedField]?.instance
+              if (fieldInstance) {
+                const wasTouched = fieldInstance.state.meta.isTouched
+                if (!wasTouched) {
+                  // Temporarily touch the field so validation runs, then restore
+                  fieldInstance.setMeta((prev) => ({
+                    ...prev,
+                    isTouched: true,
+                  }))
+                }
+                const result = await fieldInstance.validate(cause)
+                if (!wasTouched) {
+                  fieldInstance.setMeta((prev) => ({
+                    ...prev,
+                    isTouched: false,
+                  }))
+                }
+                return result
+              }
             }
             return this.validateField(nestedField, cause)
           }),
@@ -2477,7 +2495,10 @@ export class FormApi<
     if (!dontValidate) {
       // Validate the whole array + all fields that have shifted
       await this.validateField(field, 'change')
-      await this.validateArrayFieldsStartingFrom(field, index, 'change')
+      // avoidTouch: true prevents auto-touching siblings that shifted after removal
+      await this.validateArrayFieldsStartingFrom(field, index, 'change', {
+        avoidTouch: true,
+      })
     }
   }
 
