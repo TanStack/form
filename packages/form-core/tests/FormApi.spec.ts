@@ -366,6 +366,92 @@ describe('form api', () => {
     expect(form.getFieldValue('names')).toStrictEqual(['one', 'two', 'three'])
   })
 
+  it("should clean onMount errors when replacing an array field's value", async () => {
+    const form = new FormApi({
+      defaultValues: {
+        people: [
+          {
+            firstName: '',
+            lastName: '',
+          },
+        ],
+      },
+      validators: {
+        onMount: ({ value }) => {
+          let fieldErrors: Record<string, string> = {}
+
+          value.people.map((x, index) => {
+            if (x.firstName.length < 3) {
+              fieldErrors[`people[${index}].firstName`] =
+                'First name is too short'
+            }
+
+            if (x.lastName.length < 3) {
+              fieldErrors[`people[${index}].lastName`] =
+                'Last name is too short'
+            }
+          })
+
+          if (Object.keys(fieldErrors).length > 0) {
+            return {
+              fields: { ...fieldErrors },
+            }
+          }
+
+          return fieldErrors
+        },
+        onChange: ({ value }) => {
+          let fieldErrors: Record<string, string> = {}
+
+          value.people.map((x, index) => {
+            if (x.firstName.length < 3) {
+              fieldErrors[`people[${index}].firstName`] =
+                'First name is too short'
+            }
+
+            if (x.lastName.length < 3) {
+              fieldErrors[`people[${index}].lastName`] =
+                'Last name is too short'
+            }
+          })
+
+          if (Object.keys(fieldErrors).length > 0) {
+            return {
+              fields: { ...fieldErrors },
+            }
+          }
+
+          return fieldErrors
+        },
+      },
+    })
+    form.mount()
+
+    // Since validation runs through the field, a field must be mounted for that array
+    new FieldApi({ form, name: 'people' }).mount()
+
+    await form.replaceFieldValue('people', 0, {
+      firstName: 'Chuck',
+      lastName: 'Norris',
+    })
+
+    expect(form.state.values).toStrictEqual({
+      people: [
+        {
+          firstName: 'Chuck',
+          lastName: 'Norris',
+        },
+      ],
+    })
+    expect.soft(form.state.fieldMetaBase['people']!.errorMap).toStrictEqual({})
+    expect
+      .soft(form.state.fieldMetaBase['people[0].firstName']!.errorMap)
+      .toStrictEqual({})
+    expect
+      .soft(form.state.fieldMetaBase['people[0].firstName']!.errorSourceMap)
+      .toStrictEqual({})
+  })
+
   it("should run onChange validation when inserting an array field's value", () => {
     const form = new FormApi({
       defaultValues: {
