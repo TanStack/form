@@ -22,7 +22,7 @@ import type {
 } from './standardSchemaValidator'
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
 import type { ReadonlyStore, Store } from '@tanstack/store'
-import {
+import type {
   AnyFieldLikeMeta,
   AnyFieldLikeMetaBase,
   FieldErrorMapFromValidator,
@@ -30,7 +30,6 @@ import {
   FieldLikeAPI,
   FieldLikeApiOptions,
   FieldLikeMetaBase,
-  FieldLikeOptions,
   FieldLikeState,
   FormLikeAPI,
   ListenerCause,

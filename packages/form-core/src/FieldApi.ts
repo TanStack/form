@@ -13,7 +13,6 @@ import {
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
 import type {
-  FieldAsyncValidateOrFn,
   FieldErrorMapFromValidator,
   FieldInfo,
   FieldLikeAPI,
@@ -21,7 +20,6 @@ import type {
   FieldLikeMetaBase,
   FieldLikeOptions,
   FieldLikeState,
-  FieldValidateOrFn,
   ListenerCause,
   UnwrapFieldAsyncValidateOrFn,
   UnwrapFieldValidateOrFn,
@@ -36,7 +34,12 @@ import type {
   StandardSchemaV1,
   TStandardSchemaValidatorValue,
 } from './standardSchemaValidator'
-import type { FormAsyncValidateOrFn, FormValidateOrFn } from './FormApi'
+import type {
+  FormAsyncValidateOrFn,
+  FormValidateAsyncFn,
+  FormValidateFn,
+  FormValidateOrFn,
+} from './FormApi'
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
 
 /**
@@ -153,6 +156,28 @@ export type FieldListenerFn<
     any
   >
 }) => void
+
+/**
+ * @private
+ */
+export type FieldValidateOrFn<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> =
+  | FieldValidateFn<TParentData, TName, TData>
+  | StandardSchemaV1<TData, unknown>
+
+/**
+ * @private
+ */
+export type FieldAsyncValidateOrFn<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> =
+  | FieldValidateAsyncFn<TParentData, TName, TData>
+  | StandardSchemaV1<TData, unknown>
 
 export interface FieldValidators<
   TParentData,
