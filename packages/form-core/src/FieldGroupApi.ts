@@ -7,14 +7,19 @@ import type {
   FormAsyncValidateOrFn,
   FormValidateOrFn,
 } from './FormApi'
-import type { AnyFieldLikeMetaBase, FieldOptions } from './FieldApi'
+import type { FieldOptions } from './FieldApi'
 import type {
   DeepKeys,
   DeepKeysOfType,
   DeepValue,
   FieldsMap,
 } from './util-types'
-import type { FormLikeAPI, UpdateMetaOptions, ValidationCause } from './types'
+import {
+  AnyFieldLikeMetaBase,
+  FormLikeAPI,
+  UpdateMetaOptions,
+  ValidationCause,
+} from './types'
 
 export type AnyFieldGroupApi = FieldGroupApi<
   any,
@@ -364,7 +369,7 @@ export class FieldGroupApi<
    */
   setFieldMeta = <TField extends DeepKeys<TFieldGroupData>>(
     field: TField,
-    updater: Updater<AnyFieldMetaBase>,
+    updater: Updater<AnyFieldLikeMetaBase>,
   ) => {
     return this.form.setFieldMeta(this.getFormFieldName(field), updater)
   }
