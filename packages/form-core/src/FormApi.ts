@@ -1,13 +1,14 @@
 import { createAtom } from '@tanstack/store'
 import {
   getOrCreateFieldApiNode,
-  nameToFiedNodeSegments,
+  nameToFieldNodeSegments,
 } from './FieldApi.internal'
 import { createFieldNode } from './FieldApi'
 import type { FieldApiNode } from './FieldApi.internal'
 import type { Atom } from '@tanstack/store'
 import type { InternalFormApi } from './FormApi.internal'
 import type { FormApi, FormOptions, FormState } from './FormApi.types'
+import type { FieldMeta } from './FieldApi.types'
 
 // Typeland: users[${number}].foo
 // '[15]'
@@ -33,6 +34,7 @@ const value = 12;
 
 class FormApiImpl<TData> implements InternalFormApi<TData> {
   baseAtom: Atom<FormState<TData>>
+  fieldMetaAtom: Atom<Partial<Record<string, FieldMeta>>>
   store: Atom<any>
   _fieldRootNode: FieldApiNode
   declare state: FormState<TData>
@@ -42,10 +44,12 @@ class FormApiImpl<TData> implements InternalFormApi<TData> {
       values: options.defaultValues,
     })
 
+    this.fieldMetaAtom = createAtom({})
     this.store = createAtom({})
     this._fieldRootNode = createFieldNode({
       segment: '',
       parent: null,
+      form: this,
     })
 
     Object.defineProperty(this, 'state', {
@@ -55,8 +59,14 @@ class FormApiImpl<TData> implements InternalFormApi<TData> {
   }
 
   _requestField = (name: string): FieldApiNode => {
-    const segments = nameToFiedNodeSegments(name)
-    return getOrCreateFieldApiNode(this._fieldRootNode, segments)
+    const segments = nameToFieldNodeSegments(name)
+    const fieldNode = getOrCreateFieldApiNode(
+      this._fieldRootNode,
+      segments,
+      this,
+    )
+
+    return fieldNode
   }
 }
 
@@ -146,6 +156,6 @@ class FormApiImpl<TData> implements InternalFormApi<TData> {
 
 export function createForm<TData>(
   formOptions: FormOptions<TData>,
-): FormApi<TData> {
+): InternalFormApi<TData> {
   return new FormApiImpl(formOptions)
 }

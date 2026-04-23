@@ -1,7 +1,9 @@
 import { createFieldNode } from './FieldApi'
-import type { FieldApi, FieldApiParams } from './FieldApi.types'
+import type { ReadonlyAtom } from '@tanstack/store'
+import type { FieldApi } from './FieldApi.types'
+import type { FormApi } from './FormApi.types'
 
-export function nameToFiedNodeSegments(
+export function nameToFieldNodeSegments(
   nameOrSegments: string | Array<string>,
 ): Array<string> {
   if (typeof nameOrSegments !== 'string') return nameOrSegments
@@ -23,24 +25,29 @@ export function nameToFiedNodeSegments(
 export function getOrCreateFieldApiNode(
   trieNode: FieldApiNode,
   segments: Array<string>,
+  form: FormApi<any>,
 ): FieldApiNode {
   const [segment, ...nextSegments] = segments
   if (!segment) return trieNode
 
   let childNode = trieNode._getFieldBySegmentName(segment)
   if (childNode) {
-    return getOrCreateFieldApiNode(childNode, nextSegments)
+    return getOrCreateFieldApiNode(childNode, nextSegments, form)
   }
 
-  childNode = createFieldNode({ segment, parent: trieNode })
+  childNode = createFieldNode({ segment, parent: trieNode, form })
 
   trieNode._setChild(childNode)
 
-  return getOrCreateFieldApiNode(childNode, nextSegments)
+  return getOrCreateFieldApiNode(childNode, nextSegments, form)
 }
 
 export interface FieldApiNode extends FieldApi {
   _type: 'array' | null
+
+  _store: ReadonlyAtom<any> | null
+
+  get store(): ReadonlyAtom<any>
 
   get _isArray(): boolean
 
@@ -54,6 +61,10 @@ export interface FieldApiNode extends FieldApi {
    * Only used when `this._isArray()` is false
    */
   _childrenMap: Map<string, FieldApiNode>
+  /**
+   * @private
+   */
+  _fullPathCache: string | null
 
   _getFieldBySegmentName: (name: string) => FieldApiNode | undefined
 
@@ -62,6 +73,10 @@ export interface FieldApiNode extends FieldApi {
   _createChild: (segment: string) => FieldApiNode
 
   get _children(): Array<FieldApiNode>
+
+  get name(): string
+
+  _invalidateFullPath: () => void
 
   /**
    * @private

@@ -1,4 +1,5 @@
 import type { FieldApiNode } from './FieldApi.internal'
+import type { FormApi } from './FormApi.types'
 
 export interface FieldMeta {
   isTouched: boolean
@@ -19,4 +20,5 @@ export interface FieldApi {
 export interface FieldApiParams {
   segment: string
   parent: FieldApiNode | null
+  form: FormApi<any>
 }
