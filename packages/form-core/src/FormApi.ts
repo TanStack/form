@@ -1,12 +1,13 @@
 import { createAtom } from '@tanstack/store'
-import { FieldApi, defaultFieldMeta } from './FieldApi'
-import { TrieNode, getOrCreateTrieNode, nameToTrieSegments } from './fieldTrie'
+import {
+  getOrCreateFieldApiNode,
+  nameToFiedNodeSegments,
+} from './FieldApi.internal'
+import { createFieldNode } from './FieldApi'
+import type { FieldApiNode } from './FieldApi.internal'
 import type { Atom } from '@tanstack/store'
-import type { FieldId, FieldMeta } from './FieldApi.types'
-
-interface FormOptions {
-  defaultValues: any
-}
+import type { InternalFormApi } from './FormApi.internal'
+import type { FormApi, FormOptions, FormState } from './FormApi.types'
 
 // Typeland: users[${number}].foo
 // '[15]'
@@ -30,33 +31,32 @@ const value = 12;
 // form.isValidating: if fieldApi or formApi is validating, increment counter. Boolean is counter > 0
 // form.isDefaultValue: ??? --> probably keep old system, but benchmark it
 
-export class FormApi {
-  baseAtom: Atom<any>
+class FormApiImpl<TData> implements InternalFormApi<TData> {
+  baseAtom: Atom<FormState<TData>>
   store: Atom<any>
-  fieldsTrie: TrieNode
-  declare state: any
+  _fieldRootNode: FieldApiNode
+  declare state: FormState<TData>
 
-  constructor(options: FormOptions) {
-    this.baseAtom = createAtom({})
+  constructor(options: FormOptions<TData>) {
+    this.baseAtom = createAtom({
+      values: options.defaultValues,
+    })
 
     this.store = createAtom({})
-    this.fieldsTrie = new TrieNode({ segment: '', parent: null, fieldId: null })
+    this._fieldRootNode = createFieldNode({
+      segment: '',
+      parent: null,
+    })
 
     Object.defineProperty(this, 'state', {
-      get: () => this.store.get(),
+      get: (): FormState<TData> => this.store.get(),
       enumerable: true,
     })
   }
 
-  _requestField = (name: string): TrieNode => {
-    const segments = nameToTrieSegments(name)
-    return getOrCreateTrieNode(this.fieldsTrie, segments)
-
-    // swapFieldValues(0, 1)
-    // users[1] => users[0] // REFERENCE STAYS THE SAME
-    // render cycle
-    // component requests users[0]
-    // -> reference stayed the same
+  _requestField = (name: string): FieldApiNode => {
+    const segments = nameToFiedNodeSegments(name)
+    return getOrCreateFieldApiNode(this._fieldRootNode, segments)
   }
 }
 
@@ -143,3 +143,9 @@ export class FormApi {
 //    nodeA  nodeB
 //     /  \
 //   nodeC nodeD
+
+export function createForm<TData>(
+  formOptions: FormOptions<TData>,
+): FormApi<TData> {
+  return new FormApiImpl(formOptions)
+}
