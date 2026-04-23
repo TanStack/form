@@ -1,9 +1,9 @@
 {
-  "name": "@tanstack/template-example-solid-devtools",
+  "name": "@tanstack/template-example-solid-basic",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --port=3008",
+    "dev": "vite --port=3007",
     "build": "vite build",
     "preview": "vite preview",
     "test:types": "tsc"

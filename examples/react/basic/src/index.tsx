@@ -5,17 +5,16 @@ import { useTemplate } from '@tanstack/react-form'
 
 function App() {
   const template = React.useMemo(
-    () => createTemplate({ message: 'Hello from React with Devtools!' }),
+    () => createTemplate({ message: 'Hello from React!' }),
     [],
   )
   const state = useTemplate(template)
 
   return (
     <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
-      <h1>TanStack Template - React Devtools Example</h1>
+      <h1>TanStack Template - React Basic Example</h1>
       <p>Message: {state.message}</p>
       <button onClick={() => template.greet()}>Greet (check console)</button>
-
     </div>
   )
 }

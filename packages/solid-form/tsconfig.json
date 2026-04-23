@@ -2,11 +2,8 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "jsx": "preserve",
-    "jsxImportSource": "solid-js",
-    "moduleResolution": "Bundler",
-    "paths": {
-      "@tanstack/form-core": ["../form-core/src"]
-    }
+    "jsxImportSource": "solid-js"
   },
-  "include": ["src", "tests", "eslint.config.js", "vite.config.ts"]
+  "include": ["src", "vitest.config.ts", "tests"],
+  "exclude": ["eslint.config.js"]
 }

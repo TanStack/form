@@ -1,11 +1,8 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "jsx": "react-jsx",
-    "moduleResolution": "Bundler",
-    "paths": {
-      "@tanstack/form-core": ["../form-core/src"]
-    }
+    "jsx": "react"
   },
-  "include": ["src", "tests", "eslint.config.js"]
+  "include": ["src", "vitest.config.ts", "tests"],
+  "exclude": ["eslint.config.js"]
 }

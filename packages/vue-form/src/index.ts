@@ -1,5 +1,1 @@
-export * from '@tanstack/form-core'
-export { useSelector, useStore } from '@tanstack/vue-store'
-export * from './useField'
-export * from './useForm'
-export * from './useFormGroup'
+export const msg = "Hello"

@@ -1,9 +1,9 @@
 {
-  "name": "@tanstack/template-example-react-devtools",
+  "name": "@tanstack/template-example-react-basic",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --port=3006",
+    "dev": "vite --port=3005",
     "build": "vite build",
     "preview": "vite preview",
     "test:types": "tsc"
