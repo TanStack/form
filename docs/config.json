@@ -303,6 +303,10 @@
             {
               "label": "Linked Fields",
               "to": "framework/svelte/guides/linked-fields"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/svelte/guides/form-composition"
             }
           ]
         }
@@ -677,6 +681,10 @@
             {
               "label": "Standard Schema",
               "to": "framework/svelte/examples/standard-schema"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/svelte/examples/large-form"
             }
           ]
         }
