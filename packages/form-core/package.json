@@ -32,9 +32,9 @@
       "require": "./dist/index.cjs",
       "import": "./dist/index.js"
     },
-    "./types": {
-      "require": "./dist/types.cjs",
-      "import": "./dist/types.js"
+    "./internals": {
+      "require": "./dist/internals.cjs",
+      "import": "./dist/internals.js"
     },
     "./package.json": "./package.json"
   },

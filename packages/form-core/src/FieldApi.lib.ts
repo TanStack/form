@@ -1,19 +1,76 @@
 import { createAtom } from '@tanstack/store'
 import type { ReadonlyAtom } from '@tanstack/store'
-import type { FormApi } from './FormApi.types'
-import type { FieldApiNode } from './FieldApi.internal'
-import type { FieldApiParams, FieldMeta } from './FieldApi.types'
+import type { FieldApi, FieldMeta } from './FieldApi.public'
+import type { FormApi } from './FormApi.public'
+
+export function nameToFieldNodeSegments(
+  nameOrSegments: string | Array<string>,
+): Array<string> {
+  if (typeof nameOrSegments !== 'string') return nameOrSegments
+
+  const result: Array<string> = []
+  let s = ''
+  for (const char of nameOrSegments) {
+    switch (char) {
+      case '.':
+      case '[':
+        result.push(s)
+        s = ''
+        break
+      case ']':
+        break
+      default:
+        s += char
+        break
+    }
+  }
+  result.push(s)
+  return result
+}
+
+export function getOrCreateFieldApi<TData>(
+  trieNode: InternalFieldApi<TData>,
+  segments: Array<string>,
+  form: FormApi<any>,
+): InternalFieldApi<TData> {
+  const [segment, ...nextSegments] = segments
+  if (!segment) return trieNode
+
+  let childNode = trieNode._getChild(segment)
+  if (childNode) {
+    return getOrCreateFieldApi(childNode, nextSegments, form)
+  }
+
+  childNode = new InternalFieldApi({ segment, parent: trieNode, form })
+
+  trieNode._setChild(childNode)
+
+  return getOrCreateFieldApi(childNode, nextSegments, form)
+}
 
 export const defaultFieldMeta: FieldMeta = {
   isTouched: false,
 }
 
-class FieldApiImpl implements FieldApiNode {
+export interface InternalFieldApiParams<TData> {
+  segment: string
+  parent: InternalFieldApi<TData> | null
+  form: FormApi<TData>
+}
+
+// Possible plan for performance
+// When changing array elements, update the segment name
+// keep track of a `pathVersion` per node
+// mutation segment increments the pathVersion
+// when children access fullPath, it checks if parentVersion === childVersion
+// if not, recompute and sync version
+
+export class InternalFieldApi<TData> implements FieldApi<TData> {
   _type: 'array' | null
   _segment
   _parent
-  _childrenArray: Array<FieldApiNode> = []
-  _childrenMap: Map<string, FieldApiNode> = new Map()
+  _childrenArray: Array<InternalFieldApi<TData>> = []
+  _childrenMap: Map<string, InternalFieldApi<TData>> = new Map()
   _fullPathCache: string | null = null
   _store: ReadonlyAtom<any> | null = null
 
@@ -23,7 +80,7 @@ class FieldApiImpl implements FieldApiNode {
     return this._type === 'array'
   }
 
-  get _children(): Array<FieldApiNode> {
+  get _children(): Array<InternalFieldApi<TData>> {
     if (this._isArray) {
       return this._childrenArray
     }
@@ -65,7 +122,7 @@ class FieldApiImpl implements FieldApiNode {
     return this._fullPathCache
   }
 
-  constructor({ segment, parent, form }: FieldApiParams) {
+  constructor({ segment, parent, form }: InternalFieldApiParams<TData>) {
     this._segment = segment
     this._parent = parent
     this._type = null // Array.isArray(form.getFieldValue())
@@ -77,14 +134,22 @@ class FieldApiImpl implements FieldApiNode {
     this._children.forEach((child) => child._invalidateFullPath())
   }
 
-  _getFieldBySegmentName(name: string): FieldApiNode | undefined {
+  /**
+   * @private
+   * Get a child FieldApi by its segment name.
+   */
+  _getChild(segment: string): InternalFieldApi<TData> | undefined {
     if (this._isArray) {
-      return this._childrenArray[parseInt(this._segment, 10)]
+      return this._childrenArray[parseInt(segment, 10)]
     }
-    return this._childrenMap.get(name)
+    return this._childrenMap.get(segment)
   }
 
-  _setChild = (node: FieldApiNode): void => {
+  /**
+   * @private
+   * Set an existing node as a child of this FieldApi.
+   */
+  _setChild = (node: InternalFieldApi<TData>): void => {
     if (this._isArray) {
       this._childrenArray[parseInt(node._segment, 10)] = node
     } else {
@@ -92,8 +157,17 @@ class FieldApiImpl implements FieldApiNode {
     }
   }
 
-  _createChild = (segment: string): FieldApiNode => {
-    const node = createFieldNode({ segment, parent: this, form: this.form })
+  /**
+   * @private
+   * Create a new FieldApi with the given segment name and add it as child.
+   * @returns the new FieldApi.
+   */
+  _createChild = (segment: string): InternalFieldApi<TData> => {
+    const node = new InternalFieldApi({
+      segment,
+      parent: this,
+      form: this.form,
+    })
     this._setChild(node)
     return node
   }
@@ -106,7 +180,7 @@ class FieldApiImpl implements FieldApiNode {
 
   swapValues = (oldIndex: number, newIndex: number) => {
     if (!this._isArray) {
-      console.warn('swapValues can only be used on array nodes')
+      console.warn('swapValues: This method can only be used on array fields')
       return
     }
 
@@ -178,7 +252,3 @@ class FieldApiImpl implements FieldApiNode {
 // getOrCreateNodeByFieldId(fieldId: string): create Node, get nodeId, create derived, register in metaMap
 
 // validateArray() -> touches all child nodes -> traverse, check for nodeId, if present, set it in the map
-
-export function createFieldNode(fieldOptions: FieldApiParams): FieldApiNode {
-  return new FieldApiImpl(fieldOptions)
-}

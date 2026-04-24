@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { nameToFieldNodeSegments } from '../src/FieldApi.internal'
+import { nameToFieldNodeSegments } from '../src/internals'
 
 describe('nameToFieldNodeSegments', () => {
   it('splits dot-separated field names', () => {

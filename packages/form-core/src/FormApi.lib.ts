@@ -1,14 +1,12 @@
 import { createAtom } from '@tanstack/store'
 import {
-  getOrCreateFieldApiNode,
+  InternalFieldApi,
+  getOrCreateFieldApi,
   nameToFieldNodeSegments,
-} from './FieldApi.internal'
-import { createFieldNode } from './FieldApi'
-import type { FieldApiNode } from './FieldApi.internal'
+} from './FieldApi.lib'
 import type { Atom } from '@tanstack/store'
-import type { InternalFormApi } from './FormApi.internal'
-import type { FormApi, FormOptions, FormState } from './FormApi.types'
-import type { FieldMeta } from './FieldApi.types'
+import type { FormApi, FormOptions, FormState } from './FormApi.public'
+import type { FieldMeta } from './FieldApi.public'
 
 // Typeland: users[${number}].foo
 // '[15]'
@@ -32,11 +30,11 @@ const value = 12;
 // form.isValidating: if fieldApi or formApi is validating, increment counter. Boolean is counter > 0
 // form.isDefaultValue: ??? --> probably keep old system, but benchmark it
 
-class FormApiImpl<TData> implements InternalFormApi<TData> {
+export class InternalFormApi<TData> implements FormApi<TData> {
   baseAtom: Atom<FormState<TData>>
   fieldMetaAtom: Atom<Partial<Record<string, FieldMeta>>>
   store: Atom<any>
-  _fieldRootNode: FieldApiNode
+  _fieldRootNode: InternalFieldApi<TData>
   declare state: FormState<TData>
 
   constructor(options: FormOptions<TData>) {
@@ -46,7 +44,7 @@ class FormApiImpl<TData> implements InternalFormApi<TData> {
 
     this.fieldMetaAtom = createAtom({})
     this.store = createAtom({})
-    this._fieldRootNode = createFieldNode({
+    this._fieldRootNode = new InternalFieldApi({
       segment: '',
       parent: null,
       form: this,
@@ -58,13 +56,9 @@ class FormApiImpl<TData> implements InternalFormApi<TData> {
     })
   }
 
-  _requestField = (name: string): FieldApiNode => {
+  _requestField = (name: string): InternalFieldApi<TData> => {
     const segments = nameToFieldNodeSegments(name)
-    const fieldNode = getOrCreateFieldApiNode(
-      this._fieldRootNode,
-      segments,
-      this,
-    )
+    const fieldNode = getOrCreateFieldApi(this._fieldRootNode, segments, this)
 
     return fieldNode
   }
@@ -153,9 +147,3 @@ class FormApiImpl<TData> implements InternalFormApi<TData> {
 //    nodeA  nodeB
 //     /  \
 //   nodeC nodeD
-
-export function createForm<TData>(
-  formOptions: FormOptions<TData>,
-): InternalFormApi<TData> {
-  return new FormApiImpl(formOptions)
-}
