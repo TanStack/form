@@ -11,11 +11,17 @@ export function nameToFieldNodeSegments(
   const result: Array<string> = []
   let s = ''
   for (const char of nameOrSegments) {
-    if (char === '.' || char === '[') {
-      result.push(s)
-      s = char
-    } else {
-      s += char
+    switch (char) {
+      case '.':
+      case '[':
+        result.push(s)
+        s = ''
+        break
+      case ']':
+        break
+      default:
+        s += char
+        break
     }
   }
   result.push(s)

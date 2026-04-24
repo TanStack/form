@@ -4,15 +4,6 @@ import type { FormApi } from './FormApi.types'
 import type { FieldApiNode } from './FieldApi.internal'
 import type { FieldApiParams, FieldMeta } from './FieldApi.types'
 
-function tryGetIndexOfSegment(segment: string): number | null {
-  // `name` might be `[0]` or `.1`, but cannot be `[0][1]`, because we only look for direct children
-  const indexMatch = segment.match(/^\[?(\d+)\]?$/)
-  if (indexMatch && indexMatch[1]) {
-    return parseInt(indexMatch[1], 10)
-  }
-  return null
-}
-
 export const defaultFieldMeta: FieldMeta = {
   isTouched: false,
 }
@@ -62,7 +53,15 @@ class FieldApiImpl implements FieldApiNode {
 
   get name(): string {
     if (this._fullPathCache) return this._fullPathCache
-    this._fullPathCache = this._parent?.name + this._segment
+    let segment: string
+    if (this._parent) {
+      segment = this._parent._isArray
+        ? `[${this._segment}]`
+        : `.${this._segment}`
+    } else {
+      segment = this._segment
+    }
+    this._fullPathCache = segment
     return this._fullPathCache
   }
 
@@ -80,21 +79,14 @@ class FieldApiImpl implements FieldApiNode {
 
   _getFieldBySegmentName(name: string): FieldApiNode | undefined {
     if (this._isArray) {
-      const index = tryGetIndexOfSegment(name)
-      if (index !== null) {
-        return this._childrenArray[index]
-      }
-      return undefined
+      return this._childrenArray[parseInt(this._segment, 10)]
     }
     return this._childrenMap.get(name)
   }
 
   _setChild = (node: FieldApiNode): void => {
     if (this._isArray) {
-      const index = tryGetIndexOfSegment(node._segment)
-      if (index !== null) {
-        this._childrenArray[index] = node
-      }
+      this._childrenArray[parseInt(node._segment, 10)] = node
     } else {
       this._childrenMap.set(node._segment, node)
     }
@@ -131,8 +123,8 @@ class FieldApiImpl implements FieldApiNode {
 
     this._childrenArray[oldIndex] = newChild
     this._childrenArray[newIndex] = oldChild
-    newChild._segment = `[${newIndex}]`
-    oldChild._segment = `[${oldIndex}]`
+    newChild._segment = String(newIndex)
+    oldChild._segment = String(oldIndex)
 
     oldChild._invalidateFullPath()
     newChild._invalidateFullPath()
