@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { nameToFieldNodeSegments } from '../src/internals'
+import { InternalFormApi, nameToFieldNodeSegments } from '../src/internals'
 
 describe('nameToFieldNodeSegments', () => {
   it('splits dot-separated field names', () => {
@@ -25,5 +25,16 @@ describe('nameToFieldNodeSegments', () => {
       '1',
       'bar',
     ])
+  })
+})
+
+describe('Form Fields', () => {
+  it('has the correct name for a field', () => {
+    const form = new InternalFormApi({
+      defaultValues: { name: '', nested: { name: '' } },
+    })
+
+    expect(form._requestField('name').name).toBe('name')
+    expect(form._requestField('nested.name').name).toBe('nested.name')
   })
 })

@@ -77,9 +77,9 @@ export interface InternalFieldApiParams<TData> {
 // if not, recompute and sync version
 
 export class InternalFieldApi<TData> implements FieldApi<TData> {
-  _type: 'array' | null
-  _segment
-  _parent
+  _type: 'array' | null | undefined
+  _segment: string
+  _parent: InternalFieldApi<TData> | null
   _childrenArray: Array<InternalFieldApi<TData>> = []
   _childrenMap: Map<string, InternalFieldApi<TData>> = new Map()
   _fullPathCache: string | null = null
@@ -88,6 +88,11 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
   form: InternalFormApi<any>
 
   get _isArray() {
+    // The root node is created before the form exists, so we should
+    // lazily evaluate isArray to avoid an undefined check
+    if (this._type === undefined) {
+      this._type = Array.isArray(this._getValue()) ? 'array' : null
+    }
     return this._type === 'array'
   }
 
@@ -125,13 +130,14 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
 
   get name(): string {
     if (this._fullPathCache) return this._fullPathCache
-    let segment: string
-    if (this._parent) {
-      segment = this._parent._isArray
+    let segment: string = this._parent?._segment ?? ''
+    // If the parent is the root node
+    if (this._parent?._segment) {
+      segment += this._parent._isArray
         ? `[${this._segment}]`
         : `.${this._segment}`
     } else {
-      segment = this._segment
+      segment += this._segment
     }
     this._fullPathCache = segment
     return this._fullPathCache
@@ -140,7 +146,6 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
   constructor({ segment, parent, form }: InternalFieldApiParams<TData>) {
     this._segment = segment
     this._parent = parent
-    this._type = null // Array.isArray(form.getFieldValue())
     this.form = form
   }
 

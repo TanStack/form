@@ -8,24 +8,19 @@ import type { FieldApi, FormOptions } from '@tanstack/form-core-v2'
 export interface InternalReactFormApi<TData>
   extends ReactFormApi<TData>, InternalFormApi<TData> {}
 
-// private
 export function initializeForm<TData>(
   options: FormOptions<TData>,
 ): ReactFormApi<TData> {
   const form = new InternalFormApi(options)
 
-  // recasting to hide internal methods from user
   const reactFormApi: InternalReactFormApi<TData> = form as never
 
-  function Field(props: FieldProps<TData>) {
+  reactFormApi.Field = function FormField(props: FieldProps<TData>) {
     const fieldApi = useField({ ...props, form })
 
     useSelector(fieldApi.store, (state) => state.value)
-
     return <>{props.children(fieldApi)}</>
   }
-
-  Object.assign(reactFormApi, { Field })
 
   return reactFormApi
 }

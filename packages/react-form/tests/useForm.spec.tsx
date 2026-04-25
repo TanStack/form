@@ -3,7 +3,7 @@ import { renderHook } from '@testing-library/react'
 import { useForm } from '../src'
 
 describe('FormApi', () => {
-  it('should mount the form to the dom', async () => {
+  it('should mount the form to the dom', () => {
     const { result } = renderHook(() => {
       const form = useForm({ defaultValues: { name: 'tony-hawk' } })
 
