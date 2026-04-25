@@ -4,9 +4,11 @@ import {
   getOrCreateFieldApi,
   nameToFieldNodeSegments,
 } from './FieldApi.lib'
+import { getBy, setBy } from './utils'
 import type { Atom } from '@tanstack/store'
 import type { FormApi, FormOptions, FormState } from './FormApi.public'
-import type { FieldMeta } from './FieldApi.public'
+import type { FieldApi, FieldMeta } from './FieldApi.public'
+import type { Updater } from './types.public'
 
 // Typeland: users[${number}].foo
 // '[15]'
@@ -31,19 +33,17 @@ const value = 12;
 // form.isDefaultValue: ??? --> probably keep old system, but benchmark it
 
 export class InternalFormApi<TData> implements FormApi<TData> {
-  baseAtom: Atom<FormState<TData>>
-  fieldMetaAtom: Atom<Partial<Record<string, FieldMeta>>>
-  store: Atom<any>
+  storeAtom: Atom<FormState<TData>>
+  fieldMetaAtom: Atom<Map<FieldApi<TData>, FieldMeta>>
   _fieldRootNode: InternalFieldApi<TData>
   declare state: FormState<TData>
 
   constructor(options: FormOptions<TData>) {
-    this.baseAtom = createAtom({
+    this.storeAtom = createAtom({
       values: options.defaultValues,
     })
 
-    this.fieldMetaAtom = createAtom({})
-    this.store = createAtom({})
+    this.fieldMetaAtom = createAtom(new Map())
     this._fieldRootNode = new InternalFieldApi({
       segment: '',
       parent: null,
@@ -51,9 +51,17 @@ export class InternalFormApi<TData> implements FormApi<TData> {
     })
 
     Object.defineProperty(this, 'state', {
-      get: (): FormState<TData> => this.store.get(),
+      get: (): FormState<TData> => this.storeAtom.get(),
       enumerable: true,
     })
+  }
+
+  setFieldValue = (fieldName: string, updater: Updater<any>) => {
+    setBy(this.state.values, fieldName, updater)
+  }
+
+  getFieldValue = (fieldName: string): any => {
+    return getBy(this.state.values, fieldName)
   }
 
   _requestField = (name: string): InternalFieldApi<TData> => {

@@ -1,6 +1,10 @@
 import { createAtom } from '@tanstack/store'
+
+// types
+import type { Updater } from './types.public'
+import type { InternalFormApi } from './FormApi.lib'
 import type { ReadonlyAtom } from '@tanstack/store'
-import type { FieldApi, FieldMeta } from './FieldApi.public'
+import type { FieldApi, FieldMeta, FieldState } from './FieldApi.public'
 import type { FormApi } from './FormApi.public'
 
 export function nameToFieldNodeSegments(
@@ -10,6 +14,7 @@ export function nameToFieldNodeSegments(
 
   const result: Array<string> = []
   let s = ''
+
   for (const char of nameOrSegments) {
     switch (char) {
       case '.':
@@ -25,6 +30,7 @@ export function nameToFieldNodeSegments(
     }
   }
   result.push(s)
+
   return result
 }
 
@@ -41,7 +47,11 @@ export function getOrCreateFieldApi<TData>(
     return getOrCreateFieldApi(childNode, nextSegments, form)
   }
 
-  childNode = new InternalFieldApi({ segment, parent: trieNode, form })
+  childNode = new InternalFieldApi({
+    segment,
+    parent: trieNode,
+    form: form as InternalFormApi<TData>,
+  })
 
   trieNode._setChild(childNode)
 
@@ -50,12 +60,13 @@ export function getOrCreateFieldApi<TData>(
 
 export const defaultFieldMeta: FieldMeta = {
   isTouched: false,
+  errors: [],
 }
 
 export interface InternalFieldApiParams<TData> {
   segment: string
   parent: InternalFieldApi<TData> | null
-  form: FormApi<TData>
+  form: InternalFormApi<TData>
 }
 
 // Possible plan for performance
@@ -72,9 +83,9 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
   _childrenArray: Array<InternalFieldApi<TData>> = []
   _childrenMap: Map<string, InternalFieldApi<TData>> = new Map()
   _fullPathCache: string | null = null
-  _store: ReadonlyAtom<any> | null = null
+  _store: ReadonlyAtom<FieldState> | null = null
 
-  form: FormApi<any>
+  form: InternalFormApi<any>
 
   get _isArray() {
     return this._type === 'array'
@@ -87,20 +98,24 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
     return Array.from(this._childrenMap.values())
   }
 
-  get store(): ReadonlyAtom<any> {
+  get store(): ReadonlyAtom<FieldState> {
     if (!this._store) {
       const derived = createAtom(() => {
         const metaMap = this.form.fieldMetaAtom.get()
-        const fieldMeta = metaMap[this.name]
+        const fieldMeta = metaMap.get(this)
+        const fieldValue = this._getValue()
 
         return {
+          value: fieldValue,
           meta: fieldMeta ?? defaultFieldMeta,
         }
       })
 
-      if (this.form.fieldMetaAtom.get()[this.name] === undefined) {
+      if (this.form.fieldMetaAtom.get().get(this) === undefined) {
         this.form.fieldMetaAtom.set((prev) => {
-          return { ...prev, [this.name]: defaultFieldMeta }
+          const result = new Map(prev)
+          result.set(this, defaultFieldMeta)
+          return result
         })
       }
       this._store = derived
@@ -129,7 +144,7 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
     this.form = form
   }
 
-  _invalidateFullPath = () => {
+  _invalidateFullPath() {
     this._fullPathCache = null
     this._children.forEach((child) => child._invalidateFullPath())
   }
@@ -149,7 +164,7 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
    * @private
    * Set an existing node as a child of this FieldApi.
    */
-  _setChild = (node: InternalFieldApi<TData>): void => {
+  _setChild(node: InternalFieldApi<TData>): void {
     if (this._isArray) {
       this._childrenArray[parseInt(node._segment, 10)] = node
     } else {
@@ -162,7 +177,7 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
    * Create a new FieldApi with the given segment name and add it as child.
    * @returns the new FieldApi.
    */
-  _createChild = (segment: string): InternalFieldApi<TData> => {
+  _createChild(segment: string): InternalFieldApi<TData> {
     const node = new InternalFieldApi({
       segment,
       parent: this,
@@ -172,13 +187,45 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
     return node
   }
 
+  _getValue(): any {
+    return this.form.getFieldValue(this.name)
+  }
+
+  // foo.bar set{{foo, {}}}
+  // foo.bar set{{foo:  {bar: 1}}}
+
+  /**
+   * parent.getValue().[ourSegment] = value
+   * @param value
+   * @returns
+   */
+  _setValue(value: any): any {
+    return this.form.setFieldValue(this.name, value)
+  }
+
+  get state() {
+    return this.store.get()
+  }
+
+  get value() {
+    return this.store.get().value
+  }
+
+  get meta() {
+    return this.store.get().meta
+  }
+
+  get errors() {
+    return this.store.get().meta.errors
+  }
+
   // data: ['a', 'b']
   // name="data[0]" -> node created, meta created
   // data.swapValues(0, 1) -> valid, but node errors
   // -> swapValues or other arary mutations need to check runtime -> swap values in the array -> THAT's where the check has to occur.
   // after we made the form data update, we getOrCreateNode() of the two elements
 
-  swapValues = (oldIndex: number, newIndex: number) => {
+  swapValues(oldIndex: number, newIndex: number) {
     if (!this._isArray) {
       console.warn('swapValues: This method can only be used on array fields')
       return
@@ -204,11 +251,15 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
     newChild._invalidateFullPath()
   }
 
-  pushValue = () => {
+  pushValue() {
     if (!this._isArray) {
       console.warn('pushValues can only be used on array nodes')
       return
     }
+  }
+
+  handleChange(value: Updater<any>): void {
+    this._setValue(value)
   }
 }
 
