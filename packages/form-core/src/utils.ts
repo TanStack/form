@@ -107,7 +107,7 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
   return doSet(obj)
 }
 
-function callUpdater(updater: Updater<any>, object: any): any {
+export function callUpdater(updater: Updater<any>, object: any): any {
   return typeof updater === 'function'
     ? (updater as (...args: Array<any>) => any)(object)
     : updater

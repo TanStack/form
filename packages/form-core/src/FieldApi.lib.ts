@@ -1,6 +1,6 @@
-import { createAtom } from '@tanstack/store'
+import { batch, createAtom } from '@tanstack/store'
+import { callUpdater } from './utils'
 
-// types
 import type { Updater } from './types.public'
 import type { InternalFormApi } from './FormApi.lib'
 import type { ReadonlyAtom } from '@tanstack/store'
@@ -77,7 +77,7 @@ export interface InternalFieldApiParams<TData> {
 // if not, recompute and sync version
 
 export class InternalFieldApi<TData> implements FieldApi<TData> {
-  _type: 'array' | null | undefined
+  _type: 'array' | 'object' | null
   _segment: string
   _parent: InternalFieldApi<TData> | null
   _childrenArray: Array<InternalFieldApi<TData>> = []
@@ -87,11 +87,20 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
 
   form: InternalFormApi<any>
 
-  get _isArray() {
+  /**
+   * @private
+   * Whether a derived atom exists for this field. Atoms are only made
+   * on-demand if there is an adapter component that needs one.
+   */
+  get _isMounted(): boolean {
+    return this._store !== null
+  }
+
+  get _isArray(): boolean {
     // The root node is created before the form exists, so we should
     // lazily evaluate isArray to avoid an undefined check
-    if (this._type === undefined) {
-      this._type = Array.isArray(this._getValue()) ? 'array' : null
+    if (this._type === null) {
+      this._type = Array.isArray(this._getValue()) ? 'array' : 'object'
     }
     return this._type === 'array'
   }
@@ -106,23 +115,9 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
   get store(): ReadonlyAtom<FieldState> {
     if (!this._store) {
       const derived = createAtom(() => {
-        const metaMap = this.form.fieldMetaAtom.get()
-        const fieldMeta = metaMap.get(this)
-        const fieldValue = this._getValue()
-
-        return {
-          value: fieldValue,
-          meta: fieldMeta ?? defaultFieldMeta,
-        }
+        return getFieldState(this)
       })
 
-      if (this.form.fieldMetaAtom.get().get(this) === undefined) {
-        this.form.fieldMetaAtom.set((prev) => {
-          const result = new Map(prev)
-          result.set(this, defaultFieldMeta)
-          return result
-        })
-      }
       this._store = derived
     }
     return this._store
@@ -147,6 +142,9 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
     this._segment = segment
     this._parent = parent
     this.form = form
+    // lazily evaluate it since it depends on form state. The root node
+    // cannot yet get that state.
+    this._type = null
   }
 
   _invalidateFullPath() {
@@ -175,6 +173,43 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
     } else {
       this._childrenMap.set(node._segment, node)
     }
+  }
+
+  /**
+   * @private
+   * Set this field's meta. If not present, it will create the
+   * entry.
+   */
+  _setMeta(updater: Updater<FieldMeta>) {
+    this.form.fieldMetaAtom.set((prevMap) => {
+      const map = new Map(prevMap)
+      const meta = map.get(this) ?? defaultFieldMeta
+      map.set(this, callUpdater(updater, meta))
+      return map
+    })
+  }
+
+  /**
+   * @private
+   * Mark this field and its parents as touched.
+   */
+  _markAsTouched(options?: { doPropagation?: boolean }) {
+    const doPropagation = options?.doPropagation ?? true
+
+    let currNode: InternalFieldApi<any> | null = this
+
+    batch(() => {
+      while (currNode) {
+        if (currNode._isMounted && !currNode.meta.isTouched) {
+          currNode._setMeta((prev) => ({ ...prev, isTouched: true }))
+        }
+        if (doPropagation) {
+          currNode = currNode._parent
+        } else {
+          break
+        }
+      }
+    })
   }
 
   /**
@@ -209,19 +244,25 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
   }
 
   get state() {
-    return this.store.get()
+    // Accessing `store` mounts the field, which we don't necessarily want.
+    // Parent or child nodes may simply want some info about a field's state.
+    if (this._isMounted) {
+      return this.store.get()
+    } else {
+      return getFieldState(this)
+    }
   }
 
   get value() {
-    return this.store.get().value
+    return this.state.value
   }
 
   get meta() {
-    return this.store.get().meta
+    return this.state.meta
   }
 
   get errors() {
-    return this.store.get().meta.errors
+    return this.state.meta.errors
   }
 
   // data: ['a', 'b']
@@ -265,6 +306,7 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
 
   handleChange(value: Updater<any>): void {
     this._setValue(value)
+    this._markAsTouched()
   }
 }
 
@@ -308,3 +350,14 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
 // getOrCreateNodeByFieldId(fieldId: string): create Node, get nodeId, create derived, register in metaMap
 
 // validateArray() -> touches all child nodes -> traverse, check for nodeId, if present, set it in the map
+
+function getFieldState(field: InternalFieldApi<any>): FieldState {
+  const metaMap = field.form.fieldMetaAtom.get()
+  const fieldMeta = metaMap.get(field)
+  const fieldValue = field._getValue()
+
+  return {
+    value: fieldValue,
+    meta: fieldMeta ?? defaultFieldMeta,
+  }
+}
