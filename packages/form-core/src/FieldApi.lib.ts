@@ -208,7 +208,7 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
 
   get name(): string {
     if (this._fullPathCache) return this._fullPathCache
-    let segment: string = this._parent?._segment ?? ''
+    let segment: string = this._parent?.name ?? ''
     // If the parent is the root node
     if (this._parent?._segment) {
       segment += this._parent._isArray
@@ -430,9 +430,6 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
 // onSubmit: checks the whole schema
 // render: only what's visible -> only Field with name="users[5-10]" -> onComponentUnmount listener destroys the field
 // but if we did eager evaluation of tree, we would have 100000 nodes with lazy created meta
-
-// name="obj1.obj2"
-// delete obj1 -> 2 nodes to destroy
 
 // defaultValues: { mode: 'a', data: null }
 

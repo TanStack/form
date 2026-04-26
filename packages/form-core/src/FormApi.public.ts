@@ -7,7 +7,14 @@ export interface FormOptions<TData> {
 }
 
 export interface FormState<TData> {
+  /**
+   * The current values of the form.
+   */
   values: TData
+  /**
+   * Whether the form has been touched.
+   */
+  isTouched: boolean
 }
 
 export interface FormApi<TData> {

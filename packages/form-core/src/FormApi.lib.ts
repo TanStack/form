@@ -5,7 +5,7 @@ import {
   nameToFieldNodeSegments,
   tryGetFieldApi,
 } from './FieldApi.lib'
-import { getBy, setBy } from './utils'
+import { evaluate, getBy, setBy } from './utils'
 import type {
   FieldApiOverrideOptions,
   InternalFieldUpdateOptions,
@@ -41,26 +41,29 @@ export class InternalFormApi<TData> implements FormApi<TData> {
     this._options = options
     this.valuesAtom = createAtom(options.defaultValues)
     this.fieldMetaAtom = createAtom(new Map())
-    this.store = createAtom<FormState<TData>>(
-      (prev) => {
-        const values = this.valuesAtom.get()
-
-        if (!prev) {
-          return { values }
-        }
-
-        return {
-          values,
-        }
-      },
-      { compare: shallow },
-    )
-
     this._fieldRootNode = new InternalFieldApi({
       segment: '',
       parent: null,
       form: this,
     })
+
+    this.store = createAtom<FormState<TData>>(
+      (prev) => {
+        const values = this.valuesAtom.get()
+        const isTouched =
+          this.fieldMetaAtom.get().get(this._fieldRootNode)?.isTouched ?? false
+
+        if (!prev) {
+          return { values, isTouched }
+        }
+
+        return {
+          values,
+          isTouched,
+        }
+      },
+      { compare: shallow },
+    )
 
     Object.defineProperty(this, 'state', {
       get: (): FormState<TData> => this.store.get(),
@@ -76,6 +79,9 @@ export class InternalFormApi<TData> implements FormApi<TData> {
   _update = (options: FormOptions<TData>) => {
     const oldOptions = this.options
     this._options = options
+
+    if (evaluate(options.defaultValues, oldOptions.defaultValues)) {
+    }
     // TODO plans
     // form.update(B) => A !== B -> Queue async update
     // v1: !form.isTouched -> Apply state

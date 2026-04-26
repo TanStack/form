@@ -31,10 +31,21 @@ describe('nameToFieldNodeSegments', () => {
 describe('Form Fields', () => {
   it('has the correct name for a field', () => {
     const form = new InternalFormApi({
-      defaultValues: { name: '', nested: { name: '' } },
+      defaultValues: {
+        name: '',
+        nested: { name: '' },
+        deeply: { nested: { name: '' } },
+        array: [{ nested: { name: '' } }],
+      },
     })
 
     expect(form._getOrCreateFieldApi('name').name).toBe('name')
     expect(form._getOrCreateFieldApi('nested.name').name).toBe('nested.name')
+    expect(form._getOrCreateFieldApi('deeply.nested.name').name).toBe(
+      'deeply.nested.name',
+    )
+    expect(form._getOrCreateFieldApi('array[0].nested.name').name).toBe(
+      'array[0].nested.name',
+    )
   })
 })
