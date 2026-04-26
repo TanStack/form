@@ -333,7 +333,7 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
           return map
         })
 
-        stack.push(...this._children)
+        stack.push(...currField._children)
       }
     })
   }

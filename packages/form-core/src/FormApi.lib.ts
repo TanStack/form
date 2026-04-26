@@ -119,7 +119,7 @@ export class InternalFormApi<TData> implements FormApi<TData> {
   deleteField(fieldName: string, opts?: FieldApiOverrideOptions) {
     const field = opts?.fieldApiOverride ?? this._tryGetFieldApi(fieldName)
 
-    field?._kill
+    field?._kill()
   }
 
   pushFieldValue(
