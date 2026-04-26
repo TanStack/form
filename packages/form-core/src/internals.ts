@@ -1,3 +1,4 @@
 export * from './FieldApi.lib'
 export * from './FormApi.lib'
 export * from './utils'
+export * from './types.lib'

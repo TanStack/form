@@ -1,4 +1,4 @@
-import type { Updater } from './types.public'
+import type { FieldUpdateOptions, Updater } from './types.public'
 import type { FormApi } from './FormApi.public'
 
 // field.meta
@@ -11,9 +11,16 @@ import type { FormApi } from './FormApi.public'
  * field.state.errors
  */
 
-export interface FieldMeta {
+export interface BaseFieldMeta {
   isTouched: boolean
+  isDirty: boolean
   errors: FieldErrors
+}
+
+export interface FieldMeta extends BaseFieldMeta {
+  isPristine: boolean
+  isInvalid: boolean
+  isValid: boolean
 }
 
 export interface FieldState {
@@ -55,5 +62,5 @@ export interface FieldApi<TFormData> {
 
   errors: FieldErrors
 
-  handleChange: (value: Updater<any>) => void
+  handleChange: (value: Updater<any>, options?: FieldUpdateOptions) => void
 }

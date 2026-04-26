@@ -34,7 +34,7 @@ describe('Form Fields', () => {
       defaultValues: { name: '', nested: { name: '' } },
     })
 
-    expect(form._requestField('name').name).toBe('name')
-    expect(form._requestField('nested.name').name).toBe('nested.name')
+    expect(form._getOrCreateFieldApi('name').name).toBe('name')
+    expect(form._getOrCreateFieldApi('nested.name').name).toBe('nested.name')
   })
 })

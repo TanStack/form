@@ -1,23 +1,19 @@
-import { createAtom } from '@tanstack/store'
+import { batch, createAtom, shallow } from '@tanstack/store'
 import {
   InternalFieldApi,
   getOrCreateFieldApi,
   nameToFieldNodeSegments,
+  tryGetFieldApi,
 } from './FieldApi.lib'
 import { getBy, setBy } from './utils'
-import type { Atom } from '@tanstack/store'
+import type {
+  FieldApiOverrideOptions,
+  InternalFieldUpdateOptions,
+} from './types.lib'
+import type { Atom, ReadonlyAtom } from '@tanstack/store'
 import type { FormApi, FormOptions, FormState } from './FormApi.public'
-import type { FieldApi, FieldMeta } from './FieldApi.public'
+import type { BaseFieldMeta, FieldApi } from './FieldApi.public'
 import type { Updater } from './types.public'
-
-// Typeland: users[${number}].foo
-// '[15]'
-
-/*
-const value = 12;
-
-<form.Field name={`users[${value}]`}/>
-*/
 
 // Async defaultValues =>
 // initial: A === { name: '', foo: null }
@@ -33,17 +29,33 @@ const value = 12;
 // form.isDefaultValue: ??? --> probably keep old system, but benchmark it
 
 export class InternalFormApi<TData> implements FormApi<TData> {
-  storeAtom: Atom<FormState<TData>>
-  fieldMetaAtom: Atom<Map<FieldApi<TData>, FieldMeta>>
+  valuesAtom: Atom<TData>
+  store: ReadonlyAtom<FormState<TData>>
+  fieldMetaAtom: Atom<Map<FieldApi<TData>, BaseFieldMeta>>
   _fieldRootNode: InternalFieldApi<TData>
-  declare state: FormState<TData>
+  _options: FormOptions<TData>
+  declare readonly state: FormState<TData>
+  declare readonly options: FormOptions<TData>
 
   constructor(options: FormOptions<TData>) {
-    this.storeAtom = createAtom({
-      values: options.defaultValues,
-    })
-
+    this._options = options
+    this.valuesAtom = createAtom(options.defaultValues)
     this.fieldMetaAtom = createAtom(new Map())
+    this.store = createAtom<FormState<TData>>(
+      (prev) => {
+        const values = this.valuesAtom.get()
+
+        if (!prev) {
+          return { values }
+        }
+
+        return {
+          values,
+        }
+      },
+      { compare: shallow },
+    )
+
     this._fieldRootNode = new InternalFieldApi({
       segment: '',
       parent: null,
@@ -51,40 +63,155 @@ export class InternalFormApi<TData> implements FormApi<TData> {
     })
 
     Object.defineProperty(this, 'state', {
-      get: (): FormState<TData> => this.storeAtom.get(),
+      get: (): FormState<TData> => this.store.get(),
+      enumerable: true,
+    })
+
+    Object.defineProperty(this, 'options', {
+      get: (): FormOptions<TData> => this._options,
       enumerable: true,
     })
   }
 
-  setFieldValue = (fieldName: string, updater: Updater<any>) => {
-    setBy(this.state.values, fieldName, updater)
+  _update = (options: FormOptions<TData>) => {
+    const oldOptions = this.options
+    this._options = options
+    // TODO plans
+    // form.update(B) => A !== B -> Queue async update
+    // v1: !form.isTouched -> Apply state
+    // v2?: Apply state -> Traverse fieldsMap values, if fieldApi is not touched, setFieldValue of the field path
   }
 
   getFieldValue = (fieldName: string): any => {
     return getBy(this.state.values, fieldName)
   }
 
-  _requestField = (name: string): InternalFieldApi<TData> => {
-    const segments = nameToFieldNodeSegments(name)
-    const fieldNode = getOrCreateFieldApi(this._fieldRootNode, segments, this)
+  setFieldValue = (
+    fieldName: string,
+    updater: Updater<any>,
+    options: InternalFieldUpdateOptions = {},
+  ) => {
+    const {
+      markAsDirty = true,
+      markAsTouched = true,
+      fieldApiOverride,
+    } = options
 
-    return fieldNode
+    const field = fieldApiOverride ?? this._tryGetFieldApi(fieldName)
+
+    batch(() => {
+      this.valuesAtom.set((prev) => setBy(prev, fieldName, updater))
+      if (markAsTouched) {
+        field?._markAsTouched()
+      }
+      if (markAsDirty) {
+        field?._markAsDirty()
+      }
+    })
+  }
+
+  deleteField(fieldName: string, opts?: FieldApiOverrideOptions) {
+    const field = opts?.fieldApiOverride ?? this._tryGetFieldApi(fieldName)
+
+    field?._kill
+  }
+
+  pushFieldValue(
+    arrayFieldName: string,
+    value: any,
+    options?: FieldApiOverrideOptions,
+  ) {
+    const field =
+      options?.fieldApiOverride ?? this._tryGetFieldApi(arrayFieldName)
+    if (!field) return
+
+    if (!Array.isArray(field.value)) {
+      console.warn(
+        '<form>.pushValue: This method can only be used on array fields',
+      )
+      return
+    }
+
+    field._createChild(`[${field.value.length}]`)
+
+    this.setFieldValue(
+      arrayFieldName,
+      (prev: Array<any>) => {
+        return [...prev, value]
+      },
+      options,
+    )
+  }
+
+  swapFieldValues(
+    arrayFieldName: string,
+    indexA: number,
+    indexB: number,
+    options?: FieldApiOverrideOptions,
+  ) {
+    const fieldValue = this.getFieldValue(arrayFieldName)
+    if (!Array.isArray(fieldValue)) {
+      console.warn(
+        '<form>.swapFieldValues: This method can only be used on array fields',
+      )
+      return
+    }
+
+    if (indexA === indexB) {
+      return
+    }
+
+    this.setFieldValue(
+      arrayFieldName,
+      (prev: Array<any>) => {
+        const a = prev[indexA]
+        const b = prev[indexB]
+        const array = prev.slice()
+        array[indexA] = b
+        array[indexB] = a
+        return array
+      },
+      options,
+    )
+
+    const fieldA = tryGetFieldApi(
+      this._fieldRootNode,
+      nameToFieldNodeSegments(`${arrayFieldName}[${indexA}]`),
+    )
+
+    const fieldB = tryGetFieldApi(
+      this._fieldRootNode,
+      nameToFieldNodeSegments(`${arrayFieldName}[${indexB}]`),
+    )
+
+    if (fieldA) {
+      fieldA._segment = String(indexB)
+    }
+
+    if (fieldB) {
+      fieldB._segment = String(indexA)
+    }
+  }
+
+  _tryGetFieldApi = (
+    nameOrSegments: string | Array<string>,
+  ): InternalFieldApi<TData> | null => {
+    return tryGetFieldApi(
+      this._fieldRootNode,
+      nameToFieldNodeSegments(nameOrSegments),
+    )
+  }
+
+  _getOrCreateFieldApi = (
+    nameOrSegments: string | Array<string>,
+  ): InternalFieldApi<TData> => {
+    return getOrCreateFieldApi(
+      this._fieldRootNode,
+      nameToFieldNodeSegments(nameOrSegments),
+      this,
+    )
   }
 }
-
-/*
-  function useField(name: string) {
-    const fieldApi = useMemo(() => {
-      return form._requestField(name)
-    }, [form, name])
-
-    useEffect(() => {
-      const cleanup = fieldApi.mount()
-      return cleanup
-    }, [fieldApi])
-  }
-
- */
 
 /*
   // TODO: Talk about user-land listeners moving after a shift or other array operation

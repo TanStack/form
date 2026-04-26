@@ -1,16 +1,33 @@
 import { batch, createAtom } from '@tanstack/store'
 import { callUpdater } from './utils'
 
-import type { Updater } from './types.public'
+import type { FieldUpdateOptions, Updater } from './types.public'
 import type { InternalFormApi } from './FormApi.lib'
 import type { ReadonlyAtom } from '@tanstack/store'
-import type { FieldApi, FieldMeta, FieldState } from './FieldApi.public'
+import type {
+  BaseFieldMeta,
+  FieldApi,
+  FieldMeta,
+  FieldState,
+} from './FieldApi.public'
 import type { FormApi } from './FormApi.public'
 
+interface PropagateOptions {
+  /**
+   * Whether to propagate the action to parent field nodes.
+   */
+  doPropagate: boolean
+}
+
+/**
+ * Convert a name into an array of segments.
+ *
+ * If it already is an array, it will create a shallow copy.
+ */
 export function nameToFieldNodeSegments(
   nameOrSegments: string | Array<string>,
 ): Array<string> {
-  if (typeof nameOrSegments !== 'string') return nameOrSegments
+  if (typeof nameOrSegments !== 'string') return nameOrSegments.slice()
 
   const result: Array<string> = []
   let s = ''
@@ -34,17 +51,24 @@ export function nameToFieldNodeSegments(
   return result
 }
 
+/**
+ * @private
+ * Get a field api at the specified location. If it doesn't exist,
+ * it will create the necessary nodes to get it.
+ *
+ * @important This mutates the segments array.
+ */
 export function getOrCreateFieldApi<TData>(
   trieNode: InternalFieldApi<TData>,
   segments: Array<string>,
   form: FormApi<any>,
 ): InternalFieldApi<TData> {
-  const [segment, ...nextSegments] = segments
+  const segment = segments.shift()
   if (!segment) return trieNode
 
   let childNode = trieNode._getChild(segment)
   if (childNode) {
-    return getOrCreateFieldApi(childNode, nextSegments, form)
+    return getOrCreateFieldApi(childNode, segments, form)
   }
 
   childNode = new InternalFieldApi({
@@ -55,11 +79,35 @@ export function getOrCreateFieldApi<TData>(
 
   trieNode._setChild(childNode)
 
-  return getOrCreateFieldApi(childNode, nextSegments, form)
+  return getOrCreateFieldApi(childNode, segments, form)
+}
+
+/**
+ * @private
+ *
+ * @important This mutates the segments array.
+ */
+export function tryGetFieldApi<TData>(
+  trieNode: InternalFieldApi<TData>,
+  segments: Array<string>,
+): InternalFieldApi<TData> | null {
+  const segment = segments.shift()
+  if (!segment) return trieNode
+
+  const childNode = trieNode._getChild(segment)
+  if (childNode) {
+    return tryGetFieldApi(childNode, segments)
+  } else {
+    return null
+  }
 }
 
 export const defaultFieldMeta: FieldMeta = {
   isTouched: false,
+  isDirty: false,
+  isInvalid: false,
+  isPristine: true,
+  isValid: true,
   errors: [],
 }
 
@@ -78,12 +126,25 @@ export interface InternalFieldApiParams<TData> {
 
 export class InternalFieldApi<TData> implements FieldApi<TData> {
   _type: 'array' | 'object' | null
-  _segment: string
   _parent: InternalFieldApi<TData> | null
   _childrenArray: Array<InternalFieldApi<TData>> = []
   _childrenMap: Map<string, InternalFieldApi<TData>> = new Map()
   _fullPathCache: string | null = null
   _store: ReadonlyAtom<FieldState> | null = null
+
+  #segment: string
+
+  get _segment() {
+    return this.#segment
+  }
+
+  set _segment(value: string) {
+    if (this.#segment === value) {
+      return
+    }
+    this.#segment = value
+    this._invalidateFullPath()
+  }
 
   form: InternalFormApi<any>
 
@@ -114,8 +175,30 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
 
   get store(): ReadonlyAtom<FieldState> {
     if (!this._store) {
-      const derived = createAtom(() => {
-        return getFieldState(this)
+      const derived = createAtom<FieldState>((prev) => {
+        const baseMeta = getBaseFieldMeta(this)
+        const value = this._getValue()
+
+        let meta: FieldMeta
+        if (prev && isSameBaseMeta(prev.meta, baseMeta)) {
+          meta = prev.meta
+        } else {
+          meta = {
+            ...baseMeta,
+            isPristine: !baseMeta.isDirty,
+            isInvalid: baseMeta.errors.length > 0,
+            isValid: baseMeta.errors.length === 0,
+          }
+        }
+
+        if (prev?.meta === meta && prev.value === value) {
+          return prev
+        }
+
+        return {
+          meta,
+          value,
+        }
       })
 
       this._store = derived
@@ -139,7 +222,7 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
   }
 
   constructor({ segment, parent, form }: InternalFieldApiParams<TData>) {
-    this._segment = segment
+    this.#segment = segment
     this._parent = parent
     this.form = form
     // lazily evaluate it since it depends on form state. The root node
@@ -193,8 +276,8 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
    * @private
    * Mark this field and its parents as touched.
    */
-  _markAsTouched(options?: { doPropagation?: boolean }) {
-    const doPropagation = options?.doPropagation ?? true
+  _markAsTouched(options?: PropagateOptions) {
+    const doPropagation = options?.doPropagate ?? true
 
     let currNode: InternalFieldApi<any> | null = this
 
@@ -208,6 +291,49 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
         } else {
           break
         }
+      }
+    })
+  }
+
+  _markAsDirty(options?: PropagateOptions) {
+    const doPropagation = options?.doPropagate ?? true
+    let currNode: InternalFieldApi<any> | null = this
+
+    batch(() => {
+      while (currNode) {
+        if (!currNode.meta.isDirty) {
+          currNode._setMeta((prev) => ({ ...prev, isDirty: true }))
+        }
+        if (doPropagation) {
+          currNode = currNode._parent
+        } else {
+          break
+        }
+      }
+    })
+  }
+
+  /**
+   * @private
+   * Kill this field and its children.
+   * Removes the affected fields' meta as well.
+   */
+  _kill() {
+    batch(() => {
+      const stack: Array<InternalFieldApi<any>> = [this]
+
+      while (stack.length > 0) {
+        const currField = stack.pop()!
+
+        currField._store = null
+
+        currField.form.fieldMetaAtom.set((prev) => {
+          const map = new Map(prev)
+          map.delete(this)
+          return map
+        })
+
+        stack.push(...this._children)
       }
     })
   }
@@ -231,25 +357,13 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
     return this.form.getFieldValue(this.name)
   }
 
-  // foo.bar set{{foo, {}}}
-  // foo.bar set{{foo:  {bar: 1}}}
-
-  /**
-   * parent.getValue().[ourSegment] = value
-   * @param value
-   * @returns
-   */
-  _setValue(value: any): any {
-    return this.form.setFieldValue(this.name, value)
-  }
-
   get state() {
     // Accessing `store` mounts the field, which we don't necessarily want.
     // Parent or child nodes may simply want some info about a field's state.
     if (this._isMounted) {
       return this.store.get()
     } else {
-      return getFieldState(this)
+      return getFieldSnapshot(this)
     }
   }
 
@@ -271,30 +385,10 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
   // -> swapValues or other arary mutations need to check runtime -> swap values in the array -> THAT's where the check has to occur.
   // after we made the form data update, we getOrCreateNode() of the two elements
 
-  swapValues(oldIndex: number, newIndex: number) {
-    if (!this._isArray) {
-      console.warn('swapValues: This method can only be used on array fields')
-      return
-    }
-
-    const oldChild = this._childrenArray[oldIndex]
-    const newChild = this._childrenArray[newIndex]
-
-    if (!oldChild || !newChild) {
-      console.warn(
-        'swapValues: One of the indices does not exist in children array',
-      )
-
-      return
-    }
-
-    this._childrenArray[oldIndex] = newChild
-    this._childrenArray[newIndex] = oldChild
-    newChild._segment = String(newIndex)
-    oldChild._segment = String(oldIndex)
-
-    oldChild._invalidateFullPath()
-    newChild._invalidateFullPath()
+  swapValues(indexA: number, indexB: number) {
+    this.form.swapFieldValues(this.name, indexA, indexB, {
+      fieldApiOverride: this,
+    })
   }
 
   pushValue() {
@@ -304,9 +398,11 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
     }
   }
 
-  handleChange(value: Updater<any>): void {
-    this._setValue(value)
-    this._markAsTouched()
+  handleChange(value: Updater<any>, options: FieldUpdateOptions = {}): void {
+    return this.form.setFieldValue(this.name, value, {
+      ...options,
+      fieldApiOverride: this,
+    })
   }
 }
 
@@ -351,13 +447,27 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
 
 // validateArray() -> touches all child nodes -> traverse, check for nodeId, if present, set it in the map
 
-function getFieldState(field: InternalFieldApi<any>): FieldState {
-  const metaMap = field.form.fieldMetaAtom.get()
-  const fieldMeta = metaMap.get(field)
-  const fieldValue = field._getValue()
-
+function getFieldSnapshot(field: InternalFieldApi<any>): FieldState {
+  const baseMeta = getBaseFieldMeta(field)
   return {
-    value: fieldValue,
-    meta: fieldMeta ?? defaultFieldMeta,
+    value: field._getValue(),
+    meta: {
+      ...baseMeta,
+      isInvalid: baseMeta.errors.length > 0,
+      isValid: baseMeta.errors.length === 0,
+      isPristine: !baseMeta.isDirty,
+    },
   }
+}
+
+function getBaseFieldMeta(field: InternalFieldApi<any>): BaseFieldMeta {
+  return field.form.fieldMetaAtom.get().get(field) ?? defaultFieldMeta
+}
+
+function isSameBaseMeta(metaA: BaseFieldMeta, metaB: BaseFieldMeta): boolean {
+  return (
+    metaA.isTouched === metaB.isTouched &&
+    metaA.isDirty === metaB.isDirty &&
+    metaA.errors === metaB.errors
+  )
 }
