@@ -200,7 +200,7 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
 
     batch(() => {
       while (currNode) {
-        if (currNode._isMounted && !currNode.meta.isTouched) {
+        if (!currNode.meta.isTouched) {
           currNode._setMeta((prev) => ({ ...prev, isTouched: true }))
         }
         if (doPropagation) {
