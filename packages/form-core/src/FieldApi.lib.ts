@@ -309,39 +309,27 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
     })
   }
 
-  /**
-   * @private
-   * Mark this field and its parents as touched.
-   */
-  _markAsTouched(options?: PropagateOptions) {
-    const doPropagation = options?.doPropagate ?? true
+  _notifyChange(
+    options: FieldUpdateOptions & PropagateOptions = { doPropagate: true },
+  ) {
+    const { markAsDirty = true, markAsTouched = true, doPropagate } = options
 
     let currNode: InternalFieldApi<any> | null = this
 
     batch(() => {
       while (currNode) {
-        if (!currNode.meta.isTouched) {
-          currNode._setMeta((prev) => ({ ...prev, isTouched: true }))
-        }
-        if (doPropagation) {
-          currNode = currNode._parent
-        } else {
-          break
-        }
-      }
-    })
-  }
+        const { isDirty, isTouched } = currNode.meta
+        const shouldUpdateDirty = markAsDirty && !isDirty
+        const shouldUpdateTouched = markAsTouched && !isTouched
 
-  _markAsDirty(options?: PropagateOptions) {
-    const doPropagation = options?.doPropagate ?? true
-    let currNode: InternalFieldApi<any> | null = this
-
-    batch(() => {
-      while (currNode) {
-        if (!currNode.meta.isDirty) {
-          currNode._setMeta((prev) => ({ ...prev, isDirty: true }))
+        if (shouldUpdateDirty || shouldUpdateTouched) {
+          currNode._setMeta((prev) => ({
+            ...prev,
+            isTouched: markAsTouched ? true : prev.isTouched,
+            isDirty: markAsDirty ? true : prev.isDirty,
+          }))
         }
-        if (doPropagation) {
+        if (doPropagate) {
           currNode = currNode._parent
         } else {
           break
@@ -428,13 +416,11 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
     })
   }
 
-  pushValue() {
-    // TODO This guard should be moved to form.
-    // assess it's an array before pushing a new node.
-    if (!this._isArray) {
-      console.warn('pushValues can only be used on array nodes')
-      return
-    }
+  pushValue(value: any, options: FieldUpdateOptions = {}): void {
+    return this.form.pushFieldValue(this.name, value, {
+      ...options,
+      fieldApiOverride: this,
+    })
   }
 
   handleChange(value: Updater<any>, options: FieldUpdateOptions = {}): void {

@@ -95,24 +95,14 @@ export class InternalFormApi<TData> implements FormApi<TData> {
   setFieldValue = (
     fieldName: string,
     updater: Updater<any>,
-    options: InternalFieldUpdateOptions = {},
+    options?: InternalFieldUpdateOptions,
   ) => {
-    const {
-      markAsDirty = true,
-      markAsTouched = true,
-      fieldApiOverride,
-    } = options
-
-    const field = fieldApiOverride ?? this._tryGetFieldApi(fieldName)
+    const field = options?.fieldApiOverride ?? this._tryGetFieldApi(fieldName)
 
     batch(() => {
       this.valuesAtom.set((prev) => setBy(prev, fieldName, updater))
-      if (markAsTouched) {
-        field?._markAsTouched()
-      }
-      if (markAsDirty) {
-        field?._markAsDirty()
-      }
+
+      field?._notifyChange({ ...options, doPropagate: true })
     })
   }
 
@@ -125,7 +115,7 @@ export class InternalFormApi<TData> implements FormApi<TData> {
   pushFieldValue(
     arrayFieldName: string,
     value: any,
-    options?: FieldApiOverrideOptions,
+    options?: InternalFieldUpdateOptions,
   ) {
     const field =
       options?.fieldApiOverride ?? this._tryGetFieldApi(arrayFieldName)

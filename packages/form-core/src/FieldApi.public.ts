@@ -48,6 +48,12 @@ export interface FieldApi<TFormData> {
   swapValues: (indexA: number, indexB: number) => void
 
   /**
+   * Push a new value into this field's array.
+   * If this field is not an array, this method will be ignored.
+   */
+  pushValue: (value: any, options?: FieldUpdateOptions) => void
+
+  /**
    * @deprecated
    * Use the respective getters instead:
    * - `field.value`
