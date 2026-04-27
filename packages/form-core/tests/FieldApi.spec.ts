@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { InternalFormApi, nameToFieldNodeSegments } from '../src/internals'
+import { defaultFieldMeta } from '../src/FieldApi.lib'
 
 describe('nameToFieldNodeSegments', () => {
   it('splits dot-separated field names', () => {
@@ -152,5 +153,139 @@ describe('Form Field names', () => {
 
     const field = form._getOrCreateFieldApi('[0].name')
     expect(field.name).toBe('[0].name')
+  })
+})
+
+describe('Field Meta', () => {
+  it('returns default meta for a new field', () => {
+    const form = new InternalFormApi({
+      defaultValues: { foo: '' },
+    })
+    const field = form._getOrCreateFieldApi('foo')
+    expect(field.meta).toEqual(defaultFieldMeta)
+  })
+
+  it('returns default meta for nested fields', () => {
+    const form = new InternalFormApi({
+      defaultValues: { foo: { bar: '' } },
+    })
+    const field = form._getOrCreateFieldApi('foo.bar')
+    expect(field.meta).toEqual(defaultFieldMeta)
+  })
+
+  it('updates meta via handleChange', () => {
+    const form = new InternalFormApi({
+      defaultValues: { foo: '' },
+    })
+    const field = form._getOrCreateFieldApi('foo')
+    expect(field.meta.isDirty).toBe(false)
+    expect(field.meta.isTouched).toBe(false)
+
+    field.handleChange('bar')
+
+    expect(field.meta.isDirty).toBe(true)
+    expect(field.meta.isTouched).toBe(true)
+    expect(field.meta.isPristine).toBe(false)
+  })
+
+  it('computes isPristine from isDirty', () => {
+    const form = new InternalFormApi({
+      defaultValues: { foo: '' },
+    })
+    const field = form._getOrCreateFieldApi('foo')
+
+    expect(field.meta.isPristine).toBe(true)
+    expect(field.meta.isDirty).toBe(false)
+
+    field.handleChange('bar')
+
+    expect(field.meta.isPristine).toBe(false)
+    expect(field.meta.isDirty).toBe(true)
+  })
+
+  it('propagates dirty state to parent fields on handleChange', () => {
+    const form = new InternalFormApi({
+      defaultValues: { parent: { child: '' } },
+    })
+    const parentField = form._getOrCreateFieldApi('parent')
+    const childField = form._getOrCreateFieldApi('parent.child')
+
+    expect(parentField.meta.isDirty).toBe(false)
+    expect(childField.meta.isDirty).toBe(false)
+
+    childField.handleChange('new value')
+
+    expect(parentField.meta.isDirty).toBe(true)
+    expect(childField.meta.isDirty).toBe(true)
+  })
+
+  it('propagates touched state to parent fields on handleChange', () => {
+    const form = new InternalFormApi({
+      defaultValues: { parent: { child: '' } },
+    })
+    const parentField = form._getOrCreateFieldApi('parent')
+    const childField = form._getOrCreateFieldApi('parent.child')
+
+    expect(parentField.meta.isTouched).toBe(false)
+    expect(childField.meta.isTouched).toBe(false)
+
+    childField.handleChange('new value')
+
+    expect(parentField.meta.isTouched).toBe(true)
+    expect(childField.meta.isTouched).toBe(true)
+  })
+
+  it('does not propagate dirty state when markAsDirty is false', () => {
+    const form = new InternalFormApi({
+      defaultValues: { parent: { child: '' } },
+    })
+    const parentField = form._getOrCreateFieldApi('parent')
+    const childField = form._getOrCreateFieldApi('parent.child')
+
+    childField.handleChange('new value', { markAsDirty: false })
+
+    expect(parentField.meta.isDirty).toBe(false)
+    expect(childField.meta.isDirty).toBe(false)
+  })
+
+  it('does not propagate touched state when markAsTouched is false', () => {
+    const form = new InternalFormApi({
+      defaultValues: { parent: { child: '' } },
+    })
+    const parentField = form._getOrCreateFieldApi('parent')
+    const childField = form._getOrCreateFieldApi('parent.child')
+
+    childField.handleChange('new value', { markAsTouched: false })
+
+    expect(parentField.meta.isTouched).toBe(false)
+    expect(childField.meta.isTouched).toBe(false)
+  })
+
+  it('updates meta for array fields when using pushValue', () => {
+    const form = new InternalFormApi({
+      defaultValues: { arr: ['a'] },
+    })
+    const field = form._getOrCreateFieldApi('arr')
+
+    expect(field.meta.isDirty).toBe(false)
+
+    field.pushValue('b')
+
+    expect(field.meta.isDirty).toBe(true)
+    expect(field.meta.isTouched).toBe(true)
+  })
+
+  it('updates meta for array fields when using swapValues', () => {
+    const form = new InternalFormApi({
+      defaultValues: { arr: ['a', 'b'] },
+    })
+    const field = form._getOrCreateFieldApi('arr')
+
+    expect(field.meta.isDirty).toBe(false)
+
+    field.swapValues(0, 1)
+
+    expect(field.meta.isDirty).toBe(true)
+    expect(field.meta.isTouched).toBe(true)
   })
 })

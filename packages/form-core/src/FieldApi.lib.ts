@@ -46,7 +46,6 @@ export function nameToFieldNodeSegments(
     switch (char) {
       case '.':
       case '[':
-        // [0].bar would be wrongly parsed as [0, '', 'bar'] otherwise
         flush(false)
         break
       case ']':
