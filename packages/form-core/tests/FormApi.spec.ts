@@ -28,6 +28,8 @@ describe('FormApi', () => {
     // TODO extend with default state
   })
 
+  // TODO reset behaviour
+
   describe('getFieldValue', () => {
     it('returns a top-level value', () => {
       const form = new InternalFormApi({ defaultValues: { name: 'Alice' } })
@@ -76,11 +78,14 @@ describe('FormApi', () => {
       expect(form.getFieldValue('count')).toBe(2)
     })
 
-    it('marks form isTouched true after a change', () => {
+    it('marks form isTouched and isDirty after a change', () => {
       const form = new InternalFormApi({ defaultValues: { name: '' } })
       const field = form._getOrCreateFieldApi('name')
+      void field.store
       form.setFieldValue('name', 'Alice', { fieldApiOverride: field })
       expect(form.state.isTouched).toBe(true)
+      expect(form.state.isDirty).toBe(true)
+      expect(form.state.isPristine).toBe(false)
     })
 
     it('does not mark form isTouched when markAsTouched is false', () => {
@@ -91,6 +96,17 @@ describe('FormApi', () => {
         markAsTouched: false,
       })
       expect(form.state.isTouched).toBe(false)
+    })
+
+    it('does not mark form isDirty when markAsDirty is false', () => {
+      const form = new InternalFormApi({ defaultValues: { name: '' } })
+      const field = form._getOrCreateFieldApi('name')
+      form.setFieldValue('name', 'Alice', {
+        fieldApiOverride: field,
+        markAsDirty: false,
+      })
+      expect(form.state.isDirty).toBe(false)
+      expect(form.state.isPristine).toBe(true)
     })
 
     it('does not mark the field dirty when markAsDirty is false', () => {

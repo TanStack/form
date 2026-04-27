@@ -330,14 +330,15 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
     let currNode: InternalFieldApi<any> | InternalRootFieldApi<any> = this
 
     batch(() => {
-      if (markAsTouched) {
+      if (markAsTouched && originalField._isMounted) {
         originalField.form._fieldRootNode._addToTouchedFields(originalField)
       }
 
       while (!currNode._isRoot) {
         const { isDirty, isTouched } = currNode.meta
         const shouldUpdateDirty = markAsDirty && !isDirty
-        const shouldUpdateTouched = markAsTouched && !isTouched
+        const shouldUpdateTouched =
+          markAsTouched && !isTouched && currNode._isMounted
 
         if (shouldUpdateDirty || shouldUpdateTouched) {
           currNode._setMeta((prev) => ({

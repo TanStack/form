@@ -1,10 +1,6 @@
 import type { FieldUpdateOptions, Updater } from './types.public'
 import type { FormApi } from './FormApi.public'
 
-// field.meta
-// field.errors
-// field.state
-
 /**
  * field.state.value
  * field.state.isTouched

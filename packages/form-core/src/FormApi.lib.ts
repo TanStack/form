@@ -18,9 +18,15 @@ import type { Updater } from './types.public'
 
 export interface BaseFormMeta {
   /**
+   * @private
    * Fields that have been touched.
    */
   touchedFields: Set<InternalFieldApi<any>>
+  /**
+   * @private
+   * A field has notified the root to be dirty
+   */
+  isDirty: boolean
 }
 
 // StandardSchema<Input, Output>
@@ -98,25 +104,28 @@ export class InternalFormApi<TData> implements FormApi<TData> {
     this.fieldMetaAtom = createAtom<
       ReadonlyMap<FieldApi<TData>, BaseFieldMeta>
     >(new Map())
-    this._formMetaAtom = createAtom<BaseFormMeta>({
-      touchedFields: new Set<InternalFieldApi<any>>(),
-    })
+    this._formMetaAtom = createAtom({
+      touchedFields: new Set(),
+      isDirty: false,
+      // Autocomplete seems to misbehave unless we do it like this
+    } satisfies BaseFormMeta as BaseFormMeta)
     this._fieldRootNode = new InternalRootFieldApi(this)
 
-    this.store = createAtom<FormState<TData>>(
-      (prev) => {
+    this.store = createAtom(
+      () => {
         const values = this.valuesAtom.get()
         const baseFormMeta = this._formMetaAtom.get()
-        const isTouched = baseFormMeta.touchedFields.size > 0
 
-        if (!prev) {
-          return { values, isTouched }
-        }
+        const isDirty = baseFormMeta.isDirty
+        const isPristine = !isDirty
+        const isTouched = baseFormMeta.touchedFields.size > 0
 
         return {
           values,
           isTouched,
-        }
+          isDirty,
+          isPristine,
+        } satisfies FormState<TData>
       },
       { compare: shallow },
     )
@@ -162,22 +171,27 @@ export class InternalFormApi<TData> implements FormApi<TData> {
 
     batch(() => {
       this.valuesAtom.set((prev) => setBy(prev, fieldName, updater))
+      const markAsDirty = options?.markAsDirty ?? true
 
+      if (markAsDirty && !this._formMetaAtom.get().isDirty) {
+        this._formMetaAtom.set((prev) => ({ ...prev, isDirty: true }))
+      }
       field?._notifyChange({ ...options, doPropagate: true })
     })
   }
 
-  deleteField(fieldName: string, opts?: FieldApiOverrideOptions) {
+  // TODO type safety: DeepKeys that extend undefined?
+  deleteField = (fieldName: string, opts?: FieldApiOverrideOptions) => {
     const field = opts?.fieldApiOverride ?? this._tryGetFieldApi(fieldName)
 
     field?._kill()
   }
 
-  pushFieldValue(
+  pushFieldValue = (
     arrayFieldName: string,
     value: any,
     options?: InternalFieldUpdateOptions,
-  ) {
+  ) => {
     const field =
       options?.fieldApiOverride ?? this._tryGetFieldApi(arrayFieldName)
     if (!field) return
@@ -200,12 +214,12 @@ export class InternalFormApi<TData> implements FormApi<TData> {
     )
   }
 
-  swapFieldValues(
+  swapFieldValues = (
     arrayFieldName: string,
     indexA: number,
     indexB: number,
     options?: FieldApiOverrideOptions,
-  ) {
+  ) => {
     const fieldValue = this.getFieldValue(arrayFieldName)
     if (!Array.isArray(fieldValue)) {
       console.warn(

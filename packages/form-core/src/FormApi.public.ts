@@ -15,6 +15,16 @@ export interface FormState<TData> {
    * Whether the form has been touched.
    */
   isTouched: boolean
+  /**
+   * Whether the form has been dirtied. The opposite of `isPristine`.
+   *
+   * TODO add link to persistent dirty model? Or maybe a reference to isDefaultValue?
+   */
+  isDirty: boolean
+  /**
+   * Whether the form has not yet been dirtied. The opposite of `isDirty`.
+   */
+  isPristine: boolean
 }
 
 export interface FormApi<TData> {
