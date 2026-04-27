@@ -1,6 +1,8 @@
 import { batch, createAtom } from '@tanstack/store'
 import { callUpdater, mapDelete } from './utils'
 
+import type { PropagateOptions } from './types.lib'
+import type { InternalRootFieldApi } from './RootFieldApi.lib'
 import type { FieldUpdateOptions, Updater } from './types.public'
 import type { InternalFormApi } from './FormApi.lib'
 import type { ReadonlyAtom } from '@tanstack/store'
@@ -10,13 +12,6 @@ import type {
   FieldMeta,
   FieldState,
 } from './FieldApi.public'
-
-interface PropagateOptions {
-  /**
-   * Whether to propagate the action to parent field nodes.
-   */
-  doPropagate: boolean
-}
 
 export type NameSegment = string | number
 export type NameSegments = Array<NameSegment>
@@ -138,13 +133,6 @@ export interface InternalFieldApiParams<TData> {
   form: InternalFormApi<TData>
 }
 
-export interface InternalTrieNode<TData> {
-  _getChild: (segment: NameSegment) => InternalFieldApi<TData> | undefined
-  _setChild: (node: InternalFieldApi<TData>) => void
-  readonly _isRoot: boolean
-  form: InternalFormApi<TData>
-}
-
 // Possible plan for performance
 // When changing array elements, update the segment name
 // keep track of a `pathVersion` per node
@@ -152,64 +140,7 @@ export interface InternalTrieNode<TData> {
 // when children access fullPath, it checks if parentVersion === childVersion
 // if not, recompute and sync version
 
-export class InternalRootFieldApi<TData> implements InternalTrieNode<TData> {
-  readonly _isRoot = true
-  #children: Map<NameSegment, InternalFieldApi<TData>> = new Map()
-
-  form: InternalFormApi<TData>
-
-  readonly name = ''
-
-  get _children(): Array<InternalFieldApi<TData>> {
-    return Array.from(this.#children.values())
-  }
-
-  constructor(form: InternalFormApi<TData>) {
-    this.form = form
-  }
-
-  /**
-   * @private
-   * Get a child FieldApi by its segment name.
-   */
-  _getChild(segment: NameSegment): InternalFieldApi<TData> | undefined {
-    return this.#children.get(segment)
-  }
-
-  /**
-   * @private
-   * Set an existing node as a child of this root node.
-   */
-  _setChild(node: InternalFieldApi<TData>): void {
-    this.#children.set(node._segment, node)
-  }
-
-  _addToTouchedFields(node: InternalFieldApi<any>) {
-    this.form._formMetaAtom.set((prev) => {
-      if (prev.touchedFields.has(node)) {
-        return prev
-      }
-      const newSet = new Set(prev.touchedFields)
-      newSet.add(node)
-      return { ...prev, touchedFields: newSet }
-    })
-  }
-
-  _removeFromTouchedFields(node: InternalFieldApi<any>) {
-    this.form._formMetaAtom.set((prev) => {
-      if (!prev.touchedFields.has(node)) {
-        return prev
-      }
-      const newSet = new Set(prev.touchedFields)
-      newSet.delete(node)
-      return { ...prev, touchedFields: newSet }
-    })
-  }
-}
-
-export class InternalFieldApi<TData>
-  implements FieldApi<TData>, InternalTrieNode<TData>
-{
+export class InternalFieldApi<TData> implements FieldApi<TData> {
   _type: 'array' | 'object' | 'leaf' = 'leaf'
   readonly _isRoot = false
   _parent: InternalFieldApi<TData> | InternalRootFieldApi<TData>
@@ -394,7 +325,9 @@ export class InternalFieldApi<TData>
     let currNode: InternalFieldApi<any> | InternalRootFieldApi<any> = this
 
     batch(() => {
-      originalField.form._fieldRootNode._addToTouchedFields(originalField)
+      if (markAsTouched) {
+        originalField.form._fieldRootNode._addToTouchedFields(originalField)
+      }
 
       while (!currNode._isRoot) {
         const { isDirty, isTouched } = currNode.meta

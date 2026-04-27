@@ -137,9 +137,10 @@ describe('FieldApi', () => {
       const fieldC = form._getOrCreateFieldApi('a.b.c')
 
       expect(fieldC.name).toBe('a.b.c')
-      expect(fieldC._parent?.name).toBe('a.b')
-      expect(fieldC._parent?._parent?.name).toBe('a')
-      expect(fieldC._parent?._parent?._parent?.name).toBe('')
+      expect(fieldC._parent.name).toBe('a.b')
+      // Root node doesn't have parent, so it complains about the types
+      expect((fieldC._parent as any)._parent.name).toBe('a')
+      expect((fieldC._parent as any)._parent._parent.name).toBe('')
     })
 
     it('uses bracket notation for array parent segments', () => {
@@ -149,7 +150,7 @@ describe('FieldApi', () => {
       const field = form._getOrCreateFieldApi('arr[0].nested')
 
       expect(field.name).toBe('arr[0].nested')
-      expect(field._parent?.name).toBe('arr[0]')
+      expect(field._parent.name).toBe('arr[0]')
     })
 
     it('allows top-level arrays', () => {

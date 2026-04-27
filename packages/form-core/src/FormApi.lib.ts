@@ -1,11 +1,11 @@
 import { batch, createAtom, shallow } from '@tanstack/store'
 import {
-  InternalRootFieldApi,
   getOrCreateFieldApi,
   nameToFieldNodeSegments,
   tryGetFieldApi,
 } from './FieldApi.lib'
 import { evaluate, getBy, mapDelete, setBy } from './utils'
+import { InternalRootFieldApi } from './RootFieldApi.lib'
 import type { InternalFieldApi } from './FieldApi.lib'
 import type {
   FieldApiOverrideOptions,

@@ -12,3 +12,10 @@ export interface FieldApiOverrideOptions {
 
 export interface InternalFieldUpdateOptions
   extends FieldUpdateOptions, FieldApiOverrideOptions {}
+
+export interface PropagateOptions {
+  /**
+   * Whether to propagate the action to parent field nodes.
+   */
+  doPropagate: boolean
+}
