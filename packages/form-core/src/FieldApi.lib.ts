@@ -1,5 +1,5 @@
 import { batch, createAtom } from '@tanstack/store'
-import { callUpdater } from './utils'
+import { callUpdater, mapDelete } from './utils'
 
 import type { FieldUpdateOptions, Updater } from './types.public'
 import type { InternalFormApi } from './FormApi.lib'
@@ -10,7 +10,6 @@ import type {
   FieldMeta,
   FieldState,
 } from './FieldApi.public'
-import type { FormApi } from './FormApi.public'
 
 interface PropagateOptions {
   /**
@@ -69,25 +68,31 @@ export function nameToFieldNodeSegments(
  * @important This mutates the segments array.
  */
 export function getOrCreateFieldApi<TData>(
-  trieNode: InternalFieldApi<TData>,
+  node: InternalFieldApi<TData> | InternalRootFieldApi<any>,
   segments: NameSegments,
-  form: FormApi<any>,
+  form: InternalFormApi<any>,
 ): InternalFieldApi<TData> {
   const segment = segments.shift()
-  if (segment === undefined) return trieNode
+  if (segment === undefined) {
+    // If trieNode is the root, we need to return a field node, not the root
+    if (node._isRoot) {
+      throw new Error('Root node cannot be a field API')
+    }
+    return node
+  }
 
-  let childNode = trieNode._getChild(segment)
+  let childNode = node._getChild(segment)
   if (childNode) {
     return getOrCreateFieldApi(childNode, segments, form)
   }
 
   childNode = new InternalFieldApi({
     segment,
-    parent: trieNode,
-    form: form as InternalFormApi<TData>,
+    parent: node,
+    form: form,
   })
 
-  trieNode._setChild(childNode)
+  node._setChild(childNode)
 
   return getOrCreateFieldApi(childNode, segments, form)
 }
@@ -98,11 +103,17 @@ export function getOrCreateFieldApi<TData>(
  * @important This mutates the segments array.
  */
 export function tryGetFieldApi<TData>(
-  trieNode: InternalFieldApi<TData>,
+  trieNode: InternalFieldApi<TData> | InternalRootFieldApi<TData>,
   segments: NameSegments,
 ): InternalFieldApi<TData> | null {
   const segment = segments.shift()
-  if (segment === undefined) return trieNode
+  if (segment === undefined) {
+    // If trieNode is the root, we cannot return it as a field API
+    if (!trieNode._isRoot) {
+      return trieNode
+    }
+    return null
+  }
 
   const childNode = trieNode._getChild(segment)
   if (childNode) {
@@ -123,7 +134,14 @@ export const defaultFieldMeta: FieldMeta = {
 
 export interface InternalFieldApiParams<TData> {
   segment: NameSegment
-  parent: InternalFieldApi<TData> | null
+  parent: InternalFieldApi<TData> | InternalRootFieldApi<TData>
+  form: InternalFormApi<TData>
+}
+
+export interface InternalTrieNode<TData> {
+  _getChild: (segment: NameSegment) => InternalFieldApi<TData> | undefined
+  _setChild: (node: InternalFieldApi<TData>) => void
+  readonly _isRoot: boolean
   form: InternalFormApi<TData>
 }
 
@@ -134,9 +152,67 @@ export interface InternalFieldApiParams<TData> {
 // when children access fullPath, it checks if parentVersion === childVersion
 // if not, recompute and sync version
 
-export class InternalFieldApi<TData> implements FieldApi<TData> {
+export class InternalRootFieldApi<TData> implements InternalTrieNode<TData> {
+  readonly _isRoot = true
+  #children: Map<NameSegment, InternalFieldApi<TData>> = new Map()
+
+  form: InternalFormApi<TData>
+
+  readonly name = ''
+
+  get _children(): Array<InternalFieldApi<TData>> {
+    return Array.from(this.#children.values())
+  }
+
+  constructor(form: InternalFormApi<TData>) {
+    this.form = form
+  }
+
+  /**
+   * @private
+   * Get a child FieldApi by its segment name.
+   */
+  _getChild(segment: NameSegment): InternalFieldApi<TData> | undefined {
+    return this.#children.get(segment)
+  }
+
+  /**
+   * @private
+   * Set an existing node as a child of this root node.
+   */
+  _setChild(node: InternalFieldApi<TData>): void {
+    this.#children.set(node._segment, node)
+  }
+
+  _addToTouchedFields(node: InternalFieldApi<any>) {
+    this.form._formMetaAtom.set((prev) => {
+      if (prev.touchedFields.has(node)) {
+        return prev
+      }
+      const newSet = new Set(prev.touchedFields)
+      newSet.add(node)
+      return { ...prev, touchedFields: newSet }
+    })
+  }
+
+  _removeFromTouchedFields(node: InternalFieldApi<any>) {
+    this.form._formMetaAtom.set((prev) => {
+      if (!prev.touchedFields.has(node)) {
+        return prev
+      }
+      const newSet = new Set(prev.touchedFields)
+      newSet.delete(node)
+      return { ...prev, touchedFields: newSet }
+    })
+  }
+}
+
+export class InternalFieldApi<TData>
+  implements FieldApi<TData>, InternalTrieNode<TData>
+{
   _type: 'array' | 'object' | 'leaf' = 'leaf'
-  _parent: InternalFieldApi<TData> | null
+  readonly _isRoot = false
+  _parent: InternalFieldApi<TData> | InternalRootFieldApi<TData>
   _childrenArray: Array<InternalFieldApi<TData>> = []
   _childrenMap: Map<string, InternalFieldApi<TData>> = new Map()
   _fullPathCache: string | null = null
@@ -221,14 +297,14 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
 
   get name(): string {
     if (this._fullPathCache) return this._fullPathCache
-    if (!this._parent) return ''
 
     const ownSegment =
       typeof this._segment === 'number' ? `[${this._segment}]` : this._segment
 
     let name = this._parent.name
-    // If my parent is root or an array, don't add a dot
-    if (this._parent._parent && typeof this._segment !== 'number') {
+
+    // If my parent is not root and not an array, add a dot
+    if (!this._parent._isRoot && typeof this._segment !== 'number') {
       name += '.'
     }
     name += ownSegment
@@ -312,11 +388,15 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
     options: FieldUpdateOptions & PropagateOptions = { doPropagate: true },
   ) {
     const { markAsDirty = true, markAsTouched = true, doPropagate } = options
+    // Not sure if we lose this context, so might as well
+    const originalField = this
 
-    let currNode: InternalFieldApi<any> | null = this
+    let currNode: InternalFieldApi<any> | InternalRootFieldApi<any> = this
 
     batch(() => {
-      while (currNode) {
+      originalField.form._fieldRootNode._addToTouchedFields(originalField)
+
+      while (!currNode._isRoot) {
         const { isDirty, isTouched } = currNode.meta
         const shouldUpdateDirty = markAsDirty && !isDirty
         const shouldUpdateTouched = markAsTouched && !isTouched
@@ -351,11 +431,8 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
 
         currField._store = null
 
-        currField.form.fieldMetaAtom.set((prev) => {
-          const map = new Map(prev)
-          map.delete(this)
-          return map
-        })
+        this.form._fieldRootNode._removeFromTouchedFields(currField)
+        currField.form.fieldMetaAtom.set(mapDelete(this))
 
         stack.push(...currField._children)
       }

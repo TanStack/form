@@ -1,11 +1,12 @@
 import { batch, createAtom, shallow } from '@tanstack/store'
 import {
-  InternalFieldApi,
+  InternalRootFieldApi,
   getOrCreateFieldApi,
   nameToFieldNodeSegments,
   tryGetFieldApi,
 } from './FieldApi.lib'
-import { evaluate, getBy, setBy } from './utils'
+import { evaluate, getBy, mapDelete, setBy } from './utils'
+import type { InternalFieldApi } from './FieldApi.lib'
 import type {
   FieldApiOverrideOptions,
   InternalFieldUpdateOptions,
@@ -14,6 +15,13 @@ import type { Atom, ReadonlyAtom } from '@tanstack/store'
 import type { FormApi, FormOptions, FormState } from './FormApi.public'
 import type { BaseFieldMeta, FieldApi } from './FieldApi.public'
 import type { Updater } from './types.public'
+
+export interface BaseFormMeta {
+  /**
+   * Fields that have been touched.
+   */
+  touchedFields: Set<InternalFieldApi<any>>
+}
 
 // Async defaultValues =>
 // initial: A === { name: '', foo: null }
@@ -31,8 +39,9 @@ import type { Updater } from './types.public'
 export class InternalFormApi<TData> implements FormApi<TData> {
   valuesAtom: Atom<TData>
   store: ReadonlyAtom<FormState<TData>>
-  fieldMetaAtom: Atom<Map<FieldApi<TData>, BaseFieldMeta>>
-  _fieldRootNode: InternalFieldApi<TData>
+  fieldMetaAtom: Atom<ReadonlyMap<FieldApi<TData>, BaseFieldMeta>>
+  _formMetaAtom: Atom<BaseFormMeta>
+  _fieldRootNode: InternalRootFieldApi<TData>
   _options: FormOptions<TData>
   declare readonly state: FormState<TData>
   declare readonly options: FormOptions<TData>
@@ -40,18 +49,19 @@ export class InternalFormApi<TData> implements FormApi<TData> {
   constructor(options: FormOptions<TData>) {
     this._options = options
     this.valuesAtom = createAtom(options.defaultValues)
-    this.fieldMetaAtom = createAtom(new Map())
-    this._fieldRootNode = new InternalFieldApi({
-      segment: '',
-      parent: null,
-      form: this,
+    this.fieldMetaAtom = createAtom<
+      ReadonlyMap<FieldApi<TData>, BaseFieldMeta>
+    >(new Map())
+    this._formMetaAtom = createAtom<BaseFormMeta>({
+      touchedFields: new Set<InternalFieldApi<any>>(),
     })
+    this._fieldRootNode = new InternalRootFieldApi(this)
 
     this.store = createAtom<FormState<TData>>(
       (prev) => {
         const values = this.valuesAtom.get()
-        const isTouched =
-          this.fieldMetaAtom.get().get(this._fieldRootNode)?.isTouched ?? false
+        const baseFormMeta = this._formMetaAtom.get()
+        const isTouched = baseFormMeta.touchedFields.size > 0
 
         if (!prev) {
           return { values, isTouched }
@@ -211,6 +221,10 @@ export class InternalFormApi<TData> implements FormApi<TData> {
       nameToFieldNodeSegments(nameOrSegments),
       this,
     )
+  }
+
+  _deleteMeta = (fieldNode: InternalFieldApi<TData>) => {
+    this.fieldMetaAtom.set(mapDelete(fieldNode))
   }
 }
 

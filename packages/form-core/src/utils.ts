@@ -1,5 +1,5 @@
 import { nameToFieldNodeSegments } from './FieldApi.lib'
-import type { Updater } from './types.public'
+import type { UpdateFn, Updater } from './types.public'
 
 /*
 / credit is due to https://github.com/lukeed/uuid for this code, with current npm
@@ -111,6 +111,33 @@ export function callUpdater(updater: Updater<any>, object: any): any {
   return typeof updater === 'function'
     ? (updater as (...args: Array<any>) => any)(object)
     : updater
+}
+
+/**
+ * @private
+ * Immutably delete a key from a map.
+ */
+export function mapDelete<TKey, TValue>(
+  key: NoInfer<TKey>,
+): UpdateFn<ReadonlyMap<TKey, TValue>>
+export function mapDelete<TKey, TValue>(
+  key: TKey,
+  map: ReadonlyMap<TKey, TValue>,
+): ReadonlyMap<TKey, TValue>
+export function mapDelete<TKey, TValue>(
+  key: TKey,
+  map?: ReadonlyMap<TKey, TValue>,
+): Updater<ReadonlyMap<TKey, TValue>> {
+  const pipeline = (oldMap: ReadonlyMap<TKey, TValue>) => {
+    if (!oldMap.has(key)) {
+      return oldMap
+    }
+    const newMap = new Map(oldMap)
+    newMap.delete(key)
+    return newMap
+  }
+
+  return map ? pipeline(map) : pipeline
 }
 
 // TODO remove and import from store:

@@ -1,4 +1,5 @@
-export type Updater<T> = T | ((prev: T) => T)
+export type UpdateFn<T> = (previousValue: T) => T
+export type Updater<T> = T | UpdateFn<T>
 
 export interface FieldUpdateOptions {
   /**

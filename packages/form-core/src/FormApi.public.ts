@@ -19,7 +19,7 @@ export interface FormState<TData> {
 
 export interface FormApi<TData> {
   store: ReadonlyAtom<FormState<TData>>
-  fieldMetaAtom: Atom<Map<FieldApi<TData>, BaseFieldMeta>>
+  fieldMetaAtom: Atom<ReadonlyMap<FieldApi<TData>, BaseFieldMeta>>
   state: FormState<TData>
   /**
    * TODO
