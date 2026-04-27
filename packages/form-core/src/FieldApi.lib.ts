@@ -102,7 +102,7 @@ export function tryGetFieldApi<TData>(
   segments: NameSegments,
 ): InternalFieldApi<TData> | null {
   const segment = segments.shift()
-  if (!segment) return trieNode
+  if (segment === undefined) return trieNode
 
   const childNode = trieNode._getChild(segment)
   if (childNode) {
