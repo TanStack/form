@@ -138,7 +138,7 @@ export class InternalFormApi<TData> implements FormApi<TData> {
       return
     }
 
-    field._createChild(`[${field.value.length}]`)
+    field._createChild(field.value.length)
 
     this.setFieldValue(
       arrayFieldName,
@@ -190,12 +190,17 @@ export class InternalFormApi<TData> implements FormApi<TData> {
       nameToFieldNodeSegments(`${arrayFieldName}[${indexB}]`),
     )
 
+    // Fields aren't necessarily mounted, so we should assume
+    // that the indeces will represent actual values in the array.
+    // If not, then the user will most likely not iterate over them
+    // during rendering, so we don't need to worry about them.
+
     if (fieldA) {
-      fieldA._segment = String(indexB)
+      fieldA._segment = indexB
     }
 
     if (fieldB) {
-      fieldB._segment = String(indexA)
+      fieldB._segment = indexA
     }
   }
 

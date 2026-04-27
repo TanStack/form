@@ -19,34 +19,45 @@ interface PropagateOptions {
   doPropagate: boolean
 }
 
+export type NameSegment = string | number
+export type NameSegments = Array<NameSegment>
+
 /**
  * Convert a name into an array of segments.
  *
  * If it already is an array, it will create a shallow copy.
  */
 export function nameToFieldNodeSegments(
-  nameOrSegments: string | Array<string>,
-): Array<string> {
+  nameOrSegments: string | NameSegments,
+): NameSegments {
   if (typeof nameOrSegments !== 'string') return nameOrSegments.slice()
 
-  const result: Array<string> = []
+  const result: NameSegments = []
   let s = ''
+
+  const flush = (asNumber: boolean) => {
+    if (s.length > 0) {
+      result.push(asNumber ? parseInt(s, 10) : s)
+      s = ''
+    }
+  }
 
   for (const char of nameOrSegments) {
     switch (char) {
       case '.':
       case '[':
-        result.push(s)
-        s = ''
+        // [0].bar would be wrongly parsed as [0, '', 'bar'] otherwise
+        flush(false)
         break
       case ']':
+        flush(true)
         break
       default:
         s += char
         break
     }
   }
-  result.push(s)
+  flush(false)
 
   return result
 }
@@ -60,11 +71,11 @@ export function nameToFieldNodeSegments(
  */
 export function getOrCreateFieldApi<TData>(
   trieNode: InternalFieldApi<TData>,
-  segments: Array<string>,
+  segments: NameSegments,
   form: FormApi<any>,
 ): InternalFieldApi<TData> {
   const segment = segments.shift()
-  if (!segment) return trieNode
+  if (segment === undefined) return trieNode
 
   let childNode = trieNode._getChild(segment)
   if (childNode) {
@@ -89,7 +100,7 @@ export function getOrCreateFieldApi<TData>(
  */
 export function tryGetFieldApi<TData>(
   trieNode: InternalFieldApi<TData>,
-  segments: Array<string>,
+  segments: NameSegments,
 ): InternalFieldApi<TData> | null {
   const segment = segments.shift()
   if (!segment) return trieNode
@@ -112,7 +123,7 @@ export const defaultFieldMeta: FieldMeta = {
 }
 
 export interface InternalFieldApiParams<TData> {
-  segment: string
+  segment: NameSegment
   parent: InternalFieldApi<TData> | null
   form: InternalFormApi<TData>
 }
@@ -125,20 +136,20 @@ export interface InternalFieldApiParams<TData> {
 // if not, recompute and sync version
 
 export class InternalFieldApi<TData> implements FieldApi<TData> {
-  _type: 'array' | 'object' | null
+  _type: 'array' | 'object' | 'leaf' = 'leaf'
   _parent: InternalFieldApi<TData> | null
   _childrenArray: Array<InternalFieldApi<TData>> = []
   _childrenMap: Map<string, InternalFieldApi<TData>> = new Map()
   _fullPathCache: string | null = null
   _store: ReadonlyAtom<FieldState> | null = null
 
-  #segment: string
+  #segment: NameSegment
 
-  get _segment() {
+  get _segment(): NameSegment {
     return this.#segment
   }
 
-  set _segment(value: string) {
+  set _segment(value: NameSegment) {
     if (this.#segment === value) {
       return
     }
@@ -158,19 +169,22 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
   }
 
   get _isArray(): boolean {
-    // The root node is created before the form exists, so we should
-    // lazily evaluate isArray to avoid an undefined check
-    if (this._type === null) {
-      this._type = Array.isArray(this._getValue()) ? 'array' : 'object'
-    }
     return this._type === 'array'
   }
 
+  get _isLeaf(): boolean {
+    return this._type === 'leaf'
+  }
+
   get _children(): Array<InternalFieldApi<TData>> {
-    if (this._isArray) {
-      return this._childrenArray
+    switch (this._type) {
+      case 'array':
+        return this._childrenArray.filter(Boolean)
+      case 'object':
+        return Array.from(this._childrenMap.values())
+      case 'leaf':
+        return []
     }
-    return Array.from(this._childrenMap.values())
   }
 
   get store(): ReadonlyAtom<FieldState> {
@@ -208,16 +222,18 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
 
   get name(): string {
     if (this._fullPathCache) return this._fullPathCache
-    let segment: string = this._parent?.name ?? ''
-    // If the parent is the root node
-    if (this._parent?._segment) {
-      segment += this._parent._isArray
-        ? `[${this._segment}]`
-        : `.${this._segment}`
-    } else {
-      segment += this._segment
+    if (!this._parent) return ''
+
+    const ownSegment =
+      typeof this._segment === 'number' ? `[${this._segment}]` : this._segment
+
+    let name = this._parent.name
+    // If my parent is root or an array, don't add a dot
+    if (this._parent._parent && typeof this._segment !== 'number') {
+      name += '.'
     }
-    this._fullPathCache = segment
+    name += ownSegment
+    this._fullPathCache = name
     return this._fullPathCache
   }
 
@@ -225,9 +241,6 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
     this.#segment = segment
     this._parent = parent
     this.form = form
-    // lazily evaluate it since it depends on form state. The root node
-    // cannot yet get that state.
-    this._type = null
   }
 
   _invalidateFullPath() {
@@ -239,11 +252,17 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
    * @private
    * Get a child FieldApi by its segment name.
    */
-  _getChild(segment: string): InternalFieldApi<TData> | undefined {
-    if (this._isArray) {
-      return this._childrenArray[parseInt(segment, 10)]
+  _getChild(segment: NameSegment): InternalFieldApi<TData> | undefined {
+    switch (this._type) {
+      case 'array':
+        if (typeof segment !== 'number') return undefined
+        return this._childrenArray[segment]
+      case 'object':
+        if (typeof segment !== 'string') return undefined
+        return this._childrenMap.get(segment)
+      case 'leaf':
+        return undefined
     }
-    return this._childrenMap.get(segment)
   }
 
   /**
@@ -251,9 +270,27 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
    * Set an existing node as a child of this FieldApi.
    */
   _setChild(node: InternalFieldApi<TData>): void {
-    if (this._isArray) {
-      this._childrenArray[parseInt(node._segment, 10)] = node
+    if (this._type === 'leaf') {
+      this._type = typeof node._segment === 'number' ? 'array' : 'object'
+    }
+
+    if (this._type === 'array') {
+      if (typeof node._segment !== 'number') {
+        console.warn(
+          'Adding a string accessor to an array field is not allowed.',
+        )
+        return
+      }
+
+      this._childrenArray[node._segment] = node
     } else {
+      if (typeof node._segment !== 'string') {
+        console.warn(
+          'Adding a numeric accessor to an object field is not allowed.',
+        )
+        return
+      }
+
       this._childrenMap.set(node._segment, node)
     }
   }
@@ -343,7 +380,7 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
    * Create a new FieldApi with the given segment name and add it as child.
    * @returns the new FieldApi.
    */
-  _createChild(segment: string): InternalFieldApi<TData> {
+  _createChild(segment: NameSegment): InternalFieldApi<TData> {
     const node = new InternalFieldApi({
       segment,
       parent: this,
@@ -392,6 +429,8 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
   }
 
   pushValue() {
+    // TODO This guard should be moved to form.
+    // assess it's an array before pushing a new node.
     if (!this._isArray) {
       console.warn('pushValues can only be used on array nodes')
       return
