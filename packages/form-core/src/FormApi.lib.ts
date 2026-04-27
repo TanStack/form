@@ -23,6 +23,25 @@ export interface BaseFormMeta {
   touchedFields: Set<InternalFieldApi<any>>
 }
 
+// StandardSchema<Input, Output>
+// defaultValues === Input
+
+// <unknown, Output>
+//      z.infer ^
+
+// z.enum(['A', 'B']) = <'A' | 'B', 'A' | 'B'>
+// defaultValues: { choice: null }
+// -> defaultValues should implement the schema, but not be the same as its input
+
+// z.enum(['A', 'B']).nullable().transform(v => v !== null)
+// defaultValues: { choice: null }
+// -> defaultValues and schema are inferred and then compared (v1)
+// -> schema type should dictate it all -> defaultValues === z.input<typeof mySchema>
+
+// Proposal:
+//   - onSubmit should have access to the schema results
+//   - validation pipeline: see RFC
+
 // Async defaultValues =>
 // initial: A === { name: '', foo: null }
 // async: B === { name: 'Foo', foo: { bar: 'bar' } }
@@ -35,6 +54,33 @@ export interface BaseFormMeta {
 // form.isPristine: same process
 // form.isValidating: if fieldApi or formApi is validating, increment counter. Boolean is counter > 0
 // form.isDefaultValue: ??? --> probably keep old system, but benchmark it
+
+/**
+    form state:
+
+    isFieldsTouched <> isTouched  ---- is there a **mounted** field that is touched?
+    isFieldsValidating            ---- is there a mounted field that is validating?
+    isDirty                       ---- NOT is there a moutned field that is dirty -> field state for value is derived from form
+                                  ---- has a field handled a change since last reset?
+    isFieldsValid                 ---- is there a field with errors (depends on our errorMap implementation)
+
+
+
+    field-level errors
+
+    axiom: field meta travels with the field, such as swapValues etc. etc.
+
+    from a UX perspective, field-level errors are set as a name -> 'foo[0]' is wrong
+
+    (BUT if you swap the field, the 'false value' probably moved with it)
+
+
+    fieldMetaAtom: Map<FieldApi, Meta> -> fieldMetaAtom.values().some(v => )
+
+    rootNodeInfo: 
+
+    -> Should errors move with the field, or should they remain at the name
+ */
 
 export class InternalFormApi<TData> implements FormApi<TData> {
   valuesAtom: Atom<TData>

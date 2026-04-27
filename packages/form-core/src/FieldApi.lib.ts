@@ -150,6 +150,11 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
   _store: ReadonlyAtom<FieldState> | null = null
 
   #segment: NameSegment
+  /**
+   * @private
+   * How many components have marked this field as desired / registered.
+   */
+  #refCount = 0
 
   get _segment(): NameSegment {
     return this.#segment
@@ -348,6 +353,32 @@ export class InternalFieldApi<TData> implements FieldApi<TData> {
         }
       }
     })
+  }
+
+  /**
+   * @private
+   * Register as a component that you're using this field.
+   *
+   */
+  _register() {
+    this.#refCount++
+  }
+
+  /**
+   * @private
+   * Unregister as a component that you're using this field.
+   *
+   */
+  _unregister() {
+    this.#refCount--
+
+    if (this.#refCount === 0) {
+      setTimeout(() => {
+        if (this.#refCount === 0) {
+          this._store = null
+        }
+      }, 0)
+    }
   }
 
   /**
