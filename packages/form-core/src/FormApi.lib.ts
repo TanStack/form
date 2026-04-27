@@ -90,12 +90,17 @@ export class InternalFormApi<TData> implements FormApi<TData> {
     const oldOptions = this.options
     this._options = options
 
-    if (evaluate(options.defaultValues, oldOptions.defaultValues)) {
+    if (!evaluate(options.defaultValues, oldOptions.defaultValues)) {
+      if (!this.state.isTouched) {
+        this.valuesAtom.set(options.defaultValues)
+      }
     }
+
     // TODO plans
     // form.update(B) => A !== B -> Queue async update
     // v1: !form.isTouched -> Apply state
     // v2?: Apply state -> Traverse fieldsMap values, if fieldApi is not touched, setFieldValue of the field path
+    //     Note: Probably should be a shallow check rather than deep, otherwise we'd have to traverse the entire defaultValues
   }
 
   getFieldValue = (fieldName: string): any => {

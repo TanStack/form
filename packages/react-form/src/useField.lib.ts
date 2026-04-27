@@ -8,7 +8,7 @@ export interface InternalFieldProps<TData> extends FieldProps<TData> {
 
 export function useField<TData>(options: InternalFieldProps<TData>) {
   const fieldApi = useMemo(
-    () => options.form._requestField(options.name),
+    () => options.form._getOrCreateFieldApi(options.name),
     [options.name, options.form],
   )
 

@@ -15,6 +15,16 @@ describe('FormApi', () => {
       expect(form.state.isTouched).toBe(false)
     })
 
+    it('allows async default values', () => {
+      const form = new InternalFormApi({ defaultValues: { name: '' } })
+      expect(form.state.values).toEqual({ name: '' })
+      expect(form.state.isTouched).toBe(false)
+      form._update({ defaultValues: { name: 'async' } })
+
+      expect(form.state.isTouched).toBe(false)
+      expect(form.state.values).toEqual({ name: 'async' })
+    })
+
     // TODO extend with default state
   })
 
