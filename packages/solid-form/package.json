@@ -42,8 +42,9 @@
     "src"
   ],
   "dependencies": {
-    "@tanstack/solid-store": "^0.8.0",
-    "@tanstack/form-core": "workspace:*"
+    "@tanstack/form-core": "workspace:*",
+    "@tanstack/solid-store": "^0.11.0",
+    "vite-plugin-solid": "^2.11.10"
   },
   "devDependencies": {
     "@types/node": "^25.0.7",
