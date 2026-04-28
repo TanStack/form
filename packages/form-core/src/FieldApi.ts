@@ -1,4 +1,4 @@
-import { Derived, batch } from '@tanstack/store'
+import { batch, createStore } from '@tanstack/store'
 import {
   isStandardSchemaValidator,
   standardSchemaValidators,
@@ -8,11 +8,11 @@ import {
   determineFieldLevelErrorSourceAndValue,
   evaluate,
   getAsyncValidatorArray,
-  getBy,
   getSyncValidatorArray,
   mergeOpts,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
+import type { ReadonlyStore } from '@tanstack/store'
 import type { DeepKeys, DeepValue, UnwrapOneLevelOfArray } from './util-types'
 import type {
   StandardSchemaV1,
@@ -382,6 +382,7 @@ export interface FieldListeners<
   onBlur?: FieldListenerFn<TParentData, TName, TData>
   onBlurDebounceMs?: number
   onMount?: FieldListenerFn<TParentData, TName, TData>
+  onUnmount?: FieldListenerFn<TParentData, TName, TData>
   onSubmit?: FieldListenerFn<TParentData, TName, TData>
 }
 
@@ -1090,7 +1091,7 @@ export class FieldApi<
   /**
    * The field state store.
    */
-  store!: Derived<
+  store!: ReadonlyStore<
     FieldState<
       TParentData,
       TName,
@@ -1167,10 +1168,9 @@ export class FieldApi<
       formListeners: {} as Record<ListenerCause, never>,
     }
 
-    this.store = new Derived({
-      deps: [this.form.store],
-      fn: ({ prevVal: _prevVal }) => {
-        const prevVal = _prevVal as
+    this.store = createStore(
+      (
+        prevVal:
           | FieldState<
               TParentData,
               TName,
@@ -1194,7 +1194,10 @@ export class FieldApi<
               TFormOnDynamic,
               TFormOnDynamicAsync
             >
-          | undefined
+          | undefined,
+      ) => {
+        // Temp hack to subscribe to form.store
+        this.form.store.get()
 
         const meta = this.form.getFieldMeta(this.name) ?? {
           ...defaultFieldMeta,
@@ -1242,7 +1245,7 @@ export class FieldApi<
           TFormOnDynamicAsync
         >
       },
-    })
+    )
   }
 
   /**
@@ -1273,10 +1276,9 @@ export class FieldApi<
 
   /**
    * Mounts the field instance to the form.
+   * @returns A function to unmount the field instance.
    */
   mount = () => {
-    const cleanup = this.store.mount()
-
     if (this.options.defaultValue !== undefined && !this.getMeta().isTouched) {
       this.form.setFieldValue(this.name, this.options.defaultValue, {
         dontUpdateMeta: true,
@@ -1322,7 +1324,86 @@ export class FieldApi<
       fieldApi: this,
     })
 
-    return cleanup
+    return () => {
+      // Stop any in-flight async validation or listener work tied to this instance.
+      for (const [key, timeout] of Object.entries(
+        this.timeoutIds.validations,
+      )) {
+        if (timeout) {
+          clearTimeout(timeout)
+          this.timeoutIds.validations[
+            key as keyof typeof this.timeoutIds.validations
+          ] = null
+        }
+      }
+      for (const [key, timeout] of Object.entries(this.timeoutIds.listeners)) {
+        if (timeout) {
+          clearTimeout(timeout)
+          this.timeoutIds.listeners[
+            key as keyof typeof this.timeoutIds.listeners
+          ] = null
+        }
+      }
+      for (const [key, timeout] of Object.entries(
+        this.timeoutIds.formListeners,
+      )) {
+        if (timeout) {
+          clearTimeout(timeout)
+          this.timeoutIds.formListeners[
+            key as keyof typeof this.timeoutIds.formListeners
+          ] = null
+        }
+      }
+
+      const fieldInfo = this.form.fieldInfo[this.name]
+      if (!fieldInfo) return
+
+      // If a newer field instance has already been mounted for this name,
+      // avoid touching its shared validation state during teardown.
+      if (fieldInfo.instance !== this) return
+
+      for (const [key, validationMeta] of Object.entries(
+        fieldInfo.validationMetaMap,
+      )) {
+        validationMeta?.lastAbortController.abort()
+        fieldInfo.validationMetaMap[
+          key as keyof typeof fieldInfo.validationMetaMap
+        ] = undefined
+      }
+
+      this.form.baseStore.setState((prev) => ({
+        // Preserve interaction flags so field-level defaultValue does not
+        // reseed user-entered values on remount.
+        ...prev,
+        fieldMetaBase: {
+          ...prev.fieldMetaBase,
+          [this.name]: {
+            ...defaultFieldMeta,
+            isTouched:
+              prev.fieldMetaBase[this.name]?.isTouched ??
+              defaultFieldMeta.isTouched,
+            isBlurred:
+              prev.fieldMetaBase[this.name]?.isBlurred ??
+              defaultFieldMeta.isBlurred,
+            isDirty:
+              prev.fieldMetaBase[this.name]?.isDirty ??
+              defaultFieldMeta.isDirty,
+          },
+        },
+      }))
+
+      fieldInfo.instance = null
+
+      this.options.listeners?.onUnmount?.({
+        value: this.state.value,
+        fieldApi: this,
+      })
+
+      this.form.options.listeners?.onFieldUnmount?.({
+        formApi: this.form,
+        fieldApi: this,
+      })
+    }
   }
 
   /**
@@ -1595,6 +1676,7 @@ export class FieldApi<
     const validates = getSyncValidatorArray(cause, {
       ...this.options,
       form: this.form,
+      fieldName: this.name,
       validationLogic:
         this.form.options.validationLogic || defaultValidationLogic,
     })
@@ -1605,6 +1687,7 @@ export class FieldApi<
         const fieldValidates = getSyncValidatorArray(cause, {
           ...field.options,
           form: field.form,
+          fieldName: field.name,
           validationLogic:
             field.form.options.validationLogic || defaultValidationLogic,
         })
@@ -1731,6 +1814,7 @@ export class FieldApi<
     const validates = getAsyncValidatorArray(cause, {
       ...this.options,
       form: this.form,
+      fieldName: this.name,
       validationLogic:
         this.form.options.validationLogic || defaultValidationLogic,
     })
@@ -1744,6 +1828,7 @@ export class FieldApi<
         const fieldValidates = getAsyncValidatorArray(cause, {
           ...field.options,
           form: field.form,
+          fieldName: field.name,
           validationLogic:
             field.form.options.validationLogic || defaultValidationLogic,
         })
@@ -1789,12 +1874,13 @@ export class FieldApi<
       promises: Promise<ValidationError | undefined>[],
     ) => {
       const errorMapKey = getErrorMapKey(validateObj.cause)
-      const fieldValidatorMeta = field.getInfo().validationMetaMap[errorMapKey]
+      const fieldInfo = field.getInfo()
+      const fieldValidatorMeta = fieldInfo.validationMetaMap[errorMapKey]
 
       fieldValidatorMeta?.lastAbortController.abort()
       const controller = new AbortController()
 
-      this.getInfo().validationMetaMap[errorMapKey] = {
+      fieldInfo.validationMetaMap[errorMapKey] = {
         lastAbortController: controller,
       }
 
@@ -1803,11 +1889,11 @@ export class FieldApi<
           let rawError!: ValidationError | undefined
           try {
             rawError = await new Promise((rawResolve, rawReject) => {
-              if (this.timeoutIds.validations[validateObj.cause]) {
-                clearTimeout(this.timeoutIds.validations[validateObj.cause]!)
+              if (field.timeoutIds.validations[validateObj.cause]) {
+                clearTimeout(field.timeoutIds.validations[validateObj.cause]!)
               }
 
-              this.timeoutIds.validations[validateObj.cause] = setTimeout(
+              field.timeoutIds.validations[validateObj.cause] = setTimeout(
                 async () => {
                   if (controller.signal.aborted) return rawResolve(undefined)
                   try {
@@ -1837,13 +1923,19 @@ export class FieldApi<
 
           const fieldLevelError = normalizeError(rawError)
           const formLevelError =
-            asyncFormValidationResults[this.name]?.[errorMapKey]
+            asyncFormValidationResults[
+              field.name as keyof typeof asyncFormValidationResults
+            ]?.[errorMapKey]
 
           const { newErrorValue, newSource } =
             determineFieldLevelErrorSourceAndValue({
               formLevelError,
               fieldLevelError,
             })
+
+          if (field.getInfo().instance !== field) {
+            return resolve(undefined)
+          }
 
           field.setMeta((prev) => {
             return {

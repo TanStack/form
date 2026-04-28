@@ -1,5 +1,42 @@
 # @tanstack/react-form-start
 
+## 1.29.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/react-form@1.29.1
+
+## 1.29.0
+
+### Patch Changes
+
+- Updated dependencies [[`d6ab662`](https://github.com/TanStack/form/commit/d6ab662cdf3856a165f8649fc725f6877fd6e1da)]:
+  - @tanstack/react-form@1.29.0
+
+## 1.28.6
+
+### Patch Changes
+
+- Updated dependencies [[`7a1428d`](https://github.com/TanStack/form/commit/7a1428d6ce2806069b3d7b8f8b2aacc26315b771)]:
+  - @tanstack/react-form@1.28.6
+
+## 1.28.5
+
+### Patch Changes
+
+- Updated dependencies [[`704fefa`](https://github.com/TanStack/form/commit/704fefa8e9f178e49a36250d706756d8b3fd3cca), [`7ca9898`](https://github.com/TanStack/form/commit/7ca989800f697d94d3b5850e5204ea0a3b670461)]:
+  - @tanstack/react-form@1.28.5
+
+## 1.28.4
+
+### Patch Changes
+
+- Fixes bad inference from `decode-formdata`'s weird typing of the `decode` function, including handling how it incorrectly doesn't handle undefined values for the form info object. ([#2052](https://github.com/TanStack/form/pull/2052))
+
+- Updated dependencies [[`f88faaf`](https://github.com/TanStack/form/commit/f88faaf72d265fdcbe99887421bd97dd03cb703e)]:
+  - @tanstack/react-form@1.28.4
+
 ## 1.28.3
 
 ### Patch Changes

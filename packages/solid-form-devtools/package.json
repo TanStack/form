@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/solid-form-devtools",
-  "version": "0.2.16",
+  "version": "0.2.22",
   "description": "Solid adapter for devtools for Form.",
   "author": "Tanner Linsley",
   "license": "MIT",
@@ -54,7 +54,7 @@
     "solid-js": ">=1.9.7"
   },
   "dependencies": {
-    "@tanstack/devtools-utils": "^0.3.0",
+    "@tanstack/devtools-utils": "^0.4.0",
     "@tanstack/form-devtools": "workspace:*"
   },
   "devDependencies": {

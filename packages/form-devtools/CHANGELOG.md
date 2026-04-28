@@ -1,5 +1,48 @@
 # @tanstack/form-devtools
 
+## 0.2.22
+
+### Patch Changes
+
+- Updated dependencies [[`6b8aa1e`](https://github.com/TanStack/form/commit/6b8aa1e92d883dfbdddbd5f0393a31d2e7120d3d)]:
+  - @tanstack/form-core@1.29.1
+
+## 0.2.21
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.29.0
+
+## 0.2.20
+
+### Patch Changes
+
+- Updated dependencies [[`7a1428d`](https://github.com/TanStack/form/commit/7a1428d6ce2806069b3d7b8f8b2aacc26315b771)]:
+  - @tanstack/form-core@1.28.6
+
+## 0.2.19
+
+### Patch Changes
+
+- Extract devtools theme to form devtools ([#2079](https://github.com/TanStack/form/pull/2079))
+
+## 0.2.18
+
+### Patch Changes
+
+- Upgrade packages and fixed theme pacakge missmatch ([#2072](https://github.com/TanStack/form/pull/2072))
+
+- Updated dependencies [[`39932c1`](https://github.com/TanStack/form/commit/39932c1da28b5e4ea4b73f8b488d92fc100ccc41)]:
+  - @tanstack/form-core@1.28.5
+
+## 0.2.17
+
+### Patch Changes
+
+- Updated dependencies [[`f88faaf`](https://github.com/TanStack/form/commit/f88faaf72d265fdcbe99887421bd97dd03cb703e)]:
+  - @tanstack/form-core@1.28.4
+
 ## 0.2.16
 
 ### Patch Changes

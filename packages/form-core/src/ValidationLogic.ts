@@ -1,6 +1,6 @@
 import type { AnyFormApi, FormValidators } from './FormApi'
 
-interface ValidationLogicValidatorsFn {
+export interface ValidationLogicValidatorsFn {
   // TODO: Type this properly
   fn: FormValidators<
     any,

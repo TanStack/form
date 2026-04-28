@@ -21,7 +21,7 @@ As such, this guide shows you how you can mix-n-match TanStack Form with TanStac
 <script setup lang="ts">
 import { useForm } from '@tanstack/vue-form'
 import { useQuery } from '@tanstack/vue-query'
-import { watchEffect, reactive } from 'vue'
+import { watchEffect, reactive, computed } from 'vue'
 
 const { data, isLoading } = useQuery({
   queryKey: ['data'],

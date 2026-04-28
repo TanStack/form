@@ -328,6 +328,172 @@ describe('useField', () => {
     expect((getByTestId('first-field') as HTMLInputElement).value).toBe('hello')
   })
 
+  it('should not keep hidden field submit errors after unmount', async () => {
+    const onSubmit = vi.fn()
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+        onSubmit: ({ value }) => onSubmit(value),
+      })
+
+      return (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            form.handleSubmit()
+          }}
+        >
+          <form.Field name="firstName">
+            {(field) => (
+              <input
+                data-testid="first-name"
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+            )}
+          </form.Field>
+
+          <form.Subscribe selector={(state) => state.values.firstName === 'a'}>
+            {(showLastName) =>
+              showLastName ? (
+                <form.Field
+                  name="lastName"
+                  validators={{
+                    onSubmit: ({ value }) =>
+                      value.length >= 5 ? undefined : 'lastName too short',
+                  }}
+                >
+                  {(field) => (
+                    <input
+                      data-testid="last-name"
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
+                  )}
+                </form.Field>
+              ) : null
+            }
+          </form.Subscribe>
+
+          <form.Subscribe
+            selector={(state) => [state.canSubmit, state.isSubmitting]}
+          >
+            {([canSubmit, isSubmitting]) => (
+              <button data-testid="submit" type="submit" disabled={!canSubmit}>
+                {isSubmitting ? '...' : 'Submit'}
+              </button>
+            )}
+          </form.Subscribe>
+        </form>
+      )
+    }
+
+    const { getByTestId, queryByTestId } = render(
+      <StrictMode>
+        <Comp />
+      </StrictMode>,
+    )
+
+    const submitButton = getByTestId('submit')
+
+    await user.type(getByTestId('first-name'), 'a')
+    await user.type(getByTestId('last-name'), 'abc')
+    await user.click(submitButton)
+
+    await waitFor(() => expect(submitButton).toBeDisabled())
+    expect(onSubmit).toHaveBeenCalledTimes(0)
+
+    await user.clear(getByTestId('first-name'))
+    await user.type(getByTestId('first-name'), 'b')
+
+    await waitFor(() =>
+      expect(queryByTestId('last-name')).not.toBeInTheDocument(),
+    )
+    await waitFor(() => expect(submitButton).toBeEnabled())
+
+    await user.click(submitButton)
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1))
+
+    await user.clear(getByTestId('first-name'))
+    await user.type(getByTestId('first-name'), 'a')
+
+    const remountedLastName = await waitFor(() => getByTestId('last-name'))
+    expect((remountedLastName as HTMLInputElement).value).toBe('abc')
+    expect(submitButton).toBeEnabled()
+  })
+
+  it('should call onUnmount listener when a field is conditionally removed', async () => {
+    const fieldUnmount = vi.fn()
+    const formFieldUnmount = vi.fn()
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          show: true,
+          name: 'test',
+        },
+        listeners: {
+          onFieldUnmount: formFieldUnmount,
+        },
+      })
+
+      return (
+        <>
+          <form.Field name="show">
+            {(field) => (
+              <input
+                data-testid="toggle"
+                type="checkbox"
+                checked={field.state.value}
+                onChange={(e) => field.handleChange(e.target.checked)}
+              />
+            )}
+          </form.Field>
+
+          <form.Subscribe selector={(s) => s.values.show}>
+            {(show) =>
+              show ? (
+                <form.Field name="name" listeners={{ onUnmount: fieldUnmount }}>
+                  {(field) => (
+                    <input
+                      data-testid="name"
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
+                  )}
+                </form.Field>
+              ) : null
+            }
+          </form.Subscribe>
+        </>
+      )
+    }
+
+    const { getByTestId, queryByTestId } = render(
+      <StrictMode>
+        <Comp />
+      </StrictMode>,
+    )
+
+    await waitFor(() => expect(getByTestId('name')).toBeInTheDocument())
+
+    const callsBefore = fieldUnmount.mock.calls.length
+    const formCallsBefore = formFieldUnmount.mock.calls.length
+
+    await user.click(getByTestId('toggle'))
+
+    await waitFor(() => expect(queryByTestId('name')).not.toBeInTheDocument())
+    expect(fieldUnmount).toHaveBeenCalledTimes(callsBefore + 1)
+    expect(formFieldUnmount).toHaveBeenCalledTimes(formCallsBefore + 1)
+  })
+
   it('should validate async on change', async () => {
     type Person = {
       firstName: string
