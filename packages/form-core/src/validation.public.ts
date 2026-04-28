@@ -5,6 +5,7 @@
  *
  */
 
+import type { FieldApi } from './FieldApi.public'
 import type { FormApi } from './FormApi.public'
 import type { OneOrMany } from './types.public'
 
@@ -13,6 +14,7 @@ export type ValidationEvent = ValidationSignal | 'submit'
 
 export interface ValidationEnabledContext<TFormData> {
   formApi: FormApi<TFormData, []>
+  fieldApi: FieldApi<any, any> | null
   value: TFormData
 }
 
@@ -42,6 +44,7 @@ export interface FormValidationError {
 export interface FormValidatorContext<TFormData> {
   event: ValidationEvent
   formApi: FormApi<TFormData, []>
+  fieldApi: FieldApi<any, any> | null
   value: TFormData
 }
 
@@ -75,6 +78,14 @@ export interface FormValidator<TFormData> {
    * @default false
    */
   runOnlyIfValid?: boolean
+  /**
+   * TODO docs
+   *
+   * NOTE: source-field: The field that emitted the validation. Errors for emitted fields
+   * aren't discarded on change, but kept, even if the source field has changed since then.
+   * Only if the error for that field still persists, of course
+   */
+  errorScope?: 'form-level' | 'field-level' | 'all' | 'source-field'
   /**
    * Whether this validator should be called during a submission attempt.
    *
