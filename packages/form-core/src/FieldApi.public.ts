@@ -1,5 +1,6 @@
 import type { FieldUpdateOptions, Updater } from './types.public'
 import type { FormApi } from './FormApi.public'
+import type { FormValidator } from './validation.public'
 
 /**
  * field.state.value
@@ -26,11 +27,14 @@ export interface FieldState {
 
 export type FieldErrors = Array<any>
 
-export interface FieldApi<TFormData> {
+export interface FieldApi<
+  TFormData,
+  TFormValidators extends Array<FormValidator<TFormData>>,
+> {
   /**
    * The form that owns this field.
    */
-  form: FormApi<TFormData>
+  form: FormApi<TFormData, TFormValidators>
 
   /**
    * The name of the field.

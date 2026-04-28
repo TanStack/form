@@ -15,13 +15,14 @@ import type { Atom, ReadonlyAtom } from '@tanstack/store'
 import type { FormApi, FormOptions, FormState } from './FormApi.public'
 import type { BaseFieldMeta, FieldApi } from './FieldApi.public'
 import type { Updater } from './types.public'
+import type { FormValidator } from './validation.public'
 
 export interface BaseFormMeta {
   /**
    * @private
    * Fields that have been touched.
    */
-  touchedFields: Set<InternalFieldApi<any>>
+  touchedFields: Set<InternalFieldApi<any, any>>
   /**
    * @private
    * A field has notified the root to be dirty
@@ -83,26 +84,31 @@ export interface BaseFormMeta {
 
     fieldMetaAtom: Map<FieldApi, Meta> -> fieldMetaAtom.values().some(v => )
 
-    rootNodeInfo: 
+    rootNodeInfo:
 
     -> Should errors move with the field, or should they remain at the name
  */
 
-export class InternalFormApi<TData> implements FormApi<TData> {
-  valuesAtom: Atom<TData>
-  store: ReadonlyAtom<FormState<TData>>
-  fieldMetaAtom: Atom<ReadonlyMap<FieldApi<TData>, BaseFieldMeta>>
+export class InternalFormApi<
+  TFormData,
+  TFormValidators extends Array<FormValidator<TFormData>>,
+> implements FormApi<TFormData, TFormValidators> {
+  valuesAtom: Atom<TFormData>
+  store: ReadonlyAtom<FormState<TFormData>>
+  fieldMetaAtom: Atom<
+    ReadonlyMap<FieldApi<TFormData, TFormValidators>, BaseFieldMeta>
+  >
   _formMetaAtom: Atom<BaseFormMeta>
-  _fieldRootNode: InternalRootFieldApi<TData>
-  _options: FormOptions<TData>
-  declare readonly state: FormState<TData>
-  declare readonly options: FormOptions<TData>
+  _fieldRootNode: InternalRootFieldApi<TFormData>
+  _options: FormOptions<TFormData, TFormValidators>
+  declare readonly state: FormState<TFormData>
+  declare readonly options: FormOptions<TFormData, TFormValidators>
 
-  constructor(options: FormOptions<TData>) {
+  constructor(options: FormOptions<TFormData, TFormValidators>) {
     this._options = options
     this.valuesAtom = createAtom(options.defaultValues)
     this.fieldMetaAtom = createAtom<
-      ReadonlyMap<FieldApi<TData>, BaseFieldMeta>
+      ReadonlyMap<FieldApi<TFormData, TFormValidators>, BaseFieldMeta>
     >(new Map())
     this._formMetaAtom = createAtom({
       touchedFields: new Set(),
@@ -125,23 +131,23 @@ export class InternalFormApi<TData> implements FormApi<TData> {
           isTouched,
           isDirty,
           isPristine,
-        } satisfies FormState<TData>
+        } satisfies FormState<TFormData>
       },
       { compare: shallow },
     )
 
     Object.defineProperty(this, 'state', {
-      get: (): FormState<TData> => this.store.get(),
+      get: (): FormState<TFormData> => this.store.get(),
       enumerable: true,
     })
 
     Object.defineProperty(this, 'options', {
-      get: (): FormOptions<TData> => this._options,
+      get: (): FormOptions<TFormData, TFormValidators> => this._options,
       enumerable: true,
     })
   }
 
-  _update = (options: FormOptions<TData>) => {
+  _update = (options: FormOptions<TFormData, TFormValidators>) => {
     const oldOptions = this.options
     this._options = options
 
@@ -271,7 +277,7 @@ export class InternalFormApi<TData> implements FormApi<TData> {
 
   _tryGetFieldApi = (
     nameOrSegments: string | Array<string>,
-  ): InternalFieldApi<TData> | null => {
+  ): InternalFieldApi<TFormData, TFormValidators> | null => {
     return tryGetFieldApi(
       this._fieldRootNode,
       nameToFieldNodeSegments(nameOrSegments),
@@ -280,7 +286,7 @@ export class InternalFormApi<TData> implements FormApi<TData> {
 
   _getOrCreateFieldApi = (
     nameOrSegments: string | Array<string>,
-  ): InternalFieldApi<TData> => {
+  ): InternalFieldApi<TFormData, TFormValidators> => {
     return getOrCreateFieldApi(
       this._fieldRootNode,
       nameToFieldNodeSegments(nameOrSegments),
@@ -288,7 +294,9 @@ export class InternalFormApi<TData> implements FormApi<TData> {
     )
   }
 
-  _deleteMeta = (fieldNode: InternalFieldApi<TData>) => {
+  _deleteMeta = (
+    fieldNode: InternalFieldApi<TFormData, TFormValidators>,
+  ): void => {
     this.fieldMetaAtom.set(mapDelete(fieldNode))
   }
 }

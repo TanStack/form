@@ -15,3 +15,5 @@ export interface FieldUpdateOptions {
    */
   markAsDirty?: boolean
 }
+
+export type OneOrMany<T> = T | Array<T>
