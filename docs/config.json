@@ -104,6 +104,10 @@
               "to": "framework/react/guides/basic-concepts"
             },
             {
+              "label": "Getting and Setting Field Values",
+              "to": "framework/react/guides/field-values"
+            },
+            {
               "label": "Form Validation",
               "to": "framework/react/guides/validation"
             },
