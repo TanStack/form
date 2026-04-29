@@ -14,6 +14,8 @@ export function isErrorResult(
   return true
 }
 
+type ValidateContext = Omit<FormValidatorContext<any>, 'value'>
+
 export interface PipelineResult {
   validatorIndex: number
   errorScope: NonNullable<FormValidator<any>['errorScope']>
@@ -31,26 +33,26 @@ export function createValidatorPipelineCache(): ValidatorPipelineCache {
 }
 
 interface DebouncedValidationCall {
-  context: FormValidatorContext<any>
+  context: ValidateContext
   resolve: (result: FormValidateResult | undefined) => void
   reject: (error: unknown) => void
 }
 
 function getEnabledState(
   booleanOrFn: boolean | ValidationEnabledFn<any>,
-  context: FormValidatorContext<any>,
+  context: ValidateContext,
 ): boolean {
   if (typeof booleanOrFn === 'boolean') return booleanOrFn
   return booleanOrFn({
     fieldApi: context.fieldApi,
     formApi: context.formApi,
-    value: context.value,
+    value: context.formApi.state.values,
   })
 }
 
 function isSignalEnabled(
   signal: ValidationSignalOption<any>,
-  context: FormValidatorContext<any>,
+  context: ValidateContext,
 ): boolean {
   if (typeof signal === 'string') {
     return signal === context.event
@@ -63,7 +65,7 @@ function isSignalEnabled(
 
 function getFirstEnabledSignal(
   validator: FormValidator<any>,
-  context: FormValidatorContext<any>,
+  context: ValidateContext,
 ): ValidationSignalOption<any> | 'submit' | null {
   const { runOnSubmit = true } = validator
   const signals = validator.signals ?? []
@@ -84,38 +86,38 @@ function getFirstEnabledSignal(
   return null
 }
 
-function getSignalDebounceMs(signal: ValidationSignalOption<any>): number {
-  const debounceMs = typeof signal === 'object' ? signal.debounceMs : undefined
-  return debounceMs ?? 0
-}
-
-function getDebouncerKey(
-  context: FormValidatorContext<any>,
-  validatorIndex: number,
-): string {
-  return `${context.event}:${validatorIndex}:${context.fieldApi?.name ?? 'form'}`
+function getDebouncerKey(validatorIndex: number): string {
+  return `form:${validatorIndex}`
 }
 
 function runMaybeDebouncedValidator(
   validator: FormValidator<any>,
-  context: FormValidatorContext<any>,
+  context: ValidateContext,
   validatorIndex: number,
-  debounceMs: number,
   cache: ValidatorPipelineCache,
 ): Promise<FormValidateResult> {
   const run = async (
-    validationContext: FormValidatorContext<any>,
+    validationContext: ValidateContext,
   ): Promise<FormValidateResult> => {
-    return validator.validate(validationContext)
+    return validator.validate({
+      ...validationContext,
+      value: validationContext.formApi.state.values,
+    })
   }
 
+  const debounceMs =
+    context.event === 'submit' ? 0 : (validator.signalDebounceMs ?? 0)
+  const debouncerKey = getDebouncerKey(validatorIndex)
+
+  // Cancel any pending debounce for this key
+  const existingDebouncer = cache.debouncers.get(debouncerKey)
+
   if (debounceMs <= 0) {
+    existingDebouncer?.cancel()
     return run(context)
   }
 
-  const debouncerKey = getDebouncerKey(context, validatorIndex)
-
-  let debouncer = cache.debouncers.get(debouncerKey)
+  let debouncer = existingDebouncer
 
   if (!debouncer) {
     debouncer = new LiteDebouncer(
@@ -147,7 +149,7 @@ function runMaybeDebouncedValidator(
 
 export async function runFormValidatorPipeline(
   pipeline: Array<FormValidator<any>>,
-  context: FormValidatorContext<any>,
+  context: ValidateContext,
   cache: ValidatorPipelineCache = createValidatorPipelineCache(),
 ): Promise<Array<PipelineResult>> {
   let pendingPromises: Array<Promise<PipelineResult>> = []
@@ -190,16 +192,12 @@ export async function runFormValidatorPipeline(
       }
     }
 
-    const debounceMs =
-      firstEnabledSignal === 'submit'
-        ? 0
-        : getSignalDebounceMs(firstEnabledSignal)
-
+    // Submit always executes immediately (debounceMs = 0)
+    // Non-submit events use validator.signalDebounceMs (defaults to 0)
     const promise = runMaybeDebouncedValidator(
       validator,
       context,
       i,
-      debounceMs,
       cache,
     ).then((result) => ({
       validatorIndex: i,

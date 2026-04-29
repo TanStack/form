@@ -21,11 +21,9 @@ describe('runFormValidatorPipeline', () => {
       runWithContext: (args: {
         event: Event
         field?: InternalFieldApi<any, Array<any>>
-        valueOverride?: any
       }) => {
         return runFormValidatorPipeline(pipeline, {
           formApi: form,
-          value: args.valueOverride ?? form.state.values,
           fieldApi: args.field ?? null,
           event: args.event,
         })

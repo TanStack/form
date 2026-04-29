@@ -23,7 +23,6 @@ export type ValidationEnabledFn<TFormData> = (
 
 export interface ValidationSignalConfig<TFormData> {
   signal: ValidationSignal
-  debounceMs?: number
   enabled?: boolean | ValidationEnabledFn<TFormData>
 }
 
@@ -98,6 +97,13 @@ export interface FormValidator<TFormData> {
    * @default true
    */
   runOnSubmit?: boolean | ValidationEnabledFn<TFormData>
+  /**
+   * The debounce time in milliseconds for validation signals (change, blur).
+   * Does not affect submit events, which always execute immediately.
+   *
+   * @default 0
+   */
+  signalDebounceMs?: number
   validate: FormValidatorFn<TFormData>
   signals?: Array<ValidationSignalOption<TFormData>>
 }

@@ -6,6 +6,8 @@ import {
 } from './FieldApi.lib'
 import { evaluate, getBy, mapDelete, setBy } from './utils'
 import { InternalRootFieldApi } from './RootFieldApi.lib'
+import { createValidatorPipelineCache } from './validation.lib'
+import type { ValidatorPipelineCache } from './validation.lib'
 import type { InternalFieldApi } from './FieldApi.lib'
 import type {
   FieldApiOverrideOptions,
@@ -101,6 +103,7 @@ export class InternalFormApi<
   _formMetaAtom: Atom<BaseFormMeta>
   _fieldRootNode: InternalRootFieldApi<TFormData>
   _options: FormOptions<TFormData, TFormValidators>
+  _validatorPipelineCache: ValidatorPipelineCache
   declare readonly state: FormState<TFormData>
   declare readonly options: FormOptions<TFormData, TFormValidators>
 
@@ -110,6 +113,7 @@ export class InternalFormApi<
     this.fieldMetaAtom = createAtom<
       ReadonlyMap<FieldApi<TFormData, TFormValidators>, BaseFieldMeta>
     >(new Map())
+    this._validatorPipelineCache = createValidatorPipelineCache()
     this._formMetaAtom = createAtom({
       touchedFields: new Set(),
       isDirty: false,
