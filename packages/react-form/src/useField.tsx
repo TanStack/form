@@ -11,10 +11,12 @@ import type {
   DeepKeys,
   DeepValue,
   FieldAsyncValidateOrFn,
+  FieldListeners,
   FieldValidateOrFn,
   FieldValidators,
   FormAsyncValidateOrFn,
   FormValidateOrFn,
+  StandardSchemaV1,
   Updater,
 } from '@tanstack/form-core'
 import type { FunctionComponent, ReactElement, ReactNode } from 'react'
@@ -41,6 +43,234 @@ type FieldApiWithCustomMeta<TFieldApi, TCustomMeta> = {
     : AnyFieldMeta & WidenMeta<TCustomMeta>
   setMeta: (updater: Updater<AnyFieldMetaBase & WidenMeta<TCustomMeta>>) => void
 } & TFieldApi
+
+type FieldValidatorApiWithCustomMeta<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName>,
+  TCustomMeta,
+> = FieldApiWithCustomMeta<
+  FieldApi<
+    TParentData,
+    TName,
+    TData,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+  >,
+  TCustomMeta
+>
+
+type FieldValidateFnWithCustomMeta<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName>,
+  TCustomMeta,
+> = (props: {
+  value: TData
+  fieldApi: FieldValidatorApiWithCustomMeta<
+    TParentData,
+    TName,
+    TData,
+    TCustomMeta
+  >
+}) => unknown
+
+type FieldAsyncValidateFnWithCustomMeta<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName>,
+  TCustomMeta,
+> = (props: {
+  value: TData
+  fieldApi: FieldValidatorApiWithCustomMeta<
+    TParentData,
+    TName,
+    TData,
+    TCustomMeta
+  >
+  signal: AbortSignal
+}) => unknown | Promise<unknown>
+
+type FieldValidateOrFnWithCustomMeta<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName>,
+  TCustomMeta,
+> =
+  | FieldValidateFnWithCustomMeta<TParentData, TName, TData, TCustomMeta>
+  | StandardSchemaV1<TData, unknown>
+
+type FieldAsyncValidateOrFnWithCustomMeta<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName>,
+  TCustomMeta,
+> =
+  | FieldAsyncValidateFnWithCustomMeta<TParentData, TName, TData, TCustomMeta>
+  | StandardSchemaV1<TData, unknown>
+
+type CoreFieldValidateOrFn<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName>,
+  TValidator,
+> = TValidator extends undefined
+  ? undefined
+  : TValidator extends StandardSchemaV1<TData, unknown>
+    ? TValidator
+    : TValidator extends (...args: any) => infer TReturn
+      ? (props: { value: TData; fieldApi: any }) => TReturn
+      : never
+
+type CoreFieldAsyncValidateOrFn<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName>,
+  TValidator,
+> = TValidator extends undefined
+  ? undefined
+  : TValidator extends StandardSchemaV1<TData, unknown>
+    ? TValidator
+    : TValidator extends (...args: any) => infer TReturn
+      ? (props: { value: TData; fieldApi: any; signal: AbortSignal }) => TReturn
+      : never
+
+type FieldValidatorsWithCustomMeta<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName>,
+  TCustomMeta,
+  TOnMount extends
+    | undefined
+    | FieldValidateOrFnWithCustomMeta<TParentData, TName, TData, TCustomMeta>,
+  TOnChange extends
+    | undefined
+    | FieldValidateOrFnWithCustomMeta<TParentData, TName, TData, TCustomMeta>,
+  TOnChangeAsync extends
+    | undefined
+    | FieldAsyncValidateOrFnWithCustomMeta<
+        TParentData,
+        TName,
+        TData,
+        TCustomMeta
+      >,
+  TOnBlur extends
+    | undefined
+    | FieldValidateOrFnWithCustomMeta<TParentData, TName, TData, TCustomMeta>,
+  TOnBlurAsync extends
+    | undefined
+    | FieldAsyncValidateOrFnWithCustomMeta<
+        TParentData,
+        TName,
+        TData,
+        TCustomMeta
+      >,
+  TOnSubmit extends
+    | undefined
+    | FieldValidateOrFnWithCustomMeta<TParentData, TName, TData, TCustomMeta>,
+  TOnSubmitAsync extends
+    | undefined
+    | FieldAsyncValidateOrFnWithCustomMeta<
+        TParentData,
+        TName,
+        TData,
+        TCustomMeta
+      >,
+  TOnDynamic extends
+    | undefined
+    | FieldValidateOrFnWithCustomMeta<TParentData, TName, TData, TCustomMeta>,
+  TOnDynamicAsync extends
+    | undefined
+    | FieldAsyncValidateOrFnWithCustomMeta<
+        TParentData,
+        TName,
+        TData,
+        TCustomMeta
+      >,
+> = Omit<
+  FieldValidators<
+    TParentData,
+    TName,
+    TData,
+    CoreFieldValidateOrFn<TParentData, TName, TData, TOnMount>,
+    CoreFieldValidateOrFn<TParentData, TName, TData, TOnChange>,
+    CoreFieldAsyncValidateOrFn<TParentData, TName, TData, TOnChangeAsync>,
+    CoreFieldValidateOrFn<TParentData, TName, TData, TOnBlur>,
+    CoreFieldAsyncValidateOrFn<TParentData, TName, TData, TOnBlurAsync>,
+    CoreFieldValidateOrFn<TParentData, TName, TData, TOnSubmit>,
+    CoreFieldAsyncValidateOrFn<TParentData, TName, TData, TOnSubmitAsync>,
+    CoreFieldValidateOrFn<TParentData, TName, TData, TOnDynamic>,
+    CoreFieldAsyncValidateOrFn<TParentData, TName, TData, TOnDynamicAsync>
+  >,
+  | 'onMount'
+  | 'onChange'
+  | 'onChangeAsync'
+  | 'onBlur'
+  | 'onBlurAsync'
+  | 'onSubmit'
+  | 'onSubmitAsync'
+  | 'onDynamic'
+  | 'onDynamicAsync'
+> & {
+  onMount?: TOnMount
+  onChange?: TOnChange
+  onChangeAsync?: TOnChangeAsync
+  onBlur?: TOnBlur
+  onBlurAsync?: TOnBlurAsync
+  onSubmit?: TOnSubmit
+  onSubmitAsync?: TOnSubmitAsync
+  onDynamic?: TOnDynamic
+  onDynamicAsync?: TOnDynamicAsync
+}
+
+type FieldListenersWithCustomMeta<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName>,
+  TCustomMeta,
+> = Omit<
+  FieldListeners<TParentData, TName, TData>,
+  'onChange' | 'onBlur' | 'onMount' | 'onUnmount' | 'onSubmit'
+> & {
+  onChange?: FieldListenerFnWithCustomMeta<TParentData, TName, TData, TCustomMeta>
+  onBlur?: FieldListenerFnWithCustomMeta<TParentData, TName, TData, TCustomMeta>
+  onMount?: FieldListenerFnWithCustomMeta<TParentData, TName, TData, TCustomMeta>
+  onUnmount?: FieldListenerFnWithCustomMeta<TParentData, TName, TData, TCustomMeta>
+  onSubmit?: FieldListenerFnWithCustomMeta<TParentData, TName, TData, TCustomMeta>
+}
+
+type FieldListenerFnWithCustomMeta<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName>,
+  TCustomMeta,
+> = (props: {
+  value: TData
+  fieldApi: FieldValidatorApiWithCustomMeta<
+    TParentData,
+    TName,
+    TData,
+    TCustomMeta
+  >
+}) => void
 
 interface ReactFieldApi<
   TParentData,
@@ -528,23 +758,53 @@ export type FieldComponent<
 > = <
   const TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
-  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnMount extends
+    | undefined
+    | FieldValidateOrFnWithCustomMeta<TParentData, TName, TData, TFormMeta>,
+  TOnChange extends
+    | undefined
+    | FieldValidateOrFnWithCustomMeta<TParentData, TName, TData, TFormMeta>,
   TOnChangeAsync extends
     | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+    | FieldAsyncValidateOrFnWithCustomMeta<
+        TParentData,
+        TName,
+        TData,
+        TFormMeta
+      >,
+  TOnBlur extends
+    | undefined
+    | FieldValidateOrFnWithCustomMeta<TParentData, TName, TData, TFormMeta>,
   TOnBlurAsync extends
     | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+    | FieldAsyncValidateOrFnWithCustomMeta<
+        TParentData,
+        TName,
+        TData,
+        TFormMeta
+      >,
+  TOnSubmit extends
+    | undefined
+    | FieldValidateOrFnWithCustomMeta<TParentData, TName, TData, TFormMeta>,
   TOnSubmitAsync extends
     | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+    | FieldAsyncValidateOrFnWithCustomMeta<
+        TParentData,
+        TName,
+        TData,
+        TFormMeta
+      >,
+  TOnDynamic extends
+    | undefined
+    | FieldValidateOrFnWithCustomMeta<TParentData, TName, TData, TFormMeta>,
   TOnDynamicAsync extends
     | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | FieldAsyncValidateOrFnWithCustomMeta<
+        TParentData,
+        TName,
+        TData,
+        TFormMeta
+      >,
   const TFieldMeta extends object = {},
 >({
   children,
@@ -554,15 +814,15 @@ export type FieldComponent<
     TParentData,
     TName,
     TData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync,
+    CoreFieldValidateOrFn<TParentData, TName, TData, TOnMount>,
+    CoreFieldValidateOrFn<TParentData, TName, TData, TOnChange>,
+    CoreFieldAsyncValidateOrFn<TParentData, TName, TData, TOnChangeAsync>,
+    CoreFieldValidateOrFn<TParentData, TName, TData, TOnBlur>,
+    CoreFieldAsyncValidateOrFn<TParentData, TName, TData, TOnBlurAsync>,
+    CoreFieldValidateOrFn<TParentData, TName, TData, TOnSubmit>,
+    CoreFieldAsyncValidateOrFn<TParentData, TName, TData, TOnSubmitAsync>,
+    CoreFieldValidateOrFn<TParentData, TName, TData, TOnDynamic>,
+    CoreFieldAsyncValidateOrFn<TParentData, TName, TData, TOnDynamicAsync>,
     TFormOnMount,
     TFormOnChange,
     TFormOnChangeAsync,
@@ -576,24 +836,45 @@ export type FieldComponent<
     TPatentSubmitMeta,
     ExtendedApi
   >,
-  'children' | 'defaultMeta'
+  'children' | 'defaultMeta' | 'validators' | 'listeners'
 > & {
   defaultMeta?: TFieldMeta
+  validators?: FieldValidatorsWithCustomMeta<
+    TParentData,
+    TName,
+    TData,
+    TFormMeta,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync
+  >
+  listeners?: FieldListenersWithCustomMeta<
+    TParentData,
+    TName,
+    TData,
+    TFormMeta
+  >
   children: (
     fieldApi: FieldApiWithCustomMeta<
       FieldApi<
         TParentData,
         TName,
         TData,
-        TOnMount,
-        TOnChange,
-        TOnChangeAsync,
-        TOnBlur,
-        TOnBlurAsync,
-        TOnSubmit,
-        TOnSubmitAsync,
-        TOnDynamic,
-        TOnDynamicAsync,
+        CoreFieldValidateOrFn<TParentData, TName, TData, TOnMount>,
+        CoreFieldValidateOrFn<TParentData, TName, TData, TOnChange>,
+        CoreFieldAsyncValidateOrFn<TParentData, TName, TData, TOnChangeAsync>,
+        CoreFieldValidateOrFn<TParentData, TName, TData, TOnBlur>,
+        CoreFieldAsyncValidateOrFn<TParentData, TName, TData, TOnBlurAsync>,
+        CoreFieldValidateOrFn<TParentData, TName, TData, TOnSubmit>,
+        CoreFieldAsyncValidateOrFn<TParentData, TName, TData, TOnSubmitAsync>,
+        CoreFieldValidateOrFn<TParentData, TName, TData, TOnDynamic>,
+        CoreFieldAsyncValidateOrFn<TParentData, TName, TData, TOnDynamicAsync>,
         TFormOnMount,
         TFormOnChange,
         TFormOnChangeAsync,
