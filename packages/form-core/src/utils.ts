@@ -1,5 +1,5 @@
 import { nameToFieldNodeSegments } from './FieldApi.lib'
-import type { UpdateFn, Updater } from './types.public'
+import type { OneOrMany, UpdateFn, Updater } from './types.public'
 
 /*
 / credit is due to https://github.com/lukeed/uuid for this code, with current npm
@@ -138,6 +138,14 @@ export function mapDelete<TKey, TValue>(
   }
 
   return map ? pipeline(map) : pipeline
+}
+
+export function normalizeToArray<T>(
+  input: null | undefined | OneOrMany<T>,
+): Array<T> {
+  if (Array.isArray(input)) return input
+  if (input === null || input === undefined) return []
+  return [input]
 }
 
 // TODO remove and import from store:

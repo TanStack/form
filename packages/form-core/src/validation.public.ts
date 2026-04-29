@@ -21,7 +21,9 @@ export interface ValidationEnabledContext<TFormData> {
 export interface ValidationSignalConfig<TFormData> {
   signal: ValidationSignal
   debounceMs?: number
-  enabled?: (context: ValidationEnabledContext<TFormData>) => boolean
+  enabled?:
+    | boolean
+    | ((context: ValidationEnabledContext<TFormData>) => boolean)
 }
 
 export type ValidationSignalOption<TFormData> =
