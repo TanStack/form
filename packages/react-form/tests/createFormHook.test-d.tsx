@@ -21,6 +21,249 @@ const { useAppForm, withForm, withFieldGroup } = createFormHook({
 })
 
 describe('createFormHook', () => {
+  it('should infer form-level defaultMeta through useAppForm and formOptions', () => {
+    type Option = { test: 'hello' }
+
+    const options = formOptions({
+      defaultValues: {
+        name: '',
+      },
+      defaultMeta: {
+        dataSource: [] as Option[],
+      },
+    })
+
+    function Comp() {
+      const form = useAppForm(options)
+
+      expectTypeOf(form.getFieldMeta('name')?.dataSource).toEqualTypeOf<
+        Option[] | undefined
+      >()
+
+      return (
+        <form.Field name="name">
+          {(field) => {
+            expectTypeOf(field.state.meta.dataSource).toEqualTypeOf<Option[]>()
+            return null
+          }}
+        </form.Field>
+      )
+    }
+  })
+
+  it('should infer form-level defaultMeta when passing directly to useAppForm', () => {
+    type Option = { test: 'any' }
+
+    function Comp() {
+      const form = useAppForm({
+        defaultValues: {
+          iam: 'hello',
+        },
+        defaultMeta: {
+          dataSource: [] as Option[],
+        },
+      })
+
+      return (
+        <form.AppField name="iam">
+          {(field) => {
+            expectTypeOf(field.state.meta.dataSource).toEqualTypeOf<Option[]>()
+            return null
+          }}
+        </form.AppField>
+      )
+    }
+  })
+
+  it('should infer field-level defaultMeta through useAppForm and formOptions', () => {
+    type Option = { test: 'any' }
+
+    const options = formOptions({
+      defaultValues: {
+        iam: 'hello',
+      },
+    })
+
+    function Comp() {
+      const form = useAppForm(options)
+
+      return (
+        <form.AppField
+          name="iam"
+          defaultMeta={{
+            dataSource: [] as Option[],
+          }}
+        >
+          {(field) => {
+            expectTypeOf(field.state.meta.dataSource).toEqualTypeOf<Option[]>()
+            return null
+          }}
+        </form.AppField>
+      )
+    }
+  })
+
+  it('should infer field-level defaultMeta when passing directly to useAppForm', () => {
+    type Option = { test: 'any' }
+
+    function Comp() {
+      const form = useAppForm({
+        defaultValues: {
+          iam: 'hello',
+        },
+      })
+
+      return (
+        <form.AppField
+          name="iam"
+          defaultMeta={{
+            dataSource: [] as Option[],
+          }}
+        >
+          {(field) => {
+            expectTypeOf(field.state.meta.dataSource).toEqualTypeOf<Option[]>()
+            return null
+          }}
+        </form.AppField>
+      )
+    }
+  })
+
+  it('should allow passing a form with inferred defaultMeta to withForm components', () => {
+    type Option = { test: 'hello' }
+
+    const ChildForm = withForm({
+      defaultValues: {
+        name: '',
+      },
+      render: ({ form }) => {
+        return <form.Test />
+      },
+    })
+
+    function Comp() {
+      const form = useAppForm({
+        defaultValues: {
+          name: '',
+        },
+        defaultMeta: {
+          dataSource: [] as Option[],
+        },
+      })
+
+      return <ChildForm form={form} />
+    }
+  })
+
+  it('should infer custom meta in field validators', () => {
+    type Option = { INV_NO: string }
+
+    function Comp() {
+      const form = useAppForm({
+        defaultValues: {
+          invoice: '',
+        },
+        defaultMeta: {
+          dataSource: [] as Option[],
+        },
+      })
+
+      return (
+        <form.AppField
+          name="invoice"
+          validators={{
+            onChange: async ({ fieldApi, value }) => {
+              const selectedInvoice = fieldApi
+                .getMeta()
+                .dataSource.find((invoice) => invoice.INV_NO === value)
+
+              expectTypeOf(selectedInvoice).toEqualTypeOf<Option | undefined>()
+            },
+          }}
+        >
+          {() => null}
+        </form.AppField>
+      )
+    }
+  })
+
+  it('should infer custom meta in field listeners', () => {
+    type Option = { INV_NO: string }
+
+    function Comp() {
+      const form = useAppForm({
+        defaultValues: {
+          invoice: '' as string | undefined,
+        },
+        defaultMeta: {
+          dataSource: [] as Option[],
+        },
+      })
+
+      return (
+        <form.AppField
+          name="invoice"
+          listeners={{
+            onChange: ({ fieldApi, value }) => {
+              const selectedInvoice = fieldApi
+                .getMeta()
+                .dataSource.find(
+                  (invoice: { INV_NO: string }) => invoice.INV_NO === value,
+                )
+
+              expectTypeOf(selectedInvoice).toEqualTypeOf<
+                { INV_NO: string } | undefined
+              >()
+            },
+          }}
+        >
+          {() => null}
+        </form.AppField>
+      )
+    }
+  })
+
+  it('should infer field-level defaultMeta in field listeners', () => {
+    type FormOption = { INV_NO: string }
+    type FieldOption = { INV_NO: string; YEAR_NO: number }
+
+    function Comp() {
+      const form = useAppForm({
+        defaultValues: {
+          invoice: '' as string | undefined,
+        },
+        defaultMeta: {
+          dataSource: [] as FormOption[],
+        },
+      })
+
+      return (
+        <form.AppField
+          name="invoice"
+          defaultMeta={{
+            dataSource: [] as FieldOption[],
+          }}
+          listeners={{
+            onChange: ({ fieldApi, value }) => {
+              const selectedInvoice = fieldApi
+                .getMeta()
+                .dataSource.find((invoice) => invoice.INV_NO === value)
+
+              expectTypeOf(selectedInvoice).toEqualTypeOf<
+                FieldOption | undefined
+              >()
+              expectTypeOf(selectedInvoice?.YEAR_NO).toEqualTypeOf<
+                number | undefined
+              >()
+            },
+          }}
+        >
+          {() => null}
+        </form.AppField>
+      )
+    }
+  })
+
   it('should not break with an infinite type on large schemas', () => {
     const ActivityKind0_Names = ['Work', 'Rest', 'OnCall'] as const
     type ActivityKind0 = (typeof ActivityKind0_Names)[number]

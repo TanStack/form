@@ -7,8 +7,10 @@ import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import { useFormId } from './useFormId'
 import type {
+  AnyFieldMeta,
   AnyFormApi,
   AnyFormState,
+  DeepKeys,
   FormAsyncValidateOrFn,
   FormOptions,
   FormState,
@@ -16,6 +18,82 @@ import type {
 } from '@tanstack/form-core'
 import type { FunctionComponent, PropsWithChildren, ReactNode } from 'react'
 import type { FieldComponent } from './useField'
+
+type WidenMeta<TMeta> = {
+  [TKey in keyof TMeta]: TMeta[TKey] extends boolean
+    ? boolean
+    : TMeta[TKey] extends number
+      ? number
+      : TMeta[TKey] extends string
+        ? string
+        : TMeta[TKey]
+}
+
+type FormApiWithCustomMeta<TFormApi, TFormData, TFormMeta> = Omit<
+  TFormApi,
+  'state' | 'getFieldMeta'
+> & {
+  readonly state: TFormApi extends { readonly state: infer TState }
+    ? TState extends { fieldMeta: unknown }
+      ? Omit<TState, 'fieldMeta'> & {
+          fieldMeta: Partial<
+            Record<DeepKeys<TFormData>, AnyFieldMeta & WidenMeta<TFormMeta>>
+          >
+        }
+      : TState
+    : never
+  getFieldMeta: <TField extends DeepKeys<TFormData>>(
+    field: TField,
+  ) => (AnyFieldMeta & WidenMeta<TFormMeta>) | undefined
+}
+
+type UseFormExtendedApi<
+  TFormData,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+  TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta,
+  TFormMeta = {},
+> = FormApiWithCustomMeta<
+  FormApi<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    TOnServer,
+    TSubmitMeta
+  >,
+  TFormData,
+  TFormMeta
+> &
+  ReactFormApi<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    TOnServer,
+    TSubmitMeta,
+    TFormMeta
+  >
 
 /**
  * Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned from `useForm`
@@ -33,6 +111,7 @@ export interface ReactFormApi<
   in out TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TSubmitMeta,
+  in out TFormMeta = {},
 > {
   /**
    * A React component to render form fields. With this, you can render and manage individual form fields.
@@ -49,7 +128,9 @@ export interface ReactFormApi<
     TOnDynamic,
     TOnDynamicAsync,
     TOnServer,
-    TSubmitMeta
+    TSubmitMeta,
+    {},
+    TFormMeta
   >
   /**
    * A `Subscribe` function that allows you to listen and react to changes in the form's state. It's especially useful when you need to execute side effects or render specific components in response to state updates.
@@ -108,6 +189,7 @@ export type ReactFormExtendedApi<
   TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   TSubmitMeta,
+  TFormMeta = {},
 > = FormApi<
   TFormData,
   TOnMount,
@@ -134,7 +216,8 @@ export type ReactFormExtendedApi<
     TOnDynamic,
     TOnDynamicAsync,
     TOnServer,
-    TSubmitMeta
+    TSubmitMeta,
+    TFormMeta
   >
 
 function LocalSubscribe({
@@ -155,6 +238,100 @@ function LocalSubscribe({
  *
  * This API encapsulates all the necessary functionalities related to the form. It allows you to manage form state, handle submissions, and interact with form fields
  */
+export function useForm<
+  const TFormMeta extends object,
+  TFormData,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+  TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta,
+>(
+  opts: Omit<
+    FormOptions<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TOnServer,
+      TSubmitMeta,
+      TFormMeta
+    >,
+    'defaultMeta'
+  > & {
+    defaultMeta: TFormMeta
+  },
+): UseFormExtendedApi<
+  TFormData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
+  TOnServer,
+  TSubmitMeta,
+  TFormMeta
+>
+
+export function useForm<
+  TFormData,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+  TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta,
+>(
+  opts?: FormOptions<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    TOnServer,
+    TSubmitMeta
+  >,
+): ReactFormExtendedApi<
+  TFormData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
+  TOnServer,
+  TSubmitMeta
+>
+
 export function useForm<
   TFormData,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
@@ -239,7 +416,7 @@ export function useForm<
     } as never
 
     extendedApi.Field = function APIField(props) {
-      return <Field {...props} form={formApi} />
+      return <Field {...(props as any)} form={formApi} />
     }
 
     extendedApi.Subscribe = function Subscribe(props: any) {
