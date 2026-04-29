@@ -58,6 +58,9 @@ function isSignalEnabled(
   if (typeof signal === 'string') {
     return signal === context.event
   }
+  if (signal.signal !== context.event) {
+    return false
+  }
 
   const { enabled = true } = signal
 

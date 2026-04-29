@@ -250,4 +250,35 @@ describe('runFormValidatorPipeline', () => {
 
     vi.useRealTimers()
   })
+
+  it('should check for enabled signals', async () => {
+    const formApi = getForm({ name: '' })
+    const validate = vi.fn(() => ({ message: 'foo' }))
+
+    let doThing = false
+
+    const { runWithContext } = getPipeline(formApi, [
+      {
+        validate,
+        signals: [
+          { signal: 'change', enabled: () => doThing },
+          { signal: 'blur', enabled: doThing },
+        ],
+      },
+    ])
+
+    await runWithContext({ event: 'change' })
+    await runWithContext({ event: 'blur' })
+
+    expect(validate).not.toHaveBeenCalled()
+
+    doThing = true
+
+    // Since it's a function for enable, it should be the most up to date value
+    await runWithContext({ event: 'change' })
+    expect(validate).toHaveBeenCalledOnce()
+    // but blur should have the value stored on its own, not being updated
+    await runWithContext({ event: 'blur' })
+    expect(validate).toHaveBeenCalledOnce()
+  })
 })
