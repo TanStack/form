@@ -540,6 +540,9 @@ importers:
 
   packages/form-core:
     dependencies:
+      '@tanstack/pacer-lite':
+        specifier: ^0.2.1
+        version: 0.2.1
       '@tanstack/store':
         specifier: ^0.11.0
         version: 0.11.0
@@ -3891,6 +3894,10 @@ packages:
     resolution: {integrity: sha512-uAa5gQbmPOESokHM5t+AhQ3Ye8S2/bN+PB6CHKjHXixNN6aMDSQEtHoguPoMb3a3q/NeJ2NdiseyoUg4vsh/ng==}
     peerDependencies:
       lit: ^3.0.0
+
+  '@tanstack/pacer-lite@0.2.1':
+    resolution: {integrity: sha512-3PouiFjR4B6x1c969/Pl4ZIJleof1M0n6fNX8NRiC9Sqv1g06CVDlEaXUR4212ycGFyfq4q+t8Gi37Xy+z34iQ==}
+    engines: {node: '>=18'}
 
   '@tanstack/preact-store@0.13.1':
     resolution: {integrity: sha512-0h8ku2LfJ/TtVtgx24CLgS2OgzY5wVsRWIGktE0yq6b6fHlsCcY55IEJXTDRs0RTYWFOXu7N/1kfb2SLEOasaw==}
@@ -12672,6 +12679,8 @@ snapshots:
     dependencies:
       '@tanstack/store': 0.11.0
       lit: 3.3.3
+
+  '@tanstack/pacer-lite@0.2.1': {}
 
   '@tanstack/preact-store@0.13.1(preact@10.29.2)':
     dependencies:
