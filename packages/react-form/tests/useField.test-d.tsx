@@ -79,9 +79,13 @@ it('should infer custom meta from form and field defaultMeta', () => {
         disabled: false,
         order: 1,
         label: 'Country',
+        formDataSource: [] as Country[],
       },
     })
 
+    expectTypeOf(form.getFieldMeta('countryId')?.formDataSource).toEqualTypeOf<
+      Country[] | undefined
+    >()
     form.getFieldMeta('countryId')?.disabled
     form.state.fieldMeta.countryId?.disabled
 
@@ -96,6 +100,9 @@ it('should infer custom meta from form and field defaultMeta', () => {
           expectTypeOf(field.state.meta.disabled).toEqualTypeOf<boolean>()
           expectTypeOf(field.state.meta.order).toEqualTypeOf<number>()
           expectTypeOf(field.state.meta.label).toEqualTypeOf<string>()
+          expectTypeOf(field.state.meta.formDataSource).toEqualTypeOf<
+            Country[]
+          >()
           expectTypeOf(field.state.meta.dataSource).toEqualTypeOf<Country[]>()
           expectTypeOf(field.getMeta().dataSource).toEqualTypeOf<Country[]>()
 
