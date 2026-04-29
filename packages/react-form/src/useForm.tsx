@@ -141,18 +141,18 @@ export type ReactFormExtendedApi<
   TFormMeta = {},
 > = FormApiWithCustomMeta<
   FormApi<
-  TFormData,
-  TOnMount,
-  TOnChange,
-  TOnChangeAsync,
-  TOnBlur,
-  TOnBlurAsync,
-  TOnSubmit,
-  TOnSubmitAsync,
-  TOnDynamic,
-  TOnDynamicAsync,
-  TOnServer,
-  TSubmitMeta
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    TOnServer,
+    TSubmitMeta
   >,
   TFormData,
   TFormMeta
