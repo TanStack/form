@@ -155,6 +155,38 @@ describe('createFormHook', () => {
     }
   })
 
+  it('should infer custom meta in field validators', () => {
+    type Option = { INV_NO: string }
+
+    function Comp() {
+      const form = useAppForm({
+        defaultValues: {
+          invoice: '',
+        },
+        defaultMeta: {
+          dataSource: [] as Option[],
+        },
+      })
+
+      return (
+        <form.AppField
+          name="invoice"
+          validators={{
+            onChange: async ({ fieldApi, value }) => {
+              const selectedInvoice = fieldApi
+                .getMeta()
+                .dataSource.find((invoice) => invoice.INV_NO === value)
+
+              expectTypeOf(selectedInvoice).toEqualTypeOf<Option | undefined>()
+            },
+          }}
+        >
+          {() => null}
+        </form.AppField>
+      )
+    }
+  })
+
   it('should not break with an infinite type on large schemas', () => {
     const ActivityKind0_Names = ['Work', 'Rest', 'OnCall'] as const
     type ActivityKind0 = (typeof ActivityKind0_Names)[number]
