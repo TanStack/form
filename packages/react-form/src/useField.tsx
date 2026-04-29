@@ -250,11 +250,31 @@ type FieldListenersWithCustomMeta<
   FieldListeners<TParentData, TName, TData>,
   'onChange' | 'onBlur' | 'onMount' | 'onUnmount' | 'onSubmit'
 > & {
-  onChange?: FieldListenerFnWithCustomMeta<TParentData, TName, TData, TCustomMeta>
+  onChange?: FieldListenerFnWithCustomMeta<
+    TParentData,
+    TName,
+    TData,
+    TCustomMeta
+  >
   onBlur?: FieldListenerFnWithCustomMeta<TParentData, TName, TData, TCustomMeta>
-  onMount?: FieldListenerFnWithCustomMeta<TParentData, TName, TData, TCustomMeta>
-  onUnmount?: FieldListenerFnWithCustomMeta<TParentData, TName, TData, TCustomMeta>
-  onSubmit?: FieldListenerFnWithCustomMeta<TParentData, TName, TData, TCustomMeta>
+  onMount?: FieldListenerFnWithCustomMeta<
+    TParentData,
+    TName,
+    TData,
+    TCustomMeta
+  >
+  onUnmount?: FieldListenerFnWithCustomMeta<
+    TParentData,
+    TName,
+    TData,
+    TCustomMeta
+  >
+  onSubmit?: FieldListenerFnWithCustomMeta<
+    TParentData,
+    TName,
+    TData,
+    TCustomMeta
+  >
 }
 
 type FieldListenerFnWithCustomMeta<
@@ -854,12 +874,7 @@ export type FieldComponent<
     TOnDynamic,
     TOnDynamicAsync
   >
-  listeners?: FieldListenersWithCustomMeta<
-    TParentData,
-    TName,
-    TData,
-    TFormMeta
-  >
+  listeners?: FieldListenersWithCustomMeta<TParentData, TName, TData, TFormMeta>
   children: (
     fieldApi: FieldApiWithCustomMeta<
       FieldApi<
