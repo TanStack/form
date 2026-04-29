@@ -356,11 +356,16 @@ export interface FormOptions<
   in out TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TSubmitMeta = never,
+  in out TFormMeta = {},
 > extends BaseFormOptions<TFormData, TSubmitMeta> {
   /**
    * The form name, used for devtools and identification
    */
   formId?: string
+  /**
+   * Optional default metadata applied to every field when its meta is initialized.
+   */
+  defaultMeta?: Partial<AnyFieldMetaBase & TFormMeta & Record<string, unknown>>
   /**
    * The default state for the form.
    */

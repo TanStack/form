@@ -7,6 +7,7 @@ import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
   AnyFieldApi,
   AnyFieldMeta,
+  AnyFieldMetaBase,
   DeepKeys,
   DeepValue,
   FieldAsyncValidateOrFn,
@@ -14,9 +15,32 @@ import type {
   FieldValidators,
   FormAsyncValidateOrFn,
   FormValidateOrFn,
+  Updater,
 } from '@tanstack/form-core'
 import type { FunctionComponent, ReactElement, ReactNode } from 'react'
 import type { UseFieldOptions, UseFieldOptionsBound } from './types'
+
+type WidenMeta<TMeta> = {
+  [TKey in keyof TMeta]: TMeta[TKey] extends boolean
+    ? boolean
+    : TMeta[TKey] extends number
+      ? number
+      : TMeta[TKey] extends string
+        ? string
+        : TMeta[TKey]
+}
+
+type FieldApiWithCustomMeta<TFieldApi, TCustomMeta> = {
+  readonly state: TFieldApi extends { readonly state: infer TState }
+    ? TState extends { meta: infer TMeta }
+      ? Omit<TState, 'meta'> & { meta: TMeta & WidenMeta<TCustomMeta> }
+      : TState
+    : never
+  getMeta: () => TFieldApi extends { getMeta: () => infer TMeta }
+    ? TMeta & WidenMeta<TCustomMeta>
+    : AnyFieldMeta & WidenMeta<TCustomMeta>
+  setMeta: (updater: Updater<AnyFieldMetaBase & WidenMeta<TCustomMeta>>) => void
+} & TFieldApi
 
 interface ReactFieldApi<
   TParentData,
@@ -500,6 +524,7 @@ export type FieldComponent<
   in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   in out TPatentSubmitMeta,
   in out ExtendedApi = {},
+  in out TFormMeta = {},
 > = <
   const TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
@@ -520,35 +545,72 @@ export type FieldComponent<
   TOnDynamicAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  const TFieldMeta extends object = {},
 >({
   children,
   ...fieldOptions
-}: FieldComponentBoundProps<
-  TParentData,
-  TName,
-  TData,
-  TOnMount,
-  TOnChange,
-  TOnChangeAsync,
-  TOnBlur,
-  TOnBlurAsync,
-  TOnSubmit,
-  TOnSubmitAsync,
-  TOnDynamic,
-  TOnDynamicAsync,
-  TFormOnMount,
-  TFormOnChange,
-  TFormOnChangeAsync,
-  TFormOnBlur,
-  TFormOnBlurAsync,
-  TFormOnSubmit,
-  TFormOnSubmitAsync,
-  TFormOnDynamic,
-  TFormOnDynamicAsync,
-  TFormOnServer,
-  TPatentSubmitMeta,
-  ExtendedApi
->) => ReturnType<FunctionComponent>
+}: Omit<
+  FieldComponentBoundProps<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
+    TFormOnServer,
+    TPatentSubmitMeta,
+    ExtendedApi
+  >,
+  'children' | 'defaultMeta'
+> & {
+  defaultMeta?: TFieldMeta
+  children: (
+    fieldApi: FieldApiWithCustomMeta<
+      FieldApi<
+        TParentData,
+        TName,
+        TData,
+        TOnMount,
+        TOnChange,
+        TOnChangeAsync,
+        TOnBlur,
+        TOnBlurAsync,
+        TOnSubmit,
+        TOnSubmitAsync,
+        TOnDynamic,
+        TOnDynamicAsync,
+        TFormOnMount,
+        TFormOnChange,
+        TFormOnChangeAsync,
+        TFormOnBlur,
+        TFormOnBlurAsync,
+        TFormOnSubmit,
+        TFormOnSubmitAsync,
+        TFormOnDynamic,
+        TFormOnDynamicAsync,
+        TFormOnServer,
+        TPatentSubmitMeta
+      > &
+        ExtendedApi,
+      TFormMeta & TFieldMeta
+    >,
+  ) => ReactNode
+}) => ReturnType<FunctionComponent>
 
 /**
  * A type alias representing a field component for a form lens data type.

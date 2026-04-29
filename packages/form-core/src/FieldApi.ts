@@ -448,7 +448,7 @@ export interface FieldOptions<
    * An optional object with default metadata for the field.
    */
   defaultMeta?: Partial<
-    FieldMeta<
+    FieldMetaBase<
       TParentData,
       TName,
       TData,
@@ -470,7 +470,8 @@ export interface FieldOptions<
       any,
       any,
       any
-    >
+    > &
+      Record<string, unknown>
   >
   /**
    * A list of listeners which attach to the corresponding events
@@ -631,7 +632,7 @@ export type FieldMetaBase<
    * A flag indicating whether the field is currently being validated.
    */
   isValidating: boolean
-}
+} & Record<string, unknown>
 
 export type AnyFieldMetaBase = FieldMetaBase<
   any,
@@ -1201,6 +1202,7 @@ export class FieldApi<
 
         const meta = this.form.getFieldMeta(this.name) ?? {
           ...defaultFieldMeta,
+          ...this.form.options.defaultMeta,
           ...opts.defaultMeta,
         }
 

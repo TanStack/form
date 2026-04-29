@@ -361,7 +361,7 @@ export function createFormHook<
             {(field) => (
               // eslint-disable-next-line @eslint-react/no-context-provider
               <fieldContext.Provider value={field}>
-                {children(Object.assign(field, fieldComponents))}
+                {children(Object.assign(field, fieldComponents) as never)}
               </fieldContext.Provider>
             )}
           </form.Field>
