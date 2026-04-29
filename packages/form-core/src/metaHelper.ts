@@ -3,12 +3,12 @@ import type {
   FormAsyncValidateOrFn,
   FormValidateOrFn,
 } from './FormApi'
-import type { AnyFieldMeta } from './FieldApi'
 import type { DeepKeys } from './util-types'
+import type { AnyFieldLikeMeta } from './types'
 
 type ValueFieldMode = 'insert' | 'remove' | 'swap' | 'move'
 
-export const defaultFieldMeta: AnyFieldMeta = {
+export const defaultFieldMeta: AnyFieldLikeMeta = {
   isValidating: false,
   isTouched: false,
   isBlurred: false,
@@ -77,7 +77,7 @@ export function metaHelper<
         }
         return fieldMap
       },
-      new Map<DeepKeys<TFormData>, AnyFieldMeta | undefined>(),
+      new Map<DeepKeys<TFormData>, AnyFieldLikeMeta | undefined>(),
     )
 
     shiftMeta(affectedFields, fromIndex < toIndex ? 'up' : 'down')
@@ -226,7 +226,7 @@ export function metaHelper<
     })
   }
 
-  const getEmptyFieldMeta = (): AnyFieldMeta => defaultFieldMeta
+  const getEmptyFieldMeta = (): AnyFieldLikeMeta => defaultFieldMeta
 
   return {
     handleArrayMove,
