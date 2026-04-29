@@ -1,11 +1,18 @@
 import { LiteDebouncer } from '@tanstack/pacer-lite/lite-debouncer'
-import { normalizeToArray } from './utils'
 import type {
   FormValidateResult,
   FormValidator,
   FormValidatorContext,
+  ValidationEnabledFn,
   ValidationSignalOption,
 } from './validation.public'
+
+export function isErrorResult(
+  value: FormValidateResult,
+): value is Exclude<FormValidateResult, null | undefined | false> {
+  if (value === null || value === undefined || value === false) return false
+  return true
+}
 
 export interface PipelineResult {
   validatorIndex: number
@@ -29,6 +36,18 @@ interface DebouncedValidationCall {
   reject: (error: unknown) => void
 }
 
+function getEnabledState(
+  booleanOrFn: boolean | ValidationEnabledFn<any>,
+  context: FormValidatorContext<any>,
+): boolean {
+  if (typeof booleanOrFn === 'boolean') return booleanOrFn
+  return booleanOrFn({
+    fieldApi: context.fieldApi,
+    formApi: context.formApi,
+    value: context.value,
+  })
+}
+
 function isSignalEnabled(
   signal: ValidationSignalOption<any>,
   context: FormValidatorContext<any>,
@@ -39,25 +58,20 @@ function isSignalEnabled(
 
   const { enabled = true } = signal
 
-  if (typeof enabled === 'boolean') {
-    return enabled
-  }
-
-  return enabled({
-    fieldApi: context.fieldApi,
-    formApi: context.formApi,
-    value: context.value,
-  })
+  return getEnabledState(enabled, context)
 }
 
 function getFirstEnabledSignal(
   validator: FormValidator<any>,
   context: FormValidatorContext<any>,
-): ValidationSignalOption<any> | null {
+): ValidationSignalOption<any> | 'submit' | null {
   const { runOnSubmit = true } = validator
-  const signals = normalizeToArray(validator.signals)
+  const signals = validator.signals ?? []
 
-  if (context.event === 'submit' && !runOnSubmit) {
+  if (context.event === 'submit') {
+    if (getEnabledState(runOnSubmit, context)) {
+      return 'submit'
+    }
     return null
   }
 
@@ -88,10 +102,10 @@ function runMaybeDebouncedValidator(
   validatorIndex: number,
   debounceMs: number,
   cache: ValidatorPipelineCache,
-): Promise<FormValidateResult | undefined> {
+): Promise<FormValidateResult> {
   const run = async (
     validationContext: FormValidatorContext<any>,
-  ): Promise<FormValidateResult | undefined> => {
+  ): Promise<FormValidateResult> => {
     return validator.validate(validationContext)
   }
 
@@ -147,7 +161,7 @@ export async function runFormValidatorPipeline(
     pendingPromises = []
 
     for (const result of promiseResults) {
-      if (result.result !== null && result.result !== undefined) {
+      if (isErrorResult(result.result)) {
         hasErroredPromises = true
       }
 
@@ -176,7 +190,10 @@ export async function runFormValidatorPipeline(
       }
     }
 
-    const debounceMs = getSignalDebounceMs(firstEnabledSignal)
+    const debounceMs =
+      firstEnabledSignal === 'submit'
+        ? 0
+        : getSignalDebounceMs(firstEnabledSignal)
 
     const promise = runMaybeDebouncedValidator(
       validator,

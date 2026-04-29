@@ -7,23 +7,24 @@
 
 import type { FieldApi } from './FieldApi.public'
 import type { FormApi } from './FormApi.public'
-import type { OneOrMany } from './types.public'
 
 export type ValidationSignal = 'change' | 'blur'
 export type ValidationEvent = ValidationSignal | 'submit'
 
 export interface ValidationEnabledContext<TFormData> {
-  formApi: FormApi<TFormData, []>
+  formApi: FormApi<TFormData, Array<any>>
   fieldApi: FieldApi<any, any> | null
   value: TFormData
 }
 
+export type ValidationEnabledFn<TFormData> = (
+  context: ValidationEnabledContext<TFormData>,
+) => boolean
+
 export interface ValidationSignalConfig<TFormData> {
   signal: ValidationSignal
   debounceMs?: number
-  enabled?:
-    | boolean
-    | ((context: ValidationEnabledContext<TFormData>) => boolean)
+  enabled?: boolean | ValidationEnabledFn<TFormData>
 }
 
 export type ValidationSignalOption<TFormData> =
@@ -45,7 +46,7 @@ export interface FormValidationError {
 
 export interface FormValidatorContext<TFormData> {
   event: ValidationEvent
-  formApi: FormApi<TFormData, []>
+  formApi: FormApi<TFormData, Array<any>>
   fieldApi: FieldApi<any, any> | null
   value: TFormData
 }
@@ -56,14 +57,15 @@ export interface FormValidatorContext<TFormData> {
 export type ValidateResult =
   | null
   | undefined
+  | false
   | ValidationError
   | Array<ValidationError>
+
+export type FormValidateResult = ValidateResult | FormValidationError
 
 export type FormValidatorFn<TFormData> = (
   context: FormValidatorContext<TFormData>,
 ) => FormValidateResult | Promise<FormValidateResult>
-
-export type FormValidateResult = ValidateResult | FormValidationError
 
 /**
  * A validator function that produces validation results.
@@ -89,11 +91,13 @@ export interface FormValidator<TFormData> {
    */
   errorScope?: 'form-level' | 'field-level' | 'all' | 'source-field'
   /**
+   * TODO docs
+   *
    * Whether this validator should be called during a submission attempt.
    *
    * @default true
    */
-  runOnSubmit?: boolean
+  runOnSubmit?: boolean | ValidationEnabledFn<TFormData>
   validate: FormValidatorFn<TFormData>
-  signals?: OneOrMany<ValidationSignalOption<TFormData>>
+  signals?: Array<ValidationSignalOption<TFormData>>
 }
