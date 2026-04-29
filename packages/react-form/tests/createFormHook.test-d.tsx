@@ -21,6 +21,32 @@ const { useAppForm, withForm, withFieldGroup } = createFormHook({
 })
 
 describe('createFormHook', () => {
+  it('should infer form-level defaultMeta through useAppForm and formOptions', () => {
+    type Option = { test: 'hello' }
+
+    const options = formOptions({
+      defaultValues: {
+        name: '',
+      },
+      defaultMeta: {
+        dataSource: [] as Option[],
+      },
+    })
+
+    function Comp() {
+      const form = useAppForm(options)
+
+      return (
+        <form.Field name="name">
+          {(field) => {
+            expectTypeOf(field.state.meta.dataSource).toEqualTypeOf<Option[]>()
+            return null
+          }}
+        </form.Field>
+      )
+    }
+  })
+
   it('should not break with an infinite type on large schemas', () => {
     const ActivityKind0_Names = ['Work', 'Rest', 'OnCall'] as const
     type ActivityKind0 = (typeof ActivityKind0_Names)[number]

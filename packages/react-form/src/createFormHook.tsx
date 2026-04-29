@@ -161,6 +161,7 @@ export type AppFieldExtendedReactFormApi<
   TSubmitMeta,
   TFieldComponents extends Record<string, ComponentType<any>>,
   TFormComponents extends Record<string, ComponentType<any>>,
+  TFormMeta = {},
 > = ReactFormExtendedApi<
   TFormData,
   TOnMount,
@@ -173,7 +174,8 @@ export type AppFieldExtendedReactFormApi<
   TOnDynamic,
   TOnDynamicAsync,
   TOnServer,
-  TSubmitMeta
+  TSubmitMeta,
+  TFormMeta
 > &
   NoInfer<TFormComponents> & {
     AppField: FieldComponent<
@@ -189,7 +191,8 @@ export type AppFieldExtendedReactFormApi<
       TOnDynamicAsync,
       TOnServer,
       TSubmitMeta,
-      NoInfer<TFieldComponents>
+      NoInfer<TFieldComponents>,
+      TFormMeta
     >
     AppForm: ComponentType<
       // PropsWithChildren<P> is not optional in React 17
@@ -312,21 +315,28 @@ export function createFormHook<
     TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
     TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
     TSubmitMeta,
+    const TFormMeta extends object = {},
   >(
-    props: FormOptions<
-      TFormData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TOnDynamic,
-      TOnDynamicAsync,
-      TOnServer,
-      TSubmitMeta
-    >,
+    props: Omit<
+      FormOptions<
+        TFormData,
+        TOnMount,
+        TOnChange,
+        TOnChangeAsync,
+        TOnBlur,
+        TOnBlurAsync,
+        TOnSubmit,
+        TOnSubmitAsync,
+        TOnDynamic,
+        TOnDynamicAsync,
+        TOnServer,
+        TSubmitMeta,
+        TFormMeta
+      >,
+      'defaultMeta'
+    > & {
+      defaultMeta?: TFormMeta
+    },
   ): AppFieldExtendedReactFormApi<
     TFormData,
     TOnMount,
@@ -341,9 +351,24 @@ export function createFormHook<
     TOnServer,
     TSubmitMeta,
     TComponents,
-    TFormComponents
+    TFormComponents,
+    TFormMeta
   > {
-    const form = useForm(props)
+    const form = useForm(props) as unknown as ReactFormExtendedApi<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TOnServer,
+      TSubmitMeta,
+      TFormMeta
+    >
 
     // PropsWithChildren<P> is not optional in React 17
     const AppForm = useMemo<ComponentType<PropsWithChildren<{}>>>(() => {
@@ -379,7 +404,8 @@ export function createFormHook<
         TOnDynamicAsync,
         TOnServer,
         TSubmitMeta,
-        TComponents
+        TComponents,
+        TFormMeta
       >
       return AppField
     }, [form])
