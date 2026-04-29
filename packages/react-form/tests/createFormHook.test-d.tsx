@@ -207,12 +207,53 @@ describe('createFormHook', () => {
             onChange: ({ fieldApi, value }) => {
               const selectedInvoice = fieldApi
                 .getMeta()
-                ?.dataSource.find(
+                .dataSource.find(
                   (invoice: { INV_NO: string }) => invoice.INV_NO === value,
                 )
 
               expectTypeOf(selectedInvoice).toEqualTypeOf<
                 { INV_NO: string } | undefined
+              >()
+            },
+          }}
+        >
+          {() => null}
+        </form.AppField>
+      )
+    }
+  })
+
+  it('should infer field-level defaultMeta in field listeners', () => {
+    type FormOption = { INV_NO: string }
+    type FieldOption = { INV_NO: string; YEAR_NO: number }
+
+    function Comp() {
+      const form = useAppForm({
+        defaultValues: {
+          invoice: '' as string | undefined,
+        },
+        defaultMeta: {
+          dataSource: [] as FormOption[],
+        },
+      })
+
+      return (
+        <form.AppField
+          name="invoice"
+          defaultMeta={{
+            dataSource: [] as FieldOption[],
+          }}
+          listeners={{
+            onChange: ({ fieldApi, value }) => {
+              const selectedInvoice = fieldApi
+                .getMeta()
+                .dataSource.find((invoice) => invoice.INV_NO === value)
+
+              expectTypeOf(selectedInvoice).toEqualTypeOf<
+                FieldOption | undefined
+              >()
+              expectTypeOf(selectedInvoice?.YEAR_NO).toEqualTypeOf<
+                number | undefined
               >()
             },
           }}

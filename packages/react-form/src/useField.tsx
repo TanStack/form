@@ -32,6 +32,9 @@ type WidenMeta<TMeta> = {
         : TMeta[TKey]
 }
 
+type MergeMeta<TFormMeta, TFieldMeta> = Omit<TFormMeta, keyof TFieldMeta> &
+  TFieldMeta
+
 type FieldApiWithCustomMeta<TFieldApi, TCustomMeta> = {
   readonly state: TFieldApi extends { readonly state: infer TState }
     ? TState extends { meta: infer TMeta }
@@ -778,54 +781,79 @@ export type FieldComponent<
 > = <
   const TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
+  const TFieldMeta extends object,
   TOnMount extends
     | undefined
-    | FieldValidateOrFnWithCustomMeta<TParentData, TName, TData, TFormMeta>,
+    | FieldValidateOrFnWithCustomMeta<
+        TParentData,
+        TName,
+        TData,
+        MergeMeta<TFormMeta, TFieldMeta>
+      >,
   TOnChange extends
     | undefined
-    | FieldValidateOrFnWithCustomMeta<TParentData, TName, TData, TFormMeta>,
+    | FieldValidateOrFnWithCustomMeta<
+        TParentData,
+        TName,
+        TData,
+        MergeMeta<TFormMeta, TFieldMeta>
+      >,
   TOnChangeAsync extends
     | undefined
     | FieldAsyncValidateOrFnWithCustomMeta<
         TParentData,
         TName,
         TData,
-        TFormMeta
+        MergeMeta<TFormMeta, TFieldMeta>
       >,
   TOnBlur extends
     | undefined
-    | FieldValidateOrFnWithCustomMeta<TParentData, TName, TData, TFormMeta>,
+    | FieldValidateOrFnWithCustomMeta<
+        TParentData,
+        TName,
+        TData,
+        MergeMeta<TFormMeta, TFieldMeta>
+      >,
   TOnBlurAsync extends
     | undefined
     | FieldAsyncValidateOrFnWithCustomMeta<
         TParentData,
         TName,
         TData,
-        TFormMeta
+        MergeMeta<TFormMeta, TFieldMeta>
       >,
   TOnSubmit extends
     | undefined
-    | FieldValidateOrFnWithCustomMeta<TParentData, TName, TData, TFormMeta>,
+    | FieldValidateOrFnWithCustomMeta<
+        TParentData,
+        TName,
+        TData,
+        MergeMeta<TFormMeta, TFieldMeta>
+      >,
   TOnSubmitAsync extends
     | undefined
     | FieldAsyncValidateOrFnWithCustomMeta<
         TParentData,
         TName,
         TData,
-        TFormMeta
+        MergeMeta<TFormMeta, TFieldMeta>
       >,
   TOnDynamic extends
     | undefined
-    | FieldValidateOrFnWithCustomMeta<TParentData, TName, TData, TFormMeta>,
+    | FieldValidateOrFnWithCustomMeta<
+        TParentData,
+        TName,
+        TData,
+        MergeMeta<TFormMeta, TFieldMeta>
+      >,
   TOnDynamicAsync extends
     | undefined
     | FieldAsyncValidateOrFnWithCustomMeta<
         TParentData,
         TName,
         TData,
-        TFormMeta
+        MergeMeta<TFormMeta, TFieldMeta>
       >,
-  const TFieldMeta extends object = {},
 >({
   children,
   ...fieldOptions
@@ -863,7 +891,7 @@ export type FieldComponent<
     TParentData,
     TName,
     TData,
-    TFormMeta,
+    MergeMeta<TFormMeta, TFieldMeta>,
     TOnMount,
     TOnChange,
     TOnChangeAsync,
@@ -874,7 +902,12 @@ export type FieldComponent<
     TOnDynamic,
     TOnDynamicAsync
   >
-  listeners?: FieldListenersWithCustomMeta<TParentData, TName, TData, TFormMeta>
+  listeners?: FieldListenersWithCustomMeta<
+    TParentData,
+    TName,
+    TData,
+    MergeMeta<TFormMeta, TFieldMeta>
+  >
   children: (
     fieldApi: FieldApiWithCustomMeta<
       FieldApi<
@@ -903,7 +936,7 @@ export type FieldComponent<
         TPatentSubmitMeta
       > &
         ExtendedApi,
-      TFormMeta & TFieldMeta
+      MergeMeta<TFormMeta, TFieldMeta>
     >,
   ) => ReactNode
 }) => ReturnType<FunctionComponent>
