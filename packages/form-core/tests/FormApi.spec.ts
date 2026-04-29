@@ -225,6 +225,40 @@ describe('form api', () => {
     expect(form.getFieldValue('name')).toEqual('other')
   })
 
+  it('should clear nested field errors when setting a parent object field', () => {
+    const form = new FormApi({
+      defaultValues: {
+        a: {
+          b: 0,
+        },
+      },
+    })
+
+    const childField = new FieldApi({
+      form,
+      name: 'a.b',
+      validators: {
+        onChange: ({ value }) =>
+          value > 0 ? undefined : 'Must be greater than 0',
+      },
+    })
+
+    form.mount()
+    childField.mount()
+
+    childField.setValue(0)
+
+    expect(childField.state.meta.errors).toEqual(['Must be greater than 0'])
+
+    form.setFieldValue('a', {
+      b: 1,
+    })
+
+    expect(form.getFieldValue('a.b')).toBe(1)
+    expect(childField.state.meta.errors).toEqual([])
+    expect(childField.state.meta.isValid).toBe(true)
+  })
+
   it("should be dirty after a field's value has been set", () => {
     const form = new FormApi({
       defaultValues: {
