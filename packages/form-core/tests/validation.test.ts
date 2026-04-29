@@ -131,4 +131,123 @@ describe('runFormValidatorPipeline', () => {
     expect(falseBoolean).not.toHaveBeenCalled()
     expect(falseCallback).not.toHaveBeenCalled()
   })
+
+  it('should debounce non-submit validation', async () => {
+    vi.useFakeTimers()
+
+    const formApi = getForm({ name: '' })
+    const validate = vi.fn(() => ({ message: 'foo' }))
+
+    const { runWithContext } = getPipeline(formApi, [
+      {
+        validate,
+        signals: ['change'],
+        signalDebounceMs: 100,
+      },
+    ])
+
+    const promise = runWithContext({ event: 'change' })
+
+    expect(validate).not.toHaveBeenCalled()
+
+    await vi.advanceTimersByTimeAsync(99)
+    expect(validate).not.toHaveBeenCalled()
+
+    await vi.advanceTimersByTimeAsync(1)
+
+    await expect(promise).resolves.toHaveLength(1)
+
+    expect(validate).toHaveBeenCalledOnce()
+
+    vi.useRealTimers()
+  })
+
+  it('should cancel an existing debounced validation when the same validator runs immediately', async () => {
+    vi.useFakeTimers()
+
+    const formApi = getForm({ name: '' })
+    const validate = vi.fn(() => ({ message: 'foo' }))
+
+    const { runWithContext } = getPipeline(formApi, [
+      {
+        validate,
+        signals: ['change'],
+        signalDebounceMs: 100,
+      },
+    ])
+
+    runWithContext({ event: 'change' })
+
+    await vi.advanceTimersByTimeAsync(50)
+
+    const submitResults = await runWithContext({ event: 'submit' })
+
+    expect(validate).toHaveBeenCalledOnce()
+    expect(submitResults).toHaveLength(1)
+
+    await vi.advanceTimersByTimeAsync(100)
+
+    expect(validate).toHaveBeenCalledOnce()
+
+    vi.useRealTimers()
+  })
+
+  it('should debounce separate validators independently', async () => {
+    vi.useFakeTimers()
+
+    const formApi = getForm({ name: '' })
+
+    const first = vi.fn(() => ({ message: 'first' }))
+    const second = vi.fn(() => ({ message: 'second' }))
+
+    const { runWithContext } = getPipeline(formApi, [
+      {
+        validate: first,
+        signals: ['change'],
+        signalDebounceMs: 100,
+      },
+      {
+        validate: second,
+        signals: ['change'],
+        signalDebounceMs: 200,
+      },
+    ])
+
+    const promise = runWithContext({ event: 'change' })
+
+    await vi.advanceTimersByTimeAsync(100)
+
+    expect(first).toHaveBeenCalledOnce()
+    expect(second).not.toHaveBeenCalled()
+
+    await vi.advanceTimersByTimeAsync(100)
+
+    await expect(promise).resolves.toHaveLength(2)
+
+    expect(second).toHaveBeenCalledOnce()
+
+    vi.useRealTimers()
+  })
+
+  it('should not debounce submit validation', async () => {
+    vi.useFakeTimers()
+
+    const formApi = getForm({ name: '' })
+    const validate = vi.fn(() => ({ message: 'foo' }))
+
+    const { runWithContext } = getPipeline(formApi, [
+      {
+        validate,
+        signals: ['change'],
+        signalDebounceMs: 100,
+      },
+    ])
+
+    const results = await runWithContext({ event: 'submit' })
+
+    expect(validate).toHaveBeenCalledOnce()
+    expect(results).toHaveLength(1)
+
+    vi.useRealTimers()
+  })
 })

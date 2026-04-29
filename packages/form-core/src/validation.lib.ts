@@ -6,6 +6,7 @@ import type {
   ValidationEnabledFn,
   ValidationSignalOption,
 } from './validation.public'
+import type { InternalFormApi } from './FormApi.lib'
 
 export function isErrorResult(
   value: FormValidateResult,
@@ -150,10 +151,11 @@ function runMaybeDebouncedValidator(
 export async function runFormValidatorPipeline(
   pipeline: Array<FormValidator<any>>,
   context: ValidateContext,
-  cache: ValidatorPipelineCache = createValidatorPipelineCache(),
 ): Promise<Array<PipelineResult>> {
   let pendingPromises: Array<Promise<PipelineResult>> = []
   const results: Array<PipelineResult> = []
+  const cache = (context.formApi as InternalFormApi<any, any>)
+    ._validatorPipelineCache
   let hasErrors = false
 
   const applyPendingPromises = async (): Promise<boolean> => {
