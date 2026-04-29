@@ -238,6 +238,7 @@ export interface WithFormProps<
   TFieldComponents extends Record<string, ComponentType<any>>,
   TFormComponents extends Record<string, ComponentType<any>>,
   TRenderProps extends object = Record<string, never>,
+  TFormMeta extends object = {},
 > extends FormOptions<
   TFormData,
   TOnMount,
@@ -250,7 +251,8 @@ export interface WithFormProps<
   TOnDynamic,
   TOnDynamicAsync,
   TOnServer,
-  TSubmitMeta
+  TSubmitMeta,
+  TFormMeta
 > {
   // Optional, but adds props to the `render` function outside of `form`
   props?: TRenderProps
@@ -271,7 +273,8 @@ export interface WithFormProps<
           TOnServer,
           TSubmitMeta,
           TFieldComponents,
-          TFormComponents
+          TFormComponents,
+          TFormMeta
         >
       }
     >
@@ -506,6 +509,7 @@ export function createFormHook<
     TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
     TSubmitMeta,
     TRenderProps extends object = {},
+    const TFormMeta extends object = {},
   >({
     render,
     props,
@@ -524,7 +528,8 @@ export function createFormHook<
     TSubmitMeta,
     TComponents,
     TFormComponents,
-    TRenderProps
+    TRenderProps,
+    TFormMeta
   >): WithFormProps<
     UnwrapOrAny<TFormData>,
     UnwrapDefaultOrAny<undefined | FormValidateOrFn<TFormData>, TOnMount>,
@@ -543,7 +548,8 @@ export function createFormHook<
     UnwrapOrAny<TSubmitMeta>,
     UnwrapOrAny<TComponents>,
     UnwrapOrAny<TFormComponents>,
-    UnwrapOrAny<TRenderProps>
+    UnwrapOrAny<TRenderProps>,
+    UnwrapDefaultOrAny<{}, TFormMeta>
   >['render'] {
     return function Render(innerProps) {
       return render({ ...props, ...innerProps })

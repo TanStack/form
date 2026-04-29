@@ -129,6 +129,32 @@ describe('createFormHook', () => {
     }
   })
 
+  it('should allow passing a form with inferred defaultMeta to withForm components', () => {
+    type Option = { test: 'hello' }
+
+    const ChildForm = withForm({
+      defaultValues: {
+        name: '',
+      },
+      render: ({ form }) => {
+        return <form.Test />
+      },
+    })
+
+    function Comp() {
+      const form = useAppForm({
+        defaultValues: {
+          name: '',
+        },
+        defaultMeta: {
+          dataSource: [] as Option[],
+        },
+      })
+
+      return <ChildForm form={form} />
+    }
+  })
+
   it('should not break with an infinite type on large schemas', () => {
     const ActivityKind0_Names = ['Work', 'Rest', 'OnCall'] as const
     type ActivityKind0 = (typeof ActivityKind0_Names)[number]
