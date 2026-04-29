@@ -5,6 +5,8 @@ import type {
   FormValidatorContext,
   ValidationSignalOption,
 } from './validation.public'
+// TODO catch thrown errors
+// TODO return errorScope
 
 export interface PipelineResult {
   validatorIndex: number
@@ -32,21 +34,24 @@ function isSignalEnabled(
   })
 }
 
-function isValidatorDisabled(
+function getFirstEnabledSignal(
   validator: FormValidator<any>,
   context: FormValidatorContext<any>,
-): boolean {
+): ValidationSignalOption<any> | null {
   const { runOnSubmit = true } = validator
   const signals = normalizeToArray(validator.signals)
 
   if (context.event === 'submit' && !runOnSubmit) {
-    return true
+    return null
   }
 
-  const isSignalDisabled = (signal: ValidationSignalOption<any>) =>
-    !isSignalEnabled(signal, context)
+  for (const signal of signals) {
+    if (isSignalEnabled(signal, context)) {
+      return signal
+    }
+  }
 
-  return signals.every(isSignalDisabled)
+  return null
 }
 
 export async function runFormValidatorPipeline(
@@ -72,15 +77,18 @@ export async function runFormValidatorPipeline(
     return hasErroredPromises
   }
 
-  // TODO catch thrown errors
-  // TODO return errorScope
-
   for (let i = 0; i < pipeline.length; i++) {
     const validator = pipeline[i]!
 
     const { errorScope = 'all', validate, runOnlyIfValid } = validator
-    if (isValidatorDisabled(validator, context)) {
+    const firstEnabledSignal = getFirstEnabledSignal(validator, context)
+    if (firstEnabledSignal === null) {
       continue
+    }
+
+    if (typeof firstEnabledSignal === 'object') {
+      // TODO add debouncing
+      firstEnabledSignal.debounceMs
     }
 
     if (runOnlyIfValid) {
