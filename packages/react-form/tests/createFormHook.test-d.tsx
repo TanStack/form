@@ -36,6 +36,10 @@ describe('createFormHook', () => {
     function Comp() {
       const form = useAppForm(options)
 
+      expectTypeOf(form.getFieldMeta('name')?.dataSource).toEqualTypeOf<
+        Option[] | undefined
+      >()
+
       return (
         <form.Field name="name">
           {(field) => {
@@ -43,6 +47,84 @@ describe('createFormHook', () => {
             return null
           }}
         </form.Field>
+      )
+    }
+  })
+
+  it('should infer form-level defaultMeta when passing directly to useAppForm', () => {
+    type Option = { test: 'any' }
+
+    function Comp() {
+      const form = useAppForm({
+        defaultValues: {
+          iam: 'hello',
+        },
+        defaultMeta: {
+          dataSource: [] as Option[],
+        },
+      })
+
+      return (
+        <form.AppField name="iam">
+          {(field) => {
+            expectTypeOf(field.state.meta.dataSource).toEqualTypeOf<Option[]>()
+            return null
+          }}
+        </form.AppField>
+      )
+    }
+  })
+
+  it('should infer field-level defaultMeta through useAppForm and formOptions', () => {
+    type Option = { test: 'any' }
+
+    const options = formOptions({
+      defaultValues: {
+        iam: 'hello',
+      },
+    })
+
+    function Comp() {
+      const form = useAppForm(options)
+
+      return (
+        <form.AppField
+          name="iam"
+          defaultMeta={{
+            dataSource: [] as Option[],
+          }}
+        >
+          {(field) => {
+            expectTypeOf(field.state.meta.dataSource).toEqualTypeOf<Option[]>()
+            return null
+          }}
+        </form.AppField>
+      )
+    }
+  })
+
+  it('should infer field-level defaultMeta when passing directly to useAppForm', () => {
+    type Option = { test: 'any' }
+
+    function Comp() {
+      const form = useAppForm({
+        defaultValues: {
+          iam: 'hello',
+        },
+      })
+
+      return (
+        <form.AppField
+          name="iam"
+          defaultMeta={{
+            dataSource: [] as Option[],
+          }}
+        >
+          {(field) => {
+            expectTypeOf(field.state.meta.dataSource).toEqualTypeOf<Option[]>()
+            return null
+          }}
+        </form.AppField>
       )
     }
   })

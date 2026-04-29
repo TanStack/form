@@ -5,8 +5,10 @@ import { useForm } from './useForm'
 import { useFieldGroup } from './useFieldGroup'
 import type {
   AnyFieldApi,
+  AnyFieldMeta,
   AnyFormApi,
   BaseFormOptions,
+  DeepKeys,
   DeepKeysOfType,
   FieldApi,
   FieldsMap,
@@ -59,6 +61,25 @@ const formContext = createContext<AnyFormApi>(null as never)
  * `DefaultT`, as if that's the case we assume that inferencing has not occurred.
  */
 type UnwrapOrAny<T> = [unknown] extends [T] ? any : T
+type WidenMeta<TMeta> = {
+  [TKey in keyof TMeta]: TMeta[TKey] extends boolean
+    ? boolean
+    : TMeta[TKey] extends number
+      ? number
+      : TMeta[TKey] extends string
+        ? string
+        : TMeta[TKey]
+}
+type FormApiCustomMeta<TFormData, TFormMeta> = {
+  readonly state: {
+    fieldMeta: Partial<
+      Record<DeepKeys<TFormData>, AnyFieldMeta & WidenMeta<TFormMeta>>
+    >
+  }
+  getFieldMeta: <TField extends DeepKeys<TFormData>>(
+    field: TField,
+  ) => (AnyFieldMeta & WidenMeta<TFormMeta>) | undefined
+}
 type UnwrapDefaultOrAny<DefaultT, T> = [DefaultT] extends [T]
   ? [T] extends [DefaultT]
     ? any
@@ -162,21 +183,22 @@ export type AppFieldExtendedReactFormApi<
   TFieldComponents extends Record<string, ComponentType<any>>,
   TFormComponents extends Record<string, ComponentType<any>>,
   TFormMeta = {},
-> = ReactFormExtendedApi<
-  TFormData,
-  TOnMount,
-  TOnChange,
-  TOnChangeAsync,
-  TOnBlur,
-  TOnBlurAsync,
-  TOnSubmit,
-  TOnSubmitAsync,
-  TOnDynamic,
-  TOnDynamicAsync,
-  TOnServer,
-  TSubmitMeta,
-  TFormMeta
-> &
+> = FormApiCustomMeta<TFormData, TFormMeta> &
+  ReactFormExtendedApi<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    TOnServer,
+    TSubmitMeta,
+    TFormMeta
+  > &
   NoInfer<TFormComponents> & {
     AppField: FieldComponent<
       TFormData,
@@ -354,7 +376,40 @@ export function createFormHook<
     TFormComponents,
     TFormMeta
   > {
-    const form = useForm(props) as unknown as ReactFormExtendedApi<
+    const form = useForm<
+      TFormMeta,
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TOnServer,
+      TSubmitMeta
+    >(
+      props as Omit<
+        FormOptions<
+          TFormData,
+          TOnMount,
+          TOnChange,
+          TOnChangeAsync,
+          TOnBlur,
+          TOnBlurAsync,
+          TOnSubmit,
+          TOnSubmitAsync,
+          TOnDynamic,
+          TOnDynamicAsync,
+          TOnServer,
+          TSubmitMeta,
+          TFormMeta
+        >,
+        'defaultMeta'
+      > & { defaultMeta: TFormMeta },
+    ) as unknown as ReactFormExtendedApi<
       TFormData,
       TOnMount,
       TOnChange,
@@ -418,7 +473,23 @@ export function createFormHook<
       })
     }, [form, AppField, AppForm])
 
-    return extendedForm
+    return extendedForm as unknown as AppFieldExtendedReactFormApi<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TOnServer,
+      TSubmitMeta,
+      TComponents,
+      TFormComponents,
+      TFormMeta
+    >
   }
 
   function withForm<
