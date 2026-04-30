@@ -1,6 +1,14 @@
 import type { FieldApi } from './FieldApi.public'
 import type { FormApi } from './FormApi.public'
 
+/**
+ * TODO should we stick to "Signal"? It sounds very tech-y.
+ *
+ * I'd be fine with chaging it to `Event` and have 'submit' just be excluded from it.
+ * The other type could be called `ValidationEventOrSubmit. Can't be an internal naming because
+ * it's passed to `validate` contexts.
+ * - Luca
+ */
 export type ValidationSignal = 'change' | 'blur'
 export type ValidationEvent = ValidationSignal | 'submit'
 
@@ -26,14 +34,14 @@ export type ValidationSignalOption<TFormData> =
 /**
  * A single validation error with a unique identifier.
  */
-export interface ValidationError {
+export interface ErrorWithMessage {
   message: string
 }
 
-export interface FormValidationError {
-  form?: ValidationError | Array<ValidationError>
+export interface ValidationAggregateError {
+  form?: ErrorWithMessage | Array<ErrorWithMessage>
   // TODO: replace with DeepKeys and make it partial
-  fields: Record<string, ValidationError | Array<ValidationError>>
+  fields: Record<string, ErrorWithMessage | Array<ErrorWithMessage>>
 }
 
 export interface FormValidatorContext<TFormData> {
@@ -44,17 +52,14 @@ export interface FormValidatorContext<TFormData> {
   signal: AbortSignal
 }
 
+export type ValidationError = ErrorWithMessage | Array<ErrorWithMessage>
 /**
  * Result of validation - can be null/undefined (valid), a single error, or multiple errors.
  */
-export type ValidateResult =
-  | null
-  | undefined
-  | false
-  | ValidationError
-  | Array<ValidationError>
+export type ValidationResult = null | undefined | false | ValidationError
 
-export type FormValidateResult = ValidateResult | FormValidationError
+export type FormValidationError = ValidationError | ValidationAggregateError
+export type FormValidateResult = ValidationResult | ValidationAggregateError
 
 export type FormValidatorFn<TFormData> = (
   context: FormValidatorContext<TFormData>,
@@ -64,7 +69,9 @@ export type FormValidatorFn<TFormData> = (
  * A validator function that produces validation results.
  */
 export interface Validator {
-  validate: (...args: Array<any>) => ValidateResult | Promise<ValidateResult>
+  validate: (
+    ...args: Array<any>
+  ) => ValidationResult | Promise<ValidationResult>
 }
 
 export type FormValidatorErrorScope =

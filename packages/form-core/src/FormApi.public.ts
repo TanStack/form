@@ -1,7 +1,11 @@
 import type { FieldUpdateOptions } from './types.public'
 import type { Atom, ReadonlyAtom } from '@tanstack/store'
 import type { BaseFieldMeta, FieldApi } from './FieldApi.public'
-import type { FormValidator } from './validation.public'
+import type {
+  FormValidationError,
+  FormValidator,
+  ValidationSignal,
+} from './validation.public'
 
 export interface FormOptions<
   TData,
@@ -30,6 +34,10 @@ export interface FormState<TData> {
    * Whether the form has not yet been dirtied. The opposite of `isDirty`.
    */
   isPristine: boolean
+  /**
+   * Array of form-level validation errors.
+   */
+  formErrors: Array<FormValidationError>
 }
 
 export interface FormApi<
@@ -42,6 +50,21 @@ export interface FormApi<
   >
   readonly state: FormState<TData>
   readonly options: FormOptions<TData, TFormValidators>
+
+  /**
+   * TODO expand on it
+   *
+   * Validates with the given validation signal and returns
+   * errors if they appeared. It will automatically populate the
+   * form's error state.
+   */
+  validate: (signal: ValidationSignal) => Promise<Array<FormValidationError>>
+
+  /**
+   * TODO for later: submit meta
+   *
+   */
+  handleSubmit: () => Promise<any>
 
   /**
    * TODO

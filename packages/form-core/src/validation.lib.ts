@@ -1,6 +1,7 @@
 import { LiteDebouncer } from '@tanstack/pacer-lite/lite-debouncer'
 import type {
   FormValidateResult,
+  FormValidationError,
   FormValidator,
   FormValidatorContext,
   FormValidatorErrorScope,
@@ -9,9 +10,13 @@ import type {
 } from './validation.public'
 import type { InternalFormApi } from './FormApi.lib'
 
+/**
+ * @private
+ * Check if a validation result is considered an error.
+ */
 export function isErrorResult(
   value: FormValidateResult,
-): value is Exclude<FormValidateResult, null | undefined | false> {
+): value is FormValidationError {
   if (value === null || value === undefined || value === false) return false
   return true
 }
@@ -209,6 +214,7 @@ function runMaybeDebouncedValidator(
 export async function runFormValidatorPipeline(
   pipeline: Array<FormValidator<any>>,
   context: InputContext,
+  onResult?: (result: PipelineResult) => void,
 ): Promise<Array<PipelineResult>> {
   let pendingPromises: Array<Promise<PipelineResult>> = []
   const results: Array<PipelineResult> = []
@@ -228,6 +234,7 @@ export async function runFormValidatorPipeline(
       }
 
       results.push(result)
+      onResult?.(result)
     }
 
     return hasErroredPromises

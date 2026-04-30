@@ -193,5 +193,98 @@ describe('FormApi', () => {
     })
   })
 
+  describe('validate', () => {
+    it('returns empty array when no validators are defined', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: undefined,
+      })
+      const result = await form.validate('submit')
+      expect(result).toEqual([])
+    })
+
+    it('returns empty array when validators array is empty', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [],
+      })
+      const result = await form.validate('submit')
+      expect(result).toEqual([])
+    })
+
+    it('returns filtered error results from validators', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            validate: () => ({ message: 'error1' as const }),
+          },
+          {
+            validate: () => null,
+          },
+          {
+            validate: () => ({ message: 'error2' as const }),
+          },
+          {
+            validate: () => undefined,
+          },
+          {
+            validate: () => false,
+          },
+        ],
+      })
+      const result = await form.validate('submit')
+      expect(result).toEqual([{ message: 'error1' }, { message: 'error2' }])
+    })
+
+    it('returns ValidationError objects from validators', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            validate: () => ({ message: 'Name is required' }),
+          },
+        ],
+      })
+      const result = await form.validate('submit')
+      expect(result).toEqual([{ message: 'Name is required' }])
+    })
+
+    it('returns array of ValidationError objects from validators', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            validate: () => [{ message: 'Error 1' }, { message: 'Error 2' }],
+          },
+        ],
+      })
+      const result = await form.validate('submit')
+      expect(result).toEqual([[{ message: 'Error 1' }, { message: 'Error 2' }]])
+    })
+
+    it('filters out null and false from mixed results', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            validate: () => null,
+          },
+          {
+            validate: () => ({ message: 'Valid error' }),
+          },
+          {
+            validate: () => false,
+          },
+          {
+            validate: () => undefined,
+          },
+        ],
+      })
+      const result = await form.validate('submit')
+      expect(result).toEqual([{ message: 'Valid error' }])
+    })
+  })
+
   // End of FormApi test
 })

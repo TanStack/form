@@ -6,8 +6,12 @@ import {
 } from './FieldApi.lib'
 import { evaluate, getBy, mapDelete, setBy } from './utils'
 import { InternalRootFieldApi } from './RootFieldApi.lib'
-import { createValidatorPipelineCache } from './validation.lib'
-import type { ValidatorPipelineCache } from './validation.lib'
+import {
+  createValidatorPipelineCache,
+  isErrorResult,
+  runFormValidatorPipeline,
+} from './validation.lib'
+import type { PipelineResult, ValidatorPipelineCache } from './validation.lib'
 import type { InternalFieldApi } from './FieldApi.lib'
 import type {
   FieldApiOverrideOptions,
@@ -17,7 +21,11 @@ import type { Atom, ReadonlyAtom } from '@tanstack/store'
 import type { FormApi, FormOptions, FormState } from './FormApi.public'
 import type { BaseFieldMeta, FieldApi } from './FieldApi.public'
 import type { Updater } from './types.public'
-import type { FormValidator } from './validation.public'
+import type {
+  FormValidationError,
+  FormValidator,
+  ValidationEvent,
+} from './validation.public'
 
 export interface BaseFormMeta {
   /**
@@ -30,6 +38,11 @@ export interface BaseFormMeta {
    * A field has notified the root to be dirty
    */
   isDirty: boolean
+  /**
+   * @private
+   * Map of form-level errors keyed by validatorIndex
+   */
+  errors: Map<number, FormValidationError>
 }
 
 // StandardSchema<Input, Output>
@@ -117,6 +130,7 @@ export class InternalFormApi<
     this._formMetaAtom = createAtom({
       touchedFields: new Set(),
       isDirty: false,
+      errors: new Map(),
       // Autocomplete seems to misbehave unless we do it like this
     } satisfies BaseFormMeta as BaseFormMeta)
     this._fieldRootNode = new InternalRootFieldApi(this)
@@ -129,12 +143,16 @@ export class InternalFormApi<
         const isDirty = baseFormMeta.isDirty
         const isPristine = !isDirty
         const isTouched = baseFormMeta.touchedFields.size > 0
+        const formErrors = Array.from(baseFormMeta.errors.entries())
+          .sort(([a], [b]) => a - b)
+          .map(([_, err]) => err)
 
         return {
           values,
           isTouched,
           isDirty,
           isPristine,
+          formErrors,
         } satisfies FormState<TFormData>
       },
       { compare: shallow },
@@ -303,6 +321,45 @@ export class InternalFormApi<
   ): void => {
     this.fieldMetaAtom.set(mapDelete(fieldNode))
   }
+
+  _processValidationResult = (result: PipelineResult) => {
+    this._formMetaAtom.set((prev) => {
+      const errors = new Map(prev.errors)
+
+      if (isErrorResult(result.result)) {
+        errors.set(result.validatorIndex, result.result)
+      } else if (prev.errors.has(result.validatorIndex)) {
+        errors.delete(result.validatorIndex)
+      } else {
+        // not an error and doesn't even exist, so the work was a no-op
+        return prev
+      }
+
+      return { ...prev, errors }
+    })
+  }
+
+  validate = async (
+    signal: ValidationEvent,
+    opts?: FieldApiOverrideOptions,
+  ): Promise<Array<FormValidationError>> => {
+    if (!this.options.validators) return []
+    if (this.options.validators.length === 0) return []
+
+    const pipelineResults = await runFormValidatorPipeline(
+      this._options.validators ?? [],
+      {
+        event: signal,
+        formApi: this,
+        fieldApi: opts?.fieldApiOverride ?? null,
+      },
+      (result) => this._processValidationResult(result),
+    )
+
+    return pipelineResults.map(({ result }) => result).filter(isErrorResult)
+  }
+
+  handleSubmit = () => this.validate('submit')
 }
 
 /*
