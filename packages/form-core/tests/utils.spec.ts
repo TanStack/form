@@ -753,6 +753,41 @@ describe('evaluate', () => {
     const setB = new Set([1, 2, 4])
     expect(evaluate(setA, setB)).toEqual(false)
   })
+
+  it('should treat distinct non-plain objects with no own enumerable keys as not equal', () => {
+    // Simulates Temporal.Duration, RegExp, or any class that exposes state only
+    // through getters. Object.keys() returns [] for these, so without this guard
+    // the key-iteration loop would vacuously succeed and return true.
+    class Duration {
+      #ms: number
+      constructor(ms: number) {
+        this.#ms = ms
+      }
+      get milliseconds() {
+        return this.#ms
+      }
+    }
+
+    const d1 = new Duration(1000)
+    const d2 = new Duration(2000)
+    const d3 = new Duration(1000)
+    const dSame = d1
+
+    expect(evaluate(d1, dSame)).toEqual(true) // same reference
+    expect(evaluate(d1, d2)).toEqual(false) // different instances, different state
+    expect(evaluate(d1, d3)).toEqual(false) // different instances, same state — still false
+  })
+
+  it('should still treat two plain empty objects as equal', () => {
+    expect(evaluate({}, {})).toEqual(true)
+    expect(evaluate({ a: {} }, { a: {} })).toEqual(true)
+  })
+
+  it('should treat a non-plain object against a plain empty object as not equal', () => {
+    class Empty {}
+    expect(evaluate(new Empty(), {})).toEqual(false)
+    expect(evaluate({}, new Empty())).toEqual(false)
+  })
 })
 
 describe('concatenatePaths', () => {
