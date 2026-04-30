@@ -437,6 +437,18 @@ export function evaluate<T>(objA: T, objB: T) {
     return false
   }
 
+  // Blob (and File, which extends Blob) objects have no own enumerable keys,
+  // so the generic key-comparison below would incorrectly consider any two
+  // Blob/File instances as equal. Fall back to referential identity (already
+  // handled by Object.is above, which returned false).
+  if (
+    typeof Blob !== 'undefined' &&
+    objA instanceof Blob &&
+    objB instanceof Blob
+  ) {
+    return false
+  }
+
   if (objA instanceof Date && objB instanceof Date) {
     return objA.getTime() === objB.getTime()
   }

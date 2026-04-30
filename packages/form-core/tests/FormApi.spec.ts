@@ -4121,6 +4121,32 @@ it('should generate a formId if not provided', () => {
   expect(form.formId.length).toBeGreaterThan(1)
 })
 
+it('should detect file value changes when setting a different File', () => {
+  const form = new FormApi({
+    defaultValues: {
+      avatar: undefined as File | undefined,
+    },
+  })
+
+  form.mount()
+
+  const firstFile = new File(['first'], 'first.png', { type: 'image/png' })
+  form.setFieldValue('avatar', firstFile)
+  expect(form.getFieldValue('avatar')).toBe(firstFile)
+  expect(form.getFieldValue('avatar')).toBeInstanceOf(File)
+  expect(form.getFieldValue('avatar')!.name).toBe('first.png')
+
+  const secondFile = new File(['second'], 'second.png', { type: 'image/png' })
+  form.setFieldValue('avatar', secondFile)
+  expect(form.getFieldValue('avatar')).toBe(secondFile)
+  expect(form.getFieldValue('avatar')).toBeInstanceOf(File)
+  expect(form.getFieldValue('avatar')!.name).toBe('second.png')
+
+  // Setting the same file reference again should keep the same value
+  form.setFieldValue('avatar', secondFile)
+  expect(form.getFieldValue('avatar')).toBe(secondFile)
+})
+
 describe('form api event client', () => {
   it('should have debug disabled', () => {
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
