@@ -1,5 +1,6 @@
 import type { FieldApi } from './FieldApi.public'
 import type { FormApi } from './FormApi.public'
+import type { OneOrMany } from './types.public'
 
 /**
  * TODO should we stick to "Signal"? It sounds very tech-y.
@@ -37,11 +38,12 @@ export type ValidationSignalOption<TFormData> =
 export interface ErrorWithMessage {
   message: string
 }
+export type ValidationError = OneOrMany<ErrorWithMessage>
 
 export interface ValidationAggregateError {
   form?: ErrorWithMessage | Array<ErrorWithMessage>
   // TODO: replace with DeepKeys and make it partial
-  fields: Record<string, ErrorWithMessage | Array<ErrorWithMessage>>
+  fields: Record<string, ValidationError>
 }
 
 export interface FormValidatorContext<TFormData> {
@@ -52,7 +54,6 @@ export interface FormValidatorContext<TFormData> {
   signal: AbortSignal
 }
 
-export type ValidationError = ErrorWithMessage | Array<ErrorWithMessage>
 /**
  * Result of validation - can be null/undefined (valid), a single error, or multiple errors.
  */

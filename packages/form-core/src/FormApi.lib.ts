@@ -4,7 +4,7 @@ import {
   nameToFieldNodeSegments,
   tryGetFieldApi,
 } from './FieldApi.lib'
-import { evaluate, getBy, mapDelete, setBy } from './utils'
+import { evaluate, getBy, mapDelete, normalizeToArray, setBy } from './utils'
 import { InternalRootFieldApi } from './RootFieldApi.lib'
 import {
   createValidatorPipelineCache,
@@ -40,9 +40,10 @@ export interface BaseFormMeta {
   isDirty: boolean
   /**
    * @private
-   * Map of form-level errors keyed by validatorIndex
+   * Sparse 2-dimensional array of form-level errors where index corresponds to validatorIndex.
+   * Each validator index contains an array of errors (normalized).
    */
-  errors: Map<number, FormValidationError>
+  errors: Array<Array<FormValidationError> | undefined>
 }
 
 // StandardSchema<Input, Output>
@@ -130,7 +131,7 @@ export class InternalFormApi<
     this._formMetaAtom = createAtom({
       touchedFields: new Set(),
       isDirty: false,
-      errors: new Map(),
+      errors: [],
       // Autocomplete seems to misbehave unless we do it like this
     } satisfies BaseFormMeta as BaseFormMeta)
     this._fieldRootNode = new InternalRootFieldApi(this)
@@ -143,9 +144,7 @@ export class InternalFormApi<
         const isDirty = baseFormMeta.isDirty
         const isPristine = !isDirty
         const isTouched = baseFormMeta.touchedFields.size > 0
-        const formErrors = Array.from(baseFormMeta.errors.entries())
-          .sort(([a], [b]) => a - b)
-          .map(([_, err]) => err)
+        const formErrors = baseFormMeta.errors.flatMap((errors) => errors ?? [])
 
         return {
           values,
@@ -324,12 +323,14 @@ export class InternalFormApi<
 
   _processValidationResult = (result: PipelineResult) => {
     this._formMetaAtom.set((prev) => {
-      const errors = new Map(prev.errors)
+      const errors = [...prev.errors]
 
       if (isErrorResult(result.result)) {
-        errors.set(result.validatorIndex, result.result)
-      } else if (prev.errors.has(result.validatorIndex)) {
-        errors.delete(result.validatorIndex)
+        const errorArray = normalizeToArray(result.result)
+
+        errors[result.validatorIndex] = errorArray
+      } else if (prev.errors[result.validatorIndex] !== undefined) {
+        errors[result.validatorIndex] = undefined
       } else {
         // not an error and doesn't even exist, so the work was a no-op
         return prev
@@ -342,7 +343,7 @@ export class InternalFormApi<
   validate = async (
     signal: ValidationEvent,
     opts?: FieldApiOverrideOptions,
-  ): Promise<Array<FormValidationError>> => {
+  ) => {
     if (!this.options.validators) return []
     if (this.options.validators.length === 0) return []
 

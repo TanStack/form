@@ -15,7 +15,7 @@ describe('FormApi', () => {
       expect(form.state.isTouched).toBe(false)
     })
 
-    it('allows async default values', () => {
+    it('supports updating defaultValues after initialization', () => {
       const form = new InternalFormApi({ defaultValues: { name: '' } })
       expect(form.state.values).toEqual({ name: '' })
       expect(form.state.isTouched).toBe(false)
@@ -143,7 +143,7 @@ describe('FormApi', () => {
       warn.mockRestore()
     })
 
-    it('swaps child field node segments', () => {
+    it('updates field segments after swap', () => {
       const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
       const field0 = form._getOrCreateFieldApi('items[0]')
       const field1 = form._getOrCreateFieldApi('items[1]')
@@ -212,7 +212,7 @@ describe('FormApi', () => {
       expect(result).toEqual([])
     })
 
-    it('returns filtered error results from validators', async () => {
+    it('filters out falsy validator results', async () => {
       const form = new InternalFormApi({
         defaultValues: { name: '' },
         validators: [
@@ -237,7 +237,7 @@ describe('FormApi', () => {
       expect(result).toEqual([{ message: 'error1' }, { message: 'error2' }])
     })
 
-    it('returns ValidationError objects from validators', async () => {
+    it('returns ValidationError objects', async () => {
       const form = new InternalFormApi({
         defaultValues: { name: '' },
         validators: [
@@ -250,7 +250,7 @@ describe('FormApi', () => {
       expect(result).toEqual([{ message: 'Name is required' }])
     })
 
-    it('returns array of ValidationError objects from validators', async () => {
+    it('handles validators returning error arrays', async () => {
       const form = new InternalFormApi({
         defaultValues: { name: '' },
         validators: [
@@ -261,9 +261,13 @@ describe('FormApi', () => {
       })
       const result = await form.validate('submit')
       expect(result).toEqual([[{ message: 'Error 1' }, { message: 'Error 2' }]])
+      expect(form.state.formErrors).toEqual([
+        { message: 'Error 1' },
+        { message: 'Error 2' },
+      ])
     })
 
-    it('filters out null and false from mixed results', async () => {
+    it('filters out falsy values from mixed validator results', async () => {
       const form = new InternalFormApi({
         defaultValues: { name: '' },
         validators: [
@@ -283,6 +287,325 @@ describe('FormApi', () => {
       })
       const result = await form.validate('submit')
       expect(result).toEqual([{ message: 'Valid error' }])
+    })
+
+    describe('form-level validation', () => {
+      it('populates formErrors', async () => {
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              validate: () => ({ message: 'Form error' }),
+              signals: ['change'],
+            },
+          ],
+        })
+        await form.validate('change')
+        expect(form.state.formErrors).toEqual([{ message: 'Form error' }])
+      })
+
+      it('maintains validator order with async debounced and sync validators', async () => {
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              signalDebounceMs: 100,
+              validate: () => ({ message: 'Async debounced error' }),
+              signals: ['change'],
+            },
+            {
+              validate: () => ({ message: 'Sync error' }),
+              signals: ['change'],
+            },
+          ],
+        })
+
+        // Start validation but don't await
+        const validatePromise = form.validate('change')
+
+        // The sync validator should populate formErrors first
+        await vi.waitFor(() => {
+          expect(form.state.formErrors).toContainEqual({
+            message: 'Sync error',
+          })
+        })
+
+        // After debounce, the async validator result should also be in formErrors
+        // The errors should be ordered by validator index
+        await validatePromise
+        expect(form.state.formErrors).toEqual([
+          { message: 'Async debounced error' },
+          { message: 'Sync error' },
+        ])
+      })
+
+      it('collects all errors from multiple sync validators', async () => {
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              validate: () => ({ message: 'Error 1' }),
+              signals: ['change'],
+            },
+            {
+              validate: () => ({ message: 'Error 2' }),
+              signals: ['change'],
+            },
+            {
+              validate: () => ({ message: 'Error 3' }),
+              signals: ['change'],
+            },
+            {
+              validate: () => ({ message: 'Error 4' }),
+              signals: ['change'],
+            },
+          ],
+        })
+
+        await form.validate('change')
+        expect(form.state.formErrors).toEqual([
+          { message: 'Error 1' },
+          { message: 'Error 2' },
+          { message: 'Error 3' },
+          { message: 'Error 4' },
+        ])
+      })
+
+      it('partially populates errors before debounce completes', async () => {
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              validate: () => ({ message: 'Sync error' }),
+              signals: ['blur'],
+            },
+            {
+              signalDebounceMs: 100,
+              validate: () => ({ message: 'Debounced error' }),
+              signals: ['blur'],
+            },
+          ],
+        })
+
+        // Start validation but don't await
+        const validatePromise = form.validate('blur')
+
+        // The sync validator should populate formErrors first
+        await vi.waitFor(() => {
+          expect(form.state.formErrors).toContainEqual({
+            message: 'Sync error',
+          })
+        })
+
+        // After debounce, both errors should be present
+        await validatePromise
+        expect(form.state.formErrors).toEqual([
+          { message: 'Sync error' },
+          { message: 'Debounced error' },
+        ])
+      })
+
+      it('partially populates errors before async validator completes', async () => {
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              validate: () => ({ message: 'Sync error' }),
+              signals: ['blur'],
+            },
+            {
+              // eslint-disable-next-line @typescript-eslint/require-await
+              validate: async () => ({ message: 'Async error' }),
+              signals: ['blur'],
+            },
+          ],
+        })
+
+        // Start validation but don't await
+        const validatePromise = form.validate('blur')
+
+        // The sync validator should populate formErrors first
+        await vi.waitFor(() => {
+          expect(form.state.formErrors).toContainEqual({
+            message: 'Sync error',
+          })
+        })
+
+        // After async completes, both errors should be present
+        await validatePromise
+        expect(form.state.formErrors).toEqual([
+          { message: 'Sync error' },
+          { message: 'Async error' },
+        ])
+      })
+
+      it('skips validators with runOnlyIfValid when errors exist', async () => {
+        const thirdValidatorFn = vi
+          .fn()
+          .mockImplementation(() => ({ message: 'Should not run' }))
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              validate: () => ({ message: 'Sync error' }),
+              signals: ['blur'],
+            },
+            {
+              // eslint-disable-next-line @typescript-eslint/require-await
+              validate: async () => ({ message: 'Async error' }),
+              signals: ['blur'],
+            },
+            {
+              runOnlyIfValid: true,
+              validate: thirdValidatorFn,
+              signals: ['blur'],
+            },
+          ],
+        })
+
+        // Start validation
+        await form.validate('blur')
+
+        // First two validators should have populated errors
+        expect(form.state.formErrors).toEqual([
+          { message: 'Sync error' },
+          { message: 'Async error' },
+        ])
+
+        // Third validator should NOT have been called because there were errors from previous validators
+        expect(thirdValidatorFn).not.toHaveBeenCalled()
+      })
+    })
+
+    describe('handleSubmit', () => {
+      it('validates with submit signal', async () => {
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              validate: () => ({ message: 'Submit error' }),
+            },
+          ],
+        })
+        await form.handleSubmit()
+        expect(form.state.formErrors).toEqual([{ message: 'Submit error' }])
+      })
+
+      it('skips validators with runOnlyIfValid on submit when errors exist', async () => {
+        const thirdValidatorFn = vi
+          .fn()
+          .mockImplementation(() => ({ message: 'Should not run' }))
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              validate: () => ({ message: 'First error' }),
+            },
+            {
+              runOnlyIfValid: true,
+              validate: thirdValidatorFn,
+            },
+          ],
+        })
+        await form.handleSubmit()
+        expect(form.state.formErrors).toEqual([{ message: 'First error' }])
+        expect(thirdValidatorFn).not.toHaveBeenCalled()
+      })
+
+      it('skips validators with runOnSubmit: false', async () => {
+        const validatorFn = vi
+          .fn()
+          .mockImplementation(() => ({ message: 'Should not run' }))
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              runOnSubmit: false,
+              validate: validatorFn,
+              signals: ['change'],
+            },
+          ],
+        })
+        await form.handleSubmit()
+        expect(form.state.formErrors).toEqual([])
+        expect(validatorFn).not.toHaveBeenCalled()
+      })
+
+      it('runs validators with runOnSubmit: true on submit', async () => {
+        const validatorFn = vi
+          .fn()
+          .mockImplementation(() => ({ message: 'Submit error' }))
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              runOnSubmit: true,
+              validate: validatorFn,
+            },
+          ],
+        })
+        await form.handleSubmit()
+        expect(form.state.formErrors).toEqual([{ message: 'Submit error' }])
+        expect(validatorFn).toHaveBeenCalled()
+      })
+
+      it('runs validators with runOnSubmit: false on their signals', async () => {
+        const validatorFn = vi
+          .fn()
+          .mockImplementation(() => ({ message: 'Change error' }))
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              runOnSubmit: false,
+              validate: validatorFn,
+              signals: ['change'],
+            },
+          ],
+        })
+        await form.validate('change')
+        // runOnSubmit: false only affects submit, not the configured signals
+        expect(form.state.formErrors).toEqual([{ message: 'Change error' }])
+        expect(validatorFn).toHaveBeenCalled()
+      })
+
+      it('skips validators with runOnSubmit: false and no signals on submit', async () => {
+        const validatorFn = vi
+          .fn()
+          .mockImplementation(() => ({ message: 'Should not run' }))
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              runOnSubmit: false,
+              validate: validatorFn,
+            },
+          ],
+        })
+        await form.handleSubmit()
+        expect(form.state.formErrors).toEqual([])
+        expect(validatorFn).not.toHaveBeenCalled()
+      })
+
+      it('supports runOnSubmit as a function', async () => {
+        const validatorFn = vi
+          .fn()
+          .mockImplementation(() => ({ message: 'Conditional submit error' }))
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              runOnSubmit: ({ formApi }) => formApi.state.values.name === '',
+              validate: validatorFn,
+            },
+          ],
+        })
+        await form.handleSubmit()
+        expect(form.state.formErrors).toEqual([
+          { message: 'Conditional submit error' },
+        ])
+        expect(validatorFn).toHaveBeenCalled()
+      })
     })
   })
 
