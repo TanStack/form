@@ -1,10 +1,9 @@
-import { LiteDebouncer } from '@tanstack/pacer-lite/lite-debouncer'
+import { LiteDebouncer } from '@tanstack/pacer-lite'
 import type {
   FormValidateResult,
   FormValidationError,
   FormValidator,
   FormValidatorContext,
-  FormValidatorErrorScope,
   ValidationEnabledFn,
   ValidationSignalOption,
 } from './validation.public'
@@ -21,12 +20,38 @@ export function isErrorResult(
   return true
 }
 
+/**
+ * Check if a validation result is a ValidationAggregateError.
+ * If it is, return an object with formError and fieldErrors.
+ * Otherwise, return null.
+ */
+export function isAggregateError(value: FormValidateResult): {
+  formError: FormValidationError | null
+  fieldErrors: Record<string, FormValidationError>
+} | null {
+  if (!isErrorResult(value)) return null
+
+  const aggregateError = value
+
+  // A ValidationAggregateError must be an object with at least one of form or fields
+  if (!Array.isArray(aggregateError)) {
+    // Check if it has the form or fields properties (or both)
+    if ('fields' in aggregateError) {
+      return {
+        formError: aggregateError.form ?? null,
+        fieldErrors: aggregateError.fields,
+      }
+    }
+  }
+
+  return null
+}
+
 type ValidateContext = Omit<FormValidatorContext<any>, 'value'>
 type InputContext = Omit<ValidateContext, 'signal'>
 
 export interface PipelineResult {
   validatorIndex: number
-  errorScope: FormValidatorErrorScope
   result: FormValidateResult
 }
 
@@ -243,7 +268,7 @@ export async function runFormValidatorPipeline(
   for (let i = 0; i < pipeline.length; i++) {
     const validator = pipeline[i]!
 
-    const { errorScope = 'all', runOnlyIfValid } = validator
+    const { runOnlyIfValid } = validator
     const firstEnabledSignal = getFirstEnabledValidationSignal(
       validator,
       context,
@@ -267,9 +292,8 @@ export async function runFormValidatorPipeline(
       context,
       i,
       cache,
-    ).then((result) => ({
+    ).then<PipelineResult>((result) => ({
       validatorIndex: i,
-      errorScope,
       result,
     }))
 

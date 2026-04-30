@@ -41,7 +41,6 @@ describe('runFormValidatorPipeline', () => {
     const results = await runWithContext({ event: 'submit' })
     expect(results).toHaveLength(1)
     expect(results).toContainEqual({
-      errorScope: 'all',
       result: { message: 'foo' },
       validatorIndex: 0,
     } satisfies PipelineResult)

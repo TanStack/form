@@ -8,6 +8,7 @@ import { evaluate, getBy, mapDelete, normalizeToArray, setBy } from './utils'
 import { InternalRootFieldApi } from './RootFieldApi.lib'
 import {
   createValidatorPipelineCache,
+  isAggregateError,
   isErrorResult,
   runFormValidatorPipeline,
 } from './validation.lib'
@@ -322,6 +323,13 @@ export class InternalFormApi<
   }
 
   _processValidationResult = (result: PipelineResult) => {
+    const aggregateError = isAggregateError(result.result)
+
+    if (aggregateError) {
+      this._processAggregateError(aggregateError, result.validatorIndex)
+      return
+    }
+
     this._formMetaAtom.set((prev) => {
       const errors = [...prev.errors]
 
@@ -337,6 +345,39 @@ export class InternalFormApi<
       }
 
       return { ...prev, errors }
+    })
+  }
+
+  /**
+   * Process a ValidationAggregateError by setting form-level and field-level errors.
+   */
+  _processAggregateError = (
+    aggregateError: {
+      formError: FormValidationError | null
+      fieldErrors: Record<string, FormValidationError>
+    },
+    validatorIndex: number,
+  ) => {
+    batch(() => {
+      // Handle form-level errors
+      this._formMetaAtom.set((prev) => {
+        const errors = [...prev.errors]
+        if (aggregateError.formError) {
+          errors[validatorIndex] = normalizeToArray(aggregateError.formError)
+        } else if (prev.errors[validatorIndex] !== undefined) {
+          errors[validatorIndex] = undefined
+        }
+        return { ...prev, errors }
+      })
+
+      // Handle field-level errors
+      for (const [fieldName, fieldError] of Object.entries(aggregateError.fieldErrors)) {
+        const field = this._getOrCreateFieldApi(fieldName)
+        field._setMeta((prev) => ({
+          ...prev,
+          errors: normalizeToArray(fieldError),
+        }))
+      }
     })
   }
 
