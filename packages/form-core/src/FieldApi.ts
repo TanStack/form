@@ -1737,17 +1737,28 @@ export class FieldApi<
 
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (field.state.meta.errorMap?.[errorMapKey] !== newErrorValue) {
-          field.setMeta((prev) => ({
-            ...prev,
-            errorMap: {
+          field.setMeta((prev) => {
+            const nextErrorMap = {
               ...prev.errorMap,
               [errorMapKey]: newErrorValue,
-            },
-            errorSourceMap: {
-              ...prev.errorSourceMap,
-              [errorMapKey]: newSource,
-            },
-          }))
+            }
+            // Clear stale onMount error when a later validator confirms the field is valid
+            if (
+              !newErrorValue &&
+              errorMapKey !== 'onMount' &&
+              prev.errorMap.onMount
+            ) {
+              nextErrorMap.onMount = undefined
+            }
+            return {
+              ...prev,
+              errorMap: nextErrorMap,
+              errorSourceMap: {
+                ...prev.errorSourceMap,
+                [errorMapKey]: newSource,
+              },
+            }
+          })
         }
         if (newErrorValue) {
           hasErrored = true
@@ -1938,13 +1949,22 @@ export class FieldApi<
           }
 
           field.setMeta((prev) => {
+            const nextErrorMap = {
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+              ...prev?.errorMap,
+              [errorMapKey]: newErrorValue,
+            }
+            // Clear stale onMount error when a later validator confirms the field is valid
+            if (
+              !newErrorValue &&
+              errorMapKey !== 'onMount' &&
+              prev.errorMap.onMount
+            ) {
+              nextErrorMap.onMount = undefined
+            }
             return {
               ...prev,
-              errorMap: {
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                ...prev?.errorMap,
-                [errorMapKey]: newErrorValue,
-              },
+              errorMap: nextErrorMap,
               errorSourceMap: {
                 ...prev.errorSourceMap,
                 [errorMapKey]: newSource,
