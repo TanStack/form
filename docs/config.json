@@ -132,6 +132,10 @@
               "to": "framework/react/guides/listeners"
             },
             {
+              "label": "Getting and Setting Values",
+              "to": "framework/react/guides/getting-and-setting-values"
+            },
+            {
               "label": "Custom Errors",
               "to": "framework/react/guides/custom-errors"
             },
