@@ -52,6 +52,10 @@ Finally, you can use a subfield like so:
 </form.Field>
 ```
 
+## Why Index as Key?
+
+You may notice that these examples use `key={i}` the array index as the key prop. React's documentation generally advises _against_ using array indices as keys when items can be reordered or deleted. TanStack Form is an exception to this rule. Because field names in TanStack Form arrays are index-based, using the array index as `key` is required, it keeps React component instances, form store state, and field names in sync.
+
 ## Full Example
 
 ```jsx
