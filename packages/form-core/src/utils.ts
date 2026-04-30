@@ -464,6 +464,20 @@ export function evaluate<T>(objA: T, objB: T) {
     return false
   }
 
+  // Two distinct non-plain, non-array objects with no own enumerable keys cannot
+  // be compared by key iteration — the loop below would vacuously succeed and
+  // treat them as equal regardless of their internal state. This covers Temporal
+  // types, RegExp, and any class that exposes values only through getters.
+  if (
+    keysA.length === 0 &&
+    !Array.isArray(objA) &&
+    !Array.isArray(objB) &&
+    (Object.getPrototypeOf(objA) !== Object.prototype ||
+      Object.getPrototypeOf(objB) !== Object.prototype)
+  ) {
+    return false
+  }
+
   for (const key of keysA) {
     // performs recursive search down the object tree
 
