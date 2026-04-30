@@ -3,6 +3,7 @@ import type {
   FormValidateResult,
   FormValidator,
   FormValidatorContext,
+  FormValidatorErrorScope,
   ValidationEnabledFn,
   ValidationSignalOption,
 } from './validation.public'
@@ -16,20 +17,25 @@ export function isErrorResult(
 }
 
 type ValidateContext = Omit<FormValidatorContext<any>, 'value'>
+type InputContext = Omit<ValidateContext, 'signal'>
 
 export interface PipelineResult {
   validatorIndex: number
-  errorScope: NonNullable<FormValidator<any>['errorScope']>
+  errorScope: FormValidatorErrorScope
   result: FormValidateResult
 }
 
+type ValidatorCacheKey = `form:${number}`
+
 export interface ValidatorPipelineCache {
-  debouncers: Map<string, LiteDebouncer<any>>
+  debouncers: Map<ValidatorCacheKey, LiteDebouncer<any>>
+  abortControllers: Map<ValidatorCacheKey, AbortController>
 }
 
 export function createValidatorPipelineCache(): ValidatorPipelineCache {
   return {
     debouncers: new Map(),
+    abortControllers: new Map(),
   }
 }
 
@@ -41,7 +47,7 @@ interface DebouncedValidationCall {
 
 function getEnabledState(
   booleanOrFn: boolean | ValidationEnabledFn<any>,
-  context: ValidateContext,
+  context: InputContext,
 ): boolean {
   if (typeof booleanOrFn === 'boolean') return booleanOrFn
   return booleanOrFn({
@@ -51,9 +57,9 @@ function getEnabledState(
   })
 }
 
-function isSignalEnabled(
+function isValidationSignalEnabled(
   signal: ValidationSignalOption<any>,
-  context: ValidateContext,
+  context: InputContext,
 ): boolean {
   if (typeof signal === 'string') {
     return signal === context.event
@@ -67,9 +73,9 @@ function isSignalEnabled(
   return getEnabledState(enabled, context)
 }
 
-function getFirstEnabledSignal(
+function getFirstEnabledValidationSignal(
   validator: FormValidator<any>,
-  context: ValidateContext,
+  context: InputContext,
 ): ValidationSignalOption<any> | 'submit' | null {
   const { runOnSubmit = true } = validator
   const signals = validator.signals ?? []
@@ -82,7 +88,7 @@ function getFirstEnabledSignal(
   }
 
   for (const signal of signals) {
-    if (isSignalEnabled(signal, context)) {
+    if (isValidationSignalEnabled(signal, context)) {
       return signal
     }
   }
@@ -90,35 +96,70 @@ function getFirstEnabledSignal(
   return null
 }
 
-function getDebouncerKey(validatorIndex: number): string {
+function getDebouncerKey(validatorIndex: number): ValidatorCacheKey {
   return `form:${validatorIndex}`
 }
 
 function runMaybeDebouncedValidator(
   validator: FormValidator<any>,
-  context: ValidateContext,
+  context: InputContext,
   validatorIndex: number,
   cache: ValidatorPipelineCache,
 ): Promise<FormValidateResult> {
+  const debounceMs =
+    context.event === 'submit' ? 0 : (validator.signalDebounceMs ?? 0)
+  const cacheKey = getDebouncerKey(validatorIndex)
+
+  const existingDebouncer = cache.debouncers.get(cacheKey)
+
+  // AbortControllers are scoped to the validator instead of the pipeline.
+  // Mostly because different validators can have different debounces and they
+  // can be triggered by unrelated validation signals
+  cache.abortControllers.get(cacheKey)?.abort()
+
+  const abortController = new AbortController()
+  const signal = abortController.signal
+  cache.abortControllers.set(cacheKey, abortController)
+
   const run = async (
     validationContext: ValidateContext,
   ): Promise<FormValidateResult> => {
-    return validator.validate({
+    if (validationContext.signal.aborted) {
+      return null
+    }
+    const validatePromise = validator.validate({
       ...validationContext,
       value: validationContext.formApi.state.values,
     })
+    // Race the validation against the signal being aborted
+    let onAbort = () => {}
+    const abortPromise = new Promise<FormValidateResult>((resolve) => {
+      if (validationContext.signal.aborted) {
+        resolve(null)
+        return
+      }
+      onAbort = () => {
+        validationContext.signal.removeEventListener('abort', onAbort)
+        resolve(null)
+      }
+      validationContext.signal.addEventListener('abort', onAbort)
+    })
+    try {
+      return await Promise.race([validatePromise, abortPromise])
+    } finally {
+      validationContext.signal.removeEventListener('abort', onAbort)
+      cache.abortControllers.delete(cacheKey)
+    }
   }
 
-  const debounceMs =
-    context.event === 'submit' ? 0 : (validator.signalDebounceMs ?? 0)
-  const debouncerKey = getDebouncerKey(validatorIndex)
-
-  // Cancel any pending debounce for this key
-  const existingDebouncer = cache.debouncers.get(debouncerKey)
+  const internalContext: ValidateContext = {
+    ...context,
+    signal,
+  }
 
   if (debounceMs <= 0) {
     existingDebouncer?.cancel()
-    return run(context)
+    return run(internalContext)
   }
 
   let debouncer = existingDebouncer
@@ -139,21 +180,35 @@ function runMaybeDebouncedValidator(
       },
     )
 
-    cache.debouncers.set(debouncerKey, debouncer)
+    cache.debouncers.set(cacheKey, debouncer)
   }
 
   return new Promise<FormValidateResult>((resolve, reject) => {
+    const onAbort = () => {
+      debouncer.cancel()
+      cache.abortControllers.delete(cacheKey)
+      resolve(null)
+    }
+    signal.addEventListener('abort', onAbort)
     debouncer.maybeExecute({
-      context,
-      resolve,
-      reject,
+      context: internalContext,
+      resolve: (result: any) => {
+        signal.removeEventListener('abort', onAbort)
+        cache.abortControllers.delete(cacheKey)
+        resolve(result)
+      },
+      reject: (error: any) => {
+        signal.removeEventListener('abort', onAbort)
+        cache.abortControllers.delete(cacheKey)
+        reject(error)
+      },
     })
   })
 }
 
 export async function runFormValidatorPipeline(
   pipeline: Array<FormValidator<any>>,
-  context: ValidateContext,
+  context: InputContext,
 ): Promise<Array<PipelineResult>> {
   let pendingPromises: Array<Promise<PipelineResult>> = []
   const results: Array<PipelineResult> = []
@@ -182,7 +237,10 @@ export async function runFormValidatorPipeline(
     const validator = pipeline[i]!
 
     const { errorScope = 'all', runOnlyIfValid } = validator
-    const firstEnabledSignal = getFirstEnabledSignal(validator, context)
+    const firstEnabledSignal = getFirstEnabledValidationSignal(
+      validator,
+      context,
+    )
 
     if (firstEnabledSignal === null) {
       continue
@@ -197,8 +255,6 @@ export async function runFormValidatorPipeline(
       }
     }
 
-    // Submit always executes immediately (debounceMs = 0)
-    // Non-submit events use validator.signalDebounceMs (defaults to 0)
     const promise = runMaybeDebouncedValidator(
       validator,
       context,

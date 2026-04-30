@@ -281,4 +281,82 @@ describe('runFormValidatorPipeline', () => {
     await runWithContext({ event: 'blur' })
     expect(validate).toHaveBeenCalledOnce()
   })
+
+  it('should abort existing debounced validation when same event runs again', async () => {
+    vi.useFakeTimers()
+
+    const formApi = getForm({ name: '' })
+    const validationResult = { message: 'foo' }
+    const validate = vi.fn(() => validationResult)
+
+    const { runWithContext } = getPipeline(formApi, [
+      {
+        validate,
+        signals: ['change'],
+        signalDebounceMs: 100,
+      },
+    ])
+
+    const firstPromise = runWithContext({ event: 'change' })
+
+    await vi.advanceTimersByTimeAsync(50)
+    const secondPromise = runWithContext({ event: 'change' })
+
+    await vi.advanceTimersByTimeAsync(100)
+
+    expect(validate).toHaveBeenCalledOnce()
+
+    await expect(firstPromise).resolves.toHaveLength(1)
+    await expect(firstPromise).resolves.toContainEqual(
+      expect.objectContaining({ result: null }),
+    )
+
+    await expect(secondPromise).resolves.toHaveLength(1)
+    await expect(secondPromise).resolves.toContainEqual(
+      expect.objectContaining({ result: validationResult }),
+    )
+
+    vi.useRealTimers()
+  })
+
+  it('should abort existing async validation when same event runs again', async () => {
+    const formApi = getForm({ name: '' })
+
+    let resolveFirstValidation!: () => void
+    const waitForFirstValidation = new Promise<void>((resolve) => {
+      resolveFirstValidation = resolve
+    })
+
+    const validate = vi
+      .fn()
+      .mockResolvedValueOnce(
+        waitForFirstValidation.then(() => ({ message: 'first' })),
+      )
+      .mockResolvedValueOnce({ message: 'second' })
+
+    const { runWithContext } = getPipeline(formApi, [
+      {
+        validate,
+        signals: ['change'],
+      },
+    ])
+
+    const firstPromise = runWithContext({ event: 'change' })
+    expect(validate).toHaveBeenCalledOnce()
+
+    const secondPromise = runWithContext({ event: 'change' })
+    expect(validate).toHaveBeenCalledTimes(2)
+
+    resolveFirstValidation()
+
+    await expect(firstPromise).resolves.toHaveLength(1)
+    await expect(firstPromise).resolves.toContainEqual(
+      expect.objectContaining({ result: null }),
+    )
+
+    await expect(secondPromise).resolves.toHaveLength(1)
+    await expect(secondPromise).resolves.toContainEqual(
+      expect.objectContaining({ result: { message: 'second' } }),
+    )
+  })
 })

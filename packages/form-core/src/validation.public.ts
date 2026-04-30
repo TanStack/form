@@ -1,10 +1,3 @@
-/**
- * Validators in
- *
- *
- *
- */
-
 import type { FieldApi } from './FieldApi.public'
 import type { FormApi } from './FormApi.public'
 
@@ -48,6 +41,7 @@ export interface FormValidatorContext<TFormData> {
   formApi: FormApi<TFormData, Array<any>>
   fieldApi: FieldApi<any, any> | null
   value: TFormData
+  signal: AbortSignal
 }
 
 /**
@@ -73,6 +67,12 @@ export interface Validator {
   validate: (...args: Array<any>) => ValidateResult | Promise<ValidateResult>
 }
 
+export type FormValidatorErrorScope =
+  | 'form-level'
+  | 'field-level'
+  | 'all'
+  | 'source-field'
+
 export interface FormValidator<TFormData> {
   /**
    * If `true`, this validator will only run when all previous validators have passed.
@@ -88,7 +88,7 @@ export interface FormValidator<TFormData> {
    * aren't discarded on change, but kept, even if the source field has changed since then.
    * Only if the error for that field still persists, of course
    */
-  errorScope?: 'form-level' | 'field-level' | 'all' | 'source-field'
+  errorScope?: FormValidatorErrorScope
   /**
    * TODO docs
    *
