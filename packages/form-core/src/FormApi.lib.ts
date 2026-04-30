@@ -45,6 +45,12 @@ export interface BaseFormMeta {
    * Each validator index contains an array of errors (normalized).
    */
   errors: Array<Array<FormValidationError> | undefined>
+  /**
+   * @private
+   * Sparse array of field references per validator index that have errors.
+   * Used to clear stale field errors when a validator no longer reports them.
+   */
+  fieldErrors: Array<Set<InternalFieldApi<any, any>> | undefined>
 }
 
 // StandardSchema<Input, Output>
@@ -133,6 +139,7 @@ export class InternalFormApi<
       touchedFields: new Set(),
       isDirty: false,
       errors: [],
+      fieldErrors: [],
       // Autocomplete seems to misbehave unless we do it like this
     } satisfies BaseFormMeta as BaseFormMeta)
     this._fieldRootNode = new InternalRootFieldApi(this)
@@ -371,13 +378,41 @@ export class InternalFormApi<
       })
 
       // Handle field-level errors
-      for (const [fieldName, fieldError] of Object.entries(aggregateError.fieldErrors)) {
-        const field = this._getOrCreateFieldApi(fieldName)
-        field._setMeta((prev) => ({
-          ...prev,
-          errors: normalizeToArray(fieldError),
-        }))
-      }
+      this._formMetaAtom.set((prev) => {
+        const fieldErrors = [...prev.fieldErrors]
+        const newFieldRefs = new Set() satisfies (typeof fieldErrors)[number]
+        const oldFieldRefs = fieldErrors[validatorIndex]
+
+        // Set new field errors and build the new reference set
+        for (const [fieldName, fieldError] of Object.entries(
+          aggregateError.fieldErrors,
+        )) {
+          const field = this._getOrCreateFieldApi(fieldName)
+          field._setMeta((prev) => ({
+            ...prev,
+            errors: normalizeToArray(fieldError),
+          }))
+          newFieldRefs.add(field)
+        }
+
+        // Clear errors for fields that are no longer in the new result
+        if (oldFieldRefs) {
+          for (const field of oldFieldRefs) {
+            if (!newFieldRefs.has(field)) {
+              field._setMeta((prev) => ({
+                ...prev,
+                errors: [],
+              }))
+            }
+          }
+        }
+
+        // Update the tracking set for this validator
+        fieldErrors[validatorIndex] =
+          newFieldRefs.size > 0 ? newFieldRefs : undefined
+
+        return { ...prev, fieldErrors }
+      })
     })
   }
 
@@ -392,7 +427,7 @@ export class InternalFormApi<
       this._options.validators ?? [],
       {
         event: signal,
-        formApi: this,
+        formApi: this as never,
         fieldApi: opts?.fieldApiOverride ?? null,
       },
       (result) => this._processValidationResult(result),

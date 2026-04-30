@@ -14,7 +14,7 @@ export type ValidationSignal = 'change' | 'blur'
 export type ValidationEvent = ValidationSignal | 'submit'
 
 export interface ValidationEnabledContext<TFormData> {
-  formApi: FormApi<TFormData, any>
+  formApi: FormApi<TFormData, Array<any>>
   fieldApi: FieldApi<any, any> | null
   value: TFormData
 }
