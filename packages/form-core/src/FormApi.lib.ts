@@ -41,16 +41,16 @@ export interface BaseFormMeta {
   isDirty: boolean
   /**
    * @private
-   * Sparse 2-dimensional array of form-level errors where index corresponds to validatorIndex.
+   * Dense 2-dimensional array of form-level errors where index corresponds to validatorIndex.
    * Each validator index contains an array of errors (normalized).
    */
-  errors: Array<Array<FormValidationError> | undefined>
+  errors: Array<Array<FormValidationError>>
   /**
    * @private
-   * Sparse array of field references per validator index that have errors.
+   * Dense array of field references per validator index that have errors.
    * Used to clear stale field errors when a validator no longer reports them.
    */
-  fieldErrors: Array<Set<InternalFieldApi<any, any>> | undefined>
+  fieldErrors: Array<Set<InternalFieldApi<any, any>>>
 }
 
 // StandardSchema<Input, Output>
@@ -135,12 +135,12 @@ export class InternalFormApi<
       ReadonlyMap<FieldApi<TFormData, TFormValidators>, BaseFieldMeta>
     >(new Map())
     this._validatorPipelineCache = createValidatorPipelineCache()
+    const validatorCount = this._options.validators?.length ?? 0
     this._formMetaAtom = createAtom({
       touchedFields: new Set(),
       isDirty: false,
-      errors: [],
-      fieldErrors: [],
-      // Autocomplete seems to misbehave unless we do it like this
+      errors: Array.from({ length: validatorCount }, () => []),
+      fieldErrors: Array.from({ length: validatorCount }, () => new Set()),
     } satisfies BaseFormMeta as BaseFormMeta)
     this._fieldRootNode = new InternalRootFieldApi(this)
 
@@ -152,7 +152,7 @@ export class InternalFormApi<
         const isDirty = baseFormMeta.isDirty
         const isPristine = !isDirty
         const isTouched = baseFormMeta.touchedFields.size > 0
-        const formErrors = baseFormMeta.errors.flatMap((errors) => errors ?? [])
+        const formErrors = baseFormMeta.errors.flat()
 
         return {
           values,
@@ -179,6 +179,14 @@ export class InternalFormApi<
   _update = (options: FormOptions<TFormData, TFormValidators>) => {
     const oldOptions = this.options
     this._options = options
+
+    if (
+      (options.validators?.length ?? 0) !== (oldOptions.validators?.length ?? 0)
+    ) {
+      console.warn(
+        'TanStack Form: The length of the validator array should not change after initialization',
+      )
+    }
 
     if (!evaluate(options.defaultValues, oldOptions.defaultValues)) {
       if (!this.state.isTouched) {
@@ -342,13 +350,9 @@ export class InternalFormApi<
 
       if (isErrorResult(result.result)) {
         const errorArray = normalizeToArray(result.result)
-
         errors[result.validatorIndex] = errorArray
-      } else if (prev.errors[result.validatorIndex] !== undefined) {
-        errors[result.validatorIndex] = undefined
       } else {
-        // not an error and doesn't even exist, so the work was a no-op
-        return prev
+        errors[result.validatorIndex] = []
       }
 
       return { ...prev, errors }
@@ -371,8 +375,8 @@ export class InternalFormApi<
         const errors = [...prev.errors]
         if (aggregateError.formError) {
           errors[validatorIndex] = normalizeToArray(aggregateError.formError)
-        } else if (prev.errors[validatorIndex] !== undefined) {
-          errors[validatorIndex] = undefined
+        } else {
+          errors[validatorIndex] = []
         }
         return { ...prev, errors }
       })
@@ -380,7 +384,7 @@ export class InternalFormApi<
       // Handle field-level errors
       this._formMetaAtom.set((prev) => {
         const fieldErrors = [...prev.fieldErrors]
-        const newFieldRefs = new Set() satisfies (typeof fieldErrors)[number]
+        const newFieldRefs = new Set<InternalFieldApi<any, any>>()
         const oldFieldRefs = fieldErrors[validatorIndex]
 
         // Set new field errors and build the new reference set
@@ -407,9 +411,7 @@ export class InternalFormApi<
           }
         }
 
-        // Update the tracking set for this validator
-        fieldErrors[validatorIndex] =
-          newFieldRefs.size > 0 ? newFieldRefs : undefined
+        fieldErrors[validatorIndex] = newFieldRefs
 
         return { ...prev, fieldErrors }
       })
