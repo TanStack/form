@@ -126,6 +126,7 @@ export const defaultFieldMeta: FieldMeta = {
   isPristine: true,
   isValid: true,
   errors: [],
+  childErrorCount: 0,
 }
 
 export interface InternalFieldApiParams<
@@ -217,11 +218,13 @@ export class InternalFieldApi<
         if (prev && isSameBaseMeta(prev.meta, baseMeta)) {
           meta = prev.meta
         } else {
+          const isInvalid =
+            baseMeta.errors.length > 0 || baseMeta.childErrorCount > 0
           meta = {
             ...baseMeta,
             isPristine: !baseMeta.isDirty,
-            isInvalid: baseMeta.errors.length > 0,
-            isValid: baseMeta.errors.length === 0,
+            isInvalid,
+            isValid: !isInvalid,
           }
         }
 
@@ -323,10 +326,42 @@ export class InternalFieldApi<
   _setMeta(updater: Updater<FieldMeta>) {
     this.form.fieldMetaAtom.set((prevMap) => {
       const map = new Map(prevMap)
-      const meta = map.get(this) ?? defaultFieldMeta
-      map.set(this, callUpdater(updater, meta))
+      const prevMeta = map.get(this) ?? defaultFieldMeta
+      const newMeta = callUpdater(updater, prevMeta)
+
+      map.set(this, newMeta)
+
+      // Inform parent if error count changed
+      const prevContributes =
+        prevMeta.errors.length > 0 || prevMeta.childErrorCount > 0
+      const newContributes =
+        newMeta.errors.length > 0 || newMeta.childErrorCount > 0
+
+      if (!this._parent._isRoot) {
+        this._parent._updateChildErrorCount(prevContributes, newContributes)
+      }
+
       return map
     })
+  }
+
+  /**
+   * @private
+   * Called when a child's error contribution changes.
+   * Increments/decrements childErrorCount and propagates up.
+   */
+  _updateChildErrorCount(
+    prevContributes: boolean,
+    newContributes: boolean,
+  ): void {
+    if (prevContributes === newContributes) return
+
+    const delta = newContributes ? 1 : -1
+
+    this._setMeta((prev) => ({
+      ...prev,
+      childErrorCount: prev.childErrorCount + delta,
+    }))
   }
 
   _notifyChange(
@@ -405,6 +440,18 @@ export class InternalFieldApi<
 
         currField._store = null
 
+        // Decrement parent's childErrorCount if this field was contributing
+        if (!currField._parent._isRoot) {
+          const fieldMeta =
+            currField.form.fieldMetaAtom.get().get(currField) ??
+            defaultFieldMeta
+          const wasContributing =
+            fieldMeta.errors.length > 0 || fieldMeta.childErrorCount > 0
+          if (wasContributing) {
+            currField._parent._updateChildErrorCount(true, false)
+          }
+        }
+
         this.form._fieldRootNode._removeFromTouchedFields(currField)
         currField.form.fieldMetaAtom.set(mapDelete(currField))
 
@@ -416,8 +463,7 @@ export class InternalFieldApi<
             if (currFieldErrors) {
               const newFieldErrors = new Set(currFieldErrors)
               newFieldErrors.delete(currField)
-              fieldErrors[i] =
-                newFieldErrors.size > 0 ? newFieldErrors : undefined
+              fieldErrors[i] = newFieldErrors
             }
           }
           return { ...prev, fieldErrors }
@@ -540,8 +586,8 @@ function getFieldSnapshot(field: InternalFieldApi<any, any>): FieldState {
     value: field._getValue(),
     meta: {
       ...baseMeta,
-      isInvalid: baseMeta.errors.length > 0,
-      isValid: baseMeta.errors.length === 0,
+      isInvalid: baseMeta.errors.length > 0 || baseMeta.childErrorCount > 0,
+      isValid: baseMeta.errors.length === 0 && baseMeta.childErrorCount === 0,
       isPristine: !baseMeta.isDirty,
     },
   }
@@ -555,6 +601,7 @@ function isSameBaseMeta(metaA: BaseFieldMeta, metaB: BaseFieldMeta): boolean {
   return (
     metaA.isTouched === metaB.isTouched &&
     metaA.isDirty === metaB.isDirty &&
-    metaA.errors === metaB.errors
+    metaA.errors === metaB.errors &&
+    metaA.childErrorCount === metaB.childErrorCount
   )
 }

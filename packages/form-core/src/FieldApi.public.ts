@@ -12,6 +12,7 @@ export interface BaseFieldMeta {
   isTouched: boolean
   isDirty: boolean
   errors: FieldErrors
+  childErrorCount: number
 }
 
 export interface FieldMeta extends BaseFieldMeta {
