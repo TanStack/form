@@ -96,7 +96,7 @@ export type FormValidationErrorMap<
     | TOnDynamicReturn
     | TOnDynamicAsyncReturn
     | GlobalFormValidationError<TFormData>
-  onServer?: TOnServerReturn
+  onServer?: TOnServerReturn | ValidationError
 }
 
 export type FormValidationError<TFormData> =
