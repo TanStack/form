@@ -1,6 +1,6 @@
 import { describe, expectTypeOf, it } from 'vitest'
 import { formOptions } from '@tanstack/form-core'
-import { createFormHook, createFormHookContexts } from '../src'
+import { createFormHook, createFormHookContexts, useFieldGroup } from '../src'
 
 const { fieldContext, useFieldContext, formContext, useFormContext } =
   createFormHookContexts()
@@ -268,6 +268,32 @@ describe('createFormHook', () => {
       // @ts-expect-error Incorrect form opts
       <WithFormComponent form={incorrectAppForm} prop1="test" prop2={10} />
     )
+  })
+
+  it('should preserve undefined for union-only field values', () => {
+    type UnionType =
+      | {
+          id: string
+        }
+      | {
+          id: undefined
+        }
+
+    const WithUnionForm = withForm({
+      defaultValues: {} as UnionType,
+      render: ({ form }) => {
+        return (
+          <form.AppField name="id">
+            {(field) => {
+              expectTypeOf(field.state.value).toEqualTypeOf<string | undefined>()
+              // @ts-expect-error id can be undefined
+              const unsafeLength = field.state.value.length
+              return unsafeLength
+            }}
+          </form.AppField>
+        )
+      },
+    })
   })
 
   it('should infer subset values and props when calling withFieldGroup', () => {
@@ -818,6 +844,50 @@ describe('createFormHook', () => {
     const Component4 = <FieldGroup form={form} fields="nope" />
     // @ts-expect-error because the types don't match properly
     const Component5 = <FieldGroup form={form} fields="nope2" />
+  })
+
+  it('useFieldGroup should reject nullish-only field-group paths', () => {
+    const groupFields = {
+      name: '',
+    }
+
+    type WrapperValues = {
+      namespace3: { name: string } | null | undefined
+      nope: null | undefined
+    }
+
+    const defaultValues: WrapperValues = {
+      namespace3: null,
+      nope: null,
+    }
+
+    const form = useAppForm({
+      defaultValues,
+    })
+
+    const group = useFieldGroup({
+      form,
+      defaultValues: groupFields,
+      fields: 'namespace3',
+      formComponents: {
+        Test,
+      },
+    })
+
+    expectTypeOf(group.state.values).toEqualTypeOf<{
+      name: string
+    }>()
+    expectTypeOf(group.state.values.name).toEqualTypeOf<string>()
+
+    const wrongGroup = useFieldGroup({
+      form,
+      defaultValues: groupFields,
+      // @ts-expect-error nullish-only fields cannot produce the group shape
+      fields: 'nope',
+      formComponents: {
+        Test,
+      },
+    })
   })
 
   it('should allow interfaces without index signatures to be assigned to `props` in withForm and withFormGroup', () => {

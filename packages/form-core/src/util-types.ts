@@ -135,21 +135,23 @@ export type DeepKeysAndValuesImpl<
   T,
   TParent extends AnyDeepKeyAndValue = never,
   TAcc = never,
-> = unknown extends T
-  ? TAcc | UnknownDeepKeyAndValue<TParent>
-  : unknown extends T // this stops runaway recursion when T is any
-    ? T
-    : T extends string | number | boolean | bigint | Date
-      ? TAcc
-      : T extends ReadonlyArray<any>
-        ? number extends T['length']
-          ? DeepKeyAndValueArray<TParent, T, TAcc>
-          : DeepKeyAndValueTuple<TParent, T, TAcc>
-        : keyof T extends never
-          ? TAcc | UnknownDeepKeyAndValue<TParent>
-          : T extends object
-            ? DeepKeyAndValueObject<TParent, T, TAcc>
-            : TAcc
+> = [T] extends [never]
+  ? TAcc
+  : unknown extends T
+    ? TAcc | UnknownDeepKeyAndValue<TParent>
+    : unknown extends T // this stops runaway recursion when T is any
+      ? T
+      : T extends string | number | boolean | bigint | Date
+        ? TAcc
+        : T extends ReadonlyArray<any>
+          ? number extends T['length']
+            ? DeepKeyAndValueArray<TParent, T, TAcc>
+            : DeepKeyAndValueTuple<TParent, T, TAcc>
+          : keyof T extends never
+            ? TAcc | UnknownDeepKeyAndValue<TParent>
+            : T extends object
+              ? DeepKeyAndValueObject<TParent, T, TAcc>
+              : TAcc
 
 export type DeepRecord<T> = {
   [TRecord in DeepKeysAndValues<T> as TRecord['key']]: TRecord['value']
@@ -194,3 +196,14 @@ export type FieldsMap<TFormData, TFieldGroupData> =
             TFieldGroupData[K]
           >
         }
+
+type ExtractByNonNullableValue<T, TValue> = T extends { value: infer V }
+  ? [NonNullable<V>] extends [never]
+    ? never
+    : NonNullable<V> extends TValue
+      ? T
+      : never
+  : never
+
+export type DeepKeysOfNonNullableType<TData, TValue> =
+  ExtractByNonNullableValue<DeepKeysAndValues<TData>, TValue>['key']
