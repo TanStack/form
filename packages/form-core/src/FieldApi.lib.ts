@@ -129,6 +129,7 @@ export const defaultBaseFieldMeta: BaseFieldMeta = {
   isDirty: false,
   childErrorCount: 0,
   errors: [],
+  formValidatorErrors: [],
 }
 
 export const defaultFieldMeta: FieldMeta =
@@ -452,8 +453,13 @@ export class InternalFieldApi<
 
         // Decrement parent's childErrorCount if this field was contributing
         if (!currField._parent._isRoot && currFieldMeta) {
+          const hasFormValidatorErrors = currFieldMeta.formValidatorErrors.some(
+            (errors) => errors.length > 0,
+          )
           const wasContributing =
-            currFieldMeta.errors.length > 0 || currFieldMeta.childErrorCount > 0
+            currFieldMeta.errors.length > 0 ||
+            currFieldMeta.childErrorCount > 0 ||
+            hasFormValidatorErrors
           if (wasContributing) {
             currField._parent._updateChildErrorCount(true, false)
           }
@@ -596,10 +602,19 @@ function getFieldSnapshot(field: InternalFieldApi<any, any>): FieldState {
 }
 
 function deriveFromBaseFieldMeta(baseMeta: BaseFieldMeta): FieldMeta {
+  const hasFormValidatorErrors = baseMeta.formValidatorErrors.some(
+    (errors) => errors.length > 0,
+  )
   return {
     ...baseMeta,
-    isInvalid: baseMeta.errors.length > 0 || baseMeta.childErrorCount > 0,
-    isValid: baseMeta.errors.length === 0 && baseMeta.childErrorCount === 0,
+    isInvalid:
+      baseMeta.errors.length > 0 ||
+      baseMeta.childErrorCount > 0 ||
+      hasFormValidatorErrors,
+    isValid:
+      baseMeta.errors.length === 0 &&
+      baseMeta.childErrorCount === 0 &&
+      !hasFormValidatorErrors,
     isPristine: !baseMeta.isDirty,
   }
 }

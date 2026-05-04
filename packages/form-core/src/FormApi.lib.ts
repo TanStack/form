@@ -380,10 +380,20 @@ export class InternalFormApi<
           aggregateError.fieldErrors,
         )) {
           const field = this._getOrCreateFieldApi(fieldName)
-          field._setMeta((prev) => ({
-            ...prev,
-            errors: normalizeToArray(fieldError),
-          }))
+          field._setMeta((prev) => {
+            const formValidatorErrors = [...prev.formValidatorErrors]
+            // Ensure array is large enough for this validator index.
+            // We can't eagerly assign them on field creation because the field meta
+            // is lazily created. Therefore, the default is always an empty array.
+            while (formValidatorErrors.length <= validatorIndex) {
+              formValidatorErrors.push([])
+            }
+            formValidatorErrors[validatorIndex] = normalizeToArray(fieldError)
+            return {
+              ...prev,
+              formValidatorErrors,
+            }
+          })
           newFieldRefs.add(field)
         }
 
@@ -391,10 +401,16 @@ export class InternalFormApi<
         if (oldFieldRefs) {
           for (const field of oldFieldRefs) {
             if (!newFieldRefs.has(field)) {
-              field._setMeta((prev) => ({
-                ...prev,
-                errors: [],
-              }))
+              field._setMeta((prev) => {
+                const formValidatorErrors = [...prev.formValidatorErrors]
+                if (formValidatorErrors.length > validatorIndex) {
+                  formValidatorErrors[validatorIndex] = []
+                }
+                return {
+                  ...prev,
+                  formValidatorErrors,
+                }
+              })
             }
           }
         }

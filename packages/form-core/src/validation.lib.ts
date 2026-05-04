@@ -290,19 +290,24 @@ async function runValidatorPipeline({
 
   const applyPendingPromises = async (): Promise<boolean> => {
     let hasErroredPromises = false
+    const newPending: Array<Promise<void>> = []
 
-    const promiseResults = await Promise.all(pendingPromises)
-    pendingPromises = []
-
-    for (const result of promiseResults) {
-      if (isErrorResult(result.result)) {
-        hasErroredPromises = true
-      }
-
-      results.push(result)
-      onResult?.(result)
+    for (const promise of pendingPromises) {
+      newPending.push(
+        promise.then((result) => {
+          if (isErrorResult(result.result)) {
+            hasErroredPromises = true
+          }
+          results.push(result)
+          // We want to make sure that slow validators or debounced ones
+          // don't slow down early incoming finishes.
+          onResult?.(result)
+        }),
+      )
     }
 
+    pendingPromises = []
+    await Promise.all(newPending)
     return hasErroredPromises
   }
 
