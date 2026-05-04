@@ -32,7 +32,17 @@ export interface ReactFormFieldProps<TData> extends FieldApiOptions<any, any> {
    * TODO props
    */
   name: string
-  // validators
 
   children: (fieldApi: FieldApi<TData, any>) => React.ReactNode
+}
+
+export interface ReactFormArrayFieldProps<TData> extends FieldApiOptions<
+  any,
+  any
+> {
+  /**
+   * TODO props
+   */
+  name: string
+  children: (fieldApi: FieldApi<TData, Array<any>>) => React.ReactNode
 }

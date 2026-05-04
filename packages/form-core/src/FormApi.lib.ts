@@ -270,41 +270,50 @@ export class InternalFormApi<
       return
     }
 
-    this.setFieldValue(
-      arrayFieldName,
-      (prev: Array<any>) => {
-        const a = prev[indexA]
-        const b = prev[indexB]
-        const array = prev.slice()
-        array[indexA] = b
-        array[indexB] = a
-        return array
-      },
-      options,
-    )
+    batch(() => {
+      this.setFieldValue(
+        arrayFieldName,
+        (prev: Array<any>) => {
+          const a = prev[indexA]
+          const b = prev[indexB]
+          const array = prev.slice()
+          array[indexA] = b
+          array[indexB] = a
+          return array
+        },
+        options,
+      )
 
-    const fieldA = tryGetFieldApi(
-      this._fieldRootNode,
-      nameToFieldNodeSegments(`${arrayFieldName}[${indexA}]`),
-    )
+      const arrayField = tryGetFieldApi(
+        this._fieldRootNode,
+        nameToFieldNodeSegments(arrayFieldName),
+      )
 
-    const fieldB = tryGetFieldApi(
-      this._fieldRootNode,
-      nameToFieldNodeSegments(`${arrayFieldName}[${indexB}]`),
-    )
+      if (!arrayField) return
 
-    // Fields aren't necessarily mounted, so we should assume
-    // that the indeces will represent actual values in the array.
-    // If not, then the user will most likely not iterate over them
-    // during rendering, so we don't need to worry about them.
+      // Since the length wasn't changed, we need to notify manually
+      arrayField._setMeta((prev) => ({
+        ...prev,
+        _arrayVersion: prev._arrayVersion + 1,
+      }))
 
-    if (fieldA) {
-      fieldA._segment = indexB
-    }
+      const fieldA = tryGetFieldApi(arrayField, [indexA])
 
-    if (fieldB) {
-      fieldB._segment = indexA
-    }
+      const fieldB = tryGetFieldApi(arrayField, [indexB])
+
+      // Fields aren't necessarily mounted, so we should assume
+      // that the indeces will represent actual values in the array.
+      // If not, then the user will most likely not iterate over them
+      // during rendering, so we don't need to worry about them.
+
+      if (fieldA) {
+        fieldA._segment = indexB
+      }
+
+      if (fieldB) {
+        fieldB._segment = indexA
+      }
+    })
   }
 
   _tryGetFieldApi = (

@@ -35,6 +35,11 @@ export type NameSegments = Array<NameSegment>
 export interface InternalBaseFieldMeta extends BaseFieldMeta {
   _formValidatorErrors: Array<Array<ValidationError>>
   _fieldValidatorErrors: Array<Array<ValidationError>>
+  /**
+   * @private
+   * Used to rerender for ArrayField components
+   */
+  _arrayVersion: number
 }
 
 export interface FieldAtoms {
@@ -156,6 +161,7 @@ export const defaultInternalBaseFieldMeta: InternalBaseFieldMeta = {
   ...defaultBaseFieldMeta,
   _fieldValidatorErrors: [],
   _formValidatorErrors: [],
+  _arrayVersion: 0,
 }
 
 export const defaultFieldMeta: FieldMeta = deriveFromBaseFieldMeta(
