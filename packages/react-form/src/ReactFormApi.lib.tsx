@@ -3,7 +3,6 @@ import { useSelector } from '@tanstack/react-store'
 import { InternalFormApi } from '@tanstack/form-core-v2/internals'
 import { useField } from './useField.lib'
 import type { InternalBaseFieldMeta } from '@tanstack/form-core-v2/internals'
-import type { FunctionComponent } from 'react'
 import type {
   ReactFormApi,
   ReactFormArrayFieldProps,
@@ -11,13 +10,7 @@ import type {
 } from './useForm.public'
 import type { FormOptions } from '@tanstack/form-core-v2'
 
-export interface InternalReactFormApi<TData> extends InternalFormApi<
-  TData,
-  any
-> {
-  Field: FunctionComponent<ReactFormFieldProps<TData>>
-  ArrayField: FunctionComponent<ReactFormArrayFieldProps<TData>>
-}
+export interface InternalReactFormApi<TData> extends ReactFormApi<TData> {}
 
 export function initializeForm<TData>(
   options: FormOptions<TData, any>,
@@ -51,7 +44,7 @@ export function initializeForm<TData>(
     )
     return <>{props.children(fieldApi)}</>
   }
-  reactFormApi.Field.displayName = 'form.ArrayField'
+  reactFormApi.ArrayField.displayName = 'form.ArrayField'
 
   return reactFormApi
 }

@@ -91,4 +91,17 @@ export interface FormApi<
     indexA: number,
     indexB: number,
   ) => void
+
+  /**
+   * TODO
+   * @param arrayFieldName
+   * @param value
+   * @param options
+   * @returns
+   */
+  pushFieldValue: (
+    arrayFieldName: string,
+    value: any,
+    options?: FieldUpdateOptions,
+  ) => void
 }

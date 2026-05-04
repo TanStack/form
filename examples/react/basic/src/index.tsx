@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom/client'
 import { useForm } from '@tanstack/react-form'
 
 const ARRAY = [...new Array(1000).keys()]
-const values = ARRAY.map((i) => ({ message: 'Field ' + i }))
+const values = ARRAY.map((i) => ({ id: i, message: 'Field ' + i }))
 
 function App() {
   const form = useForm({
@@ -12,44 +12,66 @@ function App() {
   return (
     <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
       <h1>TanStack Form - Array field</h1>
-      <h2>Values amount: {ARRAY.length}</h2>
-      {values.map((_, i) => (
-        <form.Field
-          key={i}
-          name={`fields[${i}].message`}
-          validators={[
-            {
-              validate: ({ value }) =>
-                value.length <= 3 && { message: 'Too short (debounced)' },
-              signals: ['change'],
-              signalDebounceMs: 500,
-            },
-          ]}
-        >
-          {(field) => (
-            <span style={{ position: 'relative' }}>
-              <input
-                value={field.value}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-              {field.meta.isInvalid && (
-                <span
-                  style={{
-                    position: 'absolute',
-                    backgroundColor: 'black',
-                    left: 0,
-                    top: '100%',
-                    zIndex: 1,
-                    color: 'white',
-                  }}
-                >
-                  {field.meta.errors[0].message}
-                </span>
-              )}
-            </span>
-          )}
-        </form.Field>
-      ))}
+
+      <button onClick={() => form.swapFieldValues('fields', 0, 1)}>
+        Swap 0 and 1
+      </button>
+      <button
+        onClick={() =>
+          form.pushFieldValue('fields', {
+            id: form.state.values.fields.length,
+            message: `New Field`,
+          })
+        }
+      >
+        Push
+      </button>
+      <br />
+      <form.ArrayField name="fields">
+        {(field) => (
+          <>
+            <h2>Values amount: {field.value.length}</h2>
+            {field.value.map((element: any, i: number) => (
+              <form.Field
+                key={element.id}
+                name={`fields[${i}].message`}
+                validators={[
+                  {
+                    validate: ({ value }) =>
+                      value.length <= 3 && {
+                        message: 'Too short (debounced)',
+                      },
+                    signals: ['change'],
+                  },
+                ]}
+              >
+                {(field) => (
+                  <span style={{ position: 'relative' }}>
+                    <input
+                      value={field.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
+                    {field.meta.isInvalid && (
+                      <span
+                        style={{
+                          position: 'absolute',
+                          backgroundColor: 'black',
+                          left: 0,
+                          top: '100%',
+                          zIndex: 1,
+                          color: 'white',
+                        }}
+                      >
+                        {field.meta.errors[0].message}
+                      </span>
+                    )}
+                  </span>
+                )}
+              </form.Field>
+            ))}
+          </>
+        )}
+      </form.ArrayField>
     </div>
   )
 }

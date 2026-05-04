@@ -14,6 +14,7 @@ export interface ReactFormApi<TData> extends FormApi<TData, any> {
    * TODO docs
    */
   Field: FunctionComponent<ReactFormFieldProps<TData>>
+  ArrayField: FunctionComponent<ReactFormArrayFieldProps<TData>>
 }
 
 /**
