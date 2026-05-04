@@ -1854,15 +1854,16 @@ export class FieldApi<
     // Check if there are actual async validators to run before setting isValidating
     // This prevents unnecessary re-renders when there are no async validators
     // See: https://github.com/TanStack/form/issues/1130
-    const hasAsyncValidators =
-      validates.some((v) => v.validate) ||
-      linkedFieldValidates.some((v) => v.validate)
+    const hasAsyncValidators = validates.some((v) => v.validate)
+    const hasLinkedAsyncValidators = linkedFieldValidates.some((v) => v.validate)
 
     if (hasAsyncValidators) {
       if (!this.state.meta.isValidating) {
         this.setMeta((prev) => ({ ...prev, isValidating: true }))
       }
+    }
 
+    if (hasLinkedAsyncValidators) {
       for (const linkedField of linkedFields) {
         linkedField.setMeta((prev) => ({ ...prev, isValidating: true }))
       }
@@ -1980,7 +1981,9 @@ export class FieldApi<
     // Only reset isValidating if we set it to true earlier
     if (hasAsyncValidators) {
       this.setMeta((prev) => ({ ...prev, isValidating: false }))
+    }
 
+    if (hasLinkedAsyncValidators) {
       for (const linkedField of linkedFields) {
         linkedField.setMeta((prev) => ({ ...prev, isValidating: false }))
       }

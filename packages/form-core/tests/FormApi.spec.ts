@@ -3047,6 +3047,7 @@ describe('form api', () => {
 
     expect.soft(form.state.isFieldsValidating).toBe(false)
     expect.soft(form.state.isFieldsValid).toBe(true)
+    expect.soft(form.state.isValid).toBe(true)
     expect.soft(form.state.canSubmit).toBe(true)
 
     vi.useRealTimers()
