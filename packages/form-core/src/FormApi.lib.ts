@@ -22,6 +22,7 @@ import type { Atom, ReadonlyAtom } from '@tanstack/store'
 import type { FormApi, FormOptions, FormState } from './FormApi.public'
 import type { Updater } from './types.public'
 import type {
+  FormValidateResult,
   FormValidationError,
   FormValidator,
   ValidationEvent,
@@ -324,7 +325,7 @@ export class InternalFormApi<
     )
   }
 
-  _processValidationResult = (result: PipelineResult) => {
+  _processValidationResult = (result: PipelineResult<FormValidateResult>) => {
     const aggregateError = isAggregateError(result.result)
 
     if (aggregateError) {
@@ -409,18 +410,21 @@ export class InternalFormApi<
     signal: ValidationEvent,
     opts?: FieldApiOverrideOptions,
   ) => {
-    if (!this.options.validators) return []
-    if (this.options.validators.length === 0) return []
+    const pipeline = this.options.validators
+    if (!pipeline) return []
+    if (pipeline.length === 0) return []
 
-    const pipelineResults = await runFormValidatorPipeline(
-      this._options.validators ?? [],
-      {
+    const pipelineResults = await runFormValidatorPipeline({
+      context: {
         event: signal,
+        // TypeScript doesn't instantly complain, but instead decides to wait a while.
+        // Just leave it as never.
         formApi: this as never,
         fieldApi: opts?.fieldApiOverride ?? null,
       },
-      (result) => this._processValidationResult(result),
-    )
+      pipeline,
+      onResult: (result) => this._processValidationResult(result),
+    })
 
     return pipelineResults.map(({ result }) => result).filter(isErrorResult)
   }

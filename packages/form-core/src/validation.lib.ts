@@ -1,5 +1,8 @@
 import { LiteDebouncer } from '@tanstack/pacer-lite'
 import type {
+  FieldValidateResult,
+  FieldValidator,
+  FieldValidatorContext,
   FormValidateResult,
   FormValidationError,
   FormValidator,
@@ -9,13 +12,46 @@ import type {
 } from './validation.public'
 import type { InternalFormApi } from './FormApi.lib'
 
+export interface BaseValidator<TFormData> {
+  /**
+   * If `true`, this validator will only run when all previous validators have passed.
+   * If `false`, validators run regardless of earlier validation results.
+   *
+   * @default false
+   */
+  runOnlyIfValid?: boolean
+  /**
+   * TODO docs
+   *
+   * Whether this validator should be called during a submission attempt.
+   *
+   * @default true
+   */
+  runOnSubmit?: boolean | ValidationEnabledFn<TFormData>
+  /**
+   * The debounce time in milliseconds for validation signals (change, blur).
+   * Does not affect submit events, which always execute immediately.
+   *
+   * @default 0
+   */
+  signalDebounceMs?: number
+  signals?: Array<ValidationSignalOption<TFormData>>
+}
+
+type FormValidateContext = Omit<FormValidatorContext<any>, 'value'>
+type FieldValidateContext = Omit<FieldValidatorContext<any, any>, 'value'>
+type FormInputContext = Omit<FormValidateContext, 'signal'>
+type FieldInputContext = Omit<FieldValidateContext, 'signal'>
+
+type InputContext = FieldInputContext | FormInputContext
+
 /**
  * @private
  * Check if a validation result is considered an error.
  */
-export function isErrorResult(
-  value: FormValidateResult,
-): value is FormValidationError {
+export function isErrorResult<T extends FormValidationError>(
+  value: FormValidateResult | FieldValidateResult,
+): value is T {
   if (value === null || value === undefined || value === false) return false
   return true
 }
@@ -29,7 +65,7 @@ export function isAggregateError(value: FormValidateResult): {
   formError: FormValidationError | null
   fieldErrors: Record<string, FormValidationError>
 } | null {
-  if (!isErrorResult(value)) return null
+  if (!isErrorResult<FormValidationError>(value)) return null
 
   const aggregateError = value
 
@@ -47,19 +83,14 @@ export function isAggregateError(value: FormValidateResult): {
   return null
 }
 
-type ValidateContext = Omit<FormValidatorContext<any>, 'value'>
-type InputContext = Omit<ValidateContext, 'signal'>
-
-export interface PipelineResult {
+export interface PipelineResult<T> {
   validatorIndex: number
-  result: FormValidateResult
+  result: T
 }
 
-type ValidatorCacheKey = `form:${number}`
-
 export interface ValidatorPipelineCache {
-  debouncers: Map<ValidatorCacheKey, LiteDebouncer<any>>
-  abortControllers: Map<ValidatorCacheKey, AbortController>
+  debouncers: Map<number, LiteDebouncer<any>>
+  abortControllers: Map<number, AbortController>
 }
 
 export function createValidatorPipelineCache(): ValidatorPipelineCache {
@@ -70,14 +101,14 @@ export function createValidatorPipelineCache(): ValidatorPipelineCache {
 }
 
 interface DebouncedValidationCall {
-  context: ValidateContext
+  context: FormValidateContext
   resolve: (result: FormValidateResult | undefined) => void
   reject: (error: unknown) => void
 }
 
 function getEnabledState(
   booleanOrFn: boolean | ValidationEnabledFn<any>,
-  context: InputContext,
+  context: FormInputContext,
 ): boolean {
   if (typeof booleanOrFn === 'boolean') return booleanOrFn
   return booleanOrFn({
@@ -89,7 +120,7 @@ function getEnabledState(
 
 function isValidationSignalEnabled(
   signal: ValidationSignalOption<any>,
-  context: InputContext,
+  context: FormInputContext,
 ): boolean {
   if (typeof signal === 'string') {
     return signal === context.event
@@ -104,8 +135,8 @@ function isValidationSignalEnabled(
 }
 
 function getFirstEnabledValidationSignal(
-  validator: FormValidator<any>,
-  context: InputContext,
+  validator: BaseValidator<any>,
+  context: FormInputContext,
 ): ValidationSignalOption<any> | 'submit' | null {
   const { runOnSubmit = true } = validator
   const signals = validator.signals ?? []
@@ -126,20 +157,28 @@ function getFirstEnabledValidationSignal(
   return null
 }
 
-function getDebouncerKey(validatorIndex: number): ValidatorCacheKey {
-  return `form:${validatorIndex}`
+interface ValidatorPipelineArgs {
+  context: InputContext
+  cache: ValidatorPipelineCache
+  pipeline: Array<FormValidator<any> | FieldValidator<any, any>>
+  getContext: (
+    inputContext: FieldValidateContext | FormValidateContext,
+  ) => FieldValidatorContext<any, any> | FormValidatorContext<any>
+  onResult?: (result: PipelineResult<FormValidateResult>) => void
 }
 
 function runMaybeDebouncedValidator(
-  validator: FormValidator<any>,
+  validator: BaseValidator<any>,
   context: InputContext,
   validatorIndex: number,
   cache: ValidatorPipelineCache,
+  onExecute: (
+    inputContext: FormValidateContext | FieldValidateContext,
+  ) => Promise<FormValidateResult> | FormValidateResult,
 ): Promise<FormValidateResult> {
   const debounceMs =
     context.event === 'submit' ? 0 : (validator.signalDebounceMs ?? 0)
-  const cacheKey = getDebouncerKey(validatorIndex)
-
+  const cacheKey = validatorIndex
   const existingDebouncer = cache.debouncers.get(cacheKey)
 
   // AbortControllers are scoped to the validator instead of the pipeline.
@@ -152,14 +191,16 @@ function runMaybeDebouncedValidator(
   cache.abortControllers.set(cacheKey, abortController)
 
   const run = async (
-    validationContext: ValidateContext,
+    validationContext: FormValidateContext | FieldValidateContext,
   ): Promise<FormValidateResult> => {
     if (validationContext.signal.aborted) {
       return null
     }
-    const validatePromise = validator.validate({
-      ...validationContext,
-      value: validationContext.formApi.state.values,
+    const validatePromise = onExecute({
+      event: context.event,
+      fieldApi: context.fieldApi,
+      formApi: context.formApi,
+      signal: validationContext.signal,
     })
     // Race the validation against the signal being aborted
     let onAbort = () => {}
@@ -182,7 +223,7 @@ function runMaybeDebouncedValidator(
     }
   }
 
-  const internalContext: ValidateContext = {
+  const internalContext: FormValidateContext = {
     ...context,
     signal,
   }
@@ -236,15 +277,15 @@ function runMaybeDebouncedValidator(
   })
 }
 
-export async function runFormValidatorPipeline(
-  pipeline: Array<FormValidator<any>>,
-  context: InputContext,
-  onResult?: (result: PipelineResult) => void,
-): Promise<Array<PipelineResult>> {
-  let pendingPromises: Array<Promise<PipelineResult>> = []
-  const results: Array<PipelineResult> = []
-  const cache = (context.formApi as InternalFormApi<any, any>)
-    ._validatorPipelineCache
+async function runValidatorPipeline({
+  pipeline,
+  context,
+  cache,
+  getContext,
+  onResult,
+}: ValidatorPipelineArgs): Promise<Array<PipelineResult<FormValidateResult>>> {
+  let pendingPromises: Array<Promise<PipelineResult<FormValidateResult>>> = []
+  const results: Array<PipelineResult<FormValidateResult>> = []
   let hasErrors = false
 
   const applyPendingPromises = async (): Promise<boolean> => {
@@ -292,7 +333,8 @@ export async function runFormValidatorPipeline(
       context,
       i,
       cache,
-    ).then<PipelineResult>((result) => ({
+      (ctx) => validator.validate(getContext(ctx) as never),
+    ).then<PipelineResult<FormValidateResult>>((result) => ({
       validatorIndex: i,
       result,
     }))
@@ -303,4 +345,33 @@ export async function runFormValidatorPipeline(
   await applyPendingPromises()
 
   return results
+}
+
+interface FormValidatorPipelineArgs {
+  pipeline: Array<FormValidator<any>>
+  context: FormInputContext
+  onResult?: (result: PipelineResult<FormValidateResult>) => void
+}
+
+export async function runFormValidatorPipeline({
+  pipeline,
+  context,
+  onResult,
+}: FormValidatorPipelineArgs): Promise<
+  Array<PipelineResult<FormValidateResult>>
+> {
+  return runValidatorPipeline({
+    pipeline,
+    context,
+    onResult,
+    cache: (context.formApi as InternalFormApi<any, any>)
+      ._validatorPipelineCache,
+    getContext: (ctx) => ({
+      event: ctx.event,
+      fieldApi: ctx.fieldApi,
+      formApi: ctx.formApi,
+      signal: ctx.signal,
+      value: ctx.formApi.state.values,
+    }),
+  })
 }

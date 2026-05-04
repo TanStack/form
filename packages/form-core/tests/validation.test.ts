@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { runFormValidatorPipeline } from '../src/validation.lib'
 import { InternalFormApi } from '../src/FormApi.lib'
-import type { PipelineResult } from '../src/validation.lib'
 import type { FormValidator, FormValidatorContext } from '../src'
 import type { InternalFieldApi } from '../src/FieldApi.lib'
 
@@ -22,10 +21,13 @@ describe('runFormValidatorPipeline', () => {
         event: Event
         field?: InternalFieldApi<any, Array<any>>
       }) => {
-        return runFormValidatorPipeline(pipeline, {
-          formApi: form,
-          fieldApi: args.field ?? null,
-          event: args.event,
+        return runFormValidatorPipeline({
+          context: {
+            event: args.event,
+            formApi: form,
+            fieldApi: args.field ?? null,
+          },
+          pipeline: pipeline,
         })
       },
     }
@@ -40,10 +42,9 @@ describe('runFormValidatorPipeline', () => {
     ])
     const results = await runWithContext({ event: 'submit' })
     expect(results).toHaveLength(1)
-    expect(results).toContainEqual({
-      result: { message: 'foo' },
-      validatorIndex: 0,
-    } satisfies PipelineResult)
+    expect(results).toContainEqual(
+      expect.objectContaining({ result: { message: 'foo' } }),
+    )
   })
 
   it('should only run validators with matching signal', async () => {

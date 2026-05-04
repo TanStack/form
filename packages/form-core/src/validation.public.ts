@@ -1,6 +1,7 @@
 import type { FieldApi } from './FieldApi.public'
 import type { FormApi } from './FormApi.public'
 import type { OneOrMany } from './types.public'
+import type { BaseValidator } from './validation.lib'
 
 /**
  * TODO should we stick to "Signal"? It sounds very tech-y.
@@ -80,31 +81,8 @@ export interface Validator {
   ) => ValidationResult | Promise<ValidationResult>
 }
 
-export interface FormValidator<TFormData> {
-  /**
-   * If `true`, this validator will only run when all previous validators have passed.
-   * If `false`, validators run regardless of earlier validation results.
-   *
-   * @default false
-   */
-  runOnlyIfValid?: boolean
-  /**
-   * TODO docs
-   *
-   * Whether this validator should be called during a submission attempt.
-   *
-   * @default true
-   */
-  runOnSubmit?: boolean | ValidationEnabledFn<TFormData>
-  /**
-   * The debounce time in milliseconds for validation signals (change, blur).
-   * Does not affect submit events, which always execute immediately.
-   *
-   * @default 0
-   */
-  signalDebounceMs?: number
+export interface FormValidator<TFormData> extends BaseValidator<TFormData> {
   validate: FormValidatorFn<TFormData>
-  signals?: Array<ValidationSignalOption<TFormData>>
 }
 
 export interface FieldValidatorContext<
@@ -121,27 +99,9 @@ export type FieldValidatorFn<TFormData, TFieldValue> = (
   context: FieldValidatorContext<TFormData, TFieldValue>,
 ) => FieldValidateResult | Promise<FieldValidateResult>
 
-export interface FieldValidator<TFormData, TFieldValue> {
-  /**
-   * If `true`, this validator will only run when all previous validators have passed.
-   * If `false`, validators run regardless of earlier validation results.
-   *
-   * @default false
-   */
-  runOnlyIfValid?: boolean
-  /**
-   * Whether this validator should be called during a submission attempt.
-   *
-   * @default true
-   */
-  runOnSubmit?: boolean | ValidationEnabledFn<any>
-  /**
-   * The debounce time in milliseconds for validation signals (change, blur).
-   * Does not affect submit events, which always execute immediately.
-   *
-   * @default 0
-   */
-  signalDebounceMs?: number
+export interface FieldValidator<
+  TFormData,
+  TFieldValue,
+> extends BaseValidator<TFormData> {
   validate: FieldValidatorFn<TFormData, TFieldValue>
-  signals?: Array<ValidationSignalOption<any>>
 }
