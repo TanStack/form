@@ -26,6 +26,9 @@ import type {
   ValidationError,
 } from './validation.public'
 
+// TODO is this SSR friendly?
+const metaCache = new WeakMap<InternalBaseFieldMeta, FieldMeta>()
+
 export type NameSegment = string | number
 export type NameSegments = Array<NameSegment>
 
@@ -710,16 +713,21 @@ function getFieldSnapshot(field: InternalFieldApi<any, any>): FieldState {
 }
 
 function deriveFromBaseFieldMeta(baseMeta: InternalBaseFieldMeta): FieldMeta {
+  const cached = metaCache.get(baseMeta)
+  if (cached) return cached
+
   const errors = getErrorsFromBaseMeta(baseMeta)
   const isInvalid = errors.length > 0 || baseMeta.childErrorCount > 0
 
-  return {
+  const result: FieldMeta = {
     ...baseMeta,
     isInvalid,
     errors,
     isValid: !isInvalid,
     isPristine: !baseMeta.isDirty,
   }
+  metaCache.set(baseMeta, result)
+  return result
 }
 
 function getErrorsFromBaseMeta(
