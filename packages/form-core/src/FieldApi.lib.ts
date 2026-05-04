@@ -318,6 +318,12 @@ export class InternalFieldApi<
     this._validators = validators ?? []
   }
 
+  _update(params: Pick<InternalFieldApiParams<any, any>, 'validators'>) {
+    if (params.validators) {
+      this._validators = params.validators
+    }
+  }
+
   _invalidateFullPath() {
     this._fullPathCache = null
     this._children.forEach((child) => child._invalidateFullPath())
@@ -385,7 +391,9 @@ export class InternalFieldApi<
         prevMeta._formValidatorErrors.length > 0 ||
         prevMeta.childErrorCount > 0
       const newContributes =
-        newMeta.errors.length > 0 || newMeta.childErrorCount > 0
+        newMeta._fieldValidatorErrors.length > 0 ||
+        newMeta._formValidatorErrors.length > 0 ||
+        newMeta.childErrorCount > 0
 
       if (!this._parent._isRoot) {
         this._parent._updateChildErrorCount(prevContributes, newContributes)
@@ -565,6 +573,7 @@ export class InternalFieldApi<
         }
 
         currField._atoms = null
+        this._validatorCache = null
 
         this.form._fieldRootNode._removeFromTouchedFields(currField)
 
