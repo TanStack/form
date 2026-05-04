@@ -11,6 +11,7 @@ import type {
   ValidationSignalOption,
 } from './validation.public'
 import type { InternalFormApi } from './FormApi.lib'
+import type { InternalFieldApi } from './FieldApi.lib'
 
 export interface BaseValidator<TFormData> {
   /**
@@ -358,19 +359,20 @@ interface FormValidatorPipelineArgs {
   onResult?: (result: PipelineResult<FormValidateResult>) => void
 }
 
-export async function runFormValidatorPipeline({
+export function runFormValidatorPipeline({
   pipeline,
   context,
   onResult,
 }: FormValidatorPipelineArgs): Promise<
   Array<PipelineResult<FormValidateResult>>
 > {
+  const cache = (context.formApi as InternalFormApi<any, any>)
+    ._validatorPipelineCache
   return runValidatorPipeline({
     pipeline,
     context,
     onResult,
-    cache: (context.formApi as InternalFormApi<any, any>)
-      ._validatorPipelineCache,
+    cache,
     getContext: (ctx) => ({
       event: ctx.event,
       fieldApi: ctx.fieldApi,
@@ -379,4 +381,36 @@ export async function runFormValidatorPipeline({
       value: ctx.formApi.state.values,
     }),
   })
+}
+
+interface FieldValidatorPipelineArgs {
+  pipeline: Array<FieldValidator<any, any>>
+  context: FieldInputContext
+  onResult?: (result: PipelineResult<FieldValidateResult>) => void
+}
+
+export function runFieldValidatorPipeline({
+  pipeline,
+  context,
+  onResult,
+}: FieldValidatorPipelineArgs): Promise<
+  Array<PipelineResult<FieldValidateResult>>
+> {
+  const cache = (
+    context.fieldApi as InternalFieldApi<any, any>
+  )._getOrCreateValidatorCache()
+
+  return runValidatorPipeline({
+    pipeline,
+    context,
+    onResult: onResult as never,
+    cache,
+    getContext: (ctx) => ({
+      event: ctx.event,
+      formApi: ctx.formApi,
+      signal: ctx.signal,
+      fieldApi: context.fieldApi,
+      value: context.fieldApi.value,
+    }),
+  }) as never
 }

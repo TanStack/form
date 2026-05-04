@@ -384,14 +384,16 @@ export class InternalFormApi<
         )) {
           const field = this._getOrCreateFieldApi(fieldName, undefined)
           field._setMeta((prev) => {
-            const formValidatorErrors = [...prev.formValidatorErrors]
+            const formValidatorErrors = [...prev._formValidatorErrors]
             // Ensure array is large enough for this validator index.
             // We can't eagerly assign them on field creation because the field meta
             // is lazily created. Therefore, the default is always an empty array.
             while (formValidatorErrors.length <= validatorIndex) {
               formValidatorErrors.push([])
             }
-            formValidatorErrors[validatorIndex] = normalizeToArray(fieldError)
+            formValidatorErrors[validatorIndex] = normalizeToArray(
+              fieldError,
+            ) as never
             return {
               ...prev,
               formValidatorErrors,
@@ -405,7 +407,7 @@ export class InternalFormApi<
           for (const field of oldFieldRefs) {
             if (!newFieldRefs.has(field)) {
               field._setMeta((prev) => {
-                const formValidatorErrors = [...prev.formValidatorErrors]
+                const formValidatorErrors = [...prev._formValidatorErrors]
                 if (formValidatorErrors.length > validatorIndex) {
                   formValidatorErrors[validatorIndex] = []
                 }
@@ -429,16 +431,6 @@ export class InternalFormApi<
     signal: ValidationEvent,
     opts?: FieldApiOverrideOptions,
   ) => {
-    // TODO fieldApiOverride was initially meant for also doing field level validation.
-    // However, this could cause some issues because of the field context. Notably,
-    // setFieldValue -> field._notifyChange() -> this.validate() was originally a form call,
-    // but we'd have a field reference available. So should there be one or no?
-
-    // If there should be one, that's easy enough, we simply pass it as argument for validators to
-    // see. We would also add in field-level validation into the pipeline.
-
-    // If not ... well ... good luck.
-
     const pipeline = this.options.validators
     if (!pipeline) return []
     if (pipeline.length === 0) return []

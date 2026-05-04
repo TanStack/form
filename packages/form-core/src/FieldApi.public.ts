@@ -1,8 +1,8 @@
 import type { FieldUpdateOptions, Updater } from './types.public'
 import type { FormApi } from './FormApi.public'
 import type {
+  ErrorWithMessage,
   FieldValidator,
-  FormValidationError,
   FormValidator,
 } from './validation.public'
 
@@ -15,8 +15,6 @@ import type {
 export interface BaseFieldMeta {
   isTouched: boolean
   isDirty: boolean
-  errors: FieldErrors
-  formValidatorErrors: Array<Array<FormValidationError>>
   childErrorCount: number
 }
 
@@ -24,6 +22,7 @@ export interface FieldMeta extends BaseFieldMeta {
   isPristine: boolean
   isInvalid: boolean
   isValid: boolean
+  errors: Array<ErrorWithMessage>
 }
 
 export interface FieldState {

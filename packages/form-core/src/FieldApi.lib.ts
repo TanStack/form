@@ -1,5 +1,11 @@
 import { batch, createAtom } from '@tanstack/store'
-import { callUpdater } from './utils'
+import { callUpdater, normalizeToArray } from './utils'
+import {
+  createValidatorPipelineCache,
+  isErrorResult,
+  runFieldValidatorPipeline,
+} from './validation.lib'
+import type { PipelineResult, ValidatorPipelineCache } from './validation.lib'
 
 import type { PropagateOptions } from './types.lib'
 import type { InternalRootFieldApi } from './RootFieldApi.lib'
@@ -12,14 +18,25 @@ import type {
   FieldMeta,
   FieldState,
 } from './FieldApi.public'
-import type { FieldValidator, FormValidator } from './validation.public'
+import type {
+  ErrorWithMessage,
+  FieldValidateResult,
+  FieldValidator,
+  FormValidator,
+  ValidationError,
+} from './validation.public'
 
 export type NameSegment = string | number
 export type NameSegments = Array<NameSegment>
 
+export interface InternalBaseFieldMeta extends BaseFieldMeta {
+  _formValidatorErrors: Array<Array<ValidationError>>
+  _fieldValidatorErrors: Array<Array<ValidationError>>
+}
+
 export interface FieldAtoms {
   store: ReadonlyAtom<FieldState>
-  meta: Atom<BaseFieldMeta>
+  meta: Atom<InternalBaseFieldMeta>
 }
 
 /**
@@ -130,12 +147,17 @@ export const defaultBaseFieldMeta: BaseFieldMeta = {
   isTouched: false,
   isDirty: false,
   childErrorCount: 0,
-  errors: [],
-  formValidatorErrors: [],
 }
 
-export const defaultFieldMeta: FieldMeta =
-  deriveFromBaseFieldMeta(defaultBaseFieldMeta)
+export const defaultInternalBaseFieldMeta: InternalBaseFieldMeta = {
+  ...defaultBaseFieldMeta,
+  _fieldValidatorErrors: [],
+  _formValidatorErrors: [],
+}
+
+export const defaultFieldMeta: FieldMeta = deriveFromBaseFieldMeta(
+  defaultInternalBaseFieldMeta,
+)
 
 export interface InternalFieldApiParams<
   TFormData,
@@ -168,6 +190,7 @@ export class InternalFieldApi<
   _fullPathCache: string | null = null
   _atoms: FieldAtoms | null = null
   _validators: Array<FieldValidator<any, any>>
+  _validatorCache: ValidatorPipelineCache | null = null
 
   #segment: NameSegment
   /**
@@ -220,17 +243,14 @@ export class InternalFieldApi<
 
   _getOrCreateAtoms(): FieldAtoms {
     if (!this._atoms) {
-      const metaAtom = createAtom<BaseFieldMeta>(defaultBaseFieldMeta)
+      const metaAtom = createAtom<InternalBaseFieldMeta>(
+        defaultInternalBaseFieldMeta,
+      )
       const derived = createAtom<FieldState>((prev) => {
         const newMeta = metaAtom.get()
         const value = this._getValue()
 
-        let meta: FieldMeta
-        if (prev && prev.meta === newMeta) {
-          meta = prev.meta
-        } else {
-          meta = deriveFromBaseFieldMeta(newMeta)
-        }
+        const meta = deriveFromBaseFieldMeta(newMeta)
 
         if (prev?.meta === meta && prev.value === value) {
           return prev
@@ -248,6 +268,13 @@ export class InternalFieldApi<
       }
     }
     return this._atoms
+  }
+
+  _getOrCreateValidatorCache(): ValidatorPipelineCache {
+    if (!this._validatorCache) {
+      this._validatorCache = createValidatorPipelineCache()
+    }
+    return this._validatorCache
   }
 
   get store(): ReadonlyAtom<FieldState> {
@@ -271,11 +298,11 @@ export class InternalFieldApi<
     return this._fullPathCache
   }
 
-  _getBaseMeta(): BaseFieldMeta {
+  _getBaseMeta(): InternalBaseFieldMeta {
     if (this._atoms) {
       return this._atoms.meta.get()
     } else {
-      return defaultFieldMeta
+      return defaultInternalBaseFieldMeta
     }
   }
 
@@ -348,13 +375,15 @@ export class InternalFieldApi<
    * Set this field's meta. If not present, it will create the
    * entry.
    */
-  _setMeta(updater: Updater<FieldMeta>) {
+  _setMeta(updater: Updater<InternalBaseFieldMeta>) {
     this._getOrCreateAtoms().meta.set((prevMeta) => {
       const newMeta = callUpdater(updater, prevMeta)
 
       // Inform parent if error count changed
       const prevContributes =
-        prevMeta.errors.length > 0 || prevMeta.childErrorCount > 0
+        prevMeta._fieldValidatorErrors.length > 0 ||
+        prevMeta._formValidatorErrors.length > 0 ||
+        prevMeta.childErrorCount > 0
       const newContributes =
         newMeta.errors.length > 0 || newMeta.childErrorCount > 0
 
@@ -385,9 +414,63 @@ export class InternalFieldApi<
     }))
   }
 
+  /**
+   * @private
+   * Triggers validation for this field and all parent fields,
+   * eventually calling form validation.
+   */
+  _triggerValidationCascade(event: 'change' | 'blur' | 'submit'): void {
+    let current: InternalFieldApi<any, any> | InternalRootFieldApi<any> = this
+
+    while (!current._isRoot) {
+      current._runFieldValidation(event)
+      current = current._parent
+    }
+
+    this.form.validate(event, { fieldApiOverride: this })
+  }
+
+  /**
+   * @private
+   * Runs this field's validation pipeline.
+   */
+  async _runFieldValidation(
+    event: 'change' | 'blur' | 'submit',
+  ): Promise<Array<PipelineResult<FieldValidateResult>>> {
+    if (this._validators.length === 0) return []
+
+    const results = await runFieldValidatorPipeline({
+      pipeline: this._validators,
+      context: {
+        event,
+        fieldApi: this,
+        formApi: this.form,
+      },
+      onResult: (result) => this._processValidationResult(result),
+    })
+
+    return results
+  }
+
+  _processValidationResult(result: PipelineResult<FieldValidateResult>) {
+    this._setMeta((prev) => {
+      const errors = [...prev._fieldValidatorErrors]
+      if (isErrorResult(result.result)) {
+        errors[result.validatorIndex] = normalizeToArray(result.result)
+      } else {
+        errors[result.validatorIndex] = []
+      }
+      return {
+        ...prev,
+        _fieldValidatorErrors: errors,
+      } satisfies InternalBaseFieldMeta
+    })
+  }
+
   _notifyChange(
     options: FieldUpdateOptions & PropagateOptions = { doPropagate: true },
-  ) {
+    event: 'change' | 'blur' | 'submit' = 'change',
+  ): void {
     const {
       markAsDirty = true,
       markAsTouched = true,
@@ -426,7 +509,7 @@ export class InternalFieldApi<
     })
 
     if (causeValidation) {
-      this.form.validate('change', { fieldApiOverride: this })
+      this._triggerValidationCascade(event)
     }
   }
 
@@ -472,13 +555,10 @@ export class InternalFieldApi<
 
         // Decrement parent's childErrorCount if this field was contributing
         if (!currField._parent._isRoot && currFieldMeta) {
-          const hasFormValidatorErrors = currFieldMeta.formValidatorErrors.some(
-            (errors) => errors.length > 0,
-          )
+          const currFieldErrors = getErrorsFromBaseMeta(currFieldMeta)
+
           const wasContributing =
-            currFieldMeta.errors.length > 0 ||
-            currFieldMeta.childErrorCount > 0 ||
-            hasFormValidatorErrors
+            currFieldErrors.length > 0 || currFieldMeta.childErrorCount > 0
           if (wasContributing) {
             currField._parent._updateChildErrorCount(true, false)
           }
@@ -620,20 +700,27 @@ function getFieldSnapshot(field: InternalFieldApi<any, any>): FieldState {
   }
 }
 
-function deriveFromBaseFieldMeta(baseMeta: BaseFieldMeta): FieldMeta {
-  const hasFormValidatorErrors = baseMeta.formValidatorErrors.some(
-    (errors) => errors.length > 0,
-  )
+function deriveFromBaseFieldMeta(baseMeta: InternalBaseFieldMeta): FieldMeta {
+  const errors = getErrorsFromBaseMeta(baseMeta)
+  const isInvalid = errors.length > 0 || baseMeta.childErrorCount > 0
+
   return {
     ...baseMeta,
-    isInvalid:
-      baseMeta.errors.length > 0 ||
-      baseMeta.childErrorCount > 0 ||
-      hasFormValidatorErrors,
-    isValid:
-      baseMeta.errors.length === 0 &&
-      baseMeta.childErrorCount === 0 &&
-      !hasFormValidatorErrors,
+    isInvalid,
+    errors,
+    isValid: !isInvalid,
     isPristine: !baseMeta.isDirty,
   }
+}
+
+function getErrorsFromBaseMeta(
+  baseMeta: InternalBaseFieldMeta,
+): Array<ErrorWithMessage> {
+  return (
+    baseMeta._fieldValidatorErrors
+      .concat(baseMeta._formValidatorErrors)
+      // ValidationError is OneOrMany, TypeScript doesn't realize that
+      // flat also takes care of that
+      .flat() as Array<ErrorWithMessage>
+  )
 }
