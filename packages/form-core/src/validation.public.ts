@@ -46,12 +46,17 @@ export interface ValidationAggregateError {
   fields: Record<string, ValidationError>
 }
 
-export interface FormValidatorContext<TFormData> {
+interface BaseValidatorContext<TFormData> {
   event: ValidationEvent
+  signal: AbortSignal
   formApi: FormApi<TFormData, Array<any>>
+}
+
+export interface FormValidatorContext<
+  TFormData,
+> extends BaseValidatorContext<TFormData> {
   fieldApi: FieldApi<any, any> | null
   value: TFormData
-  signal: AbortSignal
 }
 
 /**
@@ -100,4 +105,43 @@ export interface FormValidator<TFormData> {
   signalDebounceMs?: number
   validate: FormValidatorFn<TFormData>
   signals?: Array<ValidationSignalOption<TFormData>>
+}
+
+export interface FieldValidatorContext<
+  TFormData,
+  TFieldValue,
+> extends BaseValidatorContext<TFormData> {
+  fieldApi: FieldApi<TFormData, any>
+  value: TFieldValue
+}
+
+export type FieldValidateResult = ValidationResult
+
+export type FieldValidatorFn<TFormData, TFieldValue> = (
+  context: FieldValidatorContext<TFormData, TFieldValue>,
+) => FieldValidateResult | Promise<FieldValidateResult>
+
+export interface FieldValidator<TFormData, TFieldValue> {
+  /**
+   * If `true`, this validator will only run when all previous validators have passed.
+   * If `false`, validators run regardless of earlier validation results.
+   *
+   * @default false
+   */
+  runOnlyIfValid?: boolean
+  /**
+   * Whether this validator should be called during a submission attempt.
+   *
+   * @default true
+   */
+  runOnSubmit?: boolean | ValidationEnabledFn<any>
+  /**
+   * The debounce time in milliseconds for validation signals (change, blur).
+   * Does not affect submit events, which always execute immediately.
+   *
+   * @default 0
+   */
+  signalDebounceMs?: number
+  validate: FieldValidatorFn<TFormData, TFieldValue>
+  signals?: Array<ValidationSignalOption<any>>
 }

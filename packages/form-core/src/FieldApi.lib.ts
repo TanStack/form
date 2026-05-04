@@ -1,11 +1,11 @@
 import { batch, createAtom } from '@tanstack/store'
-import { callUpdater, mapDelete } from './utils'
+import { callUpdater } from './utils'
 
 import type { PropagateOptions } from './types.lib'
 import type { InternalRootFieldApi } from './RootFieldApi.lib'
 import type { FieldUpdateOptions, Updater } from './types.public'
 import type { InternalFormApi } from './FormApi.lib'
-import type { ReadonlyAtom } from '@tanstack/store'
+import type { Atom, ReadonlyAtom } from '@tanstack/store'
 import type {
   BaseFieldMeta,
   FieldApi,
@@ -16,6 +16,11 @@ import type { FormValidator } from './validation.public'
 
 export type NameSegment = string | number
 export type NameSegments = Array<NameSegment>
+
+export interface FieldAtoms {
+  store: ReadonlyAtom<FieldState>
+  meta: Atom<BaseFieldMeta>
+}
 
 /**
  * Convert a name into an array of segments.
@@ -119,15 +124,15 @@ export function tryGetFieldApi(
   }
 }
 
-export const defaultFieldMeta: FieldMeta = {
+export const defaultBaseFieldMeta: BaseFieldMeta = {
   isTouched: false,
   isDirty: false,
-  isInvalid: false,
-  isPristine: true,
-  isValid: true,
-  errors: [],
   childErrorCount: 0,
+  errors: [],
 }
+
+export const defaultFieldMeta: FieldMeta =
+  deriveFromBaseFieldMeta(defaultBaseFieldMeta)
 
 export interface InternalFieldApiParams<
   TFormData,
@@ -157,7 +162,7 @@ export class InternalFieldApi<
   _childrenArray: Array<InternalFieldApi<any, any>> = []
   _childrenMap: Map<string, InternalFieldApi<any, any>> = new Map()
   _fullPathCache: string | null = null
-  _store: ReadonlyAtom<FieldState> | null = null
+  _atoms: FieldAtoms | null = null
 
   #segment: NameSegment
   /**
@@ -186,7 +191,7 @@ export class InternalFieldApi<
    * on-demand if there is an adapter component that needs one.
    */
   get _isMounted(): boolean {
-    return this._store !== null
+    return this._atoms !== null
   }
 
   get _isArray(): boolean {
@@ -208,24 +213,18 @@ export class InternalFieldApi<
     }
   }
 
-  get store(): ReadonlyAtom<FieldState> {
-    if (!this._store) {
+  _getOrCreateAtoms(): FieldAtoms {
+    if (!this._atoms) {
+      const metaAtom = createAtom<BaseFieldMeta>(defaultBaseFieldMeta)
       const derived = createAtom<FieldState>((prev) => {
-        const baseMeta = getBaseFieldMeta(this)
+        const newMeta = metaAtom.get()
         const value = this._getValue()
 
         let meta: FieldMeta
-        if (prev && isSameBaseMeta(prev.meta, baseMeta)) {
+        if (prev && prev.meta === newMeta) {
           meta = prev.meta
         } else {
-          const isInvalid =
-            baseMeta.errors.length > 0 || baseMeta.childErrorCount > 0
-          meta = {
-            ...baseMeta,
-            isPristine: !baseMeta.isDirty,
-            isInvalid,
-            isValid: !isInvalid,
-          }
+          meta = deriveFromBaseFieldMeta(newMeta)
         }
 
         if (prev?.meta === meta && prev.value === value) {
@@ -238,9 +237,16 @@ export class InternalFieldApi<
         }
       })
 
-      this._store = derived
+      this._atoms = {
+        store: derived,
+        meta: metaAtom,
+      }
     }
-    return this._store
+    return this._atoms
+  }
+
+  get store(): ReadonlyAtom<FieldState> {
+    return this._getOrCreateAtoms().store
   }
 
   get name(): string {
@@ -258,6 +264,14 @@ export class InternalFieldApi<
     name += ownSegment
     this._fullPathCache = name
     return this._fullPathCache
+  }
+
+  _getBaseMeta(): BaseFieldMeta {
+    if (this._atoms) {
+      return this._atoms.meta.get()
+    } else {
+      return defaultFieldMeta
+    }
   }
 
   constructor({ segment, parent, form }: InternalFieldApiParams<any, any>) {
@@ -324,12 +338,8 @@ export class InternalFieldApi<
    * entry.
    */
   _setMeta(updater: Updater<FieldMeta>) {
-    this.form.fieldMetaAtom.set((prevMap) => {
-      const map = new Map(prevMap)
-      const prevMeta = map.get(this) ?? defaultFieldMeta
+    this._getOrCreateAtoms().meta.set((prevMeta) => {
       const newMeta = callUpdater(updater, prevMeta)
-
-      map.set(this, newMeta)
 
       // Inform parent if error count changed
       const prevContributes =
@@ -341,7 +351,7 @@ export class InternalFieldApi<
         this._parent._updateChildErrorCount(prevContributes, newContributes)
       }
 
-      return map
+      return newMeta
     })
   }
 
@@ -420,7 +430,7 @@ export class InternalFieldApi<
     if (this.#refCount === 0) {
       setTimeout(() => {
         if (this.#refCount === 0) {
-          this._store = null
+          this._atoms = null
         }
       }, 0)
     }
@@ -438,22 +448,20 @@ export class InternalFieldApi<
       while (stack.length > 0) {
         const currField = stack.pop()!
 
-        currField._store = null
+        const currFieldMeta = currField._atoms?.meta.get()
 
         // Decrement parent's childErrorCount if this field was contributing
-        if (!currField._parent._isRoot) {
-          const fieldMeta =
-            currField.form.fieldMetaAtom.get().get(currField) ??
-            defaultFieldMeta
+        if (!currField._parent._isRoot && currFieldMeta) {
           const wasContributing =
-            fieldMeta.errors.length > 0 || fieldMeta.childErrorCount > 0
+            currFieldMeta.errors.length > 0 || currFieldMeta.childErrorCount > 0
           if (wasContributing) {
             currField._parent._updateChildErrorCount(true, false)
           }
         }
 
+        currField._atoms = null
+
         this.form._fieldRootNode._removeFromTouchedFields(currField)
-        currField.form.fieldMetaAtom.set(mapDelete(currField))
 
         // Remove field from form's fieldErrors tracking for all validators
         currField.form._formMetaAtom.set((prev) => {
@@ -581,27 +589,17 @@ export class InternalFieldApi<
 // validateArray() -> touches all child nodes -> traverse, check for nodeId, if present, set it in the map
 
 function getFieldSnapshot(field: InternalFieldApi<any, any>): FieldState {
-  const baseMeta = getBaseFieldMeta(field)
   return {
     value: field._getValue(),
-    meta: {
-      ...baseMeta,
-      isInvalid: baseMeta.errors.length > 0 || baseMeta.childErrorCount > 0,
-      isValid: baseMeta.errors.length === 0 && baseMeta.childErrorCount === 0,
-      isPristine: !baseMeta.isDirty,
-    },
+    meta: deriveFromBaseFieldMeta(field._getBaseMeta()),
   }
 }
 
-function getBaseFieldMeta(field: InternalFieldApi<any, any>): BaseFieldMeta {
-  return field.form.fieldMetaAtom.get().get(field) ?? defaultFieldMeta
-}
-
-function isSameBaseMeta(metaA: BaseFieldMeta, metaB: BaseFieldMeta): boolean {
-  return (
-    metaA.isTouched === metaB.isTouched &&
-    metaA.isDirty === metaB.isDirty &&
-    metaA.errors === metaB.errors &&
-    metaA.childErrorCount === metaB.childErrorCount
-  )
+function deriveFromBaseFieldMeta(baseMeta: BaseFieldMeta): FieldMeta {
+  return {
+    ...baseMeta,
+    isInvalid: baseMeta.errors.length > 0 || baseMeta.childErrorCount > 0,
+    isValid: baseMeta.errors.length === 0 && baseMeta.childErrorCount === 0,
+    isPristine: !baseMeta.isDirty,
+  }
 }

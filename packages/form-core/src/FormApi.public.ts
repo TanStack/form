@@ -1,6 +1,5 @@
 import type { FieldUpdateOptions } from './types.public'
-import type { Atom, ReadonlyAtom } from '@tanstack/store'
-import type { BaseFieldMeta, FieldApi } from './FieldApi.public'
+import type { ReadonlyAtom } from '@tanstack/store'
 import type {
   FormValidationError,
   FormValidator,
@@ -45,9 +44,6 @@ export interface FormApi<
   TFormValidators extends Array<FormValidator<TData>>,
 > {
   store: ReadonlyAtom<FormState<TData>>
-  fieldMetaAtom: Atom<
-    ReadonlyMap<FieldApi<TData, TFormValidators>, BaseFieldMeta>
-  >
   readonly state: FormState<TData>
   readonly options: FormOptions<TData, TFormValidators>
 

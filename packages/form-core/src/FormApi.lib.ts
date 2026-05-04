@@ -4,7 +4,7 @@ import {
   nameToFieldNodeSegments,
   tryGetFieldApi,
 } from './FieldApi.lib'
-import { evaluate, getBy, mapDelete, normalizeToArray, setBy } from './utils'
+import { evaluate, getBy, normalizeToArray, setBy } from './utils'
 import { InternalRootFieldApi } from './RootFieldApi.lib'
 import {
   createValidatorPipelineCache,
@@ -20,7 +20,6 @@ import type {
 } from './types.lib'
 import type { Atom, ReadonlyAtom } from '@tanstack/store'
 import type { FormApi, FormOptions, FormState } from './FormApi.public'
-import type { BaseFieldMeta, FieldApi } from './FieldApi.public'
 import type { Updater } from './types.public'
 import type {
   FormValidationError,
@@ -118,9 +117,6 @@ export class InternalFormApi<
 > implements FormApi<TFormData, TFormValidators> {
   valuesAtom: Atom<TFormData>
   store: ReadonlyAtom<FormState<TFormData>>
-  fieldMetaAtom: Atom<
-    ReadonlyMap<FieldApi<TFormData, TFormValidators>, BaseFieldMeta>
-  >
   _formMetaAtom: Atom<BaseFormMeta>
   _fieldRootNode: InternalRootFieldApi<TFormData>
   _options: FormOptions<TFormData, TFormValidators>
@@ -131,9 +127,6 @@ export class InternalFormApi<
   constructor(options: FormOptions<TFormData, TFormValidators>) {
     this._options = options
     this.valuesAtom = createAtom(options.defaultValues)
-    this.fieldMetaAtom = createAtom<
-      ReadonlyMap<FieldApi<TFormData, TFormValidators>, BaseFieldMeta>
-    >(new Map())
     this._validatorPipelineCache = createValidatorPipelineCache()
     const validatorCount = this._options.validators?.length ?? 0
     this._formMetaAtom = createAtom({
@@ -329,12 +322,6 @@ export class InternalFormApi<
       nameToFieldNodeSegments(nameOrSegments),
       this,
     )
-  }
-
-  _deleteMeta = (
-    fieldNode: InternalFieldApi<TFormData, TFormValidators>,
-  ): void => {
-    this.fieldMetaAtom.set(mapDelete(fieldNode))
   }
 
   _processValidationResult = (result: PipelineResult) => {

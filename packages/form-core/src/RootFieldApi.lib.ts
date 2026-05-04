@@ -3,17 +3,17 @@ import type { InternalFormApi } from './FormApi.lib'
 
 export class InternalRootFieldApi<TData> {
   readonly _isRoot = true
-  #children: Map<NameSegment, InternalFieldApi<TData>> = new Map()
+  #children: Map<NameSegment, InternalFieldApi<TData, any>> = new Map()
 
-  form: InternalFormApi<TData>
+  form: InternalFormApi<TData, any>
 
   readonly name = ''
 
-  get _children(): Array<InternalFieldApi<TData>> {
+  get _children(): Array<InternalFieldApi<TData, any>> {
     return Array.from(this.#children.values())
   }
 
-  constructor(form: InternalFormApi<TData>) {
+  constructor(form: InternalFormApi<TData, any>) {
     this.form = form
   }
 
@@ -21,7 +21,7 @@ export class InternalRootFieldApi<TData> {
    * @private
    * Get a child FieldApi by its segment name.
    */
-  _getChild(segment: NameSegment): InternalFieldApi<TData> | undefined {
+  _getChild(segment: NameSegment): InternalFieldApi<TData, any> | undefined {
     return this.#children.get(segment)
   }
 
@@ -29,11 +29,11 @@ export class InternalRootFieldApi<TData> {
    * @private
    * Set an existing node as a child of this root node.
    */
-  _setChild(node: InternalFieldApi<TData>): void {
+  _setChild(node: InternalFieldApi<TData, any>): void {
     this.#children.set(node._segment, node)
   }
 
-  _addToTouchedFields(node: InternalFieldApi<any>) {
+  _addToTouchedFields(node: InternalFieldApi<any, any>) {
     this.form._formMetaAtom.set((prev) => {
       if (prev.touchedFields.has(node)) {
         return prev
@@ -44,7 +44,7 @@ export class InternalRootFieldApi<TData> {
     })
   }
 
-  _removeFromTouchedFields(node: InternalFieldApi<any>) {
+  _removeFromTouchedFields(node: InternalFieldApi<any, any>) {
     this.form._formMetaAtom.set((prev) => {
       if (!prev.touchedFields.has(node)) {
         return prev
