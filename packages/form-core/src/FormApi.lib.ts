@@ -22,6 +22,7 @@ import type { Atom, ReadonlyAtom } from '@tanstack/store'
 import type { FormApi, FormOptions, FormState } from './FormApi.public'
 import type { Updater } from './types.public'
 import type {
+  FieldValidator,
   FormValidateResult,
   FormValidationError,
   FormValidator,
@@ -235,7 +236,7 @@ export class InternalFormApi<
 
     if (!Array.isArray(field.value)) {
       console.warn(
-        '<form>.pushValue: This method can only be used on array fields',
+        '<form>.pushFieldValue: This method can only be used on array fields',
       )
       return
     }
@@ -317,11 +318,13 @@ export class InternalFormApi<
 
   _getOrCreateFieldApi = (
     nameOrSegments: string | Array<string>,
+    validators: Array<FieldValidator<any, any>> | undefined,
   ): InternalFieldApi<TFormData, TFormValidators> => {
     return getOrCreateFieldApi(
       this._fieldRootNode,
       nameToFieldNodeSegments(nameOrSegments),
       this,
+      validators,
     )
   }
 
@@ -379,7 +382,7 @@ export class InternalFormApi<
         for (const [fieldName, fieldError] of Object.entries(
           aggregateError.fieldErrors,
         )) {
-          const field = this._getOrCreateFieldApi(fieldName)
+          const field = this._getOrCreateFieldApi(fieldName, undefined)
           field._setMeta((prev) => {
             const formValidatorErrors = [...prev.formValidatorErrors]
             // Ensure array is large enough for this validator index.
@@ -426,6 +429,16 @@ export class InternalFormApi<
     signal: ValidationEvent,
     opts?: FieldApiOverrideOptions,
   ) => {
+    // TODO fieldApiOverride was initially meant for also doing field level validation.
+    // However, this could cause some issues because of the field context. Notably,
+    // setFieldValue -> field._notifyChange() -> this.validate() was originally a form call,
+    // but we'd have a field reference available. So should there be one or no?
+
+    // If there should be one, that's easy enough, we simply pass it as argument for validators to
+    // see. We would also add in field-level validation into the pipeline.
+
+    // If not ... well ... good luck.
+
     const pipeline = this.options.validators
     if (!pipeline) return []
     if (pipeline.length === 0) return []

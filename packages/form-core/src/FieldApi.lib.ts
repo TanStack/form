@@ -12,7 +12,7 @@ import type {
   FieldMeta,
   FieldState,
 } from './FieldApi.public'
-import type { FormValidator } from './validation.public'
+import type { FieldValidator, FormValidator } from './validation.public'
 
 export type NameSegment = string | number
 export type NameSegments = Array<NameSegment>
@@ -72,6 +72,7 @@ export function getOrCreateFieldApi(
   node: InternalFieldApi<any, any> | InternalRootFieldApi<any>,
   segments: NameSegments,
   form: InternalFormApi<any, any>,
+  validators?: Array<FieldValidator<any, any>>,
 ): InternalFieldApi<any, any> {
   const segment = segments.shift()
   if (segment === undefined) {
@@ -84,18 +85,19 @@ export function getOrCreateFieldApi(
 
   let childNode = node._getChild(segment)
   if (childNode) {
-    return getOrCreateFieldApi(childNode, segments, form)
+    return getOrCreateFieldApi(childNode, segments, form, validators)
   }
 
   childNode = new InternalFieldApi({
     segment,
     parent: node,
     form: form,
+    validators,
   })
 
   node._setChild(childNode)
 
-  return getOrCreateFieldApi(childNode, segments, form)
+  return getOrCreateFieldApi(childNode, segments, form, validators)
 }
 
 /**
@@ -144,6 +146,7 @@ export interface InternalFieldApiParams<
     | InternalFieldApi<TFormData, TFormValidators>
     | InternalRootFieldApi<TFormData>
   form: InternalFormApi<TFormData, TFormValidators>
+  validators?: Array<FieldValidator<any, any>>
 }
 
 // Possible plan for performance
@@ -164,6 +167,7 @@ export class InternalFieldApi<
   _childrenMap: Map<string, InternalFieldApi<any, any>> = new Map()
   _fullPathCache: string | null = null
   _atoms: FieldAtoms | null = null
+  _validators: Array<FieldValidator<any, any>>
 
   #segment: NameSegment
   /**
@@ -275,10 +279,16 @@ export class InternalFieldApi<
     }
   }
 
-  constructor({ segment, parent, form }: InternalFieldApiParams<any, any>) {
+  constructor({
+    segment,
+    parent,
+    validators,
+    form,
+  }: InternalFieldApiParams<any, any>) {
     this.#segment = segment
     this._parent = parent
     this.form = form
+    this._validators = validators ?? []
   }
 
   _invalidateFullPath() {
@@ -378,7 +388,12 @@ export class InternalFieldApi<
   _notifyChange(
     options: FieldUpdateOptions & PropagateOptions = { doPropagate: true },
   ) {
-    const { markAsDirty = true, markAsTouched = true, doPropagate } = options
+    const {
+      markAsDirty = true,
+      markAsTouched = true,
+      causeValidation = true,
+      doPropagate,
+    } = options
     // Not sure if we lose this context, so might as well
     const originalField = this
 
@@ -409,6 +424,10 @@ export class InternalFieldApi<
         }
       }
     })
+
+    if (causeValidation) {
+      this.form.validate('change', { fieldApiOverride: this })
+    }
   }
 
   /**

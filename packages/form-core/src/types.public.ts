@@ -14,6 +14,12 @@ export interface FieldUpdateOptions {
    * @default true
    */
   markAsDirty?: boolean
+  /**
+   * Whether to cause a validation run from the update.
+   *
+   * @default true
+   */
+  causeValidation?: boolean
 }
 
 export type OneOrMany<T> = T | Array<T>

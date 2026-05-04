@@ -80,7 +80,7 @@ describe('FormApi', () => {
 
     it('marks form isTouched and isDirty after a change', () => {
       const form = new InternalFormApi({ defaultValues: { name: '' } })
-      const field = form._getOrCreateFieldApi('name')
+      const field = form._getOrCreateFieldApi('name', undefined)
       void field.store
       form.setFieldValue('name', 'Alice', { fieldApiOverride: field })
       expect(form.state.isTouched).toBe(true)
@@ -90,7 +90,7 @@ describe('FormApi', () => {
 
     it('does not mark form isTouched when markAsTouched is false', () => {
       const form = new InternalFormApi({ defaultValues: { name: '' } })
-      const field = form._getOrCreateFieldApi('name')
+      const field = form._getOrCreateFieldApi('name', undefined)
       form.setFieldValue('name', 'Alice', {
         fieldApiOverride: field,
         markAsTouched: false,
@@ -100,7 +100,7 @@ describe('FormApi', () => {
 
     it('does not mark form isDirty when markAsDirty is false', () => {
       const form = new InternalFormApi({ defaultValues: { name: '' } })
-      const field = form._getOrCreateFieldApi('name')
+      const field = form._getOrCreateFieldApi('name', undefined)
       form.setFieldValue('name', 'Alice', {
         fieldApiOverride: field,
         markAsDirty: false,
@@ -111,7 +111,7 @@ describe('FormApi', () => {
 
     it('does not mark the field dirty when markAsDirty is false', () => {
       const form = new InternalFormApi({ defaultValues: { name: '' } })
-      const field = form._getOrCreateFieldApi('name')
+      const field = form._getOrCreateFieldApi('name', undefined)
       form.setFieldValue('name', 'Alice', {
         fieldApiOverride: field,
         markAsDirty: false,
@@ -145,8 +145,8 @@ describe('FormApi', () => {
 
     it('updates field segments after swap', () => {
       const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
-      const field0 = form._getOrCreateFieldApi('items[0]')
-      const field1 = form._getOrCreateFieldApi('items[1]')
+      const field0 = form._getOrCreateFieldApi('items[0]', undefined)
+      const field1 = form._getOrCreateFieldApi('items[1]', undefined)
       form.swapFieldValues('items', 0, 1)
       expect(field0._segment).toBe(1)
       expect(field1._segment).toBe(0)
@@ -156,7 +156,7 @@ describe('FormApi', () => {
   describe('pushFieldValue', () => {
     it('appends a value to an array field', () => {
       const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
-      const field = form._getOrCreateFieldApi('items')
+      const field = form._getOrCreateFieldApi('items', undefined)
       form.pushFieldValue('items', 'c', { fieldApiOverride: field })
       expect(form.getFieldValue('items')).toEqual(['a', 'b', 'c'])
     })
@@ -164,7 +164,7 @@ describe('FormApi', () => {
     it('warns when called on a non-array field', () => {
       const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
       const form = new InternalFormApi({ defaultValues: { name: '' } })
-      const field = form._getOrCreateFieldApi('name')
+      const field = form._getOrCreateFieldApi('name', undefined)
       form.pushFieldValue('name', 'x', { fieldApiOverride: field })
       expect(warn).toHaveBeenCalled()
       warn.mockRestore()
@@ -174,7 +174,7 @@ describe('FormApi', () => {
   describe('deleteField', () => {
     it('unmounts the field store', () => {
       const form = new InternalFormApi({ defaultValues: { name: '' } })
-      const field = form._getOrCreateFieldApi('name')
+      const field = form._getOrCreateFieldApi('name', undefined)
       void field.store
       expect(field._isMounted).toBe(true)
       form.deleteField('name', { fieldApiOverride: field })
@@ -183,8 +183,8 @@ describe('FormApi', () => {
 
     it('also unmounts child field stores', () => {
       const form = new InternalFormApi({ defaultValues: { a: { b: '' } } })
-      const parent = form._getOrCreateFieldApi('a')
-      const child = form._getOrCreateFieldApi('a.b')
+      const parent = form._getOrCreateFieldApi('a', undefined)
+      const child = form._getOrCreateFieldApi('a.b', undefined)
       void parent.store
       void child.store
       form.deleteField('a', { fieldApiOverride: parent })
@@ -605,6 +605,158 @@ describe('FormApi', () => {
           { message: 'Conditional submit error' },
         ])
         expect(validatorFn).toHaveBeenCalled()
+      })
+    })
+
+    describe('causing validations', () => {
+      it('runs change validators on value updates', async () => {
+        const validatorFn = vi
+          .fn()
+          .mockImplementation(() => ({ message: 'Change error' }))
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              validate: validatorFn,
+              signals: ['change'],
+            },
+          ],
+        })
+        const field = form._getOrCreateFieldApi('name', undefined)
+        form.setFieldValue('name', 'Alice', { fieldApiOverride: field })
+        await vi.waitFor(() => {
+          expect(validatorFn).toHaveBeenCalled()
+        })
+      })
+
+      it('runs only change validators when updating values', async () => {
+        const onChangeValidatorFn = vi
+          .fn()
+          .mockImplementation(() => ({ message: 'Change error' }))
+        const onBlurValidatorFn = vi
+          .fn()
+          .mockImplementation(() => ({ message: 'Blur error' }))
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              validate: onChangeValidatorFn,
+              signals: ['change'],
+            },
+            {
+              validate: onBlurValidatorFn,
+              signals: ['blur'],
+            },
+          ],
+        })
+        const field = form._getOrCreateFieldApi('name', undefined)
+        form.setFieldValue('name', 'Alice', { fieldApiOverride: field })
+        await vi.waitFor(() => {
+          expect(onChangeValidatorFn).toHaveBeenCalled()
+          expect(onBlurValidatorFn).not.toHaveBeenCalled()
+        })
+      })
+
+      it('skips validators when change signal is disabled', async () => {
+        vi.useFakeTimers()
+        const validatorFn = vi
+          .fn()
+          .mockImplementation(() => ({ message: 'Change error' }))
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              validate: validatorFn,
+              signals: [{ signal: 'change', enabled: false }],
+            },
+          ],
+        })
+        const field = form._getOrCreateFieldApi('name', undefined)
+        field.handleChange('Alice')
+        await vi.runAllTimersAsync()
+
+        expect(validatorFn).not.toHaveBeenCalled()
+        vi.useRealTimers()
+      })
+
+      it('skips validation when explicitly disabled per update', async () => {
+        vi.useFakeTimers()
+        const validatorFn = vi
+          .fn()
+          .mockImplementation(() => ({ message: 'Change error' }))
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              validate: validatorFn,
+              signals: ['change'],
+            },
+          ],
+        })
+        const field = form._getOrCreateFieldApi('name', undefined)
+        field.handleChange('Alice', { causeValidation: false })
+        await vi.runAllTimersAsync()
+
+        expect(validatorFn).not.toHaveBeenCalled()
+        vi.useRealTimers()
+      })
+
+      it('debounces change validators across rapid updates', async () => {
+        vi.useFakeTimers()
+        const validatorFn = vi
+          .fn()
+          .mockImplementation(() => ({ message: 'Debounced error' }))
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              validate: validatorFn,
+              signals: ['change'],
+              signalDebounceMs: 100,
+            },
+          ],
+        })
+        const field = form._getOrCreateFieldApi('name', undefined)
+        form.setFieldValue('name', 'A', { fieldApiOverride: field })
+        form.setFieldValue('name', 'Al', { fieldApiOverride: field })
+        form.setFieldValue('name', 'Ali', { fieldApiOverride: field })
+        expect(validatorFn).not.toHaveBeenCalled()
+        await vi.advanceTimersByTimeAsync(100)
+        expect(validatorFn).toHaveBeenCalledOnce()
+        vi.useRealTimers()
+      })
+
+      it('discards stale async validation results', async () => {
+        vi.useFakeTimers()
+        const validatorFn = vi
+          .fn()
+          .mockImplementationOnce(
+            () =>
+              new Promise((resolve) =>
+                setTimeout(() => resolve({ message: 'Stale error' }), 50),
+              ),
+          )
+          .mockImplementationOnce(() =>
+            Promise.resolve({ message: 'Current error' }),
+          )
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              validate: validatorFn,
+              signals: ['change'],
+            },
+          ],
+        })
+        const field = form._getOrCreateFieldApi('name', undefined)
+        form.setFieldValue('name', 'A', { fieldApiOverride: field })
+        form.setFieldValue('name', 'Alice', { fieldApiOverride: field })
+        await vi.runAllTimersAsync()
+
+        expect(validatorFn).toHaveBeenCalledTimes(2)
+        expect(form.state.formErrors).toEqual([{ message: 'Current error' }])
+
+        vi.useRealTimers()
       })
     })
   })
