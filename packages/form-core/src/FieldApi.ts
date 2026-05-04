@@ -1855,7 +1855,9 @@ export class FieldApi<
     // This prevents unnecessary re-renders when there are no async validators
     // See: https://github.com/TanStack/form/issues/1130
     const hasAsyncValidators = validates.some((v) => v.validate)
-    const hasLinkedAsyncValidators = linkedFieldValidates.some((v) => v.validate)
+    const hasLinkedAsyncValidators = linkedFieldValidates.some(
+      (v) => v.validate,
+    )
 
     if (hasAsyncValidators) {
       if (!this.state.meta.isValidating) {
