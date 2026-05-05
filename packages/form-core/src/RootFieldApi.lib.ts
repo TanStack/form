@@ -45,13 +45,19 @@ export class InternalRootFieldApi<TData> {
     })
   }
 
-  _removeFromTouchedFields(node: InternalFieldApi<any, any>) {
+  _removeChild(segment: NameSegment): void {
+    this.#children.delete(segment)
+  }
+
+  _removeFromTouchedFieldsBatch(nodes: Set<InternalFieldApi<any, any>>) {
     this.form._formMetaAtom.set((prev) => {
-      if (!prev.touchedFields.has(node)) {
+      const newSet = new Set(prev.touchedFields)
+      for (const node of nodes) {
+        newSet.delete(node)
+      }
+      if (newSet.size === prev.touchedFields.size) {
         return prev
       }
-      const newSet = new Set(prev.touchedFields)
-      newSet.delete(node)
       return { ...prev, touchedFields: newSet }
     })
   }

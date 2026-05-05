@@ -311,6 +311,41 @@ export class InternalFormApi<
     })
   }
 
+  clearFieldValues = (
+    arrayFieldName: string,
+    options?: FieldApiOverrideOptions,
+  ) => {
+    const fieldValue = this.getFieldValue(arrayFieldName)
+    if (!Array.isArray(fieldValue)) {
+      console.warn(
+        '<form>.clearFieldValues: This method can only be used on array fields',
+      )
+      return
+    }
+
+    batch(() => {
+      this.setFieldValue(arrayFieldName, () => [], options)
+
+      const arrayField = tryGetFieldApi(
+        this._fieldRootNode,
+        nameToFieldNodeSegments(arrayFieldName),
+      )
+
+      if (!arrayField) return
+
+      arrayField._setMeta((prev) => ({
+        ...prev,
+        _arrayVersion: prev._arrayVersion + 1,
+      }))
+
+      // Kill all child fields since the array is now empty
+      // _kill() will remove each child from the parent's children
+      for (const child of [...arrayField._children]) {
+        child._kill()
+      }
+    })
+  }
+
   _tryGetFieldApi = (
     nameOrSegments: string | Array<string>,
   ): InternalFieldApi<TFormData, TFormValidators> | null => {

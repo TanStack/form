@@ -171,6 +171,37 @@ describe('FormApi', () => {
     })
   })
 
+  describe('clearFieldValues', () => {
+    it('empties an array field', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c'] },
+      })
+      form.clearFieldValues('items')
+      expect(form.getFieldValue('items')).toEqual([])
+    })
+
+    it('warns when called on a non-array field', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const form = new InternalFormApi({ defaultValues: { name: '' } })
+      form.clearFieldValues('name')
+      expect(warn).toHaveBeenCalled()
+      warn.mockRestore()
+    })
+
+    it('kills child fields', () => {
+      const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
+      const arrayField = form._getOrCreateFieldApi('items', undefined)
+      form._getOrCreateFieldApi('items[0]', undefined)
+      form._getOrCreateFieldApi('items[1]', undefined)
+
+      form.clearFieldValues('items')
+
+      expect(form._tryGetFieldApi('items[0]')).toBeNull()
+      expect(form._tryGetFieldApi('items[1]')).toBeNull()
+      expect(arrayField._children).toEqual([])
+    })
+  })
+
   describe('deleteField', () => {
     it('unmounts the field store', () => {
       const form = new InternalFormApi({ defaultValues: { name: '' } })

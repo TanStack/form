@@ -392,6 +392,24 @@ export class InternalFieldApi<
 
   /**
    * @private
+   * Remove a child node from this FieldApi.
+   *
+   * @important Does not kill the child node.
+   */
+  _removeChild(segment: NameSegment): void {
+    if (this._type === 'array') {
+      if (typeof segment === 'number') {
+        this._childrenArray[segment] = undefined as never
+      }
+    } else {
+      if (typeof segment === 'string') {
+        this._childrenMap.delete(segment)
+      }
+    }
+  }
+
+  /**
+   * @private
    * Set this field's meta. If not present, it will create the
    * entry.
    */
@@ -521,10 +539,8 @@ export class InternalFieldApi<
       while (!currNode._isRoot) {
         const { isDirty, isTouched, isBlurred } = currNode.meta
         const shouldUpdateDirty = markAsDirty && !isDirty
-        const shouldUpdateTouched =
-          markAsTouched && !isTouched && currNode._isMounted
-        const shouldUpdateBlurred =
-          markAsBlurred && !isBlurred && currNode._isMounted
+        const shouldUpdateTouched = markAsTouched && !isTouched
+        const shouldUpdateBlurred = markAsBlurred && !isBlurred
 
         if (shouldUpdateDirty || shouldUpdateTouched || shouldUpdateBlurred) {
           currNode._setMeta((prev) => ({
@@ -590,43 +606,76 @@ export class InternalFieldApi<
   _kill() {
     batch(() => {
       const stack: Array<InternalFieldApi<any, any>> = [this]
+      const nodesToKill: Array<InternalFieldApi<any, any>> = []
+      const nodesToKillSet = new Set<InternalFieldApi<any, any>>()
 
       while (stack.length > 0) {
-        const currField = stack.pop()!
+        const node = stack.pop()!
+        nodesToKill.push(node)
+        nodesToKillSet.add(node)
+        stack.push(...node._children)
+      }
 
-        const currFieldMeta = currField._atoms?.meta.get()
+      for (const node of nodesToKill) {
+        node._parent._removeChild(node._segment)
+      }
 
-        // Decrement parent's childErrorCount if this field was contributing
-        if (!currField._parent._isRoot && currFieldMeta) {
-          const currFieldErrors = getErrorsFromBaseMeta(currFieldMeta)
+      this.form._formMetaAtom.set((prev) => {
+        let touchedFields = prev.touchedFields
 
-          const wasContributing =
-            currFieldErrors.length > 0 || currFieldMeta.childErrorCount > 0
-          if (wasContributing) {
-            currField._parent._updateChildErrorCount(true, false)
+        if (touchedFields.size > 0) {
+          const nextTouchedFields = new Set(touchedFields)
+
+          for (const node of nodesToKill) {
+            nextTouchedFields.delete(node)
+          }
+
+          if (nextTouchedFields.size !== touchedFields.size) {
+            touchedFields = nextTouchedFields
           }
         }
 
-        currField._atoms = null
-        this._validatorCache = null
+        const fieldErrors = [...prev.fieldErrors]
 
-        this.form._fieldRootNode._removeFromTouchedFields(currField)
+        for (let i = 0; i < fieldErrors.length; i++) {
+          const currFieldErrors = fieldErrors[i]
+          if (!currFieldErrors || currFieldErrors.size === 0) continue
 
-        // Remove field from form's fieldErrors tracking for all validators
-        currField.form._formMetaAtom.set((prev) => {
-          const fieldErrors = [...prev.fieldErrors]
-          for (let i = 0; i < fieldErrors.length; i++) {
-            const currFieldErrors = fieldErrors[i]
-            if (currFieldErrors) {
-              const newFieldErrors = new Set(currFieldErrors)
-              newFieldErrors.delete(currField)
-              fieldErrors[i] = newFieldErrors
+          let next: Set<InternalFieldApi<any, any>> | undefined
+
+          for (const node of currFieldErrors) {
+            if (nodesToKillSet.has(node)) {
+              if (!next) {
+                next = new Set(currFieldErrors)
+              }
+              next.delete(node)
             }
           }
-          return { ...prev, fieldErrors }
-        })
 
-        stack.push(...currField._children)
+          if (next) {
+            fieldErrors[i] = next
+          }
+        }
+
+        return { ...prev, fieldErrors }
+      })
+
+      for (const node of nodesToKill) {
+        const nodeMeta = node._atoms?.meta.get()
+
+        if (!node._parent._isRoot && nodeMeta) {
+          const nodeErrors = getErrorsFromBaseMeta(nodeMeta)
+          const wasContributing =
+            nodeErrors.length > 0 || nodeMeta.childErrorCount > 0
+          if (wasContributing) {
+            node._parent._updateChildErrorCount(true, false)
+          }
+        }
+
+        node._atoms = null
+        node._validatorCache = null
+        node._childrenArray = []
+        node._childrenMap.clear()
       }
     })
   }
@@ -680,6 +729,13 @@ export class InternalFieldApi<
 
   swapValues = (indexA: number, indexB: number) => {
     this.form.swapFieldValues(this.name, indexA, indexB, {
+      fieldApiOverride: this,
+    })
+  }
+
+  clearValues = (options: FieldUpdateOptions = {}): void => {
+    this.form.clearFieldValues(this.name, {
+      ...options,
       fieldApiOverride: this,
     })
   }
