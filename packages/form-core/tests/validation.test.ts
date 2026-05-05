@@ -1,7 +1,12 @@
 import { describe, expect, it, vi } from 'vitest'
 import { runFormValidatorPipeline } from '../src/validation.lib'
 import { InternalFormApi } from '../src/FormApi.lib'
-import type { FormValidator, FormValidatorContext } from '../src'
+import type { PipelineResult } from '../src/validation.lib'
+import type {
+  FormValidateResult,
+  FormValidator,
+  FormValidatorContext,
+} from '../src'
 import type { InternalFieldApi } from '../src/FieldApi.lib'
 
 describe('runFormValidatorPipeline', () => {
@@ -20,6 +25,7 @@ describe('runFormValidatorPipeline', () => {
       runWithContext: (args: {
         event: Event
         field?: InternalFieldApi<any, Array<any>>
+        onResult?: (result: PipelineResult<FormValidateResult>) => void
       }) => {
         return runFormValidatorPipeline({
           context: {
@@ -27,6 +33,7 @@ describe('runFormValidatorPipeline', () => {
             formApi: form,
             fieldApi: args.field ?? null,
           },
+          onResult: args.onResult,
           pipeline: pipeline,
         })
       },
@@ -167,6 +174,7 @@ describe('runFormValidatorPipeline', () => {
 
     const formApi = getForm({ name: '' })
     const validate = vi.fn(() => ({ message: 'foo' }))
+    const onResult = vi.fn()
 
     const { runWithContext } = getPipeline(formApi, [
       {
@@ -176,14 +184,21 @@ describe('runFormValidatorPipeline', () => {
       },
     ])
 
-    runWithContext({ event: 'change' })
+    runWithContext({ event: 'change', onResult })
 
     await vi.advanceTimersByTimeAsync(50)
 
-    const submitResults = await runWithContext({ event: 'submit' })
+    const submitResults = await runWithContext({ event: 'submit', onResult })
 
     expect(validate).toHaveBeenCalledOnce()
     expect(submitResults).toHaveLength(1)
+
+    expect(onResult).toHaveBeenCalledOnce()
+    expect(onResult).toHaveBeenCalledWith(
+      expect.objectContaining({
+        result: { message: 'foo' },
+      }),
+    )
 
     await vi.advanceTimersByTimeAsync(100)
 
@@ -288,6 +303,7 @@ describe('runFormValidatorPipeline', () => {
     const formApi = getForm({ name: '' })
     const validationResult = { message: 'foo' }
     const validate = vi.fn(() => validationResult)
+    const onResult = vi.fn()
 
     const { runWithContext } = getPipeline(formApi, [
       {
@@ -297,22 +313,20 @@ describe('runFormValidatorPipeline', () => {
       },
     ])
 
-    const firstPromise = runWithContext({ event: 'change' })
+    const firstPromise = runWithContext({ event: 'change', onResult })
 
     await vi.advanceTimersByTimeAsync(50)
-    const secondPromise = runWithContext({ event: 'change' })
+    const secondPromise = runWithContext({ event: 'change', onResult })
 
     await vi.advanceTimersByTimeAsync(100)
 
     expect(validate).toHaveBeenCalledOnce()
 
-    await expect(firstPromise).resolves.toHaveLength(1)
-    await expect(firstPromise).resolves.toContainEqual(
-      expect.objectContaining({ result: null }),
-    )
+    await firstPromise
+    await secondPromise
 
-    await expect(secondPromise).resolves.toHaveLength(1)
-    await expect(secondPromise).resolves.toContainEqual(
+    expect(onResult).toHaveBeenCalledOnce()
+    expect(onResult).toHaveBeenCalledWith(
       expect.objectContaining({ result: validationResult }),
     )
 
@@ -333,6 +347,7 @@ describe('runFormValidatorPipeline', () => {
         waitForFirstValidation.then(() => ({ message: 'first' })),
       )
       .mockResolvedValueOnce({ message: 'second' })
+    const onResult = vi.fn()
 
     const { runWithContext } = getPipeline(formApi, [
       {
@@ -341,22 +356,59 @@ describe('runFormValidatorPipeline', () => {
       },
     ])
 
-    const firstPromise = runWithContext({ event: 'change' })
+    const firstPromise = runWithContext({ event: 'change', onResult })
     expect(validate).toHaveBeenCalledOnce()
 
-    const secondPromise = runWithContext({ event: 'change' })
+    const secondPromise = runWithContext({ event: 'change', onResult })
     expect(validate).toHaveBeenCalledTimes(2)
 
     resolveFirstValidation()
 
-    await expect(firstPromise).resolves.toHaveLength(1)
-    await expect(firstPromise).resolves.toContainEqual(
-      expect.objectContaining({ result: null }),
-    )
+    await firstPromise
+    await secondPromise
 
-    await expect(secondPromise).resolves.toHaveLength(1)
-    await expect(secondPromise).resolves.toContainEqual(
+    expect(onResult).toHaveBeenCalledOnce()
+    expect(onResult).toHaveBeenCalledWith(
       expect.objectContaining({ result: { message: 'second' } }),
     )
+  })
+
+  it('should not call onResult for aborted debounced calls', async () => {
+    vi.useFakeTimers()
+
+    const formApi = getForm({ name: '' })
+    const validationResult = { message: 'foo' }
+    const validate = vi.fn(() => validationResult)
+    const onResult = vi.fn()
+
+    const { runWithContext } = getPipeline(formApi, [
+      {
+        validate,
+        signals: ['change'],
+        signalDebounceMs: 100,
+      },
+    ])
+
+    const firstPromise = runWithContext({ event: 'change', onResult })
+
+    await vi.advanceTimersByTimeAsync(50)
+    const secondPromise = runWithContext({ event: 'change', onResult })
+
+    await vi.advanceTimersByTimeAsync(100)
+
+    expect(validate).toHaveBeenCalledOnce()
+
+    await firstPromise
+    await secondPromise
+
+    expect(onResult).toHaveBeenCalledOnce()
+    expect(onResult).toHaveBeenCalledWith(
+      expect.objectContaining({
+        validatorIndex: 0,
+        result: validationResult,
+      }),
+    )
+
+    vi.useRealTimers()
   })
 })

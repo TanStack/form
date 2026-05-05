@@ -84,6 +84,8 @@ export function isAggregateError(value: FormValidateResult): {
   return null
 }
 
+const ABORTED_CALL = { isAborted: true }
+
 export interface PipelineResult<T> {
   validatorIndex: number
   result: T
@@ -229,52 +231,65 @@ function runMaybeDebouncedValidator(
     signal,
   }
 
-  if (debounceMs <= 0) {
-    existingDebouncer?.cancel()
-    return run(internalContext)
-  }
-
-  let debouncer = existingDebouncer
-
-  if (!debouncer) {
-    debouncer = new LiteDebouncer(
-      async (call: DebouncedValidationCall) => {
-        try {
-          call.resolve(await run(call.context))
-        } catch (error) {
-          call.reject(error)
-        }
-      },
-      {
-        wait: debounceMs,
-        leading: false,
-        trailing: true,
-      },
-    )
-
-    cache.debouncers.set(cacheKey, debouncer)
-  }
-
   return new Promise<FormValidateResult>((resolve, reject) => {
     const onAbort = () => {
-      debouncer.cancel()
+      existingDebouncer?.cancel()
       cache.abortControllers.delete(cacheKey)
-      resolve(null)
+      resolve(ABORTED_CALL as never)
     }
     signal.addEventListener('abort', onAbort)
-    debouncer.maybeExecute({
-      context: internalContext,
-      resolve: (result: any) => {
-        signal.removeEventListener('abort', onAbort)
-        cache.abortControllers.delete(cacheKey)
-        resolve(result)
-      },
-      reject: (error: any) => {
-        signal.removeEventListener('abort', onAbort)
-        cache.abortControllers.delete(cacheKey)
-        reject(error)
-      },
-    })
+
+    const cleanup = () => {
+      signal.removeEventListener('abort', onAbort)
+      cache.abortControllers.delete(cacheKey)
+    }
+
+    if (debounceMs <= 0) {
+      existingDebouncer?.cancel()
+      run(internalContext).then(
+        (result) => {
+          cleanup()
+          resolve(result)
+        },
+        (error) => {
+          cleanup()
+          reject(error)
+        },
+      )
+    } else {
+      let debouncer = existingDebouncer
+
+      if (!debouncer) {
+        debouncer = new LiteDebouncer(
+          async (call: DebouncedValidationCall) => {
+            try {
+              call.resolve(await run(call.context))
+            } catch (error) {
+              call.reject(error)
+            }
+          },
+          {
+            wait: debounceMs,
+            leading: false,
+            trailing: true,
+          },
+        )
+
+        cache.debouncers.set(cacheKey, debouncer)
+      }
+
+      debouncer.maybeExecute({
+        context: internalContext,
+        resolve: (result: any) => {
+          cleanup()
+          resolve(result)
+        },
+        reject: (error: any) => {
+          cleanup()
+          reject(error)
+        },
+      })
+    }
   })
 }
 
@@ -296,6 +311,9 @@ async function runValidatorPipeline({
     for (const promise of pendingPromises) {
       newPending.push(
         promise.then((result) => {
+          // @ts-expect-error ABORTED_CALL is a special case, but we
+          // don't want to change all the typing just for it
+          if (result.result === ABORTED_CALL) return
           if (isErrorResult(result.result)) {
             hasErroredPromises = true
           }
