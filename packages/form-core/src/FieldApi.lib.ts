@@ -596,8 +596,10 @@ export class InternalFieldApi<
     const oldSegment = this.#segment
     this.#segment = newSegment
     this._invalidateFullPath()
-    this._removeChild(oldSegment)
-    this._setChild(this)
+    if (this._parent._getChild(oldSegment) === this) {
+      this._parent._removeChild(oldSegment)
+    }
+    this._parent._setChild(this)
   }
 
   /**

@@ -290,10 +290,10 @@ export class InternalFormApi<
       if (!arrayField) return
 
       // Shift existing children to the right of the insertion index
-      for (let i = fieldValue.length; i > index; i--) {
-        const child = arrayField._childrenArray[i - 1]
-        if (child) {
-          child._moveTo(i)
+      for (const child of arrayField._children) {
+        if (typeof child._segment === 'string') continue
+        if (child._segment >= index) {
+          child._moveTo(child._segment + 1)
         }
       }
     })
