@@ -52,7 +52,7 @@ function App() {
                 {(field) => (
                   <span style={{ position: 'relative' }}>
                     <input
-                      value={field.name}
+                      value={field.value}
                       onChange={(e) => field.handleChange(e.target.value)}
                     />
                     <span>{field.meta.isValid ? '✅' : '❌'}</span>
