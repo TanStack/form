@@ -1807,7 +1807,8 @@ export class FieldApi<
       return {
         ...prev,
         validationCount: newCount,
-        isValidating: newCount > 0 && !prev.isValidating ? true : prev.isValidating,
+        isValidating:
+          newCount > 0 && !prev.isValidating ? true : prev.isValidating,
       }
     })
   }
@@ -1822,7 +1823,8 @@ export class FieldApi<
       return {
         ...prev,
         validationCount: newCount,
-        isValidating: newCount === 0 && prev.isValidating ? false : prev.isValidating,
+        isValidating:
+          newCount === 0 && prev.isValidating ? false : prev.isValidating,
       }
     })
   }
