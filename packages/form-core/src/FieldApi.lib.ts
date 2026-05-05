@@ -25,7 +25,6 @@ import type {
   FormValidator,
   ValidationError,
 } from './validation.public'
-import type { StandardSchemaV1Issue } from './standardSchema.public'
 
 // TODO is this SSR friendly?
 const metaCache = new WeakMap<InternalBaseFieldMeta, FieldMeta>()
@@ -155,6 +154,7 @@ export function tryGetFieldApi(
 export const defaultBaseFieldMeta: BaseFieldMeta = {
   isTouched: false,
   isDirty: false,
+  isBlurred: false,
   childErrorCount: 0,
 }
 
@@ -475,16 +475,11 @@ export class InternalFieldApi<
   }
 
   _processValidationResult(result: PipelineResult<FieldValidateResult>) {
-    // Check if this is a Standard Schema result
-    const standardSchemaError = this._processStandardSchemaResult(result)
-    
     this._setMeta((prev) => {
       const prevErrors = prev._fieldValidatorErrors
-      const newError = standardSchemaError ?? (
-        isErrorResult(result.result)
-          ? normalizeToArray(result.result)
-          : []
-      )
+      const newError = isErrorResult(result.result)
+        ? normalizeToArray(result.result)
+        : []
       const prevError = prevErrors[result.validatorIndex] ?? []
 
       // TODO this could be a hot path, but we avoid rerenders if this succeeds.
@@ -502,65 +497,6 @@ export class InternalFieldApi<
     })
   }
 
-  /**
-   * Process a Standard Schema validation result for a field.
-   * Extracts issues for this field only and converts to an array of error messages.
-   * Returns an array of error messages or an empty array if valid.
-   */
-  _processStandardSchemaResult(
-    result: PipelineResult<FieldValidateResult>,
-  ): Array<ErrorWithMessage> | null {
-    // Check if the result has the Standard Schema structure
-    if (
-      result.result &&
-      typeof result.result === 'object' &&
-      'issues' in result.result &&
-      Array.isArray(result.result.issues)
-    ) {
-      const issues = result.result.issues as Array<StandardSchemaV1Issue>
-      
-      if (issues.length === 0) {
-        // Validation passed
-        return []
-      }
-
-      // Filter issues that belong to this field
-      const fieldIssues = issues.filter((issue) => {
-        const issuePath = issue.path ?? []
-        
-        // If there's no path, it's a field-level error for the current field
-        if (issuePath.length === 0) {
-          return true
-        }
-
-        // Check if the issue path matches this field's name
-        // Build the path string from the issue path
-        let issuePathString = ''
-        for (let i = 0; i < issuePath.length; i++) {
-          const pathSegment = issuePath[i]
-          if (pathSegment === undefined) continue
-          
-          const segment =
-            typeof pathSegment === 'object' ? pathSegment.key : pathSegment
-          
-          const segmentAsNumber = Number(segment)
-          if (!Number.isNaN(segmentAsNumber)) {
-            issuePathString += `[${segmentAsNumber}]`
-          } else {
-            issuePathString += (i > 0 ? '.' : '') + String(segment)
-          }
-        }
-        
-        return issuePathString === this.name
-      })
-
-      // Convert to array of ErrorWithMessage
-      return fieldIssues.map((issue) => ({ message: issue.message }))
-    }
-
-    return null
-  }
-
   _notifyChange(
     options: FieldUpdateOptions & PropagateOptions = { doPropagate: true },
     event: 'change' | 'blur' | 'submit' = 'change',
@@ -569,6 +505,7 @@ export class InternalFieldApi<
       markAsDirty = true,
       markAsTouched = true,
       causeValidation = true,
+      markAsBlurred = false,
       doPropagate,
     } = options
     // Not sure if we lose this context, so might as well
@@ -582,16 +519,19 @@ export class InternalFieldApi<
       }
 
       while (!currNode._isRoot) {
-        const { isDirty, isTouched } = currNode.meta
+        const { isDirty, isTouched, isBlurred } = currNode.meta
         const shouldUpdateDirty = markAsDirty && !isDirty
         const shouldUpdateTouched =
           markAsTouched && !isTouched && currNode._isMounted
+        const shouldUpdateBlurred =
+          markAsBlurred && !isBlurred && currNode._isMounted
 
-        if (shouldUpdateDirty || shouldUpdateTouched) {
+        if (shouldUpdateDirty || shouldUpdateTouched || shouldUpdateBlurred) {
           currNode._setMeta((prev) => ({
             ...prev,
             isTouched: markAsTouched ? true : prev.isTouched,
             isDirty: markAsDirty ? true : prev.isDirty,
+            isBlurred: markAsBlurred ? true : prev.isBlurred,
           }))
         }
         if (doPropagate) {
@@ -738,24 +678,40 @@ export class InternalFieldApi<
   // -> swapValues or other arary mutations need to check runtime -> swap values in the array -> THAT's where the check has to occur.
   // after we made the form data update, we getOrCreateNode() of the two elements
 
-  swapValues(indexA: number, indexB: number) {
+  swapValues = (indexA: number, indexB: number) => {
     this.form.swapFieldValues(this.name, indexA, indexB, {
       fieldApiOverride: this,
     })
   }
 
-  pushValue(value: any, options: FieldUpdateOptions = {}): void {
+  pushValue = (value: any, options: FieldUpdateOptions = {}): void => {
     return this.form.pushFieldValue(this.name, value, {
       ...options,
       fieldApiOverride: this,
     })
   }
 
-  handleChange(value: Updater<any>, options: FieldUpdateOptions = {}): void {
+  handleChange = (
+    value: Updater<any>,
+    options: FieldUpdateOptions = {},
+  ): void => {
     return this.form.setFieldValue(this.name, value, {
       ...options,
       fieldApiOverride: this,
     })
+  }
+
+  handleBlur = (): void => {
+    this._notifyChange(
+      {
+        markAsDirty: false,
+        causeValidation: true,
+        doPropagate: true,
+        markAsTouched: true,
+        markAsBlurred: true,
+      },
+      'blur',
+    )
   }
 }
 

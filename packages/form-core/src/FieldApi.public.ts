@@ -15,6 +15,7 @@ import type {
 export interface BaseFieldMeta {
   isTouched: boolean
   isDirty: boolean
+  isBlurred: boolean
   childErrorCount: number
 }
 
@@ -74,6 +75,8 @@ export interface FieldApi<
   errors: FieldErrors
 
   handleChange: (value: Updater<any>, options?: FieldUpdateOptions) => void
+
+  handleBlur: () => void
 }
 
 export interface FieldApiOptions<TFormData, TFieldValue> {

@@ -33,17 +33,12 @@ export function SchemaExample() {
               <input
                 value={field.value}
                 onChange={(e) => field.handleChange(e.target.value)}
-                // TODO blur behaviour from core
-                onBlur={() => form.validate('blur')}
+                onBlur={field.handleBlur}
                 autoComplete="new-password"
               />
             </label>
             <br />
-            <span>
-              {field.meta.isInvalid && field.meta.isTouched
-                ? field.meta.errors[0].message
-                : '\u200b'}
-            </span>
+            {field.meta.isBlurred && <span>{field.errors[0]?.message}</span>}
           </div>
         )}
       </form.Field>
@@ -57,15 +52,12 @@ export function SchemaExample() {
               <input
                 value={field.value}
                 onChange={(e) => field.handleChange(e.target.value)}
-                // TODO blur behaviour from core
-                onBlur={() => form.validate('blur')}
+                onBlur={field.handleBlur}
                 autoComplete="new-password"
               />
             </label>
             <br />
-            {field.meta.isInvalid && field.meta.isTouched
-              ? field.meta.errors[0].message
-              : '\u200b'}
+            {field.meta.isBlurred && <span>{field.errors[0]?.message}</span>}
           </div>
         )}
       </form.Field>

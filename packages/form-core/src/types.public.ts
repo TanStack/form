@@ -15,6 +15,12 @@ export interface FieldUpdateOptions {
    */
   markAsDirty?: boolean
   /**
+   * Whether to mark the field as blurred from the update.
+   *
+   * @default: Only true if the emitted event is a blur
+   */
+  markAsBlurred?: boolean
+  /**
    * Whether to cause a validation run from the update.
    *
    * @default true

@@ -405,7 +405,7 @@ describe('runFormValidatorPipeline', () => {
     vi.useFakeTimers()
 
     const formApi = getForm({ users: ['a', 'b', 'c'] })
-    const receivedFieldApiNames: string[] = []
+    const receivedFieldApiNames: Array<string> = []
 
     const { runWithContext } = getPipeline(formApi, [
       {

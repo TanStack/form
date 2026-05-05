@@ -1,5 +1,5 @@
-import ReactDOM from 'react-dom/client'
 import { useForm } from '@tanstack/react-form'
+import z from 'zod'
 
 const ARRAY = [...new Array(1000).keys()]
 const values = ARRAY.map((i) => ({ id: i, message: 'Field ' + i }))
@@ -9,14 +9,11 @@ export function ArrayExample() {
     defaultValues: { fields: values },
     validators: [
       {
-        validate: ({ fieldApi }) => {
-          if (!fieldApi) return
-          return {
-            fields: {
-              [fieldApi.name]: { message: 'Bounce!' },
-            },
-          }
-        },
+        validate: z.object({
+          fields: z.array(
+            z.object({ id: z.number(), message: z.string().min(3) }),
+          ),
+        }),
         signals: [
           { signal: 'change', enabled: ({ fieldApi }) => fieldApi !== null },
         ],
