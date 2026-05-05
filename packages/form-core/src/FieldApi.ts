@@ -1798,7 +1798,7 @@ export class FieldApi<
   }
 
   /**
-   * @private
+   * `@private`
    * Starts tracking an async validation, incrementing the counter and setting isValidating if needed.
    */
   private startValidation() {
@@ -1814,12 +1814,12 @@ export class FieldApi<
   }
 
   /**
-   * @private
+   * `@private`
    * Ends tracking an async validation, decrementing the counter and clearing isValidating if no validations remain.
    */
   private endValidation() {
     this.setMeta((prev) => {
-      const newCount = prev.validationCount - 1
+      const newCount = Math.max(0, prev.validationCount - 1)
       return {
         ...prev,
         validationCount: newCount,
