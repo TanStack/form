@@ -1934,6 +1934,7 @@ export class FieldApi<
             rawError = await new Promise((rawResolve, rawReject) => {
               if (field.timeoutIds.validations[validateObj.cause]) {
                 clearTimeout(field.timeoutIds.validations[validateObj.cause]!)
+                field.endValidation()
               }
 
               field.timeoutIds.validations[validateObj.cause] = setTimeout(
