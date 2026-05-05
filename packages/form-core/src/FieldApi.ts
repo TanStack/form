@@ -631,6 +631,12 @@ export type FieldMetaBase<
    * A flag indicating whether the field is currently being validated.
    */
   isValidating: boolean
+  /**
+   * @private
+   * Counter for tracking active async validations to prevent race conditions
+   * when multiple validations finish at the same time.
+   */
+  validationCount: number
 }
 
 export type AnyFieldMetaBase = FieldMetaBase<
@@ -1793,6 +1799,36 @@ export class FieldApi<
 
   /**
    * @private
+   * Starts tracking an async validation, incrementing the counter and setting isValidating if needed.
+   */
+  private startValidation() {
+    this.setMeta((prev) => {
+      const newCount = prev.validationCount + 1
+      return {
+        ...prev,
+        validationCount: newCount,
+        isValidating: newCount > 0 && !prev.isValidating ? true : prev.isValidating,
+      }
+    })
+  }
+
+  /**
+   * @private
+   * Ends tracking an async validation, decrementing the counter and clearing isValidating if no validations remain.
+   */
+  private endValidation() {
+    this.setMeta((prev) => {
+      const newCount = prev.validationCount - 1
+      return {
+        ...prev,
+        validationCount: newCount,
+        isValidating: newCount === 0 && prev.isValidating ? false : prev.isValidating,
+      }
+    })
+  }
+
+  /**
+   * @private
    */
   validateAsync = async (
     cause: ValidationCause,
@@ -1866,13 +1902,11 @@ export class FieldApi<
       : []
 
     if (hasAsyncValidators) {
-      if (!this.state.meta.isValidating) {
-        this.setMeta((prev) => ({ ...prev, isValidating: true }))
-      }
+      this.startValidation()
     }
 
     for (const linkedField of linkedFieldsWithAsyncValidators) {
-      linkedField.setMeta((prev) => ({ ...prev, isValidating: true }))
+      linkedField.startValidation()
     }
 
     const validateFieldAsyncFn = (
@@ -1986,11 +2020,11 @@ export class FieldApi<
 
     // Only reset isValidating if we set it to true earlier
     if (hasAsyncValidators) {
-      this.setMeta((prev) => ({ ...prev, isValidating: false }))
+      this.endValidation()
     }
 
     for (const linkedField of linkedFieldsWithAsyncValidators) {
-      linkedField.setMeta((prev) => ({ ...prev, isValidating: false }))
+      linkedField.endValidation()
     }
 
     return results.filter(Boolean)

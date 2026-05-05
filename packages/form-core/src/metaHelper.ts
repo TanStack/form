@@ -19,6 +19,7 @@ export const defaultFieldMeta: AnyFieldMeta = {
   errors: [],
   errorMap: {},
   errorSourceMap: {},
+  validationCount: 0,
 }
 
 export function metaHelper<
