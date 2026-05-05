@@ -60,6 +60,17 @@ export interface FieldApi<
   pushValue: (value: any, options?: FieldUpdateOptions) => void
 
   /**
+   * Insert a new value into this field's array at the specified index.
+   * If this field is not an array, this method will be ignored.
+   * @param index - The index at which to insert the value
+   * @param value - The value to insert
+   * @param options - Optional update options
+   */
+  insertValue: (index: number, value: any, options?: FieldUpdateOptions) => void
+
+  clearValues: () => void
+
+  /**
    * @deprecated
    * Use the respective getters instead:
    * - `field.value`

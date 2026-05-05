@@ -156,8 +156,7 @@ describe('FormApi', () => {
   describe('pushFieldValue', () => {
     it('appends a value to an array field', () => {
       const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
-      const field = form._getOrCreateFieldApi('items', undefined)
-      form.pushFieldValue('items', 'c', { fieldApiOverride: field })
+      form.pushFieldValue('items', 'c')
       expect(form.getFieldValue('items')).toEqual(['a', 'b', 'c'])
     })
 
@@ -168,6 +167,80 @@ describe('FormApi', () => {
       form.pushFieldValue('name', 'x', { fieldApiOverride: field })
       expect(warn).toHaveBeenCalled()
       warn.mockRestore()
+    })
+  })
+
+  describe('insertFieldValue', () => {
+    it('inserts a value at the specified index', () => {
+      const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
+      form.insertFieldValue('items', 1, 'x')
+      expect(form.getFieldValue('items')).toEqual(['a', 'x', 'b'])
+      form.insertFieldValue('items', 0, 'y')
+      expect(form.getFieldValue('items')).toEqual(['y', 'a', 'x', 'b'])
+      form.insertFieldValue('items', 3, 'z')
+      expect(form.getFieldValue('items')).toEqual(['y', 'a', 'x', 'z', 'b'])
+    })
+
+    it('inserts a value in an empty array', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: [] as Array<string> },
+      })
+      form.insertFieldValue('items', 0, 'x')
+      expect(form.getFieldValue('items')).toEqual(['x'])
+    })
+
+    it('warns when called on a non-array field', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const form = new InternalFormApi({ defaultValues: { name: '' } })
+      form.insertFieldValue('name', 0, 'x')
+      expect(warn).toHaveBeenCalled()
+      warn.mockRestore()
+    })
+
+    it('warns when index is negative', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
+      form.insertFieldValue('items', -1, 'x')
+      expect(warn).toHaveBeenCalled()
+      expect(form.getFieldValue('items')).toEqual(['a', 'b'])
+      warn.mockRestore()
+    })
+
+    it('warns when index is out of bounds', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
+      form.insertFieldValue('items', 3, 'x')
+      expect(warn).toHaveBeenCalled()
+      expect(form.getFieldValue('items')).toEqual(['a', 'b'])
+      warn.mockRestore()
+    })
+
+    it('shifts child field segments after insert', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c'] },
+      })
+      const field0 = form._getOrCreateFieldApi('items[0]', undefined)
+      const field1 = form._getOrCreateFieldApi('items[1]', undefined)
+      const field2 = form._getOrCreateFieldApi('items[2]', undefined)
+      form.insertFieldValue('items', 1, 'x')
+      expect(field0._segment).toBe(0)
+      expect(field1._segment).toBe(2)
+      expect(field2._segment).toBe(3)
+
+      expect(form._getOrCreateFieldApi('items[0]', undefined)).toBe(field0)
+      expect(form._getOrCreateFieldApi('items[1]', undefined)).not.toBe(field1)
+      expect(form._getOrCreateFieldApi('items[2]', undefined)).toBe(field1)
+      expect(form._getOrCreateFieldApi('items[3]', undefined)).toBe(field2)
+    })
+
+    it("updates the array field's meta", () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b'] },
+      })
+      const field = form._getOrCreateFieldApi('items', undefined)
+      form.insertFieldValue('items', 1, 'x')
+      expect(field.meta.isDirty).toBe(true)
+      expect(field.meta.isTouched).toBe(true)
     })
   })
 
@@ -199,6 +272,12 @@ describe('FormApi', () => {
       expect(form._tryGetFieldApi('items[0]')).toBeNull()
       expect(form._tryGetFieldApi('items[1]')).toBeNull()
       expect(arrayField._children).toEqual([])
+    })
+
+    it('works without a mounted field', () => {
+      const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
+      form.clearFieldValues('items')
+      expect(form.getFieldValue('items')).toEqual([])
     })
   })
 

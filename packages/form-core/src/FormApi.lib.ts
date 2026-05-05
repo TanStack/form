@@ -231,18 +231,13 @@ export class InternalFormApi<
     value: any,
     options?: InternalFieldUpdateOptions,
   ) => {
-    const field =
-      options?.fieldApiOverride ?? this._tryGetFieldApi(arrayFieldName)
-    if (!field) return
-
-    if (!Array.isArray(field.value)) {
+    const fieldValue = this.getFieldValue(arrayFieldName)
+    if (!Array.isArray(fieldValue)) {
       console.warn(
         '<form>.pushFieldValue: This method can only be used on array fields',
       )
       return
     }
-
-    field._createChild(field.value.length)
 
     this.setFieldValue(
       arrayFieldName,
@@ -251,6 +246,57 @@ export class InternalFormApi<
       },
       options,
     )
+  }
+
+  insertFieldValue = (
+    arrayFieldName: string,
+    index: number,
+    value: any,
+    options?: InternalFieldUpdateOptions,
+  ) => {
+    const fieldValue = this.getFieldValue(arrayFieldName)
+    if (!Array.isArray(fieldValue)) {
+      console.warn(
+        '<form>.insertFieldValue: This method can only be used on array fields',
+      )
+      return
+    }
+
+    if (index < 0 || index > fieldValue.length) {
+      console.warn(
+        `<form>.insertFieldValue: Index ${index} is out of bounds for array field '${arrayFieldName}' with length ${fieldValue.length}`,
+      )
+      return
+    }
+
+    batch(() => {
+      this.setFieldValue(
+        arrayFieldName,
+        (prev: Array<any>) => {
+          const array = prev.slice()
+          array.splice(index, 0, value)
+          return array
+        },
+        options,
+      )
+
+      const arrayField =
+        options?.fieldApiOverride ??
+        tryGetFieldApi(
+          this._fieldRootNode,
+          nameToFieldNodeSegments(arrayFieldName),
+        )
+
+      if (!arrayField) return
+
+      // Shift existing children to the right of the insertion index
+      for (let i = fieldValue.length; i > index; i--) {
+        const child = arrayField._childrenArray[i - 1]
+        if (child) {
+          child._moveTo(i)
+        }
+      }
+    })
   }
 
   swapFieldValues = (
@@ -285,10 +331,12 @@ export class InternalFormApi<
         options,
       )
 
-      const arrayField = tryGetFieldApi(
-        this._fieldRootNode,
-        nameToFieldNodeSegments(arrayFieldName),
-      )
+      const arrayField =
+        options?.fieldApiOverride ??
+        tryGetFieldApi(
+          this._fieldRootNode,
+          nameToFieldNodeSegments(arrayFieldName),
+        )
 
       if (!arrayField) return
 
@@ -326,10 +374,12 @@ export class InternalFormApi<
     batch(() => {
       this.setFieldValue(arrayFieldName, () => [], options)
 
-      const arrayField = tryGetFieldApi(
-        this._fieldRootNode,
-        nameToFieldNodeSegments(arrayFieldName),
-      )
+      const arrayField =
+        options?.fieldApiOverride ??
+        tryGetFieldApi(
+          this._fieldRootNode,
+          nameToFieldNodeSegments(arrayFieldName),
+        )
 
       if (!arrayField) return
 

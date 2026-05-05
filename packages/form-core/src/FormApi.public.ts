@@ -104,4 +104,13 @@ export interface FormApi<
     value: any,
     options?: FieldUpdateOptions,
   ) => void
+
+  insertFieldValue: (
+    arrayFieldName: string,
+    index: number,
+    value: any,
+    options?: FieldUpdateOptions,
+  ) => void
+
+  clearFieldValues: (arrayFieldName: string) => void
 }

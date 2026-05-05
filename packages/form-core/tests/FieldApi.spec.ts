@@ -250,6 +250,86 @@ describe('FieldApi', () => {
     })
   })
 
+  describe('insertFieldValue', () => {
+    it('inserts a value at the specified index', () => {
+      const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
+      const field = form._getOrCreateFieldApi('items', undefined)
+      field.insertValue(1, 'x')
+      expect(field.value).toEqual(['a', 'x', 'b'])
+      field.insertValue(0, 'y')
+      expect(field.value).toEqual(['y', 'a', 'x', 'b'])
+      field.insertValue(3, 'z')
+      expect(field.value).toEqual(['y', 'a', 'x', 'z', 'b'])
+    })
+
+    it('inserts a value in an empty array', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: [] as Array<string> },
+      })
+      const field = form._getOrCreateFieldApi('items', undefined)
+      field.insertValue(0, 'x')
+      expect(field.value).toEqual(['x'])
+    })
+
+    it('warns when called on a non-array field', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const form = new InternalFormApi({ defaultValues: { name: '' } })
+      const field = form._getOrCreateFieldApi('name', undefined)
+      field.insertValue(0, 'x')
+      expect(warn).toHaveBeenCalled()
+      warn.mockRestore()
+    })
+
+    it('warns when index is negative', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
+      const field = form._getOrCreateFieldApi('items', undefined)
+      field.insertValue(-1, 'x')
+      expect(warn).toHaveBeenCalled()
+      expect(form.getFieldValue('items')).toEqual(['a', 'b'])
+      warn.mockRestore()
+    })
+
+    it('warns when index is out of bounds', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
+      const field = form._getOrCreateFieldApi('items', undefined)
+      field.insertValue(3, 'x')
+      expect(warn).toHaveBeenCalled()
+      expect(form.getFieldValue('items')).toEqual(['a', 'b'])
+      warn.mockRestore()
+    })
+
+    it('shifts child field segments after insert', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c'] },
+      })
+      const arrayField = form._getOrCreateFieldApi('items', undefined)
+      const field0 = form._getOrCreateFieldApi('items[0]', undefined)
+      const field1 = form._getOrCreateFieldApi('items[1]', undefined)
+      const field2 = form._getOrCreateFieldApi('items[2]', undefined)
+      arrayField.insertValue(1, 'x')
+      expect(field0._segment).toBe(0)
+      expect(field1._segment).toBe(2)
+      expect(field2._segment).toBe(3)
+
+      expect(form._getOrCreateFieldApi('items[0]', undefined)).toBe(field0)
+      expect(form._getOrCreateFieldApi('items[1]', undefined)).not.toBe(field1)
+      expect(form._getOrCreateFieldApi('items[2]', undefined)).toBe(field1)
+      expect(form._getOrCreateFieldApi('items[3]', undefined)).toBe(field2)
+    })
+
+    it("updates the array field's meta", () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b'] },
+      })
+      const field = form._getOrCreateFieldApi('items', undefined)
+      field.insertValue(1, 'x')
+      expect(field.meta.isDirty).toBe(true)
+      expect(field.meta.isTouched).toBe(true)
+    })
+  })
+
   describe('clearValues', () => {
     it('empties an array field', () => {
       const form = new InternalFormApi({
@@ -489,6 +569,20 @@ describe('FieldApi', () => {
       expect(field.meta.isDirty).toBe(false)
 
       field.pushValue('b')
+
+      expect(field.meta.isDirty).toBe(true)
+      expect(field.meta.isTouched).toBe(true)
+    })
+
+    it('updates meta for array fields when using insertValue', () => {
+      const form = new InternalFormApi({
+        defaultValues: { arr: ['a', 'b'] },
+      })
+      const field = form._getOrCreateFieldApi('arr', undefined)
+
+      expect(field.meta.isDirty).toBe(false)
+
+      field.insertValue(1, 'x')
 
       expect(field.meta.isDirty).toBe(true)
       expect(field.meta.isTouched).toBe(true)

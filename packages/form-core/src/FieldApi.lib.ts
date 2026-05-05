@@ -593,9 +593,11 @@ export class InternalFieldApi<
     if (this.#segment === newSegment) {
       return
     }
+    const oldSegment = this.#segment
     this.#segment = newSegment
     this._invalidateFullPath()
-    this._parent._setChild(this)
+    this._removeChild(oldSegment)
+    this._setChild(this)
   }
 
   /**
@@ -742,6 +744,17 @@ export class InternalFieldApi<
 
   pushValue = (value: any, options: FieldUpdateOptions = {}): void => {
     return this.form.pushFieldValue(this.name, value, {
+      ...options,
+      fieldApiOverride: this,
+    })
+  }
+
+  insertValue = (
+    index: number,
+    value: any,
+    options: FieldUpdateOptions = {},
+  ): void => {
+    return this.form.insertFieldValue(this.name, index, value, {
       ...options,
       fieldApiOverride: this,
     })
