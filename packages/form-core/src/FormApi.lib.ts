@@ -338,6 +338,10 @@ export class InternalFormApi<
     field._setMeta((prev) => {
       const formValidatorErrors = [...prev._formValidatorErrors]
       if (formValidatorErrors.length > validatorIndex) {
+        const prevError = formValidatorErrors[validatorIndex]
+        if (evaluate(prevError, [])) {
+          return prev
+        }
         formValidatorErrors[validatorIndex] = []
       }
       return {
@@ -427,7 +431,13 @@ export class InternalFormApi<
             while (formErrors.length <= validatorIndex) {
               formErrors.push([])
             }
-            formErrors[validatorIndex] = normalizeToArray(fieldError) as never
+            const newError = normalizeToArray(fieldError)
+            const prevError = formErrors[validatorIndex] ?? []
+            // TODO does this tank performance for standard schemas?
+            if (evaluate(prevError, newError as never)) {
+              return prev
+            }
+            formErrors[validatorIndex] = newError as never
             return {
               ...prev,
               _formValidatorErrors: formErrors,
