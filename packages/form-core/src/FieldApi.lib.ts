@@ -196,6 +196,8 @@ export class InternalFieldApi<
   _parent: InternalFieldApi<any, any> | InternalRootFieldApi<any>
   _childrenArray: Array<InternalFieldApi<any, any>> = []
   _childrenMap: Map<string, InternalFieldApi<any, any>> = new Map()
+  _pathVersion = 0
+  _parentPathVersion = 0
   _fullPathCache: string | null = null
   _atoms: FieldAtoms | null = null
   _validators: Array<FieldValidator<any, any>>
@@ -287,6 +289,10 @@ export class InternalFieldApi<
   }
 
   get name(): string {
+    if (this._parentPathVersion !== this._parent._pathVersion) {
+      this._fullPathCache = null
+    }
+
     if (this._fullPathCache) return this._fullPathCache
 
     const ownSegment =
@@ -299,7 +305,9 @@ export class InternalFieldApi<
       name += '.'
     }
     name += ownSegment
+
     this._fullPathCache = name
+    this._parentPathVersion = this._parent._pathVersion
     return this._fullPathCache
   }
 
@@ -330,8 +338,8 @@ export class InternalFieldApi<
   }
 
   _invalidateFullPath() {
+    this._pathVersion++
     this._fullPathCache = null
-    this._children.forEach((child) => child._invalidateFullPath())
   }
 
   /**

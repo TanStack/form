@@ -4,6 +4,7 @@ import type { InternalFormApi } from './FormApi.lib'
 export class InternalRootFieldApi<TData> {
   readonly _isRoot = true
   #children: Map<NameSegment, InternalFieldApi<TData, any>> = new Map()
+  readonly _pathVersion = 0
 
   form: InternalFormApi<TData, any>
 
