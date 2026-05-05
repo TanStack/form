@@ -1,5 +1,5 @@
 import { batch, createAtom } from '@tanstack/store'
-import { callUpdater, normalizeToArray } from './utils'
+import { callUpdater, evaluate, normalizeToArray } from './utils'
 import {
   createValidatorPipelineCache,
   isErrorResult,
@@ -208,16 +208,12 @@ export class InternalFieldApi<
    */
   #refCount = 0
 
+  /**
+   * @private
+   * This is read-only. Use fieldApi._moveTo() instead for writes.
+   */
   get _segment(): NameSegment {
     return this.#segment
-  }
-
-  set _segment(value: NameSegment) {
-    if (this.#segment === value) {
-      return
-    }
-    this.#segment = value
-    this._invalidateFullPath()
   }
 
   form: InternalFormApi<any, any>
@@ -471,12 +467,20 @@ export class InternalFieldApi<
 
   _processValidationResult(result: PipelineResult<FieldValidateResult>) {
     this._setMeta((prev) => {
-      const errors = [...prev._fieldValidatorErrors]
-      if (isErrorResult(result.result)) {
-        errors[result.validatorIndex] = normalizeToArray(result.result)
-      } else {
-        errors[result.validatorIndex] = []
+      const prevErrors = prev._fieldValidatorErrors
+      const newError = isErrorResult(result.result)
+        ? normalizeToArray(result.result)
+        : []
+      const prevError = prevErrors[result.validatorIndex] ?? []
+
+      // TODO this could be a hot path, but we avoid rerenders if this succeeds.
+      // Perhaps change it to a prev.length === 0 === new.length?
+      if (evaluate(prevError, newError)) {
+        return prev
       }
+
+      const errors = [...prevErrors]
+      errors[result.validatorIndex] = newError
       return {
         ...prev,
         _fieldValidatorErrors: errors,
@@ -554,6 +558,15 @@ export class InternalFieldApi<
         }
       }, 0)
     }
+  }
+
+  _moveTo(newSegment: NameSegment): void {
+    if (this.#segment === newSegment) {
+      return
+    }
+    this.#segment = newSegment
+    this._invalidateFullPath()
+    this._parent._setChild(this)
   }
 
   /**

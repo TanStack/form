@@ -678,7 +678,6 @@ describe('FormApi', () => {
         await vi.runAllTimersAsync()
 
         expect(validatorFn).not.toHaveBeenCalled()
-        vi.useRealTimers()
       })
 
       it('skips validation when explicitly disabled per update', async () => {
@@ -700,7 +699,6 @@ describe('FormApi', () => {
         await vi.runAllTimersAsync()
 
         expect(validatorFn).not.toHaveBeenCalled()
-        vi.useRealTimers()
       })
 
       it('debounces change validators across rapid updates', async () => {
@@ -725,7 +723,6 @@ describe('FormApi', () => {
         expect(validatorFn).not.toHaveBeenCalled()
         await vi.advanceTimersByTimeAsync(100)
         expect(validatorFn).toHaveBeenCalledOnce()
-        vi.useRealTimers()
       })
 
       it('discards stale async validation results', async () => {
@@ -757,11 +754,258 @@ describe('FormApi', () => {
 
         expect(validatorFn).toHaveBeenCalledTimes(2)
         expect(form.state.formErrors).toEqual([{ message: 'Current error' }])
+      })
+    })
 
-        vi.useRealTimers()
+    describe('setting field-level errors from form validators', () => {
+      it('populates field errors from validator with fields property', async () => {
+        const form = new InternalFormApi({
+          defaultValues: { name: '', age: 0 },
+          validators: [
+            {
+              validate: () => ({
+                fields: {
+                  name: { message: 'Name is required' },
+                },
+              }),
+              signals: ['change'],
+            },
+          ],
+        })
+        const field = form._getOrCreateFieldApi('name', undefined)
+        void field.store
+        await form.validate('change')
+        expect(field.errors).toEqual([{ message: 'Name is required' }])
+      })
+
+      it('handles multiple field errors from a single validator', async () => {
+        const form = new InternalFormApi({
+          defaultValues: { name: '', age: 0 },
+          validators: [
+            {
+              validate: () => ({
+                fields: {
+                  name: { message: 'Name is required' },
+                  age: { message: 'Age is required' },
+                },
+              }),
+              signals: ['change'],
+            },
+          ],
+        })
+        const nameField = form._getOrCreateFieldApi('name', undefined)
+        const ageField = form._getOrCreateFieldApi('age', undefined)
+        void nameField.store
+        void ageField.store
+        await form.validate('change')
+        expect(nameField.errors).toEqual([{ message: 'Name is required' }])
+        expect(ageField.errors).toEqual([{ message: 'Age is required' }])
+      })
+
+      it('handles array error format in field-level errors', async () => {
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              validate: () => ({
+                fields: {
+                  name: [{ message: 'Error 1' }, { message: 'Error 2' }],
+                  lastName: { message: 'Error 3' },
+                },
+              }),
+              signals: ['change'],
+            },
+          ],
+        })
+        const nameField = form._getOrCreateFieldApi('name', undefined)
+        const lastNameField = form._getOrCreateFieldApi('lastName', undefined)
+        void nameField.store
+        void lastNameField.store
+
+        await form.validate('change')
+        expect(nameField.errors).toEqual([
+          { message: 'Error 1' },
+          { message: 'Error 2' },
+        ])
+        expect(lastNameField.errors).toEqual([{ message: 'Error 3' }])
+      })
+
+      it('combines field-level and form-level errors in field.errors', async () => {
+        vi.useFakeTimers()
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              validate: () => ({
+                fields: {
+                  name: { message: 'Form-level error' },
+                },
+              }),
+              signals: ['change'],
+            },
+          ],
+        })
+        const field = form._getOrCreateFieldApi('name', [
+          { validate: () => ({ message: 'Field-level error' }) },
+        ])
+        void field.store
+        field.handleChange('New value')
+        await vi.runAllTimersAsync()
+        expect(field.errors).toEqual([{ message: 'Form-level error' }])
+      })
+
+      it('clears field errors when validator no longer reports them', async () => {
+        let shouldError = true
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              validate: () => {
+                if (shouldError) {
+                  return {
+                    fields: {
+                      name: { message: 'Error' },
+                    },
+                  }
+                }
+                return null
+              },
+              signals: ['change'],
+            },
+          ],
+        })
+        const field = form._getOrCreateFieldApi('name', undefined)
+        void field.store
+
+        await form.validate('change')
+        expect(field.errors).toEqual([{ message: 'Error' }])
+
+        shouldError = false
+        await form.validate('change')
+        expect(field.errors).toEqual([])
+      })
+
+      it('handles multiple validators with field errors', async () => {
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              validate: () => ({
+                fields: {
+                  name: { message: 'Error from validator 1' },
+                },
+              }),
+              signals: ['change'],
+            },
+            {
+              validate: () => ({
+                fields: {
+                  name: { message: 'Error from validator 2' },
+                },
+              }),
+              signals: ['change'],
+            },
+          ],
+        })
+        const field = form._getOrCreateFieldApi('name', undefined)
+        void field.store
+        await form.validate('change')
+        expect(field.errors).toEqual([
+          { message: 'Error from validator 1' },
+          { message: 'Error from validator 2' },
+        ])
+      })
+
+      it('handles formError and field errors together', async () => {
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              validate: () => ({
+                form: { message: 'Form-wide error' },
+                fields: {
+                  name: { message: 'Field-specific error' },
+                },
+              }),
+              signals: ['change'],
+            },
+          ],
+        })
+        const field = form._getOrCreateFieldApi('name', undefined)
+        void field.store
+        await form.validate('change')
+        expect(form.state.formErrors).toEqual([{ message: 'Form-wide error' }])
+        expect(field.errors).toEqual([{ message: 'Field-specific error' }])
+      })
+
+      it('sets errors for fields even if they are not created yet', async () => {
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              validate: () => ({
+                fields: {
+                  nonexistent: { message: 'Error on nonexistent field' },
+                },
+              }),
+              signals: ['change'],
+            },
+          ],
+        })
+        // Field doesn't exist yet
+        let field = form._tryGetFieldApi(['nonexistent'])
+        expect(field).toBeNull()
+
+        await form.validate('change')
+
+        // Field should now exist with error
+        field = form._tryGetFieldApi(['nonexistent'])
+        expect(field).not.toBeNull()
+        void field!.store
+        expect(field!.errors).toEqual([
+          { message: 'Error on nonexistent field' },
+        ])
+      })
+
+      it('allows removal of field errors even if the field is unmounted', async () => {
+        let shouldError = true
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              validate: () => {
+                if (shouldError) {
+                  return {
+                    fields: {
+                      nonexistent: { message: 'Error on nonexistent field' },
+                    },
+                  }
+                }
+                return null
+              },
+              signals: ['change'],
+            },
+          ],
+        })
+        let field = form._tryGetFieldApi('nonexistent')
+        expect(field).toBeNull()
+
+        await form.validate('change')
+
+        field = form._tryGetFieldApi('nonexistent')
+        expect(field).not.toBeNull()
+        void field!.store
+
+        expect(field!.errors).toEqual([
+          { message: 'Error on nonexistent field' },
+        ])
+
+        shouldError = false
+        await form.validate('change')
+        field = form._tryGetFieldApi('nonexistent')
+        expect(field?.errors).toEqual([])
       })
     })
   })
-
   // End of FormApi test
 })

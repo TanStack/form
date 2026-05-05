@@ -200,9 +200,9 @@ function runMaybeDebouncedValidator(
       return null
     }
     const validatePromise = onExecute({
-      event: context.event,
-      fieldApi: context.fieldApi,
-      formApi: context.formApi,
+      event: validationContext.event,
+      fieldApi: validationContext.fieldApi,
+      formApi: validationContext.formApi,
       signal: validationContext.signal,
     })
     // Race the validation against the signal being aborted

@@ -124,7 +124,7 @@ describe('FieldApi', () => {
       expect(field.name).toBe('arr[0]')
       expect(subField.name).toBe('arr[0].bar')
 
-      field._segment = 1
+      field._moveTo(1)
 
       expect(field.name).toBe('arr[1]')
       expect(subField.name).toBe('arr[1].bar')
@@ -160,6 +160,27 @@ describe('FieldApi', () => {
 
       const field = form._getOrCreateFieldApi('[0].name', undefined)
       expect(field.name).toBe('[0].name')
+    })
+
+    it('updates field lookup after form.swapFieldValues', () => {
+      const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
+
+      const fieldAt0Before = form._getOrCreateFieldApi('items[0]', undefined)
+      const fieldAt1Before = form._getOrCreateFieldApi('items[1]', undefined)
+
+      expect(fieldAt0Before.name).toBe('items[0]')
+      expect(fieldAt1Before.name).toBe('items[1]')
+
+      form.swapFieldValues('items', 0, 1)
+
+      const fieldAt0After = form._getOrCreateFieldApi('items[0]', undefined)
+      const fieldAt1After = form._getOrCreateFieldApi('items[1]', undefined)
+
+      expect(fieldAt0After).toBe(fieldAt1Before)
+      expect(fieldAt0After.name).toBe('items[0]')
+
+      expect(fieldAt1After).toBe(fieldAt0Before)
+      expect(fieldAt1After.name).toBe('items[1]')
     })
   })
 

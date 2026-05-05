@@ -8,19 +8,26 @@ import type {
   ReactFormArrayFieldProps,
   ReactFormFieldProps,
 } from './useForm.public'
-import type { FormOptions } from '@tanstack/form-core-v2'
+import type { FormOptions, FormValidator } from '@tanstack/form-core-v2'
 
-export interface InternalReactFormApi<TData> extends ReactFormApi<TData> {}
+export interface InternalReactFormApi<
+  TData,
+  TFormValidators extends Array<FormValidator<TData>>,
+> extends ReactFormApi<TData, TFormValidators> {}
 
-export function initializeForm<TData>(
-  options: FormOptions<TData, any>,
-): ReactFormApi<TData> {
+export function initializeForm<
+  TData,
+  TFormValidators extends Array<FormValidator<TData>>,
+>(
+  options: FormOptions<TData, TFormValidators>,
+): ReactFormApi<TData, TFormValidators> {
   const form = new InternalFormApi(options)
 
-  const reactFormApi: InternalReactFormApi<TData> = form as never
+  const reactFormApi: InternalReactFormApi<TData, TFormValidators> =
+    form as never
 
   reactFormApi.Field = function TanStackFormField(
-    props: ReactFormFieldProps<TData>,
+    props: ReactFormFieldProps<TData, TFormValidators>,
   ) {
     const fieldApi = useField({ ...props, form })
 
@@ -33,7 +40,7 @@ export function initializeForm<TData>(
   reactFormApi.Field.displayName = 'form.Field'
 
   reactFormApi.ArrayField = function TanStackFormArrayField(
-    props: ReactFormArrayFieldProps<TData>,
+    props: ReactFormArrayFieldProps<TData, TFormValidators>,
   ) {
     const fieldApi = useField({ ...props, form })
 

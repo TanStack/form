@@ -13,7 +13,7 @@ import {
   runFormValidatorPipeline,
 } from './validation.lib'
 import type { PipelineResult, ValidatorPipelineCache } from './validation.lib'
-import type { InternalFieldApi } from './FieldApi.lib'
+import type { InternalBaseFieldMeta, InternalFieldApi } from './FieldApi.lib'
 import type {
   FieldApiOverrideOptions,
   InternalFieldUpdateOptions,
@@ -305,14 +305,8 @@ export class InternalFormApi<
       // that the indeces will represent actual values in the array.
       // If not, then the user will most likely not iterate over them
       // during rendering, so we don't need to worry about them.
-
-      if (fieldA) {
-        fieldA._segment = indexB
-      }
-
-      if (fieldB) {
-        fieldB._segment = indexA
-      }
+      fieldA?._moveTo(indexB)
+      fieldB?._moveTo(indexA)
     })
   }
 
@@ -337,6 +331,22 @@ export class InternalFormApi<
     )
   }
 
+  _clearFieldValidatorError = (
+    field: InternalFieldApi<any, any>,
+    validatorIndex: number,
+  ) => {
+    field._setMeta((prev) => {
+      const formValidatorErrors = [...prev._formValidatorErrors]
+      if (formValidatorErrors.length > validatorIndex) {
+        formValidatorErrors[validatorIndex] = []
+      }
+      return {
+        ...prev,
+        _formValidatorErrors: formValidatorErrors,
+      }
+    })
+  }
+
   _processValidationResult = (result: PipelineResult<FormValidateResult>) => {
     const aggregateError = isAggregateError(result.result)
 
@@ -345,17 +355,34 @@ export class InternalFormApi<
       return
     }
 
-    this._formMetaAtom.set((prev) => {
-      const errors = [...prev.errors]
+    batch(() => {
+      this._formMetaAtom.set((prev) => {
+        const errors = [...prev.errors]
 
-      if (isErrorResult(result.result)) {
-        const errorArray = normalizeToArray(result.result)
-        errors[result.validatorIndex] = errorArray
-      } else {
-        errors[result.validatorIndex] = []
-      }
+        if (isErrorResult(result.result)) {
+          const errorArray = normalizeToArray(result.result)
+          errors[result.validatorIndex] = errorArray
+        } else {
+          errors[result.validatorIndex] = []
+        }
 
-      return { ...prev, errors }
+        return { ...prev, errors }
+      })
+
+      // Clear field-level errors from potential previous { fields: {} } errors
+      this._formMetaAtom.set((prev) => {
+        const fieldErrors = [...prev.fieldErrors]
+        const oldFieldRefs = fieldErrors[result.validatorIndex]
+
+        if (oldFieldRefs) {
+          for (const field of oldFieldRefs) {
+            this._clearFieldValidatorError(field, result.validatorIndex)
+          }
+          fieldErrors[result.validatorIndex] = new Set()
+        }
+
+        return { ...prev, fieldErrors }
+      })
     })
   }
 
@@ -393,20 +420,18 @@ export class InternalFormApi<
         )) {
           const field = this._getOrCreateFieldApi(fieldName, undefined)
           field._setMeta((prev) => {
-            const formValidatorErrors = [...prev._formValidatorErrors]
+            const formErrors = [...prev._formValidatorErrors]
             // Ensure array is large enough for this validator index.
             // We can't eagerly assign them on field creation because the field meta
             // is lazily created. Therefore, the default is always an empty array.
-            while (formValidatorErrors.length <= validatorIndex) {
-              formValidatorErrors.push([])
+            while (formErrors.length <= validatorIndex) {
+              formErrors.push([])
             }
-            formValidatorErrors[validatorIndex] = normalizeToArray(
-              fieldError,
-            ) as never
+            formErrors[validatorIndex] = normalizeToArray(fieldError) as never
             return {
               ...prev,
-              formValidatorErrors,
-            }
+              _formValidatorErrors: formErrors,
+            } satisfies InternalBaseFieldMeta
           })
           newFieldRefs.add(field)
         }
@@ -415,16 +440,7 @@ export class InternalFormApi<
         if (oldFieldRefs) {
           for (const field of oldFieldRefs) {
             if (!newFieldRefs.has(field)) {
-              field._setMeta((prev) => {
-                const formValidatorErrors = [...prev._formValidatorErrors]
-                if (formValidatorErrors.length > validatorIndex) {
-                  formValidatorErrors[validatorIndex] = []
-                }
-                return {
-                  ...prev,
-                  formValidatorErrors,
-                }
-              })
+              this._clearFieldValidatorError(field, validatorIndex)
             }
           }
         }

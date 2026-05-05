@@ -165,8 +165,6 @@ describe('runFormValidatorPipeline', () => {
     await expect(promise).resolves.toHaveLength(1)
 
     expect(validate).toHaveBeenCalledOnce()
-
-    vi.useRealTimers()
   })
 
   it('should cancel an existing debounced validation when the same validator runs immediately', async () => {
@@ -203,8 +201,6 @@ describe('runFormValidatorPipeline', () => {
     await vi.advanceTimersByTimeAsync(100)
 
     expect(validate).toHaveBeenCalledOnce()
-
-    vi.useRealTimers()
   })
 
   it('should debounce separate validators independently', async () => {
@@ -240,8 +236,6 @@ describe('runFormValidatorPipeline', () => {
     await expect(promise).resolves.toHaveLength(2)
 
     expect(second).toHaveBeenCalledOnce()
-
-    vi.useRealTimers()
   })
 
   it('should not debounce submit validation', async () => {
@@ -262,8 +256,6 @@ describe('runFormValidatorPipeline', () => {
 
     expect(validate).toHaveBeenCalledOnce()
     expect(results).toHaveLength(1)
-
-    vi.useRealTimers()
   })
 
   it('should check for enabled signals', async () => {
@@ -329,8 +321,6 @@ describe('runFormValidatorPipeline', () => {
     expect(onResult).toHaveBeenCalledWith(
       expect.objectContaining({ result: validationResult }),
     )
-
-    vi.useRealTimers()
   })
 
   it('should abort existing async validation when same event runs again', async () => {
@@ -408,7 +398,48 @@ describe('runFormValidatorPipeline', () => {
         result: validationResult,
       }),
     )
+  })
 
-    vi.useRealTimers()
+  it('should use the correct fieldApi when debounced validation is triggered by different fields', async () => {
+    vi.useFakeTimers()
+
+    const formApi = getForm({ users: ['a', 'b', 'c'] })
+    const receivedFieldApiNames: string[] = []
+
+    const { runWithContext } = getPipeline(formApi, [
+      {
+        validate: ({ fieldApi }) => {
+          if (fieldApi) {
+            receivedFieldApiNames.push(fieldApi.name)
+          }
+          return null
+        },
+        signals: ['change'],
+        signalDebounceMs: 100,
+      },
+    ])
+
+    // Get or create field APIs for users[1] and users[2]
+    const field1 = formApi._getOrCreateFieldApi('users[1]', undefined)
+    const field2 = formApi._getOrCreateFieldApi('users[2]', undefined)
+
+    // Trigger validation for users[1]
+    const firstPromise = runWithContext({ event: 'change', field: field1 })
+
+    // Advance time partially (before debounce completes)
+    await vi.advanceTimersByTimeAsync(50)
+
+    // Trigger validation for users[2] (this should abort the first debounced call)
+    const secondPromise = runWithContext({ event: 'change', field: field2 })
+
+    // Advance time to complete the debounce
+    await vi.advanceTimersByTimeAsync(100)
+
+    await firstPromise
+    await secondPromise
+
+    // The validator should have been called once with users[2], not users[1]
+    expect(receivedFieldApiNames).toHaveLength(1)
+    expect(receivedFieldApiNames[0]).toBe('users[2]')
   })
 })

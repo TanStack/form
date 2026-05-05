@@ -7,6 +7,22 @@ const values = ARRAY.map((i) => ({ id: i, message: 'Field ' + i }))
 function App() {
   const form = useForm({
     defaultValues: { fields: values },
+    validators: [
+      {
+        validate: ({ fieldApi }) => {
+          if (!fieldApi) return
+          return {
+            fields: {
+              [fieldApi.name]: { message: 'Bounce!' },
+            },
+          }
+        },
+        signals: [
+          { signal: 'change', enabled: ({ fieldApi }) => fieldApi !== null },
+        ],
+        signalDebounceMs: 500,
+      },
+    ],
   })
 
   return (
@@ -32,25 +48,14 @@ function App() {
           <>
             <h2>Values amount: {field.value.length}</h2>
             {field.value.map((element: any, i: number) => (
-              <form.Field
-                key={element.id}
-                name={`fields[${i}].message`}
-                validators={[
-                  {
-                    validate: ({ value }) =>
-                      value.length <= 3 && {
-                        message: 'Too short (debounced)',
-                      },
-                    signals: ['change'],
-                  },
-                ]}
-              >
+              <form.Field key={element.id} name={`fields[${i}].message`}>
                 {(field) => (
                   <span style={{ position: 'relative' }}>
                     <input
-                      value={field.value}
+                      value={field.name}
                       onChange={(e) => field.handleChange(e.target.value)}
                     />
+                    <span>{field.meta.isValid ? '✅' : '❌'}</span>
                     {field.meta.isInvalid && (
                       <span
                         style={{
