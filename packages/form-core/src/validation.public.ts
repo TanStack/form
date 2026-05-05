@@ -1,5 +1,6 @@
 import type { FieldApi } from './FieldApi.public'
 import type { FormApi } from './FormApi.public'
+import type { StandardSchemaV1 } from './standardSchema.public'
 import type { OneOrMany } from './types.public'
 import type { BaseValidator } from './validation.lib'
 
@@ -82,7 +83,7 @@ export interface Validator {
 }
 
 export interface FormValidator<TFormData> extends BaseValidator<TFormData> {
-  validate: FormValidatorFn<TFormData>
+  validate: FormValidatorFn<TFormData> | StandardSchemaV1<TFormData, any>
 }
 
 export interface FieldValidatorContext<
@@ -103,5 +104,7 @@ export interface FieldValidator<
   TFormData,
   TFieldValue,
 > extends BaseValidator<TFormData> {
-  validate: FieldValidatorFn<TFormData, TFieldValue>
+  validate:
+    | FieldValidatorFn<TFormData, TFieldValue>
+    | StandardSchemaV1<TFieldValue, any>
 }

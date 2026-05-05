@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+import { z } from 'zod'
 import { runFormValidatorPipeline } from '../src/validation.lib'
 import { InternalFormApi } from '../src/FormApi.lib'
 import type { PipelineResult } from '../src/validation.lib'
@@ -441,5 +442,268 @@ describe('runFormValidatorPipeline', () => {
     // The validator should have been called once with users[2], not users[1]
     expect(receivedFieldApiNames).toHaveLength(1)
     expect(receivedFieldApiNames[0]).toBe('users[2]')
+  })
+
+  describe('Standard Schema validation', () => {
+    /**
+     * Assert that the result consists of certain fields with certain errors.
+     *
+     * {
+     *   // ...any
+     *   result: {
+     *     // ...any
+     *     fields: {
+     *       fieldName: []
+     *     }
+     *   }
+     * }
+     */
+    function getFieldErrorMatcher(fields: Record<string, Array<string>>) {
+      const fieldMatchers = Object.fromEntries(
+        Object.entries(fields).map(([fieldName, messages]) => [
+          fieldName,
+          expect.arrayContaining(
+            messages.map((message) =>
+              expect.objectContaining({
+                message,
+              }),
+            ),
+          ),
+        ]),
+      )
+
+      return expect.objectContaining({
+        result: expect.objectContaining({
+          fields: fieldMatchers,
+        }),
+      })
+    }
+
+    it('should validate form with a successful zod schema', async () => {
+      const formApi = getForm({ name: 'test', age: 25 })
+
+      const schema = z.object({
+        name: z.string().min(1),
+        age: z.number().min(0),
+      })
+
+      const { runWithContext } = getPipeline(formApi, [
+        {
+          validate: schema,
+        },
+      ])
+
+      const results = await runWithContext({ event: 'submit' })
+
+      expect(results).toHaveLength(1)
+      expect(results[0]?.result).toBeNull()
+    })
+
+    it('should validate form with a failing zod schema', async () => {
+      const formApi = getForm({ name: '', age: 25 })
+
+      const schema = z.object({
+        name: z.string().min(1, 'Name is required'),
+        age: z.number().min(0),
+      })
+
+      const { runWithContext } = getPipeline(formApi, [
+        {
+          validate: schema,
+        },
+      ])
+
+      const results = await runWithContext({ event: 'submit' })
+
+      expect(results).toEqual([
+        getFieldErrorMatcher({ name: ['Name is required'] }),
+      ])
+    })
+
+    it('should validate form with multiple errors from zod schema', async () => {
+      const formApi = getForm({ name: '', age: -5 })
+
+      const schema = z.object({
+        name: z.string().min(1, 'Name is required'),
+        age: z.number().min(0, 'Age must be positive'),
+      })
+
+      const { runWithContext } = getPipeline(formApi, [
+        {
+          validate: schema,
+        },
+      ])
+
+      const results = await runWithContext({ event: 'submit' })
+
+      expect(results).toEqual([
+        getFieldErrorMatcher({
+          name: ['Name is required'],
+          age: ['Age must be positive'],
+        }),
+      ])
+    })
+
+    it('should validate form with nested path errors from zod schema', async () => {
+      const formApi = getForm({ user: { name: '', email: '' } })
+
+      const schema = z.object({
+        user: z.object({
+          name: z.string().min(1, 'Name is required'),
+          email: z.email('Email is invalid'),
+        }),
+      })
+
+      const { runWithContext } = getPipeline(formApi, [
+        {
+          validate: schema,
+        },
+      ])
+
+      const results = await runWithContext({ event: 'submit' })
+
+      expect(results).toHaveLength(1)
+      expect(results).toEqual([
+        getFieldErrorMatcher({
+          'user.name': ['Name is required'],
+          'user.email': ['Email is invalid'],
+        }),
+      ])
+    })
+
+    it('should validate form with array path errors from zod schema', async () => {
+      const formApi = getForm({ users: [{ name: '' }, { name: '' }] })
+
+      const schema = z.object({
+        users: z.array(
+          z.object({
+            name: z.string().min(1, 'Name is required'),
+          }),
+        ),
+      })
+
+      const { runWithContext } = getPipeline(formApi, [
+        {
+          validate: schema,
+        },
+      ])
+
+      const results = await runWithContext({ event: 'submit' })
+
+      expect(results).toEqual([
+        getFieldErrorMatcher({
+          'users[0].name': ['Name is required'],
+          'users[1].name': ['Name is required'],
+        }),
+      ])
+    })
+
+    it('should run zod schema validators with matching signal', async () => {
+      const formApi = getForm({ name: '' })
+
+      const schema = z.object({
+        name: z.string().min(1, 'Name is required'),
+      })
+
+      const { runWithContext } = getPipeline(formApi, [
+        {
+          validate: schema,
+          signals: ['change'],
+        },
+      ])
+
+      const blurResults = await runWithContext({ event: 'blur' })
+      expect(blurResults).toHaveLength(0)
+
+      const changeResults = await runWithContext({ event: 'change' })
+      expect(changeResults).toEqual([
+        getFieldErrorMatcher({ name: ['Name is required'] }),
+      ])
+
+      const submitResults = await runWithContext({ event: 'change' })
+      expect(submitResults).toEqual([
+        getFieldErrorMatcher({ name: ['Name is required'] }),
+      ])
+    })
+
+    it('should respect runOnlyIfValid with zod schema validators', async () => {
+      const formApi = getForm({ name: '' })
+
+      const failingSchema = z.object({
+        name: z.string().min(1, 'Name is required'),
+      })
+
+      const passingSchema = z.object({
+        name: z.string(),
+      })
+
+      const validateSpy = vi.fn(() => null)
+
+      const { runWithContext } = getPipeline(formApi, [
+        {
+          validate: failingSchema,
+        },
+        {
+          validate: passingSchema,
+          runOnlyIfValid: true,
+        },
+        {
+          validate: validateSpy,
+          runOnlyIfValid: true,
+        },
+      ])
+
+      const results = await runWithContext({ event: 'submit' })
+
+      expect(results[0]).toEqual(
+        getFieldErrorMatcher({ name: ['Name is required'] }),
+      )
+      expect(validateSpy).not.toHaveBeenCalled()
+    })
+
+    it('should work with async zod schema validation', async () => {
+      const formApi = getForm({ name: '' })
+
+      // Zod schemas can be async with refinements
+      const schema = z.object({
+        name: z
+          .string()
+          // eslint-disable-next-line @typescript-eslint/require-await
+          .refine(async (val) => val.length > 0, 'Name is required'),
+      })
+
+      const { runWithContext } = getPipeline(formApi, [
+        {
+          validate: schema,
+        },
+      ])
+
+      const results = await runWithContext({ event: 'submit' })
+
+      expect(results).toEqual([
+        getFieldErrorMatcher({ name: ['Name is required'] }),
+      ])
+    })
+
+    it('should not run zod schema validators with runOnSubmit disabled', async () => {
+      const formApi = getForm({ name: '' })
+
+      const schema = z.object({
+        name: z.string().min(1, 'Name is required'),
+      })
+
+      const { runWithContext } = getPipeline(formApi, [
+        {
+          validate: schema,
+          runOnSubmit: false,
+        },
+      ])
+
+      const submitResults = await runWithContext({ event: 'submit' })
+      expect(submitResults).toHaveLength(0)
+
+      const changeResults = await runWithContext({ event: 'change' })
+      expect(changeResults).toHaveLength(0)
+    })
   })
 })

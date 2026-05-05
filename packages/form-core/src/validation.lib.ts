@@ -1,4 +1,9 @@
 import { LiteDebouncer } from '@tanstack/pacer-lite'
+import {
+  isStandardSchema,
+  parseStandardSchema,
+  prefixSchemaToErrors,
+} from './standardSchema.lib'
 import type {
   FieldValidateResult,
   FieldValidator,
@@ -167,18 +172,27 @@ interface ValidatorPipelineArgs {
   getContext: (
     inputContext: FieldValidateContext | FormValidateContext,
   ) => FieldValidatorContext<any, any> | FormValidatorContext<any>
+  scope: 'field' | 'form'
   onResult?: (result: PipelineResult<FormValidateResult>) => void
 }
 
-function runMaybeDebouncedValidator(
-  validator: BaseValidator<any>,
-  context: InputContext,
-  validatorIndex: number,
-  cache: ValidatorPipelineCache,
+interface RunMaybeDebouncedValidatorArgs {
+  validator: BaseValidator<any>
+  context: InputContext
+  validatorIndex: number
+  cache: ValidatorPipelineCache
   onExecute: (
     inputContext: FormValidateContext | FieldValidateContext,
-  ) => Promise<FormValidateResult> | FormValidateResult,
-): Promise<FormValidateResult> {
+  ) => Promise<FormValidateResult> | FormValidateResult
+}
+
+function runMaybeDebouncedValidator({
+  validator,
+  context,
+  validatorIndex,
+  cache,
+  onExecute,
+}: RunMaybeDebouncedValidatorArgs): Promise<FormValidateResult> {
   const debounceMs =
     context.event === 'submit' ? 0 : (validator.signalDebounceMs ?? 0)
   const cacheKey = validatorIndex
@@ -299,6 +313,7 @@ async function runValidatorPipeline({
   cache,
   getContext,
   onResult,
+  scope,
 }: ValidatorPipelineArgs): Promise<Array<PipelineResult<FormValidateResult>>> {
   let pendingPromises: Array<Promise<PipelineResult<FormValidateResult>>> = []
   const results: Array<PipelineResult<FormValidateResult>> = []
@@ -352,13 +367,20 @@ async function runValidatorPipeline({
       }
     }
 
-    const promise = runMaybeDebouncedValidator(
+    const promise = runMaybeDebouncedValidator({
       validator,
       context,
-      i,
+      validatorIndex: i,
       cache,
-      (ctx) => validator.validate(getContext(ctx) as never),
-    ).then<PipelineResult<FormValidateResult>>((result) => ({
+      onExecute: (ctx) => {
+        const context = getContext(ctx)
+        if (isStandardSchema(validator.validate)) {
+          return parseStandardSchema(validator.validate, context.value, scope)
+        } else {
+          return validator.validate(context as never)
+        }
+      },
+    }).then<PipelineResult<FormValidateResult>>((result) => ({
       validatorIndex: i,
       result,
     }))
@@ -398,6 +420,7 @@ export function runFormValidatorPipeline({
       signal: ctx.signal,
       value: ctx.formApi.state.values,
     }),
+    scope: 'form',
   })
 }
 
@@ -430,5 +453,6 @@ export function runFieldValidatorPipeline({
       fieldApi: context.fieldApi,
       value: context.fieldApi.value,
     }),
+    scope: 'field',
   }) as never
 }

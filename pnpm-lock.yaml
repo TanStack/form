@@ -546,6 +546,9 @@ importers:
       '@tanstack/store':
         specifier: ^0.11.0
         version: 0.11.0
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
 
   packages/form-devtools:
     dependencies:
@@ -11189,7 +11192,7 @@ snapshots:
       eslint: 9.39.5(jiti@2.7.0)
       ts-pattern: 5.9.0
       typescript: 5.9.3
-      zod: 3.25.76
+      zod: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -14840,8 +14843,8 @@ snapshots:
       '@babel/parser': 7.29.7
       eslint: 9.39.5(jiti@2.7.0)
       hermes-parser: 0.25.1
-      zod: 3.25.76
-      zod-validation-error: 3.5.4(zod@3.25.76)
+      zod: 4.4.3
+      zod-validation-error: 3.5.4(zod@4.4.3)
     transitivePeerDependencies:
       - supports-color
 
@@ -18897,6 +18900,10 @@ snapshots:
   zod-validation-error@3.5.4(zod@3.25.76):
     dependencies:
       zod: 3.25.76
+
+  zod-validation-error@3.5.4(zod@4.4.3):
+    dependencies:
+      zod: 4.4.3
 
   zod@3.25.76: {}
 
