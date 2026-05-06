@@ -1,20 +1,20 @@
-import type { InternalFieldApi, NameSegment } from './FieldApi.lib'
-import type { InternalFormApi } from './FormApi.lib'
+import type { AnyInternalFieldApi, NameSegment } from './FieldApi.lib'
+import type { AnyInternalFormApi } from './FormApi.lib'
 
-export class InternalRootFieldApi<TData> {
+export class InternalRootFieldApi {
   readonly _isRoot = true
-  #children: Map<NameSegment, InternalFieldApi<TData, any>> = new Map()
+  #children: Map<NameSegment, AnyInternalFieldApi> = new Map()
   readonly _pathVersion = 0
 
-  form: InternalFormApi<TData, any>
+  form: AnyInternalFormApi
 
   readonly name = ''
 
-  get _children(): Array<InternalFieldApi<TData, any>> {
+  get _children(): Array<AnyInternalFieldApi> {
     return Array.from(this.#children.values())
   }
 
-  constructor(form: InternalFormApi<TData, any>) {
+  constructor(form: AnyInternalFormApi) {
     this.form = form
   }
 
@@ -22,7 +22,7 @@ export class InternalRootFieldApi<TData> {
    * @private
    * Get a child FieldApi by its segment name.
    */
-  _getChild(segment: NameSegment): InternalFieldApi<TData, any> | undefined {
+  _getChild(segment: NameSegment): AnyInternalFieldApi | undefined {
     return this.#children.get(segment)
   }
 
@@ -30,11 +30,11 @@ export class InternalRootFieldApi<TData> {
    * @private
    * Set an existing node as a child of this root node.
    */
-  _setChild(node: InternalFieldApi<TData, any>): void {
+  _setChild(node: AnyInternalFieldApi): void {
     this.#children.set(node._segment, node)
   }
 
-  _addToTouchedFields(node: InternalFieldApi<any, any>) {
+  _addToTouchedFields(node: AnyInternalFieldApi) {
     this.form._formMetaAtom.set((prev) => {
       if (prev.touchedFields.has(node)) {
         return prev
@@ -49,7 +49,7 @@ export class InternalRootFieldApi<TData> {
     this.#children.delete(segment)
   }
 
-  _removeFromTouchedFieldsBatch(nodes: Set<InternalFieldApi<any, any>>) {
+  _removeFromTouchedFieldsBatch(nodes: Set<AnyInternalFieldApi>) {
     this.form._formMetaAtom.set((prev) => {
       const newSet = new Set(prev.touchedFields)
       for (const node of nodes) {

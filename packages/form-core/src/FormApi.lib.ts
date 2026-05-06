@@ -14,7 +14,12 @@ import {
 } from './validation.lib'
 
 import type { PipelineResult, ValidatorPipelineCache } from './validation.lib'
-import type { InternalBaseFieldMeta, InternalFieldApi } from './FieldApi.lib'
+import type {
+  AnyFieldApiOptions,
+  AnyInternalFieldApi,
+  InternalBaseFieldMeta,
+  InternalFieldApi,
+} from './FieldApi.lib'
 import type {
   FieldApiOverrideOptions,
   InternalFieldUpdateOptions,
@@ -24,7 +29,6 @@ import type { Atom, ReadonlyAtom } from '@tanstack/store'
 import type { FormApi, FormOptions, FormState } from './FormApi.public'
 import type { FieldUpdateOptions, Updater } from './types.public'
 import type {
-  FieldValidator,
   FormValidateResult,
   FormValidationError,
   FormValidator,
@@ -36,7 +40,7 @@ export interface BaseFormMeta {
    * @private
    * Fields that have been touched.
    */
-  touchedFields: Set<InternalFieldApi<any, any>>
+  touchedFields: Set<AnyInternalFieldApi>
   /**
    * @private
    * A field has notified the root to be dirty
@@ -53,7 +57,7 @@ export interface BaseFormMeta {
    * Dense array of field references per validator index that have errors.
    * Used to clear stale field errors when a validator no longer reports them.
    */
-  fieldErrors: Array<Set<InternalFieldApi<any, any>>>
+  fieldErrors: Array<Set<AnyInternalFieldApi>>
 }
 
 // StandardSchema<Input, Output>
@@ -115,6 +119,8 @@ export interface BaseFormMeta {
     -> Should errors move with the field, or should they remain at the name
  */
 
+export type AnyInternalFormApi = InternalFormApi<any, any>
+
 export class InternalFormApi<
   TFormData,
   TFormValidators extends Array<FormValidator<TFormData>>,
@@ -122,7 +128,7 @@ export class InternalFormApi<
   valuesAtom: Atom<TFormData>
   store: ReadonlyAtom<FormState<TFormData>>
   _formMetaAtom: Atom<BaseFormMeta>
-  _fieldRootNode: InternalRootFieldApi<TFormData>
+  _fieldRootNode: InternalRootFieldApi
   _options: FormOptions<TFormData, TFormValidators>
   _validatorPipelineCache: ValidatorPipelineCache
   declare readonly state: FormState<TFormData>
@@ -473,7 +479,7 @@ export class InternalFormApi<
   }
 
   _notifyFieldChange = (
-    field: InternalFieldApi<any, any> | null,
+    field: AnyInternalFieldApi | null,
     options: FieldUpdateOptions & PropagateOptions,
     event: 'change' | 'blur' | 'submit',
   ) => {
@@ -525,19 +531,18 @@ export class InternalFormApi<
   }
 
   _getOrCreateFieldApi = (
-    nameOrSegments: string | Array<string>,
-    validators: Array<FieldValidator<any, any>> | undefined,
+    options: Omit<AnyFieldApiOptions, 'form'>,
   ): InternalFieldApi<TFormData, TFormValidators> => {
     return getOrCreateFieldApi(
       this._fieldRootNode,
-      nameToFieldNodeSegments(nameOrSegments),
+      nameToFieldNodeSegments(options.name),
       this,
-      validators,
+      options,
     )
   }
 
   _clearFieldValidatorError = (
-    field: InternalFieldApi<any, any>,
+    field: AnyInternalFieldApi,
     validatorIndex: number,
   ) => {
     field._setMeta((prev) => {
@@ -620,14 +625,14 @@ export class InternalFormApi<
       // Handle field-level errors
       this._formMetaAtom.set((prev) => {
         const fieldErrors = [...prev.fieldErrors]
-        const newFieldRefs = new Set<InternalFieldApi<any, any>>()
+        const newFieldRefs = new Set<AnyInternalFieldApi>()
         const oldFieldRefs = fieldErrors[validatorIndex]
 
         // Set new field errors and build the new reference set
         for (const [fieldName, fieldError] of Object.entries(
           aggregateError.fieldErrors,
         )) {
-          const field = this._getOrCreateFieldApi(fieldName, undefined)
+          const field = this._getOrCreateFieldApi({ name: fieldName })
           field._setMeta((prev) => {
             const formErrors = [...prev._formValidatorErrors]
             // Ensure array is large enough for this validator index.

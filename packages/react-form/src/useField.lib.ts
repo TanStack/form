@@ -6,18 +6,25 @@ import type { FormValidator } from '@tanstack/form-core-v2'
 export interface InternalFieldProps<
   TData,
   TFormValidators extends Array<FormValidator<TData>>,
-> extends ReactFormFieldProps<TData, TFormValidators> {
-  form: InternalFormApi<TData, any>
+  TFieldValue,
+> extends ReactFormFieldProps<TData, TFormValidators, TFieldValue> {
+  form: InternalFormApi<TData, TFormValidators>
 }
 
 export function useField<
   TData,
   TFormValidators extends Array<FormValidator<TData>>,
->(options: InternalFieldProps<TData, TFormValidators>) {
-  const validatorsRef = useRef(options.validators)
+  TFieldValue,
+>(options: InternalFieldProps<TData, TFormValidators, TFieldValue>) {
+  const optionsRef = useRef(options)
+  optionsRef.current = options
+
   const fieldApi = useMemo(
     () =>
-      options.form._getOrCreateFieldApi(options.name, validatorsRef.current),
+      options.form._getOrCreateFieldApi({
+        ...optionsRef.current,
+        name: options.name,
+      }),
     [options.name, options.form],
   )
 

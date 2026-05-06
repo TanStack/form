@@ -5,6 +5,7 @@ import type {
   FieldValidator,
   FormValidator,
 } from './validation.public'
+import type { FieldListeners } from './listeners.public'
 
 /**
  * field.state.value
@@ -118,7 +119,12 @@ export interface FieldApi<
   handleBlur: () => void
 }
 
-export interface FieldApiOptions<TFormData, TFieldValue> {
+export interface FieldApiOptions<
+  TFormData,
+  TFormValidators extends Array<FormValidator<TFormData>>,
+  TFieldValue,
+> {
   name: string
   validators?: Array<FieldValidator<TFormData, TFieldValue>>
+  listeners?: FieldListeners<TFormData, TFormValidators>
 }

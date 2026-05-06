@@ -2,6 +2,7 @@ import React from 'react'
 import { useSelector } from '@tanstack/react-store'
 import { InternalFormApi } from '@tanstack/form-core-v2/internals'
 import { useField } from './useField.lib'
+import type { FunctionComponent } from 'react'
 import type { InternalBaseFieldMeta } from '@tanstack/form-core-v2/internals'
 import type {
   ReactFormApi,
@@ -26,8 +27,8 @@ export function initializeForm<
   const reactFormApi: InternalReactFormApi<TData, TFormValidators> =
     form as never
 
-  reactFormApi.Field = function TanStackFormField(
-    props: ReactFormFieldProps<TData, TFormValidators>,
+  const Field: FunctionComponent<any> = function TanStackFormField<TFieldValue>(
+    props: ReactFormFieldProps<TData, TFormValidators, TFieldValue>,
   ) {
     const fieldApi = useField({ ...props, form })
 
@@ -37,10 +38,11 @@ export function initializeForm<
     return <>{props.children(fieldApi)}</>
   }
 
-  reactFormApi.Field.displayName = 'form.Field'
+  Field.displayName = 'form.Field'
+  reactFormApi.Field = Field
 
-  reactFormApi.ArrayField = function TanStackFormArrayField(
-    props: ReactFormArrayFieldProps<TData, TFormValidators>,
+  const ArrayField = function TanStackFormArrayField<TFieldValue>(
+    props: ReactFormArrayFieldProps<TData, TFormValidators, TFieldValue>,
   ) {
     const fieldApi = useField({ ...props, form })
 
@@ -51,7 +53,9 @@ export function initializeForm<
     )
     return <>{props.children(fieldApi)}</>
   }
-  reactFormApi.ArrayField.displayName = 'form.ArrayField'
+
+  ArrayField.displayName = 'form.ArrayField'
+  reactFormApi.ArrayField = ArrayField
 
   return reactFormApi
 }

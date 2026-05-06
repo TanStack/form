@@ -421,8 +421,8 @@ describe('runFormValidatorPipeline', () => {
     ])
 
     // Get or create field APIs for users[1] and users[2]
-    const field1 = formApi._getOrCreateFieldApi('users[1]', undefined)
-    const field2 = formApi._getOrCreateFieldApi('users[2]', undefined)
+    const field1 = formApi._getOrCreateFieldApi({ name: 'users[1]' })
+    const field2 = formApi._getOrCreateFieldApi({ name: 'users[2]' })
 
     // Trigger validation for users[1]
     const firstPromise = runWithContext({ event: 'change', field: field1 })

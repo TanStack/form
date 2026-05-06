@@ -10,6 +10,9 @@ import type {
   FormValidator,
 } from '@tanstack/form-core-v2'
 
+// This type mess takes care of react 17-19 cross compatability.
+type ReactNode = ReturnType<FunctionComponent<{}>>
+
 export interface ReactFormApi<
   TData,
   TFormValidators extends Array<FormValidator<TData>>,
@@ -17,10 +20,12 @@ export interface ReactFormApi<
   /**
    * TODO docs
    */
-  Field: FunctionComponent<ReactFormFieldProps<TData, TFormValidators>>
-  ArrayField: FunctionComponent<
-    ReactFormArrayFieldProps<TData, TFormValidators>
-  >
+  Field: <TFieldValue>(
+    props: ReactFormFieldProps<TData, TFormValidators, TFieldValue>,
+  ) => ReactNode
+  ArrayField: <TFieldValue>(
+    props: ReactFormArrayFieldProps<TData, TFormValidators, TFieldValue>,
+  ) => ReactNode
 }
 
 /**
@@ -40,13 +45,15 @@ export function useForm<
 export interface ReactFormFieldProps<
   TData,
   TFormValidators extends Array<FormValidator<TData>>,
-> extends FieldApiOptions<TData, any> {
+  TFieldValue,
+> extends FieldApiOptions<TData, TFormValidators, TFieldValue> {
   children: (fieldApi: FieldApi<TData, TFormValidators>) => React.ReactNode
 }
 
 export interface ReactFormArrayFieldProps<
   TData,
   TFormValidators extends Array<FormValidator<TData>>,
-> extends FieldApiOptions<TData, any> {
+  TFieldValue,
+> extends FieldApiOptions<TData, TFormValidators, TFieldValue> {
   children: (fieldApi: FieldApi<TData, TFormValidators>) => React.ReactNode
 }

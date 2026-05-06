@@ -70,7 +70,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { foo: '' },
       })
-      const field = form._getOrCreateFieldApi('foo', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'foo' })
       expect(field.name).toBe('foo')
     })
 
@@ -78,7 +78,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { foo: { bar: { baz: '' } } },
       })
-      const field = form._getOrCreateFieldApi('foo.bar.baz', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'foo.bar.baz' })
       expect(field.name).toBe('foo.bar.baz')
     })
 
@@ -86,7 +86,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { arr: [''] },
       })
-      const field = form._getOrCreateFieldApi('arr[0]', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'arr[0]' })
       expect(field.name).toBe('arr[0]')
     })
 
@@ -94,7 +94,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { arr: [{ nested: '' }] },
       })
-      const field = form._getOrCreateFieldApi('arr[0].nested', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'arr[0].nested' })
       expect(field.name).toBe('arr[0].nested')
     })
 
@@ -102,7 +102,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { foo: { arr: [{ bar: '' }] } },
       })
-      const field = form._getOrCreateFieldApi('foo.arr[0].bar', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'foo.arr[0].bar' })
       expect(field.name).toBe('foo.arr[0].bar')
     })
 
@@ -110,7 +110,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { arr: [[['']]] },
       })
-      const field = form._getOrCreateFieldApi('arr[0][1][2]', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'arr[0][1][2]' })
       expect(field.name).toBe('arr[0][1][2]')
     })
 
@@ -118,8 +118,8 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { arr: [{ foo: '' }, { bar: '' }] },
       })
-      const field = form._getOrCreateFieldApi('arr[0]', undefined)
-      const subField = form._getOrCreateFieldApi('arr[0].bar', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'arr[0]' })
+      const subField = form._getOrCreateFieldApi({ name: 'arr[0].bar' })
 
       expect(field.name).toBe('arr[0]')
       expect(subField.name).toBe('arr[0].bar')
@@ -134,7 +134,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { a: { b: { c: '' } } },
       })
-      const fieldC = form._getOrCreateFieldApi('a.b.c', undefined)
+      const fieldC = form._getOrCreateFieldApi({ name: 'a.b.c' })
 
       expect(fieldC.name).toBe('a.b.c')
       expect(fieldC._parent.name).toBe('a.b')
@@ -147,7 +147,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { arr: [{ nested: '' }] },
       })
-      const field = form._getOrCreateFieldApi('arr[0].nested', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'arr[0].nested' })
 
       expect(field.name).toBe('arr[0].nested')
       expect(field._parent.name).toBe('arr[0]')
@@ -158,23 +158,23 @@ describe('FieldApi', () => {
         defaultValues: [{ name: '' }],
       })
 
-      const field = form._getOrCreateFieldApi('[0].name', undefined)
+      const field = form._getOrCreateFieldApi({ name: '[0].name' })
       expect(field.name).toBe('[0].name')
     })
 
     it('updates field lookup after form.swapFieldValues', () => {
       const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
 
-      const fieldAt0Before = form._getOrCreateFieldApi('items[0]', undefined)
-      const fieldAt1Before = form._getOrCreateFieldApi('items[1]', undefined)
+      const fieldAt0Before = form._getOrCreateFieldApi({ name: 'items[0]' })
+      const fieldAt1Before = form._getOrCreateFieldApi({ name: 'items[1]' })
 
       expect(fieldAt0Before.name).toBe('items[0]')
       expect(fieldAt1Before.name).toBe('items[1]')
 
       form.swapFieldValues('items', 0, 1)
 
-      const fieldAt0After = form._getOrCreateFieldApi('items[0]', undefined)
-      const fieldAt1After = form._getOrCreateFieldApi('items[1]', undefined)
+      const fieldAt0After = form._getOrCreateFieldApi({ name: 'items[0]' })
+      const fieldAt1After = form._getOrCreateFieldApi({ name: 'items[1]' })
 
       expect(fieldAt0After).toBe(fieldAt1Before)
       expect(fieldAt0After.name).toBe('items[0]')
@@ -187,21 +187,21 @@ describe('FieldApi', () => {
   describe('handleChange', () => {
     it('updates the field value', () => {
       const form = new InternalFormApi({ defaultValues: { name: '' } })
-      const field = form._getOrCreateFieldApi('name', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'name' })
       field.handleChange('Alice')
       expect(field.value).toBe('Alice')
     })
 
     it('accepts an updater function', () => {
       const form = new InternalFormApi({ defaultValues: { count: 1 } })
-      const field = form._getOrCreateFieldApi('count', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'count' })
       field.handleChange((prev: number) => prev + 1)
       expect(field.value).toBe(2)
     })
 
     it('marks the field as dirty and touched by default', () => {
       const form = new InternalFormApi({ defaultValues: { name: '' } })
-      const field = form._getOrCreateFieldApi('name', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'name' })
       field.handleChange('Alice')
       expect(field.meta.isDirty).toBe(true)
       expect(field.meta.isTouched).toBe(true)
@@ -209,14 +209,14 @@ describe('FieldApi', () => {
 
     it('respects markAsDirty: false', () => {
       const form = new InternalFormApi({ defaultValues: { name: '' } })
-      const field = form._getOrCreateFieldApi('name', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'name' })
       field.handleChange('Alice', { markAsDirty: false })
       expect(field.meta.isDirty).toBe(false)
     })
 
     it('respects markAsTouched: false', () => {
       const form = new InternalFormApi({ defaultValues: { name: '' } })
-      const field = form._getOrCreateFieldApi('name', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'name' })
       field.handleChange('Alice', { markAsTouched: false })
       expect(field.meta.isTouched).toBe(false)
     })
@@ -225,7 +225,7 @@ describe('FieldApi', () => {
   describe('pushValue', () => {
     it('appends a value to an array field', () => {
       const form = new InternalFormApi({ defaultValues: { items: ['a'] } })
-      const field = form._getOrCreateFieldApi('items', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'items' })
       field.pushValue('b')
       expect(field.value).toEqual(['a', 'b'])
     })
@@ -234,7 +234,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { items: [] as Array<string> },
       })
-      const field = form._getOrCreateFieldApi('items', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'items' })
       field.pushValue('a')
       expect(field.meta.isDirty).toBe(true)
       expect(field.meta.isTouched).toBe(true)
@@ -243,7 +243,7 @@ describe('FieldApi', () => {
     it('warns when called on a non-array field', () => {
       const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
       const form = new InternalFormApi({ defaultValues: { name: '' } })
-      const field = form._getOrCreateFieldApi('name', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'name' })
       field.pushValue('x')
       expect(warn).toHaveBeenCalled()
       warn.mockRestore()
@@ -253,7 +253,7 @@ describe('FieldApi', () => {
   describe('insertFieldValue', () => {
     it('inserts a value at the specified index', () => {
       const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
-      const field = form._getOrCreateFieldApi('items', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'items' })
       field.insertValue(1, 'x')
       expect(field.value).toEqual(['a', 'x', 'b'])
       field.insertValue(0, 'y')
@@ -266,7 +266,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { items: [] as Array<string> },
       })
-      const field = form._getOrCreateFieldApi('items', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'items' })
       field.insertValue(0, 'x')
       expect(field.value).toEqual(['x'])
     })
@@ -274,7 +274,7 @@ describe('FieldApi', () => {
     it('warns when called on a non-array field', () => {
       const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
       const form = new InternalFormApi({ defaultValues: { name: '' } })
-      const field = form._getOrCreateFieldApi('name', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'name' })
       field.insertValue(0, 'x')
       expect(warn).toHaveBeenCalled()
       warn.mockRestore()
@@ -283,7 +283,7 @@ describe('FieldApi', () => {
     it('warns when index is negative', () => {
       const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
       const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
-      const field = form._getOrCreateFieldApi('items', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'items' })
       field.insertValue(-1, 'x')
       expect(warn).toHaveBeenCalled()
       expect(form.getFieldValue('items')).toEqual(['a', 'b'])
@@ -293,7 +293,7 @@ describe('FieldApi', () => {
     it('warns when index is out of bounds', () => {
       const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
       const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
-      const field = form._getOrCreateFieldApi('items', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'items' })
       field.insertValue(3, 'x')
       expect(warn).toHaveBeenCalled()
       expect(form.getFieldValue('items')).toEqual(['a', 'b'])
@@ -304,26 +304,26 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { items: ['a', 'b', 'c'] },
       })
-      const arrayField = form._getOrCreateFieldApi('items', undefined)
-      const field0 = form._getOrCreateFieldApi('items[0]', undefined)
-      const field1 = form._getOrCreateFieldApi('items[1]', undefined)
-      const field2 = form._getOrCreateFieldApi('items[2]', undefined)
+      const arrayField = form._getOrCreateFieldApi({ name: 'items' })
+      const field0 = form._getOrCreateFieldApi({ name: 'items[0]' })
+      const field1 = form._getOrCreateFieldApi({ name: 'items[1]' })
+      const field2 = form._getOrCreateFieldApi({ name: 'items[2]' })
       arrayField.insertValue(1, 'x')
       expect(field0._segment).toBe(0)
       expect(field1._segment).toBe(2)
       expect(field2._segment).toBe(3)
 
-      expect(form._getOrCreateFieldApi('items[0]', undefined)).toBe(field0)
-      expect(form._getOrCreateFieldApi('items[1]', undefined)).not.toBe(field1)
-      expect(form._getOrCreateFieldApi('items[2]', undefined)).toBe(field1)
-      expect(form._getOrCreateFieldApi('items[3]', undefined)).toBe(field2)
+      expect(form._getOrCreateFieldApi({ name: 'items[0]' })).toBe(field0)
+      expect(form._getOrCreateFieldApi({ name: 'items[1]' })).not.toBe(field1)
+      expect(form._getOrCreateFieldApi({ name: 'items[2]' })).toBe(field1)
+      expect(form._getOrCreateFieldApi({ name: 'items[3]' })).toBe(field2)
     })
 
     it("updates the array field's meta", () => {
       const form = new InternalFormApi({
         defaultValues: { items: ['a', 'b'] },
       })
-      const field = form._getOrCreateFieldApi('items', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'items' })
       field.insertValue(1, 'x')
       expect(field.meta.isDirty).toBe(true)
       expect(field.meta.isTouched).toBe(true)
@@ -335,7 +335,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { items: ['a', 'b', 'c'] },
       })
-      const field = form._getOrCreateFieldApi('items', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'items' })
       field.clearValues()
       expect(field.value).toEqual([])
     })
@@ -343,7 +343,7 @@ describe('FieldApi', () => {
     it('warns when called on a non-array field', () => {
       const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
       const form = new InternalFormApi({ defaultValues: { name: '' } })
-      const field = form._getOrCreateFieldApi('name', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'name' })
       field.clearValues()
       expect(warn).toHaveBeenCalled()
       warn.mockRestore()
@@ -351,9 +351,9 @@ describe('FieldApi', () => {
 
     it('kills child fields', () => {
       const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
-      const arrayField = form._getOrCreateFieldApi('items', undefined)
-      form._getOrCreateFieldApi('items[0]', undefined)
-      form._getOrCreateFieldApi('items[1]', undefined)
+      const arrayField = form._getOrCreateFieldApi({ name: 'items' })
+      form._getOrCreateFieldApi({ name: 'items[0]' })
+      form._getOrCreateFieldApi({ name: 'items[1]' })
 
       arrayField.clearValues()
 
@@ -368,16 +368,16 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { items: ['a', 'b', 'c'] },
       })
-      const field = form._getOrCreateFieldApi('items', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'items' })
       field.swapValues(0, 2)
       expect(field.value).toEqual(['c', 'b', 'a'])
     })
 
     it('swaps child field segments', () => {
       const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
-      const field0 = form._getOrCreateFieldApi('items[0]', undefined)
-      const field1 = form._getOrCreateFieldApi('items[1]', undefined)
-      const arrayField = form._getOrCreateFieldApi('items', undefined)
+      const field0 = form._getOrCreateFieldApi({ name: 'items[0]' })
+      const field1 = form._getOrCreateFieldApi({ name: 'items[1]' })
+      const arrayField = form._getOrCreateFieldApi({ name: 'items' })
       arrayField.swapValues(0, 1)
       expect(field0._segment).toBe(1)
       expect(field1._segment).toBe(0)
@@ -385,7 +385,7 @@ describe('FieldApi', () => {
 
     it('does nothing when indexA === indexB', () => {
       const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
-      const field = form._getOrCreateFieldApi('items', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'items' })
       field.swapValues(0, 0)
       expect(field.value).toEqual(['a', 'b'])
     })
@@ -393,7 +393,7 @@ describe('FieldApi', () => {
     it('warns when called on a non-array field', () => {
       const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
       const form = new InternalFormApi({ defaultValues: { name: '' } })
-      const field = form._getOrCreateFieldApi('name', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'name' })
       field.swapValues(0, 1)
       expect(warn).toHaveBeenCalled()
       warn.mockRestore()
@@ -405,7 +405,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { items: ['a', 'b', 'c', 'd', 'e', 'f'] },
       })
-      const field = form._getOrCreateFieldApi('items', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'items' })
 
       field.removeValue(1)
       expect(field.value).toEqual(['a', 'c', 'd', 'e', 'f'])
@@ -418,7 +418,7 @@ describe('FieldApi', () => {
     it('warns when called on a non-array field', () => {
       const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
       const form = new InternalFormApi({ defaultValues: { name: '' } })
-      const field = form._getOrCreateFieldApi('name', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'name' })
 
       field.removeValue(0)
       expect(warn).toHaveBeenCalled()
@@ -428,7 +428,7 @@ describe('FieldApi', () => {
     it('warns when index is negative', () => {
       const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
       const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
-      const field = form._getOrCreateFieldApi('items', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'items' })
 
       field.removeValue(-1)
       expect(warn).toHaveBeenCalled()
@@ -439,7 +439,7 @@ describe('FieldApi', () => {
     it('warns when index is out of bounds', () => {
       const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
       const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
-      const field = form._getOrCreateFieldApi('items', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'items' })
 
       field.removeValue(2)
       expect(warn).toHaveBeenCalled()
@@ -451,11 +451,11 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { items: ['a', 'b', 'c'] },
       })
-      const arrayField = form._getOrCreateFieldApi('items', undefined)
+      const arrayField = form._getOrCreateFieldApi({ name: 'items' })
 
-      const field0 = form._getOrCreateFieldApi('items[0]', undefined)
-      form._getOrCreateFieldApi('items[1]', undefined)
-      const field2 = form._getOrCreateFieldApi('items[2]', undefined)
+      const field0 = form._getOrCreateFieldApi({ name: 'items[0]' })
+      form._getOrCreateFieldApi({ name: 'items[1]' })
+      const field2 = form._getOrCreateFieldApi({ name: 'items[2]' })
 
       arrayField.removeValue(1)
 
@@ -470,20 +470,20 @@ describe('FieldApi', () => {
   describe('field meta derived properties', () => {
     it('starts with defaultFieldMeta values', () => {
       const form = new InternalFormApi({ defaultValues: { x: '' } })
-      const field = form._getOrCreateFieldApi('x', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'x' })
       expect(field.meta).toMatchObject(defaultFieldMeta)
     })
 
     it('isPristine becomes false after a change', () => {
       const form = new InternalFormApi({ defaultValues: { x: '' } })
-      const field = form._getOrCreateFieldApi('x', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'x' })
       field.handleChange('new')
       expect(field.meta.isPristine).toBe(false)
     })
 
     it('isValid is true and isInvalid is false when there are no errors', () => {
       const form = new InternalFormApi({ defaultValues: { x: '' } })
-      const field = form._getOrCreateFieldApi('x', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'x' })
       expect(field.meta.isValid).toBe(true)
       expect(field.meta.isInvalid).toBe(false)
     })
@@ -492,24 +492,24 @@ describe('FieldApi', () => {
   describe('dirty/touched propagation', () => {
     it('marks parent fields as dirty when a child changes', () => {
       const form = new InternalFormApi({ defaultValues: { a: { b: '' } } })
-      const parent = form._getOrCreateFieldApi('a', undefined)
-      const child = form._getOrCreateFieldApi('a.b', undefined)
+      const parent = form._getOrCreateFieldApi({ name: 'a' })
+      const child = form._getOrCreateFieldApi({ name: 'a.b' })
       child.handleChange('new')
       expect(parent.meta.isDirty).toBe(true)
     })
 
     it('marks parent fields as touched when a child changes', () => {
       const form = new InternalFormApi({ defaultValues: { a: { b: '' } } })
-      const parent = form._getOrCreateFieldApi('a', undefined)
-      const child = form._getOrCreateFieldApi('a.b', undefined)
+      const parent = form._getOrCreateFieldApi({ name: 'a' })
+      const child = form._getOrCreateFieldApi({ name: 'a.b' })
       child.handleChange('new')
       expect(parent.meta.isTouched).toBe(true)
     })
 
     it('does not mark parent as dirty when markAsDirty is false', () => {
       const form = new InternalFormApi({ defaultValues: { a: { b: '' } } })
-      const parent = form._getOrCreateFieldApi('a', undefined)
-      const child = form._getOrCreateFieldApi('a.b', undefined)
+      const parent = form._getOrCreateFieldApi({ name: 'a' })
+      const child = form._getOrCreateFieldApi({ name: 'a.b' })
       child.handleChange('new', { markAsDirty: false })
       expect(parent.meta.isDirty).toBe(false)
     })
@@ -518,9 +518,9 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { a: { b: { c: '' } } },
       })
-      const grandparent = form._getOrCreateFieldApi('a', undefined)
-      const parent = form._getOrCreateFieldApi('a.b', undefined)
-      const child = form._getOrCreateFieldApi('a.b.c', undefined)
+      const grandparent = form._getOrCreateFieldApi({ name: 'a' })
+      const parent = form._getOrCreateFieldApi({ name: 'a.b' })
+      const child = form._getOrCreateFieldApi({ name: 'a.b.c' })
       child.handleChange('new')
       expect(parent.meta.isDirty).toBe(true)
       expect(grandparent.meta.isDirty).toBe(true)
@@ -530,9 +530,9 @@ describe('FieldApi', () => {
   describe('_setChild type transitions', () => {
     it('transitions from leaf to object when a string child is added', () => {
       const form = new InternalFormApi({ defaultValues: { foo: { bar: '' } } })
-      const field = form._getOrCreateFieldApi('foo', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'foo' })
       expect(field._isLeaf).toBe(true)
-      form._getOrCreateFieldApi('foo.bar', undefined)
+      form._getOrCreateFieldApi({ name: 'foo.bar' })
       expect(field._isLeaf).toBe(false)
       expect(field._isArray).toBe(false)
       expect(field._type).toBe('object')
@@ -540,9 +540,9 @@ describe('FieldApi', () => {
 
     it('transitions from leaf to array when a numeric child is added', () => {
       const form = new InternalFormApi({ defaultValues: { arr: [''] } })
-      const field = form._getOrCreateFieldApi('arr', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'arr' })
       expect(field._isLeaf).toBe(true)
-      form._getOrCreateFieldApi('arr[0]', undefined)
+      form._getOrCreateFieldApi({ name: 'arr[0]' })
       expect(field._isArray).toBe(true)
       expect(field._type).toBe('array')
     })
@@ -552,8 +552,8 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { arr: [] as Array<any> },
       })
-      const arrField = form._getOrCreateFieldApi('arr', undefined)
-      form._getOrCreateFieldApi('arr[0]', undefined)
+      const arrField = form._getOrCreateFieldApi({ name: 'arr' })
+      form._getOrCreateFieldApi({ name: 'arr[0]' })
 
       const strChild = new InternalFieldApi({
         segment: 'bad',
@@ -571,8 +571,8 @@ describe('FieldApi', () => {
     it('warns when adding a numeric accessor to an object field', () => {
       const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
       const form = new InternalFormApi({ defaultValues: { obj: { a: '' } } })
-      const objField = form._getOrCreateFieldApi('obj', undefined)
-      form._getOrCreateFieldApi('obj.a', undefined)
+      const objField = form._getOrCreateFieldApi({ name: 'obj' })
+      form._getOrCreateFieldApi({ name: 'obj.a' })
 
       const numChild = new InternalFieldApi({
         segment: 0,
@@ -593,7 +593,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { foo: { bar: '' } },
       })
-      const field = form._getOrCreateFieldApi('foo.bar', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'foo.bar' })
       expect(field.meta).toEqual(defaultFieldMeta)
     })
 
@@ -601,7 +601,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { foo: '' },
       })
-      const field = form._getOrCreateFieldApi('foo', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'foo' })
       expect(field.meta.isDirty).toBe(false)
       expect(field.meta.isTouched).toBe(false)
 
@@ -616,7 +616,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { foo: '' },
       })
-      const field = form._getOrCreateFieldApi('foo', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'foo' })
 
       expect(field.meta.isPristine).toBe(true)
       expect(field.meta.isDirty).toBe(false)
@@ -631,7 +631,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { arr: ['a'] },
       })
-      const field = form._getOrCreateFieldApi('arr', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'arr' })
 
       expect(field.meta.isDirty).toBe(false)
 
@@ -645,7 +645,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { arr: ['a', 'b'] },
       })
-      const field = form._getOrCreateFieldApi('arr', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'arr' })
 
       expect(field.meta.isDirty).toBe(false)
 
@@ -659,7 +659,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { arr: ['a', 'b'] },
       })
-      const field = form._getOrCreateFieldApi('arr', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'arr' })
 
       expect(field.meta.isDirty).toBe(false)
 
@@ -673,20 +673,20 @@ describe('FieldApi', () => {
   describe('_isMounted and store', () => {
     it('is false before the store is accessed', () => {
       const form = new InternalFormApi({ defaultValues: { x: '' } })
-      const field = form._getOrCreateFieldApi('x', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'x' })
       expect(field._isMounted).toBe(false)
     })
 
     it('is true after the store is accessed', () => {
       const form = new InternalFormApi({ defaultValues: { x: '' } })
-      const field = form._getOrCreateFieldApi('x', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'x' })
       void field.store
       expect(field._isMounted).toBe(true)
     })
 
     it('store returns consistent state', () => {
       const form = new InternalFormApi({ defaultValues: { x: 'hello' } })
-      const field = form._getOrCreateFieldApi('x', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'x' })
       const state = field.store.get()
       expect(state.value).toBe('hello')
       expect(state.meta).toMatchObject(defaultFieldMeta)
@@ -698,7 +698,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { items: ['a', 'b', 'c', 'd'] },
       })
-      const field = form._getOrCreateFieldApi('items', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'items' })
       field.filterValues((value) => value !== 'b' && value !== 'd')
       expect(form.getFieldValue('items')).toEqual(['a', 'c'])
     })
@@ -707,7 +707,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { items: ['a', 'b', 'c', 'd'] },
       })
-      const field = form._getOrCreateFieldApi('items', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'items' })
       field.filterValues((_, index) => index % 2 === 0)
       expect(form.getFieldValue('items')).toEqual(['a', 'c'])
     })
@@ -716,7 +716,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { items: ['a', 'b', 'c'] },
       })
-      const field = form._getOrCreateFieldApi('items', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'items' })
       field.filterValues((_, index, array) => {
         return index === array.length - 1
       })
@@ -727,7 +727,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { items: ['a', 'b', 'c'] },
       })
-      const field = form._getOrCreateFieldApi('items', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'items' })
       const thisObj = { threshold: 1 }
       field.filterValues(
         function (_, index) {
@@ -743,7 +743,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { items: ['a', 'b', 'c'] },
       })
-      const field = form._getOrCreateFieldApi('items', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'items' })
       field.filterValues(() => false)
       expect(form.getFieldValue('items')).toEqual([])
     })
@@ -752,7 +752,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { items: ['a', 'b', 'c'] },
       })
-      const field = form._getOrCreateFieldApi('items', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'items' })
       field.filterValues(() => true)
       expect(form.getFieldValue('items')).toEqual(['a', 'b', 'c'])
     })
@@ -761,7 +761,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { items: [] as Array<string> },
       })
-      const field = form._getOrCreateFieldApi('items', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'items' })
       field.filterValues(() => true)
       expect(form.getFieldValue('items')).toEqual([])
     })
@@ -769,7 +769,7 @@ describe('FieldApi', () => {
     it('warns when called on a non-array field', () => {
       const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
       const form = new InternalFormApi({ defaultValues: { name: '' } })
-      const field = form._getOrCreateFieldApi('name', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'name' })
       field.filterValues(() => true)
       expect(warn).toHaveBeenCalled()
       warn.mockRestore()
@@ -779,11 +779,11 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { items: ['a', 'b', 'c', 'd'] },
       })
-      const arrayField = form._getOrCreateFieldApi('items', undefined)
-      const field0 = form._getOrCreateFieldApi('items[0]', undefined)
-      form._getOrCreateFieldApi('items[1]', undefined)
-      const field2 = form._getOrCreateFieldApi('items[2]', undefined)
-      form._getOrCreateFieldApi('items[3]', undefined)
+      const arrayField = form._getOrCreateFieldApi({ name: 'items' })
+      const field0 = form._getOrCreateFieldApi({ name: 'items[0]' })
+      form._getOrCreateFieldApi({ name: 'items[1]' })
+      const field2 = form._getOrCreateFieldApi({ name: 'items[2]' })
+      form._getOrCreateFieldApi({ name: 'items[3]' })
 
       // Keep only indices 0 and 2
       arrayField.filterValues((_, index) => index === 0 || index === 2)
@@ -800,11 +800,11 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { items: ['a', 'b', 'c'] },
       })
-      const arrayField = form._getOrCreateFieldApi('items', undefined)
+      const arrayField = form._getOrCreateFieldApi({ name: 'items' })
 
-      const field0 = form._getOrCreateFieldApi('items[0]', undefined)
-      form._getOrCreateFieldApi('items[1]', undefined)
-      const field2 = form._getOrCreateFieldApi('items[2]', undefined)
+      const field0 = form._getOrCreateFieldApi({ name: 'items[0]' })
+      form._getOrCreateFieldApi({ name: 'items[1]' })
+      const field2 = form._getOrCreateFieldApi({ name: 'items[2]' })
 
       arrayField.filterValues((_, index) => index !== 1)
 
@@ -816,7 +816,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { items: ['a', 'b', 'c'] },
       })
-      const field = form._getOrCreateFieldApi('items', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'items' })
       field.filterValues(() => true)
       expect(field.meta.isDirty).toBe(true)
       expect(field.meta.isTouched).toBe(true)
@@ -826,7 +826,7 @@ describe('FieldApi', () => {
       const form = new InternalFormApi({
         defaultValues: { items: ['a', 'b', 'c'] },
       })
-      const field = form._getOrCreateFieldApi('items', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'items' })
 
       const originalArray = field.value
       field.filterValues(() => true)
@@ -843,7 +843,7 @@ describe('FieldApi', () => {
           ],
         },
       })
-      const field = form._getOrCreateFieldApi('items', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'items' })
       field.filterValues((person: any) => person.age > 28)
       expect(form.getFieldValue('items')).toEqual([
         { name: 'Alice', age: 30 },
@@ -855,7 +855,7 @@ describe('FieldApi', () => {
   describe('_kill', () => {
     it('unmounts the field store', () => {
       const form = new InternalFormApi({ defaultValues: { x: '' } })
-      const field = form._getOrCreateFieldApi('x', undefined)
+      const field = form._getOrCreateFieldApi({ name: 'x' })
       void field.store
       expect(field._isMounted).toBe(true)
       field._kill()
@@ -864,8 +864,8 @@ describe('FieldApi', () => {
 
     it('also kills child fields', () => {
       const form = new InternalFormApi({ defaultValues: { a: { b: '' } } })
-      const parent = form._getOrCreateFieldApi('a', undefined)
-      const child = form._getOrCreateFieldApi('a.b', undefined)
+      const parent = form._getOrCreateFieldApi({ name: 'a' })
+      const child = form._getOrCreateFieldApi({ name: 'a.b' })
       void parent.store
       void child.store
       parent._kill()

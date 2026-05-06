@@ -10,11 +10,12 @@ import type { PipelineResult, ValidatorPipelineCache } from './validation.lib'
 import type { PropagateOptions } from './types.lib'
 import type { InternalRootFieldApi } from './RootFieldApi.lib'
 import type { FieldUpdateOptions, Updater } from './types.public'
-import type { InternalFormApi } from './FormApi.lib'
+import type { AnyInternalFormApi, InternalFormApi } from './FormApi.lib'
 import type { Atom, ReadonlyAtom } from '@tanstack/store'
 import type {
   BaseFieldMeta,
   FieldApi,
+  FieldApiOptions,
   FieldMeta as PublicFieldMeta,
   FieldState as PublicFieldState,
 } from './FieldApi.public'
@@ -25,6 +26,9 @@ import type {
   FormValidator,
   ValidationError,
 } from './validation.public'
+
+export type AnyFieldApiOptions = FieldApiOptions<any, any, any>
+export type AnyFieldValidator = FieldValidator<any, any>
 
 // TODO Should be irrelevant for SSR, but double check please
 const metaCache = new WeakMap<InternalBaseFieldMeta, InternalFieldMeta>()
@@ -101,11 +105,11 @@ export function nameToFieldNodeSegments(
  * @important This mutates the segments array.
  */
 export function getOrCreateFieldApi(
-  node: InternalFieldApi<any, any> | InternalRootFieldApi<any>,
+  node: AnyInternalFieldApi | InternalRootFieldApi,
   segments: NameSegments,
-  form: InternalFormApi<any, any>,
-  validators?: Array<FieldValidator<any, any>>,
-): InternalFieldApi<any, any> {
+  form: AnyInternalFormApi,
+  options?: Omit<AnyFieldApiOptions, 'name'>,
+): AnyInternalFieldApi {
   const segment = segments.shift()
   if (segment === undefined) {
     // If trieNode is the root, we need to return a field node, not the root
@@ -117,19 +121,19 @@ export function getOrCreateFieldApi(
 
   let childNode = node._getChild(segment)
   if (childNode) {
-    return getOrCreateFieldApi(childNode, segments, form, validators)
+    return getOrCreateFieldApi(childNode, segments, form, options)
   }
 
   childNode = new InternalFieldApi({
     segment,
     parent: node,
     form: form,
-    validators,
+    ...options,
   })
 
   node._setChild(childNode)
 
-  return getOrCreateFieldApi(childNode, segments, form, validators)
+  return getOrCreateFieldApi(childNode, segments, form, options)
 }
 
 /**
@@ -138,9 +142,9 @@ export function getOrCreateFieldApi(
  * @important This mutates the segments array.
  */
 export function tryGetFieldApi(
-  trieNode: InternalFieldApi<any, any> | InternalRootFieldApi<any>,
+  trieNode: AnyInternalFieldApi | InternalRootFieldApi,
   segments: NameSegments,
-): InternalFieldApi<any, any> | null {
+): AnyInternalFieldApi | null {
   const segment = segments.shift()
   if (segment === undefined) {
     // If trieNode is the root, we cannot return it as a field API
@@ -176,16 +180,16 @@ export const defaultFieldMeta: InternalFieldMeta = deriveFromBaseFieldMeta(
   defaultInternalBaseFieldMeta,
 )
 
+export type AnyInternalFieldApiParams = InternalFieldApiParams<any, any>
+
 export interface InternalFieldApiParams<
   TFormData,
   TFormValidators extends Array<FormValidator<TFormData>>,
-> {
+> extends Omit<AnyFieldApiOptions, 'name'> {
   segment: NameSegment
-  parent:
-    | InternalFieldApi<TFormData, TFormValidators>
-    | InternalRootFieldApi<TFormData>
+  parent: InternalFieldApi<TFormData, TFormValidators> | InternalRootFieldApi
   form: InternalFormApi<TFormData, TFormValidators>
-  validators?: Array<FieldValidator<any, any>>
+  validators?: Array<AnyFieldValidator>
 }
 
 // Possible plan for performance
@@ -195,20 +199,22 @@ export interface InternalFieldApiParams<
 // when children access fullPath, it checks if parentVersion === childVersion
 // if not, recompute and sync version
 
+export type AnyInternalFieldApi = InternalFieldApi<any, any>
+
 export class InternalFieldApi<
   TFormData,
   TFormValidators extends Array<FormValidator<TFormData>>,
 > implements FieldApi<TFormData, TFormValidators> {
   _type: 'array' | 'object' | 'leaf' = 'leaf'
   readonly _isRoot = false
-  _parent: InternalFieldApi<any, any> | InternalRootFieldApi<any>
-  _childrenArray: Array<InternalFieldApi<any, any>> = []
-  _childrenMap: Map<string, InternalFieldApi<any, any>> = new Map()
+  _parent: AnyInternalFieldApi | InternalRootFieldApi
+  _childrenArray: Array<AnyInternalFieldApi> = []
+  _childrenMap: Map<string, AnyInternalFieldApi> = new Map()
   _pathVersion = 0
   _parentPathVersion = 0
   _fullPathCache: string | null = null
   _atoms: FieldAtoms | null = null
-  _validators: Array<FieldValidator<any, any>>
+  _validators: Array<AnyFieldValidator>
   _validatorCache: ValidatorPipelineCache | null = null
 
   #segment: NameSegment
@@ -226,7 +232,7 @@ export class InternalFieldApi<
     return this.#segment
   }
 
-  form: InternalFormApi<any, any>
+  form: AnyInternalFormApi
 
   /**
    * @private
@@ -245,7 +251,7 @@ export class InternalFieldApi<
     return this._type === 'leaf'
   }
 
-  get _children(): Array<InternalFieldApi<any, any>> {
+  get _children(): Array<AnyInternalFieldApi> {
     switch (this._type) {
       case 'array':
         return this._childrenArray.filter(Boolean)
@@ -332,14 +338,14 @@ export class InternalFieldApi<
     parent,
     validators,
     form,
-  }: InternalFieldApiParams<any, any>) {
+  }: AnyInternalFieldApiParams) {
     this.#segment = segment
     this._parent = parent
     this.form = form
     this._validators = validators ?? []
   }
 
-  _update(params: Pick<InternalFieldApiParams<any, any>, 'validators'>) {
+  _update(params: Pick<AnyInternalFieldApiParams, 'validators'>) {
     if (params.validators) {
       this._validators = params.validators
     }
@@ -354,7 +360,7 @@ export class InternalFieldApi<
    * @private
    * Get a child FieldApi by its segment name.
    */
-  _getChild(segment: NameSegment): InternalFieldApi<any, any> | undefined {
+  _getChild(segment: NameSegment): AnyInternalFieldApi | undefined {
     switch (this._type) {
       case 'array':
         if (typeof segment !== 'number') return undefined
@@ -371,7 +377,7 @@ export class InternalFieldApi<
    * @private
    * Set an existing node as a child of this FieldApi.
    */
-  _setChild(node: InternalFieldApi<any, any>): void {
+  _setChild(node: AnyInternalFieldApi): void {
     if (this._type === 'leaf') {
       this._type = typeof node._segment === 'number' ? 'array' : 'object'
     }
@@ -467,7 +473,7 @@ export class InternalFieldApi<
    * eventually calling form validation.
    */
   _triggerValidationCascade(event: 'change' | 'blur' | 'submit'): void {
-    let current: InternalFieldApi<any, any> | InternalRootFieldApi<any> = this
+    let current: AnyInternalFieldApi | InternalRootFieldApi = this
 
     while (!current._isRoot) {
       current._runFieldValidation(event)
@@ -536,7 +542,7 @@ export class InternalFieldApi<
     // Not sure if we lose this context, so might as well
     const originalField = this
 
-    let currNode: InternalFieldApi<any, any> | InternalRootFieldApi<any> = this
+    let currNode: AnyInternalFieldApi | InternalRootFieldApi = this
 
     batch(() => {
       if (markAsTouched && originalField._isMounted) {
@@ -616,9 +622,9 @@ export class InternalFieldApi<
    */
   _kill() {
     batch(() => {
-      const stack: Array<InternalFieldApi<any, any>> = [this]
-      const nodesToKill: Array<InternalFieldApi<any, any>> = []
-      const nodesToKillSet = new Set<InternalFieldApi<any, any>>()
+      const stack: Array<AnyInternalFieldApi> = [this]
+      const nodesToKill: Array<AnyInternalFieldApi> = []
+      const nodesToKillSet = new Set<AnyInternalFieldApi>()
 
       while (stack.length > 0) {
         const node = stack.pop()!
@@ -652,7 +658,7 @@ export class InternalFieldApi<
           const currFieldErrors = fieldErrors[i]
           if (!currFieldErrors || currFieldErrors.size === 0) continue
 
-          let next: Set<InternalFieldApi<any, any>> | undefined
+          let next: Set<AnyInternalFieldApi> | undefined
 
           for (const node of currFieldErrors) {
             if (nodesToKillSet.has(node)) {
@@ -696,7 +702,7 @@ export class InternalFieldApi<
    * Create a new FieldApi with the given segment name and add it as child.
    * @returns the new FieldApi.
    */
-  _createChild(segment: NameSegment): InternalFieldApi<any, any> {
+  _createChild(segment: NameSegment): AnyInternalFieldApi {
     const node = new InternalFieldApi({
       segment,
       parent: this,
@@ -848,9 +854,7 @@ export class InternalFieldApi<
 
 // validateArray() -> touches all child nodes -> traverse, check for nodeId, if present, set it in the map
 
-function getFieldSnapshot(
-  field: InternalFieldApi<any, any>,
-): InternalFieldState {
+function getFieldSnapshot(field: AnyInternalFieldApi): InternalFieldState {
   return {
     value: field._getValue(),
     meta: deriveFromBaseFieldMeta(field._getBaseMeta()),
