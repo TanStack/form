@@ -1216,7 +1216,7 @@ export interface FieldLikeAPI<
   getInfo: () => FieldInfo<TParentData>
   validate: (
     cause: ValidationCause,
-    opts?: { skipFormValidation?: boolean },
+    opts?: { skipFormValidation?: boolean; skipGroupValidation?: boolean },
   ) => ValidationError[] | Promise<ValidationError[]>
   /**
    * @private

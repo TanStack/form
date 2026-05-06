@@ -1265,7 +1265,10 @@ export class FormGroupApi<
 
   mount = () => {
     this.update(this.options as never)
-    return () => {}
+    this.form.formGroupApis.add(this)
+    return () => {
+      this.form.formGroupApis.delete(this)
+    }
   }
 
   /**
@@ -1715,7 +1718,10 @@ export class FormGroupApi<
         fieldValidationPromises.push(
           // Remember, `validate` is either a sync operation or a promise
           Promise.resolve().then(() =>
-            fieldInstance.validate(cause, { skipFormValidation: true }),
+            fieldInstance.validate(cause, {
+              skipFormValidation: true,
+              skipGroupValidation: true,
+            }),
           ),
         )
 

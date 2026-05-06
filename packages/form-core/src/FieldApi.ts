@@ -1579,7 +1579,7 @@ export class FieldApi<
    */
   validate = (
     cause: ValidationCause,
-    opts?: { skipFormValidation?: boolean },
+    opts?: { skipFormValidation?: boolean; skipGroupValidation?: boolean },
   ): ValidationError[] | Promise<ValidationError[]> => {
     // If the field is pristine, do not validate
     if (!this.state.meta.isTouched) return []
@@ -1593,6 +1593,16 @@ export class FieldApi<
       fieldsErrorMap[this.name] ?? {},
     )
 
+    // Cascade into any encompassing `FormGroupApi`'s own validators so
+    // group-scoped strategies (e.g. `revalidateLogic` gated on the group's
+    // own `submissionAttempts`) get a chance to react to this field change.
+    if (!opts?.skipGroupValidation) {
+      for (const group of this.form.formGroupApis) {
+        if (!this.name.startsWith(group.name)) continue
+        group.validateSync(cause, {}, { skipRelatedFieldValidation: true })
+      }
+    }
+
     if (hasErrored && !this.options.asyncAlways) {
       this.getInfo().validationMetaMap[
         getErrorMapKey(cause)
@@ -1604,7 +1614,39 @@ export class FieldApi<
     const formValidationResultPromise = opts?.skipFormValidation
       ? Promise.resolve({})
       : this.form.validateAsync(cause)
-    return this.validateAsync(cause, formValidationResultPromise)
+
+    const fieldAsyncResults = this.validateAsync(
+      cause,
+      formValidationResultPromise,
+    )
+
+    if (opts?.skipGroupValidation) {
+      return fieldAsyncResults
+    }
+
+    // Track each encompassing group's async validators alongside the field's
+    // own async result so callers awaiting `validate()` also wait on group
+    // validators completing.
+    const groupAsyncResults: Promise<ValidationError[]>[] = []
+    for (const group of this.form.formGroupApis) {
+      if (!this.name.startsWith(group.name)) continue
+      groupAsyncResults.push(
+        Promise.resolve(
+          group.validateAsync(cause, Promise.resolve({}), {
+            skipRelatedFieldValidation: true,
+          }),
+        ),
+      )
+    }
+
+    if (groupAsyncResults.length === 0) {
+      return fieldAsyncResults
+    }
+
+    return Promise.all([
+      Promise.resolve(fieldAsyncResults),
+      ...groupAsyncResults,
+    ]).then((results) => results.flat())
   }
 
   /**

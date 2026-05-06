@@ -47,6 +47,7 @@ import type {
   TStandardSchemaValidatorValue,
 } from './standardSchemaValidator'
 import type { AnyFieldApi } from './FieldApi'
+import type { AnyFormGroupApi } from './FormGroupApi'
 import type { DeepKeys, DeepKeysOfType, DeepValue } from './util-types'
 import type { Updater } from './utils'
 
@@ -911,6 +912,12 @@ export class FormApi<
    * A record of field information for each field in the form.
    */
   fieldInfo: Partial<Record<DeepKeys<TFormData>, FieldInfo<TFormData>>> = {}
+  /**
+   * The set of currently-mounted `FormGroupApi` instances belonging to
+   * this form. Used by `FieldApi.validate` to cascade field-level changes
+   * into the validators of any group that encompasses the field.
+   */
+  formGroupApis: Set<AnyFormGroupApi> = new Set()
   get state() {
     return this.store.state
   }
@@ -1526,7 +1533,10 @@ export class FormApi<
           fieldValidationPromises.push(
             // Remember, `validate` is either a sync operation or a promise
             Promise.resolve().then(() =>
-              fieldInstance.validate(cause, { skipFormValidation: true }),
+              fieldInstance.validate(cause, {
+                skipFormValidation: true,
+                skipGroupValidation: true,
+              }),
             ),
           )
 
