@@ -12,7 +12,7 @@ export const Step2Form = withForm({
       <form.FormGroup
         name="step2"
         validators={{
-          onDynamic: step2Schema
+          onDynamic: step2Schema,
         }}
         onGroupSubmit={({ value: _value }) => {
           form.handleSubmit()
