@@ -1,5 +1,11 @@
 import { createStore } from '@tanstack/store'
 import { concatenatePaths, getBy, makePathArray } from './utils'
+import type {
+  AnyFieldLikeMetaBase,
+  FormLikeAPI,
+  UpdateMetaOptions,
+  ValidationCause,
+} from './types'
 import type { ReadonlyStore } from '@tanstack/store'
 import type { Updater } from './utils'
 import type {
@@ -14,12 +20,6 @@ import type {
   DeepValue,
   FieldsMap,
 } from './util-types'
-import {
-  AnyFieldLikeMetaBase,
-  FormLikeAPI,
-  UpdateMetaOptions,
-  ValidationCause,
-} from './types'
 
 export type AnyFieldGroupApi = FieldGroupApi<
   any,

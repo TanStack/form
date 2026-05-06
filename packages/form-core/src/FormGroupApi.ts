@@ -14,6 +14,26 @@ import {
 } from './standardSchemaValidator'
 import { defaultFieldMeta } from './metaHelper'
 import { FieldApi } from './FieldApi'
+import {
+  FieldLikeApiOptions
+} from './types'
+import type {
+  AnyFieldLikeMeta,
+  AnyFieldLikeMetaBase,
+  FieldErrorMapFromValidator,
+  FieldInfo,
+  FieldLikeAPI,
+  FieldLikeMetaBase,
+  FieldLikeOptions,
+  FieldLikeState,
+  FormLikeAPI,
+  ListenerCause,
+  UnwrapFieldAsyncValidateOrFn,
+  UnwrapFieldValidateOrFn,
+  UpdateMetaOptions,
+  ValidationCause,
+  ValidationError,
+  ValidationErrorMap} from './types';
 import type {
   FormApi,
   FormAsyncValidateOrFn,
@@ -26,25 +46,6 @@ import type {
 } from './standardSchemaValidator'
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
 import type { ReadonlyStore, Store } from '@tanstack/store'
-import {
-  AnyFieldLikeMeta,
-  AnyFieldLikeMetaBase,
-  FieldErrorMapFromValidator,
-  FieldInfo,
-  FieldLikeAPI,
-  FieldLikeApiOptions,
-  FieldLikeMetaBase,
-  FieldLikeOptions,
-  FieldLikeState,
-  FormLikeAPI,
-  ListenerCause,
-  UnwrapFieldAsyncValidateOrFn,
-  UnwrapFieldValidateOrFn,
-  UpdateMetaOptions,
-  ValidationCause,
-  ValidationError,
-  ValidationErrorMap,
-} from './types'
 import type { DeepKeys, DeepKeysOfType, DeepValue } from './util-types'
 
 /**

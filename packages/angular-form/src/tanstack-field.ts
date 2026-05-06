@@ -23,7 +23,7 @@ import type {
   DeepKeys,
   DeepValue,
   FieldListeners,
-  FieldMeta,
+  FieldLikeMeta,
   FieldValidators,
   FormAsyncValidateOrFn,
   FormValidateOrFn,
@@ -117,7 +117,7 @@ export class TanStackField<
   defaultMeta =
     input<
       Partial<
-        FieldMeta<
+        FieldLikeMeta<
           TParentData,
           TName,
           TData,

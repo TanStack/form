@@ -21,17 +21,7 @@ import {
 } from './standardSchemaValidator'
 import { defaultFieldMeta, metaHelper } from './metaHelper'
 import { formEventClient } from './EventClient'
-import type { ReadonlyStore, Store } from '@tanstack/store'
-
-// types
-import type { ValidationLogicFn } from './ValidationLogic'
 import type {
-  StandardSchemaV1,
-  StandardSchemaV1Issue,
-  TStandardSchemaValidatorValue,
-} from './standardSchemaValidator'
-import type { AnyFieldApi } from './FieldApi'
-import {
   AnyFieldLikeMeta,
   AnyFieldLikeMetaBase,
   ExtractGlobalFormError,
@@ -47,6 +37,16 @@ import {
   ValidationErrorMap,
   ValidationErrorMapKeys,
 } from './types'
+import type { ReadonlyStore, Store } from '@tanstack/store'
+
+// types
+import type { ValidationLogicFn } from './ValidationLogic'
+import type {
+  StandardSchemaV1,
+  StandardSchemaV1Issue,
+  TStandardSchemaValidatorValue,
+} from './standardSchemaValidator'
+import type { AnyFieldApi } from './FieldApi'
 import type { DeepKeys, DeepKeysOfType, DeepValue } from './util-types'
 import type { Updater } from './utils'
 

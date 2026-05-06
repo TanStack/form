@@ -6,6 +6,8 @@ import { useMemo, useRef, useState } from 'react'
 import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import { useFormId } from './useFormId'
+import { FormGroup } from './useFormGroup'
+import type { FormGroupComponent } from './useFormGroup';
 import type {
   AnyFormApi,
   AnyFormState,
@@ -16,7 +18,6 @@ import type {
 } from '@tanstack/form-core'
 import type { FunctionComponent, PropsWithChildren, ReactNode } from 'react'
 import type { FieldComponent } from './useField'
-import { FormGroup, FormGroupComponent } from './useFormGroup'
 
 /**
  * Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned from `useForm`

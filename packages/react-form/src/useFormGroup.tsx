@@ -3,20 +3,19 @@
 import { useMemo, useState } from 'react'
 import { useStore } from '@tanstack/react-store'
 import {
-  FormGroupApiOptions,
-  FormGroupOptions,
-  functionalUpdate,
+  FormGroupApi,
+  functionalUpdate
 } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
-import {
+import type {
   DeepKeys,
   DeepValue,
   FormAsyncValidateOrFn,
-  FormGroupApi,
+  FormGroupApiOptions,
   FormGroupAsyncValidateOrFn,
+  FormGroupOptions,
   FormGroupValidateOrFn,
-  FormValidateOrFn,
-} from '@tanstack/form-core'
+  FormValidateOrFn} from '@tanstack/form-core';
 import type { FunctionComponent, ReactNode } from 'react'
 
 export type UseFormGroup<
