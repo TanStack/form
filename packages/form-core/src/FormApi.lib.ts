@@ -484,7 +484,11 @@ export class InternalFormApi<
     event: 'change' | 'blur' | 'submit',
   ) => {
     const { markAsDirty = true } = options
-    if (markAsDirty && !this._formMetaAtom.get().isDirty) {
+    if (
+      event === 'change' &&
+      markAsDirty &&
+      !this._formMetaAtom.get().isDirty
+    ) {
       this._formMetaAtom.set((prev) => ({ ...prev, isDirty: true }))
     }
 
