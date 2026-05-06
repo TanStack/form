@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { FieldApi, FormApi, FormGroupApi } from '../src/index'
+import { revalidateLogic } from '../src/ValidationLogic'
 
 describe('form group api', () => {
   it('should allow a submission without submitting the form', async () => {
@@ -279,5 +280,63 @@ describe('form group api', () => {
     expect(onGroupSubmit).toHaveBeenCalledTimes(1)
     expect(onGroupSubmitInvalid).toHaveBeenCalledTimes(1)
     expect(step1Group.state.meta.errorMap.onSubmit).toBeUndefined()
+  })
+
+  it('should clear stale form-level onDynamic field errors on subsequent group submissions when using revalidateLogic', async () => {
+    const onSubmit = vi.fn()
+    const onGroupSubmit = vi.fn()
+    const onGroupSubmitInvalid = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        step1: { name: '' },
+        step2: { name: 'test2' },
+      },
+      onSubmit,
+      validationLogic: revalidateLogic(),
+      validators: {
+        onDynamic: ({ value }) => {
+          const fieldErrors: Record<string, string> = {}
+          if (!value.step1.name) {
+            fieldErrors['step1.name'] = 'Required'
+          }
+          return Object.keys(fieldErrors).length
+            ? { fields: fieldErrors as never }
+            : undefined
+        },
+      },
+    })
+
+    const step1Group = new FormGroupApi({
+      name: 'step1',
+      form,
+      onGroupSubmit,
+      onGroupSubmitInvalid,
+    })
+
+    const step1NameField = new FieldApi({
+      name: 'step1.name',
+      form,
+    })
+
+    form.mount()
+    step1Group.mount()
+    step1NameField.mount()
+
+    // First submit fails: form-level onDynamic propagates error to field
+    await step1Group.handleSubmit()
+    expect(onGroupSubmitInvalid).toHaveBeenCalledTimes(1)
+    expect(onGroupSubmit).not.toHaveBeenCalled()
+    expect(step1NameField.state.meta.errorMap.onDynamic).toBe('Required')
+
+    // Fix the value: revalidateLogic should now run onDynamic on `change`
+    // because submissionAttempts > 0, clearing the stale field error.
+    step1NameField.setValue('valid name')
+    expect(step1NameField.state.meta.errorMap.onDynamic).toBeUndefined()
+
+    // Second submit should succeed
+    await step1Group.handleSubmit()
+    expect(onGroupSubmit).toHaveBeenCalledTimes(1)
+    expect(onGroupSubmitInvalid).toHaveBeenCalledTimes(1)
   })
 })

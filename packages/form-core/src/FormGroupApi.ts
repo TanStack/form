@@ -1958,6 +1958,16 @@ export class FormGroupApi<
       isSubmitSuccessful: false, // Reset isSubmitSuccessful at the start of submission
     }))
 
+    // Also bump the parent form's submissionAttempts so that validation
+    // strategies which gate on it (e.g. `revalidateLogic`'s post-submission
+    // mode) activate for related fields after a group submit. Without this,
+    // dynamic validators wouldn't re-run on subsequent `change` events,
+    // leaving stale form-sourced errors (e.g. `onDynamic`) on related fields.
+    this.form.baseStore.setState((old) => ({
+      ...old,
+      submissionAttempts: old.submissionAttempts + 1,
+    }))
+
     batch(() => {
       void Object.values(this.getRelatedFields()).forEach((field) => {
         // If any fields are not touched
@@ -1997,9 +2007,13 @@ export class FormGroupApi<
       skipRelatedFieldValidation: true,
     })
 
-    // Group is invalid, do not submit
+    // Group (or related fields) is invalid, do not submit. Mirrors
+    // `FormApi._handleSubmit`'s check against the derived `state.isValid`,
+    // which includes both the group's own validators and any form-level
+    // errors propagated onto related fields by `validate('submit')` above
+    // (e.g. `onDynamic` errors via `revalidateLogic`).
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (!this.state.meta.isValid) {
+    if (!this.areRelatedFieldsValid() || !this.state.meta.isValid) {
       done()
 
       this.options.onGroupSubmitInvalid?.({
