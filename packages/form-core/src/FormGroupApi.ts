@@ -14,7 +14,11 @@ import {
 } from './standardSchemaValidator'
 import { defaultFieldMeta } from './metaHelper'
 import { FieldApi } from './FieldApi'
-import type { FormAsyncValidateOrFn, FormValidateOrFn } from './FormApi'
+import type {
+  FormApi,
+  FormAsyncValidateOrFn,
+  FormValidateOrFn,
+} from './FormApi'
 import type { AnyFieldApi } from './FieldApi'
 import type {
   StandardSchemaV1,
@@ -22,7 +26,7 @@ import type {
 } from './standardSchemaValidator'
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
 import type { ReadonlyStore, Store } from '@tanstack/store'
-import type {
+import {
   AnyFieldLikeMeta,
   AnyFieldLikeMetaBase,
   FieldErrorMapFromValidator,
@@ -30,6 +34,7 @@ import type {
   FieldLikeAPI,
   FieldLikeApiOptions,
   FieldLikeMetaBase,
+  FieldLikeOptions,
   FieldLikeState,
   FormLikeAPI,
   ListenerCause,
@@ -445,7 +450,7 @@ interface FormGroupExtraOptions<
   }) => void
 }
 
-interface FormGroupApiOptions<
+export interface FormGroupOptions<
   in out TParentData,
   in out TName extends DeepKeys<TParentData>,
   in out TData extends DeepValue<TParentData, TName>,
@@ -498,7 +503,7 @@ interface FormGroupApiOptions<
   in out TParentSubmitMeta,
 >
   extends
-    FieldLikeApiOptions<
+    FieldLikeOptions<
       TParentData,
       TName,
       TData,
@@ -510,18 +515,7 @@ interface FormGroupApiOptions<
       TOnSubmit,
       TOnSubmitAsync,
       TOnDynamic,
-      TOnDynamicAsync,
-      TFormOnMount,
-      TFormOnChange,
-      TFormOnChangeAsync,
-      TFormOnBlur,
-      TFormOnBlurAsync,
-      TFormOnSubmit,
-      TFormOnSubmitAsync,
-      TFormOnDynamic,
-      TFormOnDynamicAsync,
-      TFormOnServer,
-      TParentSubmitMeta
+      TOnDynamicAsync
     >,
     FormGroupExtraOptions<
       TParentData,
@@ -549,6 +543,99 @@ interface FormGroupApiOptions<
       TFormOnServer,
       TParentSubmitMeta
     > {}
+
+interface FormGroupApiOptions<
+  in out TParentData,
+  in out TName extends DeepKeys<TParentData>,
+  in out TData extends DeepValue<TParentData, TName>,
+  in out TOnMount extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnChange extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnChangeAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TOnBlur extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnBlurAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TOnSubmit extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnSubmitAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TOnDynamic extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnDynamicAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TSubmitMeta,
+  in out TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnChangeAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnBlurAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnSubmitAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnDynamicAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TParentSubmitMeta,
+> extends FormGroupOptions<
+  TParentData,
+  TName,
+  TData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
+  TSubmitMeta,
+  TFormOnMount,
+  TFormOnChange,
+  TFormOnChangeAsync,
+  TFormOnBlur,
+  TFormOnBlurAsync,
+  TFormOnSubmit,
+  TFormOnSubmitAsync,
+  TFormOnDynamic,
+  TFormOnDynamicAsync,
+  TFormOnServer,
+  TParentSubmitMeta
+> {
+  form: FormApi<
+    TParentData,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
+    TFormOnServer,
+    TParentSubmitMeta
+  >
+}
 
 interface FormGroupState {
   /**
