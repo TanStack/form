@@ -1,5 +1,5 @@
 import { withForm } from '../../hooks/form'
-import { wizardFormOpts } from './shared-form'
+import { step2Schema, wizardFormOpts } from './shared-form'
 
 export const Step2Form = withForm({
   ...wizardFormOpts,
@@ -11,6 +11,9 @@ export const Step2Form = withForm({
     return (
       <form.FormGroup
         name="step2"
+        validators={{
+          onDynamic: step2Schema
+        }}
         onGroupSubmit={({ value: _value }) => {
           form.handleSubmit()
         }}
