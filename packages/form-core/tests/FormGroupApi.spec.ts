@@ -227,4 +227,57 @@ describe('form group api', () => {
   })
   it.todo('Should handle onXListenTo from fields')
   it.todo('Should handle onXListenTo from other groups')
+
+  it('should re-run validation on subsequent submissions after fixing the value', async () => {
+    const onSubmit = vi.fn()
+    const onGroupSubmit = vi.fn()
+    const onGroupSubmitInvalid = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        step1: { name: '' },
+        step2: { name: 'test2' },
+      },
+      onSubmit,
+    })
+
+    const step1Group = new FormGroupApi({
+      name: 'step1',
+      form,
+      onGroupSubmit,
+      onGroupSubmitInvalid,
+      validators: {
+        onSubmit: ({ value }) => {
+          if (!value.name) {
+            return 'Name is required'
+          }
+          return undefined
+        },
+      },
+    })
+
+    const step1NameField = new FieldApi({
+      name: 'step1.name',
+      form,
+    })
+
+    form.mount()
+    step1Group.mount()
+    step1NameField.mount()
+
+    // First submit fails
+    await step1Group.handleSubmit()
+    expect(onGroupSubmitInvalid).toHaveBeenCalledTimes(1)
+    expect(onGroupSubmit).not.toHaveBeenCalled()
+    expect(step1Group.state.meta.errorMap.onSubmit).toBe('Name is required')
+
+    // Fix the value
+    step1NameField.setValue('valid name')
+
+    // Second submit should re-validate and succeed
+    await step1Group.handleSubmit()
+    expect(onGroupSubmit).toHaveBeenCalledTimes(1)
+    expect(onGroupSubmitInvalid).toHaveBeenCalledTimes(1)
+    expect(step1Group.state.meta.errorMap.onSubmit).toBeUndefined()
+  })
 })

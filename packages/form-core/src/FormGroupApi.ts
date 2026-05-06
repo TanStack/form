@@ -1971,15 +1971,6 @@ export class FormGroupApi<
     const submitMetaArg =
       submitMeta ?? (this.options.onSubmitMeta as TSubmitMeta)
 
-    if (!this.state.meta.isValid) {
-      this.options.onGroupSubmitInvalid?.({
-        value: this.state.value,
-        groupApi: this,
-        meta: submitMetaArg,
-      })
-      return
-    }
-
     this.formStateStore.setState((d) => ({ ...d, isSubmitting: true }))
 
     const done = () => {
