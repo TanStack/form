@@ -16,6 +16,7 @@ import type {
 } from '@tanstack/form-core'
 import type { FunctionComponent, PropsWithChildren, ReactNode } from 'react'
 import type { FieldComponent } from './useField'
+import { FormGroup, FormGroupComponent } from './useFormGroup'
 
 /**
  * Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned from `useForm`
@@ -38,6 +39,20 @@ export interface ReactFormApi<
    * A React component to render form fields. With this, you can render and manage individual form fields.
    */
   Field: FieldComponent<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    TOnServer,
+    TSubmitMeta
+  >
+  FormGroup: FormGroupComponent<
     TFormData,
     TOnMount,
     TOnChange,
@@ -240,6 +255,10 @@ export function useForm<
 
     extendedApi.Field = function APIField(props) {
       return <Field {...props} form={formApi} />
+    }
+
+    extendedApi.FormGroup = function APIFormGroup(props) {
+      return <FormGroup {...props} form={formApi} />
     }
 
     extendedApi.Subscribe = function Subscribe(props: any) {
