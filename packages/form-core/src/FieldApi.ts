@@ -35,10 +35,7 @@ import type {
   StandardSchemaV1,
   TStandardSchemaValidatorValue,
 } from './standardSchemaValidator'
-import type {
-  FormAsyncValidateOrFn,
-  FormValidateOrFn,
-} from './FormApi'
+import type { FormAsyncValidateOrFn, FormValidateOrFn } from './FormApi'
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
 
 /**

@@ -103,8 +103,7 @@ export const revalidateLogic =
       ? props.group.formState.submissionAttempts
       : props.form.state.submissionAttempts
 
-    const modeToWatch =
-      submissionAttempts === 0 ? mode : modeAfterSubmission
+    const modeToWatch = submissionAttempts === 0 ? mode : modeAfterSubmission
 
     if ([modeToWatch, 'submit'].includes(props.event.type)) {
       validatorsToAdd.push(dynamicValidator)

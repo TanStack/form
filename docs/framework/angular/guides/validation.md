@@ -25,7 +25,7 @@ Here is an example:
       [tanstackField]="form"
       name="age"
       [validators]="{
-        onChange: ageValidator
+        onChange: ageValidator,
       }"
       #age="field"
     >
@@ -63,7 +63,7 @@ In the example above, the validation is done at each keystroke (`onChange`). If,
       [tanstackField]="form"
       name="age"
       [validators]="{
-        onBlur: ageValidator
+        onBlur: ageValidator,
       }"
       #age="field"
     >
@@ -75,7 +75,7 @@ In the example above, the validation is done at each keystroke (`onChange`). If,
         [name]="age.api.name"
         [value]="age.api.state.value"
         type="number"
-        (blur)='age.api.handleBlur()'
+        (blur)="age.api.handleBlur()"
         (input)="age.api.handleChange($any($event).target.valueAsNumber)"
       />
       @if (age.api.state.meta.errors) {
@@ -105,7 +105,7 @@ So you can control when the validation is done by implementing the desired callb
       name="age"
       [validators]="{
         onChange: ageValidator,
-        onBlur: minimumAgeValidator
+        onBlur: minimumAgeValidator,
       }"
       #age="field"
     >
@@ -154,7 +154,7 @@ Once you have your validation in place, you can map the errors from an array to 
       [tanstackField]="form"
       name="age"
       [validators]="{
-        onChange: ageValidator
+        onChange: ageValidator,
       }"
       #age="field"
     >
@@ -185,7 +185,7 @@ Or use the `errorMap` property to access the specific error you're looking for:
       [tanstackField]="form"
       name="age"
       [validators]="{
-        onChange: ageValidator
+        onChange: ageValidator,
       }"
       #age="field"
     >
@@ -299,21 +299,21 @@ You can set errors on the fields from the form's validators. One common use case
   template: `
     <form (submit)="handleSubmit($event)">
       <div>
-        <ng-container
-          [tanstackField]="form"
-          name="age"
-          #ageField="field"
-        >
+        <ng-container [tanstackField]="form" name="age" #ageField="field">
           <label [for]="ageField.api.name">Age:</label>
           <input
             type="number"
             [name]="ageField.api.name"
             [value]="ageField.api.state.value"
             (blur)="ageField.api.handleBlur()"
-            (input)="ageField.api.handleChange($any($event).target.valueAsNumber)"
+            (input)="
+              ageField.api.handleChange($any($event).target.valueAsNumber)
+            "
           />
           @if (ageField.api.state.meta.errors.length > 0) {
-            <em role="alert">{{ ageField.api.state.meta.errors.join(', ') }}</em>
+            <em role="alert">{{
+              ageField.api.state.meta.errors.join(', ')
+            }}</em>
           }
         </ng-container>
       </div>
@@ -321,7 +321,6 @@ You can set errors on the fields from the form's validators. One common use case
     </form>
   `,
 })
-
 export class AppComponent {
   form = injectForm({
     defaultValues: {
@@ -344,18 +343,18 @@ export class AppComponent {
               'socials[0].url': 'The provided URL does not exist',
               'details.email': 'An email is required',
             },
-          };
+          }
         }
 
-        return null;
+        return null
       },
     },
-  });
+  })
 
   handleSubmit(event: SubmitEvent) {
-    event.preventDefault();
-    event.stopPropagation();
-    this.form.handleSubmit();
+    event.preventDefault()
+    event.stopPropagation()
+    this.form.handleSubmit()
   }
 }
 ```
@@ -370,24 +369,30 @@ export class AppComponent {
 >   standalone: true,
 >   imports: [TanStackField],
 >   template: `
->       <div>
->         <ng-container
->          [tanstackField]="form"
+>     <div>
+>       <ng-container
+>         [tanstackField]="form"
 >         name="age"
->        #ageField="field"
->       [validators]="{
->        onChange: fieldValidator
->     }"
->  >
->   <input type="number" [value]="ageField.api.state.value"
->   (input)="ageField.api.handleChange($any($event).target.valueAsNumber)"
->   />
->    @if (ageField.api.state.meta.errors.length > 0) {
->       <em role="alert">{{ ageField.api.state.meta.errors.join(', ') }}</em>
->     }
->   </ng-container>
-> </div>
-> `,
+>         #ageField="field"
+>         [validators]="{
+>           onChange: fieldValidator,
+>         }"
+>       >
+>         <input
+>           type="number"
+>           [value]="ageField.api.state.value"
+>           (input)="
+>             ageField.api.handleChange($any($event).target.valueAsNumber)
+>           "
+>         />
+>         @if (ageField.api.state.meta.errors.length > 0) {
+>           <em role="alert">{{
+>             ageField.api.state.meta.errors.join(', ')
+>           }}</em>
+>         }
+>       </ng-container>
+>     </div>
+>   `,
 > })
 > export class AppComponent {
 >   form = injectForm({
@@ -400,15 +405,14 @@ export class AppComponent {
 >           fields: {
 >             age: value.age < 12 ? 'Too young!' : undefined,
 >           },
->         };
+>         }
 >       },
 >     },
->   });
+>   })
 >
 >   fieldValidator: FieldValidateFn<any, any, number> = ({ value }) =>
->     value % 2 === 0 ? 'Must be odd!' : undefined;
+>     value % 2 === 0 ? 'Must be odd!' : undefined
 > }
->
 > ```
 >
 > Will only show `'Must be odd!` even if the 'Too young!' error is returned by the form-level validation.
@@ -476,7 +480,7 @@ Synchronous and Asynchronous validations can coexist. For example, it is possibl
         [id]="age.api.name"
         [name]="age.api.name"
         [value]="age.api.state.value"
-        type='number'
+        type="number"
         (blur)="age.api.handleBlur()"
         (input)="age.api.handleChange($any($event).target.value)"
       />
@@ -513,7 +517,7 @@ Instead, we enable an easy method for debouncing your `async` calls by adding a 
 <ng-container
   [tanstackField]="form"
   name="age"
-  asyncDebounceMs={500}
+  asyncDebounceMs="{500}"
   [validators]="{ onChangeAsync: someValidator }"
   #age="field"
 >
@@ -530,7 +534,7 @@ This will debounce every async call with a 500ms delay. You can even override th
   [validators]="{
     onChangeAsyncDebounceMs: 1500,
     onChangeAsync: someValidator,
-    onBlurAsync: otherValidator
+    onBlurAsync: otherValidator,
   }"
   #age="field"
 >
@@ -581,7 +585,7 @@ import { z } from 'zod'
 export class AppComponent {
   form = injectForm({
     // ...
-   })
+  })
 
   z = z
 
@@ -603,7 +607,7 @@ Async validations on form and field level are supported as well:
       [validators]="{
         onChange: z.number().gte(13, 'You must be 13 to make an account'),
         onChangeAsyncDebounceMs: 500,
-        onChangeAsync: increaseAge
+        onChangeAsync: increaseAge,
       }"
       #age="field"
     >
