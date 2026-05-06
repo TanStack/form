@@ -383,7 +383,7 @@ export interface FieldOptions<
       TOnDynamicAsync
     > {}
 
-interface FieldApiOptions<
+export interface FieldApiOptions<
   in out TParentData,
   in out TName extends DeepKeys<TParentData>,
   in out TData extends DeepValue<TParentData, TName>,

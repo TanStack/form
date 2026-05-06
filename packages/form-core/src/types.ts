@@ -812,6 +812,8 @@ export type AnyFieldLikeMeta = FieldLikeMeta<
   any
 >
 
+export type AnyFieldMeta = AnyFieldLikeMeta
+
 /**
  * @private
  * An object type representing the state of a field.
