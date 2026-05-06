@@ -596,10 +596,33 @@ export function createFormHook<
     return form as never
   }
 
+  function extendForm<
+    const TNewField extends Record<string, ComponentType<any>> & {
+      [K in keyof TComponents]?: 'Error: field component names must be unique — this key already exists in the base form'
+    },
+    const TNewForm extends Record<string, ComponentType<any>> & {
+      [K in keyof TFormComponents]?: 'Error: form component names must be unique — this key already exists in the base form'
+    },
+  >(extension: { fieldComponents?: TNewField; formComponents?: TNewForm }) {
+    return createFormHook({
+      fieldContext,
+      formContext,
+      fieldComponents: {
+        ...fieldComponents,
+        ...extension.fieldComponents,
+      } as TComponents & TNewField,
+      formComponents: {
+        ...formComponents,
+        ...extension.formComponents,
+      } as TFormComponents & TNewForm,
+    })
+  }
+
   return {
     useAppForm,
     withForm,
     withFieldGroup,
     useTypedAppFormContext,
+    extendForm,
   }
 }

@@ -700,6 +700,257 @@ describe('createFormHook', () => {
     expect(button).toBeInTheDocument()
   })
 
+  describe('extendForm', () => {
+    it('should include both parent and extended field components', () => {
+      function ExtendedTextField({ label }: { label: string }) {
+        const field = useFieldContext<string>()
+        return (
+          <label>
+            <div>{label}</div>
+            <input
+              data-testid="extended-input"
+              value={field.state.value}
+              onChange={(e) => field.handleChange(e.target.value)}
+            />
+          </label>
+        )
+      }
+
+      const { useAppForm: useExtendedForm } = createFormHook({
+        fieldComponents: { TextField },
+        formComponents: { SubscribeButton },
+        fieldContext,
+        formContext,
+      }).extendForm({
+        fieldComponents: { ExtendedTextField },
+      })
+
+      function Comp() {
+        const form = useExtendedForm({
+          defaultValues: { firstName: 'John', lastName: 'Doe' },
+        })
+
+        return (
+          <>
+            <form.AppField
+              name="firstName"
+              children={(field) => <field.TextField label="First Name" />}
+            />
+            <form.AppField
+              name="lastName"
+              children={(field) => (
+                <field.ExtendedTextField label="Last Name" />
+              )}
+            />
+          </>
+        )
+      }
+
+      const { getByLabelText, getByTestId } = render(<Comp />)
+      expect(getByLabelText('First Name')).toHaveValue('John')
+      expect(getByTestId('extended-input')).toHaveValue('Doe')
+    })
+
+    it('should include both parent and extended form components', () => {
+      function ExtendedSubmit({ label }: { label: string }) {
+        const form = useFormContext()
+        return (
+          <form.Subscribe selector={(state) => state.isSubmitting}>
+            {(isSubmitting) => (
+              <button
+                data-testid="extended-submit"
+                disabled={isSubmitting}
+                type="button"
+              >
+                {label}
+              </button>
+            )}
+          </form.Subscribe>
+        )
+      }
+
+      const { useAppForm: useExtendedForm } = createFormHook({
+        fieldComponents: { TextField },
+        formComponents: { SubscribeButton },
+        fieldContext,
+        formContext,
+      }).extendForm({
+        formComponents: { ExtendedSubmit },
+      })
+
+      function Comp() {
+        const form = useExtendedForm({
+          defaultValues: { firstName: 'John' },
+        })
+
+        return (
+          <form.AppForm>
+            <form.SubscribeButton label="Submit" />
+            <form.ExtendedSubmit label="Extended Submit" />
+          </form.AppForm>
+        )
+      }
+
+      const { getByText, getByTestId } = render(<Comp />)
+      expect(getByText('Submit')).toBeInTheDocument()
+      expect(getByTestId('extended-submit')).toHaveTextContent(
+        'Extended Submit',
+      )
+    })
+
+    it('should support chaining multiple extendForm calls', () => {
+      function FieldA({ label }: { label: string }) {
+        const field = useFieldContext<string>()
+        return (
+          <label>
+            <div>{label}</div>
+            <input
+              value={field.state.value}
+              onChange={(e) => field.handleChange(e.target.value)}
+            />
+          </label>
+        )
+      }
+
+      function FieldB({ label }: { label: string }) {
+        const field = useFieldContext<string>()
+        return (
+          <label>
+            <div>{label}</div>
+            <input
+              value={field.state.value}
+              onChange={(e) => field.handleChange(e.target.value)}
+            />
+          </label>
+        )
+      }
+
+      const base = createFormHook({
+        fieldComponents: { TextField },
+        formComponents: {},
+        fieldContext,
+        formContext,
+      })
+
+      const { useAppForm: useChainedForm } = base
+        .extendForm({ fieldComponents: { FieldA } })
+        .extendForm({ fieldComponents: { FieldB } })
+
+      function Comp() {
+        const form = useChainedForm({
+          defaultValues: { a: 'valueA', b: 'valueB', c: 'valueC' },
+        })
+
+        return (
+          <>
+            <form.AppField
+              name="a"
+              children={(field) => <field.TextField label="A" />}
+            />
+            <form.AppField
+              name="b"
+              children={(field) => <field.FieldA label="B" />}
+            />
+            <form.AppField
+              name="c"
+              children={(field) => <field.FieldB label="C" />}
+            />
+          </>
+        )
+      }
+
+      const { getByLabelText } = render(<Comp />)
+      expect(getByLabelText('A')).toHaveValue('valueA')
+      expect(getByLabelText('B')).toHaveValue('valueB')
+      expect(getByLabelText('C')).toHaveValue('valueC')
+    })
+
+    it('should work with withForm after extendForm', () => {
+      function ExtendedTextField({ label }: { label: string }) {
+        const field = useFieldContext<string>()
+        return (
+          <label>
+            <div>{label}</div>
+            <input
+              value={field.state.value}
+              onChange={(e) => field.handleChange(e.target.value)}
+            />
+          </label>
+        )
+      }
+
+      const { useAppForm: useExtendedForm, withForm: withExtendedForm } =
+        createFormHook({
+          fieldComponents: { TextField },
+          formComponents: { SubscribeButton },
+          fieldContext,
+          formContext,
+        }).extendForm({
+          fieldComponents: { ExtendedTextField },
+        })
+
+      const ChildForm = withExtendedForm({
+        defaultValues: { firstName: 'Jane', lastName: 'Smith' },
+        render: function Render({ form }) {
+          return (
+            <>
+              <form.AppField
+                name="firstName"
+                children={(field) => <field.TextField label="First Name" />}
+              />
+              <form.AppField
+                name="lastName"
+                children={(field) => (
+                  <field.ExtendedTextField label="Last Name" />
+                )}
+              />
+            </>
+          )
+        },
+      })
+
+      function Parent() {
+        const form = useExtendedForm({
+          defaultValues: { firstName: 'Jane', lastName: 'Smith' },
+        })
+        return <ChildForm form={form} />
+      }
+
+      const { getByLabelText } = render(<Parent />)
+      expect(getByLabelText('First Name')).toHaveValue('Jane')
+      expect(getByLabelText('Last Name')).toHaveValue('Smith')
+    })
+
+    it('should return a new extendForm from the extended hook', () => {
+      function ExtendedTextField({ label }: { label: string }) {
+        const field = useFieldContext<string>()
+        return (
+          <label>
+            <div>{label}</div>
+            <input
+              value={field.state.value}
+              onChange={(e) => field.handleChange(e.target.value)}
+            />
+          </label>
+        )
+      }
+
+      const base = createFormHook({
+        fieldComponents: { TextField },
+        formComponents: { SubscribeButton },
+        fieldContext,
+        formContext,
+      })
+
+      const extended = base.extendForm({
+        fieldComponents: { ExtendedTextField },
+      })
+
+      // extendForm should itself expose extendForm
+      expect(typeof extended.extendForm).toBe('function')
+    })
+  })
+
   it('should render FieldGroup Subscribe without selector (default identity)', async () => {
     const formOpts = formOptions({
       defaultValues: {

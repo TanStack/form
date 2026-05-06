@@ -1,5 +1,23 @@
 # @tanstack/react-form
 
+## 1.29.1
+
+### Patch Changes
+
+- Updated dependencies [[`6b8aa1e`](https://github.com/TanStack/form/commit/6b8aa1e92d883dfbdddbd5f0393a31d2e7120d3d)]:
+  - @tanstack/form-core@1.29.1
+
+## 1.29.0
+
+### Minor Changes
+
+- Adds extension method to AppForm allowing for teams to extend upstream AppForms ([#2106](https://github.com/TanStack/form/pull/2106))
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.29.0
+
 ## 1.28.6
 
 ### Patch Changes
