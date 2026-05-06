@@ -195,7 +195,34 @@ describe('useFormGroup form-like surface', () => {
         onGroupSubmit: () => {},
       })
 
-      expectTypeOf(group).toMatchTypeOf<FormGroupApi<any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any>>()
+      expectTypeOf(group).toMatchTypeOf<
+        FormGroupApi<
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any
+        >
+      >()
     }
   })
 })
