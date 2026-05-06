@@ -7,7 +7,7 @@ import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import { useFormId } from './useFormId'
 import { FormGroup } from './useFormGroup'
-import type { FormGroupComponent } from './useFormGroup';
+import type { FormGroupComponent } from './useFormGroup'
 import type {
   AnyFormApi,
   AnyFormState,

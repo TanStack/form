@@ -14,9 +14,7 @@ import {
 } from './standardSchemaValidator'
 import { defaultFieldMeta } from './metaHelper'
 import { FieldApi } from './FieldApi'
-import {
-  FieldLikeApiOptions
-} from './types'
+import { FieldLikeApiOptions } from './types'
 import type {
   AnyFieldLikeMeta,
   AnyFieldLikeMetaBase,
@@ -33,7 +31,8 @@ import type {
   UpdateMetaOptions,
   ValidationCause,
   ValidationError,
-  ValidationErrorMap} from './types';
+  ValidationErrorMap,
+} from './types'
 import type {
   FormApi,
   FormAsyncValidateOrFn,

@@ -2,10 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { useStore } from '@tanstack/react-store'
-import {
-  FormGroupApi,
-  functionalUpdate
-} from '@tanstack/form-core'
+import { FormGroupApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
   DeepKeys,
@@ -15,7 +12,8 @@ import type {
   FormGroupAsyncValidateOrFn,
   FormGroupOptions,
   FormGroupValidateOrFn,
-  FormValidateOrFn} from '@tanstack/form-core';
+  FormValidateOrFn,
+} from '@tanstack/form-core'
 import type { FunctionComponent, ReactNode } from 'react'
 
 export type UseFormGroup<
