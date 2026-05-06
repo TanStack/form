@@ -16,13 +16,13 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "valibot": "^1.1.0",
-    "vue": "^3.5.13",
+    "vue": "^3.5.17",
     "zod": "^3.25.76"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.4",
     "typescript": "5.8.2",
     "vite": "^7.2.2",
-    "vue-tsc": "^2.2.2"
+    "vue-tsc": "^3.0.1"
   }
 }
