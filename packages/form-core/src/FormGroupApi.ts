@@ -1375,6 +1375,7 @@ export class FormGroupApi<
     const validates = getSyncValidatorArray(cause, {
       ...this.options,
       form: this.form,
+      group: this,
       validationLogic:
         this.form.options.validationLogic || defaultValidationLogic,
     })
@@ -1521,6 +1522,7 @@ export class FormGroupApi<
     const validates = getAsyncValidatorArray(cause, {
       ...this.options,
       form: this.form,
+      group: this,
       validationLogic:
         this.form.options.validationLogic || defaultValidationLogic,
     })
@@ -1956,16 +1958,6 @@ export class FormGroupApi<
       // Count submission attempts
       submissionAttempts: old.submissionAttempts + 1,
       isSubmitSuccessful: false, // Reset isSubmitSuccessful at the start of submission
-    }))
-
-    // Also bump the parent form's submissionAttempts so that validation
-    // strategies which gate on it (e.g. `revalidateLogic`'s post-submission
-    // mode) activate for related fields after a group submit. Without this,
-    // dynamic validators wouldn't re-run on subsequent `change` events,
-    // leaving stale form-sourced errors (e.g. `onDynamic`) on related fields.
-    this.form.baseStore.setState((old) => ({
-      ...old,
-      submissionAttempts: old.submissionAttempts + 1,
     }))
 
     batch(() => {

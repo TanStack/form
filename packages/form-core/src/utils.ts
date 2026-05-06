@@ -251,6 +251,7 @@ export function getSyncValidatorArray<T>(
   options: SyncValidatorArrayPartialOptions<T> & {
     validationLogic?: any
     form?: any
+    group?: any
     fieldName?: string
   },
 ): T extends FieldValidators<
@@ -300,6 +301,7 @@ export function getSyncValidatorArray<T>(
 
   return options.validationLogic({
     form: options.form,
+    group: options.group,
     validators: options.validators,
     event: { type: cause, fieldName: options.fieldName, async: false },
     runValidation,
@@ -314,6 +316,7 @@ export function getAsyncValidatorArray<T>(
   options: AsyncValidatorArrayPartialOptions<T> & {
     validationLogic?: any
     form?: any
+    group?: any
     fieldName?: string
   },
 ): T extends FieldValidators<
@@ -411,6 +414,7 @@ export function getAsyncValidatorArray<T>(
 
   return options.validationLogic({
     form: options.form,
+    group: options.group,
     validators: options.validators,
     event: { type: cause, fieldName: options.fieldName, async: true },
     runValidation,
