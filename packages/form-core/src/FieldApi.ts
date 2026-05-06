@@ -1679,7 +1679,7 @@ export class FieldApi<
     )
   }
 
-  private triggerOnBlurListener() {
+  private triggerOnBlurListener = () => {
     const formDebounceMs = this.form.options.listeners?.onBlurDebounceMs
     if (formDebounceMs && formDebounceMs > 0) {
       if (this.timeoutIds.formListeners.blur) {
@@ -1765,7 +1765,7 @@ export class FieldApi<
   /**
    * @private
    */
-  triggerOnSubmitListener() {
+  triggerOnSubmitListener = () => {
     this.options.listeners?.onSubmit?.({
       value: this.state.value,
       fieldApi: this,

@@ -544,7 +544,7 @@ export interface FormGroupOptions<
       TParentSubmitMeta
     > {}
 
-interface FormGroupApiOptions<
+export interface FormGroupApiOptions<
   in out TParentData,
   in out TName extends DeepKeys<TParentData>,
   in out TData extends DeepValue<TParentData, TName>,
@@ -1263,7 +1263,7 @@ export class FormGroupApi<
     ) as never
   }
 
-  mount() {
+  mount = () => {
     this.update(this.options as never)
     return () => {}
   }
@@ -1931,7 +1931,7 @@ export class FormGroupApi<
   /**
    * @private
    */
-  triggerOnSubmitListener() {
+  triggerOnSubmitListener = () => {
     this.options.listeners?.onSubmit?.({
       value: this.state.value,
       groupApi: this,
