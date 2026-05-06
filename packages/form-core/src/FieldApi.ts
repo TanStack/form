@@ -1596,18 +1596,48 @@ export class FieldApi<
     // Cascade into any encompassing `FormGroupApi`'s own validators so
     // group-scoped strategies (e.g. `revalidateLogic` gated on the group's
     // own `submissionAttempts`) get a chance to react to this field change.
-    if (!opts?.skipGroupValidation) {
-      for (const group of this.form.formGroupApis) {
-        if (!this.name.startsWith(group.name)) continue
-        group.validateSync(cause, {}, { skipRelatedFieldValidation: true })
+    // Mirror the field's sync→short-circuit-on-error→async semantics for
+    // each group: only kick off async validators if the group's sync pass
+    // was clean (or its `asyncAlways` flag is set).
+    const encompassingGroups = opts?.skipGroupValidation
+      ? []
+      : Array.from(this.form.formGroupApis).filter((group) =>
+          this.name.startsWith(group.name),
+        )
+
+    const groupAsyncResults: Promise<ValidationError[]>[] = []
+    for (const group of encompassingGroups) {
+      const { hasErrored: groupHasErrored } = group.validateSync(
+        cause,
+        {},
+        { skipRelatedFieldValidation: true },
+      )
+
+      if (groupHasErrored && !group.options.asyncAlways) {
+        continue
       }
+
+      groupAsyncResults.push(
+        group.validateAsync(cause, Promise.resolve({}), {
+          skipRelatedFieldValidation: true,
+        }),
+      )
     }
 
     if (hasErrored && !this.options.asyncAlways) {
       this.getInfo().validationMetaMap[
         getErrorMapKey(cause)
       ]?.lastAbortController.abort()
-      return this.state.meta.errors
+
+      // The field short-circuits, but any group whose async validators
+      // are still in flight needs to be awaited so its errors are tracked.
+      if (groupAsyncResults.length === 0) {
+        return this.state.meta.errors
+      }
+      return Promise.all(groupAsyncResults).then((groupErrs) => [
+        ...this.state.meta.errors,
+        ...groupErrs.flat(),
+      ])
     }
 
     // No error? Attempt async validation
@@ -1620,33 +1650,13 @@ export class FieldApi<
       formValidationResultPromise,
     )
 
-    if (opts?.skipGroupValidation) {
-      return fieldAsyncResults
-    }
-
-    // Track each encompassing group's async validators alongside the field's
-    // own async result so callers awaiting `validate()` also wait on group
-    // validators completing.
-    const groupAsyncResults: Promise<ValidationError[]>[] = []
-    for (const group of this.form.formGroupApis) {
-      if (!this.name.startsWith(group.name)) continue
-      groupAsyncResults.push(
-        Promise.resolve(
-          group.validateAsync(cause, Promise.resolve({}), {
-            skipRelatedFieldValidation: true,
-          }),
-        ),
-      )
-    }
-
     if (groupAsyncResults.length === 0) {
       return fieldAsyncResults
     }
 
-    return Promise.all([
-      Promise.resolve(fieldAsyncResults),
-      ...groupAsyncResults,
-    ]).then((results) => results.flat())
+    return Promise.all([fieldAsyncResults, ...groupAsyncResults]).then(
+      (results) => results.flat(),
+    )
   }
 
   /**
