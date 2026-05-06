@@ -1583,15 +1583,6 @@ export class FieldApi<
     // If the field is pristine, do not validate
     if (!this.state.meta.isTouched) return []
 
-    // Attempt to sync validate first
-    const { fieldsErrorMap } = opts?.skipFormValidation
-      ? { fieldsErrorMap: {} as never }
-      : this.form.validateSync(cause)
-    const { hasErrored } = this.validateSync(
-      cause,
-      fieldsErrorMap[this.name] ?? {},
-    )
-
     // Cascade into any encompassing `FormGroupApi`'s own validators so
     // group-scoped strategies (e.g. `revalidateLogic` gated on the group's
     // own `submissionAttempts`) get a chance to react to this field change.
@@ -1603,6 +1594,39 @@ export class FieldApi<
       : Array.from(this.form.formGroupApis).filter((group) =>
           this.name.startsWith(group.name),
         )
+
+    // Attempt to sync validate first
+    const formSyncResult = opts?.skipFormValidation
+      ? { fieldsErrorMap: {} as never }
+      : this.form.validateSync(cause)
+    let fieldsErrorMap = (formSyncResult.fieldsErrorMap[this.name] ??
+      {}) as ValidationErrorMap
+
+    // For each encompassing group whose own submission has been attempted,
+    // also re-run the parent form's validators with that group as the
+    // gating context. This ensures form-level errors (e.g. those produced
+    // by a form-level z.object onDynamic during a group submit) are kept
+    // fresh on subsequent field changes — even though the form itself
+    // hasn't been submitted directly.
+    if (!opts?.skipFormValidation) {
+      for (const group of encompassingGroups) {
+        if (group.formState.submissionAttempts === 0) continue
+        const { fieldsErrorMap: groupFormErrors } = this.form.validateSync(
+          cause,
+          {
+            group,
+            dontUpdateFormErrorMap: true,
+            filterFieldNames: (fieldName) => fieldName.startsWith(group.name),
+          },
+        )
+        fieldsErrorMap = {
+          ...fieldsErrorMap,
+          ...(groupFormErrors[this.name] ?? {}),
+        }
+      }
+    }
+
+    const { hasErrored } = this.validateSync(cause, fieldsErrorMap)
 
     const groupHasErroredWeakMap = new WeakMap<AnyFormGroupApi, boolean>()
     for (const group of encompassingGroups) {

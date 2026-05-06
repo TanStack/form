@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+import { z } from 'zod'
 import { FieldApi, FormApi, FormGroupApi } from '../src/index'
 import { revalidateLogic } from '../src/ValidationLogic'
 
@@ -338,7 +339,54 @@ describe('form group api', () => {
     expect(onGroupSubmitInvalid).toHaveBeenCalledTimes(1)
   })
 
-  it('group submissions should not bump or affect the parent form-level onDynamic gating', async () => {
+  it('group submissions should not bump the parent form-level submissionAttempts', async () => {
+    const formDynamic = vi.fn(() => undefined)
+
+    const form = new FormApi({
+      defaultValues: { step1: { name: '' }, step2: { name: '' } },
+      onSubmit: vi.fn(),
+      validationLogic: revalidateLogic(),
+      validators: {
+        onDynamic: formDynamic,
+      },
+    })
+
+    const step1Group = new FormGroupApi({
+      name: 'step1',
+      form,
+      onGroupSubmit: vi.fn(),
+    })
+
+    const step1NameField = new FieldApi({
+      name: 'step1.name',
+      form,
+    })
+    const step2NameField = new FieldApi({
+      name: 'step2.name',
+      form,
+    })
+
+    form.mount()
+    step1Group.mount()
+    step1NameField.mount()
+    step2NameField.mount()
+
+    const initialFormAttempts = form.state.submissionAttempts
+    await step1Group.handleSubmit()
+
+    // Group submission must not bump the form's submissionAttempts
+    expect(form.state.submissionAttempts).toBe(initialFormAttempts)
+
+    formDynamic.mockClear()
+
+    // A change to a field OUTSIDE any submitted group should still leave
+    // the form's onDynamic gated off (since form.submissionAttempts === 0
+    // and step2 has not been submitted).
+    step2NameField.setValue('valid name')
+    expect(formDynamic).not.toHaveBeenCalled()
+  })
+
+  it('field changes inside a submitted group re-run the form-level onDynamic with the group as gating context', async () => {
     const formDynamic = vi.fn(() => undefined)
 
     const form = new FormApi({
@@ -365,17 +413,66 @@ describe('form group api', () => {
     step1Group.mount()
     step1NameField.mount()
 
-    const initialFormAttempts = form.state.submissionAttempts
     await step1Group.handleSubmit()
-
-    // Group submission must not bump the form's submissionAttempts
-    expect(form.state.submissionAttempts).toBe(initialFormAttempts)
-
     formDynamic.mockClear()
 
-    // Form-level onDynamic is still gated on the form's own submissionAttempts
-    // (which is 0), so a `change` event must NOT trigger it.
+    // After the group has been submitted, a change to a field inside it
+    // re-runs the form-level onDynamic gated on the group's
+    // submissionAttempts so stale form-level errors stay in sync.
     step1NameField.setValue('valid name')
-    expect(formDynamic).not.toHaveBeenCalled()
+    expect(formDynamic).toHaveBeenCalled()
+  })
+
+  it('repro: field error from form-level onDynamic should clear after group submit + fix', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        step1: { name: '' },
+        step2: { name: '' },
+      },
+      onSubmit: vi.fn(),
+      validationLogic: revalidateLogic(),
+      validators: {
+        onDynamic: z.object({
+          step1: z.object({
+            name: z.string().min(2, 'Name must be at least 2 characters'),
+          }),
+          step2: z.object({
+            name: z.string().min(3, 'Name must be at least 3 characters'),
+          }),
+        }),
+      },
+    })
+
+    const step1Group = new FormGroupApi({
+      name: 'step1',
+      form,
+      onGroupSubmit: vi.fn(),
+      onGroupSubmitInvalid: vi.fn(),
+      validators: {
+        onDynamic: z.object({
+          name: z.string().min(2, 'Name must be at least 2 characters'),
+        }),
+      },
+    })
+
+    const step1NameField = new FieldApi({
+      name: 'step1.name',
+      form,
+    })
+
+    form.mount()
+    step1Group.mount()
+    step1NameField.mount()
+
+    // First submit fails: group surfaces an error and the form-level
+    // z.object also propagates a per-field onDynamic error onto the field.
+    await step1Group.handleSubmit()
+    expect(step1Group.state.meta.errorMap.onDynamic).toBeDefined()
+    expect(step1NameField.state.meta.errors.length).toBeGreaterThan(0)
+
+    // Fix the value: both the group AND the field should clear.
+    step1NameField.setValue('valid name')
+    expect(step1Group.state.meta.errorMap.onDynamic).toBeUndefined()
+    expect(step1NameField.state.meta.errors).toEqual([])
   })
 })

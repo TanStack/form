@@ -817,6 +817,11 @@ interface ValidateOpts<TFormData> {
   dontUpdateFormErrorMap?: boolean
   // Filter which field names to validate, useful for FormGroup validation to filter out fields that don't start with the FormGroup name
   filterFieldNames?: (fieldName: DeepKeys<TFormData>) => boolean
+  // When form-level validators are run on behalf of a `FormGroupApi` (e.g.
+  // because a field inside that group is revalidating), pass the group so
+  // strategies like `revalidateLogic` can gate on the group's own
+  // `submissionAttempts` instead of the parent form's.
+  group?: AnyFormGroupApi
 }
 
 /**
@@ -1649,6 +1654,7 @@ export class FormApi<
     const validates = getSyncValidatorArray(cause, {
       ...this.options,
       form: this,
+      group: validateOpts?.group,
       validationLogic: this.options.validationLogic || defaultValidationLogic,
     })
 
@@ -1837,6 +1843,7 @@ export class FormApi<
     const validates = getAsyncValidatorArray(cause, {
       ...this.options,
       form: this,
+      group: validateOpts?.group,
       validationLogic: this.options.validationLogic || defaultValidationLogic,
     })
 
