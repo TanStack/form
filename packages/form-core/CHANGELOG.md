@@ -1,5 +1,11 @@
 # @tanstack/form-core
 
+## 1.29.1
+
+### Patch Changes
+
+- Ensure fieldName is passed to custom validation logic functions ([#2127](https://github.com/TanStack/form/pull/2127))
+
 ## 1.29.0
 
 ## 1.28.6

@@ -1261,6 +1261,7 @@ export class FieldApi<
     const validates = getSyncValidatorArray(cause, {
       ...this.options,
       form: this.form,
+      fieldName: this.name,
       validationLogic:
         this.form.options.validationLogic || defaultValidationLogic,
     })
@@ -1271,6 +1272,7 @@ export class FieldApi<
         const fieldValidates = getSyncValidatorArray(cause, {
           ...field.options,
           form: field.form,
+          fieldName: field.name,
           validationLogic:
             field.form.options.validationLogic || defaultValidationLogic,
         })
@@ -1397,6 +1399,7 @@ export class FieldApi<
     const validates = getAsyncValidatorArray(cause, {
       ...this.options,
       form: this.form,
+      fieldName: this.name,
       validationLogic:
         this.form.options.validationLogic || defaultValidationLogic,
     })
@@ -1410,6 +1413,7 @@ export class FieldApi<
         const fieldValidates = getAsyncValidatorArray(cause, {
           ...field.options,
           form: field.form,
+          fieldName: field.name,
           validationLogic:
             field.form.options.validationLogic || defaultValidationLogic,
         })
