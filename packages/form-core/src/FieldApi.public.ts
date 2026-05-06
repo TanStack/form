@@ -88,6 +88,17 @@ export interface FieldApi<
   removeValue: (index: number, options?: FieldUpdateOptions) => void
 
   /**
+   * Filter the values in this field's array using a predicate function.
+   * If this field is not an array, this method will be ignored.
+   * @param predicate - The predicate function to filter values. Returns true to keep the value, false to remove it.
+   * @param options - Optional update options including a custom `thisArg` for the predicate
+   */
+  filterValues: (
+    predicate: (value: any, index: number, array: Array<any>) => boolean,
+    options?: FieldUpdateOptions & { thisArg?: any },
+  ) => void
+
+  /**
    * @deprecated
    * Use the respective getters instead:
    * - `field.value`

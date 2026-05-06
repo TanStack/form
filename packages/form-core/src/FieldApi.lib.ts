@@ -15,8 +15,8 @@ import type { Atom, ReadonlyAtom } from '@tanstack/store'
 import type {
   BaseFieldMeta,
   FieldApi,
-  FieldMeta,
-  FieldState,
+  FieldMeta as PublicFieldMeta,
+  FieldState as PublicFieldState,
 } from './FieldApi.public'
 import type {
   ErrorWithMessage,
@@ -26,13 +26,13 @@ import type {
   ValidationError,
 } from './validation.public'
 
-// TODO is this SSR friendly?
-const metaCache = new WeakMap<InternalBaseFieldMeta, FieldMeta>()
+// TODO Should be irrelevant for SSR, but double check please
+const metaCache = new WeakMap<InternalBaseFieldMeta, InternalFieldMeta>()
 
 export type NameSegment = string | number
 export type NameSegments = Array<NameSegment>
 
-export interface InternalBaseFieldMeta extends BaseFieldMeta {
+interface MetaExtension {
   _formValidatorErrors: Array<Array<ValidationError>>
   _fieldValidatorErrors: Array<Array<ValidationError>>
   /**
@@ -42,8 +42,15 @@ export interface InternalBaseFieldMeta extends BaseFieldMeta {
   _arrayVersion: number
 }
 
+export interface InternalBaseFieldMeta extends BaseFieldMeta, MetaExtension {}
+export interface InternalFieldMeta extends PublicFieldMeta, MetaExtension {}
+
+export interface InternalFieldState extends PublicFieldState {
+  meta: InternalFieldMeta
+}
+
 export interface FieldAtoms {
-  store: ReadonlyAtom<FieldState>
+  store: ReadonlyAtom<InternalFieldState>
   meta: Atom<InternalBaseFieldMeta>
 }
 
@@ -165,7 +172,7 @@ export const defaultInternalBaseFieldMeta: InternalBaseFieldMeta = {
   _arrayVersion: 0,
 }
 
-export const defaultFieldMeta: FieldMeta = deriveFromBaseFieldMeta(
+export const defaultFieldMeta: InternalFieldMeta = deriveFromBaseFieldMeta(
   defaultInternalBaseFieldMeta,
 )
 
@@ -254,11 +261,11 @@ export class InternalFieldApi<
       const metaAtom = createAtom<InternalBaseFieldMeta>(
         defaultInternalBaseFieldMeta,
       )
-      const derived = createAtom<FieldState>((prev) => {
+      const derived = createAtom<InternalFieldState>((prev) => {
         const newMeta = metaAtom.get()
         const value = this._getValue()
 
-        const meta = deriveFromBaseFieldMeta(newMeta)
+        const meta = deriveFromBaseFieldMeta(newMeta, prev?.meta)
 
         if (prev?.meta === meta && prev.value === value) {
           return prev
@@ -285,7 +292,7 @@ export class InternalFieldApi<
     return this._validatorCache
   }
 
-  get store(): ReadonlyAtom<FieldState> {
+  get store(): ReadonlyAtom<InternalFieldState> {
     return this._getOrCreateAtoms().store
   }
 
@@ -516,8 +523,8 @@ export class InternalFieldApi<
   }
 
   _notifyChange(
-    options: FieldUpdateOptions & PropagateOptions = { doPropagate: true },
-    event: 'change' | 'blur' | 'submit' = 'change',
+    options: FieldUpdateOptions & PropagateOptions,
+    event: 'change' | 'blur' | 'submit',
   ): void {
     const {
       markAsDirty = true,
@@ -769,6 +776,16 @@ export class InternalFieldApi<
     })
   }
 
+  filterValues = (
+    predicate: (value: any, index: number, array: Array<any>) => boolean,
+    options?: FieldUpdateOptions & { thisArg?: any },
+  ) => {
+    return this.form.filterFieldValues(this.name, predicate, {
+      ...options,
+      fieldApiOverride: this,
+    })
+  }
+
   handleChange = (
     value: Updater<any>,
     options: FieldUpdateOptions = {},
@@ -831,21 +848,26 @@ export class InternalFieldApi<
 
 // validateArray() -> touches all child nodes -> traverse, check for nodeId, if present, set it in the map
 
-function getFieldSnapshot(field: InternalFieldApi<any, any>): FieldState {
+function getFieldSnapshot(
+  field: InternalFieldApi<any, any>,
+): InternalFieldState {
   return {
     value: field._getValue(),
     meta: deriveFromBaseFieldMeta(field._getBaseMeta()),
   }
 }
 
-function deriveFromBaseFieldMeta(baseMeta: InternalBaseFieldMeta): FieldMeta {
+function deriveFromBaseFieldMeta(
+  baseMeta: InternalBaseFieldMeta,
+  previousMeta?: InternalFieldMeta,
+): InternalFieldMeta {
   const cached = metaCache.get(baseMeta)
   if (cached) return cached
 
-  const errors = getErrorsFromBaseMeta(baseMeta)
+  const errors = getErrorsFromBaseMeta(baseMeta, previousMeta)
   const isInvalid = errors.length > 0 || baseMeta.childErrorCount > 0
 
-  const result: FieldMeta = {
+  const result: InternalFieldMeta = {
     ...baseMeta,
     isInvalid,
     errors,
@@ -858,12 +880,20 @@ function deriveFromBaseFieldMeta(baseMeta: InternalBaseFieldMeta): FieldMeta {
 
 function getErrorsFromBaseMeta(
   baseMeta: InternalBaseFieldMeta,
+  previousMeta?: InternalFieldMeta,
 ): Array<ErrorWithMessage> {
-  return (
-    baseMeta._fieldValidatorErrors
+  let result: Array<ErrorWithMessage>
+  if (
+    previousMeta?._fieldValidatorErrors === baseMeta._fieldValidatorErrors &&
+    previousMeta._formValidatorErrors === baseMeta._fieldValidatorErrors
+  ) {
+    result = previousMeta.errors
+  } else {
+    result = baseMeta._fieldValidatorErrors
       .concat(baseMeta._formValidatorErrors)
       // ValidationError is OneOrMany, TypeScript doesn't realize that
       // flat also takes care of that
       .flat() as Array<ErrorWithMessage>
-  )
+  }
+  return result
 }

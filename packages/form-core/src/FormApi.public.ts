@@ -140,4 +140,17 @@ export interface FormApi<
     index: number,
     options?: FieldUpdateOptions,
   ) => void
+
+  /**
+   * Filter the values in an array field using a predicate function.
+   * If the field is not an array, this method will be ignored.
+   * @param arrayFieldName - The name of the array field
+   * @param predicate - The predicate function to filter values. Returns true to keep the value, false to remove it.
+   * @param options - Optional update options including a custom `thisArg` for the predicate
+   */
+  filterFieldValues: (
+    arrayFieldName: string,
+    predicate: (value: any, index: number, array: Array<any>) => boolean,
+    options?: FieldUpdateOptions & { thisArg?: any },
+  ) => void
 }

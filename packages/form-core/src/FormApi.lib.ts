@@ -18,10 +18,11 @@ import type { InternalBaseFieldMeta, InternalFieldApi } from './FieldApi.lib'
 import type {
   FieldApiOverrideOptions,
   InternalFieldUpdateOptions,
+  PropagateOptions,
 } from './types.lib'
 import type { Atom, ReadonlyAtom } from '@tanstack/store'
 import type { FormApi, FormOptions, FormState } from './FormApi.public'
-import type { Updater } from './types.public'
+import type { FieldUpdateOptions, Updater } from './types.public'
 import type {
   FieldValidator,
   FormValidateResult,
@@ -210,12 +211,12 @@ export class InternalFormApi<
 
     batch(() => {
       this.valuesAtom.set((prev) => setBy(prev, fieldName, updater))
-      const markAsDirty = options?.markAsDirty ?? true
 
-      if (markAsDirty && !this._formMetaAtom.get().isDirty) {
-        this._formMetaAtom.set((prev) => ({ ...prev, isDirty: true }))
-      }
-      field?._notifyChange({ ...options, doPropagate: true })
+      this._notifyFieldChange(
+        field,
+        { ...options, doPropagate: true },
+        'change',
+      )
     })
   }
 
@@ -398,7 +399,7 @@ export class InternalFormApi<
 
   clearFieldValues = (
     arrayFieldName: string,
-    options?: FieldApiOverrideOptions,
+    options?: InternalFieldUpdateOptions,
   ) => {
     if (this._isInvalidArrayMethod('clearFieldValues', arrayFieldName)) {
       return
@@ -427,6 +428,61 @@ export class InternalFormApi<
         child._kill()
       }
     })
+  }
+
+  filterFieldValues = (
+    arrayFieldName: string,
+    predicate: (value: any, index: number, array: Array<any>) => boolean,
+    options?: InternalFieldUpdateOptions & { thisArg?: any },
+  ) => {
+    if (this._isInvalidArrayMethod('filterFieldValues', arrayFieldName)) {
+      return
+    }
+
+    const oldArray: Array<any> = this.getFieldValue(arrayFieldName)
+    const arrayNode =
+      options?.fieldApiOverride ?? this._tryGetFieldApi(arrayFieldName)
+
+    let nextSegment = 0
+    const thisArg = options?.thisArg
+    const filtered = oldArray.filter((value, index, array) => {
+      const keep = predicate.call(thisArg, value, index, array)
+      if (!arrayNode) return keep
+
+      const childAtIndex = arrayNode._getChild(index)
+      if (keep) {
+        childAtIndex?._moveTo(nextSegment)
+        nextSegment++
+      } else {
+        childAtIndex?._kill()
+      }
+      return keep
+    })
+
+    if (oldArray.length === filtered.length) {
+      // Setting filtered array would be a no-op, but either way the user
+      // tried to set a value
+      this._notifyFieldChange(
+        arrayNode,
+        { ...options, doPropagate: true },
+        'change',
+      )
+    } else {
+      this.setFieldValue(arrayFieldName, filtered, options)
+    }
+  }
+
+  _notifyFieldChange = (
+    field: InternalFieldApi<any, any> | null,
+    options: FieldUpdateOptions & PropagateOptions,
+    event: 'change' | 'blur' | 'submit',
+  ) => {
+    const { markAsDirty = true } = options
+    if (markAsDirty && !this._formMetaAtom.get().isDirty) {
+      this._formMetaAtom.set((prev) => ({ ...prev, isDirty: true }))
+    }
+
+    field?._notifyChange(options, event)
   }
 
   _isInvalidArrayMethod = (

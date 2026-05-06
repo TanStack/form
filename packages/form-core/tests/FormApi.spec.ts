@@ -332,6 +332,154 @@ describe('FormApi', () => {
     })
   })
 
+  describe('filterFieldValues', () => {
+    it('filters array elements based on predicate', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c', 'd'] },
+      })
+      form.filterFieldValues('items', (value) => value !== 'b' && value !== 'd')
+      expect(form.getFieldValue('items')).toEqual(['a', 'c'])
+    })
+
+    it('filters with index-aware predicate', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c', 'd'] },
+      })
+      form.filterFieldValues('items', (_, index) => index % 2 === 0)
+      expect(form.getFieldValue('items')).toEqual(['a', 'c'])
+    })
+
+    it('filters with array-aware predicate', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c'] },
+      })
+      form.filterFieldValues('items', (_, index, array) => {
+        return index === array.length - 1
+      })
+      expect(form.getFieldValue('items')).toEqual(['c'])
+    })
+
+    it('uses thisArg when provided', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c'] },
+      })
+      const thisObj = { threshold: 1 }
+      form.filterFieldValues(
+        'items',
+        function (_, index) {
+          // @ts-expect-error - Who tf uses thisArg anyways
+          return index >= this.threshold
+        },
+        { thisArg: thisObj },
+      )
+      expect(form.getFieldValue('items')).toEqual(['b', 'c'])
+    })
+
+    it('filters out all elements', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c'] },
+      })
+      form.filterFieldValues('items', () => false)
+      expect(form.getFieldValue('items')).toEqual([])
+    })
+
+    it('keeps all elements when predicate always returns true', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c'] },
+      })
+      form.filterFieldValues('items', () => true)
+      expect(form.getFieldValue('items')).toEqual(['a', 'b', 'c'])
+    })
+
+    it('filters an empty array', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: [] as Array<string> },
+      })
+      form.filterFieldValues('items', () => true)
+      expect(form.getFieldValue('items')).toEqual([])
+    })
+
+    it('warns when called on a non-array field', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const form = new InternalFormApi({ defaultValues: { name: '' } })
+      form.filterFieldValues('name', () => true)
+      expect(warn).toHaveBeenCalled()
+      warn.mockRestore()
+    })
+
+    it('reorganizes child field segments after filtering', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c', 'd'] },
+      })
+      const field0 = form._getOrCreateFieldApi('items[0]', undefined)
+      form._getOrCreateFieldApi('items[1]', undefined)
+      const field2 = form._getOrCreateFieldApi('items[2]', undefined)
+      form._getOrCreateFieldApi('items[3]', undefined)
+
+      // Keep only indices 0 and 2
+      form.filterFieldValues('items', (_, index) => index === 0 || index === 2)
+
+      expect(field0._segment).toBe(0)
+      expect(field2._segment).toBe(1)
+      expect(form._tryGetFieldApi('items[0]')).toBe(field0)
+      expect(form._tryGetFieldApi('items[1]')).toBe(field2)
+      expect(form._tryGetFieldApi('items[2]')).toBeNull()
+      expect(form._tryGetFieldApi('items[3]')).toBeNull()
+    })
+
+    it('kills removed child fields', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c'] },
+      })
+
+      const field0 = form._getOrCreateFieldApi('items[0]', undefined)
+      form._getOrCreateFieldApi('items[1]', undefined)
+      const field2 = form._getOrCreateFieldApi('items[2]', undefined)
+
+      form.filterFieldValues('items', (_, index) => index !== 1)
+
+      expect(form._tryGetFieldApi('items[0]')).toBe(field0)
+      expect(form._tryGetFieldApi('items[1]')).toBe(field2)
+    })
+
+    it('updates array field meta when filtered', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c'] },
+      })
+      const field = form._getOrCreateFieldApi('items', undefined)
+      form.filterFieldValues('items', () => true)
+      expect(field.meta.isDirty).toBe(true)
+      expect(field.meta.isTouched).toBe(true)
+    })
+
+    it('does not set value when no elements are filtered out', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c'] },
+      })
+
+      const originalArray = form.getFieldValue('items')
+      form.filterFieldValues('items', () => true)
+      expect(form.getFieldValue('items')).toBe(originalArray)
+    })
+
+    it('handles complex objects in array', () => {
+      const form = new InternalFormApi({
+        defaultValues: {
+          items: [
+            { name: 'Alice', age: 30 },
+            { name: 'Bob', age: 25 },
+            { name: 'Charlie', age: 35 },
+          ],
+        },
+      })
+      form.filterFieldValues('items', (person: any) => person.age > 28)
+      expect(form.getFieldValue('items')).toEqual([
+        { name: 'Alice', age: 30 },
+        { name: 'Charlie', age: 35 },
+      ])
+    })
+  })
+
   describe('deleteField', () => {
     it('unmounts the field store', () => {
       const form = new InternalFormApi({ defaultValues: { name: '' } })
