@@ -50,12 +50,16 @@ export interface FieldApi<
   /**
    * Swap two elements in this field's array.
    * If this field is not an array, this method will be ignored.
+   * @param indexA - The index of the first element to swap
+   * @param indexB - The index of the second element to swap
    */
   swapValues: (indexA: number, indexB: number) => void
 
   /**
    * Push a new value into this field's array.
    * If this field is not an array, this method will be ignored.
+   * @param value - The value to push into the array
+   * @param options - Optional update options
    */
   pushValue: (value: any, options?: FieldUpdateOptions) => void
 
@@ -68,7 +72,20 @@ export interface FieldApi<
    */
   insertValue: (index: number, value: any, options?: FieldUpdateOptions) => void
 
-  clearValues: () => void
+  /**
+   * Clear all values from this field's array.
+   * If this field is not an array, this method will be ignored.
+   * @param options - Optional update options
+   */
+  clearValues: (options?: FieldUpdateOptions) => void
+
+  /**
+   * Remove a value from this field's array at the specified index.
+   * If this field is not an array, this method will be ignored.
+   * @param index - The index of the value to remove
+   * @param options - Optional update options
+   */
+  removeValue: (index: number, options?: FieldUpdateOptions) => void
 
   /**
    * @deprecated

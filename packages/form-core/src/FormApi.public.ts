@@ -81,10 +81,11 @@ export interface FormApi<
   getFieldValue: (fieldName: string) => any
 
   /**
-   * TODO
-   * @param arrayFieldName
-   * @param indexA
-   * @param indexB
+   * Swap two values in an array field.
+   * If the field is not an array, this method will be ignored.
+   * @param arrayFieldName - The name of the array field
+   * @param indexA - The index of the first value to swap
+   * @param indexB - The index of the second value to swap
    */
   swapFieldValues: (
     arrayFieldName: string,
@@ -93,11 +94,11 @@ export interface FormApi<
   ) => void
 
   /**
-   * TODO
-   * @param arrayFieldName
-   * @param value
-   * @param options
-   * @returns
+   * Push a value into an array field.
+   * If the field is not an array, this method will be ignored.
+   * @param arrayFieldName - The name of the array field
+   * @param value - The value to push
+   * @param options - Optional update options
    */
   pushFieldValue: (
     arrayFieldName: string,
@@ -105,6 +106,14 @@ export interface FormApi<
     options?: FieldUpdateOptions,
   ) => void
 
+  /**
+   * Insert a value into an array field at the specified index.
+   * If the field is not an array, this method will be ignored.
+   * @param arrayFieldName - The name of the array field
+   * @param index - The index at which to insert the value
+   * @param value - The value to insert
+   * @param options - Optional update options
+   */
   insertFieldValue: (
     arrayFieldName: string,
     index: number,
@@ -112,5 +121,23 @@ export interface FormApi<
     options?: FieldUpdateOptions,
   ) => void
 
+  /**
+   * Clear all values from an array field.
+   * If the field is not an array, this method will be ignored.
+   * @param arrayFieldName - The name of the array field
+   */
   clearFieldValues: (arrayFieldName: string) => void
+
+  /**
+   * Remove a value from an array field at the specified index.
+   * If the field is not an array, this method will be ignored.
+   * @param arrayFieldName - The name of the array field
+   * @param index - The index of the value to remove
+   * @param options - Optional update options
+   */
+  removeFieldValue: (
+    arrayFieldName: string,
+    index: number,
+    options?: FieldUpdateOptions,
+  ) => void
 }

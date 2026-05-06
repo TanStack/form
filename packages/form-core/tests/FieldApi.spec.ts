@@ -400,6 +400,73 @@ describe('FieldApi', () => {
     })
   })
 
+  describe('removeValue', () => {
+    it('removes an element at the specified index', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c', 'd', 'e', 'f'] },
+      })
+      const field = form._getOrCreateFieldApi('items', undefined)
+
+      field.removeValue(1)
+      expect(field.value).toEqual(['a', 'c', 'd', 'e', 'f'])
+      field.removeValue(0)
+      expect(field.value).toEqual(['c', 'd', 'e', 'f'])
+      field.removeValue(3)
+      expect(field.value).toEqual(['c', 'd', 'e'])
+    })
+
+    it('warns when called on a non-array field', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const form = new InternalFormApi({ defaultValues: { name: '' } })
+      const field = form._getOrCreateFieldApi('name', undefined)
+
+      field.removeValue(0)
+      expect(warn).toHaveBeenCalled()
+      warn.mockRestore()
+    })
+
+    it('warns when index is negative', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
+      const field = form._getOrCreateFieldApi('items', undefined)
+
+      field.removeValue(-1)
+      expect(warn).toHaveBeenCalled()
+      expect(field.value).toEqual(['a', 'b'])
+      warn.mockRestore()
+    })
+
+    it('warns when index is out of bounds', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
+      const field = form._getOrCreateFieldApi('items', undefined)
+
+      field.removeValue(2)
+      expect(warn).toHaveBeenCalled()
+      expect(field.value).toEqual(['a', 'b'])
+      warn.mockRestore()
+    })
+
+    it('kills the removed child field and shifts remaining children', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c'] },
+      })
+      const arrayField = form._getOrCreateFieldApi('items', undefined)
+
+      const field0 = form._getOrCreateFieldApi('items[0]', undefined)
+      form._getOrCreateFieldApi('items[1]', undefined)
+      const field2 = form._getOrCreateFieldApi('items[2]', undefined)
+
+      arrayField.removeValue(1)
+
+      expect(form._tryGetFieldApi('items[0]')).toBe(field0)
+      expect(form._tryGetFieldApi('items[1]')).toBe(field2)
+      expect(form._tryGetFieldApi('items[2]')).toBeNull()
+      expect(field0._segment).toBe(0)
+      expect(field2._segment).toBe(1)
+    })
+  })
+
   describe('field meta derived properties', () => {
     it('starts with defaultFieldMeta values', () => {
       const form = new InternalFormApi({ defaultValues: { x: '' } })

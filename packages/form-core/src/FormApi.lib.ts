@@ -230,12 +230,8 @@ export class InternalFormApi<
     arrayFieldName: string,
     value: any,
     options?: InternalFieldUpdateOptions,
-  ) => {
-    const fieldValue = this.getFieldValue(arrayFieldName)
-    if (!Array.isArray(fieldValue)) {
-      console.warn(
-        '<form>.pushFieldValue: This method can only be used on array fields',
-      )
+  ): void => {
+    if (this._isInvalidArrayMethod('pushFieldValue', arrayFieldName)) {
       return
     }
 
@@ -253,19 +249,13 @@ export class InternalFormApi<
     index: number,
     value: any,
     options?: InternalFieldUpdateOptions,
-  ) => {
-    const fieldValue = this.getFieldValue(arrayFieldName)
-    if (!Array.isArray(fieldValue)) {
-      console.warn(
-        '<form>.insertFieldValue: This method can only be used on array fields',
-      )
-      return
-    }
-
-    if (index < 0 || index > fieldValue.length) {
-      console.warn(
-        `<form>.insertFieldValue: Index ${index} is out of bounds for array field '${arrayFieldName}' with length ${fieldValue.length}`,
-      )
+  ): void => {
+    if (
+      this._isInvalidArrayMethod('insertFieldValue', arrayFieldName, {
+        bounds: [index],
+        allowEndIndex: true,
+      })
+    ) {
       return
     }
 
@@ -299,17 +289,64 @@ export class InternalFormApi<
     })
   }
 
+  removeFieldValue = (
+    arrayFieldName: string,
+    index: number,
+    options?: InternalFieldUpdateOptions,
+  ): void => {
+    if (
+      this._isInvalidArrayMethod('removeFieldValue', arrayFieldName, {
+        bounds: [index],
+        allowEndIndex: false,
+      })
+    ) {
+      return
+    }
+
+    batch(() => {
+      this.setFieldValue(
+        arrayFieldName,
+        (prev: Array<any>) => {
+          const array = prev.slice()
+          array.splice(index, 1)
+          return array
+        },
+        options,
+      )
+
+      const arrayField =
+        options?.fieldApiOverride ??
+        tryGetFieldApi(
+          this._fieldRootNode,
+          nameToFieldNodeSegments(arrayFieldName),
+        )
+
+      if (!arrayField) return
+
+      const childToRemove = tryGetFieldApi(arrayField, [index])
+      childToRemove?._kill()
+
+      for (const child of arrayField._children) {
+        if (typeof child._segment === 'string') continue
+        if (child._segment > index) {
+          child._moveTo(child._segment - 1)
+        }
+      }
+    })
+  }
+
   swapFieldValues = (
     arrayFieldName: string,
     indexA: number,
     indexB: number,
     options?: FieldApiOverrideOptions,
   ) => {
-    const fieldValue = this.getFieldValue(arrayFieldName)
-    if (!Array.isArray(fieldValue)) {
-      console.warn(
-        '<form>.swapFieldValues: This method can only be used on array fields',
-      )
+    if (
+      this._isInvalidArrayMethod('swapFieldValues', arrayFieldName, {
+        bounds: [indexA, indexB],
+        allowEndIndex: false,
+      })
+    ) {
       return
     }
 
@@ -363,11 +400,7 @@ export class InternalFormApi<
     arrayFieldName: string,
     options?: FieldApiOverrideOptions,
   ) => {
-    const fieldValue = this.getFieldValue(arrayFieldName)
-    if (!Array.isArray(fieldValue)) {
-      console.warn(
-        '<form>.clearFieldValues: This method can only be used on array fields',
-      )
+    if (this._isInvalidArrayMethod('clearFieldValues', arrayFieldName)) {
       return
     }
 
@@ -394,6 +427,36 @@ export class InternalFormApi<
         child._kill()
       }
     })
+  }
+
+  _isInvalidArrayMethod = (
+    methodName: string,
+    arrayFieldName: string,
+    args: {
+      bounds: Array<number>
+      allowEndIndex: boolean
+    } = { bounds: [], allowEndIndex: false },
+  ): boolean => {
+    const { bounds, allowEndIndex } = args
+
+    const array = this.getFieldValue(arrayFieldName)
+    if (!Array.isArray(array)) {
+      console.warn(
+        `<form>.${methodName}: This method can only be used on array fields, but '${arrayFieldName}' is: `,
+        array,
+      )
+      return true
+    }
+    const maxIndex = allowEndIndex ? array.length : array.length - 1
+    for (const index of bounds) {
+      if (index < 0 || index > maxIndex) {
+        console.warn(
+          `<form>.${methodName}: ${index} is out of bounds for '${arrayFieldName}', expected 0 - ${maxIndex}.`,
+        )
+        return true
+      }
+    }
+    return false
   }
 
   _tryGetFieldApi = (

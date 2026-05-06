@@ -762,6 +762,13 @@ export class InternalFieldApi<
     })
   }
 
+  removeValue = (index: number, options: FieldUpdateOptions = {}): void => {
+    return this.form.removeFieldValue(this.name, index, {
+      ...options,
+      fieldApiOverride: this,
+    })
+  }
+
   handleChange = (
     value: Updater<any>,
     options: FieldUpdateOptions = {},
