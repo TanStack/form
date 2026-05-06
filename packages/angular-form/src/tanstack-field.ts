@@ -22,8 +22,8 @@ import { injectStore } from '@tanstack/angular-store'
 import type {
   DeepKeys,
   DeepValue,
-  FieldListeners,
   FieldLikeMeta,
+  FieldListeners,
   FieldValidators,
   FormAsyncValidateOrFn,
   FormValidateOrFn,

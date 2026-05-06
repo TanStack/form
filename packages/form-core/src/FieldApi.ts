@@ -12,6 +12,7 @@ import {
   mergeOpts,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
+import type { AnyFormGroupApi } from './FormGroupApi'
 import type {
   FieldErrorMapFromValidator,
   FieldInfo,
@@ -39,7 +40,6 @@ import type {
   FormValidateOrFn,
 } from './FormApi'
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
-import { AnyFormGroupApi } from './FormGroupApi'
 
 /**
  * @private
@@ -1644,7 +1644,7 @@ export class FieldApi<
         getErrorMapKey(cause)
       ]?.lastAbortController.abort()
 
-      let groupErrors = [] as ValidationError[][]
+      const groupErrors = [] as ValidationError[][]
 
       for (const group of encompassingGroups) {
         group
@@ -1667,7 +1667,7 @@ export class FieldApi<
       formValidationResultPromise,
     )
 
-    let groupAsyncResults: Promise<ValidationError[]>[] = []
+    const groupAsyncResults: Promise<ValidationError[]>[] = []
     for (const group of encompassingGroups) {
       if (groupHasErroredWeakMap.get(group) && !group.options.asyncAlways) {
         continue
