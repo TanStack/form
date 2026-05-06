@@ -36,11 +36,10 @@ import type {
 } from './standardSchemaValidator'
 import type {
   FormAsyncValidateOrFn,
-  FormValidateAsyncFn,
-  FormValidateFn,
   FormValidateOrFn,
 } from './FormApi'
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
+import { AnyFormGroupApi } from './FormGroupApi'
 
 /**
  * @private
@@ -1596,41 +1595,42 @@ export class FieldApi<
     // Cascade into any encompassing `FormGroupApi`'s own validators so
     // group-scoped strategies (e.g. `revalidateLogic` gated on the group's
     // own `submissionAttempts`) get a chance to react to this field change.
-    // We delegate to `group.validate()` (rather than poking
-    // `validateSync`/`validateAsync` directly) so the group honors its own
-    // sync→short-circuit-on-error→async semantics — including respecting
-    // `asyncAlways` and aborting in-flight async validators.
-    const groupResults: (ValidationError[] | Promise<ValidationError[]>)[] = []
-    if (!opts?.skipGroupValidation) {
-      for (const group of this.form.formGroupApis) {
-        if (!this.name.startsWith(group.name)) continue
-        groupResults.push(
-          group.validate(cause, {
-            skipFormValidation: true,
-            skipRelatedFieldValidation: true,
-          }),
+    // Mirror the field's sync→short-circuit-on-error→async semantics for
+    // each group: only kick off async validators if the group's sync pass
+    // was clean (or its `asyncAlways` flag is set).
+    const encompassingGroups = opts?.skipGroupValidation
+      ? []
+      : Array.from(this.form.formGroupApis).filter((group) =>
+          this.name.startsWith(group.name),
         )
-      }
-    }
 
-    const pendingGroupResults = groupResults.filter(
-      (r): r is Promise<ValidationError[]> => r instanceof Promise,
-    )
+    const groupHasErroredWeakMap = new WeakMap<AnyFormGroupApi, boolean>()
+    for (const group of encompassingGroups) {
+      const { hasErrored: groupHasErrored } = group.validateSync(
+        cause,
+        {},
+        { skipRelatedFieldValidation: true },
+      )
+
+      groupHasErroredWeakMap.set(group, groupHasErrored)
+    }
 
     if (hasErrored && !this.options.asyncAlways) {
       this.getInfo().validationMetaMap[
         getErrorMapKey(cause)
       ]?.lastAbortController.abort()
 
-      // The field short-circuits, but any group whose async validators are
-      // still in flight needs to be awaited so its errors are tracked.
-      if (pendingGroupResults.length === 0) {
-        return this.state.meta.errors
+      let groupErrors = [] as ValidationError[][]
+
+      for (const group of encompassingGroups) {
+        group
+          .getInfo()
+          .validationMetaMap[getErrorMapKey(cause)]?.lastAbortController.abort()
+
+        groupErrors.push(group.state.meta.errors)
       }
-      return Promise.all(pendingGroupResults).then((groupErrs) => [
-        ...this.state.meta.errors,
-        ...groupErrs.flat(),
-      ])
+
+      return [...this.state.meta.errors, ...groupErrors.flat()]
     }
 
     // No error? Attempt async validation
@@ -1643,11 +1643,24 @@ export class FieldApi<
       formValidationResultPromise,
     )
 
-    if (pendingGroupResults.length === 0) {
+    let groupAsyncResults: Promise<ValidationError[]>[] = []
+    for (const group of encompassingGroups) {
+      if (groupHasErroredWeakMap.get(group) && !group.options.asyncAlways) {
+        continue
+      }
+
+      groupAsyncResults.push(
+        group.validateAsync(cause, formValidationResultPromise, {
+          skipRelatedFieldValidation: true,
+        }),
+      )
+    }
+
+    if (groupAsyncResults.length === 0) {
       return fieldAsyncResults
     }
 
-    return Promise.all([fieldAsyncResults, ...pendingGroupResults]).then(
+    return Promise.all([fieldAsyncResults, ...groupAsyncResults]).then(
       (results) => results.flat(),
     )
   }
