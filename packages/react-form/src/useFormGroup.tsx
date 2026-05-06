@@ -2,11 +2,9 @@
 
 import { useMemo, useState } from 'react'
 import { useStore } from '@tanstack/react-store'
-import { FormGroupApiOptions, functionalUpdate } from '@tanstack/form-core'
+import { FormGroupApiOptions, FormGroupOptions, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import {
-  AnyFieldApi,
-  AnyFieldMeta,
   DeepKeys,
   DeepValue,
   FormAsyncValidateOrFn,
@@ -447,7 +445,7 @@ interface FormGroupComponentBoundProps<
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TParentSubmitMeta,
   ExtendedApi = {},
-> extends FormGroupApiOptions<
+> extends FormGroupOptions<
   TParentData,
   TName,
   TData,
