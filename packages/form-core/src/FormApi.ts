@@ -356,11 +356,16 @@ export interface FormOptions<
   in out TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TSubmitMeta = never,
+  in out TFormMeta = {},
 > extends BaseFormOptions<TFormData, TSubmitMeta> {
   /**
    * The form name, used for devtools and identification
    */
   formId?: string
+  /**
+   * Optional default metadata applied to every field when its meta is initialized.
+   */
+  defaultMeta?: Partial<AnyFieldMetaBase & TFormMeta & Record<string, unknown>>
   /**
    * The default state for the form.
    */
@@ -2307,16 +2312,24 @@ export class FormApi<
 
     batch(() => {
       if (!dontUpdateMeta) {
-        this.setFieldMeta(field, (prev) => ({
-          ...prev,
-          isTouched: true,
-          isDirty: true,
-          errorMap: {
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            ...prev?.errorMap,
-            onMount: undefined,
-          },
-        }))
+        const meta = this.getFieldMeta(field)
+
+        if (
+          !meta?.isTouched ||
+          !meta.isDirty ||
+          meta.errorMap.onMount !== undefined
+        ) {
+          this.setFieldMeta(field, (prev) => ({
+            ...prev,
+            isTouched: true,
+            isDirty: true,
+            errorMap: {
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+              ...prev?.errorMap,
+              onMount: undefined,
+            },
+          }))
+        }
       }
 
       this.baseStore.setState((prev) => {

@@ -1,6 +1,8 @@
 import { expectTypeOf, it } from 'vitest'
 import { useForm } from '../src/index'
 
+type Country = { id: number; name: string }
+
 it('should type state.value properly', () => {
   function Comp() {
     const form = useForm({
@@ -63,6 +65,56 @@ it('should type onChange properly', () => {
           children={() => null}
         />
       </>
+    )
+  }
+})
+
+it('should infer custom meta from form and field defaultMeta', () => {
+  function Comp() {
+    const form = useForm({
+      defaultValues: {
+        countryId: '',
+      },
+      defaultMeta: {
+        disabled: false,
+        order: 1,
+        label: 'Country',
+        formDataSource: [] as Country[],
+      },
+    })
+
+    expectTypeOf(form.getFieldMeta('countryId')?.formDataSource).toEqualTypeOf<
+      Country[] | undefined
+    >()
+    form.getFieldMeta('countryId')?.disabled
+    form.state.fieldMeta.countryId?.disabled
+
+    return (
+      <form.Field
+        name="countryId"
+        defaultMeta={{
+          dataSource: [] as Country[],
+        }}
+      >
+        {(field) => {
+          expectTypeOf(field.state.meta.disabled).toEqualTypeOf<boolean>()
+          expectTypeOf(field.state.meta.order).toEqualTypeOf<number>()
+          expectTypeOf(field.state.meta.label).toEqualTypeOf<string>()
+          expectTypeOf(field.state.meta.formDataSource).toEqualTypeOf<
+            Country[]
+          >()
+          expectTypeOf(field.state.meta.dataSource).toEqualTypeOf<Country[]>()
+          expectTypeOf(field.getMeta().dataSource).toEqualTypeOf<Country[]>()
+
+          field.setMeta((prev) => ({
+            ...prev,
+            disabled: true,
+            dataSource: [{ id: 1, name: 'Yemen' }],
+          }))
+
+          return null
+        }}
+      </form.Field>
     )
   }
 })
