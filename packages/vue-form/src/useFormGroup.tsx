@@ -34,34 +34,34 @@ export type FormGroupComponent<
   TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TParentSubmitMeta,
-// This complex type comes from Vue's return type for `DefineSetupFnComponent` but with our own types sprinkled in
-// This allows us to pre-bind some generics while keeping the props type unbound generics for props-based inferencing
+  // This complex type comes from Vue's return type for `DefineSetupFnComponent` but with our own types sprinkled in
+  // This allows us to pre-bind some generics while keeping the props type unbound generics for props-based inferencing
 > = new <
   TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
   TOnMount extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnChange extends
-  | undefined
-  | FormGroupValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnChangeAsync extends
-  | undefined
-  | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
   TOnBlur extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnBlurAsync extends
-  | undefined
-  | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
   TOnSubmit extends
-  | undefined
-  | FormGroupValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnSubmitAsync extends
-  | undefined
-  | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
   TOnDynamic extends
-  | undefined
-  | FormGroupValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnDynamicAsync extends
-  | undefined
-  | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
   TSubmitMeta,
 >(
   props: FormGroupComponentBoundProps<
@@ -224,27 +224,27 @@ export function useFormGroup<
   TData extends DeepValue<TParentData, TName>,
   TOnMount extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnChange extends
-  | undefined
-  | FormGroupValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnChangeAsync extends
-  | undefined
-  | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
   TOnBlur extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnBlurAsync extends
-  | undefined
-  | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
   TOnSubmit extends
-  | undefined
-  | FormGroupValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnSubmitAsync extends
-  | undefined
-  | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
   TOnDynamic extends
-  | undefined
-  | FormGroupValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnDynamicAsync extends
-  | undefined
-  | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
   TSubmitMeta,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
@@ -321,27 +321,27 @@ export type FormGroupComponentProps<
   TData extends DeepValue<TParentData, TName>,
   TOnMount extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnChange extends
-  | undefined
-  | FormGroupValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnChangeAsync extends
-  | undefined
-  | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
   TOnBlur extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnBlurAsync extends
-  | undefined
-  | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
   TOnSubmit extends
-  | undefined
-  | FormGroupValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnSubmitAsync extends
-  | undefined
-  | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
   TOnDynamic extends
-  | undefined
-  | FormGroupValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnDynamicAsync extends
-  | undefined
-  | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
   TSubmitMeta,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
@@ -387,27 +387,27 @@ export type FormGroupComponentBoundProps<
   TData extends DeepValue<TParentData, TName>,
   TOnMount extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnChange extends
-  | undefined
-  | FormGroupValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnChangeAsync extends
-  | undefined
-  | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
   TOnBlur extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnBlurAsync extends
-  | undefined
-  | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
   TOnSubmit extends
-  | undefined
-  | FormGroupValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnSubmitAsync extends
-  | undefined
-  | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
   TOnDynamic extends
-  | undefined
-  | FormGroupValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnDynamicAsync extends
-  | undefined
-  | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
   TSubmitMeta,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
@@ -453,32 +453,32 @@ export const FormGroup = defineComponent(
     TName extends DeepKeys<TParentData>,
     TData extends DeepValue<TParentData, TName>,
     TOnMount extends
-    | undefined
-    | FormGroupValidateOrFn<TParentData, TName, TData>,
+      | undefined
+      | FormGroupValidateOrFn<TParentData, TName, TData>,
     TOnChange extends
-    | undefined
-    | FormGroupValidateOrFn<TParentData, TName, TData>,
+      | undefined
+      | FormGroupValidateOrFn<TParentData, TName, TData>,
     TOnChangeAsync extends
-    | undefined
-    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+      | undefined
+      | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
     TOnBlur extends
-    | undefined
-    | FormGroupValidateOrFn<TParentData, TName, TData>,
+      | undefined
+      | FormGroupValidateOrFn<TParentData, TName, TData>,
     TOnBlurAsync extends
-    | undefined
-    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+      | undefined
+      | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
     TOnSubmit extends
-    | undefined
-    | FormGroupValidateOrFn<TParentData, TName, TData>,
+      | undefined
+      | FormGroupValidateOrFn<TParentData, TName, TData>,
     TOnSubmitAsync extends
-    | undefined
-    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+      | undefined
+      | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
     TOnDynamic extends
-    | undefined
-    | FormGroupValidateOrFn<TParentData, TName, TData>,
+      | undefined
+      | FormGroupValidateOrFn<TParentData, TName, TData>,
     TOnDynamicAsync extends
-    | undefined
-    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+      | undefined
+      | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
     TSubmitMeta,
     TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
     TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
