@@ -1,5 +1,5 @@
 import type { FieldApi } from './FieldApi.public'
-import type { FormValidator, ValidationEvent } from './validation.public'
+import type { FormValidator, ValidationTrigger } from './validation.public'
 
 export interface FieldListenerContext<
   TFormData,
@@ -22,7 +22,7 @@ export interface FieldListenerConfig<
   debounceMs?: number
 }
 
-export type FieldListenerEvents = ValidationEvent | 'mount' | 'unmount'
+export type FieldListenerEvents = ValidationTrigger | 'mount' | 'unmount'
 
 export type FieldListeners<
   TFormData,

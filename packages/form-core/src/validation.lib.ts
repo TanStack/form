@@ -8,37 +8,12 @@ import type {
   FormValidationError,
   FormValidator,
   FormValidatorContext,
-  ValidationEnabledFn,
-  ValidationSignalOption,
+  ValidationPredicateFn,
+  ValidationTriggerOption,
+  Validator,
 } from './validation.public'
 import type { InternalFormApi } from './FormApi.lib'
 import type { InternalFieldApi } from './FieldApi.lib'
-
-export interface BaseValidator<TFormData> {
-  /**
-   * If `true`, this validator will only run when all previous validators have passed.
-   * If `false`, validators run regardless of earlier validation results.
-   *
-   * @default false
-   */
-  runOnlyIfValid?: boolean
-  /**
-   * TODO docs
-   *
-   * Whether this validator should be called during a submission attempt.
-   *
-   * @default true
-   */
-  runOnSubmit?: boolean | ValidationEnabledFn<TFormData>
-  /**
-   * The debounce time in milliseconds for validation signals (change, blur).
-   * Does not affect submit events, which always execute immediately.
-   *
-   * @default 0
-   */
-  signalDebounceMs?: number
-  signals?: Array<ValidationSignalOption<TFormData>>
-}
 
 type FormValidateContext = Omit<FormValidatorContext<any>, 'value'>
 type FieldValidateContext = Omit<FieldValidatorContext<any, any>, 'value'>
@@ -111,39 +86,39 @@ interface DebouncedValidationCall {
 }
 
 function getEnabledState(
-  booleanOrFn: boolean | ValidationEnabledFn<any>,
+  booleanOrFn: boolean | ValidationPredicateFn<any>,
   context: FormInputContext,
 ): boolean {
   if (typeof booleanOrFn === 'boolean') return booleanOrFn
   return booleanOrFn({
-    fieldApi: context.fieldApi,
+    triggerFieldApi: context.triggerFieldApi,
     formApi: context.formApi,
     value: context.formApi.state.values,
   })
 }
 
 function isValidationSignalEnabled(
-  signal: ValidationSignalOption<any>,
+  signal: ValidationTriggerOption<any>,
   context: FormInputContext,
 ): boolean {
   if (typeof signal === 'string') {
     return signal === context.event
   }
-  if (signal.signal !== context.event) {
+  if (signal.trigger !== context.event) {
     return false
   }
 
-  const { enabled = true } = signal
+  const { when: enabled = true } = signal
 
   return getEnabledState(enabled, context)
 }
 
 function getFirstEnabledValidationSignal(
-  validator: BaseValidator<any>,
+  validator: Validator<any, any>,
   context: FormInputContext,
-): ValidationSignalOption<any> | 'submit' | null {
+): ValidationTriggerOption<any> | 'submit' | null {
   const { runOnSubmit = true } = validator
-  const signals = validator.signals ?? []
+  const signals = validator.triggers ?? []
 
   if (context.event === 'submit') {
     if (getEnabledState(runOnSubmit, context)) {
@@ -173,7 +148,7 @@ interface ValidatorPipelineArgs {
 }
 
 interface RunMaybeDebouncedValidatorArgs {
-  validator: BaseValidator<any>
+  validator: Validator<any, any>
   context: InputContext
   validatorIndex: number
   cache: ValidatorPipelineCache
@@ -190,7 +165,7 @@ function runMaybeDebouncedValidator({
   onExecute,
 }: RunMaybeDebouncedValidatorArgs): Promise<FormValidateResult> {
   const debounceMs =
-    context.event === 'submit' ? 0 : (validator.signalDebounceMs ?? 0)
+    context.event === 'submit' ? 0 : (validator.triggerDebounceMs ?? 0)
   const cacheKey = validatorIndex
   const existingDebouncer = cache.debouncers.get(cacheKey)
 
@@ -209,9 +184,10 @@ function runMaybeDebouncedValidator({
     if (validationContext.signal.aborted) {
       return null
     }
+
     const validatePromise = onExecute({
       event: validationContext.event,
-      fieldApi: validationContext.fieldApi,
+      triggerFieldApi: validationContext.triggerFieldApi,
       formApi: validationContext.formApi,
       signal: validationContext.signal,
     })
@@ -378,10 +354,10 @@ async function runValidatorPipeline({
       cache,
       onExecute: (ctx) => {
         const context = getContext(ctx)
-        if (isStandardSchema(validator.validate)) {
-          return parseStandardSchema(validator.validate, context.value, scope)
+        if (isStandardSchema(validator.run)) {
+          return parseStandardSchema(validator.run, context.value, scope)
         } else {
-          return validator.validate(context as never)
+          return validator.run(context as never)
         }
       },
     }).then<PipelineResult<FormValidateResult>>((result) => ({
@@ -419,7 +395,7 @@ export function runFormValidatorPipeline({
     cache,
     getContext: (ctx) => ({
       event: ctx.event,
-      fieldApi: ctx.fieldApi,
+      triggerFieldApi: ctx.triggerFieldApi,
       formApi: ctx.formApi,
       signal: ctx.signal,
       value: ctx.formApi.state.values,
@@ -442,7 +418,7 @@ export function runFieldValidatorPipeline({
   Array<PipelineResult<FieldValidateResult>>
 > {
   const cache = (
-    context.fieldApi as InternalFieldApi<any, any>
+    context.triggerFieldApi as InternalFieldApi<any, any>
   )._getOrCreateValidatorCache()
 
   return runValidatorPipeline({
@@ -454,8 +430,8 @@ export function runFieldValidatorPipeline({
       event: ctx.event,
       formApi: ctx.formApi,
       signal: ctx.signal,
-      fieldApi: context.fieldApi,
-      value: context.fieldApi.value,
+      fieldApi: context.triggerFieldApi,
+      value: context.triggerFieldApi.value,
     }),
     scope: 'field',
   }) as never

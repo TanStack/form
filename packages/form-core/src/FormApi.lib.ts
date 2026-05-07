@@ -32,7 +32,7 @@ import type {
   FormValidateResult,
   FormValidationError,
   FormValidator,
-  ValidationEvent,
+  ValidationTrigger,
 } from './validation.public'
 
 export interface BaseFormMeta {
@@ -677,7 +677,7 @@ export class InternalFormApi<
   }
 
   validate = async (
-    signal: ValidationEvent,
+    signal: ValidationTrigger,
     opts?: FieldApiOverrideOptions,
   ) => {
     const pipeline = this.options.validators
@@ -690,7 +690,7 @@ export class InternalFormApi<
         // TypeScript doesn't instantly complain, but instead decides to wait a while.
         // Just leave it as never.
         formApi: this as never,
-        fieldApi: opts?.fieldApiOverride ?? null,
+        triggerFieldApi: opts?.fieldApiOverride,
       },
       pipeline,
       onResult: (result) => this._processValidationResult(result),

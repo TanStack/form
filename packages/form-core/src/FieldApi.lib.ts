@@ -496,7 +496,7 @@ export class InternalFieldApi<
       pipeline: this._validators,
       context: {
         event,
-        fieldApi: this,
+        triggerFieldApi: this,
         formApi: this.form,
       },
       onResult: (result) => this._processValidationResult(result),

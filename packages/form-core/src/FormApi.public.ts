@@ -1,9 +1,9 @@
 import type { FieldUpdateOptions } from './types.public'
 import type { ReadonlyAtom } from '@tanstack/store'
 import type {
+  ConfigurableValidationTrigger,
   FormValidationError,
   FormValidator,
-  ValidationSignal,
 } from './validation.public'
 
 export interface FormOptions<
@@ -54,7 +54,9 @@ export interface FormApi<
    * errors if they appeared. It will automatically populate the
    * form's error state.
    */
-  validate: (signal: ValidationSignal) => Promise<Array<FormValidationError>>
+  validate: (
+    signal: ConfigurableValidationTrigger,
+  ) => Promise<Array<FormValidationError>>
 
   /**
    * TODO for later: submit meta

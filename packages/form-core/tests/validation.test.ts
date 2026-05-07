@@ -32,7 +32,7 @@ describe('runFormValidatorPipeline', () => {
           context: {
             event: args.event,
             formApi: form,
-            fieldApi: args.field ?? null,
+            triggerFieldApi: args.field,
           },
           onResult: args.onResult,
           pipeline: pipeline,
@@ -45,7 +45,7 @@ describe('runFormValidatorPipeline', () => {
     const formApi = getForm({ name: '' })
     const { runWithContext } = getPipeline(formApi, [
       {
-        validate: () => ({ message: 'foo' }),
+        run: () => ({ message: 'foo' }),
       },
     ])
     const results = await runWithContext({ event: 'submit' })
@@ -64,16 +64,16 @@ describe('runFormValidatorPipeline', () => {
 
     const { runWithContext } = getPipeline(formApi, [
       {
-        validate: change,
-        signals: ['change'],
+        run: change,
+        triggers: ['change'],
       },
       {
-        validate: blur,
-        signals: ['blur'],
+        run: blur,
+        triggers: ['blur'],
       },
       {
-        validate: blurOrChange,
-        signals: ['blur', 'change'],
+        run: blurOrChange,
+        triggers: ['blur', 'change'],
       },
     ])
 
@@ -102,22 +102,22 @@ describe('runFormValidatorPipeline', () => {
 
     const { runWithContext } = getPipeline(formApi, [
       {
-        validate: trueByDefault,
+        run: trueByDefault,
       },
       {
-        validate: trueCallback,
+        run: trueCallback,
         runOnSubmit: () => true,
       },
       {
-        validate: trueBoolean,
+        run: trueBoolean,
         runOnSubmit: true,
       },
       {
-        validate: falseBoolean,
+        run: falseBoolean,
         runOnSubmit: false,
       },
       {
-        validate: falseCallback,
+        run: falseCallback,
         runOnSubmit: () => false,
       },
     ])
@@ -144,42 +144,42 @@ describe('runFormValidatorPipeline', () => {
     vi.useFakeTimers()
 
     const formApi = getForm({ name: '' })
-    const validate = vi.fn(() => ({ message: 'foo' }))
+    const run = vi.fn(() => ({ message: 'foo' }))
 
     const { runWithContext } = getPipeline(formApi, [
       {
-        validate,
-        signals: ['change'],
-        signalDebounceMs: 100,
+        run,
+        triggers: ['change'],
+        triggerDebounceMs: 100,
       },
     ])
 
     const promise = runWithContext({ event: 'change' })
 
-    expect(validate).not.toHaveBeenCalled()
+    expect(run).not.toHaveBeenCalled()
 
     await vi.advanceTimersByTimeAsync(99)
-    expect(validate).not.toHaveBeenCalled()
+    expect(run).not.toHaveBeenCalled()
 
     await vi.advanceTimersByTimeAsync(1)
 
     await expect(promise).resolves.toHaveLength(1)
 
-    expect(validate).toHaveBeenCalledOnce()
+    expect(run).toHaveBeenCalledOnce()
   })
 
   it('should cancel an existing debounced validation when the same validator runs immediately', async () => {
     vi.useFakeTimers()
 
     const formApi = getForm({ name: '' })
-    const validate = vi.fn(() => ({ message: 'foo' }))
+    const run = vi.fn(() => ({ message: 'foo' }))
     const onResult = vi.fn()
 
     const { runWithContext } = getPipeline(formApi, [
       {
-        validate,
-        signals: ['change'],
-        signalDebounceMs: 100,
+        run,
+        triggers: ['change'],
+        triggerDebounceMs: 100,
       },
     ])
 
@@ -189,7 +189,7 @@ describe('runFormValidatorPipeline', () => {
 
     const submitResults = await runWithContext({ event: 'submit', onResult })
 
-    expect(validate).toHaveBeenCalledOnce()
+    expect(run).toHaveBeenCalledOnce()
     expect(submitResults).toHaveLength(1)
 
     expect(onResult).toHaveBeenCalledOnce()
@@ -201,7 +201,7 @@ describe('runFormValidatorPipeline', () => {
 
     await vi.advanceTimersByTimeAsync(100)
 
-    expect(validate).toHaveBeenCalledOnce()
+    expect(run).toHaveBeenCalledOnce()
   })
 
   it('should debounce separate validators independently', async () => {
@@ -214,14 +214,14 @@ describe('runFormValidatorPipeline', () => {
 
     const { runWithContext } = getPipeline(formApi, [
       {
-        validate: first,
-        signals: ['change'],
-        signalDebounceMs: 100,
+        run: first,
+        triggers: ['change'],
+        triggerDebounceMs: 100,
       },
       {
-        validate: second,
-        signals: ['change'],
-        signalDebounceMs: 200,
+        run: second,
+        triggers: ['change'],
+        triggerDebounceMs: 200,
       },
     ])
 
@@ -243,34 +243,34 @@ describe('runFormValidatorPipeline', () => {
     vi.useFakeTimers()
 
     const formApi = getForm({ name: '' })
-    const validate = vi.fn(() => ({ message: 'foo' }))
+    const run = vi.fn(() => ({ message: 'foo' }))
 
     const { runWithContext } = getPipeline(formApi, [
       {
-        validate,
-        signals: ['change'],
-        signalDebounceMs: 100,
+        run,
+        triggers: ['change'],
+        triggerDebounceMs: 100,
       },
     ])
 
     const results = await runWithContext({ event: 'submit' })
 
-    expect(validate).toHaveBeenCalledOnce()
+    expect(run).toHaveBeenCalledOnce()
     expect(results).toHaveLength(1)
   })
 
-  it('should check for enabled signals', async () => {
+  it('should check for enabled triggers', async () => {
     const formApi = getForm({ name: '' })
-    const validate = vi.fn(() => ({ message: 'foo' }))
+    const run = vi.fn(() => ({ message: 'foo' }))
 
     let doThing = false
 
     const { runWithContext } = getPipeline(formApi, [
       {
-        validate,
-        signals: [
-          { signal: 'change', enabled: () => doThing },
-          { signal: 'blur', enabled: doThing },
+        run,
+        triggers: [
+          { trigger: 'change', when: () => doThing },
+          { trigger: 'blur', when: doThing },
         ],
       },
     ])
@@ -278,16 +278,16 @@ describe('runFormValidatorPipeline', () => {
     await runWithContext({ event: 'change' })
     await runWithContext({ event: 'blur' })
 
-    expect(validate).not.toHaveBeenCalled()
+    expect(run).not.toHaveBeenCalled()
 
     doThing = true
 
     // Since it's a function for enable, it should be the most up to date value
     await runWithContext({ event: 'change' })
-    expect(validate).toHaveBeenCalledOnce()
+    expect(run).toHaveBeenCalledOnce()
     // but blur should have the value stored on its own, not being updated
     await runWithContext({ event: 'blur' })
-    expect(validate).toHaveBeenCalledOnce()
+    expect(run).toHaveBeenCalledOnce()
   })
 
   it('should abort existing debounced validation when same event runs again', async () => {
@@ -295,14 +295,14 @@ describe('runFormValidatorPipeline', () => {
 
     const formApi = getForm({ name: '' })
     const validationResult = { message: 'foo' }
-    const validate = vi.fn(() => validationResult)
+    const run = vi.fn(() => validationResult)
     const onResult = vi.fn()
 
     const { runWithContext } = getPipeline(formApi, [
       {
-        validate,
-        signals: ['change'],
-        signalDebounceMs: 100,
+        run,
+        triggers: ['change'],
+        triggerDebounceMs: 100,
       },
     ])
 
@@ -313,7 +313,7 @@ describe('runFormValidatorPipeline', () => {
 
     await vi.advanceTimersByTimeAsync(100)
 
-    expect(validate).toHaveBeenCalledOnce()
+    expect(run).toHaveBeenCalledOnce()
 
     await firstPromise
     await secondPromise
@@ -332,7 +332,7 @@ describe('runFormValidatorPipeline', () => {
       resolveFirstValidation = resolve
     })
 
-    const validate = vi
+    const run = vi
       .fn()
       .mockResolvedValueOnce(
         waitForFirstValidation.then(() => ({ message: 'first' })),
@@ -342,16 +342,16 @@ describe('runFormValidatorPipeline', () => {
 
     const { runWithContext } = getPipeline(formApi, [
       {
-        validate,
-        signals: ['change'],
+        run,
+        triggers: ['change'],
       },
     ])
 
     const firstPromise = runWithContext({ event: 'change', onResult })
-    expect(validate).toHaveBeenCalledOnce()
+    expect(run).toHaveBeenCalledOnce()
 
     const secondPromise = runWithContext({ event: 'change', onResult })
-    expect(validate).toHaveBeenCalledTimes(2)
+    expect(run).toHaveBeenCalledTimes(2)
 
     resolveFirstValidation()
 
@@ -369,14 +369,14 @@ describe('runFormValidatorPipeline', () => {
 
     const formApi = getForm({ name: '' })
     const validationResult = { message: 'foo' }
-    const validate = vi.fn(() => validationResult)
+    const run = vi.fn(() => validationResult)
     const onResult = vi.fn()
 
     const { runWithContext } = getPipeline(formApi, [
       {
-        validate,
-        signals: ['change'],
-        signalDebounceMs: 100,
+        run,
+        triggers: ['change'],
+        triggerDebounceMs: 100,
       },
     ])
 
@@ -387,7 +387,7 @@ describe('runFormValidatorPipeline', () => {
 
     await vi.advanceTimersByTimeAsync(100)
 
-    expect(validate).toHaveBeenCalledOnce()
+    expect(run).toHaveBeenCalledOnce()
 
     await firstPromise
     await secondPromise
@@ -409,14 +409,14 @@ describe('runFormValidatorPipeline', () => {
 
     const { runWithContext } = getPipeline(formApi, [
       {
-        validate: ({ fieldApi }) => {
-          if (fieldApi) {
-            receivedFieldApiNames.push(fieldApi.name)
+        run: ({ triggerFieldApi }) => {
+          if (triggerFieldApi) {
+            receivedFieldApiNames.push(triggerFieldApi.name)
           }
           return null
         },
-        signals: ['change'],
-        signalDebounceMs: 100,
+        triggers: ['change'],
+        triggerDebounceMs: 100,
       },
     ])
 
@@ -489,7 +489,7 @@ describe('runFormValidatorPipeline', () => {
 
       const { runWithContext } = getPipeline(formApi, [
         {
-          validate: schema,
+          run: schema,
         },
       ])
 
@@ -509,7 +509,7 @@ describe('runFormValidatorPipeline', () => {
 
       const { runWithContext } = getPipeline(formApi, [
         {
-          validate: schema,
+          run: schema,
         },
       ])
 
@@ -530,7 +530,7 @@ describe('runFormValidatorPipeline', () => {
 
       const { runWithContext } = getPipeline(formApi, [
         {
-          validate: schema,
+          run: schema,
         },
       ])
 
@@ -556,7 +556,7 @@ describe('runFormValidatorPipeline', () => {
 
       const { runWithContext } = getPipeline(formApi, [
         {
-          validate: schema,
+          run: schema,
         },
       ])
 
@@ -584,7 +584,7 @@ describe('runFormValidatorPipeline', () => {
 
       const { runWithContext } = getPipeline(formApi, [
         {
-          validate: schema,
+          run: schema,
         },
       ])
 
@@ -607,8 +607,8 @@ describe('runFormValidatorPipeline', () => {
 
       const { runWithContext } = getPipeline(formApi, [
         {
-          validate: schema,
-          signals: ['change'],
+          run: schema,
+          triggers: ['change'],
         },
       ])
 
@@ -641,14 +641,14 @@ describe('runFormValidatorPipeline', () => {
 
       const { runWithContext } = getPipeline(formApi, [
         {
-          validate: failingSchema,
+          run: failingSchema,
         },
         {
-          validate: passingSchema,
+          run: passingSchema,
           runOnlyIfValid: true,
         },
         {
-          validate: validateSpy,
+          run: validateSpy,
           runOnlyIfValid: true,
         },
       ])
@@ -674,7 +674,7 @@ describe('runFormValidatorPipeline', () => {
 
       const { runWithContext } = getPipeline(formApi, [
         {
-          validate: schema,
+          run: schema,
         },
       ])
 
@@ -694,7 +694,7 @@ describe('runFormValidatorPipeline', () => {
 
       const { runWithContext } = getPipeline(formApi, [
         {
-          validate: schema,
+          run: schema,
           runOnSubmit: false,
         },
       ])

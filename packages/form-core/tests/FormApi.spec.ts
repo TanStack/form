@@ -527,19 +527,19 @@ describe('FormApi', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              validate: () => ({ message: 'error1' as const }),
+              run: () => ({ message: 'error1' as const }),
             },
             {
-              validate: () => null,
+              run: () => null,
             },
             {
-              validate: () => ({ message: 'error2' as const }),
+              run: () => ({ message: 'error2' as const }),
             },
             {
-              validate: () => undefined,
+              run: () => undefined,
             },
             {
-              validate: () => false,
+              run: () => false,
             },
           ],
         })
@@ -552,7 +552,7 @@ describe('FormApi', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              validate: () => ({ message: 'Name is required' }),
+              run: () => ({ message: 'Name is required' }),
             },
           ],
         })
@@ -565,7 +565,7 @@ describe('FormApi', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              validate: () => [{ message: 'Error 1' }, { message: 'Error 2' }],
+              run: () => [{ message: 'Error 1' }, { message: 'Error 2' }],
             },
           ],
         })
@@ -584,16 +584,16 @@ describe('FormApi', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              validate: () => null,
+              run: () => null,
             },
             {
-              validate: () => ({ message: 'Valid error' }),
+              run: () => ({ message: 'Valid error' }),
             },
             {
-              validate: () => false,
+              run: () => false,
             },
             {
-              validate: () => undefined,
+              run: () => undefined,
             },
           ],
         })
@@ -606,8 +606,8 @@ describe('FormApi', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              validate: () => ({ message: 'Form error' }),
-              signals: ['change'],
+              run: () => ({ message: 'Form error' }),
+              triggers: ['change'],
             },
           ],
         })
@@ -620,13 +620,13 @@ describe('FormApi', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              signalDebounceMs: 100,
-              validate: () => ({ message: 'Async debounced error' }),
-              signals: ['change'],
+              triggerDebounceMs: 100,
+              run: () => ({ message: 'Async debounced error' }),
+              triggers: ['change'],
             },
             {
-              validate: () => ({ message: 'Sync error' }),
-              signals: ['change'],
+              run: () => ({ message: 'Sync error' }),
+              triggers: ['change'],
             },
           ],
         })
@@ -655,20 +655,20 @@ describe('FormApi', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              validate: () => ({ message: 'Error 1' }),
-              signals: ['change'],
+              run: () => ({ message: 'Error 1' }),
+              triggers: ['change'],
             },
             {
-              validate: () => ({ message: 'Error 2' }),
-              signals: ['change'],
+              run: () => ({ message: 'Error 2' }),
+              triggers: ['change'],
             },
             {
-              validate: () => ({ message: 'Error 3' }),
-              signals: ['change'],
+              run: () => ({ message: 'Error 3' }),
+              triggers: ['change'],
             },
             {
-              validate: () => ({ message: 'Error 4' }),
-              signals: ['change'],
+              run: () => ({ message: 'Error 4' }),
+              triggers: ['change'],
             },
           ],
         })
@@ -687,13 +687,13 @@ describe('FormApi', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              validate: () => ({ message: 'Sync error' }),
-              signals: ['blur'],
+              run: () => ({ message: 'Sync error' }),
+              triggers: ['blur'],
             },
             {
-              signalDebounceMs: 100,
-              validate: () => ({ message: 'Debounced error' }),
-              signals: ['blur'],
+              triggerDebounceMs: 100,
+              run: () => ({ message: 'Debounced error' }),
+              triggers: ['blur'],
             },
           ],
         })
@@ -721,13 +721,13 @@ describe('FormApi', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              validate: () => ({ message: 'Sync error' }),
-              signals: ['blur'],
+              run: () => ({ message: 'Sync error' }),
+              triggers: ['blur'],
             },
             {
               // eslint-disable-next-line @typescript-eslint/require-await
-              validate: async () => ({ message: 'Async error' }),
-              signals: ['blur'],
+              run: async () => ({ message: 'Async error' }),
+              triggers: ['blur'],
             },
           ],
         })
@@ -758,18 +758,18 @@ describe('FormApi', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              validate: () => ({ message: 'Sync error' }),
-              signals: ['blur'],
+              run: () => ({ message: 'Sync error' }),
+              triggers: ['blur'],
             },
             {
               // eslint-disable-next-line @typescript-eslint/require-await
-              validate: async () => ({ message: 'Async error' }),
-              signals: ['blur'],
+              run: async () => ({ message: 'Async error' }),
+              triggers: ['blur'],
             },
             {
               runOnlyIfValid: true,
-              validate: thirdValidatorFn,
-              signals: ['blur'],
+              run: thirdValidatorFn,
+              triggers: ['blur'],
             },
           ],
         })
@@ -789,12 +789,12 @@ describe('FormApi', () => {
     })
 
     describe('handleSubmit', () => {
-      it('validates with submit signal', async () => {
+      it('validates with submit trigger', async () => {
         const form = new InternalFormApi({
           defaultValues: { name: '' },
           validators: [
             {
-              validate: () => ({ message: 'Submit error' }),
+              run: () => ({ message: 'Submit error' }),
             },
           ],
         })
@@ -810,11 +810,11 @@ describe('FormApi', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              validate: () => ({ message: 'First error' }),
+              run: () => ({ message: 'First error' }),
             },
             {
               runOnlyIfValid: true,
-              validate: thirdValidatorFn,
+              run: thirdValidatorFn,
             },
           ],
         })
@@ -832,8 +832,8 @@ describe('FormApi', () => {
           validators: [
             {
               runOnSubmit: false,
-              validate: validatorFn,
-              signals: ['change'],
+              run: validatorFn,
+              triggers: ['change'],
             },
           ],
         })
@@ -851,7 +851,7 @@ describe('FormApi', () => {
           validators: [
             {
               runOnSubmit: true,
-              validate: validatorFn,
+              run: validatorFn,
             },
           ],
         })
@@ -860,7 +860,7 @@ describe('FormApi', () => {
         expect(validatorFn).toHaveBeenCalled()
       })
 
-      it('runs validators with runOnSubmit: false on their signals', async () => {
+      it('runs validators with runOnSubmit: false on their triggers', async () => {
         const validatorFn = vi
           .fn()
           .mockImplementation(() => ({ message: 'Change error' }))
@@ -869,18 +869,18 @@ describe('FormApi', () => {
           validators: [
             {
               runOnSubmit: false,
-              validate: validatorFn,
-              signals: ['change'],
+              run: validatorFn,
+              triggers: ['change'],
             },
           ],
         })
         await form.validate('change')
-        // runOnSubmit: false only affects submit, not the configured signals
+        // runOnSubmit: false only affects submit, not the configured triggers
         expect(form.state.formErrors).toEqual([{ message: 'Change error' }])
         expect(validatorFn).toHaveBeenCalled()
       })
 
-      it('skips validators with runOnSubmit: false and no signals on submit', async () => {
+      it('skips validators with runOnSubmit: false and no triggers on submit', async () => {
         const validatorFn = vi
           .fn()
           .mockImplementation(() => ({ message: 'Should not run' }))
@@ -889,7 +889,7 @@ describe('FormApi', () => {
           validators: [
             {
               runOnSubmit: false,
-              validate: validatorFn,
+              run: validatorFn,
             },
           ],
         })
@@ -907,7 +907,7 @@ describe('FormApi', () => {
           validators: [
             {
               runOnSubmit: ({ formApi }) => formApi.state.values.name === '',
-              validate: validatorFn,
+              run: validatorFn,
             },
           ],
         })
@@ -928,8 +928,8 @@ describe('FormApi', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              validate: validatorFn,
-              signals: ['change'],
+              run: validatorFn,
+              triggers: ['change'],
             },
           ],
         })
@@ -951,12 +951,12 @@ describe('FormApi', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              validate: onChangeValidatorFn,
-              signals: ['change'],
+              run: onChangeValidatorFn,
+              triggers: ['change'],
             },
             {
-              validate: onBlurValidatorFn,
-              signals: ['blur'],
+              run: onBlurValidatorFn,
+              triggers: ['blur'],
             },
           ],
         })
@@ -968,7 +968,7 @@ describe('FormApi', () => {
         })
       })
 
-      it('skips validators when change signal is disabled', async () => {
+      it('skips validators when change trigger is disabled', async () => {
         vi.useFakeTimers()
         const validatorFn = vi
           .fn()
@@ -977,8 +977,8 @@ describe('FormApi', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              validate: validatorFn,
-              signals: [{ signal: 'change', enabled: false }],
+              run: validatorFn,
+              triggers: [{ trigger: 'change', when: false }],
             },
           ],
         })
@@ -998,8 +998,8 @@ describe('FormApi', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              validate: validatorFn,
-              signals: ['change'],
+              run: validatorFn,
+              triggers: ['change'],
             },
           ],
         })
@@ -1019,9 +1019,9 @@ describe('FormApi', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              validate: validatorFn,
-              signals: ['change'],
-              signalDebounceMs: 100,
+              run: validatorFn,
+              triggers: ['change'],
+              triggerDebounceMs: 100,
             },
           ],
         })
@@ -1051,8 +1051,8 @@ describe('FormApi', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              validate: validatorFn,
-              signals: ['change'],
+              run: validatorFn,
+              triggers: ['change'],
             },
           ],
         })
@@ -1072,12 +1072,12 @@ describe('FormApi', () => {
           defaultValues: { name: '', age: 0 },
           validators: [
             {
-              validate: () => ({
+              run: () => ({
                 fields: {
                   name: { message: 'Name is required' },
                 },
               }),
-              signals: ['change'],
+              triggers: ['change'],
             },
           ],
         })
@@ -1092,13 +1092,13 @@ describe('FormApi', () => {
           defaultValues: { name: '', age: 0 },
           validators: [
             {
-              validate: () => ({
+              run: () => ({
                 fields: {
                   name: { message: 'Name is required' },
                   age: { message: 'Age is required' },
                 },
               }),
-              signals: ['change'],
+              triggers: ['change'],
             },
           ],
         })
@@ -1116,13 +1116,13 @@ describe('FormApi', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              validate: () => ({
+              run: () => ({
                 fields: {
                   name: [{ message: 'Error 1' }, { message: 'Error 2' }],
                   lastName: { message: 'Error 3' },
                 },
               }),
-              signals: ['change'],
+              triggers: ['change'],
             },
           ],
         })
@@ -1145,18 +1145,18 @@ describe('FormApi', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              validate: () => ({
+              run: () => ({
                 fields: {
                   name: { message: 'Form-level error' },
                 },
               }),
-              signals: ['change'],
+              triggers: ['change'],
             },
           ],
         })
         const field = form._getOrCreateFieldApi({
           name: 'name',
-          validators: [{ validate: () => ({ message: 'Field-level error' }) }],
+          validators: [{ run: () => ({ message: 'Field-level error' }) }],
         })
         void field.store
         field.handleChange('New value')
@@ -1170,7 +1170,7 @@ describe('FormApi', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              validate: () => {
+              run: () => {
                 if (shouldError) {
                   return {
                     fields: {
@@ -1180,7 +1180,7 @@ describe('FormApi', () => {
                 }
                 return null
               },
-              signals: ['change'],
+              triggers: ['change'],
             },
           ],
         })
@@ -1200,20 +1200,20 @@ describe('FormApi', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              validate: () => ({
+              run: () => ({
                 fields: {
                   name: { message: 'Error from validator 1' },
                 },
               }),
-              signals: ['change'],
+              triggers: ['change'],
             },
             {
-              validate: () => ({
+              run: () => ({
                 fields: {
                   name: { message: 'Error from validator 2' },
                 },
               }),
-              signals: ['change'],
+              triggers: ['change'],
             },
           ],
         })
@@ -1231,13 +1231,13 @@ describe('FormApi', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              validate: () => ({
+              run: () => ({
                 form: { message: 'Form-wide error' },
                 fields: {
                   name: { message: 'Field-specific error' },
                 },
               }),
-              signals: ['change'],
+              triggers: ['change'],
             },
           ],
         })
@@ -1253,12 +1253,12 @@ describe('FormApi', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              validate: () => ({
+              run: () => ({
                 fields: {
                   nonexistent: { message: 'Error on nonexistent field' },
                 },
               }),
-              signals: ['change'],
+              triggers: ['change'],
             },
           ],
         })
@@ -1283,7 +1283,7 @@ describe('FormApi', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              validate: () => {
+              run: () => {
                 if (shouldError) {
                   return {
                     fields: {
@@ -1293,7 +1293,7 @@ describe('FormApi', () => {
                 }
                 return null
               },
-              signals: ['change'],
+              triggers: ['change'],
             },
           ],
         })

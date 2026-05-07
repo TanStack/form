@@ -2,37 +2,58 @@ import type { FieldApi } from './FieldApi.public'
 import type { FormApi } from './FormApi.public'
 import type { StandardSchemaV1 } from './standardSchema.public'
 import type { OneOrMany } from './types.public'
-import type { BaseValidator } from './validation.lib'
 
-/**
- * TODO should we stick to "Signal"? It sounds very tech-y.
- *
- * I'd be fine with chaging it to `Event` and have 'submit' just be excluded from it.
- * The other type could be called `ValidationEventOrSubmit. Can't be an internal naming because
- * it's passed to `validate` contexts.
- * - Luca
- */
-export type ValidationSignal = 'change' | 'blur'
-export type ValidationEvent = ValidationSignal | 'submit'
+export interface Validator<
+  TFormData,
+  TValidator extends StandardSchemaV1 | ValidatorFn<any, any>,
+> {
+  run: TValidator
+  /**
+   * If `true`, this validator will only run when all previous validators have passed.
+   * If `false`, validators run regardless of earlier validation results.
+   *
+   * @default false
+   */
+  runOnlyIfValid?: boolean
+  /**
+   * TODO docs
+   *
+   * Whether this validator should be called during a submission attempt.
+   *
+   * @default true
+   */
+  runOnSubmit?: boolean | ValidationPredicateFn<TFormData>
+  /**
+   * The debounce time in milliseconds for validation triggers (change, blur).
+   * Does not affect submit events, which always execute immediately.
+   *
+   * @default 0
+   */
+  triggerDebounceMs?: number
+  triggers?: Array<ValidationTriggerOption<TFormData>>
+}
 
-export interface ValidationEnabledContext<TFormData> {
+export type ValidationTrigger = 'change' | 'blur' | 'submit'
+export type ConfigurableValidationTrigger = Exclude<ValidationTrigger, 'submit'>
+
+export interface ValidationPredicateContext<TFormData> {
   formApi: FormApi<TFormData, Array<any>>
-  fieldApi: FieldApi<any, any> | null
+  triggerFieldApi?: FieldApi<any, any>
   value: TFormData
 }
 
-export type ValidationEnabledFn<TFormData> = (
-  context: ValidationEnabledContext<TFormData>,
+export type ValidationPredicateFn<TFormData> = (
+  context: ValidationPredicateContext<TFormData>,
 ) => boolean
 
-export interface ValidationSignalConfig<TFormData> {
-  signal: ValidationSignal
-  enabled?: boolean | ValidationEnabledFn<TFormData>
+export interface ValidationTriggerConfig<TFormData> {
+  trigger: ConfigurableValidationTrigger
+  when?: boolean | ValidationPredicateFn<TFormData>
 }
 
-export type ValidationSignalOption<TFormData> =
-  | ValidationSignal
-  | ValidationSignalConfig<TFormData>
+export type ValidationTriggerOption<TFormData> =
+  | ConfigurableValidationTrigger
+  | ValidationTriggerConfig<TFormData>
 
 /**
  * A single validation error with a unique identifier.
@@ -49,7 +70,7 @@ export interface ValidationAggregateError {
 }
 
 interface BaseValidatorContext<TFormData> {
-  event: ValidationEvent
+  event: ValidationTrigger
   signal: AbortSignal
   formApi: FormApi<TFormData, Array<any>>
 }
@@ -57,54 +78,50 @@ interface BaseValidatorContext<TFormData> {
 export interface FormValidatorContext<
   TFormData,
 > extends BaseValidatorContext<TFormData> {
-  fieldApi: FieldApi<any, any> | null
+  triggerFieldApi?: FieldApi<any, any>
   value: TFormData
 }
+
+export type ValidValidationResult = null | undefined | false
 
 /**
  * Result of validation - can be null/undefined (valid), a single error, or multiple errors.
  */
-export type ValidationResult = null | undefined | false | ValidationError
+export type ValidationResult = ValidValidationResult | ValidationError
 
 export type FormValidationError = ValidationError | ValidationAggregateError
 export type FormValidateResult = ValidationResult | ValidationAggregateError
 
-export type FormValidatorFn<TFormData> = (
-  context: FormValidatorContext<TFormData>,
-) => FormValidateResult | Promise<FormValidateResult>
+export type ValidatorFn<TParameter, TReturn> = (
+  ...args: Array<TParameter>
+) => TReturn | Promise<TReturn>
 
-/**
- * A validator function that produces validation results.
- */
-export interface Validator {
-  validate: (
-    ...args: Array<any>
-  ) => ValidationResult | Promise<ValidationResult>
-}
+export type FormValidatorFn<TFormData> = ValidatorFn<
+  FormValidatorContext<TFormData>,
+  FormValidateResult
+>
 
-export interface FormValidator<TFormData> extends BaseValidator<TFormData> {
-  validate: FormValidatorFn<TFormData> | StandardSchemaV1<TFormData, any>
-}
+export interface FormValidator<TFormData> extends Validator<
+  TFormData,
+  FormValidatorFn<TFormData> | StandardSchemaV1<TFormData, any>
+> {}
 
 export interface FieldValidatorContext<
   TFormData,
   TFieldValue,
 > extends BaseValidatorContext<TFormData> {
-  fieldApi: FieldApi<TFormData, any>
+  triggerFieldApi: FieldApi<TFormData, any>
   value: TFieldValue
 }
 
 export type FieldValidateResult = ValidationResult
 
-export type FieldValidatorFn<TFormData, TFieldValue> = (
-  context: FieldValidatorContext<TFormData, TFieldValue>,
-) => FieldValidateResult | Promise<FieldValidateResult>
+export type FieldValidatorFn<TFormData, TFieldValue> = ValidatorFn<
+  FieldValidatorContext<TFormData, TFieldValue>,
+  FieldValidateResult
+>
 
-export interface FieldValidator<
+export interface FieldValidator<TFormData, TFieldValue> extends Validator<
   TFormData,
-  TFieldValue,
-> extends BaseValidator<TFormData> {
-  validate:
-    | FieldValidatorFn<TFormData, TFieldValue>
-    | StandardSchemaV1<TFieldValue, any>
-}
+  FieldValidatorFn<TFormData, TFieldValue> | StandardSchemaV1<TFieldValue, any>
+> {}
