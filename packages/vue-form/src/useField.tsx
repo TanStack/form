@@ -370,25 +370,7 @@ export function useField<
       name: opts.name,
     })
 
-    const extendedApi: typeof api &
-      VueFieldApi<
-        TParentData,
-        TFormOnMount,
-        TFormOnChange,
-        TFormOnChangeAsync,
-        TFormOnBlur,
-        TFormOnBlurAsync,
-        TFormOnSubmit,
-        TFormOnSubmitAsync,
-        TFormOnDynamic,
-        TFormOnDynamicAsync,
-        TFormOnServer,
-        TParentSubmitMeta
-      > = api as never
-
-    extendedApi.Field = Field as never
-
-    return extendedApi
+    return api
   })()
 
   const fieldState = useStore(fieldApi.store, (state) => state)
