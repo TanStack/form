@@ -549,6 +549,42 @@ export class InternalFieldApi<
         originalField.form._fieldRootNode._addToTouchedFields(originalField)
       }
 
+      // -> it triggered a change
+      // -> foo.bar is dirty
+
+      // arrayField -> users
+      // fieldA -> users[0] // for now
+      // fieldB -> users[1]
+
+      // arrayField.swapValues(0, 1)
+      // arrayField.isDirty
+      // -> fieldA is not dirty
+      // -> fieldA changes -> arrayField was changed -> form is changed
+
+      /**
+       * We need meta dataflow to go from:
+       *
+       * Child -> parent
+       *
+       * Rather than:
+       *
+       * Parent -> child
+       *
+       * This is because a child can access a parent's dataset, but the parent cannot access the child easily:
+       *
+       * @example <form.Field name="users" children={arrayField => <form.Field name={"users[0]"} children={fieldA => { "fieldA can access arrayField but not vice-versa" }} />} />
+       *
+       */
+      // arrayField.isSelfDirty -> somebody called arrayField.handleChange()
+      // arrayField.isAChildDirty -> somebody called fieldA.handleChange() or fieldB.handleChange()
+      // arrayField.isDirty -> arrayField.isSelfDirty || arrayField.isAChildDirty
+
+      // arrayField.pushValue()
+
+      // arrayField represents itself + fieldA + fieldB
+      // fieldA can have special "override" meta
+      // -> field-level validators
+
       while (!currNode._isRoot) {
         const { isDirty, isTouched, isBlurred } = currNode.meta
         const shouldUpdateDirty = markAsDirty && !isDirty
@@ -602,10 +638,25 @@ export class InternalFieldApi<
     }
   }
 
+  /**
+   * @private
+   */
   _moveTo(newSegment: NameSegment): void {
     if (this.#segment === newSegment) {
       return
     }
+    /**
+     * swapFieldValues 0 (indexA) and 1 (indexB)
+     * arrayField.moveChild(indexA, indexB) -> moves fieldA to fieldB's segment but replaces it
+     * arrayField.moveChild(1, 0)
+     *
+     * fieldA.moveTo(indexB)
+     * fieldB.moveTo(indexA)
+     *
+     * fieldA removes 0 and sets 1
+     * fieldB removes 1 and sets 0
+     * -> fieldA was lost
+     */
     const oldSegment = this.#segment
     this.#segment = newSegment
     this._invalidateFullPath()
@@ -889,7 +940,7 @@ function getErrorsFromBaseMeta(
   let result: Array<ErrorWithMessage>
   if (
     previousMeta?._fieldValidatorErrors === baseMeta._fieldValidatorErrors &&
-    previousMeta._formValidatorErrors === baseMeta._fieldValidatorErrors
+    previousMeta._formValidatorErrors === baseMeta._formValidatorErrors
   ) {
     result = previousMeta.errors
   } else {

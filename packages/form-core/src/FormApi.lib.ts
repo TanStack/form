@@ -449,7 +449,7 @@ export class InternalFormApi<
     const arrayNode =
       options?.fieldApiOverride ?? this._tryGetFieldApi(arrayFieldName)
 
-    let nextSegment = 0
+    let length = 0
     const thisArg = options?.thisArg
     const filtered = oldArray.filter((value, index, array) => {
       const keep = predicate.call(thisArg, value, index, array)
@@ -457,8 +457,8 @@ export class InternalFormApi<
 
       const childAtIndex = arrayNode._getChild(index)
       if (keep) {
-        childAtIndex?._moveTo(nextSegment)
-        nextSegment++
+        childAtIndex?._moveTo(length)
+        length++
       } else {
         childAtIndex?._kill()
       }

@@ -354,6 +354,14 @@ async function runValidatorPipeline({
       continue
     }
 
+    /**
+     * [A, B, C?, D]
+     * -> I would expect D not to run, but the code below would.
+     *
+     * This needs some discussion.
+     *
+     * TODO
+     */
     if (runOnlyIfValid) {
       if (hasErrors) {
         continue
