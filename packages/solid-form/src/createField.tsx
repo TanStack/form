@@ -15,7 +15,6 @@ import type {
   FieldValidators,
   FormAsyncValidateOrFn,
   FormValidateOrFn,
-  Narrow,
 } from '@tanstack/form-core'
 
 import type { Accessor, JSX, JSXElement } from 'solid-js'
@@ -238,23 +237,7 @@ export function createField<
 
   const api = new FieldApi(options)
 
-  const extendedApi: typeof api &
-    SolidFieldApi<
-      TParentData,
-      TFormOnMount,
-      TFormOnChange,
-      TFormOnChangeAsync,
-      TFormOnBlur,
-      TFormOnBlurAsync,
-      TFormOnSubmit,
-      TFormOnSubmitAsync,
-      TFormOnDynamic,
-      TFormOnDynamicAsync,
-      TFormOnServer,
-      TParentSubmitMeta
-    > = api as never
-
-  extendedApi.Field = Field as never
+  const extendedApi: typeof api = api as never
 
   let mounted = false
   // Instantiates field meta and removes it when unrendered
