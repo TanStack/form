@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 
 import {
-  InternalFieldApi,
   InternalFormApi,
   defaultFieldMeta,
   nameToFieldNodeSegments,
@@ -524,67 +523,6 @@ describe('FieldApi', () => {
       child.handleChange('new')
       expect(parent.meta.isDirty).toBe(true)
       expect(grandparent.meta.isDirty).toBe(true)
-    })
-  })
-
-  describe('_setChild type transitions', () => {
-    it('transitions from leaf to object when a string child is added', () => {
-      const form = new InternalFormApi({ defaultValues: { foo: { bar: '' } } })
-      const field = form._getOrCreateFieldApi({ name: 'foo' })
-      expect(field._isLeaf).toBe(true)
-      form._getOrCreateFieldApi({ name: 'foo.bar' })
-      expect(field._isLeaf).toBe(false)
-      expect(field._isArray).toBe(false)
-      expect(field._type).toBe('object')
-    })
-
-    it('transitions from leaf to array when a numeric child is added', () => {
-      const form = new InternalFormApi({ defaultValues: { arr: [''] } })
-      const field = form._getOrCreateFieldApi({ name: 'arr' })
-      expect(field._isLeaf).toBe(true)
-      form._getOrCreateFieldApi({ name: 'arr[0]' })
-      expect(field._isArray).toBe(true)
-      expect(field._type).toBe('array')
-    })
-
-    it('warns when adding a string accessor to an array field', () => {
-      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-      const form = new InternalFormApi({
-        defaultValues: { arr: [] as Array<any> },
-      })
-      const arrField = form._getOrCreateFieldApi({ name: 'arr' })
-      form._getOrCreateFieldApi({ name: 'arr[0]' })
-
-      const strChild = new InternalFieldApi({
-        segment: 'bad',
-        parent: arrField,
-        form: arrField.form,
-      })
-      arrField._setChild(strChild)
-
-      expect(warn).toHaveBeenCalledWith(
-        expect.stringContaining('string accessor'),
-      )
-      warn.mockRestore()
-    })
-
-    it('warns when adding a numeric accessor to an object field', () => {
-      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-      const form = new InternalFormApi({ defaultValues: { obj: { a: '' } } })
-      const objField = form._getOrCreateFieldApi({ name: 'obj' })
-      form._getOrCreateFieldApi({ name: 'obj.a' })
-
-      const numChild = new InternalFieldApi({
-        segment: 0,
-        parent: objField,
-        form: objField.form,
-      })
-      objField._setChild(numChild)
-
-      expect(warn).toHaveBeenCalledWith(
-        expect.stringContaining('numeric accessor'),
-      )
-      warn.mockRestore()
     })
   })
 

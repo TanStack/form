@@ -205,11 +205,9 @@ export class InternalFieldApi<
   TFormData,
   TFormValidators extends Array<FormValidator<TFormData>>,
 > implements FieldApi<TFormData, TFormValidators> {
-  _type: 'array' | 'object' | 'leaf' = 'leaf'
   readonly _isRoot = false
   _parent: AnyInternalFieldApi | InternalRootFieldApi
-  _childrenArray: Array<AnyInternalFieldApi> = []
-  _childrenMap: Map<string, AnyInternalFieldApi> = new Map()
+  #children: Map<NameSegment, AnyInternalFieldApi> = new Map()
   _pathVersion = 0
   _parentPathVersion = 0
   _fullPathCache: string | null = null
@@ -243,23 +241,8 @@ export class InternalFieldApi<
     return this._atoms !== null
   }
 
-  get _isArray(): boolean {
-    return this._type === 'array'
-  }
-
-  get _isLeaf(): boolean {
-    return this._type === 'leaf'
-  }
-
   get _children(): Array<AnyInternalFieldApi> {
-    switch (this._type) {
-      case 'array':
-        return this._childrenArray.filter(Boolean)
-      case 'object':
-        return Array.from(this._childrenMap.values())
-      case 'leaf':
-        return []
-    }
+    return Array.from(this.#children.values())
   }
 
   _getOrCreateAtoms(): FieldAtoms {
@@ -361,16 +344,7 @@ export class InternalFieldApi<
    * Get a child FieldApi by its segment name.
    */
   _getChild(segment: NameSegment): AnyInternalFieldApi | undefined {
-    switch (this._type) {
-      case 'array':
-        if (typeof segment !== 'number') return undefined
-        return this._childrenArray[segment]
-      case 'object':
-        if (typeof segment !== 'string') return undefined
-        return this._childrenMap.get(segment)
-      case 'leaf':
-        return undefined
-    }
+    return this.#children.get(segment)
   }
 
   /**
@@ -378,29 +352,7 @@ export class InternalFieldApi<
    * Set an existing node as a child of this FieldApi.
    */
   _setChild(node: AnyInternalFieldApi): void {
-    if (this._type === 'leaf') {
-      this._type = typeof node._segment === 'number' ? 'array' : 'object'
-    }
-
-    if (this._type === 'array') {
-      if (typeof node._segment !== 'number') {
-        console.warn(
-          'Adding a string accessor to an array field is not allowed.',
-        )
-        return
-      }
-
-      this._childrenArray[node._segment] = node
-    } else {
-      if (typeof node._segment !== 'string') {
-        console.warn(
-          'Adding a numeric accessor to an object field is not allowed.',
-        )
-        return
-      }
-
-      this._childrenMap.set(node._segment, node)
-    }
+    this.#children.set(node._segment, node)
   }
 
   /**
@@ -410,15 +362,7 @@ export class InternalFieldApi<
    * @important Does not kill the child node.
    */
   _removeChild(segment: NameSegment): void {
-    if (this._type === 'array') {
-      if (typeof segment === 'number') {
-        this._childrenArray[segment] = undefined as never
-      }
-    } else {
-      if (typeof segment === 'string') {
-        this._childrenMap.delete(segment)
-      }
-    }
+    this.#children.delete(segment)
   }
 
   /**
@@ -742,8 +686,7 @@ export class InternalFieldApi<
 
         node._atoms = null
         node._validatorCache = null
-        node._childrenArray = []
-        node._childrenMap.clear()
+        node.#children.clear()
       }
     })
   }
