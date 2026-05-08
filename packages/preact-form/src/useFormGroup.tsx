@@ -1,27 +1,20 @@
 import { useMemo, useState } from 'preact/hooks'
-import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/preact-store'
+import { FormGroupApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
-  AnyFieldApi,
-  AnyFieldMeta,
   DeepKeys,
   DeepValue,
-  FieldAsyncValidateOrFn,
-  FieldValidateOrFn,
-  FieldValidators,
   FormAsyncValidateOrFn,
+  FormGroupApiOptions,
+  FormGroupAsyncValidateOrFn,
+  FormGroupOptions,
+  FormGroupValidateOrFn,
   FormValidateOrFn,
 } from '@tanstack/form-core'
 import type { ComponentChild, FunctionComponent } from 'preact'
-import type { UseFieldOptions, UseFieldOptionsBound } from './types'
 
-/**
- * A type representing a hook for using a field in a form with the given form data type.
- *
- * A function that takes an optional object with a `name` property and field options, and returns a `FieldApi` instance for the specified field.
- */
-export type UseField<
+export type UseFormGroup<
   TParentData,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
@@ -33,108 +26,36 @@ export type UseField<
   TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
   TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TPatentSubmitMeta,
+  TParentSubmitMeta,
 > = <
   TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
-  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnMount extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnChangeAsync extends
     | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnBlurAsync extends
     | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnSubmitAsync extends
     | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnDynamic extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnDynamicAsync extends
     | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TSubmitMeta,
 >(
-  opts: UseFieldOptionsBound<
-    TParentData,
-    TName,
-    TData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync
-  >,
-) => FieldApi<
-  TParentData,
-  TName,
-  TData,
-  TOnMount,
-  TOnChange,
-  TOnChangeAsync,
-  TOnBlur,
-  TOnBlurAsync,
-  TOnSubmit,
-  TOnSubmitAsync,
-  TOnDynamic,
-  TOnDynamicAsync,
-  TFormOnMount,
-  TFormOnChange,
-  TFormOnChangeAsync,
-  TFormOnBlur,
-  TFormOnBlurAsync,
-  TFormOnSubmit,
-  TFormOnSubmitAsync,
-  TFormOnDynamic,
-  TFormOnDynamicAsync,
-  TFormOnServer,
-  TPatentSubmitMeta
->
-
-/**
- * A hook for managing a field in a form.
- * @param opts An object with field options.
- *
- * @returns The `FieldApi` instance for the specified field.
- */
-export function useField<
-  TParentData,
-  TName extends DeepKeys<TParentData>,
-  TData extends DeepValue<TParentData, TName>,
-  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChangeAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnBlurAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnSubmitAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnDynamicAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TPatentSubmitMeta,
->(
-  opts: UseFieldOptions<
+  opts: FormGroupApiOptions<
     TParentData,
     TName,
     TData,
@@ -147,6 +68,7 @@ export function useField<
     TOnSubmitAsync,
     TOnDynamic,
     TOnDynamicAsync,
+    TSubmitMeta,
     TFormOnMount,
     TFormOnChange,
     TFormOnChangeAsync,
@@ -157,184 +79,9 @@ export function useField<
     TFormOnDynamic,
     TFormOnDynamicAsync,
     TFormOnServer,
-    TPatentSubmitMeta
+    TParentSubmitMeta
   >,
-) {
-  // Keep a snapshot of options so that React Compiler doesn't
-  // wrongly optimize fieldApi.
-  const [prevOptions, setPrevOptions] = useState(() => ({
-    form: opts.form,
-    name: opts.name,
-  }))
-
-  const [fieldApi, setFieldApi] = useState(() => {
-    return new FieldApi({
-      ...opts,
-    })
-  })
-
-  // We only want to
-  // update on name changes since those are at risk of becoming stale. The field
-  // state must be up to date for the internal JSX render.
-  // The other options can freely be in `fieldApi.update`
-  if (prevOptions.form !== opts.form || prevOptions.name !== opts.name) {
-    setFieldApi(
-      new FieldApi({
-        ...opts,
-      }),
-    )
-    setPrevOptions({ form: opts.form, name: opts.name })
-  }
-
-  // For array mode, only track length changes to avoid re-renders when child properties change
-  // See: https://github.com/TanStack/form/issues/1925
-  const reactiveStateValue = useStore(
-    fieldApi.store,
-    (opts.mode === 'array'
-      ? (state) => Object.keys((state.value as unknown) ?? []).length
-      : (state) => state.value) as (
-      state: typeof fieldApi.state,
-    ) => TData | number,
-  )
-  const reactiveMetaIsTouched = useStore(
-    fieldApi.store,
-    (state) => state.meta.isTouched,
-  )
-  const reactiveMetaIsBlurred = useStore(
-    fieldApi.store,
-    (state) => state.meta.isBlurred,
-  )
-  const reactiveMetaIsDirty = useStore(
-    fieldApi.store,
-    (state) => state.meta.isDirty,
-  )
-  const reactiveMetaErrorMap = useStore(
-    fieldApi.store,
-    (state) => state.meta.errorMap,
-  )
-  const reactiveMetaErrorSourceMap = useStore(
-    fieldApi.store,
-    (state) => state.meta.errorSourceMap,
-  )
-  const reactiveMetaIsValidating = useStore(
-    fieldApi.store,
-    (state) => state.meta.isValidating,
-  )
-
-  // This makes me sad, but if I understand correctly, this is what we have to do for reactivity to work properly with React compiler.
-  const extendedFieldApi = useMemo(() => {
-    const reactiveFieldApi = {
-      ...fieldApi,
-      get state() {
-        return {
-          // For array mode, reactiveStateValue is the length (for reactivity tracking),
-          // so we need to get the actual value from fieldApi
-          value:
-            opts.mode === 'array' ? fieldApi.state.value : reactiveStateValue,
-          get meta() {
-            return {
-              ...fieldApi.state.meta,
-              isTouched: reactiveMetaIsTouched,
-              isBlurred: reactiveMetaIsBlurred,
-              isDirty: reactiveMetaIsDirty,
-              errorMap: reactiveMetaErrorMap,
-              errorSourceMap: reactiveMetaErrorSourceMap,
-              isValidating: reactiveMetaIsValidating,
-            } satisfies AnyFieldMeta
-          },
-        } satisfies AnyFieldApi['state']
-      },
-    }
-
-    const extendedApi: FieldApi<
-      TParentData,
-      TName,
-      TData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TOnDynamic,
-      TOnDynamicAsync,
-      TFormOnMount,
-      TFormOnChange,
-      TFormOnChangeAsync,
-      TFormOnBlur,
-      TFormOnBlurAsync,
-      TFormOnSubmit,
-      TFormOnSubmitAsync,
-      TFormOnDynamic,
-      TFormOnDynamicAsync,
-      TFormOnServer,
-      TPatentSubmitMeta
-    > = reactiveFieldApi as never
-
-    return extendedApi
-  }, [
-    fieldApi,
-    opts.mode,
-    reactiveStateValue,
-    reactiveMetaIsTouched,
-    reactiveMetaIsBlurred,
-    reactiveMetaIsDirty,
-    reactiveMetaErrorMap,
-    reactiveMetaErrorSourceMap,
-    reactiveMetaIsValidating,
-  ])
-
-  useIsomorphicLayoutEffect(fieldApi.mount, [fieldApi])
-
-  /**
-   * fieldApi.update should not have any side effects. Think of it like a `useRef`
-   * that we need to keep updated every render with the most up-to-date information.
-   */
-  useIsomorphicLayoutEffect(() => {
-    fieldApi.update(opts)
-  })
-
-  return extendedFieldApi
-}
-
-/**
- * @param children A render function that takes a field API instance and returns a React element.
- */
-interface FieldComponentProps<
-  TParentData,
-  TName extends DeepKeys<TParentData>,
-  TData extends DeepValue<TParentData, TName>,
-  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChangeAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnBlurAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnSubmitAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnDynamicAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TPatentSubmitMeta,
-  ExtendedApi = {},
-> extends UseFieldOptions<
+) => FormGroupApi<
   TParentData,
   TName,
   TData,
@@ -347,6 +94,7 @@ interface FieldComponentProps<
   TOnSubmitAsync,
   TOnDynamic,
   TOnDynamicAsync,
+  TSubmitMeta,
   TFormOnMount,
   TFormOnChange,
   TFormOnChangeAsync,
@@ -357,10 +105,161 @@ interface FieldComponentProps<
   TFormOnDynamic,
   TFormOnDynamicAsync,
   TFormOnServer,
-  TPatentSubmitMeta
-> {
-  children: (
-    fieldApi: FieldApi<
+  TParentSubmitMeta
+>
+
+export function useFormGroup<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName>,
+  TOnMount extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnChangeAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnBlurAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnSubmitAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnDynamic extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnDynamicAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TSubmitMeta,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TParentSubmitMeta,
+>(
+  opts: FormGroupApiOptions<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    TSubmitMeta,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
+    TFormOnServer,
+    TParentSubmitMeta
+  >,
+) {
+  // Keep a snapshot of options so that React Compiler doesn't
+  // wrongly optimize formGroupApi.
+  const [prevOptions, setPrevOptions] = useState(() => ({
+    form: opts.form,
+    name: opts.name,
+  }))
+
+  const [formGroupApi, setFormGroupApi] = useState(() => {
+    return new FormGroupApi({
+      ...opts,
+    })
+  })
+
+  // We only want to
+  // update on name changes since those are at risk of becoming stale. The field
+  // state must be up to date for the internal JSX render.
+  // The other options can freely be in `fieldApi.update`
+  if (prevOptions.form !== opts.form || prevOptions.name !== opts.name) {
+    setFormGroupApi(
+      new FormGroupApi({
+        ...opts,
+      }),
+    )
+    setPrevOptions({ form: opts.form, name: opts.name })
+  }
+
+  const reactiveStateValue = useStore(
+    formGroupApi.store,
+    (state) => state.value,
+  )
+
+  const reactiveMetaIsTouched = useStore(
+    formGroupApi.store,
+    (state) => state.meta.isTouched,
+  )
+  const reactiveMetaIsBlurred = useStore(
+    formGroupApi.store,
+    (state) => state.meta.isBlurred,
+  )
+  const reactiveMetaIsDirty = useStore(
+    formGroupApi.store,
+    (state) => state.meta.isDirty,
+  )
+  const reactiveMetaErrorMap = useStore(
+    formGroupApi.store,
+    (state) => state.meta.errorMap,
+  )
+  const reactiveMetaErrorSourceMap = useStore(
+    formGroupApi.store,
+    (state) => state.meta.errorSourceMap,
+  )
+  const reactiveMetaIsValidating = useStore(
+    formGroupApi.store,
+    (state) => state.meta.isValidating,
+  )
+
+  // This makes me sad, but if I understand correctly, this is what we have to do for reactivity to work properly with React compiler.
+  const extendedFieldApi = useMemo(() => {
+    const reactiveFieldApi = {
+      ...formGroupApi,
+      handleSubmit: ((...props: never[]) => {
+        return formGroupApi._handleSubmit(...props)
+      }) as typeof formGroupApi.handleSubmit,
+      get formState() {
+        return formGroupApi.formState
+      },
+      get state() {
+        return {
+          value: reactiveStateValue,
+          get meta() {
+            return {
+              ...formGroupApi.state.meta,
+              isTouched: reactiveMetaIsTouched,
+              isBlurred: reactiveMetaIsBlurred,
+              isDirty: reactiveMetaIsDirty,
+              errorMap: reactiveMetaErrorMap,
+              errorSourceMap: reactiveMetaErrorSourceMap,
+              isValidating: reactiveMetaIsValidating,
+            } satisfies typeof formGroupApi.state.meta
+          },
+        } satisfies typeof formGroupApi.state
+      },
+    }
+
+    const extendedApi: FormGroupApi<
       TParentData,
       TName,
       TData,
@@ -373,6 +272,7 @@ interface FieldComponentProps<
       TOnSubmitAsync,
       TOnDynamic,
       TOnDynamicAsync,
+      TSubmitMeta,
       TFormOnMount,
       TFormOnChange,
       TFormOnChangeAsync,
@@ -383,33 +283,58 @@ interface FieldComponentProps<
       TFormOnDynamic,
       TFormOnDynamicAsync,
       TFormOnServer,
-      TPatentSubmitMeta
-    > &
-      ExtendedApi,
-  ) => ComponentChild
+      TParentSubmitMeta
+    > = reactiveFieldApi as never
+
+    return extendedApi
+  }, [
+    formGroupApi,
+    reactiveStateValue,
+    reactiveMetaIsTouched,
+    reactiveMetaIsBlurred,
+    reactiveMetaIsDirty,
+    reactiveMetaErrorMap,
+    reactiveMetaErrorSourceMap,
+    reactiveMetaIsValidating,
+  ])
+
+  useIsomorphicLayoutEffect(formGroupApi.mount, [formGroupApi])
+
+  useIsomorphicLayoutEffect(() => {
+    formGroupApi.update(opts)
+  })
+
+  return extendedFieldApi
 }
 
-interface FieldComponentBoundProps<
+interface FormGroupComponentProps<
   TParentData,
   TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
-  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnMount extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnChangeAsync extends
     | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnBlurAsync extends
     | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnSubmitAsync extends
     | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnDynamic extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnDynamicAsync extends
     | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TSubmitMeta,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
@@ -420,9 +345,9 @@ interface FieldComponentBoundProps<
   TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
   TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TPatentSubmitMeta,
+  TParentSubmitMeta,
   ExtendedApi = {},
-> extends UseFieldOptionsBound<
+> extends FormGroupApiOptions<
   TParentData,
   TName,
   TData,
@@ -434,10 +359,22 @@ interface FieldComponentBoundProps<
   TOnSubmit,
   TOnSubmitAsync,
   TOnDynamic,
-  TOnDynamicAsync
+  TOnDynamicAsync,
+  TSubmitMeta,
+  TFormOnMount,
+  TFormOnChange,
+  TFormOnChangeAsync,
+  TFormOnBlur,
+  TFormOnBlurAsync,
+  TFormOnSubmit,
+  TFormOnSubmitAsync,
+  TFormOnDynamic,
+  TFormOnDynamicAsync,
+  TFormOnServer,
+  TParentSubmitMeta
 > {
   children: (
-    fieldApi: FieldApi<
+    formGroupApi: FormGroupApi<
       TParentData,
       TName,
       TData,
@@ -450,6 +387,7 @@ interface FieldComponentBoundProps<
       TOnSubmitAsync,
       TOnDynamic,
       TOnDynamicAsync,
+      TSubmitMeta,
       TFormOnMount,
       TFormOnChange,
       TFormOnChangeAsync,
@@ -460,16 +398,110 @@ interface FieldComponentBoundProps<
       TFormOnDynamic,
       TFormOnDynamicAsync,
       TFormOnServer,
-      TPatentSubmitMeta
+      TParentSubmitMeta
     > &
       ExtendedApi,
   ) => ComponentChild
 }
 
-/**
- * A type alias representing a field component for a specific form data type.
- */
-export type FieldComponent<
+interface FormGroupComponentBoundProps<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName>,
+  TOnMount extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnChangeAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnBlurAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnSubmitAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnDynamic extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnDynamicAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TSubmitMeta,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TParentSubmitMeta,
+  ExtendedApi = {},
+> extends FormGroupOptions<
+  TParentData,
+  TName,
+  TData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
+  TSubmitMeta,
+  TFormOnMount,
+  TFormOnChange,
+  TFormOnChangeAsync,
+  TFormOnBlur,
+  TFormOnBlurAsync,
+  TFormOnSubmit,
+  TFormOnSubmitAsync,
+  TFormOnDynamic,
+  TFormOnDynamicAsync,
+  TFormOnServer,
+  TParentSubmitMeta
+> {
+  children: (
+    formGroupApi: FormGroupApi<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TSubmitMeta,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync,
+      TFormOnServer,
+      TParentSubmitMeta
+    > &
+      ExtendedApi,
+  ) => ComponentChild
+}
+
+export type FormGroupComponent<
   in out TParentData,
   in out TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
@@ -489,32 +521,39 @@ export type FieldComponent<
     | undefined
     | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-  in out TPatentSubmitMeta,
+  in out TParentSubmitMeta,
   in out ExtendedApi = {},
 > = <
   const TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
-  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnMount extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnChangeAsync extends
     | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnBlurAsync extends
     | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnSubmitAsync extends
     | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnDynamic extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnDynamicAsync extends
     | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TSubmitMeta,
 >({
   children,
-  ...fieldOptions
-}: FieldComponentBoundProps<
+  ...formGroupOptions
+}: FormGroupComponentBoundProps<
   TParentData,
   TName,
   TData,
@@ -527,6 +566,7 @@ export type FieldComponent<
   TOnSubmitAsync,
   TOnDynamic,
   TOnDynamicAsync,
+  TSubmitMeta,
   TFormOnMount,
   TFormOnChange,
   TFormOnChangeAsync,
@@ -537,124 +577,38 @@ export type FieldComponent<
   TFormOnDynamic,
   TFormOnDynamicAsync,
   TFormOnServer,
-  TPatentSubmitMeta,
+  TParentSubmitMeta,
   ExtendedApi
 >) => ReturnType<FunctionComponent>
 
-/**
- * A type alias representing a field component for a form lens data type.
- */
-export type LensFieldComponent<
-  in out TLensData,
-  in out TParentSubmitMeta,
-  in out ExtendedApi = {},
-> = <
-  const TName extends DeepKeys<TLensData>,
-  TData extends DeepValue<TLensData, TName>,
-  TOnMount extends undefined | FieldValidateOrFn<unknown, string, TData>,
-  TOnChange extends undefined | FieldValidateOrFn<unknown, string, TData>,
-  TOnChangeAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<unknown, string, TData>,
-  TOnBlur extends undefined | FieldValidateOrFn<unknown, string, TData>,
-  TOnBlurAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<unknown, string, TData>,
-  TOnSubmit extends undefined | FieldValidateOrFn<unknown, string, TData>,
-  TOnSubmitAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<unknown, string, TData>,
-  TOnDynamic extends undefined | FieldValidateOrFn<unknown, string, TData>,
-  TOnDynamicAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<unknown, string, TData>,
->({
-  children,
-  ...fieldOptions
-}: Omit<
-  FieldComponentBoundProps<
-    unknown,
-    string,
-    TData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync,
-    undefined | FormValidateOrFn<unknown>,
-    undefined | FormValidateOrFn<unknown>,
-    undefined | FormAsyncValidateOrFn<unknown>,
-    undefined | FormValidateOrFn<unknown>,
-    undefined | FormAsyncValidateOrFn<unknown>,
-    undefined | FormValidateOrFn<unknown>,
-    undefined | FormAsyncValidateOrFn<unknown>,
-    undefined | FormValidateOrFn<unknown>,
-    undefined | FormAsyncValidateOrFn<unknown>,
-    undefined | FormAsyncValidateOrFn<unknown>,
-    TParentSubmitMeta,
-    ExtendedApi
-  >,
-  'name' | 'validators'
-> & {
-  name: TName
-  validators?: Omit<
-    FieldValidators<
-      unknown,
-      string,
-      TData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TOnDynamic,
-      TOnDynamicAsync
-    >,
-    'onChangeListenTo' | 'onBlurListenTo'
-  > & {
-    /**
-     * An optional list of field names that should trigger this field's `onChange` and `onChangeAsync` events when its value changes
-     */
-    onChangeListenTo?: DeepKeys<TLensData>[]
-    /**
-     * An optional list of field names that should trigger this field's `onBlur` and `onBlurAsync` events when its value changes
-     */
-    onBlurListenTo?: DeepKeys<TLensData>[]
-  }
-}) => ReturnType<FunctionComponent>
-
-/**
- * A function component that takes field options and a render function as children and returns a React component.
- *
- * The `Field` component uses the `useField` hook internally to manage the field instance.
- */
-export const Field = (<
+export const FormGroup = (<
   TParentData,
   TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
-  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnMount extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnChangeAsync extends
     | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnBlurAsync extends
     | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnSubmitAsync extends
     | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnDynamic extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnDynamicAsync extends
     | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TSubmitMeta,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
@@ -665,11 +619,11 @@ export const Field = (<
   TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
   TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TPatentSubmitMeta,
+  TParentSubmitMeta,
 >({
   children,
-  ...fieldOptions
-}: FieldComponentProps<
+  ...formGroupOptions
+}: FormGroupComponentProps<
   TParentData,
   TName,
   TData,
@@ -682,6 +636,7 @@ export const Field = (<
   TOnSubmitAsync,
   TOnDynamic,
   TOnDynamicAsync,
+  TSubmitMeta,
   TFormOnMount,
   TFormOnChange,
   TFormOnChangeAsync,
@@ -692,17 +647,18 @@ export const Field = (<
   TFormOnDynamic,
   TFormOnDynamicAsync,
   TFormOnServer,
-  TPatentSubmitMeta
+  TParentSubmitMeta
 >): ReturnType<FunctionComponent> => {
-  const fieldApi = useField(fieldOptions as any)
+  const formGroupApi = useFormGroup(formGroupOptions as any)
 
   const jsxToDisplay = useMemo(
-    () => functionalUpdate(children, fieldApi as any),
-    [children, fieldApi],
+    () => functionalUpdate(children, formGroupApi as any),
+    [children, formGroupApi],
   )
   return (<>{jsxToDisplay}</>) as never
 }) satisfies FunctionComponent<
-  FieldComponentProps<
+  FormGroupComponentProps<
+    any,
     any,
     any,
     any,

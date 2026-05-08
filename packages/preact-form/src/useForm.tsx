@@ -1,9 +1,11 @@
 import { FormApi, functionalUpdate, mergeAndUpdate } from '@tanstack/form-core'
 import { useMemo, useRef, useState } from 'preact/hooks'
+import { useStore } from '@tanstack/preact-store'
 import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import { useFormId } from './useFormId'
-import { useStore } from './useStore'
+import { FormGroup } from './useFormGroup'
+import type { FormGroupComponent } from './useFormGroup'
 import type {
   AnyFormApi,
   AnyFormState,
@@ -15,7 +17,6 @@ import type {
 import type { ComponentChild, FunctionComponent } from 'preact'
 import type { FieldComponent } from './useField'
 import type { PropsWithChildren } from './types'
-import type { NoInfer } from './useStore'
 
 /**
  * Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned from `useForm`
@@ -38,6 +39,20 @@ export interface ReactFormApi<
    * A React component to render form fields. With this, you can render and manage individual form fields.
    */
   Field: FieldComponent<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    TOnServer,
+    TSubmitMeta
+  >
+  FormGroup: FormGroupComponent<
     TFormData,
     TOnMount,
     TOnChange,
@@ -240,6 +255,10 @@ export function useForm<
 
     extendedApi.Field = function APIField(props) {
       return <Field {...props} form={formApi} />
+    }
+
+    extendedApi.FormGroup = function APIFormGroup(props) {
+      return <FormGroup {...props} form={formApi} />
     }
 
     extendedApi.Subscribe = function Subscribe(props: any) {

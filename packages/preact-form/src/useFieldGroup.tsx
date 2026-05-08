@@ -1,7 +1,7 @@
 import { useState } from 'preact/hooks'
 import { FieldGroupApi, functionalUpdate } from '@tanstack/form-core'
+import { useStore } from '@tanstack/preact-store'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
-import { useStore } from './useStore'
 import type {
   AnyFieldGroupApi,
   DeepKeysOfType,
