@@ -177,6 +177,32 @@ module('Integration | createForm', function (hooks) {
     assert.dom('#store').hasText('Grace');
   });
 
+  test('this.form.Field works as closure-bound shorthand', async function (assert) {
+    class TestForm extends Component {
+      form = createForm(this, {
+        defaultValues: { firstName: 'Ada', lastName: '' } as Sample,
+        onSubmit: async () => {},
+      });
+
+      <template>
+        <this.form.Field @name="firstName" as |field|>
+          <input
+            id="firstName"
+            value={{field.state.value}}
+            {{on "input" (fn handleInput field)}}
+          />
+          <output id="value">{{field.state.value}}</output>
+        </this.form.Field>
+      </template>
+    }
+
+    await render(<template><TestForm /></template>);
+    assert.dom('#firstName').hasValue('Ada');
+
+    await fillIn('#firstName', 'Grace');
+    assert.dom('#value').hasText('Grace');
+  });
+
   test('handleSubmit invokes onSubmit with current values', async function (assert) {
     let submitted: Sample | undefined;
 
