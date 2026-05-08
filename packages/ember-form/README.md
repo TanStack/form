@@ -4,8 +4,7 @@ Powerful, type-safe forms for Ember, built on `@tanstack/form-core`.
 
 ## Compatibility
 
-- Ember.js v6.0 or above (gjs/gts only)
-- `@glimmer/component` v2
+- ember-source 6.8+ (gjs/gts only)
 
 ## Installation
 
@@ -85,6 +84,8 @@ export default class SignupForm extends Component {
 - `form.useStore(selector?)` — Returns `{ current }` where `current` is autotracked. Useful outside of templates (e.g. in `@cached` getters).
 
 Everything else is re-exported from `@tanstack/form-core` (validators, types, helpers).
+
+For the full guide — quick start, basic concepts, validation, dynamic validation, async initial values, arrays, linked fields, and form composition — see the [Ember docs in the TanStack/form repo](https://github.com/TanStack/form/tree/main/docs/framework/ember).
 
 ## License
 

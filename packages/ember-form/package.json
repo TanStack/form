@@ -42,11 +42,9 @@
     "lint": "concurrently \"pnpm:lint:*(!fix)\" --names \"lint:\" --prefixColors auto",
     "lint:fix": "concurrently \"pnpm:lint:*:fix\" --names \"fix:\" --prefixColors auto && pnpm run format",
     "lint:format": "prettier . --cache --check",
-    "lint:hbs": "ember-template-lint . --no-error-on-unmatched-pattern",
-    "lint:hbs:fix": "ember-template-lint . --fix --no-error-on-unmatched-pattern",
     "test:eslint": "eslint ./src ./tests",
     "test:types": "ember-tsc --noEmit -p tsconfig.publish.json",
-    "test:lib": "vite build --mode=development --out-dir dist-tests && testem --file testem.cjs ci --port 0",
+    "test:lib": "NODE_ENV=development vite build --mode=development --out-dir dist-tests && testem --file testem.cjs ci --port 0",
     "test:lib:dev": "vite dev",
     "test:build": "publint --strict",
     "prepack": "rollup --config",
@@ -59,7 +57,7 @@
   },
   "peerDependencies": {
     "@glimmer/component": "^2.0.0",
-    "ember-source": "^6.0.0"
+    "ember-source": "^6.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
@@ -69,9 +67,7 @@
     "@ember/app-tsconfig": "^1.0.0",
     "@ember/library-tsconfig": "^1.0.0",
     "@ember/test-helpers": "^5.2.1",
-    "@ember/test-waiters": "^4.1.1",
     "@embroider/addon-dev": "^8.1.0",
-    "@embroider/compat": "^4.1.0",
     "@embroider/core": "^4.1.0",
     "@embroider/macros": "^1.20.1",
     "@embroider/vite": "^1.1.5",
@@ -90,7 +86,6 @@
     "ember-qunit": "^9.0.2",
     "ember-source": "^6.12.0",
     "ember-strict-application-resolver": "^0.1.0",
-    "ember-template-lint": "^7.9.0",
     "eslint": "9.36.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-ember": "^12.3.3",
@@ -113,10 +108,6 @@
   "ember-addon": {
     "version": 2,
     "type": "addon",
-    "main": "addon-main.cjs",
-    "app-js": {
-      "./components/field.js": "./dist/_app_/components/field.js",
-      "./components/subscribe.js": "./dist/_app_/components/subscribe.js"
-    }
+    "main": "addon-main.cjs"
   }
 }

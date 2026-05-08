@@ -1,6 +1,6 @@
 import { FormApi } from '@tanstack/form-core';
 import { registerDestructor } from '@ember/destroyable';
-import { TrackedValue } from './-private/tracked-state.ts';
+import { trackedObject } from '@glimmer/validator';
 import Field from './components/field.gts';
 
 import type { TOC } from '@ember/component/template-only';
@@ -271,7 +271,7 @@ export function createForm<
 
   extended.useStore = ((selector) => {
     const read = () => (selector ? selector(api.state) : api.state);
-    const box = new TrackedValue(read());
+    const box = trackedObject({ current: read() }) as { current: unknown };
     const unsub = api.store.subscribe(() => {
       box.current = read();
     }).unsubscribe;
