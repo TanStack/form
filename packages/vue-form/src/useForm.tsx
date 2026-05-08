@@ -1,7 +1,7 @@
 import { FormApi } from '@tanstack/form-core'
 import { useStore } from '@tanstack/vue-store'
 import { defineComponent, h, onMounted } from 'vue'
-import { Field, useField } from './useField'
+import { Field } from './useField'
 import { FormGroup } from './useFormGroup'
 import type {
   FormAsyncValidateOrFn,
@@ -18,7 +18,7 @@ import type {
   Ref,
   SlotsType,
 } from 'vue'
-import type { FieldComponent, UseField } from './useField'
+import type { FieldComponent } from './useField'
 import type { FormGroupComponent } from './useFormGroup'
 
 type SubscribeComponent<
@@ -138,20 +138,6 @@ export interface VueFormApi<
   TSubmitMeta,
 > {
   Field: FieldComponent<
-    TParentData,
-    TFormOnMount,
-    TFormOnChange,
-    TFormOnChangeAsync,
-    TFormOnBlur,
-    TFormOnBlurAsync,
-    TFormOnSubmit,
-    TFormOnSubmitAsync,
-    TFormOnDynamic,
-    TFormOnDynamicAsync,
-    TFormOnServer,
-    TSubmitMeta
-  >
-  useField: UseField<
     TParentData,
     TFormOnMount,
     TFormOnChange,
@@ -303,10 +289,6 @@ export function useForm<
         inheritAttrs: false,
       },
     ) as never
-    extendedApi.useField = (props) => {
-      const field = useField({ ...props, form: api })
-      return field
-    }
     extendedApi.FormGroup = defineComponent(
       (props, context) => {
         return () =>
