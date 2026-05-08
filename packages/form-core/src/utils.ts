@@ -191,10 +191,21 @@ export function makePathArray(str: string | Array<string | number>) {
           // ...and either be a single '0' or not start with '0'.
           (segLen === 1 || str.charCodeAt(segStart) !== CC_ZERO)
 
+        const seg = str.slice(segStart, i)
         if (treatAsNumber) {
-          result.push(parseInt(str.slice(segStart, i), 10))
+          const num = parseInt(seg, 10)
+          // Up to 15 digits, parseInt is always lossless (the max
+          // 15-digit decimal is below Number.MAX_SAFE_INTEGER). Beyond
+          // that, verify by round-trip: if parseInt lost precision
+          // (e.g., a 20-digit literal), fall back to the string so we
+          // don't silently change the value.
+          if (segLen <= 15 || String(num) === seg) {
+            result.push(num)
+          } else {
+            result.push(seg)
+          }
         } else {
-          result.push(str.slice(segStart, i))
+          result.push(seg)
         }
       } else if (
         // This branch, which handles empty segments, only exists to preserve

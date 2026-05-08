@@ -271,6 +271,12 @@ describe('makePathArray', () => {
     expect(makePathArray('12345')).toEqual([12345])
   })
 
+  it('should keep digit-only segments past Number precision as strings', () => {
+    expect(makePathArray('99999999999999999999')).toEqual([
+      '99999999999999999999',
+    ])
+  })
+
   it('should treat lone "0" as the number 0', () => {
     expect(makePathArray('0')).toEqual([0])
     expect(makePathArray('a.0.b')).toEqual(['a', 0, 'b'])
