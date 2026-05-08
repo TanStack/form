@@ -43,6 +43,10 @@ export function createFormCompositionContexts() {
       any,
       any,
       any,
+      any,
+      any,
+      any,
+      any,
       any
     >
   }
@@ -61,6 +65,8 @@ export function createFormCompositionContexts() {
     return form as VueFormExtendedApi<
       // If you need access to the form data, you need to use `withForm` instead
       Record<string, never>,
+      any,
+      any,
       any,
       any,
       any,
@@ -95,6 +101,8 @@ type AppFieldExtendedReactFormApi<
   TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+  TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   TSubmitMeta,
   TFieldComponents extends Record<string, Component>,
@@ -108,6 +116,8 @@ type AppFieldExtendedReactFormApi<
   TOnBlurAsync,
   TOnSubmit,
   TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
   TOnServer,
   TSubmitMeta
 > &
@@ -121,6 +131,8 @@ type AppFieldExtendedReactFormApi<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TOnServer,
       TSubmitMeta,
       NoInfer<TFieldComponents>
@@ -137,6 +149,8 @@ export interface WithFormProps<
   TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+  TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   TSubmitMeta,
   TFieldComponents extends Record<string, Component>,
@@ -151,6 +165,8 @@ export interface WithFormProps<
   TOnBlurAsync,
   TOnSubmit,
   TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
   TOnServer,
   TSubmitMeta
 > {
@@ -167,6 +183,8 @@ export interface WithFormProps<
         TOnBlurAsync,
         TOnSubmit,
         TOnSubmitAsync,
+        TOnDynamic,
+        TOnDynamicAsync,
         TOnServer,
         TSubmitMeta,
         TFieldComponents,
@@ -194,6 +212,8 @@ export function createFormComposition<
     TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
     TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
     TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+    TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
     TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
     TSubmitMeta,
   >(
@@ -206,6 +226,8 @@ export function createFormComposition<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TOnServer,
       TSubmitMeta
     >,
@@ -218,6 +240,8 @@ export function createFormComposition<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
     TOnServer,
     TSubmitMeta,
     TComponents,
@@ -261,6 +285,8 @@ export function createFormComposition<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TOnServer,
       TSubmitMeta,
       TComponents
