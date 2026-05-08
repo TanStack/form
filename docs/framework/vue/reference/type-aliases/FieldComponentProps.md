@@ -9,7 +9,7 @@ title: FieldComponentProps
 type FieldComponentProps<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta> = UseFieldOptions<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta>;
 ```
 
-Defined in: [packages/vue-form/src/useField.tsx:416](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L416)
+Defined in: [packages/vue-form/src/useField.tsx:278](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L278)
 
 ## Type Parameters
 

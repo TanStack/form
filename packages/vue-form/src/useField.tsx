@@ -15,7 +15,6 @@ import type {
   EmitsOptions,
   EmitsToProps,
   PublicProps,
-  Ref,
   SetupContext,
   SlotsType,
 } from 'vue'
@@ -185,125 +184,6 @@ export interface VueFieldApi<
   >
 }
 
-export type UseField<
-  TParentData,
-  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TParentSubmitMeta,
-> = <
-  TName extends DeepKeys<TParentData>,
-  TData extends DeepValue<TParentData, TName>,
-  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChangeAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnBlurAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnSubmitAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnDynamicAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
->(
-  opts: UseFieldOptionsBound<
-    TParentData,
-    TName,
-    TData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync
-  >,
-) => {
-  api: FieldApi<
-    TParentData,
-    TName,
-    TData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync,
-    TFormOnMount,
-    TFormOnChange,
-    TFormOnChangeAsync,
-    TFormOnBlur,
-    TFormOnBlurAsync,
-    TFormOnSubmit,
-    TFormOnSubmitAsync,
-    TFormOnDynamic,
-    TFormOnDynamicAsync,
-    TFormOnServer,
-    TParentSubmitMeta
-  > &
-    VueFieldApi<
-      TParentData,
-      TFormOnMount,
-      TFormOnChange,
-      TFormOnChangeAsync,
-      TFormOnBlur,
-      TFormOnBlurAsync,
-      TFormOnSubmit,
-      TFormOnSubmitAsync,
-      TFormOnDynamic,
-      TFormOnDynamicAsync,
-      TFormOnServer,
-      TParentSubmitMeta
-    >
-  state: Readonly<
-    Ref<
-      FieldApi<
-        TParentData,
-        TName,
-        TData,
-        TOnMount,
-        TOnChange,
-        TOnChangeAsync,
-        TOnBlur,
-        TOnBlurAsync,
-        TOnSubmit,
-        TOnSubmitAsync,
-        TOnDynamic,
-        TOnDynamicAsync,
-        TFormOnMount,
-        TFormOnChange,
-        TFormOnChangeAsync,
-        TFormOnBlur,
-        TFormOnBlurAsync,
-        TFormOnSubmit,
-        TFormOnSubmitAsync,
-        TFormOnDynamic,
-        TFormOnDynamicAsync,
-        TFormOnServer,
-        TParentSubmitMeta
-      >['state']
-    >
-  >
-}
-
 export function useField<
   TParentData,
   TName extends DeepKeys<TParentData>,
@@ -370,25 +250,7 @@ export function useField<
       name: opts.name,
     })
 
-    const extendedApi: typeof api &
-      VueFieldApi<
-        TParentData,
-        TFormOnMount,
-        TFormOnChange,
-        TFormOnChangeAsync,
-        TFormOnBlur,
-        TFormOnBlurAsync,
-        TFormOnSubmit,
-        TFormOnSubmitAsync,
-        TFormOnDynamic,
-        TFormOnDynamicAsync,
-        TFormOnServer,
-        TParentSubmitMeta
-      > = api as never
-
-    extendedApi.Field = Field as never
-
-    return extendedApi
+    return api
   })()
 
   const fieldState = useStore(fieldApi.store, (state) => state)

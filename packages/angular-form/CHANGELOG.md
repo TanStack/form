@@ -1,5 +1,19 @@
 # @tanstack/angular-form
 
+## 1.29.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.29.3
+
+## 1.29.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.29.2
+
 ## 1.29.1
 
 ### Patch Changes
