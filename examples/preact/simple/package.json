@@ -9,7 +9,7 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/preact-form": "^1.29.3",
+    "@tanstack/preact-form": "^1.29.4",
     "preact": "^10.26.4"
   },
   "devDependencies": {

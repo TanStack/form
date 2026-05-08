@@ -389,7 +389,7 @@ importers:
   examples/preact/simple:
     dependencies:
       '@tanstack/preact-form':
-        specifier: ^1.29.3
+        specifier: ^1.29.4
         version: link:../../../packages/preact-form
       preact:
         specifier: ^10.26.4
