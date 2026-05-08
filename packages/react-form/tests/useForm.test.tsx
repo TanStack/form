@@ -481,7 +481,7 @@ describe('useForm', () => {
     expect(getByText(error)).toBeInTheDocument()
   })
 
-  it("should set field errors from the the form's onChangeAsync validator", async () => {
+  it("should set field errors from the form's onChangeAsync validator", async () => {
     function Comp() {
       const form = useForm({
         defaultValues: {
