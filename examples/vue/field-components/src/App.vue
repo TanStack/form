@@ -57,7 +57,6 @@ const form = useAppForm({
       <field.TextField label="Email" />
     </form.AppField>
     <form.AppField name="phone" v-slot="{ field }">
-      {{ JSON.stringify(field.TextField, null, 2) }}
       <field.TextField label="Phone" />
     </form.AppField>
     <h2>Emergency Contact</h2>
