@@ -13,7 +13,7 @@ import type {
   Validator,
 } from './validation.public'
 import type { InternalFormApi } from './FormApi.lib'
-import type { AnyInternalFieldApi, InternalFieldApi } from './FieldApi.lib'
+import type { AnyInternalFieldApi } from './FieldApi.lib'
 
 type FormValidateContext = Omit<FormValidatorContext<any>, 'value'>
 type FieldValidateContext = Omit<FieldValidatorContext<any, any>, 'value'>
@@ -174,21 +174,31 @@ interface RunMaybeDebouncedValidatorArgs<TResult extends ValidateResult> {
   onExecute: (inputContext: ValidateContext) => Promise<TResult> | TResult
 }
 
+function clearAbortController<TResult extends ValidateResult>(
+  cache: ValidatorPipelineCache<TResult>,
+  cacheKey: number,
+  abortController: AbortController,
+): void {
+  if (cache.abortControllers.get(cacheKey) === abortController) {
+    cache.abortControllers.delete(cacheKey)
+  }
+}
+
 function createAbortPromise(signal: AbortSignal): {
-  promise: Promise<null>
+  promise: Promise<AbortedCall>
   cleanup: () => void
 } {
   let onAbort = () => {}
 
-  const promise = new Promise<null>((resolve) => {
+  const promise = new Promise<AbortedCall>((resolve) => {
     if (signal.aborted) {
-      resolve(null)
+      resolve(ABORTED_CALL)
       return
     }
 
     onAbort = () => {
       signal.removeEventListener('abort', onAbort)
-      resolve(null)
+      resolve(ABORTED_CALL)
     }
 
     signal.addEventListener('abort', onAbort)
@@ -200,6 +210,43 @@ function createAbortPromise(signal: AbortSignal): {
       signal.removeEventListener('abort', onAbort)
     },
   }
+}
+
+async function executeWithAbort<TResult extends ValidateResult>(
+  context: ValidateContext,
+  onExecute: (inputContext: ValidateContext) => Promise<TResult> | TResult,
+): Promise<TResult | AbortedCall> {
+  if (context.signal.aborted) {
+    return ABORTED_CALL
+  }
+
+  const { promise: abortPromise, cleanup } = createAbortPromise(context.signal)
+
+  try {
+    return await Promise.race([
+      Promise.resolve(onExecute(context)),
+      abortPromise,
+    ])
+  } finally {
+    cleanup()
+  }
+}
+
+function getValidatorDebounceMs(
+  validator: Validator<any, any>,
+  context: InputContext,
+): number {
+  return context.event === 'submit' ? 0 : (validator.triggerDebounceMs ?? 0)
+}
+
+function abortPreviousValidatorRun<TResult extends ValidateResult>(
+  cache: ValidatorPipelineCache<TResult>,
+  cacheKey: number,
+): void {
+  // AbortControllers are scoped to the validator instead of the whole pipeline.
+  // Mostly because different validators can have different debounces and they
+  // can be triggered by unrelated validation signals
+  cache.abortControllers.get(cacheKey)?.abort()
 }
 
 function getOrCreateDebouncer<TResult extends ValidateResult>(
@@ -232,13 +279,9 @@ function runMaybeDebouncedValidator<TResult extends ValidateResult>({
   onExecute,
 }: RunMaybeDebouncedValidatorArgs<TResult>): Promise<TResult | AbortedCall> {
   const cacheKey = validatorIndex
-  const debounceMs =
-    context.event === 'submit' ? 0 : (validator.triggerDebounceMs ?? 0)
+  const debounceMs = getValidatorDebounceMs(validator, context)
 
-  // AbortControllers are scoped to the validator instead of the whole pipeline.
-  // Mostly because different validators can have different debounces and they
-  // can be triggered by unrelated validation signals
-  cache.abortControllers.get(cacheKey)?.abort()
+  abortPreviousValidatorRun(cache, cacheKey)
 
   const abortController = new AbortController()
   const signal = abortController.signal
@@ -250,56 +293,49 @@ function runMaybeDebouncedValidator<TResult extends ValidateResult>({
     signal,
   }
 
-  const cleanupController = () => {
-    cache.abortControllers.delete(cacheKey)
-  }
-
-  const run = async (ctx: ValidateContext): Promise<TResult | AbortedCall> => {
-    if (ctx.signal.aborted) {
-      return ABORTED_CALL
-    }
-
-    const { promise: abortPromise, cleanup } = createAbortPromise(ctx.signal)
-
-    try {
-      return (await Promise.race([
-        Promise.resolve(onExecute(ctx)),
-        abortPromise,
-      ])) as never
-    } finally {
-      cleanup()
-      cleanupController()
-    }
+  const clearCurrentController = () => {
+    clearAbortController(cache, cacheKey, abortController)
   }
 
   return new Promise<TResult | AbortedCall>((resolve, reject) => {
-    const cleanup = () => {
-      signal.removeEventListener('abort', onAbort)
-      cleanupController()
+    let settled = false
+
+    const settle = (value: TResult | AbortedCall) => {
+      if (settled) return
+
+      settled = true
+      cleanupAbortListener()
+      clearCurrentController()
+      resolve(value)
+    }
+
+    const fail = (error: unknown) => {
+      if (settled) return
+
+      settled = true
+      cleanupAbortListener()
+      clearCurrentController()
+      reject(error)
     }
 
     const onAbort = () => {
       cache.debouncers.get(cacheKey)?.cancel()
-      cleanup()
-      resolve(ABORTED_CALL)
+      settle(ABORTED_CALL)
     }
 
-    signal.addEventListener('abort', onAbort)
+    const cleanupAbortListener = () => {
+      signal.removeEventListener('abort', onAbort)
+    }
+
+    signal.addEventListener('abort', onAbort, { once: true })
+
+    const run = (ctx: ValidateContext) => {
+      executeWithAbort(ctx, onExecute).then(settle, fail)
+    }
 
     if (debounceMs <= 0) {
       cache.debouncers.get(cacheKey)?.cancel()
-
-      run(validationContext).then(
-        (result) => {
-          cleanup()
-          resolve(result)
-        },
-        (error) => {
-          cleanup()
-          reject(error)
-        },
-      )
-
+      run(validationContext)
       return
     }
 
@@ -307,21 +343,18 @@ function runMaybeDebouncedValidator<TResult extends ValidateResult>({
       cache,
       cacheKey,
       (call) => {
-        run(call.context).then(call.resolve, call.reject)
+        executeWithAbort(call.context, onExecute).then(
+          call.resolve,
+          call.reject,
+        )
       },
       debounceMs,
     )
 
     debouncer.maybeExecute({
       context: validationContext,
-      resolve: (result) => {
-        cleanup()
-        resolve(result)
-      },
-      reject: (error) => {
-        cleanup()
-        reject(error)
-      },
+      resolve: settle,
+      reject: fail,
     })
   })
 }

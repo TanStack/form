@@ -130,7 +130,7 @@ export class InternalFormApi<
   _formMetaAtom: Atom<BaseFormMeta>
   _fieldRootNode: InternalRootFieldApi
   _options: FormOptions<TFormData, TFormValidators>
-  _validatorPipelineCache: ValidatorPipelineCache
+  _validatorPipelineCache: ValidatorPipelineCache<any>
   declare readonly state: FormState<TFormData>
   declare readonly options: FormOptions<TFormData, TFormValidators>
 
