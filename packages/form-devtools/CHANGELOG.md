@@ -1,5 +1,12 @@
 # @tanstack/form-devtools
 
+## 0.2.23
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.29.2
+
 ## 0.2.22
 
 ### Patch Changes
