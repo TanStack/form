@@ -195,6 +195,10 @@
             {
               "label": "Linked Fields",
               "to": "framework/vue/guides/linked-fields"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/vue/guides/form-composition"
             }
           ]
         },
