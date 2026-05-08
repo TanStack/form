@@ -142,7 +142,10 @@ const form = injectForm()
 </script>
 
 <template>
-  <form.Subscribe :selector="(state) => state.isSubmitting" v-slot="isSubmitting">
+  <form.Subscribe
+    :selector="(state) => state.isSubmitting"
+    v-slot="isSubmitting"
+  >
     <button type="submit" :disabled="isSubmitting">{{ props.label }}</button>
   </form.Subscribe>
 </template>
@@ -323,7 +326,10 @@ const form = injectForm()
 </script>
 
 <template>
-  <form.Subscribe :selector="(state) => state.isSubmitting" v-slot="isSubmitting">
+  <form.Subscribe
+    :selector="(state) => state.isSubmitting"
+    v-slot="isSubmitting"
+  >
     <button type="submit" :disabled="isSubmitting">{{ props.label }}</button>
   </form.Subscribe>
 </template>
