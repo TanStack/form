@@ -21,7 +21,7 @@ import type { PropsWithChildren } from './types'
 /**
  * Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned from `useForm`
  */
-export interface ReactFormApi<
+export interface PreactFormApi<
   in out TFormData,
   in out TOnMount extends undefined | FormValidateOrFn<TFormData>,
   in out TOnChange extends undefined | FormValidateOrFn<TFormData>,
@@ -36,7 +36,7 @@ export interface ReactFormApi<
   in out TSubmitMeta,
 > {
   /**
-   * A React component to render form fields. With this, you can render and manage individual form fields.
+   * A Preact component to render form fields. With this, you can render and manage individual form fields.
    */
   Field: FieldComponent<
     TFormData,
@@ -108,9 +108,9 @@ export interface ReactFormApi<
 }
 
 /**
- * An extended version of the `FormApi` class that includes React-specific functionalities from `ReactFormApi`
+ * An extended version of the `FormApi` class that includes Preact-specific functionalities from `PreactFormApi`
  */
-export type ReactFormExtendedApi<
+export type PreactFormExtendedApi<
   TFormData,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
   TOnChange extends undefined | FormValidateOrFn<TFormData>,
@@ -137,7 +137,7 @@ export type ReactFormExtendedApi<
   TOnServer,
   TSubmitMeta
 > &
-  ReactFormApi<
+  PreactFormApi<
     TFormData,
     TOnMount,
     TOnChange,
@@ -226,7 +226,7 @@ export function useForm<
   }
 
   const extendedFormApi = useMemo(() => {
-    const extendedApi: ReactFormExtendedApi<
+    const extendedApi: PreactFormExtendedApi<
       TFormData,
       TOnMount,
       TOnChange,

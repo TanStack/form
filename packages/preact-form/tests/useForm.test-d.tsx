@@ -1,7 +1,7 @@
 import { describe, expectTypeOf, it } from 'vitest'
 import { formOptions, useForm } from '../src/index'
 import type { FormAsyncValidateOrFn, FormValidateOrFn } from '../src/index'
-import type { ReactFormExtendedApi } from '../src/useForm'
+import type { PreactFormExtendedApi } from '../src/useForm'
 
 describe('useForm', () => {
   it('should type onSubmit properly', () => {
@@ -52,7 +52,7 @@ describe('useForm', () => {
       TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
       TSubmitMeta,
     >(
-      f: ReactFormExtendedApi<
+      f: PreactFormExtendedApi<
         TFormData,
         TOnMount,
         TOnChange,

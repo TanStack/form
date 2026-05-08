@@ -10,7 +10,7 @@ import type {
   FormAsyncValidateOrFn,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type { AppFieldExtendedReactFormApi } from './createFormHook'
+import type { AppFieldExtendedPreactFormApi } from './createFormHook'
 import type { ComponentChild, ComponentType, FunctionComponent } from 'preact'
 import type { LensFieldComponent } from './useField'
 import type { PropsWithChildren } from './types'
@@ -31,7 +31,7 @@ function LocalSubscribe({
 /**
  * @private
  */
-export type AppFieldExtendedReactFieldGroupApi<
+export type AppFieldExtendedPreactFieldGroupApi<
   TFormData,
   TFieldGroupData,
   TFields extends
@@ -108,7 +108,7 @@ export function useFieldGroup<
   TSubmitMeta = never,
 >(opts: {
   form:
-    | AppFieldExtendedReactFormApi<
+    | AppFieldExtendedPreactFormApi<
         TFormData,
         TOnMount,
         TOnChange,
@@ -124,7 +124,7 @@ export function useFieldGroup<
         TComponents,
         TFormComponents
       >
-    | AppFieldExtendedReactFieldGroupApi<
+    | AppFieldExtendedPreactFieldGroupApi<
         // Since this only occurs if you nest it within other form lenses, it can be more
         // lenient with the types.
         unknown,
@@ -148,7 +148,7 @@ export function useFieldGroup<
   defaultValues?: TFieldGroupData
   onSubmitMeta?: TSubmitMeta
   formComponents: TFormComponents
-}): AppFieldExtendedReactFieldGroupApi<
+}): AppFieldExtendedPreactFieldGroupApi<
   TFormData,
   TFieldGroupData,
   TFields,
@@ -170,7 +170,7 @@ export function useFieldGroup<
     const api = new FieldGroupApi(opts)
     const form =
       opts.form instanceof FieldGroupApi
-        ? (opts.form.form as AppFieldExtendedReactFormApi<
+        ? (opts.form.form as AppFieldExtendedPreactFormApi<
             TFormData,
             TOnMount,
             TOnChange,
@@ -188,7 +188,7 @@ export function useFieldGroup<
           >)
         : opts.form
 
-    const extendedApi: AppFieldExtendedReactFieldGroupApi<
+    const extendedApi: AppFieldExtendedPreactFieldGroupApi<
       TFormData,
       TFieldGroupData,
       TFields,
@@ -233,7 +233,7 @@ export function useFieldGroup<
 
     return Object.assign(extendedApi, {
       ...opts.formComponents,
-    }) as AppFieldExtendedReactFieldGroupApi<
+    }) as AppFieldExtendedPreactFieldGroupApi<
       TFormData,
       TFieldGroupData,
       TFields,

@@ -1418,8 +1418,8 @@ importers:
         specifier: workspace:*
         version: link:../form-core
       '@tanstack/preact-store':
-        specifier: ^0.13.0
-        version: 0.13.0(preact@10.29.1)
+        specifier: ^0.13.1
+        version: 0.13.1(preact@10.29.1)
     devDependencies:
       '@preact/preset-vite':
         specifier: ^2.10.2
@@ -5182,8 +5182,8 @@ packages:
     resolution: {integrity: sha512-y/xtNPNt/YeyoVxE/JCx+T7yjEzpezmbb+toK8DDD1P4m7Kzs5YR956+7OKexG3f8aXgC3rLZl7b1V+yNUSy5w==}
     engines: {node: '>=18'}
 
-  '@tanstack/preact-store@0.13.0':
-    resolution: {integrity: sha512-jhzf4+gFomlaehFp4PhevM65d36FQSxuYcWx7MnwcBA/WqGu387xXjyng58yO17lhkXRPtonl/usK+3WAN+8eA==}
+  '@tanstack/preact-store@0.13.1':
+    resolution: {integrity: sha512-0h8ku2LfJ/TtVtgx24CLgS2OgzY5wVsRWIGktE0yq6b6fHlsCcY55IEJXTDRs0RTYWFOXu7N/1kfb2SLEOasaw==}
     peerDependencies:
       preact: ^10.0.0
 
@@ -15196,7 +15196,7 @@ snapshots:
 
   '@tanstack/pacer-lite@0.1.1': {}
 
-  '@tanstack/preact-store@0.13.0(preact@10.29.1)':
+  '@tanstack/preact-store@0.13.1(preact@10.29.1)':
     dependencies:
       '@tanstack/store': 0.11.0
       preact: 10.29.1
