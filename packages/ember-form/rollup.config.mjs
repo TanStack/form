@@ -19,13 +19,6 @@ export default {
   plugins: [
     addon.publicEntrypoints(['**/*.js', 'index.js']),
 
-    addon.appReexports([
-      'components/**/*.js',
-      'helpers/**/*.js',
-      'modifiers/**/*.js',
-      'services/**/*.js',
-    ]),
-
     addon.dependencies(),
 
     babel({
@@ -34,9 +27,7 @@ export default {
       configFile: babelConfig,
     }),
 
-    addon.hbs(),
     addon.gjs(),
-    addon.keepAssets(['**/*.css']),
     addon.declarations(
       'declarations',
       'pnpm ember-tsc --declaration --emitDeclarationOnly --declarationDir declarations -p tsconfig.publish.json',

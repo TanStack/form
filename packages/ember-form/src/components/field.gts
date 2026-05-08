@@ -1,7 +1,12 @@
 import Component from '@glimmer/component';
+import { cached } from '@glimmer/tracking';
+// `trackedObject` is re-exported from `@ember/reactive/collections` in
+// ember-source 6.8+, but that path isn't in @embroider/addon-dev's virtual
+// peer-deps list yet. Importing from `@glimmer/validator` (a virtual peer)
+// gets the same primitive without the resolution warning.
+import { trackedObject } from '@glimmer/validator';
 import { FieldApi } from '@tanstack/form-core';
 import { registerDestructor } from '@ember/destroyable';
-import { TrackedValue } from '../-private/tracked-state.ts';
 
 import type {
   AnyFormApi,
@@ -102,8 +107,8 @@ export interface FieldSignature<
  * the given path, mounts it for the lifetime of this component, and yields
  * the field API to its block.
  *
- * `field.state` reads the latest store snapshot via `@tracked`, so updates
- * inside templates are reactive.
+ * `field.state` reads a `trackedObject` snapshot of the underlying store, so
+ * reads in templates rerender on store changes.
  *
  * @example
  * ```gjs
@@ -230,18 +235,25 @@ export default class Field<
   ) {
     super(owner as never, args);
 
-    const { form, name, ...rest } = args;
-    this.#api = new FieldApi({ form, name, ...rest } as never);
+    this.#api = new FieldApi(this.#fieldOptions as never);
 
-    const stateBox = new TrackedValue(this.#api.store.state);
+    // We replace the `state` getter on the FieldApi instance with one that
+    // reads from a `trackedObject` mirror of the store. This is intentionally
+    // unconventional: form-core's `FieldApi#state` is defined on the prototype
+    // and reads `this.store.state` synchronously. By shadowing it on the
+    // instance with a tracked snapshot, every `{{field.state.X}}` read inside
+    // a template entangles with the corresponding key on the tracked mirror,
+    // and the `store.subscribe` callback below assigns into that mirror to
+    // dirty only the keys that actually changed.
+    const state = trackedObject(this.#api.store.state) as object;
     Object.defineProperty(this.#api, 'state', {
       configurable: true,
-      get: () => stateBox.current,
+      get: () => state,
     });
 
     const cleanupMount = this.#api.mount();
     const unsub = this.#api.store.subscribe(() => {
-      stateBox.current = this.#api.store.state;
+      Object.assign(state, this.#api.store.state);
     }).unsubscribe;
 
     registerDestructor(this, () => {
@@ -250,9 +262,40 @@ export default class Field<
     });
   }
 
+  get #fieldOptions() {
+    return {
+      form: this.args.form,
+      name: this.args.name,
+      defaultValue: this.args.defaultValue,
+      asyncDebounceMs: this.args.asyncDebounceMs,
+      asyncAlways: this.args.asyncAlways,
+      defaultMeta: this.args.defaultMeta,
+      validators: this.args.validators,
+      listeners: this.args.listeners,
+      mode: this.args.mode,
+    };
+  }
+
+  /**
+   * Mirrors svelte-form's `$effect.pre(() => api.update(opts))`. Reading this
+   * getter inside the template entangles with each `this.args.*` it touches,
+   * so any change to a passed-in argument re-runs `api.update(...)`. The
+   * leading underscore is a convention — public-but-internal — because
+   * templates invoke path lookups via `Reflect.get`, which can't reach
+   * `#private` fields.
+   */
+  @cached
+  get _syncArgs() {
+    this.#api.update(this.#fieldOptions as never);
+    return null;
+  }
+
   get field() {
     return this.#api;
   }
 
-  <template>{{yield this.field}}</template>
+  <template>
+    {{this._syncArgs}}
+    {{yield this.field}}
+  </template>
 }
