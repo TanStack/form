@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { createAppForm } from '../../runes/form.js'
+  import { getFormType } from '../../runes/form.js'
   import { peopleFormOpts } from './shared-form.js'
 
-  type AppForm = ReturnType<typeof createAppForm<typeof peopleFormOpts.defaultValues>>
+  const formType = getFormType({ ...peopleFormOpts })
 
-  const { form }: { form: AppForm } = $props()
+  const { form }: { form: typeof formType } = $props()
 </script>
 
 <form.AppField name="emergencyContact.fullName">
