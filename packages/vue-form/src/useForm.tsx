@@ -103,21 +103,7 @@ type SubscribeComponent<
     false,
     {},
     SlotsType<{
-      default: NoInfer<
-        FormState<
-          TParentData,
-          TFormOnMount,
-          TFormOnChange,
-          TFormOnChangeAsync,
-          TFormOnBlur,
-          TFormOnBlurAsync,
-          TFormOnSubmit,
-          TFormOnSubmitAsync,
-          TFormOnDynamic,
-          TFormOnDynamicAsync,
-          TFormOnServer
-        >
-      >
+      default: TSelected
     }>
   >
 
