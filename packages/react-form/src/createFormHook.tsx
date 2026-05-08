@@ -1,6 +1,6 @@
 'use client'
 /* eslint-disable @eslint-react/no-context-provider */
-import { createContext, use, useMemo } from 'react'
+import { createContext, useContext, useMemo } from 'react'
 import { useForm } from './useForm'
 import { useFieldGroup } from './useFieldGroup'
 import type {
@@ -66,7 +66,7 @@ type UnwrapDefaultOrAny<DefaultT, T> = [DefaultT] extends [T]
   : T
 
 function useFormContext() {
-  const form = use(formContext)
+  const form = useContext(formContext)
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!form) {
@@ -94,7 +94,7 @@ function useFormContext() {
 
 export function createFormHookContexts() {
   function useFieldContext<TData>() {
-    const field = use(fieldContext)
+    const field = useContext(fieldContext)
 
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!field) {
