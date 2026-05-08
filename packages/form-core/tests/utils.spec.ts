@@ -270,6 +270,77 @@ describe('makePathArray', () => {
   it('should still convert non-leading-zero numbers to number types', () => {
     expect(makePathArray('12345')).toEqual([12345])
   })
+
+  it('should treat lone "0" as the number 0', () => {
+    expect(makePathArray('0')).toEqual([0])
+    expect(makePathArray('a.0.b')).toEqual(['a', 0, 'b'])
+  })
+
+  it('should preserve leading zeros mid-path in both notations', () => {
+    expect(makePathArray('a.01.b')).toEqual(['a', '01', 'b'])
+    expect(makePathArray('a[01]')).toEqual(['a', '01'])
+  })
+
+  it('should return a defensive copy when given an array', () => {
+    const input: Array<string | number> = ['a', 0, 'b']
+    const out = makePathArray(input)
+    expect(out).toEqual(input)
+    expect(out).not.toBe(input)
+  })
+
+  it('should throw on non-string non-array input', () => {
+    expect(() => makePathArray(null as any)).toThrow('Path must be a string.')
+    expect(() => makePathArray(42 as any)).toThrow('Path must be a string.')
+    expect(() => makePathArray({} as any)).toThrow('Path must be a string.')
+  })
+
+  it('should handle malformed input', () => {
+    // Backwards compatible:
+
+    // Previous output: ['a', 'b']
+    expect(makePathArray('a..b')).toEqual(['a', 'b'])
+    // Previous output: ['a']
+    expect(makePathArray(']a')).toEqual(['a'])
+    // Previous output: ['a']
+    expect(makePathArray('a]')).toEqual(['a'])
+    // Previous output: ['a', 'b', 'c']
+    expect(makePathArray('a[b[c')).toEqual(['a', 'b', 'c'])
+    // Previous output: ['a', 'b', 'c']
+    expect(makePathArray('a[b[c]')).toEqual(['a', 'b', 'c'])
+    // Previous output: ['']
+    expect(makePathArray('')).toEqual([''])
+    // Previous output: ['', '']
+    expect(makePathArray('.')).toEqual(['', ''])
+    // Previous output: ['']
+    expect(makePathArray('[')).toEqual([''])
+    // Previous output: ['']
+    expect(makePathArray('[]')).toEqual([''])
+    // Previous output: ['', 'a']
+    expect(makePathArray('.a')).toEqual(['', 'a'])
+    // Previous output: ['a', '']
+    expect(makePathArray('a.')).toEqual(['a', ''])
+    // Previous output: ['a', '']
+    expect(makePathArray('a[')).toEqual(['a', ''])
+    // Previous output: ['', 'a']
+    expect(makePathArray('..a')).toEqual(['', 'a'])
+    // Previous output: ['a', '']
+    expect(makePathArray('a..')).toEqual(['a', ''])
+    // Previous output: ['a', '']
+    expect(makePathArray('a[[')).toEqual(['a', ''])
+    // Previous output: ['']
+    expect(makePathArray(']')).toEqual([''])
+    // Previous output: ['', '']
+    expect(makePathArray('[[')).toEqual(['', ''])
+    // Previous output: ['', 0]
+    expect(makePathArray('[[0]')).toEqual(['', 0])
+
+    // Breaking changes:
+
+    // This case is impossible to reproduce without allocating a new string that
+    // completely elides `]` or maintaining an array buffer in the loop to do so.
+    // Previous output: ['ab']
+    expect(makePathArray('a]b')).toEqual(['ab'])
+  })
 })
 
 describe('determineFormLevelErrorSourceAndValue', () => {
