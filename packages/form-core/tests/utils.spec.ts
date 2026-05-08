@@ -339,7 +339,7 @@ describe('makePathArray', () => {
     // This case is impossible to reproduce without allocating a new string that
     // completely elides `]` or maintaining an array buffer in the loop to do so.
     // Previous output: ['ab']
-    expect(makePathArray('a]b')).toEqual(['ab'])
+    expect(makePathArray('a]b')).toEqual(['a', 'b'])
   })
 })
 

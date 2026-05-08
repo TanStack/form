@@ -141,16 +141,12 @@ export function deleteBy(obj: any, _path: any) {
   return doDelete(obj)
 }
 
-const reLineOfOnlyDigits = /^(\d+)$/gm
-// the second dot must be in a lookahead or the engine
-// will skip subsequent numbers (like foo.0.1.)
-const reDigitsBetweenDots = /\.(\d+)(?=\.)/gm
-const reStartWithDigitThenDot = /^(\d+)\./gm
-const reDotWithDigitsToEnd = /\.(\d+$)/gm
-const reMultipleDots = /\.{2,}/gm
-
-const intPrefix = '__int__'
-const intReplace = `${intPrefix}$1`
+// Char codes used by the parser below.
+const CC_DOT = 0x2e // '.'
+const CC_OPEN = 0x5b // '['
+const CC_CLOSE = 0x5d // ']'
+const CC_ZERO = 0x30 // '0'
+const CC_NINE = 0x39 // '9'
 
 /**
  * @private
@@ -164,31 +160,76 @@ export function makePathArray(str: string | Array<string | number>) {
     throw new Error('Path must be a string.')
   }
 
-  return (
-    str
-      // Leading `[` may lead to wrong parsing down the line
-      // (Example: '[0][1]' should be '0.1', not '.0.1')
-      .replace(/(^\[)|]/gm, '')
-      .replace(/\[/g, '.')
-      .replace(reLineOfOnlyDigits, intReplace)
-      .replace(reDigitsBetweenDots, `.${intReplace}.`)
-      .replace(reStartWithDigitThenDot, `${intReplace}.`)
-      .replace(reDotWithDigitsToEnd, `.${intReplace}`)
-      .replace(reMultipleDots, '.')
-      .split('.')
-      .map((d) => {
-        if (d.startsWith(intPrefix)) {
-          const numStr = d.substring(intPrefix.length)
-          const num = parseInt(numStr, 10)
+  const len = str.length
+  const result: Array<string | number> = []
+  // Location of the first character of the in-progress segment in `str`.
+  // The segment ends at the current `i` when we hit a separator.
+  //
+  // We strip an optional leading '[' so '[0]' parses as [0], not ['', 0].
+  // Doing this up front keeps the loop's backwards compatibility handling simpler.
+  let segStart = len > 0 && str.charCodeAt(0) === CC_OPEN ? 1 : 0
+  // Whether the in-progress segment has been all ASCII digits so far.
+  // Used together with the leading-zero check to decide if it should be
+  // pushed as a number instead of a string.
+  let allDigits = true
+  // Tracks the previous character.  Only necessary to preserve the
+  // old behavior for malformed input.
+  let prev = -1
+  // Walk once. `i === len` is treated as a virtual final separator so the
+  // flush block handles both mid-string segments and the last one.
+  for (let i = segStart; i <= len; i++) {
+    const char = i < len ? str.charCodeAt(i) : -1
 
-          if (String(num) === numStr) {
-            return num
-          }
-          return numStr
+    // Handle separators (including the virtual one at the end). Flush the in-progress segment.
+    if (i === len || char === CC_DOT || char === CC_OPEN || char === CC_CLOSE) {
+      const segLen = i - segStart
+      if (segLen > 0) {
+        // To treat the segment as a number...
+        const treatAsNumber =
+          // ...it must contain only digits...
+          allDigits &&
+          // ...and either be a single '0' or not start with '0'.
+          (segLen === 1 || str.charCodeAt(segStart) !== CC_ZERO)
+
+        if (treatAsNumber) {
+          result.push(parseInt(str.slice(segStart, i), 10))
+        } else {
+          result.push(str.slice(segStart, i))
         }
-        return d
-      })
-  )
+      } else if (
+        // This branch, which handles empty segments, only exists to preserve
+        // the old behavior for malformed input.
+
+        // Push the empty segment unless this is a "phantom boundary" the
+        // old regex impl would have absorbed:
+        //   1. `]` was always stripped — `prev === ']'` means the real
+        //      boundary already happened on the previous iteration.
+        //   2. A leading `]` was stripped too (the leading `[` strip
+        //      above handles its counterpart for `[`).
+        //   3. `..` and `[[` collapse to a single boundary.
+        prev !== CC_CLOSE &&
+        !(prev === -1 && char === CC_CLOSE) &&
+        !(prev === char && (char === CC_DOT || char === CC_OPEN))
+      ) {
+        result.push('')
+      }
+
+      // Start a new segment.
+      segStart = i + 1
+      allDigits = true
+    } else if (char < CC_ZERO || char > CC_NINE) {
+      allDigits = false
+    }
+
+    prev = char
+  }
+
+  // If the input was effectively all phantom chars (e.g. ']', '[]',
+  // '[]]'), the loop produces no segments. The old impl returned ['']
+  // for these because.
+  if (!result.length) result.push('')
+
+  return result
 }
 
 /**
