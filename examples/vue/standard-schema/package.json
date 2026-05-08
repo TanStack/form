@@ -16,7 +16,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "valibot": "^1.1.0",
-    "vue": "^3.5.17",
+    "vue": "v3.6.0-beta.11",
     "zod": "^3.25.76"
   },
   "devDependencies": {
