@@ -1,5 +1,5 @@
 ---
-'@tanstack/preact-form': major
+'@tanstack/preact-form': patch
 ---
 
 Initial release of Preact adapter
