@@ -1,5 +1,14 @@
 # @tanstack/vue-form
 
+## 1.29.3
+
+### Patch Changes
+
+- Make subscribe component accept the selector type properly ([#2154](https://github.com/TanStack/form/pull/2154))
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.29.3
+
 ## 1.29.2
 
 ### Patch Changes
