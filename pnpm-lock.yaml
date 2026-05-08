@@ -1176,10 +1176,10 @@ importers:
         specifier: ^7.2.2
         version: 7.2.2(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.0)(sass@1.90.0)(sugarss@5.0.1(postcss@8.5.14))(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.1)
       vue-tsc:
-        specifier: ^3.0.1
+        specifier: ^3.2.8
         version: 3.2.8(typescript@5.8.2)
 
-  examples/vue/field-components:
+  examples/vue/large-form:
     dependencies:
       '@tanstack/vue-form':
         specifier: ^1.29.2
@@ -1198,7 +1198,7 @@ importers:
         specifier: ^7.2.2
         version: 7.2.2(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.0)(sass@1.90.0)(sugarss@5.0.1(postcss@8.5.14))(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.1)
       vue-tsc:
-        specifier: ^3.0.1
+        specifier: ^3.2.8
         version: 3.2.8(typescript@5.8.2)
 
   examples/vue/simple:
@@ -1220,7 +1220,7 @@ importers:
         specifier: ^7.2.2
         version: 7.2.2(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.0)(sass@1.90.0)(sugarss@5.0.1(postcss@8.5.14))(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.1)
       vue-tsc:
-        specifier: ^3.0.1
+        specifier: ^3.2.8
         version: 3.2.8(typescript@5.8.2)
 
   examples/vue/standard-schema:
@@ -1260,7 +1260,7 @@ importers:
         specifier: ^7.2.2
         version: 7.2.2(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.0)(sass@1.90.0)(sugarss@5.0.1(postcss@8.5.14))(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.1)
       vue-tsc:
-        specifier: ^3.0.1
+        specifier: ^3.2.8
         version: 3.2.8(typescript@5.8.2)
 
   packages/angular-form:
