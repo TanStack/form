@@ -89,6 +89,15 @@
               "to": "framework/svelte/quick-start"
             }
           ]
+        },
+        {
+          "label": "ember",
+          "children": [
+            {
+              "label": "Quick Start",
+              "to": "framework/ember/quick-start"
+            }
+          ]
         }
       ]
     },
@@ -307,6 +316,39 @@
             {
               "label": "Form Composition",
               "to": "framework/svelte/guides/form-composition"
+            }
+          ]
+        },
+        {
+          "label": "ember",
+          "children": [
+            {
+              "label": "Basic Concepts",
+              "to": "framework/ember/guides/basic-concepts"
+            },
+            {
+              "label": "Form Validation",
+              "to": "framework/ember/guides/validation"
+            },
+            {
+              "label": "Dynamic Validation",
+              "to": "framework/ember/guides/dynamic-validation"
+            },
+            {
+              "label": "Async Initial Values",
+              "to": "framework/ember/guides/async-initial-values"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/ember/guides/arrays"
+            },
+            {
+              "label": "Linked Fields",
+              "to": "framework/ember/guides/linked-fields"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/ember/guides/form-composition"
             }
           ]
         }
