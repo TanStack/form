@@ -1,0 +1,21 @@
+{
+  "extends": "@ember/library-tsconfig",
+  "include": [
+    "src/**/*",
+    "tests/**/*",
+    "demo-app/**/*",
+    "*.config.js",
+    "*.config.mjs",
+    "*.config.cjs"
+  ],
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
+    "noEmit": true,
+    "types": ["ember-source/types", "@glint/ember-tsc/types"],
+    "paths": {
+      "@tanstack/ember-form": ["./src/index.ts"],
+      "@tanstack/ember-form/*": ["./src/*"]
+    }
+  }
+}
