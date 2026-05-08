@@ -1,7 +1,9 @@
 import { FormApi } from '@tanstack/form-core';
 import { registerDestructor } from '@ember/destroyable';
 import { TrackedValue } from './-private/tracked-state.ts';
+import Field from './components/field.gts';
 
+import type { TOC } from '@ember/component/template-only';
 import type {
   FormAsyncValidateOrFn,
   FormOptions,
@@ -69,6 +71,13 @@ export interface EmberFormApi<
       >,
     ) => TSelected,
   ) => { readonly current: TSelected };
+
+  /**
+   * A `<Field>` component closure-bound to this form. Lets you write
+   * `<this.form.Field @name="..." as |field|>...</this.form.Field>` instead
+   * of passing `@form={{this.form}}` explicitly.
+   */
+  Field: TOC<BoundFieldSignature>;
 }
 
 /**
@@ -115,6 +124,55 @@ export type EmberFormExtendedApi<
     TOnServer,
     TSubmitMeta
   >;
+
+/**
+ * @private
+ *
+ * Build a closure-bound `<Field>` for a specific `FormApi`. The returned
+ * component takes all of `FieldSignature['Args']` minus `form` (which is
+ * supplied from the closure), so it can be invoked as `<form.Field @name=... />`.
+ *
+ * Typed via `as never` because strict glint wants to validate the inner
+ * `<Field>` invocation against the full Field signature, but we're forwarding
+ * untyped args from the outer template scope (the loss of types is recovered
+ * by the cast on the calling site, where `EmberFormApi['Field']` is declared).
+ */
+interface BoundFieldSignature {
+  Args: {
+    name: string;
+    defaultValue?: unknown;
+    asyncDebounceMs?: number;
+    asyncAlways?: boolean;
+    defaultMeta?: unknown;
+    validators?: unknown;
+    listeners?: unknown;
+    mode?: 'value' | 'array';
+  };
+  Blocks: {
+    default: [field: unknown];
+  };
+}
+
+function makeBoundField(
+  api: FormApi<any, any, any, any, any, any, any, any, any, any, any, any>,
+): TOC<BoundFieldSignature> {
+  return <template>
+    <Field
+      @form={{api}}
+      @name={{@name}}
+      @defaultValue={{@defaultValue}}
+      @asyncDebounceMs={{@asyncDebounceMs}}
+      @asyncAlways={{@asyncAlways}}
+      @defaultMeta={{@defaultMeta}}
+      @validators={{@validators}}
+      @listeners={{@listeners}}
+      @mode={{@mode}}
+      as |field|
+    >
+      {{yield field}}
+    </Field>
+  </template>;
+}
 
 /**
  * Create a `FormApi` instance whose lifecycle is tied to `parent`. Mounts the
@@ -220,6 +278,8 @@ export function createForm<
     subscriptions.push(unsub);
     return box;
   }) as (typeof extended)['useStore'];
+
+  extended.Field = makeBoundField(api);
 
   registerDestructor(parent, () => {
     for (const unsub of subscriptions) unsub();

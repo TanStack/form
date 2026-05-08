@@ -47,8 +47,7 @@ export default class SignupForm extends Component {
 
   <template>
     <form {{on "submit" this.submit}}>
-      <Field
-        @form={{this.form}}
+      <this.form.Field
         @name="firstName"
         @validators={{hash onChange=tooShort}}
         as |field|
@@ -63,7 +62,7 @@ export default class SignupForm extends Component {
         {{#each field.state.meta.errors as |error|}}
           <em>{{error}}</em>
         {{/each}}
-      </Field>
+      </this.form.Field>
 
       <Subscribe @form={{this.form}} @selector={{this.pickSubmit}} as |slice|>
         <button type="submit" disabled={{slice.cantSubmit}}>
@@ -75,10 +74,13 @@ export default class SignupForm extends Component {
 }
 ```
 
+`<this.form.Field>` is closure-bound shorthand for `<Field @form={{this.form}}>`. Use whichever is more convenient.
+
 ### API
 
-- `createForm(parent, options)` — Returns a `FormApi` extended with `useStore(selector?)`. `parent` should be `this` from a `@glimmer/component` (or any destroyable owner). The form is mounted immediately and unmounted when `parent` is destroyed.
+- `createForm(parent, options)` — Returns a `FormApi` extended with `useStore(selector?)` and a closure-bound `Field`. `parent` should be `this` from a `@glimmer/component` (or any destroyable owner). The form is mounted immediately and unmounted when `parent` is destroyed.
 - `<Field @form @name [@validators] [@defaultValue] [@asyncDebounceMs] [@listeners] [@mode]>` — Yields a `FieldApi` whose `state` is autotracked. Reads of `field.state.*` in templates rerender on store changes.
+- `<this.form.Field @name [...]>` — closure-bound variant of `<Field>` returned from `createForm`. Equivalent to passing `@form={{this.form}}` explicitly.
 - `<Subscribe @form [@selector]>` — Yields the result of `selector(form.store.state)` (or the full state when omitted), reactive across changes.
 - `form.useStore(selector?)` — Returns `{ current }` where `current` is autotracked. Useful outside of templates (e.g. in `@cached` getters).
 

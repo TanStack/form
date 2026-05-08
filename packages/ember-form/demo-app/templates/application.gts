@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { fn, hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { pageTitle } from 'ember-page-title';
-import { createForm, Field, Subscribe } from '@tanstack/ember-form';
+import { createForm, Subscribe } from '@tanstack/ember-form';
 
 interface Person {
   firstName: string;
@@ -50,8 +50,7 @@ export default class ApplicationTemplate extends Component {
     <h1>TanStack Form &mdash; Ember Demo</h1>
 
     <form {{on "submit" this.handleSubmit}}>
-      <Field
-        @form={{this.form}}
+      <this.form.Field
         @name="firstName"
         @validators={{hash onChange=tooShort}}
         as |field|
@@ -66,10 +65,9 @@ export default class ApplicationTemplate extends Component {
             {{on "input" (fn handleInput field)}}
           />
         </div>
-      </Field>
+      </this.form.Field>
 
-      <Field
-        @form={{this.form}}
+      <this.form.Field
         @name="lastName"
         @validators={{hash onChange=tooShort}}
         as |field|
@@ -87,7 +85,7 @@ export default class ApplicationTemplate extends Component {
             <em>{{err}}</em>
           {{/each}}
         </div>
-      </Field>
+      </this.form.Field>
 
       <Subscribe
         @form={{this.form}}
