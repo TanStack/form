@@ -1,6 +1,6 @@
 import { createFormHook } from '@tanstack/solid-form'
 import { fieldContext, formContext, useFormContext } from './form-context.tsx'
-import { TextField } from '../components/text-fields.tsx';
+import { TextField } from '../components/text-fields.tsx'
 
 function SubscribeButton(props: { label: string }) {
   const form = useFormContext()

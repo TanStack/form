@@ -37,7 +37,9 @@ export const Step1Form = withForm({
               <props.form.SubscribeButton label="Submit" />
             </props.form.AppForm>
             {/* formGroup contains errorMaps and errors, just like forms and fields */}
-            <pre>{JSON.stringify(formGroup().state.meta.errorMap, null, 2)}</pre>
+            <pre>
+              {JSON.stringify(formGroup().state.meta.errorMap, null, 2)}
+            </pre>
           </form>
         )}
       </props.form.FormGroup>
