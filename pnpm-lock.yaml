@@ -1182,7 +1182,7 @@ importers:
   examples/vue/field-components:
     dependencies:
       '@tanstack/vue-form':
-        specifier: ^1.29.1
+        specifier: ^1.29.2
         version: link:../../../packages/vue-form
       vue:
         specifier: v3.6.0-beta.11
