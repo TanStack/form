@@ -256,23 +256,29 @@ export function createFormComposition<
       }
     })
 
+    const FieldProvider = defineComponent(
+      (props: { field: AnyFieldApi }, { slots }) => {
+        provide(fieldProviderKey, props.field)
+        return () => slots.default?.()
+      },
+      { props: ['field'] },
+    )
+
     const AppField = defineComponent((props, { slots }) => {
       return () => {
         return (
           <form.Field {...props}>
-            {({ field }: { field: AnyFieldApi }) =>
-              h({
-                setup: (_) => {
-                  provide(fieldProviderKey, field)
-                },
-                render: () => {
-                  return slots.default({
-                    field: Object.assign(field, fieldComponents),
-                    state: field.state,
-                  })
-                },
-              })
-            }
+            {({ field }: { field: AnyFieldApi }) => (
+              <FieldProvider field={field}>
+                {{
+                  default: () =>
+                    slots.default!({
+                      field: Object.assign(field, fieldComponents),
+                      state: field.state,
+                    }),
+                }}
+              </FieldProvider>
+            )}
           </form.Field>
         )
       }
