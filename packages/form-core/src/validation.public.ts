@@ -110,7 +110,7 @@ export interface FieldValidatorContext<
   TFormData,
   TFieldValue,
 > extends BaseValidatorContext<TFormData> {
-  triggerFieldApi: FieldApi<TFormData, any>
+  fieldApi: FieldApi<TFormData, any>
   value: TFieldValue
 }
 

@@ -213,7 +213,7 @@ export class InternalFieldApi<
   _fullPathCache: string | null = null
   _atoms: FieldAtoms | null = null
   _validators: Array<AnyFieldValidator>
-  _validatorCache: ValidatorPipelineCache | null = null
+  _validatorCache: ValidatorPipelineCache<any> | null = null
 
   #segment: NameSegment
   /**
@@ -274,7 +274,7 @@ export class InternalFieldApi<
     return this._atoms
   }
 
-  _getOrCreateValidatorCache(): ValidatorPipelineCache {
+  _getOrCreateValidatorCache(): ValidatorPipelineCache<any> {
     if (!this._validatorCache) {
       this._validatorCache = createValidatorPipelineCache()
     }
@@ -440,7 +440,7 @@ export class InternalFieldApi<
       pipeline: this._validators,
       context: {
         event,
-        triggerFieldApi: this,
+        fieldApi: this,
         formApi: this.form,
       },
       onResult: (result) => this._processValidationResult(result),
