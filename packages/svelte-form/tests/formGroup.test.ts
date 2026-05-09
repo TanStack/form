@@ -34,9 +34,7 @@ describe('form.FormGroup', () => {
     render(FormGroupSubmit, { onSubmit, onGroupSubmit })
 
     await user.click(
-      element.querySelector<HTMLButtonElement>(
-        '[data-testid="submit-group"]',
-      )!,
+      element.querySelector<HTMLButtonElement>('[data-testid="submit-group"]')!,
     )
 
     await vi.waitFor(() => expect(onGroupSubmit).toHaveBeenCalledTimes(1))
@@ -67,12 +65,12 @@ describe('form.FormGroup', () => {
     render(FormGroupInvalid, { onSubmit, onGroupSubmit, onGroupSubmitInvalid })
 
     await user.click(
-      element.querySelector<HTMLButtonElement>(
-        '[data-testid="submit-group"]',
-      )!,
+      element.querySelector<HTMLButtonElement>('[data-testid="submit-group"]')!,
     )
 
-    await vi.waitFor(() => expect(onGroupSubmitInvalid).toHaveBeenCalledTimes(1))
+    await vi.waitFor(() =>
+      expect(onGroupSubmitInvalid).toHaveBeenCalledTimes(1),
+    )
     expect(onGroupSubmit).not.toHaveBeenCalled()
     expect(onSubmit).not.toHaveBeenCalled()
     await vi.waitFor(() =>
@@ -89,9 +87,7 @@ describe('form.FormGroup', () => {
     render(FormGroupOuterErrors, { onGroupSubmit, onGroupSubmitInvalid })
 
     await user.click(
-      element.querySelector<HTMLButtonElement>(
-        '[data-testid="submit-group"]',
-      )!,
+      element.querySelector<HTMLButtonElement>('[data-testid="submit-group"]')!,
     )
 
     await vi.waitFor(() => expect(onGroupSubmit).toHaveBeenCalledTimes(1))
@@ -104,9 +100,7 @@ describe('form.FormGroup', () => {
     render(FormGroupSubmitMeta, { onGroupSubmit })
 
     await user.click(
-      element.querySelector<HTMLButtonElement>(
-        '[data-testid="submit-group"]',
-      )!,
+      element.querySelector<HTMLButtonElement>('[data-testid="submit-group"]')!,
     )
 
     await vi.waitFor(() => expect(onGroupSubmit).toHaveBeenCalledTimes(1))
