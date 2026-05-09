@@ -332,6 +332,19 @@ importers:
         specifier: ^7.2.2
         version: 7.2.2(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.0)(sass@1.90.0)(sugarss@5.0.1(postcss@8.5.6))(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.1)
 
+  examples/lit/large-form:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.23.32
+        version: link:../../../packages/lit-form
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.1
+    devDependencies:
+      vite:
+        specifier: ^7.2.2
+        version: 7.2.2(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.0)(sass@1.90.0)(sugarss@5.0.1(postcss@8.5.6))(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.1)
+
   examples/lit/simple:
     dependencies:
       '@tanstack/lit-form':
