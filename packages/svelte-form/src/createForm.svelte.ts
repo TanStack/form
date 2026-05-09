@@ -2,6 +2,7 @@ import { FormApi } from '@tanstack/form-core'
 import { useStore } from '@tanstack/svelte-store'
 import { onMount } from 'svelte'
 import Field from './Field.svelte'
+import FormGroup from './FormGroup.svelte'
 import Subscribe from './Subscribe.svelte'
 import type {
   Component,
@@ -15,7 +16,11 @@ import type {
   FormState,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type { FieldComponent, WithoutFunction } from './types.js'
+import type {
+  FieldComponent,
+  FormGroupComponent,
+  WithoutFunction,
+} from './types.js'
 
 export interface SvelteFormApi<
   TParentData,
@@ -32,6 +37,20 @@ export interface SvelteFormApi<
   TSubmitMeta,
 > {
   Field: FieldComponent<
+    TParentData,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
+    TFormOnServer,
+    TSubmitMeta
+  >
+  FormGroup: FormGroupComponent<
     TParentData,
     TFormOnMount,
     TFormOnChange,
@@ -273,6 +292,9 @@ export function createForm<
   // @ts-expect-error constructor definition exists only on a type level
   extendedApi.Field = (internal, props) =>
     Field(internal, { ...props, form: api as never } as never)
+  // @ts-expect-error constructor definition exists only on a type level
+  extendedApi.FormGroup = (internal, props) =>
+    FormGroup(internal, { ...props, form: api as never } as never)
   extendedApi.useStore = (selector) => useStore(api.store, selector)
   // @ts-expect-error constructor definition exists only on a type level
   extendedApi.Subscribe = (internal, props) =>
