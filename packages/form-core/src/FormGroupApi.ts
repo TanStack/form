@@ -637,7 +637,7 @@ export interface FormGroupApiOptions<
   >
 }
 
-interface FormGroupState {
+export interface FormGroupState {
   /**
    * A boolean indicating if the form is currently in the process of being submitted after `handleSubmit` is called.
    *
