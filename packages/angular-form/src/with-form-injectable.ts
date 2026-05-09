@@ -13,7 +13,7 @@ export class TanStackWithFormInjectable {
   >(null as never)
 }
 
-export interface TanStackWithFormRef<
+interface TanStackWithFormRef<
   TFormData,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
   TOnChange extends undefined | FormValidateOrFn<TFormData>,
