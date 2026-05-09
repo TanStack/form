@@ -1,6 +1,40 @@
 import type { FieldApi } from './FieldApi.public'
 import type { FormValidator, ValidationTrigger } from './validation.public'
 
+// form
+
+export type FormListenerEvents = ValidationTrigger | 'mount' | 'reset'
+
+export interface FormListenerContext<
+  TFormData,
+  TFormValidators extends Array<FormValidator<TFormData>>,
+> {
+  fieldApi?: FieldApi<TFormData, TFormValidators>
+  formApi: TFormData
+}
+
+export type FormListenerFn<
+  TFormData,
+  TFormValidators extends Array<FormValidator<TFormData>>,
+> = (context: FormListenerContext<TFormData, TFormValidators>) => void
+
+export interface FormListenerConfig<
+  TFormData,
+  TFormValidators extends Array<FormValidator<TFormData>>,
+> {
+  run: FormListenerFn<TFormData, TFormValidators>
+  triggers: Array<FormListenerEvents>
+  debounceMs?: number
+}
+
+// field
+
+export type FieldListenerEvents =
+  | ValidationTrigger
+  | 'mount'
+  | 'unmount'
+  | 'reset'
+
 export interface FieldListenerContext<
   TFormData,
   TFormValidators extends Array<FormValidator<TFormData>>,
@@ -21,9 +55,6 @@ export interface FieldListenerConfig<
   listener: FieldListenerFn<TFormData, TFormValidators>
   debounceMs?: number
 }
-
-export type FormListenerEvents = ValidationTrigger | 'mount'
-export type FieldListenerEvents = FormListenerEvents | 'unmount'
 
 export type FieldListeners<
   TFormData,

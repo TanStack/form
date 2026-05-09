@@ -1,5 +1,46 @@
 import { nameToFieldNodeSegments } from './FieldApi.lib'
+
+// type
+import type { LiteDebouncer } from '@tanstack/pacer-lite'
 import type { OneOrMany, UpdateFn, Updater } from './types.public'
+import type { ValidateContext } from './validation.lib'
+import type { FormListenerFn } from './listeners.public'
+import type { FormValidator } from './validation.public'
+
+const ABORTED_CALL = Symbol('ABORTED_CALL')
+
+type AbortedCall = typeof ABORTED_CALL
+
+interface PendingDebouncedCall<TResult> {
+  context: ValidateContext
+  resolve: (value: TResult | AbortedCall) => void
+  reject: (error: unknown) => void
+}
+
+type ValidationDebouncer<TResult> = LiteDebouncer<
+  (call: PendingDebouncedCall<TResult>) => void
+>
+
+export interface PipelineCache<
+  TFormData,
+  TFormValidators extends Array<FormValidator<TFormData>>,
+  TResult,
+> {
+  listenersDebouncers: Map<
+    number,
+    LiteDebouncer<FormListenerFn<TFormData, TFormValidators>>
+  >
+  validatorDebouncers: Map<number, ValidationDebouncer<TResult>>
+  validatorAbortControllers: Map<number, AbortController>
+}
+
+export function createPipelineCache(): PipelineCache<any, any, any> {
+  return {
+    listenersDebouncers: new Map(),
+    validatorDebouncers: new Map(),
+    validatorAbortControllers: new Map(),
+  }
+}
 
 /*
 / credit is due to https://github.com/lukeed/uuid for this code, with current npm

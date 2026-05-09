@@ -21,7 +21,7 @@ type FormInputContext = Omit<FormValidateContext, 'signal'>
 type FieldInputContext = Omit<FieldValidateContext, 'signal'>
 
 type InputContext = FormInputContext | FieldInputContext
-type ValidateContext = FormValidateContext | FieldValidateContext
+export type ValidateContext = FormValidateContext | FieldValidateContext
 type ValidateResult = FormValidateResult | FieldValidateResult
 
 function isFormContext(ctx: InputContext): ctx is FormInputContext {
@@ -85,14 +85,16 @@ type ValidationDebouncer<TResult> = LiteDebouncer<
 >
 
 export interface ValidatorPipelineCache<TResult> {
-  debouncers: Map<number, ValidationDebouncer<TResult>>
-  abortControllers: Map<number, AbortController>
+  listenersDebouncers: Map<number, ValidationDebouncer<TResult>>
+  validatorDebouncers: Map<number, ValidationDebouncer<TResult>>
+  validatorAbortControllers: Map<number, AbortController>
 }
 
 export function createValidatorPipelineCache(): ValidatorPipelineCache<any> {
   return {
-    debouncers: new Map(),
-    abortControllers: new Map(),
+    listenersDebouncers: new Map(),
+    validatorDebouncers: new Map(),
+    validatorAbortControllers: new Map(),
   }
 }
 
@@ -179,8 +181,8 @@ function clearAbortController<TResult extends ValidateResult>(
   cacheKey: number,
   abortController: AbortController,
 ): void {
-  if (cache.abortControllers.get(cacheKey) === abortController) {
-    cache.abortControllers.delete(cacheKey)
+  if (cache.validatorAbortControllers.get(cacheKey) === abortController) {
+    cache.validatorAbortControllers.delete(cacheKey)
   }
 }
 
@@ -246,7 +248,7 @@ function abortPreviousValidatorRun<TResult extends ValidateResult>(
   // AbortControllers are scoped to the validator instead of the whole pipeline.
   // Mostly because different validators can have different debounces and they
   // can be triggered by unrelated validation signals
-  cache.abortControllers.get(cacheKey)?.abort()
+  cache.validatorAbortControllers.get(cacheKey)?.abort()
 }
 
 function getOrCreateDebouncer<TResult extends ValidateResult>(
@@ -255,14 +257,14 @@ function getOrCreateDebouncer<TResult extends ValidateResult>(
   fn: (call: PendingDebouncedCall<TResult>) => void,
   wait: number,
 ): ValidationDebouncer<TResult> {
-  let debouncer = cache.debouncers.get(cacheKey)
+  let debouncer = cache.validatorDebouncers.get(cacheKey)
 
   if (!debouncer) {
     debouncer = new LiteDebouncer(fn, {
       wait,
     })
 
-    cache.debouncers.set(cacheKey, debouncer)
+    cache.validatorDebouncers.set(cacheKey, debouncer)
   } else {
     debouncer.fn = fn
     debouncer.options.wait = wait
@@ -286,7 +288,7 @@ function runMaybeDebouncedValidator<TResult extends ValidateResult>({
   const abortController = new AbortController()
   const signal = abortController.signal
 
-  cache.abortControllers.set(cacheKey, abortController)
+  cache.validatorAbortControllers.set(cacheKey, abortController)
 
   const validationContext: ValidateContext = {
     ...context,
@@ -319,7 +321,7 @@ function runMaybeDebouncedValidator<TResult extends ValidateResult>({
     }
 
     const onAbort = () => {
-      cache.debouncers.get(cacheKey)?.cancel()
+      cache.validatorDebouncers.get(cacheKey)?.cancel()
       settle(ABORTED_CALL)
     }
 
@@ -334,7 +336,7 @@ function runMaybeDebouncedValidator<TResult extends ValidateResult>({
     }
 
     if (debounceMs <= 0) {
-      cache.debouncers.get(cacheKey)?.cancel()
+      cache.validatorDebouncers.get(cacheKey)?.cancel()
       run(validationContext)
       return
     }

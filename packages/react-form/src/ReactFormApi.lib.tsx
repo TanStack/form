@@ -1,13 +1,14 @@
-import React from 'react'
 import { useSelector } from '@tanstack/react-store'
 import { InternalFormApi } from '@tanstack/form-core-v2/internals'
+import React from 'react'
 import { useField } from './useField.lib'
-import type { FunctionComponent } from 'react'
+import { Subscribe as StoreSubscribe } from './Subscribe'
 import type { InternalBaseFieldMeta } from '@tanstack/form-core-v2/internals'
 import type {
   ReactFormApi,
   ReactFormArrayFieldProps,
   ReactFormFieldProps,
+  ReactFormSubscribeProps,
 } from './useForm.public'
 import type { FormOptions, FormValidator } from '@tanstack/form-core-v2'
 
@@ -17,32 +18,29 @@ export interface InternalReactFormApi<
 > extends ReactFormApi<TData, TFormValidators> {}
 
 export function initializeForm<
-  TData,
-  TFormValidators extends Array<FormValidator<TData>>,
+  TFormData,
+  TFormValidators extends Array<FormValidator<TFormData>>,
 >(
-  options: FormOptions<TData, TFormValidators>,
-): ReactFormApi<TData, TFormValidators> {
+  options: FormOptions<TFormData, TFormValidators>,
+): ReactFormApi<TFormData, TFormValidators> {
   const form = new InternalFormApi(options)
 
-  const reactFormApi: InternalReactFormApi<TData, TFormValidators> =
+  const reactFormApi: InternalReactFormApi<TFormData, TFormValidators> =
     form as never
 
-  const Field: FunctionComponent<any> = function TanStackFormField<TFieldValue>(
-    props: ReactFormFieldProps<TData, TFormValidators, TFieldValue>,
+  reactFormApi.Field = function TanStackFormField<TFieldValue>(
+    props: ReactFormFieldProps<TFormData, TFormValidators, TFieldValue>,
   ) {
     const fieldApi = useField({ ...props, form })
 
     useSelector(fieldApi.store, (state) => state.value)
     useSelector(fieldApi.store, (state) => state.meta)
 
-    return <>{props.children(fieldApi)}</>
+    return props.children(fieldApi)
   }
 
-  Field.displayName = 'form.Field'
-  reactFormApi.Field = Field
-
-  const ArrayField = function TanStackFormArrayField<TFieldValue>(
-    props: ReactFormArrayFieldProps<TData, TFormValidators, TFieldValue>,
+  reactFormApi.ArrayField = function TanStackFormArrayField<TFieldValue>(
+    props: ReactFormArrayFieldProps<TFormData, TFormValidators, TFieldValue>,
   ) {
     const fieldApi = useField({ ...props, form })
 
@@ -51,11 +49,14 @@ export function initializeForm<
       fieldApi.store,
       (state) => (state.meta as never as InternalBaseFieldMeta)._arrayVersion,
     )
-    return <>{props.children(fieldApi)}</>
+    return props.children(fieldApi)
   }
 
-  ArrayField.displayName = 'form.ArrayField'
-  reactFormApi.ArrayField = ArrayField
+  reactFormApi.Subscribe = function TanStackFormSubscribe<TSelected>(
+    props: ReactFormSubscribeProps<TFormData, TSelected>,
+  ) {
+    return <StoreSubscribe source={reactFormApi.store} {...props} />
+  }
 
   return reactFormApi
 }

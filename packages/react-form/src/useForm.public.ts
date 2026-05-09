@@ -1,31 +1,61 @@
 import { useState } from 'react'
 import { initializeForm } from './ReactFormApi.lib'
-import type React from 'react'
-import type { FunctionComponent } from 'react'
+import type { SubscribeProps } from './Subscribe'
+import type { CrossVersionReactNode } from './types.lib'
 import type {
   FieldApi,
   FieldApiOptions,
   FormApi,
   FormOptions,
+  FormState,
   FormValidator,
 } from '@tanstack/form-core-v2'
 
-// This type mess takes care of react 17-19 cross compatability.
-type ReactNode = ReturnType<FunctionComponent<{}>>
+/**
+ * Subscribe to `form.store` (full form state). The selector receives the full
+ * {@link FormState}.
+ */
+export type ReactFormSubscribeProps<TFormData, TSelected> = Omit<
+  SubscribeProps<FormState<TFormData>, TSelected>,
+  'source'
+>
 
-export interface ReactFormApi<
+export interface ReactFormFieldProps<
   TData,
   TFormValidators extends Array<FormValidator<TData>>,
-> extends FormApi<TData, TFormValidators> {
+  TFieldValue,
+> extends FieldApiOptions<TData, TFormValidators, TFieldValue> {
+  children: (
+    fieldApi: FieldApi<TData, TFormValidators>,
+  ) => CrossVersionReactNode
+}
+
+export interface ReactFormArrayFieldProps<
+  TData,
+  TFormValidators extends Array<FormValidator<TData>>,
+  TFieldValue,
+> extends FieldApiOptions<TData, TFormValidators, TFieldValue> {
+  children: (
+    fieldApi: FieldApi<TData, TFormValidators>,
+  ) => CrossVersionReactNode
+}
+
+export interface ReactFormApi<
+  TFormData,
+  TFormValidators extends Array<FormValidator<TFormData>>,
+> extends FormApi<TFormData, TFormValidators> {
   /**
    * TODO docs
    */
   Field: <TFieldValue>(
-    props: ReactFormFieldProps<TData, TFormValidators, TFieldValue>,
-  ) => ReactNode
+    props: ReactFormFieldProps<TFormData, TFormValidators, TFieldValue>,
+  ) => CrossVersionReactNode
   ArrayField: <TFieldValue>(
-    props: ReactFormArrayFieldProps<TData, TFormValidators, TFieldValue>,
-  ) => ReactNode
+    props: ReactFormArrayFieldProps<TFormData, TFormValidators, TFieldValue>,
+  ) => CrossVersionReactNode
+  Subscribe: <TSelected>(
+    props: ReactFormSubscribeProps<TFormData, TSelected>,
+  ) => CrossVersionReactNode
 }
 
 /**
@@ -40,20 +70,4 @@ export function useForm<
   const [form] = useState(() => initializeForm(options))
 
   return form
-}
-
-export interface ReactFormFieldProps<
-  TData,
-  TFormValidators extends Array<FormValidator<TData>>,
-  TFieldValue,
-> extends FieldApiOptions<TData, TFormValidators, TFieldValue> {
-  children: (fieldApi: FieldApi<TData, TFormValidators>) => React.ReactNode
-}
-
-export interface ReactFormArrayFieldProps<
-  TData,
-  TFormValidators extends Array<FormValidator<TData>>,
-  TFieldValue,
-> extends FieldApiOptions<TData, TFormValidators, TFieldValue> {
-  children: (fieldApi: FieldApi<TData, TFormValidators>) => React.ReactNode
 }
