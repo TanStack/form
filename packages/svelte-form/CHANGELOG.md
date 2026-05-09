@@ -1,5 +1,16 @@
 # @tanstack/svelte-form
 
+## 1.30.0
+
+### Minor Changes
+
+- Add ability to get form type from Svelte ([#2159](https://github.com/TanStack/form/pull/2159))
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.30.0
+
 ## 1.29.3
 
 ### Patch Changes

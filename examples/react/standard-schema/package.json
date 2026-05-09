@@ -9,7 +9,7 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/react-form": "^1.29.3",
+    "@tanstack/react-form": "^1.30.0",
     "arktype": "^2.1.22",
     "effect": "^3.17.14",
     "react": "^19.0.0",
@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@tanstack/react-devtools": "^0.9.7",
-    "@tanstack/react-form-devtools": "^0.2.24",
+    "@tanstack/react-form-devtools": "^0.2.25",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^5.1.1",
