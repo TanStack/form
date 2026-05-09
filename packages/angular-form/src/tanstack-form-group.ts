@@ -11,11 +11,7 @@ import {
   numberAttribute,
   untracked,
 } from '@angular/core'
-import {
-  FormApi,
-  FormGroupApi,
-  FormGroupApiOptions,
-} from '@tanstack/form-core'
+import { FormApi, FormGroupApi, FormGroupApiOptions } from '@tanstack/form-core'
 import { injectStore } from '@tanstack/angular-store'
 import type {
   DeepKeys,
@@ -39,9 +35,7 @@ export class TanStackFormGroup<
   TParentData,
   const TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
-  TOnMount extends
-    | undefined
-    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnMount extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnChange extends
     | undefined
     | FormGroupValidateOrFn<TParentData, TName, TData>,
@@ -76,8 +70,7 @@ export class TanStackFormGroup<
   TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TParentSubmitMeta,
-> implements OnInit
-{
+> implements OnInit {
   name = input.required<TName>()
   defaultValue = input<NoInfer<TData>>()
   asyncDebounceMs = input(undefined as never as number, {
@@ -127,8 +120,7 @@ export class TanStackFormGroup<
       >
     >()
 
-  listeners =
-    input<NoInfer<FormGroupListeners<TParentData, TName, TData>>>()
+  listeners = input<NoInfer<FormGroupListeners<TParentData, TName, TData>>>()
 
   defaultMeta =
     input<

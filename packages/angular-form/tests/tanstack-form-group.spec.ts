@@ -2,11 +2,7 @@ import { render, waitFor } from '@testing-library/angular'
 import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { describe, expect, it, vi } from 'vitest'
 import { userEvent } from '@testing-library/user-event'
-import {
-  TanStackField,
-  TanStackFormGroup,
-  injectForm,
-} from '../src/index'
+import { TanStackField, TanStackFormGroup, injectForm } from '../src/index'
 
 const user = userEvent.setup()
 
@@ -33,11 +29,7 @@ describe('TanStackFormGroupDirective', () => {
               g.api.handleSubmit()
             "
           >
-            <ng-container
-              [tanstackField]="form"
-              name="step1.name"
-              #f="field"
-            >
+            <ng-container [tanstackField]="form" name="step1.name" #f="field">
               <input
                 data-testid="step1-name"
                 [value]="f.api.state.value"
@@ -76,16 +68,8 @@ describe('TanStackFormGroupDirective', () => {
       standalone: true,
       changeDetection: ChangeDetectionStrategy.OnPush,
       template: `
-        <ng-container
-          [tanstackFormGroup]="form"
-          name="step1"
-          #g="formGroup"
-        >
-          <ng-container
-            [tanstackField]="form"
-            name="step1.name"
-            #f="field"
-          >
+        <ng-container [tanstackFormGroup]="form" name="step1" #g="formGroup">
+          <ng-container [tanstackField]="form" name="step1.name" #f="field">
             <input
               data-testid="step1-name"
               [value]="f.api.state.value"
@@ -116,9 +100,7 @@ describe('TanStackFormGroupDirective', () => {
     await user.type(getByTestId('step1-name'), 'updated')
 
     await waitFor(() =>
-      expect(getByTestId('group-value').textContent).toBe(
-        '{"name":"updated"}',
-      ),
+      expect(getByTestId('group-value').textContent).toBe('{"name":"updated"}'),
     )
   })
 
@@ -147,11 +129,7 @@ describe('TanStackFormGroupDirective', () => {
               g.api.handleSubmit()
             "
           >
-            <ng-container
-              [tanstackField]="form"
-              name="step1.name"
-              #f="field"
-            >
+            <ng-container [tanstackField]="form" name="step1.name" #f="field">
               <input
                 data-testid="step1-name"
                 [value]="f.api.state.value"
@@ -217,11 +195,7 @@ describe('TanStackFormGroupDirective', () => {
               g.api.handleSubmit()
             "
           >
-            <ng-container
-              [tanstackField]="form"
-              name="step1.name"
-              #f="field"
-            >
+            <ng-container [tanstackField]="form" name="step1.name" #f="field">
               <input
                 data-testid="step1-name"
                 [value]="f.api.state.value"
