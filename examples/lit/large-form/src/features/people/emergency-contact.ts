@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { getFormType } from '@tanstack/lit-form'
+import { TanStackFormSubscriber, getFormType } from '@tanstack/lit-form'
 import { peopleFormOpts } from './shared-form.js'
 import '../../components/text-field.js'
 
@@ -10,6 +10,8 @@ const formType = getFormType(peopleFormOpts)
 export class EmergencyContactFields extends LitElement {
   @property({ attribute: false })
   form!: typeof formType
+
+  _subscriber = new TanStackFormSubscriber(this, () => this.form.api.store)
 
   protected createRenderRoot() {
     return this

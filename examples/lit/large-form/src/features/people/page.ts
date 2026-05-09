@@ -48,9 +48,7 @@ export class PeoplePage extends LitElement {
         <address-fields .form=${this.form}></address-fields>
 
         <h2>Emergency Contact</h2>
-        <emergency-contact-fields
-          .form=${this.form}
-        ></emergency-contact-fields>
+        <emergency-contact-fields .form=${this.form}></emergency-contact-fields>
 
         <button type="submit" ?disabled=${this.form.api.state.isSubmitting}>
           ${this.form.api.state.isSubmitting ? 'Submitting...' : 'Submit'}

@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { getFormType } from '@tanstack/lit-form'
+import { TanStackFormSubscriber, getFormType } from '@tanstack/lit-form'
 import { peopleFormOpts } from './shared-form.js'
 import '../../components/text-field.js'
 
@@ -10,6 +10,8 @@ const formType = getFormType(peopleFormOpts)
 export class AddressFields extends LitElement {
   @property({ attribute: false })
   form!: typeof formType
+
+  _subscriber = new TanStackFormSubscriber(this, () => this.form.api.store)
 
   protected createRenderRoot() {
     return this
@@ -22,12 +24,18 @@ export class AddressFields extends LitElement {
         ${this.form.field(
           { name: 'address.line1' },
           (field) =>
-            html`<text-field label="Address Line 1" .field=${field}></text-field>`,
+            html`<text-field
+              label="Address Line 1"
+              .field=${field}
+            ></text-field>`,
         )}
         ${this.form.field(
           { name: 'address.line2' },
           (field) =>
-            html`<text-field label="Address Line 2" .field=${field}></text-field>`,
+            html`<text-field
+              label="Address Line 2"
+              .field=${field}
+            ></text-field>`,
         )}
         ${this.form.field(
           { name: 'address.city' },
