@@ -1,9 +1,10 @@
 /// <reference lib="dom" />
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import '@testing-library/jest-dom'
 import { userEvent } from '@testing-library/user-event'
 import { LitElement, html } from 'lit'
 import { TanStackFormController } from '../src/index.js'
+import { defineOnce, mount } from './utils'
 
 const user = userEvent.setup()
 
@@ -12,29 +13,7 @@ interface TestData {
   step2: { name: string }
 }
 
-const registered = new Set<string>()
-function defineOnce(name: string, ctor: CustomElementConstructor) {
-  if (!registered.has(name) && !window.customElements.get(name)) {
-    window.customElements.define(name, ctor)
-    registered.add(name)
-  }
-}
-
-async function mount<T extends LitElement>(tag: string): Promise<T> {
-  const el = document.createElement(tag) as T
-  document.body.appendChild(el)
-  await el.updateComplete
-  return el
-}
-
 describe('form.group directive', () => {
-  let mounted: LitElement[] = []
-
-  afterEach(() => {
-    for (const el of mounted) el.remove()
-    mounted = []
-  })
-
   it('should call onGroupSubmit but not the form onSubmit when submitting the group', async () => {
     const onSubmit = vi.fn()
     const onGroupSubmit = vi.fn()
@@ -81,7 +60,6 @@ describe('form.group directive', () => {
 
     defineOnce('group-test-1', TestEl)
     const el = await mount<TestEl>('group-test-1')
-    mounted.push(el)
 
     const button = el.shadowRoot!.querySelector<HTMLButtonElement>(
       '#submit-group',
@@ -124,7 +102,6 @@ describe('form.group directive', () => {
 
     defineOnce('group-test-2', TestEl)
     const el = await mount<TestEl>('group-test-2')
-    mounted.push(el)
 
     const valueEl = () =>
       el.shadowRoot!.querySelector<HTMLPreElement>('#group-value')!
@@ -199,7 +176,6 @@ ${String(group.state.meta.errorMap.onSubmit ?? '')}</pre
 
     defineOnce('group-test-3', TestEl)
     const el = await mount<TestEl>('group-test-3')
-    mounted.push(el)
 
     await user.click(
       el.shadowRoot!.querySelector<HTMLButtonElement>('#submit-group')!,
@@ -269,7 +245,6 @@ ${String(group.state.meta.errorMap.onSubmit ?? '')}</pre
 
     defineOnce('group-test-4', TestEl)
     const el = await mount<TestEl>('group-test-4')
-    mounted.push(el)
 
     await user.click(
       el.shadowRoot!.querySelector<HTMLButtonElement>('#submit-group')!,
@@ -312,7 +287,6 @@ ${String(group.state.meta.errorMap.onSubmit ?? '')}</pre
 
     defineOnce('group-test-5', TestEl)
     const el = await mount<TestEl>('group-test-5')
-    mounted.push(el)
 
     await user.click(
       el.shadowRoot!.querySelector<HTMLButtonElement>('#submit-group')!,
