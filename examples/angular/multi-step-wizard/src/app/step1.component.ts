@@ -3,9 +3,10 @@ import {
   TanStackAppField,
   TanStackField,
   TanStackFormGroup,
+  injectWithForm,
 } from '@tanstack/angular-form'
 import { TextFieldComponent } from './text-field.component'
-import { step1Schema } from './shared-form'
+import { step1Schema, wizardFormOpts } from './shared-form'
 
 @Component({
   selector: 'app-step1',
@@ -18,7 +19,7 @@ import { step1Schema } from './shared-form'
   ],
   template: `
     <ng-container
-      [tanstackFormGroup]="form()"
+      [tanstackFormGroup]="withForm.form"
       name="step1"
       [validators]="{ onDynamic: step1Schema }"
       [onGroupSubmit]="onGroupSubmit"
@@ -35,7 +36,7 @@ import { step1Schema } from './shared-form'
         <app-text-field
           label="Step 1 Name"
           tanstack-app-field
-          [tanstackField]="form()"
+          [tanstackField]="withForm.form"
           name="step1.name"
         />
 
@@ -48,7 +49,7 @@ import { step1Schema } from './shared-form'
   `,
 })
 export class Step1Component {
-  form = input.required<any>()
+  withForm = injectWithForm({ ...wizardFormOpts })
   step = input.required<number>()
   isSubmitting = input.required<boolean>()
   stepChange = output<number>()

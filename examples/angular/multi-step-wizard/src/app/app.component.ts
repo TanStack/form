@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core'
 import {
+  TanStackWithForm,
   injectForm,
   injectStore,
   revalidateLogic,
@@ -12,10 +13,11 @@ import { step1Schema, step2Schema, wizardFormOpts } from './shared-form'
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [Step1Component, Step2Component],
+  imports: [TanStackWithForm, Step1Component, Step2Component],
   template: `
     @if (step() === 0) {
       <app-step1
+        tanstack-with-form
         [form]="form"
         [step]="step()"
         [isSubmitting]="isSubmitting()"
@@ -24,6 +26,7 @@ import { step1Schema, step2Schema, wizardFormOpts } from './shared-form'
     }
     @if (step() === 1) {
       <app-step2
+        tanstack-with-form
         [form]="form"
         [step]="step()"
         [isSubmitting]="isSubmitting()"
