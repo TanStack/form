@@ -63,12 +63,18 @@ export class AppForm extends LitElement {
 
   render() {
     return html`
-      ${this.form.field({ name: 'firstName' }, (field) => html`
-        <text-field label="First Name" .field=${field}></text-field>
-      `)}
-      ${this.form.field({ name: 'lastName' }, (field) => html`
-        <text-field label="Last Name" .field=${field}></text-field>
-      `)}
+      ${this.form.field(
+        { name: 'firstName' },
+        (field) => html`
+          <text-field label="First Name" .field=${field}></text-field>
+        `,
+      )}
+      ${this.form.field(
+        { name: 'lastName' },
+        (field) => html`
+          <text-field label="Last Name" .field=${field}></text-field>
+        `,
+      )}
     `
   }
 }
@@ -121,9 +127,12 @@ export class ChildForm extends LitElement {
   render() {
     return html`
       <p>${this.title}</p>
-      ${this.form.field({ name: 'firstName' }, (field) => html`
-        <text-field label="First Name" .field=${field}></text-field>
-      `)}
+      ${this.form.field(
+        { name: 'firstName' },
+        (field) => html`
+          <text-field label="First Name" .field=${field}></text-field>
+        `,
+      )}
     `
   }
 }
@@ -180,9 +189,12 @@ export class PasswordFields extends LitElement {
 
   render() {
     return html`
-      ${this.form.field({ name: 'password' }, (field) => html`
-        <text-field label="Password" .field=${field}></text-field>
-      `)}
+      ${this.form.field(
+        { name: 'password' },
+        (field) => html`
+          <text-field label="Password" .field=${field}></text-field>
+        `,
+      )}
       ${this.form.field(
         {
           name: 'confirm_password',
