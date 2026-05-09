@@ -1,5 +1,16 @@
 # @tanstack/angular-form
 
+## 1.31.0
+
+### Minor Changes
+
+- Add tanstack-with-form API for more modular form usage ([#2163](https://github.com/TanStack/form/pull/2163))
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.31.0
+
 ## 1.30.0
 
 ### Patch Changes
