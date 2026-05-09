@@ -45,9 +45,7 @@ describe('form.group directive', () => {
                     id="step1-name"
                     .value=${field.state.value}
                     @input=${(e: Event) =>
-                      field.handleChange(
-                        (e.target as HTMLInputElement).value,
-                      )}
+                      field.handleChange((e.target as HTMLInputElement).value)}
                   />
                 `,
               )}
@@ -61,9 +59,8 @@ describe('form.group directive', () => {
     defineOnce('group-test-1', TestEl)
     const el = await mount<TestEl>('group-test-1')
 
-    const button = el.shadowRoot!.querySelector<HTMLButtonElement>(
-      '#submit-group',
-    )!
+    const button =
+      el.shadowRoot!.querySelector<HTMLButtonElement>('#submit-group')!
     await user.click(button)
 
     await vi.waitFor(() => expect(onGroupSubmit).toHaveBeenCalledTimes(1))
@@ -107,8 +104,7 @@ describe('form.group directive', () => {
       el.shadowRoot!.querySelector<HTMLPreElement>('#group-value')!
     expect(valueEl().textContent).toBe('{"name":"initial"}')
 
-    const input =
-      el.shadowRoot!.querySelector<HTMLInputElement>('#step1-name')!
+    const input = el.shadowRoot!.querySelector<HTMLInputElement>('#step1-name')!
     input.focus()
     input.value = 'updated'
     input.dispatchEvent(new Event('input', { bubbles: true, composed: true }))
@@ -158,9 +154,7 @@ describe('form.group directive', () => {
                     id="step1-name"
                     .value=${field.state.value}
                     @input=${(e: Event) =>
-                      field.handleChange(
-                        (e.target as HTMLInputElement).value,
-                      )}
+                      field.handleChange((e.target as HTMLInputElement).value)}
                   />
                 `,
               )}
@@ -230,9 +224,7 @@ ${String(group.state.meta.errorMap.onSubmit ?? '')}</pre
                     id="step1-name"
                     .value=${field.state.value}
                     @input=${(e: Event) =>
-                      field.handleChange(
-                        (e.target as HTMLInputElement).value,
-                      )}
+                      field.handleChange((e.target as HTMLInputElement).value)}
                   />
                 `,
               )}

@@ -675,9 +675,7 @@ type groupRenderCallback<
   TParentData,
   TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
-  TOnMount extends
-    | undefined
-    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnMount extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnChange extends
     | undefined
     | FormGroupValidateOrFn<TParentData, TName, TData>,
@@ -745,9 +743,7 @@ type formGroupDirectiveType<
   TParentData,
   TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
-  TOnMount extends
-    | undefined
-    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnMount extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnChange extends
     | undefined
     | FormGroupValidateOrFn<TParentData, TName, TData>,
@@ -858,9 +854,7 @@ class FormGroupDirective<
   TParentData,
   TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
-  TOnMount extends
-    | undefined
-    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnMount extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
   TOnChange extends
     | undefined
     | FormGroupValidateOrFn<TParentData, TName, TData>,
