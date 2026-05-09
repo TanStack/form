@@ -168,3 +168,107 @@ export class AppComponent {
 ```
 
 > Here, the `tanstack-app-field` directive is taking the properties from `[tanstackField]` and `provide`ing them down to the `app-text-field` so that they can be more easily consumed as a component.
+
+## Breaking big forms into smaller pieces
+
+Sometimes forms get very large; it's just how it goes sometimes. While TanStack Form supports large forms well, it's never fun to work with hundreds or thousands of lines of code in a single component.
+
+To solve this, we support breaking forms into smaller pieces using the `[tanstack-with-form]` directive together with the `injectWithForm` function.
+
+The parent component owns the `form` (created via `injectForm`) and passes it down to a child component using the `tanstack-with-form` directive. The child component reads it back via `injectWithForm`, which returns a fully-typed reference to that same `FormApi` — meaning the child can render `[tanstackField]` bindings, `tanstack-app-field` components, etc. against the parent's form without needing to redeclare any generics.
+
+First, lift your shared form options out using `formOptions` so both the parent and the child can reference the same shape:
+
+```angular-ts
+// shared-form.ts
+import { formOptions } from '@tanstack/angular-form'
+
+export const peopleFormOpts = formOptions({
+  defaultValues: {
+    firstName: '',
+    lastName: '',
+  },
+})
+```
+
+Then, build a child component that consumes the form via `injectWithForm`:
+
+```angular-ts
+// child-form.component.ts
+import { Component } from '@angular/core'
+import {
+  TanStackAppField,
+  TanStackField,
+  injectWithForm,
+} from '@tanstack/angular-form'
+import { AppTextField } from './app-text-field.component'
+import { peopleFormOpts } from './shared-form'
+
+@Component({
+  selector: 'app-child-form',
+  standalone: true,
+  imports: [TanStackField, TanStackAppField, AppTextField],
+  template: `
+    <app-text-field
+      label="First name:"
+      tanstack-app-field
+      [tanstackField]="withForm.form"
+      name="firstName"
+    />
+    <app-text-field
+      label="Last name:"
+      tanstack-app-field
+      [tanstackField]="withForm.form"
+      name="lastName"
+    />
+  `,
+})
+export class ChildForm {
+  // Spreading the form options into `injectWithForm` is what gives `withForm.form`
+  // its full type inference — no generics needed.
+  withForm = injectWithForm({ ...peopleFormOpts })
+}
+```
+
+> The options passed to `injectWithForm({ ...peopleFormOpts })` are only used for type inference. They are not read at runtime; the actual `FormApi` instance comes from the ancestor `tanstack-with-form` directive.
+
+Finally, in the parent component, create the form with `injectForm` and pass it to the child via the `tanstack-with-form` directive:
+
+```angular-ts
+// app.component.ts
+import { Component } from '@angular/core'
+import {
+  TanStackWithForm,
+  injectForm,
+} from '@tanstack/angular-form'
+import { ChildForm } from './child-form.component'
+import { peopleFormOpts } from './shared-form'
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [TanStackWithForm, ChildForm],
+  template: `
+    <form (submit)="handleSubmit($event)">
+      <app-child-form tanstack-with-form [form]="form" />
+      <button type="submit">Submit</button>
+    </form>
+  `,
+})
+export class AppComponent {
+  form = injectForm({
+    ...peopleFormOpts,
+    onSubmit({ value }) {
+      console.log(value)
+    },
+  })
+
+  handleSubmit(event: SubmitEvent) {
+    event.preventDefault()
+    event.stopPropagation()
+    this.form.handleSubmit()
+  }
+}
+```
+
+This pattern lets you split a large form across many components while keeping a single source of truth for the form's state and types. Any descendant of the `tanstack-with-form` directive can call `injectWithForm({ ...peopleFormOpts })` to gain typed access to the same form instance.

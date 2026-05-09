@@ -6,3 +6,8 @@ export { TanStackField } from './tanstack-field'
 export { TanStackFormGroup } from './tanstack-form-group'
 export { injectStore } from './inject-store'
 export { TanStackFieldInjectable, injectField } from './injectable'
+export { TanStackWithForm } from './with-form'
+export {
+  TanStackWithFormInjectable,
+  injectWithForm,
+} from './with-form-injectable'
