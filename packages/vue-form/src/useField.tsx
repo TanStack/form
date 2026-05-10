@@ -2,14 +2,14 @@ import { FieldApi } from '@tanstack/form-core'
 import { useStore } from '@tanstack/vue-store'
 import { computed, defineComponent, onMounted, onUnmounted, watch } from 'vue'
 import type {
+  AnyFieldApi,
+  AnyFieldMeta,
   DeepKeys,
   DeepValue,
   FieldAsyncValidateOrFn,
   FieldValidateOrFn,
   FormAsyncValidateOrFn,
   FormValidateOrFn,
-  AnyFieldMeta,
-  AnyFieldApi,
 } from '@tanstack/form-core'
 import type {
   ComponentOptionsMixin,
