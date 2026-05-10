@@ -246,9 +246,10 @@ export class TanStackField<
     const isArrayMode = this.mode() === 'array'
     const reactiveValue = injectStore(
       this._api().store,
-      isArrayMode
-        ? (state) => Object.keys((state.value as unknown) ?? []).length
-        : (state) => state.value,
+      (state) =>
+        isArrayMode
+          ? Object.keys((state.value as unknown) ?? []).length
+          : state.value,
       injectorOpts,
     )
     const reactiveIsTouched = injectStore(
