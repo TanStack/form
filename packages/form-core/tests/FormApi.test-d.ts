@@ -364,13 +364,7 @@ it('should extract the form error type from a global form error', () => {
   >()
 
   expectTypeOf(form.state.errors).toEqualTypeOf<
-    (
-      | 'onMount'
-      | 'onChange'
-      | 'onChangeAsync'
-      | 'onBlur'
-      | 'onBlurAsync'
-    )[]
+    ('onMount' | 'onChange' | 'onChangeAsync' | 'onBlur' | 'onBlurAsync')[]
   >
 })
 

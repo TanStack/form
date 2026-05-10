@@ -286,9 +286,7 @@ describe('formOptions', () => {
 
     const form = new FormApi(formOpts)
 
-    expectTypeOf(form.state.errors).toEqualTypeOf<
-      ('I just need an error')[]
-    >()
+    expectTypeOf(form.state.errors).toEqualTypeOf<'I just need an error'[]>()
 
     const form2 = new FormApi({
       ...formOpts,
@@ -302,9 +300,7 @@ describe('formOptions', () => {
       },
     })
 
-    expectTypeOf(form2.state.errors).toEqualTypeOf<
-      ('Too short!')[]
-    >()
+    expectTypeOf(form2.state.errors).toEqualTypeOf<'Too short!'[]>()
 
     const form3 = new FormApi({
       ...formOpts,
