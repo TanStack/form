@@ -893,4 +893,131 @@ describe('createFormHook', () => {
     props: null,
     render: () => <></>,
   })
+
+  describe('extendForm', () => {
+    function ExtendedField() {
+      return null
+    }
+    function ExtendedFormComp() {
+      return null
+    }
+
+    const baseHook = createFormHook({
+      fieldComponents: { Test },
+      formComponents: { Test },
+      fieldContext,
+      formContext,
+    })
+
+    const {
+      withForm: withExtendedForm,
+      withFieldGroup: withExtendedFieldGroup,
+      extendForm,
+    } = baseHook.extendForm({
+      fieldComponents: { ExtendedField },
+      formComponents: { ExtendedFormComp },
+    })
+
+    it('should expose extendForm on the returned hook', () => {
+      expectTypeOf(extendForm).toBeFunction()
+    })
+
+    it('should include parent field components in the extended AppField render prop', () => {
+      withExtendedForm({
+        defaultValues: { name: '' },
+        render: ({ form }) => {
+          expectTypeOf(form.AppField).toBeFunction()
+
+          return (
+            <form.AppField name="name">
+              {(field) => {
+                expectTypeOf(field.Test).toBeFunction()
+                expectTypeOf(field.ExtendedField).toBeFunction()
+                return null
+              }}
+            </form.AppField>
+          )
+        },
+      })
+    })
+
+    it('should include parent form components on the extended form', () => {
+      withExtendedForm({
+        defaultValues: { name: '' },
+        render: ({ form }) => {
+          expectTypeOf(form.Test).toBeFunction()
+          expectTypeOf(form.ExtendedFormComp).toBeFunction()
+          return null
+        },
+      })
+    })
+
+    it('should include parent and extended components in withFieldGroup', () => {
+      withExtendedFieldGroup({
+        defaultValues: { name: '' },
+        render: ({ group }) => {
+          expectTypeOf(group.Test).toBeFunction()
+          expectTypeOf(group.ExtendedFormComp).toBeFunction()
+
+          return (
+            <group.AppField name="name">
+              {(field) => {
+                expectTypeOf(field.Test).toBeFunction()
+                expectTypeOf(field.ExtendedField).toBeFunction()
+                return null
+              }}
+            </group.AppField>
+          )
+        },
+      })
+    })
+
+    it('should error when a duplicate field component name is used in extendForm', () => {
+      baseHook.extendForm({
+        fieldComponents: {
+          // @ts-expect-error 'Test' already exists in the base form
+          Test: ExtendedField,
+        },
+      })
+    })
+
+    it('should error when a duplicate form component name is used in extendForm', () => {
+      baseHook.extendForm({
+        formComponents: {
+          // @ts-expect-error 'Test' already exists in the base form
+          Test: ExtendedFormComp,
+        },
+      })
+    })
+
+    it('should allow further extension of an already extended hook', () => {
+      function ThirdField() {
+        return null
+      }
+
+      const { useAppForm: useDoublyExtended } = baseHook
+        .extendForm({ fieldComponents: { ExtendedField } })
+        .extendForm({ fieldComponents: { ThirdField } })
+
+      withExtendedForm({
+        defaultValues: { name: '' },
+        render: ({ form }) => {
+          return (
+            <form.AppField name="name">
+              {(field) => {
+                expectTypeOf(field.Test).toBeFunction()
+                expectTypeOf(field.ExtendedField).toBeFunction()
+                return null
+              }}
+            </form.AppField>
+          )
+        },
+      })
+
+      const doublyExtendedForm = useDoublyExtended({
+        defaultValues: { name: '' },
+      })
+      expectTypeOf(doublyExtendedForm.AppField).toBeFunction()
+    })
+  })
 })

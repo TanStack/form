@@ -108,6 +108,31 @@ describe('standard schema validator', () => {
       ])
     })
 
+    it('should handle form-level field errors for fields without a mounted FieldApi instance', () => {
+      const form = new FormApi({
+        defaultValues: {
+          email: '',
+        },
+        validators: {
+          onChange: z.object({
+            email: z.string().email('email must be an email address'),
+          }),
+        },
+      })
+
+      form.mount()
+
+      form.setFieldValue('email', 'not-an-email')
+
+      expect(form.state.errors).toMatchObject([
+        { email: [{ message: 'email must be an email address' }] },
+      ])
+
+      form.setFieldValue('email', 'test@example.com')
+
+      expect(form.state.errors).toEqual([])
+    })
+
     it('should support standard schema async validation with zod', async () => {
       vi.useFakeTimers()
 

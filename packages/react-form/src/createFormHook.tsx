@@ -65,6 +65,33 @@ type UnwrapDefaultOrAny<DefaultT, T> = [DefaultT] extends [T]
     : T
   : T
 
+function useFormContext() {
+  const form = useContext(formContext)
+
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (!form) {
+    throw new Error(
+      '`formContext` only works when within a `formComponent` passed to `createFormHook`',
+    )
+  }
+
+  return form as ReactFormExtendedApi<
+    // If you need access to the form data, you need to use `withForm` instead
+    Record<string, never>,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+  >
+}
+
 export function createFormHookContexts() {
   function useFieldContext<TData>() {
     const field = useContext(fieldContext)
@@ -89,33 +116,6 @@ export function createFormHookContexts() {
       any,
       any,
       any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any
-    >
-  }
-
-  function useFormContext() {
-    const form = useContext(formContext)
-
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (!form) {
-      throw new Error(
-        '`formContext` only works when within a `formComponent` passed to `createFormHook`',
-      )
-    }
-
-    return form as ReactFormExtendedApi<
-      // If you need access to the form data, you need to use `withForm` instead
-      Record<string, never>,
       any,
       any,
       any,
@@ -359,7 +359,6 @@ export function createFormHook<
         return (
           <form.Field {...props}>
             {(field) => (
-              // eslint-disable-next-line @eslint-react/no-context-provider
               <fieldContext.Provider value={field}>
                 {children(Object.assign(field, fieldComponents))}
               </fieldContext.Provider>
@@ -448,7 +447,9 @@ export function createFormHook<
     UnwrapOrAny<TFormComponents>,
     UnwrapOrAny<TRenderProps>
   >['render'] {
-    return (innerProps) => render({ ...props, ...innerProps })
+    return function Render(innerProps) {
+      return render({ ...props, ...innerProps })
+    }
   }
 
   function withFieldGroup<
@@ -540,9 +541,87 @@ export function createFormHook<
     }
   }
 
+  /**
+   * ⚠️ **Use withForm whenever possible.**
+   *
+   * Gets a typed form from the `<form.AppForm />` context.
+   */
+  function useTypedAppFormContext<
+    TFormData,
+    TOnMount extends undefined | FormValidateOrFn<TFormData>,
+    TOnChange extends undefined | FormValidateOrFn<TFormData>,
+    TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+    TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+    TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+    TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TSubmitMeta,
+  >(
+    _props: FormOptions<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TOnServer,
+      TSubmitMeta
+    >,
+  ): AppFieldExtendedReactFormApi<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    TOnServer,
+    TSubmitMeta,
+    TComponents,
+    TFormComponents
+  > {
+    const form = useFormContext()
+
+    return form as never
+  }
+
+  function extendForm<
+    const TNewField extends Record<string, ComponentType<any>> & {
+      [K in keyof TComponents]?: 'Error: field component names must be unique — this key already exists in the base form'
+    },
+    const TNewForm extends Record<string, ComponentType<any>> & {
+      [K in keyof TFormComponents]?: 'Error: form component names must be unique — this key already exists in the base form'
+    },
+  >(extension: { fieldComponents?: TNewField; formComponents?: TNewForm }) {
+    return createFormHook({
+      fieldContext,
+      formContext,
+      fieldComponents: {
+        ...fieldComponents,
+        ...extension.fieldComponents,
+      } as TComponents & TNewField,
+      formComponents: {
+        ...formComponents,
+        ...extension.formComponents,
+      } as TFormComponents & TNewForm,
+    })
+  }
+
   return {
     useAppForm,
     withForm,
     withFieldGroup,
+    useTypedAppFormContext,
+    extendForm,
   }
 }

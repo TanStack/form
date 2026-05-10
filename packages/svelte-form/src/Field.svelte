@@ -10,8 +10,7 @@
   } from '@tanstack/form-core'
   import { useStore } from '@tanstack/svelte-store'
   import { onMount, type Snippet } from 'svelte'
-  import Field from './Field.svelte'
-  import type { CreateFieldOptions, SvelteFieldApi } from './types.js'
+  import type { CreateFieldOptions } from './types.js'
 
   export function createField<
     TParentData,
@@ -76,23 +75,7 @@
 
     const api = new FieldApi(options)
 
-    const extendedApi: typeof api &
-      SvelteFieldApi<
-        TParentData,
-        TFormOnMount,
-        TFormOnChange,
-        TFormOnChangeAsync,
-        TFormOnBlur,
-        TFormOnBlurAsync,
-        TFormOnSubmit,
-        TFormOnSubmitAsync,
-        TFormOnDynamic,
-        TFormOnDynamicAsync,
-        TFormOnServer,
-        TParentSubmitMeta
-      > = api as never
-
-    extendedApi.Field = Field as never
+    const extendedApi: typeof api = api as never
 
     let mounted = false
     // Instantiates field meta and removes it when unrendered

@@ -1,8 +1,13 @@
 import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
-import { FieldApi, FormApi, formEventClient } from '../src/index'
+import { FieldApi, FormApi, formEventClient, mergeForm } from '../src/index'
 import { sleep } from './utils'
-import type { AnyFieldApi, AnyFormApi } from '../src/index'
+import type {
+  AnyFieldApi,
+  AnyFormApi,
+  AnyFormState,
+  FormState,
+} from '../src/index'
 
 describe('form api', () => {
   it('should get default form state when default values are passed', () => {
@@ -1980,7 +1985,7 @@ describe('form api', () => {
     ).toBeUndefined()
   })
 
-  it('should validate all fields consistently', async () => {
+  it('should validate all fields consistently - field level onChange validators', async () => {
     const form = new FormApi({
       defaultValues: {
         firstName: '',
@@ -1992,8 +1997,7 @@ describe('form api', () => {
       form,
       name: 'firstName',
       validators: {
-        onChange: ({ value }) =>
-          value.length > 0 ? undefined : 'first name is required',
+        onChange: ({ value }) => (value.length > 0 ? undefined : 'is required'),
       },
     })
 
@@ -2001,9 +2005,30 @@ describe('form api', () => {
     field.mount()
 
     await form.validateAllFields('change')
-    expect(field.getMeta().errorMap.onChange).toEqual('first name is required')
-    await form.validateAllFields('change')
-    expect(field.getMeta().errorMap.onChange).toEqual('first name is required')
+    expect(field.getMeta().errorMap.onChange).toEqual('is required')
+  })
+
+  it('should validate all fields consistently - field level onSubmit validators', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onSubmit: ({ value }) => (value.length > 0 ? undefined : 'is required'),
+      },
+    })
+
+    form.mount()
+    field.mount()
+
+    await form.validateAllFields('submit')
+    expect(field.getMeta().errorMap.onSubmit).toEqual('is required')
   })
 
   it('should validate a single field consistently if touched', async () => {
@@ -4151,5 +4176,71 @@ describe('form api event client', () => {
     expect(logSpy).not.toHaveBeenCalled()
 
     logSpy.mockRestore()
+  })
+})
+
+describe('form transform', () => {
+  it('should transform state values on first load', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      transform: (baseForm) => {
+        return mergeForm(baseForm as AnyFormApi, {
+          values: {
+            name: 'Another',
+          },
+        })
+      },
+    })
+
+    form.mount()
+
+    expect(form.state.values.name).toBe('Another')
+  })
+
+  it('should transform form error map on first load', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      transform: (baseForm) => {
+        return mergeForm(baseForm as AnyFormApi, {
+          errorMap: {
+            onChange: 'Error',
+          },
+        })
+      },
+    })
+
+    form.mount()
+
+    expect(form.state.errorMap.onChange).toBe('Error')
+  })
+
+  it('should transform fields error map on first load', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      transform: (baseForm) => {
+        return mergeForm(baseForm as AnyFormApi, {
+          errorMap: {
+            onChange: { fields: { name: 'Error' } },
+          },
+        })
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      name: 'name',
+      form,
+    })
+
+    field.mount()
+
+    expect(field.state.meta.errorMap.onChange).toBe('Error')
   })
 })
