@@ -590,6 +590,15 @@ importers:
       '@react-navigation/native':
         specifier: ^7.1.8
         version: 7.2.4(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.6)(react@19.1.0))(react@19.1.0)
+      '@tanstack/react-form':
+        specifier: ^1.31.0
+        version: link:../../../packages/react-form
+      arktype:
+        specifier: ^2.1.22
+        version: 2.1.23
+      effect:
+        specifier: ^3.17.14
+        version: 3.17.14
       expo:
         specifier: ~54.0.33
         version: 54.0.34(@babel/core@7.28.5)(@expo/metro-runtime@6.1.2)(expo-router@6.0.23)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.6)(react@19.1.0))(react@19.1.0)(typescript@5.8.2)
@@ -653,6 +662,12 @@ importers:
       react-native-worklets:
         specifier: 0.5.1
         version: 0.5.1(@babel/core@7.28.5)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.6)(react@19.1.0))(react@19.1.0)
+      valibot:
+        specifier: ^1.1.0
+        version: 1.1.0(typescript@5.8.2)
+      zod:
+        specifier: ^3.25.76
+        version: 3.25.76
     devDependencies:
       '@types/react':
         specifier: ~19.1.0
@@ -1702,7 +1717,7 @@ importers:
     devDependencies:
       '@sveltejs/package':
         specifier: ^2.5.3
-        version: 2.5.4(svelte@5.41.1)(typescript@5.9.3)
+        version: 2.5.4(svelte@5.41.1)(typescript@5.8.2)
       '@sveltejs/vite-plugin-svelte':
         specifier: ^5.1.1
         version: 5.1.1(svelte@5.41.1)(vite@7.2.2(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.0)(lightningcss@1.32.0)(sass@1.90.0)(sugarss@5.0.1(postcss@8.5.6))(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.1))
@@ -1714,7 +1729,7 @@ importers:
         version: 5.41.1
       svelte-check:
         specifier: ^4.3.1
-        version: 4.3.3(picomatch@4.0.3)(svelte@5.41.1)(typescript@5.9.3)
+        version: 4.3.3(picomatch@4.0.3)(svelte@5.41.1)(typescript@5.8.2)
 
   packages/vue-form:
     dependencies:
@@ -12935,6 +12950,7 @@ packages:
 
   uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   uvu@0.5.6:
@@ -18346,14 +18362,14 @@ snapshots:
     dependencies:
       acorn: 8.15.0
 
-  '@sveltejs/package@2.5.4(svelte@5.41.1)(typescript@5.9.3)':
+  '@sveltejs/package@2.5.4(svelte@5.41.1)(typescript@5.8.2)':
     dependencies:
       chokidar: 4.0.3
       kleur: 4.1.5
       sade: 1.8.1
       semver: 7.7.2
       svelte: 5.41.1
-      svelte2tsx: 0.7.43(svelte@5.41.1)(typescript@5.9.3)
+      svelte2tsx: 0.7.43(svelte@5.41.1)(typescript@5.8.2)
     transitivePeerDependencies:
       - typescript
 
@@ -18715,7 +18731,7 @@ snapshots:
       '@tanstack/react-router': 1.135.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       vite: 7.2.2(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.0)(lightningcss@1.32.0)(sass@1.90.0)(sugarss@5.0.1(postcss@8.5.6))(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.1)
       vite-plugin-solid: 2.11.10(@testing-library/jest-dom@6.9.1)(solid-js@1.9.11)(vite@7.2.2(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.0)(lightningcss@1.32.0)(sass@1.90.0)(sugarss@5.0.1(postcss@8.5.6))(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.1))
-      webpack: 5.101.2(@swc/core@1.13.5)(esbuild@0.25.9)
+      webpack: 5.101.2(@swc/core@1.13.5)
     transitivePeerDependencies:
       - supports-color
 
@@ -21378,7 +21394,7 @@ snapshots:
       '@typescript-eslint/eslint-plugin': 8.46.4(@typescript-eslint/parser@8.46.4(eslint@9.36.0(jiti@2.6.1))(typescript@5.8.2))(eslint@9.36.0(jiti@2.6.1))(typescript@5.8.2)
       '@typescript-eslint/parser': 8.46.4(eslint@9.36.0(jiti@2.6.1))(typescript@5.8.2)
       eslint: 9.36.0(jiti@2.6.1)
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import-x@4.16.1(@typescript-eslint/utils@8.46.4(eslint@9.36.0(jiti@2.6.1))(typescript@5.8.2))(eslint-import-resolver-node@0.3.10)(eslint@9.36.0(jiti@2.6.1)))(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.4(eslint@9.36.0(jiti@2.6.1))(typescript@5.8.2))(eslint@9.36.0(jiti@2.6.1)))(eslint@9.36.0(jiti@2.6.1))
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import-x@4.16.1(@typescript-eslint/utils@8.46.4(eslint@9.36.0(jiti@2.6.1))(typescript@5.8.2))(eslint-import-resolver-node@0.3.10)(eslint@9.36.0(jiti@2.6.1)))(eslint-plugin-import@2.32.0)(eslint@9.36.0(jiti@2.6.1))
       eslint-plugin-expo: 1.0.0(eslint@9.36.0(jiti@2.6.1))(typescript@5.8.2)
       eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.46.4(eslint@9.36.0(jiti@2.6.1))(typescript@5.8.2))(eslint-import-resolver-typescript@3.10.1)(eslint@9.36.0(jiti@2.6.1))
       eslint-plugin-react: 7.37.5(eslint@9.36.0(jiti@2.6.1))
@@ -21405,7 +21421,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import-x@4.16.1(@typescript-eslint/utils@8.46.4(eslint@9.36.0(jiti@2.6.1))(typescript@5.8.2))(eslint-import-resolver-node@0.3.10)(eslint@9.36.0(jiti@2.6.1)))(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.4(eslint@9.36.0(jiti@2.6.1))(typescript@5.8.2))(eslint@9.36.0(jiti@2.6.1)))(eslint@9.36.0(jiti@2.6.1)):
+  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import-x@4.16.1(@typescript-eslint/utils@8.46.4(eslint@9.36.0(jiti@2.6.1))(typescript@5.8.2))(eslint-import-resolver-node@0.3.10)(eslint@9.36.0(jiti@2.6.1)))(eslint-plugin-import@2.32.0)(eslint@9.36.0(jiti@2.6.1)):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.3
@@ -21428,7 +21444,7 @@ snapshots:
       '@typescript-eslint/parser': 8.46.4(eslint@9.36.0(jiti@2.6.1))(typescript@5.8.2)
       eslint: 9.36.0(jiti@2.6.1)
       eslint-import-resolver-node: 0.3.10
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import-x@4.16.1(@typescript-eslint/utils@8.46.4(eslint@9.36.0(jiti@2.6.1))(typescript@5.8.2))(eslint-import-resolver-node@0.3.10)(eslint@9.36.0(jiti@2.6.1)))(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.4(eslint@9.36.0(jiti@2.6.1))(typescript@5.8.2))(eslint@9.36.0(jiti@2.6.1)))(eslint@9.36.0(jiti@2.6.1))
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import-x@4.16.1(@typescript-eslint/utils@8.46.4(eslint@9.36.0(jiti@2.6.1))(typescript@5.8.2))(eslint-import-resolver-node@0.3.10)(eslint@9.36.0(jiti@2.6.1)))(eslint-plugin-import@2.32.0)(eslint@9.36.0(jiti@2.6.1))
     transitivePeerDependencies:
       - supports-color
 
@@ -26682,7 +26698,7 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  svelte-check@4.3.3(picomatch@4.0.3)(svelte@5.41.1)(typescript@5.9.3):
+  svelte-check@4.3.3(picomatch@4.0.3)(svelte@5.41.1)(typescript@5.8.2):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.29
       chokidar: 4.0.3
@@ -26690,16 +26706,16 @@ snapshots:
       picocolors: 1.1.1
       sade: 1.8.1
       svelte: 5.41.1
-      typescript: 5.9.3
+      typescript: 5.8.2
     transitivePeerDependencies:
       - picomatch
 
-  svelte2tsx@0.7.43(svelte@5.41.1)(typescript@5.9.3):
+  svelte2tsx@0.7.43(svelte@5.41.1)(typescript@5.8.2):
     dependencies:
       dedent-js: 1.0.1
       pascal-case: 3.1.2
       svelte: 5.41.1
-      typescript: 5.9.3
+      typescript: 5.8.2
 
   svelte@5.41.1:
     dependencies:
@@ -26783,6 +26799,18 @@ snapshots:
     optionalDependencies:
       '@swc/core': 1.13.5
       esbuild: 0.25.9
+
+  terser-webpack-plugin@5.3.14(@swc/core@1.13.5)(webpack@5.101.2(@swc/core@1.13.5)(esbuild@0.25.9)):
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.29
+      jest-worker: 27.5.1
+      schema-utils: 4.3.2
+      serialize-javascript: 6.0.2
+      terser: 5.43.1
+      webpack: 5.101.2(@swc/core@1.13.5)
+    optionalDependencies:
+      '@swc/core': 1.13.5
+    optional: true
 
   terser@5.43.1:
     dependencies:
@@ -27063,7 +27091,8 @@ snapshots:
 
   typescript@5.9.2: {}
 
-  typescript@5.9.3: {}
+  typescript@5.9.3:
+    optional: true
 
   ua-parser-js@1.0.41: {}
 
@@ -27686,6 +27715,39 @@ snapshots:
       webpack: 5.101.2(@swc/core@1.13.5)(esbuild@0.25.9)
 
   webpack-virtual-modules@0.6.2: {}
+
+  webpack@5.101.2(@swc/core@1.13.5):
+    dependencies:
+      '@types/eslint-scope': 3.7.7
+      '@types/estree': 1.0.8
+      '@types/json-schema': 7.0.15
+      '@webassemblyjs/ast': 1.14.1
+      '@webassemblyjs/wasm-edit': 1.14.1
+      '@webassemblyjs/wasm-parser': 1.14.1
+      acorn: 8.15.0
+      acorn-import-phases: 1.0.4(acorn@8.15.0)
+      browserslist: 4.25.4
+      chrome-trace-event: 1.0.4
+      enhanced-resolve: 5.18.1
+      es-module-lexer: 1.7.0
+      eslint-scope: 5.1.1
+      events: 3.3.0
+      glob-to-regexp: 0.4.1
+      graceful-fs: 4.2.11
+      json-parse-even-better-errors: 2.3.1
+      loader-runner: 4.3.0
+      mime-types: 2.1.35
+      neo-async: 2.6.2
+      schema-utils: 4.3.2
+      tapable: 2.2.2
+      terser-webpack-plugin: 5.3.14(@swc/core@1.13.5)(webpack@5.101.2(@swc/core@1.13.5)(esbuild@0.25.9))
+      watchpack: 2.4.4
+      webpack-sources: 3.3.3
+    transitivePeerDependencies:
+      - '@swc/core'
+      - esbuild
+      - uglify-js
+    optional: true
 
   webpack@5.101.2(@swc/core@1.13.5)(esbuild@0.25.9):
     dependencies:
