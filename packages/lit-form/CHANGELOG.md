@@ -1,5 +1,11 @@
 # @tanstack/lit-form
 
+## 1.24.0
+
+### Minor Changes
+
+- Add `getFormType` type helper utility to Lit adapter ([#2165](https://github.com/TanStack/form/pull/2165))
+
 ## 1.23.32
 
 ### Patch Changes
