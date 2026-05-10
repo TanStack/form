@@ -48,7 +48,6 @@ it('should return all errors matching the right type from getAllErrors', () => {
       | 'onSubmitAsync'
       | { onBlur: true; onBlurNumber: number }
       | 'onBlurAsync'
-      | undefined
     )[]
   >()
 
@@ -371,7 +370,6 @@ it('should extract the form error type from a global form error', () => {
       | 'onChangeAsync'
       | 'onBlur'
       | 'onBlurAsync'
-      | undefined
     )[]
   >
 })
