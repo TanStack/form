@@ -8,6 +8,8 @@ import type {
   FieldValidateOrFn,
   FormAsyncValidateOrFn,
   FormValidateOrFn,
+  AnyFieldMeta,
+  AnyFieldApi,
 } from '@tanstack/form-core'
 import type {
   ComponentOptionsMixin,
@@ -255,43 +257,57 @@ export function useField<
 
   // For array mode, only track length changes to avoid re-renders when child properties change
   // See: https://github.com/TanStack/form/issues/1925
-  const value = useStore(fieldApi.store, (state) => {
-    if (opts.mode === 'array') {
-      return (state.value as any)?.length
-    }
-
-    return state.value
-  })
-  const isTouched = useStore(fieldApi.store, (state) => state.meta.isTouched)
-  const isBlurred = useStore(fieldApi.store, (state) => state.meta.isBlurred)
-  const isDirty = useStore(fieldApi.store, (state) => state.meta.isDirty)
-  const errorMap = useStore(fieldApi.store, (state) => state.meta.errorMap)
-  const errorSourceMap = useStore(
+  const reactiveStateValue = useStore(
+    fieldApi.store,
+    (opts.mode === 'array'
+      ? (state) => Object.keys((state.value as unknown) ?? []).length
+      : (state) => state.value) as (
+      state: typeof fieldApi.state,
+    ) => TData | number,
+  )
+  const reactiveMetaIsTouched = useStore(
+    fieldApi.store,
+    (state) => state.meta.isTouched,
+  )
+  const reactiveMetaIsBlurred = useStore(
+    fieldApi.store,
+    (state) => state.meta.isBlurred,
+  )
+  const reactiveMetaIsDirty = useStore(
+    fieldApi.store,
+    (state) => state.meta.isDirty,
+  )
+  const reactiveMetaErrorMap = useStore(
+    fieldApi.store,
+    (state) => state.meta.errorMap,
+  )
+  const reactiveMetaErrorSourceMap = useStore(
     fieldApi.store,
     (state) => state.meta.errorSourceMap,
   )
-  const isValidating = useStore(
+  const reactiveMetaIsValidating = useStore(
     fieldApi.store,
     (state) => state.meta.isValidating,
   )
 
   const fieldState = computed(() => {
-    const valueValue = value.value
-
     return {
-      value: (opts.mode === 'array'
-        ? fieldApi.state.value
-        : valueValue) as TData,
-      meta: {
-        ...fieldApi.state.meta,
-        isTouched: isTouched.value,
-        isBlurred: isBlurred.value,
-        isDirty: isDirty.value,
-        errorMap: errorMap.value,
-        errorSourceMap: errorSourceMap.value,
-        isValidating: isValidating.value,
+      // For array mode, reactiveStateValue is the length (for reactivity tracking),
+      // so we need to get the actual value from fieldApi
+      value:
+        opts.mode === 'array' ? fieldApi.state.value : reactiveStateValue.value,
+      get meta() {
+        return {
+          ...fieldApi.state.meta,
+          isTouched: reactiveMetaIsTouched.value,
+          isBlurred: reactiveMetaIsBlurred.value,
+          isDirty: reactiveMetaIsDirty.value,
+          errorMap: reactiveMetaErrorMap.value,
+          errorSourceMap: reactiveMetaErrorSourceMap.value,
+          isValidating: reactiveMetaIsValidating.value,
+        } satisfies AnyFieldMeta
       },
-    }
+    } satisfies AnyFieldApi['state']
   })
 
   let cleanup!: () => void
