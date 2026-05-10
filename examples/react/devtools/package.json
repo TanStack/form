@@ -10,13 +10,13 @@
   },
   "dependencies": {
     "@tanstack/react-form": "^1.31.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
   },
   "devDependencies": {
     "@tanstack/react-devtools": "^0.9.7",
     "@tanstack/react-form-devtools": "^0.2.26",
-    "@types/react": "^19.0.7",
+    "@types/react": "~19.1.0",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^5.1.1",
     "vite": "^7.2.2"
