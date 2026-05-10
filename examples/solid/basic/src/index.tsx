@@ -1,16 +1,37 @@
 import { render } from 'solid-js/web'
-import { createTemplate } from '@tanstack/form-core'
-import { createTemplateSignal } from '@tanstack/solid-form'
+import { Show, createSignal } from 'solid-js'
+import { ArrayIndexExample } from './arrayIndex'
+import { ArrayForExample } from './arrayFor'
+
+type Tabs = 'arrayFor' | 'arrayIndex'
 
 function App() {
-  const template = createTemplate({ message: 'Hello from Solid!' })
-  const state = createTemplateSignal(template)
+  const [tab, setTab] = createSignal<Tabs>('arrayFor')
 
   return (
     <div style={{ padding: '20px', 'font-family': 'sans-serif' }}>
-      <h1>TanStack Template - Solid Basic Example</h1>
-      <p>Message: {state().message}</p>
-      <button onClick={() => template.greet()}>Greet (check console)</button>
+      <h1>TanStack Form - Solid Array Field</h1>
+      <button
+        onClick={() => setTab('arrayFor')}
+        disabled={tab() === 'arrayFor'}
+      >
+        Array with <code>For</code>
+      </button>
+      &nbsp;
+      <button
+        onClick={() => setTab('arrayIndex')}
+        disabled={tab() === 'arrayIndex'}
+      >
+        Array with <code>Index</code>
+      </button>
+      <br />
+      <br />
+      <Show when={tab() === 'arrayIndex'}>
+        <ArrayIndexExample />
+      </Show>
+      <Show when={tab() === 'arrayFor'}>
+        <ArrayForExample />
+      </Show>
     </div>
   )
 }

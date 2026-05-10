@@ -6,15 +6,16 @@ export function SchemaExample() {
     defaultValues: { name: '', email: '' },
     validators: [
       {
-        validate: z.object({
+        run: z.object({
           name: z.string().min(1, 'Name is required'),
           email: z.email('Email is required'),
         }),
-        signals: [
+        triggers: [
           'blur',
           {
-            signal: 'change',
-            enabled: ({ fieldApi }) => Boolean(fieldApi?.meta.isInvalid),
+            trigger: 'change',
+            when: ({ triggerFieldApi }) =>
+              Boolean(triggerFieldApi?.meta.isInvalid),
           },
         ],
       },

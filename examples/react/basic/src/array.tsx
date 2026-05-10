@@ -9,15 +9,18 @@ export function ArrayExample() {
     defaultValues: { fields: values },
     validators: [
       {
-        validate: z.object({
+        run: z.object({
           fields: z.array(
             z.object({ id: z.number(), message: z.string().min(3) }),
           ),
         }),
-        signals: [
-          { signal: 'change', enabled: ({ fieldApi }) => fieldApi !== null },
+        triggers: [
+          {
+            trigger: 'change',
+            when: ({ triggerFieldApi }) => triggerFieldApi !== undefined,
+          },
         ],
-        signalDebounceMs: 500,
+        triggerDebounceMs: 500,
       },
     ],
   })
@@ -42,7 +45,7 @@ export function ArrayExample() {
       <form.ArrayField name="fields">
         {(field) => (
           <>
-            <h2>Values amount: {field.value.length}</h2>
+            <h2>Values amount: {field.value.length.toLocaleString()}</h2>
             {field.value.map((element: any, i: number) => (
               <form.Field key={element.id} name={`fields[${i}].message`}>
                 {(field) => (
