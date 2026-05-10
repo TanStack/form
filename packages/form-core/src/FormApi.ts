@@ -1041,6 +1041,7 @@ export class FormApi<
             isValidating: false,
             isBlurred: false,
             isDirty: false,
+            validationCount: 0,
             ...(existingFieldMeta ?? {}),
             errorSourceMap: {
               ...(existingFieldMeta?.['errorSourceMap'] ?? {}),

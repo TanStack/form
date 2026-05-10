@@ -631,6 +631,12 @@ export type FieldMetaBase<
    * A flag indicating whether the field is currently being validated.
    */
   isValidating: boolean
+  /**
+   * @private
+   * Counter for tracking active async validations to prevent race conditions
+   * when multiple validations finish at the same time.
+   */
+  validationCount: number
 }
 
 export type AnyFieldMetaBase = FieldMetaBase<
@@ -1792,6 +1798,38 @@ export class FieldApi<
   }
 
   /**
+   * `@private`
+   * Starts tracking an async validation, incrementing the counter and setting isValidating if needed.
+   */
+  private startValidation() {
+    this.setMeta((prev) => {
+      const newCount = prev.validationCount + 1
+      return {
+        ...prev,
+        validationCount: newCount,
+        isValidating:
+          newCount > 0 && !prev.isValidating ? true : prev.isValidating,
+      }
+    })
+  }
+
+  /**
+   * `@private`
+   * Ends tracking an async validation, decrementing the counter and clearing isValidating if no validations remain.
+   */
+  private endValidation() {
+    this.setMeta((prev) => {
+      const newCount = Math.max(0, prev.validationCount - 1)
+      return {
+        ...prev,
+        validationCount: newCount,
+        isValidating:
+          newCount === 0 && prev.isValidating ? false : prev.isValidating,
+      }
+    })
+  }
+
+  /**
    * @private
    */
   validateAsync = async (
@@ -1854,18 +1892,23 @@ export class FieldApi<
     // Check if there are actual async validators to run before setting isValidating
     // This prevents unnecessary re-renders when there are no async validators
     // See: https://github.com/TanStack/form/issues/1130
-    const hasAsyncValidators =
-      validates.some((v) => v.validate) ||
-      linkedFieldValidates.some((v) => v.validate)
+    const hasAsyncValidators = validates.some((v) => v.validate)
+    const linkedFieldsWithAsyncValidators = linkedFieldValidates.some(
+      (v) => v.validate,
+    )
+      ? Array.from(
+          new Set(
+            linkedFieldValidates.filter((v) => v.validate).map((v) => v.field),
+          ),
+        )
+      : []
 
     if (hasAsyncValidators) {
-      if (!this.state.meta.isValidating) {
-        this.setMeta((prev) => ({ ...prev, isValidating: true }))
-      }
+      this.startValidation()
+    }
 
-      for (const linkedField of linkedFields) {
-        linkedField.setMeta((prev) => ({ ...prev, isValidating: true }))
-      }
+    for (const linkedField of linkedFieldsWithAsyncValidators) {
+      linkedField.startValidation()
     }
 
     const validateFieldAsyncFn = (
@@ -1891,6 +1934,7 @@ export class FieldApi<
             rawError = await new Promise((rawResolve, rawReject) => {
               if (field.timeoutIds.validations[validateObj.cause]) {
                 clearTimeout(field.timeoutIds.validations[validateObj.cause]!)
+                field.endValidation()
               }
 
               field.timeoutIds.validations[validateObj.cause] = setTimeout(
@@ -1979,11 +2023,11 @@ export class FieldApi<
 
     // Only reset isValidating if we set it to true earlier
     if (hasAsyncValidators) {
-      this.setMeta((prev) => ({ ...prev, isValidating: false }))
+      this.endValidation()
+    }
 
-      for (const linkedField of linkedFields) {
-        linkedField.setMeta((prev) => ({ ...prev, isValidating: false }))
-      }
+    for (const linkedField of linkedFieldsWithAsyncValidators) {
+      linkedField.endValidation()
     }
 
     return results.filter(Boolean)

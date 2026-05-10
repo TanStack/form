@@ -2991,6 +2991,68 @@ describe('form api', () => {
     expect(passconfirmField.state.meta.errors.length).toBe(0)
   })
 
+  it('should not leave linked fields stuck in isValidating when multiple setValue calls trigger concurrent async validation', async () => {
+    vi.useFakeTimers()
+
+    const validationFn = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        street: '',
+        houseNo: '',
+        zipCode: '',
+        city: '',
+      },
+    })
+
+    form.mount()
+
+    const street = new FieldApi({
+      form,
+      name: 'street',
+      validators: {
+        onChangeListenTo: ['houseNo', 'zipCode', 'city'],
+        onChangeAsyncDebounceMs: 300,
+        onChangeAsync: async () => {
+          await sleep(500)
+          await validationFn()
+          return undefined
+        },
+      },
+    })
+    const houseNo = new FieldApi({ form, name: 'houseNo' })
+    const zipCode = new FieldApi({ form, name: 'zipCode' })
+    const city = new FieldApi({ form, name: 'city' })
+
+    street.mount()
+    houseNo.mount()
+    zipCode.mount()
+    city.mount()
+
+    // Simulate browser autofill: all fields set in rapid succession
+    street.setValue('Foo Street')
+    houseNo.setValue('2')
+    zipCode.setValue('12345')
+    city.setValue('Barrington')
+
+    // Run debounce + async validation
+    await vi.runAllTimersAsync()
+
+    expect.soft(validationFn).toHaveBeenCalledTimes(1)
+
+    expect.soft(street.getMeta().isValidating).toBe(false)
+    expect.soft(houseNo.getMeta().isValidating).toBe(false)
+    expect.soft(zipCode.getMeta().isValidating).toBe(false)
+    expect.soft(city.getMeta().isValidating).toBe(false)
+
+    expect.soft(form.state.isFieldsValidating).toBe(false)
+    expect.soft(form.state.isFieldsValid).toBe(true)
+    expect.soft(form.state.isValid).toBe(true)
+    expect.soft(form.state.canSubmit).toBe(true)
+
+    vi.useRealTimers()
+  })
+
   it("should set field errors from the form's onMount validator", async () => {
     const form = new FormApi({
       defaultValues: {
