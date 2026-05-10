@@ -429,4 +429,34 @@ describe('useField', () => {
       expect(getByTestId('val')).toHaveTextContent('["a","b"]'),
     )
   })
+
+  it('should rerender array mode field on swapFieldValues', async () => {
+    const Comp = defineComponent(() => {
+      const form = useForm({
+        defaultValues: {
+          test: ['a', 'b'],
+        },
+      })
+
+      return () => (
+        <form.Field name="test" mode="array">
+          {({ field }: { field: AnyFieldApi }) => (
+            <div>
+              <div data-testid="val">{JSON.stringify(field.state.value)}</div>
+              <button onClick={() => form.swapFieldValues('test', 0, 1)}>
+                swap
+              </button>
+            </div>
+          )}
+        </form.Field>
+      )
+    })
+
+    const { getByTestId, getByText } = render(Comp)
+    expect(getByTestId('val')).toHaveTextContent('["a","b"]')
+    await user.click(getByText('swap'))
+    await waitFor(() =>
+      expect(getByTestId('val')).toHaveTextContent('["b","a"]'),
+    )
+  })
 })

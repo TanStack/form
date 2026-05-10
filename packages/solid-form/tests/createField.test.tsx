@@ -595,4 +595,34 @@ describe('createField', () => {
       expect(getByTestId('val')).toHaveTextContent('["a","b"]'),
     )
   })
+
+  it('should rerender array mode field on swapFieldValues', async () => {
+    function Comp() {
+      const form = createForm(() => ({
+        defaultValues: {
+          test: ['a', 'b'],
+        },
+      }))
+
+      return (
+        <form.Field name="test" mode="array">
+          {(field) => (
+            <div>
+              <div data-testid="val">{JSON.stringify(field().state.value)}</div>
+              <button onClick={() => form.swapFieldValues('test', 0, 1)}>
+                swap
+              </button>
+            </div>
+          )}
+        </form.Field>
+      )
+    }
+
+    const { getByTestId, getByText } = render(() => <Comp />)
+    expect(getByTestId('val')).toHaveTextContent('["a","b"]')
+    await user.click(getByText('swap'))
+    await waitFor(() =>
+      expect(getByTestId('val')).toHaveTextContent('["b","a"]'),
+    )
+  })
 })
