@@ -14,32 +14,28 @@ describe('form.FormGroup', () => {
     const onSubmit = vi.fn()
     const onGroupSubmit = vi.fn()
 
-    const { container } = render(FormGroupSubmit, { onSubmit, onGroupSubmit })
+    const { getByTestId } = render(FormGroupSubmit, { onSubmit, onGroupSubmit })
 
-    await user.click(
-      container.querySelector<HTMLButtonElement>(
-        '[data-testid="submit-group"]',
-      )!,
-    )
+    await user.click(getByTestId('submit-group'))
 
     await vi.waitFor(() => expect(onGroupSubmit).toHaveBeenCalledTimes(1))
     expect(onSubmit).not.toHaveBeenCalled()
   })
 
   it('should expose group state value reactively', async () => {
-    const { container } = render(FormGroupReactive)
+    const { getByTestId } = render(FormGroupReactive)
 
-    const groupValue = () =>
-      container.querySelector('[data-testid="group-value"]')!.textContent
-    expect(groupValue()).toBe('{"name":"initial"}')
+    expect(getByTestId('group-value')).toHaveTextContent('{"name":"initial"}')
 
-    const input = container.querySelector<HTMLInputElement>(
-      '[data-testid="step1-name"]',
-    )!
+    const input = getByTestId('step1-name')
     await user.clear(input)
     await user.type(input, 'updated')
 
-    await vi.waitFor(() => expect(groupValue()).toBe('{"name":"updated"}'))
+    await vi.waitFor(() =>
+      expect(getByTestId('group-value')).toHaveTextContent(
+        '{"name":"updated"}',
+      ),
+    )
   })
 
   it('should call onGroupSubmitInvalid when group-level validation fails', async () => {
@@ -47,17 +43,13 @@ describe('form.FormGroup', () => {
     const onGroupSubmit = vi.fn()
     const onGroupSubmitInvalid = vi.fn()
 
-    const { container } = render(FormGroupInvalid, {
+    const { getByTestId } = render(FormGroupInvalid, {
       onSubmit,
       onGroupSubmit,
       onGroupSubmitInvalid,
     })
 
-    await user.click(
-      container.querySelector<HTMLButtonElement>(
-        '[data-testid="submit-group"]',
-      )!,
-    )
+    await user.click(getByTestId('submit-group'))
 
     await vi.waitFor(() =>
       expect(onGroupSubmitInvalid).toHaveBeenCalledTimes(1),
@@ -65,9 +57,7 @@ describe('form.FormGroup', () => {
     expect(onGroupSubmit).not.toHaveBeenCalled()
     expect(onSubmit).not.toHaveBeenCalled()
     await vi.waitFor(() =>
-      expect(
-        container.querySelector('[data-testid="group-error"]')!.textContent,
-      ).toBe('Name is required'),
+      expect(getByTestId('group-error')).toHaveTextContent('Name is required'),
     )
   })
 
@@ -75,16 +65,12 @@ describe('form.FormGroup', () => {
     const onGroupSubmit = vi.fn()
     const onGroupSubmitInvalid = vi.fn()
 
-    const { container } = render(FormGroupOuterErrors, {
+    const { getByTestId } = render(FormGroupOuterErrors, {
       onGroupSubmit,
       onGroupSubmitInvalid,
     })
 
-    await user.click(
-      container.querySelector<HTMLButtonElement>(
-        '[data-testid="submit-group"]',
-      )!,
-    )
+    await user.click(getByTestId('submit-group'))
 
     await vi.waitFor(() => expect(onGroupSubmit).toHaveBeenCalledTimes(1))
     expect(onGroupSubmitInvalid).not.toHaveBeenCalled()
@@ -93,13 +79,9 @@ describe('form.FormGroup', () => {
   it('should pass submit meta through handleSubmit', async () => {
     const onGroupSubmit = vi.fn()
 
-    const { container } = render(FormGroupSubmitMeta, { onGroupSubmit })
+    const { getByTestId } = render(FormGroupSubmitMeta, { onGroupSubmit })
 
-    await user.click(
-      container.querySelector<HTMLButtonElement>(
-        '[data-testid="submit-group"]',
-      )!,
-    )
+    await user.click(getByTestId('submit-group'))
 
     await vi.waitFor(() => expect(onGroupSubmit).toHaveBeenCalledTimes(1))
     expect(onGroupSubmit).toHaveBeenCalledWith(
