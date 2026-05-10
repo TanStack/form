@@ -9,7 +9,7 @@ title: FormValidator
 type FormValidator<TFormData, TType, TFn> = object;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:146](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L146)
+Defined in: [packages/form-core/src/FormApi.ts:151](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L151)
 
 ## Type Parameters
 
@@ -33,7 +33,7 @@ Defined in: [packages/form-core/src/FormApi.ts:146](https://github.com/TanStack/
 validate(options, fn): unknown;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:147](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L147)
+Defined in: [packages/form-core/src/FormApi.ts:152](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L152)
 
 #### Parameters
 
@@ -59,7 +59,7 @@ Defined in: [packages/form-core/src/FormApi.ts:147](https://github.com/TanStack/
 validateAsync(options, fn): Promise<unknown>;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:148](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L148)
+Defined in: [packages/form-core/src/FormApi.ts:153](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L153)
 
 #### Parameters
 

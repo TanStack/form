@@ -48,7 +48,12 @@ import type {
 } from './standardSchemaValidator'
 import type { AnyFieldApi } from './FieldApi'
 import type { AnyFormGroupApi } from './FormGroupApi'
-import type { DeepKeys, DeepKeysOfType, DeepValue } from './util-types'
+import type {
+  DeepKeys,
+  DeepKeysOfType,
+  DeepValue,
+  RejectPromiseValidator,
+} from './util-types'
 import type { Updater } from './utils'
 
 /**
@@ -187,11 +192,11 @@ export interface FormValidators<
   /**
    * Optional function that fires as soon as the component mounts.
    */
-  onMount?: TOnMount
+  onMount?: RejectPromiseValidator<TOnMount>
   /**
    * Optional function that checks the validity of your data whenever a value changes
    */
-  onChange?: TOnChange
+  onChange?: RejectPromiseValidator<TOnChange>
   /**
    * Optional onChange asynchronous counterpart to onChange. Useful for more complex validation logic that might involve server requests.
    */
@@ -203,7 +208,7 @@ export interface FormValidators<
   /**
    * Optional function that validates the form data when a field loses focus, returns a `FormValidationError`
    */
-  onBlur?: TOnBlur
+  onBlur?: RejectPromiseValidator<TOnBlur>
   /**
    * Optional onBlur asynchronous validation method for when a field loses focus returns a ` FormValidationError` or a promise of `Promise<FormValidationError>`
    */
@@ -212,9 +217,9 @@ export interface FormValidators<
    * The default time in milliseconds that if set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds.
    */
   onBlurAsyncDebounceMs?: number
-  onSubmit?: TOnSubmit
+  onSubmit?: RejectPromiseValidator<TOnSubmit>
   onSubmitAsync?: TOnSubmitAsync
-  onDynamic?: TOnDynamic
+  onDynamic?: RejectPromiseValidator<TOnDynamic>
   onDynamicAsync?: TOnDynamicAsync
   onDynamicAsyncDebounceMs?: number
 }
@@ -623,16 +628,18 @@ export type DerivedFormState<
    * The error array for the form itself.
    */
   errors: Array<
-    | UnwrapFormValidateOrFn<TOnMount>
-    | UnwrapFormValidateOrFn<TOnChange>
-    | UnwrapFormAsyncValidateOrFn<TOnChangeAsync>
-    | UnwrapFormValidateOrFn<TOnBlur>
-    | UnwrapFormAsyncValidateOrFn<TOnBlurAsync>
-    | UnwrapFormValidateOrFn<TOnSubmit>
-    | UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>
-    | UnwrapFormValidateOrFn<TOnDynamic>
-    | UnwrapFormAsyncValidateOrFn<TOnDynamicAsync>
-    | UnwrapFormAsyncValidateOrFn<TOnServer>
+    NonNullable<
+      | UnwrapFormValidateOrFn<TOnMount>
+      | UnwrapFormValidateOrFn<TOnChange>
+      | UnwrapFormAsyncValidateOrFn<TOnChangeAsync>
+      | UnwrapFormValidateOrFn<TOnBlur>
+      | UnwrapFormAsyncValidateOrFn<TOnBlurAsync>
+      | UnwrapFormValidateOrFn<TOnSubmit>
+      | UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>
+      | UnwrapFormValidateOrFn<TOnDynamic>
+      | UnwrapFormAsyncValidateOrFn<TOnDynamicAsync>
+      | UnwrapFormAsyncValidateOrFn<TOnServer>
+    >
   >
   /**
    * A boolean indicating if any of the form fields are currently validating.
@@ -1019,6 +1026,7 @@ export class FormApi<
             isValidating: false,
             isBlurred: false,
             isDirty: false,
+            _arrayVersion: 0,
             ...(existingFieldMeta ?? {}),
             errorSourceMap: {
               ...(existingFieldMeta?.['errorSourceMap'] ?? {}),
@@ -1108,16 +1116,12 @@ export class FormApi<
           // As primitives, we don't need to aggressively persist the same referential value for performance reasons
           const isFieldValid = !isNonEmptyArray(fieldErrors)
           const isFieldPristine = !currBaseMeta.isDirty
-          const isDefaultValue =
-            evaluate(
-              curFieldVal,
+          const isDefaultValue = evaluate(
+            curFieldVal,
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            this.getFieldInfo(fieldName)?.instance?.options.defaultValue ??
               getBy(this.options.defaultValues, fieldName),
-            ) ||
-            evaluate(
-              curFieldVal,
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-              this.getFieldInfo(fieldName)?.instance?.options.defaultValue,
-            )
+          )
 
           if (
             prevFieldInfo &&
@@ -1231,14 +1235,16 @@ export class FormApi<
       ) {
         errors = Object.values(currBaseStore.errorMap).reduce<
           Array<
-            | UnwrapFormValidateOrFn<TOnMount>
-            | UnwrapFormValidateOrFn<TOnChange>
-            | UnwrapFormAsyncValidateOrFn<TOnChangeAsync>
-            | UnwrapFormValidateOrFn<TOnBlur>
-            | UnwrapFormAsyncValidateOrFn<TOnBlurAsync>
-            | UnwrapFormValidateOrFn<TOnSubmit>
-            | UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>
-            | UnwrapFormAsyncValidateOrFn<TOnServer>
+            NonNullable<
+              | UnwrapFormValidateOrFn<TOnMount>
+              | UnwrapFormValidateOrFn<TOnChange>
+              | UnwrapFormAsyncValidateOrFn<TOnChangeAsync>
+              | UnwrapFormValidateOrFn<TOnBlur>
+              | UnwrapFormAsyncValidateOrFn<TOnBlurAsync>
+              | UnwrapFormValidateOrFn<TOnSubmit>
+              | UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>
+              | UnwrapFormAsyncValidateOrFn<TOnServer>
+            >
           >
         >((prev, curr) => {
           if (curr === undefined) return prev
@@ -1509,16 +1515,35 @@ export class FormApi<
       }
     }
 
-    this.baseStore.setState(() =>
-      getDefaultFormState({
+    this.baseStore.setState(() => {
+      let nextValues =
+        values ??
+        this.options.defaultValues ??
+        this.options.defaultState?.values
+
+      if (!values) {
+        ;(Object.values(this.fieldInfo) as FieldInfo<any>[]).forEach(
+          (fieldInfo) => {
+            if (
+              fieldInfo.instance &&
+              fieldInfo.instance.options.defaultValue !== undefined
+            ) {
+              nextValues = setBy(
+                nextValues,
+                fieldInfo.instance.name,
+                fieldInfo.instance.options.defaultValue,
+              )
+            }
+          },
+        )
+      }
+
+      return getDefaultFormState({
         ...(this.options.defaultState as any),
-        values:
-          values ??
-          this.options.defaultValues ??
-          this.options.defaultState?.values,
+        values: nextValues,
         fieldMetaBase,
-      }),
-    )
+      })
+    })
   }
 
   /**
@@ -2374,6 +2399,8 @@ export class FormApi<
       (prev) => [...(Array.isArray(prev) ? prev : []), value] as any,
       options,
     )
+
+    metaHelper(this).bumpArrayVersion(field)
   }
 
   insertFieldValue = async <TField extends DeepKeysOfType<TFormData, any[]>>(
@@ -2430,6 +2457,8 @@ export class FormApi<
       },
       mergeOpts(options, { dontValidate: true }),
     )
+
+    metaHelper(this).bumpArrayVersion(field)
 
     const dontValidate = options?.dontValidate ?? false
     if (!dontValidate) {
@@ -2562,6 +2591,8 @@ export class FormApi<
       mergeOpts(options, { dontValidate: true }),
     )
 
+    metaHelper(this).bumpArrayVersion(field)
+
     if (lastIndex !== null) {
       for (let i = 0; i <= lastIndex; i++) {
         const fieldKey = `${field}[${i}]`
@@ -2581,15 +2612,21 @@ export class FormApi<
    */
   resetField = <TField extends DeepKeys<TFormData>>(field: TField) => {
     this.baseStore.setState((prev) => {
+      const fieldDefault =
+        this.getFieldInfo(field).instance?.options.defaultValue
+      const formDefault = getBy(this.options.defaultValues, field)
+      const targetValue = fieldDefault ?? formDefault
+
       return {
         ...prev,
         fieldMetaBase: {
           ...prev.fieldMetaBase,
           [field]: defaultFieldMeta,
         },
-        values: this.options.defaultValues
-          ? setBy(prev.values, field, getBy(this.options.defaultValues, field))
-          : prev.values,
+        values:
+          targetValue !== undefined
+            ? setBy(prev.values, field, targetValue)
+            : prev.values,
       }
     })
   }
@@ -2664,16 +2701,18 @@ export class FormApi<
   getAllErrors = (): {
     form: {
       errors: Array<
-        | UnwrapFormValidateOrFn<TOnMount>
-        | UnwrapFormValidateOrFn<TOnChange>
-        | UnwrapFormAsyncValidateOrFn<TOnChangeAsync>
-        | UnwrapFormValidateOrFn<TOnBlur>
-        | UnwrapFormAsyncValidateOrFn<TOnBlurAsync>
-        | UnwrapFormValidateOrFn<TOnSubmit>
-        | UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>
-        | UnwrapFormValidateOrFn<TOnDynamic>
-        | UnwrapFormAsyncValidateOrFn<TOnDynamicAsync>
-        | UnwrapFormAsyncValidateOrFn<TOnServer>
+        NonNullable<
+          | UnwrapFormValidateOrFn<TOnMount>
+          | UnwrapFormValidateOrFn<TOnChange>
+          | UnwrapFormAsyncValidateOrFn<TOnChangeAsync>
+          | UnwrapFormValidateOrFn<TOnBlur>
+          | UnwrapFormAsyncValidateOrFn<TOnBlurAsync>
+          | UnwrapFormValidateOrFn<TOnSubmit>
+          | UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>
+          | UnwrapFormValidateOrFn<TOnDynamic>
+          | UnwrapFormAsyncValidateOrFn<TOnDynamicAsync>
+          | UnwrapFormAsyncValidateOrFn<TOnServer>
+        >
       >
       errorMap: ValidationErrorMap<
         UnwrapFormValidateOrFn<TOnMount>,

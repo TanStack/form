@@ -1,5 +1,21 @@
 # @tanstack/form-core
 
+## 1.32.0
+
+### Minor Changes
+
+- Introduced a **Prioritized Default System** that ensures consistency between field metadata and form reset behavior. This change prioritizes field-level default values over form-level defaults across `isDefaultValue` derivation, `form.reset()`, and `form.resetField()`. This ensures that field metadata accurately reflects the state the form would return to upon reset and prevents `undefined` from being incorrectly treated as a default when a value is explicitly specified. ([#2006](https://github.com/TanStack/form/pull/2006))
+
+### Patch Changes
+
+- `evaluate()` incorrectly treated distinct non-plain objects with no own enumerable keys (Temporal types, RegExp, getter-only class instances) as equal because the key-iteration loop vacuously succeeded. A guard now returns `false` for such objects, falling back to referential inequality. ([#2140](https://github.com/TanStack/form/pull/2140))
+
+- exclude undefined from FormState errors type ([`427b3d9`](https://github.com/TanStack/form/commit/427b3d9fd516b8222339ae7e8e38844f198c5d7a))
+
+- Prevent synchronous validators from returning Promises ([#1987](https://github.com/TanStack/form/pull/1987))
+
+- re-render arrays when length doesn't change but values do ([#2172](https://github.com/TanStack/form/pull/2172))
+
 ## 1.31.0
 
 ## 1.30.0

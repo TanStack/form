@@ -20,7 +20,7 @@ type FieldComponent<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync
 }>>;
 ```
 
-Defined in: [packages/vue-form/src/useField.tsx:23](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L23)
+Defined in: [packages/vue-form/src/useField.tsx:25](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L25)
 
 ## Type Parameters
 

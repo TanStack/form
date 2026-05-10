@@ -9,7 +9,7 @@ title: DeepKeysAndValues
 type DeepKeysAndValues<T> = DeepKeysAndValuesImpl<T> extends AnyDeepKeyAndValue ? DeepKeysAndValuesImpl<T> : never;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:129](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L129)
+Defined in: [packages/form-core/src/util-types.ts:146](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L146)
 
 ## Type Parameters
 

@@ -9,4 +9,4 @@ title: AnyFormOptions
 type AnyFormOptions = FormOptions<any, any, any, any, any, any, any, any, any, any, any, any>;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:481](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L481)
+Defined in: [packages/form-core/src/FormApi.ts:486](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L486)

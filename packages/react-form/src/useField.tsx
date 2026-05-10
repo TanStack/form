@@ -193,7 +193,7 @@ export function useField<
   const reactiveStateValue = useStore(
     fieldApi.store,
     (opts.mode === 'array'
-      ? (state) => Object.keys((state.value as unknown) ?? []).length
+      ? (state) => state.meta._arrayVersion || 0
       : (state) => state.value) as (
       state: typeof fieldApi.state,
     ) => TData | number,

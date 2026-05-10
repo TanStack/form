@@ -1150,6 +1150,7 @@ export class FormGroupApi<
           isDefaultValue,
           isDirty,
           errorSourceMap: {},
+          _arrayVersion: meta._arrayVersion,
         } as FormGroupStoreState &
           FieldLikeState<
             TParentData,
