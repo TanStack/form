@@ -96,10 +96,59 @@
       api.update(current)
     })
 
-    const storeSub = useStore(api.store)
+    const storeSub = useStore(api.store, (state) =>
+      options.mode === 'array'
+        ? Object.keys((state.value as unknown) ?? []).length
+        : state.value,
+    )
+    const metaIsTouchedSub = useStore(
+      api.store,
+      (state) => state.meta.isTouched,
+    )
+    const metaIsBlurredSub = useStore(
+      api.store,
+      (state) => state.meta.isBlurred,
+    )
+    const metaIsDirtySub = useStore(api.store, (state) => state.meta.isDirty)
+    const metaErrorMapSub = useStore(api.store, (state) => state.meta.errorMap)
+    const metaErrorSourceMapSub = useStore(
+      api.store,
+      (state) => state.meta.errorSourceMap,
+    )
+    const metaIsValidatingSub = useStore(
+      api.store,
+      (state) => state.meta.isValidating,
+    )
     Object.defineProperty(extendedApi, 'state', {
       get() {
-        return storeSub.current
+        // Read all reactive sources to track them as dependencies. For array
+        // mode, `storeSub.current` is the array length so we still pull the
+        // actual value from the underlying api state.
+        // See: https://github.com/TanStack/form/issues/1961
+        // Note: we read from `api.store.state` (not `api.state`) to avoid
+        // infinite recursion since this getter shadows the prototype's `state`
+        // getter on the same object.
+        const trackedValue = storeSub.current
+        const isTouched = metaIsTouchedSub.current
+        const isBlurred = metaIsBlurredSub.current
+        const isDirty = metaIsDirtySub.current
+        const errorMap = metaErrorMapSub.current
+        const errorSourceMap = metaErrorSourceMapSub.current
+        const isValidating = metaIsValidatingSub.current
+        const baseState = api.store.state
+        return {
+          ...baseState,
+          value: options.mode === 'array' ? baseState.value : trackedValue,
+          meta: {
+            ...baseState.meta,
+            isTouched,
+            isBlurred,
+            isDirty,
+            errorMap,
+            errorSourceMap,
+            isValidating,
+          },
+        }
       },
     })
 
