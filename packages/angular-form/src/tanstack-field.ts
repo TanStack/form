@@ -248,7 +248,7 @@ export class TanStackField<
       this._api().store,
       (state) =>
         isArrayMode
-          ? Object.keys((state.value as unknown) ?? []).length
+          ? state.meta._arrayVersion ?? 0
           : state.value,
       injectorOpts,
     )

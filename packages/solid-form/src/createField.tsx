@@ -175,7 +175,7 @@ function makeFieldReactive<
   // See: https://github.com/TanStack/form/issues/1961
   const reactiveStateValue = useStore(fieldApi.store, (state) =>
     mode === 'array'
-      ? Object.keys((state.value as unknown) ?? []).length
+      ? state.meta._arrayVersion ?? 0
       : state.value,
   )
   const reactiveMetaIsTouched = useStore(

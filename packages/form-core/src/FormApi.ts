@@ -1048,6 +1048,7 @@ export class FormApi<
             isValidating: false,
             isBlurred: false,
             isDirty: false,
+            _arrayVersion: 0,
             ...(existingFieldMeta ?? {}),
             errorSourceMap: {
               ...(existingFieldMeta?.['errorSourceMap'] ?? {}),
@@ -2396,6 +2397,8 @@ export class FormApi<
       (prev) => [...(Array.isArray(prev) ? prev : []), value] as any,
       options,
     )
+
+    metaHelper(this).bumpArrayVersion(field)
   }
 
   insertFieldValue = async <TField extends DeepKeysOfType<TFormData, any[]>>(
@@ -2452,6 +2455,8 @@ export class FormApi<
       },
       mergeOpts(options, { dontValidate: true }),
     )
+
+    metaHelper(this).bumpArrayVersion(field)
 
     const dontValidate = options?.dontValidate ?? false
     if (!dontValidate) {
@@ -2583,6 +2588,8 @@ export class FormApi<
       [] as any,
       mergeOpts(options, { dontValidate: true }),
     )
+
+    metaHelper(this).bumpArrayVersion(field)
 
     if (lastIndex !== null) {
       for (let i = 0; i <= lastIndex; i++) {

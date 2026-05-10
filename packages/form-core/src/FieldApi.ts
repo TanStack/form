@@ -636,6 +636,14 @@ export type FieldMetaBase<
    * A flag indicating whether the field is currently being validated.
    */
   isValidating: boolean
+  /**
+   * @private a counter that is incremented every time a structural array
+   * operation (push, insert, remove, swap, move, replace, clear) modifies
+   * the value of an array field. Adapters can subscribe to this to trigger
+   * re-renders for `mode="array"` fields without having to subscribe to the
+   * full field value.
+   */
+  _arrayVersion: number
 }
 
 export type AnyFieldMetaBase = FieldMetaBase<
