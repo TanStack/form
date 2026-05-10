@@ -308,9 +308,7 @@ export function useField<
     const isValidating = reactiveMetaIsValidating.value
     return {
       value:
-        opts.mode === 'array'
-          ? fieldApi.state.value
-          : (trackedValue as TData),
+        opts.mode === 'array' ? fieldApi.state.value : (trackedValue as TData),
       meta: {
         ...fieldApi.state.meta,
         isTouched,
