@@ -1,5 +1,112 @@
 # @tanstack/solid-form
 
+## 1.31.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.31.0
+
+## 1.30.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.30.0
+
+## 1.29.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.29.3
+
+## 1.29.2
+
+### Patch Changes
+
+- Remove errant `Field.Field` usage and `useForm().useField()` ([`94f9841`](https://github.com/TanStack/form/commit/94f984161a8d4c5cb41aa37b61d63d5744ef01d5))
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.29.2
+
+## 1.29.1
+
+### Patch Changes
+
+- Updated dependencies [[`6b8aa1e`](https://github.com/TanStack/form/commit/6b8aa1e92d883dfbdddbd5f0393a31d2e7120d3d)]:
+  - @tanstack/form-core@1.29.1
+
+## 1.29.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.29.0
+
+## 1.28.6
+
+### Patch Changes
+
+- Updated dependencies [[`7a1428d`](https://github.com/TanStack/form/commit/7a1428d6ce2806069b3d7b8f8b2aacc26315b771)]:
+  - @tanstack/form-core@1.28.6
+
+## 1.28.5
+
+### Patch Changes
+
+- Updated dependencies [[`39932c1`](https://github.com/TanStack/form/commit/39932c1da28b5e4ea4b73f8b488d92fc100ccc41)]:
+  - @tanstack/form-core@1.28.5
+
+## 1.28.4
+
+### Patch Changes
+
+- Fix props passed to `withForm` and `withFieldGroup` not being reactive. ([#2058](https://github.com/TanStack/form/pull/2058))
+
+  Object spread (`{ ...props, ...innerProps }`) was eagerly evaluating SolidJS reactive getters, producing a static snapshot that broke signal tracking. Replaced with `mergeProps()` to preserve getter descriptors and `createComponent()` to maintain the correct reactive context.
+
+- Refactor internals for substancially faster performance ([#2035](https://github.com/TanStack/form/pull/2035))
+
+- Updated dependencies [[`f88faaf`](https://github.com/TanStack/form/commit/f88faaf72d265fdcbe99887421bd97dd03cb703e)]:
+  - @tanstack/form-core@1.28.4
+
+## 1.28.3
+
+### Patch Changes
+
+- form arrays now work again ([#2041](https://github.com/TanStack/form/pull/2041))
+
+- Updated dependencies [[`0b3952d`](https://github.com/TanStack/form/commit/0b3952d9805b4f1756829faa012e4112c14859a7)]:
+  - @tanstack/form-core@1.28.3
+
+## 1.28.2
+
+### Patch Changes
+
+- bump @tanstack/store dependency to 0.8.0 ([#2038](https://github.com/TanStack/form/pull/2038))
+
+- Updated dependencies [[`a07862d`](https://github.com/TanStack/form/commit/a07862de23ea008c7dd3821edd880b6ebc569016)]:
+  - @tanstack/form-core@1.28.2
+
+## 1.28.1
+
+### Patch Changes
+
+- Updated dependencies [[`72d970a`](https://github.com/TanStack/form/commit/72d970add6ab682d733e35a95e5e1f44efb695d2)]:
+  - @tanstack/form-core@1.28.1
+
+## 1.28.0
+
+### Patch Changes
+
+- fix: flatten errors consistently when validating before field mount ([#2003](https://github.com/TanStack/form/pull/2003))
+
+  Fixed an issue where `field.errors` was incorrectly nested as `[[error]]` instead of `[error]` when `form.validate()` was called manually before a field was mounted. The `flat(1)` operation is now applied by default unless `disableErrorFlat` is explicitly set to true, ensuring consistent error structure regardless of when validation occurs.
+
+- Updated dependencies [[`41faffe`](https://github.com/TanStack/form/commit/41faffee657e753b37132275c2255d29fdd3f325), [`7f2453b`](https://github.com/TanStack/form/commit/7f2453baf8c852adfab2475fa3f110f597b24c52)]:
+  - @tanstack/form-core@1.28.0
+
 ## 1.27.7
 
 ### Patch Changes

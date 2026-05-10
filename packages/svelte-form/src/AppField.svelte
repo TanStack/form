@@ -9,11 +9,11 @@
     children: Snippet
     fieldProps: any
   }
-  const { children, form, fieldComponents, fieldProps }: Props = $props()
+  const { children: childrenProp, form, fieldComponents, fieldProps }: Props = $props()
 </script>
 
 <form.Field {...fieldProps}>
   {#snippet children(field: any)}
-    <InnerAppField field={field} children={children} fieldComponents={fieldComponents}/>
+    <InnerAppField field={field} children={childrenProp} fieldComponents={fieldComponents}/>
   {/snippet}
 </form.Field>

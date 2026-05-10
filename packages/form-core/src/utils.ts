@@ -251,6 +251,7 @@ export function getSyncValidatorArray<T>(
   options: SyncValidatorArrayPartialOptions<T> & {
     validationLogic?: any
     form?: any
+    fieldName?: string
   },
 ): T extends FieldValidators<
   any,
@@ -300,7 +301,7 @@ export function getSyncValidatorArray<T>(
   return options.validationLogic({
     form: options.form,
     validators: options.validators,
-    event: { type: cause, async: false },
+    event: { type: cause, fieldName: options.fieldName, async: false },
     runValidation,
   })
 }
@@ -313,6 +314,7 @@ export function getAsyncValidatorArray<T>(
   options: AsyncValidatorArrayPartialOptions<T> & {
     validationLogic?: any
     form?: any
+    fieldName?: string
   },
 ): T extends FieldValidators<
   any,
@@ -410,7 +412,7 @@ export function getAsyncValidatorArray<T>(
   return options.validationLogic({
     form: options.form,
     validators: options.validators,
-    event: { type: cause, async: true },
+    event: { type: cause, fieldName: options.fieldName, async: true },
     runValidation,
   })
 }
@@ -615,3 +617,47 @@ export const throttleFormState = liteThrottle(
     wait: 300,
   },
 )
+
+// Do not use a serialize and deserialize method like JSON.stringify/parse
+// as that will drop functions, dates, undefined, Infinity, NaN, etc.
+export function deepCopy<T>(obj: T): T {
+  if (obj === null || typeof obj !== 'object') {
+    return obj
+  }
+
+  if (obj instanceof Date) {
+    return new Date(obj.getTime()) as any
+  }
+
+  if (Array.isArray(obj)) {
+    const arrCopy = [] as any[]
+    for (let i = 0; i < obj.length; i++) {
+      arrCopy[i] = deepCopy(obj[i])
+    }
+    return arrCopy as any
+  }
+
+  if (obj instanceof Map) {
+    const mapCopy = new Map()
+    obj.forEach((value, key) => {
+      mapCopy.set(key, deepCopy(value))
+    })
+    return mapCopy as any
+  }
+
+  if (obj instanceof Set) {
+    const setCopy = new Set()
+    obj.forEach((value) => {
+      setCopy.add(deepCopy(value))
+    })
+    return setCopy as any
+  }
+
+  const copy: { [key: string]: any } = {}
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      copy[key] = deepCopy((obj as any)[key])
+    }
+  }
+  return copy as T
+}

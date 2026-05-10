@@ -1,7 +1,7 @@
 import { FormApi } from '@tanstack/form-core'
 import { useStore } from '@tanstack/svelte-store'
 import { onMount } from 'svelte'
-import Field, { createField } from './Field.svelte'
+import Field from './Field.svelte'
 import Subscribe from './Subscribe.svelte'
 import type {
   Component,
@@ -15,7 +15,7 @@ import type {
   FormState,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type { CreateField, FieldComponent, WithoutFunction } from './types.js'
+import type { FieldComponent, WithoutFunction } from './types.js'
 
 export interface SvelteFormApi<
   TParentData,
@@ -32,20 +32,6 @@ export interface SvelteFormApi<
   TSubmitMeta,
 > {
   Field: FieldComponent<
-    TParentData,
-    TFormOnMount,
-    TFormOnChange,
-    TFormOnChangeAsync,
-    TFormOnBlur,
-    TFormOnBlurAsync,
-    TFormOnSubmit,
-    TFormOnSubmitAsync,
-    TFormOnDynamic,
-    TFormOnDynamicAsync,
-    TFormOnServer,
-    TSubmitMeta
-  >
-  createField: CreateField<
     TParentData,
     TFormOnMount,
     TFormOnChange,
@@ -287,10 +273,6 @@ export function createForm<
   // @ts-expect-error constructor definition exists only on a type level
   extendedApi.Field = (internal, props) =>
     Field(internal, { ...props, form: api as never } as never)
-  extendedApi.createField = (props) =>
-    createField(() => {
-      return { ...props(), form: api } as never
-    }) as never // Type cast because else "Error: Type instantiation is excessively deep and possibly infinite."
   extendedApi.useStore = (selector) => useStore(api.store, selector)
   // @ts-expect-error constructor definition exists only on a type level
   extendedApi.Subscribe = (internal, props) =>

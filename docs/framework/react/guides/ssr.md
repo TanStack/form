@@ -106,8 +106,8 @@ Finally, we'll use `getFormDataFromServer` in our loader to get the state from o
 
 ```tsx
 // app/routes/index.tsx
+import { createFileRoute } from '@tanstack/react-router'
 import {
-  createFileRoute
   mergeForm,
   useForm,
   useStore,

@@ -238,7 +238,7 @@ it('should have the correct types returned from form validators in array', () =>
     },
   } as const)
 
-  expectTypeOf(form.state.errors).toEqualTypeOf<Array<'123' | undefined>>()
+  expectTypeOf(form.state.errors).toEqualTypeOf<Array<'123'>>()
 })
 
 it('should handle "fields" return types added to the field\'s errorMap itself', () => {

@@ -48,7 +48,6 @@ it('should return all errors matching the right type from getAllErrors', () => {
       | 'onSubmitAsync'
       | { onBlur: true; onBlurNumber: number }
       | 'onBlurAsync'
-      | undefined
     )[]
   >()
 
@@ -365,14 +364,7 @@ it('should extract the form error type from a global form error', () => {
   >()
 
   expectTypeOf(form.state.errors).toEqualTypeOf<
-    (
-      | 'onMount'
-      | 'onChange'
-      | 'onChangeAsync'
-      | 'onBlur'
-      | 'onBlurAsync'
-      | undefined
-    )[]
+    ('onMount' | 'onChange' | 'onChangeAsync' | 'onBlur' | 'onBlurAsync')[]
   >
 })
 

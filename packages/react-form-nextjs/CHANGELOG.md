@@ -1,5 +1,100 @@
 # @tanstack/react-form-nextjs
 
+## 1.31.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/react-form@1.31.0
+
+## 1.30.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/react-form@1.30.0
+
+## 1.29.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/react-form@1.29.3
+
+## 1.29.2
+
+### Patch Changes
+
+- Updated dependencies [[`94f9841`](https://github.com/TanStack/form/commit/94f984161a8d4c5cb41aa37b61d63d5744ef01d5)]:
+  - @tanstack/react-form@1.29.2
+
+## 1.29.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/react-form@1.29.1
+
+## 1.29.0
+
+### Patch Changes
+
+- Updated dependencies [[`d6ab662`](https://github.com/TanStack/form/commit/d6ab662cdf3856a165f8649fc725f6877fd6e1da)]:
+  - @tanstack/react-form@1.29.0
+
+## 1.28.6
+
+### Patch Changes
+
+- Updated dependencies [[`7a1428d`](https://github.com/TanStack/form/commit/7a1428d6ce2806069b3d7b8f8b2aacc26315b771)]:
+  - @tanstack/react-form@1.28.6
+
+## 1.28.5
+
+### Patch Changes
+
+- Updated dependencies [[`704fefa`](https://github.com/TanStack/form/commit/704fefa8e9f178e49a36250d706756d8b3fd3cca), [`7ca9898`](https://github.com/TanStack/form/commit/7ca989800f697d94d3b5850e5204ea0a3b670461)]:
+  - @tanstack/react-form@1.28.5
+
+## 1.28.4
+
+### Patch Changes
+
+- Fixes bad inference from `decode-formdata`'s weird typing of the `decode` function, including handling how it incorrectly doesn't handle undefined values for the form info object. ([#2052](https://github.com/TanStack/form/pull/2052))
+
+- Updated dependencies [[`f88faaf`](https://github.com/TanStack/form/commit/f88faaf72d265fdcbe99887421bd97dd03cb703e)]:
+  - @tanstack/react-form@1.28.4
+
+## 1.28.3
+
+### Patch Changes
+
+- Updated dependencies [[`0b3952d`](https://github.com/TanStack/form/commit/0b3952d9805b4f1756829faa012e4112c14859a7)]:
+  - @tanstack/react-form@1.28.3
+
+## 1.28.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/react-form@1.28.2
+
+## 1.28.1
+
+### Patch Changes
+
+- Fix various issues with SSR. Things should now work as-expected in many many more scenarios than before ([#1890](https://github.com/TanStack/form/pull/1890))
+
+- Updated dependencies [[`e954177`](https://github.com/TanStack/form/commit/e9541771b5204efa43fb9f00c38e36cef9964fb4), [`72d970a`](https://github.com/TanStack/form/commit/72d970add6ab682d733e35a95e5e1f44efb695d2)]:
+  - @tanstack/react-form@1.28.1
+
+## 1.28.0
+
+### Patch Changes
+
+- Updated dependencies [[`41faffe`](https://github.com/TanStack/form/commit/41faffee657e753b37132275c2255d29fdd3f325), [`a7eda7a`](https://github.com/TanStack/form/commit/a7eda7a388f3dd38ed8b395d11034c6760aff84e)]:
+  - @tanstack/react-form@1.28.0
+
 ## 1.27.7
 
 ### Patch Changes
