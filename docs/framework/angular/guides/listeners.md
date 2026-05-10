@@ -15,10 +15,11 @@ In this example, when the user changes the country, the selected province needs 
 
 Events that can be "listened" to are:
 
-- onChange
-- onBlur
-- onMount
-- onSubmit
+- `onChange`
+- `onBlur`
+- `onMount`
+- `onSubmit`
+- `onUnmount`
 
 ```angular-ts
 @Component({
@@ -30,7 +31,7 @@ Events that can be "listened" to are:
       [tanstackField]="form"
       name="country"
       [listeners]="{
-        onChange: onCountryChange
+        onChange: onCountryChange,
       }"
       #country="field"
     ></ng-container>
@@ -42,7 +43,6 @@ Events that can be "listened" to are:
     ></ng-container>
   `,
 })
-
 export class AppComponent {
   form = injectForm({
     defaultValues: {

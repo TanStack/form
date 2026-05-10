@@ -12,7 +12,7 @@ function useStore<TState, TSelected>(
 options?): Accessor<TSelected>;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+solid-store@0.9.1\_solid-js@1.9.9/node\_modules/@tanstack/solid-store/dist/esm/index.d.ts:8
+Defined in: node\_modules/.pnpm/@tanstack+solid-store@0.9.1\_solid-js@1.9.11/node\_modules/@tanstack/solid-store/dist/esm/index.d.ts:8
 
 ## Type Parameters
 

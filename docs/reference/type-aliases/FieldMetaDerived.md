@@ -9,7 +9,7 @@ title: FieldMetaDerived
 type FieldMetaDerived<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync> = object;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:659](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L659)
+Defined in: [packages/form-core/src/FieldApi.ts:660](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L660)
 
 ## Type Parameters
 
@@ -114,7 +114,7 @@ errors: (
   | UnwrapOneLevelOfArray<UnwrapFieldAsyncValidateOrFn<TName, TOnDynamicAsync, TFormOnDynamicAsync>>)[];
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:693](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L693)
+Defined in: [packages/form-core/src/FieldApi.ts:694](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L694)
 
 An array of errors related to the field value.
 
@@ -126,7 +126,7 @@ An array of errors related to the field value.
 isDefaultValue: boolean;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:737](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L737)
+Defined in: [packages/form-core/src/FieldApi.ts:738](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L738)
 
 A flag indicating whether the field's current value is the default value
 
@@ -138,7 +138,7 @@ A flag indicating whether the field's current value is the default value
 isPristine: boolean;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:729](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L729)
+Defined in: [packages/form-core/src/FieldApi.ts:730](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L730)
 
 A flag that is `true` if the field's value has not been modified by the user. Opposite of `isDirty`.
 
@@ -150,6 +150,6 @@ A flag that is `true` if the field's value has not been modified by the user. Op
 isValid: boolean;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:733](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L733)
+Defined in: [packages/form-core/src/FieldApi.ts:734](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L734)
 
 A boolean indicating if the field is valid. Evaluates `true` if there are no field errors.

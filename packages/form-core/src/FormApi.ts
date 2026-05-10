@@ -306,6 +306,24 @@ export interface FormListeners<
     >
     meta: TSubmitMeta
   }) => void
+
+  onFieldUnmount?: (props: {
+    formApi: FormApi<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TOnServer,
+      TSubmitMeta
+    >
+    fieldApi: AnyFieldApi
+  }) => void
 }
 
 /**
@@ -927,7 +945,7 @@ export class FormApi<
   /**
    * A record of field information for each field in the form.
    */
-  fieldInfo: Record<DeepKeys<TFormData>, FieldInfo<TFormData>> = {} as any
+  fieldInfo: Partial<Record<DeepKeys<TFormData>, FieldInfo<TFormData>>> = {}
 
   get state() {
     return this.store.state
@@ -1528,15 +1546,18 @@ export class FormApi<
   }
 
   /**
-   * Validates all fields using the correct handlers for a given validation cause.
+   * Validates all fields according to the FIELD level validators.
+   * This will ignore FORM level validators, use form.validate({ValidationCause}) for a complete validation
    */
   validateAllFields = async (cause: ValidationCause) => {
     const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
+
     batch(() => {
       void (Object.values(this.fieldInfo) as FieldInfo<any>[]).forEach(
         (field) => {
           if (!field.instance) return
           const fieldInstance = field.instance
+
           // Validate the field
           fieldValidationPromises.push(
             // Remember, `validate` is either a sync operation or a promise
@@ -1544,6 +1565,7 @@ export class FormApi<
               fieldInstance.validate(cause, { skipFormValidation: true }),
             ),
           )
+
           // If any fields are not touched
           if (!field.instance.state.meta.isTouched) {
             // Mark them as touched
@@ -1605,7 +1627,6 @@ export class FormApi<
     field: TField,
     cause: ValidationCause,
   ) => {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     const fieldInstance = this.fieldInfo[field]?.instance
 
     if (!fieldInstance) {
@@ -2224,7 +2245,6 @@ export class FormApi<
   getFieldInfo = <TField extends DeepKeys<TFormData>>(
     field: TField,
   ): FieldInfo<TFormData> => {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     return (this.fieldInfo[field] ||= {
       instance: null,
       validationMetaMap: {

@@ -131,6 +131,32 @@ Defined in: [packages/form-core/src/FormApi.ts:254](https://github.com/TanStack/
 
 ***
 
+### onFieldUnmount()?
+
+```ts
+optional onFieldUnmount: (props) => void;
+```
+
+Defined in: [packages/form-core/src/FormApi.ts:310](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L310)
+
+#### Parameters
+
+##### props
+
+###### fieldApi
+
+[`AnyFieldApi`](../type-aliases/AnyFieldApi.md)
+
+###### formApi
+
+[`FormApi`](../classes/FormApi.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`\>
+
+#### Returns
+
+`void`
+
+***
+
 ### onMount()?
 
 ```ts

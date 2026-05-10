@@ -1,5 +1,67 @@
 # @tanstack/lit-form
 
+## 1.24.0
+
+### Minor Changes
+
+- Add `getFormType` type helper utility to Lit adapter ([#2165](https://github.com/TanStack/form/pull/2165))
+
+## 1.23.32
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.31.0
+
+## 1.23.31
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.30.0
+
+## 1.23.30
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.29.3
+
+## 1.23.29
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.29.2
+
+## 1.23.28
+
+### Patch Changes
+
+- Updated dependencies [[`6b8aa1e`](https://github.com/TanStack/form/commit/6b8aa1e92d883dfbdddbd5f0393a31d2e7120d3d)]:
+  - @tanstack/form-core@1.29.1
+
+## 1.23.27
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.29.0
+
+## 1.23.26
+
+### Patch Changes
+
+- Updated dependencies [[`7a1428d`](https://github.com/TanStack/form/commit/7a1428d6ce2806069b3d7b8f8b2aacc26315b771)]:
+  - @tanstack/form-core@1.28.6
+
+## 1.23.25
+
+### Patch Changes
+
+- Updated dependencies [[`39932c1`](https://github.com/TanStack/form/commit/39932c1da28b5e4ea4b73f8b488d92fc100ccc41)]:
+  - @tanstack/form-core@1.28.5
+
 ## 1.23.24
 
 ### Patch Changes

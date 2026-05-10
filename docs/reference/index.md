@@ -31,6 +31,7 @@ title: "@tanstack/form-core"
 - [TupleDeepKeyAndValue](interfaces/TupleDeepKeyAndValue.md)
 - [UnknownDeepKeyAndValue](interfaces/UnknownDeepKeyAndValue.md)
 - [ValidationLogicProps](interfaces/ValidationLogicProps.md)
+- [ValidationLogicValidatorsFn](interfaces/ValidationLogicValidatorsFn.md)
 
 ## Type Aliases
 

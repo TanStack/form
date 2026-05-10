@@ -1,7 +1,7 @@
 import { FormApi } from '@tanstack/form-core'
 import { useStore } from '@tanstack/vue-store'
 import { defineComponent, h, onMounted } from 'vue'
-import { Field, useField } from './useField'
+import { Field } from './useField'
 import type {
   FormAsyncValidateOrFn,
   FormOptions,
@@ -17,7 +17,7 @@ import type {
   Ref,
   SlotsType,
 } from 'vue'
-import type { FieldComponent, UseField } from './useField'
+import type { FieldComponent } from './useField'
 
 type SubscribeComponent<
   TParentData,
@@ -103,21 +103,7 @@ type SubscribeComponent<
     false,
     {},
     SlotsType<{
-      default: NoInfer<
-        FormState<
-          TParentData,
-          TFormOnMount,
-          TFormOnChange,
-          TFormOnChangeAsync,
-          TFormOnBlur,
-          TFormOnBlurAsync,
-          TFormOnSubmit,
-          TFormOnSubmitAsync,
-          TFormOnDynamic,
-          TFormOnDynamicAsync,
-          TFormOnServer
-        >
-      >
+      default: TSelected
     }>
   >
 
@@ -136,20 +122,6 @@ export interface VueFormApi<
   TSubmitMeta,
 > {
   Field: FieldComponent<
-    TParentData,
-    TFormOnMount,
-    TFormOnChange,
-    TFormOnChangeAsync,
-    TFormOnBlur,
-    TFormOnBlurAsync,
-    TFormOnSubmit,
-    TFormOnSubmitAsync,
-    TFormOnDynamic,
-    TFormOnDynamicAsync,
-    TFormOnServer,
-    TSubmitMeta
-  >
-  useField: UseField<
     TParentData,
     TFormOnMount,
     TFormOnChange,
@@ -287,10 +259,6 @@ export function useForm<
         inheritAttrs: false,
       },
     ) as never
-    extendedApi.useField = (props) => {
-      const field = useField({ ...props, form: api })
-      return field
-    }
     extendedApi.useStore = (selector) => {
       return useStore(api.store as never, selector as never) as never
     }

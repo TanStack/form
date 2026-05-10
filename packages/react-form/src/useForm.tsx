@@ -139,11 +139,11 @@ export type ReactFormExtendedApi<
 
 function LocalSubscribe({
   form,
-  selector,
+  selector = (state) => state,
   children,
 }: PropsWithChildren<{
   form: AnyFormApi
-  selector: (state: AnyFormState) => AnyFormState
+  selector?: (state: AnyFormState) => AnyFormState
 }>): ReturnType<FunctionComponent> {
   const data = useStore(form.store, selector)
 
