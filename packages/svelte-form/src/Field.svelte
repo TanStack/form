@@ -98,7 +98,7 @@
 
     const storeSub = useStore(api.store, (state) =>
       options.mode === 'array'
-        ? state.meta._arrayVersion ?? 0
+        ? state.meta._arrayVersion || 0
         : state.value,
     )
     const metaIsTouchedSub = useStore(

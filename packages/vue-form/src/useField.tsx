@@ -260,7 +260,7 @@ export function useField<
   const reactiveStateValue = useStore(
     fieldApi.store,
     (opts.mode === 'array'
-      ? (state) => state.meta._arrayVersion ?? 0
+      ? (state) => state.meta._arrayVersion || 0
       : (state) => state.value) as (
       state: typeof fieldApi.state,
     ) => TData | number,

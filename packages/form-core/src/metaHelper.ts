@@ -61,7 +61,7 @@ export function metaHelper<
     const currentMeta = formApi.getFieldMeta(field) ?? defaultFieldMeta
     formApi.setFieldMeta(field, {
       ...currentMeta,
-      _arrayVersion: (currentMeta._arrayVersion ?? 0) + 1,
+      _arrayVersion: (currentMeta._arrayVersion || 0) + 1,
     })
   }
 
