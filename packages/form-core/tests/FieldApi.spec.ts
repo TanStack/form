@@ -3529,4 +3529,81 @@ describe('edge cases and error handling', () => {
     field.handleChange(undefined)
     expect(field.state.value).toBeUndefined()
   })
+
+  it('should run listener onReset when field.reset() is called', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    let triggered: string | undefined
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: {
+        onReset: ({ value }) => {
+          triggered = value
+        },
+      },
+    })
+
+    form.mount()
+    field.mount()
+    field.setValue('changed')
+    field.reset()
+
+    expect(triggered).toStrictEqual('test')
+  })
+
+  it('should not run onReset listener when form.reset() is called directly', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    const onReset = vi.fn()
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: {
+        onReset,
+      },
+    })
+
+    form.mount()
+    field.mount()
+    form.reset()
+
+    expect(onReset).not.toHaveBeenCalled()
+  })
+
+  it('should provide value and fieldApi in the onReset listener', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    let capturedFieldApi: any
+    let capturedValue: string | undefined
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: {
+        onReset: ({ value, fieldApi }) => {
+          capturedValue = value
+          capturedFieldApi = fieldApi
+        },
+      },
+    })
+
+    form.mount()
+    field.mount()
+    field.reset()
+
+    expect(capturedValue).toStrictEqual('test')
+    expect(capturedFieldApi).toBe(field)
+  })
 })

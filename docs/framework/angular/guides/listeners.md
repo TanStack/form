@@ -20,6 +20,7 @@ Events that can be "listened" to are:
 - `onMount`
 - `onSubmit`
 - `onUnmount`
+- `onReset`
 
 ```angular-ts
 @Component({

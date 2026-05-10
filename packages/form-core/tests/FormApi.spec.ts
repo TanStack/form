@@ -4203,4 +4203,61 @@ describe('form transform', () => {
 
     expect(field.state.meta.errorMap.onChange).toBe('Error')
   })
+
+  it('should run the form listener onReset', () => {
+    let triggered!: string
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      listeners: {
+        onReset: ({ formApi }) => {
+          triggered = formApi.state.values.name
+        },
+      },
+    })
+
+    form.mount()
+    form.reset()
+
+    expect(triggered).toStrictEqual('test')
+  })
+
+  it('should run the form listener onReset with new values', () => {
+    let triggered!: string
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      listeners: {
+        onReset: ({ formApi }) => {
+          triggered = formApi.state.values.name
+        },
+      },
+    })
+
+    form.mount()
+    form.reset({ name: 'reset-value' })
+
+    expect(triggered).toStrictEqual('reset-value')
+  })
+
+  it('should provide formApi in the onReset listener', () => {
+    let capturedFormApi: any
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      listeners: {
+        onReset: ({ formApi }) => {
+          capturedFormApi = formApi
+        },
+      },
+    })
+
+    form.mount()
+    form.reset()
+
+    expect(capturedFormApi).toBe(form)
+  })
 })

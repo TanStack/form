@@ -384,6 +384,7 @@ export interface FieldListeners<
   onMount?: FieldListenerFn<TParentData, TName, TData>
   onUnmount?: FieldListenerFn<TParentData, TName, TData>
   onSubmit?: FieldListenerFn<TParentData, TName, TData>
+  onReset?: FieldListenerFn<TParentData, TName, TData>
 }
 
 /**
@@ -2092,6 +2093,17 @@ export class FieldApi<
       { value: this.state.value, validationSource: 'field' },
       schema,
     )
+  }
+
+  /**
+   * Resets the field value and meta to default state.
+   */
+  reset = () => {
+    this.form.resetField(this.name)
+    this.options.listeners?.onReset?.({
+      value: this.state.value,
+      fieldApi: this,
+    })
   }
 
   private triggerOnBlurListener() {
