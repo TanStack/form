@@ -12,8 +12,8 @@
 
 <form.Field name="test" mode="array">
   {#snippet children(field)}
-    <div id="val">{JSON.stringify(field.state.value)}</div>
-    <button id="push" type="button" onclick={() => field.pushValue('b')}>
+    <div data-testid="val">{JSON.stringify(field.state.value)}</div>
+    <button data-testid="push" type="button" onclick={() => field.pushValue('b')}>
       push
     </button>
   {/snippet}
