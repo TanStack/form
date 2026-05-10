@@ -126,8 +126,8 @@ function makeFieldReactive<
       TFormOnDynamicAsync,
       TFormOnServer,
       TParentSubmitMeta
-    > &
-    FieldOptionsMode,
+    >,
+  { mode }: FieldOptionsMode,
 ): () => FieldApi<
   TParentData,
   TName,
@@ -328,7 +328,7 @@ export function createField<
     TFormOnDynamicAsync,
     TFormOnServer,
     TParentSubmitMeta
-  >(extendedApi as never, options.mode)
+  >(extendedApi as never, { mode: options.mode })
 }
 
 interface FieldComponentBoundProps<
