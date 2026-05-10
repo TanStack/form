@@ -1,7 +1,7 @@
 import { LitElement, html, nothing } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { repeat } from 'lit/directives/repeat.js'
-import { TanStackFormSubscriber } from '@tanstack/lit-form'
+import { TanStackStoreSelector } from '@tanstack/lit-store'
 import type { AnyFieldApi } from '@tanstack/lit-form'
 
 @customElement('text-field')
@@ -12,7 +12,7 @@ export class TextField extends LitElement {
   @property({ type: String })
   label = ''
 
-  _subscriber = new TanStackFormSubscriber(this, () => this.field.store)
+  _selector = new TanStackStoreSelector(this, () => this.field?.store)
 
   // Render into light DOM so the surrounding form picks up the inputs naturally
   protected createRenderRoot() {

@@ -14,10 +14,13 @@ This guide covers the patterns that work well in Lit:
 
 The most direct way to share field UI across multiple forms in Lit is to write a custom element that accepts the `FieldApi` instance as a property. The `AnyFieldApi` type from `@tanstack/lit-form` gives you a "this is some field, I don't care about the exact generics" type that's perfect for that property.
 
+Because the field is a property of the custom element rather than something the element owns, the host needs to subscribe to the field's store so it re-renders when the field's value or metadata change. The `TanStackStoreSelector` reactive controller from [`@tanstack/lit-store`](https://tanstack.com/store/latest/docs/framework/lit/quick-start) does exactly that.
+
 ```ts
 // text-field.ts
 import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
+import { TanStackStoreSelector } from '@tanstack/lit-store'
 import type { AnyFieldApi } from '@tanstack/lit-form'
 
 @customElement('text-field')
@@ -27,6 +30,9 @@ export class TextField extends LitElement {
 
   @property({ type: String })
   label = ''
+
+  // Re-render whenever this field's store updates.
+  _selector = new TanStackStoreSelector(this, () => this.field?.store)
 
   render() {
     return html`
@@ -84,6 +90,8 @@ The `field` parameter inside the render callback remains fully typed against the
 
 > If your reusable component only ever wraps fields of a specific value type (for example, only `string` fields), you can narrow the property type with the generic `FieldApi<...>` instead of `AnyFieldApi` — but `AnyFieldApi` is the easiest option to start with and matches how the directive is exposed in render callbacks elsewhere.
 
+> `TanStackStoreSelector` accepts an optional second argument to scope what triggers a re-render — for example, `(snapshot) => snapshot.meta.errors`. Passing nothing re-renders on any change to the field's store, which is the simplest default.
+
 ## Breaking big forms into smaller pieces
 
 Sometimes forms get very large. To keep things manageable, you can break a form across multiple custom elements that each receive the `TanStackFormController` as a property.
@@ -104,12 +112,13 @@ export const peopleFormOpts = formOptions({
 })
 ```
 
-Then derive the property type for a child custom element from those shared options:
+Then derive the property type for a child custom element from those shared options. As with reusable field elements, the child element receives the controller as a property and won't re-render automatically when the form's state changes — wire it up with `TanStackStoreSelector` against `form.api.store`:
 
 ```ts
 // child-form.ts
 import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
+import { TanStackStoreSelector } from '@tanstack/lit-store'
 import { getFormType } from '@tanstack/lit-form'
 import { peopleFormOpts } from './shared-form.js'
 import './text-field.js'
@@ -123,6 +132,9 @@ export class ChildForm extends LitElement {
 
   @property({ type: String })
   title = 'Child Form'
+
+  // Re-render when the form's state changes.
+  _selector = new TanStackStoreSelector(this, () => this.form?.api.store)
 
   render() {
     return html`
@@ -170,6 +182,7 @@ The same pattern works for sharing a group of related fields (for example, a pas
 // password-fields.ts
 import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
+import { TanStackStoreSelector } from '@tanstack/lit-store'
 import { formOptions, getFormType } from '@tanstack/lit-form'
 import './text-field.js'
 
@@ -186,6 +199,8 @@ const passwordFormType = getFormType(passwordFormOpts)
 export class PasswordFields extends LitElement {
   @property({ attribute: false })
   form!: typeof passwordFormType
+
+  _selector = new TanStackStoreSelector(this, () => this.form?.api.store)
 
   render() {
     return html`

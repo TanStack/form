@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@tanstack/lit-form": "^1.23.32",
+    "@tanstack/lit-store": "^0.13.2",
     "lit": "^3.3.1"
   },
   "devDependencies": {

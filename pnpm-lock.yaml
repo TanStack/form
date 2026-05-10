@@ -337,6 +337,9 @@ importers:
       '@tanstack/lit-form':
         specifier: ^1.23.32
         version: link:../../../packages/lit-form
+      '@tanstack/lit-store':
+        specifier: ^0.13.2
+        version: 0.13.2(lit@3.3.1)
       lit:
         specifier: ^3.3.1
         version: 3.3.1
@@ -5157,6 +5160,11 @@ packages:
     resolution: {integrity: sha512-B7+x7eP2FFvi3fgd3rNH9o/Eixt+pp0zCIdGhnQbAJjFrlwIKGjGnwyJjhWJ5fMQlGks/E2LdDTqEV4W9Plx7g==}
     engines: {node: '>=12'}
 
+  '@tanstack/lit-store@0.13.2':
+    resolution: {integrity: sha512-uAa5gQbmPOESokHM5t+AhQ3Ye8S2/bN+PB6CHKjHXixNN6aMDSQEtHoguPoMb3a3q/NeJ2NdiseyoUg4vsh/ng==}
+    peerDependencies:
+      lit: ^3.0.0
+
   '@tanstack/pacer-lite@0.1.1':
     resolution: {integrity: sha512-y/xtNPNt/YeyoVxE/JCx+T7yjEzpezmbb+toK8DDD1P4m7Kzs5YR956+7OKexG3f8aXgC3rLZl7b1V+yNUSy5w==}
     engines: {node: '>=18'}
@@ -5289,6 +5297,9 @@ packages:
   '@tanstack/start-storage-context@1.135.2':
     resolution: {integrity: sha512-9pr5Ssp5EYcDSb35y5f+YcM2Z+IxexWjiBcrIu8OgN/jI52N98QooWrQED/VMOo7gHUC5/IeuWQAehpLH6TzNg==}
     engines: {node: '>=22.12.0'}
+
+  '@tanstack/store@0.11.0':
+    resolution: {integrity: sha512-WlzzCt3xi0G6pCAJu1U+2jiECwabETDpQDi3hfkFZvJii9AuZqEKbOiVarX1/bWhTNjU486yQtJCCasi/0q+Cw==}
 
   '@tanstack/store@0.8.1':
     resolution: {integrity: sha512-PtOisLjUZPz5VyPRSCGjNOlwTvabdTBQ2K80DpVL1chGVr35WRxfeavAPdNq6pm/t7F8GhoR2qtmkkqtCEtHYw==}
@@ -15167,6 +15178,11 @@ snapshots:
 
   '@tanstack/history@1.133.28': {}
 
+  '@tanstack/lit-store@0.13.2(lit@3.3.1)':
+    dependencies:
+      '@tanstack/store': 0.11.0
+      lit: 3.3.1
+
   '@tanstack/pacer-lite@0.1.1': {}
 
   '@tanstack/preact-store@0.10.2(preact@10.29.1)':
@@ -15406,6 +15422,8 @@ snapshots:
   '@tanstack/start-storage-context@1.135.2':
     dependencies:
       '@tanstack/router-core': 1.135.2
+
+  '@tanstack/store@0.11.0': {}
 
   '@tanstack/store@0.8.1': {}
 
