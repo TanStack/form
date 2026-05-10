@@ -575,7 +575,12 @@ export class InternalFieldApi<
 
     if (this.#refCount === 0) {
       setTimeout(() => {
-        if (this.#refCount === 0) {
+        const nobodyNeedsNode = this.#refCount === 0
+        const isDefaultMeta = evaluate(
+          this._atoms?.meta.get(),
+          defaultInternalBaseFieldMeta,
+        )
+        if (nobodyNeedsNode && isDefaultMeta) {
           this._atoms = null
         }
       }, 0)

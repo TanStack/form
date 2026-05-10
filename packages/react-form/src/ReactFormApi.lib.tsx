@@ -5,24 +5,27 @@ import { useField } from './useField.lib'
 import { Subscribe as StoreSubscribe } from './Subscribe'
 import type { InternalBaseFieldMeta } from '@tanstack/form-core-v2/internals'
 import type {
-  ReactFormApi,
   ReactFormArrayFieldProps,
   ReactFormFieldProps,
   ReactFormSubscribeProps,
+  ReactTanStackFormComponents,
 } from './useForm.public'
 import type { FormOptions, FormValidator } from '@tanstack/form-core-v2'
 
 export interface InternalReactFormApi<
   TData,
   TFormValidators extends Array<FormValidator<TData>>,
-> extends ReactFormApi<TData, TFormValidators> {}
+>
+  extends
+    InternalFormApi<TData, TFormValidators>,
+    ReactTanStackFormComponents<TData, TFormValidators> {}
 
 export function initializeForm<
   TFormData,
   TFormValidators extends Array<FormValidator<TFormData>>,
 >(
   options: FormOptions<TFormData, TFormValidators>,
-): ReactFormApi<TFormData, TFormValidators> {
+): InternalReactFormApi<TFormData, TFormValidators> {
   const form = new InternalFormApi(options)
 
   const reactFormApi: InternalReactFormApi<TFormData, TFormValidators> =

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { initializeForm } from './ReactFormApi.lib'
 import type { SubscribeProps } from './Subscribe'
 import type { CrossVersionReactNode } from './types.lib'
@@ -40,10 +40,10 @@ export interface ReactFormArrayFieldProps<
   ) => CrossVersionReactNode
 }
 
-export interface ReactFormApi<
+export interface ReactTanStackFormComponents<
   TFormData,
   TFormValidators extends Array<FormValidator<TFormData>>,
-> extends FormApi<TFormData, TFormValidators> {
+> {
   /**
    * TODO docs
    */
@@ -58,6 +58,14 @@ export interface ReactFormApi<
   ) => CrossVersionReactNode
 }
 
+export interface ReactFormApi<
+  TFormData,
+  TFormValidators extends Array<FormValidator<TFormData>>,
+>
+  extends
+    FormApi<TFormData, TFormValidators>,
+    ReactTanStackFormComponents<TFormData, TFormValidators> {}
+
 /**
  * TODO docs
  */
@@ -68,6 +76,8 @@ export function useForm<
   options: FormOptions<TData, TFormValidators>,
 ): ReactFormApi<TData, TFormValidators> {
   const [form] = useState(() => initializeForm(options))
+
+  useEffect(() => form._update(options))
 
   return form
 }
