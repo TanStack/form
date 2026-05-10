@@ -18,7 +18,11 @@ import type {
 } from '@tanstack/form-core'
 
 import type { Accessor, JSX, JSXElement } from 'solid-js'
-import type { CreateFieldOptions, CreateFieldOptionsBound } from './types'
+import type {
+  CreateFieldOptions,
+  CreateFieldOptionsBound,
+  FieldOptionsMode,
+} from './types'
 
 interface SolidFieldApi<
   TParentData,
@@ -122,7 +126,8 @@ function makeFieldReactive<
       TFormOnDynamicAsync,
       TFormOnServer,
       TParentSubmitMeta
-    >,
+    > &
+    FieldOptionsMode,
 ): () => FieldApi<
   TParentData,
   TName,
@@ -163,12 +168,50 @@ function makeFieldReactive<
     TParentSubmitMeta
   > {
   const [field, setField] = createSignal(fieldApi, { equals: false })
-  // Handle shallow comparison to make sure that Derived doesn't create a new setField call every time
-  const store = useStore(fieldApi.store, (store) => store)
+  // Subscribe to the pieces of state that should trigger a re-render of the
+  // field. For array mode, we only track the length of the array value to
+  // avoid re-renders when child properties change. Meta is tracked piece by
+  // piece so that consumers re-render when any meta property updates.
+  // See: https://github.com/TanStack/form/issues/1961
+  const reactiveStateValue = useStore(fieldApi.store, (state) =>
+    mode === 'array'
+      ? Object.keys((state.value as unknown) ?? []).length
+      : state.value,
+  )
+  const reactiveMetaIsTouched = useStore(
+    fieldApi.store,
+    (state) => state.meta.isTouched,
+  )
+  const reactiveMetaIsBlurred = useStore(
+    fieldApi.store,
+    (state) => state.meta.isBlurred,
+  )
+  const reactiveMetaIsDirty = useStore(
+    fieldApi.store,
+    (state) => state.meta.isDirty,
+  )
+  const reactiveMetaErrorMap = useStore(
+    fieldApi.store,
+    (state) => state.meta.errorMap,
+  )
+  const reactiveMetaErrorSourceMap = useStore(
+    fieldApi.store,
+    (state) => state.meta.errorSourceMap,
+  )
+  const reactiveMetaIsValidating = useStore(
+    fieldApi.store,
+    (state) => state.meta.isValidating,
+  )
   // Run before initial render
   createComputed(() => {
-    // Use the store to track dependencies
-    store()
+    // Read all reactive sources to track them as dependencies
+    reactiveStateValue()
+    reactiveMetaIsTouched()
+    reactiveMetaIsBlurred()
+    reactiveMetaIsDirty()
+    reactiveMetaErrorMap()
+    reactiveMetaErrorSourceMap()
+    reactiveMetaIsValidating()
     setField(fieldApi)
   })
   return field
@@ -285,7 +328,7 @@ export function createField<
     TFormOnDynamicAsync,
     TFormOnServer,
     TParentSubmitMeta
-  >(extendedApi as never)
+  >(extendedApi as never, options.mode)
 }
 
 interface FieldComponentBoundProps<
