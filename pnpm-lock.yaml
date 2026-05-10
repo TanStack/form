@@ -322,7 +322,7 @@ importers:
   examples/lit/array:
     dependencies:
       '@tanstack/lit-form':
-        specifier: ^1.23.32
+        specifier: ^1.24.0
         version: link:../../../packages/lit-form
       lit:
         specifier: ^3.3.1
@@ -335,7 +335,7 @@ importers:
   examples/lit/large-form:
     dependencies:
       '@tanstack/lit-form':
-        specifier: ^1.23.32
+        specifier: ^1.24.0
         version: link:../../../packages/lit-form
       '@tanstack/lit-store':
         specifier: ^0.13.2
@@ -351,7 +351,7 @@ importers:
   examples/lit/simple:
     dependencies:
       '@tanstack/lit-form':
-        specifier: ^1.23.32
+        specifier: ^1.24.0
         version: link:../../../packages/lit-form
       lit:
         specifier: ^3.3.1
@@ -364,7 +364,7 @@ importers:
   examples/lit/standard-schema:
     dependencies:
       '@tanstack/lit-form':
-        specifier: ^1.23.32
+        specifier: ^1.24.0
         version: link:../../../packages/lit-form
       arktype:
         specifier: ^2.1.22
@@ -392,7 +392,7 @@ importers:
         specifier: ^2.4.0
         version: 2.4.0
       '@tanstack/lit-form':
-        specifier: ^1.23.32
+        specifier: ^1.24.0
         version: link:../../../packages/lit-form
       lit:
         specifier: ^3.3.1
