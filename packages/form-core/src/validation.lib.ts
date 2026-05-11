@@ -1,18 +1,20 @@
 import { LiteDebouncer } from '@tanstack/pacer-lite'
 import { isStandardSchema, parseStandardSchema } from './standardSchema.lib'
 import type {
+  ErrorWithMessage,
   FieldValidateResult,
   FieldValidator,
   FieldValidatorContext,
   FormValidateResult,
-  FormValidationError,
   FormValidator,
   FormValidatorContext,
   ValidationDebounceFn,
+  ValidationErrorInput,
   ValidationPredicateFn,
   ValidationTriggerOption,
   Validator,
 } from './validation.public'
+import { normalizeToArray } from './utils'
 import type { InternalFormApi } from './FormApi.lib'
 import type { AnyInternalFieldApi } from './FieldApi.lib'
 
@@ -43,11 +45,19 @@ type AbortedCall = typeof ABORTED_CALL
  * @private
  * Check if a validation result is considered an error.
  */
-export function isErrorResult<T extends FormValidationError>(
-  value: FormValidateResult | FieldValidateResult,
-): value is T {
+export function isErrorResult<T extends FormValidateResult | FieldValidateResult>(
+  value: T,
+): value is Exclude<T, null | undefined | false> {
   if (value === null || value === undefined || value === false) return false
   return true
+}
+
+export function normalizeValidationError(
+  value: ValidationErrorInput | null | undefined,
+): Array<ErrorWithMessage> {
+  return normalizeToArray(value).map((error) =>
+    typeof error === 'string' ? { message: error } : error,
+  )
 }
 
 /**
@@ -56,15 +66,19 @@ export function isErrorResult<T extends FormValidationError>(
  * Otherwise, return null.
  */
 export function isAggregateError(value: FormValidateResult): {
-  formError: FormValidationError | null
-  fieldErrors: Record<string, FormValidationError>
+  formError: ValidationErrorInput | null
+  fieldErrors: Record<string, ValidationErrorInput>
 } | null {
-  if (!isErrorResult<FormValidationError>(value)) return null
+  if (!isErrorResult(value)) return null
 
   const aggregateError = value
 
   // A ValidationAggregateError must be an object with at least one of form or fields
-  if (!Array.isArray(aggregateError)) {
+  if (
+    typeof aggregateError === 'object' &&
+    aggregateError !== null &&
+    !Array.isArray(aggregateError)
+  ) {
     if ('fields' in aggregateError) {
       return {
         formError: aggregateError.form ?? null,

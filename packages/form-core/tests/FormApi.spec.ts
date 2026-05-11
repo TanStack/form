@@ -560,6 +560,20 @@ describe('FormApi', () => {
         expect(result).toEqual([{ message: 'Name is required' }])
       })
 
+      it('stores string validator results as message objects', async () => {
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              run: () => 'Name is required',
+            },
+          ],
+        })
+
+        await form.validate('submit')
+        expect(form.state.formErrors).toEqual([{ message: 'Name is required' }])
+      })
+
       it('handles validators returning error arrays', async () => {
         const form = new InternalFormApi({
           defaultValues: { name: '' },
@@ -1087,6 +1101,26 @@ describe('FormApi', () => {
         expect(field.errors).toEqual([{ message: 'Name is required' }])
       })
 
+      it('stores string field errors from form validators as message objects', async () => {
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              run: () => ({
+                fields: {
+                  name: 'Name is required',
+                },
+              }),
+              triggers: ['change'],
+            },
+          ],
+        })
+        const field = form._getOrCreateFieldApi({ name: 'name' })
+        void field.store
+        await form.validate('change')
+        expect(field.errors).toEqual([{ message: 'Name is required' }])
+      })
+
       it('handles multiple field errors from a single validator', async () => {
         const form = new InternalFormApi({
           defaultValues: { name: '', age: 0 },
@@ -1162,6 +1196,19 @@ describe('FormApi', () => {
         field.handleChange('New value')
         await vi.runAllTimersAsync()
         expect(field.errors).toEqual([{ message: 'Form-level error' }])
+      })
+
+      it('stores string field validator results as message objects', async () => {
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+        })
+        const field = form._getOrCreateFieldApi({
+          name: 'name',
+          validators: [{ run: () => 'Field-level error' }],
+        })
+        void field.store
+        await field._runFieldValidation('submit')
+        expect(field.errors).toEqual([{ message: 'Field-level error' }])
       })
 
       it('clears field errors when validator no longer reports them', async () => {

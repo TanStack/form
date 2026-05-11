@@ -1,8 +1,9 @@
 import { batch, createAtom } from '@tanstack/store'
-import { callUpdater, evaluate, normalizeToArray } from './utils'
+import { callUpdater, evaluate } from './utils'
 import {
   createValidatorPipelineCache,
   isErrorResult,
+  normalizeValidationError,
   runFieldValidatorPipeline,
 } from './validation.lib'
 import type { PipelineResult, ValidatorPipelineCache } from './validation.lib'
@@ -24,7 +25,6 @@ import type {
   FieldValidateResult,
   FieldValidator,
   FormValidator,
-  ValidationError,
 } from './validation.public'
 
 export type AnyFieldApiOptions = FieldApiOptions<any, any, any>
@@ -37,8 +37,8 @@ export type NameSegment = string | number
 export type NameSegments = Array<NameSegment>
 
 interface MetaExtension {
-  _formValidatorErrors: Array<Array<ValidationError>>
-  _fieldValidatorErrors: Array<Array<ValidationError>>
+  _formValidatorErrors: Array<Array<ErrorWithMessage>>
+  _fieldValidatorErrors: Array<Array<ErrorWithMessage>>
   /**
    * @private
    * Used to rerender for ArrayField components
@@ -453,7 +453,7 @@ export class InternalFieldApi<
     this._setMeta((prev) => {
       const prevErrors = prev._fieldValidatorErrors
       const newError = isErrorResult(result.result)
-        ? normalizeToArray(result.result)
+        ? normalizeValidationError(result.result)
         : []
       const prevError = prevErrors[result.validatorIndex] ?? []
 
@@ -896,7 +896,7 @@ function getErrorsFromBaseMeta(
       .concat(baseMeta._formValidatorErrors)
       // ValidationError is OneOrMany, TypeScript doesn't realize that
       // flat also takes care of that
-      .flat() as Array<ErrorWithMessage>
+      .flat()
   }
   return result
 }

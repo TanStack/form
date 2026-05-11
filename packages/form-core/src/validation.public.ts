@@ -66,12 +66,14 @@ export type ValidationTriggerOption<TFormData, TValue = TFormData> =
 export interface ErrorWithMessage {
   message: string
 }
+export type ValidationErrorValue = ErrorWithMessage | string
 export type ValidationError = OneOrMany<ErrorWithMessage>
+export type ValidationErrorInput = OneOrMany<ValidationErrorValue>
 
 export interface ValidationAggregateError {
-  form?: ErrorWithMessage | Array<ErrorWithMessage>
+  form?: ValidationErrorInput
   // TODO: replace with DeepKeys and make it partial
-  fields: Record<string, ValidationError>
+  fields: Record<string, ValidationErrorInput>
 }
 
 interface BaseValidatorContext<TFormData> {
@@ -92,9 +94,9 @@ export type ValidValidationResult = null | undefined | false
 /**
  * Result of validation - can be null/undefined (valid), a single error, or multiple errors.
  */
-export type ValidationResult = ValidValidationResult | ValidationError
+export type ValidationResult = ValidValidationResult | ValidationErrorInput
 
-export type FormValidationError = ValidationError | ValidationAggregateError
+export type FormValidationError = ValidationErrorInput | ValidationAggregateError
 export type FormValidateResult = ValidationResult | ValidationAggregateError
 
 export type ValidatorFn<TParameter, TReturn> = (

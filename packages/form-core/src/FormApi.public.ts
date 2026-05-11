@@ -2,6 +2,7 @@ import type { FieldUpdateOptions } from './types.public'
 import type { ReadonlyAtom } from '@tanstack/store'
 import type {
   ConfigurableValidationTrigger,
+  ErrorWithMessage,
   FormValidationError,
   FormValidator,
 } from './validation.public'
@@ -36,7 +37,7 @@ export interface FormState<TData> {
   /**
    * Array of form-level validation errors.
    */
-  formErrors: Array<FormValidationError>
+  formErrors: Array<ErrorWithMessage>
 }
 
 export interface FormApi<

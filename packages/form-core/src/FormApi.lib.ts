@@ -4,12 +4,13 @@ import {
   nameToFieldNodeSegments,
   tryGetFieldApi,
 } from './FieldApi.lib'
-import { evaluate, getBy, normalizeToArray, setBy } from './utils'
+import { evaluate, getBy, setBy } from './utils'
 import { InternalRootFieldApi } from './RootFieldApi.lib'
 import {
   createValidatorPipelineCache,
   isAggregateError,
   isErrorResult,
+  normalizeValidationError,
   runFormValidatorPipeline,
 } from './validation.lib'
 
@@ -30,8 +31,9 @@ import type { FormApi, FormOptions, FormState } from './FormApi.public'
 import type { FieldUpdateOptions, Updater } from './types.public'
 import type {
   FormValidateResult,
-  FormValidationError,
   FormValidator,
+  ErrorWithMessage,
+  ValidationErrorInput,
   ValidationTrigger,
 } from './validation.public'
 
@@ -51,7 +53,7 @@ export interface BaseFormMeta {
    * Dense 2-dimensional array of form-level errors where index corresponds to validatorIndex.
    * Each validator index contains an array of errors (normalized).
    */
-  errors: Array<Array<FormValidationError>>
+  errors: Array<Array<ErrorWithMessage>>
   /**
    * @private
    * Dense array of field references per validator index that have errors.
@@ -578,7 +580,9 @@ export class InternalFormApi<
         const errors = [...prev.errors]
 
         if (isErrorResult(result.result)) {
-          const errorArray = normalizeToArray(result.result)
+          const errorArray = normalizeValidationError(
+            result.result as ValidationErrorInput,
+          )
           errors[result.validatorIndex] = errorArray
         } else {
           errors[result.validatorIndex] = []
@@ -609,8 +613,8 @@ export class InternalFormApi<
    */
   _processAggregateError = (
     aggregateError: {
-      formError: FormValidationError | null
-      fieldErrors: Record<string, FormValidationError>
+      formError: ValidationErrorInput | null
+      fieldErrors: Record<string, ValidationErrorInput>
     },
     validatorIndex: number,
   ) => {
@@ -619,7 +623,9 @@ export class InternalFormApi<
       this._formMetaAtom.set((prev) => {
         const errors = [...prev.errors]
         if (aggregateError.formError) {
-          errors[validatorIndex] = normalizeToArray(aggregateError.formError)
+          errors[validatorIndex] = normalizeValidationError(
+            aggregateError.formError,
+          )
         } else {
           errors[validatorIndex] = []
         }
@@ -645,13 +651,13 @@ export class InternalFormApi<
             while (formErrors.length <= validatorIndex) {
               formErrors.push([])
             }
-            const newError = normalizeToArray(fieldError)
+            const newError = normalizeValidationError(fieldError)
             const prevError = formErrors[validatorIndex] ?? []
             // TODO does this tank performance for standard schemas?
-            if (evaluate(prevError, newError as never)) {
+            if (evaluate(prevError, newError)) {
               return prev
             }
-            formErrors[validatorIndex] = newError as never
+            formErrors[validatorIndex] = newError
             return {
               ...prev,
               _formValidatorErrors: formErrors,
