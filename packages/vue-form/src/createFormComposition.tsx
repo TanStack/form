@@ -1,15 +1,16 @@
 import { defineComponent, h, inject, provide } from 'vue'
-import { useForm } from './useForm'
-import type { Component, InjectionKey } from 'vue'
 import {
+  FormApi
+} from '@tanstack/form-core'
+import { useForm } from './useForm'
+import type {
   AnyFieldApi,
   AnyFormApi,
   FieldApi,
-  FormApi,
   FormAsyncValidateOrFn,
   FormOptions,
-  FormValidateOrFn,
-} from '@tanstack/form-core'
+  FormValidateOrFn} from '@tanstack/form-core';
+import type { Component, InjectionKey } from 'vue'
 import type { FieldComponent } from './useField'
 import type { VueFormExtendedApi } from './useForm'
 
