@@ -22,6 +22,7 @@ import type {
   FieldErrorMapFromValidator,
   FieldInfo,
   FieldLikeAPI,
+  FieldLikeMeta,
   FieldLikeMetaBase,
   FieldLikeOptions,
   FieldLikeState,
@@ -46,7 +47,12 @@ import type {
 } from './standardSchemaValidator'
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
 import type { ReadonlyStore, Store } from '@tanstack/store'
-import type { DeepKeys, DeepKeysOfType, DeepValue } from './util-types'
+import type {
+  DeepKeys,
+  DeepKeysOfType,
+  DeepValue,
+  UnwrapOneLevelOfArray,
+} from './util-types'
 
 /**
  * @private
@@ -724,11 +730,107 @@ export type AnyFormGroupApi = FormGroupApi<
   any
 >
 
-interface FormGroupStoreState extends AnyFieldLikeMeta {
+export interface FormGroupStoreState<
+  in out TParentData,
+  in out TName extends DeepKeys<TParentData>,
+  in out TData extends DeepValue<TParentData, TName>,
+  in out TOnMount extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnChange extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnChangeAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TOnBlur extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnBlurAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TOnSubmit extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnSubmitAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TOnDynamic extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnDynamicAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnChangeAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnBlurAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnSubmitAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnDynamicAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+> extends FieldLikeState<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync
+  >,
+    FieldLikeMeta<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync
+    >,
+    FormGroupState {
   isFieldsValidating: boolean
   isFieldsValid: boolean
   isGroupValid: boolean
+  isValid: boolean
   canSubmit: boolean
+  errorSourceMap: Record<string, never>
 }
 
 export class FormGroupApi<
@@ -903,7 +1005,7 @@ export class FormGroupApi<
    * The field state store.
    */
   store!: ReadonlyStore<
-    FieldLikeState<
+    FormGroupStoreState<
       TParentData,
       TName,
       TData,
@@ -1005,30 +1107,29 @@ export class FormGroupApi<
     this.store = createStore(
       (
         prevVal:
-          | (FormGroupStoreState &
-              FieldLikeState<
-                TParentData,
-                TName,
-                TData,
-                TOnMount,
-                TOnChange,
-                TOnChangeAsync,
-                TOnBlur,
-                TOnBlurAsync,
-                TOnSubmit,
-                TOnSubmitAsync,
-                TOnDynamic,
-                TOnDynamicAsync,
-                TFormOnMount,
-                TFormOnChange,
-                TFormOnChangeAsync,
-                TFormOnBlur,
-                TFormOnBlurAsync,
-                TFormOnSubmit,
-                TFormOnSubmitAsync,
-                TFormOnDynamic,
-                TFormOnDynamicAsync
-              >)
+          | FormGroupStoreState<
+              TParentData,
+              TName,
+              TData,
+              TOnMount,
+              TOnChange,
+              TOnChangeAsync,
+              TOnBlur,
+              TOnBlurAsync,
+              TOnSubmit,
+              TOnSubmitAsync,
+              TOnDynamic,
+              TOnDynamicAsync,
+              TFormOnMount,
+              TFormOnChange,
+              TFormOnChangeAsync,
+              TFormOnBlur,
+              TFormOnBlurAsync,
+              TFormOnSubmit,
+              TFormOnSubmitAsync,
+              TFormOnDynamic,
+              TFormOnDynamicAsync
+            >
           | undefined,
       ) => {
         // Temp hack to subscribe to form.store
@@ -1073,24 +1174,38 @@ export class FormGroupApi<
         if (!prevMeta || meta.errorMap !== prevMeta.errorMap) {
           errors = Object.values(meta.errorMap).reduce<
             Array<
-              | UnwrapFieldValidateOrFn<TName, TOnMount, TFormOnMount>
-              | UnwrapFieldValidateOrFn<TName, TOnChange, TFormOnChange>
-              | UnwrapFieldAsyncValidateOrFn<
-                  TName,
-                  TOnChangeAsync,
-                  TFormOnChangeAsync
+              | UnwrapOneLevelOfArray<
+                  UnwrapFieldValidateOrFn<TName, TOnMount, TFormOnMount>
                 >
-              | UnwrapFieldValidateOrFn<TName, TOnBlur, TFormOnBlur>
-              | UnwrapFieldAsyncValidateOrFn<
-                  TName,
-                  TOnBlurAsync,
-                  TFormOnBlurAsync
+              | UnwrapOneLevelOfArray<
+                  UnwrapFieldValidateOrFn<TName, TOnChange, TFormOnChange>
                 >
-              | UnwrapFieldValidateOrFn<TName, TOnSubmit, TFormOnSubmit>
-              | UnwrapFieldAsyncValidateOrFn<
-                  TName,
-                  TOnSubmitAsync,
-                  TFormOnSubmitAsync
+              | UnwrapOneLevelOfArray<
+                  UnwrapFieldAsyncValidateOrFn<
+                    TName,
+                    TOnChangeAsync,
+                    TFormOnChangeAsync
+                  >
+                >
+              | UnwrapOneLevelOfArray<
+                  UnwrapFieldValidateOrFn<TName, TOnBlur, TFormOnBlur>
+                >
+              | UnwrapOneLevelOfArray<
+                  UnwrapFieldAsyncValidateOrFn<
+                    TName,
+                    TOnBlurAsync,
+                    TFormOnBlurAsync
+                  >
+                >
+              | UnwrapOneLevelOfArray<
+                  UnwrapFieldValidateOrFn<TName, TOnSubmit, TFormOnSubmit>
+                >
+              | UnwrapOneLevelOfArray<
+                  UnwrapFieldAsyncValidateOrFn<
+                    TName,
+                    TOnSubmitAsync,
+                    TFormOnSubmitAsync
+                  >
                 >
             >
           >((prev, curr) => {
@@ -1170,30 +1285,29 @@ export class FormGroupApi<
           isDirty,
           errorSourceMap: {},
           _arrayVersion: meta._arrayVersion,
-        } as FormGroupStoreState &
-          FieldLikeState<
-            TParentData,
-            TName,
-            TData,
-            TOnMount,
-            TOnChange,
-            TOnChangeAsync,
-            TOnBlur,
-            TOnBlurAsync,
-            TOnSubmit,
-            TOnSubmitAsync,
-            TOnDynamic,
-            TOnDynamicAsync,
-            TFormOnMount,
-            TFormOnChange,
-            TFormOnChangeAsync,
-            TFormOnBlur,
-            TFormOnBlurAsync,
-            TFormOnSubmit,
-            TFormOnSubmitAsync,
-            TFormOnDynamic,
-            TFormOnDynamicAsync
-          >
+        } as FormGroupStoreState<
+          TParentData,
+          TName,
+          TData,
+          TOnMount,
+          TOnChange,
+          TOnChangeAsync,
+          TOnBlur,
+          TOnBlurAsync,
+          TOnSubmit,
+          TOnSubmitAsync,
+          TOnDynamic,
+          TOnDynamicAsync,
+          TFormOnMount,
+          TFormOnChange,
+          TFormOnChangeAsync,
+          TFormOnBlur,
+          TFormOnBlurAsync,
+          TFormOnSubmit,
+          TFormOnSubmitAsync,
+          TFormOnDynamic,
+          TFormOnDynamicAsync
+        >
 
         prevMeta = meta
 
@@ -1389,6 +1503,10 @@ export class FormGroupApi<
 
     const relatedFieldMetas: (AnyFieldLikeMeta & { name: string })[] = []
     for (const [fieldName, fieldMeta] of fields) {
+      // Skip the group's own self-entry — its validity is tracked via
+      // `isGroupValid`. Including it here would conflate group-level
+      // validation with field-level validation in `isFieldsValid` etc.
+      if (fieldName === this.name) continue
       if (fieldName.startsWith(this.name)) {
         relatedFieldMetas.push({ ...fieldMeta, name: fieldName })
       }

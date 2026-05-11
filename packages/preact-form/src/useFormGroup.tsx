@@ -248,6 +248,7 @@ export function useFormGroup<
       },
       get state() {
         return {
+          ...formGroupApi.state,
           value: reactiveStateValue,
           get meta() {
             return {

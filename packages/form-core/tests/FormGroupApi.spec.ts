@@ -792,4 +792,145 @@ describe('form group api', () => {
     expect(step1Group.state.meta.errorMap.onDynamic).toBeUndefined()
     expect(step1NameField.state.meta.errors).toEqual([])
   })
+
+  describe('isFieldsValid / isGroupValid / isValid', () => {
+    it('should be true on a pristine, valid group', () => {
+      const form = new FormApi({
+        defaultValues: {
+          step1: { name: 'test' },
+          step2: { name: 'test2' },
+        },
+      })
+
+      const step1Group = new FormGroupApi({
+        name: 'step1',
+        form,
+      })
+
+      const step1NameField = new FieldApi({
+        name: 'step1.name',
+        form,
+      })
+
+      form.mount()
+      step1Group.mount()
+      step1NameField.mount()
+
+      expect(step1Group.state.isFieldsValid).toBe(true)
+      expect(step1Group.state.isGroupValid).toBe(true)
+      expect(step1Group.state.isValid).toBe(true)
+    })
+
+    it('isFieldsValid should be false when a child field has an error, while isGroupValid stays true', async () => {
+      const form = new FormApi({
+        defaultValues: {
+          step1: { name: '' },
+          step2: { name: 'test2' },
+        },
+      })
+
+      const step1Group = new FormGroupApi({
+        name: 'step1',
+        form,
+      })
+
+      const step1NameField = new FieldApi({
+        name: 'step1.name',
+        form,
+        validators: {
+          onChange: ({ value }) => (!value ? 'Name is required' : undefined),
+        },
+      })
+
+      form.mount()
+      step1Group.mount()
+      step1NameField.mount()
+
+      step1NameField.handleChange('')
+
+      expect(step1NameField.state.meta.errors.length).toBeGreaterThan(0)
+      expect(step1Group.state.isFieldsValid).toBe(false)
+      expect(step1Group.state.isGroupValid).toBe(true)
+      expect(step1Group.state.isValid).toBe(false)
+    })
+
+    it('isGroupValid should be false when a group-level validator errors, while isFieldsValid stays true', async () => {
+      const form = new FormApi({
+        defaultValues: {
+          step1: { name: '' },
+          step2: { name: 'test2' },
+        },
+      })
+
+      const step1Group = new FormGroupApi({
+        name: 'step1',
+        form,
+        validators: {
+          onSubmit: ({ value }) =>
+            !value.name ? 'Name is required' : undefined,
+        },
+      })
+
+      const step1NameField = new FieldApi({
+        name: 'step1.name',
+        form,
+      })
+
+      form.mount()
+      step1Group.mount()
+      step1NameField.mount()
+
+      await step1Group.handleSubmit()
+
+      expect(step1Group.state.meta.errorMap.onSubmit).toBe('Name is required')
+      expect(step1Group.state.isFieldsValid).toBe(true)
+      expect(step1Group.state.isGroupValid).toBe(false)
+      expect(step1Group.state.isValid).toBe(false)
+    })
+
+    it('isValid should recover to true after fixing both a field-level and group-level error', async () => {
+      const form = new FormApi({
+        defaultValues: {
+          step1: { name: '' },
+          step2: { name: 'test2' },
+        },
+      })
+
+      const step1Group = new FormGroupApi({
+        name: 'step1',
+        form,
+        validators: {
+          onSubmit: ({ value }) =>
+            !value.name ? 'Name is required' : undefined,
+        },
+      })
+
+      const step1NameField = new FieldApi({
+        name: 'step1.name',
+        form,
+        validators: {
+          onChange: ({ value }) => (!value ? 'Name is required' : undefined),
+        },
+      })
+
+      form.mount()
+      step1Group.mount()
+      step1NameField.mount()
+
+      step1NameField.handleChange('')
+      await step1Group.handleSubmit()
+
+      // Field error short-circuits the group's own onSubmit, so only the
+      // field-level branch is invalid here.
+      expect(step1Group.state.isFieldsValid).toBe(false)
+      expect(step1Group.state.isValid).toBe(false)
+
+      step1NameField.handleChange('valid name')
+      await step1Group.handleSubmit()
+
+      expect(step1Group.state.isFieldsValid).toBe(true)
+      expect(step1Group.state.isGroupValid).toBe(true)
+      expect(step1Group.state.isValid).toBe(true)
+    })
+  })
 })
