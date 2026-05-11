@@ -793,7 +793,8 @@ export interface FormGroupMeta<
     | undefined
     | FormAsyncValidateOrFn<TParentData>,
 >
-  extends FieldLikeMeta<
+  extends
+    FieldLikeMeta<
       TParentData,
       TName,
       TData,

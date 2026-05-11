@@ -1230,8 +1230,7 @@ export class FormApi<
             if (m.isDirty) aggIsDirty = true
           }
           const isPristine = !aggIsDirty
-          const isValidating =
-            !!isFieldsValidating || lifecycle.isValidating
+          const isValidating = !!isFieldsValidating || lifecycle.isValidating
 
           // Group's own errors derived from `ownFieldMeta.errorMap`. Mirrors
           // the per-instance reduction that previously lived in
@@ -1248,23 +1247,20 @@ export class FormApi<
             (prevGroupMeta as unknown as { __srcErrorMap?: unknown })
               .__srcErrorMap !== errorMap
           ) {
-            errors = Object.values(errorMap).reduce<unknown[]>(
-              (acc, curr) => {
-                if (curr === undefined) return acc
-                if (
-                  curr &&
-                  typeof curr === 'object' &&
-                  'fields' in (curr as object)
-                ) {
-                  const groupErr = (curr as { group?: unknown }).group
-                  if (groupErr !== undefined) acc.push(groupErr)
-                  return acc
-                }
-                acc.push(curr)
+            errors = Object.values(errorMap).reduce<unknown[]>((acc, curr) => {
+              if (curr === undefined) return acc
+              if (
+                curr &&
+                typeof curr === 'object' &&
+                'fields' in (curr as object)
+              ) {
+                const groupErr = (curr as { group?: unknown }).group
+                if (groupErr !== undefined) acc.push(groupErr)
                 return acc
-              },
-              [],
-            )
+              }
+              acc.push(curr)
+              return acc
+            }, [])
           }
 
           const isGroupValid = errors.length === 0
@@ -1295,8 +1291,7 @@ export class FormApi<
             prevGroupMeta.isValidating === isValidating &&
             prevGroupMeta.isSubmitting === lifecycle.isSubmitting &&
             prevGroupMeta.isSubmitted === lifecycle.isSubmitted &&
-            prevGroupMeta.submissionAttempts ===
-              lifecycle.submissionAttempts &&
+            prevGroupMeta.submissionAttempts === lifecycle.submissionAttempts &&
             prevGroupMeta.isSubmitSuccessful === lifecycle.isSubmitSuccessful
           ) {
             result[groupName] = prevGroupMeta
