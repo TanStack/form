@@ -115,6 +115,17 @@
       },
     })
 
+    // Submission lifecycle (isSubmitting, submissionAttempts, etc.) lives on
+    // a separate store from value/meta, so we have to subscribe to it
+    // explicitly and override the `formState` getter so reads in components
+    // are tracked by Svelte.
+    const formStateSub = useStore(api.formStateStore)
+    Object.defineProperty(extendedApi, 'formState', {
+      get() {
+        return formStateSub.current
+      },
+    })
+
     return extendedApi
   }
 </script>

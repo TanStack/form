@@ -283,4 +283,70 @@ describe('TanStackFormGroupDirective', () => {
       }),
     )
   })
+
+  it('should rerender group.formState.isSubmitting during an async submit', async () => {
+    let resolveSubmit!: () => void
+    const onGroupSubmit = vi.fn(
+      () =>
+        new Promise<void>((resolve) => {
+          resolveSubmit = resolve
+        }),
+    )
+
+    @Component({
+      selector: 'test-component',
+      standalone: true,
+      changeDetection: ChangeDetectionStrategy.OnPush,
+      template: `
+        <ng-container
+          [tanstackFormGroup]="form"
+          name="step1"
+          [onGroupSubmit]="onGroupSubmit"
+          #g="formGroup"
+        >
+          <form
+            (submit)="
+              $event.preventDefault();
+              $event.stopPropagation();
+              g.api.handleSubmit()
+            "
+          >
+            <button
+              type="submit"
+              data-testid="submit-group"
+              [disabled]="g.api.formState.isSubmitting"
+            >
+              {{ g.api.formState.isSubmitting ? 'Saving...' : 'Continue' }}
+            </button>
+          </form>
+        </ng-container>
+      `,
+      imports: [TanStackFormGroup],
+    })
+    class TestComponent {
+      onGroupSubmit = onGroupSubmit
+      form = injectForm({
+        defaultValues: {
+          step1: { name: 'test' },
+          step2: { name: 'test2' },
+        },
+      })
+    }
+
+    const { getByTestId } = await render(TestComponent)
+    const button = getByTestId('submit-group') as HTMLButtonElement
+    expect(button.textContent?.trim()).toBe('Continue')
+    expect(button.disabled).toBe(false)
+
+    await user.click(button)
+
+    await waitFor(() => expect(button.textContent?.trim()).toBe('Saving...'))
+    expect(button.disabled).toBe(true)
+
+    resolveSubmit()
+
+    await waitFor(() => expect(button.textContent?.trim()).toBe('Continue'))
+    expect(button.disabled).toBe(false)
+    expect(onGroupSubmit).toHaveBeenCalledTimes(1)
+  })
 })

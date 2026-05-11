@@ -292,4 +292,70 @@ ${String(group.state.meta.errorMap.onSubmit ?? '')}</pre
       }),
     )
   })
+
+  it('should rerender group.formState.isSubmitting during an async submit', async () => {
+    let resolveSubmit!: () => void
+    const onGroupSubmit = vi.fn(
+      () =>
+        new Promise<void>((resolve) => {
+          resolveSubmit = resolve
+        }),
+    )
+
+    class TestEl extends LitElement {
+      form = new TanStackFormController(this, {
+        defaultValues: {
+          step1: { name: 'test' },
+          step2: { name: 'test2' },
+        } as TestData,
+      })
+
+      render() {
+        return html`${this.form.group(
+          { name: 'step1', onGroupSubmit },
+          (group) => html`
+            <form
+              @submit=${(e: Event) => {
+                e.preventDefault()
+                e.stopPropagation()
+                void group.handleSubmit()
+              }}
+            >
+              <button
+                type="submit"
+                id="submit-group"
+                ?disabled=${group.formState.isSubmitting}
+              >
+                ${group.formState.isSubmitting ? 'Saving...' : 'Continue'}
+              </button>
+            </form>
+          `,
+        )}`
+      }
+    }
+
+    defineOnce('group-test-6', TestEl)
+    const el = await mount<TestEl>('group-test-6')
+
+    const button = () =>
+      el.shadowRoot!.querySelector<HTMLButtonElement>('#submit-group')!
+
+    expect(button().textContent?.trim()).toBe('Continue')
+    expect(button().disabled).toBe(false)
+
+    await user.click(button())
+
+    await vi.waitFor(() =>
+      expect(button().textContent?.trim()).toBe('Saving...'),
+    )
+    expect(button().disabled).toBe(true)
+
+    resolveSubmit()
+
+    await vi.waitFor(() =>
+      expect(button().textContent?.trim()).toBe('Continue'),
+    )
+    expect(button().disabled).toBe(false)
+    expect(onGroupSubmit).toHaveBeenCalledTimes(1)
+  })
 })

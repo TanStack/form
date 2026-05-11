@@ -231,6 +231,11 @@ export function useFormGroup<
     (state) => state.meta.isValidating,
   )
 
+  const reactiveFormState = useStore(
+    formGroupApi.formStateStore,
+    (state) => state,
+  )
+
   // This makes me sad, but if I understand correctly, this is what we have to do for reactivity to work properly with React compiler.
   const extendedFieldApi = useMemo(() => {
     const reactiveFieldApi = {
@@ -239,7 +244,7 @@ export function useFormGroup<
         return formGroupApi._handleSubmit(...props)
       }) as typeof formGroupApi.handleSubmit,
       get formState() {
-        return formGroupApi.formState
+        return reactiveFormState
       },
       get state() {
         return {
@@ -296,6 +301,7 @@ export function useFormGroup<
     reactiveMetaErrorMap,
     reactiveMetaErrorSourceMap,
     reactiveMetaIsValidating,
+    reactiveFormState,
   ])
 
   useIsomorphicLayoutEffect(formGroupApi.mount, [formGroupApi])

@@ -269,4 +269,61 @@ describe('form.FormGroup', () => {
       }),
     )
   })
+
+  it('should rerender group.formState.isSubmitting during an async submit', async () => {
+    let resolveSubmit!: () => void
+    const onGroupSubmit = vi.fn(
+      () =>
+        new Promise<void>((resolve) => {
+          resolveSubmit = resolve
+        }),
+    )
+
+    const Comp = defineComponent(() => {
+      const form = useForm({
+        defaultValues: {
+          step1: { name: 'test' },
+          step2: { name: 'test2' },
+        },
+      })
+
+      return () => (
+        <form.FormGroup name="step1" onGroupSubmit={onGroupSubmit}>
+          {({ group }: { group: AnyFormGroupApi }) => (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                void group.handleSubmit()
+              }}
+            >
+              <button
+                type="submit"
+                data-testid="submit-group"
+                disabled={group.formState.isSubmitting}
+              >
+                {group.formState.isSubmitting ? 'Saving...' : 'Continue'}
+              </button>
+            </form>
+          )}
+        </form.FormGroup>
+      )
+    })
+
+    const { getByTestId } = render(Comp)
+    const button = getByTestId('submit-group') as HTMLButtonElement
+    expect(button.textContent).toBe('Continue')
+    expect(button.disabled).toBe(false)
+
+    await user.click(button)
+
+    await waitFor(() => expect(button.textContent).toBe('Saving...'))
+    expect(button.disabled).toBe(true)
+
+    resolveSubmit()
+
+    await waitFor(() => expect(button.textContent).toBe('Continue'))
+    expect(button.disabled).toBe(false)
+    expect(onGroupSubmit).toHaveBeenCalledTimes(1)
+  })
 })

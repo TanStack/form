@@ -918,6 +918,7 @@ class FormGroupDirective<
     TParentSubmitMeta
   >
   #unmount?: () => void
+  #formStateUnsubscribe?: () => void
 
   constructor(partInfo: PartInfo) {
     super(partInfo)
@@ -938,6 +939,17 @@ class FormGroupDirective<
 
         this.#group = new FormGroupApi(options as never)
         this.#unmount = this.#group.mount()
+        // Submission lifecycle (isSubmitting, submissionAttempts, etc.) lives
+        // on a separate store that nothing else subscribes to, so we have to
+        // request a re-render of this directive when it changes to keep
+        // `group.formState.*` reactive.
+        this.#formStateUnsubscribe = this.#group.formStateStore.subscribe(
+          () => {
+            if (this.#group) {
+              this.setValue(_render(this.#group))
+            }
+          },
+        ).unsubscribe
       }
 
       this.#registered = true
@@ -949,6 +961,8 @@ class FormGroupDirective<
   protected disconnected() {
     super.disconnected()
     this.#unmount?.()
+    this.#formStateUnsubscribe?.()
+    this.#formStateUnsubscribe = undefined
   }
 
   protected reconnected() {
