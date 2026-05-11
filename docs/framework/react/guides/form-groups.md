@@ -64,7 +64,7 @@ return (
             onGroupSubmitInvalid={() => {
                 // Or handle invalid submissions, just like a top-level form
             }}
-            submitMeta={{} as SomeType}
+            onSubmitMeta={{} as SomeType}
             children={group => (
                 // Use `group.handleSubmit()` to submit the sub-form, but not the parent form
                 // ...
@@ -105,10 +105,11 @@ Form groups have a distinct validation proceedure that we think makes sense for 
   name="step1"
   validators={{
     onChange: ({ value, groupApi }) => ({
+      group: value.name === 'error' ? 'Group error' : undefined,
       fields: {
         // Must use the name of the field relative to the FormGroup as the error key,
         // to stay consistent with how standard schema works with form groups
-        name: value.name === 'error' ? 'Error' : undefined,
+        name: value.name === 'error' ? 'Field error' : undefined,
       },
     }),
   }}
@@ -165,3 +166,12 @@ Instead, pass your sub-schema for the group to the `onDynamic` validation of the
 ```
 
 It will treat `group.submissionAttempts` as the way to change what validator is ran before/after submit.
+
+## Form Group State
+
+Just like you're able to access `group.state.meta.errors`, you're also able to access the group's value using `group.state.value`. Likewise, here are some valuable properties you can access in the `group.state.meta`:
+
+- `group.state.meta.isFieldsValid`: `true` when the field-level validators have no errors
+- `group.state.meta.isGroupValid`: `true` when the group-level validators have no errors
+- `group.state.meta.isValid`: `true` when both the field-level and group-level validators have no errors
+- `group.state.meta.isSubmitting`: `true` when the group is in the process of being submitted
