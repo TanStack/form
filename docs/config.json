@@ -129,6 +129,10 @@
               "to": "framework/react/guides/arrays"
             },
             {
+              "label": "Form Groups",
+              "to": "framework/react/guides/form-groups"
+            },
+            {
               "label": "Linked Fields",
               "to": "framework/react/guides/linked-fields"
             },
