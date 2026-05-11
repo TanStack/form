@@ -188,6 +188,202 @@ describe('form group api', () => {
     expect(onSubmit).not.toHaveBeenCalled()
     expect(step1Group.state.meta.errorMap.onSubmit).toBe('Name is required')
   })
+
+  it('Should propagate manual function field errors from group validators to child fields', async () => {
+    const onSubmit = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        step1: { name: '' },
+        step2: { name: 'test2' },
+      },
+      onSubmit,
+    })
+
+    const onGroupSubmit = vi.fn()
+    const onGroupSubmitInvalid = vi.fn()
+
+    const step1Group = new FormGroupApi({
+      name: 'step1',
+      form,
+      onGroupSubmit,
+      onGroupSubmitInvalid,
+      validators: {
+        onSubmit: () => {
+          return {
+            fields: {
+              'name': 'Name is required',
+            },
+          }
+        },
+      },
+    })
+
+    const step1NameField = new FieldApi({
+      name: 'step1.name',
+      form,
+    })
+
+    form.mount()
+    step1Group.mount()
+    step1NameField.mount()
+
+    await step1Group.handleSubmit()
+
+    expect(onGroupSubmitInvalid).toHaveBeenCalled()
+    expect(onGroupSubmit).not.toHaveBeenCalled()
+    expect(onSubmit).not.toHaveBeenCalled()
+    expect(step1NameField.state.meta.errorMap.onSubmit).toBe(
+      'Name is required',
+    )
+  })
+
+  it('Should propagate standard schema field errors from group validators to child fields', async () => {
+    const onSubmit = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        step1: { name: '' },
+        step2: { name: 'test2' },
+      },
+      onSubmit,
+    })
+
+    const onGroupSubmit = vi.fn()
+    const onGroupSubmitInvalid = vi.fn()
+
+    const step1Group = new FormGroupApi({
+      name: 'step1',
+      form,
+      onGroupSubmit,
+      onGroupSubmitInvalid,
+      validators: {
+        onSubmit: z.object({
+          name: z.string().min(1, 'Name is required'),
+        }),
+      },
+    })
+
+    const step1NameField = new FieldApi({
+      name: 'step1.name',
+      form,
+    })
+
+    form.mount()
+    step1Group.mount()
+    step1NameField.mount()
+
+    await step1Group.handleSubmit()
+
+    expect(onGroupSubmitInvalid).toHaveBeenCalled()
+    expect(onGroupSubmit).not.toHaveBeenCalled()
+    expect(onSubmit).not.toHaveBeenCalled()
+    expect(
+      step1NameField.state.meta.errorMap.onSubmit,
+    ).toBeDefined()
+  })
+
+  it('Should propagate onDynamic field errors from group validators to child fields when revalidateLogic is on the form', async () => {
+    const onSubmit = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        step1: { name: '' },
+        step2: { name: 'test2' },
+      },
+      onSubmit,
+      validationLogic: revalidateLogic(),
+    })
+
+    const onGroupSubmit = vi.fn()
+    const onGroupSubmitInvalid = vi.fn()
+
+    const step1Group = new FormGroupApi({
+      name: 'step1',
+      form,
+      onGroupSubmit,
+      onGroupSubmitInvalid,
+      validators: {
+        onDynamic: () => {
+          return {
+            fields: {
+              'name': 'Name is required',
+            },
+          }
+        },
+      },
+    })
+
+    const step1NameField = new FieldApi({
+      name: 'step1.name',
+      form,
+    })
+
+    form.mount()
+    step1Group.mount()
+    step1NameField.mount()
+
+    await step1Group.handleSubmit()
+
+    expect(onGroupSubmitInvalid).toHaveBeenCalled()
+    expect(onGroupSubmit).not.toHaveBeenCalled()
+    expect(onSubmit).not.toHaveBeenCalled()
+    expect(step1NameField.state.meta.errorMap.onDynamic).toBe(
+      'Name is required',
+    )
+  })
+
+  it('Should propagate onDynamic field errors from group validators to child fields when revalidateLogic is on the group', async () => {
+    const onSubmit = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        step1: { name: '' },
+        step2: { name: 'test2' },
+      },
+      onSubmit,
+    })
+
+    const onGroupSubmit = vi.fn()
+    const onGroupSubmitInvalid = vi.fn()
+
+    const step1Group = new FormGroupApi({
+      name: 'step1',
+      form,
+      onGroupSubmit,
+      onGroupSubmitInvalid,
+      // @ts-expect-error validationLogic is not yet supported on FormGroupOptions
+      validationLogic: revalidateLogic(),
+      validators: {
+        onDynamic: () => {
+          return {
+            fields: {
+              'name': 'Name is required',
+            },
+          }
+        },
+      },
+    })
+
+    const step1NameField = new FieldApi({
+      name: 'step1.name',
+      form,
+    })
+
+    form.mount()
+    step1Group.mount()
+    step1NameField.mount()
+
+    await step1Group.handleSubmit()
+
+    expect(onGroupSubmitInvalid).toHaveBeenCalled()
+    expect(onGroupSubmit).not.toHaveBeenCalled()
+    expect(onSubmit).not.toHaveBeenCalled()
+    expect(step1NameField.state.meta.errorMap.onDynamic).toBe(
+      'Name is required',
+    )
+  })
+
   it('Should handle submit meta args', async () => {
     const onSubmit = vi.fn()
 
