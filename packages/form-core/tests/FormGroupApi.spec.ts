@@ -238,6 +238,90 @@ describe('form group api', () => {
     )
   })
 
+  it('Should set the group error from a manual { group, fields } validator return', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        step1: { name: '' },
+        step2: { name: 'test2' },
+      },
+    })
+
+    const step1Group = new FormGroupApi({
+      name: 'step1',
+      form,
+      validators: {
+        onSubmit: () => {
+          return {
+            group: 'Group is invalid',
+            fields: {
+              name: 'Name is required',
+            },
+          }
+        },
+      },
+    })
+
+    const step1NameField = new FieldApi({
+      name: 'step1.name',
+      form,
+    })
+
+    form.mount()
+    step1Group.mount()
+    step1NameField.mount()
+
+    await step1Group.handleSubmit()
+
+    expect(step1Group.state.meta.errorMap.onSubmit).toBe('Group is invalid')
+    expect(step1NameField.state.meta.errorMap.onSubmit).toBe(
+      'Name is required',
+    )
+  })
+
+  it('Should not treat a manual { form, fields } return from a group validator as a group-level error', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        step1: { name: '' },
+        step2: { name: 'test2' },
+      },
+    })
+
+    const step1Group = new FormGroupApi({
+      name: 'step1',
+      form,
+      validators: {
+        onSubmit: () => {
+          return {
+            // `form` is not a supported group key. It should be ignored
+            // (rather than surfaced as the group's own error). The
+            // `fields` payload should still be distributed normally.
+            form: 'Should be ignored',
+            fields: {
+              name: 'Name is required',
+            },
+          }
+        },
+      },
+    })
+
+    const step1NameField = new FieldApi({
+      name: 'step1.name',
+      form,
+    })
+
+    form.mount()
+    step1Group.mount()
+    step1NameField.mount()
+
+    await step1Group.handleSubmit()
+
+    expect(step1Group.state.meta.errorMap.onSubmit).toBeUndefined()
+    expect(step1Group.state.meta.errors).toEqual([])
+    expect(step1NameField.state.meta.errorMap.onSubmit).toBe(
+      'Name is required',
+    )
+  })
+
   it('Should propagate standard schema field errors from group validators to child fields', async () => {
     const onSubmit = vi.fn()
 

@@ -5,7 +5,6 @@ import {
   evaluate,
   getAsyncValidatorArray,
   getSyncValidatorArray,
-  isGlobalFormValidationError,
   mergeOpts,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
@@ -1097,8 +1096,10 @@ export class FormGroupApi<
           >((prev, curr) => {
             if (curr === undefined) return prev
 
-            if (curr && isGlobalFormValidationError(curr)) {
-              prev.push(curr.form as never)
+            if (curr && isGlobalGroupValidationError(curr)) {
+              if (curr.group !== undefined) {
+                prev.push(curr.group as never)
+              }
               return prev
             }
             prev.push(curr as never)
@@ -1271,10 +1272,22 @@ export class FormGroupApi<
     // When `api` is 'field', the return type cannot be `FormValidationError`
   }): unknown {
     if (isStandardSchemaValidator(props.validate)) {
-      return standardSchemaValidators[props.type](
+      const result = standardSchemaValidators[props.type](
         props.value,
         props.validate,
-      ) as never
+      ) as unknown
+
+      // Standard schemas with `validationSource: 'form'` return `{ form, fields }`.
+      // For groups we expose the same fan-out shape but under a `group` key
+      // (a `form` key on a group-level validator would be misleading), so
+      // remap the standard-schema result here. Manual functions on a group
+      // are expected to return `{ group, fields }` already.
+      if (props.type === 'validate') {
+        return remapStandardSchemaResultForGroup(result)
+      }
+      return (result as Promise<unknown>).then(
+        remapStandardSchemaResultForGroup,
+      )
     }
 
     return (props.validate as FormGroupValidateFn<any, any>)(
@@ -1552,10 +1565,9 @@ export class FormGroupApi<
 
         let groupOwnRawError: unknown = rawError
         let groupFieldErrors: Record<string, unknown> | undefined = undefined
-        if (isGroup && isGlobalFormValidationError(rawError)) {
-          groupOwnRawError = (rawError as { form?: unknown }).form
-          groupFieldErrors = (rawError as { fields?: Record<string, unknown> })
-            .fields
+        if (isGroup && isGlobalGroupValidationError(rawError)) {
+          groupOwnRawError = rawError.group
+          groupFieldErrors = rawError.fields
         }
 
         const fieldLevelError = normalizeError(
@@ -1785,11 +1797,9 @@ export class FormGroupApi<
           let groupFieldErrors:
             | Record<string, unknown>
             | undefined = undefined
-          if (isGroup && isGlobalFormValidationError(rawError)) {
-            groupOwnRawError = (rawError as { form?: ValidationError }).form
-            groupFieldErrors = (
-              rawError as { fields?: Record<string, unknown> }
-            ).fields
+          if (isGroup && isGlobalGroupValidationError(rawError)) {
+            groupOwnRawError = rawError.group as ValidationError | undefined
+            groupFieldErrors = rawError.fields
           }
 
           const fieldLevelError = normalizeError(groupOwnRawError)
@@ -2232,6 +2242,37 @@ function normalizeError(rawError?: ValidationError) {
   }
 
   return undefined
+}
+
+/**
+ * @private
+ *
+ * Type guard for the group-level analogue of `GlobalFormValidationError`.
+ * Group-level validators that want to fan errors out to child fields return
+ * `{ group?: ValidationError, fields: { ...relativePath: ValidationError } }`.
+ */
+function isGlobalGroupValidationError(
+  error: unknown,
+): error is { group?: unknown; fields?: Record<string, unknown> } {
+  return !!error && typeof error === 'object' && 'fields' in error
+}
+
+/**
+ * @private
+ *
+ * Standard schemas produce `{ form, fields }`. For groups we prefer to expose
+ * a `{ group, fields }` shape because `form` would be misleading on a
+ * group-level validator. This rename keeps the rest of the group validation
+ * pipeline operating on a single shape.
+ */
+function remapStandardSchemaResultForGroup(result: unknown): unknown {
+  if (!result || typeof result !== 'object') return result
+  if (!('form' in result) && !('fields' in result)) return result
+  const { form, fields, ...rest } = result as {
+    form?: unknown
+    fields?: unknown
+  }
+  return { ...rest, group: form, fields }
 }
 
 function getErrorMapKey(cause: ValidationCause) {
