@@ -8,3 +8,7 @@ title: "@tanstack/lit-form"
 ## Classes
 
 - [TanStackFormController](classes/TanStackFormController.md)
+
+## Functions
+
+- [getFormType](functions/getFormType.md)

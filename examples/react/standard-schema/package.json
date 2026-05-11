@@ -9,18 +9,18 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/react-devtools": "^0.7.8",
-    "@tanstack/react-form": "^1.28.3",
-    "@tanstack/react-form-devtools": "^0.2.16",
+    "@tanstack/react-form": "^1.32.0",
     "arktype": "^2.1.22",
     "effect": "^3.17.14",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
     "valibot": "^1.1.0",
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@types/react": "^19.0.7",
+    "@tanstack/react-devtools": "^0.9.7",
+    "@tanstack/react-form-devtools": "^0.2.27",
+    "@types/react": "~19.1.0",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^5.1.1",
     "vite": "^7.2.2"

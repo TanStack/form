@@ -15,7 +15,6 @@ title: "@tanstack/solid-form"
 
 ## Type Aliases
 
-- [CreateField](type-aliases/CreateField.md)
 - [FieldComponent](type-aliases/FieldComponent.md)
 - [LensFieldComponent](type-aliases/LensFieldComponent.md)
 - [SolidFormExtendedApi](type-aliases/SolidFormExtendedApi.md)

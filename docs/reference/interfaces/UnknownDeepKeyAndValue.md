@@ -5,7 +5,7 @@ title: UnknownDeepKeyAndValue
 
 # Interface: UnknownDeepKeyAndValue\<TParent\>
 
-Defined in: [packages/form-core/src/util-types.ts:122](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L122)
+Defined in: [packages/form-core/src/util-types.ts:139](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L139)
 
 ## Extends
 
@@ -25,7 +25,7 @@ Defined in: [packages/form-core/src/util-types.ts:122](https://github.com/TanSta
 key: UnknownAccessor<TParent>;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:125](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L125)
+Defined in: [packages/form-core/src/util-types.ts:142](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L142)
 
 #### Overrides
 
@@ -39,7 +39,7 @@ Defined in: [packages/form-core/src/util-types.ts:125](https://github.com/TanSta
 value: unknown;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:126](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L126)
+Defined in: [packages/form-core/src/util-types.ts:143](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L143)
 
 #### Overrides
 

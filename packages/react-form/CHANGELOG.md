@@ -1,5 +1,91 @@
 # @tanstack/react-form
 
+## 1.32.0
+
+### Patch Changes
+
+- re-render arrays when length doesn't change but values do ([#2172](https://github.com/TanStack/form/pull/2172))
+
+- Updated dependencies [[`5dd1ed4`](https://github.com/TanStack/form/commit/5dd1ed4e9eb0fb9c3f8909dfb58236c07c27739d), [`556e35e`](https://github.com/TanStack/form/commit/556e35e30ad75f536ae253960a371c32ae138e29), [`427b3d9`](https://github.com/TanStack/form/commit/427b3d9fd516b8222339ae7e8e38844f198c5d7a), [`01f51b5`](https://github.com/TanStack/form/commit/01f51b54f551e1cb052b222652fbf6e05c9f2b44), [`4d250c0`](https://github.com/TanStack/form/commit/4d250c0c10433484ba6f622d94ca1a56bd0768d0)]:
+  - @tanstack/form-core@1.32.0
+
+## 1.31.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.31.0
+
+## 1.30.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.30.0
+
+## 1.29.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.29.3
+
+## 1.29.2
+
+### Patch Changes
+
+- Remove errant `Field.Field` usage and `useForm().useField()` ([`94f9841`](https://github.com/TanStack/form/commit/94f984161a8d4c5cb41aa37b61d63d5744ef01d5))
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.29.2
+
+## 1.29.1
+
+### Patch Changes
+
+- Updated dependencies [[`6b8aa1e`](https://github.com/TanStack/form/commit/6b8aa1e92d883dfbdddbd5f0393a31d2e7120d3d)]:
+  - @tanstack/form-core@1.29.1
+
+## 1.29.0
+
+### Minor Changes
+
+- Adds extension method to AppForm allowing for teams to extend upstream AppForms ([#2106](https://github.com/TanStack/form/pull/2106))
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.29.0
+
+## 1.28.6
+
+### Patch Changes
+
+- fix(core): field unmount ([#2068](https://github.com/TanStack/form/pull/2068))
+
+- Updated dependencies [[`7a1428d`](https://github.com/TanStack/form/commit/7a1428d6ce2806069b3d7b8f8b2aacc26315b771)]:
+  - @tanstack/form-core@1.28.6
+
+## 1.28.5
+
+### Patch Changes
+
+- Reimplement fallback selector for Subscribe component ([#2071](https://github.com/TanStack/form/pull/2071))
+
+- Use a named function for the `withForm` HOC return to enable Fast Refresh. ([#2067](https://github.com/TanStack/form/pull/2067))
+
+- Updated dependencies [[`39932c1`](https://github.com/TanStack/form/commit/39932c1da28b5e4ea4b73f8b488d92fc100ccc41)]:
+  - @tanstack/form-core@1.28.5
+
+## 1.28.4
+
+### Patch Changes
+
+- Refactor internals for substancially faster performance ([#2035](https://github.com/TanStack/form/pull/2035))
+
+- Updated dependencies [[`f88faaf`](https://github.com/TanStack/form/commit/f88faaf72d265fdcbe99887421bd97dd03cb703e)]:
+  - @tanstack/form-core@1.28.4
+
 ## 1.28.3
 
 ### Patch Changes

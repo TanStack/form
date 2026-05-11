@@ -1,7 +1,9 @@
 import { FieldApi } from '@tanstack/form-core'
 import { useStore } from '@tanstack/vue-store'
-import { defineComponent, onMounted, onUnmounted, watch } from 'vue'
+import { computed, defineComponent, onMounted, onUnmounted, watch } from 'vue'
 import type {
+  AnyFieldApi,
+  AnyFieldMeta,
   DeepKeys,
   DeepValue,
   FieldAsyncValidateOrFn,
@@ -15,7 +17,6 @@ import type {
   EmitsOptions,
   EmitsToProps,
   PublicProps,
-  Ref,
   SetupContext,
   SlotsType,
 } from 'vue'
@@ -185,125 +186,6 @@ export interface VueFieldApi<
   >
 }
 
-export type UseField<
-  TParentData,
-  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TParentSubmitMeta,
-> = <
-  TName extends DeepKeys<TParentData>,
-  TData extends DeepValue<TParentData, TName>,
-  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChangeAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnBlurAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnSubmitAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnDynamicAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
->(
-  opts: UseFieldOptionsBound<
-    TParentData,
-    TName,
-    TData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync
-  >,
-) => {
-  api: FieldApi<
-    TParentData,
-    TName,
-    TData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync,
-    TFormOnMount,
-    TFormOnChange,
-    TFormOnChangeAsync,
-    TFormOnBlur,
-    TFormOnBlurAsync,
-    TFormOnSubmit,
-    TFormOnSubmitAsync,
-    TFormOnDynamic,
-    TFormOnDynamicAsync,
-    TFormOnServer,
-    TParentSubmitMeta
-  > &
-    VueFieldApi<
-      TParentData,
-      TFormOnMount,
-      TFormOnChange,
-      TFormOnChangeAsync,
-      TFormOnBlur,
-      TFormOnBlurAsync,
-      TFormOnSubmit,
-      TFormOnSubmitAsync,
-      TFormOnDynamic,
-      TFormOnDynamicAsync,
-      TFormOnServer,
-      TParentSubmitMeta
-    >
-  state: Readonly<
-    Ref<
-      FieldApi<
-        TParentData,
-        TName,
-        TData,
-        TOnMount,
-        TOnChange,
-        TOnChangeAsync,
-        TOnBlur,
-        TOnBlurAsync,
-        TOnSubmit,
-        TOnSubmitAsync,
-        TOnDynamic,
-        TOnDynamicAsync,
-        TFormOnMount,
-        TFormOnChange,
-        TFormOnChangeAsync,
-        TFormOnBlur,
-        TFormOnBlurAsync,
-        TFormOnSubmit,
-        TFormOnSubmitAsync,
-        TFormOnDynamic,
-        TFormOnDynamicAsync,
-        TFormOnServer,
-        TParentSubmitMeta
-      >['state']
-    >
-  >
-}
-
 export function useField<
   TParentData,
   TName extends DeepKeys<TParentData>,
@@ -370,28 +252,111 @@ export function useField<
       name: opts.name,
     })
 
-    const extendedApi: typeof api &
-      VueFieldApi<
-        TParentData,
-        TFormOnMount,
-        TFormOnChange,
-        TFormOnChangeAsync,
-        TFormOnBlur,
-        TFormOnBlurAsync,
-        TFormOnSubmit,
-        TFormOnSubmitAsync,
-        TFormOnDynamic,
-        TFormOnDynamicAsync,
-        TFormOnServer,
-        TParentSubmitMeta
-      > = api as never
-
-    extendedApi.Field = Field as never
-
-    return extendedApi
+    return api
   })()
 
-  const fieldState = useStore(fieldApi.store, (state) => state)
+  // For array mode, only track length changes to avoid re-renders when child properties change
+  // See: https://github.com/TanStack/form/issues/1925
+  const reactiveStateValue = useStore(
+    fieldApi.store,
+    (opts.mode === 'array'
+      ? (state) => state.meta._arrayVersion || 0
+      : (state) => state.value) as (
+      state: typeof fieldApi.state,
+    ) => TData | number,
+  )
+  const reactiveMetaIsTouched = useStore(
+    fieldApi.store,
+    (state) => state.meta.isTouched,
+  )
+  const reactiveMetaIsBlurred = useStore(
+    fieldApi.store,
+    (state) => state.meta.isBlurred,
+  )
+  const reactiveMetaIsDirty = useStore(
+    fieldApi.store,
+    (state) => state.meta.isDirty,
+  )
+  const reactiveMetaErrorMap = useStore(
+    fieldApi.store,
+    (state) => state.meta.errorMap,
+  )
+  const reactiveMetaErrorSourceMap = useStore(
+    fieldApi.store,
+    (state) => state.meta.errorSourceMap,
+  )
+  const reactiveMetaIsValidating = useStore(
+    fieldApi.store,
+    (state) => state.meta.isValidating,
+  )
+
+  const fieldState = computed(() => {
+    // For array mode, reactiveStateValue is the length (for reactivity tracking),
+    // so we need to read it to register the dependency, then return the actual
+    // value from fieldApi.
+    const trackedValue = reactiveStateValue.value
+    // Read all reactive meta refs eagerly so that fieldState recomputes (and
+    // dependent renders re-run) whenever any of them change. Without this, a
+    // consumer reading `field.getMeta()` or `field.state.meta` from a render
+    // function would not re-render on meta updates, since the meta getter
+    // would never have registered those dependencies.
+    const isTouched = reactiveMetaIsTouched.value
+    const isBlurred = reactiveMetaIsBlurred.value
+    const isDirty = reactiveMetaIsDirty.value
+    const errorMap = reactiveMetaErrorMap.value
+    const errorSourceMap = reactiveMetaErrorSourceMap.value
+    const isValidating = reactiveMetaIsValidating.value
+    return {
+      value:
+        opts.mode === 'array' ? fieldApi.state.value : (trackedValue as TData),
+      meta: {
+        ...fieldApi.state.meta,
+        isTouched,
+        isBlurred,
+        isDirty,
+        errorMap,
+        errorSourceMap,
+        isValidating,
+      } satisfies AnyFieldMeta,
+    } satisfies AnyFieldApi['state']
+  })
+
+  const extendedFieldApi = computed(() => {
+    const reactiveFieldApi = {
+      ...fieldApi,
+      get state() {
+        return fieldState.value
+      },
+    }
+
+    const extendedApi: FieldApi<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync,
+      TFormOnServer,
+      TParentSubmitMeta
+    > = reactiveFieldApi as never
+
+    return extendedApi
+  })
 
   let cleanup!: () => void
   onMounted(() => {
@@ -410,7 +375,7 @@ export function useField<
     },
   )
 
-  return { api: fieldApi, state: fieldState } as const
+  return { api: extendedFieldApi.value, state: fieldState.value } as const
 }
 
 export type FieldComponentProps<
@@ -573,7 +538,7 @@ export const Field = defineComponent(
     return () =>
       context.slots.default!({
         field: fieldApi.api,
-        state: fieldApi.state.value,
+        state: fieldApi.state,
       })
   },
   { name: 'Field', inheritAttrs: false },

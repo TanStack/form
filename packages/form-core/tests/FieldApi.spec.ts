@@ -65,6 +65,7 @@ describe('field api', () => {
       errors: [],
       errorMap: {},
       errorSourceMap: {},
+      _arrayVersion: 0,
     })
   })
 
@@ -120,7 +121,7 @@ describe('field api', () => {
     expect(field.getMeta().isDefaultValue).toBe(false)
 
     field.setValue('test')
-    expect(field.getMeta().isDefaultValue).toBe(true)
+    expect(field.getMeta().isDefaultValue).toBe(false)
 
     form.resetField('name')
     expect(field.getMeta().isDefaultValue).toBe(true)
@@ -128,6 +129,54 @@ describe('field api', () => {
     // checks the defaultValue provided to the field
     field.setValue('another-test')
     expect(field.getMeta().isDefaultValue).toBe(true)
+  })
+
+  it('should be false when value is undefined and a default value is specified in form-level only', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'foo',
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+    field.mount()
+
+    expect(field.getMeta().isDefaultValue).toBe(true)
+
+    // Set to undefined - should be false because 'foo' is the default
+    field.setValue(undefined as any)
+    expect(field.getMeta().isDefaultValue).toBe(false)
+  })
+
+  it('should handle falsy values correctly in isDefaultValue', () => {
+    const form = new FormApi({
+      defaultValues: {
+        count: 0,
+        active: false,
+        text: '',
+      },
+    })
+    form.mount()
+
+    const countField = new FieldApi({ form, name: 'count' })
+    const activeField = new FieldApi({ form, name: 'active' })
+    const textField = new FieldApi({ form, name: 'text' })
+    countField.mount()
+    activeField.mount()
+    textField.mount()
+
+    expect(countField.getMeta().isDefaultValue).toBe(true)
+    expect(activeField.getMeta().isDefaultValue).toBe(true)
+    expect(textField.getMeta().isDefaultValue).toBe(true)
+
+    countField.setValue(1)
+    expect(countField.getMeta().isDefaultValue).toBe(false)
+    countField.setValue(0)
+    expect(countField.getMeta().isDefaultValue).toBe(true)
   })
 
   it('should update the fields meta isDefaultValue with arrays - simple', () => {
@@ -817,13 +866,13 @@ describe('field api', () => {
       // No async validators defined - only sync or none
     })
 
-    field.mount()
+    const unsub = field.mount()
 
     // Track isValidating changes
     const isValidatingStates: boolean[] = []
-    field.store.subscribe(() => {
+    const storeunsub = field.store.subscribe(() => {
       isValidatingStates.push(field.getMeta().isValidating)
-    })
+    }).unsubscribe
 
     // Initial state
     expect(field.getMeta().isValidating).toBe(false)
@@ -836,6 +885,8 @@ describe('field api', () => {
     // This prevents unnecessary re-renders
     expect(isValidatingStates.every((state) => state === false)).toBe(true)
     expect(field.getMeta().isValidating).toBe(false)
+    unsub()
+    storeunsub()
   })
 
   it('should run async validation onChange', async () => {
@@ -1487,6 +1538,83 @@ describe('field api', () => {
     expect(triggered).toStrictEqual('test')
   })
 
+  it('should run listener onUnmount', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    let triggered: string | undefined
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: {
+        onUnmount: ({ value }) => {
+          triggered = value
+        },
+      },
+    })
+
+    const unmount = field.mount()
+    expect(triggered).toBeUndefined()
+
+    unmount()
+    expect(triggered).toStrictEqual('test')
+  })
+
+  it('should run form listener onFieldUnmount', () => {
+    let capturedName: string | undefined
+
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      listeners: {
+        onFieldUnmount: ({ fieldApi }) => {
+          capturedName = fieldApi.name as string
+        },
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+
+    const unmount = field.mount()
+    expect(capturedName).toBeUndefined()
+
+    unmount()
+    expect(capturedName).toStrictEqual('name')
+  })
+
+  it('should not run onUnmount listener if fieldInfo was already deleted', () => {
+    const onUnmount = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: { onUnmount },
+    })
+
+    const unmount = field.mount()
+    form.deleteField('name')
+
+    expect(() => unmount()).not.toThrow()
+    expect(onUnmount).not.toHaveBeenCalled()
+  })
+
   it('should contain multiple errors when running validation onBlur and onChange', () => {
     const form = new FormApi({
       defaultValues: {
@@ -1596,10 +1724,351 @@ describe('field api', () => {
       name: 'name',
     })
 
-    const unmount = field.mount()
-    unmount()
+    field.mount()
     expect(form.getFieldInfo(field.name).instance).toBeDefined()
     expect(form.getFieldInfo(field.name)).toBeDefined()
+  })
+
+  it('should clear meta on unmount while preserving value', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: 'a',
+        lastName: 'abc',
+      },
+      onSubmit: () => {},
+    })
+
+    form.mount()
+
+    const firstName = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+    const lastName = new FieldApi({
+      form,
+      name: 'lastName',
+      validators: {
+        onSubmit: ({ value }) =>
+          value.length >= 5 ? undefined : 'last name must be at least 5 chars',
+      },
+    })
+
+    firstName.mount()
+    const unmountLastName = lastName.mount()
+
+    await form.handleSubmit()
+    expect(form.state.canSubmit).toBe(false)
+    expect(lastName.getMeta().errors).toContain(
+      'last name must be at least 5 chars',
+    )
+
+    expect(unmountLastName).toBeTypeOf('function')
+    unmountLastName()
+
+    expect(form.getFieldValue('lastName')).toBe('abc')
+    expect(form.state.fieldMeta.lastName).toMatchObject({
+      isTouched: true,
+      isValid: true,
+      errors: [],
+    })
+    expect(form.state.canSubmit).toBe(true)
+
+    const remountedLastName = new FieldApi({
+      form,
+      name: 'lastName',
+      validators: {
+        onSubmit: ({ value }) =>
+          value.length >= 5 ? undefined : 'last name must be at least 5 chars',
+      },
+    })
+
+    remountedLastName.mount()
+    expect(remountedLastName.getMeta().errors).toStrictEqual([])
+    expect(remountedLastName.getMeta().isTouched).toBe(true)
+    expect(remountedLastName.getValue()).toBe('abc')
+  })
+
+  it('should preserve field-level defaultValue changes across unmount remount cleanup', () => {
+    const form = new FormApi({
+      defaultValues: {} as { name?: string },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      defaultValue: 'initial',
+    })
+
+    const unmount = field.mount()
+    field.setValue('changed')
+    expect(unmount).toBeTypeOf('function')
+    unmount()
+
+    const remountedField = new FieldApi({
+      form,
+      name: 'name',
+      defaultValue: 'initial',
+    })
+
+    remountedField.mount()
+    expect(remountedField.getValue()).toBe('changed')
+  })
+
+  it('should not apply in-flight async validation results after unmount', async () => {
+    vi.useFakeTimers()
+
+    let resolveValidation!: () => void
+    const validationPromise = new Promise<void>((resolve) => {
+      resolveValidation = resolve
+    })
+
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onChangeAsyncDebounceMs: 0,
+        onChangeAsync: async () => {
+          await validationPromise
+          return 'async error should be ignored after unmount'
+        },
+      },
+    })
+
+    const unmount = field.mount()
+
+    field.setValue('trigger')
+    await vi.runAllTimersAsync()
+
+    expect(unmount).toBeTypeOf('function')
+    unmount()
+    resolveValidation()
+    await vi.runAllTimersAsync()
+
+    expect(form.state.fieldMeta.name).toMatchObject({
+      isTouched: true,
+      isValid: true,
+      errors: [],
+    })
+
+    vi.useRealTimers()
+  })
+
+  it('should cancel debounced field and form listeners on unmount', async () => {
+    vi.useFakeTimers()
+
+    const fieldListener = vi.fn()
+    const formListener = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+      listeners: {
+        onChange: formListener,
+        onChangeDebounceMs: 200,
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: {
+        onChange: fieldListener,
+        onChangeDebounceMs: 200,
+      },
+    })
+
+    const unmount = field.mount()
+    field.setValue('trigger')
+    expect(unmount).toBeTypeOf('function')
+    unmount()
+
+    await vi.advanceTimersByTimeAsync(500)
+
+    expect(fieldListener).toHaveBeenCalledTimes(0)
+    expect(formListener).toHaveBeenCalledTimes(0)
+
+    vi.useRealTimers()
+  })
+
+  it('should ignore cleanup when fieldInfo was deleted before unmount', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+
+    const unmount = field.mount()
+    form.deleteField('name')
+
+    expect(unmount).toBeTypeOf('function')
+    expect(() => unmount()).not.toThrow()
+  })
+
+  it('should not clear newer instance state when older instance unmounts', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+
+    form.mount()
+
+    const oldField = new FieldApi({
+      form,
+      name: 'name',
+    })
+    const oldUnmount = oldField.mount()
+
+    const newField = new FieldApi({
+      form,
+      name: 'name',
+    })
+    newField.mount()
+    newField.setValue('new value')
+
+    expect(oldUnmount).toBeTypeOf('function')
+    oldUnmount()
+
+    expect(form.getFieldInfo('name').instance).toBe(newField)
+    expect(newField.getValue()).toBe('new value')
+    expect(newField.getMeta().isTouched).toBe(true)
+  })
+
+  it('should not cancel newer instance async validation when older instance unmounts', async () => {
+    vi.useFakeTimers()
+
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+
+    form.mount()
+
+    const oldField = new FieldApi({
+      form,
+      name: 'name',
+    })
+    const oldUnmount = oldField.mount()
+
+    const newField = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onChangeAsyncDebounceMs: 10,
+        onChangeAsync: async ({ value }) =>
+          value === 'taken' ? 'name is taken' : undefined,
+      },
+    })
+
+    newField.mount()
+    newField.setValue('taken')
+
+    expect(oldUnmount).toBeTypeOf('function')
+    oldUnmount()
+
+    await vi.runAllTimersAsync()
+
+    expect(newField.getMeta().errors).toContain('name is taken')
+
+    vi.useRealTimers()
+  })
+
+  it('should ignore stale async validation results from an older remounted instance', async () => {
+    vi.useFakeTimers()
+
+    let resolve!: () => void
+    const promise = new Promise((r) => {
+      resolve = r as never
+    })
+
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+
+    form.mount()
+
+    const oldField = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onChangeAsyncDebounceMs: 0,
+        onChangeAsync: async () => {
+          await promise
+          return 'stale error'
+        },
+      },
+    })
+
+    oldField.mount()
+    oldField.setValue('taken')
+    await vi.runAllTimersAsync()
+
+    const newField = new FieldApi({
+      form,
+      name: 'name',
+    })
+    newField.mount()
+
+    resolve()
+    await vi.runAllTimersAsync()
+
+    expect(newField.getMeta().errors).toStrictEqual([])
+
+    vi.useRealTimers()
+  })
+
+  it('should surface thrown async validator errors', async () => {
+    vi.useFakeTimers()
+
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onChangeAsyncDebounceMs: 0,
+        onChangeAsync: async () => {
+          throw 'async validation failed'
+        },
+      },
+    })
+
+    field.mount()
+    field.setValue('test')
+    await vi.runAllTimersAsync()
+
+    expect(field.getMeta().errors).toContain('async validation failed')
+
+    vi.useRealTimers()
   })
 
   it('should show onSubmit errors', async () => {
@@ -1947,6 +2416,60 @@ describe('field api', () => {
     expect(passconfirmField.state.meta.errors).toStrictEqual([
       'Passwords do not match',
     ])
+  })
+
+  it('should cancel linked field async validation when the target field unmounts', async () => {
+    vi.useFakeTimers()
+
+    let resolve!: () => void
+    const promise = new Promise((r) => {
+      resolve = r as never
+    })
+
+    const form = new FormApi({
+      defaultValues: {
+        password: '',
+        confirm_password: '',
+      },
+    })
+
+    form.mount()
+
+    const passField = new FieldApi({
+      form,
+      name: 'password',
+    })
+
+    const passconfirmField = new FieldApi({
+      form,
+      name: 'confirm_password',
+      validators: {
+        onChangeListenTo: ['password'],
+        onChangeAsyncDebounceMs: 0,
+        onChangeAsync: async () => {
+          await promise
+          return 'Passwords do not match'
+        },
+      },
+    })
+
+    passField.mount()
+    const unmount = passconfirmField.mount()
+
+    passField.setValue('one')
+    await vi.runAllTimersAsync()
+
+    expect(unmount).toBeTypeOf('function')
+    unmount()
+    resolve()
+    await vi.runAllTimersAsync()
+
+    expect(form.state.fieldMeta.confirm_password).toMatchObject({
+      errors: [],
+      isValid: true,
+    })
+
+    vi.useRealTimers()
   })
 
   it('should add  a new value to the fieldApi errorMap', () => {
