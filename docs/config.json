@@ -206,6 +206,10 @@
               "to": "framework/preact/guides/arrays"
             },
             {
+              "label": "Form Groups",
+              "to": "framework/preact/guides/form-groups"
+            },
+            {
               "label": "Linked Fields",
               "to": "framework/preact/guides/linked-fields"
             },
