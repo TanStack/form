@@ -649,6 +649,10 @@
               "to": "framework/react/examples/simple"
             },
             {
+              "label": "Multi-Step Wizard",
+              "to": "framework/react/examples/multi-step-wizard"
+            },
+            {
               "label": "Arrays",
               "to": "framework/react/examples/array"
             },
@@ -702,6 +706,10 @@
               "to": "framework/vue/examples/simple"
             },
             {
+              "label": "Multi-Step Wizard",
+              "to": "framework/vue/examples/multi-step-wizard"
+            },
+            {
               "label": "Arrays",
               "to": "framework/vue/examples/array"
             },
@@ -717,6 +725,10 @@
             {
               "label": "Simple",
               "to": "framework/angular/examples/simple"
+            },
+            {
+              "label": "Multi-Step Wizard",
+              "to": "framework/angular/examples/multi-step-wizard"
             },
             {
               "label": "Arrays",
@@ -740,6 +752,10 @@
               "to": "framework/solid/examples/simple"
             },
             {
+              "label": "Multi-Step Wizard",
+              "to": "framework/solid/examples/multi-step-wizard"
+            },
+            {
               "label": "Arrays",
               "to": "framework/solid/examples/array"
             },
@@ -761,6 +777,10 @@
               "to": "framework/lit/examples/simple"
             },
             {
+              "label": "Multi-Step Wizard",
+              "to": "framework/lit/examples/multi-step-wizard"
+            },
+            {
               "label": "Array",
               "to": "framework/lit/examples/array"
             },
@@ -775,11 +795,28 @@
           ]
         },
         {
+          "label": "preact",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "framework/preact/examples/simple"
+            },
+            {
+              "label": "Multi-Step Wizard",
+              "to": "framework/preact/examples/multi-step-wizard"
+            }
+          ]
+        },
+        {
           "label": "svelte",
           "children": [
             {
               "label": "Simple",
               "to": "framework/svelte/examples/simple"
+            },
+            {
+              "label": "Multi-Step Wizard",
+              "to": "framework/svelte/examples/multi-step-wizard"
             },
             {
               "label": "Arrays",
