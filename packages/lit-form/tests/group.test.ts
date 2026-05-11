@@ -293,7 +293,7 @@ ${String(group.state.meta.errorMap.onSubmit ?? '')}</pre
     )
   })
 
-  it('should rerender group.formState.isSubmitting during an async submit', async () => {
+  it('should rerender group.state.meta.isSubmitting during an async submit', async () => {
     let resolveSubmit!: () => void
     const onGroupSubmit = vi.fn(
       () =>
@@ -324,9 +324,9 @@ ${String(group.state.meta.errorMap.onSubmit ?? '')}</pre
               <button
                 type="submit"
                 id="submit-group"
-                ?disabled=${group.formState.isSubmitting}
+                ?disabled=${group.state.meta.isSubmitting}
               >
-                ${group.formState.isSubmitting ? 'Saving...' : 'Continue'}
+                ${group.state.meta.isSubmitting ? 'Saving...' : 'Continue'}
               </button>
             </form>
           `,

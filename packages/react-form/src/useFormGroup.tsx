@@ -233,9 +233,44 @@ export function useFormGroup<
     (state) => state.meta.isValidating,
   )
 
-  const reactiveFormState = useStore(
-    formGroupApi.formStateStore,
-    (state) => state,
+  // Submission lifecycle and aggregated validity now live on `state.meta`
+  // (mirroring `FieldApi.state.meta`). Subscribe to the fields callers
+  // typically read so React Compiler picks them up as dependencies.
+  const reactiveMetaIsSubmitting = useStore(
+    formGroupApi.store,
+    (state) => state.meta.isSubmitting,
+  )
+  const reactiveMetaIsSubmitted = useStore(
+    formGroupApi.store,
+    (state) => state.meta.isSubmitted,
+  )
+  const reactiveMetaSubmissionAttempts = useStore(
+    formGroupApi.store,
+    (state) => state.meta.submissionAttempts,
+  )
+  const reactiveMetaIsSubmitSuccessful = useStore(
+    formGroupApi.store,
+    (state) => state.meta.isSubmitSuccessful,
+  )
+  const reactiveMetaCanSubmit = useStore(
+    formGroupApi.store,
+    (state) => state.meta.canSubmit,
+  )
+  const reactiveMetaIsValid = useStore(
+    formGroupApi.store,
+    (state) => state.meta.isValid,
+  )
+  const reactiveMetaIsFieldsValid = useStore(
+    formGroupApi.store,
+    (state) => state.meta.isFieldsValid,
+  )
+  const reactiveMetaIsFieldsValidating = useStore(
+    formGroupApi.store,
+    (state) => state.meta.isFieldsValidating,
+  )
+  const reactiveMetaIsGroupValid = useStore(
+    formGroupApi.store,
+    (state) => state.meta.isGroupValid,
   )
 
   // This makes me sad, but if I understand correctly, this is what we have to do for reactivity to work properly with React compiler.
@@ -245,9 +280,6 @@ export function useFormGroup<
       handleSubmit: ((...props: never[]) => {
         return formGroupApi._handleSubmit(...props)
       }) as typeof formGroupApi.handleSubmit,
-      get formState() {
-        return reactiveFormState
-      },
       get state() {
         return {
           ...formGroupApi.state,
@@ -261,6 +293,15 @@ export function useFormGroup<
               errorMap: reactiveMetaErrorMap,
               errorSourceMap: reactiveMetaErrorSourceMap,
               isValidating: reactiveMetaIsValidating,
+              isSubmitting: reactiveMetaIsSubmitting,
+              isSubmitted: reactiveMetaIsSubmitted,
+              submissionAttempts: reactiveMetaSubmissionAttempts,
+              isSubmitSuccessful: reactiveMetaIsSubmitSuccessful,
+              canSubmit: reactiveMetaCanSubmit,
+              isValid: reactiveMetaIsValid,
+              isFieldsValid: reactiveMetaIsFieldsValid,
+              isFieldsValidating: reactiveMetaIsFieldsValidating,
+              isGroupValid: reactiveMetaIsGroupValid,
             } satisfies typeof formGroupApi.state.meta
           },
         } satisfies typeof formGroupApi.state
@@ -304,7 +345,15 @@ export function useFormGroup<
     reactiveMetaErrorMap,
     reactiveMetaErrorSourceMap,
     reactiveMetaIsValidating,
-    reactiveFormState,
+    reactiveMetaIsSubmitting,
+    reactiveMetaIsSubmitted,
+    reactiveMetaSubmissionAttempts,
+    reactiveMetaIsSubmitSuccessful,
+    reactiveMetaCanSubmit,
+    reactiveMetaIsValid,
+    reactiveMetaIsFieldsValid,
+    reactiveMetaIsFieldsValidating,
+    reactiveMetaIsGroupValid,
   ])
 
   useIsomorphicLayoutEffect(formGroupApi.mount, [formGroupApi])

@@ -47,7 +47,11 @@ import type {
   TStandardSchemaValidatorValue,
 } from './standardSchemaValidator'
 import type { AnyFieldApi } from './FieldApi'
-import type { AnyFormGroupApi } from './FormGroupApi'
+import type {
+  AnyFormGroupApi,
+  AnyFormGroupMeta,
+  FormGroupState,
+} from './FormGroupApi'
 import type {
   DeepKeys,
   DeepKeysOfType,
@@ -551,6 +555,13 @@ export type BaseFormState<
    */
   fieldMetaBase: Partial<Record<DeepKeys<TFormData>, AnyFieldLikeMetaBase>>
   /**
+   * A record of submission lifecycle state for each mounted `FormGroupApi`,
+   * keyed by the group's fully-qualified field name. Stored on the form so
+   * group-level state can be read from `FormApi` without having to walk the
+   * mounted group instances.
+   */
+  formGroupStateBase: Partial<Record<string, FormGroupState>>
+  /**
    * A boolean indicating if the form is currently in the process of being submitted after `handleSubmit` is called.
    *
    * Goes back to `false` when submission completes for one of the following reasons:
@@ -783,6 +794,7 @@ function getDefaultFormState<
     values: defaultState.values ?? ({} as never),
     errorMap: defaultState.errorMap ?? {},
     fieldMetaBase: defaultState.fieldMetaBase ?? ({} as never),
+    formGroupStateBase: defaultState.formGroupStateBase ?? {},
     isSubmitted: defaultState.isSubmitted ?? false,
     isSubmitting: defaultState.isSubmitting ?? false,
     isValidating: defaultState.isValidating ?? false,
@@ -905,6 +917,14 @@ export class FormApi<
       TOnServer
     >['fieldMeta']
   >
+  /**
+   * A derived store of every mounted `FormGroupApi`'s `meta`, keyed by
+   * group name. Mirrors `fieldMetaDerived` for fields: per-group `meta`
+   * is computed once on the form (from `baseStore.formGroupStateBase`,
+   * `fieldMetaDerived`, and the registered `formGroupApis`) so reads
+   * from a `FormGroupApi.store` instance stay minimal.
+   */
+  formGroupMetaDerived!: ReadonlyStore<Record<string, AnyFormGroupMeta>>
   store: ReadonlyStore<
     FormState<
       TFormData,
@@ -1159,6 +1179,174 @@ export class FormApi<
         return fieldMeta
       },
     ) as never
+
+    this.formGroupMetaDerived = createStore<Record<string, AnyFormGroupMeta>>(
+      (prevVal) => {
+        const currBaseStore = this.baseStore.get()
+        const currFieldMeta = this.fieldMetaDerived.get() as Record<
+          string,
+          AnyFieldLikeMeta | undefined
+        >
+
+        const result: Record<string, AnyFormGroupMeta> = {}
+
+        for (const group of this.formGroupApis) {
+          const groupName = group.name as string
+          const lifecycle =
+            currBaseStore.formGroupStateBase[groupName] ??
+            ({
+              isSubmitted: false,
+              isSubmitting: false,
+              isValidating: false,
+              submissionAttempts: 0,
+              isSubmitSuccessful: false,
+            } as FormGroupState)
+
+          // The group's own field-meta entry (its `errorMap` is where the
+          // group's own validators write via `setFieldMeta`).
+          const ownFieldMeta = currFieldMeta[groupName] as
+            | AnyFieldLikeMeta
+            | undefined
+
+          // Aggregate validity / interaction flags across descendant fields
+          // (excluding the group's own self-entry — its validity is tracked
+          // separately via `isGroupValid`).
+          let isFieldsValidating = false
+          let isFieldsValid = true
+          let aggIsTouched = false
+          let aggIsBlurred = false
+          let aggIsDefaultValue = true
+          let aggIsDirty = false
+          for (const fieldName in currFieldMeta) {
+            if (fieldName === groupName) continue
+            if (!fieldName.startsWith(groupName)) continue
+            const m = currFieldMeta[fieldName]
+            if (!m) continue
+            if (m.isValidating) isFieldsValidating = true
+            if (!m.isValid) isFieldsValid = false
+            if (m.isTouched) aggIsTouched = true
+            if (m.isBlurred) aggIsBlurred = true
+            if (!m.isDefaultValue) aggIsDefaultValue = false
+            if (m.isDirty) aggIsDirty = true
+          }
+          const isPristine = !aggIsDirty
+          const isValidating =
+            !!isFieldsValidating || lifecycle.isValidating
+
+          // Group's own errors derived from `ownFieldMeta.errorMap`. Mirrors
+          // the per-instance reduction that previously lived in
+          // `FormGroupApi.store`. Standard-schema group validators may
+          // return `{ group, fields }`; we only surface the `group` portion
+          // here (the `fields` portion is fanned out onto child fields by
+          // `distributeFieldErrors`).
+          const errorMap = ownFieldMeta?.errorMap ?? {}
+          const errorSourceMap = ownFieldMeta?.errorSourceMap ?? {}
+          const prevGroupMeta = prevVal?.[groupName]
+          let errors = prevGroupMeta?.errors ?? []
+          if (
+            !prevGroupMeta ||
+            (prevGroupMeta as unknown as { __srcErrorMap?: unknown })
+              .__srcErrorMap !== errorMap
+          ) {
+            errors = Object.values(errorMap).reduce<unknown[]>(
+              (acc, curr) => {
+                if (curr === undefined) return acc
+                if (
+                  curr &&
+                  typeof curr === 'object' &&
+                  'fields' in (curr as object)
+                ) {
+                  const groupErr = (curr as { group?: unknown }).group
+                  if (groupErr !== undefined) acc.push(groupErr)
+                  return acc
+                }
+                acc.push(curr)
+                return acc
+              },
+              [],
+            )
+          }
+
+          const isGroupValid = errors.length === 0
+          const isValid = isFieldsValid && isGroupValid
+          const submitInvalid = group.options.canSubmitWhenInvalid ?? false
+          const canSubmit =
+            (lifecycle.submissionAttempts === 0 && !aggIsTouched) ||
+            (!isValidating && !lifecycle.isSubmitting && isValid) ||
+            submitInvalid
+
+          // Reuse previous identity when shallow-equal — keeps subscribers
+          // from re-rendering when nothing meaningful changed.
+          if (
+            prevGroupMeta &&
+            prevGroupMeta.errorMap === errorMap &&
+            prevGroupMeta.errorSourceMap === errorSourceMap &&
+            prevGroupMeta.errors === errors &&
+            prevGroupMeta.isFieldsValidating === isFieldsValidating &&
+            prevGroupMeta.isFieldsValid === isFieldsValid &&
+            prevGroupMeta.isGroupValid === isGroupValid &&
+            prevGroupMeta.isValid === isValid &&
+            prevGroupMeta.canSubmit === canSubmit &&
+            prevGroupMeta.isTouched === aggIsTouched &&
+            prevGroupMeta.isBlurred === aggIsBlurred &&
+            prevGroupMeta.isPristine === isPristine &&
+            prevGroupMeta.isDefaultValue === aggIsDefaultValue &&
+            prevGroupMeta.isDirty === aggIsDirty &&
+            prevGroupMeta.isValidating === isValidating &&
+            prevGroupMeta.isSubmitting === lifecycle.isSubmitting &&
+            prevGroupMeta.isSubmitted === lifecycle.isSubmitted &&
+            prevGroupMeta.submissionAttempts ===
+              lifecycle.submissionAttempts &&
+            prevGroupMeta.isSubmitSuccessful === lifecycle.isSubmitSuccessful
+          ) {
+            result[groupName] = prevGroupMeta
+            continue
+          }
+
+          const meta = {
+            // Submission lifecycle (spread first; `isValidating` below
+            // intentionally overrides `lifecycle.isValidating` with the
+            // OR of group-level + descendant-field validating).
+            ...lifecycle,
+            // Field-meta-base fields (so `setMeta` updates can roundtrip
+            // through `state.meta`).
+            errorMap,
+            errorSourceMap,
+            _arrayVersion: ownFieldMeta?._arrayVersion ?? 0,
+            // Aggregated descendant booleans (override field-level meaning
+            // for groups — a group's "field" itself never receives input).
+            isTouched: aggIsTouched,
+            isBlurred: aggIsBlurred,
+            isDirty: aggIsDirty,
+            isPristine,
+            isDefaultValue: aggIsDefaultValue,
+            // Aggregated validity
+            isValid,
+            errors,
+            isValidating,
+            // Group-only flags
+            isFieldsValidating,
+            isFieldsValid,
+            isGroupValid,
+            canSubmit,
+          } as AnyFormGroupMeta
+
+          // Stash the source errorMap on a non-enumerable shadow so the
+          // next derive run can short-circuit `errors` recomputation when
+          // nothing changed (mirrors `prevMeta.errorMap` tracking on the
+          // old per-instance store).
+          Object.defineProperty(meta, '__srcErrorMap', {
+            value: errorMap,
+            enumerable: false,
+            configurable: true,
+          })
+
+          result[groupName] = meta
+        }
+
+        return result
+      },
+    )
 
     let prevBaseStoreForStore:
       | BaseFormState<
@@ -2262,6 +2450,15 @@ export class FormApi<
     field: TField,
   ): AnyFieldLikeMeta | undefined => {
     return this.state.fieldMeta[field]
+  }
+
+  /**
+   * Gets the derived `meta` of the form group registered at the given
+   * name. Mirrors `getFieldMeta` for fields. Returns `undefined` if no
+   * `FormGroupApi` with that name is currently mounted.
+   */
+  getFormGroupMeta = (name: string): AnyFormGroupMeta | undefined => {
+    return this.formGroupMetaDerived.state[name]
   }
 
   /**

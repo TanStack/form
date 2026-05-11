@@ -1607,7 +1607,7 @@ export class FieldApi<
     // hasn't been submitted directly.
     if (!opts?.skipFormValidation) {
       for (const group of encompassingGroups) {
-        if (group.formState.submissionAttempts === 0) continue
+        if (group.state.meta.submissionAttempts === 0) continue
         const { fieldsErrorMap: groupFormErrors } = this.form.validateSync(
           cause,
           {

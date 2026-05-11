@@ -284,7 +284,7 @@ describe('TanStackFormGroupDirective', () => {
     )
   })
 
-  it('should rerender group.formState.isSubmitting during an async submit', async () => {
+  it('should rerender group.state.meta.isSubmitting during an async submit', async () => {
     let resolveSubmit!: () => void
     const onGroupSubmit = vi.fn(
       () =>
@@ -314,9 +314,9 @@ describe('TanStackFormGroupDirective', () => {
             <button
               type="submit"
               data-testid="submit-group"
-              [disabled]="g.api.formState.isSubmitting"
+              [disabled]="g.api.state.meta.isSubmitting"
             >
-              {{ g.api.formState.isSubmitting ? 'Saving...' : 'Continue' }}
+              {{ g.api.state.meta.isSubmitting ? 'Saving...' : 'Continue' }}
             </button>
           </form>
         </ng-container>

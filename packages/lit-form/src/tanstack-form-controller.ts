@@ -918,7 +918,7 @@ class FormGroupDirective<
     TParentSubmitMeta
   >
   #unmount?: () => void
-  #formStateUnsubscribe?: () => void
+  #storeUnsubscribe?: () => void
 
   constructor(partInfo: PartInfo) {
     super(partInfo)
@@ -939,20 +939,19 @@ class FormGroupDirective<
 
         this.#group = new FormGroupApi(options as never)
         this.#unmount = this.#group.mount()
-        // Submission lifecycle (isSubmitting, submissionAttempts, etc.) lives
-        // on a separate store that nothing else subscribes to, so we have to
-        // request a re-render of this directive when it changes to keep
-        // `group.formState.*` reactive. Defer to a microtask to avoid
-        // scheduling an update from within Lit's update cycle.
-        this.#formStateUnsubscribe = this.#group.formStateStore.subscribe(
-          () => {
-            queueMicrotask(() => {
-              if (this.#group) {
-                this.setValue(_render(this.#group))
-              }
-            })
-          },
-        ).unsubscribe
+        // The group's `state` (including aggregated validity and submission
+        // lifecycle on `state.meta`) is computed from `formGroupMetaDerived`
+        // on the parent form. Subscribe to the per-instance store so this
+        // directive re-renders when any of those fields change. Defer to a
+        // microtask to avoid scheduling an update from within Lit's update
+        // cycle.
+        this.#storeUnsubscribe = this.#group.store.subscribe(() => {
+          queueMicrotask(() => {
+            if (this.#group) {
+              this.setValue(_render(this.#group))
+            }
+          })
+        }).unsubscribe
       }
 
       this.#registered = true
@@ -964,8 +963,8 @@ class FormGroupDirective<
   protected disconnected() {
     super.disconnected()
     this.#unmount?.()
-    this.#formStateUnsubscribe?.()
-    this.#formStateUnsubscribe = undefined
+    this.#storeUnsubscribe?.()
+    this.#storeUnsubscribe = undefined
   }
 
   protected reconnected() {

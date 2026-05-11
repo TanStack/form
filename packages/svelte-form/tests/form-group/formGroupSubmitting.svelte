@@ -29,9 +29,9 @@
       <button
         type="submit"
         data-testid="submit-group"
-        disabled={group.formState.isSubmitting}
+        disabled={group.state.meta.isSubmitting}
       >
-        {group.formState.isSubmitting ? 'Saving...' : 'Continue'}
+        {group.state.meta.isSubmitting ? 'Saving...' : 'Continue'}
       </button>
     </form>
   {/snippet}

@@ -270,7 +270,7 @@ describe('form.FormGroup', () => {
     )
   })
 
-  it('should rerender group.formState.isSubmitting during an async submit', async () => {
+  it('should rerender group.state.meta.isSubmitting during an async submit', async () => {
     let resolveSubmit!: () => void
     const onGroupSubmit = vi.fn(
       () =>
@@ -300,9 +300,9 @@ describe('form.FormGroup', () => {
               <button
                 type="submit"
                 data-testid="submit-group"
-                disabled={group.formState.isSubmitting}
+                disabled={group.state.meta.isSubmitting}
               >
-                {group.formState.isSubmitting ? 'Saving...' : 'Continue'}
+                {group.state.meta.isSubmitting ? 'Saving...' : 'Continue'}
               </button>
             </form>
           )}

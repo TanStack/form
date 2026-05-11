@@ -115,15 +115,10 @@ function makeFormGroupReactive<
   const [group, setGroup] = createSignal(formGroupApi, { equals: false })
   // Handle shallow comparison to make sure that Derived doesn't create a new setGroup call every time
   const store = useStore(formGroupApi.store, (store) => store)
-  // Submission lifecycle (isSubmitting, submissionAttempts, etc.) lives on a
-  // separate store from value/meta, so we have to track it explicitly to keep
-  // `group.formState.*` reactive.
-  const formStateStore = useStore(formGroupApi.formStateStore, (state) => state)
   // Run before initial render
   createComputed(() => {
-    // Use the stores to track dependencies
+    // Use the store to track dependencies
     store()
-    formStateStore()
     setGroup(formGroupApi)
   })
   return group

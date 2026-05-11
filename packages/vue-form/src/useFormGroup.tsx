@@ -294,17 +294,6 @@ export function useFormGroup<
   })()
 
   const groupState = useStore(formGroupApi.store, (state) => state)
-  // Submission lifecycle (isSubmitting, submissionAttempts, etc.) lives on a
-  // separate store from value/meta, so we have to subscribe to it explicitly
-  // and override the `formState` getter on the api so reads inside Vue
-  // render functions are tracked.
-  const formStateRef = useStore(formGroupApi.formStateStore, (state) => state)
-  Object.defineProperty(formGroupApi, 'formState', {
-    configurable: true,
-    get() {
-      return formStateRef.value
-    },
-  })
 
   let cleanup!: () => void
   onMounted(() => {

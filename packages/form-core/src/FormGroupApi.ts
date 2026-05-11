@@ -46,7 +46,7 @@ import type {
   TStandardSchemaValidatorValue,
 } from './standardSchemaValidator'
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
-import type { ReadonlyStore, Store } from '@tanstack/store'
+import type { ReadonlyStore } from '@tanstack/store'
 import type {
   DeepKeys,
   DeepKeysOfType,
@@ -730,7 +730,21 @@ export type AnyFormGroupApi = FormGroupApi<
   any
 >
 
-export interface FormGroupStoreState<
+/**
+ * @public
+ *
+ * The `meta` shape exposed on `FormGroupApi.state.meta`. Mirrors
+ * `FieldApi.state.meta` (since `FormGroupMeta extends FieldLikeMeta`) but
+ * additionally surfaces the group's submission lifecycle and aggregated
+ * validity flags. All derivation lives on the parent `FormApi` (in
+ * `formGroupMetaDerived`), keeping per-instance `FormGroupApi.store` as
+ * minimal as `FieldApi.store`.
+ *
+ * Aggregated booleans (`isTouched`, `isBlurred`, `isDirty`, `isPristine`,
+ * `isDefaultValue`) are computed across the group's descendant fields
+ * rather than the group's own field-meta entry.
+ */
+export interface FormGroupMeta<
   in out TParentData,
   in out TName extends DeepKeys<TParentData>,
   in out TData extends DeepValue<TParentData, TName>,
@@ -779,31 +793,7 @@ export interface FormGroupStoreState<
     | undefined
     | FormAsyncValidateOrFn<TParentData>,
 >
-  extends
-    FieldLikeState<
-      TParentData,
-      TName,
-      TData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TOnDynamic,
-      TOnDynamicAsync,
-      TFormOnMount,
-      TFormOnChange,
-      TFormOnChangeAsync,
-      TFormOnBlur,
-      TFormOnBlurAsync,
-      TFormOnSubmit,
-      TFormOnSubmitAsync,
-      TFormOnDynamic,
-      TFormOnDynamicAsync
-    >,
-    FieldLikeMeta<
+  extends FieldLikeMeta<
       TParentData,
       TName,
       TData,
@@ -832,7 +822,146 @@ export interface FormGroupStoreState<
   isGroupValid: boolean
   isValid: boolean
   canSubmit: boolean
-  errorSourceMap: Record<string, never>
+}
+
+/**
+ * @public
+ *
+ * `FormGroupMeta` with all generics widened to `any`.
+ */
+export type AnyFormGroupMeta = FormGroupMeta<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
+
+export interface FormGroupStoreState<
+  in out TParentData,
+  in out TName extends DeepKeys<TParentData>,
+  in out TData extends DeepValue<TParentData, TName>,
+  in out TOnMount extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnChange extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnChangeAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TOnBlur extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnBlurAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TOnSubmit extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnSubmitAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TOnDynamic extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnDynamicAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnChangeAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnBlurAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnSubmitAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnDynamicAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+> {
+  /**
+   * The current value of the form group.
+   */
+  value: TData
+  /**
+   * The current metadata of the form group, including aggregated validity,
+   * group-level errors, and submission lifecycle.
+   */
+  meta: FormGroupMeta<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync
+  >
+}
+
+/**
+ * @private
+ *
+ * Builds a default `FormGroupMeta` value, used as a fallback when the
+ * parent form's `formGroupMetaDerived` store has no entry for this group
+ * yet (e.g. between `new FormGroupApi(...)` and `mount()`).
+ */
+export function getDefaultFormGroupMeta(
+  defaultMeta?: Partial<AnyFieldLikeMetaBase>,
+): AnyFormGroupMeta {
+  return {
+    ...defaultFieldMeta,
+    ...defaultMeta,
+    errors: [],
+    isPristine: true,
+    isValid: true,
+    isDefaultValue: true,
+    isFieldsValidating: false,
+    isFieldsValid: true,
+    isGroupValid: true,
+    canSubmit: true,
+    isSubmitting: false,
+    isSubmitted: false,
+    isValidating: false,
+    submissionAttempts: 0,
+    isSubmitSuccessful: false,
+  } as AnyFormGroupMeta
 }
 
 export class FormGroupApi<
@@ -1038,10 +1167,30 @@ export class FormGroupApi<
     return this.store.state
   }
 
-  formStateStore: Store<FormGroupState>
-
-  get formState() {
-    return this.formStateStore.state
+  /**
+   * @private
+   *
+   * Updates this group's submission lifecycle state on the parent form's
+   * `baseStore` (where group state is now persisted), preserving entries
+   * for any other mounted groups. After writing, the form's
+   * `formGroupMetaDerived` re-derives so this group's `state.meta` picks
+   * up the new lifecycle values automatically.
+   */
+  private setFormGroupState = (
+    updater: (prev: FormGroupState) => FormGroupState,
+  ) => {
+    this.form.baseStore.setState((prev) => {
+      const prevGroupState =
+        prev.formGroupStateBase[this.name as never] ??
+        getDefaultFormGroupState({})
+      return {
+        ...prev,
+        formGroupStateBase: {
+          ...prev.formGroupStateBase,
+          [this.name as never]: updater(prevGroupState),
+        },
+      }
+    })
   }
 
   timeoutIds: {
@@ -1098,14 +1247,6 @@ export class FormGroupApi<
       formListeners: {} as Record<ListenerCause, never>,
     }
 
-    const formStateStoreVal: FormGroupState = getDefaultFormGroupState({
-      ...(opts.defaultState as any),
-    })
-
-    this.formStateStore = createStore(formStateStoreVal) as never
-
-    let prevMeta: AnyFieldLikeMeta | undefined = undefined
-
     this.store = createStore(
       (
         prevVal:
@@ -1134,13 +1275,17 @@ export class FormGroupApi<
             >
           | undefined,
       ) => {
-        // Temp hack to subscribe to form.store
-        this.form.store.get()
+        // Subscribe to all form-level derived state that affects this
+        // group. Mirrors `FieldApi.store`'s minimal pattern: per-instance
+        // `store` only sources `{ value, meta }`; all heavy derivation
+        // lives on the parent `FormApi` (in `formGroupMetaDerived`).
+        this.form.formGroupMetaDerived.get()
+        this.form.baseStore.get()
 
-        const meta = this.form.getFieldMeta(this.name) ?? {
-          ...defaultFieldMeta,
-          ...opts.defaultMeta,
-        }
+        const meta =
+          (this.form.getFormGroupMeta(this.name as never) as
+            | AnyFormGroupMeta
+            | undefined) ?? getDefaultFormGroupMeta(opts.defaultMeta as never)
 
         let value = this.form.getFieldValue(this.name)
         if (
@@ -1152,141 +1297,13 @@ export class FormGroupApi<
           value = this.options.defaultValue
         }
 
-        const relatedFieldMeta = this.getRelatedFieldMetasDerived()
-
-        const isFieldsValidating = relatedFieldMeta.some(
-          (field) => field.isValidating,
-        )
-
-        const isFieldsValid = relatedFieldMeta.every((field) => field.isValid)
-
-        const isTouched = relatedFieldMeta.some((field) => field.isTouched)
-        const isBlurred = relatedFieldMeta.some((field) => field.isBlurred)
-        const isDefaultValue = relatedFieldMeta.every(
-          (field) => field.isDefaultValue,
-        )
-
-        const isDirty = relatedFieldMeta.some((field) => field.isDirty)
-        const isPristine = !isDirty
-
-        const isValidating = !!isFieldsValidating
-
-        // As `errors` is not a primitive, we need to aggressively persist the same referencial value for performance reasons
-        let errors = prevVal?.errors ?? []
-        if (!prevMeta || meta.errorMap !== prevMeta.errorMap) {
-          errors = Object.values(meta.errorMap).reduce<
-            Array<
-              | UnwrapOneLevelOfArray<
-                  UnwrapFieldValidateOrFn<TName, TOnMount, TFormOnMount>
-                >
-              | UnwrapOneLevelOfArray<
-                  UnwrapFieldValidateOrFn<TName, TOnChange, TFormOnChange>
-                >
-              | UnwrapOneLevelOfArray<
-                  UnwrapFieldAsyncValidateOrFn<
-                    TName,
-                    TOnChangeAsync,
-                    TFormOnChangeAsync
-                  >
-                >
-              | UnwrapOneLevelOfArray<
-                  UnwrapFieldValidateOrFn<TName, TOnBlur, TFormOnBlur>
-                >
-              | UnwrapOneLevelOfArray<
-                  UnwrapFieldAsyncValidateOrFn<
-                    TName,
-                    TOnBlurAsync,
-                    TFormOnBlurAsync
-                  >
-                >
-              | UnwrapOneLevelOfArray<
-                  UnwrapFieldValidateOrFn<TName, TOnSubmit, TFormOnSubmit>
-                >
-              | UnwrapOneLevelOfArray<
-                  UnwrapFieldAsyncValidateOrFn<
-                    TName,
-                    TOnSubmitAsync,
-                    TFormOnSubmitAsync
-                  >
-                >
-            >
-          >((prev, curr) => {
-            if (curr === undefined) return prev
-
-            if (curr && isGlobalGroupValidationError(curr)) {
-              if (curr.group !== undefined) {
-                prev.push(curr.group as never)
-              }
-              return prev
-            }
-            prev.push(curr as never)
-            return prev
-          }, [])
-        }
-
-        const isGroupValid = errors.length === 0
-        const isValid = isFieldsValid && isGroupValid
-        const submitInvalid = this.options.canSubmitWhenInvalid ?? false
-        const canSubmit =
-          (this.formStateStore.state.submissionAttempts === 0 &&
-            !isTouched) /* &&
-            !hasOnMountError */ ||
-          (!isValidating &&
-            !this.formStateStore.state.isSubmitting &&
-            isValid) ||
-          submitInvalid
-
-        const errorMap = meta.errorMap
-        // TODO: Handle this
-        /*
-        if (shouldInvalidateOnMount) {
-          errors = errors.filter(
-            (err) => err !== currBaseStore.errorMap.onMount,
-          )
-          errorMap = Object.assign(errorMap, { onMount: undefined })
-        }
-         */
-
-        if (
-          prevVal &&
-          prevMeta &&
-          prevVal.value === value &&
-          prevVal.meta === meta &&
-          prevVal.errorMap === errorMap &&
-          prevVal.errors === errors &&
-          prevVal.isFieldsValidating === isFieldsValidating &&
-          prevVal.isFieldsValid === isFieldsValid &&
-          prevVal.isGroupValid === isGroupValid &&
-          prevVal.isValid === isValid &&
-          prevVal.canSubmit === canSubmit &&
-          prevVal.isTouched === isTouched &&
-          prevVal.isBlurred === isBlurred &&
-          prevVal.isPristine === isPristine &&
-          prevVal.isDefaultValue === isDefaultValue &&
-          prevVal.isDirty === isDirty &&
-          evaluate(prevMeta, meta)
-        ) {
+        if (prevVal && prevVal.value === value && prevVal.meta === meta) {
           return prevVal
         }
 
-        const state = {
-          ...this.formStateStore.state,
+        return {
           value,
           meta,
-          errorMap,
-          errors,
-          canSubmit,
-          isFieldsValidating,
-          isFieldsValid,
-          isGroupValid,
-          isValid,
-          isTouched,
-          isBlurred,
-          isPristine,
-          isDefaultValue,
-          isDirty,
-          errorSourceMap: {},
-          _arrayVersion: meta._arrayVersion,
         } as FormGroupStoreState<
           TParentData,
           TName,
@@ -1310,10 +1327,6 @@ export class FormGroupApi<
           TFormOnDynamic,
           TFormOnDynamicAsync
         >
-
-        prevMeta = meta
-
-        return state
       },
     )
 
@@ -1367,7 +1380,10 @@ export class FormGroupApi<
     }
 
     if (!this.form.getFieldMeta(this.name)) {
-      this.form.setFieldMeta(this.name, this.state.meta)
+      this.form.setFieldMeta(this.name, {
+        ...defaultFieldMeta,
+        ...(this.options.defaultMeta as Partial<AnyFieldLikeMetaBase>),
+      } as never)
     }
   }
 
@@ -1414,8 +1430,39 @@ export class FormGroupApi<
   mount = () => {
     this.update(this.options as never)
     this.form.formGroupApis.add(this)
+
+    // Seed the parent form's `formGroupStateBase` entry for this group.
+    // We always write so that `formGroupMetaDerived` re-derives now that
+    // `formGroupApis` includes this instance — this is what makes
+    // `state.meta` populated on the very first read after mount. Mirrors
+    // `FieldApi.mount`'s lifecycle: per-group lifecycle state lives on
+    // the form so it can be read off `FormApi` directly without walking
+    // the mounted group instances.
+    this.form.baseStore.setState((prev) => ({
+      ...prev,
+      formGroupStateBase: {
+        ...prev.formGroupStateBase,
+        [this.name as never]:
+          prev.formGroupStateBase[this.name as never] ??
+          getDefaultFormGroupState({
+            ...((this.options.defaultState as Partial<FormGroupState>) ?? {}),
+          }),
+      },
+    }))
+
     return () => {
       this.form.formGroupApis.delete(this)
+
+      // Reset this group's submission lifecycle state on the form. Mirrors
+      // `FieldApi.mount`'s teardown which resets `fieldMetaBase` for the
+      // unmounting field while preserving the entry on the parent store.
+      this.form.baseStore.setState((prev) => ({
+        ...prev,
+        formGroupStateBase: {
+          ...prev.formGroupStateBase,
+          [this.name as never]: getDefaultFormGroupState({}),
+        },
+      }))
     }
   }
 
@@ -2244,7 +2291,7 @@ export class FormGroupApi<
    * Handles the form submission, performs validation, and calls the appropriate onSubmit or onSubmitInvalid callbacks.
    */
   _handleSubmit = async (submitMeta?: TSubmitMeta): Promise<void> => {
-    this.formStateStore.setState((old) => ({
+    this.setFormGroupState((old) => ({
       ...old,
       // Submission attempts mark the form as not submitted
       isSubmitted: false,
@@ -2266,10 +2313,10 @@ export class FormGroupApi<
     const submitMetaArg =
       submitMeta ?? (this.options.onSubmitMeta as TSubmitMeta)
 
-    this.formStateStore.setState((d) => ({ ...d, isSubmitting: true }))
+    this.setFormGroupState((d) => ({ ...d, isSubmitting: true }))
 
     const done = () => {
-      this.formStateStore.setState((prev) => ({ ...prev, isSubmitting: false }))
+      this.setFormGroupState((prev) => ({ ...prev, isSubmitting: false }))
     }
 
     await this.validateAllFields('submit')
@@ -2333,7 +2380,7 @@ export class FormGroupApi<
       })
 
       batch(() => {
-        this.formStateStore.setState((prev) => ({
+        this.setFormGroupState((prev) => ({
           ...prev,
           isSubmitted: true,
           isSubmitSuccessful: true, // Set isSubmitSuccessful to true on successful submission
@@ -2342,7 +2389,7 @@ export class FormGroupApi<
         done()
       })
     } catch (err) {
-      this.formStateStore.setState((prev) => ({
+      this.setFormGroupState((prev) => ({
         ...prev,
         isSubmitSuccessful: false, // Ensure isSubmitSuccessful is false if an error occurs
       }))

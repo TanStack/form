@@ -100,7 +100,7 @@ export const revalidateLogic =
     // `modeAfterSubmission` after that group itself has been submitted.
     // Otherwise (form-level validators), gate on the parent form.
     const submissionAttempts = props.group
-      ? props.group.formState.submissionAttempts
+      ? props.group.state.meta.submissionAttempts
       : props.form.state.submissionAttempts
 
     const modeToWatch = submissionAttempts === 0 ? mode : modeAfterSubmission

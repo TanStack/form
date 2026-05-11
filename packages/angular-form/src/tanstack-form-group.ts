@@ -332,18 +332,14 @@ export class TanStackFormGroup<
       },
     )
 
-    // Submission lifecycle (isSubmitting, submissionAttempts, etc.) lives on
-    // a separate store from value/meta, so we have to subscribe to it
-    // explicitly to keep `group.formState.*` reactive.
-    const formStateVals = injectStore(this._api().formStateStore, undefined, {
-      injector: this.injector,
-    })
+    // Submission lifecycle and aggregated validity now live on `state.meta`
+    // (mirroring `FieldApi.state.meta`), so subscribing to the main store
+    // above is sufficient to keep them reactive.
 
     effect(
       () => {
         // Load bearing change detection check
         const _values = vals()
-        const _formStateValues = formStateVals()
         this.cd.markForCheck()
       },
       { injector: this.injector },

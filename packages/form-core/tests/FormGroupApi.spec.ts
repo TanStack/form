@@ -816,9 +816,9 @@ describe('form group api', () => {
       step1Group.mount()
       step1NameField.mount()
 
-      expect(step1Group.state.isFieldsValid).toBe(true)
-      expect(step1Group.state.isGroupValid).toBe(true)
-      expect(step1Group.state.isValid).toBe(true)
+      expect(step1Group.state.meta.isFieldsValid).toBe(true)
+      expect(step1Group.state.meta.isGroupValid).toBe(true)
+      expect(step1Group.state.meta.isValid).toBe(true)
     })
 
     it('isFieldsValid should be false when a child field has an error, while isGroupValid stays true', async () => {
@@ -849,9 +849,9 @@ describe('form group api', () => {
       step1NameField.handleChange('')
 
       expect(step1NameField.state.meta.errors.length).toBeGreaterThan(0)
-      expect(step1Group.state.isFieldsValid).toBe(false)
-      expect(step1Group.state.isGroupValid).toBe(true)
-      expect(step1Group.state.isValid).toBe(false)
+      expect(step1Group.state.meta.isFieldsValid).toBe(false)
+      expect(step1Group.state.meta.isGroupValid).toBe(true)
+      expect(step1Group.state.meta.isValid).toBe(false)
     })
 
     it('isGroupValid should be false when a group-level validator errors, while isFieldsValid stays true', async () => {
@@ -883,9 +883,9 @@ describe('form group api', () => {
       await step1Group.handleSubmit()
 
       expect(step1Group.state.meta.errorMap.onSubmit).toBe('Name is required')
-      expect(step1Group.state.isFieldsValid).toBe(true)
-      expect(step1Group.state.isGroupValid).toBe(false)
-      expect(step1Group.state.isValid).toBe(false)
+      expect(step1Group.state.meta.isFieldsValid).toBe(true)
+      expect(step1Group.state.meta.isGroupValid).toBe(false)
+      expect(step1Group.state.meta.isValid).toBe(false)
     })
 
     it('isValid should recover to true after fixing both a field-level and group-level error', async () => {
@@ -922,15 +922,15 @@ describe('form group api', () => {
 
       // Field error short-circuits the group's own onSubmit, so only the
       // field-level branch is invalid here.
-      expect(step1Group.state.isFieldsValid).toBe(false)
-      expect(step1Group.state.isValid).toBe(false)
+      expect(step1Group.state.meta.isFieldsValid).toBe(false)
+      expect(step1Group.state.meta.isValid).toBe(false)
 
       step1NameField.handleChange('valid name')
       await step1Group.handleSubmit()
 
-      expect(step1Group.state.isFieldsValid).toBe(true)
-      expect(step1Group.state.isGroupValid).toBe(true)
-      expect(step1Group.state.isValid).toBe(true)
+      expect(step1Group.state.meta.isFieldsValid).toBe(true)
+      expect(step1Group.state.meta.isGroupValid).toBe(true)
+      expect(step1Group.state.meta.isValid).toBe(true)
     })
   })
 })

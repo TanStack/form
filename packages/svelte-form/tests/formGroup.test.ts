@@ -93,7 +93,7 @@ describe('form.FormGroup', () => {
     )
   })
 
-  it('should rerender group.formState.isSubmitting during an async submit', async () => {
+  it('should rerender group.state.meta.isSubmitting during an async submit', async () => {
     let resolveSubmit!: () => void
     const onGroupSubmit = vi.fn(
       () =>
