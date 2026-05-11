@@ -1445,7 +1445,7 @@ export class FormGroupApi<
         [this.name as never]:
           prev.formGroupStateBase[this.name as never] ??
           getDefaultFormGroupState({
-            ...((this.options.defaultState as Partial<FormGroupState>) ?? {}),
+            ...(this.options.defaultState as Partial<FormGroupState>),
           }),
       },
     }))
