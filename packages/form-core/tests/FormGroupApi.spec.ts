@@ -283,6 +283,51 @@ describe('form group api', () => {
     ).toBeDefined()
   })
 
+  it('Should not duplicate field errors when overlapping schemas are attached to both the form and the group', async () => {
+    const step1Schema = z.object({
+      name: z.string().min(3),
+    })
+    const formSchema = z.object({
+      step1: step1Schema,
+      step2: z.object({ name: z.string() }),
+    })
+
+    const form = new FormApi({
+      defaultValues: {
+        step1: { name: '' },
+        step2: { name: 'test2' },
+      },
+      validators: {
+        onChange: formSchema,
+      },
+    })
+
+    const step1Group = new FormGroupApi({
+      name: 'step1',
+      form,
+      validators: {
+        onChange: step1Schema,
+      },
+    })
+
+    const step1NameField = new FieldApi({
+      name: 'step1.name',
+      form,
+    })
+
+    form.mount()
+    step1Group.mount()
+    step1NameField.mount()
+
+    step1NameField.handleChange('')
+
+    // Both validators flag the same field with the same issue. Even though
+    // each one writes to the field's errorMap independently, only one
+    // entry should end up in the field's `errors` array.
+    expect(step1NameField.state.meta.errors.length).toBe(1)
+    expect(step1NameField.state.meta.errorMap.onChange).toBeDefined()
+  })
+
   it('Should propagate onDynamic field errors from group validators to child fields when revalidateLogic is on the form', async () => {
     const onSubmit = vi.fn()
 
