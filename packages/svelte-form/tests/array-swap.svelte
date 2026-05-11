@@ -12,9 +12,9 @@
 
 <form.Field name="test" mode="array">
   {#snippet children(field)}
-    <div id="val">{JSON.stringify(field.state.value)}</div>
+    <div data-testid="val">{JSON.stringify(field.state.value)}</div>
     <button
-      id="swap"
+      data-testid="swap"
       type="button"
       onclick={() => form.swapFieldValues('test', 0, 1)}
     >
