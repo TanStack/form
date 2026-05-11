@@ -298,10 +298,7 @@ export function useFormGroup<
   // separate store from value/meta, so we have to subscribe to it explicitly
   // and override the `formState` getter on the api so reads inside Vue
   // render functions are tracked.
-  const formStateRef = useStore(
-    formGroupApi.formStateStore,
-    (state) => state,
-  )
+  const formStateRef = useStore(formGroupApi.formStateStore, (state) => state)
   Object.defineProperty(formGroupApi, 'formState', {
     configurable: true,
     get() {

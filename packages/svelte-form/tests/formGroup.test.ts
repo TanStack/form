@@ -109,9 +109,7 @@ describe('form.FormGroup', () => {
 
     await user.click(button)
 
-    await vi.waitFor(() =>
-      expect(button.textContent?.trim()).toBe('Saving...'),
-    )
+    await vi.waitFor(() => expect(button.textContent?.trim()).toBe('Saving...'))
     expect(button.disabled).toBe(true)
 
     resolveSubmit()

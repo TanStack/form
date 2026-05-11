@@ -118,10 +118,7 @@ function makeFormGroupReactive<
   // Submission lifecycle (isSubmitting, submissionAttempts, etc.) lives on a
   // separate store from value/meta, so we have to track it explicitly to keep
   // `group.formState.*` reactive.
-  const formStateStore = useStore(
-    formGroupApi.formStateStore,
-    (state) => state,
-  )
+  const formStateStore = useStore(formGroupApi.formStateStore, (state) => state)
   // Run before initial render
   createComputed(() => {
     // Use the stores to track dependencies
