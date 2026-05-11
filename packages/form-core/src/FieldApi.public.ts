@@ -17,13 +17,24 @@ export interface BaseFieldMeta {
   isTouched: boolean
   isDirty: boolean
   isBlurred: boolean
-  childErrorCount: number
+}
+
+export interface SubfieldsMeta {
+  isEveryValid: boolean
+  isAnyInvalid: boolean
+  isEveryPristine: boolean
+  isSomeDirty: boolean
+  isSomeTouched: boolean
 }
 
 export interface FieldMeta extends BaseFieldMeta {
   isPristine: boolean
+  isSelfTouched: boolean
+  isSelfDirty: boolean
   isInvalid: boolean
+  isSelfValid: boolean
   isValid: boolean
+  subfields: SubfieldsMeta
   errors: Array<ErrorWithMessage>
 }
 

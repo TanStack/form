@@ -485,6 +485,70 @@ describe('FieldApi', () => {
       const field = form._getOrCreateFieldApi({ name: 'x' })
       expect(field.meta.isValid).toBe(true)
       expect(field.meta.isInvalid).toBe(false)
+      expect(field.meta.isSelfValid).toBe(true)
+      expect(field.meta.subfields.isEveryValid).toBe(true)
+      expect(field.meta.subfields.isAnyInvalid).toBe(false)
+    })
+
+    it('isDirty is false when self and subfields are pristine', () => {
+      const form = new InternalFormApi({ defaultValues: { x: '' } })
+      const field = form._getOrCreateFieldApi({ name: 'x' })
+      expect(field.meta.isDirty).toBe(false)
+      expect(field.meta.isSelfDirty).toBe(false)
+      expect(field.meta.subfields.isSomeDirty).toBe(false)
+      expect(field.meta.subfields.isEveryPristine).toBe(true)
+      expect(field.meta.isPristine).toBe(true)
+    })
+
+    it('isTouched is false when self and subfields are untouched', () => {
+      const form = new InternalFormApi({ defaultValues: { x: '' } })
+      const field = form._getOrCreateFieldApi({ name: 'x' })
+      expect(field.meta.isTouched).toBe(false)
+      expect(field.meta.isSelfTouched).toBe(false)
+      expect(field.meta.subfields.isSomeTouched).toBe(false)
+    })
+
+    it('separates self validity from subfield validity', () => {
+      const form = new InternalFormApi({ defaultValues: { a: { b: '' } } })
+      const parent = form._getOrCreateFieldApi({ name: 'a' })
+      const child = form._getOrCreateFieldApi({ name: 'a.b' })
+
+      child._setMeta((prev) => ({
+        ...prev,
+        _fieldValidatorErrors: [[{ message: 'Required' }]],
+      }))
+
+      expect(child.meta.isSelfValid).toBe(false)
+      expect(child.meta.subfields.isEveryValid).toBe(true)
+      expect(child.meta.subfields.isAnyInvalid).toBe(false)
+      expect(child.meta.isValid).toBe(false)
+
+      expect(parent.meta.isSelfValid).toBe(true)
+      expect(parent.meta.subfields.isEveryValid).toBe(false)
+      expect(parent.meta.subfields.isAnyInvalid).toBe(true)
+      expect(parent.meta.isValid).toBe(false)
+      expect(parent.meta.isInvalid).toBe(true)
+    })
+
+    it('keeps aggregate validity invalid when self and subfields both have errors', () => {
+      const form = new InternalFormApi({ defaultValues: { a: { b: '' } } })
+      const parent = form._getOrCreateFieldApi({ name: 'a' })
+      const child = form._getOrCreateFieldApi({ name: 'a.b' })
+
+      parent._setMeta((prev) => ({
+        ...prev,
+        _fieldValidatorErrors: [[{ message: 'Parent error' }]],
+      }))
+      child._setMeta((prev) => ({
+        ...prev,
+        _fieldValidatorErrors: [[{ message: 'Child error' }]],
+      }))
+
+      expect(parent.meta.isSelfValid).toBe(false)
+      expect(parent.meta.subfields.isEveryValid).toBe(false)
+      expect(parent.meta.subfields.isAnyInvalid).toBe(true)
+      expect(parent.meta.isValid).toBe(false)
+      expect(parent.meta.isInvalid).toBe(true)
     })
   })
 
@@ -495,6 +559,27 @@ describe('FieldApi', () => {
       const child = form._getOrCreateFieldApi({ name: 'a.b' })
       child.handleChange('new')
       expect(parent.meta.isDirty).toBe(true)
+      expect(parent.meta.isSelfDirty).toBe(false)
+      expect(parent.meta.subfields.isSomeDirty).toBe(true)
+      expect(parent.meta.subfields.isEveryPristine).toBe(false)
+      expect(child.meta.isDirty).toBe(true)
+      expect(child.meta.isSelfDirty).toBe(true)
+      expect(child.meta.subfields.isSomeDirty).toBe(false)
+      expect(child.meta.subfields.isEveryPristine).toBe(true)
+    })
+
+    it('keeps self and subfield dirtiness separate when both are dirty', () => {
+      const form = new InternalFormApi({ defaultValues: { a: { b: '' } } })
+      const parent = form._getOrCreateFieldApi({ name: 'a' })
+      const child = form._getOrCreateFieldApi({ name: 'a.b' })
+
+      parent.handleChange({ b: 'parent' })
+      child.handleChange('child')
+
+      expect(parent.meta.isSelfDirty).toBe(true)
+      expect(parent.meta.subfields.isSomeDirty).toBe(true)
+      expect(parent.meta.isDirty).toBe(true)
+      expect(parent.meta.isPristine).toBe(false)
     })
 
     it('marks parent fields as touched when a child changes', () => {
@@ -502,6 +587,24 @@ describe('FieldApi', () => {
       const parent = form._getOrCreateFieldApi({ name: 'a' })
       const child = form._getOrCreateFieldApi({ name: 'a.b' })
       child.handleChange('new')
+      expect(parent.meta.isTouched).toBe(true)
+      expect(parent.meta.isSelfTouched).toBe(false)
+      expect(parent.meta.subfields.isSomeTouched).toBe(true)
+      expect(child.meta.isTouched).toBe(true)
+      expect(child.meta.isSelfTouched).toBe(true)
+      expect(child.meta.subfields.isSomeTouched).toBe(false)
+    })
+
+    it('keeps self and subfield touched state separate when both are touched', () => {
+      const form = new InternalFormApi({ defaultValues: { a: { b: '' } } })
+      const parent = form._getOrCreateFieldApi({ name: 'a' })
+      const child = form._getOrCreateFieldApi({ name: 'a.b' })
+
+      parent.handleBlur()
+      child.handleBlur()
+
+      expect(parent.meta.isSelfTouched).toBe(true)
+      expect(parent.meta.subfields.isSomeTouched).toBe(true)
       expect(parent.meta.isTouched).toBe(true)
     })
 

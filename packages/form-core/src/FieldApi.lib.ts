@@ -19,6 +19,7 @@ import type {
   FieldApiOptions,
   FieldMeta as PublicFieldMeta,
   FieldState as PublicFieldState,
+  SubfieldsMeta,
 } from './FieldApi.public'
 import type {
   ErrorWithMessage,
@@ -36,9 +37,20 @@ const metaCache = new WeakMap<InternalBaseFieldMeta, InternalFieldMeta>()
 export type NameSegment = string | number
 export type NameSegments = Array<NameSegment>
 
+type ChildContributionKey = 'touched' | 'dirty' | 'error'
+type ChildContributionCounts = Record<ChildContributionKey, number>
+type ChildContributionStates = Record<ChildContributionKey, boolean>
+
+const childContributionKeys: Array<ChildContributionKey> = [
+  'touched',
+  'dirty',
+  'error',
+]
+
 interface MetaExtension {
   _formValidatorErrors: Array<Array<ErrorWithMessage>>
   _fieldValidatorErrors: Array<Array<ErrorWithMessage>>
+  childContributionCounts: ChildContributionCounts
   /**
    * @private
    * Used to rerender for ArrayField components
@@ -166,11 +178,15 @@ export const defaultBaseFieldMeta: BaseFieldMeta = {
   isTouched: false,
   isDirty: false,
   isBlurred: false,
-  childErrorCount: 0,
 }
 
 export const defaultInternalBaseFieldMeta: InternalBaseFieldMeta = {
   ...defaultBaseFieldMeta,
+  childContributionCounts: {
+    touched: 0,
+    dirty: 0,
+    error: 0,
+  },
   _fieldValidatorErrors: [],
   _formValidatorErrors: [],
   _arrayVersion: 0,
@@ -374,18 +390,17 @@ export class InternalFieldApi<
     this._getOrCreateAtoms().meta.set((prevMeta) => {
       const newMeta = callUpdater(updater, prevMeta)
 
-      // Inform parent if error count changed
-      const prevContributes =
-        prevMeta._fieldValidatorErrors.length > 0 ||
-        prevMeta._formValidatorErrors.length > 0 ||
-        prevMeta.childErrorCount > 0
-      const newContributes =
-        newMeta._fieldValidatorErrors.length > 0 ||
-        newMeta._formValidatorErrors.length > 0 ||
-        newMeta.childErrorCount > 0
-
       if (!this._parent._isRoot) {
-        this._parent._updateChildErrorCount(prevContributes, newContributes)
+        const prevContributions = getChildContributionStates(prevMeta)
+        const newContributions = getChildContributionStates(newMeta)
+
+        for (const key of childContributionKeys) {
+          this._parent._updateChildContributionCount(
+            key,
+            prevContributions[key],
+            newContributions[key],
+          )
+        }
       }
 
       return newMeta
@@ -394,10 +409,11 @@ export class InternalFieldApi<
 
   /**
    * @private
-   * Called when a child's error contribution changes.
-   * Increments/decrements childErrorCount and propagates up.
+   * Called when a child's meta contribution changes.
+   * Increments/decrements the relevant child contribution count and propagates up.
    */
-  _updateChildErrorCount(
+  _updateChildContributionCount(
+    key: ChildContributionKey,
     prevContributes: boolean,
     newContributes: boolean,
   ): void {
@@ -407,7 +423,10 @@ export class InternalFieldApi<
 
     this._setMeta((prev) => ({
       ...prev,
-      childErrorCount: prev.childErrorCount + delta,
+      childContributionCounts: {
+        ...prev.childContributionCounts,
+        [key]: prev.childContributionCounts[key] + delta,
+      },
     }))
   }
 
@@ -530,16 +549,18 @@ export class InternalFieldApi<
       // -> field-level validators
 
       while (!currNode._isRoot) {
-        const { isDirty, isTouched, isBlurred } = currNode.meta
-        const shouldUpdateDirty = markAsDirty && !isDirty
-        const shouldUpdateTouched = markAsTouched && !isTouched
+        const isOriginalField = currNode === originalField
+        const { isSelfDirty, isSelfTouched, isBlurred } = currNode.meta
+        const shouldUpdateDirty = isOriginalField && markAsDirty && !isSelfDirty
+        const shouldUpdateTouched =
+          isOriginalField && markAsTouched && !isSelfTouched
         const shouldUpdateBlurred = markAsBlurred && !isBlurred
 
         if (shouldUpdateDirty || shouldUpdateTouched || shouldUpdateBlurred) {
           currNode._setMeta((prev) => ({
             ...prev,
-            isTouched: markAsTouched ? true : prev.isTouched,
-            isDirty: markAsDirty ? true : prev.isDirty,
+            isTouched: shouldUpdateTouched ? true : prev.isTouched,
+            isDirty: shouldUpdateDirty ? true : prev.isDirty,
             isBlurred: markAsBlurred ? true : prev.isBlurred,
           }))
         }
@@ -681,11 +702,14 @@ export class InternalFieldApi<
         const nodeMeta = node._atoms?.meta.get()
 
         if (!node._parent._isRoot && nodeMeta) {
-          const nodeErrors = getErrorsFromBaseMeta(nodeMeta)
-          const wasContributing =
-            nodeErrors.length > 0 || nodeMeta.childErrorCount > 0
-          if (wasContributing) {
-            node._parent._updateChildErrorCount(true, false)
+          const contributions = getChildContributionStates(nodeMeta)
+
+          for (const key of childContributionKeys) {
+            node._parent._updateChildContributionCount(
+              key,
+              contributions[key],
+              false,
+            )
           }
         }
 
@@ -868,17 +892,48 @@ function deriveFromBaseFieldMeta(
   if (cached) return cached
 
   const errors = getErrorsFromBaseMeta(baseMeta, previousMeta)
-  const isInvalid = errors.length > 0 || baseMeta.childErrorCount > 0
+  const isSelfTouched = baseMeta.isTouched
+  const isSelfDirty = baseMeta.isDirty
+  const isSelfValid = errors.length === 0
+  const subfields: SubfieldsMeta = {
+    isEveryValid: baseMeta.childContributionCounts.error === 0,
+    isAnyInvalid: baseMeta.childContributionCounts.error > 0,
+    isEveryPristine: baseMeta.childContributionCounts.dirty === 0,
+    isSomeDirty: baseMeta.childContributionCounts.dirty > 0,
+    isSomeTouched: baseMeta.childContributionCounts.touched > 0,
+  }
+  const isTouched = isSelfTouched || subfields.isSomeTouched
+  const isDirty = isSelfDirty || subfields.isSomeDirty
+  const isValid = isSelfValid && subfields.isEveryValid
+  const isInvalid = !isValid
 
   const result: InternalFieldMeta = {
     ...baseMeta,
+    isTouched,
+    isSelfTouched,
+    isDirty,
+    isSelfDirty,
     isInvalid,
+    isSelfValid,
     errors,
-    isValid: !isInvalid,
-    isPristine: !baseMeta.isDirty,
+    isValid,
+    subfields,
+    isPristine: !isDirty,
   }
   metaCache.set(baseMeta, result)
   return result
+}
+
+function getChildContributionStates(
+  meta: InternalBaseFieldMeta,
+): ChildContributionStates {
+  return {
+    touched: meta.isTouched || meta.childContributionCounts.touched > 0,
+    dirty: meta.isDirty || meta.childContributionCounts.dirty > 0,
+    error:
+      getErrorsFromBaseMeta(meta).length > 0 ||
+      meta.childContributionCounts.error > 0,
+  }
 }
 
 function getErrorsFromBaseMeta(
