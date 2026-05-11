@@ -9,7 +9,7 @@ title: TupleAccessor
 type TupleAccessor<TParent, TKey> = `${TParent["key"] extends never ? "" : TParent["key"]}[${TKey}]`;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:51](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L51)
+Defined in: [packages/form-core/src/util-types.ts:68](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L68)
 
 ## Type Parameters
 

@@ -11,30 +11,32 @@ You can accomplish this by specifying the `onSubmitMeta` property. This meta dat
 > Note: if `form.handleSubmit()` is called without metadata, it will use the provided default.
 
 ```angular-ts
-import { Component } from '@angular/core';
-import { injectForm } from '@tanstack/angular-form';
-
+import { Component } from '@angular/core'
+import { injectForm } from '@tanstack/angular-form'
 
 type FormMeta = {
-  submitAction: 'continue' | 'backToMenu' | null;
-};
+  submitAction: 'continue' | 'backToMenu' | null
+}
 
 // Metadata is not required to call form.handleSubmit().
 // Specify what values to use as default if no meta is passed
 const defaultMeta: FormMeta = {
   submitAction: null,
-};
+}
 
 @Component({
   selector: 'app-root',
   template: `
     <form (submit)="handleSubmit($event)">
-      <button type="submit" (click)="
-        handleClick({ submitAction: 'continue' })
-      ">Submit and continue</button>
-      <button type="submit" (click)="
-        handleClick({ submitAction: 'backToMenu' })
-      ">Submit and back to menu</button>
+      <button type="submit" (click)="handleClick({ submitAction: 'continue' })">
+        Submit and continue
+      </button>
+      <button
+        type="submit"
+        (click)="handleClick({ submitAction: 'backToMenu' })"
+      >
+        Submit and back to menu
+      </button>
     </form>
   `,
 })
@@ -47,18 +49,18 @@ export class AppComponent {
     onSubmitMeta: defaultMeta,
     onSubmit: async ({ value, meta }) => {
       // Do something with the values passed via handleSubmit
-      console.log(`Selected action - ${meta.submitAction}`, value);
+      console.log(`Selected action - ${meta.submitAction}`, value)
     },
-  });
+  })
 
   handleSubmit(event: SubmitEvent) {
-    event.preventDefault();
-    event.stopPropagation();
+    event.preventDefault()
+    event.stopPropagation()
   }
 
   handleClick(meta: FormMeta) {
     // Overwrites the default specified in onSubmitMeta
-    this.form.handleSubmit(meta);
+    this.form.handleSubmit(meta)
   }
 }
 ```

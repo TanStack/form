@@ -9,7 +9,7 @@ title: FieldMetaBase
 type FieldMetaBase<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync> = object;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:568](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L568)
+Defined in: [packages/form-core/src/FieldApi.ts:573](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L573)
 
 ## Type Parameters
 
@@ -105,7 +105,7 @@ Defined in: [packages/form-core/src/FieldApi.ts:568](https://github.com/TanStack
 errorMap: ValidationErrorMap<UnwrapFieldValidateOrFn<TName, TOnMount, TFormOnMount>, UnwrapFieldValidateOrFn<TName, TOnChange, TFormOnChange>, UnwrapFieldAsyncValidateOrFn<TName, TOnChangeAsync, TFormOnChangeAsync>, UnwrapFieldValidateOrFn<TName, TOnBlur, TFormOnBlur>, UnwrapFieldAsyncValidateOrFn<TName, TOnBlurAsync, TFormOnBlurAsync>, UnwrapFieldValidateOrFn<TName, TOnSubmit, TFormOnSubmit>, UnwrapFieldAsyncValidateOrFn<TName, TOnSubmitAsync, TFormOnSubmitAsync>, UnwrapFieldValidateOrFn<TName, TOnDynamic, TFormOnDynamic>, UnwrapFieldAsyncValidateOrFn<TName, TOnDynamicAsync, TFormOnDynamicAsync>>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:614](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L614)
+Defined in: [packages/form-core/src/FieldApi.ts:619](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L619)
 
 A map of errors related to the field value.
 
@@ -117,7 +117,7 @@ A map of errors related to the field value.
 isBlurred: boolean;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:606](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L606)
+Defined in: [packages/form-core/src/FieldApi.ts:611](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L611)
 
 A flag indicating whether the field has been blurred.
 
@@ -129,7 +129,7 @@ A flag indicating whether the field has been blurred.
 isDirty: boolean;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:610](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L610)
+Defined in: [packages/form-core/src/FieldApi.ts:615](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L615)
 
 A flag that is `true` if the field's value has been modified by the user. Opposite of `isPristine`.
 
@@ -141,7 +141,7 @@ A flag that is `true` if the field's value has been modified by the user. Opposi
 isTouched: boolean;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:602](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L602)
+Defined in: [packages/form-core/src/FieldApi.ts:607](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L607)
 
 A flag indicating whether the field has been touched.
 
@@ -153,6 +153,6 @@ A flag indicating whether the field has been touched.
 isValidating: boolean;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:633](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L633)
+Defined in: [packages/form-core/src/FieldApi.ts:638](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L638)
 
 A flag indicating whether the field is currently being validated.

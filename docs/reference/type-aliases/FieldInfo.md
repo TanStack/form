@@ -9,7 +9,7 @@ title: FieldInfo
 type FieldInfo<TFormData> = object;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:509](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L509)
+Defined in: [packages/form-core/src/FormApi.ts:514](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L514)
 
 An object representing the field information for a specific field within the form.
 
@@ -29,7 +29,7 @@ instance:
   | null;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:513](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L513)
+Defined in: [packages/form-core/src/FormApi.ts:518](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L518)
 
 An instance of the FieldAPI.
 
@@ -41,6 +41,6 @@ An instance of the FieldAPI.
 validationMetaMap: Record<ValidationErrorMapKeys, ValidationMeta | undefined>;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:541](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L541)
+Defined in: [packages/form-core/src/FormApi.ts:546](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L546)
 
 A record of field validation internal handling.
