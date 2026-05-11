@@ -352,7 +352,7 @@ describe('form group api', () => {
       form,
       onGroupSubmit,
       onGroupSubmitInvalid,
-      // @ts-expect-error validationLogic is not yet supported on FormGroupOptions
+
       validationLogic: revalidateLogic(),
       validators: {
         onDynamic: () => {

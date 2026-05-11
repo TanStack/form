@@ -1,6 +1,7 @@
 import { batch, createStore } from '@tanstack/store'
 import {
   determineFieldLevelErrorSourceAndValue,
+  determineFormLevelErrorSourceAndValue,
   evaluate,
   getAsyncValidatorArray,
   getSyncValidatorArray,
@@ -8,6 +9,7 @@ import {
   mergeOpts,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
+import type { ValidationLogicFn } from './ValidationLogic'
 import {
   isStandardSchemaValidator,
   standardSchemaValidators,
@@ -377,6 +379,12 @@ interface FormGroupExtraOptions<
   listeners?: FormGroupListeners<TParentData, TName, TData>
 
   defaultState?: FormGroupState
+  /**
+   * Optional validation logic strategy to use for this group's own
+   * validators (e.g. `revalidateLogic()`). When omitted, the parent form's
+   * `validationLogic` (or the default) is used.
+   */
+  validationLogic?: ValidationLogicFn
   /**
    * onSubmitMeta, the data passed from the handleSubmit handler, to the onSubmit function props
    */
@@ -939,6 +947,16 @@ export class FormGroupApi<
     formListeners: Record<ListenerCause, ReturnType<typeof setTimeout> | null>
   }
 
+  /**
+   * @private
+   *
+   * Tracks the set of fully-qualified child field names that this group's
+   * validators last set form-source errors on, keyed by `errorMap` key.
+   * Used to clear stale group-level field errors on subsequent runs without
+   * trampling errors set by the parent form's validators.
+   */
+  private _lastDistributedFieldNames: Partial<Record<string, Set<string>>> = {}
+
   constructor(
     opts: FormGroupApiOptions<
       TParentData,
@@ -1368,6 +1386,97 @@ export class FormGroupApi<
 
   /**
    * @private
+   *
+   * Builds a fully-qualified field name from a path that is relative to this
+   * group, supporting both dot (`name`, `nested.value`) and bracket
+   * (`[0].name`) notation.
+   */
+  private buildChildFieldName = (relativeName: string): string => {
+    if (relativeName === '') return this.name as string
+    if (relativeName.startsWith('[')) return `${this.name}${relativeName}`
+    return `${this.name}.${relativeName}`
+  }
+
+  /**
+   * @private
+   *
+   * Distributes a `{ fields: { ... } }` payload returned by one of this
+   * group's own validators onto the corresponding child fields. Tracks
+   * which fields have been touched so subsequent runs can clear stale
+   * errors without trampling errors set by the parent form's validators.
+   */
+  private distributeFieldErrors = (
+    errorMapKey: string,
+    fieldErrors: Record<string, unknown> | undefined,
+  ): boolean => {
+    const previousNames =
+      this._lastDistributedFieldNames[errorMapKey] ?? new Set<string>()
+    const currentNames = new Set<string>()
+
+    if (fieldErrors) {
+      for (const [relativeName, err] of Object.entries(fieldErrors)) {
+        if (err === undefined || err === null || err === false) continue
+        currentNames.add(this.buildChildFieldName(relativeName))
+      }
+    }
+
+    const allNames = new Set<string>([...previousNames, ...currentNames])
+
+    let hasErrored = false
+    for (const fullName of allNames) {
+      const relativeName = fullName.startsWith(this.name + '[')
+        ? fullName.slice((this.name as string).length)
+        : fullName.slice((this.name as string).length + 1)
+      const newFormValidatorError = fieldErrors?.[relativeName] as
+        | ValidationError
+        | undefined
+
+      const fieldMeta = this.form.getFieldMeta(fullName as never)
+      if (!fieldMeta && !newFormValidatorError) continue
+
+      const previousErrorValue = fieldMeta?.errorMap?.[
+        errorMapKey as never
+      ] as ValidationError | undefined
+      const isPreviousErrorFromFormValidator =
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        fieldMeta?.errorSourceMap?.[errorMapKey as never] === 'form'
+
+      const { newErrorValue, newSource } =
+        determineFormLevelErrorSourceAndValue({
+          newFormValidatorError,
+          isPreviousErrorFromFormValidator,
+          previousErrorValue,
+        })
+
+      if (newErrorValue) hasErrored = true
+
+      if (
+        previousErrorValue === newErrorValue &&
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        fieldMeta?.errorSourceMap?.[errorMapKey as never] === newSource
+      ) {
+        continue
+      }
+
+      this.form.setFieldMeta(fullName as never, (prev) => ({
+        ...(prev ?? defaultFieldMeta),
+        errorMap: {
+          ...(prev?.errorMap ?? {}),
+          [errorMapKey]: newErrorValue,
+        },
+        errorSourceMap: {
+          ...(prev?.errorSourceMap ?? {}),
+          [errorMapKey]: newSource,
+        },
+      }))
+    }
+
+    this._lastDistributedFieldNames[errorMapKey] = currentNames
+    return hasErrored
+  }
+
+  /**
+   * @private
    */
   validateSync = (
     cause: ValidationCause,
@@ -1381,7 +1490,9 @@ export class FormGroupApi<
       form: this.form,
       group: this,
       validationLogic:
-        this.form.options.validationLogic || defaultValidationLogic,
+        this.options.validationLogic ||
+        this.form.options.validationLogic ||
+        defaultValidationLogic,
     })
 
     const relatedFields = opts.skipRelatedFieldValidation
@@ -1416,25 +1527,40 @@ export class FormGroupApi<
         validateObj: SyncValidator<any>,
       ) => {
         const errorMapKey = getErrorMapKey(validateObj.cause)
+        const isGroup = fieldOrGroup === this
 
-        const fieldLevelError = validateObj.validate
-          ? normalizeError(
-              // TODO: Remove `any` cast
-              (fieldOrGroup as any).runValidator({
-                validate: validateObj.validate,
-                value: {
-                  value: fieldOrGroup.store.state.value,
-                  validationSource: 'field',
-                  ...(fieldOrGroup instanceof FormGroupApi
-                    ? {
-                        groupApi: fieldOrGroup,
-                      }
-                    : { fieldApi: fieldOrGroup }),
-                } as never,
-                type: 'validate',
-              }),
-            )
-          : undefined
+        let rawError: unknown = undefined
+        if (validateObj.validate) {
+          rawError = (fieldOrGroup as any).runValidator({
+            validate: validateObj.validate,
+            value: {
+              value: fieldOrGroup.store.state.value,
+              // For the group's own validators we want standard schemas to
+              // produce a `{ form, fields }` shape (with relative keys) so
+              // we can fan errors out to children. Field-level validators on
+              // related fields keep the regular field source.
+              validationSource: isGroup ? 'form' : 'field',
+              ...(fieldOrGroup instanceof FormGroupApi
+                ? {
+                    groupApi: fieldOrGroup,
+                  }
+                : { fieldApi: fieldOrGroup }),
+            } as never,
+            type: 'validate',
+          })
+        }
+
+        let groupOwnRawError: unknown = rawError
+        let groupFieldErrors: Record<string, unknown> | undefined = undefined
+        if (isGroup && isGlobalFormValidationError(rawError)) {
+          groupOwnRawError = (rawError as { form?: unknown }).form
+          groupFieldErrors = (rawError as { fields?: Record<string, unknown> })
+            .fields
+        }
+
+        const fieldLevelError = normalizeError(
+          groupOwnRawError as ValidationError,
+        )
 
         const formLevelError = errorFromForm[errorMapKey]
 
@@ -1460,6 +1586,16 @@ export class FormGroupApi<
         }
         if (newErrorValue) {
           hasErrored = true
+        }
+
+        if (isGroup) {
+          const distributedHasErrored = this.distributeFieldErrors(
+            errorMapKey,
+            groupFieldErrors,
+          )
+          if (distributedHasErrored) {
+            hasErrored = true
+          }
         }
       }
 
@@ -1528,7 +1664,9 @@ export class FormGroupApi<
       form: this.form,
       group: this,
       validationLogic:
-        this.form.options.validationLogic || defaultValidationLogic,
+        this.options.validationLogic ||
+        this.form.options.validationLogic ||
+        defaultValidationLogic,
     })
 
     // Get the field-specific error messages that are coming from the form's validator
@@ -1597,6 +1735,8 @@ export class FormGroupApi<
         lastAbortController: controller,
       }
 
+      const isGroup = fieldOrGroup === this
+
       promises.push(
         new Promise<ValidationError | undefined>(async (resolve) => {
           let rawError!: ValidationError | undefined
@@ -1618,7 +1758,10 @@ export class FormGroupApi<
                         value: {
                           value: fieldOrGroup.store.state.value,
                           signal: controller.signal,
-                          validationSource: 'field',
+                          // See sync counterpart: produce `{ form, fields }`
+                          // from standard schemas attached to the group so we
+                          // can fan errors out to children.
+                          validationSource: isGroup ? 'form' : 'field',
                           ...(fieldOrGroup instanceof FormGroupApi
                             ? {
                                 groupApi: fieldOrGroup,
@@ -1638,7 +1781,18 @@ export class FormGroupApi<
           }
           if (controller.signal.aborted) return resolve(undefined)
 
-          const fieldLevelError = normalizeError(rawError)
+          let groupOwnRawError: ValidationError | undefined = rawError
+          let groupFieldErrors:
+            | Record<string, unknown>
+            | undefined = undefined
+          if (isGroup && isGlobalFormValidationError(rawError)) {
+            groupOwnRawError = (rawError as { form?: ValidationError }).form
+            groupFieldErrors = (
+              rawError as { fields?: Record<string, unknown> }
+            ).fields
+          }
+
+          const fieldLevelError = normalizeError(groupOwnRawError)
           const formLevelError =
             asyncFormValidationResults[
               fieldOrGroup.name as keyof typeof asyncFormValidationResults
@@ -1668,6 +1822,10 @@ export class FormGroupApi<
               },
             }
           })
+
+          if (isGroup) {
+            this.distributeFieldErrors(errorMapKey, groupFieldErrors)
+          }
 
           resolve(newErrorValue)
         }),
