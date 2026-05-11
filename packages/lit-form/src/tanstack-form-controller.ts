@@ -942,12 +942,15 @@ class FormGroupDirective<
         // Submission lifecycle (isSubmitting, submissionAttempts, etc.) lives
         // on a separate store that nothing else subscribes to, so we have to
         // request a re-render of this directive when it changes to keep
-        // `group.formState.*` reactive.
+        // `group.formState.*` reactive. Defer to a microtask to avoid
+        // scheduling an update from within Lit's update cycle.
         this.#formStateUnsubscribe = this.#group.formStateStore.subscribe(
           () => {
-            if (this.#group) {
-              this.setValue(_render(this.#group))
-            }
+            queueMicrotask(() => {
+              if (this.#group) {
+                this.setValue(_render(this.#group))
+              }
+            })
           },
         ).unsubscribe
       }
