@@ -2,6 +2,7 @@ import { nothing } from 'lit'
 import { PartType, directive } from 'lit/directive.js'
 import { FieldApi, FormApi, FormGroupApi } from '@tanstack/form-core'
 import { AsyncDirective } from 'lit/async-directive.js'
+import { TanStackStoreSelector } from '@tanstack/lit-store'
 import type {
   DeepKeys,
   DeepValue,
@@ -236,9 +237,6 @@ export class TanStackFormController<
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TSubmitMeta,
 > implements ReactiveController {
-  #host: ReactiveControllerHost
-  #subscription?: () => void
-
   api: FormApi<
     TParentData,
     TFormOnMount,
@@ -285,18 +283,19 @@ export class TanStackFormController<
       TFormOnServer,
       TSubmitMeta
     >(config)
-    ;(this.#host = host).addController(this)
+
+    // `TanStackStoreSelector` registers itself as a controller on `host`
+    // and calls `requestUpdate` when its selected value changes. Subscribe
+    // to the form's main store and to `formGroupMetaDerived` so any change
+    // to per-group submission lifecycle / aggregated validity also
+    // triggers a host re-render.
+    new TanStackStoreSelector(host, () => this.api.store)
+    new TanStackStoreSelector(host, () => this.api.formGroupMetaDerived)
   }
 
-  hostConnected() {
-    this.#subscription = this.api.store.subscribe(() => {
-      this.#host.requestUpdate()
-    }).unsubscribe
-  }
+  hostConnected() {}
 
-  hostDisconnected() {
-    this.#subscription?.()
-  }
+  hostDisconnected() {}
 
   field<
     TName extends DeepKeys<TParentData>,
@@ -918,7 +917,6 @@ class FormGroupDirective<
     TParentSubmitMeta
   >
   #unmount?: () => void
-  #storeUnsubscribe?: () => void
 
   constructor(partInfo: PartInfo) {
     super(partInfo)
@@ -939,19 +937,6 @@ class FormGroupDirective<
 
         this.#group = new FormGroupApi(options as never)
         this.#unmount = this.#group.mount()
-        // The group's `state` (including aggregated validity and submission
-        // lifecycle on `state.meta`) is computed from `formGroupMetaDerived`
-        // on the parent form. Subscribe to the per-instance store so this
-        // directive re-renders when any of those fields change. Defer to a
-        // microtask to avoid scheduling an update from within Lit's update
-        // cycle.
-        this.#storeUnsubscribe = this.#group.store.subscribe(() => {
-          queueMicrotask(() => {
-            if (this.#group) {
-              this.setValue(_render(this.#group))
-            }
-          })
-        }).unsubscribe
       }
 
       this.#registered = true
@@ -963,8 +948,6 @@ class FormGroupDirective<
   protected disconnected() {
     super.disconnected()
     this.#unmount?.()
-    this.#storeUnsubscribe?.()
-    this.#storeUnsubscribe = undefined
   }
 
   protected reconnected() {

@@ -1694,6 +1694,9 @@ importers:
       '@tanstack/form-core':
         specifier: workspace:*
         version: link:../form-core
+      '@tanstack/lit-store':
+        specifier: ^0.13.2
+        version: 0.13.2(lit@3.3.2)
     devDependencies:
       lit:
         specifier: ^3.3.1
@@ -1916,7 +1919,7 @@ importers:
     devDependencies:
       '@sveltejs/package':
         specifier: ^2.5.3
-        version: 2.5.7(svelte@5.55.5(@typescript-eslint/types@8.59.2))(typescript@5.9.2)
+        version: 2.5.7(svelte@5.55.5(@typescript-eslint/types@8.59.2))(typescript@5.8.2)
       '@sveltejs/vite-plugin-svelte':
         specifier: ^5.1.1
         version: 5.1.1(svelte@5.55.5(@typescript-eslint/types@8.59.2))(vite@7.3.3(@types/node@24.12.3)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(sugarss@5.0.1(postcss@8.5.14))(terser@5.47.1)(yaml@2.8.4))
@@ -1928,7 +1931,7 @@ importers:
         version: 5.55.5(@typescript-eslint/types@8.59.2)
       svelte-check:
         specifier: ^4.3.1
-        version: 4.4.8(picomatch@4.0.4)(svelte@5.55.5(@typescript-eslint/types@8.59.2))(typescript@5.9.2)
+        version: 4.4.8(picomatch@4.0.4)(svelte@5.55.5(@typescript-eslint/types@8.59.2))(typescript@5.8.2)
 
   packages/vue-form:
     dependencies:
@@ -14477,7 +14480,7 @@ snapshots:
       tree-kill: 1.2.2
       tslib: 2.8.1
       typescript: 5.8.2
-      webpack: 5.105.0(@swc/core@1.15.33)(esbuild@0.28.0)(lightningcss@1.32.0)(postcss@8.5.12)
+      webpack: 5.105.0(@swc/core@1.15.33)(lightningcss@1.32.0)(postcss@8.5.12)
       webpack-dev-middleware: 7.4.2(tslib@2.8.1)(webpack@5.105.0(@swc/core@1.15.33)(esbuild@0.28.0)(lightningcss@1.32.0)(postcss@8.5.12))
       webpack-dev-server: 5.2.2(tslib@2.8.1)(webpack@5.105.0(@swc/core@1.15.33)(esbuild@0.28.0)(lightningcss@1.32.0)(postcss@8.5.12))
       webpack-merge: 6.0.1
@@ -19472,14 +19475,14 @@ snapshots:
     dependencies:
       acorn: 8.16.0
 
-  '@sveltejs/package@2.5.7(svelte@5.55.5(@typescript-eslint/types@8.59.2))(typescript@5.9.2)':
+  '@sveltejs/package@2.5.7(svelte@5.55.5(@typescript-eslint/types@8.59.2))(typescript@5.8.2)':
     dependencies:
       chokidar: 5.0.0
       kleur: 4.1.5
       sade: 1.8.1
       semver: 7.8.0
       svelte: 5.55.5(@typescript-eslint/types@8.59.2)
-      svelte2tsx: 0.7.55(svelte@5.55.5(@typescript-eslint/types@8.59.2))(typescript@5.9.2)
+      svelte2tsx: 0.7.55(svelte@5.55.5(@typescript-eslint/types@8.59.2))(typescript@5.8.2)
     transitivePeerDependencies:
       - typescript
 
@@ -27876,7 +27879,7 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  svelte-check@4.4.8(picomatch@4.0.4)(svelte@5.55.5(@typescript-eslint/types@8.59.2))(typescript@5.9.2):
+  svelte-check@4.4.8(picomatch@4.0.4)(svelte@5.55.5(@typescript-eslint/types@8.59.2))(typescript@5.8.2):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       chokidar: 4.0.3
@@ -27884,16 +27887,16 @@ snapshots:
       picocolors: 1.1.1
       sade: 1.8.1
       svelte: 5.55.5(@typescript-eslint/types@8.59.2)
-      typescript: 5.9.2
+      typescript: 5.8.2
     transitivePeerDependencies:
       - picomatch
 
-  svelte2tsx@0.7.55(svelte@5.55.5(@typescript-eslint/types@8.59.2))(typescript@5.9.2):
+  svelte2tsx@0.7.55(svelte@5.55.5(@typescript-eslint/types@8.59.2))(typescript@5.8.2):
     dependencies:
       dedent-js: 1.0.1
       scule: 1.3.0
       svelte: 5.55.5(@typescript-eslint/types@8.59.2)
-      typescript: 5.9.2
+      typescript: 5.8.2
 
   svelte@5.55.5(@typescript-eslint/types@8.59.2):
     dependencies:
@@ -27971,6 +27974,18 @@ snapshots:
     optionalDependencies:
       '@swc/core': 1.15.33
       esbuild: 0.28.0
+      lightningcss: 1.32.0
+      postcss: 8.5.12
+
+  terser-webpack-plugin@5.6.0(@swc/core@1.15.33)(lightningcss@1.32.0)(postcss@8.5.12)(webpack@5.105.0(@swc/core@1.15.33)(esbuild@0.28.0)(lightningcss@1.32.0)(postcss@8.5.12)):
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.31
+      jest-worker: 27.5.1
+      schema-utils: 4.3.3
+      terser: 5.43.1
+      webpack: 5.105.0(@swc/core@1.15.33)(lightningcss@1.32.0)(postcss@8.5.12)
+    optionalDependencies:
+      '@swc/core': 1.15.33
       lightningcss: 1.32.0
       postcss: 8.5.12
 
@@ -29080,6 +29095,47 @@ snapshots:
       schema-utils: 4.3.3
       tapable: 2.3.3
       terser-webpack-plugin: 5.6.0(@swc/core@1.15.33)(esbuild@0.28.0)(lightningcss@1.32.0)(postcss@8.5.12)(webpack@5.105.0(@swc/core@1.15.33)(esbuild@0.28.0)(lightningcss@1.32.0)(postcss@8.5.12))
+      watchpack: 2.5.1
+      webpack-sources: 3.4.1
+    transitivePeerDependencies:
+      - '@minify-html/node'
+      - '@swc/core'
+      - '@swc/css'
+      - '@swc/html'
+      - clean-css
+      - cssnano
+      - csso
+      - esbuild
+      - html-minifier-terser
+      - lightningcss
+      - postcss
+      - uglify-js
+
+  webpack@5.105.0(@swc/core@1.15.33)(lightningcss@1.32.0)(postcss@8.5.12):
+    dependencies:
+      '@types/eslint-scope': 3.7.7
+      '@types/estree': 1.0.9
+      '@types/json-schema': 7.0.15
+      '@webassemblyjs/ast': 1.14.1
+      '@webassemblyjs/wasm-edit': 1.14.1
+      '@webassemblyjs/wasm-parser': 1.14.1
+      acorn: 8.16.0
+      acorn-import-phases: 1.0.4(acorn@8.16.0)
+      browserslist: 4.28.2
+      chrome-trace-event: 1.0.4
+      enhanced-resolve: 5.21.2
+      es-module-lexer: 2.1.0
+      eslint-scope: 5.1.1
+      events: 3.3.0
+      glob-to-regexp: 0.4.1
+      graceful-fs: 4.2.11
+      json-parse-even-better-errors: 2.3.1
+      loader-runner: 4.3.2
+      mime-types: 2.1.35
+      neo-async: 2.6.2
+      schema-utils: 4.3.3
+      tapable: 2.3.3
+      terser-webpack-plugin: 5.6.0(@swc/core@1.15.33)(lightningcss@1.32.0)(postcss@8.5.12)(webpack@5.105.0(@swc/core@1.15.33)(esbuild@0.28.0)(lightningcss@1.32.0)(postcss@8.5.12))
       watchpack: 2.5.1
       webpack-sources: 3.4.1
     transitivePeerDependencies:
