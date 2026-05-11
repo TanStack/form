@@ -8,7 +8,6 @@ import {
   mergeOpts,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
-import type { ValidationLogicFn } from './ValidationLogic'
 import {
   isStandardSchemaValidator,
   standardSchemaValidators,
@@ -16,6 +15,7 @@ import {
 import { defaultFieldMeta } from './metaHelper'
 import { FieldApi } from './FieldApi'
 import { FieldLikeApiOptions } from './types'
+import type { ValidationLogicFn } from './ValidationLogic'
 import type {
   AnyFieldLikeMeta,
   AnyFieldLikeMetaBase,
@@ -1447,12 +1447,13 @@ export class FormGroupApi<
       const fieldMeta = this.form.getFieldMeta(fullName as never)
       if (!fieldMeta && !newFormValidatorError) continue
 
-      const previousErrorValue = fieldMeta?.errorMap?.[
+      const previousErrorValue = fieldMeta?.errorMap[
         errorMapKey as never
       ] as ValidationError | undefined
       const isPreviousErrorFromFormValidator =
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        fieldMeta?.errorSourceMap?.[errorMapKey as never] === 'form'
+        (fieldMeta?.errorSourceMap[errorMapKey as never] as
+          | string
+          | undefined) === 'form'
 
       const { newErrorValue, newSource } =
         determineFormLevelErrorSourceAndValue({
@@ -1465,20 +1466,19 @@ export class FormGroupApi<
 
       if (
         previousErrorValue === newErrorValue &&
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        fieldMeta?.errorSourceMap?.[errorMapKey as never] === newSource
+        fieldMeta?.errorSourceMap[errorMapKey as never] === newSource
       ) {
         continue
       }
 
       this.form.setFieldMeta(fullName as never, (prev) => ({
-        ...(prev ?? defaultFieldMeta),
+        ...prev,
         errorMap: {
-          ...(prev?.errorMap ?? {}),
+          ...prev.errorMap,
           [errorMapKey]: newErrorValue,
         },
         errorSourceMap: {
-          ...(prev?.errorSourceMap ?? {}),
+          ...prev.errorSourceMap,
           [errorMapKey]: newSource,
         },
       }))
