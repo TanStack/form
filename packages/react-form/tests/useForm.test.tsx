@@ -1075,4 +1075,36 @@ describe('useForm', () => {
     await user.click(getByText('Rerender'))
     await findByText('Another')
   })
+
+  it('should have reactive options', async () => {
+    const snapshots: (string | undefined)[] = []
+
+    function Component() {
+      const [defaultValues, setDefaultValues] = useState({ name: 'old' })
+      const form = useForm({ defaultValues })
+
+      useEffect(() => {
+        snapshots.push(form.options.defaultValues?.name)
+      })
+
+      return (
+        <button
+          type="button"
+          data-testid="update"
+          onClick={() => setDefaultValues({ name: 'New' })}
+        >
+          Update
+        </button>
+      )
+    }
+
+    const { getByTestId } = render(<Component />)
+
+    expect(snapshots).toContain('old')
+
+    await user.click(getByTestId('update'))
+    await waitFor(() => {
+      expect(snapshots).toContain('New')
+    })
+  })
 })
