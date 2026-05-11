@@ -6,6 +6,7 @@ import type { OneOrMany } from './types.public'
 export interface Validator<
   TFormData,
   TValidator extends StandardSchemaV1 | ValidatorFn<any, any>,
+  TContextValue,
 > {
   run: TValidator
   /**
@@ -22,38 +23,42 @@ export interface Validator<
    *
    * @default true
    */
-  runOnSubmit?: boolean | ValidationPredicateFn<TFormData>
+  runOnSubmit?: boolean | ValidationPredicateFn<TFormData, TContextValue>
   /**
    * The debounce time in milliseconds for validation triggers (change, blur).
    * Does not affect submit events, which always execute immediately.
    *
    * @default 0
    */
-  triggerDebounceMs?: number
-  triggers?: Array<ValidationTriggerOption<TFormData>>
+  triggerDebounceMs?: number | ValidationDebounceFn<TFormData, TContextValue>
+  triggers?: Array<ValidationTriggerOption<TFormData, TContextValue>>
 }
 
 export type ValidationTrigger = 'change' | 'blur' | 'submit'
 export type ConfigurableValidationTrigger = Exclude<ValidationTrigger, 'submit'>
 
-export interface ValidationPredicateContext<TFormData> {
+export interface ValidationPredicateContext<TFormData, TValue = TFormData> {
   formApi: FormApi<TFormData, Array<any>>
   triggerFieldApi?: FieldApi<any, any>
-  value: TFormData
+  value: TValue
 }
 
-export type ValidationPredicateFn<TFormData> = (
-  context: ValidationPredicateContext<TFormData>,
+export type ValidationPredicateFn<TFormData, TValue = TFormData> = (
+  context: ValidationPredicateContext<TFormData, TValue>,
 ) => boolean
 
-export interface ValidationTriggerConfig<TFormData> {
+export type ValidationDebounceFn<TFormData, TValue = TFormData> = (
+  context: ValidationPredicateContext<TFormData, TValue>,
+) => number
+
+export interface ValidationTriggerConfig<TFormData, TValue = TFormData> {
   trigger: ConfigurableValidationTrigger
-  when?: boolean | ValidationPredicateFn<TFormData>
+  when?: boolean | ValidationPredicateFn<TFormData, TValue>
 }
 
-export type ValidationTriggerOption<TFormData> =
+export type ValidationTriggerOption<TFormData, TValue = TFormData> =
   | ConfigurableValidationTrigger
-  | ValidationTriggerConfig<TFormData>
+  | ValidationTriggerConfig<TFormData, TValue>
 
 /**
  * A single validation error with a unique identifier.
@@ -103,7 +108,8 @@ export type FormValidatorFn<TFormData> = ValidatorFn<
 
 export interface FormValidator<TFormData> extends Validator<
   TFormData,
-  FormValidatorFn<TFormData> | StandardSchemaV1<TFormData, any>
+  FormValidatorFn<TFormData> | StandardSchemaV1<TFormData, any>,
+  TFormData
 > {}
 
 export interface FieldValidatorContext<
@@ -123,5 +129,6 @@ export type FieldValidatorFn<TFormData, TFieldValue> = ValidatorFn<
 
 export interface FieldValidator<TFormData, TFieldValue> extends Validator<
   TFormData,
-  FieldValidatorFn<TFormData, TFieldValue> | StandardSchemaV1<TFieldValue, any>
+  FieldValidatorFn<TFormData, TFieldValue> | StandardSchemaV1<TFieldValue, any>,
+  TFieldValue
 > {}

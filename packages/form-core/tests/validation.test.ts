@@ -1,12 +1,19 @@
 import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
-import { runFormValidatorPipeline } from '../src/validation.lib'
+import {
+  runFieldValidatorPipeline,
+  runFormValidatorPipeline,
+} from '../src/validation.lib'
 import { InternalFormApi } from '../src/FormApi.lib'
 import type { PipelineResult } from '../src/validation.lib'
 import type {
+  FieldValidateResult,
+  FieldValidator,
   FormValidateResult,
   FormValidator,
   FormValidatorContext,
+  ValidationDebounceFn,
+  ValidationPredicateFn,
 } from '../src'
 import type { InternalFieldApi } from '../src/FieldApi.lib'
 
@@ -36,6 +43,30 @@ describe('runFormValidatorPipeline', () => {
           },
           onResult: args.onResult,
           pipeline: pipeline,
+        })
+      },
+    }
+  }
+
+  function getFieldPipeline<T, TValue>(
+    form: InternalFormApi<T, Array<any>>,
+    field: InternalFieldApi<T, Array<any>>,
+    pipeline: Array<FieldValidator<T, TValue>>,
+  ) {
+    return {
+      pipeline,
+      runWithContext: (args: {
+        event: Event
+        onResult?: (result: PipelineResult<FieldValidateResult>) => void
+      }) => {
+        return runFieldValidatorPipeline({
+          context: {
+            event: args.event,
+            formApi: form,
+            fieldApi: field,
+          },
+          onResult: args.onResult,
+          pipeline,
         })
       },
     }
@@ -168,6 +199,80 @@ describe('runFormValidatorPipeline', () => {
     expect(run).toHaveBeenCalledOnce()
   })
 
+  it('should debounce validation with a function', async () => {
+    vi.useFakeTimers()
+
+    const formApi = getForm({ name: 'test' })
+    const field = formApi._getOrCreateFieldApi({ name: 'name' })
+    const run = vi.fn(() => ({ message: 'foo' }))
+    const triggerDebounceMs = vi.fn(({ formApi, triggerFieldApi, value }) => {
+      expect(formApi.state.values).toEqual({ name: 'test' })
+      expect(triggerFieldApi).toBe(field)
+      expect(value).toEqual({ name: 'test' })
+
+      return 100
+    })
+
+    const { runWithContext } = getPipeline(formApi, [
+      {
+        run,
+        triggers: ['change'],
+        triggerDebounceMs,
+      },
+    ])
+
+    const promise = runWithContext({ event: 'change', field })
+
+    expect(triggerDebounceMs).toHaveBeenCalledOnce()
+    expect(run).not.toHaveBeenCalled()
+
+    await vi.advanceTimersByTimeAsync(99)
+    expect(run).not.toHaveBeenCalled()
+
+    await vi.advanceTimersByTimeAsync(1)
+
+    await expect(promise).resolves.toHaveLength(1)
+
+    expect(run).toHaveBeenCalledOnce()
+  })
+
+  it('should use field value for field-level debounce functions', async () => {
+    vi.useFakeTimers()
+
+    const formApi = getForm({ name: 'test' })
+    const field = formApi._getOrCreateFieldApi({ name: 'name' })
+    const run = vi.fn(() => ({ message: 'foo' }))
+    const triggerDebounceMs: ValidationDebounceFn<{ name: string }, string> =
+      vi.fn(({ value }) => {
+        expect(value).toBe('test')
+
+        return value.length * 20
+      })
+    const pipeline: Array<FieldValidator<{ name: string }, string>> = [
+      {
+        run,
+        triggers: ['change'],
+        triggerDebounceMs,
+      },
+    ]
+
+    const { runWithContext } = getFieldPipeline(formApi, field, pipeline)
+
+    const promise = runWithContext({ event: 'change' })
+
+    expect(triggerDebounceMs).toHaveBeenCalledOnce()
+    expect(run).not.toHaveBeenCalled()
+
+    await vi.advanceTimersByTimeAsync(79)
+    expect(run).not.toHaveBeenCalled()
+
+    await vi.advanceTimersByTimeAsync(21)
+
+    await expect(promise).resolves.toHaveLength(1)
+
+    expect(run).toHaveBeenCalledOnce()
+  })
+
   it('should cancel an existing debounced validation when the same validator runs immediately', async () => {
     vi.useFakeTimers()
 
@@ -287,6 +392,33 @@ describe('runFormValidatorPipeline', () => {
     expect(run).toHaveBeenCalledOnce()
     // but blur should have the value stored on its own, not being updated
     await runWithContext({ event: 'blur' })
+    expect(run).toHaveBeenCalledOnce()
+  })
+
+  it('should use field value for field-level trigger predicates', async () => {
+    const formApi = getForm({ name: 'test' })
+    const field = formApi._getOrCreateFieldApi({ name: 'name' })
+    const run = vi.fn(() => ({ message: 'foo' }))
+    const when: ValidationPredicateFn<{ name: string }, string> = vi.fn(
+      ({ value }) => value === 'test',
+    )
+
+    const { runWithContext } = getFieldPipeline(formApi, field, [
+      {
+        run,
+        triggers: [{ trigger: 'change', when }],
+      },
+    ])
+
+    await runWithContext({ event: 'change' })
+
+    expect(when).toHaveBeenCalledOnce()
+    expect(when).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: 'test',
+        triggerFieldApi: field,
+      }),
+    )
     expect(run).toHaveBeenCalledOnce()
   })
 

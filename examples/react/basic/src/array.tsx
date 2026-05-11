@@ -20,7 +20,10 @@ export function ArrayExample() {
             when: ({ triggerFieldApi }) => triggerFieldApi !== undefined,
           },
         ],
-        triggerDebounceMs: 500,
+        triggerDebounceMs: ({ triggerFieldApi }) => {
+          if (triggerFieldApi?.meta.isInvalid) return 0
+          return 500
+        },
       },
     ],
   })

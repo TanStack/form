@@ -8,6 +8,7 @@ import type {
   FormValidationError,
   FormValidator,
   FormValidatorContext,
+  ValidationDebounceFn,
   ValidationPredicateFn,
   ValidationTriggerOption,
   Validator,
@@ -26,6 +27,12 @@ type ValidateResult = FormValidateResult | FieldValidateResult
 
 function isFormContext(ctx: InputContext): ctx is FormInputContext {
   return 'triggerFieldApi' in ctx
+}
+
+function getContextValue(context: InputContext) {
+  return isFormContext(context)
+    ? context.formApi.state.values
+    : context.fieldApi.value
 }
 
 const ABORTED_CALL = Symbol('ABORTED_CALL')
@@ -109,7 +116,22 @@ function getEnabledState(
       ? context.triggerFieldApi
       : context.fieldApi,
     formApi: context.formApi,
-    value: context.formApi.state.values,
+    value: getContextValue(context),
+  })
+}
+
+function getDebounceMs(
+  numberOrFn: number | ValidationDebounceFn<any>,
+  context: InputContext,
+): number {
+  if (typeof numberOrFn === 'number') return numberOrFn
+
+  return numberOrFn({
+    triggerFieldApi: isFormContext(context)
+      ? context.triggerFieldApi
+      : context.fieldApi,
+    formApi: context.formApi,
+    value: getContextValue(context),
   })
 }
 
@@ -131,7 +153,7 @@ function isValidationSignalEnabled(
 }
 
 function shouldRunValidator(
-  validator: Validator<any, any>,
+  validator: Validator<any, any, any>,
   context: InputContext,
 ): boolean {
   const { runOnSubmit = true } = validator
@@ -146,7 +168,7 @@ function shouldRunValidator(
 }
 
 function executeValidator<TResult extends ValidateResult>(
-  validator: Validator<any, any>,
+  validator: Validator<any, any, any>,
   context: FormValidatorContext<any> | FieldValidatorContext<any, any>,
   scope: 'field' | 'form',
 ): TResult | Promise<TResult> {
@@ -169,7 +191,7 @@ interface ValidatorPipelineArgs<TResult extends ValidateResult> {
 }
 
 interface RunMaybeDebouncedValidatorArgs<TResult extends ValidateResult> {
-  validator: Validator<any, any>
+  validator: Validator<any, any, any>
   context: InputContext
   validatorIndex: number
   cache: ValidatorPipelineCache<TResult>
@@ -235,10 +257,14 @@ async function executeWithAbort<TResult extends ValidateResult>(
 }
 
 function getValidatorDebounceMs(
-  validator: Validator<any, any>,
+  validator: Validator<any, any, any>,
   context: InputContext,
 ): number {
-  return context.event === 'submit' ? 0 : (validator.triggerDebounceMs ?? 0)
+  if (context.event === 'submit') return 0
+
+  const { triggerDebounceMs = 0 } = validator
+
+  return getDebounceMs(triggerDebounceMs, context)
 }
 
 function abortPreviousValidatorRun<TResult extends ValidateResult>(

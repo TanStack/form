@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { initializeForm } from './ReactFormApi.lib'
+import { useEffect, useRef, useState } from 'react'
+import { initializeForm, InternalReactFormApi } from './ReactFormApi.lib'
 import type { SubscribeProps } from './Subscribe'
 import type { CrossVersionReactNode } from './types.lib'
 import type {
@@ -10,6 +10,10 @@ import type {
   FormState,
   FormValidator,
 } from '@tanstack/form-core-v2'
+import {
+  AnyInternalFormApi,
+  InternalFormApi,
+} from '@tanstack/form-core-v2/internals'
 
 /**
  * Subscribe to `form.store` (full form state). The selector receives the full
@@ -75,9 +79,13 @@ export function useForm<
 >(
   options: FormOptions<TData, TFormValidators>,
 ): ReactFormApi<TData, TFormValidators> {
-  const [form] = useState(() => initializeForm(options))
+  const form = useRef<InternalReactFormApi<TData, TFormValidators>>(null)
 
-  useEffect(() => form._update(options))
+  if (!form.current) {
+    form.current = initializeForm(options)
+  }
 
-  return form
+  useEffect(() => form.current!._update(options))
+
+  return form.current!
 }
