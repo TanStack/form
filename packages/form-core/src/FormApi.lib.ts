@@ -133,8 +133,12 @@ export class InternalFormApi<
   _fieldRootNode: InternalRootFieldApi
   _options: FormOptions<TFormData, TFormValidators>
   _validatorPipelineCache: ValidatorPipelineCache<any>
-  declare readonly state: FormState<TFormData>
-  declare readonly options: FormOptions<TFormData, TFormValidators>
+  get state(): FormState<TFormData> {
+    return this.store.get()
+  }
+  get options(): FormOptions<TFormData, TFormValidators> {
+    return this._options
+  }
 
   constructor(options: FormOptions<TFormData, TFormValidators>) {
     this._options = options
@@ -169,16 +173,6 @@ export class InternalFormApi<
       },
       { compare: shallow },
     )
-
-    Object.defineProperty(this, 'state', {
-      get: (): FormState<TFormData> => this.store.get(),
-      enumerable: true,
-    })
-
-    Object.defineProperty(this, 'options', {
-      get: (): FormOptions<TFormData, TFormValidators> => this._options,
-      enumerable: true,
-    })
   }
 
   _update = (options: FormOptions<TFormData, TFormValidators>) => {
