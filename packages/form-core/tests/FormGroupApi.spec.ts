@@ -212,7 +212,7 @@ describe('form group api', () => {
         onSubmit: () => {
           return {
             fields: {
-              'name': 'Name is required',
+              name: 'Name is required',
             },
           }
         },
@@ -233,9 +233,7 @@ describe('form group api', () => {
     expect(onGroupSubmitInvalid).toHaveBeenCalled()
     expect(onGroupSubmit).not.toHaveBeenCalled()
     expect(onSubmit).not.toHaveBeenCalled()
-    expect(step1NameField.state.meta.errorMap.onSubmit).toBe(
-      'Name is required',
-    )
+    expect(step1NameField.state.meta.errorMap.onSubmit).toBe('Name is required')
   })
 
   it('Should set the group error from a manual { group, fields } validator return', async () => {
@@ -273,9 +271,7 @@ describe('form group api', () => {
     await step1Group.handleSubmit()
 
     expect(step1Group.state.meta.errorMap.onSubmit).toBe('Group is invalid')
-    expect(step1NameField.state.meta.errorMap.onSubmit).toBe(
-      'Name is required',
-    )
+    expect(step1NameField.state.meta.errorMap.onSubmit).toBe('Name is required')
   })
 
   it('Should not treat a manual { form, fields } return from a group validator as a group-level error', async () => {
@@ -317,9 +313,7 @@ describe('form group api', () => {
 
     expect(step1Group.state.meta.errorMap.onSubmit).toBeUndefined()
     expect(step1Group.state.meta.errors).toEqual([])
-    expect(step1NameField.state.meta.errorMap.onSubmit).toBe(
-      'Name is required',
-    )
+    expect(step1NameField.state.meta.errorMap.onSubmit).toBe('Name is required')
   })
 
   it('Should propagate standard schema field errors from group validators to child fields', async () => {
@@ -362,9 +356,7 @@ describe('form group api', () => {
     expect(onGroupSubmitInvalid).toHaveBeenCalled()
     expect(onGroupSubmit).not.toHaveBeenCalled()
     expect(onSubmit).not.toHaveBeenCalled()
-    expect(
-      step1NameField.state.meta.errorMap.onSubmit,
-    ).toBeDefined()
+    expect(step1NameField.state.meta.errorMap.onSubmit).toBeDefined()
   })
 
   it('Should not duplicate field errors when overlapping schemas are attached to both the form and the group', async () => {
@@ -436,7 +428,7 @@ describe('form group api', () => {
         onDynamic: () => {
           return {
             fields: {
-              'name': 'Name is required',
+              name: 'Name is required',
             },
           }
         },
@@ -487,7 +479,7 @@ describe('form group api', () => {
         onDynamic: () => {
           return {
             fields: {
-              'name': 'Name is required',
+              name: 'Name is required',
             },
           }
         },

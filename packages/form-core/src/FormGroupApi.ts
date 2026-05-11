@@ -1447,9 +1447,9 @@ export class FormGroupApi<
       const fieldMeta = this.form.getFieldMeta(fullName as never)
       if (!fieldMeta && !newFormValidatorError) continue
 
-      const previousErrorValue = fieldMeta?.errorMap[
-        errorMapKey as never
-      ] as ValidationError | undefined
+      const previousErrorValue = fieldMeta?.errorMap[errorMapKey as never] as
+        | ValidationError
+        | undefined
       const isPreviousErrorFromFormValidator =
         (fieldMeta?.errorSourceMap[errorMapKey as never] as
           | string
@@ -1794,9 +1794,7 @@ export class FormGroupApi<
           if (controller.signal.aborted) return resolve(undefined)
 
           let groupOwnRawError: ValidationError | undefined = rawError
-          let groupFieldErrors:
-            | Record<string, unknown>
-            | undefined = undefined
+          let groupFieldErrors: Record<string, unknown> | undefined = undefined
           if (isGroup && isGlobalGroupValidationError(rawError)) {
             groupOwnRawError = rawError.group as ValidationError | undefined
             groupFieldErrors = rawError.fields
