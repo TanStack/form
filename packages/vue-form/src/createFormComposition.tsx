@@ -1,7 +1,5 @@
 import { defineComponent, h, inject, provide } from 'vue'
-import {
-  FormApi
-} from '@tanstack/form-core'
+import { FormApi } from '@tanstack/form-core'
 import { useForm } from './useForm'
 import type {
   AnyFieldApi,
@@ -9,7 +7,8 @@ import type {
   FieldApi,
   FormAsyncValidateOrFn,
   FormOptions,
-  FormValidateOrFn} from '@tanstack/form-core';
+  FormValidateOrFn,
+} from '@tanstack/form-core'
 import type { Component, InjectionKey } from 'vue'
 import type { FieldComponent } from './useField'
 import type { VueFormExtendedApi } from './useForm'
