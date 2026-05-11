@@ -325,6 +325,10 @@
               "to": "framework/solid/guides/arrays"
             },
             {
+              "label": "Form Groups",
+              "to": "framework/solid/guides/form-groups"
+            },
+            {
               "label": "Linked Fields",
               "to": "framework/solid/guides/linked-fields"
             },
