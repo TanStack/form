@@ -83,28 +83,29 @@ export function nameToFieldNodeSegments(
   const result: NameSegments = []
   let s = ''
 
-  const flush = (asNumber: boolean) => {
-    if (s.length > 0) {
-      result.push(asNumber ? parseInt(s, 10) : s)
-      s = ''
-    }
-  }
-
-  for (const char of nameOrSegments) {
-    switch (char) {
-      case '.':
-      case '[':
-        flush(false)
+  for (let i = 0; i < nameOrSegments.length; i++) {
+    switch (nameOrSegments.charCodeAt(i)) {
+      case 0x2e: // '.'
+      case 0x5b: // '['
+        if (s.length > 0) {
+          result.push(s)
+          s = ''
+        }
         break
-      case ']':
-        flush(true)
+      case 0x5d: // ']'
+        if (s.length > 0) {
+          result.push(parseInt(s, 10))
+          s = ''
+        }
         break
       default:
-        s += char
+        s += nameOrSegments.charAt(i)
         break
     }
   }
-  flush(false)
+  if (s.length > 0) {
+    result.push(s)
+  }
 
   return result
 }
