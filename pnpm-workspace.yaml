@@ -11,3 +11,7 @@ packages:
   - examples/vue/**
   - examples/lit/**
   - examples/svelte/**
+
+allowBuilds:
+  nx: true
+  unrs-resolver: true
