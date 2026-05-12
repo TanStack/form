@@ -13,12 +13,15 @@ packages:
   - examples/svelte/**
 
 allowBuilds:
-  '@parcel/watcher': true
-  '@swc/core': true
-  esbuild: true
-  lmdb: true
-  msgpackr-extract: true
-  sharp: true
-  vue-demi: true
+  # root dependency
   nx: true
-  unrs-resolver: true
+  unrs-resolver: false # not directly required for build
+  esbuild: true
+
+  # @angular/build
+  '@parcel/watcher': false # optional dep of @angular/build
+  lmdb: false # optional dep of @angular/build
+  msgpackr-extract: false # optional dep of @angular/build
+
+  # @tanstack/vue-store
+  vue-demi: false # only required for vue 2 support
