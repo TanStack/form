@@ -25,8 +25,6 @@ Because `createForm` runs at component construction time, the simplest pattern i
 ```gjs
 // person-form.gts
 import Component from '@glimmer/component';
-import { fn } from '@ember/helper';
-import { on } from '@ember/modifier';
 import { createForm } from '@tanstack/ember-form';
 
 const handleInput = (field, event) => field.handleChange(event.target.value);

@@ -16,8 +16,7 @@ pnpm add @tanstack/ember-form
 
 ```gjs
 import Component from '@glimmer/component';
-import { fn, hash } from '@ember/helper';
-import { on } from '@ember/modifier';
+import { hash } from '@ember/helper';
 import { createForm, Field, Subscribe } from '@tanstack/ember-form';
 
 const handleInput = (field, event) => {

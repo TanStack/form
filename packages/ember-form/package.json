@@ -57,7 +57,7 @@
   },
   "peerDependencies": {
     "@glimmer/component": "^2.0.0",
-    "ember-source": "^6.8.0"
+    "ember-source": "^7.1.0-alpha.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
@@ -79,12 +79,12 @@
     "@glint/environment-ember-template-imports": "^1.5.0",
     "@rollup/plugin-babel": "^6.0.4",
     "@typescript-eslint/parser": "^8.0.0",
-    "babel-plugin-ember-template-compilation": "^4.0.0",
+    "babel-plugin-ember-template-compilation": "^3.1.0",
     "concurrently": "^9.0.1",
     "ember-eslint-parser": "^0.5.9",
     "ember-page-title": "^9.0.3",
     "ember-qunit": "^9.0.2",
-    "ember-source": "^6.12.0",
+    "ember-source": "^7.1.0-alpha.5",
     "ember-strict-application-resolver": "^0.1.0",
     "eslint": "9.36.0",
     "eslint-config-prettier": "^10.1.5",

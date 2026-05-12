@@ -33,8 +33,6 @@ export default class PeopleForm extends Component {
 This will regenerate the list every time you run `pushValue` on `field`:
 
 ```gjs
-import { fn } from '@ember/helper';
-import { on } from '@ember/modifier';
 
 const addPerson = (field) => field.pushValue({ name: '', age: 0 });
 
@@ -47,8 +45,6 @@ const addPerson = (field) => field.pushValue({ name: '', age: 0 });
 Finally, you can use a subfield like so:
 
 ```gjs
-import { fn } from '@ember/helper';
-import { on } from '@ember/modifier';
 
 const handleInput = (field, event) => field.handleChange(event.target.value);
 const nameAt = (i) => `people[${i}].name`;
@@ -66,8 +62,6 @@ const nameAt = (i) => `people[${i}].name`;
 
 ```gjs
 import Component from '@glimmer/component';
-import { fn } from '@ember/helper';
-import { on } from '@ember/modifier';
 import { createForm } from '@tanstack/ember-form';
 
 const handleInput = (field, event) => field.handleChange(event.target.value);

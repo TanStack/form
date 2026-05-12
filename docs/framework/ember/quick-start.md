@@ -7,8 +7,6 @@ The bare minimum to get started with TanStack Form is to create a form and add a
 
 ```gjs
 import Component from '@glimmer/component';
-import { fn } from '@ember/helper';
-import { on } from '@ember/modifier';
 import { createForm } from '@tanstack/ember-form';
 
 const handleInput = (field, event) => field.handleChange(event.target.value);
