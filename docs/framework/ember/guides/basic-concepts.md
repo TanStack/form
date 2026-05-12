@@ -69,8 +69,6 @@ Example:
 
 ```gjs
 import Component from '@glimmer/component';
-import { fn } from '@ember/helper';
-import { on } from '@ember/modifier';
 import { createForm } from '@tanstack/ember-form';
 
 const handleInput = (field, event) => field.handleChange(event.target.value);
@@ -171,8 +169,7 @@ Example:
 
 ```gjs
 import Component from '@glimmer/component';
-import { fn, hash } from '@ember/helper';
-import { on } from '@ember/modifier';
+import { hash } from '@ember/helper';
 import { createForm } from '@tanstack/ember-form';
 
 const handleInput = (field, event) => field.handleChange(event.target.value);
@@ -230,8 +227,7 @@ Supported libraries include:
 
 ```gjs
 import Component from '@glimmer/component';
-import { fn, hash } from '@ember/helper';
-import { on } from '@ember/modifier';
+import { hash } from '@ember/helper';
 import { z } from 'zod';
 import { createForm } from '@tanstack/ember-form';
 
@@ -322,8 +318,6 @@ Example:
 
 ```gjs
 import Component from '@glimmer/component';
-import { fn } from '@ember/helper';
-import { on } from '@ember/modifier';
 import { createForm } from '@tanstack/ember-form';
 
 const handleInput = (field, event) => field.handleChange(event.target.value);
