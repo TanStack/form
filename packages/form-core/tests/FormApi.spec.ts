@@ -81,7 +81,6 @@ describe('FormApi', () => {
     it('marks form isTouched and isDirty after a change', () => {
       const form = new InternalFormApi({ defaultValues: { name: '' } })
       const field = form._getOrCreateFieldApi({ name: 'name' })
-      void field.store
       form.setFieldValue('name', 'Alice', { fieldApiOverride: field })
       expect(form.state.isTouched).toBe(true)
       expect(form.state.isDirty).toBe(true)
@@ -484,7 +483,7 @@ describe('FormApi', () => {
     it('unmounts the field store', () => {
       const form = new InternalFormApi({ defaultValues: { name: '' } })
       const field = form._getOrCreateFieldApi({ name: 'name' })
-      void field.store
+      field._register()
       expect(field._isMounted).toBe(true)
       form.deleteField('name', { fieldApiOverride: field })
       expect(field._isMounted).toBe(false)

@@ -1,8 +1,9 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { render } from '@testing-library/react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { userEvent } from '@testing-library/user-event'
 import { useForm } from '../src'
+import type { AnyInternalFormApi } from '@tanstack/form-core-v2/internals'
 
 const user = userEvent.setup()
 
@@ -97,5 +98,48 @@ describe('Form fields', () => {
     await user.type(input, 'foo')
     expect(isTouchedCheckbox).toBeChecked()
     expect(isDirtyCheckbox).toBeChecked()
+  })
+
+  it('should remove unused field nodes', async () => {
+    const formApi = { current: null as AnyInternalFormApi | null }
+
+    function Component() {
+      const [show, setShow] = useState(true)
+      const form = useForm({ defaultValues: { foo: { bar: 'Value' } } })
+
+      useEffect(() => {
+        formApi.current = form as never
+      })
+
+      return (
+        <>
+          {show && (
+            <form.Field name="foo.bar">
+              {({ value }) => <span data-testid="field">{value}</span>}
+            </form.Field>
+          )}
+          <button onClick={() => setShow(false)} data-testid="off">
+            Turn off
+          </button>
+        </>
+      )
+    }
+
+    const { getByTestId } = render(<Component />)
+    const field = getByTestId('field')
+
+    expect(field).toBeInTheDocument()
+    // Field exists before unmount
+    expect(formApi.current?._tryGetFieldApi('foo.bar')).not.toBeNull()
+
+    await user.click(getByTestId('off'))
+
+    expect(field).not.toBeInTheDocument()
+    await vi.waitFor(
+      () => {
+        expect(formApi.current?._tryGetFieldApi('foo.bar')).toBeNull()
+      },
+      { interval: 50, timeout: 500 },
+    )
   })
 })

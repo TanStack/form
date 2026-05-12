@@ -30,5 +30,10 @@ export function useField<
 
   useEffect(() => fieldApi._update(options))
 
+  useEffect(() => {
+    const cleanup = fieldApi._register()
+    return cleanup
+  })
+
   return fieldApi
 }

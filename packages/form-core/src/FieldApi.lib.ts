@@ -66,8 +66,8 @@ export interface InternalFieldState extends PublicFieldState {
 }
 
 export interface FieldAtoms {
-  store: ReadonlyAtom<InternalFieldState>
-  meta: Atom<InternalBaseFieldMeta>
+  store?: ReadonlyAtom<InternalFieldState>
+  meta?: Atom<InternalBaseFieldMeta>
 }
 
 /**
@@ -227,7 +227,7 @@ export class InternalFieldApi<
   _pathVersion = 0
   _parentPathVersion = 0
   _fullPathCache: string | null = null
-  _atoms: FieldAtoms | null = null
+  _atoms: FieldAtoms
   _validators: Array<AnyFieldValidator>
   _validatorCache: ValidatorPipelineCache<any> | null = null
 
@@ -254,19 +254,20 @@ export class InternalFieldApi<
    * on-demand if there is an adapter component that needs one.
    */
   get _isMounted(): boolean {
-    return this._atoms !== null
+    return this.#refCount > 0
   }
 
   get _children(): Array<AnyInternalFieldApi> {
     return Array.from(this.#children.values())
   }
 
-  _getOrCreateAtoms(): FieldAtoms {
-    if (!this._atoms) {
-      const metaAtom = createAtom<InternalBaseFieldMeta>(
-        defaultInternalBaseFieldMeta,
-      )
-      const derived = createAtom<InternalFieldState>((prev) => {
+  _getOrCreateAtoms(): Required<FieldAtoms> {
+    let { meta: metaAtom, store: storeAtom } = this._atoms
+    if (!metaAtom) {
+      metaAtom = createAtom(defaultInternalBaseFieldMeta)
+    }
+    if (!storeAtom) {
+      storeAtom = createAtom<InternalFieldState>((prev) => {
         const newMeta = metaAtom.get()
         const value = this._getValue()
 
@@ -281,13 +282,12 @@ export class InternalFieldApi<
           value,
         }
       })
-
-      this._atoms = {
-        store: derived,
-        meta: metaAtom,
-      }
     }
-    return this._atoms
+
+    const required: Required<FieldAtoms> = { meta: metaAtom, store: storeAtom }
+
+    this._atoms = required
+    return required
   }
 
   _getOrCreateValidatorCache(): ValidatorPipelineCache<any> {
@@ -325,11 +325,7 @@ export class InternalFieldApi<
   }
 
   _getBaseMeta(): InternalBaseFieldMeta {
-    if (this._atoms) {
-      return this._atoms.meta.get()
-    } else {
-      return defaultInternalBaseFieldMeta
-    }
+    return this._atoms.meta?.get() ?? defaultInternalBaseFieldMeta
   }
 
   constructor({
@@ -342,6 +338,7 @@ export class InternalFieldApi<
     this._parent = parent
     this.form = form
     this._validators = validators ?? []
+    this._atoms = {}
   }
 
   _update(params: Pick<AnyInternalFieldApiParams, 'validators'>) {
@@ -508,7 +505,7 @@ export class InternalFieldApi<
     let currNode: AnyInternalFieldApi | InternalRootFieldApi = this
 
     batch(() => {
-      if (markAsTouched && originalField._isMounted) {
+      if (markAsTouched) {
         originalField.form._fieldRootNode._addToTouchedFields(originalField)
       }
 
@@ -582,8 +579,10 @@ export class InternalFieldApi<
    * Register as a component that you're using this field.
    *
    */
-  _register() {
+  _register(): () => void {
     this.#refCount++
+    this._getOrCreateAtoms()
+    return () => this._unregister()
   }
 
   /**
@@ -591,19 +590,18 @@ export class InternalFieldApi<
    * Unregister as a component that you're using this field.
    *
    */
-  _unregister() {
+  _unregister(): void {
     this.#refCount--
 
-    if (this.#refCount === 0) {
+    if (this.#refCount <= 0) {
       setTimeout(() => {
-        const nobodyNeedsNode = this.#refCount === 0
-        const isDefaultMeta = evaluate(
-          this._atoms?.meta.get(),
-          defaultInternalBaseFieldMeta,
-        )
-        if (nobodyNeedsNode && isDefaultMeta) {
-          this._atoms = null
+        this._atoms.store = undefined
+
+        if (this._atoms.meta?.get() === defaultInternalBaseFieldMeta) {
+          this._atoms.meta = undefined
         }
+
+        this._pruneIfUnused()
       }, 0)
     }
   }
@@ -654,7 +652,28 @@ export class InternalFieldApi<
         stack.push(...node._children)
       }
 
+      this._parent._removeChild(this._segment)
+
       for (const node of nodesToKill) {
+        const nodeMeta = node._atoms.meta?.get()
+
+        if (!node._parent._isRoot && nodeMeta) {
+          const contributions = getChildContributionStates(nodeMeta)
+
+          for (const key of childContributionKeys) {
+            node._parent._updateChildContributionCount(
+              key,
+              contributions[key],
+              false,
+            )
+          }
+        }
+
+        node.#refCount = 0
+        node._atoms.store = undefined
+        node._validatorCache = null
+        node.#children.clear()
+
         node._parent._removeChild(node._segment)
       }
 
@@ -695,29 +714,33 @@ export class InternalFieldApi<
           }
         }
 
-        return { ...prev, fieldErrors }
+        return { ...prev, touchedFields, fieldErrors }
       })
-
-      for (const node of nodesToKill) {
-        const nodeMeta = node._atoms?.meta.get()
-
-        if (!node._parent._isRoot && nodeMeta) {
-          const contributions = getChildContributionStates(nodeMeta)
-
-          for (const key of childContributionKeys) {
-            node._parent._updateChildContributionCount(
-              key,
-              contributions[key],
-              false,
-            )
-          }
-        }
-
-        node._atoms = null
-        node._validatorCache = null
-        node.#children.clear()
-      }
     })
+  }
+
+  _canPrune(): boolean {
+    if (this.#refCount > 0) return false
+    if (this.#children.size > 0) return false
+    const meta = this._atoms.meta?.get() ?? defaultInternalBaseFieldMeta
+    // if meta wasn't used or hasn't changed
+    if (meta !== defaultInternalBaseFieldMeta) return false
+
+    return true
+  }
+
+  _pruneIfUnused(): void {
+    let node: AnyInternalFieldApi | InternalRootFieldApi = this
+
+    while (!node._isRoot) {
+      if (!node._canPrune()) {
+        break
+      }
+
+      node._parent._removeChild(node._segment)
+
+      node = node._parent
+    }
   }
 
   /**

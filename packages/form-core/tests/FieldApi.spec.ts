@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 import {
   InternalFormApi,
   defaultFieldMeta,
+  defaultInternalBaseFieldMeta,
   nameToFieldNodeSegments,
 } from '../src/internals'
 
@@ -718,10 +719,10 @@ describe('FieldApi', () => {
       expect(field._isMounted).toBe(false)
     })
 
-    it('is true after the store is accessed', () => {
+    it('is true after registering', () => {
       const form = new InternalFormApi({ defaultValues: { x: '' } })
       const field = form._getOrCreateFieldApi({ name: 'x' })
-      void field.store
+      field._register()
       expect(field._isMounted).toBe(true)
     })
 
@@ -897,7 +898,7 @@ describe('FieldApi', () => {
     it('unmounts the field store', () => {
       const form = new InternalFormApi({ defaultValues: { x: '' } })
       const field = form._getOrCreateFieldApi({ name: 'x' })
-      void field.store
+      field._register()
       expect(field._isMounted).toBe(true)
       field._kill()
       expect(field._isMounted).toBe(false)
@@ -912,6 +913,109 @@ describe('FieldApi', () => {
       parent._kill()
       expect(parent._isMounted).toBe(false)
       expect(child._isMounted).toBe(false)
+    })
+  })
+
+  describe('_unregister', () => {
+    it('unmounts when no registers remain', () => {
+      const form = new InternalFormApi({ defaultValues: { x: '' } })
+      const field = form._getOrCreateFieldApi({ name: 'x' })
+
+      const unregister = field._register()
+      expect(field._isMounted).toBe(true)
+
+      unregister()
+      expect(field._isMounted).toBe(false)
+    })
+
+    it('cleans up store on unmount', async () => {
+      const form = new InternalFormApi({ defaultValues: { x: '' } })
+      const field = form._getOrCreateFieldApi({ name: 'x' })
+
+      const unregister = field._register()
+      expect(field._atoms.store).toBeDefined()
+
+      unregister()
+
+      await vi.waitFor(() => {
+        expect(field._atoms.store).toBeUndefined()
+      })
+    })
+
+    it('cleans up atoms on unmount when meta was not modified', async () => {
+      const form = new InternalFormApi({ defaultValues: { x: '' } })
+      const field = form._getOrCreateFieldApi({ name: 'x' })
+
+      const unregister = field._register()
+      expect(field._atoms.meta).toBeDefined()
+      expect(field._atoms.meta?.get()).toBe(defaultInternalBaseFieldMeta)
+
+      unregister()
+
+      await vi.waitFor(() => {
+        expect(field._atoms.meta).toBeUndefined()
+        expect(field._atoms.store).toBeUndefined()
+      })
+    })
+
+    it('keeps meta atom on unmount when meta was modified', async () => {
+      const form = new InternalFormApi({ defaultValues: { x: '' } })
+      const field = form._getOrCreateFieldApi({ name: 'x' })
+
+      const unregister = field._register()
+      expect(field._atoms.meta).toBeDefined()
+      expect(field._atoms.meta?.get()).toBe(defaultInternalBaseFieldMeta)
+
+      field.handleChange('New value')
+
+      unregister()
+
+      await vi.waitFor(() => {
+        expect(field._atoms.meta).toBeDefined()
+        expect(field._atoms.store).toBeUndefined()
+      })
+    })
+
+    it('does not clean up when registers still exist', async () => {
+      const form = new InternalFormApi({ defaultValues: { x: '' } })
+      const field = form._getOrCreateFieldApi({ name: 'x' })
+
+      const unregister1 = field._register()
+      const unregister2 = field._register()
+
+      expect(field._atoms.store).toBeDefined()
+
+      unregister1()
+      // Still mounted because of second registration
+      expect(field._isMounted).toBe(true)
+
+      unregister2()
+      expect(field._isMounted).toBe(false)
+
+      await vi.waitFor(() => {
+        expect(field._atoms.store).toBeUndefined()
+      })
+    })
+
+    it('cleans up store for child fields when parent unregisters', async () => {
+      const form = new InternalFormApi({ defaultValues: { a: { b: '' } } })
+      const parent = form._getOrCreateFieldApi({ name: 'a' })
+      const child = form._getOrCreateFieldApi({ name: 'a.b' })
+
+      const unregisterParent = parent._register()
+      const unregisterChild = child._register()
+
+      expect(parent._atoms.store).toBeDefined()
+      expect(child._atoms.store).toBeDefined()
+
+      unregisterChild()
+      unregisterParent()
+
+      await vi.waitFor(() => {
+        expect(parent._atoms.store).toBeUndefined()
+        // Child's store should also be cleaned up (separate refCount)
+        expect(child._atoms.store).toBeUndefined()
+      })
     })
   })
 })

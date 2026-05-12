@@ -30,9 +30,9 @@ import type { Atom, ReadonlyAtom } from '@tanstack/store'
 import type { FormApi, FormOptions, FormState } from './FormApi.public'
 import type { FieldUpdateOptions, Updater } from './types.public'
 import type {
+  ErrorWithMessage,
   FormValidateResult,
   FormValidator,
-  ErrorWithMessage,
   ValidationErrorInput,
   ValidationTrigger,
 } from './validation.public'
