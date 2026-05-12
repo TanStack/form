@@ -51,8 +51,6 @@ The simplest way to remove boilerplate is to write small wrapper components that
 ```gjs
 // text-field.gts
 import Component from '@glimmer/component';
-import { fn } from '@ember/helper';
-import { on } from '@ember/modifier';
 
 const handleInput = (field, event) =>
   field.handleChange(event.target.value);
@@ -347,8 +345,6 @@ Now that we've covered the basics of composing forms, let's put it all together 
 ```gjs
 // /src/components/text-field.gts
 import Component from '@glimmer/component';
-import { fn } from '@ember/helper';
-import { on } from '@ember/modifier';
 
 const handleInput = (field, event) => field.handleChange(event.target.value);
 

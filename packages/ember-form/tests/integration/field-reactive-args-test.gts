@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
-import { fn, hash } from '@ember/helper';
-import { on } from '@ember/modifier';
+import { hash } from '@ember/helper';
 import { tracked } from '@glimmer/tracking';
 import { click, fillIn, render } from '@ember/test-helpers';
 import { module, test } from 'qunit';

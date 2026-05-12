@@ -144,8 +144,7 @@ You can also use `onDynamic` validation with fields, just like you would with ot
 
 ```gjs
 import Component from '@glimmer/component';
-import { fn, hash } from '@ember/helper';
-import { on } from '@ember/modifier';
+import { hash } from '@ember/helper';
 import { createForm, revalidateLogic } from '@tanstack/ember-form';
 
 const handleNumberInput = (field, event) =>

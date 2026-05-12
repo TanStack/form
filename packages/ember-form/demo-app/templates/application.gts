@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
-import { fn, hash } from '@ember/helper';
-import { on } from '@ember/modifier';
+import { hash } from '@ember/helper';
 import { pageTitle } from 'ember-page-title';
 import { createForm, Subscribe } from '@tanstack/ember-form';
 

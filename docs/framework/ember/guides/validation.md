@@ -17,8 +17,7 @@ Here is an example:
 
 ```gjs
 import Component from '@glimmer/component';
-import { fn, hash } from '@ember/helper';
-import { on } from '@ember/modifier';
+import { hash } from '@ember/helper';
 import { createForm } from '@tanstack/ember-form';
 
 const handleNumberInput = (field, event) =>
