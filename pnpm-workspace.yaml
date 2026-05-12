@@ -18,6 +18,9 @@ allowBuilds:
   unrs-resolver: false # not directly required for build
   esbuild: true
 
+  # nx, @vitejs/plugin-react-swc, terser-webpack-plugin
+  '@swc/core': true
+
   # @angular/build
   '@parcel/watcher': false # optional dep of @angular/build
   lmdb: false # optional dep of @angular/build
@@ -25,3 +28,6 @@ allowBuilds:
 
   # @tanstack/vue-store
   vue-demi: false # only required for vue 2 support
+
+  # nextJs
+  sharp: false # not directly required for build
