@@ -6,7 +6,11 @@ import {
   normalizeValidationError,
   runFieldValidatorPipeline,
 } from './validation.lib'
-import type { PipelineResult, ValidatorPipelineCache } from './validation.lib'
+import type {
+  FieldValidatorPipelineResult,
+  PipelineResult,
+  ValidatorPipelineCache,
+} from './validation.lib'
 
 import type { PropagateOptions } from './types.lib'
 import type { InternalRootFieldApi } from './RootFieldApi.lib'
@@ -450,20 +454,27 @@ export class InternalFieldApi<
    */
   async _runFieldValidation(
     event: 'change' | 'blur' | 'submit',
-  ): Promise<Array<PipelineResult<FieldValidateResult>>> {
-    if (this._validators.length === 0) return []
+    options?: { onResult?: boolean },
+  ): Promise<FieldValidatorPipelineResult> {
+    if (this._validators.length === 0)
+      return {
+        results: [],
+        hasErrors: false,
+        thrownError: null,
+      }
 
-    const results = await runFieldValidatorPipeline({
+    return runFieldValidatorPipeline({
       pipeline: this._validators,
       context: {
         event,
         fieldApi: this,
         formApi: this.form,
       },
-      onResult: (result) => this._processValidationResult(result),
+      onResult:
+        options?.onResult !== false
+          ? (result) => this._processValidationResult(result)
+          : undefined,
     })
-
-    return results
   }
 
   _processValidationResult(result: PipelineResult<FieldValidateResult>) {

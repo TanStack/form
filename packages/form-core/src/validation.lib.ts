@@ -1,5 +1,6 @@
 import { LiteDebouncer } from '@tanstack/pacer-lite'
 import { isStandardSchema, parseStandardSchema } from './standardSchema.lib'
+import { isNil, normalizeToArray } from './utils'
 import type {
   ErrorWithMessage,
   FieldValidateResult,
@@ -14,7 +15,6 @@ import type {
   ValidationTriggerOption,
   Validator,
 } from './validation.public'
-import { normalizeToArray } from './utils'
 import type { InternalFormApi } from './FormApi.lib'
 import type { AnyInternalFieldApi } from './FieldApi.lib'
 
@@ -38,17 +38,19 @@ function getContextValue(context: InputContext) {
 }
 
 const ABORTED_CALL = Symbol('ABORTED_CALL')
+const THROWN_ERROR = Symbol('THROWN_ERROR')
 
 type AbortedCall = typeof ABORTED_CALL
+type ThrownError = { [THROWN_ERROR]: true; error: unknown }
 
 /**
  * @private
  * Check if a validation result is considered an error.
  */
-export function isErrorResult<T extends FormValidateResult | FieldValidateResult>(
-  value: T,
-): value is Exclude<T, null | undefined | false> {
-  if (value === null || value === undefined || value === false) return false
+export function isErrorResult<
+  T extends FormValidateResult | FieldValidateResult,
+>(value: T): value is Exclude<T, null | undefined | false> {
+  if (isNil(value) || value === false) return false
   return true
 }
 
@@ -74,11 +76,7 @@ export function isAggregateError(value: FormValidateResult): {
   const aggregateError = value
 
   // A ValidationAggregateError must be an object with at least one of form or fields
-  if (
-    typeof aggregateError === 'object' &&
-    aggregateError !== null &&
-    !Array.isArray(aggregateError)
-  ) {
+  if (typeof aggregateError === 'object' && !Array.isArray(aggregateError)) {
     if ('fields' in aggregateError) {
       return {
         formError: aggregateError.form ?? null,
@@ -97,7 +95,7 @@ export interface PipelineResult<T> {
 
 interface PendingDebouncedCall<TResult> {
   context: ValidateContext
-  resolve: (value: TResult | AbortedCall) => void
+  resolve: (value: TResult | AbortedCall | ThrownError) => void
   reject: (error: unknown) => void
 }
 
@@ -197,6 +195,7 @@ interface ValidatorPipelineArgs<TResult extends ValidateResult> {
   context: InputContext
   cache: ValidatorPipelineCache<TResult>
   pipeline: Array<FormValidator<any> | FieldValidator<any, any>>
+  hasFailedBefore: boolean
   getContext: (
     inputContext: ValidateContext,
   ) => FieldValidatorContext<any, any> | FormValidatorContext<any>
@@ -319,7 +318,9 @@ function runMaybeDebouncedValidator<TResult extends ValidateResult>({
   validatorIndex,
   cache,
   onExecute,
-}: RunMaybeDebouncedValidatorArgs<TResult>): Promise<TResult | AbortedCall> {
+}: RunMaybeDebouncedValidatorArgs<TResult>): Promise<
+  TResult | AbortedCall | ThrownError
+> {
   const cacheKey = validatorIndex
   const debounceMs = getValidatorDebounceMs(validator, context)
 
@@ -339,10 +340,10 @@ function runMaybeDebouncedValidator<TResult extends ValidateResult>({
     clearAbortController(cache, cacheKey, abortController)
   }
 
-  return new Promise<TResult | AbortedCall>((resolve, reject) => {
+  return new Promise<TResult | AbortedCall | ThrownError>((resolve) => {
     let settled = false
 
-    const settle = (value: TResult | AbortedCall) => {
+    const settle = (value: TResult | AbortedCall | ThrownError) => {
       if (settled) return
 
       settled = true
@@ -354,10 +355,8 @@ function runMaybeDebouncedValidator<TResult extends ValidateResult>({
     const fail = (error: unknown) => {
       if (settled) return
 
-      settled = true
-      cleanupAbortListener()
-      clearCurrentController()
-      reject(error)
+      console.error('Validator threw an error:', error)
+      settle({ [THROWN_ERROR]: true, error })
     }
 
     const onAbort = () => {
@@ -387,7 +386,11 @@ function runMaybeDebouncedValidator<TResult extends ValidateResult>({
       (call) => {
         executeWithAbort(call.context, onExecute).then(
           call.resolve,
-          call.reject,
+          (error) => {
+            console.error('Validator threw an error:', error)
+            const thrownError: ThrownError = { [THROWN_ERROR]: true, error }
+            call.resolve(thrownError)
+          },
         )
       },
       debounceMs,
@@ -396,23 +399,36 @@ function runMaybeDebouncedValidator<TResult extends ValidateResult>({
     debouncer.maybeExecute({
       context: validationContext,
       resolve: settle,
-      reject: fail,
+      reject: () => {
+        // This should not be called anymore since we handle errors in the debouncer callback
+      },
     })
   })
 }
 
 async function flushPendingResults<TResult extends ValidateResult>(
-  pending: Array<Promise<PipelineResult<TResult | AbortedCall>>>,
+  pending: Array<Promise<PipelineResult<TResult | AbortedCall | ThrownError>>>,
   results: Array<PipelineResult<TResult>>,
   onResult?: (result: PipelineResult<TResult>) => void,
-): Promise<boolean> {
+): Promise<{ hasErrors: boolean; thrownError: unknown | null }> {
   let hasErrors = false
+  let thrownError: unknown | null = null
 
   await Promise.all(
     pending.map(async (promise) => {
       const result = await promise
 
       if (result.result === ABORTED_CALL) {
+        return
+      }
+
+      // Check if this is a thrown error from a validator
+      if (
+        typeof result.result === 'object' &&
+        result.result !== null &&
+        THROWN_ERROR in result.result
+      ) {
+        thrownError = result.result.error
         return
       }
 
@@ -430,29 +446,39 @@ async function flushPendingResults<TResult extends ValidateResult>(
     }),
   )
 
-  return hasErrors
+  return { hasErrors, thrownError }
 }
 
 async function runValidatorPipeline<TResult extends ValidateResult>({
   pipeline,
   context,
   cache,
+  hasFailedBefore = false,
   getContext,
   onResult,
   scope,
-}: ValidatorPipelineArgs<TResult>): Promise<Array<PipelineResult<TResult>>> {
-  let pending: Array<Promise<PipelineResult<TResult | AbortedCall>>> = []
+}: ValidatorPipelineArgs<TResult>): Promise<{
+  results: Array<PipelineResult<TResult>>
+  hasErrors: boolean
+  thrownError: unknown | null
+}> {
+  let pending: Array<
+    Promise<PipelineResult<TResult | AbortedCall | ThrownError>>
+  > = []
   const results: Array<PipelineResult<TResult>> = []
 
-  let hasErrors = false as boolean
+  let hasErrors = hasFailedBefore
+  let thrownError: unknown | null = null
 
-  const flush = async (): Promise<boolean> => {
-    const didError = await flushPendingResults(pending, results, onResult)
+  const flush = async (): Promise<void> => {
+    const { hasErrors: didError, thrownError: flushedThrownError } =
+      await flushPendingResults(pending, results, onResult)
 
     pending = []
     hasErrors ||= didError
-
-    return didError
+    if (flushedThrownError !== null) {
+      thrownError = flushedThrownError
+    }
   }
 
   for (let i = 0; i < pipeline.length; i++) {
@@ -462,11 +488,11 @@ async function runValidatorPipeline<TResult extends ValidateResult>({
       continue
     }
 
-    if (validator.runOnlyIfValid) {
+    if (validator.bailIfInvalid) {
       await flush()
 
-      if (hasErrors) {
-        continue
+      if (hasErrors || thrownError !== null) {
+        break
       }
     }
 
@@ -478,7 +504,7 @@ async function runValidatorPipeline<TResult extends ValidateResult>({
       onExecute: (ctx) => {
         return executeValidator<TResult>(validator, getContext(ctx), scope)
       },
-    }).then<PipelineResult<TResult | AbortedCall>>((result) => ({
+    }).then<PipelineResult<TResult | AbortedCall | ThrownError>>((result) => ({
       validatorIndex: i,
       result,
     }))
@@ -488,23 +514,37 @@ async function runValidatorPipeline<TResult extends ValidateResult>({
 
   await flush()
 
-  // Shouldn't happen, but in case we have sparse arrays
-  return results.filter(Boolean)
+  return {
+    // Shouldn't happen, but in case we have sparse arrays
+    results: results.filter(Boolean),
+    hasErrors,
+    thrownError,
+  }
 }
 
 interface FormValidatorPipelineArgs {
   pipeline: Array<FormValidator<any>>
   context: FormInputContext
+  /**
+   * @private
+   * Whether previous pipelines have reported an error or not.
+   */
+  hasFailedBefore: boolean
   onResult?: (result: PipelineResult<FormValidateResult>) => void
+}
+
+export interface FormValidatorPipelineResult {
+  results: Array<PipelineResult<FormValidateResult>>
+  hasErrors: boolean
+  thrownError: unknown | null
 }
 
 export function runFormValidatorPipeline({
   pipeline,
   context,
   onResult,
-}: FormValidatorPipelineArgs): Promise<
-  Array<PipelineResult<FormValidateResult>>
-> {
+  hasFailedBefore,
+}: FormValidatorPipelineArgs): Promise<FormValidatorPipelineResult> {
   const cache = (context.formApi as InternalFormApi<any, any>)
     ._validatorPipelineCache
 
@@ -513,6 +553,7 @@ export function runFormValidatorPipeline({
     context,
     onResult,
     cache,
+    hasFailedBefore,
     getContext: (ctx) => {
       if (isFormContext(ctx)) {
         return {
@@ -541,13 +582,17 @@ interface FieldValidatorPipelineArgs {
   onResult?: (result: PipelineResult<FieldValidateResult>) => void
 }
 
+export interface FieldValidatorPipelineResult {
+  results: Array<PipelineResult<FieldValidateResult>>
+  hasErrors: boolean
+  thrownError: unknown | null
+}
+
 export function runFieldValidatorPipeline({
   pipeline,
   context,
   onResult,
-}: FieldValidatorPipelineArgs): Promise<
-  Array<PipelineResult<FieldValidateResult>>
-> {
+}: FieldValidatorPipelineArgs): Promise<FieldValidatorPipelineResult> {
   const cache = (
     context.fieldApi as AnyInternalFieldApi
   )._getOrCreateValidatorCache()
@@ -557,6 +602,8 @@ export function runFieldValidatorPipeline({
     context,
     onResult,
     cache,
+    // No use case for configuring this outside of field pipeline yet
+    hasFailedBefore: false,
     getContext: (ctx) => ({
       event: ctx.event,
       formApi: ctx.formApi,

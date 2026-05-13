@@ -763,7 +763,7 @@ describe('FormApi', () => {
         ])
       })
 
-      it('skips validators with runOnlyIfValid when errors exist', async () => {
+      it('skips validators with bailIfInvalid when errors exist', async () => {
         const thirdValidatorFn = vi
           .fn()
           .mockImplementation(() => ({ message: 'Should not run' }))
@@ -780,7 +780,7 @@ describe('FormApi', () => {
               triggers: ['blur'],
             },
             {
-              runOnlyIfValid: true,
+              bailIfInvalid: true,
               run: thirdValidatorFn,
               triggers: ['blur'],
             },
@@ -799,6 +799,44 @@ describe('FormApi', () => {
         // Third validator should NOT have been called because there were errors from previous validators
         expect(thirdValidatorFn).not.toHaveBeenCalled()
       })
+
+      it('skips all remaining validators after bailIfInvalid when errors exist', async () => {
+        const thirdValidatorFn = vi
+          .fn()
+          .mockImplementation(() => ({ message: 'Should not run' }))
+        const fourthValidatorFn = vi
+          .fn()
+          .mockImplementation(() => ({ message: 'Should also not run' }))
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              run: () => ({ message: 'Sync error' }),
+              triggers: ['blur'],
+            },
+            {
+              bailIfInvalid: true,
+              run: thirdValidatorFn,
+              triggers: ['blur'],
+            },
+            {
+              run: fourthValidatorFn,
+              triggers: ['blur'],
+            },
+          ],
+        })
+
+        // Start validation
+        await form.validate('blur')
+
+        // First validator should have populated errors
+        expect(form.state.formErrors).toEqual([{ message: 'Sync error' }])
+
+        // Third validator (with bailIfInvalid) should NOT have been called
+        expect(thirdValidatorFn).not.toHaveBeenCalled()
+        // Fourth validator (after bailIfInvalid) should also NOT have been called
+        expect(fourthValidatorFn).not.toHaveBeenCalled()
+      })
     })
 
     describe('handleSubmit', () => {
@@ -815,7 +853,7 @@ describe('FormApi', () => {
         expect(form.state.formErrors).toEqual([{ message: 'Submit error' }])
       })
 
-      it('skips validators with runOnlyIfValid on submit when errors exist', async () => {
+      it('skips validators with bailIfInvalid on submit when errors exist', async () => {
         const thirdValidatorFn = vi
           .fn()
           .mockImplementation(() => ({ message: 'Should not run' }))
@@ -826,13 +864,41 @@ describe('FormApi', () => {
               run: () => ({ message: 'First error' }),
             },
             {
-              runOnlyIfValid: true,
+              bailIfInvalid: true,
               run: thirdValidatorFn,
             },
           ],
         })
         await form.handleSubmit()
         expect(form.state.formErrors).toEqual([{ message: 'First error' }])
+        expect(thirdValidatorFn).not.toHaveBeenCalled()
+      })
+
+      it('skips all remaining validators after bailIfInvalid on submit when errors exist', async () => {
+        const secondValidatorFn = vi
+          .fn()
+          .mockImplementation(() => ({ message: 'Should not run' }))
+        const thirdValidatorFn = vi
+          .fn()
+          .mockImplementation(() => ({ message: 'Should also not run' }))
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              run: () => ({ message: 'First error' }),
+            },
+            {
+              bailIfInvalid: true,
+              run: secondValidatorFn,
+            },
+            {
+              run: thirdValidatorFn,
+            },
+          ],
+        })
+        await form.handleSubmit()
+        expect(form.state.formErrors).toEqual([{ message: 'First error' }])
+        expect(secondValidatorFn).not.toHaveBeenCalled()
         expect(thirdValidatorFn).not.toHaveBeenCalled()
       })
 

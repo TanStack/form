@@ -14,7 +14,11 @@ import {
   runFormValidatorPipeline,
 } from './validation.lib'
 
-import type { PipelineResult, ValidatorPipelineCache } from './validation.lib'
+import type {
+  FormValidatorPipelineResult,
+  PipelineResult,
+  ValidatorPipelineCache,
+} from './validation.lib'
 import type {
   AnyFieldApiOptions,
   AnyInternalFieldApi,
@@ -60,6 +64,8 @@ export interface BaseFormMeta {
    * Used to clear stale field errors when a validator no longer reports them.
    */
   fieldErrors: Array<Set<AnyInternalFieldApi>>
+  isSubmitting: boolean
+  submissionAttempts: number
 }
 
 // StandardSchema<Input, Output>
@@ -150,6 +156,8 @@ export class InternalFormApi<
       isDirty: false,
       errors: Array.from({ length: validatorCount }, () => []),
       fieldErrors: Array.from({ length: validatorCount }, () => new Set()),
+      isSubmitting: false,
+      submissionAttempts: 0,
     } satisfies BaseFormMeta as BaseFormMeta)
     this._fieldRootNode = new InternalRootFieldApi(this)
 
@@ -161,6 +169,8 @@ export class InternalFormApi<
         const isDirty = baseFormMeta.isDirty
         const isPristine = !isDirty
         const isTouched = baseFormMeta.touchedFields.size > 0
+        // TODO weakmap cache? Otherwise this always makes a new reference
+        // Field already does it for its meta, use it as reference
         const formErrors = baseFormMeta.errors.flat()
 
         return {
@@ -169,6 +179,8 @@ export class InternalFormApi<
           isDirty,
           isPristine,
           formErrors,
+          isSubmitting: baseFormMeta.isSubmitting,
+          submissionAttempts: baseFormMeta.submissionAttempts,
         } satisfies FormState<TFormData>
       },
       { compare: shallow },
@@ -676,15 +688,28 @@ export class InternalFormApi<
     })
   }
 
-  validate = async (
+  _runFormValidation = async (
     signal: ValidationTrigger,
-    opts?: FieldApiOverrideOptions,
-  ) => {
+    opts?: FieldApiOverrideOptions & {
+      onResult?: boolean
+      hasFailedBefore?: boolean
+    },
+  ): Promise<FormValidatorPipelineResult> => {
     const pipeline = this.options.validators
-    if (!pipeline) return []
-    if (pipeline.length === 0) return []
+    if (!pipeline)
+      return {
+        results: [],
+        hasErrors: false,
+        thrownError: null,
+      }
+    if (pipeline.length === 0)
+      return {
+        results: [],
+        hasErrors: false,
+        thrownError: null,
+      }
 
-    const pipelineResults = await runFormValidatorPipeline({
+    return runFormValidatorPipeline({
       context: {
         event: signal,
         // TypeScript doesn't instantly complain, but instead decides to wait a while.
@@ -692,14 +717,96 @@ export class InternalFormApi<
         formApi: this as never,
         triggerFieldApi: opts?.fieldApiOverride,
       },
+      hasFailedBefore: opts?.hasFailedBefore ?? false,
       pipeline,
-      onResult: (result) => this._processValidationResult(result),
+      onResult:
+        opts?.onResult !== false
+          ? (result) => this._processValidationResult(result)
+          : undefined,
     })
-
-    return pipelineResults.map(({ result }) => result).filter(isErrorResult)
   }
 
-  handleSubmit = () => this.validate('submit')
+  validate = async (
+    signal: ValidationTrigger,
+    opts?: FieldApiOverrideOptions & {
+      onResult?: boolean
+      hasFailedBefore?: boolean
+    },
+  ) => {
+    const pipelineResults = await this._runFormValidation(signal, opts)
+    return pipelineResults.results
+      .map(({ result }) => result)
+      .filter(isErrorResult)
+  }
+
+  handleSubmit = async () => {
+    this._formMetaAtom.set((prev) => ({
+      ...prev,
+      isSubmitting: true,
+      submissionAttempts: prev.submissionAttempts + 1,
+    }))
+
+    const submissionData = {
+      hasFailed: false,
+    }
+
+    const fields =
+      this._fieldRootNode._touchAllFieldsAndCollectSubmitValidators()
+
+    const fieldValidatorResults = await Promise.all(
+      fields.map((field) =>
+        field._runFieldValidation('submit', { onResult: false }),
+      ),
+    )
+
+    const fieldResults: Array<ValidationErrorInput> = []
+
+    batch(() => {
+      for (let i = 0; i < fieldValidatorResults.length; i++) {
+        const field = fields[i]!
+        const pipelineResult = fieldValidatorResults[i]!
+
+        if (pipelineResult.thrownError !== null) {
+          submissionData.hasFailed = true
+        }
+
+        for (const result of pipelineResult.results) {
+          if (isErrorResult(result.result)) {
+            submissionData.hasFailed = true
+            fieldResults.push(result.result)
+          }
+          field._processValidationResult(result)
+        }
+      }
+    })
+
+    for (const pipelineResult of fieldValidatorResults) {
+      for (const result of pipelineResult.results) {
+        if (isErrorResult(result.result)) {
+          fieldResults.push(result.result)
+        }
+      }
+    }
+
+    // TODO maybe some users don't want form validation to run if field validation failed.
+    const formPipelineResult = await this._runFormValidation('submit', {
+      hasFailedBefore: submissionData.hasFailed,
+    })
+
+    if (formPipelineResult.thrownError !== null) {
+      submissionData.hasFailed = true
+    }
+
+    const errorResults = formPipelineResult.results
+      .map(({ result }) => result)
+      .filter(isErrorResult)
+      .concat(fieldResults)
+
+    // TODO set isSubmitting false
+    // set isSubmitSuccessful
+    // call onSubmit if successful
+    return errorResults
+  }
 }
 
 /*

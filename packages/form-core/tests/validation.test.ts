@@ -34,6 +34,7 @@ describe('runFormValidatorPipeline', () => {
         event: Event
         field?: InternalFieldApi<any, Array<any>>
         onResult?: (result: PipelineResult<FormValidateResult>) => void
+        hasFailedBefore?: boolean
       }) => {
         return runFormValidatorPipeline({
           context: {
@@ -41,9 +42,10 @@ describe('runFormValidatorPipeline', () => {
             formApi: form,
             triggerFieldApi: args.field,
           },
+          hasFailedBefore: args.hasFailedBefore ?? false,
           onResult: args.onResult,
           pipeline: pipeline,
-        })
+        }).then((res) => res.results)
       },
     }
   }
@@ -67,7 +69,7 @@ describe('runFormValidatorPipeline', () => {
           },
           onResult: args.onResult,
           pipeline,
-        })
+        }).then((res) => res.results)
       },
     }
   }
@@ -758,7 +760,7 @@ describe('runFormValidatorPipeline', () => {
       ])
     })
 
-    it('should respect runOnlyIfValid with zod schema validators', async () => {
+    it('should respect bailIfInvalid with zod schema validators', async () => {
       const formApi = getForm({ name: '' })
 
       const failingSchema = z.object({
@@ -777,11 +779,11 @@ describe('runFormValidatorPipeline', () => {
         },
         {
           run: passingSchema,
-          runOnlyIfValid: true,
+          bailIfInvalid: true,
         },
         {
           run: validateSpy,
-          runOnlyIfValid: true,
+          bailIfInvalid: true,
         },
       ])
 
@@ -836,6 +838,78 @@ describe('runFormValidatorPipeline', () => {
 
       const changeResults = await runWithContext({ event: 'change' })
       expect(changeResults).toHaveLength(0)
+    })
+  })
+
+  describe('validator errors', () => {
+    it('should handle validator thrown errors gracefully without bubbling', async () => {
+      vi.useFakeTimers()
+      const formApi = getForm({ name: '' })
+      const consoleErrorSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {})
+
+      const { runWithContext } = getPipeline(formApi, [
+        {
+          run: () => {
+            // Valid validation result
+            return { message: 'first validator' }
+          },
+        },
+        {
+          run: () => {
+            // This will throw: Cannot read property 'foo' of undefined
+            const obj: any = undefined
+            return obj.foo.bar
+          },
+        },
+      ])
+
+      // Should not throw - promise should resolve
+      const promise = runWithContext({
+        event: 'submit',
+        hasFailedBefore: false,
+      })
+      await vi.runAllTimersAsync()
+
+      await expect(promise).resolves.toBeDefined()
+      // Should have logged the error
+      expect(consoleErrorSpy).toHaveBeenCalled()
+
+      consoleErrorSpy.mockRestore()
+    })
+
+    it('should handle async validator thrown errors', async () => {
+      vi.useFakeTimers()
+      const formApi = getForm({ name: '' })
+      const consoleErrorSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {})
+
+      const { runWithContext } = getPipeline(formApi, [
+        {
+          run: async () => {
+            return Promise.resolve({ message: 'first validator' })
+          },
+        },
+        {
+          run: async () => {
+            await Promise.reject()
+          },
+        },
+      ])
+
+      // Should not throw - promise should resolve
+      const promise = runWithContext({
+        event: 'submit',
+        hasFailedBefore: false,
+      })
+
+      await vi.runAllTimersAsync()
+      await expect(promise).resolves.toBeDefined()
+      expect(consoleErrorSpy).toHaveBeenCalled()
+
+      consoleErrorSpy.mockRestore()
     })
   })
 })

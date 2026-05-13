@@ -38,6 +38,17 @@ export interface FormState<TData> {
    * Array of form-level validation errors.
    */
   formErrors: Array<ErrorWithMessage>
+  /**
+   * Whether the form is currently in the process of submitting.
+   *
+   */
+  isSubmitting: boolean
+  /**
+   * The number of times a submission has been attempted, regardless of its success.
+   *
+   * If the form is reset, this will revert back to 0.
+   */
+  submissionAttempts: number
 }
 
 export interface FormApi<

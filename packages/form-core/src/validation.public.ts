@@ -10,12 +10,12 @@ export interface Validator<
 > {
   run: TValidator
   /**
-   * If `true`, this validator will only run when all previous validators have passed.
+   * If `true`, this validator and all subsequent validators will be skipped if any previous validator has failed.
    * If `false`, validators run regardless of earlier validation results.
    *
    * @default false
    */
-  runOnlyIfValid?: boolean
+  bailIfInvalid?: boolean
   /**
    * TODO docs
    *

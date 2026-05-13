@@ -61,4 +61,34 @@ export class InternalRootFieldApi {
       return { ...prev, touchedFields: newSet }
     })
   }
+
+  _touchAllFieldsAndCollectSubmitValidators(): Array<AnyInternalFieldApi> {
+    const fieldsWithValidators: Array<AnyInternalFieldApi> = []
+    const stack = [...this._children]
+
+    while (stack.length > 0) {
+      const field = stack.pop()!
+
+      field._notifyChange(
+        {
+          causeValidation: false,
+          markAsBlurred: false,
+          markAsDirty: false,
+          // Touch all fields
+          markAsTouched: true,
+          // We're doing DFS, so propagation is useless
+          doPropagate: false,
+        },
+        'submit',
+      )
+
+      stack.push(...field._children)
+
+      if (field._validators.length > 0) {
+        fieldsWithValidators.push(field)
+      }
+    }
+
+    return fieldsWithValidators
+  }
 }

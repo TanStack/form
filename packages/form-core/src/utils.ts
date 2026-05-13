@@ -84,6 +84,13 @@ export function uuid(): string {
   return out
 }
 
+export function isNotNil<T>(input: T): input is NonNullable<T> {
+  return input !== null && input !== undefined
+}
+export function isNil<T>(input: T): input is Extract<T, undefined | null> {
+  return !isNotNil(input)
+}
+
 /**
  * Get a value from an object using a path, including dot notation.
  * @private
