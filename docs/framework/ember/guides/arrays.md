@@ -22,7 +22,7 @@ export default class PeopleForm extends Component {
 
   <template>
     <this.form.Field @name="people" @mode="array" as |field|>
-      {{#each field.state.value as |person i|}}
+      {{#each field.state.value as |person|}}
         {{!-- ... --}}
       {{/each}}
     </this.form.Field>

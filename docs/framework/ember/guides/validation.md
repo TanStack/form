@@ -17,7 +17,6 @@ Here is an example:
 
 ```gjs
 import Component from '@glimmer/component';
-import { hash } from '@ember/helper';
 import { createForm } from '@tanstack/ember-form';
 
 const handleNumberInput = (field, event) =>
@@ -329,7 +328,6 @@ To use schemas from these libraries you can pass them to `@validators` the same 
 
 ```gjs
 import Component from '@glimmer/component';
-import { hash } from '@ember/helper';
 import { z } from 'zod';
 import { createForm } from '@tanstack/ember-form';
 

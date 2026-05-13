@@ -16,7 +16,6 @@ To solve this, we need to make sure that the "confirm password" validation is re
 
 ```gjs
 import Component from '@glimmer/component';
-import { hash } from '@ember/helper';
 import { createForm } from '@tanstack/ember-form';
 
 const handleChange = (field, event) => field.handleChange(event.target.value);
