@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { initializeForm, InternalReactFormApi } from './ReactFormApi.lib'
 import type { SubscribeProps } from './Subscribe'
 import type { CrossVersionReactNode } from './types.lib'
@@ -10,10 +10,6 @@ import type {
   FormState,
   FormValidator,
 } from '@tanstack/form-core-v2'
-import {
-  AnyInternalFormApi,
-  InternalFormApi,
-} from '@tanstack/form-core-v2/internals'
 
 /**
  * Subscribe to `form.store` (full form state). The selector receives the full
@@ -26,7 +22,7 @@ export type ReactFormSubscribeProps<TFormData, TSelected> = Omit<
 
 export interface ReactFormFieldProps<
   TData,
-  TFormValidators extends Array<FormValidator<TData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TData>>,
   TFieldValue,
 > extends FieldApiOptions<TData, TFormValidators, TFieldValue> {
   children: (
@@ -36,7 +32,7 @@ export interface ReactFormFieldProps<
 
 export interface ReactFormArrayFieldProps<
   TData,
-  TFormValidators extends Array<FormValidator<TData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TData>>,
   TFieldValue,
 > extends FieldApiOptions<TData, TFormValidators, TFieldValue> {
   children: (
@@ -46,7 +42,7 @@ export interface ReactFormArrayFieldProps<
 
 export interface ReactTanStackFormComponents<
   TFormData,
-  TFormValidators extends Array<FormValidator<TFormData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 > {
   /**
    * TODO docs
@@ -64,7 +60,7 @@ export interface ReactTanStackFormComponents<
 
 export interface ReactFormApi<
   TFormData,
-  TFormValidators extends Array<FormValidator<TFormData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 >
   extends
     FormApi<TFormData, TFormValidators>,
@@ -75,7 +71,7 @@ export interface ReactFormApi<
  */
 export function useForm<
   TData,
-  TFormValidators extends Array<FormValidator<TData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TData>>,
 >(
   options: FormOptions<TData, TFormValidators>,
 ): ReactFormApi<TData, TFormValidators> {

@@ -9,5 +9,6 @@ export default defineConfig({
     environment: 'happy-dom',
     setupFiles: ['./tests/test-setup.ts'],
     globals: true,
+    coverage: { enabled: true, provider: 'istanbul', include: ['src/**/*'] },
   },
 })

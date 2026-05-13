@@ -13,7 +13,7 @@ import type { Accessor } from 'solid-js'
 
 export interface InternalFieldProps<
   TData,
-  TFormValidators extends Array<FormValidator<TData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TData>>,
   TFieldValue,
 > extends FieldApiOptions<TData, TFormValidators, TFieldValue> {
   form: InternalFormApi<TData, TFormValidators>
@@ -21,7 +21,7 @@ export interface InternalFieldProps<
 
 export function createField<
   TData,
-  TFormValidators extends Array<FormValidator<TData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TData>>,
   TFieldValue,
 >(
   options: Accessor<InternalFieldProps<TData, TFormValidators, TFieldValue>>,
@@ -53,7 +53,7 @@ export function createField<
 
 export function createArrayField<
   TData,
-  TFormValidators extends Array<FormValidator<TData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TData>>,
   TFieldValue,
 >(
   options: Accessor<InternalFieldProps<TData, TFormValidators, TFieldValue>>,

@@ -3,16 +3,29 @@ import type { ReadonlyAtom } from '@tanstack/store'
 import type {
   ConfigurableValidationTrigger,
   ErrorWithMessage,
+  FormStandardSchemaValidatorOutputs,
   FormValidationError,
   FormValidator,
 } from './validation.public'
 
-export interface FormOptions<
-  TData,
-  TFormValidators extends Array<FormValidator<TData>>,
+export interface FormSubmitContext<
+  TFormData,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 > {
-  defaultValues: TData
+  value: TFormData
+  formApi: FormApi<TFormData, TFormValidators>
+  schemaOutput: FormStandardSchemaValidatorOutputs<TFormValidators>
+}
+
+export interface FormOptions<
+  TFormData,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+> {
+  defaultValues: TFormData
   validators?: TFormValidators
+  onSubmit?: (
+    context: FormSubmitContext<TFormData, TFormValidators>,
+  ) => any | Promise<any>
 }
 
 export interface FormState<TData> {
@@ -53,7 +66,7 @@ export interface FormState<TData> {
 
 export interface FormApi<
   TData,
-  TFormValidators extends Array<FormValidator<TData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TData>>,
 > {
   store: ReadonlyAtom<FormState<TData>>
   readonly state: FormState<TData>

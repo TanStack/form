@@ -47,7 +47,7 @@ export type FieldErrors = Array<any>
 
 export interface FieldApi<
   TFormData,
-  TFormValidators extends Array<FormValidator<TFormData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 > {
   /**
    * The form that owns this field.
@@ -132,7 +132,7 @@ export interface FieldApi<
 
 export interface FieldApiOptions<
   TFormData,
-  TFormValidators extends Array<FormValidator<TFormData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
   TFieldValue,
 > {
   name: string

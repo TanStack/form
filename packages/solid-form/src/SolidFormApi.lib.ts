@@ -12,7 +12,7 @@ import type { FormOptions, FormValidator } from '@tanstack/form-core-v2'
 
 export interface InternalSolidFormApi<
   TData,
-  TFormValidators extends Array<FormValidator<TData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TData>>,
 >
   extends
     InternalFormApi<TData, TFormValidators>,
@@ -20,7 +20,7 @@ export interface InternalSolidFormApi<
 
 export function initializeForm<
   TFormData,
-  TFormValidators extends Array<FormValidator<TFormData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 >(
   options: FormOptions<TFormData, TFormValidators>,
 ): InternalSolidFormApi<TFormData, TFormValidators> {

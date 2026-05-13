@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, expectTypeOf, it, vi } from 'vitest'
 import { z } from 'zod'
 import {
   runFieldValidatorPipeline,
@@ -9,6 +9,7 @@ import type { PipelineResult } from '../src/validation.lib'
 import type {
   FieldValidateResult,
   FieldValidator,
+  FormStandardSchemaValidatorOutputs,
   FormValidateResult,
   FormValidator,
   FormValidatorContext,
@@ -25,14 +26,14 @@ describe('runFormValidatorPipeline', () => {
   }
 
   function getPipeline<T>(
-    form: InternalFormApi<T, Array<any>>,
+    form: InternalFormApi<T, ReadonlyArray<any>>,
     pipeline: Array<FormValidator<T>>,
   ) {
     return {
       pipeline,
       runWithContext: (args: {
         event: Event
-        field?: InternalFieldApi<any, Array<any>>
+        field?: InternalFieldApi<any, ReadonlyArray<any>>
         onResult?: (result: PipelineResult<FormValidateResult>) => void
         hasFailedBefore?: boolean
       }) => {
@@ -51,8 +52,8 @@ describe('runFormValidatorPipeline', () => {
   }
 
   function getFieldPipeline<T, TValue>(
-    form: InternalFormApi<T, Array<any>>,
-    field: InternalFieldApi<T, Array<any>>,
+    form: InternalFormApi<T, ReadonlyArray<any>>,
+    field: InternalFieldApi<T, ReadonlyArray<any>>,
     pipeline: Array<FieldValidator<T, TValue>>,
   ) {
     return {
@@ -84,7 +85,10 @@ describe('runFormValidatorPipeline', () => {
     const results = await runWithContext({ event: 'submit' })
     expect(results).toHaveLength(1)
     expect(results).toContainEqual(
-      expect.objectContaining({ result: { message: 'foo' } }),
+      expect.objectContaining({
+        result: { message: 'foo' },
+        schemaResult: null,
+      }),
     )
   })
 
@@ -579,6 +583,68 @@ describe('runFormValidatorPipeline', () => {
   })
 
   describe('Standard Schema validation', () => {
+    it('should infer standard schema validator output types', () => {
+      const lengthSchema = z
+        .object({
+          name: z.string(),
+        })
+        .transform(({ name }) => ({ nameLength: name.length }))
+      const uppercaseSchema = z
+        .object({
+          name: z.string(),
+        })
+        .transform(({ name }) => ({ upperName: name.toUpperCase() }))
+
+      type Validators = [
+        { run: typeof lengthSchema },
+        { run: typeof uppercaseSchema },
+      ]
+      type Output = FormStandardSchemaValidatorOutputs<Validators>
+
+      expectTypeOf<Output>().toEqualTypeOf<
+        { nameLength: number } | { upperName: string }
+      >()
+    })
+
+    it('should infer onSubmit value from standard schema validators', () => {
+      const schema = z
+        .object({
+          name: z.string(),
+        })
+        .transform(({ name }) => ({ nameLength: name.length }))
+
+      new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [{ run: schema }],
+        onSubmit: ({ value, schemaOutput }) => {
+          expectTypeOf(value).toEqualTypeOf<{ name: string }>()
+          expectTypeOf(schemaOutput).toEqualTypeOf<{ nameLength: number }>()
+        },
+      })
+    })
+
+    it('should pass standard schema output to onSubmit', async () => {
+      const onSubmit = vi.fn()
+      const schema = z
+        .object({
+          name: z.string(),
+        })
+        .transform(({ name }) => ({ nameLength: name.length }))
+      const form = new InternalFormApi({
+        defaultValues: { name: 'test' },
+        validators: [{ run: schema }],
+        onSubmit,
+      })
+
+      await form.handleSubmit()
+
+      expect(onSubmit).toHaveBeenCalledWith({
+        value: { name: 'test' },
+        formApi: form,
+        schemaOutput: { nameLength: 4 },
+      })
+    })
+
     /**
      * Assert that the result consists of certain fields with certain errors.
      *
@@ -631,6 +697,10 @@ describe('runFormValidatorPipeline', () => {
 
       expect(results).toHaveLength(1)
       expect(results[0]?.result).toBeNull()
+      expect(results[0]?.schemaResult).toEqual({
+        name: 'test',
+        age: 25,
+      })
     })
 
     it('should validate form with a failing zod schema', async () => {
@@ -652,6 +722,7 @@ describe('runFormValidatorPipeline', () => {
       expect(results).toEqual([
         getFieldErrorMatcher({ name: ['Name is required'] }),
       ])
+      expect(results[0]?.schemaResult).toBeNull()
     })
 
     it('should validate form with multiple errors from zod schema', async () => {
@@ -895,6 +966,7 @@ describe('runFormValidatorPipeline', () => {
         {
           run: async () => {
             await Promise.reject()
+            return null
           },
         },
       ])

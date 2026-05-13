@@ -66,6 +66,7 @@ export interface BaseFormMeta {
   fieldErrors: Array<Set<AnyInternalFieldApi>>
   isSubmitting: boolean
   submissionAttempts: number
+  isSubmitSuccessful: boolean
 }
 
 // StandardSchema<Input, Output>
@@ -131,7 +132,7 @@ export type AnyInternalFormApi = InternalFormApi<any, any>
 
 export class InternalFormApi<
   TFormData,
-  TFormValidators extends Array<FormValidator<TFormData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 > implements FormApi<TFormData, TFormValidators> {
   valuesAtom: Atom<TFormData>
   store: ReadonlyAtom<FormState<TFormData>>
@@ -139,6 +140,8 @@ export class InternalFormApi<
   _fieldRootNode: InternalRootFieldApi
   _options: FormOptions<TFormData, TFormValidators>
   _validatorPipelineCache: ValidatorPipelineCache<any>
+  _lastSchemaOutput = null
+
   get state(): FormState<TFormData> {
     return this.store.get()
   }
@@ -158,6 +161,7 @@ export class InternalFormApi<
       fieldErrors: Array.from({ length: validatorCount }, () => new Set()),
       isSubmitting: false,
       submissionAttempts: 0,
+      isSubmitSuccessful: false,
     } satisfies BaseFormMeta as BaseFormMeta)
     this._fieldRootNode = new InternalRootFieldApi(this)
 
@@ -574,6 +578,8 @@ export class InternalFormApi<
   }
 
   _processValidationResult = (result: PipelineResult<FormValidateResult>) => {
+    this._lastSchemaOutput = result.schemaResult
+
     const aggregateError = isAggregateError(result.result)
 
     if (aggregateError) {
@@ -802,9 +808,34 @@ export class InternalFormApi<
       .filter(isErrorResult)
       .concat(fieldResults)
 
+    const cleanup = () => {
+      this._formMetaAtom.set((prev) => {
+        return {
+          ...prev,
+          isSubmitting: false,
+          isSubmitSuccessful: submissionData.hasFailed,
+        }
+      })
+    }
+
+    if (submissionData.hasFailed) {
+      cleanup()
+      return
+    }
+    try {
+      await this.options.onSubmit?.({
+        formApi: this,
+        schemaOutput: this._lastSchemaOutput as never,
+        value: this.state.values,
+      })
+    } catch (e) {
+      console.error(e)
+    } finally {
+      cleanup()
+    }
+
     // TODO set isSubmitting false
     // set isSubmitSuccessful
-    // call onSubmit if successful
     return errorResults
   }
 }

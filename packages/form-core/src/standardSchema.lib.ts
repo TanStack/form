@@ -55,21 +55,33 @@ export function isStandardSchema(
   return typeof object === 'object' && '~standard' in object
 }
 
-export function parseStandardSchema(
-  schema: StandardSchemaV1,
+export function parseStandardSchema<TOutput>(
+  schema: StandardSchemaV1<any, TOutput>,
   value: any,
   scope: 'form' | 'field',
-) {
-  return Promise.resolve(schema['~standard'].validate(value)).then(
-    (result): FormValidateResult => {
-      if (!result.issues) return null
-      if (scope === 'field') {
-        return result.issues as Array<ErrorWithMessage>
-      }
+): Promise<{
+  result: FormValidateResult
+  schemaResult: TOutput | null
+}> {
+  return Promise.resolve(schema['~standard'].validate(value)).then((result) => {
+    if (!result.issues) {
       return {
-        // TODO the form probably wants a copy?
-        fields: prefixSchemaToErrors(result.issues, value),
+        result: null,
+        schemaResult: result.value,
       }
-    },
-  )
+    }
+
+    const validationResult =
+      scope === 'field'
+        ? (result.issues as Array<ErrorWithMessage>)
+        : {
+            // TODO the form probably wants a copy?
+            fields: prefixSchemaToErrors(result.issues, value),
+          }
+
+    return {
+      result: validationResult,
+      schemaResult: null,
+    }
+  })
 }

@@ -205,7 +205,7 @@ export type AnyInternalFieldApiParams = InternalFieldApiParams<any, any>
 
 export interface InternalFieldApiParams<
   TFormData,
-  TFormValidators extends Array<FormValidator<TFormData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 > extends Omit<AnyFieldApiOptions, 'name'> {
   segment: NameSegment
   parent: InternalFieldApi<TFormData, TFormValidators> | InternalRootFieldApi
@@ -224,7 +224,7 @@ export type AnyInternalFieldApi = InternalFieldApi<any, any>
 
 export class InternalFieldApi<
   TFormData,
-  TFormValidators extends Array<FormValidator<TFormData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 > implements FieldApi<TFormData, TFormValidators> {
   readonly _isRoot = false
   _parent: AnyInternalFieldApi | InternalRootFieldApi

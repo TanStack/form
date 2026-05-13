@@ -5,7 +5,7 @@ import type { FormValidator } from '@tanstack/form-core-v2'
 
 export interface InternalFieldProps<
   TData,
-  TFormValidators extends Array<FormValidator<TData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TData>>,
   TFieldValue,
 > extends ReactFormFieldProps<TData, TFormValidators, TFieldValue> {
   form: InternalFormApi<TData, TFormValidators>
@@ -13,7 +13,7 @@ export interface InternalFieldProps<
 
 export function useField<
   TData,
-  TFormValidators extends Array<FormValidator<TData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TData>>,
   TFieldValue,
 >(options: InternalFieldProps<TData, TFormValidators, TFieldValue>) {
   const optionsRef = useRef(options)

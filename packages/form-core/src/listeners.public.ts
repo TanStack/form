@@ -7,7 +7,7 @@ export type FormListenerEvents = ValidationTrigger | 'mount' | 'reset'
 
 export interface FormListenerContext<
   TFormData,
-  TFormValidators extends Array<FormValidator<TFormData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 > {
   fieldApi?: FieldApi<TFormData, TFormValidators>
   formApi: TFormData
@@ -15,12 +15,12 @@ export interface FormListenerContext<
 
 export type FormListenerFn<
   TFormData,
-  TFormValidators extends Array<FormValidator<TFormData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 > = (context: FormListenerContext<TFormData, TFormValidators>) => void
 
 export interface FormListenerConfig<
   TFormData,
-  TFormValidators extends Array<FormValidator<TFormData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 > {
   run: FormListenerFn<TFormData, TFormValidators>
   triggers: Array<FormListenerEvents>
@@ -37,7 +37,7 @@ export type FieldListenerEvents =
 
 export interface FieldListenerContext<
   TFormData,
-  TFormValidators extends Array<FormValidator<TFormData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 > {
   value: any
   fieldApi: FieldApi<TFormData, TFormValidators>
@@ -45,12 +45,12 @@ export interface FieldListenerContext<
 
 export type FieldListenerFn<
   TFormData,
-  TFormValidators extends Array<FormValidator<TFormData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 > = (context: FieldListenerContext<TFormData, TFormValidators>) => void
 
 export interface FieldListenerConfig<
   TFormData,
-  TFormValidators extends Array<FormValidator<TFormData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 > {
   listener: FieldListenerFn<TFormData, TFormValidators>
   debounceMs?: number
@@ -58,7 +58,7 @@ export interface FieldListenerConfig<
 
 export type FieldListeners<
   TFormData,
-  TFormValidators extends Array<FormValidator<TFormData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 > = Partial<
   Record<
     FieldListenerEvents,

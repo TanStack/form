@@ -21,7 +21,7 @@ export interface SolidFormSubscribeProps<TFormData, TSelected> {
 
 export interface SolidFormFieldProps<
   TData,
-  TFormValidators extends Array<FormValidator<TData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TData>>,
   TFieldValue,
 > extends FieldApiOptions<TData, TFormValidators, TFieldValue> {
   children: (
@@ -31,7 +31,7 @@ export interface SolidFormFieldProps<
 
 export interface SolidFormArrayFieldProps<
   TData,
-  TFormValidators extends Array<FormValidator<TData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TData>>,
   TFieldValue,
 > extends FieldApiOptions<TData, TFormValidators, TFieldValue> {
   children: (
@@ -41,7 +41,7 @@ export interface SolidFormArrayFieldProps<
 
 export interface SolidTanStackFormComponents<
   TFormData,
-  TFormValidators extends Array<FormValidator<TFormData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 > {
   /**
    * TODO docs
@@ -59,7 +59,7 @@ export interface SolidTanStackFormComponents<
 
 export interface SolidFormApi<
   TFormData,
-  TFormValidators extends Array<FormValidator<TFormData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 >
   extends
     FormApi<TFormData, TFormValidators>,
@@ -70,7 +70,7 @@ export interface SolidFormApi<
  */
 export function createForm<
   TData,
-  TFormValidators extends Array<FormValidator<TData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TData>>,
 >(
   options: Accessor<FormOptions<TData, TFormValidators>>,
 ): SolidFormApi<TData, TFormValidators> {

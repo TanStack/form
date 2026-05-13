@@ -38,7 +38,7 @@ export type ValidationTrigger = 'change' | 'blur' | 'submit'
 export type ConfigurableValidationTrigger = Exclude<ValidationTrigger, 'submit'>
 
 export interface ValidationPredicateContext<TFormData, TValue = TFormData> {
-  formApi: FormApi<TFormData, Array<any>>
+  formApi: FormApi<TFormData, ReadonlyArray<any>>
   triggerFieldApi?: FieldApi<any, any>
   value: TValue
 }
@@ -79,7 +79,7 @@ export interface ValidationAggregateError {
 interface BaseValidatorContext<TFormData> {
   event: ValidationTrigger
   signal: AbortSignal
-  formApi: FormApi<TFormData, Array<any>>
+  formApi: FormApi<TFormData, ReadonlyArray<any>>
 }
 
 export interface FormValidatorContext<
@@ -96,7 +96,9 @@ export type ValidValidationResult = null | undefined | false
  */
 export type ValidationResult = ValidValidationResult | ValidationErrorInput
 
-export type FormValidationError = ValidationErrorInput | ValidationAggregateError
+export type FormValidationError =
+  | ValidationErrorInput
+  | ValidationAggregateError
 export type FormValidateResult = ValidationResult | ValidationAggregateError
 
 export type ValidatorFn<TParameter, TReturn> = (
@@ -113,6 +115,14 @@ export interface FormValidator<TFormData> extends Validator<
   FormValidatorFn<TFormData> | StandardSchemaV1<TFormData, any>,
   TFormData
 > {}
+
+export type FormStandardSchemaValidatorOutputs<
+  TFormValidators extends ReadonlyArray<FormValidator<any>>,
+> = TFormValidators[number] extends {
+  run: StandardSchemaV1<any, infer TOutput>
+}
+  ? TOutput
+  : never
 
 export interface FieldValidatorContext<
   TFormData,

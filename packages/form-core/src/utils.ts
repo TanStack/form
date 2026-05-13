@@ -23,7 +23,7 @@ type ValidationDebouncer<TResult> = LiteDebouncer<
 
 export interface PipelineCache<
   TFormData,
-  TFormValidators extends Array<FormValidator<TFormData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
   TResult,
 > {
   listenersDebouncers: Map<

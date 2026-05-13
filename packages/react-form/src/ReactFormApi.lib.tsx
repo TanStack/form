@@ -14,7 +14,7 @@ import type { FormOptions, FormValidator } from '@tanstack/form-core-v2'
 
 export interface InternalReactFormApi<
   TData,
-  TFormValidators extends Array<FormValidator<TData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TData>>,
 >
   extends
     InternalFormApi<TData, TFormValidators>,
@@ -22,7 +22,7 @@ export interface InternalReactFormApi<
 
 export function initializeForm<
   TFormData,
-  TFormValidators extends Array<FormValidator<TFormData>>,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 >(
   options: FormOptions<TFormData, TFormValidators>,
 ): InternalReactFormApi<TFormData, TFormValidators> {
