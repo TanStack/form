@@ -9,7 +9,7 @@ title: deepCopy
 function deepCopy<T>(obj): T;
 ```
 
-Defined in: [packages/form-core/src/utils.ts:623](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.ts#L623)
+Defined in: [packages/form-core/src/utils.ts:637](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.ts#L637)
 
 ## Type Parameters
 

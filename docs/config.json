@@ -46,6 +46,15 @@
           ]
         },
         {
+          "label": "preact",
+          "children": [
+            {
+              "label": "Quick Start",
+              "to": "framework/preact/quick-start"
+            }
+          ]
+        },
+        {
           "label": "vue",
           "children": [
             {
@@ -170,6 +179,67 @@
           ]
         },
         {
+          "label": "preact",
+          "children": [
+            {
+              "label": "Basic Concepts",
+              "to": "framework/preact/guides/basic-concepts"
+            },
+            {
+              "label": "Form Validation",
+              "to": "framework/preact/guides/validation"
+            },
+            {
+              "label": "Dynamic Validation",
+              "to": "framework/preact/guides/dynamic-validation"
+            },
+            {
+              "label": "Async Initial Values",
+              "to": "framework/preact/guides/async-initial-values"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/preact/guides/arrays"
+            },
+            {
+              "label": "Linked Fields",
+              "to": "framework/preact/guides/linked-fields"
+            },
+            {
+              "label": "Reactivity",
+              "to": "framework/preact/guides/reactivity"
+            },
+            {
+              "label": "Listeners",
+              "to": "framework/preact/guides/listeners"
+            },
+            {
+              "label": "Custom Errors",
+              "to": "framework/preact/guides/custom-errors"
+            },
+            {
+              "label": "Submission Handling",
+              "to": "framework/preact/guides/submission-handling"
+            },
+            {
+              "label": "UI Libraries",
+              "to": "framework/preact/guides/ui-libraries"
+            },
+            {
+              "label": "Focus Management",
+              "to": "framework/preact/guides/focus-management"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/preact/guides/form-composition"
+            },
+            {
+              "label": "Debugging",
+              "to": "framework/preact/guides/debugging"
+            }
+          ]
+        },
+        {
           "label": "vue",
           "children": [
             {
@@ -274,6 +344,10 @@
             {
               "label": "Arrays",
               "to": "framework/lit/guides/arrays"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/lit/guides/form-composition"
             }
           ]
         },
@@ -433,6 +507,35 @@
             {
               "label": "Types / UseField",
               "to": "framework/react/reference/type-aliases/UseField"
+            }
+          ]
+        },
+        {
+          "label": "preact",
+          "children": [
+            {
+              "label": "Preact Reference",
+              "to": "framework/preact/reference/index"
+            },
+            {
+              "label": "Variables / Field",
+              "to": "framework/preact/reference/variables/Field"
+            },
+            {
+              "label": "Functions / useField",
+              "to": "framework/preact/reference/functions/useField"
+            },
+            {
+              "label": "Functions / useForm",
+              "to": "framework/preact/reference/functions/useForm"
+            },
+            {
+              "label": "Types / FieldComponent",
+              "to": "framework/preact/reference/type-aliases/FieldComponent"
+            },
+            {
+              "label": "Types / UseField",
+              "to": "framework/preact/reference/type-aliases/UseField"
             }
           ]
         },

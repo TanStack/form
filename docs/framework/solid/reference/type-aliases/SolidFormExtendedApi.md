@@ -9,7 +9,7 @@ title: SolidFormExtendedApi
 type SolidFormExtendedApi<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta> = FormApi<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta> & SolidFormApi<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta>;
 ```
 
-Defined in: [packages/solid-form/src/createForm.tsx:132](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L132)
+Defined in: [packages/solid-form/src/createForm.tsx:118](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L118)
 
 An extended version of the `FormApi` class that includes React-specific functionalities from `ReactFormApi`
 

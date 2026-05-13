@@ -9,7 +9,7 @@ title: FormValidateFn
 type FormValidateFn<TFormData> = (props) => unknown;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:87](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L87)
+Defined in: [packages/form-core/src/FormApi.ts:92](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L92)
 
 ## Type Parameters
 

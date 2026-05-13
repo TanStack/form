@@ -13,7 +13,12 @@ import {
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
 import type { ReadonlyStore } from '@tanstack/store'
-import type { DeepKeys, DeepValue, UnwrapOneLevelOfArray } from './util-types'
+import type {
+  DeepKeys,
+  DeepValue,
+  RejectPromiseValidator,
+  UnwrapOneLevelOfArray,
+} from './util-types'
 import type {
   StandardSchemaV1,
   StandardSchemaV1Issue,
@@ -309,13 +314,13 @@ export interface FieldValidators<
   /**
    * An optional function, that runs on the mount event of input.
    */
-  onMount?: TOnMount
+  onMount?: RejectPromiseValidator<TOnMount>
   /**
    * An optional function, that runs on the change event of input.
    *
    * @example z.string().min(1)
    */
-  onChange?: TOnChange
+  onChange?: RejectPromiseValidator<TOnChange>
   /**
    * An optional property similar to `onChange` but async validation
    *
@@ -337,7 +342,7 @@ export interface FieldValidators<
    *
    * @example z.string().min(1)
    */
-  onBlur?: TOnBlur
+  onBlur?: RejectPromiseValidator<TOnBlur>
   /**
    * An optional property similar to `onBlur` but async validation.
    *
@@ -360,14 +365,14 @@ export interface FieldValidators<
    *
    * @example z.string().min(1)
    */
-  onSubmit?: TOnSubmit
+  onSubmit?: RejectPromiseValidator<TOnSubmit>
   /**
    * An optional property similar to `onSubmit` but async validation.
    *
    * @example z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })
    */
   onSubmitAsync?: TOnSubmitAsync
-  onDynamic?: TOnDynamic
+  onDynamic?: RejectPromiseValidator<TOnDynamic>
   onDynamicAsync?: TOnDynamicAsync
   onDynamicAsyncDebounceMs?: number
 }
@@ -631,6 +636,14 @@ export type FieldMetaBase<
    * A flag indicating whether the field is currently being validated.
    */
   isValidating: boolean
+  /**
+   * @private a counter that is incremented every time a structural array
+   * operation (push, insert, remove, swap, move, replace, clear) modifies
+   * the value of an array field. Adapters can subscribe to this to trigger
+   * re-renders for `mode="array"` fields without having to subscribe to the
+   * full field value.
+   */
+  _arrayVersion: number
 }
 
 export type AnyFieldMetaBase = FieldMetaBase<

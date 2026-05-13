@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/react-form-devtools",
-  "version": "0.2.22",
+  "version": "0.2.27",
   "description": "Devtools, for TanStack React form.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -56,10 +56,10 @@
     "@tanstack/form-devtools": "workspace:*"
   },
   "devDependencies": {
-    "@types/react": "^19.0.7",
+    "@types/react": "~19.1.0",
     "@vitejs/plugin-react": "^5.1.1",
     "eslint-plugin-react-compiler": "19.1.0-rc.2",
-    "react": "^19.0.0",
+    "react": "19.1.0",
     "vite": "^7.2.2"
   },
   "peerDependencies": {

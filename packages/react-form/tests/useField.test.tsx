@@ -1470,6 +1470,62 @@ describe('useField', () => {
     expect(renderCount.arrayField).toBeGreaterThan(arrayFieldBeforeAdd)
   })
 
+  it('should rerender array field on swapFieldValues even when length is unchanged', async () => {
+    // swapFieldValues does not change array length but must still notify the
+    // parent array field so subscribers see the new order.
+    const renderCount = { arrayField: 0 }
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          people: [{ name: 'John' }, { name: 'Jane' }],
+        },
+      })
+
+      return (
+        <form.Field name="people" mode="array">
+          {(arrayField) => {
+            renderCount.arrayField++
+            return (
+              <div>
+                <ol data-testid="list">
+                  {arrayField.state.value.map((person, i) => (
+                    <li key={i} data-testid={`item-${i}`}>
+                      {person.name}
+                    </li>
+                  ))}
+                </ol>
+                <button
+                  type="button"
+                  data-testid="swap"
+                  onClick={() => form.swapFieldValues('people', 0, 1)}
+                >
+                  Swap
+                </button>
+              </div>
+            )
+          }}
+        </form.Field>
+      )
+    }
+
+    const { getByTestId } = render(
+      <StrictMode>
+        <Comp />
+      </StrictMode>,
+    )
+
+    expect(getByTestId('item-0')).toHaveTextContent('John')
+    expect(getByTestId('item-1')).toHaveTextContent('Jane')
+
+    const before = renderCount.arrayField
+    await user.click(getByTestId('swap'))
+
+    expect(renderCount.arrayField).toBeGreaterThan(before)
+    expect(getByTestId('item-0')).toHaveTextContent('Jane')
+    expect(getByTestId('item-1')).toHaveTextContent('John')
+  })
+
   it('should handle defaultValue without setstate-in-render error', async () => {
     // Spy on console.error before rendering
     const consoleErrorSpy = vi.spyOn(console, 'error')

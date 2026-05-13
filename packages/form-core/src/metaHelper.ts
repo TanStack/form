@@ -19,6 +19,7 @@ export const defaultFieldMeta: AnyFieldMeta = {
   errors: [],
   errorMap: {},
   errorSourceMap: {},
+  _arrayVersion: 0,
 }
 
 export function metaHelper<
@@ -51,6 +52,20 @@ export function metaHelper<
   >,
 ) {
   /**
+   * Bump the `_arrayVersion` counter on the array field's meta. This
+   * provides a cheap, structural signal that adapters can subscribe to in
+   * order to trigger re-renders when the array is mutated in ways that
+   * `length` alone cannot detect (e.g. swaps and moves).
+   */
+  function bumpArrayVersion(field: DeepKeys<TFormData>) {
+    const currentMeta = formApi.getFieldMeta(field) ?? defaultFieldMeta
+    formApi.setFieldMeta(field, {
+      ...currentMeta,
+      _arrayVersion: (currentMeta._arrayVersion || 0) + 1,
+    })
+  }
+
+  /**
    * Handle the meta shift caused from moving a field from one index to another.
    */
   function handleArrayMove(
@@ -58,6 +73,7 @@ export function metaHelper<
     fromIndex: number,
     toIndex: number,
   ) {
+    bumpArrayVersion(field)
     const affectedFields = getAffectedFields(field, fromIndex, 'move', toIndex)
 
     const startIndex = Math.min(fromIndex, toIndex)
@@ -102,6 +118,7 @@ export function metaHelper<
    * Handle the meta shift from removing a field at the specified index.
    */
   function handleArrayRemove(field: DeepKeys<TFormData>, index: number) {
+    bumpArrayVersion(field)
     const affectedFields = getAffectedFields(field, index, 'remove')
 
     shiftMeta(affectedFields, 'up')
@@ -115,6 +132,7 @@ export function metaHelper<
     index: number,
     secondIndex: number,
   ) {
+    bumpArrayVersion(field)
     const affectedFields = getAffectedFields(field, index, 'swap', secondIndex)
 
     affectedFields.forEach((fieldKey) => {
@@ -143,6 +161,7 @@ export function metaHelper<
    * Handle the meta shift from inserting a field at the specified index.
    */
   function handleArrayInsert(field: DeepKeys<TFormData>, insertIndex: number) {
+    bumpArrayVersion(field)
     const affectedFields = getAffectedFields(field, insertIndex, 'insert')
 
     shiftMeta(affectedFields, 'down')
@@ -229,6 +248,7 @@ export function metaHelper<
   const getEmptyFieldMeta = (): AnyFieldMeta => defaultFieldMeta
 
   return {
+    bumpArrayVersion,
     handleArrayMove,
     handleArrayRemove,
     handleArraySwap,
