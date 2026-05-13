@@ -1317,9 +1317,6 @@ importers:
       '@babel/runtime':
         specifier: ^7.25.6
         version: 7.28.3
-      '@ember/app-tsconfig':
-        specifier: ^1.0.0
-        version: 1.0.3
       '@ember/library-tsconfig':
         specifier: ^1.0.0
         version: 1.1.3
@@ -1329,9 +1326,6 @@ importers:
       '@embroider/addon-dev':
         specifier: ^8.1.0
         version: 8.3.0(@glint/template@1.7.7)(rollup@4.52.5)
-      '@embroider/core':
-        specifier: ^4.1.0
-        version: 4.4.7(@glint/template@1.7.7)
       '@embroider/macros':
         specifier: ^1.20.1
         version: 1.20.2(@babel/core@7.28.5)(@glint/template@1.7.7)
@@ -1365,9 +1359,6 @@ importers:
       babel-plugin-ember-template-compilation:
         specifier: ^3.1.0
         version: 3.1.0
-      concurrently:
-        specifier: ^9.0.1
-        version: 9.2.1
       ember-eslint-parser:
         specifier: ^0.5.9
         version: 0.5.13(@babel/core@7.28.5)(@typescript-eslint/parser@8.46.4(eslint@9.36.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.36.0(jiti@2.6.1))(typescript@5.9.3)
@@ -1404,12 +1395,6 @@ importers:
       premove:
         specifier: ^4.0.0
         version: 4.0.0
-      prettier:
-        specifier: ^3.7.4
-        version: 3.7.4
-      prettier-plugin-ember-template-tag:
-        specifier: ^2.0.4
-        version: 2.1.5(prettier@3.7.4)
       publint:
         specifier: ^0.3.15
         version: 0.3.20
@@ -2810,9 +2795,6 @@ packages:
 
   '@ember-data/rfc395-data@0.0.4':
     resolution: {integrity: sha512-tGRdvgC9/QMQSuSuJV45xoyhI0Pzjm7A9o/MVVA3HakXIImJbbzx/k/6dO9CUEQXIyS2y0fW6C1XaYOG7rY0FQ==}
-
-  '@ember/app-tsconfig@1.0.3':
-    resolution: {integrity: sha512-dw+/F68xvBw8JYLpyFmAcnF5d/vZqlP6GkEde+XIuPPPn6PIakrh0jtP0/tPxBw8tVuc6eD+H+8CWSsSFrGuiA==}
 
   '@ember/library-tsconfig@1.1.3':
     resolution: {integrity: sha512-4cKJ38VEcm4mYmontK9BCpQgm5GPLgAeXqd6PqTHD8eKN0GTeegxdX4SsSUN/8emmULq/9H/Oh6fp3vM2mFqkA==}
@@ -7012,11 +6994,6 @@ packages:
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
-  concurrently@9.2.1:
-    resolution: {integrity: sha512-fsfrO0MxV64Znoy8/l1vVIjjHa29SZyyqPgQBwhiDcaW8wJc2W3XWVOGx4M3oJBnv/zdUZIIp1gDeS98GzP8Ng==}
-    engines: {node: '>=18'}
-    hasBin: true
-
   confbox@0.1.8:
     resolution: {integrity: sha512-RMtmw0iFkeR4YV+fUOSucriAQNb9g8zFR52MWCtl+cCZOFRNL6zeB395vPzFhEjjn4fMxXudmELnl/KF/WrK6w==}
 
@@ -10524,12 +10501,6 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
 
-  prettier-plugin-ember-template-tag@2.1.5:
-    resolution: {integrity: sha512-AF8Ld5DagbD5V3cw0tkw8youFD9fxsKAR4nowJ41WzgnaFZHXkyw+PnOAWP2ose1rw+Aff3Z7PXFPkn0/CmA5Q==}
-    engines: {node: 18.* || >= 20}
-    peerDependencies:
-      prettier: '>= 3.0.0'
-
   prettier@2.8.8:
     resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
     engines: {node: '>=10.13.0'}
@@ -11261,10 +11232,6 @@ packages:
 
   shell-quote@1.8.2:
     resolution: {integrity: sha512-AzqKpGKjrj7EM6rKVQEPpB288oCfnrEIuyoT9cyF4nmGa7V8Zk6f7RRqYisX8X9m+Q7bd632aZW4ky7EhbQztA==}
-    engines: {node: '>= 0.4'}
-
-  shell-quote@1.8.3:
-    resolution: {integrity: sha512-ObmnIF4hXNg1BqhnHmgbDETF8dLPCggZWBjkQfhZpbszZnYur5DUljTcCHii5LC3J5E0yeO/1LIMyH+UvHQgyw==}
     engines: {node: '>= 0.4'}
 
   shellwords@0.1.1:
@@ -14957,8 +14924,6 @@ snapshots:
   '@discoveryjs/json-ext@0.6.3': {}
 
   '@ember-data/rfc395-data@0.0.4': {}
-
-  '@ember/app-tsconfig@1.0.3': {}
 
   '@ember/library-tsconfig@1.1.3': {}
 
@@ -19587,15 +19552,6 @@ snapshots:
 
   concat-map@0.0.1: {}
 
-  concurrently@9.2.1:
-    dependencies:
-      chalk: 4.1.2
-      rxjs: 7.8.2
-      shell-quote: 1.8.3
-      supports-color: 8.1.1
-      tree-kill: 1.2.2
-      yargs: 17.7.2
-
   confbox@0.1.8: {}
 
   confbox@0.2.2: {}
@@ -23759,14 +23715,6 @@ snapshots:
 
   premove@4.0.0: {}
 
-  prettier-plugin-ember-template-tag@2.1.5(prettier@3.7.4):
-    dependencies:
-      '@babel/traverse': 7.28.5
-      content-tag: 4.2.0
-      prettier: 3.7.4
-    transitivePeerDependencies:
-      - supports-color
-
   prettier@2.8.8: {}
 
   prettier@3.7.4: {}
@@ -24658,8 +24606,6 @@ snapshots:
   shebang-regex@3.0.0: {}
 
   shell-quote@1.8.2: {}
-
-  shell-quote@1.8.3: {}
 
   shellwords@0.1.1: {}
 

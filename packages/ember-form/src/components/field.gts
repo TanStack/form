@@ -237,14 +237,23 @@ export default class Field<
 
     this.#api = new FieldApi(this.#fieldOptions as never);
 
-    // We replace the `state` getter on the FieldApi instance with one that
-    // reads from a `trackedObject` mirror of the store. This is intentionally
-    // unconventional: form-core's `FieldApi#state` is defined on the prototype
-    // and reads `this.store.state` synchronously. By shadowing it on the
-    // instance with a tracked snapshot, every `{{field.state.X}}` read inside
-    // a template entangles with the corresponding key on the tracked mirror,
-    // and the `store.subscribe` callback below assigns into that mirror to
-    // dirty only the keys that actually changed.
+    // ⚠️ This shadows `state` on the FieldApi *instance* — replacing the
+    // prototype getter defined by form-core (which returns `this.store.state`
+    // synchronously) with one that returns a `trackedObject` mirror.
+    //
+    // Why this is necessary: consumers yield the api into a template and read
+    // `{{field.state.value}}`, `{{field.state.meta.errors}}`, etc. For those
+    // reads to trigger re-renders, the property accesses must go through
+    // Glimmer's autotracking. The store itself doesn't entangle reads — it
+    // only notifies subscribers — so without this shadow, templates would
+    // render the initial value and then never update.
+    //
+    // Why we don't subclass FieldApi: form-core constructs the instance for
+    // us (and also constructs sub-fields internally), so we can't hook the
+    // constructor cleanly. Instance-level `Object.defineProperty` is the
+    // narrowest available seam, and it stays compatible with every method on
+    // FieldApi that reads `this.state` because the override mirrors the same
+    // value (just sourced from a tracked proxy).
     const state = trackedObject(this.#api.store.state) as object;
     Object.defineProperty(this.#api, 'state', {
       configurable: true,

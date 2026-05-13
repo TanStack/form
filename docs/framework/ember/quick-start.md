@@ -53,7 +53,7 @@ A few things worth pointing out:
 
 - `createForm(this, { ... })` is called from a class field initializer. The first argument is any destroyable — typically the component instance. The form's lifecycle (mount/unmount and store subscriptions) is tied to that destroyable.
 - `this.form.Field` is a closure-bound `<Field>` component that already knows about this form. You can also import `Field` from `@tanstack/ember-form` and pass `@form={{this.form}}` explicitly if you prefer.
-- Strict-mode templates require explicit imports for every helper, modifier, and component used — including `on` from `@ember/modifier` and `fn` from `@ember/helper`.
+- Common template built-ins like `on`, `fn`, `hash`, and `if` are compiled into scope by ember-source's template build transforms (ember-source 7+), so you don't need to import them.
 - `handleInput` is defined at module scope rather than as a method, so we can use the standard `(fn handleInput field)` pattern without binding `this` for every render.
 
 From here, you'll be ready to explore all of the other features of TanStack Form!

@@ -38,10 +38,6 @@
   "scripts": {
     "clean": "premove ./dist ./dist-tests ./declarations ./coverage",
     "build": "rollup --config",
-    "format": "prettier . --cache --write",
-    "lint": "concurrently \"pnpm:lint:*(!fix)\" --names \"lint:\" --prefixColors auto",
-    "lint:fix": "concurrently \"pnpm:lint:*:fix\" --names \"fix:\" --prefixColors auto && pnpm run format",
-    "lint:format": "prettier . --cache --check",
     "test:eslint": "eslint ./src ./tests",
     "test:types": "ember-tsc --noEmit -p tsconfig.publish.json",
     "test:lib": "NODE_ENV=development vite build --mode=development --out-dir dist-tests && testem --file testem.cjs ci --port 0",
@@ -64,11 +60,9 @@
     "@babel/eslint-parser": "^7.25.1",
     "@babel/plugin-transform-typescript": "^7.25.0",
     "@babel/runtime": "^7.25.6",
-    "@ember/app-tsconfig": "^1.0.0",
     "@ember/library-tsconfig": "^1.0.0",
     "@ember/test-helpers": "^5.2.1",
     "@embroider/addon-dev": "^8.1.0",
-    "@embroider/core": "^4.1.0",
     "@embroider/macros": "^1.20.1",
     "@embroider/vite": "^1.1.5",
     "@eslint/js": "^9.17.0",
@@ -80,7 +74,6 @@
     "@rollup/plugin-babel": "^6.0.4",
     "@typescript-eslint/parser": "^8.0.0",
     "babel-plugin-ember-template-compilation": "^3.1.0",
-    "concurrently": "^9.0.1",
     "ember-eslint-parser": "^0.5.9",
     "ember-page-title": "^9.0.3",
     "ember-qunit": "^9.0.2",
@@ -93,17 +86,12 @@
     "eslint-plugin-n": "^17.15.1",
     "globals": "^16.1.0",
     "premove": "^4.0.0",
-    "prettier": "^3.7.4",
-    "prettier-plugin-ember-template-tag": "^2.0.4",
     "publint": "^0.3.15",
     "qunit": "^2.24.1",
     "qunit-dom": "^3.4.0",
     "rollup": "^4.22.5",
     "testem": "^3.15.1",
     "vite": "^7.2.2"
-  },
-  "ember": {
-    "edition": "octane"
   },
   "ember-addon": {
     "version": 2,

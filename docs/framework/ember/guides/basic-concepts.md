@@ -7,19 +7,23 @@ This page introduces the basic concepts and terminology used in the `@tanstack/e
 
 ## Form Options
 
-You can create options for your form so that it can be shared between multiple forms by using the `formOptions` function.
+You can create options for your form so that they can be shared between multiple forms by using the `formOptions` function.
 
 Example:
 
 ```ts
 import { formOptions } from '@tanstack/ember-form';
 
+interface Person {
+  firstName: string;
+  lastName: string;
+  hobbies: Array<string>;
+}
+
+const defaultPerson: Person = { firstName: '', lastName: '', hobbies: [] };
+
 const formOpts = formOptions({
-  defaultValues: {
-    firstName: '',
-    lastName: '',
-    hobbies: [],
-  } as Person,
+  defaultValues: defaultPerson,
 });
 ```
 
@@ -29,7 +33,17 @@ A Form Instance is an object that represents an individual form and provides met
 
 ```ts
 import Component from '@glimmer/component';
-import { createForm } from '@tanstack/ember-form';
+import { createForm, formOptions } from '@tanstack/ember-form';
+
+interface Person {
+  firstName: string;
+  lastName: string;
+  hobbies: Array<string>;
+}
+
+const formOpts = formOptions({
+  defaultValues: { firstName: '', lastName: '', hobbies: [] } as Person,
+});
 
 export default class MyForm extends Component {
   form = createForm(this, {
@@ -45,6 +59,15 @@ export default class MyForm extends Component {
 You may also create a form instance without using `formOptions`:
 
 ```ts
+import Component from '@glimmer/component';
+import { createForm } from '@tanstack/ember-form';
+
+interface Person {
+  firstName: string;
+  lastName: string;
+  hobbies: Array<string>;
+}
+
 export default class MyForm extends Component {
   form = createForm<Person>(this, {
     onSubmit: async ({ value }) => {
@@ -163,13 +186,12 @@ Reading `field.state.value` inside a template entangles with Glimmer's autotrack
 
 ## Validation
 
-`@tanstack/ember-form` provides both synchronous and asynchronous validation out of the box. Validation functions can be passed to the `<Field>` component using the `@validators` arg, typically built up with the `hash` helper from `@ember/helper`.
+`@tanstack/ember-form` provides both synchronous and asynchronous validation out of the box. Validation functions can be passed to the `<Field>` component using the `@validators` arg, typically built up with the `hash` helper.
 
 Example:
 
 ```gjs
 import Component from '@glimmer/component';
-import { hash } from '@ember/helper';
 import { createForm } from '@tanstack/ember-form';
 
 const handleInput = (field, event) => field.handleChange(event.target.value);
@@ -227,7 +249,6 @@ Supported libraries include:
 
 ```gjs
 import Component from '@glimmer/component';
-import { hash } from '@ember/helper';
 import { z } from 'zod';
 import { createForm } from '@tanstack/ember-form';
 

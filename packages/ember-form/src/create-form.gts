@@ -15,7 +15,7 @@ import type {
  * The Ember-flavored extensions that `createForm` adds to the `FormApi`.
  *
  * Mirrors the shape of `SvelteFormApi` but uses Glimmer's autotracking
- * (`@tracked` via `TrackedValue`) instead of Svelte runes for reactivity.
+ * (via `trackedObject`) instead of Svelte runes for reactivity.
  */
 export interface EmberFormApi<
   TParentData,
@@ -130,12 +130,8 @@ export type EmberFormExtendedApi<
  *
  * Build a closure-bound `<Field>` for a specific `FormApi`. The returned
  * component takes all of `FieldSignature['Args']` minus `form` (which is
- * supplied from the closure), so it can be invoked as `<form.Field @name=... />`.
- *
- * Typed via `as never` because strict glint wants to validate the inner
- * `<Field>` invocation against the full Field signature, but we're forwarding
- * untyped args from the outer template scope (the loss of types is recovered
- * by the cast on the calling site, where `EmberFormApi['Field']` is declared).
+ * supplied from the closure), so it can be invoked as
+ * `<form.Field @name=... />`.
  */
 interface BoundFieldSignature {
   Args: {
@@ -182,7 +178,7 @@ function makeBoundField(
  * @example
  * ```gjs
  * import Component from '@glimmer/component';
- * import { createForm, Field } from '@tanstack/ember-form';
+ * import { createForm } from '@tanstack/ember-form';
  *
  * export default class MyForm extends Component {
  *   form = createForm(this, {
@@ -192,9 +188,9 @@ function makeBoundField(
  *
  *   <template>
  *     <form {{on "submit" this.form.handleSubmit}}>
- *       <Field @form={{this.form}} @name="firstName" as |field|>
+ *       <this.form.Field @name="firstName" as |field|>
  *         <input value={{field.state.value}} />
- *       </Field>
+ *       </this.form.Field>
  *     </form>
  *   </template>
  * }
