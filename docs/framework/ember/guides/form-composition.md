@@ -245,7 +245,6 @@ Sometimes, a pair of fields are so closely related that it makes sense to group 
 ```gjs
 // password-fields.gts
 import Component from '@glimmer/component';
-import { hash } from '@ember/helper';
 import type { AnyFormApi } from '@tanstack/ember-form';
 import TextField from './text-field.gts';
 

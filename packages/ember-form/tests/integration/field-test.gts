@@ -1,5 +1,4 @@
 import Component from '@glimmer/component';
-import { hash } from '@ember/helper';
 import { fillIn, render } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';

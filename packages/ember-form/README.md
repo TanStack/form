@@ -4,7 +4,9 @@ Powerful, type-safe forms for Ember, built on `@tanstack/form-core`.
 
 ## Compatibility
 
-- ember-source 6.8+ (gjs/gts only)
+- ember-source 7.1+ (gjs/gts only)
+
+ember-source 7.1's template build transforms compile common keywords (`on`, `fn`, `hash`, `if`, etc.) into template scope, so you don't need to import them from `@ember/helper` or `@ember/modifier`.
 
 ## Installation
 
@@ -16,7 +18,6 @@ pnpm add @tanstack/ember-form
 
 ```gjs
 import Component from '@glimmer/component';
-import { hash } from '@ember/helper';
 import { createForm, Field, Subscribe } from '@tanstack/ember-form';
 
 const handleInput = (field, event) => {
@@ -88,4 +89,4 @@ For the full guide — quick start, basic concepts, validation, dynamic validati
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE.md).
+MIT — see the [root LICENSE](../../LICENSE).

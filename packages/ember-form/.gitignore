@@ -3,18 +3,12 @@ dist/
 dist-tests/
 declarations/
 
-# from scenarios
-tmp/
-config/optional-features.json
-ember-cli-build.cjs
-
-# npm/pnpm/yarn pack output
+# pack output (publint, dry-run publishes)
 *.tgz
 
-# deps & caches
-node_modules/
+# caches
 .eslintcache
 .prettiercache
 
-# potentially containing secrets
+# local-only files
 *.local

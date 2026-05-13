@@ -1,17 +1,3 @@
-/**
- * Debugging:
- *   https://eslint.org/docs/latest/use/configure/debug
- *  ----------------------------------------------------
- *
- *   Print a file's calculated configuration
- *
- *     npx eslint --print-config path/to/file.js
- *
- *   Inspecting the config
- *
- *     npx eslint --inspect-config
- *
- */
 import babelParser from '@babel/eslint-parser/experimental-worker';
 import emberParser from 'ember-eslint-parser';
 import tsParser from '@typescript-eslint/parser';
