@@ -301,50 +301,27 @@ describe('makePathArray', () => {
   })
 
   it('should handle malformed input', () => {
-    // Backwards compatible:
-
-    // Previous output: ['a', 'b']
     expect(makePathArray('a..b')).toEqual(['a', 'b'])
-    // Previous output: ['a']
     expect(makePathArray(']a')).toEqual(['a'])
-    // Previous output: ['a']
     expect(makePathArray('a]')).toEqual(['a'])
-    // Previous output: ['a', 'b', 'c']
     expect(makePathArray('a[b[c')).toEqual(['a', 'b', 'c'])
-    // Previous output: ['a', 'b', 'c']
     expect(makePathArray('a[b[c]')).toEqual(['a', 'b', 'c'])
-    // Previous output: ['']
     expect(makePathArray('')).toEqual([''])
-    // Previous output: ['', '']
     expect(makePathArray('.')).toEqual(['', ''])
-    // Previous output: ['']
     expect(makePathArray('[')).toEqual([''])
-    // Previous output: ['']
     expect(makePathArray('[]')).toEqual([''])
-    // Previous output: ['', 'a']
     expect(makePathArray('.a')).toEqual(['', 'a'])
-    // Previous output: ['a', '']
     expect(makePathArray('a.')).toEqual(['a', ''])
-    // Previous output: ['a', '']
     expect(makePathArray('a[')).toEqual(['a', ''])
-    // Previous output: ['', 'a']
     expect(makePathArray('..a')).toEqual(['', 'a'])
-    // Previous output: ['a', '']
     expect(makePathArray('a..')).toEqual(['a', ''])
-    // Previous output: ['a', '']
     expect(makePathArray('a[[')).toEqual(['a', ''])
-    // Previous output: ['']
     expect(makePathArray(']')).toEqual([''])
-    // Previous output: ['', '']
     expect(makePathArray('[[')).toEqual(['', ''])
-    // Previous output: ['', 0]
     expect(makePathArray('[[0]')).toEqual(['', 0])
 
-    // Breaking changes:
-
-    // This case is impossible to reproduce without allocating a new string that
-    // completely elides `]` or maintaining an array buffer in the loop to do so.
-    // Previous output: ['ab']
+    // NOTE: This case differs from the previous implementation of makePathArray here:
+    // https://github.com/TanStack/form/blob/24ac6ca47074f5f1478db6744fb8004312ee5cbe/packages/form-core/src/utils.ts#L158
     expect(makePathArray('a]b')).toEqual(['a', 'b'])
   })
 })

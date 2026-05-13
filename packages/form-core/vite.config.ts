@@ -10,10 +10,6 @@ const config = defineConfig({
     environment: 'jsdom',
     coverage: { enabled: true, provider: 'istanbul', include: ['src/**/*'] },
     typecheck: { enabled: true },
-    benchmark: {
-      include: ['**/*.bench.ts'],
-      exclude: ['node_modules'],
-    },
   },
 })
 
