@@ -121,6 +121,11 @@ export interface FieldListener<
   TFieldValue,
 > extends Listener<FieldListenerTriggers, TFormData, TFieldValue> {
   run: FieldListenerFn<TFormData, TFormValidators, TFieldValue>
+  // TODO what to name it
+  // - listenTo
+  // - listenToFields
+  // - watchFields
+  watchFields?: Array<string>
 }
 
 export type FieldListeners<

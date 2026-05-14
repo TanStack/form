@@ -128,6 +128,8 @@ export interface FieldApi<
   handleChange: (value: Updater<any>, options?: FieldUpdateOptions) => void
 
   handleBlur: () => void
+
+  reset: () => void
 }
 
 export interface FieldApiOptions<

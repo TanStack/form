@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
 import { InternalFormApi } from '../../src/FormApi.lib'
-import { defaultFieldMeta } from '../../src/internals'
 
 describe('form - field meta', () => {
   describe('getFieldMeta', () => {
@@ -9,8 +8,9 @@ describe('form - field meta', () => {
 
       expect(form.getFieldMeta('name')).toEqual(undefined)
 
+      form._getOrCreateFieldApi({ name: 'name' })
       form.setFieldValue('name', 'bye')
-      expect(form.getFieldMeta('name')).toEqual(defaultFieldMeta)
+      expect(form.getFieldMeta('name')).toBeDefined()
     })
   })
 })

@@ -69,7 +69,7 @@ export class InternalRootFieldApi {
     while (stack.length > 0) {
       const field = stack.pop()!
 
-      field._notifyChange(
+      field._notifyEvent(
         {
           causeValidation: false,
           markAsBlurred: false,

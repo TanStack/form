@@ -79,19 +79,19 @@ function getDebounceMs(
   })
 }
 
-function isListenerSignalEnabled(
-  signal: ListenerTriggerOption<any, any, any>,
+function isListenerTriggerEnabled(
+  trigger: ListenerTriggerOption<any, any, any>,
   context: InputContext,
 ): boolean {
-  if (typeof signal === 'string') {
-    return signal === context.event
+  if (typeof trigger === 'string') {
+    return trigger === context.event
   }
 
-  if (signal.trigger !== context.event) {
+  if (trigger.trigger !== context.event) {
     return false
   }
 
-  const { when: enabled = true } = signal
+  const { when: enabled = true } = trigger
 
   return getEnabledState(enabled, context)
 }
@@ -100,8 +100,8 @@ function shouldRunListener(
   listener: Listener<any, any, any>,
   context: InputContext,
 ): boolean {
-  return (listener.triggers ?? []).some((signal) =>
-    isListenerSignalEnabled(signal, context),
+  return (listener.triggers ?? []).some((trigger) =>
+    isListenerTriggerEnabled(trigger, context),
   )
 }
 
@@ -233,18 +233,29 @@ interface FieldListenerPipelineArgs<
 > {
   pipeline: ReadonlyArray<FieldListener<TFormData, TFormValidators, any>>
   context: FieldInputContext
+  /**
+   * @private
+   * When an incoming watched field notifies, we should only run listeners
+   * that are actually interested in it.
+   */
+  listenerIndecesToRun: Array<number> | null
 }
 
 export function runFieldListenerPipeline<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 >({
-  pipeline,
+  pipeline: incomingPipeline,
   context,
+  listenerIndecesToRun,
 }: FieldListenerPipelineArgs<TFormData, TFormValidators>): void {
   if (context.fieldApi._isKilled) return
 
   const cache = context.fieldApi._getOrCreatePipelineCache()
+
+  const pipeline = listenerIndecesToRun
+    ? incomingPipeline.filter((_, i) => listenerIndecesToRun.includes(i))
+    : incomingPipeline
 
   return runListenerPipeline({
     pipeline,

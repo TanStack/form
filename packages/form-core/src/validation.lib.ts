@@ -149,19 +149,19 @@ function getDebounceMs(
   })
 }
 
-function isValidationSignalEnabled(
-  signal: ValidationTriggerOption<any>,
+function isValidationTriggerEnabled(
+  trigger: ValidationTriggerOption<any>,
   context: InputContext,
 ): boolean {
-  if (typeof signal === 'string') {
-    return signal === context.event
+  if (typeof trigger === 'string') {
+    return trigger === context.event
   }
 
-  if (signal.trigger !== context.event) {
+  if (trigger.trigger !== context.event) {
     return false
   }
 
-  const { when: enabled = true } = signal
+  const { when: enabled = true } = trigger
 
   return getEnabledState(enabled, context)
 }
@@ -177,7 +177,7 @@ function shouldRunValidator(
   }
 
   return (validator.triggers ?? []).some((signal) =>
-    isValidationSignalEnabled(signal, context),
+    isValidationTriggerEnabled(signal, context),
   )
 }
 

@@ -185,4 +185,6 @@ export interface FormApi<
     predicate: (value: any, index: number, array: Array<any>) => boolean,
     options?: FieldUpdateOptions & { thisArg?: any },
   ) => void
+
+  resetField: (fieldName: string) => void
 }

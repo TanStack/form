@@ -23,6 +23,7 @@ import type {
   AnyInternalFieldApi,
   InternalBaseFieldMeta,
   InternalFieldApi,
+  InternalFieldMeta,
 } from './FieldApi.lib'
 import type {
   FieldApiOverrideOptions,
@@ -239,6 +240,10 @@ export class InternalFormApi<
     return getBy(this.state.values, fieldName)
   }
 
+  getFieldMeta = (fieldName: string): InternalFieldMeta | undefined => {
+    return this._tryGetFieldApi(fieldName)?.meta
+  }
+
   setFieldValue = (
     fieldName: string,
     updater: Updater<any>,
@@ -255,6 +260,15 @@ export class InternalFormApi<
         'change',
       )
     })
+  }
+
+  resetField = (fieldName: string, opts?: FieldApiOverrideOptions) => {
+    const field = opts?.fieldApiOverride ?? this._tryGetFieldApi(fieldName)
+    this.valuesAtom.set((prev) =>
+      setBy(prev, fieldName, getBy(this.options.defaultValues, fieldName)),
+    )
+
+    field?._children.forEach((child) => child._kill())
   }
 
   // TODO type safety: DeepKeys that extend undefined?
@@ -523,7 +537,7 @@ export class InternalFormApi<
       this._formMetaAtom.set((prev) => ({ ...prev, isDirty: true }))
     }
 
-    field?._notifyChange(options, event)
+    field?._notifyEvent(options, event)
   }
 
   _isInvalidArrayMethod = (

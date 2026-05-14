@@ -10,6 +10,13 @@ import {
   normalizeValidationError,
   runFieldValidatorPipeline,
 } from './validation.lib'
+import { runFieldListenerPipeline } from './listeners.lib'
+import {
+  attachWatchingField,
+  detachWatchingField,
+  reconcileWatchedFields,
+} from './listeners-utils.lib'
+import type { FieldListener, FieldListenerTriggers } from './listeners.public'
 import type { PipelineCache } from './utils'
 import type {
   FieldValidatorPipelineResult,
@@ -137,6 +144,18 @@ export function getOrCreateFieldApi(
     if (node._isRoot) {
       throw new Error('Root node cannot be a field API')
     }
+    // Say we internally make a field for data storage:
+    // form._getOrCreateFieldApi({ name: 'foo' })
+
+    // later in the render cycle, a user renders a component that actually does
+    // form._getOrCreateFieldApi({ name: 'foo', validators: [...] })
+
+    // This would be too late! Even worse, we're going to send an error that validators
+    // changed length when the user did nothing wrong
+    // TODO
+    if (options) {
+      node._update(options)
+    }
     return node
   }
 
@@ -224,6 +243,14 @@ export interface InternalFieldApiParams<
 // when children access fullPath, it checks if parentVersion === childVersion
 // if not, recompute and sync version
 
+interface ListenToFieldsMeta {
+  field: AnyInternalFieldApi
+  name: string
+}
+
+export type FieldWatchingFields = Map<AnyInternalFieldApi, Set<number>>
+export type FieldListenToFields = Array<Array<ListenToFieldsMeta>>
+
 export type AnyInternalFieldApi = InternalFieldApi<any, any>
 
 export class InternalFieldApi<
@@ -238,6 +265,15 @@ export class InternalFieldApi<
   _fullPathCache: string | null = null
   _atoms: FieldAtoms
   _validators: Array<AnyFieldValidator>
+  _listeners: Array<FieldListener<any, any, any>> | null
+
+  // TODO implement
+  /**
+   * @private
+   * Fields that are listening to this one.
+   */
+  _watchingFields: FieldWatchingFields
+  _listenToFields: Array<Array<ListenToFieldsMeta>>
   _pipelineCache: PipelineCache<any> | null = null
   _isKilled = false
 
@@ -347,20 +383,48 @@ export class InternalFieldApi<
     parent,
     validators,
     form,
+    listeners,
   }: AnyInternalFieldApiParams) {
     this.#segment = segment
     this._parent = parent
     this.form = form
     this._validators = validators ?? []
     this._atoms = {}
+    this._listeners = listeners ?? null
+
+    this._watchingFields = new Map()
+    this._listenToFields = []
+    this._listeners = null
+
+    const reconciled = reconcileWatchedFields({
+      field: this,
+      prevListenToFields: this._listenToFields,
+      nextListeners: listeners,
+      form,
+    })
+
+    reconciled.attach.forEach(attachWatchingField)
   }
 
-  _update(params: Pick<AnyInternalFieldApiParams, 'validators'>) {
+  _update(options: Omit<AnyFieldApiOptions, 'name' | 'form'>) {
     if (this._isKilled) return
 
-    if (params.validators) {
-      this._validators = params.validators
+    if (options.validators) {
+      this._validators = options.validators
     }
+
+    const reconciled = reconcileWatchedFields({
+      field: this,
+      prevListenToFields: this._listenToFields,
+      nextListeners: options.listeners,
+      form: this.form,
+    })
+
+    reconciled.detach.forEach(detachWatchingField)
+    reconciled.attach.forEach(attachWatchingField)
+
+    this._listeners = reconciled.listeners
+    this._listenToFields = reconciled.listenToFields
   }
 
   _invalidateFullPath() {
@@ -530,7 +594,7 @@ export class InternalFieldApi<
     })
   }
 
-  _notifyChange(
+  _notifyEvent(
     options: FieldUpdateOptions & PropagateOptions,
     event: 'change' | 'blur' | 'submit',
   ): void {
@@ -589,6 +653,8 @@ export class InternalFieldApi<
       // fieldA can have special "override" meta
       // -> field-level validators
 
+      const seenListenerFields = new WeakSet<AnyInternalFieldApi>()
+
       while (!currNode._isRoot) {
         const isOriginalField = currNode === originalField
         const { isSelfDirty, isSelfTouched, isBlurred } = currNode.meta
@@ -605,6 +671,9 @@ export class InternalFieldApi<
             isBlurred: markAsBlurred ? true : prev.isBlurred,
           }))
         }
+
+        currNode._notifyListener(event, seenListenerFields)
+
         if (doPropagate) {
           currNode = currNode._parent
         } else {
@@ -615,6 +684,45 @@ export class InternalFieldApi<
 
     if (causeValidation) {
       this._triggerValidationCascade(event)
+    }
+  }
+
+  _notifyListener(
+    trigger: FieldListenerTriggers,
+    seenFields: WeakSet<AnyInternalFieldApi>,
+    onlyRunListenerIndeces: Array<number> | null = null,
+  ) {
+    if (this._isKilled) return
+    // Field A listens to Field B listens to field A
+    // FieldA.notifyListener -> fieldB.notifyListener -> fieldA.notifyLister
+    if (seenFields.has(this)) {
+      console.warn(
+        `Field listener: cyclical listener cycle detected. Check around the field ${this.name}`,
+      )
+      return
+    }
+
+    seenFields.add(this)
+
+    if (this._listeners) {
+      runFieldListenerPipeline({
+        pipeline: this._listeners,
+        context: {
+          event: trigger,
+          fieldApi: this,
+          formApi: this.form,
+        },
+        listenerIndecesToRun: onlyRunListenerIndeces,
+      })
+    }
+
+    for (const [watchingField, listenerIndeces] of this._watchingFields) {
+      if (watchingField._isKilled) {
+        this._watchingFields.delete(watchingField)
+        continue
+      }
+
+      watchingField._notifyListener(trigger, seenFields, [...listenerIndeces])
     }
   }
 
@@ -630,6 +738,8 @@ export class InternalFieldApi<
 
     this.#refCount++
     this._getOrCreateAtoms()
+
+    this._notifyListener('mount', new WeakSet())
     return () => this._unregister()
   }
 
@@ -642,6 +752,7 @@ export class InternalFieldApi<
     if (this._isKilled) return
 
     this.#refCount--
+    this._notifyListener('unmount', new WeakSet())
 
     if (this.#refCount <= 0) {
       setTimeout(() => {
@@ -654,6 +765,13 @@ export class InternalFieldApi<
         this._pruneIfUnused()
       }, 0)
     }
+  }
+
+  reset = () => {
+    // TODO: add reset functionality
+    this.form.resetField(this.name, { fieldApiOverride: this })
+
+    this._notifyListener('reset', new WeakSet())
   }
 
   /**
@@ -926,7 +1044,7 @@ export class InternalFieldApi<
   handleBlur = (): void => {
     if (this._isKilled) return
 
-    this._notifyChange(
+    this._notifyEvent(
       {
         markAsDirty: false,
         causeValidation: true,
@@ -1052,7 +1170,6 @@ function isPrunableMeta(meta: InternalBaseFieldMeta): boolean {
     (key) => meta.childContributionCounts[key] === 0,
   )
 }
-
 function getErrorsFromBaseMeta(
   baseMeta: InternalBaseFieldMeta,
   previousMeta?: InternalFieldMeta,
