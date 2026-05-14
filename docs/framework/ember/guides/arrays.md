@@ -10,30 +10,28 @@ TanStack Form supports arrays as values in a form, including sub-object values i
 To use an array, you can iterate over `field.state.value` with [`{{#each}}`](https://api.emberjs.com/ember/release/classes/Ember.Templates.helpers/methods/each):
 
 ```gjs
-import Component from '@glimmer/component';
 import { createForm } from '@tanstack/ember-form';
 
-export default class PeopleForm extends Component {
-  form = createForm(this, {
-    defaultValues: {
-      people: [],
-    },
-  });
+const PeopleForm = createForm({
+  defaultValues: {
+    people: [],
+  },
+});
 
-  <template>
-    <this.form.Field @name="people" @mode="array" as |field|>
+<template>
+  <PeopleForm as |Form|>
+    <Form.Field @name="people" @mode="array" as |field|>
       {{#each field.state.value as |person|}}
         {{!-- ... --}}
       {{/each}}
-    </this.form.Field>
-  </template>
-}
+    </Form.Field>
+  </PeopleForm>
+</template>
 ```
 
 This will regenerate the list every time you run `pushValue` on `field`:
 
 ```gjs
-
 const addPerson = (field) => field.pushValue({ name: '', age: 0 });
 
 {{!-- inside a template --}}
@@ -45,49 +43,48 @@ const addPerson = (field) => field.pushValue({ name: '', age: 0 });
 Finally, you can use a subfield like so:
 
 ```gjs
-
 const handleInput = (field, event) => field.handleChange(event.target.value);
 const nameAt = (i) => `people[${i}].name`;
 
 {{!-- inside a template --}}
-<this.form.Field @name={{nameAt i}} as |subField|>
+<Form.Field @name={{nameAt i}} as |subField|>
   <input
     value={{subField.state.value}}
     {{on "input" (fn handleInput subField)}}
   />
-</this.form.Field>
+</Form.Field>
 ```
 
 ## Full Example
 
 ```gjs
-import Component from '@glimmer/component';
 import { createForm } from '@tanstack/ember-form';
 
 const handleInput = (field, event) => field.handleChange(event.target.value);
 const nameAt = (i) => `people[${i}].name`;
 const addPerson = (field) => field.pushValue({ name: '', age: 0 });
 
-export default class PeopleForm extends Component {
-  form = createForm(this, {
-    defaultValues: {
-      people: [] as Array<{ age: number; name: string }>,
-    },
-    onSubmit: ({ value }) => alert(JSON.stringify(value)),
-  });
+const onSubmitFor = (form) => (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  form.handleSubmit();
+};
 
-  submit = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    this.form.handleSubmit();
-  };
+const handleSubmit = ({ value }) => alert(JSON.stringify(value));
 
-  <template>
-    <form id="form" {{on "submit" this.submit}}>
-      <this.form.Field @name="people" as |field|>
+const PeopleForm = createForm({
+  defaultValues: {
+    people: [] as Array<{ age: number; name: string }>,
+  },
+});
+
+<template>
+  <PeopleForm @onSubmit={{handleSubmit}} as |Form|>
+    <form id="form" {{on "submit" (onSubmitFor Form)}}>
+      <Form.Field @name="people" as |field|>
         <div>
           {{#each field.state.value as |person i|}}
-            <this.form.Field @name={{nameAt i}} as |subField|>
+            <Form.Field @name={{nameAt i}} as |subField|>
               <div>
                 <label>
                   <div>Name for person {{i}}</div>
@@ -97,19 +94,19 @@ export default class PeopleForm extends Component {
                   />
                 </label>
               </div>
-            </this.form.Field>
+            </Form.Field>
           {{/each}}
 
           <button {{on "click" (fn addPerson field)}} type="button">
             Add person
           </button>
         </div>
-      </this.form.Field>
+      </Form.Field>
 
       <button type="submit">Submit</button>
     </form>
-  </template>
-}
+  </PeopleForm>
+</template>
 ```
 
 > Note: in strict-mode templates you can't put complex expressions like `` `people[${i}].name` `` directly into an attribute or argument value. The `nameAt` helper above is a small module-level function that does the templating in JavaScript and is then invoked as `{{nameAt i}}`.

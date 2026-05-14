@@ -17,84 +17,82 @@ const handleInput = (
 const tooShort = ({ value }: { value: string }) =>
   value.length < 3 ? 'Not long enough' : undefined;
 
-export default class ApplicationTemplate extends Component {
-  form = createForm(this, {
-    defaultValues: { firstName: 'Christian', lastName: '' } as Person,
-    onSubmit: async ({ value }) => {
-      // eslint-disable-next-line no-console
-      console.log('submitted', value);
-    },
-  });
+const pickSubmitState = (state: {
+  canSubmit: boolean;
+  isSubmitting: boolean;
+}) => ({
+  cantSubmit: !state.canSubmit,
+  isSubmitting: state.isSubmitting,
+});
 
-  handleSubmit = (event: Event) => {
+const PersonForm = createForm({
+  defaultValues: { firstName: 'Christian', lastName: '' } as Person,
+});
+
+const onSubmitFor =
+  (form: { handleSubmit: () => void }) => (event: Event) => {
     event.preventDefault();
     event.stopPropagation();
-    this.form.handleSubmit();
+    form.handleSubmit();
   };
 
-  reset = () => this.form.reset();
-
-  pickSubmitState = (state: {
-    canSubmit: boolean;
-    isSubmitting: boolean;
-  }) => ({
-    cantSubmit: !state.canSubmit,
-    isSubmitting: state.isSubmitting,
-  });
+export default class ApplicationTemplate extends Component {
+  onSubmit = async ({ value }: { value: Person }) => {
+    // eslint-disable-next-line no-console
+    console.log('submitted', value);
+  };
 
   <template>
     {{pageTitle "Demo App"}}
 
     <h1>TanStack Form &mdash; Ember Demo</h1>
 
-    <form {{on "submit" this.handleSubmit}}>
-      <this.form.Field
-        @name="firstName"
-        @validators={{hash onChange=tooShort}}
-        as |field|
-      >
-        <div>
-          <label for="firstName">First Name</label>
-          <input
-            id="firstName"
-            type="text"
-            placeholder="First Name"
-            value={{field.state.value}}
-            {{on "input" (fn handleInput field)}}
-          />
-        </div>
-      </this.form.Field>
+    <PersonForm @onSubmit={{this.onSubmit}} as |Form|>
+      <form {{on "submit" (onSubmitFor Form)}}>
+        <Form.Field
+          @name="firstName"
+          @validators={{hash onChange=tooShort}}
+          as |field|
+        >
+          <div>
+            <label for="firstName">First Name</label>
+            <input
+              id="firstName"
+              type="text"
+              placeholder="First Name"
+              value={{field.state.value}}
+              {{on "input" (fn handleInput field)}}
+            />
+          </div>
+        </Form.Field>
 
-      <this.form.Field
-        @name="lastName"
-        @validators={{hash onChange=tooShort}}
-        as |field|
-      >
-        <div>
-          <label for="lastName">Last Name</label>
-          <input
-            id="lastName"
-            type="text"
-            placeholder="Last Name"
-            value={{field.state.value}}
-            {{on "input" (fn handleInput field)}}
-          />
-          {{#each field.state.meta.errors as |err|}}
-            <em>{{err}}</em>
-          {{/each}}
-        </div>
-      </this.form.Field>
+        <Form.Field
+          @name="lastName"
+          @validators={{hash onChange=tooShort}}
+          as |field|
+        >
+          <div>
+            <label for="lastName">Last Name</label>
+            <input
+              id="lastName"
+              type="text"
+              placeholder="Last Name"
+              value={{field.state.value}}
+              {{on "input" (fn handleInput field)}}
+            />
+            {{#each field.state.meta.errors as |err|}}
+              <em>{{err}}</em>
+            {{/each}}
+          </div>
+        </Form.Field>
 
-      <Subscribe
-        @form={{this.form}}
-        @selector={{this.pickSubmitState}}
-        as |slice|
-      >
-        <button type="submit" disabled={{slice.cantSubmit}}>
-          {{if slice.isSubmitting "Submitting" "Submit"}}
-        </button>
-      </Subscribe>
-      <button type="button" {{on "click" this.reset}}>Reset</button>
-    </form>
+        <Subscribe @form={{Form}} @selector={{pickSubmitState}} as |slice|>
+          <button type="submit" disabled={{slice.cantSubmit}}>
+            {{if slice.isSubmitting "Submitting" "Submit"}}
+          </button>
+        </Subscribe>
+        <button type="button" {{on "click" Form.reset}}>Reset</button>
+      </form>
+    </PersonForm>
   </template>
 }

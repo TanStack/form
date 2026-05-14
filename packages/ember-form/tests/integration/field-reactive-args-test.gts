@@ -6,15 +6,19 @@ import { setupRenderingTest } from 'ember-qunit';
 import { createForm, Field } from '@tanstack/ember-form';
 import { handleInput, type Sample } from '../helpers.ts';
 
+const minThree = ({ value }: { value: string }) =>
+  value.length < 3 ? 'min 3' : undefined;
+const minFive = ({ value }: { value: string }) =>
+  value.length < 5 ? 'min 5' : undefined;
+
+const SampleForm = createForm({
+  defaultValues: { firstName: '', lastName: '' } as Sample,
+});
+
 module('Integration | Field reactive args', function (hooks) {
   setupRenderingTest(hooks);
 
   test('changing @validators re-applies via api.update()', async function (assert) {
-    const minThree = ({ value }: { value: string }) =>
-      value.length < 3 ? 'min 3' : undefined;
-    const minFive = ({ value }: { value: string }) =>
-      value.length < 5 ? 'min 5' : undefined;
-
     class State {
       @tracked validator: ({ value }: { value: string }) => string | undefined =
         minThree;
@@ -22,12 +26,7 @@ module('Integration | Field reactive args', function (hooks) {
 
     const local = new State();
 
-    class TestForm extends Component {
-      form = createForm(this, {
-        defaultValues: { firstName: '', lastName: '' } as Sample,
-        onSubmit: async () => {},
-      });
-
+    class TestApp extends Component {
       get validator() {
         return local.validator;
       }
@@ -37,26 +36,28 @@ module('Integration | Field reactive args', function (hooks) {
       };
 
       <template>
-        <Field
-          @form={{this.form}}
-          @name="firstName"
-          @validators={{hash onChange=this.validator}}
-          as |field|
-        >
-          <input
-            id="firstName"
-            value={{field.state.value}}
-            {{on "input" (fn handleInput field)}}
-          />
-          {{#each field.state.meta.errors as |error|}}
-            <em class="error">{{error}}</em>
-          {{/each}}
-        </Field>
-        <button id="swap" type="button" {{on "click" this.swap}}>swap</button>
+        <SampleForm as |form|>
+          <Field
+            @form={{form}}
+            @name="firstName"
+            @validators={{hash onChange=this.validator}}
+            as |field|
+          >
+            <input
+              id="firstName"
+              value={{field.state.value}}
+              {{on "input" (fn handleInput field)}}
+            />
+            {{#each field.state.meta.errors as |error|}}
+              <em class="error">{{error}}</em>
+            {{/each}}
+          </Field>
+          <button id="swap" type="button" {{on "click" this.swap}}>swap</button>
+        </SampleForm>
       </template>
     }
 
-    await render(<template><TestForm /></template>);
+    await render(<template><TestApp /></template>);
 
     // initial validator (min 3): "Jo" should fail
     await fillIn('#firstName', 'Jo');

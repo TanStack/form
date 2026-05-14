@@ -1,39 +1,37 @@
-import Component from '@glimmer/component';
 import { fillIn, render } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { createForm, Subscribe } from '@tanstack/ember-form';
 import { handleInput, type Sample } from '../helpers.ts';
 
+const SampleForm = createForm({
+  defaultValues: { firstName: '', lastName: '' } as Sample,
+});
+
+const GraceForm = createForm({
+  defaultValues: { firstName: 'Grace', lastName: '' } as Sample,
+});
+
+const pickValues = (state: { values: Sample }) => state.values;
+
 module('Integration | Subscribe', function (hooks) {
   setupRenderingTest(hooks);
 
   test('yields a selected slice that updates', async function (assert) {
-    const pickValues = (state: { values: Sample }) => state.values;
-
-    class TestForm extends Component {
-      form = createForm(this, {
-        defaultValues: { firstName: '', lastName: '' } as Sample,
-        onSubmit: async () => {},
-      });
-
-      pickValues = pickValues;
-
-      <template>
-        <this.form.Field @name="firstName" as |field|>
+    await render(<template>
+      <SampleForm as |form|>
+        <form.Field @name="firstName" as |field|>
           <input
             id="firstName"
             value={{field.state.value}}
             {{on "input" (fn handleInput field)}}
           />
-        </this.form.Field>
-        <Subscribe @form={{this.form}} @selector={{this.pickValues}} as |values|>
+        </form.Field>
+        <Subscribe @form={{form}} @selector={{pickValues}} as |values|>
           <output id="snapshot">{{values.firstName}}</output>
         </Subscribe>
-      </template>
-    }
-
-    await render(<template><TestForm /></template>);
+      </SampleForm>
+    </template>);
     assert.dom('#snapshot').hasText('');
 
     await fillIn('#firstName', 'Ada');
@@ -41,20 +39,13 @@ module('Integration | Subscribe', function (hooks) {
   });
 
   test('omitted selector yields the full form state', async function (assert) {
-    class TestForm extends Component {
-      form = createForm(this, {
-        defaultValues: { firstName: 'Grace', lastName: '' } as Sample,
-        onSubmit: async () => {},
-      });
-
-      <template>
-        <Subscribe @form={{this.form}} as |state|>
+    await render(<template>
+      <GraceForm as |form|>
+        <Subscribe @form={{form}} as |state|>
           <output id="firstNameSnapshot">{{state.values.firstName}}</output>
         </Subscribe>
-      </template>
-    }
-
-    await render(<template><TestForm /></template>);
+      </GraceForm>
+    </template>);
     assert.dom('#firstNameSnapshot').hasText('Grace');
   });
 });
