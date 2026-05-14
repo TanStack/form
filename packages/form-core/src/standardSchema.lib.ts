@@ -1,3 +1,4 @@
+import { isNil } from './utils'
 import type {
   StandardSchemaV1,
   StandardSchemaV1Issue,
@@ -16,37 +17,48 @@ export function prefixSchemaToErrors(
   const schema = new Map<string, Array<StandardSchemaV1Issue>>()
 
   for (const issue of issues) {
-    const issuePath = issue.path ?? []
+    const path = getPathFromIssue(issue, formValue)
+    if (path === '') continue
 
-    let currentFormValue = formValue
-    let path = ''
-
-    for (let i = 0; i < issuePath.length; i++) {
-      const pathSegment = issuePath[i]
-      if (pathSegment === undefined) continue
-
-      const segment =
-        typeof pathSegment === 'object' ? pathSegment.key : pathSegment
-
-      // Standard Schema doesn't specify if paths should use numbers or stringified numbers for array access.
-      // However, if we follow the path it provides and encounter an array, then we can assume it's intended for array access.
-      const segmentAsNumber = Number(segment)
-      if (Array.isArray(currentFormValue) && !Number.isNaN(segmentAsNumber)) {
-        path += `[${segmentAsNumber}]`
-      } else {
-        path += (i > 0 ? '.' : '') + String(segment)
-      }
-
-      if (typeof currentFormValue === 'object' && currentFormValue !== null) {
-        currentFormValue = currentFormValue[segment as never]
-      } else {
-        currentFormValue = undefined
-      }
-    }
     schema.set(path, (schema.get(path) ?? []).concat(issue))
   }
 
   return Object.fromEntries(schema)
+}
+
+function getPathFromIssue(
+  issue: StandardSchemaV1Issue,
+  formValue: unknown,
+): string {
+  const issuePath = issue.path ?? []
+
+  let currentFormValue = formValue
+  let path = ''
+
+  for (const pathSegment of issuePath) {
+    if (isNil(pathSegment)) continue
+
+    const segment =
+      typeof pathSegment === 'object' ? pathSegment.key : pathSegment
+    if (segment === '') continue
+
+    // Standard Schema doesn't specify if paths should use numbers or stringified numbers for array access.
+    // However, if we follow the path it provides and encounter an array, then we can assume it's intended for array access.
+    const segmentAsNumber = Number(segment)
+    if (Array.isArray(currentFormValue) && !Number.isNaN(segmentAsNumber)) {
+      path += `[${segmentAsNumber}]`
+    } else {
+      path += (path === '' ? '' : '.') + String(segment)
+    }
+
+    if (typeof currentFormValue === 'object' && currentFormValue !== null) {
+      currentFormValue = currentFormValue[segment as never]
+    } else {
+      currentFormValue = undefined
+    }
+  }
+
+  return path
 }
 
 export function isStandardSchema(
@@ -77,6 +89,7 @@ export function parseStandardSchema<TOutput>(
       scope === 'field'
         ? (result.issues as Array<ErrorWithMessage>)
         : {
+            form: result.issues.slice(),
             // TODO the form probably wants a copy?
             fields: prefixSchemaToErrors(result.issues, value),
           }
