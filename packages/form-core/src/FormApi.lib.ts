@@ -96,8 +96,12 @@ export interface BaseFormMeta {
    * Used to clear stale field errors when a validator no longer reports them.
    */
   fieldErrors: Array<Set<AnyInternalFieldApi>>
+  /**
+   * @private
+   * Root fields whose own or descendant meta currently contributes errors.
+   */
+  errorFields: Set<AnyInternalFieldApi>
   isSubmitting: boolean
-  submissionAttempts: number
   isSubmitSuccessful: boolean
 }
 
@@ -108,8 +112,8 @@ function createInitialFormMeta(validatorCount: number): BaseFormMeta {
     errors: Array.from({ length: validatorCount }, () => []),
     errorSourceEvents: Array.from({ length: validatorCount }, () => null),
     fieldErrors: Array.from({ length: validatorCount }, () => new Set()),
+    errorFields: new Set(),
     isSubmitting: false,
-    submissionAttempts: 0,
     isSubmitSuccessful: false,
   }
 }
@@ -205,6 +209,37 @@ function hasFieldEventError(
   )
 }
 
+function hasValidatorErrors(errors: Array<Array<ErrorWithMessage>>): boolean {
+  return errors.some((validatorErrors) => validatorErrors.length > 0)
+}
+
+function hasFieldErrors(field: AnyInternalFieldApi): boolean {
+  const meta = field._getBaseMeta()
+
+  return (
+    hasValidatorErrors(meta._fieldValidatorErrors) ||
+    hasValidatorErrors(meta._formValidatorErrors) ||
+    meta.childContributionCounts.error > 0
+  )
+}
+
+function reconcileErrorFields(
+  errorFields: Set<AnyInternalFieldApi>,
+  fields: Iterable<AnyInternalFieldApi>,
+): Set<AnyInternalFieldApi> {
+  const nextErrorFields = new Set(errorFields)
+
+  for (const field of fields) {
+    if (hasFieldErrors(field)) {
+      nextErrorFields.add(field)
+    } else {
+      nextErrorFields.delete(field)
+    }
+  }
+
+  return nextErrorFields
+}
+
 export class InternalFormApi<
   TFormData,
   const TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
@@ -212,11 +247,12 @@ export class InternalFormApi<
   valuesAtom: Atom<TFormData>
   store: ReadonlyAtom<FormState<TFormData>>
   _formMetaAtom: Atom<BaseFormMeta>
+  _submissionAttemptsAtom: Atom<number>
+  _resetVersionAtom: Atom<number>
   _fieldRootNode: InternalRootFieldApi
   _options: FormOptions<TFormData, TFormValidators>
   _lastUpdateDefaultValues: TFormData
   _pipelineCache: PipelineCache<any>
-  _resetVersion = 0
   _schemaOutputs: Array<any> = []
 
   get state(): FormState<TFormData> {
@@ -233,12 +269,15 @@ export class InternalFormApi<
     this._pipelineCache = createPipelineCache()
     const validatorCount = this._options.validators?.length ?? 0
     this._formMetaAtom = createAtom(createInitialFormMeta(validatorCount))
+    this._submissionAttemptsAtom = createAtom(0)
+    this._resetVersionAtom = createAtom(0)
     this._fieldRootNode = new InternalRootFieldApi(this)
 
     this.store = createAtom(
       () => {
         const values = this.valuesAtom.get()
         const baseFormMeta = this._formMetaAtom.get()
+        const submissionAttempts = this._submissionAttemptsAtom.get()
 
         const isDirty = baseFormMeta.isDirty
         const isPristine = !isDirty
@@ -246,6 +285,13 @@ export class InternalFormApi<
         // TODO weakmap cache? Otherwise this always makes a new reference
         // Field already does it for its meta, use it as reference
         const formErrors = baseFormMeta.errors.flat()
+        // TODO mount errors
+        const hasMountError = false as boolean
+        const hasErrors =
+          hasMountError ||
+          formErrors.length > 0 ||
+          baseFormMeta.errorFields.size > 0
+        const canSubmit = !baseFormMeta.isSubmitting && !hasErrors
 
         return {
           values,
@@ -253,8 +299,9 @@ export class InternalFormApi<
           isDirty,
           isPristine,
           formErrors,
+          canSubmit,
           isSubmitting: baseFormMeta.isSubmitting,
-          submissionAttempts: baseFormMeta.submissionAttempts,
+          submissionAttempts,
         } satisfies FormState<TFormData>
       },
       { compare: shallow },
@@ -265,23 +312,25 @@ export class InternalFormApi<
     return () => {}
   }
 
-  // keepDefaultValues is an ass name, reconsider || preserveDefaultValues?
+  // keepDefaultValues is a bad name, reconsider || preserveDefaultValues?
+  // Once decided, fix `FormApi.public.ts` to also have it
   // TODO
   reset = (values?: TFormData, opts?: { preserveDefaultValues?: boolean }) => {
     if (values && !opts?.preserveDefaultValues) {
       this._options = { ...this.options, defaultValues: values }
     }
 
-    this._resetVersion++
     cancelPipelineCache(this._pipelineCache)
     this._pipelineCache = createPipelineCache()
     this._schemaOutputs = []
 
     batch(() => {
+      this._resetVersionAtom.set((version) => version + 1)
       this._fieldRootNode._children.forEach((child) => child._kill())
       this._formMetaAtom.set(
         createInitialFormMeta(this.options.validators?.length ?? 0),
       )
+      this._submissionAttemptsAtom.set(0)
       this.valuesAtom.set(values ?? this._options.defaultValues)
     })
   }
@@ -295,6 +344,10 @@ export class InternalFormApi<
 
     this._lastUpdateDefaultValues = options.defaultValues
     this._options = options
+
+    if (options.errorVisibility !== oldOptions.errorVisibility) {
+      this._fieldRootNode._children.forEach((child) => child._invalidateMeta())
+    }
 
     if (
       (options.validators?.length ?? 0) !== (oldOptions.validators?.length ?? 0)
@@ -740,11 +793,15 @@ export class InternalFormApi<
   _getOrCreateFieldApi = (
     options: Omit<AnyFieldApiOptions, 'form'>,
   ): InternalFieldApi<TFormData, TFormValidators> => {
+    const { name, ...restOpts } = options
+
+    const fieldOptions = Object.keys(restOpts).length > 0 ? restOpts : undefined
+
     return getOrCreateFieldApi(
       this._fieldRootNode,
-      nameToFieldNodeSegments(options.name),
+      nameToFieldNodeSegments(name),
       this,
-      options,
+      fieldOptions,
     )
   }
 
@@ -845,15 +902,17 @@ export class InternalFormApi<
       this._formMetaAtom.set((prev) => {
         const fieldErrors = [...prev.fieldErrors]
         const oldFieldRefs = fieldErrors[result.validatorIndex]
+        let errorFields = prev.errorFields
 
         if (oldFieldRefs) {
           for (const field of oldFieldRefs) {
             this._clearFieldValidatorError(field, result.validatorIndex)
           }
           fieldErrors[result.validatorIndex] = new Set()
+          errorFields = reconcileErrorFields(errorFields, oldFieldRefs)
         }
 
-        return { ...prev, fieldErrors }
+        return { ...prev, fieldErrors, errorFields }
       })
     })
   }
@@ -899,6 +958,7 @@ export class InternalFormApi<
         const oldFieldRefs = fieldErrors[validatorIndex]
 
         const staleFieldRefs = oldFieldRefs ? new Set(oldFieldRefs) : undefined
+        const affectedFields = new Set<AnyInternalFieldApi>()
 
         // Set new field errors and build the new reference set
         for (const [fieldName, fieldError] of Object.entries(
@@ -924,6 +984,7 @@ export class InternalFormApi<
             } satisfies InternalBaseFieldMeta
           })
           newFieldRefs.add(field)
+          affectedFields.add(field)
           staleFieldRefs?.delete(field)
         }
 
@@ -931,12 +992,17 @@ export class InternalFormApi<
         if (staleFieldRefs) {
           for (const field of staleFieldRefs) {
             this._clearFieldValidatorError(field, validatorIndex)
+            affectedFields.add(field)
           }
         }
 
         fieldErrors[validatorIndex] = newFieldRefs
+        const errorFields = reconcileErrorFields(
+          prev.errorFields,
+          affectedFields,
+        )
 
-        return { ...prev, fieldErrors }
+        return { ...prev, fieldErrors, errorFields }
       })
     })
   }
@@ -993,15 +1059,17 @@ export class InternalFormApi<
   }
 
   handleSubmit = async (): Promise<Array<FormValidationError>> => {
-    const submitResetVersion = this._resetVersion
+    const submitResetVersion = this._resetVersionAtom.get()
     const hasResettedFormDuringSubmit = () =>
-      this._resetVersion !== submitResetVersion
+      this._resetVersionAtom.get() !== submitResetVersion
 
-    this._formMetaAtom.set((prev) => ({
-      ...prev,
-      isSubmitting: true,
-      submissionAttempts: prev.submissionAttempts + 1,
-    }))
+    batch(() => {
+      this._submissionAttemptsAtom.set((prev) => prev + 1)
+      this._formMetaAtom.set((prev) => ({
+        ...prev,
+        isSubmitting: true,
+      }))
+    })
 
     const submissionData = {
       hasFailed: false,

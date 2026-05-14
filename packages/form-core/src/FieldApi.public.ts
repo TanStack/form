@@ -1,17 +1,12 @@
 import type { FieldUpdateOptions, Updater } from './types.public'
 import type { FormApi } from './FormApi.public'
 import type {
+  ErrorVisibility,
   ErrorWithMessage,
   FieldValidator,
   FormValidator,
 } from './validation.public'
 import type { FieldListeners } from './listeners.public'
-
-/**
- * field.state.value
- * field.state.isTouched
- * field.state.errors
- */
 
 export interface BaseFieldMeta {
   isTouched: boolean
@@ -27,6 +22,12 @@ export interface SubfieldsMeta {
   isSomeTouched: boolean
 }
 
+export interface OriginalFieldMeta {
+  errors: Array<ErrorWithMessage>
+  isValid: boolean
+  isInvalid: boolean
+}
+
 export interface FieldMeta extends BaseFieldMeta {
   isPristine: boolean
   isSelfTouched: boolean
@@ -36,6 +37,7 @@ export interface FieldMeta extends BaseFieldMeta {
   isValid: boolean
   subfields: SubfieldsMeta
   errors: Array<ErrorWithMessage>
+  original: OriginalFieldMeta
 }
 
 export interface FieldState {
@@ -43,7 +45,10 @@ export interface FieldState {
   meta: FieldMeta
 }
 
-export type FieldErrors = Array<any>
+// TODO this should be inferred
+export type FieldErrors = Array<ErrorWithMessage>
+
+export type AnyFieldApi = FieldApi<any, any>
 
 export interface FieldApi<
   TFormData,
@@ -138,6 +143,7 @@ export interface FieldApiOptions<
   TFieldValue,
 > {
   name: string
+  errorVisibility?: ErrorVisibility
   validators?: Array<FieldValidator<TFormData, TFieldValue>>
   listeners?: FieldListeners<TFormData, TFormValidators>
 }

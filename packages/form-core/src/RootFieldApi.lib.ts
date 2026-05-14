@@ -45,6 +45,26 @@ export class InternalRootFieldApi {
     })
   }
 
+  _updateErrorFields(
+    node: AnyInternalFieldApi,
+    prevContributes: boolean,
+    newContributes: boolean,
+  ) {
+    if (prevContributes === newContributes) return
+
+    this.form._formMetaAtom.set((prev) => {
+      const errorFields = new Set(prev.errorFields)
+
+      if (newContributes) {
+        errorFields.add(node)
+      } else {
+        errorFields.delete(node)
+      }
+
+      return { ...prev, errorFields }
+    })
+  }
+
   _removeChild(segment: NameSegment): void {
     this.#children.delete(segment)
   }

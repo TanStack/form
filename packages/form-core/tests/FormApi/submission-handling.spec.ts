@@ -80,6 +80,29 @@ describe('form - submission handling', () => {
       ])
     })
 
+    it('sets canSubmit to false while submitting', async () => {
+      let finishSubmit!: () => void
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        onSubmit: () =>
+          new Promise<void>((resolve) => {
+            finishSubmit = resolve
+          }),
+      })
+
+      const submitPromise = form.handleSubmit()
+      await vi.waitFor(() => {
+        expect(finishSubmit).toBeTypeOf('function')
+      })
+
+      expect(form.state.canSubmit).toBe(false)
+
+      finishSubmit()
+      await submitPromise
+
+      expect(form.state.canSubmit).toBe(true)
+    })
+
     it('preserves schema output when later non-schema validators run', async () => {
       const onSubmit = vi.fn()
       const schema = z

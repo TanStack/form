@@ -15,6 +15,11 @@ describe('form - lifecycle', () => {
       expect(form.state.isTouched).toBe(false)
     })
 
+    it('state.canSubmit starts as true', () => {
+      const form = new InternalFormApi({ defaultValues: { name: '' } })
+      expect(form.state.canSubmit).toBe(true)
+    })
+
     it('supports updating defaultValues after initialization', () => {
       const form = new InternalFormApi({ defaultValues: { name: '' } })
       expect(form.state.values).toEqual({ name: '' })

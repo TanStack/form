@@ -43,6 +43,7 @@ import type {
   SubfieldsMeta,
 } from './FieldApi.public'
 import type {
+  ErrorVisibility,
   ErrorWithMessage,
   FieldValidateResult,
   FieldValidator,
@@ -232,6 +233,8 @@ export const defaultInternalBaseFieldMeta: InternalBaseFieldMeta = {
 
 export const defaultFieldMeta: InternalFieldMeta = deriveFromBaseFieldMeta(
   defaultInternalBaseFieldMeta,
+  undefined,
+  undefined,
 )
 
 export type AnyInternalFieldApiParams = InternalFieldApiParams<any, any>
@@ -297,6 +300,7 @@ export class InternalFieldApi<
   _atoms: FieldAtoms
   _validators: Array<AnyFieldValidator> | null
   _listeners: Array<FieldListener<any, any, any>> | null
+  _errorVisibility: ErrorVisibility | undefined
 
   // TODO implement
   /**
@@ -350,7 +354,7 @@ export class InternalFieldApi<
         const newMeta = metaAtom.get()
         const value = this._getValue()
 
-        const meta = deriveFromBaseFieldMeta(newMeta, prev?.meta)
+        const meta = deriveFromBaseFieldMeta(newMeta, prev?.meta, this)
 
         if (prev?.meta === meta && prev.value === value) {
           return prev
@@ -417,11 +421,13 @@ export class InternalFieldApi<
     validators,
     form,
     listeners,
+    errorVisibility,
   }: AnyInternalFieldApiParams) {
     this.#segment = segment
     this._parent = parent
     this.form = form
     this._validators = validators && validators.length > 0 ? validators : null
+    this._errorVisibility = errorVisibility
     this._atoms = {}
     this._listeners = null
     this._watchingFields = null
@@ -455,6 +461,8 @@ export class InternalFieldApi<
   _update(options: Omit<AnyFieldApiOptions, 'name' | 'form'>) {
     if (this._isKilled) return
 
+    this._errorVisibility = options.errorVisibility
+
     const reconciledListeners = reconcileWatchedListenerFields({
       field: this,
       prevListenToFields: this._listenToFields,
@@ -487,6 +495,16 @@ export class InternalFieldApi<
   _invalidateFullPath() {
     this._pathVersion++
     this._fullPathCache = null
+  }
+
+  _invalidateMeta() {
+    if (this._atoms.meta) {
+      this._atoms.meta.set((prev) => ({ ...prev }))
+    }
+
+    for (const child of this.#children.values()) {
+      child._invalidateMeta()
+    }
   }
 
   /**
@@ -525,11 +543,10 @@ export class InternalFieldApi<
 
     this._getOrCreateAtoms().meta.set((prevMeta) => {
       const newMeta = callUpdater(updater, prevMeta)
+      const prevContributions = getChildContributionStates(prevMeta)
+      const newContributions = getChildContributionStates(newMeta)
 
       if (!this._parent._isRoot) {
-        const prevContributions = getChildContributionStates(prevMeta)
-        const newContributions = getChildContributionStates(newMeta)
-
         for (const key of childContributionKeys) {
           this._parent._updateChildContributionCount(
             key,
@@ -537,6 +554,12 @@ export class InternalFieldApi<
             newContributions[key],
           )
         }
+      } else {
+        this._parent._updateErrorFields(
+          this,
+          prevContributions.error,
+          newContributions.error,
+        )
       }
 
       return newMeta
@@ -1021,6 +1044,7 @@ export class InternalFieldApi<
 
       this.form._formMetaAtom.set((prev) => {
         let touchedFields = prev.touchedFields
+        let errorFields = prev.errorFields
 
         if (touchedFields.size > 0) {
           const nextTouchedFields = new Set(touchedFields)
@@ -1031,6 +1055,18 @@ export class InternalFieldApi<
 
           if (nextTouchedFields.size !== touchedFields.size) {
             touchedFields = nextTouchedFields
+          }
+        }
+
+        if (errorFields.size > 0) {
+          const nextErrorFields = new Set(errorFields)
+
+          for (const node of nodesToKill) {
+            nextErrorFields.delete(node)
+          }
+
+          if (nextErrorFields.size !== errorFields.size) {
+            errorFields = nextErrorFields
           }
         }
 
@@ -1056,7 +1092,7 @@ export class InternalFieldApi<
           }
         }
 
-        return { ...prev, touchedFields, fieldErrors }
+        return { ...prev, touchedFields, errorFields, fieldErrors }
       })
     })
   }
@@ -1268,21 +1304,27 @@ export class InternalFieldApi<
 function getFieldSnapshot(field: AnyInternalFieldApi): InternalFieldState {
   return {
     value: field._getValue(),
-    meta: deriveFromBaseFieldMeta(field._getBaseMeta()),
+    meta: deriveFromBaseFieldMeta(field._getBaseMeta(), undefined, field),
   }
 }
 
 function deriveFromBaseFieldMeta(
   baseMeta: InternalBaseFieldMeta,
-  previousMeta?: InternalFieldMeta,
+  previousMeta: InternalFieldMeta | undefined,
+  field: AnyInternalFieldApi | undefined,
 ): InternalFieldMeta {
-  const cached = metaCache.get(baseMeta)
+  const errorVisibility = getErrorVisibility(field)
+  const canDisplayErrors = shouldDisplayErrors(errorVisibility, field, baseMeta)
+  const canUseMetaCache = errorVisibility === 'always'
+  const cached = canUseMetaCache ? metaCache.get(baseMeta) : undefined
   if (cached) return cached
 
-  const errors = getErrorsFromBaseMeta(baseMeta, previousMeta)
+  const originalErrors = getErrorsFromBaseMeta(baseMeta, previousMeta)
+  const errors = canDisplayErrors ? originalErrors : []
   const isSelfTouched = baseMeta.isTouched
   const isSelfDirty = baseMeta.isDirty
   const isSelfValid = errors.length === 0
+  const isOriginalSelfValid = originalErrors.length === 0
   const subfields: SubfieldsMeta = {
     isEveryValid: baseMeta.childContributionCounts.error === 0,
     isAnyInvalid: baseMeta.childContributionCounts.error > 0,
@@ -1304,12 +1346,55 @@ function deriveFromBaseFieldMeta(
     isInvalid,
     isSelfValid,
     errors,
+    original: {
+      errors: originalErrors,
+      isValid: isOriginalSelfValid && subfields.isEveryValid,
+      isInvalid: !(isOriginalSelfValid && subfields.isEveryValid),
+    },
     isValid,
     subfields,
     isPristine: !isDirty,
   }
-  metaCache.set(baseMeta, result)
+  if (canUseMetaCache) {
+    metaCache.set(baseMeta, result)
+  }
   return result
+}
+
+function getErrorVisibility(
+  field: AnyInternalFieldApi | undefined,
+): ErrorVisibility {
+  return (
+    field?._errorVisibility ?? field?.form.options.errorVisibility ?? 'always'
+  )
+}
+
+function shouldDisplayErrors(
+  errorVisibility: ErrorVisibility,
+  field: AnyInternalFieldApi | undefined,
+  baseMeta: InternalBaseFieldMeta,
+): boolean {
+  if (!field) return true
+  const hasSubmitBeenAttempted = field.form._submissionAttemptsAtom.get() > 0
+
+  switch (errorVisibility) {
+    case 'always':
+      return true
+    case 'touched':
+      return baseMeta.isTouched || baseMeta.childContributionCounts.touched > 0
+    case 'blurred':
+      return baseMeta.isBlurred
+    case 'touched-or-submit-attempted':
+      return (
+        baseMeta.isTouched ||
+        baseMeta.childContributionCounts.touched > 0 ||
+        hasSubmitBeenAttempted
+      )
+    case 'blurred-or-submit-attempted':
+      return baseMeta.isBlurred || hasSubmitBeenAttempted
+    case 'submit-attempted':
+      return hasSubmitBeenAttempted
+  }
 }
 
 function getChildContributionStates(
@@ -1349,7 +1434,7 @@ function getErrorsFromBaseMeta(
     previousMeta?._fieldValidatorErrors === baseMeta._fieldValidatorErrors &&
     previousMeta._formValidatorErrors === baseMeta._formValidatorErrors
   ) {
-    result = previousMeta.errors
+    result = previousMeta.original.errors
   } else {
     result = baseMeta._fieldValidatorErrors
       .concat(baseMeta._formValidatorErrors)

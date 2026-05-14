@@ -126,6 +126,22 @@ describe('form - validation', () => {
       expect(form.state.formErrors).toEqual([{ message: 'Form error' }])
     })
 
+    it('sets canSubmit to false when form errors are present', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            run: () => ({ message: 'Form error' }),
+            triggers: ['change'],
+          },
+        ],
+      })
+
+      await form.validate('change')
+
+      expect(form.state.canSubmit).toBe(false)
+    })
+
     it('maintains validator order with async debounced and sync validators', async () => {
       const form = new InternalFormApi({
         defaultValues: { name: '' },
@@ -505,6 +521,45 @@ describe('form - validation', () => {
       expect(field.errors).toEqual([{ message: 'Name is required' }])
     })
 
+    it('sets canSubmit to false when field errors are present', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            run: () => ({
+              fields: {
+                name: { message: 'Name is required' },
+              },
+            }),
+            triggers: ['change'],
+          },
+        ],
+      })
+
+      await form.validate('change')
+
+      expect(form.state.canSubmit).toBe(false)
+    })
+
+    it('sets canSubmit to false when field validator errors are present', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+      })
+      const field = form._getOrCreateFieldApi({
+        name: 'name',
+        validators: [
+          {
+            run: () => ({ message: 'Name is required' }),
+            triggers: ['change'],
+          },
+        ],
+      })
+
+      await field._runFieldValidation('change')
+
+      expect(form.state.canSubmit).toBe(false)
+    })
+
     it('stores string field errors from form validators as message objects', async () => {
       const form = new InternalFormApi({
         defaultValues: { name: '' },
@@ -547,6 +602,157 @@ describe('form - validation', () => {
       await form.validate('change')
       expect(nameField.errors).toEqual([{ message: 'Name is required' }])
       expect(ageField.errors).toEqual([{ message: 'Age is required' }])
+    })
+
+    it('filters public field errors with form-level errorVisibility', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '', age: 0 },
+        errorVisibility: 'touched',
+        validators: [
+          {
+            run: () => ({
+              fields: {
+                name: { message: 'Name is required' },
+                age: { message: 'Age is required' },
+              },
+            }),
+            triggers: ['change'],
+          },
+        ],
+      })
+      const nameField = form._getOrCreateFieldApi({ name: 'name' })
+      const ageField = form._getOrCreateFieldApi({ name: 'age' })
+
+      nameField.handleChange('Alice', { causeValidation: false })
+      await form.validate('change')
+
+      expect(nameField.errors).toEqual([{ message: 'Name is required' }])
+      expect(nameField.meta.isValid).toBe(false)
+      expect(nameField.meta.original.errors).toEqual([
+        { message: 'Name is required' },
+      ])
+      expect(nameField.meta.original.isValid).toBe(false)
+
+      expect(ageField.errors).toEqual([])
+      expect(ageField.meta.isValid).toBe(true)
+      expect(ageField.meta.original.errors).toEqual([
+        { message: 'Age is required' },
+      ])
+      expect(ageField.meta.original.isValid).toBe(false)
+    })
+
+    it('lets fields override the form-level errorVisibility', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '', age: 0 },
+        errorVisibility: 'touched',
+        validators: [
+          {
+            run: () => ({
+              fields: {
+                age: { message: 'Age is required' },
+              },
+            }),
+            triggers: ['change'],
+          },
+        ],
+      })
+      const ageField = form._getOrCreateFieldApi({
+        name: 'age',
+        errorVisibility: 'always',
+      })
+
+      await form.validate('change')
+
+      expect(ageField.errors).toEqual([{ message: 'Age is required' }])
+      expect(ageField.meta.isValid).toBe(false)
+      expect(ageField.meta.original.errors).toEqual([
+        { message: 'Age is required' },
+      ])
+    })
+
+    it('reveals touched-or-submit-attempted errors after a submit attempt', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        errorVisibility: 'touched-or-submit-attempted',
+        validators: [
+          {
+            run: () => ({
+              fields: {
+                name: { message: 'Name is required' },
+              },
+            }),
+            triggers: ['change'],
+          },
+        ],
+      })
+      const field = form._getOrCreateFieldApi({ name: 'name' })
+
+      await form.validate('change')
+      expect(field.errors).toEqual([])
+      expect(field.meta.original.errors).toEqual([
+        { message: 'Name is required' },
+      ])
+
+      await form.handleSubmit()
+
+      expect(field.errors).toEqual([{ message: 'Name is required' }])
+      expect(field.meta.isValid).toBe(false)
+      expect(field.meta.original.isValid).toBe(false)
+    })
+
+    it('reveals submit-attempted errors only after a submit attempt', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        errorVisibility: 'submit-attempted',
+        validators: [
+          {
+            run: () => ({
+              fields: {
+                name: { message: 'Name is required' },
+              },
+            }),
+            triggers: ['change'],
+          },
+        ],
+      })
+      const field = form._getOrCreateFieldApi({ name: 'name' })
+
+      field.handleBlur()
+      await form.validate('change')
+      expect(field.errors).toEqual([])
+
+      await form.handleSubmit()
+      expect(field.errors).toEqual([{ message: 'Name is required' }])
+    })
+
+    it('reveals blurred-or-submit-attempted errors after blur or submit', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '', email: '' },
+        errorVisibility: 'blurred-or-submit-attempted',
+        validators: [
+          {
+            run: () => ({
+              fields: {
+                name: { message: 'Name is required' },
+                email: { message: 'Email is required' },
+              },
+            }),
+            triggers: ['change'],
+          },
+        ],
+      })
+      const nameField = form._getOrCreateFieldApi({ name: 'name' })
+      const emailField = form._getOrCreateFieldApi({ name: 'email' })
+
+      nameField.handleBlur()
+      await form.validate('change')
+
+      expect(nameField.errors).toEqual([{ message: 'Name is required' }])
+      expect(emailField.errors).toEqual([])
+
+      await form.handleSubmit()
+
+      expect(emailField.errors).toEqual([{ message: 'Email is required' }])
     })
 
     it('handles array error format in field-level errors', async () => {

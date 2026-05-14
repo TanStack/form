@@ -2,6 +2,7 @@ import type { FieldUpdateOptions } from './types.public'
 import type { ReadonlyAtom } from '@tanstack/store'
 import type {
   ConfigurableValidationTrigger,
+  ErrorVisibility,
   ErrorWithMessage,
   FormStandardSchemaValidatorOutputs,
   FormValidationError,
@@ -27,6 +28,7 @@ export interface FormOptions<
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 > {
   defaultValues: TFormData
+  errorVisibility?: ErrorVisibility
   validators?: TFormValidators
   onSubmit?: (
     context: FormSubmitContext<TFormData, TFormValidators>,
@@ -57,6 +59,13 @@ export interface FormState<TData> {
    */
   formErrors: Array<ErrorWithMessage>
   /**
+   * Whether the form can currently be submitted.
+   *
+   * This is an optimistic button affordance: `true` until validation has found
+   * errors, then `false` while errors are known or the form is submitting.
+   */
+  canSubmit: boolean
+  /**
    * Whether the form is currently in the process of submitting.
    *
    */
@@ -69,13 +78,15 @@ export interface FormState<TData> {
   submissionAttempts: number
 }
 
+export type AnyFormApi = FormApi<any, any>
+
 export interface FormApi<
-  TData,
-  TFormValidators extends ReadonlyArray<FormValidator<TData>>,
+  TFormData,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 > {
-  store: ReadonlyAtom<FormState<TData>>
-  readonly state: FormState<TData>
-  readonly options: FormOptions<TData, TFormValidators>
+  store: ReadonlyAtom<FormState<TFormData>>
+  readonly state: FormState<TFormData>
+  readonly options: FormOptions<TFormData, TFormValidators>
 
   /**
    * TODO expand on it
@@ -93,6 +104,10 @@ export interface FormApi<
    *
    */
   handleSubmit: () => Promise<Array<FormValidationError>>
+  /**
+   * TODO
+   */
+  reset: (values?: TFormData) => void
 
   /**
    * TODO

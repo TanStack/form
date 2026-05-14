@@ -100,6 +100,45 @@ describe('Form fields', () => {
     expect(isDirtyCheckbox).toBeChecked()
   })
 
+  it('should recreate mounted fields after form reset', async () => {
+    function Component() {
+      const form = useForm({ defaultValues: { name: 'tony-hawk' } })
+      return (
+        <>
+          <form.Field name="name">
+            {(field) => (
+              <label htmlFor={field.name}>
+                {field.name}
+                <input
+                  id={field.name}
+                  value={field.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              </label>
+            )}
+          </form.Field>
+          <button onClick={() => form.reset()} data-testid="reset">
+            Reset
+          </button>
+        </>
+      )
+    }
+
+    const { getByLabelText, getByTestId } = render(<Component />)
+    const input = getByLabelText('name')
+
+    await user.clear(input)
+    await user.type(input, 'before-reset')
+    expect(input).toHaveValue('before-reset')
+
+    await user.click(getByTestId('reset'))
+    expect(input).toHaveValue('tony-hawk')
+
+    await user.clear(input)
+    await user.type(input, 'after-reset')
+    expect(input).toHaveValue('after-reset')
+  })
+
   it('should remove unused field nodes', async () => {
     const formApi = { current: null as AnyInternalFormApi | null }
 

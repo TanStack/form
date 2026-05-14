@@ -1,5 +1,5 @@
-import type { FieldApi } from './FieldApi.public'
 import type { FormApi } from './FormApi.public'
+import type { FieldApi } from './FieldApi.public'
 import type { StandardSchemaV1 } from './standardSchema.public'
 import type { OneOrMany } from './types.public'
 
@@ -36,6 +36,14 @@ export interface Validator<
 
 export type ValidationTrigger = 'change' | 'blur' | 'submit'
 export type ConfigurableValidationTrigger = Exclude<ValidationTrigger, 'submit'>
+
+export type ErrorVisibility =
+  | 'always'
+  | 'touched'
+  | 'blurred'
+  | 'touched-or-submit-attempted'
+  | 'blurred-or-submit-attempted'
+  | 'submit-attempted'
 
 export interface ValidationPredicateContext<TFormData, TValue = TFormData> {
   formApi: FormApi<TFormData, ReadonlyArray<any>>

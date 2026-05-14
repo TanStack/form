@@ -1,25 +1,137 @@
+import { useForm } from '@tanstack/react-form'
 import ReactDOM from 'react-dom/client'
-import { useState } from 'react'
-import { ArrayExample } from './array'
-import { SchemaExample } from './schema'
+import type { AnyFieldApi } from '@tanstack/react-form'
+
+interface FieldInfoProps {
+  field: AnyFieldApi
+}
+function FieldError({ field }: FieldInfoProps) {
+  if (field.meta.isValid) return null
+
+  return <em>{field.errors.map((error) => error.message).join('\n')}</em>
+}
 
 function App() {
-  const [tab, setTab] = useState<'array' | 'schema'>('array')
+  const form = useForm({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+    },
+    onSubmit: ({ value, createValidationError }) => {
+      // Do something with form data
+      console.log(value)
+
+      // If your endpoint returned validation errors, pass them on
+      return createValidationError({
+        form: 'Please resolve the issues',
+        fields: {
+          firstName: 'Name already exists',
+        },
+      })
+    },
+  })
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
-      <h1>TanStack Form - Array field</h1>
-      <button onClick={() => setTab('array')} disabled={tab === 'array'}>
-        Array example
-      </button>
-      &nbsp;
-      <button onClick={() => setTab('schema')} disabled={tab === 'schema'}>
-        Schema example
-      </button>
-      <br />
-      <br />
-      {tab === 'array' && <ArrayExample />}
-      {tab === 'schema' && <SchemaExample />}
+    <div>
+      <h1>Simple Form Example</h1>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          form.handleSubmit()
+        }}
+      >
+        <div>
+          {/* A type-safe field component*/}
+          <form.Field
+            name="firstName"
+            validators={[
+              {
+                run: ({ value }) => {
+                  if (value.length === 0) return 'A first name is required'
+                  if (value.length < 3) return 'First name is too short'
+                },
+                // Define what should trigger validation. Submissions trigger validation by default.
+                triggers: ['change', 'blur'],
+                triggerDebounceMs: 300,
+              },
+              {
+                // Supports async functions!
+                run: async ({ value }) => {
+                  await new Promise((resolve) => setTimeout(resolve, 1000))
+                  return (
+                    value.includes('error') &&
+                    'No "error" allowed in first name'
+                  )
+                },
+                triggers: ['change'],
+                // prevent expensive validators from running
+                bailIfInvalid: true,
+              },
+            ]}
+          >
+            {(field) => {
+              // Avoid hasty abstractions. Render props are great!
+              return (
+                <>
+                  <label htmlFor={field.name}>First Name:</label>
+                  <input
+                    id={field.name}
+                    name={field.name}
+                    value={field.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                  <FieldError field={field} />
+                </>
+              )
+            }}
+          </form.Field>
+        </div>
+        <div>
+          <form.Field name="lastName">
+            {(field) => (
+              <>
+                <label htmlFor={field.name}>Last Name:</label>
+                <input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+                <FieldError field={field} />
+              </>
+            )}
+          </form.Field>
+        </div>
+        {/** Subscribe to form state to have reactive components */}
+        <form.Subscribe selector={(state) => state.formErrors}>
+          {(formErrors) => (
+            <em>{formErrors.map((v) => v.message).join(', ')}</em>
+          )}
+        </form.Subscribe>
+        <br />
+        <form.Subscribe
+          selector={(state) => [state.canSubmit, state.isSubmitting]}
+        >
+          {([canSubmit, isSubmitting]) => (
+            <button type="submit" disabled={!canSubmit}>
+              {isSubmitting ? '...' : 'Submit'}
+            </button>
+          )}
+        </form.Subscribe>
+        <button
+          type="reset"
+          onClick={(e) => {
+            // Avoid unexpected resets of form elements (especially <select> elements)
+            e.preventDefault()
+            form.reset()
+          }}
+        >
+          Reset
+        </button>
+      </form>
     </div>
   )
 }
