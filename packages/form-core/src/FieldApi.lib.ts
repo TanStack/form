@@ -1,14 +1,13 @@
 import { batch, createAtom } from '@tanstack/store'
+import { callUpdater, cancelPipelineCache, createPipelineCache } from './utils'
 import {
-  callUpdater,
-  cancelPipelineCache,
-  createPipelineCache,
-  evaluate,
-} from './utils'
-import {
+  clearIndexedErrorsFromSource,
+  hasIndexedErrorFromSource,
   isErrorResult,
+  isValidationTriggerEnabled,
   normalizeValidationError,
   runFieldValidatorPipeline,
+  setIndexedError,
 } from './validation.lib'
 import { runFieldListenerPipeline } from './listeners.lib'
 import {
@@ -67,7 +66,9 @@ const childContributionKeys: Array<ChildContributionKey> = [
 
 interface MetaExtension {
   _formValidatorErrors: Array<Array<ErrorWithMessage>>
+  _formValidatorErrorSourceEvents: Array<string | null>
   _fieldValidatorErrors: Array<Array<ErrorWithMessage>>
+  _fieldValidatorErrorSourceEvents: Array<string | null>
   childContributionCounts: ChildContributionCounts
   /**
    * @private
@@ -219,7 +220,9 @@ export const defaultInternalBaseFieldMeta: InternalBaseFieldMeta = {
     error: 0,
   },
   _fieldValidatorErrors: [],
+  _fieldValidatorErrorSourceEvents: [],
   _formValidatorErrors: [],
+  _formValidatorErrorSourceEvents: [],
   _arrayVersion: 0,
 }
 
@@ -255,6 +258,27 @@ export type FieldWatchingFields = Map<AnyInternalFieldApi, Set<number>>
 export type FieldListenToFields = Array<Array<ListenToFieldsMeta>>
 
 export type AnyInternalFieldApi = InternalFieldApi<any, any>
+
+function hasFieldValidatorErrors(
+  meta: InternalBaseFieldMeta,
+  indexes: Array<number>,
+  sourceEvent: string,
+): boolean {
+  for (const i of indexes) {
+    if (
+      hasIndexedErrorFromSource(
+        meta._fieldValidatorErrors,
+        meta._fieldValidatorErrorSourceEvents,
+        i,
+        sourceEvent,
+      )
+    ) {
+      return true
+    }
+  }
+
+  return false
+}
 
 export class InternalFieldApi<
   TFormData,
@@ -600,35 +624,90 @@ export class InternalFieldApi<
       },
       onResult:
         options?.onResult !== false
-          ? (result) => this._processValidationResult(result)
+          ? (result) => this._processValidationResult(result, event)
           : undefined,
       validatorIndecesToRun: options?.onlyRunValidatorIndeces ?? null,
     })
   }
 
-  _processValidationResult(result: PipelineResult<FieldValidateResult>) {
+  _processValidationResult(
+    result: PipelineResult<FieldValidateResult>,
+    sourceEvent: string,
+  ) {
     if (this._isKilled) return
 
     this._setMeta((prev) => {
-      const prevErrors = prev._fieldValidatorErrors
       const newError = isErrorResult(result.result)
         ? normalizeValidationError(result.result)
         : []
-      const prevError = prevErrors[result.validatorIndex] ?? []
+      const nextErrors = setIndexedError(
+        prev._fieldValidatorErrors,
+        prev._fieldValidatorErrorSourceEvents,
+        result.validatorIndex,
+        newError,
+        sourceEvent,
+      )
 
-      // TODO this could be a hot path, but we avoid rerenders if this succeeds.
-      // Perhaps change it to a prev.length === 0 === new.length?
-      if (evaluate(prevError, newError)) {
-        return prev
-      }
+      if (!nextErrors) return prev
 
-      const errors = [...prevErrors]
-      errors[result.validatorIndex] = newError
       return {
         ...prev,
-        _fieldValidatorErrors: errors,
+        _fieldValidatorErrors: nextErrors.errors,
+        _fieldValidatorErrorSourceEvents: nextErrors.errorSourceEvents,
       } satisfies InternalBaseFieldMeta
     })
+  }
+
+  _clearEventErrors(sourceEvent: string): void {
+    if (this._isKilled) return
+
+    const validators = this._validators
+    if (!validators) return
+
+    const eventErrorIndexes: Array<number> = []
+
+    for (let i = 0; i < validators.length; i++) {
+      const runsOnChange = validators[i]!.triggers?.some((trigger) =>
+        isValidationTriggerEnabled(trigger, {
+          event: 'change',
+          fieldApi: this,
+          formApi: this.form,
+        }),
+      )
+
+      if (!runsOnChange) {
+        eventErrorIndexes.push(i)
+      }
+    }
+
+    if (eventErrorIndexes.length === 0) return
+    if (
+      !hasFieldValidatorErrors(
+        this._getBaseMeta(),
+        eventErrorIndexes,
+        sourceEvent,
+      )
+    ) {
+      return
+    }
+
+    this._setMeta((prev) => {
+      const clearedErrors = clearIndexedErrorsFromSource(
+        prev._fieldValidatorErrors,
+        prev._fieldValidatorErrorSourceEvents,
+        eventErrorIndexes,
+        sourceEvent,
+      )
+
+      if (!clearedErrors) return prev
+
+      return {
+        ...prev,
+        _fieldValidatorErrors: clearedErrors.errors,
+        _fieldValidatorErrorSourceEvents: clearedErrors.errorSourceEvents,
+      } satisfies InternalBaseFieldMeta
+    })
+    this._pruneIfUnused()
   }
 
   _notifyEvent(
@@ -636,6 +715,10 @@ export class InternalFieldApi<
     event: 'change' | 'blur' | 'submit',
   ): void {
     if (this._isKilled) return
+
+    if (event === 'change') {
+      this._clearEventErrors('submit')
+    }
 
     const {
       markAsDirty = true,

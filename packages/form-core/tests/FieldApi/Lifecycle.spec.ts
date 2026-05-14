@@ -75,11 +75,14 @@ describe('field - lifecycle', () => {
       const field = form._getOrCreateFieldApi({ name: 'x' })
 
       field._kill()
-      field._processValidationResult({
-        validatorIndex: 0,
-        result: { message: 'Too late' },
-        schemaResult: null,
-      })
+      field._processValidationResult(
+        {
+          validatorIndex: 0,
+          result: { message: 'Too late' },
+          schemaResult: null,
+        },
+        'submit',
+      )
 
       expect(field.errors).toEqual([])
     })

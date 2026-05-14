@@ -1,6 +1,6 @@
 import { LiteDebouncer } from '@tanstack/pacer-lite'
 import { isStandardSchema, parseStandardSchema } from './standardSchema.lib'
-import { isNil, isNotNil, normalizeToArray } from './utils'
+import { evaluate, isNil, isNotNil, normalizeToArray } from './utils'
 import type { PipelineCache } from './utils'
 import type {
   ErrorWithMessage,
@@ -24,7 +24,7 @@ type FieldValidateContext = Omit<FieldValidatorContext<any, any>, 'value'>
 type FormInputContext = Omit<FormValidateContext, 'signal'>
 type FieldInputContext = Omit<FieldValidateContext, 'signal'>
 
-type InputContext = FormInputContext | FieldInputContext
+export type InputContext = FormInputContext | FieldInputContext
 export type ValidateContext = FormValidateContext | FieldValidateContext
 type ValidateResult = FormValidateResult | FieldValidateResult
 
@@ -61,6 +61,81 @@ export function normalizeValidationError(
   return normalizeToArray(value).map((error) =>
     typeof error === 'string' ? { message: error } : error,
   )
+}
+
+export function hasIndexedErrorFromSource(
+  errors: Array<Array<ErrorWithMessage>>,
+  errorSourceEvents: Array<string | null>,
+  index: number,
+  sourceEvent: string,
+): boolean {
+  const error = errors[index]
+  if (!error) return false
+  if (error.length === 0) return false
+  if (errorSourceEvents[index] !== sourceEvent) return false
+  return true
+}
+
+export function setIndexedError(
+  errors: Array<Array<ErrorWithMessage>>,
+  errorSourceEvents: Array<string | null>,
+  index: number,
+  error: Array<ErrorWithMessage>,
+  sourceEvent: string,
+): {
+  errors: Array<Array<ErrorWithMessage>>
+  errorSourceEvents: Array<string | null>
+} | null {
+  const nextSourceEvent = error.length > 0 ? sourceEvent : null
+  const prevError = errors[index] ?? []
+
+  if (
+    evaluate(prevError, error) &&
+    errorSourceEvents[index] === nextSourceEvent
+  ) {
+    return null
+  }
+
+  const nextErrors = [...errors]
+  const nextErrorSourceEvents = [...errorSourceEvents]
+  nextErrors[index] = error
+  nextErrorSourceEvents[index] = nextSourceEvent
+
+  return {
+    errors: nextErrors,
+    errorSourceEvents: nextErrorSourceEvents,
+  }
+}
+
+export function clearIndexedErrorsFromSource(
+  errors: Array<Array<ErrorWithMessage>>,
+  errorSourceEvents: Array<string | null>,
+  indexes: Array<number>,
+  sourceEvent: string,
+): {
+  errors: Array<Array<ErrorWithMessage>>
+  errorSourceEvents: Array<string | null>
+} | null {
+  let nextErrors: Array<Array<ErrorWithMessage>> | null = null
+  let nextErrorSourceEvents: Array<string | null> | null = null
+
+  for (const index of indexes) {
+    if (
+      hasIndexedErrorFromSource(errors, errorSourceEvents, index, sourceEvent)
+    ) {
+      nextErrors ??= errors.slice()
+      nextErrorSourceEvents ??= errorSourceEvents.slice()
+      nextErrors[index] = []
+      nextErrorSourceEvents[index] = null
+    }
+  }
+
+  if (!nextErrors || !nextErrorSourceEvents) return null
+
+  return {
+    errors: nextErrors,
+    errorSourceEvents: nextErrorSourceEvents,
+  }
 }
 
 /**
@@ -149,7 +224,7 @@ function getDebounceMs(
   })
 }
 
-function isValidationTriggerEnabled(
+export function isValidationTriggerEnabled(
   trigger: ValidationTriggerOption<any>,
   context: InputContext,
 ): boolean {

@@ -7,10 +7,14 @@ import {
 import { createPipelineCache, evaluate, getBy, isNotNil, setBy } from './utils'
 import { InternalRootFieldApi } from './RootFieldApi.lib'
 import {
+  clearIndexedErrorsFromSource,
+  hasIndexedErrorFromSource,
   isAggregateError,
   isErrorResult,
+  isValidationTriggerEnabled,
   normalizeValidationError,
   runFormValidatorPipeline,
+  setIndexedError,
 } from './validation.lib'
 import type { PipelineCache } from './utils'
 
@@ -78,6 +82,7 @@ export interface BaseFormMeta {
    * Each validator index contains an array of errors (normalized).
    */
   errors: Array<Array<ErrorWithMessage>>
+  errorSourceEvents: Array<string | null>
   /**
    * @private
    * Dense array of field references per validator index that have errors.
@@ -150,6 +155,36 @@ export interface BaseFormMeta {
 
 export type AnyInternalFormApi = InternalFormApi<any, any>
 
+function hasFieldEventErrors(
+  field: AnyInternalFieldApi,
+  eventErrorIndexes: Array<number>,
+  sourceEvent: string,
+): boolean {
+  for (const i of eventErrorIndexes) {
+    if (hasFieldEventError(field, i, sourceEvent)) {
+      return true
+    }
+  }
+
+  return false
+}
+
+function hasFieldEventError(
+  field: AnyInternalFieldApi,
+  index: number,
+  sourceEvent: string,
+): boolean {
+  const { _formValidatorErrors, _formValidatorErrorSourceEvents } =
+    field._getBaseMeta()
+
+  return hasIndexedErrorFromSource(
+    _formValidatorErrors,
+    _formValidatorErrorSourceEvents,
+    index,
+    sourceEvent,
+  )
+}
+
 export class InternalFormApi<
   TFormData,
   const TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
@@ -178,6 +213,7 @@ export class InternalFormApi<
       touchedFields: new Set(),
       isDirty: false,
       errors: Array.from({ length: validatorCount }, () => []),
+      errorSourceEvents: Array.from({ length: validatorCount }, () => null),
       fieldErrors: Array.from({ length: validatorCount }, () => new Set()),
       isSubmitting: false,
       submissionAttempts: 0,
@@ -544,6 +580,10 @@ export class InternalFormApi<
     options: FieldUpdateOptions & PropagateOptions,
     event: 'change' | 'blur' | 'submit',
   ) => {
+    if (event === 'change') {
+      this._clearEventErrors(field, 'submit')
+    }
+
     const { markAsDirty = true } = options
     if (
       event === 'change' &&
@@ -554,6 +594,79 @@ export class InternalFormApi<
     }
 
     field?._notifyEvent(options, event)
+  }
+
+  _clearEventErrors = (
+    field: AnyInternalFieldApi | null,
+    sourceEvent: string,
+  ) => {
+    const validatorCount = this.options.validators?.length ?? 0
+    const formMeta = this._formMetaAtom.get()
+    const fieldFormErrorCount =
+      field?._getBaseMeta()._formValidatorErrors.length ?? 0
+    const eventErrorCount = Math.max(
+      formMeta.errors.length,
+      formMeta.fieldErrors.length,
+      fieldFormErrorCount,
+    )
+    const eventErrorIndexes: Array<number> = []
+
+    for (let i = 0; i < validatorCount; i++) {
+      const validator = this.options.validators?.[i]
+      const runsOnChange = validator?.triggers?.some((trigger) =>
+        isValidationTriggerEnabled(trigger, {
+          event: 'change',
+          formApi: this as never,
+          triggerFieldApi: field ?? undefined,
+        }),
+      )
+
+      if (validator && !runsOnChange) {
+        eventErrorIndexes.push(i)
+      }
+    }
+
+    for (let i = validatorCount; i < eventErrorCount; i++) {
+      eventErrorIndexes.push(i)
+    }
+
+    batch(() => {
+      this._formMetaAtom.set((prev) => {
+        const clearedErrors = clearIndexedErrorsFromSource(
+          prev.errors,
+          prev.errorSourceEvents,
+          eventErrorIndexes,
+          sourceEvent,
+        )
+        const fieldErrors = [...prev.fieldErrors]
+        let hasChanged = clearedErrors !== null
+
+        if (field) {
+          for (const i of eventErrorIndexes) {
+            const fieldRefs = fieldErrors[i]
+            if (
+              fieldRefs?.has(field) &&
+              hasFieldEventError(field, i, sourceEvent)
+            ) {
+              const nextFieldRefs = new Set(fieldRefs)
+              nextFieldRefs.delete(field)
+              fieldErrors[i] = nextFieldRefs
+              hasChanged = true
+            }
+          }
+        }
+
+        if (!hasChanged) {
+          return prev
+        }
+
+        return { ...prev, ...(clearedErrors ?? {}), fieldErrors }
+      })
+
+      if (field && hasFieldEventErrors(field, eventErrorIndexes, sourceEvent)) {
+        this._clearFieldEventErrors(field, eventErrorIndexes, sourceEvent)
+      }
+    })
   }
 
   _isInvalidArrayMethod = (
@@ -611,23 +724,57 @@ export class InternalFormApi<
     validatorIndex: number,
   ) => {
     field._setMeta((prev) => {
-      const formValidatorErrors = [...prev._formValidatorErrors]
-      if (formValidatorErrors.length > validatorIndex) {
-        const prevError = formValidatorErrors[validatorIndex]
-        if (evaluate(prevError, [])) {
-          return prev
-        }
-        formValidatorErrors[validatorIndex] = []
+      if (prev._formValidatorErrors.length <= validatorIndex) {
+        return prev
       }
+
+      const clearedErrors = setIndexedError(
+        prev._formValidatorErrors,
+        prev._formValidatorErrorSourceEvents,
+        validatorIndex,
+        [],
+        '',
+      )
+
+      if (!clearedErrors) return prev
+
       return {
         ...prev,
-        _formValidatorErrors: formValidatorErrors,
+        _formValidatorErrors: clearedErrors.errors,
+        _formValidatorErrorSourceEvents: clearedErrors.errorSourceEvents,
       }
     })
     field._pruneIfUnused()
   }
 
-  _processValidationResult = (result: PipelineResult<FormValidateResult>) => {
+  _clearFieldEventErrors = (
+    field: AnyInternalFieldApi,
+    eventErrorIndexes: Array<number>,
+    sourceEvent: string,
+  ) => {
+    field._setMeta((prev) => {
+      const clearedErrors = clearIndexedErrorsFromSource(
+        prev._formValidatorErrors,
+        prev._formValidatorErrorSourceEvents,
+        eventErrorIndexes,
+        sourceEvent,
+      )
+
+      if (!clearedErrors) return prev
+
+      return {
+        ...prev,
+        _formValidatorErrors: clearedErrors.errors,
+        _formValidatorErrorSourceEvents: clearedErrors.errorSourceEvents,
+      }
+    })
+    field._pruneIfUnused()
+  }
+
+  _processValidationResult = (
+    result: PipelineResult<FormValidateResult>,
+    sourceEvent: string,
+  ) => {
     if (result.hasSchemaResult) {
       this._schemaOutputs[result.validatorIndex] = result.schemaResult
     }
@@ -635,24 +782,34 @@ export class InternalFormApi<
     const aggregateError = isAggregateError(result.result)
 
     if (aggregateError) {
-      this._processAggregateError(aggregateError, result.validatorIndex)
+      this._processAggregateError(
+        aggregateError,
+        result.validatorIndex,
+        sourceEvent,
+      )
       return
     }
 
     batch(() => {
       this._formMetaAtom.set((prev) => {
-        const errors = [...prev.errors]
+        const nextError = isErrorResult(result.result)
+          ? normalizeValidationError(result.result as ValidationErrorInput)
+          : []
+        const nextErrors = setIndexedError(
+          prev.errors,
+          prev.errorSourceEvents,
+          result.validatorIndex,
+          nextError,
+          sourceEvent,
+        )
 
-        if (isErrorResult(result.result)) {
-          const errorArray = normalizeValidationError(
-            result.result as ValidationErrorInput,
-          )
-          errors[result.validatorIndex] = errorArray
-        } else {
-          errors[result.validatorIndex] = []
+        if (!nextErrors) return prev
+
+        return {
+          ...prev,
+          errors: nextErrors.errors,
+          errorSourceEvents: nextErrors.errorSourceEvents,
         }
-
-        return { ...prev, errors }
       })
 
       // Clear field-level errors from potential previous { fields: {} } errors
@@ -681,19 +838,29 @@ export class InternalFormApi<
       fieldErrors: Record<string, ValidationErrorInput>
     },
     validatorIndex: number,
+    sourceEvent: string,
   ) => {
     batch(() => {
       // Handle form-level errors
       this._formMetaAtom.set((prev) => {
-        const errors = [...prev.errors]
-        if (aggregateError.formError) {
-          errors[validatorIndex] = normalizeValidationError(
-            aggregateError.formError,
-          )
-        } else {
-          errors[validatorIndex] = []
+        const nextError = aggregateError.formError
+          ? normalizeValidationError(aggregateError.formError)
+          : []
+        const nextErrors = setIndexedError(
+          prev.errors,
+          prev.errorSourceEvents,
+          validatorIndex,
+          nextError,
+          sourceEvent,
+        )
+
+        if (!nextErrors) return prev
+
+        return {
+          ...prev,
+          errors: nextErrors.errors,
+          errorSourceEvents: nextErrors.errorSourceEvents,
         }
-        return { ...prev, errors }
       })
 
       // Handle field-level errors
@@ -710,23 +877,21 @@ export class InternalFormApi<
         )) {
           const field = this._getOrCreateFieldApi({ name: fieldName })
           field._setMeta((prev) => {
-            const formErrors = [...prev._formValidatorErrors]
-            // Ensure array is large enough for this validator index.
-            // We can't eagerly assign them on field creation because the field meta
-            // is lazily created. Therefore, the default is always an empty array.
-            while (formErrors.length <= validatorIndex) {
-              formErrors.push([])
-            }
             const newError = normalizeValidationError(fieldError)
-            const prevError = formErrors[validatorIndex] ?? []
-            // TODO does this tank performance for standard schemas?
-            if (evaluate(prevError, newError)) {
-              return prev
-            }
-            formErrors[validatorIndex] = newError
+            const nextErrors = setIndexedError(
+              prev._formValidatorErrors,
+              prev._formValidatorErrorSourceEvents,
+              validatorIndex,
+              newError,
+              sourceEvent,
+            )
+
+            if (!nextErrors) return prev
+
             return {
               ...prev,
-              _formValidatorErrors: formErrors,
+              _formValidatorErrors: nextErrors.errors,
+              _formValidatorErrorSourceEvents: nextErrors.errorSourceEvents,
             } satisfies InternalBaseFieldMeta
           })
           newFieldRefs.add(field)
@@ -780,7 +945,7 @@ export class InternalFormApi<
       pipeline,
       onResult:
         opts?.onResult !== false
-          ? (result) => this._processValidationResult(result)
+          ? (result) => this._processValidationResult(result, signal)
           : undefined,
     })
   }
@@ -835,7 +1000,7 @@ export class InternalFormApi<
             submissionData.hasFailed = true
             fieldResults.push(result.result)
           }
-          field._processValidationResult(result)
+          field._processValidationResult(result, 'submit')
         }
       }
     })
@@ -896,11 +1061,14 @@ export class InternalFormApi<
       // Anyways, point is that onSubmit will be [validators.length], so we can always assume it's onSubmit
 
       if (isNotNil(maybeError) && maybeError[SUBMIT_ERROR]) {
-        this._processValidationResult({
-          validatorIndex: this.options.validators?.length ?? 0,
-          result: maybeError,
-          schemaResult: null,
-        })
+        this._processValidationResult(
+          {
+            validatorIndex: this.options.validators?.length ?? 0,
+            result: maybeError,
+            schemaResult: null,
+          },
+          'submit',
+        )
         submissionData.submitError = maybeError
       }
     } catch (e) {
@@ -913,11 +1081,14 @@ export class InternalFormApi<
         submissionData.hasFailed = true
         errorResults.push(submissionData.submitError)
 
-        this._processValidationResult({
-          validatorIndex: this.options.validators?.length ?? 0,
-          result: submissionData.submitError,
-          schemaResult: null,
-        })
+        this._processValidationResult(
+          {
+            validatorIndex: this.options.validators?.length ?? 0,
+            result: submissionData.submitError,
+            schemaResult: null,
+          },
+          'submit',
+        )
       }
       // Cleanup regardless of error result or not
       cleanup()
