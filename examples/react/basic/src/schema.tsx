@@ -20,10 +20,20 @@ export function SchemaExample() {
         ],
       },
     ],
+    onSubmit: ({ value, schemaOutput }) => {
+      alert('Submitted!')
+      console.log(value, schemaOutput)
+    },
   })
 
   return (
-    <form>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        void form.handleSubmit()
+      }}
+    >
       <h2>Schema example</h2>
       <form.Field name="name">
         {(field) => (
@@ -39,7 +49,9 @@ export function SchemaExample() {
               />
             </label>
             <br />
-            {field.meta.isBlurred && <span>{field.errors[0]?.message}</span>}
+            {(field.meta.isBlurred || form.state.submissionAttempts > 0) && (
+              <span>{field.errors[0]?.message}</span>
+            )}
           </div>
         )}
       </form.Field>
@@ -58,10 +70,13 @@ export function SchemaExample() {
               />
             </label>
             <br />
-            {field.meta.isBlurred && <span>{field.errors[0]?.message}</span>}
+            {(field.meta.isBlurred || form.state.submissionAttempts > 0) && (
+              <span>{field.errors[0]?.message}</span>
+            )}
           </div>
         )}
       </form.Field>
+      <button type="submit">Submit</button>
     </form>
   )
 }

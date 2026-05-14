@@ -638,11 +638,12 @@ describe('runFormValidatorPipeline', () => {
 
       await form.handleSubmit()
 
-      expect(onSubmit).toHaveBeenCalledWith({
-        value: { name: 'test' },
-        formApi: form,
-        schemaOutput: { nameLength: 4 },
-      })
+      expect(onSubmit).toHaveBeenCalledWith(
+        expect.objectContaining({
+          value: { name: 'test' },
+          schemaOutput: { nameLength: 4 },
+        }),
+      )
     })
 
     /**

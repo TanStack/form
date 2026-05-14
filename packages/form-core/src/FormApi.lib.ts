@@ -4,7 +4,7 @@ import {
   nameToFieldNodeSegments,
   tryGetFieldApi,
 } from './FieldApi.lib'
-import { evaluate, getBy, setBy } from './utils'
+import { evaluate, getBy, isNotNil, setBy } from './utils'
 import { InternalRootFieldApi } from './RootFieldApi.lib'
 import {
   createValidatorPipelineCache,
@@ -36,10 +36,30 @@ import type { FieldUpdateOptions, Updater } from './types.public'
 import type {
   ErrorWithMessage,
   FormValidateResult,
+  FormValidationError,
   FormValidator,
   ValidationErrorInput,
   ValidationTrigger,
 } from './validation.public'
+
+const SUBMIT_ERROR = Symbol('SUBMIT_ERROR')
+
+type OnSubmitError<T extends FormValidationError> = T & { [SUBMIT_ERROR]: true }
+
+const createValidationError = <TError extends FormValidationError>(
+  error: TError,
+): OnSubmitError<TError> => {
+  let output: OnSubmitError<TError>
+  if (typeof error === 'string') {
+    // strings can't retain symbols, so we gotta normalize early
+    output = { message: error } as any
+  } else {
+    output = error as any
+  }
+  output[SUBMIT_ERROR] = true
+
+  return output
+}
 
 export interface BaseFormMeta {
   /**
@@ -650,6 +670,8 @@ export class InternalFormApi<
         const newFieldRefs = new Set<AnyInternalFieldApi>()
         const oldFieldRefs = fieldErrors[validatorIndex]
 
+        const staleFieldRefs = oldFieldRefs ? new Set(oldFieldRefs) : undefined
+
         // Set new field errors and build the new reference set
         for (const [fieldName, fieldError] of Object.entries(
           aggregateError.fieldErrors,
@@ -676,14 +698,13 @@ export class InternalFormApi<
             } satisfies InternalBaseFieldMeta
           })
           newFieldRefs.add(field)
+          staleFieldRefs?.delete(field)
         }
 
         // Clear errors for fields that are no longer in the new result
-        if (oldFieldRefs) {
-          for (const field of oldFieldRefs) {
-            if (!newFieldRefs.has(field)) {
-              this._clearFieldValidatorError(field, validatorIndex)
-            }
+        if (staleFieldRefs) {
+          for (const field of staleFieldRefs) {
+            this._clearFieldValidatorError(field, validatorIndex)
           }
         }
 
@@ -745,7 +766,7 @@ export class InternalFormApi<
       .filter(isErrorResult)
   }
 
-  handleSubmit = async () => {
+  handleSubmit = async (): Promise<Array<FormValidationError>> => {
     this._formMetaAtom.set((prev) => ({
       ...prev,
       isSubmitting: true,
@@ -754,6 +775,7 @@ export class InternalFormApi<
 
     const submissionData = {
       hasFailed: false,
+      submitError: null as any,
     }
 
     const fields =
@@ -786,20 +808,17 @@ export class InternalFormApi<
       }
     })
 
-    for (const pipelineResult of fieldValidatorResults) {
-      for (const result of pipelineResult.results) {
-        if (isErrorResult(result.result)) {
-          fieldResults.push(result.result)
-        }
-      }
-    }
-
     // TODO maybe some users don't want form validation to run if field validation failed.
+    // Configurable option with opt-out wouldn't hurt.
+    // Also keep in mind this would apply to handleChange too.
     const formPipelineResult = await this._runFormValidation('submit', {
       hasFailedBefore: submissionData.hasFailed,
     })
 
-    if (formPipelineResult.thrownError !== null) {
+    if (
+      formPipelineResult.thrownError !== null ||
+      formPipelineResult.hasErrors
+    ) {
       submissionData.hasFailed = true
     }
 
@@ -820,22 +839,50 @@ export class InternalFormApi<
 
     if (submissionData.hasFailed) {
       cleanup()
-      return
+      return errorResults
     }
     try {
-      await this.options.onSubmit?.({
+      const maybeError = await this.options.onSubmit?.({
         formApi: this,
         schemaOutput: this._lastSchemaOutput as never,
         value: this.state.values,
+        createValidationError,
       })
+
+      // TODO we need to implement onMount / onSubmit errors being cleared on change
+      // An array of [0 .. validators.length] can cover the latest validator error's cause
+      // maybe? It could be that field level errors shouldn't be cleared so eagerly, only on itself.
+
+      // Anyways, point is that onSubmit will be [validators.length], so we can always assume it's onSubmit
+
+      if (isNotNil(maybeError) && maybeError[SUBMIT_ERROR]) {
+        this._processValidationResult({
+          validatorIndex: this.options.validators?.length ?? 0,
+          result: maybeError,
+          schemaResult: null,
+        })
+        submissionData.hasFailed = true
+      }
     } catch (e) {
       console.error(e)
-    } finally {
-      cleanup()
+      submissionData.hasFailed = true
     }
 
-    // TODO set isSubmitting false
-    // set isSubmitSuccessful
+    batch(() => {
+      if (isErrorResult(submissionData.submitError)) {
+        submissionData.hasFailed = true
+        errorResults.push(submissionData.submitError)
+
+        this._processValidationResult({
+          validatorIndex: this.options.validators?.length ?? 0,
+          result: submissionData.submitError,
+          schemaResult: null,
+        })
+      }
+      // Cleanup regardless of error result or not
+      cleanup()
+    })
+
     return errorResults
   }
 }

@@ -8,6 +8,10 @@ import type {
   FormValidator,
 } from './validation.public'
 
+export type CreateValidationErrorFn = (
+  error: FormValidationError,
+) => FormValidationError
+
 export interface FormSubmitContext<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
@@ -15,6 +19,7 @@ export interface FormSubmitContext<
   value: TFormData
   formApi: FormApi<TFormData, TFormValidators>
   schemaOutput: FormStandardSchemaValidatorOutputs<TFormValidators>
+  createValidationError: CreateValidationErrorFn
 }
 
 export interface FormOptions<
@@ -87,7 +92,7 @@ export interface FormApi<
    * TODO for later: submit meta
    *
    */
-  handleSubmit: () => Promise<any>
+  handleSubmit: () => Promise<Array<FormValidationError>>
 
   /**
    * TODO
