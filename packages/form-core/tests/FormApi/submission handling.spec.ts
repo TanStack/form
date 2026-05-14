@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+import { z } from 'zod'
 import { InternalFormApi } from '../../src/FormApi.lib'
 
 describe('Submission handling', () => {
@@ -59,6 +60,52 @@ describe('Submission handling', () => {
       expect(field.state.meta.errors).toEqual([{ message: 'Name is required' }])
       expect(fieldValidatorFn).toHaveBeenCalledOnce()
       expect(onSubmit).not.toHaveBeenCalled()
+    })
+
+    it('returns validation errors created during onSubmit', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        onSubmit: ({ createValidationError }) => {
+          return createValidationError('Submission failed')
+        },
+      })
+
+      const result = await form.handleSubmit()
+
+      expect(result).toEqual([
+        expect.objectContaining({ message: 'Submission failed' }),
+      ])
+      expect(form.state.formErrors).toEqual([
+        expect.objectContaining({ message: 'Submission failed' }),
+      ])
+    })
+
+    it('preserves schema output when later non-schema validators run', async () => {
+      const onSubmit = vi.fn()
+      const schema = z
+        .object({
+          name: z.string(),
+        })
+        .transform(({ name }) => ({ nameLength: name.length }))
+      const form = new InternalFormApi({
+        defaultValues: { name: 'test' },
+        validators: [
+          { run: schema },
+          {
+            run: () => null,
+          },
+        ],
+        onSubmit,
+      })
+
+      await form.handleSubmit()
+
+      expect(onSubmit).toHaveBeenCalledWith(
+        expect.objectContaining({
+          value: { name: 'test' },
+          schemaOutput: { nameLength: 4 },
+        }),
+      )
     })
 
     it('skips bailIfInvalid form validators when field validators fail first', async () => {

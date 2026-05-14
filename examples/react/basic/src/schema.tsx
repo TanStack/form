@@ -1,15 +1,33 @@
 import { useForm } from '@tanstack/react-form'
 import { z } from 'zod'
 
+async function callEndpoint(value: any): any {}
+
+type WrapInString<T extends number> = `NUM_${T}`
+type ParseResult<T extends ReadonlyArray<number>> = T extends [
+  infer TFirst,
+  ...infer TRest,
+]
+  ? TFirst extends number
+    ? TRest extends ReadonlyArray<number>
+      ? [WrapInString<TFirst>, ...ParseResult<TRest>]
+      : []
+    : []
+  : []
+
+type T1 = ParseResult<[1, 2, 3]>
+
 export function SchemaExample() {
   const form = useForm({
     defaultValues: { name: '', email: '' },
     validators: [
       {
-        run: z.object({
-          name: z.string().min(1, 'Name is required'),
-          email: z.email('Email is required'),
-        }),
+        run: z
+          .object({
+            name: z.string().min(1, 'Name is required'),
+            email: z.email('Email is required'),
+          })
+          .transform((d) => 0),
         triggers: [
           'blur',
           {
@@ -19,10 +37,23 @@ export function SchemaExample() {
           },
         ],
       },
+      {
+        run: z
+          .object({
+            name: z.string().min(1, 'Name is required'),
+            email: z.email('Email is required'),
+          })
+          .transform((d) => ''),
+        runOnSubmit: false,
+      },
     ],
-    onSubmit: ({ value, schemaOutput }) => {
+    onSubmit: async ({ value, createValidationError }) => {
       alert('Submitted!')
-      console.log(value, schemaOutput)
+      const result = await callEndpoint(value)
+
+      if (isErrorResult(result)) {
+        return createValidationError('This is an error!')
+      }
     },
   })
 

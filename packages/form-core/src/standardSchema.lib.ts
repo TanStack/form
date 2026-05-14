@@ -62,12 +62,14 @@ export function parseStandardSchema<TOutput>(
 ): Promise<{
   result: FormValidateResult
   schemaResult: TOutput | null
+  hasSchemaResult: boolean
 }> {
   return Promise.resolve(schema['~standard'].validate(value)).then((result) => {
     if (!result.issues) {
       return {
         result: null,
         schemaResult: result.value,
+        hasSchemaResult: true,
       }
     }
 
@@ -82,6 +84,7 @@ export function parseStandardSchema<TOutput>(
     return {
       result: validationResult,
       schemaResult: null,
+      hasSchemaResult: false,
     }
   })
 }

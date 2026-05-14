@@ -92,11 +92,13 @@ export interface PipelineResult<T> {
   validatorIndex: number
   result: T
   schemaResult: any | null
+  hasSchemaResult?: boolean
 }
 
 interface ValidatorExecutionResult<TResult> {
   result: TResult
   schemaResult: any | null
+  hasSchemaResult: boolean
 }
 
 interface PendingDebouncedCall<TResult extends ValidateResult> {
@@ -204,6 +206,7 @@ async function executeValidator<TResult extends ValidateResult>(
   return {
     result: await validator.run(context),
     schemaResult: null,
+    hasSchemaResult: false,
   }
 }
 
@@ -475,6 +478,9 @@ async function flushPendingResults<TResult extends ValidateResult>(
         result: executionResult.result,
         schemaResult: executionResult.schemaResult,
       }
+      Object.defineProperty(publicResult, 'hasSchemaResult', {
+        value: executionResult.hasSchemaResult,
+      })
 
       results[result.validatorIndex] = publicResult
       onResult?.(publicResult)

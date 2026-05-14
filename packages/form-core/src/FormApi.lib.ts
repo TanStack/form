@@ -598,7 +598,9 @@ export class InternalFormApi<
   }
 
   _processValidationResult = (result: PipelineResult<FormValidateResult>) => {
-    this._lastSchemaOutput = result.schemaResult
+    if (result.hasSchemaResult) {
+      this._lastSchemaOutput = result.schemaResult
+    }
 
     const aggregateError = isAggregateError(result.result)
 
@@ -775,7 +777,7 @@ export class InternalFormApi<
 
     const submissionData = {
       hasFailed: false,
-      submitError: null as any,
+      submitError: null satisfies FormValidateResult as FormValidateResult,
     }
 
     const fields =
@@ -861,7 +863,7 @@ export class InternalFormApi<
           result: maybeError,
           schemaResult: null,
         })
-        submissionData.hasFailed = true
+        submissionData.submitError = maybeError
       }
     } catch (e) {
       console.error(e)
@@ -886,6 +888,66 @@ export class InternalFormApi<
     return errorResults
   }
 }
+
+/**
+ * Error cleanup
+ *
+ * DONT HAVE YET - mount
+ * -> in v1, it refers to Component mount
+ * -> in v2, we can check if `mount.run` is a promise. If not, then we can use that as immediate error feedback
+ * otherwise, delay processing with .then() -> "init" rather than mount
+ *
+ * change
+ * blur
+ * submit
+ *
+ * -> when are these cleared?
+ *
+ * Submission and onMount errors clear after change/blur
+ * -> Form-level errors should clear when any field changes / blurs
+ *   -> { form: x, fields: {} } -> split into form-level and field-level
+ * -> Field-level errors should ONLY clear if that specific field changes / blurs
+ *
+ *
+ * Linked Fields
+ * -> a field has a Set<other fields> that need to be notified
+ * -> if a field B has a field-level error from onSubmit, and it listens to field A,
+ * then changing field A should trigger field B validation, but it should NOT clear field B errors.
+ *
+ *
+ * Field mounts
+ *  -> is there `listeners.listenToblabla`
+ *  -> if so, for each, `form.getOrCreateFieldApi(name)
+ *  -> const unsubscribe = otherField.attachListener(this)
+ *
+ *  -> field._update() brings in different names
+ *  -> Map<oldName, unsubscribe> -> unsubscribe
+ *
+ *  -> repeat process of subscribing
+ *
+ *  prune condition needs to be extended: listeners need to be size 0
+ *
+ *  -> {
+ *     run: () => {},
+ *     triggers: ['change', 'blur', 'submit', 'mount', 'unmount'], // not the same as submit
+ *     // runOnSubmit doesn't exist
+ *     listenToFields: ['otherField']
+ *   }
+ *
+ *
+ * const form  = useForm({ defaultValues, validators: [
+ *   { run: () => 'Form-level' } // This only runs on submit. If field changes/blurs and this error is still there, clear it
+ *   { run: () => ({ form: 'Form-level', fields: { 'name', 'Too short' }})} // If field changes/blurs, remove form-level. If `name` changes, then remove name.
+ * ]})
+ *
+ */
+
+/**
+ * TODO do testing with basic react example, see what feels good DX wise:
+ *
+ * Field A level error, field B level error, field A listens to field B for validation
+ * -> should Field A clear onSubmit/onMount errors when field B triggered validation?
+ */
 
 /*
   // TODO: Talk about user-land listeners moving after a shift or other array operation
