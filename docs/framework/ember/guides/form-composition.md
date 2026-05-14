@@ -27,21 +27,18 @@ export const peopleFormOpts = formOptions({
 
 ```gjs
 // app.gts
-import Component from '@glimmer/component';
 import { createForm } from '@tanstack/ember-form';
 import { peopleFormOpts } from './shared-form.ts';
 
-export default class App extends Component {
-  form = createForm(this, {
-    ...peopleFormOpts,
-  });
+const App = createForm(peopleFormOpts);
 
-  <template>
-    <this.form.Field @name="firstName" as |field|>
+<template>
+  <App as |Form|>
+    <Form.Field @name="firstName" as |field|>
       {{!-- ... --}}
-    </this.form.Field>
-  </template>
-}
+    </Form.Field>
+  </App>
+</template>
 ```
 
 ## Pre-bound Field components
@@ -82,27 +79,26 @@ You're then able to reuse this component anywhere you have a `field`:
 
 ```gjs
 // app.gts
-import Component from '@glimmer/component';
 import { createForm } from '@tanstack/ember-form';
 import TextField from './text-field.gts';
 
-export default class App extends Component {
-  form = createForm(this, {
-    defaultValues: {
-      firstName: 'John',
-      lastName: 'Doe',
-    },
-  });
+const App = createForm({
+  defaultValues: {
+    firstName: 'John',
+    lastName: 'Doe',
+  },
+});
 
-  <template>
-    <this.form.Field @name="firstName" as |field|>
+<template>
+  <App as |Form|>
+    <Form.Field @name="firstName" as |field|>
       <TextField @field={{field}} @label="First Name" />
-    </this.form.Field>
-    <this.form.Field @name="lastName" as |field|>
+    </Form.Field>
+    <Form.Field @name="lastName" as |field|>
       <TextField @field={{field}} @label="Last Name" />
-    </this.form.Field>
-  </template>
-}
+    </Form.Field>
+  </App>
+</template>
 ```
 
 This not only allows you to reuse the UI of your shared component, but retains the type-safety you'd expect from TanStack Form: typo `@name` and you'll get a TypeScript error.
@@ -141,23 +137,22 @@ export default class SubscribeButton extends Component<SubscribeButtonSignature>
 
 ```gjs
 // app.gts
-import Component from '@glimmer/component';
 import { createForm } from '@tanstack/ember-form';
 import SubscribeButton from './subscribe-button.gts';
 
-export default class App extends Component {
-  form = createForm(this, {
-    defaultValues: {
-      firstName: 'John',
-      lastName: 'Doe',
-    },
-  });
+const App = createForm({
+  defaultValues: {
+    firstName: 'John',
+    lastName: 'Doe',
+  },
+});
 
-  <template>
+<template>
+  <App as |Form|>
     {{!-- ...fields... --}}
-    <SubscribeButton @form={{this.form}} @label="Submit" />
-  </template>
-}
+    <SubscribeButton @form={{Form}} @label="Submit" />
+  </App>
+</template>
 ```
 
 ## Breaking big forms into smaller pieces
@@ -220,23 +215,20 @@ export default class ChildForm extends Component<ChildFormSignature> {
 
 ```gjs
 // app.gts
-import Component from '@glimmer/component';
 import { createForm } from '@tanstack/ember-form';
 import { peopleFormOpts } from './shared-form.ts';
 import ChildForm from './child-form.gts';
 
-export default class App extends Component {
-  form = createForm(this, {
-    ...peopleFormOpts,
-  });
+const App = createForm(peopleFormOpts);
 
-  <template>
-    <ChildForm @form={{this.form}} @title="Testing" />
-  </template>
-}
+<template>
+  <App as |Form|>
+    <ChildForm @form={{Form}} @title="Testing" />
+  </App>
+</template>
 ```
 
-> The `EmberFormExtendedApi` generic chain is verbose, but the type can be derived from `ReturnType<typeof createForm<...>>` if you'd rather lean on inference. In practice, most teams type the form arg loosely (`AnyFormApi`) inside reusable subcomponents and rely on the call site to provide type safety.
+> The `EmberFormExtendedApi` generic chain is verbose, but the type can be derived from the form component's yielded block-param type if you'd rather lean on inference. In practice, most teams type the form arg loosely (`AnyFormApi`) inside reusable subcomponents and rely on the call site to provide type safety.
 
 ## Reusing groups of fields in multiple forms
 
@@ -303,30 +295,29 @@ We can now use these grouped fields in any form that implements the required fie
 
 ```gjs
 // app.gts
-import Component from '@glimmer/component';
 import { createForm } from '@tanstack/ember-form';
 import PasswordFields from './password-fields.gts';
 import TextField from './text-field.gts';
 import SubscribeButton from './subscribe-button.gts';
 
-export default class App extends Component {
-  form = createForm(this, {
-    defaultValues: {
-      name: '',
-      age: 0,
-      password: '',
-      confirm_password: '',
-    },
-  });
+const App = createForm({
+  defaultValues: {
+    name: '',
+    age: 0,
+    password: '',
+    confirm_password: '',
+  },
+});
 
-  <template>
-    <this.form.Field @name="name" as |field|>
+<template>
+  <App as |Form|>
+    <Form.Field @name="name" as |field|>
       <TextField @field={{field}} @label="Name" />
-    </this.form.Field>
-    <PasswordFields @form={{this.form}} @title="Account Password" />
-    <SubscribeButton @form={{this.form}} @label="Submit" />
-  </template>
-}
+    </Form.Field>
+    <PasswordFields @form={{Form}} @title="Account Password" />
+    <SubscribeButton @form={{Form}} @label="Submit" />
+  </App>
+</template>
 ```
 
 > Unlike form-level components, validators in field groups cannot be strictly typed and could be any value. Ensure that your fields can accept unknown error types.
@@ -415,20 +406,17 @@ export default class ChildForm extends Component {
 
 ```gjs
 // /src/features/people/page.gts
-import Component from '@glimmer/component';
 import { createForm } from '@tanstack/ember-form';
 import { peopleFormOpts } from './shared-form.ts';
 import ChildForm from './child-form.gts';
 
-export default class PeoplePage extends Component {
-  form = createForm(this, {
-    ...peopleFormOpts,
-  });
+const PeoplePage = createForm(peopleFormOpts);
 
-  <template>
-    <ChildForm @form={{this.form}} @title="Testing" />
-  </template>
-}
+<template>
+  <PeoplePage as |Form|>
+    <ChildForm @form={{Form}} @title="Testing" />
+  </PeoplePage>
+</template>
 ```
 
 ## API Usage Guidance

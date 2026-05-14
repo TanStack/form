@@ -16,24 +16,23 @@ It's up to you! The `<Field>` component accepts a `@validators` arg whose keys (
 Here is an example:
 
 ```gjs
-import Component from '@glimmer/component';
 import { createForm } from '@tanstack/ember-form';
 
 const handleNumberInput = (field, event) =>
   field.handleChange(event.target.valueAsNumber);
 
-export default class AgeForm extends Component {
-  form = createForm(this, {
-    defaultValues: { age: 0 },
-  });
+const validateAge = ({ value }) =>
+  value < 13 ? 'You must be 13 to make an account' : undefined;
 
-  validateAge = ({ value }) =>
-    value < 13 ? 'You must be 13 to make an account' : undefined;
+const AgeForm = createForm({
+  defaultValues: { age: 0 },
+});
 
-  <template>
-    <this.form.Field
+<template>
+  <AgeForm as |Form|>
+    <Form.Field
       @name="age"
-      @validators={{hash onChange=this.validateAge}}
+      @validators={{hash onChange=validateAge}}
       as |field|
     >
       <label for={{field.name}}>Age:</label>
@@ -47,17 +46,17 @@ export default class AgeForm extends Component {
       {{#if field.state.meta.errors}}
         <em role="alert">{{field.state.meta.errors}}</em>
       {{/if}}
-    </this.form.Field>
-  </template>
-}
+    </Form.Field>
+  </AgeForm>
+</template>
 ```
 
 In the example above, the validation is done at each change. If, instead, we wanted the validation to be done when the field is blurred, we would change the code above to use `onBlur`:
 
 ```gjs
-<this.form.Field
+<Form.Field
   @name="age"
-  @validators={{hash onBlur=this.validateAge}}
+  @validators={{hash onBlur=validateAge}}
   as |field|
 >
   <label for={{field.name}}>Age:</label>
@@ -72,32 +71,35 @@ In the example above, the validation is done at each change. If, instead, we wan
   {{#if field.state.meta.errors}}
     <em role="alert">{{field.state.meta.errors}}</em>
   {{/if}}
-</this.form.Field>
+</Form.Field>
 ```
 
 So you can control when the validation is done by populating the appropriate key on `@validators`. You can even perform different pieces of validation at different times:
 
 ```gjs
-export default class AgeForm extends Component {
-  form = createForm(this, { defaultValues: { age: 0 } });
+import { createForm } from '@tanstack/ember-form';
 
-  validateAgeOnChange = ({ value }) =>
-    value < 13 ? 'You must be 13 to make an account' : undefined;
-  validateAgeOnBlur = ({ value }) => (value < 0 ? 'Invalid value' : undefined);
+const validateAgeOnChange = ({ value }) =>
+  value < 13 ? 'You must be 13 to make an account' : undefined;
+const validateAgeOnBlur = ({ value }) =>
+  value < 0 ? 'Invalid value' : undefined;
 
-  <template>
-    <this.form.Field
+const AgeForm = createForm({ defaultValues: { age: 0 } });
+
+<template>
+  <AgeForm as |Form|>
+    <Form.Field
       @name="age"
       @validators={{hash
-        onChange=this.validateAgeOnChange
-        onBlur=this.validateAgeOnBlur
+        onChange=validateAgeOnChange
+        onBlur=validateAgeOnBlur
       }}
       as |field|
     >
       {{!-- ... --}}
-    </this.form.Field>
-  </template>
-}
+    </Form.Field>
+  </AgeForm>
+</template>
 ```
 
 In the example above, we are validating different things on the same field at different times (on every change and when blurring the field). Since `field.state.meta.errors` is an array, all the relevant errors at a given time are displayed. You can also use `field.state.meta.errorMap` to get errors based on _when_ the validation was done (`onChange`, `onBlur`, etc.). More info about displaying errors below.
@@ -107,16 +109,16 @@ In the example above, we are validating different things on the same field at di
 Once you have your validation in place, you can map the errors from an array to be displayed in your UI:
 
 ```gjs
-<this.form.Field
+<Form.Field
   @name="age"
-  @validators={{hash onChange=this.validateAge}}
+  @validators={{hash onChange=validateAge}}
   as |field|
 >
   {{!-- ... --}}
   {{#if field.state.meta.errors}}
     <em role="alert">{{field.state.meta.errors}}</em>
   {{/if}}
-</this.form.Field>
+</Form.Field>
 ```
 
 > Note: `errors` is an array. Rendering it directly inside `{{ }}` will join with commas. If you want explicit control, iterate with `{{#each}}` or pre-join in a getter.
@@ -124,30 +126,33 @@ Once you have your validation in place, you can map the errors from an array to 
 Or use the `errorMap` property to access the specific error you're looking for:
 
 ```gjs
-<this.form.Field
+<Form.Field
   @name="age"
-  @validators={{hash onChange=this.validateAge}}
+  @validators={{hash onChange=validateAge}}
   as |field|
 >
   {{!-- ... --}}
   {{#if field.state.meta.errorMap.onChange}}
     <em role="alert">{{field.state.meta.errorMap.onChange}}</em>
   {{/if}}
-</this.form.Field>
+</Form.Field>
 ```
 
 It's worth mentioning that our `errors` array and the `errorMap` matches the types returned by the validators. This means that:
 
 ```gjs
-export default class AgeForm extends Component {
-  form = createForm(this, { defaultValues: { age: 0 } });
+import { createForm } from '@tanstack/ember-form';
 
-  validateAge = ({ value }) => (value < 13 ? { isOldEnough: false } : undefined);
+const validateAge = ({ value }) =>
+  value < 13 ? { isOldEnough: false } : undefined;
 
-  <template>
-    <this.form.Field
+const AgeForm = createForm({ defaultValues: { age: 0 } });
+
+<template>
+  <AgeForm as |Form|>
+    <Form.Field
       @name="age"
-      @validators={{hash onChange=this.validateAge}}
+      @validators={{hash onChange=validateAge}}
       as |field|
     >
       {{!-- errorMap.onChange is type `{isOldEnough: false} | undefined` --}}
@@ -155,9 +160,9 @@ export default class AgeForm extends Component {
       {{#if field.state.meta.errorMap.onChange.isOldEnough}}
         <em>The user is not old enough</em>
       {{/if}}
-    </this.form.Field>
-  </template>
-}
+    </Form.Field>
+  </AgeForm>
+</template>
 ```
 
 ## Validation at field level vs at form level
@@ -167,45 +172,45 @@ As shown above, each `<Field>` accepts its own validation rules via the `onChang
 Example:
 
 ```gjs
-import Component from '@glimmer/component';
-import { createForm } from '@tanstack/ember-form';
+import { createForm, Subscribe } from '@tanstack/ember-form';
 
-export default class FormWithFormLevelValidation extends Component {
-  form = createForm(this, {
-    defaultValues: { age: 0 },
-    onSubmit: async ({ value }) => {
-      console.log(value);
+const handleSubmit = async ({ value }) => {
+  console.log(value);
+};
+
+const onChangeErrorMap = (state) => state.errorMap.onChange;
+
+const FormWithFormLevelValidation = createForm({
+  defaultValues: { age: 0 },
+  validators: {
+    // Add validators to the form the same way you would add them to a field
+    onChange({ value }) {
+      if (value.age < 13) {
+        return 'Must be 13 or older to sign';
+      }
+      return undefined;
     },
-    validators: {
-      // Add validators to the form the same way you would add them to a field
-      onChange({ value }) {
-        if (value.age < 13) {
-          return 'Must be 13 or older to sign';
-        }
-        return undefined;
-      },
-    },
-  });
+  },
+});
 
-  // Subscribe to the form's error map so that updates to it will render.
-  // Alternately, you can use `<Subscribe>`.
-  formErrorMap = this.form.useStore((state) => state.errorMap);
-
-  <template>
+<template>
+  <FormWithFormLevelValidation @onSubmit={{handleSubmit}} as |Form|>
     <div>
       {{!-- ... --}}
-      {{#if this.formErrorMap.current.onChange}}
-        <div>
-          <em>There was an error on the form: {{this.formErrorMap.current.onChange}}</em>
-        </div>
-      {{/if}}
+      <Subscribe @form={{Form}} @selector={{onChangeErrorMap}} as |formError|>
+        {{#if formError}}
+          <div>
+            <em>There was an error on the form: {{formError}}</em>
+          </div>
+        {{/if}}
+      </Subscribe>
       {{!-- ... --}}
     </div>
-  </template>
-}
+  </FormWithFormLevelValidation>
+</template>
 ```
 
-The `useStore` method returns an autotracked box: read `.current` inside a template (or a `@cached` getter) to get the latest selected slice and re-render when it changes.
+`<Subscribe>` is the recommended way to read form state in templates — give it the yielded `Form` block param and a selector, and the slice is autotracked. (If you'd rather read state from JavaScript, e.g. a `@cached` getter, write a small child component that takes `@form` and calls `form.useStore(selector)` in its constructor.)
 
 ## Asynchronous Functional Validation
 
@@ -214,18 +219,23 @@ While we suspect most validations will be synchronous, there are many instances 
 To do this, we have dedicated `onChangeAsync`, `onBlurAsync`, and other keys that can be used to validate against:
 
 ```gjs
-export default class AgeForm extends Component {
-  form = createForm(this, { defaultValues: { age: 0 } });
+import { createForm } from '@tanstack/ember-form';
 
-  validateAgeAsync = async ({ value }) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    return value < 13 ? 'You must be 13 to make an account' : undefined;
-  };
+const handleNumberInput = (field, event) =>
+  field.handleChange(event.target.valueAsNumber);
 
-  <template>
-    <this.form.Field
+const validateAgeAsync = async ({ value }) => {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  return value < 13 ? 'You must be 13 to make an account' : undefined;
+};
+
+const AgeForm = createForm({ defaultValues: { age: 0 } });
+
+<template>
+  <AgeForm as |Form|>
+    <Form.Field
       @name="age"
-      @validators={{hash onChangeAsync=this.validateAgeAsync}}
+      @validators={{hash onChangeAsync=validateAgeAsync}}
       as |field|
     >
       <label for={{field.name}}>Age:</label>
@@ -239,37 +249,39 @@ export default class AgeForm extends Component {
       {{#if field.state.meta.errors}}
         <em role="alert">{{field.state.meta.errors}}</em>
       {{/if}}
-    </this.form.Field>
-  </template>
-}
+    </Form.Field>
+  </AgeForm>
+</template>
 ```
 
 Synchronous and asynchronous validations can coexist. For example, it is possible to define both `onBlur` and `onBlurAsync` on the same field:
 
 ```gjs
-export default class AgeForm extends Component {
-  form = createForm(this, { defaultValues: { age: 0 } });
+import { createForm } from '@tanstack/ember-form';
 
-  validateAgeOnBlur = ({ value }) =>
-    value < 13 ? 'You must be at least 13' : undefined;
-  validateAgeOnBlurAsync = async ({ value }) => {
-    const currentAge = await fetchCurrentAgeOnProfile();
-    return value < currentAge ? 'You can only increase the age' : undefined;
-  };
+const validateAgeOnBlur = ({ value }) =>
+  value < 13 ? 'You must be at least 13' : undefined;
+const validateAgeOnBlurAsync = async ({ value }) => {
+  const currentAge = await fetchCurrentAgeOnProfile();
+  return value < currentAge ? 'You can only increase the age' : undefined;
+};
 
-  <template>
-    <this.form.Field
+const AgeForm = createForm({ defaultValues: { age: 0 } });
+
+<template>
+  <AgeForm as |Form|>
+    <Form.Field
       @name="age"
       @validators={{hash
-        onBlur=this.validateAgeOnBlur
-        onBlurAsync=this.validateAgeOnBlurAsync
+        onBlur=validateAgeOnBlur
+        onBlurAsync=validateAgeOnBlurAsync
       }}
       as |field|
     >
       {{!-- ... --}}
-    </this.form.Field>
-  </template>
-}
+    </Form.Field>
+  </AgeForm>
+</template>
 ```
 
 The synchronous validation method (`onBlur`) is run first and the asynchronous method (`onBlurAsync`) is only run if the synchronous one (`onBlur`) succeeds. To change this behaviour, set the `@asyncAlways` arg to `true`, and the async method will be run regardless of the result of the sync method.
@@ -281,31 +293,31 @@ While async calls are the way to go when validating against the database, runnin
 Instead, we enable an easy method for debouncing your `async` calls by adding a single arg:
 
 ```gjs
-<this.form.Field
+<Form.Field
   @name="age"
   @asyncDebounceMs={{500}}
-  @validators={{hash onChangeAsync=this.validateAgeAsync}}
+  @validators={{hash onChangeAsync=validateAgeAsync}}
   as |field|
 >
   {{!-- ... --}}
-</this.form.Field>
+</Form.Field>
 ```
 
 This will debounce every async call with a 500ms delay. You can even override this on a per-validator basis using the matching `*DebounceMs` key:
 
 ```gjs
-<this.form.Field
+<Form.Field
   @name="age"
   @asyncDebounceMs={{500}}
   @validators={{hash
     onChangeAsyncDebounceMs=1500
-    onChangeAsync=this.validateAgeOnChangeAsync
-    onBlurAsync=this.validateAgeOnBlurAsync
+    onChangeAsync=validateAgeOnChangeAsync
+    onBlurAsync=validateAgeOnBlurAsync
   }}
   as |field|
 >
   {{!-- ... --}}
-</this.form.Field>
+</Form.Field>
 ```
 
 > This will run `onChangeAsync` every 1500ms while `onBlurAsync` will run every 500ms.
@@ -327,56 +339,58 @@ _Note:_ make sure to use the latest version of the schema libraries as older ver
 To use schemas from these libraries you can pass them to `@validators` the same way you would a custom function:
 
 ```gjs
-import Component from '@glimmer/component';
 import { z } from 'zod';
 import { createForm } from '@tanstack/ember-form';
 
-export default class AgeForm extends Component {
-  form = createForm(this, { defaultValues: { age: 0 } });
+const ageSchema = z.number().gte(13, 'You must be 13 to make an account');
 
-  ageSchema = z.number().gte(13, 'You must be 13 to make an account');
+const AgeForm = createForm({ defaultValues: { age: 0 } });
 
-  <template>
-    <this.form.Field
+<template>
+  <AgeForm as |Form|>
+    <Form.Field
       @name="age"
-      @validators={{hash onChange=this.ageSchema}}
+      @validators={{hash onChange=ageSchema}}
       as |field|
     >
       {{!-- ... --}}
-    </this.form.Field>
-  </template>
-}
+    </Form.Field>
+  </AgeForm>
+</template>
 ```
 
 Async validations on form and field level are supported as well:
 
 ```gjs
-export default class AgeForm extends Component {
-  form = createForm(this, { defaultValues: { age: 0 } });
+import { z } from 'zod';
+import { createForm } from '@tanstack/ember-form';
 
-  ageSchema = z.number().gte(13, 'You must be 13 to make an account');
-  ageSchemaAsync = z.number().refine(
-    async (value) => {
-      const currentAge = await fetchCurrentAgeOnProfile();
-      return value >= currentAge;
-    },
-    { message: 'You can only increase the age' },
-  );
+const ageSchema = z.number().gte(13, 'You must be 13 to make an account');
+const ageSchemaAsync = z.number().refine(
+  async (value) => {
+    const currentAge = await fetchCurrentAgeOnProfile();
+    return value >= currentAge;
+  },
+  { message: 'You can only increase the age' },
+);
 
-  <template>
-    <this.form.Field
+const AgeForm = createForm({ defaultValues: { age: 0 } });
+
+<template>
+  <AgeForm as |Form|>
+    <Form.Field
       @name="age"
       @validators={{hash
-        onChange=this.ageSchema
+        onChange=ageSchema
         onChangeAsyncDebounceMs=500
-        onChangeAsync=this.ageSchemaAsync
+        onChangeAsync=ageSchemaAsync
       }}
       as |field|
     >
       {{!-- ... --}}
-    </this.form.Field>
-  </template>
-}
+    </Form.Field>
+  </AgeForm>
+</template>
 ```
 
 ## Preventing invalid forms from being submitted
@@ -388,32 +402,31 @@ The form state object has a `canSubmit` flag that is false when any field is inv
 You can subscribe to it via `<Subscribe>` and use the value in order to, for example, disable the submit button when the form is invalid (in practice, disabled buttons are not accessible, use `aria-disabled` instead).
 
 ```gjs
-import Component from '@glimmer/component';
 import { createForm, Subscribe } from '@tanstack/ember-form';
 
-export default class FormWithSubmitGate extends Component {
-  form = createForm(this, {
-    /* ... */
-  });
+// Pre-compute negation in the selector — strict-mode templates can't write
+// {{!state.canSubmit}} inline.
+const submitButtonState = (state) => ({
+  cantSubmit: !state.canSubmit,
+  isSubmitting: state.isSubmitting,
+});
 
-  // Pre-compute negation in the selector — strict-mode templates can't write
-  // {{!state.canSubmit}} inline.
-  submitButtonState = (state) => ({
-    cantSubmit: !state.canSubmit,
-    isSubmitting: state.isSubmitting,
-  });
+const FormWithSubmitGate = createForm({
+  /* ... */
+});
 
-  <template>
+<template>
+  <FormWithSubmitGate as |Form|>
     {{!-- ... --}}
 
     {{!-- Dynamic submit button --}}
-    <Subscribe @form={{this.form}} @selector={{this.submitButtonState}} as |slice|>
+    <Subscribe @form={{Form}} @selector={{submitButtonState}} as |slice|>
       <button type="submit" disabled={{slice.cantSubmit}}>
         {{if slice.isSubmitting "..." "Submit"}}
       </button>
     </Subscribe>
-  </template>
-}
+  </FormWithSubmitGate>
+</template>
 ```
 
 To prevent the form from being submitted before any interaction, combine `canSubmit` with `isPristine` flags. A simple condition like `!canSubmit || isPristine` (computed inside the selector) effectively disables submissions until the user has made changes.

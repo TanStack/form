@@ -1,39 +1,36 @@
 import Component from '@glimmer/component';
-import { render, settled } from '@ember/test-helpers';
+import { click, render } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { createForm } from '@tanstack/ember-form';
 import type { Sample } from '../helpers.ts';
 
+const SampleForm = createForm({
+  defaultValues: { firstName: 'Linus', lastName: 'Pauling' } as Sample,
+});
+
 module('Integration | form.handleSubmit', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('invokes onSubmit with current values', async function (assert) {
+  test('invokes the @onSubmit arg with current values', async function (assert) {
     let submitted: Sample | undefined;
 
     class TestForm extends Component {
-      form = createForm(this, {
-        defaultValues: { firstName: 'Linus', lastName: 'Pauling' } as Sample,
-        onSubmit: async ({ value }) => {
-          submitted = value;
-        },
-      });
-
-      submit = (event: Event) => {
-        event.preventDefault();
-        this.form.handleSubmit();
+      onSubmit = async ({ value }: { value: Sample }) => {
+        submitted = value;
       };
 
       <template>
-        <form id="f" {{on "submit" this.submit}}>
-          <button id="go" type="submit">Go</button>
-        </form>
+        <SampleForm @onSubmit={{this.onSubmit}} as |form|>
+          <button id="go" type="button" {{on "click" form.handleSubmit}}>
+            Go
+          </button>
+        </SampleForm>
       </template>
     }
 
     await render(<template><TestForm /></template>);
-    document.getElementById('go')?.click();
-    await settled();
+    await click('#go');
 
     assert.deepEqual(submitted, { firstName: 'Linus', lastName: 'Pauling' });
   });

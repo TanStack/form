@@ -5,31 +5,40 @@ import { setupRenderingTest } from 'ember-qunit';
 import { createForm } from '@tanstack/ember-form';
 import { handleInput, type Sample } from '../helpers.ts';
 
+const SampleForm = createForm({
+  defaultValues: { firstName: '', lastName: '' } as Sample,
+});
+
+const firstNameSelector = (state: { values: Sample }) => state.values.firstName;
+
+interface SliceSignature {
+  Args: { form: { useStore: <T>(s: (state: any) => T) => { current: T } } };
+  Blocks: { default: [value: string] };
+}
+
+class FirstNameSlice extends Component<SliceSignature> {
+  slice = this.args.form.useStore(firstNameSelector);
+  <template>{{yield this.slice.current}}</template>
+}
+
 module('Integration | form.useStore', function (hooks) {
   setupRenderingTest(hooks);
 
   test('selector returns reactive slice that updates', async function (assert) {
-    class TestForm extends Component {
-      form = createForm(this, {
-        defaultValues: { firstName: '', lastName: '' } as Sample,
-        onSubmit: async () => {},
-      });
-
-      slice = this.form.useStore((state) => state.values.firstName);
-
-      <template>
-        <this.form.Field @name="firstName" as |field|>
+    await render(<template>
+      <SampleForm as |form|>
+        <form.Field @name="firstName" as |field|>
           <input
             id="firstName"
             value={{field.state.value}}
             {{on "input" (fn handleInput field)}}
           />
-        </this.form.Field>
-        <output id="store">{{this.slice.current}}</output>
-      </template>
-    }
-
-    await render(<template><TestForm /></template>);
+        </form.Field>
+        <FirstNameSlice @form={{form}} as |value|>
+          <output id="store">{{value}}</output>
+        </FirstNameSlice>
+      </SampleForm>
+    </template>);
     assert.dom('#store').hasText('');
 
     await fillIn('#firstName', 'Grace');
