@@ -4,7 +4,13 @@ import {
   nameToFieldNodeSegments,
   tryGetFieldApi,
 } from './FieldApi.lib'
-import { createPipelineCache, evaluate, getBy, isNotNil, setBy } from './utils'
+import {
+  createPipelineCache,
+  evaluate,
+  getBy,
+  isNotNil,
+  setBy,
+} from './utils.lib'
 import { InternalRootFieldApi } from './RootFieldApi.lib'
 import {
   clearIndexedErrorsFromSource,
@@ -16,7 +22,7 @@ import {
   runFormValidatorPipeline,
   setIndexedError,
 } from './validation.lib'
-import type { PipelineCache } from './utils'
+import type { PipelineCache } from './utils.lib'
 
 import type {
   FormValidatorPipelineResult,

@@ -1,5 +1,5 @@
 import { LiteDebouncer } from '@tanstack/pacer-lite'
-import type { PipelineCache } from './utils'
+import type { PipelineCache } from './utils.lib'
 import type { FormValidator } from './validation.public'
 import type { AnyInternalFieldApi } from './FieldApi.lib'
 import type { InternalFormApi } from './FormApi.lib'

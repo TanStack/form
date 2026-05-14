@@ -1,5 +1,9 @@
 import { batch, createAtom } from '@tanstack/store'
-import { callUpdater, cancelPipelineCache, createPipelineCache } from './utils'
+import {
+  callUpdater,
+  cancelPipelineCache,
+  createPipelineCache,
+} from './utils.lib'
 import {
   clearIndexedErrorsFromSource,
   hasIndexedErrorFromSource,
@@ -19,7 +23,7 @@ import {
   reconcileWatchedValidatorFields,
 } from './linked-fields.lib'
 import type { FieldListener, FieldListenerTriggers } from './listeners.public'
-import type { PipelineCache } from './utils'
+import type { PipelineCache } from './utils.lib'
 import type {
   FieldValidatorPipelineResult,
   PipelineResult,
