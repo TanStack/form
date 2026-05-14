@@ -22,7 +22,7 @@ export interface InternalReactFormApi<
 
 export function initializeForm<
   TFormData,
-  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  const TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 >(
   options: FormOptions<TFormData, TFormValidators>,
 ): InternalReactFormApi<TFormData, TFormValidators> {

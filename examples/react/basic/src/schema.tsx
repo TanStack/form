@@ -1,33 +1,18 @@
 import { useForm } from '@tanstack/react-form'
 import { z } from 'zod'
 
-async function callEndpoint(value: any): any {}
-
-type WrapInString<T extends number> = `NUM_${T}`
-type ParseResult<T extends ReadonlyArray<number>> = T extends [
-  infer TFirst,
-  ...infer TRest,
-]
-  ? TFirst extends number
-    ? TRest extends ReadonlyArray<number>
-      ? [WrapInString<TFirst>, ...ParseResult<TRest>]
-      : []
-    : []
-  : []
-
-type T1 = ParseResult<[1, 2, 3]>
+// TODO
+// Schemas aren't guaranteed to run during validation, so
 
 export function SchemaExample() {
   const form = useForm({
     defaultValues: { name: '', email: '' },
     validators: [
       {
-        run: z
-          .object({
-            name: z.string().min(1, 'Name is required'),
-            email: z.email('Email is required'),
-          })
-          .transform((d) => 0),
+        run: z.object({
+          name: z.string().min(1, 'Name is required'),
+          email: z.email('Email is required'),
+        }),
         triggers: [
           'blur',
           {
@@ -43,17 +28,12 @@ export function SchemaExample() {
             name: z.string().min(1, 'Name is required'),
             email: z.email('Email is required'),
           })
-          .transform((d) => ''),
+          .transform((d) => ({ ...d, name: d.name.toUpperCase() })),
         runOnSubmit: false,
       },
     ],
-    onSubmit: async ({ value, createValidationError }) => {
+    onSubmit: async ({ value, schemaOutputs }) => {
       alert('Submitted!')
-      const result = await callEndpoint(value)
-
-      if (isErrorResult(result)) {
-        return createValidationError('This is an error!')
-      }
     },
   })
 

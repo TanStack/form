@@ -119,7 +119,9 @@ export interface FormValidator<TFormData> extends Validator<
 type TryInferSchemaOutput<T> = T extends {
   run: StandardSchemaV1<any, infer TOutput>
 }
-  ? TOutput
+  ? T extends { runOnSubmit: false }
+    ? undefined
+    : TOutput
   : undefined
 
 export type FormStandardSchemaValidatorOutputs<

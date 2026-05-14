@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
-import { initializeForm, InternalReactFormApi } from './ReactFormApi.lib'
+import { initializeForm } from './ReactFormApi.lib'
+import type { InternalReactFormApi } from './ReactFormApi.lib'
 import type { SubscribeProps } from './Subscribe'
 import type { CrossVersionReactNode } from './types.lib'
 import type {
@@ -71,17 +72,17 @@ export interface ReactFormApi<
  */
 export function useForm<
   TData,
-  TFormValidators extends ReadonlyArray<FormValidator<TData>>,
+  const TFormValidators extends ReadonlyArray<FormValidator<TData>>,
 >(
   options: FormOptions<TData, TFormValidators>,
 ): ReactFormApi<TData, TFormValidators> {
-  const form = useRef<InternalReactFormApi<TData, TFormValidators>>(null)
+  const formRef = useRef<InternalReactFormApi<TData, TFormValidators>>(null)
 
-  if (!form.current) {
-    form.current = initializeForm(options)
+  if (!formRef.current) {
+    formRef.current = initializeForm(options)
   }
 
-  useEffect(() => form.current!._update(options))
+  useEffect(() => formRef.current!._update(options))
 
-  return form.current!
+  return formRef.current
 }

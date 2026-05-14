@@ -221,6 +221,10 @@ export class InternalFormApi<
     if (values && !opts?.preserveDefaultValues) {
       this._options = { ...this.options, defaultValues: values }
     }
+
+    this._fieldRootNode._children.forEach((child) => child._kill())
+
+    this.valuesAtom.set(values ?? this._options.defaultValues)
   }
 
   _update = (options: FormOptions<TFormData, TFormValidators>) => {
