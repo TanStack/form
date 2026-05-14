@@ -760,7 +760,42 @@ describe('validate', () => {
       shouldError = false
       await form.validate('change')
       field = form._tryGetFieldApi('nonexistent')
-      expect(field?.errors).toEqual([])
+      expect(field).toBeNull()
+    })
+
+    it('keeps mounted fields after removing form validator field errors', async () => {
+      let shouldError = true
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            run: () => {
+              if (shouldError) {
+                return {
+                  fields: {
+                    name: { message: 'Error' },
+                  },
+                }
+              }
+              return null
+            },
+            triggers: ['change'],
+          },
+        ],
+      })
+      const field = form._getOrCreateFieldApi({ name: 'name' })
+      const unregister = field._register()
+
+      await form.validate('change')
+      expect(field.errors).toEqual([{ message: 'Error' }])
+
+      shouldError = false
+      await form.validate('change')
+
+      expect(form._tryGetFieldApi('name')).toBe(field)
+      expect(field.errors).toEqual([])
+
+      unregister()
     })
   })
 })

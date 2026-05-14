@@ -4,20 +4,19 @@ import {
   nameToFieldNodeSegments,
   tryGetFieldApi,
 } from './FieldApi.lib'
-import { evaluate, getBy, isNotNil, setBy } from './utils'
+import { createPipelineCache, evaluate, getBy, isNotNil, setBy } from './utils'
 import { InternalRootFieldApi } from './RootFieldApi.lib'
 import {
-  createValidatorPipelineCache,
   isAggregateError,
   isErrorResult,
   normalizeValidationError,
   runFormValidatorPipeline,
 } from './validation.lib'
+import type { PipelineCache } from './utils'
 
 import type {
   FormValidatorPipelineResult,
   PipelineResult,
-  ValidatorPipelineCache,
 } from './validation.lib'
 import type {
   AnyFieldApiOptions,
@@ -159,7 +158,7 @@ export class InternalFormApi<
   _formMetaAtom: Atom<BaseFormMeta>
   _fieldRootNode: InternalRootFieldApi
   _options: FormOptions<TFormData, TFormValidators>
-  _validatorPipelineCache: ValidatorPipelineCache<any>
+  _pipelineCache: PipelineCache<any>
   _schemaOutputs: Array<any> = []
 
   get state(): FormState<TFormData> {
@@ -172,7 +171,7 @@ export class InternalFormApi<
   constructor(options: FormOptions<TFormData, TFormValidators>) {
     this._options = options
     this.valuesAtom = createAtom(options.defaultValues)
-    this._validatorPipelineCache = createValidatorPipelineCache()
+    this._pipelineCache = createPipelineCache()
     const validatorCount = this._options.validators?.length ?? 0
     this._formMetaAtom = createAtom({
       touchedFields: new Set(),
@@ -595,6 +594,7 @@ export class InternalFormApi<
         _formValidatorErrors: formValidatorErrors,
       }
     })
+    field._pruneIfUnused()
   }
 
   _processValidationResult = (result: PipelineResult<FormValidateResult>) => {

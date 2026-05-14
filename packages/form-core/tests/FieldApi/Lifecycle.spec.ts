@@ -37,6 +37,7 @@ describe('Field lifecycle', () => {
       expect(field._isMounted).toBe(true)
       field._kill()
       expect(field._isMounted).toBe(false)
+      expect(field._isKilled).toBe(true)
     })
 
     it('also kills child fields', () => {
@@ -48,6 +49,49 @@ describe('Field lifecycle', () => {
       parent._kill()
       expect(parent._isMounted).toBe(false)
       expect(child._isMounted).toBe(false)
+      expect(parent._isKilled).toBe(true)
+      expect(child._isKilled).toBe(true)
+    })
+
+    it('ignores validation started after a field is killed', async () => {
+      const validator = vi.fn(() => ({ message: 'Too late' }))
+      const form = new InternalFormApi({ defaultValues: { x: '' } })
+      const field = form._getOrCreateFieldApi({
+        name: 'x',
+        validators: [{ run: validator }],
+      })
+
+      field._kill()
+
+      const result = await field._runFieldValidation('submit')
+
+      expect(validator).not.toHaveBeenCalled()
+      expect(result.results).toEqual([])
+      expect(field.errors).toEqual([])
+    })
+
+    it('ignores validation results that arrive after a field is killed', () => {
+      const form = new InternalFormApi({ defaultValues: { x: '' } })
+      const field = form._getOrCreateFieldApi({ name: 'x' })
+
+      field._kill()
+      field._processValidationResult({
+        validatorIndex: 0,
+        result: { message: 'Too late' },
+        schemaResult: null,
+      })
+
+      expect(field.errors).toEqual([])
+    })
+
+    it('ignores stale field writes after a field is killed', () => {
+      const form = new InternalFormApi({ defaultValues: { x: '' } })
+      const field = form._getOrCreateFieldApi({ name: 'x' })
+
+      field._kill()
+      field.handleChange('ignored')
+
+      expect(form.getFieldValue('x')).toBe('')
     })
   })
 

@@ -1,6 +1,7 @@
 import { LiteDebouncer } from '@tanstack/pacer-lite'
 import { isStandardSchema, parseStandardSchema } from './standardSchema.lib'
 import { isNil, isNotNil, normalizeToArray } from './utils'
+import type { PipelineCache } from './utils'
 import type {
   ErrorWithMessage,
   FieldValidateResult,
@@ -109,27 +110,13 @@ interface PendingDebouncedCall<TResult extends ValidateResult> {
   reject: (error: unknown) => void
 }
 
-type ValidationDebouncer<TResult extends ValidateResult> = LiteDebouncer<
+export type ValidationDebouncer<TResult extends ValidateResult> = LiteDebouncer<
   (call: PendingDebouncedCall<TResult>) => void
 >
 
 interface PendingPipelineResult<T> {
   validatorIndex: number
   result: T
-}
-
-export interface ValidatorPipelineCache<TResult extends ValidateResult> {
-  listenersDebouncers: Map<number, ValidationDebouncer<TResult>>
-  validatorDebouncers: Map<number, ValidationDebouncer<TResult>>
-  validatorAbortControllers: Map<number, AbortController>
-}
-
-export function createValidatorPipelineCache(): ValidatorPipelineCache<any> {
-  return {
-    listenersDebouncers: new Map(),
-    validatorDebouncers: new Map(),
-    validatorAbortControllers: new Map(),
-  }
 }
 
 function getEnabledState(
@@ -212,7 +199,7 @@ async function executeValidator<TResult extends ValidateResult>(
 
 interface ValidatorPipelineArgs<TResult extends ValidateResult> {
   context: InputContext
-  cache: ValidatorPipelineCache<TResult>
+  cache: PipelineCache<TResult>
   pipeline: ReadonlyArray<FormValidator<any> | FieldValidator<any, any>>
   hasFailedBefore: boolean
   getContext: (
@@ -226,14 +213,14 @@ interface RunMaybeDebouncedValidatorArgs<TResult extends ValidateResult> {
   validator: Validator<any, any, any>
   context: InputContext
   validatorIndex: number
-  cache: ValidatorPipelineCache<TResult>
+  cache: PipelineCache<TResult>
   onExecute: (
     inputContext: ValidateContext,
   ) => Promise<ValidatorExecutionResult<TResult>>
 }
 
 function clearAbortController<TResult extends ValidateResult>(
-  cache: ValidatorPipelineCache<TResult>,
+  cache: PipelineCache<TResult>,
   cacheKey: number,
   abortController: AbortController,
 ): void {
@@ -304,7 +291,7 @@ function getValidatorDebounceMs(
 }
 
 function abortPreviousValidatorRun<TResult extends ValidateResult>(
-  cache: ValidatorPipelineCache<TResult>,
+  cache: PipelineCache<TResult>,
   cacheKey: number,
 ): void {
   // AbortControllers are scoped to the validator instead of the whole pipeline.
@@ -314,7 +301,7 @@ function abortPreviousValidatorRun<TResult extends ValidateResult>(
 }
 
 function getOrCreateDebouncer<TResult extends ValidateResult>(
-  cache: ValidatorPipelineCache<TResult>,
+  cache: PipelineCache<TResult>,
   cacheKey: number,
   fn: (call: PendingDebouncedCall<TResult>) => void,
   wait: number,
@@ -588,8 +575,7 @@ export function runFormValidatorPipeline({
   onResult,
   hasFailedBefore,
 }: FormValidatorPipelineArgs): Promise<FormValidatorPipelineResult> {
-  const cache = (context.formApi as InternalFormApi<any, any>)
-    ._validatorPipelineCache
+  const cache = (context.formApi as InternalFormApi<any, any>)._pipelineCache
 
   return runValidatorPipeline<FormValidateResult>({
     pipeline,
@@ -636,9 +622,16 @@ export function runFieldValidatorPipeline({
   context,
   onResult,
 }: FieldValidatorPipelineArgs): Promise<FieldValidatorPipelineResult> {
-  const cache = (
-    context.fieldApi as AnyInternalFieldApi
-  )._getOrCreateValidatorCache()
+  const fieldApi = context.fieldApi as AnyInternalFieldApi
+
+  if (fieldApi._isKilled)
+    return Promise.resolve({
+      results: [],
+      hasErrors: false,
+      thrownError: null,
+    })
+
+  const cache = fieldApi._getOrCreatePipelineCache()
 
   return runValidatorPipeline<FieldValidateResult>({
     pipeline,

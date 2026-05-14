@@ -1,16 +1,67 @@
+import type { FormApi } from './FormApi.public'
 import type { FieldApi } from './FieldApi.public'
 import type { FormValidator, ValidationTrigger } from './validation.public'
 
-// form
+// triggers
 
-export type FormListenerEvents = ValidationTrigger | 'mount' | 'reset'
+export type FormListenerTriggers = ValidationTrigger | 'mount' | 'reset'
+export type FieldListenerTriggers = FormListenerTriggers | 'unmount'
+
+// shared
+
+export interface ListenerPredicateContext<TFormData, TValue> {
+  formApi: FormApi<TFormData, ReadonlyArray<any>>
+  triggerFieldApi?: FieldApi<any, any>
+  value: TValue
+}
+
+export type ListenerPredicateFn<TFormData, TValue> = (
+  context: ListenerPredicateContext<TFormData, TValue>,
+) => boolean
+
+export interface ListenerTriggerConfig<
+  TTriggers extends FieldListenerTriggers,
+  TFormData,
+  TValue = TFormData,
+> {
+  trigger: TTriggers
+  when?: boolean | ListenerPredicateFn<TFormData, TValue>
+}
+
+export type ListenerTriggerOption<
+  TTriggers extends FieldListenerTriggers,
+  TFormData,
+  TValue = TFormData,
+> = TTriggers | ListenerTriggerConfig<TTriggers, TFormData, TValue>
+
+export type ListenerDebounceFn<TFormData, TValue> = (
+  context: ListenerPredicateContext<TFormData, TValue>,
+) => number
+
+export interface Listener<
+  TTriggers extends FieldListenerTriggers,
+  TFormData,
+  TValue = TFormData,
+> {
+  /**
+   * The debounce time in milliseconds for validation triggers (change, blur).
+   * Does not affect submit events, which always execute immediately.
+   *
+   * @default 0
+   */
+  triggerDebounceMs?: number | ListenerDebounceFn<TFormData, TValue>
+  triggers?: Array<ListenerTriggerOption<TTriggers, TFormData, TValue>>
+}
+
+// form
 
 export interface FormListenerContext<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 > {
-  fieldApi?: FieldApi<TFormData, TFormValidators>
-  formApi: TFormData
+  triggerFieldApi?: FieldApi<TFormData, TFormValidators>
+  formApi: FormApi<TFormData, TFormValidators>
+  value: TFormData
 }
 
 export type FormListenerFn<
@@ -18,54 +69,64 @@ export type FormListenerFn<
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 > = (context: FormListenerContext<TFormData, TFormValidators>) => void
 
-export interface FormListenerConfig<
+export interface FormListener<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
-> {
+> extends Listener<FormListenerTriggers, TFormData> {
   run: FormListenerFn<TFormData, TFormValidators>
-  triggers: Array<FormListenerEvents>
-  debounceMs?: number
 }
 
-// field
+export type FormListeners<
+  TFormData,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+> = Array<FormListener<TFormData, TFormValidators>>
 
-export type FieldListenerEvents =
-  | ValidationTrigger
-  | 'mount'
-  | 'unmount'
-  | 'reset'
+// field
 
 export interface FieldListenerContext<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  TFieldValue,
 > {
-  value: any
+  value: TFieldValue
   fieldApi: FieldApi<TFormData, TFormValidators>
+  formApi: FormApi<TFormData, TFormValidators>
 }
+
+// Field A listens to field B
+// field B triggers field A validation
+// -> should fieldApi refer to A or should it refer to B?
+//    -> No, it should refer to field A still. B data can be obtained from other sources.
 
 export type FieldListenerFn<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
-> = (context: FieldListenerContext<TFormData, TFormValidators>) => void
+  TFieldValue,
+> = (
+  context: FieldListenerContext<TFormData, TFormValidators, TFieldValue>,
+) => void
 
 export interface FieldListenerConfig<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  TFieldValue,
 > {
-  listener: FieldListenerFn<TFormData, TFormValidators>
+  listener: FieldListenerFn<TFormData, TFormValidators, TFieldValue>
   debounceMs?: number
+}
+
+export interface FieldListener<
+  TFormData,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  TFieldValue,
+> extends Listener<FieldListenerTriggers, TFormData, TFieldValue> {
+  run: FieldListenerFn<TFormData, TFormValidators, TFieldValue>
 }
 
 export type FieldListeners<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
-> = Partial<
-  Record<
-    FieldListenerEvents,
-    | FieldListenerConfig<TFormData, TFormValidators>
-    | FieldListenerFn<TFormData, TFormValidators>
-  >
->
+> = Array<FieldListener<TFormData, TFormValidators, any>>
 
 /**
  * {
@@ -192,4 +253,25 @@ export type FieldListeners<
  *
  * createHelper(formOptions | form)
  * <form.Field listeners={myCallback}
+ *
+ *
+ *  * Field mounts
+ *  -> is there `listeners.listenToblabla`
+ *  -> if so, for each, `form.getOrCreateFieldApi(name)
+ *  -> const unsubscribe = otherField.attachListener(this)
+ *
+ *  -> field._update() brings in different names
+ *  -> Map<oldName, unsubscribe> -> unsubscribe
+ *
+ *  -> repeat process of subscribing
+ *
+ *  prune condition needs to be extended: listeners need to be size 0
+ *
+ *  -> {
+ *     run: () => {},
+ *     triggers: ['change', 'blur', 'submit', 'mount', 'unmount'], // not the same as submit
+ *     // runOnSubmit doesn't exist
+ *     listenToFields: ['otherField']
+ *   }
+ *
  */

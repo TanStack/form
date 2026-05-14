@@ -1,45 +1,48 @@
 import { nameToFieldNodeSegments } from './FieldApi.lib'
 
 // type
-import type { LiteDebouncer } from '@tanstack/pacer-lite'
 import type { OneOrMany, UpdateFn, Updater } from './types.public'
-import type { ValidateContext } from './validation.lib'
-import type { FormListenerFn } from './listeners.public'
-import type { FormValidator } from './validation.public'
-
-const ABORTED_CALL = Symbol('ABORTED_CALL')
-
-type AbortedCall = typeof ABORTED_CALL
-
-interface PendingDebouncedCall<TResult> {
-  context: ValidateContext
-  resolve: (value: TResult | AbortedCall) => void
-  reject: (error: unknown) => void
-}
-
-type ValidationDebouncer<TResult> = LiteDebouncer<
-  (call: PendingDebouncedCall<TResult>) => void
->
+import type { ValidationDebouncer } from './validation.lib'
+import type {
+  FieldValidateResult,
+  FormValidateResult,
+} from './validation.public'
+import type { ListenerDebouncer } from './listeners.lib'
 
 export interface PipelineCache<
-  TFormData,
-  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
-  TResult,
+  TResult extends FormValidateResult | FieldValidateResult,
 > {
-  listenersDebouncers: Map<
-    number,
-    LiteDebouncer<FormListenerFn<TFormData, TFormValidators>>
-  >
+  listenerDebouncers: Map<number, ListenerDebouncer>
   validatorDebouncers: Map<number, ValidationDebouncer<TResult>>
   validatorAbortControllers: Map<number, AbortController>
 }
 
-export function createPipelineCache(): PipelineCache<any, any, any> {
+export function createPipelineCache(): PipelineCache<any> {
   return {
-    listenersDebouncers: new Map(),
+    listenerDebouncers: new Map(),
     validatorDebouncers: new Map(),
     validatorAbortControllers: new Map(),
   }
+}
+
+export function cancelPipelineCache(cache: PipelineCache<any>): void {
+  for (const abortController of Array.from(
+    cache.validatorAbortControllers.values(),
+  )) {
+    abortController.abort()
+  }
+
+  for (const debouncer of cache.validatorDebouncers.values()) {
+    debouncer.cancel()
+  }
+
+  for (const debouncer of cache.listenerDebouncers.values()) {
+    debouncer.cancel()
+  }
+
+  cache.validatorAbortControllers.clear()
+  cache.validatorDebouncers.clear()
+  cache.listenerDebouncers.clear()
 }
 
 /*

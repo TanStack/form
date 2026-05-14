@@ -1,15 +1,19 @@
 import { batch, createAtom } from '@tanstack/store'
-import { callUpdater, evaluate } from './utils'
 import {
-  createValidatorPipelineCache,
+  callUpdater,
+  cancelPipelineCache,
+  createPipelineCache,
+  evaluate,
+} from './utils'
+import {
   isErrorResult,
   normalizeValidationError,
   runFieldValidatorPipeline,
 } from './validation.lib'
+import type { PipelineCache } from './utils'
 import type {
   FieldValidatorPipelineResult,
   PipelineResult,
-  ValidatorPipelineCache,
 } from './validation.lib'
 
 import type { PropagateOptions } from './types.lib'
@@ -234,7 +238,8 @@ export class InternalFieldApi<
   _fullPathCache: string | null = null
   _atoms: FieldAtoms
   _validators: Array<AnyFieldValidator>
-  _validatorCache: ValidatorPipelineCache<any> | null = null
+  _pipelineCache: PipelineCache<any> | null = null
+  _isKilled = false
 
   #segment: NameSegment
   /**
@@ -295,11 +300,15 @@ export class InternalFieldApi<
     return required
   }
 
-  _getOrCreateValidatorCache(): ValidatorPipelineCache<any> {
-    if (!this._validatorCache) {
-      this._validatorCache = createValidatorPipelineCache()
+  _getOrCreatePipelineCache(): PipelineCache<any> {
+    if (this._isKilled) {
+      return createPipelineCache()
     }
-    return this._validatorCache
+
+    if (!this._pipelineCache) {
+      this._pipelineCache = createPipelineCache()
+    }
+    return this._pipelineCache
   }
 
   get store(): ReadonlyAtom<InternalFieldState> {
@@ -347,6 +356,8 @@ export class InternalFieldApi<
   }
 
   _update(params: Pick<AnyInternalFieldApiParams, 'validators'>) {
+    if (this._isKilled) return
+
     if (params.validators) {
       this._validators = params.validators
     }
@@ -389,6 +400,8 @@ export class InternalFieldApi<
    * entry.
    */
   _setMeta(updater: Updater<InternalBaseFieldMeta>) {
+    if (this._isKilled) return
+
     this._getOrCreateAtoms().meta.set((prevMeta) => {
       const newMeta = callUpdater(updater, prevMeta)
 
@@ -419,6 +432,8 @@ export class InternalFieldApi<
     prevContributes: boolean,
     newContributes: boolean,
   ): void {
+    if (this._isKilled) return
+
     if (prevContributes === newContributes) return
 
     const delta = newContributes ? 1 : -1
@@ -438,9 +453,15 @@ export class InternalFieldApi<
    * eventually calling form validation.
    */
   _triggerValidationCascade(event: 'change' | 'blur' | 'submit'): void {
+    if (this._isKilled) return
+
     let current: AnyInternalFieldApi | InternalRootFieldApi = this
 
     while (!current._isRoot) {
+      if (current._isKilled) {
+        break
+      }
+
       current._runFieldValidation(event)
       current = current._parent
     }
@@ -456,6 +477,13 @@ export class InternalFieldApi<
     event: 'change' | 'blur' | 'submit',
     options?: { onResult?: boolean },
   ): Promise<FieldValidatorPipelineResult> {
+    if (this._isKilled)
+      return {
+        results: [],
+        hasErrors: false,
+        thrownError: null,
+      }
+
     if (this._validators.length === 0)
       return {
         results: [],
@@ -478,6 +506,8 @@ export class InternalFieldApi<
   }
 
   _processValidationResult(result: PipelineResult<FieldValidateResult>) {
+    if (this._isKilled) return
+
     this._setMeta((prev) => {
       const prevErrors = prev._fieldValidatorErrors
       const newError = isErrorResult(result.result)
@@ -504,6 +534,8 @@ export class InternalFieldApi<
     options: FieldUpdateOptions & PropagateOptions,
     event: 'change' | 'blur' | 'submit',
   ): void {
+    if (this._isKilled) return
+
     const {
       markAsDirty = true,
       markAsTouched = true,
@@ -592,6 +624,10 @@ export class InternalFieldApi<
    *
    */
   _register(): () => void {
+    if (this._isKilled) {
+      return () => {}
+    }
+
     this.#refCount++
     this._getOrCreateAtoms()
     return () => this._unregister()
@@ -603,6 +639,8 @@ export class InternalFieldApi<
    *
    */
   _unregister(): void {
+    if (this._isKilled) return
+
     this.#refCount--
 
     if (this.#refCount <= 0) {
@@ -622,6 +660,8 @@ export class InternalFieldApi<
    * @private
    */
   _moveTo(newSegment: NameSegment): void {
+    if (this._isKilled) return
+
     if (this.#segment === newSegment) {
       return
     }
@@ -681,9 +721,13 @@ export class InternalFieldApi<
           }
         }
 
+        node._isKilled = true
         node.#refCount = 0
         node._atoms.store = undefined
-        node._validatorCache = null
+        if (node._pipelineCache) {
+          cancelPipelineCache(node._pipelineCache)
+          node._pipelineCache = null
+        }
         node.#children.clear()
 
         node._parent._removeChild(node._segment)
@@ -732,11 +776,12 @@ export class InternalFieldApi<
   }
 
   _canPrune(): boolean {
+    if (this._isKilled) return false
+
     if (this.#refCount > 0) return false
     if (this.#children.size > 0) return false
     const meta = this._atoms.meta?.get() ?? defaultInternalBaseFieldMeta
-    // if meta wasn't used or hasn't changed
-    if (meta !== defaultInternalBaseFieldMeta) return false
+    if (!isPrunableMeta(meta)) return false
 
     return true
   }
@@ -761,6 +806,10 @@ export class InternalFieldApi<
    * @returns the new FieldApi.
    */
   _createChild(segment: NameSegment): AnyInternalFieldApi {
+    if (this._isKilled) {
+      throw new Error('Cannot create a child field from a killed field')
+    }
+
     const node = new InternalFieldApi({
       segment,
       parent: this,
@@ -803,12 +852,16 @@ export class InternalFieldApi<
   // after we made the form data update, we getOrCreateNode() of the two elements
 
   swapValues = (indexA: number, indexB: number) => {
+    if (this._isKilled) return
+
     this.form.swapFieldValues(this.name, indexA, indexB, {
       fieldApiOverride: this,
     })
   }
 
   clearValues = (options: FieldUpdateOptions = {}): void => {
+    if (this._isKilled) return
+
     this.form.clearFieldValues(this.name, {
       ...options,
       fieldApiOverride: this,
@@ -816,6 +869,8 @@ export class InternalFieldApi<
   }
 
   pushValue = (value: any, options: FieldUpdateOptions = {}): void => {
+    if (this._isKilled) return
+
     return this.form.pushFieldValue(this.name, value, {
       ...options,
       fieldApiOverride: this,
@@ -827,6 +882,8 @@ export class InternalFieldApi<
     value: any,
     options: FieldUpdateOptions = {},
   ): void => {
+    if (this._isKilled) return
+
     return this.form.insertFieldValue(this.name, index, value, {
       ...options,
       fieldApiOverride: this,
@@ -834,6 +891,8 @@ export class InternalFieldApi<
   }
 
   removeValue = (index: number, options: FieldUpdateOptions = {}): void => {
+    if (this._isKilled) return
+
     return this.form.removeFieldValue(this.name, index, {
       ...options,
       fieldApiOverride: this,
@@ -844,6 +903,8 @@ export class InternalFieldApi<
     predicate: (value: any, index: number, array: Array<any>) => boolean,
     options?: FieldUpdateOptions & { thisArg?: any },
   ) => {
+    if (this._isKilled) return
+
     return this.form.filterFieldValues(this.name, predicate, {
       ...options,
       fieldApiOverride: this,
@@ -854,6 +915,8 @@ export class InternalFieldApi<
     value: Updater<any>,
     options: FieldUpdateOptions = {},
   ): void => {
+    if (this._isKilled) return
+
     return this.form.setFieldValue(this.name, value, {
       ...options,
       fieldApiOverride: this,
@@ -861,6 +924,8 @@ export class InternalFieldApi<
   }
 
   handleBlur = (): void => {
+    if (this._isKilled) return
+
     this._notifyChange(
       {
         markAsDirty: false,
@@ -969,6 +1034,23 @@ function getChildContributionStates(
       getErrorsFromBaseMeta(meta).length > 0 ||
       meta.childContributionCounts.error > 0,
   }
+}
+
+function hasValidatorErrors(errors: Array<Array<ErrorWithMessage>>): boolean {
+  return errors.some((validatorErrors) => validatorErrors.length > 0)
+}
+
+function isPrunableMeta(meta: InternalBaseFieldMeta): boolean {
+  if (meta.isTouched) return false
+  if (meta.isDirty) return false
+  if (meta.isBlurred) return false
+  if (meta._arrayVersion !== 0) return false
+  if (hasValidatorErrors(meta._fieldValidatorErrors)) return false
+  if (hasValidatorErrors(meta._formValidatorErrors)) return false
+
+  return childContributionKeys.every(
+    (key) => meta.childContributionCounts[key] === 0,
+  )
 }
 
 function getErrorsFromBaseMeta(
