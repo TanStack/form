@@ -5,6 +5,7 @@ import {
   tryGetFieldApi,
 } from './FieldApi.lib'
 import {
+  cancelPipelineCache,
   createPipelineCache,
   evaluate,
   getBy,
@@ -98,6 +99,19 @@ export interface BaseFormMeta {
   isSubmitting: boolean
   submissionAttempts: number
   isSubmitSuccessful: boolean
+}
+
+function createInitialFormMeta(validatorCount: number): BaseFormMeta {
+  return {
+    touchedFields: new Set(),
+    isDirty: false,
+    errors: Array.from({ length: validatorCount }, () => []),
+    errorSourceEvents: Array.from({ length: validatorCount }, () => null),
+    fieldErrors: Array.from({ length: validatorCount }, () => new Set()),
+    isSubmitting: false,
+    submissionAttempts: 0,
+    isSubmitSuccessful: false,
+  }
 }
 
 // StandardSchema<Input, Output>
@@ -200,7 +214,9 @@ export class InternalFormApi<
   _formMetaAtom: Atom<BaseFormMeta>
   _fieldRootNode: InternalRootFieldApi
   _options: FormOptions<TFormData, TFormValidators>
+  _lastUpdateDefaultValues: TFormData
   _pipelineCache: PipelineCache<any>
+  _resetVersion = 0
   _schemaOutputs: Array<any> = []
 
   get state(): FormState<TFormData> {
@@ -212,19 +228,11 @@ export class InternalFormApi<
 
   constructor(options: FormOptions<TFormData, TFormValidators>) {
     this._options = options
+    this._lastUpdateDefaultValues = options.defaultValues
     this.valuesAtom = createAtom(options.defaultValues)
     this._pipelineCache = createPipelineCache()
     const validatorCount = this._options.validators?.length ?? 0
-    this._formMetaAtom = createAtom({
-      touchedFields: new Set(),
-      isDirty: false,
-      errors: Array.from({ length: validatorCount }, () => []),
-      errorSourceEvents: Array.from({ length: validatorCount }, () => null),
-      fieldErrors: Array.from({ length: validatorCount }, () => new Set()),
-      isSubmitting: false,
-      submissionAttempts: 0,
-      isSubmitSuccessful: false,
-    } satisfies BaseFormMeta as BaseFormMeta)
+    this._formMetaAtom = createAtom(createInitialFormMeta(validatorCount))
     this._fieldRootNode = new InternalRootFieldApi(this)
 
     this.store = createAtom(
@@ -264,13 +272,28 @@ export class InternalFormApi<
       this._options = { ...this.options, defaultValues: values }
     }
 
-    this._fieldRootNode._children.forEach((child) => child._kill())
+    this._resetVersion++
+    cancelPipelineCache(this._pipelineCache)
+    this._pipelineCache = createPipelineCache()
+    this._schemaOutputs = []
 
-    this.valuesAtom.set(values ?? this._options.defaultValues)
+    batch(() => {
+      this._fieldRootNode._children.forEach((child) => child._kill())
+      this._formMetaAtom.set(
+        createInitialFormMeta(this.options.validators?.length ?? 0),
+      )
+      this.valuesAtom.set(values ?? this._options.defaultValues)
+    })
   }
 
   _update = (options: FormOptions<TFormData, TFormValidators>) => {
     const oldOptions = this.options
+    const didDefaultValuesChange = !evaluate(
+      options.defaultValues,
+      this._lastUpdateDefaultValues,
+    )
+
+    this._lastUpdateDefaultValues = options.defaultValues
     this._options = options
 
     if (
@@ -281,7 +304,7 @@ export class InternalFormApi<
       )
     }
 
-    if (!evaluate(options.defaultValues, oldOptions.defaultValues)) {
+    if (didDefaultValuesChange) {
       if (!this.state.isTouched) {
         this.valuesAtom.set(options.defaultValues)
       }
@@ -970,6 +993,10 @@ export class InternalFormApi<
   }
 
   handleSubmit = async (): Promise<Array<FormValidationError>> => {
+    const submitResetVersion = this._resetVersion
+    const hasResettedFormDuringSubmit = () =>
+      this._resetVersion !== submitResetVersion
+
     this._formMetaAtom.set((prev) => ({
       ...prev,
       isSubmitting: true,
@@ -989,6 +1016,10 @@ export class InternalFormApi<
         field._runFieldValidation('submit', { onResult: false }),
       ),
     )
+
+    if (hasResettedFormDuringSubmit()) {
+      return []
+    }
 
     const fieldResults: Array<ValidationErrorInput> = []
 
@@ -1018,6 +1049,10 @@ export class InternalFormApi<
       hasFailedBefore: submissionData.hasFailed,
     })
 
+    if (hasResettedFormDuringSubmit()) {
+      return []
+    }
+
     if (
       formPipelineResult.thrownError !== null ||
       formPipelineResult.hasErrors
@@ -1031,6 +1066,10 @@ export class InternalFormApi<
       .concat(fieldResults)
 
     const cleanup = () => {
+      if (hasResettedFormDuringSubmit()) {
+        return
+      }
+
       this._formMetaAtom.set((prev) => {
         return {
           ...prev,
@@ -1060,6 +1099,10 @@ export class InternalFormApi<
         createValidationError,
       })
 
+      if (hasResettedFormDuringSubmit()) {
+        return []
+      }
+
       // TODO we need to implement onMount / onSubmit errors being cleared on change
       // An array of [0 .. validators.length] can cover the latest validator error's cause
       // maybe? It could be that field level errors shouldn't be cleared so eagerly, only on itself.
@@ -1078,6 +1121,10 @@ export class InternalFormApi<
         submissionData.submitError = maybeError
       }
     } catch (e) {
+      if (hasResettedFormDuringSubmit()) {
+        return []
+      }
+
       console.error(e)
       submissionData.hasFailed = true
     }

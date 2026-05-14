@@ -60,6 +60,117 @@ describe('form - lifecycle', () => {
       expect(form.state.values).toEqual({ name: 'reset state' })
       expect(form.options.defaultValues).toEqual({ name: '' })
     })
+
+    it('does not let a repeated _update default overwrite reset values', () => {
+      const form = new InternalFormApi({ defaultValues: { name: '' } })
+
+      form._update({ defaultValues: { name: 'async' } })
+      form.reset({ name: 'reset default' })
+      form._update({ defaultValues: { name: 'async' } })
+
+      expect(form.state.values).toEqual({ name: 'reset default' })
+
+      form._update({ defaultValues: { name: 'new async' } })
+
+      expect(form.state.values).toEqual({ name: 'new async' })
+    })
+
+    it('resets meta and kills fields', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            run: () => 'Submit error',
+          },
+        ],
+      })
+      const field = form._getOrCreateFieldApi({ name: 'name' })
+      field._register()
+      field.handleChange('dirty')
+
+      await form.handleSubmit()
+      form.reset()
+
+      expect(form.state.values).toEqual({ name: '' })
+      expect(form.state.isDirty).toBe(false)
+      expect(form.state.isTouched).toBe(false)
+      expect(form.state.formErrors).toEqual([])
+      expect(form.state.submissionAttempts).toBe(0)
+      expect(form.getFieldMeta('name')).toBeUndefined()
+    })
+
+    it('cancels pending form validators on reset', async () => {
+      vi.useFakeTimers()
+      const validator = vi.fn(() => 'Late error')
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            triggers: ['change'],
+            triggerDebounceMs: 100,
+            run: validator,
+          },
+        ],
+      })
+
+      const validatePromise = form.validate('change')
+      form.reset()
+      await vi.advanceTimersByTimeAsync(100)
+      const result = await validatePromise
+
+      expect(result).toEqual([])
+      expect(validator).not.toHaveBeenCalled()
+      expect(form.state.formErrors).toEqual([])
+    })
+
+    it('cancels pending field listeners on reset', async () => {
+      vi.useFakeTimers()
+      const listener = vi.fn()
+      const form = new InternalFormApi({ defaultValues: { name: '' } })
+      const field = form._getOrCreateFieldApi({
+        name: 'name',
+        listeners: [
+          {
+            triggers: ['change'],
+            triggerDebounceMs: 100,
+            run: listener,
+          },
+        ],
+      })
+
+      field.handleChange('dirty')
+      form.reset()
+      await vi.advanceTimersByTimeAsync(100)
+
+      expect(listener).not.toHaveBeenCalled()
+    })
+
+    it('ignores submit cleanup and submit errors after reset', async () => {
+      let finishSubmit!: () => void
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        onSubmit: ({ createValidationError }) =>
+          new Promise((resolve) => {
+            finishSubmit = () =>
+              resolve(createValidationError('Late submit error'))
+          }),
+      })
+
+      const submitPromise = form.handleSubmit()
+      await vi.waitFor(() => {
+        expect(finishSubmit).toBeTypeOf('function')
+      })
+
+      form.reset({ name: 'reset value' }, { preserveDefaultValues: true })
+      finishSubmit()
+      const result = await submitPromise
+
+      expect(result).toEqual([])
+      expect(form.state.values).toEqual({ name: 'reset value' })
+      expect(form.state.formErrors).toEqual([])
+      expect(form.state.isSubmitting).toBe(false)
+      expect(form.state.submissionAttempts).toBe(0)
+    })
   })
 
   // field methods
