@@ -211,6 +211,18 @@ export class InternalFormApi<
     )
   }
 
+  mount = () => {
+    return () => {}
+  }
+
+  // keepDefaultValues is an ass name, reconsider || preserveDefaultValues?
+  // TODO
+  reset = (values?: TFormData, opts?: { preserveDefaultValues?: boolean }) => {
+    if (values && !opts?.preserveDefaultValues) {
+      this._options = { ...this.options, defaultValues: values }
+    }
+  }
+
   _update = (options: FormOptions<TFormData, TFormValidators>) => {
     const oldOptions = this.options
     this._options = options

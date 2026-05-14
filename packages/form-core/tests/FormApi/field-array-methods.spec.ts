@@ -20,6 +20,7 @@ describe('form - field array methods', () => {
     it('warns when called on a non-array field', () => {
       const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
       const form = new InternalFormApi({ defaultValues: { name: '' } })
+
       form.swapFieldValues('name', 0, 1)
       expect(warn).toHaveBeenCalled()
       warn.mockRestore()

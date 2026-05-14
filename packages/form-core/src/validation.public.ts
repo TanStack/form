@@ -154,4 +154,6 @@ export interface FieldValidator<TFormData, TFieldValue> extends Validator<
   TFormData,
   FieldValidatorFn<TFormData, TFieldValue> | StandardSchemaV1<TFieldValue, any>,
   TFieldValue
-> {}
+> {
+  watchFields?: Array<string>
+}

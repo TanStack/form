@@ -206,6 +206,7 @@ interface ValidatorPipelineArgs<TResult extends ValidateResult> {
     inputContext: ValidateContext,
   ) => FieldValidatorContext<any, any> | FormValidatorContext<any>
   scope: 'field' | 'form'
+  validatorIndecesToRun?: Array<number> | null
   onResult?: (result: PipelineResult<TResult>) => void
 }
 
@@ -485,6 +486,7 @@ async function runValidatorPipeline<TResult extends ValidateResult>({
   getContext,
   onResult,
   scope,
+  validatorIndecesToRun = null,
 }: ValidatorPipelineArgs<TResult>): Promise<{
   results: Array<PipelineResult<TResult>>
   hasErrors: boolean
@@ -509,6 +511,10 @@ async function runValidatorPipeline<TResult extends ValidateResult>({
 
   for (let i = 0; i < pipeline.length; i++) {
     const validator = pipeline[i]!
+
+    if (validatorIndecesToRun && !validatorIndecesToRun.includes(i)) {
+      continue
+    }
 
     if (!shouldRunValidator(validator, context)) {
       continue
@@ -609,6 +615,12 @@ interface FieldValidatorPipelineArgs {
   pipeline: Array<FieldValidator<any, any>>
   context: FieldInputContext
   onResult?: (result: PipelineResult<FieldValidateResult>) => void
+  /**
+   * @private
+   * When an incoming watched field notifies, we should only run validators
+   * that are actually interested in it.
+   */
+  validatorIndecesToRun?: Array<number> | null
 }
 
 export interface FieldValidatorPipelineResult {
@@ -621,6 +633,7 @@ export function runFieldValidatorPipeline({
   pipeline,
   context,
   onResult,
+  validatorIndecesToRun = null,
 }: FieldValidatorPipelineArgs): Promise<FieldValidatorPipelineResult> {
   const fieldApi = context.fieldApi as AnyInternalFieldApi
 
@@ -648,5 +661,6 @@ export function runFieldValidatorPipeline({
       value: context.fieldApi.value,
     }),
     scope: 'field',
+    validatorIndecesToRun,
   })
 }

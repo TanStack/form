@@ -1,0 +1,285 @@
+import { describe, expect, it, vi } from 'vitest'
+import { InternalFormApi } from '../../src/FormApi.lib'
+
+describe('field - linked validators', () => {
+  it('runs a watched validator when its watched source field changes', async () => {
+    vi.useFakeTimers()
+    const validator = vi.fn()
+
+    const form = new InternalFormApi({
+      defaultValues: { source: '', target: 'target' },
+    })
+    const targetField = form._getOrCreateFieldApi({
+      name: 'target',
+      validators: [
+        {
+          triggers: ['change'],
+          watchFields: ['source'],
+          run: validator,
+        },
+      ],
+    })
+    const sourceField = form._getOrCreateFieldApi({ name: 'source' })
+
+    sourceField.handleChange('source')
+
+    await vi.runOnlyPendingTimersAsync()
+
+    expect(validator).toHaveBeenCalledOnce()
+    expect(validator).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: 'target',
+        fieldApi: targetField,
+        formApi: form,
+      }),
+    )
+  })
+
+  it('does not run unrelated watched validators', async () => {
+    vi.useFakeTimers()
+    const watchedValidator = vi.fn()
+    const unrelatedValidator = vi.fn()
+
+    const form = new InternalFormApi({
+      defaultValues: { source: '', other: '', target: '' },
+    })
+    form._getOrCreateFieldApi({
+      name: 'target',
+      validators: [
+        {
+          triggers: ['change'],
+          watchFields: ['source'],
+          run: watchedValidator,
+        },
+        {
+          triggers: ['change'],
+          watchFields: ['other'],
+          run: unrelatedValidator,
+        },
+      ],
+    })
+    const sourceField = form._getOrCreateFieldApi({ name: 'source' })
+
+    sourceField.handleChange('source')
+    await vi.runOnlyPendingTimersAsync()
+
+    expect(watchedValidator).toHaveBeenCalledOnce()
+    expect(unrelatedValidator).not.toHaveBeenCalled()
+  })
+
+  it("does not run a watched field's validator when the trigger does not match", async () => {
+    vi.useFakeTimers()
+    const validator = vi.fn()
+
+    const form = new InternalFormApi({
+      defaultValues: { source: '', target: '' },
+    })
+    form._getOrCreateFieldApi({
+      name: 'target',
+      validators: [
+        {
+          triggers: ['blur'],
+          watchFields: ['source'],
+          run: validator,
+        },
+      ],
+    })
+    const sourceField = form._getOrCreateFieldApi({ name: 'source' })
+
+    sourceField.handleChange('source')
+    await vi.runOnlyPendingTimersAsync()
+
+    expect(validator).not.toHaveBeenCalled()
+  })
+
+  it('runs a linked validator when any of multiple watched fields changes', async () => {
+    vi.useFakeTimers()
+    const validator = vi.fn()
+
+    const form = new InternalFormApi({
+      defaultValues: { source: '', other: '', target: '' },
+    })
+    form._getOrCreateFieldApi({
+      name: 'target',
+      validators: [
+        {
+          triggers: ['change'],
+          watchFields: ['source', 'other'],
+          run: validator,
+        },
+      ],
+    })
+    const sourceField = form._getOrCreateFieldApi({ name: 'source' })
+    const otherField = form._getOrCreateFieldApi({ name: 'other' })
+
+    sourceField.handleChange('source')
+    otherField.handleChange('other')
+    await vi.runOnlyPendingTimersAsync()
+
+    expect(validator).toHaveBeenCalledTimes(2)
+  })
+
+  it('updates watched fields when the watched name changes without moving a field', async () => {
+    vi.useFakeTimers()
+    const validator = vi.fn()
+
+    const form = new InternalFormApi({
+      defaultValues: { source: '', other: '', target: '' },
+    })
+    const targetField = form._getOrCreateFieldApi({
+      name: 'target',
+      validators: [
+        {
+          triggers: ['change'],
+          watchFields: ['source'],
+          run: validator,
+        },
+      ],
+    })
+    const sourceField = form._getOrCreateFieldApi({ name: 'source' })
+    const otherField = form._getOrCreateFieldApi({ name: 'other' })
+
+    targetField._update({
+      validators: [
+        {
+          triggers: ['change'],
+          watchFields: ['other'],
+          run: validator,
+        },
+      ],
+    })
+
+    sourceField.handleChange('source changed')
+    await vi.runOnlyPendingTimersAsync()
+
+    expect(validator).not.toHaveBeenCalled()
+
+    otherField.handleChange('other changed')
+    await vi.runOnlyPendingTimersAsync()
+
+    expect(validator).toHaveBeenCalledOnce()
+  })
+
+  it('updates a dynamic watched field name after its field moves', async () => {
+    vi.useFakeTimers()
+    const validator = vi.fn()
+
+    const form = new InternalFormApi({
+      defaultValues: { users: ['first', 'second'], target: '' },
+    })
+    const targetField = form._getOrCreateFieldApi({
+      name: 'target',
+      validators: [
+        {
+          triggers: ['change'],
+          watchFields: ['users[0]'],
+          run: validator,
+        },
+      ],
+    })
+    const fieldAt0Before = form._getOrCreateFieldApi({ name: 'users[0]' })
+    const fieldAt1Before = form._getOrCreateFieldApi({ name: 'users[1]' })
+
+    form.swapFieldValues('users', 0, 1)
+    expect(form._getOrCreateFieldApi({ name: 'users[1]' })).toBe(fieldAt0Before)
+
+    targetField._update({
+      validators: [
+        {
+          triggers: ['change'],
+          watchFields: ['users[1]'],
+          run: validator,
+        },
+      ],
+    })
+
+    fieldAt1Before.handleChange('first index changed')
+    await vi.runOnlyPendingTimersAsync()
+
+    expect(validator).not.toHaveBeenCalled()
+
+    fieldAt0Before.handleChange('second index changed')
+    await vi.runOnlyPendingTimersAsync()
+
+    expect(validator).toHaveBeenCalledOnce()
+  })
+
+  it('keeps validator result indices stable when running selected watched validators', async () => {
+    vi.useFakeTimers()
+    const otherValidator = vi.fn(() => 'other error')
+    const sourceValidator = vi.fn(() => 'source error')
+
+    const form = new InternalFormApi({
+      defaultValues: { source: '', other: '', target: '' },
+    })
+    const targetField = form._getOrCreateFieldApi({
+      name: 'target',
+      validators: [
+        {
+          triggers: ['change'],
+          watchFields: ['other'],
+          run: otherValidator,
+        },
+        {
+          triggers: ['change'],
+          watchFields: ['source'],
+          run: sourceValidator,
+        },
+      ],
+    })
+    const sourceField = form._getOrCreateFieldApi({ name: 'source' })
+
+    sourceField.handleChange('source')
+    await vi.runOnlyPendingTimersAsync()
+
+    expect(otherValidator).not.toHaveBeenCalled()
+    expect(sourceValidator).toHaveBeenCalledOnce()
+    expect(targetField.meta._fieldValidatorErrors[0]).toEqual(undefined)
+    expect(targetField.meta._fieldValidatorErrors[1]).toEqual([
+      { message: 'source error' },
+    ])
+    expect(targetField.errors).toEqual([{ message: 'source error' }])
+  })
+
+  it('warns and stops cyclical validator watch chains', async () => {
+    vi.useFakeTimers()
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const firstValidator = vi.fn()
+    const secondValidator = vi.fn()
+
+    const form = new InternalFormApi({
+      defaultValues: { first: '', second: '' },
+    })
+    const firstField = form._getOrCreateFieldApi({
+      name: 'first',
+      validators: [
+        {
+          triggers: ['change'],
+          watchFields: ['second'],
+          run: firstValidator,
+        },
+      ],
+    })
+    form._getOrCreateFieldApi({
+      name: 'second',
+      validators: [
+        {
+          triggers: ['change'],
+          watchFields: ['first'],
+          run: secondValidator,
+        },
+      ],
+    })
+
+    firstField.handleChange('first')
+    await vi.runOnlyPendingTimersAsync()
+
+    expect(firstValidator).toHaveBeenCalledOnce()
+    expect(secondValidator).toHaveBeenCalledOnce()
+    expect(warn).toHaveBeenCalledWith(
+      'Field validator: cyclical validator cycle detected. Check around the field first',
+    )
+
+    warn.mockRestore()
+  })
+})

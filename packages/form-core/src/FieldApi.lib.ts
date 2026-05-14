@@ -12,10 +12,13 @@ import {
 } from './validation.lib'
 import { runFieldListenerPipeline } from './listeners.lib'
 import {
-  attachWatchingField,
-  detachWatchingField,
-  reconcileWatchedFields,
-} from './listeners-utils.lib'
+  attachWatchingListenerField,
+  attachWatchingValidatorField,
+  detachWatchingListenerField,
+  detachWatchingValidatorField,
+  reconcileWatchedListenerFields,
+  reconcileWatchedValidatorFields,
+} from './linked-fields.lib'
 import type { FieldListener, FieldListenerTriggers } from './listeners.public'
 import type { PipelineCache } from './utils'
 import type {
@@ -264,7 +267,7 @@ export class InternalFieldApi<
   _parentPathVersion = 0
   _fullPathCache: string | null = null
   _atoms: FieldAtoms
-  _validators: Array<AnyFieldValidator>
+  _validators: Array<AnyFieldValidator> | null
   _listeners: Array<FieldListener<any, any, any>> | null
 
   // TODO implement
@@ -272,8 +275,10 @@ export class InternalFieldApi<
    * @private
    * Fields that are listening to this one.
    */
-  _watchingFields: FieldWatchingFields
-  _listenToFields: Array<Array<ListenToFieldsMeta>>
+  _watchingFields: FieldWatchingFields | null
+  _listenToFields: FieldListenToFields | null
+  _watchingValidatorFields: FieldWatchingFields | null
+  _validateOnFields: FieldListenToFields | null
   _pipelineCache: PipelineCache<any> | null = null
   _isKilled = false
 
@@ -388,43 +393,67 @@ export class InternalFieldApi<
     this.#segment = segment
     this._parent = parent
     this.form = form
-    this._validators = validators ?? []
+    this._validators = validators && validators.length > 0 ? validators : null
     this._atoms = {}
-    this._listeners = listeners ?? null
-
-    this._watchingFields = new Map()
-    this._listenToFields = []
     this._listeners = null
+    this._watchingFields = null
+    this._listenToFields = null
+    this._watchingValidatorFields = null
+    this._validateOnFields = null
 
-    const reconciled = reconcileWatchedFields({
+    const reconciledListeners = reconcileWatchedListenerFields({
       field: this,
       prevListenToFields: this._listenToFields,
       nextListeners: listeners,
       form,
     })
 
-    reconciled.attach.forEach(attachWatchingField)
+    reconciledListeners.attach.forEach(attachWatchingListenerField)
+    this._listeners = reconciledListeners.items
+    this._listenToFields = reconciledListeners.listenToFields
+
+    const reconciledValidators = reconcileWatchedValidatorFields({
+      field: this,
+      prevListenToFields: this._validateOnFields,
+      nextValidators: validators,
+      form,
+    })
+
+    reconciledValidators.attach.forEach(attachWatchingValidatorField)
+    this._validators = reconciledValidators.items
+    this._validateOnFields = reconciledValidators.listenToFields
   }
 
   _update(options: Omit<AnyFieldApiOptions, 'name' | 'form'>) {
     if (this._isKilled) return
 
-    if (options.validators) {
-      this._validators = options.validators
-    }
-
-    const reconciled = reconcileWatchedFields({
+    const reconciledListeners = reconcileWatchedListenerFields({
       field: this,
       prevListenToFields: this._listenToFields,
       nextListeners: options.listeners,
       form: this.form,
     })
 
-    reconciled.detach.forEach(detachWatchingField)
-    reconciled.attach.forEach(attachWatchingField)
+    reconciledListeners.detach.forEach(detachWatchingListenerField)
+    reconciledListeners.attach.forEach(attachWatchingListenerField)
 
-    this._listeners = reconciled.listeners
-    this._listenToFields = reconciled.listenToFields
+    this._listeners = reconciledListeners.items
+    this._listenToFields = reconciledListeners.listenToFields
+
+    if (options.validators) {
+      const reconciledValidators = reconcileWatchedValidatorFields({
+        field: this,
+        prevListenToFields: this._validateOnFields,
+        nextValidators: options.validators,
+        form: this.form,
+      })
+
+      reconciledValidators.detach.forEach(detachWatchingValidatorField)
+      reconciledValidators.attach.forEach(attachWatchingValidatorField)
+
+      this._validators = reconciledValidators.items
+      this._validateOnFields = reconciledValidators.listenToFields
+    }
   }
 
   _invalidateFullPath() {
@@ -520,6 +549,7 @@ export class InternalFieldApi<
     if (this._isKilled) return
 
     let current: AnyInternalFieldApi | InternalRootFieldApi = this
+    const seenValidatorFields = new WeakSet<AnyInternalFieldApi>()
 
     while (!current._isRoot) {
       if (current._isKilled) {
@@ -527,6 +557,7 @@ export class InternalFieldApi<
       }
 
       current._runFieldValidation(event)
+      current._notifyValidator(event, seenValidatorFields)
       current = current._parent
     }
 
@@ -539,7 +570,10 @@ export class InternalFieldApi<
    */
   async _runFieldValidation(
     event: 'change' | 'blur' | 'submit',
-    options?: { onResult?: boolean },
+    options?: {
+      onResult?: boolean
+      onlyRunValidatorIndeces?: Array<number> | null
+    },
   ): Promise<FieldValidatorPipelineResult> {
     if (this._isKilled)
       return {
@@ -548,7 +582,9 @@ export class InternalFieldApi<
         thrownError: null,
       }
 
-    if (this._validators.length === 0)
+    const validators = this._validators
+
+    if (!validators)
       return {
         results: [],
         hasErrors: false,
@@ -556,7 +592,7 @@ export class InternalFieldApi<
       }
 
     return runFieldValidatorPipeline({
-      pipeline: this._validators,
+      pipeline: validators,
       context: {
         event,
         fieldApi: this,
@@ -566,6 +602,7 @@ export class InternalFieldApi<
         options?.onResult !== false
           ? (result) => this._processValidationResult(result)
           : undefined,
+      validatorIndecesToRun: options?.onlyRunValidatorIndeces ?? null,
     })
   }
 
@@ -716,13 +753,57 @@ export class InternalFieldApi<
       })
     }
 
-    for (const [watchingField, listenerIndeces] of this._watchingFields) {
+    const watchingFields = this._watchingFields
+    if (!watchingFields) return
+
+    for (const [watchingField, listenerIndeces] of watchingFields) {
       if (watchingField._isKilled) {
-        this._watchingFields.delete(watchingField)
+        watchingFields.delete(watchingField)
         continue
       }
 
       watchingField._notifyListener(trigger, seenFields, [...listenerIndeces])
+    }
+
+    if (watchingFields.size === 0) {
+      this._watchingFields = null
+    }
+  }
+
+  _notifyValidator(
+    trigger: 'change' | 'blur' | 'submit',
+    seenFields: WeakSet<AnyInternalFieldApi>,
+    onlyRunValidatorIndeces: Array<number> | null = null,
+  ) {
+    if (this._isKilled) return
+
+    if (seenFields.has(this)) {
+      console.warn(
+        `Field validator: cyclical validator cycle detected. Check around the field ${this.name}`,
+      )
+      return
+    }
+
+    seenFields.add(this)
+
+    if (this._validators && onlyRunValidatorIndeces) {
+      this._runFieldValidation(trigger, { onlyRunValidatorIndeces })
+    }
+
+    const watchingFields = this._watchingValidatorFields
+    if (!watchingFields) return
+
+    for (const [watchingField, validatorIndeces] of watchingFields) {
+      if (watchingField._isKilled) {
+        watchingFields.delete(watchingField)
+        continue
+      }
+
+      watchingField._notifyValidator(trigger, seenFields, [...validatorIndeces])
+    }
+
+    if (watchingFields.size === 0) {
+      this._watchingValidatorFields = null
     }
   }
 
@@ -898,6 +979,8 @@ export class InternalFieldApi<
 
     if (this.#refCount > 0) return false
     if (this.#children.size > 0) return false
+    if (this._watchingFields) return false
+    if (this._watchingValidatorFields) return false
     const meta = this._atoms.meta?.get() ?? defaultInternalBaseFieldMeta
     if (!isPrunableMeta(meta)) return false
 

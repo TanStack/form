@@ -84,7 +84,7 @@ export class InternalRootFieldApi {
 
       stack.push(...field._children)
 
-      if (field._validators.length > 0) {
+      if (field._validators && field._validators.length > 0) {
         fieldsWithValidators.push(field)
       }
     }
