@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
 import { InternalFormApi } from '../../src/FormApi.lib'
-import { defaultFieldMeta } from '../../src/internals'
 
 describe('form -le', () => {
   describe('initial state', () => {

@@ -32,7 +32,8 @@ function toListenerKey(listenerIndex: number, name: string): ListenerKey {
 function ofListenerKey(
   key: ListenerKey,
 ): [listenerIndex: number, name: string] {
-  return key.split(':') as never
+  const [listenerIndex, name] = key.split(':') as [number, string]
+  return [Number(listenerIndex), name]
 }
 
 export function reconcileWatchedFields({
