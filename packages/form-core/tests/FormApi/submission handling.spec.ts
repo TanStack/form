@@ -103,7 +103,7 @@ describe('Submission handling', () => {
       expect(onSubmit).toHaveBeenCalledWith(
         expect.objectContaining({
           value: { name: 'test' },
-          schemaOutput: { nameLength: 4 },
+          schemaOutputs: [{ nameLength: 4 }, undefined],
         }),
       )
     })

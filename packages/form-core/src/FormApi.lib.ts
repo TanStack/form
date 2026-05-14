@@ -152,7 +152,7 @@ export type AnyInternalFormApi = InternalFormApi<any, any>
 
 export class InternalFormApi<
   TFormData,
-  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  const TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 > implements FormApi<TFormData, TFormValidators> {
   valuesAtom: Atom<TFormData>
   store: ReadonlyAtom<FormState<TFormData>>
@@ -160,7 +160,7 @@ export class InternalFormApi<
   _fieldRootNode: InternalRootFieldApi
   _options: FormOptions<TFormData, TFormValidators>
   _validatorPipelineCache: ValidatorPipelineCache<any>
-  _lastSchemaOutput = null
+  _schemaOutputs: Array<any> = []
 
   get state(): FormState<TFormData> {
     return this.store.get()
@@ -599,7 +599,7 @@ export class InternalFormApi<
 
   _processValidationResult = (result: PipelineResult<FormValidateResult>) => {
     if (result.hasSchemaResult) {
-      this._lastSchemaOutput = result.schemaResult
+      this._schemaOutputs[result.validatorIndex] = result.schemaResult
     }
 
     const aggregateError = isAggregateError(result.result)
@@ -843,10 +843,18 @@ export class InternalFormApi<
       cleanup()
       return errorResults
     }
+
+    const schemaOutputs: any = Array.from(
+      { length: this.options.validators?.length ?? 0 },
+      (_, i) => {
+        return this._schemaOutputs[i]
+      },
+    )
+
     try {
       const maybeError = await this.options.onSubmit?.({
         formApi: this,
-        schemaOutput: this._lastSchemaOutput as never,
+        schemaOutputs,
         value: this.state.values,
         createValidationError,
       })

@@ -602,7 +602,14 @@ describe('runFormValidatorPipeline', () => {
       type Output = FormStandardSchemaValidatorOutputs<Validators>
 
       expectTypeOf<Output>().toEqualTypeOf<
-        { nameLength: number } | { upperName: string }
+        [
+          {
+            nameLength: number
+          },
+          {
+            upperName: string
+          },
+        ]
       >()
     })
 
@@ -616,9 +623,26 @@ describe('runFormValidatorPipeline', () => {
       new InternalFormApi({
         defaultValues: { name: '' },
         validators: [{ run: schema }],
-        onSubmit: ({ value, schemaOutput }) => {
+        onSubmit: ({ value, schemaOutputs }) => {
           expectTypeOf(value).toEqualTypeOf<{ name: string }>()
-          expectTypeOf(schemaOutput).toEqualTypeOf<{ nameLength: number }>()
+          expectTypeOf(schemaOutputs).toEqualTypeOf<[{ nameLength: number }]>()
+        },
+      })
+
+      const schema2 = z
+        .object({
+          name: z.string(),
+        })
+        .transform(({ name }) => ({ date: new Date(name.length) }))
+
+      new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [{ run: schema }, { run: () => false }, { run: schema2 }],
+        onSubmit: ({ value, schemaOutputs }) => {
+          expectTypeOf(value).toEqualTypeOf<{ name: string }>()
+          expectTypeOf(schemaOutputs).toEqualTypeOf<
+            [{ nameLength: number }, undefined, { date: Date }]
+          >()
         },
       })
     })
@@ -641,7 +665,7 @@ describe('runFormValidatorPipeline', () => {
       expect(onSubmit).toHaveBeenCalledWith(
         expect.objectContaining({
           value: { name: 'test' },
-          schemaOutput: { nameLength: 4 },
+          schemaOutputs: [{ nameLength: 4 }],
         }),
       )
     })

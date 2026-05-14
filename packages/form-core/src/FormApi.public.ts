@@ -18,7 +18,7 @@ export interface FormSubmitContext<
 > {
   value: TFormData
   formApi: FormApi<TFormData, TFormValidators>
-  schemaOutput: FormStandardSchemaValidatorOutputs<TFormValidators>
+  schemaOutputs: FormStandardSchemaValidatorOutputs<TFormValidators>
   createValidationError: CreateValidationErrorFn
 }
 

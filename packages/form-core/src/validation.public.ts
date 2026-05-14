@@ -120,16 +120,20 @@ type TryInferSchemaOutput<T> = T extends {
   run: StandardSchemaV1<any, infer TOutput>
 }
   ? TOutput
-  : never
+  : undefined
 
 export type FormStandardSchemaValidatorOutputs<
   TFormValidators extends ReadonlyArray<FormValidator<any>>,
-> =
-  TryInferSchemaOutput<TFormValidators[number]> extends infer Result
-    ? [Result] extends [never]
-      ? null
-      : Result
-    : never
+> = TFormValidators extends readonly [infer TFirst, ...infer TRest]
+  ? TFirst extends FormValidator<any>
+    ? TRest extends ReadonlyArray<FormValidator<any>>
+      ? [
+          TryInferSchemaOutput<TFirst>,
+          ...FormStandardSchemaValidatorOutputs<TRest>,
+        ]
+      : []
+    : []
+  : []
 
 export interface FieldValidatorContext<
   TFormData,
