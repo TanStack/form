@@ -5,7 +5,7 @@ import {
 } from '../../src/FieldApi.lib'
 import { InternalFormApi } from '../../src/FormApi.lib'
 
-describe('Field lifecycle', () => {
+describe('field - lifecycle', () => {
   describe('_isMounted and store', () => {
     it('is false before the store is accessed', () => {
       const form = new InternalFormApi({ defaultValues: { x: '' } })

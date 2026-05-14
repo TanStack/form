@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { InternalFormApi } from '../../src/FormApi.lib'
+import { defaultFieldMeta } from '../../src/internals'
 
-describe('Form and field lifecycle', () => {
+describe('form -le', () => {
   describe('initial state', () => {
     it('state.values matches defaultValues', () => {
       const form = new InternalFormApi({
@@ -28,7 +29,16 @@ describe('Form and field lifecycle', () => {
     // TODO extend with default state
   })
 
-  // TODO reset behaviour
+  describe('resetField', () => {
+    it('should reset field', () => {
+      const form = new InternalFormApi({ defaultValues: { name: 'hi' } })
+      form.setFieldValue('name', 'bye')
+      form.resetField('name')
+
+      expect(form.getFieldValue('name')).toEqual('hi')
+      expect(form.getFieldMeta('name')).toEqual(undefined)
+    })
+  })
 
   describe('deleteField', () => {
     it('unmounts the field store', () => {

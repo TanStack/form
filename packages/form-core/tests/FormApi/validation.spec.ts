@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
 import { InternalFormApi } from '../../src/FormApi.lib'
 
-describe('validate', () => {
-  describe('form-level validation', () => {
+describe('form - validation', () => {
+  describe('validate', () => {
     it('returns empty array when no validators are defined', async () => {
       const form = new InternalFormApi({
         defaultValues: { name: '' },

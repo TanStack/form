@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
 import { InternalFormApi } from '../../src/FormApi.lib'
 
-describe('Submission handling', () => {
+describe('form - submission handling', () => {
   describe('handleSubmit', () => {
     it('validates with submit trigger', async () => {
       const form = new InternalFormApi({

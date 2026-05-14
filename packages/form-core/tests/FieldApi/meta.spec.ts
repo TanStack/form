@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { InternalFormApi } from '../../src/FormApi.lib'
 import { defaultFieldMeta } from '../../src/FieldApi.lib'
 
-describe('Field meta', () => {
+describe('field - meta', () => {
   describe('field meta derived properties', () => {
     it('starts with defaultFieldMeta values', () => {
       const form = new InternalFormApi({ defaultValues: { x: '' } })
