@@ -6,53 +6,55 @@ title: Quick Start
 The bare minimum to get started with TanStack Form is to create a form and add a field. Keep in mind that this example does not include any validation or error handling... yet.
 
 ```gjs
-import Component from '@glimmer/component';
 import { createForm } from '@tanstack/ember-form';
 
 const handleInput = (field, event) => field.handleChange(event.target.value);
 
-export default class SimpleFormExample extends Component {
-  form = createForm(this, {
-    defaultValues: {
-      fullName: '',
-    },
-    onSubmit: async ({ value }) => {
-      // Do something with form data
-      console.log(value);
-    },
-  });
+const onSubmitFor = (form) => (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  form.handleSubmit();
+};
 
-  submit = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    this.form.handleSubmit();
-  };
+const handleSubmit = async ({ value }) => {
+  // Do something with form data
+  console.log(value);
+};
 
-  <template>
-    <div>
-      <h1>Simple Form Example</h1>
-      <form {{on "submit" this.submit}}>
+const SimpleFormExample = createForm({
+  defaultValues: {
+    fullName: '',
+  },
+});
+
+<template>
+  <div>
+    <h1>Simple Form Example</h1>
+    <SimpleFormExample @onSubmit={{handleSubmit}} as |Form|>
+      <form {{on "submit" (onSubmitFor Form)}}>
         <div>
-          <this.form.Field @name="fullName" as |field|>
+          <Form.Field @name="fullName" as |field|>
             <input
               name={{field.name}}
               value={{field.state.value}}
               {{on "blur" field.handleBlur}}
               {{on "input" (fn handleInput field)}}
             />
-          </this.form.Field>
+          </Form.Field>
         </div>
         <button type="submit">Submit</button>
       </form>
-    </div>
-  </template>
-}
+    </SimpleFormExample>
+  </div>
+</template>
 ```
 
 A few things worth pointing out:
 
-- `createForm(this, { ... })` is called from a class field initializer. The first argument is any destroyable — typically the component instance. The form's lifecycle (mount/unmount and store subscriptions) is tied to that destroyable.
-- `this.form.Field` is a closure-bound `<Field>` component that already knows about this form. You can also import `Field` from `@tanstack/ember-form` and pass `@form={{this.form}}` explicitly if you prefer.
+- `createForm({ ... })` is called at module scope. It returns a Glimmer component that you invoke in your template; the form's lifecycle (mount/unmount and store subscriptions) is tied to that invocation. The same `createForm` result can be invoked multiple times — each invocation is its own form instance.
+- Anything shared across every instance (such as `defaultValues` or validators that don't depend on per-instance state) goes into the `createForm` call. Anything per-instance — most notably `onSubmit`, which usually closes over component state — is passed as an arg on the invocation: `<SimpleFormExample @onSubmit={{handleSubmit}}>`.
+- The invocation yields a block param (`Form` in the example above). Use it to render fields (`<Form.Field>`) or to pass to `<Subscribe>`. We capitalize the block param `Form` so it doesn't visually collide with the HTML `<form>` element in the template.
+- `onSubmitFor` is a small module-level helper that produces a `submit` handler for a given form. It's a convenient way to keep `event.preventDefault()` plumbing out of every template without re-introducing class methods.
 - Common template built-ins like `on`, `fn`, `hash`, and `if` are compiled into scope by ember-source's template build transforms (ember-source 7+), so you don't need to import them.
 - `handleInput` is defined at module scope rather than as a method, so we can use the standard `(fn handleInput field)` pattern without binding `this` for every render.
 

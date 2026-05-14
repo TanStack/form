@@ -8,27 +8,24 @@ In many cases, you want to change the validation rules depending on the state of
 We support this through our `onDynamic` validation function.
 
 ```ts
-import Component from '@glimmer/component';
 import { revalidateLogic, createForm } from '@tanstack/ember-form';
 
-export default class MyForm extends Component {
-  form = createForm(this, {
-    defaultValues: {
-      firstName: '',
-      lastName: '',
+const MyForm = createForm({
+  defaultValues: {
+    firstName: '',
+    lastName: '',
+  },
+  // If this is omitted, onDynamic will not be called
+  validationLogic: revalidateLogic(),
+  validators: {
+    onDynamic: ({ value }) => {
+      if (!value.firstName) {
+        return { firstName: 'A first name is required' };
+      }
+      return undefined;
     },
-    // If this is omitted, onDynamic will not be called
-    validationLogic: revalidateLogic(),
-    validators: {
-      onDynamic: ({ value }) => {
-        if (!value.firstName) {
-          return { firstName: 'A first name is required' };
-        }
-        return undefined;
-      },
-    },
-  });
-}
+  },
+});
 ```
 
 > By default `onDynamic` is not called, so you need to pass `revalidateLogic()` to the `validationLogic` option of `createForm`.
@@ -52,7 +49,7 @@ It takes two arguments:
 You can, for example, use the following to revalidate on blur after the first submission:
 
 ```ts
-form = createForm(this, {
+const MyForm = createForm({
   // ...
   validationLogic: revalidateLogic({
     mode: 'submit',
@@ -64,78 +61,81 @@ form = createForm(this, {
 
 ## Accessing Errors
 
-Just as you might access errors from an `onChange` or `onBlur` validation, you can access the errors from the `onDynamic` validation function using the `form.state.errorMap` object.
+Just as you might access errors from an `onChange` or `onBlur` validation, you can access the errors from the `onDynamic` validation function using the `state.errorMap` object yielded by `<Subscribe>`.
 
 ```gjs
-import Component from '@glimmer/component';
-import { createForm, revalidateLogic } from '@tanstack/ember-form';
+import { createForm, revalidateLogic, Subscribe } from '@tanstack/ember-form';
 
-export default class MyForm extends Component {
-  form = createForm(this, {
-    // ...
-    validationLogic: revalidateLogic(),
-    validators: {
-      onDynamic: ({ value }) => {
-        if (!value.firstName) {
-          return { firstName: 'A first name is required' };
-        }
-        return undefined;
-      },
+const onDynamicFirstName = (state) => state.errorMap.onDynamic?.firstName;
+
+const MyForm = createForm({
+  // ...
+  validationLogic: revalidateLogic(),
+  validators: {
+    onDynamic: ({ value }) => {
+      if (!value.firstName) {
+        return { firstName: 'A first name is required' };
+      }
+      return undefined;
     },
-  });
+  },
+});
 
-  // useStore is the recommended way to read form state in templates because
-  // it returns an autotracked box. Reading `form.state.errorMap` directly in
-  // a template works too, but useStore lets you select just the slice you
-  // care about.
-  errors = this.form.useStore((state) => state.errorMap);
-
-  <template>
-    <p>{{this.errors.current.onDynamic.firstName}}</p>
-  </template>
-}
+<template>
+  <MyForm as |Form|>
+    <Subscribe @form={{Form}} @selector={{onDynamicFirstName}} as |error|>
+      <p>{{error}}</p>
+    </Subscribe>
+  </MyForm>
+</template>
 ```
+
+> `<Subscribe>` is the most ergonomic way to read form state in a template. If you'd rather read state in JavaScript (e.g. a `@cached` getter), write a tiny child component that takes `@form` and calls `form.useStore(selector)` in its constructor — `useStore` returns an autotracked box whose `.current` re-renders only when the selected slice changes.
 
 ## Usage with Other Validation Logic
 
 You can use `onDynamic` validation alongside other validation logic, such as `onChange` or `onBlur`.
 
 ```gjs
-import Component from '@glimmer/component';
-import { revalidateLogic, createForm } from '@tanstack/ember-form';
+import { createForm, revalidateLogic, Subscribe } from '@tanstack/ember-form';
 
-export default class MyForm extends Component {
-  form = createForm(this, {
-    defaultValues: {
-      firstName: '',
-      lastName: '',
+const onChangeFirstName = (state) => state.errorMap.onChange?.firstName;
+const onDynamicLastName = (state) => state.errorMap.onDynamic?.lastName;
+
+const MyForm = createForm({
+  defaultValues: {
+    firstName: '',
+    lastName: '',
+  },
+  validationLogic: revalidateLogic(),
+  validators: {
+    onChange: ({ value }) => {
+      if (!value.firstName) {
+        return { firstName: 'A first name is required' };
+      }
+      return undefined;
     },
-    validationLogic: revalidateLogic(),
-    validators: {
-      onChange: ({ value }) => {
-        if (!value.firstName) {
-          return { firstName: 'A first name is required' };
-        }
-        return undefined;
-      },
-      onDynamic: ({ value }) => {
-        if (!value.lastName) {
-          return { lastName: 'A last name is required' };
-        }
-        return undefined;
-      },
+    onDynamic: ({ value }) => {
+      if (!value.lastName) {
+        return { lastName: 'A last name is required' };
+      }
+      return undefined;
     },
-  });
+  },
+});
 
-  errors = this.form.useStore((state) => state.errorMap);
-
-  <template>
+<template>
+  <MyForm as |Form|>
     <div>
-      <p>{{this.errors.current.onChange.firstName}}</p>
-      <p>{{this.errors.current.onDynamic.lastName}}</p>
+      <Subscribe @form={{Form}} @selector={{onChangeFirstName}} as |error|>
+        <p>{{error}}</p>
+      </Subscribe>
+      <Subscribe @form={{Form}} @selector={{onDynamicLastName}} as |error|>
+        <p>{{error}}</p>
+      </Subscribe>
     </div>
-  </template>
-}
+  </MyForm>
+</template>
 ```
 
 ### Usage with Fields
@@ -143,38 +143,38 @@ export default class MyForm extends Component {
 You can also use `onDynamic` validation with fields, just like you would with other validation logic.
 
 ```gjs
-import Component from '@glimmer/component';
 import { createForm, revalidateLogic } from '@tanstack/ember-form';
 
 const handleNumberInput = (field, event) =>
   field.handleChange(event.target.valueAsNumber);
 
-export default class AgeForm extends Component {
-  form = createForm(this, {
-    defaultValues: {
-      name: '',
-      age: 0,
-    },
-    validationLogic: revalidateLogic(),
-    onSubmit: ({ value }) => {
-      alert(JSON.stringify(value));
-    },
-  });
+const validateAge = ({ value }) =>
+  value > 18 ? undefined : 'Age must be greater than 18';
 
-  validateAge = ({ value }) =>
-    value > 18 ? undefined : 'Age must be greater than 18';
+const onSubmitFor = (form) => (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  form.handleSubmit();
+};
 
-  submit = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    this.form.handleSubmit();
-  };
+const handleSubmit = ({ value }) => {
+  alert(JSON.stringify(value));
+};
 
-  <template>
-    <form {{on "submit" this.submit}}>
-      <this.form.Field
+const AgeForm = createForm({
+  defaultValues: {
+    name: '',
+    age: 0,
+  },
+  validationLogic: revalidateLogic(),
+});
+
+<template>
+  <AgeForm @onSubmit={{handleSubmit}} as |Form|>
+    <form {{on "submit" (onSubmitFor Form)}}>
+      <Form.Field
         @name="age"
-        @validators={{hash onDynamic=this.validateAge}}
+        @validators={{hash onDynamic=validateAge}}
         as |field|
       >
         <div>
@@ -188,19 +188,21 @@ export default class AgeForm extends Component {
             {{field.state.meta.errorMap.onDynamic}}
           </p>
         </div>
-      </this.form.Field>
+      </Form.Field>
       <button type="submit">Submit</button>
     </form>
-  </template>
-}
+  </AgeForm>
+</template>
 ```
+
+> If a validator needs to depend on per-instance state (e.g. props passed to the surrounding component), construct it inside a wrapper Glimmer component that takes the form as `@form` and stores the validator as a class field. The wrapper can then render `<@form.Field @validators={{hash onDynamic=this.validateAge}}>`. The reactive-args path keeps working — anything that wraps a `Field` to provide `@validators` from `this.args` will re-sync.
 
 ### Async Validation
 
 Async validation can also be used with `onDynamic` just like with other validation logic. You can even debounce the async validation to avoid excessive calls.
 
 ```ts
-form = createForm(this, {
+const UsernameForm = createForm({
   defaultValues: {
     username: '',
   },
@@ -232,8 +234,7 @@ const schema = z.object({
   lastName: z.string().min(1, 'A last name is required'),
 });
 
-// inside a component
-form = createForm(this, {
+const MyForm = createForm({
   defaultValues: {
     firstName: '',
     lastName: '',

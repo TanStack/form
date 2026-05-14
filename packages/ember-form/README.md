@@ -16,9 +16,11 @@ pnpm add @tanstack/ember-form
 
 ## Usage
 
+`createForm` is a module-scope factory. Each call returns a Glimmer component whose args override the defaults you passed in.
+
 ```gjs
 import Component from '@glimmer/component';
-import { createForm, Field, Subscribe } from '@tanstack/ember-form';
+import { createForm, Subscribe } from '@tanstack/ember-form';
 
 const handleInput = (field, event) => {
   field.handleChange(event.target.value);
@@ -26,62 +28,64 @@ const handleInput = (field, event) => {
 
 const tooShort = ({ value }) => (value.length < 3 ? 'Too short' : undefined);
 
-export default class SignupForm extends Component {
-  form = createForm(this, {
-    defaultValues: { firstName: '', lastName: '' },
-    onSubmit: async ({ value }) => {
-      console.log('submit', value);
-    },
-  });
+const pickSubmit = (state) => ({
+  cantSubmit: !state.canSubmit,
+  isSubmitting: state.isSubmitting,
+});
 
-  submit = (event) => {
-    event.preventDefault();
-    this.form.handleSubmit();
+const onSubmitFor = (form) => (event) => {
+  event.preventDefault();
+  form.handleSubmit();
+};
+
+const SignupForm = createForm({
+  defaultValues: { firstName: '', lastName: '' },
+});
+
+export default class Signup extends Component {
+  onSubmit = async ({ value }) => {
+    console.log('submit', value);
   };
 
-  pickSubmit = (state) => ({
-    cantSubmit: !state.canSubmit,
-    isSubmitting: state.isSubmitting,
-  });
-
   <template>
-    <form {{on "submit" this.submit}}>
-      <this.form.Field
-        @name="firstName"
-        @validators={{hash onChange=tooShort}}
-        as |field|
-      >
-        <label>
-          First name
-          <input
-            value={{field.state.value}}
-            {{on "input" (fn handleInput field)}}
-          />
-        </label>
-        {{#each field.state.meta.errors as |error|}}
-          <em>{{error}}</em>
-        {{/each}}
-      </this.form.Field>
+    <SignupForm @onSubmit={{this.onSubmit}} as |Form|>
+      <form {{on "submit" (onSubmitFor Form)}}>
+        <Form.Field
+          @name="firstName"
+          @validators={{hash onChange=tooShort}}
+          as |field|
+        >
+          <label>
+            First name
+            <input
+              value={{field.state.value}}
+              {{on "input" (fn handleInput field)}}
+            />
+          </label>
+          {{#each field.state.meta.errors as |error|}}
+            <em>{{error}}</em>
+          {{/each}}
+        </Form.Field>
 
-      <Subscribe @form={{this.form}} @selector={{this.pickSubmit}} as |slice|>
-        <button type="submit" disabled={{slice.cantSubmit}}>
-          {{if slice.isSubmitting "Submitting…" "Submit"}}
-        </button>
-      </Subscribe>
-    </form>
+        <Subscribe @form={{Form}} @selector={{pickSubmit}} as |slice|>
+          <button type="submit" disabled={{slice.cantSubmit}}>
+            {{if slice.isSubmitting "Submitting…" "Submit"}}
+          </button>
+        </Subscribe>
+      </form>
+    </SignupForm>
   </template>
 }
 ```
 
-`<this.form.Field>` is closure-bound shorthand for `<Field @form={{this.form}}>`. Use whichever is more convenient.
-
 ### API
 
-- `createForm(parent, options)` — Returns a `FormApi` extended with `useStore(selector?)` and a closure-bound `Field`. `parent` should be `this` from a `@glimmer/component` (or any destroyable owner). The form is mounted immediately and unmounted when `parent` is destroyed.
-- `<Field @form @name [@validators] [@defaultValue] [@asyncDebounceMs] [@listeners] [@mode]>` — Yields a `FieldApi` whose `state` is autotracked. Reads of `field.state.*` in templates rerender on store changes.
-- `<this.form.Field @name [...]>` — closure-bound variant of `<Field>` returned from `createForm`. Equivalent to passing `@form={{this.form}}` explicitly.
+- `createForm(baseOptions)` — Returns a Glimmer component bound to those base options. Call at module scope; the same component can be invoked multiple times. Args on the invocation site (e.g. `@onSubmit`, `@validators`, ...) override the matching `baseOptions` key.
+- The yielded `form` from the block is the `FormApi` extended with two helpers:
+  - `form.Field` — A closure-bound `<Field>` so you can write `<Form.Field @name="...">` without passing `@form`.
+  - `form.useStore(selector?)` — Returns `{ current }` where `current` is autotracked. Useful when reading the slice from JS (e.g. inside a `@cached` getter on a child component that receives the form as an arg). For inline template reads, prefer `<Subscribe>`.
+- `<Field @form @name [@validators] [@defaultValue] [@asyncDebounceMs] [@listeners] [@mode]>` — Standalone form-aware field. Same as `Form.Field` but with `@form` passed explicitly.
 - `<Subscribe @form [@selector]>` — Yields the result of `selector(form.store.state)` (or the full state when omitted), reactive across changes.
-- `form.useStore(selector?)` — Returns `{ current }` where `current` is autotracked. Useful outside of templates (e.g. in `@cached` getters).
 
 Everything else is re-exported from `@tanstack/form-core` (validators, types, helpers).
 

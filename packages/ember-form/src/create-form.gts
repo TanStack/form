@@ -1,3 +1,4 @@
+import Component from '@glimmer/component';
 import { FormApi } from '@tanstack/form-core';
 import { registerDestructor } from '@ember/destroyable';
 import { trackedObject } from '@glimmer/validator';
@@ -12,9 +13,8 @@ import type {
 } from '@tanstack/form-core';
 
 /**
- * The Ember-flavored extensions that `createForm` adds to the `FormApi`.
- *
- * Mirrors the shape of `SvelteFormApi` but uses Glimmer's autotracking
+ * The Ember-flavored extensions that `createForm` adds to the `FormApi` it
+ * yields. Mirrors the shape of `SvelteFormApi` but uses Glimmer's autotracking
  * (via `trackedObject`) instead of Svelte runes for reactivity.
  */
 export interface EmberFormApi<
@@ -74,14 +74,14 @@ export interface EmberFormApi<
 
   /**
    * A `<Field>` component closure-bound to this form. Lets you write
-   * `<this.form.Field @name="..." as |field|>...</this.form.Field>` instead
-   * of passing `@form={{this.form}}` explicitly.
+   * `<form.Field @name="..." as |field|>...</form.Field>` instead of passing
+   * `@form={{form}}` explicitly.
    */
   Field: TOC<BoundFieldSignature>;
 }
 
 /**
- * The full, extended `FormApi` returned by `createForm`.
+ * The full, extended `FormApi` yielded from a `createForm` component's block.
  */
 export type EmberFormExtendedApi<
   TFormData,
@@ -171,53 +171,163 @@ function makeBoundField(
 }
 
 /**
- * Create a `FormApi` instance whose lifecycle is tied to `parent`. Mounts the
- * form immediately and registers a destructor on `parent` to unmount and
- * release store subscriptions when `parent` is destroyed.
+ * The component returned from `createForm`. Invokers can pass any subset of
+ * `FormOptions` as args to override the base options provided at module
+ * scope.
+ */
+export interface FormComponentSignature<
+  TFormData,
+  TFormOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TFormOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta,
+> {
+  Args: Partial<
+    FormOptions<
+      TFormData,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync,
+      TFormOnServer,
+      TSubmitMeta
+    >
+  >;
+  Blocks: {
+    default: [
+      form: EmberFormExtendedApi<
+        TFormData,
+        TFormOnMount,
+        TFormOnChange,
+        TFormOnChangeAsync,
+        TFormOnBlur,
+        TFormOnBlurAsync,
+        TFormOnSubmit,
+        TFormOnSubmitAsync,
+        TFormOnDynamic,
+        TFormOnDynamicAsync,
+        TFormOnServer,
+        TSubmitMeta
+      >,
+    ];
+  };
+}
+
+/**
+ * Build a reusable form component from a `FormOptions` blueprint. Each time
+ * the returned component is invoked it instantiates its own `FormApi` (mixed
+ * with the invocation args) and yields it.
+ *
+ * Designed to be called at module scope — no `this` required — so the same
+ * options can back many form instances and the same component can be reused
+ * across pages.
  *
  * @example
  * ```gjs
- * import Component from '@glimmer/component';
  * import { createForm } from '@tanstack/ember-form';
  *
- * export default class MyForm extends Component {
- *   form = createForm(this, {
- *     defaultValues: { firstName: '', lastName: '' },
- *     onSubmit: async ({ value }) => console.log(value),
- *   });
+ * const SignupForm = createForm({
+ *   defaultValues: { firstName: '', lastName: '' },
+ * });
  *
- *   <template>
- *     <form {{on "submit" this.form.handleSubmit}}>
- *       <this.form.Field @name="firstName" as |field|>
- *         <input value={{field.state.value}} />
- *       </this.form.Field>
- *     </form>
- *   </template>
- * }
+ * <template>
+ *   <SignupForm @onSubmit={{handleSubmit}} as |form|>
+ *     <form.Field @name="firstName" as |field|>
+ *       <input value={{field.state.value}} />
+ *     </form.Field>
+ *     <button {{on "click" form.handleSubmit}}>Submit</button>
+ *   </SignupForm>
+ * </template>
  * ```
  *
- * @param parent  Any destroyable (typically `this` from a `@glimmer/component`).
- *                Used to schedule unmount + unsubscribe on destruction.
- * @param options FormApi options. Currently captured at construction time;
- *                call `form.update(opts)` to apply runtime changes.
+ * @param baseOptions Default `FormOptions`. Anything passed as a component
+ *                    arg (e.g. `@onSubmit`) overrides the matching key.
  */
 export function createForm<
-  TParentData,
-  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormData,
+  TFormOnMount extends undefined | FormValidateOrFn<TFormData> = undefined,
+  TFormOnChange extends undefined | FormValidateOrFn<TFormData> = undefined,
+  TFormOnChangeAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TFormData> = undefined,
+  TFormOnBlur extends undefined | FormValidateOrFn<TFormData> = undefined,
+  TFormOnBlurAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TFormData> = undefined,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TFormData> = undefined,
+  TFormOnSubmitAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TFormData> = undefined,
+  TFormOnDynamic extends undefined | FormValidateOrFn<TFormData> = undefined,
+  TFormOnDynamicAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TFormData> = undefined,
+  TFormOnServer extends
+    | undefined
+    | FormAsyncValidateOrFn<TFormData> = undefined,
+  TSubmitMeta = never,
+>(
+  baseOptions: FormOptions<
+    TFormData,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
+    TFormOnServer,
+    TSubmitMeta
+  > = {} as never,
+): abstract new (owner: unknown, args: never) => Component<
+  FormComponentSignature<
+    TFormData,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
+    TFormOnServer,
+    TSubmitMeta
+  >
+> {
+  return makeFormComponent(baseOptions) as never;
+}
+
+function makeFormComponent<
+  TFormData,
+  TFormOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TFormOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   TSubmitMeta,
 >(
-  parent: object,
-  options?: FormOptions<
-    TParentData,
+  baseOptions: FormOptions<
+    TFormData,
     TFormOnMount,
     TFormOnChange,
     TFormOnChangeAsync,
@@ -230,28 +340,25 @@ export function createForm<
     TFormOnServer,
     TSubmitMeta
   >,
-): EmberFormExtendedApi<
-  TParentData,
-  TFormOnMount,
-  TFormOnChange,
-  TFormOnChangeAsync,
-  TFormOnBlur,
-  TFormOnBlurAsync,
-  TFormOnSubmit,
-  TFormOnSubmitAsync,
-  TFormOnDynamic,
-  TFormOnDynamicAsync,
-  TFormOnServer,
-  TSubmitMeta
-> {
-  const api = new FormApi(options);
+) {
+  type Sig = FormComponentSignature<
+    TFormData,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
+    TFormOnServer,
+    TSubmitMeta
+  >;
 
-  const cleanupMount = api.mount();
-  const subscriptions: Array<() => void> = [];
-
-  const extended = api as typeof api &
-    EmberFormApi<
-      TParentData,
+  return class FormComponent extends Component<Sig> {
+    api: EmberFormExtendedApi<
+      TFormData,
       TFormOnMount,
       TFormOnChange,
       TFormOnChangeAsync,
@@ -265,22 +372,82 @@ export function createForm<
       TSubmitMeta
     >;
 
-  extended.useStore = ((selector) => {
-    const read = () => (selector ? selector(api.state) : api.state);
-    const box = trackedObject({ current: read() }) as { current: unknown };
-    const unsub = api.store.subscribe(() => {
-      box.current = read();
-    }).unsubscribe;
-    subscriptions.push(unsub);
-    return box;
-  }) as (typeof extended)['useStore'];
+    constructor(owner: unknown, args: Sig['Args']) {
+      super(owner as never, args);
 
-  extended.Field = makeBoundField(api);
+      const merged = { ...baseOptions, ...this.args };
+      const formApi = new FormApi(merged as never) as FormApi<
+        TFormData,
+        TFormOnMount,
+        TFormOnChange,
+        TFormOnChangeAsync,
+        TFormOnBlur,
+        TFormOnBlurAsync,
+        TFormOnSubmit,
+        TFormOnSubmitAsync,
+        TFormOnDynamic,
+        TFormOnDynamicAsync,
+        TFormOnServer,
+        TSubmitMeta
+      >;
 
-  registerDestructor(parent, () => {
-    for (const unsub of subscriptions) unsub();
-    cleanupMount();
-  });
+      const cleanupMount = formApi.mount();
+      const subscriptions: Array<() => void> = [];
 
-  return extended;
+      const extended = formApi as typeof formApi &
+        EmberFormApi<
+          TFormData,
+          TFormOnMount,
+          TFormOnChange,
+          TFormOnChangeAsync,
+          TFormOnBlur,
+          TFormOnBlurAsync,
+          TFormOnSubmit,
+          TFormOnSubmitAsync,
+          TFormOnDynamic,
+          TFormOnDynamicAsync,
+          TFormOnServer,
+          TSubmitMeta
+        >;
+
+      extended.useStore = ((selector: never) => {
+        const read = () =>
+          selector ? (selector as (s: never) => never)(formApi.state as never) : formApi.state;
+        const box = trackedObject({ current: read() }) as { current: unknown };
+        const unsub = formApi.store.subscribe(() => {
+          box.current = read();
+        }).unsubscribe;
+        subscriptions.push(unsub);
+        return box;
+      }) as (typeof extended)['useStore'];
+
+      extended.Field = makeBoundField(formApi as never);
+
+      this.api = extended;
+
+      registerDestructor(this, () => {
+        for (const unsub of subscriptions) unsub();
+        cleanupMount();
+      });
+    }
+
+    /**
+     * Re-apply merged options whenever any arg changes. Read in the template
+     * so the autotracking entanglement actually fires; mirrors svelte-form's
+     * `$effect.pre(() => api.update(opts))`.
+     *
+     * Glimmer's autotracking memoizes per-tag; reads of `this.args.*` here
+     * entangle with their argument tags, so the body only re-runs when an
+     * arg has actually changed.
+     */
+    get _syncOptions() {
+      this.api.update({ ...baseOptions, ...this.args } as never);
+      return null;
+    }
+
+    <template>
+      {{this._syncOptions}}
+      {{yield this.api}}
+    </template>
+  };
 }
