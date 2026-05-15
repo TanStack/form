@@ -31,8 +31,8 @@ export function initializeForm<
   const reactFormApi: InternalReactFormApi<TFormData, TFormValidators> =
     form as never
 
-  reactFormApi.Field = function TanStackFormField<TFieldValue>(
-    props: ReactFormFieldProps<TFormData, TFormValidators, TFieldValue>,
+  reactFormApi.Field = function TanStackFormField(
+    props: ReactFormFieldProps<TFormData, TFormValidators, any, any>,
   ) {
     const fieldApi = useField({ ...props, form })
 
@@ -42,8 +42,8 @@ export function initializeForm<
     return props.children(fieldApi)
   }
 
-  reactFormApi.ArrayField = function TanStackFormArrayField<TFieldValue>(
-    props: ReactFormArrayFieldProps<TFormData, TFormValidators, TFieldValue>,
+  reactFormApi.ArrayField = function TanStackFormArrayField(
+    props: ReactFormArrayFieldProps<TFormData, TFormValidators, any, any>,
   ) {
     const fieldApi = useField({ ...props, form })
 

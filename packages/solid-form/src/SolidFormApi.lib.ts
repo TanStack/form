@@ -29,8 +29,8 @@ export function initializeForm<
   const solidFormApi: InternalSolidFormApi<TFormData, TFormValidators> =
     form as never
 
-  solidFormApi.Field = function TanStackFormField<TFieldValue>(
-    props: SolidFormFieldProps<TFormData, TFormValidators, TFieldValue>,
+  solidFormApi.Field = function TanStackFormField(
+    props: SolidFormFieldProps<TFormData, TFormValidators, any, any>,
   ) {
     const fieldOptions = mergeProps(props, { form })
     const fieldApi = createField(() => fieldOptions)
@@ -38,8 +38,8 @@ export function initializeForm<
     return props.children(fieldApi)
   }
 
-  solidFormApi.ArrayField = function TanStackFormArrayField<TFieldValue>(
-    props: SolidFormArrayFieldProps<TFormData, TFormValidators, TFieldValue>,
+  solidFormApi.ArrayField = function TanStackFormArrayField(
+    props: SolidFormArrayFieldProps<TFormData, TFormValidators, any, any>,
   ) {
     const fieldOptions = mergeProps(props, { form })
     const fieldApi = createArrayField(() => fieldOptions)

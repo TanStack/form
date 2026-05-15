@@ -1,6 +1,9 @@
-import { shallow, useSelector, useStore } from '@tanstack/solid-store'
+import { shallow, useSelector } from '@tanstack/solid-store'
 import { createMemo, createRenderEffect } from 'solid-js'
 import type {
+  DeepKeys,
+  DeepKeysWhereValueIncludes,
+  DeepValue,
   FieldApi,
   FieldApiOptions,
   FormValidator,
@@ -12,20 +15,24 @@ import type {
 import type { Accessor } from 'solid-js'
 
 export interface InternalFieldProps<
-  TData,
-  TFormValidators extends ReadonlyArray<FormValidator<TData>>,
-  TFieldValue,
-> extends FieldApiOptions<TData, TFormValidators, TFieldValue> {
-  form: InternalFormApi<TData, TFormValidators>
+  TFormData,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  TFieldName extends DeepKeys<TFormData>,
+  TFieldValue extends DeepValue<TFormData, TFieldName>,
+> extends FieldApiOptions<TFormData, TFormValidators, TFieldName, TFieldValue> {
+  form: InternalFormApi<TFormData, TFormValidators>
 }
 
 export function createField<
-  TData,
-  TFormValidators extends ReadonlyArray<FormValidator<TData>>,
-  TFieldValue,
+  TFormData,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  TFieldName extends DeepKeys<TFormData>,
+  TFieldValue extends DeepValue<TFormData, TFieldName>,
 >(
-  options: Accessor<InternalFieldProps<TData, TFormValidators, TFieldValue>>,
-): Accessor<FieldApi<TData, TFormValidators>> {
+  options: Accessor<
+    InternalFieldProps<TFormData, TFormValidators, TFieldName, TFieldValue>
+  >,
+): Accessor<FieldApi<TFormData, TFormValidators, TFieldName, TFieldValue>> {
   const fieldApi = createMemo(() => {
     const opts = options()
 
@@ -39,7 +46,9 @@ export function createField<
     fieldApi()._update(options())
   })
 
-  const state = useStore(fieldApi().store, (value) => value, shallow)
+  const state = useSelector(fieldApi().store, (value) => value, {
+    compare: shallow,
+  })
 
   return createMemo(
     () => {
@@ -52,12 +61,15 @@ export function createField<
 }
 
 export function createArrayField<
-  TData,
-  TFormValidators extends ReadonlyArray<FormValidator<TData>>,
-  TFieldValue,
+  TFormData,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
+  TFieldValue extends DeepValue<TFormData, TFieldName>,
 >(
-  options: Accessor<InternalFieldProps<TData, TFormValidators, TFieldValue>>,
-): Accessor<FieldApi<TData, TFormValidators>> {
+  options: Accessor<
+    InternalFieldProps<TFormData, TFormValidators, TFieldName, TFieldValue>
+  >,
+): Accessor<FieldApi<TFormData, TFormValidators, TFieldName, TFieldValue>> {
   const fieldApi = createMemo(() => {
     const opts = options()
 

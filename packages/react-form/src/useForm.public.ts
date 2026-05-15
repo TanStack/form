@@ -4,6 +4,9 @@ import type { InternalReactFormApi } from './ReactFormApi.lib'
 import type { SubscribeProps } from './Subscribe'
 import type { CrossVersionReactNode } from './types.lib'
 import type {
+  DeepKeys,
+  DeepKeysWhereValueIncludes,
+  DeepValue,
   FieldApi,
   FieldApiOptions,
   FormApi,
@@ -22,22 +25,24 @@ export type ReactFormSubscribeProps<TFormData, TSelected> = Omit<
 >
 
 export interface ReactFormFieldProps<
-  TData,
-  TFormValidators extends ReadonlyArray<FormValidator<TData>>,
-  TFieldValue,
-> extends FieldApiOptions<TData, TFormValidators, TFieldValue> {
+  TFormData,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  TFieldName extends DeepKeys<TFormData>,
+  TFieldValue extends DeepValue<TFormData, TFieldName>,
+> extends FieldApiOptions<TFormData, TFormValidators, TFieldName, TFieldValue> {
   children: (
-    fieldApi: FieldApi<TData, TFormValidators>,
+    fieldApi: FieldApi<TFormData, TFormValidators, TFieldName, TFieldValue>,
   ) => CrossVersionReactNode
 }
 
 export interface ReactFormArrayFieldProps<
-  TData,
-  TFormValidators extends ReadonlyArray<FormValidator<TData>>,
-  TFieldValue,
-> extends FieldApiOptions<TData, TFormValidators, TFieldValue> {
+  TFormData,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
+  TFieldValue extends DeepValue<TFormData, TFieldName>,
+> extends FieldApiOptions<TFormData, TFormValidators, TFieldName, TFieldValue> {
   children: (
-    fieldApi: FieldApi<TData, TFormValidators>,
+    fieldApi: FieldApi<TFormData, TFormValidators, TFieldName, TFieldValue>,
   ) => CrossVersionReactNode
 }
 
@@ -48,11 +53,27 @@ export interface ReactTanStackFormComponents<
   /**
    * TODO docs
    */
-  Field: <TFieldValue>(
-    props: ReactFormFieldProps<TFormData, TFormValidators, TFieldValue>,
+  Field: <
+    TFieldName extends DeepKeys<TFormData>,
+    TFieldValue extends DeepValue<TFormData, TFieldName>,
+  >(
+    props: ReactFormFieldProps<
+      TFormData,
+      TFormValidators,
+      TFieldName,
+      TFieldValue
+    >,
   ) => CrossVersionReactNode
-  ArrayField: <TFieldValue>(
-    props: ReactFormArrayFieldProps<TFormData, TFormValidators, TFieldValue>,
+  ArrayField: <
+    TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
+    TFieldValue extends DeepValue<TFormData, TFieldName>,
+  >(
+    props: ReactFormArrayFieldProps<
+      TFormData,
+      TFormValidators,
+      TFieldName,
+      TFieldValue
+    >,
   ) => CrossVersionReactNode
   Subscribe: <TSelected>(
     props: ReactFormSubscribeProps<TFormData, TSelected>,

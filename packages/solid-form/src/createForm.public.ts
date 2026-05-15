@@ -1,6 +1,9 @@
 import { createRenderEffect, untrack } from 'solid-js'
 import { initializeForm } from './SolidFormApi.lib'
 import type {
+  DeepKeys,
+  DeepKeysWhereValueIncludes,
+  DeepValue,
   FieldApi,
   FieldApiOptions,
   FormApi,
@@ -20,22 +23,28 @@ export interface SolidFormSubscribeProps<TFormData, TSelected> {
 }
 
 export interface SolidFormFieldProps<
-  TData,
-  TFormValidators extends ReadonlyArray<FormValidator<TData>>,
-  TFieldValue,
-> extends FieldApiOptions<TData, TFormValidators, TFieldValue> {
+  TFormData,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  TFieldName extends DeepKeys<TFormData>,
+  TFieldValue extends DeepValue<TFormData, TFieldName>,
+> extends FieldApiOptions<TFormData, TFormValidators, TFieldName, TFieldValue> {
   children: (
-    fieldApi: Accessor<FieldApi<TData, TFormValidators>>,
+    fieldApi: Accessor<
+      FieldApi<TFormData, TFormValidators, TFieldName, TFieldValue>
+    >,
   ) => JSX.Element
 }
 
 export interface SolidFormArrayFieldProps<
-  TData,
-  TFormValidators extends ReadonlyArray<FormValidator<TData>>,
-  TFieldValue,
-> extends FieldApiOptions<TData, TFormValidators, TFieldValue> {
+  TFormData,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  TFieldName extends DeepKeys<TFormData>,
+  TFieldValue extends DeepValue<TFormData, TFieldName>,
+> extends FieldApiOptions<TFormData, TFormValidators, TFieldName, TFieldValue> {
   children: (
-    fieldApi: Accessor<FieldApi<TData, TFormValidators>>,
+    fieldApi: Accessor<
+      FieldApi<TFormData, TFormValidators, TFieldName, TFieldValue>
+    >,
   ) => JSX.Element
 }
 
@@ -46,11 +55,27 @@ export interface SolidTanStackFormComponents<
   /**
    * TODO docs
    */
-  Field: <TFieldValue>(
-    props: SolidFormFieldProps<TFormData, TFormValidators, TFieldValue>,
+  Field: <
+    TFieldName extends DeepKeys<TFormData>,
+    TFieldValue extends DeepValue<TFormData, TFieldName>,
+  >(
+    props: SolidFormFieldProps<
+      TFormData,
+      TFormValidators,
+      TFieldName,
+      TFieldValue
+    >,
   ) => JSX.Element
-  ArrayField: <TFieldValue>(
-    props: SolidFormArrayFieldProps<TFormData, TFormValidators, TFieldValue>,
+  ArrayField: <
+    TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
+    TFieldValue extends DeepValue<TFormData, TFieldName>,
+  >(
+    props: SolidFormArrayFieldProps<
+      TFormData,
+      TFormValidators,
+      TFieldName,
+      TFieldValue
+    >,
   ) => JSX.Element
   Subscribe: <TSelected>(
     props: SolidFormSubscribeProps<TFormData, TSelected>,
