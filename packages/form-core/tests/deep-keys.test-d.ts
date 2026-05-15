@@ -416,6 +416,27 @@ describe('DeepKeys', () => {
 
     expectTypeOf<DeepKeys<UserDto>>().toEqualTypeOf<ExpectedKeys>()
   })
+
+  it('should handle records', () => {
+    type Value = {
+      a: string
+      b: number
+      c: { d: string }
+    }
+    type RecordExample = {
+      records: Record<string, Value>
+    }
+
+    type ExpectedKeys =
+      | 'records'
+      | `records.${string}`
+      | `records.${string}.a`
+      | `records.${string}.b`
+      | `records.${string}.c`
+      | `records.${string}.c.d`
+
+    expectTypeOf<DeepKeys<RecordExample>>().toEqualTypeOf<ExpectedKeys>()
+  })
 })
 
 describe('DeepValue', () => {
@@ -1022,5 +1043,30 @@ describe('DeepValue', () => {
     expectTypeOf<Expect<'obj.c.anything'>>().toEqualTypeOf<unknown>()
     expectTypeOf<Expect<`obj.c.${string}`>>().toEqualTypeOf<unknown>()
     expectTypeOf<Expect<'obj.d'>>().toEqualTypeOf<number>()
+  })
+
+  it('should handle records', () => {
+    type Value = {
+      a: string
+      b: number
+      c: { d: string }
+    }
+    type RecordExample = {
+      records: Record<string, Value>
+    }
+
+    type Expect<TKey extends string> = DeepValue<RecordExample, TKey>
+
+    expectTypeOf<Expect<'records'>>().toEqualTypeOf<Record<string, Value>>()
+    expectTypeOf<Expect<'records.foo'>>().toEqualTypeOf<Value>()
+    expectTypeOf<Expect<'records.foo.a'>>().toEqualTypeOf<string>()
+    expectTypeOf<Expect<'records.foo.b'>>().toEqualTypeOf<number>()
+    expectTypeOf<Expect<'records.foo.c'>>().toEqualTypeOf<{ d: string }>()
+    expectTypeOf<Expect<'records.foo.c.d'>>().toEqualTypeOf<string>()
+    expectTypeOf<Expect<`records.${string}`>>().toEqualTypeOf<Value>()
+    expectTypeOf<Expect<`records.${string}.a`>>().toEqualTypeOf<string>()
+    expectTypeOf<Expect<`records.${string}.b`>>().toEqualTypeOf<number>()
+    expectTypeOf<Expect<`records.${string}.c`>>().toEqualTypeOf<{ d: string }>()
+    expectTypeOf<Expect<`records.${string}.c.d`>>().toEqualTypeOf<string>()
   })
 })
