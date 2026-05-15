@@ -1,5 +1,5 @@
-import { describe, expect, expectTypeOf, it } from 'vitest'
-import type { DeepKeys, DeepKeysAndValuesImpl, DeepValue } from '../src/index'
+import { describe, expectTypeOf, it } from 'vitest'
+import type { DeepKeys, DeepValue } from '../src/index'
 
 interface User {
   name: string
@@ -144,6 +144,277 @@ describe('DeepKeys', () => {
       | 'onlyNil'
 
     expectTypeOf<DeepKeys<NullishStates>>().toEqualTypeOf<ExpectedKeys>()
+  })
+
+  it('should handle nullish states with nested objects', () => {
+    type NestedNullishState = {
+      mixed?: { mainUser: { name: 'name' } } | null | undefined
+    }
+
+    type ExpectedKeys = 'mixed' | 'mixed.mainUser' | 'mixed.mainUser.name'
+
+    expectTypeOf<DeepKeys<NestedNullishState>>().toEqualTypeOf<ExpectedKeys>()
+  })
+
+  it('should handle unions with nested cases', () => {
+    type TheUnion =
+      | { a: User }
+      | { a: string }
+      | { b: string }
+      | { c: { user: User } | { user: number } }
+    type NestedObjectUnionCase = {
+      normal: TheUnion
+    }
+    type ExpectedKeys =
+      | 'normal'
+      | 'normal.a'
+      | 'normal.a.name'
+      | 'normal.a.id'
+      | 'normal.a.age'
+      | 'normal.b'
+      | 'normal.c'
+      | 'normal.c.user'
+      | 'normal.c.user.name'
+      | 'normal.c.user.id'
+      | 'normal.c.user.age'
+
+    expectTypeOf<
+      DeepKeys<NestedObjectUnionCase>
+    >().toEqualTypeOf<ExpectedKeys>()
+  })
+
+  it('should handle nullish within nested unions', () => {
+    type NullishNested = {
+      nullable:
+        | { a?: number; b?: { c: boolean } | null }
+        | { b?: { c: string; e: number } }
+    }
+
+    type ExpectedKeys =
+      | 'nullable'
+      | 'nullable.a'
+      | 'nullable.b'
+      | 'nullable.b.c'
+      | 'nullable.b.e'
+
+    expectTypeOf<DeepKeys<NullishNested>>().toEqualTypeOf<ExpectedKeys>()
+  })
+
+  it('should handle one dimensional arrays', () => {
+    type OneDimArrays = {
+      ages: Array<number>
+      names: Array<string>
+      users: Array<User>
+    }
+    type ExpectedKeys =
+      | 'ages'
+      | `ages[${number}]`
+      | 'names'
+      | `names[${number}]`
+      | 'users'
+      | `users[${number}]`
+      | `users[${number}].name`
+      | `users[${number}].id`
+      | `users[${number}].age`
+
+    expectTypeOf<DeepKeys<OneDimArrays>>().toEqualTypeOf<ExpectedKeys>()
+  })
+
+  it('should handle two dimensional arrays', () => {
+    type TwoDimArrays = {
+      ages: Array<Array<number>>
+      names: Array<Array<string>>
+      users: Array<Array<User>>
+    }
+    type ExpectedKeys =
+      | 'ages'
+      | `ages[${number}]`
+      | `ages[${number}][${number}]`
+      | 'names'
+      | `names[${number}]`
+      | `names[${number}][${number}]`
+      | 'users'
+      | `users[${number}]`
+      | `users[${number}][${number}]`
+      | `users[${number}][${number}].name`
+      | `users[${number}][${number}].id`
+      | `users[${number}][${number}].age`
+
+    expectTypeOf<DeepKeys<TwoDimArrays>>().toEqualTypeOf<ExpectedKeys>()
+  })
+
+  it('should handle two arrays with object', () => {
+    type TwoDimArrays = {
+      entries: Array<{
+        ages: Array<number>
+        names: Array<string>
+        users: Array<User>
+      }>
+    }
+    type ExpectedKeys =
+      | 'entries'
+      | `entries[${number}]`
+      | `entries[${number}].ages`
+      | `entries[${number}].ages[${number}]`
+      | `entries[${number}].names`
+      | `entries[${number}].names[${number}]`
+      | `entries[${number}].users`
+      | `entries[${number}].users[${number}]`
+      | `entries[${number}].users[${number}].name`
+      | `entries[${number}].users[${number}].id`
+      | `entries[${number}].users[${number}].age`
+
+    expectTypeOf<DeepKeys<TwoDimArrays>>().toEqualTypeOf<ExpectedKeys>()
+  })
+
+  it('should handle optional arrays', () => {
+    type UsersArray = {
+      nullable: Array<User> | null
+      undefinable: Array<User> | undefined
+      optional?: Array<User>
+    }
+
+    type ExpectedKeys =
+      | 'nullable'
+      | `nullable[${number}]`
+      | `nullable[${number}].name`
+      | `nullable[${number}].id`
+      | `nullable[${number}].age`
+      | 'undefinable'
+      | `undefinable[${number}]`
+      | `undefinable[${number}].name`
+      | `undefinable[${number}].id`
+      | `undefinable[${number}].age`
+      | 'optional'
+      | `optional[${number}]`
+      | `optional[${number}].name`
+      | `optional[${number}].id`
+      | `optional[${number}].age`
+
+    expectTypeOf<DeepKeys<UsersArray>>().toEqualTypeOf<ExpectedKeys>()
+  })
+
+  it('should support top level arrays', () => {
+    type UserArray = Array<User>
+
+    type ExpectedKeys =
+      | `[${number}]`
+      | `[${number}].name`
+      | `[${number}].id`
+      | `[${number}].age`
+
+    expectTypeOf<DeepKeys<UserArray>>().toEqualTypeOf<ExpectedKeys>()
+  })
+
+  it('should handle a real use case object', () => {
+    type Stock = {
+      id: string
+      quantity: number
+      isChecked: boolean
+    }
+
+    type Product = {
+      id: string
+      description?: string
+      price_internet?: number
+      price_dealer_region?: number
+      price_dealer?: number
+      stock: Array<Stock> | null
+      quantity: number
+      isChecked: boolean
+    }
+    type Cart = {
+      id: number
+      product: Product
+    }
+
+    type Payment_types = Array<{
+      id: string
+      title: string
+      name: string
+    }>
+
+    type Shipping_methods = Array<{
+      id: string
+      title: string
+      name: string
+    }>
+
+    type Avatar = {
+      url?: string
+    } & {
+      id: string
+      storage: string
+      filename_disk: string | null
+      filename_original: string | null
+      filename_download: string | null
+      filename_preview: string | null
+      filename_thumbnail: string | null
+      filename_medium: string | null
+      filename_large: string | null
+      filename_huge: string | null
+      filename_icon: string | null
+      filename_icon_large: string | null
+      focal_point_y: number | null
+    }
+
+    type UserDto = {
+      id: string
+      first_name: string | null
+      email: string | null
+      avatar: string | Avatar | null
+      // Reference Cart, Payment_types, Shipping_methods
+      cart: Cart | null
+      payment_types: Payment_types | null
+      shipping_methods: Shipping_methods | null
+    }
+
+    type ExpectedKeys =
+      | 'id'
+      | 'first_name'
+      | 'email'
+      | 'avatar'
+      | 'avatar.url'
+      | 'avatar.id'
+      | 'avatar.storage'
+      | 'avatar.filename_disk'
+      | 'avatar.filename_original'
+      | 'avatar.filename_download'
+      | 'avatar.filename_preview'
+      | 'avatar.filename_thumbnail'
+      | 'avatar.filename_medium'
+      | 'avatar.filename_large'
+      | 'avatar.filename_huge'
+      | 'avatar.filename_icon'
+      | 'avatar.filename_icon_large'
+      | 'avatar.focal_point_y'
+      | 'cart'
+      | 'cart.id'
+      | 'cart.product'
+      | 'cart.product.id'
+      | 'cart.product.description'
+      | 'cart.product.price_internet'
+      | 'cart.product.price_dealer_region'
+      | 'cart.product.price_dealer'
+      | 'cart.product.quantity'
+      | 'cart.product.isChecked'
+      | 'cart.product.stock'
+      | `cart.product.stock[${number}]`
+      | `cart.product.stock[${number}].id`
+      | `cart.product.stock[${number}].quantity`
+      | `cart.product.stock[${number}].isChecked`
+      | 'payment_types'
+      | `payment_types[${number}]`
+      | `payment_types[${number}].id`
+      | `payment_types[${number}].title`
+      | `payment_types[${number}].name`
+      | 'shipping_methods'
+      | `shipping_methods[${number}]`
+      | `shipping_methods[${number}].id`
+      | `shipping_methods[${number}].title`
+      | `shipping_methods[${number}].name`
+
+    expectTypeOf<DeepKeys<UserDto>>().toEqualTypeOf<ExpectedKeys>()
   })
 })
 
@@ -300,269 +571,456 @@ describe('DeepValue', () => {
     expectTypeOf<Expect<'optionalNull'>>().toEqualTypeOf<undefined | null>()
     expectTypeOf<Expect<'onlyNil'>>().toEqualTypeOf<undefined | null>()
   })
+
+  it('should handle nullish states with nested objects', () => {
+    type Roles = { mainUser: { name: 'name' } }
+    type NestedNullishState = {
+      mixed?: Roles | null | undefined
+    }
+
+    type Expect<TKey extends string> = DeepValue<NestedNullishState, TKey>
+
+    expectTypeOf<Expect<'mixed'>>().toEqualTypeOf<Roles | null | undefined>()
+    expectTypeOf<Expect<'mixed.mainUser'>>().toEqualTypeOf<
+      { name: 'name' } | undefined
+    >()
+    expectTypeOf<Expect<'mixed.mainUser.name'>>().toEqualTypeOf<
+      'name' | undefined
+    >()
+  })
+
+  it('should handle unions with nested cases', () => {
+    type TheUnion =
+      | { a: User }
+      | { a: string }
+      | { b: string }
+      | { c: { user: User } | { user: number } }
+    type NestedObjectUnionCase = {
+      normal: TheUnion
+    }
+
+    type Expect<TKey extends string> = DeepValue<NestedObjectUnionCase, TKey>
+
+    expectTypeOf<Expect<'normal'>>().toEqualTypeOf<TheUnion>()
+    expectTypeOf<Expect<'normal.a'>>().toEqualTypeOf<
+      User | string | undefined
+    >()
+    expectTypeOf<Expect<'normal.a.id'>>().toEqualTypeOf<string | undefined>()
+    expectTypeOf<Expect<'normal.a.name'>>().toEqualTypeOf<string | undefined>()
+    expectTypeOf<Expect<'normal.a.age'>>().toEqualTypeOf<number | undefined>()
+    expectTypeOf<Expect<'normal.b'>>().toEqualTypeOf<string | undefined>()
+    expectTypeOf<Expect<'normal.c'>>().toEqualTypeOf<
+      { user: User } | { user: number } | undefined
+    >()
+    expectTypeOf<Expect<'normal.c.user'>>().toEqualTypeOf<
+      User | number | undefined
+    >()
+    expectTypeOf<Expect<'normal.c.user.name'>>().toEqualTypeOf<
+      string | undefined
+    >()
+    expectTypeOf<Expect<'normal.c.user.id'>>().toEqualTypeOf<
+      string | undefined
+    >()
+    expectTypeOf<Expect<'normal.c.user.age'>>().toEqualTypeOf<
+      number | undefined
+    >()
+  })
+
+  it('should handle nullish within nested unions', () => {
+    type TheUnion =
+      | { a?: number; b?: { c: boolean } | null }
+      | { b?: { c: string; e: number } }
+
+    type NullishNested = {
+      nullable: TheUnion
+    }
+
+    type Expect<TKey extends string> = DeepValue<NullishNested, TKey>
+
+    expectTypeOf<Expect<'nullable'>>().toEqualTypeOf<TheUnion>()
+    expectTypeOf<Expect<'nullable.a'>>().toEqualTypeOf<number | undefined>()
+    expectTypeOf<Expect<'nullable.b'>>().toEqualTypeOf<
+      { c: boolean } | { c: string; e: number } | null | undefined
+    >()
+    expectTypeOf<Expect<'nullable.b.c'>>().toEqualTypeOf<
+      boolean | string | undefined
+    >()
+    expectTypeOf<Expect<'nullable.b.e'>>().toEqualTypeOf<number | undefined>()
+  })
+
+  it('should handle one dimensional arrays', () => {
+    type OneDimArrays = {
+      ages: Array<number>
+      names: Array<string>
+      users: Array<User>
+    }
+
+    type Expect<TKey extends string> = DeepValue<OneDimArrays, TKey>
+
+    expectTypeOf<Expect<'ages'>>().toEqualTypeOf<Array<number>>()
+    expectTypeOf<Expect<`ages[${number}]`>>().toEqualTypeOf<number>()
+    expectTypeOf<Expect<'names'>>().toEqualTypeOf<Array<string>>()
+    expectTypeOf<Expect<`names[${number}]`>>().toEqualTypeOf<string>()
+    expectTypeOf<Expect<'users'>>().toEqualTypeOf<Array<User>>()
+    expectTypeOf<Expect<`users[${number}]`>>().toEqualTypeOf<User>()
+    expectTypeOf<Expect<`users[${number}].name`>>().toEqualTypeOf<string>()
+    expectTypeOf<Expect<`users[${number}].id`>>().toEqualTypeOf<string>()
+    expectTypeOf<Expect<`users[${number}].age`>>().toEqualTypeOf<number>()
+  })
+
+  it('should handle two dimensional arrays', () => {
+    type TwoDimArrays = {
+      ages: Array<Array<number>>
+      names: Array<Array<string>>
+      users: Array<Array<User>>
+    }
+
+    type Expect<TKey extends string> = DeepValue<TwoDimArrays, TKey>
+
+    expectTypeOf<Expect<'ages'>>().toEqualTypeOf<Array<Array<number>>>()
+    expectTypeOf<Expect<`ages[${number}]`>>().toEqualTypeOf<Array<number>>()
+    expectTypeOf<Expect<`ages[${number}][${number}]`>>().toEqualTypeOf<number>()
+    expectTypeOf<Expect<'names'>>().toEqualTypeOf<Array<Array<string>>>()
+    expectTypeOf<Expect<`names[${number}]`>>().toEqualTypeOf<Array<string>>()
+    expectTypeOf<
+      Expect<`names[${number}][${number}]`>
+    >().toEqualTypeOf<string>()
+    expectTypeOf<Expect<'users'>>().toEqualTypeOf<Array<Array<User>>>()
+    expectTypeOf<Expect<`users[${number}]`>>().toEqualTypeOf<Array<User>>()
+    expectTypeOf<Expect<`users[${number}][${number}]`>>().toEqualTypeOf<User>()
+    expectTypeOf<
+      Expect<`users[${number}][${number}].name`>
+    >().toEqualTypeOf<string>()
+    expectTypeOf<
+      Expect<`users[${number}][${number}].id`>
+    >().toEqualTypeOf<string>()
+    expectTypeOf<
+      Expect<`users[${number}][${number}].age`>
+    >().toEqualTypeOf<number>()
+  })
+
+  it('should handle two arrays with object', () => {
+    type TwoDimArrays = {
+      entries: Array<{
+        ages: Array<number>
+        names: Array<string>
+        users: Array<User>
+      }>
+    }
+
+    type Expect<TKey extends string> = DeepValue<TwoDimArrays, TKey>
+
+    expectTypeOf<Expect<'entries'>>().toEqualTypeOf<
+      Array<{ ages: Array<number>; names: Array<string>; users: Array<User> }>
+    >()
+    expectTypeOf<Expect<`entries[${number}]`>>().toEqualTypeOf<{
+      ages: Array<number>
+      names: Array<string>
+      users: Array<User>
+    }>()
+    expectTypeOf<Expect<`entries[${number}].ages`>>().toEqualTypeOf<
+      Array<number>
+    >()
+    expectTypeOf<
+      Expect<`entries[${number}].ages[${number}]`>
+    >().toEqualTypeOf<number>()
+    expectTypeOf<Expect<`entries[${number}].names`>>().toEqualTypeOf<
+      Array<string>
+    >()
+    expectTypeOf<
+      Expect<`entries[${number}].names[${number}]`>
+    >().toEqualTypeOf<string>()
+    expectTypeOf<Expect<`entries[${number}].users`>>().toEqualTypeOf<
+      Array<User>
+    >()
+    expectTypeOf<
+      Expect<`entries[${number}].users[${number}]`>
+    >().toEqualTypeOf<User>()
+    expectTypeOf<
+      Expect<`entries[${number}].users[${number}].name`>
+    >().toEqualTypeOf<string>()
+    expectTypeOf<
+      Expect<`entries[${number}].users[${number}].id`>
+    >().toEqualTypeOf<string>()
+    expectTypeOf<
+      Expect<`entries[${number}].users[${number}].age`>
+    >().toEqualTypeOf<number>()
+  })
+
+  it('should handle optional arrays', () => {
+    type UsersArray = {
+      nullable: Array<User> | null
+      undefinable: Array<User> | undefined
+      optional?: Array<User>
+    }
+
+    type Expect<TKey extends string> = DeepValue<UsersArray, TKey>
+
+    expectTypeOf<Expect<'nullable'>>().toEqualTypeOf<Array<User> | null>()
+    expectTypeOf<Expect<`nullable[${number}]`>>().toEqualTypeOf<
+      User | undefined
+    >()
+    expectTypeOf<Expect<`nullable[${number}].name`>>().toEqualTypeOf<
+      string | undefined
+    >()
+    expectTypeOf<Expect<`nullable[${number}].id`>>().toEqualTypeOf<
+      string | undefined
+    >()
+    expectTypeOf<Expect<`nullable[${number}].age`>>().toEqualTypeOf<
+      number | undefined
+    >()
+
+    expectTypeOf<Expect<'undefinable'>>().toEqualTypeOf<
+      Array<User> | undefined
+    >()
+    expectTypeOf<Expect<`undefinable[${number}]`>>().toEqualTypeOf<
+      User | undefined
+    >()
+    expectTypeOf<Expect<`undefinable[${number}].name`>>().toEqualTypeOf<
+      string | undefined
+    >()
+    expectTypeOf<Expect<`undefinable[${number}].id`>>().toEqualTypeOf<
+      string | undefined
+    >()
+    expectTypeOf<Expect<`undefinable[${number}].age`>>().toEqualTypeOf<
+      number | undefined
+    >()
+
+    expectTypeOf<Expect<'optional'>>().toEqualTypeOf<Array<User> | undefined>()
+    expectTypeOf<Expect<`optional[${number}]`>>().toEqualTypeOf<
+      User | undefined
+    >()
+    expectTypeOf<Expect<`optional[${number}].name`>>().toEqualTypeOf<
+      string | undefined
+    >()
+    expectTypeOf<Expect<`optional[${number}].id`>>().toEqualTypeOf<
+      string | undefined
+    >()
+    expectTypeOf<Expect<`optional[${number}].age`>>().toEqualTypeOf<
+      number | undefined
+    >()
+  })
+
+  it('should support top level arrays', () => {
+    type UserArray = Array<User>
+
+    type Expect<TKey extends string> = DeepValue<UserArray, TKey>
+
+    expectTypeOf<Expect<'[0]'>>().toEqualTypeOf<User>()
+    expectTypeOf<Expect<'[15]'>>().toEqualTypeOf<User>()
+    expectTypeOf<Expect<`[${number}]`>>().toEqualTypeOf<User>()
+    expectTypeOf<Expect<`[${number}].name`>>().toEqualTypeOf<string>()
+    expectTypeOf<Expect<`[${number}].id`>>().toEqualTypeOf<string>()
+    expectTypeOf<Expect<`[${number}].age`>>().toEqualTypeOf<number>()
+  })
+
+  it('should handle a real use case object', () => {
+    type Stock = {
+      id: string
+      quantity: number
+      isChecked: boolean
+    }
+
+    type Product = {
+      id: string
+      description?: string
+      price_internet?: number
+      price_dealer_region?: number
+      price_dealer?: number
+      stock: Array<Stock> | null
+      quantity: number
+      isChecked: boolean
+    }
+    type Cart = {
+      id: number
+      product: Product
+    }
+
+    type Payment_type = {
+      id: string
+      title: string
+      name: string
+    }
+
+    type Shipping_method = {
+      id: string
+      title: string
+      name: string
+    }
+
+    type Avatar = {
+      url?: string
+    } & {
+      id: string
+      storage: string
+      filename_disk: string | null
+      filename_original: string | null
+      filename_download: string | null
+      filename_preview: string | null
+      filename_thumbnail: string | null
+      filename_medium: string | null
+      filename_large: string | null
+      filename_huge: string | null
+      filename_icon: string | null
+      filename_icon_large: string | null
+      focal_point_y: number | null
+    }
+
+    type UserDto = {
+      id: string
+      first_name: string | null
+      email: string | null
+      avatar: string | Avatar | null
+      // Reference Cart, Payment_types, Shipping_methods
+      cart: Cart | null
+      payment_types: Array<Payment_type> | null
+      shipping_methods: Array<Shipping_method> | null
+    }
+
+    type Expect<TKey extends string> = DeepValue<UserDto, TKey>
+
+    expectTypeOf<Expect<'id'>>().toEqualTypeOf<string>()
+    expectTypeOf<Expect<'first_name'>>().toEqualTypeOf<string | null>()
+    expectTypeOf<Expect<'email'>>().toEqualTypeOf<string | null>()
+    expectTypeOf<Expect<'avatar'>>().toEqualTypeOf<string | Avatar | null>()
+    expectTypeOf<Expect<'avatar.url'>>().toEqualTypeOf<string | undefined>()
+    expectTypeOf<Expect<'avatar.id'>>().toEqualTypeOf<string | undefined>()
+    expectTypeOf<Expect<'avatar.storage'>>().toEqualTypeOf<string | undefined>()
+    expectTypeOf<Expect<'avatar.filename_disk'>>().toEqualTypeOf<
+      string | null | undefined
+    >()
+    expectTypeOf<Expect<'avatar.filename_original'>>().toEqualTypeOf<
+      string | null | undefined
+    >()
+    expectTypeOf<Expect<'avatar.filename_download'>>().toEqualTypeOf<
+      string | null | undefined
+    >()
+    expectTypeOf<Expect<'avatar.filename_preview'>>().toEqualTypeOf<
+      string | null | undefined
+    >()
+    expectTypeOf<Expect<'avatar.filename_thumbnail'>>().toEqualTypeOf<
+      string | null | undefined
+    >()
+    expectTypeOf<Expect<'avatar.filename_medium'>>().toEqualTypeOf<
+      string | null | undefined
+    >()
+    expectTypeOf<Expect<'avatar.filename_large'>>().toEqualTypeOf<
+      string | null | undefined
+    >()
+    expectTypeOf<Expect<'avatar.filename_huge'>>().toEqualTypeOf<
+      string | null | undefined
+    >()
+    expectTypeOf<Expect<'avatar.filename_icon'>>().toEqualTypeOf<
+      string | null | undefined
+    >()
+    expectTypeOf<Expect<'avatar.filename_icon_large'>>().toEqualTypeOf<
+      string | null | undefined
+    >()
+    expectTypeOf<Expect<'avatar.focal_point_y'>>().toEqualTypeOf<
+      number | null | undefined
+    >()
+    expectTypeOf<Expect<'cart'>>().toEqualTypeOf<Cart | null>()
+    expectTypeOf<Expect<'cart.id'>>().toEqualTypeOf<number | undefined>()
+    expectTypeOf<Expect<'cart.product'>>().toEqualTypeOf<Product | undefined>()
+    expectTypeOf<Expect<'cart.product.id'>>().toEqualTypeOf<
+      string | undefined
+    >()
+    expectTypeOf<Expect<'cart.product.description'>>().toEqualTypeOf<
+      string | undefined
+    >()
+    expectTypeOf<Expect<'cart.product.price_internet'>>().toEqualTypeOf<
+      number | undefined
+    >()
+    expectTypeOf<Expect<'cart.product.price_dealer_region'>>().toEqualTypeOf<
+      number | undefined
+    >()
+    expectTypeOf<Expect<'cart.product.price_dealer'>>().toEqualTypeOf<
+      number | undefined
+    >()
+    expectTypeOf<Expect<'cart.product.quantity'>>().toEqualTypeOf<
+      number | undefined
+    >()
+    expectTypeOf<Expect<'cart.product.isChecked'>>().toEqualTypeOf<
+      boolean | undefined
+    >()
+    expectTypeOf<Expect<'cart.product.stock'>>().toEqualTypeOf<
+      Array<Stock> | null | undefined
+    >()
+    expectTypeOf<Expect<`cart.product.stock[${number}]`>>().toEqualTypeOf<
+      Stock | undefined
+    >()
+    expectTypeOf<Expect<`cart.product.stock[${number}].id`>>().toEqualTypeOf<
+      string | undefined
+    >()
+    expectTypeOf<
+      Expect<`cart.product.stock[${number}].quantity`>
+    >().toEqualTypeOf<number | undefined>()
+    expectTypeOf<
+      Expect<`cart.product.stock[${number}].isChecked`>
+    >().toEqualTypeOf<boolean | undefined>()
+    expectTypeOf<
+      Expect<'payment_types'>
+    >().toEqualTypeOf<Array<Payment_type> | null>()
+    expectTypeOf<Expect<`payment_types[${number}]`>>().toEqualTypeOf<
+      Payment_type | undefined
+    >()
+    expectTypeOf<Expect<`payment_types[${number}].id`>>().toEqualTypeOf<
+      string | undefined
+    >()
+    expectTypeOf<Expect<`payment_types[${number}].title`>>().toEqualTypeOf<
+      string | undefined
+    >()
+    expectTypeOf<Expect<`payment_types[${number}].name`>>().toEqualTypeOf<
+      string | undefined
+    >()
+    expectTypeOf<
+      Expect<'shipping_methods'>
+    >().toEqualTypeOf<Array<Shipping_method> | null>()
+    expectTypeOf<Expect<`shipping_methods[${number}]`>>().toEqualTypeOf<
+      Shipping_method | undefined
+    >()
+    expectTypeOf<Expect<`shipping_methods[${number}].id`>>().toEqualTypeOf<
+      string | undefined
+    >()
+    expectTypeOf<Expect<`shipping_methods[${number}].title`>>().toEqualTypeOf<
+      string | undefined
+    >()
+    expectTypeOf<Expect<`shipping_methods[${number}].name`>>().toEqualTypeOf<
+      string | undefined
+    >()
+  })
+
+  it('should handle objects with any', () => {
+    type ObjectWithAny = {
+      a: any
+      b: number
+      obj: {
+        c: any
+        d: number
+      }
+    }
+
+    type ExpectedKeys =
+      | 'a'
+      | `a.${string}`
+      | 'b'
+      | 'obj'
+      | 'obj.c'
+      | `obj.c.${string}`
+      | 'obj.d'
+
+    expectTypeOf<DeepKeys<ObjectWithAny>>().toEqualTypeOf<ExpectedKeys>()
+
+    type Expect<TKey extends string> = DeepValue<ObjectWithAny, TKey>
+
+    expectTypeOf<Expect<'a'>>().toEqualTypeOf<any>()
+    expectTypeOf<Expect<'a.anything'>>().toEqualTypeOf<unknown>()
+    expectTypeOf<Expect<`a.${string}`>>().toEqualTypeOf<unknown>()
+    expectTypeOf<Expect<'b'>>().toEqualTypeOf<number>()
+    expectTypeOf<Expect<'obj'>>().toEqualTypeOf<{ c: any; d: number }>()
+    expectTypeOf<Expect<'obj.c'>>().toEqualTypeOf<any>()
+    expectTypeOf<Expect<'obj.c.anything'>>().toEqualTypeOf<unknown>()
+    expectTypeOf<Expect<`obj.c.${string}`>>().toEqualTypeOf<unknown>()
+    expectTypeOf<Expect<'obj.d'>>().toEqualTypeOf<number>()
+  })
 })
-
-// type NestedNullableObjectCase = {
-//   null: { mainUser: 'name' } | null
-//   undefined: { mainUser: 'name' } | undefined
-//   optional?: { mainUser: 'name' }
-//   mixed: { mainUser: 'name' } | null | undefined
-// }
-
-// type NestedNullableObjectCaseNull = DeepValue<
-//   NestedNullableObjectCase,
-//   'null.mainUser'
-// >
-// expectTypeOf(0 as never as NestedNullableObjectCaseNull).toEqualTypeOf<
-//   'name' | null
-// >()
-// type NestedNullableObjectCaseUndefined = DeepValue<
-//   NestedNullableObjectCase,
-//   'undefined.mainUser'
-// >
-// expectTypeOf(0 as never as NestedNullableObjectCaseUndefined).toEqualTypeOf<
-//   'name' | undefined
-// >()
-// type NestedNullableObjectCaseOptional = DeepValue<
-//   NestedNullableObjectCase,
-//   'undefined.mainUser'
-// >
-// expectTypeOf(0 as never as NestedNullableObjectCaseOptional).toEqualTypeOf<
-//   'name' | undefined
-// >()
-// type NestedNullableObjectCaseMixed = DeepValue<
-//   NestedNullableObjectCase,
-//   'mixed.mainUser'
-// >
-// expectTypeOf(
-//   0 as never as 'name' | null | undefined,
-// ).toEqualTypeOf<NestedNullableObjectCaseMixed>()
-
-// type DoubleNestedNullableObjectCase = {
-//   mixed?: { mainUser: { name: 'name' } } | null | undefined
-// }
-// type DoubleNestedNullableObjectA = DeepValue<
-//   DoubleNestedNullableObjectCase,
-//   'mixed.mainUser'
-// >
-// expectTypeOf(
-//   0 as never as { name: 'name' } | null | undefined,
-// ).toEqualTypeOf<DoubleNestedNullableObjectA>()
-// type DoubleNestedNullableObjectB = DeepValue<
-//   DoubleNestedNullableObjectCase,
-//   'mixed.mainUser.name'
-// >
-// expectTypeOf(0 as never as DoubleNestedNullableObjectB).toEqualTypeOf<
-//   'name' | null | undefined
-// >()
-
-// type NestedObjectUnionCase = {
-//   normal:
-//     | { a: User }
-//     | { a: string }
-//     | { b: string }
-//     | { c: { user: User } | { user: number } }
-// }
-// type NestedObjectUnionA = DeepValue<NestedObjectUnionCase, 'normal.a.age'>
-// expectTypeOf(0 as never as NestedObjectUnionA).toEqualTypeOf<number>()
-// type NestedObjectUnionB = DeepValue<NestedObjectUnionCase, 'normal.b'>
-// expectTypeOf(0 as never as NestedObjectUnionB).toEqualTypeOf<string>()
-// type NestedObjectUnionC = DeepValue<NestedObjectUnionCase, 'normal.c.user.id'>
-// expectTypeOf(0 as never as NestedObjectUnionC).toEqualTypeOf<string>()
-
-// type NestedNullableObjectUnionCase = {
-//   nullable:
-//     | { a?: number; b?: { c: boolean } | null }
-//     | { b?: { c: string; e: number } }
-// }
-// type NestedNullableObjectUnionA = DeepValue<
-//   NestedNullableObjectUnionCase,
-//   'nullable.a'
-// >
-// expectTypeOf(0 as never as NestedNullableObjectUnionA).toEqualTypeOf<
-//   number | undefined
-// >()
-// type NestedNullableObjectUnionB = DeepValue<
-//   NestedNullableObjectUnionCase,
-//   'nullable.b.c'
-// >
-// expectTypeOf(
-//   0 as never as string | boolean | null | undefined,
-// ).toEqualTypeOf<NestedNullableObjectUnionB>()
-// type NestedNullableObjectUnionC = DeepValue<
-//   NestedNullableObjectUnionCase,
-//   'nullable.b.e'
-// >
-// expectTypeOf(0 as never as NestedNullableObjectUnionC).toEqualTypeOf<
-//   number | undefined
-// >()
-
-// type NestedArrayExample = DeepValue<{ users: Array<User> }, 'users[0].age'>
-// expectTypeOf(0 as never as NestedArrayExample).toEqualTypeOf<number>()
-
-// type NestedLooseArrayExample = DeepValue<
-//   { users: Array<User> },
-//   `users[${number}].age`
-// >
-// expectTypeOf(0 as never as NestedLooseArrayExample).toEqualTypeOf<number>()
-
-// type NestedArrayUnionExample = DeepValue<
-//   { users: string | Array<User> },
-//   'users[0].age'
-// >
-// expectTypeOf(0 as never as NestedArrayUnionExample).toEqualTypeOf<number>()
-
-// type NestedTupleExample = DeepValue<
-//   { topUsers: [User, 0, User] },
-//   'topUsers[0].age'
-// >
-// expectTypeOf(0 as never as NestedTupleExample).toEqualTypeOf<number>()
-
-// type NestedTupleBroadExample = DeepValue<
-//   { topUsers: Array<User> },
-//   `topUsers[${number}].age`
-// >
-// expectTypeOf(0 as never as NestedTupleBroadExample).toEqualTypeOf<number>()
-
-// type DeeplyNestedTupleBroadExample = DeepValue<
-//   { nested: { topUsers: Array<User> } },
-//   `nested.topUsers[${number}].age`
-// >
-// expectTypeOf(
-//   0 as never as DeeplyNestedTupleBroadExample,
-// ).toEqualTypeOf<number>()
-
-// type SimpleArrayExample = DeepValue<Array<User>, `[${number}]`>
-// expectTypeOf(0 as never as SimpleArrayExample).toEqualTypeOf<User>()
-
-// type SimpleNestedArrayExample = DeepValue<Array<User>, `[${number}].age`>
-// expectTypeOf(0 as never as SimpleNestedArrayExample).toEqualTypeOf<number>()
-
-// type NestedTupleItemExample = DeepValue<
-//   { topUsers: [User, 0, User] },
-//   'topUsers[1]'
-// >
-// expectTypeOf<NestedTupleItemExample>().toEqualTypeOf<0>()
-
-// type ArrayExample = DeepValue<[1, 2, 3], '[1]'>
-// expectTypeOf(0 as never as ArrayExample).toEqualTypeOf<2>()
-
-// type NonNestedObjExample = DeepValue<{ a: 1 }, 'a'>
-// expectTypeOf(0 as never as NonNestedObjExample).toEqualTypeOf<1>()
-
-// type FormDefinition = {
-//   nested: {
-//     people: Array<User>
-//   }
-// }
-
-// type FormDefinitionValue = DeepValue<
-//   FormDefinition,
-//   `nested.people[${number}].name`
-// >
-
-// expectTypeOf(0 as never as FormDefinitionValue).toEqualTypeOf<string>()
-
-// type DoubleDeepArray = DeepValue<
-//   {
-//     people: Array<{
-//       parents: Array<{
-//         name: string
-//         age: number
-//       }>
-//     }>
-//   },
-//   `people[${0}].parents[${0}].name`
-// >
-
-// expectTypeOf(0 as never as DoubleDeepArray).toEqualTypeOf<string>()
-
-// // Deepness is infinite error check
-// type Cart = Array<{
-//   id: number
-//   product: {
-//     id: string
-//     description?: string
-//     price_internet?: number
-//     price_dealer_region?: number
-//     price_dealer?: number
-//     stock: Array<{
-//       id: string
-//       quantity: number
-//       isChecked: boolean
-//     }> | null
-//   }
-//   quantity: number
-//   isChecked: boolean
-// }>
-
-// type Payment_types = Array<{
-//   id: string
-//   title: string
-//   name: string
-// }>
-
-// type Shipping_methods = Array<{
-//   id: string
-//   title: string
-//   name: string
-// }>
-
-// type Userr = {
-//   id: string
-//   first_name: string | null
-//   email: string | null
-//   avatar:
-//     | string
-//     | ({
-//         url?: string
-//       } & {
-//         id: string
-//         storage: string
-//         filename_disk: string | null
-//         filename_original: string | null
-//         filename_download: string | null
-//         filename_preview: string | null
-//         filename_thumbnail: string | null
-//         filename_medium: string | null
-//         filename_large: string | null
-//         filename_huge: string | null
-//         filename_icon: string | null
-//         filename_icon_large: string | null
-//         focal_point_y: number | null
-//       })
-//     | null
-//   // Reference Cart, Payment_types, Shipping_methods
-//   cart: Cart | null
-//   payment_types: Payment_types | null
-//   shipping_methods: Shipping_methods | null
-// }
-
-// type UserKeys = DeepValue<Userr, DeepKeys<Userr>>
-
-// type ObjectWithAny = {
-//   a: any
-//   b: number
-//   obj: {
-//     c: any
-//     d: number
-//   }
-// }
-
-// expectTypeOf(0 as never as DeepKeys<ObjectWithAny>).toEqualTypeOf<
-//   'a' | 'b' | 'obj' | `a.${string}` | 'obj.c' | `obj.c.${string}` | 'obj.d'
-// >()
-
-// type AnyObjectExample = DeepValue<ObjectWithAny, 'a'>
-// expectTypeOf(0 as never as AnyObjectExample).toEqualTypeOf<any>()
-// type AnyObjectExample2 = DeepValue<ObjectWithAny, 'b'>
-// expectTypeOf(0 as never as AnyObjectExample2).toEqualTypeOf<number>()
-// type AnyObjectExample3 = DeepValue<ObjectWithAny, 'obj'>
-// expectTypeOf(0 as never as AnyObjectExample3).toEqualTypeOf<{
-//   c: any
-//   d: number
-// }>
-// type AnyObjectExample4 = DeepValue<ObjectWithAny, 'obj.c'>
-// expectTypeOf(0 as never as AnyObjectExample4).toEqualTypeOf<any>()
-// type AnyObjectExample5 = DeepValue<ObjectWithAny, 'obj.d'>
-// expectTypeOf(0 as never as AnyObjectExample5).toEqualTypeOf<number>()

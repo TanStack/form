@@ -1,4 +1,4 @@
-export interface AnyDeepKeyAndValue<
+interface AnyDeepKeyAndValue<
   TKey extends string = string,
   TValue extends any = any,
 > {
@@ -149,7 +149,7 @@ type DeepKeysAndValues<T> =
     ? DeepKeysAndValuesImpl<T>
     : never
 
-export type DeepKeysAndValuesImpl<
+type DeepKeysAndValuesImpl<
   T,
   TParent extends AnyDeepKeyAndValue = never,
   TAcc = never,
