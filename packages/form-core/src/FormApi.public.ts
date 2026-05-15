@@ -23,6 +23,8 @@ export interface FormSubmitContext<
   createValidationError: CreateValidationErrorFn
 }
 
+export type AnyFormOptions = FormOptions<any, any>
+
 export interface FormOptions<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
