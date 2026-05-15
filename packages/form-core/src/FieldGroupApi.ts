@@ -350,10 +350,7 @@ export class FieldGroupApi<
   getFieldValue = <TField extends DeepKeys<TFieldGroupData>>(
     field: TField,
   ): DeepValue<TFieldGroupData, TField> => {
-    return this.form.getFieldValue(this.getFormFieldName(field)) as DeepValue<
-      TFieldGroupData,
-      TField
-    >
+    return this.form.getFieldValue(this.getFormFieldName(field)) as never
   }
 
   /**
