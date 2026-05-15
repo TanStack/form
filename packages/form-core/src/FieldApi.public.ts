@@ -1,3 +1,8 @@
+import type {
+  DeepKeys,
+  DeepValue,
+  TryGetArrayElementType,
+} from './deep-keys.public'
 import type { FieldUpdateOptions, Updater } from './types.public'
 import type { FormApi } from './FormApi.public'
 import type {
@@ -48,11 +53,13 @@ export interface FieldState {
 // TODO this should be inferred
 export type FieldErrors = Array<ErrorWithMessage>
 
-export type AnyFieldApi = FieldApi<any, any>
+export type AnyFieldApi = FieldApi<any, any, any, any>
 
 export interface FieldApi<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  TFieldName extends DeepKeys<TFormData>,
+  TFieldValue extends DeepValue<TFormData, TFieldName>,
 > {
   /**
    * The form that owns this field.
@@ -62,7 +69,7 @@ export interface FieldApi<
   /**
    * The name of the field.
    */
-  get name(): string
+  get name(): TFieldName
 
   /**
    * Swap two elements in this field's array.
@@ -78,7 +85,10 @@ export interface FieldApi<
    * @param value - The value to push into the array
    * @param options - Optional update options
    */
-  pushValue: (value: any, options?: FieldUpdateOptions) => void
+  pushValue: (
+    value: TryGetArrayElementType<TFieldValue>,
+    options?: FieldUpdateOptions,
+  ) => void
 
   /**
    * Insert a new value into this field's array at the specified index.
@@ -87,7 +97,11 @@ export interface FieldApi<
    * @param value - The value to insert
    * @param options - Optional update options
    */
-  insertValue: (index: number, value: any, options?: FieldUpdateOptions) => void
+  insertValue: (
+    index: number,
+    value: TryGetArrayElementType<TFieldValue>,
+    options?: FieldUpdateOptions,
+  ) => void
 
   /**
    * Clear all values from this field's array.
@@ -111,7 +125,11 @@ export interface FieldApi<
    * @param options - Optional update options including a custom `thisArg` for the predicate
    */
   filterValues: (
-    predicate: (value: any, index: number, array: Array<any>) => boolean,
+    predicate: (
+      value: TryGetArrayElementType<TFieldValue>,
+      index: number,
+      array: TFieldValue,
+    ) => boolean,
     options?: FieldUpdateOptions & { thisArg?: any },
   ) => void
 
@@ -124,13 +142,16 @@ export interface FieldApi<
    */
   state: FieldState
 
-  value: any
+  value: TFieldValue
 
   meta: FieldMeta
 
   errors: FieldErrors
 
-  handleChange: (value: Updater<any>, options?: FieldUpdateOptions) => void
+  handleChange: (
+    value: Updater<TFieldValue>,
+    options?: FieldUpdateOptions,
+  ) => void
 
   handleBlur: () => void
 
@@ -140,10 +161,16 @@ export interface FieldApi<
 export interface FieldApiOptions<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
-  TFieldValue,
+  TFieldName extends DeepKeys<TFormData>,
+  TFieldValue extends DeepValue<TFormData, TFieldName>,
 > {
-  name: string
+  name: TFieldName
   errorVisibility?: ErrorVisibility
-  validators?: Array<FieldValidator<TFormData, TFieldValue>>
-  listeners?: FieldListeners<TFormData, TFormValidators>
+  validators?: Array<FieldValidator<TFormData, TFieldName, TFieldValue>>
+  listeners?: FieldListeners<
+    TFormData,
+    TFormValidators,
+    TFieldName,
+    TFieldValue
+  >
 }

@@ -1,5 +1,6 @@
+import type { DeepKeys, DeepValue } from './deep-keys.public'
 import type { FormApi } from './FormApi.public'
-import type { FieldApi } from './FieldApi.public'
+import type { AnyFieldApi, FieldApi } from './FieldApi.public'
 import type { FormValidator, ValidationTrigger } from './validation.public'
 
 // triggers
@@ -11,7 +12,7 @@ export type FieldListenerTriggers = FormListenerTriggers | 'unmount'
 
 export interface ListenerPredicateContext<TFormData, TValue> {
   formApi: FormApi<TFormData, ReadonlyArray<any>>
-  triggerFieldApi?: FieldApi<any, any>
+  triggerFieldApi?: AnyFieldApi
   value: TValue
 }
 
@@ -59,7 +60,7 @@ export interface FormListenerContext<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 > {
-  triggerFieldApi?: FieldApi<TFormData, TFormValidators>
+  triggerFieldApi?: FieldApi<TFormData, TFormValidators, any, any>
   formApi: FormApi<TFormData, TFormValidators>
   value: TFormData
 }
@@ -86,10 +87,11 @@ export type FormListeners<
 export interface FieldListenerContext<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
-  TFieldValue,
+  TFieldName extends DeepKeys<TFormData>,
+  TFieldValue extends DeepValue<TFormData, TFieldName>,
 > {
   value: TFieldValue
-  fieldApi: FieldApi<TFormData, TFormValidators>
+  fieldApi: FieldApi<TFormData, TFormValidators, TFieldName, TFieldValue>
   formApi: FormApi<TFormData, TFormValidators>
 }
 
@@ -101,26 +103,34 @@ export interface FieldListenerContext<
 export type FieldListenerFn<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
-  TFieldValue,
+  TFieldName extends DeepKeys<TFormData>,
+  TFieldValue extends DeepValue<TFormData, TFieldName>,
 > = (
-  context: FieldListenerContext<TFormData, TFormValidators, TFieldValue>,
+  context: FieldListenerContext<
+    TFormData,
+    TFormValidators,
+    TFieldName,
+    TFieldValue
+  >,
 ) => void
 
 export interface FieldListenerConfig<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
-  TFieldValue,
+  TFieldName extends DeepKeys<TFormData>,
+  TFieldValue extends DeepValue<TFormData, TFieldName>,
 > {
-  listener: FieldListenerFn<TFormData, TFormValidators, TFieldValue>
+  listener: FieldListenerFn<TFormData, TFormValidators, TFieldName, TFieldValue>
   debounceMs?: number
 }
 
 export interface FieldListener<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
-  TFieldValue,
+  TFieldName extends DeepKeys<TFormData>,
+  TFieldValue extends DeepValue<TFormData, TFieldName>,
 > extends Listener<FieldListenerTriggers, TFormData, TFieldValue> {
-  run: FieldListenerFn<TFormData, TFormValidators, TFieldValue>
+  run: FieldListenerFn<TFormData, TFormValidators, TFieldName, TFieldValue>
   // TODO what to name it
   // - listenTo
   // - listenToFields
@@ -131,7 +141,9 @@ export interface FieldListener<
 export type FieldListeners<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
-> = Array<FieldListener<TFormData, TFormValidators, any>>
+  TFieldName extends DeepKeys<TFormData>,
+  TFieldValue extends DeepValue<TFormData, TFieldName>,
+> = Array<FieldListener<TFormData, TFormValidators, TFieldName, TFieldValue>>
 
 /**
  * {

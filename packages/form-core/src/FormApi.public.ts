@@ -1,3 +1,9 @@
+import type {
+  DeepKeys,
+  DeepKeysWhereValueIncludes,
+  DeepValue,
+  TryGetArrayElementType,
+} from './deep-keys.public'
 import type { FieldUpdateOptions } from './types.public'
 import type { ReadonlyAtom } from '@tanstack/store'
 import type {
@@ -116,9 +122,9 @@ export interface FormApi<
    * @param fieldName
    * @param updater
    */
-  setFieldValue: (
-    fieldName: string,
-    value: any,
+  setFieldValue: <TFieldName extends DeepKeys<TFormData>>(
+    fieldName: TFieldName,
+    value: DeepValue<TFormData, TFieldName>,
     options?: FieldUpdateOptions,
   ) => void
 
@@ -127,7 +133,9 @@ export interface FormApi<
    * @param fieldName
    * @returns
    */
-  getFieldValue: (fieldName: string) => any
+  getFieldValue: <TFieldName extends DeepKeys<TFormData>>(
+    fieldName: TFieldName,
+  ) => DeepValue<TFormData, TFieldName>
 
   /**
    * Swap two values in an array field.
@@ -136,8 +144,10 @@ export interface FormApi<
    * @param indexA - The index of the first value to swap
    * @param indexB - The index of the second value to swap
    */
-  swapFieldValues: (
-    arrayFieldName: string,
+  swapFieldValues: <
+    TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
+  >(
+    arrayFieldName: TFieldName,
     indexA: number,
     indexB: number,
   ) => void
@@ -149,9 +159,11 @@ export interface FormApi<
    * @param value - The value to push
    * @param options - Optional update options
    */
-  pushFieldValue: (
-    arrayFieldName: string,
-    value: any,
+  pushFieldValue: <
+    TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
+  >(
+    arrayFieldName: TFieldName,
+    value: TryGetArrayElementType<DeepValue<TFormData, TFieldName>>,
     options?: FieldUpdateOptions,
   ) => void
 
@@ -163,10 +175,12 @@ export interface FormApi<
    * @param value - The value to insert
    * @param options - Optional update options
    */
-  insertFieldValue: (
-    arrayFieldName: string,
+  insertFieldValue: <
+    TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
+  >(
+    arrayFieldName: TFieldName,
     index: number,
-    value: any,
+    value: TryGetArrayElementType<DeepValue<TFormData, TFieldName>>,
     options?: FieldUpdateOptions,
   ) => void
 
@@ -175,7 +189,11 @@ export interface FormApi<
    * If the field is not an array, this method will be ignored.
    * @param arrayFieldName - The name of the array field
    */
-  clearFieldValues: (arrayFieldName: string) => void
+  clearFieldValues: <
+    TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
+  >(
+    arrayFieldName: TFieldName,
+  ) => void
 
   /**
    * Remove a value from an array field at the specified index.
@@ -184,8 +202,10 @@ export interface FormApi<
    * @param index - The index of the value to remove
    * @param options - Optional update options
    */
-  removeFieldValue: (
-    arrayFieldName: string,
+  removeFieldValue: <
+    TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
+  >(
+    arrayFieldName: TFieldName,
     index: number,
     options?: FieldUpdateOptions,
   ) => void
@@ -197,11 +217,19 @@ export interface FormApi<
    * @param predicate - The predicate function to filter values. Returns true to keep the value, false to remove it.
    * @param options - Optional update options including a custom `thisArg` for the predicate
    */
-  filterFieldValues: (
-    arrayFieldName: string,
-    predicate: (value: any, index: number, array: Array<any>) => boolean,
+  filterFieldValues: <
+    TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
+  >(
+    arrayFieldName: TFieldName,
+    predicate: (
+      value: TryGetArrayElementType<DeepValue<TFormData, TFieldName>>,
+      index: number,
+      array: DeepValue<TFormData, TFieldName>,
+    ) => boolean,
     options?: FieldUpdateOptions & { thisArg?: any },
   ) => void
 
-  resetField: (fieldName: string) => void
+  resetField: <TFieldName extends DeepKeys<TFormData>>(
+    fieldName: TFieldName,
+  ) => void
 }

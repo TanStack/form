@@ -62,7 +62,10 @@ function getPathFromIssue(
 }
 
 export function isStandardSchema(
-  object: FormValidatorFn<any> | FieldValidatorFn<any, any> | StandardSchemaV1,
+  object:
+    | FormValidatorFn<any>
+    | FieldValidatorFn<any, any, any>
+    | StandardSchemaV1,
 ): object is StandardSchemaV1<any, any> {
   return typeof object === 'object' && '~standard' in object
 }

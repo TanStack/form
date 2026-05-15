@@ -1,5 +1,9 @@
 import { describe, expectTypeOf, it } from 'vitest'
-import type { DeepKeys, DeepValue } from '../src/index'
+import type {
+  DeepKeys,
+  DeepKeysWhereValueIncludes,
+  DeepValue,
+} from '../src/index'
 
 interface User {
   name: string
@@ -1068,5 +1072,33 @@ describe('DeepValue', () => {
     expectTypeOf<Expect<`records.${string}.b`>>().toEqualTypeOf<number>()
     expectTypeOf<Expect<`records.${string}.c`>>().toEqualTypeOf<{ d: string }>()
     expectTypeOf<Expect<`records.${string}.c.d`>>().toEqualTypeOf<string>()
+  })
+})
+
+describe('DeepKeysWhereValueIncludes', () => {
+  it('should allow unions to pass', () => {
+    type Example = {
+      foo: Array<{ bar: string }> | null | undefined
+      bar: Array<{ bar: string }> | string | number
+      foobar: Array<{ bar: string } | { different: string }>
+    }
+
+    type ExpectedKeys =
+      | 'foo'
+      | `foo[${number}]`
+      | `foo[${number}].bar`
+      | 'bar'
+      | `bar[${number}]`
+      | `bar[${number}].bar`
+      | 'foobar'
+      | `foobar[${number}]`
+      | `foobar[${number}].bar`
+      | `foobar[${number}].different`
+
+    expectTypeOf<DeepKeys<Example>>().toEqualTypeOf<ExpectedKeys>()
+
+    expectTypeOf<
+      DeepKeysWhereValueIncludes<Example, Array<any>>
+    >().toEqualTypeOf<'foo' | 'bar' | 'foobar'>()
   })
 })

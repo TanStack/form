@@ -22,6 +22,11 @@ import {
   reconcileWatchedListenerFields,
   reconcileWatchedValidatorFields,
 } from './linked-fields.lib'
+import type {
+  DeepKeys,
+  DeepValue,
+  TryGetArrayElementType,
+} from './deep-keys.public'
 import type { FieldListener, FieldListenerTriggers } from './listeners.public'
 import type { PipelineCache } from './utils.lib'
 import type {
@@ -50,8 +55,8 @@ import type {
   FormValidator,
 } from './validation.public'
 
-export type AnyFieldApiOptions = FieldApiOptions<any, any, any>
-export type AnyFieldValidator = FieldValidator<any, any>
+export type AnyFieldApiOptions = FieldApiOptions<any, any, any, any>
+export type AnyFieldValidator = FieldValidator<any, any, any>
 
 // TODO Should be irrelevant for SSR, but double check please
 const metaCache = new WeakMap<InternalBaseFieldMeta, InternalFieldMeta>()
@@ -237,14 +242,23 @@ export const defaultFieldMeta: InternalFieldMeta = deriveFromBaseFieldMeta(
   undefined,
 )
 
-export type AnyInternalFieldApiParams = InternalFieldApiParams<any, any>
+export type AnyInternalFieldApiParams = InternalFieldApiParams<
+  any,
+  any,
+  any,
+  any
+>
 
 export interface InternalFieldApiParams<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  TFieldName extends DeepKeys<TFormData>,
+  TFieldValue extends DeepValue<TFormData, TFieldName>,
 > extends Omit<AnyFieldApiOptions, 'name'> {
   segment: NameSegment
-  parent: InternalFieldApi<TFormData, TFormValidators> | InternalRootFieldApi
+  parent:
+    | InternalFieldApi<TFormData, TFormValidators, TFieldName, TFieldValue>
+    | InternalRootFieldApi
   form: InternalFormApi<TFormData, TFormValidators>
   validators?: Array<AnyFieldValidator>
 }
@@ -264,7 +278,7 @@ interface ListenToFieldsMeta {
 export type FieldWatchingFields = Map<AnyInternalFieldApi, Set<number>>
 export type FieldListenToFields = Array<Array<ListenToFieldsMeta>>
 
-export type AnyInternalFieldApi = InternalFieldApi<any, any>
+export type AnyInternalFieldApi = InternalFieldApi<any, any, any, any>
 
 function hasFieldValidatorErrors(
   meta: InternalBaseFieldMeta,
@@ -290,16 +304,19 @@ function hasFieldValidatorErrors(
 export class InternalFieldApi<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
-> implements FieldApi<TFormData, TFormValidators> {
+  TFieldName extends DeepKeys<TFormData>,
+  TFieldValue extends DeepValue<TFormData, TFieldName>,
+  // TODO TFieldValidators
+> implements FieldApi<TFormData, TFormValidators, TFieldName, TFieldValue> {
   readonly _isRoot = false
   _parent: AnyInternalFieldApi | InternalRootFieldApi
   #children: Map<NameSegment, AnyInternalFieldApi> = new Map()
   _pathVersion = 0
   _parentPathVersion = 0
-  _fullPathCache: string | null = null
+  _fullPathCache: TFieldName | null = null
   _atoms: FieldAtoms
   _validators: Array<AnyFieldValidator> | null
-  _listeners: Array<FieldListener<any, any, any>> | null
+  _listeners: Array<FieldListener<any, any, any, any>> | null
   _errorVisibility: ErrorVisibility | undefined
 
   // TODO implement
@@ -388,7 +405,7 @@ export class InternalFieldApi<
     return this._getOrCreateAtoms().store
   }
 
-  get name(): string {
+  get name(): TFieldName {
     if (this._parentPathVersion !== this._parent._pathVersion) {
       this._fullPathCache = null
     }
@@ -408,7 +425,7 @@ export class InternalFieldApi<
 
     this._fullPathCache = name
     this._parentPathVersion = this._parent._pathVersion
-    return this._fullPathCache
+    return this._fullPathCache!
   }
 
   _getBaseMeta(): InternalBaseFieldMeta {
@@ -1224,19 +1241,23 @@ export class InternalFieldApi<
   }
 
   filterValues = (
-    predicate: (value: any, index: number, array: Array<any>) => boolean,
+    predicate: (
+      value: TryGetArrayElementType<TFieldValue>,
+      index: number,
+      array: TFieldValue,
+    ) => boolean,
     options?: FieldUpdateOptions & { thisArg?: any },
   ) => {
     if (this._isKilled) return
 
-    return this.form.filterFieldValues(this.name, predicate, {
+    return this.form.filterFieldValues(this.name, predicate as never, {
       ...options,
       fieldApiOverride: this,
     })
   }
 
   handleChange = (
-    value: Updater<any>,
+    value: Updater<TFieldValue>,
     options: FieldUpdateOptions = {},
   ): void => {
     if (this._isKilled) return

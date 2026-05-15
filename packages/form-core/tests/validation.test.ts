@@ -7,6 +7,8 @@ import {
 import { InternalFormApi } from '../src/FormApi.lib'
 import type { PipelineResult } from '../src/validation.lib'
 import type {
+  DeepKeys,
+  DeepValue,
   FieldValidateResult,
   FieldValidator,
   FormStandardSchemaValidatorOutputs,
@@ -33,7 +35,7 @@ describe('runFormValidatorPipeline', () => {
       pipeline,
       runWithContext: (args: {
         event: Event
-        field?: InternalFieldApi<any, ReadonlyArray<any>>
+        field?: InternalFieldApi<any, ReadonlyArray<any>, any, any>
         onResult?: (result: PipelineResult<FormValidateResult>) => void
         hasFailedBefore?: boolean
       }) => {
@@ -51,10 +53,14 @@ describe('runFormValidatorPipeline', () => {
     }
   }
 
-  function getFieldPipeline<T, TValue>(
-    form: InternalFormApi<T, ReadonlyArray<any>>,
-    field: InternalFieldApi<T, ReadonlyArray<any>>,
-    pipeline: Array<FieldValidator<T, TValue>>,
+  function getFieldPipeline<
+    TFormData,
+    TFieldName extends DeepKeys<TFormData>,
+    TFieldValue extends DeepValue<TFormData, TFieldName>,
+  >(
+    form: InternalFormApi<TFormData, ReadonlyArray<any>>,
+    field: InternalFieldApi<TFormData, ReadonlyArray<any>, any, any>,
+    pipeline: Array<FieldValidator<TFormData, TFieldName, TFieldValue>>,
   ) {
     return {
       pipeline,
@@ -254,7 +260,7 @@ describe('runFormValidatorPipeline', () => {
 
         return value.length * 20
       })
-    const pipeline: Array<FieldValidator<{ name: string }, string>> = [
+    const pipeline: Array<FieldValidator<{ name: string }, 'name', string>> = [
       {
         run,
         triggers: ['change'],

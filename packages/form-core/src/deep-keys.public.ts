@@ -218,3 +218,19 @@ export type DeepValue<TValue, TAccessor extends string> = unknown extends TValue
   : TAccessor extends DeepKeys<TValue>
     ? DeepValueImpl<TValue, TAccessor>
     : never
+
+export type DeepKeysWhereValueIncludes<TData, TValue> =
+  DeepKeysAndValues<TData> extends infer TDeepKeyAndValue
+    ? TDeepKeyAndValue extends AnyDeepKeyAndValue
+      ? Extract<NonNullable<TDeepKeyAndValue['value']>, TValue> extends never
+        ? never
+        : TDeepKeyAndValue['key']
+      : never
+    : never
+
+export type TryGetArrayElementType<TValue> =
+  NonNullable<TValue> extends infer TCandidate
+    ? TCandidate extends Array<any>
+      ? TCandidate
+      : never
+    : never

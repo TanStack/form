@@ -23,6 +23,7 @@ import {
   runFormValidatorPipeline,
   setIndexedError,
 } from './validation.lib'
+import type { DeepKeys } from './deep-keys.public'
 import type { PipelineCache } from './utils.lib'
 
 import type {
@@ -33,7 +34,6 @@ import type {
   AnyFieldApiOptions,
   AnyInternalFieldApi,
   InternalBaseFieldMeta,
-  InternalFieldApi,
   InternalFieldMeta,
 } from './FieldApi.lib'
 import type {
@@ -396,7 +396,10 @@ export class InternalFormApi<
     })
   }
 
-  resetField = (fieldName: string, opts?: FieldApiOverrideOptions) => {
+  resetField = <TFieldName extends DeepKeys<TFormData>>(
+    fieldName: TFieldName,
+    opts?: FieldApiOverrideOptions,
+  ) => {
     const field = opts?.fieldApiOverride ?? this._tryGetFieldApi(fieldName)
     this.valuesAtom.set((prev) =>
       setBy(prev, fieldName, getBy(this.options.defaultValues, fieldName)),
@@ -617,7 +620,7 @@ export class InternalFormApi<
 
   filterFieldValues = (
     arrayFieldName: string,
-    predicate: (value: any, index: number, array: Array<any>) => boolean,
+    predicate: (value: any, index: number, array: any) => boolean,
     options?: InternalFieldUpdateOptions & { thisArg?: any },
   ) => {
     if (this._isInvalidArrayMethod('filterFieldValues', arrayFieldName)) {
@@ -783,7 +786,7 @@ export class InternalFormApi<
 
   _tryGetFieldApi = (
     nameOrSegments: string | Array<string>,
-  ): InternalFieldApi<TFormData, TFormValidators> | null => {
+  ): AnyInternalFieldApi | null => {
     return tryGetFieldApi(
       this._fieldRootNode,
       nameToFieldNodeSegments(nameOrSegments),
@@ -792,7 +795,7 @@ export class InternalFormApi<
 
   _getOrCreateFieldApi = (
     options: Omit<AnyFieldApiOptions, 'form'>,
-  ): InternalFieldApi<TFormData, TFormValidators> => {
+  ): AnyInternalFieldApi => {
     const { name, ...restOpts } = options
 
     const fieldOptions = Object.keys(restOpts).length > 0 ? restOpts : undefined
@@ -1161,7 +1164,7 @@ export class InternalFormApi<
 
     try {
       const maybeError = await this.options.onSubmit?.({
-        formApi: this,
+        formApi: this as never,
         schemaOutputs,
         value: this.state.values,
         createValidationError,

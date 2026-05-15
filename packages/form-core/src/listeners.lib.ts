@@ -1,4 +1,5 @@
 import { LiteDebouncer } from '@tanstack/pacer-lite'
+import type { DeepKeys, DeepValue } from './deep-keys.public'
 import type { PipelineCache } from './utils.lib'
 import type { FormValidator } from './validation.public'
 import type { AnyInternalFieldApi } from './FieldApi.lib'
@@ -32,8 +33,8 @@ type FieldInputContext = {
 type InputContext = FormInputContext | FieldInputContext
 type ListenerContext =
   | FormListenerContext<any, any>
-  | FieldListenerContext<any, any, any>
-type AnyListener = FormListener<any, any> | FieldListener<any, any, any>
+  | FieldListenerContext<any, any, any, any>
+type AnyListener = FormListener<any, any> | FieldListener<any, any, any, any>
 
 export type ListenerDebouncer = LiteDebouncer<
   (context: ListenerContext) => void
@@ -230,8 +231,12 @@ export function runFormListenerPipeline({
 interface FieldListenerPipelineArgs<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  TFieldName extends DeepKeys<TFormData>,
+  TFieldValue extends DeepValue<TFormData, TFieldName>,
 > {
-  pipeline: ReadonlyArray<FieldListener<TFormData, TFormValidators, any>>
+  pipeline: ReadonlyArray<
+    FieldListener<TFormData, TFormValidators, TFieldName, TFieldValue>
+  >
   context: FieldInputContext
   /**
    * @private
@@ -244,11 +249,18 @@ interface FieldListenerPipelineArgs<
 export function runFieldListenerPipeline<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  TFieldName extends DeepKeys<TFormData>,
+  TFieldValue extends DeepValue<TFormData, TFieldName>,
 >({
   pipeline: incomingPipeline,
   context,
   listenerIndecesToRun,
-}: FieldListenerPipelineArgs<TFormData, TFormValidators>): void {
+}: FieldListenerPipelineArgs<
+  TFormData,
+  TFormValidators,
+  TFieldName,
+  TFieldValue
+>): void {
   if (context.fieldApi._isKilled) return
 
   const cache = context.fieldApi._getOrCreatePipelineCache()

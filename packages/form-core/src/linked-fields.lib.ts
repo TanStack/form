@@ -6,7 +6,7 @@ import type {
 import type { AnyInternalFormApi } from './FormApi.lib'
 import type { FieldListener } from './listeners.public'
 
-type AnyFieldListener = FieldListener<any, any, any>
+type AnyFieldListener = FieldListener<any, any, any, any>
 
 type WatcherIndex = number
 
@@ -33,9 +33,7 @@ type WatcherKey = `${number}:${string}`
 function toWatcherKey(watcherIndex: number, name: string): WatcherKey {
   return `${watcherIndex}:${name}`
 }
-function ofWatcherKey(
-  key: WatcherKey,
-): [watcherIndex: number, name: string] {
+function ofWatcherKey(key: WatcherKey): [watcherIndex: number, name: string] {
   const [watcherIndex, name] = key.split(':') as [number, string]
   return [Number(watcherIndex), name]
 }
@@ -122,7 +120,7 @@ export function reconcileWatchedListenerFields({
   field,
   form,
 }: {
-  nextListeners: Array<FieldListener<any, any, any>> | null | undefined
+  nextListeners: Array<FieldListener<any, any, any, any>> | null | undefined
   prevListenToFields: FieldListenToFields | null
   field: AnyInternalFieldApi
   form: AnyInternalFormApi
@@ -162,11 +160,7 @@ function attachWatchingField(
     sourceField: AnyInternalFieldApi,
     watchingFields: Map<AnyInternalFieldApi, Set<number>>,
   ) => void,
-  {
-    sourceField,
-    watchingField,
-    watcherIndex,
-  }: WatchFieldOperation,
+  { sourceField, watchingField, watcherIndex }: WatchFieldOperation,
 ) {
   let watchingFields = getWatchingFields(sourceField)
   if (!watchingFields) {
@@ -189,11 +183,7 @@ function detachWatchingField(
     sourceField: AnyInternalFieldApi,
   ) => Map<AnyInternalFieldApi, Set<number>> | null,
   clearWatchingFields: (sourceField: AnyInternalFieldApi) => void,
-  {
-    sourceField,
-    watchingField,
-    watcherIndex,
-  }: WatchFieldOperation,
+  { sourceField, watchingField, watcherIndex }: WatchFieldOperation,
 ) {
   const watchingFields = getWatchingFields(sourceField)
   if (!watchingFields) return

@@ -1,5 +1,6 @@
+import type { DeepKeys, DeepValue } from './deep-keys.public'
 import type { FormApi } from './FormApi.public'
-import type { FieldApi } from './FieldApi.public'
+import type { AnyFieldApi, FieldApi } from './FieldApi.public'
 import type { StandardSchemaV1 } from './standardSchema.public'
 import type { OneOrMany } from './types.public'
 
@@ -47,7 +48,7 @@ export type ErrorVisibility =
 
 export interface ValidationPredicateContext<TFormData, TValue = TFormData> {
   formApi: FormApi<TFormData, ReadonlyArray<any>>
-  triggerFieldApi?: FieldApi<any, any>
+  triggerFieldApi?: AnyFieldApi
   value: TValue
 }
 
@@ -93,7 +94,7 @@ interface BaseValidatorContext<TFormData> {
 export interface FormValidatorContext<
   TFormData,
 > extends BaseValidatorContext<TFormData> {
-  triggerFieldApi?: FieldApi<any, any>
+  triggerFieldApi?: AnyFieldApi
   value: TFormData
 }
 
@@ -147,22 +148,32 @@ export type FormStandardSchemaValidatorOutputs<
 
 export interface FieldValidatorContext<
   TFormData,
-  TFieldValue,
+  TFieldName extends DeepKeys<TFormData>,
+  TFieldValue extends DeepValue<TFormData, TFieldName>,
 > extends BaseValidatorContext<TFormData> {
-  fieldApi: FieldApi<TFormData, any>
+  fieldApi: FieldApi<TFormData, any, TFieldName, TFieldValue>
   value: TFieldValue
 }
 
 export type FieldValidateResult = ValidationResult
 
-export type FieldValidatorFn<TFormData, TFieldValue> = ValidatorFn<
-  FieldValidatorContext<TFormData, TFieldValue>,
+export type FieldValidatorFn<
+  TFormData,
+  TFieldName extends DeepKeys<TFormData>,
+  TFieldValue extends DeepValue<TFormData, TFieldName>,
+> = ValidatorFn<
+  FieldValidatorContext<TFormData, TFieldName, TFieldValue>,
   FieldValidateResult
 >
 
-export interface FieldValidator<TFormData, TFieldValue> extends Validator<
+export interface FieldValidator<
   TFormData,
-  FieldValidatorFn<TFormData, TFieldValue> | StandardSchemaV1<TFieldValue, any>,
+  TFieldName extends DeepKeys<TFormData>,
+  TFieldValue extends DeepValue<TFormData, TFieldName>,
+> extends Validator<
+  TFormData,
+  | FieldValidatorFn<TFormData, TFieldName, TFieldValue>
+  | StandardSchemaV1<TFieldValue, any>,
   TFieldValue
 > {
   watchFields?: Array<string>

@@ -20,7 +20,7 @@ import type { InternalFormApi } from './FormApi.lib'
 import type { AnyInternalFieldApi } from './FieldApi.lib'
 
 type FormValidateContext = Omit<FormValidatorContext<any>, 'value'>
-type FieldValidateContext = Omit<FieldValidatorContext<any, any>, 'value'>
+type FieldValidateContext = Omit<FieldValidatorContext<any, any, any>, 'value'>
 type FormInputContext = Omit<FormValidateContext, 'signal'>
 type FieldInputContext = Omit<FieldValidateContext, 'signal'>
 
@@ -258,7 +258,7 @@ function shouldRunValidator(
 
 async function executeValidator<TResult extends ValidateResult>(
   validator: Validator<any, any, any>,
-  context: FormValidatorContext<any> | FieldValidatorContext<any, any>,
+  context: FormValidatorContext<any> | FieldValidatorContext<any, any, any>,
   scope: 'field' | 'form',
 ): Promise<ValidatorExecutionResult<TResult>> {
   if (isStandardSchema(validator.run)) {
@@ -275,11 +275,11 @@ async function executeValidator<TResult extends ValidateResult>(
 interface ValidatorPipelineArgs<TResult extends ValidateResult> {
   context: InputContext
   cache: PipelineCache<TResult>
-  pipeline: ReadonlyArray<FormValidator<any> | FieldValidator<any, any>>
+  pipeline: ReadonlyArray<FormValidator<any> | FieldValidator<any, any, any>>
   hasFailedBefore: boolean
   getContext: (
     inputContext: ValidateContext,
-  ) => FieldValidatorContext<any, any> | FormValidatorContext<any>
+  ) => FieldValidatorContext<any, any, any> | FormValidatorContext<any>
   scope: 'field' | 'form'
   validatorIndecesToRun?: Array<number> | null
   onResult?: (result: PipelineResult<TResult>) => void
@@ -687,7 +687,7 @@ export function runFormValidatorPipeline({
 }
 
 interface FieldValidatorPipelineArgs {
-  pipeline: Array<FieldValidator<any, any>>
+  pipeline: Array<FieldValidator<any, any, any>>
   context: FieldInputContext
   onResult?: (result: PipelineResult<FieldValidateResult>) => void
   /**
