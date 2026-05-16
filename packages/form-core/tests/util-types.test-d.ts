@@ -102,6 +102,78 @@ expectTypeOf(
 ).toEqualTypeOf<'meta.mainUser.age'>()
 
 /**
+ * Properly handles properties whose values are purely nullish like so:
+ */
+type NullishValueSupport = {
+  nullValue: null
+  undefinedValue: undefined
+  nullishValue: null | undefined
+}
+expectTypeOf(0 as never as DeepKeys<NullishValueSupport>).toEqualTypeOf<
+  'nullValue' | 'undefinedValue' | 'nullishValue'
+>()
+expectTypeOf(
+  0 as never as DeepValue<NullishValueSupport, 'nullValue'>,
+).toEqualTypeOf<null>()
+expectTypeOf(
+  0 as never as DeepValue<NullishValueSupport, 'undefinedValue'>,
+).toEqualTypeOf<undefined>()
+expectTypeOf(
+  0 as never as DeepValue<NullishValueSupport, 'nullishValue'>,
+).toEqualTypeOf<null | undefined>()
+
+/**
+ * Properly handles tuple items whose values are purely nullish like so:
+ */
+type NullishTupleValueSupport = {
+  values: [null, undefined, null | undefined]
+}
+expectTypeOf(0 as never as DeepKeys<NullishTupleValueSupport>).toEqualTypeOf<
+  'values' | 'values[0]' | 'values[1]' | 'values[2]'
+>()
+expectTypeOf(
+  0 as never as DeepValue<NullishTupleValueSupport, 'values[0]'>,
+).toEqualTypeOf<null>()
+expectTypeOf(
+  0 as never as DeepValue<NullishTupleValueSupport, 'values[1]'>,
+).toEqualTypeOf<undefined>()
+expectTypeOf(
+  0 as never as DeepValue<NullishTupleValueSupport, 'values[2]'>,
+).toEqualTypeOf<null | undefined>()
+
+/**
+ * Properly handles array items whose values are purely nullish like so:
+ */
+type NullishArrayValueSupport = {
+  nullValues: null[]
+  undefinedValues: undefined[]
+  nullishValues: (null | undefined)[]
+}
+expectTypeOf(0 as never as DeepKeys<NullishArrayValueSupport>).toEqualTypeOf<
+  | 'nullValues'
+  | `nullValues[${number}]`
+  | 'undefinedValues'
+  | `undefinedValues[${number}]`
+  | 'nullishValues'
+  | `nullishValues[${number}]`
+>()
+expectTypeOf(
+  0 as never as DeepValue<NullishArrayValueSupport, `nullValues[${number}]`>,
+).toEqualTypeOf<null>()
+expectTypeOf(
+  0 as never as DeepValue<
+    NullishArrayValueSupport,
+    `undefinedValues[${number}]`
+  >,
+).toEqualTypeOf<undefined>()
+expectTypeOf(
+  0 as never as DeepValue<
+    NullishArrayValueSupport,
+    `nullishValues[${number}]`
+  >,
+).toEqualTypeOf<null | undefined>()
+
+/**
  * Properly handles `object` edgecase nesting like so:
  */
 type ObjectNestedEdgecase = { meta: { mainUser: object } }
