@@ -46,11 +46,12 @@ import type { Atom, ReadonlyAtom } from '@tanstack/store'
 import type { FormApi, FormOptions, FormState } from './FormApi.public'
 import type { FieldUpdateOptions, Updater } from './types.public'
 import type {
-  ErrorWithMessage,
+  FormErrors,
   FormValidateResult,
   FormValidationError,
   FormValidator,
   ValidationErrorInput,
+  ValidationIssue,
   ValidationTrigger,
 } from './validation.public'
 
@@ -89,7 +90,7 @@ export interface BaseFormMeta {
    * Dense 2-dimensional array of form-level errors where index corresponds to validatorIndex.
    * Each validator index contains an array of errors (normalized).
    */
-  errors: Array<Array<ErrorWithMessage>>
+  errors: Array<Array<ValidationIssue>>
   errorSourceEvents: Array<string | null>
   /**
    * @private
@@ -218,7 +219,7 @@ function hasFieldEventError(
   )
 }
 
-function hasValidatorErrors(errors: Array<Array<ErrorWithMessage>>): boolean {
+function hasValidatorErrors(errors: Array<Array<ValidationIssue>>): boolean {
   return errors.some((validatorErrors) => validatorErrors.length > 0)
 }
 
@@ -252,9 +253,10 @@ function reconcileErrorFields(
 export class InternalFormApi<
   TFormData,
   const TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  // TODO submit return (possible error)
 > implements FormApi<TFormData, TFormValidators> {
   valuesAtom: Atom<TFormData>
-  store: ReadonlyAtom<FormState<TFormData>>
+  store: ReadonlyAtom<FormState<TFormData, TFormValidators>>
   _formMetaAtom: Atom<BaseFormMeta>
   _submissionAttemptsAtom: Atom<number>
   _resetVersionAtom: Atom<number>
@@ -264,7 +266,7 @@ export class InternalFormApi<
   _pipelineCache: PipelineCache<any>
   _schemaOutputs: Array<any> = []
 
-  get state(): FormState<TFormData> {
+  get state(): FormState<TFormData, TFormValidators> {
     return this.store.get()
   }
   get options(): FormOptions<TFormData, TFormValidators> {
@@ -310,12 +312,12 @@ export class InternalFormApi<
           isTouched,
           isDirty,
           isPristine,
-          formErrors,
+          formErrors: formErrors as FormErrors<TFormValidators>,
           canSubmit,
           isSubmitting: baseFormMeta.isSubmitting,
           isValidating,
           submissionAttempts,
-        } satisfies FormState<TFormData>
+        } satisfies FormState<TFormData, TFormValidators>
       },
       { compare: shallow },
     )
@@ -711,7 +713,7 @@ export class InternalFormApi<
 
     for (let i = 0; i < validatorCount; i++) {
       const validator = this.options.validators?.[i]
-      const runsOnChange = validator?.triggers?.some((trigger) =>
+      const runsOnChange = validator?.triggers.some((trigger) =>
         isValidationTriggerEnabled(trigger, {
           event: 'change',
           formApi: this as never,

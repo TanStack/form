@@ -1,7 +1,10 @@
 import type { DeepKeys, DeepValue } from './deep-keys.public'
 import type { FormApi } from './FormApi.public'
 import type { AnyFieldApi, FieldApi } from './FieldApi.public'
-import type { StandardSchemaV1 } from './standardSchema.public'
+import type {
+  StandardSchemaV1,
+  StandardSchemaV1Issue,
+} from './standardSchema.public'
 import type { OneOrMany } from './types.public'
 
 export interface Validator<
@@ -71,11 +74,11 @@ export type ValidationTriggerOption<TFormData, TValue = TFormData> =
 /**
  * A single validation error with a unique identifier.
  */
-export interface ErrorWithMessage {
+export interface ValidationIssue {
   message: string
 }
-export type ValidationErrorValue = ErrorWithMessage | string
-export type ValidationError = OneOrMany<ErrorWithMessage>
+export type ValidationErrorValue = ValidationIssue | string
+export type ValidationError = OneOrMany<ValidationIssue>
 export type ValidationErrorInput = OneOrMany<ValidationErrorValue>
 
 export interface ValidationAggregateError {
@@ -177,3 +180,28 @@ export interface FieldValidator<
 > {
   watchFields?: Array<string>
 }
+
+type NormalizeFormError<TError> =
+  TError extends ReadonlyArray<infer TItem>
+    ? NormalizeFormError<TItem>
+    : TError extends string
+      ? ValidationIssue
+      : TError
+
+type ExtractFormError<TFormValidator> = TFormValidator extends {
+  run: StandardSchemaV1<any, any>
+}
+  ? StandardSchemaV1Issue
+  : TFormValidator extends { run: (...args: any) => infer TResult }
+    ? Awaited<TResult> extends infer TAwaitedResult
+      ? TAwaitedResult extends ValidationAggregateError
+        ? NormalizeFormError<NonNullable<TAwaitedResult['form']>>
+        : NormalizeFormError<Extract<TAwaitedResult, ValidationErrorInput>>
+      : never
+    : never
+
+export type FormErrors<
+  TFormValidators extends ReadonlyArray<FormValidator<any>>,
+> = unknown extends TFormValidators
+  ? Array<ValidationIssue>
+  : Array<ExtractFormError<TFormValidators[number]>>

@@ -9,7 +9,7 @@ import type { ReadonlyAtom } from '@tanstack/store'
 import type {
   ConfigurableValidationTrigger,
   ErrorVisibility,
-  ErrorWithMessage,
+  FormErrors,
   FormStandardSchemaValidatorOutputs,
   FormValidationError,
   FormValidator,
@@ -43,11 +43,14 @@ export interface FormOptions<
   ) => any | Promise<any>
 }
 
-export interface FormState<TData> {
+export interface FormState<
+  TFormData,
+  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+> {
   /**
    * The current values of the form.
    */
-  values: TData
+  values: TFormData
   /**
    * Whether the form has been touched.
    */
@@ -65,7 +68,7 @@ export interface FormState<TData> {
   /**
    * Array of form-level validation errors.
    */
-  formErrors: Array<ErrorWithMessage>
+  formErrors: FormErrors<TFormValidators>
   /**
    * Whether the form can currently be submitted.
    *
@@ -96,8 +99,8 @@ export interface FormApi<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
 > {
-  store: ReadonlyAtom<FormState<TFormData>>
-  readonly state: FormState<TFormData>
+  store: ReadonlyAtom<FormState<TFormData, TFormValidators>>
+  readonly state: FormState<TFormData, TFormValidators>
   readonly options: FormOptions<TFormData, TFormValidators>
 
   /**

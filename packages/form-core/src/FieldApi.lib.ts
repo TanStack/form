@@ -52,7 +52,7 @@ import type {
 } from './FieldApi.public'
 import type {
   ErrorVisibility,
-  ErrorWithMessage,
+  ValidationIssue,
   FieldValidateResult,
   FieldValidator,
   FormValidator,
@@ -82,9 +82,9 @@ const childContributionKeys: Array<ChildContributionKey> = [
 ]
 
 interface MetaExtension {
-  _formValidatorErrors: Array<Array<ErrorWithMessage>>
+  _formValidatorErrors: Array<Array<ValidationIssue>>
   _formValidatorErrorSourceEvents: Array<string | null>
-  _fieldValidatorErrors: Array<Array<ErrorWithMessage>>
+  _fieldValidatorErrors: Array<Array<ValidationIssue>>
   _fieldValidatorErrorSourceEvents: Array<string | null>
   childContributionCounts: ChildContributionCounts
   _validationCount: number
@@ -1487,7 +1487,7 @@ function getChildContributionStates(
   }
 }
 
-function hasValidatorErrors(errors: Array<Array<ErrorWithMessage>>): boolean {
+function hasValidatorErrors(errors: Array<Array<ValidationIssue>>): boolean {
   return errors.some((validatorErrors) => validatorErrors.length > 0)
 }
 
@@ -1508,8 +1508,8 @@ function isPrunableMeta(meta: InternalBaseFieldMeta): boolean {
 function getErrorsFromBaseMeta(
   baseMeta: InternalBaseFieldMeta,
   previousMeta?: InternalFieldMeta,
-): Array<ErrorWithMessage> {
-  let result: Array<ErrorWithMessage>
+): Array<ValidationIssue> {
+  let result: Array<ValidationIssue>
   if (
     previousMeta?._fieldValidatorErrors === baseMeta._fieldValidatorErrors &&
     previousMeta._formValidatorErrors === baseMeta._formValidatorErrors

@@ -7,7 +7,7 @@ import type { FieldUpdateOptions, Updater } from './types.public'
 import type { FormApi } from './FormApi.public'
 import type {
   ErrorVisibility,
-  ErrorWithMessage,
+  ValidationIssue,
   FieldValidator,
   FormValidator,
 } from './validation.public'
@@ -30,7 +30,7 @@ export interface SubfieldsMeta {
 }
 
 export interface OriginalFieldMeta {
-  errors: Array<ErrorWithMessage>
+  errors: Array<ValidationIssue>
   isValid: boolean
   isInvalid: boolean
 }
@@ -44,7 +44,7 @@ export interface FieldMeta extends BaseFieldMeta {
   isSelfValidating: boolean
   isValid: boolean
   subfields: SubfieldsMeta
-  errors: Array<ErrorWithMessage>
+  errors: Array<ValidationIssue>
   original: OriginalFieldMeta
 }
 
@@ -54,7 +54,7 @@ export interface FieldState {
 }
 
 // TODO this should be inferred
-export type FieldErrors = Array<ErrorWithMessage>
+export type FieldErrors = Array<ValidationIssue>
 
 export type AnyFieldApi = FieldApi<any, any, any, any>
 

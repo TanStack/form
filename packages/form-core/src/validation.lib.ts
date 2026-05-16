@@ -3,7 +3,7 @@ import { isStandardSchema, parseStandardSchema } from './standardSchema.lib'
 import { evaluate, isNil, isNotNil, normalizeToArray } from './utils.lib'
 import type { PipelineCache } from './utils.lib'
 import type {
-  ErrorWithMessage,
+  ValidationIssue,
   FieldValidateResult,
   FieldValidator,
   FieldValidatorContext,
@@ -57,14 +57,14 @@ export function isErrorResult<
 
 export function normalizeValidationError(
   value: ValidationErrorInput | null | undefined,
-): Array<ErrorWithMessage> {
+): Array<ValidationIssue> {
   return normalizeToArray(value).map((error) =>
     typeof error === 'string' ? { message: error } : error,
   )
 }
 
 export function hasIndexedErrorFromSource(
-  errors: Array<Array<ErrorWithMessage>>,
+  errors: Array<Array<ValidationIssue>>,
   errorSourceEvents: Array<string | null>,
   index: number,
   sourceEvent: string,
@@ -77,13 +77,13 @@ export function hasIndexedErrorFromSource(
 }
 
 export function setIndexedError(
-  errors: Array<Array<ErrorWithMessage>>,
+  errors: Array<Array<ValidationIssue>>,
   errorSourceEvents: Array<string | null>,
   index: number,
-  error: Array<ErrorWithMessage>,
+  error: Array<ValidationIssue>,
   sourceEvent: string,
 ): {
-  errors: Array<Array<ErrorWithMessage>>
+  errors: Array<Array<ValidationIssue>>
   errorSourceEvents: Array<string | null>
 } | null {
   const nextSourceEvent = error.length > 0 ? sourceEvent : null
@@ -108,15 +108,15 @@ export function setIndexedError(
 }
 
 export function clearIndexedErrorsFromSource(
-  errors: Array<Array<ErrorWithMessage>>,
+  errors: Array<Array<ValidationIssue>>,
   errorSourceEvents: Array<string | null>,
   indexes: Array<number>,
   sourceEvent: string,
 ): {
-  errors: Array<Array<ErrorWithMessage>>
+  errors: Array<Array<ValidationIssue>>
   errorSourceEvents: Array<string | null>
 } | null {
-  let nextErrors: Array<Array<ErrorWithMessage>> | null = null
+  let nextErrors: Array<Array<ValidationIssue>> | null = null
   let nextErrorSourceEvents: Array<string | null> | null = null
 
   for (const index of indexes) {

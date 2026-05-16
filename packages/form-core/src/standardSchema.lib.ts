@@ -4,7 +4,7 @@ import type {
   StandardSchemaV1Issue,
 } from './standardSchema.public'
 import type {
-  ErrorWithMessage,
+  ValidationIssue,
   FieldValidatorFn,
   FormValidateResult,
   FormValidatorFn,
@@ -90,7 +90,7 @@ export function parseStandardSchema<TOutput>(
 
     const validationResult =
       scope === 'field'
-        ? (result.issues as Array<ErrorWithMessage>)
+        ? (result.issues as Array<ValidationIssue>)
         : {
             form: result.issues.slice(),
             // TODO the form probably wants a copy?
