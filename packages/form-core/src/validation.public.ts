@@ -32,7 +32,7 @@ export interface Validator<
    * @default 0
    */
   triggerDebounceMs?: number | ValidationDebounceFn<TFormData, TContextValue>
-  triggers?: Array<ValidationTriggerOption<TFormData, TContextValue>>
+  triggers: Array<ValidationTriggerOption<TFormData, TContextValue>>
 }
 
 export type ValidationTrigger = 'change' | 'blur' | 'submit'

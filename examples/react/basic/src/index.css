@@ -1,0 +1,83 @@
+#root {
+  width: 70rem;
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  border-inline: 1px solid var(--border);
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+}
+
+h1 {
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+}
+
+button {
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: #08060d;
+  background: #f4f3ec;
+  border: 2px solid transparent;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  transition: border-color 0.3s;
+  margin-inline: 0.5rem;
+  margin-top: 0.5rem;
+  font-family: ui-monospace, Consolas, monospace;
+  display: inline-flex;
+  cursor: pointer;
+}
+
+button:hover {
+  border: 2px solid rgba(8, 6, 13, 0.5);
+}
+
+label {
+  display: grid;
+  gap: 0.35rem;
+}
+
+label > input {
+  width: 100%;
+  max-width: 16rem;
+  margin-inline: auto;
+  border: 1px solid #d4d4d8;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  outline: none;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease,
+    background-color 120ms ease;
+}
+
+label > input:focus-visible {
+  border-color: #71717a;
+  box-shadow: 0 0 0 3px rgb(113 113 122 / 0.12);
+}
+
+small {
+  min-height: 1.25rem;
+  font-size: 0.8125rem;
+  color: #dc2626;
+  white-space: pre-line;
+}
+
+label.validating > input {
+  border-color: #93c5fd;
+}
+
+label > input[aria-invalid='true'] {
+  border-color: #fca5a5;
+  background-color: #fef2f2;
+}
+
+label > input[aria-invalid='true']:focus-visible {
+  box-shadow: 0 0 0 3px rgb(248 113 113 / 0.16);
+}

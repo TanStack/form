@@ -1,20 +1,16 @@
 import { useForm } from '@tanstack/react-form'
 import ReactDOM from 'react-dom/client'
 import type { AnyFieldApi } from '@tanstack/react-form'
+import './index.css'
 
 interface FieldInfoProps {
   field: AnyFieldApi
 }
 function FieldError({ field }: FieldInfoProps) {
   return (
-    <>
-      <br />
-      {field.meta.isInvalid && (
-        <em>{field.errors.map((e) => e.message).join(',')}</em>
-      )}
-      <br />
-      {field.meta.isValidating ? 'Validating...' : null}
-    </>
+    <small role={field.meta.isInvalid ? 'alert' : undefined} aria-live="polite">
+      {field.errors.map((e) => e.message).join('\n')}
+    </small>
   )
 }
 
@@ -30,9 +26,10 @@ function App() {
 
       // If your endpoint returned validation errors, pass them on
       return createValidationError({
-        form: 'Please resolve the issues',
         fields: {
+          // Set field-specific errors from the form!
           firstName: 'Name already exists',
+          lastName: 'Name already exists',
         },
       })
     },
@@ -48,74 +45,73 @@ function App() {
           form.handleSubmit()
         }}
       >
-        <div>
-          {/* A type-safe field component*/}
-          <form.Field
-            name="firstName"
-            validators={[
-              {
-                run: ({ value }) => {
-                  if (value.length === 0) return 'A first name is required'
-                  if (value.length < 3) return 'First name is too short'
-                },
-                // Define what should trigger validation. Submissions trigger validation by default.
-                triggers: ['change', 'blur'],
-                triggerDebounceMs: 300,
+        {/* A type-safe field component*/}
+        <form.Field
+          name="firstName"
+          validators={[
+            {
+              run: ({ value }) => {
+                if (value.length === 0) return 'A first name is required'
+                if (value.length < 3) return 'First name is too short'
               },
-              {
-                // Supports async functions!
-                run: async ({ value }) => {
-                  await new Promise((resolve) => setTimeout(resolve, 1000))
-                  return (
-                    value.includes('error') &&
-                    'No "error" allowed in first name'
-                  )
-                },
-                triggers: ['change'],
-                // prevent expensive validators from running
-                bailIfInvalid: true,
+              // Define what should trigger validation. Submissions trigger validation by default.
+              triggers: ['change', 'blur'],
+              triggerDebounceMs: 300,
+            },
+            {
+              // Supports async functions!
+              run: async ({ value }) => {
+                await new Promise((resolve) => setTimeout(resolve, 1000))
+                return (
+                  value.toLowerCase().includes('error') &&
+                  'No "error" allowed in first name'
+                )
               },
-            ]}
-          >
-            {(field) => {
-              // Avoid hasty abstractions. Render props are great!
-              return (
-                <>
-                  <label htmlFor={field.name}>First Name:</label>
-                  <input
-                    id={field.name}
-                    name={field.name}
-                    value={field.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                  />
-                  <FieldError field={field} />
-                </>
-              )
-            }}
-          </form.Field>
-        </div>
-        <div>
-          <form.Field name="lastName">
-            {(field) => (
-              <>
-                <label htmlFor={field.name}>Last Name:</label>
+              triggers: ['change'],
+              // prevent expensive validators from running
+              bailIfInvalid: true,
+            },
+          ]}
+        >
+          {(field) => {
+            // Avoid hasty abstractions. Render props are great!
+            return (
+              <label className={field.meta.isValidating ? 'validating' : ''}>
+                <span>First Name</span>
+
                 <input
-                  id={field.name}
                   name={field.name}
-                  value={field.state.value}
+                  value={field.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
+                  aria-invalid={field.meta.isInvalid}
                 />
                 <FieldError field={field} />
-              </>
-            )}
-          </form.Field>
-        </div>
+              </label>
+            )
+          }}
+        </form.Field>
+        <form.Field name="lastName">
+          {(field) => (
+            <label className={field.meta.isValidating ? 'validating' : ''}>
+              <span>Last Name</span>
+              <input
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                aria-invalid={field.meta.isInvalid}
+              />
+              <FieldError field={field} />
+            </label>
+          )}
+        </form.Field>
         {/** Subscribe to form state to have reactive components */}
         <form.Subscribe selector={(state) => state.formErrors}>
           {(formErrors) => (
-            <em>{formErrors.map((v) => v.message).join(', ')}</em>
+            <small role="alert" aria-live="polite">
+              {formErrors.map((e) => e.message).join('\n')}
+            </small>
           )}
         </form.Subscribe>
         <br />
@@ -123,7 +119,7 @@ function App() {
           selector={(state) => [state.canSubmit, state.isSubmitting]}
         >
           {([canSubmit, isSubmitting]) => (
-            <button type="submit" disabled={!canSubmit}>
+            <button type="submit" disabled={!canSubmit || isSubmitting}>
               {isSubmitting ? '...' : 'Submit'}
             </button>
           )}
