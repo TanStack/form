@@ -4,10 +4,10 @@ import type {
   StandardSchemaV1Issue,
 } from './standardSchema.public'
 import type {
-  ValidationIssue,
   FieldValidatorFn,
   FormValidateResult,
   FormValidatorFn,
+  ValidationIssue,
 } from './validation.public'
 
 export function prefixSchemaToErrors(
@@ -75,7 +75,7 @@ export function parseStandardSchema<TOutput>(
   value: any,
   scope: 'form' | 'field',
 ): Promise<{
-  result: FormValidateResult
+  result: FormValidateResult<any>
   schemaResult: TOutput | null
   hasSchemaResult: boolean
 }> {

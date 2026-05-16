@@ -947,11 +947,12 @@ describe('form - validation', () => {
         defaultValues: { name: '' },
         validators: [
           {
-            run: () => ({
-              fields: {
-                nonexistent: { message: 'Error on nonexistent field' },
-              },
-            }),
+            run: () =>
+              ({
+                fields: {
+                  nonexistent: { message: 'Error on nonexistent field' },
+                },
+              }) as any,
             triggers: ['change'],
           },
         ],
@@ -981,7 +982,8 @@ describe('form - validation', () => {
                   fields: {
                     nonexistent: { message: 'Error on nonexistent field' },
                   },
-                }
+                  // This is needed because 'nonexistent' is type checked and would invalidate the function
+                } as any
               }
               return null
             },

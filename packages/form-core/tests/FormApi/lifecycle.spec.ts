@@ -457,7 +457,7 @@ describe('form - lifecycle', () => {
         name: 'name',
         validators: [
           {
-            run: ({ event }) =>
+            run: ({ event }: { event: string }) =>
               event === 'submit'
                 ? 'Submit field validator failed'
                 : 'Change field validator failed',

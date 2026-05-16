@@ -32,7 +32,10 @@ import type {
   DeepValue,
   TryGetArrayElementType,
 } from './deep-keys.public'
-import type { FieldListener, FieldListenerTriggers } from './listeners.public'
+import type {
+  AnyFieldListener,
+  FieldListenerTriggers,
+} from './listeners.public'
 import type { PipelineCache } from './utils.lib'
 import type {
   FieldValidatorPipelineResult,
@@ -40,25 +43,27 @@ import type {
 } from './validation.lib'
 import type { PropagateOptions } from './types.lib'
 import type { FieldUpdateOptions, Updater } from './types.public'
-import type { AnyInternalFormApi, InternalFormApi } from './FormApi.lib'
+import type { AnyInternalFormApi } from './FormApi.lib'
 import type { Atom, ReadonlyAtom } from '@tanstack/store'
 import type {
+  AnyFieldMeta as AnyPublicFieldMeta,
   BaseFieldMeta,
   FieldApi,
   FieldApiOptions,
-  FieldMeta as PublicFieldMeta,
   FieldState as PublicFieldState,
   SubfieldsMeta,
 } from './FieldApi.public'
 import type {
   ErrorVisibility,
-  ValidationIssue,
+  FieldErrors,
   FieldValidateResult,
   FieldValidator,
-  FormValidator,
+  FieldValidators,
+  FormValidators,
+  ValidationIssue,
 } from './validation.public'
 
-export type AnyFieldApiOptions = FieldApiOptions<any, any, any, any>
+export type AnyFieldApiOptions = FieldApiOptions<any, any, any, any, any>
 export type AnyFieldValidator = FieldValidator<any, any, any>
 
 // TODO Should be irrelevant for SSR, but double check please
@@ -96,9 +101,15 @@ interface MetaExtension {
 }
 
 export interface InternalBaseFieldMeta extends BaseFieldMeta, MetaExtension {}
-export interface InternalFieldMeta extends PublicFieldMeta, MetaExtension {}
+export interface InternalFieldMeta extends AnyPublicFieldMeta, MetaExtension {}
 
-export interface InternalFieldState extends PublicFieldState {
+export interface InternalFieldState extends PublicFieldState<
+  any,
+  any,
+  any,
+  any,
+  any
+> {
   meta: InternalFieldMeta
 }
 
@@ -253,25 +264,14 @@ export const defaultFieldMeta: InternalFieldMeta = deriveFromBaseFieldMeta(
   undefined,
 )
 
-export type AnyInternalFieldApiParams = InternalFieldApiParams<
-  any,
-  any,
-  any,
-  any
->
-
-export interface InternalFieldApiParams<
-  TFormData,
-  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
-  TFieldName extends DeepKeys<TFormData>,
-  TFieldValue extends DeepValue<TFormData, TFieldName>,
-> extends Omit<AnyFieldApiOptions, 'name'> {
+export interface InternalFieldApiParams extends Omit<
+  AnyFieldApiOptions,
+  'name'
+> {
   segment: NameSegment
-  parent:
-    | InternalFieldApi<TFormData, TFormValidators, TFieldName, TFieldValue>
-    | InternalRootFieldApi
-  form: InternalFormApi<TFormData, TFormValidators>
-  validators?: Array<AnyFieldValidator>
+  parent: AnyInternalFieldApi | InternalRootFieldApi
+  form: AnyInternalFormApi
+  validators?: FieldValidators<any, any, any>
 }
 
 // Possible plan for performance
@@ -288,8 +288,6 @@ interface ListenToFieldsMeta {
 
 export type FieldWatchingFields = Map<AnyInternalFieldApi, Set<number>>
 export type FieldListenToFields = Array<Array<ListenToFieldsMeta>>
-
-export type AnyInternalFieldApi = InternalFieldApi<any, any, any, any>
 
 function hasFieldValidatorErrors(
   meta: InternalBaseFieldMeta,
@@ -312,13 +310,21 @@ function hasFieldValidatorErrors(
   return false
 }
 
+export type AnyInternalFieldApi = InternalFieldApi<any, any, any, any, any>
+
 export class InternalFieldApi<
   TFormData,
-  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  TFormValidators extends FormValidators<TFormData>,
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
-  // TODO TFieldValidators
-> implements FieldApi<TFormData, TFormValidators, TFieldName, TFieldValue> {
+  TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
+> implements FieldApi<
+  TFormData,
+  TFormValidators,
+  TFieldName,
+  TFieldValue,
+  TFieldValidators
+> {
   readonly _isRoot = false
   _parent: AnyInternalFieldApi | InternalRootFieldApi
   #children: Map<NameSegment, AnyInternalFieldApi> = new Map()
@@ -327,7 +333,7 @@ export class InternalFieldApi<
   _fullPathCache: TFieldName | null = null
   _atoms: FieldAtoms
   _validators: Array<AnyFieldValidator> | null
-  _listeners: Array<FieldListener<any, any, any, any>> | null
+  _listeners: Array<AnyFieldListener> | null
   _errorVisibility: ErrorVisibility | undefined
 
   // TODO implement
@@ -450,11 +456,14 @@ export class InternalFieldApi<
     form,
     listeners,
     errorVisibility,
-  }: AnyInternalFieldApiParams) {
+  }: InternalFieldApiParams) {
     this.#segment = segment
     this._parent = parent
     this.form = form
-    this._validators = validators && validators.length > 0 ? validators : null
+    this._validators =
+      validators && validators.length > 0
+        ? (validators as Array<AnyFieldValidator>)
+        : null
     this._errorVisibility = errorVisibility
     this._atoms = {}
     this._listeners = null
@@ -477,7 +486,7 @@ export class InternalFieldApi<
     const reconciledValidators = reconcileWatchedValidatorFields({
       field: this,
       prevListenToFields: this._validateOnFields,
-      nextValidators: validators,
+      nextValidators: validators as Array<AnyFieldValidator> | undefined,
       form,
     })
 
@@ -508,7 +517,7 @@ export class InternalFieldApi<
       const reconciledValidators = reconcileWatchedValidatorFields({
         field: this,
         prevListenToFields: this._validateOnFields,
-        nextValidators: options.validators,
+        nextValidators: options.validators as Array<AnyFieldValidator>,
         form: this.form,
       })
 
@@ -1220,7 +1229,7 @@ export class InternalFieldApi<
     return this.form.getFieldValue(this.name)
   }
 
-  get state() {
+  get state(): InternalFieldState {
     // Accessing `store` mounts the field, which we don't necessarily want.
     // Parent or child nodes may simply want some info about a field's state.
     if (this._isMounted) {
@@ -1234,11 +1243,11 @@ export class InternalFieldApi<
     return this.state.value
   }
 
-  get meta() {
+  get meta(): InternalFieldMeta {
     return this.state.meta
   }
 
-  get errors() {
+  get errors(): FieldErrors<TFormValidators, TFieldValidators> {
     return this.state.meta.errors
   }
 

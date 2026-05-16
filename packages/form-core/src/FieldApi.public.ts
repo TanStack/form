@@ -7,9 +7,9 @@ import type { FieldUpdateOptions, Updater } from './types.public'
 import type { FormApi } from './FormApi.public'
 import type {
   ErrorVisibility,
-  ValidationIssue,
-  FieldValidator,
-  FormValidator,
+  FieldValidators,
+  FormValidators,
+  FieldErrors as ValidationFieldErrors,
 } from './validation.public'
 import type { FieldListeners } from './listeners.public'
 
@@ -29,13 +29,21 @@ export interface SubfieldsMeta {
   isSomeValidating: boolean
 }
 
-export interface OriginalFieldMeta {
-  errors: Array<ValidationIssue>
+export interface OriginalFieldMeta<
+  TFormValidators extends FormValidators<any>,
+  TFieldValidators extends FieldValidators<any, any, any>,
+> {
+  errors: ValidationFieldErrors<TFormValidators, TFieldValidators>
   isValid: boolean
   isInvalid: boolean
 }
 
-export interface FieldMeta extends BaseFieldMeta {
+export type AnyFieldMeta = FieldMeta<any, any>
+
+export interface FieldMeta<
+  TFormValidators extends FormValidators<any>,
+  TFieldValidators extends FieldValidators<any, any, any>,
+> extends BaseFieldMeta {
   isPristine: boolean
   isSelfTouched: boolean
   isSelfDirty: boolean
@@ -44,25 +52,29 @@ export interface FieldMeta extends BaseFieldMeta {
   isSelfValidating: boolean
   isValid: boolean
   subfields: SubfieldsMeta
-  errors: Array<ValidationIssue>
-  original: OriginalFieldMeta
+  errors: ValidationFieldErrors<TFormValidators, TFieldValidators>
+  original: OriginalFieldMeta<TFormValidators, TFieldValidators>
 }
 
-export interface FieldState {
-  value: any
-  meta: FieldMeta
+export interface FieldState<
+  TFormData,
+  TFormValidators extends FormValidators<TFormData>,
+  TFieldName extends DeepKeys<TFormData>,
+  TFieldValue extends DeepValue<TFormData, TFieldName>,
+  TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
+> {
+  value: TFieldValue
+  meta: FieldMeta<TFormValidators, TFieldValidators>
 }
 
-// TODO this should be inferred
-export type FieldErrors = Array<ValidationIssue>
-
-export type AnyFieldApi = FieldApi<any, any, any, any>
+export type AnyFieldApi = FieldApi<any, any, any, any, any>
 
 export interface FieldApi<
   TFormData,
-  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  TFormValidators extends FormValidators<TFormData>,
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
+  TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
 > {
   /**
    * The form that owns this field.
@@ -143,13 +155,19 @@ export interface FieldApi<
    * - `field.errors`
    * - `field.meta`
    */
-  state: FieldState
+  state: FieldState<
+    TFormData,
+    TFormValidators,
+    TFieldName,
+    TFieldValue,
+    TFieldValidators
+  >
 
   value: TFieldValue
 
-  meta: FieldMeta
+  meta: FieldMeta<TFormValidators, TFieldValidators>
 
-  errors: FieldErrors
+  errors: ValidationFieldErrors<TFormValidators, TFieldValidators>
 
   handleChange: (
     value: Updater<TFieldValue>,
@@ -163,17 +181,19 @@ export interface FieldApi<
 
 export interface FieldApiOptions<
   TFormData,
-  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  TFormValidators extends FormValidators<TFormData>,
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
+  TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
 > {
   name: TFieldName
   errorVisibility?: ErrorVisibility
-  validators?: Array<FieldValidator<TFormData, TFieldName, TFieldValue>>
+  validators?: TFieldValidators
   listeners?: FieldListeners<
     TFormData,
     TFormValidators,
     TFieldName,
-    TFieldValue
+    TFieldValue,
+    TFieldValidators
   >
 }

@@ -2,35 +2,18 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useSelector } from '@tanstack/react-store'
 import type { InternalFormApi } from '@tanstack/form-core-v2/internals'
 import type { ReactFormFieldProps } from './useForm.public'
-import type { DeepKeys, DeepValue, FormValidator } from '@tanstack/form-core-v2'
 
-export interface InternalFieldProps<
-  TFormData,
-  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
-  TFieldName extends DeepKeys<TFormData>,
-  TFieldValue extends DeepValue<TFormData, TFieldName>,
-> extends ReactFormFieldProps<
-  TFormData,
-  TFormValidators,
-  TFieldName,
-  TFieldValue
+export interface InternalFieldProps extends ReactFormFieldProps<
+  any,
+  any,
+  any,
+  any,
+  any
 > {
-  form: InternalFormApi<TFormData, TFormValidators>
+  form: InternalFormApi<any, any>
 }
 
-export function useField<
-  TFormData,
-  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
-  TFieldName extends DeepKeys<TFormData>,
-  TFieldValue extends DeepValue<TFormData, TFieldName>,
->(
-  options: InternalFieldProps<
-    TFormData,
-    TFormValidators,
-    TFieldName,
-    TFieldValue
-  >,
-) {
+export function useField(options: InternalFieldProps) {
   const optionsRef = useRef(options)
   optionsRef.current = options
 

@@ -49,7 +49,8 @@ import type {
   FormErrors,
   FormValidateResult,
   FormValidationError,
-  FormValidator,
+  FormValidators,
+  ValidationAggregateError,
   ValidationErrorInput,
   ValidationIssue,
   ValidationTrigger,
@@ -57,9 +58,14 @@ import type {
 
 const SUBMIT_ERROR = Symbol('SUBMIT_ERROR')
 
-type OnSubmitError<T extends FormValidationError> = T & { [SUBMIT_ERROR]: true }
+type OnSubmitError<T extends FormValidationError<any>> = T & {
+  [SUBMIT_ERROR]: true
+}
 
-const createValidationError = <TError extends FormValidationError>(
+const createValidationError = <
+  TFormData,
+  TError extends FormValidationError<TFormData>,
+>(
   error: TError,
 ): OnSubmitError<TError> => {
   let output: OnSubmitError<TError>
@@ -252,7 +258,7 @@ function reconcileErrorFields(
 
 export class InternalFormApi<
   TFormData,
-  const TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  const TFormValidators extends FormValidators<TFormData>,
   // TODO submit return (possible error)
 > implements FormApi<TFormData, TFormValidators> {
   valuesAtom: Atom<TFormData>
@@ -876,7 +882,7 @@ export class InternalFormApi<
   }
 
   _processValidationResult = (
-    result: PipelineResult<FormValidateResult>,
+    result: PipelineResult<FormValidateResult<TFormData>>,
     sourceEvent: string,
   ) => {
     if (result.hasSchemaResult) {
@@ -941,7 +947,7 @@ export class InternalFormApi<
   _processAggregateError = (
     aggregateError: {
       formError: ValidationErrorInput | null
-      fieldErrors: Record<string, ValidationErrorInput>
+      fieldErrors: ValidationAggregateError<any>['fields']
     },
     validatorIndex: number,
     sourceEvent: string,
@@ -1093,7 +1099,7 @@ export class InternalFormApi<
       .filter(isErrorResult)
   }
 
-  handleSubmit = async (): Promise<Array<FormValidationError>> => {
+  handleSubmit = async (): Promise<Array<FormValidationError<TFormData>>> => {
     const submitResetVersion = this._resetVersionAtom.get()
     const hasResettedFormDuringSubmit = () =>
       this._resetVersionAtom.get() !== submitResetVersion
@@ -1108,7 +1114,8 @@ export class InternalFormApi<
 
     const submissionData = {
       hasFailed: false,
-      submitError: null satisfies FormValidateResult as FormValidateResult,
+      submitError:
+        null satisfies FormValidateResult<TFormData> as FormValidateResult<TFormData>,
     }
 
     const fields =

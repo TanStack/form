@@ -3,15 +3,16 @@ import { isStandardSchema, parseStandardSchema } from './standardSchema.lib'
 import { evaluate, isNil, isNotNil, normalizeToArray } from './utils.lib'
 import type { PipelineCache } from './utils.lib'
 import type {
-  ValidationIssue,
   FieldValidateResult,
   FieldValidator,
   FieldValidatorContext,
   FormValidateResult,
   FormValidator,
   FormValidatorContext,
+  ValidationAggregateError,
   ValidationDebounceFn,
   ValidationErrorInput,
+  ValidationIssue,
   ValidationPredicateFn,
   ValidationTriggerOption,
   Validator,
@@ -26,7 +27,7 @@ type FieldInputContext = Omit<FieldValidateContext, 'signal'>
 
 export type InputContext = FormInputContext | FieldInputContext
 export type ValidateContext = FormValidateContext | FieldValidateContext
-type ValidateResult = FormValidateResult | FieldValidateResult
+type ValidateResult = FormValidateResult<any> | FieldValidateResult
 
 function isFormContext(ctx: InputContext): ctx is FormInputContext {
   return 'triggerFieldApi' in ctx
@@ -48,9 +49,9 @@ type ThrownError = { [THROWN_ERROR]: true; error: unknown }
  * @private
  * Check if a validation result is considered an error.
  */
-export function isErrorResult<
-  T extends FormValidateResult | FieldValidateResult,
->(value: T): value is Exclude<T, null | undefined | false> {
+export function isErrorResult<T extends ValidateResult>(
+  value: T,
+): value is Exclude<T, null | undefined | false> {
   if (isNil(value) || value === false) return false
   return true
 }
@@ -143,9 +144,9 @@ export function clearIndexedErrorsFromSource(
  * If it is, return an object with formError and fieldErrors.
  * Otherwise, return null.
  */
-export function isAggregateError(value: FormValidateResult): {
+export function isAggregateError(value: FormValidateResult<any>): {
   formError: ValidationErrorInput | null
-  fieldErrors: Record<string, ValidationErrorInput>
+  fieldErrors: ValidationAggregateError<any>['fields']
 } | null {
   if (!isErrorResult(value)) return null
 
@@ -195,7 +196,7 @@ interface PendingPipelineResult<T> {
 }
 
 function getEnabledState(
-  booleanOrFn: boolean | ValidationPredicateFn<any>,
+  booleanOrFn: boolean | ValidationPredicateFn<any, any>,
   context: InputContext,
 ): boolean {
   if (typeof booleanOrFn === 'boolean') return booleanOrFn
@@ -210,7 +211,7 @@ function getEnabledState(
 }
 
 function getDebounceMs(
-  numberOrFn: number | ValidationDebounceFn<any>,
+  numberOrFn: number | ValidationDebounceFn<any, any>,
   context: InputContext,
 ): number {
   if (typeof numberOrFn === 'number') return numberOrFn
@@ -225,7 +226,7 @@ function getDebounceMs(
 }
 
 export function isValidationTriggerEnabled(
-  trigger: ValidationTriggerOption<any>,
+  trigger: ValidationTriggerOption<any, any>,
   context: InputContext,
 ): boolean {
   if (typeof trigger === 'string') {
@@ -251,7 +252,7 @@ function shouldRunValidator(
     return getEnabledState(runOnSubmit, context)
   }
 
-  return (validator.triggers ?? []).some((signal) =>
+  return validator.triggers.some((signal) =>
     isValidationTriggerEnabled(signal, context),
   )
 }
@@ -641,11 +642,11 @@ interface FormValidatorPipelineArgs {
    * Whether previous pipelines have reported an error or not.
    */
   hasFailedBefore: boolean
-  onResult?: (result: PipelineResult<FormValidateResult>) => void
+  onResult?: (result: PipelineResult<FormValidateResult<any>>) => void
 }
 
 export interface FormValidatorPipelineResult {
-  results: Array<PipelineResult<FormValidateResult>>
+  results: Array<PipelineResult<FormValidateResult<any>>>
   hasErrors: boolean
   thrownError: unknown | null
 }
@@ -658,7 +659,7 @@ export function runFormValidatorPipeline({
 }: FormValidatorPipelineArgs): Promise<FormValidatorPipelineResult> {
   const cache = (context.formApi as InternalFormApi<any, any>)._pipelineCache
 
-  return runValidatorPipeline<FormValidateResult>({
+  return runValidatorPipeline<FormValidateResult<any>>({
     pipeline,
     context,
     onResult,

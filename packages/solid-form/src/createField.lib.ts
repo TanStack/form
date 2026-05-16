@@ -1,38 +1,25 @@
 import { shallow, useSelector } from '@tanstack/solid-store'
 import { createMemo, createRenderEffect } from 'solid-js'
+import type { AnyFieldApi, FieldApiOptions } from '@tanstack/form-core-v2'
 import type {
-  DeepKeys,
-  DeepKeysWhereValueIncludes,
-  DeepValue,
-  FieldApi,
-  FieldApiOptions,
-  FormValidator,
-} from '@tanstack/form-core-v2'
-import type {
+  AnyInternalFormApi,
   InternalBaseFieldMeta,
-  InternalFormApi,
 } from '@tanstack/form-core-v2/internals'
 import type { Accessor } from 'solid-js'
 
-export interface InternalFieldProps<
-  TFormData,
-  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
-  TFieldName extends DeepKeys<TFormData>,
-  TFieldValue extends DeepValue<TFormData, TFieldName>,
-> extends FieldApiOptions<TFormData, TFormValidators, TFieldName, TFieldValue> {
-  form: InternalFormApi<TFormData, TFormValidators>
+export interface InternalFieldProps extends FieldApiOptions<
+  any,
+  any,
+  any,
+  any,
+  any
+> {
+  form: AnyInternalFormApi
 }
 
-export function createField<
-  TFormData,
-  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
-  TFieldName extends DeepKeys<TFormData>,
-  TFieldValue extends DeepValue<TFormData, TFieldName>,
->(
-  options: Accessor<
-    InternalFieldProps<TFormData, TFormValidators, TFieldName, TFieldValue>
-  >,
-): Accessor<FieldApi<TFormData, TFormValidators, TFieldName, TFieldValue>> {
+export function createField(
+  options: Accessor<InternalFieldProps>,
+): Accessor<AnyFieldApi> {
   const fieldApi = createMemo(() => {
     const opts = options()
 
@@ -60,16 +47,9 @@ export function createField<
   )
 }
 
-export function createArrayField<
-  TFormData,
-  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
-  TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
-  TFieldValue extends DeepValue<TFormData, TFieldName>,
->(
-  options: Accessor<
-    InternalFieldProps<TFormData, TFormValidators, TFieldName, TFieldValue>
-  >,
-): Accessor<FieldApi<TFormData, TFormValidators, TFieldName, TFieldValue>> {
+export function createArrayField(
+  options: Accessor<InternalFieldProps>,
+): Accessor<AnyFieldApi> {
   const fieldApi = createMemo(() => {
     const opts = options()
 

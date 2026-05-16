@@ -18,7 +18,7 @@ import type {
   ValidationDebounceFn,
   ValidationPredicateFn,
 } from '../src'
-import type { InternalFieldApi } from '../src/FieldApi.lib'
+import type { AnyInternalFieldApi } from '../src/FieldApi.lib'
 
 describe('runFormValidatorPipeline', () => {
   type Event = FormValidatorContext<any>['event']
@@ -35,8 +35,8 @@ describe('runFormValidatorPipeline', () => {
       pipeline,
       runWithContext: (args: {
         event: Event
-        field?: InternalFieldApi<any, ReadonlyArray<any>, any, any>
-        onResult?: (result: PipelineResult<FormValidateResult>) => void
+        field?: AnyInternalFieldApi
+        onResult?: (result: PipelineResult<FormValidateResult<any>>) => void
         hasFailedBefore?: boolean
       }) => {
         return runFormValidatorPipeline({
@@ -59,7 +59,7 @@ describe('runFormValidatorPipeline', () => {
     TFieldValue extends DeepValue<TFormData, TFieldName>,
   >(
     form: InternalFormApi<TFormData, ReadonlyArray<any>>,
-    field: InternalFieldApi<TFormData, ReadonlyArray<any>, any, any>,
+    field: AnyInternalFieldApi,
     pipeline: Array<FieldValidator<TFormData, TFieldName, TFieldValue>>,
   ) {
     return {

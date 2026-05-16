@@ -1,7 +1,12 @@
 import { describe, expectTypeOf, it } from 'vitest'
 import z from 'zod'
 import { InternalFormApi } from '../src/FormApi.lib'
-import type { StandardSchemaV1Issue, ValidationIssue } from '../src'
+import type {
+  AnyFormApi,
+  FieldErrors,
+  StandardSchemaV1Issue,
+  ValidationIssue,
+} from '../src'
 
 describe('FormErrors', () => {
   it('should infer the error type from the validator', () => {
@@ -125,5 +130,85 @@ describe('FormErrors', () => {
     expectTypeOf<typeof formErrorsCustom>().toEqualTypeOf<
       Array<{ message: string; errorCount: number }>
     >()
+  })
+
+  it('should fall back to ValidationIssue if `any` was used', () => {
+    expectTypeOf<AnyFormApi['state']['formErrors']>().toEqualTypeOf<
+      Array<ValidationIssue>
+    >()
+  })
+})
+
+describe('FieldErrors', () => {
+  it('should infer field-level validator errors', () => {
+    type Errors = FieldErrors<
+      [],
+      [{ run: () => { message: string; fieldOnly: true }; triggers: [] }]
+    >
+
+    expectTypeOf<Errors>().toEqualTypeOf<
+      Array<{ message: string; fieldOnly: true }>
+    >()
+  })
+
+  it('should infer field errors from aggregate form validators', () => {
+    type Errors = FieldErrors<
+      [
+        {
+          run: () => {
+            form: { message: string; formOnly: true }
+            fields: { name: { message: string; fieldOnly: true } }
+          }
+          triggers: []
+        },
+      ],
+      []
+    >
+
+    expectTypeOf<Errors>().toEqualTypeOf<
+      Array<{ message: string; fieldOnly: true }>
+    >()
+  })
+
+  it('should combine form aggregate and field validator errors', () => {
+    type Errors = FieldErrors<
+      [
+        {
+          run: () => {
+            form: string
+            fields: { name: { message: string; fromForm: true } }
+          }
+          triggers: []
+        },
+      ],
+      [{ run: () => { message: string; fromField: true }; triggers: [] }]
+    >
+
+    expectTypeOf<Errors>().toEqualTypeOf<
+      Array<
+        | { message: string; fromForm: true }
+        | { message: string; fromField: true }
+      >
+    >()
+  })
+
+  it('should normalize string field errors', () => {
+    type Errors = FieldErrors<
+      [{ run: () => { form: string; fields: { name: string } }; triggers: [] }],
+      [{ run: () => string; triggers: [] }]
+    >
+
+    expectTypeOf<Errors>().toEqualTypeOf<Array<ValidationIssue>>()
+  })
+
+  it('should support standard schemas', () => {
+    const schema = z.object({ name: z.string() })
+
+    type Errors = FieldErrors<
+      [{ run: typeof schema; triggers: [] }],
+      [{ run: typeof schema; triggers: [] }]
+    >
+
+    expectTypeOf<Errors>().toEqualTypeOf<Array<StandardSchemaV1Issue>>()
   })
 })

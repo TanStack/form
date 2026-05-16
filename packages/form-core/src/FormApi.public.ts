@@ -12,28 +12,28 @@ import type {
   FormErrors,
   FormStandardSchemaValidatorOutputs,
   FormValidationError,
-  FormValidator,
+  FormValidators,
 } from './validation.public'
 
-export type CreateValidationErrorFn = (
-  error: FormValidationError,
-) => FormValidationError
+export type CreateValidationErrorFn<TFormData> = (
+  error: FormValidationError<TFormData>,
+) => FormValidationError<TFormData>
 
 export interface FormSubmitContext<
   TFormData,
-  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  TFormValidators extends FormValidators<TFormData>,
 > {
   value: TFormData
   formApi: FormApi<TFormData, TFormValidators>
   schemaOutputs: FormStandardSchemaValidatorOutputs<TFormValidators>
-  createValidationError: CreateValidationErrorFn
+  createValidationError: CreateValidationErrorFn<TFormData>
 }
 
 export type AnyFormOptions = FormOptions<any, any>
 
 export interface FormOptions<
   TFormData,
-  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  TFormValidators extends FormValidators<TFormData>,
 > {
   defaultValues: TFormData
   errorVisibility?: ErrorVisibility
@@ -45,7 +45,7 @@ export interface FormOptions<
 
 export interface FormState<
   TFormData,
-  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  TFormValidators extends FormValidators<TFormData>,
 > {
   /**
    * The current values of the form.
@@ -97,7 +97,7 @@ export type AnyFormApi = FormApi<any, any>
 
 export interface FormApi<
   TFormData,
-  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  TFormValidators extends FormValidators<TFormData>,
 > {
   store: ReadonlyAtom<FormState<TFormData, TFormValidators>>
   readonly state: FormState<TFormData, TFormValidators>
@@ -112,13 +112,13 @@ export interface FormApi<
    */
   validate: (
     signal: ConfigurableValidationTrigger,
-  ) => Promise<Array<FormValidationError>>
+  ) => Promise<Array<FormValidationError<TFormData>>>
 
   /**
    * TODO for later: submit meta
    *
    */
-  handleSubmit: () => Promise<Array<FormValidationError>>
+  handleSubmit: () => Promise<Array<FormValidationError<TFormData>>>
   /**
    * TODO
    */

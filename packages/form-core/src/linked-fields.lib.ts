@@ -4,9 +4,7 @@ import type {
   FieldListenToFields,
 } from './FieldApi.lib'
 import type { AnyInternalFormApi } from './FormApi.lib'
-import type { FieldListener } from './listeners.public'
-
-type AnyFieldListener = FieldListener<any, any, any, any>
+import type { AnyFieldListener } from './listeners.public'
 
 type WatcherIndex = number
 
@@ -120,7 +118,7 @@ export function reconcileWatchedListenerFields({
   field,
   form,
 }: {
-  nextListeners: Array<FieldListener<any, any, any, any>> | null | undefined
+  nextListeners: Array<AnyFieldListener> | null | undefined
   prevListenToFields: FieldListenToFields | null
   field: AnyInternalFieldApi
   form: AnyInternalFormApi

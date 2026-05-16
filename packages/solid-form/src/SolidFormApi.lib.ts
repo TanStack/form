@@ -1,6 +1,6 @@
 import { InternalFormApi } from '@tanstack/form-core-v2/internals'
 import { mergeProps } from 'solid-js'
-import { Subscribe } from './Subscribe.lib'
+import { Subscribe } from './Subscribe.public'
 import { createArrayField, createField } from './createField.lib'
 import type {
   SolidFormArrayFieldProps,
@@ -8,29 +8,20 @@ import type {
   SolidFormSubscribeProps,
   SolidTanStackFormComponents,
 } from './createForm.public'
-import type { FormOptions, FormValidator } from '@tanstack/form-core-v2'
+import type { FormOptions } from '@tanstack/form-core-v2'
 
-export interface InternalSolidFormApi<
-  TData,
-  TFormValidators extends ReadonlyArray<FormValidator<TData>>,
->
-  extends
-    InternalFormApi<TData, TFormValidators>,
-    SolidTanStackFormComponents<TData, TFormValidators> {}
+export interface InternalSolidFormApi
+  extends InternalFormApi<any, any>, SolidTanStackFormComponents<any, any> {}
 
-export function initializeForm<
-  TFormData,
-  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
->(
-  options: FormOptions<TFormData, TFormValidators>,
-): InternalSolidFormApi<TFormData, TFormValidators> {
+export function initializeForm(
+  options: FormOptions<any, any>,
+): InternalSolidFormApi {
   const form = new InternalFormApi(options)
 
-  const solidFormApi: InternalSolidFormApi<TFormData, TFormValidators> =
-    form as never
+  const solidFormApi: InternalSolidFormApi = form as never
 
   solidFormApi.Field = function TanStackFormField(
-    props: SolidFormFieldProps<TFormData, TFormValidators, any, any>,
+    props: SolidFormFieldProps<any, any, any, any, any>,
   ) {
     const fieldOptions = mergeProps(props, { form })
     const fieldApi = createField(() => fieldOptions)
@@ -39,7 +30,7 @@ export function initializeForm<
   }
 
   solidFormApi.ArrayField = function TanStackFormArrayField(
-    props: SolidFormArrayFieldProps<TFormData, TFormValidators, any, any>,
+    props: SolidFormArrayFieldProps<Array<any>, any, any, any, any>,
   ) {
     const fieldOptions = mergeProps(props, { form })
     const fieldApi = createArrayField(() => fieldOptions)
@@ -47,8 +38,8 @@ export function initializeForm<
     return props.children(fieldApi)
   }
 
-  solidFormApi.Subscribe = function TanStackFormSubscribe<TSelected>(
-    props: SolidFormSubscribeProps<TFormData, TSelected>,
+  solidFormApi.Subscribe = function TanStackFormSubscribe(
+    props: SolidFormSubscribeProps<any, any, any>,
   ) {
     return Subscribe(mergeProps(props, { source: solidFormApi.store }))
   }

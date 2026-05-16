@@ -10,7 +10,7 @@ import type {
 import type { ListenerDebouncer } from './listeners.lib'
 
 export interface PipelineCache<
-  TResult extends FormValidateResult | FieldValidateResult,
+  TResult extends FormValidateResult<any> | FieldValidateResult,
 > {
   listenerDebouncers: Map<number, ListenerDebouncer>
   validatorDebouncers: Map<number, ValidationDebouncer<TResult>>
