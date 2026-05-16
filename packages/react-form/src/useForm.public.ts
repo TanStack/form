@@ -13,7 +13,6 @@ import type {
   FormApi,
   FormOptions,
   FormState,
-  FormValidator,
   FormValidators,
 } from '@tanstack/form-core-v2'
 
@@ -90,7 +89,7 @@ export interface ReactFormArrayFieldProps<
 
 export interface ReactTanStackFormComponents<
   TFormData,
-  TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
 > {
   /**
@@ -132,7 +131,7 @@ export interface ReactTanStackFormComponents<
       TFieldValidators
     >,
   ) => CrossVersionReactNode
-  Subscribe: <TSelected, TFormValidators extends FormValidators<TFormData>>(
+  Subscribe: <TSelected>(
     props: ReactFormSubscribeProps<
       TFormData,
       TFormValidators,
