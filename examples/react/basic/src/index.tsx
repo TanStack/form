@@ -6,9 +6,16 @@ interface FieldInfoProps {
   field: AnyFieldApi
 }
 function FieldError({ field }: FieldInfoProps) {
-  if (field.meta.isValid) return null
-
-  return <em>{field.errors.map((error) => error.message).join('\n')}</em>
+  return (
+    <>
+      <br />
+      {field.meta.isInvalid && (
+        <em>{field.errors.map((e) => e.message).join(',')}</em>
+      )}
+      <br />
+      {field.meta.isValidating ? 'Validating...' : null}
+    </>
+  )
 }
 
 function App() {

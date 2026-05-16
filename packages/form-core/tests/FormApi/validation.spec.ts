@@ -142,6 +142,59 @@ describe('form - validation', () => {
       expect(form.state.canSubmit).toBe(false)
     })
 
+    it('tracks isValidating while a form validator is pending', async () => {
+      vi.useFakeTimers()
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            triggers: ['change'],
+            run: async () => {
+              await new Promise((resolve) => setTimeout(resolve, 100))
+              return null
+            },
+          },
+        ],
+      })
+
+      const validatePromise = form.validate('change')
+
+      expect(form.state.isValidating).toBe(true)
+
+      await vi.runAllTimersAsync()
+      await validatePromise
+
+      expect(form.state.isValidating).toBe(false)
+      vi.useRealTimers()
+    })
+
+    it('tracks isValidating while a field validator is pending', async () => {
+      vi.useFakeTimers()
+      const form = new InternalFormApi({ defaultValues: { name: '' } })
+      const field = form._getOrCreateFieldApi({
+        name: 'name',
+        validators: [
+          {
+            triggers: ['change'],
+            run: async () => {
+              await new Promise((resolve) => setTimeout(resolve, 100))
+              return null
+            },
+          },
+        ],
+      })
+
+      const validatePromise = field._runFieldValidation('change')
+
+      expect(form.state.isValidating).toBe(true)
+
+      await vi.runAllTimersAsync()
+      await validatePromise
+
+      expect(form.state.isValidating).toBe(false)
+      vi.useRealTimers()
+    })
+
     it('maintains validator order with async debounced and sync validators', async () => {
       const form = new InternalFormApi({
         defaultValues: { name: '' },

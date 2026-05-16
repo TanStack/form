@@ -79,6 +79,10 @@ export interface FormState<TData> {
    */
   isSubmitting: boolean
   /**
+   * Whether the form or any field is currently validating.
+   */
+  isValidating: boolean
+  /**
    * The number of times a submission has been attempted, regardless of its success.
    *
    * If the form is reset, this will revert back to 0.

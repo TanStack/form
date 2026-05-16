@@ -22,6 +22,11 @@ import {
   reconcileWatchedListenerFields,
   reconcileWatchedValidatorFields,
 } from './linked-fields.lib'
+import { rootCounterContributionKeys } from './RootFieldApi.lib'
+import type {
+  InternalRootFieldApi,
+  RootCounterContributionKey,
+} from './RootFieldApi.lib'
 import type {
   DeepKeys,
   DeepValue,
@@ -33,9 +38,7 @@ import type {
   FieldValidatorPipelineResult,
   PipelineResult,
 } from './validation.lib'
-
 import type { PropagateOptions } from './types.lib'
-import type { InternalRootFieldApi } from './RootFieldApi.lib'
 import type { FieldUpdateOptions, Updater } from './types.public'
 import type { AnyInternalFormApi, InternalFormApi } from './FormApi.lib'
 import type { Atom, ReadonlyAtom } from '@tanstack/store'
@@ -64,14 +67,18 @@ const metaCache = new WeakMap<InternalBaseFieldMeta, InternalFieldMeta>()
 export type NameSegment = string | number
 export type NameSegments = Array<NameSegment>
 
-type ChildContributionKey = 'touched' | 'dirty' | 'error'
+export type ChildContributionKey =
+  | RootCounterContributionKey
+  | 'dirty'
+  | 'error'
 type ChildContributionCounts = Record<ChildContributionKey, number>
-type ChildContributionStates = Record<ChildContributionKey, boolean>
+export type ChildContributionStates = Record<ChildContributionKey, boolean>
 
 const childContributionKeys: Array<ChildContributionKey> = [
   'touched',
   'dirty',
   'error',
+  'validating',
 ]
 
 interface MetaExtension {
@@ -80,6 +87,7 @@ interface MetaExtension {
   _fieldValidatorErrors: Array<Array<ErrorWithMessage>>
   _fieldValidatorErrorSourceEvents: Array<string | null>
   childContributionCounts: ChildContributionCounts
+  _validationCount: number
   /**
    * @private
    * Used to rerender for ArrayField components
@@ -220,6 +228,7 @@ export const defaultBaseFieldMeta: BaseFieldMeta = {
   isTouched: false,
   isDirty: false,
   isBlurred: false,
+  isValidating: false,
 }
 
 export const defaultInternalBaseFieldMeta: InternalBaseFieldMeta = {
@@ -228,7 +237,9 @@ export const defaultInternalBaseFieldMeta: InternalBaseFieldMeta = {
     touched: 0,
     dirty: 0,
     error: 0,
+    validating: 0,
   },
+  _validationCount: 0,
   _fieldValidatorErrors: [],
   _fieldValidatorErrorSourceEvents: [],
   _formValidatorErrors: [],
@@ -564,14 +575,16 @@ export class InternalFieldApi<
       const newContributions = getChildContributionStates(newMeta)
 
       if (!this._parent._isRoot) {
-        for (const key of childContributionKeys) {
-          this._parent._updateChildContributionCount(
-            key,
-            prevContributions[key],
-            newContributions[key],
-          )
-        }
+        this._parent._updateChildContributionCount(
+          prevContributions,
+          newContributions,
+        )
       } else {
+        this._parent._updateFieldContributionCount(
+          prevContributions,
+          newContributions,
+        )
+
         this._parent._updateErrorFields(
           this,
           prevContributions.error,
@@ -589,23 +602,29 @@ export class InternalFieldApi<
    * Increments/decrements the relevant child contribution count and propagates up.
    */
   _updateChildContributionCount(
-    key: ChildContributionKey,
-    prevContributes: boolean,
-    newContributes: boolean,
+    prevState: ChildContributionStates,
+    newState: ChildContributionStates,
   ): void {
     if (this._isKilled) return
 
-    if (prevContributes === newContributes) return
+    batch(() => {
+      for (const key of childContributionKeys) {
+        const prevContributes = prevState[key]
+        const newContributes = newState[key]
 
-    const delta = newContributes ? 1 : -1
+        if (prevContributes === newContributes) return
 
-    this._setMeta((prev) => ({
-      ...prev,
-      childContributionCounts: {
-        ...prev.childContributionCounts,
-        [key]: prev.childContributionCounts[key] + delta,
-      },
-    }))
+        const delta = newContributes ? 1 : -1
+
+        this._setMeta((prev) => ({
+          ...prev,
+          childContributionCounts: {
+            ...prev.childContributionCounts,
+            [key]: prev.childContributionCounts[key] + delta,
+          },
+        }))
+      }
+    })
   }
 
   /**
@@ -659,18 +678,43 @@ export class InternalFieldApi<
         thrownError: null,
       }
 
-    return runFieldValidatorPipeline({
-      pipeline: validators,
-      context: {
-        event,
-        fieldApi: this,
-        formApi: this.form,
-      },
-      onResult:
-        options?.onResult !== false
-          ? (result) => this._processValidationResult(result, event)
-          : undefined,
-      validatorIndecesToRun: options?.onlyRunValidatorIndeces ?? null,
+    this._setValidationCount((count) => count + 1)
+    try {
+      return await runFieldValidatorPipeline({
+        pipeline: validators,
+        context: {
+          event,
+          fieldApi: this,
+          formApi: this.form,
+        },
+        onResult:
+          options?.onResult !== false
+            ? (result) => this._processValidationResult(result, event)
+            : undefined,
+        validatorIndecesToRun: options?.onlyRunValidatorIndeces ?? null,
+      })
+    } finally {
+      this._setValidationCount((count) => Math.max(0, count - 1))
+    }
+  }
+
+  _setValidationCount(updater: Updater<number>): void {
+    this._setMeta((prev) => {
+      const _validationCount = callUpdater(updater, prev._validationCount)
+      const isValidating = _validationCount > 0
+
+      if (
+        prev._validationCount === _validationCount &&
+        prev.isValidating === isValidating
+      ) {
+        return prev
+      }
+
+      return {
+        ...prev,
+        _validationCount,
+        isValidating,
+      }
     })
   }
 
@@ -777,10 +821,6 @@ export class InternalFieldApi<
     let currNode: AnyInternalFieldApi | InternalRootFieldApi = this
 
     batch(() => {
-      if (markAsTouched) {
-        originalField.form._fieldRootNode._addToTouchedFields(originalField)
-      }
-
       // -> it triggered a change
       // -> foo.bar is dirty
 
@@ -1032,18 +1072,33 @@ export class InternalFieldApi<
 
       this._parent._removeChild(this._segment)
 
+      const killedRootCounterContributions: Record<
+        RootCounterContributionKey,
+        number
+      > = {
+        touched: 0,
+        validating: 0,
+      }
+
       for (const node of nodesToKill) {
         const nodeMeta = node._atoms.meta?.get()
 
         if (!node._parent._isRoot && nodeMeta) {
+          node._parent._updateChildContributionCount(
+            getChildContributionStates(nodeMeta),
+            {
+              dirty: false,
+              error: false,
+              touched: false,
+              validating: false,
+            },
+          )
+        } else if (nodeMeta) {
           const contributions = getChildContributionStates(nodeMeta)
-
-          for (const key of childContributionKeys) {
-            node._parent._updateChildContributionCount(
-              key,
-              contributions[key],
-              false,
-            )
+          for (const key of rootCounterContributionKeys) {
+            if (contributions[key]) {
+              killedRootCounterContributions[key]++
+            }
           }
         }
 
@@ -1060,20 +1115,15 @@ export class InternalFieldApi<
       }
 
       this.form._formMetaAtom.set((prev) => {
-        let touchedFields = prev.touchedFields
         let errorFields = prev.errorFields
-
-        if (touchedFields.size > 0) {
-          const nextTouchedFields = new Set(touchedFields)
-
-          for (const node of nodesToKill) {
-            nextTouchedFields.delete(node)
-          }
-
-          if (nextTouchedFields.size !== touchedFields.size) {
-            touchedFields = nextTouchedFields
-          }
-        }
+        const touchedFieldCount = Math.max(
+          0,
+          prev.touchedFieldCount - killedRootCounterContributions.touched,
+        )
+        const fieldValidationCount = Math.max(
+          0,
+          prev.fieldValidationCount - killedRootCounterContributions.validating,
+        )
 
         if (errorFields.size > 0) {
           const nextErrorFields = new Set(errorFields)
@@ -1109,7 +1159,13 @@ export class InternalFieldApi<
           }
         }
 
-        return { ...prev, touchedFields, errorFields, fieldErrors }
+        return {
+          ...prev,
+          touchedFieldCount,
+          errorFields,
+          fieldValidationCount,
+          fieldErrors,
+        }
       })
     })
   }
@@ -1352,9 +1408,12 @@ function deriveFromBaseFieldMeta(
     isEveryPristine: baseMeta.childContributionCounts.dirty === 0,
     isSomeDirty: baseMeta.childContributionCounts.dirty > 0,
     isSomeTouched: baseMeta.childContributionCounts.touched > 0,
+    isSomeValidating: baseMeta.childContributionCounts.validating > 0,
   }
   const isTouched = isSelfTouched || subfields.isSomeTouched
   const isDirty = isSelfDirty || subfields.isSomeDirty
+  const isSelfValidating = baseMeta.isValidating
+  const isValidating = isSelfValidating || subfields.isSomeValidating
   const isValid = isSelfValid && subfields.isEveryValid
   const isInvalid = !isValid
 
@@ -1366,6 +1425,8 @@ function deriveFromBaseFieldMeta(
     isSelfDirty,
     isInvalid,
     isSelfValid,
+    isSelfValidating,
+    isValidating,
     errors,
     original: {
       errors: originalErrors,
@@ -1424,6 +1485,8 @@ function getChildContributionStates(
   return {
     touched: meta.isTouched || meta.childContributionCounts.touched > 0,
     dirty: meta.isDirty || meta.childContributionCounts.dirty > 0,
+    validating:
+      meta.isValidating || meta.childContributionCounts.validating > 0,
     error:
       getErrorsFromBaseMeta(meta).length > 0 ||
       meta.childContributionCounts.error > 0,
@@ -1438,6 +1501,8 @@ function isPrunableMeta(meta: InternalBaseFieldMeta): boolean {
   if (meta.isTouched) return false
   if (meta.isDirty) return false
   if (meta.isBlurred) return false
+  if (meta.isValidating) return false
+  if (meta._validationCount !== 0) return false
   if (meta._arrayVersion !== 0) return false
   if (hasValidatorErrors(meta._fieldValidatorErrors)) return false
   if (hasValidatorErrors(meta._formValidatorErrors)) return false

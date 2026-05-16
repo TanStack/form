@@ -5,6 +5,7 @@ import {
   tryGetFieldApi,
 } from './FieldApi.lib'
 import {
+  callUpdater,
   cancelPipelineCache,
   createPipelineCache,
   evaluate,
@@ -75,9 +76,9 @@ const createValidationError = <TError extends FormValidationError>(
 export interface BaseFormMeta {
   /**
    * @private
-   * Fields that have been touched.
+   * Number of root fields whose own or descendant meta currently contributes touched state.
    */
-  touchedFields: Set<AnyInternalFieldApi>
+  touchedFieldCount: number
   /**
    * @private
    * A field has notified the root to be dirty
@@ -101,18 +102,26 @@ export interface BaseFormMeta {
    * Root fields whose own or descendant meta currently contributes errors.
    */
   errorFields: Set<AnyInternalFieldApi>
+  /**
+   * @private
+   * Number of root fields whose own or descendant meta currently validates.
+   */
+  fieldValidationCount: number
+  validationCount: number
   isSubmitting: boolean
   isSubmitSuccessful: boolean
 }
 
 function createInitialFormMeta(validatorCount: number): BaseFormMeta {
   return {
-    touchedFields: new Set(),
+    touchedFieldCount: 0,
     isDirty: false,
     errors: Array.from({ length: validatorCount }, () => []),
     errorSourceEvents: Array.from({ length: validatorCount }, () => null),
     fieldErrors: Array.from({ length: validatorCount }, () => new Set()),
     errorFields: new Set(),
+    fieldValidationCount: 0,
+    validationCount: 0,
     isSubmitting: false,
     isSubmitSuccessful: false,
   }
@@ -281,7 +290,10 @@ export class InternalFormApi<
 
         const isDirty = baseFormMeta.isDirty
         const isPristine = !isDirty
-        const isTouched = baseFormMeta.touchedFields.size > 0
+        const isTouched = baseFormMeta.touchedFieldCount > 0
+        const isValidating =
+          baseFormMeta.validationCount > 0 ||
+          baseFormMeta.fieldValidationCount > 0
         // TODO weakmap cache? Otherwise this always makes a new reference
         // Field already does it for its meta, use it as reference
         const formErrors = baseFormMeta.errors.flat()
@@ -301,6 +313,7 @@ export class InternalFormApi<
           formErrors,
           canSubmit,
           isSubmitting: baseFormMeta.isSubmitting,
+          isValidating,
           submissionAttempts,
         } satisfies FormState<TFormData>
       },
@@ -1031,20 +1044,37 @@ export class InternalFormApi<
         thrownError: null,
       }
 
-    return runFormValidatorPipeline({
-      context: {
-        event: signal,
-        // TypeScript doesn't instantly complain, but instead decides to wait a while.
-        // Just leave it as never.
-        formApi: this as never,
-        triggerFieldApi: opts?.fieldApiOverride,
-      },
-      hasFailedBefore: opts?.hasFailedBefore ?? false,
-      pipeline,
-      onResult:
-        opts?.onResult !== false
-          ? (result) => this._processValidationResult(result, signal)
-          : undefined,
+    this._setValidationCount((count) => count + 1)
+    try {
+      return await runFormValidatorPipeline({
+        context: {
+          event: signal,
+          // TypeScript doesn't instantly complain, but instead decides to wait a while.
+          // Just leave it as never.
+          formApi: this as never,
+          triggerFieldApi: opts?.fieldApiOverride,
+        },
+        hasFailedBefore: opts?.hasFailedBefore ?? false,
+        pipeline,
+        onResult:
+          opts?.onResult !== false
+            ? (result) => this._processValidationResult(result, signal)
+            : undefined,
+      })
+    } finally {
+      this._setValidationCount((count) => Math.max(0, count - 1))
+    }
+  }
+
+  _setValidationCount = (updater: Updater<number>): void => {
+    this._formMetaAtom.set((prev) => {
+      const validationCount = callUpdater(updater, prev.validationCount)
+
+      if (prev.validationCount === validationCount) {
+        return prev
+      }
+
+      return { ...prev, validationCount }
     })
   }
 

@@ -1,8 +1,12 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { InternalFormApi } from '../../src/FormApi.lib'
 import { defaultFieldMeta } from '../../src/FieldApi.lib'
 
 describe('field - meta', () => {
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
   describe('field meta derived properties', () => {
     it('starts with defaultFieldMeta values', () => {
       const form = new InternalFormApi({ defaultValues: { x: '' } })
@@ -43,6 +47,68 @@ describe('field - meta', () => {
       expect(field.meta.isTouched).toBe(false)
       expect(field.meta.isSelfTouched).toBe(false)
       expect(field.meta.subfields.isSomeTouched).toBe(false)
+    })
+
+    it('tracks self validation state while a field validator is pending', async () => {
+      vi.useFakeTimers()
+      const form = new InternalFormApi({ defaultValues: { x: '' } })
+      const field = form._getOrCreateFieldApi({
+        name: 'x',
+        validators: [
+          {
+            triggers: ['change'],
+            run: async () => {
+              await new Promise((resolve) => setTimeout(resolve, 100))
+              return null
+            },
+          },
+        ],
+      })
+
+      const validationPromise = field._runFieldValidation('change')
+
+      expect(field.meta.isValidating).toBe(true)
+      expect(field.meta.isSelfValidating).toBe(true)
+      expect(field.meta.subfields.isSomeValidating).toBe(false)
+
+      await vi.runAllTimersAsync()
+      await validationPromise
+
+      expect(field.meta.isValidating).toBe(false)
+      expect(field.meta.isSelfValidating).toBe(false)
+      vi.useRealTimers()
+    })
+
+    it('aggregates validation state from subfields', async () => {
+      vi.useFakeTimers()
+      const form = new InternalFormApi({ defaultValues: { a: { b: '' } } })
+      const parent = form._getOrCreateFieldApi({ name: 'a' })
+      const child = form._getOrCreateFieldApi({
+        name: 'a.b',
+        validators: [
+          {
+            triggers: ['change'],
+            run: async () => {
+              await new Promise((resolve) => setTimeout(resolve, 100))
+              return null
+            },
+          },
+        ],
+      })
+
+      const validationPromise = child._runFieldValidation('change')
+
+      expect(child.meta.isValidating).toBe(true)
+      expect(parent.meta.isValidating).toBe(true)
+      expect(parent.meta.isSelfValidating).toBe(false)
+      expect(parent.meta.subfields.isSomeValidating).toBe(true)
+
+      await vi.runAllTimersAsync()
+      await validationPromise
+
+      expect(parent.meta.isValidating).toBe(false)
+      expect(parent.meta.subfields.isSomeValidating).toBe(false)
+      vi.useRealTimers()
     })
 
     it('separates self validity from subfield validity', () => {

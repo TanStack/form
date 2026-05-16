@@ -228,9 +228,4 @@ export type DeepKeysWhereValueIncludes<TData, TValue> =
       : never
     : never
 
-export type TryGetArrayElementType<TValue> =
-  NonNullable<TValue> extends infer TCandidate
-    ? TCandidate extends Array<any>
-      ? TCandidate
-      : never
-    : never
+export type TryGetArrayElementType<TValue> = Extract<TValue, Array<any>>[number]

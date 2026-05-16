@@ -1,5 +1,25 @@
-import type { AnyInternalFieldApi, NameSegment } from './FieldApi.lib'
-import type { AnyInternalFormApi } from './FormApi.lib'
+import { batch } from '@tanstack/store'
+import type {
+  AnyInternalFieldApi,
+  ChildContributionStates,
+  NameSegment,
+} from './FieldApi.lib'
+import type { AnyInternalFormApi, BaseFormMeta } from './FormApi.lib'
+
+export type RootCounterContributionKey = 'touched' | 'validating'
+
+export const rootCounterContributionKeys: Array<RootCounterContributionKey> = [
+  'touched',
+  'validating',
+]
+
+const rootCounterMetaKeys: Record<
+  RootCounterContributionKey,
+  keyof Pick<BaseFormMeta, 'touchedFieldCount' | 'fieldValidationCount'>
+> = {
+  touched: 'touchedFieldCount',
+  validating: 'fieldValidationCount',
+}
 
 export class InternalRootFieldApi {
   readonly _isRoot = true
@@ -34,17 +54,6 @@ export class InternalRootFieldApi {
     this.#children.set(node._segment, node)
   }
 
-  _addToTouchedFields(node: AnyInternalFieldApi) {
-    this.form._formMetaAtom.set((prev) => {
-      if (prev.touchedFields.has(node)) {
-        return prev
-      }
-      const newSet = new Set(prev.touchedFields)
-      newSet.add(node)
-      return { ...prev, touchedFields: newSet }
-    })
-  }
-
   _updateErrorFields(
     node: AnyInternalFieldApi,
     prevContributes: boolean,
@@ -65,21 +74,34 @@ export class InternalRootFieldApi {
     })
   }
 
-  _removeChild(segment: NameSegment): void {
-    this.#children.delete(segment)
+  _updateFieldContributionCount(
+    prevState: ChildContributionStates,
+    newState: ChildContributionStates,
+  ) {
+    batch(() => {
+      for (const key of rootCounterContributionKeys) {
+        const prevContributes = prevState[key]
+        const newContributes = newState[key]
+
+        if (prevContributes === newContributes) return
+
+        this.form._formMetaAtom.set((prev) => {
+          const metaKey = rootCounterMetaKeys[key]
+          const delta = newContributes ? 1 : -1
+          const count = Math.max(0, prev[metaKey] + delta)
+
+          if (prev[metaKey] === count) {
+            return prev
+          }
+
+          return { ...prev, [metaKey]: count }
+        })
+      }
+    })
   }
 
-  _removeFromTouchedFieldsBatch(nodes: Set<AnyInternalFieldApi>) {
-    this.form._formMetaAtom.set((prev) => {
-      const newSet = new Set(prev.touchedFields)
-      for (const node of nodes) {
-        newSet.delete(node)
-      }
-      if (newSet.size === prev.touchedFields.size) {
-        return prev
-      }
-      return { ...prev, touchedFields: newSet }
-    })
+  _removeChild(segment: NameSegment): void {
+    this.#children.delete(segment)
   }
 
   _touchAllFieldsAndCollectSubmitValidators(): Array<AnyInternalFieldApi> {

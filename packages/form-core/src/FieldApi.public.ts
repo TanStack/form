@@ -17,6 +17,7 @@ export interface BaseFieldMeta {
   isTouched: boolean
   isDirty: boolean
   isBlurred: boolean
+  isValidating: boolean
 }
 
 export interface SubfieldsMeta {
@@ -25,6 +26,7 @@ export interface SubfieldsMeta {
   isEveryPristine: boolean
   isSomeDirty: boolean
   isSomeTouched: boolean
+  isSomeValidating: boolean
 }
 
 export interface OriginalFieldMeta {
@@ -39,6 +41,7 @@ export interface FieldMeta extends BaseFieldMeta {
   isSelfDirty: boolean
   isInvalid: boolean
   isSelfValid: boolean
+  isSelfValidating: boolean
   isValid: boolean
   subfields: SubfieldsMeta
   errors: Array<ErrorWithMessage>
