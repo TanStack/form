@@ -14,6 +14,7 @@ import type {
   ServerFormState,
   UnwrapFormAsyncValidateOrFn,
 } from '@tanstack/react-form'
+import type { FormDataInfo } from 'decode-formdata'
 
 interface CreateServerValidateOptions<
   TFormData,
@@ -75,7 +76,7 @@ export const createServerValidate =
       TSubmitMeta
     >,
   ) =>
-  async (formData: FormData, info?: Parameters<typeof decode>[1]) => {
+  async (formData: FormData, info?: FormDataInfo) => {
     const { onServerValidate } = defaultOpts
 
     const runValidator = async ({
@@ -98,7 +99,9 @@ export const createServerValidate =
       })
     }
 
-    const values = decode(formData, info) as never as TFormData
+    const values = (info
+      ? decode(formData, info)
+      : decode(formData)) as never as TFormData
 
     const onServerError = (await runValidator({
       value: values,

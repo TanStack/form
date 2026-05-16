@@ -16,7 +16,6 @@ import type {
 } from '@tanstack/form-core'
 import type { FunctionComponent, PropsWithChildren, ReactNode } from 'react'
 import type { FieldComponent } from './useField'
-import type { NoInfer } from '@tanstack/react-store'
 
 /**
  * Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned from `useForm`
@@ -140,11 +139,11 @@ export type ReactFormExtendedApi<
 
 function LocalSubscribe({
   form,
-  selector,
+  selector = (state) => state,
   children,
 }: PropsWithChildren<{
   form: AnyFormApi
-  selector: (state: AnyFormState) => AnyFormState
+  selector?: (state: AnyFormState) => AnyFormState
 }>): ReturnType<FunctionComponent> {
   const data = useStore(form.store, selector)
 

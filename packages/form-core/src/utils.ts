@@ -251,6 +251,7 @@ export function getSyncValidatorArray<T>(
   options: SyncValidatorArrayPartialOptions<T> & {
     validationLogic?: any
     form?: any
+    fieldName?: string
   },
 ): T extends FieldValidators<
   any,
@@ -300,7 +301,7 @@ export function getSyncValidatorArray<T>(
   return options.validationLogic({
     form: options.form,
     validators: options.validators,
-    event: { type: cause, async: false },
+    event: { type: cause, fieldName: options.fieldName, async: false },
     runValidation,
   })
 }
@@ -313,6 +314,7 @@ export function getAsyncValidatorArray<T>(
   options: AsyncValidatorArrayPartialOptions<T> & {
     validationLogic?: any
     form?: any
+    fieldName?: string
   },
 ): T extends FieldValidators<
   any,
@@ -410,7 +412,7 @@ export function getAsyncValidatorArray<T>(
   return options.validationLogic({
     form: options.form,
     validators: options.validators,
-    event: { type: cause, async: true },
+    event: { type: cause, fieldName: options.fieldName, async: true },
     runValidation,
   })
 }
@@ -459,6 +461,20 @@ export function evaluate<T>(objA: T, objB: T) {
   const keysB = Object.keys(objB)
 
   if (keysA.length !== keysB.length) {
+    return false
+  }
+
+  // Two distinct non-plain, non-array objects with no own enumerable keys cannot
+  // be compared by key iteration — the loop below would vacuously succeed and
+  // treat them as equal regardless of their internal state. This covers Temporal
+  // types, RegExp, and any class that exposes values only through getters.
+  if (
+    keysA.length === 0 &&
+    !Array.isArray(objA) &&
+    !Array.isArray(objB) &&
+    (Object.getPrototypeOf(objA) !== Object.prototype ||
+      Object.getPrototypeOf(objB) !== Object.prototype)
+  ) {
     return false
   }
 

@@ -9,7 +9,7 @@ import type {
   FormValidateOrFn,
 } from '@tanstack/form-core'
 import type { JSXElement } from 'solid-js'
-import type { CreateField, FieldComponent } from './createField'
+import type { FieldComponent } from './createField'
 
 export interface SolidFormApi<
   TParentData,
@@ -26,20 +26,6 @@ export interface SolidFormApi<
   TSubmitMeta,
 > {
   Field: FieldComponent<
-    TParentData,
-    TFormOnMount,
-    TFormOnChange,
-    TFormOnChangeAsync,
-    TFormOnBlur,
-    TFormOnBlurAsync,
-    TFormOnSubmit,
-    TFormOnSubmitAsync,
-    TFormOnDynamic,
-    TFormOnDynamicAsync,
-    TFormOnServer,
-    TSubmitMeta
-  >
-  createField: CreateField<
     TParentData,
     TFormOnMount,
     TFormOnChange,
@@ -231,10 +217,6 @@ export function createForm<
     > = api as never
 
   extendedApi.Field = (props) => <Field {...props} form={api} />
-  extendedApi.createField = (props) =>
-    createField(() => {
-      return { ...props(), form: api }
-    }) as never
   extendedApi.useStore = (selector) => useStore(api.store, selector)
   extendedApi.Subscribe = (props) =>
     functionalUpdate(props.children, useStore(api.store, props.selector))

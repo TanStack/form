@@ -15,7 +15,7 @@ To use an array, you can use `field.api.state.value` on an array value:
   standalone: true,
   imports: [TanStackField],
   template: `
-    <ng-container [tanstackField]="form" name="people" #people="field">
+    <ng-container [tanstackField]="form" name="people" mode="array" #people="field">
       <div>
         @for (_ of people.api.state.value; track $index) {
           <!-- ... -->
@@ -47,7 +47,7 @@ This will generate the mapped JSX every time you run `pushValue` on `field`:
 Finally, you can use a subfield like so:
 
 ```angular-html
- <ng-container
+<ng-container
   [tanstackField]="form"
   [name]="getPeopleName($index)"
   #person="field"
@@ -57,9 +57,7 @@ Finally, you can use a subfield like so:
       <div>Name for person {{ $index }}</div>
       <input
         [value]="person.api.state.value"
-        (input)="
-          person.api.handleChange($any($event).target.value)
-        "
+        (input)="person.api.handleChange($any($event).target.value)"
       />
     </label>
   </div>
@@ -81,7 +79,10 @@ export class AppComponent {
 > See, if we did the following:
 >
 > ```angular-html
-> <ng-container [tanstackField]="form" [name]="'people[' + $index + '].name'"></ng-container>
+> <ng-container
+>   [tanstackField]="form"
+>   [name]="'people[' + $index + '].name'"
+> ></ng-container>
 > ```
 >
 > We'd be running into a TypeScript issue where `"one" + "two"` is `string` rather than the required `"onetwo"` type
@@ -100,7 +101,7 @@ export class AppComponent {
   template: `
     <form (submit)="handleSubmit($event)">
       <div>
-        <ng-container [tanstackField]="form" name="people" #people="field">
+        <ng-container [tanstackField]="form" name="people" mode="array" #people="field">
           <div>
             @for (_ of people.api.state.value; track $index) {
               <ng-container
@@ -145,8 +146,7 @@ export class AppComponent {
     },
   })
 
-
-  getPeopleName = (idx: number) => `people[${idx}].name` as const;
+  getPeopleName = (idx: number) => `people[${idx}].name` as const
 
   canSubmit = injectStore(this.form, (state) => state.canSubmit)
   isSubmitting = injectStore(this.form, (state) => state.isSubmitting)
