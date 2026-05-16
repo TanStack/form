@@ -42,7 +42,6 @@ export type ErrorVisibility =
   | 'always'
   | 'touched'
   | 'blurred'
-  | 'touched-or-submit-attempted'
   | 'blurred-or-submit-attempted'
   | 'submit-attempted'
 

@@ -86,6 +86,7 @@ describe('runFormValidatorPipeline', () => {
     const { runWithContext } = getPipeline(formApi, [
       {
         run: () => ({ message: 'foo' }),
+        triggers: [],
       },
     ])
     const results = await runWithContext({ event: 'submit' })
@@ -146,22 +147,27 @@ describe('runFormValidatorPipeline', () => {
     const { runWithContext } = getPipeline(formApi, [
       {
         run: trueByDefault,
+        triggers: [],
       },
       {
         run: trueCallback,
         runOnSubmit: () => true,
+        triggers: [],
       },
       {
         run: trueBoolean,
         runOnSubmit: true,
+        triggers: [],
       },
       {
         run: falseBoolean,
         runOnSubmit: false,
+        triggers: [],
       },
       {
         run: falseCallback,
         runOnSubmit: () => false,
+        triggers: [],
       },
     ])
 
@@ -601,11 +607,12 @@ describe('runFormValidatorPipeline', () => {
         })
         .transform(({ name }) => ({ upperName: name.toUpperCase() }))
 
-      type Validators = [
-        { run: typeof lengthSchema },
-        { run: typeof uppercaseSchema },
-      ]
-      type Output = FormStandardSchemaValidatorOutputs<Validators>
+      type Output = FormStandardSchemaValidatorOutputs<
+        [
+          { run: typeof lengthSchema; triggers: [] },
+          { run: typeof uppercaseSchema; triggers: [] },
+        ]
+      >
 
       expectTypeOf<Output>().toEqualTypeOf<
         [
@@ -628,7 +635,7 @@ describe('runFormValidatorPipeline', () => {
 
       new InternalFormApi({
         defaultValues: { name: '' },
-        validators: [{ run: schema }],
+        validators: [{ run: schema, triggers: [] }],
         onSubmit: ({ value, schemaOutputs }) => {
           expectTypeOf(value).toEqualTypeOf<{ name: string }>()
           expectTypeOf(schemaOutputs).toEqualTypeOf<[{ nameLength: number }]>()
@@ -643,7 +650,11 @@ describe('runFormValidatorPipeline', () => {
 
       new InternalFormApi({
         defaultValues: { name: '' },
-        validators: [{ run: schema }, { run: () => false }, { run: schema2 }],
+        validators: [
+          { run: schema, triggers: [] },
+          { run: () => false, triggers: [] },
+          { run: schema2, triggers: [] },
+        ],
         onSubmit: ({ value, schemaOutputs }) => {
           expectTypeOf(value).toEqualTypeOf<{ name: string }>()
           expectTypeOf(schemaOutputs).toEqualTypeOf<
@@ -662,7 +673,7 @@ describe('runFormValidatorPipeline', () => {
         .transform(({ name }) => ({ nameLength: name.length }))
       const form = new InternalFormApi({
         defaultValues: { name: 'test' },
-        validators: [{ run: schema }],
+        validators: [{ run: schema, triggers: [] }],
         onSubmit,
       })
 
@@ -721,6 +732,7 @@ describe('runFormValidatorPipeline', () => {
       const { runWithContext } = getPipeline(formApi, [
         {
           run: schema,
+          triggers: [],
         },
       ])
 
@@ -745,6 +757,7 @@ describe('runFormValidatorPipeline', () => {
       const { runWithContext } = getPipeline(formApi, [
         {
           run: schema,
+          triggers: [],
         },
       ])
 
@@ -767,6 +780,7 @@ describe('runFormValidatorPipeline', () => {
       const { runWithContext } = getPipeline(formApi, [
         {
           run: schema,
+          triggers: [],
         },
       ])
 
@@ -793,6 +807,7 @@ describe('runFormValidatorPipeline', () => {
       const { runWithContext } = getPipeline(formApi, [
         {
           run: schema,
+          triggers: [],
         },
       ])
 
@@ -821,6 +836,7 @@ describe('runFormValidatorPipeline', () => {
       const { runWithContext } = getPipeline(formApi, [
         {
           run: schema,
+          triggers: [],
         },
       ])
 
@@ -878,13 +894,16 @@ describe('runFormValidatorPipeline', () => {
       const { runWithContext } = getPipeline(formApi, [
         {
           run: failingSchema,
+          triggers: [],
         },
         {
           run: passingSchema,
+          triggers: [],
           bailIfInvalid: true,
         },
         {
           run: validateSpy,
+          triggers: [],
           bailIfInvalid: true,
         },
       ])
@@ -911,6 +930,7 @@ describe('runFormValidatorPipeline', () => {
       const { runWithContext } = getPipeline(formApi, [
         {
           run: schema,
+          triggers: [],
         },
       ])
 
@@ -931,6 +951,7 @@ describe('runFormValidatorPipeline', () => {
       const { runWithContext } = getPipeline(formApi, [
         {
           run: schema,
+          triggers: [],
           runOnSubmit: false,
         },
       ])
@@ -957,6 +978,7 @@ describe('runFormValidatorPipeline', () => {
             // Valid validation result
             return { message: 'first validator' }
           },
+          triggers: [],
         },
         {
           run: () => {
@@ -964,6 +986,7 @@ describe('runFormValidatorPipeline', () => {
             const obj: any = undefined
             return obj.foo.bar
           },
+          triggers: [],
         },
       ])
 
@@ -993,12 +1016,14 @@ describe('runFormValidatorPipeline', () => {
           run: async () => {
             return Promise.resolve({ message: 'first validator' })
           },
+          triggers: [],
         },
         {
           run: async () => {
             await Promise.reject()
             return null
           },
+          triggers: [],
         },
       ])
 

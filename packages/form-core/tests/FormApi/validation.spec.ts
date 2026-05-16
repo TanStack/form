@@ -27,18 +27,23 @@ describe('form - validation', () => {
         validators: [
           {
             run: () => ({ message: 'error1' as const }),
+            triggers: [],
           },
           {
             run: () => null,
+            triggers: [],
           },
           {
             run: () => ({ message: 'error2' as const }),
+            triggers: [],
           },
           {
             run: () => undefined,
+            triggers: [],
           },
           {
             run: () => false,
+            triggers: [],
           },
         ],
       })
@@ -52,6 +57,7 @@ describe('form - validation', () => {
         validators: [
           {
             run: () => ({ message: 'Name is required' }),
+            triggers: [],
           },
         ],
       })
@@ -65,6 +71,7 @@ describe('form - validation', () => {
         validators: [
           {
             run: () => 'Name is required',
+            triggers: [],
           },
         ],
       })
@@ -79,6 +86,7 @@ describe('form - validation', () => {
         validators: [
           {
             run: () => [{ message: 'Error 1' }, { message: 'Error 2' }],
+            triggers: [],
           },
         ],
       })
@@ -96,15 +104,19 @@ describe('form - validation', () => {
         validators: [
           {
             run: () => null,
+            triggers: [],
           },
           {
             run: () => ({ message: 'Valid error' }),
+            triggers: [],
           },
           {
             run: () => false,
+            triggers: [],
           },
           {
             run: () => undefined,
+            triggers: [],
           },
         ],
       })
@@ -723,36 +735,6 @@ describe('form - validation', () => {
       ])
     })
 
-    it('reveals touched-or-submit-attempted errors after a submit attempt', async () => {
-      const form = new InternalFormApi({
-        defaultValues: { name: '' },
-        errorVisibility: 'touched-or-submit-attempted',
-        validators: [
-          {
-            run: () => ({
-              fields: {
-                name: { message: 'Name is required' },
-              },
-            }),
-            triggers: ['change'],
-          },
-        ],
-      })
-      const field = form._getOrCreateFieldApi({ name: 'name' })
-
-      await form.validate('change')
-      expect(field.errors).toEqual([])
-      expect(field.meta.original.errors).toEqual([
-        { message: 'Name is required' },
-      ])
-
-      await form.handleSubmit()
-
-      expect(field.errors).toEqual([{ message: 'Name is required' }])
-      expect(field.meta.isValid).toBe(false)
-      expect(field.meta.original.isValid).toBe(false)
-    })
-
     it('reveals submit-attempted errors only after a submit attempt', async () => {
       const form = new InternalFormApi({
         defaultValues: { name: '' },
@@ -853,7 +835,9 @@ describe('form - validation', () => {
       })
       const field = form._getOrCreateFieldApi({
         name: 'name',
-        validators: [{ run: () => ({ message: 'Field-level error' }) }],
+        validators: [
+          { run: () => ({ message: 'Field-level error' }), triggers: [] },
+        ],
       })
       void field.store
       field.handleChange('New value')
@@ -867,7 +851,7 @@ describe('form - validation', () => {
       })
       const field = form._getOrCreateFieldApi({
         name: 'name',
-        validators: [{ run: () => 'Field-level error' }],
+        validators: [{ run: () => 'Field-level error', triggers: [] }],
       })
       void field.store
       await field._runFieldValidation('submit')

@@ -10,6 +10,7 @@ describe('form - submission handling', () => {
         validators: [
           {
             run: () => ({ message: 'Submit error' }),
+            triggers: [],
           },
         ],
       })
@@ -24,6 +25,7 @@ describe('form - submission handling', () => {
         validators: [
           {
             run: () => ({ message: 'Submit error' }),
+            triggers: [],
           },
         ],
         onSubmit,
@@ -50,6 +52,7 @@ describe('form - submission handling', () => {
         validators: [
           {
             run: fieldValidatorFn,
+            triggers: [],
           },
         ],
       })
@@ -113,9 +116,13 @@ describe('form - submission handling', () => {
       const form = new InternalFormApi({
         defaultValues: { name: 'test' },
         validators: [
-          { run: schema },
+          {
+            run: schema,
+            triggers: [],
+          },
           {
             run: () => null,
+            triggers: [],
           },
         ],
         onSubmit,
@@ -141,6 +148,7 @@ describe('form - submission handling', () => {
           {
             bailIfInvalid: true,
             run: formValidatorFn,
+            triggers: [],
           },
         ],
       })
@@ -149,6 +157,7 @@ describe('form - submission handling', () => {
         validators: [
           {
             run: () => ({ message: 'Field error' }),
+            triggers: [],
           },
         ],
       })
@@ -168,10 +177,12 @@ describe('form - submission handling', () => {
         validators: [
           {
             run: () => ({ message: 'First error' }),
+            triggers: [],
           },
           {
             bailIfInvalid: true,
             run: thirdValidatorFn,
+            triggers: [],
           },
         ],
       })
@@ -192,13 +203,16 @@ describe('form - submission handling', () => {
         validators: [
           {
             run: () => ({ message: 'First error' }),
+            triggers: [],
           },
           {
             bailIfInvalid: true,
             run: secondValidatorFn,
+            triggers: [],
           },
           {
             run: thirdValidatorFn,
+            triggers: [],
           },
         ],
       })
@@ -237,6 +251,7 @@ describe('form - submission handling', () => {
           {
             runOnSubmit: true,
             run: validatorFn,
+            triggers: [],
           },
         ],
       })
@@ -275,6 +290,7 @@ describe('form - submission handling', () => {
           {
             runOnSubmit: false,
             run: validatorFn,
+            triggers: [],
           },
         ],
       })
@@ -293,6 +309,7 @@ describe('form - submission handling', () => {
           {
             runOnSubmit: ({ formApi }) => formApi.state.values.name === '',
             run: validatorFn,
+            triggers: [],
           },
         ],
       })

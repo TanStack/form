@@ -86,6 +86,7 @@ describe('form - lifecycle', () => {
         validators: [
           {
             run: () => 'Submit error',
+            triggers: [],
           },
         ],
       })
@@ -216,6 +217,7 @@ describe('form - lifecycle', () => {
         validators: [
           {
             run: () => 'Submit-only validator failed',
+            triggers: [],
           },
         ],
       })
@@ -363,6 +365,7 @@ describe('form - lifecycle', () => {
         validators: [
           {
             run: () => 'Name is required',
+            triggers: [],
           },
         ],
       })
@@ -371,6 +374,7 @@ describe('form - lifecycle', () => {
         validators: [
           {
             run: () => 'Email is required',
+            triggers: [],
           },
         ],
       })

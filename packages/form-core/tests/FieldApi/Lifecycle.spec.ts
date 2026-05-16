@@ -58,7 +58,7 @@ describe('field - lifecycle', () => {
       const form = new InternalFormApi({ defaultValues: { x: '' } })
       const field = form._getOrCreateFieldApi({
         name: 'x',
-        validators: [{ run: validator }],
+        validators: [{ run: validator, triggers: [] }],
       })
 
       field._kill()

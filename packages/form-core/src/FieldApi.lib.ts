@@ -755,7 +755,7 @@ export class InternalFieldApi<
     const eventErrorIndexes: Array<number> = []
 
     for (let i = 0; i < validators.length; i++) {
-      const runsOnChange = validators[i]!.triggers?.some((trigger) =>
+      const runsOnChange = validators[i]!.triggers.some((trigger) =>
         isValidationTriggerEnabled(trigger, {
           event: 'change',
           fieldApi: this,
@@ -1466,12 +1466,6 @@ function shouldDisplayErrors(
       return baseMeta.isTouched || baseMeta.childContributionCounts.touched > 0
     case 'blurred':
       return baseMeta.isBlurred
-    case 'touched-or-submit-attempted':
-      return (
-        baseMeta.isTouched ||
-        baseMeta.childContributionCounts.touched > 0 ||
-        hasSubmitBeenAttempted
-      )
     case 'blurred-or-submit-attempted':
       return baseMeta.isBlurred || hasSubmitBeenAttempted
     case 'submit-attempted':
