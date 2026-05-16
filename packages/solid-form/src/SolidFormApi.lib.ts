@@ -11,17 +11,19 @@ import type {
 import type { FormOptions } from '@tanstack/form-core-v2'
 
 export interface InternalSolidFormApi
-  extends InternalFormApi<any, any>, SolidTanStackFormComponents<any, any> {}
+  extends
+    InternalFormApi<any, any, any>,
+    SolidTanStackFormComponents<any, any, any> {}
 
 export function initializeForm(
-  options: FormOptions<any, any>,
+  options: FormOptions<any, any, any>,
 ): InternalSolidFormApi {
   const form = new InternalFormApi(options)
 
   const solidFormApi: InternalSolidFormApi = form as never
 
   solidFormApi.Field = function TanStackFormField(
-    props: SolidFormFieldProps<any, any, any, any, any>,
+    props: SolidFormFieldProps<any, any, any, any, any, any>,
   ) {
     const fieldOptions = mergeProps(props, { form })
     const fieldApi = createField(() => fieldOptions)
@@ -30,7 +32,7 @@ export function initializeForm(
   }
 
   solidFormApi.ArrayField = function TanStackFormArrayField(
-    props: SolidFormArrayFieldProps<Array<any>, any, any, any, any>,
+    props: SolidFormArrayFieldProps<Array<any>, any, any, any, any, any>,
   ) {
     const fieldOptions = mergeProps(props, { form })
     const fieldApi = createArrayField(() => fieldOptions)
@@ -39,7 +41,7 @@ export function initializeForm(
   }
 
   solidFormApi.Subscribe = function TanStackFormSubscribe(
-    props: SolidFormSubscribeProps<any, any, any>,
+    props: SolidFormSubscribeProps<any, any, any, any>,
   ) {
     return Subscribe(mergeProps(props, { source: solidFormApi.store }))
   }

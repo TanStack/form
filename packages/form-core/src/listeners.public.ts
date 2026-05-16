@@ -16,7 +16,7 @@ export type FieldListenerTriggers = FormListenerTriggers | 'unmount'
 // shared
 
 export interface ListenerPredicateContext<TFormData, TValue> {
-  formApi: FormApi<TFormData, ReadonlyArray<any>>
+  formApi: FormApi<TFormData, any, any>
   triggerFieldApi?: AnyFieldApi
   value: TValue
 }
@@ -64,36 +64,50 @@ export interface Listener<
 export interface FormListenerContext<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  TSubmitReturn,
 > {
-  triggerFieldApi?: FieldApi<TFormData, TFormValidators, any, any, any>
-  formApi: FormApi<TFormData, TFormValidators>
+  triggerFieldApi?: FieldApi<
+    TFormData,
+    TFormValidators,
+    TSubmitReturn,
+    any,
+    any,
+    any
+  >
+  formApi: FormApi<TFormData, TFormValidators, TSubmitReturn>
   value: TFormData
 }
 
 export type FormListenerFn<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
-> = (context: FormListenerContext<TFormData, TFormValidators>) => void
+  TSubmitReturn,
+> = (
+  context: FormListenerContext<TFormData, TFormValidators, TSubmitReturn>,
+) => void
 
-export type AnyFormListener = FormListener<any, any>
+export type AnyFormListener = FormListener<any, any, any>
 
 export interface FormListener<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  TSubmitReturn,
 > extends Listener<FormListenerTriggers, TFormData, TFormData> {
-  run: FormListenerFn<TFormData, TFormValidators>
+  run: FormListenerFn<TFormData, TFormValidators, TSubmitReturn>
 }
 
 export type FormListeners<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
-> = Array<FormListener<TFormData, TFormValidators>>
+  TSubmitReturn,
+> = Array<FormListener<TFormData, TFormValidators, TSubmitReturn>>
 
 // field
 
 export interface FieldListenerContext<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
   TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
@@ -102,11 +116,12 @@ export interface FieldListenerContext<
   fieldApi: FieldApi<
     TFormData,
     TFormValidators,
+    TSubmitReturn,
     TFieldName,
     TFieldValue,
     TFieldValidators
   >
-  formApi: FormApi<TFormData, TFormValidators>
+  formApi: FormApi<TFormData, TFormValidators, TSubmitReturn>
 }
 
 // Field A listens to field B
@@ -117,6 +132,7 @@ export interface FieldListenerContext<
 export type FieldListenerFn<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
   TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
@@ -124,17 +140,19 @@ export type FieldListenerFn<
   context: FieldListenerContext<
     TFormData,
     TFormValidators,
+    TSubmitReturn,
     TFieldName,
     TFieldValue,
     TFieldValidators
   >,
 ) => void
 
-export type AnyFieldListener = FieldListener<any, any, any, any, any>
+export type AnyFieldListener = FieldListener<any, any, any, any, any, any>
 
 export interface FieldListener<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
   TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
@@ -142,6 +160,7 @@ export interface FieldListener<
   run: FieldListenerFn<
     TFormData,
     TFormValidators,
+    TSubmitReturn,
     TFieldName,
     TFieldValue,
     TFieldValidators
@@ -156,6 +175,7 @@ export interface FieldListener<
 export type FieldListeners<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
   TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
@@ -163,6 +183,7 @@ export type FieldListeners<
   FieldListener<
     TFormData,
     TFormValidators,
+    TSubmitReturn,
     TFieldName,
     TFieldValue,
     TFieldValidators

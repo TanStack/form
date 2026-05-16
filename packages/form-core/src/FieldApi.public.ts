@@ -32,17 +32,23 @@ export interface SubfieldsMeta {
 export interface OriginalFieldMeta<
   TFormValidators extends FormValidators<any>,
   TFieldValidators extends FieldValidators<any, any, any>,
+  TSubmitReturn,
 > {
-  errors: ValidationFieldErrors<TFormValidators, TFieldValidators>
+  errors: ValidationFieldErrors<
+    TFormValidators,
+    TFieldValidators,
+    TSubmitReturn
+  >
   isValid: boolean
   isInvalid: boolean
 }
 
-export type AnyFieldMeta = FieldMeta<any, any>
+export type AnyFieldMeta = FieldMeta<any, any, any>
 
 export interface FieldMeta<
   TFormValidators extends FormValidators<any>,
   TFieldValidators extends FieldValidators<any, any, any>,
+  TSubmitReturn,
 > extends BaseFieldMeta {
   isPristine: boolean
   isSelfTouched: boolean
@@ -52,26 +58,32 @@ export interface FieldMeta<
   isSelfValidating: boolean
   isValid: boolean
   subfields: SubfieldsMeta
-  errors: ValidationFieldErrors<TFormValidators, TFieldValidators>
-  original: OriginalFieldMeta<TFormValidators, TFieldValidators>
+  errors: ValidationFieldErrors<
+    TFormValidators,
+    TFieldValidators,
+    TSubmitReturn
+  >
+  original: OriginalFieldMeta<TFormValidators, TFieldValidators, TSubmitReturn>
 }
 
 export interface FieldState<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
   TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
 > {
   value: TFieldValue
-  meta: FieldMeta<TFormValidators, TFieldValidators>
+  meta: FieldMeta<TFormValidators, TFieldValidators, TSubmitReturn>
 }
 
-export type AnyFieldApi = FieldApi<any, any, any, any, any>
+export type AnyFieldApi = FieldApi<any, any, any, any, any, any>
 
 export interface FieldApi<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
   TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
@@ -79,7 +91,7 @@ export interface FieldApi<
   /**
    * The form that owns this field.
    */
-  form: FormApi<TFormData, TFormValidators>
+  form: FormApi<TFormData, TFormValidators, TSubmitReturn>
 
   /**
    * The name of the field.
@@ -158,6 +170,7 @@ export interface FieldApi<
   state: FieldState<
     TFormData,
     TFormValidators,
+    TSubmitReturn,
     TFieldName,
     TFieldValue,
     TFieldValidators
@@ -165,9 +178,13 @@ export interface FieldApi<
 
   value: TFieldValue
 
-  meta: FieldMeta<TFormValidators, TFieldValidators>
+  meta: FieldMeta<TFormValidators, TFieldValidators, TSubmitReturn>
 
-  errors: ValidationFieldErrors<TFormValidators, TFieldValidators>
+  errors: ValidationFieldErrors<
+    TFormValidators,
+    TFieldValidators,
+    TSubmitReturn
+  >
 
   handleChange: (
     value: Updater<TFieldValue>,
@@ -182,6 +199,7 @@ export interface FieldApi<
 export interface FieldApiOptions<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
   TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
@@ -192,6 +210,7 @@ export interface FieldApiOptions<
   listeners?: FieldListeners<
     TFormData,
     TFormValidators,
+    TSubmitReturn,
     TFieldName,
     TFieldValue,
     TFieldValidators

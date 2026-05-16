@@ -8,8 +8,12 @@ import type { ReactFormApi } from './useForm.public'
 export type CrossVersionReactNode = ReturnType<FunctionComponent<{}>>
 
 export type ReactFormType<TOptions extends AnyFormOptions> =
-  TOptions extends FormOptions<infer TFormData, infer TFormValidators>
-    ? ReactFormApi<TFormData, TFormValidators>
+  TOptions extends FormOptions<
+    infer TFormData,
+    infer TFormValidators,
+    infer TSubmitReturn
+  >
+    ? ReactFormApi<TFormData, TFormValidators, TSubmitReturn>
     : never
 
 // AppForm type helper plan

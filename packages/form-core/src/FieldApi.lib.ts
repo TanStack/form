@@ -63,7 +63,7 @@ import type {
   ValidationIssue,
 } from './validation.public'
 
-export type AnyFieldApiOptions = FieldApiOptions<any, any, any, any, any>
+export type AnyFieldApiOptions = FieldApiOptions<any, any, any, any, any, any>
 export type AnyFieldValidator = FieldValidator<any, any, any>
 
 // TODO Should be irrelevant for SSR, but double check please
@@ -104,6 +104,7 @@ export interface InternalBaseFieldMeta extends BaseFieldMeta, MetaExtension {}
 export interface InternalFieldMeta extends AnyPublicFieldMeta, MetaExtension {}
 
 export interface InternalFieldState extends PublicFieldState<
+  any,
   any,
   any,
   any,
@@ -310,17 +311,19 @@ function hasFieldValidatorErrors(
   return false
 }
 
-export type AnyInternalFieldApi = InternalFieldApi<any, any, any, any, any>
+export type AnyInternalFieldApi = InternalFieldApi<any, any, any, any, any, any>
 
 export class InternalFieldApi<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
   TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
 > implements FieldApi<
   TFormData,
   TFormValidators,
+  TSubmitReturn,
   TFieldName,
   TFieldValue,
   TFieldValidators
@@ -1247,7 +1250,7 @@ export class InternalFieldApi<
     return this.state.meta
   }
 
-  get errors(): FieldErrors<TFormValidators, TFieldValidators> {
+  get errors(): FieldErrors<TFormValidators, TFieldValidators, TSubmitReturn> {
     return this.state.meta.errors
   }
 

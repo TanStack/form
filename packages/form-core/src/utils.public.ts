@@ -4,8 +4,9 @@ import type { FormValidators } from './validation.public'
 export function formOptions<
   TFormData,
   const TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
 >(
-  options: FormOptions<TFormData, TFormValidators>,
-): FormOptions<TFormData, TFormValidators> {
+  options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
+): FormOptions<TFormData, TFormValidators, TSubmitReturn> {
   return options
 }

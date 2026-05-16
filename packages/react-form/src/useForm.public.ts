@@ -24,21 +24,27 @@ import type {
 export type ReactFormSubscribeProps<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
   TSelected,
 > = Omit<
-  SubscribeProps<FormState<TFormData, TFormValidators>, TSelected>,
+  SubscribeProps<
+    FormState<TFormData, TFormValidators, TSubmitReturn>,
+    TSelected
+  >,
   'source'
 >
 
 export interface ReactFormFieldProps<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
   TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
 > extends FieldApiOptions<
   TFormData,
   TFormValidators,
+  TSubmitReturn,
   TFieldName,
   TFieldValue,
   TFieldValidators
@@ -47,6 +53,7 @@ export interface ReactFormFieldProps<
     fieldApi: FieldApi<
       TFormData,
       TFormValidators,
+      TSubmitReturn,
       TFieldName,
       TFieldValue,
       TFieldValidators
@@ -57,12 +64,14 @@ export interface ReactFormFieldProps<
 export interface ReactFormArrayFieldProps<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
   TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
   TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
 > extends FieldApiOptions<
   TFormData,
   TFormValidators,
+  TSubmitReturn,
   TFieldName,
   TFieldValue,
   TFieldValidators
@@ -71,6 +80,7 @@ export interface ReactFormArrayFieldProps<
     fieldApi: FieldApi<
       TFormData,
       TFormValidators,
+      TSubmitReturn,
       TFieldName,
       TFieldValue,
       TFieldValidators
@@ -81,6 +91,7 @@ export interface ReactFormArrayFieldProps<
 export interface ReactTanStackFormComponents<
   TFormData,
   TFormValidators extends ReadonlyArray<FormValidator<TFormData>>,
+  TSubmitReturn,
 > {
   /**
    * TODO docs
@@ -97,6 +108,7 @@ export interface ReactTanStackFormComponents<
     props: ReactFormFieldProps<
       TFormData,
       TFormValidators,
+      TSubmitReturn,
       TFieldName,
       TFieldValue,
       TFieldValidators
@@ -114,23 +126,30 @@ export interface ReactTanStackFormComponents<
     props: ReactFormArrayFieldProps<
       TFormData,
       TFormValidators,
+      TSubmitReturn,
       TFieldName,
       TFieldValue,
       TFieldValidators
     >,
   ) => CrossVersionReactNode
   Subscribe: <TSelected, TFormValidators extends FormValidators<TFormData>>(
-    props: ReactFormSubscribeProps<TFormData, TFormValidators, TSelected>,
+    props: ReactFormSubscribeProps<
+      TFormData,
+      TFormValidators,
+      TSubmitReturn,
+      TSelected
+    >,
   ) => CrossVersionReactNode
 }
 
 export interface ReactFormApi<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
 >
   extends
-    FormApi<TFormData, TFormValidators>,
-    ReactTanStackFormComponents<TFormData, TFormValidators> {}
+    FormApi<TFormData, TFormValidators, TSubmitReturn>,
+    ReactTanStackFormComponents<TFormData, TFormValidators, TSubmitReturn> {}
 
 /**
  * TODO docs
@@ -138,9 +157,10 @@ export interface ReactFormApi<
 export function useForm<
   TData,
   const TFormValidators extends FormValidators<TData>,
+  TSubmitReturn,
 >(
-  options: FormOptions<TData, TFormValidators>,
-): ReactFormApi<TData, TFormValidators> {
+  options: FormOptions<TData, TFormValidators, TSubmitReturn>,
+): ReactFormApi<TData, TFormValidators, TSubmitReturn> {
   const formRef = useRef<InternalReactFormApi>(null)
 
   if (!formRef.current) {

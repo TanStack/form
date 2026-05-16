@@ -657,7 +657,8 @@ export function runFormValidatorPipeline({
   onResult,
   hasFailedBefore,
 }: FormValidatorPipelineArgs): Promise<FormValidatorPipelineResult> {
-  const cache = (context.formApi as InternalFormApi<any, any>)._pipelineCache
+  const cache = (context.formApi as InternalFormApi<any, any, any>)
+    ._pipelineCache
 
   return runValidatorPipeline<FormValidateResult<any>>({
     pipeline,

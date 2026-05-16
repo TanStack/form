@@ -13,17 +13,19 @@ import type {
 import type { FormOptions } from '@tanstack/form-core-v2'
 
 export interface InternalReactFormApi
-  extends InternalFormApi<any, any>, ReactTanStackFormComponents<any, any> {}
+  extends
+    InternalFormApi<any, any, any>,
+    ReactTanStackFormComponents<any, any, any> {}
 
 export function initializeForm(
-  options: FormOptions<any, any>,
+  options: FormOptions<any, any, any>,
 ): InternalReactFormApi {
   const form = new InternalFormApi(options)
 
   const reactFormApi: InternalReactFormApi = form as never
 
   reactFormApi.Field = function TanStackFormField(
-    props: ReactFormFieldProps<any, any, any, any, any>,
+    props: ReactFormFieldProps<any, any, any, any, any, any>,
   ) {
     const fieldApi = useField({ ...props, form })
 
@@ -34,7 +36,7 @@ export function initializeForm(
   }
 
   reactFormApi.ArrayField = function TanStackFormArrayField(
-    props: ReactFormArrayFieldProps<Array<any>, any, any, any, any>,
+    props: ReactFormArrayFieldProps<Array<any>, any, any, any, any, any>,
   ) {
     const fieldApi = useField({ ...props, form })
 
@@ -47,7 +49,7 @@ export function initializeForm(
   }
 
   reactFormApi.Subscribe = function TanStackFormSubscribe(
-    props: ReactFormSubscribeProps<any, any, any>,
+    props: ReactFormSubscribeProps<any, any, any, any>,
   ) {
     return <StoreSubscribe source={reactFormApi.store} {...props} />
   }

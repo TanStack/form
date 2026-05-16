@@ -19,19 +19,19 @@ type ListenerEvent = FieldListenerTriggers
 type FormInputContext = {
   event: ListenerEvent
   triggerFieldApi?: AnyInternalFieldApi
-  formApi: InternalFormApi<any, any>
+  formApi: InternalFormApi<any, any, any>
 }
 
 type FieldInputContext = {
   event: ListenerEvent
   fieldApi: AnyInternalFieldApi
-  formApi: InternalFormApi<any, any>
+  formApi: InternalFormApi<any, any, any>
 }
 
 type InputContext = FormInputContext | FieldInputContext
 type ListenerContext =
-  | FormListenerContext<any, any>
-  | FieldListenerContext<any, any, any, any, any>
+  | FormListenerContext<any, any, any>
+  | FieldListenerContext<any, any, any, any, any, any>
 type AnyListener = AnyFormListener | AnyFieldListener
 
 export type ListenerDebouncer = LiteDebouncer<

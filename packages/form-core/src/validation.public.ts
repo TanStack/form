@@ -1,5 +1,5 @@
 import type { DeepKeys, DeepValue } from './deep-keys.public'
-import type { FormApi } from './FormApi.public'
+import type { FormApi, OnSubmitError } from './FormApi.public'
 import type { AnyFieldApi, FieldApi } from './FieldApi.public'
 import type {
   StandardSchemaV1,
@@ -49,7 +49,7 @@ export type ErrorVisibility =
   | 'submit-attempted'
 
 export interface ValidationPredicateContext<TFormData, TValue> {
-  formApi: FormApi<TFormData, ReadonlyArray<any>>
+  formApi: FormApi<TFormData, any, any>
   triggerFieldApi?: AnyFieldApi
   value: TValue
 }
@@ -89,7 +89,7 @@ export interface ValidationAggregateError<TFormData> {
 interface BaseValidatorContext<TFormData> {
   event: ValidationTrigger
   signal: AbortSignal
-  formApi: FormApi<TFormData, ReadonlyArray<any>>
+  formApi: FormApi<TFormData, any, any>
 }
 
 export interface FormValidatorContext<
@@ -156,7 +156,7 @@ export interface FieldValidatorContext<
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
 > extends BaseValidatorContext<TFormData> {
-  fieldApi: FieldApi<TFormData, any, TFieldName, TFieldValue, any>
+  fieldApi: FieldApi<TFormData, any, any, TFieldName, TFieldValue, any>
   value: TFieldValue
 }
 
@@ -190,88 +190,85 @@ export type FieldValidators<
   TFieldValue extends DeepValue<TFormData, TFieldName>,
 > = ReadonlyArray<FieldValidator<TFormData, TFieldName, TFieldValue>>
 
+type NormalizeValidationResult<TResult> = NormalizeValidationError<
+  Exclude<TResult, ValidValidationResult>
+>
+
 type NormalizeValidationError<TError> =
   TError extends ReadonlyArray<infer TItem>
     ? NormalizeValidationError<TItem>
     : TError extends string
       ? ValidationIssue
-      : TError
+      : TError extends ValidationIssue
+        ? TError
+        : ValidationIssue
 
-type ExtractFormError<TFormValidator> = TFormValidator extends {
-  run: StandardSchemaV1<any, any>
-}
-  ? StandardSchemaV1Issue
-  : TFormValidator extends { run: (...args: any) => infer TResult }
-    ? Awaited<TResult> extends infer TAwaitedResult
-      ? TAwaitedResult extends ValidationAggregateError<any>
-        ? NormalizeValidationError<NonNullable<TAwaitedResult['form']>>
-        : NormalizeValidationError<
-            Extract<TAwaitedResult, ValidationErrorInput>
-          >
-      : never
-    : never
+type ValidationErrorTarget = 'form' | 'field'
 
-type ExtractFormValidatorFieldError<TFormValidator> = TFormValidator extends {
-  run: StandardSchemaV1<any, any>
-}
-  ? StandardSchemaV1Issue
-  : TFormValidator extends { run: (...args: any) => infer TResult }
-    ? Awaited<TResult> extends infer TAwaitedResult
-      ? TAwaitedResult extends ValidationAggregateError<any>
-        ? TAwaitedResult['fields'] extends Record<
-            PropertyKey,
-            infer TFieldError
-          >
-          ? NormalizeValidationError<TFieldError>
-          : never
+type ExtractAggregateError<TResult, TTarget extends ValidationErrorTarget> =
+  TResult extends ValidationAggregateError<any>
+    ? TTarget extends 'form'
+      ? TResult extends { form?: infer TError }
+        ? NormalizeValidationResult<TError>
         : never
-      : never
-    : never
+      : TResult extends { fields: infer TFields }
+        ? NormalizeValidationResult<TFields[keyof TFields]>
+        : never
+    : NormalizeValidationResult<TResult>
 
-type ExtractFieldValidatorError<TFieldValidator> = TFieldValidator extends {
-  run: StandardSchemaV1<any, any>
-}
+type ExtractValidatorError<
+  TValidator,
+  TTarget extends ValidationErrorTarget,
+> = TValidator extends { readonly run: StandardSchemaV1<any, any> }
   ? StandardSchemaV1Issue
-  : TFieldValidator extends { run: (...args: any) => infer TResult }
-    ? Awaited<TResult> extends infer TAwaitedResult
-      ? NormalizeValidationError<Extract<TAwaitedResult, ValidationErrorInput>>
-      : never
+  : TValidator extends { readonly run: (...args: any) => infer TResult }
+    ? ExtractAggregateError<Awaited<TResult>, TTarget>
     : never
 
-type IsAny<T> = 0 extends 1 & T ? true : false
-type IsBroadFormValidators<TFormValidators> =
-  IsAny<TFormValidators> extends true
-    ? true
-    : TFormValidators extends ReadonlyArray<infer TFormValidator>
-      ? FormValidator<any> extends TFormValidator
-        ? true
-        : false
-      : true
-type IsBroadFieldValidators<TFieldValidators> =
-  IsAny<TFieldValidators> extends true
-    ? true
-    : TFieldValidators extends ReadonlyArray<infer TFieldValidator>
-      ? FieldValidator<any, any, any> extends TFieldValidator
-        ? true
-        : false
-      : true
+type ExtractValidatorListErrors<
+  TValidators extends ReadonlyArray<any>,
+  TTarget extends ValidationErrorTarget,
+> = unknown extends TValidators
+  ? ValidationIssue
+  : ExtractValidatorError<TValidators[number], TTarget>
+
+type ExtractSubmitFormError<TSubmitReturn> =
+  TSubmitReturn extends OnSubmitError<infer TResult>
+    ? ExtractAggregateError<Awaited<TResult>, 'form'>
+    : never
+
+type ExtractSubmitFieldError<TSubmitReturn> =
+  TSubmitReturn extends OnSubmitError<infer TResult>
+    ? ExtractAggregateError<Awaited<TResult>, 'field'>
+    : never
+
+type ExtractFormValidatorErrors<TFormValidators extends FormValidators<any>> =
+  unknown extends TFormValidators
+    ? ValidationIssue
+    : ExtractValidatorError<TFormValidators[number], 'form'>
 
 export type FormErrors<
-  TFormValidators extends ReadonlyArray<FormValidator<any>>,
-> =
-  IsBroadFormValidators<TFormValidators> extends true
-    ? Array<ValidationIssue>
-    : Array<ExtractFormError<TFormValidators[number]>>
+  TFormValidators extends FormValidators<any>,
+  TSubmitReturn,
+> = Array<
+  | ExtractFormValidatorErrors<TFormValidators>
+  | ExtractSubmitFormError<TSubmitReturn>
+>
+
+type ExtractFormValidatorFieldErrors<
+  TFormValidators extends FormValidators<any>,
+> = ExtractValidatorListErrors<TFormValidators, 'field'>
+
+type ExtractFieldValidatorErrors<
+  TFieldValidators extends FieldValidators<any, any, any>,
+> = ExtractValidatorListErrors<TFieldValidators, 'field'>
 
 export type FieldErrors<
-  TFormValidators extends ReadonlyArray<FormValidator<any>>,
-  TFieldValidators extends ReadonlyArray<FieldValidator<any, any, any>>,
-> =
-  IsBroadFormValidators<TFormValidators> extends true
-    ? Array<ValidationIssue>
-    : IsBroadFieldValidators<TFieldValidators> extends true
-      ? Array<ValidationIssue>
-      : Array<
-          | ExtractFormValidatorFieldError<TFormValidators[number]>
-          | ExtractFieldValidatorError<TFieldValidators[number]>
-        >
+  TFormValidators extends FormValidators<any>,
+  TFieldValidators extends FieldValidators<any, any, any>,
+  TSubmitReturn,
+> = Array<
+  | ExtractFormValidatorFieldErrors<TFormValidators>
+  | ExtractFieldValidatorErrors<TFieldValidators>
+  | ExtractSubmitFieldError<TSubmitReturn>
+>

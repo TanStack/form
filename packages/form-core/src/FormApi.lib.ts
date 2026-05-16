@@ -24,6 +24,14 @@ import {
   runFormValidatorPipeline,
   setIndexedError,
 } from './validation.lib'
+import type {
+  CreateValidationErrorFn,
+  FormApi,
+  FormOptions,
+  FormState,
+  OnSubmitError,
+} from './FormApi.public'
+
 import type { DeepKeys } from './deep-keys.public'
 import type { PipelineCache } from './utils.lib'
 
@@ -43,7 +51,6 @@ import type {
   PropagateOptions,
 } from './types.lib'
 import type { Atom, ReadonlyAtom } from '@tanstack/store'
-import type { FormApi, FormOptions, FormState } from './FormApi.public'
 import type { FieldUpdateOptions, Updater } from './types.public'
 import type {
   FormErrors,
@@ -58,13 +65,14 @@ import type {
 
 const SUBMIT_ERROR = Symbol('SUBMIT_ERROR')
 
-type OnSubmitError<T extends FormValidationError<any>> = T & {
-  [SUBMIT_ERROR]: true
+function isSubmitError<TFormData>(
+  value: unknown,
+): value is FormValidationError<TFormData> {
+  return isNotNil(value) && Boolean((value as any)[SUBMIT_ERROR])
 }
 
-const createValidationError = <
-  TFormData,
-  TError extends FormValidationError<TFormData>,
+const createValidationError: CreateValidationErrorFn<any> = <
+  TError extends FormValidationError<any>,
 >(
   error: TError,
 ): OnSubmitError<TError> => {
@@ -75,7 +83,8 @@ const createValidationError = <
   } else {
     output = error as any
   }
-  output[SUBMIT_ERROR] = true
+  const runtimeOutput = output as any
+  runtimeOutput[SUBMIT_ERROR] = true
 
   return output
 }
@@ -193,7 +202,7 @@ function createInitialFormMeta(validatorCount: number): BaseFormMeta {
     -> Should errors move with the field, or should they remain at the name
  */
 
-export type AnyInternalFormApi = InternalFormApi<any, any>
+export type AnyInternalFormApi = InternalFormApi<any, any, any>
 
 function hasFieldEventErrors(
   field: AnyInternalFieldApi,
@@ -259,27 +268,28 @@ function reconcileErrorFields(
 export class InternalFormApi<
   TFormData,
   const TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
   // TODO submit return (possible error)
-> implements FormApi<TFormData, TFormValidators> {
+> implements FormApi<TFormData, TFormValidators, TSubmitReturn> {
   valuesAtom: Atom<TFormData>
-  store: ReadonlyAtom<FormState<TFormData, TFormValidators>>
+  store: ReadonlyAtom<FormState<TFormData, TFormValidators, any>>
   _formMetaAtom: Atom<BaseFormMeta>
   _submissionAttemptsAtom: Atom<number>
   _resetVersionAtom: Atom<number>
   _fieldRootNode: InternalRootFieldApi
-  _options: FormOptions<TFormData, TFormValidators>
+  _options: FormOptions<TFormData, TFormValidators, any>
   _lastUpdateDefaultValues: TFormData
   _pipelineCache: PipelineCache<any>
   _schemaOutputs: Array<any> = []
 
-  get state(): FormState<TFormData, TFormValidators> {
+  get state(): FormState<TFormData, TFormValidators, any> {
     return this.store.get()
   }
-  get options(): FormOptions<TFormData, TFormValidators> {
+  get options(): FormOptions<TFormData, TFormValidators, any> {
     return this._options
   }
 
-  constructor(options: FormOptions<TFormData, TFormValidators>) {
+  constructor(options: FormOptions<TFormData, TFormValidators, any>) {
     this._options = options
     this._lastUpdateDefaultValues = options.defaultValues
     this.valuesAtom = createAtom(options.defaultValues)
@@ -318,12 +328,12 @@ export class InternalFormApi<
           isTouched,
           isDirty,
           isPristine,
-          formErrors: formErrors as FormErrors<TFormValidators>,
+          formErrors: formErrors as FormErrors<TFormValidators, any>,
           canSubmit,
           isSubmitting: baseFormMeta.isSubmitting,
           isValidating,
           submissionAttempts,
-        } satisfies FormState<TFormData, TFormValidators>
+        } satisfies FormState<TFormData, TFormValidators, any>
       },
       { compare: shallow },
     )
@@ -356,7 +366,7 @@ export class InternalFormApi<
     })
   }
 
-  _update = (options: FormOptions<TFormData, TFormValidators>) => {
+  _update = (options: FormOptions<TFormData, TFormValidators, any>) => {
     const oldOptions = this.options
     const didDefaultValuesChange = !evaluate(
       options.defaultValues,
@@ -1219,7 +1229,7 @@ export class InternalFormApi<
 
       // Anyways, point is that onSubmit will be [validators.length], so we can always assume it's onSubmit
 
-      if (isNotNil(maybeError) && maybeError[SUBMIT_ERROR]) {
+      if (isSubmitError<TFormData>(maybeError)) {
         this._processValidationResult(
           {
             validatorIndex: this.options.validators?.length ?? 0,

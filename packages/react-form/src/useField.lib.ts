@@ -8,9 +8,10 @@ export interface InternalFieldProps extends ReactFormFieldProps<
   any,
   any,
   any,
+  any,
   any
 > {
-  form: InternalFormApi<any, any>
+  form: InternalFormApi<any, any, any>
 }
 
 export function useField(options: InternalFieldProps) {

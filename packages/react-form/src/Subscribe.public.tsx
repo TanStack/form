@@ -39,9 +39,13 @@ export interface SubscribeProps<TSourceData, TSelected> {
 export function Subscribe<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
   TSelected,
 >(
-  props: SubscribeProps<FormState<TFormData, TFormValidators>, TSelected>,
+  props: SubscribeProps<
+    FormState<TFormData, TFormValidators, TSubmitReturn>,
+    TSelected
+  >,
 ): ReturnType<FunctionComponent> {
   const selected = useSelector(
     // Atom and store share the same selection protocol; union args need a widen for TS.

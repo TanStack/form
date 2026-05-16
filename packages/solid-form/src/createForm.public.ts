@@ -17,25 +17,30 @@ import type { Accessor, JSX } from 'solid-js'
 export interface SolidFormSubscribeProps<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
   TSelected,
 > {
   /**
    * Select from the full form state. Children receive a Solid accessor for the
    * selected value.
    */
-  selector: (state: FormState<TFormData, TFormValidators>) => TSelected
+  selector: (
+    state: FormState<TFormData, TFormValidators, TSubmitReturn>,
+  ) => TSelected
   children: JSX.Element | ((state: Accessor<TSelected>) => JSX.Element)
 }
 
 export interface SolidFormFieldProps<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
   TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
 > extends FieldApiOptions<
   TFormData,
   TFormValidators,
+  TSubmitReturn,
   TFieldName,
   TFieldValue,
   TFieldValidators
@@ -45,6 +50,7 @@ export interface SolidFormFieldProps<
       FieldApi<
         TFormData,
         TFormValidators,
+        TSubmitReturn,
         TFieldName,
         TFieldValue,
         TFieldValidators
@@ -56,12 +62,14 @@ export interface SolidFormFieldProps<
 export interface SolidFormArrayFieldProps<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
   TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
   TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
 > extends FieldApiOptions<
   TFormData,
   TFormValidators,
+  TSubmitReturn,
   TFieldName,
   TFieldValue,
   TFieldValidators
@@ -71,6 +79,7 @@ export interface SolidFormArrayFieldProps<
       FieldApi<
         TFormData,
         TFormValidators,
+        TSubmitReturn,
         TFieldName,
         TFieldValue,
         TFieldValidators
@@ -82,6 +91,7 @@ export interface SolidFormArrayFieldProps<
 export interface SolidTanStackFormComponents<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
 > {
   /**
    * TODO docs
@@ -98,6 +108,7 @@ export interface SolidTanStackFormComponents<
     props: SolidFormFieldProps<
       TFormData,
       TFormValidators,
+      TSubmitReturn,
       TFieldName,
       TFieldValue,
       TFieldValidators
@@ -115,33 +126,41 @@ export interface SolidTanStackFormComponents<
     props: SolidFormArrayFieldProps<
       TFormData,
       TFormValidators,
+      TSubmitReturn,
       TFieldName,
       TFieldValue,
       TFieldValidators
     >,
   ) => JSX.Element
   Subscribe: <TSelected>(
-    props: SolidFormSubscribeProps<TFormData, TFormValidators, TSelected>,
+    props: SolidFormSubscribeProps<
+      TFormData,
+      TFormValidators,
+      TSubmitReturn,
+      TSelected
+    >,
   ) => JSX.Element
 }
 
 export interface SolidFormApi<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
 >
   extends
-    FormApi<TFormData, TFormValidators>,
-    SolidTanStackFormComponents<TFormData, TFormValidators> {}
+    FormApi<TFormData, TFormValidators, TSubmitReturn>,
+    SolidTanStackFormComponents<TFormData, TFormValidators, TSubmitReturn> {}
 
 /**
  * TODO docs
  */
 export function createForm<
   TData,
-  TFormValidators extends FormValidators<TData>,
+  const TFormValidators extends FormValidators<TData>,
+  TSubmitReturn,
 >(
-  options: Accessor<FormOptions<TData, TFormValidators>>,
-): SolidFormApi<TData, TFormValidators> {
+  options: Accessor<FormOptions<TData, TFormValidators, TSubmitReturn>>,
+): SolidFormApi<TData, TFormValidators, TSubmitReturn> {
   const form = untrack(() => initializeForm(options()))
 
   createRenderEffect(() => {

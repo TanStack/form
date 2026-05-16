@@ -15,37 +15,47 @@ import type {
   FormValidators,
 } from './validation.public'
 
-export type CreateValidationErrorFn<TFormData> = (
-  error: FormValidationError<TFormData>,
-) => FormValidationError<TFormData>
+declare const onSubmitErrorBrand: unique symbol
+
+export type OnSubmitError<T extends FormValidationError<any>> = T & {
+  [onSubmitErrorBrand]: true
+}
+
+export type CreateValidationErrorFn<TFormData> = <
+  TError extends FormValidationError<TFormData>,
+>(
+  error: TError,
+) => OnSubmitError<TError>
 
 export interface FormSubmitContext<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
 > {
   value: TFormData
-  formApi: FormApi<TFormData, TFormValidators>
+  formApi: FormApi<TFormData, TFormValidators, any>
   schemaOutputs: FormStandardSchemaValidatorOutputs<TFormValidators>
   createValidationError: CreateValidationErrorFn<TFormData>
 }
 
-export type AnyFormOptions = FormOptions<any, any>
+export type AnyFormOptions = FormOptions<any, any, any>
 
 export interface FormOptions<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
 > {
   defaultValues: TFormData
   errorVisibility?: ErrorVisibility
   validators?: TFormValidators
   onSubmit?: (
     context: FormSubmitContext<TFormData, TFormValidators>,
-  ) => any | Promise<any>
+  ) => TSubmitReturn
 }
 
 export interface FormState<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
 > {
   /**
    * The current values of the form.
@@ -68,7 +78,7 @@ export interface FormState<
   /**
    * Array of form-level validation errors.
    */
-  formErrors: FormErrors<TFormValidators>
+  formErrors: FormErrors<TFormValidators, TSubmitReturn>
   /**
    * Whether the form can currently be submitted.
    *
@@ -93,15 +103,16 @@ export interface FormState<
   submissionAttempts: number
 }
 
-export type AnyFormApi = FormApi<any, any>
+export type AnyFormApi = FormApi<any, any, any>
 
 export interface FormApi<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
 > {
-  store: ReadonlyAtom<FormState<TFormData, TFormValidators>>
-  readonly state: FormState<TFormData, TFormValidators>
-  readonly options: FormOptions<TFormData, TFormValidators>
+  store: ReadonlyAtom<FormState<TFormData, TFormValidators, TSubmitReturn>>
+  readonly state: FormState<TFormData, TFormValidators, TSubmitReturn>
+  readonly options: FormOptions<TFormData, TFormValidators, TSubmitReturn>
 
   /**
    * TODO expand on it

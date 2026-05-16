@@ -28,7 +28,7 @@ describe('runFormValidatorPipeline', () => {
   }
 
   function getPipeline<T>(
-    form: InternalFormApi<T, ReadonlyArray<any>>,
+    form: InternalFormApi<T, any, any>,
     pipeline: Array<FormValidator<T>>,
   ) {
     return {
@@ -58,7 +58,7 @@ describe('runFormValidatorPipeline', () => {
     TFieldName extends DeepKeys<TFormData>,
     TFieldValue extends DeepValue<TFormData, TFieldName>,
   >(
-    form: InternalFormApi<TFormData, ReadonlyArray<any>>,
+    form: InternalFormApi<TFormData, any, any>,
     field: AnyInternalFieldApi,
     pipeline: Array<FieldValidator<TFormData, TFieldName, TFieldValue>>,
   ) {
