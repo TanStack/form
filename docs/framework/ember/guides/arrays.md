@@ -19,12 +19,12 @@ const PeopleForm = createForm({
 });
 
 <template>
-  <PeopleForm as |Form|>
-    <Form.Field @name="people" @mode="array" as |field|>
+  <PeopleForm as |tanstackForm|>
+    <tanstackForm.Field @name="people" @mode="array" as |field|>
       {{#each field.state.value as |person|}}
         {{!-- ... --}}
       {{/each}}
-    </Form.Field>
+    </tanstackForm.Field>
   </PeopleForm>
 </template>
 ```
@@ -47,12 +47,12 @@ const handleInput = (field, event) => field.handleChange(event.target.value);
 const nameAt = (i) => `people[${i}].name`;
 
 {{!-- inside a template --}}
-<Form.Field @name={{nameAt i}} as |subField|>
+<tanstackForm.Field @name={{nameAt i}} as |subField|>
   <input
     value={{subField.state.value}}
     {{on "input" (fn handleInput subField)}}
   />
-</Form.Field>
+</tanstackForm.Field>
 ```
 
 ## Full Example
@@ -79,12 +79,12 @@ const PeopleForm = createForm({
 });
 
 <template>
-  <PeopleForm @onSubmit={{handleSubmit}} as |Form|>
-    <form id="form" {{on "submit" (onSubmitFor Form)}}>
-      <Form.Field @name="people" as |field|>
+  <PeopleForm @onSubmit={{handleSubmit}} as |f|>
+    <form id="form" {{on "submit" (onSubmitFor f)}}>
+      <f.Field @name="people" as |field|>
         <div>
           {{#each field.state.value as |person i|}}
-            <Form.Field @name={{nameAt i}} as |subField|>
+            <f.Field @name={{nameAt i}} as |subField|>
               <div>
                 <label>
                   <div>Name for person {{i}}</div>
@@ -94,14 +94,14 @@ const PeopleForm = createForm({
                   />
                 </label>
               </div>
-            </Form.Field>
+            </f.Field>
           {{/each}}
 
           <button {{on "click" (fn addPerson field)}} type="button">
             Add person
           </button>
         </div>
-      </Form.Field>
+      </f.Field>
 
       <button type="submit">Submit</button>
     </form>

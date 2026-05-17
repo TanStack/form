@@ -74,8 +74,12 @@ export interface EmberFormApi<
 
   /**
    * A `<Field>` component closure-bound to this form. Lets you write
-   * `<form.Field @name="..." as |field|>...</form.Field>` instead of passing
-   * `@form={{form}}` explicitly.
+   * `<tanstackForm.Field @name="..." as |field|>...</tanstackForm.Field>`
+   * instead of passing `@form={{tanstackForm}}` explicitly.
+   *
+   * Note: in Glimmer strict mode a block param shadows same-named HTML
+   * elements, so name the yielded value `tanstackForm` (or, when your
+   * markup includes an HTML `<form>` element, `f`) rather than `form`.
    */
   Field: TOC<BoundFieldSignature>;
 }
@@ -131,7 +135,7 @@ export type EmberFormExtendedApi<
  * Build a closure-bound `<Field>` for a specific `FormApi`. The returned
  * component takes all of `FieldSignature['Args']` minus `form` (which is
  * supplied from the closure), so it can be invoked as
- * `<form.Field @name=... />`.
+ * `<tanstackForm.Field @name=... />`.
  */
 interface BoundFieldSignature {
   Args: {
@@ -243,11 +247,11 @@ export interface FormComponentSignature<
  * });
  *
  * <template>
- *   <SignupForm @onSubmit={{handleSubmit}} as |form|>
- *     <form.Field @name="firstName" as |field|>
+ *   <SignupForm @onSubmit={{handleSubmit}} as |tanstackForm|>
+ *     <tanstackForm.Field @name="firstName" as |field|>
  *       <input value={{field.state.value}} />
- *     </form.Field>
- *     <button {{on "click" form.handleSubmit}}>Submit</button>
+ *     </tanstackForm.Field>
+ *     <button {{on "click" tanstackForm.handleSubmit}}>Submit</button>
  *   </SignupForm>
  * </template>
  * ```

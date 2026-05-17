@@ -19,15 +19,15 @@ module('Integration | Subscribe', function (hooks) {
 
   test('yields a selected slice that updates', async function (assert) {
     await render(<template>
-      <SampleForm as |form|>
-        <form.Field @name="firstName" as |field|>
+      <SampleForm as |tanstackForm|>
+        <tanstackForm.Field @name="firstName" as |field|>
           <input
             id="firstName"
             value={{field.state.value}}
             {{on "input" (fn handleInput field)}}
           />
-        </form.Field>
-        <Subscribe @form={{form}} @selector={{pickValues}} as |values|>
+        </tanstackForm.Field>
+        <Subscribe @form={{tanstackForm}} @selector={{pickValues}} as |values|>
           <output id="snapshot">{{values.firstName}}</output>
         </Subscribe>
       </SampleForm>
@@ -40,8 +40,8 @@ module('Integration | Subscribe', function (hooks) {
 
   test('omitted selector yields the full form state', async function (assert) {
     await render(<template>
-      <GraceForm as |form|>
-        <Subscribe @form={{form}} as |state|>
+      <GraceForm as |tanstackForm|>
+        <Subscribe @form={{tanstackForm}} as |state|>
           <output id="firstNameSnapshot">{{state.values.firstName}}</output>
         </Subscribe>
       </GraceForm>

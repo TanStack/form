@@ -51,25 +51,25 @@ export const PersonForm = createForm({
   <PersonForm
     @defaultValues={{@initial}}
     @onSubmit={{handleSubmit}}
-    as |Form|
+    as |f|
   >
-    <form {{on "submit" (onSubmitFor Form)}}>
-      <Form.Field @name="firstName" as |field|>
+    <form {{on "submit" (onSubmitFor f)}}>
+      <f.Field @name="firstName" as |field|>
         <input
           name={{field.name}}
           value={{field.state.value}}
           {{on "blur" field.handleBlur}}
           {{on "input" (fn handleInput field)}}
         />
-      </Form.Field>
-      <Form.Field @name="lastName" as |field|>
+      </f.Field>
+      <f.Field @name="lastName" as |field|>
         <input
           name={{field.name}}
           value={{field.state.value}}
           {{on "blur" field.handleBlur}}
           {{on "input" (fn handleInput field)}}
         />
-      </Form.Field>
+      </f.Field>
       <button type="submit">Submit</button>
     </form>
   </PersonForm>

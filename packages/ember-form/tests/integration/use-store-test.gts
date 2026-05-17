@@ -26,15 +26,15 @@ module('Integration | form.useStore', function (hooks) {
 
   test('selector returns reactive slice that updates', async function (assert) {
     await render(<template>
-      <SampleForm as |form|>
-        <form.Field @name="firstName" as |field|>
+      <SampleForm as |tanstackForm|>
+        <tanstackForm.Field @name="firstName" as |field|>
           <input
             id="firstName"
             value={{field.state.value}}
             {{on "input" (fn handleInput field)}}
           />
-        </form.Field>
-        <FirstNameSlice @form={{form}} as |value|>
+        </tanstackForm.Field>
+        <FirstNameSlice @form={{tanstackForm}} as |value|>
           <output id="store">{{value}}</output>
         </FirstNameSlice>
       </SampleForm>

@@ -47,9 +47,9 @@ export default class ApplicationTemplate extends Component {
 
     <h1>TanStack Form &mdash; Ember Demo</h1>
 
-    <PersonForm @onSubmit={{this.onSubmit}} as |Form|>
-      <form {{on "submit" (onSubmitFor Form)}}>
-        <Form.Field
+    <PersonForm @onSubmit={{this.onSubmit}} as |f|>
+      <form {{on "submit" (onSubmitFor f)}}>
+        <f.Field
           @name="firstName"
           @validators={{hash onChange=tooShort}}
           as |field|
@@ -64,9 +64,9 @@ export default class ApplicationTemplate extends Component {
               {{on "input" (fn handleInput field)}}
             />
           </div>
-        </Form.Field>
+        </f.Field>
 
-        <Form.Field
+        <f.Field
           @name="lastName"
           @validators={{hash onChange=tooShort}}
           as |field|
@@ -84,14 +84,14 @@ export default class ApplicationTemplate extends Component {
               <em>{{err}}</em>
             {{/each}}
           </div>
-        </Form.Field>
+        </f.Field>
 
-        <Subscribe @form={{Form}} @selector={{pickSubmitState}} as |slice|>
+        <Subscribe @form={{f}} @selector={{pickSubmitState}} as |slice|>
           <button type="submit" disabled={{slice.cantSubmit}}>
             {{if slice.isSubmitting "Submitting" "Submit"}}
           </button>
         </Subscribe>
-        <button type="button" {{on "click" Form.reset}}>Reset</button>
+        <button type="button" {{on "click" f.reset}}>Reset</button>
       </form>
     </PersonForm>
   </template>

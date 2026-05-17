@@ -82,8 +82,8 @@ const MyForm = createForm({
 });
 
 <template>
-  <MyForm as |Form|>
-    <Subscribe @form={{Form}} @selector={{onDynamicFirstName}} as |error|>
+  <MyForm as |tanstackForm|>
+    <Subscribe @form={{tanstackForm}} @selector={{onDynamicFirstName}} as |error|>
       <p>{{error}}</p>
     </Subscribe>
   </MyForm>
@@ -125,12 +125,12 @@ const MyForm = createForm({
 });
 
 <template>
-  <MyForm as |Form|>
+  <MyForm as |tanstackForm|>
     <div>
-      <Subscribe @form={{Form}} @selector={{onChangeFirstName}} as |error|>
+      <Subscribe @form={{tanstackForm}} @selector={{onChangeFirstName}} as |error|>
         <p>{{error}}</p>
       </Subscribe>
-      <Subscribe @form={{Form}} @selector={{onDynamicLastName}} as |error|>
+      <Subscribe @form={{tanstackForm}} @selector={{onDynamicLastName}} as |error|>
         <p>{{error}}</p>
       </Subscribe>
     </div>
@@ -170,9 +170,9 @@ const AgeForm = createForm({
 });
 
 <template>
-  <AgeForm @onSubmit={{handleSubmit}} as |Form|>
-    <form {{on "submit" (onSubmitFor Form)}}>
-      <Form.Field
+  <AgeForm @onSubmit={{handleSubmit}} as |f|>
+    <form {{on "submit" (onSubmitFor f)}}>
+      <f.Field
         @name="age"
         @validators={{hash onDynamic=validateAge}}
         as |field|
@@ -188,7 +188,7 @@ const AgeForm = createForm({
             {{field.state.meta.errorMap.onDynamic}}
           </p>
         </div>
-      </Form.Field>
+      </f.Field>
       <button type="submit">Submit</button>
     </form>
   </AgeForm>
