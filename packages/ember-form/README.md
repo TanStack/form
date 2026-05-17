@@ -48,9 +48,9 @@ export default class Signup extends Component {
   };
 
   <template>
-    <SignupForm @onSubmit={{this.onSubmit}} as |Form|>
-      <form {{on "submit" (onSubmitFor Form)}}>
-        <Form.Field
+    <SignupForm @onSubmit={{this.onSubmit}} as |f|>
+      <form {{on "submit" (onSubmitFor f)}}>
+        <f.Field
           @name="firstName"
           @validators={{hash onChange=tooShort}}
           as |field|
@@ -65,9 +65,9 @@ export default class Signup extends Component {
           {{#each field.state.meta.errors as |error|}}
             <em>{{error}}</em>
           {{/each}}
-        </Form.Field>
+        </f.Field>
 
-        <Subscribe @form={{Form}} @selector={{pickSubmit}} as |slice|>
+        <Subscribe @form={{f}} @selector={{pickSubmit}} as |slice|>
           <button type="submit" disabled={{slice.cantSubmit}}>
             {{if slice.isSubmitting "Submitting…" "Submit"}}
           </button>
@@ -81,11 +81,13 @@ export default class Signup extends Component {
 ### API
 
 - `createForm(baseOptions)` — Returns a Glimmer component bound to those base options. Call at module scope; the same component can be invoked multiple times. Args on the invocation site (e.g. `@onSubmit`, `@validators`, ...) override the matching `baseOptions` key.
-- The yielded `form` from the block is the `FormApi` extended with two helpers:
-  - `form.Field` — A closure-bound `<Field>` so you can write `<Form.Field @name="...">` without passing `@form`.
-  - `form.useStore(selector?)` — Returns `{ current }` where `current` is autotracked. Useful when reading the slice from JS (e.g. inside a `@cached` getter on a child component that receives the form as an arg). For inline template reads, prefer `<Subscribe>`.
-- `<Field @form @name [@validators] [@defaultValue] [@asyncDebounceMs] [@listeners] [@mode]>` — Standalone form-aware field. Same as `Form.Field` but with `@form` passed explicitly.
+- The block param yields the `FormApi` extended with two helpers:
+  - `<theForm>.Field` — A closure-bound `<Field>` so you can write `<tanstackForm.Field @name="...">` without passing `@form`.
+  - `<theForm>.useStore(selector?)` — Returns `{ current }` where `current` is autotracked. Useful when reading the slice from JS (e.g. inside a `@cached` getter on a child component that receives the form as an arg). For inline template reads, prefer `<Subscribe>`.
+- `<Field @form @name [@validators] [@defaultValue] [@asyncDebounceMs] [@listeners] [@mode]>` — Standalone form-aware field. Same as the closure-bound `.Field` but with `@form` passed explicitly.
 - `<Subscribe @form [@selector]>` — Yields the result of `selector(form.store.state)` (or the full state when omitted), reactive across changes.
+
+> **Block-param naming.** In Glimmer strict mode a block param shadows same-named HTML elements. Name the yielded value `tanstackForm`; if your markup also contains an HTML `<form>` element, use a short alias like `f` instead (a block param named `form` would make `<form>` try to render the form object as a component).
 
 Everything else is re-exported from `@tanstack/form-core` (validators, types, helpers).
 

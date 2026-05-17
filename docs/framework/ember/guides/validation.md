@@ -29,8 +29,8 @@ const AgeForm = createForm({
 });
 
 <template>
-  <AgeForm as |Form|>
-    <Form.Field
+  <AgeForm as |tanstackForm|>
+    <tanstackForm.Field
       @name="age"
       @validators={{hash onChange=validateAge}}
       as |field|
@@ -46,7 +46,7 @@ const AgeForm = createForm({
       {{#if field.state.meta.errors}}
         <em role="alert">{{field.state.meta.errors}}</em>
       {{/if}}
-    </Form.Field>
+    </tanstackForm.Field>
   </AgeForm>
 </template>
 ```
@@ -54,7 +54,7 @@ const AgeForm = createForm({
 In the example above, the validation is done at each change. If, instead, we wanted the validation to be done when the field is blurred, we would change the code above to use `onBlur`:
 
 ```gjs
-<Form.Field
+<tanstackForm.Field
   @name="age"
   @validators={{hash onBlur=validateAge}}
   as |field|
@@ -71,7 +71,7 @@ In the example above, the validation is done at each change. If, instead, we wan
   {{#if field.state.meta.errors}}
     <em role="alert">{{field.state.meta.errors}}</em>
   {{/if}}
-</Form.Field>
+</tanstackForm.Field>
 ```
 
 So you can control when the validation is done by populating the appropriate key on `@validators`. You can even perform different pieces of validation at different times:
@@ -87,8 +87,8 @@ const validateAgeOnBlur = ({ value }) =>
 const AgeForm = createForm({ defaultValues: { age: 0 } });
 
 <template>
-  <AgeForm as |Form|>
-    <Form.Field
+  <AgeForm as |tanstackForm|>
+    <tanstackForm.Field
       @name="age"
       @validators={{hash
         onChange=validateAgeOnChange
@@ -97,7 +97,7 @@ const AgeForm = createForm({ defaultValues: { age: 0 } });
       as |field|
     >
       {{!-- ... --}}
-    </Form.Field>
+    </tanstackForm.Field>
   </AgeForm>
 </template>
 ```
@@ -109,7 +109,7 @@ In the example above, we are validating different things on the same field at di
 Once you have your validation in place, you can map the errors from an array to be displayed in your UI:
 
 ```gjs
-<Form.Field
+<tanstackForm.Field
   @name="age"
   @validators={{hash onChange=validateAge}}
   as |field|
@@ -118,7 +118,7 @@ Once you have your validation in place, you can map the errors from an array to 
   {{#if field.state.meta.errors}}
     <em role="alert">{{field.state.meta.errors}}</em>
   {{/if}}
-</Form.Field>
+</tanstackForm.Field>
 ```
 
 > Note: `errors` is an array. Rendering it directly inside `{{ }}` will join with commas. If you want explicit control, iterate with `{{#each}}` or pre-join in a getter.
@@ -126,7 +126,7 @@ Once you have your validation in place, you can map the errors from an array to 
 Or use the `errorMap` property to access the specific error you're looking for:
 
 ```gjs
-<Form.Field
+<tanstackForm.Field
   @name="age"
   @validators={{hash onChange=validateAge}}
   as |field|
@@ -135,7 +135,7 @@ Or use the `errorMap` property to access the specific error you're looking for:
   {{#if field.state.meta.errorMap.onChange}}
     <em role="alert">{{field.state.meta.errorMap.onChange}}</em>
   {{/if}}
-</Form.Field>
+</tanstackForm.Field>
 ```
 
 It's worth mentioning that our `errors` array and the `errorMap` matches the types returned by the validators. This means that:
@@ -149,8 +149,8 @@ const validateAge = ({ value }) =>
 const AgeForm = createForm({ defaultValues: { age: 0 } });
 
 <template>
-  <AgeForm as |Form|>
-    <Form.Field
+  <AgeForm as |tanstackForm|>
+    <tanstackForm.Field
       @name="age"
       @validators={{hash onChange=validateAge}}
       as |field|
@@ -160,7 +160,7 @@ const AgeForm = createForm({ defaultValues: { age: 0 } });
       {{#if field.state.meta.errorMap.onChange.isOldEnough}}
         <em>The user is not old enough</em>
       {{/if}}
-    </Form.Field>
+    </tanstackForm.Field>
   </AgeForm>
 </template>
 ```
@@ -194,10 +194,10 @@ const FormWithFormLevelValidation = createForm({
 });
 
 <template>
-  <FormWithFormLevelValidation @onSubmit={{handleSubmit}} as |Form|>
+  <FormWithFormLevelValidation @onSubmit={{handleSubmit}} as |tanstackForm|>
     <div>
       {{!-- ... --}}
-      <Subscribe @form={{Form}} @selector={{onChangeErrorMap}} as |formError|>
+      <Subscribe @form={{tanstackForm}} @selector={{onChangeErrorMap}} as |formError|>
         {{#if formError}}
           <div>
             <em>There was an error on the form: {{formError}}</em>
@@ -210,7 +210,7 @@ const FormWithFormLevelValidation = createForm({
 </template>
 ```
 
-`<Subscribe>` is the recommended way to read form state in templates — give it the yielded `Form` block param and a selector, and the slice is autotracked. (If you'd rather read state from JavaScript, e.g. a `@cached` getter, write a small child component that takes `@form` and calls `form.useStore(selector)` in its constructor.)
+`<Subscribe>` is the recommended way to read form state in templates — give it the yielded form block param (`tanstackForm`, or `f` in examples that include a `<form>` element) and a selector, and the slice is autotracked. (If you'd rather read state from JavaScript, e.g. a `@cached` getter, write a small child component that takes `@form` and calls `form.useStore(selector)` in its constructor.)
 
 ## Asynchronous Functional Validation
 
@@ -232,8 +232,8 @@ const validateAgeAsync = async ({ value }) => {
 const AgeForm = createForm({ defaultValues: { age: 0 } });
 
 <template>
-  <AgeForm as |Form|>
-    <Form.Field
+  <AgeForm as |tanstackForm|>
+    <tanstackForm.Field
       @name="age"
       @validators={{hash onChangeAsync=validateAgeAsync}}
       as |field|
@@ -249,7 +249,7 @@ const AgeForm = createForm({ defaultValues: { age: 0 } });
       {{#if field.state.meta.errors}}
         <em role="alert">{{field.state.meta.errors}}</em>
       {{/if}}
-    </Form.Field>
+    </tanstackForm.Field>
   </AgeForm>
 </template>
 ```
@@ -269,8 +269,8 @@ const validateAgeOnBlurAsync = async ({ value }) => {
 const AgeForm = createForm({ defaultValues: { age: 0 } });
 
 <template>
-  <AgeForm as |Form|>
-    <Form.Field
+  <AgeForm as |tanstackForm|>
+    <tanstackForm.Field
       @name="age"
       @validators={{hash
         onBlur=validateAgeOnBlur
@@ -279,7 +279,7 @@ const AgeForm = createForm({ defaultValues: { age: 0 } });
       as |field|
     >
       {{!-- ... --}}
-    </Form.Field>
+    </tanstackForm.Field>
   </AgeForm>
 </template>
 ```
@@ -293,20 +293,20 @@ While async calls are the way to go when validating against the database, runnin
 Instead, we enable an easy method for debouncing your `async` calls by adding a single arg:
 
 ```gjs
-<Form.Field
+<tanstackForm.Field
   @name="age"
   @asyncDebounceMs={{500}}
   @validators={{hash onChangeAsync=validateAgeAsync}}
   as |field|
 >
   {{!-- ... --}}
-</Form.Field>
+</tanstackForm.Field>
 ```
 
 This will debounce every async call with a 500ms delay. You can even override this on a per-validator basis using the matching `*DebounceMs` key:
 
 ```gjs
-<Form.Field
+<tanstackForm.Field
   @name="age"
   @asyncDebounceMs={{500}}
   @validators={{hash
@@ -317,7 +317,7 @@ This will debounce every async call with a 500ms delay. You can even override th
   as |field|
 >
   {{!-- ... --}}
-</Form.Field>
+</tanstackForm.Field>
 ```
 
 > This will run `onChangeAsync` every 1500ms while `onBlurAsync` will run every 500ms.
@@ -347,14 +347,14 @@ const ageSchema = z.number().gte(13, 'You must be 13 to make an account');
 const AgeForm = createForm({ defaultValues: { age: 0 } });
 
 <template>
-  <AgeForm as |Form|>
-    <Form.Field
+  <AgeForm as |tanstackForm|>
+    <tanstackForm.Field
       @name="age"
       @validators={{hash onChange=ageSchema}}
       as |field|
     >
       {{!-- ... --}}
-    </Form.Field>
+    </tanstackForm.Field>
   </AgeForm>
 </template>
 ```
@@ -377,8 +377,8 @@ const ageSchemaAsync = z.number().refine(
 const AgeForm = createForm({ defaultValues: { age: 0 } });
 
 <template>
-  <AgeForm as |Form|>
-    <Form.Field
+  <AgeForm as |tanstackForm|>
+    <tanstackForm.Field
       @name="age"
       @validators={{hash
         onChange=ageSchema
@@ -388,7 +388,7 @@ const AgeForm = createForm({ defaultValues: { age: 0 } });
       as |field|
     >
       {{!-- ... --}}
-    </Form.Field>
+    </tanstackForm.Field>
   </AgeForm>
 </template>
 ```
@@ -416,11 +416,11 @@ const FormWithSubmitGate = createForm({
 });
 
 <template>
-  <FormWithSubmitGate as |Form|>
+  <FormWithSubmitGate as |tanstackForm|>
     {{!-- ... --}}
 
     {{!-- Dynamic submit button --}}
-    <Subscribe @form={{Form}} @selector={{submitButtonState}} as |slice|>
+    <Subscribe @form={{tanstackForm}} @selector={{submitButtonState}} as |slice|>
       <button type="submit" disabled={{slice.cantSubmit}}>
         {{if slice.isSubmitting "..." "Submit"}}
       </button>
