@@ -271,10 +271,10 @@ function reconcileErrorFields(
 // It assumes that by the time async defaultValues come in, not many fields have been touched.
 // If they were, they're likely in the same section.
 function applyDefaultValuesPreservingTouchedFields<TFormData>(
-  form: InternalFormApi<TFormData, any, any>,
+  currentValues: TFormData,
   defaultValues: TFormData,
+  form: AnyInternalFormApi,
 ): TFormData {
-  const currentValues = form.state.values
   let nextValues = defaultValues
 
   for (const field of form._fieldRootNode._children) {
@@ -419,10 +419,11 @@ export class InternalFormApi<
       if (!this.state.isTouched) {
         this.valuesAtom.set(options.defaultValues)
       } else {
-        this.valuesAtom.set(
+        this.valuesAtom.set((prev) =>
           applyDefaultValuesPreservingTouchedFields(
-            this,
+            prev,
             options.defaultValues,
+            this,
           ),
         )
       }
