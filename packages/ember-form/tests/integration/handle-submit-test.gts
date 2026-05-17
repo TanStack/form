@@ -9,6 +9,11 @@ const SampleForm = createForm({
   defaultValues: { firstName: 'Linus', lastName: 'Pauling' } as Sample,
 });
 
+const onSubmitFor = (f: { handleSubmit: () => void }) => (event: Event) => {
+  event.preventDefault();
+  f.handleSubmit();
+};
+
 module('Integration | form.handleSubmit', function (hooks) {
   setupRenderingTest(hooks);
 
@@ -21,10 +26,10 @@ module('Integration | form.handleSubmit', function (hooks) {
       };
 
       <template>
-        <SampleForm @onSubmit={{this.onSubmit}} as |form|>
-          <button id="go" type="button" {{on "click" form.handleSubmit}}>
-            Go
-          </button>
+        <SampleForm @onSubmit={{this.onSubmit}} as |f|>
+          <form {{on "submit" (onSubmitFor f)}}>
+            <button id="go" type="submit">Go</button>
+          </form>
         </SampleForm>
       </template>
     }

@@ -36,9 +36,9 @@ module('Integration | Field reactive args', function (hooks) {
       };
 
       <template>
-        <SampleForm as |form|>
+        <SampleForm as |tanstackForm|>
           <Field
-            @form={{form}}
+            @form={{tanstackForm}}
             @name="firstName"
             @validators={{hash onChange=this.validator}}
             as |field|

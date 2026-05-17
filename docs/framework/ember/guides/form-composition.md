@@ -33,10 +33,10 @@ import { peopleFormOpts } from './shared-form.ts';
 const App = createForm(peopleFormOpts);
 
 <template>
-  <App as |Form|>
-    <Form.Field @name="firstName" as |field|>
+  <App as |tanstackForm|>
+    <tanstackForm.Field @name="firstName" as |field|>
       {{!-- ... --}}
-    </Form.Field>
+    </tanstackForm.Field>
   </App>
 </template>
 ```
@@ -90,13 +90,13 @@ const App = createForm({
 });
 
 <template>
-  <App as |Form|>
-    <Form.Field @name="firstName" as |field|>
+  <App as |tanstackForm|>
+    <tanstackForm.Field @name="firstName" as |field|>
       <TextField @field={{field}} @label="First Name" />
-    </Form.Field>
-    <Form.Field @name="lastName" as |field|>
+    </tanstackForm.Field>
+    <tanstackForm.Field @name="lastName" as |field|>
       <TextField @field={{field}} @label="Last Name" />
-    </Form.Field>
+    </tanstackForm.Field>
   </App>
 </template>
 ```
@@ -148,9 +148,9 @@ const App = createForm({
 });
 
 <template>
-  <App as |Form|>
+  <App as |tanstackForm|>
     {{!-- ...fields... --}}
-    <SubscribeButton @form={{Form}} @label="Submit" />
+    <SubscribeButton @form={{tanstackForm}} @label="Submit" />
   </App>
 </template>
 ```
@@ -222,8 +222,8 @@ import ChildForm from './child-form.gts';
 const App = createForm(peopleFormOpts);
 
 <template>
-  <App as |Form|>
-    <ChildForm @form={{Form}} @title="Testing" />
+  <App as |tanstackForm|>
+    <ChildForm @form={{tanstackForm}} @title="Testing" />
   </App>
 </template>
 ```
@@ -310,12 +310,12 @@ const App = createForm({
 });
 
 <template>
-  <App as |Form|>
-    <Form.Field @name="name" as |field|>
+  <App as |tanstackForm|>
+    <tanstackForm.Field @name="name" as |field|>
       <TextField @field={{field}} @label="Name" />
-    </Form.Field>
-    <PasswordFields @form={{Form}} @title="Account Password" />
-    <SubscribeButton @form={{Form}} @label="Submit" />
+    </tanstackForm.Field>
+    <PasswordFields @form={{tanstackForm}} @title="Account Password" />
+    <SubscribeButton @form={{tanstackForm}} @label="Submit" />
   </App>
 </template>
 ```
@@ -413,8 +413,8 @@ import ChildForm from './child-form.gts';
 const PeoplePage = createForm(peopleFormOpts);
 
 <template>
-  <PeoplePage as |Form|>
-    <ChildForm @form={{Form}} @title="Testing" />
+  <PeoplePage as |tanstackForm|>
+    <ChildForm @form={{tanstackForm}} @title="Testing" />
   </PeoplePage>
 </template>
 ```

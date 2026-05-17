@@ -54,8 +54,8 @@ const handleSubmit = async ({ value }) => {
 };
 
 <template>
-  <MyForm @onSubmit={{handleSubmit}} as |Form|>
-    {{!-- ...fields go here, using Form.Field... --}}
+  <MyForm @onSubmit={{handleSubmit}} as |tanstackForm|>
+    {{!-- ...fields go here, using tanstackForm.Field... --}}
   </MyForm>
 </template>
 ```
@@ -84,17 +84,17 @@ const handleSubmit = async ({ value }) => {
 };
 
 <template>
-  <MyForm @onSubmit={{handleSubmit}} as |Form|>
+  <MyForm @onSubmit={{handleSubmit}} as |tanstackForm|>
     {{!-- ... --}}
   </MyForm>
 </template>
 ```
 
-> The invocation yields a block param — `Form` in the examples above. We capitalize it so it doesn't visually collide with the HTML `<form>` element. Use it to render fields (`<Form.Field>`) and to feed `<Subscribe @form={{Form}}>`.
+> The invocation yields a block param — `tanstackForm` in the examples above. Name it `tanstackForm` by default; a block param named `form` would shadow the HTML `<form>` element (in Glimmer strict mode `<form>` then resolves to the lexical binding and Glimmer tries to render the form object as a component). In examples that include a literal `<form>` element, use the short alias `f` instead. Use the block param to render fields (`<tanstackForm.Field>`) and to feed `<Subscribe @form={{tanstackForm}}>`.
 
 ## Field
 
-A Field represents a single form input element, such as a text input or a checkbox. Fields are created using the `<Field>` component, either via the closure-bound `Form.Field` yielded from the invocation, or by importing `Field` from `@tanstack/ember-form` and passing `@form={{Form}}` explicitly. The component accepts a `@name` arg, which should match a key in the form's default values, and yields a field object to its block.
+A Field represents a single form input element, such as a text input or a checkbox. Fields are created using the `<Field>` component, either via the closure-bound `tanstackForm.Field` yielded from the invocation, or by importing `Field` from `@tanstack/ember-form` and passing `@form={{tanstackForm}}` explicitly. The component accepts a `@name` arg, which should match a key in the form's default values, and yields a field object to its block.
 
 Example:
 
@@ -108,15 +108,15 @@ const FirstNameForm = createForm({
 });
 
 <template>
-  <FirstNameForm as |Form|>
-    <Form.Field @name="firstName" as |field|>
+  <FirstNameForm as |tanstackForm|>
+    <tanstackForm.Field @name="firstName" as |field|>
       <input
         name={{field.name}}
         value={{field.state.value}}
         {{on "blur" field.handleBlur}}
         {{on "input" (fn handleInput field)}}
       />
-    </Form.Field>
+    </tanstackForm.Field>
   </FirstNameForm>
 </template>
 ```
@@ -179,14 +179,14 @@ The Field API is the object yielded from the `<Field>` block. It provides method
 Example:
 
 ```gjs
-<Form.Field @name="firstName" as |field|>
+<tanstackForm.Field @name="firstName" as |field|>
   <input
     name={{field.name}}
     value={{field.state.value}}
     {{on "blur" field.handleBlur}}
     {{on "input" (fn handleInput field)}}
   />
-</Form.Field>
+</tanstackForm.Field>
 ```
 
 Reading `field.state.value` inside a template entangles with Glimmer's autotracking system, so the input re-renders whenever the underlying store changes — no manual subscription required.
@@ -219,8 +219,8 @@ const FirstNameForm = createForm({
 });
 
 <template>
-  <FirstNameForm as |Form|>
-    <Form.Field
+  <FirstNameForm as |tanstackForm|>
+    <tanstackForm.Field
       @name="firstName"
       @validators={{hash
         onChange=validateFirstName
@@ -235,7 +235,7 @@ const FirstNameForm = createForm({
         {{on "input" (fn handleInput field)}}
       />
       <p>{{field.state.meta.errors.[0]}}</p>
-    </Form.Field>
+    </tanstackForm.Field>
   </FirstNameForm>
 </template>
 ```
@@ -275,8 +275,8 @@ const FirstNameForm = createForm({
 });
 
 <template>
-  <FirstNameForm as |Form|>
-    <Form.Field
+  <FirstNameForm as |tanstackForm|>
+    <tanstackForm.Field
       @name="firstName"
       @validators={{hash
         onChange=firstNameSchema
@@ -292,7 +292,7 @@ const FirstNameForm = createForm({
         {{on "input" (fn handleInput field)}}
       />
       <p>{{field.state.meta.errors.[0]}}</p>
-    </Form.Field>
+    </tanstackForm.Field>
   </FirstNameForm>
 </template>
 ```
@@ -321,12 +321,12 @@ const NameForm = createForm({
 });
 
 <template>
-  <NameForm as |Form|>
-    <Subscribe @form={{Form}} @selector={{firstNameSelector}} as |firstName|>
+  <NameForm as |tanstackForm|>
+    <Subscribe @form={{tanstackForm}} @selector={{firstNameSelector}} as |firstName|>
       <p>First name: {{firstName}}</p>
     </Subscribe>
 
-    <Subscribe @form={{Form}} @selector={{submitButtonState}} as |slice|>
+    <Subscribe @form={{tanstackForm}} @selector={{submitButtonState}} as |slice|>
       <button type="submit" disabled={{slice.cantSubmit}}>
         {{if slice.isSubmitting "..." "Submit"}}
       </button>
@@ -363,14 +363,14 @@ const HobbiesForm = createForm({
 });
 
 <template>
-  <HobbiesForm as |Form|>
-    <Form.Field @name="hobbies" @mode="array" as |hobbiesField|>
+  <HobbiesForm as |tanstackForm|>
+    <tanstackForm.Field @name="hobbies" @mode="array" as |hobbiesField|>
       <div>
         Hobbies
         <div>
           {{#each hobbiesField.state.value as |_ i|}}
             <div>
-              <Form.Field @name={{nameAt i}} as |field|>
+              <tanstackForm.Field @name={{nameAt i}} as |field|>
                 <div>
                   <label for={{field.name}}>Name:</label>
                   <input
@@ -384,8 +384,8 @@ const HobbiesForm = createForm({
                     X
                   </button>
                 </div>
-              </Form.Field>
-              <Form.Field @name={{descriptionAt i}} as |field|>
+              </tanstackForm.Field>
+              <tanstackForm.Field @name={{descriptionAt i}} as |field|>
                 <div>
                   <label for={{field.name}}>Description:</label>
                   <input
@@ -396,7 +396,7 @@ const HobbiesForm = createForm({
                     {{on "change" (fn handleInput field)}}
                   />
                 </div>
-              </Form.Field>
+              </tanstackForm.Field>
             </div>
           {{else}}
             No hobbies found.
@@ -406,7 +406,7 @@ const HobbiesForm = createForm({
           Add hobby
         </button>
       </div>
-    </Form.Field>
+    </tanstackForm.Field>
   </HobbiesForm>
 </template>
 ```

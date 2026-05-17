@@ -21,7 +21,8 @@ const handleChange = (field, event) => field.handleChange(event.target.value);
 const onChangeListenTo = ['password'];
 
 // `fieldApi.form` is the underlying FormApi — the same value that's yielded
-// as the block param when the form component is invoked.
+// as the block param (named `tanstackForm` by default, or `f` in examples
+// that include a `<form>` element) when the form component is invoked.
 const validateConfirm = ({ value, fieldApi }) => {
   if (value !== fieldApi.form.getFieldValue('password')) {
     return 'Passwords do not match';
@@ -38,9 +39,9 @@ const PasswordForm = createForm({
 });
 
 <template>
-  <PasswordForm as |Form|>
+  <PasswordForm as |tanstackForm|>
     <div>
-      <Form.Field @name="password" as |field|>
+      <tanstackForm.Field @name="password" as |field|>
         <label>
           <div>Password</div>
           <input
@@ -48,8 +49,8 @@ const PasswordForm = createForm({
             {{on "change" (fn handleChange field)}}
           />
         </label>
-      </Form.Field>
-      <Form.Field
+      </tanstackForm.Field>
+      <tanstackForm.Field
         @name="confirm_password"
         @validators={{hash
           onChangeListenTo=onChangeListenTo
@@ -69,7 +70,7 @@ const PasswordForm = createForm({
             <div>{{err}}</div>
           {{/each}}
         </div>
-      </Form.Field>
+      </tanstackForm.Field>
     </div>
   </PasswordForm>
 </template>
