@@ -265,6 +265,33 @@ function reconcileErrorFields(
   return nextErrorFields
 }
 
+// This scales with the amount of top-level fields, with the setter operation
+// scaling with the amount of touched fields.
+
+// It assumes that by the time async defaultValues come in, not many fields have been touched.
+// If they were, they're likely in the same section.
+function applyDefaultValuesPreservingTouchedFields<TFormData>(
+  form: InternalFormApi<TFormData, any, any>,
+  defaultValues: TFormData,
+): TFormData {
+  const currentValues = form.state.values
+  let nextValues = defaultValues
+
+  for (const field of form._fieldRootNode._children) {
+    const baseMeta = field._getBaseMeta()
+
+    if (baseMeta.isTouched) {
+      nextValues = setBy(
+        nextValues,
+        field.name,
+        getBy(currentValues, field.name),
+      )
+    }
+  }
+
+  return nextValues
+}
+
 export class InternalFormApi<
   TFormData,
   const TFormValidators extends FormValidators<TFormData>,
@@ -391,14 +418,20 @@ export class InternalFormApi<
     if (didDefaultValuesChange) {
       if (!this.state.isTouched) {
         this.valuesAtom.set(options.defaultValues)
+      } else {
+        this.valuesAtom.set(
+          applyDefaultValuesPreservingTouchedFields(
+            this,
+            options.defaultValues,
+          ),
+        )
       }
     }
 
     // TODO plans
     // form.update(B) => A !== B -> Queue async update
     // v1: !form.isTouched -> Apply state
-    // v2?: Apply state -> Traverse fieldsMap values, if fieldApi is not touched, setFieldValue of the field path
-    //     Note: Probably should be a shallow check rather than deep, otherwise we'd have to traverse the entire defaultValues
+    // v2? If only 'a' was touched, 'b' could still receive async updates
   }
 
   getFieldValue = (fieldName: string): any => {
