@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'preact/hooks'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
+import { useStore } from '@tanstack/preact-store'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
-import { useStore } from './useStore'
 import type {
   AnyFieldApi,
   AnyFieldMeta,
@@ -15,39 +15,6 @@ import type {
 } from '@tanstack/form-core'
 import type { ComponentChild, FunctionComponent } from 'preact'
 import type { UseFieldOptions, UseFieldOptionsBound } from './types'
-
-interface ReactFieldApi<
-  TParentData,
-  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TPatentSubmitMeta,
-> {
-  /**
-   * A pre-bound and type-safe sub-field component using this field as a root.
-   */
-  Field: FieldComponent<
-    TParentData,
-    TFormOnMount,
-    TFormOnChange,
-    TFormOnChangeAsync,
-    TFormOnBlur,
-    TFormOnBlurAsync,
-    TFormOnSubmit,
-    TFormOnSubmitAsync,
-    TFormOnDynamic,
-    TFormOnDynamicAsync,
-    TFormOnServer,
-    TPatentSubmitMeta
-  >
-}
 
 /**
  * A type representing a hook for using a field in a form with the given form data type.
@@ -303,23 +270,7 @@ export function useField<
       TFormOnDynamicAsync,
       TFormOnServer,
       TPatentSubmitMeta
-    > &
-      ReactFieldApi<
-        TParentData,
-        TFormOnMount,
-        TFormOnChange,
-        TFormOnChangeAsync,
-        TFormOnBlur,
-        TFormOnBlurAsync,
-        TFormOnSubmit,
-        TFormOnSubmitAsync,
-        TFormOnDynamic,
-        TFormOnDynamicAsync,
-        TFormOnServer,
-        TPatentSubmitMeta
-      > = reactiveFieldApi as never
-
-    extendedApi.Field = Field as never
+    > = reactiveFieldApi as never
 
     return extendedApi
   }, [
