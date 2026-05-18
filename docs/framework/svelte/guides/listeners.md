@@ -21,77 +21,77 @@ Events that can be "listened" to are:
 - `onSubmit`
 - `onUnmount`
 
-```tsx
-function App() {
-  const form = useForm({
+```svelte
+<script>
+  import { createForm } from '@tanstack/svelte-form'
+
+  const form = createForm(() => ({
     defaultValues: {
       country: '',
       province: '',
     },
     // ...
-  })
+  }))
+</script>
 
-  return (
-    <div>
-      <form.Field
-        name="country"
-        listeners={{
-          onChange: ({ value }) => {
-            console.log(`Country changed to: ${value}, resetting province`)
-            form.setFieldValue('province', '')
-          },
-        }}
-      >
-        {(field) => (
-          <label>
-            <div>Country</div>
-            <input
-              value={field.state.value}
-              onChange={(e) => field.handleChange(e.target.value)}
-            />
-          </label>
-        )}
-      </form.Field>
+<div>
+  <form.Field
+    name="country"
+    listeners={{
+      onChange: ({ value }) => {
+        console.log(`Country changed to: ${value}, resetting province`)
+        form.setFieldValue('province', '')
+      },
+    }}
+  >
+    {#snippet children(field)}
+      <label>
+        <div>Country</div>
+        <input
+          value={field.state.value}
+          onchange={(e) => field.handleChange(e.target.value)}
+        />
+      </label>
+    {/snippet}
+  </form.Field>
 
-      <form.Field name="province">
-        {(field) => (
-          <label>
-            <div>Province</div>
-            <input
-              value={field.state.value}
-              onChange={(e) => field.handleChange(e.target.value)}
-            />
-          </label>
-        )}
-      </form.Field>
-    </div>
-  )
-}
+  <form.Field name="province">
+    {#snippet children(field)}
+      <label>
+        <div>Province</div>
+        <input
+          value={field.state.value}
+          onchange={(e) => field.handleChange(e.target.value)}
+        />
+      </label>
+    {/snippet}
+  </form.Field>
+</div>
 ```
 
-### Built-in Debouncing
+## Built-in Debouncing
 
 If you are making an API request inside a listener, you may want to debounce the calls as it can lead to performance issues.
 We enable an easy method for debouncing your listeners by adding a `onChangeDebounceMs` or `onBlurDebounceMs`.
 
-```tsx
+```svelte
 <form.Field
   name="country"
   listeners={{
-    onChangeDebounceMs: 500, // 500ms debounce
+    onChangeDebounceMs: 500,
     onChange: ({ value }) => {
       console.log(`Country changed to: ${value} without a change within 500ms, resetting province`)
       form.setFieldValue('province', '')
     },
   }}
 >
-  {(field) => (
-    /* ... */
-  )}
+  {#snippet children(field)}
+    <!-- ... -->
+  {/snippet}
 </form.Field>
 ```
 
-### Form listeners
+## Form listeners
 
 At a higher level, listeners are also available at the form level, allowing you access to the `onMount` and `onSubmit` events, and having `onChange`, `onBlur`, and `onUnmount` propagated to all the form's children. Form-level listeners can also be debounced in the same way as previously discussed.
 
@@ -104,24 +104,28 @@ At a higher level, listeners are also available at the form level, allowing you 
 - `fieldApi`
 - `formApi`
 
-```tsx
-const form = useForm({
-  listeners: {
-    onMount: ({ formApi }) => {
-      // custom logging service
-      loggingService('mount', formApi.state.values)
-    },
+```svelte
+<script>
+  import { createForm } from '@tanstack/svelte-form'
 
-    onChange: ({ formApi, fieldApi }) => {
-      // autosave logic
-      if (formApi.state.isValid) {
-        formApi.handleSubmit()
-      }
+  const form = createForm(() => ({
+    listeners: {
+      onMount: ({ formApi }) => {
+        // custom logging service
+        loggingService('mount', formApi.state.values)
+      },
 
-      // fieldApi represents the field that triggered the event.
-      console.log(fieldApi.name, fieldApi.state.value)
+      onChange: ({ formApi, fieldApi }) => {
+        // autosave logic
+        if (formApi.state.isValid) {
+          formApi.handleSubmit()
+        }
+
+        // fieldApi represents the field that triggered the event.
+        console.log(fieldApi.name, fieldApi.state.value)
+      },
+      onChangeDebounceMs: 500,
     },
-    onChangeDebounceMs: 500,
-  },
-})
+  }))
+</script>
 ```

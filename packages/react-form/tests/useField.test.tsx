@@ -440,7 +440,7 @@ describe('useField', () => {
           name: 'test',
         },
         listeners: {
-          onFieldUnmount: formFieldUnmount,
+          onUnmount: formFieldUnmount,
         },
       })
 
