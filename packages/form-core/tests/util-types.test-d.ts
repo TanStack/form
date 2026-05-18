@@ -167,10 +167,7 @@ expectTypeOf(
   >,
 ).toEqualTypeOf<undefined>()
 expectTypeOf(
-  0 as never as DeepValue<
-    NullishArrayValueSupport,
-    `nullishValues[${number}]`
-  >,
+  0 as never as DeepValue<NullishArrayValueSupport, `nullishValues[${number}]`>,
 ).toEqualTypeOf<null | undefined>()
 
 /**
