@@ -179,13 +179,20 @@ const useForm = useFormHook as UseFormHook
 
 export type UseSchemaFormHook = <
   const TFormValidators extends FormValidators<any>,
-  TFormData extends FormValidatorData<TFormValidators>,
   TSubmitReturn,
 >(
-  options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
-) => ReactFormApi<TFormData, TFormValidators, TSubmitReturn>
+  options: FormOptions<
+    FormValidatorData<TFormValidators>,
+    TFormValidators,
+    TSubmitReturn
+  >,
+) => ReactFormApi<
+  FormValidatorData<TFormValidators>,
+  TFormValidators,
+  TSubmitReturn
+>
 
-const useSchemaForm = useFormHook as UseSchemaFormHook
+const useSchemaForm = useFormHook as unknown as UseSchemaFormHook
 
 export type UseNullableSchemaFormHook = <
   const TFormValidators extends FormValidators<any>,
