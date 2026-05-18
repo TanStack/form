@@ -35,6 +35,7 @@ export type FieldComponent<
   TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TParentSubmitMeta,
+  ExtendedApi = {},
   // This complex type comes from Vue's return type for `DefineSetupFnComponent` but with our own types sprinkled in
   // This allows us to pre-bind some generics while keeping the props type unbound generics for props-based inferencing
 > = new <
@@ -126,7 +127,8 @@ export type FieldComponent<
         TFormOnDynamicAsync,
         TFormOnServer,
         TParentSubmitMeta
-      >
+      > &
+        ExtendedApi
       state: FieldApi<
         TParentData,
         TName,
