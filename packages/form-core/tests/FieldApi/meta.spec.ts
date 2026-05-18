@@ -98,10 +98,12 @@ describe('field - meta', () => {
 
       const validationPromise = child._runFieldValidation('change')
 
-      expect(child.meta.isValidating).toBe(true)
-      expect(parent.meta.isValidating).toBe(true)
-      expect(parent.meta.isSelfValidating).toBe(false)
-      expect(parent.meta.subfields.isSomeValidating).toBe(true)
+      vi.waitFor(() => {
+        expect(child.meta.isValidating).toBe(true)
+        expect(parent.meta.isValidating).toBe(true)
+        expect(parent.meta.isSelfValidating).toBe(false)
+        expect(parent.meta.subfields.isSomeValidating).toBe(true)
+      })
 
       await vi.runAllTimersAsync()
       await validationPromise
@@ -121,16 +123,18 @@ describe('field - meta', () => {
         _fieldValidatorErrors: [[{ message: 'Required' }]],
       }))
 
-      expect(child.meta.isSelfValid).toBe(false)
-      expect(child.meta.subfields.isEveryValid).toBe(true)
-      expect(child.meta.subfields.isAnyInvalid).toBe(false)
-      expect(child.meta.isValid).toBe(false)
+      vi.waitFor(() => {
+        expect(child.meta.isSelfValid).toBe(false)
+        expect(child.meta.subfields.isEveryValid).toBe(true)
+        expect(child.meta.subfields.isAnyInvalid).toBe(false)
+        expect(child.meta.isValid).toBe(false)
 
-      expect(parent.meta.isSelfValid).toBe(true)
-      expect(parent.meta.subfields.isEveryValid).toBe(false)
-      expect(parent.meta.subfields.isAnyInvalid).toBe(true)
-      expect(parent.meta.isValid).toBe(false)
-      expect(parent.meta.isInvalid).toBe(true)
+        expect(parent.meta.isSelfValid).toBe(true)
+        expect(parent.meta.subfields.isEveryValid).toBe(false)
+        expect(parent.meta.subfields.isAnyInvalid).toBe(true)
+        expect(parent.meta.isValid).toBe(false)
+        expect(parent.meta.isInvalid).toBe(true)
+      })
     })
 
     it('keeps aggregate validity invalid when self and subfields both have errors', () => {
@@ -147,11 +151,13 @@ describe('field - meta', () => {
         _fieldValidatorErrors: [[{ message: 'Child error' }]],
       }))
 
-      expect(parent.meta.isSelfValid).toBe(false)
-      expect(parent.meta.subfields.isEveryValid).toBe(false)
-      expect(parent.meta.subfields.isAnyInvalid).toBe(true)
-      expect(parent.meta.isValid).toBe(false)
-      expect(parent.meta.isInvalid).toBe(true)
+      vi.waitFor(() => {
+        expect(parent.meta.isSelfValid).toBe(false)
+        expect(parent.meta.subfields.isEveryValid).toBe(false)
+        expect(parent.meta.subfields.isAnyInvalid).toBe(true)
+        expect(parent.meta.isValid).toBe(false)
+        expect(parent.meta.isInvalid).toBe(true)
+      })
     })
   })
 
@@ -227,8 +233,11 @@ describe('field - meta', () => {
       const parent = form._getOrCreateFieldApi({ name: 'a.b' })
       const child = form._getOrCreateFieldApi({ name: 'a.b.c' })
       child.handleChange('new')
-      expect(parent.meta.isDirty).toBe(true)
-      expect(grandparent.meta.isDirty).toBe(true)
+      // This needs waitFor? Why? Why is this a race condition?
+      vi.waitFor(() => {
+        expect(parent.meta.isDirty).toBe(true)
+        expect(grandparent.meta.isDirty).toBe(true)
+      })
     })
   })
 

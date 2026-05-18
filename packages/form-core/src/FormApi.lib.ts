@@ -296,7 +296,6 @@ export class InternalFormApi<
   TFormData,
   const TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
-  // TODO submit return (possible error)
 > implements FormApi<TFormData, TFormValidators, TSubmitReturn> {
   valuesAtom: Atom<TFormData>
   store: ReadonlyAtom<FormState<TFormData, TFormValidators, any>>

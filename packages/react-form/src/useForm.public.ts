@@ -1,8 +1,5 @@
 import { useEffect, useRef } from 'react'
 import { initializeForm } from './ReactFormApi.lib'
-import type { InternalReactFormApi } from './ReactFormApi.lib'
-import type { SubscribeProps } from './Subscribe.public'
-import type { CrossVersionReactNode } from './types.lib'
 import type {
   DeepKeys,
   DeepKeysWhereValueIncludes,
@@ -15,6 +12,14 @@ import type {
   FormState,
   FormValidators,
 } from '@tanstack/form-core-v2'
+import type { InternalReactFormApi } from './ReactFormApi.lib'
+import type { SubscribeProps } from './Subscribe.public'
+import type { CrossVersionReactNode } from './types.lib'
+import type {
+  FormValidatorData,
+  InferUnion,
+  NullableSchemaData,
+} from '@tanstack/form-core-v2/internals'
 
 /**
  * Subscribe to `form.store` (full form state). The selector receives the full
@@ -150,16 +155,7 @@ export interface ReactFormApi<
     FormApi<TFormData, TFormValidators, TSubmitReturn>,
     ReactTanStackFormComponents<TFormData, TFormValidators, TSubmitReturn> {}
 
-/**
- * TODO docs
- */
-export function useForm<
-  TData,
-  const TFormValidators extends FormValidators<TData>,
-  TSubmitReturn,
->(
-  options: FormOptions<TData, TFormValidators, TSubmitReturn>,
-): ReactFormApi<TData, TFormValidators, TSubmitReturn> {
+function useFormHook(options: FormOptions<any, any, any>) {
   const formRef = useRef<InternalReactFormApi>(null)
 
   if (!formRef.current) {
@@ -170,3 +166,40 @@ export function useForm<
 
   return formRef.current
 }
+
+export type UseFormHook = <
+  TFormData,
+  TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
+>(
+  options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
+) => ReactFormApi<TFormData, TFormValidators, TSubmitReturn>
+
+const useForm = useFormHook as UseFormHook
+
+export type UseSchemaFormHook = <
+  const TFormValidators extends FormValidators<any>,
+  TFormData extends FormValidatorData<TFormValidators>,
+  TSubmitReturn,
+>(
+  options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
+) => ReactFormApi<TFormData, TFormValidators, TSubmitReturn>
+
+const useSchemaForm = useFormHook as UseSchemaFormHook
+
+export type UseNullableSchemaFormHook = <
+  const TFormValidators extends FormValidators<any>,
+  const TFormData extends NullableSchemaData<TFormValidators>,
+  TSubmitReturn,
+>(
+  options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
+) => ReactFormApi<
+  InferUnion<TFormData, FormValidatorData<TFormValidators>>,
+  TFormValidators,
+  TSubmitReturn
+>
+
+// TODO add unit tests, chances are the InferUnion type is incomplete
+const useNullableSchemaForm = useFormHook as UseNullableSchemaFormHook
+
+export { useForm, useSchemaForm, useNullableSchemaForm }
