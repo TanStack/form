@@ -3,7 +3,7 @@ import { useStore } from '@tanstack/solid-store'
 import { onCleanup, onMount } from 'solid-js'
 import type { Component, JSX, ParentProps } from 'solid-js'
 import type {
-  DeepKeysOfType,
+  DeepKeysOfNonNullableType,
   FieldGroupState,
   FieldsMap,
   FormAsyncValidateOrFn,
@@ -19,7 +19,7 @@ export type AppFieldExtendedSolidFieldGroupApi<
   TFormData,
   TFieldGroupData,
   TFields extends
-    | DeepKeysOfType<TFormData, TFieldGroupData | null | undefined>
+    | DeepKeysOfNonNullableType<TFormData, TFieldGroupData>
     | FieldsMap<TFormData, TFieldGroupData>,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
   TOnChange extends undefined | FormValidateOrFn<TFormData>,
@@ -75,7 +75,7 @@ export function createFieldGroup<
   TFormData,
   TFieldGroupData,
   TFields extends
-    | DeepKeysOfType<TFormData, TFieldGroupData | null | undefined>
+    | DeepKeysOfNonNullableType<TFormData, TFieldGroupData>
     | FieldsMap<TFormData, TFieldGroupData>,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
   TOnChange extends undefined | FormValidateOrFn<TFormData>,
