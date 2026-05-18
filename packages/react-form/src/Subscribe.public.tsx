@@ -6,7 +6,6 @@ import type {
   ReadonlyStore,
   Store,
 } from '@tanstack/react-store'
-import type { FunctionComponent } from 'react'
 import type { CrossVersionReactNode } from './types.lib'
 
 export type SubscribeSource<TValue> =
@@ -26,8 +25,12 @@ export interface SubscribeProps<TSourceData, TSelected> {
    * (shallow compare).
    */
   selector: (state: TSourceData) => TSelected
+  /**
+   * Optional. If provided, the component will only render when the `when` function returns `true`.
+   */
+  when?: (selected: NoInfer<TSelected>) => boolean
   children:
-    | ((state: TSelected) => CrossVersionReactNode)
+    | ((state: NoInfer<TSelected>) => CrossVersionReactNode)
     | CrossVersionReactNode
 }
 
@@ -46,7 +49,7 @@ export function Subscribe<
     FormState<TFormData, TFormValidators, TSubmitReturn>,
     TSelected
   >,
-): ReturnType<FunctionComponent> {
+): CrossVersionReactNode {
   const selected = useSelector(
     // Atom and store share the same selection protocol; union args need a widen for TS.
     props.source,
@@ -56,7 +59,10 @@ export function Subscribe<
     },
   ) as TSelected
 
+  if (props.when?.(selected) === false) {
+    return null
+  }
   return typeof props.children === 'function'
-    ? (props.children as (state: TSelected) => CrossVersionReactNode)(selected)
+    ? props.children(selected)
     : props.children
 }
