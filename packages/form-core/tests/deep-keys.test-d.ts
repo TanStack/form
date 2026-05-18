@@ -107,6 +107,15 @@ describe('DeepKeys', () => {
     expectTypeOf<DeepKeys<NestedUnknown>>().toEqualTypeOf<ExpectedKeys>()
   })
 
+  it('should handle `any` in types', () => {
+    expectTypeOf<DeepKeys<any>>().toEqualTypeOf<string>()
+
+    type NestedUnknown = { meta: { mainUser: any } }
+    type ExpectedKeys = 'meta' | 'meta.mainUser' | `meta.mainUser.${string}`
+
+    expectTypeOf<DeepKeys<NestedUnknown>>().toEqualTypeOf<ExpectedKeys>()
+  })
+
   it('should handle unions and intersections', () => {
     type DiscriminatedUnion = { name: string } & (
       | { variant: 'foo' }
@@ -540,6 +549,25 @@ describe('DeepValue', () => {
 
     expectTypeOf<Expect<'meta'>>().toEqualTypeOf<{ mainUser: unknown }>()
     expectTypeOf<Expect<'meta.mainUser'>>().toEqualTypeOf<unknown>()
+    expectTypeOf<Expect<'meta.mainUser.foo'>>().toEqualTypeOf<unknown>()
+    expectTypeOf<Expect<'meta.mainUser.foo.bar'>>().toEqualTypeOf<unknown>()
+    expectTypeOf<
+      Expect<'meta.mainUser.foo.bar.foobar'>
+    >().toEqualTypeOf<unknown>()
+  })
+
+  it('should handle `any` in types', () => {
+    // Whether this is any or unknown is up to us. Change unit test if desired.
+    expectTypeOf<DeepValue<any, 'foo'>>().toEqualTypeOf<any>()
+    expectTypeOf<DeepValue<any, 'foo.bar'>>().toEqualTypeOf<any>()
+    expectTypeOf<DeepValue<any, 'foo.bar.foobar'>>().toEqualTypeOf<any>()
+
+    type NestedAny = { meta: { mainUser: any } }
+
+    type Expect<TKey extends string> = DeepValue<NestedAny, TKey>
+
+    expectTypeOf<Expect<'meta'>>().toEqualTypeOf<{ mainUser: any }>()
+    expectTypeOf<Expect<'meta.mainUser'>>().toEqualTypeOf<any>()
     expectTypeOf<Expect<'meta.mainUser.foo'>>().toEqualTypeOf<unknown>()
     expectTypeOf<Expect<'meta.mainUser.foo.bar'>>().toEqualTypeOf<unknown>()
     expectTypeOf<

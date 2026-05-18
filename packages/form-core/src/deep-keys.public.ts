@@ -1,3 +1,5 @@
+import type { BuiltInType } from './utils.lib'
+
 interface AnyDeepKeyAndValue<
   TKey extends string = string,
   TValue extends any = any,
@@ -5,8 +7,6 @@ interface AnyDeepKeyAndValue<
   key: TKey
   value: TValue
 }
-
-type Primitive = string | number | boolean | bigint | symbol | Date
 
 type ObjectPart<T> = T extends object
   ? T extends ReadonlyArray<any>
@@ -157,9 +157,11 @@ type DeepKeysAndValuesImpl<
   ? TAcc
   : unknown extends T
     ? TAcc | UnknownDeepKeyAndValue<TParent>
-    : unknown extends T
+    : // If omitted, DeepKeys has an excessive stack when comparing keyof. Likely because of trying to check
+      // unknown or any, but I don't know for sure.
+      unknown extends T
       ? T
-      : [T] extends [Primitive]
+      : [T] extends [BuiltInType]
         ? TAcc
         : [ArrayPart<T>] extends [never]
           ? [ObjectPart<T>] extends [never]

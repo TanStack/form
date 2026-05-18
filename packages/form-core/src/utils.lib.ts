@@ -9,6 +9,15 @@ import type {
 } from './validation.public'
 import type { ListenerDebouncer } from './listeners.lib'
 
+type Primitive = string | number | boolean | bigint | symbol | null | undefined
+
+export type BuiltInType =
+  | Primitive
+  | Date
+  | RegExp
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+  | Function
+
 export interface PipelineCache<
   TResult extends FormValidateResult<any> | FieldValidateResult,
 > {

@@ -9,9 +9,8 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/react-form": "^1.33.3",
     "@tanstack/pacer-lite": "^0.2.1",
-    "@tanstack/form-core": "^1.33.3",
+    "@tanstack/react-form": "^1.33.3",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "zod": "^4.4.3"

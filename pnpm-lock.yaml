@@ -382,9 +382,6 @@ importers:
 
   examples/react/basic:
     dependencies:
-      '@tanstack/form-core':
-        specifier: ^1.33.3
-        version: link:../../../packages/form-core
       '@tanstack/pacer-lite':
         specifier: ^0.2.1
         version: 0.2.1

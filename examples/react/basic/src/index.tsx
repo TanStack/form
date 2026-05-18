@@ -107,14 +107,6 @@ function App() {
           )}
         </form.Field>
         {/** Subscribe to form state to have reactive components */}
-        <form.Subscribe selector={(state) => state.formErrors}>
-          {(formErrors) => (
-            <small role="alert" aria-live="polite">
-              {formErrors.map((e) => e.message).join('\n')}
-            </small>
-          )}
-        </form.Subscribe>
-        <br />
         <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting]}
         >
