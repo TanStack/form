@@ -91,3 +91,18 @@ const form = useForm({
   },
 })
 ```
+
+> In a situation where you want to be able to submit in an invalid state `canSubmitWhenInvalid` boolean flag can be provided to useForm.
+
+```tsx
+const form = useForm({
+  defaultValues: {
+    data: '',
+  },
+  canSubmitWhenInvalid: true,
+  onSubmit: async ({ value }) => {
+    // Do something with the values
+    console.log(value)
+  },
+})
+```
