@@ -83,6 +83,28 @@ describe('form - submission handling', () => {
       ])
     })
 
+    it('sets isSubmitSuccessful based on submission outcome', async () => {
+      const successfulForm = new InternalFormApi({
+        defaultValues: { name: '' },
+      })
+      await successfulForm.handleSubmit()
+
+      expect(successfulForm.state.isSubmitSuccessful).toBe(true)
+
+      const failingForm = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            run: () => ({ message: 'Submit error' }),
+            triggers: [],
+          },
+        ],
+      })
+      await failingForm.handleSubmit()
+
+      expect(failingForm.state.isSubmitSuccessful).toBe(false)
+    })
+
     it('sets canSubmit to false while submitting', async () => {
       let finishSubmit!: () => void
       const form = new InternalFormApi({
@@ -104,6 +126,165 @@ describe('form - submission handling', () => {
       await submitPromise
 
       expect(form.state.canSubmit).toBe(true)
+    })
+
+    it('ignores field validator results after reset during submit', async () => {
+      let finishValidator!: () => void
+      const onSubmit = vi.fn()
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        onSubmit,
+      })
+      form._getOrCreateFieldApi({
+        name: 'name',
+        validators: [
+          {
+            run: () =>
+              new Promise<null>((resolve) => {
+                finishValidator = () => resolve(null)
+              }),
+            triggers: [],
+          },
+        ],
+      })
+
+      const submitPromise = form.handleSubmit()
+      await vi.waitFor(() => {
+        expect(finishValidator).toBeTypeOf('function')
+      })
+
+      form.reset({ name: 'reset value' }, { preserveDefaultValues: true })
+      finishValidator()
+      const result = await submitPromise
+
+      expect(result).toEqual([])
+      expect(onSubmit).not.toHaveBeenCalled()
+      expect(form.state.values).toEqual({ name: 'reset value' })
+      expect(form.state.formErrors).toEqual([])
+      expect(form.state.isSubmitting).toBe(false)
+      expect(form.state.submissionAttempts).toBe(0)
+    })
+
+    it('ignores form validator results after reset during submit', async () => {
+      let finishValidator!: () => void
+      const onSubmit = vi.fn()
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            run: () =>
+              new Promise<null>((resolve) => {
+                finishValidator = () => resolve(null)
+              }),
+            triggers: [],
+          },
+        ],
+        onSubmit,
+      })
+
+      const submitPromise = form.handleSubmit()
+      await vi.waitFor(() => {
+        expect(finishValidator).toBeTypeOf('function')
+      })
+
+      form.reset({ name: 'reset value' }, { preserveDefaultValues: true })
+      finishValidator()
+      const result = await submitPromise
+
+      expect(result).toEqual([])
+      expect(onSubmit).not.toHaveBeenCalled()
+      expect(form.state.values).toEqual({ name: 'reset value' })
+      expect(form.state.formErrors).toEqual([])
+      expect(form.state.isSubmitting).toBe(false)
+      expect(form.state.submissionAttempts).toBe(0)
+    })
+
+    it('skips onSubmit when a field validator throws during submit', async () => {
+      const error = new Error('Field validator failed')
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+      const onSubmit = vi.fn()
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        onSubmit,
+      })
+      form._getOrCreateFieldApi({
+        name: 'name',
+        validators: [
+          {
+            run: () => {
+              throw error
+            },
+            triggers: [],
+          },
+        ],
+      })
+
+      try {
+        const result = await form.handleSubmit()
+
+        expect(result).toEqual([])
+        expect(onSubmit).not.toHaveBeenCalled()
+        expect(form.state.isSubmitting).toBe(false)
+        expect(form.state.isSubmitSuccessful).toBe(false)
+        expect(consoleSpy).toHaveBeenCalledWith(
+          'Validator threw an error:',
+          error,
+        )
+      } finally {
+        consoleSpy.mockRestore()
+      }
+    })
+
+    it('ignores rejected onSubmit errors after reset', async () => {
+      let rejectSubmit!: (error: Error) => void
+      const error = new Error('Late submit failure')
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        onSubmit: () =>
+          new Promise<void>((_, reject) => {
+            rejectSubmit = reject
+          }),
+      })
+
+      try {
+        const submitPromise = form.handleSubmit()
+        await vi.waitFor(() => {
+          expect(rejectSubmit).toBeTypeOf('function')
+        })
+
+        form.reset({ name: 'reset value' }, { preserveDefaultValues: true })
+        rejectSubmit(error)
+        const result = await submitPromise
+
+        expect(result).toEqual([])
+        expect(consoleSpy).not.toHaveBeenCalled()
+        expect(form.state.values).toEqual({ name: 'reset value' })
+        expect(form.state.isSubmitting).toBe(false)
+        expect(form.state.submissionAttempts).toBe(0)
+      } finally {
+        consoleSpy.mockRestore()
+      }
+    })
+
+    it('logs rejected onSubmit errors and finishes the failed submission', async () => {
+      const error = new Error('Submit failed')
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        onSubmit: () => Promise.reject(error),
+      })
+
+      try {
+        const result = await form.handleSubmit()
+
+        expect(result).toEqual([])
+        expect(consoleSpy).toHaveBeenCalledWith(error)
+        expect(form.state.isSubmitting).toBe(false)
+        expect(form.state.isSubmitSuccessful).toBe(false)
+      } finally {
+        consoleSpy.mockRestore()
+      }
     })
 
     it('preserves schema output when later non-schema validators run', async () => {

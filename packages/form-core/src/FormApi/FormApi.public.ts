@@ -94,6 +94,10 @@ export interface FormState<
    */
   isSubmitting: boolean
   /**
+   * Whether the latest submission completed without validation or submit errors.
+   */
+  isSubmitSuccessful: boolean
+  /**
    * Whether the form or any field is currently validating.
    */
   isValidating: boolean

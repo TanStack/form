@@ -328,6 +328,7 @@ export class InternalFormApi<
           formErrors: formErrors as FormErrors<TFormValidators, any>,
           canSubmit,
           isSubmitting: baseFormMeta.isSubmitting,
+          isSubmitSuccessful: baseFormMeta.isSubmitSuccessful,
           isValidating,
           submissionAttempts,
         } satisfies FormState<TFormData, TFormValidators, any>

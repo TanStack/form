@@ -118,7 +118,7 @@ export async function runSubmissionProcess<TFormData>(
       return {
         ...prev,
         isSubmitting: false,
-        isSubmitSuccessful: submissionData.hasFailed,
+        isSubmitSuccessful: !submissionData.hasFailed,
       }
     })
   }
