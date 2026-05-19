@@ -53,6 +53,26 @@ describe('field - lifecycle', () => {
       expect(child._isKilled).toBe(true)
     })
 
+    it('can notify a listener event before killing the field subtree', () => {
+      const parentListener = vi.fn()
+      const childListener = vi.fn()
+
+      const form = new InternalFormApi({ defaultValues: { a: { b: '' } } })
+      const parent = form._getOrCreateFieldApi({
+        name: 'a',
+        listeners: [{ triggers: ['reset'], run: parentListener }],
+      })
+      form._getOrCreateFieldApi({
+        name: 'a.b',
+        listeners: [{ triggers: ['reset'], run: childListener }],
+      })
+
+      parent._kill({ listenerEvent: 'reset' })
+
+      expect(parentListener).toHaveBeenCalledOnce()
+      expect(childListener).toHaveBeenCalledOnce()
+    })
+
     it('ignores validation started after a field is killed', async () => {
       const validator = vi.fn(() => ({ message: 'Too late' }))
       const form = new InternalFormApi({ defaultValues: { x: '' } })

@@ -946,6 +946,21 @@ export class InternalFieldApi<
     }
   }
 
+  _notifySubtreeListeners(trigger: FieldListenerTriggers): void {
+    if (this._isKilled) return
+
+    const stack: Array<AnyInternalFieldApi> = [this]
+
+    while (stack.length > 0) {
+      const node = stack.pop()!
+
+      if (node._isKilled) continue
+
+      node._notifyListener(trigger, new WeakSet())
+      stack.push(...node._children)
+    }
+  }
+
   /**
    * @private
    * Register as a component that you're using this field.
@@ -1029,7 +1044,11 @@ export class InternalFieldApi<
    * Kill this field and its children.
    * Removes the affected fields' meta as well.
    */
-  _kill() {
+  _kill(
+    options: {
+      listenerEvent?: FieldListenerTriggers
+    } = {},
+  ) {
     batch(() => {
       const stack: Array<AnyInternalFieldApi> = [this]
       const nodesToKill: Array<AnyInternalFieldApi> = []
@@ -1040,6 +1059,10 @@ export class InternalFieldApi<
         nodesToKill.push(node)
         nodesToKillSet.add(node)
         stack.push(...node._children)
+      }
+
+      if (options.listenerEvent) {
+        this._notifySubtreeListeners(options.listenerEvent)
       }
 
       this._parent._removeChild(this._segment)

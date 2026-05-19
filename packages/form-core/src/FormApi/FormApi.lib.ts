@@ -337,6 +337,8 @@ export class InternalFormApi<
   }
 
   mount = () => {
+    this._notifyFormListener('mount', null)
+
     return () => {}
   }
 
@@ -354,13 +356,17 @@ export class InternalFormApi<
 
     batch(() => {
       this._resetVersionAtom.set((version) => version + 1)
-      this._fieldRootNode._children.forEach((child) => child._kill())
+      this._fieldRootNode._children.forEach((child) =>
+        child._kill({ listenerEvent: 'reset' }),
+      )
       this._formMetaAtom.set(
         createInitialFormMeta(this.options.validators?.length ?? 0),
       )
       this._submissionAttemptsAtom.set(0)
       this.valuesAtom.set(values ?? this._options.defaultValues)
     })
+
+    this._notifyFormListener('reset', null)
   }
 
   _update = (options: FormOptions<TFormData, TFormValidators, any>) => {
@@ -435,7 +441,7 @@ export class InternalFormApi<
       setBy(prev, fieldName, getBy(this.options.defaultValues, fieldName)),
     )
 
-    field?._children.forEach((child) => child._kill())
+    field?._children.forEach((child) => child._kill({ listenerEvent: 'reset' }))
   }
 
   // TODO type safety: DeepKeys that extend undefined?
@@ -924,6 +930,8 @@ export class InternalFormApi<
 
   handleSubmit = (): Promise<Array<FormValidationError<TFormData>>> => {
     if (this._handleSubmitPromise) return this._handleSubmitPromise
+
+    this._notifyFormListener('submit', null)
 
     const handleSubmitPromise = runSubmissionProcess(this).finally(() => {
       if (this._handleSubmitPromise === handleSubmitPromise) {
