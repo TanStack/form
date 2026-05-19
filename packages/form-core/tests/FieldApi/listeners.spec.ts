@@ -413,4 +413,67 @@ describe('field - linked listeners ', () => {
     firstField.handleChange('New new name')
     expect(listener).toHaveBeenCalledTimes(2)
   })
+
+  it('handles mismatched field references when field name resolves to different instance', () => {
+    const listener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: {
+        users: [{ name: 'First' }, { name: 'Second' }, { name: 'Third' }],
+      },
+    })
+
+    const oldField = form._getOrCreateFieldApi({ name: 'users[0]' })
+    const watchingField = form._getOrCreateFieldApi({
+      name: 'users[1]',
+      listeners: [
+        { run: listener, watchFields: ['users[0]'], triggers: ['change'] },
+      ],
+    })
+
+    oldField.handleChange('First change')
+    expect(listener).toHaveBeenCalledOnce()
+    listener.mockClear()
+
+    // Swap the field values - now users[0] resolves to what was users[2]
+    form.swapFieldValues('users', 0, 2)
+
+    // Update listener to still watch 'users[0]', but now that name resolves to thirdField
+    watchingField._update({
+      listeners: [
+        { run: listener, watchFields: ['users[0]'], triggers: ['change'] },
+      ],
+    })
+
+    oldField.handleChange('Second change')
+    // old firstField change should NOT trigger listener
+    // because we're no longer watching it
+    expect(listener).not.toHaveBeenCalled()
+
+    const newField = form._getOrCreateFieldApi({ name: 'users[0]' })
+    newField.handleChange('Third change')
+    expect(listener).toHaveBeenCalledOnce()
+  })
+
+  it('should warn if a field watches itself', async () => {
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const listener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+    })
+
+    const firstField = form._getOrCreateFieldApi({
+      name: 'name',
+      listeners: [
+        { run: listener, watchFields: ['name'], triggers: ['change'] },
+      ],
+    })
+
+    firstField.handleChange('Change')
+    await vi.waitFor(() => {
+      expect(consoleSpy).toHaveBeenCalled()
+      expect(listener).toHaveBeenCalledOnce()
+    })
+
+    consoleSpy.mockRestore()
+  })
 })

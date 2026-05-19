@@ -1039,5 +1039,56 @@ describe('runFormValidatorPipeline', () => {
 
       consoleErrorSpy.mockRestore()
     })
+
+    it('should handle errors in debounced validators', async () => {
+      vi.useFakeTimers()
+      const formApi = getForm({ name: '' })
+      const consoleErrorSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {})
+
+      const { runWithContext } = getPipeline(formApi, [
+        {
+          run: () => {
+            throw new Error('Debounced error')
+          },
+          triggers: ['change'],
+          triggerDebounceMs: 100,
+        },
+      ])
+
+      const promise = runWithContext({ event: 'change' })
+
+      await vi.advanceTimersByTimeAsync(100)
+
+      await expect(promise).resolves.toBeDefined()
+      expect(consoleErrorSpy).toHaveBeenCalled()
+
+      consoleErrorSpy.mockRestore()
+    })
+  })
+
+  describe('edge cases', () => {
+    it('should return empty results for killed fields', async () => {
+      const formApi = getForm({ name: 'test' })
+      const field = formApi._getOrCreateFieldApi({ name: 'name' })
+
+      // Mark the field as killed
+      field._isKilled = true
+
+      const pipeline: Array<FieldValidator<{ name: string }, 'name', string>> =
+        [
+          {
+            run: vi.fn(() => ({ message: 'should not be called' })),
+            triggers: ['change'],
+          },
+        ]
+
+      const { runWithContext } = getFieldPipeline(formApi, field, pipeline)
+
+      const results = await runWithContext({ event: 'change' })
+
+      expect(results).toHaveLength(0)
+    })
   })
 })

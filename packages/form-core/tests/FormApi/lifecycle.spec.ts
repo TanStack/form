@@ -30,6 +30,24 @@ describe('form - lifecycle', () => {
       expect(form.state.values).toEqual({ name: 'async' })
     })
 
+    it('should only apply options to the leaf node', async () => {
+      vi.useFakeTimers()
+      const listener = vi.fn()
+      const form = new InternalFormApi({
+        defaultValues: { foo: { bar: '' } },
+      })
+      const field = form._getOrCreateFieldApi({
+        name: 'foo.bar',
+        listeners: [{ run: listener, triggers: ['change'] }],
+      })
+
+      field.handleChange('New value')
+
+      await vi.runAllTimersAsync()
+
+      expect(listener).toHaveBeenCalledOnce()
+    })
+
     // TODO extend with default state
   })
 

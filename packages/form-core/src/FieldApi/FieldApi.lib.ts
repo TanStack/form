@@ -202,7 +202,9 @@ export function getOrCreateFieldApi(
     segment,
     parent: node,
     form: form,
-    ...options,
+    // We're creating fields on our way to the leaf, so don't
+    // pass options like listeners etc.
+    ...(segments.length === 0 ? options : {}),
   })
 
   node._setChild(childNode)
