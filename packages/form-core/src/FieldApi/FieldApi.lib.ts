@@ -1309,6 +1309,8 @@ export class InternalFieldApi<
       },
       'blur',
     )
+
+    this.form._notifyFormListener('blur', this)
   }
 }
 

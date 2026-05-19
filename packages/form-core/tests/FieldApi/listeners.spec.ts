@@ -476,4 +476,31 @@ describe('field - linked listeners ', () => {
 
     consoleSpy.mockRestore()
   })
+
+  it('should skip listeners that do not watch the linked field', () => {
+    const listener1 = vi.fn()
+    const listener2 = vi.fn()
+    const listener3 = vi.fn()
+
+    const form = new InternalFormApi({
+      defaultValues: { source: '', target: '' },
+    })
+
+    form._getOrCreateFieldApi({
+      name: 'target',
+      listeners: [
+        { run: listener1, triggers: ['change'], watchFields: ['source'] },
+        { run: listener2, triggers: ['change'] },
+        { run: listener3, triggers: ['change'], watchFields: ['source'] },
+      ],
+    })
+
+    const sourceField = form._getOrCreateFieldApi({ name: 'source' })
+
+    sourceField.handleChange('new value')
+
+    expect(listener1).toHaveBeenCalledOnce()
+    expect(listener2).not.toHaveBeenCalled()
+    expect(listener3).toHaveBeenCalledOnce()
+  })
 })

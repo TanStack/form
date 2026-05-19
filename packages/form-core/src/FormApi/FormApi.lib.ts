@@ -25,6 +25,7 @@ import {
   runFormValidatorPipeline,
   setIndexedError,
 } from '../validation.lib'
+import { runFormListenerPipeline } from '../listeners.lib'
 import { runSubmissionProcess } from './handleSubmit.lib'
 import { ArrayMethods } from './array-methods.lib'
 import type { FormApi, FormOptions, FormState } from './FormApi.public'
@@ -59,6 +60,7 @@ import type {
   ValidationIssue,
   ValidationTrigger,
 } from '../validation.public'
+import type { FormListenerTriggers } from '../listeners.public'
 
 export interface BaseFormMeta {
   /**
@@ -420,7 +422,7 @@ export class InternalFormApi<
     batch(() => {
       this.valuesAtom.set((prev) => setBy(prev, fieldName, updater))
 
-      this._notifyFieldChange(field, updateOptions, 'change')
+      this._notifyFieldChange(field, updateOptions)
     })
   }
 
@@ -522,18 +524,33 @@ export class InternalFormApi<
   _notifyFieldChange = (
     field: AnyInternalFieldApi | null,
     options: ResolvedInternalFieldUpdateOptions,
-    event: 'change' | 'blur' | 'submit',
   ) => {
-    if (event === 'change') {
-      this._clearEventErrors(field, 'submit')
-    }
+    this._clearEventErrors(field, 'submit')
 
     const { markAsDirty } = options
     if (markAsDirty && !this._formMetaAtom.get().isDirty) {
       this._formMetaAtom.set((prev) => ({ ...prev, isDirty: true }))
     }
 
-    field?._notifyEvent(options, event)
+    field?._notifyEvent(options, 'change')
+    this._notifyFormListener('change', field)
+  }
+
+  _notifyFormListener = (
+    trigger: FormListenerTriggers,
+    triggerFieldApi: AnyInternalFieldApi | null,
+  ) => {
+    if (!this.options.listeners) return
+    if (this.options.listeners.length === 0) return
+
+    runFormListenerPipeline({
+      pipeline: this.options.listeners,
+      context: {
+        event: trigger,
+        formApi: this,
+        triggerFieldApi: triggerFieldApi ?? undefined,
+      },
+    })
   }
 
   _clearEventErrors = (

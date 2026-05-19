@@ -14,6 +14,7 @@ import type {
   FormValidationError,
   FormValidators,
 } from '../validation.public'
+import type { FormListeners } from '../listeners.public'
 
 declare const onSubmitErrorBrand: unique symbol
 
@@ -47,6 +48,7 @@ export interface FormOptions<
   defaultValues: TFormData
   errorVisibility?: ErrorVisibility
   validators?: TFormValidators
+  listeners?: FormListeners<TFormData, TFormValidators, TSubmitReturn>
   onSubmit?: (
     context: FormSubmitContext<TFormData, TFormValidators>,
   ) => TSubmitReturn
