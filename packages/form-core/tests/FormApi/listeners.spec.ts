@@ -126,6 +126,26 @@ describe('form - listeners', () => {
     expect(blurListener).not.toHaveBeenCalled()
   })
 
+  it('should not run object triggers when the form event does not match', () => {
+    const listener = vi.fn()
+    const when = vi.fn(() => true)
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      listeners: [
+        {
+          triggers: [{ trigger: 'blur', when }],
+          run: listener,
+        },
+      ],
+    })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+
+    field.handleChange('Alice')
+
+    expect(listener).not.toHaveBeenCalled()
+    expect(when).not.toHaveBeenCalled()
+  })
+
   it('supports listener predicates for form events', () => {
     const listener = vi.fn()
     const form = new InternalFormApi({
@@ -148,5 +168,68 @@ describe('form - listeners', () => {
     field.handleChange('Alice')
 
     expect(listener).toHaveBeenCalledOnce()
+  })
+
+  it('supports dynamic debounce for form listeners', async () => {
+    vi.useFakeTimers()
+    const listener = vi.fn()
+    const triggerDebounceMs = vi.fn(({ formApi, triggerFieldApi, value }) => {
+      expect(formApi.state.values).toEqual({ name: 'Alice' })
+      expect(triggerFieldApi?.name).toBe('name')
+      expect(value).toEqual({ name: 'Alice' })
+      return 100
+    })
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      listeners: [
+        {
+          triggers: ['change'],
+          triggerDebounceMs,
+          run: listener,
+        },
+      ],
+    })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+
+    field.handleChange('Alice')
+
+    expect(triggerDebounceMs).toHaveBeenCalledOnce()
+    expect(listener).not.toHaveBeenCalled()
+
+    await vi.advanceTimersByTimeAsync(99)
+    expect(listener).not.toHaveBeenCalled()
+
+    await vi.advanceTimersByTimeAsync(1)
+    expect(listener).toHaveBeenCalledOnce()
+    expect(listener).toHaveBeenCalledWith({
+      formApi: form,
+      triggerFieldApi: field,
+      value: { name: 'Alice' },
+    })
+
+    vi.useRealTimers()
+  })
+
+  it('logs rejected async form listener errors', async () => {
+    const error = new Error('listener failed')
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      listeners: [
+        {
+          triggers: ['change'],
+          run: () => Promise.reject(error),
+        },
+      ],
+    })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+
+    field.handleChange('Alice')
+
+    await vi.waitFor(() => {
+      expect(consoleSpy).toHaveBeenCalled()
+    })
+
+    consoleSpy.mockRestore()
   })
 })

@@ -86,6 +86,47 @@ describe('field - listeners', () => {
     field._unregister()
     expect(listener).toHaveBeenCalledOnce()
   })
+
+  it('supports dynamic debounce for field listeners', async () => {
+    vi.useFakeTimers()
+    const listener = vi.fn()
+    const triggerDebounceMs = vi.fn(({ formApi, triggerFieldApi, value }) => {
+      expect(formApi.state.values).toEqual({ name: 'Alice' })
+      expect(triggerFieldApi?.name).toBe('name')
+      expect(value).toBe('Alice')
+      return 100
+    })
+
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+    const field = form._getOrCreateFieldApi({
+      name: 'name',
+      listeners: [
+        {
+          triggers: ['change'],
+          triggerDebounceMs,
+          run: listener,
+        },
+      ],
+    })
+
+    field.handleChange('Alice')
+
+    expect(triggerDebounceMs).toHaveBeenCalledOnce()
+    expect(listener).not.toHaveBeenCalled()
+
+    await vi.advanceTimersByTimeAsync(99)
+    expect(listener).not.toHaveBeenCalled()
+
+    await vi.advanceTimersByTimeAsync(1)
+    expect(listener).toHaveBeenCalledOnce()
+    expect(listener).toHaveBeenCalledWith({
+      value: 'Alice',
+      fieldApi: field,
+      formApi: form,
+    })
+
+    vi.useRealTimers()
+  })
 })
 
 describe('field - linked listeners ', () => {
