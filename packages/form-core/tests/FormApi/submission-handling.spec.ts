@@ -319,5 +319,116 @@ describe('form - submission handling', () => {
       ])
       expect(validatorFn).toHaveBeenCalled()
     })
+
+    it('returns the same promise when handleSubmit is called multiple times during submission', async () => {
+      let resolveValidator!: () => void
+      const validatorPromise = new Promise<void>((resolve) => {
+        resolveValidator = resolve
+      })
+
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            run: async () => {
+              await validatorPromise
+              return null
+            },
+            triggers: [],
+          },
+        ],
+      })
+
+      const firstSubmitPromise = form.handleSubmit()
+
+      await vi.waitFor(() => {
+        expect(form.state.isSubmitting).toBe(true)
+      })
+
+      // Second handleSubmit call while first is still pending
+      const secondSubmitPromise = form.handleSubmit()
+
+      expect(firstSubmitPromise).toBe(secondSubmitPromise)
+
+      resolveValidator()
+
+      await firstSubmitPromise
+      await secondSubmitPromise
+
+      expect(form.state.isSubmitting).toBe(false)
+    })
+
+    it('clears previous field errors when onSubmit returns new field-specific errors', async () => {
+      let doErrorA = true
+
+      const form = new InternalFormApi({
+        defaultValues: { fieldA: '', fieldB: '' },
+        onSubmit: ({ createValidationError }) => {
+          if (doErrorA) {
+            return createValidationError({
+              fields: {
+                fieldA: { message: 'Field A error' },
+              },
+            })
+          }
+          return createValidationError({
+            fields: {
+              fieldB: { message: 'Field B error' },
+            },
+          })
+        },
+      })
+
+      const fieldA = form._getOrCreateFieldApi({
+        name: 'fieldA',
+      })
+      const fieldB = form._getOrCreateFieldApi({
+        name: 'fieldB',
+      })
+
+      // First submission - error at fieldA
+      await form.handleSubmit()
+      expect(fieldA.state.meta.errors).toEqual([{ message: 'Field A error' }])
+      expect(fieldB.state.meta.errors).toEqual([])
+
+      doErrorA = false
+
+      // Second submission - error at fieldB, fieldA error should be cleared
+      await form.handleSubmit()
+      expect(fieldA.state.meta.errors).toEqual([])
+      expect(fieldB.state.meta.errors).toEqual([{ message: 'Field B error' }])
+    })
+
+    it('clears field errors when onSubmit no longer returns errors', async () => {
+      let doError = true
+
+      const form = new InternalFormApi({
+        defaultValues: { fieldA: '' },
+        onSubmit: ({ createValidationError }) => {
+          if (doError) {
+            return createValidationError({
+              fields: {
+                fieldA: { message: 'Field A error' },
+              },
+            })
+          }
+          return null
+        },
+      })
+
+      const fieldA = form._getOrCreateFieldApi({
+        name: 'fieldA',
+      })
+
+      // First submission - error at fieldA
+      await form.handleSubmit()
+      expect(fieldA.state.meta.errors).toEqual([{ message: 'Field A error' }])
+
+      doError = false
+
+      // Second submission - error at fieldB, fieldA error should be cleared
+      await form.handleSubmit()
+      expect(fieldA.state.meta.errors).toEqual([])
+    })
   })
 })

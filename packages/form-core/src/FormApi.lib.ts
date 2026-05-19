@@ -11,7 +11,6 @@ import {
   evaluate,
   getBy,
   getTargetField,
-  isNotNil,
   resolveFieldUpdateOptions,
   setBy,
 } from './utils.lib'
@@ -26,13 +25,9 @@ import {
   runFormValidatorPipeline,
   setIndexedError,
 } from './validation.lib'
-import type {
-  CreateValidationErrorFn,
-  FormApi,
-  FormOptions,
-  FormState,
-  OnSubmitError,
-} from './FormApi.public'
+import { runSubmissionProcess } from './FormApi/handleSubmit.lib'
+import { ArrayMethods } from './FormApi/array-methods.lib'
+import type { FormApi, FormOptions, FormState } from './FormApi.public'
 
 import type { DeepKeys } from './deep-keys.public'
 import type { PipelineCache } from './utils.lib'
@@ -64,32 +59,6 @@ import type {
   ValidationIssue,
   ValidationTrigger,
 } from './validation.public'
-
-const SUBMIT_ERROR = Symbol('SUBMIT_ERROR')
-
-function isSubmitError<TFormData>(
-  value: unknown,
-): value is FormValidationError<TFormData> {
-  return isNotNil(value) && Boolean((value as any)[SUBMIT_ERROR])
-}
-
-const createValidationError: CreateValidationErrorFn<any> = <
-  TError extends FormValidationError<any>,
->(
-  error: TError,
-): OnSubmitError<TError> => {
-  let output: OnSubmitError<TError>
-  if (typeof error === 'string') {
-    // strings can't retain symbols, so we gotta normalize early
-    output = { message: error } as any
-  } else {
-    output = error as any
-  }
-  const runtimeOutput = output as any
-  runtimeOutput[SUBMIT_ERROR] = true
-
-  return output
-}
 
 export interface BaseFormMeta {
   /**
@@ -479,17 +448,12 @@ export class InternalFormApi<
     value: any,
     options?: InternalFieldUpdateOptions,
   ): void => {
-    if (this._isInvalidArrayMethod('pushFieldValue', arrayFieldName)) {
-      return
-    }
-
-    this.setFieldValue(
+    return ArrayMethods.pushValue({
+      form: this,
       arrayFieldName,
-      (prev: Array<any>) => {
-        return [...prev, value]
-      },
+      value,
       options,
-    )
+    })
   }
 
   insertFieldValue = (
@@ -498,39 +462,12 @@ export class InternalFormApi<
     value: any,
     options?: InternalFieldUpdateOptions,
   ): void => {
-    if (
-      this._isInvalidArrayMethod('insertFieldValue', arrayFieldName, {
-        bounds: [index],
-        allowEndIndex: true,
-      })
-    ) {
-      return
-    }
-
-    const updateOptions = resolveFieldUpdateOptions(options, 'change')
-    const arrayField = getTargetField(this, arrayFieldName, updateOptions)
-    updateOptions.fieldApiOverride = arrayField
-
-    batch(() => {
-      this.setFieldValue(
-        arrayFieldName,
-        (prev: Array<any>) => {
-          const array = prev.slice()
-          array.splice(index, 0, value)
-          return array
-        },
-        updateOptions,
-      )
-
-      if (!arrayField) return
-
-      // Shift existing children to the right of the insertion index
-      for (const child of arrayField._children) {
-        if (typeof child._segment === 'string') continue
-        if (child._segment >= index) {
-          child._moveTo(child._segment + 1)
-        }
-      }
+    return ArrayMethods.insertValue({
+      form: this,
+      arrayFieldName,
+      index,
+      value,
+      options,
     })
   }
 
@@ -539,41 +476,11 @@ export class InternalFormApi<
     index: number,
     options?: InternalFieldUpdateOptions,
   ): void => {
-    if (
-      this._isInvalidArrayMethod('removeFieldValue', arrayFieldName, {
-        bounds: [index],
-        allowEndIndex: false,
-      })
-    ) {
-      return
-    }
-
-    const updateOptions = resolveFieldUpdateOptions(options, 'change')
-    const arrayField = getTargetField(this, arrayFieldName, updateOptions)
-    updateOptions.fieldApiOverride = arrayField
-
-    batch(() => {
-      this.setFieldValue(
-        arrayFieldName,
-        (prev: Array<any>) => {
-          const array = prev.slice()
-          array.splice(index, 1)
-          return array
-        },
-        updateOptions,
-      )
-
-      if (!arrayField) return
-
-      const childToRemove = tryGetFieldApi(arrayField, [index])
-      childToRemove?._kill()
-
-      for (const child of arrayField._children) {
-        if (typeof child._segment === 'string') continue
-        if (child._segment > index) {
-          child._moveTo(child._segment - 1)
-        }
-      }
+    return ArrayMethods.removeValue({
+      form: this,
+      arrayFieldName,
+      index,
+      options,
     })
   }
 
@@ -583,126 +490,33 @@ export class InternalFormApi<
     indexB: number,
     options?: InternalFieldUpdateOptions,
   ) => {
-    if (
-      this._isInvalidArrayMethod('swapFieldValues', arrayFieldName, {
-        bounds: [indexA, indexB],
-        allowEndIndex: false,
-      })
-    ) {
-      return
-    }
-
-    if (indexA === indexB) {
-      return
-    }
-
-    const updateOptions = resolveFieldUpdateOptions(options, 'change')
-    const arrayField = getTargetField(this, arrayFieldName, updateOptions)
-    updateOptions.fieldApiOverride = arrayField
-
-    batch(() => {
-      this.setFieldValue(
-        arrayFieldName,
-        (prev: Array<any>) => {
-          const a = prev[indexA]
-          const b = prev[indexB]
-          const array = prev.slice()
-          array[indexA] = b
-          array[indexB] = a
-          return array
-        },
-        updateOptions,
-      )
-
-      if (!arrayField) return
-
-      // Since the length wasn't changed, we need to notify manually
-      arrayField._setMeta((prev) => ({
-        ...prev,
-        _arrayVersion: prev._arrayVersion + 1,
-      }))
-
-      const fieldA = tryGetFieldApi(arrayField, [indexA])
-
-      const fieldB = tryGetFieldApi(arrayField, [indexB])
-
-      // Fields aren't necessarily mounted, so we should assume
-      // that the indeces will represent actual values in the array.
-      // If not, then the user will most likely not iterate over them
-      // during rendering, so we don't need to worry about them.
-      fieldA?._moveTo(indexB)
-      fieldB?._moveTo(indexA)
+    return ArrayMethods.swapValues({
+      form: this,
+      arrayFieldName,
+      indexA,
+      indexB,
+      options,
     })
   }
 
   clearFieldValues = (
     arrayFieldName: string,
     options?: InternalFieldUpdateOptions,
-  ) => {
-    if (this._isInvalidArrayMethod('clearFieldValues', arrayFieldName)) {
-      return
-    }
-
-    const updateOptions = resolveFieldUpdateOptions(options, 'change')
-    const arrayField = getTargetField(this, arrayFieldName, updateOptions)
-    updateOptions.fieldApiOverride = arrayField
-
-    batch(() => {
-      this.setFieldValue(arrayFieldName, [], updateOptions)
-
-      if (!arrayField) return
-
-      arrayField._setMeta((prev) => ({
-        ...prev,
-        _arrayVersion: prev._arrayVersion + 1,
-      }))
-
-      // Kill all child fields since the array is now empty
-      // _kill() will remove each child from the parent's children
-      for (const child of arrayField._children) {
-        child._kill()
-      }
-    })
+  ): void => {
+    return ArrayMethods.clearValues({ form: this, arrayFieldName, options })
   }
 
   filterFieldValues = (
     arrayFieldName: string,
     predicate: (value: any, index: number, array: any) => boolean,
     options?: InternalFieldUpdateOptions & { thisArg?: any },
-  ) => {
-    if (this._isInvalidArrayMethod('filterFieldValues', arrayFieldName)) {
-      return
-    }
-
-    const updateOptions = resolveFieldUpdateOptions(options, 'change')
-    const arrayNode = getTargetField(this, arrayFieldName, updateOptions)
-    updateOptions.fieldApiOverride = arrayNode
-
-    const oldArray: Array<any> = this.getFieldValue(arrayFieldName)
-
-    let length = 0
-    const thisArg = options?.thisArg
-    const filtered = oldArray.filter((value, index, array) => {
-      const keep = predicate.call(thisArg, value, index, array)
-      if (!arrayNode) return keep
-
-      const childAtIndex = arrayNode._getChild(index)
-      if (keep) {
-        childAtIndex?._moveTo(length)
-        length++
-      } else {
-        childAtIndex?._kill()
-      }
-      return keep
+  ): void => {
+    return ArrayMethods.filterValues({
+      form: this,
+      arrayFieldName,
+      predicate,
+      options,
     })
-
-    if (oldArray.length === filtered.length) {
-      // Setting filtered array would be a no-op, but either way the user
-      // tried to set a value
-      this._notifyFieldChange(arrayNode, updateOptions, 'change')
-    } else {
-      this.setFieldValue(arrayFieldName, filtered, updateOptions)
-    }
   }
 
   _notifyFieldChange = (
@@ -793,36 +607,6 @@ export class InternalFormApi<
         this._clearFieldEventErrors(field, eventErrorIndexes, sourceEvent)
       }
     })
-  }
-
-  _isInvalidArrayMethod = (
-    methodName: string,
-    arrayFieldName: string,
-    args: {
-      bounds: Array<number>
-      allowEndIndex: boolean
-    } = { bounds: [], allowEndIndex: false },
-  ): boolean => {
-    const { bounds, allowEndIndex } = args
-
-    const array = this.getFieldValue(arrayFieldName)
-    if (!Array.isArray(array)) {
-      console.warn(
-        `<form>.${methodName}: This method can only be used on array fields, but '${arrayFieldName}' is: `,
-        array,
-      )
-      return true
-    }
-    const maxIndex = allowEndIndex ? array.length : array.length - 1
-    for (const index of bounds) {
-      if (index < 0 || index > maxIndex) {
-        console.warn(
-          `<form>.${methodName}: ${index} is out of bounds for '${arrayFieldName}', expected 0 - ${maxIndex}.`,
-        )
-        return true
-      }
-    }
-    return false
   }
 
   _tryGetFieldApi = (
@@ -1119,165 +903,20 @@ export class InternalFormApi<
       .filter(isErrorResult)
   }
 
-  handleSubmit = async (): Promise<Array<FormValidationError<TFormData>>> => {
-    const submitResetVersion = this._resetVersionAtom.get()
-    const hasResettedFormDuringSubmit = () =>
-      this._resetVersionAtom.get() !== submitResetVersion
+  _handleSubmitPromise: Promise<any> | null = null
 
-    batch(() => {
-      this._submissionAttemptsAtom.set((prev) => prev + 1)
-      this._formMetaAtom.set((prev) => ({
-        ...prev,
-        isSubmitting: true,
-      }))
-    })
+  handleSubmit = (): Promise<Array<FormValidationError<TFormData>>> => {
+    if (this._handleSubmitPromise) return this._handleSubmitPromise
 
-    const submissionData = {
-      hasFailed: false,
-      submitError:
-        null satisfies FormValidateResult<TFormData> as FormValidateResult<TFormData>,
-    }
-
-    const fields =
-      this._fieldRootNode._touchAllFieldsAndCollectSubmitValidators()
-
-    const fieldValidatorResults = await Promise.all(
-      fields.map((field) =>
-        field._runFieldValidation('submit', { onResult: false }),
-      ),
-    )
-
-    if (hasResettedFormDuringSubmit()) {
-      return []
-    }
-
-    const fieldResults: Array<ValidationErrorInput> = []
-
-    batch(() => {
-      for (let i = 0; i < fieldValidatorResults.length; i++) {
-        const field = fields[i]!
-        const pipelineResult = fieldValidatorResults[i]!
-
-        if (pipelineResult.thrownError !== null) {
-          submissionData.hasFailed = true
-        }
-
-        for (const result of pipelineResult.results) {
-          if (isErrorResult(result.result)) {
-            submissionData.hasFailed = true
-            fieldResults.push(result.result)
-          }
-          field._processValidationResult(result, 'submit')
-        }
+    const handleSubmitPromise = runSubmissionProcess(this).finally(() => {
+      if (this._handleSubmitPromise === handleSubmitPromise) {
+        this._handleSubmitPromise = null
       }
     })
 
-    // TODO maybe some users don't want form validation to run if field validation failed.
-    // Configurable option with opt-out wouldn't hurt.
-    // Also keep in mind this would apply to handleChange too.
-    const formPipelineResult = await this._runFormValidation('submit', {
-      hasFailedBefore: submissionData.hasFailed,
-    })
+    this._handleSubmitPromise = handleSubmitPromise
 
-    if (hasResettedFormDuringSubmit()) {
-      return []
-    }
-
-    if (
-      formPipelineResult.thrownError !== null ||
-      formPipelineResult.hasErrors
-    ) {
-      submissionData.hasFailed = true
-    }
-
-    const errorResults = formPipelineResult.results
-      .map(({ result }) => result)
-      .filter(isErrorResult)
-      .concat(fieldResults)
-
-    const cleanup = () => {
-      if (hasResettedFormDuringSubmit()) {
-        return
-      }
-
-      this._formMetaAtom.set((prev) => {
-        return {
-          ...prev,
-          isSubmitting: false,
-          isSubmitSuccessful: submissionData.hasFailed,
-        }
-      })
-    }
-
-    if (submissionData.hasFailed) {
-      cleanup()
-      return errorResults
-    }
-
-    const schemaOutputs: any = Array.from(
-      { length: this.options.validators?.length ?? 0 },
-      (_, i) => {
-        return this._schemaOutputs[i]
-      },
-    )
-
-    try {
-      const maybeError = await this.options.onSubmit?.({
-        formApi: this as never,
-        schemaOutputs,
-        value: this.state.values,
-        createValidationError,
-      })
-
-      if (hasResettedFormDuringSubmit()) {
-        return []
-      }
-
-      // TODO we need to implement onMount / onSubmit errors being cleared on change
-      // An array of [0 .. validators.length] can cover the latest validator error's cause
-      // maybe? It could be that field level errors shouldn't be cleared so eagerly, only on itself.
-
-      // Anyways, point is that onSubmit will be [validators.length], so we can always assume it's onSubmit
-
-      if (isSubmitError<TFormData>(maybeError)) {
-        this._processValidationResult(
-          {
-            validatorIndex: this.options.validators?.length ?? 0,
-            result: maybeError,
-            schemaResult: null,
-          },
-          'submit',
-        )
-        submissionData.submitError = maybeError
-      }
-    } catch (e) {
-      if (hasResettedFormDuringSubmit()) {
-        return []
-      }
-
-      console.error(e)
-      submissionData.hasFailed = true
-    }
-
-    batch(() => {
-      if (isErrorResult(submissionData.submitError)) {
-        submissionData.hasFailed = true
-        errorResults.push(submissionData.submitError)
-
-        this._processValidationResult(
-          {
-            validatorIndex: this.options.validators?.length ?? 0,
-            result: submissionData.submitError,
-            schemaResult: null,
-          },
-          'submit',
-        )
-      }
-      // Cleanup regardless of error result or not
-      cleanup()
-    })
-
-    return errorResults
+    return handleSubmitPromise
   }
 }
 
