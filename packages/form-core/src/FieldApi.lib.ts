@@ -41,7 +41,7 @@ import type {
   FieldValidatorPipelineResult,
   PipelineResult,
 } from './validation.lib'
-import type { PropagateOptions } from './types.lib'
+import type { ResolvedInternalFieldUpdateOptions } from './types.lib'
 import type { FieldUpdateOptions, Updater } from './types.public'
 import type { AnyInternalFormApi } from './FormApi.lib'
 import type { Atom, ReadonlyAtom } from '@tanstack/store'
@@ -537,16 +537,6 @@ export class InternalFieldApi<
     this._fullPathCache = null
   }
 
-  _invalidateMeta() {
-    if (this._atoms.meta) {
-      this._atoms.meta.set((prev) => ({ ...prev }))
-    }
-
-    for (const child of this.#children.values()) {
-      child._invalidateMeta()
-    }
-  }
-
   /**
    * @private
    * Get a child FieldApi by its segment name.
@@ -811,7 +801,10 @@ export class InternalFieldApi<
   }
 
   _notifyEvent(
-    options: FieldUpdateOptions & PropagateOptions,
+    options: Omit<
+      ResolvedInternalFieldUpdateOptions,
+      'fieldApiOverride' | '_skipFieldCreation'
+    >,
     event: 'change' | 'blur' | 'submit',
   ): void {
     if (this._isKilled) return
@@ -821,10 +814,10 @@ export class InternalFieldApi<
     }
 
     const {
-      markAsDirty = true,
-      markAsTouched = true,
-      causeValidation = true,
-      markAsBlurred = false,
+      markAsDirty,
+      markAsTouched,
+      causeValidation,
+      markAsBlurred,
       doPropagate,
     } = options
     // Not sure if we lose this context, so might as well
@@ -833,42 +826,6 @@ export class InternalFieldApi<
     let currNode: AnyInternalFieldApi | InternalRootFieldApi = this
 
     batch(() => {
-      // -> it triggered a change
-      // -> foo.bar is dirty
-
-      // arrayField -> users
-      // fieldA -> users[0] // for now
-      // fieldB -> users[1]
-
-      // arrayField.swapValues(0, 1)
-      // arrayField.isDirty
-      // -> fieldA is not dirty
-      // -> fieldA changes -> arrayField was changed -> form is changed
-
-      /**
-       * We need meta dataflow to go from:
-       *
-       * Child -> parent
-       *
-       * Rather than:
-       *
-       * Parent -> child
-       *
-       * This is because a child can access a parent's dataset, but the parent cannot access the child easily:
-       *
-       * @example <form.Field name="users" children={arrayField => <form.Field name={"users[0]"} children={fieldA => { "fieldA can access arrayField but not vice-versa" }} />} />
-       *
-       */
-      // arrayField.isSelfDirty -> somebody called arrayField.handleChange()
-      // arrayField.isAChildDirty -> somebody called fieldA.handleChange() or fieldB.handleChange()
-      // arrayField.isDirty -> arrayField.isSelfDirty || arrayField.isAChildDirty
-
-      // arrayField.pushValue()
-
-      // arrayField represents itself + fieldA + fieldB
-      // fieldA can have special "override" meta
-      // -> field-level validators
-
       const seenListenerFields = new WeakSet<AnyInternalFieldApi>()
 
       while (!currNode._isRoot) {
@@ -877,6 +834,7 @@ export class InternalFieldApi<
         const shouldUpdateDirty = isOriginalField && markAsDirty && !isSelfDirty
         const shouldUpdateTouched =
           isOriginalField && markAsTouched && !isSelfTouched
+
         const shouldUpdateBlurred = markAsBlurred && !isBlurred
 
         if (shouldUpdateDirty || shouldUpdateTouched || shouldUpdateBlurred) {

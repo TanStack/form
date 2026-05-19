@@ -10,7 +10,9 @@ import {
   createPipelineCache,
   evaluate,
   getBy,
+  getTargetField,
   isNotNil,
+  resolveFieldUpdateOptions,
   setBy,
 } from './utils.lib'
 import { InternalRootFieldApi } from './RootFieldApi.lib'
@@ -48,10 +50,10 @@ import type {
 import type {
   FieldApiOverrideOptions,
   InternalFieldUpdateOptions,
-  PropagateOptions,
+  ResolvedInternalFieldUpdateOptions,
 } from './types.lib'
 import type { Atom, ReadonlyAtom } from '@tanstack/store'
-import type { FieldUpdateOptions, Updater } from './types.public'
+import type { Updater } from './types.public'
 import type {
   FormErrors,
   FormValidateResult,
@@ -278,9 +280,7 @@ function applyDefaultValuesPreservingTouchedFields<TFormData>(
   let nextValues = defaultValues
 
   for (const field of form._fieldRootNode._children) {
-    const baseMeta = field._getBaseMeta()
-
-    if (baseMeta.isTouched) {
+    if (field.meta.isTouched) {
       nextValues = setBy(
         nextValues,
         field.name,
@@ -402,10 +402,6 @@ export class InternalFormApi<
     this._lastUpdateDefaultValues = options.defaultValues
     this._options = options
 
-    if (options.errorVisibility !== oldOptions.errorVisibility) {
-      this._fieldRootNode._children.forEach((child) => child._invalidateMeta())
-    }
-
     if (
       (options.validators?.length ?? 0) !== (oldOptions.validators?.length ?? 0)
     ) {
@@ -447,16 +443,15 @@ export class InternalFormApi<
     updater: Updater<any>,
     options?: InternalFieldUpdateOptions,
   ) => {
-    const field = options?.fieldApiOverride ?? this._tryGetFieldApi(fieldName)
+    const updateOptions = resolveFieldUpdateOptions(options, 'change')
+
+    const field = getTargetField(this, fieldName, updateOptions)
+    updateOptions.fieldApiOverride = field
 
     batch(() => {
       this.valuesAtom.set((prev) => setBy(prev, fieldName, updater))
 
-      this._notifyFieldChange(
-        field,
-        { ...options, doPropagate: true },
-        'change',
-      )
+      this._notifyFieldChange(field, updateOptions, 'change')
     })
   }
 
@@ -512,6 +507,10 @@ export class InternalFormApi<
       return
     }
 
+    const updateOptions = resolveFieldUpdateOptions(options, 'change')
+    const arrayField = getTargetField(this, arrayFieldName, updateOptions)
+    updateOptions.fieldApiOverride = arrayField
+
     batch(() => {
       this.setFieldValue(
         arrayFieldName,
@@ -520,15 +519,8 @@ export class InternalFormApi<
           array.splice(index, 0, value)
           return array
         },
-        options,
+        updateOptions,
       )
-
-      const arrayField =
-        options?.fieldApiOverride ??
-        tryGetFieldApi(
-          this._fieldRootNode,
-          nameToFieldNodeSegments(arrayFieldName),
-        )
 
       if (!arrayField) return
 
@@ -556,6 +548,10 @@ export class InternalFormApi<
       return
     }
 
+    const updateOptions = resolveFieldUpdateOptions(options, 'change')
+    const arrayField = getTargetField(this, arrayFieldName, updateOptions)
+    updateOptions.fieldApiOverride = arrayField
+
     batch(() => {
       this.setFieldValue(
         arrayFieldName,
@@ -564,15 +560,8 @@ export class InternalFormApi<
           array.splice(index, 1)
           return array
         },
-        options,
+        updateOptions,
       )
-
-      const arrayField =
-        options?.fieldApiOverride ??
-        tryGetFieldApi(
-          this._fieldRootNode,
-          nameToFieldNodeSegments(arrayFieldName),
-        )
 
       if (!arrayField) return
 
@@ -592,7 +581,7 @@ export class InternalFormApi<
     arrayFieldName: string,
     indexA: number,
     indexB: number,
-    options?: FieldApiOverrideOptions,
+    options?: InternalFieldUpdateOptions,
   ) => {
     if (
       this._isInvalidArrayMethod('swapFieldValues', arrayFieldName, {
@@ -607,6 +596,10 @@ export class InternalFormApi<
       return
     }
 
+    const updateOptions = resolveFieldUpdateOptions(options, 'change')
+    const arrayField = getTargetField(this, arrayFieldName, updateOptions)
+    updateOptions.fieldApiOverride = arrayField
+
     batch(() => {
       this.setFieldValue(
         arrayFieldName,
@@ -618,15 +611,8 @@ export class InternalFormApi<
           array[indexB] = a
           return array
         },
-        options,
+        updateOptions,
       )
-
-      const arrayField =
-        options?.fieldApiOverride ??
-        tryGetFieldApi(
-          this._fieldRootNode,
-          nameToFieldNodeSegments(arrayFieldName),
-        )
 
       if (!arrayField) return
 
@@ -657,15 +643,12 @@ export class InternalFormApi<
       return
     }
 
-    batch(() => {
-      this.setFieldValue(arrayFieldName, () => [], options)
+    const updateOptions = resolveFieldUpdateOptions(options, 'change')
+    const arrayField = getTargetField(this, arrayFieldName, updateOptions)
+    updateOptions.fieldApiOverride = arrayField
 
-      const arrayField =
-        options?.fieldApiOverride ??
-        tryGetFieldApi(
-          this._fieldRootNode,
-          nameToFieldNodeSegments(arrayFieldName),
-        )
+    batch(() => {
+      this.setFieldValue(arrayFieldName, [], updateOptions)
 
       if (!arrayField) return
 
@@ -676,7 +659,7 @@ export class InternalFormApi<
 
       // Kill all child fields since the array is now empty
       // _kill() will remove each child from the parent's children
-      for (const child of [...arrayField._children]) {
+      for (const child of arrayField._children) {
         child._kill()
       }
     })
@@ -691,9 +674,11 @@ export class InternalFormApi<
       return
     }
 
+    const updateOptions = resolveFieldUpdateOptions(options, 'change')
+    const arrayNode = getTargetField(this, arrayFieldName, updateOptions)
+    updateOptions.fieldApiOverride = arrayNode
+
     const oldArray: Array<any> = this.getFieldValue(arrayFieldName)
-    const arrayNode =
-      options?.fieldApiOverride ?? this._tryGetFieldApi(arrayFieldName)
 
     let length = 0
     const thisArg = options?.thisArg
@@ -714,31 +699,23 @@ export class InternalFormApi<
     if (oldArray.length === filtered.length) {
       // Setting filtered array would be a no-op, but either way the user
       // tried to set a value
-      this._notifyFieldChange(
-        arrayNode,
-        { ...options, doPropagate: true },
-        'change',
-      )
+      this._notifyFieldChange(arrayNode, updateOptions, 'change')
     } else {
-      this.setFieldValue(arrayFieldName, filtered, options)
+      this.setFieldValue(arrayFieldName, filtered, updateOptions)
     }
   }
 
   _notifyFieldChange = (
     field: AnyInternalFieldApi | null,
-    options: FieldUpdateOptions & PropagateOptions,
+    options: ResolvedInternalFieldUpdateOptions,
     event: 'change' | 'blur' | 'submit',
   ) => {
     if (event === 'change') {
       this._clearEventErrors(field, 'submit')
     }
 
-    const { markAsDirty = true } = options
-    if (
-      event === 'change' &&
-      markAsDirty &&
-      !this._formMetaAtom.get().isDirty
-    ) {
+    const { markAsDirty } = options
+    if (markAsDirty && !this._formMetaAtom.get().isDirty) {
       this._formMetaAtom.set((prev) => ({ ...prev, isDirty: true }))
     }
 
@@ -1103,7 +1080,7 @@ export class InternalFormApi<
           // TypeScript doesn't instantly complain, but instead decides to wait a while.
           // Just leave it as never.
           formApi: this as never,
-          triggerFieldApi: opts?.fieldApiOverride,
+          triggerFieldApi: opts?.fieldApiOverride ?? undefined,
         },
         hasFailedBefore: opts?.hasFailedBefore ?? false,
         pipeline,

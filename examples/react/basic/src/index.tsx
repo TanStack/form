@@ -97,7 +97,7 @@ function App() {
               <span>Last Name</span>
               <input
                 name={field.name}
-                value={field.state.value}
+                value={field.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
                 aria-invalid={field.meta.isInvalid}

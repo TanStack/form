@@ -168,6 +168,7 @@ export interface FormApi<
     arrayFieldName: TFieldName,
     indexA: number,
     indexB: number,
+    options?: FieldUpdateOptions,
   ) => void
 
   /**
@@ -211,6 +212,7 @@ export interface FormApi<
     TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
   >(
     arrayFieldName: TFieldName,
+    options?: FieldUpdateOptions,
   ) => void
 
   /**

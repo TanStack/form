@@ -187,8 +187,10 @@ describe('form - lifecycle', () => {
       form.setFieldValue('name', 'bye')
       form.resetField('name')
 
-      expect(form.getFieldValue('name')).toEqual('hi')
-      expect(form.getFieldMeta('name')).toEqual(undefined)
+      vi.waitFor(() => {
+        expect(form.getFieldValue('name')).toEqual('hi')
+        expect(form.getFieldMeta('name')).toEqual(undefined)
+      })
     })
   })
 

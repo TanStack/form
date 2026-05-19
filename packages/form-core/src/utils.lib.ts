@@ -1,7 +1,13 @@
 import { nameToFieldNodeSegments } from './FieldApi.lib'
+import type { AnyInternalFieldApi } from './FieldApi.lib'
 
 // type
-import type { OneOrMany, UpdateFn, Updater } from './types.public'
+import type {
+  FieldUpdateOptions,
+  OneOrMany,
+  UpdateFn,
+  Updater,
+} from './types.public'
 import type { ValidationDebouncer } from './validation.lib'
 import type {
   FieldValidateResult,
@@ -9,6 +15,50 @@ import type {
   FormValidators,
 } from './validation.public'
 import type { ListenerDebouncer } from './listeners.lib'
+import type {
+  InternalFieldUpdateOptions,
+  ResolvedInternalFieldUpdateOptions,
+} from './types.lib'
+import type { AnyInternalFormApi } from './FormApi.lib'
+
+export function resolveFieldUpdateOptions(
+  options: InternalFieldUpdateOptions | undefined,
+  event: 'change' | 'blur' | 'submit' | 'noEvent',
+): ResolvedInternalFieldUpdateOptions {
+  const baseOpts: Required<FieldUpdateOptions> = {
+    causeValidation: options?.causeValidation ?? true,
+    markAsBlurred: options?.markAsBlurred ?? event === 'blur',
+    markAsDirty: options?.markAsDirty ?? event === 'change',
+    markAsTouched:
+      options?.markAsTouched ?? (event === 'change' || event === 'submit'),
+  }
+  const noFieldCreationNeeded =
+    !baseOpts.markAsTouched && !baseOpts.markAsDirty && !baseOpts.markAsBlurred
+
+  return {
+    ...baseOpts,
+    _skipFieldCreation: options?._skipFieldCreation ?? noFieldCreationNeeded,
+    fieldApiOverride: options?.fieldApiOverride ?? null,
+    doPropagate: options?.doPropagate ?? true,
+  }
+}
+
+export function getTargetField(
+  formApi: AnyInternalFormApi,
+  fieldName: string,
+  options: ResolvedInternalFieldUpdateOptions,
+) {
+  let field: AnyInternalFieldApi | null
+
+  if (options.fieldApiOverride) {
+    field = options.fieldApiOverride
+  } else if (options._skipFieldCreation) {
+    field = formApi._tryGetFieldApi(fieldName)
+  } else {
+    field = formApi._getOrCreateFieldApi({ name: fieldName })
+  }
+  return field
+}
 
 type Primitive = string | number | boolean | bigint | symbol | null | undefined
 
