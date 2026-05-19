@@ -3,7 +3,7 @@ import {
   callUpdater,
   cancelPipelineCache,
   createPipelineCache,
-} from './utils.lib'
+} from '../utils.lib'
 import {
   clearIndexedErrorsFromSource,
   hasIndexedErrorFromSource,
@@ -12,8 +12,8 @@ import {
   normalizeValidationError,
   runFieldValidatorPipeline,
   setIndexedError,
-} from './validation.lib'
-import { runFieldListenerPipeline } from './listeners.lib'
+} from '../validation.lib'
+import { runFieldListenerPipeline } from '../listeners.lib'
 import {
   attachWatchingListenerField,
   attachWatchingValidatorField,
@@ -31,19 +31,19 @@ import type {
   DeepKeys,
   DeepValue,
   TryGetArrayElementType,
-} from './deep-keys.public'
+} from '../deep-keys.public'
 import type {
   AnyFieldListener,
   FieldListenerTriggers,
-} from './listeners.public'
-import type { PipelineCache } from './utils.lib'
+} from '../listeners.public'
+import type { PipelineCache } from '../utils.lib'
 import type {
   FieldValidatorPipelineResult,
   PipelineResult,
-} from './validation.lib'
-import type { ResolvedInternalFieldUpdateOptions } from './types.lib'
-import type { FieldUpdateOptions, Updater } from './types.public'
-import type { AnyInternalFormApi } from './FormApi.lib'
+} from '../validation.lib'
+import type { ResolvedInternalFieldUpdateOptions } from '../types.lib'
+import type { FieldUpdateOptions, Updater } from '../types.public'
+import type { AnyInternalFormApi } from '../FormApi/FormApi.lib'
 import type { Atom, ReadonlyAtom } from '@tanstack/store'
 import type {
   AnyFieldMeta as AnyPublicFieldMeta,
@@ -61,7 +61,7 @@ import type {
   FieldValidators,
   FormValidators,
   ValidationIssue,
-} from './validation.public'
+} from '../validation.public'
 
 export type AnyFieldApiOptions = FieldApiOptions<any, any, any, any, any, any>
 export type AnyFieldValidator = FieldValidator<any, any, any>

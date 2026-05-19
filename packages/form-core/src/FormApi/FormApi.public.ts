@@ -3,8 +3,8 @@ import type {
   DeepKeysWhereValueIncludes,
   DeepValue,
   TryGetArrayElementType,
-} from './deep-keys.public'
-import type { FieldUpdateOptions } from './types.public'
+} from '../deep-keys.public'
+import type { FieldUpdateOptions } from '../types.public'
 import type { ReadonlyAtom } from '@tanstack/store'
 import type {
   ConfigurableValidationTrigger,
@@ -13,7 +13,7 @@ import type {
   FormStandardSchemaValidatorOutputs,
   FormValidationError,
   FormValidators,
-} from './validation.public'
+} from '../validation.public'
 
 declare const onSubmitErrorBrand: unique symbol
 

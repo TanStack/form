@@ -1,5 +1,5 @@
-import { nameToFieldNodeSegments } from './FieldApi.lib'
-import type { AnyInternalFieldApi } from './FieldApi.lib'
+import { nameToFieldNodeSegments } from './FieldApi/FieldApi.lib'
+import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
 
 // type
 import type {
@@ -19,7 +19,7 @@ import type {
   InternalFieldUpdateOptions,
   ResolvedInternalFieldUpdateOptions,
 } from './types.lib'
-import type { AnyInternalFormApi } from './FormApi.lib'
+import type { AnyInternalFormApi } from './FormApi/FormApi.lib'
 
 export function resolveFieldUpdateOptions(
   options: InternalFieldUpdateOptions | undefined,

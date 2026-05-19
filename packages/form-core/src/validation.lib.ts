@@ -17,8 +17,8 @@ import type {
   ValidationTriggerOption,
   Validator,
 } from './validation.public'
-import type { InternalFormApi } from './FormApi.lib'
-import type { AnyInternalFieldApi } from './FieldApi.lib'
+import type { InternalFormApi } from './FormApi/FormApi.lib'
+import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
 
 type FormValidateContext = Omit<FormValidatorContext<any>, 'value'>
 type FieldValidateContext = Omit<FieldValidatorContext<any, any, any>, 'value'>

@@ -1,4 +1,4 @@
-import type { AnyInternalFieldApi } from './FieldApi.lib'
+import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
 import type { FieldUpdateOptions } from './types.public'
 
 export interface FieldApiOverrideOptions {

@@ -3,8 +3,8 @@ import type {
   AnyInternalFieldApi,
   FieldListenToFields,
 } from './FieldApi.lib'
-import type { AnyInternalFormApi } from './FormApi.lib'
-import type { AnyFieldListener } from './listeners.public'
+import type { AnyInternalFormApi } from '../FormApi/FormApi.lib'
+import type { AnyFieldListener } from '../listeners.public'
 
 type WatcherIndex = number
 

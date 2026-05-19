@@ -4,7 +4,7 @@ import type {
   ChildContributionStates,
   NameSegment,
 } from './FieldApi.lib'
-import type { AnyInternalFormApi, BaseFormMeta } from './FormApi.lib'
+import type { AnyInternalFormApi, BaseFormMeta } from '../FormApi/FormApi.lib'
 
 export type RootCounterContributionKey = 'touched' | 'validating'
 

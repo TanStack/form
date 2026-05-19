@@ -1,13 +1,13 @@
 import { batch } from '@tanstack/store'
 import { isErrorResult } from '../validation.lib'
 import { isNotNil } from '../utils.lib'
-import type { InternalFormApi } from '../FormApi.lib'
+import type { InternalFormApi } from './FormApi.lib'
 import type {
   FormValidateResult,
   FormValidationError,
   ValidationErrorInput,
 } from '../validation.public'
-import type { CreateValidationErrorFn, OnSubmitError } from '../FormApi.public'
+import type { CreateValidationErrorFn, OnSubmitError } from './FormApi.public'
 
 export const SUBMIT_ERROR = Symbol('SUBMIT_ERROR')
 

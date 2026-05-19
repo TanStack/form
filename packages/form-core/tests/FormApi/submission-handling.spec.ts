@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
-import { InternalFormApi } from '../../src/FormApi.lib'
+import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
 
 describe('form - submission handling', () => {
   describe('handleSubmit', () => {

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { InternalFormApi } from '../../src/FormApi.lib'
-import { defaultFieldMeta } from '../../src/FieldApi.lib'
+import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
+import { defaultFieldMeta } from '../../src/FieldApi/FieldApi.lib'
 
 describe('field - meta', () => {
   afterEach(() => {

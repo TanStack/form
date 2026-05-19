@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { InternalFormApi } from '../../src/FormApi.lib'
+import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
 
 describe('form - field meta', () => {
   describe('getFieldMeta', () => {

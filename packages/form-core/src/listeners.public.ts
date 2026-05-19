@@ -1,6 +1,6 @@
 import type { DeepKeys, DeepValue } from './deep-keys.public'
-import type { FormApi } from './FormApi.public'
-import type { AnyFieldApi, FieldApi } from './FieldApi.public'
+import type { FormApi } from './FormApi/FormApi.public'
+import type { AnyFieldApi, FieldApi } from './FieldApi/FieldApi.public'
 import type {
   FieldValidators,
   FormValidator,

@@ -2,8 +2,8 @@ import { describe, expect, it, vi } from 'vitest'
 import {
   defaultFieldMeta,
   defaultInternalBaseFieldMeta,
-} from '../../src/FieldApi.lib'
-import { InternalFormApi } from '../../src/FormApi.lib'
+} from '../../src/FieldApi/FieldApi.lib'
+import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
 
 describe('field - lifecycle', () => {
   describe('_isMounted and store', () => {

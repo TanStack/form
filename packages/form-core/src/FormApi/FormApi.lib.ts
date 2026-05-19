@@ -3,7 +3,7 @@ import {
   getOrCreateFieldApi,
   nameToFieldNodeSegments,
   tryGetFieldApi,
-} from './FieldApi.lib'
+} from '../FieldApi/FieldApi.lib'
 import {
   callUpdater,
   cancelPipelineCache,
@@ -13,8 +13,8 @@ import {
   getTargetField,
   resolveFieldUpdateOptions,
   setBy,
-} from './utils.lib'
-import { InternalRootFieldApi } from './RootFieldApi.lib'
+} from '../utils.lib'
+import { InternalRootFieldApi } from '../FieldApi/RootFieldApi.lib'
 import {
   clearIndexedErrorsFromSource,
   hasIndexedErrorFromSource,
@@ -24,31 +24,31 @@ import {
   normalizeValidationError,
   runFormValidatorPipeline,
   setIndexedError,
-} from './validation.lib'
-import { runSubmissionProcess } from './FormApi/handleSubmit.lib'
-import { ArrayMethods } from './FormApi/array-methods.lib'
+} from '../validation.lib'
+import { runSubmissionProcess } from './handleSubmit.lib'
+import { ArrayMethods } from './array-methods.lib'
 import type { FormApi, FormOptions, FormState } from './FormApi.public'
 
-import type { DeepKeys } from './deep-keys.public'
-import type { PipelineCache } from './utils.lib'
+import type { DeepKeys } from '../deep-keys.public'
+import type { PipelineCache } from '../utils.lib'
 
 import type {
   FormValidatorPipelineResult,
   PipelineResult,
-} from './validation.lib'
+} from '../validation.lib'
 import type {
   AnyFieldApiOptions,
   AnyInternalFieldApi,
   InternalBaseFieldMeta,
   InternalFieldMeta,
-} from './FieldApi.lib'
+} from '../FieldApi/FieldApi.lib'
 import type {
   FieldApiOverrideOptions,
   InternalFieldUpdateOptions,
   ResolvedInternalFieldUpdateOptions,
-} from './types.lib'
+} from '../types.lib'
 import type { Atom, ReadonlyAtom } from '@tanstack/store'
-import type { Updater } from './types.public'
+import type { Updater } from '../types.public'
 import type {
   FormErrors,
   FormValidateResult,
@@ -58,7 +58,7 @@ import type {
   ValidationErrorInput,
   ValidationIssue,
   ValidationTrigger,
-} from './validation.public'
+} from '../validation.public'
 
 export interface BaseFormMeta {
   /**

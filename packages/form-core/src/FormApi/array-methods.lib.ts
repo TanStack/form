@@ -1,7 +1,7 @@
 import { batch } from '@tanstack/store'
 import { getTargetField, resolveFieldUpdateOptions } from '../utils.lib'
-import { tryGetFieldApi } from '../FieldApi.lib'
-import type { AnyInternalFormApi } from '../FormApi.lib'
+import { tryGetFieldApi } from '../FieldApi/FieldApi.lib'
+import type { AnyInternalFormApi } from './FormApi.lib'
 import type { InternalFieldUpdateOptions } from '../types.lib'
 
 function isInvalidArrayMethod(

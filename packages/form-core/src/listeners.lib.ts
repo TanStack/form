@@ -1,7 +1,7 @@
 import { LiteDebouncer } from '@tanstack/pacer-lite'
 import type { PipelineCache } from './utils.lib'
-import type { AnyInternalFieldApi } from './FieldApi.lib'
-import type { InternalFormApi } from './FormApi.lib'
+import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
+import type { InternalFormApi } from './FormApi/FormApi.lib'
 import type {
   AnyFieldListener,
   AnyFormListener,

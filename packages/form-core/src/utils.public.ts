@@ -1,4 +1,4 @@
-import type { FormOptions } from './FormApi.public'
+import type { FormOptions } from './FormApi/FormApi.public'
 import type {
   FormValidatorData,
   InferUnion,

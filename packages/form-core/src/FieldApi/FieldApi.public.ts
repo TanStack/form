@@ -2,16 +2,16 @@ import type {
   DeepKeys,
   DeepValue,
   TryGetArrayElementType,
-} from './deep-keys.public'
-import type { FieldUpdateOptions, Updater } from './types.public'
-import type { FormApi } from './FormApi.public'
+} from '../deep-keys.public'
+import type { FieldUpdateOptions, Updater } from '../types.public'
+import type { FormApi } from '../FormApi/FormApi.public'
 import type {
   ErrorVisibility,
   FieldValidators,
   FormValidators,
   FieldErrors as ValidationFieldErrors,
-} from './validation.public'
-import type { FieldListeners } from './listeners.public'
+} from '../validation.public'
+import type { FieldListeners } from '../listeners.public'
 
 export interface BaseFieldMeta {
   isTouched: boolean

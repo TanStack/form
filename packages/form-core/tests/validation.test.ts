@@ -4,7 +4,7 @@ import {
   runFieldValidatorPipeline,
   runFormValidatorPipeline,
 } from '../src/validation.lib'
-import { InternalFormApi } from '../src/FormApi.lib'
+import { InternalFormApi } from '../src/FormApi/FormApi.lib'
 import type { PipelineResult } from '../src/validation.lib'
 import type {
   DeepKeys,
@@ -18,7 +18,7 @@ import type {
   ValidationDebounceFn,
   ValidationPredicateFn,
 } from '../src'
-import type { AnyInternalFieldApi } from '../src/FieldApi.lib'
+import type { AnyInternalFieldApi } from '../src/FieldApi/FieldApi.lib'
 
 describe('runFormValidatorPipeline', () => {
   type Event = FormValidatorContext<any>['event']

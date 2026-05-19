@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { InternalFormApi } from '../../src/FormApi.lib'
+import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
 
 describe('field - linked validators', () => {
   it('runs a watched validator when its watched source field changes', async () => {
