@@ -1,13 +1,12 @@
 import { InternalFormApi } from '@tanstack/form-core-v2/internals'
 import { useEffect, useRef } from 'react'
-import { attachReactFormComponents } from './ReactForm/Components.lib'
+import { attachReactFormComponents } from './Components.lib'
+import type { AnyInternalFormApi } from '@tanstack/form-core-v2/internals'
 import type { FormOptions } from '@tanstack/form-core-v2'
-import type { ReactTanStackFormComponents } from './ReactForm/Components.public'
+import type { ReactTanStackFormComponents } from './Components.public'
 
 export interface InternalReactFormApi
-  extends
-    InternalFormApi<any, any, any>,
-    ReactTanStackFormComponents<any, any, any> {}
+  extends AnyInternalFormApi, ReactTanStackFormComponents<any, any, any> {}
 
 export function initializeForm(
   options: FormOptions<any, any, any>,

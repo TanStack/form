@@ -2,7 +2,7 @@ import React from 'react'
 import { useArrayField, useValueField } from '../useField.lib'
 import { Subscribe } from '../Subscribe.public'
 import type { AnyInternalFormApi } from '@tanstack/form-core-v2/internals'
-import type { InternalReactFormApi } from '../ReactFormApi.lib'
+import type { InternalReactFormApi } from './ReactFormApi.lib'
 import type { FunctionComponent } from 'react'
 import type {
   ReactFormArrayFieldProps,
