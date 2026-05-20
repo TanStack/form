@@ -1,6 +1,6 @@
 import type { AnyFormOptions, FormOptions } from '@tanstack/form-core-v2'
 import type { FunctionComponent } from 'react'
-import type { ReactFormApi } from './useForm.public'
+import type { ReactFormApi } from './ReactForm/useForm.public'
 
 /**
  * This type mess takes care of react 17-19 cross compatability.
