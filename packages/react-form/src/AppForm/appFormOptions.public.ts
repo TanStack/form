@@ -1,9 +1,10 @@
-import type { FormOptions, FormValidators } from '@tanstack/form-core-v2'
 import type {
+  FormOptions,
   FormValidatorData,
+  FormValidators,
   InferUnion,
   NullableSchemaData,
-} from '@tanstack/form-core-v2/internals'
+} from '@tanstack/form-core-v2'
 import type { FunctionComponent } from 'react'
 
 declare const fieldComponentsSymbol: unique symbol
@@ -68,7 +69,7 @@ export interface AppFormOptionsApi<
     InferUnion<TFormData, FormValidatorData<TFormValidators>>,
     TFormValidators,
     TSubmitReturn,
-    TFieldComponents,
-    TFormComponents
+    TFormComponents,
+    TFieldComponents
   >
 }

@@ -1,14 +1,16 @@
-import { InternalFormApi } from '@tanstack/form-core-v2/internals'
 import { useInternalForm } from '../ReactForm/ReactFormApi.lib'
-import { attachReactAppFormComponents } from './Components.lib'
-import type { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
+import { createAppFormInitializer } from './initializeAppForm.lib'
 import type { FunctionComponent } from 'react'
 import type { AppFormOptionsApi } from './appFormOptions.public'
+import type {
+  AppFormHookCreateOptions,
+  AppFormHookResult,
+} from './createFormHookTypes.public'
 import type {
   UseFormHook,
   UseNullableSchemaFormHook,
   UseSchemaFormHook,
-} from '../ReactForm/useForm.public'
+} from '../ReactForm/useFormTypes.public'
 import type { FormOptions } from '@tanstack/form-core-v2'
 
 const appFormOptions = ((opts) => {
@@ -18,45 +20,13 @@ const appFormOptions = ((opts) => {
 appFormOptions.schema = (opts) => opts as never
 appFormOptions.nullableSchema = (opts) => opts as never
 
-export interface AppFormHookResult<
-  TFormComponents extends Record<string, FunctionComponent<any>>,
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
-> {
-  appFormOptions: AppFormOptionsApi<TFormComponents, TFieldComponents>
-  useSchemaAppForm: UseSchemaFormHook<TFormComponents, TFieldComponents>
-  useAppForm: UseFormHook<TFormComponents, TFieldComponents>
-  useNullableSchemaAppForm: UseNullableSchemaFormHook<
-    TFormComponents,
-    TFieldComponents
-  >
-}
-
-export interface AppFormHookCreateOptions<
-  TFormComponents extends Record<string, FunctionComponent<any>>,
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
-> {
-  fieldComponents: TFieldComponents
-  formComponents: TFormComponents
-}
-
 export function createFormHook<
   const TFormComponents extends Record<string, FunctionComponent<any>>,
   const TFieldComponents extends Record<string, FunctionComponent<any>>,
 >(
   createOptions: AppFormHookCreateOptions<TFormComponents, TFieldComponents>,
 ): AppFormHookResult<TFormComponents, TFieldComponents> {
-  function initializeAppForm(
-    options: FormOptions<any, any, any>,
-  ): InternalReactFormApi {
-    const form = new InternalFormApi(options)
-    const extendedForm = attachReactAppFormComponents(
-      form,
-      createOptions.formComponents,
-      createOptions.fieldComponents,
-    )
-
-    return extendedForm as never
-  }
+  const initializeAppForm = createAppFormInitializer(createOptions)
 
   function useExtendedForm(hookOptions: FormOptions<any, any, any>) {
     const form = useInternalForm(hookOptions, initializeAppForm)

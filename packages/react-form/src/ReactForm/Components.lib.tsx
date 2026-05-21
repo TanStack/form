@@ -2,9 +2,9 @@ import React from 'react'
 import { Subscribe } from '../Subscribe.public'
 import {
   useArrayFieldSubscription,
-  useField,
   useValueFieldSubscription,
-} from '../useField.lib'
+} from './fieldSubscriptions.lib'
+import { useField } from './useField.lib'
 import type { AnyInternalFormApi } from '@tanstack/form-core-v2/internals'
 import type { InternalReactFormApi } from './ReactFormApi.lib'
 import type { FunctionComponent } from 'react'

@@ -1,4 +1,4 @@
-import type { BuiltInType } from './utils.lib'
+import type { BuiltInType } from './utils.public'
 
 interface AnyDeepKeyAndValue<
   TKey extends string = string,

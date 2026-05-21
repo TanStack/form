@@ -1,7 +1,7 @@
 import type { FormValidators } from '@tanstack/form-core-v2'
-import type { ReactFormApi } from '../ReactForm/useForm.public'
+import type { ReactFormApi } from '../ReactForm/formApiTypes.public'
 import type { FunctionComponent } from 'react'
-import type { CrossVersionReactNode } from '../types.public'
+import type { CrossVersionReactNode } from '../reactTypes.public'
 
 export type AppFormComponent = FunctionComponent<{
   children: Exclude<CrossVersionReactNode, Promise<any>>

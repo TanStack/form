@@ -5,7 +5,7 @@ import type {
   AnyInternalFieldApi,
   InternalFormApi,
 } from '@tanstack/form-core-v2/internals'
-import type { ReactFormFieldProps } from './ReactForm/Components.public'
+import type { ReactFormFieldProps } from './Components.public'
 
 export interface InternalFieldProps extends ReactFormFieldProps<
   any,
@@ -48,14 +48,4 @@ export function useField(
   })
 
   return fieldApi
-}
-
-export function useValueFieldSubscription(fieldApi: AnyInternalFieldApi): void {
-  useSelector(fieldApi.store, (state) => state.value)
-  useSelector(fieldApi.store, (state) => state.meta)
-}
-
-export function useArrayFieldSubscription(fieldApi: AnyInternalFieldApi): void {
-  useSelector(fieldApi.store, (state) => state.value.length)
-  useSelector(fieldApi.store, (state) => state.meta._arrayVersion)
 }

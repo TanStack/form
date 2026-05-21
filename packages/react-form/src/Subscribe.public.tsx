@@ -6,7 +6,7 @@ import type {
   ReadonlyStore,
   Store,
 } from '@tanstack/react-store'
-import type { CrossVersionReactNode } from './types.public'
+import type { CrossVersionReactNode } from './reactTypes.public'
 
 export type SubscribeSource<TValue> =
   | Atom<TValue>

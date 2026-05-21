@@ -9,9 +9,54 @@ import type {
   FormValidators,
 } from '@tanstack/form-core-v2'
 import type { SubscribeProps } from '../Subscribe.public'
-import type { CrossVersionReactNode } from '../types.public'
+import type { CrossVersionReactNode } from '../reactTypes.public'
 import type { FunctionComponent } from 'react'
-import type { FieldComponentsMatchingType } from '../AppForm/createFormHookContexts.public'
+
+type ExactFieldBrand<TValue> = {
+  readonly __tanstackFieldExactType: TValue
+}
+
+type AcceptsFieldBrand<TAcceptedValue> = {
+  readonly __tanstackFieldAcceptsType: TAcceptedValue
+}
+
+type IsSame<TTypeA, TTypeB> = [TTypeA] extends [TTypeB]
+  ? [TTypeB] extends [TTypeA]
+    ? true
+    : false
+  : false
+
+type ExactBrandValue<T> =
+  T extends ExactFieldBrand<infer TValue> ? TValue : never
+
+type AcceptsBrandValue<T> =
+  T extends AcceptsFieldBrand<infer TValue> ? TValue : never
+
+type HasExactBrand<T> = T extends ExactFieldBrand<any> ? true : false
+
+type HasAcceptsBrand<T> = T extends AcceptsFieldBrand<any> ? true : false
+
+type CompatibleFieldKey<TKey, TComponent, TTargetValue> =
+  HasExactBrand<TComponent> extends true
+    ? IsSame<ExactBrandValue<TComponent>, TTargetValue> extends true
+      ? TKey
+      : never
+    : HasAcceptsBrand<TComponent> extends true
+      ? [TTargetValue] extends [AcceptsBrandValue<TComponent>]
+        ? TKey
+        : never
+      : TKey
+
+type FieldComponentsMatchingType<
+  TFieldComponents extends Record<string, FunctionComponent<any>>,
+  TTargetValue,
+> = {
+  [K in keyof TFieldComponents as CompatibleFieldKey<
+    K,
+    TFieldComponents[K],
+    TTargetValue
+  >]: TFieldComponents[K]
+}
 
 export type ReactFieldApi<
   TFormData,

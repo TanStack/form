@@ -9,7 +9,7 @@ import type {
   AppFormComponent,
   ReactAppFormApi,
 } from './ReactAppFormApi.public'
-import type { CrossVersionReactNode } from '../types.public'
+import type { CrossVersionReactNode } from '../reactTypes.public'
 
 type AnyReactAppFormApi = ReactAppFormApi<
   any,

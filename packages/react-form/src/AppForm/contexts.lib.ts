@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react'
-import { useValueFieldSubscription } from '../useField.lib'
+import { useValueFieldSubscription } from '../ReactForm/fieldSubscriptions.lib'
 import type { AnyInternalFieldApi } from '@tanstack/form-core-v2/internals'
 import type { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
 
