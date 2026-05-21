@@ -15,6 +15,7 @@ import type {
   FormValidators,
 } from '../validation.public'
 import type { FormListeners } from '../listeners.public'
+import type { ArrayFieldMethods } from './array-methods.lib'
 
 declare const onSubmitErrorBrand: unique symbol
 
@@ -109,7 +110,9 @@ export interface FormState<
   submissionAttempts: number
 }
 
-export type AnyFormApi = FormApi<any, any, any>
+// Array field methods resolve to `never` if there is no array value, so we need
+// to remove them to keep AnyFormApi truly compatible with all forms
+export type AnyFormApi = Omit<FormApi<any, any, any>, ArrayFieldMethods>
 
 export interface FormApi<
   TFormData,

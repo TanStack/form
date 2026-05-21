@@ -43,7 +43,7 @@ export function Subscribe<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
-  TSelected,
+  const TSelected,
 >(
   props: SubscribeProps<
     FormState<TFormData, TFormValidators, TSubmitReturn>,

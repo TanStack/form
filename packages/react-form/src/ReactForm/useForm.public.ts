@@ -1,5 +1,6 @@
 import { initializeForm, useInternalForm } from './ReactFormApi.lib'
 import type {
+  AnyFormApi,
   FormApi,
   FormOptions,
   FormValidators,
@@ -12,11 +13,10 @@ import type {
 import type { ReactTanStackFormComponents } from './Components.public'
 import type { FunctionComponent } from 'react'
 
-export type ReactFormApi<
+type ExtendedFormApi<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
-  TFormComponents extends Record<string, FunctionComponent<any>>,
   TFieldComponents extends Record<string, FunctionComponent<any>>,
 > = FormApi<TFormData, TFormValidators, TSubmitReturn> &
   ReactTanStackFormComponents<
@@ -24,8 +24,24 @@ export type ReactFormApi<
     TFormValidators,
     TSubmitReturn,
     TFieldComponents
-  > &
+  >
+
+export type ReactFormApi<
+  TFormData,
+  TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
+  TFormComponents extends Record<string, FunctionComponent<any>>,
+  TFieldComponents extends Record<string, FunctionComponent<any>>,
+> = ExtendedFormApi<
+  TFormData,
+  TFormValidators,
+  TSubmitReturn,
+  TFieldComponents
+> &
   TFormComponents
+
+export type AnyReactFormApi = AnyFormApi &
+  ReactTanStackFormComponents<any, any, any, any>
 
 export type UseFormHook<
   TFormComponents extends Record<string, FunctionComponent<any>>,

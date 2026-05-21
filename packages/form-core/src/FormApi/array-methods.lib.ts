@@ -308,6 +308,16 @@ export const ArrayMethods = {
   insertValue: insertFieldValue,
   removeValue: removeFieldValue,
   swapValues: swapFieldValues,
+  // 'replaceFieldValue'
+  // 'moveFieldValues'
   clearValues: clearFieldValues,
   filterValues: filterFieldValues,
 }
+
+export type ArrayFieldMethods =
+  | 'pushFieldValue'
+  | 'insertFieldValue'
+  | 'removeFieldValue'
+  | 'swapFieldValues'
+  | 'clearFieldValues'
+  | 'filterFieldValues'
