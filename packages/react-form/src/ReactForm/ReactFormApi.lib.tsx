@@ -6,7 +6,7 @@ import type { FormOptions } from '@tanstack/form-core-v2'
 import type { ReactTanStackFormComponents } from './Components.public'
 
 export interface InternalReactFormApi
-  extends AnyInternalFormApi, ReactTanStackFormComponents<any, any, any> {}
+  extends AnyInternalFormApi, ReactTanStackFormComponents<any, any, any, any> {}
 
 export function initializeForm(
   options: FormOptions<any, any, any>,

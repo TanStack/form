@@ -1,3 +1,6 @@
+import type { FieldApi } from './FieldApi/FieldApi.public'
+import type { FieldValidators, FormValidators } from './validation.public'
+
 export type UpdateFn<T> = (previousValue: T) => T
 export type Updater<T> = T | UpdateFn<T>
 
@@ -29,3 +32,5 @@ export interface FieldUpdateOptions {
 }
 
 export type OneOrMany<T> = T | Array<T>
+
+export type FieldWithValue<T> = FieldApi<any, any, any, string, T, any>

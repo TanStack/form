@@ -1,10 +1,11 @@
 // @ts-check
 
 import pluginReact from '@eslint-react/eslint-plugin'
-import reactCompiler from 'eslint-plugin-react-compiler'
+import pluginReactCompiler from 'eslint-plugin-react-compiler'
 import pluginReactHooks from 'eslint-plugin-react-hooks'
 import rootConfig from '../../eslint.config.js'
 
+/** @type {import('eslint').Linter.Config[]} */
 export default [
   ...rootConfig,
   {
@@ -14,14 +15,20 @@ export default [
   {
     plugins: {
       'react-hooks': pluginReactHooks,
-      'react-compiler': reactCompiler,
+      'react-compiler': pluginReactCompiler,
     },
     rules: {
+      '@eslint-react/dom/no-missing-button-type': 'off',
+      '@eslint-react/no-use-context': 'off',
+      'react-compiler/react-compiler': 'error',
       'react-hooks/exhaustive-deps': 'error',
       'react-hooks/rules-of-hooks': 'error',
-      'react-compiler/react-compiler': 'error',
-      // Must be "off" to avoid moving `useContext` to `use`, which breaks React 17/18 usage.
-      '@eslint-react/no-use-context': 'off',
+    },
+  },
+  {
+    files: ['**/__tests__/**'],
+    rules: {
+      // 'react-compiler/react-compiler': 'off',
     },
   },
 ]

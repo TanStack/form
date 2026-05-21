@@ -244,6 +244,8 @@ describe('FormErrors', () => {
     expectTypeOf<FormErrors<any, never>>().toEqualTypeOf<
       Array<ValidationIssue>
     >()
+
+    expectTypeOf<FormErrors<any, any>>().toEqualTypeOf<Array<ValidationIssue>>()
   })
 })
 
@@ -460,6 +462,10 @@ describe('FieldErrors', () => {
 
   it('should fall back to ValidationIssue if `any` was used', () => {
     expectTypeOf<FieldErrors<any, any, never>>().toEqualTypeOf<
+      Array<ValidationIssue>
+    >()
+
+    expectTypeOf<FieldErrors<any, any, any>>().toEqualTypeOf<
       Array<ValidationIssue>
     >()
   })

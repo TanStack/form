@@ -10,6 +10,8 @@ import type {
 } from '@tanstack/form-core-v2'
 import type { SubscribeProps } from '../Subscribe.public'
 import type { CrossVersionReactNode } from '../types.public'
+import type { FunctionComponent } from 'react'
+import type { FieldComponentsMatchingType } from '../AppForm/createComponents.public'
 
 /**
  * Subscribe to `form.store` (full form state). The selector receives the full
@@ -48,6 +50,7 @@ export interface ReactFormFieldProps<
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
   TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
+  TFieldComponents extends Record<string, FunctionComponent<any>>,
 > extends FieldApiOptions<
   TFormData,
   TFormValidators,
@@ -64,7 +67,8 @@ export interface ReactFormFieldProps<
       TFieldName,
       TFieldValue,
       TFieldValidators
-    >,
+    > &
+      FieldComponentsMatchingType<TFieldComponents, TFieldValue>,
   ) => CrossVersionReactNode
 }
 
@@ -72,6 +76,7 @@ export type ReactFormFieldComponent<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
+  TFieldComponents extends Record<string, FunctionComponent<any>>,
 > = <
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
@@ -83,7 +88,8 @@ export type ReactFormFieldComponent<
     TSubmitReturn,
     TFieldName,
     TFieldValue,
-    TFieldValidators
+    TFieldValidators,
+    TFieldComponents
   >,
 ) => CrossVersionReactNode
 
@@ -137,11 +143,17 @@ export interface ReactTanStackFormComponents<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
+  TFieldComponents extends Record<string, FunctionComponent<any>>,
 > {
   /**
    * TODO docs
    */
-  Field: ReactFormFieldComponent<TFormData, TFormValidators, TSubmitReturn>
+  Field: ReactFormFieldComponent<
+    TFormData,
+    TFormValidators,
+    TSubmitReturn,
+    TFieldComponents
+  >
 
   ArrayField: ReactFormArrayFieldComponent<
     TFormData,

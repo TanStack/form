@@ -10,28 +10,44 @@ import type {
   NullableSchemaData,
 } from '@tanstack/form-core-v2/internals'
 import type { ReactTanStackFormComponents } from './Components.public'
+import type { FunctionComponent } from 'react'
 
-export interface ReactFormApi<
+export type ReactFormApi<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
->
-  extends
-    FormApi<TFormData, TFormValidators, TSubmitReturn>,
-    ReactTanStackFormComponents<TFormData, TFormValidators, TSubmitReturn> {}
+  TFormComponents extends Record<string, FunctionComponent<any>>,
+  TFieldComponents extends Record<string, FunctionComponent<any>>,
+> = FormApi<TFormData, TFormValidators, TSubmitReturn> &
+  ReactTanStackFormComponents<
+    TFormData,
+    TFormValidators,
+    TSubmitReturn,
+    TFieldComponents
+  > &
+  TFormComponents
 
-export type UseFormHook = <
+export type UseFormHook<
+  TFormComponents extends Record<string, FunctionComponent<any>>,
+  TFieldComponents extends Record<string, FunctionComponent<any>>,
+> = <
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
 >(
   options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
-) => ReactFormApi<TFormData, TFormValidators, TSubmitReturn>
-
-export type UseSchemaFormHook = <
-  const TFormValidators extends FormValidators<any>,
+) => ReactFormApi<
+  TFormData,
+  TFormValidators,
   TSubmitReturn,
->(
+  TFormComponents,
+  TFieldComponents
+>
+
+export type UseSchemaFormHook<
+  TFormComponents extends Record<string, FunctionComponent<any>>,
+  TFieldComponents extends Record<string, FunctionComponent<any>>,
+> = <const TFormValidators extends FormValidators<any>, TSubmitReturn>(
   options: FormOptions<
     FormValidatorData<TFormValidators>,
     TFormValidators,
@@ -40,10 +56,15 @@ export type UseSchemaFormHook = <
 ) => ReactFormApi<
   FormValidatorData<TFormValidators>,
   TFormValidators,
-  TSubmitReturn
+  TSubmitReturn,
+  TFormComponents,
+  TFieldComponents
 >
 
-export type UseNullableSchemaFormHook = <
+export type UseNullableSchemaFormHook<
+  TFormComponents extends Record<string, FunctionComponent<any>>,
+  TFieldComponents extends Record<string, FunctionComponent<any>>,
+> = <
   const TFormValidators extends FormValidators<any>,
   const TFormData extends NullableSchemaData<TFormValidators>,
   TSubmitReturn,
@@ -52,14 +73,25 @@ export type UseNullableSchemaFormHook = <
 ) => ReactFormApi<
   InferUnion<TFormData, FormValidatorData<TFormValidators>>,
   TFormValidators,
-  TSubmitReturn
+  TSubmitReturn,
+  TFormComponents,
+  TFieldComponents
 >
 
-const useSchemaForm = useFormHook as unknown as UseSchemaFormHook
+const useSchemaForm = useFormHook as unknown as UseSchemaFormHook<
+  Record<never, never>,
+  Record<never, never>
+>
 
-const useForm = useFormHook as UseFormHook
+const useForm = useFormHook as never as UseFormHook<
+  Record<never, never>,
+  Record<never, never>
+>
 
 // TODO add unit tests, chances are the InferUnion type is incomplete
-const useNullableSchemaForm = useFormHook as UseNullableSchemaFormHook
+const useNullableSchemaForm = useFormHook as never as UseNullableSchemaFormHook<
+  Record<never, never>,
+  Record<never, never>
+>
 
 export { useForm, useSchemaForm, useNullableSchemaForm }

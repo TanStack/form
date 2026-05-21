@@ -232,13 +232,15 @@ type ExtractValidatorListErrors<
   ? ValidationIssue
   : ExtractValidatorError<TValidators[number], TTarget>
 
-type ExtractSubmitFormError<TSubmitReturn> =
-  TSubmitReturn extends OnSubmitError<infer TResult>
+type ExtractSubmitFormError<TSubmitReturn> = unknown extends TSubmitReturn
+  ? ValidationIssue
+  : TSubmitReturn extends OnSubmitError<infer TResult>
     ? ExtractAggregateError<Awaited<TResult>, 'form'>
     : never
 
-type ExtractSubmitFieldError<TSubmitReturn> =
-  TSubmitReturn extends OnSubmitError<infer TResult>
+type ExtractSubmitFieldError<TSubmitReturn> = unknown extends TSubmitReturn
+  ? ValidationIssue
+  : TSubmitReturn extends OnSubmitError<infer TResult>
     ? ExtractAggregateError<Awaited<TResult>, 'field'>
     : never
 
