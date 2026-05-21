@@ -274,3 +274,23 @@ export type FieldErrors<
   | ExtractFieldValidatorErrors<TFieldValidators>
   | ExtractSubmitFieldError<TSubmitReturn>
 >
+
+export function createFormValidators<
+  const TFactory extends <TFormData>(
+    run: FormValidatorFn<TFormData> | StandardSchemaV1<TFormData, any>,
+  ) => FormValidators<TFormData>,
+>(factoryFunction: TFactory) {
+  return factoryFunction
+}
+
+const dynamic = createFormValidators((run) => [
+  {
+    run,
+    triggers: [
+      {
+        trigger: 'change',
+        when: ({ formApi }) => formApi.state.submissionAttempts > 0,
+      },
+    ],
+  },
+])

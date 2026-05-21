@@ -59,7 +59,6 @@ import type {
   FieldValidateResult,
   FieldValidator,
   FieldValidators,
-  FormValidators,
   ValidationIssue,
 } from '../validation.public'
 
@@ -313,23 +312,13 @@ function hasFieldValidatorErrors(
   return false
 }
 
-export type AnyInternalFieldApi = InternalFieldApi<any, any, any, any, any, any>
+export type AnyInternalFieldApi = InternalFieldApi<any, any, any>
 
 export class InternalFieldApi<
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
-  TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
-> implements FieldApi<
-  TFormData,
-  TFormValidators,
-  TSubmitReturn,
-  TFieldName,
-  TFieldValue,
-  TFieldValidators
-> {
+> implements FieldApi<any, any, any, any, any, any> {
   readonly _isRoot = false
   _parent: AnyInternalFieldApi | InternalRootFieldApi
   #children: Map<NameSegment, AnyInternalFieldApi> = new Map()
@@ -1233,7 +1222,7 @@ export class InternalFieldApi<
     return this.state.meta
   }
 
-  get errors(): FieldErrors<TFormValidators, TFieldValidators, TSubmitReturn> {
+  get errors(): FieldErrors<any, any, any> {
     return this.state.meta.errors
   }
 
