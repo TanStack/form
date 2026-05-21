@@ -28,7 +28,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: true # changesets/action pushes version/release changes
       - name: Setup Tools
-        uses: TanStack/config/.github/setup@e4b48f16568324f76f467aa4c2aac2f05db632c3 # main
+        uses: TanStack/config/.github/setup@99d23c6212f36eff17d30a21e58da77f55a4cfe9 # main
       - name: Run Tests
         run: pnpm run test:ci
       - name: Run Changesets (version or publish)
@@ -41,6 +41,6 @@ jobs:
           title: 'ci: Version Packages'
       - name: Comment on PRs about release
         if: steps.changesets.outputs.published == 'true'
-        uses: TanStack/config/.github/comment-on-release@e4b48f16568324f76f467aa4c2aac2f05db632c3 # main
+        uses: TanStack/config/.github/comment-on-release@99d23c6212f36eff17d30a21e58da77f55a4cfe9 # main
         with:
           published-packages: ${{ steps.changesets.outputs.publishedPackages }}
