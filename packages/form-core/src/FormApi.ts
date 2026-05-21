@@ -1512,6 +1512,17 @@ export class FormApi<
       )
     })
 
+    if (shouldUpdateValues) {
+      const helper = metaHelper(this)
+      for (const fieldKey of Object.keys(
+        this.fieldInfo,
+      ) as DeepKeys<TFormData>[]) {
+        if (Array.isArray(this.getFieldValue(fieldKey))) {
+          helper.bumpArrayVersion(fieldKey)
+        }
+      }
+    }
+
     formEventClient.emit('form-api', {
       id: this._formId,
       state: this.store.state,

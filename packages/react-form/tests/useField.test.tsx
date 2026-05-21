@@ -1526,6 +1526,42 @@ describe('useField', () => {
     expect(getByTestId('item-1')).toHaveTextContent('John')
   })
 
+  it('should rerender array field when async defaultValues resolve', async () => {
+    // Regression test for https://github.com/TanStack/form/issues/2178
+    // When async defaultValues arrive after initial render, array fields in
+    // mode="array" must re-render because _arrayVersion is used as the
+    // reactivity signal (not value length).
+    type Person = { name: string }
+    type FormData = { people: Person[] }
+
+    function Comp({ defaultValues }: { defaultValues?: FormData }) {
+      const form = useForm({ defaultValues })
+
+      return (
+        <form.Field name="people" mode="array">
+          {(field) => (
+            <ol data-testid="list">
+              {(field.state.value ?? []).map((person, i) => (
+                <li key={i} data-testid={`item-${i}`}>
+                  {person.name}
+                </li>
+              ))}
+            </ol>
+          )}
+        </form.Field>
+      )
+    }
+
+    const { getByTestId, rerender } = render(<Comp />)
+    expect(getByTestId('list').children).toHaveLength(0)
+
+    rerender(<Comp defaultValues={{ people: [{ name: 'Alice' }] }} />)
+    await waitFor(() =>
+      expect(getByTestId('list').children).toHaveLength(1),
+    )
+    expect(getByTestId('item-0')).toHaveTextContent('Alice')
+  })
+
   it('should handle defaultValue without setstate-in-render error', async () => {
     // Spy on console.error before rendering
     const consoleErrorSpy = vi.spyOn(console, 'error')
