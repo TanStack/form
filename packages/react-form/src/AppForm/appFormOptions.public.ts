@@ -30,13 +30,7 @@ export interface AppFormOptionsApi<
     const TFormValidators extends FormValidators<TFormData>,
     TSubmitReturn,
   >(
-    options: AppFormOptions<
-      TFormData,
-      TFormValidators,
-      TSubmitReturn,
-      TFormComponents,
-      TFieldComponents
-    >,
+    options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
   ): AppFormOptions<
     TFormData,
     TFormValidators,

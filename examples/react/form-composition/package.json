@@ -1,0 +1,26 @@
+{
+  "name": "@tanstack/template-example-react-form-composition",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port=3005",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test:types": "tsc"
+  },
+  "dependencies": {
+    "@tanstack/pacer-lite": "^0.2.1",
+    "@tanstack/react-form": "^0.0.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.8",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.2",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "typescript": "5.9.3",
+    "vite": "^7.3.1"
+  }
+}
