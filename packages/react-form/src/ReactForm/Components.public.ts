@@ -11,7 +11,25 @@ import type {
 import type { SubscribeProps } from '../Subscribe.public'
 import type { CrossVersionReactNode } from '../types.public'
 import type { FunctionComponent } from 'react'
-import type { FieldComponentsMatchingType } from '../AppForm/createComponents.public'
+import type { FieldComponentsMatchingType } from '../AppForm/createFormHookContexts.public'
+
+export type ReactFieldApi<
+  TFormData,
+  TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
+  TFieldName extends DeepKeys<TFormData>,
+  TFieldValue extends DeepValue<TFormData, TFieldName>,
+  TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
+  TFieldComponents extends Record<string, FunctionComponent<any>>,
+> = FieldApi<
+  TFormData,
+  TFormValidators,
+  TSubmitReturn,
+  TFieldName,
+  TFieldValue,
+  TFieldValidators
+> &
+  FieldComponentsMatchingType<TFieldComponents, TFieldValue>
 
 /**
  * Subscribe to `form.store` (full form state). The selector receives the full
@@ -60,15 +78,15 @@ export interface ReactFormFieldProps<
   TFieldValidators
 > {
   children: (
-    fieldApi: FieldApi<
+    fieldApi: ReactFieldApi<
       TFormData,
       TFormValidators,
       TSubmitReturn,
       TFieldName,
       TFieldValue,
-      TFieldValidators
-    > &
-      FieldComponentsMatchingType<TFieldComponents, TFieldValue>,
+      TFieldValidators,
+      TFieldComponents
+    >,
   ) => CrossVersionReactNode
 }
 
@@ -100,6 +118,7 @@ export interface ReactFormArrayFieldProps<
   TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
   TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
+  TFieldComponents extends Record<string, FunctionComponent<any>>,
 > extends FieldApiOptions<
   TFormData,
   TFormValidators,
@@ -109,13 +128,14 @@ export interface ReactFormArrayFieldProps<
   TFieldValidators
 > {
   children: (
-    fieldApi: FieldApi<
+    fieldApi: ReactFieldApi<
       TFormData,
       TFormValidators,
       TSubmitReturn,
       TFieldName,
       TFieldValue,
-      TFieldValidators
+      TFieldValidators,
+      TFieldComponents
     >,
   ) => CrossVersionReactNode
 }
@@ -124,6 +144,7 @@ export type ReactFormArrayFieldComponent<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
+  TFieldComponents extends Record<string, FunctionComponent<any>>,
 > = <
   TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
@@ -135,7 +156,8 @@ export type ReactFormArrayFieldComponent<
     TSubmitReturn,
     TFieldName,
     TFieldValue,
-    TFieldValidators
+    TFieldValidators,
+    TFieldComponents
   >,
 ) => CrossVersionReactNode
 
@@ -158,7 +180,8 @@ export interface ReactTanStackFormComponents<
   ArrayField: ReactFormArrayFieldComponent<
     TFormData,
     TFormValidators,
-    TSubmitReturn
+    TSubmitReturn,
+    TFieldComponents
   >
 
   Subscribe: ReactFormSubscribeComponent<

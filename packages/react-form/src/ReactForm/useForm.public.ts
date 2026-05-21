@@ -1,4 +1,4 @@
-import { useFormHook } from './ReactFormApi.lib'
+import { initializeForm, useInternalForm } from './ReactFormApi.lib'
 import type {
   FormApi,
   FormOptions,
@@ -77,6 +77,11 @@ export type UseNullableSchemaFormHook<
   TFormComponents,
   TFieldComponents
 >
+
+function useFormHook(options: FormOptions<any, any, any>) {
+  const form = useInternalForm(options, initializeForm)
+  return form
+}
 
 const useSchemaForm = useFormHook as unknown as UseSchemaFormHook<
   Record<never, never>,

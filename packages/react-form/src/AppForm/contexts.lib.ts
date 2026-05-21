@@ -1,4 +1,5 @@
 import { createContext, useContext } from 'react'
+import { useValueFieldSubscription } from '../useField.lib'
 import type { AnyInternalFieldApi } from '@tanstack/form-core-v2/internals'
 import type { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
 
@@ -9,9 +10,11 @@ export function useFieldContext(): AnyInternalFieldApi {
   const field = useContext(FieldContext)
   if (field === null) {
     throw new Error(
-      'TanStack Form: Field components must be used within a `form.AppField` component.',
+      'TanStack Form: Field components must be used within a `form.Field` component.',
     )
   }
+
+  useValueFieldSubscription(field)
 
   return field
 }

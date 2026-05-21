@@ -13,19 +13,26 @@ export function initializeForm(
 ): InternalReactFormApi {
   const form = new InternalFormApi(options)
 
-  const reactFormApi = attachReactFormComponents(form)
+  const reactFormApi = attachReactFormComponents(form, null)
 
   return reactFormApi
 }
 
-export function useFormHook(options: FormOptions<any, any, any>) {
+export function useInternalForm(
+  options: FormOptions<any, any, any>,
+  initializeFn: (options: FormOptions<any, any, any>) => InternalReactFormApi,
+) {
   const formRef = useRef<InternalReactFormApi>(null)
 
   if (!formRef.current) {
-    formRef.current = initializeForm(options)
+    formRef.current = initializeFn(options)
   }
 
   useEffect(() => formRef.current!._update(options))
+  useEffect(() => {
+    const unmount = formRef.current!.mount()
+    return unmount
+  }, [])
 
   return formRef.current
 }

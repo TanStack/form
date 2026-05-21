@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useSelector } from '@tanstack/react-store'
+import type { FunctionComponent } from 'react'
 import type {
   AnyInternalFieldApi,
   InternalFormApi,
@@ -12,12 +13,16 @@ export interface InternalFieldProps extends ReactFormFieldProps<
   any,
   any,
   any,
+  any,
   any
 > {
   form: InternalFormApi<any, any, any>
 }
 
-export function useField(options: InternalFieldProps): AnyInternalFieldApi {
+export function useField(
+  options: InternalFieldProps,
+  fieldComponents: Record<string, FunctionComponent<any>> | null,
+): AnyInternalFieldApi {
   const optionsRef = useRef(options)
   optionsRef.current = options
 
@@ -25,11 +30,15 @@ export function useField(options: InternalFieldProps): AnyInternalFieldApi {
 
   const fieldApi = useMemo(() => {
     void resetVersion
-    return options.form._getOrCreateFieldApi({
+    const field = options.form._getOrCreateFieldApi({
       ...optionsRef.current,
       name: options.name,
     })
-  }, [options.name, options.form, resetVersion])
+    if (fieldComponents === null) return field
+    Object.assign(field, fieldComponents)
+
+    return field
+  }, [options.name, options.form, resetVersion, fieldComponents])
 
   useEffect(() => fieldApi._update(options))
 
@@ -41,22 +50,12 @@ export function useField(options: InternalFieldProps): AnyInternalFieldApi {
   return fieldApi
 }
 
-export function useValueField(
-  options: InternalFieldProps,
-): AnyInternalFieldApi {
-  const fieldApi = useField(options)
+export function useValueFieldSubscription(fieldApi: AnyInternalFieldApi): void {
   useSelector(fieldApi.store, (state) => state.value)
   useSelector(fieldApi.store, (state) => state.meta)
-  return fieldApi
 }
 
-export function useArrayField(
-  options: InternalFieldProps,
-): AnyInternalFieldApi {
-  const fieldApi = useField(options)
-
+export function useArrayFieldSubscription(fieldApi: AnyInternalFieldApi): void {
   useSelector(fieldApi.store, (state) => state.value.length)
   useSelector(fieldApi.store, (state) => state.meta._arrayVersion)
-
-  return fieldApi
 }

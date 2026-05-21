@@ -1,4 +1,7 @@
-import { useFormHook } from '../ReactForm/ReactFormApi.lib'
+import { InternalFormApi } from '@tanstack/form-core-v2/internals'
+import { useInternalForm } from '../ReactForm/ReactFormApi.lib'
+import { attachReactAppFormComponents } from './Components.lib'
+import type { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
 import type { FunctionComponent } from 'react'
 import type { AppFormOptionsApi } from './appFormOptions.public'
 import type {
@@ -6,6 +9,7 @@ import type {
   UseNullableSchemaFormHook,
   UseSchemaFormHook,
 } from '../ReactForm/useForm.public'
+import type { FormOptions } from '@tanstack/form-core-v2'
 
 const appFormOptions = ((opts) => {
   return opts
@@ -39,22 +43,39 @@ export function createFormHook<
   const TFormComponents extends Record<string, FunctionComponent<any>>,
   const TFieldComponents extends Record<string, FunctionComponent<any>>,
 >(
-  options: AppFormHookCreateOptions<TFormComponents, TFieldComponents>,
+  createOptions: AppFormHookCreateOptions<TFormComponents, TFieldComponents>,
 ): AppFormHookResult<TFormComponents, TFieldComponents> {
+  function initializeAppForm(
+    options: FormOptions<any, any, any>,
+  ): InternalReactFormApi {
+    const form = new InternalFormApi(options)
+    const extendedForm = attachReactAppFormComponents(
+      form,
+      createOptions.formComponents,
+      createOptions.fieldComponents,
+    )
+
+    return extendedForm as never
+  }
+
+  function useExtendedForm(hookOptions: FormOptions<any, any, any>) {
+    const form = useInternalForm(hookOptions, initializeAppForm)
+    return form
+  }
   // TODO you need to attach the actual form components at runtime
-  const useSchemaAppForm = useFormHook as unknown as UseSchemaFormHook<
+  const useSchemaAppForm = useExtendedForm as unknown as UseSchemaFormHook<
     TFormComponents,
     TFieldComponents
   >
 
-  const useAppForm = useFormHook as never as UseFormHook<
+  const useAppForm = useExtendedForm as never as UseFormHook<
     TFormComponents,
     TFieldComponents
   >
 
   // TODO add unit tests, chances are the InferUnion type is incomplete
   const useNullableSchemaAppForm =
-    useFormHook as never as UseNullableSchemaFormHook<
+    useExtendedForm as never as UseNullableSchemaFormHook<
       TFormComponents,
       TFieldComponents
     >

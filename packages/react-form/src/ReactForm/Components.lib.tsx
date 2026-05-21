@@ -1,6 +1,10 @@
 import React from 'react'
-import { useArrayField, useValueField } from '../useField.lib'
 import { Subscribe } from '../Subscribe.public'
+import {
+  useArrayFieldSubscription,
+  useField,
+  useValueFieldSubscription,
+} from '../useField.lib'
 import type { AnyInternalFormApi } from '@tanstack/form-core-v2/internals'
 import type { InternalReactFormApi } from './ReactFormApi.lib'
 import type { FunctionComponent } from 'react'
@@ -12,22 +16,27 @@ import type {
 
 export function attachReactFormComponents(
   form: AnyInternalFormApi,
+  fieldComponents: Record<string, FunctionComponent<any>> | null,
 ): InternalReactFormApi {
   const resultForm = form as InternalReactFormApi
-  resultForm.Field = createFieldComponent(form)
-  resultForm.ArrayField = createArrayFieldComponent(form)
+  resultForm.Field = createFieldComponent(form, fieldComponents)
+  resultForm.ArrayField = createArrayFieldComponent(form, fieldComponents)
   resultForm.Subscribe = createSubscribeComponent(form)
 
   return resultForm
 }
 
 type AnyFieldComponent = FunctionComponent<
-  ReactFormFieldProps<any, any, any, any, any, any>
+  ReactFormFieldProps<any, any, any, any, any, any, any>
 >
 
-function createFieldComponent(form: AnyInternalFormApi): AnyFieldComponent {
+function createFieldComponent(
+  form: AnyInternalFormApi,
+  fieldComponents: Record<string, FunctionComponent<any>> | null,
+): AnyFieldComponent {
   const TanStackFormField: AnyFieldComponent = (props) => {
-    const fieldApi = useValueField({ ...props, form })
+    const fieldApi = useField({ ...props, form }, fieldComponents)
+    useValueFieldSubscription(fieldApi)
 
     return props.children(fieldApi)
   }
@@ -38,14 +47,16 @@ function createFieldComponent(form: AnyInternalFormApi): AnyFieldComponent {
 }
 
 type AnyArrayFieldComponent = FunctionComponent<
-  ReactFormArrayFieldProps<Array<any>, any, any, any, any, any>
+  ReactFormArrayFieldProps<Array<any>, any, any, any, any, any, any>
 >
 
 function createArrayFieldComponent(
   form: AnyInternalFormApi,
+  fieldComponents: Record<string, FunctionComponent<any>> | null,
 ): AnyArrayFieldComponent {
   const TanStackFormArrayField: AnyArrayFieldComponent = (props) => {
-    const fieldApi = useArrayField({ ...props, form })
+    const fieldApi = useField({ ...props, form }, fieldComponents)
+    useArrayFieldSubscription(fieldApi)
 
     return props.children(fieldApi)
   }
