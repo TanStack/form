@@ -71,20 +71,23 @@ If you are making an API request inside a listener, you may want to debounce the
 We enable an easy method for debouncing your listeners by adding a `onChangeDebounceMs` or `onBlurDebounceMs`.
 
 ```vue
-<form.Field
-  name="country"
-  :listeners="{
-    onChangeDebounceMs: 500,
-    onChange: ({ value }) => {
-      console.log(`Country changed to: ${value} without a change within 500ms, resetting province`)
-      form.setFieldValue('province', '')
-    },
-  }"
->
-  <template v-slot="{ field }">
-    <!-- ... -->
-  </template>
-</form.Field>
+<template>
+  <!-- ... -->
+  <form.Field
+    name="country"
+    :listeners="{
+      onChangeDebounceMs: 500,
+      onChange: ({ value }) => {
+        console.log(`Country changed to: ${value} without a change within 500ms, resetting province`)
+        form.setFieldValue('province', '')
+      },
+    }"
+  >
+    <template v-slot="{ field }">
+      <!-- ... -->
+    </template>
+  </form.Field>
+</template>
 ```
 
 ### Form listeners
