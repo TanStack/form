@@ -38,6 +38,90 @@ export interface Validator<
   triggers: Array<ValidationTriggerOption<TFormData, TContextValue>>
 }
 
+export type ValidatorOptions<TFormData = any, TContextValue = TFormData> = Omit<
+  Validator<
+    TFormData,
+    StandardSchemaV1<any, any> | ValidatorFn<any, any>,
+    TContextValue
+  >,
+  'run'
+>
+
+type ValidatorRun = StandardSchemaV1<any, any> | ValidatorFn<any, any>
+
+type ValidatorWithRun<
+  TFormData,
+  TContextValue,
+  TOptions extends ValidatorOptions<TFormData, TContextValue>,
+  TRun extends ValidatorRun,
+> = TOptions & Validator<TFormData, TRun, TContextValue>
+
+type ValidatorRunsFromOptions<
+  TOptions extends readonly [
+    ValidatorOptions<any, any>,
+    ...Array<ValidatorOptions<any, any>>,
+  ],
+> = {
+  readonly [TIndex in keyof TOptions]: ValidatorRun
+}
+
+type ValidatorsFromOptionsAndRuns<
+  TFormData,
+  TContextValue,
+  TOptions extends readonly [
+    ValidatorOptions<TFormData, TContextValue>,
+    ...Array<ValidatorOptions<TFormData, TContextValue>>,
+  ],
+  TRuns extends ValidatorRunsFromOptions<TOptions>,
+> = {
+  readonly [TIndex in keyof TOptions]: ValidatorWithRun<
+    TFormData,
+    TContextValue,
+    TOptions[TIndex],
+    TRuns[TIndex]
+  >
+}
+
+export function createValidator<
+  TFormData = any,
+  TContextValue = TFormData,
+  const TOptions extends ValidatorOptions<TFormData, TContextValue> =
+    ValidatorOptions<TFormData, TContextValue>,
+>(
+  options: TOptions,
+): <const TValidator extends ValidatorRun>(
+  run: TValidator,
+) => ValidatorWithRun<TFormData, TContextValue, TOptions, TValidator> {
+  return (run) => ({ ...options, run })
+}
+
+export function createValidators<
+  TFormData = any,
+  TContextValue = TFormData,
+  const TOptions extends readonly [
+    ValidatorOptions<TFormData, TContextValue>,
+    ...Array<ValidatorOptions<TFormData, TContextValue>>,
+  ] = readonly [
+    ValidatorOptions<TFormData, TContextValue>,
+    ...Array<ValidatorOptions<TFormData, TContextValue>>,
+  ],
+>(
+  options: TOptions,
+): <const TRuns extends ValidatorRunsFromOptions<TOptions>>(
+  ...runs: TRuns
+) => ValidatorsFromOptionsAndRuns<TFormData, TContextValue, TOptions, TRuns> {
+  return (...runs) =>
+    runs.map((run, index) => ({
+      ...options[index],
+      run,
+    })) as ValidatorsFromOptionsAndRuns<
+      TFormData,
+      TContextValue,
+      TOptions,
+      typeof runs
+    >
+}
+
 export type ValidationTrigger = 'change' | 'blur' | 'submit'
 export type ConfigurableValidationTrigger = Exclude<ValidationTrigger, 'submit'>
 
@@ -274,23 +358,3 @@ export type FieldErrors<
   | ExtractFieldValidatorErrors<TFieldValidators>
   | ExtractSubmitFieldError<TSubmitReturn>
 >
-
-export function createFormValidators<
-  const TFactory extends <TFormData>(
-    run: FormValidatorFn<TFormData> | StandardSchemaV1<TFormData, any>,
-  ) => FormValidators<TFormData>,
->(factoryFunction: TFactory) {
-  return factoryFunction
-}
-
-const dynamic = createFormValidators((run) => [
-  {
-    run,
-    triggers: [
-      {
-        trigger: 'change',
-        when: ({ formApi }) => formApi.state.submissionAttempts > 0,
-      },
-    ],
-  },
-])

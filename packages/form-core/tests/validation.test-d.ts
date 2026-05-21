@@ -1,9 +1,12 @@
 import { describe, expectTypeOf, it } from 'vitest'
 import z from 'zod'
+import { InternalFormApi } from '../src/FormApi/FormApi.lib'
+import { createValidator, createValidators } from '../src'
 import type {
   FieldErrors,
   FieldValidators,
   FormErrors,
+  FormStandardSchemaValidatorOutputs,
   FormValidators,
   OnSubmitError,
   StandardSchemaV1Issue,
@@ -33,6 +36,132 @@ const emptyFormValidators = defineFormValidators([])
 const emptyFieldValidators = defineFieldValidators([])
 
 describe('FormErrors', () => {
+  it('should allow inference for a form', () => {
+    const withRequiredValue = createValidator({
+      triggers: [
+        {
+          trigger: 'change',
+          when: ({ formApi }) => formApi.state.submissionAttempts > 0,
+        },
+      ],
+      runOnSubmit: true,
+    })
+
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      validators: [withRequiredValue(z.object({ name: z.string() }))],
+      onSubmit: ({ schemaOutputs }) => {
+        expectTypeOf(schemaOutputs).toEqualTypeOf<[{ name: string }]>()
+      },
+    })
+
+    expectTypeOf(form.options.defaultValues).toEqualTypeOf<{ name: string }>()
+  })
+
+  it('should preserve run arity when creating a validator array', () => {
+    const withRequiredValue = createValidators([
+      {
+        triggers: [
+          {
+            trigger: 'change',
+            when: ({ formApi }) => formApi.state.submissionAttempts > 0,
+          },
+        ],
+        runOnSubmit: true,
+      },
+      {
+        triggers: [
+          {
+            trigger: 'change',
+            when: ({ formApi }) => formApi.state.submissionAttempts > 0,
+          },
+        ],
+        runOnSubmit: true,
+        bailIfInvalid: true,
+      },
+    ])
+
+    // @ts-expect-error createValidators requires one run argument per option.
+    withRequiredValue()
+
+    // @ts-expect-error createValidators requires one run argument per option.
+    withRequiredValue(z.object({ name: z.string() }))
+
+    const endpointValidator = () => ({
+      message: 'From helper',
+      helper: true as const,
+    })
+    const extraValidator = () => ({ message: 'Extra' })
+
+    withRequiredValue(
+      z.object({ name: z.string() }),
+      endpointValidator,
+      // @ts-expect-error createValidators requires one run argument per option.
+      extraValidator,
+    )
+
+    const validators = withRequiredValue(
+      z.object({ name: z.string() }),
+      endpointValidator,
+    )
+
+    expectTypeOf(validators.length).toEqualTypeOf<2>()
+    expectTypeOf(validators[1].bailIfInvalid).toEqualTypeOf<true>()
+
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      validators,
+      onSubmit: ({ schemaOutputs }) => {
+        expectTypeOf(schemaOutputs).toEqualTypeOf<
+          [{ name: string }, undefined]
+        >()
+      },
+    })
+
+    expectTypeOf(form.options.defaultValues).toEqualTypeOf<{ name: string }>()
+  })
+
+  it('should infer the error type from validators created by a helper', () => {
+    const withRequiredValue = createValidator<TestFormData>({
+      triggers: [
+        {
+          trigger: 'change',
+          when: ({ value }) => value.name.length > 0,
+        },
+      ],
+      runOnSubmit: ({ value }) => value.name.length > 0,
+    })
+
+    const validators = defineFormValidators([
+      withRequiredValue(() => ({
+        message: 'From helper',
+        helper: true as const,
+      })),
+    ])
+
+    expectTypeOf<FormErrors<typeof validators, never>>().toEqualTypeOf<
+      Array<{ message: string; helper: true }>
+    >()
+  })
+
+  it('should preserve standard schema output types from validators created by a helper', () => {
+    const withRequiredValue = createValidator<TestFormData>({
+      triggers: [
+        {
+          trigger: 'change',
+          when: ({ value }) => value.name.length > 0,
+        },
+      ],
+    })
+
+    const schema = z.object({ name: z.literal('valid') })
+    const validators = defineFormValidators([withRequiredValue(schema)])
+
+    expectTypeOf<
+      FormStandardSchemaValidatorOutputs<typeof validators>
+    >().toEqualTypeOf<[{ name: 'valid' }]>()
+  })
+
   it('should infer the error type from the validator', () => {
     const validators = defineFormValidators([
       { run: () => ({ message: 'My error', additional: 0 }), triggers: [] },
