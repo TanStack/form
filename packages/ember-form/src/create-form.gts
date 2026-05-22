@@ -5,6 +5,7 @@ import { trackedObject } from '@glimmer/validator';
 import Field from './components/field.gts';
 
 import type { TOC } from '@ember/component/template-only';
+import type { ComponentLike } from '@glint/template';
 import type {
   FormAsyncValidateOrFn,
   FormOptions,
@@ -297,7 +298,7 @@ export function createForm<
     TFormOnServer,
     TSubmitMeta
   > = {} as never,
-): abstract new (owner: unknown, args: never) => Component<
+): ComponentLike<
   FormComponentSignature<
     TFormData,
     TFormOnMount,

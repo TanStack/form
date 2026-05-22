@@ -17,7 +17,9 @@ export default {
   output: addon.output(),
 
   plugins: [
-    addon.publicEntrypoints(['**/*.js', 'index.js']),
+    addon.publicEntrypoints(['**/*.js', 'index.js'], {
+      exclude: ['-private/**'],
+    }),
 
     addon.dependencies(),
 

@@ -9,6 +9,9 @@ import type {
   FormValidateOrFn,
 } from '@tanstack/form-core';
 
+/**
+ * @public
+ */
 export interface SubscribeSignature<
   TParentData,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
