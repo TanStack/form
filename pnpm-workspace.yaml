@@ -30,6 +30,7 @@ allowBuilds:
   nx: true
   unrs-resolver: false # not directly required for build
   esbuild: true
+  msw: true
 
   # nx, @vitejs/plugin-react-swc, terser-webpack-plugin
   '@swc/core': true

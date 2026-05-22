@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@tanstack/pacer-lite": "^0.2.1",
-    "@tanstack/react-form": "^0.0.0",
+    "@tanstack/react-form": "^1.33.3",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "zod": "^4.4.3"
