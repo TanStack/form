@@ -65,7 +65,11 @@ export interface FormOptionsApi {
     TSubmitReturn,
   >(
     options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
-  ) => FormOptions<TFormData, TFormValidators, TSubmitReturn>
+  ) => FormOptions<
+    FormValidatorData<TFormValidators>,
+    TFormValidators,
+    TSubmitReturn
+  >
 
   nullableSchema: <
     const TFormValidators extends FormValidators<any>,

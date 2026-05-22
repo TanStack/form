@@ -46,7 +46,7 @@ export interface AppFormOptionsApi<
   >(
     options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
   ) => AppFormOptions<
-    TFormData,
+    FormValidatorData<TFormValidators>,
     TFormValidators,
     TSubmitReturn,
     TFormComponents,

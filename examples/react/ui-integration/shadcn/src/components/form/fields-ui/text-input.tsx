@@ -16,12 +16,13 @@ function FormTextInput(props: TanStackFormTextInputProps) {
   return (
     <Input
       type="text"
-      id={inputProps.id ?? field.name}
+      id={field.name}
       name={field.name}
       value={field.value}
       onChange={(e) => field.handleChange(e.target.value)}
       onBlur={field.handleBlur}
       aria-invalid={field.meta.isInvalid}
+      {...inputProps}
     />
   )
 }

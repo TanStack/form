@@ -1,16 +1,16 @@
 import { useInternalForm } from '../ReactForm/ReactFormApi.lib'
 import { createAppFormInitializer } from './initializeAppForm.lib'
+import type {
+  UseAppFormHook,
+  UseNullableSchemaAppFormHook,
+  UseSchemaAppFormHook,
+} from './useAppFormTypes.public'
 import type { FunctionComponent } from 'react'
 import type { AppFormOptionsApi } from './appFormOptions.public'
 import type {
   AppFormHookCreateOptions,
   AppFormHookResult,
 } from './createFormHookTypes.public'
-import type {
-  UseFormHook,
-  UseNullableSchemaFormHook,
-  UseSchemaFormHook,
-} from '../ReactForm/useFormTypes.public'
 import type { FormOptions } from '@tanstack/form-core-v2'
 
 const appFormOptions = ((opts) => {
@@ -33,19 +33,19 @@ export function createFormHook<
     return form
   }
   // TODO you need to attach the actual form components at runtime
-  const useSchemaAppForm = useExtendedForm as unknown as UseSchemaFormHook<
+  const useSchemaAppForm = useExtendedForm as unknown as UseSchemaAppFormHook<
     TFormComponents,
     TFieldComponents
   >
 
-  const useAppForm = useExtendedForm as never as UseFormHook<
+  const useAppForm = useExtendedForm as never as UseAppFormHook<
     TFormComponents,
     TFieldComponents
   >
 
   // TODO add unit tests, chances are the InferUnion type is incomplete
   const useNullableSchemaAppForm =
-    useExtendedForm as never as UseNullableSchemaFormHook<
+    useExtendedForm as never as UseNullableSchemaAppFormHook<
       TFormComponents,
       TFieldComponents
     >
