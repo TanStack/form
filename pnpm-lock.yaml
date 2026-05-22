@@ -1350,6 +1350,9 @@ importers:
       '@glint/environment-ember-template-imports':
         specifier: ^1.5.0
         version: 1.5.2(@glint/environment-ember-loose@1.5.2(@glimmer/component@2.1.1)(@glint/template@1.7.7))(@glint/template@1.7.7)
+      '@glint/template':
+        specifier: ^1.5.0
+        version: 1.7.7
       '@rollup/plugin-babel':
         specifier: ^6.0.4
         version: 6.1.0(@babel/core@7.28.5)(@types/babel__core@7.20.5)(rollup@4.52.5)
