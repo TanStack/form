@@ -7,7 +7,7 @@ import { TanStackFormLabel } from './fields-ui/label'
 import { TanStackFormError } from './fields-ui/error'
 import { TanStackFormDescription } from './fields-ui/description'
 import { TanStackFormTextField } from './wrappers/text-field'
-import { TanStackFormDateRangePicker } from './wrappers/date-range-picker'
+import { TanStackFormDateRangePicker } from './fields-ui/date-range-picker'
 
 export const { appFormOptions, useSchemaAppForm } = createFormHook({
   fieldComponents: {

@@ -8,9 +8,9 @@ interface TanStackFormFieldProps extends ComponentProps<'div'> {
 }
 
 function FormField(props: TanStackFormFieldProps) {
-  const { field, ...divProps } = props
+  const { field } = props
 
-  return <Field data-invalid={field.meta.isInvalid} {...divProps} />
+  return <Field data-invalid={field.meta.isInvalid} {...props} />
 }
 
 export const TanStackFormField = fieldComponent.loose(FormField, 'field')

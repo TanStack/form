@@ -8,8 +8,8 @@ interface TanStackFormLabelProps extends ComponentProps<typeof Label> {
 }
 
 function FormLabel(props: TanStackFormLabelProps) {
-  const { field, ...labelProps } = props
-  return <Label {...labelProps} htmlFor={labelProps.htmlFor ?? field.name} />
+  const { field } = props
+  return <Label {...props} htmlFor={props.htmlFor ?? field.name} />
 }
 
 // We use fieldComponent instead of fieldBrand so that we don't have to pass `field` again.

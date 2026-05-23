@@ -3,10 +3,7 @@ import type { AnyFieldApi } from '@tanstack/react-form'
 import type { ComponentProps } from 'react'
 import { FieldError } from '@/components/ui/field'
 
-interface TanStackFormErrorProps extends Omit<
-  ComponentProps<typeof FieldError>,
-  'errors'
-> {
+interface TanStackFormErrorProps extends ComponentProps<typeof FieldError> {
   field: AnyFieldApi
 }
 

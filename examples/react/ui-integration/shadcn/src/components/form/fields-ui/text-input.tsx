@@ -3,15 +3,12 @@ import type { FieldWithValue } from '@tanstack/react-form'
 import type { ComponentProps } from 'react'
 import { Input } from '@/components/ui/input'
 
-interface TanStackFormTextInputProps extends Omit<
-  ComponentProps<'input'>,
-  'value' | 'onChange' | 'onBlur' | 'name'
-> {
+interface TanStackFormTextInputProps extends ComponentProps<'input'> {
   field: FieldWithValue<string>
 }
 
 function FormTextInput(props: TanStackFormTextInputProps) {
-  const { field, ...inputProps } = props
+  const { field } = props
 
   return (
     <Input
@@ -22,7 +19,7 @@ function FormTextInput(props: TanStackFormTextInputProps) {
       onChange={(e) => field.handleChange(e.target.value)}
       onBlur={field.handleBlur}
       aria-invalid={field.meta.isInvalid}
-      {...inputProps}
+      {...props}
     />
   )
 }

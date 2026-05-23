@@ -24,8 +24,14 @@ export function StayDatesCard({ form }: StayDatesCardProps) {
       <CardContent>
         <form.Form>
           <FieldGroup>
-            <form.Field name="stayDates.dateRange">
-              {(field) => <field.DateRangePicker />}
+            <form.Field name="stayDates.dateRange" errorVisibility="touched">
+              {(field) => (
+                <field.Field>
+                  <field.Label>Stay dates</field.Label>
+                  <field.DateRangePicker />
+                  <field.Error />
+                </field.Field>
+              )}
             </form.Field>
           </FieldGroup>
         </form.Form>
