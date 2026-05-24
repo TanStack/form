@@ -44,6 +44,7 @@ import type {
 import type { ResolvedInternalFieldUpdateOptions } from '../types.lib'
 import type { FieldUpdateOptions, Updater } from '../types.public'
 import type { AnyInternalFormApi } from '../FormApi/FormApi.lib'
+import type { InternalFormGroupRuntime } from '../FormGroupApi/FormGroupApi.runtime'
 import type { Atom, ReadonlyAtom } from '@tanstack/store'
 import type {
   AnyFieldMeta as AnyPublicFieldMeta,
@@ -90,6 +91,7 @@ interface MetaExtension {
   _formValidatorErrorSourceEvents: Array<string | null>
   _fieldValidatorErrors: Array<Array<ValidationIssue>>
   _fieldValidatorErrorSourceEvents: Array<string | null>
+  _formGroupErrors: Array<ValidationIssue>
   childContributionCounts: ChildContributionCounts
   _validationCount: number
   /**
@@ -255,6 +257,7 @@ export const defaultInternalBaseFieldMeta: InternalBaseFieldMeta = {
   _validationCount: 0,
   _fieldValidatorErrors: [],
   _fieldValidatorErrorSourceEvents: [],
+  _formGroupErrors: [],
   _formValidatorErrors: [],
   _formValidatorErrorSourceEvents: [],
   _arrayVersion: 0,
@@ -342,6 +345,7 @@ export class InternalFieldApi<
   _validateOnFields: FieldListenToFields | null
   _pipelineCache: PipelineCache<any> | null = null
   _isKilled = false
+  _registeredFormGroup: InternalFormGroupRuntime | null = null
 
   #segment: NameSegment
   /**
@@ -593,6 +597,53 @@ export class InternalFieldApi<
     })
   }
 
+  _registerFormGroup(group: InternalFormGroupRuntime) {
+    let current: AnyInternalFieldApi | InternalRootFieldApi = this
+
+    while (!current._isRoot) {
+      if (
+        current._registeredFormGroup &&
+        current._registeredFormGroup !== group
+      ) {
+        throw new Error(
+          `TanStack Form: Only one mounted form group may own this group of '${this.name}'`,
+        )
+      }
+      current = current._parent
+    }
+
+    const stack = [...this._children]
+    while (stack.length > 0) {
+      const child = stack.pop()!
+      if (child._registeredFormGroup && child._registeredFormGroup !== group) {
+        throw new Error(
+          `TanStack Form: Only one mounted form group may own this group of '${this.name}'`,
+        )
+      }
+      stack.push(...child._children)
+    }
+
+    this._registeredFormGroup = group
+  }
+
+  _unregisterFormGroup(group: InternalFormGroupRuntime) {
+    if (this._registeredFormGroup === group) {
+      this._registeredFormGroup = null
+    }
+  }
+
+  _findNearestRegisteredFormGroup(): InternalFormGroupRuntime | null {
+    let current: AnyInternalFieldApi | InternalRootFieldApi = this
+
+    while (!current._isRoot) {
+      const group = current._registeredFormGroup
+      if (group) return group
+      current = current._parent
+    }
+
+    return null
+  }
+
   /**
    * @private
    * Called when a child's meta contribution changes.
@@ -645,7 +696,12 @@ export class InternalFieldApi<
       current = current._parent
     }
 
-    this.form.validate(event, { fieldApiOverride: this })
+    const group = this._findNearestRegisteredFormGroup()
+    if (group && event !== 'submit') {
+      void group._validate(event, this)
+    } else {
+      this.form.validate(event, { fieldApiOverride: this })
+    }
   }
 
   /**
@@ -1098,6 +1154,7 @@ export class InternalFieldApi<
           node._pipelineCache = null
         }
         node.#children.clear()
+        node._registeredFormGroup = null
 
         node._parent._removeChild(node._segment)
       }
@@ -1447,7 +1504,9 @@ function shouldDisplayErrors(
   baseMeta: InternalBaseFieldMeta,
 ): boolean {
   if (!field) return true
-  const hasSubmitBeenAttempted = field.form._submissionAttemptsAtom.get() > 0
+  const hasSubmitBeenAttempted =
+    field.form._submissionAttemptsAtom.get() > 0 ||
+    (field._findNearestRegisteredFormGroup()?._submissionAttempts ?? 0) > 0
 
   switch (errorVisibility) {
     case 'always':
@@ -1490,6 +1549,7 @@ function isPrunableMeta(meta: InternalBaseFieldMeta): boolean {
   if (meta._arrayVersion !== 0) return false
   if (hasValidatorErrors(meta._fieldValidatorErrors)) return false
   if (hasValidatorErrors(meta._formValidatorErrors)) return false
+  if (meta._formGroupErrors.length > 0) return false
 
   return childContributionKeys.every(
     (key) => meta.childContributionCounts[key] === 0,
@@ -1502,7 +1562,8 @@ function getErrorsFromBaseMeta(
   let result: Array<ValidationIssue>
   if (
     previousMeta?._fieldValidatorErrors === baseMeta._fieldValidatorErrors &&
-    previousMeta._formValidatorErrors === baseMeta._formValidatorErrors
+    previousMeta._formValidatorErrors === baseMeta._formValidatorErrors &&
+    previousMeta._formGroupErrors === baseMeta._formGroupErrors
   ) {
     result = previousMeta.original.errors
   } else {
@@ -1511,6 +1572,7 @@ function getErrorsFromBaseMeta(
       // ValidationError is OneOrMany, TypeScript doesn't realize that
       // flat also takes care of that
       .flat()
+      .concat(baseMeta._formGroupErrors)
   }
   return result
 }

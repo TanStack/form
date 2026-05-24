@@ -313,3 +313,9 @@ export function evaluate<T>(objA: T, objB: T) {
   return true
 }
 
+export function concatenateFieldNames(nameA: string, nameB: string): string {
+  if (nameA.length === 0) return nameB
+  if (nameB.length === 0) return nameA
+  if (nameB.startsWith('[')) return `${nameA}${nameB}`
+  return `${nameA}.${nameB}`
+}

@@ -5,6 +5,9 @@ import type {
   FieldApi,
   FieldApiOptions,
   FieldValidators,
+  FormGroupApi,
+  FormGroupOptions,
+  FormGroupValidators,
   FormState,
   FormValidators,
 } from '@tanstack/form-core-v2'
@@ -205,6 +208,37 @@ export type ReactFormArrayFieldComponent<
     TFieldComponents
   >,
 ) => CrossVersionReactNode
+
+export interface ReactFormGroupProps<
+  TFormData,
+  TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
+  TGroupName extends DeepKeys<TFormData>,
+  TGroupValue extends DeepValue<TFormData, TGroupName>,
+  TGroupValidators extends FormGroupValidators<
+    TFormData,
+    TGroupName,
+    TGroupValue
+  >,
+> extends FormGroupOptions<
+  TFormData,
+  TFormValidators,
+  TSubmitReturn,
+  TGroupName,
+  TGroupValue,
+  TGroupValidators
+> {
+  children: (
+    groupApi: FormGroupApi<
+      TFormData,
+      TFormValidators,
+      TSubmitReturn,
+      TGroupName,
+      TGroupValue,
+      TGroupValidators
+    >,
+  ) => CrossVersionReactNode
+}
 
 export interface ReactTanStackFormComponents<
   TFormData,

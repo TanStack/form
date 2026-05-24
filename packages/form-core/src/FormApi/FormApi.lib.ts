@@ -61,6 +61,7 @@ import type {
   ValidationTrigger,
 } from '../validation.public'
 import type { FormListenerTriggers } from '../listeners.public'
+import type { InternalFormGroupRuntime } from '../FormGroupApi/FormGroupApi.runtime'
 
 export interface BaseFormMeta {
   /**
@@ -278,6 +279,7 @@ export class InternalFormApi<
   _lastUpdateDefaultValues: TFormData
   _pipelineCache: PipelineCache<any>
   _schemaOutputs: Array<any> = []
+  _formGroups: Map<string, InternalFormGroupRuntime> | null = null
 
   get state(): FormState<TFormData, TFormValidators, any> {
     return this.store.get()
@@ -356,6 +358,7 @@ export class InternalFormApi<
     this._schemaOutputs = []
 
     batch(() => {
+      this._formGroups?.forEach((group) => group._reset())
       this._resetVersionAtom.set((version) => version + 1)
       this._fieldRootNode._children.forEach((child) =>
         child._kill({ listenerEvent: 'reset' }),

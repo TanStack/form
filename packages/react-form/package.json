@@ -31,6 +31,10 @@
       "require": "./dist/index.cjs",
       "import": "./dist/index.js"
     },
+    "./form-group": {
+      "require": "./dist/form-group.cjs",
+      "import": "./dist/form-group.js"
+    },
     "./package.json": "./package.json"
   },
   "sideEffects": false,
