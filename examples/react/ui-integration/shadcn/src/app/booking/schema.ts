@@ -1,12 +1,12 @@
 import z from 'zod'
 import type { DateRange } from 'react-day-picker'
 
-const completeSchemaCheck = z.object({ from: z.date(), to: z.date() })
+const completeSchemaCheck = z.object({
+  from: z.date('Please select a date range.'),
+  to: z.date('Please select a date range.'),
+})
 
-const dateRangeSchema = z.custom<DateRange>(
-  (data) => completeSchemaCheck.safeParse(data).success,
-  'Please select a date range.',
-)
+const dateRangeSchema = z.custom<DateRange>().pipe(completeSchemaCheck)
 
 export const bookingFormSchema = z.object({
   guestDetails: z.object({
