@@ -74,9 +74,18 @@ importers:
       prettier:
         specifier: ^3.7.4
         version: 3.8.3
+      prettier-plugin-svelte:
+        specifier: ^3.4.1
+        version: 3.5.2(prettier@3.8.3)(svelte@5.55.9(@typescript-eslint/types@8.59.4))
       publint:
-        specifier: ^0.3.15
+        specifier: ^0.3.16
         version: 0.3.21
+      react:
+        specifier: ^19.2.3
+        version: 19.2.8
+      react-dom:
+        specifier: ^19.2.3
+        version: 19.2.8(react@19.2.8)
       sherif:
         specifier: ^1.9.0
         version: 1.11.1
@@ -8830,6 +8839,12 @@ packages:
     resolution: {integrity: sha512-zim/Hr4+FVdCIM7zL9b9Z0Wfd5Ya3mnKtiuDv7L5lzYzanSq6cOcVJ7EFcgK4I0pt28l8H0jX/x3nyog380XgQ==}
     engines: {node: '>=6'}
     hasBin: true
+
+  prettier-plugin-svelte@3.5.2:
+    resolution: {integrity: sha512-ItFouLvzSFE3ulNl4DKoWM3BGcbDCNVpIyy/Y3F2gC3aNiGLxtFUdffVqO5Z5hhYG+DFT5KULWaxmeFFpdbvaQ==}
+    peerDependencies:
+      prettier: ^3.0.0
+      svelte: ^3.2.0 || ^4.0.0-next.0 || ^5.0.0-next.0
 
   prettier@2.8.8:
     resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
@@ -19429,6 +19444,11 @@ snapshots:
   prelude-ls@1.2.1: {}
 
   premove@4.0.0: {}
+
+  prettier-plugin-svelte@3.5.2(prettier@3.8.3)(svelte@5.55.9(@typescript-eslint/types@8.59.4)):
+    dependencies:
+      prettier: 3.8.3
+      svelte: 5.55.9(@typescript-eslint/types@8.59.4)
 
   prettier@2.8.8: {}
 

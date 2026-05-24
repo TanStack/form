@@ -83,7 +83,7 @@ export class InternalRootFieldApi {
         const prevContributes = prevState[key]
         const newContributes = newState[key]
 
-        if (prevContributes === newContributes) return
+        if (prevContributes === newContributes) continue
 
         this.form._formMetaAtom.set((prev) => {
           const metaKey = rootCounterMetaKeys[key]

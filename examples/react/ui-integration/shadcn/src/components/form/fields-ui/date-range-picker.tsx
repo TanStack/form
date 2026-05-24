@@ -1,7 +1,11 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { CalendarIcon } from 'lucide-react'
 import { fieldComponent } from '../contexts'
-import type { DateRange } from 'react-day-picker'
+import type {
+  DateRange,
+  PropsRange,
+  PropsRangeRequired,
+} from 'react-day-picker'
 import type { FieldWithValue } from '@tanstack/react-form'
 import {
   Popover,
@@ -23,18 +27,23 @@ function formatDate(range: DateRange) {
   return formatter.formatRange(range.from, range.to)
 }
 
-interface TanStackFormDateRangePickerProps {
+type TanStackFormDateRangePickerProps = Omit<
+  PropsRange | PropsRangeRequired,
+  'mode'
+> & {
   field: FieldWithValue<DateRange>
 }
 
 function FormDateRangePicker(props: TanStackFormDateRangePickerProps) {
-  const { field } = props
-  const [today] = useState(() => new Date())
-
+  const { field, ...pickerProps } = props
   const label = useMemo(() => formatDate(field.value), [field.value])
 
   return (
-    <Popover>
+    <Popover
+      onOpenChange={(open) => {
+        if (!open) field.handleBlur()
+      }}
+    >
       <PopoverTrigger asChild>
         <Button
           type="button"
@@ -48,12 +57,13 @@ function FormDateRangePicker(props: TanStackFormDateRangePickerProps) {
       <PopoverContent className="w-fit">
         <Calendar
           mode="range"
-          required
           defaultMonth={field.value.from}
-          selected={field.value}
-          onSelect={(selected) => field.handleChange(selected)}
           numberOfMonths={2}
-          disabled={(date) => date < today}
+          {...pickerProps}
+          selected={field.value}
+          onSelect={(selected) =>
+            field.handleChange(selected ?? { from: undefined, to: undefined })
+          }
         />
       </PopoverContent>
     </Popover>

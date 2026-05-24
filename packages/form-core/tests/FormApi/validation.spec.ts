@@ -198,9 +198,7 @@ describe('form - validation', () => {
 
       const validatePromise = field._runFieldValidation('change')
 
-      vi.waitFor(() => {
-        expect(form.state.isValidating).toBe(true)
-      })
+      expect(form.state.isValidating).toBe(true)
 
       await vi.runAllTimersAsync()
       await validatePromise

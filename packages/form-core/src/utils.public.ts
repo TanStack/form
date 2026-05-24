@@ -61,6 +61,8 @@ export interface FormOptionsApi {
 
   schema: <
     const TFormValidators extends FormValidators<any>,
+    // Not quite sure why, but using FormValidatorData directly in the generic breaks things.
+    // Probably something recursive going on that resolves it to `never`?
     TFormData extends FormValidatorData<TFormValidators>,
     TSubmitReturn,
   >(

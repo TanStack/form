@@ -4,6 +4,19 @@ import { appFormOptions } from '@/components/form/app-form'
 
 export const bookingFormOptions = appFormOptions.schema({
   errorVisibility: 'blurred-or-submit-attempted',
+  validators: [
+    {
+      run: bookingFormSchema,
+      triggers: [
+        'blur',
+        {
+          trigger: 'change',
+          when: ({ triggerFieldApi }) =>
+            triggerFieldApi !== undefined && triggerFieldApi.meta.isInvalid,
+        },
+      ],
+    },
+  ],
   defaultValues: {
     guestDetails: {
       name: '',
@@ -18,19 +31,6 @@ export const bookingFormOptions = appFormOptions.schema({
       },
     },
   },
-  validators: [
-    {
-      run: bookingFormSchema,
-      triggers: [
-        'blur',
-        {
-          trigger: 'change',
-          when: ({ triggerFieldApi }) =>
-            triggerFieldApi !== undefined && triggerFieldApi.meta.isInvalid,
-        },
-      ],
-    },
-  ],
 })
 
 export type BookingForm = ReactFormType<typeof bookingFormOptions>

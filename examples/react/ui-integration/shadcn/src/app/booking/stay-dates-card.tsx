@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import type { Matcher } from 'react-day-picker'
 import type { BookingForm } from './shared-form'
 import {
   Card,
@@ -13,6 +15,10 @@ interface StayDatesCardProps {
 }
 
 export function StayDatesCard({ form }: StayDatesCardProps) {
+  const [matchPastDays] = useState<Matcher>(() => ({
+    before: new Date(),
+  }))
+
   return (
     <Card>
       <CardHeader>
@@ -28,7 +34,7 @@ export function StayDatesCard({ form }: StayDatesCardProps) {
               {(field) => (
                 <field.Field>
                   <field.Label>Stay dates</field.Label>
-                  <field.DateRangePicker />
+                  <field.DateRangePicker disabled={matchPastDays} />
                   <field.Error />
                 </field.Field>
               )}

@@ -605,7 +605,7 @@ export class InternalFieldApi<
         const prevContributes = prevState[key]
         const newContributes = newState[key]
 
-        if (prevContributes === newContributes) return
+        if (prevContributes === newContributes) continue
 
         const delta = newContributes ? 1 : -1
 

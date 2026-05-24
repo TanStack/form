@@ -137,6 +137,26 @@ describe('field - meta', () => {
       })
     })
 
+    it('updates child error contribution counts when only error state changes', () => {
+      const form = new InternalFormApi({ defaultValues: { a: { b: '' } } })
+      const parent = form._getOrCreateFieldApi({ name: 'a' })
+      const child = form._getOrCreateFieldApi({ name: 'a.b' })
+
+      child._setMeta((prev) => ({
+        ...prev,
+        _fieldValidatorErrors: [[{ message: 'Required' }]],
+      }))
+
+      expect(parent._getBaseMeta().childContributionCounts.error).toBe(1)
+
+      child._setMeta((prev) => ({
+        ...prev,
+        _fieldValidatorErrors: [[]],
+      }))
+
+      expect(parent._getBaseMeta().childContributionCounts.error).toBe(0)
+    })
+
     it('keeps aggregate validity invalid when self and subfields both have errors', () => {
       const form = new InternalFormApi({ defaultValues: { a: { b: '' } } })
       const parent = form._getOrCreateFieldApi({ name: 'a' })
