@@ -329,6 +329,7 @@ export class InternalFieldApi<
   _validators: Array<AnyFieldValidator> | null
   _listeners: Array<AnyFieldListener> | null
   _errorVisibility: ErrorVisibility | undefined
+  _errorBoundary: boolean
 
   // TODO implement
   /**
@@ -450,6 +451,7 @@ export class InternalFieldApi<
     form,
     listeners,
     errorVisibility,
+    errorBoundary,
   }: InternalFieldApiParams) {
     this.#segment = segment
     this._parent = parent
@@ -459,6 +461,7 @@ export class InternalFieldApi<
         ? (validators as Array<AnyFieldValidator>)
         : null
     this._errorVisibility = errorVisibility
+    this._errorBoundary = errorBoundary ?? false
     this._atoms = {}
     this._listeners = null
     this._watchingFields = null
@@ -493,6 +496,7 @@ export class InternalFieldApi<
     if (this._isKilled) return
 
     this._errorVisibility = options.errorVisibility
+    this._errorBoundary = options.errorBoundary ?? false
 
     const reconciledListeners = reconcileWatchedListenerFields({
       field: this,

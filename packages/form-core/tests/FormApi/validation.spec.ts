@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+import { z } from 'zod'
 import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
 
 describe('form - validation', () => {
@@ -562,6 +563,195 @@ describe('form - validation', () => {
 
       expect(validatorFn).toHaveBeenCalledTimes(2)
       expect(form.state.formErrors).toEqual([{ message: 'Current error' }])
+    })
+  })
+
+  describe('field error boundaries', () => {
+    it('routes descendant schema issues to an opted-in field without creating descendants', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { range: { from: '', to: '' } },
+        validators: [
+          {
+            run: z.object({
+              range: z.object({
+                from: z.string().min(1, 'Start date is required'),
+                to: z.string().min(1, 'End date is required'),
+              }),
+            }),
+            triggers: ['change'],
+          },
+        ],
+      })
+      const rangeField = form._getOrCreateFieldApi({
+        name: 'range',
+        errorBoundary: true,
+      })
+
+      await form.validate('change')
+
+      expect(rangeField.errors).toEqual([
+        expect.objectContaining({ message: 'Start date is required' }),
+        expect.objectContaining({ message: 'End date is required' }),
+      ])
+      expect(form.state.formErrors).toHaveLength(2)
+      expect(form._tryGetFieldApi('range.from')).toBeNull()
+      expect(form._tryGetFieldApi('range.to')).toBeNull()
+    })
+
+    it('routes schema issues to the nearest configured boundary', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { section: { range: { to: '' } } },
+        validators: [
+          {
+            run: z.object({
+              section: z.object({
+                range: z.object({
+                  to: z.string().min(1, 'End date is required'),
+                }),
+              }),
+            }),
+            triggers: ['change'],
+          },
+        ],
+      })
+      const sectionField = form._getOrCreateFieldApi({
+        name: 'section',
+        errorBoundary: true,
+      })
+      const rangeField = form._getOrCreateFieldApi({
+        name: 'section.range',
+        errorBoundary: true,
+      })
+
+      await form.validate('change')
+
+      expect(sectionField.errors).toEqual([])
+      expect(rangeField.errors).toEqual([
+        expect.objectContaining({ message: 'End date is required' }),
+      ])
+      expect(form._tryGetFieldApi('section.range.to')).toBeNull()
+    })
+
+    it('leaves exact schema paths unchanged without a boundary', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { range: { to: '' } },
+        validators: [
+          {
+            run: z.object({
+              range: z.object({
+                to: z.string().min(1, 'End date is required'),
+              }),
+            }),
+            triggers: ['change'],
+          },
+        ],
+      })
+      const rangeField = form._getOrCreateFieldApi({ name: 'range' })
+
+      await form.validate('change')
+
+      expect(rangeField.errors).toEqual([])
+      expect(form._tryGetFieldApi('range.to')?.errors).toEqual([
+        expect.objectContaining({ message: 'End date is required' }),
+      ])
+    })
+
+    it('clears errors from a boundary when a schema result becomes valid', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { range: { to: '' } },
+        validators: [
+          {
+            run: z.object({
+              range: z.object({
+                to: z.string().min(1, 'End date is required'),
+              }),
+            }),
+            triggers: ['change'],
+          },
+        ],
+      })
+      const rangeField = form._getOrCreateFieldApi({
+        name: 'range',
+        errorBoundary: true,
+      })
+
+      await form.validate('change')
+      expect(rangeField.errors).toHaveLength(1)
+
+      rangeField.handleChange({ to: '2026-05-24' }, { causeValidation: false })
+      await form.validate('change')
+
+      expect(rangeField.errors).toEqual([])
+    })
+
+    it('routes and combines explicit field error targets through a boundary', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { range: { from: '', to: '' } },
+        validators: [
+          {
+            run: () => ({
+              fields: {
+                'range.from': { message: 'Explicit start date error' },
+                'range.to': { message: 'Explicit end date error' },
+              },
+            }),
+            triggers: ['change'],
+          },
+        ],
+      })
+      const rangeField = form._getOrCreateFieldApi({
+        name: 'range',
+        errorBoundary: true,
+      })
+
+      await form.validate('change')
+
+      expect(rangeField.errors).toEqual([
+        { message: 'Explicit start date error' },
+        { message: 'Explicit end date error' },
+      ])
+      expect(form._tryGetFieldApi('range.from')).toBeNull()
+      expect(form._tryGetFieldApi('range.to')).toBeNull()
+    })
+
+    it('follows an error boundary field moved within an array', async () => {
+      const form = new InternalFormApi({
+        defaultValues: {
+          users: [{ range: { to: '' } }, { range: { to: '' } }],
+        },
+        validators: [
+          {
+            run: z
+              .object({
+                users: z.array(
+                  z.object({ range: z.object({ to: z.string() }) }),
+                ),
+              })
+              .superRefine((_value, context) => {
+                context.addIssue({
+                  code: 'custom',
+                  message: 'Moved range error',
+                  path: ['users', 1, 'range', 'to'],
+                })
+              }),
+            triggers: ['change'],
+          },
+        ],
+      })
+      const rangeField = form._getOrCreateFieldApi({
+        name: 'users[0].range',
+        errorBoundary: true,
+      })
+
+      form.swapFieldValues('users', 0, 1, { causeValidation: false })
+      expect(rangeField.name).toBe('users[1].range')
+
+      await form.validate('change')
+
+      expect(rangeField.errors).toEqual([
+        expect.objectContaining({ message: 'Moved range error' }),
+      ])
+      expect(form._tryGetFieldApi('users[1].range.to')).toBeNull()
     })
   })
 

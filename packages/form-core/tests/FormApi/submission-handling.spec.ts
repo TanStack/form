@@ -580,6 +580,27 @@ describe('form - submission handling', () => {
       expect(fieldB.state.meta.errors).toEqual([{ message: 'Field B error' }])
     })
 
+    it('routes submit field errors through boundaries', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { range: { to: '' } },
+        onSubmit: ({ createValidationError }) =>
+          createValidationError({
+            fields: {
+              'range.to': { message: 'Submit end date error' },
+            },
+          }),
+      })
+      const rangeField = form._getOrCreateFieldApi({
+        name: 'range',
+        errorBoundary: true,
+      })
+
+      await form.handleSubmit()
+
+      expect(rangeField.errors).toEqual([{ message: 'Submit end date error' }])
+      expect(form._tryGetFieldApi('range.to')).toBeNull()
+    })
+
     it('clears field errors when onSubmit no longer returns errors', async () => {
       let doError = true
 

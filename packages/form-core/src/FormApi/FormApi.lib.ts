@@ -657,6 +657,24 @@ export class InternalFormApi<
     )
   }
 
+  _resolveErrorFieldPath = (fieldName: string): string => {
+    let current: AnyInternalFieldApi | InternalRootFieldApi =
+      this._fieldRootNode
+    let boundary: AnyInternalFieldApi | null = null
+
+    for (const segment of nameToFieldNodeSegments(fieldName)) {
+      const child: AnyInternalFieldApi | undefined = current._getChild(segment)
+      if (!child) break
+
+      if (child._errorBoundary) {
+        boundary = child
+      }
+      current = child
+    }
+
+    return boundary?.name ?? fieldName
+  }
+
   _clearFieldValidatorError = (
     field: AnyInternalFieldApi,
     validatorIndex: number,
@@ -780,6 +798,19 @@ export class InternalFormApi<
     validatorIndex: number,
     sourceEvent: string,
   ) => {
+    const resolvedFieldErrors = new Map<string, Array<ValidationIssue>>()
+
+    for (const [fieldName, fieldError] of Object.entries(
+      aggregateError.fieldErrors,
+    )) {
+      const resolvedName = this._resolveErrorFieldPath(fieldName)
+      const errors = normalizeValidationError(fieldError)
+      resolvedFieldErrors.set(
+        resolvedName,
+        (resolvedFieldErrors.get(resolvedName) ?? []).concat(errors),
+      )
+    }
+
     batch(() => {
       // Handle form-level errors
       this._formMetaAtom.set((prev) => {
@@ -813,17 +844,14 @@ export class InternalFormApi<
         const affectedFields = new Set<AnyInternalFieldApi>()
 
         // Set new field errors and build the new reference set
-        for (const [fieldName, fieldError] of Object.entries(
-          aggregateError.fieldErrors,
-        )) {
+        for (const [fieldName, fieldError] of resolvedFieldErrors) {
           const field = this._getOrCreateFieldApi({ name: fieldName })
           field._setMeta((prev) => {
-            const newError = normalizeValidationError(fieldError)
             const nextErrors = setIndexedError(
               prev._formValidatorErrors,
               prev._formValidatorErrorSourceEvents,
               validatorIndex,
-              newError,
+              fieldError,
               sourceEvent,
             )
 

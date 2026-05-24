@@ -30,7 +30,7 @@ export function StayDatesCard({ form }: StayDatesCardProps) {
       <CardContent>
         <form.Form>
           <FieldGroup>
-            <form.Field name="stayDates.dateRange" errorVisibility="touched">
+            <form.Field name="stayDates.dateRange" errorBoundary>
               {(field) => (
                 <field.Field>
                   <field.Label>Stay dates</field.Label>

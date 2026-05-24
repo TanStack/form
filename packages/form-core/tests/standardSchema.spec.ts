@@ -132,13 +132,13 @@ describe('standard schema validation', () => {
         value: { parsed: String(value).toUpperCase() },
       }))
 
-      await expect(parseStandardSchema(schema, 'value', 'form')).resolves.toEqual(
-        {
-          result: null,
-          schemaResult: { parsed: 'VALUE' },
-          hasSchemaResult: true,
-        },
-      )
+      await expect(
+        parseStandardSchema(schema, 'value', 'form'),
+      ).resolves.toEqual({
+        result: null,
+        schemaResult: { parsed: 'VALUE' },
+        hasSchemaResult: true,
+      })
     })
 
     it('returns field issues directly for field scope', async () => {
