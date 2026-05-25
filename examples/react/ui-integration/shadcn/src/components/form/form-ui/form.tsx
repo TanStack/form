@@ -1,7 +1,7 @@
 import { useFormContext } from '../contexts'
 import type { ComponentProps, SubmitEvent } from 'react'
 
-export function TanStackFormElement(props: ComponentProps<'form'>) {
+export default function TanStackFormElement(props: ComponentProps<'form'>) {
   const form = useFormContext()
 
   function defaultHandler(event: SubmitEvent<HTMLFormElement>) {

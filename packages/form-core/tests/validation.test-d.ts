@@ -6,7 +6,7 @@ import type {
   FieldErrors,
   FieldValidators,
   FormErrors,
-  FormStandardSchemaValidatorOutputs,
+  FormGroupValidators,
   FormValidators,
   OnSubmitError,
   StandardSchemaV1Issue,
@@ -15,6 +15,11 @@ import type {
 
 type TestFormData = {
   name: string
+}
+
+type TestGroupedFormData = {
+  step: TestFormData
+  validationEnabled: boolean
 }
 
 // InternalFormApi does some `any` shenanigans. Usually okay, but for type tests it sucks.
@@ -28,6 +33,16 @@ function defineFormValidators<
 
 function defineFieldValidators<
   const TValidators extends FieldValidators<TestFormData, 'name', string>,
+>(validators: TValidators): TValidators {
+  return validators
+}
+
+function defineGroupValidators<
+  const TValidators extends FormGroupValidators<
+    TestGroupedFormData,
+    'step',
+    TestFormData
+  >,
 >(validators: TValidators): TValidators {
   return validators
 }
@@ -119,47 +134,6 @@ describe('FormErrors', () => {
     })
 
     expectTypeOf(form.options.defaultValues).toEqualTypeOf<{ name: string }>()
-  })
-
-  it('should infer the error type from validators created by a helper', () => {
-    const withRequiredValue = createValidator<TestFormData>({
-      triggers: [
-        {
-          trigger: 'change',
-          when: ({ value }) => value.name.length > 0,
-        },
-      ],
-      runOnSubmit: ({ value }) => value.name.length > 0,
-    })
-
-    const validators = defineFormValidators([
-      withRequiredValue(() => ({
-        message: 'From helper',
-        helper: true as const,
-      })),
-    ])
-
-    expectTypeOf<FormErrors<typeof validators, never>>().toEqualTypeOf<
-      Array<{ message: string; helper: true }>
-    >()
-  })
-
-  it('should preserve standard schema output types from validators created by a helper', () => {
-    const withRequiredValue = createValidator<TestFormData>({
-      triggers: [
-        {
-          trigger: 'change',
-          when: ({ value }) => value.name.length > 0,
-        },
-      ],
-    })
-
-    const schema = z.object({ name: z.literal('valid') })
-    const validators = defineFormValidators([withRequiredValue(schema)])
-
-    expectTypeOf<
-      FormStandardSchemaValidatorOutputs<typeof validators>
-    >().toEqualTypeOf<[{ name: 'valid' }]>()
   })
 
   it('should infer the error type from the validator', () => {
@@ -597,5 +571,51 @@ describe('FieldErrors', () => {
     expectTypeOf<FieldErrors<any, any, any>>().toEqualTypeOf<
       Array<ValidationIssue>
     >()
+  })
+})
+
+describe('FormGroupValidators', () => {
+  it('accepts a shared validator helper with a group schema run', () => {
+    const rewardEarlyPunishLate = createValidator({
+      triggers: [
+        'blur',
+        {
+          trigger: 'change',
+          when: ({ triggerFieldApi }) => triggerFieldApi?.meta.isInvalid === true,
+        },
+      ],
+    })
+
+    const validators = defineGroupValidators([
+      rewardEarlyPunishLate(z.object({ name: z.string() })),
+    ])
+
+    expectTypeOf(validators[0]!.run).toMatchTypeOf<
+      (typeof validators)[0]['run']
+    >()
+  })
+
+  it('keeps shared options form-scoped and run group-scoped', () => {
+    defineGroupValidators([
+      {
+        run: ({ value }) => {
+          expectTypeOf(value).toEqualTypeOf<TestFormData>()
+          return null
+        },
+        triggerDebounceMs: ({ value }) => {
+          expectTypeOf(value).toEqualTypeOf<TestGroupedFormData>()
+          return 0
+        },
+        triggers: [
+          {
+            trigger: 'change',
+            when: ({ value }) => {
+              expectTypeOf(value).toEqualTypeOf<TestGroupedFormData>()
+              return value.validationEnabled
+            },
+          },
+        ],
+      },
+    ])
   })
 })

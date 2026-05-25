@@ -91,7 +91,8 @@ interface MetaExtension {
   _formValidatorErrorSourceEvents: Array<string | null>
   _fieldValidatorErrors: Array<Array<ValidationIssue>>
   _fieldValidatorErrorSourceEvents: Array<string | null>
-  _formGroupErrors: Array<ValidationIssue>
+  _formGroupErrors: Array<Array<ValidationIssue>>
+  _formGroupErrorSourceEvents: Array<string | null>
   childContributionCounts: ChildContributionCounts
   _validationCount: number
   /**
@@ -258,6 +259,7 @@ export const defaultInternalBaseFieldMeta: InternalBaseFieldMeta = {
   _fieldValidatorErrors: [],
   _fieldValidatorErrorSourceEvents: [],
   _formGroupErrors: [],
+  _formGroupErrorSourceEvents: [],
   _formValidatorErrors: [],
   _formValidatorErrorSourceEvents: [],
   _arrayVersion: 0,
@@ -799,7 +801,7 @@ export class InternalFieldApi<
     })
   }
 
-  _clearEventErrors(sourceEvent: string): void {
+  _clearEventErrors(event: 'change' | 'blur', sourceEvent: string): void {
     if (this._isKilled) return
 
     const validators = this._validators
@@ -808,15 +810,15 @@ export class InternalFieldApi<
     const eventErrorIndexes: Array<number> = []
 
     for (let i = 0; i < validators.length; i++) {
-      const runsOnChange = validators[i]!.triggers.some((trigger) =>
+      const runsOnEvent = validators[i]!.triggers.some((trigger) =>
         isValidationTriggerEnabled(trigger, {
-          event: 'change',
+          event,
           fieldApi: this,
           formApi: this.form,
         }),
       )
 
-      if (!runsOnChange) {
+      if (!runsOnEvent) {
         eventErrorIndexes.push(i)
       }
     }
@@ -860,8 +862,17 @@ export class InternalFieldApi<
   ): void {
     if (this._isKilled) return
 
-    if (event === 'change') {
-      this._clearEventErrors('submit')
+    if (event === 'change' || event === 'blur') {
+      this._clearEventErrors(event, 'submit')
+      this._findNearestRegisteredFormGroup()?._clearEventErrors(
+        event,
+        this,
+        'submit',
+      )
+
+      if (event === 'blur') {
+        this.form._clearEventErrors(this, 'submit', event)
+      }
     }
 
     const {
@@ -1549,7 +1560,7 @@ function isPrunableMeta(meta: InternalBaseFieldMeta): boolean {
   if (meta._arrayVersion !== 0) return false
   if (hasValidatorErrors(meta._fieldValidatorErrors)) return false
   if (hasValidatorErrors(meta._formValidatorErrors)) return false
-  if (meta._formGroupErrors.length > 0) return false
+  if (meta._formGroupErrors.some((errors) => errors.length > 0)) return false
 
   return childContributionKeys.every(
     (key) => meta.childContributionCounts[key] === 0,
@@ -1572,7 +1583,7 @@ function getErrorsFromBaseMeta(
       // ValidationError is OneOrMany, TypeScript doesn't realize that
       // flat also takes care of that
       .flat()
-      .concat(baseMeta._formGroupErrors)
+      .concat(baseMeta._formGroupErrors.flat())
   }
   return result
 }

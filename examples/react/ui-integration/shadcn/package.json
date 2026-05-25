@@ -29,6 +29,8 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@tanstack/devtools-vite": "^0.7.0",
+    "@tanstack/react-devtools": "^0.10.5",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.2",

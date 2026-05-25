@@ -3,7 +3,9 @@ import type { ComponentProps } from 'react'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 
-export function TanStackFormSubmitButton(props: ComponentProps<'button'>) {
+export default function TanStackFormSubmitButton(
+  props: ComponentProps<'button'>,
+) {
   const form = useFormContext()
 
   return (

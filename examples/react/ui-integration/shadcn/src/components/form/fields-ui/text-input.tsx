@@ -28,7 +28,4 @@ function FormTextInput(props: TanStackFormTextInputProps) {
 // This component isn't generic, so that is safe.
 
 // Strict is important, because if a field is 'a' | 'b', we don't want the user to be able to use a string input
-export const TanStackFormTextInput = fieldComponent.strict(
-  FormTextInput,
-  'field',
-)
+export default fieldComponent.strict(FormTextInput, 'field')

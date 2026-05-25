@@ -58,7 +58,7 @@ function isGroupContext(ctx: InputContext): ctx is GroupInputContext {
 
 function getContextValue(context: InputContext) {
   return isGroupContext(context)
-    ? context.groupApi.value
+    ? context.formApi.state.values
     : isFormContext(context)
     ? context.formApi.state.values
     : context.fieldApi.value

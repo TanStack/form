@@ -1,13 +1,15 @@
 import { useSelector } from '@tanstack/react-store'
 import { useEffect, useMemo, useRef } from 'react'
 import { createFormGroupApi } from '@tanstack/form-core-v2/form-group'
-import type { InternalFormApi } from '@tanstack/form-core-v2/internals'
-import type { InternalFormGroupApi } from '@tanstack/form-core-v2/form-group'
 import type { ReactFormGroupProps } from '../ReactForm/Components.public'
+import type { InternalFormGroupApi } from '@tanstack/form-core-v2/form-group'
+import type { AnyInternalFormApi } from '@tanstack/form-core-v2/internals'
 
-interface InternalFormGroupProps
-  extends Omit<ReactFormGroupProps<any, any, any, any, any, any>, 'children'> {
-  form: InternalFormApi<any, any, any>
+type InternalFormGroupProps = Omit<
+  ReactFormGroupProps<any, any, any, any, any, any>,
+  'children'
+> & {
+  form: AnyInternalFormApi
 }
 
 export function useFormGroup(

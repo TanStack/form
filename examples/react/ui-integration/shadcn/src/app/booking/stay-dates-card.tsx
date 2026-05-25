@@ -1,47 +1,51 @@
 import { useState } from 'react'
-import type { Matcher } from 'react-day-picker'
+import { FormGroup } from '@tanstack/react-form/form-group'
+import { StepForm, rewardEarlyPunishLate } from './shared-form'
+import { stayDatesSchema } from './schema'
 import type { BookingForm } from './shared-form'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { FieldGroup } from '@/components/ui/field'
+import type { Matcher } from 'react-day-picker'
 
 interface StayDatesCardProps {
   form: BookingForm
+  onGroupSubmit: () => void
 }
 
-export function StayDatesCard({ form }: StayDatesCardProps) {
+function StayDatesCard({ form, onGroupSubmit }: StayDatesCardProps) {
   const [matchPastDays] = useState<Matcher>(() => ({
     before: new Date(),
   }))
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Stay dates</CardTitle>
-        <CardDescription>
-          Enter the dates you will expect to be staying
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form.Form>
-          <FieldGroup>
-            <form.Field name="stayDates.dateRange" errorBoundary>
-              {(field) => (
-                <field.Field>
-                  <field.Label>Stay dates</field.Label>
-                  <field.DateRangePicker disabled={matchPastDays} />
-                  <field.Error />
-                </field.Field>
-              )}
-            </form.Field>
-          </FieldGroup>
-        </form.Form>
-      </CardContent>
-    </Card>
+    <FormGroup
+      form={form}
+      name="stayDates"
+      validators={[rewardEarlyPunishLate(stayDatesSchema)]}
+      onGroupSubmit={onGroupSubmit}
+    >
+      {(group) => (
+        <StepForm onSubmit={group.handleSubmit}>
+          <form.Field name="stayDates.dateRange" errorBoundary>
+            {(field) => (
+              <field.Field>
+                <field.Label>Stay dates</field.Label>
+                <field.DateRangePicker disabled={matchPastDays} />
+                <field.Error />
+              </field.Field>
+            )}
+          </form.Field>
+          <form.Field name="stayDates.arrivalTime">
+            {(field) => (
+              <field.Field>
+                <field.Label>Arrival time</field.Label>
+                <field.TextInput type="time" />
+                <field.Error />
+              </field.Field>
+            )}
+          </form.Field>
+        </StepForm>
+      )}
+    </FormGroup>
   )
 }
+
+export default StayDatesCard

@@ -1,13 +1,13 @@
 import { batch, createAtom, shallow } from '@tanstack/store'
+import { cancelPipelineCache, createPipelineCache } from '../utils.lib'
 import {
-  cancelPipelineCache,
-  createPipelineCache,
-} from '../utils.lib'
-import {
+  clearIndexedErrorsFromSource,
   isAggregateError,
   isErrorResult,
+  isValidationTriggerEnabled,
   normalizeValidationError,
   runValidatorPipeline,
+  setIndexedError,
 } from '../validation.lib'
 import type { InternalFormApi } from '../FormApi/FormApi.lib'
 import type {
@@ -20,6 +20,7 @@ import type {
   ValidationErrorInput,
   ValidationIssue,
   ValidationTrigger,
+  ValidationTriggerOption,
 } from '../validation.public'
 import type { PipelineResult } from '../validation.lib'
 import type { ReadonlyAtom } from '@tanstack/store'
@@ -35,14 +36,7 @@ import type { DeepKeys, DeepValue } from '../deep-keys.public'
 import type { InternalFormGroupRuntime } from './FormGroupApi.runtime'
 
 export type AnyInternalFormGroupApi = InternalFormGroupApi
-export type AnyFormGroupOptions = FormGroupOptions<
-  any,
-  any,
-  any,
-  any,
-  any,
-  any
->
+export type AnyFormGroupOptions = FormGroupOptions<any, any, any, any, any, any>
 
 interface FormGroupValidatorPipelineArgs {
   pipeline: ReadonlyArray<FormGroupValidators<any, any, any>[number]>
@@ -103,13 +97,16 @@ export class InternalFormGroupApi
   _pipelineCache: PipelineCache<any>
   _schemaOutputs: Array<unknown> = []
   _submissionMeta = createAtom(createInitialSubmissionMeta())
-  _errorFields = new Set<AnyInternalFieldApi>()
+  _errorFields: Array<Set<AnyInternalFieldApi>> = []
   _registrationCount = 0
   _handleSubmitPromise: Promise<Array<FormGroupValidationError<any>>> | null =
     null
   store: ReadonlyAtom<FormGroupState<any, any, any, any, any>>
 
-  constructor(form: InternalFormApi<any, any, any>, options: AnyFormGroupOptions) {
+  constructor(
+    form: InternalFormApi<any, any, any>,
+    options: AnyFormGroupOptions,
+  ) {
     this.form = form
     this._options = options
     this._field = form._getOrCreateFieldApi({ name: options.name })
@@ -122,7 +119,8 @@ export class InternalFormGroupApi
           value: fieldState.value,
           meta: fieldState.meta,
           errors: fieldState.meta.errors,
-          canSubmit: !submission.isSubmitting && fieldState.meta.original.isValid,
+          canSubmit:
+            !submission.isSubmitting && fieldState.meta.original.isValid,
           isSubmitting: submission.isSubmitting,
           isSubmitSuccessful: submission.isSubmitSuccessful,
           submissionAttempts: submission.submissionAttempts,
@@ -198,7 +196,7 @@ export class InternalFormGroupApi
     cancelPipelineCache(this._pipelineCache)
     this._pipelineCache = createPipelineCache()
     this._schemaOutputs = []
-    this._replaceErrors(new Map())
+    this._clearErrors()
     this._submissionMeta.set(createInitialSubmissionMeta())
     this._handleSubmitPromise = null
   }
@@ -210,45 +208,123 @@ export class InternalFormGroupApi
       : `${this.name}.${relativeName}`
   }
 
-  _setOwnedErrors(field: AnyInternalFieldApi, errors: Array<ValidationIssue>) {
+  _setOwnedErrors(
+    field: AnyInternalFieldApi,
+    validatorIndex: number,
+    errors: Array<ValidationIssue>,
+    sourceEvent: string,
+  ) {
     field._setMeta((prev) => {
-      const current = prev._formGroupErrors
-      if (current === errors || (current.length === 0 && errors.length === 0)) {
-        return prev
-      }
+      const nextErrors = setIndexedError(
+        prev._formGroupErrors,
+        prev._formGroupErrorSourceEvents,
+        validatorIndex,
+        errors,
+        sourceEvent,
+      )
+      if (!nextErrors) return prev
 
       return {
         ...prev,
-        _formGroupErrors: errors,
+        _formGroupErrors: nextErrors.errors,
+        _formGroupErrorSourceEvents: nextErrors.errorSourceEvents,
       } satisfies InternalBaseFieldMeta
     })
     field._pruneIfUnused()
   }
 
-  _replaceErrors(nextErrors: Map<AnyInternalFieldApi, Array<ValidationIssue>>) {
+  _replaceErrors(
+    validatorIndex: number,
+    nextErrors: Map<AnyInternalFieldApi, Array<ValidationIssue>>,
+    sourceEvent: string,
+  ) {
+    const oldFields = this._errorFields[validatorIndex] ?? new Set()
+
     batch(() => {
-      for (const oldField of this._errorFields) {
+      for (const oldField of oldFields) {
         if (!nextErrors.has(oldField) && !oldField._isKilled) {
-          this._setOwnedErrors(oldField, [])
+          this._setOwnedErrors(oldField, validatorIndex, [], '')
         }
       }
 
       for (const [field, errors] of nextErrors) {
-        this._setOwnedErrors(field, errors)
+        this._setOwnedErrors(field, validatorIndex, errors, sourceEvent)
       }
     })
-    this._errorFields = new Set(nextErrors.keys())
+    this._errorFields[validatorIndex] = new Set(nextErrors.keys())
+  }
+
+  _clearErrors(): void {
+    batch(() => {
+      this._errorFields.forEach((fields, validatorIndex) => {
+        for (const field of fields) {
+          if (!field._isKilled) {
+            this._setOwnedErrors(field, validatorIndex, [], '')
+          }
+        }
+      })
+    })
+    this._errorFields = []
+  }
+
+  _clearEventErrors(
+    event: Exclude<ValidationTrigger, 'submit'>,
+    triggerFieldApi: AnyInternalFieldApi,
+    sourceEvent: string,
+  ): void {
+    const validators = this._options.validators
+    if (!validators || validators.length === 0) return
+
+    const indexesToClear: Array<number> = []
+    for (let i = 0; i < validators.length; i++) {
+      const runsOnEvent = validators[i]!.triggers.some(
+        (trigger: ValidationTriggerOption<any, any>) =>
+          isValidationTriggerEnabled(trigger, {
+            event,
+            formApi: this.form,
+            triggerFieldApi,
+          }),
+      )
+      if (!runsOnEvent) indexesToClear.push(i)
+    }
+    if (indexesToClear.length === 0) return
+
+    const fieldsToClear = new Set([this._ensureField(), triggerFieldApi])
+    batch(() => {
+      for (const field of fieldsToClear) {
+        field._setMeta((prev) => {
+          const clearedErrors = clearIndexedErrorsFromSource(
+            prev._formGroupErrors,
+            prev._formGroupErrorSourceEvents,
+            indexesToClear,
+            sourceEvent,
+          )
+          if (!clearedErrors) return prev
+
+          return {
+            ...prev,
+            _formGroupErrors: clearedErrors.errors,
+            _formGroupErrorSourceEvents: clearedErrors.errorSourceEvents,
+          } satisfies InternalBaseFieldMeta
+        })
+        field._pruneIfUnused()
+      }
+    })
   }
 
   _processValidationResults(
     results: Array<PipelineResult<FormGroupValidateResult<any>>>,
+    sourceEvent: string,
   ): void {
-    const routed = new Map<AnyInternalFieldApi, Array<ValidationIssue>>()
-    const add = (field: AnyInternalFieldApi, errors: Array<ValidationIssue>) => {
-      routed.set(field, (routed.get(field) ?? []).concat(errors))
-    }
-
     for (const result of results) {
+      const routed = new Map<AnyInternalFieldApi, Array<ValidationIssue>>()
+      const add = (
+        field: AnyInternalFieldApi,
+        errors: Array<ValidationIssue>,
+      ) => {
+        routed.set(field, (routed.get(field) ?? []).concat(errors))
+      }
+
       if (result.hasSchemaResult) {
         this._schemaOutputs[result.validatorIndex] = result.schemaResult
       }
@@ -261,24 +337,26 @@ export class InternalFormGroupApi
             normalizeValidationError(result.result as ValidationErrorInput),
           )
         }
-        continue
+      } else {
+        if (aggregate.formError) {
+          add(
+            this._ensureField(),
+            normalizeValidationError(aggregate.formError),
+          )
+        }
+
+        for (const [relativeName, error] of Object.entries(
+          aggregate.fieldErrors,
+        )) {
+          const fullName = this._fullFieldName(relativeName)
+          const resolvedName = this.form._resolveErrorFieldPath(fullName)
+          const field = this.form._getOrCreateFieldApi({ name: resolvedName })
+          add(field, normalizeValidationError(error))
+        }
       }
 
-      if (aggregate.formError) {
-        add(this._ensureField(), normalizeValidationError(aggregate.formError))
-      }
-
-      for (const [relativeName, error] of Object.entries(
-        aggregate.fieldErrors,
-      )) {
-        const fullName = this._fullFieldName(relativeName)
-        const resolvedName = this.form._resolveErrorFieldPath(fullName)
-        const field = this.form._getOrCreateFieldApi({ name: resolvedName })
-        add(field, normalizeValidationError(error))
-      }
+      this._replaceErrors(result.validatorIndex, routed, sourceEvent)
     }
-
-    this._replaceErrors(routed)
   }
 
   async _validate(
@@ -287,7 +365,7 @@ export class InternalFormGroupApi
   ): Promise<Array<FormGroupValidationError<any>>> {
     const validators = this._options.validators
     if (!validators || validators.length === 0) {
-      this._replaceErrors(new Map())
+      this._clearErrors()
       return []
     }
 
@@ -304,7 +382,7 @@ export class InternalFormGroupApi
           triggerFieldApi,
         },
       })
-      this._processValidationResults(result.results)
+      this._processValidationResults(result.results, event)
       return result.results
         .map(({ result: validationResult }) => validationResult)
         .filter(isErrorResult)
@@ -389,7 +467,7 @@ export class InternalFormGroupApi
         })
         if (hasResetDuringSubmit()) return []
         if (result.thrownError !== null || result.hasErrors) failed = true
-        this._processValidationResults(result.results)
+        this._processValidationResults(result.results, 'submit')
         groupErrors.push(
           ...result.results
             .map(({ result: validationResult }) => validationResult)
@@ -399,7 +477,7 @@ export class InternalFormGroupApi
         field._setValidationCount((count) => Math.max(0, count - 1))
       }
     } else {
-      this._replaceErrors(new Map())
+      this._clearErrors()
     }
 
     const errors = fieldErrors.concat(groupErrors)

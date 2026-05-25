@@ -134,4 +134,92 @@ describe('form group - validation', () => {
 
     unregister()
   })
+
+  it('uses form values for validator options while run receives the group value', async () => {
+    const when = vi.fn(({ value }) => value.validationEnabled)
+    const triggerDebounceMs = vi.fn(({ value }) =>
+      value.validationEnabled ? 0 : 100,
+    )
+    const run = vi.fn(({ value }) => (value.name ? null : 'Name is required'))
+    const form = new InternalFormApi({
+      defaultValues: {
+        step: { name: 'Alice' },
+        validationEnabled: true,
+      },
+    })
+    const group = createFormGroupApi(form, {
+      name: 'step',
+      validators: [
+        {
+          run,
+          triggerDebounceMs,
+          triggers: [{ trigger: 'change', when }],
+        },
+      ],
+    })
+    const field = form._getOrCreateFieldApi({ name: 'step.name' })
+    const unregister = group._register()
+
+    field.handleChange('')
+
+    await vi.waitFor(() => {
+      expect(run).toHaveBeenCalledOnce()
+    })
+    expect(when.mock.calls[0]![0].value).toEqual({
+      step: { name: '' },
+      validationEnabled: true,
+    })
+    expect(triggerDebounceMs.mock.calls[0]![0].value).toEqual({
+      step: { name: '' },
+      validationEnabled: true,
+    })
+    expect(run.mock.calls[0]![0].value).toEqual({ name: '' })
+
+    unregister()
+  })
+
+  it.each(['change', 'blur'] as const)(
+    'clears only group-level and triggering-field submit errors on %s',
+    async (event) => {
+      const form = new InternalFormApi({
+        defaultValues: { step: { name: '', email: '' } },
+      })
+      const group = createFormGroupApi(form, {
+        name: 'step',
+        validators: [
+          {
+            run: () => ({
+              form: 'Please address the errors',
+              fields: {
+                name: 'Name is required',
+                email: 'Email is required',
+              },
+            }),
+            triggers: [],
+          },
+        ],
+      })
+      const nameField = form._getOrCreateFieldApi({ name: 'step.name' })
+      const emailField = form._getOrCreateFieldApi({ name: 'step.email' })
+      const unregister = group._register()
+
+      await group.handleSubmit()
+      expect(group.errors).toEqual([{ message: 'Please address the errors' }])
+      expect(nameField.errors).toEqual([{ message: 'Name is required' }])
+      expect(emailField.errors).toEqual([{ message: 'Email is required' }])
+
+      if (event === 'change') {
+        nameField.handleChange('Alice')
+      } else {
+        nameField.handleBlur()
+      }
+      await new Promise((resolve) => setTimeout(resolve, 0))
+
+      expect(group.errors).toEqual([])
+      expect(nameField.errors).toEqual([])
+      expect(emailField.errors).toEqual([{ message: 'Email is required' }])
+
+      unregister()
+    },
+  )
 })

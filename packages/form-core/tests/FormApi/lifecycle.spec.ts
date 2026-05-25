@@ -231,6 +231,24 @@ describe('form - lifecycle', () => {
       expect(form.state.formErrors).toEqual([])
     })
 
+    it('clears form-level submit errors when any field blurs', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '', email: '' },
+        onSubmit: ({ createValidationError }) =>
+          createValidationError('Submission failed'),
+      })
+      const field = form._getOrCreateFieldApi({ name: 'name' })
+
+      await form.handleSubmit()
+      expect(form.state.formErrors).toEqual([
+        expect.objectContaining({ message: 'Submission failed' }),
+      ])
+
+      field.handleBlur()
+
+      expect(form.state.formErrors).toEqual([])
+    })
+
     it('clears form-level submit-only validator errors when any field changes', async () => {
       const form = new InternalFormApi({
         defaultValues: { name: '', email: '' },
@@ -371,6 +389,30 @@ describe('form - lifecycle', () => {
       expect(emailField.errors).toEqual([{ message: 'Email is required' }])
 
       nameField.handleChange('Alice')
+
+      expect(nameField.errors).toEqual([])
+      expect(emailField.errors).toEqual([{ message: 'Email is required' }])
+    })
+
+    it('only clears field-level submit errors for the field that blurs', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '', email: '' },
+        onSubmit: ({ createValidationError }) =>
+          createValidationError({
+            fields: {
+              name: 'Name is required',
+              email: 'Email is required',
+            },
+          }),
+      })
+      const nameField = form._getOrCreateFieldApi({ name: 'name' })
+      const emailField = form._getOrCreateFieldApi({ name: 'email' })
+
+      await form.handleSubmit()
+      expect(nameField.errors).toEqual([{ message: 'Name is required' }])
+      expect(emailField.errors).toEqual([{ message: 'Email is required' }])
+
+      nameField.handleBlur()
 
       expect(nameField.errors).toEqual([])
       expect(emailField.errors).toEqual([{ message: 'Email is required' }])

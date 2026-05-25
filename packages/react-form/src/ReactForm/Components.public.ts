@@ -1,3 +1,4 @@
+import type { ReactFormApi } from './formApiTypes.public'
 import type {
   DeepKeys,
   DeepKeysWhereValueIncludes,
@@ -228,6 +229,7 @@ export interface ReactFormGroupProps<
   TGroupValue,
   TGroupValidators
 > {
+  form: ReactFormApi<TFormData, TFormValidators, TSubmitReturn, any, any>
   children: (
     groupApi: FormGroupApi<
       TFormData,

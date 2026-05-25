@@ -50,7 +50,7 @@ export interface FormGroupValidator<
 > extends Validator<
   TFormData,
   FormGroupValidatorFn<TFormData, TGroupName, TGroupValue> | StandardSchemaV1<TGroupValue, any>,
-  TGroupValue
+  TFormData
 > {}
 
 export type FormGroupValidators<

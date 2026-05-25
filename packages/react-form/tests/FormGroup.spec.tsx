@@ -17,7 +17,7 @@ describe('Form groups', () => {
           {(group) => (
             <>
               <span data-testid="group-value">{group.value.name}</span>
-              <group.Field name="name">
+              <form.Field name="step.name">
                 {(field) => (
                   <input
                     aria-label="Name"
@@ -25,7 +25,7 @@ describe('Form groups', () => {
                     onChange={(event) => field.handleChange(event.target.value)}
                   />
                 )}
-              </group.Field>
+              </form.Field>
             </>
           )}
         </FormGroup>
@@ -60,11 +60,11 @@ describe('Form groups', () => {
         >
           {(group) => (
             <>
-              <group.Field name="name">
+              <form.Field name="step.name">
                 {(field) => (
                   <input aria-label="Name" value={field.value} readOnly />
                 )}
-              </group.Field>
+              </form.Field>
               <button type="button" onClick={() => group.handleSubmit()}>
                 Continue
               </button>
@@ -102,8 +102,8 @@ describe('Form groups', () => {
           name="step"
           validators={[{ triggers: ['change'], run: groupValidator }]}
         >
-          {(group) => (
-            <group.Field name="name">
+          {() => (
+            <form.Field name="step.name">
               {(field) => (
                 <input
                   aria-label="Name"
@@ -111,7 +111,7 @@ describe('Form groups', () => {
                   onChange={(event) => field.handleChange(event.target.value)}
                 />
               )}
-            </group.Field>
+            </form.Field>
           )}
         </FormGroup>
       )
@@ -136,16 +136,13 @@ describe('Form groups', () => {
           {(group) => (
             <>
               <span data-testid="names">{group.value.names.join(',')}</span>
-              <group.ArrayField name="names">
+              <form.ArrayField name="step.names">
                 {(field) => (
-                  <button
-                    type="button"
-                    onClick={() => field.pushValue('Bob')}
-                  >
+                  <button type="button" onClick={() => field.pushValue('Bob')}>
                     Add name
                   </button>
                 )}
-              </group.ArrayField>
+              </form.ArrayField>
             </>
           )}
         </FormGroup>

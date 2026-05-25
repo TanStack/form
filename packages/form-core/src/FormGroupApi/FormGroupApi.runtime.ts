@@ -11,4 +11,9 @@ export interface InternalFormGroupRuntime {
     event: Exclude<ValidationTrigger, 'submit'>,
     triggerFieldApi?: AnyInternalFieldApi,
   ) => Promise<unknown>
+  _clearEventErrors: (
+    event: Exclude<ValidationTrigger, 'submit'>,
+    triggerFieldApi: AnyInternalFieldApi,
+    sourceEvent: string,
+  ) => void
 }

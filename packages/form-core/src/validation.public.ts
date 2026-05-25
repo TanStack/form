@@ -54,7 +54,14 @@ type ValidatorWithRun<
   TContextValue,
   TOptions extends ValidatorOptions<TFormData, TContextValue>,
   TRun extends ValidatorRun,
-> = TOptions & Validator<TFormData, TRun, TContextValue>
+> = TOptions & Pick<Validator<TFormData, TRun, TContextValue>, 'run'>
+
+type InferFormDataFromValidator<TValidator extends ValidatorRun> =
+  TValidator extends StandardSchemaV1<infer TFormData, any>
+    ? TFormData
+    : TValidator extends FormValidatorFn<infer TFormData>
+      ? TFormData
+      : any
 
 type ValidatorRunsFromOptions<
   TOptions extends readonly [
@@ -83,16 +90,18 @@ type ValidatorsFromOptionsAndRuns<
 }
 
 export function createValidator<
-  TFormData = any,
-  TContextValue = TFormData,
-  const TOptions extends ValidatorOptions<TFormData, TContextValue> =
-    ValidatorOptions<TFormData, TContextValue>,
+  const TOptions extends ValidatorOptions<any, any>,
 >(
   options: TOptions,
 ): <const TValidator extends ValidatorRun>(
   run: TValidator,
-) => ValidatorWithRun<TFormData, TContextValue, TOptions, TValidator> {
-  return (run) => ({ ...options, run })
+) => ValidatorWithRun<
+  InferFormDataFromValidator<TValidator>,
+  InferFormDataFromValidator<TValidator>,
+  TOptions,
+  TValidator
+> {
+  return (run: ValidatorRun) => ({ ...options, run }) as never
 }
 
 export function createValidators<

@@ -25,13 +25,15 @@ export type ReactFormApi<
   TSubmitReturn,
   TFormComponents extends Record<string, FunctionComponent<any>>,
   TFieldComponents extends Record<string, FunctionComponent<any>>,
-> = ExtendedFormApi<
-  TFormData,
-  TFormValidators,
-  TSubmitReturn,
-  TFieldComponents
-> &
-  TFormComponents
+> = unknown extends TFormComponents
+  ? ExtendedFormApi<TFormData, TFormValidators, TSubmitReturn, TFieldComponents>
+  : ExtendedFormApi<
+      TFormData,
+      TFormValidators,
+      TSubmitReturn,
+      TFieldComponents
+    > &
+      TFormComponents
 
 export type AnyReactFormApi = AnyFormApi &
   ReactTanStackFormComponents<any, any, any, any>

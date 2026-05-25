@@ -12,4 +12,4 @@ function FormError(props: TanStackFormErrorProps) {
   return <FieldError {...props} errors={field.errors} />
 }
 
-export const TanStackFormError = fieldComponent.loose(FormError, 'field')
+export default fieldComponent.loose(FormError, 'field')

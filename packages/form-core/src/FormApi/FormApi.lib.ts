@@ -535,7 +535,7 @@ export class InternalFormApi<
     field: AnyInternalFieldApi | null,
     options: ResolvedInternalFieldUpdateOptions,
   ) => {
-    this._clearEventErrors(field, 'submit')
+    this._clearEventErrors(field, 'submit', 'change')
 
     const { markAsDirty } = options
     if (markAsDirty && !this._formMetaAtom.get().isDirty) {
@@ -566,6 +566,7 @@ export class InternalFormApi<
   _clearEventErrors = (
     field: AnyInternalFieldApi | null,
     sourceEvent: string,
+    event: Exclude<ValidationTrigger, 'submit'>,
   ) => {
     const validatorCount = this.options.validators?.length ?? 0
     const formMeta = this._formMetaAtom.get()
@@ -580,15 +581,15 @@ export class InternalFormApi<
 
     for (let i = 0; i < validatorCount; i++) {
       const validator = this.options.validators?.[i]
-      const runsOnChange = validator?.triggers.some((trigger) =>
+      const runsOnEvent = validator?.triggers.some((trigger) =>
         isValidationTriggerEnabled(trigger, {
-          event: 'change',
+          event,
           formApi: this as never,
           triggerFieldApi: field ?? undefined,
         }),
       )
 
-      if (validator && !runsOnChange) {
+      if (validator && !runsOnEvent) {
         eventErrorIndexes.push(i)
       }
     }
