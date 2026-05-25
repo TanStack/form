@@ -20,6 +20,29 @@ describe('form - lifecycle', () => {
       expect(form.state.canSubmit).toBe(true)
     })
 
+    it('uses a supplied formId', () => {
+      const form = new InternalFormApi({
+        formId: 'profile-form',
+        defaultValues: { name: '' },
+      })
+
+      expect(form.formId).toBe('profile-form')
+      expect(form.options.formId).toBe('profile-form')
+    })
+
+    it('generates and preserves a formId when one is not supplied', () => {
+      const form = new InternalFormApi({ defaultValues: { name: '' } })
+      const formId = form.formId
+
+      expect(formId).toBeTypeOf('string')
+      expect(formId.length).toBeGreaterThan(0)
+
+      form._update({ defaultValues: { name: 'async' } })
+
+      expect(form.formId).toBe(formId)
+      expect(form.options.formId).toBe(formId)
+    })
+
     it('supports updating defaultValues after initialization', () => {
       const form = new InternalFormApi({ defaultValues: { name: '' } })
       expect(form.state.values).toEqual({ name: '' })

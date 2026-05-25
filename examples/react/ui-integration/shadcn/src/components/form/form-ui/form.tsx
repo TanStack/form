@@ -10,5 +10,11 @@ export default function TanStackFormElement(props: ComponentProps<'form'>) {
     form.handleSubmit()
   }
 
-  return <form {...props} onSubmit={props.onSubmit ?? defaultHandler} />
+  return (
+    <form
+      id={form.formId}
+      {...props}
+      onSubmit={props.onSubmit ?? defaultHandler}
+    />
+  )
 }

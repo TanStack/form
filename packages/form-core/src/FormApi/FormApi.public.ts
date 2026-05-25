@@ -46,6 +46,7 @@ export interface FormOptions<
   TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
 > {
+  formId?: string
   defaultValues: TFormData
   errorVisibility?: ErrorVisibility
   validators?: TFormValidators
@@ -122,6 +123,7 @@ export interface FormApi<
   store: ReadonlyAtom<FormState<TFormData, TFormValidators, TSubmitReturn>>
   readonly state: FormState<TFormData, TFormValidators, TSubmitReturn>
   readonly options: FormOptions<TFormData, TFormValidators, TSubmitReturn>
+  readonly formId: string
 
   /**
    * TODO expand on it

@@ -14,6 +14,31 @@ describe('useForm', () => {
     expect(result.current.state.values).toEqual({ name: 'tony-hawk' })
   })
 
+  it('uses a supplied formId', () => {
+    const { result } = renderHook(() =>
+      useForm({
+        formId: 'signup-form',
+        defaultValues: { name: '' },
+      }),
+    )
+
+    expect(result.current.formId).toBe('signup-form')
+  })
+
+  it('creates a stable formId when one is not supplied', () => {
+    const { result, rerender } = renderHook(() =>
+      useForm({ defaultValues: { name: '' } }),
+    )
+    const formId = result.current.formId
+
+    expect(formId).toBeTypeOf('string')
+    expect(formId.length).toBeGreaterThan(0)
+
+    rerender()
+
+    expect(result.current.formId).toBe(formId)
+  })
+
   it('should support async defaultValues with useState', () => {
     const { result } = renderHook(() => {
       const [defaultValues, setDefaultValues] = useState({ name: 'initial' })

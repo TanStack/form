@@ -13,6 +13,7 @@ import {
   getTargetField,
   resolveFieldUpdateOptions,
   setBy,
+  uuid,
 } from '../utils.lib'
 import { InternalRootFieldApi } from '../FieldApi/RootFieldApi.lib'
 import {
@@ -178,6 +179,14 @@ function createInitialFormMeta(validatorCount: number): BaseFormMeta {
 
 export type AnyInternalFormApi = InternalFormApi<any, any, any>
 
+type InternalFormOptions<
+  TFormData,
+  TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
+> = FormOptions<TFormData, TFormValidators, TSubmitReturn> & {
+  formId: string
+}
+
 function hasFieldEventErrors(
   field: AnyInternalFieldApi,
   eventErrorIndexes: Array<number>,
@@ -275,7 +284,7 @@ export class InternalFormApi<
   _submissionAttemptsAtom: Atom<number>
   _resetVersionAtom: Atom<number>
   _fieldRootNode: InternalRootFieldApi
-  _options: FormOptions<TFormData, TFormValidators, any>
+  _options: InternalFormOptions<TFormData, TFormValidators, any>
   _lastUpdateDefaultValues: TFormData
   _pipelineCache: PipelineCache<any>
   _schemaOutputs: Array<any> = []
@@ -284,12 +293,15 @@ export class InternalFormApi<
   get state(): FormState<TFormData, TFormValidators, any> {
     return this.store.get()
   }
-  get options(): FormOptions<TFormData, TFormValidators, any> {
+  get options(): InternalFormOptions<TFormData, TFormValidators, any> {
     return this._options
+  }
+  get formId(): string {
+    return this._options.formId
   }
 
   constructor(options: FormOptions<TFormData, TFormValidators, any>) {
-    this._options = options
+    this._options = { ...options, formId: options.formId ?? uuid() }
     this._lastUpdateDefaultValues = options.defaultValues
     this.valuesAtom = createAtom(options.defaultValues)
     this._pipelineCache = createPipelineCache()
@@ -381,7 +393,10 @@ export class InternalFormApi<
     )
 
     this._lastUpdateDefaultValues = options.defaultValues
-    this._options = options
+    this._options = {
+      ...options,
+      formId: options.formId ?? oldOptions.formId,
+    }
 
     if (
       (options.validators?.length ?? 0) !== (oldOptions.validators?.length ?? 0)

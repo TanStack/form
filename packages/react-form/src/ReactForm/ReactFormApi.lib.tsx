@@ -1,9 +1,13 @@
 import { InternalFormApi } from '@tanstack/form-core-v2/internals'
+import * as React from 'react'
 import { useEffect, useRef } from 'react'
 import { attachReactFormComponents } from './Components.lib'
 import type { AnyInternalFormApi } from '@tanstack/form-core-v2/internals'
 import type { FormOptions } from '@tanstack/form-core-v2'
 import type { ReactTanStackFormComponents } from './Components.public'
+
+const useReactId =
+  (React as typeof React & { useId?: () => string }).useId ?? (() => undefined)
 
 export interface InternalReactFormApi
   extends AnyInternalFormApi, ReactTanStackFormComponents<any, any, any, any> {}
@@ -22,13 +26,16 @@ export function useInternalForm(
   options: FormOptions<any, any, any>,
   initializeFn: (options: FormOptions<any, any, any>) => InternalReactFormApi,
 ) {
+  const reactFormId = useReactId()
+  const resolvedOptions =
+    options.formId === undefined ? { ...options, formId: reactFormId } : options
   const formRef = useRef<InternalReactFormApi>(null)
 
   if (!formRef.current) {
-    formRef.current = initializeFn(options)
+    formRef.current = initializeFn(resolvedOptions)
   }
 
-  useEffect(() => formRef.current!._update(options))
+  useEffect(() => formRef.current!._update(resolvedOptions))
   useEffect(() => {
     const unmount = formRef.current!.mount()
     return unmount
