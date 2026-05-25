@@ -358,11 +358,14 @@ type ExtractFieldValidatorErrors<
   TFieldValidators extends FieldValidators<any, any, any>,
 > = ExtractValidatorListErrors<TFieldValidators, 'field'>
 
+// Fields can receive normalized issues routed from external scopes, such as form groups.
+// Always include the safe base type even when local validators infer narrower errors.
 export type FieldErrors<
   TFormValidators extends FormValidators<any>,
   TFieldValidators extends FieldValidators<any, any, any>,
   TSubmitReturn,
 > = Array<
+  | ValidationIssue
   | ExtractFormValidatorFieldErrors<TFormValidators>
   | ExtractFieldValidatorErrors<TFieldValidators>
   | ExtractSubmitFieldError<TSubmitReturn>

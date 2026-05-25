@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
-import React from 'react'
+import React, { useState } from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import { useForm } from '../src'
 import { FormGroup } from '../src/form-group'
@@ -82,6 +82,142 @@ describe('Form groups', () => {
     await user.click(getByRole('button', { name: 'Continue' }))
 
     expect(getByTestId('group-error')).toHaveTextContent('Name is required')
+  })
+
+  it('renders descendant errors and advances a step after a valid group submit', async () => {
+    const onGroupSubmit = vi.fn()
+    const onGroupSubmitInvalid = vi.fn()
+
+    function Component() {
+      const [showNextStep, setShowNextStep] = useState(false)
+      const form = useForm({
+        defaultValues: {
+          guestDetails: { name: '' },
+          specialRequests: { notes: '' },
+        },
+      })
+
+      if (showNextStep) {
+        return <span>Special requests</span>
+      }
+
+      return (
+        <FormGroup
+          form={form}
+          name="guestDetails"
+          validators={[
+            {
+              triggers: [],
+              run: ({ value }) =>
+                value.name
+                  ? undefined
+                  : { fields: { name: 'Please enter your name.' } },
+            },
+          ]}
+          onGroupSubmit={() => {
+            onGroupSubmit()
+            setShowNextStep(true)
+          }}
+          onGroupSubmitInvalid={onGroupSubmitInvalid}
+        >
+          {(group) => (
+            <>
+              <form.Field name="guestDetails.name">
+                {(field) => (
+                  <>
+                    <input
+                      aria-label="Guest name"
+                      value={field.value}
+                      onChange={(event) =>
+                        field.handleChange(event.target.value)
+                      }
+                    />
+                    <span data-testid="name-error">
+                      {field.errors[0]?.message ?? ''}
+                    </span>
+                  </>
+                )}
+              </form.Field>
+              <button type="button" onClick={() => group.handleSubmit()}>
+                Continue
+              </button>
+            </>
+          )}
+        </FormGroup>
+      )
+    }
+
+    const { getByLabelText, getByRole, getByTestId, getByText, queryByText } =
+      render(<Component />)
+
+    await user.click(getByRole('button', { name: 'Continue' }))
+
+    expect(getByTestId('name-error')).toHaveTextContent(
+      'Please enter your name.',
+    )
+    expect(onGroupSubmitInvalid).toHaveBeenCalledOnce()
+    expect(onGroupSubmit).not.toHaveBeenCalled()
+    expect(queryByText('Special requests')).not.toBeInTheDocument()
+
+    await user.type(getByLabelText('Guest name'), 'Alice')
+    await user.click(getByRole('button', { name: 'Continue' }))
+
+    await vi.waitFor(() => {
+      expect(getByText('Special requests')).toBeInTheDocument()
+    })
+    expect(onGroupSubmit).toHaveBeenCalledOnce()
+  })
+
+  it('submits the current step without running whole-form validation', async () => {
+    const formValidator = vi.fn(({ value }) =>
+      value.specialRequests.notes ? undefined : 'Special requests are invalid',
+    )
+    const onSubmit = vi.fn()
+    const onGroupSubmit = vi.fn()
+
+    function Component() {
+      const form = useForm({
+        defaultValues: {
+          guestDetails: { name: 'Alice' },
+          specialRequests: { notes: '' },
+        },
+        validators: [{ triggers: [], run: formValidator }],
+        onSubmit,
+      })
+
+      return (
+        <FormGroup
+          form={form}
+          name="guestDetails"
+          onGroupSubmit={onGroupSubmit}
+        >
+          {(group) => (
+            <>
+              <form.Field name="guestDetails.name">
+                {(field) => (
+                  <input
+                    aria-label="Guest name"
+                    value={field.value}
+                    readOnly
+                  />
+                )}
+              </form.Field>
+              <button type="button" onClick={() => group.handleSubmit()}>
+                Continue
+              </button>
+            </>
+          )}
+        </FormGroup>
+      )
+    }
+
+    const { getByRole } = render(<Component />)
+
+    await user.click(getByRole('button', { name: 'Continue' }))
+
+    expect(onGroupSubmit).toHaveBeenCalledOnce()
+    expect(formValidator).not.toHaveBeenCalled()
+    expect(onSubmit).not.toHaveBeenCalled()
   })
 
   it('registers the mounted group for descendant field validation', async () => {
