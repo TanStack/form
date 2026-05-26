@@ -74,7 +74,7 @@ const onGroupSubmitInvalid = () => {
     name="step1"
     :onGroupSubmit="onGroupSubmit"
     :onGroupSubmitInvalid="onGroupSubmitInvalid"
-    :onSubmitMeta="({} as SomeType)"
+    :onSubmitMeta="{} as SomeType"
     v-slot="{ group: formGroup }"
   >
     <form @submit.prevent.stop="formGroup.handleSubmit()">

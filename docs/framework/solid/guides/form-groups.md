@@ -91,10 +91,7 @@ Form groups have a distinct validation proceedure that we think makes sense for 
 - Form groups can have their own validation:
 
 ```tsx
-<form.FormGroup
-  name="step1"
-  validators={{ onChange: () => 'Error' }}
->
+<form.FormGroup name="step1" validators={{ onChange: () => 'Error' }}>
   {(group) => {
     group().state.meta.errorMap // {onChange: "Error" | undefined}
     group().state.meta.errors // ("Error")[]
