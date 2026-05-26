@@ -25,11 +25,11 @@
     "build": "ng-packagr -p ng-package.json -c tsconfig.build.json && premove ./dist/package.json"
   },
   "type": "module",
-  "types": "dist/index.d.ts",
+  "types": "dist/types/tanstack-angular-form.d.ts",
   "module": "dist/fesm2022/tanstack-angular-form.mjs",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./dist/types/tanstack-angular-form.d.ts",
       "default": "./dist/fesm2022/tanstack-angular-form.mjs"
     },
     "./package.json": {
