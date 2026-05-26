@@ -3,6 +3,17 @@ linkWorkspacePackages: true
 preferWorkspacePackages: true
 blockExoticSubdeps: true
 trustPolicy: 'no-downgrade'
+trustPolicyExclude:
+  - 'ua-parser-js@1.0.41 || 0.7.41' # React Native Web & Expo Devices; UAP v2 is not MIT
+  - 'chokidar@4.0.3' # Angular via Sass. See https://github.com/angular/angular-cli/pull/33235#issuecomment-4546209387
+  - 'semver@6.3.1 || 5.7.2' # Angular Devkit
+  - 'hosted-git-info@6.1.3' # Remix Run Dev
+  - 'vite@5.4.21' # Remix Run Dev
+  - 'react-native-worklets@0.5.1' # Expo 56 fixes this but is too new; upgrade in a few days
+  - 'eslint-import-resolver-typescript@3.10.1' # Same as above
+
+# Too young to use currently, upgrade in a few days
+overrides: {'tinyexec': '1.1.2'}
 
 packages:
   - packages/**
