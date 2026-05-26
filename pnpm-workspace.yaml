@@ -13,7 +13,7 @@ trustPolicyExclude:
   - 'eslint-import-resolver-typescript@3.10.1' # Same as above
 
 # Too young to use currently, upgrade in a few days
-overrides: {'tinyexec': '1.1.2'}
+overrides: { 'tinyexec': '1.1.2' }
 
 packages:
   - packages/**
