@@ -391,6 +391,10 @@
               "to": "framework/svelte/guides/arrays"
             },
             {
+              "label": "Form Groups",
+              "to": "framework/svelte/guides/form-groups"
+            },
+            {
               "label": "Linked Fields",
               "to": "framework/svelte/guides/linked-fields"
             },
