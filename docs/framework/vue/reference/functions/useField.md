@@ -123,53 +123,59 @@ readonly api: FieldApi<TParentData, TName, TData, TOnMount, TOnChange, TOnChange
 
 ### state
 
+#### Get Signature
+
 ```ts
-readonly state: object = fieldState.value;
+get state(): object;
 ```
 
-#### state.meta
+##### Returns
+
+`object`
+
+###### meta
 
 ```ts
 meta: object;
 ```
 
-#### state.meta.errorMap
+###### meta.errorMap
 
 ```ts
 errorMap: ValidationErrorMap<UnwrapFieldValidateOrFn<TName, TOnMount, TFormOnMount>, UnwrapFieldValidateOrFn<TName, TOnChange, TFormOnChange>, UnwrapFieldAsyncValidateOrFn<TName, TOnChangeAsync, TFormOnChangeAsync>, UnwrapFieldValidateOrFn<TName, TOnBlur, TFormOnBlur>, UnwrapFieldAsyncValidateOrFn<TName, TOnBlurAsync, TFormOnBlurAsync>, UnwrapFieldValidateOrFn<TName, TOnSubmit, TFormOnSubmit>, UnwrapFieldAsyncValidateOrFn<TName, TOnSubmitAsync, TFormOnSubmitAsync>, UnwrapFieldValidateOrFn<TName, TOnDynamic, TFormOnDynamic>, UnwrapFieldAsyncValidateOrFn<TName, TOnDynamicAsync, TFormOnDynamicAsync>>;
 ```
 
-#### state.meta.errorSourceMap
+###### meta.errorSourceMap
 
 ```ts
 errorSourceMap: ValidationErrorMapSource;
 ```
 
-#### state.meta.isBlurred
+###### meta.isBlurred
 
 ```ts
 isBlurred: boolean;
 ```
 
-#### state.meta.isDirty
+###### meta.isDirty
 
 ```ts
 isDirty: boolean;
 ```
 
-#### state.meta.isTouched
+###### meta.isTouched
 
 ```ts
 isTouched: boolean;
 ```
 
-#### state.meta.isValidating
+###### meta.isValidating
 
 ```ts
 isValidating: boolean;
 ```
 
-#### state.value
+###### value
 
 ```ts
 value: TData;
