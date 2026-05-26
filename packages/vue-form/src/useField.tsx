@@ -375,7 +375,12 @@ export function useField<
     },
   )
 
-  return { api: extendedFieldApi.value, state: fieldState.value } as const
+  return {
+    api: extendedFieldApi.value,
+    get state() {
+      return fieldState.value
+    },
+  } as const
 }
 
 export type FieldComponentProps<
