@@ -1,5 +1,13 @@
 # @tanstack/form-core
 
+## 1.32.1
+
+### Patch Changes
+
+- [#2190](https://github.com/TanStack/form/pull/2190) [`b402d7a`](https://github.com/TanStack/form/commit/b402d7ab134adca0d0d4647af12fde9b490c08f7) - Fix array async default values not updating
+
+- [#2152](https://github.com/TanStack/form/pull/2152) [`d0d941d`](https://github.com/TanStack/form/commit/d0d941dc1a4bd4ac15bb38a9ca1b4a863a3f418e) - Improve performance for mounting/unmounting <form.Field>
+
 ## 1.32.0
 
 ### Minor Changes
