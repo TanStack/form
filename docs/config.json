@@ -300,6 +300,10 @@
               "to": "framework/angular/guides/arrays"
             },
             {
+              "label": "Form Groups",
+              "to": "framework/angular/guides/form-groups"
+            },
+            {
               "label": "Form Composition",
               "to": "framework/angular/guides/form-composition"
             }
