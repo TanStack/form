@@ -15,7 +15,12 @@ To use an array, you can use `field.api.state.value` on an array value:
   standalone: true,
   imports: [TanStackField],
   template: `
-    <ng-container [tanstackField]="form" name="people" mode="array" #people="field">
+    <ng-container
+      [tanstackField]="form"
+      name="people"
+      mode="array"
+      #people="field"
+    >
       <div>
         @for (_ of people.api.state.value; track $index) {
           <!-- ... -->
@@ -101,7 +106,12 @@ export class AppComponent {
   template: `
     <form (submit)="handleSubmit($event)">
       <div>
-        <ng-container [tanstackField]="form" name="people" mode="array" #people="field">
+        <ng-container
+          [tanstackField]="form"
+          name="people"
+          mode="array"
+          #people="field"
+        >
           <div>
             @for (_ of people.api.state.value; track $index) {
               <ng-container
