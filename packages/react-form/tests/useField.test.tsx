@@ -1539,15 +1539,19 @@ describe('useField', () => {
 
       return (
         <form.Field name="people" mode="array">
-          {(field) => (
-            <ol data-testid="list">
-              {(field.state.value ?? []).map((person, i) => (
-                <li key={i} data-testid={`item-${i}`}>
-                  {person.name}
-                </li>
-              ))}
-            </ol>
-          )}
+          {(field) => {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            const val = field.state.value ?? []
+            return (
+              <ol data-mtestid="list">
+                {val.map((person, i) => (
+                  <li key={i} data-testid={`item-${i}`}>
+                    {person.name}
+                  </li>
+                ))}
+              </ol>
+            )
+          }}
         </form.Field>
       )
     }
