@@ -1412,7 +1412,7 @@ export class FieldApi<
         fieldApi: this,
       })
 
-      this.form.options.listeners?.onFieldUnmount?.({
+      this.form.options.listeners?.onUnmount?.({
         formApi: this.form,
         fieldApi: this,
       })

@@ -1563,7 +1563,7 @@ describe('field api', () => {
     expect(triggered).toStrictEqual('test')
   })
 
-  it('should run form listener onFieldUnmount', () => {
+  it('should run form listener onUnmount', () => {
     let capturedName: string | undefined
 
     const form = new FormApi({
@@ -1571,7 +1571,7 @@ describe('field api', () => {
         name: 'test',
       },
       listeners: {
-        onFieldUnmount: ({ fieldApi }) => {
+        onUnmount: ({ fieldApi }) => {
           capturedName = fieldApi.name as string
         },
       },
