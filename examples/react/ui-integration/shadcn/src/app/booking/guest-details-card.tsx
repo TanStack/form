@@ -19,13 +19,23 @@ function GuestDetailsCard({ form, onGroupSubmit }: GuestDetailsCardProps) {
       {(group) => (
         <StepForm onSubmit={group.handleSubmit}>
           <form.Field name="guestDetails.name">
-            {(field) => (
-              <field.Field>
-                <field.Label>Guest name</field.Label>
-                <field.TextInput placeholder="John Doe" />
-                <field.Error />
-              </field.Field>
-            )}
+            {(field) => {
+              // field.errors -> DISPLAYED ERRORS
+              field.meta.original.errors
+
+              // Store Derived
+              // -> callback for filtering errors
+              // ({ formApi }) => formApi.state.submissionAttempts > 0
+              // get state() { return formApi.store.get() }
+
+              return (
+                <field.Field>
+                  <field.Label>Guest name</field.Label>
+                  <field.TextInput placeholder="John Doe" />
+                  <field.Error />
+                </field.Field>
+              )
+            }}
           </form.Field>
           <form.Field name="guestDetails.phoneNumber">
             {(field) => <field.TextInputField label="Phone number" />}

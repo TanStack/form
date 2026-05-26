@@ -13,7 +13,7 @@ export type UseFormHook<
   TFieldComponents extends Record<string, FunctionComponent<any>>,
 > = <
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
+  const TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
 >(
   options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,

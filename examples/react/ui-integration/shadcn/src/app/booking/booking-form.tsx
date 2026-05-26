@@ -98,13 +98,20 @@ function CardSwitcher({ form, step, onNext }: CardSwitcherProps) {
 export function BookingForm() {
   const { step, toPreviousStep, toNextStep, isFirstStep, isLastStep } =
     useStepper(0, 6)
-  const form = useSchemaAppForm(bookingFormOptions)
+  const form = useSchemaAppForm({
+    ...bookingFormOptions,
+    onSubmit: async ({ schemaOutputs: [result] }) => {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      alert('Form was submitted! See logs for result')
+      console.log(result)
+    },
+  })
 
   return (
     <form.AppForm>
       <BookingStepCard currentStep={step}>
         <CardStepHeader step={step} />
-        <CardContent data-findme>
+        <CardContent>
           <CardSwitcher form={form} step={step} onNext={toNextStep} />
         </CardContent>
         <CardFooter className="mt-auto rounded-bl-none">

@@ -45,3 +45,15 @@ function FormSelect<TValue extends string>({
 }
 
 export default fieldBrand.loose<string>()(FormSelect)
+
+// formOptions
+// formOptions.strictSchema
+// formOptions.looseSchema
+
+// fieldBrand.loose<string>()(Comp)
+// fieldBrand.strict<string>()(Comp)
+// fieldBrand.loose()(Comp, 'field')
+// fieldBrand.strict()(Comp, 'field')
+
+// fieldComponent.loose()(Comp, 'field')
+// fieldComponent.strict()(Comp, 'field')

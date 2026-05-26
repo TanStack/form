@@ -51,6 +51,7 @@ export type NullableSchemaData<TFormValidators extends FormValidators<any>> =
   Editable<FormValidatorData<TFormValidators>>
 
 export interface FormOptionsApi {
+  // Do we really want to keep this? should it be nullableSchema?
   <
     TFormData,
     const TFormValidators extends FormValidators<TFormData>,
@@ -59,6 +60,8 @@ export interface FormOptionsApi {
     options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
   ): FormOptions<TFormData, TFormValidators, TSubmitReturn>
 
+  // Proposal: strictSchema
+  // We should use intersection, not union
   schema: <
     const TFormValidators extends FormValidators<any>,
     // Not quite sure why, but using FormValidatorData directly in the generic breaks things.
@@ -73,6 +76,10 @@ export interface FormOptionsApi {
     TSubmitReturn
   >
 
+  // formOptions() vs. formOptions.schema() vs. formOptions.strictSchema()
+  // useForm() vs. useSchemaForm() vs. useStrictSchemaForm()
+
+  // Proposal: schema
   nullableSchema: <
     const TFormValidators extends FormValidators<any>,
     const TFormData extends NullableSchemaData<TFormValidators>,

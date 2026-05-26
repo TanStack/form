@@ -24,6 +24,11 @@ function StayDatesCard({ form, onGroupSubmit }: StayDatesCardProps) {
     >
       {(group) => (
         <StepForm onSubmit={group.handleSubmit}>
+          {/**
+           * Reserved name from React, don't use it
+           *
+           * Rename maybe? See AI proposals or smth
+           */}
           <form.Field name="stayDates.dateRange" errorBoundary>
             {(field) => (
               <field.Field>
