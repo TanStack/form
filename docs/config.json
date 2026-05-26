@@ -362,6 +362,10 @@
               "to": "framework/lit/guides/arrays"
             },
             {
+              "label": "Form Groups",
+              "to": "framework/lit/guides/form-groups"
+            },
+            {
               "label": "Form Composition",
               "to": "framework/lit/guides/form-composition"
             }
