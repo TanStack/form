@@ -1543,7 +1543,7 @@ describe('useField', () => {
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             const val = field.state.value ?? []
             return (
-              <ol data-mtestid="list">
+              <ol data-testid="list">
                 {val.map((person, i) => (
                   <li key={i} data-testid={`item-${i}`}>
                     {person.name}
