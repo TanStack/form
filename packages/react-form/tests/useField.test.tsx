@@ -1556,9 +1556,7 @@ describe('useField', () => {
     expect(getByTestId('list').children).toHaveLength(0)
 
     rerender(<Comp defaultValues={{ people: [{ name: 'Alice' }] }} />)
-    await waitFor(() =>
-      expect(getByTestId('list').children).toHaveLength(1),
-    )
+    await waitFor(() => expect(getByTestId('list').children).toHaveLength(1))
     expect(getByTestId('item-0')).toHaveTextContent('Alice')
   })
 
