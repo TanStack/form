@@ -15,7 +15,7 @@
     "@react-navigation/bottom-tabs": "^7.4.0",
     "@react-navigation/elements": "^2.6.3",
     "@react-navigation/native": "^7.1.8",
-    "@tanstack/react-form": "^1.32.0",
+    "@tanstack/react-form": "^1.32.1",
     "arktype": "^2.1.22",
     "effect": "^3.17.14",
     "expo": "~54.0.33",
@@ -46,6 +46,6 @@
     "@types/react": "~19.1.0",
     "eslint": "9.36.0",
     "eslint-config-expo": "~10.0.0",
-    "typescript": "5.8.2"
+    "typescript": "5.9.3"
   }
 }

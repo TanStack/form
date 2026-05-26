@@ -104,17 +104,17 @@ describe('form.FormGroup', () => {
 
     const { getByTestId } = render(FormGroupSubmitting, { onGroupSubmit })
     const button = getByTestId('submit-group') as HTMLButtonElement
-    expect(button.textContent?.trim()).toBe('Continue')
+    expect(button.textContent.trim()).toBe('Continue')
     expect(button.disabled).toBe(false)
 
     await user.click(button)
 
-    await vi.waitFor(() => expect(button.textContent?.trim()).toBe('Saving...'))
+    await vi.waitFor(() => expect(button.textContent.trim()).toBe('Saving...'))
     expect(button.disabled).toBe(true)
 
     resolveSubmit()
 
-    await vi.waitFor(() => expect(button.textContent?.trim()).toBe('Continue'))
+    await vi.waitFor(() => expect(button.textContent.trim()).toBe('Continue'))
     expect(button.disabled).toBe(false)
     expect(onGroupSubmit).toHaveBeenCalledTimes(1)
   })

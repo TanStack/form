@@ -8,9 +8,9 @@
     "_test:types": "tsc"
   },
   "dependencies": {
-    "@remix-run/node": "^2.17.1",
-    "@remix-run/react": "^2.17.1",
-    "@remix-run/serve": "^2.17.1",
+    "@remix-run/node": "^2.17.4",
+    "@remix-run/react": "^2.17.4",
+    "@remix-run/serve": "^2.17.4",
     "@tanstack/react-form-remix": "^1.32.0",
     "@tanstack/react-store": "^0.11.0",
     "isbot": "^5.1.30",
@@ -18,10 +18,10 @@
     "react-dom": "19.1.0"
   },
   "devDependencies": {
-    "@remix-run/dev": "^2.17.1",
+    "@remix-run/dev": "^2.17.4",
     "@types/react": "~19.1.0",
     "@types/react-dom": "^19.0.3",
-    "typescript": "5.8.2",
+    "typescript": "5.9.3",
     "vite": "^7.2.2",
     "vite-tsconfig-paths": "^5.1.4"
   },

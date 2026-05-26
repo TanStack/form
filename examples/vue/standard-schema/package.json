@@ -10,7 +10,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@tanstack/vue-form": "^1.32.0",
+    "@tanstack/vue-form": "^1.32.1",
     "arktype": "^2.1.22",
     "effect": "^3.17.14",
     "react": "19.1.0",
@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.4",
-    "typescript": "5.8.2",
+    "typescript": "5.9.3",
     "vite": "^7.2.2",
     "vue-tsc": "^2.2.2"
   }

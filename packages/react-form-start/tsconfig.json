@@ -8,5 +8,5 @@
       "@tanstack/react-form": ["../react-form/dist/esm"]
     }
   },
-  "include": ["src", "tests", "eslint.config.js", "vite.config.ts"]
+  "include": ["src", "tests", "eslint.config.js"]
 }
