@@ -205,7 +205,7 @@ export interface FieldApiOptions<
   TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
 > {
   name: TFieldName
-  errorVisibility?: ErrorVisibility
+  errorVisibility?: ErrorVisibility<TFormData, TFormValidators, TSubmitReturn>
   /**
    * Route descendant field errors from form-level validation to this field.
    */

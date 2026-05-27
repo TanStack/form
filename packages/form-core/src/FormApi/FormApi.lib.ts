@@ -76,6 +76,18 @@ interface FormErrorMeta {
 
 const formErrorsCache = new WeakMap<FormErrorMeta, Array<ValidationIssue>>()
 
+export function getFormErrors(
+  form: InternalFormApi<any, any, any>,
+): Array<ValidationIssue> {
+  const baseFormErrors = form._atoms.meta.formErrors.get()
+  let formErrors = formErrorsCache.get(baseFormErrors)
+  if (!formErrors) {
+    formErrors = baseFormErrors.errors.flat()
+    formErrorsCache.set(baseFormErrors, formErrors)
+  }
+  return formErrors
+}
+
 export interface FormMetaAtoms {
   isDirty: Atom<boolean>
   /**
@@ -332,7 +344,6 @@ export class InternalFormApi<
         const values = this._atoms.values.get()
         const isDirty = this._atoms.meta.isDirty.get()
         const touchedFieldCount = this._atoms.meta.touchedFieldCount.get()
-        const baseFormErrors = this._atoms.meta.formErrors.get()
         const errorFields = this._atoms.meta.errorFields.get()
         const fieldValidationCount = this._atoms.meta.fieldValidationCount.get()
         const validationCount = this._atoms.meta.validationCount.get()
@@ -343,11 +354,7 @@ export class InternalFormApi<
         const isPristine = !isDirty
         const isTouched = touchedFieldCount > 0
         const isValidating = validationCount > 0 || fieldValidationCount > 0
-        let formErrors = formErrorsCache.get(baseFormErrors)
-        if (!formErrors) {
-          formErrors = baseFormErrors.errors.flat()
-          formErrorsCache.set(baseFormErrors, formErrors)
-        }
+        const formErrors = getFormErrors(this)
         // TODO mount errors
         const hasMountError = false as boolean
         const hasErrors =
@@ -461,7 +468,7 @@ export class InternalFormApi<
   }
 
   getFieldValue = (fieldName: string): any => {
-    return getBy(this.state.values, fieldName)
+    return getBy(this._atoms.values.get(), fieldName)
   }
 
   getFieldMeta = (fieldName: string): InternalFieldMeta | undefined => {

@@ -48,7 +48,7 @@ export interface FormOptions<
 > {
   formId?: string
   defaultValues: TFormData
-  errorVisibility?: ErrorVisibility
+  errorVisibility?: ErrorVisibility<TFormData, TFormValidators, TSubmitReturn>
   validators?: TFormValidators
   listeners?: FormListeners<TFormData, TFormValidators, TSubmitReturn>
   onSubmit?: (

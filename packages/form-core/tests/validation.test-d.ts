@@ -1,14 +1,24 @@
 import { describe, expectTypeOf, it } from 'vitest'
 import z from 'zod'
 import { InternalFormApi } from '../src/FormApi/FormApi.lib'
-import { createValidator, createValidators } from '../src'
+import {
+  createErrorVisibility,
+  createValidator,
+  createValidators,
+  formOptions,
+} from '../src'
 import type {
+  ErrorVisibilityFieldState,
+  FieldApiOptions,
   FieldErrors,
   FieldValidators,
   FormErrors,
   FormGroupValidators,
+  FormOptions,
+  FormState,
   FormValidators,
   OnSubmitError,
+  ReusableErrorVisibilityState,
   StandardSchemaV1Issue,
   ValidationIssue,
 } from '../src'
@@ -49,6 +59,113 @@ function defineGroupValidators<
 
 const emptyFormValidators = defineFormValidators([])
 const emptyFieldValidators = defineFieldValidators([])
+
+describe('ErrorVisibility', () => {
+  it('types callback scoped and pre-visibility field state', () => {
+    const options: FormOptions<
+      TestFormData,
+      typeof emptyFormValidators,
+      never
+    > = {
+      defaultValues: { name: '' },
+      errorVisibility: ({ state, fieldState }) => {
+        expectTypeOf(state).toEqualTypeOf<
+          FormState<TestFormData, typeof emptyFormValidators, never>
+        >()
+        expectTypeOf(fieldState).toEqualTypeOf<ErrorVisibilityFieldState>()
+        expectTypeOf(fieldState.value).toEqualTypeOf<any>()
+        // @ts-expect-error Filtered error output is not available while deciding visibility.
+        void fieldState.meta.errors
+        // @ts-expect-error Validity depends on the visibility decision.
+        void fieldState.meta.isValid
+        return state.isTouched && fieldState.meta.isTouched
+      },
+    }
+    const fieldOptions: FieldApiOptions<
+      TestFormData,
+      typeof emptyFormValidators,
+      never,
+      'name',
+      string,
+      typeof emptyFieldValidators
+    > = {
+      name: 'name',
+      errorVisibility: ({ fieldState }) => fieldState.value === '',
+    }
+
+    void options
+    void fieldOptions
+  })
+
+  it('creates form-agnostic reusable visibility callbacks', () => {
+    const showErrorsAfterBlurOrSubmit = createErrorVisibility(
+      ({ state, fieldState }) => {
+        expectTypeOf(
+          state,
+        ).toEqualTypeOf<ReusableErrorVisibilityState>()
+        expectTypeOf(state.values).toEqualTypeOf<unknown>()
+        expectTypeOf(fieldState).toEqualTypeOf<ErrorVisibilityFieldState>()
+        // @ts-expect-error Reusable policies cannot assume a consuming form value shape.
+        void state.values.name
+        return fieldState.meta.isBlurred || state.submissionAttempts > 0
+      },
+    )
+
+    void formOptions({
+      defaultValues: { name: '' },
+      errorVisibility: showErrorsAfterBlurOrSubmit,
+    })
+    void formOptions({
+      defaultValues: { count: 0 },
+      errorVisibility: showErrorsAfterBlurOrSubmit,
+    })
+  })
+
+  it('preserves schema-driven inference with reusable policies', () => {
+    const showErrorsAfterSubmit = createErrorVisibility(
+      ({ state }) => state.submissionAttempts > 0,
+    )
+    const options = formOptions.schema({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          run: z.object({ name: z.string() }),
+          triggers: ['change'],
+        },
+      ],
+      errorVisibility: showErrorsAfterSubmit,
+    })
+
+    expectTypeOf(options.defaultValues).toEqualTypeOf<{ name: string }>()
+  })
+
+  it('rejects removed string presets', () => {
+    const formOptions: FormOptions<
+      TestFormData,
+      typeof emptyFormValidators,
+      never
+    > = {
+      defaultValues: { name: '' },
+      // @ts-expect-error String visibility presets were replaced by callbacks.
+      errorVisibility: 'touched',
+    }
+    const fieldOptions: FieldApiOptions<
+      TestFormData,
+      typeof emptyFormValidators,
+      never,
+      'name',
+      string,
+      typeof emptyFieldValidators
+    > = {
+      name: 'name',
+      // @ts-expect-error String visibility presets were replaced by callbacks.
+      errorVisibility: 'always',
+    }
+
+    void formOptions
+    void fieldOptions
+  })
+})
 
 describe('FormErrors', () => {
   it('should allow inference for a form', () => {

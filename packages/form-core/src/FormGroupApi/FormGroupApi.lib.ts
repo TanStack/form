@@ -158,6 +158,14 @@ export class InternalFormGroupApi
     return this._submissionMeta.get().submissionAttempts
   }
 
+  get _isSubmitting(): boolean {
+    return this._submissionMeta.get().isSubmitting
+  }
+
+  get _isSubmitSuccessful(): boolean {
+    return this._submissionMeta.get().isSubmitSuccessful
+  }
+
   _ensureField(): AnyInternalFieldApi {
     if (this._field._isKilled) {
       this._field = this.form._getOrCreateFieldApi({ name: this._options.name })

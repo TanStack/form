@@ -862,7 +862,8 @@ describe('form - validation', () => {
     it('filters public field errors with form-level errorVisibility', async () => {
       const form = new InternalFormApi({
         defaultValues: { name: '', age: 0 },
-        errorVisibility: 'touched',
+        errorVisibility: ({ fieldState }) =>
+          fieldState.meta.isTouched,
         validators: [
           {
             run: () => ({
@@ -899,7 +900,8 @@ describe('form - validation', () => {
     it('lets fields override the form-level errorVisibility', async () => {
       const form = new InternalFormApi({
         defaultValues: { name: '', age: 0 },
-        errorVisibility: 'touched',
+        errorVisibility: ({ fieldState }) =>
+          fieldState.meta.isTouched,
         validators: [
           {
             run: () => ({
@@ -913,7 +915,7 @@ describe('form - validation', () => {
       })
       const ageField = form._getOrCreateFieldApi({
         name: 'age',
-        errorVisibility: 'always',
+        errorVisibility: () => true,
       })
 
       await form.validate('change')
@@ -928,7 +930,7 @@ describe('form - validation', () => {
     it('reveals submit-attempted errors only after a submit attempt', async () => {
       const form = new InternalFormApi({
         defaultValues: { name: '' },
-        errorVisibility: 'submit-attempted',
+        errorVisibility: ({ state }) => state.submissionAttempts > 0,
         validators: [
           {
             run: () => ({
@@ -953,7 +955,8 @@ describe('form - validation', () => {
     it('reveals blurred-or-submit-attempted errors after blur or submit', async () => {
       const form = new InternalFormApi({
         defaultValues: { name: '', email: '' },
-        errorVisibility: 'blurred-or-submit-attempted',
+        errorVisibility: ({ state, fieldState }) =>
+          fieldState.meta.isBlurred || state.submissionAttempts > 0,
         validators: [
           {
             run: () => ({
@@ -978,6 +981,46 @@ describe('form - validation', () => {
       await form.handleSubmit()
 
       expect(emailField.errors).toEqual([{ message: 'Email is required' }])
+    })
+
+    it('passes current scoped state and pre-visibility field state to errorVisibility', async () => {
+      const errorVisibility = vi.fn(
+        ({ state, fieldState }) =>
+          state.values.name === 'Alice' &&
+          fieldState.value === 'Alice' &&
+          fieldState.meta.isTouched &&
+          fieldState.meta.isDirty,
+      )
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        errorVisibility,
+        validators: [
+          {
+            run: () => ({ fields: { name: 'Required' } }),
+            triggers: ['change'],
+          },
+        ],
+      })
+      const field = form._getOrCreateFieldApi({ name: 'name' })
+
+      field.handleChange('Alice', { causeValidation: false })
+      await form.validate('change')
+
+      expect(field.errors).toEqual([{ message: 'Required' }])
+      expect(errorVisibility).toHaveBeenCalled()
+      const [{ fieldState }] = errorVisibility.mock.lastCall!
+      expect(fieldState).toMatchObject({
+        value: 'Alice',
+        meta: {
+          isTouched: true,
+          isSelfTouched: true,
+          isDirty: true,
+          isSelfDirty: true,
+          isPristine: false,
+        },
+      })
+      expect('errors' in fieldState.meta).toBe(false)
+      expect('isValid' in fieldState.meta).toBe(false)
     })
 
     it('handles array error format in field-level errors', async () => {

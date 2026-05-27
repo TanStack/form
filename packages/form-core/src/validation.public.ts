@@ -134,12 +134,91 @@ export function createValidators<
 export type ValidationTrigger = 'change' | 'blur' | 'submit'
 export type ConfigurableValidationTrigger = Exclude<ValidationTrigger, 'submit'>
 
-export type ErrorVisibility =
-  | 'always'
-  | 'touched'
-  | 'blurred'
-  | 'blurred-or-submit-attempted'
-  | 'submit-attempted'
+export interface ErrorVisibilitySubfieldsMeta {
+  isEveryPristine: boolean
+  isSomeDirty: boolean
+  isSomeTouched: boolean
+  isSomeValidating: boolean
+}
+
+export interface ErrorVisibilityFieldMeta {
+  isTouched: boolean
+  isSelfTouched: boolean
+  isDirty: boolean
+  isSelfDirty: boolean
+  isPristine: boolean
+  isBlurred: boolean
+  isValidating: boolean
+  isSelfValidating: boolean
+  subfields: ErrorVisibilitySubfieldsMeta
+}
+
+export interface ErrorVisibilityFieldState {
+  value: any
+  meta: ErrorVisibilityFieldMeta
+}
+
+export interface ErrorVisibilityContext<
+  TFormData,
+  TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
+> {
+  state: FormApi<TFormData, TFormValidators, TSubmitReturn>['state']
+  fieldState: ErrorVisibilityFieldState
+}
+
+/**
+ * Decides whether a field exposes its validation errors publicly.
+ *
+ * For fields inside a registered form group, submission lifecycle properties
+ * read from `state` are scoped to the nearest group. Other properties
+ * remain form-wide.
+ */
+export type ErrorVisibility<
+  TFormData,
+  TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
+> = (
+  context: ErrorVisibilityContext<TFormData, TFormValidators, TSubmitReturn>,
+) => boolean
+
+/**
+ * The scoped state view available while declaring a reusable visibility policy.
+ *
+ * `values` remains unknown because a reusable policy is not associated with a
+ * particular form shape until it is assigned to a form or field option.
+ */
+export type ReusableErrorVisibilityState = Omit<
+  FormApi<any, any, any>['state'],
+  'values'
+> & {
+  values: unknown
+}
+
+export interface ReusableErrorVisibilityContext {
+  state: ReusableErrorVisibilityState
+  fieldState: ErrorVisibilityFieldState
+}
+
+export type ReusableErrorVisibility = <
+  TFormData,
+  TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
+>(
+  context: ErrorVisibilityContext<TFormData, TFormValidators, TSubmitReturn>,
+) => boolean
+
+/**
+ * Creates a reusable, form-agnostic error visibility policy.
+ *
+ * Use an inline `errorVisibility` callback instead when the policy needs
+ * strongly typed access to the consuming form's `values`.
+ */
+export function createErrorVisibility(
+  visibility: (context: ReusableErrorVisibilityContext) => boolean,
+): ReusableErrorVisibility {
+  return visibility
+}
 
 export interface ValidationPredicateContext<TFormData, TValue> {
   formApi: FormApi<TFormData, any, any>

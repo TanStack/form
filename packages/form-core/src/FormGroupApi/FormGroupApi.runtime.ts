@@ -6,6 +6,8 @@ import type { ValidationTrigger } from '../validation.public'
  */
 export interface InternalFormGroupRuntime {
   readonly _submissionAttempts: number
+  readonly _isSubmitting: boolean
+  readonly _isSubmitSuccessful: boolean
   _reset: () => void
   _validate: (
     event: Exclude<ValidationTrigger, 'submit'>,

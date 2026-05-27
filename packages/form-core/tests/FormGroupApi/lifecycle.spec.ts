@@ -76,7 +76,7 @@ describe('form group - lifecycle', () => {
   it('uses group submission attempts for descendant error visibility', async () => {
     const form = new InternalFormApi({
       defaultValues: { step: { name: '' } },
-      errorVisibility: 'submit-attempted',
+      errorVisibility: ({ state }) => state.submissionAttempts > 0,
     })
     const group = createFormGroupApi(form, {
       name: 'step',
@@ -96,6 +96,32 @@ describe('form group - lifecycle', () => {
     ])
     expect(form.state.submissionAttempts).toBe(0)
     expect(group.state.submissionAttempts).toBe(1)
+
+    unregister()
+  })
+
+  it('gives group submission state priority for owned descendant fields', async () => {
+    const form = new InternalFormApi({
+      defaultValues: { step: { name: '' } },
+      errorVisibility: ({ state }) => state.submissionAttempts > 0,
+      validators: [
+        {
+          run: () => ({ fields: { 'step.name': 'Required' } }),
+          triggers: ['change'],
+        },
+      ],
+    })
+    const group = createFormGroupApi(form, { name: 'step' })
+    const unregister = group._register()
+    const field = form._getOrCreateFieldApi({ name: 'step.name' })
+
+    await form.validate('change')
+    await form.handleSubmit()
+    expect(form.state.submissionAttempts).toBe(1)
+    expect(field.errors).toEqual([])
+
+    await group.handleSubmit()
+    expect(field.errors).toEqual([{ message: 'Required' }])
 
     unregister()
   })

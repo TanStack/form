@@ -1,4 +1,5 @@
 import { batch, createAtom } from '@tanstack/store'
+import { getFormErrors } from '../FormApi/FormApi.lib'
 import {
   callUpdater,
   cancelPipelineCache,
@@ -44,6 +45,7 @@ import type {
 import type { ResolvedInternalFieldUpdateOptions } from '../types.lib'
 import type { FieldUpdateOptions, Updater } from '../types.public'
 import type { AnyInternalFormApi } from '../FormApi/FormApi.lib'
+import type { FormState } from '../FormApi/FormApi.public'
 import type { InternalFormGroupRuntime } from '../FormGroupApi/FormGroupApi.runtime'
 import type { Atom, ReadonlyAtom } from '@tanstack/store'
 import type {
@@ -56,6 +58,7 @@ import type {
 } from './FieldApi.public'
 import type {
   ErrorVisibility,
+  ErrorVisibilityFieldState,
   FieldErrors,
   FieldValidateResult,
   FieldValidator,
@@ -333,7 +336,7 @@ export class InternalFieldApi<
   _atoms: FieldAtoms
   _validators: Array<AnyFieldValidator> | null
   _listeners: Array<AnyFieldListener> | null
-  _errorVisibility: ErrorVisibility | undefined
+  _errorVisibility: ErrorVisibility<any, any, any> | undefined
   _errorBoundary: boolean
 
   // TODO implement
@@ -389,7 +392,7 @@ export class InternalFieldApi<
         const newMeta = metaAtom.get()
         const value = this._getValue()
 
-        const meta = deriveFromBaseFieldMeta(newMeta, prev?.meta, this)
+        const meta = deriveFromBaseFieldMeta(newMeta, prev?.meta, this, value)
 
         if (prev?.meta === meta && prev.value === value) {
           return prev
@@ -1434,9 +1437,15 @@ export class InternalFieldApi<
 // validateArray() -> touches all child nodes -> traverse, check for nodeId, if present, set it in the map
 
 function getFieldSnapshot(field: AnyInternalFieldApi): InternalFieldState {
+  const value = field._getValue()
   return {
-    value: field._getValue(),
-    meta: deriveFromBaseFieldMeta(field._getBaseMeta(), undefined, field),
+    value,
+    meta: deriveFromBaseFieldMeta(
+      field._getBaseMeta(),
+      undefined,
+      field,
+      value,
+    ),
   }
 }
 
@@ -1444,10 +1453,16 @@ function deriveFromBaseFieldMeta(
   baseMeta: InternalBaseFieldMeta,
   previousMeta: InternalFieldMeta | undefined,
   field: AnyInternalFieldApi | undefined,
+  value?: any,
 ): InternalFieldMeta {
   const errorVisibility = getErrorVisibility(field)
-  const canDisplayErrors = shouldDisplayErrors(errorVisibility, field, baseMeta)
-  const canUseMetaCache = errorVisibility === 'always'
+  const canDisplayErrors = shouldDisplayErrors(
+    errorVisibility,
+    field,
+    baseMeta,
+    value,
+  )
+  const canUseMetaCache = errorVisibility === undefined
   const cached = canUseMetaCache ? metaCache.get(baseMeta) : undefined
   if (cached) return cached
 
@@ -1500,33 +1515,125 @@ function deriveFromBaseFieldMeta(
 
 function getErrorVisibility(
   field: AnyInternalFieldApi | undefined,
-): ErrorVisibility {
-  return (
-    field?._errorVisibility ?? field?.form.options.errorVisibility ?? 'always'
-  )
+): ErrorVisibility<any, any, any> | undefined {
+  return field?._errorVisibility ?? field?.form.options.errorVisibility
 }
 
 function shouldDisplayErrors(
-  errorVisibility: ErrorVisibility,
+  errorVisibility: ErrorVisibility<any, any, any> | undefined,
   field: AnyInternalFieldApi | undefined,
   baseMeta: InternalBaseFieldMeta,
+  value?: any,
 ): boolean {
-  if (!field) return true
-  const hasSubmitBeenAttempted =
-    field.form._atoms.meta.submissionAttempts.get() > 0 ||
-    (field._findNearestRegisteredFormGroup()?._submissionAttempts ?? 0) > 0
+  if (!field || !errorVisibility) return true
+  return errorVisibility({
+    state: createErrorVisibilityState(field),
+    fieldState: createErrorVisibilityFieldState(value, baseMeta),
+  })
+}
 
-  switch (errorVisibility) {
-    case 'always':
-      return true
-    case 'touched':
-      return baseMeta.isTouched || baseMeta.childContributionCounts.touched > 0
-    case 'blurred':
-      return baseMeta.isBlurred
-    case 'blurred-or-submit-attempted':
-      return baseMeta.isBlurred || hasSubmitBeenAttempted
-    case 'submit-attempted':
-      return hasSubmitBeenAttempted
+const formStateKeys: Array<keyof FormState<any, any, any>> = [
+  'values',
+  'isTouched',
+  'isDirty',
+  'isPristine',
+  'formErrors',
+  'canSubmit',
+  'isSubmitting',
+  'isSubmitSuccessful',
+  'isValidating',
+  'submissionAttempts',
+]
+
+function createErrorVisibilityState(
+  field: AnyInternalFieldApi,
+): FormState<any, any, any> {
+  const form = field.form
+  const group = field._findNearestRegisteredFormGroup()
+
+  // TODO how is this performance-wise? Should it be cached?
+  // Keep in mind that form group checks would need to be dynamci regardless
+  return new Proxy({} as FormState<any, any, any>, {
+    get(_target, property) {
+      switch (property) {
+        case 'values':
+          return form._atoms.values.get()
+        case 'isTouched':
+          return form._atoms.meta.touchedFieldCount.get() > 0
+        case 'isDirty':
+          return form._atoms.meta.isDirty.get()
+        case 'isPristine':
+          return !form._atoms.meta.isDirty.get()
+        case 'formErrors':
+          return getFormErrors(form)
+        case 'canSubmit':
+          return (
+            !form._atoms.meta.isSubmitting.get() &&
+            getFormErrors(form).length === 0 &&
+            form._atoms.meta.errorFields.get().size === 0
+          )
+        case 'isSubmitting':
+          return group
+            ? group._isSubmitting
+            : form._atoms.meta.isSubmitting.get()
+        case 'isSubmitSuccessful':
+          return group
+            ? group._isSubmitSuccessful
+            : form._atoms.meta.isSubmitSuccessful.get()
+        case 'isValidating':
+          return (
+            form._atoms.meta.validationCount.get() > 0 ||
+            form._atoms.meta.fieldValidationCount.get() > 0
+          )
+        case 'submissionAttempts':
+          return group
+            ? group._submissionAttempts
+            : form._atoms.meta.submissionAttempts.get()
+        default:
+          return undefined
+      }
+    },
+    ownKeys: () => formStateKeys,
+    getOwnPropertyDescriptor(_target, property) {
+      if (formStateKeys.includes(property as keyof FormState<any, any, any>)) {
+        return { configurable: true, enumerable: true }
+      }
+      return undefined
+    },
+  })
+}
+
+function createErrorVisibilityFieldState(
+  value: any,
+  meta: InternalBaseFieldMeta,
+): ErrorVisibilityFieldState {
+  const isSomeTouched = meta.childContributionCounts.touched > 0
+  const isSomeDirty = meta.childContributionCounts.dirty > 0
+  const isSomeValidating = meta.childContributionCounts.validating > 0
+  const isSelfTouched = meta.isTouched
+  const isSelfDirty = meta.isDirty
+  const isSelfValidating = meta.isValidating
+  const isTouched = isSelfTouched || isSomeTouched
+  const isDirty = isSelfDirty || isSomeDirty
+
+  return {
+    value,
+    meta: {
+      isTouched,
+      isSelfTouched,
+      isDirty,
+      isSelfDirty,
+      isPristine: !isDirty,
+      isBlurred: meta.isBlurred,
+      isValidating: isSelfValidating || isSomeValidating,
+      isSelfValidating,
+      subfields: {
+        isEveryPristine: !isSomeDirty,
+        isSomeDirty,
+        isSomeTouched,
+        isSomeValidating,
+      },
+    },
   }
 }
 

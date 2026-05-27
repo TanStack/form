@@ -59,19 +59,9 @@ export const rewardEarlyPunishLate = createValidator({
 
 // formApi: new Proxy(ogFormApi, { get(): {} })
 
-const changingValue = {
-  listen: 1,
-  ignore: 99,
-}
-
-new Proxy(changingValue, {
-  get: (target, prop, receiver) => {
-    return Reflect.get(target, prop, receiver)
-  },
-})
-
 export const bookingFormOptions = appFormOptions.schema({
-  errorVisibility: 'blurred-or-submit-attempted',
+  errorVisibility: ({ state, fieldState }) =>
+    fieldState.meta.isBlurred || state.submissionAttempts > 0,
   validators: [rewardEarlyPunishLate(bookingFormSchema)],
   defaultValues: {
     guestDetails: {
