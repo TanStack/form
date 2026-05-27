@@ -74,6 +74,8 @@ interface FormErrorMeta {
   errorSourceEvents: Array<string | null>
 }
 
+const formErrorsCache = new WeakMap<FormErrorMeta, Array<ValidationIssue>>()
+
 export interface FormMetaAtoms {
   isDirty: Atom<boolean>
   /**
@@ -341,9 +343,11 @@ export class InternalFormApi<
         const isPristine = !isDirty
         const isTouched = touchedFieldCount > 0
         const isValidating = validationCount > 0 || fieldValidationCount > 0
-        // TODO weakmap cache? Otherwise this always makes a new reference
-        // Field already does it for its meta, use it as reference
-        const formErrors = baseFormErrors.errors.flat()
+        let formErrors = formErrorsCache.get(baseFormErrors)
+        if (!formErrors) {
+          formErrors = baseFormErrors.errors.flat()
+          formErrorsCache.set(baseFormErrors, formErrors)
+        }
         // TODO mount errors
         const hasMountError = false as boolean
         const hasErrors =
