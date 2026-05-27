@@ -7,6 +7,7 @@ import {
   getAsyncValidatorArray,
   getBy,
   getSyncValidatorArray,
+  isFieldInGroup,
   isGlobalFormValidationError,
   isNonEmptyArray,
   mergeOpts,
@@ -1219,7 +1220,7 @@ export class FormApi<
           let aggIsDirty = false
           for (const fieldName in currFieldMeta) {
             if (fieldName === groupName) continue
-            if (!fieldName.startsWith(groupName)) continue
+            if (!isFieldInGroup(groupName, fieldName)) continue
             const m = currFieldMeta[fieldName]
             if (!m) continue
             if (m.isValidating) isFieldsValidating = true

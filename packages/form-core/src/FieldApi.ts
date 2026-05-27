@@ -9,6 +9,7 @@ import {
   evaluate,
   getAsyncValidatorArray,
   getSyncValidatorArray,
+  isFieldInGroup,
   mergeOpts,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
@@ -1613,7 +1614,7 @@ export class FieldApi<
           {
             group,
             dontUpdateFormErrorMap: true,
-            filterFieldNames: (fieldName) => fieldName.startsWith(group.name),
+            filterFieldNames: (fieldName) => isFieldInGroup(group.name, fieldName),
           },
         )
         fieldsErrorMap = {

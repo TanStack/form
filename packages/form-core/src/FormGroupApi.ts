@@ -5,6 +5,7 @@ import {
   evaluate,
   getAsyncValidatorArray,
   getSyncValidatorArray,
+  isFieldInGroup,
   mergeOpts,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
@@ -1557,7 +1558,7 @@ export class FormGroupApi<
       // `isGroupValid`. Including it here would conflate group-level
       // validation with field-level validation in `isFieldsValid` etc.
       if (fieldName === this.name) continue
-      if (fieldName.startsWith(this.name)) {
+      if (isFieldInGroup(this.name, fieldName)) {
         relatedFieldMetas.push({ ...fieldMeta, name: fieldName })
       }
     }
@@ -2200,7 +2201,7 @@ export class FormGroupApi<
       ? { fieldsErrorMap: {} as never }
       : this.form.validateSync(cause, {
           dontUpdateFormErrorMap: true,
-          filterFieldNames: (fieldName) => fieldName.startsWith(this.name),
+          filterFieldNames: (fieldName) => isFieldInGroup(this.name, fieldName),
         })
     const { hasErrored } = this.validateSync(
       cause,
@@ -2220,7 +2221,7 @@ export class FormGroupApi<
       ? Promise.resolve({})
       : this.form.validateAsync(cause, {
           dontUpdateFormErrorMap: true,
-          filterFieldNames: (fieldName) => fieldName.startsWith(this.name),
+          filterFieldNames: (fieldName) => isFieldInGroup(this.name, fieldName),
         })
     return this.validateAsync(cause, formValidationResultPromise, {
       skipRelatedFieldValidation: opts?.skipRelatedFieldValidation,

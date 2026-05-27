@@ -9,6 +9,7 @@ import type {
   ValidationError,
   ValidationSource,
 } from './types'
+import { AnyFormGroupApi } from './FormGroupApi'
 
 export type UpdaterFn<TInput, TOutput = TInput> = (input: TInput) => TOutput
 
@@ -730,4 +731,15 @@ export function deepCopy<T>(obj: T): T {
     }
   }
   return copy as T
+}
+
+/**
+ * @private
+ */
+export function isFieldInGroup(groupName: string, fieldName: string) {
+  return (
+    fieldName === groupName ||
+    fieldName.startsWith(`${groupName}.`) ||
+    fieldName.startsWith(`${groupName}[`)
+  )
 }
