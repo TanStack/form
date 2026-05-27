@@ -1614,7 +1614,8 @@ export class FieldApi<
           {
             group,
             dontUpdateFormErrorMap: true,
-            filterFieldNames: (fieldName) => isFieldInGroup(group.name, fieldName),
+            filterFieldNames: (fieldName) =>
+              isFieldInGroup(group.name, fieldName),
           },
         )
         fieldsErrorMap = {
