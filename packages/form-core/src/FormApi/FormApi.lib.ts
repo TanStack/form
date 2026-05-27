@@ -64,17 +64,7 @@ import type {
 import type { FormListenerTriggers } from '../listeners.public'
 import type { InternalFormGroupRuntime } from '../FormGroupApi/FormGroupApi.runtime'
 
-export interface BaseFormMeta {
-  /**
-   * @private
-   * Number of root fields whose own or descendant meta currently contributes touched state.
-   */
-  touchedFieldCount: number
-  /**
-   * @private
-   * A field has notified the root to be dirty
-   */
-  isDirty: boolean
+interface FormErrorMeta {
   /**
    * @private
    * Dense 2-dimensional array of form-level errors where index corresponds to validatorIndex.
@@ -82,39 +72,65 @@ export interface BaseFormMeta {
    */
   errors: Array<Array<ValidationIssue>>
   errorSourceEvents: Array<string | null>
+}
+
+export interface FormMetaAtoms {
+  isDirty: Atom<boolean>
+  /**
+   * @private
+   * Number of root fields whose own or descendant meta currently contributes touched state.
+   */
+  touchedFieldCount: Atom<number>
+  formErrors: Atom<FormErrorMeta>
   /**
    * @private
    * Dense array of field references per validator index that have errors.
    * Used to clear stale field errors when a validator no longer reports them.
    */
-  fieldErrors: Array<Set<AnyInternalFieldApi>>
+  fieldErrors: Atom<Array<Set<AnyInternalFieldApi>>>
   /**
    * @private
    * Root fields whose own or descendant meta currently contributes errors.
    */
-  errorFields: Set<AnyInternalFieldApi>
+  errorFields: Atom<Set<AnyInternalFieldApi>>
   /**
    * @private
    * Number of root fields whose own or descendant meta currently validates.
    */
-  fieldValidationCount: number
-  validationCount: number
-  isSubmitting: boolean
-  isSubmitSuccessful: boolean
+  fieldValidationCount: Atom<number>
+  validationCount: Atom<number>
+  isSubmitting: Atom<boolean>
+  isSubmitSuccessful: Atom<boolean>
+  submissionAttempts: Atom<number>
 }
 
-function createInitialFormMeta(validatorCount: number): BaseFormMeta {
+export interface FormAtoms<TFormData> {
+  values: Atom<TFormData>
+  meta: FormMetaAtoms
+  resetVersion: Atom<number>
+}
+
+function createInitialFormErrorMeta(validatorCount: number): FormErrorMeta {
   return {
-    touchedFieldCount: 0,
-    isDirty: false,
     errors: Array.from({ length: validatorCount }, () => []),
     errorSourceEvents: Array.from({ length: validatorCount }, () => null),
-    fieldErrors: Array.from({ length: validatorCount }, () => new Set()),
-    errorFields: new Set(),
-    fieldValidationCount: 0,
-    validationCount: 0,
-    isSubmitting: false,
-    isSubmitSuccessful: false,
+  }
+}
+
+function createInitialFormMetaAtoms(validatorCount: number): FormMetaAtoms {
+  return {
+    isDirty: createAtom(false),
+    touchedFieldCount: createAtom(0),
+    formErrors: createAtom(createInitialFormErrorMeta(validatorCount)),
+    fieldErrors: createAtom(
+      Array.from({ length: validatorCount }, () => new Set<AnyInternalFieldApi>()),
+    ),
+    errorFields: createAtom(new Set<AnyInternalFieldApi>()),
+    fieldValidationCount: createAtom(0),
+    validationCount: createAtom(0),
+    isSubmitting: createAtom(false),
+    isSubmitSuccessful: createAtom(false),
+    submissionAttempts: createAtom(0),
   }
 }
 
@@ -278,11 +294,8 @@ export class InternalFormApi<
   const TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
 > implements FormApi<TFormData, TFormValidators, TSubmitReturn> {
-  valuesAtom: Atom<TFormData>
   store: ReadonlyAtom<FormState<TFormData, TFormValidators, any>>
-  _formMetaAtom: Atom<BaseFormMeta>
-  _submissionAttemptsAtom: Atom<number>
-  _resetVersionAtom: Atom<number>
+  _atoms: FormAtoms<TFormData>
   _fieldRootNode: InternalRootFieldApi
   _options: InternalFormOptions<TFormData, TFormValidators, any>
   _lastUpdateDefaultValues: TFormData
@@ -303,36 +316,41 @@ export class InternalFormApi<
   constructor(options: FormOptions<TFormData, TFormValidators, any>) {
     this._options = { ...options, formId: options.formId ?? uuid() }
     this._lastUpdateDefaultValues = options.defaultValues
-    this.valuesAtom = createAtom(options.defaultValues)
     this._pipelineCache = createPipelineCache()
     const validatorCount = this._options.validators?.length ?? 0
-    this._formMetaAtom = createAtom(createInitialFormMeta(validatorCount))
-    this._submissionAttemptsAtom = createAtom(0)
-    this._resetVersionAtom = createAtom(0)
+    this._atoms = {
+      values: createAtom(options.defaultValues),
+      meta: createInitialFormMetaAtoms(validatorCount),
+      resetVersion: createAtom(0),
+    }
     this._fieldRootNode = new InternalRootFieldApi(this)
 
     this.store = createAtom(
       () => {
-        const values = this.valuesAtom.get()
-        const baseFormMeta = this._formMetaAtom.get()
-        const submissionAttempts = this._submissionAttemptsAtom.get()
+        const values = this._atoms.values.get()
+        const isDirty = this._atoms.meta.isDirty.get()
+        const touchedFieldCount = this._atoms.meta.touchedFieldCount.get()
+        const baseFormErrors = this._atoms.meta.formErrors.get()
+        const errorFields = this._atoms.meta.errorFields.get()
+        const fieldValidationCount = this._atoms.meta.fieldValidationCount.get()
+        const validationCount = this._atoms.meta.validationCount.get()
+        const isSubmitting = this._atoms.meta.isSubmitting.get()
+        const isSubmitSuccessful = this._atoms.meta.isSubmitSuccessful.get()
+        const submissionAttempts = this._atoms.meta.submissionAttempts.get()
 
-        const isDirty = baseFormMeta.isDirty
         const isPristine = !isDirty
-        const isTouched = baseFormMeta.touchedFieldCount > 0
-        const isValidating =
-          baseFormMeta.validationCount > 0 ||
-          baseFormMeta.fieldValidationCount > 0
+        const isTouched = touchedFieldCount > 0
+        const isValidating = validationCount > 0 || fieldValidationCount > 0
         // TODO weakmap cache? Otherwise this always makes a new reference
         // Field already does it for its meta, use it as reference
-        const formErrors = baseFormMeta.errors.flat()
+        const formErrors = baseFormErrors.errors.flat()
         // TODO mount errors
         const hasMountError = false as boolean
         const hasErrors =
           hasMountError ||
           formErrors.length > 0 ||
-          baseFormMeta.errorFields.size > 0
-        const canSubmit = !baseFormMeta.isSubmitting && !hasErrors
+          errorFields.size > 0
+        const canSubmit = !isSubmitting && !hasErrors
 
         return {
           values,
@@ -341,8 +359,8 @@ export class InternalFormApi<
           isPristine,
           formErrors: formErrors as FormErrors<TFormValidators, any>,
           canSubmit,
-          isSubmitting: baseFormMeta.isSubmitting,
-          isSubmitSuccessful: baseFormMeta.isSubmitSuccessful,
+          isSubmitting,
+          isSubmitSuccessful,
           isValidating,
           submissionAttempts,
         } satisfies FormState<TFormData, TFormValidators, any>
@@ -371,15 +389,27 @@ export class InternalFormApi<
 
     batch(() => {
       this._formGroups?.forEach((group) => group._reset())
-      this._resetVersionAtom.set((version) => version + 1)
+      this._atoms.resetVersion.set((version) => version + 1)
       this._fieldRootNode._children.forEach((child) =>
         child._kill({ listenerEvent: 'reset' }),
       )
-      this._formMetaAtom.set(
-        createInitialFormMeta(this.options.validators?.length ?? 0),
+      const validatorCount = this.options.validators?.length ?? 0
+      this._atoms.meta.isDirty.set(false)
+      this._atoms.meta.touchedFieldCount.set(0)
+      this._atoms.meta.formErrors.set(createInitialFormErrorMeta(validatorCount))
+      this._atoms.meta.fieldErrors.set(
+        Array.from(
+          { length: validatorCount },
+          () => new Set<AnyInternalFieldApi>(),
+        ),
       )
-      this._submissionAttemptsAtom.set(0)
-      this.valuesAtom.set(values ?? this._options.defaultValues)
+      this._atoms.meta.errorFields.set(new Set<AnyInternalFieldApi>())
+      this._atoms.meta.fieldValidationCount.set(0)
+      this._atoms.meta.validationCount.set(0)
+      this._atoms.meta.isSubmitting.set(false)
+      this._atoms.meta.isSubmitSuccessful.set(false)
+      this._atoms.meta.submissionAttempts.set(0)
+      this._atoms.values.set(values ?? this._options.defaultValues)
     })
 
     this._notifyFormListener('reset', null)
@@ -408,9 +438,9 @@ export class InternalFormApi<
 
     if (didDefaultValuesChange) {
       if (!this.state.isTouched) {
-        this.valuesAtom.set(options.defaultValues)
+        this._atoms.values.set(options.defaultValues)
       } else {
-        this.valuesAtom.set((prev) =>
+        this._atoms.values.set((prev) =>
           applyDefaultValuesPreservingTouchedFields(
             prev,
             options.defaultValues,
@@ -445,7 +475,7 @@ export class InternalFormApi<
     updateOptions.fieldApiOverride = field
 
     batch(() => {
-      this.valuesAtom.set((prev) => setBy(prev, fieldName, updater))
+      this._atoms.values.set((prev) => setBy(prev, fieldName, updater))
 
       this._notifyFieldChange(field, updateOptions)
     })
@@ -456,7 +486,7 @@ export class InternalFormApi<
     opts?: FieldApiOverrideOptions,
   ) => {
     const field = opts?.fieldApiOverride ?? this._tryGetFieldApi(fieldName)
-    this.valuesAtom.set((prev) =>
+    this._atoms.values.set((prev) =>
       setBy(prev, fieldName, getBy(this.options.defaultValues, fieldName)),
     )
 
@@ -553,8 +583,8 @@ export class InternalFormApi<
     this._clearEventErrors(field, 'submit', 'change')
 
     const { markAsDirty } = options
-    if (markAsDirty && !this._formMetaAtom.get().isDirty) {
-      this._formMetaAtom.set((prev) => ({ ...prev, isDirty: true }))
+    if (markAsDirty && !this._atoms.meta.isDirty.get()) {
+      this._atoms.meta.isDirty.set(true)
     }
 
     field?._notifyEvent(options, 'change')
@@ -584,12 +614,13 @@ export class InternalFormApi<
     event: Exclude<ValidationTrigger, 'submit'>,
   ) => {
     const validatorCount = this.options.validators?.length ?? 0
-    const formMeta = this._formMetaAtom.get()
+    const formErrors = this._atoms.meta.formErrors.get()
+    const fieldErrors = this._atoms.meta.fieldErrors.get()
     const fieldFormErrorCount =
       field?._getBaseMeta()._formValidatorErrors.length ?? 0
     const eventErrorCount = Math.max(
-      formMeta.errors.length,
-      formMeta.fieldErrors.length,
+      formErrors.errors.length,
+      fieldErrors.length,
       fieldFormErrorCount,
     )
     const eventErrorIndexes: Array<number> = []
@@ -614,17 +645,25 @@ export class InternalFormApi<
     }
 
     batch(() => {
-      this._formMetaAtom.set((prev) => {
+      this._atoms.meta.formErrors.set((prev) => {
         const clearedErrors = clearIndexedErrorsFromSource(
           prev.errors,
           prev.errorSourceEvents,
           eventErrorIndexes,
           sourceEvent,
         )
-        const fieldErrors = [...prev.fieldErrors]
-        let hasChanged = clearedErrors !== null
+        if (!clearedErrors) {
+          return prev
+        }
 
-        if (field) {
+        return clearedErrors
+      })
+
+      if (field) {
+        this._atoms.meta.fieldErrors.set((prev) => {
+          const fieldErrors = [...prev]
+          let hasChanged = false
+
           for (const i of eventErrorIndexes) {
             const fieldRefs = fieldErrors[i]
             if (
@@ -637,14 +676,10 @@ export class InternalFormApi<
               hasChanged = true
             }
           }
-        }
 
-        if (!hasChanged) {
-          return prev
-        }
-
-        return { ...prev, ...(clearedErrors ?? {}), fieldErrors }
-      })
+          return hasChanged ? fieldErrors : prev
+        })
+      }
 
       if (field && hasFieldEventErrors(field, eventErrorIndexes, sourceEvent)) {
         this._clearFieldEventErrors(field, eventErrorIndexes, sourceEvent)
@@ -766,7 +801,7 @@ export class InternalFormApi<
     }
 
     batch(() => {
-      this._formMetaAtom.set((prev) => {
+      this._atoms.meta.formErrors.set((prev) => {
         const nextError = isErrorResult(result.result)
           ? normalizeValidationError(result.result as ValidationErrorInput)
           : []
@@ -788,21 +823,23 @@ export class InternalFormApi<
       })
 
       // Clear field-level errors from potential previous { fields: {} } errors
-      this._formMetaAtom.set((prev) => {
-        const fieldErrors = [...prev.fieldErrors]
-        const oldFieldRefs = fieldErrors[result.validatorIndex]
-        let errorFields = prev.errorFields
+      const oldFieldRefs =
+        this._atoms.meta.fieldErrors.get()[result.validatorIndex]
 
-        if (oldFieldRefs) {
-          for (const field of oldFieldRefs) {
-            this._clearFieldValidatorError(field, result.validatorIndex)
-          }
-          fieldErrors[result.validatorIndex] = new Set()
-          errorFields = reconcileErrorFields(errorFields, oldFieldRefs)
+      if (oldFieldRefs && oldFieldRefs.size > 0) {
+        for (const field of oldFieldRefs) {
+          this._clearFieldValidatorError(field, result.validatorIndex)
         }
 
-        return { ...prev, fieldErrors, errorFields }
-      })
+        this._atoms.meta.fieldErrors.set((prev) => {
+          const fieldErrors = [...prev]
+          fieldErrors[result.validatorIndex] = new Set()
+          return fieldErrors
+        })
+        this._atoms.meta.errorFields.set((prev) =>
+          reconcileErrorFields(prev, oldFieldRefs),
+        )
+      }
     })
   }
 
@@ -832,7 +869,7 @@ export class InternalFormApi<
 
     batch(() => {
       // Handle form-level errors
-      this._formMetaAtom.set((prev) => {
+      this._atoms.meta.formErrors.set((prev) => {
         const nextError = aggregateError.formError
           ? normalizeValidationError(aggregateError.formError)
           : []
@@ -854,55 +891,58 @@ export class InternalFormApi<
       })
 
       // Handle field-level errors
-      this._formMetaAtom.set((prev) => {
-        const fieldErrors = [...prev.fieldErrors]
-        const newFieldRefs = new Set<AnyInternalFieldApi>()
-        const oldFieldRefs = fieldErrors[validatorIndex]
+      const fieldErrors = [...this._atoms.meta.fieldErrors.get()]
+      const oldFieldRefs = fieldErrors[validatorIndex]
+      const staleFieldRefs = oldFieldRefs ? new Set(oldFieldRefs) : undefined
+      const affectedFields = new Set<AnyInternalFieldApi>()
+      const newFieldRefs = new Set<AnyInternalFieldApi>()
 
-        const staleFieldRefs = oldFieldRefs ? new Set(oldFieldRefs) : undefined
-        const affectedFields = new Set<AnyInternalFieldApi>()
+      // Set new field errors and build the new reference set
+      for (const [fieldName, fieldError] of resolvedFieldErrors) {
+        const field = this._getOrCreateFieldApi({ name: fieldName })
+        field._setMeta((prev) => {
+          const nextErrors = setIndexedError(
+            prev._formValidatorErrors,
+            prev._formValidatorErrorSourceEvents,
+            validatorIndex,
+            fieldError,
+            sourceEvent,
+          )
 
-        // Set new field errors and build the new reference set
-        for (const [fieldName, fieldError] of resolvedFieldErrors) {
-          const field = this._getOrCreateFieldApi({ name: fieldName })
-          field._setMeta((prev) => {
-            const nextErrors = setIndexedError(
-              prev._formValidatorErrors,
-              prev._formValidatorErrorSourceEvents,
-              validatorIndex,
-              fieldError,
-              sourceEvent,
-            )
+          if (!nextErrors) return prev
 
-            if (!nextErrors) return prev
+          return {
+            ...prev,
+            _formValidatorErrors: nextErrors.errors,
+            _formValidatorErrorSourceEvents: nextErrors.errorSourceEvents,
+          } satisfies InternalBaseFieldMeta
+        })
+        newFieldRefs.add(field)
+        affectedFields.add(field)
+        staleFieldRefs?.delete(field)
+      }
 
-            return {
-              ...prev,
-              _formValidatorErrors: nextErrors.errors,
-              _formValidatorErrorSourceEvents: nextErrors.errorSourceEvents,
-            } satisfies InternalBaseFieldMeta
-          })
-          newFieldRefs.add(field)
+      // Clear errors for fields that are no longer in the new result
+      if (staleFieldRefs) {
+        for (const field of staleFieldRefs) {
+          this._clearFieldValidatorError(field, validatorIndex)
           affectedFields.add(field)
-          staleFieldRefs?.delete(field)
         }
+      }
 
-        // Clear errors for fields that are no longer in the new result
-        if (staleFieldRefs) {
-          for (const field of staleFieldRefs) {
-            this._clearFieldValidatorError(field, validatorIndex)
-            affectedFields.add(field)
-          }
-        }
-
+      if (
+        newFieldRefs.size > 0 ||
+        (oldFieldRefs !== undefined && oldFieldRefs.size > 0)
+      ) {
         fieldErrors[validatorIndex] = newFieldRefs
-        const errorFields = reconcileErrorFields(
-          prev.errorFields,
-          affectedFields,
-        )
+        this._atoms.meta.fieldErrors.set(fieldErrors)
+      }
 
-        return { ...prev, fieldErrors, errorFields }
-      })
+      if (affectedFields.size > 0) {
+        this._atoms.meta.errorFields.set((prev) =>
+          reconcileErrorFields(prev, affectedFields),
+        )
+      }
     })
   }
 
@@ -950,15 +990,7 @@ export class InternalFormApi<
   }
 
   _setValidationCount = (updater: Updater<number>): void => {
-    this._formMetaAtom.set((prev) => {
-      const validationCount = callUpdater(updater, prev.validationCount)
-
-      if (prev.validationCount === validationCount) {
-        return prev
-      }
-
-      return { ...prev, validationCount }
-    })
+    this._atoms.meta.validationCount.set((prev) => callUpdater(updater, prev))
   }
 
   validate = async (

@@ -18,7 +18,7 @@ export function useFormGroup(
   const optionsRef = useRef(options)
   optionsRef.current = options
 
-  const resetVersion = useSelector(options.form._resetVersionAtom)
+  const resetVersion = useSelector(options.form._atoms.resetVersion)
 
   const groupApi = useMemo(() => {
     void resetVersion

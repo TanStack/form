@@ -1170,30 +1170,32 @@ export class InternalFieldApi<
         node._parent._removeChild(node._segment)
       }
 
-      this.form._formMetaAtom.set((prev) => {
-        let errorFields = prev.errorFields
-        const touchedFieldCount = Math.max(
-          0,
-          prev.touchedFieldCount - killedRootCounterContributions.touched,
-        )
-        const fieldValidationCount = Math.max(
-          0,
-          prev.fieldValidationCount - killedRootCounterContributions.validating,
-        )
+      this.form._atoms.meta.touchedFieldCount.set((prev) =>
+        Math.max(0, prev - killedRootCounterContributions.touched),
+      )
+      this.form._atoms.meta.fieldValidationCount.set((prev) =>
+        Math.max(0, prev - killedRootCounterContributions.validating),
+      )
 
-        if (errorFields.size > 0) {
-          const nextErrorFields = new Set(errorFields)
+      this.form._atoms.meta.errorFields.set((prev) => {
+        if (prev.size > 0) {
+          const nextErrorFields = new Set(prev)
 
           for (const node of nodesToKill) {
             nextErrorFields.delete(node)
           }
 
-          if (nextErrorFields.size !== errorFields.size) {
-            errorFields = nextErrorFields
+          if (nextErrorFields.size !== prev.size) {
+            return nextErrorFields
           }
         }
 
-        const fieldErrors = [...prev.fieldErrors]
+        return prev
+      })
+
+      this.form._atoms.meta.fieldErrors.set((prev) => {
+        const fieldErrors = [...prev]
+        let changed = false
 
         for (let i = 0; i < fieldErrors.length; i++) {
           const currFieldErrors = fieldErrors[i]
@@ -1212,16 +1214,11 @@ export class InternalFieldApi<
 
           if (next) {
             fieldErrors[i] = next
+            changed = true
           }
         }
 
-        return {
-          ...prev,
-          touchedFieldCount,
-          errorFields,
-          fieldValidationCount,
-          fieldErrors,
-        }
+        return changed ? fieldErrors : prev
       })
     })
   }
@@ -1516,7 +1513,7 @@ function shouldDisplayErrors(
 ): boolean {
   if (!field) return true
   const hasSubmitBeenAttempted =
-    field.form._submissionAttemptsAtom.get() > 0 ||
+    field.form._atoms.meta.submissionAttempts.get() > 0 ||
     (field._findNearestRegisteredFormGroup()?._submissionAttempts ?? 0) > 0
 
   switch (errorVisibility) {

@@ -38,16 +38,13 @@ const createValidationError: CreateValidationErrorFn<any> = <
 export async function runSubmissionProcess<TFormData>(
   form: InternalFormApi<TFormData, any, any>,
 ): Promise<Array<FormValidationError<TFormData>>> {
-  const submitResetVersion = form._resetVersionAtom.get()
+  const submitResetVersion = form._atoms.resetVersion.get()
   const hasResettedFormDuringSubmit = () =>
-    form._resetVersionAtom.get() !== submitResetVersion
+    form._atoms.resetVersion.get() !== submitResetVersion
 
   batch(() => {
-    form._submissionAttemptsAtom.set((prev) => prev + 1)
-    form._formMetaAtom.set((prev) => ({
-      ...prev,
-      isSubmitting: true,
-    }))
+    form._atoms.meta.submissionAttempts.set((prev) => prev + 1)
+    form._atoms.meta.isSubmitting.set(true)
   })
 
   const submissionData = {
@@ -114,12 +111,9 @@ export async function runSubmissionProcess<TFormData>(
       return
     }
 
-    form._formMetaAtom.set((prev) => {
-      return {
-        ...prev,
-        isSubmitting: false,
-        isSubmitSuccessful: !submissionData.hasFailed,
-      }
+    batch(() => {
+      form._atoms.meta.isSubmitting.set(false)
+      form._atoms.meta.isSubmitSuccessful.set(!submissionData.hasFailed)
     })
   }
 

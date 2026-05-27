@@ -416,9 +416,9 @@ export class InternalFormGroupApi
   }
 
   async _runSubmit(): Promise<Array<FormGroupValidationError<any>>> {
-    const submitResetVersion = this.form._resetVersionAtom.get()
+    const submitResetVersion = this.form._atoms.resetVersion.get()
     const hasResetDuringSubmit = () =>
-      this.form._resetVersionAtom.get() !== submitResetVersion
+      this.form._atoms.resetVersion.get() !== submitResetVersion
 
     this._submissionMeta.set((prev) => ({
       ...prev,

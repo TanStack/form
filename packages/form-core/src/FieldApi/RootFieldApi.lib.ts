@@ -4,7 +4,7 @@ import type {
   ChildContributionStates,
   NameSegment,
 } from './FieldApi.lib'
-import type { AnyInternalFormApi, BaseFormMeta } from '../FormApi/FormApi.lib'
+import type { AnyInternalFormApi, FormMetaAtoms } from '../FormApi/FormApi.lib'
 
 export type RootCounterContributionKey = 'touched' | 'validating'
 
@@ -15,7 +15,7 @@ export const rootCounterContributionKeys: Array<RootCounterContributionKey> = [
 
 const rootCounterMetaKeys: Record<
   RootCounterContributionKey,
-  keyof Pick<BaseFormMeta, 'touchedFieldCount' | 'fieldValidationCount'>
+  keyof Pick<FormMetaAtoms, 'touchedFieldCount' | 'fieldValidationCount'>
 > = {
   touched: 'touchedFieldCount',
   validating: 'fieldValidationCount',
@@ -61,8 +61,8 @@ export class InternalRootFieldApi {
   ) {
     if (prevContributes === newContributes) return
 
-    this.form._formMetaAtom.set((prev) => {
-      const errorFields = new Set(prev.errorFields)
+    this.form._atoms.meta.errorFields.set((prev) => {
+      const errorFields = new Set(prev)
 
       if (newContributes) {
         errorFields.add(node)
@@ -70,7 +70,7 @@ export class InternalRootFieldApi {
         errorFields.delete(node)
       }
 
-      return { ...prev, errorFields }
+      return errorFields
     })
   }
 
@@ -85,16 +85,10 @@ export class InternalRootFieldApi {
 
         if (prevContributes === newContributes) continue
 
-        this.form._formMetaAtom.set((prev) => {
-          const metaKey = rootCounterMetaKeys[key]
+        const atom = this.form._atoms.meta[rootCounterMetaKeys[key]]
+        atom.set((prev) => {
           const delta = newContributes ? 1 : -1
-          const count = Math.max(0, prev[metaKey] + delta)
-
-          if (prev[metaKey] === count) {
-            return prev
-          }
-
-          return { ...prev, [metaKey]: count }
+          return Math.max(0, prev + delta)
         })
       }
     })

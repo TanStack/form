@@ -26,7 +26,7 @@ export function useField(
   const optionsRef = useRef(options)
   optionsRef.current = options
 
-  const resetVersion = useSelector(options.form._resetVersionAtom)
+  const resetVersion = useSelector(options.form._atoms.resetVersion)
 
   const fieldApi = useMemo(() => {
     void resetVersion
