@@ -1841,6 +1841,12 @@ export class FieldApi<
         fieldApi: this,
       })
     }
+
+    for (const group of this.form.formGroupApis) {
+      if (isFieldInGroup(group.name, this.name)) {
+        group.triggerOnChangeListener()
+      }
+    }
   }
 
   /**

@@ -278,6 +278,176 @@ describe('form group api', () => {
     })
   })
 
+  it('should run form onChangeGroup listener when a child field changes', () => {
+    const onChangeGroup = vi.fn()
+    const form = new FormApi({
+      defaultValues: {
+        step1: { name: '' },
+        step2: { name: 'test2' },
+      },
+      listeners: {
+        onChangeGroup,
+      },
+    })
+
+    const step1Group = new FormGroupApi({
+      name: 'step1',
+      form,
+    })
+
+    const step1NameField = new FieldApi({
+      name: 'step1.name',
+      form,
+    })
+
+    form.mount()
+    step1Group.mount()
+    step1NameField.mount()
+
+    step1NameField.handleChange('test')
+
+    expect(onChangeGroup).toHaveBeenCalledWith({
+      formApi: form,
+      groupApi: step1Group,
+    })
+  })
+
+  it('should run group onChange listener when a child field changes', () => {
+    const form = new FormApi({
+      defaultValues: {
+        step1: { name: '' },
+        step2: { name: 'test2' },
+      },
+    })
+
+    const onChange = vi.fn()
+    const step1Group = new FormGroupApi({
+      name: 'step1',
+      form,
+      listeners: {
+        onChange,
+      },
+    })
+
+    const step1NameField = new FieldApi({
+      name: 'step1.name',
+      form,
+    })
+
+    form.mount()
+    step1Group.mount()
+    step1NameField.mount()
+
+    step1NameField.handleChange('test')
+
+    expect(onChange).toHaveBeenCalledWith({
+      value: { name: 'test' },
+      groupApi: step1Group,
+    })
+  })
+
+  it('should debounce form onChange and onChangeGroup listeners independently when a child field changes', async () => {
+    vi.useFakeTimers()
+
+    try {
+      const onChange = vi.fn()
+      const onChangeGroup = vi.fn()
+      const form = new FormApi({
+        defaultValues: {
+          step1: { name: '' },
+          step2: { name: 'test2' },
+        },
+        listeners: {
+          onChange,
+          onChangeDebounceMs: 100,
+          onChangeGroup,
+          onChangeGroupDebounceMs: 500,
+        },
+      })
+
+      const step1Group = new FormGroupApi({
+        name: 'step1',
+        form,
+      })
+
+      const step1NameField = new FieldApi({
+        name: 'step1.name',
+        form,
+      })
+
+      form.mount()
+      step1Group.mount()
+      step1NameField.mount()
+
+      step1NameField.handleChange('first')
+      step1NameField.handleChange('second')
+
+      expect(onChange).not.toHaveBeenCalled()
+      expect(onChangeGroup).not.toHaveBeenCalled()
+
+      await vi.advanceTimersByTimeAsync(100)
+
+      expect(onChange).toHaveBeenCalledTimes(1)
+      expect(onChange).toHaveBeenCalledWith({
+        formApi: form,
+        fieldApi: step1NameField,
+      })
+      expect(onChangeGroup).not.toHaveBeenCalled()
+
+      await vi.advanceTimersByTimeAsync(400)
+
+      expect(onChangeGroup).toHaveBeenCalledTimes(1)
+      expect(onChangeGroup).toHaveBeenCalledWith({
+        formApi: form,
+        groupApi: step1Group,
+      })
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('should only run form onChangeGroup when setting a group value', async () => {
+    vi.useFakeTimers()
+
+    try {
+      const onChange = vi.fn()
+      const onChangeGroup = vi.fn()
+      const form = new FormApi({
+        defaultValues: {
+          step1: { name: '' },
+          step2: { name: 'test2' },
+        },
+        listeners: {
+          onChange,
+          onChangeDebounceMs: 100,
+          onChangeGroup,
+          onChangeGroupDebounceMs: 100,
+        },
+      })
+
+      const step1Group = new FormGroupApi({
+        name: 'step1',
+        form,
+      })
+
+      form.mount()
+      step1Group.mount()
+
+      step1Group.setValue({ name: 'test' })
+
+      await vi.advanceTimersByTimeAsync(100)
+
+      expect(onChange).not.toHaveBeenCalled()
+      expect(onChangeGroup).toHaveBeenCalledTimes(1)
+      expect(onChangeGroup).toHaveBeenCalledWith({
+        formApi: form,
+        groupApi: step1Group,
+      })
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
   it('should stop in-flight async group validation on unmount', async () => {
     vi.useFakeTimers()
 
