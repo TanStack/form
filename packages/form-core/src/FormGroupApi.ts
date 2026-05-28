@@ -2274,25 +2274,24 @@ export class FormGroupApi<
    * @private
    */
   triggerOnChangeListener = () => {
-    // // TODO: Solve typings with formListener getting a fieldApi vs a groupApi
-    // const formDebounceMs = this.form.options.listeners?.onChangeDebounceMs
-    // if (formDebounceMs && formDebounceMs > 0) {
-    //   if (this.timeoutIds.formListeners.change) {
-    //     clearTimeout(this.timeoutIds.formListeners.change)
-    //   }
-    //
-    //   this.timeoutIds.formListeners.change = setTimeout(() => {
-    //     this.form.options.listeners?.onChange?.({
-    //       formApi: this.form,
-    //       groupApi: this,
-    //     })
-    //   }, formDebounceMs)
-    // } else {
-    //   this.form.options.listeners?.onChange?.({
-    //     formApi: this.form,
-    //     groupApi: this,
-    //   })
-    // }
+    const formDebounceMs = this.form.options.listeners?.onChangeDebounceMs
+    if (formDebounceMs && formDebounceMs > 0) {
+      if (this.timeoutIds.formListeners.change) {
+        clearTimeout(this.timeoutIds.formListeners.change)
+      }
+
+      this.timeoutIds.formListeners.change = setTimeout(() => {
+        this.form.options.listeners?.onChange?.({
+          formApi: this.form,
+          groupApi: this,
+        })
+      }, formDebounceMs)
+    } else {
+      this.form.options.listeners?.onChange?.({
+        formApi: this.form,
+        groupApi: this,
+      })
+    }
 
     const fieldDebounceMs = this.options.listeners?.onChangeDebounceMs
     if (fieldDebounceMs && fieldDebounceMs > 0) {

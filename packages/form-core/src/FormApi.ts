@@ -229,6 +229,111 @@ export interface FormValidators<
   onDynamicAsyncDebounceMs?: number
 }
 
+interface FormListenersPropsGroup<
+  TFormData,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+  TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta = never,
+> {
+  formApi: FormApi<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    TOnServer,
+    TSubmitMeta
+  >
+  groupApi: AnyFormGroupApi
+}
+
+interface FormListenersPropsField<
+  TFormData,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+  TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta = never,
+> {
+  formApi: FormApi<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    TOnServer,
+    TSubmitMeta
+  >
+  fieldApi: AnyFieldApi
+}
+
+type FormListenersProps<
+  TFormData,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+  TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta = never,
+> =
+  | FormListenersPropsGroup<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TOnServer,
+      TSubmitMeta
+    >
+  | FormListenersPropsField<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TOnServer,
+      TSubmitMeta
+    >
+
 export interface FormListeners<
   TFormData,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
@@ -243,8 +348,8 @@ export interface FormListeners<
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   TSubmitMeta = never,
 > {
-  onChange?: (props: {
-    formApi: FormApi<
+  onChange?: (
+    props: FormListenersProps<
       TFormData,
       TOnMount,
       TOnChange,
@@ -257,9 +362,8 @@ export interface FormListeners<
       TOnDynamicAsync,
       TOnServer,
       TSubmitMeta
-    >
-    fieldApi: AnyFieldApi
-  }) => void
+    >,
+  ) => void
   onChangeDebounceMs?: number
 
   onBlur?: (props: {
@@ -316,8 +420,8 @@ export interface FormListeners<
     meta: TSubmitMeta
   }) => void
 
-  onFieldUnmount?: (props: {
-    formApi: FormApi<
+  onFieldUnmount?: (
+    props: FormListenersPropsField<
       TFormData,
       TOnMount,
       TOnChange,
@@ -330,9 +434,25 @@ export interface FormListeners<
       TOnDynamicAsync,
       TOnServer,
       TSubmitMeta
-    >
-    fieldApi: AnyFieldApi
-  }) => void
+    >,
+  ) => void
+
+  onGroupUnmount?: (
+    props: FormListenersPropsGroup<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TOnServer,
+      TSubmitMeta
+    >,
+  ) => void
 }
 
 /**
