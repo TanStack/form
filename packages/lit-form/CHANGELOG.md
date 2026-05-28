@@ -1,5 +1,16 @@
 # @tanstack/lit-form
 
+## 1.25.0
+
+### Minor Changes
+
+- [#2128](https://github.com/TanStack/form/pull/2128) [`808f158`](https://github.com/TanStack/form/commit/808f158b62c08f69689a7b652c35989d717f9014) - Added FormGroup API
+
+### Patch Changes
+
+- Updated dependencies [[`808f158`](https://github.com/TanStack/form/commit/808f158b62c08f69689a7b652c35989d717f9014)]:
+  - @tanstack/form-core@1.33.0
+
 ## 1.24.2
 
 ### Patch Changes
