@@ -189,6 +189,80 @@ describe('form group api', () => {
     expect(step1Group.state.meta.errorMap.onSubmit).toBe('Name is required')
   })
 
+  it('should show onMount errors on form groups', () => {
+    const form = new FormApi({
+      defaultValues: {
+        step1: { name: '' },
+        step2: { name: 'test2' },
+      },
+    })
+
+    const onMount = vi.fn(({ value }) => {
+      if (!value.name) {
+        return 'Name is required'
+      }
+      return undefined
+    })
+
+    const step1Group = new FormGroupApi({
+      name: 'step1',
+      form,
+      validators: {
+        onMount,
+      },
+    })
+
+    form.mount()
+    step1Group.mount()
+
+    expect(onMount).toHaveBeenCalledTimes(1)
+    expect(step1Group.state.meta.errorMap.onMount).toBe('Name is required')
+    expect(step1Group.state.meta.errors).toStrictEqual(['Name is required'])
+    expect(step1Group.state.meta.isGroupValid).toBe(false)
+    expect(step1Group.state.meta.isValid).toBe(false)
+    expect(step1Group.state.meta.canSubmit).toBe(false)
+  })
+
+  it('Should propagate onMount field errors from group validators to child fields', () => {
+    const form = new FormApi({
+      defaultValues: {
+        step1: { name: '' },
+        step2: { name: 'test2' },
+      },
+    })
+
+    const step1Group = new FormGroupApi({
+      name: 'step1',
+      form,
+      validators: {
+        onMount: () => {
+          return {
+            group: 'Group is invalid',
+            fields: {
+              name: 'Name is required',
+            },
+          }
+        },
+      },
+    })
+
+    const step1NameField = new FieldApi({
+      name: 'step1.name',
+      form,
+    })
+
+    form.mount()
+    step1NameField.mount()
+    step1Group.mount()
+
+    expect(step1Group.state.meta.errorMap.onMount).toBe('Group is invalid')
+    expect(step1NameField.state.meta.errorMap.onMount).toBe('Name is required')
+    expect(step1NameField.state.meta.errorSourceMap.onMount).toBe('form')
+    expect(step1Group.state.meta.isFieldsValid).toBe(false)
+    expect(step1Group.state.meta.isGroupValid).toBe(false)
+    expect(step1Group.state.meta.isValid).toBe(false)
+  })
+
   it('Should propagate manual function field errors from group validators to child fields', async () => {
     const onSubmit = vi.fn()
 

@@ -1453,6 +1453,47 @@ export class FormGroupApi<
       },
     }))
 
+    const { onMount } = this.options.validators || {}
+
+    if (onMount) {
+      const rawError = this.runValidator({
+        validate: onMount,
+        value: {
+          value: this.state.value,
+          groupApi: this,
+          validationSource: 'form',
+        },
+        type: 'validate',
+      })
+
+      let groupOwnRawError = rawError
+      let groupFieldErrors: Record<string, unknown> | undefined = undefined
+      if (isGlobalGroupValidationError(rawError)) {
+        groupOwnRawError = rawError.group
+        groupFieldErrors = rawError.fields
+      }
+
+      const error = normalizeError(groupOwnRawError as ValidationError)
+      if (error) {
+        this.setMeta(
+          (prev) =>
+            ({
+              ...prev,
+              errorMap: {
+                ...prev.errorMap,
+                onMount: error,
+              },
+              errorSourceMap: {
+                ...prev.errorSourceMap,
+                onMount: 'field',
+              },
+            }) as never,
+        )
+      }
+
+      this.distributeFieldErrors('onMount', groupFieldErrors)
+    }
+
     return () => {
       this.form.formGroupApis.delete(this)
 

@@ -1241,6 +1241,16 @@ export class FormApi<
           // `distributeFieldErrors`).
           const errorMap = ownFieldMeta?.errorMap ?? {}
           const errorSourceMap = ownFieldMeta?.errorSourceMap ?? {}
+          const hasOnMountError = Boolean(
+            errorMap.onMount ||
+            Object.entries(currFieldMeta).some(
+              ([fieldName, field]) =>
+                field &&
+                fieldName !== groupName &&
+                isFieldInGroup(groupName, fieldName) &&
+                field.errorMap.onMount,
+            ),
+          )
           const prevGroupMeta = prevVal?.[groupName]
           let errors = prevGroupMeta?.errors ?? []
           if (
@@ -1268,7 +1278,9 @@ export class FormApi<
           const isValid = isFieldsValid && isGroupValid
           const submitInvalid = group.options.canSubmitWhenInvalid ?? false
           const canSubmit =
-            (lifecycle.submissionAttempts === 0 && !aggIsTouched) ||
+            (lifecycle.submissionAttempts === 0 &&
+              !aggIsTouched &&
+              !hasOnMountError) ||
             (!isValidating && !lifecycle.isSubmitting && isValid) ||
             submitInvalid
 
