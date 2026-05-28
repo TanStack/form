@@ -498,6 +498,13 @@ export function evaluate<T>(objA: T, objB: T) {
     return objA.getTime() === objB.getTime()
   }
 
+  if (
+    typeof (objA as any).equals === 'function' &&
+    objA.constructor === objB.constructor
+  ) {
+    return (objA as any).equals(objB)
+  }
+
   if (objA instanceof Map && objB instanceof Map) {
     if (objA.size !== objB.size) return false
     for (const [k, v] of objA) {
