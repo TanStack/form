@@ -1,5 +1,6 @@
 import { liteThrottle } from '@tanstack/pacer-lite'
 import { formEventClient } from './EventClient'
+import { AnyFormGroupApi } from './FormGroupApi'
 import type { ValidationLogicProps } from './ValidationLogic'
 import type { FieldValidators } from './FieldApi'
 import type { AnyFormApi, FormValidators } from './FormApi'
@@ -303,6 +304,7 @@ export function getSyncValidatorArray<T>(
   options: SyncValidatorArrayPartialOptions<T> & {
     validationLogic?: any
     form?: any
+    group?: any
     fieldName?: string
   },
 ): T extends FieldValidators<
@@ -352,6 +354,7 @@ export function getSyncValidatorArray<T>(
 
   return options.validationLogic({
     form: options.form,
+    group: options.group,
     validators: options.validators,
     event: { type: cause, fieldName: options.fieldName, async: false },
     runValidation,
@@ -366,6 +369,7 @@ export function getAsyncValidatorArray<T>(
   options: AsyncValidatorArrayPartialOptions<T> & {
     validationLogic?: any
     form?: any
+    group?: any
     fieldName?: string
   },
 ): T extends FieldValidators<
@@ -463,6 +467,7 @@ export function getAsyncValidatorArray<T>(
 
   return options.validationLogic({
     form: options.form,
+    group: options.group,
     validators: options.validators,
     event: { type: cause, fieldName: options.fieldName, async: true },
     runValidation,
@@ -726,4 +731,15 @@ export function deepCopy<T>(obj: T): T {
     }
   }
   return copy as T
+}
+
+/**
+ * @private
+ */
+export function isFieldInGroup(groupName: string, fieldName: string) {
+  return (
+    fieldName === groupName ||
+    fieldName.startsWith(`${groupName}.`) ||
+    fieldName.startsWith(`${groupName}[`)
+  )
 }

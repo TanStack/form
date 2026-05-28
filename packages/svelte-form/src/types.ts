@@ -6,6 +6,10 @@ import type {
   FieldAsyncValidateOrFn,
   FieldValidateOrFn,
   FormAsyncValidateOrFn,
+  FormGroupApi,
+  FormGroupApiOptions,
+  FormGroupAsyncValidateOrFn,
+  FormGroupValidateOrFn,
   FormValidateOrFn,
   Narrow,
 } from '@tanstack/form-core'
@@ -307,4 +311,257 @@ type FieldComponentProps<
     TParentSubmitMeta
   >,
   'form'
+>
+
+export type FormGroupComponent<
+  TParentData,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TParentSubmitMeta,
+  ExtendedApi = {},
+> =
+  // This giant type allows the type
+  // - to be used as a function (which they are now in Svelte 5)
+  // - to be used as a class (which they were in Svelte 4, and which Svelte intellisense still uses for backwards compat)
+  // - to preserve the generics correctly
+  // Once Svelte intellisense no longer has/needs backwards compat, we can remove the class constructor part
+  (<
+    TName extends DeepKeys<TParentData>,
+    TData extends DeepValue<TParentData, TName>,
+    TOnMount extends
+      | undefined
+      | FormGroupValidateOrFn<TParentData, TName, TData>,
+    TOnChange extends
+      | undefined
+      | FormGroupValidateOrFn<TParentData, TName, TData>,
+    TOnChangeAsync extends
+      | undefined
+      | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+    TOnBlur extends
+      | undefined
+      | FormGroupValidateOrFn<TParentData, TName, TData>,
+    TOnBlurAsync extends
+      | undefined
+      | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+    TOnSubmit extends
+      | undefined
+      | FormGroupValidateOrFn<TParentData, TName, TData>,
+    TOnSubmitAsync extends
+      | undefined
+      | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+    TOnDynamic extends
+      | undefined
+      | FormGroupValidateOrFn<TParentData, TName, TData>,
+    TOnDynamicAsync extends
+      | undefined
+      | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+    TSubmitMeta,
+  >(
+    internal: any,
+    {
+      children,
+      ...formGroupOptions
+    }: Omit<
+      FormGroupComponentProps<
+        TParentData,
+        TName,
+        TData,
+        TOnMount,
+        TOnChange,
+        TOnChangeAsync,
+        TOnBlur,
+        TOnBlurAsync,
+        TOnSubmit,
+        TOnSubmitAsync,
+        TOnDynamic,
+        TOnDynamicAsync,
+        TSubmitMeta,
+        TFormOnMount,
+        TFormOnChange,
+        TFormOnChangeAsync,
+        TFormOnBlur,
+        TFormOnBlurAsync,
+        TFormOnSubmit,
+        TFormOnSubmitAsync,
+        TFormOnDynamic,
+        TFormOnDynamicAsync,
+        TFormOnServer,
+        TParentSubmitMeta,
+        ExtendedApi
+      >,
+      'form'
+    >,
+  ) => {}) &
+    (new <
+      TName extends DeepKeys<TParentData>,
+      TData extends DeepValue<TParentData, TName>,
+      TOnMount extends
+        | undefined
+        | FormGroupValidateOrFn<TParentData, TName, TData>,
+      TOnChange extends
+        | undefined
+        | FormGroupValidateOrFn<TParentData, TName, TData>,
+      TOnChangeAsync extends
+        | undefined
+        | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+      TOnBlur extends
+        | undefined
+        | FormGroupValidateOrFn<TParentData, TName, TData>,
+      TOnBlurAsync extends
+        | undefined
+        | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+      TOnSubmit extends
+        | undefined
+        | FormGroupValidateOrFn<TParentData, TName, TData>,
+      TOnSubmitAsync extends
+        | undefined
+        | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+      TOnDynamic extends
+        | undefined
+        | FormGroupValidateOrFn<TParentData, TName, TData>,
+      TOnDynamicAsync extends
+        | undefined
+        | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+      TSubmitMeta,
+    >(
+      opts: ComponentConstructorOptions<
+        Omit<
+          FormGroupComponentProps<
+            TParentData,
+            TName,
+            TData,
+            TOnMount,
+            TOnChange,
+            TOnChangeAsync,
+            TOnBlur,
+            TOnBlurAsync,
+            TOnSubmit,
+            TOnSubmitAsync,
+            TOnDynamic,
+            TOnDynamicAsync,
+            TSubmitMeta,
+            TFormOnMount,
+            TFormOnChange,
+            TFormOnChangeAsync,
+            TFormOnBlur,
+            TFormOnBlurAsync,
+            TFormOnSubmit,
+            TFormOnSubmitAsync,
+            TFormOnDynamic,
+            TFormOnDynamicAsync,
+            TFormOnServer,
+            TParentSubmitMeta,
+            ExtendedApi
+          >,
+          'form'
+        >
+      >,
+    ) => SvelteComponent) &
+    WithoutFunction<Component>
+
+type FormGroupComponentProps<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName>,
+  TOnMount extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnChangeAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnBlurAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnSubmitAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnDynamic extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  TOnDynamicAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  TSubmitMeta,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TParentSubmitMeta,
+  ExtendedApi = {},
+> = {
+  children: Snippet<
+    [
+      FormGroupApi<
+        TParentData,
+        TName,
+        TData,
+        TOnMount,
+        TOnChange,
+        TOnChangeAsync,
+        TOnBlur,
+        TOnBlurAsync,
+        TOnSubmit,
+        TOnSubmitAsync,
+        TOnDynamic,
+        TOnDynamicAsync,
+        TSubmitMeta,
+        TFormOnMount,
+        TFormOnChange,
+        TFormOnChangeAsync,
+        TFormOnBlur,
+        TFormOnBlurAsync,
+        TFormOnSubmit,
+        TFormOnSubmitAsync,
+        TFormOnDynamic,
+        TFormOnDynamicAsync,
+        TFormOnServer,
+        TParentSubmitMeta
+      > &
+        ExtendedApi,
+    ]
+  >
+} & FormGroupApiOptions<
+  TParentData,
+  TName,
+  TData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
+  TSubmitMeta,
+  TFormOnMount,
+  TFormOnChange,
+  TFormOnChangeAsync,
+  TFormOnBlur,
+  TFormOnBlurAsync,
+  TFormOnSubmit,
+  TFormOnSubmitAsync,
+  TFormOnDynamic,
+  TFormOnDynamicAsync,
+  TFormOnServer,
+  TParentSubmitMeta
 >

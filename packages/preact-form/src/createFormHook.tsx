@@ -17,8 +17,8 @@ import type {
 import type { ComponentType, Context, FunctionComponent } from 'preact'
 import type { PropsWithChildren } from './types'
 import type { FieldComponent } from './useField'
-import type { ReactFormExtendedApi } from './useForm'
-import type { AppFieldExtendedReactFieldGroupApi } from './useFieldGroup'
+import type { PreactFormExtendedApi } from './useForm'
+import type { AppFieldExtendedPreactFieldGroupApi } from './useFieldGroup'
 
 // We should never hit the `null` case here
 const FieldContext = createContext<AnyFieldApi>(null as never)
@@ -71,7 +71,7 @@ function useFormContext() {
     )
   }
 
-  return form as ReactFormExtendedApi<
+  return form as PreactFormExtendedApi<
     // If you need access to the form data, you need to use `withForm` instead
     Record<string, never>,
     any,
@@ -147,7 +147,7 @@ interface CreateFormHookProps<
 /**
  * @private
  */
-export type AppFieldExtendedReactFormApi<
+export type AppFieldExtendedPreactFormApi<
   TFormData,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
   TOnChange extends undefined | FormValidateOrFn<TFormData>,
@@ -162,7 +162,7 @@ export type AppFieldExtendedReactFormApi<
   TSubmitMeta,
   TFieldComponents extends Record<string, ComponentType<any>>,
   TFormComponents extends Record<string, ComponentType<any>>,
-> = ReactFormExtendedApi<
+> = PreactFormExtendedApi<
   TFormData,
   TOnMount,
   TOnChange,
@@ -233,7 +233,7 @@ export interface WithFormProps<
   render: FunctionComponent<
     PropsWithChildren<
       NoInfer<TRenderProps> & {
-        form: AppFieldExtendedReactFormApi<
+        form: AppFieldExtendedPreactFormApi<
           TFormData,
           TOnMount,
           TOnChange,
@@ -266,7 +266,7 @@ export interface WithFieldGroupProps<
   render: FunctionComponent<
     PropsWithChildren<
       NoInfer<TRenderProps> & {
-        group: AppFieldExtendedReactFieldGroupApi<
+        group: AppFieldExtendedPreactFieldGroupApi<
           unknown,
           TFieldGroupData,
           string | FieldsMap<unknown, TFieldGroupData>,
@@ -328,7 +328,7 @@ export function createFormHook<
       TOnServer,
       TSubmitMeta
     >,
-  ): AppFieldExtendedReactFormApi<
+  ): AppFieldExtendedPreactFormApi<
     TFormData,
     TOnMount,
     TOnChange,
@@ -485,7 +485,7 @@ export function createFormHook<
     params: PropsWithChildren<
       NoInfer<TRenderProps> & {
         form:
-          | AppFieldExtendedReactFormApi<
+          | AppFieldExtendedPreactFormApi<
               TFormData,
               TOnMount,
               TOnChange,
@@ -501,7 +501,7 @@ export function createFormHook<
               TComponents,
               TFormComponents
             >
-          | AppFieldExtendedReactFieldGroupApi<
+          | AppFieldExtendedPreactFieldGroupApi<
               // Since this only occurs if you nest it within other field groups, it can be more
               // lenient with the types.
               unknown,
@@ -573,7 +573,7 @@ export function createFormHook<
       TOnServer,
       TSubmitMeta
     >,
-  ): AppFieldExtendedReactFormApi<
+  ): AppFieldExtendedPreactFormApi<
     TFormData,
     TOnMount,
     TOnChange,

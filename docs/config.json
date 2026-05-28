@@ -129,6 +129,10 @@
               "to": "framework/react/guides/arrays"
             },
             {
+              "label": "Form Groups",
+              "to": "framework/react/guides/form-groups"
+            },
+            {
               "label": "Linked Fields",
               "to": "framework/react/guides/linked-fields"
             },
@@ -202,6 +206,10 @@
               "to": "framework/preact/guides/arrays"
             },
             {
+              "label": "Form Groups",
+              "to": "framework/preact/guides/form-groups"
+            },
+            {
               "label": "Linked Fields",
               "to": "framework/preact/guides/linked-fields"
             },
@@ -263,6 +271,10 @@
               "to": "framework/vue/guides/arrays"
             },
             {
+              "label": "Form Groups",
+              "to": "framework/vue/guides/form-groups"
+            },
+            {
               "label": "Linked Fields",
               "to": "framework/vue/guides/linked-fields"
             }
@@ -286,6 +298,10 @@
             {
               "label": "Arrays",
               "to": "framework/angular/guides/arrays"
+            },
+            {
+              "label": "Form Groups",
+              "to": "framework/angular/guides/form-groups"
             },
             {
               "label": "Form Composition",
@@ -317,6 +333,10 @@
               "to": "framework/solid/guides/arrays"
             },
             {
+              "label": "Form Groups",
+              "to": "framework/solid/guides/form-groups"
+            },
+            {
               "label": "Linked Fields",
               "to": "framework/solid/guides/linked-fields"
             },
@@ -346,6 +366,10 @@
               "to": "framework/lit/guides/arrays"
             },
             {
+              "label": "Form Groups",
+              "to": "framework/lit/guides/form-groups"
+            },
+            {
               "label": "Form Composition",
               "to": "framework/lit/guides/form-composition"
             }
@@ -373,6 +397,10 @@
             {
               "label": "Arrays",
               "to": "framework/svelte/guides/arrays"
+            },
+            {
+              "label": "Form Groups",
+              "to": "framework/svelte/guides/form-groups"
             },
             {
               "label": "Linked Fields",
@@ -645,6 +673,10 @@
               "to": "framework/react/examples/simple"
             },
             {
+              "label": "Multi-Step Wizard",
+              "to": "framework/react/examples/multi-step-wizard"
+            },
+            {
               "label": "Arrays",
               "to": "framework/react/examples/array"
             },
@@ -698,6 +730,10 @@
               "to": "framework/vue/examples/simple"
             },
             {
+              "label": "Multi-Step Wizard",
+              "to": "framework/vue/examples/multi-step-wizard"
+            },
+            {
               "label": "Arrays",
               "to": "framework/vue/examples/array"
             },
@@ -713,6 +749,10 @@
             {
               "label": "Simple",
               "to": "framework/angular/examples/simple"
+            },
+            {
+              "label": "Multi-Step Wizard",
+              "to": "framework/angular/examples/multi-step-wizard"
             },
             {
               "label": "Arrays",
@@ -736,6 +776,10 @@
               "to": "framework/solid/examples/simple"
             },
             {
+              "label": "Multi-Step Wizard",
+              "to": "framework/solid/examples/multi-step-wizard"
+            },
+            {
               "label": "Arrays",
               "to": "framework/solid/examples/array"
             },
@@ -757,6 +801,10 @@
               "to": "framework/lit/examples/simple"
             },
             {
+              "label": "Multi-Step Wizard",
+              "to": "framework/lit/examples/multi-step-wizard"
+            },
+            {
               "label": "Array",
               "to": "framework/lit/examples/array"
             },
@@ -771,11 +819,28 @@
           ]
         },
         {
+          "label": "preact",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "framework/preact/examples/simple"
+            },
+            {
+              "label": "Multi-Step Wizard",
+              "to": "framework/preact/examples/multi-step-wizard"
+            }
+          ]
+        },
+        {
           "label": "svelte",
           "children": [
             {
               "label": "Simple",
               "to": "framework/svelte/examples/simple"
+            },
+            {
+              "label": "Multi-Step Wizard",
+              "to": "framework/svelte/examples/multi-step-wizard"
             },
             {
               "label": "Arrays",

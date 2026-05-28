@@ -54,7 +54,7 @@
   "dependencies": {
     "@tanstack/devtools-event-client": "^0.4.1",
     "@tanstack/pacer-lite": "^0.1.1",
-    "@tanstack/store": "^0.9.1"
+    "@tanstack/store": "^0.11.0"
   },
   "devDependencies": {
     "arktype": "^2.1.22",

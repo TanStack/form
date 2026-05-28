@@ -48,7 +48,8 @@
     "src"
   ],
   "dependencies": {
-    "@tanstack/form-core": "workspace:*"
+    "@tanstack/form-core": "workspace:*",
+    "@tanstack/lit-store": "^0.13.2"
   },
   "devDependencies": {
     "lit": "^3.3.1"
