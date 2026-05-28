@@ -69,8 +69,13 @@ import type {
 export type AnyFieldApiOptions = FieldApiOptions<any, any, any, any, any, any>
 export type AnyFieldValidator = FieldValidator<any, any, any>
 
+interface MetaCacheEntry {
+  hidden?: InternalFieldMeta
+  visible?: InternalFieldMeta
+}
+
 // TODO Should be irrelevant for SSR, but double check please
-const metaCache = new WeakMap<InternalBaseFieldMeta, InternalFieldMeta>()
+const metaCache = new WeakMap<InternalBaseFieldMeta, MetaCacheEntry>()
 
 export type NameSegment = string | number
 export type NameSegments = Array<NameSegment>
@@ -1462,8 +1467,8 @@ function deriveFromBaseFieldMeta(
     baseMeta,
     value,
   )
-  const canUseMetaCache = errorVisibility === undefined
-  const cached = canUseMetaCache ? metaCache.get(baseMeta) : undefined
+  const cacheKey = canDisplayErrors ? 'visible' : 'hidden'
+  const cached = metaCache.get(baseMeta)?.[cacheKey]
   if (cached) return cached
 
   const originalErrors = getErrorsFromBaseMeta(baseMeta, previousMeta)
@@ -1507,9 +1512,9 @@ function deriveFromBaseFieldMeta(
     subfields,
     isPristine: !isDirty,
   }
-  if (canUseMetaCache) {
-    metaCache.set(baseMeta, result)
-  }
+  const cacheEntry = metaCache.get(baseMeta) ?? {}
+  cacheEntry[cacheKey] = result
+  metaCache.set(baseMeta, cacheEntry)
   return result
 }
 

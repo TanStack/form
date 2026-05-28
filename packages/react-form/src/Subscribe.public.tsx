@@ -1,5 +1,4 @@
 import { shallow, useSelector } from '@tanstack/react-store'
-import type { FormState, FormValidators } from '@tanstack/form-core-v2'
 import type {
   Atom,
   ReadonlyAtom,
@@ -35,21 +34,14 @@ export interface SubscribeProps<TSourceData, TSelected> {
 }
 
 /**
- * A React component that allows you to subscribe to the form state.
+ * A React component that allows you to subscribe to store state.
  *
- * This is useful for opting into state re-renders for specific parts of the form state.
+ * This is useful for opting into state re-renders for specific parts of the state.
  */
 export function Subscribe<
-  TFormData,
-  TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
+  TSourceData,
   const TSelected,
->(
-  props: SubscribeProps<
-    FormState<TFormData, TFormValidators, TSubmitReturn>,
-    TSelected
-  >,
-): CrossVersionReactNode {
+>(props: SubscribeProps<TSourceData, TSelected>): CrossVersionReactNode {
   const selected = useSelector(
     // Atom and store share the same selection protocol; union args need a widen for TS.
     props.source,

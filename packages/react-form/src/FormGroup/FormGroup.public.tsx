@@ -3,32 +3,17 @@ import type { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
 import type {
   DeepKeys,
   DeepValue,
-  FormGroupApi,
   FormGroupValidators,
   FormValidators,
 } from '@tanstack/form-core-v2'
 import type { CrossVersionReactNode } from '../reactTypes.public'
 import type { ReactFormGroupProps } from '../ReactForm/Components.public'
 
-export type ReactFormGroupApi<
-  TFormData,
-  TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
-  TGroupName extends DeepKeys<TFormData>,
-  TGroupValue extends DeepValue<TFormData, TGroupName>,
-  TGroupValidators extends FormGroupValidators<
-    TFormData,
-    TGroupName,
-    TGroupValue
-  >,
-> = FormGroupApi<
-  TFormData,
-  TFormValidators,
-  TSubmitReturn,
-  TGroupName,
-  TGroupValue,
-  TGroupValidators
->
+export type {
+  ReactFormGroupApi,
+  ReactFormGroupSubscribeComponent,
+  ReactFormGroupSubscribeProps,
+} from '../ReactForm/Components.public'
 
 export function FormGroup<
   TFormData,
@@ -51,7 +36,14 @@ export function FormGroup<
     TGroupValidators
   >,
 ): CrossVersionReactNode {
-  const groupApi = useFormGroup({
+  const groupApi = useFormGroup<
+    TFormData,
+    TFormValidators,
+    TSubmitReturn,
+    TGroupName,
+    TGroupValue,
+    TGroupValidators
+  >({
     form: props.form as InternalReactFormApi,
     name: props.name,
     validators: props.validators,

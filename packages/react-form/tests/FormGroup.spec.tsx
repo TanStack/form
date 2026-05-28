@@ -16,7 +16,9 @@ describe('Form groups', () => {
         <FormGroup form={form} name="step">
           {(group) => (
             <>
-              <span data-testid="group-value">{group.value.name}</span>
+              <group.Subscribe selector={(state) => state.value.name}>
+                {(name) => <span data-testid="group-value">{name}</span>}
+              </group.Subscribe>
               <form.Field name="step.name">
                 {(field) => (
                   <input
@@ -68,9 +70,11 @@ describe('Form groups', () => {
               <button type="button" onClick={() => group.handleSubmit()}>
                 Continue
               </button>
-              <span data-testid="group-error">
-                {group.errors[0]?.message ?? ''}
-              </span>
+              <group.Subscribe selector={(state) => state.errors[0]?.message}>
+                {(message) => (
+                  <span data-testid="group-error">{message ?? ''}</span>
+                )}
+              </group.Subscribe>
             </>
           )}
         </FormGroup>
@@ -271,7 +275,11 @@ describe('Form groups', () => {
         <FormGroup form={form} name="step">
           {(group) => (
             <>
-              <span data-testid="names">{group.value.names.join(',')}</span>
+              <group.Subscribe selector={(state) => state.value.names}>
+                {(names) => (
+                  <span data-testid="names">{names.join(',')}</span>
+                )}
+              </group.Subscribe>
               <form.ArrayField name="step.names">
                 {(field) => (
                   <button type="button" onClick={() => field.pushValue('Bob')}>
@@ -290,5 +298,162 @@ describe('Form groups', () => {
     await user.click(getByRole('button', { name: 'Add name' }))
 
     expect(getByTestId('names')).toHaveTextContent('Alice,Bob')
+  })
+
+  it('does not re-render the group children when a descendant field changes', async () => {
+    let groupRenderCount = 0
+    let nameRenderCount = 0
+    let emailRenderCount = 0
+
+    function Component() {
+      const form = useForm({
+        defaultValues: {
+          step: {
+            name: '',
+            email: '',
+          },
+        },
+      })
+
+      return (
+        <FormGroup form={form} name="step">
+          {() => {
+            groupRenderCount++
+
+            return (
+              <>
+                <form.Field name="step.name">
+                  {(field) => {
+                    nameRenderCount++
+
+                    return (
+                      <input
+                        aria-label="Name"
+                        value={field.value}
+                        onChange={(event) =>
+                          field.handleChange(event.target.value)
+                        }
+                      />
+                    )
+                  }}
+                </form.Field>
+                <form.Field name="step.email">
+                  {(field) => {
+                    emailRenderCount++
+
+                    return (
+                      <input
+                        aria-label="Email"
+                        value={field.value}
+                        onChange={(event) =>
+                          field.handleChange(event.target.value)
+                        }
+                      />
+                    )
+                  }}
+                </form.Field>
+              </>
+            )
+          }}
+        </FormGroup>
+      )
+    }
+
+    const { getByLabelText } = render(<Component />)
+
+    expect(groupRenderCount).toBe(1)
+    expect(nameRenderCount).toBe(1)
+    expect(emailRenderCount).toBe(1)
+
+    await user.type(getByLabelText('Name'), 'A')
+
+    expect(groupRenderCount).toBe(1)
+    expect(nameRenderCount).toBeGreaterThan(1)
+    expect(emailRenderCount).toBe(1)
+  })
+
+  it('keeps the group Subscribe component stable across parent re-renders', async () => {
+    const subscribeComponents: Array<unknown> = []
+
+    function SubscribeProbe(props: { subscribe: unknown }) {
+      React.useEffect(() => {
+        subscribeComponents.push(props.subscribe)
+      }, [props.subscribe])
+
+      return null
+    }
+
+    function Component() {
+      const [renderCount, setRenderCount] = useState(0)
+      const form = useForm({ defaultValues: { step: { name: 'Alice' } } })
+
+      return (
+        <>
+          <button type="button" onClick={() => setRenderCount((v) => v + 1)}>
+            Re-render
+          </button>
+          <span data-testid="render-count">{renderCount}</span>
+          <FormGroup form={form} name="step">
+            {(group) => <SubscribeProbe subscribe={group.Subscribe} />}
+          </FormGroup>
+        </>
+      )
+    }
+
+    const { getByRole, getByTestId } = render(<Component />)
+
+    expect(getByTestId('render-count')).toHaveTextContent('0')
+
+    await user.click(getByRole('button', { name: 'Re-render' }))
+
+    expect(getByTestId('render-count')).toHaveTextContent('1')
+    expect(subscribeComponents).toHaveLength(1)
+  })
+
+  it('does not attach React components to the core group api', async () => {
+    let observed:
+      | { wrapperHasSubscribe: boolean; coreHasSubscribe: boolean }
+      | undefined
+
+    function GroupApiProbe(props: {
+      group: Parameters<
+        Parameters<typeof FormGroup<any, any, any, any, any, any>>[0]['children']
+      >[0]
+    }) {
+      React.useEffect(() => {
+        const coreGroup = Object.getPrototypeOf(props.group)
+        observed = {
+          wrapperHasSubscribe: Object.prototype.hasOwnProperty.call(
+            props.group,
+            'Subscribe',
+          ),
+          coreHasSubscribe: Object.prototype.hasOwnProperty.call(
+            coreGroup,
+            'Subscribe',
+          ),
+        }
+      }, [props.group])
+
+      return null
+    }
+
+    function Component() {
+      const form = useForm({ defaultValues: { step: { name: 'Alice' } } })
+
+      return (
+        <FormGroup form={form} name="step">
+          {(group) => <GroupApiProbe group={group} />}
+        </FormGroup>
+      )
+    }
+
+    render(<Component />)
+
+    await vi.waitFor(() => {
+      expect(observed).toEqual({
+        wrapperHasSubscribe: true,
+        coreHasSubscribe: false,
+      })
+    })
   })
 })

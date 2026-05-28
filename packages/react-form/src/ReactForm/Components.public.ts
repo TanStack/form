@@ -8,6 +8,7 @@ import type {
   FieldValidators,
   FormGroupApi,
   FormGroupOptions,
+  FormGroupState,
   FormGroupValidators,
   FormState,
   FormValidators,
@@ -109,6 +110,72 @@ export type ReactFormSubscribeComponent<
     TSelected
   >,
 ) => CrossVersionReactNode
+
+export type ReactFormGroupSubscribeProps<
+  TFormData,
+  TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
+  TGroupName extends DeepKeys<TFormData>,
+  TGroupValue extends DeepValue<TFormData, TGroupName>,
+  TSelected,
+> = Omit<
+  SubscribeProps<
+    FormGroupState<
+      TFormData,
+      TFormValidators,
+      TSubmitReturn,
+      TGroupName,
+      TGroupValue
+    >,
+    TSelected
+  >,
+  'source'
+>
+
+export type ReactFormGroupSubscribeComponent<
+  TFormData,
+  TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
+  TGroupName extends DeepKeys<TFormData>,
+  TGroupValue extends DeepValue<TFormData, TGroupName>,
+> = <TSelected>(
+  props: ReactFormGroupSubscribeProps<
+    TFormData,
+    TFormValidators,
+    TSubmitReturn,
+    TGroupName,
+    TGroupValue,
+    TSelected
+  >,
+) => CrossVersionReactNode
+
+export type ReactFormGroupApi<
+  TFormData,
+  TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
+  TGroupName extends DeepKeys<TFormData>,
+  TGroupValue extends DeepValue<TFormData, TGroupName>,
+  TGroupValidators extends FormGroupValidators<
+    TFormData,
+    TGroupName,
+    TGroupValue
+  >,
+> = FormGroupApi<
+  TFormData,
+  TFormValidators,
+  TSubmitReturn,
+  TGroupName,
+  TGroupValue,
+  TGroupValidators
+> & {
+  Subscribe: ReactFormGroupSubscribeComponent<
+    TFormData,
+    TFormValidators,
+    TSubmitReturn,
+    TGroupName,
+    TGroupValue
+  >
+}
 
 export interface ReactFormFieldProps<
   TFormData,
@@ -231,7 +298,7 @@ export interface ReactFormGroupProps<
 > {
   form: ReactFormApi<TFormData, TFormValidators, TSubmitReturn, any, any>
   children: (
-    groupApi: FormGroupApi<
+    groupApi: ReactFormGroupApi<
       TFormData,
       TFormValidators,
       TSubmitReturn,
