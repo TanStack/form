@@ -10,6 +10,7 @@ title: "@tanstack/angular-form"
 - [TanStackAppField](classes/TanStackAppField.md)
 - [TanStackField](classes/TanStackField.md)
 - [TanStackFieldInjectable](classes/TanStackFieldInjectable.md)
+- [TanStackFormGroup](classes/TanStackFormGroup.md)
 - [TanStackWithForm](classes/TanStackWithForm.md)
 - [TanStackWithFormInjectable](classes/TanStackWithFormInjectable.md)
 

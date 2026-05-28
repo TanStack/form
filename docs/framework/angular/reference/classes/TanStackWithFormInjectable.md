@@ -5,7 +5,7 @@ title: TanStackWithFormInjectable
 
 # Class: TanStackWithFormInjectable
 
-Defined in: [with-form-injectable.ts:10](https://github.com/TanStack/form/blob/main/packages/angular-form/src/with-form-injectable.ts#L10)
+Defined in: [angular-form/src/with-form-injectable.ts:10](https://github.com/TanStack/form/blob/main/packages/angular-form/src/with-form-injectable.ts#L10)
 
 ## Constructors
 
@@ -27,4 +27,4 @@ new TanStackWithFormInjectable(): TanStackWithFormInjectable;
 _form: WritableSignal<FormApi<any, any, any, any, any, any, any, any, any, any, any, any>>;
 ```
 
-Defined in: [with-form-injectable.ts:11](https://github.com/TanStack/form/blob/main/packages/angular-form/src/with-form-injectable.ts#L11)
+Defined in: [angular-form/src/with-form-injectable.ts:11](https://github.com/TanStack/form/blob/main/packages/angular-form/src/with-form-injectable.ts#L11)

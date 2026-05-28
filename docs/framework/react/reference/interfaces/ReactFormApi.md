@@ -5,7 +5,7 @@ title: ReactFormApi
 
 # Interface: ReactFormApi\<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta\>
 
-Defined in: [packages/react-form/src/useForm.tsx:23](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L23)
+Defined in: [packages/react-form/src/useForm.tsx:25](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L25)
 
 Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned from `useForm`
 
@@ -67,9 +67,19 @@ Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned
 Field: FieldComponent<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta>;
 ```
 
-Defined in: [packages/react-form/src/useForm.tsx:40](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L40)
+Defined in: [packages/react-form/src/useForm.tsx:42](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L42)
 
 A React component to render form fields. With this, you can render and manage individual form fields.
+
+***
+
+### FormGroup
+
+```ts
+FormGroup: FormGroupComponent<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta>;
+```
+
+Defined in: [packages/react-form/src/useForm.tsx:56](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L56)
 
 ***
 
@@ -79,7 +89,7 @@ A React component to render form fields. With this, you can render and manage in
 Subscribe: <TSelected>(props) => ReactNode | Promise<ReactNode>;
 ```
 
-Defined in: [packages/react-form/src/useForm.tsx:57](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L57)
+Defined in: [packages/react-form/src/useForm.tsx:73](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L73)
 
 A `Subscribe` function that allows you to listen and react to changes in the form's state. It's especially useful when you need to execute side effects or render specific components in response to state updates.
 

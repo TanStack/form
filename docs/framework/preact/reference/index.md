@@ -7,7 +7,7 @@ title: "@tanstack/preact-form"
 
 ## Interfaces
 
-- [ReactFormApi](interfaces/ReactFormApi.md)
+- [PreactFormApi](interfaces/PreactFormApi.md)
 - [UseFieldOptions](interfaces/UseFieldOptions.md)
 - [UseFieldOptionsBound](interfaces/UseFieldOptionsBound.md)
 - [WithFieldGroupProps](interfaces/WithFieldGroupProps.md)
@@ -16,16 +16,20 @@ title: "@tanstack/preact-form"
 ## Type Aliases
 
 - [FieldComponent](type-aliases/FieldComponent.md)
+- [FormGroupComponent](type-aliases/FormGroupComponent.md)
 - [LensFieldComponent](type-aliases/LensFieldComponent.md)
+- [PreactFormExtendedApi](type-aliases/PreactFormExtendedApi.md)
 - [PropsWithChildren](type-aliases/PropsWithChildren.md)
-- [ReactFormExtendedApi](type-aliases/ReactFormExtendedApi.md)
 - [ServerFormState](type-aliases/ServerFormState.md)
 - [UseField](type-aliases/UseField.md)
+- [UseFormGroup](type-aliases/UseFormGroup.md)
 
 ## Variables
 
 - [Field](variables/Field.md)
+- [FormGroup](variables/FormGroup.md)
 - [useIsomorphicLayoutEffect](variables/useIsomorphicLayoutEffect.md)
+- [~~useStore~~](variables/useStore.md)
 
 ## Functions
 
@@ -34,4 +38,4 @@ title: "@tanstack/preact-form"
 - [useField](functions/useField.md)
 - [useFieldGroup](functions/useFieldGroup.md)
 - [useForm](functions/useForm.md)
-- [useStore](functions/useStore.md)
+- [useFormGroup](functions/useFormGroup.md)

@@ -5,7 +5,7 @@ title: SolidFormApi
 
 # Interface: SolidFormApi\<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta\>
 
-Defined in: [packages/solid-form/src/createForm.tsx:14](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L14)
+Defined in: [packages/solid-form/src/createForm.tsx:16](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L16)
 
 ## Type Parameters
 
@@ -65,7 +65,17 @@ Defined in: [packages/solid-form/src/createForm.tsx:14](https://github.com/TanSt
 Field: FieldComponent<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta>;
 ```
 
-Defined in: [packages/solid-form/src/createForm.tsx:28](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L28)
+Defined in: [packages/solid-form/src/createForm.tsx:30](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L30)
+
+***
+
+### FormGroup
+
+```ts
+FormGroup: FormGroupComponent<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta>;
+```
+
+Defined in: [packages/solid-form/src/createForm.tsx:44](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L44)
 
 ***
 
@@ -75,7 +85,7 @@ Defined in: [packages/solid-form/src/createForm.tsx:28](https://github.com/TanSt
 Subscribe: <TSelected>(props) => Element;
 ```
 
-Defined in: [packages/solid-form/src/createForm.tsx:77](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L77)
+Defined in: [packages/solid-form/src/createForm.tsx:93](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L93)
 
 #### Type Parameters
 
@@ -107,7 +117,7 @@ Defined in: [packages/solid-form/src/createForm.tsx:77](https://github.com/TanSt
 useStore: <TSelected>(selector?) => () => TSelected;
 ```
 
-Defined in: [packages/solid-form/src/createForm.tsx:42](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L42)
+Defined in: [packages/solid-form/src/createForm.tsx:58](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L58)
 
 #### Type Parameters
 

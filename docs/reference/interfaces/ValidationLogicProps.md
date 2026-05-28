@@ -5,7 +5,7 @@ title: ValidationLogicProps
 
 # Interface: ValidationLogicProps
 
-Defined in: [packages/form-core/src/ValidationLogic.ts:20](https://github.com/TanStack/form/blob/main/packages/form-core/src/ValidationLogic.ts#L20)
+Defined in: [packages/form-core/src/ValidationLogic.ts:21](https://github.com/TanStack/form/blob/main/packages/form-core/src/ValidationLogic.ts#L21)
 
 ## Properties
 
@@ -15,7 +15,7 @@ Defined in: [packages/form-core/src/ValidationLogic.ts:20](https://github.com/Ta
 event: object;
 ```
 
-Defined in: [packages/form-core/src/ValidationLogic.ts:28](https://github.com/TanStack/form/blob/main/packages/form-core/src/ValidationLogic.ts#L28)
+Defined in: [packages/form-core/src/ValidationLogic.ts:35](https://github.com/TanStack/form/blob/main/packages/form-core/src/ValidationLogic.ts#L35)
 
 #### async
 
@@ -43,7 +43,21 @@ type: "change" | "blur" | "submit" | "mount" | "server";
 form: AnyFormApi;
 ```
 
-Defined in: [packages/form-core/src/ValidationLogic.ts:22](https://github.com/TanStack/form/blob/main/packages/form-core/src/ValidationLogic.ts#L22)
+Defined in: [packages/form-core/src/ValidationLogic.ts:23](https://github.com/TanStack/form/blob/main/packages/form-core/src/ValidationLogic.ts#L23)
+
+***
+
+### group?
+
+```ts
+optional group: AnyFormGroupApi;
+```
+
+Defined in: [packages/form-core/src/ValidationLogic.ts:29](https://github.com/TanStack/form/blob/main/packages/form-core/src/ValidationLogic.ts#L29)
+
+Set when the validators being processed belong to a `FormGroupApi`.
+Allows validation strategies (e.g. `revalidateLogic`) to gate their
+behavior on the group's own state instead of the parent form's.
 
 ***
 
@@ -53,7 +67,7 @@ Defined in: [packages/form-core/src/ValidationLogic.ts:22](https://github.com/Ta
 runValidation: (props) => void;
 ```
 
-Defined in: [packages/form-core/src/ValidationLogic.ts:33](https://github.com/TanStack/form/blob/main/packages/form-core/src/ValidationLogic.ts#L33)
+Defined in: [packages/form-core/src/ValidationLogic.ts:40](https://github.com/TanStack/form/blob/main/packages/form-core/src/ValidationLogic.ts#L40)
 
 #### Parameters
 
@@ -84,4 +98,4 @@ validators:
   | undefined;
 ```
 
-Defined in: [packages/form-core/src/ValidationLogic.ts:24](https://github.com/TanStack/form/blob/main/packages/form-core/src/ValidationLogic.ts#L24)
+Defined in: [packages/form-core/src/ValidationLogic.ts:31](https://github.com/TanStack/form/blob/main/packages/form-core/src/ValidationLogic.ts#L31)

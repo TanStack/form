@@ -9,7 +9,7 @@ title: createFieldMap
 function createFieldMap<T>(values): { [K in string | number | symbol]: K };
 ```
 
-Defined in: [packages/form-core/src/utils.ts:609](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.ts#L609)
+Defined in: [packages/form-core/src/utils.ts:614](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.ts#L614)
 
 ## Type Parameters
 

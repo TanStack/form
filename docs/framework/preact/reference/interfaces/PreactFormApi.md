@@ -1,11 +1,11 @@
 ---
-id: ReactFormApi
-title: ReactFormApi
+id: PreactFormApi
+title: PreactFormApi
 ---
 
-# Interface: ReactFormApi\<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta\>
+# Interface: PreactFormApi\<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta\>
 
-Defined in: [packages/preact-form/src/useForm.tsx:23](https://github.com/TanStack/form/blob/main/packages/preact-form/src/useForm.tsx#L23)
+Defined in: [packages/preact-form/src/useForm.tsx:24](https://github.com/TanStack/form/blob/main/packages/preact-form/src/useForm.tsx#L24)
 
 Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned from `useForm`
 
@@ -67,9 +67,19 @@ Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned
 Field: FieldComponent<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta>;
 ```
 
-Defined in: [packages/preact-form/src/useForm.tsx:40](https://github.com/TanStack/form/blob/main/packages/preact-form/src/useForm.tsx#L40)
+Defined in: [packages/preact-form/src/useForm.tsx:41](https://github.com/TanStack/form/blob/main/packages/preact-form/src/useForm.tsx#L41)
 
-A React component to render form fields. With this, you can render and manage individual form fields.
+A Preact component to render form fields. With this, you can render and manage individual form fields.
+
+***
+
+### FormGroup
+
+```ts
+FormGroup: FormGroupComponent<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta>;
+```
+
+Defined in: [packages/preact-form/src/useForm.tsx:55](https://github.com/TanStack/form/blob/main/packages/preact-form/src/useForm.tsx#L55)
 
 ***
 
@@ -79,7 +89,7 @@ A React component to render form fields. With this, you can render and manage in
 Subscribe: <TSelected>(props) => ComponentChildren;
 ```
 
-Defined in: [packages/preact-form/src/useForm.tsx:57](https://github.com/TanStack/form/blob/main/packages/preact-form/src/useForm.tsx#L57)
+Defined in: [packages/preact-form/src/useForm.tsx:72](https://github.com/TanStack/form/blob/main/packages/preact-form/src/useForm.tsx#L72)
 
 A `Subscribe` function that allows you to listen and react to changes in the form's state. It's especially useful when you need to execute side effects or render specific components in response to state updates.
 
@@ -87,7 +97,7 @@ A `Subscribe` function that allows you to listen and react to changes in the for
 
 ##### TSelected
 
-`TSelected` = `FormState`\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`\>
+`TSelected` = `NoInfer`\<`FormState`\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`\>\>
 
 #### Parameters
 

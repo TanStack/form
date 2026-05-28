@@ -12,7 +12,7 @@ type FieldComponent<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync
 }) => ReturnType<FunctionComponent>;
 ```
 
-Defined in: [packages/preact-form/src/useField.tsx:521](https://github.com/TanStack/form/blob/main/packages/preact-form/src/useField.tsx#L521)
+Defined in: [packages/preact-form/src/useField.tsx:472](https://github.com/TanStack/form/blob/main/packages/preact-form/src/useField.tsx#L472)
 
 A type alias representing a field component for a specific form data type.
 

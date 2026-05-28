@@ -46,9 +46,9 @@ useFieldContext: <TData>() => FieldApi<any, string, TData, any, any, any, any, a
 ### useFormContext()
 
 ```ts
-useFormContext: () => ReactFormExtendedApi<Record<string, never>, any, any, any, any, any, any, any, any, any, any, any>;
+useFormContext: () => PreactFormExtendedApi<Record<string, never>, any, any, any, any, any, any, any, any, any, any, any>;
 ```
 
 #### Returns
 
-[`ReactFormExtendedApi`](../type-aliases/ReactFormExtendedApi.md)\<`Record`\<`string`, `never`\>, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>
+[`PreactFormExtendedApi`](../type-aliases/PreactFormExtendedApi.md)\<`Record`\<`string`, `never`\>, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>

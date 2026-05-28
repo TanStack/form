@@ -9,7 +9,7 @@ title: uuid
 function uuid(): string;
 ```
 
-Defined in: [packages/form-core/src/utils.ts:648](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.ts#L648)
+Defined in: [packages/form-core/src/utils.ts:653](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.ts#L653)
 
 ## Returns
 

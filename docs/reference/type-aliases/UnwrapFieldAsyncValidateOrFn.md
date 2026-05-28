@@ -9,10 +9,11 @@ title: UnwrapFieldAsyncValidateOrFn
 type UnwrapFieldAsyncValidateOrFn<TName, TValidateOrFn, TFormValidateOrFn> = 
   | [TFormValidateOrFn] extends [StandardSchemaV1<any, infer TStandardOut>] ? TName extends keyof TStandardOut ? StandardSchemaV1Issue[] : undefined : undefined
   | UnwrapFormAsyncValidateOrFnForInner<TFormValidateOrFn> extends infer TFormValidateVal ? TFormValidateVal extends object ? [DeepValue<TFormValidateVal, TName>] extends [never] ? undefined : StandardSchemaV1Issue[] : TFormValidateVal extends object ? TName extends keyof TFormValidateVal["fields"] ? TFormValidateVal["fields"][TName] : undefined : undefined : never
-  | [TValidateOrFn] extends [FieldValidateAsyncFn<any, any, any>] ? Awaited<ReturnType<TValidateOrFn>> : [TValidateOrFn] extends [StandardSchemaV1<any, any>] ? StandardSchemaV1Issue[] : undefined;
+  | [TValidateOrFn] extends [FieldValidateAsyncFn<any, any, any>] ? Awaited<ReturnType<TValidateOrFn>> : [TValidateOrFn] extends [StandardSchemaV1<any, any>] ? StandardSchemaV1Issue[] : undefined
+  | [TValidateOrFn] extends [FormGroupValidateAsyncFn<any, any, any>] ? Awaited<ReturnType<TValidateOrFn>> : [TValidateOrFn] extends [StandardSchemaV1<any, any>] ? StandardSchemaV1Issue[] : undefined;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:226](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L226)
+Defined in: [packages/form-core/src/types.ts:333](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L333)
 
 ## Type Parameters
 
@@ -22,7 +23,10 @@ Defined in: [packages/form-core/src/FieldApi.ts:226](https://github.com/TanStack
 
 ### TValidateOrFn
 
-`TValidateOrFn` *extends* `undefined` \| `FieldAsyncValidateOrFn`\<`any`, `any`, `any`\>
+`TValidateOrFn` *extends* 
+  \| `undefined`
+  \| `FieldAsyncValidateOrFn`\<`any`, `any`, `any`\>
+  \| `FormGroupAsyncValidateOrFn`\<`any`, `any`\>
 
 ### TFormValidateOrFn
 
