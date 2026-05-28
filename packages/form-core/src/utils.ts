@@ -1,5 +1,6 @@
 import { liteThrottle } from '@tanstack/pacer-lite'
 import { formEventClient } from './EventClient'
+import { AnyFormGroupApi } from './FormGroupApi'
 import type { ValidationLogicProps } from './ValidationLogic'
 import type { FieldValidators } from './FieldApi'
 import type { AnyFormApi, FormValidators } from './FormApi'
@@ -9,7 +10,6 @@ import type {
   ValidationError,
   ValidationSource,
 } from './types'
-import { AnyFormGroupApi } from './FormGroupApi'
 
 export type UpdaterFn<TInput, TOutput = TInput> = (input: TInput) => TOutput
 
