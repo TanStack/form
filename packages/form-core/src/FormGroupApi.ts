@@ -195,6 +195,7 @@ export type FormGroupListenerFn<
   >
 }) => void
 
+// TODO: Add `listenTo` props back
 export interface FormGroupValidators<
   TParentData,
   TName extends DeepKeys<TParentData>,
@@ -248,7 +249,7 @@ export interface FormGroupValidators<
   /**
    * An optional list of field names that should trigger this field's `onChange` and `onChangeAsync` events when its value changes
    */
-  onChangeListenTo?: DeepKeys<TParentData>[]
+  // onChangeListenTo?: DeepKeys<TParentData>[]
   /**
    * An optional function, that runs on the blur event of input.
    *
@@ -271,7 +272,7 @@ export interface FormGroupValidators<
   /**
    * An optional list of field names that should trigger this field's `onBlur` and `onBlurAsync` events when its value changes
    */
-  onBlurListenTo?: DeepKeys<TParentData>[]
+  // onBlurListenTo?: DeepKeys<TParentData>[]
   /**
    * An optional function, that runs on the submit event of form.
    *
