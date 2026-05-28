@@ -1212,6 +1212,8 @@ export class FormGroupApi<
    */
   private _lastDistributedFieldNames: Partial<Record<string, Set<string>>> = {}
 
+  private fieldInfo: FieldInfo<TParentData>
+
   constructor(
     opts: FormGroupApiOptions<
       TParentData,
@@ -1248,6 +1250,18 @@ export class FormGroupApi<
       validations: {} as Record<ValidationCause, never>,
       listeners: {} as Record<ListenerCause, never>,
       formListeners: {} as Record<ListenerCause, never>,
+    }
+
+    this.fieldInfo = {
+      instance: null,
+      validationMetaMap: {
+        onChange: undefined,
+        onBlur: undefined,
+        onSubmit: undefined,
+        onMount: undefined,
+        onServer: undefined,
+        onDynamic: undefined,
+      },
     }
 
     this.store = createStore(
@@ -1433,6 +1447,7 @@ export class FormGroupApi<
   mount = () => {
     this.update(this.options as never)
     this.form.formGroupApis.add(this)
+    this.fieldInfo.instance = this as never
 
     // Seed the parent form's `formGroupStateBase` entry for this group.
     // We always write so that `formGroupMetaDerived` re-derives now that
@@ -1494,7 +1509,53 @@ export class FormGroupApi<
       this.distributeFieldErrors('onMount', groupFieldErrors)
     }
 
+    this.options.listeners?.onMount?.({
+      value: this.state.value,
+      groupApi: this,
+    })
+
     return () => {
+      // Stop any in-flight async validation or listener work tied to this instance.
+      for (const [key, timeout] of Object.entries(
+        this.timeoutIds.validations,
+      )) {
+        if (timeout) {
+          clearTimeout(timeout)
+          this.timeoutIds.validations[
+            key as keyof typeof this.timeoutIds.validations
+          ] = null
+        }
+      }
+      for (const [key, timeout] of Object.entries(this.timeoutIds.listeners)) {
+        if (timeout) {
+          clearTimeout(timeout)
+          this.timeoutIds.listeners[
+            key as keyof typeof this.timeoutIds.listeners
+          ] = null
+        }
+      }
+      for (const [key, timeout] of Object.entries(
+        this.timeoutIds.formListeners,
+      )) {
+        if (timeout) {
+          clearTimeout(timeout)
+          this.timeoutIds.formListeners[
+            key as keyof typeof this.timeoutIds.formListeners
+          ] = null
+        }
+      }
+
+      if (this.fieldInfo.instance !== this) return
+
+      for (const [key, validationMeta] of Object.entries(
+        this.fieldInfo.validationMetaMap,
+      )) {
+        validationMeta?.lastAbortController.abort()
+        this.fieldInfo.validationMetaMap[
+          key as keyof typeof this.fieldInfo.validationMetaMap
+        ] = undefined
+      }
+
       this.form.formGroupApis.delete(this)
 
       // Reset this group's submission lifecycle state on the form. Mirrors
@@ -1507,6 +1568,13 @@ export class FormGroupApi<
           [this.name as never]: getDefaultFormGroupState({}),
         },
       }))
+
+      this.fieldInfo.instance = null
+
+      this.options.listeners?.onUnmount?.({
+        value: this.state.value,
+        groupApi: this,
+      })
     }
   }
 
@@ -1565,7 +1633,7 @@ export class FormGroupApi<
   /**
    * Gets the field information object.
    */
-  getInfo = () => this.form.getFieldInfo(this.name)
+  getInfo = () => this.fieldInfo
 
   /**
    * @private
@@ -2274,20 +2342,20 @@ export class FormGroupApi<
    * @private
    */
   triggerOnChangeListener = () => {
-    const formDebounceMs = this.form.options.listeners?.onChangeDebounceMs
+    const formDebounceMs = this.form.options.listeners?.onChangeGroupDebounceMs
     if (formDebounceMs && formDebounceMs > 0) {
       if (this.timeoutIds.formListeners.change) {
         clearTimeout(this.timeoutIds.formListeners.change)
       }
 
       this.timeoutIds.formListeners.change = setTimeout(() => {
-        this.form.options.listeners?.onChange?.({
+        this.form.options.listeners?.onChangeGroup?.({
           formApi: this.form,
           groupApi: this,
         })
       }, formDebounceMs)
     } else {
-      this.form.options.listeners?.onChange?.({
+      this.form.options.listeners?.onChangeGroup?.({
         formApi: this.form,
         groupApi: this,
       })

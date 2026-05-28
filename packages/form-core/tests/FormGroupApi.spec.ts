@@ -223,6 +223,115 @@ describe('form group api', () => {
     expect(step1Group.state.meta.canSubmit).toBe(false)
   })
 
+  it('should run listener onMount', () => {
+    const form = new FormApi({
+      defaultValues: {
+        step1: { name: 'test' },
+        step2: { name: 'test2' },
+      },
+    })
+
+    const onMount = vi.fn()
+    const step1Group = new FormGroupApi({
+      name: 'step1',
+      form,
+      listeners: {
+        onMount,
+      },
+    })
+
+    form.mount()
+    step1Group.mount()
+
+    expect(onMount).toHaveBeenCalledWith({
+      value: { name: 'test' },
+      groupApi: step1Group,
+    })
+  })
+
+  it('should run listener onUnmount', () => {
+    const form = new FormApi({
+      defaultValues: {
+        step1: { name: 'test' },
+        step2: { name: 'test2' },
+      },
+    })
+
+    const onUnmount = vi.fn()
+    const step1Group = new FormGroupApi({
+      name: 'step1',
+      form,
+      listeners: {
+        onUnmount,
+      },
+    })
+
+    form.mount()
+    const unmount = step1Group.mount()
+    expect(onUnmount).not.toHaveBeenCalled()
+
+    unmount()
+
+    expect(onUnmount).toHaveBeenCalledWith({
+      value: { name: 'test' },
+      groupApi: step1Group,
+    })
+  })
+
+  it('should stop in-flight async group validation on unmount', async () => {
+    vi.useFakeTimers()
+
+    try {
+      const form = new FormApi({
+        defaultValues: {
+          step1: { name: 'test' },
+          step2: { name: 'test2' },
+        },
+      })
+
+      let resolve!: () => void
+      const promise = new Promise<void>((r) => {
+        resolve = r
+      })
+      let signal: AbortSignal | undefined
+
+      const step1Group = new FormGroupApi({
+        name: 'step1',
+        form,
+        validators: {
+          onChangeAsyncDebounceMs: 0,
+          onChangeAsync: async ({ signal: validatorSignal }) => {
+            signal = validatorSignal
+            await promise
+            return 'Name is invalid'
+          },
+        },
+      })
+
+      form.mount()
+      const unmount = step1Group.mount()
+
+      const validation = step1Group.validate('change', {
+        skipFormValidation: true,
+        skipRelatedFieldValidation: true,
+      })
+      await vi.runAllTimersAsync()
+
+      expect(signal?.aborted).toBe(false)
+
+      unmount()
+
+      expect(signal?.aborted).toBe(true)
+
+      resolve()
+      await validation
+
+      expect(step1Group.state.meta.errorMap.onChange).toBeUndefined()
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
   it('Should propagate onMount field errors from group validators to child fields', () => {
     const form = new FormApi({
       defaultValues: {
