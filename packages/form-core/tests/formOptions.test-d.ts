@@ -319,4 +319,71 @@ describe('formOptions', () => {
       ('Too short!' | 'I just need an error')[]
     >()
   })
+
+  it('validators.onSubmit data param should NOT be any when defined in formOptions (#1613)', () => {
+    type FormData = {
+      description: string
+    }
+
+    const formOpts = formOptions({
+      defaultValues: {
+        description: '',
+      } as FormData,
+      validators: {
+        onSubmit: (data) => {
+          // The core of #1613: data.value should be FormData, NOT any
+          expectTypeOf(data.value).toEqualTypeOf<FormData>()
+          expectTypeOf(data.value).not.toBeAny()
+
+          if (data.value.description.length === 0) {
+            return 'Description is required'
+          }
+          return undefined
+        },
+      },
+    })
+
+    const form = new FormApi(formOpts)
+    expectTypeOf(form.state.values).toEqualTypeOf<FormData>()
+
+    // Also verify spreading still works
+    const form2 = new FormApi({ ...formOpts })
+    expectTypeOf(form2.state.values).toEqualTypeOf<FormData>()
+  })
+
+  it('onSubmit handler data param should NOT be any when defined in formOptions (#1613)', () => {
+    type FormData = {
+      rows: { id: string }[]
+    }
+
+    const formOpts = formOptions({
+      defaultValues: {
+        rows: [] as { id: string }[],
+      } as FormData,
+      onSubmit: (data) => {
+        // Verify the onSubmit handler parameter is typed
+        expectTypeOf(data.value).toEqualTypeOf<FormData>()
+        expectTypeOf(data.value).not.toBeAny()
+      },
+      validators: {
+        onSubmit: (data) => {
+          expectTypeOf(data.value).toEqualTypeOf<FormData>()
+          expectTypeOf(data.value).not.toBeAny()
+          if (data.value.rows.length < 2) {
+            return 'Need at least 2 rows'
+          }
+          return undefined
+        },
+      },
+    })
+
+    // Should work without type errors when passed to FormApi
+    const form = new FormApi(formOpts)
+    expectTypeOf(form.state.values).toEqualTypeOf<FormData>()
+
+    // Spreading should also work
+    const form2 = new FormApi({ ...formOpts })
+    expectTypeOf(form2.state.values).toEqualTypeOf<FormData>()
+  })
 })
+

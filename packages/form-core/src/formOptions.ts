@@ -18,7 +18,18 @@ inside of it, meaning that TFormData changes to `unknown`.
 
 To bypass this, the intersection for defaultOpts gives TypeScript that information again,
 without losing the benefits from the TOptions generic.
+
+The return type uses Pick to selectively overlay the resolved validator/listener/onSubmit
+types onto TOptions. This preserves spread compatibility while ensuring callbacks
+have correctly typed parameters. We avoid intersecting the full FormOptions to prevent
+"excessively deep" errors from `in out` variance annotations.
 */
+
+/**
+ * Keys on FormOptions whose types depend on the validator generics
+ * and need to be resolved for proper callback parameter inference.
+ */
+type FormOptionsDependentKeys = 'validators' | 'onSubmit' | 'onSubmitInvalid' | 'listeners'
 
 export function formOptions<
   TOptions extends Partial<
@@ -67,6 +78,25 @@ export function formOptions<
     >
   > &
     TOptions,
-): TOptions {
-  return defaultOpts
+): Omit<TOptions, FormOptionsDependentKeys> &
+  Pick<
+    Partial<
+      FormOptions<
+        NoInfer<TFormData>,
+        NoInfer<TOnMount>,
+        NoInfer<TOnChange>,
+        NoInfer<TOnChangeAsync>,
+        NoInfer<TOnBlur>,
+        NoInfer<TOnBlurAsync>,
+        NoInfer<TOnSubmit>,
+        NoInfer<TOnSubmitAsync>,
+        NoInfer<TOnDynamic>,
+        NoInfer<TOnDynamicAsync>,
+        NoInfer<TOnServer>,
+        NoInfer<TSubmitMeta>
+      >
+    >,
+    FormOptionsDependentKeys & keyof TOptions
+  > {
+  return defaultOpts as any
 }
