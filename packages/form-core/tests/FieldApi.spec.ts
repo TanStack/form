@@ -610,7 +610,7 @@ describe('field api', () => {
     ).toBe('world')
   })
 
-  it('should remove remove the last subfield from an array field correctly', async () => {
+  it('should remove the last subfield from an array field correctly', async () => {
     const form = new FormApi({
       defaultValues: {
         people: [{ name: '' }],
