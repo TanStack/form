@@ -97,3 +97,23 @@ const form = useForm({
   <!-- ... -->
 </template>
 ```
+
+> In a situation where you want to be able to submit in an invalid state `canSubmitWhenInvalid` boolean flag can be provided to useForm.
+
+```vue
+<script setup lang="ts">
+import { useForm } from '@tanstack/vue-form'
+
+const form = useForm({
+  defaultValues: { data: '' },
+  canSubmitWhenInvalid: true,
+  onSubmit: async ({ value }) => {
+    // Do something with the values
+    console.log(value)
+  },
+})
+</script>
+<template>
+  <!-- ... -->
+</template>
+```
