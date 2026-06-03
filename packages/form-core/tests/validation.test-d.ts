@@ -83,11 +83,11 @@ describe('ErrorVisibility', () => {
     }
     const fieldOptions: FieldApiOptions<
       TestFormData,
-      typeof emptyFormValidators,
-      never,
       'name',
       string,
-      typeof emptyFieldValidators
+      typeof emptyFieldValidators,
+      typeof emptyFormValidators,
+      never
     > = {
       name: 'name',
       errorVisibility: ({ fieldState }) => fieldState.value === '',
@@ -100,9 +100,7 @@ describe('ErrorVisibility', () => {
   it('creates form-agnostic reusable visibility callbacks', () => {
     const showErrorsAfterBlurOrSubmit = createErrorVisibility(
       ({ state, fieldState }) => {
-        expectTypeOf(
-          state,
-        ).toEqualTypeOf<ReusableErrorVisibilityState>()
+        expectTypeOf(state).toEqualTypeOf<ReusableErrorVisibilityState>()
         expectTypeOf(state.values).toEqualTypeOf<unknown>()
         expectTypeOf(fieldState).toEqualTypeOf<ErrorVisibilityFieldState>()
         // @ts-expect-error Reusable policies cannot assume a consuming form value shape.
@@ -151,11 +149,11 @@ describe('ErrorVisibility', () => {
     }
     const fieldOptions: FieldApiOptions<
       TestFormData,
-      typeof emptyFormValidators,
-      never,
       'name',
       string,
-      typeof emptyFieldValidators
+      typeof emptyFieldValidators,
+      typeof emptyFormValidators,
+      never
     > = {
       name: 'name',
       // @ts-expect-error String visibility presets were replaced by callbacks.

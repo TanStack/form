@@ -1,7 +1,7 @@
 import type { FieldApi } from './FieldApi/FieldApi.public'
 
-export type UpdateFn<T> = (previousValue: T) => T
-export type Updater<T> = T | UpdateFn<T>
+export type UpdateFn<TValue> = (previousValue: TValue) => TValue
+export type Updater<TValue> = TValue | UpdateFn<TValue>
 
 export interface FieldUpdateOptions {
   /**
@@ -30,6 +30,13 @@ export interface FieldUpdateOptions {
   causeValidation?: boolean
 }
 
-export type OneOrMany<T> = T | Array<T>
+export type OneOrMany<TValue> = TValue | Array<TValue>
 
-export type FieldWithValue<T> = FieldApi<any, any, any, string, T, any>
+export type FieldWithValue<TFieldValue> = FieldApi<
+  any,
+  string,
+  TFieldValue,
+  any,
+  any,
+  any
+>

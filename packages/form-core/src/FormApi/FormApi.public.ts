@@ -19,7 +19,9 @@ import type { ArrayFieldMethods } from './array-methods.lib'
 
 declare const onSubmitErrorBrand: unique symbol
 
-export type OnSubmitError<T extends FormValidationError<any>> = T & {
+export type OnSubmitError<
+  TFormValidationError extends FormValidationError<any>,
+> = TFormValidationError & {
   [onSubmitErrorBrand]: true
 }
 

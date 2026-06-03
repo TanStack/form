@@ -21,7 +21,7 @@ export interface FormGroupValidatorContext<
   event: ValidationTrigger
   signal: AbortSignal
   formApi: FormApi<TFormData, any, any>
-  groupApi: FormGroupApi<TFormData, any, any, TGroupName, TGroupValue, any>
+  groupApi: FormGroupApi<TFormData, TGroupName, TGroupValue, any, any, any>
   triggerFieldApi?: AnyFieldApi
   value: TGroupValue
 }
@@ -71,20 +71,20 @@ export type FormGroupValidationError<TGroupValue> =
 
 export interface FormGroupSubmitContext<
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
   TGroupValidators extends FormGroupValidators<TFormData, TGroupName, TGroupValue>,
+  TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
 > {
   value: TGroupValue
   groupApi: FormGroupApi<
     TFormData,
-    TFormValidators,
-    TSubmitReturn,
     TGroupName,
     TGroupValue,
-    TGroupValidators
+    TGroupValidators,
+    TFormValidators,
+    TSubmitReturn
   >
   formApi: FormApi<TFormData, TFormValidators, TSubmitReturn>
   schemaOutputs: Array<unknown>
@@ -92,60 +92,60 @@ export interface FormGroupSubmitContext<
 
 export interface FormGroupSubmitInvalidContext<
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
   TGroupValidators extends FormGroupValidators<TFormData, TGroupName, TGroupValue>,
+  TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
 > extends FormGroupSubmitContext<
     TFormData,
-    TFormValidators,
-    TSubmitReturn,
     TGroupName,
     TGroupValue,
-    TGroupValidators
+    TGroupValidators,
+    TFormValidators,
+    TSubmitReturn
   > {
   errors: Array<FormGroupValidationError<TGroupValue>>
 }
 
 export interface FormGroupOptions<
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
   TGroupValidators extends FormGroupValidators<TFormData, TGroupName, TGroupValue>,
+  TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
 > {
   name: TGroupName
   validators?: TGroupValidators
   onGroupSubmit?: (
     context: FormGroupSubmitContext<
       TFormData,
-      TFormValidators,
-      TSubmitReturn,
       TGroupName,
       TGroupValue,
-      TGroupValidators
+      TGroupValidators,
+      TFormValidators,
+      TSubmitReturn
     >,
   ) => void | Promise<void>
   onGroupSubmitInvalid?: (
     context: FormGroupSubmitInvalidContext<
       TFormData,
-      TFormValidators,
-      TSubmitReturn,
       TGroupName,
       TGroupValue,
-      TGroupValidators
+      TGroupValidators,
+      TFormValidators,
+      TSubmitReturn
     >,
   ) => void | Promise<void>
 }
 
 export type FormGroupMeta<
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
+  TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
 > = FieldMeta<
   TFormValidators,
   FieldValidators<TFormData, TGroupName, TGroupValue>,
@@ -154,18 +154,18 @@ export type FormGroupMeta<
 
 export interface FormGroupState<
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
+  TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
 > {
   value: TGroupValue
   meta: FormGroupMeta<
     TFormData,
-    TFormValidators,
-    TSubmitReturn,
     TGroupName,
-    TGroupValue
+    TGroupValue,
+    TFormValidators,
+    TSubmitReturn
   >
   errors: FormGroupErrors
   canSubmit: boolean
@@ -176,45 +176,45 @@ export interface FormGroupState<
 
 export interface FormGroupApi<
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
   TGroupValidators extends FormGroupValidators<TFormData, TGroupName, TGroupValue>,
+  TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
 > {
   form: FormApi<TFormData, TFormValidators, TSubmitReturn>
   readonly options: FormGroupOptions<
     TFormData,
-    TFormValidators,
-    TSubmitReturn,
     TGroupName,
     TGroupValue,
-    TGroupValidators
+    TGroupValidators,
+    TFormValidators,
+    TSubmitReturn
   >
   readonly name: TGroupName
   readonly value: TGroupValue
   readonly state: FormGroupState<
     TFormData,
-    TFormValidators,
-    TSubmitReturn,
     TGroupName,
-    TGroupValue
+    TGroupValue,
+    TFormValidators,
+    TSubmitReturn
   >
   readonly meta: FormGroupMeta<
     TFormData,
-    TFormValidators,
-    TSubmitReturn,
     TGroupName,
-    TGroupValue
+    TGroupValue,
+    TFormValidators,
+    TSubmitReturn
   >
   readonly errors: FormGroupErrors
   store: ReadonlyAtom<
     FormGroupState<
       TFormData,
-      TFormValidators,
-      TSubmitReturn,
       TGroupName,
-      TGroupValue
+      TGroupValue,
+      TFormValidators,
+      TSubmitReturn
     >
   >
   handleSubmit: () => Promise<Array<FormGroupValidationError<TGroupValue>>>

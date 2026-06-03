@@ -38,7 +38,7 @@ export interface Validator<
   triggers: Array<ValidationTriggerOption<TFormData, TContextValue>>
 }
 
-export type ValidatorOptions<TFormData = any, TContextValue = TFormData> = Omit<
+export type ValidatorOptions<TFormData, TContextValue> = Omit<
   Validator<
     TFormData,
     StandardSchemaV1<any, any> | ValidatorFn<any, any>,
@@ -328,7 +328,7 @@ export interface FieldValidatorContext<
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
 > extends BaseValidatorContext<TFormData> {
-  fieldApi: FieldApi<TFormData, any, any, TFieldName, TFieldValue, any>
+  fieldApi: FieldApi<TFormData, TFieldName, TFieldValue, any, any, any>
   value: TFieldValue
 }
 

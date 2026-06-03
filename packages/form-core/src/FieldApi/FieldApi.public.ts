@@ -68,11 +68,11 @@ export interface FieldMeta<
 
 export interface FieldState<
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
   TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
+  TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
 > {
   value: TFieldValue
   meta: FieldMeta<TFormValidators, TFieldValidators, TSubmitReturn>
@@ -82,11 +82,11 @@ export type AnyFieldApi = FieldApi<any, any, any, any, any, any>
 
 export interface FieldApi<
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
   TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
+  TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
 > {
   /**
    * The form that owns this field.
@@ -169,11 +169,11 @@ export interface FieldApi<
    */
   state: FieldState<
     TFormData,
-    TFormValidators,
-    TSubmitReturn,
     TFieldName,
     TFieldValue,
-    TFieldValidators
+    TFieldValidators,
+    TFormValidators,
+    TSubmitReturn
   >
 
   value: TFieldValue
@@ -198,11 +198,11 @@ export interface FieldApi<
 
 export interface FieldApiOptions<
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
   TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
+  TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
 > {
   name: TFieldName
   errorVisibility?: ErrorVisibility<TFormData, TFormValidators, TSubmitReturn>
@@ -213,10 +213,10 @@ export interface FieldApiOptions<
   validators?: TFieldValidators
   listeners?: FieldListeners<
     TFormData,
-    TFormValidators,
-    TSubmitReturn,
     TFieldName,
     TFieldValue,
-    TFieldValidators
+    TFieldValidators,
+    TFormValidators,
+    TSubmitReturn
   >
 }

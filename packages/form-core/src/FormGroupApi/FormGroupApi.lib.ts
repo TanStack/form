@@ -533,8 +533,6 @@ export class InternalFormGroupApi
 
 export function createFormGroupApi<
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
   TGroupValidators extends FormGroupValidators<
@@ -542,23 +540,25 @@ export function createFormGroupApi<
     TGroupName,
     TGroupValue
   >,
+  TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
 >(
   form: InternalFormApi<TFormData, TFormValidators, TSubmitReturn>,
   options: FormGroupOptions<
     TFormData,
-    TFormValidators,
-    TSubmitReturn,
     TGroupName,
     TGroupValue,
-    TGroupValidators
+    TGroupValidators,
+    TFormValidators,
+    TSubmitReturn
   >,
 ): FormGroupApi<
   TFormData,
-  TFormValidators,
-  TSubmitReturn,
   TGroupName,
   TGroupValue,
-  TGroupValidators
+  TGroupValidators,
+  TFormValidators,
+  TSubmitReturn
 > &
   InternalFormGroupApi {
   const formGroups = (form._formGroups ??= new Map())

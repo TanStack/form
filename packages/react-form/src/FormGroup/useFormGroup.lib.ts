@@ -26,8 +26,6 @@ type InternalFormGroupProps = Omit<
 
 export function useFormGroup<
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
   TGroupValidators extends FormGroupValidators<
@@ -35,15 +33,17 @@ export function useFormGroup<
     TGroupName,
     TGroupValue
   >,
+  TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
 >(
   options: InternalFormGroupProps,
 ): ReactFormGroupApi<
   TFormData,
-  TFormValidators,
-  TSubmitReturn,
   TGroupName,
   TGroupValue,
-  TGroupValidators
+  TGroupValidators,
+  TFormValidators,
+  TSubmitReturn
 > {
   const optionsRef = useRef(options)
   optionsRef.current = options
@@ -69,11 +69,11 @@ export function useFormGroup<
     () =>
       createReactFormGroupApi<
         TFormData,
-        TFormValidators,
-        TSubmitReturn,
         TGroupName,
         TGroupValue,
-        TGroupValidators
+        TGroupValidators,
+        TFormValidators,
+        TSubmitReturn
       >(groupApi),
     [groupApi],
   )
@@ -90,8 +90,6 @@ function getCoreGroupOptions(options: InternalFormGroupProps) {
 
 function createReactFormGroupApi<
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
   TGroupValidators extends FormGroupValidators<
@@ -99,33 +97,35 @@ function createReactFormGroupApi<
     TGroupName,
     TGroupValue
   >,
+  TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
 >(
   group: InternalFormGroupApi,
 ): ReactFormGroupApi<
   TFormData,
-  TFormValidators,
-  TSubmitReturn,
   TGroupName,
   TGroupValue,
-  TGroupValidators
+  TGroupValidators,
+  TFormValidators,
+  TSubmitReturn
 > {
   const result = Object.create(group) as ReactFormGroupApi<
     TFormData,
-    TFormValidators,
-    TSubmitReturn,
     TGroupName,
     TGroupValue,
-    TGroupValidators
+    TGroupValidators,
+    TFormValidators,
+    TSubmitReturn
   >
 
   const TanStackFormGroupSubscribe = Object.assign(
     function TanStackFormGroupSubscribe<TSelected>(
       subscribeProps: ReactFormGroupSubscribeProps<
         TFormData,
-        TFormValidators,
-        TSubmitReturn,
         TGroupName,
         TGroupValue,
+        TFormValidators,
+        TSubmitReturn,
         TSelected
       >,
     ) {
@@ -137,10 +137,10 @@ function createReactFormGroupApi<
     { displayName: 'TanStackForm.GroupSubscribe' },
   ) satisfies ReactFormGroupSubscribeComponent<
     TFormData,
-    TFormValidators,
-    TSubmitReturn,
     TGroupName,
-    TGroupValue
+    TGroupValue,
+    TFormValidators,
+    TSubmitReturn
   >
   result.Subscribe = TanStackFormGroupSubscribe
 

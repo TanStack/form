@@ -17,8 +17,6 @@ export type {
 
 export function FormGroup<
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
   TGroupValidators extends FormGroupValidators<
@@ -26,23 +24,25 @@ export function FormGroup<
     TGroupName,
     TGroupValue
   >,
+  TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
 >(
   props: ReactFormGroupProps<
     TFormData,
-    TFormValidators,
-    TSubmitReturn,
     TGroupName,
     TGroupValue,
-    TGroupValidators
+    TGroupValidators,
+    TFormValidators,
+    TSubmitReturn
   >,
 ): CrossVersionReactNode {
   const groupApi = useFormGroup<
     TFormData,
-    TFormValidators,
-    TSubmitReturn,
     TGroupName,
     TGroupValue,
-    TGroupValidators
+    TGroupValidators,
+    TFormValidators,
+    TSubmitReturn
   >({
     form: props.form as InternalReactFormApi,
     name: props.name,
