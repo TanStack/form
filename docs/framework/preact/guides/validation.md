@@ -202,7 +202,7 @@ export default function App() {
 
   // Subscribe to the form's `errorMap` so that updates to it will cause re-renders
   // Alternatively, you can use `form.Subscribe`
-  const formErrorMap = useStore(form.store, (state) => state.errorMap)
+  const formErrorMap = useSelector(form.store, (state) => state.errorMap)
 
   return (
     <div>

@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { useStore } from '@tanstack/react-store'
+import { useSelector } from '@tanstack/react-store'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
@@ -190,7 +190,7 @@ export function useField<
 
   // For array mode, only track length changes to avoid re-renders when child properties change
   // See: https://github.com/TanStack/form/issues/1925
-  const reactiveStateValue = useStore(
+  const reactiveStateValue = useSelector(
     fieldApi.store,
     (opts.mode === 'array'
       ? (state) => state.meta._arrayVersion || 0
@@ -198,27 +198,27 @@ export function useField<
       state: typeof fieldApi.state,
     ) => TData | number,
   )
-  const reactiveMetaIsTouched = useStore(
+  const reactiveMetaIsTouched = useSelector(
     fieldApi.store,
     (state) => state.meta.isTouched,
   )
-  const reactiveMetaIsBlurred = useStore(
+  const reactiveMetaIsBlurred = useSelector(
     fieldApi.store,
     (state) => state.meta.isBlurred,
   )
-  const reactiveMetaIsDirty = useStore(
+  const reactiveMetaIsDirty = useSelector(
     fieldApi.store,
     (state) => state.meta.isDirty,
   )
-  const reactiveMetaErrorMap = useStore(
+  const reactiveMetaErrorMap = useSelector(
     fieldApi.store,
     (state) => state.meta.errorMap,
   )
-  const reactiveMetaErrorSourceMap = useStore(
+  const reactiveMetaErrorSourceMap = useSelector(
     fieldApi.store,
     (state) => state.meta.errorSourceMap,
   )
-  const reactiveMetaIsValidating = useStore(
+  const reactiveMetaIsValidating = useSelector(
     fieldApi.store,
     (state) => state.meta.isValidating,
   )

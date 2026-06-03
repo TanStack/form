@@ -55,4 +55,8 @@ const count = useStore(counterStore, (state) => state.count)
 
 ## Deprecated
 
-Use `useSelector` instead.
+Use [`useSelector`](useSelector.md) instead. You can import it from `@tanstack/preact-form`:
+
+```tsx
+import { useSelector } from '@tanstack/preact-form'
+```

@@ -1,5 +1,5 @@
 import { FormGroupApi } from '@tanstack/form-core'
-import { useStore } from '@tanstack/vue-store'
+import { useSelector } from '@tanstack/vue-store'
 import { defineComponent, onMounted, onUnmounted, watch } from 'vue'
 import type {
   DeepKeys,
@@ -293,7 +293,7 @@ export function useFormGroup<
     return api
   })()
 
-  const groupState = useStore(formGroupApi.store, (state) => state)
+  const groupState = useSelector(formGroupApi.store, (state) => state)
 
   let cleanup!: () => void
   onMounted(() => {

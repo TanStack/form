@@ -1,5 +1,11 @@
 # @tanstack/react-form
 
+## 1.33.1
+
+### Patch Changes
+
+- Re-export `useSelector` from `@tanstack/react-store` (fixes [#2203](https://github.com/TanStack/form/issues/2203)). `useStore` remains available but is deprecated; prefer `import { useSelector } from '@tanstack/react-form'`.
+
 ## 1.33.0
 
 ### Minor Changes
