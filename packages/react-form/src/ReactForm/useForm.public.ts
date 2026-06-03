@@ -5,26 +5,20 @@ import type {
   UseNullableSchemaFormHook,
   UseSchemaFormHook,
 } from './useFormTypes.public'
+import type { DefaultReactFormComponentMap } from '../AppForm/componentMap.public'
 
 function useFormHook(options: FormOptions<any, any, any>) {
   const form = useInternalForm(options, initializeForm)
   return form
 }
 
-const useSchemaForm = useFormHook as unknown as UseSchemaFormHook<
-  Record<never, never>,
-  Record<never, never>
->
+const useSchemaForm =
+  useFormHook as unknown as UseSchemaFormHook<DefaultReactFormComponentMap>
 
-const useForm = useFormHook as never as UseFormHook<
-  Record<never, never>,
-  Record<never, never>
->
+const useForm = useFormHook as never as UseFormHook<DefaultReactFormComponentMap>
 
 // TODO add unit tests, chances are the InferUnion type is incomplete
-const useNullableSchemaForm = useFormHook as never as UseNullableSchemaFormHook<
-  Record<never, never>,
-  Record<never, never>
->
+const useNullableSchemaForm =
+  useFormHook as never as UseNullableSchemaFormHook<DefaultReactFormComponentMap>
 
 export { useForm, useSchemaForm, useNullableSchemaForm }

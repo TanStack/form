@@ -3,26 +3,14 @@ import type {
   UseNullableSchemaAppFormHook,
   UseSchemaAppFormHook,
 } from './useAppFormTypes.public'
-import type { FunctionComponent } from 'react'
 import type { AppFormOptionsApi } from './appFormOptions.public'
+import type { AnyReactFormComponentMap } from './componentMap.public'
 
 export interface AppFormHookResult<
-  TFormComponents extends Record<string, FunctionComponent<any>>,
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
+  TComponents extends AnyReactFormComponentMap,
 > {
-  appFormOptions: AppFormOptionsApi<TFormComponents, TFieldComponents>
-  useSchemaAppForm: UseSchemaAppFormHook<TFormComponents, TFieldComponents>
-  useAppForm: UseAppFormHook<TFormComponents, TFieldComponents>
-  useNullableSchemaAppForm: UseNullableSchemaAppFormHook<
-    TFormComponents,
-    TFieldComponents
-  >
-}
-
-export interface AppFormHookCreateOptions<
-  TFormComponents extends Record<string, FunctionComponent<any>>,
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
-> {
-  fieldComponents: TFieldComponents
-  formComponents: TFormComponents
+  appFormOptions: AppFormOptionsApi<TComponents>
+  useSchemaAppForm: UseSchemaAppFormHook<TComponents>
+  useAppForm: UseAppFormHook<TComponents>
+  useNullableSchemaAppForm: UseNullableSchemaAppFormHook<TComponents>
 }

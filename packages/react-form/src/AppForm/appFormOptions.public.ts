@@ -5,25 +5,21 @@ import type {
   InferUnion,
   NullableSchemaData,
 } from '@tanstack/form-core-v2'
-import type { FunctionComponent } from 'react'
+import type { AnyReactFormComponentMap } from './componentMap.public'
 
-declare const fieldComponentsSymbol: unique symbol
-declare const formComponentsSymbol: unique symbol
+declare const componentsSymbol: unique symbol
 
 export interface AppFormOptions<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
-  TFormComponents extends Record<string, FunctionComponent<any>>,
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
+  TComponents extends AnyReactFormComponentMap,
 > extends FormOptions<TFormData, TFormValidators, TSubmitReturn> {
-  [fieldComponentsSymbol]: TFieldComponents
-  [formComponentsSymbol]: TFormComponents
+  [componentsSymbol]: TComponents
 }
 
 export interface AppFormOptionsApi<
-  TFormComponents extends Record<string, FunctionComponent<any>>,
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
+  TComponents extends AnyReactFormComponentMap,
 > {
   <
     TFormData,
@@ -31,13 +27,7 @@ export interface AppFormOptionsApi<
     TSubmitReturn,
   >(
     options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
-  ): AppFormOptions<
-    TFormData,
-    TFormValidators,
-    TSubmitReturn,
-    TFormComponents,
-    TFieldComponents
-  >
+  ): AppFormOptions<TFormData, TFormValidators, TSubmitReturn, TComponents>
 
   schema: <
     const TFormValidators extends FormValidators<any>,
@@ -51,8 +41,7 @@ export interface AppFormOptionsApi<
     FormValidatorData<TFormValidators>,
     TFormValidators,
     TSubmitReturn,
-    TFormComponents,
-    TFieldComponents
+    TComponents
   >
 
   nullableSchema: <
@@ -65,7 +54,6 @@ export interface AppFormOptionsApi<
     InferUnion<TFormData, FormValidatorData<TFormValidators>>,
     TFormValidators,
     TSubmitReturn,
-    TFormComponents,
-    TFieldComponents
+    TComponents
   >
 }

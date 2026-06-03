@@ -6,45 +6,32 @@ import type {
   InferUnion,
   NullableSchemaData,
 } from '@tanstack/form-core-v2'
-import type { FunctionComponent } from 'react'
+import type { AnyReactFormComponentMap } from './componentMap.public'
 
-export type UseAppFormHook<
-  TFormComponents extends Record<string, FunctionComponent<any>>,
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
-> = <
+export type UseAppFormHook<TComponents extends AnyReactFormComponentMap> = <
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
 >(
   options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
-) => ReactAppFormApi<
-  TFormData,
-  TFormValidators,
-  TSubmitReturn,
-  TFormComponents,
-  TFieldComponents
->
+) => ReactAppFormApi<TFormData, TFormValidators, TSubmitReturn, TComponents>
 
-export type UseSchemaAppFormHook<
-  TFormComponents extends Record<string, FunctionComponent<any>>,
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
-> = <const TFormValidators extends FormValidators<any>, TSubmitReturn>(
-  options: FormOptions<
+export type UseSchemaAppFormHook<TComponents extends AnyReactFormComponentMap> =
+  <const TFormValidators extends FormValidators<any>, TSubmitReturn>(
+    options: FormOptions<
+      FormValidatorData<TFormValidators>,
+      TFormValidators,
+      TSubmitReturn
+    >,
+  ) => ReactAppFormApi<
     FormValidatorData<TFormValidators>,
     TFormValidators,
-    TSubmitReturn
-  >,
-) => ReactAppFormApi<
-  FormValidatorData<TFormValidators>,
-  TFormValidators,
-  TSubmitReturn,
-  TFormComponents,
-  TFieldComponents
->
+    TSubmitReturn,
+    TComponents
+  >
 
 export type UseNullableSchemaAppFormHook<
-  TFormComponents extends Record<string, FunctionComponent<any>>,
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
+  TComponents extends AnyReactFormComponentMap,
 > = <
   const TFormValidators extends FormValidators<any>,
   const TFormData extends NullableSchemaData<TFormValidators>,
@@ -55,6 +42,5 @@ export type UseNullableSchemaAppFormHook<
   InferUnion<TFormData, FormValidatorData<TFormValidators>>,
   TFormValidators,
   TSubmitReturn,
-  TFormComponents,
-  TFieldComponents
+  TComponents
 >

@@ -296,7 +296,7 @@ export interface ReactFormGroupProps<
   TFormValidators,
   TSubmitReturn
 > {
-  form: ReactFormApi<TFormData, TFormValidators, TSubmitReturn, any, any>
+  form: ReactFormApi<TFormData, TFormValidators, TSubmitReturn, any>
   children: (
     groupApi: ReactFormGroupApi<
       TFormData,

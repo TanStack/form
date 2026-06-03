@@ -1,23 +1,27 @@
 import type { AnyFormOptions, FormOptions } from '@tanstack/form-core-v2'
 import type { AppFormOptions } from '../AppForm/appFormOptions.public'
+import type {
+  AnyReactFormComponentMap,
+  DefaultReactFormComponentMap,
+} from '../AppForm/componentMap.public'
 import type { ReactFormApi } from './formApiTypes.public'
 
 export type ReactFormType<
-  TOptions extends AnyFormOptions | AppFormOptions<any, any, any, any, any>,
+  TOptions extends
+    | AnyFormOptions
+    | AppFormOptions<any, any, any, AnyReactFormComponentMap>,
 > =
   TOptions extends AppFormOptions<
     infer TFormData,
     infer TFormValidators,
     infer TSubmitReturn,
-    infer TFormComponents,
-    infer TFieldComponents
+    infer TComponents
   >
     ? ReactFormApi<
         TFormData,
         TFormValidators,
         TSubmitReturn,
-        TFormComponents,
-        TFieldComponents
+        TComponents
       >
     : TOptions extends FormOptions<
           infer TFormData,
@@ -28,7 +32,6 @@ export type ReactFormType<
           TFormData,
           TFormValidators,
           TSubmitReturn,
-          Record<never, never>,
-          Record<never, never>
+          DefaultReactFormComponentMap
         >
       : never

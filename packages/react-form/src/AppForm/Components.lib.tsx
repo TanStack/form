@@ -11,6 +11,7 @@ import type {
   AppFormComponent,
   ReactAppFormApi,
 } from './ReactAppFormApi.public'
+import type { AnyReactFormComponentMap } from './componentMap.public'
 import type { CrossVersionReactNode } from '../reactTypes.public'
 import type { ReactFormFieldProps } from '../ReactForm/Components.public'
 
@@ -18,8 +19,7 @@ type AnyReactAppFormApi = ReactAppFormApi<
   any,
   any,
   any,
-  Record<string, FunctionComponent<any>>,
-  Record<string, FunctionComponent<any>>
+  AnyReactFormComponentMap
 >
 
 export function attachReactAppFormComponents(

@@ -3,6 +3,7 @@ import { FormContext } from './contexts.lib'
 import { brandComponentFactory, wrapField } from './fieldComponentHelpers.lib'
 import type React from 'react'
 import type { FieldWithValue } from '@tanstack/form-core-v2'
+import type { DefaultReactFormComponentMap } from './componentMap.public'
 import type { ReactFormApi } from '../ReactForm/formApiTypes.public'
 import type { CrossVersionReactNode } from '../reactTypes.public'
 
@@ -98,8 +99,7 @@ export interface FormHookContexts {
     any,
     any,
     any,
-    Record<never, never>,
-    Record<never, never>
+    DefaultReactFormComponentMap
   >
   fieldBrand: FieldBrandHelper
   fieldComponent: FieldComponentHelper
