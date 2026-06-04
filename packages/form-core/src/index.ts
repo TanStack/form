@@ -1,5 +1,6 @@
 export * from './FieldApi/FieldApi.public'
 export * from './FormApi/FormApi.public'
+export * from './FormGroupApi/FormGroupApi.public'
 export * from './types.public'
 export * from './validation.public'
 export * from './standardSchema.public'

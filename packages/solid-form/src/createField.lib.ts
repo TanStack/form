@@ -13,6 +13,8 @@ export interface InternalFieldProps extends FieldApiOptions<
   any,
   any,
   any,
+  any,
+  any,
   any
 > {
   form: AnyInternalFormApi

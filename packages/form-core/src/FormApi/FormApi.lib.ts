@@ -63,6 +63,7 @@ import type {
   ValidationTrigger,
 } from '../validation.public'
 import type { FormListenerTriggers } from '../listeners.public'
+import type { InternalFormGroupApi } from '../FormGroupApi/FormGroupApi.lib'
 
 export interface FormMetaAtoms {
   isDirty: Atom<boolean>
@@ -291,6 +292,7 @@ export class InternalFormApi<
   _lastUpdateDefaultValues: TFormData
   _pipelineCache: PipelineCache<any>
   _schemaOutputs: Array<any> = []
+  _formGroups = new Set<InternalFormGroupApi<any, any, any, any, any, any>>()
 
   get state(): FormState<TFormData, TFormValidators, any> {
     return this.store.get()
@@ -323,6 +325,38 @@ export class InternalFormApi<
     this._notifyFormListener('mount', null)
 
     return () => {}
+  }
+
+  _registerFormGroup = (
+    group: InternalFormGroupApi<any, any, any, any, any, any>,
+  ): void => {
+    this._formGroups.add(group)
+  }
+
+  _unregisterFormGroup = (
+    group: InternalFormGroupApi<any, any, any, any, any, any>,
+  ): void => {
+    this._formGroups.delete(group)
+  }
+
+  _getNearestFormGroupForField = (
+    fieldName: string,
+  ): InternalFormGroupApi<any, any, any, any, any, any> | null => {
+    let nearest: InternalFormGroupApi<any, any, any, any, any, any> | null = null
+    for (const group of this._formGroups) {
+      const groupName = String(group.name)
+      const isContained =
+        fieldName === groupName ||
+        fieldName.startsWith(`${groupName}.`) ||
+        fieldName.startsWith(`${groupName}[`)
+
+      if (!isContained) continue
+
+      if (!nearest || groupName.length > String(nearest.name).length) {
+        nearest = group
+      }
+    }
+    return nearest
   }
 
   // keepDefaultValues is a bad name, reconsider || preserveDefaultValues?

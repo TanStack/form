@@ -42,6 +42,8 @@ export interface SolidFormFieldProps<
   TFieldName,
   TFieldValue,
   TFieldValidators,
+  [],
+  TFormData,
   TFormValidators,
   TSubmitReturn
 > {
@@ -52,6 +54,8 @@ export interface SolidFormFieldProps<
         TFieldName,
         TFieldValue,
         TFieldValidators,
+        [],
+        TFormData,
         TFormValidators,
         TSubmitReturn
       >
@@ -71,6 +75,8 @@ export interface SolidFormArrayFieldProps<
   TFieldName,
   TFieldValue,
   TFieldValidators,
+  [],
+  TFormData,
   TFormValidators,
   TSubmitReturn
 > {
@@ -81,6 +87,8 @@ export interface SolidFormArrayFieldProps<
         TFieldName,
         TFieldValue,
         TFieldValidators,
+        [],
+        TFormData,
         TFormValidators,
         TSubmitReturn
       >

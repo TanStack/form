@@ -1,11 +1,13 @@
 import type { DeepKeys, DeepValue } from './deep-keys.public'
 import type { FormApi, OnSubmitError } from './FormApi/FormApi.public'
 import type { AnyFieldApi, FieldApi } from './FieldApi/FieldApi.public'
+import type { FormGroupApi } from './FormGroupApi/FormGroupApi.public'
 import type {
   StandardSchemaV1,
   StandardSchemaV1Issue,
 } from './standardSchema.public'
 import type { OneOrMany } from './types.public'
+import type { TryInferSchemaOutput } from './standardSchema.lib'
 
 export interface Validator<
   TFormData,
@@ -61,6 +63,8 @@ type InferFormDataFromValidator<TValidator extends ValidatorRun> =
     ? TFormData
     : TValidator extends FormValidatorFn<infer TFormData>
       ? TFormData
+      : TValidator extends FormGroupValidatorFn<infer TGroupValue>
+        ? TGroupValue
       : any
 
 type ValidatorRunsFromOptions<
@@ -302,13 +306,36 @@ export interface FormValidator<TFormData> extends Validator<
 
 export type FormValidators<TFormData> = ReadonlyArray<FormValidator<TFormData>>
 
-type TryInferSchemaOutput<T> = T extends {
-  run: StandardSchemaV1<any, infer TOutput>
+export interface FormGroupValidatorContext<TGroupValue> {
+  event: ValidationTrigger
+  signal: AbortSignal
+  formApi: FormApi<any, any, any>
+  groupApi: FormGroupApi<any, any, TGroupValue, any, any, any>
+  triggerFieldApi?: AnyFieldApi
+  value: TGroupValue
 }
-  ? T extends { runOnSubmit: false }
-    ? undefined
-    : TOutput
-  : undefined
+
+export type FormGroupValidationError<TGroupValue> =
+  | ValidationErrorInput
+  | ValidationAggregateError<TGroupValue>
+export type FormGroupValidateResult<TGroupValue> =
+  | ValidationResult
+  | ValidationAggregateError<TGroupValue>
+
+export type FormGroupValidatorFn<TGroupValue> = ValidatorFn<
+  FormGroupValidatorContext<TGroupValue>,
+  FormGroupValidateResult<TGroupValue>
+>
+
+export interface FormGroupValidator<TGroupValue> extends Validator<
+  TGroupValue,
+  FormGroupValidatorFn<TGroupValue> | StandardSchemaV1<TGroupValue, any>,
+  TGroupValue
+> {}
+
+export type FormGroupValidators<TGroupValue> = ReadonlyArray<
+  FormGroupValidator<TGroupValue>
+>
 
 export type FormStandardSchemaValidatorOutputs<
   TFormValidators extends ReadonlyArray<FormValidator<any>>,
@@ -324,11 +351,24 @@ export type FormStandardSchemaValidatorOutputs<
   : []
 
 export interface FieldValidatorContext<
+  TFieldData,
+  TFieldName extends DeepKeys<TFieldData>,
+  TFieldValue extends DeepValue<TFieldData, TFieldName>,
   TFormData,
-  TFieldName extends DeepKeys<TFormData>,
-  TFieldValue extends DeepValue<TFormData, TFieldName>,
-> extends BaseValidatorContext<TFormData> {
-  fieldApi: FieldApi<TFormData, TFieldName, TFieldValue, any, any, any>
+> {
+  event: ValidationTrigger
+  signal: AbortSignal
+  formApi: FormApi<TFormData, any, any>
+  fieldApi: FieldApi<
+    TFieldData,
+    TFieldName,
+    TFieldValue,
+    any,
+    any,
+    TFormData,
+    any,
+    any
+  >
   value: TFieldValue
 }
 
@@ -339,7 +379,7 @@ export type FieldValidatorFn<
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
 > = ValidatorFn<
-  FieldValidatorContext<TFormData, TFieldName, TFieldValue>,
+  FieldValidatorContext<TFormData, TFieldName, TFieldValue, TFormData>,
   FieldValidateResult
 >
 
@@ -437,15 +477,21 @@ type ExtractFieldValidatorErrors<
   TFieldValidators extends FieldValidators<any, any, any>,
 > = ExtractValidatorListErrors<TFieldValidators, 'field'>
 
+type ExtractGroupValidatorFieldErrors<
+  TGroupValidators extends FormGroupValidators<any>,
+> = ExtractValidatorListErrors<TGroupValidators, 'field'>
+
 // Fields can receive normalized issues routed from external scopes, such as form groups.
 // Always include the safe base type even when local validators infer narrower errors.
 export type FieldErrors<
-  TFormValidators extends FormValidators<any>,
   TFieldValidators extends FieldValidators<any, any, any>,
+  TGroupValidators extends FormGroupValidators<any>,
+  TFormValidators extends FormValidators<any>,
   TSubmitReturn,
 > = Array<
   | ValidationIssue
-  | ExtractFormValidatorFieldErrors<TFormValidators>
   | ExtractFieldValidatorErrors<TFieldValidators>
+  | ExtractGroupValidatorFieldErrors<TGroupValidators>
+  | ExtractFormValidatorFieldErrors<TFormValidators>
   | ExtractSubmitFieldError<TSubmitReturn>
 >

@@ -34,8 +34,10 @@ export type OneOrMany<TValue> = TValue | Array<TValue>
 
 export type FieldWithValue<TFieldValue> = FieldApi<
   any,
-  string,
+  any,
   TFieldValue,
+  any,
+  any,
   any,
   any,
   any

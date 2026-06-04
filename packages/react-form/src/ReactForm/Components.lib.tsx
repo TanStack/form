@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { InternalFormGroupApi } from '@tanstack/form-core-v2/internals'
 import { Subscribe } from '../Subscribe.public'
 import {
   useArrayFieldSubscription,
@@ -9,8 +10,8 @@ import type { AnyInternalFormApi } from '@tanstack/form-core-v2/internals'
 import type { InternalReactFormApi } from './ReactFormApi.lib'
 import type { FunctionComponent } from 'react'
 import type {
-  ReactFormArrayFieldProps,
   ReactFormFieldProps,
+  ReactFormGroupProps,
   ReactFormSubscribeProps,
 } from './Components.public'
 
@@ -22,12 +23,13 @@ export function attachReactFormComponents(
   resultForm.Field = createFieldComponent(form, fieldComponents)
   resultForm.ArrayField = createArrayFieldComponent(form, fieldComponents)
   resultForm.Subscribe = createSubscribeComponent(form)
+  resultForm.FormGroup = createFormGroupComponent(form, fieldComponents)
 
   return resultForm
 }
 
 type AnyFieldComponent = FunctionComponent<
-  ReactFormFieldProps<any, any, any, any, any, any, any>
+  ReactFormFieldProps<any, any, any, any, any, any, any, any, any>
 >
 
 function createFieldComponent(
@@ -46,9 +48,7 @@ function createFieldComponent(
   return TanStackFormField
 }
 
-type AnyArrayFieldComponent = FunctionComponent<
-  ReactFormArrayFieldProps<Array<any>, any, any, any, any, any, any>
->
+type AnyArrayFieldComponent = FunctionComponent<any>
 
 function createArrayFieldComponent(
   form: AnyInternalFormApi,
@@ -80,4 +80,87 @@ function createSubscribeComponent(
   TanStackFormSubscribe.displayName = 'TanStackForm.Subscribe'
 
   return TanStackFormSubscribe
+}
+
+type AnyFormGroupComponent = FunctionComponent<
+  ReactFormGroupProps<any, any, any, any, any, any, any>
+>
+
+function createFormGroupComponent(
+  form: AnyInternalFormApi,
+  fieldComponents: Record<string, FunctionComponent<any>> | null,
+): AnyFormGroupComponent {
+  const TanStackFormGroup: AnyFormGroupComponent = (props) => {
+    const groupRef =
+      React.useRef<InternalFormGroupApi<any, any, any, any, any, any>>(null)
+
+    if (!groupRef.current) {
+      groupRef.current = attachReactFormGroupComponents(
+        new InternalFormGroupApi({ ...props, form }),
+        form,
+        fieldComponents,
+      )
+    }
+
+    useEffect(() => groupRef.current?.update({ ...props, form }))
+
+    React.useEffect(() => {
+      const group = groupRef.current!
+      return () => group._cleanup()
+    }, [])
+
+    return props.children(groupRef.current as never)
+  }
+
+  TanStackFormGroup.displayName = 'TanStackForm.FormGroup'
+
+  return TanStackFormGroup
+}
+
+function attachReactFormGroupComponents(
+  group: InternalFormGroupApi<any, any, any, any, any, any>,
+  form: AnyInternalFormApi,
+  fieldComponents: Record<string, FunctionComponent<any>> | null,
+) {
+  const resultGroup = group as InternalFormGroupApi<
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+  > & {
+    Field: FunctionComponent<any>
+    ArrayField: FunctionComponent<any>
+    Subscribe: FunctionComponent<any>
+  }
+
+  resultGroup.Field = function Field(props) {
+    const fieldApi = useField(
+      { ...props, name: group._getPrefixedFieldName(props.name), form },
+      fieldComponents,
+    )
+    useValueFieldSubscription(fieldApi)
+
+    return props.children(fieldApi as never)
+  }
+  resultGroup.Field.displayName = 'TanStackForm.FormGroup.Field'
+
+  resultGroup.ArrayField = function ArrayField(props) {
+    const fieldApi = useField(
+      { ...props, name: group._getPrefixedFieldName(props.name), form },
+      fieldComponents,
+    )
+    useArrayFieldSubscription(fieldApi)
+
+    return props.children(fieldApi as never)
+  }
+  resultGroup.ArrayField.displayName = 'TanStackForm.FormGroup.ArrayField'
+
+  resultGroup.Subscribe = (props) => {
+    return <Subscribe source={group.store} {...props} />
+  }
+  resultGroup.Subscribe.displayName = 'TanStackForm.FormGroup.Subscribe'
+
+  return resultGroup
 }

@@ -70,6 +70,8 @@ describe('ErrorVisibility', () => {
       'name',
       string,
       typeof emptyFieldValidators,
+      [],
+      TestFormData,
       typeof emptyFormValidators,
       never
     > = {
@@ -136,6 +138,8 @@ describe('ErrorVisibility', () => {
       'name',
       string,
       typeof emptyFieldValidators,
+      [],
+      TestFormData,
       typeof emptyFormValidators,
       never
     > = {
@@ -458,7 +462,7 @@ describe('FieldErrors', () => {
     ])
 
     expectTypeOf<
-      FieldErrors<typeof emptyFormValidators, typeof fieldValidators, never>
+      FieldErrors<typeof fieldValidators, [], typeof emptyFormValidators, never>
     >().toEqualTypeOf<
       Array<ValidationIssue | { message: string; fieldOnly: true }>
     >()
@@ -476,9 +480,32 @@ describe('FieldErrors', () => {
     ])
 
     expectTypeOf<
-      FieldErrors<typeof formValidators, typeof emptyFieldValidators, never>
+      FieldErrors<typeof emptyFieldValidators, [], typeof formValidators, never>
     >().toEqualTypeOf<
       Array<ValidationIssue | { message: string; fieldOnly: true }>
+    >()
+  })
+
+  it('should infer field errors from aggregate group validators', () => {
+    const groupValidators = defineFormValidators([
+      {
+        run: () => ({
+          form: { message: '', groupOnly: true },
+          fields: { name: { message: '', fromGroup: true as const } },
+        }),
+        triggers: [],
+      },
+    ])
+
+    expectTypeOf<
+      FieldErrors<
+        typeof emptyFieldValidators,
+        typeof groupValidators,
+        typeof emptyFormValidators,
+        never
+      >
+    >().toEqualTypeOf<
+      Array<ValidationIssue | { message: string; fromGroup: true }>
     >()
   })
 
@@ -498,7 +525,7 @@ describe('FieldErrors', () => {
     ])
 
     expectTypeOf<
-      FieldErrors<typeof formValidators, typeof fieldValidators, never>
+      FieldErrors<typeof fieldValidators, [], typeof formValidators, never>
     >().toEqualTypeOf<
       Array<
         | ValidationIssue
@@ -521,7 +548,7 @@ describe('FieldErrors', () => {
     ])
 
     expectTypeOf<
-      FieldErrors<typeof formValidators, typeof fieldValidators, never>
+      FieldErrors<typeof fieldValidators, [], typeof formValidators, never>
     >().toEqualTypeOf<Array<ValidationIssue>>()
   })
 
@@ -531,7 +558,7 @@ describe('FieldErrors', () => {
     ])
 
     expectTypeOf<
-      FieldErrors<typeof emptyFormValidators, typeof fieldValidators, never>
+      FieldErrors<typeof fieldValidators, [], typeof emptyFormValidators, never>
     >().toEqualTypeOf<
       Array<ValidationIssue | { message: string; code: number }>
     >()
@@ -545,7 +572,7 @@ describe('FieldErrors', () => {
     ])
 
     expectTypeOf<
-      FieldErrors<typeof emptyFormValidators, typeof fieldValidators, never>
+      FieldErrors<typeof fieldValidators, [], typeof emptyFormValidators, never>
     >().toEqualTypeOf<Array<ValidationIssue>>()
 
     const mixedFieldValidators = defineFieldValidators([
@@ -558,8 +585,9 @@ describe('FieldErrors', () => {
 
     expectTypeOf<
       FieldErrors<
-        typeof emptyFormValidators,
         typeof mixedFieldValidators,
+        [],
+        typeof emptyFormValidators,
         never
       >
     >().toEqualTypeOf<
@@ -580,7 +608,23 @@ describe('FieldErrors', () => {
     ])
 
     expectTypeOf<
-      FieldErrors<typeof formValidators, typeof fieldValidators, never>
+      FieldErrors<typeof fieldValidators, [], typeof formValidators, never>
+    >().toEqualTypeOf<Array<ValidationIssue | StandardSchemaV1Issue>>()
+  })
+
+  it('should infer field errors from group standard schemas', () => {
+    const groupSchema = z.object({ name: z.string() })
+    const groupValidators = defineFormValidators([
+      { run: groupSchema, triggers: [] },
+    ])
+
+    expectTypeOf<
+      FieldErrors<
+        typeof emptyFieldValidators,
+        typeof groupValidators,
+        typeof emptyFormValidators,
+        never
+      >
     >().toEqualTypeOf<Array<ValidationIssue | StandardSchemaV1Issue>>()
   })
 
@@ -591,7 +635,7 @@ describe('FieldErrors', () => {
     ])
 
     expectTypeOf<
-      FieldErrors<typeof emptyFormValidators, typeof fieldValidators, never>
+      FieldErrors<typeof fieldValidators, [], typeof emptyFormValidators, never>
     >().toEqualTypeOf<
       Array<
         | ValidationIssue
@@ -611,7 +655,7 @@ describe('FieldErrors', () => {
     ])
 
     expectTypeOf<
-      FieldErrors<typeof emptyFormValidators, typeof fieldValidators, never>
+      FieldErrors<typeof fieldValidators, [], typeof emptyFormValidators, never>
     >().toEqualTypeOf<
       Array<
         | ValidationIssue
@@ -632,7 +676,7 @@ describe('FieldErrors', () => {
     ])
 
     expectTypeOf<
-      FieldErrors<typeof formValidators, typeof emptyFieldValidators, never>
+      FieldErrors<typeof emptyFieldValidators, [], typeof formValidators, never>
     >().toEqualTypeOf<
       Array<ValidationIssue | { message: string; fieldOnly: true }>
     >()
@@ -644,7 +688,7 @@ describe('FieldErrors', () => {
     ])
 
     expectTypeOf<
-      FieldErrors<typeof formValidators, typeof emptyFieldValidators, never>
+      FieldErrors<typeof emptyFieldValidators, [], typeof formValidators, never>
     >().toEqualTypeOf<Array<ValidationIssue>>()
   })
 
@@ -656,8 +700,9 @@ describe('FieldErrors', () => {
 
     expectTypeOf<
       FieldErrors<
-        typeof emptyFormValidators,
         typeof emptyFieldValidators,
+        [],
+        typeof emptyFormValidators,
         SubmitReturn
       >
     >().toEqualTypeOf<
@@ -668,27 +713,29 @@ describe('FieldErrors', () => {
   it('should normalize submit string field errors', () => {
     expectTypeOf<
       FieldErrors<
-        typeof emptyFormValidators,
         typeof emptyFieldValidators,
+        [],
+        typeof emptyFormValidators,
         OnSubmitError<string>
       >
     >().toEqualTypeOf<Array<ValidationIssue>>()
 
     expectTypeOf<
       FieldErrors<
-        typeof emptyFormValidators,
         typeof emptyFieldValidators,
+        [],
+        typeof emptyFormValidators,
         OnSubmitError<Array<string>>
       >
     >().toEqualTypeOf<Array<ValidationIssue>>()
   })
 
   it('should fall back to ValidationIssue if `any` was used', () => {
-    expectTypeOf<FieldErrors<any, any, never>>().toEqualTypeOf<
+    expectTypeOf<FieldErrors<any, any, any, never>>().toEqualTypeOf<
       Array<ValidationIssue>
     >()
 
-    expectTypeOf<FieldErrors<any, any, any>>().toEqualTypeOf<
+    expectTypeOf<FieldErrors<any, any, any, any>>().toEqualTypeOf<
       Array<ValidationIssue>
     >()
   })

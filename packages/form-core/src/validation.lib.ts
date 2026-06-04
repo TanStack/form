@@ -6,6 +6,8 @@ import type {
   FieldValidateResult,
   FieldValidator,
   FieldValidatorContext,
+  FormGroupValidateResult,
+  FormGroupValidatorContext,
   FormValidateResult,
   FormValidator,
   FormValidatorContext,
@@ -21,13 +23,27 @@ import type { InternalFormApi } from './FormApi/FormApi.lib'
 import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
 
 type FormValidateContext = Omit<FormValidatorContext<any>, 'value'>
-type FieldValidateContext = Omit<FieldValidatorContext<any, any, any>, 'value'>
+type FieldValidateContext = Omit<
+  FieldValidatorContext<any, any, any, any>,
+  'value'
+>
+type FormGroupValidateContext = Omit<FormGroupValidatorContext<any>, 'value'>
 type FormInputContext = Omit<FormValidateContext, 'signal'>
 type FieldInputContext = Omit<FieldValidateContext, 'signal'>
+type FormGroupInputContext = Omit<FormGroupValidateContext, 'signal'>
 
-export type InputContext = FormInputContext | FieldInputContext
-export type ValidateContext = FormValidateContext | FieldValidateContext
-type ValidateResult = FormValidateResult<any> | FieldValidateResult
+export type InputContext =
+  | FormInputContext
+  | FieldInputContext
+  | FormGroupInputContext
+export type ValidateContext =
+  | FormValidateContext
+  | FieldValidateContext
+  | FormGroupValidateContext
+type ValidateResult =
+  | FormValidateResult<any>
+  | FormGroupValidateResult<any>
+  | FieldValidateResult
 
 function isFormContext(ctx: InputContext): ctx is FormInputContext {
   return 'triggerFieldApi' in ctx
@@ -259,7 +275,10 @@ function shouldRunValidator(
 
 async function executeValidator<TResult extends ValidateResult>(
   validator: Validator<any, any, any>,
-  context: FormValidatorContext<any> | FieldValidatorContext<any, any, any>,
+  context:
+    | FormValidatorContext<any>
+    | FormGroupValidatorContext<any>
+    | FieldValidatorContext<any, any, any, any>,
   scope: 'field' | 'form',
 ): Promise<ValidatorExecutionResult<TResult>> {
   if (isStandardSchema(validator.run)) {
@@ -276,13 +295,14 @@ async function executeValidator<TResult extends ValidateResult>(
 interface ValidatorPipelineArgs<TResult extends ValidateResult> {
   context: InputContext
   cache: PipelineCache<TResult>
-  pipeline: ReadonlyArray<
-    FormValidator<any> | FieldValidator<any, any, any>
-  >
+  pipeline: ReadonlyArray<Validator<any, any, any>>
   hasFailedBefore: boolean
   getContext: (
     inputContext: ValidateContext,
-  ) => FieldValidatorContext<any, any, any> | FormValidatorContext<any>
+  ) =>
+    | FieldValidatorContext<any, any, any, any>
+    | FormGroupValidatorContext<any>
+    | FormValidatorContext<any>
   scope: 'field' | 'form'
   validatorIndecesToRun?: Array<number> | null
   onResult?: (result: PipelineResult<TResult>) => void

@@ -11,6 +11,7 @@ import type {
 import type { ValidationDebouncer } from './validation.lib'
 import type {
   FieldValidateResult,
+  FormGroupValidateResult,
   FormValidateResult,
 } from './validation.public'
 import type { ListenerDebouncer } from './listeners.lib'
@@ -60,7 +61,10 @@ export function getTargetField(
 }
 
 export interface PipelineCache<
-  TResult extends FormValidateResult<any> | FieldValidateResult,
+  TResult extends
+    | FormValidateResult<any>
+    | FormGroupValidateResult<any>
+    | FieldValidateResult,
 > {
   listenerDebouncers: Map<number, ListenerDebouncer>
   validatorDebouncers: Map<number, ValidationDebouncer<TResult>>

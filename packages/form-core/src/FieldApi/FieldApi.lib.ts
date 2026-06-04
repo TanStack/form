@@ -64,7 +64,16 @@ import type {
   ValidationIssue,
 } from '../validation.public'
 
-export type AnyFieldApiOptions = FieldApiOptions<any, any, any, any, any, any>
+export type AnyFieldApiOptions = FieldApiOptions<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
 export type AnyFieldValidator = FieldValidator<any, any, any>
 
 interface MetaCacheEntry {
@@ -110,6 +119,8 @@ export interface InternalBaseFieldMeta extends BaseFieldMeta, MetaExtension {}
 export interface InternalFieldMeta extends AnyPublicFieldMeta, MetaExtension {}
 
 export interface InternalFieldState extends PublicFieldState<
+  any,
+  any,
   any,
   any,
   any,
@@ -325,7 +336,7 @@ export class InternalFieldApi<
   TFormData,
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
-> implements FieldApi<any, any, any, any, any, any> {
+> implements FieldApi<any, any, any, any, any, any, any, any> {
   readonly _isRoot = false
   _parent: AnyInternalFieldApi | InternalRootFieldApi
   #children: Map<NameSegment, AnyInternalFieldApi> = new Map()
@@ -650,6 +661,12 @@ export class InternalFieldApi<
       current._runFieldValidation(event)
       current._notifyValidator(event, seenValidatorFields)
       current = current._parent
+    }
+
+    const group = this.form._getNearestFormGroupForField(this.name)
+    if (group) {
+      group.validate(event, { triggerFieldApi: this })
+      return
     }
 
     this.form.validate(event, { fieldApiOverride: this })
@@ -1233,7 +1250,7 @@ export class InternalFieldApi<
     return this.state.meta
   }
 
-  get errors(): FieldErrors<any, any, any> {
+  get errors(): FieldErrors<any, any, any, any> {
     return this.state.meta.errors
   }
 
