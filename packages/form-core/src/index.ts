@@ -6,5 +6,3 @@ export * from './standardSchema.public'
 export * from './listeners.public'
 export * from './utils.public'
 export * from './deep-keys.public'
-// Only type, the runtime export happens in ./form-group.tsx
-export type * from './FormGroupApi/FormGroupApi.public'

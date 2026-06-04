@@ -19,47 +19,22 @@ import type {
 } from './validation.public'
 import type { InternalFormApi } from './FormApi/FormApi.lib'
 import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
-import type {
-  FormGroupValidateResult,
-  FormGroupValidator,
-  FormGroupValidatorContext,
-} from './FormGroupApi/FormGroupApi.public'
 
 type FormValidateContext = Omit<FormValidatorContext<any>, 'value'>
 type FieldValidateContext = Omit<FieldValidatorContext<any, any, any>, 'value'>
-type GroupValidateContext = Omit<
-  FormGroupValidatorContext<any, any, any>,
-  'value'
->
 type FormInputContext = Omit<FormValidateContext, 'signal'>
 type FieldInputContext = Omit<FieldValidateContext, 'signal'>
-type GroupInputContext = Omit<GroupValidateContext, 'signal'>
 
-export type InputContext =
-  | FormInputContext
-  | FieldInputContext
-  | GroupInputContext
-export type ValidateContext =
-  | FormValidateContext
-  | FieldValidateContext
-  | GroupValidateContext
-type ValidateResult =
-  | FormValidateResult<any>
-  | FieldValidateResult
-  | FormGroupValidateResult<any>
+export type InputContext = FormInputContext | FieldInputContext
+export type ValidateContext = FormValidateContext | FieldValidateContext
+type ValidateResult = FormValidateResult<any> | FieldValidateResult
 
 function isFormContext(ctx: InputContext): ctx is FormInputContext {
-  return 'triggerFieldApi' in ctx && !('groupApi' in ctx)
-}
-
-function isGroupContext(ctx: InputContext): ctx is GroupInputContext {
-  return 'groupApi' in ctx
+  return 'triggerFieldApi' in ctx
 }
 
 function getContextValue(context: InputContext) {
-  return isGroupContext(context)
-    ? context.formApi.state.values
-    : isFormContext(context)
+  return isFormContext(context)
     ? context.formApi.state.values
     : context.fieldApi.value
 }
@@ -227,10 +202,9 @@ function getEnabledState(
   if (typeof booleanOrFn === 'boolean') return booleanOrFn
 
   return booleanOrFn({
-    triggerFieldApi:
-      isFormContext(context) || isGroupContext(context)
-        ? context.triggerFieldApi
-        : context.fieldApi,
+    triggerFieldApi: isFormContext(context)
+      ? context.triggerFieldApi
+      : context.fieldApi,
     formApi: context.formApi,
     value: getContextValue(context),
   })
@@ -243,10 +217,9 @@ function getDebounceMs(
   if (typeof numberOrFn === 'number') return numberOrFn
 
   return numberOrFn({
-    triggerFieldApi:
-      isFormContext(context) || isGroupContext(context)
-        ? context.triggerFieldApi
-        : context.fieldApi,
+    triggerFieldApi: isFormContext(context)
+      ? context.triggerFieldApi
+      : context.fieldApi,
     formApi: context.formApi,
     value: getContextValue(context),
   })
@@ -286,10 +259,7 @@ function shouldRunValidator(
 
 async function executeValidator<TResult extends ValidateResult>(
   validator: Validator<any, any, any>,
-  context:
-    | FormValidatorContext<any>
-    | FieldValidatorContext<any, any, any>
-    | FormGroupValidatorContext<any, any, any>,
+  context: FormValidatorContext<any> | FieldValidatorContext<any, any, any>,
   scope: 'field' | 'form',
 ): Promise<ValidatorExecutionResult<TResult>> {
   if (isStandardSchema(validator.run)) {
@@ -307,17 +277,12 @@ interface ValidatorPipelineArgs<TResult extends ValidateResult> {
   context: InputContext
   cache: PipelineCache<TResult>
   pipeline: ReadonlyArray<
-    | FormValidator<any>
-    | FieldValidator<any, any, any>
-    | FormGroupValidator<any, any, any>
+    FormValidator<any> | FieldValidator<any, any, any>
   >
   hasFailedBefore: boolean
   getContext: (
     inputContext: ValidateContext,
-  ) =>
-    | FieldValidatorContext<any, any, any>
-    | FormValidatorContext<any>
-    | FormGroupValidatorContext<any, any, any>
+  ) => FieldValidatorContext<any, any, any> | FormValidatorContext<any>
   scope: 'field' | 'form'
   validatorIndecesToRun?: Array<number> | null
   onResult?: (result: PipelineResult<TResult>) => void

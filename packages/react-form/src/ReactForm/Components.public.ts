@@ -1,4 +1,3 @@
-import type { ReactFormApi } from './formApiTypes.public'
 import type {
   DeepKeys,
   DeepKeysWhereValueIncludes,
@@ -6,10 +5,6 @@ import type {
   FieldApi,
   FieldApiOptions,
   FieldValidators,
-  FormGroupApi,
-  FormGroupOptions,
-  FormGroupState,
-  FormGroupValidators,
   FormState,
   FormValidators,
 } from '@tanstack/form-core-v2'
@@ -108,192 +103,6 @@ export type ReactFormSubscribeComponent<
     TFormValidators,
     TSubmitReturn,
     TSelected
-  >,
-) => CrossVersionReactNode
-
-export type ReactFormGroupSubscribeProps<
-  TFormData,
-  TGroupName extends DeepKeys<TFormData>,
-  TGroupValue extends DeepValue<TFormData, TGroupName>,
-  TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
-  TSelected,
-> = Omit<
-  SubscribeProps<
-    FormGroupState<
-      TFormData,
-      TGroupName,
-      TGroupValue,
-      TFormValidators,
-      TSubmitReturn
-    >,
-    TSelected
-  >,
-  'source'
->
-
-export type ReactFormGroupSubscribeComponent<
-  TFormData,
-  TGroupName extends DeepKeys<TFormData>,
-  TGroupValue extends DeepValue<TFormData, TGroupName>,
-  TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
-> = <TSelected>(
-  props: ReactFormGroupSubscribeProps<
-    TFormData,
-    TGroupName,
-    TGroupValue,
-    TFormValidators,
-    TSubmitReturn,
-    TSelected
-  >,
-) => CrossVersionReactNode
-
-export type ReactFormGroupApi<
-  TFormData,
-  TGroupName extends DeepKeys<TFormData>,
-  TGroupValue extends DeepValue<TFormData, TGroupName>,
-  TGroupValidators extends FormGroupValidators<
-    TFormData,
-    TGroupName,
-    TGroupValue
-  >,
-  TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
-> = FormGroupApi<
-  TFormData,
-  TGroupName,
-  TGroupValue,
-  TGroupValidators,
-  TFormValidators,
-  TSubmitReturn
-> & {
-  Field: ReactFormGroupFieldComponent<
-    TGroupValue,
-    TFormValidators,
-    TSubmitReturn,
-    any
-  >
-  ArrayField: ReactFormGroupArrayFieldComponent<
-    TGroupValue,
-    TFormValidators,
-    TSubmitReturn,
-    any
-  >
-  Subscribe: ReactFormGroupSubscribeComponent<
-    TFormData,
-    TGroupName,
-    TGroupValue,
-    TFormValidators,
-    TSubmitReturn
-  >
-}
-
-export interface ReactFormGroupFieldProps<
-  TGroupValue,
-  TFieldName extends DeepKeys<TGroupValue>,
-  TFieldValue extends DeepValue<TGroupValue, TFieldName>,
-  TFieldValidators extends FieldValidators<any, any, TFieldValue>,
-  TFormValidators extends FormValidators<any>,
-  TSubmitReturn,
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
-> extends Omit<
-    FieldApiOptions<
-      any,
-      any,
-      TFieldValue,
-      TFieldValidators,
-      TFormValidators,
-      TSubmitReturn
-    >,
-    'name'
-  > {
-  name: TFieldName
-  children: (
-    fieldApi: ReactFieldApi<
-      any,
-      any,
-      TFieldValue,
-      TFieldValidators,
-      TFormValidators,
-      TSubmitReturn,
-      TFieldComponents
-    >,
-  ) => CrossVersionReactNode
-}
-
-export type ReactFormGroupFieldComponent<
-  TGroupValue,
-  TFormValidators extends FormValidators<any>,
-  TSubmitReturn,
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
-> = <
-  TFieldName extends DeepKeys<TGroupValue>,
-  TFieldValue extends DeepValue<TGroupValue, TFieldName>,
-  TFieldValidators extends FieldValidators<any, any, TFieldValue>,
->(
-  props: ReactFormGroupFieldProps<
-    TGroupValue,
-    TFieldName,
-    TFieldValue,
-    TFieldValidators,
-    TFormValidators,
-    TSubmitReturn,
-    TFieldComponents
-  >,
-) => CrossVersionReactNode
-
-export interface ReactFormGroupArrayFieldProps<
-  TGroupValue,
-  TFieldName extends DeepKeysWhereValueIncludes<TGroupValue, Array<any>>,
-  TFieldValue extends DeepValue<TGroupValue, TFieldName>,
-  TFieldValidators extends FieldValidators<any, any, TFieldValue>,
-  TFormValidators extends FormValidators<any>,
-  TSubmitReturn,
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
-> extends Omit<
-    FieldApiOptions<
-      any,
-      any,
-      TFieldValue,
-      TFieldValidators,
-      TFormValidators,
-      TSubmitReturn
-    >,
-    'name'
-  > {
-  name: TFieldName
-  children: (
-    fieldApi: ReactFieldApi<
-      any,
-      any,
-      TFieldValue,
-      TFieldValidators,
-      TFormValidators,
-      TSubmitReturn,
-      TFieldComponents
-    >,
-  ) => CrossVersionReactNode
-}
-
-export type ReactFormGroupArrayFieldComponent<
-  TGroupValue,
-  TFormValidators extends FormValidators<any>,
-  TSubmitReturn,
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
-> = <
-  TFieldName extends DeepKeysWhereValueIncludes<TGroupValue, Array<any>>,
-  TFieldValue extends DeepValue<TGroupValue, TFieldName>,
-  TFieldValidators extends FieldValidators<any, any, TFieldValue>,
->(
-  props: ReactFormGroupArrayFieldProps<
-    TGroupValue,
-    TFieldName,
-    TFieldValue,
-    TFieldValidators,
-    TFormValidators,
-    TSubmitReturn,
-    TFieldComponents
   >,
 ) => CrossVersionReactNode
 
@@ -396,38 +205,6 @@ export type ReactFormArrayFieldComponent<
     TFieldComponents
   >,
 ) => CrossVersionReactNode
-
-export interface ReactFormGroupProps<
-  TFormData,
-  TGroupName extends DeepKeys<TFormData>,
-  TGroupValue extends DeepValue<TFormData, TGroupName>,
-  TGroupValidators extends FormGroupValidators<
-    TFormData,
-    TGroupName,
-    TGroupValue
-  >,
-  TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
-> extends FormGroupOptions<
-  TFormData,
-  TGroupName,
-  TGroupValue,
-  TGroupValidators,
-  TFormValidators,
-  TSubmitReturn
-> {
-  form: ReactFormApi<TFormData, TFormValidators, TSubmitReturn, any>
-  children: (
-    groupApi: ReactFormGroupApi<
-      TFormData,
-      TGroupName,
-      TGroupValue,
-      TGroupValidators,
-      TFormValidators,
-      TSubmitReturn
-    >,
-  ) => CrossVersionReactNode
-}
 
 export interface ReactTanStackFormComponents<
   TFormData,
