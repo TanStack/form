@@ -236,7 +236,7 @@ function App() {
 
 ## Reactivity
 
-`@tanstack/preact-form` offers various ways to subscribe to form and field state changes, most notably the `useSelector(form.store)` hook and the `form.Subscribe` component. These methods allow you to optimize your form's rendering performance by only updating components when necessary.
+`@tanstack/preact-form` offers various ways to subscribe to form and field state changes, most notably the `useSelector(form.store, …)` hook and the `form.Subscribe` component. These methods allow you to optimize your form's rendering performance by only updating components when necessary.
 
 Example:
 
@@ -265,7 +265,7 @@ const errors = useSelector(form.store, (state) => state.errorMap)
 const store = useSelector(form.store)
 ```
 
-Note: The usage of the `useField` hook to achieve reactivity is discouraged since it is designed to be used thoughtfully within the `form.Field` component. You might want to use `useSelector(form.store)` instead.
+Note: The usage of the `useField` hook to achieve reactivity is discouraged since it is designed to be used thoughtfully within the `form.Field` component. You might want to use `useSelector(form.store, …)` instead.
 
 ## Listeners
 
