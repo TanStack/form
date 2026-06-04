@@ -1,5 +1,9 @@
 import { batch, createAtom, shallow } from '@tanstack/store'
-import { cancelPipelineCache, createPipelineCache } from '../utils.lib'
+import {
+  cancelPipelineCache,
+  concatenateFieldNames,
+  createPipelineCache,
+} from '../utils.lib'
 import {
   clearIndexedErrorsFromSource,
   isAggregateError,
@@ -37,6 +41,10 @@ import type { InternalFormGroupRuntime } from './FormGroupApi.runtime'
 
 export type AnyInternalFormGroupApi = InternalFormGroupApi
 export type AnyFormGroupOptions = FormGroupOptions<any, any, any, any, any, any>
+type FormGroupInternalMembers = Omit<
+  InternalFormGroupApi,
+  keyof FormGroupApi<any, any, any, any, any, any>
+>
 
 interface FormGroupValidatorPipelineArgs {
   pipeline: ReadonlyArray<FormGroupValidators<any, any, any>[number]>
@@ -66,7 +74,7 @@ function runFormGroupValidatorPipeline({
       formApi: ctx.formApi,
       signal: ctx.signal,
       groupApi,
-      value: groupApi.value,
+      value: groupApi._getValue(),
     }),
     scope: 'form',
   })
@@ -109,16 +117,21 @@ export class InternalFormGroupApi
   ) {
     this.form = form
     this._options = options
-    this._field = form._getOrCreateFieldApi({ name: options.name })
+    this._field = form._getOrCreateFieldApi({
+      name: options.name,
+      listeners: options.listeners,
+    })
     this._pipelineCache = createPipelineCache()
     this.store = createAtom(
       () => {
         const fieldState = this._ensureField().store.get()
         const submission = this._submissionMeta.get()
         return {
-          value: fieldState.value,
+          values: fieldState.value,
           meta: fieldState.meta,
           errors: fieldState.meta.errors,
+          isValid: fieldState.meta.isValid,
+          isInvalid: fieldState.meta.isInvalid,
           canSubmit:
             !submission.isSubmitting && fieldState.meta.original.isValid,
           isSubmitting: submission.isSubmitting,
@@ -138,7 +151,7 @@ export class InternalFormGroupApi
     return this._options
   }
 
-  get value(): any {
+  _getValue(): any {
     return this._ensureField().value
   }
 
@@ -168,7 +181,10 @@ export class InternalFormGroupApi
 
   _ensureField(): AnyInternalFieldApi {
     if (this._field._isKilled) {
-      this._field = this.form._getOrCreateFieldApi({ name: this._options.name })
+      this._field = this.form._getOrCreateFieldApi({
+        name: this._options.name,
+        listeners: this._options.listeners,
+      })
       if (this._registrationCount > 0) {
         this._field._registerFormGroup(this)
         this._field._register()
@@ -179,11 +195,15 @@ export class InternalFormGroupApi
 
   _update(options: AnyFormGroupOptions): void {
     this._options = options
+    this._ensureField()._update({ listeners: options.listeners })
   }
 
   _register(): () => void {
     if (this._registrationCount === 0) {
-      this._field = this.form._getOrCreateFieldApi({ name: this._options.name })
+      this._field = this.form._getOrCreateFieldApi({
+        name: this._options.name,
+        listeners: this._options.listeners,
+      })
       const field = this._field
       field._registerFormGroup(this)
       field._register()
@@ -210,10 +230,87 @@ export class InternalFormGroupApi
   }
 
   _fullFieldName(relativeName: string): string {
-    if (relativeName === '') return this.name
-    return relativeName.startsWith('[')
-      ? `${this.name}${relativeName}`
-      : `${this.name}.${relativeName}`
+    return concatenateFieldNames(this.name, relativeName)
+  }
+
+  getFieldValue = (fieldName: string): any => {
+    return this.form.getFieldValue(this._fullFieldName(fieldName))
+  }
+
+  setFieldValue = (fieldName: string, value: any, options?: any): void => {
+    this.form.setFieldValue(this._fullFieldName(fieldName), value, options)
+  }
+
+  pushFieldValue = (
+    arrayFieldName: string,
+    value: any,
+    options?: any,
+  ): void => {
+    this.form.pushFieldValue(
+      this._fullFieldName(arrayFieldName),
+      value,
+      options,
+    )
+  }
+
+  insertFieldValue = (
+    arrayFieldName: string,
+    index: number,
+    value: any,
+    options?: any,
+  ): void => {
+    this.form.insertFieldValue(
+      this._fullFieldName(arrayFieldName),
+      index,
+      value,
+      options,
+    )
+  }
+
+  removeFieldValue = (
+    arrayFieldName: string,
+    index: number,
+    options?: any,
+  ): void => {
+    this.form.removeFieldValue(
+      this._fullFieldName(arrayFieldName),
+      index,
+      options,
+    )
+  }
+
+  swapFieldValues = (
+    arrayFieldName: string,
+    indexA: number,
+    indexB: number,
+    options?: any,
+  ): void => {
+    this.form.swapFieldValues(
+      this._fullFieldName(arrayFieldName),
+      indexA,
+      indexB,
+      options,
+    )
+  }
+
+  clearFieldValues = (arrayFieldName: string, options?: any): void => {
+    this.form.clearFieldValues(this._fullFieldName(arrayFieldName), options)
+  }
+
+  filterFieldValues = (
+    arrayFieldName: string,
+    predicate: (value: any, index: number, array: any) => boolean,
+    options?: any,
+  ): void => {
+    this.form.filterFieldValues(
+      this._fullFieldName(arrayFieldName),
+      predicate,
+      options,
+    )
+  }
+
+  resetField = (fieldName: string): void => {
+    this.form.resetField(this._fullFieldName(fieldName))
   }
 
   _setOwnedErrors(
@@ -490,7 +587,7 @@ export class InternalFormGroupApi
 
     const errors = fieldErrors.concat(groupErrors)
     const callbackContext = {
-      value: this.value,
+      value: this._getValue(),
       groupApi: this as never,
       formApi: this.form as never,
       schemaOutputs: this._schemaOutputs.slice(),
@@ -560,8 +657,12 @@ export function createFormGroupApi<
   TFormValidators,
   TSubmitReturn
 > &
-  InternalFormGroupApi {
-  const formGroups = (form._formGroups ??= new Map())
+  FormGroupInternalMembers {
+  if (!form._formGroups) {
+    form._formGroups = new Map()
+  }
+  const formGroups = form._formGroups
+
   const existing = formGroups.get(options.name)
 
   if (existing) {

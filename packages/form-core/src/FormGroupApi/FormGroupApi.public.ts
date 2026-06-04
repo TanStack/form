@@ -1,7 +1,13 @@
 import type { ReadonlyAtom } from '@tanstack/store'
-import type { DeepKeys, DeepValue } from '../deep-keys.public'
+import type {
+  DeepKeys,
+  DeepKeysWhereValueIncludes,
+  DeepValue,
+  TryGetArrayElementType,
+} from '../deep-keys.public'
 import type { AnyFieldApi, FieldMeta } from '../FieldApi/FieldApi.public'
 import type { FormApi } from '../FormApi/FormApi.public'
+import type { FieldListeners } from '../listeners.public'
 import type {
   FieldValidators,
   FormValidators,
@@ -12,6 +18,8 @@ import type {
   Validator,
 } from '../validation.public'
 import type { StandardSchemaV1 } from '../standardSchema.public'
+import type { FieldUpdateOptions, Updater } from '../types.public'
+import type { FormLikeApi } from '../FormLikeApi/FormLikeApi.lib'
 
 export interface FormGroupValidatorContext<
   TFormData,
@@ -118,6 +126,14 @@ export interface FormGroupOptions<
 > {
   name: TGroupName
   validators?: TGroupValidators
+  listeners?: FieldListeners<
+    TFormData,
+    TGroupName,
+    TGroupValue,
+    FieldValidators<TFormData, TGroupName, TGroupValue>,
+    TFormValidators,
+    TSubmitReturn
+  >
   onGroupSubmit?: (
     context: FormGroupSubmitContext<
       TFormData,
@@ -159,7 +175,7 @@ export interface FormGroupState<
   TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
 > {
-  value: TGroupValue
+  values: TGroupValue
   meta: FormGroupMeta<
     TFormData,
     TGroupName,
@@ -168,6 +184,8 @@ export interface FormGroupState<
     TSubmitReturn
   >
   errors: FormGroupErrors
+  isValid: boolean
+  isInvalid: boolean
   canSubmit: boolean
   isSubmitting: boolean
   isSubmitSuccessful: boolean
@@ -181,7 +199,7 @@ export interface FormGroupApi<
   TGroupValidators extends FormGroupValidators<TFormData, TGroupName, TGroupValue>,
   TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
-> {
+> extends FormLikeApi<TGroupValue> {
   form: FormApi<TFormData, TFormValidators, TSubmitReturn>
   readonly options: FormGroupOptions<
     TFormData,
@@ -192,7 +210,6 @@ export interface FormGroupApi<
     TSubmitReturn
   >
   readonly name: TGroupName
-  readonly value: TGroupValue
   readonly state: FormGroupState<
     TFormData,
     TGroupName,
@@ -218,4 +235,62 @@ export interface FormGroupApi<
     >
   >
   handleSubmit: () => Promise<Array<FormGroupValidationError<TGroupValue>>>
+  setFieldValue: <TFieldName extends DeepKeys<TGroupValue>>(
+    fieldName: TFieldName,
+    value: Updater<DeepValue<TGroupValue, TFieldName>>,
+    options?: FieldUpdateOptions,
+  ) => void
+  getFieldValue: <TFieldName extends DeepKeys<TGroupValue>>(
+    fieldName: TFieldName,
+  ) => DeepValue<TGroupValue, TFieldName>
+  swapFieldValues: <
+    TFieldName extends DeepKeysWhereValueIncludes<TGroupValue, Array<any>>,
+  >(
+    arrayFieldName: TFieldName,
+    indexA: number,
+    indexB: number,
+    options?: FieldUpdateOptions,
+  ) => void
+  pushFieldValue: <
+    TFieldName extends DeepKeysWhereValueIncludes<TGroupValue, Array<any>>,
+  >(
+    arrayFieldName: TFieldName,
+    value: TryGetArrayElementType<DeepValue<TGroupValue, TFieldName>>,
+    options?: FieldUpdateOptions,
+  ) => void
+  insertFieldValue: <
+    TFieldName extends DeepKeysWhereValueIncludes<TGroupValue, Array<any>>,
+  >(
+    arrayFieldName: TFieldName,
+    index: number,
+    value: TryGetArrayElementType<DeepValue<TGroupValue, TFieldName>>,
+    options?: FieldUpdateOptions,
+  ) => void
+  clearFieldValues: <
+    TFieldName extends DeepKeysWhereValueIncludes<TGroupValue, Array<any>>,
+  >(
+    arrayFieldName: TFieldName,
+    options?: FieldUpdateOptions,
+  ) => void
+  removeFieldValue: <
+    TFieldName extends DeepKeysWhereValueIncludes<TGroupValue, Array<any>>,
+  >(
+    arrayFieldName: TFieldName,
+    index: number,
+    options?: FieldUpdateOptions,
+  ) => void
+  filterFieldValues: <
+    TFieldName extends DeepKeysWhereValueIncludes<TGroupValue, Array<any>>,
+  >(
+    arrayFieldName: TFieldName,
+    predicate: (
+      value: TryGetArrayElementType<DeepValue<TGroupValue, TFieldName>>,
+      index: number,
+      array: DeepValue<TGroupValue, TFieldName>,
+    ) => boolean,
+    options?: FieldUpdateOptions & { thisArg?: any },
+  ) => void
+  resetField: <TFieldName extends DeepKeys<TGroupValue>>(
+    fieldName: TFieldName,
+  ) => void
 }

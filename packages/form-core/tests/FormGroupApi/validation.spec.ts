@@ -111,7 +111,7 @@ describe('form group - validation', () => {
     })
     expect(groupValidator).toHaveBeenCalledOnce()
     expect(formValidator).not.toHaveBeenCalled()
-    expect(form.state.formErrors).toEqual([])
+    expect(form.state.errors).toEqual([])
 
     unregister()
   })
@@ -130,7 +130,7 @@ describe('form group - validation', () => {
     await Promise.resolve()
 
     expect(formValidator).not.toHaveBeenCalled()
-    expect(form.state.formErrors).toEqual([])
+    expect(form.state.errors).toEqual([])
 
     unregister()
   })

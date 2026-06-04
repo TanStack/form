@@ -29,7 +29,9 @@ import {
 import { runFormListenerPipeline } from '../listeners.lib'
 import { runSubmissionProcess } from './handleSubmit.lib'
 import { ArrayMethods } from './array-methods.lib'
+import { getFormStateSnapshot } from './formState.lib'
 import type { FormApi, FormOptions, FormState } from './FormApi.public'
+import type { FormErrorMeta } from './formState.lib'
 
 import type { DeepKeys } from '../deep-keys.public'
 import type { PipelineCache } from '../utils.lib'
@@ -52,7 +54,6 @@ import type {
 import type { Atom, ReadonlyAtom } from '@tanstack/store'
 import type { Updater } from '../types.public'
 import type {
-  FormErrors,
   FormValidateResult,
   FormValidationError,
   FormValidators,
@@ -63,30 +64,6 @@ import type {
 } from '../validation.public'
 import type { FormListenerTriggers } from '../listeners.public'
 import type { InternalFormGroupRuntime } from '../FormGroupApi/FormGroupApi.runtime'
-
-interface FormErrorMeta {
-  /**
-   * @private
-   * Dense 2-dimensional array of form-level errors where index corresponds to validatorIndex.
-   * Each validator index contains an array of errors (normalized).
-   */
-  errors: Array<Array<ValidationIssue>>
-  errorSourceEvents: Array<string | null>
-}
-
-const formErrorsCache = new WeakMap<FormErrorMeta, Array<ValidationIssue>>()
-
-export function getFormErrors(
-  form: InternalFormApi<any, any, any>,
-): Array<ValidationIssue> {
-  const baseFormErrors = form._atoms.meta.formErrors.get()
-  let formErrors = formErrorsCache.get(baseFormErrors)
-  if (!formErrors) {
-    formErrors = baseFormErrors.errors.flat()
-    formErrorsCache.set(baseFormErrors, formErrors)
-  }
-  return formErrors
-}
 
 export interface FormMetaAtoms {
   isDirty: Atom<boolean>
@@ -339,45 +316,9 @@ export class InternalFormApi<
     }
     this._fieldRootNode = new InternalRootFieldApi(this)
 
-    this.store = createAtom(
-      () => {
-        const values = this._atoms.values.get()
-        const isDirty = this._atoms.meta.isDirty.get()
-        const touchedFieldCount = this._atoms.meta.touchedFieldCount.get()
-        const errorFields = this._atoms.meta.errorFields.get()
-        const fieldValidationCount = this._atoms.meta.fieldValidationCount.get()
-        const validationCount = this._atoms.meta.validationCount.get()
-        const isSubmitting = this._atoms.meta.isSubmitting.get()
-        const isSubmitSuccessful = this._atoms.meta.isSubmitSuccessful.get()
-        const submissionAttempts = this._atoms.meta.submissionAttempts.get()
-
-        const isPristine = !isDirty
-        const isTouched = touchedFieldCount > 0
-        const isValidating = validationCount > 0 || fieldValidationCount > 0
-        const formErrors = getFormErrors(this)
-        // TODO mount errors
-        const hasMountError = false as boolean
-        const hasErrors =
-          hasMountError ||
-          formErrors.length > 0 ||
-          errorFields.size > 0
-        const canSubmit = !isSubmitting && !hasErrors
-
-        return {
-          values,
-          isTouched,
-          isDirty,
-          isPristine,
-          formErrors: formErrors as FormErrors<TFormValidators, any>,
-          canSubmit,
-          isSubmitting,
-          isSubmitSuccessful,
-          isValidating,
-          submissionAttempts,
-        } satisfies FormState<TFormData, TFormValidators, any>
-      },
-      { compare: shallow },
-    )
+    this.store = createAtom(() => getFormStateSnapshot(this), {
+      compare: shallow,
+    })
   }
 
   mount = () => {

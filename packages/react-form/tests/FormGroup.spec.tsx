@@ -16,10 +16,10 @@ describe('Form groups', () => {
         <FormGroup form={form} name="step">
           {(group) => (
             <>
-              <group.Subscribe selector={(state) => state.value.name}>
+              <group.Subscribe selector={(state) => state.values.name}>
                 {(name) => <span data-testid="group-value">{name}</span>}
               </group.Subscribe>
-              <form.Field name="step.name">
+              <group.Field name="name">
                 {(field) => (
                   <input
                     aria-label="Name"
@@ -27,7 +27,7 @@ describe('Form groups', () => {
                     onChange={(event) => field.handleChange(event.target.value)}
                   />
                 )}
-              </form.Field>
+              </group.Field>
             </>
           )}
         </FormGroup>
@@ -62,11 +62,11 @@ describe('Form groups', () => {
         >
           {(group) => (
             <>
-              <form.Field name="step.name">
+              <group.Field name="name">
                 {(field) => (
                   <input aria-label="Name" value={field.value} readOnly />
                 )}
-              </form.Field>
+              </group.Field>
               <button type="button" onClick={() => group.handleSubmit()}>
                 Continue
               </button>
@@ -126,7 +126,7 @@ describe('Form groups', () => {
         >
           {(group) => (
             <>
-              <form.Field name="guestDetails.name">
+              <group.Field name="name">
                 {(field) => (
                   <>
                     <input
@@ -141,7 +141,7 @@ describe('Form groups', () => {
                     </span>
                   </>
                 )}
-              </form.Field>
+              </group.Field>
               <button type="button" onClick={() => group.handleSubmit()}>
                 Continue
               </button>
@@ -197,7 +197,7 @@ describe('Form groups', () => {
         >
           {(group) => (
             <>
-              <form.Field name="guestDetails.name">
+              <group.Field name="name">
                 {(field) => (
                   <input
                     aria-label="Guest name"
@@ -205,7 +205,7 @@ describe('Form groups', () => {
                     readOnly
                   />
                 )}
-              </form.Field>
+              </group.Field>
               <button type="button" onClick={() => group.handleSubmit()}>
                 Continue
               </button>
@@ -275,18 +275,18 @@ describe('Form groups', () => {
         <FormGroup form={form} name="step">
           {(group) => (
             <>
-              <group.Subscribe selector={(state) => state.value.names}>
+              <group.Subscribe selector={(state) => state.values.names}>
                 {(names) => (
                   <span data-testid="names">{names.join(',')}</span>
                 )}
               </group.Subscribe>
-              <form.ArrayField name="step.names">
+              <group.ArrayField name="names">
                 {(field) => (
                   <button type="button" onClick={() => field.pushValue('Bob')}>
                     Add name
                   </button>
                 )}
-              </form.ArrayField>
+              </group.ArrayField>
             </>
           )}
         </FormGroup>
@@ -416,9 +416,7 @@ describe('Form groups', () => {
       | undefined
 
     function GroupApiProbe(props: {
-      group: Parameters<
-        Parameters<typeof FormGroup<any, any, any, any, any, any>>[0]['children']
-      >[0]
+      group: object
     }) {
       React.useEffect(() => {
         const coreGroup = Object.getPrototypeOf(props.group)

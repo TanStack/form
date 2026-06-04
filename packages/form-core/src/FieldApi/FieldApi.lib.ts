@@ -1,5 +1,5 @@
 import { batch, createAtom } from '@tanstack/store'
-import { getFormErrors } from '../FormApi/FormApi.lib'
+import { createFormStateProxy } from '../FormApi/formState.lib'
 import {
   callUpdater,
   cancelPipelineCache,
@@ -45,7 +45,6 @@ import type {
 import type { ResolvedInternalFieldUpdateOptions } from '../types.lib'
 import type { FieldUpdateOptions, Updater } from '../types.public'
 import type { AnyInternalFormApi } from '../FormApi/FormApi.lib'
-import type { FormState } from '../FormApi/FormApi.public'
 import type { InternalFormGroupRuntime } from '../FormGroupApi/FormGroupApi.runtime'
 import type { Atom, ReadonlyAtom } from '@tanstack/store'
 import type {
@@ -1531,80 +1530,19 @@ function shouldDisplayErrors(
   value?: any,
 ): boolean {
   if (!field || !errorVisibility) return true
-  return errorVisibility({
-    state: createErrorVisibilityState(field),
-    fieldState: createErrorVisibilityFieldState(value, baseMeta),
-  })
-}
-
-const formStateKeys: Array<keyof FormState<any, any, any>> = [
-  'values',
-  'isTouched',
-  'isDirty',
-  'isPristine',
-  'formErrors',
-  'canSubmit',
-  'isSubmitting',
-  'isSubmitSuccessful',
-  'isValidating',
-  'submissionAttempts',
-]
-
-function createErrorVisibilityState(
-  field: AnyInternalFieldApi,
-): FormState<any, any, any> {
-  const form = field.form
   const group = field._findNearestRegisteredFormGroup()
-
-  // TODO how is this performance-wise? Should it be cached?
-  // Keep in mind that form group checks would need to be dynamci regardless
-  return new Proxy({} as FormState<any, any, any>, {
-    get(_target, property) {
-      switch (property) {
-        case 'values':
-          return form._atoms.values.get()
-        case 'isTouched':
-          return form._atoms.meta.touchedFieldCount.get() > 0
-        case 'isDirty':
-          return form._atoms.meta.isDirty.get()
-        case 'isPristine':
-          return !form._atoms.meta.isDirty.get()
-        case 'formErrors':
-          return getFormErrors(form)
-        case 'canSubmit':
-          return (
-            !form._atoms.meta.isSubmitting.get() &&
-            getFormErrors(form).length === 0 &&
-            form._atoms.meta.errorFields.get().size === 0
-          )
-        case 'isSubmitting':
-          return group
-            ? group._isSubmitting
-            : form._atoms.meta.isSubmitting.get()
-        case 'isSubmitSuccessful':
-          return group
-            ? group._isSubmitSuccessful
-            : form._atoms.meta.isSubmitSuccessful.get()
-        case 'isValidating':
-          return (
-            form._atoms.meta.validationCount.get() > 0 ||
-            form._atoms.meta.fieldValidationCount.get() > 0
-          )
-        case 'submissionAttempts':
-          return group
-            ? group._submissionAttempts
-            : form._atoms.meta.submissionAttempts.get()
-        default:
-          return undefined
-      }
-    },
-    ownKeys: () => formStateKeys,
-    getOwnPropertyDescriptor(_target, property) {
-      if (formStateKeys.includes(property as keyof FormState<any, any, any>)) {
-        return { configurable: true, enumerable: true }
-      }
-      return undefined
-    },
+  return errorVisibility({
+    state: createFormStateProxy(
+      field.form,
+      group
+        ? {
+            isSubmitting: group._isSubmitting,
+            isSubmitSuccessful: group._isSubmitSuccessful,
+            submissionAttempts: group._submissionAttempts,
+          }
+        : undefined,
+    ),
+    fieldState: createErrorVisibilityFieldState(value, baseMeta),
   })
 }
 

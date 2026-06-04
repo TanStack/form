@@ -15,7 +15,7 @@ describe('form - submission handling', () => {
         ],
       })
       await form.handleSubmit()
-      expect(form.state.formErrors).toEqual([{ message: 'Submit error' }])
+      expect(form.state.errors).toEqual([{ message: 'Submit error' }])
     })
 
     it('returns form validator errors and skips onSubmit', async () => {
@@ -34,7 +34,7 @@ describe('form - submission handling', () => {
       const result = await form.handleSubmit()
 
       expect(result).toEqual([{ message: 'Submit error' }])
-      expect(form.state.formErrors).toEqual([{ message: 'Submit error' }])
+      expect(form.state.errors).toEqual([{ message: 'Submit error' }])
       expect(onSubmit).not.toHaveBeenCalled()
     })
 
@@ -78,7 +78,7 @@ describe('form - submission handling', () => {
       expect(result).toEqual([
         expect.objectContaining({ message: 'Submission failed' }),
       ])
-      expect(form.state.formErrors).toEqual([
+      expect(form.state.errors).toEqual([
         expect.objectContaining({ message: 'Submission failed' }),
       ])
     })
@@ -160,7 +160,7 @@ describe('form - submission handling', () => {
       expect(result).toEqual([])
       expect(onSubmit).not.toHaveBeenCalled()
       expect(form.state.values).toEqual({ name: 'reset value' })
-      expect(form.state.formErrors).toEqual([])
+      expect(form.state.errors).toEqual([])
       expect(form.state.isSubmitting).toBe(false)
       expect(form.state.submissionAttempts).toBe(0)
     })
@@ -194,7 +194,7 @@ describe('form - submission handling', () => {
       expect(result).toEqual([])
       expect(onSubmit).not.toHaveBeenCalled()
       expect(form.state.values).toEqual({ name: 'reset value' })
-      expect(form.state.formErrors).toEqual([])
+      expect(form.state.errors).toEqual([])
       expect(form.state.isSubmitting).toBe(false)
       expect(form.state.submissionAttempts).toBe(0)
     })
@@ -368,7 +368,7 @@ describe('form - submission handling', () => {
         ],
       })
       await form.handleSubmit()
-      expect(form.state.formErrors).toEqual([{ message: 'First error' }])
+      expect(form.state.errors).toEqual([{ message: 'First error' }])
       expect(thirdValidatorFn).not.toHaveBeenCalled()
     })
 
@@ -398,7 +398,7 @@ describe('form - submission handling', () => {
         ],
       })
       await form.handleSubmit()
-      expect(form.state.formErrors).toEqual([{ message: 'First error' }])
+      expect(form.state.errors).toEqual([{ message: 'First error' }])
       expect(secondValidatorFn).not.toHaveBeenCalled()
       expect(thirdValidatorFn).not.toHaveBeenCalled()
     })
@@ -418,7 +418,7 @@ describe('form - submission handling', () => {
         ],
       })
       await form.handleSubmit()
-      expect(form.state.formErrors).toEqual([])
+      expect(form.state.errors).toEqual([])
       expect(validatorFn).not.toHaveBeenCalled()
     })
 
@@ -437,7 +437,7 @@ describe('form - submission handling', () => {
         ],
       })
       await form.handleSubmit()
-      expect(form.state.formErrors).toEqual([{ message: 'Submit error' }])
+      expect(form.state.errors).toEqual([{ message: 'Submit error' }])
       expect(validatorFn).toHaveBeenCalled()
     })
 
@@ -457,7 +457,7 @@ describe('form - submission handling', () => {
       })
       await form.validate('change')
       // runOnSubmit: false only affects submit, not the configured triggers
-      expect(form.state.formErrors).toEqual([{ message: 'Change error' }])
+      expect(form.state.errors).toEqual([{ message: 'Change error' }])
       expect(validatorFn).toHaveBeenCalled()
     })
 
@@ -476,7 +476,7 @@ describe('form - submission handling', () => {
         ],
       })
       await form.handleSubmit()
-      expect(form.state.formErrors).toEqual([])
+      expect(form.state.errors).toEqual([])
       expect(validatorFn).not.toHaveBeenCalled()
     })
 
@@ -495,7 +495,7 @@ describe('form - submission handling', () => {
         ],
       })
       await form.handleSubmit()
-      expect(form.state.formErrors).toEqual([
+      expect(form.state.errors).toEqual([
         { message: 'Conditional submit error' },
       ])
       expect(validatorFn).toHaveBeenCalled()

@@ -78,7 +78,7 @@ describe('form - validation', () => {
       })
 
       await form.validate('submit')
-      expect(form.state.formErrors).toEqual([{ message: 'Name is required' }])
+      expect(form.state.errors).toEqual([{ message: 'Name is required' }])
     })
 
     it('handles validators returning error arrays', async () => {
@@ -93,7 +93,7 @@ describe('form - validation', () => {
       })
       const result = await form.validate('submit')
       expect(result).toEqual([[{ message: 'Error 1' }, { message: 'Error 2' }]])
-      expect(form.state.formErrors).toEqual([
+      expect(form.state.errors).toEqual([
         { message: 'Error 1' },
         { message: 'Error 2' },
       ])
@@ -125,7 +125,7 @@ describe('form - validation', () => {
       expect(result).toEqual([{ message: 'Valid error' }])
     })
 
-    it('populates formErrors', async () => {
+    it('populates errors', async () => {
       const form = new InternalFormApi({
         defaultValues: { name: '' },
         validators: [
@@ -136,7 +136,7 @@ describe('form - validation', () => {
         ],
       })
       await form.validate('change')
-      expect(form.state.formErrors).toEqual([{ message: 'Form error' }])
+      expect(form.state.errors).toEqual([{ message: 'Form error' }])
     })
 
     it('sets canSubmit to false when form errors are present', async () => {
@@ -227,17 +227,17 @@ describe('form - validation', () => {
       // Start validation but don't await
       const validatePromise = form.validate('change')
 
-      // The sync validator should populate formErrors first
+      // The sync validator should populate errors first
       await vi.waitFor(() => {
-        expect(form.state.formErrors).toContainEqual({
+        expect(form.state.errors).toContainEqual({
           message: 'Sync error',
         })
       })
 
-      // After debounce, the async validator result should also be in formErrors
+      // After debounce, the async validator result should also be in errors
       // The errors should be ordered by validator index
       await validatePromise
-      expect(form.state.formErrors).toEqual([
+      expect(form.state.errors).toEqual([
         { message: 'Async debounced error' },
         { message: 'Sync error' },
       ])
@@ -267,7 +267,7 @@ describe('form - validation', () => {
       })
 
       await form.validate('change')
-      expect(form.state.formErrors).toEqual([
+      expect(form.state.errors).toEqual([
         { message: 'Error 1' },
         { message: 'Error 2' },
         { message: 'Error 3' },
@@ -294,16 +294,16 @@ describe('form - validation', () => {
       // Start validation but don't await
       const validatePromise = form.validate('blur')
 
-      // The sync validator should populate formErrors first
+      // The sync validator should populate errors first
       await vi.waitFor(() => {
-        expect(form.state.formErrors).toContainEqual({
+        expect(form.state.errors).toContainEqual({
           message: 'Sync error',
         })
       })
 
       // After debounce, both errors should be present
       await validatePromise
-      expect(form.state.formErrors).toEqual([
+      expect(form.state.errors).toEqual([
         { message: 'Sync error' },
         { message: 'Debounced error' },
       ])
@@ -328,16 +328,16 @@ describe('form - validation', () => {
       // Start validation but don't await
       const validatePromise = form.validate('blur')
 
-      // The sync validator should populate formErrors first
+      // The sync validator should populate errors first
       await vi.waitFor(() => {
-        expect(form.state.formErrors).toContainEqual({
+        expect(form.state.errors).toContainEqual({
           message: 'Sync error',
         })
       })
 
       // After async completes, both errors should be present
       await validatePromise
-      expect(form.state.formErrors).toEqual([
+      expect(form.state.errors).toEqual([
         { message: 'Sync error' },
         { message: 'Async error' },
       ])
@@ -371,7 +371,7 @@ describe('form - validation', () => {
       await form.validate('blur')
 
       // First two validators should have populated errors
-      expect(form.state.formErrors).toEqual([
+      expect(form.state.errors).toEqual([
         { message: 'Sync error' },
         { message: 'Async error' },
       ])
@@ -410,7 +410,7 @@ describe('form - validation', () => {
       await form.validate('blur')
 
       // First validator should have populated errors
-      expect(form.state.formErrors).toEqual([{ message: 'Sync error' }])
+      expect(form.state.errors).toEqual([{ message: 'Sync error' }])
 
       // Third validator (with bailIfInvalid) should NOT have been called
       expect(thirdValidatorFn).not.toHaveBeenCalled()
@@ -562,7 +562,7 @@ describe('form - validation', () => {
       await vi.runAllTimersAsync()
 
       expect(validatorFn).toHaveBeenCalledTimes(2)
-      expect(form.state.formErrors).toEqual([{ message: 'Current error' }])
+      expect(form.state.errors).toEqual([{ message: 'Current error' }])
     })
   })
 
@@ -593,7 +593,7 @@ describe('form - validation', () => {
         expect.objectContaining({ message: 'Start date is required' }),
         expect.objectContaining({ message: 'End date is required' }),
       ])
-      expect(form.state.formErrors).toHaveLength(2)
+      expect(form.state.errors).toHaveLength(2)
       expect(form._tryGetFieldApi('range.from')).toBeNull()
       expect(form._tryGetFieldApi('range.to')).toBeNull()
     })
@@ -1023,6 +1023,41 @@ describe('form - validation', () => {
       expect('isValid' in fieldState.meta).toBe(false)
     })
 
+    it('passes derived form error and validity state to errorVisibility', async () => {
+      const errorVisibility = vi.fn(
+        ({ state }) =>
+          state.errors[0]?.message === 'Form error' &&
+          !state.isValid &&
+          state.isInvalid &&
+          !state.canSubmit,
+      )
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        errorVisibility,
+        validators: [
+          {
+            run: () => ({
+              form: 'Form error',
+              fields: { name: 'Name error' },
+            }),
+            triggers: ['change'],
+          },
+        ],
+      })
+      const field = form._getOrCreateFieldApi({ name: 'name' })
+
+      await form.validate('change')
+
+      expect(field.errors).toEqual([{ message: 'Name error' }])
+      expect(errorVisibility).toHaveBeenCalled()
+      expect(errorVisibility.mock.lastCall?.[0].state).toMatchObject({
+        errors: [{ message: 'Form error' }],
+        isValid: false,
+        isInvalid: true,
+        canSubmit: false,
+      })
+    })
+
     it('handles array error format in field-level errors', async () => {
       const form = new InternalFormApi({
         defaultValues: { name: '' },
@@ -1171,7 +1206,7 @@ describe('form - validation', () => {
       const field = form._getOrCreateFieldApi({ name: 'name' })
       void field.store
       await form.validate('change')
-      expect(form.state.formErrors).toEqual([{ message: 'Form-wide error' }])
+      expect(form.state.errors).toEqual([{ message: 'Form-wide error' }])
       expect(field.errors).toEqual([{ message: 'Field-specific error' }])
     })
 

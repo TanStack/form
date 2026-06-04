@@ -141,7 +141,7 @@ describe('form - lifecycle', () => {
       expect(form.state.values).toEqual({ name: '' })
       expect(form.state.isDirty).toBe(false)
       expect(form.state.isTouched).toBe(false)
-      expect(form.state.formErrors).toEqual([])
+      expect(form.state.errors).toEqual([])
       expect(form.state.submissionAttempts).toBe(0)
       expect(form.getFieldMeta('name')).toBeUndefined()
     })
@@ -167,7 +167,7 @@ describe('form - lifecycle', () => {
 
       expect(result).toEqual([])
       expect(validator).not.toHaveBeenCalled()
-      expect(form.state.formErrors).toEqual([])
+      expect(form.state.errors).toEqual([])
     })
 
     it('cancels pending field listeners on reset', async () => {
@@ -214,7 +214,7 @@ describe('form - lifecycle', () => {
 
       expect(result).toEqual([])
       expect(form.state.values).toEqual({ name: 'reset value' })
-      expect(form.state.formErrors).toEqual([])
+      expect(form.state.errors).toEqual([])
       expect(form.state.isSubmitting).toBe(false)
       expect(form.state.submissionAttempts).toBe(0)
     })
@@ -245,13 +245,13 @@ describe('form - lifecycle', () => {
       const field = form._getOrCreateFieldApi({ name: 'name' })
 
       await form.handleSubmit()
-      expect(form.state.formErrors).toEqual([
+      expect(form.state.errors).toEqual([
         expect.objectContaining({ message: 'Submission failed' }),
       ])
 
       field.handleChange('Alice')
 
-      expect(form.state.formErrors).toEqual([])
+      expect(form.state.errors).toEqual([])
     })
 
     it('clears form-level submit errors when any field blurs', async () => {
@@ -263,13 +263,13 @@ describe('form - lifecycle', () => {
       const field = form._getOrCreateFieldApi({ name: 'name' })
 
       await form.handleSubmit()
-      expect(form.state.formErrors).toEqual([
+      expect(form.state.errors).toEqual([
         expect.objectContaining({ message: 'Submission failed' }),
       ])
 
       field.handleBlur()
 
-      expect(form.state.formErrors).toEqual([])
+      expect(form.state.errors).toEqual([])
     })
 
     it('clears form-level submit-only validator errors when any field changes', async () => {
@@ -285,13 +285,13 @@ describe('form - lifecycle', () => {
       const field = form._getOrCreateFieldApi({ name: 'name' })
 
       await form.handleSubmit()
-      expect(form.state.formErrors).toEqual([
+      expect(form.state.errors).toEqual([
         { message: 'Submit-only validator failed' },
       ])
 
       field.handleChange('Alice')
 
-      expect(form.state.formErrors).toEqual([])
+      expect(form.state.errors).toEqual([])
     })
 
     it('clears form-level submit validator errors when the validator does not run on change', async () => {
@@ -307,13 +307,13 @@ describe('form - lifecycle', () => {
       const field = form._getOrCreateFieldApi({ name: 'name' })
 
       await form.handleSubmit()
-      expect(form.state.formErrors).toEqual([
+      expect(form.state.errors).toEqual([
         { message: 'Submit or blur validator failed' },
       ])
 
       field.handleChange('Alice')
 
-      expect(form.state.formErrors).toEqual([])
+      expect(form.state.errors).toEqual([])
     })
 
     it('does not clear non-submit-sourced validator errors on change', async () => {
@@ -329,13 +329,13 @@ describe('form - lifecycle', () => {
       const field = form._getOrCreateFieldApi({ name: 'name' })
 
       await form.validate('blur')
-      expect(form.state.formErrors).toEqual([
+      expect(form.state.errors).toEqual([
         { message: 'Blur validator failed' },
       ])
 
       field.handleChange('Alice')
 
-      expect(form.state.formErrors).toEqual([
+      expect(form.state.errors).toEqual([
         { message: 'Blur validator failed' },
       ])
     })
@@ -356,14 +356,14 @@ describe('form - lifecycle', () => {
       const field = form._getOrCreateFieldApi({ name: 'name' })
 
       await form.handleSubmit()
-      expect(form.state.formErrors).toEqual([
+      expect(form.state.errors).toEqual([
         { message: 'Submit validator failed' },
       ])
 
       field.handleChange('Alice')
 
       await vi.waitFor(() => {
-        expect(form.state.formErrors).toEqual([
+        expect(form.state.errors).toEqual([
           { message: 'Change validator failed' },
         ])
       })
@@ -382,13 +382,13 @@ describe('form - lifecycle', () => {
       const field = form._getOrCreateFieldApi({ name: 'name' })
 
       await form.handleSubmit()
-      expect(form.state.formErrors).toEqual([
+      expect(form.state.errors).toEqual([
         { message: 'Submit validator failed' },
       ])
 
       field.handleChange('Alice')
 
-      expect(form.state.formErrors).toEqual([])
+      expect(form.state.errors).toEqual([])
     })
 
     it('only clears field-level submit errors for the field that changes', async () => {

@@ -84,7 +84,15 @@ export interface FormState<
   /**
    * Array of form-level validation errors.
    */
-  formErrors: FormErrors<TFormValidators, TSubmitReturn>
+  errors: FormErrors<TFormValidators, TSubmitReturn>
+  /**
+   * Whether the form currently has no form-level or field-level errors.
+   */
+  isValid: boolean
+  /**
+   * Whether the form currently has form-level or field-level errors.
+   */
+  isInvalid: boolean
   /**
    * Whether the form can currently be submitted.
    *

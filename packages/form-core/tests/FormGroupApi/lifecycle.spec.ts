@@ -12,9 +12,63 @@ describe('form group - lifecycle', () => {
 
     field.handleChange('Alice', { causeValidation: false })
 
-    expect(group.value).toEqual({ name: 'Alice' })
+    expect(group.state.values).toEqual({ name: 'Alice' })
     expect(group.meta.isDirty).toBe(true)
     expect(group.meta.isTouched).toBe(true)
+    expect(group.state.isValid).toBe(true)
+    expect(group.state.isInvalid).toBe(false)
+  })
+
+  it('delegates scoped field methods through the group name', () => {
+    const form = new InternalFormApi({
+      defaultValues: { step: { name: '', names: ['Alice'] } },
+    })
+    const group = createFormGroupApi(form, { name: 'step' })
+
+    group.setFieldValue('name', 'Bob', { causeValidation: false })
+    group.pushFieldValue('names', 'Carol', { causeValidation: false })
+    group.swapFieldValues('names', 0, 1, { causeValidation: false })
+
+    expect(group.getFieldValue('name')).toBe('Bob')
+    expect(group.state.values).toEqual({
+      name: 'Bob',
+      names: ['Carol', 'Alice'],
+    })
+    expect(form.state.values.step).toEqual({
+      name: 'Bob',
+      names: ['Carol', 'Alice'],
+    })
+
+    group.resetField('name')
+
+    expect(form.state.values.step.name).toBe('')
+  })
+
+  it('runs group listeners from the backing group field', async () => {
+    const listener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { step: { name: '' } },
+    })
+    const group = createFormGroupApi(form, {
+      name: 'step',
+      listeners: [{ triggers: ['change'], run: listener }],
+    })
+    const unregister = group._register()
+
+    form.setFieldValue('step.name', 'Alice')
+
+    await vi.waitFor(() => {
+      expect(listener).toHaveBeenCalledOnce()
+    })
+    expect(listener.mock.calls[0]![0]).toEqual(
+      expect.objectContaining({
+        value: { name: 'Alice' },
+        fieldApi: form._tryGetFieldApi('step'),
+        formApi: form,
+      }),
+    )
+
+    unregister()
   })
 
   it('reuses the group instance for a path and updates its options', async () => {

@@ -4,6 +4,10 @@ import { createFormGroupApi } from '@tanstack/form-core-v2/form-group'
 import { Subscribe } from '../Subscribe.public'
 import type {
   ReactFormGroupApi,
+  ReactFormGroupArrayFieldComponent,
+  ReactFormGroupArrayFieldProps,
+  ReactFormGroupFieldComponent,
+  ReactFormGroupFieldProps,
   ReactFormGroupProps,
   ReactFormGroupSubscribeComponent,
   ReactFormGroupSubscribeProps,
@@ -12,7 +16,9 @@ import type { InternalFormGroupApi } from '@tanstack/form-core-v2/form-group'
 import type { AnyInternalFormApi } from '@tanstack/form-core-v2/internals'
 import type {
   DeepKeys,
+  DeepKeysWhereValueIncludes,
   DeepValue,
+  FieldValidators,
   FormGroupValidators,
   FormValidators,
 } from '@tanstack/form-core-v2'
@@ -83,6 +89,7 @@ function getCoreGroupOptions(options: InternalFormGroupProps) {
   return {
     name: options.name,
     validators: options.validators,
+    listeners: options.listeners,
     onGroupSubmit: options.onGroupSubmit,
     onGroupSubmitInvalid: options.onGroupSubmitInvalid,
   }
@@ -118,6 +125,64 @@ function createReactFormGroupApi<
     TSubmitReturn
   >
 
+  const TanStackFormGroupField = Object.assign(
+    function TanStackFormGroupField<
+      TFieldName extends DeepKeys<TGroupValue>,
+      TFieldValue extends DeepValue<TGroupValue, TFieldName>,
+      TFieldValidators extends FieldValidators<any, any, TFieldValue>,
+    >(
+      fieldProps: ReactFormGroupFieldProps<
+        TGroupValue,
+        TFieldName,
+        TFieldValue,
+        TFieldValidators,
+        TFormValidators,
+        TSubmitReturn,
+        any
+      >,
+    ) {
+      return React.createElement((group.form as any).Field, {
+        ...fieldProps,
+        name: group._fullFieldName(fieldProps.name as string),
+      })
+    },
+    { displayName: 'TanStackForm.GroupField' },
+  ) satisfies ReactFormGroupFieldComponent<
+    TGroupValue,
+    TFormValidators,
+    TSubmitReturn,
+    any
+  >
+
+  const TanStackFormGroupArrayField = Object.assign(
+    function TanStackFormGroupArrayField<
+      TFieldName extends DeepKeysWhereValueIncludes<TGroupValue, Array<any>>,
+      TFieldValue extends DeepValue<TGroupValue, TFieldName>,
+      TFieldValidators extends FieldValidators<any, any, TFieldValue>,
+    >(
+      fieldProps: ReactFormGroupArrayFieldProps<
+        TGroupValue,
+        TFieldName,
+        TFieldValue,
+        TFieldValidators,
+        TFormValidators,
+        TSubmitReturn,
+        any
+      >,
+    ) {
+      return React.createElement((group.form as any).ArrayField, {
+        ...fieldProps,
+        name: group._fullFieldName(fieldProps.name as string),
+      })
+    },
+    { displayName: 'TanStackForm.GroupArrayField' },
+  ) satisfies ReactFormGroupArrayFieldComponent<
+    TGroupValue,
+    TFormValidators,
+    TSubmitReturn,
+    any
+  >
+
   const TanStackFormGroupSubscribe = Object.assign(
     function TanStackFormGroupSubscribe<TSelected>(
       subscribeProps: ReactFormGroupSubscribeProps<
@@ -142,6 +207,8 @@ function createReactFormGroupApi<
     TFormValidators,
     TSubmitReturn
   >
+  result.Field = TanStackFormGroupField
+  result.ArrayField = TanStackFormGroupArrayField
   result.Subscribe = TanStackFormGroupSubscribe
 
   return result
