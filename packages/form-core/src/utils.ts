@@ -264,6 +264,39 @@ export function concatenatePaths(path1: string, path2: string): string {
 }
 
 /**
+ * Collects dot-notation paths to every array value in a form values object.
+ * Used when async `defaultValues` update before array fields have mounted.
+ *
+ * @private
+ */
+export function collectArrayFieldPaths(
+  value: unknown,
+  prefix?: string,
+): string[] {
+  if (value === null || value === undefined || typeof value !== 'object') {
+    return []
+  }
+
+  if (Array.isArray(value)) {
+    return prefix !== undefined && prefix !== '' ? [prefix] : []
+  }
+
+  const paths: string[] = []
+  for (const key of Object.keys(value)) {
+    const nextPath = prefix ? `${prefix}.${key}` : key
+    const child = (value as Record<string, unknown>)[key]
+
+    if (Array.isArray(child)) {
+      paths.push(nextPath)
+    } else if (child !== null && typeof child === 'object') {
+      paths.push(...collectArrayFieldPaths(child, nextPath))
+    }
+  }
+
+  return paths
+}
+
+/**
  * @private
  */
 export function isNonEmptyArray(obj: any) {

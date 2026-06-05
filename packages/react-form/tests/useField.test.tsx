@@ -2,7 +2,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, waitFor, within } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
-import { StrictMode, useState } from 'react'
+import { StrictMode, useEffect, useState } from 'react'
 import { useStore } from '@tanstack/react-store'
 import { useForm } from '../src/index'
 import { sleep } from './utils'
@@ -1562,6 +1562,56 @@ describe('useField', () => {
     rerender(<Comp defaultValues={{ people: [{ name: 'Alice' }] }} />)
     await waitFor(() => expect(getByTestId('list').children).toHaveLength(1))
     expect(getByTestId('item-0')).toHaveTextContent('Alice')
+  })
+
+  it('should rerender array field when mounted after async defaultValues resolve', async () => {
+    // Regression test for https://github.com/TanStack/form/issues/2201
+    type Person = { name: string }
+    type FormData = { people: Person[] }
+
+    function Comp() {
+      const [data, setData] = useState<FormData | null>(null)
+
+      const form = useForm({
+        defaultValues: data ?? { people: [] },
+      })
+
+      useEffect(() => {
+        void Promise.resolve().then(() => {
+          setData({ people: [{ name: 'Alice' }, { name: 'Bob' }] })
+        })
+      }, [])
+
+      if (!data) {
+        return <div data-testid="loading">loading</div>
+      }
+
+      return (
+        <form.Field name="people" mode="array">
+          {(field) => {
+            const val = field.state.value ?? []
+            return (
+              <ol data-testid="list">
+                {val.map((person, i) => (
+                  <li key={i} data-testid={`item-${i}`}>
+                    {person.name}
+                  </li>
+                ))}
+              </ol>
+            )
+          }}
+        </form.Field>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+    expect(getByTestId('loading')).toBeInTheDocument()
+
+    await waitFor(() =>
+      expect(getByTestId('list').children).toHaveLength(2),
+    )
+    expect(getByTestId('item-0')).toHaveTextContent('Alice')
+    expect(getByTestId('item-1')).toHaveTextContent('Bob')
   })
 
   it('should handle defaultValue without setstate-in-render error', async () => {

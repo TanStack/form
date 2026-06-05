@@ -1,5 +1,6 @@
 import { describe, expect, expectTypeOf, it } from 'vitest'
 import {
+  collectArrayFieldPaths,
   concatenatePaths,
   createFieldMap,
   deleteBy,
@@ -841,6 +842,18 @@ describe('evaluate', () => {
     class Empty {}
     expect(evaluate(new Empty(), {})).toEqual(false)
     expect(evaluate({}, new Empty())).toEqual(false)
+  })
+})
+
+describe('collectArrayFieldPaths', () => {
+  it('should collect top-level and nested array paths', () => {
+    expect(
+      collectArrayFieldPaths({
+        people: [],
+        profile: { tags: [] },
+        name: 'test',
+      }),
+    ).toEqual(['people', 'profile.tags'])
   })
 })
 
