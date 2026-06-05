@@ -1232,6 +1232,35 @@ describe('form api', () => {
     expect(form.getFieldValue('name')).toEqual('two')
   })
 
+  it('should revalidate nested fields when a parent object value is set', () => {
+    // Regression test for https://github.com/TanStack/form/issues/2113
+    const form = new FormApi({
+      defaultValues: {
+        a: { b: 0 },
+      },
+    })
+    form.mount()
+
+    const nestedField = new FieldApi({
+      form,
+      name: 'a.b',
+      validators: {
+        onChange: ({ value }) =>
+          value > 0 ? undefined : 'must be greater than 0',
+      },
+    })
+    nestedField.mount()
+
+    form.setFieldValue('a', { b: 0 })
+    expect(nestedField.state.meta.errors).toEqual(['must be greater than 0'])
+
+    form.setFieldValue('a', { b: 1 })
+
+    expect(nestedField.getValue()).toBe(1)
+    expect(nestedField.state.meta.errors).toEqual([])
+    expect(form.state.isValid).toBe(true)
+  })
+
   it('should delete field from the form', () => {
     const form = new FormApi({
       defaultValues: {
