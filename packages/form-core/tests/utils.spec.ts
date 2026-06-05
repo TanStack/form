@@ -855,6 +855,14 @@ describe('collectArrayFieldPaths', () => {
       }),
     ).toEqual(['people', 'profile.tags'])
   })
+
+  it('should collect nested arrays inside array items', () => {
+    expect(
+      collectArrayFieldPaths({
+        people: [{ tags: ['a'] }, { tags: [] }],
+      }),
+    ).toEqual(['people', 'people[0].tags', 'people[1].tags'])
+  })
 })
 
 describe('concatenatePaths', () => {

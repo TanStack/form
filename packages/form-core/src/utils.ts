@@ -288,6 +288,11 @@ export function collectArrayFieldPaths(
 
     if (Array.isArray(child)) {
       paths.push(nextPath)
+      child.forEach((item, index) => {
+        paths.push(
+          ...collectArrayFieldPaths(item, `${nextPath}[${index}]`),
+        )
+      })
     } else if (child !== null && typeof child === 'object') {
       paths.push(...collectArrayFieldPaths(child, nextPath))
     }

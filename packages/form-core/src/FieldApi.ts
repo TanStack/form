@@ -902,6 +902,9 @@ export class FieldApi<
       fieldApi: this,
     })
 
+    // Array fields that mount after async defaultValues may already have data
+    // but still have _arrayVersion 0. Bump so adapters subscribe to the
+    // populated array (rendering, validation, hooks).
     const mountedValue = this.form.getFieldValue(this.name)
     if (
       Array.isArray(mountedValue) &&
