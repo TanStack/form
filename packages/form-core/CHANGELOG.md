@@ -1,5 +1,11 @@
 # @tanstack/form-core
 
+## 1.33.1
+
+### Patch Changes
+
+- Revalidate mounted nested fields when a parent object is updated via `setFieldValue` (fixes [#2113](https://github.com/TanStack/form/issues/2113)).
+
 ## 1.33.0
 
 ### Minor Changes

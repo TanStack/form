@@ -2671,6 +2671,17 @@ export class FormApi<
 
     if (!dontValidate) {
       this.validateField(field, 'change')
+
+      const fieldStr = field.toString()
+      for (const nestedField of Object.keys(this.fieldInfo)) {
+        if (
+          nestedField !== fieldStr &&
+          isFieldInGroup(fieldStr, nestedField) &&
+          this.getFieldInfo(nestedField as DeepKeys<TFormData>).instance
+        ) {
+          this.validateField(nestedField as DeepKeys<TFormData>, 'change')
+        }
+      }
     }
   }
 
