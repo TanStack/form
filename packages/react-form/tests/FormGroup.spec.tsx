@@ -1,11 +1,24 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { render } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
 import React, { useState } from 'react'
-import { useForm } from '../src'
+import { createFormHook, createFormHookContexts, useForm } from '../src'
 import type { AnyInternalFormApi } from '@tanstack/form-core-v2/internals'
+import type { FieldWithValue } from '@tanstack/form-core-v2'
 
 const user = userEvent.setup()
+const { fieldComponent } = createFormHookContexts()
+
+function FieldName(props: { field: FieldWithValue<string> }) {
+  return <span data-testid="app-field-name">{props.field.name}</span>
+}
+
+const { useAppForm } = createFormHook({
+  fieldComponents: {
+    FieldName: fieldComponent.loose(FieldName, 'field'),
+  },
+  formComponents: {},
+})
 
 describe('FormGroup', () => {
   it('renders from the normal form API and prefixes field names', () => {
@@ -54,6 +67,78 @@ describe('FormGroup', () => {
     const { getByTestId } = render(<Component />)
 
     expect(getByTestId('array')).toHaveTextContent('guestDetails.guests')
+  })
+
+  it('provides AppForm field context for group fields', () => {
+    function Component() {
+      const form = useAppForm({
+        defaultValues: { guestDetails: { name: 'Tony' } },
+      })
+
+      return (
+        <form.AppForm>
+          <form.FormGroup name="guestDetails">
+            {(group) => (
+              <group.Field name="name">
+                {(field) => <field.FieldName />}
+              </group.Field>
+            )}
+          </form.FormGroup>
+        </form.AppForm>
+      )
+    }
+
+    const { getByTestId } = render(<Component />)
+
+    expect(getByTestId('app-field-name')).toHaveTextContent(
+      'guestDetails.name',
+    )
+  })
+
+  it('prefixes watched field names in group field listeners', async () => {
+    const listener = vi.fn()
+
+    function Component() {
+      const form = useForm({
+        defaultValues: { guestDetails: { name: '', confirmation: '' } },
+      })
+
+      return (
+        <form.FormGroup name="guestDetails">
+          {(group) => (
+            <>
+              <group.Field name="name">
+                {(field) => (
+                  <input
+                    aria-label="Guest name"
+                    value={field.value}
+                    onChange={(event) => field.handleChange(event.target.value)}
+                  />
+                )}
+              </group.Field>
+              <group.Field
+                name="confirmation"
+                listeners={[
+                  {
+                    triggers: ['change'],
+                    watchFields: ['name'],
+                    run: listener,
+                  },
+                ]}
+              >
+                {() => null}
+              </group.Field>
+            </>
+          )}
+        </form.FormGroup>
+      )
+    }
+
+    const { getByLabelText } = render(<Component />)
+
+    await user.type(getByLabelText('Guest name'), 'A')
+
+    expect(listener).toHaveBeenCalledOnce()
   })
 
   it('subscribes to group state updates and advances an external stepper on submit', async () => {

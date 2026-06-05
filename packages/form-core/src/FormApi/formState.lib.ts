@@ -16,12 +16,11 @@ export interface FormErrorMeta {
   errorSourceEvents: Array<string | null>
 }
 
-export type FormStateOverrides = Partial<
-  Pick<
-    FormState<any, any, any>,
-    'isSubmitting' | 'isSubmitSuccessful' | 'submissionAttempts'
-  >
->
+type OverridableFormState = Omit<FormState<any, any, any>, 'values' | 'errors'>
+
+export type FormStateOverrides = {
+  [TKey in keyof OverridableFormState]?: () => OverridableFormState[TKey]
+}
 
 const formErrorsCache = new WeakMap<FormErrorMeta, Array<ValidationIssue>>()
 
@@ -71,37 +70,43 @@ export function getFormStateValue<
     case 'values':
       return form._atoms.values.get() as never
     case 'isTouched':
-      return (form._atoms.meta.touchedFieldCount.get() > 0) as never
+      return (overrides.isTouched?.() ??
+        form._atoms.meta.touchedFieldCount.get() > 0) as never
     case 'isDirty':
-      return form._atoms.meta.isDirty.get() as never
+      return (overrides.isDirty?.() ?? form._atoms.meta.isDirty.get()) as never
     case 'isPristine':
-      return !form._atoms.meta.isDirty.get() as never
+      return (overrides.isPristine?.() ??
+        !form._atoms.meta.isDirty.get()) as never
     case 'errors':
       return getFormErrors(form) as FormErrors<
         TFormValidators,
         TSubmitReturn
       > as never
     case 'isValid':
-      return (getFormErrors(form).length === 0 &&
-        form._atoms.meta.errorFields.get().size === 0) as never
+      return (overrides.isValid?.() ??
+        (getFormErrors(form).length === 0 &&
+          form._atoms.meta.errorFields.get().size === 0)) as never
     case 'isInvalid':
-      return (getFormErrors(form).length > 0 ||
-        form._atoms.meta.errorFields.get().size > 0) as never
+      return (overrides.isInvalid?.() ??
+        (getFormErrors(form).length > 0 ||
+          form._atoms.meta.errorFields.get().size > 0)) as never
     case 'canSubmit':
-      return (!form._atoms.meta.isSubmitting.get() &&
-        getFormErrors(form).length === 0 &&
-        form._atoms.meta.errorFields.get().size === 0) as never
+      return (overrides.canSubmit?.() ??
+        (!form._atoms.meta.isSubmitting.get() &&
+          getFormErrors(form).length === 0 &&
+          form._atoms.meta.errorFields.get().size === 0)) as never
     case 'isSubmitting':
-      return (overrides.isSubmitting ??
+      return (overrides.isSubmitting?.() ??
         form._atoms.meta.isSubmitting.get()) as never
     case 'isSubmitSuccessful':
-      return (overrides.isSubmitSuccessful ??
+      return (overrides.isSubmitSuccessful?.() ??
         form._atoms.meta.isSubmitSuccessful.get()) as never
     case 'isValidating':
-      return (form._atoms.meta.validationCount.get() > 0 ||
-        form._atoms.meta.fieldValidationCount.get() > 0) as never
+      return (overrides.isValidating?.() ??
+        (form._atoms.meta.validationCount.get() > 0 ||
+          form._atoms.meta.fieldValidationCount.get() > 0)) as never
     case 'submissionAttempts':
-      return (overrides.submissionAttempts ??
+      return (overrides.submissionAttempts?.() ??
         form._atoms.meta.submissionAttempts.get()) as never
     default:
       return undefined as never

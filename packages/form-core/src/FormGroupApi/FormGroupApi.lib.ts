@@ -8,14 +8,23 @@ import {
 } from '../utils.lib'
 import {
   clearIndexedErrorsFromSource,
+  hasIndexedErrorFromSource,
   isAggregateError,
   isErrorResult,
+  isValidationTriggerEnabled,
   normalizeValidationError,
   runValidatorPipeline,
   setIndexedError,
 } from '../validation.lib'
+import { hasFieldMetaErrors } from '../FieldApi/FieldApi.lib'
 import type { InternalFormApi } from '../FormApi/FormApi.lib'
-import type { AnyInternalFieldApi } from '../FieldApi/FieldApi.lib'
+import type {
+  AnyFieldApiOptions,
+  AnyInternalFieldApi,
+  FormGroupFieldErrorMeta,
+  InternalBaseFieldMeta,
+} from '../FieldApi/FieldApi.lib'
+import type { FormStateOverrides } from '../FormApi/formState.lib'
 import type { DeepKeys, DeepValue } from '../deep-keys.public'
 import type { PipelineCache } from '../utils.lib'
 import type {
@@ -32,23 +41,6 @@ import type {
   ValidationIssue,
 } from '../validation.public'
 import type { ReadonlyAtom } from '@tanstack/store'
-
-let groupId = 0
-const GROUP_VALIDATOR_INDEX_STRIDE = 1000
-
-function flattenGroupErrors<TGroupValue>(
-  results: Array<FormGroupValidateResult<TGroupValue>>,
-): Array<ValidationIssue> {
-  return results.flatMap((result) => {
-    const aggregate = isAggregateError(result)
-    if (aggregate) {
-      return aggregate.formError
-        ? normalizeValidationError(aggregate.formError)
-        : []
-    }
-    return isErrorResult(result) ? normalizeValidationError(result as any) : []
-  })
-}
 
 export class InternalFormGroupApi<
   TFormData,
@@ -78,8 +70,8 @@ export class InternalFormGroupApi<
   store: ReadonlyAtom<FormGroupState<TFormData, TGroupName, TGroupValue>>
   _pipelineCache: PipelineCache<FormGroupValidateResult<TGroupValue>>
   _schemaOutputs: Array<any> = []
-  _sourceEvent: string
-  _fieldErrorIndexStart: number
+  _errorOwner = {}
+  _fieldErrors: Array<Set<AnyInternalFieldApi> | undefined> = []
   _errors = createAtom<Array<FormGroupValidateResult<TGroupValue>>>([])
   _isSubmitting = createAtom(false)
   _isSubmitSuccessful = createAtom(false)
@@ -112,11 +104,6 @@ export class InternalFormGroupApi<
     >
     this.name = options.name
     this._pipelineCache = createPipelineCache()
-    const id = groupId++
-    this._sourceEvent = `form-group:${id}:submit`
-    this._fieldErrorIndexStart =
-      (this.form.options.validators?.length ?? 0) +
-      id * GROUP_VALIDATOR_INDEX_STRIDE
 
     this.store = createAtom(() => this._getStateSnapshot(), {
       compare: shallow,
@@ -142,35 +129,164 @@ export class InternalFormGroupApi<
     TGroupName,
     TGroupValue
   > => {
-    const errors = flattenGroupErrors(this._errors.get())
     const groupField = this.form._tryGetFieldApi(this.name)
-    const hasFieldErrors = this._hasDescendantFieldErrors(groupField)
-    const isInvalid = errors.length > 0 || hasFieldErrors
+    const groupMeta = groupField?.meta
+    const groupErrors = groupField
+      ? this._getFieldErrorMeta(groupField._getBaseMeta()).errors.flat()
+      : []
+    const isInvalid = groupField
+      ? hasFieldMetaErrors(groupField._getBaseMeta())
+      : false
+    const isTouched = groupMeta?.isTouched ?? false
+    const isDirty = groupMeta?.isDirty ?? false
+    const isValidating =
+      this._isValidating.get() || (groupMeta?.isValidating ?? false)
 
     return {
       values: this.value,
-      meta: groupField?.meta,
-      errors,
+      meta: groupMeta,
+      errors: groupErrors,
+      isTouched,
+      isDirty,
+      isPristine: !isDirty,
       isValid: !isInvalid,
       isInvalid,
       canSubmit: !this._isSubmitting.get() && !isInvalid,
       isSubmitting: this._isSubmitting.get(),
       isSubmitSuccessful: this._isSubmitSuccessful.get(),
-      isValidating: this._isValidating.get(),
+      isValidating,
       submissionAttempts: this._submissionAttempts.get(),
     }
   }
 
-  _hasDescendantFieldErrors = (field: AnyInternalFieldApi | null): boolean => {
-    if (!field) return false
-    if (field.meta.original.errors.length > 0) return true
-    return field._children.some((child) =>
-      this._hasDescendantFieldErrors(child),
-    )
+  _getScopedFormStateOverrides = (): FormStateOverrides => {
+    return {
+      isTouched: () => {
+        const meta = this.form._tryGetFieldApi(this.name)?._getBaseMeta()
+        return meta
+          ? meta.isTouched || meta.childContributionCounts.touched > 0
+          : false
+      },
+      isDirty: () => {
+        const meta = this.form._tryGetFieldApi(this.name)?._getBaseMeta()
+        return meta
+          ? meta.isDirty || meta.childContributionCounts.dirty > 0
+          : false
+      },
+      isPristine: () => {
+        const meta = this.form._tryGetFieldApi(this.name)?._getBaseMeta()
+        return meta
+          ? !meta.isDirty && meta.childContributionCounts.dirty === 0
+          : true
+      },
+      isValid: () => {
+        const meta = this.form._tryGetFieldApi(this.name)?._getBaseMeta()
+        return meta ? !hasFieldMetaErrors(meta) : true
+      },
+      isInvalid: () => {
+        const meta = this.form._tryGetFieldApi(this.name)?._getBaseMeta()
+        return meta ? hasFieldMetaErrors(meta) : false
+      },
+      canSubmit: () => {
+        const meta = this.form._tryGetFieldApi(this.name)?._getBaseMeta()
+        return !this._isSubmitting.get() && !(meta && hasFieldMetaErrors(meta))
+      },
+      isSubmitting: () => this._isSubmitting.get(),
+      isSubmitSuccessful: () => this._isSubmitSuccessful.get(),
+      isValidating: () => {
+        const meta = this.form._tryGetFieldApi(this.name)?._getBaseMeta()
+        return (
+          this._isValidating.get() ||
+          (meta
+            ? meta.isValidating || meta.childContributionCounts.validating > 0
+            : false)
+        )
+      },
+      submissionAttempts: () => this._submissionAttempts.get(),
+    }
   }
 
   _getPrefixedFieldName = (fieldName: string): string => {
     return concatenateFieldNames(this.name, fieldName)
+  }
+
+  _getFormFieldOptions = <TOptions extends AnyFieldApiOptions>(
+    options: TOptions,
+  ): AnyFieldApiOptions => {
+    return {
+      ...options,
+      name: this._getPrefixedFieldName(options.name),
+      validators: this._prefixWatchedFields(options.validators),
+      listeners: this._prefixWatchedFields(options.listeners),
+    }
+  }
+
+  _prefixWatchedFields = <
+    TItem extends { watchFields?: Array<string> } | undefined,
+  >(
+    items: ReadonlyArray<TItem> | undefined,
+  ): Array<TItem> | undefined => {
+    if (!items) return undefined
+
+    return items.map((item) => {
+      if (!item?.watchFields) return item
+
+      return {
+        ...item,
+        watchFields: item.watchFields.map(this._getPrefixedFieldName),
+      }
+    })
+  }
+
+  _setFieldValidatorError = (
+    field: AnyInternalFieldApi,
+    validatorIndex: number,
+    errors: Array<ValidationIssue>,
+    sourceEvent: string,
+  ) => {
+    field._setMeta((prev) => {
+      const previousGroupErrors = this._getFieldErrorMeta(prev)
+      const nextErrors = setIndexedError(
+        previousGroupErrors.errors,
+        previousGroupErrors.errorSourceEvents,
+        validatorIndex,
+        errors,
+        sourceEvent,
+      )
+
+      if (!nextErrors) return prev
+      const groupErrors = new Map(prev._formGroupValidatorErrors)
+      if (
+        nextErrors.errors.some((validatorErrors) => validatorErrors.length > 0)
+      ) {
+        groupErrors.set(this._errorOwner, nextErrors)
+      } else {
+        groupErrors.delete(this._errorOwner)
+      }
+      return {
+        ...prev,
+        _formGroupValidatorErrors: groupErrors,
+      }
+    })
+  }
+
+  _getFieldErrorMeta = (
+    meta: InternalBaseFieldMeta,
+  ): FormGroupFieldErrorMeta => {
+    return (
+      meta._formGroupValidatorErrors.get(this._errorOwner) ?? {
+        errors: [],
+        errorSourceEvents: [],
+      }
+    )
+  }
+
+  _clearFieldValidatorError = (
+    field: AnyInternalFieldApi,
+    validatorIndex: number,
+  ) => {
+    this._setFieldValidatorError(field, validatorIndex, [], '')
+    field._pruneIfUnused()
   }
 
   _processValidationResult = (
@@ -187,86 +303,50 @@ export class InternalFormGroupApi<
     }
 
     const aggregate = isAggregateError(result.result)
-    if (!aggregate) return
+    const validatorIndex = result.validatorIndex
+    const groupField = this.form._getOrCreateFieldApi({ name: this.name })
+    const oldFieldRefs = this._fieldErrors[validatorIndex]
+    const staleFieldRefs = oldFieldRefs ? new Set(oldFieldRefs) : undefined
+    const newFieldRefs = new Set<AnyInternalFieldApi>()
 
-    const validatorIndex = this._fieldErrorIndexStart + result.validatorIndex
-    const nextFieldRefs = new Set<AnyInternalFieldApi>()
-
-    for (const [fieldName, fieldError] of Object.entries(
-      aggregate.fieldErrors,
-    )) {
-      const fullName = this._getPrefixedFieldName(fieldName)
-      const field = this.form._getOrCreateFieldApi({ name: fullName })
-      nextFieldRefs.add(field)
-      field._setMeta((prev) => {
-        const nextErrors = setIndexedError(
-          prev._formValidatorErrors,
-          prev._formValidatorErrorSourceEvents,
-          validatorIndex,
-          normalizeValidationError(fieldError),
-          sourceEvent,
-        )
-
-        if (!nextErrors) return prev
-
-        return {
-          ...prev,
-          _formValidatorErrors: nextErrors.errors,
-          _formValidatorErrorSourceEvents: nextErrors.errorSourceEvents,
-        }
-      })
-    }
-
-    this._clearStaleFieldErrors(validatorIndex, sourceEvent, nextFieldRefs)
-    this.form._atoms.meta.errorFields.set((prev) => {
-      const next = new Set(prev)
-      for (const field of nextFieldRefs) next.add(field)
-      return next
-    })
-  }
-
-  _clearStaleFieldErrors = (
-    validatorIndex: number,
-    sourceEvent: string,
-    nextFieldRefs: Set<AnyInternalFieldApi>,
-  ) => {
-    this._visitGroupFields((field) => {
-      if (nextFieldRefs.has(field)) return
-      this._clearFieldErrorAtIndex(field, validatorIndex, sourceEvent)
-    })
-  }
-
-  _clearFieldErrorAtIndex = (
-    field: AnyInternalFieldApi,
-    validatorIndex: number,
-    sourceEvent: string,
-  ) => {
-    let changed = false as boolean
-    field._setMeta((prev) => {
-      const cleared = clearIndexedErrorsFromSource(
-        prev._formValidatorErrors,
-        prev._formValidatorErrorSourceEvents,
-        [validatorIndex],
+    batch(() => {
+      this._setFieldValidatorError(
+        groupField,
+        validatorIndex,
+        aggregate
+          ? normalizeValidationError(aggregate.formError)
+          : isErrorResult(result.result)
+            ? normalizeValidationError(result.result as never)
+            : [],
         sourceEvent,
       )
 
-      if (!cleared) return prev
-      changed = true
-      return {
-        ...prev,
-        _formValidatorErrors: cleared.errors,
-        _formValidatorErrorSourceEvents: cleared.errorSourceEvents,
+      if (aggregate) {
+        for (const [fieldName, fieldError] of Object.entries(
+          aggregate.fieldErrors,
+        )) {
+          const field = this.form._getOrCreateFieldApi({
+            name: this._getPrefixedFieldName(fieldName),
+          })
+          this._setFieldValidatorError(
+            field,
+            validatorIndex,
+            normalizeValidationError(fieldError),
+            sourceEvent,
+          )
+          newFieldRefs.add(field)
+          staleFieldRefs?.delete(field)
+        }
       }
-    })
 
-    if (changed) {
-      this.form._atoms.meta.errorFields.set((prev) => {
-        const next = new Set(prev)
-        next.delete(field)
-        return next
-      })
-      field._pruneIfUnused()
-    }
+      if (staleFieldRefs) {
+        for (const field of staleFieldRefs) {
+          this._clearFieldValidatorError(field, validatorIndex)
+        }
+      }
+
+      this._fieldErrors[validatorIndex] = newFieldRefs
+    })
   }
 
   _visitGroupFields = (visitor: (field: AnyInternalFieldApi) => void) => {
@@ -305,36 +385,152 @@ export class InternalFormGroupApi<
     return (await Promise.all(fieldValidationPromises)).flat()
   }
 
-  _clearRoutedErrors = () => {
-    this._visitGroupFields((field) => {
-      field._setMeta((prev) => {
-        const indexes = prev._formValidatorErrorSourceEvents
-          .map((source, index) => (source === this._sourceEvent ? index : -1))
-          .filter((index) => index !== -1)
-        if (indexes.length === 0) return prev
+  _hasFieldEventError = (
+    field: AnyInternalFieldApi,
+    validatorIndex: number,
+    sourceEvent: string,
+  ): boolean => {
+    const meta = field._getBaseMeta()
+    const groupErrors = this._getFieldErrorMeta(meta)
+    return hasIndexedErrorFromSource(
+      groupErrors.errors,
+      groupErrors.errorSourceEvents,
+      validatorIndex,
+      sourceEvent,
+    )
+  }
 
-        const cleared = clearIndexedErrorsFromSource(
-          prev._formValidatorErrors,
-          prev._formValidatorErrorSourceEvents,
-          indexes,
-          this._sourceEvent,
+  _clearFieldEventErrors = (
+    field: AnyInternalFieldApi,
+    validatorIndexes: Array<number>,
+    sourceEvent: string,
+  ) => {
+    field._setMeta((prev) => {
+      const previousGroupErrors = this._getFieldErrorMeta(prev)
+      const clearedErrors = clearIndexedErrorsFromSource(
+        previousGroupErrors.errors,
+        previousGroupErrors.errorSourceEvents,
+        validatorIndexes,
+        sourceEvent,
+      )
+
+      if (!clearedErrors) return prev
+      const groupErrors = new Map(prev._formGroupValidatorErrors)
+      if (
+        clearedErrors.errors.some(
+          (validatorErrors) => validatorErrors.length > 0,
         )
+      ) {
+        groupErrors.set(this._errorOwner, clearedErrors)
+      } else {
+        groupErrors.delete(this._errorOwner)
+      }
+      return {
+        ...prev,
+        _formGroupValidatorErrors: groupErrors,
+      }
+    })
+    field._pruneIfUnused()
+  }
 
-        if (!cleared) return prev
+  _clearEventErrors = (
+    field: AnyInternalFieldApi,
+    sourceEvent: string,
+    event: ConfigurableValidationTrigger,
+  ) => {
+    const validatorCount = this.options.validators?.length ?? 0
+    const groupField = this.form._tryGetFieldApi(this.name)
+    const eventErrorCount = Math.max(
+      validatorCount,
+      this._fieldErrors.length,
+      groupField
+        ? this._getFieldErrorMeta(groupField._getBaseMeta()).errors.length
+        : 0,
+      this._getFieldErrorMeta(field._getBaseMeta()).errors.length,
+    )
+    const eventErrorIndexes: Array<number> = []
+
+    for (let i = 0; i < validatorCount; i++) {
+      const validator = this.options.validators?.[i]
+      const runsOnEvent = validator?.triggers.some((trigger) =>
+        isValidationTriggerEnabled(trigger, {
+          event,
+          formApi: this.form,
+          fieldApi: field,
+        }),
+      )
+
+      if (validator && !runsOnEvent) {
+        eventErrorIndexes.push(i)
+      }
+    }
+
+    for (let i = validatorCount; i < eventErrorCount; i++) {
+      eventErrorIndexes.push(i)
+    }
+
+    if (eventErrorIndexes.length === 0) return
+
+    batch(() => {
+      if (groupField) {
+        this._clearFieldEventErrors(
+          groupField,
+          eventErrorIndexes,
+          sourceEvent,
+        )
+      }
+
+      const indexesToClearFromField: Array<number> = []
+      for (const validatorIndex of eventErrorIndexes) {
+        const fieldRefs = this._fieldErrors[validatorIndex]
+        if (
+          fieldRefs?.has(field) &&
+          this._hasFieldEventError(field, validatorIndex, sourceEvent)
+        ) {
+          const nextFieldRefs = new Set(fieldRefs)
+          nextFieldRefs.delete(field)
+          this._fieldErrors[validatorIndex] = nextFieldRefs
+          indexesToClearFromField.push(validatorIndex)
+        }
+      }
+
+      if (indexesToClearFromField.length > 0) {
+        this._clearFieldEventErrors(field, indexesToClearFromField, sourceEvent)
+      }
+    })
+  }
+
+  _clearRoutedErrors = () => {
+    const fields = new Set<AnyInternalFieldApi>()
+    const groupField = this.form._tryGetFieldApi(this.name)
+    if (groupField) fields.add(groupField)
+    for (const fieldRefs of this._fieldErrors) {
+      for (const field of fieldRefs ?? []) fields.add(field)
+    }
+
+    for (const field of fields) {
+      field._setMeta((prev) => {
+        if (!prev._formGroupValidatorErrors.has(this._errorOwner)) return prev
+        const groupErrors = new Map(prev._formGroupValidatorErrors)
+        groupErrors.delete(this._errorOwner)
         return {
           ...prev,
-          _formValidatorErrors: cleared.errors,
-          _formValidatorErrorSourceEvents: cleared.errorSourceEvents,
+          _formGroupValidatorErrors: groupErrors,
         }
       })
       field._pruneIfUnused()
-    })
+    }
+    this._fieldErrors = []
   }
 
   validate = async (
     signal: ConfigurableValidationTrigger | 'submit' = 'submit',
     opts?: { triggerFieldApi?: AnyInternalFieldApi },
   ) => {
+    if (signal !== 'submit' && opts?.triggerFieldApi) {
+      this._clearEventErrors(opts.triggerFieldApi, 'submit', signal)
+    }
+
     const pipeline = this.options.validators
     if (!pipeline || pipeline.length === 0) {
       const fieldErrors = await this._runFieldValidations(signal)
@@ -367,7 +563,7 @@ export class InternalFormGroupApi<
           value: this.value,
         }),
         onResult: (result) => {
-          this._processValidationResult(result, this._sourceEvent)
+          this._processValidationResult(result, signal)
         },
       })
 
@@ -379,9 +575,6 @@ export class InternalFormGroupApi<
 
       batch(() => {
         this._errors.set(groupErrors)
-        if (groupErrors.length === 0) {
-          this._clearRoutedErrors()
-        }
       })
 
       return errors
@@ -425,6 +618,17 @@ export class InternalFormGroupApi<
       setBy(prev, this.name, getBy(this.form.options.defaultValues, this.name)),
     )
     batch(() => {
+      this._visitGroupFields((field) => {
+        field._setMeta((prev) => {
+          if (!prev.isTouched && !prev.isDirty && !prev.isBlurred) return prev
+          return {
+            ...prev,
+            isTouched: false,
+            isDirty: false,
+            isBlurred: false,
+          }
+        })
+      })
       this._errors.set([])
       this._isSubmitting.set(false)
       this._isSubmitSuccessful.set(false)

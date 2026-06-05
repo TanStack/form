@@ -1,4 +1,3 @@
-import { FormGroup } from '@tanstack/react-form/form-group'
 import { StepForm, rewardEarlyPunishLate } from './shared-form'
 import { addOnsSchema } from './schema'
 import type { BookingForm } from './shared-form'
@@ -10,41 +9,40 @@ interface AddOnsCardProps {
 
 function AddOnsCard({ form, onGroupSubmit }: AddOnsCardProps) {
   return (
-    <FormGroup
-      form={form}
+    <form.FormGroup
       name="addOns"
       validators={[rewardEarlyPunishLate(addOnsSchema)]}
-      onGroupSubmit={onGroupSubmit}
+      onSubmit={onGroupSubmit}
     >
       {(group) => (
         <StepForm onSubmit={group.handleSubmit}>
-          <form.Field name="addOns.includeBreakfast">
+          <group.Field name="includeBreakfast">
             {(field) => (
               <field.Field orientation="horizontal">
                 <field.Checkbox />
                 <field.Label>Include breakfast</field.Label>
               </field.Field>
             )}
-          </form.Field>
-          <form.Field name="addOns.airportPickup">
+          </group.Field>
+          <group.Field name="airportPickup">
             {(field) => (
               <field.Field orientation="horizontal">
                 <field.Checkbox />
                 <field.Label>Airport pickup</field.Label>
               </field.Field>
             )}
-          </form.Field>
-          <form.Field name="addOns.parkingRequired">
+          </group.Field>
+          <group.Field name="parkingRequired">
             {(field) => (
               <field.Field orientation="horizontal">
                 <field.Checkbox />
                 <field.Label>Parking required</field.Label>
               </field.Field>
             )}
-          </form.Field>
+          </group.Field>
         </StepForm>
       )}
-    </FormGroup>
+    </form.FormGroup>
   )
 }
 

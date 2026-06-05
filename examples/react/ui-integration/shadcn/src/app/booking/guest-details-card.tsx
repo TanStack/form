@@ -1,4 +1,3 @@
-import { FormGroup } from '@tanstack/react-form/form-group'
 import { StepForm, rewardEarlyPunishLate } from './shared-form'
 import { guestDetailsSchema } from './schema'
 import type { BookingForm } from './shared-form'
@@ -10,15 +9,14 @@ interface GuestDetailsCardProps {
 
 function GuestDetailsCard({ form, onGroupSubmit }: GuestDetailsCardProps) {
   return (
-    <FormGroup
-      form={form}
+    <form.FormGroup
       name="guestDetails"
       validators={[rewardEarlyPunishLate(guestDetailsSchema)]}
-      onGroupSubmit={onGroupSubmit}
+      onSubmit={onGroupSubmit}
     >
       {(group) => (
         <StepForm onSubmit={group.handleSubmit}>
-          <form.Field name="guestDetails.name">
+          <group.Field name="name">
             {(field) => (
               <field.Field>
                 <field.Label>Guest name</field.Label>
@@ -26,11 +24,11 @@ function GuestDetailsCard({ form, onGroupSubmit }: GuestDetailsCardProps) {
                 <field.Error />
               </field.Field>
             )}
-          </form.Field>
-          <form.Field name="guestDetails.phoneNumber">
+          </group.Field>
+          <group.Field name="phoneNumber">
             {(field) => <field.TextInputField label="Phone number" />}
-          </form.Field>
-          <form.Field name="guestDetails.email">
+          </group.Field>
+          <group.Field name="email">
             {(field) => (
               <field.Field>
                 <field.Label>Email</field.Label>
@@ -42,8 +40,8 @@ function GuestDetailsCard({ form, onGroupSubmit }: GuestDetailsCardProps) {
                 </field.Description>
               </field.Field>
             )}
-          </form.Field>
-          <form.Field name="guestDetails.guestCount">
+          </group.Field>
+          <group.Field name="guestCount">
             {(field) => (
               <field.Field>
                 <field.Label>
@@ -54,10 +52,10 @@ function GuestDetailsCard({ form, onGroupSubmit }: GuestDetailsCardProps) {
                 <field.Error />
               </field.Field>
             )}
-          </form.Field>
+          </group.Field>
         </StepForm>
       )}
-    </FormGroup>
+    </form.FormGroup>
   )
 }
 

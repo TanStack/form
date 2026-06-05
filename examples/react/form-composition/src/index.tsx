@@ -1,7 +1,5 @@
-import { useForm } from '@tanstack/react-form'
 import ReactDOM from 'react-dom/client'
 import './index.css'
-import { StringField } from './StringField'
 import { sharedFormOptions } from './sharedForm'
 import { FormSection } from './FormSection'
 import { FormSubmitButton } from './FormSubmitButton'

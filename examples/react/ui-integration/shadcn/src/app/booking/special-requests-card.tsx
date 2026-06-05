@@ -1,4 +1,3 @@
-import { FormGroup } from '@tanstack/react-form/form-group'
 import { StepForm, rewardEarlyPunishLate } from './shared-form'
 import { specialRequestsSchema } from './schema'
 import type { BookingForm } from './shared-form'
@@ -13,15 +12,14 @@ function SpecialRequestsCard({
   onGroupSubmit,
 }: SpecialRequestsCardProps) {
   return (
-    <FormGroup
-      form={form}
+    <form.FormGroup
       name="specialRequests"
       validators={[rewardEarlyPunishLate(specialRequestsSchema)]}
-      onGroupSubmit={onGroupSubmit}
+      onSubmit={onGroupSubmit}
     >
       {(group) => (
         <StepForm onSubmit={group.handleSubmit}>
-          <form.Field name="specialRequests.notes">
+          <group.Field name="notes">
             {(field) => (
               <field.Field>
                 <field.Label>Notes</field.Label>
@@ -29,10 +27,10 @@ function SpecialRequestsCard({
                 <field.Error />
               </field.Field>
             )}
-          </form.Field>
+          </group.Field>
         </StepForm>
       )}
-    </FormGroup>
+    </form.FormGroup>
   )
 }
 

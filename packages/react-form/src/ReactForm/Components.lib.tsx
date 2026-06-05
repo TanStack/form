@@ -23,7 +23,7 @@ export function attachReactFormComponents(
   resultForm.Field = createFieldComponent(form, fieldComponents)
   resultForm.ArrayField = createArrayFieldComponent(form, fieldComponents)
   resultForm.Subscribe = createSubscribeComponent(form)
-  resultForm.FormGroup = createFormGroupComponent(form, fieldComponents)
+  resultForm.FormGroup = createFormGroupComponent(resultForm)
 
   return resultForm
 }
@@ -87,8 +87,7 @@ type AnyFormGroupComponent = FunctionComponent<
 >
 
 function createFormGroupComponent(
-  form: AnyInternalFormApi,
-  fieldComponents: Record<string, FunctionComponent<any>> | null,
+  form: InternalReactFormApi,
 ): AnyFormGroupComponent {
   const TanStackFormGroup: AnyFormGroupComponent = (props) => {
     const groupRef =
@@ -98,7 +97,6 @@ function createFormGroupComponent(
       groupRef.current = attachReactFormGroupComponents(
         new InternalFormGroupApi({ ...props, form }),
         form,
-        fieldComponents,
       )
     }
 
@@ -119,8 +117,7 @@ function createFormGroupComponent(
 
 function attachReactFormGroupComponents(
   group: InternalFormGroupApi<any, any, any, any, any, any>,
-  form: AnyInternalFormApi,
-  fieldComponents: Record<string, FunctionComponent<any>> | null,
+  form: InternalReactFormApi,
 ) {
   const resultGroup = group as InternalFormGroupApi<
     any,
@@ -136,24 +133,14 @@ function attachReactFormGroupComponents(
   }
 
   resultGroup.Field = function Field(props) {
-    const fieldApi = useField(
-      { ...props, name: group._getPrefixedFieldName(props.name), form },
-      fieldComponents,
-    )
-    useValueFieldSubscription(fieldApi)
-
-    return props.children(fieldApi as never)
+    const Field = form.Field
+    return <Field {...(group._getFormFieldOptions(props) as any)} />
   }
   resultGroup.Field.displayName = 'TanStackForm.FormGroup.Field'
 
   resultGroup.ArrayField = function ArrayField(props) {
-    const fieldApi = useField(
-      { ...props, name: group._getPrefixedFieldName(props.name), form },
-      fieldComponents,
-    )
-    useArrayFieldSubscription(fieldApi)
-
-    return props.children(fieldApi as never)
+    const ArrayField = form.ArrayField
+    return <ArrayField {...(group._getFormFieldOptions(props) as any)} />
   }
   resultGroup.ArrayField.displayName = 'TanStackForm.FormGroup.ArrayField'
 

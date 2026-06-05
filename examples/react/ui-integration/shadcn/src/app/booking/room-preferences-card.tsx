@@ -1,4 +1,3 @@
-import { FormGroup } from '@tanstack/react-form/form-group'
 import { StepForm, rewardEarlyPunishLate } from './shared-form'
 import { roomPreferencesSchema } from './schema'
 import type { BookingForm } from './shared-form'
@@ -13,15 +12,14 @@ function RoomPreferencesCard({
   onGroupSubmit,
 }: RoomPreferencesCardProps) {
   return (
-    <FormGroup
-      form={form}
+    <form.FormGroup
       name="roomPreferences"
       validators={[rewardEarlyPunishLate(roomPreferencesSchema)]}
-      onGroupSubmit={onGroupSubmit}
+      onSubmit={onGroupSubmit}
     >
       {(group) => (
         <StepForm onSubmit={group.handleSubmit}>
-          <form.Field name="roomPreferences.roomType">
+          <group.Field name="roomType">
             {(field) => (
               <field.Field>
                 <field.Label>Room type</field.Label>
@@ -37,8 +35,8 @@ function RoomPreferencesCard({
                 <field.Error />
               </field.Field>
             )}
-          </form.Field>
-          <form.Field name="roomPreferences.bedPreference">
+          </group.Field>
+          <group.Field name="bedPreference">
             {(field) => (
               <field.Field>
                 <field.Label>Bed preference</field.Label>
@@ -54,8 +52,8 @@ function RoomPreferencesCard({
                 <field.Error />
               </field.Field>
             )}
-          </form.Field>
-          <form.Field name="roomPreferences.smokingPreference">
+          </group.Field>
+          <group.Field name="smokingPreference">
             {(field) => (
               <field.Field>
                 <field.Label>Smoking preference</field.Label>
@@ -69,8 +67,8 @@ function RoomPreferencesCard({
                 <field.Error />
               </field.Field>
             )}
-          </form.Field>
-          <form.Field name="roomPreferences.floorPreference">
+          </group.Field>
+          <group.Field name="floorPreference">
             {(field) => (
               <field.Field>
                 <field.Label>Floor preference</field.Label>
@@ -85,10 +83,10 @@ function RoomPreferencesCard({
                 <field.Error />
               </field.Field>
             )}
-          </form.Field>
+          </group.Field>
         </StepForm>
       )}
-    </FormGroup>
+    </form.FormGroup>
   )
 }
 

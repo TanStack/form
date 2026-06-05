@@ -53,6 +53,9 @@ function FormGroupTypes() {
     >
       {(group) => {
         group.state.values.name
+        expectTypeOf(group.state.isTouched).toEqualTypeOf<boolean>()
+        expectTypeOf(group.state.isDirty).toEqualTypeOf<boolean>()
+        expectTypeOf(group.state.isPristine).toEqualTypeOf<boolean>()
         expectTypeOf(group.form.state.values.budget).toEqualTypeOf<number>()
         const validatorResult = group.form.options.validators?.[0]?.run()
         if (validatorResult && !(validatorResult instanceof Promise)) {

@@ -1,6 +1,7 @@
 import { batch, createAtom, shallow } from '@tanstack/store'
 import {
   getOrCreateFieldApi,
+  hasFormGroupValidatorErrors,
   nameToFieldNodeSegments,
   tryGetFieldApi,
 } from '../FieldApi/FieldApi.lib'
@@ -233,6 +234,7 @@ function hasFieldErrors(field: AnyInternalFieldApi): boolean {
 
   return (
     hasValidatorErrors(meta._fieldValidatorErrors) ||
+    hasFormGroupValidatorErrors(meta._formGroupValidatorErrors) ||
     hasValidatorErrors(meta._formValidatorErrors) ||
     meta.childContributionCounts.error > 0
   )

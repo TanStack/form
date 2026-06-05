@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { FormGroup } from '@tanstack/react-form/form-group'
 import { StepForm, rewardEarlyPunishLate } from './shared-form'
 import { stayDatesSchema } from './schema'
 import type { BookingForm } from './shared-form'
@@ -16,11 +15,10 @@ function StayDatesCard({ form, onGroupSubmit }: StayDatesCardProps) {
   }))
 
   return (
-    <FormGroup
-      form={form}
+    <form.FormGroup
       name="stayDates"
       validators={[rewardEarlyPunishLate(stayDatesSchema)]}
-      onGroupSubmit={onGroupSubmit}
+      onSubmit={onGroupSubmit}
     >
       {(group) => (
         <StepForm onSubmit={group.handleSubmit}>
@@ -29,7 +27,7 @@ function StayDatesCard({ form, onGroupSubmit }: StayDatesCardProps) {
            *
            * Rename maybe? See AI proposals or smth
            */}
-          <form.Field name="stayDates.dateRange" errorBoundary>
+          <group.Field name="dateRange" errorBoundary>
             {(field) => (
               <field.Field>
                 <field.Label>Stay dates</field.Label>
@@ -37,8 +35,8 @@ function StayDatesCard({ form, onGroupSubmit }: StayDatesCardProps) {
                 <field.Error />
               </field.Field>
             )}
-          </form.Field>
-          <form.Field name="stayDates.arrivalTime">
+          </group.Field>
+          <group.Field name="arrivalTime">
             {(field) => (
               <field.Field>
                 <field.Label>Arrival time</field.Label>
@@ -46,10 +44,10 @@ function StayDatesCard({ form, onGroupSubmit }: StayDatesCardProps) {
                 <field.Error />
               </field.Field>
             )}
-          </form.Field>
+          </group.Field>
         </StepForm>
       )}
-    </FormGroup>
+    </form.FormGroup>
   )
 }
 

@@ -75,6 +75,9 @@ export interface FormGroupState<
   values: TGroupValue
   meta: unknown
   errors: Array<ValidationIssue>
+  isTouched: boolean
+  isDirty: boolean
+  isPristine: boolean
   isValid: boolean
   isInvalid: boolean
   canSubmit: boolean
