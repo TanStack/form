@@ -747,7 +747,7 @@ export function isFieldInGroup(groupName: string, fieldName: string) {
 /**
  * Yields so UI updates (e.g. isSubmitting spinners) can paint before submit
  * validation runs. Uses double requestAnimationFrame in browsers and
- * setTimeout(0) elsewhere (tests, SSR).
+ * queueMicrotask elsewhere (tests, SSR) to avoid fake-timer deadlocks.
  */
 function isVitest(): boolean {
   return (
