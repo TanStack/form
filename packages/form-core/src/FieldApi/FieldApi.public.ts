@@ -7,9 +7,13 @@ import type { FieldUpdateOptions, Updater } from '../types.public'
 import type { FormApi } from '../FormApi/FormApi.public'
 import type {
   ErrorVisibility,
+  FieldValidatorMetas,
   FieldValidators,
+  FormGroupValidatorMetas,
   FormGroupValidators,
-  FormValidators,
+  FormValidatorMetas,
+  ToFieldValidatorMetas,
+  ToFormGroupValidatorMetas,
   FieldErrors as ValidationFieldErrors,
 } from '../validation.public'
 import type { FieldListeners } from '../listeners.public'
@@ -31,15 +35,15 @@ export interface SubfieldsMeta {
 }
 
 export interface OriginalFieldMeta<
-  TFieldValidators extends FieldValidators<any, any, any>,
-  TGroupValidators extends FormGroupValidators<any>,
-  TFormValidators extends FormValidators<any>,
+  TFieldValidatorMetas extends FieldValidatorMetas,
+  TGroupValidatorMetas extends FormGroupValidatorMetas,
+  TFormValidatorMetas extends FormValidatorMetas,
   TSubmitReturn,
 > {
   errors: ValidationFieldErrors<
-    TFieldValidators,
-    TGroupValidators,
-    TFormValidators,
+    TFieldValidatorMetas,
+    TGroupValidatorMetas,
+    TFormValidatorMetas,
     TSubmitReturn
   >
   isValid: boolean
@@ -49,9 +53,9 @@ export interface OriginalFieldMeta<
 export type AnyFieldMeta = FieldMeta<any, any, any, any>
 
 export interface FieldMeta<
-  TFieldValidators extends FieldValidators<any, any, any>,
-  TGroupValidators extends FormGroupValidators<any>,
-  TFormValidators extends FormValidators<any>,
+  TFieldValidatorMetas extends FieldValidatorMetas,
+  TGroupValidatorMetas extends FormGroupValidatorMetas,
+  TFormValidatorMetas extends FormValidatorMetas,
   TSubmitReturn,
 > extends BaseFieldMeta {
   isPristine: boolean
@@ -63,15 +67,15 @@ export interface FieldMeta<
   isValid: boolean
   subfields: SubfieldsMeta
   errors: ValidationFieldErrors<
-    TFieldValidators,
-    TGroupValidators,
-    TFormValidators,
+    TFieldValidatorMetas,
+    TGroupValidatorMetas,
+    TFormValidatorMetas,
     TSubmitReturn
   >
   original: OriginalFieldMeta<
-    TFieldValidators,
-    TGroupValidators,
-    TFormValidators,
+    TFieldValidatorMetas,
+    TGroupValidatorMetas,
+    TFormValidatorMetas,
     TSubmitReturn
   >
 }
@@ -80,17 +84,16 @@ export interface FieldState<
   TFieldData,
   TFieldName extends DeepKeys<TFieldData>,
   TFieldValue extends DeepValue<TFieldData, TFieldName>,
-  TFieldValidators extends FieldValidators<TFieldData, TFieldName, TFieldValue>,
-  TGroupValidators extends FormGroupValidators<any>,
-  TFormData,
-  TFormValidators extends FormValidators<TFormData>,
+  TFieldValidatorMetas extends FieldValidatorMetas,
+  TGroupValidatorMetas extends FormGroupValidatorMetas,
+  TFormValidatorMetas extends FormValidatorMetas,
   TSubmitReturn,
 > {
   value: TFieldValue
   meta: FieldMeta<
-    TFieldValidators,
-    TGroupValidators,
-    TFormValidators,
+    TFieldValidatorMetas,
+    TGroupValidatorMetas,
+    TFormValidatorMetas,
     TSubmitReturn
   >
 }
@@ -101,16 +104,16 @@ export interface FieldApi<
   TFieldData,
   TFieldName extends DeepKeys<TFieldData>,
   TFieldValue extends DeepValue<TFieldData, TFieldName>,
-  TFieldValidators extends FieldValidators<TFieldData, TFieldName, TFieldValue>,
-  TGroupValidators extends FormGroupValidators<any>,
+  TFieldValidatorMetas extends FieldValidatorMetas,
+  TGroupValidatorMetas extends FormGroupValidatorMetas,
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
+  TFormValidatorMetas extends FormValidatorMetas,
   TSubmitReturn,
 > {
   /**
    * The form that owns this field.
    */
-  form: FormApi<TFormData, TFormValidators, TSubmitReturn>
+  form: FormApi<TFormData, TFormValidatorMetas, TSubmitReturn>
 
   /**
    * The name of the field.
@@ -190,26 +193,25 @@ export interface FieldApi<
     TFieldData,
     TFieldName,
     TFieldValue,
-    TFieldValidators,
-    TGroupValidators,
-    TFormData,
-    TFormValidators,
+    TFieldValidatorMetas,
+    TGroupValidatorMetas,
+    TFormValidatorMetas,
     TSubmitReturn
   >
 
   value: TFieldValue
 
   meta: FieldMeta<
-    TFieldValidators,
-    TGroupValidators,
-    TFormValidators,
+    TFieldValidatorMetas,
+    TGroupValidatorMetas,
+    TFormValidatorMetas,
     TSubmitReturn
   >
 
   errors: ValidationFieldErrors<
-    TFieldValidators,
-    TGroupValidators,
-    TFormValidators,
+    TFieldValidatorMetas,
+    TGroupValidatorMetas,
+    TFormValidatorMetas,
     TSubmitReturn
   >
 
@@ -230,11 +232,15 @@ export interface FieldApiOptions<
   TFieldValidators extends FieldValidators<TFieldData, TFieldName, TFieldValue>,
   TGroupValidators extends FormGroupValidators<any>,
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
+  TFormValidatorMetas extends FormValidatorMetas,
   TSubmitReturn,
 > {
   name: TFieldName
-  errorVisibility?: ErrorVisibility<TFormData, TFormValidators, TSubmitReturn>
+  errorVisibility?: ErrorVisibility<
+    TFormData,
+    TFormValidatorMetas,
+    TSubmitReturn
+  >
   /**
    * Route descendant field errors from form-level validation to this field.
    */
@@ -244,10 +250,10 @@ export interface FieldApiOptions<
     TFieldData,
     TFieldName,
     TFieldValue,
-    TFieldValidators,
-    TGroupValidators,
+    ToFieldValidatorMetas<TFieldValidators>,
+    ToFormGroupValidatorMetas<TGroupValidators>,
     TFormData,
-    TFormValidators,
+    TFormValidatorMetas,
     TSubmitReturn
   >
 }

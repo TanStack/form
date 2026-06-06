@@ -58,6 +58,7 @@ import type {
   FormValidateResult,
   FormValidationError,
   FormValidators,
+  ToFormValidatorMetas,
   ValidationAggregateError,
   ValidationErrorInput,
   ValidationIssue,
@@ -115,7 +116,10 @@ function createInitialFormMetaAtoms(validatorCount: number): FormMetaAtoms {
     touchedFieldCount: createAtom(0),
     formErrors: createAtom(createInitialFormErrorMeta(validatorCount)),
     fieldErrors: createAtom(
-      Array.from({ length: validatorCount }, () => new Set<AnyInternalFieldApi>()),
+      Array.from(
+        { length: validatorCount },
+        () => new Set<AnyInternalFieldApi>(),
+      ),
     ),
     errorFields: createAtom(new Set<AnyInternalFieldApi>()),
     fieldValidationCount: createAtom(0),
@@ -286,8 +290,14 @@ export class InternalFormApi<
   TFormData,
   const TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
-> implements FormApi<TFormData, TFormValidators, TSubmitReturn> {
-  store: ReadonlyAtom<FormState<TFormData, TFormValidators, any>>
+> implements FormApi<
+  TFormData,
+  ToFormValidatorMetas<TFormValidators>,
+  TSubmitReturn
+> {
+  store: ReadonlyAtom<
+    FormState<TFormData, ToFormValidatorMetas<TFormValidators>, any>
+  >
   _atoms: FormAtoms<TFormData>
   _fieldRootNode: InternalRootFieldApi
   _options: InternalFormOptions<TFormData, TFormValidators, any>
@@ -296,11 +306,19 @@ export class InternalFormApi<
   _schemaOutputs: Array<any> = []
   _formGroups = new Set<InternalFormGroupApi<any, any, any, any, any, any>>()
 
-  get state(): FormState<TFormData, TFormValidators, any> {
+  get state(): FormState<
+    TFormData,
+    ToFormValidatorMetas<TFormValidators>,
+    any
+  > {
     return this.store.get()
   }
-  get options(): InternalFormOptions<TFormData, TFormValidators, any> {
-    return this._options
+  get options(): InternalFormOptions<
+    TFormData,
+    FormValidators<TFormData>,
+    any
+  > {
+    return this._options as never
   }
   get formId(): string {
     return this._options.formId
@@ -344,7 +362,8 @@ export class InternalFormApi<
   _getNearestFormGroupForField = (
     fieldName: string,
   ): InternalFormGroupApi<any, any, any, any, any, any> | null => {
-    let nearest: InternalFormGroupApi<any, any, any, any, any, any> | null = null
+    let nearest: InternalFormGroupApi<any, any, any, any, any, any> | null =
+      null
     for (const group of this._formGroups) {
       const groupName = String(group.name)
       const isContained =
@@ -366,7 +385,7 @@ export class InternalFormApi<
   // TODO
   reset = (values?: TFormData, opts?: { preserveDefaultValues?: boolean }) => {
     if (values && !opts?.preserveDefaultValues) {
-      this._options = { ...this.options, defaultValues: values }
+      this._options = { ...this.options, defaultValues: values } as never
     }
 
     cancelPipelineCache(this._pipelineCache)
@@ -381,7 +400,9 @@ export class InternalFormApi<
       const validatorCount = this.options.validators?.length ?? 0
       this._atoms.meta.isDirty.set(false)
       this._atoms.meta.touchedFieldCount.set(0)
-      this._atoms.meta.formErrors.set(createInitialFormErrorMeta(validatorCount))
+      this._atoms.meta.formErrors.set(
+        createInitialFormErrorMeta(validatorCount),
+      )
       this._atoms.meta.fieldErrors.set(
         Array.from(
           { length: validatorCount },

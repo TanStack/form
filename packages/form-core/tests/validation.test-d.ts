@@ -19,7 +19,9 @@ import type {
   OnSubmitError,
   ReusableErrorVisibilityState,
   StandardSchemaV1Issue,
+  ToValidatorData,
   ValidationIssue,
+  ValidatorMeta,
 } from '../src'
 
 type TestFormData = {
@@ -737,6 +739,73 @@ describe('FieldErrors', () => {
 
     expectTypeOf<FieldErrors<any, any, any, any>>().toEqualTypeOf<
       Array<ValidationIssue>
+    >()
+  })
+})
+
+describe('ToValidatorData', () => {
+  function defineFormValidators<
+    const TFormValidators extends FormValidators<any>,
+  >(validators: TFormValidators): TFormValidators {
+    return validators
+  }
+
+  it('it should transform a schema', () => {
+    const vs = defineFormValidators([
+      {
+        run: z.object({ name: z.string() }),
+        triggers: [],
+      },
+    ])
+
+    type Result = ValidatorMeta<
+      { name: string },
+      Array<StandardSchemaV1Issue>,
+      StandardSchemaV1Issue
+    >
+
+    expectTypeOf<ToValidatorData<typeof vs>>().toEqualTypeOf<[Result]>()
+  })
+
+  it('it should transform based on runOnSubmit', () => {
+    const vs = defineFormValidators([
+      {
+        run: z.object({ name: z.string() }),
+        triggers: [],
+      },
+      {
+        run: z.object({ name: z.string() }),
+        triggers: [],
+        runOnSubmit: false,
+      },
+      {
+        run: z.object({ name: z.string() }),
+        triggers: [],
+        runOnSubmit: true,
+      },
+    ])
+
+    type FirstResult = ValidatorMeta<
+      // Assume runOnSubmit is true if omitted
+      { name: string },
+      Array<StandardSchemaV1Issue>,
+      StandardSchemaV1Issue
+    >
+    type SecondResult = ValidatorMeta<
+      // it was explicitly set false
+      undefined,
+      Array<StandardSchemaV1Issue>,
+      StandardSchemaV1Issue
+    >
+    type ThirdResult = ValidatorMeta<
+      // it was explicitly set true
+      { name: string },
+      Array<StandardSchemaV1Issue>,
+      StandardSchemaV1Issue
+    >
+
+    expectTypeOf<ToValidatorData<typeof vs>>().toEqualTypeOf<
+      [FirstResult, SecondResult, ThirdResult]
     >()
   })
 })

@@ -6,8 +6,7 @@ import type {
   ReadonlyStore,
   Store,
 } from '@tanstack/solid-store'
-
-import type { FormState, FormValidators } from '@tanstack/form-core-v2'
+import type { FormState, FormValidatorMetas } from '@tanstack/form-core-v2'
 
 export type SubscribeSource<TValue> =
   | Atom<TValue>
@@ -36,12 +35,12 @@ export interface SubscribeProps<TSourceData, TSelected> {
  */
 export function Subscribe<
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
+  TFormValidatorMetas extends FormValidatorMetas,
   TSubmitReturn,
   TSelected,
 >(
   props: SubscribeProps<
-    FormState<TFormData, TFormValidators, TSubmitReturn>,
+    FormState<TFormData, TFormValidatorMetas, TSubmitReturn>,
     TSelected
   >,
 ): JSX.Element {

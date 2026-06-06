@@ -3,6 +3,7 @@ import type { InternalFormApi } from './FormApi.lib'
 import type {
   FormErrors,
   FormValidators,
+  ToFormValidatorMetas,
   ValidationIssue,
 } from '../validation.public'
 
@@ -60,12 +61,20 @@ export function getFormStateValue<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
-  TKey extends keyof FormState<TFormData, TFormValidators, TSubmitReturn>,
+  TKey extends keyof FormState<
+    TFormData,
+    ToFormValidatorMetas<TFormValidators>,
+    TSubmitReturn
+  >,
 >(
   form: InternalFormApi<TFormData, TFormValidators, TSubmitReturn>,
   key: TKey,
   overrides: FormStateOverrides = {},
-): FormState<TFormData, TFormValidators, TSubmitReturn>[TKey] {
+): FormState<
+  TFormData,
+  ToFormValidatorMetas<TFormValidators>,
+  TSubmitReturn
+>[TKey] {
   switch (key) {
     case 'values':
       return form._atoms.values.get() as never
@@ -79,7 +88,7 @@ export function getFormStateValue<
         !form._atoms.meta.isDirty.get()) as never
     case 'errors':
       return getFormErrors(form) as FormErrors<
-        TFormValidators,
+        ToFormValidatorMetas<TFormValidators>,
         TSubmitReturn
       > as never
     case 'isValid':
@@ -120,8 +129,16 @@ export function getFormStateSnapshot<
 >(
   form: InternalFormApi<TFormData, TFormValidators, TSubmitReturn>,
   overrides: FormStateOverrides = {},
-): FormState<TFormData, TFormValidators, TSubmitReturn> {
-  const result = {} as FormState<TFormData, TFormValidators, TSubmitReturn>
+): FormState<
+  TFormData,
+  ToFormValidatorMetas<TFormValidators>,
+  TSubmitReturn
+> {
+  const result = {} as FormState<
+    TFormData,
+    ToFormValidatorMetas<TFormValidators>,
+    TSubmitReturn
+  >
   for (const key of formStateKeys) {
     result[key] = getFormStateValue(form, key, overrides) as never
   }

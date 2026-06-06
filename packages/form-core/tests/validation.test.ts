@@ -15,6 +15,7 @@ import type {
   FormValidateResult,
   FormValidator,
   FormValidatorContext,
+  ToFormValidatorMetas,
   ValidationDebounceFn,
   ValidationPredicateFn,
 } from '../src'
@@ -608,10 +609,12 @@ describe('runFormValidatorPipeline', () => {
         .transform(({ name }) => ({ upperName: name.toUpperCase() }))
 
       type Output = FormStandardSchemaValidatorOutputs<
-        [
-          { run: typeof lengthSchema; triggers: [] },
-          { run: typeof uppercaseSchema; triggers: [] },
-        ]
+        ToFormValidatorMetas<
+          [
+            { run: typeof lengthSchema; triggers: [] },
+            { run: typeof uppercaseSchema; triggers: [] },
+          ]
+        >
       >
 
       expectTypeOf<Output>().toEqualTypeOf<
@@ -638,7 +641,9 @@ describe('runFormValidatorPipeline', () => {
         validators: [{ run: schema, triggers: [] }],
         onSubmit: ({ value, schemaOutputs }) => {
           expectTypeOf(value).toEqualTypeOf<{ name: string }>()
-          expectTypeOf(schemaOutputs).toEqualTypeOf<[{ nameLength: number }]>()
+          expectTypeOf(schemaOutputs).toEqualTypeOf<
+            readonly [{ nameLength: number }]
+          >()
         },
       })
 
@@ -658,7 +663,7 @@ describe('runFormValidatorPipeline', () => {
         onSubmit: ({ value, schemaOutputs }) => {
           expectTypeOf(value).toEqualTypeOf<{ name: string }>()
           expectTypeOf(schemaOutputs).toEqualTypeOf<
-            [{ nameLength: number }, undefined, { date: Date }]
+            readonly [{ nameLength: number }, undefined, { date: Date }]
           >()
         },
       })

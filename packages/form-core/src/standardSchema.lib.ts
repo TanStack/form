@@ -10,14 +10,6 @@ import type {
   ValidationIssue,
 } from './validation.public'
 
-export type TryInferSchemaOutput<T> = T extends {
-  run: StandardSchemaV1<any, infer TOutput>
-}
-  ? T extends { runOnSubmit: false }
-    ? undefined
-    : TOutput
-  : undefined
-
 export function prefixSchemaToErrors(
   issues: ReadonlyArray<StandardSchemaV1Issue>,
   formValue: unknown,

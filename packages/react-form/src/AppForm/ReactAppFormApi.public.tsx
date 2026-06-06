@@ -1,4 +1,4 @@
-import type { FormValidators } from '@tanstack/form-core-v2'
+import type { FormValidatorMetas } from '@tanstack/form-core-v2'
 import type { ReactFormApi } from '../ReactForm/formApiTypes.public'
 import type { FunctionComponent } from 'react'
 import type { CrossVersionReactNode } from '../reactTypes.public'
@@ -10,9 +10,9 @@ export type AppFormComponent = FunctionComponent<{
 
 export type ReactAppFormApi<
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
+  TFormValidatorMetas extends FormValidatorMetas,
   TSubmitReturn,
   TComponents extends AnyReactFormComponentMap,
-> = ReactFormApi<TFormData, TFormValidators, TSubmitReturn, TComponents> & {
+> = ReactFormApi<TFormData, TFormValidatorMetas, TSubmitReturn, TComponents> & {
   AppForm: AppFormComponent
 }

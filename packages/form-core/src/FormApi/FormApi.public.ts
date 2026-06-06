@@ -12,7 +12,9 @@ import type {
   FormErrors,
   FormStandardSchemaValidatorOutputs,
   FormValidationError,
+  FormValidatorMetas,
   FormValidators,
+  ToFormValidatorMetas,
 } from '../validation.public'
 import type { FormListeners } from '../listeners.public'
 import type { ArrayFieldMethods } from './array-methods.lib'
@@ -33,11 +35,11 @@ export type CreateValidationErrorFn<TFormData> = <
 
 export interface FormSubmitContext<
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
+  TFormValidatorMetas extends FormValidatorMetas,
 > {
   value: TFormData
-  formApi: FormApi<TFormData, TFormValidators, any>
-  schemaOutputs: FormStandardSchemaValidatorOutputs<TFormValidators>
+  formApi: FormApi<TFormData, TFormValidatorMetas, any>
+  schemaOutputs: FormStandardSchemaValidatorOutputs<TFormValidatorMetas>
   createValidationError: CreateValidationErrorFn<TFormData>
 }
 
@@ -50,17 +52,28 @@ export interface FormOptions<
 > {
   formId?: string
   defaultValues: TFormData
-  errorVisibility?: ErrorVisibility<TFormData, TFormValidators, TSubmitReturn>
+  errorVisibility?: ErrorVisibility<
+    TFormData,
+    ToFormValidatorMetas<TFormValidators>,
+    TSubmitReturn
+  >
   validators?: TFormValidators
-  listeners?: FormListeners<TFormData, TFormValidators, TSubmitReturn>
+  listeners?: FormListeners<
+    TFormData,
+    ToFormValidatorMetas<TFormValidators>,
+    TSubmitReturn
+  >
   onSubmit?: (
-    context: FormSubmitContext<TFormData, TFormValidators>,
+    context: FormSubmitContext<
+      TFormData,
+      ToFormValidatorMetas<TFormValidators>
+    >,
   ) => TSubmitReturn
 }
 
 export interface FormState<
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
+  TFormValidatorMetas extends FormValidatorMetas,
   TSubmitReturn,
 > {
   /**
@@ -84,7 +97,7 @@ export interface FormState<
   /**
    * Array of form-level validation errors.
    */
-  errors: FormErrors<TFormValidators, TSubmitReturn>
+  errors: FormErrors<TFormValidatorMetas, TSubmitReturn>
   /**
    * Whether the form currently has no form-level or field-level errors.
    */
@@ -127,12 +140,16 @@ export type AnyFormApi = Omit<FormApi<any, any, any>, ArrayFieldMethods>
 
 export interface FormApi<
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
+  TFormValidatorMetas extends FormValidatorMetas,
   TSubmitReturn,
 > {
-  store: ReadonlyAtom<FormState<TFormData, TFormValidators, TSubmitReturn>>
-  readonly state: FormState<TFormData, TFormValidators, TSubmitReturn>
-  readonly options: FormOptions<TFormData, TFormValidators, TSubmitReturn>
+  store: ReadonlyAtom<FormState<TFormData, TFormValidatorMetas, TSubmitReturn>>
+  readonly state: FormState<TFormData, TFormValidatorMetas, TSubmitReturn>
+  readonly options: FormOptions<
+    TFormData,
+    FormValidators<TFormData>,
+    TSubmitReturn
+  >
   readonly formId: string
 
   /**

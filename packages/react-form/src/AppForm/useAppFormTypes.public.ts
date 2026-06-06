@@ -5,6 +5,7 @@ import type {
   FormValidators,
   InferUnion,
   NullableSchemaData,
+  ToFormValidatorMetas,
 } from '@tanstack/form-core-v2'
 import type { AnyReactFormComponentMap } from './componentMap.public'
 
@@ -14,7 +15,12 @@ export type UseAppFormHook<TComponents extends AnyReactFormComponentMap> = <
   TSubmitReturn,
 >(
   options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
-) => ReactAppFormApi<TFormData, TFormValidators, TSubmitReturn, TComponents>
+) => ReactAppFormApi<
+  TFormData,
+  ToFormValidatorMetas<TFormValidators>,
+  TSubmitReturn,
+  TComponents
+>
 
 export type UseSchemaAppFormHook<TComponents extends AnyReactFormComponentMap> =
   <const TFormValidators extends FormValidators<any>, TSubmitReturn>(
@@ -25,7 +31,7 @@ export type UseSchemaAppFormHook<TComponents extends AnyReactFormComponentMap> =
     >,
   ) => ReactAppFormApi<
     FormValidatorData<TFormValidators>,
-    TFormValidators,
+    ToFormValidatorMetas<TFormValidators>,
     TSubmitReturn,
     TComponents
   >
@@ -40,7 +46,7 @@ export type UseNullableSchemaAppFormHook<
   options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
 ) => ReactAppFormApi<
   InferUnion<TFormData, FormValidatorData<TFormValidators>>,
-  TFormValidators,
+  ToFormValidatorMetas<TFormValidators>,
   TSubmitReturn,
   TComponents
 >

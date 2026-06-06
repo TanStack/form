@@ -4,32 +4,31 @@ import type { FormApi } from '../FormApi/FormApi.public'
 import type {
   ConfigurableValidationTrigger,
   FormGroupValidateResult,
-  FormGroupValidator,
+  FormGroupValidatorMetas,
   FormGroupValidators,
-  FormValidators,
+  FormValidatorMetas,
+  ToFormGroupValidatorMetas,
   ValidationIssue,
 } from '../validation.public'
-import type { TryInferSchemaOutput } from '../standardSchema.lib'
 
 export interface FormGroupSubmitContext<
   TFormData,
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
-  TGroupValidators extends FormGroupValidators<TGroupValue>,
-  TFormValidators extends FormValidators<TFormData>,
+  TGroupValidatorMetas extends FormGroupValidatorMetas,
+  TFormValidatorMetas extends FormValidatorMetas,
   TSubmitReturn,
 > {
   value: TGroupValue
-  formApi: FormApi<TFormData, TFormValidators, TSubmitReturn>
+  formApi: FormApi<TFormData, TFormValidatorMetas, TSubmitReturn>
   groupApi: FormGroupApi<
     TFormData,
     TGroupName,
     TGroupValue,
-    TGroupValidators,
-    TFormValidators,
+    TFormValidatorMetas,
     TSubmitReturn
   >
-  schemaOutputs: FormGroupStandardSchemaValidatorOutputs<TGroupValidators>
+  schemaOutputs: FormGroupStandardSchemaValidatorOutputs<TGroupValidatorMetas>
 }
 
 export interface FormGroupOptions<
@@ -37,10 +36,10 @@ export interface FormGroupOptions<
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
   TGroupValidators extends FormGroupValidators<TGroupValue>,
-  TFormValidators extends FormValidators<TFormData>,
+  TFormValidatorMetas extends FormValidatorMetas,
   TSubmitReturn,
 > {
-  form: FormApi<TFormData, TFormValidators, TSubmitReturn>
+  form: FormApi<TFormData, TFormValidatorMetas, TSubmitReturn>
   name: TGroupName
   validators?: TGroupValidators
   onSubmit?: (
@@ -48,8 +47,8 @@ export interface FormGroupOptions<
       TFormData,
       TGroupName,
       TGroupValue,
-      TGroupValidators,
-      TFormValidators,
+      ToFormGroupValidatorMetas<TGroupValidators>,
+      TFormValidatorMetas,
       TSubmitReturn
     >,
   ) => void | Promise<void>
@@ -58,8 +57,8 @@ export interface FormGroupOptions<
       TFormData,
       TGroupName,
       TGroupValue,
-      TGroupValidators,
-      TFormValidators,
+      ToFormGroupValidatorMetas<TGroupValidators>,
+      TFormValidatorMetas,
       TSubmitReturn
     > & {
       errors: Array<FormGroupValidateResult<TGroupValue>>
@@ -87,37 +86,36 @@ export interface FormGroupState<
   submissionAttempts: number
 }
 
+type MappedFormGroupsSchemaOutputs<
+  TGroupValidatorMetas extends FormGroupValidatorMetas,
+> = {
+  [K in keyof TGroupValidatorMetas]: TGroupValidatorMetas[K]['schemaSubmitOutput']
+}
+
 export type FormGroupStandardSchemaValidatorOutputs<
-  TGroupValidators extends ReadonlyArray<FormGroupValidator<any>>,
-> = TGroupValidators extends readonly [infer TFirst, ...infer TRest]
-  ? TFirst extends FormGroupValidator<any>
-    ? TRest extends ReadonlyArray<FormGroupValidator<any>>
-      ? [
-          TryInferSchemaOutput<TFirst>,
-          ...FormGroupStandardSchemaValidatorOutputs<TRest>,
-        ]
-      : []
-    : []
-  : []
+  TGroupValidatorMetas extends FormGroupValidatorMetas,
+> = unknown extends TGroupValidatorMetas
+  ? Array<unknown>
+  : MappedFormGroupsSchemaOutputs<TGroupValidatorMetas>
 
 export interface FormGroupApi<
   TFormData,
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
-  TGroupValidators extends FormGroupValidators<TGroupValue>,
-  TFormValidators extends FormValidators<TFormData>,
+  TFormValidatorMetas extends FormValidatorMetas,
   TSubmitReturn,
 > {
-  readonly form: FormApi<TFormData, TFormValidators, TSubmitReturn>
+  readonly form: FormApi<TFormData, TFormValidatorMetas, TSubmitReturn>
   readonly name: TGroupName
   readonly options: FormGroupOptions<
     TFormData,
     TGroupName,
     TGroupValue,
-    TGroupValidators,
-    TFormValidators,
+    FormGroupValidators<TGroupValue>,
+    TFormValidatorMetas,
     TSubmitReturn
   >
+
   store: ReadonlyAtom<FormGroupState<TFormData, TGroupName, TGroupValue>>
   readonly state: FormGroupState<TFormData, TGroupName, TGroupValue>
   readonly value: TGroupValue

@@ -131,7 +131,6 @@ export interface InternalFieldState extends PublicFieldState<
   any,
   any,
   any,
-  any,
   any
 > {
   meta: InternalFieldMeta

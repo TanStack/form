@@ -17,6 +17,7 @@ import {
   setIndexedError,
 } from '../validation.lib'
 import { hasFieldMetaErrors } from '../FieldApi/FieldApi.lib'
+import type { FormApi } from '../FormApi/FormApi.public'
 import type { InternalFormApi } from '../FormApi/FormApi.lib'
 import type {
   AnyFieldApiOptions,
@@ -37,7 +38,8 @@ import type {
   FormGroupValidateResult,
   FormGroupValidator,
   FormGroupValidators,
-  FormValidators,
+  FormValidatorMetas,
+  ToFormGroupValidatorMetas,
   ValidationIssue,
 } from '../validation.public'
 import type { ReadonlyAtom } from '@tanstack/store'
@@ -47,24 +49,25 @@ export class InternalFormGroupApi<
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
   const TGroupValidators extends FormGroupValidators<TGroupValue>,
-  TFormValidators extends FormValidators<TFormData>,
+  TFormValidatorMetas extends FormValidatorMetas,
   TSubmitReturn,
 > implements FormGroupApi<
   TFormData,
   TGroupName,
   TGroupValue,
-  TGroupValidators,
-  TFormValidators,
+  ToFormGroupValidatorMetas<TGroupValidators>,
+  TFormValidatorMetas,
   TSubmitReturn
 > {
-  readonly form: InternalFormApi<TFormData, TFormValidators, TSubmitReturn>
+  readonly form: FormApi<TFormData, TFormValidatorMetas, TSubmitReturn> &
+    InternalFormApi<any, any, any>
   readonly name: TGroupName
   options: FormGroupOptions<
     TFormData,
     TGroupName,
     TGroupValue,
     TGroupValidators,
-    TFormValidators,
+    TFormValidatorMetas,
     TSubmitReturn
   >
   store: ReadonlyAtom<FormGroupState<TFormData, TGroupName, TGroupValue>>
@@ -92,16 +95,17 @@ export class InternalFormGroupApi<
       TGroupName,
       TGroupValue,
       TGroupValidators,
-      TFormValidators,
+      TFormValidatorMetas,
       TSubmitReturn
     >,
   ) {
     this.options = options
-    this.form = options.form as InternalFormApi<
+    this.form = options.form as unknown as FormApi<
       TFormData,
-      TFormValidators,
+      TFormValidatorMetas,
       TSubmitReturn
-    >
+    > &
+      InternalFormApi<any, any, any>
     this.name = options.name
     this._pipelineCache = createPipelineCache()
 
@@ -117,7 +121,7 @@ export class InternalFormGroupApi<
       TGroupName,
       TGroupValue,
       TGroupValidators,
-      TFormValidators,
+      TFormValidatorMetas,
       TSubmitReturn
     >,
   ) => {
@@ -473,11 +477,7 @@ export class InternalFormGroupApi<
 
     batch(() => {
       if (groupField) {
-        this._clearFieldEventErrors(
-          groupField,
-          eventErrorIndexes,
-          sourceEvent,
-        )
+        this._clearFieldEventErrors(groupField, eventErrorIndexes, sourceEvent)
       }
 
       const indexesToClearFromField: Array<number> = []
@@ -614,7 +614,7 @@ export class InternalFormGroupApi<
     cancelPipelineCache(this._pipelineCache)
     this._pipelineCache = createPipelineCache()
     this._schemaOutputs = []
-    this.form._atoms.values.set((prev) =>
+    this.form._atoms.values.set((prev: TFormData) =>
       setBy(prev, this.name, getBy(this.form.options.defaultValues, this.name)),
     )
     batch(() => {

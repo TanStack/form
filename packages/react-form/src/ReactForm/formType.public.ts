@@ -1,4 +1,8 @@
-import type { AnyFormOptions, FormOptions } from '@tanstack/form-core-v2'
+import type {
+  AnyFormOptions,
+  FormOptions,
+  ToFormValidatorMetas,
+} from '@tanstack/form-core-v2'
 import type { AppFormOptions } from '../AppForm/appFormOptions.public'
 import type {
   AnyReactFormComponentMap,
@@ -19,7 +23,7 @@ export type ReactFormType<
   >
     ? ReactFormApi<
         TFormData,
-        TFormValidators,
+        ToFormValidatorMetas<TFormValidators>,
         TSubmitReturn,
         TComponents
       >
@@ -30,7 +34,7 @@ export type ReactFormType<
         >
       ? ReactFormApi<
           TFormData,
-          TFormValidators,
+          ToFormValidatorMetas<TFormValidators>,
           TSubmitReturn,
           DefaultReactFormComponentMap
         >
