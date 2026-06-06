@@ -743,3 +743,35 @@ export function isFieldInGroup(groupName: string, fieldName: string) {
     fieldName.startsWith(`${groupName}[`)
   )
 }
+
+/**
+ * Yields so UI updates (e.g. isSubmitting spinners) can paint before submit
+ * validation runs. Uses double requestAnimationFrame in browsers and
+ * setTimeout(0) elsewhere (tests, SSR).
+ */
+function isVitest(): boolean {
+  return (
+    typeof process !== 'undefined' &&
+    typeof process.env !== 'undefined' &&
+    process.env.VITEST === 'true'
+  )
+}
+
+export function yieldToPaint(): Promise<void> {
+  if (
+    !isVitest() &&
+    typeof window !== 'undefined' &&
+    typeof window.requestAnimationFrame === 'function'
+  ) {
+    return new Promise((resolve) => {
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => resolve())
+      })
+    })
+  }
+
+  // In tests, avoid setTimeout so leaked fake timers cannot deadlock submit.
+  return new Promise((resolve) => {
+    queueMicrotask(resolve)
+  })
+}

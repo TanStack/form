@@ -14,6 +14,7 @@ import {
   setBy,
   throttleFormState,
   uuid,
+  yieldToPaint,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
 import {
@@ -2450,6 +2451,8 @@ export class FormApi<
     const done = () => {
       this.baseStore.setState((prev) => ({ ...prev, isSubmitting: false }))
     }
+
+    await yieldToPaint()
 
     await this.validateAllFields('submit')
 
