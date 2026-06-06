@@ -67,6 +67,8 @@ import type {
 import type { FormListenerTriggers } from '../listeners.public'
 import type { InternalFormGroupApi } from '../FormGroupApi/FormGroupApi.lib'
 
+type AnyFormGroupApi = InternalFormGroupApi<any, any, any, any, any, any>
+
 export interface FormMetaAtoms {
   isDirty: Atom<boolean>
   /**
@@ -347,23 +349,18 @@ export class InternalFormApi<
     return () => {}
   }
 
-  _registerFormGroup = (
-    group: InternalFormGroupApi<any, any, any, any, any, any>,
-  ): void => {
+  _registerFormGroup = (group: AnyFormGroupApi): void => {
     this._formGroups.add(group)
   }
 
-  _unregisterFormGroup = (
-    group: InternalFormGroupApi<any, any, any, any, any, any>,
-  ): void => {
+  _unregisterFormGroup = (group: AnyFormGroupApi): void => {
     this._formGroups.delete(group)
   }
 
   _getNearestFormGroupForField = (
     fieldName: string,
-  ): InternalFormGroupApi<any, any, any, any, any, any> | null => {
-    let nearest: InternalFormGroupApi<any, any, any, any, any, any> | null =
-      null
+  ): AnyFormGroupApi | null => {
+    let nearest: AnyFormGroupApi | null = null
     for (const group of this._formGroups) {
       const groupName = String(group.name)
       const isContained =

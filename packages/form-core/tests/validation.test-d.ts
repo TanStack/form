@@ -11,12 +11,15 @@ import type {
   ErrorVisibilityFieldState,
   FieldApiOptions,
   FieldErrors,
+  FieldValidatorMeta,
   FieldValidators,
-  FormGroupStandardSchemaValidatorOutputs,
-  FormGroupValidators,
   FormErrors,
+  FormGroupStandardSchemaValidatorOutputs,
+  FormGroupValidatorMeta,
+  FormGroupValidators,
   FormOptions,
   FormState,
+  FormValidatorMeta,
   FormValidators,
   OnSubmitError,
   ReusableErrorVisibilityState,
@@ -25,9 +28,6 @@ import type {
   ToFormGroupValidatorMetas,
   ToFormValidatorMetas,
   ValidationIssue,
-  FieldValidatorMeta,
-  FormGroupValidatorMeta,
-  FormValidatorMeta,
 } from '../src'
 
 type TestFormData = {
@@ -204,7 +204,7 @@ describe('FormErrors', () => {
       defaultValues: { name: '' },
       validators: [withRequiredValue(z.object({ name: z.string() }))],
       onSubmit: ({ schemaOutputs }) => {
-        expectTypeOf(schemaOutputs).toEqualTypeOf<[{ name: string }]>()
+        expectTypeOf(schemaOutputs).toEqualTypeOf<readonly [{ name: string }]>()
       },
     })
 
@@ -266,7 +266,7 @@ describe('FormErrors', () => {
       validators,
       onSubmit: ({ schemaOutputs }) => {
         expectTypeOf(schemaOutputs).toEqualTypeOf<
-          [{ name: string }, undefined]
+          readonly [{ name: string }, undefined]
         >()
       },
     })
@@ -287,9 +287,9 @@ describe('FormErrors', () => {
       { run: () => ({ message: 'My error' as const }), triggers: [] },
     ])
 
-    expectTypeOf<TestFormErrors<typeof strictValidators, never>>().toEqualTypeOf<
-      Array<{ message: 'My error' }>
-    >()
+    expectTypeOf<
+      TestFormErrors<typeof strictValidators, never>
+    >().toEqualTypeOf<Array<{ message: 'My error' }>>()
   })
 
   it('should normalize string errors', () => {
@@ -405,9 +405,9 @@ describe('FormErrors', () => {
       },
     ])
 
-    expectTypeOf<TestFormErrors<typeof stringValidators, never>>().toEqualTypeOf<
-      Array<ValidationIssue>
-    >()
+    expectTypeOf<
+      TestFormErrors<typeof stringValidators, never>
+    >().toEqualTypeOf<Array<ValidationIssue>>()
 
     const customValidators = defineFormValidators([
       {
@@ -419,9 +419,9 @@ describe('FormErrors', () => {
       },
     ])
 
-    expectTypeOf<TestFormErrors<typeof customValidators, never>>().toEqualTypeOf<
-      Array<{ message: string; errorCount: number }>
-    >()
+    expectTypeOf<
+      TestFormErrors<typeof customValidators, never>
+    >().toEqualTypeOf<Array<{ message: string; errorCount: number }>>()
   })
 
   it('should extract aggregate errors with only field errors', () => {
@@ -476,9 +476,9 @@ describe('FormErrors', () => {
       Array<ValidationIssue>
     >()
 
-    expectTypeOf<TestFormErrors<[], OnSubmitError<Array<string>>>>().toEqualTypeOf<
-      Array<ValidationIssue>
-    >()
+    expectTypeOf<
+      TestFormErrors<[], OnSubmitError<Array<string>>>
+    >().toEqualTypeOf<Array<ValidationIssue>>()
   })
 
   it('should fall back to ValidationIssue if `any` was used', () => {
@@ -486,7 +486,9 @@ describe('FormErrors', () => {
       Array<ValidationIssue>
     >()
 
-    expectTypeOf<TestFormErrors<any, any>>().toEqualTypeOf<Array<ValidationIssue>>()
+    expectTypeOf<TestFormErrors<any, any>>().toEqualTypeOf<
+      Array<ValidationIssue>
+    >()
   })
 })
 
@@ -497,10 +499,13 @@ describe('FieldErrors', () => {
     ])
 
     expectTypeOf<
-      TestFieldErrors<typeof fieldValidators, [], typeof emptyFormValidators, never>
-    >().toEqualTypeOf<
-      Array<ValidationIssue | { message: string; fieldOnly: true }>
-    >()
+      TestFieldErrors<
+        typeof fieldValidators,
+        [],
+        typeof emptyFormValidators,
+        never
+      >
+    >().toEqualTypeOf<readonly [{ message: string; fieldOnly: true }]>()
   })
 
   it('should infer field errors from aggregate form validators', () => {
@@ -515,7 +520,12 @@ describe('FieldErrors', () => {
     ])
 
     expectTypeOf<
-      TestFieldErrors<typeof emptyFieldValidators, [], typeof formValidators, never>
+      TestFieldErrors<
+        typeof emptyFieldValidators,
+        [],
+        typeof formValidators,
+        never
+      >
     >().toEqualTypeOf<
       Array<ValidationIssue | { message: string; fieldOnly: true }>
     >()
@@ -593,7 +603,12 @@ describe('FieldErrors', () => {
     ])
 
     expectTypeOf<
-      TestFieldErrors<typeof fieldValidators, [], typeof emptyFormValidators, never>
+      TestFieldErrors<
+        typeof fieldValidators,
+        [],
+        typeof emptyFormValidators,
+        never
+      >
     >().toEqualTypeOf<
       Array<ValidationIssue | { message: string; code: number }>
     >()
@@ -607,7 +622,12 @@ describe('FieldErrors', () => {
     ])
 
     expectTypeOf<
-      TestFieldErrors<typeof fieldValidators, [], typeof emptyFormValidators, never>
+      TestFieldErrors<
+        typeof fieldValidators,
+        [],
+        typeof emptyFormValidators,
+        never
+      >
     >().toEqualTypeOf<Array<ValidationIssue>>()
 
     const mixedFieldValidators = defineFieldValidators([
@@ -670,7 +690,12 @@ describe('FieldErrors', () => {
     ])
 
     expectTypeOf<
-      TestFieldErrors<typeof fieldValidators, [], typeof emptyFormValidators, never>
+      TestFieldErrors<
+        typeof fieldValidators,
+        [],
+        typeof emptyFormValidators,
+        never
+      >
     >().toEqualTypeOf<
       Array<
         | ValidationIssue
@@ -690,7 +715,12 @@ describe('FieldErrors', () => {
     ])
 
     expectTypeOf<
-      TestFieldErrors<typeof fieldValidators, [], typeof emptyFormValidators, never>
+      TestFieldErrors<
+        typeof fieldValidators,
+        [],
+        typeof emptyFormValidators,
+        never
+      >
     >().toEqualTypeOf<
       Array<
         | ValidationIssue
@@ -711,7 +741,12 @@ describe('FieldErrors', () => {
     ])
 
     expectTypeOf<
-      TestFieldErrors<typeof emptyFieldValidators, [], typeof formValidators, never>
+      TestFieldErrors<
+        typeof emptyFieldValidators,
+        [],
+        typeof formValidators,
+        never
+      >
     >().toEqualTypeOf<
       Array<ValidationIssue | { message: string; fieldOnly: true }>
     >()
@@ -723,7 +758,12 @@ describe('FieldErrors', () => {
     ])
 
     expectTypeOf<
-      TestFieldErrors<typeof emptyFieldValidators, [], typeof formValidators, never>
+      TestFieldErrors<
+        typeof emptyFieldValidators,
+        [],
+        typeof formValidators,
+        never
+      >
     >().toEqualTypeOf<Array<ValidationIssue>>()
   })
 
@@ -891,7 +931,9 @@ describe('validator metas', () => {
       [FirstResult, SecondResult]
     >()
     expectTypeOf<
-      FormGroupStandardSchemaValidatorOutputs<ToFormGroupValidatorMetas<typeof vs>>
+      FormGroupStandardSchemaValidatorOutputs<
+        ToFormGroupValidatorMetas<typeof vs>
+      >
     >().toEqualTypeOf<[{ nameLength: number }, undefined]>()
   })
 })

@@ -28,6 +28,7 @@ import type {
 import type { FormStateOverrides } from '../FormApi/formState.lib'
 import type { DeepKeys, DeepValue } from '../deep-keys.public'
 import type { PipelineCache } from '../utils.lib'
+import type { PipelineResult } from '../validation.lib'
 import type {
   FormGroupApi,
   FormGroupOptions,
@@ -48,7 +49,7 @@ export class InternalFormGroupApi<
   TFormData,
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
-  const TGroupValidators extends FormGroupValidators<TGroupValue>,
+  const TGroupValidators extends FormGroupValidators<TFormData>,
   TFormValidatorMetas extends FormValidatorMetas,
   TSubmitReturn,
 > implements FormGroupApi<
@@ -66,11 +67,18 @@ export class InternalFormGroupApi<
     TFormData,
     TGroupName,
     TGroupValue,
-    TGroupValidators,
+    FormGroupValidators<TGroupValue>,
     TFormValidatorMetas,
     TSubmitReturn
   >
-  store: ReadonlyAtom<FormGroupState<TFormData, TGroupName, TGroupValue>>
+  store: ReadonlyAtom<
+    FormGroupState<
+      TFormData,
+      TGroupName,
+      TGroupValue,
+      ToFormGroupValidatorMetas<TGroupValidators>
+    >
+  >
   _pipelineCache: PipelineCache<FormGroupValidateResult<TGroupValue>>
   _schemaOutputs: Array<any> = []
   _errorOwner = {}
@@ -94,7 +102,7 @@ export class InternalFormGroupApi<
       TFormData,
       TGroupName,
       TGroupValue,
-      TGroupValidators,
+      FormGroupValidators<TGroupValue>,
       TFormValidatorMetas,
       TSubmitReturn
     >,
@@ -112,7 +120,7 @@ export class InternalFormGroupApi<
     this.store = createAtom(() => this._getStateSnapshot(), {
       compare: shallow,
     })
-    this.form._registerFormGroup(this as never)
+    this.form._registerFormGroup(this)
   }
 
   update = (
@@ -120,7 +128,7 @@ export class InternalFormGroupApi<
       TFormData,
       TGroupName,
       TGroupValue,
-      TGroupValidators,
+      FormGroupValidators<TGroupValue>,
       TFormValidatorMetas,
       TSubmitReturn
     >,
@@ -131,7 +139,8 @@ export class InternalFormGroupApi<
   _getStateSnapshot = (): FormGroupState<
     TFormData,
     TGroupName,
-    TGroupValue
+    TGroupValue,
+    ToFormGroupValidatorMetas<TGroupValidators>
   > => {
     const groupField = this.form._tryGetFieldApi(this.name)
     const groupMeta = groupField?.meta
@@ -526,7 +535,7 @@ export class InternalFormGroupApi<
   validate = async (
     signal: ConfigurableValidationTrigger | 'submit' = 'submit',
     opts?: { triggerFieldApi?: AnyInternalFieldApi },
-  ) => {
+  ): Promise<Array<FormGroupValidateResult<TGroupValue>>> => {
     if (signal !== 'submit' && opts?.triggerFieldApi) {
       this._clearEventErrors(opts.triggerFieldApi, 'submit', signal)
     }
@@ -542,9 +551,9 @@ export class InternalFormGroupApi<
     this._isValidating.set(true)
     try {
       const fieldErrorsPromise = this._runFieldValidations(signal)
-      const results = await runValidatorPipeline<
-        FormGroupValidateResult<TGroupValue>
-      >({
+      const results: {
+        results: Array<PipelineResult<FormGroupValidateResult<TGroupValue>>>
+      } = await runValidatorPipeline<FormGroupValidateResult<TGroupValue>>({
         pipeline: pipeline as ReadonlyArray<FormGroupValidator<any>>,
         cache: this._pipelineCache,
         context: {
@@ -567,11 +576,18 @@ export class InternalFormGroupApi<
         },
       })
 
-      const groupErrors = results.results
-        .map(({ result }) => result)
-        .filter(isErrorResult)
+      const groupErrors: Array<FormGroupValidateResult<TGroupValue>> =
+        results.results
+          .map(
+            ({ result }: { result: FormGroupValidateResult<TGroupValue> }) =>
+              result,
+          )
+          .filter(isErrorResult)
       const fieldErrors = await fieldErrorsPromise
-      const errors = [...groupErrors, ...fieldErrors]
+      const errors: Array<FormGroupValidateResult<TGroupValue>> = [
+        ...groupErrors,
+        ...fieldErrors,
+      ]
 
       batch(() => {
         this._errors.set(groupErrors)
@@ -583,13 +599,16 @@ export class InternalFormGroupApi<
     }
   }
 
-  handleSubmit = async () => {
+  handleSubmit = async (): Promise<
+    Array<FormGroupValidateResult<TGroupValue>>
+  > => {
     this._submissionAttempts.set((attempts) => attempts + 1)
     this._isSubmitting.set(true)
     this._isSubmitSuccessful.set(false)
 
     try {
-      const errors = await this.validate('submit')
+      const errors: Array<FormGroupValidateResult<TGroupValue>> =
+        await this.validate('submit')
       const context = {
         value: this.value,
         formApi: this.form,
@@ -639,7 +658,7 @@ export class InternalFormGroupApi<
   }
 
   _cleanup = () => {
-    this.form._unregisterFormGroup(this as never)
+    this.form._unregisterFormGroup(this)
     cancelPipelineCache(this._pipelineCache)
     this._pipelineCache = createPipelineCache()
     this._schemaOutputs = []

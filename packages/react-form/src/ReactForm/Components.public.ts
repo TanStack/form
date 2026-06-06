@@ -123,7 +123,7 @@ export interface ReactFormFieldProps<
   TFieldName extends DeepKeys<TFieldData>,
   TFieldValue extends DeepValue<TFieldData, TFieldName>,
   TFieldValidators extends FieldValidators<TFieldData, TFieldName, TFieldValue>,
-  TGroupValidators extends FormGroupValidators<any>,
+  TGroupValidators extends FormGroupValidatorMetas,
   TFormData,
   TFormValidatorMetas extends FormValidatorMetas,
   TSubmitReturn,
@@ -144,7 +144,7 @@ export interface ReactFormFieldProps<
       TFieldName,
       TFieldValue,
       ToFieldValidatorMetas<TFieldValidators>,
-      ToFormGroupValidatorMetas<TGroupValidators>,
+      TGroupValidators,
       TFormData,
       TFormValidatorMetas,
       TSubmitReturn,
@@ -181,7 +181,7 @@ export interface ReactFormArrayFieldProps<
   TFieldName extends DeepKeysWhereValueIncludes<TFieldData, Array<any>>,
   TFieldValue extends DeepValue<TFieldData, TFieldName>,
   TFieldValidators extends FieldValidators<TFieldData, TFieldName, TFieldValue>,
-  TGroupValidators extends FormGroupValidators<any>,
+  TGroupValidatorMetas extends FormGroupValidatorMetas,
   TFormData,
   TFormValidatorMetas extends FormValidatorMetas,
   TSubmitReturn,
@@ -191,7 +191,7 @@ export interface ReactFormArrayFieldProps<
   TFieldName,
   TFieldValue,
   TFieldValidators,
-  TGroupValidators,
+  TGroupValidatorMetas,
   TFormData,
   TFormValidatorMetas,
   TSubmitReturn
@@ -202,7 +202,7 @@ export interface ReactFormArrayFieldProps<
       TFieldName,
       TFieldValue,
       ToFieldValidatorMetas<TFieldValidators>,
-      ToFormGroupValidatorMetas<TGroupValidators>,
+      TGroupValidatorMetas,
       TFormData,
       TFormValidatorMetas,
       TSubmitReturn,
@@ -238,9 +238,13 @@ export type ReactFormGroupSubscribeProps<
   TFormData,
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
+  TGroupValidatorMetas extends FormGroupValidatorMetas,
   TSelected,
 > = Omit<
-  SubscribeProps<FormGroupState<TFormData, TGroupName, TGroupValue>, TSelected>,
+  SubscribeProps<
+    FormGroupState<TFormData, TGroupName, TGroupValue, TGroupValidatorMetas>,
+    TSelected
+  >,
   'source'
 >
 
@@ -248,11 +252,13 @@ export type ReactFormGroupSubscribeComponent<
   TFormData,
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
+  TGroupValidatorMetas extends FormGroupValidatorMetas,
 > = <TSelected>(
   props: ReactFormGroupSubscribeProps<
     TFormData,
     TGroupName,
     TGroupValue,
+    TGroupValidatorMetas,
     TSelected
   >,
 ) => CrossVersionReactNode
@@ -261,7 +267,7 @@ export type ReactFormGroupFieldComponent<
   TFormData,
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
-  TGroupValidators extends FormGroupValidators<TGroupValue>,
+  TGroupValidators extends FormGroupValidatorMetas,
   TFormValidatorMetas extends FormValidatorMetas,
   TSubmitReturn,
   TFieldComponents extends Record<string, FunctionComponent<any>>,
@@ -291,7 +297,7 @@ export type ReactFormGroupArrayFieldComponent<
   TFormData,
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
-  TGroupValidators extends FormGroupValidators<TGroupValue>,
+  TGroupValidatorMetas extends FormGroupValidatorMetas,
   TFormValidatorMetas extends FormValidatorMetas,
   TSubmitReturn,
   TFieldComponents extends Record<string, FunctionComponent<any>>,
@@ -309,7 +315,7 @@ export type ReactFormGroupArrayFieldComponent<
     TFieldName,
     TFieldValue,
     TFieldValidators,
-    TGroupValidators,
+    TGroupValidatorMetas,
     TFormData,
     TFormValidatorMetas,
     TSubmitReturn,
@@ -321,7 +327,7 @@ export type ReactFormGroupApi<
   TFormData,
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
-  TGroupValidators extends FormGroupValidators<TGroupValue>,
+  TGroupValidatorMetas extends FormGroupValidatorMetas,
   TFormValidatorMetas extends FormValidatorMetas,
   TSubmitReturn,
   TFieldComponents extends Record<string, FunctionComponent<any>>,
@@ -329,7 +335,7 @@ export type ReactFormGroupApi<
   TFormData,
   TGroupName,
   TGroupValue,
-  ToFormGroupValidatorMetas<TGroupValidators>,
+  TGroupValidatorMetas,
   TFormValidatorMetas,
   TSubmitReturn
 > & {
@@ -337,7 +343,7 @@ export type ReactFormGroupApi<
     TFormData,
     TGroupName,
     TGroupValue,
-    TGroupValidators,
+    TGroupValidatorMetas,
     TFormValidatorMetas,
     TSubmitReturn,
     TFieldComponents
@@ -346,7 +352,7 @@ export type ReactFormGroupApi<
     TFormData,
     TGroupName,
     TGroupValue,
-    TGroupValidators,
+    TGroupValidatorMetas,
     TFormValidatorMetas,
     TSubmitReturn,
     TFieldComponents
@@ -354,7 +360,8 @@ export type ReactFormGroupApi<
   Subscribe: ReactFormGroupSubscribeComponent<
     TFormData,
     TGroupName,
-    TGroupValue
+    TGroupValue,
+    TGroupValidatorMetas
   >
 }
 
@@ -382,7 +389,7 @@ export interface ReactFormGroupProps<
       TFormData,
       TGroupName,
       TGroupValue,
-      TGroupValidators,
+      ToFormGroupValidatorMetas<TGroupValidators>,
       TFormValidatorMetas,
       TSubmitReturn,
       TFieldComponents

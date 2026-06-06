@@ -8,7 +8,6 @@ import type {
   FormGroupValidators,
   FormValidatorMetas,
   ToFormGroupValidatorMetas,
-  ValidationIssue,
 } from '../validation.public'
 
 export interface FormGroupSubmitContext<
@@ -25,6 +24,7 @@ export interface FormGroupSubmitContext<
     TFormData,
     TGroupName,
     TGroupValue,
+    TGroupValidatorMetas,
     TFormValidatorMetas,
     TSubmitReturn
   >
@@ -70,10 +70,11 @@ export interface FormGroupState<
   TFormData,
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
+  TGroupValidationMetas extends FormGroupValidatorMetas,
 > {
   values: TGroupValue
   meta: unknown
-  errors: Array<ValidationIssue>
+  errors: TGroupValidationMetas[number]['groupError']
   isTouched: boolean
   isDirty: boolean
   isPristine: boolean
@@ -102,6 +103,7 @@ export interface FormGroupApi<
   TFormData,
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
+  TGroupValidatorMetas extends FormGroupValidatorMetas,
   TFormValidatorMetas extends FormValidatorMetas,
   TSubmitReturn,
 > {
@@ -116,8 +118,15 @@ export interface FormGroupApi<
     TSubmitReturn
   >
 
-  store: ReadonlyAtom<FormGroupState<TFormData, TGroupName, TGroupValue>>
-  readonly state: FormGroupState<TFormData, TGroupName, TGroupValue>
+  store: ReadonlyAtom<
+    FormGroupState<TFormData, TGroupName, TGroupValue, TGroupValidatorMetas>
+  >
+  readonly state: FormGroupState<
+    TFormData,
+    TGroupName,
+    TGroupValue,
+    TGroupValidatorMetas
+  >
   readonly value: TGroupValue
   validate: (
     signal?: ConfigurableValidationTrigger | 'submit',

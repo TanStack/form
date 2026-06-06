@@ -73,7 +73,7 @@ function FormGroupTypes() {
                 expectTypeOf(
                   field.form.state.values.budget,
                 ).toEqualTypeOf<number>()
-                expectTypeOf(field.errors).toMatchTypeOf<
+                expectTypeOf(field.errors).toEqualTypeOf<
                   Array<ValidationIssue | { message: string; fromGroup: true }>
                 >()
                 return null
@@ -85,7 +85,7 @@ function FormGroupTypes() {
                 {
                   triggers: [],
                   run: ({ fieldApi }) => {
-                    expectTypeOf(fieldApi.errors).toMatchTypeOf<
+                    expectTypeOf(fieldApi.errors).toEqualTypeOf<
                       Array<
                         ValidationIssue | { message: string; fromGroup: true }
                       >

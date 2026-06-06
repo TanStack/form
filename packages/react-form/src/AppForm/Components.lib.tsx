@@ -97,12 +97,12 @@ function createFormGroupWithContext(
 
     if (!groupRef.current) {
       groupRef.current = attachAppFormGroupComponents(
-        new InternalFormGroupApi({ ...props, form }),
+        new InternalFormGroupApi({ ...props, form } as never),
         form,
       )
     }
 
-    React.useEffect(() => groupRef.current?.update({ ...props, form }))
+    React.useEffect(() => groupRef.current?.update({ ...props, form } as never))
 
     React.useEffect(() => {
       const group = groupRef.current!

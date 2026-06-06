@@ -10,10 +10,8 @@ import type {
   FieldValidatorMetas,
   FieldValidators,
   FormGroupValidatorMetas,
-  FormGroupValidators,
   FormValidatorMetas,
   ToFieldValidatorMetas,
-  ToFormGroupValidatorMetas,
   FieldErrors as ValidationFieldErrors,
 } from '../validation.public'
 import type { FieldListeners } from '../listeners.public'
@@ -230,7 +228,7 @@ export interface FieldApiOptions<
   TFieldName extends DeepKeys<TFieldData>,
   TFieldValue extends DeepValue<TFieldData, TFieldName>,
   TFieldValidators extends FieldValidators<TFieldData, TFieldName, TFieldValue>,
-  TGroupValidators extends FormGroupValidators<any>,
+  TGroupValidators extends FormGroupValidatorMetas,
   TFormData,
   TFormValidatorMetas extends FormValidatorMetas,
   TSubmitReturn,
@@ -251,7 +249,7 @@ export interface FieldApiOptions<
     TFieldName,
     TFieldValue,
     ToFieldValidatorMetas<TFieldValidators>,
-    ToFormGroupValidatorMetas<TGroupValidators>,
+    TGroupValidators,
     TFormData,
     TFormValidatorMetas,
     TSubmitReturn
