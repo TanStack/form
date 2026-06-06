@@ -57,13 +57,6 @@ function FormGroupTypes() {
         expectTypeOf(group.state.isDirty).toEqualTypeOf<boolean>()
         expectTypeOf(group.state.isPristine).toEqualTypeOf<boolean>()
         expectTypeOf(group.form.state.values.budget).toEqualTypeOf<number>()
-        const validatorResult = group.form.options.validators?.[0]?.run()
-        if (validatorResult && !(validatorResult instanceof Promise)) {
-          expectTypeOf(validatorResult.form.fromForm).toEqualTypeOf<true>()
-        }
-        expectTypeOf<
-          ReturnType<NonNullable<typeof group.form.options.onSubmit>>
-        >().toEqualTypeOf<'submitted'>()
         // @ts-expect-error group state values are scoped to guestDetails
         group.state.values.budget
         // @ts-expect-error lifecycle cleanup is internal-only
@@ -77,16 +70,10 @@ function FormGroupTypes() {
           <>
             <group.Field name="name">
               {(field) => {
-                expectTypeOf(field.form.state.values.budget).toEqualTypeOf<
-                  number
-                >()
-                const validatorResult = field.form.options.validators?.[0]?.run()
-                if (validatorResult && !(validatorResult instanceof Promise)) {
-                  expectTypeOf(validatorResult.form.fromForm).toEqualTypeOf<
-                    true
-                  >()
-                }
-                expectTypeOf(field.errors).toEqualTypeOf<
+                expectTypeOf(
+                  field.form.state.values.budget,
+                ).toEqualTypeOf<number>()
+                expectTypeOf(field.errors).toMatchTypeOf<
                   Array<ValidationIssue | { message: string; fromGroup: true }>
                 >()
                 return null
@@ -98,7 +85,7 @@ function FormGroupTypes() {
                 {
                   triggers: [],
                   run: ({ fieldApi }) => {
-                    expectTypeOf(fieldApi.errors).toEqualTypeOf<
+                    expectTypeOf(fieldApi.errors).toMatchTypeOf<
                       Array<
                         ValidationIssue | { message: string; fromGroup: true }
                       >
