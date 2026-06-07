@@ -18,7 +18,11 @@ import type {
 } from '@tanstack/form-core-v2'
 import type { SubscribeProps } from '../Subscribe.public'
 import type { CrossVersionReactNode } from '../reactTypes.public'
-import type { FunctionComponent } from 'react'
+import type {
+  FunctionComponent,
+  LazyExoticComponent,
+  MemoExoticComponent,
+} from 'react'
 
 type ExactFieldBrand<TValue> = {
   readonly __tanstackFieldExactType: TValue
@@ -34,26 +38,23 @@ type IsSame<TTypeA, TTypeB> = [TTypeA] extends [TTypeB]
     : false
   : false
 
-type ExactBrandValue<T> =
-  T extends ExactFieldBrand<infer TValue> ? TValue : never
-
-type AcceptsBrandValue<T> =
-  T extends AcceptsFieldBrand<infer TValue> ? TValue : never
-
-type HasExactBrand<T> = T extends ExactFieldBrand<any> ? true : false
-
-type HasAcceptsBrand<T> = T extends AcceptsFieldBrand<any> ? true : false
-
 type CompatibleFieldKey<TKey, TComponent, TTargetValue> =
-  HasExactBrand<TComponent> extends true
-    ? IsSame<ExactBrandValue<TComponent>, TTargetValue> extends true
+  TComponent extends ExactFieldBrand<infer TExact>
+    ? IsSame<TExact, TTargetValue> extends true
       ? TKey
       : never
-    : HasAcceptsBrand<TComponent> extends true
-      ? [TTargetValue] extends [AcceptsBrandValue<TComponent>]
+    : TComponent extends AcceptsFieldBrand<infer TLoose>
+      ? [TTargetValue] extends [TLoose]
         ? TKey
         : never
       : TKey
+
+type UnwrapComponent<TComponent> =
+  TComponent extends LazyExoticComponent<infer TInner>
+    ? UnwrapComponent<TInner>
+    : TComponent extends MemoExoticComponent<infer TInner>
+      ? UnwrapComponent<TInner>
+      : TComponent
 
 type FieldComponentsMatchingType<
   TFieldComponents extends Record<string, FunctionComponent<any>>,
@@ -61,7 +62,7 @@ type FieldComponentsMatchingType<
 > = {
   [K in keyof TFieldComponents as CompatibleFieldKey<
     K,
-    TFieldComponents[K],
+    UnwrapComponent<TFieldComponents[K]>,
     TTargetValue
   >]: TFieldComponents[K]
 }

@@ -1,7 +1,11 @@
 import { createFormHook } from '@tanstack/react-form'
 import { lazy } from 'react'
+
 // React lazy importing loses generics, so import this directly
-import Select from './fields-ui/select'
+const Select = lazy(
+  () => import('./fields-ui/select'),
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+) as unknown as typeof import('./fields-ui/select').default
 
 const TextInput = lazy(() => import('./fields-ui/text-input'))
 const TanStackFormSubmitButton = lazy(() => import('./form-ui/submit-button'))
