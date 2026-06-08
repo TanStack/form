@@ -1,11 +1,6 @@
-import { useContext } from 'react'
-import { FormContext } from './contexts.lib'
 import { brandComponentFactory, wrapField } from './fieldComponentHelpers.lib'
-import type React from 'react'
-import type { FieldWithValue } from '@tanstack/form-core-v2'
-import type { DefaultReactFormComponentMap } from './componentMap.public'
-import type { ReactFormApi } from '../ReactForm/formApiTypes.public'
 import type { CrossVersionReactNode } from '../reactTypes.public'
+import type { FieldWithValue } from '@tanstack/form-core-v2'
 
 type ExactFieldBrand<TValue> = {
   readonly __tanstackFieldExactType: TValue
@@ -94,38 +89,20 @@ interface FieldBrandHelper {
   ) => LooseBrandedFieldComponent<TComponent, TValue>
 }
 
-export interface FormHookContexts {
-  useFormContext: () => ReactFormApi<
-    any,
-    any,
-    any,
-    DefaultReactFormComponentMap
-  >
+export interface FormHookHelpers {
   fieldBrand: FieldBrandHelper
   fieldComponent: FieldComponentHelper
 }
 
-export function createFormHookContexts(): FormHookContexts {
-  function useFormContext() {
-    const form = useContext(FormContext)
-    if (form === null) {
-      throw new Error(
-        'TanStack Form: Form components must be used within a `form.AppForm` component.',
-      )
-    }
-
-    return form
-  }
-
+export function getFormHookHelpers(): FormHookHelpers {
   return {
-    useFormContext,
     fieldComponent: {
-      loose: wrapField as never,
-      strict: wrapField as never,
+      loose: wrapField as FieldComponentHelper['loose'],
+      strict: wrapField as FieldComponentHelper['strict'],
     },
     fieldBrand: {
-      loose: brandComponentFactory as never,
-      strict: brandComponentFactory as never,
+      loose: brandComponentFactory as FieldBrandHelper['loose'],
+      strict: brandComponentFactory as FieldBrandHelper['strict'],
     },
   }
 }

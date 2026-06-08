@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { fieldComponent } from '../contexts'
+import { fieldComponent } from '../field-brand'
 import type { FieldWithValue } from '@tanstack/react-form'
 import type { ComponentProps } from 'react'
 import { Slider } from '@/components/ui/slider'

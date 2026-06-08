@@ -23,26 +23,27 @@ const TextArea = lazy(() => import('./fields-ui/text-area'))
 
 const TextInputField = lazy(() => import('./wrappers/text-field'))
 
-export const { appFormOptions, useSchemaAppForm } = createFormHook({
-  fieldComponents: {
-    // Granular elements for when you need full control
-    TextInput,
-    Field,
-    Label,
-    Error,
-    Description,
-    TextArea,
-    Checkbox,
-    NumberInput,
-    Select,
-    IntegerSlider,
+export const { appFormOptions, useSchemaAppForm, useFormContext } =
+  createFormHook({
+    fieldComponents: {
+      // Granular elements for when you need full control
+      TextInput,
+      Field,
+      Label,
+      Error,
+      Description,
+      TextArea,
+      Checkbox,
+      NumberInput,
+      Select,
+      IntegerSlider,
 
-    // General wrappers for the usual cases
-    TextInputField,
-    DateRangePicker,
-  },
-  formComponents: {
-    SubmitButton: TanStackFormSubmitButton,
-    Form: TanStackFormElement,
-  },
-})
+      // General wrappers for the usual cases
+      TextInputField,
+      DateRangePicker,
+    },
+    formComponents: {
+      SubmitButton: TanStackFormSubmitButton,
+      Form: TanStackFormElement,
+    },
+  })

@@ -1,4 +1,4 @@
-import { fieldComponent } from '../contexts'
+import { fieldComponent } from '../field-brand'
 import type { FieldWithValue } from '@tanstack/react-form'
 import { Checkbox } from '@/components/ui/checkbox'
 

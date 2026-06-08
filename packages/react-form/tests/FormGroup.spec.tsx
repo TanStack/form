@@ -2,20 +2,23 @@ import { describe, expect, it, vi } from 'vitest'
 import { render } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
 import React, { useState } from 'react'
-import { createFormHook, createFormHookContexts, useForm } from '../src'
+import { createFormHook, getFormHookHelpers, useForm } from '../src'
 import type { AnyInternalFormApi } from '@tanstack/form-core-v2/internals'
 import type { FieldWithValue } from '@tanstack/form-core-v2'
 
 const user = userEvent.setup()
-const { fieldComponent } = createFormHookContexts()
 
-function FieldName(props: { field: FieldWithValue<string> }) {
+function FieldNameComp(props: { field: FieldWithValue<string> }) {
   return <span data-testid="app-field-name">{props.field.name}</span>
 }
 
+const { fieldComponent } = getFormHookHelpers()
+
+const FieldName = fieldComponent.loose(FieldNameComp, 'field')
+
 const { useAppForm } = createFormHook({
   fieldComponents: {
-    FieldName: fieldComponent.loose(FieldName, 'field'),
+    FieldName,
   },
   formComponents: {},
 })
@@ -90,9 +93,7 @@ describe('FormGroup', () => {
 
     const { getByTestId } = render(<Component />)
 
-    expect(getByTestId('app-field-name')).toHaveTextContent(
-      'guestDetails.name',
-    )
+    expect(getByTestId('app-field-name')).toHaveTextContent('guestDetails.name')
   })
 
   it('prefixes watched field names in group field listeners', async () => {
