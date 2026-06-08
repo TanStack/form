@@ -1,10 +1,3 @@
-import type {
-  DeepKeys,
-  DeepKeysWhereValueIncludes,
-  DeepValue,
-  TryGetArrayElementType,
-} from '../deep-keys.public'
-import type { FieldUpdateOptions } from '../types.public'
 import type { ReadonlyAtom } from '@tanstack/store'
 import type {
   ConfigurableValidationTrigger,
@@ -18,6 +11,8 @@ import type {
 } from '../validation.public'
 import type { FormListeners } from '../listeners.public'
 import type { ArrayFieldMethods } from './array-methods.lib'
+import type { FormApiArrayMethods } from './FormApiArrayMethods.types.public'
+import type { FormApiFieldMethods } from './FormApiFieldMethods.types.public'
 
 declare const onSubmitErrorBrand: unique symbol
 
@@ -142,7 +137,8 @@ export interface FormApi<
   TFormData,
   TFormValidatorMetas extends FormValidatorMetas,
   TSubmitReturn,
-> {
+>
+  extends FormApiFieldMethods<TFormData>, FormApiArrayMethods<TFormData> {
   store: ReadonlyAtom<FormState<TFormData, TFormValidatorMetas, TSubmitReturn>>
   readonly state: FormState<TFormData, TFormValidatorMetas, TSubmitReturn>
   readonly options: FormOptions<
@@ -172,122 +168,4 @@ export interface FormApi<
    * TODO
    */
   reset: (values?: TFormData) => void
-
-  /**
-   * TODO
-   * @param fieldName
-   * @param updater
-   */
-  setFieldValue: <TFieldName extends DeepKeys<TFormData>>(
-    fieldName: TFieldName,
-    value: DeepValue<TFormData, TFieldName>,
-    options?: FieldUpdateOptions,
-  ) => void
-
-  /**
-   * TODO
-   * @param fieldName
-   * @returns
-   */
-  getFieldValue: <TFieldName extends DeepKeys<TFormData>>(
-    fieldName: TFieldName,
-  ) => DeepValue<TFormData, TFieldName>
-
-  /**
-   * Swap two values in an array field.
-   * If the field is not an array, this method will be ignored.
-   * @param arrayFieldName - The name of the array field
-   * @param indexA - The index of the first value to swap
-   * @param indexB - The index of the second value to swap
-   */
-  swapFieldValues: <
-    TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
-  >(
-    arrayFieldName: TFieldName,
-    indexA: number,
-    indexB: number,
-    options?: FieldUpdateOptions,
-  ) => void
-
-  /**
-   * Push a value into an array field.
-   * If the field is not an array, this method will be ignored.
-   * @param arrayFieldName - The name of the array field
-   * @param value - The value to push
-   * @param options - Optional update options
-   */
-  pushFieldValue: <
-    TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
-  >(
-    arrayFieldName: TFieldName,
-    value: TryGetArrayElementType<DeepValue<TFormData, TFieldName>>,
-    options?: FieldUpdateOptions,
-  ) => void
-
-  /**
-   * Insert a value into an array field at the specified index.
-   * If the field is not an array, this method will be ignored.
-   * @param arrayFieldName - The name of the array field
-   * @param index - The index at which to insert the value
-   * @param value - The value to insert
-   * @param options - Optional update options
-   */
-  insertFieldValue: <
-    TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
-  >(
-    arrayFieldName: TFieldName,
-    index: number,
-    value: TryGetArrayElementType<DeepValue<TFormData, TFieldName>>,
-    options?: FieldUpdateOptions,
-  ) => void
-
-  /**
-   * Clear all values from an array field.
-   * If the field is not an array, this method will be ignored.
-   * @param arrayFieldName - The name of the array field
-   */
-  clearFieldValues: <
-    TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
-  >(
-    arrayFieldName: TFieldName,
-    options?: FieldUpdateOptions,
-  ) => void
-
-  /**
-   * Remove a value from an array field at the specified index.
-   * If the field is not an array, this method will be ignored.
-   * @param arrayFieldName - The name of the array field
-   * @param index - The index of the value to remove
-   * @param options - Optional update options
-   */
-  removeFieldValue: <
-    TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
-  >(
-    arrayFieldName: TFieldName,
-    index: number,
-    options?: FieldUpdateOptions,
-  ) => void
-
-  /**
-   * Filter the values in an array field using a predicate function.
-   * If the field is not an array, this method will be ignored.
-   * @param arrayFieldName - The name of the array field
-   * @param predicate - The predicate function to filter values. Returns true to keep the value, false to remove it.
-   * @param options - Optional update options including a custom `thisArg` for the predicate
-   */
-  filterFieldValues: <
-    TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
-  >(
-    arrayFieldName: TFieldName,
-    predicate: (
-      value: TryGetArrayElementType<DeepValue<TFormData, TFieldName>>,
-      index: number,
-      array: DeepValue<TFormData, TFieldName>,
-    ) => boolean,
-    options?: FieldUpdateOptions & { thisArg?: any },
-  ) => void
-
-  resetField: <TFieldName extends DeepKeys<TFormData>>(
-    fieldName: TFieldName,
-  ) => void
 }

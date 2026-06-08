@@ -3,6 +3,7 @@ import type {
   DeepKeys,
   DeepKeysWhereValueIncludes,
   DeepValue,
+  TryGetArrayElementType,
 } from '../src/index'
 
 interface User {
@@ -1128,5 +1129,30 @@ describe('DeepKeysWhereValueIncludes', () => {
     expectTypeOf<
       DeepKeysWhereValueIncludes<Example, Array<any>>
     >().toEqualTypeOf<'foo' | 'bar' | 'foobar'>()
+  })
+
+  it('should match readonly arrays', () => {
+    type Example = {
+      mutable: Array<string>
+      readonly: ReadonlyArray<number>
+      tuple: readonly [boolean]
+      value: string
+    }
+
+    expectTypeOf<
+      DeepKeysWhereValueIncludes<Example, ReadonlyArray<any>>
+    >().toEqualTypeOf<'mutable' | 'readonly' | 'tuple'>()
+  })
+})
+
+describe('TryGetArrayElementType', () => {
+  it('should infer elements from mutable and readonly arrays', () => {
+    expectTypeOf<TryGetArrayElementType<Array<string>>>().toEqualTypeOf<string>()
+    expectTypeOf<
+      TryGetArrayElementType<ReadonlyArray<number>>
+    >().toEqualTypeOf<number>()
+    expectTypeOf<TryGetArrayElementType<readonly [boolean]>>().toEqualTypeOf<
+      boolean
+    >()
   })
 })
