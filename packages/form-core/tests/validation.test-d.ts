@@ -144,7 +144,7 @@ describe('ErrorVisibility', () => {
     const showErrorsAfterSubmit = createErrorVisibility(
       ({ state }) => state.submissionAttempts > 0,
     )
-    const options = formOptions.schema({
+    const options = formOptions.strictSchema({
       defaultValues: { name: '' },
       validators: [
         {

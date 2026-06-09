@@ -28,8 +28,6 @@ export function StepForm(props: StepFormProps) {
   )
 }
 
-// createFormValidator
-// TODO: Add overload for `formOptions` to type the name fo the APIs
 export const rewardEarlyPunishLate = createValidator({
   triggers: [
     'blur',
@@ -41,25 +39,7 @@ export const rewardEarlyPunishLate = createValidator({
   ],
 })
 
-// formOptions ->
-// formOptions that we know
-// formOptions.schema()
-// formOptions.nullableSchema()
-
-// The filter callback, what's its type?
-// -> ({formApi, fieldApi}) => boolean
-//
-// formApi.store -> values, formMeta, isValidating,
-
-// formApi => formApi.meta.errors
-// // Call when this changes
-// formApi.meta.errors;
-// // Don't call when this changes
-// formApi.values;
-
-// formApi: new Proxy(ogFormApi, { get(): {} })
-
-export const bookingFormOptions = appFormOptions.schema({
+export const bookingFormOptions = appFormOptions.strictSchema({
   errorVisibility: ({ state, fieldState }) =>
     fieldState.meta.isBlurred || state.submissionAttempts > 0,
   validators: [rewardEarlyPunishLate(bookingFormSchema)],
@@ -99,29 +79,6 @@ export const bookingFormOptions = appFormOptions.schema({
 })
 
 export type BookingForm = ReactFormType<typeof bookingFormOptions>
-
-// formOptions.schema.createFormHook <- formOptions.schema() but as useForm
-
-// useForm(formOptions.schema({}))
-// const fieldOne = fieldOptions({formOpts, name: 'name', { listeners: [] }}) // `formOpts` and `name` are optional
-// -> formOpts is passed -> name is required
-//    benefit: listeners can properly type and what have you
-
-// no formOpts -> no name, where does the value type come from?
-
-// fieldOptions<string>({}) // 1
-// fieldOptions({formOpts, name: "name"}) // 2
-
-// type MyField = ReactFieldType<typeof formOpts, typeof fieldOne>
-
-// function SpecificSubForm(props: SpecificSubFormProps) {
-//   // ...
-//   return <></>
-// }
-
-// function MySectionA(props: { form: MyForm }) {
-//   return <></>
-// }
 
 // TODO field groups!!!
 // -> password

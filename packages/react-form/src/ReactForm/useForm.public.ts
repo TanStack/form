@@ -1,24 +1,34 @@
 import { initializeForm, useInternalForm } from './ReactFormApi.lib'
-import type { FormOptions } from '@tanstack/form-core-v2'
 import type {
-  UseFormHook,
-  UseNullableSchemaFormHook,
-  UseSchemaFormHook,
-} from './useFormTypes.public'
-import type { DefaultReactFormComponentMap } from '../AppForm/componentMap.public'
+  FormOptions,
+  FormValidators,
+  ToFormValidatorMetas,
+} from '@tanstack/form-core-v2'
+import type {
+  AnyReactFormComponentMap,
+  DefaultReactFormComponentMap,
+} from '../AppForm/componentMap.public'
+import type { ReactFormApi } from './formApiTypes.public'
+
+export type UseFormHook<TComponents extends AnyReactFormComponentMap> = <
+  TFormData,
+  const TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
+>(
+  options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
+) => ReactFormApi<
+  TFormData,
+  ToFormValidatorMetas<TFormValidators>,
+  TSubmitReturn,
+  TComponents
+>
 
 function useFormHook(options: FormOptions<any, any, any>) {
   const form = useInternalForm(options, initializeForm)
   return form
 }
 
-const useSchemaForm =
-  useFormHook as unknown as UseSchemaFormHook<DefaultReactFormComponentMap>
+const useForm =
+  useFormHook as never as UseFormHook<DefaultReactFormComponentMap>
 
-const useForm = useFormHook as never as UseFormHook<DefaultReactFormComponentMap>
-
-// TODO add unit tests, chances are the InferUnion type is incomplete
-const useNullableSchemaForm =
-  useFormHook as never as UseNullableSchemaFormHook<DefaultReactFormComponentMap>
-
-export { useForm, useSchemaForm, useNullableSchemaForm }
+export { useForm }

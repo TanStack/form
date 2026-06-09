@@ -29,7 +29,7 @@ export interface AppFormOptionsApi<
     options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
   ): AppFormOptions<TFormData, TFormValidators, TSubmitReturn, TComponents>
 
-  schema: <
+  strictSchema: <
     const TFormValidators extends FormValidators<any>,
     // Not quite sure why, but using FormValidatorData directly in the generic breaks things.
     // Probably something recursive going on that resolves it to `never`?
@@ -44,7 +44,7 @@ export interface AppFormOptionsApi<
     TComponents
   >
 
-  nullableSchema: <
+  looseSchema: <
     const TFormValidators extends FormValidators<any>,
     const TFormData extends NullableSchemaData<TFormValidators>,
     TSubmitReturn,

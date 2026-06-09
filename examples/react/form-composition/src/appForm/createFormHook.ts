@@ -7,8 +7,6 @@ import { AppFormSelectMenu } from './SelectMenu'
 export const {
   useAppForm,
   appFormOptions,
-  useSchemaAppForm,
-  useNullableSchemaAppForm,
 } = createFormHook({
   fieldComponents: {
     Text: AppFormStringField,

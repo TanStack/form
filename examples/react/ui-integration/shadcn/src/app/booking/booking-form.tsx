@@ -2,7 +2,7 @@ import { lazy } from 'react'
 import { bookingFormOptions, formGroupId } from './shared-form'
 import { BookingStepCard } from './booking-step-card'
 import type { BookingForm } from './shared-form'
-import { useSchemaAppForm } from '@/components/form/app-form'
+import { useAppForm } from '@/components/form/app-form'
 import {
   CardContent,
   CardDescription,
@@ -98,7 +98,7 @@ function CardSwitcher({ form, step, onNext }: CardSwitcherProps) {
 export function BookingForm() {
   const { step, toPreviousStep, toNextStep, isFirstStep, isLastStep } =
     useStepper(0, 6)
-  const form = useSchemaAppForm({
+  const form = useAppForm({
     ...bookingFormOptions,
     onSubmit: async ({ schemaOutputs: [result] }) => {
       await new Promise((resolve) => setTimeout(resolve, 1000))
