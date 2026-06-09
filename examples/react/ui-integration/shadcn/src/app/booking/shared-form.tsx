@@ -79,34 +79,3 @@ export const bookingFormOptions = appFormOptions.strictSchema({
 })
 
 export type BookingForm = ReactFormType<typeof bookingFormOptions>
-
-// TODO field groups!!!
-// -> password
-//      - FieldWithValue<string> doesn't work, we need to render and give it options at the field group site
-//      - fieldOne doesn't work because it's bound to only a single form type, two forms can't share it
-// -> confirm_password linked to password
-
-// function MyFieldSection(props: { field: FieldWithValue<string> }) {
-//   props.field.value
-//   props.field.handleChange('')
-//   props.field.errors.map((e) => e.message)
-//   // string -> { message: string }
-//   // field => (<></>)
-// }
-
-// function App() {
-//   const form = useForm({ defaultValues: { name: '' }, validators: [] as const })
-
-//   return (
-//     <>
-//       <MySectionA form={form} />
-//       <SpecificSubForm
-//       // field1={form.fields[fieldOne.name]}
-//       />
-
-//       <form.Field
-//       // {...fieldOne}
-//       />
-//     </>
-//   )
-// }
