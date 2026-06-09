@@ -9,10 +9,12 @@ import {
 import {
   clearIndexedErrorsFromSource,
   hasIndexedErrorFromSource,
+  hasIndexedErrors,
   isAggregateError,
   isErrorResult,
   isValidationTriggerEnabled,
   normalizeValidationError,
+  reconcileRoutedFieldErrors,
   runGroupMountValidatorPipeline,
   runValidatorPipeline,
   setIndexedError,
@@ -279,6 +281,24 @@ export class InternalFormGroupApi<
     })
   }
 
+  _setGroupFieldErrorMeta = (
+    meta: InternalBaseFieldMeta,
+    groupErrors: FormGroupFieldErrorMeta,
+  ): InternalBaseFieldMeta => {
+    const formGroupValidatorErrors = new Map(meta._formGroupValidatorErrors)
+
+    if (hasIndexedErrors(groupErrors.errors)) {
+      formGroupValidatorErrors.set(this._errorOwner, groupErrors)
+    } else {
+      formGroupValidatorErrors.delete(this._errorOwner)
+    }
+
+    return {
+      ...meta,
+      _formGroupValidatorErrors: formGroupValidatorErrors,
+    }
+  }
+
   _setFieldValidatorError = (
     field: AnyInternalFieldApi,
     validatorIndex: number,
@@ -296,18 +316,8 @@ export class InternalFormGroupApi<
       )
 
       if (!nextErrors) return prev
-      const groupErrors = new Map(prev._formGroupValidatorErrors)
-      if (
-        nextErrors.errors.some((validatorErrors) => validatorErrors.length > 0)
-      ) {
-        groupErrors.set(this._errorOwner, nextErrors)
-      } else {
-        groupErrors.delete(this._errorOwner)
-      }
-      return {
-        ...prev,
-        _formGroupValidatorErrors: groupErrors,
-      }
+
+      return this._setGroupFieldErrorMeta(prev, nextErrors)
     })
   }
 
@@ -347,8 +357,6 @@ export class InternalFormGroupApi<
     const validatorIndex = result.validatorIndex
     const groupField = this.form._getOrCreateFieldApi({ name: this.name })
     const oldFieldRefs = this._fieldErrors[validatorIndex]
-    const staleFieldRefs = oldFieldRefs ? new Set(oldFieldRefs) : undefined
-    const newFieldRefs = new Set<AnyInternalFieldApi>()
 
     batch(() => {
       this._setFieldValidatorError(
@@ -363,30 +371,34 @@ export class InternalFormGroupApi<
       )
 
       if (aggregate) {
-        for (const [fieldName, fieldError] of Object.entries(
-          aggregate.fieldErrors,
-        )) {
-          const field = this.form._getOrCreateFieldApi({
-            name: this._getPrefixedFieldName(fieldName),
-          })
-          this._setFieldValidatorError(
-            field,
-            validatorIndex,
-            normalizeValidationError(fieldError),
-            sourceEvent,
-          )
-          newFieldRefs.add(field)
-          staleFieldRefs?.delete(field)
-        }
-      }
+        const normalizedFieldErrors = Object.entries(aggregate.fieldErrors).map(
+          ([fieldName, fieldError]) =>
+            [
+              this._getPrefixedFieldName(fieldName),
+              normalizeValidationError(fieldError),
+            ] as const,
+        )
 
-      if (staleFieldRefs) {
-        for (const field of staleFieldRefs) {
-          this._clearFieldValidatorError(field, validatorIndex)
-        }
-      }
+        const { fieldRefs } = reconcileRoutedFieldErrors(
+          validatorIndex,
+          normalizedFieldErrors,
+          oldFieldRefs,
+          (fieldName) => this.form._getOrCreateFieldApi({ name: fieldName }),
+          (field, index, errors) =>
+            this._setFieldValidatorError(field, index, errors, sourceEvent),
+          this._clearFieldValidatorError,
+        )
 
-      this._fieldErrors[validatorIndex] = newFieldRefs
+        this._fieldErrors[validatorIndex] = fieldRefs
+      } else {
+        if (oldFieldRefs) {
+          for (const field of oldFieldRefs) {
+            this._clearFieldValidatorError(field, validatorIndex)
+          }
+        }
+
+        this._fieldErrors[validatorIndex] = new Set()
+      }
     })
   }
 
@@ -456,20 +468,8 @@ export class InternalFormGroupApi<
       )
 
       if (!clearedErrors) return prev
-      const groupErrors = new Map(prev._formGroupValidatorErrors)
-      if (
-        clearedErrors.errors.some(
-          (validatorErrors) => validatorErrors.length > 0,
-        )
-      ) {
-        groupErrors.set(this._errorOwner, clearedErrors)
-      } else {
-        groupErrors.delete(this._errorOwner)
-      }
-      return {
-        ...prev,
-        _formGroupValidatorErrors: groupErrors,
-      }
+
+      return this._setGroupFieldErrorMeta(prev, clearedErrors)
     })
     field._pruneIfUnused()
   }

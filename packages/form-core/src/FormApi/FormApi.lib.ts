@@ -20,10 +20,12 @@ import { InternalRootFieldApi } from '../FieldApi/RootFieldApi.lib'
 import {
   clearIndexedErrorsFromSource,
   hasIndexedErrorFromSource,
+  hasIndexedErrors,
   isAggregateError,
   isErrorResult,
   isValidationTriggerEnabled,
   normalizeValidationError,
+  reconcileRoutedFieldErrors,
   runFormMountValidatorPipeline,
   runFormValidatorPipeline,
   setIndexedError,
@@ -230,17 +232,13 @@ function hasFieldEventError(
   )
 }
 
-function hasValidatorErrors(errors: Array<Array<ValidationIssue>>): boolean {
-  return errors.some((validatorErrors) => validatorErrors.length > 0)
-}
-
 function hasFieldErrors(field: AnyInternalFieldApi): boolean {
   const meta = field._getBaseMeta()
 
   return (
-    hasValidatorErrors(meta._fieldValidatorErrors) ||
+    hasIndexedErrors(meta._fieldValidatorErrors) ||
     hasFormGroupValidatorErrors(meta._formGroupValidatorErrors) ||
-    hasValidatorErrors(meta._formValidatorErrors) ||
+    hasIndexedErrors(meta._formValidatorErrors) ||
     meta.childContributionCounts.error > 0
   )
 }
@@ -734,31 +732,65 @@ export class InternalFormApi<
     return boundary?.name ?? fieldName
   }
 
+  _setFormValidatorError = (
+    validatorIndex: number,
+    errors: Array<ValidationIssue>,
+    sourceEvent: string,
+  ) => {
+    this._atoms.meta.formErrors.set((prev) => {
+      const nextErrors = setIndexedError(
+        prev.errors,
+        prev.errorSourceEvents,
+        validatorIndex,
+        errors,
+        sourceEvent,
+      )
+
+      if (!nextErrors) return prev
+
+      return {
+        ...prev,
+        errors: nextErrors.errors,
+        errorSourceEvents: nextErrors.errorSourceEvents,
+      }
+    })
+  }
+
+  _setFieldValidatorError = (
+    field: AnyInternalFieldApi,
+    validatorIndex: number,
+    errors: Array<ValidationIssue>,
+    sourceEvent: string,
+  ) => {
+    field._setMeta((prev) => {
+      const nextErrors = setIndexedError(
+        prev._formValidatorErrors,
+        prev._formValidatorErrorSourceEvents,
+        validatorIndex,
+        errors,
+        sourceEvent,
+      )
+
+      if (!nextErrors) return prev
+
+      return {
+        ...prev,
+        _formValidatorErrors: nextErrors.errors,
+        _formValidatorErrorSourceEvents: nextErrors.errorSourceEvents,
+      } satisfies InternalBaseFieldMeta
+    })
+  }
+
   _clearFieldValidatorError = (
     field: AnyInternalFieldApi,
     validatorIndex: number,
   ) => {
-    field._setMeta((prev) => {
-      if (prev._formValidatorErrors.length <= validatorIndex) {
-        return prev
-      }
+    if (field._getBaseMeta()._formValidatorErrors.length <= validatorIndex) {
+      field._pruneIfUnused()
+      return
+    }
 
-      const clearedErrors = setIndexedError(
-        prev._formValidatorErrors,
-        prev._formValidatorErrorSourceEvents,
-        validatorIndex,
-        [],
-        '',
-      )
-
-      if (!clearedErrors) return prev
-
-      return {
-        ...prev,
-        _formValidatorErrors: clearedErrors.errors,
-        _formValidatorErrorSourceEvents: clearedErrors.errorSourceEvents,
-      }
-    })
+    this._setFieldValidatorError(field, validatorIndex, [], '')
     field._pruneIfUnused()
   }
 
@@ -806,26 +838,13 @@ export class InternalFormApi<
     }
 
     batch(() => {
-      this._atoms.meta.formErrors.set((prev) => {
-        const nextError = isErrorResult(result.result)
+      this._setFormValidatorError(
+        result.validatorIndex,
+        isErrorResult(result.result)
           ? normalizeValidationError(result.result as ValidationErrorInput)
-          : []
-        const nextErrors = setIndexedError(
-          prev.errors,
-          prev.errorSourceEvents,
-          result.validatorIndex,
-          nextError,
-          sourceEvent,
-        )
-
-        if (!nextErrors) return prev
-
-        return {
-          ...prev,
-          errors: nextErrors.errors,
-          errorSourceEvents: nextErrors.errorSourceEvents,
-        }
-      })
+          : [],
+        sourceEvent,
+      )
 
       // Clear field-level errors from potential previous { fields: {} } errors
       const oldFieldRefs =
@@ -874,72 +893,30 @@ export class InternalFormApi<
 
     batch(() => {
       // Handle form-level errors
-      this._atoms.meta.formErrors.set((prev) => {
-        const nextError = aggregateError.formError
+      this._setFormValidatorError(
+        validatorIndex,
+        aggregateError.formError
           ? normalizeValidationError(aggregateError.formError)
-          : []
-        const nextErrors = setIndexedError(
-          prev.errors,
-          prev.errorSourceEvents,
-          validatorIndex,
-          nextError,
-          sourceEvent,
-        )
-
-        if (!nextErrors) return prev
-
-        return {
-          ...prev,
-          errors: nextErrors.errors,
-          errorSourceEvents: nextErrors.errorSourceEvents,
-        }
-      })
+          : [],
+        sourceEvent,
+      )
 
       // Handle field-level errors
       const fieldErrors = [...this._atoms.meta.fieldErrors.get()]
       const oldFieldRefs = fieldErrors[validatorIndex]
-      const staleFieldRefs = oldFieldRefs ? new Set(oldFieldRefs) : undefined
-      const affectedFields = new Set<AnyInternalFieldApi>()
-      const newFieldRefs = new Set<AnyInternalFieldApi>()
+      const { fieldRefs, affectedFields, didFieldRefsChange } =
+        reconcileRoutedFieldErrors(
+          validatorIndex,
+          resolvedFieldErrors,
+          oldFieldRefs,
+          (fieldName) => this._getOrCreateFieldApi({ name: fieldName }),
+          (field, index, errors) =>
+            this._setFieldValidatorError(field, index, errors, sourceEvent),
+          this._clearFieldValidatorError,
+        )
 
-      // Set new field errors and build the new reference set
-      for (const [fieldName, fieldError] of resolvedFieldErrors) {
-        const field = this._getOrCreateFieldApi({ name: fieldName })
-        field._setMeta((prev) => {
-          const nextErrors = setIndexedError(
-            prev._formValidatorErrors,
-            prev._formValidatorErrorSourceEvents,
-            validatorIndex,
-            fieldError,
-            sourceEvent,
-          )
-
-          if (!nextErrors) return prev
-
-          return {
-            ...prev,
-            _formValidatorErrors: nextErrors.errors,
-            _formValidatorErrorSourceEvents: nextErrors.errorSourceEvents,
-          } satisfies InternalBaseFieldMeta
-        })
-        newFieldRefs.add(field)
-        affectedFields.add(field)
-        staleFieldRefs?.delete(field)
-      }
-
-      // Clear errors for fields that are no longer in the new result
-      if (staleFieldRefs) {
-        for (const field of staleFieldRefs) {
-          this._clearFieldValidatorError(field, validatorIndex)
-          affectedFields.add(field)
-        }
-      }
-
-      if (
-        newFieldRefs.size > 0 ||
-        (oldFieldRefs !== undefined && oldFieldRefs.size > 0)
-      ) {
-        fieldErrors[validatorIndex] = newFieldRefs
+      if (didFieldRefsChange) {
+        fieldErrors[validatorIndex] = fieldRefs
         this._atoms.meta.fieldErrors.set(fieldErrors)
       }
 

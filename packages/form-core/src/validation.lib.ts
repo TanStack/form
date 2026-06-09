@@ -107,6 +107,12 @@ export function hasIndexedErrorFromSource(
   return true
 }
 
+export function hasIndexedErrors(
+  errors: Array<Array<ValidationIssue>>,
+): boolean {
+  return errors.some((validatorErrors) => validatorErrors.length > 0)
+}
+
 export function setIndexedError(
   errors: Array<Array<ValidationIssue>>,
   errorSourceEvents: Array<string | null>,
@@ -166,6 +172,53 @@ export function clearIndexedErrorsFromSource(
   return {
     errors: nextErrors,
     errorSourceEvents: nextErrorSourceEvents,
+  }
+}
+
+export function reconcileRoutedFieldErrors(
+  validatorIndex: number,
+  fieldErrors: Iterable<readonly [string, Array<ValidationIssue>]>,
+  oldFieldRefs: Set<AnyInternalFieldApi> | undefined,
+  getField: (fieldName: string) => AnyInternalFieldApi,
+  setFieldError: (
+    field: AnyInternalFieldApi,
+    validatorIndex: number,
+    errors: Array<ValidationIssue>,
+  ) => void,
+  clearFieldError: (
+    field: AnyInternalFieldApi,
+    validatorIndex: number,
+  ) => void,
+): {
+  fieldRefs: Set<AnyInternalFieldApi>
+  affectedFields: Set<AnyInternalFieldApi>
+  didFieldRefsChange: boolean
+} {
+  const staleFieldRefs = oldFieldRefs ? new Set(oldFieldRefs) : undefined
+  const affectedFields = new Set<AnyInternalFieldApi>()
+  const newFieldRefs = new Set<AnyInternalFieldApi>()
+
+  for (const [fieldName, fieldError] of fieldErrors) {
+    const field = getField(fieldName)
+    setFieldError(field, validatorIndex, fieldError)
+    newFieldRefs.add(field)
+    affectedFields.add(field)
+    staleFieldRefs?.delete(field)
+  }
+
+  if (staleFieldRefs) {
+    for (const field of staleFieldRefs) {
+      clearFieldError(field, validatorIndex)
+      affectedFields.add(field)
+    }
+  }
+
+  return {
+    fieldRefs: newFieldRefs,
+    affectedFields,
+    didFieldRefsChange:
+      newFieldRefs.size > 0 ||
+      (oldFieldRefs !== undefined && oldFieldRefs.size > 0),
   }
 }
 
