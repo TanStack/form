@@ -348,17 +348,17 @@ export class InternalFormApi<
     return () => {}
   }
 
-  _registerFormGroup = (group: AnyFormGroupApi): void => {
+  _registerFormGroup(group: AnyFormGroupApi): void {
     this._formGroups.add(group)
   }
 
-  _unregisterFormGroup = (group: AnyFormGroupApi): void => {
+  _unregisterFormGroup(group: AnyFormGroupApi): void {
     this._formGroups.delete(group)
   }
 
-  _getNearestFormGroupForField = (
+  _getNearestFormGroupForField(
     fieldName: string,
-  ): AnyFormGroupApi | null => {
+  ): AnyFormGroupApi | null {
     let nearest: AnyFormGroupApi | null = null
     for (const group of this._formGroups) {
       const groupName = String(group.name)
@@ -417,7 +417,7 @@ export class InternalFormApi<
     this._notifyFormListener('reset', null)
   }
 
-  _update = (options: FormOptions<TFormData, TFormValidators, any>) => {
+  _update(options: FormOptions<TFormData, TFormValidators, any>) {
     const oldOptions = this.options
     const didDefaultValuesChange = !evaluate(
       options.defaultValues,
@@ -578,10 +578,10 @@ export class InternalFormApi<
     })
   }
 
-  _notifyFieldChange = (
+  _notifyFieldChange(
     field: AnyInternalFieldApi | null,
     options: ResolvedInternalFieldUpdateOptions,
-  ) => {
+  ) {
     this._clearEventErrors(field, 'submit', 'change')
     this._clearEventErrors(field, 'mount', 'change')
 
@@ -594,10 +594,10 @@ export class InternalFormApi<
     this._notifyFormListener('change', field)
   }
 
-  _notifyFormListener = (
+  _notifyFormListener(
     trigger: FormListenerTriggers,
     triggerFieldApi: AnyInternalFieldApi | null,
-  ) => {
+  ) {
     if (!this.options.listeners) return
     if (this.options.listeners.length === 0) return
 
@@ -611,11 +611,11 @@ export class InternalFormApi<
     })
   }
 
-  _clearEventErrors = (
+  _clearEventErrors(
     field: AnyInternalFieldApi | null,
     sourceEvent: string,
     event: Exclude<ValidationTrigger, 'submit'>,
-  ) => {
+  ) {
     const validatorCount = this.options.validators?.length ?? 0
     const formErrors = this._atoms.meta.formErrors.get()
     const fieldErrors = this._atoms.meta.fieldErrors.get()
@@ -690,18 +690,18 @@ export class InternalFormApi<
     })
   }
 
-  _tryGetFieldApi = (
+  _tryGetFieldApi(
     nameOrSegments: string | Array<string>,
-  ): AnyInternalFieldApi | null => {
+  ): AnyInternalFieldApi | null {
     return tryGetFieldApi(
       this._fieldRootNode,
       nameToFieldNodeSegments(nameOrSegments),
     )
   }
 
-  _getOrCreateFieldApi = (
+  _getOrCreateFieldApi(
     options: Omit<AnyFieldApiOptions, 'form'>,
-  ): AnyInternalFieldApi => {
+  ): AnyInternalFieldApi {
     const { name, ...restOpts } = options
 
     const fieldOptions = Object.keys(restOpts).length > 0 ? restOpts : undefined
@@ -714,7 +714,7 @@ export class InternalFormApi<
     )
   }
 
-  _resolveErrorFieldPath = (fieldName: string): string => {
+  _resolveErrorFieldPath(fieldName: string): string {
     let current: AnyInternalFieldApi | InternalRootFieldApi =
       this._fieldRootNode
     let boundary: AnyInternalFieldApi | null = null
@@ -732,11 +732,11 @@ export class InternalFormApi<
     return boundary?.name ?? fieldName
   }
 
-  _setFormValidatorError = (
+  _setFormValidatorError(
     validatorIndex: number,
     errors: Array<ValidationIssue>,
     sourceEvent: string,
-  ) => {
+  ) {
     this._atoms.meta.formErrors.set((prev) => {
       const nextErrors = setIndexedError(
         prev.errors,
@@ -756,12 +756,12 @@ export class InternalFormApi<
     })
   }
 
-  _setFieldValidatorError = (
+  _setFieldValidatorError(
     field: AnyInternalFieldApi,
     validatorIndex: number,
     errors: Array<ValidationIssue>,
     sourceEvent: string,
-  ) => {
+  ) {
     field._setMeta((prev) => {
       const nextErrors = setIndexedError(
         prev._formValidatorErrors,
@@ -781,10 +781,10 @@ export class InternalFormApi<
     })
   }
 
-  _clearFieldValidatorError = (
+  _clearFieldValidatorError(
     field: AnyInternalFieldApi,
     validatorIndex: number,
-  ) => {
+  ) {
     if (field._getBaseMeta()._formValidatorErrors.length <= validatorIndex) {
       field._pruneIfUnused()
       return
@@ -794,11 +794,11 @@ export class InternalFormApi<
     field._pruneIfUnused()
   }
 
-  _clearFieldEventErrors = (
+  _clearFieldEventErrors(
     field: AnyInternalFieldApi,
     eventErrorIndexes: Array<number>,
     sourceEvent: string,
-  ) => {
+  ) {
     field._setMeta((prev) => {
       const clearedErrors = clearIndexedErrorsFromSource(
         prev._formValidatorErrors,
@@ -818,10 +818,10 @@ export class InternalFormApi<
     field._pruneIfUnused()
   }
 
-  _processValidationResult = (
+  _processValidationResult(
     result: PipelineResult<FormValidateResult<TFormData>>,
     sourceEvent: string,
-  ) => {
+  ) {
     if (result.hasSchemaResult) {
       this._schemaOutputs[result.validatorIndex] = result.schemaResult
     }
@@ -870,14 +870,14 @@ export class InternalFormApi<
   /**
    * Process a ValidationAggregateError by setting form-level and field-level errors.
    */
-  _processAggregateError = (
+  _processAggregateError(
     aggregateError: {
       formError: ValidationErrorInput | null
       fieldErrors: ValidationAggregateError<any>['fields']
     },
     validatorIndex: number,
     sourceEvent: string,
-  ) => {
+  ) {
     const resolvedFieldErrors = new Map<string, Array<ValidationIssue>>()
 
     for (const [fieldName, fieldError] of Object.entries(
@@ -912,7 +912,7 @@ export class InternalFormApi<
           (fieldName) => this._getOrCreateFieldApi({ name: fieldName }),
           (field, index, errors) =>
             this._setFieldValidatorError(field, index, errors, sourceEvent),
-          this._clearFieldValidatorError,
+          (field, index) => this._clearFieldValidatorError(field, index),
         )
 
       if (didFieldRefsChange) {
@@ -928,7 +928,7 @@ export class InternalFormApi<
     })
   }
 
-  _runMountValidation = (): void => {
+  _runMountValidation(): void {
     const pipeline = this.options.validators
     if (!pipeline || pipeline.length === 0) return
 
@@ -955,13 +955,13 @@ export class InternalFormApi<
     this._setValidationCount((count) => Math.max(0, count - 1))
   }
 
-  _runFormValidation = async (
+  async _runFormValidation(
     signal: ValidationTrigger,
     opts?: FieldApiOverrideOptions & {
       onResult?: boolean
       hasFailedBefore?: boolean
     },
-  ): Promise<FormValidatorPipelineResult> => {
+  ): Promise<FormValidatorPipelineResult> {
     const pipeline = this.options.validators
     if (!pipeline)
       return {
@@ -998,7 +998,7 @@ export class InternalFormApi<
     }
   }
 
-  _setValidationCount = (updater: Updater<number>): void => {
+  _setValidationCount(updater: Updater<number>): void {
     this._atoms.meta.validationCount.set((prev) => callUpdater(updater, prev))
   }
 
