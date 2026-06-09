@@ -1,6 +1,6 @@
-import { act, renderHook } from '@testing-library/react'
+import { act, render, renderHook, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useForm } from '../src'
 
 describe('useForm', () => {
@@ -111,5 +111,104 @@ describe('useForm', () => {
       expect(result.current.form.state.values.a.nested).toBe('touched-a')
       expect(result.current.form.state.values.b).toBe('new-b')
     })
+  })
+
+  it('does not render with pre-validation state for synchronous runOnMount validation', () => {
+    const renderStates: Array<{
+      errors: Array<string>
+      isValid: boolean
+      canSubmit: boolean
+    }> = []
+
+    function Component() {
+      const form = useForm({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            runOnMount: true,
+            triggers: [],
+            run: () => 'Name is required',
+          },
+        ],
+      })
+
+      return (
+        <form.Subscribe
+          selector={(state) => ({
+            errors: state.errors.map((error) => error.message),
+            isValid: state.isValid,
+            canSubmit: state.canSubmit,
+          })}
+        >
+          {(state) => {
+            renderStates.push(state)
+            return (
+              <output data-testid="form-state">
+                {state.errors.join(',')}|{String(state.isValid)}|
+                {String(state.canSubmit)}
+              </output>
+            )
+          }}
+        </form.Subscribe>
+      )
+    }
+
+    render(<Component />)
+
+    expect(screen.getByTestId('form-state')).toHaveTextContent(
+      'Name is required|false|false',
+    )
+    expect(renderStates).toEqual([
+      {
+        errors: ['Name is required'],
+        isValid: false,
+        canSubmit: false,
+      },
+    ])
+  })
+
+  it('does not crash when asynchronous runOnMount validation resolves after unmount', async () => {
+    let resolveValidation!: (value: string) => void
+    const validator = vi.fn(
+      () =>
+        new Promise<string>((resolve) => {
+          resolveValidation = resolve
+        }),
+    )
+
+    function Component() {
+      const form = useForm({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            runOnMount: true,
+            triggers: [],
+            run: validator,
+          },
+        ],
+      })
+
+      return (
+        <form.Subscribe selector={(state) => state.isValidating}>
+          {(isValidating) => (
+            <output data-testid="is-validating">{String(isValidating)}</output>
+          )}
+        </form.Subscribe>
+      )
+    }
+
+    const { unmount } = render(<Component />)
+
+    expect(validator).toHaveBeenCalledOnce()
+    expect(screen.getByTestId('is-validating')).toHaveTextContent('true')
+
+    unmount()
+
+    await expect(
+      act(async () => {
+        resolveValidation('Async mount error')
+        await Promise.resolve()
+      }),
+    ).resolves.toBeUndefined()
   })
 })

@@ -2,12 +2,7 @@ import { nameToFieldNodeSegments } from './FieldApi/FieldApi.lib'
 import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
 
 // type
-import type {
-  FieldUpdateOptions,
-  OneOrMany,
-  UpdateFn,
-  Updater,
-} from './types.public'
+import type { FieldUpdateOptions, OneOrMany, Updater } from './types.public'
 import type { ValidationDebouncer } from './validation.lib'
 import type {
   FieldValidateResult,
@@ -218,33 +213,6 @@ export function callUpdater<T>(updater: Updater<T>, object: T): T {
     : updater
 }
 
-/**
- * @private
- * Immutably delete a key from a map.
- */
-export function mapDelete<TKey, TValue>(
-  key: NoInfer<TKey>,
-): UpdateFn<ReadonlyMap<TKey, TValue>>
-export function mapDelete<TKey, TValue>(
-  key: TKey,
-  map: ReadonlyMap<TKey, TValue>,
-): ReadonlyMap<TKey, TValue>
-export function mapDelete<TKey, TValue>(
-  key: TKey,
-  map?: ReadonlyMap<TKey, TValue>,
-): Updater<ReadonlyMap<TKey, TValue>> {
-  const pipeline = (oldMap: ReadonlyMap<TKey, TValue>) => {
-    if (!oldMap.has(key)) {
-      return oldMap
-    }
-    const newMap = new Map(oldMap)
-    newMap.delete(key)
-    return newMap
-  }
-
-  return map ? pipeline(map) : pipeline
-}
-
 export function normalizeToArray<T>(
   input: null | undefined | OneOrMany<T>,
 ): Array<T> {
@@ -322,4 +290,15 @@ export function concatenateFieldNames(nameA: string, nameB: string): string {
   if (nameB.length === 0) return nameA
   if (nameB.startsWith('[')) return `${nameA}${nameB}`
   return `${nameA}.${nameB}`
+}
+
+export function isPromiseLike<T>(
+  value: T | PromiseLike<T>,
+): value is PromiseLike<T> {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'then' in value &&
+    typeof value.then === 'function'
+  )
 }

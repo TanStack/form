@@ -839,6 +839,7 @@ export class InternalFieldApi<
 
       if (event === 'blur') {
         this.form._clearEventErrors(this, 'submit', event)
+        this.form._clearEventErrors(this, 'mount', event)
       }
     }
 

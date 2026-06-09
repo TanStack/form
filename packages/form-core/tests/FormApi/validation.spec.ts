@@ -419,6 +419,195 @@ describe('form - validation', () => {
     })
   })
 
+  describe('runOnMount', () => {
+    it('does not run validators during construction by default', () => {
+      const validatorFn = vi.fn().mockImplementation(() => 'Mount error')
+
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [{ run: validatorFn, triggers: [] }],
+      })
+
+      expect(validatorFn).not.toHaveBeenCalled()
+      expect(form.state.errors).toEqual([])
+    })
+
+    it('does not run validators during construction when runOnMount is false', () => {
+      const validatorFn = vi.fn().mockImplementation(() => 'Mount error')
+
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [{ run: validatorFn, runOnMount: false, triggers: [] }],
+      })
+
+      expect(validatorFn).not.toHaveBeenCalled()
+      expect(form.state.errors).toEqual([])
+    })
+
+    it('runs validators during construction when runOnMount is true', () => {
+      const validatorFn = vi.fn().mockImplementation(() => 'Mount error')
+
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [{ run: validatorFn, runOnMount: true, triggers: [] }],
+      })
+
+      expect(validatorFn).toHaveBeenCalledOnce()
+      expect(form.state.errors).toEqual([{ message: 'Mount error' }])
+    })
+
+    it('sets validity state from synchronous mount validation immediately', () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            run: () => ({ message: 'Mount error' }),
+            runOnMount: true,
+            triggers: [],
+          },
+        ],
+      })
+
+      expect(form.state.errors).toEqual([{ message: 'Mount error' }])
+      expect(form.state.isValid).toBe(false)
+      expect(form.state.canSubmit).toBe(false)
+    })
+
+    it('sets field errors from synchronous aggregate mount validation immediately', () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            run: () => ({
+              fields: {
+                name: 'Name is required',
+              },
+            }),
+            runOnMount: true,
+            triggers: [],
+          },
+        ],
+      })
+      const field = form._tryGetFieldApi('name')
+
+      expect(field?.errors).toEqual([{ message: 'Name is required' }])
+      expect(form.state.canSubmit).toBe(false)
+    })
+
+    it('tracks isValidating while an asynchronous mount validator is pending', async () => {
+      vi.useFakeTimers()
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            runOnMount: true,
+            triggers: [],
+            run: async () => {
+              await new Promise((resolve) => setTimeout(resolve, 100))
+              return 'Async mount error'
+            },
+          },
+        ],
+      })
+
+      expect(form.state.isValidating).toBe(true)
+      expect(form.state.errors).toEqual([])
+
+      await vi.runAllTimersAsync()
+
+      expect(form.state.isValidating).toBe(false)
+      expect(form.state.errors).toEqual([{ message: 'Async mount error' }])
+      vi.useRealTimers()
+    })
+
+    it('ignores triggerDebounceMs for mount validation', () => {
+      vi.useFakeTimers()
+      const triggerDebounceMs = vi.fn().mockReturnValue(100)
+      const validatorFn = vi.fn().mockImplementation(() => 'Mount error')
+
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            run: validatorFn,
+            runOnMount: true,
+            triggerDebounceMs,
+            triggers: ['change'],
+          },
+        ],
+      })
+
+      expect(validatorFn).toHaveBeenCalledOnce()
+      expect(triggerDebounceMs).not.toHaveBeenCalled()
+      expect(form.state.errors).toEqual([{ message: 'Mount error' }])
+      vi.useRealTimers()
+    })
+
+    it('does not rerun mount validators when form.mount is called', () => {
+      const validatorFn = vi.fn().mockImplementation(() => 'Mount error')
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [{ run: validatorFn, runOnMount: true, triggers: [] }],
+      })
+
+      form.mount()
+
+      expect(validatorFn).toHaveBeenCalledOnce()
+    })
+
+    it('respects bailIfInvalid among mount validators', () => {
+      const secondValidatorFn = vi
+        .fn()
+        .mockImplementation(() => 'Should not run')
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            run: () => 'Mount error',
+            runOnMount: true,
+            triggers: [],
+          },
+          {
+            bailIfInvalid: true,
+            run: secondValidatorFn,
+            runOnMount: true,
+            triggers: [],
+          },
+        ],
+      })
+
+      expect(form.state.errors).toEqual([{ message: 'Mount error' }])
+      expect(secondValidatorFn).not.toHaveBeenCalled()
+    })
+
+    it('clears mount errors when a later change would not rerun the validator', () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            run: () => ({
+              form: 'Mount form error',
+              fields: {
+                name: 'Mount field error',
+              },
+            }),
+            runOnMount: true,
+            triggers: [],
+          },
+        ],
+      })
+      const field = form._tryGetFieldApi('name')
+
+      expect(form.state.errors).toEqual([{ message: 'Mount form error' }])
+      expect(field?.errors).toEqual([{ message: 'Mount field error' }])
+
+      form.setFieldValue('name', 'Alice')
+
+      expect(form.state.errors).toEqual([])
+      expect(field?.errors).toEqual([])
+    })
+  })
+
   describe('causing validations', () => {
     it('runs change validators on value updates', async () => {
       const validatorFn = vi

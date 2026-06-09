@@ -30,6 +30,12 @@ export interface Validator<
    */
   runOnSubmit?: boolean | ValidationPredicateFn<TFormData, TContextValue>
   /**
+   * Whether this validator should be called once when the form is constructed.
+   *
+   * @default false
+   */
+  runOnMount?: boolean
+  /**
    * The debounce time in milliseconds for validation triggers (change, blur).
    * Does not affect submit events, which always execute immediately.
    *

@@ -1,6 +1,12 @@
 import { LiteDebouncer } from '@tanstack/pacer-lite'
 import { isStandardSchema, parseStandardSchema } from './standardSchema.lib'
-import { evaluate, isNil, isNotNil, normalizeToArray } from './utils.lib'
+import {
+  evaluate,
+  isNil,
+  isNotNil,
+  isPromiseLike,
+  normalizeToArray,
+} from './utils.lib'
 import type { PipelineCache } from './utils.lib'
 import type {
   FieldValidateResult,
@@ -44,6 +50,12 @@ type ValidateResult =
   | FormValidateResult<any>
   | FormGroupValidateResult<any>
   | FieldValidateResult
+
+type MountValidationExecutionResult<TFormData> = {
+  result: FormValidateResult<TFormData>
+  schemaResult: any | null
+  hasSchemaResult: boolean
+}
 
 function isFormContext(ctx: InputContext): ctx is FormInputContext {
   return 'triggerFieldApi' in ctx
@@ -399,6 +411,35 @@ function abortPreviousValidatorRun<TResult extends ValidateResult>(
   cache.validatorAbortControllers.get(cacheKey)?.abort()
 }
 
+function createValidatorAbortContext<TResult extends ValidateResult>(
+  cache: PipelineCache<TResult>,
+  cacheKey: number,
+  opts?: { cancelDebouncer?: boolean },
+): {
+  abortController: AbortController
+  signal: AbortSignal
+  cleanup: () => void
+} {
+  abortPreviousValidatorRun(cache, cacheKey)
+
+  if (opts?.cancelDebouncer) {
+    cache.validatorDebouncers.get(cacheKey)?.cancel()
+  }
+
+  const abortController = new AbortController()
+  const signal = abortController.signal
+
+  cache.validatorAbortControllers.set(cacheKey, abortController)
+
+  return {
+    abortController,
+    signal,
+    cleanup: () => {
+      clearAbortController(cache, cacheKey, abortController)
+    },
+  }
+}
+
 function getOrCreateDebouncer<TResult extends ValidateResult>(
   cache: PipelineCache<TResult>,
   cacheKey: number,
@@ -433,20 +474,11 @@ function runMaybeDebouncedValidator<TResult extends ValidateResult>({
   const cacheKey = validatorIndex
   const debounceMs = getValidatorDebounceMs(validator, context)
 
-  abortPreviousValidatorRun(cache, cacheKey)
-
-  const abortController = new AbortController()
-  const signal = abortController.signal
-
-  cache.validatorAbortControllers.set(cacheKey, abortController)
+  const { signal, cleanup } = createValidatorAbortContext(cache, cacheKey)
 
   const validationContext: ValidateContext = {
     ...context,
     signal,
-  }
-
-  const clearCurrentController = () => {
-    clearAbortController(cache, cacheKey, abortController)
   }
 
   return new Promise<
@@ -461,7 +493,7 @@ function runMaybeDebouncedValidator<TResult extends ValidateResult>({
 
       settled = true
       cleanupAbortListener()
-      clearCurrentController()
+      cleanup()
       resolve(value)
     }
 
@@ -563,10 +595,8 @@ async function flushPendingResults<TResult extends ValidateResult>(
         validatorIndex: result.validatorIndex,
         result: executionResult.result,
         schemaResult: executionResult.schemaResult,
+        hasSchemaResult: executionResult.hasSchemaResult,
       }
-      Object.defineProperty(publicResult, 'hasSchemaResult', {
-        value: executionResult.hasSchemaResult,
-      })
 
       results[result.validatorIndex] = publicResult
       onResult?.(publicResult)
@@ -708,6 +738,201 @@ export function runFormValidatorPipeline({
     },
     scope: 'form',
   })
+}
+
+interface FormMountValidatorPipelineArgs {
+  pipeline: ReadonlyArray<FormValidator<any>>
+  formApi: InternalFormApi<any, any, any>
+  onResult?: (result: PipelineResult<FormValidateResult<any>>) => void
+}
+
+export interface FormMountValidatorPipelineResult {
+  didRun: boolean
+  asyncPromise: Promise<void> | null
+}
+
+function processMountValidationExecutionResult(
+  validatorIndex: number,
+  executionResult: MountValidationExecutionResult<any>,
+  onResult?: (result: PipelineResult<FormValidateResult<any>>) => void,
+): boolean {
+  const result: PipelineResult<FormValidateResult<any>> = {
+    validatorIndex,
+    result: executionResult.result,
+    schemaResult: executionResult.schemaResult,
+    hasSchemaResult: executionResult.hasSchemaResult,
+  }
+
+  onResult?.(result)
+
+  return isErrorResult(executionResult.result)
+}
+
+function executeMountValidator(
+  formApi: InternalFormApi<any, any, any>,
+  validator: FormValidator<any>,
+  validatorIndex: number,
+):
+  | MountValidationExecutionResult<any>
+  | PromiseLike<MountValidationExecutionResult<any>> {
+  const cache = formApi._pipelineCache
+  const { signal, cleanup } = createValidatorAbortContext(
+    cache,
+    validatorIndex,
+    { cancelDebouncer: true },
+  )
+
+  const context: FormValidatorContext<any> = {
+    event: 'mount' as never,
+    signal,
+    formApi,
+    value: formApi.state.values,
+  }
+
+  try {
+    if (isStandardSchema(validator.run)) {
+      return parseStandardSchema(validator.run, context.value, 'form')
+        .then((result) =>
+          signal.aborted
+            ? {
+                result: null,
+                schemaResult: null,
+                hasSchemaResult: false,
+              }
+            : result,
+        )
+        .finally(cleanup)
+    }
+
+    const result = validator.run(context)
+
+    if (isPromiseLike(result)) {
+      return Promise.resolve(result)
+        .then((asyncResult): MountValidationExecutionResult<any> => {
+          if (signal.aborted) {
+            return {
+              result: null,
+              schemaResult: null,
+              hasSchemaResult: false,
+            }
+          }
+
+          return {
+            result: asyncResult,
+            schemaResult: null,
+            hasSchemaResult: false,
+          }
+        })
+        .finally(cleanup)
+    }
+
+    cleanup()
+    return {
+      result,
+      schemaResult: null,
+      hasSchemaResult: false,
+    }
+  } catch (error) {
+    cleanup()
+    console.error(error)
+    return {
+      result: null,
+      schemaResult: null,
+      hasSchemaResult: false,
+    }
+  }
+}
+
+async function continueMountValidationFromAsyncResult(
+  pipeline: ReadonlyArray<FormValidator<any>>,
+  formApi: InternalFormApi<any, any, any>,
+  startIndex: number,
+  firstResult: PromiseLike<MountValidationExecutionResult<any>>,
+  hasFailedBefore: boolean,
+  onResult?: (result: PipelineResult<FormValidateResult<any>>) => void,
+): Promise<void> {
+  let hasFailed = hasFailedBefore
+
+  const firstExecutionResult = await firstResult
+  if (
+    processMountValidationExecutionResult(
+      startIndex,
+      firstExecutionResult,
+      onResult,
+    )
+  ) {
+    hasFailed = true
+  }
+
+  for (let i = startIndex + 1; i < pipeline.length; i++) {
+    const validator = pipeline[i]!
+    if (validator.runOnMount !== true) continue
+
+    if (validator.bailIfInvalid && hasFailed) break
+
+    const result = executeMountValidator(formApi, validator, i)
+    const executionResult = isPromiseLike(result) ? await result : result
+
+    if (processMountValidationExecutionResult(i, executionResult, onResult)) {
+      hasFailed = true
+    }
+  }
+}
+
+export function runFormMountValidatorPipeline({
+  pipeline,
+  formApi,
+  onResult,
+}: FormMountValidatorPipelineArgs): FormMountValidatorPipelineResult {
+  if (pipeline.length === 0)
+    return {
+      didRun: false,
+      asyncPromise: null,
+    }
+  if (!pipeline.some((validator) => validator.runOnMount === true))
+    return {
+      didRun: false,
+      asyncPromise: null,
+    }
+
+  let hasFailed = false
+
+  for (let i = 0; i < pipeline.length; i++) {
+    const validator = pipeline[i]!
+    if (validator.runOnMount !== true) continue
+
+    if (validator.bailIfInvalid && hasFailed) {
+      return {
+        didRun: true,
+        asyncPromise: null,
+      }
+    }
+
+    const result = executeMountValidator(formApi, validator, i)
+
+    if (isPromiseLike(result)) {
+      return {
+        didRun: true,
+        asyncPromise: continueMountValidationFromAsyncResult(
+          pipeline,
+          formApi,
+          i,
+          result,
+          hasFailed,
+          onResult,
+        ),
+      }
+    }
+
+    if (processMountValidationExecutionResult(i, result, onResult)) {
+      hasFailed = true
+    }
+  }
+
+  return {
+    didRun: true,
+    asyncPromise: null,
+  }
 }
 
 interface FieldValidatorPipelineArgs {
