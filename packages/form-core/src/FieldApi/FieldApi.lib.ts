@@ -11,6 +11,7 @@ import {
   isErrorResult,
   isValidationTriggerEnabled,
   normalizeValidationError,
+  runFieldMountValidatorPipeline,
   runFieldValidatorPipeline,
   setIndexedError,
 } from '../validation.lib'
@@ -366,6 +367,7 @@ export class InternalFieldApi<
   _validateOnFields: FieldListenToFields | null
   _pipelineCache: PipelineCache<any> | null = null
   _isKilled = false
+  _mountValidationRan = false
 
   #segment: NameSegment
   /**
@@ -838,6 +840,7 @@ export class InternalFieldApi<
       this._clearEventErrors(event, 'submit')
 
       if (event === 'blur') {
+        this._clearEventErrors('blur', 'mount')
         this.form._clearEventErrors(this, 'submit', event)
         this.form._clearEventErrors(this, 'mount', event)
       }
@@ -999,11 +1002,49 @@ export class InternalFieldApi<
       return () => {}
     }
 
+    const isFirstMount = this.#refCount === 0 && !this._mountValidationRan
     this.#refCount++
     this._getOrCreateAtoms()
 
     this._notifyListener('mount', new WeakSet())
+
+    if (isFirstMount) {
+      this._mountValidationRan = true
+      this._runMountValidation()
+    }
+
     return () => this._unregister()
+  }
+
+  /**
+   * @private
+   * Runs validators marked with runOnMount on the first component mount.
+   */
+  _runMountValidation(): void {
+    const validators = this._validators
+    if (!validators || validators.length === 0) return
+
+    this._setValidationCount((count) => count + 1)
+
+    const { didRun, asyncPromise } = runFieldMountValidatorPipeline({
+      pipeline: validators,
+      fieldApi: this,
+      onResult: (result) => this._processValidationResult(result, 'mount'),
+    })
+
+    if (!didRun) {
+      this._setValidationCount((count) => Math.max(0, count - 1))
+      return
+    }
+
+    if (asyncPromise) {
+      void asyncPromise.finally(() => {
+        this._setValidationCount((count) => Math.max(0, count - 1))
+      })
+      return
+    }
+
+    this._setValidationCount((count) => Math.max(0, count - 1))
   }
 
   /**

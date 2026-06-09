@@ -13,6 +13,7 @@ import type {
   FieldValidator,
   FieldValidatorContext,
   FormGroupValidateResult,
+  FormGroupValidator,
   FormGroupValidatorContext,
   FormValidateResult,
   FormValidator,
@@ -27,6 +28,7 @@ import type {
 } from './validation.public'
 import type { InternalFormApi } from './FormApi/FormApi.lib'
 import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
+import type { InternalFormGroupApi } from './FormGroupApi/FormGroupApi.lib'
 
 type FormValidateContext = Omit<FormValidatorContext<any>, 'value'>
 type FieldValidateContext = Omit<
@@ -987,4 +989,334 @@ export function runFieldValidatorPipeline({
     scope: 'field',
     validatorIndecesToRun,
   })
+}
+
+type FieldMountValidationExecutionResult = {
+  result: FieldValidateResult
+  schemaResult: any | null
+  hasSchemaResult: boolean
+}
+
+interface FieldMountValidatorPipelineArgs {
+  pipeline: ReadonlyArray<FieldValidator<any, any, any>>
+  fieldApi: AnyInternalFieldApi
+  onResult?: (result: PipelineResult<FieldValidateResult>) => void
+}
+
+function processFieldMountExecutionResult(
+  validatorIndex: number,
+  executionResult: FieldMountValidationExecutionResult,
+  onResult?: (result: PipelineResult<FieldValidateResult>) => void,
+): boolean {
+  const result: PipelineResult<FieldValidateResult> = {
+    validatorIndex,
+    result: executionResult.result,
+    schemaResult: executionResult.schemaResult,
+    hasSchemaResult: executionResult.hasSchemaResult,
+  }
+  onResult?.(result)
+  return isErrorResult(executionResult.result)
+}
+
+function executeFieldMountValidator(
+  fieldApi: AnyInternalFieldApi,
+  validator: FieldValidator<any, any, any>,
+  validatorIndex: number,
+):
+  | FieldMountValidationExecutionResult
+  | PromiseLike<FieldMountValidationExecutionResult> {
+  const cache = fieldApi._getOrCreatePipelineCache()
+  const { signal, cleanup } = createValidatorAbortContext(
+    cache,
+    validatorIndex,
+    { cancelDebouncer: true },
+  )
+
+  const context: FieldValidatorContext<any, any, any, any> = {
+    event: 'mount' as never,
+    signal,
+    formApi: fieldApi.form as never,
+    fieldApi: fieldApi as never,
+    value: fieldApi.value,
+  }
+
+  try {
+    if (isStandardSchema(validator.run)) {
+      return parseStandardSchema(validator.run, context.value, 'field')
+        .then((result) =>
+          signal.aborted
+            ? { result: null, schemaResult: null, hasSchemaResult: false }
+            : result,
+        )
+        .finally(cleanup) as PromiseLike<FieldMountValidationExecutionResult>
+    }
+
+    const result = validator.run(context)
+
+    if (isPromiseLike(result)) {
+      return Promise.resolve(result)
+        .then((asyncResult): FieldMountValidationExecutionResult => {
+          if (signal.aborted) {
+            return { result: null, schemaResult: null, hasSchemaResult: false }
+          }
+          return {
+            result: asyncResult,
+            schemaResult: null,
+            hasSchemaResult: false,
+          }
+        })
+        .finally(cleanup)
+    }
+
+    cleanup()
+    return { result, schemaResult: null, hasSchemaResult: false }
+  } catch (error) {
+    cleanup()
+    console.error(error)
+    return { result: null, schemaResult: null, hasSchemaResult: false }
+  }
+}
+
+async function continueFieldMountValidationFromAsyncResult(
+  pipeline: ReadonlyArray<FieldValidator<any, any, any>>,
+  fieldApi: AnyInternalFieldApi,
+  startIndex: number,
+  firstResult: PromiseLike<FieldMountValidationExecutionResult>,
+  hasFailedBefore: boolean,
+  onResult?: (result: PipelineResult<FieldValidateResult>) => void,
+): Promise<void> {
+  let hasFailed = hasFailedBefore
+
+  const firstExecutionResult = await firstResult
+  if (
+    processFieldMountExecutionResult(startIndex, firstExecutionResult, onResult)
+  ) {
+    hasFailed = true
+  }
+
+  for (let i = startIndex + 1; i < pipeline.length; i++) {
+    const validator = pipeline[i]!
+    if (validator.runOnMount !== true) continue
+    if (validator.bailIfInvalid && hasFailed) break
+
+    const result = executeFieldMountValidator(fieldApi, validator, i)
+    const executionResult = isPromiseLike(result) ? await result : result
+    if (processFieldMountExecutionResult(i, executionResult, onResult)) {
+      hasFailed = true
+    }
+  }
+}
+
+export function runFieldMountValidatorPipeline({
+  pipeline,
+  fieldApi,
+  onResult,
+}: FieldMountValidatorPipelineArgs): FormMountValidatorPipelineResult {
+  if (pipeline.length === 0) return { didRun: false, asyncPromise: null }
+  if (!pipeline.some((v) => v.runOnMount === true))
+    return { didRun: false, asyncPromise: null }
+
+  let hasFailed = false
+
+  for (let i = 0; i < pipeline.length; i++) {
+    const validator = pipeline[i]!
+    if (validator.runOnMount !== true) continue
+
+    if (validator.bailIfInvalid && hasFailed) {
+      return { didRun: true, asyncPromise: null }
+    }
+
+    const result = executeFieldMountValidator(fieldApi, validator, i)
+
+    if (isPromiseLike(result)) {
+      return {
+        didRun: true,
+        asyncPromise: continueFieldMountValidationFromAsyncResult(
+          pipeline,
+          fieldApi,
+          i,
+          result,
+          hasFailed,
+          onResult,
+        ),
+      }
+    }
+
+    if (processFieldMountExecutionResult(i, result, onResult)) {
+      hasFailed = true
+    }
+  }
+
+  return { didRun: true, asyncPromise: null }
+}
+
+// ===== GROUP MOUNT VALIDATION =====
+
+type AnyInternalFormGroupApi = InternalFormGroupApi<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
+
+type GroupMountValidationExecutionResult = {
+  result: FormGroupValidateResult<any>
+  schemaResult: any | null
+  hasSchemaResult: boolean
+}
+
+interface GroupMountValidatorPipelineArgs {
+  pipeline: ReadonlyArray<FormGroupValidator<any>>
+  groupApi: AnyInternalFormGroupApi
+  onResult?: (result: PipelineResult<FormGroupValidateResult<any>>) => void
+}
+
+function processGroupMountExecutionResult(
+  validatorIndex: number,
+  executionResult: GroupMountValidationExecutionResult,
+  onResult?: (result: PipelineResult<FormGroupValidateResult<any>>) => void,
+): boolean {
+  const result: PipelineResult<FormGroupValidateResult<any>> = {
+    validatorIndex,
+    result: executionResult.result,
+    schemaResult: executionResult.schemaResult,
+    hasSchemaResult: executionResult.hasSchemaResult,
+  }
+  onResult?.(result)
+  return isErrorResult(executionResult.result)
+}
+
+function executeGroupMountValidator(
+  groupApi: AnyInternalFormGroupApi,
+  validator: FormGroupValidator<any>,
+  validatorIndex: number,
+):
+  | GroupMountValidationExecutionResult
+  | PromiseLike<GroupMountValidationExecutionResult> {
+  const cache = groupApi._pipelineCache
+  const { signal, cleanup } = createValidatorAbortContext(
+    cache,
+    validatorIndex,
+    { cancelDebouncer: true },
+  )
+
+  const context: FormGroupValidatorContext<any> = {
+    event: 'mount' as never,
+    signal,
+    formApi: groupApi.form as never,
+    groupApi: groupApi as never,
+    triggerFieldApi: undefined,
+    value: groupApi.value,
+  }
+
+  try {
+    if (isStandardSchema(validator.run)) {
+      return parseStandardSchema(validator.run, context.value, 'form')
+        .then((result) =>
+          signal.aborted
+            ? { result: null, schemaResult: null, hasSchemaResult: false }
+            : result,
+        )
+        .finally(cleanup)
+    }
+
+    const result = validator.run(context)
+
+    if (isPromiseLike(result)) {
+      return Promise.resolve(result)
+        .then((asyncResult): GroupMountValidationExecutionResult => {
+          if (signal.aborted) {
+            return { result: null, schemaResult: null, hasSchemaResult: false }
+          }
+          return {
+            result: asyncResult,
+            schemaResult: null,
+            hasSchemaResult: false,
+          }
+        })
+        .finally(cleanup)
+    }
+
+    cleanup()
+    return { result, schemaResult: null, hasSchemaResult: false }
+  } catch (error) {
+    cleanup()
+    console.error(error)
+    return { result: null, schemaResult: null, hasSchemaResult: false }
+  }
+}
+
+async function continueGroupMountValidationFromAsyncResult(
+  pipeline: ReadonlyArray<FormGroupValidator<any>>,
+  groupApi: AnyInternalFormGroupApi,
+  startIndex: number,
+  firstResult: PromiseLike<GroupMountValidationExecutionResult>,
+  hasFailedBefore: boolean,
+  onResult?: (result: PipelineResult<FormGroupValidateResult<any>>) => void,
+): Promise<void> {
+  let hasFailed = hasFailedBefore
+
+  const firstExecutionResult = await firstResult
+  if (
+    processGroupMountExecutionResult(startIndex, firstExecutionResult, onResult)
+  ) {
+    hasFailed = true
+  }
+
+  for (let i = startIndex + 1; i < pipeline.length; i++) {
+    const validator = pipeline[i]!
+    if (validator.runOnMount !== true) continue
+    if (validator.bailIfInvalid && hasFailed) break
+
+    const result = executeGroupMountValidator(groupApi, validator, i)
+    const executionResult = isPromiseLike(result) ? await result : result
+    if (processGroupMountExecutionResult(i, executionResult, onResult)) {
+      hasFailed = true
+    }
+  }
+}
+
+export function runGroupMountValidatorPipeline({
+  pipeline,
+  groupApi,
+  onResult,
+}: GroupMountValidatorPipelineArgs): FormMountValidatorPipelineResult {
+  if (pipeline.length === 0) return { didRun: false, asyncPromise: null }
+  if (!pipeline.some((v) => v.runOnMount === true))
+    return { didRun: false, asyncPromise: null }
+
+  let hasFailed = false
+
+  for (let i = 0; i < pipeline.length; i++) {
+    const validator = pipeline[i]!
+    if (validator.runOnMount !== true) continue
+
+    if (validator.bailIfInvalid && hasFailed) {
+      return { didRun: true, asyncPromise: null }
+    }
+
+    const result = executeGroupMountValidator(groupApi, validator, i)
+
+    if (isPromiseLike(result)) {
+      return {
+        didRun: true,
+        asyncPromise: continueGroupMountValidationFromAsyncResult(
+          pipeline,
+          groupApi,
+          i,
+          result,
+          hasFailed,
+          onResult,
+        ),
+      }
+    }
+
+    if (processGroupMountExecutionResult(i, result, onResult)) {
+      hasFailed = true
+    }
+  }
+
+  return { didRun: true, asyncPromise: null }
 }

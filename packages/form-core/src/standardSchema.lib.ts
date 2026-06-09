@@ -5,6 +5,7 @@ import type {
 } from './standardSchema.public'
 import type {
   FieldValidatorFn,
+  FormGroupValidatorFn,
   FormValidateResult,
   FormValidatorFn,
   ValidationIssue,
@@ -64,6 +65,7 @@ function getPathFromIssue(
 export function isStandardSchema(
   object:
     | FormValidatorFn<any>
+    | FormGroupValidatorFn<any>
     | FieldValidatorFn<any, any, any>
     | StandardSchemaV1,
 ): object is StandardSchemaV1<any, any> {
