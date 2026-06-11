@@ -6,7 +6,7 @@ title: AnyFieldMeta
 # Type Alias: AnyFieldMeta
 
 ```ts
-type AnyFieldMeta = FieldMeta<any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any>;
+type AnyFieldMeta = AnyFieldLikeMeta;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:844](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L844)
+Defined in: [packages/form-core/src/types.ts:824](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L824)

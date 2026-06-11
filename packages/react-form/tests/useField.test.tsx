@@ -328,6 +328,172 @@ describe('useField', () => {
     expect((getByTestId('first-field') as HTMLInputElement).value).toBe('hello')
   })
 
+  it('should not keep hidden field submit errors after unmount', async () => {
+    const onSubmit = vi.fn()
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+        onSubmit: ({ value }) => onSubmit(value),
+      })
+
+      return (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            form.handleSubmit()
+          }}
+        >
+          <form.Field name="firstName">
+            {(field) => (
+              <input
+                data-testid="first-name"
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+            )}
+          </form.Field>
+
+          <form.Subscribe selector={(state) => state.values.firstName === 'a'}>
+            {(showLastName) =>
+              showLastName ? (
+                <form.Field
+                  name="lastName"
+                  validators={{
+                    onSubmit: ({ value }) =>
+                      value.length >= 5 ? undefined : 'lastName too short',
+                  }}
+                >
+                  {(field) => (
+                    <input
+                      data-testid="last-name"
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
+                  )}
+                </form.Field>
+              ) : null
+            }
+          </form.Subscribe>
+
+          <form.Subscribe
+            selector={(state) => [state.canSubmit, state.isSubmitting]}
+          >
+            {([canSubmit, isSubmitting]) => (
+              <button data-testid="submit" type="submit" disabled={!canSubmit}>
+                {isSubmitting ? '...' : 'Submit'}
+              </button>
+            )}
+          </form.Subscribe>
+        </form>
+      )
+    }
+
+    const { getByTestId, queryByTestId } = render(
+      <StrictMode>
+        <Comp />
+      </StrictMode>,
+    )
+
+    const submitButton = getByTestId('submit')
+
+    await user.type(getByTestId('first-name'), 'a')
+    await user.type(getByTestId('last-name'), 'abc')
+    await user.click(submitButton)
+
+    await waitFor(() => expect(submitButton).toBeDisabled())
+    expect(onSubmit).toHaveBeenCalledTimes(0)
+
+    await user.clear(getByTestId('first-name'))
+    await user.type(getByTestId('first-name'), 'b')
+
+    await waitFor(() =>
+      expect(queryByTestId('last-name')).not.toBeInTheDocument(),
+    )
+    await waitFor(() => expect(submitButton).toBeEnabled())
+
+    await user.click(submitButton)
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1))
+
+    await user.clear(getByTestId('first-name'))
+    await user.type(getByTestId('first-name'), 'a')
+
+    const remountedLastName = await waitFor(() => getByTestId('last-name'))
+    expect((remountedLastName as HTMLInputElement).value).toBe('abc')
+    expect(submitButton).toBeEnabled()
+  })
+
+  it('should call onUnmount listener when a field is conditionally removed', async () => {
+    const fieldUnmount = vi.fn()
+    const formFieldUnmount = vi.fn()
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          show: true,
+          name: 'test',
+        },
+        listeners: {
+          onFieldUnmount: formFieldUnmount,
+        },
+      })
+
+      return (
+        <>
+          <form.Field name="show">
+            {(field) => (
+              <input
+                data-testid="toggle"
+                type="checkbox"
+                checked={field.state.value}
+                onChange={(e) => field.handleChange(e.target.checked)}
+              />
+            )}
+          </form.Field>
+
+          <form.Subscribe selector={(s) => s.values.show}>
+            {(show) =>
+              show ? (
+                <form.Field name="name" listeners={{ onUnmount: fieldUnmount }}>
+                  {(field) => (
+                    <input
+                      data-testid="name"
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
+                  )}
+                </form.Field>
+              ) : null
+            }
+          </form.Subscribe>
+        </>
+      )
+    }
+
+    const { getByTestId, queryByTestId } = render(
+      <StrictMode>
+        <Comp />
+      </StrictMode>,
+    )
+
+    await waitFor(() => expect(getByTestId('name')).toBeInTheDocument())
+
+    const callsBefore = fieldUnmount.mock.calls.length
+    const formCallsBefore = formFieldUnmount.mock.calls.length
+
+    await user.click(getByTestId('toggle'))
+
+    await waitFor(() => expect(queryByTestId('name')).not.toBeInTheDocument())
+    expect(fieldUnmount).toHaveBeenCalledTimes(callsBefore + 1)
+    expect(formFieldUnmount).toHaveBeenCalledTimes(formCallsBefore + 1)
+  })
+
   it('should validate async on change', async () => {
     type Person = {
       firstName: string
@@ -1302,6 +1468,100 @@ describe('useField', () => {
 
     // Array field should have rerendered when length changes
     expect(renderCount.arrayField).toBeGreaterThan(arrayFieldBeforeAdd)
+  })
+
+  it('should rerender array field on swapFieldValues even when length is unchanged', async () => {
+    // swapFieldValues does not change array length but must still notify the
+    // parent array field so subscribers see the new order.
+    const renderCount = { arrayField: 0 }
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          people: [{ name: 'John' }, { name: 'Jane' }],
+        },
+      })
+
+      return (
+        <form.Field name="people" mode="array">
+          {(arrayField) => {
+            renderCount.arrayField++
+            return (
+              <div>
+                <ol data-testid="list">
+                  {arrayField.state.value.map((person, i) => (
+                    <li key={i} data-testid={`item-${i}`}>
+                      {person.name}
+                    </li>
+                  ))}
+                </ol>
+                <button
+                  type="button"
+                  data-testid="swap"
+                  onClick={() => form.swapFieldValues('people', 0, 1)}
+                >
+                  Swap
+                </button>
+              </div>
+            )
+          }}
+        </form.Field>
+      )
+    }
+
+    const { getByTestId } = render(
+      <StrictMode>
+        <Comp />
+      </StrictMode>,
+    )
+
+    expect(getByTestId('item-0')).toHaveTextContent('John')
+    expect(getByTestId('item-1')).toHaveTextContent('Jane')
+
+    const before = renderCount.arrayField
+    await user.click(getByTestId('swap'))
+
+    expect(renderCount.arrayField).toBeGreaterThan(before)
+    expect(getByTestId('item-0')).toHaveTextContent('Jane')
+    expect(getByTestId('item-1')).toHaveTextContent('John')
+  })
+
+  it('should rerender array field when async defaultValues resolve', async () => {
+    // Regression test for https://github.com/TanStack/form/issues/2178
+    // When async defaultValues arrive after initial render, array fields in
+    // mode="array" must re-render because _arrayVersion is used as the
+    // reactivity signal (not value length).
+    type Person = { name: string }
+    type FormData = { people: Person[] }
+
+    function Comp({ defaultValues }: { defaultValues?: FormData }) {
+      const form = useForm({ defaultValues })
+
+      return (
+        <form.Field name="people" mode="array">
+          {(field) => {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            const val = field.state.value ?? []
+            return (
+              <ol data-testid="list">
+                {val.map((person, i) => (
+                  <li key={i} data-testid={`item-${i}`}>
+                    {person.name}
+                  </li>
+                ))}
+              </ol>
+            )
+          }}
+        </form.Field>
+      )
+    }
+
+    const { getByTestId, rerender } = render(<Comp />)
+    expect(getByTestId('list').children).toHaveLength(0)
+
+    rerender(<Comp defaultValues={{ people: [{ name: 'Alice' }] }} />)
+    await waitFor(() => expect(getByTestId('list').children).toHaveLength(1))
+    expect(getByTestId('item-0')).toHaveTextContent('Alice')
   })
 
   it('should handle defaultValue without setstate-in-render error', async () => {

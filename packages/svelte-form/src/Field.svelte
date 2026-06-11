@@ -10,8 +10,7 @@
   } from '@tanstack/form-core'
   import { useStore } from '@tanstack/svelte-store'
   import { onMount, type Snippet } from 'svelte'
-  import Field from './Field.svelte'
-  import type { CreateFieldOptions, SvelteFieldApi } from './types.js'
+  import type { CreateFieldOptions } from './types.js'
 
   export function createField<
     TParentData,
@@ -76,23 +75,7 @@
 
     const api = new FieldApi(options)
 
-    const extendedApi: typeof api &
-      SvelteFieldApi<
-        TParentData,
-        TFormOnMount,
-        TFormOnChange,
-        TFormOnChangeAsync,
-        TFormOnBlur,
-        TFormOnBlurAsync,
-        TFormOnSubmit,
-        TFormOnSubmitAsync,
-        TFormOnDynamic,
-        TFormOnDynamicAsync,
-        TFormOnServer,
-        TParentSubmitMeta
-      > = api as never
-
-    extendedApi.Field = Field as never
+    const extendedApi: typeof api = api as never
 
     let mounted = false
     // Instantiates field meta and removes it when unrendered
@@ -113,10 +96,59 @@
       api.update(current)
     })
 
-    const storeSub = useStore(api.store)
+    const storeSub = useStore(api.store, (state) =>
+      options.mode === 'array'
+        ? state.meta._arrayVersion || 0
+        : state.value,
+    )
+    const metaIsTouchedSub = useStore(
+      api.store,
+      (state) => state.meta.isTouched,
+    )
+    const metaIsBlurredSub = useStore(
+      api.store,
+      (state) => state.meta.isBlurred,
+    )
+    const metaIsDirtySub = useStore(api.store, (state) => state.meta.isDirty)
+    const metaErrorMapSub = useStore(api.store, (state) => state.meta.errorMap)
+    const metaErrorSourceMapSub = useStore(
+      api.store,
+      (state) => state.meta.errorSourceMap,
+    )
+    const metaIsValidatingSub = useStore(
+      api.store,
+      (state) => state.meta.isValidating,
+    )
     Object.defineProperty(extendedApi, 'state', {
       get() {
-        return storeSub.current
+        // Read all reactive sources to track them as dependencies. For array
+        // mode, `storeSub.current` is the array length so we still pull the
+        // actual value from the underlying api state.
+        // See: https://github.com/TanStack/form/issues/1961
+        // Note: we read from `api.store.state` (not `api.state`) to avoid
+        // infinite recursion since this getter shadows the prototype's `state`
+        // getter on the same object.
+        const trackedValue = storeSub.current
+        const isTouched = metaIsTouchedSub.current
+        const isBlurred = metaIsBlurredSub.current
+        const isDirty = metaIsDirtySub.current
+        const errorMap = metaErrorMapSub.current
+        const errorSourceMap = metaErrorSourceMapSub.current
+        const isValidating = metaIsValidatingSub.current
+        const baseState = api.store.state
+        return {
+          ...baseState,
+          value: options.mode === 'array' ? baseState.value : trackedValue,
+          meta: {
+            ...baseState.meta,
+            isTouched,
+            isBlurred,
+            isDirty,
+            errorMap,
+            errorSourceMap,
+            isValidating,
+          },
+        }
       },
     })
 

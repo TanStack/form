@@ -270,6 +270,60 @@ describe('makePathArray', () => {
   it('should still convert non-leading-zero numbers to number types', () => {
     expect(makePathArray('12345')).toEqual([12345])
   })
+
+  it('should keep digit-only segments past Number precision as strings', () => {
+    expect(makePathArray('99999999999999999999')).toEqual([
+      '99999999999999999999',
+    ])
+  })
+
+  it('should treat lone "0" as the number 0', () => {
+    expect(makePathArray('0')).toEqual([0])
+    expect(makePathArray('a.0.b')).toEqual(['a', 0, 'b'])
+  })
+
+  it('should preserve leading zeros mid-path in both notations', () => {
+    expect(makePathArray('a.01.b')).toEqual(['a', '01', 'b'])
+    expect(makePathArray('a[01]')).toEqual(['a', '01'])
+  })
+
+  it('should return a defensive copy when given an array', () => {
+    const input: Array<string | number> = ['a', 0, 'b']
+    const out = makePathArray(input)
+    expect(out).toEqual(input)
+    expect(out).not.toBe(input)
+  })
+
+  it('should throw on non-string non-array input', () => {
+    expect(() => makePathArray(null as any)).toThrow('Path must be a string.')
+    expect(() => makePathArray(42 as any)).toThrow('Path must be a string.')
+    expect(() => makePathArray({} as any)).toThrow('Path must be a string.')
+  })
+
+  it('should handle malformed input', () => {
+    expect(makePathArray('a..b')).toEqual(['a', 'b'])
+    expect(makePathArray(']a')).toEqual(['a'])
+    expect(makePathArray('a]')).toEqual(['a'])
+    expect(makePathArray('a[b[c')).toEqual(['a', 'b', 'c'])
+    expect(makePathArray('a[b[c]')).toEqual(['a', 'b', 'c'])
+    expect(makePathArray('')).toEqual([''])
+    expect(makePathArray('.')).toEqual(['', ''])
+    expect(makePathArray('[')).toEqual([''])
+    expect(makePathArray('[]')).toEqual([''])
+    expect(makePathArray('.a')).toEqual(['', 'a'])
+    expect(makePathArray('a.')).toEqual(['a', ''])
+    expect(makePathArray('a[')).toEqual(['a', ''])
+    expect(makePathArray('..a')).toEqual(['', 'a'])
+    expect(makePathArray('a..')).toEqual(['a', ''])
+    expect(makePathArray('a[[')).toEqual(['a', ''])
+    expect(makePathArray(']')).toEqual([''])
+    expect(makePathArray('[[')).toEqual(['', ''])
+    expect(makePathArray('[[0]')).toEqual(['', 0])
+
+    // NOTE: This case differs from the previous implementation of makePathArray here:
+    // https://github.com/TanStack/form/blob/24ac6ca47074f5f1478db6744fb8004312ee5cbe/packages/form-core/src/utils.ts#L158
+    expect(makePathArray('a]b')).toEqual(['a', 'b'])
+  })
 })
 
 describe('determineFormLevelErrorSourceAndValue', () => {
@@ -691,6 +745,102 @@ describe('evaluate', () => {
 
     const dateObjectFalse = evaluate({ date: date1 }, { date: date3 })
     expect(dateObjectFalse).toEqual(false)
+  })
+
+  it('should test equality between Map objects', () => {
+    const map1 = new Map([
+      ['a', 1],
+      ['b', 2],
+    ])
+    const map2 = new Map([
+      ['a', 1],
+      ['b', 2],
+    ])
+    expect(evaluate(map1, map2)).toEqual(true)
+
+    const emptyMap1 = new Map()
+    const emptyMap2 = new Map()
+    expect(evaluate(emptyMap1, emptyMap2)).toEqual(true)
+
+    const mapSmall = new Map([['a', 1]])
+    const mapLarge = new Map([
+      ['a', 1],
+      ['b', 2],
+    ])
+    expect(evaluate(mapSmall, mapLarge)).toEqual(false)
+
+    const mapA = new Map([
+      ['a', 1],
+      ['b', 2],
+    ])
+    const mapC = new Map([
+      ['a', 1],
+      ['c', 2],
+    ])
+    expect(evaluate(mapA, mapC)).toEqual(false)
+
+    const mapVal1 = new Map([
+      ['a', 1],
+      ['b', 2],
+    ])
+    const mapVal2 = new Map([
+      ['a', 1],
+      ['b', 3],
+    ])
+    expect(evaluate(mapVal1, mapVal2)).toEqual(false)
+  })
+
+  it('should test equality between Set objects', () => {
+    const set1 = new Set([1, 2, 3])
+    const set2 = new Set([1, 2, 3])
+    expect(evaluate(set1, set2)).toEqual(true)
+
+    const emptySet1 = new Set()
+    const emptySet2 = new Set()
+    expect(evaluate(emptySet1, emptySet2)).toEqual(true)
+
+    const setSmall = new Set([1, 2])
+    const setLarge = new Set([1, 2, 3])
+    expect(evaluate(setSmall, setLarge)).toEqual(false)
+
+    const setA = new Set([1, 2, 3])
+    const setB = new Set([1, 2, 4])
+    expect(evaluate(setA, setB)).toEqual(false)
+  })
+
+  it('should treat distinct non-plain objects with no own enumerable keys as not equal', () => {
+    // Simulates Temporal.Duration, RegExp, or any class that exposes state only
+    // through getters. Object.keys() returns [] for these, so without this guard
+    // the key-iteration loop would vacuously succeed and return true.
+    class Duration {
+      #ms: number
+      constructor(ms: number) {
+        this.#ms = ms
+      }
+      get milliseconds() {
+        return this.#ms
+      }
+    }
+
+    const d1 = new Duration(1000)
+    const d2 = new Duration(2000)
+    const d3 = new Duration(1000)
+    const dSame = d1
+
+    expect(evaluate(d1, dSame)).toEqual(true) // same reference
+    expect(evaluate(d1, d2)).toEqual(false) // different instances, different state
+    expect(evaluate(d1, d3)).toEqual(false) // different instances, same state — still false
+  })
+
+  it('should still treat two plain empty objects as equal', () => {
+    expect(evaluate({}, {})).toEqual(true)
+    expect(evaluate({ a: {} }, { a: {} })).toEqual(true)
+  })
+
+  it('should treat a non-plain object against a plain empty object as not equal', () => {
+    class Empty {}
+    expect(evaluate(new Empty(), {})).toEqual(false)
+    expect(evaluate({}, new Empty())).toEqual(false)
   })
 })
 

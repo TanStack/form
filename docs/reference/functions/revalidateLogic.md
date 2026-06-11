@@ -9,7 +9,7 @@ title: revalidateLogic
 function revalidateLogic(__namedParameters): ValidationLogicFn;
 ```
 
-Defined in: [packages/form-core/src/ValidationLogic.ts:68](https://github.com/TanStack/form/blob/main/packages/form-core/src/ValidationLogic.ts#L68)
+Defined in: [packages/form-core/src/ValidationLogic.ts:75](https://github.com/TanStack/form/blob/main/packages/form-core/src/ValidationLogic.ts#L75)
 
 This forces a form's validation logic to be ran as if it were a React Hook Form validation logic.
 

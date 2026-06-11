@@ -5,7 +5,7 @@ title: FormState
 
 # Interface: FormState\<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer\>
 
-Defined in: [packages/form-core/src/FormApi.ts:699](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L699)
+Defined in: [packages/form-core/src/FormApi.ts:793](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L793)
 
 An object representing the current state of the form.
 
@@ -67,7 +67,7 @@ An object representing the current state of the form.
 optional _force_re_eval: boolean;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:604](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L604)
+Defined in: [packages/form-core/src/FormApi.ts:696](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L696)
 
 @private, used to force a re-evaluation of the form state when options change
 
@@ -85,7 +85,7 @@ BaseFormState._force_re_eval
 canSubmit: boolean;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:692](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L692)
+Defined in: [packages/form-core/src/FormApi.ts:786](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L786)
 
 A boolean indicating if the form can be submitted based on its current state.
 
@@ -103,7 +103,7 @@ DerivedFormState.canSubmit
 errorMap: ValidationErrorMap<UnwrapFormValidateOrFn<TOnMount>, UnwrapFormValidateOrFn<TOnChange>, UnwrapFormAsyncValidateOrFn<TOnChangeAsync>, UnwrapFormValidateOrFn<TOnBlur>, UnwrapFormAsyncValidateOrFn<TOnBlurAsync>, UnwrapFormValidateOrFn<TOnSubmit>, UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>, UnwrapFormValidateOrFn<TOnDynamic>, UnwrapFormAsyncValidateOrFn<TOnDynamicAsync>, UnwrapFormAsyncValidateOrFn<TOnServer>>;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:548](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L548)
+Defined in: [packages/form-core/src/FormApi.ts:633](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L633)
 
 The error map for the form itself.
 
@@ -118,7 +118,7 @@ BaseFormState.errorMap
 ### errors
 
 ```ts
-errors: (
+errors: NonNullable<
   | UnwrapFormValidateOrFn<TOnMount>
   | UnwrapFormValidateOrFn<TOnChange>
   | UnwrapFormAsyncValidateOrFn<TOnChangeAsync>
@@ -128,10 +128,10 @@ errors: (
   | UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>
   | UnwrapFormValidateOrFn<TOnDynamic>
   | UnwrapFormAsyncValidateOrFn<TOnDynamicAsync>
-  | UnwrapFormAsyncValidateOrFn<TOnServer>)[];
+  | UnwrapFormAsyncValidateOrFn<TOnServer>>[];
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:645](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L645)
+Defined in: [packages/form-core/src/FormApi.ts:737](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L737)
 
 The error array for the form itself.
 
@@ -146,10 +146,10 @@ DerivedFormState.errors
 ### fieldMeta
 
 ```ts
-fieldMeta: Partial<Record<DeepKeys<TFormData>, AnyFieldMeta>>;
+fieldMeta: Partial<Record<DeepKeys<TFormData>, AnyFieldLikeMeta>>;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:696](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L696)
+Defined in: [packages/form-core/src/FormApi.ts:790](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L790)
 
 A record of field metadata for each field in the form.
 
@@ -164,10 +164,10 @@ DerivedFormState.fieldMeta
 ### fieldMetaBase
 
 ```ts
-fieldMetaBase: Partial<Record<DeepKeys<TFormData>, AnyFieldMetaBase>>;
+fieldMetaBase: Partial<Record<DeepKeys<TFormData>, AnyFieldLikeMetaBase>>;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:567](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L567)
+Defined in: [packages/form-core/src/FormApi.ts:652](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L652)
 
 A record of field metadata for each field in the form, not including the derived properties, like `errors` and such
 
@@ -179,13 +179,34 @@ BaseFormState.fieldMetaBase
 
 ***
 
+### formGroupStateBase
+
+```ts
+formGroupStateBase: Partial<Record<string, FormGroupState>>;
+```
+
+Defined in: [packages/form-core/src/FormApi.ts:659](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L659)
+
+A record of submission lifecycle state for each mounted `FormGroupApi`,
+keyed by the group's fully-qualified field name. Stored on the form so
+group-level state can be read from `FormApi` without having to walk the
+mounted group instances.
+
+#### Inherited from
+
+```ts
+BaseFormState.formGroupStateBase
+```
+
+***
+
 ### isBlurred
 
 ```ts
 isBlurred: boolean;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:672](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L672)
+Defined in: [packages/form-core/src/FormApi.ts:766](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L766)
 
 A boolean indicating if any of the form fields have been blurred.
 
@@ -203,7 +224,7 @@ DerivedFormState.isBlurred
 isDefaultValue: boolean;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:684](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L684)
+Defined in: [packages/form-core/src/FormApi.ts:778](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L778)
 
 A boolean indicating if all of the form's fields are the same as default values.
 
@@ -221,7 +242,7 @@ DerivedFormState.isDefaultValue
 isDirty: boolean;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:676](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L676)
+Defined in: [packages/form-core/src/FormApi.ts:770](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L770)
 
 A boolean indicating if any of the form's fields' values have been modified by the user. Evaluates `true` if the user have modified at least one of the fields. Opposite of `isPristine`.
 
@@ -239,7 +260,7 @@ DerivedFormState.isDirty
 isFieldsValid: boolean;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:664](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L664)
+Defined in: [packages/form-core/src/FormApi.ts:758](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L758)
 
 A boolean indicating if all the form fields are valid. Evaluates `true` if there are no field errors.
 
@@ -257,7 +278,7 @@ DerivedFormState.isFieldsValid
 isFieldsValidating: boolean;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:660](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L660)
+Defined in: [packages/form-core/src/FormApi.ts:754](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L754)
 
 A boolean indicating if any of the form fields are currently validating.
 
@@ -275,7 +296,7 @@ DerivedFormState.isFieldsValidating
 isFormValid: boolean;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:641](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L641)
+Defined in: [packages/form-core/src/FormApi.ts:733](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L733)
 
 A boolean indicating if the form is valid.
 
@@ -293,7 +314,7 @@ DerivedFormState.isFormValid
 isFormValidating: boolean;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:637](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L637)
+Defined in: [packages/form-core/src/FormApi.ts:729](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L729)
 
 A boolean indicating if the form is currently validating.
 
@@ -311,7 +332,7 @@ DerivedFormState.isFormValidating
 isPristine: boolean;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:680](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L680)
+Defined in: [packages/form-core/src/FormApi.ts:774](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L774)
 
 A boolean indicating if none of the form's fields' values have been modified by the user. Evaluates `true` if the user have not modified any of the fields. Opposite of `isDirty`.
 
@@ -329,7 +350,7 @@ DerivedFormState.isPristine
 isSubmitSuccessful: boolean;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:600](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L600)
+Defined in: [packages/form-core/src/FormApi.ts:692](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L692)
 
 A boolean indicating if the last submission was successful.
 
@@ -347,7 +368,7 @@ BaseFormState.isSubmitSuccessful
 isSubmitted: boolean;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:588](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L588)
+Defined in: [packages/form-core/src/FormApi.ts:680](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L680)
 
 A boolean indicating if the `onSubmit` function has completed successfully.
 
@@ -369,7 +390,7 @@ BaseFormState.isSubmitted
 isSubmitting: boolean;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:580](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L580)
+Defined in: [packages/form-core/src/FormApi.ts:672](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L672)
 
 A boolean indicating if the form is currently in the process of being submitted after `handleSubmit` is called.
 
@@ -395,7 +416,7 @@ BaseFormState.isSubmitting
 isTouched: boolean;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:668](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L668)
+Defined in: [packages/form-core/src/FormApi.ts:762](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L762)
 
 A boolean indicating if any of the form fields have been touched.
 
@@ -413,7 +434,7 @@ DerivedFormState.isTouched
 isValid: boolean;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:688](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L688)
+Defined in: [packages/form-core/src/FormApi.ts:782](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L782)
 
 A boolean indicating if the form and all its fields are valid. Evaluates `true` if there are no errors.
 
@@ -431,7 +452,7 @@ DerivedFormState.isValid
 isValidating: boolean;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:592](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L592)
+Defined in: [packages/form-core/src/FormApi.ts:684](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L684)
 
 A boolean indicating if the form or any of its fields are currently validating.
 
@@ -449,7 +470,7 @@ BaseFormState.isValidating
 submissionAttempts: number;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:596](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L596)
+Defined in: [packages/form-core/src/FormApi.ts:688](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L688)
 
 A counter for tracking the number of submission attempts.
 
@@ -467,7 +488,7 @@ BaseFormState.submissionAttempts
 validationMetaMap: Record<ValidationErrorMapKeys, ValidationMeta | undefined>;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:563](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L563)
+Defined in: [packages/form-core/src/FormApi.ts:648](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L648)
 
 An internal mechanism used for keeping track of validation logic in a form.
 
@@ -485,7 +506,7 @@ BaseFormState.validationMetaMap
 values: TFormData;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:544](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L544)
+Defined in: [packages/form-core/src/FormApi.ts:629](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L629)
 
 The current values of the form fields.
 

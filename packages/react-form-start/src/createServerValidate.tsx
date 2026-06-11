@@ -17,6 +17,7 @@ import type {
   ServerFormState,
   UnwrapFormAsyncValidateOrFn,
 } from '@tanstack/react-form'
+import type { FormDataInfo } from 'decode-formdata'
 
 interface CreateServerValidateOptions<
   TFormData,
@@ -57,7 +58,7 @@ const serverFn = createServerFn({ method: 'POST' })
   .handler(async ({ data }) => {
     const { formData, info, defaultOpts } = data as {
       formData: FormData
-      info?: Parameters<typeof decode>[1]
+      info?: FormDataInfo
       defaultOpts: CreateServerValidateOptions<
         any,
         any,
@@ -97,7 +98,9 @@ const serverFn = createServerFn({ method: 'POST' })
 
     const referer = getRequestHeader('referer')!
 
-    const decodedData = decode(formData, info) as never as any
+    const decodedData = (info
+      ? decode(formData, info)
+      : decode(formData)) as never as any
 
     const onServerError = (await runValidator({
       value: decodedData,

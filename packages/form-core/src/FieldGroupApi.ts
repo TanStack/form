@@ -1,23 +1,25 @@
-import { Derived } from '@tanstack/store'
+import { createStore } from '@tanstack/store'
 import { concatenatePaths, getBy, makePathArray } from './utils'
+import type {
+  AnyFieldLikeMetaBase,
+  FormLikeAPI,
+  UpdateMetaOptions,
+  ValidationCause,
+} from './types'
+import type { ReadonlyStore } from '@tanstack/store'
 import type { Updater } from './utils'
 import type {
   FormApi,
   FormAsyncValidateOrFn,
   FormValidateOrFn,
 } from './FormApi'
-import type { AnyFieldMetaBase, FieldOptions } from './FieldApi'
+import type { FieldOptions } from './FieldApi'
 import type {
   DeepKeys,
   DeepKeysOfType,
   DeepValue,
   FieldsMap,
 } from './util-types'
-import type {
-  FieldManipulator,
-  UpdateMetaOptions,
-  ValidationCause,
-} from './types'
 
 export type AnyFieldGroupApi = FieldGroupApi<
   any,
@@ -126,7 +128,7 @@ export class FieldGroupApi<
   in out TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TSubmitMeta = never,
-> implements FieldManipulator<TFieldGroupData, TSubmitMeta> {
+> implements FormLikeAPI<TFieldGroupData, TSubmitMeta> {
   /**
    * The form that called this field group.
    */
@@ -225,7 +227,7 @@ export class FieldGroupApi<
     return newProps
   }
 
-  store: Derived<FieldGroupState<TFieldGroupData>>
+  store: ReadonlyStore<FieldGroupState<TFieldGroupData>>
 
   get state() {
     return this.store.state
@@ -275,38 +277,35 @@ export class FieldGroupApi<
       this.fieldsMap = opts.fields
     }
 
-    this.store = new Derived({
-      deps: [this.form.store],
-      fn: ({ currDepVals }) => {
-        const currFormStore = currDepVals[0]
-        let values: TFieldGroupData
-        if (typeof this.fieldsMap === 'string') {
-          // all values live at that name, so we can directly fetch it
-          values = getBy(currFormStore.values, this.fieldsMap)
-        } else {
-          // we need to fetch the values from all places where they were mapped from
-          values = {} as never
-          const fields: Record<keyof TFieldGroupData, string> = this
-            .fieldsMap as never
-          for (const key in fields) {
-            values[key] = getBy(currFormStore.values, fields[key])
-          }
+    this.store = createStore(() => {
+      const currFormStore = this.form.store.get()
+      let values: TFieldGroupData
+      if (typeof this.fieldsMap === 'string') {
+        // all values live at that name, so we can directly fetch it
+        values = getBy(currFormStore.values, this.fieldsMap)
+      } else {
+        // we need to fetch the values from all places where they were mapped from
+        values = {} as never
+        const fields: Record<keyof TFieldGroupData, string> = this
+          .fieldsMap as never
+        for (const key in fields) {
+          values[key] = getBy(currFormStore.values, fields[key])
         }
+      }
 
-        return {
-          values,
-        }
-      },
+      return {
+        values,
+      }
     })
   }
 
   /**
    * Mounts the field group instance to listen to value changes.
+   *
+   * TODO: Remove
    */
   mount = () => {
-    const cleanup = this.store.mount()
-
-    return cleanup
+    return () => {}
   }
 
   /**
@@ -370,7 +369,7 @@ export class FieldGroupApi<
    */
   setFieldMeta = <TField extends DeepKeys<TFieldGroupData>>(
     field: TField,
-    updater: Updater<AnyFieldMetaBase>,
+    updater: Updater<AnyFieldLikeMetaBase>,
   ) => {
     return this.form.setFieldMeta(this.getFormFieldName(field), updater)
   }

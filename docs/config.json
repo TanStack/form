@@ -46,6 +46,15 @@
           ]
         },
         {
+          "label": "preact",
+          "children": [
+            {
+              "label": "Quick Start",
+              "to": "framework/preact/quick-start"
+            }
+          ]
+        },
+        {
           "label": "vue",
           "children": [
             {
@@ -120,6 +129,10 @@
               "to": "framework/react/guides/arrays"
             },
             {
+              "label": "Form Groups",
+              "to": "framework/react/guides/form-groups"
+            },
+            {
               "label": "Linked Fields",
               "to": "framework/react/guides/linked-fields"
             },
@@ -170,6 +183,71 @@
           ]
         },
         {
+          "label": "preact",
+          "children": [
+            {
+              "label": "Basic Concepts",
+              "to": "framework/preact/guides/basic-concepts"
+            },
+            {
+              "label": "Form Validation",
+              "to": "framework/preact/guides/validation"
+            },
+            {
+              "label": "Dynamic Validation",
+              "to": "framework/preact/guides/dynamic-validation"
+            },
+            {
+              "label": "Async Initial Values",
+              "to": "framework/preact/guides/async-initial-values"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/preact/guides/arrays"
+            },
+            {
+              "label": "Form Groups",
+              "to": "framework/preact/guides/form-groups"
+            },
+            {
+              "label": "Linked Fields",
+              "to": "framework/preact/guides/linked-fields"
+            },
+            {
+              "label": "Reactivity",
+              "to": "framework/preact/guides/reactivity"
+            },
+            {
+              "label": "Listeners",
+              "to": "framework/preact/guides/listeners"
+            },
+            {
+              "label": "Custom Errors",
+              "to": "framework/preact/guides/custom-errors"
+            },
+            {
+              "label": "Submission Handling",
+              "to": "framework/preact/guides/submission-handling"
+            },
+            {
+              "label": "UI Libraries",
+              "to": "framework/preact/guides/ui-libraries"
+            },
+            {
+              "label": "Focus Management",
+              "to": "framework/preact/guides/focus-management"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/preact/guides/form-composition"
+            },
+            {
+              "label": "Debugging",
+              "to": "framework/preact/guides/debugging"
+            }
+          ]
+        },
+        {
           "label": "vue",
           "children": [
             {
@@ -191,6 +269,10 @@
             {
               "label": "Arrays",
               "to": "framework/vue/guides/arrays"
+            },
+            {
+              "label": "Form Groups",
+              "to": "framework/vue/guides/form-groups"
             },
             {
               "label": "Linked Fields",
@@ -216,6 +298,10 @@
             {
               "label": "Arrays",
               "to": "framework/angular/guides/arrays"
+            },
+            {
+              "label": "Form Groups",
+              "to": "framework/angular/guides/form-groups"
             },
             {
               "label": "Form Composition",
@@ -247,6 +333,10 @@
               "to": "framework/solid/guides/arrays"
             },
             {
+              "label": "Form Groups",
+              "to": "framework/solid/guides/form-groups"
+            },
+            {
               "label": "Linked Fields",
               "to": "framework/solid/guides/linked-fields"
             },
@@ -274,6 +364,14 @@
             {
               "label": "Arrays",
               "to": "framework/lit/guides/arrays"
+            },
+            {
+              "label": "Form Groups",
+              "to": "framework/lit/guides/form-groups"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/lit/guides/form-composition"
             }
           ]
         },
@@ -301,8 +399,16 @@
               "to": "framework/svelte/guides/arrays"
             },
             {
+              "label": "Form Groups",
+              "to": "framework/svelte/guides/form-groups"
+            },
+            {
               "label": "Linked Fields",
               "to": "framework/svelte/guides/linked-fields"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/svelte/guides/form-composition"
             }
           ]
         }
@@ -433,6 +539,35 @@
           ]
         },
         {
+          "label": "preact",
+          "children": [
+            {
+              "label": "Preact Reference",
+              "to": "framework/preact/reference/index"
+            },
+            {
+              "label": "Variables / Field",
+              "to": "framework/preact/reference/variables/Field"
+            },
+            {
+              "label": "Functions / useField",
+              "to": "framework/preact/reference/functions/useField"
+            },
+            {
+              "label": "Functions / useForm",
+              "to": "framework/preact/reference/functions/useForm"
+            },
+            {
+              "label": "Types / FieldComponent",
+              "to": "framework/preact/reference/type-aliases/FieldComponent"
+            },
+            {
+              "label": "Types / UseField",
+              "to": "framework/preact/reference/type-aliases/UseField"
+            }
+          ]
+        },
+        {
           "label": "vue",
           "children": [
             {
@@ -538,6 +673,10 @@
               "to": "framework/react/examples/simple"
             },
             {
+              "label": "Multi-Step Wizard",
+              "to": "framework/react/examples/multi-step-wizard"
+            },
+            {
               "label": "Arrays",
               "to": "framework/react/examples/array"
             },
@@ -591,6 +730,10 @@
               "to": "framework/vue/examples/simple"
             },
             {
+              "label": "Multi-Step Wizard",
+              "to": "framework/vue/examples/multi-step-wizard"
+            },
+            {
               "label": "Arrays",
               "to": "framework/vue/examples/array"
             },
@@ -606,6 +749,10 @@
             {
               "label": "Simple",
               "to": "framework/angular/examples/simple"
+            },
+            {
+              "label": "Multi-Step Wizard",
+              "to": "framework/angular/examples/multi-step-wizard"
             },
             {
               "label": "Arrays",
@@ -629,6 +776,10 @@
               "to": "framework/solid/examples/simple"
             },
             {
+              "label": "Multi-Step Wizard",
+              "to": "framework/solid/examples/multi-step-wizard"
+            },
+            {
               "label": "Arrays",
               "to": "framework/solid/examples/array"
             },
@@ -650,6 +801,10 @@
               "to": "framework/lit/examples/simple"
             },
             {
+              "label": "Multi-Step Wizard",
+              "to": "framework/lit/examples/multi-step-wizard"
+            },
+            {
               "label": "Array",
               "to": "framework/lit/examples/array"
             },
@@ -664,11 +819,28 @@
           ]
         },
         {
+          "label": "preact",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "framework/preact/examples/simple"
+            },
+            {
+              "label": "Multi-Step Wizard",
+              "to": "framework/preact/examples/multi-step-wizard"
+            }
+          ]
+        },
+        {
           "label": "svelte",
           "children": [
             {
               "label": "Simple",
               "to": "framework/svelte/examples/simple"
+            },
+            {
+              "label": "Multi-Step Wizard",
+              "to": "framework/svelte/examples/multi-step-wizard"
             },
             {
               "label": "Arrays",
@@ -677,6 +849,10 @@
             {
               "label": "Standard Schema",
               "to": "framework/svelte/examples/standard-schema"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/svelte/examples/large-form"
             }
           ]
         }

@@ -15,10 +15,11 @@ In this example, when the user changes the country, the selected province needs 
 
 Events that can be "listened" to are:
 
-- onChange
-- onBlur
-- onMount
-- onSubmit
+- `onChange`
+- `onBlur`
+- `onMount`
+- `onSubmit`
+- `onUnmount`
 
 ```vue
 <script setup>

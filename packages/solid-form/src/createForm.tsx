@@ -2,6 +2,7 @@ import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import { createComputed, onMount } from 'solid-js'
 import { useStore } from '@tanstack/solid-store'
 import { Field, createField } from './createField'
+import { FormGroup } from './createFormGroup'
 import type {
   FormAsyncValidateOrFn,
   FormOptions,
@@ -9,7 +10,8 @@ import type {
   FormValidateOrFn,
 } from '@tanstack/form-core'
 import type { JSXElement } from 'solid-js'
-import type { CreateField, FieldComponent } from './createField'
+import type { FieldComponent } from './createField'
+import type { FormGroupComponent } from './createFormGroup'
 
 export interface SolidFormApi<
   TParentData,
@@ -39,7 +41,7 @@ export interface SolidFormApi<
     TFormOnServer,
     TSubmitMeta
   >
-  createField: CreateField<
+  FormGroup: FormGroupComponent<
     TParentData,
     TFormOnMount,
     TFormOnChange,
@@ -231,10 +233,7 @@ export function createForm<
     > = api as never
 
   extendedApi.Field = (props) => <Field {...props} form={api} />
-  extendedApi.createField = (props) =>
-    createField(() => {
-      return { ...props(), form: api }
-    }) as never
+  extendedApi.FormGroup = (props) => <FormGroup {...props} form={api} />
   extendedApi.useStore = (selector) => useStore(api.store, selector)
   extendedApi.Subscribe = (props) =>
     functionalUpdate(props.children, useStore(api.store, props.selector))

@@ -69,6 +69,7 @@ export function DetailsPanel({ selectedKey }: DetailsPanelProps) {
             <div
               style={{
                 display: 'flex',
+                'flex-wrap': 'wrap',
                 gap: '8px',
               }}
             >
@@ -86,7 +87,7 @@ export function DetailsPanel({ selectedKey }: DetailsPanelProps) {
                     >
                       {fieldName}
                     </div>
-                    <JsonTree copyable value={fieldData as unknown} />
+                    <JsonTree copyable value={fieldData} />
                   </div>
                 )}
               </For>
@@ -98,7 +99,7 @@ export function DetailsPanel({ selectedKey }: DetailsPanelProps) {
             <div class={styles().stateContent}>
               <JsonTree
                 copyable
-                value={store()[selectedIndex()]!.state.values as unknown}
+                value={store()[selectedIndex()]!.state.values}
               />
             </div>
           </div>
@@ -106,7 +107,7 @@ export function DetailsPanel({ selectedKey }: DetailsPanelProps) {
           <div class={styles().detailSection}>
             <div class={styles().detailSectionHeader}>Form status</div>
             <div class={styles().stateContent}>
-              <JsonTree copyable value={formStatus() as unknown} />
+              <JsonTree copyable value={formStatus()} />
             </div>
           </div>
 
@@ -115,8 +116,8 @@ export function DetailsPanel({ selectedKey }: DetailsPanelProps) {
             <div class={styles().stateContent}>
               <JsonTree
                 copyable
-                value={store()[selectedIndex()]?.options as unknown}
-                collapsePaths={['validators'] as unknown as never}
+                value={store()[selectedIndex()]?.options}
+                collapsePaths={['validators']}
               />
             </div>
           </div>
@@ -124,10 +125,7 @@ export function DetailsPanel({ selectedKey }: DetailsPanelProps) {
           <div class={styles().detailSection}>
             <div class={styles().detailSectionHeader}>Submission history</div>
             <div class={styles().stateContent}>
-              <JsonTree
-                copyable
-                value={store()[selectedIndex()]?.history as unknown}
-              />
+              <JsonTree copyable value={store()[selectedIndex()]?.history} />
             </div>
           </div>
         </div>
