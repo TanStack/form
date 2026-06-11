@@ -32,18 +32,14 @@ type AcceptsFieldBrand<TAcceptedValue> = {
   readonly __tanstackFieldAcceptsType: TAcceptedValue
 }
 
-type IsSame<TTypeA, TTypeB> = [TTypeA] extends [TTypeB]
-  ? [TTypeB] extends [TTypeA]
-    ? true
-    : false
-  : false
-
 type CompatibleFieldKey<TKey, TComponent, TTargetValue> =
-  TComponent extends ExactFieldBrand<infer TExact>
-    ? IsSame<TExact, TTargetValue> extends true
-      ? TKey
+  [TComponent] extends [ExactFieldBrand<infer TExact>]
+    ? [TExact] extends [TTargetValue]
+      ? [TTargetValue] extends [TExact]
+        ? TKey
+        : never
       : never
-    : TComponent extends AcceptsFieldBrand<infer TLoose>
+    : [TComponent] extends [AcceptsFieldBrand<infer TLoose>]
       ? [TTargetValue] extends [TLoose]
         ? TKey
         : never
@@ -56,16 +52,34 @@ type UnwrapComponent<TComponent> =
       ? UnwrapComponent<TInner>
       : TComponent
 
-type FieldComponentsMatchingType<
+type UnwrappedFieldComponents<
+  TFieldComponents extends Record<string, FunctionComponent<any>>,
+> = {
+  [K in keyof TFieldComponents]: UnwrapComponent<TFieldComponents[K]>
+}
+
+type FilteredFieldComponents<
   TFieldComponents extends Record<string, FunctionComponent<any>>,
   TTargetValue,
+  TUnwrappedFieldComponents extends {
+    [K in keyof TFieldComponents]: any
+  } = UnwrappedFieldComponents<TFieldComponents>,
 > = {
   [K in keyof TFieldComponents as CompatibleFieldKey<
     K,
-    UnwrapComponent<TFieldComponents[K]>,
+    TUnwrappedFieldComponents[K],
     TTargetValue
   >]: TFieldComponents[K]
 }
+
+type FieldComponentsMatchingType<
+  TFieldComponents extends Record<string, FunctionComponent<any>>,
+  TTargetValue,
+> = unknown extends TTargetValue
+  ? TFieldComponents
+  : string extends keyof TFieldComponents
+    ? TFieldComponents
+    : FilteredFieldComponents<TFieldComponents, TTargetValue>
 
 export type ReactFieldApi<
   TFieldData,

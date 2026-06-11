@@ -2,10 +2,12 @@ import { useContext } from 'react'
 import { useInternalForm } from '../ReactForm/ReactFormApi.lib'
 import { createAppFormInitializer } from './initializeAppForm.lib'
 import { FormContext } from './contexts.lib'
-import type { UseAppFormHook } from './useAppFormTypes.public'
 import type { AppFormOptionsApi } from './appFormOptions.public'
 import type { AnyReactFormComponentMap } from './componentMap.public'
-import type { AppFormHookResult } from './createFormHookTypes.public'
+import type {
+  AppFormHookResult,
+  UseAppFormHook,
+} from './createFormHookTypes.public'
 import type { FormOptions } from '@tanstack/form-core-v2'
 
 function useFormContext() {

@@ -10,7 +10,6 @@ import type {
   ToFormValidatorMetas,
 } from '../validation.public'
 import type { FormListeners } from '../listeners.public'
-import type { ArrayFieldMethods } from './array-methods.lib'
 import type { FormApiArrayMethods } from './FormApiArrayMethods.types.public'
 import type { FormApiFieldMethods } from './FormApiFieldMethods.types.public'
 
@@ -129,9 +128,7 @@ export interface FormState<
   submissionAttempts: number
 }
 
-// Array field methods resolve to `never` if there is no array value, so we need
-// to remove them to keep AnyFormApi truly compatible with all forms
-export type AnyFormApi = Omit<FormApi<any, any, any>, ArrayFieldMethods>
+export type AnyFormApi = FormApi<any, any, any>
 
 export interface FormApi<
   TFormData,

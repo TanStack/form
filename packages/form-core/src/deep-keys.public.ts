@@ -230,7 +230,5 @@ export type DeepKeysWhereValueIncludes<TData, TValue> =
       : never
     : never
 
-export type TryGetArrayElementType<TValue> = Extract<
-  TValue,
-  ReadonlyArray<any>
->[number]
+export type TryGetArrayElementType<TValue> =
+  TValue extends ReadonlyArray<infer TElement> ? TElement : never
