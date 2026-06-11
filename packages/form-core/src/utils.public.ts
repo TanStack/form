@@ -18,7 +18,9 @@ export type Editable<T> = T extends BuiltInType
       ? EditableObject<T> | null | undefined
       : T | null | undefined
 
-type EditableObject<T extends object> = { [K in keyof T]: Editable<T[K]> }
+type EditableObject<in out T extends object> = {
+  [K in keyof T]: Editable<T[K]>
+}
 
 export type InferUnion<TBase, TIncoming> = TBase extends BuiltInType
   ? TBase | TIncoming
@@ -34,7 +36,10 @@ export type InferUnion<TBase, TIncoming> = TBase extends BuiltInType
           : TBase | TIncoming
         : TBase | TIncoming
 
-type InferUnionObject<TBase extends object, TIncoming extends object> = {
+type InferUnionObject<
+  in out TBase extends object,
+  in out TIncoming extends object,
+> = {
   [K in keyof TBase | keyof TIncoming]: K extends keyof TBase
     ? K extends keyof TIncoming
       ? InferUnion<TBase[K], TIncoming[K]>

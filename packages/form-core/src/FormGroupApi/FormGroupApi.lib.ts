@@ -34,6 +34,7 @@ import type { PipelineCache } from '../utils.lib'
 import type { PipelineResult } from '../validation.lib'
 import type {
   FormGroupApi,
+  FormGroupApiOptions,
   FormGroupOptions,
   FormGroupState,
 } from './FormGroupApi.public'
@@ -66,21 +67,16 @@ export class InternalFormGroupApi<
   readonly form: FormApi<TFormData, TFormValidatorMetas, TSubmitReturn> &
     InternalFormApi<any, any, any>
   readonly name: TGroupName
-  options: FormGroupOptions<
+  options: FormGroupApiOptions<
     TFormData,
     TGroupName,
     TGroupValue,
-    FormGroupValidators<TGroupValue>,
+    ToFormGroupValidatorMetas<TGroupValidators>,
     TFormValidatorMetas,
     TSubmitReturn
   >
   store: ReadonlyAtom<
-    FormGroupState<
-      TFormData,
-      TGroupName,
-      TGroupValue,
-      ToFormGroupValidatorMetas<TGroupValidators>
-    >
+    FormGroupState<TGroupValue, ToFormGroupValidatorMetas<TGroupValidators>>
   >
   _pipelineCache: PipelineCache<FormGroupValidateResult<TGroupValue>>
   _schemaOutputs: Array<any> = []
@@ -110,7 +106,7 @@ export class InternalFormGroupApi<
       TSubmitReturn
     >,
   ) {
-    this.options = options
+    this.options = options as never
     this.form = options.form as unknown as FormApi<
       TFormData,
       TFormValidatorMetas,
@@ -136,7 +132,7 @@ export class InternalFormGroupApi<
       TSubmitReturn
     >,
   ) => {
-    this.options = options
+    this.options = options as never
   }
 
   mount = (): void => {
@@ -167,8 +163,6 @@ export class InternalFormGroupApi<
   }
 
   _getStateSnapshot(): FormGroupState<
-    TFormData,
-    TGroupName,
     TGroupValue,
     ToFormGroupValidatorMetas<TGroupValidators>
   > {
@@ -266,9 +260,7 @@ export class InternalFormGroupApi<
 
   _prefixWatchedFields<
     TItem extends { watchFields?: Array<string> } | undefined,
-  >(
-    items: ReadonlyArray<TItem> | undefined,
-  ): Array<TItem> | undefined {
+  >(items: ReadonlyArray<TItem> | undefined): Array<TItem> | undefined {
     if (!items) return undefined
 
     return items.map((item) => {
@@ -323,9 +315,7 @@ export class InternalFormGroupApi<
     })
   }
 
-  _getFieldErrorMeta(
-    meta: InternalBaseFieldMeta,
-  ): FormGroupFieldErrorMeta {
+  _getFieldErrorMeta(meta: InternalBaseFieldMeta): FormGroupFieldErrorMeta {
     return (
       meta._formGroupValidatorErrors.get(this._errorOwner) ?? {
         errors: [],

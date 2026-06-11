@@ -31,10 +31,7 @@ import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
 import type { InternalFormGroupApi } from './FormGroupApi/FormGroupApi.lib'
 
 type FormValidateContext = Omit<FormValidatorContext<any>, 'value'>
-type FieldValidateContext = Omit<
-  FieldValidatorContext<any, any, any, any>,
-  'value'
->
+type FieldValidateContext = Omit<FieldValidatorContext<any, any, any>, 'value'>
 type FormGroupValidateContext = Omit<FormGroupValidatorContext<any>, 'value'>
 type FormInputContext = Omit<FormValidateContext, 'signal'>
 type FieldInputContext = Omit<FieldValidateContext, 'signal'>
@@ -53,7 +50,7 @@ type ValidateResult =
   | FormGroupValidateResult<any>
   | FieldValidateResult
 
-type MountValidationExecutionResult<TResult extends ValidateResult> = {
+type MountValidationExecutionResult<in out TResult extends ValidateResult> = {
   result: TResult
   schemaResult: any | null
   hasSchemaResult: boolean
@@ -185,10 +182,7 @@ export function reconcileRoutedFieldErrors(
     validatorIndex: number,
     errors: Array<ValidationIssue>,
   ) => void,
-  clearFieldError: (
-    field: AnyInternalFieldApi,
-    validatorIndex: number,
-  ) => void,
+  clearFieldError: (field: AnyInternalFieldApi, validatorIndex: number) => void,
 ): {
   fieldRefs: Set<AnyInternalFieldApi>
   affectedFields: Set<AnyInternalFieldApi>
@@ -248,20 +242,20 @@ export function isAggregateError(value: FormValidateResult<any>): {
   return null
 }
 
-export interface PipelineResult<T> {
+export interface PipelineResult<in out T> {
   validatorIndex: number
   result: T
   schemaResult: any | null
   hasSchemaResult?: boolean
 }
 
-interface ValidatorExecutionResult<TResult> {
+interface ValidatorExecutionResult<in out TResult> {
   result: TResult
   schemaResult: any | null
   hasSchemaResult: boolean
 }
 
-interface PendingDebouncedCall<TResult extends ValidateResult> {
+interface PendingDebouncedCall<in out TResult extends ValidateResult> {
   context: ValidateContext
   resolve: (
     value: ValidatorExecutionResult<TResult> | AbortedCall | ThrownError,
@@ -273,7 +267,7 @@ export type ValidationDebouncer<TResult extends ValidateResult> = LiteDebouncer<
   (call: PendingDebouncedCall<TResult>) => void
 >
 
-interface PendingPipelineResult<T> {
+interface PendingPipelineResult<in out T> {
   validatorIndex: number
   result: T
 }
@@ -345,7 +339,7 @@ async function executeValidator<TResult extends ValidateResult>(
   context:
     | FormValidatorContext<any>
     | FormGroupValidatorContext<any>
-    | FieldValidatorContext<any, any, any, any>,
+    | FieldValidatorContext<any, any, any>,
   scope: 'field' | 'form',
 ): Promise<ValidatorExecutionResult<TResult>> {
   if (isStandardSchema(validator.run)) {
@@ -359,7 +353,7 @@ async function executeValidator<TResult extends ValidateResult>(
   }
 }
 
-interface ValidatorPipelineArgs<TResult extends ValidateResult> {
+interface ValidatorPipelineArgs<in out TResult extends ValidateResult> {
   context: InputContext
   cache: PipelineCache<TResult>
   pipeline: ReadonlyArray<Validator<any, any, any>>
@@ -367,7 +361,7 @@ interface ValidatorPipelineArgs<TResult extends ValidateResult> {
   getContext: (
     inputContext: ValidateContext,
   ) =>
-    | FieldValidatorContext<any, any, any, any>
+    | FieldValidatorContext<any, any, any>
     | FormGroupValidatorContext<any>
     | FormValidatorContext<any>
   scope: 'field' | 'form'
@@ -375,7 +369,9 @@ interface ValidatorPipelineArgs<TResult extends ValidateResult> {
   onResult?: (result: PipelineResult<TResult>) => void
 }
 
-interface RunMaybeDebouncedValidatorArgs<TResult extends ValidateResult> {
+interface RunMaybeDebouncedValidatorArgs<
+  in out TResult extends ValidateResult,
+> {
   validator: Validator<any, any, any>
   context: InputContext
   validatorIndex: number
@@ -806,13 +802,15 @@ export interface FormMountValidatorPipelineResult {
   asyncPromise: Promise<void> | null
 }
 
-interface MountValidatorPipelineArgs<TResult extends ValidateResult> {
+interface MountValidatorPipelineArgs<in out TResult extends ValidateResult> {
   pipeline: ReadonlyArray<Validator<any, any, any>>
   cache: PipelineCache<TResult>
-  getContext: (signal: AbortSignal) =>
+  getContext: (
+    signal: AbortSignal,
+  ) =>
     | FormValidatorContext<any>
     | FormGroupValidatorContext<any>
-    | FieldValidatorContext<any, any, any, any>
+    | FieldValidatorContext<any, any, any>
   scope: 'field' | 'form'
   onResult?: (result: PipelineResult<TResult>) => void
 }
@@ -863,13 +861,13 @@ function executeMountValidator<TResult extends ValidateResult>(
 
   try {
     if (isStandardSchema(validator.run)) {
-      return (parseStandardSchema(validator.run, context.value, scope)
+      return parseStandardSchema(validator.run, context.value, scope)
         .then((result) =>
           signal.aborted ? createEmptyMountValidationResult<TResult>() : result,
         )
         .finally(cleanup) as unknown as PromiseLike<
         MountValidationExecutionResult<TResult>
-      >)
+      >
     }
 
     const result = validator.run(context)
@@ -903,7 +901,9 @@ function executeMountValidator<TResult extends ValidateResult>(
   }
 }
 
-async function continueMountValidationFromAsyncResult<TResult extends ValidateResult>(
+async function continueMountValidationFromAsyncResult<
+  TResult extends ValidateResult,
+>(
   pipeline: ReadonlyArray<Validator<any, any, any>>,
   cache: PipelineCache<TResult>,
   getContext: MountValidatorPipelineArgs<TResult>['getContext'],

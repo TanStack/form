@@ -10,7 +10,7 @@ import type {
 } from '../AppForm/componentMap.public'
 import type { ReactFormApi } from './formApiTypes.public'
 
-export type UseFormHook<TComponents extends AnyReactFormComponentMap> = <
+export type UseFormHook<in out TComponents extends AnyReactFormComponentMap> = <
   TFormData,
   const TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,

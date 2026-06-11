@@ -130,8 +130,6 @@ export interface InternalFieldState extends PublicFieldState<
   any,
   any,
   any,
-  any,
-  any,
   any
 > {
   meta: InternalFieldMeta
@@ -343,7 +341,7 @@ export class InternalFieldApi<
   TFormData,
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
-> implements FieldApi<any, any, any, any, any, any, any, any> {
+> implements FieldApi<any, any, any, any, any, any, any> {
   readonly _isRoot = false
   _parent: AnyInternalFieldApi | InternalRootFieldApi
   #children: Map<NameSegment, AnyInternalFieldApi> = new Map()

@@ -1,4 +1,4 @@
-import type { DeepKeys, DeepValue } from './deep-keys.public'
+import type { DeepKeys } from './deep-keys.public'
 import type { FormApi } from './FormApi/FormApi.public'
 import type { AnyFieldApi, FieldApi } from './FieldApi/FieldApi.public'
 import type {
@@ -8,27 +8,23 @@ import type {
   ValidationTrigger,
 } from './validation.public'
 
-// triggers
-
 export type FormListenerTriggers = ValidationTrigger | 'mount' | 'reset'
 export type FieldListenerTriggers = FormListenerTriggers | 'unmount'
 
-// shared
-
-export interface ListenerPredicateContext<TFormData, TValue> {
+export interface ListenerPredicateContext<in out TFormData, out TValue> {
   formApi: FormApi<TFormData, any, any>
   triggerFieldApi?: AnyFieldApi
   value: TValue
 }
 
-export type ListenerPredicateFn<TFormData, TValue> = (
+export type ListenerPredicateFn<in out TFormData, in out TValue> = (
   context: ListenerPredicateContext<TFormData, TValue>,
 ) => boolean
 
 export interface ListenerTriggerConfig<
-  TTriggers extends FieldListenerTriggers,
-  TFormData,
-  TValue,
+  out TTriggers extends FieldListenerTriggers,
+  in out TFormData,
+  in out TValue,
 > {
   trigger: TTriggers
   when?: boolean | ListenerPredicateFn<TFormData, TValue>
@@ -40,14 +36,14 @@ export type ListenerTriggerOption<
   TValue,
 > = TTriggers | ListenerTriggerConfig<TTriggers, TFormData, TValue>
 
-export type ListenerDebounceFn<TFormData, TValue> = (
+export type ListenerDebounceFn<in out TFormData, in out TValue> = (
   context: ListenerPredicateContext<TFormData, TValue>,
 ) => number
 
 export interface Listener<
-  TTriggers extends FieldListenerTriggers,
-  TFormData,
-  TValue,
+  out TTriggers extends FieldListenerTriggers,
+  in out TFormData,
+  in out TValue,
 > {
   /**
    * The debounce time in milliseconds for validation triggers (change, blur).
@@ -59,12 +55,10 @@ export interface Listener<
   triggers?: Array<ListenerTriggerOption<TTriggers, TFormData, TValue>>
 }
 
-// form
-
 export interface FormListenerContext<
-  TFormData,
-  TFormValidatorMetas extends FormValidatorMetas,
-  TSubmitReturn,
+  in out TFormData,
+  in out TFormValidatorMetas extends FormValidatorMetas,
+  in out TSubmitReturn,
 > {
   triggerFieldApi?: AnyFieldApi
   formApi: FormApi<TFormData, TFormValidatorMetas, TSubmitReturn>
@@ -72,9 +66,9 @@ export interface FormListenerContext<
 }
 
 export type FormListenerFn<
-  TFormData,
-  TFormValidatorMetas extends FormValidatorMetas,
-  TSubmitReturn,
+  in out TFormData,
+  in out TFormValidatorMetas extends FormValidatorMetas,
+  in out TSubmitReturn,
 > = (
   context: FormListenerContext<TFormData, TFormValidatorMetas, TSubmitReturn>,
 ) => void
@@ -82,9 +76,9 @@ export type FormListenerFn<
 export type AnyFormListener = FormListener<any, any, any>
 
 export interface FormListener<
-  TFormData,
-  TFormValidatorMetas extends FormValidatorMetas,
-  TSubmitReturn,
+  in out TFormData,
+  in out TFormValidatorMetas extends FormValidatorMetas,
+  in out TSubmitReturn,
 > extends Listener<FormListenerTriggers, TFormData, TFormData> {
   run: FormListenerFn<TFormData, TFormValidatorMetas, TSubmitReturn>
 }
@@ -95,21 +89,17 @@ export type FormListeners<
   TSubmitReturn,
 > = Array<FormListener<TFormData, TFormValidatorMetas, TSubmitReturn>>
 
-// field
-
 export interface FieldListenerContext<
-  TFieldData,
-  TFieldName extends DeepKeys<TFieldData>,
-  TFieldValue extends DeepValue<TFieldData, TFieldName>,
-  TFieldValidatorMetas extends FieldValidatorMetas,
-  TGroupValidatorMetas extends FormGroupValidatorMetas,
-  TFormData,
-  TFormValidatorMetas extends FormValidatorMetas,
-  TSubmitReturn,
+  out TFieldName,
+  in out TFieldValue,
+  in out TFieldValidatorMetas extends FieldValidatorMetas,
+  in out TGroupValidatorMetas extends FormGroupValidatorMetas,
+  in out TFormData,
+  in out TFormValidatorMetas extends FormValidatorMetas,
+  in out TSubmitReturn,
 > {
   value: TFieldValue
   fieldApi: FieldApi<
-    TFieldData,
     TFieldName,
     TFieldValue,
     TFieldValidatorMetas,
@@ -121,23 +111,16 @@ export interface FieldListenerContext<
   formApi: FormApi<TFormData, TFormValidatorMetas, TSubmitReturn>
 }
 
-// Field A listens to field B
-// field B triggers field A validation
-// -> should fieldApi refer to A or should it refer to B?
-//    -> No, it should refer to field A still. B data can be obtained from other sources.
-
 export type FieldListenerFn<
-  TFieldData,
-  TFieldName extends DeepKeys<TFieldData>,
-  TFieldValue extends DeepValue<TFieldData, TFieldName>,
-  TFieldValidatorMetas extends FieldValidatorMetas,
-  TGroupValidatorMetas extends FormGroupValidatorMetas,
-  TFormData,
-  TFormValidatorMetas extends FormValidatorMetas,
-  TSubmitReturn,
+  in TFieldName,
+  in out TFieldValue,
+  in out TFieldValidatorMetas extends FieldValidatorMetas,
+  in out TGroupValidatorMetas extends FormGroupValidatorMetas,
+  in out TFormData,
+  in out TFormValidatorMetas extends FormValidatorMetas,
+  in out TSubmitReturn,
 > = (
   context: FieldListenerContext<
-    TFieldData,
     TFieldName,
     TFieldValue,
     TFieldValidatorMetas,
@@ -160,17 +143,16 @@ export type AnyFieldListener = FieldListener<
 >
 
 export interface FieldListener<
-  TFieldData,
-  TFieldName extends DeepKeys<TFieldData>,
-  TFieldValue extends DeepValue<TFieldData, TFieldName>,
-  TFieldValidatorMetas extends FieldValidatorMetas,
-  TGroupValidatorMetas extends FormGroupValidatorMetas,
-  TFormData,
-  TFormValidatorMetas extends FormValidatorMetas,
-  TSubmitReturn,
+  in out TFieldData,
+  in TFieldName,
+  in out TFieldValue,
+  in out TFieldValidatorMetas extends FieldValidatorMetas,
+  in out TGroupValidatorMetas extends FormGroupValidatorMetas,
+  in out TFormData,
+  in out TFormValidatorMetas extends FormValidatorMetas,
+  in out TSubmitReturn,
 > extends Listener<FieldListenerTriggers, TFieldData, TFieldValue> {
   run: FieldListenerFn<
-    TFieldData,
     TFieldName,
     TFieldValue,
     TFieldValidatorMetas,
@@ -179,17 +161,13 @@ export interface FieldListener<
     TFormValidatorMetas,
     TSubmitReturn
   >
-  // TODO what to name it
-  // - listenTo
-  // - listenToFields
-  // - watchFields
   watchFields?: Array<DeepKeys<TFieldData>>
 }
 
 export type FieldListeners<
   TFieldData,
-  TFieldName extends DeepKeys<TFieldData>,
-  TFieldValue extends DeepValue<TFieldData, TFieldName>,
+  TFieldName,
+  TFieldValue,
   TFieldValidatorMetas extends FieldValidatorMetas,
   TGroupValidatorMetas extends FormGroupValidatorMetas,
   TFormData,

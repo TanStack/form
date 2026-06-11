@@ -1,8 +1,8 @@
 import type { FunctionComponent } from 'react'
 
 export interface ReactFormComponentMap<
-  TFormComponents extends Record<string, FunctionComponent<any>>,
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
+  in out TFormComponents extends Record<string, FunctionComponent<any>>,
+  in out TFieldComponents extends Record<string, FunctionComponent<any>>,
 > {
   formComponents: TFormComponents
   fieldComponents: TFieldComponents

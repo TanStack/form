@@ -1,4 +1,4 @@
-export type TStandardSchemaValidatorValue<TData> = {
+export type TStandardSchemaValidatorValue<out TData> = {
   value: TData
 }
 
@@ -7,7 +7,7 @@ export type TStandardSchemaValidatorIssue = Array<StandardSchemaV1Issue>
 /**
  * The Standard Schema interface.
  */
-export type StandardSchemaV1<TInput = unknown, TOutput = TInput> = {
+export type StandardSchemaV1<out TInput = unknown, out TOutput = TInput> = {
   /**
    * The Standard Schema properties.
    */
@@ -17,7 +17,7 @@ export type StandardSchemaV1<TInput = unknown, TOutput = TInput> = {
 /**
  * The Standard Schema properties interface.
  */
-interface StandardSchemaV1Props<TInput = unknown, TOutput = TInput> {
+interface StandardSchemaV1Props<out TInput = unknown, out TOutput = TInput> {
   /**
    * The version number of the standard.
    */
@@ -48,7 +48,7 @@ type StandardSchemaV1Result<TOutput> =
 /**
  * The result interface if validation succeeds.
  */
-interface StandardSchemaV1SuccessResult<TOutput> {
+interface StandardSchemaV1SuccessResult<out TOutput> {
   /**
    * The typed output value.
    */
@@ -94,7 +94,7 @@ interface StandardSchemaV1PathSegment {
 /**
  * The Standard Schema types interface.
  */
-interface StandardSchemaV1Types<TInput = unknown, TOutput = TInput> {
+interface StandardSchemaV1Types<out TInput = unknown, out TOutput = TInput> {
   /**
    * The input type of the schema.
    */

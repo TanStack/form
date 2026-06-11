@@ -17,7 +17,7 @@ export type SubscribeSource<TValue> =
  * Subscribe to `form.store` (full form state). The selector receives the full
  * {@link FormState}.
  */
-export interface SubscribeProps<TSourceData, TSelected> {
+export interface SubscribeProps<in out TSourceData, in out TSelected> {
   source: SubscribeSource<TSourceData>
   /**
    * Select from full form state. Re-renders when the selected value changes

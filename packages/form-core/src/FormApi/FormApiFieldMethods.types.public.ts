@@ -1,7 +1,7 @@
 import type { DeepKeys, DeepValue } from '../deep-keys.public'
 import type { FieldUpdateOptions } from '../types.public'
 
-export type SetFieldValueFn<TFormData> = <
+export type SetFieldValueFn<in out TFormData> = <
   TDeepKeys extends DeepKeys<TFormData>,
 >(
   DeepKeys: TDeepKeys,
@@ -9,17 +9,17 @@ export type SetFieldValueFn<TFormData> = <
   options?: FieldUpdateOptions,
 ) => void
 
-export type GetFieldValueFn<TFormData> = <
+export type GetFieldValueFn<in out TFormData> = <
   TDeepKeys extends DeepKeys<TFormData>,
 >(
   DeepKeys: TDeepKeys,
 ) => DeepValue<TFormData, TDeepKeys>
 
-export type ResetFieldFn<TFormData> = <TDeepKeys extends DeepKeys<TFormData>>(
+export type ResetFieldFn<in out TFormData> = <TDeepKeys extends DeepKeys<TFormData>>(
   DeepKeys: TDeepKeys,
 ) => void
 
-export interface FormApiFieldMethods<TFormData> {
+export interface FormApiFieldMethods<in out TFormData> {
   /**
    * TODO
    * @param DeepKeys

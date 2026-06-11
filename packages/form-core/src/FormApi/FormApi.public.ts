@@ -10,8 +10,19 @@ import type {
   ToFormValidatorMetas,
 } from '../validation.public'
 import type { FormListeners } from '../listeners.public'
-import type { FormApiArrayMethods } from './FormApiArrayMethods.types.public'
-import type { FormApiFieldMethods } from './FormApiFieldMethods.types.public'
+import type {
+  ClearFieldValuesFn,
+  FilterFieldValuesFn,
+  InsertFieldValueFn,
+  PushFieldValueFn,
+  RemoveFieldValueFn,
+  SwapFieldValuesFn,
+} from './FormApiArrayMethods.types.public'
+import type {
+  GetFieldValueFn,
+  ResetFieldFn,
+  SetFieldValueFn,
+} from './FormApiFieldMethods.types.public'
 
 declare const onSubmitErrorBrand: unique symbol
 
@@ -21,15 +32,15 @@ export type OnSubmitError<
   [onSubmitErrorBrand]: true
 }
 
-export type CreateValidationErrorFn<TFormData> = <
+export type CreateValidationErrorFn<in out TFormData> = <
   TError extends FormValidationError<TFormData>,
 >(
   error: TError,
 ) => OnSubmitError<TError>
 
 export interface FormSubmitContext<
-  TFormData,
-  TFormValidatorMetas extends FormValidatorMetas,
+  in out TFormData,
+  in out TFormValidatorMetas extends FormValidatorMetas,
 > {
   value: TFormData
   formApi: FormApi<TFormData, TFormValidatorMetas, any>
@@ -40,9 +51,9 @@ export interface FormSubmitContext<
 export type AnyFormOptions = FormOptions<any, any, any>
 
 export interface FormOptions<
-  TFormData,
-  TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
+  in out TFormData,
+  in out TFormValidators extends FormValidators<TFormData>,
+  in out TSubmitReturn,
 > {
   formId?: string
   defaultValues: TFormData
@@ -65,10 +76,29 @@ export interface FormOptions<
   ) => TSubmitReturn
 }
 
+export interface FormApiOptions<
+  in out TFormData,
+  in out TFormValidatorMetas extends FormValidatorMetas,
+  in out TSubmitReturn,
+> {
+  formId?: string
+  defaultValues: TFormData
+  errorVisibility?: ErrorVisibility<
+    TFormData,
+    TFormValidatorMetas,
+    TSubmitReturn
+  >
+  validators?: FormValidators<TFormData>
+  listeners?: FormListeners<TFormData, TFormValidatorMetas, TSubmitReturn>
+  onSubmit?: (
+    context: FormSubmitContext<TFormData, TFormValidatorMetas>,
+  ) => TSubmitReturn
+}
+
 export interface FormState<
-  TFormData,
-  TFormValidatorMetas extends FormValidatorMetas,
-  TSubmitReturn,
+  in out TFormData,
+  in out TFormValidatorMetas extends FormValidatorMetas,
+  in out TSubmitReturn,
 > {
   /**
    * The current values of the form.
@@ -131,19 +161,73 @@ export interface FormState<
 export type AnyFormApi = FormApi<any, any, any>
 
 export interface FormApi<
-  TFormData,
-  TFormValidatorMetas extends FormValidatorMetas,
-  TSubmitReturn,
->
-  extends FormApiFieldMethods<TFormData>, FormApiArrayMethods<TFormData> {
+  in out TFormData,
+  in out TFormValidatorMetas extends FormValidatorMetas,
+  in out TSubmitReturn,
+> {
   store: ReadonlyAtom<FormState<TFormData, TFormValidatorMetas, TSubmitReturn>>
   readonly state: FormState<TFormData, TFormValidatorMetas, TSubmitReturn>
-  readonly options: FormOptions<
+  readonly options: FormApiOptions<
     TFormData,
-    FormValidators<TFormData>,
+    TFormValidatorMetas,
     TSubmitReturn
   >
   readonly formId: string
+  setFieldValue: SetFieldValueFn<TFormData>
+  /**
+   * TODO
+   * @param DeepKeys
+   * @returns
+   */
+  getFieldValue: GetFieldValueFn<TFormData>
+  resetField: ResetFieldFn<TFormData>
+  /**
+   * Swap two values in an array field.
+   * If the field is not an array, this method will be ignored.
+   * @param arrayFieldName - The name of the array field
+   * @param indexA - The index of the first value to swap
+   * @param indexB - The index of the second value to swap
+   */
+  swapFieldValues: SwapFieldValuesFn<TFormData>
+  /**
+   * Push a value into an array field.
+   * If the field is not an array, this method will be ignored.
+   * @param arrayFieldName - The name of the array field
+   * @param value - The value to push
+   * @param options - Optional update options
+   */
+  pushFieldValue: PushFieldValueFn<TFormData>
+  /**
+   * Insert a value into an array field at the specified index.
+   * If the field is not an array, this method will be ignored.
+   * @param arrayFieldName - The name of the array field
+   * @param index - The index at which to insert the value
+   * @param value - The value to insert
+   * @param options - Optional update options
+   */
+  insertFieldValue: InsertFieldValueFn<TFormData>
+  /**
+   * Clear all values from an array field.
+   * If the field is not an array, this method will be ignored.
+   * @param arrayFieldName - The name of the array field
+   */
+  clearFieldValues: ClearFieldValuesFn<TFormData>
+  /**
+   * Remove a value from an array field.
+   * If the field is not an array, this method will be ignored.
+   * @param arrayFieldName - The name of the array field
+   * @param index - The index of the value to remove
+   * @param options - Optional update options
+   */
+  removeFieldValue: RemoveFieldValueFn<TFormData>
+  /**
+   * Filter the values in an array field using a predicate function.
+   * If the field is not an array, this method will be ignored.
+   * @param arrayFieldName - The name of the array field
+   * @param predicate - The predicate function to filter values. Returns true to keep the value, false to remove it.
+   * @param options - Optional update options including a custom `thisArg` for the predicate
+   */
+  filterFieldValues: FilterFieldValuesFn<TFormData>
 
   /**
    * TODO expand on it

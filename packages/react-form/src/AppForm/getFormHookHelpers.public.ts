@@ -2,11 +2,11 @@ import { brandComponentFactory, wrapField } from './fieldComponentHelpers.lib'
 import type { CrossVersionReactNode } from '../reactTypes.public'
 import type { FieldWithValue } from '@tanstack/form-core-v2'
 
-type ExactFieldBrand<TValue> = {
+type ExactFieldBrand<out TValue> = {
   readonly __tanstackFieldExactType: TValue
 }
 
-type AcceptsFieldBrand<TAcceptedValue> = {
+type AcceptsFieldBrand<out TAcceptedValue> = {
   readonly __tanstackFieldAcceptsType: TAcceptedValue
 }
 
@@ -26,30 +26,32 @@ type FieldValueFromProp<TProp> =
   TProp extends FieldWithValue<infer TValue> ? TValue : never
 
 type FieldValueFromComponentProp<
-  TComponent,
-  TFieldPropKey extends keyof PropsOf<TComponent>,
-> = FieldValueFromProp<PropsOf<TComponent>[TFieldPropKey]>
+  TProps,
+  TFieldPropKey extends keyof TProps,
+> = FieldValueFromProp<TProps[TFieldPropKey]>
 
 type PublicPropsReplacingField<
-  TComponent,
-  TFieldPropKey extends keyof PropsOf<TComponent>,
-> = Omit<PropsOf<TComponent>, TFieldPropKey>
+  TProps,
+  TFieldPropKey extends keyof TProps,
+> = Omit<TProps, TFieldPropKey>
 
 type StrictInjectedFieldComponent<
   TComponent extends AnyFieldComponent,
-  TFieldPropKey extends FieldValuePropKeys<PropsOf<TComponent>>,
+  TProps = PropsOf<TComponent>,
+  TFieldPropKey extends FieldValuePropKeys<TProps> = FieldValuePropKeys<TProps>,
 > = ((
-  props: PublicPropsReplacingField<TComponent, TFieldPropKey>,
+  props: PublicPropsReplacingField<TProps, TFieldPropKey>,
 ) => React.ReactNode) &
-  ExactFieldBrand<FieldValueFromComponentProp<TComponent, TFieldPropKey>>
+  ExactFieldBrand<FieldValueFromComponentProp<TProps, TFieldPropKey>>
 
 type LooseInjectedFieldComponent<
   TComponent extends AnyFieldComponent,
-  TFieldPropKey extends FieldValuePropKeys<PropsOf<TComponent>>,
+  TProps = PropsOf<TComponent>,
+  TFieldPropKey extends FieldValuePropKeys<TProps> = FieldValuePropKeys<TProps>,
 > = ((
-  props: PublicPropsReplacingField<TComponent, TFieldPropKey>,
+  props: PublicPropsReplacingField<TProps, TFieldPropKey>,
 ) => React.ReactNode) &
-  AcceptsFieldBrand<FieldValueFromComponentProp<TComponent, TFieldPropKey>>
+  AcceptsFieldBrand<FieldValueFromComponentProp<TProps, TFieldPropKey>>
 
 type StrictBrandedFieldComponent<
   TComponent extends AnyFieldComponent,
@@ -64,19 +66,21 @@ type LooseBrandedFieldComponent<
 interface FieldComponentHelper {
   strict: <
     TComponent extends AnyFieldComponent,
-    TFieldPropKey extends FieldValuePropKeys<PropsOf<TComponent>>,
+    TProps = PropsOf<TComponent>,
+    TFieldPropKey extends FieldValuePropKeys<TProps> = FieldValuePropKeys<TProps>,
   >(
     Component: TComponent,
     fieldPropKey: TFieldPropKey,
-  ) => StrictInjectedFieldComponent<TComponent, TFieldPropKey>
+  ) => StrictInjectedFieldComponent<TComponent, TProps, TFieldPropKey>
 
   loose: <
     TComponent extends AnyFieldComponent,
-    TFieldPropKey extends FieldValuePropKeys<PropsOf<TComponent>>,
+    TProps = PropsOf<TComponent>,
+    TFieldPropKey extends FieldValuePropKeys<TProps> = FieldValuePropKeys<TProps>,
   >(
     Component: TComponent,
     fieldPropKey: TFieldPropKey,
-  ) => LooseInjectedFieldComponent<TComponent, TFieldPropKey>
+  ) => LooseInjectedFieldComponent<TComponent, TProps, TFieldPropKey>
 }
 
 interface FieldBrandHelper {

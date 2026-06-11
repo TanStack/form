@@ -34,7 +34,12 @@ import { runFormListenerPipeline } from '../listeners.lib'
 import { runSubmissionProcess } from './handleSubmit.lib'
 import { ArrayMethods } from './array-methods.lib'
 import { getFormStateSnapshot } from './formState.lib'
-import type { FormApi, FormOptions, FormState } from './FormApi.public'
+import type {
+  FormApi,
+  FormApiOptions,
+  FormOptions,
+  FormState,
+} from './FormApi.public'
 import type { FormErrorMeta } from './formState.lib'
 import type { DeepKeys } from '../deep-keys.public'
 import type { PipelineCache } from '../utils.lib'
@@ -100,7 +105,7 @@ export interface FormMetaAtoms {
   submissionAttempts: Atom<number>
 }
 
-export interface FormAtoms<TFormData> {
+export interface FormAtoms<in out TFormData> {
   values: Atom<TFormData>
   meta: FormMetaAtoms
   resetVersion: Atom<number>
@@ -312,11 +317,11 @@ export class InternalFormApi<
   > {
     return this.store.get()
   }
-  get options(): InternalFormOptions<
+  get options(): FormApiOptions<
     TFormData,
-    FormValidators<TFormData>,
-    any
-  > {
+    ToFormValidatorMetas<TFormValidators>,
+    TSubmitReturn
+  > & { formId: string } {
     return this._options as never
   }
   get formId(): string {

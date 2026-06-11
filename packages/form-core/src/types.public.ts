@@ -1,6 +1,6 @@
 import type { FieldApi } from './FieldApi/FieldApi.public'
 
-export type UpdateFn<TValue> = (previousValue: TValue) => TValue
+export type UpdateFn<in out TValue> = (previousValue: TValue) => TValue
 export type Updater<TValue> = TValue | UpdateFn<TValue>
 
 export interface FieldUpdateOptions {
@@ -33,7 +33,6 @@ export interface FieldUpdateOptions {
 export type OneOrMany<TValue> = TValue | Array<TValue>
 
 export type FieldWithValue<TFieldValue> = FieldApi<
-  any,
   any,
   TFieldValue,
   any,

@@ -10,16 +10,16 @@ import type { AnyReactFormComponentMap } from './componentMap.public'
 declare const componentsSymbol: unique symbol
 
 export interface AppFormOptions<
-  TFormData,
-  TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
-  TComponents extends AnyReactFormComponentMap,
+  in out TFormData,
+  in out TFormValidators extends FormValidators<TFormData>,
+  in out TSubmitReturn,
+  out TComponents extends AnyReactFormComponentMap,
 > extends FormOptions<TFormData, TFormValidators, TSubmitReturn> {
   [componentsSymbol]: TComponents
 }
 
 export interface AppFormOptionsApi<
-  TComponents extends AnyReactFormComponentMap,
+  in out TComponents extends AnyReactFormComponentMap,
 > {
   <
     TFormData,

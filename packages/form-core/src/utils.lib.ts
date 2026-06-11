@@ -56,7 +56,7 @@ export function getTargetField(
 }
 
 export interface PipelineCache<
-  TResult extends
+  in out TResult extends
     | FormValidateResult<any>
     | FormGroupValidateResult<any>
     | FieldValidateResult,

@@ -31,7 +31,7 @@ type FieldInputContext = {
 type InputContext = FormInputContext | FieldInputContext
 type ListenerContext =
   | FormListenerContext<any, any, any>
-  | FieldListenerContext<any, any, any, any, any, any, any, any>
+  | FieldListenerContext<any, any, any, any, any, any, any>
 type AnyListener = AnyFormListener | AnyFieldListener
 
 export type ListenerDebouncer = LiteDebouncer<

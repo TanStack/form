@@ -21,15 +21,15 @@ export type ArrayFieldElement<
 > = TryGetArrayElementType<ArrayFieldValue<TFormData, TFieldName>>
 
 export type ArrayFieldPredicate<
-  TFormData,
-  TFieldName extends ArrayFieldName<TFormData>,
+  in out TFormData,
+  in out TFieldName extends ArrayFieldName<TFormData>,
 > = (
   value: ArrayFieldElement<TFormData, TFieldName>,
   index: number,
   array: ArrayFieldValue<TFormData, TFieldName>,
 ) => boolean
 
-export type SwapFieldValuesFn<TFormData> = <
+export type SwapFieldValuesFn<in out TFormData> = <
   TFieldName extends ArrayFieldName<TFormData>,
 >(
   arrayFieldName: TFieldName,
@@ -38,7 +38,7 @@ export type SwapFieldValuesFn<TFormData> = <
   options?: FieldUpdateOptions,
 ) => void
 
-export type PushFieldValueFn<TFormData> = <
+export type PushFieldValueFn<in out TFormData> = <
   TFieldName extends ArrayFieldName<TFormData>,
 >(
   arrayFieldName: TFieldName,
@@ -46,7 +46,7 @@ export type PushFieldValueFn<TFormData> = <
   options?: FieldUpdateOptions,
 ) => void
 
-export type InsertFieldValueFn<TFormData> = <
+export type InsertFieldValueFn<in out TFormData> = <
   TFieldName extends ArrayFieldName<TFormData>,
 >(
   arrayFieldName: TFieldName,
@@ -55,14 +55,14 @@ export type InsertFieldValueFn<TFormData> = <
   options?: FieldUpdateOptions,
 ) => void
 
-export type ClearFieldValuesFn<TFormData> = <
+export type ClearFieldValuesFn<in out TFormData> = <
   TFieldName extends ArrayFieldName<TFormData>,
 >(
   arrayFieldName: TFieldName,
   options?: FieldUpdateOptions,
 ) => void
 
-export type RemoveFieldValueFn<TFormData> = <
+export type RemoveFieldValueFn<in out TFormData> = <
   TFieldName extends ArrayFieldName<TFormData>,
 >(
   arrayFieldName: TFieldName,
@@ -70,7 +70,7 @@ export type RemoveFieldValueFn<TFormData> = <
   options?: FieldUpdateOptions,
 ) => void
 
-export type FilterFieldValuesFn<TFormData> = <
+export type FilterFieldValuesFn<in out TFormData> = <
   TFieldName extends ArrayFieldName<TFormData>,
 >(
   arrayFieldName: TFieldName,
@@ -78,7 +78,7 @@ export type FilterFieldValuesFn<TFormData> = <
   options?: FieldUpdateOptions & { thisArg?: any },
 ) => void
 
-export interface FormApiArrayMethods<TFormData> {
+export interface FormApiArrayMethods<in out TFormData> {
   /**
    * Swap two values in an array field.
    * If the field is not an array, this method will be ignored.

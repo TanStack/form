@@ -1,8 +1,8 @@
 import type { BuiltInType } from './utils.public'
 
 interface AnyDeepKeyAndValue<
-  TKey extends string = string,
-  TValue extends any = any,
+  in out TKey extends string = string,
+  in out TValue extends any = any,
 > {
   key: TKey
   value: TValue
@@ -138,7 +138,7 @@ type UnknownAccessor<TParent extends AnyDeepKeyAndValue> =
   TParent['key'] extends never ? string : `${TParent['key']}.${string}`
 
 interface UnknownDeepKeyAndValue<
-  TParent extends AnyDeepKeyAndValue,
+  in out TParent extends AnyDeepKeyAndValue,
 > extends AnyDeepKeyAndValue {
   key: UnknownAccessor<TParent>
   value: unknown

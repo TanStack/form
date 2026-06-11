@@ -7,7 +7,7 @@ import type {
   ToFormValidatorMetas,
 } from '@tanstack/form-core-v2'
 
-export type UseAppFormHook<TComponents extends AnyReactFormComponentMap> = <
+export type UseAppFormHook<in out TComponents extends AnyReactFormComponentMap> = <
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
@@ -21,7 +21,7 @@ export type UseAppFormHook<TComponents extends AnyReactFormComponentMap> = <
 >
 
 export interface AppFormHookResult<
-  TComponents extends AnyReactFormComponentMap,
+  in out TComponents extends AnyReactFormComponentMap,
 > {
   appFormOptions: AppFormOptionsApi<TComponents>
   useAppForm: UseAppFormHook<TComponents>

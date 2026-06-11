@@ -1,4 +1,4 @@
-import type { DeepKeys, DeepValue } from './deep-keys.public'
+import type { DeepKeys } from './deep-keys.public'
 import type { FormApi, OnSubmitError } from './FormApi/FormApi.public'
 import type { AnyFieldApi, FieldApi } from './FieldApi/FieldApi.public'
 import type { FormGroupApi } from './FormGroupApi/FormGroupApi.public'
@@ -9,9 +9,9 @@ import type {
 import type { OneOrMany } from './types.public'
 
 export interface Validator<
-  TFormData,
-  TValidator extends StandardSchemaV1 | ValidatorFn<any, any>,
-  TContextValue,
+  in out TFormData,
+  out TValidator extends StandardSchemaV1 | ValidatorFn<any, any>,
+  in out TContextValue,
 > {
   run: TValidator
   /**
@@ -73,7 +73,7 @@ type InferFormDataFromValidator<TValidator extends ValidatorRun> =
         : any
 
 type ValidatorRunsFromOptions<
-  TOptions extends readonly [
+  in out TOptions extends readonly [
     ValidatorOptions<any, any>,
     ...Array<ValidatorOptions<any, any>>,
   ],
@@ -82,13 +82,13 @@ type ValidatorRunsFromOptions<
 }
 
 type ValidatorsFromOptionsAndRuns<
-  TFormData,
-  TContextValue,
-  TOptions extends readonly [
+  in out TFormData,
+  in out TContextValue,
+  in out TOptions extends readonly [
     ValidatorOptions<TFormData, TContextValue>,
     ...Array<ValidatorOptions<TFormData, TContextValue>>,
   ],
-  TRuns extends ValidatorRunsFromOptions<TOptions>,
+  in out TRuns extends ValidatorRunsFromOptions<TOptions>,
 > = {
   readonly [TIndex in keyof TOptions]: ValidatorWithRun<
     TFormData,
@@ -168,9 +168,9 @@ export interface ErrorVisibilityFieldState {
 }
 
 export interface ErrorVisibilityContext<
-  TFormData,
-  TFormValidatorMetas extends ValidatorMetas,
-  TSubmitReturn,
+  in out TFormData,
+  in out TFormValidatorMetas extends ValidatorMetas,
+  in out TSubmitReturn,
 > {
   state: FormApi<TFormData, TFormValidatorMetas, TSubmitReturn>['state']
   fieldState: ErrorVisibilityFieldState
@@ -184,9 +184,9 @@ export interface ErrorVisibilityContext<
  * form-wide.
  */
 export type ErrorVisibility<
-  TFormData,
-  TFormValidatorMetas extends ValidatorMetas,
-  TSubmitReturn,
+  in out TFormData,
+  in out TFormValidatorMetas extends ValidatorMetas,
+  in out TSubmitReturn,
 > = (
   context: ErrorVisibilityContext<
     TFormData,
@@ -237,21 +237,21 @@ export function createErrorVisibility(
   return visibility as ReusableErrorVisibility
 }
 
-export interface ValidationPredicateContext<TFormData, TValue> {
+export interface ValidationPredicateContext<in out TFormData, out TValue> {
   formApi: FormApi<TFormData, any, any>
   triggerFieldApi?: AnyFieldApi
   value: TValue
 }
 
-export type ValidationPredicateFn<TFormData, TValue> = (
+export type ValidationPredicateFn<in out TFormData, in out TValue> = (
   context: ValidationPredicateContext<TFormData, TValue>,
 ) => boolean
 
-export type ValidationDebounceFn<TFormData, TValue> = (
+export type ValidationDebounceFn<in out TFormData, in out TValue> = (
   context: ValidationPredicateContext<TFormData, TValue>,
 ) => number
 
-export interface ValidationTriggerConfig<TFormData, TValue> {
+export interface ValidationTriggerConfig<in out TFormData, in out TValue> {
   trigger: ConfigurableValidationTrigger
   when?: boolean | ValidationPredicateFn<TFormData, TValue>
 }
@@ -270,19 +270,19 @@ export type ValidationErrorValue = ValidationIssue | string
 export type ValidationError = OneOrMany<ValidationIssue>
 export type ValidationErrorInput = OneOrMany<ValidationErrorValue>
 
-export interface ValidationAggregateError<TFormData> {
+export interface ValidationAggregateError<in out TFormData> {
   form?: ValidationErrorInput
   fields: Partial<Record<DeepKeys<TFormData>, ValidationErrorInput>>
 }
 
-interface BaseValidatorContext<TFormData> {
+interface BaseValidatorContext<in out TFormData> {
   event: ValidationTrigger
   signal: AbortSignal
   formApi: FormApi<TFormData, any, any>
 }
 
 export interface FormValidatorContext<
-  TFormData,
+  in out TFormData,
 > extends BaseValidatorContext<TFormData> {
   triggerFieldApi?: AnyFieldApi
   value: TFormData
@@ -302,7 +302,7 @@ export type FormValidateResult<TFormData> =
   | ValidationResult
   | ValidationAggregateError<TFormData>
 
-export type ValidatorFn<TParameter, TReturn> = (
+export type ValidatorFn<in TParameter, out TReturn> = (
   ...args: Array<TParameter>
 ) => TReturn | Promise<TReturn>
 
@@ -311,7 +311,7 @@ export type FormValidatorFn<TFormData> = ValidatorFn<
   FormValidateResult<TFormData>
 >
 
-export interface FormValidator<TFormData> extends Validator<
+export interface FormValidator<in out TFormData> extends Validator<
   TFormData,
   FormValidatorFn<TFormData> | StandardSchemaV1<TFormData, any>,
   TFormData
@@ -319,7 +319,7 @@ export interface FormValidator<TFormData> extends Validator<
 
 export type FormValidators<TFormData> = ReadonlyArray<FormValidator<TFormData>>
 
-export interface FormGroupValidatorContext<TGroupValue> {
+export interface FormGroupValidatorContext<in out TGroupValue> {
   event: ValidationTrigger
   signal: AbortSignal
   formApi: FormApi<any, any, any>
@@ -340,7 +340,7 @@ export type FormGroupValidatorFn<TGroupValue> = ValidatorFn<
   FormGroupValidateResult<TGroupValue>
 >
 
-export interface FormGroupValidator<TGroupValue> extends Validator<
+export interface FormGroupValidator<in out TGroupValue> extends Validator<
   TGroupValue,
   FormGroupValidatorFn<TGroupValue> | StandardSchemaV1<TGroupValue, any>,
   TGroupValue
@@ -350,7 +350,9 @@ export type FormGroupValidators<TGroupValue> = ReadonlyArray<
   FormGroupValidator<TGroupValue>
 >
 
-type MappedSchemaOutputs<TFormValidatorMetas extends FormValidatorMetas> = {
+type MappedSchemaOutputs<
+  in out TFormValidatorMetas extends FormValidatorMetas,
+> = {
   [K in keyof TFormValidatorMetas]: TFormValidatorMetas[K]['schemaSubmitOutput']
 }
 
@@ -361,42 +363,28 @@ export type FormStandardSchemaValidatorOutputs<
   : MappedSchemaOutputs<TFormValidatorMetas>
 
 export interface FieldValidatorContext<
-  TFieldData,
-  TFieldName extends DeepKeys<TFieldData>,
-  TFieldValue extends DeepValue<TFieldData, TFieldName>,
-  TFormData,
+  in out TFieldName,
+  in out TFieldValue,
+  in out TFormData,
 > {
   event: ValidationTrigger
   signal: AbortSignal
   formApi: FormApi<TFormData, any, any>
-  fieldApi: FieldApi<
-    TFieldData,
-    TFieldName,
-    TFieldValue,
-    any,
-    any,
-    TFormData,
-    any,
-    any
-  >
+  fieldApi: FieldApi<TFieldName, TFieldValue, any, any, TFormData, any, any>
   value: TFieldValue
 }
 
 export type FieldValidateResult = ValidationResult
 
-export type FieldValidatorFn<
-  TFormData,
-  TFieldName extends DeepKeys<TFormData>,
-  TFieldValue extends DeepValue<TFormData, TFieldName>,
-> = ValidatorFn<
-  FieldValidatorContext<TFormData, TFieldName, TFieldValue, TFormData>,
+export type FieldValidatorFn<TFormData, TFieldName, TFieldValue> = ValidatorFn<
+  FieldValidatorContext<TFieldName, TFieldValue, TFormData>,
   FieldValidateResult
 >
 
 export interface FieldValidator<
-  TFormData,
-  TFieldName extends DeepKeys<TFormData>,
-  TFieldValue extends DeepValue<TFormData, TFieldName>,
+  in out TFormData,
+  in out TFieldName,
+  in out TFieldValue,
 > extends Validator<
   TFormData,
   | FieldValidatorFn<TFormData, TFieldName, TFieldValue>
@@ -406,11 +394,9 @@ export interface FieldValidator<
   watchFields?: Array<string>
 }
 
-export type FieldValidators<
-  TFormData,
-  TFieldName extends DeepKeys<TFormData>,
-  TFieldValue extends DeepValue<TFormData, TFieldName>,
-> = ReadonlyArray<FieldValidator<TFormData, TFieldName, TFieldValue>>
+export type FieldValidators<TFormData, TFieldName, TFieldValue> = ReadonlyArray<
+  FieldValidator<TFormData, TFieldName, TFieldValue>
+>
 
 type NormalizeValidationResult<TResult> = NormalizeValidationError<
   Exclude<TResult, ValidValidationResult>
@@ -498,9 +484,9 @@ export type FieldErrors<
 >
 
 export interface FormValidatorMeta<
-  TSchemaSubmitOutput = unknown,
-  TFormError = unknown,
-  TFieldError = unknown,
+  out TSchemaSubmitOutput = unknown,
+  out TFormError = unknown,
+  out TFieldError = unknown,
 > {
   readonly schemaSubmitOutput: TSchemaSubmitOutput
   readonly formError: TFormError
@@ -509,16 +495,16 @@ export interface FormValidatorMeta<
 
 export type FormValidatorMetas = ReadonlyArray<FormValidatorMeta>
 
-export interface FieldValidatorMeta<TFieldError = unknown> {
+export interface FieldValidatorMeta<out TFieldError = unknown> {
   readonly fieldError: TFieldError
 }
 
 export type FieldValidatorMetas = ReadonlyArray<FieldValidatorMeta>
 
 export interface FormGroupValidatorMeta<
-  TSchemaSubmitOutput = unknown,
-  TGroupError = unknown,
-  TFieldError = unknown,
+  out TSchemaSubmitOutput = unknown,
+  out TGroupError = unknown,
+  out TFieldError = unknown,
 > {
   readonly schemaSubmitOutput: TSchemaSubmitOutput
   readonly groupError: TGroupError
@@ -600,17 +586,21 @@ export type ParsedFormGroupValidator<
       >
   : never
 
-type MappedFormValidatorMetas<TFormValidators extends FormValidators<any>> = {
+type MappedFormValidatorMetas<
+  in out TFormValidators extends FormValidators<any>,
+> = {
   [K in keyof TFormValidators]: ParsedFormValidator<TFormValidators[K]>
 }
 
 export type ToFormValidatorMetas<TFormValidators extends FormValidators<any>> =
   unknown extends TFormValidators
     ? FormValidatorMetas
-    : MappedFormValidatorMetas<TFormValidators>
+    : FormValidators<any> extends TFormValidators
+      ? FormValidatorMetas
+      : MappedFormValidatorMetas<TFormValidators>
 
 type MappedFieldValidatorMetas<
-  TFieldValidators extends FieldValidators<any, any, any>,
+  in out TFieldValidators extends FieldValidators<any, any, any>,
 > = {
   [K in keyof TFieldValidators]: ParsedFieldValidator<TFieldValidators[K]>
 }
@@ -619,10 +609,12 @@ export type ToFieldValidatorMetas<
   TFieldValidators extends FieldValidators<any, any, any>,
 > = unknown extends TFieldValidators
   ? FieldValidatorMetas
-  : MappedFieldValidatorMetas<TFieldValidators>
+  : FieldValidators<any, any, any> extends TFieldValidators
+    ? FieldValidatorMetas
+    : MappedFieldValidatorMetas<TFieldValidators>
 
 type MappedFormGroupValidatorMetas<
-  TGroupValidators extends FormGroupValidators<any>,
+  in out TGroupValidators extends FormGroupValidators<any>,
 > = {
   [K in keyof TGroupValidators]: ParsedFormGroupValidator<TGroupValidators[K]>
 }
@@ -631,7 +623,9 @@ export type ToFormGroupValidatorMetas<
   TGroupValidators extends FormGroupValidators<any>,
 > = unknown extends TGroupValidators
   ? FormGroupValidatorMetas
-  : MappedFormGroupValidatorMetas<TGroupValidators>
+  : FormGroupValidators<any> extends TGroupValidators
+    ? FormGroupValidatorMetas
+    : MappedFormGroupValidatorMetas<TGroupValidators>
 
 export type ToValidatorMetas<TFormValidators extends FormValidators<any>> =
   ToFormValidatorMetas<TFormValidators>

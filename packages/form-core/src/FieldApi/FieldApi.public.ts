@@ -1,8 +1,4 @@
-import type {
-  DeepKeys,
-  DeepValue,
-  TryGetArrayElementType,
-} from '../deep-keys.public'
+import type { TryGetArrayElementType } from '../deep-keys.public'
 import type { FieldUpdateOptions, Updater } from '../types.public'
 import type { FormApi } from '../FormApi/FormApi.public'
 import type {
@@ -33,10 +29,10 @@ export interface SubfieldsMeta {
 }
 
 export interface OriginalFieldMeta<
-  TFieldValidatorMetas extends FieldValidatorMetas,
-  TGroupValidatorMetas extends FormGroupValidatorMetas,
-  TFormValidatorMetas extends FormValidatorMetas,
-  TSubmitReturn,
+  in out TFieldValidatorMetas extends FieldValidatorMetas,
+  in out TGroupValidatorMetas extends FormGroupValidatorMetas,
+  in out TFormValidatorMetas extends FormValidatorMetas,
+  in out TSubmitReturn,
 > {
   errors: ValidationFieldErrors<
     TFieldValidatorMetas,
@@ -51,10 +47,10 @@ export interface OriginalFieldMeta<
 export type AnyFieldMeta = FieldMeta<any, any, any, any>
 
 export interface FieldMeta<
-  TFieldValidatorMetas extends FieldValidatorMetas,
-  TGroupValidatorMetas extends FormGroupValidatorMetas,
-  TFormValidatorMetas extends FormValidatorMetas,
-  TSubmitReturn,
+  in out TFieldValidatorMetas extends FieldValidatorMetas,
+  in out TGroupValidatorMetas extends FormGroupValidatorMetas,
+  in out TFormValidatorMetas extends FormValidatorMetas,
+  in out TSubmitReturn,
 > extends BaseFieldMeta {
   isPristine: boolean
   isSelfTouched: boolean
@@ -79,13 +75,11 @@ export interface FieldMeta<
 }
 
 export interface FieldState<
-  TFieldData,
-  TFieldName extends DeepKeys<TFieldData>,
-  TFieldValue extends DeepValue<TFieldData, TFieldName>,
-  TFieldValidatorMetas extends FieldValidatorMetas,
-  TGroupValidatorMetas extends FormGroupValidatorMetas,
-  TFormValidatorMetas extends FormValidatorMetas,
-  TSubmitReturn,
+  out TFieldValue,
+  in out TFieldValidatorMetas extends FieldValidatorMetas,
+  in out TGroupValidatorMetas extends FormGroupValidatorMetas,
+  in out TFormValidatorMetas extends FormValidatorMetas,
+  in out TSubmitReturn,
 > {
   value: TFieldValue
   meta: FieldMeta<
@@ -96,17 +90,51 @@ export interface FieldState<
   >
 }
 
-export type AnyFieldApi = FieldApi<any, any, any, any, any, any, any, any>
+export type AnyFieldApi = FieldApi<any, any, any, any, any, any, any>
+
+type FieldArrayElement<TFieldValue> = TryGetArrayElementType<TFieldValue>
+
+type FieldArrayPredicate<in out TFieldValue> = (
+  value: FieldArrayElement<TFieldValue>,
+  index: number,
+  array: TFieldValue,
+) => boolean
+
+type FieldPushValueFn<in out TFieldValue> = (
+  value: FieldArrayElement<TFieldValue>,
+  options?: FieldUpdateOptions,
+) => void
+
+type FieldInsertValueFn<in out TFieldValue> = (
+  index: number,
+  value: FieldArrayElement<TFieldValue>,
+  options?: FieldUpdateOptions,
+) => void
+
+type FieldClearValuesFn = (options?: FieldUpdateOptions) => void
+
+type FieldRemoveValueFn = (index: number, options?: FieldUpdateOptions) => void
+
+type FieldFilterValuesFn<in out TFieldValue> = (
+  predicate: FieldArrayPredicate<TFieldValue>,
+  options?: FieldUpdateOptions & { thisArg?: any },
+) => void
+
+type FieldHandleChangeFn<in out TFieldValue> = (
+  value: Updater<TFieldValue>,
+  options?: FieldUpdateOptions,
+) => void
+
+type FieldVoidFn = () => void
 
 export interface FieldApi<
-  TFieldData,
-  TFieldName extends DeepKeys<TFieldData>,
-  TFieldValue extends DeepValue<TFieldData, TFieldName>,
-  TFieldValidatorMetas extends FieldValidatorMetas,
-  TGroupValidatorMetas extends FormGroupValidatorMetas,
-  TFormData,
-  TFormValidatorMetas extends FormValidatorMetas,
-  TSubmitReturn,
+  out TFieldName,
+  in out TFieldValue,
+  in out TFieldValidatorMetas extends FieldValidatorMetas,
+  in out TGroupValidatorMetas extends FormGroupValidatorMetas,
+  in out TFormData,
+  in out TFormValidatorMetas extends FormValidatorMetas,
+  in out TSubmitReturn,
 > {
   /**
    * The form that owns this field.
@@ -132,10 +160,7 @@ export interface FieldApi<
    * @param value - The value to push into the array
    * @param options - Optional update options
    */
-  pushValue: (
-    value: TryGetArrayElementType<TFieldValue>,
-    options?: FieldUpdateOptions,
-  ) => void
+  pushValue: FieldPushValueFn<TFieldValue>
 
   /**
    * Insert a new value into this field's array at the specified index.
@@ -144,18 +169,14 @@ export interface FieldApi<
    * @param value - The value to insert
    * @param options - Optional update options
    */
-  insertValue: (
-    index: number,
-    value: TryGetArrayElementType<TFieldValue>,
-    options?: FieldUpdateOptions,
-  ) => void
+  insertValue: FieldInsertValueFn<TFieldValue>
 
   /**
    * Clear all values from this field's array.
    * If this field is not an array, this method will be ignored.
    * @param options - Optional update options
    */
-  clearValues: (options?: FieldUpdateOptions) => void
+  clearValues: FieldClearValuesFn
 
   /**
    * Remove a value from this field's array at the specified index.
@@ -163,7 +184,7 @@ export interface FieldApi<
    * @param index - The index of the value to remove
    * @param options - Optional update options
    */
-  removeValue: (index: number, options?: FieldUpdateOptions) => void
+  removeValue: FieldRemoveValueFn
 
   /**
    * Filter the values in this field's array using a predicate function.
@@ -171,14 +192,7 @@ export interface FieldApi<
    * @param predicate - The predicate function to filter values. Returns true to keep the value, false to remove it.
    * @param options - Optional update options including a custom `thisArg` for the predicate
    */
-  filterValues: (
-    predicate: (
-      value: TryGetArrayElementType<TFieldValue>,
-      index: number,
-      array: TFieldValue,
-    ) => boolean,
-    options?: FieldUpdateOptions & { thisArg?: any },
-  ) => void
+  filterValues: FieldFilterValuesFn<TFieldValue>
 
   /**
    * @deprecated
@@ -188,8 +202,6 @@ export interface FieldApi<
    * - `field.meta`
    */
   state: FieldState<
-    TFieldData,
-    TFieldName,
     TFieldValue,
     TFieldValidatorMetas,
     TGroupValidatorMetas,
@@ -213,25 +225,26 @@ export interface FieldApi<
     TSubmitReturn
   >
 
-  handleChange: (
-    value: Updater<TFieldValue>,
-    options?: FieldUpdateOptions,
-  ) => void
+  handleChange: FieldHandleChangeFn<TFieldValue>
 
-  handleBlur: () => void
+  handleBlur: FieldVoidFn
 
-  reset: () => void
+  reset: FieldVoidFn
 }
 
 export interface FieldApiOptions<
-  TFieldData,
-  TFieldName extends DeepKeys<TFieldData>,
-  TFieldValue extends DeepValue<TFieldData, TFieldName>,
-  TFieldValidators extends FieldValidators<TFieldData, TFieldName, TFieldValue>,
-  TGroupValidators extends FormGroupValidatorMetas,
-  TFormData,
-  TFormValidatorMetas extends FormValidatorMetas,
-  TSubmitReturn,
+  in out TFieldData,
+  in out TFieldName,
+  in out TFieldValue,
+  in out TFieldValidators extends FieldValidators<
+    TFieldData,
+    TFieldName,
+    TFieldValue
+  >,
+  in out TGroupValidators extends FormGroupValidatorMetas,
+  in out TFormData,
+  in out TFormValidatorMetas extends FormValidatorMetas,
+  in out TSubmitReturn,
 > {
   name: TFieldName
   errorVisibility?: ErrorVisibility<

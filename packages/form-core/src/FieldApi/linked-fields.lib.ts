@@ -19,7 +19,7 @@ interface WatchFieldOperation {
   watcherIndex: WatcherIndex
 }
 
-interface ReconciledWatchedFields<TItem> {
+interface ReconciledWatchedFields<in out TItem> {
   items: Array<TItem> | null
   listenToFields: FieldListenToFields | null
   attach: Array<WatchFieldOperation>
