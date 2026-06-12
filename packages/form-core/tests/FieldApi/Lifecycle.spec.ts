@@ -116,6 +116,152 @@ describe('field - lifecycle', () => {
 
       expect(form.getFieldValue('x')).toBe('')
     })
+
+    it('ignores stale array and blur methods after a field is killed', () => {
+      const formListener = vi.fn()
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b'] },
+        listeners: [{ triggers: ['blur'], run: formListener }],
+      })
+      const field = form._getOrCreateFieldApi({ name: 'items' })
+
+      field._kill()
+      field.swapValues(0, 1)
+      field.clearValues()
+      field.pushValue('c')
+      field.insertValue(1, 'x')
+      field.removeValue(0)
+      field.filterValues(() => false)
+      field.handleBlur()
+
+      expect(form.getFieldValue('items')).toEqual(['a', 'b'])
+      expect(formListener).not.toHaveBeenCalled()
+    })
+
+    it('returns a no-op unregister callback for a killed field', () => {
+      const form = new InternalFormApi({ defaultValues: { x: '' } })
+      const field = form._getOrCreateFieldApi({ name: 'x' })
+
+      field._kill()
+      const unregister = field._register()
+      unregister()
+      field._unregister()
+
+      expect(field._isMounted).toBe(false)
+    })
+
+    it('does not prune killed fields or fields with retained meta state', () => {
+      const cases = [
+        (
+          field: ReturnType<
+            InternalFormApi<any, any, any>['_getOrCreateFieldApi']
+          >,
+        ) => field._setMeta((prev) => ({ ...prev, isDirty: true })),
+        (
+          field: ReturnType<
+            InternalFormApi<any, any, any>['_getOrCreateFieldApi']
+          >,
+        ) => field._setMeta((prev) => ({ ...prev, isBlurred: true })),
+        (
+          field: ReturnType<
+            InternalFormApi<any, any, any>['_getOrCreateFieldApi']
+          >,
+        ) => field._setMeta((prev) => ({ ...prev, isValidating: true })),
+        (
+          field: ReturnType<
+            InternalFormApi<any, any, any>['_getOrCreateFieldApi']
+          >,
+        ) => field._setMeta((prev) => ({ ...prev, _validationCount: 1 })),
+        (
+          field: ReturnType<
+            InternalFormApi<any, any, any>['_getOrCreateFieldApi']
+          >,
+        ) => field._setMeta((prev) => ({ ...prev, _arrayVersion: 1 })),
+      ]
+
+      cases.forEach((markRetainedMeta, index) => {
+        const form = new InternalFormApi({ defaultValues: { x: '' } })
+        const field = form._getOrCreateFieldApi({ name: `x${index}` })
+        markRetainedMeta(field)
+
+        expect(field._canPrune()).toBe(false)
+      })
+
+      const form = new InternalFormApi({ defaultValues: { killed: '' } })
+      const killedField = form._getOrCreateFieldApi({ name: 'killed' })
+      killedField._kill()
+
+      expect(killedField._canPrune()).toBe(false)
+    })
+
+    it('removes killed fields from form-level routed error bookkeeping', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            triggers: [],
+            run: () => ({
+              fields: {
+                name: 'Name is required',
+              },
+            }),
+          },
+        ],
+      })
+      const field = form._getOrCreateFieldApi({ name: 'name' })
+
+      await form.validate('submit')
+      expect(field.errors).toEqual([{ message: 'Name is required' }])
+      expect(form.state.canSubmit).toBe(false)
+
+      field._kill()
+
+      expect(form.state.canSubmit).toBe(true)
+      expect(form._atoms.meta.fieldErrors.get()[0]?.size).toBe(0)
+    })
+
+    it('preserves routed errors for fields outside the killed subtree', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '', other: '' },
+        validators: [
+          {
+            triggers: [],
+            run: () => ({
+              fields: {
+                name: 'Name is required',
+              },
+            }),
+          },
+        ],
+      })
+      const nameField = form._getOrCreateFieldApi({ name: 'name' })
+      const otherField = form._getOrCreateFieldApi({ name: 'other' })
+
+      await form.validate('submit')
+      otherField._kill()
+
+      expect(nameField.errors).toEqual([{ message: 'Name is required' }])
+      expect(form.state.canSubmit).toBe(false)
+    })
+
+    it('does not prune source fields while watched validators are attached', () => {
+      const form = new InternalFormApi({
+        defaultValues: { source: '', target: '' },
+      })
+      const sourceField = form._getOrCreateFieldApi({ name: 'source' })
+      form._getOrCreateFieldApi({
+        name: 'target',
+        validators: [
+          {
+            triggers: ['change'],
+            watchFields: ['source'],
+            run: () => null,
+          },
+        ],
+      })
+
+      expect(sourceField._canPrune()).toBe(false)
+    })
   })
 
   describe('_unregister', () => {

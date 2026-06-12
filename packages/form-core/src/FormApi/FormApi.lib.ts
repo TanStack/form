@@ -361,9 +361,7 @@ export class InternalFormApi<
     this._formGroups.delete(group)
   }
 
-  _getNearestFormGroupForField(
-    fieldName: string,
-  ): AnyFormGroupApi | null {
+  _getNearestFormGroupForField(fieldName: string): AnyFormGroupApi | null {
     let nearest: AnyFormGroupApi | null = null
     for (const group of this._formGroups) {
       const groupName = String(group.name)

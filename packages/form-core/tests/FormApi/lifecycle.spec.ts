@@ -53,6 +53,45 @@ describe('form - lifecycle', () => {
       expect(form.state.values).toEqual({ name: 'async' })
     })
 
+    it('preserves touched field values when defaultValues update', () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '', email: '' },
+      })
+      const nameField = form._getOrCreateFieldApi({ name: 'name' })
+      form._getOrCreateFieldApi({ name: 'email' })
+
+      nameField.handleChange('user edit')
+      form._update({
+        defaultValues: { name: 'server name', email: 'server@example.com' },
+      })
+
+      expect(form.state.values).toEqual({
+        name: 'user edit',
+        email: 'server@example.com',
+      })
+    })
+
+    it('warns when the validator array length changes after initialization', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const form = new InternalFormApi<any, any, any>({
+        defaultValues: { name: '' },
+        validators: [{ run: () => null, triggers: [] }],
+      })
+
+      form._update({
+        defaultValues: { name: '' },
+        validators: [
+          { run: () => null, triggers: [] },
+          { run: () => null, triggers: [] },
+        ],
+      })
+
+      expect(warn).toHaveBeenCalledWith(
+        'TanStack Form: The length of the validator array should not change after initialization',
+      )
+      warn.mockRestore()
+    })
+
     it('should only apply options to the leaf node', async () => {
       vi.useFakeTimers()
       const listener = vi.fn()
@@ -233,6 +272,36 @@ describe('form - lifecycle', () => {
         expect(form.getFieldMeta('name')).toEqual(undefined)
       })
     })
+
+    it('kills descendant field nodes when resetting a parent field', () => {
+      const form = new InternalFormApi({
+        defaultValues: { person: { name: 'Alice' } },
+      })
+      form._getOrCreateFieldApi({ name: 'person' })
+      form._getOrCreateFieldApi({ name: 'person.name' })
+
+      form.resetField('person')
+
+      expect(form.getFieldValue('person')).toEqual({ name: 'Alice' })
+      expect(form._tryGetFieldApi('person.name')).toBeNull()
+    })
+
+    it('deletes a field through an explicit field override', () => {
+      const form = new InternalFormApi({ defaultValues: { name: '' } })
+      const field = form._getOrCreateFieldApi({ name: 'name' })
+
+      form.deleteField('name', { fieldApiOverride: field })
+
+      expect(form._tryGetFieldApi('name')).toBeNull()
+    })
+
+    it('ignores deleting a field that has not been created', () => {
+      const form = new InternalFormApi({ defaultValues: { name: '' } })
+
+      form.deleteField('name')
+
+      expect(form.state.values).toEqual({ name: '' })
+    })
   })
 
   describe('event error cleanup', () => {
@@ -329,15 +398,11 @@ describe('form - lifecycle', () => {
       const field = form._getOrCreateFieldApi({ name: 'name' })
 
       await form.validate('blur')
-      expect(form.state.errors).toEqual([
-        { message: 'Blur validator failed' },
-      ])
+      expect(form.state.errors).toEqual([{ message: 'Blur validator failed' }])
 
       field.handleChange('Alice')
 
-      expect(form.state.errors).toEqual([
-        { message: 'Blur validator failed' },
-      ])
+      expect(form.state.errors).toEqual([{ message: 'Blur validator failed' }])
     })
 
     it('does not event-clear submit errors when the validator runs on change', async () => {

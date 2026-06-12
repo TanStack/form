@@ -1,9 +1,16 @@
 import { describe, expect, expectTypeOf, it, vi } from 'vitest'
 import { z } from 'zod'
 import {
+  reconcileRoutedFieldErrors,
   runFieldValidatorPipeline,
   runFormValidatorPipeline,
 } from '../src/validation.lib'
+import {
+  createErrorVisibility,
+  createValidator,
+  createValidators,
+  formOptions,
+} from '../src'
 import { InternalFormApi } from '../src/FormApi/FormApi.lib'
 import type { PipelineResult } from '../src/validation.lib'
 import type {
@@ -20,6 +27,98 @@ import type {
   ValidationPredicateFn,
 } from '../src'
 import type { AnyInternalFieldApi } from '../src/FieldApi/FieldApi.lib'
+
+describe('validation public helpers', () => {
+  it('returns form options unchanged at runtime', () => {
+    const options = { defaultValues: { name: 'Ada' } }
+
+    expect(formOptions(options)).toBe(options)
+    expect(formOptions.strictSchema(options)).toBe(options)
+    expect(formOptions.looseSchema(options)).toBe(options)
+  })
+
+  it('creates validators by pairing options with run functions', () => {
+    const run = () => null
+    const validator = createValidator({
+      bailIfInvalid: true,
+      triggers: ['change'],
+    })(run)
+
+    expect(validator).toEqual({
+      bailIfInvalid: true,
+      triggers: ['change'],
+      run,
+    })
+  })
+
+  it('creates multiple validators from option and run tuples', () => {
+    const firstRun = () => null
+    const secondRun = () => ({ message: 'Required' })
+
+    const validators = createValidators([
+      { triggers: ['change'] },
+      { bailIfInvalid: true, triggers: ['blur'] },
+    ])(firstRun, secondRun)
+
+    expect(validators).toEqual([
+      { triggers: ['change'], run: firstRun },
+      { bailIfInvalid: true, triggers: ['blur'], run: secondRun },
+    ])
+  })
+
+  it('returns reusable error visibility callbacks unchanged', () => {
+    const visibility = () => true
+
+    expect(createErrorVisibility(visibility)).toBe(visibility)
+  })
+})
+
+describe('reconcileRoutedFieldErrors', () => {
+  it('reports unchanged refs when no new or old field refs exist', () => {
+    const result = reconcileRoutedFieldErrors(
+      0,
+      [],
+      undefined,
+      (fieldName) => ({ name: fieldName }) as AnyInternalFieldApi,
+      vi.fn(),
+      vi.fn(),
+    )
+
+    expect(result.didFieldRefsChange).toBe(false)
+    expect(result.fieldRefs.size).toBe(0)
+    expect(result.affectedFields.size).toBe(0)
+  })
+
+  it('reports unchanged refs when the old field ref set is empty', () => {
+    const result = reconcileRoutedFieldErrors(
+      0,
+      [],
+      new Set(),
+      (fieldName) => ({ name: fieldName }) as AnyInternalFieldApi,
+      vi.fn(),
+      vi.fn(),
+    )
+
+    expect(result.didFieldRefsChange).toBe(false)
+  })
+
+  it('clears stale old field refs when no new refs replace them', () => {
+    const field = { name: 'name' } as AnyInternalFieldApi
+    const clearFieldError = vi.fn()
+    const result = reconcileRoutedFieldErrors(
+      0,
+      [],
+      new Set([field]),
+      (fieldName) => ({ name: fieldName }) as AnyInternalFieldApi,
+      vi.fn(),
+      clearFieldError,
+    )
+
+    expect(result.didFieldRefsChange).toBe(true)
+    expect(result.affectedFields).toEqual(new Set([field]))
+    expect(clearFieldError).toHaveBeenCalledWith(field, 0)
+  })
+})
 
 describe('runFormValidatorPipeline', () => {
   type Event = FormValidatorContext<any>['event']

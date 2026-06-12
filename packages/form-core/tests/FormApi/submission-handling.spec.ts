@@ -65,6 +65,30 @@ describe('form - submission handling', () => {
       expect(onSubmit).not.toHaveBeenCalled()
     })
 
+    it('allows submit to continue when field validators pass', async () => {
+      const onSubmit = vi.fn()
+      const fieldValidatorFn = vi.fn(() => null)
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        onSubmit,
+      })
+      form._getOrCreateFieldApi({
+        name: 'name',
+        validators: [
+          {
+            run: fieldValidatorFn,
+            triggers: [],
+          },
+        ],
+      })
+
+      const result = await form.handleSubmit()
+
+      expect(result).toEqual([])
+      expect(fieldValidatorFn).toHaveBeenCalledOnce()
+      expect(onSubmit).toHaveBeenCalledOnce()
+    })
+
     it('returns validation errors created during onSubmit', async () => {
       const form = new InternalFormApi({
         defaultValues: { name: '' },

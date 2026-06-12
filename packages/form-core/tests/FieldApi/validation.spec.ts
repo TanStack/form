@@ -1,6 +1,92 @@
 import { describe, expect, it, vi } from 'vitest'
 import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
 
+describe('field - mount validators', () => {
+  it('runs synchronous mount validators on first registration', () => {
+    const validator = vi.fn(() => 'Field is invalid')
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+    })
+    const field = form._getOrCreateFieldApi({
+      name: 'name',
+      validators: [
+        {
+          run: validator,
+          runOnMount: true,
+          triggers: [],
+        },
+      ],
+    })
+
+    const unregister = field._register()
+
+    expect(validator).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: 'mount',
+        fieldApi: field,
+        formApi: form,
+        value: '',
+      }),
+    )
+    expect(field.errors).toEqual([{ message: 'Field is invalid' }])
+
+    unregister()
+  })
+
+  it('skips field mount validation when no validator opts in', () => {
+    const validator = vi.fn(() => 'Should not run')
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+    })
+    const field = form._getOrCreateFieldApi({
+      name: 'name',
+      validators: [
+        {
+          run: validator,
+          triggers: [],
+        },
+      ],
+    })
+
+    const unregister = field._register()
+
+    expect(validator).not.toHaveBeenCalled()
+    expect(field.meta.isValidating).toBe(false)
+
+    unregister()
+  })
+
+  it('tracks async mount validation on the field', async () => {
+    let resolve!: (value: string) => void
+    const result = new Promise<string>((res) => {
+      resolve = res
+    })
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+    })
+    const field = form._getOrCreateFieldApi({
+      name: 'name',
+      validators: [
+        {
+          run: () => result,
+          runOnMount: true,
+          triggers: [],
+        },
+      ],
+    })
+
+    const unregister = field._register()
+    expect(field.meta.isValidating).toBe(true)
+
+    resolve('Async field error')
+    await vi.waitFor(() => expect(field.meta.isValidating).toBe(false))
+
+    expect(field.errors).toEqual([{ message: 'Async field error' }])
+
+    unregister()
+  })
+})
+
 describe('field - linked validators', () => {
   it('runs a watched validator when its watched source field changes', async () => {
     vi.useFakeTimers()

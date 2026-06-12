@@ -2,6 +2,12 @@ import { describe, expect, it, vi } from 'vitest'
 import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
 
 describe('form - field array methods', () => {
+  const withoutFieldMeta = {
+    markAsDirty: false,
+    markAsTouched: false,
+    markAsBlurred: false,
+  }
+
   describe('swapFieldValues', () => {
     it('swaps two elements in an array field', () => {
       const form = new InternalFormApi({
@@ -33,6 +39,15 @@ describe('form - field array methods', () => {
       form.swapFieldValues('items', 0, 1)
       expect(field0._segment).toBe(1)
       expect(field1._segment).toBe(0)
+    })
+
+    it('updates values without creating a field node when meta updates are disabled', () => {
+      const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
+
+      form.swapFieldValues('items', 0, 1, withoutFieldMeta)
+
+      expect(form.getFieldValue('items')).toEqual(['b', 'a'])
+      expect(form._tryGetFieldApi('items')).toBeNull()
     })
   })
 
@@ -125,6 +140,15 @@ describe('form - field array methods', () => {
       expect(field.meta.isDirty).toBe(true)
       expect(field.meta.isTouched).toBe(true)
     })
+
+    it('inserts without creating a field node when meta updates are disabled', () => {
+      const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
+
+      form.insertFieldValue('items', 1, 'x', withoutFieldMeta)
+
+      expect(form.getFieldValue('items')).toEqual(['a', 'x', 'b'])
+      expect(form._tryGetFieldApi('items')).toBeNull()
+    })
   })
 
   describe('clearFieldValues', () => {
@@ -155,6 +179,15 @@ describe('form - field array methods', () => {
       expect(form._tryGetFieldApi('items[0]')).toBeNull()
       expect(form._tryGetFieldApi('items[1]')).toBeNull()
       expect(arrayField._children).toEqual([])
+    })
+
+    it('clears values without creating a field node when meta updates are disabled', () => {
+      const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
+
+      form.clearFieldValues('items', withoutFieldMeta)
+
+      expect(form.getFieldValue('items')).toEqual([])
+      expect(form._tryGetFieldApi('items')).toBeNull()
     })
   })
 
@@ -212,6 +245,17 @@ describe('form - field array methods', () => {
       expect(form._tryGetFieldApi('items[2]')).toBeNull()
       expect(field0._segment).toBe(0)
       expect(field2._segment).toBe(1)
+    })
+
+    it('removes values without creating a field node when meta updates are disabled', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c'] },
+      })
+
+      form.removeFieldValue('items', 1, withoutFieldMeta)
+
+      expect(form.getFieldValue('items')).toEqual(['a', 'c'])
+      expect(form._tryGetFieldApi('items')).toBeNull()
     })
   })
 
@@ -360,6 +404,21 @@ describe('form - field array methods', () => {
         { name: 'Alice', age: 30 },
         { name: 'Charlie', age: 35 },
       ])
+    })
+
+    it('filters values without creating a field node when meta updates are disabled', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c'] },
+      })
+
+      form.filterFieldValues(
+        'items',
+        (value) => value !== 'b',
+        withoutFieldMeta,
+      )
+
+      expect(form.getFieldValue('items')).toEqual(['a', 'c'])
+      expect(form._tryGetFieldApi('items')).toBeNull()
     })
   })
 })

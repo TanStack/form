@@ -139,6 +139,25 @@ describe('form - validation', () => {
       expect(form.state.errors).toEqual([{ message: 'Form error' }])
     })
 
+    it('can run form validation without storing the result', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            run: () => ({ message: 'Form error' }),
+            triggers: [],
+          },
+        ],
+      })
+
+      const result = await form._runFormValidation('submit', {
+        onResult: false,
+      })
+
+      expect(result.results).toHaveLength(1)
+      expect(form.state.errors).toEqual([])
+    })
+
     it('sets canSubmit to false when form errors are present', async () => {
       const form = new InternalFormApi({
         defaultValues: { name: '' },
@@ -380,6 +399,31 @@ describe('form - validation', () => {
       expect(thirdValidatorFn).not.toHaveBeenCalled()
     })
 
+    it('continues bailIfInvalid validators when previous validators passed', async () => {
+      const firstValidator = vi.fn(() => null)
+      const secondValidator = vi.fn(() => ({ message: 'Second error' }))
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            run: firstValidator,
+            triggers: ['change'],
+          },
+          {
+            bailIfInvalid: true,
+            run: secondValidator,
+            triggers: ['change'],
+          },
+        ],
+      })
+
+      await form.validate('change')
+
+      expect(firstValidator).toHaveBeenCalledOnce()
+      expect(secondValidator).toHaveBeenCalledOnce()
+      expect(form.state.errors).toEqual([{ message: 'Second error' }])
+    })
+
     it('skips all remaining validators after bailIfInvalid when errors exist', async () => {
       const thirdValidatorFn = vi
         .fn()
@@ -416,6 +460,40 @@ describe('form - validation', () => {
       expect(thirdValidatorFn).not.toHaveBeenCalled()
       // Fourth validator (after bailIfInvalid) should also NOT have been called
       expect(fourthValidatorFn).not.toHaveBeenCalled()
+    })
+
+    it('skips bailIfInvalid validators after an earlier validator throws', async () => {
+      const error = new Error('validator failed')
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+      const bailedValidator = vi.fn(() => ({ message: 'Should not run' }))
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            run: () => {
+              throw error
+            },
+            triggers: ['change'],
+          },
+          {
+            bailIfInvalid: true,
+            run: bailedValidator,
+            triggers: ['change'],
+          },
+        ],
+      })
+
+      try {
+        await form.validate('change')
+
+        expect(bailedValidator).not.toHaveBeenCalled()
+        expect(consoleSpy).toHaveBeenCalledWith(
+          'Validator threw an error:',
+          error,
+        )
+      } finally {
+        consoleSpy.mockRestore()
+      }
     })
   })
 
@@ -494,6 +572,27 @@ describe('form - validation', () => {
       expect(form.state.canSubmit).toBe(false)
     })
 
+    it('runs standard schema validators during mount', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            run: z.object({
+              name: z.string().min(1, 'Name is required'),
+            }),
+            runOnMount: true,
+            triggers: [],
+          },
+        ],
+      })
+
+      await vi.waitFor(() => {
+        expect(form.state.errors).toEqual([
+          expect.objectContaining({ message: 'Name is required' }),
+        ])
+      })
+    })
+
     it('tracks isValidating while an asynchronous mount validator is pending', async () => {
       vi.useFakeTimers()
       const form = new InternalFormApi({
@@ -518,6 +617,147 @@ describe('form - validation', () => {
       expect(form.state.isValidating).toBe(false)
       expect(form.state.errors).toEqual([{ message: 'Async mount error' }])
       vi.useRealTimers()
+    })
+
+    it('continues mount validation after an async mount validator resolves', async () => {
+      let resolve!: (value: null) => void
+      const asyncResult = new Promise<null>((res) => {
+        resolve = res
+      })
+      const skippedValidator = vi.fn(() => 'Should not run')
+      const secondValidator = vi.fn(() => Promise.resolve('Second mount error'))
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            runOnMount: true,
+            triggers: [],
+            run: () => asyncResult,
+          },
+          {
+            runOnMount: false,
+            triggers: [],
+            run: skippedValidator,
+          },
+          {
+            runOnMount: true,
+            triggers: [],
+            run: secondValidator,
+          },
+        ],
+      })
+
+      expect(form.state.isValidating).toBe(true)
+      expect(secondValidator).not.toHaveBeenCalled()
+
+      resolve(null)
+
+      await vi.waitFor(() => {
+        expect(form.state.isValidating).toBe(false)
+        expect(skippedValidator).not.toHaveBeenCalled()
+        expect(secondValidator).toHaveBeenCalledOnce()
+        expect(form.state.errors).toEqual([{ message: 'Second mount error' }])
+      })
+    })
+
+    it('respects bailIfInvalid after an async mount validator reports an error', async () => {
+      let resolve!: (value: string) => void
+      const asyncResult = new Promise<string>((res) => {
+        resolve = res
+      })
+      const bailedValidator = vi.fn(() => 'Should not run')
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            runOnMount: true,
+            triggers: [],
+            run: () => asyncResult,
+          },
+          {
+            bailIfInvalid: true,
+            runOnMount: true,
+            triggers: [],
+            run: bailedValidator,
+          },
+        ],
+      })
+
+      resolve('Async mount error')
+
+      await vi.waitFor(() => {
+        expect(form.state.isValidating).toBe(false)
+        expect(form.state.errors).toEqual([{ message: 'Async mount error' }])
+      })
+      expect(bailedValidator).not.toHaveBeenCalled()
+    })
+
+    it('keeps mount validation successful when validators return no errors', () => {
+      const validator = vi.fn(() => null)
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            runOnMount: true,
+            triggers: [],
+            run: validator,
+          },
+        ],
+      })
+
+      expect(validator).toHaveBeenCalledOnce()
+      expect(form.state.errors).toEqual([])
+      expect(form.state.isValidating).toBe(false)
+    })
+
+    it('logs thrown mount validator errors without storing them', () => {
+      const error = new Error('Mount validator failed')
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+      try {
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              runOnMount: true,
+              triggers: [],
+              run: () => {
+                throw error
+              },
+            },
+          ],
+        })
+
+        expect(consoleSpy).toHaveBeenCalledWith(error)
+        expect(form.state.errors).toEqual([])
+      } finally {
+        consoleSpy.mockRestore()
+      }
+    })
+
+    it('skips validators that are not opted into mount before later mount validators', () => {
+      const skippedValidator = vi.fn(() => 'Should not run')
+      const mountValidator = vi.fn(() => 'Mount error')
+
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            run: skippedValidator,
+            runOnMount: false,
+            triggers: [],
+          },
+          {
+            run: mountValidator,
+            runOnMount: true,
+            triggers: [],
+          },
+        ],
+      })
+
+      expect(skippedValidator).not.toHaveBeenCalled()
+      expect(mountValidator).toHaveBeenCalledOnce()
+      expect(form.state.errors).toEqual([{ message: 'Mount error' }])
     })
 
     it('ignores triggerDebounceMs for mount validation', () => {
@@ -965,6 +1205,25 @@ describe('form - validation', () => {
       expect(field.errors).toEqual([{ message: 'Name is required' }])
     })
 
+    it('keeps form state unchanged for aggregate validators without field errors', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            run: () => ({
+              fields: {},
+            }),
+            triggers: ['change'],
+          },
+        ],
+      })
+
+      await form.validate('change')
+
+      expect(form.state.errors).toEqual([])
+      expect(form.state.canSubmit).toBe(true)
+    })
+
     it('sets canSubmit to false when field errors are present', async () => {
       const form = new InternalFormApi({
         defaultValues: { name: '' },
@@ -1051,8 +1310,7 @@ describe('form - validation', () => {
     it('filters public field errors with form-level errorVisibility', async () => {
       const form = new InternalFormApi({
         defaultValues: { name: '', age: 0 },
-        errorVisibility: ({ fieldState }) =>
-          fieldState.meta.isTouched,
+        errorVisibility: ({ fieldState }) => fieldState.meta.isTouched,
         validators: [
           {
             run: () => ({
@@ -1089,8 +1347,7 @@ describe('form - validation', () => {
     it('lets fields override the form-level errorVisibility', async () => {
       const form = new InternalFormApi({
         defaultValues: { name: '', age: 0 },
-        errorVisibility: ({ fieldState }) =>
-          fieldState.meta.isTouched,
+        errorVisibility: ({ fieldState }) => fieldState.meta.isTouched,
         validators: [
           {
             run: () => ({

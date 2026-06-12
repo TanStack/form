@@ -4,6 +4,158 @@ import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
 import { InternalFormGroupApi } from '../../src/FormGroupApi/FormGroupApi.lib'
 
 describe('FormGroupApi', () => {
+  it('runs synchronous mount validators and stores group errors', () => {
+    const validator = vi.fn(() => 'Group is invalid')
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: 'Tony' } },
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [
+        {
+          run: validator,
+          runOnMount: true,
+          triggers: [],
+        },
+      ],
+    })
+
+    group.mount()
+
+    expect(validator).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: 'mount',
+        formApi: form,
+        groupApi: group,
+        value: { name: 'Tony' },
+      }),
+    )
+    expect(group.state.errors).toEqual([{ message: 'Group is invalid' }])
+    expect(group.state.isValidating).toBe(false)
+  })
+
+  it('tracks async group mount validation', async () => {
+    let resolve!: (value: string) => void
+    const result = new Promise<string>((res) => {
+      resolve = res
+    })
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: 'Tony' } },
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [
+        {
+          run: () => result,
+          runOnMount: true,
+          triggers: [],
+        },
+      ],
+    })
+
+    group.mount()
+    expect(group.state.isValidating).toBe(true)
+
+    resolve('Async group error')
+    await vi.waitFor(() => expect(group.state.isValidating).toBe(false))
+
+    expect(group.state.errors).toEqual([{ message: 'Async group error' }])
+  })
+
+  it('skips group mount validation when no validator opts in', () => {
+    const validator = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: 'Tony' } },
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [
+        {
+          run: validator,
+          triggers: [],
+        },
+      ],
+    })
+
+    group.mount()
+
+    expect(validator).not.toHaveBeenCalled()
+    expect(group.state.isValidating).toBe(false)
+  })
+
+  it('updates group options after construction', () => {
+    const onSubmit = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: 'Tony' } },
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+    })
+
+    group.update({
+      form,
+      name: 'guestDetails',
+      onSubmit,
+    })
+
+    expect(group.options.onSubmit).toBe(onSubmit)
+  })
+
+  it('prefixes field options declared through a group', () => {
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: '', age: 0 } },
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+    })
+
+    const options = group._getFormFieldOptions({
+      name: 'name',
+      validators: [
+        { triggers: ['change'], watchFields: ['age'], run: (): null => null },
+        { triggers: ['blur'], run: (): null => null },
+      ],
+      listeners: [
+        {
+          triggers: ['change'],
+          watchFields: ['age'],
+          run: (): undefined => undefined,
+        },
+        { triggers: ['blur'], run: (): undefined => undefined },
+      ],
+    })
+
+    expect(options.name).toBe('guestDetails.name')
+    expect(options.validators?.[0]?.watchFields).toEqual(['guestDetails.age'])
+    expect(options.validators?.[1]).not.toHaveProperty('watchFields')
+    expect(options.listeners?.[0]?.watchFields).toEqual(['guestDetails.age'])
+    expect(options.listeners?.[1]).not.toHaveProperty('watchFields')
+  })
+
+  it('leaves absent watched-field lists undefined when prefixing field options', () => {
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: '' } },
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+    })
+
+    expect(group._prefixWatchedFields(undefined)).toBeUndefined()
+    const options = group._getFormFieldOptions({
+      name: 'name',
+    })
+
+    expect(options.name).toBe('guestDetails.name')
+    expect(options.validators).toBeUndefined()
+    expect(options.listeners).toBeUndefined()
+  })
+
   it('exposes subtree values and field meta', () => {
     const form = new InternalFormApi({
       defaultValues: {
@@ -87,6 +239,37 @@ describe('FormGroupApi', () => {
     expect(form.state.submissionAttempts).toBe(0)
   })
 
+  it('passes group validator schema outputs to onSubmit', async () => {
+    const onSubmit = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: 'Tony' } },
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [
+        {
+          triggers: [],
+          run: z
+            .object({
+              name: z.string(),
+            })
+            .transform(({ name }) => ({ nameLength: name.length })),
+        },
+      ],
+      onSubmit,
+    })
+
+    await group.handleSubmit()
+
+    expect(onSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        schemaOutputs: [{ nameLength: 4 }],
+        value: { name: 'Tony' },
+      }),
+    )
+  })
+
   it('keeps submission lifecycle independent between sibling groups', async () => {
     let resolveSubmit!: () => void
     const submitting = new Promise<void>((resolve) => {
@@ -123,6 +306,54 @@ describe('FormGroupApi', () => {
 
     expect(guestGroup.state.isSubmitSuccessful).toBe(true)
     expect(billingGroup.state.isSubmitSuccessful).toBe(false)
+  })
+
+  it('exposes group submission lifecycle through scoped state overrides', async () => {
+    let resolveSubmit!: () => void
+    const submitting = new Promise<void>((resolve) => {
+      resolveSubmit = resolve
+    })
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: 'Tony' } },
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      onSubmit: () => submitting,
+    })
+    // Feel free to adjust this unit test, since this does kinda tinker with internal accessing.
+    const overrides = group._getScopedFormStateOverrides()
+
+    expect(overrides.isSubmitting?.()).toBe(false)
+    expect(overrides.isSubmitSuccessful?.()).toBe(false)
+
+    const submit = group.handleSubmit()
+    await vi.waitFor(() => expect(overrides.isSubmitting?.()).toBe(true))
+
+    resolveSubmit()
+    await submit
+
+    expect(overrides.isSubmitting?.()).toBe(false)
+    expect(overrides.isSubmitSuccessful?.()).toBe(true)
+  })
+
+  it('scoped state overrides fall back when the group field has not been created', () => {
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: 'Tony' } },
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+    })
+    const overrides = group._getScopedFormStateOverrides()
+
+    expect(overrides.isTouched?.()).toBe(false)
+    expect(overrides.isDirty?.()).toBe(false)
+    expect(overrides.isPristine?.()).toBe(true)
+    expect(overrides.isValid?.()).toBe(true)
+    expect(overrides.isInvalid?.()).toBe(false)
+    expect(overrides.canSubmit?.()).toBe(true)
+    expect(overrides.isValidating?.()).toBe(false)
   })
 
   it('scopes submit-attempt error visibility to the nearest group', async () => {
@@ -418,6 +649,40 @@ describe('FormGroupApi', () => {
     expect(groupField.errors).toEqual([])
     expect(nameField.errors).toEqual([])
     expect(emailField.errors).toEqual([{ message: 'Email error' }])
+    expect(group.state.errors).toEqual([])
+  })
+
+  it('clears routed group field errors when validation later passes', async () => {
+    let shouldError = true
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: '' } },
+    })
+    const nameField = form._getOrCreateFieldApi({ name: 'guestDetails.name' })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [
+        {
+          triggers: [],
+          run: () =>
+            shouldError
+              ? {
+                  fields: {
+                    name: 'Name is required',
+                  },
+                }
+              : null,
+        },
+      ],
+    })
+
+    await group.validate('submit')
+    expect(nameField.errors).toEqual([{ message: 'Name is required' }])
+
+    shouldError = false
+    await group.validate('submit')
+
+    expect(nameField.errors).toEqual([])
     expect(group.state.errors).toEqual([])
   })
 

@@ -117,8 +117,6 @@ export function getFormStateValue<
     case 'submissionAttempts':
       return (overrides.submissionAttempts?.() ??
         form._atoms.meta.submissionAttempts.get()) as never
-    default:
-      return undefined as never
   }
 }
 
@@ -129,11 +127,7 @@ export function getFormStateSnapshot<
 >(
   form: InternalFormApi<TFormData, TFormValidators, TSubmitReturn>,
   overrides: FormStateOverrides = {},
-): FormState<
-  TFormData,
-  ToFormValidatorMetas<TFormValidators>,
-  TSubmitReturn
-> {
+): FormState<TFormData, ToFormValidatorMetas<TFormValidators>, TSubmitReturn> {
   const result = {} as FormState<
     TFormData,
     ToFormValidatorMetas<TFormValidators>,

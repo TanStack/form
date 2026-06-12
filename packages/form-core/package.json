@@ -51,7 +51,7 @@
     "@tanstack/store": "^0.11.0"
   },
   "devDependencies": {
-    "@vitest/coverage-istanbul": "^4.1.6",
+    "@vitest/coverage-istanbul": "4.1.7",
     "zod": "^4.4.3"
   }
 }

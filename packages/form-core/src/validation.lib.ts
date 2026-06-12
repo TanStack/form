@@ -595,9 +595,9 @@ function runMaybeDebouncedValidator<TResult extends ValidateResult>({
     debouncer.maybeExecute({
       context: validationContext,
       resolve: settle,
-      reject: () => {
-        // This should not be called anymore since we handle errors in the debouncer callback
-      },
+      // This should not be called anymore since we handle errors in the
+      // debouncer callback.
+      reject: () => {},
     })
   })
 }
@@ -862,9 +862,13 @@ function executeMountValidator<TResult extends ValidateResult>(
   try {
     if (isStandardSchema(validator.run)) {
       return parseStandardSchema(validator.run, context.value, scope)
-        .then((result) =>
-          signal.aborted ? createEmptyMountValidationResult<TResult>() : result,
-        )
+        .then((result) => {
+          if (signal.aborted) {
+            return createEmptyMountValidationResult<TResult>()
+          }
+
+          return result
+        })
         .finally(cleanup) as unknown as PromiseLike<
         MountValidationExecutionResult<TResult>
       >
@@ -959,6 +963,7 @@ function runMountValidatorPipeline<TResult extends ValidateResult>({
       didRun: false,
       asyncPromise: null,
     }
+
   if (!pipeline.some((validator) => validator.runOnMount === true))
     return {
       didRun: false,

@@ -898,6 +898,7 @@ export class InternalFieldApi<
     onlyRunListenerIndeces: Array<number> | null = null,
   ) {
     if (this._isKilled) return
+
     // Field A listens to Field B listens to field A
     // FieldA.notifyListener -> fieldB.notifyListener -> fieldA.notifyLister
     if (seenFields.has(this)) {
@@ -982,7 +983,6 @@ export class InternalFieldApi<
 
     while (stack.length > 0) {
       const node = stack.pop()!
-
       if (node._isKilled) continue
 
       node._notifyListener(trigger, new WeakSet())
@@ -1213,6 +1213,7 @@ export class InternalFieldApi<
               if (!next) {
                 next = new Set(currFieldErrors)
               }
+
               next.delete(node)
             }
           }
@@ -1253,25 +1254,6 @@ export class InternalFieldApi<
 
       node = node._parent
     }
-  }
-
-  /**
-   * @private
-   * Create a new FieldApi with the given segment name and add it as child.
-   * @returns the new FieldApi.
-   */
-  _createChild(segment: NameSegment): AnyInternalFieldApi {
-    if (this._isKilled) {
-      throw new Error('Cannot create a child field from a killed field')
-    }
-
-    const node = new InternalFieldApi({
-      segment,
-      parent: this,
-      form: this.form,
-    })
-    this._setChild(node)
-    return node
   }
 
   _getValue(): any {
