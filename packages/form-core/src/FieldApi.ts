@@ -1347,14 +1347,17 @@ export class FieldApi<
 
     /**
      *  when we have an error for onSubmit in the state, we want
-     *  to clear the error as soon as the user enters a valid value in the field
+     *  to clear the error as soon as the user enters a valid value in the field.
+     *  This must only happen on a value `change` - clearing it on `blur` (or any
+     *  other non-value cause) would wrongly drop the submit error when the user
+     *  focuses and leaves the field without editing it.
      */
     const submitErrKey = getErrorMapKey('submit')
 
     if (
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       this.state.meta.errorMap?.[submitErrKey] &&
-      cause !== 'submit' &&
+      cause === 'change' &&
       !hasErrored
     ) {
       this.setMeta((prev) => ({
