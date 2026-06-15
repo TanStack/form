@@ -130,11 +130,12 @@ export type FieldGroupForm<
 export type FieldGroupFieldBindingForSlot<
   TFormData,
   TSlot extends AnyFieldGroupFieldSlot,
-> = TSlot extends FieldGroupFieldSlot<infer TValue, infer TMode>
-  ? TMode extends 'strict'
-    ? FieldGroupFieldNameForSlot<TFormData, TSlot>
-    : DeepKeysWhereValueIncludes<TFormData, TValue>
-  : never
+> =
+  TSlot extends FieldGroupFieldSlot<infer TValue, infer TMode>
+    ? TMode extends 'strict'
+      ? FieldGroupFieldNameForSlot<TFormData, TSlot>
+      : DeepKeysWhereValueIncludes<TFormData, TValue>
+    : never
 
 export type FieldGroupFieldBindings<
   TFields extends FieldGroupFields,
@@ -151,19 +152,27 @@ export type FieldGroupFieldBindingsOf<TFieldGroup, TFormData> =
     ? FieldGroupFieldBindings<FieldGroupFieldsOf<TFieldGroup>, TFormData>
     : never
 
+export type FieldGroupFieldsPropName<
+  TProps,
+  TFieldGroup extends FieldGroupDefinition<any, any>,
+> = {
+  [TPropName in keyof TProps]-?: IsSame<
+    TProps[TPropName],
+    TFieldGroup
+  > extends true
+    ? TPropName
+    : never
+}[keyof TProps]
+
 export type FieldGroupWithFieldsFn = <
   TFieldGroup extends FieldGroupDefinition<any, any>,
-  TFieldsPropName extends string,
-  TProps extends Record<TFieldsPropName, TFieldGroup>,
+  TProps extends object,
+  TFieldsPropName extends FieldGroupFieldsPropName<TProps, TFieldGroup>,
 >(
   fields: TFieldGroup,
   Component: (props: TProps) => CrossVersionReactNode,
   fieldsPropName: TFieldsPropName,
-) => <
-  TFormData,
-  TFormValidatorMetas extends FormValidatorMetas,
-  TSubmitReturn,
->(
+) => <TFormData, TFormValidatorMetas extends FormValidatorMetas, TSubmitReturn>(
   props: Omit<TProps, TFieldsPropName | 'form'> & {
     form: FieldGroupForm<
       FieldGroupFieldComponentsOf<TFieldGroup>,

@@ -91,6 +91,14 @@ interface DefinedFieldsProps {
   label: string
 }
 
+interface MismatchedFieldsProps {
+  fields: typeof looseDefinedFields
+}
+
+interface RenamedDefinedFieldsProps {
+  fieldGroup: typeof definedFields
+}
+
 type FieldBindingFormData = {
   user: {
     name: string
@@ -121,6 +129,32 @@ function DefinedFieldsImpl(props: DefinedFieldsProps) {
 const WrappedDefinedFields = withFields(
   definedFields,
   DefinedFieldsImpl,
+  'fields',
+)
+
+function MismatchedFieldsImpl(props: MismatchedFieldsProps) {
+  return <props.fields.Field name="name">{() => null}</props.fields.Field>
+}
+
+withFields(
+  definedFields,
+  MismatchedFieldsImpl,
+  // @ts-expect-error fieldsPropName must point to the matching defineFields result
+  'fields',
+)
+
+function RenamedDefinedFieldsImpl(props: RenamedDefinedFieldsProps) {
+  return (
+    <props.fieldGroup.Field name="name">{() => null}</props.fieldGroup.Field>
+  )
+}
+
+withFields(definedFields, RenamedDefinedFieldsImpl, 'fieldGroup')
+
+withFields(
+  definedFields,
+  RenamedDefinedFieldsImpl,
+  // @ts-expect-error fieldsPropName must be the prop containing the defineFields result
   'fields',
 )
 
