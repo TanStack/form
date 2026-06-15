@@ -7,7 +7,9 @@ import type {
   FormValidationError,
   FormValidatorMetas,
   FormValidators,
+  SubmitMeta,
   ToFormValidatorMetas,
+  ValidationIssue,
 } from '../validation.public'
 import type { FormListeners } from '../listeners.public'
 import type {
@@ -60,13 +62,13 @@ export interface FormOptions<
   errorVisibility?: ErrorVisibility<
     TFormData,
     ToFormValidatorMetas<TFormValidators>,
-    TSubmitReturn
+    SubmitMeta<ValidationIssue, ValidationIssue>
   >
   validators?: TFormValidators
   listeners?: FormListeners<
     TFormData,
     ToFormValidatorMetas<TFormValidators>,
-    TSubmitReturn
+    SubmitMeta<ValidationIssue, ValidationIssue>
   >
   onSubmit?: (
     context: FormSubmitContext<
@@ -79,26 +81,26 @@ export interface FormOptions<
 export interface FormApiOptions<
   in out TFormData,
   in out TFormValidatorMetas extends FormValidatorMetas,
-  in out TSubmitReturn,
+  in out TSubmitMeta,
 > {
   formId?: string
   defaultValues: TFormData
   errorVisibility?: ErrorVisibility<
     TFormData,
     TFormValidatorMetas,
-    TSubmitReturn
+    TSubmitMeta
   >
   validators?: FormValidators<TFormData>
-  listeners?: FormListeners<TFormData, TFormValidatorMetas, TSubmitReturn>
+  listeners?: FormListeners<TFormData, TFormValidatorMetas, TSubmitMeta>
   onSubmit?: (
     context: FormSubmitContext<TFormData, TFormValidatorMetas>,
-  ) => TSubmitReturn
+  ) => unknown
 }
 
 export interface FormState<
   in out TFormData,
   in out TFormValidatorMetas extends FormValidatorMetas,
-  in out TSubmitReturn,
+  in out TSubmitMeta,
 > {
   /**
    * The current values of the form.
@@ -121,7 +123,7 @@ export interface FormState<
   /**
    * Array of form-level validation errors.
    */
-  errors: FormErrors<TFormValidatorMetas, TSubmitReturn>
+  errors: FormErrors<TFormValidatorMetas, TSubmitMeta>
   /**
    * Whether the form currently has no form-level or field-level errors.
    */
@@ -163,14 +165,14 @@ export type AnyFormApi = FormApi<any, any, any>
 export interface FormApi<
   in out TFormData,
   in out TFormValidatorMetas extends FormValidatorMetas,
-  in out TSubmitReturn,
+  in out TSubmitMeta,
 > {
-  store: ReadonlyAtom<FormState<TFormData, TFormValidatorMetas, TSubmitReturn>>
-  readonly state: FormState<TFormData, TFormValidatorMetas, TSubmitReturn>
+  store: ReadonlyAtom<FormState<TFormData, TFormValidatorMetas, TSubmitMeta>>
+  readonly state: FormState<TFormData, TFormValidatorMetas, TSubmitMeta>
   readonly options: FormApiOptions<
     TFormData,
     TFormValidatorMetas,
-    TSubmitReturn
+    TSubmitMeta
   >
   readonly formId: string
   setFieldValue: SetFieldValueFn<TFormData>

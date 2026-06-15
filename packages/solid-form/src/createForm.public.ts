@@ -15,6 +15,7 @@ import type {
   ToFieldValidatorMetas,
   ToFormGroupValidatorMetas,
   ToFormValidatorMetas,
+  ToSubmitMeta,
 } from '@tanstack/form-core-v2'
 import type { Accessor, JSX } from 'solid-js'
 
@@ -54,7 +55,6 @@ export interface SolidFormFieldProps<
   children: (
     fieldApi: Accessor<
       FieldApi<
-        TFormData,
         TFieldName,
         TFieldValue,
         ToFieldValidatorMetas<TFieldValidators>,
@@ -87,7 +87,6 @@ export interface SolidFormArrayFieldProps<
   children: (
     fieldApi: Accessor<
       FieldApi<
-        TFormData,
         TFieldName,
         TFieldValue,
         ToFieldValidatorMetas<TFieldValidators>,
@@ -176,7 +175,11 @@ export function createForm<
   TSubmitReturn,
 >(
   options: Accessor<FormOptions<TData, TFormValidators, TSubmitReturn>>,
-): SolidFormApi<TData, ToFormValidatorMetas<TFormValidators>, TSubmitReturn> {
+): SolidFormApi<
+  TData,
+  ToFormValidatorMetas<TFormValidators>,
+  ToSubmitMeta<TSubmitReturn>
+> {
   const form = untrack(() => initializeForm(options()))
 
   createRenderEffect(() => {

@@ -424,17 +424,53 @@ type ExtractAggregateError<TResult, TTarget extends ValidationErrorTarget> =
         : never
     : NormalizeValidationResult<TResult>
 
-type ExtractSubmitFormError<TSubmitReturn> = unknown extends TSubmitReturn
-  ? ValidationIssue
-  : TSubmitReturn extends OnSubmitError<infer TResult>
-    ? ExtractAggregateError<Awaited<TResult>, 'form'>
+export interface SubmitMeta<
+  out TFormError = unknown,
+  out TFieldError = unknown,
+> {
+  readonly formError: TFormError
+  readonly fieldError: TFieldError
+}
+
+type ExtractSubmitValidationError<TSubmitReturn> =
+  Awaited<TSubmitReturn> extends infer TResolved
+    ? TResolved extends OnSubmitError<infer TError>
+      ? TError
+      : never
     : never
 
-type ExtractSubmitFieldError<TSubmitReturn> = unknown extends TSubmitReturn
+type ParseSubmitFormError<TSubmitReturn> = ExtractAggregateError<
+  ExtractSubmitValidationError<TSubmitReturn>,
+  'form'
+>
+
+type ParseSubmitFieldError<TSubmitReturn> = ExtractAggregateError<
+  ExtractSubmitValidationError<TSubmitReturn>,
+  'field'
+>
+
+export type ToSubmitMeta<TSubmitReturn> = unknown extends TSubmitReturn
+  ? SubmitMeta<any, any>
+  : SubmitMeta<
+      ParseSubmitFormError<TSubmitReturn>,
+      ParseSubmitFieldError<TSubmitReturn>
+    >
+
+type ExtractSubmitFormError<TSubmit> = unknown extends TSubmit
   ? ValidationIssue
-  : TSubmitReturn extends OnSubmitError<infer TResult>
-    ? ExtractAggregateError<Awaited<TResult>, 'field'>
-    : never
+  : TSubmit extends SubmitMeta<infer TFormError, any>
+    ? unknown extends TFormError
+      ? ValidationIssue
+      : TFormError
+    : ParseSubmitFormError<TSubmit>
+
+type ExtractSubmitFieldError<TSubmit> = unknown extends TSubmit
+  ? ValidationIssue
+  : TSubmit extends SubmitMeta<any, infer TFieldError>
+    ? unknown extends TFieldError
+      ? ValidationIssue
+      : TFieldError
+    : ParseSubmitFieldError<TSubmit>
 
 type IfBroad<
   TBase,

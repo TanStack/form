@@ -2,6 +2,7 @@ import type {
   AnyFormOptions,
   FormOptions,
   ToFormValidatorMetas,
+  ToSubmitMeta,
 } from '@tanstack/form-core-v2'
 import type { AppFormOptions } from '../AppForm/appFormOptions.public'
 import type {
@@ -9,6 +10,16 @@ import type {
   DefaultReactFormComponentMap,
 } from '../AppForm/componentMap.public'
 import type { ReactFormApi } from './formApiTypes.public'
+
+// When defining formOptions, `onSubmit` is most likely not going to be present in it. Users
+// prefer to define them in components.
+// That's an issue for us because TSubmitMeta is covariant, so inferring to `ToSubmitMeta` early can
+// break passing forms as props to child components.
+// This must remain `any` so that `form={form}` remains working. There are type tests for it, so feel
+// free to tinker.
+type ReactFormTypeSubmitMeta<TSubmitReturn> = unknown extends TSubmitReturn
+  ? any
+  : ToSubmitMeta<TSubmitReturn>
 
 export type ReactFormType<
   TOptions extends
@@ -24,7 +35,7 @@ export type ReactFormType<
     ? ReactFormApi<
         TFormData,
         ToFormValidatorMetas<TFormValidators>,
-        TSubmitReturn,
+        ReactFormTypeSubmitMeta<TSubmitReturn>,
         TComponents
       >
     : TOptions extends FormOptions<
@@ -35,7 +46,7 @@ export type ReactFormType<
       ? ReactFormApi<
           TFormData,
           ToFormValidatorMetas<TFormValidators>,
-          TSubmitReturn,
+          ReactFormTypeSubmitMeta<TSubmitReturn>,
           DefaultReactFormComponentMap
         >
       : never

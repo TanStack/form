@@ -24,9 +24,11 @@ import type {
   OnSubmitError,
   ReusableErrorVisibilityState,
   StandardSchemaV1Issue,
+  SubmitMeta,
   ToFieldValidatorMetas,
   ToFormGroupValidatorMetas,
   ToFormValidatorMetas,
+  ToSubmitMeta,
   ValidationIssue,
 } from '../src'
 
@@ -88,7 +90,7 @@ describe('ErrorVisibility', () => {
           FormState<
             TestFormData,
             ToFormValidatorMetas<typeof emptyFormValidators>,
-            never
+            SubmitMeta<ValidationIssue, ValidationIssue>
           >
         >()
         expectTypeOf(fieldState).toEqualTypeOf<ErrorVisibilityFieldState>()
@@ -189,6 +191,13 @@ describe('ErrorVisibility', () => {
 })
 
 describe('FormErrors', () => {
+  it('should fall back omitted submit errors to ValidationIssue submit meta', () => {
+    expectTypeOf<ToSubmitMeta<unknown>>().not.toBeAny()
+    expectTypeOf<TestFormErrors<[], ToSubmitMeta<unknown>>>().toEqualTypeOf<
+      Array<ValidationIssue>
+    >()
+  })
+
   it('should allow inference for a form', () => {
     const withRequiredValue = createValidator({
       triggers: [
@@ -465,6 +474,20 @@ describe('FormErrors', () => {
       form: { message: string; formOnly: true }
       fields: { name: { message: string; fieldOnly: true } }
     }>
+
+    expectTypeOf<TestFormErrors<[], SubmitReturn>>().toEqualTypeOf<
+      Array<{ message: string; formOnly: true }>
+    >()
+  })
+
+  it('should infer async aggregate submit errors', () => {
+    type SubmitReturn = Promise<
+      | OnSubmitError<{
+          form: { message: string; formOnly: true }
+          fields: { name: { message: string; fieldOnly: true } }
+        }>
+      | undefined
+    >
 
     expectTypeOf<TestFormErrors<[], SubmitReturn>>().toEqualTypeOf<
       Array<{ message: string; formOnly: true }>
@@ -753,6 +776,25 @@ describe('FieldErrors', () => {
       form: { message: string; formOnly: true }
       fields: { name: { message: string; fieldOnly: true } }
     }>
+
+    expectTypeOf<
+      TestFieldErrors<
+        typeof emptyFieldValidators,
+        [],
+        typeof emptyFormValidators,
+        SubmitReturn
+      >
+    >().toEqualTypeOf<Array<{ message: string; fieldOnly: true }>>()
+  })
+
+  it('should infer field errors from async submit returns', () => {
+    type SubmitReturn = Promise<
+      | OnSubmitError<{
+          form: { message: string; formOnly: true }
+          fields: { name: { message: string; fieldOnly: true } }
+        }>
+      | undefined
+    >
 
     expectTypeOf<
       TestFieldErrors<
