@@ -1,6 +1,8 @@
 import { useForm } from '@tanstack/react-form'
 import ReactDOM from 'react-dom/client'
 import './index.css'
+import { Fragment } from 'react/jsx-runtime'
+import { DateRangeField } from './fieldGroups/dateRange'
 import { LowerBoundField, UpperBoundField } from './fieldGroups/fieldBounds'
 
 function PricingFilterForm() {
@@ -61,6 +63,52 @@ function AgeRangeForm() {
   )
 }
 
+function SwappableDateRangesForm() {
+  const form = useForm({
+    defaultValues: {
+      dateRanges: [
+        {
+          id: 'A',
+          start: '2026-07-01',
+          end: '2026-07-05',
+        },
+        {
+          id: 'B',
+          start: '2026-08-10',
+          end: '2026-08-15',
+        },
+      ],
+    },
+  })
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => form.swapFieldValues('dateRanges', 0, 1)}
+      >
+        Swap date ranges
+      </button>
+      <form.ArrayField name="dateRanges">
+        {(array) =>
+          array.value.map((range, i) => (
+            <Fragment key={range.id}>
+              <DateRangeField
+                label={`Range ${range.id}`}
+                form={form}
+                fields={{
+                  start: `dateRanges[${i}].start`,
+                  end: `dateRanges[${i}].end`,
+                }}
+              />
+            </Fragment>
+          ))
+        }
+      </form.ArrayField>
+    </>
+  )
+}
+
 function App() {
   return (
     <div>
@@ -73,6 +121,10 @@ function App() {
       <div>
         <h2>Age Range Form</h2>
         <AgeRangeForm />
+      </div>
+      <div>
+        <h2>Swappable Date Ranges Form</h2>
+        <SwappableDateRangesForm />
       </div>
     </div>
   )
