@@ -68,24 +68,24 @@ function UpperBoundFieldComponent(props: UpperBoundFieldProps) {
         name="name"
         validators={[
           {
-            run: boundsSchema,
             triggers: ['change'],
-          },
-          {
-            triggers: [
-              {
-                trigger: 'change',
-                when: ({ value }) =>
-                  passesSchema(value, fields.getFieldValue('lowerBound')),
-              },
-            ],
             watchFields: ['lowerBound'],
-            run: ({ value }) => {
-              const lowerBound = boundsSchema.parse(
+            run: ({ value, parseIssues }) => {
+              const upperBoundResult = boundsSchema.safeParse(value)
+
+              if (!upperBoundResult.success) {
+                return parseIssues(upperBoundResult.error.issues)
+              }
+
+              const lowerBoundResult = boundsSchema.safeParse(
                 fields.getFieldValue('lowerBound'),
               )
-              const upperBound = boundsSchema.parse(value)
-              if (upperBound < lowerBound) {
+
+              if (!lowerBoundResult.success) {
+                return
+              }
+
+              if (upperBoundResult.data < lowerBoundResult.data) {
                 return 'Upper bound must be greater than lower bound'
               }
             },
@@ -111,7 +111,3 @@ export const UpperBoundField = withFields(
   UpperBoundFieldComponent,
   'fields',
 )
-
-function passesSchema(...numbers: Array<unknown>) {
-  return numbers.every((n) => boundsSchema.safeParse(n).success)
-}
