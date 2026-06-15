@@ -107,7 +107,7 @@ export function hasIndexedErrorFromSource(
 export function hasIndexedErrors(
   errors: Array<Array<ValidationIssue>>,
 ): boolean {
-  return errors.some((validatorErrors) => validatorErrors.length > 0)
+  return errors.some((validatorErrors) => validatorErrors?.length > 0)
 }
 
 export function setIndexedError(
@@ -130,8 +130,19 @@ export function setIndexedError(
     return null
   }
 
-  const nextErrors = [...errors]
-  const nextErrorSourceEvents = [...errorSourceEvents]
+  const nextLength = Math.max(
+    errors.length,
+    errorSourceEvents.length,
+    index + 1,
+  )
+  const nextErrors = Array.from(
+    { length: nextLength },
+    (_, errorIndex) => errors[errorIndex] ?? [],
+  )
+  const nextErrorSourceEvents = Array.from(
+    { length: nextLength },
+    (_, errorIndex) => errorSourceEvents[errorIndex] ?? null,
+  )
   nextErrors[index] = error
   nextErrorSourceEvents[index] = nextSourceEvent
 

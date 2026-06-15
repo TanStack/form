@@ -344,7 +344,7 @@ export class InternalFieldApi<
 > implements FieldApi<any, any, any, any, any, any, any> {
   readonly _isRoot = false
   _parent: AnyInternalFieldApi | InternalRootFieldApi
-  #children: Map<NameSegment, AnyInternalFieldApi> = new Map()
+  _childrenMap: Map<NameSegment, AnyInternalFieldApi> = new Map()
   _pathVersion = 0
   _parentPathVersion = 0
   _fullPathCache: TFieldName | null = null
@@ -367,19 +367,19 @@ export class InternalFieldApi<
   _isKilled = false
   _mountValidationRan = false
 
-  #segment: NameSegment
+  _segmentValue: NameSegment
   /**
    * @private
    * How many components have marked this field as desired / registered.
    */
-  #refCount = 0
+  _refCount = 0
 
   /**
    * @private
    * This is read-only. Use fieldApi._moveTo() instead for writes.
    */
   get _segment(): NameSegment {
-    return this.#segment
+    return this._segmentValue
   }
 
   form: AnyInternalFormApi
@@ -390,11 +390,11 @@ export class InternalFieldApi<
    * on-demand if there is an adapter component that needs one.
    */
   get _isMounted(): boolean {
-    return this.#refCount > 0
+    return this._refCount > 0
   }
 
   get _children(): Array<AnyInternalFieldApi> {
-    return Array.from(this.#children.values())
+    return Array.from(this._childrenMap.values())
   }
 
   _getOrCreateAtoms(): Required<FieldAtoms> {
@@ -477,7 +477,7 @@ export class InternalFieldApi<
     errorVisibility,
     errorBoundary,
   }: InternalFieldApiParams) {
-    this.#segment = segment
+    this._segmentValue = segment
     this._parent = parent
     this.form = form
     this._validators =
@@ -561,7 +561,7 @@ export class InternalFieldApi<
    * Get a child FieldApi by its segment name.
    */
   _getChild(segment: NameSegment): AnyInternalFieldApi | undefined {
-    return this.#children.get(segment)
+    return this._childrenMap.get(segment)
   }
 
   /**
@@ -569,7 +569,7 @@ export class InternalFieldApi<
    * Set an existing node as a child of this FieldApi.
    */
   _setChild(node: AnyInternalFieldApi): void {
-    this.#children.set(node._segment, node)
+    this._childrenMap.set(node._segment, node)
   }
 
   /**
@@ -579,7 +579,7 @@ export class InternalFieldApi<
    * @important Does not kill the child node.
    */
   _removeChild(segment: NameSegment): void {
-    this.#children.delete(segment)
+    this._childrenMap.delete(segment)
   }
 
   /**
@@ -1000,8 +1000,8 @@ export class InternalFieldApi<
       return () => {}
     }
 
-    const isFirstMount = this.#refCount === 0 && !this._mountValidationRan
-    this.#refCount++
+    const isFirstMount = this._refCount === 0 && !this._mountValidationRan
+    this._refCount++
     this._getOrCreateAtoms()
 
     this._notifyListener('mount', new WeakSet())
@@ -1053,10 +1053,10 @@ export class InternalFieldApi<
   _unregister(): void {
     if (this._isKilled) return
 
-    this.#refCount--
+    this._refCount--
     this._notifyListener('unmount', new WeakSet())
 
-    if (this.#refCount <= 0) {
+    if (this._refCount <= 0) {
       setTimeout(() => {
         this._atoms.store = undefined
 
@@ -1082,7 +1082,7 @@ export class InternalFieldApi<
   _moveTo(newSegment: NameSegment): void {
     if (this._isKilled) return
 
-    if (this.#segment === newSegment) {
+    if (this._segmentValue === newSegment) {
       return
     }
     /**
@@ -1097,8 +1097,8 @@ export class InternalFieldApi<
      * fieldB removes 1 and sets 0
      * -> fieldA was lost
      */
-    const oldSegment = this.#segment
-    this.#segment = newSegment
+    const oldSegment = this._segmentValue
+    this._segmentValue = newSegment
     this._invalidateFullPath()
     if (this._parent._getChild(oldSegment) === this) {
       this._parent._removeChild(oldSegment)
@@ -1165,13 +1165,13 @@ export class InternalFieldApi<
         }
 
         node._isKilled = true
-        node.#refCount = 0
+        node._refCount = 0
         node._atoms.store = undefined
         if (node._pipelineCache) {
           cancelPipelineCache(node._pipelineCache)
           node._pipelineCache = null
         }
-        node.#children.clear()
+        node._childrenMap.clear()
         node._parent._removeChild(node._segment)
       }
 
@@ -1232,8 +1232,8 @@ export class InternalFieldApi<
   _canPrune(): boolean {
     if (this._isKilled) return false
 
-    if (this.#refCount > 0) return false
-    if (this.#children.size > 0) return false
+    if (this._refCount > 0) return false
+    if (this._childrenMap.size > 0) return false
     if (this._watchingFields) return false
     if (this._watchingValidatorFields) return false
     const meta = this._atoms.meta?.get() ?? defaultInternalBaseFieldMeta
@@ -1568,7 +1568,7 @@ function getChildContributionStates(
 }
 
 function hasValidatorErrors(errors: Array<Array<ValidationIssue>>): boolean {
-  return errors.some((validatorErrors) => validatorErrors.length > 0)
+  return errors.some((validatorErrors) => validatorErrors?.length > 0)
 }
 
 function isPrunableMeta(meta: InternalBaseFieldMeta): boolean {

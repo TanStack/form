@@ -14,9 +14,7 @@ export function useFieldContext(): AnyInternalFieldApi {
     )
   }
 
-  useValueFieldSubscription(field)
-
-  return field
+  return useValueFieldSubscription(field)
 }
 
 export function useFormContext(): InternalReactFormApi {

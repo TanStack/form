@@ -1,5 +1,7 @@
 export * from './FieldApi/FieldApi.public'
 export * from './FormApi/FormApi.public'
+export * from './FormApi/FormApiArrayMethods.types.public'
+export * from './FormApi/FormApiFieldMethods.types.public'
 export * from './FormGroupApi/FormGroupApi.public'
 export * from './types.public'
 export * from './validation.public'

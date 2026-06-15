@@ -38,9 +38,9 @@ function createFieldComponent(
 ): AnyFieldComponent {
   const TanStackFormField: AnyFieldComponent = (props) => {
     const fieldApi = useField({ ...props, form }, fieldComponents)
-    useValueFieldSubscription(fieldApi)
+    const field = useValueFieldSubscription(fieldApi)
 
-    return props.children(fieldApi)
+    return props.children(field)
   }
 
   TanStackFormField.displayName = 'TanStackForm.Field'
@@ -56,9 +56,9 @@ function createArrayFieldComponent(
 ): AnyArrayFieldComponent {
   const TanStackFormArrayField: AnyArrayFieldComponent = (props) => {
     const fieldApi = useField({ ...props, form }, fieldComponents)
-    useArrayFieldSubscription(fieldApi)
+    const field = useArrayFieldSubscription(fieldApi)
 
-    return props.children(fieldApi)
+    return props.children(field)
   }
 
   TanStackFormArrayField.displayName = 'TanStackForm.ArrayField'

@@ -391,7 +391,7 @@ export interface FieldValidator<
   | StandardSchemaV1<TFieldValue, any>,
   TFieldValue
 > {
-  watchFields?: Array<string>
+  watchFields?: Array<DeepKeys<TFormData>>
 }
 
 export type FieldValidators<TFormData, TFieldName, TFieldValue> = ReadonlyArray<

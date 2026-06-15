@@ -293,7 +293,10 @@ describe('field - linked validators', () => {
   it('keeps validator result indices stable when running selected watched validators', async () => {
     vi.useFakeTimers()
     const otherValidator = vi.fn(() => 'other error')
-    const sourceValidator = vi.fn(() => 'source error')
+    const sourceValidator = vi
+      .fn()
+      .mockReturnValueOnce('source error')
+      .mockReturnValueOnce('updated source error')
 
     const form = new InternalFormApi({
       defaultValues: { source: '', other: '', target: '' },
@@ -313,6 +316,7 @@ describe('field - linked validators', () => {
         },
       ],
     })
+    const unregister = targetField._register()
     const sourceField = form._getOrCreateFieldApi({ name: 'source' })
 
     sourceField.handleChange('source')
@@ -320,11 +324,23 @@ describe('field - linked validators', () => {
 
     expect(otherValidator).not.toHaveBeenCalled()
     expect(sourceValidator).toHaveBeenCalledOnce()
-    expect(targetField.meta._fieldValidatorErrors[0]).toEqual(undefined)
+    expect(targetField.meta._fieldValidatorErrors[0]).toEqual([])
     expect(targetField.meta._fieldValidatorErrors[1]).toEqual([
       { message: 'source error' },
     ])
     expect(targetField.errors).toEqual([{ message: 'source error' }])
+
+    sourceField.handleChange('updated source')
+    await vi.runOnlyPendingTimersAsync()
+
+    expect(targetField.meta._fieldValidatorErrors[0]).toEqual([])
+    expect(targetField.meta._fieldValidatorErrors[1]).toEqual([
+      { message: 'updated source error' },
+    ])
+    expect(targetField.errors).toEqual([{ message: 'updated source error' }])
+
+    unregister()
+    await vi.runOnlyPendingTimersAsync()
   })
 
   it('warns and stops cyclical validator watch chains', async () => {

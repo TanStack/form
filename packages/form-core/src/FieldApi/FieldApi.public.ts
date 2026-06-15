@@ -11,6 +11,7 @@ import type {
   FieldErrors as ValidationFieldErrors,
 } from '../validation.public'
 import type { FieldListeners } from '../listeners.public'
+import type { ReadonlyAtom } from '@tanstack/store'
 
 export interface BaseFieldMeta {
   isTouched: boolean
@@ -207,6 +208,16 @@ export interface FieldApi<
     TGroupValidatorMetas,
     TFormValidatorMetas,
     TSubmitReturn
+  >
+
+  store: ReadonlyAtom<
+    FieldState<
+      TFieldValue,
+      TFieldValidatorMetas,
+      TGroupValidatorMetas,
+      TFormValidatorMetas,
+      TSubmitReturn
+    >
   >
 
   value: TFieldValue

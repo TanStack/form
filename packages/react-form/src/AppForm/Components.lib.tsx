@@ -69,12 +69,12 @@ function createFieldWithContext(
     // Usually, you'd have to call this on the useContext level (and we do),
     // but the user could just use the normal component without accessing that.
     // That's why we still need to add the selectors here.
-    useValueFieldSubscription(fieldApi)
+    const field = useValueFieldSubscription(fieldApi)
 
     return (
       // eslint-disable-next-line @eslint-react/no-context-provider
       <FieldContext.Provider value={fieldApi}>
-        {props.children(fieldApi) as never}
+        {props.children(field) as never}
       </FieldContext.Provider>
     )
   }
