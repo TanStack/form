@@ -63,5 +63,8 @@
   },
   "peerDependencies": {
     "@angular/core": ">=19.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/TanStack/form/issues"
   }
 }

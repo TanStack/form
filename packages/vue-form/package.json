@@ -63,5 +63,8 @@
   },
   "peerDependencies": {
     "vue": "^3.4.0"
+  },
+  "bugs": {
+    "url": "https://github.com/TanStack/form/issues"
   }
 }
