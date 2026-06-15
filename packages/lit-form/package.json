@@ -56,5 +56,8 @@
   },
   "peerDependencies": {
     "lit": "^3.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/TanStack/form/issues"
   }
 }

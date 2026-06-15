@@ -60,5 +60,8 @@
     "arktype": "^2.1.22",
     "valibot": "^1.1.0",
     "zod": "^3.25.76"
+  },
+  "bugs": {
+    "url": "https://github.com/TanStack/form/issues"
   }
 }

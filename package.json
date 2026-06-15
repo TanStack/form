@@ -73,5 +73,9 @@
     "typescript58": "npm:typescript@5.8.3",
     "vite": "^7.2.2",
     "vitest": "^3.2.4"
+  },
+  "homepage": "https://github.com/TanStack/form",
+  "bugs": {
+    "url": "https://github.com/TanStack/form/issues"
   }
 }

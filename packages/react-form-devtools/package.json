@@ -65,5 +65,8 @@
   },
   "peerDependencies": {
     "react": "^17.0.0 || ^18.0.0 || ^19.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/TanStack/form/issues"
   }
 }

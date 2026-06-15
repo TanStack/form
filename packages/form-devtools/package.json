@@ -89,5 +89,8 @@
   },
   "peerDependencies": {
     "solid-js": ">=1.9.9"
+  },
+  "bugs": {
+    "url": "https://github.com/TanStack/form/issues"
   }
 }
