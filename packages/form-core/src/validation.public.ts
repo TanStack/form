@@ -275,6 +275,19 @@ export interface ValidationAggregateError<in out TFormData> {
   fields: Partial<Record<DeepKeys<TFormData>, ValidationErrorInput>>
 }
 
+export interface ParsedStandardSchemaIssues<in out TFormData> {
+  form: Array<StandardSchemaV1Issue>
+  fields: Partial<Record<DeepKeys<TFormData>, Array<StandardSchemaV1Issue>>>
+}
+
+export type ParseFieldIssuesFn = (
+  issues: ReadonlyArray<StandardSchemaV1Issue>,
+) => Array<StandardSchemaV1Issue>
+
+export type ParseFormIssuesFn<TFormData> = (
+  issues: ReadonlyArray<StandardSchemaV1Issue>,
+) => ParsedStandardSchemaIssues<TFormData>
+
 interface BaseValidatorContext<in out TFormData> {
   event: ValidationTrigger
   signal: AbortSignal
@@ -286,6 +299,7 @@ export interface FormValidatorContext<
 > extends BaseValidatorContext<TFormData> {
   triggerFieldApi?: AnyFieldApi
   value: TFormData
+  parseIssues: ParseFormIssuesFn<TFormData>
 }
 
 export type ValidValidationResult = null | undefined | false
@@ -326,6 +340,7 @@ export interface FormGroupValidatorContext<in out TGroupValue> {
   groupApi: FormGroupApi<any, any, TGroupValue, any, any, any>
   triggerFieldApi?: AnyFieldApi
   value: TGroupValue
+  parseIssues: ParseFormIssuesFn<TGroupValue>
 }
 
 export type FormGroupValidationError<TGroupValue> =
@@ -372,6 +387,7 @@ export interface FieldValidatorContext<
   formApi: FormApi<TFormData, any, any>
   fieldApi: FieldApi<TFieldName, TFieldValue, any, any, TFormData, any, any>
   value: TFieldValue
+  parseIssues: ParseFieldIssuesFn
 }
 
 export type FieldValidateResult = ValidationResult

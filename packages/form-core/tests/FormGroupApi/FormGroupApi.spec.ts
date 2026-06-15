@@ -1072,6 +1072,45 @@ describe('FormGroupApi', () => {
     expect(group.state.errors).toEqual([])
   })
 
+  it('parses Standard Schema issues from group validators', async () => {
+    const schema = z.object({
+      name: z.string().min(1, 'Name is required'),
+    })
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: '' } },
+    })
+    const nameField = form._getOrCreateFieldApi({
+      name: 'guestDetails.name',
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [
+        {
+          triggers: [],
+          run: ({ value, parseIssues }) => {
+            const result = schema.safeParse(value)
+
+            if (!result.success) {
+              return parseIssues(result.error.issues)
+            }
+
+            return null
+          },
+        },
+      ],
+    })
+
+    await group.validate('submit')
+
+    expect(group.state.errors).toEqual([
+      expect.objectContaining({ message: 'Name is required' }),
+    ])
+    expect(nameField.errors).toEqual([
+      expect.objectContaining({ message: 'Name is required' }),
+    ])
+  })
+
   it('resets group interaction and lifecycle state without resetting siblings', async () => {
     const form = new InternalFormApi({
       defaultValues: {

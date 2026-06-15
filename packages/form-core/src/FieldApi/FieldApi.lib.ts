@@ -1568,7 +1568,7 @@ function getChildContributionStates(
 }
 
 function hasValidatorErrors(errors: Array<Array<ValidationIssue>>): boolean {
-  return errors.some((validatorErrors) => validatorErrors?.length > 0)
+  return errors.some((validatorErrors) => validatorErrors.length > 0)
 }
 
 function isPrunableMeta(meta: InternalBaseFieldMeta): boolean {

@@ -107,6 +107,45 @@ describe('form - submission handling', () => {
       ])
     })
 
+    it('returns parsed Standard Schema issues created during onSubmit', async () => {
+      const schema = z.object({
+        name: z.string().min(1, 'Name is required'),
+      })
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        onSubmit: ({ value, parseIssues }) => {
+          const result = schema.safeParse(value)
+
+          if (!result.success) {
+            return parseIssues(result.error.issues)
+          }
+
+          return null
+        },
+      })
+      const field = form._getOrCreateFieldApi({ name: 'name' })
+
+      const result = await form.handleSubmit()
+
+      expect(result).toEqual([
+        expect.objectContaining({
+          form: [expect.objectContaining({ message: 'Name is required' })],
+        }),
+      ])
+      expect(form.state.errors).toEqual([
+        expect.objectContaining({ message: 'Name is required' }),
+      ])
+      expect(field.errors).toEqual([
+        expect.objectContaining({ message: 'Name is required' }),
+      ])
+
+      form.setFieldValue('name', 'Tony', { causeValidation: false })
+      await form.handleSubmit()
+
+      expect(form.state.errors).toEqual([])
+      expect(field.errors).toEqual([])
+    })
+
     it('sets isSubmitSuccessful based on submission outcome', async () => {
       const successfulForm = new InternalFormApi({
         defaultValues: { name: '' },

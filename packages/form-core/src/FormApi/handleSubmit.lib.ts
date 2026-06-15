@@ -1,5 +1,6 @@
 import { batch } from '@tanstack/store'
 import { isErrorResult } from '../validation.lib'
+import { parseStandardSchemaIssues } from '../standardSchema.lib'
 import { isNotNil } from '../utils.lib'
 import type { InternalFormApi } from './FormApi.lib'
 import type {
@@ -7,7 +8,11 @@ import type {
   FormValidationError,
   ValidationErrorInput,
 } from '../validation.public'
-import type { CreateValidationErrorFn, OnSubmitError } from './FormApi.public'
+import type {
+  CreateValidationErrorFn,
+  OnSubmitError,
+  ParseSubmitIssuesFn,
+} from './FormApi.public'
 
 export const SUBMIT_ERROR = Symbol('SUBMIT_ERROR')
 
@@ -22,6 +27,12 @@ const createValidationError: CreateValidationErrorFn<any> = <
 >(
   error: TError,
 ): OnSubmitError<TError> => {
+  return createSubmitError(error)
+}
+
+function createSubmitError<TError extends FormValidationError<any>>(
+  error: TError,
+): OnSubmitError<TError> {
   let output: OnSubmitError<TError>
   if (typeof error === 'string') {
     // strings can't retain symbols, so we gotta normalize early
@@ -33,6 +44,14 @@ const createValidationError: CreateValidationErrorFn<any> = <
   runtimeOutput[SUBMIT_ERROR] = true
 
   return output
+}
+
+function createParseIssues<TFormData>(
+  value: TFormData,
+): ParseSubmitIssuesFn<TFormData> {
+  return (issues) => {
+    return createSubmitError(parseStandardSchemaIssues(issues, value, 'form'))
+  }
 }
 
 export async function runSubmissionProcess<TFormData>(
@@ -135,6 +154,7 @@ export async function runSubmissionProcess<TFormData>(
       schemaOutputs,
       value: form.state.values,
       createValidationError,
+      parseIssues: createParseIssues(form.state.values),
     })
 
     if (hasResettedFormDuringSubmit()) {

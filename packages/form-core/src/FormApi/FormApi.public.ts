@@ -7,10 +7,12 @@ import type {
   FormValidationError,
   FormValidatorMetas,
   FormValidators,
+  ParsedStandardSchemaIssues,
   SubmitMeta,
   ToFormValidatorMetas,
   ValidationIssue,
 } from '../validation.public'
+import type { StandardSchemaV1Issue } from '../standardSchema.public'
 import type { FormListeners } from '../listeners.public'
 import type {
   FormApiArrayMethods,
@@ -33,6 +35,10 @@ export type CreateValidationErrorFn<in out TFormData> = <
   error: TError,
 ) => OnSubmitError<TError>
 
+export type ParseSubmitIssuesFn<in out TFormData> = (
+  issues: ReadonlyArray<StandardSchemaV1Issue>,
+) => OnSubmitError<ParsedStandardSchemaIssues<TFormData>>
+
 export interface FormSubmitContext<
   in out TFormData,
   in out TFormValidatorMetas extends FormValidatorMetas,
@@ -41,6 +47,7 @@ export interface FormSubmitContext<
   formApi: FormApi<TFormData, TFormValidatorMetas, any>
   schemaOutputs: FormStandardSchemaValidatorOutputs<TFormValidatorMetas>
   createValidationError: CreateValidationErrorFn<TFormData>
+  parseIssues: ParseSubmitIssuesFn<TFormData>
 }
 
 export type AnyFormOptions = FormOptions<any, any, any>

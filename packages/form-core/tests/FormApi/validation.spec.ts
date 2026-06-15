@@ -81,6 +81,71 @@ describe('form - validation', () => {
       expect(form.state.errors).toEqual([{ message: 'Name is required' }])
     })
 
+    it('parses Standard Schema issues from field validators', async () => {
+      const schema = z.string().min(1, 'Name is required')
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+      })
+      const field = form._getOrCreateFieldApi({
+        name: 'name',
+        validators: [
+          {
+            run: (context: any) => {
+              const result = schema.safeParse(context.value)
+
+              if (!result.success) {
+                return context.parseIssues(result.error.issues)
+              }
+
+              return null
+            },
+            triggers: [],
+          },
+        ],
+      })
+
+      await field._runFieldValidation('submit')
+
+      expect(field.errors).toEqual([
+        expect.objectContaining({ message: 'Name is required' }),
+      ])
+    })
+
+    it('parses Standard Schema issues from form validators', async () => {
+      const schema = z.object({
+        user: z.object({
+          name: z.string().min(1, 'Name is required'),
+        }),
+      })
+      const form = new InternalFormApi({
+        defaultValues: { user: { name: '' } },
+        validators: [
+          {
+            run: ({ value, parseIssues }) => {
+              const result = schema.safeParse(value)
+
+              if (!result.success) {
+                return parseIssues(result.error.issues)
+              }
+
+              return null
+            },
+            triggers: [],
+          },
+        ],
+      })
+      const field = form._getOrCreateFieldApi({ name: 'user.name' })
+
+      await form.validate('submit')
+
+      expect(form.state.errors).toEqual([
+        expect.objectContaining({ message: 'Name is required' }),
+      ])
+      expect(field.errors).toEqual([
+        expect.objectContaining({ message: 'Name is required' }),
+      ])
+    })
+
     it('handles validators returning error arrays', async () => {
       const form = new InternalFormApi({
         defaultValues: { name: '' },

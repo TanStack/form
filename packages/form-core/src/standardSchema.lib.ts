@@ -8,7 +8,7 @@ import type {
   FormGroupValidatorFn,
   FormValidateResult,
   FormValidatorFn,
-  ValidationIssue,
+  ParsedStandardSchemaIssues,
 } from './validation.public'
 
 export function prefixSchemaToErrors(
@@ -90,14 +90,11 @@ export function parseStandardSchema<TOutput>(
       }
     }
 
-    const validationResult =
-      scope === 'field'
-        ? (result.issues as Array<ValidationIssue>)
-        : {
-            form: result.issues.slice(),
-            // TODO the form probably wants a copy?
-            fields: prefixSchemaToErrors(result.issues, value),
-          }
+    const validationResult = parseStandardSchemaIssues(
+      result.issues,
+      value,
+      scope,
+    )
 
     return {
       result: validationResult,
@@ -105,4 +102,37 @@ export function parseStandardSchema<TOutput>(
       hasSchemaResult: false,
     }
   })
+}
+
+export function parseStandardSchemaIssues<TValue>(
+  issues: ReadonlyArray<StandardSchemaV1Issue>,
+  value: TValue,
+  scope: 'form',
+): ParsedStandardSchemaIssues<TValue>
+export function parseStandardSchemaIssues(
+  issues: ReadonlyArray<StandardSchemaV1Issue>,
+  value: unknown,
+  scope: 'field',
+): Array<StandardSchemaV1Issue>
+export function parseStandardSchemaIssues<TValue>(
+  issues: ReadonlyArray<StandardSchemaV1Issue>,
+  value: TValue,
+  scope: 'form' | 'field',
+): ParsedStandardSchemaIssues<TValue> | Array<StandardSchemaV1Issue>
+export function parseStandardSchemaIssues<TValue>(
+  issues: ReadonlyArray<StandardSchemaV1Issue>,
+  value: TValue,
+  scope: 'form' | 'field',
+): ParsedStandardSchemaIssues<TValue> | Array<StandardSchemaV1Issue> {
+  if (scope === 'field') {
+    return issues.slice()
+  }
+
+  return {
+    form: issues.slice(),
+    fields: prefixSchemaToErrors(
+      issues,
+      value,
+    ) as ParsedStandardSchemaIssues<TValue>['fields'],
+  }
 }

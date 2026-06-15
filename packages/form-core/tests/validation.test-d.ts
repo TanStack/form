@@ -22,6 +22,7 @@ import type {
   FormValidatorMeta,
   FormValidators,
   OnSubmitError,
+  ParseSubmitIssuesFn,
   ReusableErrorVisibilityState,
   StandardSchemaV1Issue,
   SubmitMeta,
@@ -381,6 +382,19 @@ describe('FormErrors', () => {
     >()
   })
 
+  it('should infer form errors from parsed Standard Schema issues', () => {
+    const validators = defineFormValidators([
+      {
+        run: ({ parseIssues }) => parseIssues([{ message: '' }]),
+        triggers: [],
+      },
+    ])
+
+    expectTypeOf<TestFormErrors<typeof validators, never>>().toEqualTypeOf<
+      Array<StandardSchemaV1Issue>
+    >()
+  })
+
   it('should combine errors from multiple validators', () => {
     const validators = defineFormValidators([
       { run: () => ({ message: '', fromA: true as const }), triggers: [] },
@@ -478,6 +492,21 @@ describe('FormErrors', () => {
     expectTypeOf<TestFormErrors<[], SubmitReturn>>().toEqualTypeOf<
       Array<{ message: string; formOnly: true }>
     >()
+  })
+
+  it('should infer submit errors from parsed Standard Schema issues', () => {
+    type SubmitReturn = ReturnType<ParseSubmitIssuesFn<TestFormData>>
+
+    expectTypeOf<TestFormErrors<[], SubmitReturn>>().toEqualTypeOf<
+      Array<StandardSchemaV1Issue>
+    >()
+
+    new InternalFormApi({
+      defaultValues: { name: '' },
+      onSubmit: ({ parseIssues }) => {
+        return parseIssues([{ message: '' }])
+      },
+    })
   })
 
   it('should infer async aggregate submit errors', () => {
@@ -681,10 +710,55 @@ describe('FieldErrors', () => {
     >().toEqualTypeOf<Array<StandardSchemaV1Issue>>()
   })
 
+  it('should infer field errors from parsed Standard Schema issues', () => {
+    const fieldValidators = defineFieldValidators([
+      {
+        run: ({ parseIssues }) => parseIssues([{ message: '' }]),
+        triggers: [],
+      },
+    ])
+
+    const formValidators = defineFormValidators([
+      {
+        run: ({ parseIssues }) =>
+          parseIssues([{ message: '', path: ['name'] }]),
+        triggers: [],
+      },
+    ])
+
+    expectTypeOf<
+      TestFieldErrors<
+        typeof fieldValidators,
+        [],
+        typeof formValidators,
+        never
+      >
+    >().toEqualTypeOf<Array<StandardSchemaV1Issue>>()
+  })
+
   it('should infer field errors from group standard schemas', () => {
     const groupSchema = z.object({ name: z.string() })
     const groupValidators = defineGroupValidators([
       { run: groupSchema, triggers: [] },
+    ])
+
+    expectTypeOf<
+      TestFieldErrors<
+        typeof emptyFieldValidators,
+        typeof groupValidators,
+        typeof emptyFormValidators,
+        never
+      >
+    >().toEqualTypeOf<Array<StandardSchemaV1Issue>>()
+  })
+
+  it('should infer field errors from group parsed Standard Schema issues', () => {
+    const groupValidators = defineGroupValidators([
+      {
+        run: ({ parseIssues }) =>
+          parseIssues([{ message: '', path: ['name'] }]),
+        triggers: [],
+      },
     ])
 
     expectTypeOf<

@@ -1,5 +1,9 @@
 import { LiteDebouncer } from '@tanstack/pacer-lite'
-import { isStandardSchema, parseStandardSchema } from './standardSchema.lib'
+import {
+  isStandardSchema,
+  parseStandardSchema,
+  parseStandardSchemaIssues,
+} from './standardSchema.lib'
 import {
   evaluate,
   isNil,
@@ -30,9 +34,18 @@ import type { InternalFormApi } from './FormApi/FormApi.lib'
 import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
 import type { InternalFormGroupApi } from './FormGroupApi/FormGroupApi.lib'
 
-type FormValidateContext = Omit<FormValidatorContext<any>, 'value'>
-type FieldValidateContext = Omit<FieldValidatorContext<any, any, any>, 'value'>
-type FormGroupValidateContext = Omit<FormGroupValidatorContext<any>, 'value'>
+type FormValidateContext = Omit<
+  FormValidatorContext<any>,
+  'value' | 'parseIssues'
+>
+type FieldValidateContext = Omit<
+  FieldValidatorContext<any, any, any>,
+  'value' | 'parseIssues'
+>
+type FormGroupValidateContext = Omit<
+  FormGroupValidatorContext<any>,
+  'value' | 'parseIssues'
+>
 type FormInputContext = Omit<FormValidateContext, 'signal'>
 type FieldInputContext = Omit<FieldValidateContext, 'signal'>
 type FormGroupInputContext = Omit<FormGroupValidateContext, 'signal'>
@@ -64,6 +77,14 @@ function getContextValue(context: InputContext) {
   return isFormContext(context)
     ? context.formApi.state.values
     : context.fieldApi.value
+}
+
+function parseFieldIssues(
+  issues: Parameters<
+    FieldValidatorContext<any, any, any>['parseIssues']
+  >[0],
+) {
+  return parseStandardSchemaIssues(issues, undefined, 'field')
 }
 
 const ABORTED_CALL = Symbol('ABORTED_CALL')
@@ -107,7 +128,7 @@ export function hasIndexedErrorFromSource(
 export function hasIndexedErrors(
   errors: Array<Array<ValidationIssue>>,
 ): boolean {
-  return errors.some((validatorErrors) => validatorErrors?.length > 0)
+  return errors.some((validatorErrors) => validatorErrors.length > 0)
 }
 
 export function setIndexedError(
@@ -788,6 +809,12 @@ export function runFormValidatorPipeline({
           formApi: ctx.formApi,
           signal: ctx.signal,
           value: ctx.formApi.state.values,
+          parseIssues: (issues) =>
+            parseStandardSchemaIssues(
+              issues,
+              ctx.formApi.state.values,
+              'form',
+            ),
         }
       }
       return {
@@ -796,6 +823,8 @@ export function runFormValidatorPipeline({
         formApi: ctx.formApi,
         signal: ctx.signal,
         value: ctx.formApi.state.values,
+        parseIssues: (issues) =>
+          parseStandardSchemaIssues(issues, ctx.formApi.state.values, 'form'),
       }
     },
     scope: 'form',
@@ -1042,6 +1071,8 @@ export function runFormMountValidatorPipeline({
       signal,
       formApi,
       value: formApi.state.values,
+      parseIssues: (issues) =>
+        parseStandardSchemaIssues(issues, formApi.state.values, 'form'),
     }),
     scope: 'form',
     onResult,
@@ -1096,6 +1127,7 @@ export function runFieldValidatorPipeline({
       signal: ctx.signal,
       fieldApi: context.fieldApi,
       value: context.fieldApi.value,
+      parseIssues: parseFieldIssues,
     }),
     scope: 'field',
     validatorIndecesToRun,
@@ -1122,6 +1154,7 @@ export function runFieldMountValidatorPipeline({
       formApi: fieldApi.form as never,
       fieldApi: fieldApi as never,
       value: fieldApi.value,
+      parseIssues: parseFieldIssues,
     }),
     scope: 'field',
     onResult,
@@ -1160,6 +1193,8 @@ export function runGroupMountValidatorPipeline({
       groupApi: groupApi as never,
       triggerFieldApi: undefined,
       value: groupApi.value,
+      parseIssues: (issues) =>
+        parseStandardSchemaIssues(issues, groupApi.value, 'form'),
     }),
     scope: 'form',
     onResult,

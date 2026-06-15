@@ -20,6 +20,7 @@ import {
   setIndexedError,
 } from '../validation.lib'
 import { hasFieldMetaErrors } from '../FieldApi/FieldApi.lib'
+import { parseStandardSchemaIssues } from '../standardSchema.lib'
 import type { FormApi } from '../FormApi/FormApi.public'
 import type { InternalFormApi } from '../FormApi/FormApi.lib'
 import type {
@@ -593,6 +594,8 @@ export class InternalFormGroupApi<
           triggerFieldApi: opts?.triggerFieldApi,
           signal: ctx.signal,
           value: this.value,
+          parseIssues: (issues) =>
+            parseStandardSchemaIssues(issues, this.value, 'form'),
         }),
         onResult: (result) => {
           this._processValidationResult(result, signal)
