@@ -59,5 +59,8 @@
   },
   "devDependencies": {
     "vite-plugin-solid": "^2.11.8"
+  },
+  "bugs": {
+    "url": "https://github.com/TanStack/form/issues"
   }
 }

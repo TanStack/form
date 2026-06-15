@@ -66,5 +66,8 @@
     "@tanstack/react-start": {
       "optional": true
     }
+  },
+  "bugs": {
+    "url": "https://github.com/TanStack/form/issues"
   }
 }
