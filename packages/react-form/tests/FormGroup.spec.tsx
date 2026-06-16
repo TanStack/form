@@ -96,6 +96,45 @@ describe('FormGroup', () => {
     expect(getByTestId('app-field-name')).toHaveTextContent('guestDetails.name')
   })
 
+  it('uses the AppForm field provider subscription for field context', async () => {
+    const subscribe = vi.fn()
+
+    function Component() {
+      const form = useAppForm({
+        defaultValues: { guestDetails: { name: 'Tony' } },
+      })
+
+      return (
+        <form.AppForm>
+          <form.FormGroup name="guestDetails">
+            {(group) => (
+              <group.Field name="name">
+                {(field) => {
+                  const store = field.store
+                  const originalSubscribe = store.subscribe as (
+                    ...args: Array<any>
+                  ) => ReturnType<typeof store.subscribe>
+                  store.subscribe = (...args) => {
+                    subscribe()
+                    return originalSubscribe(...args)
+                  }
+
+                  return <field.FieldName />
+                }}
+              </group.Field>
+            )}
+          </form.FormGroup>
+        </form.AppForm>
+      )
+    }
+
+    render(<Component />)
+
+    await vi.waitFor(() => {
+      expect(subscribe).toHaveBeenCalledTimes(2)
+    })
+  })
+
   it('prefixes watched field names in group field listeners', async () => {
     const listener = vi.fn()
 
