@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { render } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
 import React from 'react'
-import { getFieldGroupHelpers, useForm } from '../src'
+import { getFieldGroupHelpers, useForm, useSelector } from '../src'
 
 const user = userEvent.setup()
 
@@ -85,44 +85,82 @@ const rangeFields = defineFields({
 
 interface RangeFieldsProps {
   fields: typeof rangeFields
-  renderCounts: {
-    lower: number
-    upper: number
+  onRender: {
+    lower: React.ProfilerOnRenderCallback
+    upper: React.ProfilerOnRenderCallback
   }
 }
 
-function RangeFieldsImpl({ fields, renderCounts }: RangeFieldsProps) {
+function RangeFieldsImpl({ fields, onRender }: RangeFieldsProps) {
   return (
     <>
       <fields.Field name="lower">
-        {(field) => {
-          renderCounts.lower++
-          return (
+        {(field) => (
+          <React.Profiler id="lower" onRender={onRender.lower}>
             <input
               aria-label="Lower"
               value={field.value}
               onChange={(event) => field.handleChange(event.target.value)}
             />
-          )
-        }}
+          </React.Profiler>
+        )}
       </fields.Field>
       <fields.Field name="upper">
-        {(field) => {
-          renderCounts.upper++
-          return (
+        {(field) => (
+          <React.Profiler id="upper" onRender={onRender.upper}>
             <input
               aria-label="Upper"
               value={field.value}
               onChange={(event) => field.handleChange(event.target.value)}
             />
-          )
-        }}
+          </React.Profiler>
+        )}
       </fields.Field>
     </>
   )
 }
 
 const RangeFields = withFields(rangeFields, RangeFieldsImpl, 'fields')
+
+interface RangeValuesFieldsProps {
+  fields: typeof rangeFields
+}
+
+function RangeValuesFieldsImpl({ fields }: RangeValuesFieldsProps) {
+  const values = useSelector(fields.atom)
+
+  return (
+    <>
+      <span data-testid="values">
+        {values.lower}:{values.upper}
+      </span>
+      <fields.Field name="lower">
+        {(field) => (
+          <input
+            aria-label="Lower"
+            value={field.value}
+            onChange={(event) => field.handleChange(event.target.value)}
+          />
+        )}
+      </fields.Field>
+      <fields.Field name="upper">
+        {(field) => (
+          <input
+            aria-label="Upper"
+            value={field.value}
+            onChange={(event) => field.handleChange(event.target.value)}
+          />
+        )}
+      </fields.Field>
+    </>
+  )
+}
+
+const RangeValuesFields = withFields(
+  rangeFields,
+  RangeValuesFieldsImpl,
+  'fields',
+)
 
 const memoizedInputFields = defineFields({
   value: helper.strict<string>(),
@@ -133,17 +171,11 @@ interface MemoizedInputProps {
     value: string
     handleChange: (value: string) => void
   }
-  renderCount: {
-    value: number
-  }
 }
 
 const MemoizedInput = React.memo(function MemoizedInput({
   field,
-  renderCount,
 }: MemoizedInputProps) {
-  renderCount.value++
-
   return (
     <input
       aria-label="Memoized"
@@ -155,18 +187,20 @@ const MemoizedInput = React.memo(function MemoizedInput({
 
 interface MemoizedInputFieldsProps {
   fields: typeof memoizedInputFields
-  renderCount: {
-    value: number
-  }
+  onRender: React.ProfilerOnRenderCallback
 }
 
 function MemoizedInputFieldsImpl({
   fields,
-  renderCount,
+  onRender,
 }: MemoizedInputFieldsProps) {
   return (
     <fields.Field name="value">
-      {(field) => <MemoizedInput field={field} renderCount={renderCount} />}
+      {(field) => (
+        <React.Profiler id="memoized-input" onRender={onRender}>
+          <MemoizedInput field={field} />
+        </React.Profiler>
+      )}
     </fields.Field>
   )
 }
@@ -265,7 +299,7 @@ describe('FieldGroup', () => {
   })
 
   it('updates extracted memoized field components when field values change', async () => {
-    const renderCount = { value: 0 }
+    const onRender = vi.fn()
 
     function Component() {
       const form = useForm({
@@ -278,7 +312,7 @@ describe('FieldGroup', () => {
         <MemoizedInputFields
           form={form}
           fields={{ value: 'value' }}
-          renderCount={renderCount}
+          onRender={onRender}
         />
       )
     }
@@ -289,13 +323,13 @@ describe('FieldGroup', () => {
     await user.type(input, 'abc')
 
     expect(input).toHaveValue('abc')
-    expect(renderCount.value).toBeGreaterThan(1)
+    expect(onRender).toHaveBeenCalledTimes(4)
   })
 
   it('does not rerender unrelated sibling fields when one field changes', async () => {
-    const renderCounts = {
-      lower: 0,
-      upper: 0,
+    const onRender = {
+      lower: vi.fn(),
+      upper: vi.fn(),
     }
 
     function Component() {
@@ -313,18 +347,47 @@ describe('FieldGroup', () => {
             lower: 'min',
             upper: 'max',
           }}
-          renderCounts={renderCounts}
+          onRender={onRender}
         />
       )
     }
 
     const { getByLabelText } = render(<Component />)
-    const initialUpperRenderCount = renderCounts.upper
+    const initialUpperRenderCount = onRender.upper.mock.calls.length
 
     await user.type(getByLabelText('Lower'), '12')
 
     expect(getByLabelText('Lower')).toHaveValue('12')
-    expect(renderCounts.lower).toBeGreaterThan(1)
-    expect(renderCounts.upper).toBe(initialUpperRenderCount)
+    expect(onRender.lower).toHaveBeenCalledTimes(3)
+    expect(onRender.upper).toHaveBeenCalledTimes(initialUpperRenderCount)
+  })
+
+  it('exposes bound field values through a group-level atom', async () => {
+    function Component() {
+      const form = useForm({
+        defaultValues: {
+          min: '1',
+          max: '5',
+        },
+      })
+
+      return (
+        <RangeValuesFields
+          form={form}
+          fields={{
+            lower: 'min',
+            upper: 'max',
+          }}
+        />
+      )
+    }
+
+    const { getByLabelText, getByTestId } = render(<Component />)
+
+    expect(getByTestId('values')).toHaveTextContent('1:5')
+
+    await user.type(getByLabelText('Lower'), '2')
+
+    expect(getByTestId('values')).toHaveTextContent('12:5')
   })
 })

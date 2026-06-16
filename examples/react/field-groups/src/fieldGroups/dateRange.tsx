@@ -1,4 +1,4 @@
-import { getFieldGroupHelpers } from '@tanstack/react-form'
+import { getFieldGroupHelpers, useSelector } from '@tanstack/react-form'
 import { FieldError } from '../FieldError'
 import type { FieldWithValue } from '@tanstack/react-form'
 
@@ -16,6 +16,7 @@ interface DateRangeFieldProps {
 
 function DateRangeFieldComponent(props: DateRangeFieldProps) {
   const { fields, label } = props
+  const start = useSelector(fields.values, (values) => values.start)
 
   return (
     <fieldset>
@@ -32,14 +33,11 @@ function DateRangeFieldComponent(props: DateRangeFieldProps) {
             triggers: [
               {
                 trigger: 'change',
-                when: ({ value }) =>
-                  Boolean(value && fields.getFieldValue('start')),
+                when: ({ value }) => Boolean(value && start),
               },
             ],
             watchFields: ['start'],
             run: ({ value }) => {
-              const start = fields.getFieldValue('start')
-
               if (value < start) {
                 return 'End date must be after the start date'
               }

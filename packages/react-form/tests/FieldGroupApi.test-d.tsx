@@ -1,9 +1,11 @@
 import React from 'react'
 import { expectTypeOf } from 'vitest'
 import {
-  getAppFieldGroupHelpers,
+  createFormHook,
   getFieldGroupHelpers,
   getFormHookHelpers,
+  useForm,
+  useSelector,
 } from '../src'
 import type {
   FieldGroupApi,
@@ -44,8 +46,16 @@ type FieldComponents = {
 declare const fields: FieldGroupApi<BookingFields, FieldComponents>
 declare const form: FieldGroupForm
 const { helper, defineFields, withFields } = getFieldGroupHelpers()
+const { getAppFieldGroupHelpers: getHookAppFieldGroupHelpers } = createFormHook(
+  {
+    fieldComponents: {
+      TextField,
+    },
+    formComponents: {},
+  },
+)
 const { defineFields: defineAppFields, helper: appHelper } =
-  getAppFieldGroupHelpers<FieldComponents>()
+  getHookAppFieldGroupHelpers()
 const stringSlot = helper.strict<string>()
 const looseStringSlot = helper.loose<string>()
 const numberSlot = helper.strict<number>()
@@ -73,6 +83,9 @@ const invalidWatchFieldValidators: FieldValidators<
 ]
 void invalidWatchFieldValidators
 const appDefinedFields = defineAppFields({
+  name: appHelper.strict<string>(),
+})
+const hookAppDefinedFields = defineAppFields({
   name: appHelper.strict<string>(),
 })
 
@@ -182,6 +195,10 @@ type LooseDefinedFieldBindings = FieldGroupFieldBindings<
 >
 
 function FieldGroupApiTypes() {
+  const values = useSelector(fields.atom)
+
+  expectTypeOf(values).toEqualTypeOf<BookingFields>()
+  expectTypeOf(fields.atom.get()).toEqualTypeOf<BookingFields>()
   expectTypeOf(fields.getFieldValue('guest.name')).toEqualTypeOf<string>()
   expectTypeOf(fields.getFieldValue('guest.age')).toEqualTypeOf<number>()
   expectTypeOf(fields.getFieldValue('emails')).toEqualTypeOf<
@@ -294,6 +311,20 @@ function FieldGroupApiTypes() {
 }
 
 function DefineFieldsTypes() {
+  const formWithSubmitReturn = useForm({
+    defaultValues: {
+      user: {
+        name: '',
+        age: 0,
+        emails: [] as Array<{ value: string }>,
+      },
+      literalName: 'literal' as const,
+      stringOrNumber: '',
+      tags: [] as Array<string>,
+    } satisfies FieldBindingFormData,
+    onSubmit: () => 'submitted' as const,
+  })
+
   expectTypeOf(stringSlot.mode).toEqualTypeOf<'strict'>()
   expectTypeOf(looseStringSlot.mode).toEqualTypeOf<'loose'>()
   expectTypeOf<
@@ -370,11 +401,26 @@ function DefineFieldsTypes() {
 
   expectTypeOf(definedFields.getFieldValue('name')).toEqualTypeOf<string>()
   expectTypeOf(definedFields.getFieldValue('age')).toEqualTypeOf<number>()
+  expectTypeOf(definedFields.atom.get()).toEqualTypeOf<{
+    readonly name: string
+    readonly age: number
+    readonly emails: Array<{ value: string }>
+  }>()
   // @ts-expect-error defineFields returns a FieldGroupApi for the defined fields
   definedFields.getFieldValue('unknown')
 
   return (
     <>
+      <WrappedDefinedFields
+        form={formWithSubmitReturn}
+        label="User"
+        fields={{
+          name: 'user.name',
+          age: 'user.age',
+          emails: 'user.emails',
+        }}
+      />
+
       <WrappedDefinedFields
         form={form}
         label="User"
@@ -464,6 +510,13 @@ function DefineFieldsTypes() {
           return <field.TextField />
         }}
       </appDefinedFields.Field>
+
+      <hookAppDefinedFields.Field name="name">
+        {(field) => {
+          expectTypeOf(field.value).toEqualTypeOf<string>()
+          return <field.TextField />
+        }}
+      </hookAppDefinedFields.Field>
     </>
   )
 }

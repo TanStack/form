@@ -1,5 +1,6 @@
 import { useContext } from 'react'
 import { useInternalForm } from '../ReactForm/ReactFormApi.lib'
+import { getFieldGroupHelpers } from '../FieldGroup/withFields.public'
 import { createAppFormInitializer } from './initializeAppForm.lib'
 import { FormContext } from './contexts.lib'
 import type { AppFormOptionsApi } from './appFormOptions.public'
@@ -42,6 +43,7 @@ export function createFormHook<
   return {
     useFormContext: useFormContext as never,
     appFormOptions,
+    getAppFieldGroupHelpers: getFieldGroupHelpers,
     useAppForm,
   }
 }

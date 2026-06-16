@@ -16,6 +16,7 @@ import type {
   ReactFormFieldProps,
   ReactFormSubscribeProps,
 } from '../ReactForm/Components.public'
+import type { ReadonlyAtom } from '@tanstack/react-store'
 
 type FieldGroupFieldPropsWithValidators<
   TFieldData,
@@ -32,7 +33,7 @@ type FieldGroupFieldPropsWithValidators<
     FormValidatorMetas,
     unknown,
     TFieldComponents
->,
+  >,
   'validators'
 > & {
   validators: FieldValidators<
@@ -78,7 +79,7 @@ type FieldGroupArrayFieldPropsWithValidators<
     FormValidatorMetas,
     unknown,
     TFieldComponents
->,
+  >,
   'validators'
 > & {
   validators: FieldValidators<
@@ -113,9 +114,7 @@ export interface FieldGroupFieldComponent<
   in out TFieldData,
   in out TFieldComponents extends Record<string, FunctionComponent<any>>,
 > {
-  <
-    const TFieldName extends DeepKeys<TFieldData>,
-  >(
+  <const TFieldName extends DeepKeys<TFieldData>>(
     props: FieldGroupFieldPropsWithValidators<
       TFieldData,
       TFieldName,
@@ -135,18 +134,14 @@ export interface FieldGroupArrayFieldComponent<
   in out TFieldData,
   in out TFieldComponents extends Record<string, FunctionComponent<any>>,
 > {
-  <
-    const TFieldName extends DeepKeysWhereValueIncludes<TFieldData, Array<any>>,
-  >(
+  <const TFieldName extends DeepKeysWhereValueIncludes<TFieldData, Array<any>>>(
     props: FieldGroupArrayFieldPropsWithValidators<
       TFieldData,
       TFieldName,
       TFieldComponents
     >,
   ): CrossVersionReactNode
-  <
-    const TFieldName extends DeepKeysWhereValueIncludes<TFieldData, Array<any>>,
-  >(
+  <const TFieldName extends DeepKeysWhereValueIncludes<TFieldData, Array<any>>>(
     props: FieldGroupArrayFieldPropsWithoutValidators<
       TFieldData,
       TFieldName,
@@ -172,6 +167,7 @@ export interface FieldGroupApi<
     Record<never, never>,
 >
   extends FormApiFieldMethods<TFieldData>, FormApiArrayMethods<TFieldData> {
+  atom: ReadonlyAtom<TFieldData>
   Field: FieldGroupFieldComponent<TFieldData, TFieldComponents>
   ArrayField: FieldGroupArrayFieldComponent<TFieldData, TFieldComponents>
   Subscribe: FieldGroupSubscribeComponent
