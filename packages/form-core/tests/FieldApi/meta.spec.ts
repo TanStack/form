@@ -365,5 +365,19 @@ describe('field - meta', () => {
       expect(field.meta.isDirty).toBe(true)
       expect(field.meta.isTouched).toBe(true)
     })
+
+    it('updates meta for array fields when using moveValue', () => {
+      const form = new InternalFormApi({
+        defaultValues: { arr: ['a', 'b', 'c'] },
+      })
+      const field = form._getOrCreateFieldApi({ name: 'arr' })
+
+      expect(field.meta.isDirty).toBe(false)
+
+      field.moveValue(0, 2)
+
+      expect(field.meta.isDirty).toBe(true)
+      expect(field.meta.isTouched).toBe(true)
+    })
   })
 })

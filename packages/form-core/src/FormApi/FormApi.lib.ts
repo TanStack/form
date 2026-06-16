@@ -510,6 +510,21 @@ export class InternalFormApi<
     })
   }
 
+  moveFieldValue = (
+    arrayFieldName: string,
+    fromIndex: number,
+    toIndex: number,
+    options?: InternalFieldUpdateOptions,
+  ) => {
+    return ArrayMethods.moveValue({
+      form: this,
+      arrayFieldName,
+      fromIndex,
+      toIndex,
+      options,
+    })
+  }
+
   clearFieldValues = (
     arrayFieldName: string,
     options?: InternalFieldUpdateOptions,

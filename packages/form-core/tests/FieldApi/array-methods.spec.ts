@@ -180,6 +180,86 @@ describe('field - array methods', () => {
     })
   })
 
+  describe('moveValue', () => {
+    it('moves an element forward in an array field', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c', 'd'] },
+      })
+      const field = form._getOrCreateFieldApi({ name: 'items' })
+      field.moveValue(0, 2)
+      expect(field.value).toEqual(['b', 'c', 'a', 'd'])
+    })
+
+    it('moves an element backward in an array field', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c', 'd'] },
+      })
+      const field = form._getOrCreateFieldApi({ name: 'items' })
+      field.moveValue(2, 0)
+      expect(field.value).toEqual(['c', 'a', 'b', 'd'])
+    })
+
+    it('moves child field segments forward', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c', 'd'] },
+      })
+      const arrayField = form._getOrCreateFieldApi({ name: 'items' })
+      const field0 = form._getOrCreateFieldApi({ name: 'items[0]' })
+      const field1 = form._getOrCreateFieldApi({ name: 'items[1]' })
+      const field2 = form._getOrCreateFieldApi({ name: 'items[2]' })
+      const field3 = form._getOrCreateFieldApi({ name: 'items[3]' })
+
+      arrayField.moveValue(0, 2)
+
+      expect(field0._segment).toBe(2)
+      expect(field1._segment).toBe(0)
+      expect(field2._segment).toBe(1)
+      expect(field3._segment).toBe(3)
+      expect(form._tryGetFieldApi('items[0]')).toBe(field1)
+      expect(form._tryGetFieldApi('items[1]')).toBe(field2)
+      expect(form._tryGetFieldApi('items[2]')).toBe(field0)
+      expect(form._tryGetFieldApi('items[3]')).toBe(field3)
+    })
+
+    it('moves child field segments backward', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c', 'd'] },
+      })
+      const arrayField = form._getOrCreateFieldApi({ name: 'items' })
+      const field0 = form._getOrCreateFieldApi({ name: 'items[0]' })
+      const field1 = form._getOrCreateFieldApi({ name: 'items[1]' })
+      const field2 = form._getOrCreateFieldApi({ name: 'items[2]' })
+      const field3 = form._getOrCreateFieldApi({ name: 'items[3]' })
+
+      arrayField.moveValue(2, 0)
+
+      expect(field0._segment).toBe(1)
+      expect(field1._segment).toBe(2)
+      expect(field2._segment).toBe(0)
+      expect(field3._segment).toBe(3)
+      expect(form._tryGetFieldApi('items[0]')).toBe(field2)
+      expect(form._tryGetFieldApi('items[1]')).toBe(field0)
+      expect(form._tryGetFieldApi('items[2]')).toBe(field1)
+      expect(form._tryGetFieldApi('items[3]')).toBe(field3)
+    })
+
+    it('does nothing when fromIndex === toIndex', () => {
+      const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
+      const field = form._getOrCreateFieldApi({ name: 'items' })
+      field.moveValue(1, 1)
+      expect(field.value).toEqual(['a', 'b'])
+    })
+
+    it('warns when called on a non-array field', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const form = new InternalFormApi({ defaultValues: { name: '' } })
+      const field = form._getOrCreateFieldApi({ name: 'name' })
+      field.moveValue(0, 1)
+      expect(warn).toHaveBeenCalled()
+      warn.mockRestore()
+    })
+  })
+
   describe('removeValue', () => {
     it('removes an element at the specified index', () => {
       const form = new InternalFormApi({

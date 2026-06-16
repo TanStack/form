@@ -127,6 +127,7 @@ describe('field - lifecycle', () => {
 
       field._kill()
       field.swapValues(0, 1)
+      field.moveValue(0, 1)
       field.clearValues()
       field.pushValue('c')
       field.insertValue(1, 'x')

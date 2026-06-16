@@ -219,6 +219,7 @@ function FieldGroupApiTypes() {
   fields.insertFieldValue('emails', 0, { value: 'a@example.com' })
   fields.removeFieldValue('emails', 0)
   fields.swapFieldValues('emails', 0, 1)
+  fields.moveFieldValue('emails', 0, 1)
   fields.clearFieldValues('emails')
   fields.filterFieldValues('emails', (email, index, array) => {
     expectTypeOf(email).toEqualTypeOf<{ value: string }>()

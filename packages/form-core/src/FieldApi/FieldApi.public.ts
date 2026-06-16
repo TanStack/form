@@ -116,6 +116,12 @@ type FieldClearValuesFn = (options?: FieldUpdateOptions) => void
 
 type FieldRemoveValueFn = (index: number, options?: FieldUpdateOptions) => void
 
+type FieldMoveValueFn = (
+  fromIndex: number,
+  toIndex: number,
+  options?: FieldUpdateOptions,
+) => void
+
 type FieldFilterValuesFn<in out TFieldValue> = (
   predicate: FieldArrayPredicate<TFieldValue>,
   options?: FieldUpdateOptions & { thisArg?: any },
@@ -154,6 +160,15 @@ export interface FieldApi<
    * @param indexB - The index of the second element to swap
    */
   swapValues: (indexA: number, indexB: number) => void
+
+  /**
+   * Move an element in this field's array from one index to another.
+   * If this field is not an array, this method will be ignored.
+   * @param fromIndex - The current index of the element to move
+   * @param toIndex - The index to move the element to
+   * @param options - Optional update options
+   */
+  moveValue: FieldMoveValueFn
 
   /**
    * Push a new value into this field's array.

@@ -51,6 +51,81 @@ describe('form - field array methods', () => {
     })
   })
 
+  describe('moveFieldValue', () => {
+    it('moves an element forward in an array field', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c', 'd'] },
+      })
+      form.moveFieldValue('items', 0, 2)
+      expect(form.getFieldValue('items')).toEqual(['b', 'c', 'a', 'd'])
+    })
+
+    it('moves an element backward in an array field', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c', 'd'] },
+      })
+      form.moveFieldValue('items', 2, 0)
+      expect(form.getFieldValue('items')).toEqual(['c', 'a', 'b', 'd'])
+    })
+
+    it('does nothing when fromIndex === toIndex', () => {
+      const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
+      form.moveFieldValue('items', 1, 1)
+      expect(form.getFieldValue('items')).toEqual(['a', 'b'])
+    })
+
+    it('warns when called on a non-array field', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const form = new InternalFormApi({ defaultValues: { name: '' } })
+
+      form.moveFieldValue('name', 0, 1)
+      expect(warn).toHaveBeenCalled()
+      warn.mockRestore()
+    })
+
+    it('warns when an index is out of bounds', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
+
+      form.moveFieldValue('items', 0, 2)
+      expect(warn).toHaveBeenCalled()
+      expect(form.getFieldValue('items')).toEqual(['a', 'b'])
+      warn.mockRestore()
+    })
+
+    it('updates field segments after move', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c', 'd'] },
+      })
+      const field0 = form._getOrCreateFieldApi({ name: 'items[0]' })
+      const field1 = form._getOrCreateFieldApi({ name: 'items[1]' })
+      const field2 = form._getOrCreateFieldApi({ name: 'items[2]' })
+      const field3 = form._getOrCreateFieldApi({ name: 'items[3]' })
+
+      form.moveFieldValue('items', 0, 2)
+
+      expect(field0._segment).toBe(2)
+      expect(field1._segment).toBe(0)
+      expect(field2._segment).toBe(1)
+      expect(field3._segment).toBe(3)
+      expect(form._tryGetFieldApi('items[0]')).toBe(field1)
+      expect(form._tryGetFieldApi('items[1]')).toBe(field2)
+      expect(form._tryGetFieldApi('items[2]')).toBe(field0)
+      expect(form._tryGetFieldApi('items[3]')).toBe(field3)
+    })
+
+    it('moves values without creating a field node when meta updates are disabled', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c'] },
+      })
+
+      form.moveFieldValue('items', 0, 2, withoutFieldMeta)
+
+      expect(form.getFieldValue('items')).toEqual(['b', 'c', 'a'])
+      expect(form._tryGetFieldApi('items')).toBeNull()
+    })
+  })
+
   describe('pushFieldValue', () => {
     it('appends a value to an array field', () => {
       const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })

@@ -38,6 +38,15 @@ export type SwapFieldValuesFn<in out TFormData> = <
   options?: FieldUpdateOptions,
 ) => void
 
+export type MoveFieldValueFn<in out TFormData> = <
+  TFieldName extends ArrayFieldName<TFormData>,
+>(
+  arrayFieldName: TFieldName,
+  fromIndex: number,
+  toIndex: number,
+  options?: FieldUpdateOptions,
+) => void
+
 export type PushFieldValueFn<in out TFormData> = <
   TFieldName extends ArrayFieldName<TFormData>,
 >(
@@ -87,6 +96,16 @@ export interface FormApiArrayMethods<in out TFormData> {
    * @param indexB - The index of the second value to swap
    */
   swapFieldValues: SwapFieldValuesFn<TFormData>
+
+  /**
+   * Move a value in an array field from one index to another.
+   * If the field is not an array, this method will be ignored.
+   * @param arrayFieldName - The name of the array field
+   * @param fromIndex - The current index of the value to move
+   * @param toIndex - The index to move the value to
+   * @param options - Optional update options
+   */
+  moveFieldValue: MoveFieldValueFn<TFormData>
 
   /**
    * Push a value into an array field.

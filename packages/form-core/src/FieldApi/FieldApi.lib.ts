@@ -1296,6 +1296,19 @@ export class InternalFieldApi<
     })
   }
 
+  moveValue = (
+    fromIndex: number,
+    toIndex: number,
+    options: FieldUpdateOptions = {},
+  ) => {
+    if (this._isKilled) return
+
+    this.form.moveFieldValue(this.name, fromIndex, toIndex, {
+      ...options,
+      fieldApiOverride: this,
+    })
+  }
+
   clearValues = (options: FieldUpdateOptions = {}): void => {
     if (this._isKilled) return
 

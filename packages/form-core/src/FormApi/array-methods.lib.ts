@@ -222,6 +222,74 @@ function swapFieldValues({
   })
 }
 
+function moveFieldValue({
+  form,
+  arrayFieldName,
+  fromIndex,
+  toIndex,
+  options,
+}: {
+  form: AnyInternalFormApi
+  arrayFieldName: string
+  fromIndex: number
+  toIndex: number
+  options: InternalFieldUpdateOptions | undefined
+}) {
+  if (
+    isInvalidArrayMethod(form, 'moveFieldValue', arrayFieldName, {
+      bounds: [fromIndex, toIndex],
+      allowEndIndex: false,
+    })
+  ) {
+    return
+  }
+
+  if (fromIndex === toIndex) {
+    return
+  }
+
+  const updateOptions = resolveFieldUpdateOptions(options, 'change')
+  const arrayField = getTargetField(form, arrayFieldName, updateOptions)
+  updateOptions.fieldApiOverride = arrayField
+
+  batch(() => {
+    form.setFieldValue(
+      arrayFieldName,
+      (prev: Array<any>) => {
+        const array = prev.slice()
+        const [value] = array.splice(fromIndex, 1)
+        array.splice(toIndex, 0, value)
+        return array
+      },
+      updateOptions,
+    )
+
+    if (!arrayField) return
+
+    arrayField._setMeta((prev) => ({
+      ...prev,
+      _arrayVersion: prev._arrayVersion + 1,
+    }))
+
+    const movingChild = tryGetFieldApi(arrayField, [fromIndex])
+
+    for (const child of arrayField._children) {
+      if (typeof child._segment === 'string') continue
+      if (child === movingChild) continue
+
+      if (fromIndex < toIndex) {
+        if (child._segment > fromIndex && child._segment <= toIndex) {
+          child._moveTo(child._segment - 1)
+        }
+      } else if (child._segment >= toIndex && child._segment < fromIndex) {
+        child._moveTo(child._segment + 1)
+      }
+    }
+
+    movingChild?._moveTo(toIndex)
+  })
+}
+
 function clearFieldValues({
   form,
   arrayFieldName,
@@ -308,8 +376,8 @@ export const ArrayMethods = {
   insertValue: insertFieldValue,
   removeValue: removeFieldValue,
   swapValues: swapFieldValues,
+  moveValue: moveFieldValue,
   // 'replaceFieldValue'
-  // 'moveFieldValues'
   clearValues: clearFieldValues,
   filterValues: filterFieldValues,
 }
