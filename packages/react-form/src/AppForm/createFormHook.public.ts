@@ -1,8 +1,7 @@
-import { useContext } from 'react'
 import { useInternalForm } from '../ReactForm/ReactFormApi.lib'
 import { getFieldGroupHelpers } from '../FieldGroup/withFields.public'
 import { createAppFormInitializer } from './initializeAppForm.lib'
-import { FormContext } from './contexts.lib'
+import { useFormContext } from './contexts.lib'
 import type { AppFormOptionsApi } from './appFormOptions.public'
 import type { AnyReactFormComponentMap } from './componentMap.public'
 import type {
@@ -10,17 +9,6 @@ import type {
   UseAppFormHook,
 } from './createFormHookTypes.public'
 import type { FormOptions } from '@tanstack/form-core-v2'
-
-function useFormContext() {
-  const form = useContext(FormContext)
-  if (form === null) {
-    throw new Error(
-      'TanStack Form: Form components must be used within a `form.AppForm` component.',
-    )
-  }
-
-  return form
-}
 
 const appFormOptions = ((opts) => {
   return opts

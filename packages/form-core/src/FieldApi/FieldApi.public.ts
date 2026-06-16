@@ -195,22 +195,7 @@ export interface FieldApi<
    */
   filterValues: FieldFilterValuesFn<TFieldValue>
 
-  /**
-   * @deprecated
-   * Use the respective getters instead:
-   * - `field.value`
-   * - `field.errors`
-   * - `field.meta`
-   */
-  state: FieldState<
-    TFieldValue,
-    TFieldValidatorMetas,
-    TGroupValidatorMetas,
-    TFormValidatorMetas,
-    TSubmitReturn
-  >
-
-  store: ReadonlyAtom<
+  atom: ReadonlyAtom<
     FieldState<
       TFieldValue,
       TFieldValidatorMetas,

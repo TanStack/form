@@ -74,7 +74,7 @@ function createSubscribeComponent(
   form: AnyInternalFormApi,
 ): AnySubscribeComponent {
   const TanStackFormSubscribe: AnySubscribeComponent = (props) => {
-    return <Subscribe source={form.store} {...props} />
+    return <Subscribe source={form.atom} {...props} />
   }
 
   TanStackFormSubscribe.displayName = 'TanStackForm.Subscribe'
@@ -146,7 +146,7 @@ function attachReactFormGroupComponents(
   resultGroup.ArrayField.displayName = 'TanStackForm.FormGroup.ArrayField'
 
   resultGroup.Subscribe = (props) => {
-    return <Subscribe source={group.store} {...props} />
+    return <Subscribe source={group.atom} {...props} />
   }
   resultGroup.Subscribe.displayName = 'TanStackForm.FormGroup.Subscribe'
 

@@ -14,7 +14,7 @@ export type SubscribeSource<TValue> =
   | ReadonlyStore<TValue>
 
 /**
- * Subscribe to `form.store` (full form state). The selector receives the full
+ * Subscribe to `form.atom` (full form state). The selector receives the full
  * {@link FormState}.
  */
 export interface SubscribeProps<in out TSourceData, in out TSelected> {
@@ -34,7 +34,7 @@ export interface SubscribeProps<in out TSourceData, in out TSelected> {
 }
 
 /**
- * A React component that allows you to subscribe to store state.
+ * A React component that allows you to subscribe to source state.
  *
  * This is useful for opting into state re-renders for specific parts of the state.
  */

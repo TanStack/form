@@ -1265,7 +1265,7 @@ describe('form - validation', () => {
         ],
       })
       const field = form._getOrCreateFieldApi({ name: 'name' })
-      void field.store
+      void field.atom
       await form.validate('change')
       expect(field.errors).toEqual([{ message: 'Name is required' }])
     })
@@ -1343,7 +1343,7 @@ describe('form - validation', () => {
         ],
       })
       const field = form._getOrCreateFieldApi({ name: 'name' })
-      void field.store
+      void field.atom
       await form.validate('change')
       expect(field.errors).toEqual([{ message: 'Name is required' }])
     })
@@ -1365,8 +1365,8 @@ describe('form - validation', () => {
       })
       const nameField = form._getOrCreateFieldApi({ name: 'name' })
       const ageField = form._getOrCreateFieldApi({ name: 'age' })
-      void nameField.store
-      void ageField.store
+      void nameField.atom
+      void ageField.atom
       await form.validate('change')
       expect(nameField.errors).toEqual([{ message: 'Name is required' }])
       expect(ageField.errors).toEqual([{ message: 'Age is required' }])
@@ -1586,8 +1586,8 @@ describe('form - validation', () => {
       })
       const nameField = form._getOrCreateFieldApi({ name: 'name' })
       const lastNameField = form._getOrCreateFieldApi({ name: 'lastName' })
-      void nameField.store
-      void lastNameField.store
+      void nameField.atom
+      void lastNameField.atom
 
       await form.validate('change')
       expect(nameField.errors).toEqual([
@@ -1618,7 +1618,7 @@ describe('form - validation', () => {
           { run: () => ({ message: 'Field-level error' }), triggers: [] },
         ],
       })
-      void field.store
+      void field.atom
       field.handleChange('New value')
       await vi.runAllTimersAsync()
       expect(field.errors).toEqual([{ message: 'Form-level error' }])
@@ -1632,7 +1632,7 @@ describe('form - validation', () => {
         name: 'name',
         validators: [{ run: () => 'Field-level error', triggers: [] }],
       })
-      void field.store
+      void field.atom
       await field._runFieldValidation('submit')
       expect(field.errors).toEqual([{ message: 'Field-level error' }])
     })
@@ -1658,7 +1658,7 @@ describe('form - validation', () => {
         ],
       })
       const field = form._getOrCreateFieldApi({ name: 'name' })
-      void field.store
+      void field.atom
 
       await form.validate('change')
       expect(field.errors).toEqual([{ message: 'Error' }])
@@ -1691,7 +1691,7 @@ describe('form - validation', () => {
         ],
       })
       const field = form._getOrCreateFieldApi({ name: 'name' })
-      void field.store
+      void field.atom
       await form.validate('change')
       expect(field.errors).toEqual([
         { message: 'Error from validator 1' },
@@ -1715,7 +1715,7 @@ describe('form - validation', () => {
         ],
       })
       const field = form._getOrCreateFieldApi({ name: 'name' })
-      void field.store
+      void field.atom
       await form.validate('change')
       expect(form.state.errors).toEqual([{ message: 'Form-wide error' }])
       expect(field.errors).toEqual([{ message: 'Field-specific error' }])
@@ -1745,7 +1745,7 @@ describe('form - validation', () => {
       // Field should now exist with error
       field = form._tryGetFieldApi(['nonexistent'])
       expect(field).not.toBeNull()
-      void field!.store
+      void field!.atom
       expect(field!.errors).toEqual([{ message: 'Error on nonexistent field' }])
     })
 
@@ -1777,7 +1777,7 @@ describe('form - validation', () => {
 
       field = form._tryGetFieldApi('nonexistent')
       expect(field).not.toBeNull()
-      void field!.store
+      void field!.atom
 
       expect(field!.errors).toEqual([{ message: 'Error on nonexistent field' }])
 

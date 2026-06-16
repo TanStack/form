@@ -313,11 +313,3 @@ export const ArrayMethods = {
   clearValues: clearFieldValues,
   filterValues: filterFieldValues,
 }
-
-export type ArrayFieldMethods =
-  | 'pushFieldValue'
-  | 'insertFieldValue'
-  | 'removeFieldValue'
-  | 'swapFieldValues'
-  | 'clearFieldValues'
-  | 'filterFieldValues'

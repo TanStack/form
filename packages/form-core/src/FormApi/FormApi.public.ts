@@ -168,7 +168,7 @@ export interface FormApi<
   in out TSubmitMeta,
 > extends FormApiFieldMethods<TFormData>,
     FormApiArrayMethods<TFormData> {
-  store: ReadonlyAtom<FormState<TFormData, TFormValidatorMetas, TSubmitMeta>>
+  atom: ReadonlyAtom<FormState<TFormData, TFormValidatorMetas, TSubmitMeta>>
   readonly state: FormState<TFormData, TFormValidatorMetas, TSubmitMeta>
   readonly options: FormApiOptions<
     TFormData,

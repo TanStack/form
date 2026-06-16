@@ -437,7 +437,7 @@ export class InternalFieldApi<
     return this._pipelineCache
   }
 
-  get store(): ReadonlyAtom<InternalFieldState> {
+  get atom(): ReadonlyAtom<InternalFieldState> {
     return this._getOrCreateAtoms().store
   }
 
@@ -1261,10 +1261,10 @@ export class InternalFieldApi<
   }
 
   get state(): InternalFieldState {
-    // Accessing `store` mounts the field, which we don't necessarily want.
+    // Accessing `atom` mounts the field, which we don't necessarily want.
     // Parent or child nodes may simply want some info about a field's state.
     if (this._isMounted) {
-      return this.store.get()
+      return this.atom.get()
     } else {
       return getFieldSnapshot(this)
     }
@@ -1381,44 +1381,6 @@ export class InternalFieldApi<
     this.form._notifyFormListener('blur', this)
   }
 }
-
-// On-demand (useStore or field children) -> create Derived
-// You need state changes anyways -> baseAtom for meta -> (?derived from form and baseAtom)
-
-// v1: FieldMeta record atom
-// v1: field Derived from form atom and fieldMeta atom
-
-// foo > bar > foobar
-//           > barfoo
-
-// useForm({ unusedField: '' })
-// <Field name="usedField" />
-
-// const obj1 = { child: null }
-// const obj2 = { child: obj1 }
-// obj1.child = obj2
-
-// On form creation, run node generation based on defaultValues
-// If defaultValues changes, run diffing algo to add nodes if missing -> untouched fields will have their value updated
-// dropdown: selects mode, then query for options
-
-// Virtualized rows
-// onSubmit: checks the whole schema
-// render: only what's visible -> only Field with name="users[5-10]" -> onComponentUnmount listener destroys the field
-// but if we did eager evaluation of tree, we would have 100000 nodes with lazy created meta
-
-// defaultValues: { mode: 'a', data: null }
-
-// foo > bar > foobar > mountsHere
-// atoms created: 1 // metaRecord
-// derived created: 1
-
-// If we had nodeId:
-// metaMap: Partial<Record<nodeId, FieldMetaWithoutError>>
-// each Node: nodeId?: string;
-// getOrCreateNodeByFieldId(fieldId: string): create Node, get nodeId, create derived, register in metaMap
-
-// validateArray() -> touches all child nodes -> traverse, check for nodeId, if present, set it in the map
 
 function getFieldSnapshot(field: AnyInternalFieldApi): InternalFieldState {
   const value = field._getValue()

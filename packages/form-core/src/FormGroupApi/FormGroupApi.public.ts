@@ -150,7 +150,7 @@ export interface FormGroupApi<
     TSubmitReturn
   >
 
-  store: ReadonlyAtom<FormGroupState<TGroupValue, TGroupValidatorMetas>>
+  atom: ReadonlyAtom<FormGroupState<TGroupValue, TGroupValidatorMetas>>
   readonly state: FormGroupState<TGroupValue, TGroupValidatorMetas>
   readonly value: TGroupValue
   validate: (

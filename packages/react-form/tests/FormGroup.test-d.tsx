@@ -52,6 +52,7 @@ function FormGroupTypes() {
       ]}
     >
       {(group) => {
+        expectTypeOf(group.atom.get().values.name).toEqualTypeOf<string>()
         group.state.values.name
         expectTypeOf(group.state.isTouched).toEqualTypeOf<boolean>()
         expectTypeOf(group.state.isDirty).toEqualTypeOf<boolean>()
@@ -70,12 +71,15 @@ function FormGroupTypes() {
           <>
             <group.Field name="name">
               {(field) => {
+                expectTypeOf(field.atom.get().value).toEqualTypeOf<string>()
                 expectTypeOf(
                   field.form.state.values.budget,
                 ).toEqualTypeOf<number>()
                 expectTypeOf(field.errors).toEqualTypeOf<
                   Array<{ message: string; fromGroup: true }>
                 >()
+                // @ts-expect-error public field APIs expose atom, not store
+                field.store
                 return null
               }}
             </group.Field>
@@ -116,6 +120,10 @@ function RootFieldTypes() {
       },
     },
   })
+
+  expectTypeOf(form.atom.get().values.guestDetails.name).toEqualTypeOf<string>()
+  // @ts-expect-error public form APIs expose atom, not store
+  form.store
 
   return (
     <form.Field

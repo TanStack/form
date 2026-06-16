@@ -243,7 +243,7 @@ export class InternalFormApi<
   ToFormValidatorMetas<TFormValidators>,
   ToSubmitMeta<TSubmitReturn>
 > {
-  store: ReadonlyAtom<
+  atom: ReadonlyAtom<
     FormState<
       TFormData,
       ToFormValidatorMetas<TFormValidators>,
@@ -263,8 +263,9 @@ export class InternalFormApi<
     ToFormValidatorMetas<TFormValidators>,
     ToSubmitMeta<TSubmitReturn>
   > {
-    return this.store.get()
+    return this.atom.get()
   }
+
   get options(): FormApiOptions<
     TFormData,
     ToFormValidatorMetas<TFormValidators>,
@@ -288,7 +289,7 @@ export class InternalFormApi<
     }
     this._fieldRootNode = new InternalRootFieldApi(this)
 
-    this.store = createAtom(() => getFormStateSnapshot(this), {
+    this.atom = createAtom(() => getFormStateSnapshot(this), {
       compare: shallow,
     })
 

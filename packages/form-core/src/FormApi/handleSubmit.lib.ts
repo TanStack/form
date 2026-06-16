@@ -14,9 +14,9 @@ import type {
   ParseSubmitIssuesFn,
 } from './FormApi.public'
 
-export const SUBMIT_ERROR = Symbol('SUBMIT_ERROR')
+const SUBMIT_ERROR = Symbol('SUBMIT_ERROR')
 
-export function isSubmitError<TFormData>(
+function isSubmitError<TFormData>(
   value: unknown,
 ): value is FormValidationError<TFormData> {
   return isNotNil(value) && Boolean((value as any)[SUBMIT_ERROR])

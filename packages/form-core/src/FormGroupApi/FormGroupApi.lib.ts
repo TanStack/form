@@ -76,7 +76,7 @@ export class InternalFormGroupApi<
     TFormValidatorMetas,
     TSubmitReturn
   >
-  store: ReadonlyAtom<
+  atom: ReadonlyAtom<
     FormGroupState<TGroupValue, ToFormGroupValidatorMetas<TGroupValidators>>
   >
   _pipelineCache: PipelineCache<FormGroupValidateResult<TGroupValue>>
@@ -90,7 +90,7 @@ export class InternalFormGroupApi<
   _submissionAttempts = createAtom(0)
 
   get state() {
-    return this.store.get()
+    return this.atom.get()
   }
 
   get value(): TGroupValue {
@@ -117,7 +117,7 @@ export class InternalFormGroupApi<
     this.name = options.name
     this._pipelineCache = createPipelineCache()
 
-    this.store = createAtom(() => this._getStateSnapshot(), {
+    this.atom = createAtom(() => this._getStateSnapshot(), {
       compare: shallow,
     })
     this.form._registerFormGroup(this)

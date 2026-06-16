@@ -469,8 +469,8 @@ describe('form - lifecycle', () => {
       })
       const nameField = form._getOrCreateFieldApi({ name: 'name' })
       const emailField = form._getOrCreateFieldApi({ name: 'email' })
-      void nameField.store
-      void emailField.store
+      void nameField.atom
+      void emailField.atom
 
       await form.handleSubmit()
       expect(nameField.errors).toEqual([{ message: 'Name is required' }])
@@ -528,8 +528,8 @@ describe('form - lifecycle', () => {
           },
         ],
       })
-      void nameField.store
-      void emailField.store
+      void nameField.atom
+      void emailField.atom
 
       await form.handleSubmit()
       expect(nameField.errors).toEqual([{ message: 'Name is required' }])
@@ -563,8 +563,8 @@ describe('form - lifecycle', () => {
           },
         ],
       })
-      void nameField.store
-      void emailField.store
+      void nameField.atom
+      void emailField.atom
 
       await form.handleSubmit()
       expect(nameField.errors).toEqual([{ message: 'Name is required' }])
@@ -589,7 +589,7 @@ describe('form - lifecycle', () => {
           },
         ],
       })
-      void field.store
+      void field.atom
 
       await field._runFieldValidation('blur')
       expect(field.errors).toEqual([{ message: 'Name is required' }])
@@ -615,7 +615,7 @@ describe('form - lifecycle', () => {
           },
         ],
       })
-      void field.store
+      void field.atom
 
       await form.handleSubmit()
       expect(field.errors).toEqual([
@@ -644,7 +644,7 @@ describe('form - lifecycle', () => {
           },
         ],
       })
-      void field.store
+      void field.atom
 
       await form.handleSubmit()
       expect(field.errors).toEqual([
@@ -658,7 +658,7 @@ describe('form - lifecycle', () => {
   })
 
   describe('deleteField ', () => {
-    it('unmounts the field store', () => {
+    it('unmounts the field atom', () => {
       const form = new InternalFormApi({ defaultValues: { name: '' } })
       const field = form._getOrCreateFieldApi({ name: 'name' })
       field._register()
@@ -667,12 +667,12 @@ describe('form - lifecycle', () => {
       expect(field._isMounted).toBe(false)
     })
 
-    it('also unmounts child field stores', () => {
+    it('also unmounts child field atoms', () => {
       const form = new InternalFormApi({ defaultValues: { a: { b: '' } } })
       const parent = form._getOrCreateFieldApi({ name: 'a' })
       const child = form._getOrCreateFieldApi({ name: 'a.b' })
-      void parent.store
-      void child.store
+      void parent.atom
+      void child.atom
       form.deleteField('a', { fieldApiOverride: parent })
       expect(parent._isMounted).toBe(false)
       expect(child._isMounted).toBe(false)

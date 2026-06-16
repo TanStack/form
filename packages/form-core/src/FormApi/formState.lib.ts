@@ -26,7 +26,7 @@ export type FormStateOverrides = {
 
 const formErrorsCache = new WeakMap<FormErrorMeta, Array<ValidationIssue>>()
 
-export const formStateKeys = [
+const formStateKeys = [
   'values',
   'isTouched',
   'isDirty',
@@ -46,7 +46,7 @@ type _IsExhaustiveKeys<
   T extends (typeof formStateKeys)[number] = keyof FormState<any, any, any>,
 > = T
 
-export function getFormErrors(
+function getFormErrors(
   form: InternalFormApi<any, any, any>,
 ): Array<ValidationIssue> {
   const baseFormErrors = form._atoms.meta.formErrors.get()
@@ -58,7 +58,7 @@ export function getFormErrors(
   return formErrors
 }
 
-export function getFormStateValue<
+function getFormStateValue<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,

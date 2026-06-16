@@ -6,8 +6,8 @@ import {
 import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
 
 describe('field - lifecycle', () => {
-  describe('_isMounted and store', () => {
-    it('is false before the store is accessed', () => {
+  describe('_isMounted and atom', () => {
+    it('is false before the atom is accessed', () => {
       const form = new InternalFormApi({ defaultValues: { x: '' } })
       const field = form._getOrCreateFieldApi({ name: 'x' })
       expect(field._isMounted).toBe(false)
@@ -20,17 +20,17 @@ describe('field - lifecycle', () => {
       expect(field._isMounted).toBe(true)
     })
 
-    it('store returns consistent state', () => {
+    it('atom returns consistent state', () => {
       const form = new InternalFormApi({ defaultValues: { x: 'hello' } })
       const field = form._getOrCreateFieldApi({ name: 'x' })
-      const state = field.store.get()
+      const state = field.atom.get()
       expect(state.value).toBe('hello')
       expect(state.meta).toMatchObject(defaultFieldMeta)
     })
   })
 
   describe('_kill', () => {
-    it('unmounts the field store', () => {
+    it('unmounts the field atom', () => {
       const form = new InternalFormApi({ defaultValues: { x: '' } })
       const field = form._getOrCreateFieldApi({ name: 'x' })
       field._register()
@@ -44,8 +44,8 @@ describe('field - lifecycle', () => {
       const form = new InternalFormApi({ defaultValues: { a: { b: '' } } })
       const parent = form._getOrCreateFieldApi({ name: 'a' })
       const child = form._getOrCreateFieldApi({ name: 'a.b' })
-      void parent.store
-      void child.store
+      void parent.atom
+      void child.atom
       parent._kill()
       expect(parent._isMounted).toBe(false)
       expect(child._isMounted).toBe(false)
@@ -276,7 +276,7 @@ describe('field - lifecycle', () => {
       expect(field._isMounted).toBe(false)
     })
 
-    it('cleans up store on unmount', async () => {
+    it('cleans up the atom cache on unmount', async () => {
       const form = new InternalFormApi({ defaultValues: { x: '' } })
       const field = form._getOrCreateFieldApi({ name: 'x' })
 
@@ -345,7 +345,7 @@ describe('field - lifecycle', () => {
       })
     })
 
-    it('cleans up store for child fields when parent unregisters', async () => {
+    it('cleans up atom caches for child fields when parent unregisters', async () => {
       const form = new InternalFormApi({ defaultValues: { a: { b: '' } } })
       const parent = form._getOrCreateFieldApi({ name: 'a' })
       const child = form._getOrCreateFieldApi({ name: 'a.b' })
@@ -361,7 +361,7 @@ describe('field - lifecycle', () => {
 
       await vi.waitFor(() => {
         expect(parent._atoms.store).toBeUndefined()
-        // Child's store should also be cleaned up (separate refCount)
+        // Child's atom cache should also be cleaned up (separate refCount)
         expect(child._atoms.store).toBeUndefined()
       })
     })

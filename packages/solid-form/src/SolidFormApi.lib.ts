@@ -47,7 +47,7 @@ export function initializeForm(
   solidFormApi.Subscribe = function TanStackFormSubscribe(
     props: SolidFormSubscribeProps<any, any, any, any>,
   ) {
-    return Subscribe(mergeProps(props, { source: solidFormApi.store }))
+    return Subscribe(mergeProps(props, { source: solidFormApi.atom }))
   }
 
   return solidFormApi

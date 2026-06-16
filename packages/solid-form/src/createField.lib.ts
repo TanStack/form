@@ -36,7 +36,7 @@ export function createField(
     fieldApi()._update(options())
   })
 
-  const state = useSelector(fieldApi().store, (value) => value, {
+  const state = useSelector(fieldApi().atom, (value) => value, {
     compare: shallow,
   })
 
@@ -67,11 +67,11 @@ export function createArrayField(
   })
 
   const valueLength = useSelector(
-    fieldApi().store,
+    fieldApi().atom,
     (state) => state.value.length,
   )
   const arrayVersion = useSelector(
-    fieldApi().store,
+    fieldApi().atom,
     (state) => (state.meta as never as InternalBaseFieldMeta)._arrayVersion,
   )
 

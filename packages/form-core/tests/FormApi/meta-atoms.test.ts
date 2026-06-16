@@ -13,15 +13,15 @@ describe('form - error visibility meta atom subscriptions', () => {
     })
     const field = form._getOrCreateFieldApi({ name: 'name' })
 
-    field.store.get()
+    field.atom.get()
     errorVisibility.mockClear()
 
     form._atoms.meta.isDirty.set(true)
-    field.store.get()
+    field.atom.get()
     expect(errorVisibility).not.toHaveBeenCalled()
 
     form._atoms.meta.submissionAttempts.set(1)
-    field.store.get()
+    field.atom.get()
     expect(errorVisibility).toHaveBeenCalledOnce()
   })
 
@@ -35,7 +35,7 @@ describe('form - error visibility meta atom subscriptions', () => {
     })
     const field = form._getOrCreateFieldApi({ name: 'name' })
 
-    field.store.get()
+    field.atom.get()
     errorVisibility.mockClear()
 
     form.setFieldValue('other', 'changed', {
@@ -43,7 +43,7 @@ describe('form - error visibility meta atom subscriptions', () => {
       markAsTouched: false,
       causeValidation: false,
     })
-    field.store.get()
+    field.atom.get()
 
     expect(errorVisibility).toHaveBeenCalledOnce()
   })
@@ -59,15 +59,15 @@ describe('form - error visibility meta atom subscriptions', () => {
     const field = form._getOrCreateFieldApi({ name: 'group.name' })
     const group = new InternalFormGroupApi({ form, name: 'group' })
 
-    field.store.get()
+    field.atom.get()
     errorVisibility.mockClear()
 
     group._isSubmitSuccessful.set(true)
-    field.store.get()
+    field.atom.get()
     expect(errorVisibility).not.toHaveBeenCalled()
 
     group._submissionAttempts.set(1)
-    field.store.get()
+    field.atom.get()
     expect(errorVisibility).toHaveBeenCalledOnce()
   })
 })

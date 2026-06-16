@@ -134,7 +134,7 @@ export type ReactFieldApi<
   FieldComponentsMatchingType<TFieldComponents, TFieldValue>
 
 /**
- * Subscribe to `form.store` (full form state). The selector receives the full
+ * Subscribe to `form.atom` (full form state). The selector receives the full
  * {@link FormState}.
  */
 interface ReactSubscribeProps<in out TSourceData, in out TSelected> {

@@ -110,11 +110,11 @@ describe('FormGroup', () => {
             {(group) => (
               <group.Field name="name">
                 {(field) => {
-                  const store = field.store
-                  const originalSubscribe = store.subscribe as (
+                  const atom = field.atom
+                  const originalSubscribe = atom.subscribe as (
                     ...args: Array<any>
-                  ) => ReturnType<typeof store.subscribe>
-                  store.subscribe = (...args) => {
+                  ) => ReturnType<typeof atom.subscribe>
+                  atom.subscribe = (...args) => {
                     subscribe()
                     return originalSubscribe(...args)
                   }
