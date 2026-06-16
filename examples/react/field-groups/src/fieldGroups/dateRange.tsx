@@ -4,6 +4,9 @@ import type { FieldWithValue } from '@tanstack/react-form'
 
 const { defineFields, helper, withFields } = getFieldGroupHelpers()
 
+// DateRangeField needs two string fields, but it does not care where they live.
+// These virtual names are the only field names available inside the group.
+// For example, this file can use `start` and `end`, but not `dateRanges[0]`.
 const dateRangeFields = defineFields({
   start: helper.strict<string>(),
   end: helper.strict<string>(),
@@ -16,12 +19,14 @@ interface DateRangeFieldProps {
 
 function DateRangeFieldComponent(props: DateRangeFieldProps) {
   const { fields, label } = props
+  // `fields.values` contains only the values declared above, not the entire form.
   const start = useSelector(fields.values, (values) => values.start)
 
   return (
     <fieldset>
       <legend>{label}</legend>
 
+      {/* The group uses virtual names like `start`; callers provide the real path. */}
       <fields.Field name="start">
         {(field) => <DateField field={field} label="Start date" />}
       </fields.Field>
@@ -36,6 +41,8 @@ function DateRangeFieldComponent(props: DateRangeFieldProps) {
                 when: ({ value }) => Boolean(value && start),
               },
             ],
+            // Watched fields are virtual too. This becomes the caller's bound
+            // start path, such as `dateRanges[0].start`.
             watchFields: ['start'],
             run: ({ value }) => {
               if (value < start) {

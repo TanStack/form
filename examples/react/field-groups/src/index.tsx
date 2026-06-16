@@ -1,10 +1,11 @@
 import { useForm } from '@tanstack/react-form'
 import ReactDOM from 'react-dom/client'
 import './index.css'
-import { Fragment } from 'react/jsx-runtime'
 import { DateRangeField } from './fieldGroups/dateRange'
 import { LowerBoundField, UpperBoundField } from './fieldGroups/fieldBounds'
 
+// The bounds field groups package validation and blur normalization once, then
+// each form binds the group's virtual names to its own real field paths.
 function PricingFilterForm() {
   const form = useForm({
     defaultValues: {
@@ -19,14 +20,16 @@ function PricingFilterForm() {
         label="Lowest Price"
         form={form}
         fields={{
-          name: 'minPrice',
+          // The group calls this field `value`; this form stores it at `minPrice`.
+          value: 'minPrice',
         }}
       />
       <UpperBoundField
         label="Highest Price"
         form={form}
         fields={{
-          name: 'maxPrice',
+          // `value` is rendered, and `lowerBound` is only read by the validator.
+          value: 'maxPrice',
           lowerBound: 'minPrice',
         }}
       />
@@ -48,14 +51,15 @@ function AgeRangeForm() {
         label="Lowest Age"
         form={form}
         fields={{
-          name: 'minAge',
+          // Same field group, different form paths.
+          value: 'minAge',
         }}
       />
       <UpperBoundField
         label="Highest Age"
         form={form}
         fields={{
-          name: 'maxAge',
+          value: 'maxAge',
           lowerBound: 'minAge',
         }}
       />
@@ -63,6 +67,8 @@ function AgeRangeForm() {
   )
 }
 
+// DateRangeField has access to both dates, but it still knows nothing about the
+// array it is rendered from. The parent form supplies those concrete paths here.
 function SwappableDateRangesForm() {
   const form = useForm({
     defaultValues: {
@@ -92,16 +98,15 @@ function SwappableDateRangesForm() {
       <form.ArrayField name="dateRanges">
         {(array) =>
           array.value.map((range, i) => (
-            <Fragment key={range.id}>
-              <DateRangeField
-                label={`Range ${range.id}`}
-                form={form}
-                fields={{
-                  start: `dateRanges[${i}].start`,
-                  end: `dateRanges[${i}].end`,
-                }}
-              />
-            </Fragment>
+            <DateRangeField
+              key={range.id}
+              label={`Range ${range.id}`}
+              form={form}
+              fields={{
+                start: `dateRanges[${i}].start`,
+                end: `dateRanges[${i}].end`,
+              }}
+            />
           ))
         }
       </form.ArrayField>
