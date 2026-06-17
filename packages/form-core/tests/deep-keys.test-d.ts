@@ -1147,12 +1147,14 @@ describe('DeepKeysWhereValueIncludes', () => {
 
 describe('TryGetArrayElementType', () => {
   it('should infer elements from mutable and readonly arrays', () => {
-    expectTypeOf<TryGetArrayElementType<Array<string>>>().toEqualTypeOf<string>()
+    expectTypeOf<
+      TryGetArrayElementType<Array<string>>
+    >().toEqualTypeOf<string>()
     expectTypeOf<
       TryGetArrayElementType<ReadonlyArray<number>>
     >().toEqualTypeOf<number>()
-    expectTypeOf<TryGetArrayElementType<readonly [boolean]>>().toEqualTypeOf<
-      boolean
-    >()
+    expectTypeOf<
+      TryGetArrayElementType<readonly [boolean]>
+    >().toEqualTypeOf<boolean>()
   })
 })

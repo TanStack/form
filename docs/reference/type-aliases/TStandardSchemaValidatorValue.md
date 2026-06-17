@@ -3,13 +3,13 @@ id: TStandardSchemaValidatorValue
 title: TStandardSchemaValidatorValue
 ---
 
-# Type Alias: TStandardSchemaValidatorValue\<TData, TSource\>
+# Type Alias: TStandardSchemaValidatorValue\<TData\>
 
 ```ts
-type TStandardSchemaValidatorValue<TData, TSource> = object;
+type TStandardSchemaValidatorValue<TData> = object;
 ```
 
-Defined in: [packages/form-core/src/standardSchemaValidator.ts:3](https://github.com/TanStack/form/blob/main/packages/form-core/src/standardSchemaValidator.ts#L3)
+Defined in: [standardSchema.public.ts:1](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/standardSchema.public.ts#L1)
 
 ## Type Parameters
 
@@ -17,21 +17,7 @@ Defined in: [packages/form-core/src/standardSchemaValidator.ts:3](https://github
 
 `TData`
 
-### TSource
-
-`TSource` *extends* [`ValidationSource`](ValidationSource.md) = [`ValidationSource`](ValidationSource.md)
-
 ## Properties
-
-### validationSource
-
-```ts
-validationSource: TSource;
-```
-
-Defined in: [packages/form-core/src/standardSchemaValidator.ts:8](https://github.com/TanStack/form/blob/main/packages/form-core/src/standardSchemaValidator.ts#L8)
-
-***
 
 ### value
 
@@ -39,4 +25,4 @@ Defined in: [packages/form-core/src/standardSchemaValidator.ts:8](https://github
 value: TData;
 ```
 
-Defined in: [packages/form-core/src/standardSchemaValidator.ts:7](https://github.com/TanStack/form/blob/main/packages/form-core/src/standardSchemaValidator.ts#L7)
+Defined in: [standardSchema.public.ts:2](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/standardSchema.public.ts#L2)

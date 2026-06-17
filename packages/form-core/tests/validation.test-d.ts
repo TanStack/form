@@ -727,12 +727,7 @@ describe('FieldErrors', () => {
     ])
 
     expectTypeOf<
-      TestFieldErrors<
-        typeof fieldValidators,
-        [],
-        typeof formValidators,
-        never
-      >
+      TestFieldErrors<typeof fieldValidators, [], typeof formValidators, never>
     >().toEqualTypeOf<Array<StandardSchemaV1Issue>>()
   })
 

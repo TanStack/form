@@ -3,79 +3,105 @@ id: SolidFormApi
 title: SolidFormApi
 ---
 
-# Interface: SolidFormApi\<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta\>
+# Interface: SolidFormApi\<TFormData, TFormValidatorMetas, TSubmitReturn\>
 
-Defined in: [packages/solid-form/src/createForm.tsx:16](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L16)
+Defined in: [packages/solid-form/src/createForm.public.ts:156](https://github.com/TanStack/form-v2/blob/main/packages/solid-form/src/createForm.public.ts#L156)
+
+## Extends
+
+- `FormApi`\<`TFormData`, `TFormValidatorMetas`, `TSubmitReturn`\>.[`SolidTanStackFormComponents`](SolidTanStackFormComponents.md)\<`TFormData`, `TFormValidatorMetas`, `TSubmitReturn`\>
 
 ## Type Parameters
 
-### TParentData
+### TFormData
 
-`TParentData`
+`TFormData`
 
-### TFormOnMount
+### TFormValidatorMetas
 
-`TFormOnMount` *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+`TFormValidatorMetas` *extends* `FormValidatorMetas`
 
-### TFormOnChange
+### TSubmitReturn
 
-`TFormOnChange` *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
-
-### TFormOnChangeAsync
-
-`TFormOnChangeAsync` *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
-
-### TFormOnBlur
-
-`TFormOnBlur` *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
-
-### TFormOnBlurAsync
-
-`TFormOnBlurAsync` *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
-
-### TFormOnSubmit
-
-`TFormOnSubmit` *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
-
-### TFormOnSubmitAsync
-
-`TFormOnSubmitAsync` *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
-
-### TFormOnDynamic
-
-`TFormOnDynamic` *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
-
-### TFormOnDynamicAsync
-
-`TFormOnDynamicAsync` *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
-
-### TFormOnServer
-
-`TFormOnServer` *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
-
-### TSubmitMeta
-
-`TSubmitMeta`
+`TSubmitReturn`
 
 ## Properties
 
-### Field
+### ArrayField()
 
 ```ts
-Field: FieldComponent<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta>;
+ArrayField: <TFieldName, TFieldValue, TFieldValidators>(props) => Element;
 ```
 
-Defined in: [packages/solid-form/src/createForm.tsx:30](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L30)
+Defined in: [packages/solid-form/src/createForm.public.ts:128](https://github.com/TanStack/form-v2/blob/main/packages/solid-form/src/createForm.public.ts#L128)
+
+#### Type Parameters
+
+##### TFieldName
+
+`TFieldName` *extends* `never`
+
+##### TFieldValue
+
+`TFieldValue`
+
+##### TFieldValidators
+
+`TFieldValidators` *extends* `FieldValidators`\<`TFormData`, `TFieldName`, `TFieldValue`\>
+
+#### Parameters
+
+##### props
+
+[`SolidFormArrayFieldProps`](SolidFormArrayFieldProps.md)\<`TFormData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `TFormValidatorMetas`, `TSubmitReturn`\>
+
+#### Returns
+
+`Element`
+
+#### Inherited from
+
+[`SolidTanStackFormComponents`](SolidTanStackFormComponents.md).[`ArrayField`](SolidTanStackFormComponents.md#arrayfield)
 
 ***
 
-### FormGroup
+### Field()
 
 ```ts
-FormGroup: FormGroupComponent<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta>;
+Field: <TFieldName, TFieldValue, TFieldValidators>(props) => Element;
 ```
 
-Defined in: [packages/solid-form/src/createForm.tsx:44](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L44)
+Defined in: [packages/solid-form/src/createForm.public.ts:110](https://github.com/TanStack/form-v2/blob/main/packages/solid-form/src/createForm.public.ts#L110)
+
+TODO docs
+
+#### Type Parameters
+
+##### TFieldName
+
+`TFieldName` *extends* `string`
+
+##### TFieldValue
+
+`TFieldValue`
+
+##### TFieldValidators
+
+`TFieldValidators` *extends* `FieldValidators`\<`TFormData`, `TFieldName`, `TFieldValue`\>
+
+#### Parameters
+
+##### props
+
+[`SolidFormFieldProps`](SolidFormFieldProps.md)\<`TFormData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `TFormValidatorMetas`, `TSubmitReturn`\>
+
+#### Returns
+
+`Element`
+
+#### Inherited from
+
+[`SolidTanStackFormComponents`](SolidTanStackFormComponents.md).[`Field`](SolidTanStackFormComponents.md#field)
 
 ***
 
@@ -85,94 +111,24 @@ Defined in: [packages/solid-form/src/createForm.tsx:44](https://github.com/TanSt
 Subscribe: <TSelected>(props) => Element;
 ```
 
-Defined in: [packages/solid-form/src/createForm.tsx:131](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L131)
+Defined in: [packages/solid-form/src/createForm.public.ts:146](https://github.com/TanStack/form-v2/blob/main/packages/solid-form/src/createForm.public.ts#L146)
 
 #### Type Parameters
 
 ##### TSelected
 
-`TSelected` = `NoInfer`\<`FormState`\<`TParentData`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnDynamic`, `TFormOnDynamicAsync`, `TFormOnServer`\>\>
+`TSelected`
 
 #### Parameters
 
 ##### props
 
-###### children
-
-`Element` \| (`state`) => `Element`
-
-###### selector?
-
-(`state`) => `TSelected`
+[`SolidFormSubscribeProps`](SolidFormSubscribeProps.md)\<`TFormData`, `TFormValidatorMetas`, `TSubmitReturn`, `TSelected`\>
 
 #### Returns
 
 `Element`
 
-***
+#### Inherited from
 
-### useSelector()
-
-```ts
-useSelector: <TSelected>(selector?) => () => TSelected;
-```
-
-Defined in: [packages/solid-form/src/createForm.tsx:58](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L58)
-
-#### Type Parameters
-
-##### TSelected
-
-`TSelected` = `NoInfer`\<`FormState`\<`TParentData`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnDynamic`, `TFormOnDynamicAsync`, `TFormOnServer`\>\>
-
-#### Parameters
-
-##### selector?
-
-(`state`) => `TSelected`
-
-#### Returns
-
-```ts
-(): TSelected;
-```
-
-##### Returns
-
-`TSelected`
-
-***
-
-### ~~useStore()~~
-
-```ts
-useStore: <TSelected>(selector?) => () => TSelected;
-```
-
-Defined in: [packages/solid-form/src/createForm.tsx:96](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L96)
-
-#### Type Parameters
-
-##### TSelected
-
-`TSelected` = `NoInfer`\<`FormState`\<`TParentData`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnDynamic`, `TFormOnDynamicAsync`, `TFormOnServer`\>\>
-
-#### Parameters
-
-##### selector?
-
-(`state`) => `TSelected`
-
-#### Returns
-
-```ts
-(): TSelected;
-```
-
-##### Returns
-
-`TSelected`
-
-#### Deprecated
-
-Use `form.useSelector` instead.
+[`SolidTanStackFormComponents`](SolidTanStackFormComponents.md).[`Subscribe`](SolidTanStackFormComponents.md#subscribe)

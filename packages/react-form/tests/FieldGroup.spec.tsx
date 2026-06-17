@@ -20,7 +20,11 @@ function NestedFieldsImpl({ fields }: NestedFieldsProps) {
   return (
     <>
       <fields.Field name="foo.bar">
-        {(field) => <span data-testid="field">{field.name}:{field.value}</span>}
+        {(field) => (
+          <span data-testid="field">
+            {field.name}:{field.value}
+          </span>
+        )}
       </fields.Field>
       <button
         type="button"
@@ -72,11 +76,7 @@ function PasswordFieldsImpl({ fields, listener }: PasswordFieldsProps) {
   )
 }
 
-const PasswordFields = withFields(
-  passwordFields,
-  PasswordFieldsImpl,
-  'fields',
-)
+const PasswordFields = withFields(passwordFields, PasswordFieldsImpl, 'fields')
 
 const rangeFields = defineFields({
   lower: helper.strict<string>(),
@@ -222,9 +222,7 @@ describe('FieldGroup', () => {
         },
       })
 
-      return (
-        <NestedFields form={form} fields={{ foo: 'anything' }} />
-      )
+      return <NestedFields form={form} fields={{ foo: 'anything' }} />
     }
 
     const { getByRole, getByTestId } = render(<Component />)

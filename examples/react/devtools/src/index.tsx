@@ -15,7 +15,6 @@ function App() {
       <h1>TanStack Template - React Devtools Example</h1>
       <p>Message: {state.message}</p>
       <button onClick={() => template.greet()}>Greet (check console)</button>
-
     </div>
   )
 }

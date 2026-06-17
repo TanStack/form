@@ -3,20 +3,16 @@ id: Updater
 title: Updater
 ---
 
-# Type Alias: Updater\<TInput, TOutput\>
+# Type Alias: Updater\<TValue\>
 
 ```ts
-type Updater<TInput, TOutput> = TOutput | UpdaterFn<TInput, TOutput>;
+type Updater<TValue> = TValue | UpdateFn<TValue>;
 ```
 
-Defined in: [packages/form-core/src/utils.ts:16](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.ts#L16)
+Defined in: [types.public.ts:4](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/types.public.ts#L4)
 
 ## Type Parameters
 
-### TInput
+### TValue
 
-`TInput`
-
-### TOutput
-
-`TOutput` = `TInput`
+`TValue`

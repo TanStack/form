@@ -1,8 +1,6 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
-  "ignoreFiles": [
-    "**/*.regressions.ts"
-  ],
+  "ignoreFiles": ["**/*.regressions.ts"],
   "ignoreDependencies": ["@tanstack/react-start"],
   "ignoreWorkspaces": ["examples/**"]
 }

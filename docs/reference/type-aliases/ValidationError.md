@@ -6,7 +6,7 @@ title: ValidationError
 # Type Alias: ValidationError
 
 ```ts
-type ValidationError = unknown;
+type ValidationError = OneOrMany<ValidationIssue>;
 ```
 
-Defined in: [packages/form-core/src/types.ts:35](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L35)
+Defined in: [validation.public.ts:270](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L270)

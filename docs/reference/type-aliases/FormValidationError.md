@@ -7,11 +7,11 @@ title: FormValidationError
 
 ```ts
 type FormValidationError<TFormData> = 
-  | ValidationError
-| GlobalFormValidationError<TFormData>;
+  | ValidationErrorInput
+| ValidationAggregateError<TFormData>;
 ```
 
-Defined in: [packages/form-core/src/types.ts:132](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L132)
+Defined in: [validation.public.ts:312](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L312)
 
 ## Type Parameters
 

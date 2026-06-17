@@ -12,7 +12,7 @@ function useSelector<TSource, TSelected>(
    options?): TSelected;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+react-store@0.11.0\_react-dom@19.1.0\_react@19.1.0\_\_react@19.1.0/node\_modules/@tanstack/react-store/dist/useSelector.d.ts:31
+Defined in: node\_modules/.pnpm/@tanstack+react-store@0.11.0\_react-dom@19.2.7\_react@19.2.7\_\_react@19.2.7/node\_modules/@tanstack/react-store/dist/useSelector.d.ts:31
 
 Selects a slice of state from an atom or store and subscribes the component
 to that selection.
@@ -45,7 +45,7 @@ Omit the selector to subscribe to the whole value.
 
 ### options?
 
-`UseSelectorOptions`\<`TSelected`\>
+[`UseSelectorOptions`](../interfaces/UseSelectorOptions.md)\<`TSelected`\>
 
 ## Returns
 

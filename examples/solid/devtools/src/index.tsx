@@ -13,7 +13,6 @@ function App() {
       <h1>TanStack Template - Solid Devtools Example</h1>
       <p>Message: {state().message}</p>
       <button onClick={() => template.greet()}>Greet (check console)</button>
-
     </div>
   )
 }

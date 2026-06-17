@@ -67,7 +67,8 @@ interface FieldComponentHelper {
   strict: <
     TComponent extends AnyFieldComponent,
     TProps = PropsOf<TComponent>,
-    TFieldPropKey extends FieldValuePropKeys<TProps> = FieldValuePropKeys<TProps>,
+    TFieldPropKey extends FieldValuePropKeys<TProps> =
+      FieldValuePropKeys<TProps>,
   >(
     Component: TComponent,
     fieldPropKey: TFieldPropKey,
@@ -76,7 +77,8 @@ interface FieldComponentHelper {
   loose: <
     TComponent extends AnyFieldComponent,
     TProps = PropsOf<TComponent>,
-    TFieldPropKey extends FieldValuePropKeys<TProps> = FieldValuePropKeys<TProps>,
+    TFieldPropKey extends FieldValuePropKeys<TProps> =
+      FieldValuePropKeys<TProps>,
   >(
     Component: TComponent,
     fieldPropKey: TFieldPropKey,

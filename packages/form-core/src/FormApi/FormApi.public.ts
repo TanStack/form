@@ -14,12 +14,8 @@ import type {
 } from '../validation.public'
 import type { StandardSchemaV1Issue } from '../standardSchema.public'
 import type { FormListeners } from '../listeners.public'
-import type {
-  FormApiArrayMethods,
-} from './FormApiArrayMethods.types.public'
-import type {
-  FormApiFieldMethods,
-} from './FormApiFieldMethods.types.public'
+import type { FormApiArrayMethods } from './FormApiArrayMethods.types.public'
+import type { FormApiFieldMethods } from './FormApiFieldMethods.types.public'
 
 declare const onSubmitErrorBrand: unique symbol
 
@@ -85,11 +81,7 @@ export interface FormApiOptions<
 > {
   formId?: string
   defaultValues: TFormData
-  errorVisibility?: ErrorVisibility<
-    TFormData,
-    TFormValidatorMetas,
-    TSubmitMeta
-  >
+  errorVisibility?: ErrorVisibility<TFormData, TFormValidatorMetas, TSubmitMeta>
   validators?: FormValidators<TFormData>
   listeners?: FormListeners<TFormData, TFormValidatorMetas, TSubmitMeta>
   onSubmit?: (
@@ -166,15 +158,11 @@ export interface FormApi<
   in out TFormData,
   in out TFormValidatorMetas extends FormValidatorMetas,
   in out TSubmitMeta,
-> extends FormApiFieldMethods<TFormData>,
-    FormApiArrayMethods<TFormData> {
+>
+  extends FormApiFieldMethods<TFormData>, FormApiArrayMethods<TFormData> {
   atom: ReadonlyAtom<FormState<TFormData, TFormValidatorMetas, TSubmitMeta>>
   readonly state: FormState<TFormData, TFormValidatorMetas, TSubmitMeta>
-  readonly options: FormApiOptions<
-    TFormData,
-    TFormValidatorMetas,
-    TSubmitMeta
-  >
+  readonly options: FormApiOptions<TFormData, TFormValidatorMetas, TSubmitMeta>
   readonly formId: string
 
   /**

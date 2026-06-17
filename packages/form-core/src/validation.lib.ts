@@ -80,9 +80,7 @@ function getContextValue(context: InputContext) {
 }
 
 function parseFieldIssues(
-  issues: Parameters<
-    FieldValidatorContext<any, any, any>['parseIssues']
-  >[0],
+  issues: Parameters<FieldValidatorContext<any, any, any>['parseIssues']>[0],
 ) {
   return parseStandardSchemaIssues(issues, undefined, 'field')
 }
@@ -810,11 +808,7 @@ export function runFormValidatorPipeline({
           signal: ctx.signal,
           value: ctx.formApi.state.values,
           parseIssues: (issues) =>
-            parseStandardSchemaIssues(
-              issues,
-              ctx.formApi.state.values,
-              'form',
-            ),
+            parseStandardSchemaIssues(issues, ctx.formApi.state.values, 'form'),
         }
       }
       return {

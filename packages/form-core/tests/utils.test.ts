@@ -100,10 +100,7 @@ describe('utils', () => {
 
     expect(setBy(['first'], '[2]', 'third')).toEqual(['first', 'third'])
     expect(setBy([], '[2]', 'third')).toEqual([undefined, undefined, 'third'])
-    expect(setBy(undefined, [undefined], 'third')).toEqual([
-      undefined,
-      'third',
-    ])
+    expect(setBy(undefined, [undefined], 'third')).toEqual([undefined, 'third'])
   })
 
   it('calls updater functions with the current value', () => {

@@ -44,7 +44,7 @@ Omit the selector to subscribe to the whole value.
 
 ### options?
 
-`UseSelectorOptions`\<`TSelected`\>
+[`UseSelectorOptions`](../interfaces/UseSelectorOptions.md)\<`TSelected`\>
 
 ## Returns
 

@@ -3,34 +3,34 @@ id: StandardSchemaV1
 title: StandardSchemaV1
 ---
 
-# Type Alias: StandardSchemaV1\<Input, Output\>
+# Type Alias: StandardSchemaV1\<TInput, TOutput\>
 
 ```ts
-type StandardSchemaV1<Input, Output> = object;
+type StandardSchemaV1<TInput, TOutput> = object;
 ```
 
-Defined in: [packages/form-core/src/standardSchemaValidator.ts:120](https://github.com/TanStack/form/blob/main/packages/form-core/src/standardSchemaValidator.ts#L120)
+Defined in: [standardSchema.public.ts:10](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/standardSchema.public.ts#L10)
 
 The Standard Schema interface.
 
 ## Type Parameters
 
-### Input
+### TInput
 
-`Input` = `unknown`
+`TInput` = `unknown`
 
-### Output
+### TOutput
 
-`Output` = `Input`
+`TOutput` = `TInput`
 
 ## Properties
 
 ### ~standard
 
 ```ts
-readonly ~standard: StandardSchemaV1Props<Input, Output>;
+readonly ~standard: StandardSchemaV1Props<TInput, TOutput>;
 ```
 
-Defined in: [packages/form-core/src/standardSchemaValidator.ts:124](https://github.com/TanStack/form/blob/main/packages/form-core/src/standardSchemaValidator.ts#L124)
+Defined in: [standardSchema.public.ts:14](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/standardSchema.public.ts#L14)
 
 The Standard Schema properties.

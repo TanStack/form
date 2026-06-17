@@ -3,15 +3,71 @@ id: FormGroupState
 title: FormGroupState
 ---
 
-# Interface: FormGroupState
+# Interface: FormGroupState\<TGroupValue, TGroupValidationMetas\>
 
-Defined in: [packages/form-core/src/FormGroupApi.ts:655](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L655)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:103](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L103)
 
-## Extended by
+## Type Parameters
 
-- [`FormGroupMeta`](FormGroupMeta.md)
+### TGroupValue
+
+`TGroupValue`
+
+### TGroupValidationMetas
+
+`TGroupValidationMetas` *extends* [`FormGroupValidatorMetas`](../type-aliases/FormGroupValidatorMetas.md)
 
 ## Properties
+
+### canSubmit
+
+```ts
+canSubmit: boolean;
+```
+
+Defined in: [FormGroupApi/FormGroupApi.public.ts:115](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L115)
+
+***
+
+### errors
+
+```ts
+errors: TGroupValidationMetas[number]["groupError"];
+```
+
+Defined in: [FormGroupApi/FormGroupApi.public.ts:109](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L109)
+
+***
+
+### isDirty
+
+```ts
+isDirty: boolean;
+```
+
+Defined in: [FormGroupApi/FormGroupApi.public.ts:111](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L111)
+
+***
+
+### isInvalid
+
+```ts
+isInvalid: boolean;
+```
+
+Defined in: [FormGroupApi/FormGroupApi.public.ts:114](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L114)
+
+***
+
+### isPristine
+
+```ts
+isPristine: boolean;
+```
+
+Defined in: [FormGroupApi/FormGroupApi.public.ts:112](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L112)
+
+***
 
 ### isSubmitSuccessful
 
@@ -19,25 +75,7 @@ Defined in: [packages/form-core/src/FormGroupApi.ts:655](https://github.com/TanS
 isSubmitSuccessful: boolean;
 ```
 
-Defined in: [packages/form-core/src/FormGroupApi.ts:688](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L688)
-
-A boolean indicating if the last submission was successful.
-
-***
-
-### isSubmitted
-
-```ts
-isSubmitted: boolean;
-```
-
-Defined in: [packages/form-core/src/FormGroupApi.ts:676](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L676)
-
-A boolean indicating if the `onSubmit` function has completed successfully.
-
-Goes back to `false` at each new submission attempt.
-
-Note: you can use isSubmitting to check if the form is currently submitting.
+Defined in: [FormGroupApi/FormGroupApi.public.ts:117](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L117)
 
 ***
 
@@ -47,17 +85,27 @@ Note: you can use isSubmitting to check if the form is currently submitting.
 isSubmitting: boolean;
 ```
 
-Defined in: [packages/form-core/src/FormGroupApi.ts:668](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L668)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:116](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L116)
 
-A boolean indicating if the form is currently in the process of being submitted after `handleSubmit` is called.
+***
 
-Goes back to `false` when submission completes for one of the following reasons:
-- the validation step returned errors.
-- the `onSubmit` function has completed.
+### isTouched
 
-Note: if you're running async operations in your `onSubmit` function make sure to await them to ensure `isSubmitting` is set to `false` only when the async operation completes.
+```ts
+isTouched: boolean;
+```
 
-This is useful for displaying loading indicators or disabling form inputs during submission.
+Defined in: [FormGroupApi/FormGroupApi.public.ts:110](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L110)
+
+***
+
+### isValid
+
+```ts
+isValid: boolean;
+```
+
+Defined in: [FormGroupApi/FormGroupApi.public.ts:113](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L113)
 
 ***
 
@@ -67,9 +115,17 @@ This is useful for displaying loading indicators or disabling form inputs during
 isValidating: boolean;
 ```
 
-Defined in: [packages/form-core/src/FormGroupApi.ts:680](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L680)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:118](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L118)
 
-A boolean indicating if the form or any of its fields are currently validating.
+***
+
+### meta
+
+```ts
+meta: unknown;
+```
+
+Defined in: [FormGroupApi/FormGroupApi.public.ts:108](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L108)
 
 ***
 
@@ -79,6 +135,14 @@ A boolean indicating if the form or any of its fields are currently validating.
 submissionAttempts: number;
 ```
 
-Defined in: [packages/form-core/src/FormGroupApi.ts:684](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L684)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:119](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L119)
 
-A counter for tracking the number of submission attempts.
+***
+
+### values
+
+```ts
+values: TGroupValue;
+```
+
+Defined in: [FormGroupApi/FormGroupApi.public.ts:107](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L107)

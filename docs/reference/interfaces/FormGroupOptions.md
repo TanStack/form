@@ -3,412 +3,102 @@ id: FormGroupOptions
 title: FormGroupOptions
 ---
 
-# Interface: FormGroupOptions\<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TSubmitMeta, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta\>
+# Interface: FormGroupOptions\<TFormData, TGroupName, TGroupValue, TGroupValidators, TFormValidatorMetas, TSubmitReturn\>
 
-Defined in: [packages/form-core/src/FormGroupApi.ts:468](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L468)
-
-## Extends
-
-- `FormGroupExtraOptions`\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TSubmitMeta`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnDynamic`, `TFormOnDynamicAsync`, `TFormOnServer`, `TParentSubmitMeta`\>
-
-## Extended by
-
-- [`FormGroupApiOptions`](FormGroupApiOptions.md)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:33](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L33)
 
 ## Type Parameters
 
-### TParentData
+### TFormData
 
-`TParentData`
+`TFormData`
 
-### TName
+### TGroupName
 
-`TName` *extends* [`DeepKeys`](../type-aliases/DeepKeys.md)\<`TParentData`\>
+`TGroupName`
 
-### TData
+### TGroupValue
 
-`TData` *extends* [`DeepValue`](../type-aliases/DeepValue.md)\<`TParentData`, `TName`\>
+`TGroupValue`
 
-### TOnMount
+### TGroupValidators
 
-`TOnMount` *extends* `undefined` \| `FormGroupValidateOrFn`\<`TParentData`, `TName`, `TData`\>
+`TGroupValidators` *extends* [`FormGroupValidators`](../type-aliases/FormGroupValidators.md)\<`TGroupValue`\>
 
-### TOnChange
+### TFormValidatorMetas
 
-`TOnChange` *extends* `undefined` \| `FormGroupValidateOrFn`\<`TParentData`, `TName`, `TData`\>
+`TFormValidatorMetas` *extends* [`FormValidatorMetas`](../type-aliases/FormValidatorMetas.md)
 
-### TOnChangeAsync
+### TSubmitReturn
 
-`TOnChangeAsync` *extends* 
-  \| `undefined`
-  \| `FormGroupAsyncValidateOrFn`\<`TParentData`, `TName`, `TData`\>
-
-### TOnBlur
-
-`TOnBlur` *extends* `undefined` \| `FormGroupValidateOrFn`\<`TParentData`, `TName`, `TData`\>
-
-### TOnBlurAsync
-
-`TOnBlurAsync` *extends* 
-  \| `undefined`
-  \| `FormGroupAsyncValidateOrFn`\<`TParentData`, `TName`, `TData`\>
-
-### TOnSubmit
-
-`TOnSubmit` *extends* `undefined` \| `FormGroupValidateOrFn`\<`TParentData`, `TName`, `TData`\>
-
-### TOnSubmitAsync
-
-`TOnSubmitAsync` *extends* 
-  \| `undefined`
-  \| `FormGroupAsyncValidateOrFn`\<`TParentData`, `TName`, `TData`\>
-
-### TOnDynamic
-
-`TOnDynamic` *extends* `undefined` \| `FormGroupValidateOrFn`\<`TParentData`, `TName`, `TData`\>
-
-### TOnDynamicAsync
-
-`TOnDynamicAsync` *extends* 
-  \| `undefined`
-  \| `FormGroupAsyncValidateOrFn`\<`TParentData`, `TName`, `TData`\>
-
-### TSubmitMeta
-
-`TSubmitMeta`
-
-### TFormOnMount
-
-`TFormOnMount` *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
-
-### TFormOnChange
-
-`TFormOnChange` *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
-
-### TFormOnChangeAsync
-
-`TFormOnChangeAsync` *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
-
-### TFormOnBlur
-
-`TFormOnBlur` *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
-
-### TFormOnBlurAsync
-
-`TFormOnBlurAsync` *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
-
-### TFormOnSubmit
-
-`TFormOnSubmit` *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
-
-### TFormOnSubmitAsync
-
-`TFormOnSubmitAsync` *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
-
-### TFormOnDynamic
-
-`TFormOnDynamic` *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
-
-### TFormOnDynamicAsync
-
-`TFormOnDynamicAsync` *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
-
-### TFormOnServer
-
-`TFormOnServer` *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
-
-### TParentSubmitMeta
-
-`TParentSubmitMeta`
+`TSubmitReturn`
 
 ## Properties
 
-### asyncAlways?
+### form
 
 ```ts
-optional asyncAlways: boolean;
+form: FormApi<TFormData, TFormValidatorMetas, TSubmitReturn>;
 ```
 
-Defined in: [packages/form-core/src/types.ts:982](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L982)
-
-If `true`, always run async validation, even if there are errors emitted during synchronous validation.
-
-#### Inherited from
-
-```ts
-FieldLikeOptions.asyncAlways
-```
-
-***
-
-### asyncDebounceMs?
-
-```ts
-optional asyncDebounceMs: number;
-```
-
-Defined in: [packages/form-core/src/types.ts:978](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L978)
-
-The default time to debounce async validation if there is not a more specific debounce time passed.
-
-#### Inherited from
-
-```ts
-FieldLikeOptions.asyncDebounceMs
-```
-
-***
-
-### canSubmitWhenInvalid?
-
-```ts
-optional canSubmitWhenInvalid: boolean;
-```
-
-Defined in: [packages/form-core/src/FormGroupApi.ts:381](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L381)
-
-If true, allows the form to be submitted in an invalid state i.e. canSubmit will remain true regardless of validation errors. Defaults to undefined.
-
-#### Inherited from
-
-```ts
-FormGroupExtraOptions.canSubmitWhenInvalid
-```
-
-***
-
-### defaultMeta?
-
-```ts
-optional defaultMeta: Partial<FieldLikeMeta<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, any, any, any, any, any, any, any, any, any>>;
-```
-
-Defined in: [packages/form-core/src/types.ts:986](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L986)
-
-An optional object with default metadata for the field.
-
-#### Inherited from
-
-```ts
-FieldLikeOptions.defaultMeta
-```
-
-***
-
-### defaultState?
-
-```ts
-optional defaultState: FormGroupState;
-```
-
-Defined in: [packages/form-core/src/FormGroupApi.ts:388](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L388)
-
-#### Inherited from
-
-```ts
-FormGroupExtraOptions.defaultState
-```
-
-***
-
-### defaultValue?
-
-```ts
-optional defaultValue: NoInfer<TData>;
-```
-
-Defined in: [packages/form-core/src/types.ts:974](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L974)
-
-An optional default value for the field.
-
-#### Inherited from
-
-```ts
-FieldLikeOptions.defaultValue
-```
-
-***
-
-### disableErrorFlat?
-
-```ts
-optional disableErrorFlat: boolean;
-```
-
-Defined in: [packages/form-core/src/types.ts:1014](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L1014)
-
-Disable the `flat(1)` operation on `field.errors`. This is useful if you want to keep the error structure as is. Not suggested for most use-cases.
-
-#### Inherited from
-
-```ts
-FieldLikeOptions.disableErrorFlat
-```
-
-***
-
-### listeners?
-
-```ts
-optional listeners: FormGroupListeners<TParentData, TName, TData>;
-```
-
-Defined in: [packages/form-core/src/FormGroupApi.ts:386](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L386)
-
-A list of listeners which attach to the corresponding events
-
-#### Inherited from
-
-```ts
-FormGroupExtraOptions.listeners
-```
+Defined in: [FormGroupApi/FormGroupApi.public.ts:41](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L41)
 
 ***
 
 ### name
 
 ```ts
-name: TName;
+name: TGroupName;
 ```
 
-Defined in: [packages/form-core/src/types.ts:970](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L970)
-
-The field name. The type will be `DeepKeys<TParentData>` to ensure your name is a deep key of the parent dataset.
-
-#### Inherited from
-
-```ts
-FieldLikeOptions.name
-```
+Defined in: [FormGroupApi/FormGroupApi.public.ts:42](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L42)
 
 ***
 
-### onGroupSubmit()?
+### onSubmit()?
 
 ```ts
-optional onGroupSubmit: (props) => any;
+optional onSubmit: (context) => void | Promise<void>;
 ```
 
-Defined in: [packages/form-core/src/FormGroupApi.ts:403](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L403)
-
-A function to be called when the form is submitted, what should happen once the user submits a valid form returns `any` or a promise `Promise<any>`
+Defined in: [FormGroupApi/FormGroupApi.public.ts:44](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L44)
 
 #### Parameters
 
-##### props
+##### context
 
-###### groupApi
-
-[`FormGroupApi`](../classes/FormGroupApi.md)\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TSubmitMeta`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnDynamic`, `TFormOnDynamicAsync`, `TFormOnServer`, `TParentSubmitMeta`\>
-
-###### meta
-
-`TSubmitMeta`
-
-###### value
-
-`TData`
+[`FormGroupSubmitContext`](FormGroupSubmitContext.md)\<`TFormData`, `TGroupName`, `TGroupValue`, [`ToFormGroupValidatorMetas`](../type-aliases/ToFormGroupValidatorMetas.md)\<`TGroupValidators`\>, `TFormValidatorMetas`, `TSubmitReturn`\>
 
 #### Returns
 
-`any`
-
-#### Inherited from
-
-```ts
-FormGroupExtraOptions.onGroupSubmit
-```
+`void` \| `Promise`\<`void`\>
 
 ***
 
-### onGroupSubmitInvalid()?
+### onSubmitInvalid()?
 
 ```ts
-optional onGroupSubmitInvalid: (props) => void;
+optional onSubmitInvalid: (context) => void | Promise<void>;
 ```
 
-Defined in: [packages/form-core/src/FormGroupApi.ts:436](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L436)
-
-Specify an action for scenarios where the user tries to submit an invalid form.
+Defined in: [FormGroupApi/FormGroupApi.public.ts:54](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L54)
 
 #### Parameters
 
-##### props
+##### context
 
-###### groupApi
-
-[`FormGroupApi`](../classes/FormGroupApi.md)\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TSubmitMeta`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnDynamic`, `TFormOnDynamicAsync`, `TFormOnServer`, `TParentSubmitMeta`\>
-
-###### meta
-
-`TSubmitMeta`
-
-###### value
-
-`TData`
+[`FormGroupSubmitContext`](FormGroupSubmitContext.md)\<`TFormData`, `TGroupName`, `TGroupValue`, [`ToFormGroupValidatorMetas`](../type-aliases/ToFormGroupValidatorMetas.md)\<`TGroupValidators`\>, `TFormValidatorMetas`, `TSubmitReturn`\> & `object`
 
 #### Returns
 
-`void`
-
-#### Inherited from
-
-```ts
-FormGroupExtraOptions.onGroupSubmitInvalid
-```
-
-***
-
-### onSubmitMeta?
-
-```ts
-optional onSubmitMeta: TSubmitMeta;
-```
-
-Defined in: [packages/form-core/src/FormGroupApi.ts:398](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L398)
-
-onSubmitMeta, the data passed from the handleSubmit handler, to the onSubmit function props
-
-#### Inherited from
-
-```ts
-FormGroupExtraOptions.onSubmitMeta
-```
-
-***
-
-### validationLogic?
-
-```ts
-optional validationLogic: ValidationLogicFn;
-```
-
-Defined in: [packages/form-core/src/FormGroupApi.ts:394](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L394)
-
-Optional validation logic strategy to use for this group's own
-validators (e.g. `revalidateLogic()`). When omitted, the parent form's
-`validationLogic` (or the default) is used.
-
-#### Inherited from
-
-```ts
-FormGroupExtraOptions.validationLogic
-```
+`void` \| `Promise`\<`void`\>
 
 ***
 
 ### validators?
 
 ```ts
-optional validators: FormGroupValidators<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync>;
+optional validators: TGroupValidators;
 ```
 
-Defined in: [packages/form-core/src/FormGroupApi.ts:363](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L363)
-
-A list of validators to pass to the field
-
-#### Inherited from
-
-```ts
-FormGroupExtraOptions.validators
-```
+Defined in: [FormGroupApi/FormGroupApi.public.ts:43](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L43)

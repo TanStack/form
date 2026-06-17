@@ -38,10 +38,9 @@ export interface SubscribeProps<in out TSourceData, in out TSelected> {
  *
  * This is useful for opting into state re-renders for specific parts of the state.
  */
-export function Subscribe<
-  TSourceData,
-  const TSelected,
->(props: SubscribeProps<TSourceData, TSelected>): CrossVersionReactNode {
+export function Subscribe<TSourceData, const TSelected>(
+  props: SubscribeProps<TSourceData, TSelected>,
+): CrossVersionReactNode {
   const selected = useSelector(
     // Atom and store share the same selection protocol; union args need a widen for TS.
     props.source,

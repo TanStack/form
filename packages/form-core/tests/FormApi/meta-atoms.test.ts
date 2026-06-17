@@ -4,9 +4,7 @@ import { InternalFormGroupApi } from '../../src/FormGroupApi/FormGroupApi.lib'
 
 describe('form - error visibility meta atom subscriptions', () => {
   it('tracks only accessed form metadata through the visibility proxy', () => {
-    const errorVisibility = vi.fn(
-      ({ state }) => state.submissionAttempts > 0,
-    )
+    const errorVisibility = vi.fn(({ state }) => state.submissionAttempts > 0)
     const form = new InternalFormApi({
       defaultValues: { name: '' },
       errorVisibility,
@@ -26,9 +24,7 @@ describe('form - error visibility meta atom subscriptions', () => {
   })
 
   it('tracks form values through the existing whole-values atom', () => {
-    const errorVisibility = vi.fn(
-      ({ state }) => state.values.name.length > 0,
-    )
+    const errorVisibility = vi.fn(({ state }) => state.values.name.length > 0)
     const form = new InternalFormApi({
       defaultValues: { name: '', other: '' },
       errorVisibility,
@@ -49,9 +45,7 @@ describe('form - error visibility meta atom subscriptions', () => {
   })
 
   it('tracks only accessed group metadata through lazy proxy overrides', () => {
-    const errorVisibility = vi.fn(
-      ({ state }) => state.submissionAttempts > 0,
-    )
+    const errorVisibility = vi.fn(({ state }) => state.submissionAttempts > 0)
     const form = new InternalFormApi({
       defaultValues: { group: { name: '' } },
       errorVisibility,

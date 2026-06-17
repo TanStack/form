@@ -9,7 +9,9 @@ import type {
   ToSubmitMeta,
 } from '@tanstack/form-core'
 
-export type UseAppFormHook<in out TComponents extends AnyReactFormComponentMap> = <
+export type UseAppFormHook<
+  in out TComponents extends AnyReactFormComponentMap,
+> = <
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
@@ -26,7 +28,9 @@ export interface AppFormHookResult<
   in out TComponents extends AnyReactFormComponentMap,
 > {
   appFormOptions: AppFormOptionsApi<TComponents>
-  getAppFieldGroupHelpers: () => FieldGroupHelpers<TComponents['fieldComponents']>
+  getAppFieldGroupHelpers: () => FieldGroupHelpers<
+    TComponents['fieldComponents']
+  >
   useAppForm: UseAppFormHook<TComponents>
   useFormContext: () => ReactAppFormApi<any, any, any, TComponents>
 }
