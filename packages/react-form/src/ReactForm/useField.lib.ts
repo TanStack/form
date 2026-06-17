@@ -7,7 +7,7 @@ import type {
 } from '@tanstack/form-core/internals'
 import type { ReactFormFieldProps } from './Components.public'
 
-export interface InternalFieldProps extends ReactFormFieldProps<
+interface InternalFieldProps extends ReactFormFieldProps<
   any,
   any,
   any,

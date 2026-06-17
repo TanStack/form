@@ -7,7 +7,7 @@ import type {
 } from '@tanstack/form-core/internals'
 import type { Accessor } from 'solid-js'
 
-export interface InternalFieldProps extends FieldApiOptions<
+interface InternalFieldProps extends FieldApiOptions<
   any,
   any,
   any,

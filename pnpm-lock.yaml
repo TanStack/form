@@ -500,37 +500,6 @@ importers:
         specifier: ^7.3.1
         version: 7.3.3(@types/node@25.9.5)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0)
 
-  examples/react/devtools:
-    dependencies:
-      '@tanstack/form-core':
-        specifier: ^1.33.3
-        version: link:../../../packages/form-core
-      '@tanstack/react-form':
-        specifier: ^1.33.3
-        version: link:../../../packages/react-form
-      react:
-        specifier: ^19.2.3
-        version: 19.2.8
-      react-dom:
-        specifier: ^19.2.3
-        version: 19.2.8(react@19.2.8)
-    devDependencies:
-      '@types/react':
-        specifier: ^19.2.8
-        version: 19.2.17
-      '@types/react-dom':
-        specifier: ^19.2.3
-        version: 19.2.3(@types/react@19.2.17)
-      '@vitejs/plugin-react':
-        specifier: ^5.1.2
-        version: 5.2.0(vite@7.3.3(@types/node@25.9.5)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
-      vite:
-        specifier: ^7.3.1
-        version: 7.3.3(@types/node@25.9.5)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0)
-
   examples/react/field-groups:
     dependencies:
       '@tanstack/pacer-lite':
@@ -683,53 +652,6 @@ importers:
       vite:
         specifier: ^7.3.1
         version: 7.3.3(@types/node@25.9.5)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0)
-
-  examples/solid/basic:
-    dependencies:
-      '@tanstack/form-core':
-        specifier: ^1.33.3
-        version: link:../../../packages/form-core
-      '@tanstack/solid-form':
-        specifier: ^1.33.3
-        version: link:../../../packages/solid-form
-      solid-js:
-        specifier: ^1.9.10
-        version: 1.9.13
-      zod:
-        specifier: ^4.4.3
-        version: 4.4.3
-    devDependencies:
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
-      vite:
-        specifier: ^7.3.1
-        version: 7.3.3(@types/node@25.9.5)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0)
-      vite-plugin-solid:
-        specifier: ^2.11.10
-        version: 2.11.12(@testing-library/jest-dom@6.9.1)(solid-js@1.9.13)(vite@7.3.3(@types/node@25.9.5)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
-
-  examples/solid/devtools:
-    dependencies:
-      '@tanstack/form-core':
-        specifier: ^1.33.3
-        version: link:../../../packages/form-core
-      '@tanstack/solid-form':
-        specifier: ^1.33.3
-        version: link:../../../packages/solid-form
-      solid-js:
-        specifier: ^1.9.10
-        version: 1.9.13
-    devDependencies:
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
-      vite:
-        specifier: ^7.3.1
-        version: 7.3.3(@types/node@25.9.5)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0)
-      vite-plugin-solid:
-        specifier: ^2.11.10
-        version: 2.11.12(@testing-library/jest-dom@6.9.1)(solid-js@1.9.13)(vite@7.3.3(@types/node@25.9.5)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/angular-form:
     dependencies:
@@ -19755,7 +19677,7 @@ snapshots:
       bl: 4.1.0
       chalk: 4.1.2
       cli-cursor: 3.1.0
-      cli-spinners: 2.6.1
+      cli-spinners: 2.9.2
       is-interactive: 1.0.0
       log-symbols: 4.1.0
       strip-ansi: 6.0.1

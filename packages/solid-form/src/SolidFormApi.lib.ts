@@ -10,7 +10,7 @@ import type {
 } from './createForm.public'
 import type { FormOptions } from '@tanstack/form-core'
 
-export interface InternalSolidFormApi
+interface InternalSolidFormApi
   extends
     InternalFormApi<any, any, any>,
     SolidTanStackFormComponents<any, any, any> {}
