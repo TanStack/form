@@ -1,4 +1,4 @@
-import { InternalFormApi } from '@tanstack/form-core-v2/internals'
+import { InternalFormApi } from '@tanstack/form-core/internals'
 import { mergeProps } from 'solid-js'
 import { Subscribe } from './Subscribe.public'
 import { createArrayField, createField } from './createField.lib'
@@ -8,7 +8,7 @@ import type {
   SolidFormSubscribeProps,
   SolidTanStackFormComponents,
 } from './createForm.public'
-import type { FormOptions } from '@tanstack/form-core-v2'
+import type { FormOptions } from '@tanstack/form-core'
 
 export interface InternalSolidFormApi
   extends

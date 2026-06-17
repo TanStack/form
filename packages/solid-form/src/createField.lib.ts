@@ -1,10 +1,10 @@
 import { shallow, useSelector } from '@tanstack/solid-store'
 import { createMemo, createRenderEffect } from 'solid-js'
-import type { AnyFieldApi, FieldApiOptions } from '@tanstack/form-core-v2'
+import type { AnyFieldApi, FieldApiOptions } from '@tanstack/form-core'
 import type {
   AnyInternalFormApi,
   InternalBaseFieldMeta,
-} from '@tanstack/form-core-v2/internals'
+} from '@tanstack/form-core/internals'
 import type { Accessor } from 'solid-js'
 
 export interface InternalFieldProps extends FieldApiOptions<

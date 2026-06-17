@@ -1,4 +1,4 @@
-export * from '@tanstack/form-core-v2'
+export * from '@tanstack/form-core'
 export * from '@tanstack/react-store'
 
 export * from './ReactForm/useForm.public'

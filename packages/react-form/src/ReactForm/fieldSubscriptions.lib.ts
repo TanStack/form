@@ -1,6 +1,6 @@
 import { useSelector } from '@tanstack/react-store'
 import { useMemo } from 'react'
-import type { AnyInternalFieldApi } from '@tanstack/form-core-v2/internals'
+import type { AnyInternalFieldApi } from '@tanstack/form-core/internals'
 
 export function useValueFieldSubscription(
   fieldApi: AnyInternalFieldApi,

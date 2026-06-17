@@ -1,6 +1,6 @@
 import { brandComponentFactory, wrapField } from './fieldComponentHelpers.lib'
 import type { CrossVersionReactNode } from '../reactTypes.public'
-import type { FieldWithValue } from '@tanstack/form-core-v2'
+import type { FieldWithValue } from '@tanstack/form-core'
 
 type ExactFieldBrand<out TValue> = {
   readonly __tanstackFieldExactType: TValue

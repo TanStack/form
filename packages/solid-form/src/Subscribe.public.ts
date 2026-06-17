@@ -6,7 +6,7 @@ import type {
   ReadonlyStore,
   Store,
 } from '@tanstack/solid-store'
-import type { FormState, FormValidatorMetas } from '@tanstack/form-core-v2'
+import type { FormState, FormValidatorMetas } from '@tanstack/form-core'
 
 export type SubscribeSource<TValue> =
   | Atom<TValue>

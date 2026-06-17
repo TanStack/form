@@ -1,6 +1,6 @@
-import { InternalFormApi } from '@tanstack/form-core-v2/internals'
+import { InternalFormApi } from '@tanstack/form-core/internals'
 import { attachReactAppFormComponents } from './Components.lib'
-import type { FormOptions } from '@tanstack/form-core-v2'
+import type { FormOptions } from '@tanstack/form-core'
 import type { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
 import type { AnyReactFormComponentMap } from './componentMap.public'
 

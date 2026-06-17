@@ -15,7 +15,7 @@ import type {
   FormValidatorMetas,
   ToFieldValidatorMetas,
   ToFormGroupValidatorMetas,
-} from '@tanstack/form-core-v2'
+} from '@tanstack/form-core'
 import type { CrossVersionReactNode } from '../reactTypes.public'
 import type {
   FunctionComponent,

@@ -8,7 +8,7 @@ import type {
   DeepKeysWhereValueIncludes,
   DeepValue,
   FormApi,
-} from '@tanstack/form-core-v2'
+} from '@tanstack/form-core'
 import type { FunctionComponent } from 'react'
 import type { CrossVersionReactNode } from '../reactTypes.public'
 import type { ReactTanStackFormComponents } from '../ReactForm/Components.public'

@@ -4,7 +4,7 @@ import type {
   FormValidators,
   InferUnion,
   NullableSchemaData,
-} from '@tanstack/form-core-v2'
+} from '@tanstack/form-core'
 import type { AnyReactFormComponentMap } from './componentMap.public'
 
 declare const componentsSymbol: unique symbol

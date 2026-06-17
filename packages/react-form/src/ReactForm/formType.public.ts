@@ -3,7 +3,7 @@ import type {
   FormOptions,
   ToFormValidatorMetas,
   ToSubmitMeta,
-} from '@tanstack/form-core-v2'
+} from '@tanstack/form-core'
 import type { AppFormOptions } from '../AppForm/appFormOptions.public'
 import type {
   AnyReactFormComponentMap,

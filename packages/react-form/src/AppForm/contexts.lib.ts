@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react'
-import type { AnyInternalFieldApi } from '@tanstack/form-core-v2/internals'
+import type { AnyInternalFieldApi } from '@tanstack/form-core/internals'
 import type { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
 
 export const FormContext = createContext<InternalReactFormApi | null>(null)

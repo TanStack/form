@@ -1,4 +1,4 @@
-import type { FormValidatorMetas } from '@tanstack/form-core-v2'
+import type { FormValidatorMetas } from '@tanstack/form-core'
 import type { ReactFormApi } from '../ReactForm/formApiTypes.public'
 import type { FunctionComponent } from 'react'
 import type { CrossVersionReactNode } from '../reactTypes.public'

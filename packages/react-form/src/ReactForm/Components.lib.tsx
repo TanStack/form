@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react'
-import { InternalFormGroupApi } from '@tanstack/form-core-v2/internals'
+import { InternalFormGroupApi } from '@tanstack/form-core/internals'
 import { Subscribe } from '../Subscribe.public'
 import {
   useArrayFieldSubscription,
   useValueFieldSubscription,
 } from './fieldSubscriptions.lib'
 import { useField } from './useField.lib'
-import type { AnyInternalFormApi } from '@tanstack/form-core-v2/internals'
+import type { AnyInternalFormApi } from '@tanstack/form-core/internals'
 import type { InternalReactFormApi } from './ReactFormApi.lib'
 import type { FunctionComponent } from 'react'
 import type {

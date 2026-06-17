@@ -1,6 +1,6 @@
 import React from 'react'
 import { createAtom, shallow } from '@tanstack/react-store'
-import { getBy } from '@tanstack/form-core-v2/internals'
+import { getBy } from '@tanstack/form-core/internals'
 import type { FunctionComponent } from 'react'
 import type { AnyFieldGroupApi } from './FieldGroupApi.public'
 

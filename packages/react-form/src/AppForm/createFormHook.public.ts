@@ -8,7 +8,7 @@ import type {
   AppFormHookResult,
   UseAppFormHook,
 } from './createFormHookTypes.public'
-import type { FormOptions } from '@tanstack/form-core-v2'
+import type { FormOptions } from '@tanstack/form-core'
 
 const appFormOptions = ((opts) => {
   return opts

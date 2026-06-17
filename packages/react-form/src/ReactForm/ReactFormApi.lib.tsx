@@ -1,9 +1,9 @@
-import { InternalFormApi } from '@tanstack/form-core-v2/internals'
+import { InternalFormApi } from '@tanstack/form-core/internals'
 import * as React from 'react'
 import { useEffect, useRef } from 'react'
 import { attachReactFormComponents } from './Components.lib'
-import type { AnyInternalFormApi } from '@tanstack/form-core-v2/internals'
-import type { FormOptions } from '@tanstack/form-core-v2'
+import type { AnyInternalFormApi } from '@tanstack/form-core/internals'
+import type { FormOptions } from '@tanstack/form-core'
 import type { ReactTanStackFormComponents } from './Components.public'
 
 const useReactId =

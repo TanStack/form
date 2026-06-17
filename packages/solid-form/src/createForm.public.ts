@@ -16,7 +16,7 @@ import type {
   ToFormGroupValidatorMetas,
   ToFormValidatorMetas,
   ToSubmitMeta,
-} from '@tanstack/form-core-v2'
+} from '@tanstack/form-core'
 import type { Accessor, JSX } from 'solid-js'
 
 export interface SolidFormSubscribeProps<

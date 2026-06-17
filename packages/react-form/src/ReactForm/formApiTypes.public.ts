@@ -2,7 +2,7 @@ import type {
   AnyFormApi,
   FormApi,
   FormValidatorMetas,
-} from '@tanstack/form-core-v2'
+} from '@tanstack/form-core'
 import type { FunctionComponent } from 'react'
 import type { ReactTanStackFormComponents } from './Components.public'
 import type { AnyReactFormComponentMap } from '../AppForm/componentMap.public'

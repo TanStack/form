@@ -3,7 +3,7 @@ import { render } from '@testing-library/react'
 import React, { useEffect, useState } from 'react'
 import { userEvent } from '@testing-library/user-event'
 import { useForm } from '../src'
-import type { AnyInternalFormApi } from '@tanstack/form-core-v2/internals'
+import type { AnyInternalFormApi } from '@tanstack/form-core/internals'
 
 const user = userEvent.setup()
 

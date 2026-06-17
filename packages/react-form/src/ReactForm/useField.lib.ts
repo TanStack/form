@@ -4,7 +4,7 @@ import type { FunctionComponent } from 'react'
 import type {
   AnyInternalFieldApi,
   InternalFormApi,
-} from '@tanstack/form-core-v2/internals'
+} from '@tanstack/form-core/internals'
 import type { ReactFormFieldProps } from './Components.public'
 
 export interface InternalFieldProps extends ReactFormFieldProps<

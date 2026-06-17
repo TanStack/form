@@ -3,8 +3,8 @@ import { render } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
 import React, { useState } from 'react'
 import { createFormHook, getFormHookHelpers, useForm } from '../src'
-import type { AnyInternalFormApi } from '@tanstack/form-core-v2/internals'
-import type { FieldWithValue } from '@tanstack/form-core-v2'
+import type { AnyInternalFormApi } from '@tanstack/form-core/internals'
+import type { FieldWithValue } from '@tanstack/form-core'
 
 const user = userEvent.setup()
 

@@ -1,12 +1,12 @@
 import React from 'react'
 
-import { InternalFormGroupApi } from '@tanstack/form-core-v2/internals'
+import { InternalFormGroupApi } from '@tanstack/form-core/internals'
 import { attachReactFormComponents } from '../ReactForm/Components.lib'
 import { useField } from '../ReactForm/useField.lib'
 import { useValueFieldSubscription } from '../ReactForm/fieldSubscriptions.lib'
 import { Subscribe } from '../Subscribe.public'
 import { FieldContext, FormContext } from './contexts.lib'
-import type { AnyInternalFormApi } from '@tanstack/form-core-v2/internals'
+import type { AnyInternalFormApi } from '@tanstack/form-core/internals'
 import type { FunctionComponent } from 'react'
 import type {
   AppFormComponent,
