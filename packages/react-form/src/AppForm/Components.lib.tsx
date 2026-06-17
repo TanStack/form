@@ -37,8 +37,13 @@ export function attachReactAppFormComponents(
     fieldComponents,
   ) as never as AnyReactAppFormApi
   resultForm.AppForm = createAppForm(form)
-  resultForm.Field = createFieldWithContext(form, fieldComponents)
-  resultForm.FormGroup = createFormGroupWithContext(resultForm as any)
+  resultForm.Field = createFieldWithContext(
+    form,
+    fieldComponents,
+  ) as AnyReactAppFormApi['Field']
+  resultForm.FormGroup = createFormGroupWithContext(
+    resultForm as any,
+  ) as AnyReactAppFormApi['FormGroup']
 
   return Object.assign(resultForm, formComponents)
 }

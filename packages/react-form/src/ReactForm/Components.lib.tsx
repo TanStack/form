@@ -20,10 +20,15 @@ export function attachReactFormComponents(
   fieldComponents: Record<string, FunctionComponent<any>> | null,
 ): InternalReactFormApi {
   const resultForm = form as InternalReactFormApi
-  resultForm.Field = createFieldComponent(form, fieldComponents)
+  resultForm.Field = createFieldComponent(
+    form,
+    fieldComponents,
+  ) as InternalReactFormApi['Field']
   resultForm.ArrayField = createArrayFieldComponent(form, fieldComponents)
   resultForm.Subscribe = createSubscribeComponent(form)
-  resultForm.FormGroup = createFormGroupComponent(resultForm)
+  resultForm.FormGroup = createFormGroupComponent(
+    resultForm,
+  ) as InternalReactFormApi['FormGroup']
 
   return resultForm
 }

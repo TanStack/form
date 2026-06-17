@@ -20,7 +20,7 @@ interface DateRangeFieldProps {
 function DateRangeFieldComponent(props: DateRangeFieldProps) {
   const { fields, label } = props
   // `fields.values` contains only the values declared above, not the entire form.
-  const start = useSelector(fields.values, (values) => values.start)
+  const start = useSelector(fields.atom, (values) => values.start)
 
   return (
     <fieldset>
