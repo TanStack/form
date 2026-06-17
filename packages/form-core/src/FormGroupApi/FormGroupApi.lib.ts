@@ -3,6 +3,7 @@ import {
   cancelPipelineCache,
   concatenateFieldNames,
   createPipelineCache,
+  evaluate,
   getBy,
   setBy,
 } from '../utils.lib'
@@ -216,6 +217,15 @@ export class InternalFormGroupApi<
         return meta
           ? !meta.isDirty && meta.childContributionCounts.dirty === 0
           : true
+      },
+      isDefaultValue: () => {
+        const field = this.form._tryGetFieldApi(this.name)
+        const value = getBy(this.form._atoms.values.get(), this.name)
+        if (field) return field._getIsDefaultValue(value)
+        return evaluate(
+          getBy(this.form.options.defaultValues, this.name),
+          value,
+        )
       },
       isValid: () => {
         const meta = this.form._tryGetFieldApi(this.name)?._getBaseMeta()

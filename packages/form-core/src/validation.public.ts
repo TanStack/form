@@ -156,6 +156,7 @@ export interface ErrorVisibilityFieldMeta {
   isDirty: boolean
   isSelfDirty: boolean
   isPristine: boolean
+  isDefaultValue: boolean
   isBlurred: boolean
   isValidating: boolean
   isSelfValidating: boolean

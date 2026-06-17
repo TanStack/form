@@ -54,6 +54,7 @@ export interface FieldMeta<
   in out TSubmitReturn,
 > extends BaseFieldMeta {
   isPristine: boolean
+  isDefaultValue: boolean
   isSelfTouched: boolean
   isSelfDirty: boolean
   isInvalid: boolean

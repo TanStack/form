@@ -356,6 +356,32 @@ describe('FormGroupApi', () => {
     expect(overrides.isValidating?.()).toBe(false)
   })
 
+  it('scopes isDefaultValue overrides to the group subtree', () => {
+    const form = new InternalFormApi({
+      defaultValues: {
+        guestDetails: { name: '' },
+        billingDetails: { name: '' },
+      },
+    })
+    const guestField = form._getOrCreateFieldApi({ name: 'guestDetails.name' })
+    const billingField = form._getOrCreateFieldApi({
+      name: 'billingDetails.name',
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+    })
+    const overrides = group._getScopedFormStateOverrides()
+
+    expect(overrides.isDefaultValue?.()).toBe(true)
+
+    billingField.handleChange('Alice')
+    expect(overrides.isDefaultValue?.()).toBe(true)
+
+    guestField.handleChange('Tony')
+    expect(overrides.isDefaultValue?.()).toBe(false)
+  })
+
   it('scopes submit-attempt error visibility to the nearest group', async () => {
     const form = new InternalFormApi({
       defaultValues: { guestDetails: { name: '' } },

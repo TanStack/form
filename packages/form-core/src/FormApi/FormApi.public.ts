@@ -113,6 +113,10 @@ export interface FormState<
    */
   isPristine: boolean
   /**
+   * Whether the current form values are deeply equal to the default values.
+   */
+  isDefaultValue: boolean
+  /**
    * Array of form-level validation errors.
    */
   errors: FormErrors<TFormValidatorMetas, TSubmitMeta>

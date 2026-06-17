@@ -96,6 +96,8 @@ describe('ErrorVisibility', () => {
         >()
         expectTypeOf(fieldState).toEqualTypeOf<ErrorVisibilityFieldState>()
         expectTypeOf(fieldState.value).toEqualTypeOf<any>()
+        expectTypeOf(state.isDefaultValue).toEqualTypeOf<boolean>()
+        expectTypeOf(fieldState.meta.isDefaultValue).toEqualTypeOf<boolean>()
         // @ts-expect-error Filtered error output is not available while deciding visibility.
         void fieldState.meta.errors
         // @ts-expect-error Validity depends on the visibility decision.
@@ -141,6 +143,18 @@ describe('ErrorVisibility', () => {
       defaultValues: { count: 0 },
       errorVisibility: showErrorsAfterBlurOrSubmit,
     })
+  })
+
+  it('exposes isDefaultValue through state and meta only', () => {
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+
+    expectTypeOf(form.state.isDefaultValue).toEqualTypeOf<boolean>()
+    expectTypeOf(field.meta.isDefaultValue).toEqualTypeOf<boolean>()
+    // @ts-expect-error isDefaultValue lives on form.state.
+    void form.isDefaultValue
+    // @ts-expect-error isDefaultValue lives on field.meta.
+    void field.isDefaultValue
   })
 
   it('preserves schema-driven inference with reusable policies', () => {

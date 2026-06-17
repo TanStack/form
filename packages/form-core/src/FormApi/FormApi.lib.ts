@@ -1,8 +1,10 @@
 import { batch, createAtom, shallow } from '@tanstack/store'
 import {
+  getDefaultValueCacheResult,
   getOrCreateFieldApi,
   hasFormGroupValidatorErrors,
   nameToFieldNodeSegments,
+  shouldCacheDefaultValue,
   tryGetFieldApi,
 } from '../FieldApi/FieldApi.lib'
 import {
@@ -50,6 +52,7 @@ import type {
 import type {
   AnyFieldApiOptions,
   AnyInternalFieldApi,
+  DefaultValueCacheEntry,
   InternalBaseFieldMeta,
   InternalFieldMeta,
 } from '../FieldApi/FieldApi.lib'
@@ -138,8 +141,6 @@ function createInitialFormMetaAtoms(validatorCount: number): FormMetaAtoms {
     submissionAttempts: createAtom(0),
   }
 }
-
-// form.isDefaultValue: ??? --> probably keep old system, but benchmark it
 
 export type AnyInternalFormApi = InternalFormApi<any, any, any>
 
@@ -252,6 +253,7 @@ export class InternalFormApi<
   >
   _atoms: FormAtoms<TFormData>
   _fieldRootNode: InternalRootFieldApi
+  _defaultValueCache: DefaultValueCacheEntry | null = null
   _options: InternalFormOptions<TFormData, TFormValidators, any>
   _lastUpdateDefaultValues: TFormData
   _pipelineCache: PipelineCache<any>
@@ -275,6 +277,62 @@ export class InternalFormApi<
   }
   get formId(): string {
     return this._options.formId
+  }
+
+  _setDefaultValueCache(
+    values: unknown,
+    defaultValues: unknown,
+    isDefaultValue: boolean,
+  ): boolean {
+    if (!shouldCacheDefaultValue(values, defaultValues)) {
+      this._defaultValueCache = null
+      return isDefaultValue
+    }
+
+    this._defaultValueCache = {
+      name: '',
+      value: values,
+      defaultValue: defaultValues,
+      isDefaultValue,
+    }
+    return isDefaultValue
+  }
+
+  _getCachedIsDefaultValue(
+    values: unknown = this._atoms.values.get(),
+    defaultValues: unknown = this.options.defaultValues,
+  ): boolean | undefined {
+    return getDefaultValueCacheResult(
+      this._defaultValueCache,
+      '',
+      values,
+      defaultValues,
+    )
+  }
+
+  _getIsDefaultValue(): boolean {
+    const values = this._atoms.values.get()
+    const defaultValues = this.options.defaultValues
+    const cached = this._getCachedIsDefaultValue(values, defaultValues)
+    if (cached !== undefined) return cached
+
+    for (const child of this._fieldRootNode._children) {
+      const childName = child.name
+      if (
+        child._getCachedIsDefaultValue(
+          getBy(values, childName),
+          getBy(defaultValues, childName),
+        ) === false
+      ) {
+        return this._setDefaultValueCache(values, defaultValues, false)
+      }
+    }
+
+    return this._setDefaultValueCache(
+      values,
+      defaultValues,
+      evaluate(defaultValues, values),
+    )
   }
 
   constructor(options: FormOptions<TFormData, TFormValidators, any>) {
@@ -339,6 +397,7 @@ export class InternalFormApi<
     cancelPipelineCache(this._pipelineCache)
     this._pipelineCache = createPipelineCache()
     this._schemaOutputs = []
+    this._defaultValueCache = null
 
     batch(() => {
       this._atoms.resetVersion.set((version) => version + 1)
@@ -377,6 +436,7 @@ export class InternalFormApi<
     )
 
     this._lastUpdateDefaultValues = options.defaultValues
+    this._defaultValueCache = null
     this._options = {
       ...options,
       formId: options.formId ?? oldOptions.formId,

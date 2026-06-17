@@ -31,6 +31,7 @@ const formStateKeys = [
   'isTouched',
   'isDirty',
   'isPristine',
+  'isDefaultValue',
   'errors',
   'isValid',
   'isInvalid',
@@ -87,6 +88,9 @@ function getFormStateValue<
     case 'isPristine':
       return (overrides.isPristine?.() ??
         !form._atoms.meta.isDirty.get()) as never
+    case 'isDefaultValue':
+      return (overrides.isDefaultValue?.() ??
+        form._getIsDefaultValue()) as never
     case 'errors':
       return getFormErrors(form) as FormErrors<
         ToFormValidatorMetas<TFormValidators>,

@@ -4,6 +4,8 @@ import {
   callUpdater,
   cancelPipelineCache,
   createPipelineCache,
+  evaluate,
+  getBy,
 } from '../utils.lib'
 import {
   clearIndexedErrorsFromSource,
@@ -82,8 +84,72 @@ interface MetaCacheEntry {
   visible?: InternalFieldMeta
 }
 
+interface DefaultValueMetaCacheEntry {
+  defaultValue?: InternalFieldMeta
+  notDefaultValue?: InternalFieldMeta
+}
+
 // TODO Should be irrelevant for SSR, but double check please
 const metaCache = new WeakMap<InternalBaseFieldMeta, MetaCacheEntry>()
+const defaultValueMetaCache = new WeakMap<
+  InternalFieldMeta,
+  DefaultValueMetaCacheEntry
+>()
+
+export interface DefaultValueCacheEntry {
+  name: string
+  value: unknown
+  defaultValue: unknown
+  isDefaultValue: boolean
+}
+
+export function getDefaultValueCacheResult(
+  cache: DefaultValueCacheEntry | null,
+  name: string,
+  value: unknown,
+  defaultValue: unknown,
+): boolean | undefined {
+  if (!shouldCacheDefaultValue(value, defaultValue)) return undefined
+  if (!cache) return undefined
+  if (cache.name !== name) return undefined
+  if (!Object.is(cache.value, value)) return undefined
+  if (!Object.is(cache.defaultValue, defaultValue)) return undefined
+  return cache.isDefaultValue
+}
+
+export function shouldCacheDefaultValue(
+  value: unknown,
+  defaultValue: unknown,
+): boolean {
+  return isObjectLike(value) || isObjectLike(defaultValue)
+}
+
+function isObjectLike(value: unknown): boolean {
+  return (
+    (typeof value === 'object' && value !== null) ||
+    typeof value === 'function'
+  )
+}
+
+function applyIsDefaultValueToMeta(
+  meta: InternalFieldMeta,
+  isDefaultValue: boolean,
+): InternalFieldMeta {
+  if (meta.isDefaultValue === isDefaultValue) return meta
+
+  const cacheKey = isDefaultValue ? 'defaultValue' : 'notDefaultValue'
+  const cached = defaultValueMetaCache.get(meta)?.[cacheKey]
+  if (cached) return cached
+
+  const result = {
+    ...meta,
+    isDefaultValue,
+  }
+  const cacheEntry = defaultValueMetaCache.get(meta) ?? {}
+  cacheEntry[cacheKey] = result
+  defaultValueMetaCache.set(meta, cacheEntry)
+  return result
+}
 
 export type NameSegment = string | number
 export type NameSegments = Array<NameSegment>
@@ -348,6 +414,7 @@ export class InternalFieldApi<
   _pathVersion = 0
   _parentPathVersion = 0
   _fullPathCache: TFieldName | null = null
+  _defaultValueCache: DefaultValueCacheEntry | null = null
   _atoms: FieldAtoms
   _validators: Array<AnyFieldValidator> | null
   _listeners: Array<AnyFieldListener> | null
@@ -468,6 +535,86 @@ export class InternalFieldApi<
     return this._atoms.meta?.get() ?? defaultInternalBaseFieldMeta
   }
 
+  _setDefaultValueCache(
+    value: unknown,
+    defaultValue: unknown,
+    isDefaultValue: boolean,
+  ): boolean {
+    if (!shouldCacheDefaultValue(value, defaultValue)) {
+      this._defaultValueCache = null
+      return isDefaultValue
+    }
+
+    this._defaultValueCache = {
+      name: this.name,
+      value,
+      defaultValue,
+      isDefaultValue,
+    }
+    return isDefaultValue
+  }
+
+  _getCachedIsDefaultValue(
+    value: unknown = this._getValue(),
+    defaultValue: unknown = getBy(this.form.options.defaultValues, this.name),
+  ): boolean | undefined {
+    return getDefaultValueCacheResult(
+      this._defaultValueCache,
+      this.name,
+      value,
+      defaultValue,
+    )
+  }
+
+  _cacheAncestorsAsNotDefault(): void {
+    const values = this.form._atoms.values.get()
+    const defaultValues = this.form.options.defaultValues
+    this.form._setDefaultValueCache(values, defaultValues, false)
+
+    let current = this._parent
+    while (!current._isRoot) {
+      current._setDefaultValueCache(
+        getBy(values, current.name),
+        getBy(defaultValues, current.name),
+        false,
+      )
+      current = current._parent
+    }
+  }
+
+  _getIsDefaultValue(value: unknown = this._getValue()): boolean {
+    const defaultValue = getBy(this.form.options.defaultValues, this.name)
+    const cached = this._getCachedIsDefaultValue(value, defaultValue)
+    if (cached !== undefined) return cached
+
+    if (this.form._getCachedIsDefaultValue() === true) {
+      return this._setDefaultValueCache(value, defaultValue, true)
+    }
+
+    let current = this._parent
+    while (!current._isRoot) {
+      if (current._getCachedIsDefaultValue() === true) {
+        return this._setDefaultValueCache(value, defaultValue, true)
+      }
+      current = current._parent
+    }
+
+    for (const child of this._children) {
+      if (child._getCachedIsDefaultValue() === false) {
+        this._setDefaultValueCache(value, defaultValue, false)
+        this._cacheAncestorsAsNotDefault()
+        return false
+      }
+    }
+
+    const isDefaultValue = evaluate(defaultValue, value)
+    this._setDefaultValueCache(value, defaultValue, isDefaultValue)
+    if (!isDefaultValue) {
+      this._cacheAncestorsAsNotDefault()
+    }
+    return isDefaultValue
+  }
+
   constructor({
     segment,
     parent,
@@ -554,6 +701,7 @@ export class InternalFieldApi<
   _invalidateFullPath() {
     this._pathVersion++
     this._fullPathCache = null
+    this._defaultValueCache = null
   }
 
   /**
@@ -1166,6 +1314,7 @@ export class InternalFieldApi<
 
         node._isKilled = true
         node._refCount = 0
+        node._defaultValueCache = null
         node._atoms.store = undefined
         if (node._pipelineCache) {
           cancelPipelineCache(node._pipelineCache)
@@ -1414,16 +1563,18 @@ function deriveFromBaseFieldMeta(
   field: AnyInternalFieldApi | undefined,
   value?: any,
 ): InternalFieldMeta {
+  const isDefaultValue = field ? field._getIsDefaultValue(value) : true
   const errorVisibility = getErrorVisibility(field)
   const canDisplayErrors = shouldDisplayErrors(
     errorVisibility,
     field,
     baseMeta,
     value,
+    isDefaultValue,
   )
   const cacheKey = canDisplayErrors ? 'visible' : 'hidden'
   const cached = metaCache.get(baseMeta)?.[cacheKey]
-  if (cached) return cached
+  if (cached) return applyIsDefaultValueToMeta(cached, isDefaultValue)
 
   const originalErrors = getErrorsFromBaseMeta(baseMeta, previousMeta)
   const errors = canDisplayErrors ? originalErrors : []
@@ -1455,6 +1606,7 @@ function deriveFromBaseFieldMeta(
     isInvalid,
     isSelfValid,
     isSelfValidating,
+    isDefaultValue: true,
     isValidating,
     errors,
     original: {
@@ -1469,7 +1621,7 @@ function deriveFromBaseFieldMeta(
   const cacheEntry = metaCache.get(baseMeta) ?? {}
   cacheEntry[cacheKey] = result
   metaCache.set(baseMeta, cacheEntry)
-  return result
+  return applyIsDefaultValueToMeta(result, isDefaultValue)
 }
 
 function getErrorVisibility(
@@ -1483,6 +1635,7 @@ function shouldDisplayErrors(
   field: AnyInternalFieldApi | undefined,
   baseMeta: InternalBaseFieldMeta,
   value?: any,
+  isDefaultValue = true,
 ): boolean {
   if (!field || !errorVisibility) return true
   const group = field.form._getNearestFormGroupForField(field.name)
@@ -1490,13 +1643,18 @@ function shouldDisplayErrors(
 
   return errorVisibility({
     state: createFormStateProxy(field.form, stateOverrides),
-    fieldState: createErrorVisibilityFieldState(value, baseMeta),
+    fieldState: createErrorVisibilityFieldState(
+      value,
+      baseMeta,
+      isDefaultValue,
+    ),
   })
 }
 
 function createErrorVisibilityFieldState(
   value: any,
   meta: InternalBaseFieldMeta,
+  isDefaultValue: boolean,
 ): ErrorVisibilityFieldState {
   const isSomeTouched = meta.childContributionCounts.touched > 0
   const isSomeDirty = meta.childContributionCounts.dirty > 0
@@ -1515,6 +1673,7 @@ function createErrorVisibilityFieldState(
       isDirty,
       isSelfDirty,
       isPristine: !isDirty,
+      isDefaultValue,
       isBlurred: meta.isBlurred,
       isValidating: isSelfValidating || isSomeValidating,
       isSelfValidating,

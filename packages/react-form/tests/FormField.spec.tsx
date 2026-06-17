@@ -100,6 +100,45 @@ describe('Form fields', () => {
     expect(isDirtyCheckbox).toBeChecked()
   })
 
+  it('should update isDefaultValue when changing back to the default value', async () => {
+    function Component() {
+      const form = useForm({ defaultValues: { name: 'tony-hawk' } })
+      return (
+        <form.Field name="name">
+          {(field) => (
+            <>
+              <label htmlFor={field.name}>
+                {field.name}
+                <input
+                  id={field.name}
+                  value={field.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              </label>
+              <span data-testid="isDefaultValue">
+                {String(field.meta.isDefaultValue)}
+              </span>
+              <span data-testid="isDirty">{String(field.meta.isDirty)}</span>
+            </>
+          )}
+        </form.Field>
+      )
+    }
+
+    const { getByLabelText, getByTestId } = render(<Component />)
+    const input = getByLabelText('name')
+
+    expect(getByTestId('isDefaultValue')).toHaveTextContent('true')
+    await user.clear(input)
+    await user.type(input, 'rodney-mullen')
+    expect(getByTestId('isDefaultValue')).toHaveTextContent('false')
+
+    await user.clear(input)
+    await user.type(input, 'tony-hawk')
+    expect(getByTestId('isDefaultValue')).toHaveTextContent('true')
+    expect(getByTestId('isDirty')).toHaveTextContent('true')
+  })
+
   it('should recreate mounted fields after form reset', async () => {
     function Component() {
       const form = useForm({ defaultValues: { name: 'tony-hawk' } })

@@ -60,6 +60,8 @@ function FormGroupTypes() {
         expectTypeOf(group.form.state.values.budget).toEqualTypeOf<number>()
         // @ts-expect-error group state values are scoped to guestDetails
         group.state.values.budget
+        // @ts-expect-error isDefaultValue is exposed on form state and field meta, not group state
+        group.state.isDefaultValue
         // @ts-expect-error lifecycle cleanup is internal-only
         group.destroy
         // @ts-expect-error name prefixing is internal-only
