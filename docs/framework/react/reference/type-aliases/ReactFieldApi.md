@@ -9,7 +9,7 @@ title: ReactFieldApi
 type ReactFieldApi<TFieldName, TFieldValue, TFieldValidatorMetas, TGroupValidatorMetas, TFormData, TFormValidatorMetas, TSubmitReturn, TFieldComponents> = FieldApi<TFieldName, TFieldValue, TFieldValidatorMetas, TGroupValidatorMetas, TFormData, TFormValidatorMetas, TSubmitReturn> & FieldComponentsMatchingType<TFieldComponents, TFieldValue>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:116](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L116)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:87](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L87)
 
 ## Type Parameters
 

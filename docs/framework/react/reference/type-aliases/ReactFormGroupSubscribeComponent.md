@@ -9,7 +9,7 @@ title: ReactFormGroupSubscribeComponent
 type ReactFormGroupSubscribeComponent<TGroupValue, TGroupValidatorMetas> = <TSelected>(props) => CrossVersionReactNode;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:304](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L304)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:503](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L503)
 
 ## Type Parameters
 

@@ -5,7 +5,7 @@ title: ReactFormArrayFieldProps
 
 # Interface: ReactFormArrayFieldProps\<TFieldData, TFieldName, TFieldValue, TFieldValidators, TGroupValidatorMetas, TFormData, TFormValidatorMetas, TSubmitReturn, TFieldComponents\>
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:233](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L233)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:318](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L318)
 
 ## Extends
 
@@ -57,7 +57,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:233](https:/
 children: (fieldApi) => ReactNode | Promise<ReactNode>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:257](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L257)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:342](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L342)
 
 #### Parameters
 

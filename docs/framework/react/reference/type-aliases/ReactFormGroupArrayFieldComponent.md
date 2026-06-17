@@ -6,10 +6,13 @@ title: ReactFormGroupArrayFieldComponent
 # Type Alias: ReactFormGroupArrayFieldComponent()\<TFormData, TGroupValue, TGroupValidatorMetas, TFormValidatorMetas, TSubmitReturn, TFieldComponents\>
 
 ```ts
-type ReactFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupValidatorMetas, TFormValidatorMetas, TSubmitReturn, TFieldComponents> = <TFieldName, TFieldValue, TFieldValidators>(props) => CrossVersionReactNode;
+type ReactFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupValidatorMetas, TFormValidatorMetas, TSubmitReturn, TFieldComponents> = {
+<TFieldName, TFieldValidators>  (props): ReactNode | Promise<ReactNode>;
+<TFieldName>  (props): ReactNode | Promise<ReactNode>;
+};
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:367](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L367)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:556](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L556)
 
 ## Type Parameters
 
@@ -37,26 +40,50 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:367](https:/
 
 `TFieldComponents` *extends* `Record`\<`string`, `FunctionComponent`\<`any`\>\>
 
-## Type Parameters
+## Call Signature
 
-### TFieldName
+```ts
+<TFieldName, TFieldValidators>(props): ReactNode | Promise<ReactNode>;
+```
 
-`TFieldName` *extends* `DeepKeysWhereValueIncludes`\<`TGroupValue`, `any`[]\>
+### Type Parameters
 
-### TFieldValue
+#### TFieldName
 
-`TFieldValue` = `DeepValue`\<`TGroupValue`, `TFieldName`\>
+`TFieldName` *extends* `never`
 
-### TFieldValidators
+#### TFieldValidators
 
-`TFieldValidators` *extends* `FieldValidators`\<`TGroupValue`, `TFieldName`, `TFieldValue`\> = \[\]
+`TFieldValidators` *extends* `FieldValidators`\<`TGroupValue`, `TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>\>
 
-## Parameters
+### Parameters
 
-### props
+#### props
 
-[`ReactFormArrayFieldProps`](../interfaces/ReactFormArrayFieldProps.md)\<`TGroupValue`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `TGroupValidatorMetas`, `TFormData`, `TFormValidatorMetas`, `TSubmitReturn`, `TFieldComponents`\>
+`ReactFormArrayFieldPropsWithValidators`\<`TGroupValue`, `TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>, `TFieldValidators`, `TGroupValidatorMetas`, `TFormData`, `TFormValidatorMetas`, `TSubmitReturn`, `TFieldComponents`\>
 
-## Returns
+### Returns
 
-[`CrossVersionReactNode`](CrossVersionReactNode.md)
+`ReactNode` \| `Promise`\<`ReactNode`\>
+
+## Call Signature
+
+```ts
+<TFieldName>(props): ReactNode | Promise<ReactNode>;
+```
+
+### Type Parameters
+
+#### TFieldName
+
+`TFieldName` *extends* `never`
+
+### Parameters
+
+#### props
+
+`ReactFormArrayFieldPropsWithoutValidators`\<`TGroupValue`, `TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>, `TGroupValidatorMetas`, `TFormData`, `TFormValidatorMetas`, `TSubmitReturn`, `TFieldComponents`\>
+
+### Returns
+
+`ReactNode` \| `Promise`\<`ReactNode`\>

@@ -9,7 +9,7 @@ title: ReactFormGroupSubscribeProps
 type ReactFormGroupSubscribeProps<TGroupValue, TGroupValidatorMetas, TSelected> = ReactSubscribeProps<FormGroupState<TGroupValue, TGroupValidatorMetas>, TSelected>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:295](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L295)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:494](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L494)
 
 ## Type Parameters
 
