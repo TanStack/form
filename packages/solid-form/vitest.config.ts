@@ -9,7 +9,7 @@ export default defineConfig({
     dir: './tests',
     watch: false,
     environment: 'happy-dom',
-    // setupFiles: ['./tests/test-setup.ts'],
+    setupFiles: ['./tests/test-setup.ts'],
     globals: true,
   },
 })
