@@ -1066,6 +1066,8 @@ export class FormApi<
    * @private
    */
   private _devtoolsSubmissionOverride: boolean
+  /** @private */
+  private _componentDefaultValues?: TFormData
 
   /**
    * Constructs a new `FormApi` instance with the given form options.
@@ -1095,6 +1097,7 @@ export class FormApi<
     this._formId = opts?.formId ?? uuid()
 
     this._devtoolsSubmissionOverride = false
+    this._componentDefaultValues = opts?.defaultValues
 
     let baseStoreVal: BaseFormState<
       TFormData,
@@ -1747,14 +1750,27 @@ export class FormApi<
     if (!options) return
 
     const oldOptions = this.options
+    const prevComponentDefaultValues = this._componentDefaultValues
+    this._componentDefaultValues = options.defaultValues
 
     // Options need to be updated first so that when the store is updated, the state is correct for the derived state
     this.options = options
 
+    const componentDefaultsUnchanged = evaluate(
+      options.defaultValues,
+      prevComponentDefaultValues,
+    )
+
     const shouldUpdateValues =
       options.defaultValues &&
+      !componentDefaultsUnchanged &&
       !evaluate(options.defaultValues, oldOptions.defaultValues) &&
       !this.state.isTouched
+
+    // Preserve runtime defaultValues (e.g., from reset()) when the component's defaults haven't changed. Skip on the first update() call (constructor) where oldOptions is the empty class default and has no baseline to restore. Use a new object to avoid mutating the caller-supplied options reference.
+    if (oldOptions.defaultValues !== undefined && componentDefaultsUnchanged) {
+      this.options = { ...this.options, defaultValues: oldOptions.defaultValues }
+    }
 
     const shouldUpdateState =
       !evaluate(options.defaultState, oldOptions.defaultState) &&
