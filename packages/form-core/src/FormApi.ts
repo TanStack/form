@@ -1762,7 +1762,7 @@ export class FormApi<
     )
 
     const shouldUpdateValues =
-      options.defaultValues &&
+      options.defaultValues !== undefined &&
       !componentDefaultsUnchanged &&
       !evaluate(options.defaultValues, oldOptions.defaultValues) &&
       !this.state.isTouched
