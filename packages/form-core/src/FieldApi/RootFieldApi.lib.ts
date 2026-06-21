@@ -24,7 +24,6 @@ const rootCounterMetaKeys: Record<
 export class InternalRootFieldApi {
   readonly _isRoot = true
   #children: Map<NameSegment, AnyInternalFieldApi> = new Map()
-  readonly _pathVersion = 0
 
   form: AnyInternalFormApi
 

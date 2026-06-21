@@ -316,18 +316,6 @@ export class InternalFormApi<
     const cached = this._getCachedIsDefaultValue(values, defaultValues)
     if (cached !== undefined) return cached
 
-    for (const child of this._fieldRootNode._children) {
-      const childName = child.name
-      if (
-        child._getCachedIsDefaultValue(
-          getBy(values, childName),
-          getBy(defaultValues, childName),
-        ) === false
-      ) {
-        return this._setDefaultValueCache(values, defaultValues, false)
-      }
-    }
-
     return this._setDefaultValueCache(
       values,
       defaultValues,

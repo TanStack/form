@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { render } from '@testing-library/react'
+import { fireEvent, render } from '@testing-library/react'
 import React, { useEffect, useState } from 'react'
 import { userEvent } from '@testing-library/user-event'
 import { useForm } from '../src'
@@ -137,6 +137,153 @@ describe('Form fields', () => {
     await user.type(input, 'tony-hawk')
     expect(getByTestId('isDefaultValue')).toHaveTextContent('true')
     expect(getByTestId('isDirty')).toHaveTextContent('true')
+  })
+
+  it('does not rerender unchanged field render props when another field changes', () => {
+    const renderCounts = {
+      first: 0,
+      middle: 0,
+      last: 0,
+    }
+
+    function Component() {
+      const form = useForm({
+        defaultValues: {
+          first: 'first',
+          middle: 'middle',
+          last: 'last',
+        },
+      })
+
+      return (
+        <>
+          <form.Field name="first">
+            {(field) => {
+              renderCounts.first++
+              return (
+                <label htmlFor={field.name}>
+                  {field.name}
+                  <input
+                    id={field.name}
+                    value={field.value}
+                    onChange={(event) => field.handleChange(event.target.value)}
+                  />
+                </label>
+              )
+            }}
+          </form.Field>
+          <form.Field name="middle">
+            {(field) => {
+              renderCounts.middle++
+              return (
+                <label htmlFor={field.name}>
+                  {field.name}
+                  <input
+                    id={field.name}
+                    value={field.value}
+                    onChange={(event) => field.handleChange(event.target.value)}
+                  />
+                </label>
+              )
+            }}
+          </form.Field>
+          <form.Field name="last">
+            {(field) => {
+              renderCounts.last++
+              return (
+                <label htmlFor={field.name}>
+                  {field.name}
+                  <input
+                    id={field.name}
+                    value={field.value}
+                    onChange={(event) => field.handleChange(event.target.value)}
+                  />
+                </label>
+              )
+            }}
+          </form.Field>
+        </>
+      )
+    }
+
+    const { getByLabelText } = render(<Component />)
+    const initialCounts = { ...renderCounts }
+    const middleInput = getByLabelText('middle')
+
+    fireEvent.change(middleInput, { target: { value: 'updated' } })
+
+    expect(middleInput).toHaveValue('updated')
+    expect(renderCounts.first).toBe(initialCounts.first)
+    expect(renderCounts.last).toBe(initialCounts.last)
+    expect(renderCounts.middle).toBeGreaterThan(initialCounts.middle)
+  })
+
+  it('rerenders a field when its meta changes without changing its value', () => {
+    const renderCounts = {
+      first: 0,
+      last: 0,
+    }
+
+    function Component() {
+      const form = useForm({
+        defaultValues: {
+          first: 'first',
+          last: 'last',
+        },
+      })
+
+      return (
+        <>
+          <form.Field name="first">
+            {(field) => {
+              renderCounts.first++
+              return (
+                <>
+                  <label htmlFor={field.name}>
+                    {field.name}
+                    <input
+                      id={field.name}
+                      value={field.value}
+                      onBlur={field.handleBlur}
+                      onChange={(event) =>
+                        field.handleChange(event.target.value)
+                      }
+                    />
+                  </label>
+                  <span data-testid="first-blurred">
+                    {String(field.meta.isBlurred)}
+                  </span>
+                </>
+              )
+            }}
+          </form.Field>
+          <form.Field name="last">
+            {(field) => {
+              renderCounts.last++
+              return (
+                <label htmlFor={field.name}>
+                  {field.name}
+                  <input
+                    id={field.name}
+                    value={field.value}
+                    onChange={(event) => field.handleChange(event.target.value)}
+                  />
+                </label>
+              )
+            }}
+          </form.Field>
+        </>
+      )
+    }
+
+    const { getByLabelText, getByTestId } = render(<Component />)
+    const initialCounts = { ...renderCounts }
+
+    fireEvent.blur(getByLabelText('first'))
+
+    expect(getByTestId('first-blurred')).toHaveTextContent('true')
+    expect(renderCounts.first).toBeGreaterThan(initialCounts.first)
+    expect(renderCounts.last).toBe(initialCounts.last)
   })
 
   it('should recreate mounted fields after form reset', async () => {

@@ -79,23 +79,6 @@ export type AnyFieldApiOptions = FieldApiOptions<
 >
 export type AnyFieldValidator = FieldValidator<any, any, any>
 
-interface MetaCacheEntry {
-  hidden?: InternalFieldMeta
-  visible?: InternalFieldMeta
-}
-
-interface DefaultValueMetaCacheEntry {
-  defaultValue?: InternalFieldMeta
-  notDefaultValue?: InternalFieldMeta
-}
-
-// TODO Should be irrelevant for SSR, but double check please
-const metaCache = new WeakMap<InternalBaseFieldMeta, MetaCacheEntry>()
-const defaultValueMetaCache = new WeakMap<
-  InternalFieldMeta,
-  DefaultValueMetaCacheEntry
->()
-
 export interface DefaultValueCacheEntry {
   name: string
   value: unknown
@@ -128,26 +111,6 @@ function isObjectLike(value: unknown): boolean {
   return (
     (typeof value === 'object' && value !== null) || typeof value === 'function'
   )
-}
-
-function applyIsDefaultValueToMeta(
-  meta: InternalFieldMeta,
-  isDefaultValue: boolean,
-): InternalFieldMeta {
-  if (meta.isDefaultValue === isDefaultValue) return meta
-
-  const cacheKey = isDefaultValue ? 'defaultValue' : 'notDefaultValue'
-  const cached = defaultValueMetaCache.get(meta)?.[cacheKey]
-  if (cached) return cached
-
-  const result = {
-    ...meta,
-    isDefaultValue,
-  }
-  const cacheEntry = defaultValueMetaCache.get(meta) ?? {}
-  cacheEntry[cacheKey] = result
-  defaultValueMetaCache.set(meta, cacheEntry)
-  return result
 }
 
 export type NameSegment = string | number
@@ -189,6 +152,16 @@ export interface FormGroupFieldErrorMeta {
 
 export interface InternalBaseFieldMeta extends BaseFieldMeta, MetaExtension {}
 export interface InternalFieldMeta extends AnyPublicFieldMeta, MetaExtension {}
+
+const derivedMetaSourceKey = Symbol('tanstack-form-derived-meta-source')
+const derivedMetaCanDisplayErrorsKey = Symbol(
+  'tanstack-form-derived-meta-can-display-errors',
+)
+
+type DerivedMetaMarkers = {
+  [derivedMetaCanDisplayErrorsKey]?: boolean
+  [derivedMetaSourceKey]?: InternalBaseFieldMeta
+}
 
 export interface InternalFieldState extends PublicFieldState<
   any,
@@ -364,13 +337,6 @@ export interface InternalFieldApiParams extends Omit<
   validators?: FieldValidators<any, any, any>
 }
 
-// Possible plan for performance
-// When changing array elements, update the segment name
-// keep track of a `pathVersion` per node
-// mutation segment increments the pathVersion
-// when children access fullPath, it checks if parentVersion === childVersion
-// if not, recompute and sync version
-
 interface ListenToFieldsMeta {
   field: AnyInternalFieldApi
   name: string
@@ -410,9 +376,6 @@ export class InternalFieldApi<
   readonly _isRoot = false
   _parent: AnyInternalFieldApi | InternalRootFieldApi
   _childrenMap: Map<NameSegment, AnyInternalFieldApi> = new Map()
-  _pathVersion = 0
-  _parentPathVersion = 0
-  _fullPathCache: TFieldName | null = null
   _defaultValueCache: DefaultValueCacheEntry | null = null
   _atoms: FieldAtoms
   _validators: Array<AnyFieldValidator> | null
@@ -508,12 +471,6 @@ export class InternalFieldApi<
   }
 
   get name(): TFieldName {
-    if (this._parentPathVersion !== this._parent._pathVersion) {
-      this._fullPathCache = null
-    }
-
-    if (this._fullPathCache) return this._fullPathCache
-
     const ownSegment =
       typeof this._segment === 'number' ? `[${this._segment}]` : this._segment
 
@@ -525,9 +482,7 @@ export class InternalFieldApi<
     }
     name += ownSegment
 
-    this._fullPathCache = name
-    this._parentPathVersion = this._parent._pathVersion
-    return this._fullPathCache!
+    return name as TFieldName
   }
 
   _getBaseMeta(): InternalBaseFieldMeta {
@@ -565,53 +520,13 @@ export class InternalFieldApi<
     )
   }
 
-  _cacheAncestorsAsNotDefault(): void {
-    const values = this.form._atoms.values.get()
-    const defaultValues = this.form.options.defaultValues
-    this.form._setDefaultValueCache(values, defaultValues, false)
-
-    let current = this._parent
-    while (!current._isRoot) {
-      current._setDefaultValueCache(
-        getBy(values, current.name),
-        getBy(defaultValues, current.name),
-        false,
-      )
-      current = current._parent
-    }
-  }
-
   _getIsDefaultValue(value: unknown = this._getValue()): boolean {
     const defaultValue = getBy(this.form.options.defaultValues, this.name)
     const cached = this._getCachedIsDefaultValue(value, defaultValue)
     if (cached !== undefined) return cached
 
-    if (this.form._getCachedIsDefaultValue() === true) {
-      return this._setDefaultValueCache(value, defaultValue, true)
-    }
-
-    let current = this._parent
-    while (!current._isRoot) {
-      if (current._getCachedIsDefaultValue() === true) {
-        return this._setDefaultValueCache(value, defaultValue, true)
-      }
-      current = current._parent
-    }
-
-    for (const child of this._children) {
-      if (child._getCachedIsDefaultValue() === false) {
-        this._setDefaultValueCache(value, defaultValue, false)
-        this._cacheAncestorsAsNotDefault()
-        return false
-      }
-    }
-
     const isDefaultValue = evaluate(defaultValue, value)
-    this._setDefaultValueCache(value, defaultValue, isDefaultValue)
-    if (!isDefaultValue) {
-      this._cacheAncestorsAsNotDefault()
-    }
-    return isDefaultValue
+    return this._setDefaultValueCache(value, defaultValue, isDefaultValue)
   }
 
   constructor({
@@ -695,12 +610,6 @@ export class InternalFieldApi<
       this._validators = reconciledValidators.items
       this._validateOnFields = reconciledValidators.listenToFields
     }
-  }
-
-  _invalidateFullPath() {
-    this._pathVersion++
-    this._fullPathCache = null
-    this._defaultValueCache = null
   }
 
   /**
@@ -1246,7 +1155,7 @@ export class InternalFieldApi<
      */
     const oldSegment = this._segmentValue
     this._segmentValue = newSegment
-    this._invalidateFullPath()
+    this._defaultValueCache = null
     if (this._parent._getChild(oldSegment) === this) {
       this._parent._removeChild(oldSegment)
     }
@@ -1571,10 +1480,6 @@ function deriveFromBaseFieldMeta(
     value,
     isDefaultValue,
   )
-  const cacheKey = canDisplayErrors ? 'visible' : 'hidden'
-  const cached = metaCache.get(baseMeta)?.[cacheKey]
-  if (cached) return applyIsDefaultValueToMeta(cached, isDefaultValue)
-
   const originalErrors = getErrorsFromBaseMeta(baseMeta, previousMeta)
   const errors = canDisplayErrors ? originalErrors : []
   const isSelfTouched = baseMeta.isTouched
@@ -1595,6 +1500,20 @@ function deriveFromBaseFieldMeta(
   const isValidating = isSelfValidating || subfields.isSomeValidating
   const isValid = isSelfValid && subfields.isEveryValid
   const isInvalid = !isValid
+  const isOriginalValid = isOriginalSelfValid && subfields.isEveryValid
+
+  if (
+    previousMeta &&
+    canReusePreviousMeta({
+      baseMeta,
+      canDisplayErrors,
+      isDefaultValue,
+      originalErrors,
+      previousMeta,
+    })
+  ) {
+    return previousMeta
+  }
 
   const result: InternalFieldMeta = {
     ...baseMeta,
@@ -1605,22 +1524,71 @@ function deriveFromBaseFieldMeta(
     isInvalid,
     isSelfValid,
     isSelfValidating,
-    isDefaultValue: true,
+    isDefaultValue,
     isValidating,
     errors,
     original: {
       errors: originalErrors,
-      isValid: isOriginalSelfValid && subfields.isEveryValid,
-      isInvalid: !(isOriginalSelfValid && subfields.isEveryValid),
+      isValid: isOriginalValid,
+      isInvalid: !isOriginalValid,
     },
     isValid,
     subfields,
     isPristine: !isDirty,
   }
-  const cacheEntry = metaCache.get(baseMeta) ?? {}
-  cacheEntry[cacheKey] = result
-  metaCache.set(baseMeta, cacheEntry)
-  return applyIsDefaultValueToMeta(result, isDefaultValue)
+  return markDerivedMeta(result, baseMeta, canDisplayErrors)
+}
+
+function markDerivedMeta(
+  meta: InternalFieldMeta,
+  baseMeta: InternalBaseFieldMeta,
+  canDisplayErrors: boolean,
+): InternalFieldMeta {
+  Object.defineProperties(meta, {
+    [derivedMetaCanDisplayErrorsKey]: {
+      value: canDisplayErrors,
+    },
+    [derivedMetaSourceKey]: {
+      value: baseMeta,
+    },
+  })
+
+  return meta
+}
+
+function getDerivedMetaSource(
+  meta: (InternalFieldMeta & DerivedMetaMarkers) | undefined,
+): InternalBaseFieldMeta | undefined {
+  return meta?.[derivedMetaSourceKey]
+}
+
+function getDerivedMetaCanDisplayErrors(
+  meta: (InternalFieldMeta & DerivedMetaMarkers) | undefined,
+): boolean | undefined {
+  return meta?.[derivedMetaCanDisplayErrorsKey]
+}
+
+function canReusePreviousMeta({
+  baseMeta,
+  canDisplayErrors,
+  isDefaultValue,
+  originalErrors,
+  previousMeta,
+}: {
+  baseMeta: InternalBaseFieldMeta
+  canDisplayErrors: boolean
+  isDefaultValue: boolean
+  originalErrors: Array<ValidationIssue>
+  previousMeta: InternalFieldMeta
+}): boolean {
+  if (getDerivedMetaSource(previousMeta) !== baseMeta) return false
+  if (getDerivedMetaCanDisplayErrors(previousMeta) !== canDisplayErrors) {
+    return false
+  }
+  if (previousMeta.isDefaultValue !== isDefaultValue) return false
+  if (previousMeta.original.errors !== originalErrors) return false
+
+  return true
 }
 
 function getErrorVisibility(

@@ -16,6 +16,7 @@ trustPolicyExclude:
 overrides: { 'tinyexec': '1.1.2' }
 
 packages:
+  - 'benchmarks/*'
   - packages/**
   - examples/angular/**
   - examples/react/**
