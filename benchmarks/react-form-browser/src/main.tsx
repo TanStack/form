@@ -1,3 +1,4 @@
+import { createFormikController } from './implementations/formik'
 import { createReactHookFormController } from './implementations/react-hook-form'
 import { createTanStackController } from './implementations/tanstack'
 import { parseScenarioVariant } from './scenarios'
@@ -23,6 +24,8 @@ function createController() {
   }
 
   switch (implementation) {
+    case 'formik':
+      return createFormikController(context)
     case 'react-hook-form':
       return createReactHookFormController(context)
     case 'tanstack':
@@ -33,5 +36,7 @@ function createController() {
 window.__bench = createController()
 
 function isImplementationId(value: string | null): value is ImplementationId {
-  return value === 'react-hook-form' || value === 'tanstack'
+  return (
+    value === 'formik' || value === 'react-hook-form' || value === 'tanstack'
+  )
 }

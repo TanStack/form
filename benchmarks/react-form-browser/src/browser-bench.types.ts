@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 
-export type ImplementationId = 'react-hook-form' | 'tanstack'
+export type ImplementationId = 'formik' | 'react-hook-form' | 'tanstack'
 
 export type ScenarioId =
   | 'array-insert-remove'

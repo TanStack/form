@@ -56,6 +56,7 @@
   },
   "dependencies": {
     "@tanstack/react-form": "workspace:*",
+    "formik": "^2.4.9",
     "react": "19.2.7",
     "react-dom": "19.2.7",
     "react-hook-form": "7.80.0"

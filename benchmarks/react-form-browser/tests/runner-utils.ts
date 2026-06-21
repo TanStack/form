@@ -1,5 +1,5 @@
-import { mkdirSync, writeFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { mkdirSync, rmSync, writeFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
 import {
   getScenarioVariants,
   scenarioVariantToSearchParams,
@@ -14,8 +14,11 @@ import type {
 export const implementations: Array<ImplementationId> = [
   'tanstack',
   'react-hook-form',
+  'formik',
 ]
 export const scenarioVariants = getScenarioVariants()
+
+export type ResultKind = 'memory' | 'speed'
 
 export interface NumericSummary {
   max: number
@@ -45,6 +48,28 @@ export function getVariantUrl(
 ): string {
   const params = scenarioVariantToSearchParams(implementation, variant)
   return `${baseUrl}/?${params.toString()}`
+}
+
+export function formatBenchmarkLabel(
+  implementation: ImplementationId,
+  variant: ScenarioVariant,
+): string {
+  return `${implementation} ${variant.id} ${variant.sizeKind}=${variant.size}`
+}
+
+export function resultShardPath(
+  kind: ResultKind,
+  implementation: ImplementationId,
+  variant: ScenarioVariant,
+): string {
+  return `${kind}/${implementation}/${scenarioVariantSlug(variant)}.json`
+}
+
+export function clearJsonResultDir(kind: ResultKind) {
+  rmSync(join(process.cwd(), 'dist', 'results', kind), {
+    force: true,
+    recursive: true,
+  })
 }
 
 export async function openVariant(
@@ -160,11 +185,15 @@ export function summarizeMemorySamples(samples: Array<MemorySample>) {
 
 export function writeJsonResult(filename: string, result: unknown) {
   const resultsDir = join(process.cwd(), 'dist', 'results')
+  const filePath = join(resultsDir, filename)
+
   mkdirSync(resultsDir, { recursive: true })
-  writeFileSync(
-    join(resultsDir, filename),
-    `${JSON.stringify(result, null, 2)}\n`,
-  )
+  mkdirSync(dirname(filePath), { recursive: true })
+  writeFileSync(filePath, `${JSON.stringify(result, null, 2)}\n`)
+}
+
+function scenarioVariantSlug(variant: ScenarioVariant): string {
+  return `${variant.id}-${variant.sizeKind}-${variant.size}`
 }
 
 function percentile(sortedSamples: Array<number>, percentileValue: number) {

@@ -1,12 +1,15 @@
 import { test } from '@playwright/test'
 import {
+  clearJsonResultDir,
   collectHeapUsage,
   createFreshPage,
   disposeBench,
+  formatBenchmarkLabel,
   getBenchMetrics,
   implementations,
   openVariant,
   prepareBench,
+  resultShardPath,
   runBenchInteraction,
   scenarioVariants,
   summarizeMemorySamples,
@@ -16,11 +19,15 @@ import type { MemorySample } from './runner-utils'
 
 test.describe.configure({ mode: 'serial' })
 
-test('collect browser memory results', async ({ browser }) => {
-  const results = []
+test.beforeAll(() => {
+  clearJsonResultDir('memory')
+})
 
-  for (const implementation of implementations) {
-    for (const variant of scenarioVariants) {
+for (const implementation of implementations) {
+  for (const variant of scenarioVariants) {
+    test(`memory ${formatBenchmarkLabel(implementation, variant)}`, async ({
+      browser,
+    }) => {
       const samples: Array<MemorySample> = []
       let metrics = null
 
@@ -58,21 +65,19 @@ test('collect browser memory results', async ({ browser }) => {
         }
       }
 
-      results.push({
-        implementation,
-        scenario: variant.id,
-        size: variant.size,
-        sizeKind: variant.sizeKind,
-        samples,
-        summary: summarizeMemorySamples(samples),
-        metrics,
+      writeJsonResult(resultShardPath('memory', implementation, variant), {
+        generatedAt: new Date().toISOString(),
+        unit: 'bytes',
+        result: {
+          implementation,
+          scenario: variant.id,
+          size: variant.size,
+          sizeKind: variant.sizeKind,
+          samples,
+          summary: summarizeMemorySamples(samples),
+          metrics,
+        },
       })
-    }
+    })
   }
-
-  writeJsonResult('memory.json', {
-    generatedAt: new Date().toISOString(),
-    unit: 'bytes',
-    results,
-  })
-})
+}

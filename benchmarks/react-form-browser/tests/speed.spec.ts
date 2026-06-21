@@ -1,11 +1,14 @@
 import { test } from '@playwright/test'
 import {
+  clearJsonResultDir,
   disposeBench,
+  formatBenchmarkLabel,
   getBenchMetrics,
   implementations,
   measureBenchRun,
   openVariant,
   prepareBench,
+  resultShardPath,
   scenarioVariants,
   summarize,
   writeJsonResult,
@@ -13,11 +16,15 @@ import {
 
 test.describe.configure({ mode: 'serial' })
 
-test('collect browser speed results', async ({ page }) => {
-  const results = []
+test.beforeAll(() => {
+  clearJsonResultDir('speed')
+})
 
-  for (const implementation of implementations) {
-    for (const variant of scenarioVariants) {
+for (const implementation of implementations) {
+  for (const variant of scenarioVariants) {
+    test(`speed ${formatBenchmarkLabel(implementation, variant)}`, async ({
+      page,
+    }) => {
       await openVariant(page, implementation, variant)
       await prepareBench(page)
 
@@ -33,23 +40,21 @@ test('collect browser speed results', async ({ page }) => {
       const metrics = await getBenchMetrics(page)
       await disposeBench(page)
 
-      results.push({
-        implementation,
-        scenario: variant.id,
-        size: variant.size,
-        sizeKind: variant.sizeKind,
-        warmups: variant.speed.warmups,
-        iterations: variant.speed.iterations,
-        samples,
-        summary: summarize(samples),
-        metrics,
+      writeJsonResult(resultShardPath('speed', implementation, variant), {
+        generatedAt: new Date().toISOString(),
+        unit: 'milliseconds',
+        result: {
+          implementation,
+          scenario: variant.id,
+          size: variant.size,
+          sizeKind: variant.sizeKind,
+          warmups: variant.speed.warmups,
+          iterations: variant.speed.iterations,
+          samples,
+          summary: summarize(samples),
+          metrics,
+        },
       })
-    }
+    })
   }
-
-  writeJsonResult('speed.json', {
-    generatedAt: new Date().toISOString(),
-    unit: 'milliseconds',
-    results,
-  })
-})
+}

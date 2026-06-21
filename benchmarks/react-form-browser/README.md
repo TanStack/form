@@ -2,9 +2,8 @@
 
 Browser-backed speed and memory benchmarks for public React adapter workflows.
 
-This package currently implements the TanStack Form and React Hook Form sides of
-the benchmark matrix. Formik can be added later behind the same scenario
-interface.
+This package currently implements TanStack Form, React Hook Form, and Formik
+sides of the benchmark matrix behind the same scenario interface.
 
 ## Commands
 
@@ -15,13 +14,14 @@ interface.
 - `pnpm benchmark:react:browser:types`
 
 The runners build a production Vite app and drive it through Playwright
-Chromium. Results are written to `dist/results/`.
+Chromium. Results are written as per-variant shards under
+`dist/results/speed/` and `dist/results/memory/`.
 
 Run the speed and memory benchmarks before running the compare command. The
-compare command reads `dist/results/speed.json` and `dist/results/memory.json`,
-prints side-by-side tables, writes `dist/results/compare.json`, and writes a
-standalone chart report to `dist/results/compare.html`. Use `compare:open` to
-start a Vite report server and open the chart report after generating it.
+compare command reads the speed and memory shard directories, prints
+side-by-side tables, writes `dist/results/compare.json`, and writes a standalone
+chart report to `dist/results/compare.html`. Use `compare:open` to start a Vite
+report server and open the chart report after generating it.
 
 Ratios are calculated as comparison implementation divided by the baseline
 implementation. Values below `1` mean the comparison implementation was

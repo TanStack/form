@@ -1,6 +1,12 @@
 #!/usr/bin/env node
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  writeFileSync,
+} from 'node:fs'
 import { basename, dirname, join, resolve } from 'node:path'
 import { cwd, exit, stderr } from 'node:process'
 import { createServer } from 'vite'
@@ -24,8 +30,8 @@ try {
     options.htmlOutput ?? join(options.resultsDir, 'compare.html'),
   )
 
-  const speed = readResultFile(resultsDir, 'speed.json')
-  const memory = readResultFile(resultsDir, 'memory.json')
+  const speed = readResultSet(resultsDir, 'speed', 'milliseconds')
+  const memory = readResultSet(resultsDir, 'memory', 'bytes')
   const speedMatrix = validateResultMatrix(speed, 'speed', options.baseline)
   const memoryMatrix = validateResultMatrix(memory, 'memory', options.baseline)
 
@@ -122,7 +128,7 @@ function printHelp() {
   console.log(`Usage: pnpm compare [options]
 
 Options:
-  --results-dir <path>  Directory containing speed.json and memory.json
+  --results-dir <path>  Directory containing speed/ and memory/ result shards
                         Default: dist/results
   --baseline <name>     Baseline implementation for ratios
                         Default: tanstack
@@ -134,12 +140,72 @@ Options:
   -h, --help            Show this help message`)
 }
 
-function readResultFile(resultsDir, filename) {
-  const filePath = join(resultsDir, filename)
-  if (!existsSync(filePath)) {
-    throw new Error(`Missing required benchmark result file: ${filePath}`)
+function readResultSet(resultsDir, kind, expectedUnit) {
+  const shardDir = join(resultsDir, kind)
+  if (!existsSync(shardDir)) {
+    throw new Error(`Missing required benchmark result directory: ${shardDir}`)
   }
 
+  const files = listJsonFiles(shardDir)
+  if (files.length === 0) {
+    throw new Error(
+      `Missing required benchmark result shards: ${join(shardDir, '**/*.json')}`,
+    )
+  }
+
+  return readResultShards(files, expectedUnit)
+}
+
+function readResultShards(files, expectedUnit) {
+  const results = []
+
+  for (const file of files) {
+    const shard = readJsonFile(file)
+
+    if (!shard || typeof shard !== 'object') {
+      throw new Error(`${file} must contain a JSON object`)
+    }
+
+    if (shard.unit !== expectedUnit) {
+      throw new Error(
+        `${file} must include unit "${expectedUnit}", received "${shard.unit}"`,
+      )
+    }
+
+    if (!shard.result || typeof shard.result !== 'object') {
+      throw new Error(`${file} must include a result object`)
+    }
+
+    results.push(shard.result)
+  }
+
+  return {
+    unit: expectedUnit,
+    results,
+  }
+}
+
+function listJsonFiles(directory) {
+  const entries = readdirSync(directory, { withFileTypes: true })
+  const files = []
+
+  for (const entry of entries) {
+    const entryPath = join(directory, entry.name)
+
+    if (entry.isDirectory()) {
+      files.push(...listJsonFiles(entryPath))
+      continue
+    }
+
+    if (entry.isFile() && entry.name.endsWith('.json')) {
+      files.push(entryPath)
+    }
+  }
+
+  return files.sort()
+}
+
+function readJsonFile(filePath) {
   try {
     return JSON.parse(readFileSync(filePath, 'utf8'))
   } catch (error) {
@@ -152,16 +218,18 @@ function readResultFile(resultsDir, filename) {
 }
 
 function validateResultMatrix(document, kind, baseline) {
+  const label = `${kind} results`
+
   if (!document || typeof document !== 'object') {
-    throw new Error(`${kind}.json must contain a JSON object`)
+    throw new Error(`${label} must contain a JSON object`)
   }
 
   if (!Array.isArray(document.results)) {
-    throw new Error(`${kind}.json must contain a results array`)
+    throw new Error(`${label} must contain a results array`)
   }
 
   if (document.results.length === 0) {
-    throw new Error(`${kind}.json results array is empty`)
+    throw new Error(`${label} array is empty`)
   }
 
   const implementations = []
@@ -190,7 +258,7 @@ function validateResultMatrix(document, kind, baseline) {
 
     if (group.rows.has(row.implementation)) {
       throw new Error(
-        `${kind}.json contains duplicate rows for ${row.implementation} ${formatVariant(row)}`,
+        `${label} contains duplicate rows for ${row.implementation} ${formatVariant(row)}`,
       )
     }
 
@@ -198,14 +266,12 @@ function validateResultMatrix(document, kind, baseline) {
   }
 
   if (!implementationSet.has(baseline)) {
-    throw new Error(
-      `${kind}.json is missing baseline implementation "${baseline}"`,
-    )
+    throw new Error(`${label} is missing baseline implementation "${baseline}"`)
   }
 
   if (implementations.length < 2) {
     throw new Error(
-      `${kind}.json must contain at least one implementation to compare against "${baseline}"`,
+      `${label} must contain at least one implementation to compare against "${baseline}"`,
     )
   }
 
@@ -213,7 +279,7 @@ function validateResultMatrix(document, kind, baseline) {
     for (const implementation of implementations) {
       if (!group.rows.has(implementation)) {
         throw new Error(
-          `${kind}.json has an incomplete implementation matrix: missing ${implementation} for ${formatVariant(group)}`,
+          `${label} has an incomplete implementation matrix: missing ${implementation} for ${formatVariant(group)}`,
         )
       }
     }
@@ -223,22 +289,24 @@ function validateResultMatrix(document, kind, baseline) {
 }
 
 function assertResultRow(row, kind) {
+  const label = `${kind} results`
+
   if (!row || typeof row !== 'object') {
-    throw new Error(`${kind}.json contains a non-object result row`)
+    throw new Error(`${label} contains a non-object result row`)
   }
 
   for (const field of ['implementation', 'scenario', 'sizeKind']) {
     if (typeof row[field] !== 'string' || row[field].length === 0) {
-      throw new Error(`${kind}.json result rows must include a string ${field}`)
+      throw new Error(`${label} rows must include a string ${field}`)
     }
   }
 
   if (typeof row.size !== 'number' || !Number.isFinite(row.size)) {
-    throw new Error(`${kind}.json result rows must include a numeric size`)
+    throw new Error(`${label} rows must include a numeric size`)
   }
 
   if (!row.summary || typeof row.summary !== 'object') {
-    throw new Error(`${kind}.json result rows must include a summary object`)
+    throw new Error(`${label} rows must include a summary object`)
   }
 }
 
@@ -324,13 +392,15 @@ function createMemoryRows(matrix, baseline) {
 }
 
 function assertNumericSummary(summary, kind, implementation, variant) {
+  const label = `${kind} results`
+
   for (const field of ['median', 'p95']) {
     if (
       typeof summary[field] !== 'number' ||
       !Number.isFinite(summary[field])
     ) {
       throw new Error(
-        `${kind}.json summary for ${implementation} ${formatVariant(variant)} must include numeric ${field}`,
+        `${label} summary for ${implementation} ${formatVariant(variant)} must include numeric ${field}`,
       )
     }
   }
@@ -340,7 +410,7 @@ function assertMemorySummary(summary, implementation, variant) {
   for (const phase of memoryPhases) {
     if (!summary[phase] || typeof summary[phase] !== 'object') {
       throw new Error(
-        `memory.json summary for ${implementation} ${formatVariant(variant)} is missing ${phase}`,
+        `memory results summary for ${implementation} ${formatVariant(variant)} is missing ${phase}`,
       )
     }
 
@@ -349,7 +419,7 @@ function assertMemorySummary(summary, implementation, variant) {
       !Number.isFinite(summary[phase].median)
     ) {
       throw new Error(
-        `memory.json summary for ${implementation} ${formatVariant(variant)} must include numeric ${phase}.median`,
+        `memory results summary for ${implementation} ${formatVariant(variant)} must include numeric ${phase}.median`,
       )
     }
   }
@@ -1016,6 +1086,7 @@ function formatMetricValue(value, unit) {
 function formatImplementationName(implementation) {
   if (implementation === 'tanstack') return 'TanStack Form'
   if (implementation === 'react-hook-form') return 'React Hook Form'
+  if (implementation === 'formik') return 'Formik'
   return implementation
 }
 
