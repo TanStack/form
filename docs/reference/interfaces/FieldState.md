@@ -5,7 +5,7 @@ title: FieldState
 
 # Interface: FieldState\<TFieldValue, TFieldValidatorMetas, TGroupValidatorMetas, TFormValidatorMetas, TSubmitReturn\>
 
-Defined in: [FieldApi/FieldApi.public.ts:78](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L78)
+Defined in: [FieldApi/FieldApi.public.ts:79](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L79)
 
 ## Type Parameters
 
@@ -37,7 +37,7 @@ Defined in: [FieldApi/FieldApi.public.ts:78](https://github.com/TanStack/form-v2
 meta: FieldMeta<TFieldValidatorMetas, TGroupValidatorMetas, TFormValidatorMetas, TSubmitReturn>;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:86](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L86)
+Defined in: [FieldApi/FieldApi.public.ts:87](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L87)
 
 ***
 
@@ -47,4 +47,4 @@ Defined in: [FieldApi/FieldApi.public.ts:86](https://github.com/TanStack/form-v2
 value: TFieldValue;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:85](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L85)
+Defined in: [FieldApi/FieldApi.public.ts:86](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L86)

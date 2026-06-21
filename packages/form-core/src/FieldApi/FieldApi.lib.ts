@@ -126,8 +126,7 @@ export function shouldCacheDefaultValue(
 
 function isObjectLike(value: unknown): boolean {
   return (
-    (typeof value === 'object' && value !== null) ||
-    typeof value === 'function'
+    (typeof value === 'object' && value !== null) || typeof value === 'function'
   )
 }
 

@@ -5,7 +5,7 @@ title: ParsedStandardSchemaIssues
 
 # Interface: ParsedStandardSchemaIssues\<TFormData\>
 
-Defined in: [validation.public.ts:278](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L278)
+Defined in: [validation.public.ts:279](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L279)
 
 ## Type Parameters
 
@@ -21,7 +21,7 @@ Defined in: [validation.public.ts:278](https://github.com/TanStack/form-v2/blob/
 fields: Partial<Record<DeepKeys<TFormData>, StandardSchemaV1Issue[]>>;
 ```
 
-Defined in: [validation.public.ts:280](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L280)
+Defined in: [validation.public.ts:281](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L281)
 
 ***
 
@@ -31,4 +31,4 @@ Defined in: [validation.public.ts:280](https://github.com/TanStack/form-v2/blob/
 form: StandardSchemaV1Issue[];
 ```
 
-Defined in: [validation.public.ts:279](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L279)
+Defined in: [validation.public.ts:280](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L280)

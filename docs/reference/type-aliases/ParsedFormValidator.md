@@ -9,7 +9,7 @@ title: ParsedFormValidator
 type ParsedFormValidator<TFormValidator> = TFormValidator extends object ? TFormValidator extends object ? FormValidatorMeta<undefined, TryGetFormError<TFormValidator>, TryGetFieldError<TFormValidator>> : FormValidatorMeta<TryGetSchemaOutput<TFormValidator>, TryGetFormError<TFormValidator>, TryGetFieldError<TFormValidator>> : never;
 ```
 
-Defined in: [validation.public.ts:598](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L598)
+Defined in: [validation.public.ts:599](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L599)
 
 ## Type Parameters
 

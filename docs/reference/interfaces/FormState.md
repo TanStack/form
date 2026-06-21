@@ -29,7 +29,7 @@ Defined in: [FormApi/FormApi.public.ts:92](https://github.com/TanStack/form-v2/b
 canSubmit: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:133](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L133)
+Defined in: [FormApi/FormApi.public.ts:137](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L137)
 
 Whether the form can currently be submitted.
 
@@ -44,9 +44,21 @@ errors, then `false` while errors are known or the form is submitting.
 errors: FormErrors<TFormValidatorMetas, TSubmitMeta>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:118](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L118)
+Defined in: [FormApi/FormApi.public.ts:122](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L122)
 
 Array of form-level validation errors.
+
+***
+
+### isDefaultValue
+
+```ts
+isDefaultValue: boolean;
+```
+
+Defined in: [FormApi/FormApi.public.ts:118](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L118)
+
+Whether the current form values are deeply equal to the default values.
 
 ***
 
@@ -70,7 +82,7 @@ TODO add link to persistent dirty model? Or maybe a reference to isDefaultValue?
 isInvalid: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:126](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L126)
+Defined in: [FormApi/FormApi.public.ts:130](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L130)
 
 Whether the form currently has form-level or field-level errors.
 
@@ -94,7 +106,7 @@ Whether the form has not yet been dirtied. The opposite of `isDirty`.
 isSubmitSuccessful: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:142](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L142)
+Defined in: [FormApi/FormApi.public.ts:146](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L146)
 
 Whether the latest submission completed without validation or submit errors.
 
@@ -106,7 +118,7 @@ Whether the latest submission completed without validation or submit errors.
 isSubmitting: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:138](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L138)
+Defined in: [FormApi/FormApi.public.ts:142](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L142)
 
 Whether the form is currently in the process of submitting.
 
@@ -130,7 +142,7 @@ Whether the form has been touched.
 isValid: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:122](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L122)
+Defined in: [FormApi/FormApi.public.ts:126](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L126)
 
 Whether the form currently has no form-level or field-level errors.
 
@@ -142,7 +154,7 @@ Whether the form currently has no form-level or field-level errors.
 isValidating: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:146](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L146)
+Defined in: [FormApi/FormApi.public.ts:150](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L150)
 
 Whether the form or any field is currently validating.
 
@@ -154,7 +166,7 @@ Whether the form or any field is currently validating.
 submissionAttempts: number;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:152](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L152)
+Defined in: [FormApi/FormApi.public.ts:156](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L156)
 
 The number of times a submission has been attempted, regardless of its success.
 
