@@ -147,10 +147,7 @@ export function scenarioVariantToSearchParams(
   return params
 }
 
-function getSize(
-  params: URLSearchParams,
-  sizeKind: ScenarioSizeKind,
-): number {
+function getSize(params: URLSearchParams, sizeKind: ScenarioSizeKind): number {
   const sizeParam =
     sizeKind === 'itemCount'
       ? (params.get('itemCount') ?? params.get('fieldCount'))
