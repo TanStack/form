@@ -5,7 +5,7 @@ title: FormApi
 
 # Interface: FormApi\<TFormData, TFormValidatorMetas, TSubmitMeta\>
 
-Defined in: [FormApi/FormApi.public.ts:161](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L161)
+Defined in: [FormApi/FormApi.public.ts:157](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L157)
 
 ## Extends
 
@@ -33,7 +33,7 @@ Defined in: [FormApi/FormApi.public.ts:161](https://github.com/TanStack/form-v2/
 atom: ReadonlyAtom<FormState<TFormData, TFormValidatorMetas, TSubmitMeta>>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:167](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L167)
+Defined in: [FormApi/FormApi.public.ts:163](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L163)
 
 ***
 
@@ -93,7 +93,7 @@ Optional update options including a custom `thisArg` for the predicate
 readonly formId: string;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:170](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L170)
+Defined in: [FormApi/FormApi.public.ts:166](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L166)
 
 ***
 
@@ -123,7 +123,7 @@ TODO
 handleSubmit: () => Promise<FormValidationError<TFormData>[]>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:187](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L187)
+Defined in: [FormApi/FormApi.public.ts:183](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L183)
 
 TODO for later: submit meta
 
@@ -205,7 +205,7 @@ Optional update options
 readonly options: FormApiOptions<TFormData, TFormValidatorMetas, TSubmitMeta>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:169](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L169)
+Defined in: [FormApi/FormApi.public.ts:165](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L165)
 
 ***
 
@@ -273,7 +273,7 @@ Optional update options
 reset: (values?) => void;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:191](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L191)
+Defined in: [FormApi/FormApi.public.ts:187](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L187)
 
 TODO
 
@@ -329,7 +329,7 @@ TODO
 readonly state: FormState<TFormData, TFormValidatorMetas, TSubmitMeta>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:168](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L168)
+Defined in: [FormApi/FormApi.public.ts:164](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L164)
 
 ***
 
@@ -368,7 +368,7 @@ The index of the second value to swap
 validate: (signal) => Promise<FormValidationError<TFormData>[]>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:179](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L179)
+Defined in: [FormApi/FormApi.public.ts:175](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L175)
 
 TODO expand on it
 

@@ -11,7 +11,7 @@ type FormGroupValidateResult<TGroupValue> =
 | ValidationAggregateError<TGroupValue>;
 ```
 
-Defined in: [validation.public.ts:350](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L350)
+Defined in: [validation.public.ts:349](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L349)
 
 ## Type Parameters
 

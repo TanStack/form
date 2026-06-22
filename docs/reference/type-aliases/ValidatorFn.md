@@ -9,7 +9,7 @@ title: ValidatorFn
 type ValidatorFn<TParameter, TReturn> = (...args) => TReturn | Promise<TReturn>;
 ```
 
-Defined in: [validation.public.ts:320](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L320)
+Defined in: [validation.public.ts:319](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L319)
 
 ## Type Parameters
 

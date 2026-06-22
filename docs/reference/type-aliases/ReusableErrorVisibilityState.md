@@ -9,7 +9,7 @@ title: ReusableErrorVisibilityState
 type ReusableErrorVisibilityState = Omit<FormApi<any, any, any>["state"], "values"> & object;
 ```
 
-Defined in: [validation.public.ts:205](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L205)
+Defined in: [validation.public.ts:204](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L204)
 
 The scoped state view available while declaring a reusable visibility policy.
 

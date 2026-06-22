@@ -9,4 +9,4 @@ title: FieldValidatorMetas
 type FieldValidatorMetas = ReadonlyArray<FieldValidatorMeta>;
 ```
 
-Defined in: [validation.public.ts:555](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L555)
+Defined in: [validation.public.ts:554](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L554)

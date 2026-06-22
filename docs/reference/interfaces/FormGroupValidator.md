@@ -5,7 +5,7 @@ title: FormGroupValidator
 
 # Interface: FormGroupValidator\<TGroupValue\>
 
-Defined in: [validation.public.ts:359](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L359)
+Defined in: [validation.public.ts:358](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L358)
 
 ## Extends
 

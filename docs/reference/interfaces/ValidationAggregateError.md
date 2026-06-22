@@ -5,7 +5,7 @@ title: ValidationAggregateError
 
 # Interface: ValidationAggregateError\<TFormData\>
 
-Defined in: [validation.public.ts:274](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L274)
+Defined in: [validation.public.ts:273](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L273)
 
 ## Type Parameters
 
@@ -21,7 +21,7 @@ Defined in: [validation.public.ts:274](https://github.com/TanStack/form-v2/blob/
 fields: Partial<Record<DeepKeys<TFormData>, ValidationErrorInput>>;
 ```
 
-Defined in: [validation.public.ts:276](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L276)
+Defined in: [validation.public.ts:275](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L275)
 
 ***
 
@@ -31,4 +31,4 @@ Defined in: [validation.public.ts:276](https://github.com/TanStack/form-v2/blob/
 optional form: ValidationErrorInput;
 ```
 
-Defined in: [validation.public.ts:275](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L275)
+Defined in: [validation.public.ts:274](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L274)
