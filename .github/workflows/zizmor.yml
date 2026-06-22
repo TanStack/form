@@ -11,6 +11,8 @@ permissions: {}
 jobs:
   zizmor:
     name: Run zizmor
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
