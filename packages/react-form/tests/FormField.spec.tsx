@@ -24,6 +24,49 @@ describe('Form fields', () => {
     expect(input).toHaveTextContent('tony-hawk')
   })
 
+  it('does not re-register fields during unrelated parent rerenders', () => {
+    const onMount = vi.fn()
+    const onUnmount = vi.fn()
+
+    function Component() {
+      const [count, setCount] = useState(0)
+      const form = useForm({ defaultValues: { name: 'tony-hawk' } })
+
+      return (
+        <>
+          <button data-testid="rerender" onClick={() => setCount(count + 1)}>
+            {count}
+          </button>
+          <form.Field
+            name="name"
+            listeners={[
+              { triggers: ['mount'], run: onMount },
+              { triggers: ['unmount'], run: onUnmount },
+            ]}
+          >
+            {(field) => <span data-testid="name">{field.value}</span>}
+          </form.Field>
+        </>
+      )
+    }
+
+    const { getByTestId, unmount } = render(<Component />)
+
+    expect(getByTestId('name')).toHaveTextContent('tony-hawk')
+    expect(onMount).toHaveBeenCalledOnce()
+    expect(onUnmount).not.toHaveBeenCalled()
+
+    fireEvent.click(getByTestId('rerender'))
+
+    expect(getByTestId('rerender')).toHaveTextContent('1')
+    expect(onMount).toHaveBeenCalledOnce()
+    expect(onUnmount).not.toHaveBeenCalled()
+
+    unmount()
+
+    expect(onUnmount).toHaveBeenCalledOnce()
+  })
+
   it('should have the correct name and value', async () => {
     function Component() {
       const form = useForm({ defaultValues: { name: 'tony-hawk' } })

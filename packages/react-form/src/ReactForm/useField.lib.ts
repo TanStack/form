@@ -47,7 +47,7 @@ export function useField(
   useEffect(() => {
     const cleanup = fieldApi._register()
     return cleanup
-  })
+  }, [fieldApi])
 
   return fieldApi
 }
