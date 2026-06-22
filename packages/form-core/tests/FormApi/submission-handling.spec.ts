@@ -216,7 +216,7 @@ describe('form - submission handling', () => {
         expect(finishValidator).toBeTypeOf('function')
       })
 
-      form.reset({ name: 'reset value' }, { preserveDefaultValues: true })
+      form.reset({ name: 'reset value' }, { updateDefaultValues: false })
       finishValidator()
       const result = await submitPromise
 
@@ -250,7 +250,7 @@ describe('form - submission handling', () => {
         expect(finishValidator).toBeTypeOf('function')
       })
 
-      form.reset({ name: 'reset value' }, { preserveDefaultValues: true })
+      form.reset({ name: 'reset value' }, { updateDefaultValues: false })
       finishValidator()
       const result = await submitPromise
 
@@ -316,7 +316,7 @@ describe('form - submission handling', () => {
           expect(rejectSubmit).toBeTypeOf('function')
         })
 
-        form.reset({ name: 'reset value' }, { preserveDefaultValues: true })
+        form.reset({ name: 'reset value' }, { updateDefaultValues: false })
         rejectSubmit(error)
         const result = await submitPromise
 

@@ -19,6 +19,10 @@ interface WatchFieldOperation {
   watcherIndex: WatcherIndex
 }
 
+export interface DetachWatchingFieldOptions {
+  pruneSourceField?: boolean
+}
+
 interface ReconciledWatchedFields<in out TItem> {
   items: Array<TItem> | null
   listenToFields: FieldListenToFields | null
@@ -182,6 +186,7 @@ function detachWatchingField(
   ) => Map<AnyInternalFieldApi, Set<number>> | null,
   clearWatchingFields: (sourceField: AnyInternalFieldApi) => void,
   { sourceField, watchingField, watcherIndex }: WatchFieldOperation,
+  options: DetachWatchingFieldOptions = {},
 ) {
   const watchingFields = getWatchingFields(sourceField)
   if (!watchingFields) return
@@ -198,7 +203,9 @@ function detachWatchingField(
     }
   }
 
-  sourceField._pruneIfUnused()
+  if (options.pruneSourceField !== false) {
+    sourceField._pruneIfUnused()
+  }
 }
 
 export function attachWatchingListenerField(operation: WatchFieldOperation) {
@@ -211,13 +218,17 @@ export function attachWatchingListenerField(operation: WatchFieldOperation) {
   )
 }
 
-export function detachWatchingListenerField(operation: WatchFieldOperation) {
+export function detachWatchingListenerField(
+  operation: WatchFieldOperation,
+  options?: DetachWatchingFieldOptions,
+) {
   detachWatchingField(
     (source) => source._watchingFields,
     (source) => {
       source._watchingFields = null
     },
     operation,
+    options,
   )
 }
 
@@ -231,12 +242,16 @@ export function attachWatchingValidatorField(operation: WatchFieldOperation) {
   )
 }
 
-export function detachWatchingValidatorField(operation: WatchFieldOperation) {
+export function detachWatchingValidatorField(
+  operation: WatchFieldOperation,
+  options?: DetachWatchingFieldOptions,
+) {
   detachWatchingField(
     (source) => source._watchingValidatorFields,
     (source) => {
       source._watchingValidatorFields = null
     },
     operation,
+    options,
   )
 }

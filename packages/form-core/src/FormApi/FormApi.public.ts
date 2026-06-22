@@ -158,6 +158,28 @@ export interface FormState<
 
 export type AnyFormApi = FormApi<any, any, any>
 
+export interface FormResetOptions {
+  /**
+   * Whether `reset(values)` should also update the form's `defaultValues`
+   * baseline.
+   *
+   * By default, passing values to `reset` treats those values as the new reset
+   * baseline. Future `reset()` calls will return to those values, and
+   * `state.isDefaultValue` will compare against them.
+   *
+   * Set this to `false` when you want reset semantics for form state
+   * (clearing touched, dirty, validation, submission state, and mounted fields)
+   * but want to keep comparing against the previous `defaultValues`.
+   *
+   * With `updateDefaultValues: false`, `state.isDirty` is reset to `false`,
+   * but `state.isDefaultValue` may be `false` if the provided reset values do
+   * not deeply equal the preserved defaults.
+   *
+   * This option is ignored when no reset values are provided.
+   */
+  updateDefaultValues?: boolean
+}
+
 export interface FormApi<
   in out TFormData,
   in out TFormValidatorMetas extends FormValidatorMetas,
@@ -186,7 +208,15 @@ export interface FormApi<
    */
   handleSubmit: () => Promise<Array<FormValidationError<TFormData>>>
   /**
-   * TODO
+   * Reset form values, metadata, validation state, and mounted fields.
+   *
+   * `reset()` restores the current `defaultValues`.
+   *
+   * `reset(values)` sets the current values and also updates `defaultValues`
+   * to those values.
+   *
+   * `reset(values, { updateDefaultValues: false })` sets the current values
+   * while preserving the previous `defaultValues` baseline.
    */
-  reset: (values?: TFormData) => void
+  reset: (values?: TFormData, opts?: FormResetOptions) => void
 }

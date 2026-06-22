@@ -697,5 +697,30 @@ describe('field - listeners', () => {
       expect(listener2).not.toHaveBeenCalled()
       expect(listener3).toHaveBeenCalledOnce()
     })
+
+    it('clears watched listener links when reset kills fields', () => {
+      const form = new InternalFormApi({
+        defaultValues: { source: '', target: '' },
+      })
+      const targetField = form._getOrCreateFieldApi({
+        name: 'target',
+        listeners: [
+          { run: vi.fn(), watchFields: ['source'], triggers: ['change'] },
+        ],
+      })
+      const sourceField = form._getOrCreateFieldApi({ name: 'source' })
+
+      expect(sourceField._watchingFields?.has(targetField)).toBe(true)
+      expect(targetField._listenToFields?.[0]?.[0]?.field).toBe(sourceField)
+
+      form.reset()
+
+      expect(sourceField._watchingFields).toBeNull()
+      expect(targetField._listenToFields).toBeNull()
+      expect(sourceField._isKilled).toBe(true)
+      expect(targetField._isKilled).toBe(true)
+      expect(form._tryGetFieldApi('source')).toBeNull()
+      expect(form._tryGetFieldApi('target')).toBeNull()
+    })
   })
 })

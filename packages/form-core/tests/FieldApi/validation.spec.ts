@@ -384,4 +384,28 @@ describe('field - linked validators', () => {
 
     warn.mockRestore()
   })
+
+  it('clears watched validator links when a field is killed', () => {
+    const form = new InternalFormApi({
+      defaultValues: { source: '', target: '' },
+    })
+    const targetField = form._getOrCreateFieldApi({
+      name: 'target',
+      validators: [
+        { run: vi.fn(), watchFields: ['source'], triggers: ['change'] },
+      ],
+    })
+    const sourceField = form._getOrCreateFieldApi({ name: 'source' })
+
+    expect(sourceField._watchingValidatorFields?.has(targetField)).toBe(true)
+    expect(targetField._validateOnFields?.[0]?.[0]?.field).toBe(sourceField)
+
+    form.deleteField('target')
+
+    expect(sourceField._watchingValidatorFields).toBeNull()
+    expect(targetField._validateOnFields).toBeNull()
+    expect(targetField._isKilled).toBe(true)
+    expect(form._tryGetFieldApi('source')).toBeNull()
+    expect(form._tryGetFieldApi('target')).toBeNull()
+  })
 })

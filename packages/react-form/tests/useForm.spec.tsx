@@ -1,4 +1,10 @@
-import { act, render, renderHook, screen } from '@testing-library/react'
+import {
+  act,
+  fireEvent,
+  render,
+  renderHook,
+  screen,
+} from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import React, { useState } from 'react'
 import { useForm } from '../src'
@@ -165,6 +171,42 @@ describe('useForm', () => {
         canSubmit: false,
       },
     ])
+  })
+
+  it('updates form.Subscribe selectors for isDefaultValue', () => {
+    function Component() {
+      const form = useForm({ defaultValues: { name: 'tony-hawk' } })
+
+      return (
+        <>
+          <button
+            data-testid="change"
+            onClick={() => form.setFieldValue('name', 'rodney-mullen')}
+          />
+          <button
+            data-testid="restore"
+            onClick={() => form.setFieldValue('name', 'tony-hawk')}
+          />
+          <form.Subscribe selector={(state) => state.isDefaultValue}>
+            {(isDefaultValue) => (
+              <output data-testid="is-default-value">
+                {String(isDefaultValue)}
+              </output>
+            )}
+          </form.Subscribe>
+        </>
+      )
+    }
+
+    render(<Component />)
+
+    expect(screen.getByTestId('is-default-value')).toHaveTextContent('true')
+
+    fireEvent.click(screen.getByTestId('change'))
+    expect(screen.getByTestId('is-default-value')).toHaveTextContent('false')
+
+    fireEvent.click(screen.getByTestId('restore'))
+    expect(screen.getByTestId('is-default-value')).toHaveTextContent('true')
   })
 
   it('does not crash when asynchronous runOnMount validation resolves after unmount', async () => {

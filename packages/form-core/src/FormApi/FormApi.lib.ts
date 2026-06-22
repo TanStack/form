@@ -1,4 +1,4 @@
-import { batch, createAtom, shallow } from '@tanstack/store'
+import { batch, createAtom } from '@tanstack/store'
 import {
   getDefaultValueCacheResult,
   getOrCreateFieldApi,
@@ -35,11 +35,15 @@ import {
 import { runFormListenerPipeline } from '../listeners.lib'
 import { runSubmissionProcess } from './handleSubmit.lib'
 import { ArrayMethods } from './array-methods.lib'
-import { getFormStateSnapshot } from './formState.lib'
+import {
+  compareFormStateSnapshots,
+  getFormStateSnapshot,
+} from './formState.lib'
 import type {
   FormApi,
   FormApiOptions,
   FormOptions,
+  FormResetOptions,
   FormState,
 } from './FormApi.public'
 import type { FormErrorMeta } from './formState.lib'
@@ -113,6 +117,7 @@ export interface FormAtoms<in out TFormData> {
   values: Atom<TFormData>
   meta: FormMetaAtoms
   resetVersion: Atom<number>
+  defaultValuesVersion: Atom<number>
 }
 
 function createInitialFormErrorMeta(validatorCount: number): FormErrorMeta {
@@ -311,6 +316,7 @@ export class InternalFormApi<
   }
 
   _getIsDefaultValue(): boolean {
+    void this._atoms.defaultValuesVersion.get()
     const values = this._atoms.values.get()
     const defaultValues = this.options.defaultValues
     const cached = this._getCachedIsDefaultValue(values, defaultValues)
@@ -332,11 +338,12 @@ export class InternalFormApi<
       values: createAtom(options.defaultValues),
       meta: createInitialFormMetaAtoms(validatorCount),
       resetVersion: createAtom(0),
+      defaultValuesVersion: createAtom(0),
     }
     this._fieldRootNode = new InternalRootFieldApi(this)
 
     this.atom = createAtom(() => getFormStateSnapshot(this), {
-      compare: shallow,
+      compare: compareFormStateSnapshots,
     })
 
     this._runMountValidation()
@@ -374,11 +381,11 @@ export class InternalFormApi<
     return nearest
   }
 
-  // keepDefaultValues is a bad name, reconsider || preserveDefaultValues?
-  // Once decided, fix `FormApi.public.ts` to also have it
-  // TODO
-  reset = (values?: TFormData, opts?: { preserveDefaultValues?: boolean }) => {
-    if (values && !opts?.preserveDefaultValues) {
+  reset = (values?: TFormData, opts?: FormResetOptions) => {
+    const shouldUpdateDefaultValues =
+      values !== undefined && opts?.updateDefaultValues !== false
+
+    if (shouldUpdateDefaultValues) {
       this._options = { ...this.options, defaultValues: values } as never
     }
 
@@ -389,6 +396,9 @@ export class InternalFormApi<
 
     batch(() => {
       this._atoms.resetVersion.set((version) => version + 1)
+      if (shouldUpdateDefaultValues) {
+        this._atoms.defaultValuesVersion.set((version) => version + 1)
+      }
       this._fieldRootNode._children.forEach((child) =>
         child._kill({ listenerEvent: 'reset' }),
       )
@@ -427,6 +437,9 @@ export class InternalFormApi<
     this._defaultValueCache = null
     this._options = {
       ...options,
+      defaultValues: didDefaultValuesChange
+        ? options.defaultValues
+        : oldOptions.defaultValues,
       formId: options.formId ?? oldOptions.formId,
     }
 
@@ -439,17 +452,20 @@ export class InternalFormApi<
     }
 
     if (didDefaultValuesChange) {
-      if (!this.state.isTouched) {
-        this._atoms.values.set(options.defaultValues)
-      } else {
-        this._atoms.values.set((prev) =>
-          applyDefaultValuesPreservingTouchedFields(
-            prev,
-            options.defaultValues,
-            this,
-          ),
-        )
-      }
+      batch(() => {
+        this._atoms.defaultValuesVersion.set((version) => version + 1)
+        if (this._atoms.meta.touchedFieldCount.get() === 0) {
+          this._atoms.values.set(options.defaultValues)
+        } else {
+          this._atoms.values.set((prev) =>
+            applyDefaultValuesPreservingTouchedFields(
+              prev,
+              options.defaultValues,
+              this,
+            ),
+          )
+        }
+      })
     }
 
     // TODO plans

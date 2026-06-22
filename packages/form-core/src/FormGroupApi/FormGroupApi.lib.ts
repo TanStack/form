@@ -222,6 +222,7 @@ export class InternalFormGroupApi<
         const field = this.form._tryGetFieldApi(this.name)
         const value = getBy(this.form._atoms.values.get(), this.name)
         if (field) return field._getIsDefaultValue(value)
+        void this.form._atoms.defaultValuesVersion.get()
         return evaluate(
           getBy(this.form.options.defaultValues, this.name),
           value,

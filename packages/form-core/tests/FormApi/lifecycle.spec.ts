@@ -141,7 +141,7 @@ describe('form - lifecycle', () => {
       field._register()
 
       field.handleChange('bye')
-      form.reset({ name: 'reset state' }, { preserveDefaultValues: true })
+      form.reset({ name: 'reset state' }, { updateDefaultValues: false })
       expect(form.state.values).toEqual({ name: 'reset state' })
       expect(form.options.defaultValues).toEqual({ name: '' })
     })
@@ -154,10 +154,14 @@ describe('form - lifecycle', () => {
       form._update({ defaultValues: { name: 'async' } })
 
       expect(form.state.values).toEqual({ name: 'reset default' })
+      expect(form.options.defaultValues).toEqual({ name: 'reset default' })
+      expect(form.state.isDefaultValue).toBe(true)
 
       form._update({ defaultValues: { name: 'new async' } })
 
       expect(form.state.values).toEqual({ name: 'new async' })
+      expect(form.options.defaultValues).toEqual({ name: 'new async' })
+      expect(form.state.isDefaultValue).toBe(true)
     })
 
     it('resets meta and kills fields', async () => {
@@ -247,7 +251,7 @@ describe('form - lifecycle', () => {
         expect(finishSubmit).toBeTypeOf('function')
       })
 
-      form.reset({ name: 'reset value' }, { preserveDefaultValues: true })
+      form.reset({ name: 'reset value' }, { updateDefaultValues: false })
       finishSubmit()
       const result = await submitPromise
 

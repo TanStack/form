@@ -368,6 +368,160 @@ function hasFieldValidatorErrors(
 
 export type AnyInternalFieldApi = InternalFieldApi<any, any, any>
 
+type DetachWatchingFieldFn = (
+  operation: {
+    sourceField: AnyInternalFieldApi
+    watchingField: AnyInternalFieldApi
+    watcherIndex: number
+  },
+  options?: { pruneSourceField?: boolean },
+) => void
+
+function clearWatchedSourceReference(
+  listenToFields: FieldListenToFields | null,
+  sourceField: AnyInternalFieldApi,
+  watcherIndex: number,
+): FieldListenToFields | null {
+  if (!listenToFields) return null
+
+  const sourceMetas = listenToFields[watcherIndex]
+  if (!sourceMetas) return listenToFields
+
+  const nextSourceMetas = sourceMetas.filter(
+    (sourceMeta) => sourceMeta.field !== sourceField,
+  )
+  if (nextSourceMetas.length === sourceMetas.length) {
+    return listenToFields
+  }
+
+  if (nextSourceMetas.length > 0) {
+    listenToFields[watcherIndex] = nextSourceMetas
+  } else {
+    delete listenToFields[watcherIndex]
+  }
+
+  return listenToFields.some(
+    (sourceMetasForIndex) => sourceMetasForIndex.length > 0,
+  )
+    ? listenToFields
+    : null
+}
+
+function detachOutgoingWatchedFields({
+  field,
+  listenToFields,
+  detach,
+  nodesToKill,
+  fieldsToPruneAfterKill,
+}: {
+  field: AnyInternalFieldApi
+  listenToFields: FieldListenToFields | null
+  detach: DetachWatchingFieldFn
+  nodesToKill: Set<AnyInternalFieldApi>
+  fieldsToPruneAfterKill: Set<AnyInternalFieldApi>
+}) {
+  listenToFields?.forEach((sourceMetas, watcherIndex) => {
+    for (const { field: sourceField } of sourceMetas) {
+      detach(
+        { sourceField, watchingField: field, watcherIndex },
+        { pruneSourceField: false },
+      )
+
+      if (!nodesToKill.has(sourceField)) {
+        fieldsToPruneAfterKill.add(sourceField)
+      }
+    }
+  })
+}
+
+function detachIncomingWatchedFields({
+  sourceField,
+  watchingFields,
+  detach,
+  getListenToFields,
+  setListenToFields,
+}: {
+  sourceField: AnyInternalFieldApi
+  watchingFields: FieldWatchingFields | null
+  detach: DetachWatchingFieldFn
+  getListenToFields: (
+    watchingField: AnyInternalFieldApi,
+  ) => FieldListenToFields | null
+  setListenToFields: (
+    watchingField: AnyInternalFieldApi,
+    listenToFields: FieldListenToFields | null,
+  ) => void
+}) {
+  if (!watchingFields) return
+
+  for (const [watchingField, watcherIndexes] of Array.from(watchingFields)) {
+    for (const watcherIndex of Array.from(watcherIndexes)) {
+      detach(
+        { sourceField, watchingField, watcherIndex },
+        { pruneSourceField: false },
+      )
+      setListenToFields(
+        watchingField,
+        clearWatchedSourceReference(
+          getListenToFields(watchingField),
+          sourceField,
+          watcherIndex,
+        ),
+      )
+    }
+  }
+}
+
+function detachLinkedFieldReferences({
+  field,
+  nodesToKill,
+  fieldsToPruneAfterKill,
+}: {
+  field: AnyInternalFieldApi
+  nodesToKill: Set<AnyInternalFieldApi>
+  fieldsToPruneAfterKill: Set<AnyInternalFieldApi>
+}) {
+  detachOutgoingWatchedFields({
+    field,
+    listenToFields: field._listenToFields,
+    detach: detachWatchingListenerField,
+    nodesToKill,
+    fieldsToPruneAfterKill,
+  })
+  field._listenToFields = null
+
+  detachOutgoingWatchedFields({
+    field,
+    listenToFields: field._validateOnFields,
+    detach: detachWatchingValidatorField,
+    nodesToKill,
+    fieldsToPruneAfterKill,
+  })
+  field._validateOnFields = null
+
+  detachIncomingWatchedFields({
+    sourceField: field,
+    watchingFields: field._watchingFields,
+    detach: detachWatchingListenerField,
+    getListenToFields: (watchingField) => watchingField._listenToFields,
+    setListenToFields: (watchingField, listenToFields) => {
+      watchingField._listenToFields = listenToFields
+    },
+  })
+  field._watchingFields = null
+
+  detachIncomingWatchedFields({
+    sourceField: field,
+    watchingFields: field._watchingValidatorFields,
+    detach: detachWatchingValidatorField,
+    getListenToFields: (watchingField) => watchingField._validateOnFields,
+    setListenToFields: (watchingField, listenToFields) => {
+      watchingField._validateOnFields = listenToFields
+    },
+  })
+  field._watchingValidatorFields = null
+}
+
 export class InternalFieldApi<
   TFormData,
   TFieldName extends DeepKeys<TFormData>,
@@ -521,6 +675,7 @@ export class InternalFieldApi<
   }
 
   _getIsDefaultValue(value: unknown = this._getValue()): boolean {
+    void this.form._atoms.defaultValuesVersion.get()
     const defaultValue = getBy(this.form.options.defaultValues, this.name)
     const cached = this._getCachedIsDefaultValue(value, defaultValue)
     if (cached !== undefined) return cached
@@ -590,7 +745,9 @@ export class InternalFieldApi<
       form: this.form,
     })
 
-    reconciledListeners.detach.forEach(detachWatchingListenerField)
+    reconciledListeners.detach.forEach((operation) =>
+      detachWatchingListenerField(operation),
+    )
     reconciledListeners.attach.forEach(attachWatchingListenerField)
 
     this._listeners = reconciledListeners.items
@@ -604,7 +761,9 @@ export class InternalFieldApi<
         form: this.form,
       })
 
-      reconciledValidators.detach.forEach(detachWatchingValidatorField)
+      reconciledValidators.detach.forEach((operation) =>
+        detachWatchingValidatorField(operation),
+      )
       reconciledValidators.attach.forEach(attachWatchingValidatorField)
 
       this._validators = reconciledValidators.items
@@ -1176,6 +1335,7 @@ export class InternalFieldApi<
       const stack: Array<AnyInternalFieldApi> = [this]
       const nodesToKill: Array<AnyInternalFieldApi> = []
       const nodesToKillSet = new Set<AnyInternalFieldApi>()
+      const fieldsToPruneAfterKill = new Set<AnyInternalFieldApi>()
 
       while (stack.length > 0) {
         const node = stack.pop()!
@@ -1200,6 +1360,11 @@ export class InternalFieldApi<
 
       for (const node of nodesToKill) {
         const nodeMeta = node._atoms.meta?.get()
+        detachLinkedFieldReferences({
+          field: node,
+          nodesToKill: nodesToKillSet,
+          fieldsToPruneAfterKill,
+        })
 
         if (!node._parent._isRoot && nodeMeta) {
           node._parent._updateChildContributionCount(
@@ -1230,6 +1395,10 @@ export class InternalFieldApi<
         }
         node._childrenMap.clear()
         node._parent._removeChild(node._segment)
+      }
+
+      for (const field of fieldsToPruneAfterKill) {
+        field._pruneIfUnused()
       }
 
       this.form._atoms.meta.touchedFieldCount.set((prev) =>

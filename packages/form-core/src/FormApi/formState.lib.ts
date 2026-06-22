@@ -25,6 +25,9 @@ export type FormStateOverrides = {
 }
 
 const formErrorsCache = new WeakMap<FormErrorMeta, Array<ValidationIssue>>()
+const formStateDefaultValuesVersionKey = Symbol(
+  'tanstack-form-default-values-version',
+)
 
 const formStateKeys = [
   'values',
@@ -32,6 +35,21 @@ const formStateKeys = [
   'isDirty',
   'isPristine',
   'isDefaultValue',
+  'errors',
+  'isValid',
+  'isInvalid',
+  'canSubmit',
+  'isSubmitting',
+  'isSubmitSuccessful',
+  'isValidating',
+  'submissionAttempts',
+] as const
+
+const eagerFormStateKeys = [
+  'values',
+  'isTouched',
+  'isDirty',
+  'isPristine',
   'errors',
   'isValid',
   'isInvalid',
@@ -143,9 +161,38 @@ export function getFormStateSnapshot<
     ToSubmitMeta<TSubmitReturn>
   >
   for (const key of formStateKeys) {
-    result[key] = getFormStateValue(form, key, overrides) as never
+    if (key === 'isDefaultValue') {
+      Object.defineProperty(result, key, {
+        configurable: true,
+        enumerable: true,
+        get: () => getFormStateValue(form, key, overrides),
+      })
+    } else {
+      result[key] = getFormStateValue(form, key, overrides) as never
+    }
   }
+  Object.defineProperty(result, formStateDefaultValuesVersionKey, {
+    value: form._atoms.defaultValuesVersion.get(),
+  })
   return result
+}
+
+export function compareFormStateSnapshots(
+  prev: FormState<any, any, any>,
+  next: FormState<any, any, any>,
+): boolean {
+  if (
+    (prev as any)[formStateDefaultValuesVersionKey] !==
+    (next as any)[formStateDefaultValuesVersionKey]
+  ) {
+    return false
+  }
+
+  for (const key of eagerFormStateKeys) {
+    if (!Object.is(prev[key], next[key])) return false
+  }
+
+  return true
 }
 
 export function createFormStateProxy(
