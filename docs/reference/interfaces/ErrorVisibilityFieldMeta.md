@@ -15,6 +15,16 @@ Defined in: [validation.public.ts:153](https://github.com/TanStack/form-v2/blob/
 isBlurred: boolean;
 ```
 
+Defined in: [validation.public.ts:160](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L160)
+
+***
+
+### isDefaultValue
+
+```ts
+isDefaultValue: boolean;
+```
+
 Defined in: [validation.public.ts:159](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L159)
 
 ***
@@ -65,7 +75,7 @@ Defined in: [validation.public.ts:155](https://github.com/TanStack/form-v2/blob/
 isSelfValidating: boolean;
 ```
 
-Defined in: [validation.public.ts:161](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L161)
+Defined in: [validation.public.ts:162](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L162)
 
 ***
 
@@ -85,7 +95,7 @@ Defined in: [validation.public.ts:154](https://github.com/TanStack/form-v2/blob/
 isValidating: boolean;
 ```
 
-Defined in: [validation.public.ts:160](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L160)
+Defined in: [validation.public.ts:161](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L161)
 
 ***
 
@@ -95,4 +105,4 @@ Defined in: [validation.public.ts:160](https://github.com/TanStack/form-v2/blob/
 subfields: ErrorVisibilitySubfieldsMeta;
 ```
 
-Defined in: [validation.public.ts:162](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L162)
+Defined in: [validation.public.ts:163](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L163)

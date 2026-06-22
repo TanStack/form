@@ -11,7 +11,7 @@ type FormValidationError<TFormData> =
 | ValidationAggregateError<TFormData>;
 ```
 
-Defined in: [validation.public.ts:312](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L312)
+Defined in: [validation.public.ts:313](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L313)
 
 ## Type Parameters
 

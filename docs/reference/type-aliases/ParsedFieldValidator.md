@@ -9,7 +9,7 @@ title: ParsedFieldValidator
 type ParsedFieldValidator<TFieldValidator> = TFieldValidator extends object ? FieldValidatorMeta<TryGetFieldError<TFieldValidator>> : never;
 ```
 
-Defined in: [validation.public.ts:615](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L615)
+Defined in: [validation.public.ts:616](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L616)
 
 ## Type Parameters
 

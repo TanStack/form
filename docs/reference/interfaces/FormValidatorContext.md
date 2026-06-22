@@ -5,7 +5,7 @@ title: FormValidatorContext
 
 # Interface: FormValidatorContext\<TFormData\>
 
-Defined in: [validation.public.ts:297](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L297)
+Defined in: [validation.public.ts:298](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L298)
 
 ## Extends
 
@@ -25,7 +25,7 @@ Defined in: [validation.public.ts:297](https://github.com/TanStack/form-v2/blob/
 event: ValidationTrigger;
 ```
 
-Defined in: [validation.public.ts:292](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L292)
+Defined in: [validation.public.ts:293](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L293)
 
 #### Inherited from
 
@@ -41,7 +41,7 @@ BaseValidatorContext.event
 formApi: FormApi<TFormData, any, any>;
 ```
 
-Defined in: [validation.public.ts:294](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L294)
+Defined in: [validation.public.ts:295](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L295)
 
 #### Inherited from
 
@@ -57,7 +57,7 @@ BaseValidatorContext.formApi
 parseIssues: ParseFormIssuesFn<TFormData>;
 ```
 
-Defined in: [validation.public.ts:302](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L302)
+Defined in: [validation.public.ts:303](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L303)
 
 ***
 
@@ -67,7 +67,7 @@ Defined in: [validation.public.ts:302](https://github.com/TanStack/form-v2/blob/
 signal: AbortSignal;
 ```
 
-Defined in: [validation.public.ts:293](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L293)
+Defined in: [validation.public.ts:294](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L294)
 
 #### Inherited from
 
@@ -83,7 +83,7 @@ BaseValidatorContext.signal
 optional triggerFieldApi: AnyFieldApi;
 ```
 
-Defined in: [validation.public.ts:300](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L300)
+Defined in: [validation.public.ts:301](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L301)
 
 ***
 
@@ -93,4 +93,4 @@ Defined in: [validation.public.ts:300](https://github.com/TanStack/form-v2/blob/
 value: TFormData;
 ```
 
-Defined in: [validation.public.ts:301](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L301)
+Defined in: [validation.public.ts:302](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L302)

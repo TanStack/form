@@ -38,6 +38,7 @@ title: "@tanstack/form-core"
 - [FormListenerContext](interfaces/FormListenerContext.md)
 - [FormOptions](interfaces/FormOptions.md)
 - [FormOptionsApi](interfaces/FormOptionsApi.md)
+- [FormResetOptions](interfaces/FormResetOptions.md)
 - [FormState](interfaces/FormState.md)
 - [FormSubmitContext](interfaces/FormSubmitContext.md)
 - [FormValidator](interfaces/FormValidator.md)

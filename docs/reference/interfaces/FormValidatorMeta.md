@@ -5,7 +5,7 @@ title: FormValidatorMeta
 
 # Interface: FormValidatorMeta\<TSchemaSubmitOutput, TFormError, TFieldError\>
 
-Defined in: [validation.public.ts:538](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L538)
+Defined in: [validation.public.ts:539](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L539)
 
 ## Type Parameters
 
@@ -29,7 +29,7 @@ Defined in: [validation.public.ts:538](https://github.com/TanStack/form-v2/blob/
 readonly fieldError: TFieldError;
 ```
 
-Defined in: [validation.public.ts:545](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L545)
+Defined in: [validation.public.ts:546](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L546)
 
 ***
 
@@ -39,7 +39,7 @@ Defined in: [validation.public.ts:545](https://github.com/TanStack/form-v2/blob/
 readonly formError: TFormError;
 ```
 
-Defined in: [validation.public.ts:544](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L544)
+Defined in: [validation.public.ts:545](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L545)
 
 ***
 
@@ -49,4 +49,4 @@ Defined in: [validation.public.ts:544](https://github.com/TanStack/form-v2/blob/
 readonly schemaSubmitOutput: TSchemaSubmitOutput;
 ```
 
-Defined in: [validation.public.ts:543](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L543)
+Defined in: [validation.public.ts:544](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L544)

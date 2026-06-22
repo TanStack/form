@@ -9,7 +9,7 @@ title: ParsedFormGroupValidator
 type ParsedFormGroupValidator<TGroupValidator> = TGroupValidator extends object ? TGroupValidator extends object ? FormGroupValidatorMeta<undefined, TryGetFormError<TGroupValidator>, TryGetFieldError<TGroupValidator>> : FormGroupValidatorMeta<TryGetSchemaOutput<TGroupValidator>, TryGetFormError<TGroupValidator>, TryGetFieldError<TGroupValidator>> : never;
 ```
 
-Defined in: [validation.public.ts:623](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L623)
+Defined in: [validation.public.ts:624](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L624)
 
 ## Type Parameters
 

@@ -9,4 +9,4 @@ title: ValidValidationResult
 type ValidValidationResult = null | undefined | false;
 ```
 
-Defined in: [validation.public.ts:305](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L305)
+Defined in: [validation.public.ts:306](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L306)
