@@ -3,7 +3,7 @@ id: quick-start
 title: Quick Start
 ---
 
-The bare minimum to get started with TanStack Form is to create a `TanstackFormController` as seen below with the `Employee` interface for our test form:
+The bare minimum to get started with TanStack Form is to create a `TanStackFormController` as seen below with the `Employee` interface for our test form:
 
 ```ts
 interface Employee {
@@ -13,7 +13,7 @@ interface Employee {
   jobTitle: string
 }
 
-#form = new TanStackFormController()<Employee>(this, {
+#form = new TanStackFormController<Employee>(this, {
   defaultValues: {
     firstName: '',
     lastName: '',
@@ -25,7 +25,7 @@ interface Employee {
 
 In this example `this` references the instance of your `LitElement` in which you want to use TanStack Form.
 
-To wire a form element in your template up with TanStack Form, use the `field` method of `TanstackFormController`.
+To wire a form element in your template up with TanStack Form, use the `field` method of `TanStackFormController`.
 
 The first parameter of `field` is `FieldOptions` and the second is callback to render your element.
 
