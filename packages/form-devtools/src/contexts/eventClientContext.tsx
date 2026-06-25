@@ -1,28 +1,18 @@
-import { createContext, onCleanup, onMount, useContext } from 'solid-js'
-import { devtools } from '@tanstack/form-core/internals'
-import { createFormDevtoolsBridge } from '../devtoolsBridge.lib'
-import { formEventClient } from '../eventClient.lib'
+import { createContext, useContext } from 'solid-js'
+import { createFormEventClientStore } from '../stores/eventClientStore'
 import type { ParentComponent } from 'solid-js'
 
-type FormEventClient = typeof formEventClient
+type FormEventClient = ReturnType<typeof createFormEventClientStore>
 
 const FormEventClientContext = createContext<FormEventClient | undefined>(
   undefined,
 )
 
 export const FormEventClientProvider: ParentComponent = (props) => {
-  let uninstallBridge: (() => void) | undefined
-
-  onMount(() => {
-    uninstallBridge = devtools.installBridge(createFormDevtoolsBridge())
-  })
-
-  onCleanup(() => {
-    uninstallBridge?.()
-  })
+  const value = createFormEventClientStore()
 
   return (
-    <FormEventClientContext.Provider value={formEventClient}>
+    <FormEventClientContext.Provider value={value}>
       {props.children}
     </FormEventClientContext.Provider>
   )
