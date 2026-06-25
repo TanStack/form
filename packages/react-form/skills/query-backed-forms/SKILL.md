@@ -7,8 +7,8 @@ description: >
   isSubmitting, isSubmitSuccessful, transient errors, and validation errors.
 metadata:
   type: composition
-  library: "@tanstack/react-form"
-  library_version: "0.0.0"
+  library: '@tanstack/react-form'
+  library_version: '0.0.0'
 requires:
   - react-form-composition-setup
 sources:

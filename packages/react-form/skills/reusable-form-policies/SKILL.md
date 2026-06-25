@@ -8,9 +8,9 @@ description: >
   reusable visibility or validation workflow comments.
 metadata:
   type: framework
-  library: "@tanstack/react-form"
+  library: '@tanstack/react-form'
   framework: react
-  library_version: "0.0.0"
+  library_version: '0.0.0'
 requires:
   - react-form-composition-setup
   - error-visibility-workflows
@@ -39,7 +39,8 @@ import {
 } from '@tanstack/react-form'
 
 export const showAfterBlurOrSubmit = createErrorVisibility(
-  ({ fieldState, state }) => fieldState.meta.isBlurred || state.submissionAttempts > 0,
+  ({ fieldState, state }) =>
+    fieldState.meta.isBlurred || state.submissionAttempts > 0,
 )
 
 export const rewardEarlyPunishLate = createValidator({
@@ -98,7 +99,8 @@ import { createErrorVisibility } from '@tanstack/react-form'
 
 /** Keep the first pass calm, then reveal errors after blur or submit. */
 export const waitForBlurOrSubmit = createErrorVisibility(
-  ({ fieldState, state }) => fieldState.meta.isBlurred || state.submissionAttempts > 0,
+  ({ fieldState, state }) =>
+    fieldState.meta.isBlurred || state.submissionAttempts > 0,
 )
 ```
 
@@ -174,7 +176,11 @@ const sharedFields = defineFields({
 })
 
 function SharedImpl({ fields }: { fields: typeof sharedFields }) {
-  return <fields.Field name="value">{(field) => <input value={field.value} />}</fields.Field>
+  return (
+    <fields.Field name="value">
+      {(field) => <input value={field.value} />}
+    </fields.Field>
+  )
 }
 
 export const SharedField = withFields(sharedFields, SharedImpl, 'fields')
@@ -198,7 +204,8 @@ Correct:
 
 ```ts
 export const showAfterBlurOrSubmit = createErrorVisibility(
-  ({ fieldState, state }) => fieldState.meta.isBlurred || state.submissionAttempts > 0,
+  ({ fieldState, state }) =>
+    fieldState.meta.isBlurred || state.submissionAttempts > 0,
 )
 ```
 
@@ -218,7 +225,8 @@ Correct:
 
 ```ts
 const policy = createErrorVisibility(
-  ({ fieldState, state }) => fieldState.meta.isBlurred || state.submissionAttempts > 0,
+  ({ fieldState, state }) =>
+    fieldState.meta.isBlurred || state.submissionAttempts > 0,
 )
 ```
 

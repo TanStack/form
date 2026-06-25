@@ -7,9 +7,9 @@ description: >
   choosing form option mode for schema-driven React forms.
 metadata:
   type: framework
-  library: "@tanstack/react-form"
+  library: '@tanstack/react-form'
   framework: react
-  library_version: "0.0.0"
+  library_version: '0.0.0'
 requires:
   - choosing-form-options-modes
 sources:

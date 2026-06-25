@@ -8,8 +8,8 @@ description: >
   barren core-test examples.
 metadata:
   type: lifecycle
-  library: "@tanstack/react-form"
-  library_version: "0.0.0"
+  library: '@tanstack/react-form'
+  library_version: '0.0.0'
 requires:
   - react-form-composition-setup
 sources:
@@ -42,7 +42,11 @@ const emptySignupValues: SignupValues = {
   email: '',
 }
 
-export function SignupExample({ initialValues }: { initialValues?: SignupValues }) {
+export function SignupExample({
+  initialValues,
+}: {
+  initialValues?: SignupValues
+}) {
   const form = useForm({
     defaultValues: initialValues ?? emptySignupValues,
     onSubmit: async ({ value }) => {
@@ -68,7 +72,9 @@ export function SignupExample({ initialValues }: { initialValues?: SignupValues 
         )}
       </form.Field>
       <form.Subscribe selector={(state) => state.isSubmitting}>
-        {(isSubmitting) => <button disabled={isSubmitting}>Create account</button>}
+        {(isSubmitting) => (
+          <button disabled={isSubmitting}>Create account</button>
+        )}
       </form.Subscribe>
     </form>
   )

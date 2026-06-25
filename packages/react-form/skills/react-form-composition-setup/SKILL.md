@@ -8,9 +8,9 @@ description: >
   array rendering, and field-name inference questions.
 metadata:
   type: framework
-  library: "@tanstack/react-form"
+  library: '@tanstack/react-form'
   framework: react
-  library_version: "0.0.0"
+  library_version: '0.0.0'
 requires: []
 sources:
   - TanStack/form-v2:packages/react-form/src/ReactForm/Components.public.ts
@@ -156,8 +156,12 @@ const dateRangeFields = defineFields({
 function DateRangeImpl({ fields }: { fields: typeof dateRangeFields }) {
   return (
     <>
-      <fields.Field name="start">{(field) => <input value={field.value} />}</fields.Field>
-      <fields.Field name="end">{(field) => <input value={field.value} />}</fields.Field>
+      <fields.Field name="start">
+        {(field) => <input value={field.value} />}
+      </fields.Field>
+      <fields.Field name="end">
+        {(field) => <input value={field.value} />}
+      </fields.Field>
     </>
   )
 }
@@ -297,10 +301,18 @@ const sharedFields = defineFields({
 })
 
 function SharedSection({ fields }: { fields: typeof sharedFields }) {
-  return <fields.Field name="value">{(field) => <input value={field.value} />}</fields.Field>
+  return (
+    <fields.Field name="value">
+      {(field) => <input value={field.value} />}
+    </fields.Field>
+  )
 }
 
-export const BoundSharedSection = withFields(sharedFields, SharedSection, 'fields')
+export const BoundSharedSection = withFields(
+  sharedFields,
+  SharedSection,
+  'fields',
+)
 ```
 
 TypeScript cannot usefully narrow a union of different form APIs; field groups are the reusable cross-form abstraction.

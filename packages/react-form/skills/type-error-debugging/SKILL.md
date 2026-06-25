@@ -8,9 +8,9 @@ description: >
   atom APIs.
 metadata:
   type: framework
-  library: "@tanstack/react-form"
+  library: '@tanstack/react-form'
   framework: react
-  library_version: "0.0.0"
+  library_version: '0.0.0'
 requires:
   - react-form-composition-setup
   - choosing-form-options-modes
@@ -149,13 +149,17 @@ Source: TanStack/form-v2:packages/react-form/tests/FieldGroupApi.test-d.tsx
 Wrong:
 
 ```tsx
-<fields.Field name="user.name">{(field) => <input value={field.value} />}</fields.Field>
+<fields.Field name="user.name">
+  {(field) => <input value={field.value} />}
+</fields.Field>
 ```
 
 Correct:
 
 ```tsx
-<fields.Field name="name">{(field) => <input value={field.value} />}</fields.Field>
+<fields.Field name="name">
+  {(field) => <input value={field.value} />}
+</fields.Field>
 ```
 
 Inside the group, use virtual paths defined by `defineFields`; real paths are supplied through `withFields` bindings.

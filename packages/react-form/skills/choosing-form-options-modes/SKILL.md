@@ -8,9 +8,9 @@ description: >
   editable defaults, and schemaOutputs in onSubmit.
 metadata:
   type: framework
-  library: "@tanstack/react-form"
+  library: '@tanstack/react-form'
   framework: react
-  library_version: "0.0.0"
+  library_version: '0.0.0'
 requires: []
 sources:
   - TanStack/form-v2:packages/form-core/src/utils.public.ts
@@ -71,7 +71,8 @@ export const personOptions = formOptions({
   },
   validators: [
     {
-      run: ({ value }) => (value.name.length === 0 ? 'Name is required' : undefined),
+      run: ({ value }) =>
+        value.name.length === 0 ? 'Name is required' : undefined,
       triggers: ['change'],
     },
   ],

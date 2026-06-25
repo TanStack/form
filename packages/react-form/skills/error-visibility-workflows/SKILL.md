@@ -7,9 +7,9 @@ description: >
   form group scoped submission attempts, and reusable validator trigger policies.
 metadata:
   type: framework
-  library: "@tanstack/react-form"
+  library: '@tanstack/react-form'
   framework: react
-  library_version: "0.0.0"
+  library_version: '0.0.0'
 requires: []
 sources:
   - TanStack/form-v2:packages/form-core/src/validation.public.ts
@@ -29,7 +29,8 @@ Use `errorVisibility` to define when validation errors become visible. It is a c
 import { createErrorVisibility, useForm } from '@tanstack/react-form'
 
 const showAfterBlurOrSubmit = createErrorVisibility(
-  ({ fieldState, state }) => fieldState.meta.isBlurred || state.submissionAttempts > 0,
+  ({ fieldState, state }) =>
+    fieldState.meta.isBlurred || state.submissionAttempts > 0,
 )
 
 export function LoginForm() {
@@ -45,7 +46,8 @@ export function LoginForm() {
       name="email"
       validators={[
         {
-          run: ({ value }) => (value.length === 0 ? 'Email is required' : undefined),
+          run: ({ value }) =>
+            value.length === 0 ? 'Email is required' : undefined,
           triggers: ['change', 'blur'],
         },
       ]}
@@ -71,7 +73,8 @@ export function LoginForm() {
 
 ```ts
 const showAfterBlurOrSubmit = createErrorVisibility(
-  ({ fieldState, state }) => fieldState.meta.isBlurred || state.submissionAttempts > 0,
+  ({ fieldState, state }) =>
+    fieldState.meta.isBlurred || state.submissionAttempts > 0,
 )
 ```
 
