@@ -3,7 +3,7 @@ status: reviewed
 review_state: phase_5_finalized
 generated_from:
   command: pnpm intent:scaffold
-  workflow: '@tanstack/intent domain-discovery'
+  workflow: "@tanstack/intent domain-discovery"
   phase: 5
 repository:
   root: /home/luca/repos/tanstack/form-v2
@@ -20,109 +20,109 @@ repository:
     - examples/react/**/*.tsx
 maintainer_guidance:
   adapter_first: true
-  primary_user_entrypoint: '@tanstack/react-form'
-  secondary_user_entrypoint: '@tanstack/solid-form'
-  core_role: 'Concept and implementation source, not a user workflow entrypoint.'
+  primary_user_entrypoint: "@tanstack/react-form"
+  secondary_user_entrypoint: "@tanstack/solid-form"
+  core_role: "Concept and implementation source, not a user workflow entrypoint."
   primary_adapter_status:
-    react: 'Most complete adapter; use as primary examples and skill target.'
-    solid: 'Important adapter but missing critical planned pieces; avoid Solid-first coverage for now.'
+    react: "Most complete adapter; use as primary examples and skill target."
+    solid: "Important adapter but missing critical planned pieces; avoid Solid-first coverage for now."
   schema_modes:
     default_form_options:
-      summary: 'DefaultValues-first inference.'
+      summary: "DefaultValues-first inference."
       use_when:
-        - 'The form type should be inferred from defaultValues.'
-        - 'Validation is mostly callback-based and callbacks should receive a value type derived from defaultValues.'
+        - "The form type should be inferred from defaultValues."
+        - "Validation is mostly callback-based and callbacks should receive a value type derived from defaultValues."
       properties:
-        - 'defaultValues is taken at face value.'
-        - 'The inferred defaultValues type is used for validators and callbacks.'
-        - 'This mode is often the simplest choice when no schema should own the form type.'
+        - "defaultValues is taken at face value."
+        - "The inferred defaultValues type is used for validators and callbacks."
+        - "This mode is often the simplest choice when no schema should own the form type."
     strict_schema:
-      summary: 'Schema-source pipeline mode.'
+      summary: "Schema-source pipeline mode."
       use_when:
-        - 'The schema is a transforming pipeline from input type to output type.'
-        - 'The schema should be the source for form typing.'
+        - "The schema is a transforming pipeline from input type to output type."
+        - "The schema should be the source for form typing."
       properties:
-        - 'defaultValues must align with the schema input type and should produce type errors when they do not.'
-        - 'Callbacks may not have useful inference unless a schema is present in the validator array.'
-        - 'onSubmit should read the transform output from schemaOutputs instead of raw value.'
+        - "defaultValues must align with the schema input type and should produce type errors when they do not."
+        - "Callbacks may not have useful inference unless a schema is present in the validator array."
+        - "onSubmit should read the transform output from schemaOutputs instead of raw value."
     loose_schema:
-      summary: 'Schema-source ruleset mode with editable defaults.'
+      summary: "Schema-source ruleset mode with editable defaults."
       use_when:
-        - 'The schema is a ruleset for confirming valid output, but the editable form state needs nullable or undefined starting values.'
-        - 'A schema such as z.date() needs a starting value like null before the user has chosen a date.'
+        - "The schema is a ruleset for confirming valid output, but the editable form state needs nullable or undefined starting values."
+        - "A schema such as z.date() needs a starting value like null before the user has chosen a date."
       properties:
-        - 'The input is looser while the parsed submit output is still the schema output type.'
-        - 'defaultValues must still align with the schema shape, but properties may also be null or undefined where editing requires it.'
-        - 'Callbacks may not have useful inference unless a schema is present in the validator array.'
-        - 'onSubmit should read the transform output from schemaOutputs instead of raw value.'
+        - "The input is looser while the parsed submit output is still the schema output type."
+        - "defaultValues must still align with the schema shape, but properties may also be null or undefined where editing requires it."
+        - "Callbacks may not have useful inference unless a schema is present in the validator array."
+        - "onSubmit should read the transform output from schemaOutputs instead of raw value."
   schema_ecosystem:
     standard_schema:
-      role: 'Most common integration shape.'
-      note: 'Standard Schema is an interoperability interface, not a pipeline-vs-ruleset classification system.'
-      source: 'https://standardschema.dev/'
+      role: "Most common integration shape."
+      note: "Standard Schema is an interoperability interface, not a pipeline-vs-ruleset classification system."
+      source: "https://standardschema.dev/"
     pipeline_vs_ruleset_heuristic:
-      status: 'maintainer commentary'
-      meaning: 'A mental model for deciding TanStack Form option mode: is the schema written as a pipeline of constraints/transforms, or as a firewall that only lets already-valid values through?'
-      caution: 'This is not part of Standard Schema and should not be presented as a Standard Schema concept.'
+      status: "maintainer commentary"
+      meaning: "A mental model for deciding TanStack Form option mode: is the schema written as a pipeline of constraints/transforms, or as a firewall that only lets already-valid values through?"
+      caution: "This is not part of Standard Schema and should not be presented as a Standard Schema concept."
     validation_libraries_as_of_2026_06_25:
       - name: Zod
-        standard_schema_support: 'Supported; Zod docs recommend Standard Schema for schema-agnostic black-box validation and say Zod is included among compatible libraries.'
-        general_leaning: 'ruleset/firewall-leaning by default'
-        tanstack_form_bias: 'Often looseSchema for editable forms, with strictSchema only when a Zod schema is deliberately authored as a transform pipeline.'
-        source: 'https://zod.dev/library-authors'
+        standard_schema_support: "Supported; Zod docs recommend Standard Schema for schema-agnostic black-box validation and say Zod is included among compatible libraries."
+        general_leaning: "ruleset/firewall-leaning by default"
+        tanstack_form_bias: "Often looseSchema for editable forms, with strictSchema only when a Zod schema is deliberately authored as a transform pipeline."
+        source: "https://zod.dev/library-authors"
       - name: Valibot
-        standard_schema_support: 'Implements Standard Schema v1.'
-        general_leaning: 'pipeline-leaning'
-        tanstack_form_bias: 'Often strictSchema when the schema is authored as an input-to-output pipeline.'
-        source: 'https://valibot.dev/guides/integrate-valibot/'
+        standard_schema_support: "Implements Standard Schema v1."
+        general_leaning: "pipeline-leaning"
+        tanstack_form_bias: "Often strictSchema when the schema is authored as an input-to-output pipeline."
+        source: "https://valibot.dev/guides/integrate-valibot/"
       - name: ArkType
-        standard_schema_support: 'Supports and co-authored Standard Schema; can consume Standard Schema validators as definitions.'
-        general_leaning: 'mixed; structural firewall constraints with morph/pipe support for pipeline-style transforms'
-        tanstack_form_bias: 'Choose by the actual schema intent rather than the library name.'
-        source: 'https://arktype.io/docs/integrations'
+        standard_schema_support: "Supports and co-authored Standard Schema; can consume Standard Schema validators as definitions."
+        general_leaning: "mixed; structural firewall constraints with morph/pipe support for pipeline-style transforms"
+        tanstack_form_bias: "Choose by the actual schema intent rather than the library name."
+        source: "https://arktype.io/docs/integrations"
       - name: Effect Schema
-        standard_schema_support: 'Can generate Standard Schema V1 via Schema.standardSchemaV1 for schemas without dependencies.'
-        general_leaning: 'pipeline/codec-leaning because schemas distinguish decoded Type from Encoded input and support decoding/encoding.'
-        tanstack_form_bias: 'Often strictSchema when the Effect schema is used as an encoded-to-decoded boundary.'
-        source: 'https://effect.website/docs/schema/standard-schema/'
+        standard_schema_support: "Can generate Standard Schema V1 via Schema.standardSchemaV1 for schemas without dependencies."
+        general_leaning: "pipeline/codec-leaning because schemas distinguish decoded Type from Encoded input and support decoding/encoding."
+        tanstack_form_bias: "Often strictSchema when the Effect schema is used as an encoded-to-decoded boundary."
+        source: "https://effect.website/docs/schema/standard-schema/"
   query_shape:
-    async_defaults: 'Incoming values are often maybe undefined while data loads.'
-    default_values_plan: 'Do not pass query data alone as form defaults; either gate mounted fields/form until data is ready, or coalesce query data with a static shape-complete emptyFormValues object. Neither strategy is preferred globally.'
-    visual_language: 'Gating fields or the whole form changes the visual UI language because the form appears only after data is ready; an emptyFormValues fallback can render the form immediately with loading or placeholder state.'
-    submit: 'Use an async promise for endpoint calls so isSubmitting reflects the request. Catch submit errors only when they can produce validation errors that must be returned as values. Transient thrown/rejected errors may remain thrown; they set isSubmitSuccessful to false while external query/framework state preserves the error.'
+    async_defaults: "Incoming values are often maybe undefined while data loads."
+    default_values_plan: "Do not pass query data alone as form defaults; either gate mounted fields/form until data is ready, or coalesce query data with a static shape-complete emptyFormValues object. Neither strategy is preferred globally."
+    visual_language: "Gating fields or the whole form changes the visual UI language because the form appears only after data is ready; an emptyFormValues fallback can render the form immediately with loading or placeholder state."
+    submit: "Use an async promise for endpoint calls so isSubmitting reflects the request. Catch submit errors only when they can produce validation errors that must be returned as values. Transient thrown/rejected errors may remain thrown; they set isSubmitSuccessful to false while external query/framework state preserves the error."
   hard_do_nots:
     - id: no_type_assertions
-      rule: 'Do not type assert to make TanStack Form code compile; preserve inference and fix the mismatched API boundary.'
+      rule: "Do not type assert to make TanStack Form code compile; preserve inference and fix the mismatched API boundary."
       bad_patterns:
-        - 'name={`users[${index}].name` as const}'
-        - '{(field: any) => ...}'
-        - 'field: { value: string }'
+        - "name={`users[${index}].name` as const}"
+        - "{(field: any) => ...}"
+        - "field: { value: string }"
       preferred_patterns:
-        - 'Let field names infer without as const.'
-        - 'Let form.Field render-prop children infer their field type.'
-        - 'Use FieldWithValue<T> or AnyFieldApi when a reusable component needs an explicit field prop type.'
+        - "Let field names infer without as const."
+        - "Let form.Field render-prop children infer their field type."
+        - "Use FieldWithValue<T> or AnyFieldApi when a reusable component needs an explicit field prop type."
     - id: validation_errors_are_not_transient_errors
-      rule: 'Do not store query, network, or framework transient failures as form validation errors.'
-      reason: 'Validation errors from validators or onSubmit block the user from submitting; transient errors should use the query or framework error state.'
+      rule: "Do not store query, network, or framework transient failures as form validation errors."
+      reason: "Validation errors from validators or onSubmit block the user from submitting; transient errors should use the query or framework error state."
       preferred_patterns:
-        - 'Use an async promise for endpoint calls so isSubmitting reflects the request.'
-        - 'Return createValidationError or parseIssues only for validation-shaped server responses.'
-        - 'Keep retryable network/server failures in the query or framework layer; they may throw or reject as transient failures.'
+        - "Use an async promise for endpoint calls so isSubmitting reflects the request."
+        - "Return createValidationError or parseIssues only for validation-shaped server responses."
+        - "Keep retryable network/server failures in the query or framework layer; they may throw or reject as transient failures."
     - id: validation_errors_are_values
-      rule: 'Do not throw validation errors from validators or onSubmit.'
-      reason: 'Validation errors must be returned values. Thrown/rejected errors are submit failures, not validation state.'
+      rule: "Do not throw validation errors from validators or onSubmit."
+      reason: "Validation errors must be returned values. Thrown/rejected errors are submit failures, not validation state."
       preferred_patterns:
-        - 'Return createValidationError(...) from onSubmit for validation failures.'
-        - 'Return parseIssues(...) when converting Standard Schema issues.'
-        - 'Let transient endpoint failures reject if the surrounding query/framework preserves the error state.'
+        - "Return createValidationError(...) from onSubmit for validation failures."
+        - "Return parseIssues(...) when converting Standard Schema issues."
+        - "Let transient endpoint failures reject if the surrounding query/framework preserves the error state."
     - id: no_react_form_type_unions
-      rule: 'Do not type shared sections as unions of multiple ReactFormType forms.'
+      rule: "Do not type shared sections as unions of multiple ReactFormType forms."
       bad_patterns:
-        - 'form: ReactFormType<typeof formAOptions> | ReactFormType<typeof formBOptions>'
-      reason: 'TypeScript cannot make useful sense of different form API unions for field names and methods.'
+        - "form: ReactFormType<typeof formAOptions> | ReactFormType<typeof formBOptions>"
+      reason: "TypeScript cannot make useful sense of different form API unions for field names and methods."
       preferred_patterns:
-        - 'Use ReactFormType<typeof sharedOptions> for splitting one known form into sections.'
-        - 'Use field groups when a reusable section should bind into multiple different forms or paths.'
+        - "Use ReactFormType<typeof sharedOptions> for splitting one known form into sections."
+        - "Use field groups when a reusable section should bind into multiple different forms or paths."
   excluded_from_current_skills:
     - devtools_as_entrypoint
     - migration_guidance
@@ -132,24 +132,24 @@ maintainer_guidance:
     - solid_first_examples
 domain_boundaries:
   in_scope:
-    - 'React adapter-first form setup.'
-    - 'Core concepts explained through adapter APIs.'
-    - 'Standard Schema-compatible validation and submit parsing.'
-    - 'Choosing default, strictSchema, and looseSchema option modes.'
-    - 'Async default values and async submit with query-like libraries.'
-    - 'Error visibility policy callbacks.'
-    - 'Reusable split-form types and reusable validation or visibility policy modules.'
-    - 'Interpreting TypeScript errors caused by form/schema composition.'
-    - 'Authoring realistic examples that demonstrate intended usage.'
+    - "React adapter-first form setup."
+    - "Core concepts explained through adapter APIs."
+    - "Standard Schema-compatible validation and submit parsing."
+    - "Choosing default, strictSchema, and looseSchema option modes."
+    - "Async default values and async submit with query-like libraries."
+    - "Error visibility policy callbacks."
+    - "Reusable split-form types and reusable validation or visibility policy modules."
+    - "Interpreting TypeScript errors caused by form/schema composition."
+    - "Authoring realistic examples that demonstrate intended usage."
   out_of_scope:
-    - 'Using @tanstack/form-core directly in app examples.'
-    - 'Devtools workflows while devtools are still changing.'
-    - 'Migration from v1 or other form libraries.'
-    - 'Deriving UI metadata from Standard Schemas.'
-    - 'Owning transient server/network error state inside TanStack Form.'
-    - 'Teaching a specific UI library as part of TanStack Form itself.'
+    - "Using @tanstack/form-core directly in app examples."
+    - "Devtools workflows while devtools are still changing."
+    - "Migration from v1 or other form libraries."
+    - "Deriving UI metadata from Standard Schemas."
+    - "Owning transient server/network error state inside TanStack Form."
+    - "Teaching a specific UI library as part of TanStack Form itself."
 packages:
-  - name: '@tanstack/form-core'
+  - name: "@tanstack/form-core"
     role: concept_source
     public_user_entrypoint: false
     relevant_concepts:
@@ -180,7 +180,7 @@ packages:
       - packages/form-core/tests/FormApi/default-value.spec.ts
       - packages/form-core/tests/FormApi/submission-handling.spec.ts
       - packages/form-core/tests/FormApi/field-array-methods.spec.ts
-  - name: '@tanstack/react-form'
+  - name: "@tanstack/react-form"
     role: primary_user_entrypoint
     public_user_entrypoint: true
     relevant_concepts:
@@ -212,72 +212,72 @@ packages:
       - packages/react-form/tests/submit-return.test-d.tsx
       - packages/react-form/tests/FormGroup.test-d.tsx
       - packages/react-form/tests/FieldGroupApi.test-d.tsx
-  - name: '@tanstack/solid-form'
+  - name: "@tanstack/solid-form"
     role: secondary_adapter
     public_user_entrypoint: true
     current_skill_status: deferred
-    note: 'Use as conceptual parity context only until planned Solid adapter pieces land.'
-  - name: '@tanstack/form-devtools'
+    note: "Use as conceptual parity context only until planned Solid adapter pieces land."
+  - name: "@tanstack/form-devtools"
     role: devtools
     public_user_entrypoint: false
     current_skill_status: excluded
-    note: 'Devtools are in development and should not be treated as an entrypoint yet.'
+    note: "Devtools are in development and should not be treated as an entrypoint yet."
 domains:
   - id: react-adapter-composition
     title: React Adapter Composition
-    description: 'How users compose headless React forms, reusable field components, app form contexts, field groups, arrays, and UI-library bindings through @tanstack/react-form.'
+    description: "How users compose headless React forms, reusable field components, app form contexts, field groups, arrays, and UI-library bindings through @tanstack/react-form."
     package_focus:
-      - '@tanstack/react-form'
-      - '@tanstack/form-core'
+      - "@tanstack/react-form"
+      - "@tanstack/form-core"
     core_questions:
-      - 'Should this be a one-off useForm example, an app-form setup, or a field-group composition?'
-      - 'Which pieces need to be reusable without over-constraining submit types?'
-      - 'Is this reducing nesting in one known form, reducing field JSX boilerplate, or reusing a section across forms?'
-      - 'Should split child components receive a form prop typed with ReactFormType derived from shared options, or should the section be a field group?'
-      - 'Does the example need field arrays or reorder behavior?'
+      - "Should this be a one-off useForm example, an app-form setup, or a field-group composition?"
+      - "Which pieces need to be reusable without over-constraining submit types?"
+      - "Is this reducing nesting in one known form, reducing field JSX boilerplate, or reusing a section across forms?"
+      - "Should split child components receive a form prop typed with ReactFormType derived from shared options, or should the section be a field group?"
+      - "Does the example need field arrays or reorder behavior?"
     related_skills:
       - react-form-composition-setup
       - examples-authoring
       - type-error-debugging
   - id: schema-driven-forms
     title: Schema Driven Forms
-    description: 'How Standard Schema-compatible schemas influence form option mode, validation, field error routing, submit output, and TypeScript inference.'
+    description: "How Standard Schema-compatible schemas influence form option mode, validation, field error routing, submit output, and TypeScript inference."
     package_focus:
-      - '@tanstack/react-form'
-      - '@tanstack/form-core'
+      - "@tanstack/react-form"
+      - "@tanstack/form-core"
     core_questions:
-      - 'Is the schema a pipeline from input A to output B, or a ruleset for confirming B?'
-      - 'Should submit logic read raw value or schemaOutputs?'
-      - 'Do defaults need to be nullable or maybe undefined while editing?'
+      - "Is the schema a pipeline from input A to output B, or a ruleset for confirming B?"
+      - "Should submit logic read raw value or schemaOutputs?"
+      - "Do defaults need to be nullable or maybe undefined while editing?"
     related_skills:
       - choosing-form-options-modes
       - schema-driven-forms
       - type-error-debugging
   - id: async-data-and-submit
     title: Async Data And Submit
-    description: 'How query-like loading data and mutation-like submit functions interact with default values, touched fields, validation errors, and transient errors.'
+    description: "How query-like loading data and mutation-like submit functions interact with default values, touched fields, validation errors, and transient errors."
     package_focus:
-      - '@tanstack/react-form'
-      - '@tanstack/form-core'
+      - "@tanstack/react-form"
+      - "@tanstack/form-core"
     core_questions:
-      - 'Can incoming data be undefined at first render?'
-      - 'Should later defaultValues update untouched fields while preserving touched fields?'
-      - 'Is an onSubmit failure transient or validation-related?'
+      - "Can incoming data be undefined at first render?"
+      - "Should later defaultValues update untouched fields while preserving touched fields?"
+      - "Is an onSubmit failure transient or validation-related?"
     related_skills:
       - query-backed-forms
       - error-visibility-workflows
       - examples-authoring
   - id: validation-and-error-visibility
     title: Validation And Error Visibility
-    description: 'How validators produce errors, how Standard Schema issues are routed, and how visible errors are filtered by form-level or field-level callbacks.'
+    description: "How validators produce errors, how Standard Schema issues are routed, and how visible errors are filtered by form-level or field-level callbacks."
     package_focus:
-      - '@tanstack/react-form'
-      - '@tanstack/form-core'
+      - "@tanstack/react-form"
+      - "@tanstack/form-core"
     core_questions:
-      - 'When should an error become visible?'
-      - 'Should the visibility policy or validator trigger policy be extracted into a named reusable helper?'
-      - 'Is visibility form-wide, field-specific, or group-scoped?'
-      - 'Should submit errors be parsed from Standard Schema issues or manually created?'
+      - "When should an error become visible?"
+      - "Should the visibility policy or validator trigger policy be extracted into a named reusable helper?"
+      - "Is visibility form-wide, field-specific, or group-scoped?"
+      - "Should submit errors be parsed from Standard Schema issues or manually created?"
     related_skills:
       - error-visibility-workflows
       - schema-driven-forms
@@ -286,12 +286,12 @@ domains:
     title: Diagnostics And Examples
     description: "How to turn the library's type surface and examples into agent-readable, realistic user journeys."
     package_focus:
-      - '@tanstack/react-form'
-      - '@tanstack/form-core'
+      - "@tanstack/react-form"
+      - "@tanstack/form-core"
     core_questions:
-      - 'What type boundary is producing the error?'
-      - 'Is the example demonstrating intended usage rather than only core behavior?'
-      - 'Which realistic integration should the example model without claiming ownership of external UI or query state?'
+      - "What type boundary is producing the error?"
+      - "Is the example demonstrating intended usage rather than only core behavior?"
+      - "Which realistic integration should the example model without claiming ownership of external UI or query state?"
     related_skills:
       - type-error-debugging
       - examples-authoring
@@ -301,18 +301,18 @@ skill_candidates:
     status: reviewed
     priority: high
     domain: react-adapter-composition
-    purpose: 'Help users build adapter-first React forms, reusable components, app-form setups, field groups, and UI-library bindings.'
+    purpose: "Help users build adapter-first React forms, reusable components, app-form setups, field groups, and UI-library bindings."
     entrypoints:
-      - '@tanstack/react-form/useForm'
-      - '@tanstack/react-form/ReactFormType'
-      - '@tanstack/react-form/FieldWithValue'
-      - '@tanstack/react-form/AnyFieldApi'
-      - '@tanstack/react-form/formOptions'
-      - '@tanstack/react-form/createFormHook'
-      - 'form.Field'
-      - 'form.ArrayField'
-      - 'form.Subscribe'
-      - 'form.FormGroup'
+      - "@tanstack/react-form/useForm"
+      - "@tanstack/react-form/ReactFormType"
+      - "@tanstack/react-form/FieldWithValue"
+      - "@tanstack/react-form/AnyFieldApi"
+      - "@tanstack/react-form/formOptions"
+      - "@tanstack/react-form/createFormHook"
+      - "form.Field"
+      - "form.ArrayField"
+      - "form.Subscribe"
+      - "form.FormGroup"
     sources:
       - packages/react-form/src/ReactForm/Components.public.ts
       - packages/react-form/src/ReactForm/fieldSubscriptions.lib.ts
@@ -325,85 +325,85 @@ skill_candidates:
       - examples/react/basic-splitting-form/src/index.tsx
       - examples/react/ui-integration/shadcn/src/components/form/app-form.ts
     teaches:
-      - 'Prefer adapter APIs over constructing core APIs directly.'
-      - 'Use render-prop field APIs and subscriptions instead of copying form state into component state.'
-      - 'Treat useForm and useAppForm as stable form creation hooks, not reactive state reads.'
-      - 'Use useSelector or form.Subscribe when component output must react to form state.'
-      - 'Keep reusable shared options submit-agnostic when child components should accept multiple submit implementations.'
-      - 'Use ReactFormType<typeof sharedOptions> as one option for splitting a known form into child components that receive a form prop.'
-      - 'Do not union multiple ReactFormType forms for shared sections; use field groups when a section must bind into multiple different forms or paths.'
-      - 'Use AppForm to reduce repeated field JSX boilerplate; use split form sections to reduce component nesting; use field groups for reusable sections across forms or paths.'
-      - 'Let field names and form.Field children infer; use FieldWithValue<T> or AnyFieldApi for explicit reusable field component props.'
-      - 'form.Field may bind an array value; it behaves immutably like other fields, so any element change changes the array value and rerenders whole-array consumers.'
-      - 'Use form.ArrayField when an array is a rendering boundary for child fields or list items; ArrayField subscriptions follow array shape/version changes instead of treating value as the whole render unit.'
-      - 'Use field groups for reusable sections with virtual-to-real field bindings.'
+      - "Prefer adapter APIs over constructing core APIs directly."
+      - "Use render-prop field APIs and subscriptions instead of copying form state into component state."
+      - "Treat useForm and useAppForm as stable form creation hooks, not reactive state reads."
+      - "Use useSelector or form.Subscribe when component output must react to form state."
+      - "Keep reusable shared options submit-agnostic when child components should accept multiple submit implementations."
+      - "Use ReactFormType<typeof sharedOptions> as one option for splitting a known form into child components that receive a form prop."
+      - "Do not union multiple ReactFormType forms for shared sections; use field groups when a section must bind into multiple different forms or paths."
+      - "Use AppForm to reduce repeated field JSX boilerplate; use split form sections to reduce component nesting; use field groups for reusable sections across forms or paths."
+      - "Let field names and form.Field children infer; use FieldWithValue<T> or AnyFieldApi for explicit reusable field component props."
+      - "form.Field may bind an array value; it behaves immutably like other fields, so any element change changes the array value and rerenders whole-array consumers."
+      - "Use form.ArrayField when an array is a rendering boundary for child fields or list items; ArrayField subscriptions follow array shape/version changes instead of treating value as the whole render unit."
+      - "Use field groups for reusable sections with virtual-to-real field bindings."
     failure_modes:
       - name: type_asserting_form_inference
-        symptom: 'Code adds as const to field names, annotates render-prop children as any, or uses as any to force form code to compile.'
-        correction: 'Remove the assertion and let names, children, and form helpers infer the types.'
+        symptom: "Code adds as const to field names, annotates render-prop children as any, or uses as any to force form code to compile."
+        correction: "Remove the assertion and let names, children, and form helpers infer the types."
         evidence:
           - maintainer_guidance.hard_do_nots
           - packages/react-form/src/ReactForm/Components.public.ts
       - name: shimmed_field_prop_type
-        symptom: 'A reusable component accepts a hand-written field shape like field: { value: string }.'
-        correction: 'Use inferred render-prop types, FieldWithValue<T>, or AnyFieldApi instead of a structural shim.'
+        symptom: "A reusable component accepts a hand-written field shape like field: { value: string }."
+        correction: "Use inferred render-prop types, FieldWithValue<T>, or AnyFieldApi instead of a structural shim."
         evidence:
           - examples/react/basic-splitting-form/src/StringField.tsx
           - examples/react/basic-splitting-form/src/FieldError.tsx
       - name: expecting_hook_reactivity
-        symptom: 'A component reads form.state or derived flags from the stable useForm/useAppForm return and does not re-render when form state changes.'
-        correction: 'Use useSelector with form.atom or a field/group atom, or use form.Subscribe with an explicit selector.'
+        symptom: "A component reads form.state or derived flags from the stable useForm/useAppForm return and does not re-render when form state changes."
+        correction: "Use useSelector with form.atom or a field/group atom, or use form.Subscribe with an explicit selector."
         evidence:
           - packages/react-form/src/ReactForm/ReactFormApi.lib.tsx
           - packages/react-form/src/Subscribe.public.tsx
           - packages/react-form/src/ReactForm/fieldSubscriptions.lib.ts
           - examples/react/ui-integration/dnd-kit/src/twoLists/index.tsx
       - name: core_as_user_entrypoint
-        symptom: 'Example imports @tanstack/form-core or constructs FormApi in React application code.'
-        correction: 'Use @tanstack/react-form APIs; treat core as concept and implementation source.'
+        symptom: "Example imports @tanstack/form-core or constructs FormApi in React application code."
+        correction: "Use @tanstack/react-form APIs; treat core as concept and implementation source."
         evidence:
           - maintainer_guidance.core_role
           - packages/react-form/src/ReactForm/useForm.public.ts
       - name: app_components_outside_provider
-        symptom: 'App field or form components throw because they are rendered outside form.Field or form.AppForm.'
-        correction: 'Wrap custom form components in the app-form provider pattern created by createFormHook.'
+        symptom: "App field or form components throw because they are rendered outside form.Field or form.AppForm."
+        correction: "Wrap custom form components in the app-form provider pattern created by createFormHook."
         evidence:
           - packages/react-form/src/AppForm/contexts.lib.ts
           - examples/react/ui-integration/shadcn/src/components/form/app-form.ts
       - name: over_specific_shared_form_type
-        symptom: 'A reusable child form prop rejects a parent form once onSubmit is added.'
-        correction: 'Keep shared options without onSubmit when reusable children should stay submit-agnostic.'
+        symptom: "A reusable child form prop rejects a parent form once onSubmit is added."
+        correction: "Keep shared options without onSubmit when reusable children should stay submit-agnostic."
         evidence:
           - packages/react-form/src/ReactForm/formType.public.ts
           - packages/react-form/tests/submit-return.test-d.tsx
       - name: split_form_without_react_form_type
-        symptom: 'A split form section hand-writes a large form prop type or loses field-name inference.'
-        correction: 'Export shared form options and type the prop as ReactFormType<typeof sharedFormOptions>.'
+        symptom: "A split form section hand-writes a large form prop type or loses field-name inference."
+        correction: "Export shared form options and type the prop as ReactFormType<typeof sharedFormOptions>."
         evidence:
           - examples/react/basic-splitting-form/src/FormSection.tsx
           - docs/framework/react/reference/type-aliases/ReactFormType.md
       - name: react_form_type_union_shared_section
-        symptom: 'A shared section accepts a union like ReactFormType<typeof formAOptions> | ReactFormType<typeof formBOptions> and TypeScript cannot resolve field names or methods.'
-        correction: 'Use field groups for reusable sections across forms, or use ReactFormType only for one known shared options type.'
+        symptom: "A shared section accepts a union like ReactFormType<typeof formAOptions> | ReactFormType<typeof formBOptions> and TypeScript cannot resolve field names or methods."
+        correction: "Use field groups for reusable sections across forms, or use ReactFormType only for one known shared options type."
         evidence:
           - maintainer_guidance.hard_do_nots
           - packages/react-form/src/FieldGroup/withFields.public.ts
       - name: field_used_for_rendering_array_children
-        symptom: 'A Field bound to an array value is used as the boundary for rendering item fields, and item updates rerender the whole array-value consumer.'
-        correction: 'Use ArrayField at the list boundary, then render item Fields for the values that should update independently.'
+        symptom: "A Field bound to an array value is used as the boundary for rendering item fields, and item updates rerender the whole array-value consumer."
+        correction: "Use ArrayField at the list boundary, then render item Fields for the values that should update independently."
         evidence:
           - examples/react/array/src/index.tsx
           - packages/react-form/src/ReactForm/fieldSubscriptions.lib.ts
           - packages/form-core/src/FieldApi/fieldState.lib.ts
       - name: array_field_assumed_required_for_any_array_value
-        symptom: 'Code reaches for ArrayField only because the field value is an array, even though the array is consumed as one immutable value.'
-        correction: 'Use Field when the array is a single field value; reserve ArrayField for rendering child fields or list items.'
+        symptom: "Code reaches for ArrayField only because the field value is an array, even though the array is consumed as one immutable value."
+        correction: "Use Field when the array is a single field value; reserve ArrayField for rendering child fields or list items."
         evidence:
           - packages/react-form/src/ReactForm/Components.public.ts
           - packages/react-form/src/ReactForm/fieldSubscriptions.lib.ts
       - name: raw_array_mutation
-        symptom: 'Array item values and field meta fall out of sync after splice, reorder, or manual setFieldValue.'
-        correction: 'Use pushFieldValue, insertFieldValue, removeFieldValue, swapFieldValues, moveFieldValue, clearFieldValues, or filterFieldValues.'
+        symptom: "Array item values and field meta fall out of sync after splice, reorder, or manual setFieldValue."
+        correction: "Use pushFieldValue, insertFieldValue, removeFieldValue, swapFieldValues, moveFieldValue, clearFieldValues, or filterFieldValues."
         evidence:
           - packages/form-core/src/FormApi/array-methods.lib.ts
           - packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts
@@ -413,14 +413,14 @@ skill_candidates:
     status: reviewed
     priority: high
     domain: validation-and-error-visibility
-    purpose: 'Help users extract split-form types, error visibility callbacks, and validator configs into named reusable helpers when the behavior deserves semantic intent.'
+    purpose: "Help users extract split-form types, error visibility callbacks, and validator configs into named reusable helpers when the behavior deserves semantic intent."
     entrypoints:
-      - '@tanstack/react-form/ReactFormType'
-      - 'createErrorVisibility'
-      - 'createValidator'
-      - 'createValidators'
-      - 'shared formOptions'
-      - 'shared appFormOptions'
+      - "@tanstack/react-form/ReactFormType"
+      - "createErrorVisibility"
+      - "createValidator"
+      - "createValidators"
+      - "shared formOptions"
+      - "shared appFormOptions"
     sources:
       - examples/react/basic-splitting-form/src/FormSection.tsx
       - examples/react/basic-splitting-form/src/sharedForm.ts
@@ -429,40 +429,40 @@ skill_candidates:
       - packages/form-core/tests/validation.test-d.ts
       - examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx
     teaches:
-      - 'Use ReactFormType<typeof sharedOptions> as the helper type for split form sections that receive a form prop.'
-      - 'ReactFormType splitting reduces nesting in one known form; AppForm reduces repeated field JSX; field groups cover sections reused across different forms or paths.'
-      - 'Prefer form-level errorVisibility callbacks over repeated local showErrors checks.'
-      - 'Use helper functions when a callback or validator config deserves a semantic name that preserves intent.'
-      - 'Use comments or JSDoc on named helpers to explain workflow behavior, trigger timing, debounce, bailIfInvalid, runOnSubmit, or rewardEarlyPunishLate policy.'
-      - 'Keep reusable visibility policies value-agnostic unless they are intentionally tied to one form shape; use inline callbacks when typed values are required.'
+      - "Use ReactFormType<typeof sharedOptions> as the helper type for split form sections that receive a form prop."
+      - "ReactFormType splitting reduces nesting in one known form; AppForm reduces repeated field JSX; field groups cover sections reused across different forms or paths."
+      - "Prefer form-level errorVisibility callbacks over repeated local showErrors checks."
+      - "Use helper functions when a callback or validator config deserves a semantic name that preserves intent."
+      - "Use comments or JSDoc on named helpers to explain workflow behavior, trigger timing, debounce, bailIfInvalid, runOnSubmit, or rewardEarlyPunishLate policy."
+      - "Keep reusable visibility policies value-agnostic unless they are intentionally tied to one form shape; use inline callbacks when typed values are required."
     failure_modes:
       - name: split_form_type_written_by_hand
-        symptom: 'A split form section loses field-name inference because its form prop type is hand-written.'
-        correction: 'Export shared options and type the prop as ReactFormType<typeof sharedOptions>.'
+        symptom: "A split form section loses field-name inference because its form prop type is hand-written."
+        correction: "Export shared options and type the prop as ReactFormType<typeof sharedOptions>."
         evidence:
           - examples/react/basic-splitting-form/src/FormSection.tsx
           - packages/react-form/tests/submit-return.test-d.tsx
       - name: reusable_section_uses_react_form_type_union
-        symptom: 'A shared section accepts FormA | FormB and TypeScript cannot narrow field names or methods.'
-        correction: 'Use field groups for shared sections that need to work across different forms or paths.'
+        symptom: "A shared section accepts FormA | FormB and TypeScript cannot narrow field names or methods."
+        correction: "Use field groups for shared sections that need to work across different forms or paths."
         evidence:
           - maintainer_guidance.hard_do_nots
           - packages/react-form/src/FieldGroup/withFields.public.ts
       - name: scattered_show_errors_policy
-        symptom: 'Each field repeats local showErrors logic such as field.meta.isTouched && field.meta.isInvalid.'
-        correction: 'Move default visible-error behavior into form-level errorVisibility, or extract a named createErrorVisibility helper.'
+        symptom: "Each field repeats local showErrors logic such as field.meta.isTouched && field.meta.isInvalid."
+        correction: "Move default visible-error behavior into form-level errorVisibility, or extract a named createErrorVisibility helper."
         evidence:
           - packages/form-core/tests/validation.test-d.ts
           - examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx
       - name: duplicated_validator_config_without_intent
-        symptom: 'Trigger, debounce, runOnSubmit, or bailIfInvalid config is copied without explaining the intended workflow.'
-        correction: 'Extract a named createValidator/createValidators helper and document the behavior intent.'
+        symptom: "Trigger, debounce, runOnSubmit, or bailIfInvalid config is copied without explaining the intended workflow."
+        correction: "Extract a named createValidator/createValidators helper and document the behavior intent."
         evidence:
           - packages/form-core/tests/validation.test.ts
           - examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx
       - name: reusable_visibility_reads_concrete_values
-        symptom: 'A reusable createErrorVisibility callback tries to read a concrete property such as state.values.name.'
-        correction: 'Keep reusable policies value-agnostic, or use an inline errorVisibility callback when concrete typed values are needed.'
+        symptom: "A reusable createErrorVisibility callback tries to read a concrete property such as state.values.name."
+        correction: "Keep reusable policies value-agnostic, or use an inline errorVisibility callback when concrete typed values are needed."
         evidence:
           - packages/form-core/tests/validation.test-d.ts
   - id: choosing-form-options-modes
@@ -470,14 +470,14 @@ skill_candidates:
     status: reviewed
     priority: high
     domain: schema-driven-forms
-    purpose: 'Help users choose default formOptions, strictSchema, or looseSchema based on whether the schema is a transform pipeline or a validation ruleset.'
+    purpose: "Help users choose default formOptions, strictSchema, or looseSchema based on whether the schema is a transform pipeline or a validation ruleset."
     entrypoints:
-      - '@tanstack/react-form/formOptions'
-      - '@tanstack/react-form/formOptions.strictSchema'
-      - '@tanstack/react-form/formOptions.looseSchema'
-      - '@tanstack/react-form/appFormOptions'
-      - '@tanstack/react-form/appFormOptions.strictSchema'
-      - '@tanstack/react-form/appFormOptions.looseSchema'
+      - "@tanstack/react-form/formOptions"
+      - "@tanstack/react-form/formOptions.strictSchema"
+      - "@tanstack/react-form/formOptions.looseSchema"
+      - "@tanstack/react-form/appFormOptions"
+      - "@tanstack/react-form/appFormOptions.strictSchema"
+      - "@tanstack/react-form/appFormOptions.looseSchema"
     sources:
       - packages/form-core/src/utils.public.ts
       - packages/react-form/src/AppForm/appFormOptions.public.ts
@@ -485,61 +485,61 @@ skill_candidates:
       - packages/form-core/tests/validation.test-d.ts
       - examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx
     teaches:
-      - 'The option helpers are runtime identity helpers with type-level meaning.'
-      - 'Default formOptions infers from defaultValues; those values are taken at face value and drive validator callback value types.'
-      - 'strictSchema uses the schema as the typing source for a transforming input-to-output pipeline.'
-      - 'strictSchema defaultValues must align with the schema input type and should fail type-checking when they do not.'
-      - 'looseSchema uses the schema as a ruleset while allowing editable default values that include null or undefined where needed.'
-      - 'looseSchema defaultValues must still align with the schema shape, but the input can be looser while output remains schema output.'
-      - 'In schema modes, callbacks may not infer usefully unless a schema is present in the validator array.'
-      - 'In schema modes, onSubmit should read schemaOutputs instead of raw value.'
-      - 'Use Standard Schema-capable libraries as heuristic examples only: Zod generally leans ruleset/firewall, Valibot generally leans pipeline, ArkType is mixed, and Effect Schema often leans pipeline/codec.'
+      - "The option helpers are runtime identity helpers with type-level meaning."
+      - "Default formOptions infers from defaultValues; those values are taken at face value and drive validator callback value types."
+      - "strictSchema uses the schema as the typing source for a transforming input-to-output pipeline."
+      - "strictSchema defaultValues must align with the schema input type and should fail type-checking when they do not."
+      - "looseSchema uses the schema as a ruleset while allowing editable default values that include null or undefined where needed."
+      - "looseSchema defaultValues must still align with the schema shape, but the input can be looser while output remains schema output."
+      - "In schema modes, callbacks may not infer usefully unless a schema is present in the validator array."
+      - "In schema modes, onSubmit should read schemaOutputs instead of raw value."
+      - "Use Standard Schema-capable libraries as heuristic examples only: Zod generally leans ruleset/firewall, Valibot generally leans pipeline, ArkType is mixed, and Effect Schema often leans pipeline/codec."
     failure_modes:
       - name: expecting_option_helper_runtime_behavior
-        symptom: 'User expects strictSchema or looseSchema to add validation without validators.'
-        correction: 'Explain that the helper shapes inference; validation still comes from configured validators.'
+        symptom: "User expects strictSchema or looseSchema to add validation without validators."
+        correction: "Explain that the helper shapes inference; validation still comes from configured validators."
         evidence:
           - packages/form-core/src/utils.public.ts
           - packages/form-core/tests/validation.test.ts
       - name: schema_expected_to_type_default_form_options
-        symptom: 'User chooses default formOptions but expects a schema to own the form data type.'
-        correction: 'Use default formOptions for defaultValues-first inference, or choose a schema mode when the schema should be the typing source.'
+        symptom: "User chooses default formOptions but expects a schema to own the form data type."
+        correction: "Use default formOptions for defaultValues-first inference, or choose a schema mode when the schema should be the typing source."
         evidence:
           - maintainer_guidance.schema_modes
           - packages/form-core/src/utils.public.ts
       - name: strict_ruleset_schema_blocks_editing
-        symptom: 'Defaults or field values cannot represent empty, null, or partial UI states because strict schema typing is too narrow.'
-        correction: 'Use looseSchema or default formOptions when the schema is a ruleset validating final form shape.'
+        symptom: "Defaults or field values cannot represent empty, null, or partial UI states because strict schema typing is too narrow."
+        correction: "Use looseSchema or default formOptions when the schema is a ruleset validating final form shape."
         evidence:
           - maintainer_guidance.schema_modes
           - packages/form-core/src/utils.public.ts
       - name: loose_schema_shape_mismatch
         symptom: "Loose schema defaults include null or undefined but no longer match the schema's object shape or field structure."
-        correction: 'Keep the defaultValues shape aligned with the schema while allowing null or undefined where editable state needs it.'
+        correction: "Keep the defaultValues shape aligned with the schema while allowing null or undefined where editable state needs it."
         evidence:
           - maintainer_guidance.schema_modes
           - packages/form-core/src/utils.public.ts
       - name: schema_mode_without_schema_validator
-        symptom: 'Callbacks in strictSchema or looseSchema mode do not infer the expected value type.'
-        correction: 'Put a schema in the validator array so the helper has a schema source to infer from.'
+        symptom: "Callbacks in strictSchema or looseSchema mode do not infer the expected value type."
+        correction: "Put a schema in the validator array so the helper has a schema source to infer from."
         evidence:
           - maintainer_guidance.schema_modes
           - packages/form-core/tests/validation.test-d.ts
       - name: loose_pipeline_schema_loses_transform_intent
-        symptom: 'Submit logic treats raw form value as if it were the transformed schema output.'
-        correction: 'Use strictSchema for pipeline schemas and read the transformed value from schemaOutputs.'
+        symptom: "Submit logic treats raw form value as if it were the transformed schema output."
+        correction: "Use strictSchema for pipeline schemas and read the transformed value from schemaOutputs."
         evidence:
           - packages/form-core/tests/validation.test.ts
           - packages/form-core/tests/validation.test-d.ts
       - name: on_submit_reads_value_in_schema_mode
-        symptom: 'onSubmit reads value even though strictSchema or looseSchema is being used.'
-        correction: 'Read the relevant schemaOutputs entry, because both schema modes preserve raw form value separately from parsed output.'
+        symptom: "onSubmit reads value even though strictSchema or looseSchema is being used."
+        correction: "Read the relevant schemaOutputs entry, because both schema modes preserve raw form value separately from parsed output."
         evidence:
           - packages/form-core/tests/validation.test.ts
           - packages/form-core/src/FormApi/FormApi.public.ts
       - name: confusing_zod_input_with_pipeline_input
-        symptom: 'A Zod schema is treated as a reliable A-to-B pipeline because z.input differs from z.output.'
-        correction: 'Start from Zod-as-ruleset guidance unless the specific schema is deliberately written as a transform pipeline.'
+        symptom: "A Zod schema is treated as a reliable A-to-B pipeline because z.input differs from z.output."
+        correction: "Start from Zod-as-ruleset guidance unless the specific schema is deliberately written as a transform pipeline."
         evidence:
           - maintainer_guidance.schema_ecosystem
           - examples/react/ui-integration/shadcn/src/app/booking/schema.ts
@@ -548,13 +548,13 @@ skill_candidates:
     status: reviewed
     priority: high
     domain: schema-driven-forms
-    purpose: 'Help users turn Standard Schema-compatible schemas into form validators, field errors, typed submit output, and realistic examples.'
+    purpose: "Help users turn Standard Schema-compatible schemas into form validators, field errors, typed submit output, and realistic examples."
     entrypoints:
-      - 'validators'
-      - 'schemaOutputs'
-      - 'parseIssues'
-      - 'createValidationError'
-      - 'Standard Schema validators'
+      - "validators"
+      - "schemaOutputs"
+      - "parseIssues"
+      - "createValidationError"
+      - "Standard Schema validators"
     sources:
       - packages/form-core/src/standardSchema.public.ts
       - packages/form-core/src/standardSchema.lib.ts
@@ -564,39 +564,39 @@ skill_candidates:
       - examples/react/ui-integration/shadcn/src/app/booking/schema.ts
       - examples/react/field-groups/src/index.tsx
     teaches:
-      - 'Use Standard Schema-compatible validators in form or field validators.'
-      - 'Extract reusable validator trigger configs with createValidator or createValidators when the policy is complex enough to deserve a semantic name.'
-      - 'Read parsed schema output from onSubmit context.schemaOutputs.'
-      - 'Return validation errors as values through createValidationError or parseIssues; do not throw them.'
-      - 'Let Standard Schema issue paths route field errors instead of hand-building brittle path maps.'
+      - "Use Standard Schema-compatible validators in form or field validators."
+      - "Extract reusable validator trigger configs with createValidator or createValidators when the policy is complex enough to deserve a semantic name."
+      - "Read parsed schema output from onSubmit context.schemaOutputs."
+      - "Return validation errors as values through createValidationError or parseIssues; do not throw them."
+      - "Let Standard Schema issue paths route field errors instead of hand-building brittle path maps."
     failure_modes:
       - name: assuming_schema_output_replaces_value
-        symptom: 'onSubmit reads value expecting transformed/coerced data.'
-        correction: 'Use schemaOutputs for parsed schema output; value remains form state.'
+        symptom: "onSubmit reads value expecting transformed/coerced data."
+        correction: "Use schemaOutputs for parsed schema output; value remains form state."
         evidence:
           - packages/form-core/src/FormApi/FormApi.public.ts
           - packages/form-core/tests/validation.test.ts
       - name: returning_raw_schema_error
-        symptom: 'A submit validator returns or throws raw Zod/Standard Schema errors and the form does not show intended field errors.'
-        correction: 'Return parseIssues for Standard Schema issues or createValidationError for explicit form/field errors; validation errors must be values, not thrown errors.'
+        symptom: "A submit validator returns or throws raw Zod/Standard Schema errors and the form does not show intended field errors."
+        correction: "Return parseIssues for Standard Schema issues or createValidationError for explicit form/field errors; validation errors must be values, not thrown errors."
         evidence:
           - packages/form-core/src/FormApi/FormApi.public.ts
           - packages/form-core/tests/FormApi/submission-handling.spec.ts
       - name: manual_path_mapping
-        symptom: 'Nested and array validation errors are routed to the wrong field names.'
-        correction: 'Use Standard Schema parsing so paths like user.name and users[0].name are produced consistently.'
+        symptom: "Nested and array validation errors are routed to the wrong field names."
+        correction: "Use Standard Schema parsing so paths like user.name and users[0].name are produced consistently."
         evidence:
           - packages/form-core/src/standardSchema.lib.ts
           - packages/form-core/tests/validation.test.ts
       - name: duplicated_validator_policy
-        symptom: 'The same triggers, debounce, runOnSubmit, or bailIfInvalid choices are copied across validators with no explanation.'
-        correction: 'Extract a named createValidator/createValidators helper when the policy has semantic meaning, and document why that behavior exists.'
+        symptom: "The same triggers, debounce, runOnSubmit, or bailIfInvalid choices are copied across validators with no explanation."
+        correction: "Extract a named createValidator/createValidators helper when the policy has semantic meaning, and document why that behavior exists."
         evidence:
           - packages/form-core/tests/validation.test.ts
           - examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx
       - name: schema_metadata_expectation
-        symptom: 'Example tries to infer required labels, descriptions, or UI decorations from Standard Schema metadata.'
-        correction: 'Keep UI metadata explicit or schema-library-specific; Standard Schema does not standardize metadata.'
+        symptom: "Example tries to infer required labels, descriptions, or UI decorations from Standard Schema metadata."
+        correction: "Keep UI metadata explicit or schema-library-specific; Standard Schema does not standardize metadata."
         evidence:
           - maintainer_guidance.excluded_from_current_skills
   - id: query-backed-forms
@@ -604,13 +604,13 @@ skill_candidates:
     status: reviewed
     priority: high
     domain: async-data-and-submit
-    purpose: 'Help users combine forms with query-like async defaults and mutation-like submit calls while separating transient failures from validation errors.'
+    purpose: "Help users combine forms with query-like async defaults and mutation-like submit calls while separating transient failures from validation errors."
     entrypoints:
-      - 'useForm defaultValues'
-      - 'onSubmit'
-      - 'form.reset'
-      - 'createValidationError'
-      - 'parseIssues'
+      - "useForm defaultValues"
+      - "onSubmit"
+      - "form.reset"
+      - "createValidationError"
+      - "parseIssues"
     sources:
       - packages/react-form/tests/useForm.spec.tsx
       - packages/form-core/src/FormApi/FormApi.lib.ts
@@ -618,62 +618,62 @@ skill_candidates:
       - packages/form-core/tests/FormApi/default-value.spec.ts
       - packages/form-core/tests/FormApi/submission-handling.spec.ts
     teaches:
-      - 'Maybe-undefined incoming data requires an explicit default-values plan, not direct query data alone.'
-      - 'Approach 1: gate the fields, or the whole form, until the query is ready so mounted fields start with correct data.'
-      - 'Approach 2: define a static shape-complete emptyFormValues object and pass defaultValues as queryData ?? emptyFormValues.'
-      - 'Neither approach is preferred globally; choose based on the desired loading and visual UI language.'
-      - 'Gating fields changes the UI because fields mount only after data is ready, while an emptyFormValues fallback can show the form immediately.'
-      - 'Let updated defaultValues populate untouched fields while preserving user-touched fields.'
-      - 'Use an async promise for endpoint calls inside onSubmit so isSubmitting reflects the request.'
-      - 'Catch submit errors only when the endpoint can return validation errors that should be converted into createValidationError or parseIssues values.'
-      - 'Transient submit errors can throw or reject; they set isSubmitSuccessful to false while query/framework state should preserve the error details.'
-      - 'Remember that errors stored from validators or onSubmit block submission, so transient errors should not be converted into validation errors.'
-      - 'Use reset semantics deliberately when replacing values and default baselines.'
+      - "Maybe-undefined incoming data requires an explicit default-values plan, not direct query data alone."
+      - "Approach 1: gate the fields, or the whole form, until the query is ready so mounted fields start with correct data."
+      - "Approach 2: define a static shape-complete emptyFormValues object and pass defaultValues as queryData ?? emptyFormValues."
+      - "Neither approach is preferred globally; choose based on the desired loading and visual UI language."
+      - "Gating fields changes the UI because fields mount only after data is ready, while an emptyFormValues fallback can show the form immediately."
+      - "Let updated defaultValues populate untouched fields while preserving user-touched fields."
+      - "Use an async promise for endpoint calls inside onSubmit so isSubmitting reflects the request."
+      - "Catch submit errors only when the endpoint can return validation errors that should be converted into createValidationError or parseIssues values."
+      - "Transient submit errors can throw or reject; they set isSubmitSuccessful to false while query/framework state should preserve the error details."
+      - "Remember that errors stored from validators or onSubmit block submission, so transient errors should not be converted into validation errors."
+      - "Use reset semantics deliberately when replacing values and default baselines."
     failure_modes:
       - name: undefined_data_as_final_shape
-        symptom: 'Initial query data is undefined, so fields or schema types collapse into invalid permanent defaults.'
-        correction: 'Either gate mounting until data is ready, or coalesce with a static shape-complete emptyFormValues object.'
+        symptom: "Initial query data is undefined, so fields or schema types collapse into invalid permanent defaults."
+        correction: "Either gate mounting until data is ready, or coalesce with a static shape-complete emptyFormValues object."
         evidence:
           - packages/react-form/tests/useForm.spec.tsx
           - maintainer_guidance.query_shape
       - name: query_data_without_fallback_plan
-        symptom: 'defaultValues is fed directly from query.data even though query.data can be undefined.'
-        correction: 'Use query.data ?? emptyFormValues, or delay mounting fields/form until the query has populated data.'
+        symptom: "defaultValues is fed directly from query.data even though query.data can be undefined."
+        correction: "Use query.data ?? emptyFormValues, or delay mounting fields/form until the query has populated data."
         evidence:
           - maintainer_guidance.query_shape
           - packages/react-form/tests/useForm.spec.tsx
       - name: ignoring_loading_visual_language
-        symptom: 'An example gates fields without accounting for the different loading UI, or renders empty fallback values without communicating that data is still loading.'
-        correction: 'Choose the default-values plan together with the intended visual loading language.'
+        symptom: "An example gates fields without accounting for the different loading UI, or renders empty fallback values without communicating that data is still loading."
+        correction: "Choose the default-values plan together with the intended visual loading language."
         evidence:
           - maintainer_guidance.query_shape
       - name: overwriting_touched_fields
-        symptom: 'Late async defaults replace user edits.'
+        symptom: "Late async defaults replace user edits."
         correction: "Use the form's defaultValues update behavior, which preserves touched fields and updates untouched fields."
         evidence:
           - packages/form-core/src/FormApi/FormApi.lib.ts
           - packages/react-form/tests/useForm.spec.tsx
       - name: transient_error_as_validation_error
-        symptom: 'Network/server outage becomes a visible field validation error.'
-        correction: 'Keep transient error state in the query or framework layer; return createValidationError or parseIssues only for validation failures, because stored validation errors block submission.'
+        symptom: "Network/server outage becomes a visible field validation error."
+        correction: "Keep transient error state in the query or framework layer; return createValidationError or parseIssues only for validation failures, because stored validation errors block submission."
         evidence:
           - packages/form-core/tests/FormApi/submission-handling.spec.ts
           - maintainer_guidance.query_shape
       - name: non_async_endpoint_call
-        symptom: 'onSubmit starts an endpoint call without returning or awaiting its promise, so isSubmitting does not cover the request.'
-        correction: 'Return or await the async endpoint promise from onSubmit.'
+        symptom: "onSubmit starts an endpoint call without returning or awaiting its promise, so isSubmitting does not cover the request."
+        correction: "Return or await the async endpoint promise from onSubmit."
         evidence:
           - packages/form-core/tests/FormApi/submission-handling.spec.ts
           - packages/form-core/src/FormApi/handleSubmit.lib.ts
       - name: thrown_validation_error
-        symptom: 'onSubmit throws or rejects with validation information and expects field errors.'
-        correction: 'Convert validation failures into returned createValidationError or parseIssues values; thrown/rejected errors are submit failures.'
+        symptom: "onSubmit throws or rejects with validation information and expects field errors."
+        correction: "Convert validation failures into returned createValidationError or parseIssues values; thrown/rejected errors are submit failures."
         evidence:
           - packages/form-core/tests/FormApi/submission-handling.spec.ts
           - packages/form-core/src/FormApi/FormApi.public.ts
       - name: rejected_submit_expected_to_show_field_errors
-        symptom: 'onSubmit throws or rejects a transient failure and the user expects field errors to appear.'
-        correction: 'Let transient failures remain transient and use query/framework error state; only validation failures should be converted into returned validation values.'
+        symptom: "onSubmit throws or rejects a transient failure and the user expects field errors to appear."
+        correction: "Let transient failures remain transient and use query/framework error state; only validation failures should be converted into returned validation values."
         evidence:
           - packages/form-core/tests/FormApi/submission-handling.spec.ts
           - packages/form-core/src/FormApi/FormApi.public.ts
@@ -682,15 +682,15 @@ skill_candidates:
     status: reviewed
     priority: high
     domain: validation-and-error-visibility
-    purpose: 'Help users implement visible-error policies such as show-after-blur, show-after-submit, or custom workflows.'
+    purpose: "Help users implement visible-error policies such as show-after-blur, show-after-submit, or custom workflows."
     entrypoints:
-      - 'errorVisibility'
-      - 'createErrorVisibility'
-      - 'createValidator'
-      - 'createValidators'
-      - 'fieldState.meta'
-      - 'state.submissionAttempts'
-      - 'form.FormGroup'
+      - "errorVisibility"
+      - "createErrorVisibility"
+      - "createValidator"
+      - "createValidators"
+      - "fieldState.meta"
+      - "state.submissionAttempts"
+      - "form.FormGroup"
     sources:
       - packages/form-core/src/validation.public.ts
       - packages/form-core/src/FieldApi/fieldState.lib.ts
@@ -700,48 +700,48 @@ skill_candidates:
       - packages/form-core/tests/FormGroupApi/FormGroupApi.spec.ts
       - examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx
     teaches:
-      - 'errorVisibility is a callback, not a string preset.'
-      - 'Use form-level errorVisibility to control default visible-error behavior instead of scattering local checks like field.meta.isTouched && field.meta.isInvalid.'
-      - 'Reusable policies can use createErrorVisibility but only receive unknown form values.'
-      - 'Helper functions mainly serve to give a semantic name to a callback or validator config.'
-      - 'Named reusable policies are good places for JSDoc or comments that explain why errors appear at that moment.'
-      - 'Reusable validator configs are useful when they explain trigger timing, bailIfInvalid, debounce, runOnSubmit, or rewardEarlyPunishLate behavior.'
-      - 'Inline callbacks can use typed form values from the consuming form.'
-      - 'Visibility callbacks see pre-filter meta, not visible errors or validity.'
-      - 'Group submission attempts are scoped to the nearest group.'
+      - "errorVisibility is a callback, not a string preset."
+      - "Use form-level errorVisibility to control default visible-error behavior instead of scattering local checks like field.meta.isTouched && field.meta.isInvalid."
+      - "Reusable policies can use createErrorVisibility but only receive unknown form values."
+      - "Helper functions mainly serve to give a semantic name to a callback or validator config."
+      - "Named reusable policies are good places for JSDoc or comments that explain why errors appear at that moment."
+      - "Reusable validator configs are useful when they explain trigger timing, bailIfInvalid, debounce, runOnSubmit, or rewardEarlyPunishLate behavior."
+      - "Inline callbacks can use typed form values from the consuming form."
+      - "Visibility callbacks see pre-filter meta, not visible errors or validity."
+      - "Group submission attempts are scoped to the nearest group."
     failure_modes:
       - name: string_preset
         symptom: "User writes errorVisibility: 'touched' or errorVisibility: 'always'."
-        correction: 'Use a callback or createErrorVisibility helper.'
+        correction: "Use a callback or createErrorVisibility helper."
         evidence:
           - packages/form-core/tests/validation.test-d.ts
           - packages/form-core/src/validation.public.ts
       - name: scattered_local_error_display
-        symptom: 'Each field repeats local showErrors expressions like field.meta.isTouched && field.meta.isInvalid.'
-        correction: 'Move default visible-error behavior into form-level errorVisibility.'
+        symptom: "Each field repeats local showErrors expressions like field.meta.isTouched && field.meta.isInvalid."
+        correction: "Move default visible-error behavior into form-level errorVisibility."
         evidence:
           - maintainer_guidance
           - examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx
       - name: checking_visible_errors_inside_visibility
-        symptom: 'Visibility callback tries to inspect fieldState.meta.errors or validity.'
-        correction: 'Base visibility on pre-filter meta such as isBlurred, isTouched, isDirty, or submissionAttempts.'
+        symptom: "Visibility callback tries to inspect fieldState.meta.errors or validity."
+        correction: "Base visibility on pre-filter meta such as isBlurred, isTouched, isDirty, or submissionAttempts."
         evidence:
           - packages/form-core/tests/validation.test-d.ts
           - packages/form-core/src/FieldApi/fieldState.lib.ts
       - name: reusable_policy_expects_typed_values
-        symptom: 'A createErrorVisibility callback tries to read state.values.name with a concrete form type.'
-        correction: 'Use inline errorVisibility when typed values are required, or keep reusable policies value-agnostic.'
+        symptom: "A createErrorVisibility callback tries to read state.values.name with a concrete form type."
+        correction: "Use inline errorVisibility when typed values are required, or keep reusable policies value-agnostic."
         evidence:
           - packages/form-core/tests/validation.test-d.ts
       - name: undocumented_policy_intent
-        symptom: 'A complex visibility or validator trigger policy is copied inline, making agents preserve the code but miss the workflow intent.'
-        correction: 'Extract a named helper and use comments or JSDoc to document the intended user behavior.'
+        symptom: "A complex visibility or validator trigger policy is copied inline, making agents preserve the code but miss the workflow intent."
+        correction: "Extract a named helper and use comments or JSDoc to document the intended user behavior."
         evidence:
           - packages/form-core/tests/validation.test.ts
           - examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx
       - name: group_submit_scope_surprise
-        symptom: 'A wizard section expects form-level submit attempts and group-level submit attempts to be interchangeable.'
-        correction: 'Account for nearest group scoping when using state.submissionAttempts in grouped forms.'
+        symptom: "A wizard section expects form-level submit attempts and group-level submit attempts to be interchangeable."
+        correction: "Account for nearest group scoping when using state.submissionAttempts in grouped forms."
         evidence:
           - packages/form-core/tests/FormGroupApi/FormGroupApi.spec.ts
   - id: type-error-debugging
@@ -749,22 +749,22 @@ skill_candidates:
     status: reviewed
     priority: medium
     domain: diagnostics-and-examples
-    purpose: 'Help users interpret large TypeScript errors from schemas, option modes, field groups, reusable forms, and adapter APIs.'
+    purpose: "Help users interpret large TypeScript errors from schemas, option modes, field groups, reusable forms, and adapter APIs."
     entrypoints:
-      - 'ReactFormType'
-      - 'FieldWithValue'
-      - 'AnyFieldApi'
-      - 'formOptions'
-      - 'appFormOptions'
-      - 'createErrorVisibility'
-      - 'createValidators'
-      - 'fieldComponent.strict'
-      - 'fieldComponent.loose'
-      - 'fieldBrand.strict'
-      - 'fieldBrand.loose'
-      - 'getFieldGroupHelpers'
-      - 'DeepKeys'
-      - 'DeepValue'
+      - "ReactFormType"
+      - "FieldWithValue"
+      - "AnyFieldApi"
+      - "formOptions"
+      - "appFormOptions"
+      - "createErrorVisibility"
+      - "createValidators"
+      - "fieldComponent.strict"
+      - "fieldComponent.loose"
+      - "fieldBrand.strict"
+      - "fieldBrand.loose"
+      - "getFieldGroupHelpers"
+      - "DeepKeys"
+      - "DeepValue"
     sources:
       - packages/form-core/tests/validation.test-d.ts
       - packages/form-core/tests/deep-keys.test-d.ts
@@ -774,82 +774,82 @@ skill_candidates:
       - packages/react-form/src/AppForm/getFormHookHelpers.public.ts
       - packages/react-form/src/FieldGroup/withFields.public.ts
     teaches:
-      - 'Do not use type assertions to silence TanStack Form type errors; preserve inference and fix the mismatched boundary.'
-      - 'Classify the error by boundary: option mode, schema output, submit return, reusable child form prop, error visibility state, validator helper arity, form group scope, field group virtual path or binding, field component brand, deep-key path, or public API surface.'
-      - 'Treat ReactFormType unions in shared sections as a composition issue; use field groups instead of asserting through the union.'
-      - 'Separate schema strict/loose from field component strict/loose; they solve different problems.'
-      - 'For long errors, find the first concrete path, value, validator, or submit-return mismatch and ignore expanded generic machinery around it.'
-      - 'Reusable createErrorVisibility callbacks are form-agnostic; unknown values usually mean the policy should stay generic or become an inline callback.'
-      - 'createValidators type errors usually mean the count of run functions does not match the count of option configs.'
-      - 'FormGroup type errors usually mean a root-form path or value was used where group-scoped paths or values are expected.'
-      - 'Field-group type errors usually mean real paths were used where virtual paths are expected, a binding map is incomplete, or strict/loose slot compatibility was chosen incorrectly.'
-      - 'Deep-key path errors usually point to path shape; arrays use bracket segments and array helpers only accept paths whose value includes an array.'
-      - 'Use the first meaningful generic mismatch instead of the full expanded error wall.'
-      - 'Check whether the code is trying to use private/internal shape rather than public atom-based APIs.'
+      - "Do not use type assertions to silence TanStack Form type errors; preserve inference and fix the mismatched boundary."
+      - "Classify the error by boundary: option mode, schema output, submit return, reusable child form prop, error visibility state, validator helper arity, form group scope, field group virtual path or binding, field component brand, deep-key path, or public API surface."
+      - "Treat ReactFormType unions in shared sections as a composition issue; use field groups instead of asserting through the union."
+      - "Separate schema strict/loose from field component strict/loose; they solve different problems."
+      - "For long errors, find the first concrete path, value, validator, or submit-return mismatch and ignore expanded generic machinery around it."
+      - "Reusable createErrorVisibility callbacks are form-agnostic; unknown values usually mean the policy should stay generic or become an inline callback."
+      - "createValidators type errors usually mean the count of run functions does not match the count of option configs."
+      - "FormGroup type errors usually mean a root-form path or value was used where group-scoped paths or values are expected."
+      - "Field-group type errors usually mean real paths were used where virtual paths are expected, a binding map is incomplete, or strict/loose slot compatibility was chosen incorrectly."
+      - "Deep-key path errors usually point to path shape; arrays use bracket segments and array helpers only accept paths whose value includes an array."
+      - "Use the first meaningful generic mismatch instead of the full expanded error wall."
+      - "Check whether the code is trying to use private/internal shape rather than public atom-based APIs."
     failure_modes:
       - name: assertion_hides_form_inference
-        symptom: 'A user adds as const, as any, or a render-prop annotation like field: any to make an error disappear.'
-        correction: 'Remove the assertion and follow the inferred API boundary; use FieldWithValue<T> or AnyFieldApi for reusable field props.'
+        symptom: "A user adds as const, as any, or a render-prop annotation like field: any to make an error disappear."
+        correction: "Remove the assertion and follow the inferred API boundary; use FieldWithValue<T> or AnyFieldApi for reusable field props."
         evidence:
           - maintainer_guidance.hard_do_nots
           - examples/react/basic-splitting-form/src/StringField.tsx
           - examples/react/basic-splitting-form/src/FieldError.tsx
       - name: react_form_type_union
-        symptom: 'A shared section types its form prop as a union of multiple ReactFormType aliases.'
-        correction: 'Use field groups for shared sections across forms; ReactFormType is for splitting a known form.'
+        symptom: "A shared section types its form prop as a union of multiple ReactFormType aliases."
+        correction: "Use field groups for shared sections across forms; ReactFormType is for splitting a known form."
         evidence:
           - maintainer_guidance.hard_do_nots
           - packages/react-form/src/FieldGroup/withFields.public.ts
       - name: reusable_error_visibility_unknown_values
-        symptom: 'A createErrorVisibility helper tries to read a concrete property such as state.values.name.'
-        correction: 'Keep reusable policies value-agnostic, or use an inline callback when concrete form values are needed.'
+        symptom: "A createErrorVisibility helper tries to read a concrete property such as state.values.name."
+        correction: "Keep reusable policies value-agnostic, or use an inline callback when concrete form values are needed."
         evidence:
           - packages/form-core/tests/validation.test-d.ts
       - name: create_validators_arity_mismatch
-        symptom: 'createValidators reports a long tuple or overload error around missing or extra run functions.'
-        correction: 'Pass exactly one run function for each option config.'
+        symptom: "createValidators reports a long tuple or overload error around missing or extra run functions."
+        correction: "Pass exactly one run function for each option config."
         evidence:
           - packages/form-core/tests/validation.test-d.ts
       - name: form_group_scope_mismatch
-        symptom: 'A FormGroup validator or field name complains about missing root fields or invalid paths.'
-        correction: 'Use group-scoped values and paths inside the group; reach through group.form only when root form state is intentionally needed.'
+        symptom: "A FormGroup validator or field name complains about missing root fields or invalid paths."
+        correction: "Use group-scoped values and paths inside the group; reach through group.form only when root form state is intentionally needed."
         evidence:
           - packages/react-form/tests/FormGroup.test-d.tsx
       - name: field_group_virtual_path_mismatch
-        symptom: 'A field group method, watchFields entry, Field, or ArrayField rejects a real form path.'
-        correction: 'Use the virtual paths defined by defineFields inside the field group; map them to real paths only through withFields bindings.'
+        symptom: "A field group method, watchFields entry, Field, or ArrayField rejects a real form path."
+        correction: "Use the virtual paths defined by defineFields inside the field group; map them to real paths only through withFields bindings."
         evidence:
           - packages/react-form/tests/FieldGroupApi.test-d.tsx
       - name: field_group_binding_map_mismatch
-        symptom: 'withFields rejects a binding map as incomplete, wrong, or as the internal defineFields object.'
-        correction: 'Provide every defined field binding, pass real form paths as bindings, and include the required form prop.'
+        symptom: "withFields rejects a binding map as incomplete, wrong, or as the internal defineFields object."
+        correction: "Provide every defined field binding, pass real form paths as bindings, and include the required form prop."
         evidence:
           - packages/react-form/tests/FieldGroupApi.test-d.tsx
       - name: deep_key_path_shape_mismatch
-        symptom: 'A field name or array helper rejects a path involving arrays, optional arrays, readonly arrays, or nullish data.'
-        correction: 'Check the DeepKeys path shape, including bracket array segments like users[0].name and array-valued path constraints.'
+        symptom: "A field name or array helper rejects a path involving arrays, optional arrays, readonly arrays, or nullish data."
+        correction: "Check the DeepKeys path shape, including bracket array segments like users[0].name and array-valued path constraints."
         evidence:
           - packages/form-core/tests/deep-keys.test-d.ts
       - name: schema_strict_loose_vs_field_strict_loose
-        symptom: 'User assumes fieldComponent.strict/loose means strictSchema/looseSchema.'
-        correction: 'Explain schema option modes separately from field component value-compatibility branding.'
+        symptom: "User assumes fieldComponent.strict/loose means strictSchema/looseSchema."
+        correction: "Explain schema option modes separately from field component value-compatibility branding."
         evidence:
           - packages/react-form/src/AppForm/getFormHookHelpers.public.ts
           - packages/form-core/src/utils.public.ts
       - name: submit_specific_type_leaks_to_reusable_child
-        symptom: 'A reusable child rejects a form because TOnSubmit differs.'
-        correction: 'Use shared options without onSubmit or type the child around the intended ReactFormType boundary.'
+        symptom: "A reusable child rejects a form because TOnSubmit differs."
+        correction: "Use shared options without onSubmit or type the child around the intended ReactFormType boundary."
         evidence:
           - packages/react-form/tests/submit-return.test-d.tsx
       - name: strict_field_group_binding_mismatch
-        symptom: 'A field group strict slot rejects a real field path whose value is only assignable in one direction.'
-        correction: 'Use a loose field slot when the reusable group should accept wider compatible field values.'
+        symptom: "A field group strict slot rejects a real field path whose value is only assignable in one direction."
+        correction: "Use a loose field slot when the reusable group should accept wider compatible field values."
         evidence:
           - packages/react-form/tests/FieldGroupApi.test-d.tsx
           - packages/react-form/src/FieldGroup/withFields.public.ts
       - name: public_api_store_confusion
-        symptom: 'Type error mentions missing store because example uses form.store or field.store.'
-        correction: 'Use public atom-based APIs and adapter subscriptions.'
+        symptom: "Type error mentions missing store because example uses form.store or field.store."
+        correction: "Use public atom-based APIs and adapter subscriptions."
         evidence:
           - packages/react-form/tests/FormGroup.test-d.tsx
           - packages/react-form/src/ReactForm/fieldSubscriptions.lib.ts
@@ -858,14 +858,14 @@ skill_candidates:
     status: reviewed
     priority: high
     domain: diagnostics-and-examples
-    purpose: 'Help Codex scaffold substantial maintainer examples for testing, future documentation, and user reference.'
+    purpose: "Help Codex scaffold substantial maintainer examples for testing, future documentation, and user reference."
     entrypoints:
-      - 'examples/react/basic'
-      - 'examples/react/array'
-      - 'examples/react/basic-splitting-form'
-      - 'examples/react/field-groups'
-      - 'examples/react/ui-integration/shadcn'
-      - 'examples/react/ui-integration/dnd-kit'
+      - "examples/react/basic"
+      - "examples/react/array"
+      - "examples/react/basic-splitting-form"
+      - "examples/react/field-groups"
+      - "examples/react/ui-integration/shadcn"
+      - "examples/react/ui-integration/dnd-kit"
     sources:
       - examples/react/basic/src/index.tsx
       - examples/react/array/src/index.tsx
@@ -876,35 +876,35 @@ skill_candidates:
       - examples/react/ui-integration/dnd-kit/src/singleList/index.tsx
       - examples/react/ui-integration/dnd-kit/src/twoLists/index.tsx
     teaches:
-      - 'Examples are scaffolding targets for maintainers in this private repository, and future users experience them as reference examples.'
-      - 'Examples should model user journeys, not just newly added core behavior.'
-      - 'Use React adapter APIs and realistic composition patterns.'
-      - 'When an example renders arrays of fields, use ArrayField at the list boundary and Field for item properties; when an array is one immutable value, Field is acceptable.'
-      - 'Show schema mode choice, async defaults, submit handling, and error visibility together when that reflects a real task.'
-      - 'Use useSelector or form.Subscribe for reactive form state reads; the form hook return is stable by design.'
-      - 'Keep UI library and query-library ownership boundaries honest.'
+      - "Examples are scaffolding targets for maintainers in this private repository, and future users experience them as reference examples."
+      - "Examples should model user journeys, not just newly added core behavior."
+      - "Use React adapter APIs and realistic composition patterns."
+      - "When an example renders arrays of fields, use ArrayField at the list boundary and Field for item properties; when an array is one immutable value, Field is acceptable."
+      - "Show schema mode choice, async defaults, submit handling, and error visibility together when that reflects a real task."
+      - "Use useSelector or form.Subscribe for reactive form state reads; the form hook return is stable by design."
+      - "Keep UI library and query-library ownership boundaries honest."
     failure_modes:
       - name: barren_core_test_example
-        symptom: 'Example only proves a core feature works and does not teach how a user should compose a real form.'
-        correction: 'Write examples around realistic adapter-first user journeys.'
+        symptom: "Example only proves a core feature works and does not teach how a user should compose a real form."
+        correction: "Write examples around realistic adapter-first user journeys."
         evidence:
           - maintainer_guidance.adapter_first
           - examples/react/basic/src/index.tsx
           - examples/react/ui-integration/shadcn/src/app/booking/booking-form.tsx
       - name: dnd_multi_list_index_model
-        symptom: 'Multi-list drag-and-drop stores items as a single indexed array and races React with the DnD library.'
-        correction: 'Use stable item IDs with separate order arrays for cross-list movement.'
+        symptom: "Multi-list drag-and-drop stores items as a single indexed array and races React with the DnD library."
+        correction: "Use stable item IDs with separate order arrays for cross-list movement."
         evidence:
           - examples/react/ui-integration/dnd-kit/src/twoLists/index.tsx
       - name: native_reset_surprise
-        symptom: 'A reset button triggers browser-native reset instead of form.reset semantics.'
-        correction: 'Prevent default button behavior and call form.reset intentionally.'
+        symptom: "A reset button triggers browser-native reset instead of form.reset semantics."
+        correction: "Prevent default button behavior and call form.reset intentionally."
         evidence:
           - examples/react/basic/src/index.tsx
           - packages/form-core/tests/FormApi/default-value.spec.ts
       - name: submit_button_not_subscribed
-        symptom: 'Submit button does not reflect canSubmit or isSubmitting reliably.'
-        correction: 'Use form.Subscribe selectors for submit-related state.'
+        symptom: "Submit button does not reflect canSubmit or isSubmitting reliably."
+        correction: "Use form.Subscribe selectors for submit-related state."
         evidence:
           - examples/react/basic/src/index.tsx
           - packages/react-form/src/ReactForm/Components.public.ts
@@ -912,86 +912,86 @@ gaps:
   - id: missing-tanstack-query-example
     skill: query-backed-forms
     status: open
-    question: 'No checked-in query-backed example was available in this filesystem snapshot.'
-    context: 'The IDE referenced examples/react/tanstack-query/src/App.tsx, but examples/react/tanstack-query was absent. Query-backed guidance is therefore sourced from tests and maintainer interview until a realistic example is scaffolded.'
+    question: "No checked-in query-backed example was available in this filesystem snapshot."
+    context: "The IDE referenced examples/react/tanstack-query/src/App.tsx, but examples/react/tanstack-query was absent. Query-backed guidance is therefore sourced from tests and maintainer interview until a realistic example is scaffolded."
 evidence_constraints:
   - id: docs-are-mostly-reference
     status: noted
-    note: 'The docs directory is largely generated API reference; conceptual documentation is sparse.'
-    implication: 'Generated skills should lean on source, tests, examples, and maintainer interview for current intent.'
+    note: "The docs directory is largely generated API reference; conceptual documentation is sparse."
+    implication: "Generated skills should lean on source, tests, examples, and maintainer interview for current intent."
   - id: no-private-issue-signal
     status: resolved
-    note: 'Maintainer clarified private issues are developer TODOs/plans and not useful user-problem evidence.'
-    implication: 'Do not mine private issues for skill priorities in this repository.'
+    note: "Maintainer clarified private issues are developer TODOs/plans and not useful user-problem evidence."
+    implication: "Do not mine private issues for skill priorities in this repository."
   - id: examples-are-maintainer-scaffolds
     status: resolved
     note: "Examples are needed so maintainers can test scenarios and expand future documentation; intent skills should improve Codex's ability to scaffold them."
-    implication: 'Do not treat example selection as a public roadmap priority question. Future users primarily consume examples as references.'
+    implication: "Do not treat example selection as a public roadmap priority question. Future users primarily consume examples as references."
 tensions:
   - id: schema_strictness_vs_editable_defaults
     skills:
       - choosing-form-options-modes
       - schema-driven-forms
       - type-error-debugging
-    description: 'Schema-source typing improves parsed output confidence, but editable form defaults may need nullable or undefined intermediate values.'
-    implication: 'Agents may choose strictSchema for a ruleset-style form and then fight nullish defaults with assertions, or choose looseSchema for a true transform pipeline and read raw value.'
+    description: "Schema-source typing improves parsed output confidence, but editable form defaults may need nullable or undefined intermediate values."
+    implication: "Agents may choose strictSchema for a ruleset-style form and then fight nullish defaults with assertions, or choose looseSchema for a true transform pipeline and read raw value."
   - id: query_loading_ui_vs_form_initialization
     skills:
       - query-backed-forms
       - examples-authoring
-    description: 'Gating a form until query data arrives gives correct initial state, while fallback empty values let the UI render immediately.'
-    implication: 'Agents may pass maybe-undefined query data directly or choose a loading strategy without matching the visual workflow.'
+    description: "Gating a form until query data arrives gives correct initial state, while fallback empty values let the UI render immediately."
+    implication: "Agents may pass maybe-undefined query data directly or choose a loading strategy without matching the visual workflow."
   - id: validation_state_vs_transient_state
     skills:
       - query-backed-forms
       - schema-driven-forms
       - error-visibility-workflows
-    description: 'Validation errors are form state that can block submission; transient query/network/framework failures belong outside validation state.'
-    implication: 'Agents may convert retryable endpoint failures into visible field errors and accidentally block the next submit.'
+    description: "Validation errors are form state that can block submission; transient query/network/framework failures belong outside validation state."
+    implication: "Agents may convert retryable endpoint failures into visible field errors and accidentally block the next submit."
   - id: reuse_vs_inference_boundaries
     skills:
       - react-form-composition-setup
       - reusable-form-policies
       - type-error-debugging
       - examples-authoring
-    description: 'Reusable sections improve examples and app code, but the wrong abstraction boundary breaks inference.'
-    implication: 'Agents may assert field names, hand-write field props, or union ReactFormType forms instead of using inferred children, helper types, or field groups.'
+    description: "Reusable sections improve examples and app code, but the wrong abstraction boundary breaks inference."
+    implication: "Agents may assert field names, hand-write field props, or union ReactFormType forms instead of using inferred children, helper types, or field groups."
 cross_references:
   - from: react-form-composition-setup
     to: examples-authoring
-    reason: 'Examples should model adapter-first composition choices instead of core-level API proofs.'
+    reason: "Examples should model adapter-first composition choices instead of core-level API proofs."
   - from: react-form-composition-setup
     to: reusable-form-policies
-    reason: 'Split sections, AppForm, and field groups determine which reusable helper type or policy boundary is appropriate.'
+    reason: "Split sections, AppForm, and field groups determine which reusable helper type or policy boundary is appropriate."
   - from: reusable-form-policies
     to: react-form-composition-setup
-    reason: 'Reusable policies should not replace the larger composition choice between split forms, AppForm, and field groups.'
+    reason: "Reusable policies should not replace the larger composition choice between split forms, AppForm, and field groups."
   - from: reusable-form-policies
     to: error-visibility-workflows
-    reason: 'Named visibility helpers should preserve the user workflow that controls when errors appear.'
+    reason: "Named visibility helpers should preserve the user workflow that controls when errors appear."
   - from: reusable-form-policies
     to: type-error-debugging
-    reason: 'Reusable helper boundaries often explain long ReactFormType, createErrorVisibility, and createValidators errors.'
+    reason: "Reusable helper boundaries often explain long ReactFormType, createErrorVisibility, and createValidators errors."
   - from: examples-authoring
     to: react-form-composition-setup
-    reason: 'Example scaffolds need the Field, ArrayField, Subscribe, AppForm, ReactFormType, and field-group boundaries.'
+    reason: "Example scaffolds need the Field, ArrayField, Subscribe, AppForm, ReactFormType, and field-group boundaries."
   - from: choosing-form-options-modes
     to: schema-driven-forms
-    reason: 'Schema validation and submit output depend on the selected option mode.'
+    reason: "Schema validation and submit output depend on the selected option mode."
   - from: choosing-form-options-modes
     to: type-error-debugging
-    reason: 'Many large type errors originate at the default, strictSchema, or looseSchema boundary.'
+    reason: "Many large type errors originate at the default, strictSchema, or looseSchema boundary."
   - from: schema-driven-forms
     to: query-backed-forms
-    reason: 'Query-backed submit handlers often need to convert server validation responses into returned validation values.'
+    reason: "Query-backed submit handlers often need to convert server validation responses into returned validation values."
   - from: query-backed-forms
     to: error-visibility-workflows
-    reason: 'Async defaults and submit failures often change when users expect validation errors to become visible.'
+    reason: "Async defaults and submit failures often change when users expect validation errors to become visible."
   - from: type-error-debugging
     to: react-form-composition-setup
-    reason: 'Most type fixes should preserve adapter inference instead of adding assertions.'
+    reason: "Most type fixes should preserve adapter inference instead of adding assertions."
 phase5_finalization:
-  reviewed_on: '2026-06-25'
+  reviewed_on: "2026-06-25"
   resolved_interview_topics:
     - hard_do_nots
     - schema_mode_wording

@@ -2,16 +2,16 @@ schema_version: 1
 status: reviewed
 library:
   name: TanStack Form v2
-  version: '0.0.0'
+  version: "0.0.0"
   repository: https://github.com/TanStack/form-v2
-  description: 'Headless form state, validation, schema, and adapter APIs for TanStack Form v2, with React as the primary skill target.'
+  description: "Headless form state, validation, schema, and adapter APIs for TanStack Form v2, with React as the primary skill target."
 generated_from:
   domain_map: _artifacts/domain_map.yaml
   skill_spec: _artifacts/skill_spec.md
-generated_at: '2026-06-25'
+generated_at: "2026-06-25"
 layout:
   kind: flat
-  reason: 'The reviewed skills are task-focused and independently discoverable; no router skill is needed for 8 skills.'
+  reason: "The reviewed skills are task-focused and independently discoverable; no router skill is needed for 8 skills."
   default_package: packages/react-form
   adapter_first: true
 skills:
@@ -21,7 +21,7 @@ skills:
     domain: react-adapter-composition
     path: packages/react-form/skills/react-form-composition-setup/SKILL.md
     package: packages/react-form
-    description: 'Use when building adapter-first React forms with useForm, form.Field, form.ArrayField, form.Subscribe, AppForm, ReactFormType, field groups, reusable field components, or UI-library bindings.'
+    description: "Use when building adapter-first React forms with useForm, form.Field, form.ArrayField, form.Subscribe, AppForm, ReactFormType, field groups, reusable field components, or UI-library bindings."
     sources:
       - packages/react-form/src/ReactForm/Components.public.ts
       - packages/react-form/src/ReactForm/fieldSubscriptions.lib.ts
@@ -39,7 +39,7 @@ skills:
     domain: validation-and-error-visibility
     path: packages/react-form/skills/reusable-form-policies/SKILL.md
     package: packages/react-form
-    description: 'Use when extracting ReactFormType split-form props, createErrorVisibility policies, createValidator/createValidators configs, shared formOptions, or appFormOptions into named reusable helpers with documented intent.'
+    description: "Use when extracting ReactFormType split-form props, createErrorVisibility policies, createValidator/createValidators configs, shared formOptions, or appFormOptions into named reusable helpers with documented intent."
     requires:
       - react-form-composition-setup
       - error-visibility-workflows
@@ -58,7 +58,7 @@ skills:
     domain: schema-driven-forms
     path: packages/react-form/skills/choosing-form-options-modes/SKILL.md
     package: packages/react-form
-    description: 'Use when choosing between default formOptions, formOptions.strictSchema, formOptions.looseSchema, appFormOptions, and schema-source typing for React forms.'
+    description: "Use when choosing between default formOptions, formOptions.strictSchema, formOptions.looseSchema, appFormOptions, and schema-source typing for React forms."
     sources:
       - packages/form-core/src/utils.public.ts
       - packages/react-form/src/AppForm/appFormOptions.public.ts
@@ -80,7 +80,7 @@ skills:
     domain: schema-driven-forms
     path: packages/react-form/skills/schema-driven-forms/SKILL.md
     package: packages/react-form
-    description: 'Use when wiring Standard Schema-compatible validators, validators arrays, schemaOutputs, parseIssues, createValidationError, nested issue paths, and schema submit output into React forms.'
+    description: "Use when wiring Standard Schema-compatible validators, validators arrays, schemaOutputs, parseIssues, createValidationError, nested issue paths, and schema submit output into React forms."
     requires:
       - choosing-form-options-modes
     sources:
@@ -99,7 +99,7 @@ skills:
     domain: async-data-and-submit
     path: packages/react-form/skills/query-backed-forms/SKILL.md
     package: packages/react-form
-    description: 'Use when combining React forms with query-like async defaults, maybe-undefined incoming data, emptyFormValues fallbacks, gated field mounting, async onSubmit, mutation calls, and transient-vs-validation errors.'
+    description: "Use when combining React forms with query-like async defaults, maybe-undefined incoming data, emptyFormValues fallbacks, gated field mounting, async onSubmit, mutation calls, and transient-vs-validation errors."
     requires:
       - react-form-composition-setup
     sources:
@@ -118,7 +118,7 @@ skills:
     domain: validation-and-error-visibility
     path: packages/react-form/skills/error-visibility-workflows/SKILL.md
     package: packages/react-form
-    description: 'Use when implementing errorVisibility callbacks, createErrorVisibility helpers, show-after-blur, show-after-submit, grouped submission attempts, fieldState.meta visibility, or reusable validation trigger policies.'
+    description: "Use when implementing errorVisibility callbacks, createErrorVisibility helpers, show-after-blur, show-after-submit, grouped submission attempts, fieldState.meta visibility, or reusable validation trigger policies."
     sources:
       - packages/form-core/src/validation.public.ts
       - packages/form-core/src/FieldApi/fieldState.lib.ts
@@ -135,7 +135,7 @@ skills:
     domain: diagnostics-and-examples
     path: packages/react-form/skills/type-error-debugging/SKILL.md
     package: packages/react-form
-    description: 'Use when explaining large TypeScript errors from ReactFormType, FieldWithValue, AnyFieldApi, formOptions, appFormOptions, createErrorVisibility, createValidators, field groups, DeepKeys, DeepValue, or schema modes.'
+    description: "Use when explaining large TypeScript errors from ReactFormType, FieldWithValue, AnyFieldApi, formOptions, appFormOptions, createErrorVisibility, createValidators, field groups, DeepKeys, DeepValue, or schema modes."
     requires:
       - react-form-composition-setup
       - choosing-form-options-modes
@@ -155,7 +155,7 @@ skills:
     domain: diagnostics-and-examples
     path: packages/react-form/skills/examples-authoring/SKILL.md
     package: packages/react-form
-    description: 'Use when scaffolding realistic React examples for TanStack Form v2, including schema-driven forms, query-backed forms, error visibility workflows, app-form UI integrations, field groups, arrays, and reorder behavior.'
+    description: "Use when scaffolding realistic React examples for TanStack Form v2, including schema-driven forms, query-backed forms, error visibility workflows, app-form UI integrations, field groups, arrays, and reorder behavior."
     requires:
       - react-form-composition-setup
     sources:
@@ -175,25 +175,25 @@ tensions:
       - choosing-form-options-modes
       - schema-driven-forms
       - type-error-debugging
-    implication: 'Generated skills must warn against fighting nullish editable defaults with assertions or reading raw value for pipeline output.'
+    implication: "Generated skills must warn against fighting nullish editable defaults with assertions or reading raw value for pipeline output."
   - name: query_loading_ui_vs_form_initialization
     skills:
       - query-backed-forms
       - examples-authoring
-    implication: 'Generated skills must tie the default-values plan to the visual loading workflow.'
+    implication: "Generated skills must tie the default-values plan to the visual loading workflow."
   - name: validation_state_vs_transient_state
     skills:
       - query-backed-forms
       - schema-driven-forms
       - error-visibility-workflows
-    implication: 'Generated skills must keep transient query/network failures out of form validation state.'
+    implication: "Generated skills must keep transient query/network failures out of form validation state."
   - name: reuse_vs_inference_boundaries
     skills:
       - react-form-composition-setup
       - reusable-form-policies
       - type-error-debugging
       - examples-authoring
-    implication: 'Generated skills must prefer inference, helper types, and field groups over assertions, hand-written field shims, or ReactFormType unions.'
+    implication: "Generated skills must prefer inference, helper types, and field groups over assertions, hand-written field shims, or ReactFormType unions."
 cross_references:
   - from: react-form-composition-setup
     to: examples-authoring
@@ -221,4 +221,4 @@ gaps:
   - id: missing-tanstack-query-example
     skill: query-backed-forms
     status: open
-    note: 'No checked-in examples/react/tanstack-query example existed during discovery; query-backed form guidance is reviewed from tests and maintainer interview.'
+    note: "No checked-in examples/react/tanstack-query example existed during discovery; query-backed form guidance is reviewed from tests and maintainer interview."
