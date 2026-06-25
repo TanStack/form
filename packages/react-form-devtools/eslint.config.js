@@ -18,17 +18,9 @@ export default [
       'react-compiler': pluginReactCompiler,
     },
     rules: {
-      '@eslint-react/dom/no-missing-button-type': 'off',
-      '@eslint-react/no-use-context': 'off',
       'react-compiler/react-compiler': 'error',
       'react-hooks/exhaustive-deps': 'error',
       'react-hooks/rules-of-hooks': 'error',
-    },
-  },
-  {
-    files: ['**/__tests__/**'],
-    rules: {
-      // 'react-compiler/react-compiler': 'off',
     },
   },
 ]

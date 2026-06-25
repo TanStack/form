@@ -1,4 +1,6 @@
+import { TanStackDevtools } from '@tanstack/react-devtools'
 import { useForm } from '@tanstack/react-form'
+import { formDevtoolsPlugin } from '@tanstack/react-form-devtools'
 import ReactDOM from 'react-dom/client'
 import './index.css'
 import { StringField } from './StringField'
@@ -46,6 +48,12 @@ function App() {
           Reset
         </button>
       </form>
+      <TanStackDevtools
+        plugins={[formDevtoolsPlugin()]}
+        config={{
+          hideUntilHover: false,
+        }}
+      />
     </div>
   )
 }

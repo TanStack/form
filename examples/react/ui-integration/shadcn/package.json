@@ -31,6 +31,7 @@
   "devDependencies": {
     "@tanstack/devtools-vite": "^0.7.0",
     "@tanstack/react-devtools": "^0.10.5",
+    "@tanstack/react-form-devtools": "^0.2.32",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.2",

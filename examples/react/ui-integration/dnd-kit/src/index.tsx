@@ -1,3 +1,5 @@
+import { TanStackDevtools } from '@tanstack/react-devtools'
+import { formDevtoolsPlugin } from '@tanstack/react-form-devtools'
 import { createRoot } from 'react-dom/client'
 import { SingleListExample } from './singleList'
 import { TwoListsExample } from './twoLists'
@@ -13,6 +15,12 @@ function App() {
         <SingleListExample />
         <TwoListsExample />
       </main>
+      <TanStackDevtools
+        plugins={[formDevtoolsPlugin()]}
+        config={{
+          hideUntilHover: false,
+        }}
+      />
     </div>
   )
 }

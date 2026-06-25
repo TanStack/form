@@ -1,6 +1,7 @@
 import ReactDOM from 'react-dom/client'
 import './index.css'
 import { TanStackDevtools } from '@tanstack/react-devtools'
+import { formDevtoolsPlugin } from '@tanstack/react-form-devtools'
 import { BookingForm } from './app/booking/booking-form'
 
 function App() {
@@ -10,8 +11,9 @@ function App() {
         <BookingForm />
       </div>
       <TanStackDevtools
+        plugins={[formDevtoolsPlugin()]}
         config={{
-          hideUntilHover: true,
+          hideUntilHover: false,
         }}
       />
     </div>
