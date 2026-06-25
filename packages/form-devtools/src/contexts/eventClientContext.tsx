@@ -1,132 +1,28 @@
-import dayjs from 'dayjs'
-import {
-  createContext,
-  createEffect,
-  createMemo,
-  onCleanup,
-  useContext,
-} from 'solid-js'
-import { createStore } from 'solid-js/store'
-import { formEventClient } from '@tanstack/form-core'
-
+import { createContext, onCleanup, onMount, useContext } from 'solid-js'
+import { devtools } from '@tanstack/form-core/internals'
+import { createFormDevtoolsBridge } from '../devtoolsBridge.lib'
+import { formEventClient } from '../eventClient.lib'
 import type { ParentComponent } from 'solid-js'
-import type {
-  AnyFormOptions,
-  AnyFormState,
-  BroadcastFormSubmissionState,
-} from '@tanstack/form-core'
-import type { Dayjs } from 'dayjs'
 
-type BroadcastFormSubmissionStateWithoutId =
-  BroadcastFormSubmissionState extends infer T
-    ? T extends any
-      ? Omit<T, 'id'>
-      : never
-    : never
+type FormEventClient = typeof formEventClient
 
-export type DevtoolsFormState = {
-  id: string
-  state: AnyFormState
-  date: Dayjs
-  options: AnyFormOptions
-  history: Array<BroadcastFormSubmissionStateWithoutId>
-}
-
-function useProviderValue() {
-  const [store, setStore] = createStore<Array<DevtoolsFormState>>([])
-
-  createEffect(() => {
-    const cleanup = formEventClient.on('form-api', (e) => {
-      const id = e.payload.id
-      const existingIndex = store.findIndex((item) => item.id === id)
-
-      if (existingIndex > -1) {
-        setStore(existingIndex, {
-          state: e.payload.state,
-          options: e.payload.options,
-          date: dayjs(),
-        })
-      } else {
-        setStore((prev) => [
-          ...prev,
-          {
-            id,
-            state: e.payload.state,
-            options: e.payload.options,
-            date: dayjs(),
-            history: [],
-          },
-        ])
-      }
-    })
-
-    onCleanup(cleanup)
-  })
-
-  createEffect(() => {
-    const cleanup = formEventClient.on('form-state', (e) => {
-      const id = e.payload.id
-      const existingIndex = store.findIndex((item) => item.id === id)
-
-      if (existingIndex > -1) {
-        setStore(existingIndex, {
-          state: e.payload.state,
-          date: dayjs(),
-        })
-      } else {
-        setStore((prev) => [
-          ...prev,
-          {
-            id,
-            state: e.payload.state,
-            options: {},
-            date: dayjs(),
-            history: [],
-          },
-        ])
-      }
-    })
-
-    onCleanup(cleanup)
-  })
-
-  createEffect(() => {
-    const cleanup = formEventClient.on('form-submission', (e) => {
-      const id = e.payload.id
-      const existingIndex = store.findIndex((item) => item.id === id)
-
-      const existing = store[existingIndex]
-
-      if (existingIndex > -1 && existing) {
-        const { id: _, ...rest } = e.payload
-        const newHistory = [rest, ...existing.history].slice(0, 5)
-        setStore(existingIndex, 'history', newHistory)
-      }
-    })
-
-    onCleanup(cleanup)
-  })
-
-  createEffect(() => {
-    const cleanup = formEventClient.on('form-unmounted', (e) => {
-      setStore((prev) => prev.filter((item) => item.id !== e.payload.id))
-    })
-
-    onCleanup(cleanup)
-  })
-
-  return { store }
-}
-
-type ContextType = ReturnType<typeof useProviderValue>
-
-const FormEventClientContext = createContext<ContextType | undefined>(undefined)
+const FormEventClientContext = createContext<FormEventClient | undefined>(
+  undefined,
+)
 
 export const FormEventClientProvider: ParentComponent = (props) => {
-  const value = useProviderValue()
+  let uninstallBridge: (() => void) | undefined
+
+  onMount(() => {
+    uninstallBridge = devtools.installBridge(createFormDevtoolsBridge())
+  })
+
+  onCleanup(() => {
+    uninstallBridge?.()
+  })
 
   return (
-    <FormEventClientContext.Provider value={value}>
+    <FormEventClientContext.Provider value={formEventClient}>
       {props.children}
     </FormEventClientContext.Provider>
   )
@@ -135,12 +31,11 @@ export const FormEventClientProvider: ParentComponent = (props) => {
 export function useFormEventClient() {
   const context = useContext(FormEventClientContext)
 
-  if (context === undefined) {
+  if (!context) {
     throw new Error(
-      `useFormEventClient must be used within a FormEventClientContext`,
+      'useFormEventClient must be used within a FormEventClientProvider',
     )
   }
 
-  const memoContext = createMemo(() => context.store)
-  return { store: memoContext }
+  return context
 }

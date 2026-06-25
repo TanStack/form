@@ -33,6 +33,7 @@ import {
   setIndexedError,
 } from '../validation.lib'
 import { runFormListenerPipeline } from '../listeners.lib'
+import { devtools } from '../devtoolsBridge.lib'
 import { runSubmissionProcess } from './handleSubmit.lib'
 import { ArrayMethods } from './array-methods.lib'
 import {
@@ -351,8 +352,16 @@ export class InternalFormApi<
 
   mount = () => {
     this._notifyFormListener('mount', null)
+    devtools.onFormMount(this)
 
-    return () => {}
+    let didCleanup = false
+
+    return () => {
+      if (didCleanup) return
+      didCleanup = true
+
+      devtools.onFormUnmount(this)
+    }
   }
 
   _registerFormGroup(group: AnyFormGroupApi): void {

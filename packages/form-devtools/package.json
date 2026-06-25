@@ -14,6 +14,12 @@
     "type": "github",
     "url": "https://github.com/sponsors/tannerlinsley"
   },
+  "keywords": [
+    "solid",
+    "tanstack",
+    "form",
+    "devtools"
+  ],
   "scripts": {
     "clean": "premove ./dist ./coverage",
     "test:eslint": "eslint ./src ./tests",
@@ -34,47 +40,32 @@
   "module": "./dist/index.js",
   "exports": {
     ".": {
-      "workerd": {
+      "import": {
         "types": "./dist/index.d.ts",
-        "import": "./dist/server.js"
-      },
-      "browser": {
-        "types": "./dist/index.d.ts",
-        "import": "./dist/index.js"
-      },
-      "node": {
-        "types": "./dist/index.d.ts",
-        "import": "./dist/server.js"
-      },
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+        "default": "./dist/index.js"
+      }
     },
     "./production": {
-      "workerd": {
-        "types": "./dist/production/index.d.ts",
-        "import": "./dist/production/server.js"
-      },
-      "browser": {
-        "types": "./dist/production/index.d.ts",
-        "import": "./dist/production/index.js"
-      },
-      "node": {
-        "types": "./dist/production/index.d.ts",
-        "import": "./dist/production/server.js"
-      },
-      "types": "./dist/production/index.d.ts",
-      "import": "./dist/production/index.js"
+      "import": {
+        "types": "./dist/production.d.ts",
+        "default": "./dist/production.js"
+      }
     },
     "./package.json": "./package.json"
   },
   "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
   "files": [
     "dist",
     "src"
   ],
   "dependencies": {
-    "@tanstack/devtools-ui": "^0.5.1",
-    "@tanstack/devtools-utils": "^0.4.0",
+    "@tanstack/devtools": "^0.12.2",
+    "@tanstack/devtools-event-client": "^0.4.3",
+    "@tanstack/devtools-ui": "^0.5.2",
+    "@tanstack/devtools-utils": "^0.5.0",
     "@tanstack/form-core": "workspace:*",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.18",
@@ -83,11 +74,9 @@
   "devDependencies": {
     "rolldown-plugin-solid": "^0.2.1",
     "solid-js": "^1.9.9",
-    "tsdown": "^0.21.1",
-    "vite": "^7.2.2",
-    "vite-plugin-solid": "^2.11.8"
+    "vite-plugin-solid": "^2.11.10"
   },
   "peerDependencies": {
-    "solid-js": ">=1.9.9"
+    "solid-js": ">=1.9.5"
   }
 }

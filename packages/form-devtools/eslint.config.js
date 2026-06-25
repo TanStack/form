@@ -2,4 +2,10 @@
 
 import rootConfig from '../../eslint.config.js'
 
-export default [...rootConfig]
+/** @type {import('eslint').Linter.Config[]} */
+export default [
+  ...rootConfig,
+  {
+    rules: {},
+  },
+]

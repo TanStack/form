@@ -1,9 +1,9 @@
 import { constructCoreClass } from '@tanstack/devtools-utils/solid'
 
-export interface FormDevtoolsInit {}
+export interface FormDevtoolsInit {
+  adapterName?: string
+}
 
-const [FormDevtoolsCore, FormDevtoolsCoreNoOp] = constructCoreClass(
+export const [FormDevtoolsCore, FormDevtoolsCoreNoOp] = constructCoreClass(
   () => import('./components'),
 )
-
-export { FormDevtoolsCore, FormDevtoolsCoreNoOp }

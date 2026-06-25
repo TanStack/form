@@ -14,6 +14,10 @@
     "type": "github",
     "url": "https://github.com/sponsors/tannerlinsley"
   },
+  "keywords": [
+    "tanstack",
+    "form"
+  ],
   "scripts": {
     "clean": "premove ./build ./dist",
     "lint:fix": "eslint ./src --fix",
