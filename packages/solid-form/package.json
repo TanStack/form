@@ -53,7 +53,7 @@
   },
   "devDependencies": {
     "@types/node": "^25.0.7",
-    "solid-js": "^1.9.10"
+    "solid-js": "^1.9.13"
   },
   "peerDependencies": {
     "solid-js": ">=1.9.5"

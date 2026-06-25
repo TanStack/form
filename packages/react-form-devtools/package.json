@@ -60,8 +60,11 @@
     "@tanstack/form-devtools": "workspace:*"
   },
   "devDependencies": {
+    "@eslint-react/eslint-plugin": "^2.5.7",
     "@types/react": "^19.2.8",
     "@vitejs/plugin-react": "^5.1.2",
+    "eslint-plugin-react-compiler": "19.1.0-rc.2",
+    "eslint-plugin-react-hooks": "^7.0.1",
     "react": "^19.2.3"
   },
   "peerDependencies": {
