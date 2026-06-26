@@ -20,6 +20,7 @@ export const defaultFieldMeta: AnyFieldLikeMeta = {
   errorMap: {},
   errorSourceMap: {},
   _arrayVersion: 0,
+  _pendingValidationsCount: 0,
 }
 
 export function metaHelper<
