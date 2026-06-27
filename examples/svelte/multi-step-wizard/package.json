@@ -1,0 +1,22 @@
+{
+  "name": "@tanstack/form-example-svelte-multi-step-wizard",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tanstack/svelte-form": "^1.23.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^5.1.1",
+    "@tsconfig/svelte": "^5.0.5",
+    "svelte": "^5.39.4",
+    "typescript": "5.9.3",
+    "vite": "^7.2.2"
+  }
+}

@@ -22,7 +22,7 @@ const form = useForm({
 </script>
 
 <template>
-  <form.Field name="people">
+  <form.Field name="people" mode="array">
     <template v-slot="{ field, state }">
       <div>
         <form.Field
@@ -100,7 +100,7 @@ const form = useForm({
     "
   >
     <div>
-      <form.Field name="people">
+      <form.Field name="people" mode="array">
         <template v-slot="{ field, state }">
           <div>
             <form.Field

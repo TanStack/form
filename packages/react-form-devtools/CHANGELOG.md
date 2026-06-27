@@ -1,5 +1,61 @@
 # @tanstack/react-form-devtools
 
+## 0.2.29
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-devtools@0.2.29
+
+## 0.2.28
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-devtools@0.2.28
+
+## 0.2.27
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-devtools@0.2.27
+
+## 0.2.26
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-devtools@0.2.26
+
+## 0.2.25
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-devtools@0.2.25
+
+## 0.2.24
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-devtools@0.2.24
+
+## 0.2.23
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-devtools@0.2.23
+
+## 0.2.22
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-devtools@0.2.22
+
 ## 0.2.21
 
 ### Patch Changes

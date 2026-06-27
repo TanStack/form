@@ -1,7 +1,8 @@
 import { FieldGroupApi, functionalUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/solid-store'
 import { onSettled } from 'solid-js'
-import type { Component, JSX, ParentProps } from 'solid-js'
+import type { Component, ParentProps } from 'solid-js'
+import type { JSX } from '@solidjs/web'
 import type {
   DeepKeysOfType,
   FieldGroupState,

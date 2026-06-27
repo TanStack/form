@@ -1,0 +1,21 @@
+{
+  "name": "@tanstack/form-example-solid-multi-step-wizard",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "test:types": "tsc",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tanstack/solid-form": "^1.33.0",
+    "solid-js": "^1.9.9",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "vite": "^7.2.2",
+    "vite-plugin-solid": "^2.11.8"
+  }
+}

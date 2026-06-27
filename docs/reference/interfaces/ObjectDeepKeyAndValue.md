@@ -5,7 +5,7 @@ title: ObjectDeepKeyAndValue
 
 # Interface: ObjectDeepKeyAndValue\<TParent, T, TKey\>
 
-Defined in: [packages/form-core/src/util-types.ts:97](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L97)
+Defined in: [packages/form-core/src/util-types.ts:114](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L114)
 
 ## Extends
 
@@ -33,7 +33,7 @@ Defined in: [packages/form-core/src/util-types.ts:97](https://github.com/TanStac
 key: ObjectAccessor<TParent, TKey>;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:102](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L102)
+Defined in: [packages/form-core/src/util-types.ts:119](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L119)
 
 #### Overrides
 
@@ -47,7 +47,7 @@ Defined in: [packages/form-core/src/util-types.ts:102](https://github.com/TanSta
 value: ObjectValue<TParent, T, TKey>;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:103](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L103)
+Defined in: [packages/form-core/src/util-types.ts:120](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L120)
 
 #### Overrides
 

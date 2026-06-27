@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/solid-form-devtools",
-  "version": "0.2.21",
+  "version": "0.2.29",
   "description": "Solid adapter for devtools for Form.",
   "author": "Tanner Linsley",
   "license": "MIT",
@@ -51,15 +51,14 @@
     "build": "vite build"
   },
   "peerDependencies": {
-    "solid-js": ">=2.0.0-beta.6 <2.0.0-experimental.0"
+    "solid-js": ">=1.9.7"
   },
   "dependencies": {
     "@tanstack/devtools-utils": "^0.4.0",
     "@tanstack/form-devtools": "workspace:*"
   },
   "devDependencies": {
-    "@solidjs/web": "2.0.0-beta.6",
-    "solid-js": "2.0.0-beta.6",
-    "vite-plugin-solid": "3.0.0-next.4"
+    "solid-js": "^1.9.9",
+    "vite-plugin-solid": "^2.11.8"
   }
 }

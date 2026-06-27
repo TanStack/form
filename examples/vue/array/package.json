@@ -10,12 +10,12 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@tanstack/vue-form": "^1.29.0",
+    "@tanstack/vue-form": "^1.33.0",
     "vue": "^3.5.13"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.4",
-    "typescript": "5.8.2",
+    "typescript": "5.9.3",
     "vite": "^7.2.2",
     "vue-tsc": "^2.2.2"
   }

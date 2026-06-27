@@ -9,4 +9,4 @@ title: defaultValidationLogic
 const defaultValidationLogic: ValidationLogicFn;
 ```
 
-Defined in: [packages/form-core/src/ValidationLogic.ts:120](https://github.com/TanStack/form/blob/main/packages/form-core/src/ValidationLogic.ts#L120)
+Defined in: [packages/form-core/src/ValidationLogic.ts:134](https://github.com/TanStack/form/blob/main/packages/form-core/src/ValidationLogic.ts#L134)

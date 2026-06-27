@@ -5,13 +5,11 @@ title: FieldApiOptions
 
 # Interface: FieldApiOptions\<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta\>
 
-Defined in: [packages/form-core/src/FieldApi.ts:488](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L488)
-
-An object type representing the required options for the FieldApi class.
+Defined in: [packages/form-core/src/FieldApi.ts:383](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L383)
 
 ## Extends
 
-- [`FieldOptions`](FieldOptions.md)\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`\>
+- `FieldExtraOptions`\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`\>
 
 ## Type Parameters
 
@@ -115,13 +113,15 @@ An object type representing the required options for the FieldApi class.
 optional asyncAlways: boolean;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:429](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L429)
+Defined in: [packages/form-core/src/types.ts:972](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L972)
 
 If `true`, always run async validation, even if there are errors emitted during synchronous validation.
 
 #### Inherited from
 
-[`FieldOptions`](FieldOptions.md).[`asyncAlways`](FieldOptions.md#asyncalways)
+```ts
+FieldLikeApiOptions.asyncAlways
+```
 
 ***
 
@@ -131,29 +131,33 @@ If `true`, always run async validation, even if there are errors emitted during 
 optional asyncDebounceMs: number;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:425](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L425)
+Defined in: [packages/form-core/src/types.ts:968](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L968)
 
 The default time to debounce async validation if there is not a more specific debounce time passed.
 
 #### Inherited from
 
-[`FieldOptions`](FieldOptions.md).[`asyncDebounceMs`](FieldOptions.md#asyncdebouncems)
+```ts
+FieldLikeApiOptions.asyncDebounceMs
+```
 
 ***
 
 ### defaultMeta?
 
 ```ts
-optional defaultMeta: Partial<FieldMeta<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, any, any, any, any, any, any, any, any, any>>;
+optional defaultMeta: Partial<FieldLikeMeta<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, any, any, any, any, any, any, any, any, any>>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:450](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L450)
+Defined in: [packages/form-core/src/types.ts:976](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L976)
 
 An optional object with default metadata for the field.
 
 #### Inherited from
 
-[`FieldOptions`](FieldOptions.md).[`defaultMeta`](FieldOptions.md#defaultmeta)
+```ts
+FieldLikeApiOptions.defaultMeta
+```
 
 ***
 
@@ -163,13 +167,15 @@ An optional object with default metadata for the field.
 optional defaultValue: NoInfer<TData>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:421](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L421)
+Defined in: [packages/form-core/src/types.ts:964](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L964)
 
 An optional default value for the field.
 
 #### Inherited from
 
-[`FieldOptions`](FieldOptions.md).[`defaultValue`](FieldOptions.md#defaultvalue)
+```ts
+FieldLikeApiOptions.defaultValue
+```
 
 ***
 
@@ -179,13 +185,15 @@ An optional default value for the field.
 optional disableErrorFlat: boolean;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:482](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L482)
+Defined in: [packages/form-core/src/types.ts:1004](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L1004)
 
 Disable the `flat(1)` operation on `field.errors`. This is useful if you want to keep the error structure as is. Not suggested for most use-cases.
 
 #### Inherited from
 
-[`FieldOptions`](FieldOptions.md).[`disableErrorFlat`](FieldOptions.md#disableerrorflat)
+```ts
+FieldLikeApiOptions.disableErrorFlat
+```
 
 ***
 
@@ -195,7 +203,13 @@ Disable the `flat(1)` operation on `field.errors`. This is useful if you want to
 form: FormApi<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:552](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L552)
+Defined in: [packages/form-core/src/types.ts:1084](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L1084)
+
+#### Inherited from
+
+```ts
+FieldLikeApiOptions.form
+```
 
 ***
 
@@ -205,13 +219,15 @@ Defined in: [packages/form-core/src/FieldApi.ts:552](https://github.com/TanStack
 optional listeners: FieldListeners<TParentData, TName, TData>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:478](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L478)
+Defined in: [packages/form-core/src/FieldApi.ts:325](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L325)
 
 A list of listeners which attach to the corresponding events
 
 #### Inherited from
 
-[`FieldOptions`](FieldOptions.md).[`listeners`](FieldOptions.md#listeners)
+```ts
+FieldExtraOptions.listeners
+```
 
 ***
 
@@ -221,13 +237,15 @@ A list of listeners which attach to the corresponding events
 name: TName;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:417](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L417)
+Defined in: [packages/form-core/src/types.ts:960](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L960)
 
 The field name. The type will be `DeepKeys<TParentData>` to ensure your name is a deep key of the parent dataset.
 
 #### Inherited from
 
-[`FieldOptions`](FieldOptions.md).[`name`](FieldOptions.md#name)
+```ts
+FieldLikeApiOptions.name
+```
 
 ***
 
@@ -237,10 +255,12 @@ The field name. The type will be `DeepKeys<TParentData>` to ensure your name is 
 optional validators: FieldValidators<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:433](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L433)
+Defined in: [packages/form-core/src/FieldApi.ts:307](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L307)
 
 A list of validators to pass to the field
 
 #### Inherited from
 
-[`FieldOptions`](FieldOptions.md).[`validators`](FieldOptions.md#validators)
+```ts
+FieldExtraOptions.validators
+```

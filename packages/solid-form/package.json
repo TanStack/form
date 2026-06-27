@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/solid-form",
-  "version": "1.29.0",
+  "version": "1.33.0",
   "description": "Powerful, type-safe forms for Solid.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -22,7 +22,8 @@
     "test:types:ts55": "node ../../node_modules/typescript55/lib/tsc.js",
     "test:types:ts56": "node ../../node_modules/typescript56/lib/tsc.js",
     "test:types:ts57": "node ../../node_modules/typescript57/lib/tsc.js",
-    "test:types:ts58": "tsc",
+    "test:types:ts58": "node ../../node_modules/typescript58/lib/tsc.js",
+    "test:types:ts59": "tsc",
     "test:lib": "vitest",
     "test:lib:dev": "pnpm run test:lib --watch",
     "test:build": "publint --strict",
@@ -59,13 +60,13 @@
     "@tanstack/solid-store": "^0.9.1"
   },
   "devDependencies": {
-    "@solidjs/web": "2.0.0-beta.6",
+    "@solidjs/web": "2.0.0-beta.15",
     "@testing-library/dom": "^10.4.0",
-    "solid-js": "2.0.0-beta.6",
+    "solid-js": "2.0.0-beta.15",
     "vite": "^7.2.2",
     "vite-plugin-solid": "3.0.0-next.4"
   },
   "peerDependencies": {
-    "solid-js": ">=2.0.0-beta.6 <2.0.0-experimental.0"
+    "solid-js": ">=2.0.0-beta.15 <2.0.0-experimental.0"
   }
 }

@@ -18,13 +18,8 @@ import type {
   FormOptions,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type {
-  Accessor,
-  Component,
-  Context,
-  JSXElement,
-  ParentProps,
-} from 'solid-js'
+import type { Accessor, Component, Context, ParentProps } from 'solid-js'
+import type { JSX } from '@solidjs/web'
 import type { FieldComponent } from './createField'
 import type { AppFieldExtendedSolidFieldGroupApi } from './createFieldGroup'
 import type { SolidFormExtendedApi } from './createForm'
@@ -257,7 +252,7 @@ export interface WithFormProps<
         >
       }
     >,
-  ) => JSXElement
+  ) => JSX.Element
 }
 
 export interface WithFieldGroupProps<
@@ -294,7 +289,7 @@ export interface WithFieldGroupProps<
         >
       }
     >,
-  ) => JSXElement
+  ) => JSX.Element
 }
 
 export function createFormHook<
@@ -541,7 +536,7 @@ export function createFormHook<
         fields: TFields
       }
     >,
-  ) => JSXElement {
+  ) => JSX.Element {
     return function Render(innerProps) {
       const fieldGroupProps = {
         form: innerProps.form,

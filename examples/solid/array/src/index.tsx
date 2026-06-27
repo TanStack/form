@@ -21,7 +21,7 @@ function App() {
           form.handleSubmit()
         }}
       >
-        <form.Field name="people">
+        <form.Field name="people" mode="array">
           {(field) => (
             <div>
               <Show when={field().state.value.length > 0}>

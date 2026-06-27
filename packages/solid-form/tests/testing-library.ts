@@ -1,7 +1,7 @@
 import { getQueriesForElement, prettyDOM } from '@testing-library/dom'
 import { createComponent, flush } from 'solid-js'
 import { render as solidRender } from '@solidjs/web'
-import type { JSX } from 'solid-js'
+import type { JSX } from '@solidjs/web'
 
 export * from '@testing-library/dom'
 

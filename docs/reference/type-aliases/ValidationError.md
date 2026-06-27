@@ -9,4 +9,4 @@ title: ValidationError
 type ValidationError = unknown;
 ```
 
-Defined in: [packages/form-core/src/types.ts:5](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L5)
+Defined in: [packages/form-core/src/types.ts:35](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L35)

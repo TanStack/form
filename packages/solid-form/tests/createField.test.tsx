@@ -567,4 +567,62 @@ describe('createField', () => {
     await user.click(await findByText('Submit'))
     expect(fn).toHaveBeenCalledWith({ people: [{ name: 'John', age: 0 }] })
   })
+
+  it('should support array mode', async () => {
+    function Comp() {
+      const form = createForm(() => ({
+        defaultValues: {
+          test: ['a'],
+        },
+      }))
+
+      return (
+        <form.Field name="test" mode="array">
+          {(field) => (
+            <div>
+              <div data-testid="val">{JSON.stringify(field().state.value)}</div>
+              <button onClick={() => field().pushValue('b')}>push</button>
+            </div>
+          )}
+        </form.Field>
+      )
+    }
+
+    const { getByTestId, getByText } = render(() => <Comp />)
+    expect(getByTestId('val')).toHaveTextContent('["a"]')
+    await user.click(getByText('push'))
+    await waitFor(() =>
+      expect(getByTestId('val')).toHaveTextContent('["a","b"]'),
+    )
+  })
+
+  it('should rerender array mode field on swapFieldValues', async () => {
+    function Comp() {
+      const form = createForm(() => ({
+        defaultValues: {
+          test: ['a', 'b'],
+        },
+      }))
+
+      return (
+        <form.Field name="test" mode="array">
+          {(field) => (
+            <div>
+              <div data-testid="val">{JSON.stringify(field().state.value)}</div>
+              <button onClick={() => form.swapFieldValues('test', 0, 1)}>
+                swap
+              </button>
+            </div>
+          )}
+        </form.Field>
+      )
+    }
+
+    const { getByTestId, getByText } = render(() => <Comp />)
+    expect(getByTestId('val')).toHaveTextContent('["a","b"]')
+    await user.click(getByText('swap'))
+    await waitFor(() =>
+      expect(getByTestId('val')).toHaveTextContent('["b","a"]'),
+    )
+  })
 })
