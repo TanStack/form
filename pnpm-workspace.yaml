@@ -15,6 +15,19 @@ trustPolicyExclude:
 # Too young to use currently, upgrade in a few days
 overrides: { 'tinyexec': '1.1.2' }
 
+# Keep the Solid-based devtools chain on Solid v1: `@tanstack/devtools` and
+# `@tanstack/devtools-ui` import `solid-js/web`, which no longer exists in
+# Solid 2. Their `solid-js` peer is `>=1.9.7`, which the 2.0.0-beta.x used by
+# solid-form also satisfies, so with auto-install-peers pnpm would resolve the
+# devtools' peer to the beta and break any (e.g. React) example that bundles
+# them. `@tanstack/react-devtools` (the dependent that pulls in `@tanstack/
+# devtools`) declares no solid-js itself, so we pin one to v1 here; that makes
+# the `@tanstack/devtools` peer — and its whole Solid subtree — resolve to v1.
+packageExtensions:
+  '@tanstack/react-devtools':
+    dependencies:
+      solid-js: '^1.9.9'
+
 packages:
   - packages/**
   - examples/angular/**

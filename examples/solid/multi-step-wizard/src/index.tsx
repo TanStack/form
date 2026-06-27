@@ -1,5 +1,5 @@
 /* @refresh reload */
-import { render } from 'solid-js/web'
+import { render } from '@solidjs/web'
 import { WizardPage } from './features/wizard/page.tsx'
 
 function App() {
