@@ -12,9 +12,6 @@ trustPolicyExclude:
   - 'react-native-worklets@0.5.1' # Expo 56 fixes this but is too new; upgrade in a few days
   - 'eslint-import-resolver-typescript@3.10.1' # Same as above
 
-# Too young to use currently, upgrade in a few days
-overrides: { 'tinyexec': '1.1.2' }
-
 packages:
   - 'benchmarks/*'
   - packages/**
@@ -46,3 +43,12 @@ allowBuilds:
 
   # nextJs
   sharp: false # not directly required for build
+
+overrides:
+  '@tanstack/form-core': 'workspace:*'
+  '@tanstack/form-devtools': 'workspace:*'
+  '@tanstack/react-form': 'workspace:*'
+  '@tanstack/react-form-devtools': 'workspace:*'
+  '@tanstack/solid-form': 'workspace:*'
+   # Too young to use currently, upgrade in a few days
+  'tinyexec': '1.1.2'

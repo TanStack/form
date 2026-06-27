@@ -5,7 +5,12 @@ export default defineConfig({
   plugins: [
     react({
       babel: {
-        plugins: ['babel-plugin-react-compiler'],
+        overrides: [
+          {
+            test: './src/**/*.tsx',
+            plugins: ['babel-plugin-react-compiler'],
+          },
+        ],
       },
     }),
   ],

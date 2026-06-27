@@ -77,10 +77,5 @@
     "typescript58": "npm:typescript@5.8.3",
     "vite": "^7.2.2",
     "vitest": "^4.0.17"
-  },
-  "overrides": {
-    "@tanstack/form-core": "workspace:*",
-    "@tanstack/react-form": "workspace:*",
-    "@tanstack/solid-form": "workspace:*"
   }
 }
