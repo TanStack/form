@@ -20,16 +20,19 @@ import {
   runValidatorPipeline,
   setIndexedError,
 } from '../validation.lib'
-import { hasFieldMetaErrors } from '../FieldApi/FieldApi.lib'
+import { transformFieldOptionsFieldNames } from '../FieldApi/FieldApi.lib'
+import { hasFieldMetaErrors } from '../FieldApi/fieldState.lib'
 import { parseStandardSchemaIssues } from '../standardSchema.lib'
 import type { FormApi } from '../FormApi/FormApi.public'
 import type { InternalFormApi } from '../FormApi/FormApi.lib'
 import type {
   AnyFieldApiOptions,
   AnyInternalFieldApi,
+} from '../FieldApi/FieldApi.lib'
+import type {
   FormGroupFieldErrorMeta,
   InternalBaseFieldMeta,
-} from '../FieldApi/FieldApi.lib'
+} from '../FieldApi/fieldState.lib'
 import type { FormStateOverrides } from '../FormApi/formState.lib'
 import type { DeepKeys, DeepValue } from '../deep-keys.public'
 import type { PipelineCache } from '../utils.lib'
@@ -262,29 +265,9 @@ export class InternalFormGroupApi<
   _getFormFieldOptions<TOptions extends AnyFieldApiOptions>(
     options: TOptions,
   ): AnyFieldApiOptions {
-    return {
-      ...options,
-      name: this._getPrefixedFieldName(options.name),
-      validators: this._prefixWatchedFields(options.validators),
-      listeners: this._prefixWatchedFields(options.listeners),
-    }
-  }
-
-  _prefixWatchedFields<
-    TItem extends { watchFields?: Array<string> } | undefined,
-  >(items: ReadonlyArray<TItem> | undefined): Array<TItem> | undefined {
-    if (!items) return undefined
-
-    return items.map((item) => {
-      if (!item?.watchFields) return item
-
-      return {
-        ...item,
-        watchFields: item.watchFields.map((fieldName) =>
-          this._getPrefixedFieldName(fieldName),
-        ),
-      }
-    })
+    return transformFieldOptionsFieldNames(options, (fieldName) =>
+      this._getPrefixedFieldName(fieldName),
+    )
   }
 
   _setGroupFieldErrorMeta(

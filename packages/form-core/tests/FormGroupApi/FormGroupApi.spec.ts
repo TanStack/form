@@ -146,7 +146,6 @@ describe('FormGroupApi', () => {
       name: 'guestDetails',
     })
 
-    expect(group._prefixWatchedFields(undefined)).toBeUndefined()
     const options = group._getFormFieldOptions({
       name: 'name',
     })

@@ -1,8 +1,6 @@
 import { batch, createAtom } from '@tanstack/store'
-import { createFormStateProxy } from '../FormApi/formState.lib'
 import {
   callUpdater,
-  cancelPipelineCache,
   createPipelineCache,
   evaluate,
   getBy,
@@ -27,11 +25,20 @@ import {
   reconcileWatchedListenerFields,
   reconcileWatchedValidatorFields,
 } from './linked-fields.lib'
-import { rootCounterContributionKeys } from './RootFieldApi.lib'
-import type {
-  InternalRootFieldApi,
-  RootCounterContributionKey,
-} from './RootFieldApi.lib'
+import {
+  defaultInternalBaseFieldMeta,
+  deriveFromBaseFieldMeta,
+  getChildContributionStates,
+  getFieldSnapshot,
+} from './fieldState.lib'
+import {
+  killField,
+  moveFieldToSegment,
+  notifyWatchedFieldDependencyChanges,
+  pruneFieldIfUnused,
+  updateChildContributionCount,
+} from './fieldTree.lib'
+import type { InternalRootFieldApi } from './RootFieldApi.lib'
 import type {
   DeepKeys,
   DeepValue,
@@ -49,25 +56,23 @@ import type {
 import type { ResolvedInternalFieldUpdateOptions } from '../types.lib'
 import type { FieldUpdateOptions, Updater } from '../types.public'
 import type { AnyInternalFormApi } from '../FormApi/FormApi.lib'
-import type { FieldLifecycleReference } from '../devtoolsBridge.lib'
-import type { Atom, ReadonlyAtom } from '@tanstack/store'
-import type {
-  AnyFieldMeta as AnyPublicFieldMeta,
-  BaseFieldMeta,
-  FieldApi,
-  FieldApiOptions,
-  FieldState as PublicFieldState,
-  SubfieldsMeta,
-} from './FieldApi.public'
+import type { ReadonlyAtom } from '@tanstack/store'
+import type { FieldApi, FieldApiOptions } from './FieldApi.public'
 import type {
   ErrorVisibility,
-  ErrorVisibilityFieldState,
   FieldErrors,
   FieldValidateResult,
   FieldValidator,
   FieldValidators,
-  ValidationIssue,
 } from '../validation.public'
+import type {
+  ChildContributionStates,
+  FieldAtoms,
+  InternalBaseFieldMeta,
+  InternalFieldMeta,
+  InternalFieldState,
+} from './fieldState.lib'
+import type { WatchedFieldDependencyOperation } from './fieldTree.lib'
 
 export type AnyFieldApiOptions = FieldApiOptions<
   any,
@@ -80,6 +85,57 @@ export type AnyFieldApiOptions = FieldApiOptions<
   any
 >
 export type AnyFieldValidator = FieldValidator<any, any, any>
+
+type FieldOptionItemWithWatchedFields = {
+  watchFields?: ReadonlyArray<string>
+}
+
+type FieldOptionsWithFieldNameReferences = {
+  name: string
+  validators?: ReadonlyArray<FieldOptionItemWithWatchedFields | undefined>
+  listeners?: ReadonlyArray<FieldOptionItemWithWatchedFields | undefined>
+}
+
+function transformFieldOptionItemsWithWatchedFields<
+  TItem extends FieldOptionItemWithWatchedFields | undefined,
+>(
+  items: ReadonlyArray<TItem> | undefined,
+  transformFieldName: (fieldName: string) => string,
+): Array<TItem> | undefined {
+  if (!items) return undefined
+
+  return items.map((item) => {
+    if (!item?.watchFields) return item
+
+    return {
+      ...item,
+      watchFields: item.watchFields.map(transformFieldName),
+    }
+  })
+}
+
+export function transformFieldOptionsFieldNames<
+  TFieldOptions extends { name: string },
+>(
+  fieldOptions: TFieldOptions,
+  transformFieldName: (fieldName: string) => string,
+): TFieldOptions {
+  const options = fieldOptions as TFieldOptions &
+    FieldOptionsWithFieldNameReferences
+
+  return {
+    ...fieldOptions,
+    name: transformFieldName(options.name),
+    validators: transformFieldOptionItemsWithWatchedFields(
+      options.validators,
+      transformFieldName,
+    ),
+    listeners: transformFieldOptionItemsWithWatchedFields(
+      options.listeners,
+      transformFieldName,
+    ),
+  }
+}
 
 export interface DefaultValueCacheEntry {
   name: string
@@ -117,68 +173,6 @@ function isObjectLike(value: unknown): boolean {
 
 export type NameSegment = string | number
 export type NameSegments = Array<NameSegment>
-
-export type ChildContributionKey =
-  | RootCounterContributionKey
-  | 'dirty'
-  | 'error'
-type ChildContributionCounts = Record<ChildContributionKey, number>
-export type ChildContributionStates = Record<ChildContributionKey, boolean>
-
-const childContributionKeys: Array<ChildContributionKey> = [
-  'touched',
-  'dirty',
-  'error',
-  'validating',
-]
-
-interface MetaExtension {
-  _formValidatorErrors: Array<Array<ValidationIssue>>
-  _formValidatorErrorSourceEvents: Array<string | null>
-  _formGroupValidatorErrors: Map<object, FormGroupFieldErrorMeta>
-  _fieldValidatorErrors: Array<Array<ValidationIssue>>
-  _fieldValidatorErrorSourceEvents: Array<string | null>
-  childContributionCounts: ChildContributionCounts
-  _validationCount: number
-  /**
-   * @private
-   * Used to rerender for ArrayField components
-   */
-  _arrayVersion: number
-}
-
-export interface FormGroupFieldErrorMeta {
-  errors: Array<Array<ValidationIssue>>
-  errorSourceEvents: Array<string | null>
-}
-
-export interface InternalBaseFieldMeta extends BaseFieldMeta, MetaExtension {}
-export interface InternalFieldMeta extends AnyPublicFieldMeta, MetaExtension {}
-
-const derivedMetaSourceKey = Symbol('tanstack-form-derived-meta-source')
-const derivedMetaCanDisplayErrorsKey = Symbol(
-  'tanstack-form-derived-meta-can-display-errors',
-)
-
-type DerivedMetaMarkers = {
-  [derivedMetaCanDisplayErrorsKey]?: boolean
-  [derivedMetaSourceKey]?: InternalBaseFieldMeta
-}
-
-export interface InternalFieldState extends PublicFieldState<
-  any,
-  any,
-  any,
-  any,
-  any
-> {
-  meta: InternalFieldMeta
-}
-
-export interface FieldAtoms {
-  store?: ReadonlyAtom<InternalFieldState>
-  meta?: Atom<InternalBaseFieldMeta>
-}
 
 /**
  * Convert a name into an array of segments.
@@ -299,36 +293,6 @@ export function tryGetFieldApi(
   }
 }
 
-export const defaultBaseFieldMeta: BaseFieldMeta = {
-  isTouched: false,
-  isDirty: false,
-  isBlurred: false,
-  isValidating: false,
-}
-
-export const defaultInternalBaseFieldMeta: InternalBaseFieldMeta = {
-  ...defaultBaseFieldMeta,
-  childContributionCounts: {
-    touched: 0,
-    dirty: 0,
-    error: 0,
-    validating: 0,
-  },
-  _validationCount: 0,
-  _fieldValidatorErrors: [],
-  _fieldValidatorErrorSourceEvents: [],
-  _formValidatorErrors: [],
-  _formValidatorErrorSourceEvents: [],
-  _formGroupValidatorErrors: new Map(),
-  _arrayVersion: 0,
-}
-
-export const defaultFieldMeta: InternalFieldMeta = deriveFromBaseFieldMeta(
-  defaultInternalBaseFieldMeta,
-  undefined,
-  undefined,
-)
-
 export interface InternalFieldApiParams extends Omit<
   AnyFieldApiOptions,
   'name'
@@ -369,262 +333,6 @@ function hasFieldValidatorErrors(
 }
 
 export type AnyInternalFieldApi = InternalFieldApi<any, any, any>
-
-type DetachWatchingFieldFn = (
-  operation: {
-    sourceField: AnyInternalFieldApi
-    watchingField: AnyInternalFieldApi
-    watcherIndex: number
-  },
-  options?: { pruneSourceField?: boolean },
-) => void
-
-type WatchedFieldDependencyOperation = {
-  sourceField: AnyInternalFieldApi
-  watchingField: AnyInternalFieldApi
-  watcherIndex: number
-}
-
-function collectFieldSubtree(
-  field: AnyInternalFieldApi,
-): Array<AnyInternalFieldApi> {
-  const stack: Array<AnyInternalFieldApi> = [field]
-  const fields: Array<AnyInternalFieldApi> = []
-
-  while (stack.length > 0) {
-    const node = stack.pop()!
-    fields.push(node)
-    stack.push(...node._children)
-  }
-
-  return fields
-}
-
-function notifyFieldDetailChangedForFields(
-  fields: Iterable<AnyInternalFieldApi>,
-): void {
-  for (const field of fields) {
-    if (!field._isKilled) {
-      devtools.onFieldStateChange(field, { detail: true })
-    }
-  }
-}
-
-function notifyWatchedFieldDependencyChanges(
-  field: AnyInternalFieldApi,
-  operations: ReadonlyArray<WatchedFieldDependencyOperation>,
-): void {
-  if (operations.length === 0) return
-
-  const fields = new Set<AnyInternalFieldApi>([field])
-  for (const operation of operations) {
-    fields.add(operation.sourceField)
-    fields.add(operation.watchingField)
-  }
-
-  notifyFieldDetailChangedForFields(fields)
-}
-
-function addListenToFields(
-  fields: Set<AnyInternalFieldApi>,
-  listenToFields: FieldListenToFields | null,
-): void {
-  listenToFields?.forEach((sourceMetas) => {
-    for (const { field } of sourceMetas) {
-      fields.add(field)
-    }
-  })
-}
-
-function addWatchingFields(
-  fields: Set<AnyInternalFieldApi>,
-  watchingFields: FieldWatchingFields | null,
-): void {
-  watchingFields?.forEach((_watcherIndexes, watchingField) => {
-    fields.add(watchingField)
-  })
-}
-
-function notifyLinkedFieldDetailChanges(field: AnyInternalFieldApi): void {
-  const fields = new Set<AnyInternalFieldApi>([field])
-
-  addListenToFields(fields, field._listenToFields)
-  addListenToFields(fields, field._validateOnFields)
-  addWatchingFields(fields, field._watchingFields)
-  addWatchingFields(fields, field._watchingValidatorFields)
-
-  notifyFieldDetailChangedForFields(fields)
-}
-
-function collectFieldLifecycleReferences(
-  field: AnyInternalFieldApi,
-): Array<FieldLifecycleReference> {
-  return collectFieldSubtree(field).map((node) => ({
-    previousPath: node.name,
-    field: node,
-  }))
-}
-
-function clearWatchedSourceReference(
-  listenToFields: FieldListenToFields | null,
-  sourceField: AnyInternalFieldApi,
-  watcherIndex: number,
-): FieldListenToFields | null {
-  if (!listenToFields) return null
-
-  const sourceMetas = listenToFields[watcherIndex]
-  if (!sourceMetas) return listenToFields
-
-  const nextSourceMetas = sourceMetas.filter(
-    (sourceMeta) => sourceMeta.field !== sourceField,
-  )
-  if (nextSourceMetas.length === sourceMetas.length) {
-    return listenToFields
-  }
-
-  if (nextSourceMetas.length > 0) {
-    listenToFields[watcherIndex] = nextSourceMetas
-  } else {
-    delete listenToFields[watcherIndex]
-  }
-
-  return listenToFields.some(
-    (sourceMetasForIndex) => sourceMetasForIndex.length > 0,
-  )
-    ? listenToFields
-    : null
-}
-
-function detachOutgoingWatchedFields({
-  field,
-  listenToFields,
-  detach,
-  nodesToKill,
-  fieldsToPruneAfterKill,
-}: {
-  field: AnyInternalFieldApi
-  listenToFields: FieldListenToFields | null
-  detach: DetachWatchingFieldFn
-  nodesToKill: Set<AnyInternalFieldApi>
-  fieldsToPruneAfterKill: Set<AnyInternalFieldApi>
-}) {
-  const changedSourceFields = new Set<AnyInternalFieldApi>()
-
-  listenToFields?.forEach((sourceMetas, watcherIndex) => {
-    for (const { field: sourceField } of sourceMetas) {
-      detach(
-        { sourceField, watchingField: field, watcherIndex },
-        { pruneSourceField: false },
-      )
-
-      if (!nodesToKill.has(sourceField)) {
-        fieldsToPruneAfterKill.add(sourceField)
-        changedSourceFields.add(sourceField)
-      }
-    }
-  })
-
-  notifyFieldDetailChangedForFields(changedSourceFields)
-}
-
-function detachIncomingWatchedFields({
-  sourceField,
-  watchingFields,
-  detach,
-  nodesToKill,
-  getListenToFields,
-  setListenToFields,
-}: {
-  sourceField: AnyInternalFieldApi
-  watchingFields: FieldWatchingFields | null
-  detach: DetachWatchingFieldFn
-  nodesToKill: Set<AnyInternalFieldApi>
-  getListenToFields: (
-    watchingField: AnyInternalFieldApi,
-  ) => FieldListenToFields | null
-  setListenToFields: (
-    watchingField: AnyInternalFieldApi,
-    listenToFields: FieldListenToFields | null,
-  ) => void
-}) {
-  if (!watchingFields) return
-
-  const changedWatchingFields = new Set<AnyInternalFieldApi>()
-
-  for (const [watchingField, watcherIndexes] of Array.from(watchingFields)) {
-    for (const watcherIndex of Array.from(watcherIndexes)) {
-      detach(
-        { sourceField, watchingField, watcherIndex },
-        { pruneSourceField: false },
-      )
-      setListenToFields(
-        watchingField,
-        clearWatchedSourceReference(
-          getListenToFields(watchingField),
-          sourceField,
-          watcherIndex,
-        ),
-      )
-      if (!nodesToKill.has(watchingField)) {
-        changedWatchingFields.add(watchingField)
-      }
-    }
-  }
-
-  notifyFieldDetailChangedForFields(changedWatchingFields)
-}
-
-function detachLinkedFieldReferences({
-  field,
-  nodesToKill,
-  fieldsToPruneAfterKill,
-}: {
-  field: AnyInternalFieldApi
-  nodesToKill: Set<AnyInternalFieldApi>
-  fieldsToPruneAfterKill: Set<AnyInternalFieldApi>
-}) {
-  detachOutgoingWatchedFields({
-    field,
-    listenToFields: field._listenToFields,
-    detach: detachWatchingListenerField,
-    nodesToKill,
-    fieldsToPruneAfterKill,
-  })
-  field._listenToFields = null
-
-  detachOutgoingWatchedFields({
-    field,
-    listenToFields: field._validateOnFields,
-    detach: detachWatchingValidatorField,
-    nodesToKill,
-    fieldsToPruneAfterKill,
-  })
-  field._validateOnFields = null
-
-  detachIncomingWatchedFields({
-    sourceField: field,
-    watchingFields: field._watchingFields,
-    detach: detachWatchingListenerField,
-    nodesToKill,
-    getListenToFields: (watchingField) => watchingField._listenToFields,
-    setListenToFields: (watchingField, listenToFields) => {
-      watchingField._listenToFields = listenToFields
-    },
-  })
-  field._watchingFields = null
-
-  detachIncomingWatchedFields({
-    sourceField: field,
-    watchingFields: field._watchingValidatorFields,
-    detach: detachWatchingValidatorField,
-    nodesToKill,
-    getListenToFields: (watchingField) => watchingField._validateOnFields,
-    setListenToFields: (watchingField, listenToFields) => {
-      watchingField._validateOnFields = listenToFields
-    },
-  })
-  field._watchingValidatorFields = null
-}
 
 export class InternalFieldApi<
   TFormData,
@@ -963,26 +671,7 @@ export class InternalFieldApi<
     prevState: ChildContributionStates,
     newState: ChildContributionStates,
   ): void {
-    if (this._isKilled) return
-
-    batch(() => {
-      for (const key of childContributionKeys) {
-        const prevContributes = prevState[key]
-        const newContributes = newState[key]
-
-        if (prevContributes === newContributes) continue
-
-        const delta = newContributes ? 1 : -1
-
-        this._setMeta((prev) => ({
-          ...prev,
-          childContributionCounts: {
-            ...prev.childContributionCounts,
-            [key]: prev.childContributionCounts[key] + delta,
-          },
-        }))
-      }
-    })
+    updateChildContributionCount(this, prevState, newState)
   }
 
   /**
@@ -1313,20 +1002,6 @@ export class InternalFieldApi<
     }
   }
 
-  _notifySubtreeListeners(trigger: FieldListenerTriggers): void {
-    if (this._isKilled) return
-
-    const stack: Array<AnyInternalFieldApi> = [this]
-
-    while (stack.length > 0) {
-      const node = stack.pop()!
-      if (node._isKilled) continue
-
-      node._notifyListener(trigger, new WeakSet())
-      stack.push(...node._children)
-    }
-  }
-
   /**
    * @private
    * Register as a component that you're using this field.
@@ -1426,35 +1101,7 @@ export class InternalFieldApi<
    * @private
    */
   _moveTo(newSegment: NameSegment): void {
-    if (this._isKilled) return
-
-    if (this._segmentValue === newSegment) {
-      return
-    }
-    /**
-     * swapFieldValues 0 (indexA) and 1 (indexB)
-     * arrayField.moveChild(indexA, indexB) -> moves fieldA to fieldB's segment but replaces it
-     * arrayField.moveChild(1, 0)
-     *
-     * fieldA.moveTo(indexB)
-     * fieldB.moveTo(indexA)
-     *
-     * fieldA removes 0 and sets 1
-     * fieldB removes 1 and sets 0
-     * -> fieldA was lost
-     */
-    const fieldPathChanges = collectFieldLifecycleReferences(this)
-    const oldSegment = this._segmentValue
-    this._segmentValue = newSegment
-    this._defaultValueCache = null
-    if (this._parent._getChild(oldSegment) === this) {
-      this._parent._removeChild(oldSegment)
-    }
-    this._parent._setChild(this)
-    devtools.onFieldPathChange(this.form, fieldPathChanges)
-    for (const { field } of fieldPathChanges) {
-      notifyLinkedFieldDetailChanges(field)
-    }
+    moveFieldToSegment(this, newSegment)
   }
 
   /**
@@ -1467,163 +1114,11 @@ export class InternalFieldApi<
       listenerEvent?: FieldListenerTriggers
     } = {},
   ) {
-    batch(() => {
-      const stack: Array<AnyInternalFieldApi> = [this]
-      const nodesToKill: Array<AnyInternalFieldApi> = []
-      const nodesToKillSet = new Set<AnyInternalFieldApi>()
-      const fieldsToPruneAfterKill = new Set<AnyInternalFieldApi>()
-
-      while (stack.length > 0) {
-        const node = stack.pop()!
-        nodesToKill.push(node)
-        nodesToKillSet.add(node)
-        stack.push(...node._children)
-      }
-      const unmountedFields = nodesToKill
-        .filter((node) => node._isMounted)
-        .map((node) => ({
-          previousPath: node.name,
-          field: node,
-        }))
-
-      if (options.listenerEvent) {
-        this._notifySubtreeListeners(options.listenerEvent)
-      }
-
-      this._parent._removeChild(this._segment)
-
-      const killedRootCounterContributions: Record<
-        RootCounterContributionKey,
-        number
-      > = {
-        touched: 0,
-        validating: 0,
-      }
-
-      for (const node of nodesToKill) {
-        const nodeMeta = node._atoms.meta?.get()
-        detachLinkedFieldReferences({
-          field: node,
-          nodesToKill: nodesToKillSet,
-          fieldsToPruneAfterKill,
-        })
-
-        if (!node._parent._isRoot && nodeMeta) {
-          node._parent._updateChildContributionCount(
-            getChildContributionStates(nodeMeta),
-            {
-              dirty: false,
-              error: false,
-              touched: false,
-              validating: false,
-            },
-          )
-        } else if (nodeMeta) {
-          const contributions = getChildContributionStates(nodeMeta)
-          for (const key of rootCounterContributionKeys) {
-            if (contributions[key]) {
-              killedRootCounterContributions[key]++
-            }
-          }
-        }
-
-        node._isKilled = true
-        node._refCount = 0
-        node._defaultValueCache = null
-        node._atoms.store = undefined
-        if (node._pipelineCache) {
-          cancelPipelineCache(node._pipelineCache)
-          node._pipelineCache = null
-        }
-        node._childrenMap.clear()
-        node._parent._removeChild(node._segment)
-      }
-
-      for (const field of fieldsToPruneAfterKill) {
-        field._pruneIfUnused()
-      }
-
-      this.form._atoms.meta.touchedFieldCount.set((prev) =>
-        Math.max(0, prev - killedRootCounterContributions.touched),
-      )
-      this.form._atoms.meta.fieldValidationCount.set((prev) =>
-        Math.max(0, prev - killedRootCounterContributions.validating),
-      )
-
-      this.form._atoms.meta.errorFields.set((prev) => {
-        if (prev.size > 0) {
-          const nextErrorFields = new Set(prev)
-
-          for (const node of nodesToKill) {
-            nextErrorFields.delete(node)
-          }
-
-          if (nextErrorFields.size !== prev.size) {
-            return nextErrorFields
-          }
-        }
-
-        return prev
-      })
-
-      this.form._atoms.meta.fieldErrors.set((prev) => {
-        const fieldErrors = [...prev]
-        let changed = false
-
-        for (let i = 0; i < fieldErrors.length; i++) {
-          const currFieldErrors = fieldErrors[i]
-          if (!currFieldErrors || currFieldErrors.size === 0) continue
-
-          let next: Set<AnyInternalFieldApi> | undefined
-
-          for (const node of currFieldErrors) {
-            if (nodesToKillSet.has(node)) {
-              if (!next) {
-                next = new Set(currFieldErrors)
-              }
-
-              next.delete(node)
-            }
-          }
-
-          if (next) {
-            fieldErrors[i] = next
-            changed = true
-          }
-        }
-
-        return changed ? fieldErrors : prev
-      })
-
-      devtools.onFieldSubtreeUnmount(this.form, unmountedFields)
-    })
-  }
-
-  _canPrune(): boolean {
-    if (this._isKilled) return false
-
-    if (this._refCount > 0) return false
-    if (this._childrenMap.size > 0) return false
-    if (this._watchingFields) return false
-    if (this._watchingValidatorFields) return false
-    const meta = this._atoms.meta?.get() ?? defaultInternalBaseFieldMeta
-    if (!isPrunableMeta(meta)) return false
-
-    return true
+    killField(this, options)
   }
 
   _pruneIfUnused(): void {
-    let node: AnyInternalFieldApi | InternalRootFieldApi = this
-
-    while (!node._isRoot) {
-      if (!node._canPrune()) {
-        break
-      }
-
-      node._parent._removeChild(node._segment)
-
-      node = node._parent
-    }
+    pruneFieldIfUnused(this)
   }
 
   _getValue(): any {
@@ -1763,282 +1258,4 @@ export class InternalFieldApi<
 
     this.form._notifyFormListener('blur', this)
   }
-}
-
-function getFieldSnapshot(field: AnyInternalFieldApi): InternalFieldState {
-  const value = field._getValue()
-  return {
-    value,
-    meta: deriveFromBaseFieldMeta(
-      field._getBaseMeta(),
-      undefined,
-      field,
-      value,
-    ),
-  }
-}
-
-function deriveFromBaseFieldMeta(
-  baseMeta: InternalBaseFieldMeta,
-  previousMeta: InternalFieldMeta | undefined,
-  field: AnyInternalFieldApi | undefined,
-  value?: any,
-): InternalFieldMeta {
-  const isDefaultValue = field ? field._getIsDefaultValue(value) : true
-  const errorVisibility = getErrorVisibility(field)
-  const canDisplayErrors = shouldDisplayErrors(
-    errorVisibility,
-    field,
-    baseMeta,
-    value,
-    isDefaultValue,
-  )
-  const originalErrors = getErrorsFromBaseMeta(baseMeta, previousMeta)
-  const errors = canDisplayErrors ? originalErrors : []
-  const isSelfTouched = baseMeta.isTouched
-  const isSelfDirty = baseMeta.isDirty
-  const isSelfValid = errors.length === 0
-  const isOriginalSelfValid = originalErrors.length === 0
-  const subfields: SubfieldsMeta = {
-    isEveryValid: baseMeta.childContributionCounts.error === 0,
-    isAnyInvalid: baseMeta.childContributionCounts.error > 0,
-    isEveryPristine: baseMeta.childContributionCounts.dirty === 0,
-    isSomeDirty: baseMeta.childContributionCounts.dirty > 0,
-    isSomeTouched: baseMeta.childContributionCounts.touched > 0,
-    isSomeValidating: baseMeta.childContributionCounts.validating > 0,
-  }
-  const isTouched = isSelfTouched || subfields.isSomeTouched
-  const isDirty = isSelfDirty || subfields.isSomeDirty
-  const isSelfValidating = baseMeta.isValidating
-  const isValidating = isSelfValidating || subfields.isSomeValidating
-  const isValid = isSelfValid && subfields.isEveryValid
-  const isInvalid = !isValid
-  const isOriginalValid = isOriginalSelfValid && subfields.isEveryValid
-
-  if (
-    previousMeta &&
-    canReusePreviousMeta({
-      baseMeta,
-      canDisplayErrors,
-      isDefaultValue,
-      originalErrors,
-      previousMeta,
-    })
-  ) {
-    return previousMeta
-  }
-
-  const result: InternalFieldMeta = {
-    ...baseMeta,
-    isTouched,
-    isSelfTouched,
-    isDirty,
-    isSelfDirty,
-    isInvalid,
-    isSelfValid,
-    isSelfValidating,
-    isDefaultValue,
-    isValidating,
-    errors,
-    original: {
-      errors: originalErrors,
-      isValid: isOriginalValid,
-      isInvalid: !isOriginalValid,
-    },
-    isValid,
-    subfields,
-    isPristine: !isDirty,
-  }
-  return markDerivedMeta(result, baseMeta, canDisplayErrors)
-}
-
-function markDerivedMeta(
-  meta: InternalFieldMeta,
-  baseMeta: InternalBaseFieldMeta,
-  canDisplayErrors: boolean,
-): InternalFieldMeta {
-  Object.defineProperties(meta, {
-    [derivedMetaCanDisplayErrorsKey]: {
-      value: canDisplayErrors,
-    },
-    [derivedMetaSourceKey]: {
-      value: baseMeta,
-    },
-  })
-
-  return meta
-}
-
-function getDerivedMetaSource(
-  meta: (InternalFieldMeta & DerivedMetaMarkers) | undefined,
-): InternalBaseFieldMeta | undefined {
-  return meta?.[derivedMetaSourceKey]
-}
-
-function getDerivedMetaCanDisplayErrors(
-  meta: (InternalFieldMeta & DerivedMetaMarkers) | undefined,
-): boolean | undefined {
-  return meta?.[derivedMetaCanDisplayErrorsKey]
-}
-
-function canReusePreviousMeta({
-  baseMeta,
-  canDisplayErrors,
-  isDefaultValue,
-  originalErrors,
-  previousMeta,
-}: {
-  baseMeta: InternalBaseFieldMeta
-  canDisplayErrors: boolean
-  isDefaultValue: boolean
-  originalErrors: Array<ValidationIssue>
-  previousMeta: InternalFieldMeta
-}): boolean {
-  if (getDerivedMetaSource(previousMeta) !== baseMeta) return false
-  if (getDerivedMetaCanDisplayErrors(previousMeta) !== canDisplayErrors) {
-    return false
-  }
-  if (previousMeta.isDefaultValue !== isDefaultValue) return false
-  if (previousMeta.original.errors !== originalErrors) return false
-
-  return true
-}
-
-function getErrorVisibility(
-  field: AnyInternalFieldApi | undefined,
-): ErrorVisibility<any, any, any> | undefined {
-  return field?._errorVisibility ?? field?.form.options.errorVisibility
-}
-
-function shouldDisplayErrors(
-  errorVisibility: ErrorVisibility<any, any, any> | undefined,
-  field: AnyInternalFieldApi | undefined,
-  baseMeta: InternalBaseFieldMeta,
-  value?: any,
-  isDefaultValue = true,
-): boolean {
-  if (!field || !errorVisibility) return true
-  const group = field.form._getNearestFormGroupForField(field.name)
-  const stateOverrides = group?._getScopedFormStateOverrides()
-
-  return errorVisibility({
-    state: createFormStateProxy(field.form, stateOverrides),
-    fieldState: createErrorVisibilityFieldState(
-      value,
-      baseMeta,
-      isDefaultValue,
-    ),
-  })
-}
-
-function createErrorVisibilityFieldState(
-  value: any,
-  meta: InternalBaseFieldMeta,
-  isDefaultValue: boolean,
-): ErrorVisibilityFieldState {
-  const isSomeTouched = meta.childContributionCounts.touched > 0
-  const isSomeDirty = meta.childContributionCounts.dirty > 0
-  const isSomeValidating = meta.childContributionCounts.validating > 0
-  const isSelfTouched = meta.isTouched
-  const isSelfDirty = meta.isDirty
-  const isSelfValidating = meta.isValidating
-  const isTouched = isSelfTouched || isSomeTouched
-  const isDirty = isSelfDirty || isSomeDirty
-
-  return {
-    value,
-    meta: {
-      isTouched,
-      isSelfTouched,
-      isDirty,
-      isSelfDirty,
-      isPristine: !isDirty,
-      isDefaultValue,
-      isBlurred: meta.isBlurred,
-      isValidating: isSelfValidating || isSomeValidating,
-      isSelfValidating,
-      subfields: {
-        isEveryPristine: !isSomeDirty,
-        isSomeDirty,
-        isSomeTouched,
-        isSomeValidating,
-      },
-    },
-  }
-}
-
-function getChildContributionStates(
-  meta: InternalBaseFieldMeta,
-): ChildContributionStates {
-  return {
-    touched: meta.isTouched || meta.childContributionCounts.touched > 0,
-    dirty: meta.isDirty || meta.childContributionCounts.dirty > 0,
-    validating:
-      meta.isValidating || meta.childContributionCounts.validating > 0,
-    error:
-      getErrorsFromBaseMeta(meta).length > 0 ||
-      meta.childContributionCounts.error > 0,
-  }
-}
-
-function hasValidatorErrors(errors: Array<Array<ValidationIssue>>): boolean {
-  return errors.some((validatorErrors) => validatorErrors.length > 0)
-}
-
-function isPrunableMeta(meta: InternalBaseFieldMeta): boolean {
-  if (meta.isTouched) return false
-  if (meta.isDirty) return false
-  if (meta.isBlurred) return false
-  if (meta.isValidating) return false
-  if (meta._validationCount !== 0) return false
-  if (meta._arrayVersion !== 0) return false
-  if (hasValidatorErrors(meta._fieldValidatorErrors)) return false
-  if (hasFormGroupValidatorErrors(meta._formGroupValidatorErrors)) return false
-  if (hasValidatorErrors(meta._formValidatorErrors)) return false
-
-  return childContributionKeys.every(
-    (key) => meta.childContributionCounts[key] === 0,
-  )
-}
-function getErrorsFromBaseMeta(
-  baseMeta: InternalBaseFieldMeta,
-  previousMeta?: InternalFieldMeta,
-): Array<ValidationIssue> {
-  let result: Array<ValidationIssue>
-  if (
-    previousMeta?._fieldValidatorErrors === baseMeta._fieldValidatorErrors &&
-    previousMeta._formGroupValidatorErrors ===
-      baseMeta._formGroupValidatorErrors &&
-    previousMeta._formValidatorErrors === baseMeta._formValidatorErrors
-  ) {
-    result = previousMeta.original.errors
-  } else {
-    result = baseMeta._fieldValidatorErrors
-      .concat(
-        Array.from(baseMeta._formGroupValidatorErrors.values()).flatMap(
-          (groupErrors) => groupErrors.errors,
-        ),
-      )
-      .concat(baseMeta._formValidatorErrors)
-      // ValidationError is OneOrMany, TypeScript doesn't realize that
-      // flat also takes care of that
-      .flat()
-  }
-  return result
-}
-
-export function hasFormGroupValidatorErrors(
-  groupErrors: Map<object, FormGroupFieldErrorMeta>,
-): boolean {
-  for (const { errors } of groupErrors.values()) {
-    if (hasValidatorErrors(errors)) return true
-  }
-  return false
-}
-
-export function hasFieldMetaErrors(meta: InternalBaseFieldMeta): boolean {
-  return (
-    getErrorsFromBaseMeta(meta).length > 0 ||
-    meta.childContributionCounts.error > 0
-  )
 }

@@ -1,4 +1,4 @@
-import { createRenderEffect, untrack } from 'solid-js'
+import { createRenderEffect, onCleanup, untrack } from 'solid-js'
 import { initializeForm } from './SolidFormApi.lib'
 import type {
   DeepKeys,
@@ -185,6 +185,9 @@ export function createForm<
   createRenderEffect(() => {
     form._update(options() as never)
   })
+
+  const unmount = form.mount()
+  onCleanup(unmount)
 
   return form as never
 }

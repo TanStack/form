@@ -1,6 +1,9 @@
 import React from 'react'
 import { createAtom, shallow } from '@tanstack/react-store'
-import { getBy } from '@tanstack/form-core/internals'
+import {
+  getBy,
+  transformFieldOptionsFieldNames,
+} from '@tanstack/form-core/internals'
 import type { FunctionComponent } from 'react'
 import type { AnyFieldGroupApi } from './FieldGroupApi.public'
 
@@ -49,40 +52,11 @@ function resolveFieldName(
   return resolvedName
 }
 
-function resolveWatchedFields<TItem extends { watchFields?: Array<string> }>(
-  items: ReadonlyArray<TItem> | undefined,
-  resolveName: (name: string) => string,
-): Array<TItem> | undefined {
-  if (!items) return undefined
-
-  return items.map((item) => {
-    if (!item.watchFields) return item
-
-    return {
-      ...item,
-      watchFields: item.watchFields.map(resolveName),
-    }
-  })
-}
-
 function resolveFieldProps<TProps extends { name: string }>(
   props: TProps,
   resolveName: (name: string) => string,
 ): TProps {
-  return {
-    ...props,
-    name: resolveName(props.name),
-    validators: resolveWatchedFields(
-      (props as { validators?: Array<{ watchFields?: Array<string> }> })
-        .validators,
-      resolveName,
-    ),
-    listeners: resolveWatchedFields(
-      (props as { listeners?: Array<{ watchFields?: Array<string> }> })
-        .listeners,
-      resolveName,
-    ),
-  }
+  return transformFieldOptionsFieldNames(props, resolveName)
 }
 
 function createFieldGroupApi(

@@ -2,7 +2,8 @@ import { describe, expect, it, vi } from 'vitest'
 import {
   defaultFieldMeta,
   defaultInternalBaseFieldMeta,
-} from '../../src/FieldApi/FieldApi.lib'
+} from '../../src/FieldApi/fieldState.lib'
+import { canPruneField } from '../../src/FieldApi/fieldTree.lib'
 import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
 
 describe('field - lifecycle', () => {
@@ -185,14 +186,14 @@ describe('field - lifecycle', () => {
         const field = form._getOrCreateFieldApi({ name: `x${index}` })
         markRetainedMeta(field)
 
-        expect(field._canPrune()).toBe(false)
+        expect(canPruneField(field)).toBe(false)
       })
 
       const form = new InternalFormApi({ defaultValues: { killed: '' } })
       const killedField = form._getOrCreateFieldApi({ name: 'killed' })
       killedField._kill()
 
-      expect(killedField._canPrune()).toBe(false)
+      expect(canPruneField(killedField)).toBe(false)
     })
 
     it('removes killed fields from form-level routed error bookkeeping', async () => {
@@ -261,7 +262,7 @@ describe('field - lifecycle', () => {
         ],
       })
 
-      expect(sourceField._canPrune()).toBe(false)
+      expect(canPruneField(sourceField)).toBe(false)
     })
   })
 

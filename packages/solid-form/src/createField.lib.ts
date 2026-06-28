@@ -1,5 +1,5 @@
 import { shallow, useSelector } from '@tanstack/solid-store'
-import { createMemo, createRenderEffect } from 'solid-js'
+import { createMemo, createRenderEffect, onCleanup } from 'solid-js'
 import type { AnyFieldApi, FieldApiOptions } from '@tanstack/form-core'
 import type {
   AnyInternalFormApi,
@@ -36,6 +36,11 @@ export function createField(
     fieldApi()._update(options())
   })
 
+  createRenderEffect(() => {
+    const cleanup = fieldApi()._register()
+    onCleanup(cleanup)
+  })
+
   const state = useSelector(fieldApi().atom, (value) => value, {
     compare: shallow,
   })
@@ -64,6 +69,11 @@ export function createArrayField(
 
   createRenderEffect(() => {
     fieldApi()._update(options())
+  })
+
+  createRenderEffect(() => {
+    const cleanup = fieldApi()._register()
+    onCleanup(cleanup)
   })
 
   const valueLength = useSelector(

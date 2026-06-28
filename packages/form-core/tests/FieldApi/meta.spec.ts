@@ -3,7 +3,7 @@ import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
 import {
   defaultFieldMeta,
   hasFormGroupValidatorErrors,
-} from '../../src/FieldApi/FieldApi.lib'
+} from '../../src/FieldApi/fieldState.lib'
 
 describe('field - meta', () => {
   afterEach(() => {

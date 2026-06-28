@@ -2,11 +2,11 @@ import { batch, createAtom } from '@tanstack/store'
 import {
   getDefaultValueCacheResult,
   getOrCreateFieldApi,
-  hasFormGroupValidatorErrors,
   nameToFieldNodeSegments,
   shouldCacheDefaultValue,
   tryGetFieldApi,
 } from '../FieldApi/FieldApi.lib'
+import { hasFormGroupValidatorErrors } from '../FieldApi/fieldState.lib'
 import {
   callUpdater,
   cancelPipelineCache,
@@ -58,9 +58,11 @@ import type {
   AnyFieldApiOptions,
   AnyInternalFieldApi,
   DefaultValueCacheEntry,
+} from '../FieldApi/FieldApi.lib'
+import type {
   InternalBaseFieldMeta,
   InternalFieldMeta,
-} from '../FieldApi/FieldApi.lib'
+} from '../FieldApi/fieldState.lib'
 import type {
   FieldApiOverrideOptions,
   InternalFieldUpdateOptions,

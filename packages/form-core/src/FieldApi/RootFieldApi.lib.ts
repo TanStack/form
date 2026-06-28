@@ -1,9 +1,7 @@
 import { batch } from '@tanstack/store'
-import type {
-  AnyInternalFieldApi,
-  ChildContributionStates,
-  NameSegment,
-} from './FieldApi.lib'
+import { touchAllFieldsAndCollectSubmitValidators } from './fieldTree.lib'
+import type { AnyInternalFieldApi, NameSegment } from './FieldApi.lib'
+import type { ChildContributionStates } from './fieldState.lib'
 import type { AnyInternalFormApi, FormMetaAtoms } from '../FormApi/FormApi.lib'
 
 export type RootCounterContributionKey = 'touched' | 'validating'
@@ -98,32 +96,6 @@ export class InternalRootFieldApi {
   }
 
   _touchAllFieldsAndCollectSubmitValidators(): Array<AnyInternalFieldApi> {
-    const fieldsWithValidators: Array<AnyInternalFieldApi> = []
-    const stack = [...this._children]
-
-    while (stack.length > 0) {
-      const field = stack.pop()!
-
-      field._notifyEvent(
-        {
-          causeValidation: false,
-          markAsBlurred: false,
-          markAsDirty: false,
-          // Touch all fields
-          markAsTouched: true,
-          // We're doing DFS, so propagation is useless
-          doPropagate: false,
-        },
-        'submit',
-      )
-
-      stack.push(...field._children)
-
-      if (field._validators && field._validators.length > 0) {
-        fieldsWithValidators.push(field)
-      }
-    }
-
-    return fieldsWithValidators
+    return touchAllFieldsAndCollectSubmitValidators(this)
   }
 }
