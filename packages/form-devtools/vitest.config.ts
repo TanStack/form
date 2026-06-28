@@ -3,7 +3,7 @@ import solid from 'vite-plugin-solid'
 import packageJson from './package.json' with { type: 'json' }
 
 export default defineConfig({
-  plugins: [solid()],
+  plugins: [solid({ hot: false })],
   test: {
     name: packageJson.name,
     dir: './tests',

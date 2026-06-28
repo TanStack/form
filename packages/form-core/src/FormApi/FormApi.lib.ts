@@ -506,6 +506,9 @@ export class InternalFormApi<
 
       this._notifyFieldChange(field, updateOptions)
     })
+    if (field) {
+      devtools.onFieldStateChange(field, { summary: true })
+    }
   }
 
   resetField = <TFieldName extends DeepKeys<TFormData>>(
@@ -518,6 +521,9 @@ export class InternalFormApi<
     )
 
     field?._children.forEach((child) => child._kill({ listenerEvent: 'reset' }))
+    if (field) {
+      devtools.onFieldStateChange(field, { summary: true })
+    }
   }
 
   // TODO type safety: DeepKeys that extend undefined?

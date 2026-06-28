@@ -1,11 +1,36 @@
+import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
 import type { AnyInternalFormApi } from './FormApi/FormApi.lib'
 
 export type FormDevtoolsCleanupReason = 'form-unmounted' | 'bridge-uninstalled'
 
 export type FormDevtoolsCleanup = (reason: FormDevtoolsCleanupReason) => void
 
+export interface FieldLifecycleReference {
+  previousPath: string
+  field: AnyInternalFieldApi
+}
+
+export interface FieldStateChangeScope {
+  summary?: boolean
+  detail?: boolean
+}
+
 export interface FormDevtoolsBridge {
   mountForm: (form: AnyInternalFormApi) => FormDevtoolsCleanup | void
+  fieldMounted?: (field: AnyInternalFieldApi) => void
+  fieldUnmounted?: (field: AnyInternalFieldApi, path?: string) => void
+  fieldSubtreeUnmounted?: (
+    form: AnyInternalFormApi,
+    fields: ReadonlyArray<FieldLifecycleReference>,
+  ) => void
+  fieldPathsChanged?: (
+    form: AnyInternalFormApi,
+    changes: ReadonlyArray<FieldLifecycleReference>,
+  ) => void
+  fieldStateChanged?: (
+    field: AnyInternalFieldApi,
+    scope: FieldStateChangeScope,
+  ) => void
 }
 
 interface MountedFormState {
@@ -84,8 +109,42 @@ function onFormUnmount(form: AnyInternalFormApi): void {
   mountedForms.delete(form)
 }
 
+function onFieldMount(field: AnyInternalFieldApi): void {
+  activeBridge?.fieldMounted?.(field)
+}
+
+function onFieldUnmount(field: AnyInternalFieldApi, path?: string): void {
+  activeBridge?.fieldUnmounted?.(field, path)
+}
+
+function onFieldSubtreeUnmount(
+  form: AnyInternalFormApi,
+  fields: ReadonlyArray<FieldLifecycleReference>,
+): void {
+  activeBridge?.fieldSubtreeUnmounted?.(form, fields)
+}
+
+function onFieldPathChange(
+  form: AnyInternalFormApi,
+  changes: ReadonlyArray<FieldLifecycleReference>,
+): void {
+  activeBridge?.fieldPathsChanged?.(form, changes)
+}
+
+function onFieldStateChange(
+  field: AnyInternalFieldApi,
+  scope: FieldStateChangeScope,
+): void {
+  activeBridge?.fieldStateChanged?.(field, scope)
+}
+
 export const devtools = {
   installBridge,
   onFormMount,
   onFormUnmount,
+  onFieldMount,
+  onFieldUnmount,
+  onFieldSubtreeUnmount,
+  onFieldPathChange,
+  onFieldStateChange,
 } as const

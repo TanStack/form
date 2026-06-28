@@ -17,6 +17,7 @@ import {
   runFieldValidatorPipeline,
   setIndexedError,
 } from '../validation.lib'
+import { devtools } from '../devtoolsBridge.lib'
 import { runFieldListenerPipeline } from '../listeners.lib'
 import {
   attachWatchingListenerField,
@@ -48,6 +49,7 @@ import type {
 import type { ResolvedInternalFieldUpdateOptions } from '../types.lib'
 import type { FieldUpdateOptions, Updater } from '../types.public'
 import type { AnyInternalFormApi } from '../FormApi/FormApi.lib'
+import type { FieldLifecycleReference } from '../devtoolsBridge.lib'
 import type { Atom, ReadonlyAtom } from '@tanstack/store'
 import type {
   AnyFieldMeta as AnyPublicFieldMeta,
@@ -377,6 +379,92 @@ type DetachWatchingFieldFn = (
   options?: { pruneSourceField?: boolean },
 ) => void
 
+type WatchedFieldDependencyOperation = {
+  sourceField: AnyInternalFieldApi
+  watchingField: AnyInternalFieldApi
+  watcherIndex: number
+}
+
+function collectFieldSubtree(
+  field: AnyInternalFieldApi,
+): Array<AnyInternalFieldApi> {
+  const stack: Array<AnyInternalFieldApi> = [field]
+  const fields: Array<AnyInternalFieldApi> = []
+
+  while (stack.length > 0) {
+    const node = stack.pop()!
+    fields.push(node)
+    stack.push(...node._children)
+  }
+
+  return fields
+}
+
+function notifyFieldDetailChangedForFields(
+  fields: Iterable<AnyInternalFieldApi>,
+): void {
+  for (const field of fields) {
+    if (!field._isKilled) {
+      devtools.onFieldStateChange(field, { detail: true })
+    }
+  }
+}
+
+function notifyWatchedFieldDependencyChanges(
+  field: AnyInternalFieldApi,
+  operations: ReadonlyArray<WatchedFieldDependencyOperation>,
+): void {
+  if (operations.length === 0) return
+
+  const fields = new Set<AnyInternalFieldApi>([field])
+  for (const operation of operations) {
+    fields.add(operation.sourceField)
+    fields.add(operation.watchingField)
+  }
+
+  notifyFieldDetailChangedForFields(fields)
+}
+
+function addListenToFields(
+  fields: Set<AnyInternalFieldApi>,
+  listenToFields: FieldListenToFields | null,
+): void {
+  listenToFields?.forEach((sourceMetas) => {
+    for (const { field } of sourceMetas) {
+      fields.add(field)
+    }
+  })
+}
+
+function addWatchingFields(
+  fields: Set<AnyInternalFieldApi>,
+  watchingFields: FieldWatchingFields | null,
+): void {
+  watchingFields?.forEach((_watcherIndexes, watchingField) => {
+    fields.add(watchingField)
+  })
+}
+
+function notifyLinkedFieldDetailChanges(field: AnyInternalFieldApi): void {
+  const fields = new Set<AnyInternalFieldApi>([field])
+
+  addListenToFields(fields, field._listenToFields)
+  addListenToFields(fields, field._validateOnFields)
+  addWatchingFields(fields, field._watchingFields)
+  addWatchingFields(fields, field._watchingValidatorFields)
+
+  notifyFieldDetailChangedForFields(fields)
+}
+
+function collectFieldLifecycleReferences(
+  field: AnyInternalFieldApi,
+): Array<FieldLifecycleReference> {
+  return collectFieldSubtree(field).map((node) => ({
+    previousPath: node.name,
+    field: node,
+  }))
+}
+
 function clearWatchedSourceReference(
   listenToFields: FieldListenToFields | null,
   sourceField: AnyInternalFieldApi,
@@ -420,6 +508,8 @@ function detachOutgoingWatchedFields({
   nodesToKill: Set<AnyInternalFieldApi>
   fieldsToPruneAfterKill: Set<AnyInternalFieldApi>
 }) {
+  const changedSourceFields = new Set<AnyInternalFieldApi>()
+
   listenToFields?.forEach((sourceMetas, watcherIndex) => {
     for (const { field: sourceField } of sourceMetas) {
       detach(
@@ -429,21 +519,26 @@ function detachOutgoingWatchedFields({
 
       if (!nodesToKill.has(sourceField)) {
         fieldsToPruneAfterKill.add(sourceField)
+        changedSourceFields.add(sourceField)
       }
     }
   })
+
+  notifyFieldDetailChangedForFields(changedSourceFields)
 }
 
 function detachIncomingWatchedFields({
   sourceField,
   watchingFields,
   detach,
+  nodesToKill,
   getListenToFields,
   setListenToFields,
 }: {
   sourceField: AnyInternalFieldApi
   watchingFields: FieldWatchingFields | null
   detach: DetachWatchingFieldFn
+  nodesToKill: Set<AnyInternalFieldApi>
   getListenToFields: (
     watchingField: AnyInternalFieldApi,
   ) => FieldListenToFields | null
@@ -453,6 +548,8 @@ function detachIncomingWatchedFields({
   ) => void
 }) {
   if (!watchingFields) return
+
+  const changedWatchingFields = new Set<AnyInternalFieldApi>()
 
   for (const [watchingField, watcherIndexes] of Array.from(watchingFields)) {
     for (const watcherIndex of Array.from(watcherIndexes)) {
@@ -468,8 +565,13 @@ function detachIncomingWatchedFields({
           watcherIndex,
         ),
       )
+      if (!nodesToKill.has(watchingField)) {
+        changedWatchingFields.add(watchingField)
+      }
     }
   }
+
+  notifyFieldDetailChangedForFields(changedWatchingFields)
 }
 
 function detachLinkedFieldReferences({
@@ -503,6 +605,7 @@ function detachLinkedFieldReferences({
     sourceField: field,
     watchingFields: field._watchingFields,
     detach: detachWatchingListenerField,
+    nodesToKill,
     getListenToFields: (watchingField) => watchingField._listenToFields,
     setListenToFields: (watchingField, listenToFields) => {
       watchingField._listenToFields = listenToFields
@@ -514,6 +617,7 @@ function detachLinkedFieldReferences({
     sourceField: field,
     watchingFields: field._watchingValidatorFields,
     detach: detachWatchingValidatorField,
+    nodesToKill,
     getListenToFields: (watchingField) => watchingField._validateOnFields,
     setListenToFields: (watchingField, listenToFields) => {
       watchingField._validateOnFields = listenToFields
@@ -730,6 +834,13 @@ export class InternalFieldApi<
     reconciledValidators.attach.forEach(attachWatchingValidatorField)
     this._validators = reconciledValidators.items
     this._validateOnFields = reconciledValidators.listenToFields
+
+    notifyWatchedFieldDependencyChanges(this, [
+      ...reconciledListeners.attach,
+      ...reconciledListeners.detach,
+      ...reconciledValidators.attach,
+      ...reconciledValidators.detach,
+    ])
   }
 
   _update(options: Omit<AnyFieldApiOptions, 'name' | 'form'>) {
@@ -752,6 +863,10 @@ export class InternalFieldApi<
 
     this._listeners = reconciledListeners.items
     this._listenToFields = reconciledListeners.listenToFields
+    const dependencyOperations: Array<WatchedFieldDependencyOperation> = [
+      ...reconciledListeners.attach,
+      ...reconciledListeners.detach,
+    ]
 
     if (options.validators) {
       const reconciledValidators = reconcileWatchedValidatorFields({
@@ -768,7 +883,13 @@ export class InternalFieldApi<
 
       this._validators = reconciledValidators.items
       this._validateOnFields = reconciledValidators.listenToFields
+      dependencyOperations.push(
+        ...reconciledValidators.attach,
+        ...reconciledValidators.detach,
+      )
     }
+
+    notifyWatchedFieldDependencyChanges(this, dependencyOperations)
   }
 
   /**
@@ -830,6 +951,7 @@ export class InternalFieldApi<
 
       return newMeta
     })
+    devtools.onFieldStateChange(this, { summary: true })
   }
 
   /**
@@ -1216,10 +1338,14 @@ export class InternalFieldApi<
     }
 
     const isFirstMount = this._refCount === 0 && !this._mountValidationRan
+    const wasMounted = this._isMounted
     this._refCount++
     this._getOrCreateAtoms()
 
     this._notifyListener('mount', new WeakSet())
+    if (!wasMounted) {
+      devtools.onFieldMount(this)
+    }
 
     if (isFirstMount) {
       this._mountValidationRan = true
@@ -1268,10 +1394,15 @@ export class InternalFieldApi<
   _unregister(): void {
     if (this._isKilled) return
 
+    const wasMounted = this._isMounted
     this._refCount--
     this._notifyListener('unmount', new WeakSet())
 
     if (this._refCount <= 0) {
+      if (wasMounted) {
+        devtools.onFieldUnmount(this)
+      }
+
       setTimeout(() => {
         this._atoms.store = undefined
 
@@ -1312,6 +1443,7 @@ export class InternalFieldApi<
      * fieldB removes 1 and sets 0
      * -> fieldA was lost
      */
+    const fieldPathChanges = collectFieldLifecycleReferences(this)
     const oldSegment = this._segmentValue
     this._segmentValue = newSegment
     this._defaultValueCache = null
@@ -1319,6 +1451,10 @@ export class InternalFieldApi<
       this._parent._removeChild(oldSegment)
     }
     this._parent._setChild(this)
+    devtools.onFieldPathChange(this.form, fieldPathChanges)
+    for (const { field } of fieldPathChanges) {
+      notifyLinkedFieldDetailChanges(field)
+    }
   }
 
   /**
@@ -1343,6 +1479,12 @@ export class InternalFieldApi<
         nodesToKillSet.add(node)
         stack.push(...node._children)
       }
+      const unmountedFields = nodesToKill
+        .filter((node) => node._isMounted)
+        .map((node) => ({
+          previousPath: node.name,
+          field: node,
+        }))
 
       if (options.listenerEvent) {
         this._notifySubtreeListeners(options.listenerEvent)
@@ -1452,6 +1594,8 @@ export class InternalFieldApi<
 
         return changed ? fieldErrors : prev
       })
+
+      devtools.onFieldSubtreeUnmount(this.form, unmountedFields)
     })
   }
 
