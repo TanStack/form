@@ -52,7 +52,7 @@ export interface Listener<
    * @default 0
    */
   triggerDebounceMs?: number | ListenerDebounceFn<TFormData, TValue>
-  triggers?: Array<ListenerTriggerOption<TTriggers, TFormData, TValue>>
+  triggers: Array<ListenerTriggerOption<TTriggers, TFormData, TValue>>
 }
 
 export interface FormListenerContext<

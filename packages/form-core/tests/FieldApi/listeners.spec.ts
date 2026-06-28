@@ -72,13 +72,13 @@ describe('field - listeners', () => {
     expect(listener).toHaveBeenCalledOnce()
   })
 
-  it('does not run field listeners without triggers', () => {
+  it('does not run field listeners with empty triggers', () => {
     const listener = vi.fn()
 
     const form = new InternalFormApi({ defaultValues: { x: '' } })
     const field = form._getOrCreateFieldApi({
       name: 'x',
-      listeners: [{ run: listener }],
+      listeners: [{ triggers: [], run: listener }],
     })
 
     field.handleChange('x')
