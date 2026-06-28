@@ -23,6 +23,7 @@ import {
 import { transformFieldOptionsFieldNames } from '../FieldApi/FieldApi.lib'
 import { hasFieldMetaErrors } from '../FieldApi/fieldState.lib'
 import { parseStandardSchemaIssues } from '../standardSchema.lib'
+import { createErrorMap } from '../validation.public'
 import type { FormApi } from '../FormApi/FormApi.public'
 import type { InternalFormApi } from '../FormApi/FormApi.lib'
 import type {
@@ -582,12 +583,13 @@ export class InternalFormGroupApi<
         hasFailedBefore: false,
         scope: 'form',
         getContext: (ctx) => ({
-          event: ctx.event,
+          event: signal,
           formApi: this.form,
           groupApi: this,
           triggerFieldApi: opts?.triggerFieldApi,
           signal: ctx.signal,
           value: this.value,
+          createErrorMap,
           parseIssues: (issues) =>
             parseStandardSchemaIssues(issues, this.value, 'form'),
         }),

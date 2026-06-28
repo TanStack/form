@@ -3,6 +3,7 @@ import z from 'zod'
 import { InternalFormApi } from '../src/FormApi/FormApi.lib'
 import {
   createErrorVisibility,
+  createErrorMap,
   createValidator,
   createValidators,
   formOptions,
@@ -30,6 +31,8 @@ import type {
   ToFormGroupValidatorMetas,
   ToFormValidatorMetas,
   ToSubmitMeta,
+  ValidationAggregateError,
+  ValidationErrorMap,
   ValidationIssue,
 } from '../src'
 
@@ -202,6 +205,135 @@ describe('ErrorVisibility', () => {
 
     void formOptions
     void fieldOptions
+  })
+})
+
+describe('createErrorMap', () => {
+  it('creates a typed error map shape', () => {
+    type AggregateFormData = {
+      name: string
+      user: {
+        age: number
+      }
+    }
+
+    const errors = createErrorMap<AggregateFormData>()
+
+    expectTypeOf(errors).toEqualTypeOf<ValidationErrorMap<AggregateFormData>>()
+    expectTypeOf(errors.toResult()).toEqualTypeOf<
+      ValidationAggregateError<AggregateFormData>
+      | undefined
+    >()
+
+    errors.form = 'Form error'
+    errors.fields.name = 'Name is required'
+    errors.fields['user.age'] = { message: 'Age is required' }
+    // @ts-expect-error Aggregate field errors must use valid form keys.
+    errors.fields.missing = 'Missing'
+  })
+
+  it('infers the aggregate error shape from form validator context', () => {
+    const validators = defineFormValidators([
+      {
+        run: ({ createErrorMap }) => {
+          const errors = createErrorMap()
+
+          errors.fields.name = 'Name is required'
+          // @ts-expect-error Aggregate field errors must use valid form keys.
+          errors.fields.missing = 'Missing'
+
+          return errors.toResult()
+        },
+        triggers: [],
+      },
+    ])
+
+    expectTypeOf<
+      TestFieldErrors<[], [], typeof validators, never>
+    >().toEqualTypeOf<Array<ValidationIssue>>()
+  })
+
+  it('allows validators to return error maps directly', () => {
+    const validators = defineFormValidators([
+      {
+        run: ({ createErrorMap }) => {
+          const errors = createErrorMap()
+
+          errors.fields.name = 'Name is required'
+
+          return errors
+        },
+        triggers: [],
+      },
+    ])
+
+    expectTypeOf<
+      TestFieldErrors<[], [], typeof validators, never>
+    >().toEqualTypeOf<Array<ValidationIssue>>()
+  })
+})
+
+describe('ValidationTriggerOption', () => {
+  it('rejects server triggers on validators', () => {
+    defineFormValidators([
+      {
+        run: () => undefined,
+        triggers: [
+          // @ts-expect-error Server validation is configured with runOnServer.
+          'server',
+        ],
+      },
+      {
+        run: () => undefined,
+        triggers: [
+          {
+            // @ts-expect-error Server validation is configured with runOnServer.
+            trigger: 'server',
+            when: true,
+          },
+        ],
+      },
+    ])
+
+    defineFieldValidators([
+      {
+        run: () => undefined,
+        triggers: [
+          // @ts-expect-error Field validators cannot use server triggers.
+          'server',
+        ],
+      },
+      {
+        run: () => undefined,
+        triggers: [
+          {
+            // @ts-expect-error Field validators cannot use server trigger configs.
+            trigger: 'server',
+            when: true,
+          },
+        ],
+      },
+    ])
+
+    defineGroupValidators([
+      {
+        run: () => undefined,
+        triggers: [
+          // @ts-expect-error Form group validators cannot use server triggers.
+          'server',
+        ],
+      },
+      {
+        run: () => undefined,
+        triggers: [
+          {
+            // @ts-expect-error Form group validators cannot use server trigger configs.
+            trigger: 'server',
+            when: true,
+          },
+        ],
+      },
+    ])
   })
 })
 

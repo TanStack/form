@@ -9,6 +9,9 @@ overrides:
   '@tanstack/form-devtools': workspace:*
   '@tanstack/react-form': workspace:*
   '@tanstack/react-form-devtools': workspace:*
+  '@tanstack/react-form-nextjs': workspace:*
+  '@tanstack/react-form-remix': workspace:*
+  '@tanstack/react-form-start': workspace:*
   '@tanstack/solid-form': workspace:*
   tinyexec: 1.1.2
 
@@ -23094,7 +23097,7 @@ snapshots:
       esbuild: 0.27.7
       fdir: 6.5.0(picomatch@4.0.4)
       picomatch: 4.0.4
-      postcss: 8.5.15
+      postcss: 8.5.25
       rollup: 4.60.4
       tinyglobby: 0.2.16
     optionalDependencies:

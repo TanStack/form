@@ -8,7 +8,10 @@ import type {
   ValidationTrigger,
 } from './validation.public'
 
-export type FormListenerTriggers = ValidationTrigger | 'mount' | 'reset'
+export type FormListenerTriggers =
+  | ValidationTrigger
+  | 'mount'
+  | 'reset'
 export type FieldListenerTriggers = FormListenerTriggers | 'unmount'
 
 export interface ListenerPredicateContext<in out TFormData, out TValue> {

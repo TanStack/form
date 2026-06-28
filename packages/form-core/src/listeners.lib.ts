@@ -99,7 +99,7 @@ function shouldRunListener(
   listener: Listener<any, any, any>,
   context: InputContext,
 ): boolean {
-  return (listener.triggers ?? []).some((trigger) =>
+  return listener.triggers.some((trigger) =>
     isListenerTriggerEnabled(trigger, context),
   )
 }

@@ -16,6 +16,7 @@ import type { StandardSchemaV1Issue } from '../standardSchema.public'
 import type { FormListeners } from '../listeners.public'
 import type { FormApiArrayMethods } from './FormApiArrayMethods.types.public'
 import type { FormApiFieldMethods } from './FormApiFieldMethods.types.public'
+import type { ServerFormState } from '../serverValidate.public'
 
 declare const onSubmitErrorBrand: unique symbol
 
@@ -66,6 +67,7 @@ export interface FormOptions<
     ToFormValidatorMetas<TFormValidators>,
     SubmitMeta<ValidationIssue, ValidationIssue>
   >
+  serverState?: ServerFormState<TFormData, TFormValidators> | null
   onSubmit?: (
     context: FormSubmitContext<
       TFormData,
@@ -84,6 +86,7 @@ export interface FormApiOptions<
   errorVisibility?: ErrorVisibility<TFormData, TFormValidatorMetas, TSubmitMeta>
   validators?: FormValidators<TFormData>
   listeners?: FormListeners<TFormData, TFormValidatorMetas, TSubmitMeta>
+  serverState?: ServerFormState<TFormData, any> | null
   onSubmit?: (
     context: FormSubmitContext<TFormData, TFormValidatorMetas>,
   ) => unknown

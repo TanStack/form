@@ -7,6 +7,7 @@ import {
 } from '../src/validation.lib'
 import {
   createErrorVisibility,
+  createErrorMap,
   createValidator,
   createValidators,
   formOptions,
@@ -16,6 +17,7 @@ import type { PipelineResult } from '../src/validation.lib'
 import type {
   DeepKeys,
   DeepValue,
+  ClientValidationTrigger,
   FieldValidateResult,
   FieldValidator,
   FormStandardSchemaValidatorOutputs,
@@ -70,6 +72,24 @@ describe('validation public helpers', () => {
     const visibility = () => true
 
     expect(createErrorVisibility(visibility)).toBe(visibility)
+  })
+
+  it('creates error maps that return aggregate validation results', () => {
+    const errors = createErrorMap<{ name: string; age: number }>()
+
+    expect(errors.toResult()).toBeUndefined()
+
+    errors.fields.name = undefined
+    expect(errors.toResult()).toBeUndefined()
+
+    errors.fields.age = 'Age is required'
+    expect(errors.toResult()).toEqual({ fields: { age: 'Age is required' } })
+
+    errors.form = 'Form is invalid'
+    expect(errors.toResult()).toEqual({
+      form: 'Form is invalid',
+      fields: { age: 'Age is required' },
+    })
   })
 })
 
@@ -165,7 +185,7 @@ describe('runFormValidatorPipeline', () => {
     return {
       pipeline,
       runWithContext: (args: {
-        event: Event
+        event: ClientValidationTrigger
         onResult?: (result: PipelineResult<FieldValidateResult>) => void
       }) => {
         return runFieldValidatorPipeline({
@@ -197,6 +217,89 @@ describe('runFormValidatorPipeline', () => {
         schemaResult: null,
       }),
     )
+  })
+
+  it('should provide error map helpers to form validators', async () => {
+    const formApi = getForm({ name: '' })
+    const { runWithContext } = getPipeline(formApi, [
+      {
+        run: ({ createErrorMap }) => {
+          const errors = createErrorMap()
+          errors.fields.name = 'Name is required'
+          return errors.toResult()
+        },
+        triggers: [],
+      },
+    ])
+
+    const results = await runWithContext({ event: 'submit' })
+
+    expect(results).toEqual([
+      expect.objectContaining({
+        result: { fields: { name: 'Name is required' } },
+      }),
+    ])
+  })
+
+  it('should normalize returned error map helpers', async () => {
+    const formApi = new InternalFormApi({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          run: ({ createErrorMap }) => {
+            const errors = createErrorMap()
+            errors.fields.name = undefined
+            return errors
+          },
+          triggers: [],
+        },
+      ],
+    })
+
+    const result = await formApi.validate('submit')
+
+    expect(result).toEqual([])
+    expect(formApi.state.errors).toEqual([])
+    expect(formApi.state.canSubmit).toBe(true)
+  })
+
+  it('should route errors from returned error map helpers', async () => {
+    const formApi = new InternalFormApi({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          run: ({ createErrorMap }) => {
+            const errors = createErrorMap()
+            errors.fields.name = 'Name is required'
+            return errors
+          },
+          triggers: [],
+        },
+      ],
+    })
+    const field = formApi._getOrCreateFieldApi({ name: 'name' })
+
+    await formApi.validate('submit')
+
+    expect(field.errors).toEqual([{ message: 'Name is required' }])
+  })
+
+  it('should keep plain empty objects as validation errors', async () => {
+    const formApi = new InternalFormApi({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          run: () => ({}) as any,
+          triggers: [],
+        },
+      ],
+    })
+
+    const result = await formApi.validate('submit')
+
+    expect(result).toEqual([{}])
+    expect(formApi.state.errors).toEqual([{}])
+    expect(formApi.state.canSubmit).toBe(false)
   })
 
   it('should only run validators with matching signal', async () => {

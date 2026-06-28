@@ -1,5 +1,12 @@
+import { batch } from '@tanstack/store'
+import {
+  clearIndexedErrorsFromSource,
+  hasIndexedErrorFromSource,
+  hasIndexedErrors,
+} from '../validation.lib'
 import type { FormState } from './FormApi.public'
 import type { InternalFormApi } from './FormApi.lib'
+import type { AnyInternalFieldApi } from '../FieldApi/FieldApi.lib'
 import type {
   FormErrors,
   FormValidators,
@@ -7,6 +14,7 @@ import type {
   ToSubmitMeta,
   ValidationIssue,
 } from '../validation.public'
+import type { Atom } from '@tanstack/store'
 
 export interface FormErrorMeta {
   /**
@@ -16,6 +24,26 @@ export interface FormErrorMeta {
    */
   errors: Array<Array<ValidationIssue>>
   errorSourceEvents: Array<string | null>
+}
+
+type FormValidatorFieldErrorScope =
+  | { type: 'all' }
+  | { type: 'field'; field: AnyInternalFieldApi }
+  | { type: 'none' }
+
+interface ClearFormValidatorErrorsFromSourceArgs {
+  formErrors: Atom<FormErrorMeta>
+  fieldErrors: Atom<Array<Set<AnyInternalFieldApi>>>
+  errorFields: Atom<Set<AnyInternalFieldApi>>
+  indexes: Array<number>
+  sourceEvent: string
+  fieldScope: FormValidatorFieldErrorScope
+  clearFieldEventErrors: (
+    field: AnyInternalFieldApi,
+    indexes: Array<number>,
+    sourceEvent: string,
+  ) => void
+  reconcileErrorFields?: boolean
 }
 
 type OverridableFormState = Omit<FormState<any, any, any>, 'values' | 'errors'>
@@ -75,6 +103,175 @@ function getFormErrors(
     formErrorsCache.set(baseFormErrors, formErrors)
   }
   return formErrors
+}
+
+function hasFormValidatorFieldEventErrors(
+  field: AnyInternalFieldApi,
+  indexes: Array<number>,
+  sourceEvent: string,
+): boolean {
+  for (const index of indexes) {
+    if (hasFormValidatorFieldEventError(field, index, sourceEvent)) {
+      return true
+    }
+  }
+
+  return false
+}
+
+function hasFormValidatorFieldEventError(
+  field: AnyInternalFieldApi,
+  index: number,
+  sourceEvent: string,
+): boolean {
+  const { _formValidatorErrors, _formValidatorErrorSourceEvents } =
+    field._getBaseMeta()
+
+  return hasIndexedErrorFromSource(
+    _formValidatorErrors,
+    _formValidatorErrorSourceEvents,
+    index,
+    sourceEvent,
+  )
+}
+
+function hasFormGroupValidatorErrors(
+  groupErrors: ReturnType<
+    AnyInternalFieldApi['_getBaseMeta']
+  >['_formGroupValidatorErrors'],
+): boolean {
+  for (const { errors } of groupErrors.values()) {
+    if (hasIndexedErrors(errors)) return true
+  }
+
+  return false
+}
+
+function hasFieldErrors(field: AnyInternalFieldApi): boolean {
+  const meta = field._getBaseMeta()
+
+  return (
+    hasIndexedErrors(meta._fieldValidatorErrors) ||
+    hasFormGroupValidatorErrors(meta._formGroupValidatorErrors) ||
+    hasIndexedErrors(meta._formValidatorErrors) ||
+    meta.childContributionCounts.error > 0
+  )
+}
+
+export function reconcileFormErrorFields(
+  errorFields: Set<AnyInternalFieldApi>,
+  fields: Iterable<AnyInternalFieldApi>,
+): Set<AnyInternalFieldApi> {
+  const nextErrorFields = new Set(errorFields)
+
+  for (const field of fields) {
+    if (hasFieldErrors(field)) {
+      nextErrorFields.add(field)
+    } else {
+      nextErrorFields.delete(field)
+    }
+  }
+
+  return nextErrorFields
+}
+
+export function clearFormValidatorErrorsFromSource({
+  formErrors,
+  fieldErrors,
+  errorFields,
+  indexes,
+  sourceEvent,
+  fieldScope,
+  clearFieldEventErrors,
+  reconcileErrorFields = false,
+}: ClearFormValidatorErrorsFromSourceArgs): void {
+  const affectedFields = new Set<AnyInternalFieldApi>()
+
+  batch(() => {
+    formErrors.set((prev) => {
+      const clearedErrors = clearIndexedErrorsFromSource(
+        prev.errors,
+        prev.errorSourceEvents,
+        indexes,
+        sourceEvent,
+      )
+      if (!clearedErrors) return prev
+
+      return {
+        ...prev,
+        errors: clearedErrors.errors,
+        errorSourceEvents: clearedErrors.errorSourceEvents,
+      }
+    })
+
+    if (fieldScope.type === 'all') {
+      fieldErrors.set((prev) => {
+        let nextFieldErrors: Array<Set<AnyInternalFieldApi>> | null = null
+
+        for (const validatorIndex of indexes) {
+          const fieldRefs = prev[validatorIndex]
+          if (!fieldRefs || fieldRefs.size === 0) continue
+
+          let nextFieldRefs: Set<AnyInternalFieldApi> | null = null
+          for (const field of fieldRefs) {
+            if (
+              hasFormValidatorFieldEventError(
+                field,
+                validatorIndex,
+                sourceEvent,
+              )
+            ) {
+              nextFieldRefs ??= new Set(fieldRefs)
+              nextFieldRefs.delete(field)
+              affectedFields.add(field)
+            }
+          }
+
+          if (nextFieldRefs) {
+            nextFieldErrors ??= [...prev]
+            nextFieldErrors[validatorIndex] = nextFieldRefs
+          }
+        }
+
+        return nextFieldErrors ?? prev
+      })
+    } else if (fieldScope.type === 'field') {
+      const { field } = fieldScope
+
+      fieldErrors.set((prev) => {
+        let nextFieldErrors: Array<Set<AnyInternalFieldApi>> | null = null
+
+        for (const validatorIndex of indexes) {
+          const fieldRefs = prev[validatorIndex]
+          if (
+            !fieldRefs?.has(field) ||
+            !hasFormValidatorFieldEventError(field, validatorIndex, sourceEvent)
+          ) {
+            continue
+          }
+
+          const nextFieldRefs = new Set(fieldRefs)
+          nextFieldRefs.delete(field)
+          nextFieldErrors ??= [...prev]
+          nextFieldErrors[validatorIndex] = nextFieldRefs
+        }
+
+        return nextFieldErrors ?? prev
+      })
+
+      if (hasFormValidatorFieldEventErrors(field, indexes, sourceEvent)) {
+        affectedFields.add(field)
+      }
+    }
+
+    for (const field of affectedFields) {
+      clearFieldEventErrors(field, indexes, sourceEvent)
+    }
+
+    if (reconcileErrorFields && affectedFields.size > 0) {
+      errorFields.set((prev) => reconcileFormErrorFields(prev, affectedFields))
+    }
+  })
 }
 
 function getFormStateValue<

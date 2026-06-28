@@ -6,7 +6,6 @@ import {
   shouldCacheDefaultValue,
   tryGetFieldApi,
 } from '../FieldApi/FieldApi.lib'
-import { hasFormGroupValidatorErrors } from '../FieldApi/fieldState.lib'
 import {
   callUpdater,
   cancelPipelineCache,
@@ -21,8 +20,6 @@ import {
 import { InternalRootFieldApi } from '../FieldApi/RootFieldApi.lib'
 import {
   clearIndexedErrorsFromSource,
-  hasIndexedErrorFromSource,
-  hasIndexedErrors,
   isAggregateError,
   isErrorResult,
   isValidationTriggerEnabled,
@@ -37,8 +34,10 @@ import { devtools } from '../devtoolsBridge.lib'
 import { runSubmissionProcess } from './handleSubmit.lib'
 import { ArrayMethods } from './array-methods.lib'
 import {
+  clearFormValidatorErrorsFromSource,
   compareFormStateSnapshots,
   getFormStateSnapshot,
+  reconcileFormErrorFields,
 } from './formState.lib'
 import type {
   FormApi,
@@ -83,6 +82,7 @@ import type {
 } from '../validation.public'
 import type { FormListenerTriggers } from '../listeners.public'
 import type { InternalFormGroupApi } from '../FormGroupApi/FormGroupApi.lib'
+import type { ServerFormState } from '../serverValidate.public'
 
 type AnyFormGroupApi = InternalFormGroupApi<any, any, any, any, any, any>
 
@@ -160,64 +160,6 @@ type InternalFormOptions<
   formId: string
 }
 
-function hasFieldEventErrors(
-  field: AnyInternalFieldApi,
-  eventErrorIndexes: Array<number>,
-  sourceEvent: string,
-): boolean {
-  for (const i of eventErrorIndexes) {
-    if (hasFieldEventError(field, i, sourceEvent)) {
-      return true
-    }
-  }
-
-  return false
-}
-
-function hasFieldEventError(
-  field: AnyInternalFieldApi,
-  index: number,
-  sourceEvent: string,
-): boolean {
-  const { _formValidatorErrors, _formValidatorErrorSourceEvents } =
-    field._getBaseMeta()
-
-  return hasIndexedErrorFromSource(
-    _formValidatorErrors,
-    _formValidatorErrorSourceEvents,
-    index,
-    sourceEvent,
-  )
-}
-
-function hasFieldErrors(field: AnyInternalFieldApi): boolean {
-  const meta = field._getBaseMeta()
-
-  return (
-    hasIndexedErrors(meta._fieldValidatorErrors) ||
-    hasFormGroupValidatorErrors(meta._formGroupValidatorErrors) ||
-    hasIndexedErrors(meta._formValidatorErrors) ||
-    meta.childContributionCounts.error > 0
-  )
-}
-
-function reconcileErrorFields(
-  errorFields: Set<AnyInternalFieldApi>,
-  fields: Iterable<AnyInternalFieldApi>,
-): Set<AnyInternalFieldApi> {
-  const nextErrorFields = new Set(errorFields)
-
-  for (const field of fields) {
-    if (hasFieldErrors(field)) {
-      nextErrorFields.add(field)
-    } else {
-      nextErrorFields.delete(field)
-    }
-  }
-
-  return nextErrorFields
-}
-
 // This scales with the amount of top-level fields, with the setter operation
 // scaling with the amount of touched fields.
 
@@ -267,6 +209,7 @@ export class InternalFormApi<
   _pipelineCache: PipelineCache<any>
   _schemaOutputs: Array<any> = []
   _formGroups = new Set<InternalFormGroupApi<any, any, any, any, any, any>>()
+  _lastServerState: ServerFormState<TFormData, TFormValidators> | null = null
 
   get state(): FormState<
     TFormData,
@@ -349,6 +292,7 @@ export class InternalFormApi<
       compare: compareFormStateSnapshots,
     })
 
+    this._applyServerState(this._options.serverState ?? null)
     this._runMountValidation()
   }
 
@@ -390,6 +334,66 @@ export class InternalFormApi<
       }
     }
     return nearest
+  }
+
+  _clearFormValidationSource(sourceEvent: string): void {
+    const formErrors = this._atoms.meta.formErrors.get()
+    const fieldErrors = this._atoms.meta.fieldErrors.get()
+    const eventErrorCount = Math.max(
+      formErrors.errors.length,
+      fieldErrors.length,
+    )
+    if (eventErrorCount === 0) return
+
+    const eventErrorIndexes = Array.from(
+      { length: eventErrorCount },
+      (_, index) => index,
+    )
+
+    clearFormValidatorErrorsFromSource({
+      formErrors: this._atoms.meta.formErrors,
+      fieldErrors: this._atoms.meta.fieldErrors,
+      errorFields: this._atoms.meta.errorFields,
+      indexes: eventErrorIndexes,
+      sourceEvent,
+      fieldScope: { type: 'all' },
+      clearFieldEventErrors: (field, indexes, eventSource) =>
+        this._clearFieldEventErrors(field, indexes, eventSource),
+      reconcileErrorFields: true,
+    })
+  }
+
+  _applyServerState(
+    serverState: ServerFormState<TFormData, TFormValidators> | null,
+  ): void {
+    if (serverState === this._lastServerState) return
+
+    this._lastServerState = serverState
+    this._clearFormValidationSource('server')
+
+    if (!serverState) return
+    if (
+      serverState.values === undefined &&
+      serverState.validationResults.length === 0
+    ) {
+      return
+    }
+
+    this._defaultValueCache = null
+
+    batch(() => {
+      if (serverState.values !== undefined) {
+        this._atoms.values.set(serverState.values)
+      }
+
+      this._atoms.meta.submissionAttempts.set((attempts) =>
+        Math.max(attempts, serverState.submissionAttempts),
+      )
+
+      for (const result of serverState.validationResults) {
+        this._processValidationResult(result, 'server')
+      }
+    })
   }
 
   reset = (values?: TFormData, opts?: FormResetOptions) => {
@@ -478,6 +482,8 @@ export class InternalFormApi<
         }
       })
     }
+
+    this._applyServerState(this._options.serverState ?? null)
 
     // TODO plans
     // form.update(B) => A !== B -> Queue async update
@@ -678,7 +684,14 @@ export class InternalFormApi<
 
     for (let i = 0; i < validatorCount; i++) {
       const validator = this.options.validators?.[i]
-      const runsOnEvent = validator?.triggers.some((trigger) =>
+      if (!validator) continue
+
+      if (validator.runOnServer === true) {
+        eventErrorIndexes.push(i)
+        continue
+      }
+
+      const runsOnEvent = validator.triggers.some((trigger) =>
         isValidationTriggerEnabled(trigger, {
           event,
           formApi: this as never,
@@ -686,7 +699,7 @@ export class InternalFormApi<
         }),
       )
 
-      if (validator && !runsOnEvent) {
+      if (!runsOnEvent) {
         eventErrorIndexes.push(i)
       }
     }
@@ -695,46 +708,15 @@ export class InternalFormApi<
       eventErrorIndexes.push(i)
     }
 
-    batch(() => {
-      this._atoms.meta.formErrors.set((prev) => {
-        const clearedErrors = clearIndexedErrorsFromSource(
-          prev.errors,
-          prev.errorSourceEvents,
-          eventErrorIndexes,
-          sourceEvent,
-        )
-        if (!clearedErrors) {
-          return prev
-        }
-
-        return clearedErrors
-      })
-
-      if (field) {
-        this._atoms.meta.fieldErrors.set((prev) => {
-          const fieldErrors = [...prev]
-          let hasChanged = false
-
-          for (const i of eventErrorIndexes) {
-            const fieldRefs = fieldErrors[i]
-            if (
-              fieldRefs?.has(field) &&
-              hasFieldEventError(field, i, sourceEvent)
-            ) {
-              const nextFieldRefs = new Set(fieldRefs)
-              nextFieldRefs.delete(field)
-              fieldErrors[i] = nextFieldRefs
-              hasChanged = true
-            }
-          }
-
-          return hasChanged ? fieldErrors : prev
-        })
-      }
-
-      if (field && hasFieldEventErrors(field, eventErrorIndexes, sourceEvent)) {
-        this._clearFieldEventErrors(field, eventErrorIndexes, sourceEvent)
-      }
+    clearFormValidatorErrorsFromSource({
+      formErrors: this._atoms.meta.formErrors,
+      fieldErrors: this._atoms.meta.fieldErrors,
+      errorFields: this._atoms.meta.errorFields,
+      indexes: eventErrorIndexes,
+      sourceEvent,
+      fieldScope: field ? { type: 'field', field } : { type: 'none' },
+      clearFieldEventErrors: (targetField, indexes, eventSource) =>
+        this._clearFieldEventErrors(targetField, indexes, eventSource),
     })
   }
 
@@ -909,7 +891,7 @@ export class InternalFormApi<
           return fieldErrors
         })
         this._atoms.meta.errorFields.set((prev) =>
-          reconcileErrorFields(prev, oldFieldRefs),
+          reconcileFormErrorFields(prev, oldFieldRefs),
         )
       }
     })
@@ -970,7 +952,7 @@ export class InternalFormApi<
 
       if (affectedFields.size > 0) {
         this._atoms.meta.errorFields.set((prev) =>
-          reconcileErrorFields(prev, affectedFields),
+          reconcileFormErrorFields(prev, affectedFields),
         )
       }
     })

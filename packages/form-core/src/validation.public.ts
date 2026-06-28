@@ -8,10 +8,8 @@ import type {
 } from './standardSchema.public'
 import type { OneOrMany } from './types.public'
 
-export interface Validator<
-  in out TFormData,
+export interface BaseValidator<
   out TValidator extends StandardSchemaV1 | ValidatorFn<any, any>,
-  in out TContextValue,
 > {
   run: TValidator
   /**
@@ -21,6 +19,14 @@ export interface Validator<
    * @default false
    */
   bailIfInvalid?: boolean
+}
+
+export interface Validator<
+  in out TFormData,
+  out TValidator extends StandardSchemaV1 | ValidatorFn<any, any>,
+  in out TContextValue,
+  in out TTrigger extends ValidatorTrigger = ValidatorTrigger,
+> extends BaseValidator<TValidator> {
   /**
    * TODO docs
    *
@@ -42,14 +48,19 @@ export interface Validator<
    * @default 0
    */
   triggerDebounceMs?: number | ValidationDebounceFn<TFormData, TContextValue>
-  triggers: Array<ValidationTriggerOption<TFormData, TContextValue>>
+  triggers: Array<ValidationTriggerOption<TFormData, TContextValue, TTrigger>>
 }
 
-export type ValidatorOptions<TFormData, TContextValue> = Omit<
+export type ValidatorOptions<
+  TFormData,
+  TContextValue,
+  TTrigger extends ValidatorTrigger = ValidatorTrigger,
+> = Omit<
   Validator<
     TFormData,
     StandardSchemaV1<any, any> | ValidatorFn<any, any>,
-    TContextValue
+    TContextValue,
+    TTrigger
   >,
   'run'
 >
@@ -59,7 +70,7 @@ type ValidatorRun = StandardSchemaV1<any, any> | ValidatorFn<any, any>
 type ValidatorWithRun<
   TFormData,
   TContextValue,
-  TOptions extends ValidatorOptions<TFormData, TContextValue>,
+  TOptions extends ValidatorOptions<TFormData, TContextValue, any>,
   TRun extends ValidatorRun,
 > = TOptions & Pick<Validator<TFormData, TRun, TContextValue>, 'run'>
 
@@ -68,14 +79,16 @@ type InferFormDataFromValidator<TValidator extends ValidatorRun> =
     ? TFormData
     : TValidator extends FormValidatorFn<infer TFormData>
       ? TFormData
-      : TValidator extends FormGroupValidatorFn<infer TGroupValue>
-        ? TGroupValue
-        : any
+      : TValidator extends ServerFormValidatorFn<infer TFormData>
+        ? TFormData
+        : TValidator extends FormGroupValidatorFn<infer TGroupValue>
+          ? TGroupValue
+          : any
 
 type ValidatorRunsFromOptions<
   in out TOptions extends readonly [
-    ValidatorOptions<any, any>,
-    ...Array<ValidatorOptions<any, any>>,
+    ValidatorOptions<any, any, any>,
+    ...Array<ValidatorOptions<any, any, any>>,
   ],
 > = {
   readonly [TIndex in keyof TOptions]: ValidatorRun
@@ -85,8 +98,8 @@ type ValidatorsFromOptionsAndRuns<
   in out TFormData,
   in out TContextValue,
   in out TOptions extends readonly [
-    ValidatorOptions<TFormData, TContextValue>,
-    ...Array<ValidatorOptions<TFormData, TContextValue>>,
+    ValidatorOptions<TFormData, TContextValue, any>,
+    ...Array<ValidatorOptions<TFormData, TContextValue, any>>,
   ],
   in out TRuns extends ValidatorRunsFromOptions<TOptions>,
 > = {
@@ -141,7 +154,13 @@ export function createValidators<
 }
 
 export type ValidationTrigger = 'change' | 'blur' | 'submit'
-export type ConfigurableValidationTrigger = Exclude<ValidationTrigger, 'submit'>
+export type ServerValidationTrigger = 'server'
+export type ClientValidationTrigger = ValidationTrigger
+export type ConfigurableValidationTrigger = Exclude<
+  ValidationTrigger,
+  'submit'
+>
+export type ValidatorTrigger = ConfigurableValidationTrigger
 
 export interface ErrorVisibilitySubfieldsMeta {
   isEveryPristine: boolean
@@ -252,14 +271,23 @@ export type ValidationDebounceFn<in out TFormData, in out TValue> = (
   context: ValidationPredicateContext<TFormData, TValue>,
 ) => number
 
-export interface ValidationTriggerConfig<in out TFormData, in out TValue> {
-  trigger: ConfigurableValidationTrigger
+export interface ValidationTriggerConfig<
+  in out TFormData,
+  in out TValue,
+  in out TTrigger extends ValidatorTrigger = ValidatorTrigger,
+> {
+  trigger: TTrigger
   when?: boolean | ValidationPredicateFn<TFormData, TValue>
 }
 
-export type ValidationTriggerOption<TFormData, TValue> =
-  | ConfigurableValidationTrigger
-  | ValidationTriggerConfig<TFormData, TValue>
+export type ValidationTriggerOption<
+  TFormData,
+  TValue,
+  TTrigger extends ValidatorTrigger = ValidatorTrigger,
+> = TTrigger | ValidationTriggerConfig<TFormData, TValue, TTrigger>
+
+export type ClientValidationTriggerOption<TFormData, TValue> =
+  ValidationTriggerOption<TFormData, TValue, ConfigurableValidationTrigger>
 
 /**
  * A single validation error with a unique identifier.
@@ -274,6 +302,60 @@ export type ValidationErrorInput = OneOrMany<ValidationErrorValue>
 export interface ValidationAggregateError<in out TFormData> {
   form?: ValidationErrorInput
   fields: Partial<Record<DeepKeys<TFormData>, ValidationErrorInput>>
+}
+
+export interface ValidationErrorMap<in out TFormData> {
+  form?: ValidationErrorInput
+  fields: Partial<Record<DeepKeys<TFormData>, ValidationErrorInput>>
+  toResult: () => ValidationAggregateError<TFormData> | undefined
+}
+
+export type CreateErrorMapFn<in out TFormData> =
+  () => ValidationErrorMap<TFormData>
+
+const VALIDATION_ERROR_MAP = Symbol('VALIDATION_ERROR_MAP')
+
+export function isValidationErrorMap(
+  value: unknown,
+): value is ValidationErrorMap<any> {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    (value as { [VALIDATION_ERROR_MAP]?: true })[VALIDATION_ERROR_MAP] === true
+  )
+}
+
+export function createErrorMap<TFormData>(): ValidationErrorMap<TFormData> {
+  const fields: ValidationErrorMap<TFormData>['fields'] = {}
+  const errorMap: ValidationErrorMap<TFormData> = {
+    fields,
+    toResult: () => {
+      const resultFields: ValidationAggregateError<TFormData>['fields'] = {}
+
+      for (const fieldName of Object.keys(fields) as Array<
+        DeepKeys<TFormData>
+      >) {
+        const fieldError = fields[fieldName]
+
+        if (fieldError !== undefined) {
+          resultFields[fieldName] = fieldError
+        }
+      }
+
+      if (errorMap.form === undefined && Object.keys(resultFields).length === 0)
+        return undefined
+
+      return errorMap.form === undefined
+        ? { fields: resultFields }
+        : { form: errorMap.form, fields: resultFields }
+    },
+  }
+
+  Object.defineProperty(errorMap, VALIDATION_ERROR_MAP, {
+    value: true,
+  })
+
+  return errorMap
 }
 
 export interface ParsedStandardSchemaIssues<in out TFormData> {
@@ -301,6 +383,15 @@ export interface FormValidatorContext<
   triggerFieldApi?: AnyFieldApi
   value: TFormData
   parseIssues: ParseFormIssuesFn<TFormData>
+  createErrorMap: CreateErrorMapFn<TFormData>
+}
+
+export interface ServerFormValidatorContext<in out TFormData> {
+  event: ServerValidationTrigger
+  signal: AbortSignal
+  value: TFormData
+  parseIssues: ParseFormIssuesFn<TFormData>
+  createErrorMap: CreateErrorMapFn<TFormData>
 }
 
 export type ValidValidationResult = null | undefined | false
@@ -326,22 +417,47 @@ export type FormValidatorFn<TFormData> = ValidatorFn<
   FormValidateResult<TFormData>
 >
 
-export interface FormValidator<in out TFormData> extends Validator<
+export type ServerFormValidatorFn<TFormData> = ValidatorFn<
+  ServerFormValidatorContext<TFormData>,
+  FormValidateResult<TFormData>
+>
+
+export interface ClientFormValidator<in out TFormData> extends Validator<
   TFormData,
   FormValidatorFn<TFormData> | StandardSchemaV1<TFormData, any>,
-  TFormData
-> {}
+  TFormData,
+  ConfigurableValidationTrigger
+> {
+  runOnServer?: false
+}
+
+export interface ServerFormValidator<
+  in out TFormData,
+> extends BaseValidator<
+    ServerFormValidatorFn<TFormData> | StandardSchemaV1<TFormData, any>
+  > {
+  runOnServer: true
+  runOnSubmit?: never
+  runOnMount?: never
+  triggerDebounceMs?: never
+  triggers?: never
+}
+
+export type FormValidator<TFormData> =
+  | ClientFormValidator<TFormData>
+  | ServerFormValidator<TFormData>
 
 export type FormValidators<TFormData> = ReadonlyArray<FormValidator<TFormData>>
 
 export interface FormGroupValidatorContext<in out TGroupValue> {
-  event: ValidationTrigger
+  event: ClientValidationTrigger
   signal: AbortSignal
   formApi: FormApi<any, any, any>
   groupApi: FormGroupApi<any, any, TGroupValue, any, any, any>
   triggerFieldApi?: AnyFieldApi
   value: TGroupValue
   parseIssues: ParseFormIssuesFn<TGroupValue>
+  createErrorMap: CreateErrorMapFn<TGroupValue>
 }
 
 export type FormGroupValidationError<TGroupValue> =
@@ -359,7 +475,8 @@ export type FormGroupValidatorFn<TGroupValue> = ValidatorFn<
 export interface FormGroupValidator<in out TGroupValue> extends Validator<
   TGroupValue,
   FormGroupValidatorFn<TGroupValue> | StandardSchemaV1<TGroupValue, any>,
-  TGroupValue
+  TGroupValue,
+  ConfigurableValidationTrigger
 > {}
 
 export type FormGroupValidators<TGroupValue> = ReadonlyArray<
@@ -383,7 +500,7 @@ export interface FieldValidatorContext<
   in out TFieldValue,
   in out TFormData,
 > {
-  event: ValidationTrigger
+  event: ClientValidationTrigger
   signal: AbortSignal
   formApi: FormApi<TFormData, any, any>
   fieldApi: FieldApi<TFieldName, TFieldValue, any, any, TFormData, any, any>
@@ -406,7 +523,8 @@ export interface FieldValidator<
   TFormData,
   | FieldValidatorFn<TFormData, TFieldName, TFieldValue>
   | StandardSchemaV1<TFieldValue, any>,
-  TFieldValue
+  TFieldValue,
+  ConfigurableValidationTrigger
 > {
   watchFields?: Array<DeepKeys<TFormData>>
 }

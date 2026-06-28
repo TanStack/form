@@ -1,4 +1,5 @@
 import { LiteDebouncer } from '@tanstack/pacer-lite'
+import { createErrorMap, isValidationErrorMap } from './validation.public'
 import {
   isStandardSchema,
   parseStandardSchema,
@@ -22,6 +23,8 @@ import type {
   FormValidateResult,
   FormValidator,
   FormValidatorContext,
+  ServerFormValidator,
+  ServerFormValidatorContext,
   ValidationAggregateError,
   ValidationDebounceFn,
   ValidationErrorInput,
@@ -36,7 +39,11 @@ import type { InternalFormGroupApi } from './FormGroupApi/FormGroupApi.lib'
 
 type FormValidateContext = Omit<
   FormValidatorContext<any>,
-  'value' | 'parseIssues'
+  'value' | 'parseIssues' | 'createErrorMap'
+>
+type ServerFormValidateContext = Omit<
+  ServerFormValidatorContext<any>,
+  'value' | 'parseIssues' | 'createErrorMap'
 >
 type FieldValidateContext = Omit<
   FieldValidatorContext<any, any, any>,
@@ -44,24 +51,35 @@ type FieldValidateContext = Omit<
 >
 type FormGroupValidateContext = Omit<
   FormGroupValidatorContext<any>,
-  'value' | 'parseIssues'
+  'value' | 'parseIssues' | 'createErrorMap'
 >
 type FormInputContext = Omit<FormValidateContext, 'signal'>
+type ServerFormInputContext = Omit<ServerFormValidateContext, 'signal'>
 type FieldInputContext = Omit<FieldValidateContext, 'signal'>
 type FormGroupInputContext = Omit<FormGroupValidateContext, 'signal'>
 
 export type InputContext =
   | FormInputContext
+  | ServerFormInputContext
   | FieldInputContext
   | FormGroupInputContext
 export type ValidateContext =
   | FormValidateContext
+  | ServerFormValidateContext
   | FieldValidateContext
   | FormGroupValidateContext
 type ValidateResult =
   | FormValidateResult<any>
   | FormGroupValidateResult<any>
   | FieldValidateResult
+type AnyPipelineValidator =
+  | Validator<any, any, any, any>
+  | ServerFormValidator<any>
+type AnyValidatorContext =
+  | FormValidatorContext<any>
+  | ServerFormValidatorContext<any>
+  | FormGroupValidatorContext<any>
+  | FieldValidatorContext<any, any, any>
 
 type MountValidationExecutionResult<in out TResult extends ValidateResult> = {
   result: TResult
@@ -69,14 +87,36 @@ type MountValidationExecutionResult<in out TResult extends ValidateResult> = {
   hasSchemaResult: boolean
 }
 
-function isFormContext(ctx: InputContext): ctx is FormInputContext {
-  return 'triggerFieldApi' in ctx
+function isServerContext(ctx: InputContext): ctx is ServerFormInputContext {
+  return ctx.event === 'server'
+}
+
+function isFieldContext(ctx: InputContext): ctx is FieldInputContext {
+  return 'fieldApi' in ctx
+}
+
+function isServerValidateContext(
+  ctx: ValidateContext,
+): ctx is ServerFormValidateContext {
+  return ctx.event === 'server'
+}
+
+function isFieldValidateContext(
+  ctx: ValidateContext,
+): ctx is FieldValidateContext {
+  return 'fieldApi' in ctx
+}
+
+function isServerValidator(
+  validator: AnyPipelineValidator,
+): validator is ServerFormValidator<any> {
+  return 'runOnServer' in validator && validator.runOnServer === true
 }
 
 function getContextValue(context: InputContext) {
-  return isFormContext(context)
-    ? context.formApi.state.values
-    : context.fieldApi.value
+  if (isFieldContext(context)) return context.fieldApi.value
+  if (isServerContext(context)) return undefined
+  return context.formApi.state.values
 }
 
 function parseFieldIssues(
@@ -90,6 +130,16 @@ const THROWN_ERROR = Symbol('THROWN_ERROR')
 
 type AbortedCall = typeof ABORTED_CALL
 type ThrownError = { [THROWN_ERROR]: true; error: unknown }
+
+function resolveValidatorResult<TResult extends ValidateResult>(
+  result: TResult,
+): TResult {
+  if (isValidationErrorMap(result)) {
+    return result.toResult() as TResult
+  }
+
+  return result
+}
 
 /**
  * @private
@@ -307,11 +357,12 @@ function getEnabledState(
   context: InputContext,
 ): boolean {
   if (typeof booleanOrFn === 'boolean') return booleanOrFn
+  if (isServerContext(context)) return false
 
   return booleanOrFn({
-    triggerFieldApi: isFormContext(context)
-      ? context.triggerFieldApi
-      : context.fieldApi,
+    triggerFieldApi: isFieldContext(context)
+      ? context.fieldApi
+      : context.triggerFieldApi,
     formApi: context.formApi,
     value: getContextValue(context),
   })
@@ -322,18 +373,19 @@ function getDebounceMs(
   context: InputContext,
 ): number {
   if (typeof numberOrFn === 'number') return numberOrFn
+  if (isServerContext(context)) return 0
 
   return numberOrFn({
-    triggerFieldApi: isFormContext(context)
-      ? context.triggerFieldApi
-      : context.fieldApi,
+    triggerFieldApi: isFieldContext(context)
+      ? context.fieldApi
+      : context.triggerFieldApi,
     formApi: context.formApi,
     value: getContextValue(context),
   })
 }
 
 export function isValidationTriggerEnabled(
-  trigger: ValidationTriggerOption<any, any>,
+  trigger: ValidationTriggerOption<any, any, any>,
   context: InputContext,
 ): boolean {
   if (typeof trigger === 'string') {
@@ -350,9 +402,17 @@ export function isValidationTriggerEnabled(
 }
 
 function shouldRunValidator(
-  validator: Validator<any, any, any>,
+  validator: AnyPipelineValidator,
   context: InputContext,
 ): boolean {
+  if (isServerContext(context)) {
+    return isServerValidator(validator)
+  }
+
+  if (isServerValidator(validator)) {
+    return false
+  }
+
   const { runOnSubmit = true } = validator
 
   if (context.event === 'submit') {
@@ -365,11 +425,8 @@ function shouldRunValidator(
 }
 
 async function executeValidator<TResult extends ValidateResult>(
-  validator: Validator<any, any, any>,
-  context:
-    | FormValidatorContext<any>
-    | FormGroupValidatorContext<any>
-    | FieldValidatorContext<any, any, any>,
+  validator: AnyPipelineValidator,
+  context: AnyValidatorContext,
   scope: 'field' | 'form',
 ): Promise<ValidatorExecutionResult<TResult>> {
   if (isStandardSchema(validator.run)) {
@@ -377,7 +434,7 @@ async function executeValidator<TResult extends ValidateResult>(
   }
 
   return {
-    result: await validator.run(context),
+    result: resolveValidatorResult((await validator.run(context)) as TResult),
     schemaResult: null,
     hasSchemaResult: false,
   }
@@ -386,14 +443,11 @@ async function executeValidator<TResult extends ValidateResult>(
 interface ValidatorPipelineArgs<in out TResult extends ValidateResult> {
   context: InputContext
   cache: PipelineCache<TResult>
-  pipeline: ReadonlyArray<Validator<any, any, any>>
+  pipeline: ReadonlyArray<AnyPipelineValidator>
   hasFailedBefore: boolean
   getContext: (
     inputContext: ValidateContext,
-  ) =>
-    | FieldValidatorContext<any, any, any>
-    | FormGroupValidatorContext<any>
-    | FormValidatorContext<any>
+  ) => AnyValidatorContext
   scope: 'field' | 'form'
   validatorIndecesToRun?: Array<number> | null
   onResult?: (result: PipelineResult<TResult>) => void
@@ -402,7 +456,7 @@ interface ValidatorPipelineArgs<in out TResult extends ValidateResult> {
 interface RunMaybeDebouncedValidatorArgs<
   in out TResult extends ValidateResult,
 > {
-  validator: Validator<any, any, any>
+  validator: AnyPipelineValidator
   context: InputContext
   validatorIndex: number
   cache: PipelineCache<TResult>
@@ -472,10 +526,10 @@ async function executeWithAbort<TResult extends ValidateResult>(
 }
 
 function getValidatorDebounceMs(
-  validator: Validator<any, any, any>,
+  validator: AnyPipelineValidator,
   context: InputContext,
 ): number {
-  if (context.event === 'submit') return 0
+  if (context.event === 'submit' || context.event === 'server') return 0
 
   const { triggerDebounceMs = 0 } = validator
 
@@ -800,13 +854,18 @@ export function runFormValidatorPipeline({
     cache,
     hasFailedBefore,
     getContext: (ctx) => {
-      if (isFormContext(ctx)) {
+      if (isServerValidateContext(ctx)) {
+        throw new Error('Server validation cannot run through client pipeline')
+      }
+
+      if (!isFieldValidateContext(ctx)) {
         return {
           event: ctx.event,
           triggerFieldApi: ctx.triggerFieldApi,
           formApi: ctx.formApi,
           signal: ctx.signal,
           value: ctx.formApi.state.values,
+          createErrorMap,
           parseIssues: (issues) =>
             parseStandardSchemaIssues(issues, ctx.formApi.state.values, 'form'),
         }
@@ -817,6 +876,7 @@ export function runFormValidatorPipeline({
         formApi: ctx.formApi,
         signal: ctx.signal,
         value: ctx.formApi.state.values,
+        createErrorMap,
         parseIssues: (issues) =>
           parseStandardSchemaIssues(issues, ctx.formApi.state.values, 'form'),
       }
@@ -837,14 +897,9 @@ export interface FormMountValidatorPipelineResult {
 }
 
 interface MountValidatorPipelineArgs<in out TResult extends ValidateResult> {
-  pipeline: ReadonlyArray<Validator<any, any, any>>
+  pipeline: ReadonlyArray<AnyPipelineValidator>
   cache: PipelineCache<TResult>
-  getContext: (
-    signal: AbortSignal,
-  ) =>
-    | FormValidatorContext<any>
-    | FormGroupValidatorContext<any>
-    | FieldValidatorContext<any, any, any>
+  getContext: (signal: AbortSignal) => AnyValidatorContext
   scope: 'field' | 'form'
   onResult?: (result: PipelineResult<TResult>) => void
 }
@@ -880,7 +935,7 @@ function executeMountValidator<TResult extends ValidateResult>(
   cache: PipelineCache<TResult>,
   getContext: MountValidatorPipelineArgs<TResult>['getContext'],
   scope: 'field' | 'form',
-  validator: Validator<any, any, any>,
+  validator: AnyPipelineValidator,
   validatorIndex: number,
 ):
   | MountValidationExecutionResult<TResult>
@@ -918,7 +973,7 @@ function executeMountValidator<TResult extends ValidateResult>(
           }
 
           return {
-            result: asyncResult as TResult,
+            result: resolveValidatorResult(asyncResult as TResult),
             schemaResult: null,
             hasSchemaResult: false,
           }
@@ -928,7 +983,7 @@ function executeMountValidator<TResult extends ValidateResult>(
 
     cleanup()
     return {
-      result: result as TResult,
+      result: resolveValidatorResult(result as TResult),
       schemaResult: null,
       hasSchemaResult: false,
     }
@@ -942,7 +997,7 @@ function executeMountValidator<TResult extends ValidateResult>(
 async function continueMountValidationFromAsyncResult<
   TResult extends ValidateResult,
 >(
-  pipeline: ReadonlyArray<Validator<any, any, any>>,
+  pipeline: ReadonlyArray<AnyPipelineValidator>,
   cache: PipelineCache<TResult>,
   getContext: MountValidatorPipelineArgs<TResult>['getContext'],
   scope: 'field' | 'form',
@@ -1065,6 +1120,7 @@ export function runFormMountValidatorPipeline({
       signal,
       formApi,
       value: formApi.state.values,
+      createErrorMap,
       parseIssues: (issues) =>
         parseStandardSchemaIssues(issues, formApi.state.values, 'form'),
     }),
@@ -1115,14 +1171,20 @@ export function runFieldValidatorPipeline({
     cache,
     // No use case for configuring this outside of field pipeline yet
     hasFailedBefore: false,
-    getContext: (ctx) => ({
-      event: ctx.event,
-      formApi: ctx.formApi,
-      signal: ctx.signal,
-      fieldApi: context.fieldApi,
-      value: context.fieldApi.value,
-      parseIssues: parseFieldIssues,
-    }),
+    getContext: (ctx) => {
+      if (isServerValidateContext(ctx)) {
+        throw new Error('Server validation cannot run through field pipeline')
+      }
+
+      return {
+        event: context.event,
+        formApi: ctx.formApi,
+        signal: ctx.signal,
+        fieldApi: context.fieldApi,
+        value: context.fieldApi.value,
+        parseIssues: parseFieldIssues,
+      }
+    },
     scope: 'field',
     validatorIndecesToRun,
   })
@@ -1187,6 +1249,7 @@ export function runGroupMountValidatorPipeline({
       groupApi: groupApi as never,
       triggerFieldApi: undefined,
       value: groupApi.value,
+      createErrorMap,
       parseIssues: (issues) =>
         parseStandardSchemaIssues(issues, groupApi.value, 'form'),
     }),
