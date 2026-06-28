@@ -59,6 +59,7 @@ export function FieldDetailCardHeaderSection(
 
   const copyFieldDetails = async () => {
     try {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (typeof navigator === 'undefined' || !navigator.clipboard) {
         throw new Error('Clipboard API unavailable')
       }
