@@ -8,7 +8,7 @@ interface FieldDetailJsonValues {
   default: unknown
 }
 
-export interface FieldDetailJsonState {
+interface FieldDetailJsonState {
   name: string
   values: FieldDetailJsonValues | null
   meta: FieldDetailMetaSnapshot

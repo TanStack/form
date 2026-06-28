@@ -2,23 +2,16 @@ import type { FieldState } from '@tanstack/form-core'
 
 type AnyFieldState = FieldState<any, any, any, any, any>
 
-export interface BroadcastFormId {
+export interface BroadcastFormIdentity {
   id: string
-}
-
-export interface BroadcastFormInstanceId {
   instanceId: string
 }
-
-export interface BroadcastFormIdentity
-  extends BroadcastFormId, BroadcastFormInstanceId {}
 
 export interface BroadcastFormRegistered extends BroadcastFormIdentity {}
 
 export interface BroadcastFormUnregistered extends BroadcastFormIdentity {}
 
-export interface BroadcastMountedFieldSummary
-  extends BroadcastFormId, BroadcastFormInstanceId {
+export interface BroadcastMountedFieldSummary extends BroadcastFormIdentity {
   path: string
   isTouched: boolean
   isDirty: boolean
@@ -55,8 +48,7 @@ export interface BroadcastFieldDependencies {
 export type BroadcastFieldDetailStateSnapshot = Omit<AnyFieldState, 'value'> &
   Partial<Pick<AnyFieldState, 'value'>>
 
-export interface BroadcastFieldDetailState
-  extends BroadcastFormId, BroadcastFormInstanceId {
+export interface BroadcastFieldDetailState extends BroadcastFormIdentity {
   path: string
   status: BroadcastFieldDetailStatus
   state: BroadcastFieldDetailStateSnapshot
@@ -68,14 +60,14 @@ export interface BroadcastFieldDetailState
 }
 
 export interface BroadcastFieldDetailSubscribeRequest
-  extends BroadcastFormId, BroadcastFormInstanceId {
+  extends BroadcastFormIdentity {
   path: string
   includeRawValues?: boolean
   includeArrayFields?: boolean
 }
 
 export interface BroadcastFieldDetailUnsubscribeRequest
-  extends BroadcastFormId, BroadcastFormInstanceId {
+  extends BroadcastFormIdentity {
   path: string
 }
 

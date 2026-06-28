@@ -84,7 +84,7 @@ function emitDevtoolsFieldListStateNow(form: AnyInternalFormApi): void {
   })
 }
 
-export function emitDevtoolsFieldListState(
+function emitDevtoolsFieldListState(
   form: AnyInternalFormApi,
   options: { sync?: boolean } = {},
 ): void {
@@ -327,7 +327,7 @@ export function getDevtoolsFieldDetailSnapshot(
   return result
 }
 
-export function getDevtoolsMountedFieldSummary(
+function getDevtoolsMountedFieldSummary(
   field: AnyInternalFieldApi,
 ): BroadcastMountedFieldSummary {
   const value = field._getValue()
@@ -355,7 +355,7 @@ export function getDevtoolsMountedFieldSummary(
   }
 }
 
-export function getDevtoolsMountedFieldSummaries(
+function getDevtoolsMountedFieldSummaries(
   form: AnyInternalFormApi,
 ): Array<BroadcastMountedFieldSummary> {
   const summaries: Array<BroadcastMountedFieldSummary> = []

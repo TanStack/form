@@ -67,8 +67,6 @@
     "@tanstack/devtools-ui": "^0.5.2",
     "@tanstack/devtools-utils": "^0.5.0",
     "@tanstack/form-core": "workspace:*",
-    "clsx": "^2.1.1",
-    "dayjs": "^1.11.18",
     "goober": "^2.1.16"
   },
   "devDependencies": {

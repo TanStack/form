@@ -45,7 +45,7 @@ const rootCounterContributionKeys: Array<RootCounterContributionKey> = [
   'validating',
 ]
 
-export function collectFieldSubtree(
+function collectFieldSubtree(
   field: AnyInternalFieldApi,
 ): Array<AnyInternalFieldApi> {
   const stack: Array<AnyInternalFieldApi> = [field]
@@ -343,7 +343,7 @@ export function moveFieldToSegment(
   }
 }
 
-export function notifyFieldSubtreeListeners(
+function notifyFieldSubtreeListeners(
   field: AnyInternalFieldApi,
   trigger: FieldListenerTriggers,
 ): void {

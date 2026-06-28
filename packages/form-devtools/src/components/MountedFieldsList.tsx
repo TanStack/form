@@ -6,11 +6,11 @@ import { PinIcon, PinOutlineIcon } from './icons/Pin'
 import type { DevtoolsMountedFieldSummary } from '../stores/eventClientTypes'
 import type { FieldMetaBadgeVariant } from './FieldMetaBadge'
 
-export type MountedFieldStatus = 'valid' | 'invalid'
+type MountedFieldStatus = 'valid' | 'invalid'
 
 export type FieldListFilter = 'all' | 'issues' | 'pinned'
 
-export type MountedFieldSummary = DevtoolsMountedFieldSummary
+type MountedFieldSummary = DevtoolsMountedFieldSummary
 
 type TagColor = Parameters<typeof Tag>[0]['color']
 
