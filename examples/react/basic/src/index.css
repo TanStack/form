@@ -9,7 +9,7 @@
   font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
 }
 
-button {
+#root button {
   font-size: 16px;
   padding: 5px 10px;
   border-radius: 5px;
@@ -28,16 +28,16 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+#root button:hover {
   border: 2px solid rgba(8, 6, 13, 0.5);
 }
 
-label {
+#root label {
   display: grid;
   gap: 0.35rem;
 }
 
-label > input {
+#root label > input {
   width: 100%;
   max-width: 16rem;
   margin-inline: auto;
@@ -51,27 +51,27 @@ label > input {
     background-color 120ms ease;
 }
 
-label > input:focus-visible {
+#root label > input:focus-visible {
   border-color: #71717a;
   box-shadow: 0 0 0 3px rgb(113 113 122 / 0.12);
 }
 
-small {
+#root small {
   min-height: 1.25rem;
   font-size: 0.8125rem;
   color: #dc2626;
   white-space: pre-line;
 }
 
-label.validating > input {
+#root label.validating > input {
   border-color: #93c5fd;
 }
 
-label > input[aria-invalid='true'] {
+#root label > input[aria-invalid='true'] {
   border-color: #fca5a5;
   background-color: #fef2f2;
 }
 
-label > input[aria-invalid='true']:focus-visible {
+#root label > input[aria-invalid='true']:focus-visible {
   box-shadow: 0 0 0 3px rgb(248 113 113 / 0.16);
 }

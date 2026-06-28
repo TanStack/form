@@ -1,13 +1,13 @@
-:root {
+#root {
   --color-text: #08060d;
   --color-muted: #6d6578;
   --color-border: #d9d3e3;
   --color-surface: #ffffff;
   --color-page: #f7f6f1;
   --color-accent: #116466;
-}
 
-#root {
+  background: var(--color-page);
+  color: var(--color-text);
   max-width: 100%;
   min-height: 100svh;
   margin: 0;
@@ -15,39 +15,33 @@
   font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
 }
 
-body {
-  margin: 0;
-  color: var(--color-text);
-  background: var(--color-page);
-}
-
-.app-shell {
+#root .app-shell {
   width: min(100% - 2rem, 48rem);
   margin: 0 auto;
   padding: 3rem 0;
 }
 
-header {
+#root header {
   margin-bottom: 1.5rem;
 }
 
-h1 {
+#root h1 {
   margin: 0;
   font-size: 2.5rem;
   line-height: 1;
 }
 
-h2 {
+#root h2 {
   margin: 0;
   font-size: 1.35rem;
 }
 
-h3 {
+#root h3 {
   margin: 0;
   font-size: 1.1rem;
 }
 
-button {
+#root button {
   font-size: 16px;
   padding: 0.6rem 0.9rem;
   border-radius: 0.4rem;
@@ -65,50 +59,50 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+#root button:hover {
   border-color: rgba(17, 100, 102, 0.55);
   box-shadow: 0 0 0 3px rgba(17, 100, 102, 0.1);
 }
 
-.array-form {
+#root .array-form {
   display: grid;
   gap: 1rem;
 }
 
-.examples-stack {
+#root .examples-stack {
   display: grid;
   gap: 2.5rem;
 }
 
-.example-section {
+#root .example-section {
   display: grid;
   gap: 1rem;
 }
 
-.example-header {
+#root .example-header {
   margin-bottom: 0;
 }
 
-.toolbar {
+#root .toolbar {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
 }
 
-.toolbar button[type='submit'] {
+#root .toolbar button[type='submit'] {
   color: white;
   background: var(--color-accent);
   border-color: var(--color-accent);
 }
 
-.lists-grid {
+#root .lists-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
   align-items: start;
 }
 
-.lists-grid .list-section {
+#root .lists-grid .list-section {
   align-self: stretch;
   padding: 0.85rem;
   background: #efede7;
@@ -116,29 +110,29 @@ button:hover {
   border-radius: 0.5rem;
 }
 
-.lists-grid .sortable-list {
+#root .lists-grid .sortable-list {
   min-height: 60rem;
   align-content: start;
 }
 
-.list-section {
+#root .list-section {
   display: grid;
   gap: 0.75rem;
   min-width: 0;
 }
 
-ul {
+#root ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.sortable-list {
+#root .sortable-list {
   display: grid;
   gap: 0.75rem;
 }
 
-.sortable-item {
+#root .sortable-item {
   display: grid;
   grid-template-columns: 5.5rem minmax(0, 1fr);
   align-items: end;
@@ -151,31 +145,31 @@ ul {
   box-shadow: 0 0.5rem 1.5rem rgba(8, 6, 13, 0.06);
 }
 
-.sortable-item[data-dragging='true'] {
+#root .sortable-item[data-dragging='true'] {
   opacity: 0.45;
 }
 
-.sortable-item[data-drop-target='true'] {
+#root .sortable-item[data-drop-target='true'] {
   border-color: var(--color-accent);
   box-shadow: 0 0 0 3px rgba(17, 100, 102, 0.13);
 }
 
-.list-drop-target {
+#root .list-drop-target {
   min-height: 0.75rem;
   border: 1px dashed transparent;
   border-radius: 0.5rem;
 }
 
-.list-drop-target[data-empty='true'] {
+#root .list-drop-target[data-empty='true'] {
   min-height: 4rem;
 }
 
-.list-drop-target[data-drop-target='true'] {
+#root .list-drop-target[data-drop-target='true'] {
   border-color: rgba(17, 100, 102, 0.55);
   background: rgba(17, 100, 102, 0.08);
 }
 
-.drag-handle {
+#root .drag-handle {
   width: 100%;
   height: 2.75rem;
   color: var(--color-accent);
@@ -183,7 +177,7 @@ ul {
   user-select: none;
 }
 
-.item-field {
+#root .item-field {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
@@ -193,11 +187,11 @@ ul {
   color: var(--color-text);
 }
 
-.item-field span {
+#root .item-field span {
   color: var(--color-muted);
 }
 
-input {
+#root input {
   width: 100%;
   box-sizing: border-box;
   min-width: 0;
@@ -209,35 +203,35 @@ input {
   background: white;
 }
 
-input:focus {
+#root input:focus {
   outline: none;
   border-color: var(--color-accent);
   box-shadow: 0 0 0 3px rgba(17, 100, 102, 0.12);
 }
 
 @media (max-width: 520px) {
-  .app-shell {
+  #root .app-shell {
     width: min(100% - 1rem, 48rem);
     padding: 1.5rem 0;
   }
 
-  .sortable-item {
+  #root .sortable-item {
     grid-template-columns: 1fr;
   }
 
-  .lists-grid {
+  #root .lists-grid {
     grid-template-columns: 1fr;
   }
 
-  .lists-grid .sortable-list {
+  #root .lists-grid .sortable-list {
     min-height: 14rem;
   }
 
-  .drag-handle {
+  #root .drag-handle {
     height: 2.5rem;
   }
 
-  h1 {
+  #root h1 {
     font-size: 2rem;
   }
 }

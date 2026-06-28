@@ -9,7 +9,7 @@
   --color-text: #08060d;
 }
 
-button {
+#root button {
   font-size: 16px;
   padding: 5px 10px;
   border-radius: 5px;
@@ -28,11 +28,11 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+#root button:hover {
   border: 2px solid rgba(8, 6, 13, 0.5);
 }
 
-ul {
+#root ul {
   list-style: none;
   margin: 0;
   padding: 2rem 0 0 0;
@@ -41,11 +41,11 @@ ul {
   gap: 0.75rem;
 }
 
-li {
+#root li {
   min-width: 0;
 }
 
-li label {
+#root li label {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
@@ -54,7 +54,7 @@ li label {
   color: var(--color-text);
 }
 
-input {
+#root input {
   width: 100%;
   box-sizing: border-box;
   min-width: 0;
@@ -64,12 +64,12 @@ input {
   font-size: 1rem;
 }
 
-#itemsAmount {
+#root #itemsAmount {
   max-width: 10rem;
   text-align: end;
 }
 
-li input:focus {
+#root li input:focus {
   outline: none;
   border-color: #646cff;
   box-shadow: 0 0 0 2px rgba(100, 108, 255, 0.2);
