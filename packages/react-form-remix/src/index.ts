@@ -9,44 +9,36 @@ import type {
 } from '@tanstack/form-core'
 import type { FormDataInfo } from 'decode-formdata'
 
-export interface StartServerValidateContext {
-  formData: FormData
+export interface RemixServerValidateContext {
+  request: Request
   info?: FormDataInfo
 }
 
-export type StartServerValidateResult<
+export type RemixServerValidateResult<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
 > =
   | ServerValidateSuccess<TFormData, TFormValidators>
   | ServerFormState<TFormData, TFormValidators>
-  | unknown
 
-export interface StartServerValidateOptions {
-  info?: FormDataInfo
-  onInvalid?: (args: {
-    error: ServerValidateError<any, any>
-    serverState: ServerFormState<any, any>
-  }) => unknown | Promise<unknown>
-  onValid?: (args: {
-    result: ServerValidateSuccess<any, any>
-  }) => unknown | Promise<unknown>
-}
-
-export type StartServerValidateAction<
+export type RemixServerValidateAction<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
 > = (
-  context: StartServerValidateContext,
-) => Promise<StartServerValidateResult<TFormData, TFormValidators>>
+  context: RemixServerValidateContext,
+) => Promise<RemixServerValidateResult<TFormData, TFormValidators>>
 
-type StartCreateServerValidate = <
+export interface RemixServerValidateOptions {
+  info?: FormDataInfo
+}
+
+type RemixCreateServerValidate = <
   TFormData,
   const TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
 >(
   options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
-) => StartServerValidateAction<TFormData, TFormValidators>
+) => RemixServerValidateAction<TFormData, TFormValidators>
 
 function decodeFormData<TFormData>(
   formData: FormData,
@@ -61,11 +53,11 @@ function isServerValidateError(
   return error instanceof ServerValidateError
 }
 
-export function start(
-  options: StartServerValidateOptions = {},
-): ServerValidateFrameworkPlugin<StartCreateServerValidate> {
+export function remix(
+  options: RemixServerValidateOptions = {},
+): ServerValidateFrameworkPlugin<RemixCreateServerValidate> {
   return {
-    id: 'react-form-start',
+    id: 'react-form-remix',
     createServerValidate: <
       TFormData,
       const TFormValidators extends FormValidators<TFormData>,
@@ -74,22 +66,17 @@ export function start(
       formOptions: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
     ) => {
       return async (context) => {
+        const formData = await context.request.formData()
         const values = decodeFormData<TFormData>(
-          context.formData,
+          formData,
           context.info ?? options.info,
         )
 
         try {
-          const result = await validateServerValues(formOptions, values)
-          return options.onValid ? options.onValid({ result }) : result
+          return await validateServerValues(formOptions, values)
         } catch (error) {
           if (isServerValidateError(error)) {
-            return options.onInvalid
-              ? options.onInvalid({
-                  error,
-                  serverState: error.serverState,
-                })
-              : error.serverState
+            return error.serverState
           }
 
           throw error

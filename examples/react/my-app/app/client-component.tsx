@@ -1,43 +1,55 @@
 'use client'
 
 import { useActionState } from 'react'
-import { useForm } from '@tanstack/react-form'
+import { initialServerFormState, useForm } from '@tanstack/react-form'
 import someAction from './action'
 import { formOpts } from './shared-code'
 
-// What should this value be set to?
-const initialFormState = {}
-
 export const ClientComp = () => {
-  const [state, action] = useActionState(someAction, initialFormState as never)
+  const [serverState, action, isPending] = useActionState(
+    someAction,
+    initialServerFormState,
+  )
 
-  // How to consume `state` into `useForm`?
   const form = useForm({
     ...formOpts,
-    ...state,
+    serverState,
   })
 
   return (
-    <form action={action as never} onSubmit={() => form.handleSubmit()}>
-      <form.Field
-        name="age"
-        validators={[
-          {
-            run: ({ value }) =>
-              value < 8
-                ? 'Client validation: You must be at least 8'
-                : undefined,
-            triggers: ['change'],
-          },
-        ]}
-      >
+    <form action={action} onSubmit={() => void form.handleSubmit()}>
+      <form.Field name="firstName">
         {(field) => {
           return (
             <div>
+              <label htmlFor={field.name}>First name</label>
               <input
-                name={field.name} // must explicitly set the name attribute for the POST request
+                id={field.name}
+                name={field.name}
+                type="text"
+                value={field.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+              {field.meta.errors.map((error) => (
+                <p key={error.message}>{error.message}</p>
+              ))}
+            </div>
+          )
+        }}
+      </form.Field>
+
+      <form.Field name="age">
+        {(field) => {
+          return (
+            <div>
+              <label htmlFor={field.name}>Age</label>
+              <input
+                id={field.name}
+                name={field.name}
                 type="number"
                 value={field.value}
+                onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.valueAsNumber)}
               />
               {field.meta.errors.map((error) => (
@@ -51,8 +63,8 @@ export const ClientComp = () => {
         selector={(formState) => [formState.canSubmit, formState.isSubmitting]}
       >
         {([canSubmit, isSubmitting]) => (
-          <button type="submit" disabled={!canSubmit}>
-            {isSubmitting ? '...' : 'Submit'}
+          <button type="submit" disabled={!canSubmit || isPending}>
+            {isSubmitting || isPending ? '...' : 'Submit'}
           </button>
         )}
       </form.Subscribe>

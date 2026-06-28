@@ -437,10 +437,10 @@ export interface ServerFormValidator<
     ServerFormValidatorFn<TFormData> | StandardSchemaV1<TFormData, any>
   > {
   runOnServer: true
-  runOnSubmit?: never
-  runOnMount?: never
-  triggerDebounceMs?: never
-  triggers?: never
+  runOnSubmit?: undefined
+  runOnMount?: undefined
+  triggerDebounceMs?: undefined
+  triggers?: undefined
 }
 
 export type FormValidator<TFormData> =

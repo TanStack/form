@@ -110,7 +110,7 @@ function isFieldValidateContext(
 function isServerValidator(
   validator: AnyPipelineValidator,
 ): validator is ServerFormValidator<any> {
-  return 'runOnServer' in validator && validator.runOnServer === true
+  return 'runOnServer' in validator && validator.runOnServer
 }
 
 function getContextValue(context: InputContext) {
@@ -445,9 +445,7 @@ interface ValidatorPipelineArgs<in out TResult extends ValidateResult> {
   cache: PipelineCache<TResult>
   pipeline: ReadonlyArray<AnyPipelineValidator>
   hasFailedBefore: boolean
-  getContext: (
-    inputContext: ValidateContext,
-  ) => AnyValidatorContext
+  getContext: (inputContext: ValidateContext) => AnyValidatorContext
   scope: 'field' | 'form'
   validatorIndecesToRun?: Array<number> | null
   onResult?: (result: PipelineResult<TResult>) => void

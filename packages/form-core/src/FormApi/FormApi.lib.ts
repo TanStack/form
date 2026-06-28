@@ -686,7 +686,7 @@ export class InternalFormApi<
       const validator = this.options.validators?.[i]
       if (!validator) continue
 
-      if (validator.runOnServer === true) {
+      if (validator.runOnServer) {
         eventErrorIndexes.push(i)
         continue
       }

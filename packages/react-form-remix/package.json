@@ -1,13 +1,13 @@
 {
-  "name": "@tanstack/react-form-nextjs",
-  "version": "1.33.3",
-  "description": "Powerful, type-safe forms for React.",
-  "author": "tannerlinsley",
+  "name": "@tanstack/react-form-remix",
+  "version": "0.0.0",
+  "description": "Remix server validation adapter for TanStack React Form",
+  "author": "Tanner Linsley",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TanStack/form.git",
-    "directory": "packages/react-form-nextjs"
+    "url": "git+https://github.com/TanStack/form-v2.git",
+    "directory": "packages/react-form-remix"
   },
   "homepage": "https://tanstack.com/form",
   "funding": {
@@ -15,7 +15,7 @@
     "url": "https://github.com/sponsors/tannerlinsley"
   },
   "keywords": [
-    "nextjs",
+    "remix",
     "react",
     "tanstack",
     "form"

@@ -34,6 +34,29 @@ describe('server validation', () => {
     expect(serverValidator).toHaveBeenCalledOnce()
   })
 
+  it('skips triggerless server validators during client validation', async () => {
+    const serverValidator = vi.fn(() => 'Server error')
+    const form = new InternalFormApi(
+      formOptions({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            run: serverValidator,
+            runOnServer: true,
+          },
+        ],
+      }),
+    )
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+
+    form.setFieldValue('name', 'Tony')
+    field.handleBlur()
+    await expect(form.validate('change')).resolves.toEqual([])
+    await expect(form.validate('blur')).resolves.toEqual([])
+    await expect(form.validate('submit')).resolves.toEqual([])
+    expect(serverValidator).not.toHaveBeenCalled()
+  })
+
   it('returns values and schema outputs when server validation succeeds', async () => {
     const options = formOptions({
       defaultValues: { name: '' },
