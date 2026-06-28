@@ -2,7 +2,8 @@ import { For, Show, createMemo } from 'solid-js'
 import { useFieldDetailCardStyles } from '../../styles/field-detail-card.styles'
 import type { FieldDetailSnapshot } from './fieldDetailTypes'
 
-type FieldDependencyLink = FieldDetailSnapshot['dependencies']['watches'][number]
+type FieldDependencyLink =
+  FieldDetailSnapshot['dependencies']['watches'][number]
 
 interface FieldDetailCardDependenciesSectionProps {
   field: FieldDetailSnapshot

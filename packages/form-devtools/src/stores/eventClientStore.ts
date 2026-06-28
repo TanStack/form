@@ -105,7 +105,9 @@ export function createFormEventClientStore() {
         if (existingIndex === -1) return forms
 
         const existing = forms[existingIndex]!
-        const currentPaths = new Set(e.payload.fields.map((field) => field.path))
+        const currentPaths = new Set(
+          e.payload.fields.map((field) => field.path),
+        )
         const mountedFields = e.payload.fields.reduce(
           (next, field) => upsertMountedField(next, field, createFieldId),
           existing.mountedFields.filter((field) =>

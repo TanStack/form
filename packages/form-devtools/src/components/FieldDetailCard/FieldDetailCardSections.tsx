@@ -9,11 +9,7 @@ import type {
   FieldDetailViewMode,
 } from './fieldDetailTypes'
 
-type FieldDetailCardSectionId =
-  | 'header'
-  | 'values'
-  | 'json'
-  | 'dependencies'
+type FieldDetailCardSectionId = 'header' | 'values' | 'json' | 'dependencies'
 
 interface FieldDetailCardSectionsProps {
   field: FieldDetailSnapshot

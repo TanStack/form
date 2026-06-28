@@ -59,15 +59,13 @@ export interface BroadcastFieldDetailState extends BroadcastFormIdentity {
   dependencies: BroadcastFieldDependencies
 }
 
-export interface BroadcastFieldDetailSubscribeRequest
-  extends BroadcastFormIdentity {
+export interface BroadcastFieldDetailSubscribeRequest extends BroadcastFormIdentity {
   path: string
   includeRawValues?: boolean
   includeArrayFields?: boolean
 }
 
-export interface BroadcastFieldDetailUnsubscribeRequest
-  extends BroadcastFormIdentity {
+export interface BroadcastFieldDetailUnsubscribeRequest extends BroadcastFormIdentity {
   path: string
 }
 

@@ -20,11 +20,7 @@ export function FieldDetailCardJsonSection(
   return (
     <div class={styles().jsonStateSection}>
       <div class={styles().jsonStateTree}>
-        <KeyedJsonTree
-          value={jsonState()}
-          defaultExpansionDepth={1}
-          copyable
-        />
+        <KeyedJsonTree value={jsonState()} defaultExpansionDepth={1} copyable />
       </div>
     </div>
   )

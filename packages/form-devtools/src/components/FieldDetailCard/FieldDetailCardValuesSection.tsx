@@ -139,11 +139,7 @@ function FieldDetailValuePane(props: FieldDetailValuePaneProps) {
     <div class={styles().valuePane}>
       <div class={styles().valuePaneLabel}>{props.label}</div>
       <div class={styles().valueTree}>
-        <KeyedJsonTree
-          value={props.value}
-          defaultExpansionDepth={1}
-          copyable
-        />
+        <KeyedJsonTree value={props.value} defaultExpansionDepth={1} copyable />
       </div>
     </div>
   )
