@@ -4,9 +4,9 @@ import { runValidatorPipeline } from './validation.lib'
 import { createErrorMap } from './validation.public'
 import type { FormOptions } from './FormApi/FormApi.public'
 import type {
-  FormStandardSchemaValidatorOutputs,
   FormValidateResult,
   FormValidators,
+  ServerFormStandardSchemaValidatorOutputs,
   ToFormValidatorMetas,
 } from './validation.public'
 
@@ -36,9 +36,7 @@ export interface ServerValidateSuccess<
   in out TFormValidators extends FormValidators<TFormData>,
 > {
   values: TFormData
-  schemaOutputs: FormStandardSchemaValidatorOutputs<
-    ToFormValidatorMetas<TFormValidators>
-  >
+  schemaOutputs: ServerFormStandardSchemaValidatorOutputs<TFormValidators>
 }
 
 interface ServerValidateErrorState<
@@ -107,11 +105,13 @@ export async function validateServerValues<
     cache: createPipelineCache(),
     context: {
       event: 'server',
+      formApi: undefined,
     },
     hasFailedBefore: false,
     getContext: (ctx) => ({
       event: 'server',
       signal: ctx.signal,
+      formApi: undefined,
       value: values,
       createErrorMap,
       parseIssues: (issues) =>

@@ -7,8 +7,6 @@ export const formOpts = formOptions({
   },
   validators: [
     {
-      // This is the default, but in case you want to keep it explicit.
-      runOnServer: false,
       triggers: ['change'],
       run: ({ value, createErrorMap }) => {
         const errors = createErrorMap()
@@ -21,7 +19,7 @@ export const formOpts = formOptions({
       },
     },
     {
-      runOnServer: true,
+      triggers: ['server'],
       run: ({ value, createErrorMap }) => {
         const errors = createErrorMap()
 

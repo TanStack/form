@@ -141,7 +141,7 @@ describe('reconcileRoutedFieldErrors', () => {
 })
 
 describe('runFormValidatorPipeline', () => {
-  type Event = FormValidatorContext<any>['event']
+  type Event = Exclude<FormValidatorContext<any>['event'], 'server'>
 
   function getForm<T>(defaultValues: T) {
     return new InternalFormApi({ defaultValues })

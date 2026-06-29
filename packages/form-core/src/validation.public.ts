@@ -62,8 +62,10 @@ export type ValidatorOptions<
     TContextValue,
     TTrigger
   >,
-  'run'
->
+  'run' | 'triggers'
+> & {
+  triggers: Array<FormValidationTriggerOption<TFormData, TContextValue>>
+}
 
 type ValidatorRun = StandardSchemaV1<any, any> | ValidatorFn<any, any>
 
@@ -289,6 +291,10 @@ export type ValidationTriggerOption<
 export type ClientValidationTriggerOption<TFormData, TValue> =
   ValidationTriggerOption<TFormData, TValue, ConfigurableValidationTrigger>
 
+export type FormValidationTriggerOption<TFormData, TValue> =
+  | ClientValidationTriggerOption<TFormData, TValue>
+  | ServerValidationTrigger
+
 /**
  * A single validation error with a unique identifier.
  */
@@ -371,15 +377,12 @@ export type ParseFormIssuesFn<TFormData> = (
   issues: ReadonlyArray<StandardSchemaV1Issue>,
 ) => ParsedStandardSchemaIssues<TFormData>
 
-interface BaseValidatorContext<in out TFormData> {
-  event: ValidationTrigger
-  signal: AbortSignal
-  formApi: FormApi<TFormData, any, any>
-}
-
 export interface FormValidatorContext<
   in out TFormData,
-> extends BaseValidatorContext<TFormData> {
+> {
+  event: ValidationTrigger | ServerValidationTrigger
+  signal: AbortSignal
+  formApi: FormApi<TFormData, any, any> | undefined
   triggerFieldApi?: AnyFieldApi
   value: TFormData
   parseIssues: ParseFormIssuesFn<TFormData>
@@ -387,8 +390,10 @@ export interface FormValidatorContext<
 }
 
 export interface ServerFormValidatorContext<in out TFormData> {
-  event: ServerValidationTrigger
+  event: ValidationTrigger | ServerValidationTrigger
   signal: AbortSignal
+  formApi: FormApi<TFormData, any, any> | undefined
+  triggerFieldApi?: AnyFieldApi
   value: TFormData
   parseIssues: ParseFormIssuesFn<TFormData>
   createErrorMap: CreateErrorMapFn<TFormData>
@@ -422,30 +427,16 @@ export type ServerFormValidatorFn<TFormData> = ValidatorFn<
   FormValidateResult<TFormData>
 >
 
-export interface ClientFormValidator<in out TFormData> extends Validator<
-  TFormData,
-  FormValidatorFn<TFormData> | StandardSchemaV1<TFormData, any>,
-  TFormData,
-  ConfigurableValidationTrigger
-> {
-  runOnServer?: false
-}
-
-export interface ServerFormValidator<
+export interface FormValidator<
   in out TFormData,
 > extends BaseValidator<
-    ServerFormValidatorFn<TFormData> | StandardSchemaV1<TFormData, any>
+    FormValidatorFn<TFormData> | StandardSchemaV1<TFormData, any>
   > {
-  runOnServer: true
-  runOnSubmit?: undefined
-  runOnMount?: undefined
-  triggerDebounceMs?: undefined
-  triggers?: undefined
+  runOnSubmit?: boolean | ValidationPredicateFn<TFormData, TFormData>
+  runOnMount?: boolean
+  triggerDebounceMs?: number | ValidationDebounceFn<TFormData, TFormData>
+  triggers: Array<FormValidationTriggerOption<TFormData, TFormData>>
 }
-
-export type FormValidator<TFormData> =
-  | ClientFormValidator<TFormData>
-  | ServerFormValidator<TFormData>
 
 export type FormValidators<TFormData> = ReadonlyArray<FormValidator<TFormData>>
 
@@ -698,6 +689,18 @@ type TryGetSchemaOutput<TValidator> = TValidator extends {
   ? TOutput
   : undefined
 
+type ValidatorTriggers<TValidator> = TValidator extends {
+  readonly triggers: infer TTriggers
+}
+  ? TTriggers extends ReadonlyArray<unknown>
+    ? TTriggers[number]
+    : never
+  : never
+
+type HasServerTrigger<TValidator> = ServerValidationTrigger extends ValidatorTriggers<TValidator>
+  ? true
+  : false
+
 type TryGetFormError<TValidator> = TValidator extends {
   readonly run: StandardSchemaV1<any, any>
 }
@@ -769,6 +772,22 @@ export type ToFormValidatorMetas<TFormValidators extends FormValidators<any>> =
     : FormValidators<any> extends TFormValidators
       ? FormValidatorMetas
       : MappedFormValidatorMetas<TFormValidators>
+
+type MappedServerSchemaOutputs<
+  in out TFormValidators extends FormValidators<any>,
+> = {
+  [K in keyof TFormValidators]: HasServerTrigger<TFormValidators[K]> extends true
+    ? TryGetSchemaOutput<TFormValidators[K]>
+    : undefined
+}
+
+export type ServerFormStandardSchemaValidatorOutputs<
+  TFormValidators extends FormValidators<any>,
+> = unknown extends TFormValidators
+  ? Array<unknown>
+  : FormValidators<any> extends TFormValidators
+    ? Array<unknown>
+    : MappedServerSchemaOutputs<TFormValidators>
 
 type MappedFieldValidatorMetas<
   in out TFieldValidators extends FieldValidators<any, any, any>,

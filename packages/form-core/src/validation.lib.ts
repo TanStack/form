@@ -23,7 +23,6 @@ import type {
   FormValidateResult,
   FormValidator,
   FormValidatorContext,
-  ServerFormValidator,
   ServerFormValidatorContext,
   ValidationAggregateError,
   ValidationDebounceFn,
@@ -37,14 +36,17 @@ import type { InternalFormApi } from './FormApi/FormApi.lib'
 import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
 import type { InternalFormGroupApi } from './FormGroupApi/FormGroupApi.lib'
 
-type FormValidateContext = Omit<
-  FormValidatorContext<any>,
-  'value' | 'parseIssues' | 'createErrorMap'
->
-type ServerFormValidateContext = Omit<
-  ServerFormValidatorContext<any>,
-  'value' | 'parseIssues' | 'createErrorMap'
->
+type FormValidateContext = {
+  event: Exclude<FormValidatorContext<any>['event'], 'server'>
+  signal: AbortSignal
+  formApi: InternalFormApi<any, any, any>
+  triggerFieldApi?: AnyInternalFieldApi
+}
+type ServerPipelineValidateContext = {
+  event: 'server'
+  signal: AbortSignal
+  formApi: undefined
+}
 type FieldValidateContext = Omit<
   FieldValidatorContext<any, any, any>,
   'value' | 'parseIssues'
@@ -54,7 +56,7 @@ type FormGroupValidateContext = Omit<
   'value' | 'parseIssues' | 'createErrorMap'
 >
 type FormInputContext = Omit<FormValidateContext, 'signal'>
-type ServerFormInputContext = Omit<ServerFormValidateContext, 'signal'>
+type ServerFormInputContext = Omit<ServerPipelineValidateContext, 'signal'>
 type FieldInputContext = Omit<FieldValidateContext, 'signal'>
 type FormGroupInputContext = Omit<FormGroupValidateContext, 'signal'>
 
@@ -65,7 +67,7 @@ export type InputContext =
   | FormGroupInputContext
 export type ValidateContext =
   | FormValidateContext
-  | ServerFormValidateContext
+  | ServerPipelineValidateContext
   | FieldValidateContext
   | FormGroupValidateContext
 type ValidateResult =
@@ -73,8 +75,10 @@ type ValidateResult =
   | FormGroupValidateResult<any>
   | FieldValidateResult
 type AnyPipelineValidator =
+  | FormValidator<any>
+  | FormGroupValidator<any>
+  | FieldValidator<any, any, any>
   | Validator<any, any, any, any>
-  | ServerFormValidator<any>
 type AnyValidatorContext =
   | FormValidatorContext<any>
   | ServerFormValidatorContext<any>
@@ -97,7 +101,7 @@ function isFieldContext(ctx: InputContext): ctx is FieldInputContext {
 
 function isServerValidateContext(
   ctx: ValidateContext,
-): ctx is ServerFormValidateContext {
+): ctx is ServerPipelineValidateContext {
   return ctx.event === 'server'
 }
 
@@ -107,10 +111,14 @@ function isFieldValidateContext(
   return 'fieldApi' in ctx
 }
 
-function isServerValidator(
-  validator: AnyPipelineValidator,
-): validator is ServerFormValidator<any> {
-  return 'runOnServer' in validator && validator.runOnServer
+function isServerTrigger(
+  trigger: ValidationTriggerOption<any, any, any> | 'server',
+): boolean {
+  return trigger === 'server'
+}
+
+function hasServerTrigger(validator: AnyPipelineValidator): boolean {
+  return validator.triggers.some(isServerTrigger)
 }
 
 function getContextValue(context: InputContext) {
@@ -385,7 +393,7 @@ function getDebounceMs(
 }
 
 export function isValidationTriggerEnabled(
-  trigger: ValidationTriggerOption<any, any, any>,
+  trigger: ValidationTriggerOption<any, any, any> | 'server',
   context: InputContext,
 ): boolean {
   if (typeof trigger === 'string') {
@@ -406,11 +414,7 @@ function shouldRunValidator(
   context: InputContext,
 ): boolean {
   if (isServerContext(context)) {
-    return isServerValidator(validator)
-  }
-
-  if (isServerValidator(validator)) {
-    return false
+    return hasServerTrigger(validator)
   }
 
   const { runOnSubmit = true } = validator
@@ -1176,7 +1180,7 @@ export function runFieldValidatorPipeline({
 
       return {
         event: context.event,
-        formApi: ctx.formApi,
+        formApi: context.formApi,
         signal: ctx.signal,
         fieldApi: context.fieldApi,
         value: context.fieldApi.value,

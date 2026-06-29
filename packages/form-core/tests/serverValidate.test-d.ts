@@ -8,6 +8,7 @@ import {
 import type {
   FieldValidators,
   FormOptions,
+  FormApi,
   FormGroupValidators,
   FormValidators,
   ServerValidateFrameworkPlugin,
@@ -24,7 +25,7 @@ describe('server validation types', () => {
               name: z.string(),
             })
             .transform(({ name }) => ({ nameLength: name.length })),
-          runOnServer: true,
+          triggers: ['server'],
         },
       ],
     })
@@ -37,53 +38,92 @@ describe('server validation types', () => {
     >()
   })
 
-  it('uses a server-only context for runOnServer validators', () => {
+  it('makes formApi optional for validators with server triggers', () => {
     formOptions({
       defaultValues: { name: '' },
       validators: [
         {
           run: (ctx) => {
-            expectTypeOf(ctx.event).toEqualTypeOf<'server'>()
+            expectTypeOf(ctx.event).toEqualTypeOf<
+              'change' | 'blur' | 'submit' | 'server'
+            >()
             expectTypeOf(ctx.value).toEqualTypeOf<{ name: string }>()
-            // @ts-expect-error Server validators do not receive a form API.
-            void ctx.formApi
+            expectTypeOf(ctx.formApi).toEqualTypeOf<
+              FormApi<{ name: string }, any, any> | undefined
+            >()
+            // @ts-expect-error formApi can be undefined for server-triggered validators.
+            void ctx.formApi.state.values
             return undefined
           },
-          runOnServer: true,
+          triggers: ['server'],
         },
         {
           run: ({ formApi }) => {
-            expectTypeOf(formApi.state.values).toEqualTypeOf<{
-              name: string
-            }>()
+            expectTypeOf(formApi).toEqualTypeOf<
+              FormApi<{ name: string }, any, any> | undefined
+            >()
+            return undefined
+          },
+          triggers: ['server', 'change'],
+        },
+        {
+          run: ({ formApi }) => {
+            expectTypeOf(formApi).toEqualTypeOf<
+              FormApi<{ name: string }, any, any> | undefined
+            >()
             return undefined
           },
           triggers: [],
         },
         {
           run: ({ formApi }) => {
+            expectTypeOf(formApi).toEqualTypeOf<
+              FormApi<{ name: string }, any, any> | undefined
+            >()
+            return undefined
+          },
+          runOnSubmit: ({ formApi }) => {
             expectTypeOf(formApi.state.values).toEqualTypeOf<{
               name: string
             }>()
+            return true
+          },
+          triggerDebounceMs: ({ formApi }) => {
+            expectTypeOf(formApi.state.values).toEqualTypeOf<{
+              name: string
+            }>()
+            return 0
+          },
+          triggers: [],
+        },
+        {
+          run: () => {
             return undefined
           },
-          runOnServer: false,
           triggers: [],
         },
       ],
     })
   })
 
-  it('rejects server triggers and non-form server validators', () => {
+  it('rejects server trigger configs and non-form server validators', () => {
     formOptions({
       defaultValues: { name: '' },
       validators: [
         {
           run: () => undefined,
           triggers: [
-            // @ts-expect-error Server validation is configured with runOnServer.
-            'server',
+            {
+              // @ts-expect-error Server triggers cannot be configured.
+              trigger: 'server',
+            },
           ],
+        },
+        {
+          run: () => undefined,
+          triggers: [],
+          // @ts-expect-error Server validation is configured with triggers.
+          runOnServer: true,
         },
       ],
     })
@@ -91,17 +131,19 @@ describe('server validation types', () => {
     const fieldValidators: FieldValidators<{ name: string }, 'name', string> = [
       {
         run: () => undefined,
-        triggers: [],
-        // @ts-expect-error Field validators cannot run on the server.
-        runOnServer: true,
+        triggers: [
+          // @ts-expect-error Field validators cannot use server triggers.
+          'server',
+        ],
       },
     ]
     const groupValidators: FormGroupValidators<{ name: string }> = [
       {
         run: () => undefined,
-        triggers: [],
-        // @ts-expect-error Form group validators cannot run on the server.
-        runOnServer: true,
+        triggers: [
+          // @ts-expect-error Form group validators cannot use server triggers.
+          'server',
+        ],
       },
     ]
 
@@ -130,7 +172,7 @@ describe('server validation types', () => {
         validators: [
           {
             run: () => undefined,
-            runOnServer: true,
+            triggers: ['server'],
           },
         ],
       }),

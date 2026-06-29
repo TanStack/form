@@ -21,7 +21,7 @@ describe('server validation', () => {
         },
         {
           run: serverValidator,
-          runOnServer: true,
+          triggers: ['server'],
         },
       ],
     })
@@ -34,7 +34,7 @@ describe('server validation', () => {
     expect(serverValidator).toHaveBeenCalledOnce()
   })
 
-  it('skips triggerless server validators during client validation', async () => {
+  it('runs server-only validators during client submit by default', async () => {
     const serverValidator = vi.fn(() => 'Server error')
     const form = new InternalFormApi(
       formOptions({
@@ -42,7 +42,7 @@ describe('server validation', () => {
         validators: [
           {
             run: serverValidator,
-            runOnServer: true,
+            triggers: ['server'],
           },
         ],
       }),
@@ -53,8 +53,57 @@ describe('server validation', () => {
     field.handleBlur()
     await expect(form.validate('change')).resolves.toEqual([])
     await expect(form.validate('blur')).resolves.toEqual([])
-    await expect(form.validate('submit')).resolves.toEqual([])
     expect(serverValidator).not.toHaveBeenCalled()
+    await expect(form.validate('submit')).resolves.toEqual(['Server error'])
+    expect(serverValidator).toHaveBeenCalledOnce()
+  })
+
+  it('skips server-only validators during client submit when runOnSubmit is false', async () => {
+    const validator = vi.fn(() => 'Submit error')
+    const form = new InternalFormApi(
+      formOptions({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            run: validator,
+            triggers: ['server'],
+            runOnSubmit: false,
+          },
+        ],
+      }),
+    )
+
+    await expect(form.validate('submit')).resolves.toEqual([])
+    expect(validator).not.toHaveBeenCalled()
+  })
+
+  it('runs mixed server and client trigger validators in both contexts', async () => {
+    const calls: Array<{ event: string; hasFormApi: boolean }> = []
+    const validator = vi.fn(({ event, formApi }) => {
+      calls.push({ event, hasFormApi: formApi !== undefined })
+      return `${event} error`
+    })
+    const options = formOptions({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          run: validator,
+          triggers: ['server', 'change'],
+        },
+      ],
+    })
+
+    await expect(
+      validateServerValues(options, { name: '' }),
+    ).rejects.toBeInstanceOf(ServerValidateError)
+
+    const form = new InternalFormApi(options)
+    await expect(form.validate('change')).resolves.toEqual(['change error'])
+
+    expect(calls).toEqual([
+      { event: 'server', hasFormApi: false },
+      { event: 'change', hasFormApi: true },
+    ])
   })
 
   it('returns values and schema outputs when server validation succeeds', async () => {
@@ -67,7 +116,7 @@ describe('server validation', () => {
               name: z.string(),
             })
             .transform(({ name }) => ({ nameLength: name.length })),
-          runOnServer: true,
+          triggers: ['server'],
         },
       ],
     })
@@ -89,7 +138,7 @@ describe('server validation', () => {
               name: 'Name is required',
             },
           }),
-          runOnServer: true,
+          triggers: ['server'],
         },
       ],
     })
@@ -130,7 +179,7 @@ describe('server validation', () => {
               name: 'Server name error',
             },
           }),
-          runOnServer: true,
+          triggers: ['server'],
         },
       ],
     })
@@ -165,7 +214,7 @@ describe('server validation', () => {
               name: 'Server name error',
             },
           }),
-          runOnServer: true,
+          triggers: ['server'],
         },
       ],
     })
@@ -206,7 +255,7 @@ describe('server validation', () => {
       validators: [
         {
           run: serverValidator,
-          runOnServer: true,
+          triggers: ['server'],
         },
       ],
       serverState: {

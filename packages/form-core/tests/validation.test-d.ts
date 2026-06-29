@@ -14,6 +14,7 @@ import type {
   FieldErrors,
   FieldValidatorMeta,
   FieldValidators,
+  FormApi,
   FormErrors,
   FormGroupStandardSchemaValidatorOutputs,
   FormGroupValidatorMeta,
@@ -274,22 +275,43 @@ describe('createErrorMap', () => {
 })
 
 describe('ValidationTriggerOption', () => {
-  it('rejects server triggers on validators', () => {
+  it('allows string server triggers on form validators only', () => {
     defineFormValidators([
       {
-        run: () => undefined,
-        triggers: [
-          // @ts-expect-error Server validation is configured with runOnServer.
-          'server',
-        ],
+        run: ({ formApi }) => {
+          expectTypeOf(formApi).toEqualTypeOf<
+            FormApi<TestFormData, any, any> | undefined
+          >()
+          // @ts-expect-error formApi can be undefined for server-triggered validators.
+          void formApi.state.values
+          return undefined
+        },
+        triggers: ['server'],
+      },
+      {
+        run: ({ formApi }) => {
+          expectTypeOf(formApi).toEqualTypeOf<
+            FormApi<TestFormData, any, any> | undefined
+          >()
+          return undefined
+        },
+        triggers: ['server', 'change'],
+      },
+      {
+        run: ({ formApi }) => {
+          expectTypeOf(formApi).toEqualTypeOf<
+            FormApi<TestFormData, any, any> | undefined
+          >()
+          return undefined
+        },
+        triggers: ['change'],
       },
       {
         run: () => undefined,
         triggers: [
           {
-            // @ts-expect-error Server validation is configured with runOnServer.
+            // @ts-expect-error Server triggers cannot be configured.
             trigger: 'server',
-            when: true,
           },
         ],
       },
@@ -309,7 +331,6 @@ describe('ValidationTriggerOption', () => {
           {
             // @ts-expect-error Field validators cannot use server trigger configs.
             trigger: 'server',
-            when: true,
           },
         ],
       },
@@ -329,11 +350,23 @@ describe('ValidationTriggerOption', () => {
           {
             // @ts-expect-error Form group validators cannot use server trigger configs.
             trigger: 'server',
-            when: true,
           },
         ],
       },
     ])
+
+    createValidator({
+      triggers: ['server'],
+    })
+
+    createValidator({
+      triggers: [
+        {
+          // @ts-expect-error Server triggers cannot be configured.
+          trigger: 'server',
+        },
+      ],
+    })
   })
 })
 
@@ -1095,6 +1128,19 @@ describe('validator metas', () => {
         triggers: [],
         runOnSubmit: true,
       },
+      {
+        run: z.object({ name: z.string() }),
+        triggers: ['server'],
+      },
+      {
+        run: z.object({ name: z.string() }),
+        triggers: ['server'],
+        runOnSubmit: true,
+      },
+      {
+        run: z.object({ name: z.string() }),
+        triggers: ['server', 'change'],
+      },
     ])
 
     type FirstResult = FormValidatorMeta<
@@ -1115,13 +1161,34 @@ describe('validator metas', () => {
       StandardSchemaV1Issue,
       StandardSchemaV1Issue
     >
+    type FourthResult = FormValidatorMeta<
+      // server-only validators still run on client submit by default
+      { name: string },
+      StandardSchemaV1Issue,
+      StandardSchemaV1Issue
+    >
+    type FifthResult = FormValidatorMeta<
+      // explicit runOnSubmit keeps the server-triggered validator on client submit
+      { name: string },
+      StandardSchemaV1Issue,
+      StandardSchemaV1Issue
+    >
+    type SixthResult = FormValidatorMeta<
+      // a mixed client/server validator keeps the normal client submit default
+      { name: string },
+      StandardSchemaV1Issue,
+      StandardSchemaV1Issue
+    >
 
     type Metas = ToFormValidatorMetas<typeof vs>
 
-    expectTypeOf<Metas['length']>().toEqualTypeOf<3>()
+    expectTypeOf<Metas['length']>().toEqualTypeOf<6>()
     expectTypeOf<Metas[0]>().toEqualTypeOf<FirstResult>()
     expectTypeOf<Metas[1]>().toEqualTypeOf<SecondResult>()
     expectTypeOf<Metas[2]>().toEqualTypeOf<ThirdResult>()
+    expectTypeOf<Metas[3]>().toEqualTypeOf<FourthResult>()
+    expectTypeOf<Metas[4]>().toEqualTypeOf<FifthResult>()
+    expectTypeOf<Metas[5]>().toEqualTypeOf<SixthResult>()
   })
 
   it('should transform field validators', () => {

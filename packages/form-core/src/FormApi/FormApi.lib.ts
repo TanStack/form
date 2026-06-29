@@ -686,11 +686,6 @@ export class InternalFormApi<
       const validator = this.options.validators?.[i]
       if (!validator) continue
 
-      if (validator.runOnServer) {
-        eventErrorIndexes.push(i)
-        continue
-      }
-
       const runsOnEvent = validator.triggers.some((trigger) =>
         isValidationTriggerEnabled(trigger, {
           event,
