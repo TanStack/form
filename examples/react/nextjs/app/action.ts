@@ -6,7 +6,6 @@ import {
 } from '@tanstack/react-form'
 import { next } from '@tanstack/react-form-nextjs'
 import { formOpts } from './shared-code'
-import type { ServerFormState } from '@tanstack/react-form'
 
 const { createServerValidate } = serverValidateHelper({
   framework: next({
@@ -18,14 +17,7 @@ const { createServerValidate } = serverValidateHelper({
 
 const serverValidate = createServerValidate(formOpts)
 
-type FormValues = typeof formOpts.defaultValues
-type FormValidators = NonNullable<typeof formOpts.validators>
-type ActionState = ServerFormState<FormValues, FormValidators>
-
-export default async function someAction(
-  _prev: unknown,
-  formData: FormData,
-): Promise<ActionState> {
+export default async function someAction(_prev: unknown, formData: FormData) {
   const result = await serverValidate(formData)
 
   if (!result.success) {

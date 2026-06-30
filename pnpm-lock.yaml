@@ -572,7 +572,7 @@ importers:
         specifier: ^7.3.1
         version: 7.3.3(@types/node@25.9.5)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0)
 
-  examples/react/my-app:
+  examples/react/nextjs:
     dependencies:
       '@tanstack/react-form':
         specifier: workspace:*

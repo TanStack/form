@@ -67,7 +67,10 @@ export interface FormOptions<
     ToFormValidatorMetas<TFormValidators>,
     SubmitMeta<ValidationIssue, ValidationIssue>
   >
-  serverState?: ServerFormState<TFormData, TFormValidators> | null
+  serverState?: ServerFormState<
+    NoInfer<TFormData>,
+    NoInfer<TFormValidators>
+  > | null
   onSubmit?: (
     context: FormSubmitContext<
       TFormData,
