@@ -1,5 +1,6 @@
 import { describe, expectTypeOf, it } from 'vitest'
 import { z } from 'zod'
+import { type } from 'arktype'
 import { FieldApi, FormApi, standardSchemaValidators } from '../src/index'
 import type { StandardSchemaV1Issue } from '../src/index'
 
@@ -77,6 +78,27 @@ describe('standard schema validator', () => {
     >()
     expectTypeOf(fieldSourceError).toEqualTypeOf<
       StandardSchemaV1Issue[] | undefined
+    >()
+  })
+
+  it('Should infer StandardSchemaV1Issue[] for arktype field validators (issue #2221)', () => {
+    const schema = type({ firstName: 'string>0' })
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onChange: type('string>0'),
+      },
+    })
+
+    expectTypeOf(field.getMeta().errorMap.onChange).toEqualTypeOf<
+      undefined | StandardSchemaV1Issue[]
     >()
   })
 

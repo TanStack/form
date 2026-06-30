@@ -452,17 +452,17 @@ export type UnwrapFieldValidateOrFn<
             : undefined
           : undefined
       : never)
-  | ([TValidateOrFn] extends [FieldValidateFn<any, any, any>]
-      ? ReturnType<TValidateOrFn>
-      : [TValidateOrFn] extends [StandardSchemaV1<any, any>]
-        ? // TODO: Check if `disableErrorFlat` is enabled, if so, return StandardSchemaV1Issue[][]
-          StandardSchemaV1Issue[]
+  | ([TValidateOrFn] extends [StandardSchemaV1<any, any>]
+      ? // TODO: Check if `disableErrorFlat` is enabled, if so, return StandardSchemaV1Issue[][]
+        StandardSchemaV1Issue[]
+      : [TValidateOrFn] extends [FieldValidateFn<any, any, any>]
+        ? ReturnType<TValidateOrFn>
         : undefined)
-  | ([TValidateOrFn] extends [FormGroupValidateFn<any, any, any>]
-      ? ReturnType<TValidateOrFn>
-      : [TValidateOrFn] extends [StandardSchemaV1<any, any>]
-        ? // TODO: Check if `disableErrorFlat` is enabled, if so, return StandardSchemaV1Issue[][]
-          StandardSchemaV1Issue[]
+  | ([TValidateOrFn] extends [StandardSchemaV1<any, any>]
+      ? // TODO: Check if `disableErrorFlat` is enabled, if so, return StandardSchemaV1Issue[][]
+        StandardSchemaV1Issue[]
+      : [TValidateOrFn] extends [FormGroupValidateFn<any, any, any>]
+        ? ReturnType<TValidateOrFn>
         : undefined)
 
 /**
