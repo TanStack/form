@@ -1,7 +1,6 @@
 'use server'
 
 import {
-  ServerValidateError,
   initialServerFormState,
   serverValidateHelper,
 } from '@tanstack/react-form'
@@ -27,16 +26,13 @@ export default async function someAction(
   _prev: unknown,
   formData: FormData,
 ): Promise<ActionState> {
-  try {
-    const validatedData = await serverValidate(formData)
-    console.log('validatedData', validatedData)
-  } catch (error) {
-    if (error instanceof ServerValidateError) {
-      return error.serverState as ActionState
-    }
+  const result = await serverValidate(formData)
 
-    throw error
+  if (!result.success) {
+    return result.serverState
   }
+
+  console.log('validatedData', result.values, result.schemaOutputs)
 
   return initialServerFormState
 }

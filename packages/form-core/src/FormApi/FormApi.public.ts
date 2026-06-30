@@ -16,7 +16,7 @@ import type { StandardSchemaV1Issue } from '../standardSchema.public'
 import type { FormListeners } from '../listeners.public'
 import type { FormApiArrayMethods } from './FormApiArrayMethods.types.public'
 import type { FormApiFieldMethods } from './FormApiFieldMethods.types.public'
-import type { ServerFormState } from '../serverValidate.public'
+import type { ServerFormState } from '../ssr.public'
 
 declare const onSubmitErrorBrand: unique symbol
 

@@ -4,7 +4,7 @@ import type {
   FormOptions,
   FormValidators,
   ServerValidateFrameworkPlugin,
-  ServerValidateSuccess,
+  ServerValidateResult,
 } from '@tanstack/form-core'
 import type { FormDataInfo } from 'decode-formdata'
 
@@ -13,7 +13,7 @@ export type NextServerValidate<
   TFormValidators extends FormValidators<TFormData>,
 > = (
   formData: FormData,
-) => Promise<ServerValidateSuccess<TFormData, TFormValidators>>
+) => Promise<ServerValidateResult<TFormData, TFormValidators>>
 
 export interface NextServerValidateOptions {
   info?: FormDataInfo

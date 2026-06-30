@@ -1,16 +1,13 @@
 import { describe, expectTypeOf, it } from 'vitest'
 import { z } from 'zod'
-import {
-  formOptions,
-  serverValidateHelper,
-  validateServerValues,
-} from '../src'
+import { formOptions, serverValidateHelper, validateServerValues } from '../src'
 import type {
   FieldValidators,
   FormOptions,
   FormApi,
   FormGroupValidators,
   FormValidators,
+  ServerFormState,
   ServerValidateFrameworkPlugin,
 } from '../src'
 
@@ -32,9 +29,42 @@ describe('server validation types', () => {
 
     const result = await validateServerValues(options, { name: 'Tony' })
 
+    if (!result.success) {
+      throw new Error('Expected server validation to succeed')
+    }
+
     expectTypeOf(result.values).toEqualTypeOf<{ name: string }>()
     expectTypeOf(result.schemaOutputs).toEqualTypeOf<
       readonly [{ nameLength: number }]
+    >()
+  })
+
+  it('preserves validator generics on failed server validation results', async () => {
+    const options = formOptions({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          run: () => ({
+            fields: {
+              name: 'Name is required',
+            },
+          }),
+          triggers: ['server'],
+        },
+      ],
+    })
+
+    const result = await validateServerValues(options, { name: '' })
+
+    if (result.success) {
+      throw new Error('Expected server validation to fail')
+    }
+
+    type Values = { name: string }
+    type Validators = NonNullable<typeof options.validators>
+
+    expectTypeOf(result.serverState).toEqualTypeOf<
+      ServerFormState<Values, Validators>
     >()
   })
 

@@ -17,7 +17,16 @@ export const ClientComp = () => {
   })
 
   return (
-    <form action={action} onSubmit={() => void form.handleSubmit()}>
+    <form
+      action={action}
+      onSubmit={async (e) => {
+        e.preventDefault()
+        const errors = await form.handleSubmit()
+        if (errors.length === 0) {
+          e.target.submit()
+        }
+      }}
+    >
       <form.Field name="firstName">
         {(field) => {
           return (

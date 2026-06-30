@@ -1,11 +1,10 @@
 import { decode } from 'decode-formdata'
-import { ServerValidateError, validateServerValues } from '@tanstack/form-core'
+import { validateServerValues } from '@tanstack/form-core'
 import type {
   FormOptions,
   FormValidators,
-  ServerFormState,
   ServerValidateFrameworkPlugin,
-  ServerValidateSuccess,
+  ServerValidateResult,
 } from '@tanstack/form-core'
 import type { FormDataInfo } from 'decode-formdata'
 
@@ -17,9 +16,7 @@ export interface RemixServerValidateContext {
 export type RemixServerValidateResult<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
-> =
-  | ServerValidateSuccess<TFormData, TFormValidators>
-  | ServerFormState<TFormData, TFormValidators>
+> = ServerValidateResult<TFormData, TFormValidators>
 
 export type RemixServerValidateAction<
   TFormData,
@@ -47,12 +44,6 @@ function decodeFormData<TFormData>(
   return (info ? decode(formData, info) : decode(formData)) as TFormData
 }
 
-function isServerValidateError(
-  error: unknown,
-): error is ServerValidateError<any, any> {
-  return error instanceof ServerValidateError
-}
-
 export function remix(
   options: RemixServerValidateOptions = {},
 ): ServerValidateFrameworkPlugin<RemixCreateServerValidate> {
@@ -72,15 +63,7 @@ export function remix(
           context.info ?? options.info,
         )
 
-        try {
-          return await validateServerValues(formOptions, values)
-        } catch (error) {
-          if (isServerValidateError(error)) {
-            return error.serverState
-          }
-
-          throw error
-        }
+        return validateServerValues(formOptions, values)
       }
     },
   }

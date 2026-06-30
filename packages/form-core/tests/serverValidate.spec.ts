@@ -2,11 +2,46 @@ import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
 import { InternalFormApi } from '../src/FormApi/FormApi.lib'
 import {
-  ServerValidateError,
   formOptions,
   initialServerFormState,
   validateServerValues,
 } from '../src'
+import type {
+  FormValidators,
+  ServerValidateFailure,
+  ServerValidateResult,
+  ServerValidateSuccess,
+} from '../src'
+
+function expectServerValidateSuccess<
+  TFormData,
+  TFormValidators extends FormValidators<TFormData>,
+>(
+  result: ServerValidateResult<TFormData, TFormValidators>,
+): ServerValidateSuccess<TFormData, TFormValidators> {
+  expect(result.success).toBe(true)
+
+  if (!result.success) {
+    throw new Error('Expected server validation to succeed')
+  }
+
+  return result
+}
+
+function expectServerValidateFailure<
+  TFormData,
+  TFormValidators extends FormValidators<TFormData>,
+>(
+  result: ServerValidateResult<TFormData, TFormValidators>,
+): ServerValidateFailure<TFormData, TFormValidators> {
+  expect(result.success).toBe(false)
+
+  if (result.success) {
+    throw new Error('Expected server validation to fail')
+  }
+
+  return result
+}
 
 describe('server validation', () => {
   it('runs validators explicitly configured for server validation only', async () => {
@@ -26,9 +61,9 @@ describe('server validation', () => {
       ],
     })
 
-    await expect(
-      validateServerValues(options, { name: '' }),
-    ).rejects.toBeInstanceOf(ServerValidateError)
+    expectServerValidateFailure(
+      await validateServerValues(options, { name: '' }),
+    )
 
     expect(changeValidator).not.toHaveBeenCalled()
     expect(serverValidator).toHaveBeenCalledOnce()
@@ -93,9 +128,9 @@ describe('server validation', () => {
       ],
     })
 
-    await expect(
-      validateServerValues(options, { name: '' }),
-    ).rejects.toBeInstanceOf(ServerValidateError)
+    expectServerValidateFailure(
+      await validateServerValues(options, { name: '' }),
+    )
 
     const form = new InternalFormApi(options)
     await expect(form.validate('change')).resolves.toEqual(['change error'])
@@ -121,13 +156,15 @@ describe('server validation', () => {
       ],
     })
 
-    const result = await validateServerValues(options, { name: 'Tony' })
+    const result = expectServerValidateSuccess(
+      await validateServerValues(options, { name: 'Tony' }),
+    )
 
     expect(result.values).toEqual({ name: 'Tony' })
     expect(result.schemaOutputs).toEqual([{ nameLength: 4 }])
   })
 
-  it('throws a serializable server state when validation fails', async () => {
+  it('returns a serializable server state when validation fails', async () => {
     const options = formOptions({
       defaultValues: { name: '' },
       validators: [
@@ -143,29 +180,24 @@ describe('server validation', () => {
       ],
     })
 
-    try {
-      await validateServerValues(options, { name: '' })
-      throw new Error('Expected server validation to fail')
-    } catch (error) {
-      expect(error).toBeInstanceOf(ServerValidateError)
+    const result = expectServerValidateFailure(
+      await validateServerValues(options, { name: '' }),
+    )
 
-      const serverError = error as ServerValidateError<any, any>
-
-      expect(serverError.serverState).toMatchObject({
-        values: { name: '' },
-        submissionAttempts: 1,
-      })
-      expect(serverError.serverState.validationResults).toHaveLength(1)
-      expect(serverError.serverState.validationResults[0]).toMatchObject({
-        validatorIndex: 0,
-        result: {
-          form: 'Form error',
-          fields: {
-            name: 'Name is required',
-          },
+    expect(result.serverState).toMatchObject({
+      values: { name: '' },
+      submissionAttempts: 1,
+    })
+    expect(result.serverState.validationResults).toHaveLength(1)
+    expect(result.serverState.validationResults[0]).toMatchObject({
+      validatorIndex: 0,
+      result: {
+        form: 'Form error',
+        fields: {
+          name: 'Name is required',
         },
-      })
-    }
+      },
+    })
   })
 
   it('hydrates posted values and server errors into form state', async () => {
@@ -184,12 +216,9 @@ describe('server validation', () => {
       ],
     })
 
-    let serverState
-    try {
-      await validateServerValues(options, { name: '', age: 42 })
-    } catch (error) {
-      serverState = (error as ServerValidateError<any, any>).serverState
-    }
+    const { serverState } = expectServerValidateFailure(
+      await validateServerValues(options, { name: '', age: 42 }),
+    )
 
     const form = new InternalFormApi({
       ...options,
@@ -202,6 +231,160 @@ describe('server validation', () => {
     expect(field.errors).toEqual([{ message: 'Server name error' }])
     expect(form.state.submissionAttempts).toBe(1)
     expect(form.state.canSubmit).toBe(false)
+  })
+
+  it('treats server state as an authoritative form snapshot', async () => {
+    const options = formOptions({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          run: () => 'Client error',
+          triggers: ['change'],
+        },
+        {
+          run: () => ({
+            form: 'Server form error',
+            fields: {
+              name: 'Server name error',
+            },
+          }),
+          triggers: ['server'],
+        },
+      ],
+    })
+    const form = new InternalFormApi(options)
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+
+    form.setFieldValue('name', 'Client value', {
+      fieldApiOverride: field,
+      causeValidation: false,
+    })
+    await form.validate('change')
+
+    expect(form.state.values).toEqual({ name: 'Client value' })
+    expect(form.state.isDirty).toBe(true)
+    expect(form.state.isTouched).toBe(true)
+    expect(form.state.errors).toEqual([{ message: 'Client error' }])
+
+    const { serverState } = expectServerValidateFailure(
+      await validateServerValues(options, { name: 'Server value' }),
+    )
+
+    form._update({
+      ...options,
+      serverState,
+    } as never)
+
+    expect(form.state.values).toEqual({ name: 'Server value' })
+    expect(form.state.errors).toEqual([{ message: 'Server form error' }])
+    expect(form.state.isDirty).toBe(false)
+    expect(form.state.isTouched).toBe(false)
+    expect(form.state.submissionAttempts).toBe(1)
+    expect(field.errors).toEqual([{ message: 'Server name error' }])
+    expect(field.meta.isDirty).toBe(false)
+    expect(field.meta.isTouched).toBe(false)
+    expect(field.meta.isDefaultValue).toBe(true)
+  })
+
+  it('treats empty server state as an authoritative reset', async () => {
+    const options = formOptions({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          run: () => ({
+            fields: {
+              name: 'Server name error',
+            },
+          }),
+          triggers: ['server'],
+        },
+      ],
+    })
+
+    const { serverState } = expectServerValidateFailure(
+      await validateServerValues(options, { name: 'Server value' }),
+    )
+
+    const form = new InternalFormApi({
+      ...options,
+      serverState,
+    } as never)
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+
+    expect(form.state.values).toEqual({ name: 'Server value' })
+    expect(field.errors).toEqual([{ message: 'Server name error' }])
+
+    field.handleChange('Client edit', { causeValidation: false })
+
+    expect(form.state.values).toEqual({ name: 'Client edit' })
+    expect(form.state.isDirty).toBe(true)
+
+    form._update({
+      ...options,
+      serverState: {
+        ...initialServerFormState,
+      },
+    } as never)
+
+    expect(form.state.values).toEqual({ name: '' })
+    expect(form.state.errors).toEqual([])
+    expect(form.state.isDirty).toBe(false)
+    expect(form.state.isTouched).toBe(false)
+    expect(form.state.submissionAttempts).toBe(0)
+    expect(field.errors).toEqual([])
+    expect(field.meta.isDefaultValue).toBe(true)
+  })
+
+  it('clears server errors on field events like submit errors', async () => {
+    const options = formOptions({
+      defaultValues: { name: '', email: '' },
+      validators: [
+        {
+          run: () => ({
+            form: 'Server form error',
+            fields: {
+              name: 'Server name error',
+              email: 'Server email error',
+            },
+          }),
+          triggers: ['server'],
+        },
+      ],
+    })
+
+    const { serverState } = expectServerValidateFailure(
+      await validateServerValues(options, { name: '', email: '' }),
+    )
+
+    const changeForm = new InternalFormApi({
+      ...options,
+      serverState,
+    } as never)
+    const changeNameField = changeForm._getOrCreateFieldApi({ name: 'name' })
+    const changeEmailField = changeForm._getOrCreateFieldApi({ name: 'email' })
+
+    expect(changeForm.state.errors).toEqual([{ message: 'Server form error' }])
+    expect(changeNameField.errors).toEqual([{ message: 'Server name error' }])
+    expect(changeEmailField.errors).toEqual([{ message: 'Server email error' }])
+
+    changeNameField.handleChange('Alice')
+
+    expect(changeForm.state.errors).toEqual([])
+    expect(changeNameField.errors).toEqual([])
+    expect(changeEmailField.errors).toEqual([{ message: 'Server email error' }])
+
+    const blurForm = new InternalFormApi({
+      ...options,
+      serverState,
+    } as never)
+    const blurNameField = blurForm._getOrCreateFieldApi({ name: 'name' })
+    const blurEmailField = blurForm._getOrCreateFieldApi({ name: 'email' })
+
+    blurNameField.handleBlur()
+
+    expect(blurForm.state.errors).toEqual([])
+    expect(blurNameField.errors).toEqual([])
+    expect(blurEmailField.errors).toEqual([{ message: 'Server email error' }])
   })
 
   it('clears stale server errors when a new server state arrives', async () => {
@@ -219,12 +402,9 @@ describe('server validation', () => {
       ],
     })
 
-    let serverState
-    try {
-      await validateServerValues(options, { name: '' })
-    } catch (error) {
-      serverState = (error as ServerValidateError<any, any>).serverState
-    }
+    const { serverState } = expectServerValidateFailure(
+      await validateServerValues(options, { name: '' }),
+    )
 
     const form = new InternalFormApi({
       ...options,

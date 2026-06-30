@@ -31,6 +31,7 @@ import {
 } from '../validation.lib'
 import { runFormListenerPipeline } from '../listeners.lib'
 import { devtools } from '../devtoolsBridge.lib'
+import { applyServerState } from '../ssr.lib'
 import { runSubmissionProcess } from './handleSubmit.lib'
 import { ArrayMethods } from './array-methods.lib'
 import {
@@ -82,7 +83,7 @@ import type {
 } from '../validation.public'
 import type { FormListenerTriggers } from '../listeners.public'
 import type { InternalFormGroupApi } from '../FormGroupApi/FormGroupApi.lib'
-import type { ServerFormState } from '../serverValidate.public'
+import type { ServerFormState } from '../ssr.public'
 
 type AnyFormGroupApi = InternalFormGroupApi<any, any, any, any, any, any>
 
@@ -292,7 +293,11 @@ export class InternalFormApi<
       compare: compareFormStateSnapshots,
     })
 
-    this._applyServerState(this._options.serverState ?? null)
+    applyServerState(
+      this,
+      this._options.serverState ?? null,
+      options.defaultValues,
+    )
     this._runMountValidation()
   }
 
@@ -360,39 +365,6 @@ export class InternalFormApi<
       clearFieldEventErrors: (field, indexes, eventSource) =>
         this._clearFieldEventErrors(field, indexes, eventSource),
       reconcileErrorFields: true,
-    })
-  }
-
-  _applyServerState(
-    serverState: ServerFormState<TFormData, TFormValidators> | null,
-  ): void {
-    if (serverState === this._lastServerState) return
-
-    this._lastServerState = serverState
-    this._clearFormValidationSource('server')
-
-    if (!serverState) return
-    if (
-      serverState.values === undefined &&
-      serverState.validationResults.length === 0
-    ) {
-      return
-    }
-
-    this._defaultValueCache = null
-
-    batch(() => {
-      if (serverState.values !== undefined) {
-        this._atoms.values.set(serverState.values)
-      }
-
-      this._atoms.meta.submissionAttempts.set((attempts) =>
-        Math.max(attempts, serverState.submissionAttempts),
-      )
-
-      for (const result of serverState.validationResults) {
-        this._processValidationResult(result, 'server')
-      }
     })
   }
 
@@ -483,7 +455,11 @@ export class InternalFormApi<
       })
     }
 
-    this._applyServerState(this._options.serverState ?? null)
+    applyServerState(
+      this,
+      this._options.serverState ?? null,
+      options.defaultValues,
+    )
 
     // TODO plans
     // form.update(B) => A !== B -> Queue async update
@@ -637,6 +613,7 @@ export class InternalFormApi<
     options: ResolvedInternalFieldUpdateOptions,
   ) {
     this._clearEventErrors(field, 'submit', 'change')
+    this._clearEventErrors(field, 'server', 'change')
     this._clearEventErrors(field, 'mount', 'change')
 
     const { markAsDirty } = options
