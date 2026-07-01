@@ -89,9 +89,7 @@ function resetToServerState<TFormData>(
     form._atoms.values.set(values)
     form._atoms.meta.isDirty.set(false)
     form._atoms.meta.touchedFieldCount.set(0)
-    form._atoms.meta.formErrors.set(
-      createInitialFormErrorMeta(validatorCount),
-    )
+    form._atoms.meta.formErrors.set(createInitialFormErrorMeta(validatorCount))
     form._atoms.meta.fieldErrors.set(createInitialFieldErrors(validatorCount))
     form._atoms.meta.errorFields.set(new Set<AnyInternalFieldApi>())
     form._atoms.meta.fieldValidationCount.set(0)

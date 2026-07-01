@@ -26,4 +26,3 @@ export function getInternalTanStackCookie():
 export function deleteInternalTanStackCookie(): void {
   deleteCookie(INTERNALS_COOKIE_NAME)
 }
-

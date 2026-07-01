@@ -222,18 +222,12 @@ describe('server validation types', () => {
         _options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
         _pluginOptions?: { field: keyof TFormData },
       ) => {
-        return Object.assign(
-          (values: TFormData) => Promise.resolve(values),
-          {
-            getState: () =>
-              Promise.resolve(
-                null as never as ServerFormState<
-                  TFormData,
-                  TFormValidators
-                >,
-              ),
-          },
-        )
+        return Object.assign((values: TFormData) => Promise.resolve(values), {
+          getState: () =>
+            Promise.resolve(
+              null as never as ServerFormState<TFormData, TFormValidators>,
+            ),
+        })
       },
     } satisfies ServerValidateFrameworkPlugin
 

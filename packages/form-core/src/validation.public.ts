@@ -158,10 +158,7 @@ export function createValidators<
 export type ValidationTrigger = 'change' | 'blur' | 'submit'
 export type ServerValidationTrigger = 'server'
 export type ClientValidationTrigger = ValidationTrigger
-export type ConfigurableValidationTrigger = Exclude<
-  ValidationTrigger,
-  'submit'
->
+export type ConfigurableValidationTrigger = Exclude<ValidationTrigger, 'submit'>
 export type ValidatorTrigger = ConfigurableValidationTrigger
 
 export interface ErrorVisibilitySubfieldsMeta {
@@ -377,9 +374,7 @@ export type ParseFormIssuesFn<TFormData> = (
   issues: ReadonlyArray<StandardSchemaV1Issue>,
 ) => ParsedStandardSchemaIssues<TFormData>
 
-export interface FormValidatorContext<
-  in out TFormData,
-> {
+export interface FormValidatorContext<in out TFormData> {
   event: ValidationTrigger | ServerValidationTrigger
   signal: AbortSignal
   formApi: FormApi<TFormData, any, any> | undefined
@@ -427,11 +422,9 @@ export type ServerFormValidatorFn<TFormData> = ValidatorFn<
   FormValidateResult<TFormData>
 >
 
-export interface FormValidator<
-  in out TFormData,
-> extends BaseValidator<
-    FormValidatorFn<TFormData> | StandardSchemaV1<TFormData, any>
-  > {
+export interface FormValidator<in out TFormData> extends BaseValidator<
+  FormValidatorFn<TFormData> | StandardSchemaV1<TFormData, any>
+> {
   runOnSubmit?: boolean | ValidationPredicateFn<TFormData, TFormData>
   runOnMount?: boolean
   triggerDebounceMs?: number | ValidationDebounceFn<TFormData, TFormData>
@@ -697,9 +690,8 @@ type ValidatorTriggers<TValidator> = TValidator extends {
     : never
   : never
 
-type HasServerTrigger<TValidator> = ServerValidationTrigger extends ValidatorTriggers<TValidator>
-  ? true
-  : false
+type HasServerTrigger<TValidator> =
+  ServerValidationTrigger extends ValidatorTriggers<TValidator> ? true : false
 
 type TryGetFormError<TValidator> = TValidator extends {
   readonly run: StandardSchemaV1<any, any>
@@ -776,7 +768,9 @@ export type ToFormValidatorMetas<TFormValidators extends FormValidators<any>> =
 type MappedServerSchemaOutputs<
   in out TFormValidators extends FormValidators<any>,
 > = {
-  [K in keyof TFormValidators]: HasServerTrigger<TFormValidators[K]> extends true
+  [K in keyof TFormValidators]: HasServerTrigger<
+    TFormValidators[K]
+  > extends true
     ? TryGetSchemaOutput<TFormValidators[K]>
     : undefined
 }

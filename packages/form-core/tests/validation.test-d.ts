@@ -222,8 +222,7 @@ describe('createErrorMap', () => {
 
     expectTypeOf(errors).toEqualTypeOf<ValidationErrorMap<AggregateFormData>>()
     expectTypeOf(errors.toResult()).toEqualTypeOf<
-      ValidationAggregateError<AggregateFormData>
-      | undefined
+      ValidationAggregateError<AggregateFormData> | undefined
     >()
 
     errors.form = 'Form error'
