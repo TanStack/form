@@ -9,7 +9,7 @@ title: createValidators
 function createValidators<TFormData, TContextValue, TOptions>(options): <TRuns>(...runs) => ValidatorsFromOptionsAndRuns<TFormData, TContextValue, TOptions, TRuns>;
 ```
 
-Defined in: [validation.public.ts:116](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L116)
+Defined in: [packages/form-core/src/validation.public.ts:131](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L131)
 
 ## Type Parameters
 
@@ -23,7 +23,7 @@ Defined in: [validation.public.ts:116](https://github.com/TanStack/form-v2/blob/
 
 ### TOptions
 
-`TOptions` *extends* readonly \[[`ValidatorOptions`](../type-aliases/ValidatorOptions.md)\<`TFormData`, `TContextValue`\>, [`ValidatorOptions`](../type-aliases/ValidatorOptions.md)\<`TFormData`, `TContextValue`\>\] = readonly \[[`ValidatorOptions`](../type-aliases/ValidatorOptions.md)\<`TFormData`, `TContextValue`\>, [`ValidatorOptions`](../type-aliases/ValidatorOptions.md)\<`TFormData`, `TContextValue`\>\]
+`TOptions` *extends* readonly \[[`ValidatorOptions`](../type-aliases/ValidatorOptions.md)\<`TFormData`, `TContextValue`, [`ConfigurableValidationTrigger`](../type-aliases/ConfigurableValidationTrigger.md)\>, [`ValidatorOptions`](../type-aliases/ValidatorOptions.md)\<`TFormData`, `TContextValue`, [`ConfigurableValidationTrigger`](../type-aliases/ConfigurableValidationTrigger.md)\>\] = readonly \[[`ValidatorOptions`](../type-aliases/ValidatorOptions.md)\<`TFormData`, `TContextValue`, [`ConfigurableValidationTrigger`](../type-aliases/ConfigurableValidationTrigger.md)\>, [`ValidatorOptions`](../type-aliases/ValidatorOptions.md)\<`TFormData`, `TContextValue`, [`ConfigurableValidationTrigger`](../type-aliases/ConfigurableValidationTrigger.md)\>\]
 
 ## Parameters
 

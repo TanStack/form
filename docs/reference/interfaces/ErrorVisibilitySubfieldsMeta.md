@@ -5,7 +5,7 @@ title: ErrorVisibilitySubfieldsMeta
 
 # Interface: ErrorVisibilitySubfieldsMeta
 
-Defined in: [validation.public.ts:146](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L146)
+Defined in: [packages/form-core/src/validation.public.ts:164](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L164)
 
 ## Properties
 
@@ -15,7 +15,7 @@ Defined in: [validation.public.ts:146](https://github.com/TanStack/form-v2/blob/
 isEveryPristine: boolean;
 ```
 
-Defined in: [validation.public.ts:147](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L147)
+Defined in: [packages/form-core/src/validation.public.ts:165](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L165)
 
 ***
 
@@ -25,7 +25,7 @@ Defined in: [validation.public.ts:147](https://github.com/TanStack/form-v2/blob/
 isSomeDirty: boolean;
 ```
 
-Defined in: [validation.public.ts:148](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L148)
+Defined in: [packages/form-core/src/validation.public.ts:166](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L166)
 
 ***
 
@@ -35,7 +35,7 @@ Defined in: [validation.public.ts:148](https://github.com/TanStack/form-v2/blob/
 isSomeTouched: boolean;
 ```
 
-Defined in: [validation.public.ts:149](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L149)
+Defined in: [packages/form-core/src/validation.public.ts:167](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L167)
 
 ***
 
@@ -45,4 +45,4 @@ Defined in: [validation.public.ts:149](https://github.com/TanStack/form-v2/blob/
 isSomeValidating: boolean;
 ```
 
-Defined in: [validation.public.ts:150](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L150)
+Defined in: [packages/form-core/src/validation.public.ts:168](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L168)

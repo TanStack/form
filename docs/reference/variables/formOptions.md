@@ -9,4 +9,4 @@ title: formOptions
 const formOptions: FormOptionsApi;
 ```
 
-Defined in: [utils.public.ts:94](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/utils.public.ts#L94)
+Defined in: [packages/form-core/src/utils.public.ts:94](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/utils.public.ts#L94)

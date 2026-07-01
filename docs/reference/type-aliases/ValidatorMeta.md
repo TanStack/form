@@ -9,7 +9,7 @@ title: ValidatorMeta
 type ValidatorMeta<TSchemaSubmitOutput, TFormError, TFieldError> = FormValidatorMeta<TSchemaSubmitOutput, TFormError, TFieldError>;
 ```
 
-Defined in: [validation.public.ts:569](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L569)
+Defined in: [packages/form-core/src/validation.public.ts:671](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L671)
 
 ## Type Parameters
 

@@ -5,9 +5,14 @@ title: "@tanstack/form-core"
 
 # @tanstack/form-core
 
+## Classes
+
+- [~~ServerValidateError~~](classes/ServerValidateError.md)
+
 ## Interfaces
 
 - [BaseFieldMeta](interfaces/BaseFieldMeta.md)
+- [BaseValidator](interfaces/BaseValidator.md)
 - [ErrorVisibilityContext](interfaces/ErrorVisibilityContext.md)
 - [ErrorVisibilityFieldMeta](interfaces/ErrorVisibilityFieldMeta.md)
 - [ErrorVisibilityFieldState](interfaces/ErrorVisibilityFieldState.md)
@@ -50,10 +55,17 @@ title: "@tanstack/form-core"
 - [OriginalFieldMeta](interfaces/OriginalFieldMeta.md)
 - [ParsedStandardSchemaIssues](interfaces/ParsedStandardSchemaIssues.md)
 - [ReusableErrorVisibilityContext](interfaces/ReusableErrorVisibilityContext.md)
+- [ServerFormState](interfaces/ServerFormState.md)
+- [ServerFormValidatorContext](interfaces/ServerFormValidatorContext.md)
+- [ServerValidateFailure](interfaces/ServerValidateFailure.md)
+- [ServerValidateFrameworkPlugin](interfaces/ServerValidateFrameworkPlugin.md)
+- [ServerValidateSuccess](interfaces/ServerValidateSuccess.md)
+- [ServerValidationResult](interfaces/ServerValidationResult.md)
 - [StandardSchemaV1Issue](interfaces/StandardSchemaV1Issue.md)
 - [SubfieldsMeta](interfaces/SubfieldsMeta.md)
 - [SubmitMeta](interfaces/SubmitMeta.md)
 - [ValidationAggregateError](interfaces/ValidationAggregateError.md)
+- [ValidationErrorMap](interfaces/ValidationErrorMap.md)
 - [ValidationIssue](interfaces/ValidationIssue.md)
 - [ValidationPredicateContext](interfaces/ValidationPredicateContext.md)
 - [ValidationTriggerConfig](interfaces/ValidationTriggerConfig.md)
@@ -73,7 +85,10 @@ title: "@tanstack/form-core"
 - [ArrayFieldValue](type-aliases/ArrayFieldValue.md)
 - [BuiltInType](type-aliases/BuiltInType.md)
 - [ClearFieldValuesFn](type-aliases/ClearFieldValuesFn.md)
+- [ClientValidationTrigger](type-aliases/ClientValidationTrigger.md)
+- [ClientValidationTriggerOption](type-aliases/ClientValidationTriggerOption.md)
 - [ConfigurableValidationTrigger](type-aliases/ConfigurableValidationTrigger.md)
+- [CreateErrorMapFn](type-aliases/CreateErrorMapFn.md)
 - [CreateValidationErrorFn](type-aliases/CreateValidationErrorFn.md)
 - [DeepKeys](type-aliases/DeepKeys.md)
 - [DeepKeysWhereValueIncludes](type-aliases/DeepKeysWhereValueIncludes.md)
@@ -103,6 +118,7 @@ title: "@tanstack/form-core"
 - [FormStandardSchemaValidatorOutputs](type-aliases/FormStandardSchemaValidatorOutputs.md)
 - [FormValidateResult](type-aliases/FormValidateResult.md)
 - [FormValidationError](type-aliases/FormValidationError.md)
+- [FormValidationTriggerOption](type-aliases/FormValidationTriggerOption.md)
 - [FormValidatorData](type-aliases/FormValidatorData.md)
 - [FormValidatorFn](type-aliases/FormValidatorFn.md)
 - [FormValidatorMetas](type-aliases/FormValidatorMetas.md)
@@ -128,6 +144,12 @@ title: "@tanstack/form-core"
 - [ResetFieldFn](type-aliases/ResetFieldFn.md)
 - [ReusableErrorVisibility](type-aliases/ReusableErrorVisibility.md)
 - [ReusableErrorVisibilityState](type-aliases/ReusableErrorVisibilityState.md)
+- [ServerFormStandardSchemaValidatorOutputs](type-aliases/ServerFormStandardSchemaValidatorOutputs.md)
+- [ServerFormValidatorFn](type-aliases/ServerFormValidatorFn.md)
+- [ServerValidateFrameworkCreateServerValidate](type-aliases/ServerValidateFrameworkCreateServerValidate.md)
+- [ServerValidateResult](type-aliases/ServerValidateResult.md)
+- [ServerValidateRunner](type-aliases/ServerValidateRunner.md)
+- [ServerValidationTrigger](type-aliases/ServerValidationTrigger.md)
 - [SetFieldValueFn](type-aliases/SetFieldValueFn.md)
 - [StandardSchemaV1](type-aliases/StandardSchemaV1.md)
 - [SwapFieldValuesFn](type-aliases/SwapFieldValuesFn.md)
@@ -154,14 +176,20 @@ title: "@tanstack/form-core"
 - [ValidatorMeta](type-aliases/ValidatorMeta.md)
 - [ValidatorMetas](type-aliases/ValidatorMetas.md)
 - [ValidatorOptions](type-aliases/ValidatorOptions.md)
+- [ValidatorTrigger](type-aliases/ValidatorTrigger.md)
 - [ValidValidationResult](type-aliases/ValidValidationResult.md)
 
 ## Variables
 
 - [formOptions](variables/formOptions.md)
+- [initialServerFormState](variables/initialServerFormState.md)
 
 ## Functions
 
+- [createErrorMap](functions/createErrorMap.md)
 - [createErrorVisibility](functions/createErrorVisibility.md)
 - [createValidator](functions/createValidator.md)
 - [createValidators](functions/createValidators.md)
+- [isValidationErrorMap](functions/isValidationErrorMap.md)
+- [serverValidateHelper](functions/serverValidateHelper.md)
+- [validateServerValues](functions/validateServerValues.md)

@@ -9,7 +9,7 @@ title: RemoveFieldValueFn
 type RemoveFieldValueFn<TFormData> = <TFieldName>(arrayFieldName, index, options?) => void;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:74](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L74)
+Defined in: [packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts:74](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L74)
 
 ## Type Parameters
 

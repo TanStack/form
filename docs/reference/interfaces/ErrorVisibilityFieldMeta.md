@@ -5,7 +5,7 @@ title: ErrorVisibilityFieldMeta
 
 # Interface: ErrorVisibilityFieldMeta
 
-Defined in: [validation.public.ts:153](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L153)
+Defined in: [packages/form-core/src/validation.public.ts:171](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L171)
 
 ## Properties
 
@@ -15,7 +15,7 @@ Defined in: [validation.public.ts:153](https://github.com/TanStack/form-v2/blob/
 isBlurred: boolean;
 ```
 
-Defined in: [validation.public.ts:160](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L160)
+Defined in: [packages/form-core/src/validation.public.ts:178](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L178)
 
 ***
 
@@ -25,7 +25,7 @@ Defined in: [validation.public.ts:160](https://github.com/TanStack/form-v2/blob/
 isDefaultValue: boolean;
 ```
 
-Defined in: [validation.public.ts:159](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L159)
+Defined in: [packages/form-core/src/validation.public.ts:177](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L177)
 
 ***
 
@@ -35,7 +35,7 @@ Defined in: [validation.public.ts:159](https://github.com/TanStack/form-v2/blob/
 isDirty: boolean;
 ```
 
-Defined in: [validation.public.ts:156](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L156)
+Defined in: [packages/form-core/src/validation.public.ts:174](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L174)
 
 ***
 
@@ -45,7 +45,7 @@ Defined in: [validation.public.ts:156](https://github.com/TanStack/form-v2/blob/
 isPristine: boolean;
 ```
 
-Defined in: [validation.public.ts:158](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L158)
+Defined in: [packages/form-core/src/validation.public.ts:176](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L176)
 
 ***
 
@@ -55,7 +55,7 @@ Defined in: [validation.public.ts:158](https://github.com/TanStack/form-v2/blob/
 isSelfDirty: boolean;
 ```
 
-Defined in: [validation.public.ts:157](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L157)
+Defined in: [packages/form-core/src/validation.public.ts:175](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L175)
 
 ***
 
@@ -65,7 +65,7 @@ Defined in: [validation.public.ts:157](https://github.com/TanStack/form-v2/blob/
 isSelfTouched: boolean;
 ```
 
-Defined in: [validation.public.ts:155](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L155)
+Defined in: [packages/form-core/src/validation.public.ts:173](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L173)
 
 ***
 
@@ -75,7 +75,7 @@ Defined in: [validation.public.ts:155](https://github.com/TanStack/form-v2/blob/
 isSelfValidating: boolean;
 ```
 
-Defined in: [validation.public.ts:162](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L162)
+Defined in: [packages/form-core/src/validation.public.ts:180](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L180)
 
 ***
 
@@ -85,7 +85,7 @@ Defined in: [validation.public.ts:162](https://github.com/TanStack/form-v2/blob/
 isTouched: boolean;
 ```
 
-Defined in: [validation.public.ts:154](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L154)
+Defined in: [packages/form-core/src/validation.public.ts:172](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L172)
 
 ***
 
@@ -95,7 +95,7 @@ Defined in: [validation.public.ts:154](https://github.com/TanStack/form-v2/blob/
 isValidating: boolean;
 ```
 
-Defined in: [validation.public.ts:161](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L161)
+Defined in: [packages/form-core/src/validation.public.ts:179](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L179)
 
 ***
 
@@ -105,4 +105,4 @@ Defined in: [validation.public.ts:161](https://github.com/TanStack/form-v2/blob/
 subfields: ErrorVisibilitySubfieldsMeta;
 ```
 
-Defined in: [validation.public.ts:163](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L163)
+Defined in: [packages/form-core/src/validation.public.ts:181](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L181)

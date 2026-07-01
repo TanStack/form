@@ -5,7 +5,7 @@ title: FieldApiOptions
 
 # Interface: FieldApiOptions\<TFieldData, TFieldName, TFieldValue, TFieldValidators, TGroupValidators, TFormData, TFormValidatorMetas, TSubmitReturn\>
 
-Defined in: [FieldApi/FieldApi.public.ts:247](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L247)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:247](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L247)
 
 ## Type Parameters
 
@@ -49,7 +49,7 @@ Defined in: [FieldApi/FieldApi.public.ts:247](https://github.com/TanStack/form-v
 optional errorBoundary: boolean;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:270](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L270)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:270](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L270)
 
 Route descendant field errors from form-level validation to this field.
 
@@ -61,7 +61,7 @@ Route descendant field errors from form-level validation to this field.
 optional errorVisibility: ErrorVisibility<TFormData, TFormValidatorMetas, TSubmitReturn>;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:262](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L262)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:262](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L262)
 
 ***
 
@@ -71,7 +71,7 @@ Defined in: [FieldApi/FieldApi.public.ts:262](https://github.com/TanStack/form-v
 optional listeners: FieldListeners<TFieldData, TFieldName, TFieldValue, ToFieldValidatorMetas<TFieldValidators>, TGroupValidators, TFormData, TFormValidatorMetas, TSubmitReturn>;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:272](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L272)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:272](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L272)
 
 ***
 
@@ -81,7 +81,7 @@ Defined in: [FieldApi/FieldApi.public.ts:272](https://github.com/TanStack/form-v
 name: TFieldName;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:261](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L261)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:261](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L261)
 
 ***
 
@@ -91,4 +91,4 @@ Defined in: [FieldApi/FieldApi.public.ts:261](https://github.com/TanStack/form-v
 optional validators: TFieldValidators;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:271](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L271)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:271](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L271)

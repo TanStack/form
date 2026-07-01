@@ -5,7 +5,7 @@ title: BaseFieldMeta
 
 # Interface: BaseFieldMeta
 
-Defined in: [FieldApi/FieldApi.public.ts:16](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L16)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:16](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L16)
 
 ## Extended by
 
@@ -19,7 +19,7 @@ Defined in: [FieldApi/FieldApi.public.ts:16](https://github.com/TanStack/form-v2
 isBlurred: boolean;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:19](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L19)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:19](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L19)
 
 ***
 
@@ -29,7 +29,7 @@ Defined in: [FieldApi/FieldApi.public.ts:19](https://github.com/TanStack/form-v2
 isDirty: boolean;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:18](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L18)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:18](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L18)
 
 ***
 
@@ -39,7 +39,7 @@ Defined in: [FieldApi/FieldApi.public.ts:18](https://github.com/TanStack/form-v2
 isTouched: boolean;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:17](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L17)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:17](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L17)
 
 ***
 
@@ -49,4 +49,4 @@ Defined in: [FieldApi/FieldApi.public.ts:17](https://github.com/TanStack/form-v2
 isValidating: boolean;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:20](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L20)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:20](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L20)

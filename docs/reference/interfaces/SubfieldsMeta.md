@@ -5,7 +5,7 @@ title: SubfieldsMeta
 
 # Interface: SubfieldsMeta
 
-Defined in: [FieldApi/FieldApi.public.ts:23](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L23)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:23](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L23)
 
 ## Properties
 
@@ -15,7 +15,7 @@ Defined in: [FieldApi/FieldApi.public.ts:23](https://github.com/TanStack/form-v2
 isAnyInvalid: boolean;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:25](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L25)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:25](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L25)
 
 ***
 
@@ -25,7 +25,7 @@ Defined in: [FieldApi/FieldApi.public.ts:25](https://github.com/TanStack/form-v2
 isEveryPristine: boolean;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:26](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L26)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:26](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L26)
 
 ***
 
@@ -35,7 +35,7 @@ Defined in: [FieldApi/FieldApi.public.ts:26](https://github.com/TanStack/form-v2
 isEveryValid: boolean;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:24](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L24)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:24](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L24)
 
 ***
 
@@ -45,7 +45,7 @@ Defined in: [FieldApi/FieldApi.public.ts:24](https://github.com/TanStack/form-v2
 isSomeDirty: boolean;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:27](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L27)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:27](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L27)
 
 ***
 
@@ -55,7 +55,7 @@ Defined in: [FieldApi/FieldApi.public.ts:27](https://github.com/TanStack/form-v2
 isSomeTouched: boolean;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:28](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L28)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:28](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L28)
 
 ***
 
@@ -65,4 +65,4 @@ Defined in: [FieldApi/FieldApi.public.ts:28](https://github.com/TanStack/form-v2
 isSomeValidating: boolean;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:29](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L29)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:29](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L29)

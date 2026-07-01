@@ -1,0 +1,34 @@
+---
+id: ServerValidateFrameworkPlugin
+title: ServerValidateFrameworkPlugin
+---
+
+# Interface: ServerValidateFrameworkPlugin\<TCreateServerValidate\>
+
+Defined in: [packages/form-core/src/ssr.public.ts:103](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L103)
+
+## Type Parameters
+
+### TCreateServerValidate
+
+`TCreateServerValidate` *extends* [`ServerValidateFrameworkCreateServerValidate`](../type-aliases/ServerValidateFrameworkCreateServerValidate.md) = [`ServerValidateFrameworkCreateServerValidate`](../type-aliases/ServerValidateFrameworkCreateServerValidate.md)
+
+## Properties
+
+### createServerValidate
+
+```ts
+createServerValidate: TCreateServerValidate;
+```
+
+Defined in: [packages/form-core/src/ssr.public.ts:108](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L108)
+
+***
+
+### id
+
+```ts
+id: `react-form-${string}`;
+```
+
+Defined in: [packages/form-core/src/ssr.public.ts:107](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L107)

@@ -9,4 +9,4 @@ title: FieldListenerTriggers
 type FieldListenerTriggers = FormListenerTriggers | "unmount";
 ```
 
-Defined in: [listeners.public.ts:12](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L12)
+Defined in: [packages/form-core/src/listeners.public.ts:12](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L12)

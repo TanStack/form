@@ -5,11 +5,7 @@ title: FormValidatorContext
 
 # Interface: FormValidatorContext\<TFormData\>
 
-Defined in: [validation.public.ts:298](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L298)
-
-## Extends
-
-- `BaseValidatorContext`\<`TFormData`\>
+Defined in: [packages/form-core/src/validation.public.ts:377](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L377)
 
 ## Type Parameters
 
@@ -19,35 +15,33 @@ Defined in: [validation.public.ts:298](https://github.com/TanStack/form-v2/blob/
 
 ## Properties
 
+### createErrorMap
+
+```ts
+createErrorMap: CreateErrorMapFn<TFormData>;
+```
+
+Defined in: [packages/form-core/src/validation.public.ts:384](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L384)
+
+***
+
 ### event
 
 ```ts
-event: ValidationTrigger;
+event: ValidationTrigger | "server";
 ```
 
-Defined in: [validation.public.ts:293](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L293)
-
-#### Inherited from
-
-```ts
-BaseValidatorContext.event
-```
+Defined in: [packages/form-core/src/validation.public.ts:378](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L378)
 
 ***
 
 ### formApi
 
 ```ts
-formApi: FormApi<TFormData, any, any>;
+formApi: FormApi<TFormData, any, any> | undefined;
 ```
 
-Defined in: [validation.public.ts:295](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L295)
-
-#### Inherited from
-
-```ts
-BaseValidatorContext.formApi
-```
+Defined in: [packages/form-core/src/validation.public.ts:380](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L380)
 
 ***
 
@@ -57,7 +51,7 @@ BaseValidatorContext.formApi
 parseIssues: ParseFormIssuesFn<TFormData>;
 ```
 
-Defined in: [validation.public.ts:303](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L303)
+Defined in: [packages/form-core/src/validation.public.ts:383](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L383)
 
 ***
 
@@ -67,13 +61,7 @@ Defined in: [validation.public.ts:303](https://github.com/TanStack/form-v2/blob/
 signal: AbortSignal;
 ```
 
-Defined in: [validation.public.ts:294](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L294)
-
-#### Inherited from
-
-```ts
-BaseValidatorContext.signal
-```
+Defined in: [packages/form-core/src/validation.public.ts:379](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L379)
 
 ***
 
@@ -83,7 +71,7 @@ BaseValidatorContext.signal
 optional triggerFieldApi: AnyFieldApi;
 ```
 
-Defined in: [validation.public.ts:301](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L301)
+Defined in: [packages/form-core/src/validation.public.ts:381](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L381)
 
 ***
 
@@ -93,4 +81,4 @@ Defined in: [validation.public.ts:301](https://github.com/TanStack/form-v2/blob/
 value: TFormData;
 ```
 
-Defined in: [validation.public.ts:302](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L302)
+Defined in: [packages/form-core/src/validation.public.ts:382](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L382)

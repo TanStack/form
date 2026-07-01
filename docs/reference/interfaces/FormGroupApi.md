@@ -5,7 +5,7 @@ title: FormGroupApi
 
 # Interface: FormGroupApi\<TFormData, TGroupName, TGroupValue, TGroupValidatorMetas, TFormValidatorMetas, TSubmitReturn\>
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:134](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L134)
+Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:134](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L134)
 
 ## Type Parameters
 
@@ -41,7 +41,7 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:134](https://github.com/TanStac
 atom: ReadonlyAtom<FormGroupState<TGroupValue, TGroupValidatorMetas>>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:153](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L153)
+Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:153](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L153)
 
 ***
 
@@ -51,7 +51,7 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:153](https://github.com/TanStac
 readonly form: FormApi<TFormData, TFormValidatorMetas, TSubmitReturn>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:142](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L142)
+Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:142](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L142)
 
 ***
 
@@ -61,7 +61,7 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:142](https://github.com/TanStac
 handleSubmit: () => Promise<FormGroupValidateResult<TGroupValue>[]>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:159](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L159)
+Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:159](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L159)
 
 #### Returns
 
@@ -75,7 +75,7 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:159](https://github.com/TanStac
 readonly name: TGroupName;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:143](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L143)
+Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:143](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L143)
 
 ***
 
@@ -85,7 +85,7 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:143](https://github.com/TanStac
 readonly options: FormGroupApiOptions<TFormData, TGroupName, TGroupValue, TGroupValidatorMetas, TFormValidatorMetas, TSubmitReturn>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:144](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L144)
+Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:144](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L144)
 
 ***
 
@@ -95,7 +95,7 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:144](https://github.com/TanStac
 reset: () => void;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:160](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L160)
+Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:160](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L160)
 
 #### Returns
 
@@ -109,7 +109,7 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:160](https://github.com/TanStac
 readonly state: FormGroupState<TGroupValue, TGroupValidatorMetas>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:154](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L154)
+Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:154](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L154)
 
 ***
 
@@ -119,7 +119,7 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:154](https://github.com/TanStac
 validate: (signal?) => Promise<FormGroupValidateResult<TGroupValue>[]>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:156](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L156)
+Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:156](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L156)
 
 #### Parameters
 
@@ -139,4 +139,4 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:156](https://github.com/TanStac
 readonly value: TGroupValue;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:155](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L155)
+Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:155](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L155)

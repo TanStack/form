@@ -9,7 +9,7 @@ title: MoveFieldValueFn
 type MoveFieldValueFn<TFormData> = <TFieldName>(arrayFieldName, fromIndex, toIndex, options?) => void;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:41](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L41)
+Defined in: [packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts:41](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L41)
 
 ## Type Parameters
 

@@ -9,7 +9,7 @@ title: UpdateFn
 type UpdateFn<TValue> = (previousValue) => TValue;
 ```
 
-Defined in: [types.public.ts:3](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/types.public.ts#L3)
+Defined in: [packages/form-core/src/types.public.ts:3](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/types.public.ts#L3)
 
 ## Type Parameters
 

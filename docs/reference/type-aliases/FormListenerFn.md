@@ -9,7 +9,7 @@ title: FormListenerFn
 type FormListenerFn<TFormData, TFormValidatorMetas, TSubmitReturn> = (context) => void;
 ```
 
-Defined in: [listeners.public.ts:68](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L68)
+Defined in: [packages/form-core/src/listeners.public.ts:68](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L68)
 
 ## Type Parameters
 

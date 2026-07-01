@@ -5,7 +5,7 @@ title: FieldListener
 
 # Interface: FieldListener\<TFieldData, TFieldName, TFieldValue, TFieldValidatorMetas, TGroupValidatorMetas, TFormData, TFormValidatorMetas, TSubmitReturn\>
 
-Defined in: [listeners.public.ts:145](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L145)
+Defined in: [packages/form-core/src/listeners.public.ts:145](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L145)
 
 ## Extends
 
@@ -53,7 +53,7 @@ Defined in: [listeners.public.ts:145](https://github.com/TanStack/form-v2/blob/m
 run: FieldListenerFn<TFieldName, TFieldValue, TFieldValidatorMetas, TGroupValidatorMetas, TFormData, TFormValidatorMetas, TSubmitReturn>;
 ```
 
-Defined in: [listeners.public.ts:155](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L155)
+Defined in: [packages/form-core/src/listeners.public.ts:155](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L155)
 
 ***
 
@@ -65,7 +65,7 @@ optional triggerDebounceMs:
 | ListenerDebounceFn<TFieldData, TFieldValue>;
 ```
 
-Defined in: [listeners.public.ts:54](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L54)
+Defined in: [packages/form-core/src/listeners.public.ts:54](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L54)
 
 The debounce time in milliseconds for validation triggers (change, blur).
 Does not affect submit events, which always execute immediately.
@@ -82,13 +82,13 @@ Does not affect submit events, which always execute immediately.
 
 ***
 
-### triggers?
+### triggers
 
 ```ts
-optional triggers: ListenerTriggerOption<FieldListenerTriggers, TFieldData, TFieldValue>[];
+triggers: ListenerTriggerOption<FieldListenerTriggers, TFieldData, TFieldValue>[];
 ```
 
-Defined in: [listeners.public.ts:55](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L55)
+Defined in: [packages/form-core/src/listeners.public.ts:55](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L55)
 
 #### Inherited from
 
@@ -102,4 +102,4 @@ Defined in: [listeners.public.ts:55](https://github.com/TanStack/form-v2/blob/ma
 optional watchFields: DeepKeys<TFieldData>[];
 ```
 
-Defined in: [listeners.public.ts:164](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L164)
+Defined in: [packages/form-core/src/listeners.public.ts:164](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L164)

@@ -9,7 +9,7 @@ title: ResetFieldFn
 type ResetFieldFn<TFormData> = <TDeepKeys>(DeepKeys) => void;
 ```
 
-Defined in: [FormApi/FormApiFieldMethods.types.public.ts:18](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L18)
+Defined in: [packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts:18](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L18)
 
 ## Type Parameters
 

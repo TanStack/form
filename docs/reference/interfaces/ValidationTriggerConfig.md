@@ -3,9 +3,9 @@ id: ValidationTriggerConfig
 title: ValidationTriggerConfig
 ---
 
-# Interface: ValidationTriggerConfig\<TFormData, TValue\>
+# Interface: ValidationTriggerConfig\<TFormData, TValue, TTrigger\>
 
-Defined in: [validation.public.ts:255](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L255)
+Defined in: [packages/form-core/src/validation.public.ts:273](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L273)
 
 ## Type Parameters
 
@@ -17,15 +17,19 @@ Defined in: [validation.public.ts:255](https://github.com/TanStack/form-v2/blob/
 
 `TValue`
 
+### TTrigger
+
+`TTrigger` *extends* [`ValidatorTrigger`](../type-aliases/ValidatorTrigger.md) = [`ValidatorTrigger`](../type-aliases/ValidatorTrigger.md)
+
 ## Properties
 
 ### trigger
 
 ```ts
-trigger: ConfigurableValidationTrigger;
+trigger: TTrigger;
 ```
 
-Defined in: [validation.public.ts:256](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L256)
+Defined in: [packages/form-core/src/validation.public.ts:278](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L278)
 
 ***
 
@@ -37,4 +41,4 @@ optional when:
 | ValidationPredicateFn<TFormData, TValue>;
 ```
 
-Defined in: [validation.public.ts:257](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L257)
+Defined in: [packages/form-core/src/validation.public.ts:279](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L279)

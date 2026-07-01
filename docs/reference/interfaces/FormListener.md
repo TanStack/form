@@ -5,7 +5,7 @@ title: FormListener
 
 # Interface: FormListener\<TFormData, TFormValidatorMetas, TSubmitReturn\>
 
-Defined in: [listeners.public.ts:78](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L78)
+Defined in: [packages/form-core/src/listeners.public.ts:78](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L78)
 
 ## Extends
 
@@ -33,7 +33,7 @@ Defined in: [listeners.public.ts:78](https://github.com/TanStack/form-v2/blob/ma
 run: FormListenerFn<TFormData, TFormValidatorMetas, TSubmitReturn>;
 ```
 
-Defined in: [listeners.public.ts:83](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L83)
+Defined in: [packages/form-core/src/listeners.public.ts:83](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L83)
 
 ***
 
@@ -45,7 +45,7 @@ optional triggerDebounceMs:
 | ListenerDebounceFn<TFormData, TFormData>;
 ```
 
-Defined in: [listeners.public.ts:54](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L54)
+Defined in: [packages/form-core/src/listeners.public.ts:54](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L54)
 
 The debounce time in milliseconds for validation triggers (change, blur).
 Does not affect submit events, which always execute immediately.
@@ -62,13 +62,13 @@ Does not affect submit events, which always execute immediately.
 
 ***
 
-### triggers?
+### triggers
 
 ```ts
-optional triggers: ListenerTriggerOption<FormListenerTriggers, TFormData, TFormData>[];
+triggers: ListenerTriggerOption<FormListenerTriggers, TFormData, TFormData>[];
 ```
 
-Defined in: [listeners.public.ts:55](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L55)
+Defined in: [packages/form-core/src/listeners.public.ts:55](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L55)
 
 #### Inherited from
 

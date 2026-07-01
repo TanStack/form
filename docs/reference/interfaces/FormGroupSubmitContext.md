@@ -5,7 +5,7 @@ title: FormGroupSubmitContext
 
 # Interface: FormGroupSubmitContext\<TFormData, TGroupName, TGroupValue, TGroupValidatorMetas, TFormValidatorMetas, TSubmitReturn\>
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:12](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L12)
+Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:12](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L12)
 
 ## Type Parameters
 
@@ -41,7 +41,7 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:12](https://github.com/TanStack
 formApi: FormApi<TFormData, TFormValidatorMetas, TSubmitReturn>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:21](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L21)
+Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:21](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L21)
 
 ***
 
@@ -51,7 +51,7 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:21](https://github.com/TanStack
 groupApi: FormGroupApi<TFormData, TGroupName, TGroupValue, TGroupValidatorMetas, TFormValidatorMetas, TSubmitReturn>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:22](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L22)
+Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:22](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L22)
 
 ***
 
@@ -61,7 +61,7 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:22](https://github.com/TanStack
 schemaOutputs: FormGroupStandardSchemaValidatorOutputs<TGroupValidatorMetas>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:30](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L30)
+Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:30](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L30)
 
 ***
 
@@ -71,4 +71,4 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:30](https://github.com/TanStack
 value: TGroupValue;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:20](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L20)
+Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:20](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L20)

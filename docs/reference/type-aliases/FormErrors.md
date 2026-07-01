@@ -11,7 +11,7 @@ type FormErrors<TFormValidatorMetas, TSubmitReturn> = (
   | ExtractSubmitFormError<TSubmitReturn>)[];
 ```
 
-Defined in: [validation.public.ts:499](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L499)
+Defined in: [packages/form-core/src/validation.public.ts:601](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L601)
 
 ## Type Parameters
 

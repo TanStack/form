@@ -9,7 +9,7 @@ title: ParseFieldIssuesFn
 type ParseFieldIssuesFn = (issues) => StandardSchemaV1Issue[];
 ```
 
-Defined in: [validation.public.ts:284](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L284)
+Defined in: [packages/form-core/src/validation.public.ts:369](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L369)
 
 ## Parameters
 

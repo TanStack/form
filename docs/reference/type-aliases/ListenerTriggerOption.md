@@ -11,7 +11,7 @@ type ListenerTriggerOption<TTriggers, TFormData, TValue> =
 | ListenerTriggerConfig<TTriggers, TFormData, TValue>;
 ```
 
-Defined in: [listeners.public.ts:33](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L33)
+Defined in: [packages/form-core/src/listeners.public.ts:33](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L33)
 
 ## Type Parameters
 

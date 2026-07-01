@@ -9,7 +9,7 @@ title: FieldListeners
 type FieldListeners<TFieldData, TFieldName, TFieldValue, TFieldValidatorMetas, TGroupValidatorMetas, TFormData, TFormValidatorMetas, TSubmitReturn> = FieldListener<TFieldData, TFieldName, TFieldValue, TFieldValidatorMetas, TGroupValidatorMetas, TFormData, TFormValidatorMetas, TSubmitReturn>[];
 ```
 
-Defined in: [listeners.public.ts:167](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L167)
+Defined in: [packages/form-core/src/listeners.public.ts:167](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L167)
 
 ## Type Parameters
 

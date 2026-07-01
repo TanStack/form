@@ -5,7 +5,7 @@ title: FormApi
 
 # Interface: FormApi\<TFormData, TFormValidatorMetas, TSubmitMeta\>
 
-Defined in: [FormApi/FormApi.public.ts:183](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L183)
+Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:189](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L189)
 
 ## Extends
 
@@ -33,7 +33,7 @@ Defined in: [FormApi/FormApi.public.ts:183](https://github.com/TanStack/form-v2/
 atom: ReadonlyAtom<FormState<TFormData, TFormValidatorMetas, TSubmitMeta>>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:189](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L189)
+Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:195](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L195)
 
 ***
 
@@ -43,7 +43,7 @@ Defined in: [FormApi/FormApi.public.ts:189](https://github.com/TanStack/form-v2/
 clearFieldValues: ClearFieldValuesFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:134](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L134)
+Defined in: [packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts:134](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L134)
 
 Clear all values from an array field.
 If the field is not an array, this method will be ignored.
@@ -64,7 +64,7 @@ The name of the array field
 filterFieldValues: FilterFieldValuesFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:152](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L152)
+Defined in: [packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts:152](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L152)
 
 Filter the values in an array field using a predicate function.
 If the field is not an array, this method will be ignored.
@@ -93,7 +93,7 @@ Optional update options including a custom `thisArg` for the predicate
 readonly formId: string;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:192](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L192)
+Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:198](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L198)
 
 ***
 
@@ -103,7 +103,7 @@ Defined in: [FormApi/FormApi.public.ts:192](https://github.com/TanStack/form-v2/
 getFieldValue: GetFieldValueFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiFieldMethods.types.public.ts:37](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L37)
+Defined in: [packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts:37](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L37)
 
 TODO
 
@@ -123,7 +123,7 @@ TODO
 handleSubmit: () => Promise<FormValidationError<TFormData>[]>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:209](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L209)
+Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:215](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L215)
 
 TODO for later: submit meta
 
@@ -139,7 +139,7 @@ TODO for later: submit meta
 insertFieldValue: InsertFieldValueFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:127](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L127)
+Defined in: [packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts:127](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L127)
 
 Insert a value into an array field at the specified index.
 If the field is not an array, this method will be ignored.
@@ -172,7 +172,7 @@ Optional update options
 moveFieldValue: MoveFieldValueFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:108](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L108)
+Defined in: [packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts:108](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L108)
 
 Move a value in an array field from one index to another.
 If the field is not an array, this method will be ignored.
@@ -205,7 +205,7 @@ Optional update options
 readonly options: FormApiOptions<TFormData, TFormValidatorMetas, TSubmitMeta>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:191](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L191)
+Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:197](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L197)
 
 ***
 
@@ -215,7 +215,7 @@ Defined in: [FormApi/FormApi.public.ts:191](https://github.com/TanStack/form-v2/
 pushFieldValue: PushFieldValueFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:117](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L117)
+Defined in: [packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts:117](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L117)
 
 Push a value into an array field.
 If the field is not an array, this method will be ignored.
@@ -244,7 +244,7 @@ Optional update options
 removeFieldValue: RemoveFieldValueFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:143](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L143)
+Defined in: [packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts:143](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L143)
 
 Remove a value from an array field at the specified index.
 If the field is not an array, this method will be ignored.
@@ -273,7 +273,7 @@ Optional update options
 reset: (values?, opts?) => void;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:221](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L221)
+Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:227](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L227)
 
 Reset form values, metadata, validation state, and mounted fields.
 
@@ -307,7 +307,7 @@ while preserving the previous `defaultValues` baseline.
 resetField: ResetFieldFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiFieldMethods.types.public.ts:39](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L39)
+Defined in: [packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts:39](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L39)
 
 #### Inherited from
 
@@ -321,7 +321,7 @@ Defined in: [FormApi/FormApiFieldMethods.types.public.ts:39](https://github.com/
 setFieldValue: SetFieldValueFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiFieldMethods.types.public.ts:30](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L30)
+Defined in: [packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts:30](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L30)
 
 TODO
 
@@ -341,7 +341,7 @@ TODO
 readonly state: FormState<TFormData, TFormValidatorMetas, TSubmitMeta>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:190](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L190)
+Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:196](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L196)
 
 ***
 
@@ -351,7 +351,7 @@ Defined in: [FormApi/FormApi.public.ts:190](https://github.com/TanStack/form-v2/
 swapFieldValues: SwapFieldValuesFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:98](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L98)
+Defined in: [packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts:98](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L98)
 
 Swap two values in an array field.
 If the field is not an array, this method will be ignored.
@@ -380,7 +380,7 @@ The index of the second value to swap
 validate: (signal) => Promise<FormValidationError<TFormData>[]>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:201](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L201)
+Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:207](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L207)
 
 TODO expand on it
 

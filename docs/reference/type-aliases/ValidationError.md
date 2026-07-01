@@ -9,4 +9,4 @@ title: ValidationError
 type ValidationError = OneOrMany<ValidationIssue>;
 ```
 
-Defined in: [validation.public.ts:271](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L271)
+Defined in: [packages/form-core/src/validation.public.ts:302](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L302)

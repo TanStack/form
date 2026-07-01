@@ -9,7 +9,7 @@ title: FormStandardSchemaValidatorOutputs
 type FormStandardSchemaValidatorOutputs<TFormValidatorMetas> = unknown extends TFormValidatorMetas ? unknown[] : MappedSchemaOutputs<TFormValidatorMetas>;
 ```
 
-Defined in: [validation.public.ts:375](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L375)
+Defined in: [packages/form-core/src/validation.public.ts:476](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L476)
 
 ## Type Parameters
 

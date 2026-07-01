@@ -9,7 +9,7 @@ title: Updater
 type Updater<TValue> = TValue | UpdateFn<TValue>;
 ```
 
-Defined in: [types.public.ts:4](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/types.public.ts#L4)
+Defined in: [packages/form-core/src/types.public.ts:4](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/types.public.ts#L4)
 
 ## Type Parameters
 

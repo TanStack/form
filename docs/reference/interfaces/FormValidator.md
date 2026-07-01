@@ -5,13 +5,13 @@ title: FormValidator
 
 # Interface: FormValidator\<TFormData\>
 
-Defined in: [validation.public.ts:329](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L329)
+Defined in: [packages/form-core/src/validation.public.ts:425](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L425)
 
 ## Extends
 
-- [`Validator`](Validator.md)\<`TFormData`, 
+- [`BaseValidator`](BaseValidator.md)\<
   \| [`FormValidatorFn`](../type-aliases/FormValidatorFn.md)\<`TFormData`\>
-  \| [`StandardSchemaV1`](../type-aliases/StandardSchemaV1.md)\<`TFormData`, `any`\>, `TFormData`\>
+  \| [`StandardSchemaV1`](../type-aliases/StandardSchemaV1.md)\<`TFormData`, `any`\>\>
 
 ## Type Parameters
 
@@ -27,7 +27,7 @@ Defined in: [validation.public.ts:329](https://github.com/TanStack/form-v2/blob/
 optional bailIfInvalid: boolean;
 ```
 
-Defined in: [validation.public.ts:23](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L23)
+Defined in: [packages/form-core/src/validation.public.ts:21](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L21)
 
 If `true`, this validator and all subsequent validators will be skipped if any previous validator has failed.
 If `false`, validators run regardless of earlier validation results.
@@ -40,7 +40,7 @@ false
 
 #### Inherited from
 
-[`Validator`](Validator.md).[`bailIfInvalid`](Validator.md#bailifinvalid)
+[`BaseValidator`](BaseValidator.md).[`bailIfInvalid`](BaseValidator.md#bailifinvalid)
 
 ***
 
@@ -52,11 +52,11 @@ run:
 | StandardSchemaV1<TFormData, any>;
 ```
 
-Defined in: [validation.public.ts:16](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L16)
+Defined in: [packages/form-core/src/validation.public.ts:14](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L14)
 
 #### Inherited from
 
-[`Validator`](Validator.md).[`run`](Validator.md#run)
+[`BaseValidator`](BaseValidator.md).[`run`](BaseValidator.md#run)
 
 ***
 
@@ -66,19 +66,7 @@ Defined in: [validation.public.ts:16](https://github.com/TanStack/form-v2/blob/m
 optional runOnMount: boolean;
 ```
 
-Defined in: [validation.public.ts:37](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L37)
-
-Whether this validator should be called once when the form is constructed.
-
-#### Default
-
-```ts
-false
-```
-
-#### Inherited from
-
-[`Validator`](Validator.md).[`runOnMount`](Validator.md#runonmount)
+Defined in: [packages/form-core/src/validation.public.ts:429](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L429)
 
 ***
 
@@ -90,21 +78,7 @@ optional runOnSubmit:
 | ValidationPredicateFn<TFormData, TFormData>;
 ```
 
-Defined in: [validation.public.ts:31](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L31)
-
-TODO docs
-
-Whether this validator should be called during a submission attempt.
-
-#### Default
-
-```ts
-true
-```
-
-#### Inherited from
-
-[`Validator`](Validator.md).[`runOnSubmit`](Validator.md#runonsubmit)
+Defined in: [packages/form-core/src/validation.public.ts:428](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L428)
 
 ***
 
@@ -116,31 +90,14 @@ optional triggerDebounceMs:
 | ValidationDebounceFn<TFormData, TFormData>;
 ```
 
-Defined in: [validation.public.ts:44](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L44)
-
-The debounce time in milliseconds for validation triggers (change, blur).
-Does not affect submit events, which always execute immediately.
-
-#### Default
-
-```ts
-0
-```
-
-#### Inherited from
-
-[`Validator`](Validator.md).[`triggerDebounceMs`](Validator.md#triggerdebouncems)
+Defined in: [packages/form-core/src/validation.public.ts:430](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L430)
 
 ***
 
 ### triggers
 
 ```ts
-triggers: ValidationTriggerOption<TFormData, TFormData>[];
+triggers: FormValidationTriggerOption<TFormData, TFormData>[];
 ```
 
-Defined in: [validation.public.ts:45](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L45)
-
-#### Inherited from
-
-[`Validator`](Validator.md).[`triggers`](Validator.md#triggers)
+Defined in: [packages/form-core/src/validation.public.ts:431](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L431)

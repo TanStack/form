@@ -9,7 +9,7 @@ title: createErrorVisibility
 function createErrorVisibility(visibility): ReusableErrorVisibility;
 ```
 
-Defined in: [validation.public.ts:235](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L235)
+Defined in: [packages/form-core/src/validation.public.ts:253](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L253)
 
 Creates a reusable, form-agnostic error visibility policy.
 
