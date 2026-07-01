@@ -1,20 +1,11 @@
-# TanStack Start - Basic Example
+# TanStack Form + TanStack Start Example
 
-This is the basic TanStack Start example, demonstrating the fundamentals of building applications with TanStack Router and TanStack Start.
+This example shows TanStack React Form running inside TanStack Start with:
 
-- [TanStack Router Docs](https://tanstack.com/router)
-
-It's deployed automagically with Netlify!
-
-- [Netlify](https://netlify.com/)
-
-## Start a new project based on this example
-
-To start a new project based on this example, run:
-
-```sh
-npx gitpick TanStack/router/tree/main/examples/react/start-basic start-basic
-```
+- client-side validation before the native form post
+- server-side validation through `createServerFn`
+- invalid server state persisted through `@tanstack/react-form-start`
+- loader hydration of server errors after redirect
 
 ## Getting Started
 
@@ -25,7 +16,7 @@ pnpm install
 pnpm dev
 ```
 
-This starts your app in development mode, rebuilding assets on file changes.
+This starts the TanStack Start app in development mode.
 
 ## Build
 

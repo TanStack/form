@@ -210,4 +210,60 @@ describe('server validation types', () => {
 
     expectTypeOf(validate).parameter(0).toEqualTypeOf<{ name: string }>()
   })
+
+  it('preserves plugin-customized validator options and form-bound helpers', () => {
+    const plugin = {
+      id: 'react-form-test',
+      createServerValidate: <
+        TFormData,
+        const TFormValidators extends FormValidators<TFormData>,
+        TSubmitReturn,
+      >(
+        _options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
+        _pluginOptions?: { field: keyof TFormData },
+      ) => {
+        return Object.assign(
+          (values: TFormData) => Promise.resolve(values),
+          {
+            getState: () =>
+              Promise.resolve(
+                null as never as ServerFormState<
+                  TFormData,
+                  TFormValidators
+                >,
+              ),
+          },
+        )
+      },
+    } satisfies ServerValidateFrameworkPlugin
+
+    const options = formOptions({
+      defaultValues: { name: '', age: 0 },
+      validators: [
+        {
+          run: () => undefined,
+          triggers: ['server'],
+        },
+      ],
+    })
+
+    const { createServerValidate } = serverValidateHelper({ framework: plugin })
+    const validate = createServerValidate(options, { field: 'age' })
+
+    // @ts-expect-error Plugin options are typed against the form values.
+    createServerValidate(options, { field: 'missing' })
+
+    expectTypeOf(validate).parameter(0).toEqualTypeOf<{
+      name: string
+      age: number
+    }>()
+    expectTypeOf(validate.getState()).toEqualTypeOf<
+      Promise<
+        ServerFormState<
+          { name: string; age: number },
+          NonNullable<typeof options.validators>
+        >
+      >
+    >()
+  })
 })

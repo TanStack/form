@@ -74,4 +74,50 @@ describe('start server validation types', () => {
       >()
     }
   })
+
+  it('types form-bound helpers and form data info from values', async () => {
+    const options = formOptions({
+      defaultValues: { firstName: '', age: 0 },
+      validators: [
+        {
+          run: () => undefined,
+          triggers: ['server'],
+        },
+      ],
+    })
+
+    const { createServerValidate } = serverValidateHelper({
+      framework: start(),
+    })
+    const validate = createServerValidate(options, {
+      info: {
+        numbers: ['age'],
+      },
+    })
+
+    // @ts-expect-error String fields cannot be configured as numbers.
+    createServerValidate(options, { info: { numbers: ['firstName'] } })
+
+    await validate({
+      formData: {} as FormData,
+      info: {
+        numbers: ['age'],
+      },
+    })
+
+    await validate({
+      formData: {} as FormData,
+      // @ts-expect-error Invocation info is also typed against form values.
+      info: { numbers: ['firstName'] },
+    })
+
+    expectTypeOf(validate.getFormData()).toEqualTypeOf<
+      Promise<
+        ServerFormState<
+          { firstName: string; age: number },
+          NonNullable<typeof options.validators>
+        >
+      >
+    >()
+  })
 })

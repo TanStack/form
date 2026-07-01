@@ -108,6 +108,92 @@ describe('start server validation persistence', () => {
     await expect(getFormData()).resolves.toEqual(initialServerFormState)
   })
 
+  it('infers number form data info from default values', async () => {
+    const validate = start().createServerValidate(
+      formOptions({
+        defaultValues: { age: 0 },
+      }),
+    )
+
+    const result = await validate({
+      formData: createFormData({ age: '42' }),
+    })
+
+    expect(result).toMatchObject({
+      success: true,
+      values: { age: 42 },
+    })
+  })
+
+  it('uses explicit form-level info when inference is disabled', async () => {
+    const validate = start().createServerValidate(
+      formOptions({
+        defaultValues: { age: 0 },
+      }),
+      {
+        inferFormDataInfo: false,
+        info: {
+          numbers: ['age'],
+        },
+      },
+    )
+
+    const result = await validate({
+      formData: createFormData({ age: '42' }),
+    })
+
+    expect(result).toMatchObject({
+      success: true,
+      values: { age: 42 },
+    })
+  })
+
+  it('merges invocation info after form-level info', async () => {
+    const validate = start().createServerValidate(
+      formOptions({
+        defaultValues: { age: 0, score: 0 },
+      }),
+      {
+        inferFormDataInfo: false,
+        info: {
+          numbers: ['age'],
+        },
+      },
+    )
+
+    const result = await validate({
+      formData: createFormData({ age: '42', score: '7' }),
+      info: {
+        numbers: ['score'],
+      },
+    })
+
+    expect(result).toMatchObject({
+      success: true,
+      values: { age: 42, score: 7 },
+    })
+  })
+
+  it('can opt out of default value form data inference', async () => {
+    const validate = start().createServerValidate(
+      formOptions({
+        defaultValues: { age: 0 },
+      }),
+      {
+        inferFormDataInfo: false,
+      },
+    )
+
+    const result = await validate({
+      formData: createFormData({ age: '42' }),
+    })
+
+    expect(result).toMatchObject({
+      success: true,
+      values: { age: '42' },
+    })
+  })
+
   it('runs onInvalid after persisting invalid server state', async () => {
     const validate = start({
       onInvalid: ({ serverState }) => {
@@ -134,4 +220,3 @@ describe('start server validation persistence', () => {
     ])
   })
 })
-

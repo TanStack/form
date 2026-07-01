@@ -97,6 +97,7 @@ export type ServerValidateFrameworkCreateServerValidate = <
   TSubmitReturn,
 >(
   formOptions: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
+  pluginOptions?: any,
 ) => unknown
 
 export interface ServerValidateFrameworkPlugin<
