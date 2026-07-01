@@ -11,16 +11,7 @@ export default defineConfig({
         enabled: true,
       },
     }),
-    react({
-      babel: {
-        overrides: [
-          {
-            test: './src/**/*.tsx',
-            plugins: ['babel-plugin-react-compiler'],
-          },
-        ],
-      },
-    }),
+    react(),
     tailwindcss(),
   ],
   resolve: {
