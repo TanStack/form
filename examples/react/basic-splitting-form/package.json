@@ -11,8 +11,8 @@
   "dependencies": {
     "@tanstack/pacer-lite": "^0.2.1",
     "@tanstack/react-form": "^1.33.3",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
     "zod": "^4.4.3"
   },
   "devDependencies": {
@@ -20,9 +20,9 @@
     "@tanstack/react-form-devtools": "^0.2.32",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^5.1.2",
+    "@vitejs/plugin-react": "^6.0.1",
     "babel-plugin-react-compiler": "^1.0.0",
-    "typescript": "5.9.3",
-    "vite": "^7.3.1"
+    "typescript": "^6.0.2",
+    "vite": "^8.0.14"
   }
 }
