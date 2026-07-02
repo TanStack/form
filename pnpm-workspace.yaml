@@ -15,6 +15,7 @@ trustPolicyExclude:
 packages:
   - 'benchmarks/*'
   - packages/**
+  - '!packages/form-devtools-old'
   - examples/angular/**
   - examples/react/**
   - examples/preact/**
