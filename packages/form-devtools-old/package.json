@@ -1,0 +1,86 @@
+{
+  "name": "@tanstack/form-devtools-old",
+  "version": "0.0.0",
+  "description": "Devtools for TanStack Form v2",
+  "author": "Tanner Linsley",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TanStack/form-v2.git",
+    "directory": "packages/form-devtools"
+  },
+  "homepage": "https://tanstack.com/form",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/tannerlinsley"
+  },
+  "keywords": [
+    "solid",
+    "tanstack",
+    "form",
+    "devtools"
+  ],
+  "scripts": {
+    "clean": "premove ./build ./dist",
+    "test:eslint": "eslint ./src",
+    "test:lib": "vitest --passWithNoTests",
+    "test:lib:dev": "pnpm test:lib --watch",
+    "test:types": "tsc",
+    "build": "vite build && tsc -p tsconfig.build.json",
+    "build:dev": "vite build --watch"
+  },
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "module": "./dist/index.js",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    },
+    "./production": {
+      "import": {
+        "types": "./dist/production.d.ts",
+        "default": "./dist/production.js"
+      }
+    },
+    "./style.css": "./dist/style.css",
+    "./package.json": "./package.json"
+  },
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "dependencies": {
+    "@ark-ui/solid": "^5.37.1",
+    "@fontsource-variable/inter": "^5.2.8",
+    "@tanstack/devtools": "^0.12.2",
+    "@tanstack/devtools-event-client": "^0.4.3",
+    "@tanstack/devtools-ui": "^0.5.2",
+    "@tanstack/devtools-utils": "^0.5.0",
+    "@tanstack/form-core": "workspace:*",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "goober": "^2.1.16",
+    "lucide-solid": "^1.22.0",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss": "^4.3.2",
+    "tw-animate-css": "^1.4.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.2",
+    "solid-js": "^1.9.13",
+    "vite": "^8.1.2",
+    "vite-plugin-solid": "^2.11.10"
+  },
+  "peerDependencies": {
+    "solid-js": ">=1.9.5"
+  }
+}
