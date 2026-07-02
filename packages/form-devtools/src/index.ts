@@ -1,5 +1,6 @@
 'use client'
 
+import './devtoolsBridge.lib'
 import * as Devtools from './core'
 
 import type { ClassType } from '@tanstack/devtools-utils/solid/class'

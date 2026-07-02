@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
+import { installDevtoolsBridge } from '../../src/devtoolsBridge.lib'
 
 describe('form - lifecycle', () => {
   describe('initial state', () => {
@@ -41,6 +42,79 @@ describe('form - lifecycle', () => {
 
       expect(form.formId).toBe(formId)
       expect(form.options.formId).toBe(formId)
+    })
+
+    it('supports changing a supplied formId during update', () => {
+      const form = new InternalFormApi({
+        formId: 'profile-form',
+        defaultValues: { name: '' },
+      })
+
+      form._update({
+        formId: 'renamed-profile-form',
+        defaultValues: { name: '' },
+      })
+
+      expect(form.formId).toBe('renamed-profile-form')
+      expect(form.options.formId).toBe('renamed-profile-form')
+    })
+
+    it('notifies an installed devtools bridge during form lifecycle hooks', () => {
+      const form = new InternalFormApi({
+        formId: 'profile-form',
+        defaultValues: { name: '' },
+      })
+      const mountForm = vi.fn()
+      const unmountForm = vi.fn()
+      const updateForm = vi.fn()
+      const uninstallBridge = installDevtoolsBridge({
+        mountForm,
+        unmountForm,
+        updateForm,
+      })
+
+      try {
+        const unmount = form.mount()
+        expect(mountForm).toHaveBeenCalledWith(form)
+
+        form._update({
+          formId: 'renamed-profile-form',
+          defaultValues: { name: '' },
+        })
+        expect(updateForm).toHaveBeenCalledWith(form)
+
+        unmount()
+        expect(unmountForm).toHaveBeenCalledWith(form)
+      } finally {
+        uninstallBridge()
+      }
+    })
+
+    it('stops notifying a devtools bridge after it uninstalls', () => {
+      const form = new InternalFormApi({
+        formId: 'profile-form',
+        defaultValues: { name: '' },
+      })
+      const mountForm = vi.fn()
+      const unmountForm = vi.fn()
+      const updateForm = vi.fn()
+      const uninstallBridge = installDevtoolsBridge({
+        mountForm,
+        unmountForm,
+        updateForm,
+      })
+      uninstallBridge()
+
+      const unmount = form.mount()
+      form._update({
+        formId: 'renamed-profile-form',
+        defaultValues: { name: '' },
+      })
+      unmount()
+
+      expect(mountForm).not.toHaveBeenCalled()
+      expect(updateForm).not.toHaveBeenCalled()
+      expect(unmountForm).not.toHaveBeenCalled()
     })
 
     it('supports updating defaultValues after initialization', () => {

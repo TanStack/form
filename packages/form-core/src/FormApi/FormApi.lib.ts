@@ -31,6 +31,7 @@ import {
 } from '../validation.lib'
 import { runFormListenerPipeline } from '../listeners.lib'
 import { applyServerState } from '../ssr.lib'
+import { getDevtoolsBridge } from '../devtoolsBridge.lib'
 import { runSubmissionProcess } from './handleSubmit.lib'
 import { ArrayMethods } from './array-methods.lib'
 import {
@@ -307,12 +308,14 @@ export class InternalFormApi<
 
   mount = () => {
     this._notifyFormListener('mount', null)
+    getDevtoolsBridge()?.mountForm?.(this)
 
     let didCleanup = false
 
     return () => {
       if (didCleanup) return
       didCleanup = true
+      getDevtoolsBridge()?.unmountForm?.(this)
     }
   }
 
@@ -461,11 +464,7 @@ export class InternalFormApi<
       this._options.serverState ?? null,
       options.defaultValues,
     )
-
-    // TODO plans
-    // form.update(B) => A !== B -> Queue async update
-    // v1: !form.isTouched -> Apply state
-    // v2? If only 'a' was touched, 'b' could still receive async updates
+    getDevtoolsBridge()?.updateForm?.(this)
   }
 
   getFieldValue = (fieldName: string): any => {
