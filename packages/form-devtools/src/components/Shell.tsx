@@ -5,7 +5,7 @@ import {
   createSignal,
   onCleanup,
 } from 'solid-js'
-import { Header, HeaderLogo, MainPanel } from '@tanstack/devtools-ui'
+import { Header, HeaderLogo } from '@tanstack/devtools-ui'
 import { useFormEventClient } from '../contexts/eventClientContext'
 import { useResizablePanel } from '../hooks/useResizablePanel'
 import {
@@ -288,7 +288,7 @@ export function Shell(props: ShellProps) {
   })
 
   return (
-    <MainPanel class={styles().rootPanel}>
+    <>
       <Header>
         <HeaderLogo
           flavor={{ light: '#eeaf00', dark: '#eeaf00' }}
@@ -397,6 +397,6 @@ export function Shell(props: ShellProps) {
           />
         </div>
       </div>
-    </MainPanel>
+    </>
   )
 }
