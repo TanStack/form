@@ -31,7 +31,7 @@ import {
 } from '../validation.lib'
 import { runFormListenerPipeline } from '../listeners.lib'
 import { applyServerState } from '../ssr.lib'
-import { getDevtoolsBridge } from '../devtoolsBridge.lib'
+import { devtools } from '../devtoolsBridge.lib'
 import { runSubmissionProcess } from './handleSubmit.lib'
 import { ArrayMethods } from './array-methods.lib'
 import {
@@ -308,14 +308,14 @@ export class InternalFormApi<
 
   mount = () => {
     this._notifyFormListener('mount', null)
-    getDevtoolsBridge()?.mountForm?.(this)
+    devtools().mountForm?.(this)
 
     let didCleanup = false
 
     return () => {
       if (didCleanup) return
       didCleanup = true
-      getDevtoolsBridge()?.unmountForm?.(this)
+      devtools().unmountForm?.(this)
     }
   }
 
@@ -464,7 +464,7 @@ export class InternalFormApi<
       this._options.serverState ?? null,
       options.defaultValues,
     )
-    getDevtoolsBridge()?.updateForm?.(this)
+    devtools().updateForm?.(this)
   }
 
   getFieldValue = (fieldName: string): any => {
