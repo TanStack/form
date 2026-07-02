@@ -30,6 +30,10 @@ stats.json
 stats.html
 *.cpuprofile
 .vscode/settings.json
+.idea
+.cursor
+.claude
+.codex
 
 *.log
 .cache

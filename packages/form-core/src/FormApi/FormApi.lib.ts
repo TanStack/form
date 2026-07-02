@@ -30,7 +30,6 @@ import {
   setIndexedError,
 } from '../validation.lib'
 import { runFormListenerPipeline } from '../listeners.lib'
-import { devtools } from '../devtoolsBridge.lib'
 import { applyServerState } from '../ssr.lib'
 import { runSubmissionProcess } from './handleSubmit.lib'
 import { ArrayMethods } from './array-methods.lib'
@@ -308,15 +307,12 @@ export class InternalFormApi<
 
   mount = () => {
     this._notifyFormListener('mount', null)
-    devtools.onFormMount(this)
 
     let didCleanup = false
 
     return () => {
       if (didCleanup) return
       didCleanup = true
-
-      devtools.onFormUnmount(this)
     }
   }
 
@@ -495,9 +491,6 @@ export class InternalFormApi<
 
       this._notifyFieldChange(field, updateOptions)
     })
-    if (field) {
-      devtools.onFieldStateChange(field, { summary: true })
-    }
   }
 
   resetField = <TFieldName extends DeepKeys<TFormData>>(
@@ -510,9 +503,6 @@ export class InternalFormApi<
     )
 
     field?._children.forEach((child) => child._kill({ listenerEvent: 'reset' }))
-    if (field) {
-      devtools.onFieldStateChange(field, { summary: true })
-    }
   }
 
   // TODO type safety: DeepKeys that extend undefined?

@@ -1012,6 +1012,64 @@ importers:
         specifier: ^7.2.2
         version: 7.3.3(@types/node@25.9.5)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0)
 
+  packages/form-devtools-old:
+    dependencies:
+      '@ark-ui/solid':
+        specifier: ^5.37.1
+        version: 5.37.1(solid-js@1.9.13)
+      '@fontsource-variable/inter':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@tanstack/devtools':
+        specifier: ^0.12.2
+        version: 0.12.2(csstype@3.2.3)(solid-js@1.9.13)
+      '@tanstack/devtools-event-client':
+        specifier: ^0.4.3
+        version: 0.4.3
+      '@tanstack/devtools-ui':
+        specifier: ^0.5.2
+        version: 0.5.2(csstype@3.2.3)(solid-js@1.9.13)
+      '@tanstack/devtools-utils':
+        specifier: ^0.5.0
+        version: 0.5.1(@types/react@19.2.17)(react@19.2.7)(solid-js@1.9.13)
+      '@tanstack/form-core':
+        specifier: workspace:*
+        version: link:../form-core
+      class-variance-authority:
+        specifier: ^0.7.1
+        version: 0.7.1
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
+      goober:
+        specifier: ^2.1.16
+        version: 2.1.19(csstype@3.2.3)
+      lucide-solid:
+        specifier: ^1.22.0
+        version: 1.22.0(solid-js@1.9.13)
+      tailwind-merge:
+        specifier: ^3.6.0
+        version: 3.6.0
+      tailwindcss:
+        specifier: ^4.3.2
+        version: 4.3.2
+      tw-animate-css:
+        specifier: ^1.4.0
+        version: 1.4.0
+    devDependencies:
+      '@tailwindcss/vite':
+        specifier: ^4.3.2
+        version: 4.3.2(vite@8.1.2(@types/node@25.9.3)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.9.0))
+      solid-js:
+        specifier: ^1.9.13
+        version: 1.9.13
+      vite:
+        specifier: ^8.1.2
+        version: 8.1.2(@types/node@25.9.3)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.9.0)
+      vite-plugin-solid:
+        specifier: ^2.11.10
+        version: 2.11.12(@testing-library/jest-dom@6.9.1)(solid-js@1.9.13)(vite@8.1.2(@types/node@25.9.3)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.9.0))
+
   packages/react-form:
     dependencies:
       '@tanstack/form-core':

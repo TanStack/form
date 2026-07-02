@@ -10,7 +10,6 @@ import {
   runFieldValidatorPipeline,
   setIndexedError,
 } from '../validation.lib'
-import { devtools } from '../devtoolsBridge.lib'
 import { runFieldListenerPipeline } from '../listeners.lib'
 import {
   attachWatchingListenerField,
@@ -29,7 +28,6 @@ import {
 import {
   killField,
   moveFieldToSegment,
-  notifyWatchedFieldDependencyChanges,
   pruneFieldIfUnused,
   updateChildContributionCount,
 } from './fieldTree.lib'
@@ -537,13 +535,6 @@ export class InternalFieldApi<
     reconciledValidators.attach.forEach(attachWatchingValidatorField)
     this._validators = reconciledValidators.items
     this._validateOnFields = reconciledValidators.listenToFields
-
-    notifyWatchedFieldDependencyChanges(this, [
-      ...reconciledListeners.attach,
-      ...reconciledListeners.detach,
-      ...reconciledValidators.attach,
-      ...reconciledValidators.detach,
-    ])
   }
 
   _update(options: Omit<AnyFieldApiOptions, 'name' | 'form'>) {
@@ -591,8 +582,6 @@ export class InternalFieldApi<
         ...reconciledValidators.detach,
       )
     }
-
-    notifyWatchedFieldDependencyChanges(this, dependencyOperations)
   }
 
   /**
@@ -654,7 +643,6 @@ export class InternalFieldApi<
 
       return newMeta
     })
-    devtools.onFieldStateChange(this, { summary: true })
   }
 
   /**
@@ -1009,14 +997,10 @@ export class InternalFieldApi<
     }
 
     const isFirstMount = this._refCount === 0 && !this._mountValidationRan
-    const wasMounted = this._isMounted
     this._refCount++
     this._getOrCreateAtoms()
 
     this._notifyListener('mount', new WeakSet())
-    if (!wasMounted) {
-      devtools.onFieldMount(this)
-    }
 
     if (isFirstMount) {
       this._mountValidationRan = true
@@ -1065,15 +1049,10 @@ export class InternalFieldApi<
   _unregister(): void {
     if (this._isKilled) return
 
-    const wasMounted = this._isMounted
     this._refCount--
     this._notifyListener('unmount', new WeakSet())
 
     if (this._refCount <= 0) {
-      if (wasMounted) {
-        devtools.onFieldUnmount(this)
-      }
-
       setTimeout(() => {
         this._atoms.store = undefined
 

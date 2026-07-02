@@ -10,6 +10,14 @@
     "pnpm": ">=11.0.0"
   },
   "type": "module",
+  "intent": {
+    "skills": [
+      "@tanstack/devtools-vite",
+      "@tanstack/devtools",
+      "@tanstack/devtools-event-client",
+      "@tanstack/devtools-utils"
+    ]
+  },
   "scripts": {
     "clean": "pnpm --filter \"./packages/**\" run clean",
     "test": "pnpm run test:ci",

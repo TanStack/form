@@ -1,6 +1,5 @@
 import { batch } from '@tanstack/store'
 import { cancelPipelineCache } from '../utils.lib'
-import { devtools } from '../devtoolsBridge.lib'
 import {
   detachWatchingListenerField,
   detachWatchingValidatorField,
@@ -11,7 +10,6 @@ import {
   getChildContributionStates,
   isPrunableMeta,
 } from './fieldState.lib'
-import type { FieldLifecycleReference } from '../devtoolsBridge.lib'
 import type { FieldListenerTriggers } from '../listeners.public'
 import type {
   AnyInternalFieldApi,
@@ -58,62 +56,6 @@ function collectFieldSubtree(
   }
 
   return fields
-}
-
-function notifyFieldDetailChangedForFields(
-  fields: Iterable<AnyInternalFieldApi>,
-): void {
-  for (const field of fields) {
-    if (!field._isKilled) {
-      devtools.onFieldStateChange(field, { detail: true })
-    }
-  }
-}
-
-export function notifyWatchedFieldDependencyChanges(
-  field: AnyInternalFieldApi,
-  operations: ReadonlyArray<WatchedFieldDependencyOperation>,
-): void {
-  if (operations.length === 0) return
-
-  const fields = new Set<AnyInternalFieldApi>([field])
-  for (const operation of operations) {
-    fields.add(operation.sourceField)
-    fields.add(operation.watchingField)
-  }
-
-  notifyFieldDetailChangedForFields(fields)
-}
-
-function addListenToFields(
-  fields: Set<AnyInternalFieldApi>,
-  listenToFields: FieldListenToFields | null,
-): void {
-  listenToFields?.forEach((sourceMetas) => {
-    for (const { field } of sourceMetas) {
-      fields.add(field)
-    }
-  })
-}
-
-function addWatchingFields(
-  fields: Set<AnyInternalFieldApi>,
-  watchingFields: FieldWatchingFields | null,
-): void {
-  watchingFields?.forEach((_watcherIndexes, watchingField) => {
-    fields.add(watchingField)
-  })
-}
-
-function notifyLinkedFieldDetailChanges(field: AnyInternalFieldApi): void {
-  const fields = new Set<AnyInternalFieldApi>([field])
-
-  addListenToFields(fields, field._listenToFields)
-  addListenToFields(fields, field._validateOnFields)
-  addWatchingFields(fields, field._watchingFields)
-  addWatchingFields(fields, field._watchingValidatorFields)
-
-  notifyFieldDetailChangedForFields(fields)
 }
 
 function clearWatchedSourceReference(
@@ -174,8 +116,6 @@ function detachOutgoingWatchedFields({
       }
     }
   })
-
-  notifyFieldDetailChangedForFields(changedSourceFields)
 }
 
 function detachIncomingWatchedFields({
@@ -221,8 +161,6 @@ function detachIncomingWatchedFields({
       }
     }
   }
-
-  notifyFieldDetailChangedForFields(changedWatchingFields)
 }
 
 function detachLinkedFieldReferences({
@@ -304,21 +242,6 @@ export function updateChildContributionCount(
   })
 }
 
-function collectFieldLifecycleReferences(
-  field: AnyInternalFieldApi,
-): Array<FieldLifecycleReference> {
-  const references: Array<FieldLifecycleReference> = []
-
-  for (const node of collectFieldSubtree(field)) {
-    references.push({
-      previousPath: node.name,
-      field: node,
-    })
-  }
-
-  return references
-}
-
 export function moveFieldToSegment(
   field: AnyInternalFieldApi,
   newSegment: NameSegment,
@@ -329,7 +252,6 @@ export function moveFieldToSegment(
     return
   }
 
-  const fieldPathChanges = collectFieldLifecycleReferences(field)
   const oldSegment = field._segmentValue
   field._segmentValue = newSegment
   field._defaultValueCache = null
@@ -337,10 +259,6 @@ export function moveFieldToSegment(
     field._parent._removeChild(oldSegment)
   }
   field._parent._setChild(field)
-  devtools.onFieldPathChange(field.form, fieldPathChanges)
-  for (const { field: renamedField } of fieldPathChanges) {
-    notifyLinkedFieldDetailChanges(renamedField)
-  }
 }
 
 function notifyFieldSubtreeListeners(
@@ -369,13 +287,6 @@ export function killField(
     if (options.listenerEvent) {
       notifyFieldSubtreeListeners(field, options.listenerEvent)
     }
-
-    const unmountedFields = nodesToKill
-      .filter((node) => node._isMounted)
-      .map((node) => ({
-        previousPath: node.name,
-        field: node,
-      }))
 
     field._parent._removeChild(field._segment)
 
@@ -481,8 +392,6 @@ export function killField(
 
       return changed ? fieldErrors : prev
     })
-
-    devtools.onFieldSubtreeUnmount(field.form, unmountedFields)
   })
 }
 
