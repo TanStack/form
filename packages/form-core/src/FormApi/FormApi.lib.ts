@@ -195,6 +195,11 @@ export class InternalFormApi<
   ToFormValidatorMetas<TFormValidators>,
   ToSubmitMeta<TSubmitReturn>
 > {
+  /**
+   * Devtools use this to show what version of the library is being used.
+   */
+  static majorVersion = 2
+
   atom: ReadonlyAtom<
     FormState<
       TFormData,
