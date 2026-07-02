@@ -1,10 +1,4 @@
-import {
-  For,
-  createEffect,
-  createMemo,
-  createSignal,
-  onCleanup,
-} from 'solid-js'
+import { createEffect, createMemo, createSignal, onCleanup } from 'solid-js'
 import { Header, HeaderLogo } from '@tanstack/devtools-ui'
 import { useFormEventClient } from '../contexts/eventClientContext'
 import { useResizablePanel } from '../hooks/useResizablePanel'
@@ -15,7 +9,7 @@ import {
 } from '../stores/fieldDetailSubscriptions'
 import { getDevtoolsFormKey } from '../stores/eventClientTypes'
 import { useShellStyles } from '../styles/shell.styles'
-import { DetailPanelContent, LeftPanelContent } from './ShellPanels'
+import { FormSelector } from './FormSelector'
 import {
   areFieldSelectionIdentitiesEqual,
   areFieldSelectionIdentityArraysEqual,
@@ -40,11 +34,6 @@ const leftPanelWidth: ResizablePanelArgs = {
   maxPx: 800,
 } as const
 
-interface FormSelectOption {
-  value: string
-  label: string
-}
-
 interface ShellProps {
   adapterName?: string
 }
@@ -60,8 +49,6 @@ export function Shell(props: ShellProps) {
     activeFormKey,
     requestFieldDetailSubscribe,
     requestFieldDetailUnsubscribe,
-    selectForm,
-    store,
   } = useFormEventClient()
   const leftPanel = useResizablePanel(leftPanelWidth)
   const [activeTab, setActiveTab] = createSignal<DevtoolsTabId>('overview')
@@ -77,29 +64,6 @@ export function Shell(props: ShellProps) {
   >({})
   const activeTabConfig = createMemo(
     () => devtoolsTabs.find((tab) => tab.id === activeTab()) ?? devtoolsTabs[0],
-  )
-  const formOptions = createMemo<Array<FormSelectOption>>(() => {
-    const forms = store()
-    const formIdCounts = new Map<string, number>()
-
-    for (const form of forms) {
-      formIdCounts.set(form.id, (formIdCounts.get(form.id) ?? 0) + 1)
-    }
-
-    if (forms.length === 0) {
-      return [{ value: '-', label: 'No forms' }]
-    }
-
-    return forms.map((form) => ({
-      value: getDevtoolsFormKey(form),
-      label:
-        (formIdCounts.get(form.id) ?? 0) > 1
-          ? `${form.id} (${form.instanceId.slice(0, 8)})`
-          : form.id,
-    }))
-  })
-  const selectedForm = createMemo(
-    () => activeFormKey() ?? formOptions()[0]?.value ?? '-',
   )
   const mountedFields = createMemo(() => activeForm()?.mountedFields ?? [])
   const mountedFieldPaths = createMemo(
@@ -148,7 +112,6 @@ export function Shell(props: ShellProps) {
   )
   let fieldDetailSubscriptions: Array<FieldDetailSubscriptionDescriptor> = []
   let previousSelectionFormKey: string | null | undefined
-  let formSelectRef: HTMLSelectElement | undefined
 
   const selectFieldPath = (fieldPath: string) => {
     const field = mountedFields().find((item) => item.path === fieldPath)
@@ -215,15 +178,6 @@ export function Shell(props: ShellProps) {
       previousSelectionFormKey = formKey
       setSelectedField(null)
       setPinnedFields([])
-    }
-  })
-
-  createEffect(() => {
-    const selected = selectedForm()
-    formOptions()
-
-    if (formSelectRef && formSelectRef.value !== selected) {
-      formSelectRef.value = selected
     }
   })
 
@@ -301,20 +255,7 @@ export function Shell(props: ShellProps) {
         >
           {props.adapterName ? `${props.adapterName} ` : ''}Form v2
         </HeaderLogo>
-        <select
-          ref={formSelectRef}
-          aria-label="Select form"
-          value={selectedForm()}
-          onInput={(event) => {
-            const nextFormKey = event.currentTarget.value
-            selectForm(nextFormKey)
-            event.currentTarget.value = nextFormKey
-          }}
-        >
-          <For each={formOptions()}>
-            {(option) => <option value={option.value}>{option.label}</option>}
-          </For>
-        </select>
+        <FormSelector />
       </Header>
 
       {/* <div
