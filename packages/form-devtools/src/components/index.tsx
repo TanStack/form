@@ -1,17 +1,8 @@
 import '../styles/index.css'
-import { Header, MainPanel, ThemeContextProvider } from '@tanstack/devtools-ui'
-import { InfoIcon } from 'lucide-solid'
-import { FormLogo } from './FormLogo'
-import { FormSelector } from './FormSelector'
+import { MainPanel, ThemeContextProvider } from '@tanstack/devtools-ui'
 import { PortalProvider } from './ui/portal'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from './ui/tooltip'
-import { Button } from './ui/button'
-import { Code } from './ui/code'
+import { TooltipProvider } from './ui/tooltip'
+import { Header } from './Header'
 import type {
   TanStackDevtoolsPluginProps,
   TanStackDevtoolsTheme,
@@ -42,29 +33,7 @@ export default function Shell(props: DevtoolsProps) {
           class="tanstack-form-devtools w-full h-full"
           data-theme={props.theme}
         >
-          <Header>
-            <FormLogo adapterName={props.adapterName} />
-            <FormSelector class="ms-5" />
-            <Tooltip>
-              <TooltipTrigger
-                asChild={(props) => (
-                  <Button
-                    variant="ghost"
-                    {...props({ class: 'icon-sm me-auto' })}
-                  >
-                    <InfoIcon />
-                  </Button>
-                )}
-              />
-              <TooltipContent class="text-center">
-                <span>
-                  Form names looking a bit cryptic?
-                  <br /> Add a <Code>formId</Code> option to give it a clearer
-                  name.
-                </span>
-              </TooltipContent>
-            </Tooltip>
-          </Header>
+          <Header adapterName={props.adapterName} />
         </PortalProvider>
       </MainPanel>
     </ContextWrappers>
