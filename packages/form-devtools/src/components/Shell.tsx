@@ -289,7 +289,7 @@ export function Shell(props: ShellProps) {
 
   return (
     <>
-      <Header>
+      <Header class="border-b-0">
         <HeaderLogo
           flavor={{ light: '#eeaf00', dark: '#eeaf00' }}
           onClick={() => {
@@ -317,7 +317,7 @@ export function Shell(props: ShellProps) {
         </select>
       </Header>
 
-      <div
+      {/* <div
         class={styles().tabBar}
         role="tablist"
         aria-label="Form devtools sections"
@@ -396,7 +396,7 @@ export function Shell(props: ShellProps) {
             visibleFields={visibleDetailFields()}
           />
         </div>
-      </div>
+      </div> */}
     </>
   )
 }

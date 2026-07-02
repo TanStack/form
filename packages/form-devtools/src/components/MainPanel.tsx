@@ -1,4 +1,4 @@
-import './index.css'
+import '@/styles/index.css'
 import { MainPanel as UIPanel } from '@tanstack/devtools-ui'
 import type { TanStackDevtoolsPluginProps } from '@tanstack/devtools'
 import type { JSXElement } from 'solid-js'

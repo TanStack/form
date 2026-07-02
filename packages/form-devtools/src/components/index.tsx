@@ -1,7 +1,7 @@
 import { ThemeContextProvider } from '@tanstack/devtools-ui'
 import { FormEventClientProvider } from '../contexts/eventClientContext'
 import { Shell } from './Shell'
-import { MainPanel } from './ui/MainPanel'
+import { MainPanel } from './MainPanel'
 import type { TanStackDevtoolsPluginProps } from '@tanstack/devtools'
 import type { FormDevtoolsInit } from '../core'
 
