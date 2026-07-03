@@ -5,18 +5,6 @@ import type { ParentProps } from 'solid-js'
 
 export type FormTabValue = 'field' | 'form' | 'validation'
 
-function FormTabsRoot(props: ParentProps) {
-  return (
-    <Tabs.Root
-      defaultValue={'field' satisfies FormTabValue}
-      lazyMount
-      unmountOnExit
-    >
-      {props.children}
-    </Tabs.Root>
-  )
-}
-
 interface FormTabsTriggerProps extends ParentProps {
   value: FormTabValue
 }
@@ -40,13 +28,32 @@ function FormTabsTrigger(props: FormTabsTriggerProps) {
 
 export function TabsNav() {
   return (
-    <FormTabsRoot>
-      <Tabs.List class="inline-flex relative gap-2 z-0">
-        <FormTabsTrigger value="field">Field</FormTabsTrigger>
-        <FormTabsTrigger value="form">Form</FormTabsTrigger>
-        <FormTabsTrigger value="validation">Validation</FormTabsTrigger>
-        <TabIndicator />
-      </Tabs.List>
-    </FormTabsRoot>
+    <Tabs.List class="inline-flex relative gap-2 z-0">
+      <FormTabsTrigger value="field">Field</FormTabsTrigger>
+      <FormTabsTrigger value="form">Form</FormTabsTrigger>
+      <FormTabsTrigger value="validation">Validation</FormTabsTrigger>
+      <TabIndicator />
+    </Tabs.List>
+  )
+}
+
+interface DevtoolsTabProps extends ParentProps {
+  value: FormTabValue
+}
+
+export function DevtoolsTab(props: DevtoolsTabProps) {
+  return (
+    <Tabs.Content
+      class="min-h-0 flex-1"
+      value={props.value}
+      asChild={(props) => (
+        <main
+          {...props()}
+          class="overflow-x-hidden overflow-y-auto px-2 py-1"
+        />
+      )}
+    >
+      {props.children}
+    </Tabs.Content>
   )
 }

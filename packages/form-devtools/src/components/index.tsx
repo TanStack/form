@@ -1,11 +1,19 @@
 import '../styles/index.css'
-import { MainPanel, ThemeContextProvider } from '@tanstack/devtools-ui'
-import { PortalProvider } from './ui/portal'
+import { ThemeContextProvider } from '@tanstack/devtools-ui'
 import { TooltipProvider } from './ui/tooltip'
 import { Shell } from './Shell'
 import type { TanStackDevtoolsPluginProps } from '@tanstack/devtools'
 import type { FormDevtoolsInit } from '../core'
+import type { JSX } from 'solid-js'
 import { FormSelectorProvider } from '@/contexts/formSelectorContext'
+
+const wrapperStyle: JSX.CSSProperties = {
+  height: '100%',
+  width: '100%',
+  'overflow-y': 'hidden',
+  'overflow-x': 'hidden',
+  position: 'relative',
+}
 
 type DevtoolsProps = TanStackDevtoolsPluginProps & FormDevtoolsInit
 
@@ -14,14 +22,13 @@ export default function App(props: DevtoolsProps) {
     <ThemeContextProvider theme={props.theme}>
       <TooltipProvider openDelay={0} interactive>
         <FormSelectorProvider>
-          <MainPanel>
-            <PortalProvider
-              class="tanstack-form-devtools w-full h-full"
-              data-theme={props.theme}
-            >
-              <Shell adapterName={props.adapterName} />
-            </PortalProvider>
-          </MainPanel>
+          <div
+            class="tanstack-form-devtools"
+            data-theme={props.theme}
+            style={wrapperStyle}
+          >
+            <Shell adapterName={props.adapterName} theme={props.theme} />
+          </div>
         </FormSelectorProvider>
       </TooltipProvider>
     </ThemeContextProvider>
