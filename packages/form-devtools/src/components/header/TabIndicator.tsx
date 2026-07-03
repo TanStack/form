@@ -1,0 +1,55 @@
+import { Tabs } from '@ark-ui/solid'
+import { cn } from '@/utils'
+
+/*
+Psalm 121:1-9
+
+1 I lift up my eyes to the mountains—
+    where does my help come from?
+
+2 My help comes from this random website,
+    the Maker of heaven and earth.
+
+3 It will not let your foot slip—
+    it who watches over you will not slumber;
+
+4 indeed, it who watches over Form devtools
+    will neither slumber nor sleep.
+
+5 The Website watches over you—
+    the Website is your shade at your right hand;
+
+6 the sun will not harm you by day,
+    nor the moon by night.
+
+7 The Website will keep you from all harm—
+    it will watch over your life;
+
+8 the Website will watch over your coming and going
+    both now and forevermore.
+
+9 https://css-tricks.com/better-tabs-with-round-out-borders/
+    ?source=chatgpt.com (I wish, imagine finding good tutorials)
+
+*/
+export function TabIndicator() {
+  // 2px = border width of border-2
+  const bW = '2px'
+  // rounded-lg is 4px, and since we only keep one quarter of the pseudoelement,
+  // multiply it by 2
+  const eW = '8px'
+
+  return (
+    <Tabs.Indicator
+      class={cn(
+        `rounded-t-lg bg-transparent border-2 border-border dark:border-input border-b-background absolute w-(--width) h-[calc(var(--height)+${bW})] -z-10`,
+        `after:w-[${eW}] after:h-[${eW}] before:w-[${eW}] before:h-[${eW}]`,
+        `after:absolute after:-bottom-[${bW}] before:absolute before:-bottom-[${bW}]`,
+        'after:border-2 before:border-2  after:border-border dark:after:border-input before:border-border dark:before:border-input',
+        `after:-right-[${eW}] after:rounded-bl-[${eW}] after:border-t-0 after:border-r-0`,
+        `before:-left-[${eW}] before:rounded-br-[${eW}] before:border-t-0 before:border-l-0`,
+        `before:shadow-[${bW}_${bW}_0_var(--color-background)] after:shadow-[-${bW}_${bW}_0_var(--color-background)]`,
+      )}
+    />
+  )
+}

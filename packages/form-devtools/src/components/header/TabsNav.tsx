@@ -1,7 +1,7 @@
 import { Tabs } from '@ark-ui/solid'
 import { Button } from '../ui/button'
+import { TabIndicator } from './TabIndicator'
 import type { ParentProps } from 'solid-js'
-import { cn } from '@/utils'
 
 export type FormTabValue = 'field' | 'form' | 'validation'
 
@@ -28,7 +28,7 @@ function FormTabsTrigger(props: FormTabsTriggerProps) {
       asChild={(props) => (
         <Button
           variant="ghost"
-          class="rounded-b-none h-10 pb-2 border-b-0"
+          class="rounded-b-none h-10 pb-2 px-4 border-b-0 hover:bg-background"
           {...props()}
         ></Button>
       )}
@@ -45,14 +45,7 @@ export function TabsNav() {
         <FormTabsTrigger value="field">Field</FormTabsTrigger>
         <FormTabsTrigger value="form">Form</FormTabsTrigger>
         <FormTabsTrigger value="validation">Validation</FormTabsTrigger>
-        <Tabs.Indicator
-          class={cn(
-            'absolute w-(--width) h-[calc(var(--height)+2px)] -z-10',
-            'bg-transparent border-border dark:border-input',
-            'border-2 border-b-background',
-            'rounded-t-lg',
-          )}
-        />
+        <TabIndicator />
       </Tabs.List>
     </FormTabsRoot>
   )
