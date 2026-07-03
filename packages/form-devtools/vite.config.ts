@@ -4,11 +4,16 @@ import solid from 'vite-plugin-solid'
 import tailwindcss from '@tailwindcss/vite'
 import packageJson from './package.json' with { type: 'json' }
 
-const componentsEntry = path.resolve(__dirname, './src/components/index.tsx')
+const normalizeChunkPath = (id: string | null | undefined) =>
+  id?.replaceAll(path.sep, '/')
+
+const componentsEntry = normalizeChunkPath(
+  path.resolve(__dirname, './src/components/index.tsx'),
+)
 
 const isBareImport = (id: string) =>
   !id.startsWith('.') &&
-  !id.startsWith('/') &&
+  !path.isAbsolute(id) &&
   !id.startsWith('\0') &&
   !id.startsWith('@/') &&
   id !== '@'
@@ -20,7 +25,13 @@ export default defineConfig({
     {
       name: 'form-devtools-css-entry',
       renderChunk(code, chunk) {
-        if (chunk.facadeModuleId !== componentsEntry) {
+        const isComponentsChunk =
+          normalizeChunkPath(chunk.facadeModuleId) === componentsEntry ||
+          Object.keys(chunk.modules).some(
+            (moduleId) => normalizeChunkPath(moduleId) === componentsEntry,
+          )
+
+        if (!isComponentsChunk) {
           return null
         }
 
