@@ -52,7 +52,7 @@ interface HeaderProps {
 
 export function Header(props: HeaderProps) {
   return (
-    <header class="px-3 pt-2 flex flex-wrap items-start gap-x-5 gap-y-2 border-b-2 border-border dark:border-input [--tab-indicator-bottom:calc(-0.5rem-2px)]">
+    <header class="px-3 pt-2 flex flex-wrap items-start gap-x-5 gap-y-2 border-b-2 border-border [--tab-indicator-bottom:calc(-0.5rem-2px)]">
       <div class="pb-2">
         <FormLogo adapterName={props.adapterName} />
       </div>

@@ -141,6 +141,22 @@
   }
 }
 
+@layer components {
+  .tanstack-form-devtools .form-tab-indicator {
+    --tab-indicator-border: var(--border);
+    border-color: var(--tab-indicator-border);
+  }
+
+  .tanstack-form-devtools[data-theme='dark'] .form-tab-indicator {
+    --tab-indicator-border: oklch(0.232 0.004 49.25);
+  }
+
+  .tanstack-form-devtools .form-tab-indicator::before,
+  .tanstack-form-devtools .form-tab-indicator::after {
+    border-color: var(--tab-indicator-border);
+  }
+}
+
 .tanstack-form-devtools {
   @import 'tailwindcss/utilities.css';
 }

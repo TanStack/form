@@ -37,6 +37,6 @@ export function TabIndicator() {
   // multiply it by 2
 
   return (
-    <Tabs.Indicator class="rounded-t-lg bg-transparent border-2 border-border dark:border-input border-b-background absolute w-(--width) h-[calc(var(--height)+2px)] -z-10 after:w-[8px] after:h-[8px] before:w-[8px] before:h-[8px] after:absolute after:-bottom-[2px] before:absolute before:-bottom-[2px] after:border-2 before:border-2  after:border-border dark:after:border-input before:border-border dark:before:border-input after:-right-[8px] after:rounded-bl-[8px] after:border-t-0 after:border-r-0 before:-left-[8px] before:rounded-br-[8px] before:border-t-0 before:border-l-0 before:shadow-[2px_2px_0_var(--color-background)] after:shadow-[-2px_2px_0_var(--color-background)]" />
+    <Tabs.Indicator class="form-tab-indicator rounded-t-lg bg-transparent border-2 border-b-background absolute w-(--width) h-[calc(var(--height)+2px)] -z-10 after:w-[8px] after:h-[8px] before:w-[8px] before:h-[8px] after:absolute after:-bottom-[2px] before:absolute before:-bottom-[2px] after:border-2 before:border-2 after:-right-[8px] after:rounded-bl-[8px] after:border-t-0 after:border-r-0 before:-left-[8px] before:rounded-br-[8px] before:border-t-0 before:border-l-0 before:shadow-[2px_2px_0_var(--background)] after:shadow-[-2px_2px_0_var(--background)]" />
   )
 }
