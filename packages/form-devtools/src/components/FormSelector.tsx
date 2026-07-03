@@ -16,11 +16,7 @@ interface FormSelectOption {
   disabled?: boolean
 }
 
-interface FormSelectorProps {
-  class?: string
-}
-
-export function FormSelector(props: FormSelectorProps) {
+export function FormSelector() {
   const { mountedForms, selectedFormInstanceId, setSelectedForm } =
     useFormSelector()
   const formOptions = createMemo<Array<FormSelectOption>>(() => {
@@ -53,9 +49,11 @@ export function FormSelector(props: FormSelectorProps) {
       onValueChange={(details) => {
         setSelectedForm(details.value[0] ?? null)
       }}
-      class={props.class}
     >
-      <SelectTrigger aria-label="Select form">
+      <SelectTrigger
+        aria-label="Select form"
+        class="rounded-l-none border-l-0 min-w-24"
+      >
         <SelectValue placeholder="Select form" />
       </SelectTrigger>
       <SelectContent position="popper">
