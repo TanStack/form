@@ -1,11 +1,11 @@
-import { Header as UIHeader } from '@tanstack/devtools-ui'
 import { RefreshCcwIcon } from 'lucide-solid'
-import { FormLogo } from './ui/FormLogo'
+import { FormLogo } from '../ui/FormLogo'
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
+import { Button } from '../ui/button'
+import { ButtonGroup } from '../ui/button-group'
+import { Code } from '../ui/code'
 import { FormSelector } from './FormSelector'
-import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip'
-import { Button } from './ui/button'
-import { ButtonGroup } from './ui/button-group'
-import { Code } from './ui/code'
+import { TabsNav } from './TabsNav'
 import { formDevtoolsEventClient } from '@/eventClient.lib'
 
 interface CryptidNameHintProps {
@@ -52,12 +52,15 @@ interface HeaderProps {
 
 export function Header(props: HeaderProps) {
   return (
-    <UIHeader class="border-b-0">
-      <FormLogo adapterName={props.adapterName} />
-      <ButtonGroup class="ms-5 me-auto">
+    <header class="px-3 pt-2 flex flex-wrap items-start gap-x-5 gap-y-2 border-b-2 border-border dark:border-input [--tab-indicator-bottom:calc(-0.5rem-2px)]">
+      <div class="pb-2">
+        <FormLogo adapterName={props.adapterName} />
+      </div>
+      <ButtonGroup class="pb-2">
         <CrypticNameHint class="icon-sm" />
         <FormSelector />
       </ButtonGroup>
-    </UIHeader>
+      <TabsNav />
+    </header>
   )
 }

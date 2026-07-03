@@ -7,7 +7,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from './ui/select'
+} from '../ui/select'
 import { useFormSelector } from '@/contexts/formSelectorContext'
 
 interface FormSelectOption {

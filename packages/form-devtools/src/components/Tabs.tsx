@@ -57,12 +57,5 @@ interface TabContentProps extends ParentProps {
 }
 
 export function FormTabContent(props: TabContentProps) {
-  return (
-    <Tabs.Content
-      value={props.value}
-      class="border-t-2 border-border dark:border-input"
-    >
-      {props.children}
-    </Tabs.Content>
-  )
+  return <Tabs.Content value={props.value}>{props.children}</Tabs.Content>
 }

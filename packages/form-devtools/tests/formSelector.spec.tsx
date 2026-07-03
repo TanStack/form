@@ -2,7 +2,7 @@ import { render } from 'solid-js/web'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import '../src'
 import { InternalFormApi } from '@tanstack/form-core/internals'
-import { FormSelector } from '../src/components/FormSelector'
+import { FormSelector } from '../src/components/header/FormSelector'
 import {
   FormSelectorProvider,
   useFormSelector,
