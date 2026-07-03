@@ -28,7 +28,7 @@ function FormTabsTrigger(props: FormTabsTriggerProps) {
       asChild={(props) => (
         <Button
           variant="ghost"
-          class="rounded-b-none h-10 pb-2 px-4 border-b-0 hover:bg-background"
+          class="rounded-b-none h-10 pb-2 px-4 border-b-0 hover:bg-transparent"
           {...props()}
         ></Button>
       )}
