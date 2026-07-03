@@ -1,6 +1,6 @@
 import { Header as UIHeader } from '@tanstack/devtools-ui'
 import { InfoIcon } from 'lucide-solid'
-import { FormLogo } from './FormLogo'
+import { FormLogo } from './ui/FormLogo'
 import { FormSelector } from './FormSelector'
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip'
 import { Button } from './ui/button'
@@ -37,7 +37,7 @@ interface HeaderProps {
 
 export function Header(props: HeaderProps) {
   return (
-    <UIHeader>
+    <UIHeader class="border-b-0">
       <FormLogo adapterName={props.adapterName} />
       <FormSelector class="ms-5" />
       <CrypticNameHint class="icon-sm me-auto" />
