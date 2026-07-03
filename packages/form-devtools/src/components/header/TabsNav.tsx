@@ -16,7 +16,7 @@ function FormTabsTrigger(props: FormTabsTriggerProps) {
       asChild={(props) => (
         <Button
           variant="ghost"
-          class="rounded-b-none h-10 pb-2 px-4 border-b-0 bg-transparent hover:bg-transparent"
+          class="rounded-b-none h-10 pb-2 px-4 border-b-0 bg-transparent hover:bg-transparent dark:bg-transparent dark:hover:bg-transparent"
           {...props()}
         ></Button>
       )}
@@ -49,7 +49,7 @@ export function DevtoolsTab(props: DevtoolsTabProps) {
       asChild={(props) => (
         <main
           {...props()}
-          class="overflow-x-hidden overflow-y-auto px-2 py-1"
+          class="overflow-x-hidden overflow-y-auto px-2 py-1 border-b border-border"
         />
       )}
     >
