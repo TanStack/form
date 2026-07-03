@@ -1,5 +1,4 @@
 import { Tabs } from '@ark-ui/solid'
-import { cn } from '@/utils'
 
 /*
 Psalm 121:1-9
@@ -34,22 +33,10 @@ Psalm 121:1-9
 */
 export function TabIndicator() {
   // 2px = border width of border-2
-  const bW = '2px'
   // rounded-lg is 4px, and since we only keep one quarter of the pseudoelement,
   // multiply it by 2
-  const eW = '8px'
 
   return (
-    <Tabs.Indicator
-      class={cn(
-        `rounded-t-lg bg-transparent border-2 border-border dark:border-input border-b-background absolute w-(--width) h-[calc(var(--height)+${bW})] -z-10`,
-        `after:w-[${eW}] after:h-[${eW}] before:w-[${eW}] before:h-[${eW}]`,
-        `after:absolute after:-bottom-[${bW}] before:absolute before:-bottom-[${bW}]`,
-        'after:border-2 before:border-2  after:border-border dark:after:border-input before:border-border dark:before:border-input',
-        `after:-right-[${eW}] after:rounded-bl-[${eW}] after:border-t-0 after:border-r-0`,
-        `before:-left-[${eW}] before:rounded-br-[${eW}] before:border-t-0 before:border-l-0`,
-        `before:shadow-[${bW}_${bW}_0_var(--color-background)] after:shadow-[-${bW}_${bW}_0_var(--color-background)]`,
-      )}
-    />
+    <Tabs.Indicator class="rounded-t-lg bg-transparent border-2 border-border dark:border-input border-b-background absolute w-(--width) h-[calc(var(--height)+2px)] -z-10 after:w-[8px] after:h-[8px] before:w-[8px] before:h-[8px] after:absolute after:-bottom-[2px] before:absolute before:-bottom-[2px] after:border-2 before:border-2  after:border-border dark:after:border-input before:border-border dark:before:border-input after:-right-[8px] after:rounded-bl-[8px] after:border-t-0 after:border-r-0 before:-left-[8px] before:rounded-br-[8px] before:border-t-0 before:border-l-0 before:shadow-[2px_2px_0_var(--color-background)] after:shadow-[-2px_2px_0_var(--color-background)]" />
   )
 }
