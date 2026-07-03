@@ -1,5 +1,5 @@
 import { installDevtoolsBridge, uuid } from '@tanstack/form-core/internals'
-import { emitFormDevtoolsEvent, onFormDevtoolsEvent } from './eventClient.lib'
+import { formDevtoolsEventClient } from './eventClient.lib'
 import type {
   AnyInternalFormApi,
   FormDevtoolsBridge,
@@ -28,7 +28,7 @@ function getMountedFormsSnapshot(): Array<DevtoolsMountedForm> {
 }
 
 function emitMountedFormsChanged(): void {
-  emitFormDevtoolsEvent('mounted-forms-changed', {
+  formDevtoolsEventClient.emit('mounted-forms-changed', {
     forms: getMountedFormsSnapshot(),
   })
 }
@@ -78,7 +78,7 @@ export function createFormDevtoolsBridge(): FormDevtoolsBridge {
   }
 }
 
-onFormDevtoolsEvent('request-mounted-forms', () => {
+formDevtoolsEventClient.on('request-mounted-forms', () => {
   emitMountedFormsChanged()
 })
 

@@ -7,10 +7,7 @@ import {
   onMount,
   useContext,
 } from 'solid-js'
-import {
-  emitFormDevtoolsEvent,
-  onFormDevtoolsEvent,
-} from '../eventClient.lib'
+import { formDevtoolsEventClient } from '../eventClient.lib'
 import type { DevtoolsMountedForm } from '../eventClientTypes'
 import type { Accessor, ParentComponent } from 'solid-js'
 
@@ -56,14 +53,14 @@ function createFormSelectorStore(): FormSelectorContextValue {
   }
 
   onMount(() => {
-    const unsubscribeMountedForms = onFormDevtoolsEvent(
+    const unsubscribeMountedForms = formDevtoolsEventClient.on(
       'mounted-forms-changed',
       (event) => {
         setMountedForms(event.payload.forms)
       },
     )
 
-    emitFormDevtoolsEvent('request-mounted-forms', {})
+    formDevtoolsEventClient.emit('request-mounted-forms', {})
 
     onCleanup(() => {
       unsubscribeMountedForms()

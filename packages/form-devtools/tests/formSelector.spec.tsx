@@ -1,5 +1,5 @@
 import { render } from 'solid-js/web'
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import '../src'
 import { InternalFormApi } from '@tanstack/form-core/internals'
 import { FormSelector } from '../src/components/FormSelector'
@@ -10,15 +10,38 @@ import {
 import type { FormSelectorContextValue } from '../src/contexts/formSelectorContext'
 import type { JSX } from 'solid-js'
 
-function installEventClientHandshake() {
+interface EventClientDispatchEvent {
+  type: string
+  payload: unknown
+  pluginId?: string
+}
+
+let disposeEventClientBus: (() => void) | undefined
+
+function installEventClientBus() {
   const onConnect = () => {
     window.dispatchEvent(new CustomEvent('tanstack-connect-success'))
   }
+  const onDispatch = (event: Event) => {
+    const devtoolsEvent = (event as CustomEvent<EventClientDispatchEvent>)
+      .detail
+
+    window.dispatchEvent(
+      new CustomEvent(devtoolsEvent.type, { detail: devtoolsEvent }),
+    )
+    window.dispatchEvent(
+      new CustomEvent('tanstack-devtools-global', {
+        detail: devtoolsEvent,
+      }),
+    )
+  }
 
   window.addEventListener('tanstack-connect', onConnect)
+  window.addEventListener('tanstack-dispatch-event', onDispatch)
 
   return () => {
     window.removeEventListener('tanstack-connect', onConnect)
+    window.removeEventListener('tanstack-dispatch-event', onDispatch)
   }
 }
 
@@ -30,7 +53,6 @@ function CaptureSelector(props: {
 }
 
 function renderFormSelector(children?: () => JSX.Element) {
-  const disposeHandshake = installEventClientHandshake()
   let selector: FormSelectorContextValue | undefined
   const container = document.createElement('div')
   document.body.append(container)
@@ -60,12 +82,20 @@ function renderFormSelector(children?: () => JSX.Element) {
     dispose: () => {
       dispose()
       container.remove()
-      disposeHandshake()
     },
   }
 }
 
 describe('form selector context', () => {
+  beforeEach(() => {
+    disposeEventClientBus = installEventClientBus()
+  })
+
+  afterEach(() => {
+    disposeEventClientBus?.()
+    disposeEventClientBus = undefined
+  })
+
   it('receives forms mounted before the provider mounts once form-devtools is imported', () => {
     const form = new InternalFormApi({
       formId: 'profile',
