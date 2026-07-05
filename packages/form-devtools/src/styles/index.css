@@ -6,6 +6,7 @@
 
 @import 'tw-animate-css';
 @import './shadcn_port.css';
+@import './json_tree.css';
 
 @custom-variant dark (&:is(.tanstack-form-devtools[data-theme=dark], .tanstack-form-devtools[data-theme=dark] *));
 
@@ -14,6 +15,22 @@
 }
 
 @theme inline {
+  --color-tab-indicator: var(--tab-indicator);
+  --color-brand: var(--brand);
+  --color-json-brace: var(--muted-foreground);
+  --color-json-colon: var(--muted-foreground);
+  --color-json-key: var(--json-key);
+  --color-json-number: var(--json-number);
+  --color-json-boolean: var(--json-boolean);
+  --color-json-nil: var(--json-nil);
+  --color-json-error: var(--json-error);
+  --color-json-string: var(--json-string);
+  --color-json-function: var(--json-function);
+  --color-json-regex: var(--json-regex);
+  --color-json-date: var(--json-date);
+  --color-json-constructor: var(--json-constructor);
+  --color-json-preview: var(--muted-foreground);
+
   --font-heading: var(--font-sans);
   --font-sans: 'Inter Variable', sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
@@ -47,7 +64,6 @@
   --color-card: var(--card);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
-  --color-tab-indicator: var(--tab-indicator);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -58,14 +74,27 @@
 }
 
 .tanstack-form-devtools {
+  --brand: oklch(79.171% 0.16292 82.439);
+  --tab-indicator: oklch(0.923 0.003 48.717);
+  --json-key: #0056a2ff;
+  --json-number: #00855aff;
+  --json-boolean: #0034faff;
+  --json-error: #d82e3aff;
+  --json-nil: #d82e3aff;
+  --json-string: #b0831cff;
+  --json-regex: #ac2e8fff;
+  --json-date: #ac2e8fff;
+  --json-function: #ac2e8fff;
+  --json-constructor: #00855aff;
+
   --background: oklch(1 0 0);
   --foreground: oklch(0.147 0.004 49.25);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.147 0.004 49.25);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.147 0.004 49.25);
-  --primary: oklch(0.555 0.163 48.998);
-  --primary-foreground: oklch(0.987 0.022 95.277);
+  --primary: oklch(0.852 0.199 91.936);
+  --primary-foreground: oklch(0.147 0.004 49.25);
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
   --muted: oklch(0.97 0.001 106.424);
@@ -76,32 +105,41 @@
   --border: oklch(0.923 0.003 48.717);
   --input: oklch(0.923 0.003 48.717);
   --ring: oklch(0.709 0.01 56.259);
-  --chart-1: oklch(0.879 0.169 91.605);
-  --chart-2: oklch(0.769 0.188 70.08);
-  --chart-3: oklch(0.666 0.179 58.318);
-  --chart-4: oklch(0.555 0.163 48.998);
-  --chart-5: oklch(0.473 0.137 46.201);
+  --chart-1: oklch(0.905 0.182 98.111);
+  --chart-2: oklch(79.171% 0.16292 82.439);
+  --chart-3: oklch(0.681 0.162 75.834);
+  --chart-4: oklch(0.554 0.135 66.442);
+  --chart-5: oklch(0.476 0.114 61.907);
   --radius: 0.625rem;
   --sidebar: oklch(0.985 0.001 106.423);
   --sidebar-foreground: oklch(0.147 0.004 49.25);
-  --sidebar-primary: oklch(0.666 0.179 58.318);
-  --sidebar-primary-foreground: oklch(0.987 0.022 95.277);
+  --sidebar-primary: oklch(0.852 0.199 91.936);
+  --sidebar-primary-foreground: oklch(0.147 0.004 49.25);
   --sidebar-accent: oklch(0.97 0.001 106.424);
   --sidebar-accent-foreground: oklch(0.216 0.006 56.043);
   --sidebar-border: oklch(0.923 0.003 48.717);
   --sidebar-ring: oklch(0.709 0.01 56.259);
-  --tab-indicator: oklch(0.923 0.003 48.717);
 }
 
 .tanstack-form-devtools[data-theme='dark'] {
+  --tab-indicator: oklch(0.232 0.004 49.25);
+  --json-key: #8edefcff;
+  --json-number: #b3cdaaff;
+  --json-boolean: #3e9fd4ff;
+  --json-error: #ff4448ff;
+  --json-nil: #ff4448ff;
+  --json-string: #d59077ff;
+  --json-regex: #e174bcff;
+  --json-date: #e174bcff;
+  --json-function: #e174bcff;
+  --json-constructor: #b3cdaaff;
+
   --background: oklch(0.147 0.004 49.25);
   --foreground: oklch(0.985 0.001 106.423);
   --card: oklch(0.216 0.006 56.043);
   --card-foreground: oklch(0.985 0.001 106.423);
   --popover: oklch(0.216 0.006 56.043);
   --popover-foreground: oklch(0.985 0.001 106.423);
-  --primary: oklch(0.473 0.137 46.201);
-  --primary-foreground: oklch(0.987 0.022 95.277);
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.268 0.007 34.298);
@@ -112,25 +150,17 @@
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.553 0.013 58.071);
-  --chart-1: oklch(0.879 0.169 91.605);
-  --chart-2: oklch(0.769 0.188 70.08);
-  --chart-3: oklch(0.666 0.179 58.318);
-  --chart-4: oklch(0.555 0.163 48.998);
-  --chart-5: oklch(0.473 0.137 46.201);
   --sidebar: oklch(0.216 0.006 56.043);
   --sidebar-foreground: oklch(0.985 0.001 106.423);
-  --sidebar-primary: oklch(0.769 0.188 70.08);
-  --sidebar-primary-foreground: oklch(0.279 0.077 45.635);
   --sidebar-accent: oklch(0.268 0.007 34.298);
   --sidebar-accent-foreground: oklch(0.985 0.001 106.423);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.553 0.013 58.071);
-  --tab-indicator: oklch(0.232 0.004 49.25);
 }
 
 @layer base {
   .tanstack-form-devtools {
-    @apply bg-background font-sans text-foreground;
+    @apply bg-background font-sans text-foreground text-base;
   }
 
   .tanstack-form-devtools,
@@ -146,4 +176,32 @@
 
 .tanstack-form-devtools {
   @import 'tailwindcss/utilities.css';
+}
+
+/*
+Ark UI recommends disabling native scroll for this kinda stuff
+https://ark-ui.com/docs/components/scroll-area#required-style
+*/
+.tanstack-form-devtools [data-scope='scroll-area'][data-part='viewport'] {
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.tanstack-form-devtools
+  [data-scope='scroll-area'][data-part='viewport']::-webkit-scrollbar {
+  display: none;
+}
+
+.tanstack-form-devtools
+  [data-scope='scroll-area'][data-part='scrollbar'][data-orientation='vertical']:not(
+    [data-overflow-y]
+  ),
+.tanstack-form-devtools
+  [data-scope='scroll-area'][data-part='scrollbar'][data-orientation='horizontal']:not(
+    [data-overflow-x]
+  ),
+.tanstack-form-devtools
+  [data-scope='scroll-area'][data-part='corner'][data-state='hidden'] {
+  display: none;
 }

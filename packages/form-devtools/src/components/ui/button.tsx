@@ -47,7 +47,8 @@ const buttonVariants = cva(
   },
 )
 
-type ButtonProps = HTMLArkProps<'button'> & VariantProps<typeof buttonVariants>
+export type ButtonProps = HTMLArkProps<'button'> &
+  VariantProps<typeof buttonVariants>
 
 function Button(props: ButtonProps) {
   const [local, buttonProps] = splitProps(props, ['class', 'variant', 'size'])

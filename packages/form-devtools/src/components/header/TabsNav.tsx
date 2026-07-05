@@ -1,5 +1,7 @@
 import { Tabs } from '@ark-ui/solid'
+import { Show } from 'solid-js'
 import { Button } from '../ui/button'
+import { ScrollArea } from '../ui/scroll-area'
 import { TabIndicator } from './TabIndicator'
 import type { ParentProps } from 'solid-js'
 
@@ -39,6 +41,7 @@ export function TabsNav() {
 
 interface DevtoolsTabProps extends ParentProps {
   value: FormTabValue
+  disableScroll?: boolean
 }
 
 export function DevtoolsTab(props: DevtoolsTabProps) {
@@ -49,11 +52,13 @@ export function DevtoolsTab(props: DevtoolsTabProps) {
       asChild={(props) => (
         <main
           {...props()}
-          class="overflow-x-hidden overflow-y-auto px-2 py-1 border-b border-border"
+          class="overflow-hidden px-2 py-1 border-b border-border"
         />
       )}
     >
-      {props.children}
+      <Show when={!props.disableScroll} fallback={props.children}>
+        <ScrollArea class="size-full">{props.children}</ScrollArea>
+      </Show>
     </Tabs.Content>
   )
 }

@@ -1,0 +1,96 @@
+@layer components {
+  .tanstack-form-devtools .ark-json-root {
+    --indent-size: 0.5rem;
+
+    & [data-part='branch'][data-depth='1'],
+    & [data-part='item'][data-depth='1'] {
+      @apply p-2;
+    }
+
+    & [data-part='item']:hover {
+      @apply bg-muted transition-transform hover:translate-x-0.75;
+    }
+
+    & [data-part='branch']:has(> [data-part='branch-control']:hover) {
+      @apply bg-muted;
+    }
+
+    & [data-part='branch']:not([data-depth='1']):hover {
+      @apply transition-transform hover:translate-x-0.75;
+    }
+
+    & [data-part='item'] {
+      @apply relative rounded-sm;
+      --indicator-left: calc((var(--depth) - 1) * 1rem - 1rem);
+      padding-inline-start: calc((var(--depth) - 1) * 1rem + 0.2rem);
+    }
+
+    & [data-part='branch'] {
+      @apply rounded-sm;
+    }
+
+    & [data-part='branch-control'] {
+      @apply relative ps-4 flex items-center;
+      --indicator-left: calc((var(--depth) - 1) * 1rem - 1rem);
+      padding-inline-start: calc((var(--depth) - 1) * 1rem + 0.2rem);
+      &[data-depth='1'] {
+        padding-inline-start: 1.2rem;
+        --indicator-left: 0;
+      }
+    }
+
+    & [data-part='branch-indicator'] {
+      @apply absolute origin-center data-[state='open']:rotate-90;
+      left: var(--indicator-left);
+    }
+
+    & [data-part='branch-indent-guide'] {
+      @apply w-px h-full bg-json-key;
+    }
+
+    & [data-kind='preview'] {
+      @apply select-none;
+    }
+
+    & [data-type='string'] {
+      @apply text-json-string;
+    }
+    & [data-type='number'] {
+      @apply text-json-number;
+    }
+    & [data-type='boolean'] {
+      @apply text-json-boolean;
+    }
+    & [data-type='null'],
+    & [data-type='undefined'] {
+      @apply text-json-nil;
+    }
+    & [data-type='function'] {
+      @apply text-json-function;
+    }
+    & [data-type='date'] {
+      @apply text-json-date;
+    }
+    & [data-type='error'] {
+      @apply text-json-error;
+    }
+    & [data-type='regex'] {
+      @apply text-json-regex;
+    }
+    & [data-kind='brace'] {
+      @apply text-json-brace;
+    }
+    & [data-kind='key'] {
+      @apply text-json-key;
+    }
+    & [data-kind='preview-text'] {
+      @apply text-json-preview italic text-xs;
+    }
+    & [data-kind='colon'] {
+      @apply mx-1 text-json-colon;
+    }
+    & [data-kind='constructor'] {
+      @apply text-json-constructor;
+    }
+  }
+}
