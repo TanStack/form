@@ -7,6 +7,17 @@ import { cn } from '@/utils'
 // design-system API, variants, and styling.
 // https://ui.shadcn.com/
 
+/**
+ * A styled scroll container with a viewport, corner, and default vertical
+ * scrollbar.
+ *
+ * @example
+ * ```tsx
+ * <ScrollArea class="h-40">
+ *   <div class="p-4">Scrollable content</div>
+ * </ScrollArea>
+ * ```
+ */
 function ScrollArea(props: ScrollAreaPrimitive.RootProps) {
   const [local, others] = splitProps(props, ['class', 'children'])
 
@@ -30,6 +41,24 @@ function ScrollArea(props: ScrollAreaPrimitive.RootProps) {
   )
 }
 
+/**
+ * An optional scrollbar part for ScrollArea.
+ *
+ * ScrollArea renders a vertical scrollbar by default; add ScrollBar when a
+ * horizontal scrollbar is needed for wide content.
+ *
+ * @example
+ * ```tsx
+ * <ScrollArea class="w-72 whitespace-nowrap">
+ *   <div class="flex w-max gap-4 p-4">
+ *     <span>Overview</span>
+ *     <span>Analytics</span>
+ *     <span>Reports</span>
+ *   </div>
+ *   <ScrollBar orientation="horizontal" />
+ * </ScrollArea>
+ * ```
+ */
 function ScrollBar(props: ScrollAreaPrimitive.ScrollbarProps) {
   const [local, others] = splitProps(props, ['class', 'orientation'])
 

@@ -26,6 +26,20 @@ type TooltipProviderContextValue = {
 
 const TooltipProviderContext = createContext<TooltipProviderContextValue>()
 
+/**
+ * Provides default timing, positioning, and interaction behavior for nested
+ * tooltips.
+ *
+ * @example
+ * ```tsx
+ * <TooltipProvider>
+ *   <Tooltip>
+ *     <TooltipTrigger>Hover me</TooltipTrigger>
+ *     <TooltipContent>Helpful context</TooltipContent>
+ *   </Tooltip>
+ * </TooltipProvider>
+ * ```
+ */
 function TooltipProvider(props: TooltipProviderProps) {
   const [local] = splitProps(props, [
     'children',
@@ -47,6 +61,19 @@ function TooltipProvider(props: TooltipProviderProps) {
   )
 }
 
+/**
+ * The root component that coordinates tooltip trigger and content state.
+ *
+ * @example
+ * ```tsx
+ * <TooltipProvider>
+ *   <Tooltip>
+ *     <TooltipTrigger>Hover me</TooltipTrigger>
+ *     <TooltipContent>Helpful context</TooltipContent>
+ *   </Tooltip>
+ * </TooltipProvider>
+ * ```
+ */
 function Tooltip(props: TooltipPrimitive.RootProps) {
   const [local, others] = splitProps(props, [
     'children',
@@ -71,6 +98,19 @@ function Tooltip(props: TooltipPrimitive.RootProps) {
   )
 }
 
+/**
+ * The element that opens its associated TooltipContent on hover or focus.
+ *
+ * @example
+ * ```tsx
+ * <TooltipProvider>
+ *   <Tooltip>
+ *     <TooltipTrigger>Hover me</TooltipTrigger>
+ *     <TooltipContent>Helpful context</TooltipContent>
+ *   </Tooltip>
+ * </TooltipProvider>
+ * ```
+ */
 function TooltipTrigger(props: TooltipPrimitive.TriggerProps) {
   const [local, others] = splitProps(props, ['class'])
 
@@ -83,6 +123,19 @@ function TooltipTrigger(props: TooltipPrimitive.TriggerProps) {
   )
 }
 
+/**
+ * The floating tooltip surface shown for the associated TooltipTrigger.
+ *
+ * @example
+ * ```tsx
+ * <TooltipProvider>
+ *   <Tooltip>
+ *     <TooltipTrigger>Hover me</TooltipTrigger>
+ *     <TooltipContent>Helpful context</TooltipContent>
+ *   </Tooltip>
+ * </TooltipProvider>
+ * ```
+ */
 function TooltipContent(props: TooltipPrimitive.ContentProps) {
   const [local, others] = splitProps(props, ['children', 'class'])
 

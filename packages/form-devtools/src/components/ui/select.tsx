@@ -66,6 +66,28 @@ type SelectProps = Omit<
   collection?: ListCollection<SelectItemData>
 }
 
+/**
+ * The root component that owns select state and the available item collection.
+ *
+ * @example
+ * ```tsx
+ * <Select defaultValue={["general"]}>
+ *   <SelectTrigger>
+ *     <SelectValue placeholder="Choose area" />
+ *   </SelectTrigger>
+ *   <SelectContent>
+ *     <SelectScrollUpButton />
+ *     <SelectGroup>
+ *       <SelectLabel>Workspace</SelectLabel>
+ *       <SelectItem value="general">General</SelectItem>
+ *       <SelectSeparator />
+ *       <SelectItem value="billing">Billing</SelectItem>
+ *     </SelectGroup>
+ *     <SelectScrollDownButton />
+ *   </SelectContent>
+ * </Select>
+ * ```
+ */
 function Select(props: SelectProps) {
   const [local, others] = splitProps(props, [
     'children',
@@ -122,6 +144,28 @@ function Select(props: SelectProps) {
   )
 }
 
+/**
+ * Groups related SelectItem options within SelectContent.
+ *
+ * @example
+ * ```tsx
+ * <Select defaultValue={["general"]}>
+ *   <SelectTrigger>
+ *     <SelectValue placeholder="Choose area" />
+ *   </SelectTrigger>
+ *   <SelectContent>
+ *     <SelectScrollUpButton />
+ *     <SelectGroup>
+ *       <SelectLabel>Workspace</SelectLabel>
+ *       <SelectItem value="general">General</SelectItem>
+ *       <SelectSeparator />
+ *       <SelectItem value="billing">Billing</SelectItem>
+ *     </SelectGroup>
+ *     <SelectScrollDownButton />
+ *   </SelectContent>
+ * </Select>
+ * ```
+ */
 function SelectGroup(props: SelectPrimitive.ItemGroupProps) {
   const [local, others] = splitProps(props, ['class'])
 
@@ -134,6 +178,28 @@ function SelectGroup(props: SelectPrimitive.ItemGroupProps) {
   )
 }
 
+/**
+ * Displays the selected item label or placeholder inside a SelectTrigger.
+ *
+ * @example
+ * ```tsx
+ * <Select defaultValue={["general"]}>
+ *   <SelectTrigger>
+ *     <SelectValue placeholder="Choose area" />
+ *   </SelectTrigger>
+ *   <SelectContent>
+ *     <SelectScrollUpButton />
+ *     <SelectGroup>
+ *       <SelectLabel>Workspace</SelectLabel>
+ *       <SelectItem value="general">General</SelectItem>
+ *       <SelectSeparator />
+ *       <SelectItem value="billing">Billing</SelectItem>
+ *     </SelectGroup>
+ *     <SelectScrollDownButton />
+ *   </SelectContent>
+ * </Select>
+ * ```
+ */
 function SelectValue(props: SelectPrimitive.ValueTextProps) {
   const [local, others] = splitProps(props, ['class'])
 
@@ -150,6 +216,28 @@ type SelectTriggerProps = SelectPrimitive.TriggerProps & {
   size?: 'sm' | 'default'
 }
 
+/**
+ * The button-like control that opens the SelectContent popover.
+ *
+ * @example
+ * ```tsx
+ * <Select defaultValue={["general"]}>
+ *   <SelectTrigger>
+ *     <SelectValue placeholder="Choose area" />
+ *   </SelectTrigger>
+ *   <SelectContent>
+ *     <SelectScrollUpButton />
+ *     <SelectGroup>
+ *       <SelectLabel>Workspace</SelectLabel>
+ *       <SelectItem value="general">General</SelectItem>
+ *       <SelectSeparator />
+ *       <SelectItem value="billing">Billing</SelectItem>
+ *     </SelectGroup>
+ *     <SelectScrollDownButton />
+ *   </SelectContent>
+ * </Select>
+ * ```
+ */
 function SelectTrigger(props: SelectTriggerProps) {
   const [local, others] = splitProps(props, ['class', 'size', 'children'])
 
@@ -180,6 +268,28 @@ type SelectContentProps = SelectPrimitive.ContentProps & {
   align?: 'start' | 'center' | 'end'
 }
 
+/**
+ * The floating listbox surface that contains SelectItem options.
+ *
+ * @example
+ * ```tsx
+ * <Select defaultValue={["general"]}>
+ *   <SelectTrigger>
+ *     <SelectValue placeholder="Choose area" />
+ *   </SelectTrigger>
+ *   <SelectContent>
+ *     <SelectScrollUpButton />
+ *     <SelectGroup>
+ *       <SelectLabel>Workspace</SelectLabel>
+ *       <SelectItem value="general">General</SelectItem>
+ *       <SelectSeparator />
+ *       <SelectItem value="billing">Billing</SelectItem>
+ *     </SelectGroup>
+ *     <SelectScrollDownButton />
+ *   </SelectContent>
+ * </Select>
+ * ```
+ */
 function SelectContent(props: SelectContentProps) {
   const [local, others] = splitProps(props, [
     'class',
@@ -217,6 +327,28 @@ function SelectContent(props: SelectContentProps) {
   )
 }
 
+/**
+ * A muted label for a group of SelectItem options.
+ *
+ * @example
+ * ```tsx
+ * <Select defaultValue={["general"]}>
+ *   <SelectTrigger>
+ *     <SelectValue placeholder="Choose area" />
+ *   </SelectTrigger>
+ *   <SelectContent>
+ *     <SelectScrollUpButton />
+ *     <SelectGroup>
+ *       <SelectLabel>Workspace</SelectLabel>
+ *       <SelectItem value="general">General</SelectItem>
+ *       <SelectSeparator />
+ *       <SelectItem value="billing">Billing</SelectItem>
+ *     </SelectGroup>
+ *     <SelectScrollDownButton />
+ *   </SelectContent>
+ * </Select>
+ * ```
+ */
 function SelectLabel(props: SelectPrimitive.ItemGroupLabelProps) {
   const [local, others] = splitProps(props, ['class'])
 
@@ -237,6 +369,28 @@ type SelectItemProps = Omit<SelectPrimitive.ItemProps, 'children' | 'item'> & {
   value: string
 }
 
+/**
+ * A selectable option that registers itself with the parent Select collection.
+ *
+ * @example
+ * ```tsx
+ * <Select defaultValue={["general"]}>
+ *   <SelectTrigger>
+ *     <SelectValue placeholder="Choose area" />
+ *   </SelectTrigger>
+ *   <SelectContent>
+ *     <SelectScrollUpButton />
+ *     <SelectGroup>
+ *       <SelectLabel>Workspace</SelectLabel>
+ *       <SelectItem value="general">General</SelectItem>
+ *       <SelectSeparator />
+ *       <SelectItem value="billing">Billing</SelectItem>
+ *     </SelectGroup>
+ *     <SelectScrollDownButton />
+ *   </SelectContent>
+ * </Select>
+ * ```
+ */
 function SelectItem(props: SelectItemProps) {
   const [local, others] = splitProps(props, [
     'class',
@@ -289,6 +443,28 @@ function SelectItem(props: SelectItemProps) {
   )
 }
 
+/**
+ * A visual divider between groups or related SelectItem options.
+ *
+ * @example
+ * ```tsx
+ * <Select defaultValue={["general"]}>
+ *   <SelectTrigger>
+ *     <SelectValue placeholder="Choose area" />
+ *   </SelectTrigger>
+ *   <SelectContent>
+ *     <SelectScrollUpButton />
+ *     <SelectGroup>
+ *       <SelectLabel>Workspace</SelectLabel>
+ *       <SelectItem value="general">General</SelectItem>
+ *       <SelectSeparator />
+ *       <SelectItem value="billing">Billing</SelectItem>
+ *     </SelectGroup>
+ *     <SelectScrollDownButton />
+ *   </SelectContent>
+ * </Select>
+ * ```
+ */
 function SelectSeparator(props: JSX.HTMLElementTags['div']) {
   const [local, others] = splitProps(props, ['class'])
 
@@ -303,6 +479,29 @@ function SelectSeparator(props: JSX.HTMLElementTags['div']) {
   )
 }
 
+/**
+ * An optional scroll affordance for overflowing SelectContent above the visible
+ * list.
+ *
+ * @example
+ * ```tsx
+ * <Select defaultValue={["general"]}>
+ *   <SelectTrigger>
+ *     <SelectValue placeholder="Choose area" />
+ *   </SelectTrigger>
+ *   <SelectContent>
+ *     <SelectScrollUpButton />
+ *     <SelectGroup>
+ *       <SelectLabel>Workspace</SelectLabel>
+ *       <SelectItem value="general">General</SelectItem>
+ *       <SelectSeparator />
+ *       <SelectItem value="billing">Billing</SelectItem>
+ *     </SelectGroup>
+ *     <SelectScrollDownButton />
+ *   </SelectContent>
+ * </Select>
+ * ```
+ */
 function SelectScrollUpButton(props: JSX.HTMLElementTags['div']) {
   const [local, others] = splitProps(props, ['class'])
 
@@ -321,6 +520,29 @@ function SelectScrollUpButton(props: JSX.HTMLElementTags['div']) {
   )
 }
 
+/**
+ * An optional scroll affordance for overflowing SelectContent below the visible
+ * list.
+ *
+ * @example
+ * ```tsx
+ * <Select defaultValue={["general"]}>
+ *   <SelectTrigger>
+ *     <SelectValue placeholder="Choose area" />
+ *   </SelectTrigger>
+ *   <SelectContent>
+ *     <SelectScrollUpButton />
+ *     <SelectGroup>
+ *       <SelectLabel>Workspace</SelectLabel>
+ *       <SelectItem value="general">General</SelectItem>
+ *       <SelectSeparator />
+ *       <SelectItem value="billing">Billing</SelectItem>
+ *     </SelectGroup>
+ *     <SelectScrollDownButton />
+ *   </SelectContent>
+ * </Select>
+ * ```
+ */
 function SelectScrollDownButton(props: JSX.HTMLElementTags['div']) {
   const [local, others] = splitProps(props, ['class'])
 

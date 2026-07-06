@@ -22,6 +22,19 @@ interface LibraryLogoProps extends ComponentProps<'a'> {
   majorVersion?: number
 }
 
+/**
+ * A TanStack library logo link with adapter, library, and version labeling.
+ *
+ * @example
+ * ```tsx
+ * <LibraryLogo
+ *   href="https://tanstack.com/form"
+ *   libraryName="Form"
+ *   adapter="Solid"
+ *   brandColor="#8b5cf6"
+ * />
+ * ```
+ */
 export function LibraryLogo(props: LibraryLogoProps) {
   const [local, other] = splitProps(props, [
     'adapter',
@@ -34,13 +47,13 @@ export function LibraryLogo(props: LibraryLogoProps) {
   return (
     <a
       class={cn(
-        'flex flex-col gap-0.5 items-center focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring',
+        'flex flex-col items-center gap-0.5 focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring',
         local.class,
       )}
       target="_blank"
       {...other}
     >
-      <span class="whitespace-nowrap text-base leading-none font-bold text-foreground">
+      <span class="text-base leading-none font-bold whitespace-nowrap text-foreground">
         TANSTACK
       </span>
       <span

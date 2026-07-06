@@ -16,6 +16,14 @@ type SeparatorProps = HTMLArkProps<'div'> & {
   'data-slot'?: string
 }
 
+/**
+ * A horizontal or vertical divider for separating related content.
+ *
+ * @example
+ * ```tsx
+ * <Separator />
+ * ```
+ */
 function Separator(props: SeparatorProps) {
   const [local, others] = splitProps(props, [
     'class',

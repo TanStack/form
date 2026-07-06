@@ -8,7 +8,7 @@ import { cn } from '@/utils'
 
 interface JsonTreeProps extends ComponentProps<'div'> {
   /**
-   * The value to
+   * The value to render in the JSON tree.
    */
   value: unknown
   /**
@@ -30,6 +30,14 @@ interface JsonTreeProps extends ComponentProps<'div'> {
   quotesOnKeys?: boolean
 }
 
+/**
+ * A scrollable JSON inspector with optional key quotes and copy support.
+ *
+ * @example
+ * ```tsx
+ * <JsonTree value={{ name: "Ada" }} defaultExpandedDepth={1} />
+ * ```
+ */
 export function JsonTree(props: JsonTreeProps) {
   const [local, others] = splitProps(props, [
     'value',
@@ -47,7 +55,7 @@ export function JsonTree(props: JsonTreeProps) {
       asChild={(innerProps) => (
         <ScrollArea
           class={cn(
-            'text-sm/6 ark-json-root w-full font-mono rounded-lg',
+            'ark-json-root w-full rounded-lg font-mono text-sm/6',
             local.class,
           )}
           {...others}
@@ -56,12 +64,12 @@ export function JsonTree(props: JsonTreeProps) {
       )}
     >
       <Show when={props.copyable}>
-        <CopyButton value={local.value} class="z-10 absolute right-1 top-1" />
+        <CopyButton value={local.value} class="absolute top-1 right-1 z-10" />
       </Show>
       <JsonTreeView.Tree
-        arrow={<ChevronRightIcon class="w-4 h-4 text-muted-foreground" />}
+        arrow={<ChevronRightIcon class="h-4 w-4 text-muted-foreground" />}
         indentGuide
-        class="flex flex-col text-1/2 rounded-lg"
+        class="text-1/2 flex flex-col rounded-lg"
       />
     </JsonTreeView.Root>
   )

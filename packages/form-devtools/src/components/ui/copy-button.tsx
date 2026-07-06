@@ -13,6 +13,14 @@ type CopyButtonProps = Omit<ButtonProps, 'value'> & {
   copyTimeout?: number
 }
 
+/**
+ * An icon button that copies a value to the clipboard and shows a copied state.
+ *
+ * @example
+ * ```tsx
+ * <CopyButton value="Hello world" />
+ * ```
+ */
 export function CopyButton(props: CopyButtonProps) {
   const [local, others] = splitProps(props, [
     'value',

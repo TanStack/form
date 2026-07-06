@@ -13,6 +13,18 @@ const PortalContext = createContext<Accessor<HTMLElement | undefined>>()
 
 type PortalProviderProps = Omit<JSX.HTMLElementTags['div'], 'ref'>
 
+/**
+ * Provides a local mount element for descendant Portal content.
+ *
+ * @example
+ * ```tsx
+ * <PortalProvider>
+ *   <Portal>
+ *     <div>Portalled content</div>
+ *   </Portal>
+ * </PortalProvider>
+ * ```
+ */
 function PortalProvider(props: PortalProviderProps) {
   const [local, others] = splitProps(props, ['children', 'class'])
   const [portalMount, setPortalMount] = createSignal<HTMLElement>()
@@ -36,6 +48,19 @@ type PortalProps = {
   mount?: Node
 }
 
+/**
+ * Renders children into the nearest PortalProvider mount, a custom mount, or the
+ * document body.
+ *
+ * @example
+ * ```tsx
+ * <PortalProvider>
+ *   <Portal>
+ *     <div>Portalled content</div>
+ *   </Portal>
+ * </PortalProvider>
+ * ```
+ */
 function Portal(props: PortalProps) {
   const contextMount = useContext(PortalContext)
   const mount = () => props.mount ?? contextMount?.()

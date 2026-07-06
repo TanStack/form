@@ -50,6 +50,15 @@ const buttonVariants = cva(
 export type ButtonProps = HTMLArkProps<'button'> &
   VariantProps<typeof buttonVariants>
 
+/**
+ * A styled button for primary actions, secondary actions, links, and icon-only
+ * controls.
+ *
+ * @example
+ * ```tsx
+ * <Button>Save changes</Button>
+ * ```
+ */
 function Button(props: ButtonProps) {
   const [local, buttonProps] = splitProps(props, ['class', 'variant', 'size'])
 

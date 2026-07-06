@@ -2,6 +2,14 @@
   .tanstack-form-devtools .ark-json-root {
     --indent-size: 0.5rem;
 
+    & [data-part='branch-content'] {
+      @apply relative;
+    }
+
+    & [data-type='object'][data-kind='preview'] > * {
+      @apply select-none;
+    }
+
     & [data-part='branch'][data-depth='1'],
     & [data-part='item'][data-depth='1'] {
       @apply p-2;
@@ -44,12 +52,9 @@
       left: var(--indicator-left);
     }
 
-    & [data-part='branch-indent-guide'] {
-      @apply w-px h-full bg-json-key;
-    }
-
-    & [data-kind='preview'] {
-      @apply select-none;
+    & [data-part='branch-indent-guide']:not([data-depth='1']) {
+      @apply w-px h-full bg-json-key absolute z-10;
+      left: calc((var(--depth) - 1) * 1rem - 0.5rem);
     }
 
     & [data-type='string'] {

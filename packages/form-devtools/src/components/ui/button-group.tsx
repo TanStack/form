@@ -33,6 +33,19 @@ const buttonGroupVariants = cva(
 type ButtonGroupProps = JSX.HTMLElementTags['div'] &
   VariantProps<typeof buttonGroupVariants>
 
+/**
+ * A grouped container that visually joins adjacent buttons and controls.
+ *
+ * @example
+ * ```tsx
+ * <ButtonGroup>
+ *   <ButtonGroupText>Status</ButtonGroupText>
+ *   <Button variant="outline">Open</Button>
+ *   <ButtonGroupSeparator />
+ *   <Button variant="outline">Closed</Button>
+ * </ButtonGroup>
+ * ```
+ */
 function ButtonGroup(props: ButtonGroupProps) {
   const [local, others] = splitProps(props, ['class', 'orientation'])
 
@@ -52,6 +65,19 @@ function ButtonGroup(props: ButtonGroupProps) {
   )
 }
 
+/**
+ * Static text or icon content styled to align with buttons inside a ButtonGroup.
+ *
+ * @example
+ * ```tsx
+ * <ButtonGroup>
+ *   <ButtonGroupText>Status</ButtonGroupText>
+ *   <Button variant="outline">Open</Button>
+ *   <ButtonGroupSeparator />
+ *   <Button variant="outline">Closed</Button>
+ * </ButtonGroup>
+ * ```
+ */
 function ButtonGroupText(props: HTMLArkProps<'div'>) {
   const [local, others] = splitProps(props, ['class'])
 
@@ -66,6 +92,19 @@ function ButtonGroupText(props: HTMLArkProps<'div'>) {
   )
 }
 
+/**
+ * A divider that separates adjacent controls inside a ButtonGroup.
+ *
+ * @example
+ * ```tsx
+ * <ButtonGroup>
+ *   <ButtonGroupText>Status</ButtonGroupText>
+ *   <Button variant="outline">Open</Button>
+ *   <ButtonGroupSeparator />
+ *   <Button variant="outline">Closed</Button>
+ * </ButtonGroup>
+ * ```
+ */
 function ButtonGroupSeparator(props: SeparatorProps) {
   const [local, others] = splitProps(props, ['class', 'orientation'])
 
@@ -84,9 +123,4 @@ function ButtonGroupSeparator(props: SeparatorProps) {
   )
 }
 
-export {
-  ButtonGroup,
-  ButtonGroupSeparator,
-  ButtonGroupText,
-  buttonGroupVariants,
-}
+export { ButtonGroup, ButtonGroupSeparator, ButtonGroupText }
