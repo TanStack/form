@@ -2,14 +2,12 @@ import { useClipboard } from '@ark-ui/solid'
 import { Show, splitProps } from 'solid-js'
 import { CheckIcon, CopyIcon } from 'lucide-solid'
 import { Button } from './button'
-import type { JSX } from 'solid-js'
 import type { ButtonProps } from './button'
 import { cn } from '@/utils'
 
 type CopyButtonProps = Omit<ButtonProps, 'value'> & {
   // The value that should be copied
   value: unknown
-  copied?: JSX.Element
   copyTimeout?: number
 }
 
@@ -33,7 +31,7 @@ export function CopyButton(props: CopyButtonProps) {
   const size = () => local.size ?? 'icon'
 
   const clipboard = useClipboard({
-    value: '',
+    defaultValue: '',
     timeout: props.copyTimeout ?? 1200,
   })
 
@@ -46,8 +44,7 @@ export function CopyButton(props: CopyButtonProps) {
 
   return (
     <Button
-      aria-label="Copy"
-      title={clipboard().copied ? 'Copied' : 'Copy to clipboard'}
+      {...clipboard().getTriggerProps()}
       variant={variant()}
       size={size()}
       class={cn('text-muted-foreground hover:text-foreground', props.class)}
@@ -108,7 +105,17 @@ function toClipboardText(value: unknown): string {
       }
 
       if (current && typeof current === 'object') {
-        if (seen.has(current)) return '[Circular]'
+        if (seen.has(current)) {
+          let name = 'Object'
+
+          try {
+            // Looks funny, doesn't it? You can try the unsafe version yourself:
+            // Object.create(null)
+            name = current?.constructor?.name ?? 'Object'
+          } catch {}
+
+          return `[Circular Reference: ${name}]`
+        }
         seen.add(current)
       }
 
