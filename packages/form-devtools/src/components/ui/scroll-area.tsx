@@ -31,7 +31,10 @@ function ScrollArea(props: ScrollAreaPrimitive.RootProps) {
         data-slot="scroll-area-viewport"
         class="size-full rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1"
       >
-        <ScrollAreaPrimitive.Content data-slot="scroll-area-content">
+        <ScrollAreaPrimitive.Content
+          data-slot="scroll-area-content"
+          class="min-h-full"
+        >
           {local.children}
         </ScrollAreaPrimitive.Content>
       </ScrollAreaPrimitive.Viewport>

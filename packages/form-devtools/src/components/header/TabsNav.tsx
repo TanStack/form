@@ -49,12 +49,7 @@ export function DevtoolsTab(props: DevtoolsTabProps) {
     <Tabs.Content
       class="min-h-0 flex-1"
       value={props.value}
-      asChild={(props) => (
-        <main
-          {...props()}
-          class="overflow-hidden px-2 py-1 border-b border-border"
-        />
-      )}
+      asChild={(props) => <main {...props()} class="overflow-hidden" />}
     >
       <Show when={!props.disableScroll} fallback={props.children}>
         <ScrollArea class="size-full">{props.children}</ScrollArea>
