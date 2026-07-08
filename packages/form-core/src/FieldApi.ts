@@ -1379,7 +1379,7 @@ export class FieldApi<
    */
   private startValidation() {
     this.setMeta((prev) => {
-      const newCount = (prev._pendingValidationsCount) + 1
+      const newCount = prev._pendingValidationsCount + 1
       return {
         ...prev,
         _pendingValidationsCount: newCount,
@@ -1395,7 +1395,7 @@ export class FieldApi<
    */
   private endValidation() {
     this.setMeta((prev) => {
-      const newCount = Math.max(0, (prev._pendingValidationsCount) - 1)
+      const newCount = Math.max(0, prev._pendingValidationsCount - 1)
       return {
         ...prev,
         _pendingValidationsCount: newCount,
