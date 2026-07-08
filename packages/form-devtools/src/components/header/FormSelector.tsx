@@ -8,7 +8,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select'
-import { useFormSelector } from '@/contexts/formSelectorContext'
+import {
+  mountedForms,
+  selectedForm,
+  setRequestedFormId,
+} from '@/stores/formSelectorStore'
 
 interface FormSelectOption {
   value: string
@@ -17,37 +21,28 @@ interface FormSelectOption {
 }
 
 export function FormSelector() {
-  const { mountedForms, selectedFormInstanceId, setSelectedForm } =
-    useFormSelector()
+  const noSelection = { value: '-', label: 'No forms', disabled: true }
+
   const formOptions = createMemo<Array<FormSelectOption>>(() => {
     const forms = mountedForms()
-    const formIdCounts = new Map<string, number>()
-
-    for (const form of forms) {
-      formIdCounts.set(form.formId, (formIdCounts.get(form.formId) ?? 0) + 1)
-    }
-
-    if (forms.length === 0) {
-      return [{ value: '-', label: 'No forms', disabled: true }]
-    }
-
+    if (forms.length === 0) return [noSelection]
     return forms.map((form) => ({
       value: form.instanceId,
-      label:
-        (formIdCounts.get(form.formId) ?? 0) > 1
-          ? `${form.formId} (${form.instanceId.slice(0, 8)})`
-          : form.formId,
+      label: form.label,
     }))
   })
-  const selectedValue = createMemo(
-    () => selectedFormInstanceId() ?? formOptions()[0]?.value ?? '-',
-  )
+
+  const value = createMemo(() => {
+    const selected = selectedForm()
+    if (!selected) return [noSelection.value]
+    return [selected.instanceId]
+  })
 
   return (
     <Select
-      value={[selectedValue()]}
+      value={value()}
       onValueChange={(details) => {
-        setSelectedForm(details.value[0] ?? null)
+        setRequestedFormId(details.value[0] ?? null)
       }}
     >
       <SelectTrigger

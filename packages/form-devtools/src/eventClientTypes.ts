@@ -1,6 +1,8 @@
+import type { FormId } from './types/branded'
+
 export interface DevtoolsMountedForm {
-  formId: string
-  instanceId: string
+  label: string
+  instanceId: FormId
 }
 
 export type FormDevtoolsEventMap = {

@@ -22,7 +22,7 @@ export function getDevtoolsFormInstanceId(form: AnyInternalFormApi): string {
 
 function getMountedFormsSnapshot(): Array<DevtoolsMountedForm> {
   return Array.from(mountedForms, (form) => ({
-    formId: form.formId,
+    label: form.formId,
     instanceId: getDevtoolsFormInstanceId(form),
   }))
 }

@@ -27,7 +27,7 @@
     "test:lib:dev": "pnpm test:lib --watch",
     "test:types": "tsc",
     "build": "vite build && tsc -p tsconfig.build.json",
-    "build:dev": "vite build --watch"
+    "dev": "vite build --watch"
   },
   "type": "module",
   "types": "./dist/index.d.ts",
