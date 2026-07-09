@@ -15,6 +15,11 @@ this repository.
 - Keep `useForm`, `defaultValues`, `onSubmit`, `form.Field`, and
   `form.Subscribe`, but update render props from `field.state.value` and
   `field.state.meta` to `field.value` and `field.meta`.
+- Always provide `defaultValues` to `useForm`. v2 does not support omitting
+  them.
+- Move field-level `defaultValue` props into form-level `defaultValues`.
+- Remove field-level `defaultMeta` props. Model initial validation and error
+  visibility through validators, `runOnMount`, and `errorVisibility`.
 - Change validation from keyed event objects like `{ onChange, onBlur }` to
   arrays of validator objects with `run` and `triggers`.
 - Change async validator debounce options such as `onChangeAsyncDebounceMs` to
@@ -28,10 +33,16 @@ this repository.
   objects. Use `error.message` when rendering text.
 - Return `createValidationError(...)` from `onSubmit` when a submit handler
   needs to route server errors back to form or field state.
+- Use `useSelector`, which replaces v1's deprecated `useStore` usage.
+- Subscribe to `form.atom` and `field.atom` instead of `form.store` and
+  `field.store`.
 - Use `formOptions(...)` for shared base form options.
+- Replace `withForm` components with plain components that accept a `form` prop
+  typed as `ReactFormType<typeof formOpts>`.
 - Use `form.FormGroup` for scoped sections of the same form, and
   `getFieldGroupHelpers().withFields(...)` for reusable field bundles that map
-  virtual field names to different concrete form paths.
+  virtual field names to different concrete form paths. v2 removes
+  `withFieldGroup`.
 
 ## Basic fields
 
@@ -88,6 +99,77 @@ field.errors.map((error) => error.message).join(',')
 The v2 React integration tests also assert that fields rerender independently
 when sibling fields change. Prefer reading only the subscribed field values and
 meta you need in each render prop.
+
+## Defaults and initial meta
+
+In v1, a form could rely on field-level `defaultValue` props:
+
+```tsx
+// v1
+const form = useForm({
+  defaultValues: {} as Person,
+})
+
+<form.Field name="firstName" defaultValue="">
+  {(field) => <input value={field.state.value} />}
+</form.Field>
+```
+
+In v2, `defaultValues` are required on the form and are the only place to define
+initial values:
+
+```tsx
+// v2
+const form = useForm({
+  defaultValues: {
+    firstName: '',
+    lastName: '',
+  },
+})
+
+<form.Field name="firstName">
+  {(field) => <input value={field.value} />}
+</form.Field>
+```
+
+`<form.Field defaultMeta={...}>` was also removed. If v1 code used
+`defaultMeta={{ isTouched: true }}` to show errors immediately, migrate that to
+validation and visibility configuration instead:
+
+```tsx
+// v2
+const form = useForm({
+  defaultValues: {
+    firstName: '',
+  },
+  errorVisibility: ({ fieldState, state }) =>
+    fieldState.meta.isBlurred || state.submissionAttempts > 0,
+})
+
+<form.Field
+  name="firstName"
+  validators={[
+    {
+      runOnMount: true,
+      triggers: ['change', 'blur'],
+      run: ({ value }) => (value ? undefined : 'First name is required'),
+    },
+  ]}
+>
+  {(field) => (
+    <>
+      <input
+        value={field.value}
+        onBlur={field.handleBlur}
+        onChange={(event) => field.handleChange(event.target.value)}
+      />
+      {field.errors.map((error) => (
+        <p key={error.message}>{error.message}</p>
+      ))}
+    </>
+  )}
+</form.Field>
+```
 
 ## Validators
 
@@ -259,6 +341,33 @@ const form = useForm({
 `form.handleSubmit()` resolves to the current errors, so server examples can
 await it and branch on `errors.length`.
 
+## Selectors and atoms
+
+v1 re-exported `useStore` from `@tanstack/react-store`, but that usage was
+deprecated before v2. In v2, use `useSelector` and subscribe to atoms:
+
+```tsx
+// v1
+import { useStore } from '@tanstack/react-store'
+
+const errors = useStore(form.store, (state) => state.errors)
+const fieldErrors = useStore(field.store, (state) => state.meta.errors)
+```
+
+```tsx
+// v2
+import { useSelector } from '@tanstack/react-form'
+
+const errors = useSelector(form.atom, (state) => state.errors)
+const fieldErrors = useSelector(field.atom, (state) => state.meta.errors)
+```
+
+The same rename applies when subscribing to field groups:
+
+```tsx
+const values = useSelector(fields.atom, (values) => values)
+```
+
 ## Arrays
 
 v1 represented array fields with `mode="array"` and exposed array helpers from
@@ -329,8 +438,9 @@ without forcing the whole list to rerender for every item value change.
 ## Shared form options
 
 For extracted components, v1 composition examples often use a custom
-`useAppForm` hook from `createFormHook`. v2 still supports app form hooks, but
-the smaller building block for shared defaults is `formOptions(...)`:
+`useAppForm` hook plus `withForm` from `createFormHook`. v2 still supports app
+form hooks, but `withForm` was removed. The smaller building block for shared
+defaults is `formOptions(...)`:
 
 ```tsx
 import { formOptions } from '@tanstack/react-form'
@@ -381,6 +491,55 @@ function SubmitButton({ form }: { form: AnyReactFormApi }) {
 }
 ```
 
+For components that previously used `withForm`, pass the form API explicitly and
+type it from the same options object:
+
+```tsx
+// v1
+const AddressFields = withForm({
+  defaultValues: {
+    address: {
+      street: '',
+      country: '',
+    },
+  },
+  render: ({ form }) => (
+    <>
+      <form.Field name="address.street">{/* ... */}</form.Field>
+      <form.Field name="address.country">{/* ... */}</form.Field>
+    </>
+  ),
+})
+```
+
+```tsx
+// v2
+import { formOptions } from '@tanstack/react-form'
+import type { ReactFormType } from '@tanstack/react-form'
+
+export const profileFormOptions = formOptions({
+  defaultValues: {
+    address: {
+      street: '',
+      country: '',
+    },
+  },
+})
+
+interface AddressFieldsProps {
+  form: ReactFormType<typeof profileFormOptions>
+}
+
+function AddressFields({ form }: AddressFieldsProps) {
+  return (
+    <>
+      <form.Field name="address.street">{/* ... */}</form.Field>
+      <form.Field name="address.country">{/* ... */}</form.Field>
+    </>
+  )
+}
+```
+
 ## Form groups and field groups
 
 v1 already had `form.FormGroup` and `useFormGroup` patterns for multi-step
@@ -411,9 +570,9 @@ Inside the group, field names are scoped. `name="name"` becomes
 `guestDetails.name`, `group.ArrayField name="guests"` becomes
 `guestDetails.guests`, and watched fields are scoped the same way.
 
-v2 also adds field groups for reusable field bundles. Use
-`getFieldGroupHelpers()` when a component should not care where its fields live
-in the parent form:
+v1's `withFieldGroup` HOC was removed. v2 replaces it with field-group helpers
+for reusable field bundles. Use `getFieldGroupHelpers()` when a component should
+not care where its fields live in the parent form:
 
 ```tsx
 import { getFieldGroupHelpers } from '@tanstack/react-form'
@@ -478,7 +637,20 @@ Then bind virtual names to concrete paths wherever the group is used:
 ```
 
 Use this v2 pattern to migrate v1 `withFieldGroup` components that were reused
-against different field paths.
+against different field paths. If you are using app form components from
+`createFormHook`, get the same helper shape from
+`getAppFieldGroupHelpers` instead:
+
+```tsx
+const { useAppForm, getAppFieldGroupHelpers } = createFormHook({
+  fieldComponents: {
+    TextField,
+  },
+  formComponents: {},
+})
+
+const { defineFields, helper, withFields } = getAppFieldGroupHelpers()
+```
 
 ## Listeners
 
@@ -548,14 +720,18 @@ Client rendering still follows the same v2 field surface:
 
 1. Upgrade imports and keep the smallest possible form compiling with
    `useForm`, `defaultValues`, `form.Field`, and `form.handleSubmit()`.
-2. Update field render props from `field.state.*` to the direct v2 surface.
-3. Convert validators and listeners to arrays.
-4. Convert arrays from `mode="array"` to `form.ArrayField` and form-level array
+2. Move every field-level `defaultValue` into form-level `defaultValues` and
+   remove `defaultMeta`.
+3. Update field render props from `field.state.*` to the direct v2 surface.
+4. Replace `useStore(...store...)` with `useSelector(...atom...)`.
+5. Convert validators and listeners to arrays.
+6. Convert arrays from `mode="array"` to `form.ArrayField` and form-level array
    mutators.
-5. Convert submitted server errors to `createValidationError(...)`.
-6. Revisit composition: use `formOptions(...)` for shared options,
+7. Convert submitted server errors to `createValidationError(...)`.
+8. Revisit composition: use `formOptions(...)` for shared options,
+   `ReactFormType<typeof formOpts>` for extracted form props,
    `form.FormGroup` for scoped sections, and `withFields(...)` for reusable
    field bundles.
-7. Re-run React integration tests around validation timing, field rerenders,
+9. Re-run React integration tests around validation timing, field rerenders,
    groups, and array mutations. These are the areas where v2 intentionally
    tightened behavior.
