@@ -6,7 +6,7 @@ import {
   onCleanup,
   onMount,
 } from 'solid-js'
-import { useStore } from '@tanstack/solid-store'
+import { useSelector } from '@tanstack/solid-store'
 import type {
   DeepKeys,
   DeepValue,
@@ -173,30 +173,30 @@ function makeFieldReactive<
   // avoid re-renders when child properties change. Meta is tracked piece by
   // piece so that consumers re-render when any meta property updates.
   // See: https://github.com/TanStack/form/issues/1961
-  const reactiveStateValue = useStore(fieldApi.store, (state) =>
+  const reactiveStateValue = useSelector(fieldApi.store, (state) =>
     mode === 'array' ? state.meta._arrayVersion || 0 : state.value,
   )
-  const reactiveMetaIsTouched = useStore(
+  const reactiveMetaIsTouched = useSelector(
     fieldApi.store,
     (state) => state.meta.isTouched,
   )
-  const reactiveMetaIsBlurred = useStore(
+  const reactiveMetaIsBlurred = useSelector(
     fieldApi.store,
     (state) => state.meta.isBlurred,
   )
-  const reactiveMetaIsDirty = useStore(
+  const reactiveMetaIsDirty = useSelector(
     fieldApi.store,
     (state) => state.meta.isDirty,
   )
-  const reactiveMetaErrorMap = useStore(
+  const reactiveMetaErrorMap = useSelector(
     fieldApi.store,
     (state) => state.meta.errorMap,
   )
-  const reactiveMetaErrorSourceMap = useStore(
+  const reactiveMetaErrorSourceMap = useSelector(
     fieldApi.store,
     (state) => state.meta.errorSourceMap,
   )
-  const reactiveMetaIsValidating = useStore(
+  const reactiveMetaIsValidating = useSelector(
     fieldApi.store,
     (state) => state.meta.isValidating,
   )

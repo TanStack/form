@@ -1,5 +1,11 @@
 # @tanstack/preact-form
 
+## 1.30.1
+
+### Patch Changes
+
+- Re-export `useSelector` from `@tanstack/preact-store` (fixes [#2203](https://github.com/TanStack/form/issues/2203)). `useStore` remains available but is deprecated.
+
 ## 1.30.0
 
 ### Minor Changes

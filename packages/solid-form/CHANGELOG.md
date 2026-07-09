@@ -1,5 +1,11 @@
 # @tanstack/solid-form
 
+## 1.33.1
+
+### Patch Changes
+
+- Re-export `useSelector` from `@tanstack/solid-store`. Add `form.useSelector`; `form.useStore` is deprecated (fixes [#2203](https://github.com/TanStack/form/issues/2203)).
+
 ## 1.33.0
 
 ### Minor Changes

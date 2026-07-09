@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'preact/hooks'
-import { useStore } from '@tanstack/preact-store'
+import { useSelector } from '@tanstack/preact-store'
 import { FormGroupApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
@@ -201,71 +201,71 @@ export function useFormGroup<
     setPrevOptions({ form: opts.form, name: opts.name })
   }
 
-  const reactiveStateValue = useStore(
+  const reactiveStateValue = useSelector(
     formGroupApi.store,
     (state) => state.value,
   )
 
-  const reactiveMetaIsTouched = useStore(
+  const reactiveMetaIsTouched = useSelector(
     formGroupApi.store,
     (state) => state.meta.isTouched,
   )
-  const reactiveMetaIsBlurred = useStore(
+  const reactiveMetaIsBlurred = useSelector(
     formGroupApi.store,
     (state) => state.meta.isBlurred,
   )
-  const reactiveMetaIsDirty = useStore(
+  const reactiveMetaIsDirty = useSelector(
     formGroupApi.store,
     (state) => state.meta.isDirty,
   )
-  const reactiveMetaErrorMap = useStore(
+  const reactiveMetaErrorMap = useSelector(
     formGroupApi.store,
     (state) => state.meta.errorMap,
   )
-  const reactiveMetaErrorSourceMap = useStore(
+  const reactiveMetaErrorSourceMap = useSelector(
     formGroupApi.store,
     (state) => state.meta.errorSourceMap,
   )
-  const reactiveMetaIsValidating = useStore(
+  const reactiveMetaIsValidating = useSelector(
     formGroupApi.store,
     (state) => state.meta.isValidating,
   )
 
   // Submission lifecycle and aggregated validity now live on `state.meta`
   // (mirroring `FieldApi.state.meta`).
-  const reactiveMetaIsSubmitting = useStore(
+  const reactiveMetaIsSubmitting = useSelector(
     formGroupApi.store,
     (state) => state.meta.isSubmitting,
   )
-  const reactiveMetaIsSubmitted = useStore(
+  const reactiveMetaIsSubmitted = useSelector(
     formGroupApi.store,
     (state) => state.meta.isSubmitted,
   )
-  const reactiveMetaSubmissionAttempts = useStore(
+  const reactiveMetaSubmissionAttempts = useSelector(
     formGroupApi.store,
     (state) => state.meta.submissionAttempts,
   )
-  const reactiveMetaIsSubmitSuccessful = useStore(
+  const reactiveMetaIsSubmitSuccessful = useSelector(
     formGroupApi.store,
     (state) => state.meta.isSubmitSuccessful,
   )
-  const reactiveMetaCanSubmit = useStore(
+  const reactiveMetaCanSubmit = useSelector(
     formGroupApi.store,
     (state) => state.meta.canSubmit,
   )
-  const reactiveMetaIsValid = useStore(
+  const reactiveMetaIsValid = useSelector(
     formGroupApi.store,
     (state) => state.meta.isValid,
   )
-  const reactiveMetaIsFieldsValid = useStore(
+  const reactiveMetaIsFieldsValid = useSelector(
     formGroupApi.store,
     (state) => state.meta.isFieldsValid,
   )
-  const reactiveMetaIsFieldsValidating = useStore(
+  const reactiveMetaIsFieldsValidating = useSelector(
     formGroupApi.store,
     (state) => state.meta.isFieldsValidating,
   )
-  const reactiveMetaIsGroupValid = useStore(
+  const reactiveMetaIsGroupValid = useSelector(
     formGroupApi.store,
     (state) => state.meta.isGroupValid,
   )

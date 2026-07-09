@@ -1,6 +1,6 @@
 export * from '@tanstack/form-core'
 
-export { useStore } from '@tanstack/preact-store'
+export { useSelector, useStore } from '@tanstack/preact-store'
 
 export * from './createFormHook'
 export * from './types'

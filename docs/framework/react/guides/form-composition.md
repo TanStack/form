@@ -424,9 +424,9 @@ const FieldGroupPasswordFields = withFieldGroup({
   // Internally, you will have access to a `group` instead of a `form`
   render: function Render({ group, title }) {
     // access reactive values using the group store
-    const password = useStore(group.store, (state) => state.values.password)
+    const password = useSelector(group.store, (state) => state.values.password)
     // or the form itself
-    const isSubmitting = useStore(
+    const isSubmitting = useSelector(
       group.form.store,
       (state) => state.isSubmitting,
     )

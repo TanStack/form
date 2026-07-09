@@ -220,14 +220,14 @@ Supported libraries include:
 
 ## Reactivity
 
-`@tanstack/svelte-form` offers various ways to subscribe to form and field state changes, most notably the `form.useStore` hook and the `form.Subscribe` component. These methods allow you to optimize your form's rendering performance by only updating components when necessary.
+`@tanstack/svelte-form` offers various ways to subscribe to form and field state changes, most notably the `form.useSelector` hook and the `form.Subscribe` component. These methods allow you to optimize your form's rendering performance by only updating components when necessary.
 
 Example:
 
 ```svelte
 <script>
   //...
-  const firstName = form.useStore((state) => state.values.firstName)
+  const firstName = form.useSelector((state) => state.values.firstName)
 </script>
 
 <form.Subscribe

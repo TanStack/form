@@ -1,6 +1,6 @@
 import { useState } from 'preact/hooks'
 import { FieldGroupApi, functionalUpdate } from '@tanstack/form-core'
-import { useStore } from '@tanstack/preact-store'
+import { useSelector } from '@tanstack/preact-store'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
   AnyFieldGroupApi,
@@ -23,7 +23,7 @@ function LocalSubscribe({
   lens: AnyFieldGroupApi
   selector: (state: FieldGroupState<any>) => FieldGroupState<any>
 }>): ReturnType<FunctionComponent> {
-  const data = useStore(lens.store, selector)
+  const data = useSelector(lens.store, selector)
 
   return <>{functionalUpdate(children, data)}</>
 }

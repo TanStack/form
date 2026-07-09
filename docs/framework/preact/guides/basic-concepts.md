@@ -236,12 +236,14 @@ function App() {
 
 ## Reactivity
 
-`@tanstack/preact-form` offers various ways to subscribe to form and field state changes, most notably the `useStore(form.store)` hook and the `form.Subscribe` component. These methods allow you to optimize your form's rendering performance by only updating components when necessary.
+`@tanstack/preact-form` offers various ways to subscribe to form and field state changes, most notably the `useSelector(form.store, …)` hook and the `form.Subscribe` component. These methods allow you to optimize your form's rendering performance by only updating components when necessary.
 
 Example:
 
 ```tsx
-const firstName = useStore(form.store, (state) => state.values.firstName)
+import { useSelector } from '@tanstack/preact-form'
+
+const firstName = useSelector(form.store, (state) => state.values.firstName)
 //...
 <form.Subscribe
   selector={(state) => [state.canSubmit, state.isSubmitting]}
@@ -253,17 +255,17 @@ const firstName = useStore(form.store, (state) => state.values.firstName)
 />
 ```
 
-It is important to remember that while the `useStore` hook's `selector` prop is optional, it is strongly recommended to provide one, as omitting it will result in unnecessary re-renders.
+It is important to remember that while the `useSelector` hook's `selector` prop is optional, it is strongly recommended to provide one, as omitting it will result in unnecessary re-renders.
 
 ```tsx
 // Correct use
-const firstName = useStore(form.store, (state) => state.values.firstName)
-const errors = useStore(form.store, (state) => state.errorMap)
+const firstName = useSelector(form.store, (state) => state.values.firstName)
+const errors = useSelector(form.store, (state) => state.errorMap)
 // Incorrect use
-const store = useStore(form.store)
+const store = useSelector(form.store)
 ```
 
-Note: The usage of the `useField` hook to achieve reactivity is discouraged since it is designed to be used thoughtfully within the `form.Field` component. You might want to use `useStore(form.store)` instead.
+Note: The usage of the `useField` hook to achieve reactivity is discouraged since it is designed to be used thoughtfully within the `form.Field` component. You might want to use `useSelector(form.store, …)` instead.
 
 ## Listeners
 

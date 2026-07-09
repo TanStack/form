@@ -8,7 +8,7 @@
     type FormAsyncValidateOrFn,
     type FormValidateOrFn,
   } from '@tanstack/form-core'
-  import { useStore } from '@tanstack/svelte-store'
+  import { useSelector } from '@tanstack/svelte-store'
   import { onMount, type Snippet } from 'svelte'
   import type { CreateFieldOptions } from './types.js'
 
@@ -96,26 +96,26 @@
       api.update(current)
     })
 
-    const storeSub = useStore(api.store, (state) =>
+    const storeSub = useSelector(api.store, (state) =>
       options.mode === 'array'
         ? state.meta._arrayVersion || 0
         : state.value,
     )
-    const metaIsTouchedSub = useStore(
+    const metaIsTouchedSub = useSelector(
       api.store,
       (state) => state.meta.isTouched,
     )
-    const metaIsBlurredSub = useStore(
+    const metaIsBlurredSub = useSelector(
       api.store,
       (state) => state.meta.isBlurred,
     )
-    const metaIsDirtySub = useStore(api.store, (state) => state.meta.isDirty)
-    const metaErrorMapSub = useStore(api.store, (state) => state.meta.errorMap)
-    const metaErrorSourceMapSub = useStore(
+    const metaIsDirtySub = useSelector(api.store, (state) => state.meta.isDirty)
+    const metaErrorMapSub = useSelector(api.store, (state) => state.meta.errorMap)
+    const metaErrorSourceMapSub = useSelector(
       api.store,
       (state) => state.meta.errorSourceMap,
     )
-    const metaIsValidatingSub = useStore(
+    const metaIsValidatingSub = useSelector(
       api.store,
       (state) => state.meta.isValidating,
     )
