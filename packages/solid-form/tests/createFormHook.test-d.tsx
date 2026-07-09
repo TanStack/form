@@ -1,7 +1,7 @@
 import { describe, expectTypeOf, it } from 'vitest'
 import { formOptions } from '@tanstack/form-core'
 import { createFormHook, createFormHookContexts } from '../src'
-import type { JSX } from 'solid-js/jsx-runtime'
+import type { Element } from 'solid-js'
 
 const { fieldContext, useFieldContext, formContext, useFormContext } =
   createFormHookContexts()
@@ -194,7 +194,7 @@ describe('createFormHook', () => {
         expectTypeOf(props).toEqualTypeOf<{
           prop1: string
           prop2: number
-          children?: JSX.Element
+          children?: Element
         }>()
         return <form.Test />
       },

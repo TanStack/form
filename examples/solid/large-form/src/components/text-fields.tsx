@@ -17,7 +17,7 @@ export default function TextField(props: { label: string }) {
         />
       </label>
       <For each={errors()}>
-        {(error) => <div style={{ color: 'red' }}>{error}</div>}
+        {(error) => <div style={{ color: 'red' }}>{error()}</div>}
       </For>
     </div>
   )

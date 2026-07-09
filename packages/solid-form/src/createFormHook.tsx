@@ -1,8 +1,8 @@
 import {
   createComponent,
   createContext,
-  mergeProps,
-  splitProps,
+  merge,
+  omit,
   useContext,
 } from 'solid-js'
 import { createFieldGroup } from './createFieldGroup'
@@ -18,13 +18,8 @@ import type {
   FormOptions,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type {
-  Accessor,
-  Component,
-  Context,
-  JSXElement,
-  ParentProps,
-} from 'solid-js'
+import type { Accessor, Component, Context, ParentProps } from 'solid-js'
+import type { JSX } from '@solidjs/web'
 import type { FieldComponent } from './createField'
 import type { AppFieldExtendedSolidFieldGroupApi } from './createFieldGroup'
 import type { SolidFormExtendedApi } from './createForm'
@@ -257,7 +252,7 @@ export interface WithFormProps<
         >
       }
     >,
-  ) => JSXElement
+  ) => JSX.Element
 }
 
 export interface WithFieldGroupProps<
@@ -294,7 +289,7 @@ export interface WithFieldGroupProps<
         >
       }
     >,
-  ) => JSXElement
+  ) => JSX.Element
 }
 
 export function createFormHook<
@@ -351,26 +346,18 @@ export function createFormHook<
 
     const AppForm = ((formProps) => {
       return (
-        <opts.formContext.Provider value={form}>
-          {formProps.children}
-        </opts.formContext.Provider>
+        <opts.formContext value={form}>{formProps.children}</opts.formContext>
       )
     }) as Component<ParentProps>
 
     const AppField = ((_props) => {
-      const [childProps, fieldProps] = splitProps(_props, ['children'])
+      const fieldProps = omit(_props, 'children')
       return (
         <form.Field {...fieldProps}>
-          {(field) => (
-            <opts.fieldContext.Provider value={field}>
-              {createComponent(
-                () =>
-                  childProps.children(
-                    Object.assign(field, opts.fieldComponents),
-                  ),
-                {},
-              )}
-            </opts.fieldContext.Provider>
+          {(field: any) => (
+            <opts.fieldContext value={field}>
+              {_props.children(Object.assign(field, opts.fieldComponents))}
+            </opts.fieldContext>
           )}
         </form.Field>
       )
@@ -472,7 +459,7 @@ export function createFormHook<
     return (innerProps) =>
       createComponent(
         render as Component<any>,
-        mergeProps(props ?? {}, innerProps),
+        props ? merge(props, innerProps) : innerProps,
       )
   }
 
@@ -549,7 +536,7 @@ export function createFormHook<
         fields: TFields
       }
     >,
-  ) => JSXElement {
+  ) => JSX.Element {
     return function Render(innerProps) {
       const fieldGroupProps = {
         form: innerProps.form,
@@ -560,7 +547,7 @@ export function createFormHook<
       const fieldGroupApi = createFieldGroup(() => fieldGroupProps)
       return createComponent(
         render as Component<any>,
-        mergeProps(props ?? {}, innerProps, { group: fieldGroupApi as any }),
+        merge(props ?? {}, innerProps, { group: fieldGroupApi as any }),
       )
     }
   }

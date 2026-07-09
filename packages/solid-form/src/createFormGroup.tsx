@@ -1,10 +1,9 @@
 import { FormGroupApi, functionalUpdate } from '@tanstack/form-core'
 import {
   createComponent,
-  createComputed,
-  createSignal,
-  onCleanup,
-  onMount,
+  createMemo,
+  createRenderEffect,
+  onSettled,
 } from 'solid-js'
 import { useStore } from '@tanstack/solid-store'
 import type {
@@ -17,7 +16,8 @@ import type {
   FormGroupValidateOrFn,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type { Accessor, JSX, JSXElement } from 'solid-js'
+import type { Accessor } from 'solid-js'
+import type { JSX } from '@solidjs/web'
 
 // ugly way to trick solid into triggering updates for changes on the formGroupApi
 function makeFormGroupReactive<
@@ -112,16 +112,16 @@ function makeFormGroupReactive<
   TFormOnServer,
   TParentSubmitMeta
 > {
-  const [group, setGroup] = createSignal(formGroupApi, { equals: false })
   // Handle shallow comparison to make sure that Derived doesn't create a new setGroup call every time
   const store = useStore(formGroupApi.store, (store) => store)
-  // Run before initial render
-  createComputed(() => {
-    // Use the store to track dependencies
-    store()
-    setGroup(formGroupApi)
-  })
-  return group
+  return createMemo(
+    () => {
+      // Use the store to track dependencies
+      store()
+      return formGroupApi
+    },
+    { equals: false },
+  )
 }
 
 export function createFormGroup<
@@ -197,25 +197,29 @@ export function createFormGroup<
 
   let mounted = false
   // Instantiates form group meta and removes it when unrendered
-  onMount(() => {
+  onSettled(() => {
     const cleanupFn = api.mount()
     mounted = true
-    onCleanup(() => {
+    return () => {
       cleanupFn()
       mounted = false
-    })
+    }
   })
 
   /**
    * formGroupApi.update should not have any side effects. Think of it like a `useRef`
    * that we need to keep updated every render with the most up-to-date information.
    *
-   * createComputed to make sure this effect runs before render effects
+   * createRenderEffect to make sure this effect runs before render effects
    */
-  createComputed(() => {
-    if (!mounted) return
-    api.update(opts())
-  })
+  createRenderEffect(
+    () => opts(),
+    (options) => {
+      if (!mounted) return undefined
+      api.update(options)
+      return undefined
+    },
+  )
 
   return makeFormGroupReactive<
     TParentData,
@@ -424,7 +428,7 @@ export type FormGroupComponent<
     TParentSubmitMeta,
     ExtendedApi
   >,
-) => JSXElement
+) => JSX.Element
 
 interface FormGroupComponentProps<
   TParentData,
@@ -518,7 +522,7 @@ interface FormGroupComponentProps<
       TFormOnServer,
       TParentSubmitMeta
     >,
-  ) => JSXElement
+  ) => JSX.Element
 }
 
 export function FormGroup<

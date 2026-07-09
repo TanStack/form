@@ -10,11 +10,12 @@
   },
   "dependencies": {
     "@tanstack/solid-form": "^1.33.0",
-    "solid-js": "^1.9.9"
+    "solid-js": "2.0.0-beta.15"
   },
   "devDependencies": {
+    "@solidjs/web": "2.0.0-beta.15",
     "typescript": "5.9.3",
     "vite": "^7.2.2",
-    "vite-plugin-solid": "^2.11.8"
+    "vite-plugin-solid": "3.0.0-next.5"
   }
 }

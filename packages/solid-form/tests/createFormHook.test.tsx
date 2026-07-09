@@ -593,9 +593,12 @@ describe('createFormHook', () => {
       ...formOpts,
       props: { status: 'idle' as 'idle' | 'loading' },
       render: (props) => {
-        createEffect(() => {
-          spy(props.status)
-        })
+        createEffect(
+          () => props.status,
+          (status) => {
+            spy(status)
+          },
+        )
         return <div data-testid="status">{props.status}</div>
       },
     })

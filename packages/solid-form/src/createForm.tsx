@@ -1,5 +1,5 @@
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
-import { createComputed, onMount } from 'solid-js'
+import { createRenderEffect, onSettled } from 'solid-js'
 import { useStore } from '@tanstack/solid-store'
 import { Field, createField } from './createField'
 import { FormGroup } from './createFormGroup'
@@ -9,8 +9,8 @@ import type {
   FormState,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type { JSXElement } from 'solid-js'
-import type { FieldComponent } from './createField'
+import type { JSX } from '@solidjs/web'
+import type { CreateField, FieldComponent } from './createField'
 import type { FormGroupComponent } from './createFormGroup'
 
 export interface SolidFormApi<
@@ -28,6 +28,20 @@ export interface SolidFormApi<
   TSubmitMeta,
 > {
   Field: FieldComponent<
+    TParentData,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
+    TFormOnServer,
+    TSubmitMeta
+  >
+  createField: CreateField<
     TParentData,
     TFormOnMount,
     TFormOnChange,
@@ -124,8 +138,8 @@ export interface SolidFormApi<
         >
       >,
     ) => TSelected
-    children: ((state: () => NoInfer<TSelected>) => JSXElement) | JSXElement
-  }) => JSXElement
+    children: ((state: () => NoInfer<TSelected>) => JSX.Element) | JSX.Element
+  }) => JSX.Element
 }
 
 /**
@@ -232,19 +246,29 @@ export function createForm<
       TSubmitMeta
     > = api as never
 
-  extendedApi.Field = (props) => <Field {...props} form={api} />
-  extendedApi.FormGroup = (props) => <FormGroup {...props} form={api} />
-  extendedApi.useStore = (selector) => useStore(api.store, selector)
-  extendedApi.Subscribe = (props) =>
+  extendedApi.Field = (props: any) => <Field {...props} form={api} />
+  extendedApi.createField = (props: any) =>
+    createField(() => {
+      return { ...props(), form: api }
+    }) as never
+  extendedApi.FormGroup = (props: any) => <FormGroup {...props} form={api} />
+  extendedApi.useStore = (selector: any) => useStore(api.store, selector)
+  extendedApi.Subscribe = (props: any) =>
     functionalUpdate(props.children, useStore(api.store, props.selector))
 
-  onMount(api.mount)
+  onSettled(api.mount)
 
   /**
    * formApi.update should not have any side effects. Think of it like a `useRef`
    * that we need to keep updated every render with the most up-to-date information.
    */
-  createComputed(() => api.update(opts?.()))
+  createRenderEffect(
+    () => opts?.(),
+    (options) => {
+      api.update(options)
+      return undefined
+    },
+  )
 
   return extendedApi
 }

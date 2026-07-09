@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen, waitFor } from '@solidjs/testing-library'
 import { userEvent } from '@testing-library/user-event'
-import { Index, Show, createSignal, onCleanup } from 'solid-js'
+import { Repeat, Show, createSignal, onCleanup } from 'solid-js'
 import { createForm } from '../src/index'
 import { sleep } from './utils'
 import type { FormValidationErrorMap } from '../src/index'
@@ -502,8 +502,8 @@ describe('createForm', () => {
         <>
           <form.Field name="foo" mode="array">
             {(arrayField) => (
-              <Index each={arrayField().state.value}>
-                {(_, i) => (
+              <Repeat count={arrayField().state.value.length}>
+                {(i) => (
                   <form.Field name={`foo[${i}].name`}>
                     {(field) => {
                       expect(field().name).toBe(`foo[${i}].name`)
@@ -512,7 +512,7 @@ describe('createForm', () => {
                     }}
                   </form.Field>
                 )}
-              </Index>
+              </Repeat>
             )}
           </form.Field>
           <button
@@ -560,8 +560,8 @@ describe('createForm', () => {
                     Add Item
                   </button>
                   <div>
-                    <Index each={fieldArray().state.value}>
-                      {(_, index) => (
+                    <Repeat count={fieldArray().state.value.length}>
+                      {(index) => (
                         <form.Field name={`items[${index}]`}>
                           {(field) => (
                             <div>
@@ -573,7 +573,7 @@ describe('createForm', () => {
                           )}
                         </form.Field>
                       )}
-                    </Index>
+                    </Repeat>
                   </div>
                 </div>
               )}
@@ -610,10 +610,9 @@ describe('createForm', () => {
           <form.Field name="foo" mode="array">
             {(arrayField) => (
               // This unit test provides different result based on
-              // using For vs. Index. Unit test both
-              // once that's fixed.
-              <Index each={arrayField().state.value}>
-                {(_, i) => (
+              // Keep index-based array field rendering covered.
+              <Repeat count={arrayField().state.value.length}>
+                {(i) => (
                   <form.Field name={`foo[${i}].name`}>
                     {(field) => {
                       expect(field().name).toBe(`foo[${i}].name`)
@@ -622,7 +621,7 @@ describe('createForm', () => {
                     }}
                   </form.Field>
                 )}
-              </Index>
+              </Repeat>
             )}
           </form.Field>
           <button

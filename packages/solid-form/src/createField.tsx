@@ -1,10 +1,10 @@
 import { FieldApi } from '@tanstack/form-core'
 import {
   createComponent,
-  createComputed,
-  createSignal,
-  onCleanup,
-  onMount,
+  createMemo,
+  createRenderEffect,
+  omit,
+  onSettled,
 } from 'solid-js'
 import { useStore } from '@tanstack/solid-store'
 import type {
@@ -15,9 +15,11 @@ import type {
   FieldValidators,
   FormAsyncValidateOrFn,
   FormValidateOrFn,
+  Narrow,
 } from '@tanstack/form-core'
 
-import type { Accessor, JSX, JSXElement } from 'solid-js'
+import type { Accessor } from 'solid-js'
+import type { JSX } from '@solidjs/web'
 import type {
   CreateFieldOptions,
   CreateFieldOptionsBound,
@@ -53,6 +55,94 @@ interface SolidFieldApi<
     TParentSubmitMeta
   >
 }
+
+export type CreateField<
+  TParentData,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TParentSubmitMeta,
+> = <
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName>,
+  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChangeAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnBlurAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnSubmitAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnDynamicAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+>(
+  opts: () => { name: Narrow<TName> } & CreateFieldOptionsBound<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync
+  >,
+) => () => FieldApi<
+  TParentData,
+  TName,
+  TData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
+  TFormOnMount,
+  TFormOnChange,
+  TFormOnChangeAsync,
+  TFormOnBlur,
+  TFormOnBlurAsync,
+  TFormOnSubmit,
+  TFormOnSubmitAsync,
+  TFormOnDynamic,
+  TFormOnDynamicAsync,
+  TFormOnServer,
+  TParentSubmitMeta
+> &
+  SolidFieldApi<
+    TParentData,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
+    TFormOnServer,
+    TParentSubmitMeta
+  >
 
 // ugly way to trick solid into triggering updates for changes on the fieldApi
 function makeFieldReactive<
@@ -167,11 +257,10 @@ function makeFieldReactive<
     TFormOnServer,
     TParentSubmitMeta
   > {
-  const [field, setField] = createSignal(fieldApi, { equals: false })
   // Subscribe to the pieces of state that should trigger a re-render of the
-  // field. For array mode, we only track the length of the array value to
-  // avoid re-renders when child properties change. Meta is tracked piece by
-  // piece so that consumers re-render when any meta property updates.
+  // field. For array mode, we only track the array version to avoid re-renders
+  // when child properties change. Meta is tracked piece by piece so that
+  // consumers re-render when any meta property updates.
   // See: https://github.com/TanStack/form/issues/1961
   const reactiveStateValue = useStore(fieldApi.store, (state) =>
     mode === 'array' ? state.meta._arrayVersion || 0 : state.value,
@@ -200,19 +289,20 @@ function makeFieldReactive<
     fieldApi.store,
     (state) => state.meta.isValidating,
   )
-  // Run before initial render
-  createComputed(() => {
-    // Read all reactive sources to track them as dependencies
-    reactiveStateValue()
-    reactiveMetaIsTouched()
-    reactiveMetaIsBlurred()
-    reactiveMetaIsDirty()
-    reactiveMetaErrorMap()
-    reactiveMetaErrorSourceMap()
-    reactiveMetaIsValidating()
-    setField(fieldApi)
-  })
-  return field
+  return createMemo(
+    () => {
+      // Read all reactive sources to track them as dependencies
+      reactiveStateValue()
+      reactiveMetaIsTouched()
+      reactiveMetaIsBlurred()
+      reactiveMetaIsDirty()
+      reactiveMetaErrorMap()
+      reactiveMetaErrorSourceMap()
+      reactiveMetaIsValidating()
+      return fieldApi
+    },
+    { equals: false },
+  )
 }
 
 export function createField<
@@ -282,25 +372,35 @@ export function createField<
 
   let mounted = false
   // Instantiates field meta and removes it when unrendered
-  onMount(() => {
+  onSettled(() => {
+    api.update(opts())
     const cleanupFn = api.mount()
     mounted = true
-    onCleanup(() => {
-      cleanupFn()
+    return () => {
       mounted = false
-    })
+      cleanupFn()
+    }
   })
 
   /**
    * fieldApi.update should not have any side effects. Think of it like a `useRef`
    * that we need to keep updated every render with the most up-to-date information.
    *
-   * createComputed to make sure this effect runs before render effects
+   * createRenderEffect keeps the api options in sync before user effects run.
    */
-  createComputed(() => {
-    if (!mounted) return
-    api.update(opts())
-  })
+  createRenderEffect(
+    () => {
+      const nextOptions = opts()
+      return mounted ? nextOptions : undefined
+    },
+    (options) => {
+      if (options) {
+        api.update(options)
+      }
+
+      return undefined
+    },
+  )
 
   return makeFieldReactive<
     TParentData,
@@ -566,7 +666,7 @@ interface FieldComponentProps<
       TFormOnServer,
       TParentSubmitMeta
     >,
-  ) => JSXElement
+  ) => JSX.Element
 }
 
 /**
@@ -741,8 +841,7 @@ export function Field<
     TFormOnServer,
     TParentSubmitMeta
   >(() => {
-    const { children, ...fieldOptions } = props
-    return fieldOptions
+    return omit(props, 'children')
   })
 
   return <>{createComponent(() => props.children(fieldApi), {})}</>

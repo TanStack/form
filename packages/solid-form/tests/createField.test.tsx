@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, waitFor } from '@solidjs/testing-library'
 import { userEvent } from '@testing-library/user-event'
-import { Index, Show } from 'solid-js'
+import { Repeat, Show } from 'solid-js'
 import { createForm } from '../src/index'
 import { sleep } from './utils'
 
@@ -402,8 +402,8 @@ describe('createField', () => {
                 <div>
                   <Show when={field().state.value.length > 0}>
                     {/* Do not change this to For or the test will fail */}
-                    <Index each={field().state.value}>
-                      {(_, i) => {
+                    <Repeat count={field().state.value.length}>
+                      {(i) => {
                         return (
                           <form.Field name={`people[${i}]`}>
                             {(subField) => (
@@ -430,7 +430,7 @@ describe('createField', () => {
                           </form.Field>
                         )
                       }}
-                    </Index>
+                    </Repeat>
                   </Show>
 
                   <button onClick={() => field().pushValue('')} type="button">
@@ -496,8 +496,8 @@ describe('createField', () => {
                 <div>
                   <Show when={field().state.value.length > 0}>
                     {/* Do not change this to For or the test will fail */}
-                    <Index each={field().state.value}>
-                      {(_, i) => {
+                    <Repeat count={field().state.value.length}>
+                      {(i) => {
                         return (
                           <form.Field name={`people[${i}].name`}>
                             {(subField) => (
@@ -524,7 +524,7 @@ describe('createField', () => {
                           </form.Field>
                         )
                       }}
-                    </Index>
+                    </Repeat>
                   </Show>
 
                   <button

@@ -2,15 +2,14 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "jsx": "preserve",
-    "jsxImportSource": "solid-js",
+    "jsxImportSource": "@solidjs/web",
     "moduleResolution": "Bundler",
-    "rootDir": "src",
     "outDir": "dist/source",
     "noEmit": false,
     "declaration": true,
     "sourceMap": true,
     "paths": {
-      "@tanstack/form-core": ["../../form-core/src"]
+      "@tanstack/form-core": ["../form-core/src"]
     }
   },
   "include": ["src"]
