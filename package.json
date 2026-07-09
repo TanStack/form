@@ -86,5 +86,8 @@
     "typescript55": "npm:typescript@5.5.4",
     "typescript54": "npm:typescript@5.4.5",
     "vitest": "^4.0.17"
+  },
+  "sherif": {
+    "ignorePackage": ["@tanstack/form-example-react-expo"]
   }
 }
