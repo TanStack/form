@@ -15,9 +15,15 @@ import type {
   FormValidateAsyncFn,
   FormValidateOrFn,
   ServerFormState,
+  StandardSchemaV1,
   UnwrapFormAsyncValidateOrFn,
 } from '@tanstack/react-form'
 import type { FormDataInfo } from 'decode-formdata'
+
+type InferServerValidatorOutput<
+  TOnServer extends undefined | FormAsyncValidateOrFn<any>,
+  TFormData,
+> = TOnServer extends StandardSchemaV1<any, infer Output> ? Output : TFormData
 
 interface CreateServerValidateOptions<
   TFormData,
@@ -82,18 +88,32 @@ const serverFn = createServerFn({ method: 'POST' })
     }: {
       value: any
       validationSource: 'form'
-    }) => {
+    }): Promise<{
+      error: UnwrapFormAsyncValidateOrFn<any> | undefined
+      validatedValue: any
+    }> => {
       if (isStandardSchemaValidator(onServerValidate)) {
-        return await standardSchemaValidators.validateAsync(
+        const rawResult = await onServerValidate['~standard'].validate(value)
+
+        if (!rawResult.issues) {
+          return { error: undefined, validatedValue: rawResult.value }
+        }
+
+        const error = await standardSchemaValidators.validateAsync(
           { value, validationSource },
           onServerValidate,
         )
+
+        return { error, validatedValue: undefined }
       }
-      return (onServerValidate as FormValidateAsyncFn<any>)({
+
+      const error = await (onServerValidate as FormValidateAsyncFn<any>)({
         value,
         signal: undefined as never,
         formApi: undefined as never,
       })
+
+      return { error, validatedValue: value }
     }
 
     const referer = getRequestHeader('referer')!
@@ -102,12 +122,12 @@ const serverFn = createServerFn({ method: 'POST' })
       ? decode(formData, info)
       : decode(formData)) as never as any
 
-    const onServerError = (await runValidator({
+    const { error: onServerError, validatedValue } = await runValidator({
       value: decodedData,
       validationSource: 'form',
-    })) as UnwrapFormAsyncValidateOrFn<any> | undefined
+    })
 
-    if (!onServerError) return decodedData
+    if (!onServerError) return validatedValue
 
     const onServerErrorVal = (
       isGlobalFormValidationError(onServerError)
@@ -167,4 +187,6 @@ export const createServerValidate =
     >,
   ) =>
   (formData: FormData, info?: Parameters<typeof decode>[1]) =>
-    serverFn({ data: { defaultOpts, formData, info } })
+    serverFn({ data: { defaultOpts, formData, info } }) as Promise<
+      InferServerValidatorOutput<TOnServer, TFormData>
+    >

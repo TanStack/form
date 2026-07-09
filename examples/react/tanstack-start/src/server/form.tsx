@@ -4,8 +4,15 @@ import {
   createServerValidate,
   getFormData,
 } from '@tanstack/react-form-start'
+
 import { setResponseStatus } from '@tanstack/react-start/server'
-import { formOpts } from './form-isomorphic'
+import { formOpts } from '../utils/form-isomorphic'
+
+export const getFormDataFromServer = createServerFn({ method: 'GET' }).handler(
+  async () => {
+    return getFormData()
+  },
+)
 
 const serverValidate = createServerValidate({
   ...formOpts,
@@ -39,9 +46,3 @@ export const handleForm = createServerFn({ method: 'POST' })
 
     return 'Form has validated successfully'
   })
-
-export const getFormDataFromServer = createServerFn({ method: 'GET' }).handler(
-  async () => {
-    return getFormData()
-  },
-)
