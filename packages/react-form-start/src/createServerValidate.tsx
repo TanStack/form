@@ -50,7 +50,7 @@ interface CreateServerValidateOptions<
 }
 
 const serverFn = createServerFn({ method: 'POST' })
-  .inputValidator(
+  .validator(
     (data: { formData: unknown; info?: unknown; defaultOpts: unknown }) => {
       return data
     },
