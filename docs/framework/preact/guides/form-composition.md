@@ -345,7 +345,7 @@ const FieldGroupPasswordFields = withFieldGroup({
 
   // Optional, but adds props to the `render` function in addition to `form`
   props: {
-    // These default values are also for type-checking and are not used at runtime
+    // These props are set as default values for the `render` function
     title: 'Password',
   },
   // Internally, you will have access to a `group` instead of a `form`

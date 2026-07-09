@@ -542,6 +542,49 @@ describe('form group api', () => {
     expect(step1Group.state.meta.isValid).toBe(false)
   })
 
+  it('Should not throw when a group validator returns field errors for a field that is not mounted yet', () => {
+    const form = new FormApi({
+      defaultValues: {
+        step1: { name: '', unmountedField: '' },
+        step2: { name: 'test2' },
+      },
+    })
+
+    const step1Group = new FormGroupApi({
+      name: 'step1',
+      form,
+      validators: {
+        onMount: () => {
+          return {
+            fields: {
+              unmountedField: 'Unmounted field is required',
+            },
+          }
+        },
+      },
+    })
+
+    // Note: no FieldApi is ever created/mounted for `step1.unmountedField`,
+    // so it has no entry in `fieldMetaBase` when the group validates.
+    form.mount()
+
+    expect(() => step1Group.mount()).not.toThrow()
+
+    expect(step1Group.state.meta.isFieldsValid).toBe(false)
+
+    // Once the field mounts, the previously-distributed error should
+    // surface on it.
+    const unmountedField = new FieldApi({
+      name: 'step1.unmountedField',
+      form,
+    })
+    unmountedField.mount()
+
+    expect(unmountedField.state.meta.errorMap.onMount).toBe(
+      'Unmounted field is required',
+    )
+  })
+
   it('Should propagate manual function field errors from group validators to child fields', async () => {
     const onSubmit = vi.fn()
 
