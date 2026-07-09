@@ -1,5 +1,21 @@
 # @tanstack/form-core
 
+## 1.33.1
+
+### Patch Changes
+
+- [#2236](https://github.com/TanStack/form/pull/2236) [`3c57f6d`](https://github.com/TanStack/form/commit/3c57f6d4311f823ab39374417edb5fae544ad15a) - Fix TS4023 declaration emit
+
+- [#2233](https://github.com/TanStack/form/pull/2233) [`7b3012b`](https://github.com/TanStack/form/commit/7b3012b03e706cc409c2952964145a11a300d7fe) - Fix `FormGroupApi.distributeFieldErrors` throwing `TypeError: Cannot read properties of undefined` when a group validator returns errors for a field that is not mounted yet
+
+- [#2120](https://github.com/TanStack/form/pull/2120) [`741da6b`](https://github.com/TanStack/form/commit/741da6bb659a319acaa55292564999fcbbc90012) - fix(form-core): clear stale onBlur errors on re-submission
+
+- [#2236](https://github.com/TanStack/form/pull/2236) [`3c57f6d`](https://github.com/TanStack/form/commit/3c57f6d4311f823ab39374417edb5fae544ad15a) - Fix arktype usage typing in validators
+
+- [#2056](https://github.com/TanStack/form/pull/2056) [`6cd477a`](https://github.com/TanStack/form/commit/6cd477a97df9612019d8a2d9c97f2e86b1b59256) - fix: create fieldMeta on async validation for fields with errors
+
+- [#2143](https://github.com/TanStack/form/pull/2143) [`887a129`](https://github.com/TanStack/form/commit/887a1293375a168452e82b0fb482841ec02ad77f) - fix race condition when listening to multiple Fields in onChangeListenTo
+
 ## 1.33.0
 
 ### Minor Changes
