@@ -2,7 +2,6 @@ import { batch, createAtom } from '@tanstack/store'
 import {
   getDefaultValueCacheResult,
   getOrCreateFieldApi,
-  nameToFieldNodeSegments,
   shouldCacheDefaultValue,
   tryGetFieldApi,
 } from '../FieldApi/FieldApi.lib'
@@ -13,6 +12,7 @@ import {
   evaluate,
   getBy,
   getTargetField,
+  nameToFieldNodeSegments,
   resolveFieldUpdateOptions,
   setBy,
   uuid,

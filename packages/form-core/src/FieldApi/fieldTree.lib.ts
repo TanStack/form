@@ -22,13 +22,13 @@ import type {
   AnyInternalFieldApi,
   FieldListenToFields,
   FieldWatchingFields,
-  NameSegment,
 } from './FieldApi.lib'
 import type {
   InternalRootFieldApi,
   RootCounterContributionKey,
 } from './RootFieldApi.lib'
 import type { ChildContributionStates } from './fieldState.lib'
+import type { NameSegment } from '../utils.lib'
 
 type DetachWatchingFieldFn = (
   operation: FieldDependencyChange,

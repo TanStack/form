@@ -1,8 +1,9 @@
 import { batch } from '@tanstack/store'
 import { touchAllFieldsAndCollectSubmitValidators } from './fieldTree.lib'
-import type { AnyInternalFieldApi, NameSegment } from './FieldApi.lib'
+import type { AnyInternalFieldApi } from './FieldApi.lib'
 import type { ChildContributionStates } from './fieldState.lib'
 import type { AnyInternalFormApi, FormMetaAtoms } from '../FormApi/FormApi.lib'
+import type { NameSegment } from '../utils.lib'
 
 export type RootCounterContributionKey = 'touched' | 'validating'
 

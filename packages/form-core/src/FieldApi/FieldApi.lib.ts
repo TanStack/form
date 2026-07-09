@@ -43,7 +43,7 @@ import type {
   AnyFieldListener,
   FieldListenerTriggers,
 } from '../listeners.public'
-import type { PipelineCache } from '../utils.lib'
+import type { NameSegment, NameSegments, PipelineCache } from '../utils.lib'
 import type {
   FieldValidatorPipelineResult,
   PipelineResult,
@@ -163,49 +163,6 @@ function isObjectLike(value: unknown): boolean {
   return (
     (typeof value === 'object' && value !== null) || typeof value === 'function'
   )
-}
-
-export type NameSegment = string | number
-export type NameSegments = Array<NameSegment>
-
-/**
- * Convert a name into an array of segments.
- *
- * If it already is an array, it will create a shallow copy.
- */
-export function nameToFieldNodeSegments(
-  nameOrSegments: string | NameSegments,
-): NameSegments {
-  if (typeof nameOrSegments !== 'string') return nameOrSegments.slice()
-
-  const result: NameSegments = []
-  let s = ''
-
-  for (let i = 0; i < nameOrSegments.length; i++) {
-    switch (nameOrSegments.charCodeAt(i)) {
-      case 0x2e: // '.'
-      case 0x5b: // '['
-        if (s.length > 0) {
-          result.push(s)
-          s = ''
-        }
-        break
-      case 0x5d: // ']'
-        if (s.length > 0) {
-          result.push(parseInt(s, 10))
-          s = ''
-        }
-        break
-      default:
-        s += nameOrSegments.charAt(i)
-        break
-    }
-  }
-  if (s.length > 0) {
-    result.push(s)
-  }
-
-  return result
 }
 
 /**

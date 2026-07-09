@@ -1,4 +1,3 @@
-import { nameToFieldNodeSegments } from './FieldApi/FieldApi.lib'
 import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
 
 // type
@@ -15,6 +14,49 @@ import type {
   ResolvedInternalFieldUpdateOptions,
 } from './types.lib'
 import type { AnyInternalFormApi } from './FormApi/FormApi.lib'
+
+export type NameSegment = string | number
+export type NameSegments = Array<NameSegment>
+
+/**
+ * Convert a name into an array of segments.
+ *
+ * If it already is an array, it will create a shallow copy.
+ */
+export function nameToFieldNodeSegments(
+  nameOrSegments: string | NameSegments,
+): NameSegments {
+  if (typeof nameOrSegments !== 'string') return nameOrSegments.slice()
+
+  const result: NameSegments = []
+  let s = ''
+
+  for (let i = 0; i < nameOrSegments.length; i++) {
+    switch (nameOrSegments.charCodeAt(i)) {
+      case 0x2e: // '.'
+      case 0x5b: // '['
+        if (s.length > 0) {
+          result.push(s)
+          s = ''
+        }
+        break
+      case 0x5d: // ']'
+        if (s.length > 0) {
+          result.push(parseInt(s, 10))
+          s = ''
+        }
+        break
+      default:
+        s += nameOrSegments.charAt(i)
+        break
+    }
+  }
+  if (s.length > 0) {
+    result.push(s)
+  }
+
+  return result
+}
 
 export function resolveFieldUpdateOptions(
   options: InternalFieldUpdateOptions | undefined,
