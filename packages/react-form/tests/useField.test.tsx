@@ -1470,6 +1470,100 @@ describe('useField', () => {
     expect(renderCount.arrayField).toBeGreaterThan(arrayFieldBeforeAdd)
   })
 
+  it('should rerender array field on swapFieldValues even when length is unchanged', async () => {
+    // swapFieldValues does not change array length but must still notify the
+    // parent array field so subscribers see the new order.
+    const renderCount = { arrayField: 0 }
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          people: [{ name: 'John' }, { name: 'Jane' }],
+        },
+      })
+
+      return (
+        <form.Field name="people" mode="array">
+          {(arrayField) => {
+            renderCount.arrayField++
+            return (
+              <div>
+                <ol data-testid="list">
+                  {arrayField.state.value.map((person, i) => (
+                    <li key={i} data-testid={`item-${i}`}>
+                      {person.name}
+                    </li>
+                  ))}
+                </ol>
+                <button
+                  type="button"
+                  data-testid="swap"
+                  onClick={() => form.swapFieldValues('people', 0, 1)}
+                >
+                  Swap
+                </button>
+              </div>
+            )
+          }}
+        </form.Field>
+      )
+    }
+
+    const { getByTestId } = render(
+      <StrictMode>
+        <Comp />
+      </StrictMode>,
+    )
+
+    expect(getByTestId('item-0')).toHaveTextContent('John')
+    expect(getByTestId('item-1')).toHaveTextContent('Jane')
+
+    const before = renderCount.arrayField
+    await user.click(getByTestId('swap'))
+
+    expect(renderCount.arrayField).toBeGreaterThan(before)
+    expect(getByTestId('item-0')).toHaveTextContent('Jane')
+    expect(getByTestId('item-1')).toHaveTextContent('John')
+  })
+
+  it('should rerender array field when async defaultValues resolve', async () => {
+    // Regression test for https://github.com/TanStack/form/issues/2178
+    // When async defaultValues arrive after initial render, array fields in
+    // mode="array" must re-render because _arrayVersion is used as the
+    // reactivity signal (not value length).
+    type Person = { name: string }
+    type FormData = { people: Person[] }
+
+    function Comp({ defaultValues }: { defaultValues?: FormData }) {
+      const form = useForm({ defaultValues })
+
+      return (
+        <form.Field name="people" mode="array">
+          {(field) => {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            const val = field.state.value ?? []
+            return (
+              <ol data-testid="list">
+                {val.map((person, i) => (
+                  <li key={i} data-testid={`item-${i}`}>
+                    {person.name}
+                  </li>
+                ))}
+              </ol>
+            )
+          }}
+        </form.Field>
+      )
+    }
+
+    const { getByTestId, rerender } = render(<Comp />)
+    expect(getByTestId('list').children).toHaveLength(0)
+
+    rerender(<Comp defaultValues={{ people: [{ name: 'Alice' }] }} />)
+    await waitFor(() => expect(getByTestId('list').children).toHaveLength(1))
+    expect(getByTestId('item-0')).toHaveTextContent('Alice')
+  })
+
   it('should handle defaultValue without setstate-in-render error', async () => {
     // Spy on console.error before rendering
     const consoleErrorSpy = vi.spyOn(console, 'error')

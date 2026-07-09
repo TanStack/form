@@ -1,0 +1,23 @@
+{
+  "name": "@tanstack/form-example-vue-multi-step-wizard",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:dev": "vite build -m development",
+    "test:types": "vue-tsc",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "@tanstack/vue-form": "^1.33.0",
+    "vue": "^3.5.13",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.4",
+    "typescript": "5.9.3",
+    "vite": "^7.2.2",
+    "vue-tsc": "^2.2.2"
+  }
+}

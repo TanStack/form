@@ -5,7 +5,7 @@ title: FieldGroupOptions
 
 # Interface: FieldGroupOptions\<TFormData, TFieldGroupData, TFields, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta\>
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:50](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L50)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:51](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L51)
 
 An object representing the options for a field group.
 
@@ -77,7 +77,7 @@ An object representing the options for a field group.
 optional defaultValues: TFieldGroupData;
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:106](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L106)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:107](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L107)
 
 The expected subsetValues that the form must provide.
 
@@ -89,7 +89,7 @@ The expected subsetValues that the form must provide.
 fields: TFields;
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:102](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L102)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:103](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L103)
 
 The path to the field group data.
 
@@ -103,7 +103,7 @@ form:
 | FieldGroupApi<any, TFormData, any, any, any, any, any, any, any, any, any, any, any, TSubmitMeta>;
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:68](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L68)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:69](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L69)
 
 ***
 
@@ -113,6 +113,6 @@ Defined in: [packages/form-core/src/FieldGroupApi.ts:68](https://github.com/TanS
 optional onSubmitMeta: TSubmitMeta;
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:110](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L110)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:111](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L111)
 
 onSubmitMeta, the data passed from the handleSubmit handler, to the onSubmit function props

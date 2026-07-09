@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/react-form-devtools",
-  "version": "0.2.21",
+  "version": "0.2.29",
   "description": "Devtools, for TanStack React form.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -22,7 +22,8 @@
     "test:types:ts55": "node ../../node_modules/typescript55/lib/tsc.js",
     "test:types:ts56": "node ../../node_modules/typescript56/lib/tsc.js",
     "test:types:ts57": "node ../../node_modules/typescript57/lib/tsc.js",
-    "test:types:ts58": "tsc",
+    "test:types:ts58": "node ../../node_modules/typescript58/lib/tsc.js",
+    "test:types:ts59": "tsc",
     "test:lib": "vitest",
     "test:lib:dev": "pnpm run test:lib --watch",
     "test:build": "publint --strict",
@@ -56,10 +57,10 @@
     "@tanstack/form-devtools": "workspace:*"
   },
   "devDependencies": {
-    "@types/react": "^19.0.7",
+    "@types/react": "~19.1.0",
     "@vitejs/plugin-react": "^5.1.1",
     "eslint-plugin-react-compiler": "19.1.0-rc.2",
-    "react": "^19.0.0",
+    "react": "19.1.0",
     "vite": "^7.2.2"
   },
   "peerDependencies": {

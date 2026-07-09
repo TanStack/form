@@ -218,6 +218,24 @@ export default function App() {
 }
 ```
 
+_Note:_ The example above uses a function validator that returns a `string`. When using a [Standard Schema](#standard-schema-libraries) validator (Zod, Valibot, ArkType, Effect/Schema), `state.errorMap.onChange` is typed as `Record<string, StandardSchemaV1Issue[]>` instead, keyed by field name. Iterate the record to render the messages:
+
+```tsx
+{
+  formErrorMap.onChange ? (
+    <div>
+      <em>
+        There was an error on the form:{' '}
+        {Object.values(formErrorMap.onChange)
+          .flat()
+          .map((issue) => issue.message)
+          .join(', ')}
+      </em>
+    </div>
+  ) : null
+}
+```
+
 ### Setting field-level errors from the form's validators
 
 You can set errors on the fields from the form's validators. One common use case for this is validating all the fields on submit by calling a single API endpoint in the form's `onSubmitAsync` validator.
