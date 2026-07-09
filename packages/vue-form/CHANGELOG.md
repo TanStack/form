@@ -4,6 +4,15 @@
 
 ### Patch Changes
 
+- [#2206](https://github.com/TanStack/form/pull/2206) [`df52a12`](https://github.com/TanStack/form/commit/df52a12c8772cb025bfba6773c5ff0a488211662) - Re-export `useSelector` from TanStack Store adapters and document migration from deprecated `useStore` (fixes [#2203](https://github.com/TanStack/form/issues/2203)).
+
+- Updated dependencies [[`3c57f6d`](https://github.com/TanStack/form/commit/3c57f6d4311f823ab39374417edb5fae544ad15a), [`7b3012b`](https://github.com/TanStack/form/commit/7b3012b03e706cc409c2952964145a11a300d7fe), [`741da6b`](https://github.com/TanStack/form/commit/741da6bb659a319acaa55292564999fcbbc90012), [`3c57f6d`](https://github.com/TanStack/form/commit/3c57f6d4311f823ab39374417edb5fae544ad15a), [`6cd477a`](https://github.com/TanStack/form/commit/6cd477a97df9612019d8a2d9c97f2e86b1b59256), [`887a129`](https://github.com/TanStack/form/commit/887a1293375a168452e82b0fb482841ec02ad77f)]:
+  - @tanstack/form-core@1.33.1
+
+## 1.33.1
+
+### Patch Changes
+
 - Re-export `useSelector` from `@tanstack/vue-store`. Add `form.useSelector`; `form.useStore` is deprecated (fixes [#2203](https://github.com/TanStack/form/issues/2203)).
 
 ## 1.33.0
