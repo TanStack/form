@@ -1795,9 +1795,6 @@ importers:
         specifier: ^0.9.0
         version: 0.9.0
     devDependencies:
-      '@tanstack/react-start':
-        specifier: ^1.168.27
-        version: 1.168.27(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vite-plugin-solid@2.11.12(@testing-library/jest-dom@6.9.1)(solid-js@1.9.13)(vite@7.3.3(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)))(vite@7.3.3(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0))(webpack@5.105.2(@swc/core@1.15.40)(lightningcss@1.32.0)(postcss@8.5.15))
       '@types/react':
         specifier: ~19.2.0
         version: 19.2.17
@@ -1823,9 +1820,6 @@ importers:
         specifier: ^0.9.0
         version: 0.9.0
     devDependencies:
-      '@tanstack/react-start':
-        specifier: ^1.168.27
-        version: 1.168.27(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vite-plugin-solid@2.11.12(@testing-library/jest-dom@6.9.1)(solid-js@1.9.13)(vite@7.3.3(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)))(vite@7.3.3(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0))(webpack@5.105.2(@swc/core@1.15.40)(lightningcss@1.32.0)(postcss@8.5.15))
       '@types/react':
         specifier: ~19.2.0
         version: 19.2.17
