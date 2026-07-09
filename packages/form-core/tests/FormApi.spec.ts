@@ -1232,6 +1232,28 @@ describe('form api', () => {
     expect(form.getFieldValue('name')).toEqual('two')
   })
 
+  it('should bump array version when defaultValues update before the array field mounts', () => {
+    type Person = { name: string }
+    type FormData = { people: Person[] }
+    const form = new FormApi({
+      defaultValues: {
+        people: [],
+      } as FormData,
+    })
+    form.mount()
+
+    const versionBefore = form.getFieldMeta('people')?._arrayVersion ?? 0
+
+    form.update({
+      defaultValues: {
+        people: [{ name: 'Alice' }, { name: 'Bob' }],
+      },
+    })
+
+    expect(form.getFieldValue('people')).toHaveLength(2)
+    expect(form.getFieldMeta('people')?._arrayVersion).toBe(versionBefore + 1)
+  })
+
   it('should delete field from the form', () => {
     const form = new FormApi({
       defaultValues: {

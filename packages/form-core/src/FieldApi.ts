@@ -3,7 +3,7 @@ import {
   isStandardSchemaValidator,
   standardSchemaValidators,
 } from './standardSchemaValidator'
-import { defaultFieldMeta } from './metaHelper'
+import { defaultFieldMeta, metaHelper } from './metaHelper'
 import {
   determineFieldLevelErrorSourceAndValue,
   evaluate,
@@ -901,6 +901,18 @@ export class FieldApi<
       value: this.state.value,
       fieldApi: this,
     })
+
+    // Array fields that mount after async defaultValues may already have data
+    // but still have _arrayVersion 0. Bump so adapters subscribe to the
+    // populated array (rendering, validation, hooks).
+    const mountedValue = this.form.getFieldValue(this.name)
+    if (
+      Array.isArray(mountedValue) &&
+      mountedValue.length > 0 &&
+      (this.getMeta()._arrayVersion ?? 0) === 0
+    ) {
+      metaHelper(this.form).bumpArrayVersion(this.name)
+    }
 
     return () => {
       // Stop any in-flight async validation or listener work tied to this instance.

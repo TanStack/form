@@ -1,5 +1,11 @@
 # @tanstack/form-core
 
+## 1.33.1
+
+### Patch Changes
+
+- Bump `_arrayVersion` when async `defaultValues` update array fields that are not mounted yet, and when array fields mount with existing values (fixes [#2201](https://github.com/TanStack/form/issues/2201)).
+
 ## 1.33.0
 
 ### Minor Changes

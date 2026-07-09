@@ -1,5 +1,6 @@
 import { batch, createStore } from '@tanstack/store'
 import {
+  collectArrayFieldPaths,
   deleteBy,
   determineFormLevelErrorSourceAndValue,
   evaluate,
@@ -1783,12 +1784,22 @@ export class FormApi<
 
     if (shouldUpdateValues) {
       const helper = metaHelper(this)
+      const arrayFieldKeys = new Set<DeepKeys<TFormData>>()
+
       for (const fieldKey of Object.keys(
         this.fieldInfo,
       ) as DeepKeys<TFormData>[]) {
         if (Array.isArray(this.getFieldValue(fieldKey))) {
-          helper.bumpArrayVersion(fieldKey)
+          arrayFieldKeys.add(fieldKey)
         }
+      }
+
+      for (const fieldPath of collectArrayFieldPaths(options.defaultValues)) {
+        arrayFieldKeys.add(fieldPath as DeepKeys<TFormData>)
+      }
+
+      for (const fieldKey of arrayFieldKeys) {
+        helper.bumpArrayVersion(fieldKey)
       }
     }
 
