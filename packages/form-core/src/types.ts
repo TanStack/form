@@ -555,6 +555,16 @@ export type FieldLikeMetaBase<
   isValidating: boolean
 
   /**
+   * @private
+   * Counter for tracking active async validations to prevent race conditions
+   * when multiple validations finish at the same time.
+   *
+   * NOTE: This field is intentionally internal (prefixed with `_`) and is not
+   * part of the public API — do not read or rely on it from external code.
+   */
+  _pendingValidationsCount: number
+
+  /**
    * @private a counter that is incremented every time a structural array
    * operation (push, insert, remove, swap, move, replace, clear) modifies
    * the value of an array field. Adapters can subscribe to this to trigger

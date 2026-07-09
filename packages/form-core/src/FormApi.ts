@@ -1143,6 +1143,7 @@ export class FormApi<
             isBlurred: false,
             isDirty: false,
             _arrayVersion: 0,
+            _pendingValidationsCount: 0,
             ...(existingFieldMeta ?? {}),
             errorSourceMap: {
               ...(existingFieldMeta?.['errorSourceMap'] ?? {}),

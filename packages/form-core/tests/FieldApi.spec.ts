@@ -66,6 +66,7 @@ describe('field api', () => {
       errorMap: {},
       errorSourceMap: {},
       _arrayVersion: 0,
+      _pendingValidationsCount: 0,
     })
   })
 
