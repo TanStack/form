@@ -341,7 +341,7 @@ Use `field.state.value` instead.
 handleBlur(): void;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1701](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1701)
+Defined in: [packages/form-core/src/FieldApi.ts:1739](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1739)
 
 Handles the blur event.
 
@@ -357,7 +357,7 @@ Handles the blur event.
 handleChange(updater): void;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1694](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1694)
+Defined in: [packages/form-core/src/FieldApi.ts:1732](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1732)
 
 Handles the change event.
 
@@ -477,7 +477,7 @@ parseValueWithSchema(schema):
   | undefined;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1744](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1744)
+Defined in: [packages/form-core/src/FieldApi.ts:1782](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1782)
 
 Parses the field's value with the given schema and returns
 issues (if any). This method does NOT set any internal errors.
@@ -505,7 +505,7 @@ parseValueWithSchemaAsync(schema): Promise<
 | undefined>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1756](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1756)
+Defined in: [packages/form-core/src/FieldApi.ts:1794](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1794)
 
 Parses the field's value with the given schema and returns
 issues (if any). This method does NOT set any internal errors.
@@ -617,7 +617,7 @@ Replaces a value at the specified index.
 setErrorMap(errorMap): void;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1717](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1717)
+Defined in: [packages/form-core/src/FieldApi.ts:1755](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1755)
 
 Updates the field's errorMap
 
@@ -754,7 +754,7 @@ Updates the field instance with new options.
 validate(cause, opts?): unknown[] | Promise<unknown[]>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1577](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1577)
+Defined in: [packages/form-core/src/FieldApi.ts:1615](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1615)
 
 Validates the field value.
 

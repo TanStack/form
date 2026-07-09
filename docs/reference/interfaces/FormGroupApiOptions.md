@@ -125,7 +125,7 @@ Defined in: [packages/form-core/src/FormGroupApi.ts:562](https://github.com/TanS
 optional asyncAlways: boolean;
 ```
 
-Defined in: [packages/form-core/src/types.ts:972](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L972)
+Defined in: [packages/form-core/src/types.ts:982](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L982)
 
 If `true`, always run async validation, even if there are errors emitted during synchronous validation.
 
@@ -141,7 +141,7 @@ If `true`, always run async validation, even if there are errors emitted during 
 optional asyncDebounceMs: number;
 ```
 
-Defined in: [packages/form-core/src/types.ts:968](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L968)
+Defined in: [packages/form-core/src/types.ts:978](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L978)
 
 The default time to debounce async validation if there is not a more specific debounce time passed.
 
@@ -173,7 +173,7 @@ If true, allows the form to be submitted in an invalid state i.e. canSubmit will
 optional defaultMeta: Partial<FieldLikeMeta<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, any, any, any, any, any, any, any, any, any>>;
 ```
 
-Defined in: [packages/form-core/src/types.ts:976](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L976)
+Defined in: [packages/form-core/src/types.ts:986](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L986)
 
 An optional object with default metadata for the field.
 
@@ -203,7 +203,7 @@ Defined in: [packages/form-core/src/FormGroupApi.ts:388](https://github.com/TanS
 optional defaultValue: NoInfer<TData>;
 ```
 
-Defined in: [packages/form-core/src/types.ts:964](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L964)
+Defined in: [packages/form-core/src/types.ts:974](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L974)
 
 An optional default value for the field.
 
@@ -219,7 +219,7 @@ An optional default value for the field.
 optional disableErrorFlat: boolean;
 ```
 
-Defined in: [packages/form-core/src/types.ts:1004](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L1004)
+Defined in: [packages/form-core/src/types.ts:1014](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L1014)
 
 Disable the `flat(1)` operation on `field.errors`. This is useful if you want to keep the error structure as is. Not suggested for most use-cases.
 
@@ -261,7 +261,7 @@ A list of listeners which attach to the corresponding events
 name: TName;
 ```
 
-Defined in: [packages/form-core/src/types.ts:960](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L960)
+Defined in: [packages/form-core/src/types.ts:970](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L970)
 
 The field name. The type will be `DeepKeys<TParentData>` to ensure your name is a deep key of the parent dataset.
 
