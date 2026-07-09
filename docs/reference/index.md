@@ -31,6 +31,8 @@ title: "@tanstack/form-core"
 - [FormGroupStoreState](interfaces/FormGroupStoreState.md)
 - [FormGroupValidators](interfaces/FormGroupValidators.md)
 - [FormListeners](interfaces/FormListeners.md)
+- [FormListenersPropsField](interfaces/FormListenersPropsField.md)
+- [FormListenersPropsGroup](interfaces/FormListenersPropsGroup.md)
 - [FormOptions](interfaces/FormOptions.md)
 - [FormState](interfaces/FormState.md)
 - [FormValidators](interfaces/FormValidators.md)
