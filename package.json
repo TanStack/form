@@ -88,6 +88,8 @@
     "vitest": "^4.0.17"
   },
   "sherif": {
-    "ignorePackage": ["@tanstack/form-example-react-expo"]
+    "ignorePackage": [
+      "@tanstack/form-example-react-expo"
+    ]
   }
 }
