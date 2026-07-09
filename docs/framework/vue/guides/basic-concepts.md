@@ -240,14 +240,14 @@ const onChangeFirstName = z.string().refine(
 
 ## Reactivity
 
-`@tanstack/vue-form` offers various ways to subscribe to form and field state changes, most notably the `form.useStore` method and the `form.Subscribe` component. These methods allow you to optimize your form's rendering performance by only updating components when necessary.
+`@tanstack/vue-form` offers various ways to subscribe to form and field state changes, most notably the `form.useSelector` method and the `form.Subscribe` component. These methods allow you to optimize your form's rendering performance by only updating components when necessary.
 
 Example:
 
 ```vue
 <script setup lang="ts">
 // ...
-const firstName = form.useStore((state) => state.values.firstName)
+const firstName = form.useSelector((state) => state.values.firstName)
 </script>
 
 <template>
@@ -292,7 +292,7 @@ Example:
 
 More information can be found at [Listeners](./listeners.md)
 
-Note: The usage of the `form.useField` method to achieve reactivity is discouraged since it is designed to be used thoughtfully within the `form.Field` component. You might want to use `form.useStore` instead.
+Note: The usage of the `form.useField` method to achieve reactivity is discouraged since it is designed to be used thoughtfully within the `form.Field` component. You might want to use `form.useSelector` instead.
 
 ## Array Fields
 

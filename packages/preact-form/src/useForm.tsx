@@ -1,6 +1,6 @@
 import { FormApi, functionalUpdate, mergeAndUpdate } from '@tanstack/form-core'
 import { useMemo, useRef, useState } from 'preact/hooks'
-import { useStore } from '@tanstack/preact-store'
+import { useSelector } from '@tanstack/preact-store'
 import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import { useFormId } from './useFormId'
@@ -160,7 +160,7 @@ function LocalSubscribe({
   form: AnyFormApi
   selector: (state: AnyFormState) => AnyFormState
 }>): ReturnType<FunctionComponent> {
-  const data = useStore(form.store, selector)
+  const data = useSelector(form.store, selector)
 
   return <>{functionalUpdate(children, data)}</>
 }

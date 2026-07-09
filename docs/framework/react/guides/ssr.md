@@ -110,7 +110,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import {
   mergeForm,
   useForm,
-  useStore,
+  useSelector,
   useTransform,
 } from '@tanstack/react-form-start'
 
@@ -128,7 +128,7 @@ function Home() {
     transform: useTransform((baseForm) => mergeForm(baseForm, state), [state]),
   })
 
-  const formErrors = useStore(form.store, (formState) => formState.errors)
+  const formErrors = useSelector(form.store, (formState) => formState.errors)
 
   return (
     <form action={handleForm.url} method="post" encType={'multipart/form-data'}>
@@ -259,7 +259,7 @@ import {
   initialFormState,
   mergeForm,
   useForm,
-  useStore,
+  useSelector,
   useTransform,
 } from '@tanstack/react-form-nextjs'
 import someAction from './action'
@@ -273,7 +273,7 @@ export const ClientComp = () => {
     transform: useTransform((baseForm) => mergeForm(baseForm, state!), [state]),
   })
 
-  const formErrors = useStore(form.store, (formState) => formState.errors)
+  const formErrors = useSelector(form.store, (formState) => formState.errors)
 
   return (
     <form action={action as never} onSubmit={() => form.handleSubmit()}>
@@ -414,7 +414,7 @@ import {
   mergeForm,
   useActionData,
   useForm,
-  useStore,
+  useSelector,
   useTransform,
 } from '@tanstack/react-form'
 import {
@@ -443,7 +443,7 @@ export default function Index() {
     ),
   })
 
-  const formErrors = useStore(form.store, (formState) => formState.errors)
+  const formErrors = useSelector(form.store, (formState) => formState.errors)
 
   return (
     <Form method="post" onSubmit={() => form.handleSubmit()}>

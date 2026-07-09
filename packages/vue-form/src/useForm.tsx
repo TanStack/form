@@ -1,5 +1,5 @@
 import { FormApi } from '@tanstack/form-core'
-import { useStore } from '@tanstack/vue-store'
+import { useSelector } from '@tanstack/vue-store'
 import { defineComponent, h, onMounted } from 'vue'
 import { Field } from './useField'
 import { FormGroup } from './useFormGroup'
@@ -151,6 +151,44 @@ export interface VueFormApi<
     TFormOnServer,
     TSubmitMeta
   >
+  useSelector: <
+    TSelected = NoInfer<
+      FormState<
+        TParentData,
+        TFormOnMount,
+        TFormOnChange,
+        TFormOnChangeAsync,
+        TFormOnBlur,
+        TFormOnBlurAsync,
+        TFormOnSubmit,
+        TFormOnSubmitAsync,
+        TFormOnDynamic,
+        TFormOnDynamicAsync,
+        TFormOnServer
+      >
+    >,
+  >(
+    selector?: (
+      state: NoInfer<
+        FormState<
+          TParentData,
+          TFormOnMount,
+          TFormOnChange,
+          TFormOnChangeAsync,
+          TFormOnBlur,
+          TFormOnBlurAsync,
+          TFormOnSubmit,
+          TFormOnSubmitAsync,
+          TFormOnDynamic,
+          TFormOnDynamicAsync,
+          TFormOnServer
+        >
+      >,
+    ) => TSelected,
+  ) => Readonly<Ref<TSelected>>
+  /**
+   * @deprecated Use `form.useSelector` instead.
+   */
   useStore: <
     TSelected = NoInfer<
       FormState<
@@ -289,14 +327,16 @@ export function useForm<
         inheritAttrs: false,
       },
     ) as never
-    extendedApi.useStore = (selector) => {
-      return useStore(api.store as never, selector as never) as never
-    }
+    const subscribeToStore = (selector?: (state: never) => unknown) =>
+      useSelector(api.store as never, selector as never) as never
+    extendedApi.useSelector = subscribeToStore
+    /** @deprecated Use `form.useSelector` instead. */
+    extendedApi.useStore = subscribeToStore
     extendedApi.Subscribe = defineComponent(
       (props, context) => {
         const allProps = { ...props, ...context.attrs }
         const selector = allProps.selector ?? ((state: never) => state)
-        const data = useStore(api.store as never, selector as never)
+        const data = useSelector(api.store as never, selector as never)
         return () => context.slots.default!(data.value)
       },
       {
