@@ -1068,6 +1068,15 @@ export class FormApi<
   private _devtoolsSubmissionOverride: boolean
 
   /**
+   * The `defaultValues` carried by the options on the previous `update()` call
+   * (i.e. the last values that came from the framework adapter / props). Used
+   * to detect a genuine props change without being fooled by `reset(values)`,
+   * which legitimately mutates `this.options.defaultValues`.
+   * See https://github.com/TanStack/form/issues/1681
+   */
+  private _prevUpdateDefaultValues: TFormData | undefined = undefined
+
+  /**
    * Constructs a new `FormApi` instance with the given form options.
    */
   constructor(
@@ -1748,13 +1757,29 @@ export class FormApi<
 
     const oldOptions = this.options
 
-    // Options need to be updated first so that when the store is updated, the state is correct for the derived state
-    this.options = options
+    // `reset(values)` moves the baseline by writing `this.options.defaultValues`.
+    // Compare the incoming `defaultValues` against the ones seen on the previous
+    // `update()` (the previous props), NOT against `this.options.defaultValues`,
+    // so a reset isn't misread as a props change and doesn't get clobbered.
+    // See https://github.com/TanStack/form/issues/1681
+    const prevUpdateDefaultValues = this._prevUpdateDefaultValues
+    this._prevUpdateDefaultValues = options.defaultValues
 
-    const shouldUpdateValues =
-      options.defaultValues &&
-      !evaluate(options.defaultValues, oldOptions.defaultValues) &&
-      !this.state.isTouched
+    const defaultValuesChanged =
+      !!options.defaultValues &&
+      !evaluate(options.defaultValues, prevUpdateDefaultValues)
+
+    // Options need to be updated first so that when the store is updated, the state is correct for the derived state.
+    // When the props `defaultValues` did not actually change, preserve the
+    // current baseline (e.g. one set by `reset(values)`) instead of overwriting
+    // it, so `isDirty`/`isDefaultValue` stay correct after a reset.
+    this.options =
+      defaultValuesChanged ||
+      evaluate(options.defaultValues, oldOptions.defaultValues)
+        ? options
+        : { ...options, defaultValues: oldOptions.defaultValues }
+
+    const shouldUpdateValues = defaultValuesChanged && !this.state.isTouched
 
     const shouldUpdateState =
       !evaluate(options.defaultState, oldOptions.defaultState) &&
