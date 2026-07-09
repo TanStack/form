@@ -64,3 +64,67 @@ const form = useForm({
   </div>
 </template>
 ```
+
+### Built-in Debouncing
+
+If you are making an API request inside a listener, you may want to debounce the calls as it can lead to performance issues.
+We enable an easy method for debouncing your listeners by adding a `onChangeDebounceMs` or `onBlurDebounceMs`.
+
+```vue
+<template>
+  <!-- ... -->
+  <form.Field
+    name="country"
+    :listeners="{
+      onChangeDebounceMs: 500,
+      onChange: ({ value }) => {
+        console.log(`Country changed to: ${value} without a change within 500ms, resetting province`)
+        form.setFieldValue('province', '')
+      },
+    }"
+  >
+    <template v-slot="{ field }">
+      <!-- ... -->
+    </template>
+  </form.Field>
+</template>
+```
+
+### Form listeners
+
+At a higher level, listeners are also available at the form level, allowing you access to the `onMount` and `onSubmit` events, and having `onChange` and `onBlur` propagated to all the form's children. Form-level listeners can also be debounced in the same way as previously discussed.
+
+`onMount` and `onSubmit` listeners have the following parameters:
+
+- `formApi`
+
+`onChange` and `onBlur` listeners have access to:
+
+- `fieldApi`
+- `formApi`
+
+```vue
+<script setup>
+import { useForm } from '@tanstack/vue-form'
+
+const form = useForm({
+  listeners: {
+    onMount: ({ formApi }) => {
+      // custom logging service
+      loggingService('mount', formApi.state.values)
+    },
+
+    onChange: ({ formApi, fieldApi }) => {
+      // autosave logic
+      if (formApi.state.isValid) {
+        formApi.handleSubmit()
+      }
+
+      // fieldApi represents the field that triggered the event.
+      console.log(fieldApi.name, fieldApi.state.value)
+    },
+    onChangeDebounceMs: 500,
+  },
+})
+</script>
+```
