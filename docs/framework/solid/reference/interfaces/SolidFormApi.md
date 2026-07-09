@@ -85,7 +85,7 @@ Defined in: [packages/solid-form/src/createForm.tsx:44](https://github.com/TanSt
 Subscribe: <TSelected>(props) => Element;
 ```
 
-Defined in: [packages/solid-form/src/createForm.tsx:93](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L93)
+Defined in: [packages/solid-form/src/createForm.tsx:131](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L131)
 
 #### Type Parameters
 
@@ -111,10 +111,10 @@ Defined in: [packages/solid-form/src/createForm.tsx:93](https://github.com/TanSt
 
 ***
 
-### useStore()
+### useSelector()
 
 ```ts
-useStore: <TSelected>(selector?) => () => TSelected;
+useSelector: <TSelected>(selector?) => () => TSelected;
 ```
 
 Defined in: [packages/solid-form/src/createForm.tsx:58](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L58)
@@ -140,3 +140,39 @@ Defined in: [packages/solid-form/src/createForm.tsx:58](https://github.com/TanSt
 ##### Returns
 
 `TSelected`
+
+***
+
+### ~~useStore()~~
+
+```ts
+useStore: <TSelected>(selector?) => () => TSelected;
+```
+
+Defined in: [packages/solid-form/src/createForm.tsx:96](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L96)
+
+#### Type Parameters
+
+##### TSelected
+
+`TSelected` = `NoInfer`\<`FormState`\<`TParentData`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnDynamic`, `TFormOnDynamicAsync`, `TFormOnServer`\>\>
+
+#### Parameters
+
+##### selector?
+
+(`state`) => `TSelected`
+
+#### Returns
+
+```ts
+(): TSelected;
+```
+
+##### Returns
+
+`TSelected`
+
+#### Deprecated
+
+Use `form.useSelector` instead.

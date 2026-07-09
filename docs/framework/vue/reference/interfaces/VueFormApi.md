@@ -85,14 +85,14 @@ Defined in: [packages/vue-form/src/useForm.tsx:140](https://github.com/TanStack/
 Subscribe: SubscribeComponent<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer>;
 ```
 
-Defined in: [packages/vue-form/src/useForm.tsx:189](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L189)
+Defined in: [packages/vue-form/src/useForm.tsx:227](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L227)
 
 ***
 
-### useStore()
+### useSelector()
 
 ```ts
-useStore: <TSelected>(selector?) => Readonly<Ref<TSelected>>;
+useSelector: <TSelected>(selector?) => Readonly<Ref<TSelected>>;
 ```
 
 Defined in: [packages/vue-form/src/useForm.tsx:154](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L154)
@@ -112,3 +112,33 @@ Defined in: [packages/vue-form/src/useForm.tsx:154](https://github.com/TanStack/
 #### Returns
 
 `Readonly`\<`Ref`\<`TSelected`\>\>
+
+***
+
+### ~~useStore()~~
+
+```ts
+useStore: <TSelected>(selector?) => Readonly<Ref<TSelected>>;
+```
+
+Defined in: [packages/vue-form/src/useForm.tsx:192](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L192)
+
+#### Type Parameters
+
+##### TSelected
+
+`TSelected` = `NoInfer`\<`FormState`\<`TParentData`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnDynamic`, `TFormOnDynamicAsync`, `TFormOnServer`\>\>
+
+#### Parameters
+
+##### selector?
+
+(`state`) => `TSelected`
+
+#### Returns
+
+`Readonly`\<`Ref`\<`TSelected`\>\>
+
+#### Deprecated
+
+Use `form.useSelector` instead.

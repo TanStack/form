@@ -11,7 +11,7 @@ const useStore: <TSource, TSelected>(source, selector?, compare?) => TSelected;
 
 Defined in: node\_modules/.pnpm/@tanstack+react-store@0.11.0\_react-dom@19.1.0\_react@19.1.0\_\_react@19.1.0/node\_modules/@tanstack/react-store/dist/useStore.d.ts:12
 
-Deprecated alias for useSelector.
+Deprecated alias for [useSelector](../functions/useSelector.md).
 
 ## Type Parameters
 
@@ -55,8 +55,4 @@ const count = useStore(counterStore, (state) => state.count)
 
 ## Deprecated
 
-Use [`useSelector`](useSelector.md) instead. You can import it from `@tanstack/react-form`:
-
-```tsx
-import { useSelector } from '@tanstack/react-form'
-```
+Use `useSelector` instead.

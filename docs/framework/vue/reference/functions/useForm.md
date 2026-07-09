@@ -9,7 +9,7 @@ title: useForm
 function useForm<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta>(opts?): FormApi<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta> & VueFormApi<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta>;
 ```
 
-Defined in: [packages/vue-form/src/useForm.tsx:204](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L204)
+Defined in: [packages/vue-form/src/useForm.tsx:242](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L242)
 
 ## Type Parameters
 

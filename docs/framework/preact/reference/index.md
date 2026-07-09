@@ -29,7 +29,6 @@ title: "@tanstack/preact-form"
 - [Field](variables/Field.md)
 - [FormGroup](variables/FormGroup.md)
 - [useIsomorphicLayoutEffect](variables/useIsomorphicLayoutEffect.md)
-- [useSelector](variables/useSelector.md)
 - [~~useStore~~](variables/useStore.md)
 
 ## Functions
@@ -40,3 +39,4 @@ title: "@tanstack/preact-form"
 - [useFieldGroup](functions/useFieldGroup.md)
 - [useForm](functions/useForm.md)
 - [useFormGroup](functions/useFormGroup.md)
+- [useSelector](functions/useSelector.md)

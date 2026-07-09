@@ -34,3 +34,4 @@ title: "@tanstack/solid-form"
 - [createFormHookContexts](functions/createFormHookContexts.md)
 - [Field](functions/Field.md)
 - [FormGroup](functions/FormGroup.md)
+- [useSelector](functions/useSelector.md)

@@ -209,7 +209,7 @@ Defined in: [packages/form-core/src/FormApi.ts:1049](https://github.com/TanStack
 _handleSubmit(submitMeta?): Promise<void>;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2413](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2413)
+Defined in: [packages/form-core/src/FormApi.ts:2419](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2419)
 
 Handles the form submission, performs validation, and calls the appropriate onSubmit or onSubmitInvalid callbacks.
 
@@ -231,7 +231,7 @@ Handles the form submission, performs validation, and calls the appropriate onSu
 clearFieldValues<TField>(field, options?): void;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2896](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2896)
+Defined in: [packages/form-core/src/FormApi.ts:2902](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2902)
 
 Clear all values within an array field.
 
@@ -269,7 +269,7 @@ FormLikeAPI.clearFieldValues
 deleteField<TField>(field): void;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2684](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2684)
+Defined in: [packages/form-core/src/FormApi.ts:2690](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2690)
 
 #### Type Parameters
 
@@ -301,7 +301,7 @@ FormLikeAPI.deleteField
 getAllErrors(): object;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:3019](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L3019)
+Defined in: [packages/form-core/src/FormApi.ts:3025](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L3025)
 
 Returns form and field level errors
 
@@ -354,7 +354,7 @@ errors: NonNullable<
 getFieldInfo<TField>(field): FieldInfo<TFormData>;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2588](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2588)
+Defined in: [packages/form-core/src/FormApi.ts:2594](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2594)
 
 Gets the field info of the specified field.
 
@@ -382,7 +382,7 @@ Gets the field info of the specified field.
 getFieldMeta<TField>(field): AnyFieldLikeMeta | undefined;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2570](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2570)
+Defined in: [packages/form-core/src/FormApi.ts:2576](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2576)
 
 Gets the metadata of the specified field.
 
@@ -416,7 +416,7 @@ FormLikeAPI.getFieldMeta
 getFieldValue<TField>(field): DeepValue<TFormData, TField>;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2563](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2563)
+Defined in: [packages/form-core/src/FormApi.ts:2569](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2569)
 
 Gets the value of the specified field.
 
@@ -450,7 +450,7 @@ FormLikeAPI.getFieldValue
 getFormGroupMeta(name): AnyFormGroupMeta | undefined;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2581](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2581)
+Defined in: [packages/form-core/src/FormApi.ts:2587](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2587)
 
 Gets the derived `meta` of the form group registered at the given
 name. Mirrors `getFieldMeta` for fields. Returns `undefined` if no
@@ -476,7 +476,7 @@ name. Mirrors `getFieldMeta` for fields. Returns `undefined` if no
 handleSubmit(): Promise<void>;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2404](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2404)
+Defined in: [packages/form-core/src/FormApi.ts:2410](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2410)
 
 Handles the form submission, performs validation, and calls the appropriate onSubmit or onSubmitInvalid callbacks.
 
@@ -496,7 +496,7 @@ FormLikeAPI.handleSubmit
 handleSubmit(submitMeta): Promise<void>;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2405](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2405)
+Defined in: [packages/form-core/src/FormApi.ts:2411](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2411)
 
 ##### Parameters
 
@@ -526,7 +526,7 @@ insertFieldValue<TField>(
 options?): Promise<void>;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2724](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2724)
+Defined in: [packages/form-core/src/FormApi.ts:2730](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2730)
 
 #### Type Parameters
 
@@ -594,7 +594,7 @@ moveFieldValues<TField>(
    options?): void;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2864](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2864)
+Defined in: [packages/form-core/src/FormApi.ts:2870](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2870)
 
 Moves the value at the first specified index to the second specified index within an array field.
 
@@ -645,7 +645,7 @@ parseValuesWithSchema(schema):
   | undefined;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:3085](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L3085)
+Defined in: [packages/form-core/src/FormApi.ts:3091](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L3091)
 
 Parses the form's values with a given standard schema and returns
 issues (if any). This method does NOT set any internal errors.
@@ -679,7 +679,7 @@ parseValuesWithSchemaAsync(schema): Promise<
 | undefined>;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:3097](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L3097)
+Defined in: [packages/form-core/src/FormApi.ts:3103](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L3103)
 
 Parses the form's values with a given standard schema and returns
 issues (if any). This method does NOT set any internal errors.
@@ -712,7 +712,7 @@ pushFieldValue<TField>(
    options?): void;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2708](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2708)
+Defined in: [packages/form-core/src/FormApi.ts:2714](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2714)
 
 Pushes a value into an array field.
 
@@ -757,7 +757,7 @@ removeFieldValue<TField>(
 options?): Promise<void>;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2792](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2792)
+Defined in: [packages/form-core/src/FormApi.ts:2798](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2798)
 
 Removes a value from an array field at the specified index.
 
@@ -803,7 +803,7 @@ replaceFieldValue<TField>(
 options?): Promise<void>;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2761](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2761)
+Defined in: [packages/form-core/src/FormApi.ts:2767](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2767)
 
 Replaces a value into an array field at the specified index.
 
@@ -882,7 +882,7 @@ Optional options to control the reset behavior.
 resetField<TField>(field): void;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2931](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2931)
+Defined in: [packages/form-core/src/FormApi.ts:2937](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2937)
 
 Resets the field value and meta to default state
 
@@ -916,7 +916,7 @@ FormLikeAPI.resetField
 resetFieldMeta<TField>(fieldMeta): Partial<Record<TField, AnyFieldLikeMeta>>;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2628](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2628)
+Defined in: [packages/form-core/src/FormApi.ts:2634](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2634)
 
 resets every field's meta
 
@@ -944,7 +944,7 @@ resets every field's meta
 setErrorMap(errorMap): void;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2955](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2955)
+Defined in: [packages/form-core/src/FormApi.ts:2961](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2961)
 
 Updates the form's errorMap
 
@@ -966,7 +966,7 @@ Updates the form's errorMap
 setFieldMeta<TField>(field, updater): void;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2607](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2607)
+Defined in: [packages/form-core/src/FormApi.ts:2613](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2613)
 
 Updates the metadata of the specified field.
 
@@ -1007,7 +1007,7 @@ setFieldValue<TField>(
    opts?): void;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2644](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2644)
+Defined in: [packages/form-core/src/FormApi.ts:2650](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2650)
 
 Sets the value of the specified field and optionally updates the touched state.
 
@@ -1053,7 +1053,7 @@ swapFieldValues<TField>(
    options?): void;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2832](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2832)
+Defined in: [packages/form-core/src/FormApi.ts:2838](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2838)
 
 Swaps the values at the specified indices within an array field.
 

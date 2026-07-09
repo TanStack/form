@@ -11,7 +11,7 @@ const useStore: <TSource, TSelected>(source, selector?, compare?) => Readonly<Re
 
 Defined in: node\_modules/.pnpm/@tanstack+vue-store@0.11.0\_vue@3.5.34\_typescript@5.9.3\_/node\_modules/@tanstack/vue-store/dist/useStore.d.ts:14
 
-Deprecated alias for useSelector.
+Deprecated alias for [useSelector](../functions/useSelector.md).
 
 ## Type Parameters
 
