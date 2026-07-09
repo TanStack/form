@@ -2872,10 +2872,10 @@ describe('form api', () => {
         onSubmit: ({ value }) => {
           return value.names.includes('person-2')
             ? {
-              fields: {
-                names: 'person-2 cannot be used',
-              },
-            }
+                fields: {
+                  names: 'person-2 cannot be used',
+                },
+              }
             : undefined
         },
       },
@@ -4241,7 +4241,7 @@ it('should generate a formId if not provided', () => {
 
 describe('form api event client', () => {
   it('should have debug disabled', () => {
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => { })
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
 
     const form = new FormApi({
       defaultValues: {
