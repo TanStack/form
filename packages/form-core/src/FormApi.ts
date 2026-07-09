@@ -229,7 +229,7 @@ export interface FormValidators<
   onDynamicAsyncDebounceMs?: number
 }
 
-interface FormListenersPropsGroup<
+export interface FormListenersPropsGroup<
   TFormData,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
   TOnChange extends undefined | FormValidateOrFn<TFormData>,
@@ -260,7 +260,7 @@ interface FormListenersPropsGroup<
   groupApi: AnyFormGroupApi
 }
 
-interface FormListenersPropsField<
+export interface FormListenersPropsField<
   TFormData,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
   TOnChange extends undefined | FormValidateOrFn<TFormData>,
