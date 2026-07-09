@@ -30,7 +30,7 @@ export default function App() {
 
   return (
     <div>
-      <h1>Simple Form Example</h1>
+      <h1>Simple Form Example - React Compiler</h1>
       <form
         onSubmit={(e) => {
           e.preventDefault()
