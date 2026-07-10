@@ -3,50 +3,47 @@ id: devtools
 title: Devtools
 ---
 
-TanStack Form comes with a ready-to-go suite of devtools.
+TanStack Form integrates with the TanStack Devtools shell through a form plugin.
 
-## Setup
-
-Install the [TanStack Devtools](https://tanstack.com/devtools/latest/docs/quick-start) library and the [TanStack Form plugin](http://npmjs.com/package/@tanstack/react-form-devtools), from the framework adapter that you're working in (in this case `@tanstack/react-devtools` and `@tanstack/react-form-devtools`).
+## Install
 
 ```bash
-npm i @tanstack/react-devtools
-npm i @tanstack/react-form-devtools
+npm install @tanstack/react-devtools @tanstack/react-form-devtools
 ```
 
-Next, in the root of your application, import the `TanStackDevtools`.
+## Add the plugin
+
+Render one `TanStackDevtools` instance near the root of the application and pass
+it `formDevtoolsPlugin()`.
 
 ```tsx
-import { TanStackDevtools } from '@tanstack/react-devtools'
-
-import App from './App'
-
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-
-    <TanStackDevtools />
-  </StrictMode>,
-)
-```
-
-Import the `formDevtoolsPlugin` from **TanStack Form** and provide it to the `TanStackDevtools` component.
-
-```tsx
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { formDevtoolsPlugin } from '@tanstack/react-form-devtools'
 
-import App from './App'
+import { App } from './App'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
-
     <TanStackDevtools plugins={[formDevtoolsPlugin()]} />
   </StrictMode>,
 )
 ```
 
-Finally, add any additional configuration you desire to the `TanStackDevtools` component. More information can be found under the [TanStack Devtools Configuration](https://tanstack.com/devtools/) section.
+The plugin discovers mounted forms through the adapter's devtools bridge. Use
+it to inspect current values, validation state, field metadata, and registered
+fields while developing.
 
-A complete working example can be found in our [examples section](https://tanstack.com/form/latest/docs/framework/react/examples/devtools).
+The shell also accepts configuration such as `hideUntilHover`:
+
+```tsx
+<TanStackDevtools
+  plugins={[formDevtoolsPlugin()]}
+  config={{ hideUntilHover: false }}
+/>
+```
+
+See the [TanStack Devtools documentation](https://tanstack.com/devtools) for
+shell placement and configuration.
