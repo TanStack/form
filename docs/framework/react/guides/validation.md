@@ -3,579 +3,226 @@ id: form-validation
 title: Form and Field Validation
 ---
 
-At the core of TanStack Form's functionality is the concept of validation. TanStack Form makes validation highly customizable:
+TanStack Form supports synchronous, asynchronous, field-level, form-level, and
+Standard Schema validation. Every validator is an ordered object with a `run`
+implementation and explicit `triggers`.
 
-- You can control when to perform the validation (on change, on input, on blur, on submit, etc.)
-- Validation rules can be defined at the field-level or at the form-level
-- Validation can be synchronous or asynchronous (for example, as a result of an API call)
+## Choose when validation runs
 
-## When is validation performed?
-
-It's up to you! The `<Field />` component accepts some callbacks as props such as `onChange` or `onBlur`. Those callbacks are passed the current value of the field, as well as the `fieldApi` object, so that you can perform the validation. If you find a validation error, simply return the error message as a string, and it will be available in `field.state.meta.errors`.
-
-Here is an example:
+Use `change` for immediate feedback and `blur` for feedback after leaving an
+input. Submission runs validators by default regardless of their configured
+change and blur triggers.
 
 ```tsx
 <form.Field
   name="age"
-  validators={{
-    onChange: ({ value }) =>
-      value < 13 ? 'You must be 13 to make an account' : undefined,
-  }}
+  validators={[
+    {
+      triggers: ['change'],
+      run: ({ value }) =>
+        value >= 13 ? undefined : 'You must be at least 13',
+    },
+    {
+      triggers: ['blur'],
+      run: ({ value }) => (value >= 0 ? undefined : 'Age cannot be negative'),
+    },
+  ]}
 >
   {(field) => (
-    <>
-      <label htmlFor={field.name}>Age:</label>
+    <label>
+      Age
       <input
-        id={field.name}
         name={field.name}
-        value={field.state.value}
         type="number"
-        onChange={(e) => field.handleChange(e.target.valueAsNumber)}
-      />
-      {!field.state.meta.isValid && (
-        <em role="alert">{field.state.meta.errors.join(', ')}</em>
-      )}
-    </>
-  )}
-</form.Field>
-```
-
-In the example above, the validation is done at each keystroke (`onChange`). If, instead, we wanted the validation to be done when the field is blurred, we would change the code above like so:
-
-```tsx
-<form.Field
-  name="age"
-  validators={{
-    onBlur: ({ value }) =>
-      value < 13 ? 'You must be 13 to make an account' : undefined,
-  }}
->
-  {(field) => (
-    <>
-      <label htmlFor={field.name}>Age:</label>
-      <input
-        id={field.name}
-        name={field.name}
-        value={field.state.value}
-        type="number"
-        // Listen to the onBlur event on the field
+        value={field.value}
         onBlur={field.handleBlur}
-        // We always need to implement onChange, so that TanStack Form receives the changes
-        onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+        onChange={(event) => field.handleChange(event.target.valueAsNumber)}
+        aria-invalid={field.meta.isInvalid}
       />
-      {!field.state.meta.isValid && (
-        <em role="alert">{field.state.meta.errors.join(', ')}</em>
-      )}
-    </>
+      {field.errors.map((error) => (
+        <span key={error.message} role="alert">
+          {error.message}
+        </span>
+      ))}
+    </label>
   )}
 </form.Field>
 ```
 
-So, you can control when the validation is done by implementing the desired callback. You can even perform different pieces of validation at different times:
+Additional controls include:
+
+- `runOnMount`: run once when the field or form is constructed.
+- `runOnSubmit`: disable or conditionally enable submit-time execution.
+- `triggerDebounceMs`: debounce change and blur execution.
+- `bailIfInvalid`: skip this and subsequent validators when an earlier one
+  failed.
+- trigger objects with `when`: enable a trigger conditionally.
+- `watchFields`: rerun a field validator when related fields trigger it.
+
+## Control when errors are visible
+
+Validation and presentation are separate. `errorVisibility` decides when field
+issues appear in `field.errors`:
 
 ```tsx
-<form.Field
-  name="age"
-  validators={{
-    onChange: ({ value }) =>
-      value < 13 ? 'You must be 13 to make an account' : undefined,
-    onBlur: ({ value }) => (value < 0 ? 'Invalid value' : undefined),
-  }}
->
-  {(field) => (
-    <>
-      <label htmlFor={field.name}>Age:</label>
-      <input
-        id={field.name}
-        name={field.name}
-        value={field.state.value}
-        type="number"
-        // Listen to the onBlur event on the field
-        onBlur={field.handleBlur}
-        // We always need to implement onChange, so that TanStack Form receives the changes
-        onChange={(e) => field.handleChange(e.target.valueAsNumber)}
-      />
-      {!field.state.meta.isValid && (
-        <em role="alert">{field.state.meta.errors.join(', ')}</em>
-      )}
-    </>
-  )}
-</form.Field>
+const form = useForm({
+  defaultValues: { email: '' },
+  errorVisibility: ({ fieldState, state }) =>
+    fieldState.meta.isBlurred || state.submissionAttempts > 0,
+})
 ```
 
-In the example above, we are validating different things on the same field at different times (at each keystroke and when blurring the field). Since `field.state.meta.errors` is an array, all the relevant errors at a given time are displayed. You can also use `field.state.meta.errorMap` to get errors based on _when_ the validation was done (onChange, onBlur, etc.). More information about displaying errors is below.
+Use `field.meta.original.errors` for the unfiltered issues when debugging or
+building a custom visibility system.
 
-## Displaying Errors
+## Form-level validation
 
-Once you have your validation in place, you can map the errors from an array to be displayed in your UI:
-
-```tsx
-<form.Field
-  name="age"
-  validators={{
-    onChange: ({ value }) =>
-      value < 13 ? 'You must be 13 to make an account' : undefined,
-  }}
->
-  {(field) => {
-    return (
-      <>
-        {/* ... */}
-        {!field.state.meta.isValid && (
-          <em>{field.state.meta.errors.join(',')}</em>
-        )}
-      </>
-    )
-  }}
-</form.Field>
-```
-
-Or use the `errorMap` property to access the specific error you're looking for:
+A form validator can produce a form issue and route issues to typed field paths
+with `createErrorMap`:
 
 ```tsx
-<form.Field
-  name="age"
-  validators={{
-    onChange: ({ value }) =>
-      value < 13 ? 'You must be 13 to make an account' : undefined,
-  }}
->
-  {(field) => (
-    <>
-      {/* ... */}
-      {field.state.meta.errorMap['onChange'] ? (
-        <em>{field.state.meta.errorMap['onChange']}</em>
-      ) : null}
-    </>
-  )}
-</form.Field>
-```
+const form = useForm({
+  defaultValues: {
+    email: '',
+    phone: '',
+  },
+  validators: [
+    {
+      triggers: ['change'],
+      run: ({ value, createErrorMap }) => {
+        const errors = createErrorMap()
 
-It's worth mentioning that our `errors` array and the `errorMap` match the types returned by the validators. This means that:
-
-```tsx
-<form.Field
-  name="age"
-  validators={{
-    onChange: ({ value }) => (value < 13 ? { isOldEnough: false } : undefined),
-  }}
->
-  {(field) => (
-    <>
-      {/* ... */}
-      {/* errorMap.onChange is type `{isOldEnough: false} | undefined` */}
-      {/* meta.errors is type `Array<{isOldEnough: false} | undefined>` */}
-      {!field.state.meta.errorMap['onChange']?.isOldEnough ? (
-        <em>The user is not old enough</em>
-      ) : null}
-    </>
-  )}
-</form.Field>
-```
-
-## Validation at field-level vs at form-level
-
-As shown above, each `<Field>` accepts its own validation rules via the callbacks such as `onChange` and `onBlur`. It is also possible to define validation rules at the form-level (as opposed to field-by-field) by passing similar callbacks to the `useForm()` hook.
-
-Example:
-
-```tsx
-export default function App() {
-  const form = useForm({
-    defaultValues: {
-      age: 0,
-    },
-    onSubmit: async ({ value }) => {
-      console.log(value)
-    },
-    validators: {
-      // Add validators to the form the same way you would add them to a field
-      onChange({ value }) {
-        if (value.age < 13) {
-          return 'Must be 13 or older to sign'
-        }
-        return undefined
-      },
-    },
-  })
-
-  // Subscribe to the form's `errorMap` so that updates to it will cause re-renders
-  // Alternatively, you can use `form.Subscribe`
-  const formErrorMap = useSelector(form.store, (state) => state.errorMap)
-
-  return (
-    <div>
-      {/* ... */}
-      {formErrorMap.onChange ? (
-        <div>
-          <em>There was an error on the form: {formErrorMap.onChange}</em>
-        </div>
-      ) : null}
-      {/* ... */}
-    </div>
-  )
-}
-```
-
-_Note:_ The example above uses a function validator that returns a `string`. When using a [Standard Schema](#standard-schema-libraries) validator (Zod, Valibot, ArkType, Effect/Schema), `state.errorMap.onChange` is typed as `Record<string, StandardSchemaV1Issue[]>` instead, keyed by field name. Iterate the record to render the messages:
-
-```tsx
-{
-  formErrorMap.onChange ? (
-    <div>
-      <em>
-        There was an error on the form:{' '}
-        {Object.values(formErrorMap.onChange)
-          .flat()
-          .map((issue) => issue.message)
-          .join(', ')}
-      </em>
-    </div>
-  ) : null
-}
-```
-
-### Setting field-level errors from the form's validators
-
-You can set errors on the fields from the form's validators. One common use case for this is validating all the fields on submit by calling a single API endpoint in the form's `onSubmitAsync` validator.
-
-```tsx
-export default function App() {
-  const form = useForm({
-    defaultValues: {
-      age: 0,
-      socials: [],
-      details: {
-        email: '',
-      },
-    },
-    validators: {
-      onSubmitAsync: async ({ value }) => {
-        // Validate the value on the server
-        const hasErrors = await verifyDataOnServer(value)
-        if (hasErrors) {
-          return {
-            form: 'Invalid data', // The `form` key is optional
-            fields: {
-              age: 'Must be 13 or older to sign',
-              // Set errors on nested fields with the field's name
-              'socials[0].url': 'The provided URL does not exist',
-              'details.email': 'An email is required',
-            },
-          }
+        if (!value.email && !value.phone) {
+          errors.form = 'Provide an email address or phone number'
+          errors.fields.email = 'Email is required when phone is empty'
+          errors.fields.phone = 'Phone is required when email is empty'
         }
 
-        return null
+        return errors.toResult()
       },
     },
-  })
-
-  return (
-    <div>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
-          void form.handleSubmit()
-        }}
-      >
-        <form.Field name="age">
-          {(field) => (
-            <>
-              <label htmlFor={field.name}>Age:</label>
-              <input
-                id={field.name}
-                name={field.name}
-                value={field.state.value}
-                type="number"
-                onChange={(e) => field.handleChange(e.target.valueAsNumber)}
-              />
-              {!field.state.meta.isValid && (
-                <em role="alert">{field.state.meta.errors.join(', ')}</em>
-              )}
-            </>
-          )}
-        </form.Field>
-        <form.Subscribe
-          selector={(state) => [state.errorMap]}
-          children={([errorMap]) =>
-            errorMap.onSubmit ? (
-              <div>
-                <em>There was an error on the form: {errorMap.onSubmit}</em>
-              </div>
-            ) : null
-          }
-        />
-        {/*...*/}
-      </form>
-    </div>
-  )
-}
+  ],
+})
 ```
 
-> Something worth mentioning is that if you have a form validation function that returns an error, that error may be overwritten by the field-specific validation.
->
-> This means that:
->
-> ```jsx
-> const form = useForm({
->   defaultValues: {
->     age: 0,
->   },
->   validators: {
->     onChange: ({ value }) => {
->       return {
->         fields: {
->           age: value.age < 12 ? 'Too young!' : undefined,
->         },
->       }
->     },
->   },
-> })
->
-> // ...
->
-> return (
->   <form.Field
->     name="age"
->     validators={{
->       onChange: ({ value }) => (value % 2 === 0 ? 'Must be odd!' : undefined),
->     }}
->     children={() => <>{/* ... */}</>}
->   />
-> )
-> ```
->
-> Will only show `'Must be odd!'` even if the 'Too young!' error is returned by the form-level validation.
+Subscribe to `form.state.errors` through `form.Subscribe` or `form.atom` to
+render form-level issues. Field-routed issues appear in the corresponding
+`field.errors`.
 
-## Asynchronous Functional Validation
+## Asynchronous validation and debouncing
 
-While we suspect most validation will be synchronous, there are many instances where a network call or some other async operation would be useful to validate against.
-
-To do this, we have dedicated `onChangeAsync`, `onBlurAsync`, and other methods that can be used to validate against:
+`run` may return a promise. Put cheap synchronous checks first and use
+`bailIfInvalid` to avoid unnecessary requests:
 
 ```tsx
-<form.Field
-  name="age"
-  validators={{
-    onChangeAsync: async ({ value }) => {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      return value < 13 ? 'You must be 13 to make an account' : undefined
+validators={[
+  {
+    triggers: ['change'],
+    run: ({ value }) =>
+      value.length >= 3 ? undefined : 'Use at least 3 characters',
+  },
+  {
+    triggers: ['change'],
+    triggerDebounceMs: 500,
+    bailIfInvalid: true,
+    run: async ({ value }) => {
+      const available = await checkUsername(value)
+      return available ? undefined : 'That username is already taken'
     },
-  }}
->
-  {(field) => (
-    <>
-      <label htmlFor={field.name}>Age:</label>
-      <input
-        id={field.name}
-        name={field.name}
-        value={field.state.value}
-        type="number"
-        onChange={(e) => field.handleChange(e.target.valueAsNumber)}
-      />
-      {!field.state.meta.isValid && (
-        <em role="alert">{field.state.meta.errors.join(', ')}</em>
-      )}
-    </>
-  )}
-</form.Field>
+  },
+]}
 ```
 
-Synchronous and asynchronous validators can coexist. For example, it is possible to define both `onBlur` and `onBlurAsync` on the same field:
+Submit validation always runs immediately, even when a trigger is debounced.
+`field.meta.isValidating` and `form.state.isValidating` expose pending work.
+
+## Standard Schema validation
+
+Any Standard Schema implementation can be supplied as `run`:
 
 ```tsx
-<form.Field
-  name="age"
-  validators={{
-    onBlur: ({ value }) => (value < 13 ? 'You must be at least 13' : undefined),
-    onBlurAsync: async ({ value }) => {
-      const currentAge = await fetchCurrentAgeOnProfile()
-      return value < currentAge ? 'You can only increase the age' : undefined
-    },
-  }}
->
-  {(field) => (
-    <>
-      <label htmlFor={field.name}>Age:</label>
-      <input
-        id={field.name}
-        name={field.name}
-        value={field.state.value}
-        type="number"
-        onBlur={field.handleBlur}
-        onChange={(e) => field.handleChange(e.target.valueAsNumber)}
-      />
-      {!field.state.meta.isValid && (
-        <em role="alert">{field.state.meta.errors.join(', ')}</em>
-      )}
-    </>
-  )}
-</form.Field>
-```
+import { z } from 'zod'
 
-The synchronous validation method (`onBlur`) is run first, and the asynchronous method (`onBlurAsync`) is only run if the synchronous one (`onBlur`) succeeds. To change this behaviour, set the `asyncAlways` option to `true`, and the async method will be run regardless of the result of the sync method.
-
-### Built-in Debouncing
-
-While async calls are the way to go when validating against the database, running a network request on every keystroke is a good way to DDoS your database.
-
-Instead, we enable an easy method for debouncing your `async` calls by adding a single property:
-
-```tsx
-<form.Field
-  name="age"
-  asyncDebounceMs={500}
-  validators={{
-    onChangeAsync: async ({ value }) => {
-      // ...
-    },
-  }}
-  children={(field) => {
-    return <>{/* ... */}</>
-  }}
-/>
-```
-
-This will debounce every async call with a 500ms delay. You can even override this property on a per-validation property:
-
-```tsx
-<form.Field
-  name="age"
-  asyncDebounceMs={500}
-  validators={{
-    onChangeAsyncDebounceMs: 1500,
-    onChangeAsync: async ({ value }) => {
-      // ...
-    },
-    onBlurAsync: async ({ value }) => {
-      // ...
-    },
-  }}
-  children={(field) => {
-    return <>{/* ... */}</>
-  }}
-/>
-```
-
-This will run `onChangeAsync` every 1500ms, whereas `onBlurAsync` will run every 500ms.
-
-## Validation through Schema Libraries
-
-While functions provide more flexibility and customization over your validation, they can be a bit verbose. To help solve this, there are libraries that provide schema-based validation to make shorthand and type-strict validation substantially easier. You can also define a single schema for your entire form and pass it to the form-level validators; errors will automatically propagate to the fields.
-
-### Standard Schema Libraries
-
-TanStack Form natively supports all libraries following the [Standard Schema specification](https://github.com/standard-schema/standard-schema), most notably:
-
-- [Zod](https://zod.dev/)
-- [Valibot](https://valibot.dev/)
-- [ArkType](https://arktype.io/)
-- [Effect/Schema](https://effect.website/docs/schema/standard-schema/)
-
-_Note:_ make sure to use the latest version of the schema libraries as older versions might not support Standard Schema yet.
-
-> Validation will not provide you with transformed values. See [submission handling](./submission-handling.md) for more information.
-
-To use schemas from these libraries you can pass them to the `validators` props as you would do with a custom function:
-
-```tsx
-const userSchema = z.object({
-  age: z.number().gte(13, 'You must be 13 to make an account'),
+const accountSchema = z.object({
+  email: z.string().email(),
+  age: z.number().min(13),
 })
 
-function App() {
-  const form = useForm({
-    defaultValues: {
-      age: 0,
+const form = useForm({
+  defaultValues: { email: '', age: 0 },
+  validators: [
+    {
+      triggers: ['change'],
+      run: accountSchema,
     },
-    validators: {
-      onChange: userSchema,
+  ],
+})
+```
+
+Schema paths are routed to matching fields. Parsed outputs are available in
+`schemaOutputs` during submit; the form's editable value remains the schema
+input type.
+
+For custom schema routing, call a schema's safe parse API inside `run` and pass
+its issues to the provided `parseIssues` helper.
+
+## Validate related fields
+
+Use `watchFields` when one field's validity depends on another:
+
+```tsx
+<form.Field
+  name="endDate"
+  validators={[
+    {
+      triggers: ['change', 'blur'],
+      watchFields: ['startDate'],
+      run: ({ value, formApi }) =>
+        value >= formApi.getFieldValue('startDate')
+          ? undefined
+          : 'End date must be on or after the start date',
     },
-  })
-  return (
-    <div>
-      <form.Field
-        name="age"
-        children={(field) => {
-          return <>{/* ... */}</>
-        }}
-      />
-    </div>
-  )
+  ]}
+/>
+```
+
+## Return errors from submission
+
+Endpoint validation belongs in `onSubmit`. Return
+`createValidationError(...)` to feed server issues back into normal form state:
+
+```tsx
+onSubmit: async ({ value, createValidationError }) => {
+  const result = await saveProfile(value)
+
+  if (!result.ok) {
+    return createValidationError({
+      form: 'Could not save the profile',
+      fields: { email: 'This email is already registered' },
+    })
+  }
+
+  return null
 }
 ```
 
-Async validators at the form- and field-level are supported as well:
+## Prevent invalid submission
+
+`form.handleSubmit()` blocks `onSubmit` when validation fails and calls
+`onSubmitInvalid` when configured. Subscribe to `canSubmit` and `isSubmitting`
+to reflect that state in the submit UI:
 
 ```tsx
-<form.Field
-  name="age"
-  validators={{
-    onChange: z.number().gte(13, 'You must be 13 to make an account'),
-    onChangeAsyncDebounceMs: 500,
-    onChangeAsync: z.number().refine(
-      async (value) => {
-        const currentAge = await fetchCurrentAgeOnProfile()
-        return value >= currentAge
-      },
-      {
-        message: 'You can only increase the age',
-      },
-    ),
-  }}
-  children={(field) => {
-    return <>{/* ... */}</>
-  }}
-/>
+<form.Subscribe
+  selector={(state) => [state.canSubmit, state.isSubmitting]}
+>
+  {([canSubmit, isSubmitting]) => (
+    <button type="submit" disabled={!canSubmit || isSubmitting}>
+      {isSubmitting ? 'Submitting…' : 'Submit'}
+    </button>
+  )}
+</form.Subscribe>
 ```
 
-If you need even more control over your Standard Schema validation, you can combine a Standard Schema with a callback function like so:
-
-```tsx
-<form.Field
-  name="age"
-  asyncDebounceMs={500}
-  validators={{
-    onChangeAsync: async ({ value, fieldApi }) => {
-      const errors = fieldApi.parseValueWithSchema(
-        z.number().gte(13, 'You must be 13 to make an account'),
-      )
-      if (errors) return errors
-      // continue with your validation
-    },
-  }}
-  children={(field) => {
-    return <>{/* ... */}</>
-  }}
-/>
-```
-
-## Preventing invalid forms from being submitted
-
-The callbacks, such as `onChange` and `onBlur`, are also run when the form is submitted and the submission is blocked because the form is invalid.
-
-The form state object has a `canSubmit` flag that is `false` when any field is invalid and the form has been touched (`canSubmit` is true until the form has been touched, even if some fields are "technically" invalid based on their `onChange`/`onBlur` props).
-
-You can subscribe to `canSubmit` via `form.Subscribe` and use the value in order to, for example, disable the submit button when the form is invalid (in practice, disabled buttons are not accessible, use `aria-disabled` instead).
-
-```tsx
-const form = useForm(/* ... */)
-
-return (
-  /* ... */
-
-  // Dynamic submit button
-  <form.Subscribe
-    selector={(state) => [state.canSubmit, state.isSubmitting]}
-    children={([canSubmit, isSubmitting]) => (
-      <button type="submit" disabled={!canSubmit}>
-        {isSubmitting ? '...' : 'Submit'}
-      </button>
-    )}
-  />
-)
-```
-
-To prevent the form from being submitted before any interaction, combine `canSubmit` with `isPristine` flags. A simple condition like `!canSubmit || isPristine` effectively disables submissions until the user has made changes.
+If a disabled submit button would hide useful validation feedback, keep it
+focusable with `aria-disabled` and let `handleSubmit()` report the issues.
