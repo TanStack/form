@@ -1,5 +1,5 @@
 {
-  "name": "@tanstack/form-example-react-simple",
+  "name": "@tanstack/form-example-react-standard-schema",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,8 +10,12 @@
   },
   "dependencies": {
     "@tanstack/react-form": "^1.33.3",
+    "arktype": "^2.1.22",
+    "effect": "^3.17.14",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "valibot": "^1.1.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@tanstack/react-devtools": "^0.10.5",
