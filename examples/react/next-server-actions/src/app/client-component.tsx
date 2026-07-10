@@ -23,7 +23,7 @@ export const ClientComp = () => {
         e.preventDefault()
         const errors = await form.handleSubmit()
         if (errors.length === 0) {
-          e.currentTarget.submit()
+          e.target.submit()
         }
       }}
     >
