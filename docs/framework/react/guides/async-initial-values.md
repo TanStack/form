@@ -3,49 +3,57 @@ id: async-initial-values
 title: Async Initial Values
 ---
 
-Let's say that you want to fetch some data from an API and use it as the initial value of a form.
+Forms often edit data loaded from an API. A server-state library such as
+TanStack Query should own fetching, caching, loading, and retries; TanStack Form
+should own the editable copy.
 
-While this problem sounds simple on the surface, there are hidden complexities you might not have thought of thus far.
+## Wait for data before creating the editor
 
-For example, you might want to show a loading spinner while the data is being fetched, or you might want to handle errors gracefully.
-Likewise, you could also find yourself looking for a way to cache the data so that you don't have to fetch it every time the form is rendered.
-
-While we could implement many of these features from scratch, it would end up looking a lot like another project we maintain: [TanStack Query](https://tanstack.com/query).
-
-As such, this guide shows you how you can mix-n-match TanStack Form with TanStack Query to achieve the desired behavior.
-
-## Basic Usage
+Render a loading or error state first, then mount a component whose
+`defaultValues` are complete.
 
 ```tsx
-import { useForm } from '@tanstack/react-form'
 import { useQuery } from '@tanstack/react-query'
+import { useForm } from '@tanstack/react-form'
 
-export default function App() {
-  const {data, isLoading} = useQuery({
-    queryKey: ['data'],
-    queryFn: async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      return {firstName: 'FirstName', lastName: "LastName"}
-    }
+type User = {
+  firstName: string
+  lastName: string
+}
+
+export function UserPage({ userId }: { userId: string }) {
+  const userQuery = useQuery({
+    queryKey: ['user', userId],
+    queryFn: () => fetch(`/api/users/${userId}`).then((res) => res.json()),
   })
 
+  if (userQuery.isPending) return <p>Loading…</p>
+  if (userQuery.isError) return <p role="alert">Could not load the user.</p>
+
+  return <UserEditor key={userId} user={userQuery.data} />
+}
+
+function UserEditor({ user }: { user: User }) {
   const form = useForm({
-    defaultValues: {
-      firstName: data?.firstName ?? '',
-      lastName: data?.lastName ?? '',
-    },
+    defaultValues: user,
     onSubmit: async ({ value }) => {
-      // Do something with form data
-      console.log(value)
+      await fetch('/api/users', {
+        method: 'PUT',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(value),
+      })
     },
   })
 
-  if (isLoading) return <p>Loading...</p>
-
-  return (
-    // ...
-  )
+  return <form>{/* fields */}</form>
 }
 ```
 
-This will show a loading spinner until the data is fetched, and then it will render the form with the fetched data as the initial values.
+`defaultValues` are initialization data, not a continuously synchronized prop.
+Mounting the editor only after data exists avoids uncontrolled inputs and makes
+it explicit when switching records should create a fresh form.
+
+If background refetches arrive while a user is editing, decide at the product
+level whether to keep local edits, prompt before replacing them, or call
+`form.reset(nextValues)` deliberately. Do not overwrite in-progress input merely
+because a query refreshed.
