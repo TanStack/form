@@ -3,134 +3,122 @@ id: quick-start
 title: Quick Start
 ---
 
-TanStack Form is unlike most form libraries you've used before. It's designed for large-scale production usage, with a focus on type safety, performance and composition for an unmatched developer experience.
+TanStack Form is a headless, type-safe form library. It owns form state and
+validation while leaving markup, styling, and component choice to you.
 
-As a result, we've developed [a philosophy around the library's usage](../../philosophy.md) that values scalability and long-term developer experience over short and sharable code snippets.
+Install the React adapter:
 
-Here's an example of a form following many of our best practices, which will allow you to rapidly develop even high-complexity forms after a short onboarding experience:
+```bash
+npm install @tanstack/react-form
+```
+
+## Create a form
+
+`useForm` requires `defaultValues`. Their shape becomes the form's inferred
+value type.
 
 ```tsx
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { createFormHook, createFormHookContexts } from '@tanstack/react-form'
-// Form components that pre-bind events from the form hook; check our "Form Composition" guide for more
-import { TextField, NumberField, SubmitButton } from '~our-app/ui-library'
-// We also support Valibot, ArkType, and any other standard schema library
-import { z } from 'zod'
+import { useForm } from '@tanstack/react-form'
 
-const { fieldContext, formContext } = createFormHookContexts()
-
-// Allow us to bind components to the form to keep type safety but reduce production boilerplate
-// Define this once to have a generator of consistent form instances throughout your app
-const { useAppForm } = createFormHook({
-  fieldComponents: {
-    TextField,
-    NumberField,
-  },
-  formComponents: {
-    SubmitButton,
-  },
-  fieldContext,
-  formContext,
-})
-
-const PeoplePage = () => {
-  const form = useAppForm({
+export function ProfileForm() {
+  const form = useForm({
     defaultValues: {
-      username: '',
+      fullName: '',
       age: 0,
     },
-    validators: {
-      // Pass a schema or function to validate
-      onChange: z.object({
-        username: z.string(),
-        age: z.number().min(13),
-      }),
-    },
-    onSubmit: ({ value }) => {
-      // Do something with form data
-      alert(JSON.stringify(value, null, 2))
+    onSubmit: async ({ value }) => {
+      console.log(value)
     },
   })
 
   return (
     <form
-      onSubmit={(e) => {
-        e.preventDefault()
-        form.handleSubmit()
+      onSubmit={(event) => {
+        event.preventDefault()
+        void form.handleSubmit()
       }}
     >
-      <h1>Personal Information</h1>
-      {/* Components are bound to `form` and `field` to ensure extreme type safety */}
-      {/* Use `form.AppField` to render a component bound to a single field */}
-      <form.AppField
-        name="username"
-        children={(field) => <field.TextField label="Full Name" />}
-      />
-      {/* The "name" property will throw a TypeScript error if typo'd  */}
-      <form.AppField
+      <form.Field
+        name="fullName"
+        validators={[
+          {
+            triggers: ['change', 'blur'],
+            run: ({ value }) =>
+              value.trim() ? undefined : 'Enter your full name',
+          },
+        ]}
+      >
+        {(field) => (
+          <label>
+            Full name
+            <input
+              name={field.name}
+              value={field.value}
+              onBlur={field.handleBlur}
+              onChange={(event) => field.handleChange(event.target.value)}
+              aria-invalid={field.meta.isInvalid}
+            />
+            {field.errors.map((error) => (
+              <span key={error.message} role="alert">
+                {error.message}
+              </span>
+            ))}
+          </label>
+        )}
+      </form.Field>
+
+      <form.Field
         name="age"
-        children={(field) => <field.NumberField label="Age" />}
-      />
-      {/* Components in `form.AppForm` have access to the form context */}
-      <form.AppForm>
-        <form.SubmitButton />
-      </form.AppForm>
+        validators={[
+          {
+            triggers: ['change'],
+            run: ({ value }) =>
+              value >= 13 ? undefined : 'You must be at least 13',
+          },
+        ]}
+      >
+        {(field) => (
+          <label>
+            Age
+            <input
+              name={field.name}
+              type="number"
+              value={field.value}
+              onBlur={field.handleBlur}
+              onChange={(event) =>
+                field.handleChange(event.target.valueAsNumber)
+              }
+              aria-invalid={field.meta.isInvalid}
+            />
+          </label>
+        )}
+      </form.Field>
+
+      <form.Subscribe
+        selector={(state) => [state.canSubmit, state.isSubmitting]}
+      >
+        {([canSubmit, isSubmitting]) => (
+          <button type="submit" disabled={!canSubmit || isSubmitting}>
+            {isSubmitting ? 'Saving…' : 'Save'}
+          </button>
+        )}
+      </form.Subscribe>
     </form>
   )
 }
-
-const rootElement = document.getElementById('root')!
-ReactDOM.createRoot(rootElement).render(<PeoplePage />)
 ```
 
-While we generally suggest using `createFormHook` for reduced boilerplate in the long-run, we also support one-off components and other behaviors using `useForm` and `form.Field`:
+The important pieces are:
 
-```tsx
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { useForm } from '@tanstack/react-form'
+- `defaultValues` define the complete initial value and drive type inference.
+- `form.Field` subscribes to one field. Its render prop exposes `field.value`,
+  `field.meta`, and event handlers.
+- Validators are ordered objects with a `run` function and explicit
+  `triggers`.
+- `form.Subscribe` rerenders only its own children when the selected form state
+  changes.
+- `form.handleSubmit()` validates the form before calling `onSubmit`.
 
-const PeoplePage = () => {
-  const form = useForm({
-    defaultValues: {
-      username: '',
-      age: 0,
-    },
-    onSubmit: ({ value }) => {
-      // Do something with form data
-      alert(JSON.stringify(value, null, 2))
-    },
-  })
-
-  return (
-    <form.Field
-      name="age"
-      validators={{
-        // We can choose between form-wide and field-specific validators
-        onChange: ({ value }) =>
-          value > 13 ? undefined : 'Must be 13 or older',
-      }}
-      children={(field) => (
-        <>
-          <input
-            name={field.name}
-            value={field.state.value}
-            onBlur={field.handleBlur}
-            type="number"
-            onChange={(e) => field.handleChange(e.target.valueAsNumber)}
-          />
-          {!field.state.meta.isValid && (
-            <em>{field.state.meta.errors.join(',')}</em>
-          )}
-        </>
-      )}
-    />
-  )
-}
-
-const rootElement = document.getElementById('root')!
-ReactDOM.createRoot(rootElement).render(<PeoplePage />)
-```
-
-All properties from `useForm` can be used in `useAppForm` and all properties from `form.Field` can be used in `form.AppField`.
+For application-wide field and form components, see
+[Form Composition](./guides/form-composition.md). For validation timing,
+schemas, and server errors, see [Form and Field Validation](./guides/validation.md).
