@@ -32,7 +32,7 @@ Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:115](htt
 ### errors
 
 ```ts
-errors: TGroupValidationMetas[number]["groupError"];
+errors: TGroupValidationMetas[number]["groupError"][];
 ```
 
 Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:109](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L109)

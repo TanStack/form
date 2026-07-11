@@ -3,22 +3,22 @@ id: ValidatorOptions
 title: ValidatorOptions
 ---
 
-# Type Alias: ValidatorOptions\<TFormData, TContextValue, TTrigger\>
+# Type Alias: ValidatorOptions\<TFormData, TContextValue, TTrigger, TScope\>
 
 ```ts
-type ValidatorOptions<TFormData, TContextValue, TTrigger> = Omit<Validator<TFormData, 
+type ValidatorOptions<TFormData, TContextValue, TTrigger, TScope> = Omit<Validator<TFormData, 
   | StandardSchemaV1<any, any>
-  | ValidatorFn<any, any>, TContextValue, TTrigger>, "run" | "triggers"> & object;
+  | ValidatorFn<any, any>, TContextValue, TTrigger, TScope>, "run" | "triggers"> & object;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:54](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L54)
+Defined in: [packages/form-core/src/validation.public.ts:61](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L61)
 
 ## Type Declaration
 
 ### triggers
 
 ```ts
-triggers: FormValidationTriggerOption<TFormData, TContextValue>[];
+triggers: FormValidationTriggerOption<TFormData, TContextValue, TScope>[];
 ```
 
 ## Type Parameters
@@ -34,3 +34,7 @@ triggers: FormValidationTriggerOption<TFormData, TContextValue>[];
 ### TTrigger
 
 `TTrigger` *extends* [`ValidatorTrigger`](ValidatorTrigger.md) = [`ValidatorTrigger`](ValidatorTrigger.md)
+
+### TScope
+
+`TScope` *extends* [`ValidatorScope`](ValidatorScope.md) = [`ValidatorScope`](ValidatorScope.md)

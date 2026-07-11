@@ -5,7 +5,7 @@ title: FieldValidatorMeta
 
 # Interface: FieldValidatorMeta\<TFieldError\>
 
-Defined in: [packages/form-core/src/validation.public.ts:653](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L653)
+Defined in: [packages/form-core/src/validation.public.ts:729](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L729)
 
 ## Type Parameters
 
@@ -21,4 +21,4 @@ Defined in: [packages/form-core/src/validation.public.ts:653](https://github.com
 readonly fieldError: TFieldError;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:654](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L654)
+Defined in: [packages/form-core/src/validation.public.ts:730](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L730)

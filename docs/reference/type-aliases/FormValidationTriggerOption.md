@@ -3,15 +3,15 @@ id: FormValidationTriggerOption
 title: FormValidationTriggerOption
 ---
 
-# Type Alias: FormValidationTriggerOption\<TFormData, TValue\>
+# Type Alias: FormValidationTriggerOption\<TFormData, TValue, TScope\>
 
 ```ts
-type FormValidationTriggerOption<TFormData, TValue> = 
-  | ClientValidationTriggerOption<TFormData, TValue>
+type FormValidationTriggerOption<TFormData, TValue, TScope> = 
+  | ClientValidationTriggerOption<TFormData, TValue, TScope>
   | ServerValidationTrigger;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:291](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L291)
+Defined in: [packages/form-core/src/validation.public.ts:359](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L359)
 
 ## Type Parameters
 
@@ -22,3 +22,7 @@ Defined in: [packages/form-core/src/validation.public.ts:291](https://github.com
 ### TValue
 
 `TValue`
+
+### TScope
+
+`TScope` *extends* [`ValidatorScope`](ValidatorScope.md) = [`ValidatorScope`](ValidatorScope.md)

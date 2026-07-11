@@ -3,13 +3,13 @@ id: ValidationPredicateFn
 title: ValidationPredicateFn
 ---
 
-# Type Alias: ValidationPredicateFn()\<TFormData, TValue\>
+# Type Alias: ValidationPredicateFn()\<TFormData, TValue, TScope\>
 
 ```ts
-type ValidationPredicateFn<TFormData, TValue> = (context) => boolean;
+type ValidationPredicateFn<TFormData, TValue, TScope> = (context) => boolean;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:265](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L265)
+Defined in: [packages/form-core/src/validation.public.ts:319](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L319)
 
 ## Type Parameters
 
@@ -21,11 +21,15 @@ Defined in: [packages/form-core/src/validation.public.ts:265](https://github.com
 
 `TValue`
 
+### TScope
+
+`TScope` *extends* [`ValidatorScope`](ValidatorScope.md) = [`ValidatorScope`](ValidatorScope.md)
+
 ## Parameters
 
 ### context
 
-[`ValidationPredicateContext`](../interfaces/ValidationPredicateContext.md)\<`TFormData`, `TValue`\>
+[`ValidationPredicateContext`](ValidationPredicateContext.md)\<`TFormData`, `TValue`, `TScope`\>
 
 ## Returns
 

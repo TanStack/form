@@ -9,7 +9,7 @@ title: ToFormValidatorMetas
 type ToFormValidatorMetas<TFormValidators> = unknown extends TFormValidators ? FormValidatorMetas : FormValidators<any> extends TFormValidators ? FormValidatorMetas : MappedFormValidatorMetas<TFormValidators>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:761](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L761)
+Defined in: [packages/form-core/src/validation.public.ts:837](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L837)
 
 ## Type Parameters
 

@@ -3,15 +3,15 @@ id: ValidationTriggerOption
 title: ValidationTriggerOption
 ---
 
-# Type Alias: ValidationTriggerOption\<TFormData, TValue, TTrigger\>
+# Type Alias: ValidationTriggerOption\<TFormData, TValue, TTrigger, TScope\>
 
 ```ts
-type ValidationTriggerOption<TFormData, TValue, TTrigger> = 
+type ValidationTriggerOption<TFormData, TValue, TTrigger, TScope> = 
   | TTrigger
-| ValidationTriggerConfig<TFormData, TValue, TTrigger>;
+| ValidationTriggerConfig<TFormData, TValue, TTrigger, TScope>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:282](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L282)
+Defined in: [packages/form-core/src/validation.public.ts:341](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L341)
 
 ## Type Parameters
 
@@ -26,3 +26,7 @@ Defined in: [packages/form-core/src/validation.public.ts:282](https://github.com
 ### TTrigger
 
 `TTrigger` *extends* [`ValidatorTrigger`](ValidatorTrigger.md) = [`ValidatorTrigger`](ValidatorTrigger.md)
+
+### TScope
+
+`TScope` *extends* [`ValidatorScope`](ValidatorScope.md) = [`ValidatorScope`](ValidatorScope.md)

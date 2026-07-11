@@ -9,7 +9,7 @@ title: ParseFormIssuesFn
 type ParseFormIssuesFn<TFormData> = (issues) => ParsedStandardSchemaIssues<TFormData>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:373](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L373)
+Defined in: [packages/form-core/src/validation.public.ts:445](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L445)
 
 ## Type Parameters
 

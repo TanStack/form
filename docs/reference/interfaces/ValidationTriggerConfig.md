@@ -3,9 +3,9 @@ id: ValidationTriggerConfig
 title: ValidationTriggerConfig
 ---
 
-# Interface: ValidationTriggerConfig\<TFormData, TValue, TTrigger\>
+# Interface: ValidationTriggerConfig\<TFormData, TValue, TTrigger, TScope\>
 
-Defined in: [packages/form-core/src/validation.public.ts:273](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L273)
+Defined in: [packages/form-core/src/validation.public.ts:331](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L331)
 
 ## Type Parameters
 
@@ -21,6 +21,10 @@ Defined in: [packages/form-core/src/validation.public.ts:273](https://github.com
 
 `TTrigger` *extends* [`ValidatorTrigger`](../type-aliases/ValidatorTrigger.md) = [`ValidatorTrigger`](../type-aliases/ValidatorTrigger.md)
 
+### TScope
+
+`TScope` *extends* [`ValidatorScope`](../type-aliases/ValidatorScope.md) = [`ValidatorScope`](../type-aliases/ValidatorScope.md)
+
 ## Properties
 
 ### trigger
@@ -29,7 +33,7 @@ Defined in: [packages/form-core/src/validation.public.ts:273](https://github.com
 trigger: TTrigger;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:278](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L278)
+Defined in: [packages/form-core/src/validation.public.ts:337](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L337)
 
 ***
 
@@ -38,7 +42,7 @@ Defined in: [packages/form-core/src/validation.public.ts:278](https://github.com
 ```ts
 optional when: 
   | boolean
-| ValidationPredicateFn<TFormData, TValue>;
+| ValidationPredicateFn<TFormData, TValue, TScope>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:279](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L279)
+Defined in: [packages/form-core/src/validation.public.ts:338](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L338)

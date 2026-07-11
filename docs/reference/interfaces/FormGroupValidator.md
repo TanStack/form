@@ -5,13 +5,13 @@ title: FormGroupValidator
 
 # Interface: FormGroupValidator\<TGroupValue\>
 
-Defined in: [packages/form-core/src/validation.public.ts:459](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L459)
+Defined in: [packages/form-core/src/validation.public.ts:533](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L533)
 
 ## Extends
 
 - [`Validator`](Validator.md)\<`TGroupValue`, 
   \| [`FormGroupValidatorFn`](../type-aliases/FormGroupValidatorFn.md)\<`TGroupValue`\>
-  \| [`StandardSchemaV1`](../type-aliases/StandardSchemaV1.md)\<`TGroupValue`, `any`\>, `TGroupValue`, [`ConfigurableValidationTrigger`](../type-aliases/ConfigurableValidationTrigger.md)\>
+  \| [`StandardSchemaV1`](../type-aliases/StandardSchemaV1.md)\<`TGroupValue`, `any`\>, `TGroupValue`, [`ConfigurableValidationTrigger`](../type-aliases/ConfigurableValidationTrigger.md), `"group"`\>
 
 ## Type Parameters
 
@@ -66,7 +66,7 @@ Defined in: [packages/form-core/src/validation.public.ts:14](https://github.com/
 optional runOnMount: boolean;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:43](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L43)
+Defined in: [packages/form-core/src/validation.public.ts:46](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L46)
 
 Whether this validator should be called once when the form is constructed.
 
@@ -87,10 +87,10 @@ false
 ```ts
 optional runOnSubmit: 
   | boolean
-| ValidationPredicateFn<TGroupValue, TGroupValue>;
+| ValidationPredicateFn<TGroupValue, TGroupValue, "group">;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:37](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L37)
+Defined in: [packages/form-core/src/validation.public.ts:38](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L38)
 
 TODO docs
 
@@ -113,10 +113,10 @@ true
 ```ts
 optional triggerDebounceMs: 
   | number
-| ValidationDebounceFn<TGroupValue, TGroupValue>;
+| ValidationDebounceFn<TGroupValue, TGroupValue, "group">;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:50](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L50)
+Defined in: [packages/form-core/src/validation.public.ts:53](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L53)
 
 The debounce time in milliseconds for validation triggers (change, blur).
 Does not affect submit events, which always execute immediately.
@@ -136,10 +136,10 @@ Does not affect submit events, which always execute immediately.
 ### triggers
 
 ```ts
-triggers: ValidationTriggerOption<TGroupValue, TGroupValue, ConfigurableValidationTrigger>[];
+triggers: ValidationTriggerOption<TGroupValue, TGroupValue, ConfigurableValidationTrigger, "group">[];
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:51](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L51)
+Defined in: [packages/form-core/src/validation.public.ts:56](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L56)
 
 #### Inherited from
 

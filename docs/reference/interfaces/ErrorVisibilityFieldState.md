@@ -5,7 +5,7 @@ title: ErrorVisibilityFieldState
 
 # Interface: ErrorVisibilityFieldState
 
-Defined in: [packages/form-core/src/validation.public.ts:184](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L184)
+Defined in: [packages/form-core/src/validation.public.ts:194](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L194)
 
 ## Properties
 
@@ -15,7 +15,7 @@ Defined in: [packages/form-core/src/validation.public.ts:184](https://github.com
 meta: ErrorVisibilityFieldMeta;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:186](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L186)
+Defined in: [packages/form-core/src/validation.public.ts:196](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L196)
 
 ***
 
@@ -25,4 +25,4 @@ Defined in: [packages/form-core/src/validation.public.ts:186](https://github.com
 value: any;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:185](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L185)
+Defined in: [packages/form-core/src/validation.public.ts:195](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L195)

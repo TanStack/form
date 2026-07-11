@@ -13,7 +13,7 @@ type FieldErrors<TFieldValidatorMetas, TGroupValidatorMetas, TFormValidatorMetas
   | ExtractSubmitFieldError<TSubmitReturn>)[];
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:614](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L614)
+Defined in: [packages/form-core/src/validation.public.ts:690](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L690)
 
 ## Type Parameters
 

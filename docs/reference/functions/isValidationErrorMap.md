@@ -9,7 +9,7 @@ title: isValidationErrorMap
 function isValidationErrorMap(value): value is ValidationErrorMap<any>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:321](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L321)
+Defined in: [packages/form-core/src/validation.public.ts:393](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L393)
 
 ## Parameters
 

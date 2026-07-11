@@ -9,7 +9,7 @@ title: ReusableErrorVisibility
 type ReusableErrorVisibility = <TFormData, TFormValidatorMetas, TSubmitReturn>(context) => boolean;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:235](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L235)
+Defined in: [packages/form-core/src/validation.public.ts:245](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L245)
 
 ## Type Parameters
 

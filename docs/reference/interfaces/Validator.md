@@ -3,7 +3,7 @@ id: Validator
 title: Validator
 ---
 
-# Interface: Validator\<TFormData, TValidator, TContextValue, TTrigger\>
+# Interface: Validator\<TFormData, TValidator, TContextValue, TTrigger, TScope\>
 
 Defined in: [packages/form-core/src/validation.public.ts:24](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L24)
 
@@ -35,6 +35,10 @@ Defined in: [packages/form-core/src/validation.public.ts:24](https://github.com/
 ### TTrigger
 
 `TTrigger` *extends* [`ValidatorTrigger`](../type-aliases/ValidatorTrigger.md) = [`ValidatorTrigger`](../type-aliases/ValidatorTrigger.md)
+
+### TScope
+
+`TScope` *extends* [`ValidatorScope`](../type-aliases/ValidatorScope.md) = [`ValidatorScope`](../type-aliases/ValidatorScope.md)
 
 ## Properties
 
@@ -81,7 +85,7 @@ Defined in: [packages/form-core/src/validation.public.ts:14](https://github.com/
 optional runOnMount: boolean;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:43](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L43)
+Defined in: [packages/form-core/src/validation.public.ts:46](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L46)
 
 Whether this validator should be called once when the form is constructed.
 
@@ -98,10 +102,10 @@ false
 ```ts
 optional runOnSubmit: 
   | boolean
-| ValidationPredicateFn<TFormData, TContextValue>;
+| ValidationPredicateFn<TFormData, TContextValue, TScope>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:37](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L37)
+Defined in: [packages/form-core/src/validation.public.ts:38](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L38)
 
 TODO docs
 
@@ -120,10 +124,10 @@ true
 ```ts
 optional triggerDebounceMs: 
   | number
-| ValidationDebounceFn<TFormData, TContextValue>;
+| ValidationDebounceFn<TFormData, TContextValue, TScope>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:50](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L50)
+Defined in: [packages/form-core/src/validation.public.ts:53](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L53)
 
 The debounce time in milliseconds for validation triggers (change, blur).
 Does not affect submit events, which always execute immediately.
@@ -139,7 +143,7 @@ Does not affect submit events, which always execute immediately.
 ### triggers
 
 ```ts
-triggers: ValidationTriggerOption<TFormData, TContextValue, TTrigger>[];
+triggers: ValidationTriggerOption<TFormData, TContextValue, TTrigger, TScope>[];
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:51](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L51)
+Defined in: [packages/form-core/src/validation.public.ts:56](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L56)

@@ -3,13 +3,13 @@ id: ValidationDebounceFn
 title: ValidationDebounceFn
 ---
 
-# Type Alias: ValidationDebounceFn()\<TFormData, TValue\>
+# Type Alias: ValidationDebounceFn()\<TFormData, TValue, TScope\>
 
 ```ts
-type ValidationDebounceFn<TFormData, TValue> = (context) => number;
+type ValidationDebounceFn<TFormData, TValue, TScope> = (context) => number;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:269](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L269)
+Defined in: [packages/form-core/src/validation.public.ts:325](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L325)
 
 ## Type Parameters
 
@@ -21,11 +21,15 @@ Defined in: [packages/form-core/src/validation.public.ts:269](https://github.com
 
 `TValue`
 
+### TScope
+
+`TScope` *extends* [`ValidatorScope`](ValidatorScope.md) = [`ValidatorScope`](ValidatorScope.md)
+
 ## Parameters
 
 ### context
 
-[`ValidationPredicateContext`](../interfaces/ValidationPredicateContext.md)\<`TFormData`, `TValue`\>
+[`ValidationPredicateContext`](ValidationPredicateContext.md)\<`TFormData`, `TValue`, `TScope`\>
 
 ## Returns
 

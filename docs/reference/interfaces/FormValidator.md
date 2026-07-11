@@ -5,7 +5,7 @@ title: FormValidator
 
 # Interface: FormValidator\<TFormData\>
 
-Defined in: [packages/form-core/src/validation.public.ts:425](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L425)
+Defined in: [packages/form-core/src/validation.public.ts:497](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L497)
 
 ## Extends
 
@@ -66,7 +66,7 @@ Defined in: [packages/form-core/src/validation.public.ts:14](https://github.com/
 optional runOnMount: boolean;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:429](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L429)
+Defined in: [packages/form-core/src/validation.public.ts:501](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L501)
 
 ***
 
@@ -75,10 +75,10 @@ Defined in: [packages/form-core/src/validation.public.ts:429](https://github.com
 ```ts
 optional runOnSubmit: 
   | boolean
-| ValidationPredicateFn<TFormData, TFormData>;
+| ValidationPredicateFn<TFormData, TFormData, "form">;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:428](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L428)
+Defined in: [packages/form-core/src/validation.public.ts:500](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L500)
 
 ***
 
@@ -87,17 +87,17 @@ Defined in: [packages/form-core/src/validation.public.ts:428](https://github.com
 ```ts
 optional triggerDebounceMs: 
   | number
-| ValidationDebounceFn<TFormData, TFormData>;
+| ValidationDebounceFn<TFormData, TFormData, "form">;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:430](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L430)
+Defined in: [packages/form-core/src/validation.public.ts:502](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L502)
 
 ***
 
 ### triggers
 
 ```ts
-triggers: FormValidationTriggerOption<TFormData, TFormData>[];
+triggers: FormValidationTriggerOption<TFormData, TFormData, "form">[];
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:431](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L431)
+Defined in: [packages/form-core/src/validation.public.ts:505](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L505)

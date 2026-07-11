@@ -5,7 +5,7 @@ title: ErrorVisibilitySubfieldsMeta
 
 # Interface: ErrorVisibilitySubfieldsMeta
 
-Defined in: [packages/form-core/src/validation.public.ts:164](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L164)
+Defined in: [packages/form-core/src/validation.public.ts:174](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L174)
 
 ## Properties
 
@@ -15,7 +15,7 @@ Defined in: [packages/form-core/src/validation.public.ts:164](https://github.com
 isEveryPristine: boolean;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:165](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L165)
+Defined in: [packages/form-core/src/validation.public.ts:175](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L175)
 
 ***
 
@@ -25,7 +25,7 @@ Defined in: [packages/form-core/src/validation.public.ts:165](https://github.com
 isSomeDirty: boolean;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:166](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L166)
+Defined in: [packages/form-core/src/validation.public.ts:176](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L176)
 
 ***
 
@@ -35,7 +35,7 @@ Defined in: [packages/form-core/src/validation.public.ts:166](https://github.com
 isSomeTouched: boolean;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:167](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L167)
+Defined in: [packages/form-core/src/validation.public.ts:177](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L177)
 
 ***
 
@@ -45,4 +45,4 @@ Defined in: [packages/form-core/src/validation.public.ts:167](https://github.com
 isSomeValidating: boolean;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:168](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L168)
+Defined in: [packages/form-core/src/validation.public.ts:178](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L178)

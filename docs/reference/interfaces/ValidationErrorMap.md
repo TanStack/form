@@ -5,7 +5,7 @@ title: ValidationErrorMap
 
 # Interface: ValidationErrorMap\<TFormData\>
 
-Defined in: [packages/form-core/src/validation.public.ts:310](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L310)
+Defined in: [packages/form-core/src/validation.public.ts:382](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L382)
 
 ## Type Parameters
 
@@ -21,7 +21,7 @@ Defined in: [packages/form-core/src/validation.public.ts:310](https://github.com
 fields: Partial<Record<DeepKeys<TFormData>, ValidationErrorInput>>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:312](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L312)
+Defined in: [packages/form-core/src/validation.public.ts:384](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L384)
 
 ***
 
@@ -31,7 +31,7 @@ Defined in: [packages/form-core/src/validation.public.ts:312](https://github.com
 optional form: ValidationErrorInput;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:311](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L311)
+Defined in: [packages/form-core/src/validation.public.ts:383](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L383)
 
 ***
 
@@ -43,7 +43,7 @@ toResult: () =>
   | undefined;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:313](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L313)
+Defined in: [packages/form-core/src/validation.public.ts:385](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L385)
 
 #### Returns
 
