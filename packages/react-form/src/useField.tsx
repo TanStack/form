@@ -169,22 +169,28 @@ export function useField<
     name: opts.name,
   }))
 
-  const [fieldApi, setFieldApi] = useState(() => {
+  const [fieldApiState, setFieldApi] = useState(() => {
     return new FieldApi({
       ...opts,
     })
   })
+
+  let fieldApi = fieldApiState
 
   // We only want to
   // update on name changes since those are at risk of becoming stale. The field
   // state must be up to date for the internal JSX render.
   // The other options can freely be in `fieldApi.update`
   if (prevOptions.form !== opts.form || prevOptions.name !== opts.name) {
-    setFieldApi(
-      new FieldApi({
-        ...opts,
-      }),
-    )
+    // Adjusting state during render: create the new FieldApi and use it for the
+    // rest of this render so the render prop reads state at the current `name`.
+    // Otherwise the discarded render still runs to completion with the stale
+    // instance, briefly surfacing `undefined` for shifted array items on removal.
+    // See: https://github.com/TanStack/form/issues/2238
+    fieldApi = new FieldApi({
+      ...opts,
+    })
+    setFieldApi(fieldApi)
     setPrevOptions({ form: opts.form, name: opts.name })
   }
 
