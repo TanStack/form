@@ -106,7 +106,7 @@ export interface FormGroupState<
 > {
   values: TGroupValue
   meta: unknown
-  errors: TGroupValidationMetas[number]['groupError']
+  errors: Array<TGroupValidationMetas[number]['groupError']>
   isTouched: boolean
   isDirty: boolean
   isPristine: boolean

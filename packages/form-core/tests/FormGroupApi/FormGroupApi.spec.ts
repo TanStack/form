@@ -798,11 +798,86 @@ describe('FormGroupApi', () => {
     await group.validate('change')
 
     expect(when).toHaveBeenCalledWith(
-      expect.objectContaining({ value: { name: 'Tony' } }),
+      expect.objectContaining({
+        scope: 'group',
+        groupApi: group,
+        value: { name: 'Tony' },
+      }),
     )
     expect(run).toHaveBeenCalledWith(
       expect.objectContaining({ value: { name: 'Tony' } }),
     )
+  })
+
+  it('passes the group context to predicates triggered by descendant fields', async () => {
+    const when = vi.fn(() => true)
+    const run = vi.fn(() => null)
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: '' } },
+    })
+    const nameField = form._getOrCreateFieldApi({
+      name: 'guestDetails.name',
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [
+        {
+          triggers: [{ trigger: 'change', when }],
+          run,
+        },
+      ],
+    })
+
+    nameField.handleChange('Tony')
+
+    await vi.waitFor(() => expect(run).toHaveBeenCalledOnce())
+    expect(when).toHaveBeenCalledWith(
+      expect.objectContaining({
+        scope: 'group',
+        formApi: form,
+        fieldApi: nameField,
+        groupApi: group,
+        value: { name: 'Tony' },
+      }),
+    )
+  })
+
+  it('can enable change validation after the group submits', async () => {
+    const run = vi.fn(() => null)
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: '' } },
+    })
+    const nameField = form._getOrCreateFieldApi({
+      name: 'guestDetails.name',
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [
+        {
+          triggers: [
+            {
+              trigger: 'change',
+              when: ({ groupApi }) =>
+                groupApi.state.submissionAttempts > 0,
+            },
+          ],
+          run,
+        },
+      ],
+    })
+
+    nameField.handleChange('before submit')
+    await new Promise((resolve) => setTimeout(resolve, 0))
+    expect(run).not.toHaveBeenCalled()
+
+    await group.handleSubmit()
+    expect(run).toHaveBeenCalledOnce()
+    run.mockClear()
+
+    nameField.handleChange('after submit')
+    await vi.waitFor(() => expect(run).toHaveBeenCalledOnce())
   })
 
   it('captures field-triggered validation inside the group without running root validation', async () => {
@@ -874,8 +949,7 @@ describe('FormGroupApi', () => {
           triggers: [
             {
               trigger: 'change',
-              when: ({ triggerFieldApi }) =>
-                triggerFieldApi?.meta.isInvalid ?? false,
+              when: ({ fieldApi }) => fieldApi?.meta.isInvalid ?? false,
             },
           ],
           run: z.object({

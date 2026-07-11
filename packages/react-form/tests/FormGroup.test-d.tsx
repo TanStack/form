@@ -114,6 +114,161 @@ function FormGroupTypes() {
   )
 }
 
+type GuestDetails = {
+  name: string
+  emails: Array<string>
+}
+
+type GroupValidationError = {
+  message: string
+  fromGroup: true
+}
+
+function FormGroupSubscribeTypes() {
+  const form = useForm({
+    defaultValues: {
+      guestDetails: {
+        name: '',
+        emails: [''],
+      },
+      budget: 0,
+    },
+  })
+
+  return (
+    <form.FormGroup
+      name="guestDetails"
+      validators={[
+        {
+          triggers: [],
+          run: () => ({
+            form: {
+              message: '',
+              fromGroup: true as const,
+            },
+            fields: {},
+          }),
+        },
+      ]}
+    >
+      {(group) => (
+        <>
+          <group.Subscribe
+            selector={(state) => {
+              expectTypeOf(state.values).toEqualTypeOf<GuestDetails>()
+              // @ts-expect-error selector values are scoped to guestDetails
+              state.values.budget
+              return state.values
+            }}
+          >
+            {(values) => {
+              expectTypeOf(values).toEqualTypeOf<GuestDetails>()
+              return null
+            }}
+          </group.Subscribe>
+
+          <group.Subscribe
+            selector={(state) => {
+              expectTypeOf(state.errors).not.toBeNever()
+              expectTypeOf(state.errors).toEqualTypeOf<
+                Array<GroupValidationError>
+              >()
+              return state.errors
+            }}
+            when={(errors) => {
+              expectTypeOf(errors).toEqualTypeOf<
+                Array<GroupValidationError>
+              >()
+              return errors.length > 0
+            }}
+          >
+            {(errors) => {
+              expectTypeOf(errors).toEqualTypeOf<
+                Array<GroupValidationError>
+              >()
+              return null
+            }}
+          </group.Subscribe>
+
+          <group.Subscribe selector={(state) => state.meta}>
+            {(meta) => {
+              expectTypeOf(meta).toBeUnknown()
+              return null
+            }}
+          </group.Subscribe>
+
+          <group.Subscribe
+            selector={(state) => {
+              expectTypeOf(state.isTouched).toEqualTypeOf<boolean>()
+              expectTypeOf(state.isDirty).toEqualTypeOf<boolean>()
+              expectTypeOf(state.isPristine).toEqualTypeOf<boolean>()
+              expectTypeOf(state.isValid).toEqualTypeOf<boolean>()
+              expectTypeOf(state.isInvalid).toEqualTypeOf<boolean>()
+              expectTypeOf(state.canSubmit).toEqualTypeOf<boolean>()
+              expectTypeOf(state.isSubmitting).toEqualTypeOf<boolean>()
+              expectTypeOf(state.isSubmitSuccessful).toEqualTypeOf<boolean>()
+              expectTypeOf(state.isValidating).toEqualTypeOf<boolean>()
+              expectTypeOf(state.submissionAttempts).toEqualTypeOf<number>()
+
+              return {
+                isSubmitting: state.isSubmitting,
+                submissionAttempts: state.submissionAttempts,
+              }
+            }}
+          >
+            {(status) => {
+              expectTypeOf(status.isSubmitting).toEqualTypeOf<boolean>()
+              expectTypeOf(status.submissionAttempts).toEqualTypeOf<number>()
+              return null
+            }}
+          </group.Subscribe>
+        </>
+      )}
+    </form.FormGroup>
+  )
+}
+
+function FormGroupSubscribeWithoutGroupErrorsTypes() {
+  const form = useForm({
+    defaultValues: {
+      guestDetails: {
+        name: '',
+      },
+    },
+  })
+
+  return (
+    <form.FormGroup
+      name="guestDetails"
+      validators={[
+        {
+          triggers: [],
+          run: () => ({
+            fields: {
+              name: { message: '' },
+            },
+          }),
+        },
+      ]}
+    >
+      {(group) => (
+        <group.Subscribe
+          selector={(state) => {
+            expectTypeOf(state.errors).not.toBeNever()
+            expectTypeOf(state.errors).toEqualTypeOf<Array<never>>()
+            return state.errors
+          }}
+        >
+          {(errors) => {
+            expectTypeOf(errors).toEqualTypeOf<Array<never>>()
+            return null
+          }}
+        </group.Subscribe>
+      )}
+    </form.FormGroup>
+  )
+}
+
 function RootFieldTypes() {
   const form = useForm({
     defaultValues: {
@@ -150,4 +305,6 @@ function RootFieldTypes() {
 }
 
 void FormGroupTypes
+void FormGroupSubscribeTypes
+void FormGroupSubscribeWithoutGroupErrorsTypes
 void RootFieldTypes

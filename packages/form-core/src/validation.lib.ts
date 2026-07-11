@@ -25,10 +25,9 @@ import type {
   FormValidatorContext,
   ServerFormValidatorContext,
   ValidationAggregateError,
-  ValidationDebounceFn,
   ValidationErrorInput,
   ValidationIssue,
-  ValidationPredicateFn,
+  ValidationPredicateContext,
   ValidationTriggerOption,
   Validator,
 } from './validation.public'
@@ -37,12 +36,14 @@ import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
 import type { InternalFormGroupApi } from './FormGroupApi/FormGroupApi.lib'
 
 type FormValidateContext = {
+  scope: 'form'
   event: Exclude<FormValidatorContext<any>['event'], 'server'>
   signal: AbortSignal
   formApi: InternalFormApi<any, any, any>
   triggerFieldApi?: AnyInternalFieldApi
 }
 type ServerPipelineValidateContext = {
+  scope: 'server'
   event: 'server'
   signal: AbortSignal
   formApi: undefined
@@ -50,11 +51,11 @@ type ServerPipelineValidateContext = {
 type FieldValidateContext = Omit<
   FieldValidatorContext<any, any, any>,
   'value' | 'parseIssues'
->
+> & { scope: 'field' }
 type FormGroupValidateContext = Omit<
   FormGroupValidatorContext<any>,
   'value' | 'parseIssues' | 'createErrorMap'
->
+> & { scope: 'group' }
 type FormInputContext = Omit<FormValidateContext, 'signal'>
 type ServerFormInputContext = Omit<ServerPipelineValidateContext, 'signal'>
 type FieldInputContext = Omit<FieldValidateContext, 'signal'>
@@ -96,7 +97,11 @@ function isServerContext(ctx: InputContext): ctx is ServerFormInputContext {
 }
 
 function isFieldContext(ctx: InputContext): ctx is FieldInputContext {
-  return 'fieldApi' in ctx
+  return ctx.scope === 'field'
+}
+
+function isGroupContext(ctx: InputContext): ctx is FormGroupInputContext {
+  return ctx.scope === 'group'
 }
 
 function isServerValidateContext(
@@ -108,7 +113,7 @@ function isServerValidateContext(
 function isFieldValidateContext(
   ctx: ValidateContext,
 ): ctx is FieldValidateContext {
-  return 'fieldApi' in ctx
+  return ctx.scope === 'field'
 }
 
 function isServerTrigger(
@@ -121,10 +126,34 @@ function hasServerTrigger(validator: AnyPipelineValidator): boolean {
   return validator.triggers.some(isServerTrigger)
 }
 
-function getContextValue(context: InputContext) {
-  if (isFieldContext(context)) return context.fieldApi.value
-  if (isServerContext(context)) return undefined
-  return context.formApi.state.values
+function getPredicateContext(
+  context: Exclude<InputContext, ServerFormInputContext>,
+): ValidationPredicateContext<any, any> {
+  if (isFieldContext(context)) {
+    return {
+      scope: 'field',
+      formApi: context.formApi,
+      fieldApi: context.fieldApi,
+      value: context.fieldApi.value,
+    }
+  }
+
+  if (isGroupContext(context)) {
+    return {
+      scope: 'group',
+      formApi: context.formApi,
+      fieldApi: context.triggerFieldApi,
+      groupApi: context.groupApi,
+      value: context.groupApi.value,
+    }
+  }
+
+  return {
+    scope: 'form',
+    formApi: context.formApi,
+    fieldApi: context.triggerFieldApi,
+    value: context.formApi.state.values,
+  }
 }
 
 function parseFieldIssues(
@@ -361,35 +390,23 @@ interface PendingPipelineResult<in out T> {
 }
 
 function getEnabledState(
-  booleanOrFn: boolean | ValidationPredicateFn<any, any>,
+  booleanOrFn: boolean | ((context: any) => boolean),
   context: InputContext,
 ): boolean {
   if (typeof booleanOrFn === 'boolean') return booleanOrFn
   if (isServerContext(context)) return false
 
-  return booleanOrFn({
-    triggerFieldApi: isFieldContext(context)
-      ? context.fieldApi
-      : context.triggerFieldApi,
-    formApi: context.formApi,
-    value: getContextValue(context),
-  })
+  return booleanOrFn(getPredicateContext(context))
 }
 
 function getDebounceMs(
-  numberOrFn: number | ValidationDebounceFn<any, any>,
+  numberOrFn: number | ((context: any) => number),
   context: InputContext,
 ): number {
   if (typeof numberOrFn === 'number') return numberOrFn
   if (isServerContext(context)) return 0
 
-  return numberOrFn({
-    triggerFieldApi: isFieldContext(context)
-      ? context.fieldApi
-      : context.triggerFieldApi,
-    formApi: context.formApi,
-    value: getContextValue(context),
-  })
+  return numberOrFn(getPredicateContext(context))
 }
 
 export function isValidationTriggerEnabled(

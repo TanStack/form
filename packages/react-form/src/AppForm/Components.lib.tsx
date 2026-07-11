@@ -108,6 +108,7 @@ function createFormGroupWithContext(
 
     React.useEffect(() => {
       const group = groupRef.current!
+      group.mount()
       return () => group._cleanup()
     }, [])
 

@@ -1,5 +1,6 @@
+import { step2Schema, stepValidator } from './shared-form'
+import type { wizardFormOpts } from './shared-form'
 import type { ReactFormType } from '@tanstack/react-form'
-import { step2Schema, wizardFormOpts } from './shared-form'
 
 type WizardForm = ReactFormType<typeof wizardFormOpts>
 
@@ -13,12 +14,7 @@ export function Step2Form({ form, step, setStep }: Step2FormProps) {
   return (
     <form.FormGroup
       name="step2"
-      validators={[
-        {
-          triggers: [],
-          run: step2Schema,
-        },
-      ]}
+      validators={[stepValidator(step2Schema)]}
       onSubmit={() => {
         form.handleSubmit()
       }}
@@ -31,9 +27,9 @@ export function Step2Form({ form, step, setStep }: Step2FormProps) {
             formGroup.handleSubmit()
           }}
         >
-          <form.Field name="step2.name">
+          <formGroup.Field name="name">
             {(field) => <field.TextField label="Step 2 Name" />}
-          </form.Field>
+          </formGroup.Field>
 
           <button type="button" onClick={() => setStep(step - 1)}>
             Back

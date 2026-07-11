@@ -2,13 +2,14 @@ import { describe, expectTypeOf, it } from 'vitest'
 import z from 'zod'
 import { InternalFormApi } from '../src/FormApi/FormApi.lib'
 import {
-  createErrorVisibility,
   createErrorMap,
+  createErrorVisibility,
   createValidator,
   createValidators,
   formOptions,
 } from '../src'
 import type {
+  AnyFieldApi,
   ErrorVisibilityFieldState,
   FieldApiOptions,
   FieldErrors,
@@ -274,6 +275,82 @@ describe('createErrorMap', () => {
 })
 
 describe('ValidationTriggerOption', () => {
+  it('provides scope-specific predicate owner APIs', () => {
+    defineFormValidators([
+      {
+        run: () => undefined,
+        triggers: [
+          {
+            trigger: 'change',
+            when: (context) => {
+              expectTypeOf(context.scope).toEqualTypeOf<'form'>()
+              expectTypeOf(context.groupApi).toEqualTypeOf<undefined>()
+              expectTypeOf(context.fieldApi).toEqualTypeOf<
+                AnyFieldApi | undefined
+              >()
+              return context.formApi.state.submissionAttempts > 0
+            },
+          },
+        ],
+      },
+    ])
+
+    defineGroupValidators([
+      {
+        run: () => undefined,
+        triggers: [
+          {
+            trigger: 'change',
+            when: (context) => {
+              expectTypeOf(context.scope).toEqualTypeOf<'group'>()
+              expectTypeOf(context.groupApi).not.toBeUndefined()
+              expectTypeOf(context.fieldApi).toEqualTypeOf<
+                AnyFieldApi | undefined
+              >()
+              return context.groupApi.state.submissionAttempts > 0
+            },
+          },
+        ],
+      },
+    ])
+
+    defineFieldValidators([
+      {
+        run: () => undefined,
+        triggers: [
+          {
+            trigger: 'change',
+            when: (context) => {
+              expectTypeOf(context.scope).toEqualTypeOf<'field'>()
+              expectTypeOf(context.groupApi).toEqualTypeOf<undefined>()
+              expectTypeOf(context.fieldApi).not.toBeUndefined()
+              return context.fieldApi.meta.isInvalid
+            },
+          },
+        ],
+      },
+    ])
+  })
+
+  it('narrows scope-agnostic reusable predicate contexts', () => {
+    createValidator({
+      triggers: [
+        {
+          trigger: 'change',
+          when: (context) => {
+            if (context.scope === 'group') {
+              return context.groupApi.state.submissionAttempts > 0
+            }
+            if (context.scope === 'field') {
+              return context.fieldApi.meta.isInvalid
+            }
+            return context.formApi.state.submissionAttempts > 0
+          },
+        },
+      ],
+    })
+  })
+
   it('allows string server triggers on form validators only', () => {
     defineFormValidators([
       {

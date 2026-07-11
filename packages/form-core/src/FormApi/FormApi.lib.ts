@@ -687,6 +687,7 @@ export class InternalFormApi<
 
       const runsOnEvent = validator.triggers.some((trigger) =>
         isValidationTriggerEnabled(trigger, {
+          scope: 'form',
           event,
           formApi: this as never,
           triggerFieldApi: field ?? undefined,
@@ -1004,6 +1005,7 @@ export class InternalFormApi<
     try {
       return await runFormValidatorPipeline({
         context: {
+          scope: 'form',
           event: signal,
           // TypeScript doesn't instantly complain, but instead decides to wait a while.
           // Just leave it as never.

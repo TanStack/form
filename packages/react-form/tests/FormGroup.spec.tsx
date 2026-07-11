@@ -4,7 +4,7 @@ import { userEvent } from '@testing-library/user-event'
 import React, { useState } from 'react'
 import { createFormHook, getFormHookHelpers, useForm } from '../src'
 import type { AnyInternalFormApi } from '@tanstack/form-core/internals'
-import type { FieldWithValue } from '@tanstack/form-core'
+import type { FieldWithValue, StandardSchemaV1 } from '@tanstack/form-core'
 
 const user = userEvent.setup()
 
@@ -12,13 +12,34 @@ function FieldNameComp(props: { field: FieldWithValue<string> }) {
   return <span data-testid="app-field-name">{props.field.name}</span>
 }
 
+function TextFieldComp(props: {
+  field: FieldWithValue<string>
+  label: string
+}) {
+  return (
+    <label>
+      {props.label}
+      <input
+        value={props.field.value}
+        onChange={(event) => props.field.handleChange(event.target.value)}
+        onBlur={props.field.handleBlur}
+      />
+      <span data-testid="visible-errors">
+        {props.field.errors.map((error) => error.message).join(',')}
+      </span>
+    </label>
+  )
+}
+
 const { fieldComponent } = getFormHookHelpers()
 
 const FieldName = fieldComponent.loose(FieldNameComp, 'field')
+const TextField = fieldComponent.strict(TextFieldComp, 'field')
 
 const { useAppForm } = createFormHook({
   fieldComponents: {
     FieldName,
+    TextField,
   },
   formComponents: {},
 })
@@ -98,6 +119,8 @@ describe('FormGroup', () => {
 
   it('uses the AppForm field provider subscription for field context', async () => {
     const subscribe = vi.fn()
+    const unsubscribe = vi.fn()
+    const instrumentedAtoms = new WeakSet<object>()
 
     function Component() {
       const form = useAppForm({
@@ -111,12 +134,25 @@ describe('FormGroup', () => {
               <group.Field name="name">
                 {(field) => {
                   const atom = field.atom
-                  const originalSubscribe = atom.subscribe as (
-                    ...args: Array<any>
-                  ) => ReturnType<typeof atom.subscribe>
-                  atom.subscribe = (...args) => {
-                    subscribe()
-                    return originalSubscribe(...args)
+                  if (!instrumentedAtoms.has(atom)) {
+                    instrumentedAtoms.add(atom)
+                    const originalSubscribe = atom.subscribe as (
+                      ...args: Array<any>
+                    ) => ReturnType<typeof atom.subscribe>
+                    atom.subscribe = (...args) => {
+                      subscribe()
+                      const subscription = originalSubscribe(...args)
+                      let isActive = true
+                      return {
+                        unsubscribe: () => {
+                          if (isActive) {
+                            isActive = false
+                            unsubscribe()
+                          }
+                          subscription.unsubscribe()
+                        },
+                      }
+                    }
                   }
 
                   return <field.FieldName />
@@ -128,10 +164,20 @@ describe('FormGroup', () => {
       )
     }
 
-    render(<Component />)
+    const { unmount } = render(<Component />)
 
     await vi.waitFor(() => {
-      expect(subscribe).toHaveBeenCalledTimes(2)
+      expect(subscribe.mock.calls.length - unsubscribe.mock.calls.length).toBe(
+        2,
+      )
+    })
+
+    unmount()
+
+    await vi.waitFor(() => {
+      expect(subscribe.mock.calls.length - unsubscribe.mock.calls.length).toBe(
+        0,
+      )
     })
   })
 
@@ -179,6 +225,58 @@ describe('FormGroup', () => {
     await user.type(getByLabelText('Guest name'), 'A')
 
     expect(listener).toHaveBeenCalledOnce()
+  })
+
+  it('routes descendant field changes to the nearest form group', async () => {
+    const validator = vi.fn(() => ({
+      fields: {
+        name: 'Name is invalid',
+      },
+    }))
+
+    function Component() {
+      const form = useForm({
+        defaultValues: { step1: { name: '' } },
+      })
+
+      return (
+        <form.FormGroup
+          name="step1"
+          validators={[
+            {
+              triggers: ['change'],
+              run: validator,
+            },
+          ]}
+        >
+          {(group) => (
+            <group.Field name="name">
+              {(field) => (
+                <>
+                  <input
+                    aria-label="Step 1 name"
+                    value={field.value}
+                    onChange={(event) => field.handleChange(event.target.value)}
+                  />
+                  <span data-testid="change-error">
+                    {field.errors.map((error) => error.message).join(',')}
+                  </span>
+                </>
+              )}
+            </group.Field>
+          )}
+        </form.FormGroup>
+      )
+    }
+
+    const { getByLabelText, getByTestId } = render(<Component />)
+
+    await user.type(getByLabelText('Step 1 name'), 'A')
+
+    await vi.waitFor(() => {
+      expect(validator).toHaveBeenCalledOnce()
+      expect(getByTestId('change-error')).toHaveTextContent('Name is invalid')
+    })
   })
 
   it('subscribes to group state updates and advances an external stepper on submit', async () => {
@@ -253,6 +351,133 @@ describe('FormGroup', () => {
     await user.click(getByText('Continue'))
 
     expect(getByTestId('error')).toHaveTextContent('Name is required')
+  })
+
+  it('routes group validator field errors to prefixed group fields', async () => {
+    function Component() {
+      const form = useForm({
+        defaultValues: { step1: { name: '' } },
+      })
+
+      return (
+        <form.FormGroup
+          name="step1"
+          validators={[
+            {
+              triggers: [],
+              run: () => ({
+                fields: {
+                  name: 'Name is required',
+                },
+              }),
+            },
+          ]}
+        >
+          {(group) => (
+            <>
+              <group.Field name="name">
+                {(field) => (
+                  <span data-testid="group-field-error">
+                    {field.name}:
+                    {field.errors.map((error) => error.message).join(',')}
+                  </span>
+                )}
+              </group.Field>
+              <button onClick={() => group.handleSubmit()}>Continue</button>
+            </>
+          )}
+        </form.FormGroup>
+      )
+    }
+
+    const { getByText, getByTestId } = render(<Component />)
+
+    await user.click(getByText('Continue'))
+
+    await vi.waitFor(() => {
+      expect(getByTestId('group-field-error')).toHaveTextContent(
+        'step1.name:Name is required',
+      )
+    })
+  })
+
+  it('renders Standard Schema group errors through AppForm field components', async () => {
+    const formRef = { current: null as AnyInternalFormApi | null }
+    const validate = vi.fn((value: unknown) => {
+      const step = value as { name: string }
+      return step.name.length >= 2
+        ? { value: step }
+        : {
+            issues: [
+              {
+                message: 'Name must be at least 2 characters',
+                path: ['name'],
+              },
+            ],
+          }
+    })
+    const step1Schema = {
+      '~standard': {
+        version: 1,
+        vendor: 'test',
+        validate,
+      },
+    } satisfies StandardSchemaV1<{ name: string }>
+
+    function Component() {
+      const form = useAppForm({
+        defaultValues: { step1: { name: '' } },
+      })
+      // eslint-disable-next-line react-compiler/react-compiler
+      formRef.current = form as never
+
+      return (
+        <form.AppForm>
+          <form.FormGroup
+            name="step1"
+            validators={[
+              {
+                triggers: [],
+                run: step1Schema,
+              },
+            ]}
+          >
+            {(group) => (
+              <form
+                onSubmit={(event) => {
+                  event.preventDefault()
+                  event.stopPropagation()
+                  group.handleSubmit()
+                }}
+              >
+                <group.Field name="name">
+                  {(field) => <field.TextField label="Step 1 Name" />}
+                </group.Field>
+                <button type="submit">Submit</button>
+              </form>
+            )}
+          </form.FormGroup>
+        </form.AppForm>
+      )
+    }
+
+    const { getByText, getByTestId } = render(<Component />)
+
+    await user.click(getByText('Submit'))
+
+    await vi.waitFor(() => {
+      expect(validate).toHaveBeenCalled()
+      expect(
+        formRef.current?._tryGetFieldApi('step1.name')?.meta.original.errors,
+      ).toEqual([
+        expect.objectContaining({
+          message: 'Name must be at least 2 characters',
+        }),
+      ])
+      expect(getByTestId('visible-errors')).toHaveTextContent(
+        'Name must be at least 2 characters',
+      )
+    })
   })
 
   it('does not add a DOM-rendering StepForm helper', () => {

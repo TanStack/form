@@ -143,6 +143,8 @@ export class InternalFormGroupApi<
   }
 
   mount = (): void => {
+    this.form._registerFormGroup(this)
+
     const pipeline = this.options.validators
     if (!pipeline || pipeline.length === 0) return
 
@@ -480,9 +482,11 @@ export class InternalFormGroupApi<
       const validator = this.options.validators?.[i]
       const runsOnEvent = validator?.triggers.some((trigger) =>
         isValidationTriggerEnabled(trigger, {
+          scope: 'group',
           event,
           formApi: this.form,
-          fieldApi: field,
+          groupApi: this,
+          triggerFieldApi: field,
         }),
       )
 
@@ -573,9 +577,11 @@ export class InternalFormGroupApi<
         pipeline: pipeline as ReadonlyArray<FormGroupValidator<any>>,
         cache: this._pipelineCache,
         context: {
+          scope: 'group',
           event: signal,
           formApi: this.form,
-          fieldApi: opts?.triggerFieldApi ?? ({ value: this.value } as never),
+          groupApi: this,
+          triggerFieldApi: opts?.triggerFieldApi,
         },
         hasFailedBefore: false,
         scope: 'form',

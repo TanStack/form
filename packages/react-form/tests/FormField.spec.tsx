@@ -53,18 +53,21 @@ describe('Form fields', () => {
     const { getByTestId, unmount } = render(<Component />)
 
     expect(getByTestId('name')).toHaveTextContent('tony-hawk')
-    expect(onMount).toHaveBeenCalledOnce()
-    expect(onUnmount).not.toHaveBeenCalled()
+    expect(onMount.mock.calls.length - onUnmount.mock.calls.length).toBe(1)
+
+    const initialMountCount = onMount.mock.calls.length
+    const initialUnmountCount = onUnmount.mock.calls.length
 
     fireEvent.click(getByTestId('rerender'))
 
     expect(getByTestId('rerender')).toHaveTextContent('1')
-    expect(onMount).toHaveBeenCalledOnce()
-    expect(onUnmount).not.toHaveBeenCalled()
+    expect(onMount).toHaveBeenCalledTimes(initialMountCount)
+    expect(onUnmount).toHaveBeenCalledTimes(initialUnmountCount)
 
     unmount()
 
-    expect(onUnmount).toHaveBeenCalledOnce()
+    expect(onMount.mock.calls.length - onUnmount.mock.calls.length).toBe(0)
+    expect(onUnmount).toHaveBeenCalledTimes(initialUnmountCount + 1)
   })
 
   it('should have the correct name and value', async () => {

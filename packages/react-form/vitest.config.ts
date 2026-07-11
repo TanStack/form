@@ -11,5 +11,25 @@ export default defineConfig({
     environment: 'happy-dom',
     setupFiles: ['./tests/test-setup.ts'],
     globals: true,
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: `${packageJson.name}: normal`,
+          env: {
+            VITEST_REACT_STRICT_MODE: 'false',
+          },
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: `${packageJson.name}: strict`,
+          env: {
+            VITEST_REACT_STRICT_MODE: 'true',
+          },
+        },
+      },
+    ],
   },
 })

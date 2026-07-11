@@ -26,6 +26,7 @@ export interface Validator<
   out TValidator extends StandardSchemaV1 | ValidatorFn<any, any>,
   in out TContextValue,
   in out TTrigger extends ValidatorTrigger = ValidatorTrigger,
+  in out TScope extends ValidatorScope = ValidatorScope,
 > extends BaseValidator<TValidator> {
   /**
    * TODO docs
@@ -34,7 +35,9 @@ export interface Validator<
    *
    * @default true
    */
-  runOnSubmit?: boolean | ValidationPredicateFn<TFormData, TContextValue>
+  runOnSubmit?:
+    | boolean
+    | ValidationPredicateFn<TFormData, TContextValue, TScope>
   /**
    * Whether this validator should be called once when the form is constructed.
    *
@@ -47,24 +50,32 @@ export interface Validator<
    *
    * @default 0
    */
-  triggerDebounceMs?: number | ValidationDebounceFn<TFormData, TContextValue>
-  triggers: Array<ValidationTriggerOption<TFormData, TContextValue, TTrigger>>
+  triggerDebounceMs?:
+    | number
+    | ValidationDebounceFn<TFormData, TContextValue, TScope>
+  triggers: Array<
+    ValidationTriggerOption<TFormData, TContextValue, TTrigger, TScope>
+  >
 }
 
 export type ValidatorOptions<
   TFormData,
   TContextValue,
   TTrigger extends ValidatorTrigger = ValidatorTrigger,
+  TScope extends ValidatorScope = ValidatorScope,
 > = Omit<
   Validator<
     TFormData,
     StandardSchemaV1<any, any> | ValidatorFn<any, any>,
     TContextValue,
-    TTrigger
+    TTrigger,
+    TScope
   >,
   'run' | 'triggers'
 > & {
-  triggers: Array<FormValidationTriggerOption<TFormData, TContextValue>>
+  triggers: Array<
+    FormValidationTriggerOption<TFormData, TContextValue, TScope>
+  >
 }
 
 type ValidatorRun = StandardSchemaV1<any, any> | ValidatorFn<any, any>
@@ -160,6 +171,7 @@ export type ServerValidationTrigger = 'server'
 export type ClientValidationTrigger = ValidationTrigger
 export type ConfigurableValidationTrigger = Exclude<ValidationTrigger, 'submit'>
 export type ValidatorTrigger = ConfigurableValidationTrigger
+export type ValidatorScope = 'form' | 'group' | 'field'
 
 export interface ErrorVisibilitySubfieldsMeta {
   isEveryPristine: boolean
@@ -256,40 +268,106 @@ export function createErrorVisibility(
   return visibility as ReusableErrorVisibility
 }
 
-export interface ValidationPredicateContext<in out TFormData, out TValue> {
+interface BaseValidationPredicateContext<
+  in out TFormData,
+  out TValue,
+  out TScope extends ValidatorScope,
+> {
+  scope: TScope
   formApi: FormApi<TFormData, any, any>
-  triggerFieldApi?: AnyFieldApi
+  /**
+   * The field associated with this validation, if any.
+   *
+   * For form and group validators, this is the field that triggered the
+   * validation. For field validators, this is the field being validated.
+   */
+  fieldApi?: AnyFieldApi
   value: TValue
 }
 
-export type ValidationPredicateFn<in out TFormData, in out TValue> = (
-  context: ValidationPredicateContext<TFormData, TValue>,
+export interface FormValidationPredicateContext<in out TFormData>
+  extends BaseValidationPredicateContext<TFormData, TFormData, 'form'> {
+  groupApi?: never
+}
+
+export interface FormGroupValidationPredicateContext<in out TGroupValue>
+  extends BaseValidationPredicateContext<any, TGroupValue, 'group'> {
+  groupApi: FormGroupApi<any, any, TGroupValue, any, any, any>
+}
+
+export interface FieldValidationPredicateContext<
+  in out TFormData,
+  out TFieldValue,
+> extends BaseValidationPredicateContext<TFormData, TFieldValue, 'field'> {
+  groupApi?: never
+  /** The field being validated. */
+  fieldApi: AnyFieldApi
+}
+
+export type ValidationPredicateContext<
+  TFormData,
+  TValue,
+  TScope extends ValidatorScope = ValidatorScope,
+> = TScope extends 'form'
+  ? FormValidationPredicateContext<TFormData>
+  : TScope extends 'group'
+    ? FormGroupValidationPredicateContext<TValue>
+    : TScope extends 'field'
+      ? FieldValidationPredicateContext<TFormData, TValue>
+      : never
+
+export type ValidationPredicateFn<
+  in out TFormData,
+  in out TValue,
+  in TScope extends ValidatorScope = ValidatorScope,
+> = (
+  context: ValidationPredicateContext<TFormData, TValue, TScope>,
 ) => boolean
 
-export type ValidationDebounceFn<in out TFormData, in out TValue> = (
-  context: ValidationPredicateContext<TFormData, TValue>,
+export type ValidationDebounceFn<
+  in out TFormData,
+  in out TValue,
+  in TScope extends ValidatorScope = ValidatorScope,
+> = (
+  context: ValidationPredicateContext<TFormData, TValue, TScope>,
 ) => number
 
 export interface ValidationTriggerConfig<
   in out TFormData,
   in out TValue,
   in out TTrigger extends ValidatorTrigger = ValidatorTrigger,
+  in TScope extends ValidatorScope = ValidatorScope,
 > {
   trigger: TTrigger
-  when?: boolean | ValidationPredicateFn<TFormData, TValue>
+  when?: boolean | ValidationPredicateFn<TFormData, TValue, TScope>
 }
 
 export type ValidationTriggerOption<
   TFormData,
   TValue,
   TTrigger extends ValidatorTrigger = ValidatorTrigger,
-> = TTrigger | ValidationTriggerConfig<TFormData, TValue, TTrigger>
+  TScope extends ValidatorScope = ValidatorScope,
+> =
+  | TTrigger
+  | ValidationTriggerConfig<TFormData, TValue, TTrigger, TScope>
 
-export type ClientValidationTriggerOption<TFormData, TValue> =
-  ValidationTriggerOption<TFormData, TValue, ConfigurableValidationTrigger>
+export type ClientValidationTriggerOption<
+  TFormData,
+  TValue,
+  TScope extends ValidatorScope = ValidatorScope,
+> = ValidationTriggerOption<
+  TFormData,
+  TValue,
+  ConfigurableValidationTrigger,
+  TScope
+>
 
-export type FormValidationTriggerOption<TFormData, TValue> =
-  | ClientValidationTriggerOption<TFormData, TValue>
+export type FormValidationTriggerOption<
+  TFormData,
+  TValue,
+  TScope extends ValidatorScope = ValidatorScope,
+> =
+  | ClientValidationTriggerOption<TFormData, TValue, TScope>
   | ServerValidationTrigger
 
 /**
@@ -425,10 +503,14 @@ export type ServerFormValidatorFn<TFormData> = ValidatorFn<
 export interface FormValidator<in out TFormData> extends BaseValidator<
   FormValidatorFn<TFormData> | StandardSchemaV1<TFormData, any>
 > {
-  runOnSubmit?: boolean | ValidationPredicateFn<TFormData, TFormData>
+  runOnSubmit?:
+    | boolean
+    | ValidationPredicateFn<TFormData, TFormData, 'form'>
   runOnMount?: boolean
-  triggerDebounceMs?: number | ValidationDebounceFn<TFormData, TFormData>
-  triggers: Array<FormValidationTriggerOption<TFormData, TFormData>>
+  triggerDebounceMs?:
+    | number
+    | ValidationDebounceFn<TFormData, TFormData, 'form'>
+  triggers: Array<FormValidationTriggerOption<TFormData, TFormData, 'form'>>
 }
 
 export type FormValidators<TFormData> = ReadonlyArray<FormValidator<TFormData>>
@@ -460,7 +542,8 @@ export interface FormGroupValidator<in out TGroupValue> extends Validator<
   TGroupValue,
   FormGroupValidatorFn<TGroupValue> | StandardSchemaV1<TGroupValue, any>,
   TGroupValue,
-  ConfigurableValidationTrigger
+  ConfigurableValidationTrigger,
+  'group'
 > {}
 
 export type FormGroupValidators<TGroupValue> = ReadonlyArray<
@@ -508,7 +591,8 @@ export interface FieldValidator<
   | FieldValidatorFn<TFormData, TFieldName, TFieldValue>
   | StandardSchemaV1<TFieldValue, any>,
   TFieldValue,
-  ConfigurableValidationTrigger
+  ConfigurableValidationTrigger,
+  'field'
 > {
   watchFields?: Array<DeepKeys<TFormData>>
 }

@@ -33,8 +33,8 @@ export const rewardEarlyPunishLate = createValidator({
     'blur',
     {
       trigger: 'change',
-      when: ({ triggerFieldApi }) =>
-        triggerFieldApi !== undefined && triggerFieldApi.meta.isInvalid,
+      when: ({ fieldApi }) =>
+        fieldApi !== undefined && fieldApi.meta.isInvalid,
     },
   ],
 })

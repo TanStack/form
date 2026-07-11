@@ -164,13 +164,14 @@ describe('useForm', () => {
     expect(screen.getByTestId('form-state')).toHaveTextContent(
       'Name is required|false|false',
     )
-    expect(renderStates).toEqual([
-      {
+    expect(renderStates.length).toBeGreaterThan(0)
+    for (const state of renderStates) {
+      expect(state).toEqual({
         errors: ['Name is required'],
         isValid: false,
         canSubmit: false,
-      },
-    ])
+      })
+    }
   })
 
   it('updates form.Subscribe selectors for isDefaultValue', () => {

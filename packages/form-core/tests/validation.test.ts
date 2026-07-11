@@ -161,6 +161,7 @@ describe('runFormValidatorPipeline', () => {
       }) => {
         return runFormValidatorPipeline({
           context: {
+            scope: 'form',
             event: args.event,
             formApi: form,
             triggerFieldApi: args.field,
@@ -190,6 +191,7 @@ describe('runFormValidatorPipeline', () => {
       }) => {
         return runFieldValidatorPipeline({
           context: {
+            scope: 'field',
             event: args.event,
             formApi: form,
             fieldApi: field,
@@ -426,13 +428,16 @@ describe('runFormValidatorPipeline', () => {
     const formApi = getForm({ name: 'test' })
     const field = formApi._getOrCreateFieldApi({ name: 'name' })
     const run = vi.fn(() => ({ message: 'foo' }))
-    const triggerDebounceMs = vi.fn(({ formApi, triggerFieldApi, value }) => {
-      expect(formApi.state.values).toEqual({ name: 'test' })
-      expect(triggerFieldApi).toBe(field)
-      expect(value).toEqual({ name: 'test' })
+    const triggerDebounceMs = vi.fn(
+      ({ scope, formApi, fieldApi, value }) => {
+        expect(scope).toBe('form')
+        expect(formApi.state.values).toEqual({ name: 'test' })
+        expect(fieldApi).toBe(field)
+        expect(value).toEqual({ name: 'test' })
 
-      return 100
-    })
+        return 100
+      },
+    )
 
     const { runWithContext } = getPipeline(formApi, [
       {
@@ -636,8 +641,9 @@ describe('runFormValidatorPipeline', () => {
     expect(when).toHaveBeenCalledOnce()
     expect(when).toHaveBeenCalledWith(
       expect.objectContaining({
+        scope: 'field',
+        fieldApi: field,
         value: 'test',
-        triggerFieldApi: field,
       }),
     )
     expect(run).toHaveBeenCalledOnce()

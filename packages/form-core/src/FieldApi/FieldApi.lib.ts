@@ -680,6 +680,7 @@ export class InternalFieldApi<
       return await runFieldValidatorPipeline({
         pipeline: validators,
         context: {
+          scope: 'field',
           event,
           fieldApi: this,
           formApi: this.form,
@@ -754,6 +755,7 @@ export class InternalFieldApi<
     for (let i = 0; i < validators.length; i++) {
       const runsOnEvent = validators[i]!.triggers.some((trigger) =>
         isValidationTriggerEnabled(trigger, {
+          scope: 'field',
           event,
           fieldApi: this,
           formApi: this.form,
@@ -1019,6 +1021,8 @@ export class InternalFieldApi<
 
     if (this._refCount <= 0) {
       setTimeout(() => {
+        if (this._refCount > 0) return
+
         this._atoms.store = undefined
 
         if (this._atoms.meta?.get() === defaultInternalBaseFieldMeta) {

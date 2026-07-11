@@ -154,6 +154,7 @@ export async function validateServerValues<
     pipeline,
     cache: createPipelineCache(),
     context: {
+      scope: 'server',
       event: 'server',
       formApi: undefined,
     },

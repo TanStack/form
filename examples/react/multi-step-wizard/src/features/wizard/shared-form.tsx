@@ -1,4 +1,5 @@
 import z from 'zod'
+import { createValidator } from '@tanstack/react-form'
 import { appFormOptions } from '../../hooks/form.tsx'
 
 export const step1Schema = z.object({
@@ -7,6 +8,19 @@ export const step1Schema = z.object({
 
 export const step2Schema = z.object({
   name: z.string().min(3, 'Name must be at least 3 characters'),
+})
+
+export const stepValidator = createValidator({
+  triggers: [
+    {
+      trigger: 'change',
+      when: ({ groupApi, formApi }) => {
+        const submitTries =
+          groupApi?.state.submissionAttempts ?? formApi.state.submissionAttempts
+        return submitTries > 0
+      },
+    },
+  ],
 })
 
 export const wizardFormOpts = appFormOptions({
@@ -27,7 +41,7 @@ export const wizardFormOpts = appFormOptions({
         step1: step1Schema,
         step2: step2Schema,
       }),
-      triggers: ['change', 'blur'],
+      triggers: [],
     },
   ],
 })
