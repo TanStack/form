@@ -223,7 +223,11 @@ export function normalizeToArray<T>(
 
 // TODO remove and import from store:
 // https://github.com/TanStack/store/pull/313
-export function evaluate<T>(objA: T, objB: T) {
+export function evaluate<T>(
+  objA: T,
+  objB: T,
+  seen: WeakMap<object, WeakSet<object>> = new WeakMap(),
+): boolean {
   if (Object.is(objA, objB)) {
     return true
   }
@@ -237,11 +241,32 @@ export function evaluate<T>(objA: T, objB: T) {
     return false
   }
 
+  // guards against circular references
+  let seenB = seen.get(objA)
+
+  if (seenB?.has(objB)) return true
+
+  if (!seenB) {
+    seenB = new WeakSet()
+    seen.set(objA, seenB)
+  }
+
+  seenB.add(objB)
+
+  // guards against runtime cross type evaluation
+  if (Object.getPrototypeOf(objA) !== Object.getPrototypeOf(objB)) {
+    return false
+  }
+
   if (objA instanceof Date && objB instanceof Date) {
     return objA.getTime() === objB.getTime()
   }
 
-  if (objA instanceof File && objB instanceof File) {
+  if (
+    typeof File !== 'undefined' &&
+    objA instanceof File &&
+    objB instanceof File
+  ) {
     return (
       objA.name === objB.name &&
       objA.size === objB.size &&
@@ -252,22 +277,26 @@ export function evaluate<T>(objA: T, objB: T) {
 
   if (objA instanceof Map && objB instanceof Map) {
     if (objA.size !== objB.size) return false
+
     for (const [k, v] of objA) {
-      if (!objB.has(k) || !Object.is(v, objB.get(k))) return false
+      if (!objB.has(k) || !evaluate(v, objB.get(k), seen)) return false
     }
+
     return true
   }
 
   if (objA instanceof Set && objB instanceof Set) {
     if (objA.size !== objB.size) return false
+
     for (const v of objA) {
-      if (!objB.has(v)) return false
+      if (![...objB].some((bv) => evaluate(v, bv, seen))) return false
     }
+
     return true
   }
 
-  const keysA = Object.keys(objA)
-  const keysB = Object.keys(objB)
+  const keysA = getOwnKeys(objA)
+  const keysB = getOwnKeys(objB)
 
   if (keysA.length !== keysB.length) {
     return false
@@ -275,14 +304,20 @@ export function evaluate<T>(objA: T, objB: T) {
 
   for (const key of keysA) {
     if (
-      !keysB.includes(key) ||
-      !evaluate(objA[key as keyof T], objB[key as keyof T])
+      !Object.prototype.hasOwnProperty.call(objB, key) ||
+      !evaluate(objA[key as keyof T], objB[key as keyof T], seen)
     ) {
       return false
     }
   }
 
   return true
+}
+
+function getOwnKeys(obj: object): Array<string | symbol> {
+  return (Object.keys(obj) as Array<string | symbol>).concat(
+    Object.getOwnPropertySymbols(obj),
+  )
 }
 
 export function concatenateFieldNames(nameA: string, nameB: string): string {

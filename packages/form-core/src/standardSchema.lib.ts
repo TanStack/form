@@ -69,7 +69,8 @@ export function isStandardSchema(
     | FieldValidatorFn<any, any, any>
     | StandardSchemaV1,
 ): object is StandardSchemaV1<any, any> {
-  return typeof object === 'object' && '~standard' in object
+  // Arktype typeof is function, not object. This is the only constraint that's safe so far.
+  return '~standard' in object
 }
 
 export function parseStandardSchema<TOutput>(
