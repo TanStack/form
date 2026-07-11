@@ -428,16 +428,14 @@ describe('runFormValidatorPipeline', () => {
     const formApi = getForm({ name: 'test' })
     const field = formApi._getOrCreateFieldApi({ name: 'name' })
     const run = vi.fn(() => ({ message: 'foo' }))
-    const triggerDebounceMs = vi.fn(
-      ({ scope, formApi, fieldApi, value }) => {
-        expect(scope).toBe('form')
-        expect(formApi.state.values).toEqual({ name: 'test' })
-        expect(fieldApi).toBe(field)
-        expect(value).toEqual({ name: 'test' })
+    const triggerDebounceMs = vi.fn(({ scope, formApi, fieldApi, value }) => {
+      expect(scope).toBe('form')
+      expect(formApi.state.values).toEqual({ name: 'test' })
+      expect(fieldApi).toBe(field)
+      expect(value).toEqual({ name: 'test' })
 
-        return 100
-      },
-    )
+      return 100
+    })
 
     const { runWithContext } = getPipeline(formApi, [
       {

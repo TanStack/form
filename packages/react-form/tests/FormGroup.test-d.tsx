@@ -176,16 +176,12 @@ function FormGroupSubscribeTypes() {
               return state.errors
             }}
             when={(errors) => {
-              expectTypeOf(errors).toEqualTypeOf<
-                Array<GroupValidationError>
-              >()
+              expectTypeOf(errors).toEqualTypeOf<Array<GroupValidationError>>()
               return errors.length > 0
             }}
           >
             {(errors) => {
-              expectTypeOf(errors).toEqualTypeOf<
-                Array<GroupValidationError>
-              >()
+              expectTypeOf(errors).toEqualTypeOf<Array<GroupValidationError>>()
               return null
             }}
           </group.Subscribe>

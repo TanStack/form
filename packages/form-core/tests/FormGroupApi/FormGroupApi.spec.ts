@@ -859,8 +859,7 @@ describe('FormGroupApi', () => {
           triggers: [
             {
               trigger: 'change',
-              when: ({ groupApi }) =>
-                groupApi.state.submissionAttempts > 0,
+              when: ({ groupApi }) => groupApi.state.submissionAttempts > 0,
             },
           ],
           run,
