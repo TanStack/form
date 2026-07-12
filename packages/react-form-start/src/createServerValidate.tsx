@@ -166,5 +166,5 @@ export const createServerValidate =
       TSubmitMeta
     >,
   ) =>
-  (formData: FormData, info?: Parameters<typeof decode>[1]) =>
+  (formData: FormData, info?: FormDataInfo) =>
     serverFn({ data: { defaultOpts, formData, info } })
