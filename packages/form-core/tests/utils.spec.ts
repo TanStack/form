@@ -747,6 +747,18 @@ describe('evaluate', () => {
     expect(dateObjectFalse).toEqual(false)
   })
 
+  it('should test equality for objects with an equals() method (e.g. Temporal, Decimal.js)', () => {
+    class ValueType {
+      constructor(private val: number) {}
+      equals(other: ValueType) {
+        return this.val === other.val
+      }
+    }
+
+    expect(evaluate(new ValueType(1), new ValueType(1))).toEqual(true)
+    expect(evaluate(new ValueType(1), new ValueType(2))).toEqual(false)
+  })
+
   it('should test equality between Map objects', () => {
     const map1 = new Map([
       ['a', 1],
