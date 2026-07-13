@@ -9,14 +9,14 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/react-form": "^1.33.1",
+    "@tanstack/react-form": "^1.33.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "zod": "^3.25.76"
   },
   "devDependencies": {
     "@tanstack/react-devtools": "^0.9.7",
-    "@tanstack/react-form-devtools": "^0.2.30",
+    "@tanstack/react-form-devtools": "^0.2.31",
     "@types/react": "~19.2.0",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^5.1.1",

@@ -1,5 +1,14 @@
 # @tanstack/react-form
 
+## 1.33.2
+
+### Patch Changes
+
+- [#2240](https://github.com/TanStack/form/pull/2240) [`d756476`](https://github.com/TanStack/form/commit/d756476b3ce5e6618a062b929a4a256fa0f4d683) - Use fresh FieldApi in current render on name change
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.33.2
+
 ## 1.33.1
 
 ### Patch Changes
