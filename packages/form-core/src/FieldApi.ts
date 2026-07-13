@@ -1292,6 +1292,7 @@ export class FieldApi<
       const validateFieldFn = (
         field: AnyFieldApi,
         validateObj: SyncValidator<any>,
+        isLinkedField = false,
       ) => {
         const errorMapKey = getErrorMapKey(validateObj.cause)
 
@@ -1334,6 +1335,32 @@ export class FieldApi<
         if (newErrorValue) {
           hasErrored = true
         }
+
+        // A direct value change clears the mount-time error in
+        // `setFieldValue`. When a field is revalidated indirectly via
+        // `onChangeListenTo`/`onBlurListenTo`, its own value never changed, so
+        // that clearing never ran and a now-stale `onMount` error would linger
+        // forever (leaving the field permanently invalid even though its
+        // validators now pass). Clear it once a passing linked revalidation
+        // supersedes it.
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (
+          isLinkedField &&
+          !newErrorValue &&
+          field.state.meta.errorMap?.onMount
+        ) {
+          field.setMeta((prev) => ({
+            ...prev,
+            errorMap: {
+              ...prev.errorMap,
+              onMount: undefined,
+            },
+            errorSourceMap: {
+              ...prev.errorSourceMap,
+              onMount: undefined,
+            },
+          }))
+        }
       }
 
       for (const validateObj of validates) {
@@ -1341,7 +1368,7 @@ export class FieldApi<
       }
       for (const fieldValitateObj of linkedFieldValidates) {
         if (!fieldValitateObj.validate) continue
-        validateFieldFn(fieldValitateObj.field, fieldValitateObj)
+        validateFieldFn(fieldValitateObj.field, fieldValitateObj, true)
       }
     })
 
