@@ -16,6 +16,7 @@ import type {
 import type { FieldOptions } from './FieldApi'
 import type {
   DeepKeys,
+  DeepKeysOfNonNullableType,
   DeepKeysOfType,
   DeepValue,
   FieldsMap,
@@ -52,7 +53,7 @@ export interface FieldGroupOptions<
   in out TFormData,
   in out TFieldGroupData,
   in out TFields extends
-    | DeepKeysOfType<TFormData, TFieldGroupData | null | undefined>
+    | DeepKeysOfNonNullableType<TFormData, TFieldGroupData>
     | FieldsMap<TFormData, TFieldGroupData>,
   in out TOnMount extends undefined | FormValidateOrFn<TFormData>,
   in out TOnChange extends undefined | FormValidateOrFn<TFormData>,
@@ -115,7 +116,7 @@ export class FieldGroupApi<
   in out TFormData,
   in out TFieldGroupData,
   in out TFields extends
-    | DeepKeysOfType<TFormData, TFieldGroupData | null | undefined>
+    | DeepKeysOfNonNullableType<TFormData, TFieldGroupData>
     | FieldsMap<TFormData, TFieldGroupData>,
   in out TOnMount extends undefined | FormValidateOrFn<TFormData>,
   in out TOnChange extends undefined | FormValidateOrFn<TFormData>,
