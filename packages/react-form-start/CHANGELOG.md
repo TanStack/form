@@ -1,5 +1,16 @@
 # @tanstack/react-form-start
 
+## 1.33.2
+
+### Patch Changes
+
+- [#2241](https://github.com/TanStack/form/pull/2241) [`a101fad`](https://github.com/TanStack/form/commit/a101faddaa5d6f2b181b3f13843fe91eb23b6974) - Fix `createServerValidate` second parameter type to use `FormDataInfo` instead of `Parameters<typeof decode>[1]`, matching `@tanstack/react-form-nextjs` and fixing TypeScript errors when passing `booleans`, `dates`, etc.
+
+  Fixes [#2239](https://github.com/TanStack/form/issues/2239)
+
+- Updated dependencies [[`d756476`](https://github.com/TanStack/form/commit/d756476b3ce5e6618a062b929a4a256fa0f4d683)]:
+  - @tanstack/react-form@1.33.2
+
 ## 1.33.1
 
 ### Patch Changes

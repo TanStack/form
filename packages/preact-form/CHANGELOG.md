@@ -1,5 +1,12 @@
 # @tanstack/preact-form
 
+## 1.30.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.33.2
+
 ## 1.30.1
 
 ### Patch Changes
