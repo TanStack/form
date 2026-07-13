@@ -2,6 +2,7 @@ cleanupUnusedCatalogs: true
 linkWorkspacePackages: true
 preferWorkspacePackages: true
 blockExoticSubdeps: true
+minimumReleaseAge: 1440
 trustPolicy: 'no-downgrade'
 trustPolicyExclude:
   - 'ua-parser-js@1.0.41 || 0.7.41' # React Native Web & Expo Devices; UAP v2 is not MIT
