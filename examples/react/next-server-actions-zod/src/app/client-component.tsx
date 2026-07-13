@@ -28,21 +28,19 @@ export const ClientComp = () => {
       }}
     >
       <form.Field name="age">
-        {(field) => {
-          return (
-            <div>
-              <input
-                name="age"
-                type="number"
-                value={field.value}
-                onChange={(e) => field.handleChange(e.target.valueAsNumber)}
-              />
-              {field.errors.map((error) => (
-                <p key={error.message}>{error.message}</p>
-              ))}
-            </div>
-          )
-        }}
+        {(field) => (
+          <div>
+            <input
+              name={field.name}
+              type="number"
+              value={field.value}
+              onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+            />
+            {field.errors.map((error) => (
+              <p key={error.message}>{error.message}</p>
+            ))}
+          </div>
+        )}
       </form.Field>
       <form.Subscribe
         selector={(formState) => [formState.canSubmit, formState.isSubmitting]}
