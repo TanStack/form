@@ -962,6 +962,86 @@ describe('useField', () => {
     expect(fn).toHaveBeenCalledWith({ people: [{ name: 'John', age: 0 }] })
   })
 
+  it('should not surface undefined for shifted items when a non-last stably-keyed array item is removed', async () => {
+    // Regression test for https://github.com/TanStack/form/issues/2238
+    // When array items are keyed by a stable id (not index), removing a
+    // non-last item changes the `name` prop of the surviving items. The field
+    // must read state at its current `name` on that render, never `undefined`.
+    const observedValues: Array<string | undefined> = []
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          sections: [] as Array<{ id: string; title: string }>,
+        },
+      })
+
+      let nextId = 0
+
+      return (
+        <form.Field name="sections" mode="array">
+          {(field) => {
+            return (
+              <div>
+                {field.state.value.map((section, i) => {
+                  return (
+                    <form.Field key={section.id} name={`sections[${i}].title`}>
+                      {(subField) => {
+                        observedValues.push(subField.state.value)
+                        return (
+                          <label>
+                            <div>Title for section {section.id}</div>
+                            <input
+                              value={subField.state.value}
+                              onChange={(e) =>
+                                subField.handleChange(e.target.value)
+                              }
+                            />
+                          </label>
+                        )
+                      }}
+                    </form.Field>
+                  )
+                })}
+                <button
+                  type="button"
+                  onClick={() =>
+                    field.pushValue({
+                      id: `id-${(nextId += 1)}`,
+                      title: `Section ${field.state.value.length + 1}`,
+                    })
+                  }
+                >
+                  Add section
+                </button>
+                <button type="button" onClick={() => field.removeValue(0)}>
+                  Remove first section
+                </button>
+              </div>
+            )
+          }}
+        </form.Field>
+      )
+    }
+
+    const { getByText, findByLabelText } = render(<Comp />)
+
+    await user.click(getByText('Add section'))
+    await user.click(getByText('Add section'))
+
+    await findByLabelText('Title for section id-1')
+    await findByLabelText('Title for section id-2')
+
+    observedValues.length = 0
+    await user.click(getByText('Remove first section'))
+
+    // The surviving item (previously `sections[1]`) shifts to `sections[0]`.
+    // Its value must remain "Section 2" and never render as `undefined`.
+    const survivingInput = await findByLabelText('Title for section id-2')
+    expect((survivingInput as HTMLInputElement).value).toBe('Section 2')
+    expect(observedValues).not.toContain(undefined)
+  })
+
   it('should handle sync linked fields', async () => {
     const fn = vi.fn()
     function Comp() {
