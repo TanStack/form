@@ -3203,6 +3203,36 @@ describe('form api', () => {
     )
   })
 
+  it("preserves field errors from the form's onMount validator before fields mount", () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+      validators: {
+        onMount: () => ({
+          fields: {
+            firstName: 'first name is required',
+          },
+        }),
+      },
+    })
+
+    form.mount()
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+
+    firstNameField.mount()
+
+    expect(firstNameField.state.meta.errorMap.onMount).toBe(
+      'first name is required',
+    )
+    expect(firstNameField.state.meta.errorSourceMap.onMount).toBe('form')
+    expect(firstNameField.state.meta.errors).toEqual(['first name is required'])
+  })
+
   it('clears errors on all fields affected by form validation when condition resolves', () => {
     const form = new FormApi({
       defaultValues: {
