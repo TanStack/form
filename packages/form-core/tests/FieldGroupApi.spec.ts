@@ -512,6 +512,395 @@ describe('field group api', () => {
     expect(form.state.values.nested.field.name).toBeUndefined()
   })
 
+  it('should deleteAllFields for string field groups', () => {
+    const defaultValues = {
+      nested: {
+        field: {
+          name: 'hello',
+        },
+      },
+    }
+
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'nested.field.name',
+    })
+    field.mount()
+
+    const group = new FieldGroupApi({
+      defaultValues: { name: '' },
+      form,
+      fields: 'nested.field',
+    })
+    group.mount()
+
+    group.deleteAllFields()
+
+    expect(form.state.values.nested.field).toEqual({})
+  })
+
+  it('should deleteAllFields for mapped field groups', () => {
+    type FormVals = {
+      a: string
+      b: string
+    }
+
+    const defaultValues: FormVals = { a: 'A', b: 'B' }
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+
+    const group = new FieldGroupApi({
+      form,
+      fields: {
+        firstName: 'a',
+        lastName: 'b',
+      },
+      defaultValues: { firstName: '', lastName: '' },
+    })
+    group.mount()
+
+    group.deleteAllFields()
+
+    expect(form.state.values.a).toBeUndefined()
+    expect(form.state.values.b).toBeUndefined()
+  })
+
+  it('should not delete sibling fields with matching prefix', () => {
+    const defaultValues = {
+      people: {
+        name: 'A',
+      },
+      peopleCount: {
+        total: 2,
+      },
+    }
+
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+
+    const peopleField = new FieldApi({
+      form,
+      name: 'people.name',
+    })
+    const peopleCountField = new FieldApi({
+      form,
+      name: 'peopleCount.total',
+    })
+    peopleField.mount()
+    peopleCountField.mount()
+
+    const group = new FieldGroupApi({
+      defaultValues: { name: '' },
+      form,
+      fields: 'people',
+    })
+    group.mount()
+
+    group.deleteAllFields()
+
+    expect(form.state.values.people).toEqual({})
+    expect(form.state.values.peopleCount.total).toBe(2)
+  })
+
+  it('should deleteAllFields even when no child fields are mounted', () => {
+    const defaultValues = {
+      nested: {
+        field: {
+          name: 'hello',
+          age: 12,
+        },
+      },
+    }
+
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+
+    const group = new FieldGroupApi({
+      defaultValues: { name: '', age: 0 },
+      form,
+      fields: 'nested.field',
+    })
+    group.mount()
+
+    group.deleteAllFields()
+
+    expect(form.state.values.nested.field).toEqual({})
+  })
+
+  it('should replaceAllFields for string field groups', () => {
+    const defaultValues: FormValues = {
+      name: '',
+      age: 0,
+      people: [],
+      relatives: {
+        father: {
+          name: 'father',
+          age: 10,
+        },
+      },
+    }
+
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+
+    const group = new FieldGroupApi({
+      defaultValues: {} as Person,
+      form,
+      fields: 'relatives.father',
+    })
+    group.mount()
+
+    group.replaceAllFields({ name: 'New name', age: 99 })
+
+    expect(form.state.values.relatives.father).toEqual({
+      name: 'New name',
+      age: 99,
+    })
+  })
+
+  it('should replaceAllFields for mapped field groups', () => {
+    type FormVals = {
+      a: string
+      b: string
+    }
+
+    const defaultValues: FormVals = { a: 'A', b: 'B' }
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+
+    const group = new FieldGroupApi({
+      form,
+      fields: {
+        firstName: 'a',
+        lastName: 'b',
+      },
+      defaultValues: { firstName: '', lastName: '' },
+    })
+    group.mount()
+
+    group.replaceAllFields({ firstName: 'X', lastName: 'Y' })
+
+    expect(form.state.values.a).toBe('X')
+    expect(form.state.values.b).toBe('Y')
+  })
+
+  it('should resetAllFields for string field groups', () => {
+    const defaultValues = {
+      nested: {
+        field: {
+          name: 'Default',
+          age: 33,
+        },
+      },
+    }
+
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+
+    const nameField = new FieldApi({
+      form,
+      name: 'nested.field.name',
+    })
+    const ageField = new FieldApi({
+      form,
+      name: 'nested.field.age',
+    })
+    nameField.mount()
+    ageField.mount()
+
+    const group = new FieldGroupApi({
+      defaultValues: { name: '', age: 0 },
+      form,
+      fields: 'nested.field',
+    })
+    group.mount()
+
+    group.setFieldValue('name', 'Updated')
+    group.setFieldValue('age', 99)
+    expect(form.state.values.nested.field).toEqual({ name: 'Updated', age: 99 })
+    expect(form.getFieldMeta('nested.field.name')?.isTouched).toBe(true)
+    expect(form.getFieldMeta('nested.field.age')?.isDirty).toBe(true)
+
+    group.resetAllFields()
+
+    expect(form.state.values.nested.field).toEqual(defaultValues.nested.field)
+    expect(form.getFieldMeta('nested.field.name')?.isTouched).toBe(false)
+    expect(form.getFieldMeta('nested.field.name')?.isDirty).toBe(false)
+    expect(form.getFieldMeta('nested.field.age')?.isTouched).toBe(false)
+    expect(form.getFieldMeta('nested.field.age')?.isDirty).toBe(false)
+  })
+
+  it('should resetAllFields for mapped field groups', () => {
+    type FormVals = {
+      a: string
+      b: string
+    }
+
+    const defaultValues: FormVals = { a: 'A', b: 'B' }
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+
+    const fieldA = new FieldApi({
+      form,
+      name: 'a',
+    })
+    const fieldB = new FieldApi({
+      form,
+      name: 'b',
+    })
+    fieldA.mount()
+    fieldB.mount()
+
+    const group = new FieldGroupApi({
+      form,
+      fields: {
+        firstName: 'a',
+        lastName: 'b',
+      },
+      defaultValues: { firstName: '', lastName: '' },
+    })
+    group.mount()
+
+    group.replaceAllFields({ firstName: 'X', lastName: 'Y' })
+    expect(form.state.values).toEqual({ a: 'X', b: 'Y' })
+    expect(form.getFieldMeta('a')?.isTouched).toBe(true)
+    expect(form.getFieldMeta('b')?.isDirty).toBe(true)
+
+    group.resetAllFields()
+
+    expect(form.state.values).toEqual(defaultValues)
+    expect(form.getFieldMeta('a')?.isTouched).toBe(false)
+    expect(form.getFieldMeta('a')?.isDirty).toBe(false)
+    expect(form.getFieldMeta('b')?.isTouched).toBe(false)
+    expect(form.getFieldMeta('b')?.isDirty).toBe(false)
+  })
+
+  it('should not reset sibling fields with matching prefix', () => {
+    const defaultValues = {
+      people: {
+        name: 'A',
+      },
+      peopleCount: {
+        total: 2,
+      },
+    }
+
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+
+    const peopleField = new FieldApi({
+      form,
+      name: 'people.name',
+    })
+    const peopleCountField = new FieldApi({
+      form,
+      name: 'peopleCount.total',
+    })
+    peopleField.mount()
+    peopleCountField.mount()
+
+    form.setFieldValue('people.name', 'Updated')
+    form.setFieldValue('peopleCount.total', 99)
+
+    const group = new FieldGroupApi({
+      defaultValues: { name: '' },
+      form,
+      fields: 'people',
+    })
+    group.mount()
+
+    group.resetAllFields()
+
+    expect(form.state.values.people.name).toBe('A')
+    expect(form.state.values.peopleCount.total).toBe(99)
+  })
+
+  it('should resetAllFields even when no child fields are mounted', () => {
+    const defaultValues = {
+      nested: {
+        field: {
+          name: 'Default',
+          age: 33,
+        },
+      },
+    }
+
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+
+    form.setFieldValue('nested.field', {
+      name: 'Updated',
+      age: 100,
+    })
+
+    const group = new FieldGroupApi({
+      defaultValues: { name: '', age: 0 },
+      form,
+      fields: 'nested.field',
+    })
+    group.mount()
+
+    group.resetAllFields()
+
+    expect(form.state.values.nested.field).toEqual(defaultValues.nested.field)
+  })
+
+  it('should not overwrite group values when defaultValues are missing', () => {
+    const form = new FormApi({
+      defaultValues: undefined as
+        | {
+            nested: {
+              field: {
+                name: string
+                age: number
+              }
+            }
+          }
+        | undefined,
+    })
+    form.mount()
+
+    form.setFieldValue('nested.field.name', 'Updated')
+    form.setFieldValue('nested.field.age', 77)
+
+    const group = new FieldGroupApi({
+      defaultValues: { name: '', age: 0 },
+      form,
+      fields: 'nested.field',
+    })
+    group.mount()
+
+    group.resetAllFields()
+
+    expect(form.state.values.nested.field).toEqual({
+      name: 'Updated',
+      age: 77,
+    })
+  })
+
   it('should forward array methods to the form', async () => {
     vi.useFakeTimers()
     const defaultValues = {
