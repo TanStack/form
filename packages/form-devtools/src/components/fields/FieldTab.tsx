@@ -4,7 +4,7 @@ import { DevtoolsTab } from '../header/TabsNav'
 import { Separator } from '../ui/separator'
 import { ScrollArea } from '../ui/scroll-area'
 import { LeftResizablePanel } from './LeftResizablePanel'
-import { FieldListSearch } from './FieldListSearch'
+import { FieldListSearch } from './listSearch/FieldListSearch'
 import type { SplitterPanelData } from '@ark-ui/solid'
 import { useFormDevtoolsStore } from '@/stores/formDevtoolsStore'
 import { cn } from '@/utils'
@@ -14,7 +14,7 @@ const mainId = 'fieldTabMain'
 const panels: Array<SplitterPanelData> = [
   {
     id: sidebarId,
-    minSize: 5,
+    minSize: 10,
   },
   {
     id: mainId,

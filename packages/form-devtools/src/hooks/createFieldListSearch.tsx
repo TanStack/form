@@ -36,7 +36,7 @@ type FieldFilterGroup =
   | 'touched'
   | 'defaultValue'
 
-interface FieldListFilter {
+export interface FieldListFilter {
   id: string
   label: string
   group: FieldFilterGroup
@@ -248,6 +248,13 @@ export function createFieldListSearch({
     },
   }))
 
+  const clearSelection = () => {
+    setQuery('')
+    setSelectedTags([])
+  }
+
+  const hasFilters = () => selectedTags().length > 0 || query().length > 0
+
   function Provider(props: ParentProps) {
     return (
       <TagsInput.RootProvider value={tagsInputApi}>
@@ -263,6 +270,8 @@ export function createFieldListSearch({
     comboboxApi,
     Provider,
     selectedTags,
+    clearSelection,
+    hasFilters,
     tagsSuggestions: () => tagsCollection.collection(),
   }
 }
