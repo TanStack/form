@@ -104,4 +104,58 @@ describe('field list store', () => {
     expect(fieldList.selectedFieldPath()).toBeNull()
     expect(fieldList.selectedFieldRow()?.path).toBe('user.name')
   })
+
+  it('tracks pinned fields once and preserves the order they were pinned', () => {
+    fieldList.setFieldPinned('field-name', true)
+    fieldList.setFieldPinned('field-email', true)
+    fieldList.setFieldPinned('field-name', true)
+
+    expect(fieldList.pinnedFieldIds()).toEqual(['field-name', 'field-email'])
+
+    fieldList.toggleFieldPinned('field-name')
+
+    expect(fieldList.pinnedFieldIds()).toEqual(['field-email'])
+  })
+
+  it('puts the selected field before pinned fields without duplicate cards', () => {
+    fieldList.setSubscribedFormId(formA)
+    fieldList.applySnapshot({
+      formInstanceId: formA,
+      fields: [
+        field('user.name', 'field-name'),
+        field('user.email', 'field-email'),
+        field('settings.theme', 'field-theme'),
+      ],
+    })
+    fieldList.setFieldPinned('field-email', true)
+    fieldList.setFieldPinned('field-name', true)
+    fieldList.setFieldPinned('field-theme', true)
+    fieldList.setSelectedFieldPath('user.name')
+
+    expect(fieldList.mainPanelFieldRows().map((row) => row.fieldId)).toEqual([
+      'field-name',
+      'field-email',
+      'field-theme',
+    ])
+  })
+
+  it('drops pins for fields omitted by a replacement snapshot', () => {
+    fieldList.setSubscribedFormId(formA)
+    fieldList.applySnapshot({
+      formInstanceId: formA,
+      fields: [
+        field('user.name', 'field-name'),
+        field('user.email', 'field-email'),
+      ],
+    })
+    fieldList.setFieldPinned('field-name', true)
+    fieldList.setFieldPinned('field-email', true)
+
+    fieldList.applySnapshot({
+      formInstanceId: formA,
+      fields: [field('user.email', 'field-email')],
+    })
+
+    expect(fieldList.pinnedFieldIds()).toEqual(['field-email'])
+  })
 })

@@ -6,6 +6,7 @@ import {
   createSignal,
 } from 'solid-js'
 import fuzzysort from 'fuzzysort'
+import { createListCollection } from '@ark-ui/solid'
 import type { Accessor } from 'solid-js'
 import type {
   DevtoolsMountedFieldRow,
@@ -30,7 +31,30 @@ export const [selectedFieldPath, setSelectedFieldPath] = createSignal<
   string | null
 >(null)
 
+export const [pinnedFieldIds, setPinnedFieldIds] = createSignal<
+  ReadonlyArray<FieldId>
+>([])
+
 export const [fieldSearchQuery, setFieldSearchQuery] = createSignal('')
+
+export function isFieldPinned(fieldId: FieldId): boolean {
+  return pinnedFieldIds().includes(fieldId)
+}
+
+export function setFieldPinned(fieldId: FieldId, pinned: boolean): void {
+  setPinnedFieldIds((current) => {
+    const isPinned = current.includes(fieldId)
+
+    if (isPinned === pinned) return current
+    if (pinned) return [...current, fieldId]
+
+    return current.filter((id) => id !== fieldId)
+  })
+}
+
+export function toggleFieldPinned(fieldId: FieldId): void {
+  setFieldPinned(fieldId, !isFieldPinned(fieldId))
+}
 
 function compareFieldRowsByPath(
   a: DevtoolsMountedFieldRow,
@@ -69,7 +93,43 @@ export function createFieldListComputations() {
     return rows[0] ?? null
   })
 
-  return { fieldRows, visibleFieldRows, selectedFieldRow }
+  const mainPanelFieldRows = createMemo(() => {
+    const selected = selectedFieldRow()
+    const seenFieldIds = new Set<FieldId>()
+    const rows: Array<DevtoolsMountedFieldRow> = []
+
+    if (selected) {
+      seenFieldIds.add(selected.fieldId)
+      rows.push(selected)
+    }
+
+    for (const fieldId of pinnedFieldIds()) {
+      if (seenFieldIds.has(fieldId)) continue
+      const row = rowsByFieldId().get(fieldId)
+      if (!row) continue
+
+      seenFieldIds.add(fieldId)
+      rows.push(row)
+    }
+
+    return rows
+  })
+
+  const fieldsListCollection = createMemo(() =>
+    createListCollection({
+      items: visibleFieldRows(),
+      itemToString: (item) => item.path,
+      itemToValue: (item) => item.fieldId,
+    }),
+  )
+
+  return {
+    fieldRows,
+    visibleFieldRows,
+    fieldsListCollection,
+    selectedFieldRow,
+    mainPanelFieldRows,
+  }
 }
 
 export function clearFieldRows(): void {
@@ -77,6 +137,7 @@ export function clearFieldRows(): void {
     setRowsByPath(new Map())
     setRowsByFieldId(new Map())
     setSelectedFieldPath(null)
+    setPinnedFieldIds([])
   })
 }
 
@@ -105,6 +166,13 @@ export function applyFieldListSnapshot({
     if (requestedPath && !nextRowsByPath.has(requestedPath)) {
       setSelectedFieldPath(null)
     }
+
+    const nextPinnedFieldIds = pinnedFieldIds().filter((fieldId) =>
+      nextRowsByFieldId.has(fieldId),
+    )
+    if (nextPinnedFieldIds.length !== pinnedFieldIds().length) {
+      setPinnedFieldIds(nextPinnedFieldIds)
+    }
   })
 }
 
@@ -117,6 +185,11 @@ export const fieldListCache = {
   setRowsByFieldId,
   selectedFieldPath,
   setSelectedFieldPath,
+  pinnedFieldIds,
+  setPinnedFieldIds,
+  isFieldPinned,
+  setFieldPinned,
+  toggleFieldPinned,
   fieldSearchQuery,
   setFieldSearchQuery,
   clearRows: clearFieldRows,

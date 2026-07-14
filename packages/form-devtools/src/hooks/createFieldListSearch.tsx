@@ -1,28 +1,23 @@
 import {
   Combobox,
   TagsInput,
+  createListCollection,
   useCombobox,
-  useListCollection,
   useTagsInput,
 } from '@ark-ui/solid'
 import fuzzysort from 'fuzzysort'
 import {
+  BookmarkIcon,
   CheckIcon,
   PencilIcon,
   PencilSparklesIcon,
-  PinIcon,
   PointerIcon,
   PointerOffIcon,
   SquareDashedIcon,
   SquareIcon,
   XIcon,
 } from 'lucide-solid'
-import {
-  createEffect,
-  createMemo,
-  createSignal,
-  createUniqueId,
-} from 'solid-js'
+import { createMemo, createSignal, createUniqueId } from 'solid-js'
 import type { Accessor, ParentProps, Setter } from 'solid-js'
 import type { LucideIcon } from 'lucide-solid'
 
@@ -30,7 +25,7 @@ const mentionRegex = /(?:^|\s)@(\S*)/
 
 type FieldFilterGroup =
   | 'dirty'
-  | 'pinned'
+  | 'bookmarked'
   | 'valid'
   | 'mounted'
   | 'touched'
@@ -48,29 +43,6 @@ export interface FieldListFilter {
 }
 
 const allFieldFilters: Array<FieldListFilter> = [
-  {
-    label: 'Pinned',
-    id: 'pinned',
-    group: 'pinned',
-    description: 'Is pinned in the devtools',
-    icon: PinIcon,
-  },
-  {
-    label: 'Mounted',
-    id: 'mounted',
-    group: 'mounted',
-    aliases: ['Visible'],
-    description: 'Is rendered in a component',
-    icon: SquareIcon,
-  },
-  {
-    label: 'Unmounted',
-    id: 'unmounted',
-    group: 'mounted',
-    aliases: ['Invisible', 'Not mounted'],
-    description: 'Is not currently rendered',
-    icon: SquareDashedIcon,
-  },
   {
     label: 'Invalid',
     id: 'invalid',
@@ -119,6 +91,30 @@ const allFieldFilters: Array<FieldListFilter> = [
     description: 'Has not been changed or blurred',
     icon: PointerOffIcon,
   },
+  {
+    label: 'Bookmarked',
+    id: 'bookmarked',
+    group: 'bookmarked',
+    aliases: ['Pinned', 'Selected'],
+    description: 'Is bookmarked in the devtools',
+    icon: BookmarkIcon,
+  },
+  {
+    label: 'Mounted',
+    id: 'mounted',
+    group: 'mounted',
+    aliases: ['Visible'],
+    description: 'Is rendered in a component',
+    icon: SquareIcon,
+  },
+  {
+    label: 'Unmounted',
+    id: 'unmounted',
+    group: 'mounted',
+    aliases: ['Invisible', 'Not mounted'],
+    description: 'Is not currently rendered',
+    icon: SquareDashedIcon,
+  },
 ]
 
 function suggestFilters(
@@ -128,6 +124,7 @@ function suggestFilters(
   const keysResults = fuzzysort.go(query, suggestions, {
     keys: ['label', 'description', (filter) => filter.aliases?.join() ?? ''],
     all: true,
+    threshold: 0.3,
     scoreFn: (results) => {
       const labelScore = results[0]?.score ?? 0
       const descriptionScore = results[1]?.score ?? 0
@@ -177,17 +174,13 @@ export function createFieldListSearch({
     )
   })
 
-  const tagsCollection = useListCollection<FieldListFilter>({
-    initialItems: remainingFilters(),
-    itemToString: (item) => item.label,
-    itemToValue: (item) => item.id,
-  })
-
-  createEffect(() => {
-    tagsCollection.set(
-      suggestFilters(activeMention() ?? '', remainingFilters()),
-    )
-  })
+  const tagsCollection = createMemo(() =>
+    createListCollection<FieldListFilter>({
+      items: suggestFilters(activeMention() ?? '', remainingFilters()),
+      itemToString: (item) => item.label,
+      itemToValue: (item) => item.id,
+    }),
+  )
 
   const tagsInputApi = useTagsInput(() => ({
     ids,
@@ -215,7 +208,7 @@ export function createFieldListSearch({
   const comboboxApi = useCombobox(() => ({
     ids,
 
-    collection: tagsCollection.collection(),
+    collection: tagsCollection(),
 
     inputValue: query(),
     value: [],
@@ -272,6 +265,6 @@ export function createFieldListSearch({
     selectedTags,
     clearSelection,
     hasFilters,
-    tagsSuggestions: () => tagsCollection.collection(),
+    tagsSuggestions: tagsCollection,
   }
 }

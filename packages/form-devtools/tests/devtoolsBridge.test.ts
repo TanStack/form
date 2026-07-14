@@ -67,7 +67,7 @@ describe('form devtools bridge field snapshots', () => {
 
       const rows = getMountedFieldRowsSnapshot(form, identity)
       expect(rows).toEqual([
-        { path: 'items[0]', fieldId: movedFieldId, leaf: '0' },
+        { path: 'items[0]', fieldId: movedFieldId, leaf: '[0]' },
       ])
     } finally {
       unregisterRemoved()

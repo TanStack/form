@@ -115,7 +115,8 @@ const itemMediaVariants = cva(
   },
 )
 
-type ItemMediaProps = DivProps & VariantProps<typeof itemMediaVariants>
+type ItemMediaProps = HTMLArkProps<'div'> &
+  VariantProps<typeof itemMediaVariants>
 
 function ItemMedia(props: ItemMediaProps) {
   const [local, others] = splitProps(props, ['class', 'variant'])
@@ -123,7 +124,7 @@ function ItemMedia(props: ItemMediaProps) {
   const variant = () => local.variant ?? 'default'
 
   return (
-    <div
+    <ark.div
       {...others}
       data-slot="item-media"
       data-variant={variant()}

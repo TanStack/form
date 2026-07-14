@@ -30,6 +30,7 @@
   --color-json-date: var(--json-date);
   --color-json-constructor: var(--json-constructor);
   --color-json-preview: var(--muted-foreground);
+  --text-tiny: var(--text-tiny);
 
   --font-heading: var(--font-sans);
   --font-sans: 'Inter Variable', sans-serif;
@@ -86,6 +87,8 @@
   --json-date: #ac2e8fff;
   --json-function: #ac2e8fff;
   --json-constructor: #00855aff;
+
+  --text-tiny: 0.625rem;
 
   --background: oklch(1 0 0);
   --foreground: oklch(0.147 0.004 49.25);

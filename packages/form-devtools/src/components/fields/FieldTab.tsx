@@ -1,13 +1,22 @@
-import { Splitter } from '@ark-ui/solid'
+import { Listbox, Splitter } from '@ark-ui/solid'
 import { For, Show, createSignal } from 'solid-js'
+import { BookmarkIcon } from 'lucide-solid'
 import { DevtoolsTab } from '../header/TabsNav'
 import { Separator } from '../ui/separator'
 import { ScrollArea } from '../ui/scroll-area'
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemTitle,
+} from '../ui/item'
+import { Badge } from '../ui/badge'
 import { LeftResizablePanel } from './LeftResizablePanel'
 import { FieldListSearch } from './listSearch/FieldListSearch'
 import type { SplitterPanelData } from '@ark-ui/solid'
 import { useFormDevtoolsStore } from '@/stores/formDevtoolsStore'
-import { cn } from '@/utils'
 
 const sidebarId = 'fieldTabSidebar'
 const mainId = 'fieldTabMain'
@@ -29,7 +38,10 @@ export function FieldTab() {
     fieldRows,
     selectedFieldRow,
     setSelectedFieldPath,
-    visibleFieldRows,
+    fieldsListCollection,
+    mainPanelFieldRows,
+    isFieldPinned,
+    toggleFieldPinned,
   } = fieldList
   const [size, setSize] = createSignal([0.25, 0.75])
 
@@ -37,6 +49,12 @@ export function FieldTab() {
     if (!selectedForm()) return 'No form selected'
     if (fieldRows().length === 0) return 'No mounted fields'
     return 'No matching fields'
+  }
+
+  const selectedRow = () => {
+    const id = selectedFieldRow()?.fieldId
+    if (id) return [id]
+    return []
   }
 
   return (
@@ -54,53 +72,116 @@ export function FieldTab() {
           <FieldListSearch />
           <Separator />
           <ScrollArea class="min-h-0">
-            <Show
-              when={selectedForm() && visibleFieldRows().length > 0}
-              fallback={
-                <div class="flex min-h-24 items-center justify-center px-3 text-center text-xs text-muted-foreground">
-                  {emptyMessage()}
-                </div>
-              }
+            <Listbox.Root
+              collection={fieldsListCollection()}
+              value={selectedRow()}
+              onValueChange={(details) => {
+                const row = fieldsListCollection().items.find(
+                  (item) => item.fieldId === details.value[0],
+                )
+                if (row) setSelectedFieldPath(row.path)
+              }}
+              selectionMode="single"
+              deselectable
             >
-              <div class="grid gap-1">
-                <For each={visibleFieldRows()}>
-                  {(field) => (
-                    <button
-                      type="button"
-                      title={field.path}
-                      aria-selected={selectedFieldRow()?.path === field.path}
-                      onClick={() => setSelectedFieldPath(field.path)}
-                      class={cn(
-                        'min-h-8 w-full min-w-0 rounded-md px-2 py-1.5 text-left font-mono text-xs leading-5 outline-none transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-ring/50 aria-selected:bg-sidebar-accent aria-selected:text-sidebar-accent-foreground',
+              <Listbox.Empty class="flex w-full justify-center py-2 text-center text-sm text-muted-foreground">
+                {emptyMessage()}
+              </Listbox.Empty>
+              <Listbox.Content
+                asChild={(innerProps) => (
+                  <ItemGroup {...innerProps()} class="gap-2 outline-none" />
+                )}
+              >
+                <For each={fieldsListCollection().items}>
+                  {(item) => (
+                    <Listbox.Item
+                      item={item}
+                      asChild={(innerProps) => (
+                        <Item
+                          class="group cursor-pointer hover:bg-muted/40 data-highlighted:not-data-selected:bg-muted/50 data-selected:bg-muted/50 flex-nowrap"
+                          {...innerProps()}
+                        />
                       )}
                     >
-                      <span class="block truncate">{field.path}</span>
-                    </button>
+                      <ItemMedia
+                        variant="default"
+                        class="group self-stretch! items-start"
+                        asChild={(innerProps) => (
+                          <button
+                            {...innerProps()}
+                            type="button"
+                            title={
+                              isFieldPinned(item.fieldId)
+                                ? 'Remove bookmark'
+                                : 'Bookmark'
+                            }
+                            aria-pressed={isFieldPinned(item.fieldId)}
+                            onPointerDown={(event) => event.stopPropagation()}
+                            onClick={(event) => {
+                              event.stopPropagation()
+                              toggleFieldPinned(item.fieldId)
+                            }}
+                          />
+                        )}
+                      >
+                        <BookmarkIcon class="group-aria-pressed:fill-current size-4.5" />
+                      </ItemMedia>
+                      <ItemContent>
+                        <Listbox.ItemText
+                          asChild={(innerProps) => (
+                            <ItemTitle {...innerProps()} class="truncate" />
+                          )}
+                        >
+                          {item.path}
+                        </Listbox.ItemText>
+                        <ItemDescription class="flex flex-wrap gap-2">
+                          <Badge class="bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300">
+                            Blue
+                          </Badge>
+                          <Badge class="bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300">
+                            Green
+                          </Badge>
+                          <Badge class="bg-sky-50 text-sky-700 dark:bg-sky-950 dark:text-sky-300">
+                            Sky
+                          </Badge>
+                          <Badge class="bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300">
+                            Purple
+                          </Badge>
+                          <Badge class="bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300">
+                            Red
+                          </Badge>
+                        </ItemDescription>
+                      </ItemContent>
+                    </Listbox.Item>
                   )}
                 </For>
-              </div>
-            </Show>
+              </Listbox.Content>
+            </Listbox.Root>
           </ScrollArea>
         </LeftResizablePanel>
         <Splitter.Panel id={mainId} class="size-full min-w-0 p-3">
           <Show
-            when={selectedFieldRow()}
+            when={mainPanelFieldRows().length > 0}
             fallback={
               <div class="flex size-full items-center justify-center text-sm text-muted-foreground">
                 No field selected
               </div>
             }
           >
-            {(field) => (
-              <div class="grid max-w-full gap-2">
-                <div class="text-xs font-medium uppercase text-muted-foreground">
-                  Field
-                </div>
-                <code class="block max-w-full overflow-hidden text-ellipsis whitespace-nowrap rounded-md border bg-muted px-2 py-1.5 font-mono text-sm">
-                  {field().path}
-                </code>
-              </div>
-            )}
+            <div class="grid max-w-full gap-2">
+              <For each={mainPanelFieldRows()}>
+                {(field) => (
+                  <div class="grid max-w-full gap-2">
+                    <div class="text-xs font-medium uppercase text-muted-foreground">
+                      Field
+                    </div>
+                    <code class="block max-w-full overflow-hidden text-ellipsis whitespace-nowrap rounded-md border bg-muted px-2 py-1.5 font-mono text-sm">
+                      {field.path}
+                    </code>
+                  </div>
+                )}
+              </For>
+            </div>
           </Show>
         </Splitter.Panel>
       </Splitter.Root>

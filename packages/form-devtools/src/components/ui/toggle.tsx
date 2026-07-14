@@ -1,7 +1,9 @@
-import { cva, type VariantProps } from 'class-variance-authority'
-import { Toggle as TogglePrimitive, type ToggleRootProps } from '@ark-ui/solid'
-import { cn } from '@/utils'
+import { cva } from 'class-variance-authority'
+import { Toggle as TogglePrimitive } from '@ark-ui/solid'
 import { splitProps } from 'solid-js'
+import type { VariantProps } from 'class-variance-authority'
+import type { ToggleRootProps } from '@ark-ui/solid'
+import { cn } from '@/utils'
 
 // Ported from the original shadcn/ui + Radix UI + React component.
 // This wraps the Ark UI + SolidJS primitive and preserves shadcn's Tailwind-based
