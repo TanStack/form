@@ -83,6 +83,33 @@ describe('form api', () => {
     })
   })
 
+  it('should create complete meta when setFieldValue targets an uninitialized field', () => {
+    const form = new FormApi({
+      defaultValues: {
+        availableFor: 'longStay',
+      } as { availableFor: string; fees?: number },
+    })
+    form.mount()
+
+    // `fees` is rendered conditionally and has not been mounted yet, so its
+    // meta is created for the first time by this call.
+    form.setFieldValue('fees', 1)
+
+    const meta = form.getFieldMeta('fees')
+
+    // Every documented meta field must be present (not `undefined`), matching
+    // the meta of a field that has been mounted normally.
+    expect(meta).toMatchObject({
+      isValidating: false,
+      isBlurred: false,
+      errors: [],
+      errorSourceMap: {},
+    })
+    expect(meta?.isValidating).not.toBeUndefined()
+    expect(meta?.isBlurred).not.toBeUndefined()
+    expect(meta?.errorSourceMap).not.toBeUndefined()
+  })
+
   it('should reset with provided custom default values', () => {
     const defaultValues = {
       name: 'test',
