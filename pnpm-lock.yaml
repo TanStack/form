@@ -948,6 +948,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      fuzzysort:
+        specifier: ^3.1.0
+        version: 3.1.0
       goober:
         specifier: ^2.1.16
         version: 2.1.19(csstype@3.2.3)

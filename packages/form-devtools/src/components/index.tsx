@@ -5,7 +5,7 @@ import { Shell } from './Shell'
 import type { TanStackDevtoolsPluginProps } from '@tanstack/devtools'
 import type { FormDevtoolsInit } from '../core'
 import type { JSX } from 'solid-js'
-import { useFormDevtoolsEvents } from '@/hooks/useFormDevtoolsEvents'
+import { FormDevtoolsStoreProvider } from '@/stores/formDevtoolsStore'
 
 const wrapperStyle: JSX.CSSProperties = {
   height: '100%',
@@ -17,9 +17,7 @@ const wrapperStyle: JSX.CSSProperties = {
 
 type DevtoolsProps = TanStackDevtoolsPluginProps & FormDevtoolsInit
 
-export default function App(props: DevtoolsProps) {
-  useFormDevtoolsEvents()
-
+function FormDevtoolsContent(props: DevtoolsProps) {
   return (
     <ThemeContextProvider theme={props.theme}>
       <TooltipProvider openDelay={0} interactive>
@@ -32,5 +30,13 @@ export default function App(props: DevtoolsProps) {
         </div>
       </TooltipProvider>
     </ThemeContextProvider>
+  )
+}
+
+export default function App(props: DevtoolsProps) {
+  return (
+    <FormDevtoolsStoreProvider>
+      <FormDevtoolsContent {...props} />
+    </FormDevtoolsStoreProvider>
   )
 }

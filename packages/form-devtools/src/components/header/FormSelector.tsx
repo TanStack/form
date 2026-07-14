@@ -8,11 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select'
-import {
-  mountedForms,
-  selectedForm,
-  setRequestedFormId,
-} from '@/stores/formSelectorStore'
+import { useFormDevtoolsStore } from '@/stores/formDevtoolsStore'
 
 interface FormSelectOption {
   value: string
@@ -21,6 +17,8 @@ interface FormSelectOption {
 }
 
 export function FormSelector() {
+  const { mountedForms, selectedForm, setRequestedFormId } =
+    useFormDevtoolsStore().formSelector
   const noSelection = { value: '-', label: 'No forms', disabled: true }
 
   const formOptions = createMemo<Array<FormSelectOption>>(() => {
