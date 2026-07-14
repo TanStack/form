@@ -12,6 +12,7 @@ import {
   PencilSparklesIcon,
   PinIcon,
   PointerIcon,
+  PointerOffIcon,
   SquareDashedIcon,
   SquareIcon,
   XIcon,
@@ -22,10 +23,10 @@ import {
   createSignal,
   createUniqueId,
 } from 'solid-js'
-import type { ParentProps } from 'solid-js'
+import type { Accessor, ParentProps, Setter } from 'solid-js'
 import type { LucideIcon } from 'lucide-solid'
 
-const mentionRegex = /(?:^| )@(\w*)$/
+const mentionRegex = /(?:^|\s)@(\S*)/
 
 type FieldFilterGroup =
   | 'dirty'
@@ -90,7 +91,7 @@ const allFieldFilters: Array<FieldListFilter> = [
     label: 'Dirty',
     id: 'dirty',
     group: 'dirty',
-    aliases: ['Not pristine', 'Not clean', 'Unclean'],
+    aliases: ['Not pristine', 'Not clean', 'Unclean', 'Changed'],
     description: 'Has been dirtied',
     icon: PencilIcon,
   },
@@ -98,7 +99,7 @@ const allFieldFilters: Array<FieldListFilter> = [
     label: 'Pristine',
     id: 'pristine',
     group: 'dirty',
-    aliases: ['Not dirty', 'Clean'],
+    aliases: ['Not dirty', 'Clean', 'Unchanged'],
     description: 'Has not been dirtied',
     icon: PencilSparklesIcon,
   },
@@ -116,7 +117,7 @@ const allFieldFilters: Array<FieldListFilter> = [
     group: 'touched',
     aliases: ['Not Changed', 'Not Blurred'],
     description: 'Has not been changed or blurred',
-    icon: PointerIcon,
+    icon: PointerOffIcon,
   },
 ]
 
@@ -126,7 +127,6 @@ function suggestFilters(
 ): Array<FieldListFilter> {
   const keysResults = fuzzysort.go(query, suggestions, {
     keys: ['label', 'description', (filter) => filter.aliases?.join() ?? ''],
-    limit: 8,
     all: true,
     scoreFn: (results) => {
       const labelScore = results[0]?.score ?? 0
@@ -145,20 +145,27 @@ function getFilters(selection: Array<string>): Array<FieldListFilter> {
     .filter((filter) => filter !== undefined)
 }
 
-export function createFieldListSearch() {
+interface FieldListSearchArgs {
+  query: Accessor<string>
+  setQuery: Setter<string>
+}
+
+export function createFieldListSearch({
+  query,
+  setQuery,
+}: FieldListSearchArgs) {
   const uid = createUniqueId()
   const ids = {
     input: `input_${uid}`,
     control: `control_${uid}`,
   }
 
-  const [text, setText] = createSignal('')
   const [selectedTags, setSelectedTags] = createSignal<Array<FieldListFilter>>(
     [],
   )
 
   const activeMention = createMemo(() => {
-    const match = text().match(mentionRegex)
+    const match = query().match(mentionRegex)
     return match?.[1] ?? null
   })
 
@@ -166,7 +173,7 @@ export function createFieldListSearch() {
     const selected = selectedTags()
     if (selected.length === 0) return allFieldFilters
     return allFieldFilters.filter((f) =>
-      selected.some((s) => s.group !== f.group),
+      selected.every((s) => s.group !== f.group),
     )
   })
 
@@ -174,7 +181,6 @@ export function createFieldListSearch() {
     initialItems: remainingFilters(),
     itemToString: (item) => item.label,
     itemToValue: (item) => item.id,
-    limit: 8,
   })
 
   createEffect(() => {
@@ -192,9 +198,9 @@ export function createFieldListSearch() {
       setSelectedTags(getFilters(details.value))
     },
 
-    inputValue: text(),
+    inputValue: query(),
     onInputValueChange(details) {
-      setText(details.inputValue)
+      setQuery(details.inputValue)
     },
 
     delimiter: /$disable Delimeter/,
@@ -203,7 +209,7 @@ export function createFieldListSearch() {
   }))
 
   function replaceActiveMention() {
-    setText((prev) => prev.replace(mentionRegex, ''))
+    setQuery((prev) => prev.replace(mentionRegex, ''))
   }
 
   const comboboxApi = useCombobox(() => ({
@@ -211,7 +217,7 @@ export function createFieldListSearch() {
 
     collection: tagsCollection.collection(),
 
-    inputValue: text(),
+    inputValue: query(),
     value: [],
 
     open: activeMention() !== null,

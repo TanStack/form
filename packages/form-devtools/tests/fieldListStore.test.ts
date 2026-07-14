@@ -1,5 +1,6 @@
 import { createRoot } from 'solid-js'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { nameToFieldNodeSegments } from '@tanstack/form-core/internals'
 import { createFormDevtoolsStore } from '../src/stores/formDevtoolsStore'
 import type { FormDevtoolsStore } from '../src/stores/formDevtoolsStore'
 import type { DevtoolsMountedFieldRow } from '../src/eventClientTypes'
@@ -9,7 +10,11 @@ const formA = 'form-a' as FormId
 const formB = 'form-b' as FormId
 
 function field(path: string, fieldId: string): DevtoolsMountedFieldRow {
-  return { path, fieldId: fieldId }
+  return {
+    path,
+    fieldId: fieldId,
+    leaf: String(nameToFieldNodeSegments(path).at(-1) ?? path),
+  }
 }
 
 let fieldList!: FormDevtoolsStore['fieldList']

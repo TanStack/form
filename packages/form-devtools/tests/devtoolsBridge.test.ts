@@ -20,7 +20,7 @@ describe('form devtools bridge field snapshots', () => {
       expect(rows).toHaveLength(1)
       expect(row.path).toBe('name')
       expect(row.fieldId).toEqual(expect.any(String))
-      expect(Object.keys(row).sort()).toEqual(['fieldId', 'path'])
+      expect(Object.keys(row).sort()).toEqual(['fieldId', 'leaf', 'path'])
     } finally {
       unregister()
     }
@@ -66,7 +66,9 @@ describe('form devtools bridge field snapshots', () => {
       form.removeFieldValue('items', 0)
 
       const rows = getMountedFieldRowsSnapshot(form, identity)
-      expect(rows).toEqual([{ path: 'items[0]', fieldId: movedFieldId }])
+      expect(rows).toEqual([
+        { path: 'items[0]', fieldId: movedFieldId, leaf: '0' },
+      ])
     } finally {
       unregisterRemoved()
       unregisterMoved()

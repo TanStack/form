@@ -3,8 +3,8 @@ import { describe, expect, it } from 'vitest'
 import { createFieldsController } from '../src/bridge/fields'
 import { createMountedFormsController } from '../src/bridge/forms/mountedForms'
 import { formDevtoolsEventClient } from '../src/eventClient.lib'
-import type { DevtoolsMountedFieldRow } from '../src/eventClientTypes'
 import { connectTestEventBus } from './testEventBus'
+import type { DevtoolsMountedFieldRow } from '../src/eventClientTypes'
 
 describe('field list bridge', () => {
   it('emits a subscribed snapshot and clears it on final form unmount', () => {
@@ -28,7 +28,7 @@ describe('field list bridge', () => {
         formInstanceId: instanceId,
       })
       expect(snapshots.at(-1)).toEqual([
-        { path: 'name', fieldId: expect.any(String) },
+        { path: 'name', fieldId: expect.any(String), leaf: 'name' },
       ])
 
       mountedForms.unmountForm(form, fields.unmountForm)

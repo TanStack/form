@@ -11,10 +11,15 @@ import {
   ItemTitle,
 } from '../ui/item'
 import { createFieldListSearch } from '@/hooks/createFieldListSearch'
+import { useFormDevtoolsStore } from '@/stores/formDevtoolsStore'
 
 export function FieldListSearch() {
+  const { fieldList } = useFormDevtoolsStore()
   const { Provider, comboboxApi, selectedTags, tagsSuggestions } =
-    createFieldListSearch()
+    createFieldListSearch({
+      query: fieldList.fieldSearchQuery,
+      setQuery: fieldList.setFieldSearchQuery,
+    })
 
   return (
     <Provider>
@@ -30,9 +35,9 @@ export function FieldListSearch() {
                 <TagsInput.Item value={value.id} index={index()}>
                   <TagsInput.ItemPreview
                     data-slot="combobox-chip"
-                    class="data-highlighted:bg-primary data-highlighted:text-primary-foreground flex h-[calc(--spacing(5.25))] w-fit items-center justify-center gap-1 rounded-sm bg-muted px-1.5 text-xs font-medium whitespace-nowrap text-foreground has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-disabled:opacity-50 pr-0"
+                    class="transition-colors group data-highlighted:bg-primary data-highlighted:text-primary-foreground flex h-[calc(--spacing(5.25))] w-fit items-center justify-center gap-1 rounded-sm bg-muted px-1.5 text-xs font-medium whitespace-nowrap text-foreground has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-disabled:opacity-50 pr-0"
                   >
-                    <TagsInput.ItemText class="group">
+                    <TagsInput.ItemText>
                       <span class="group-not-data-highlighted:text-muted-foreground">
                         @
                       </span>
@@ -45,6 +50,7 @@ export function FieldListSearch() {
                           variant="ghost"
                           size="icon-xs"
                           data-slot="combobox-chip-remove"
+                          class="group-data-highlighted:bg-transparent group-data-highlighted:hover:bg-transparent dark:group-data-highlighted:bg-transparent dark:group-data-highlighted:hover:bg-transparent group-data-highlighted:hover:text-inherit"
                           {...innerProps()}
                         />
                       )}

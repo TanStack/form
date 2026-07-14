@@ -27,9 +27,7 @@ export function FieldTab() {
   const { selectedForm } = formSelector
   const {
     fieldRows,
-    fieldSearchQuery,
     selectedFieldRow,
-    setFieldSearchQuery,
     setSelectedFieldPath,
     visibleFieldRows,
   } = fieldList
@@ -64,7 +62,7 @@ export function FieldTab() {
                 </div>
               }
             >
-              <div class="grid gap-1 pr-2">
+              <div class="grid gap-1">
                 <For each={visibleFieldRows()}>
                   {(field) => (
                     <button

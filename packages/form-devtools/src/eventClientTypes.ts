@@ -10,6 +10,7 @@ export type DevtoolsMountedFieldSummary = Record<string, never>
 export interface DevtoolsMountedFieldRow {
   path: string
   fieldId: FieldId
+  leaf: string
   summary?: DevtoolsMountedFieldSummary
 }
 

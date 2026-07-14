@@ -40,6 +40,10 @@ export function getMountedFieldRowsSnapshot(
     fields.push({
       path: field.name,
       fieldId: identity.getFieldId(field),
+      leaf:
+        typeof field._segment === 'string'
+          ? field._segment
+          : `[${field._segment}]`,
     })
   }
 

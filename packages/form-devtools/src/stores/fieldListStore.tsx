@@ -5,6 +5,7 @@ import {
   createRoot,
   createSignal,
 } from 'solid-js'
+import fuzzysort from 'fuzzysort'
 import type { Accessor } from 'solid-js'
 import type {
   DevtoolsMountedFieldRow,
@@ -44,12 +45,17 @@ export function createFieldListComputations() {
   )
 
   const visibleFieldRows = createMemo(() => {
-    const query = fieldSearchQuery().trim().toLocaleLowerCase()
-    const rows = fieldRows()
+    const results = fuzzysort.go(fieldSearchQuery(), fieldRows(), {
+      keys: ['path', 'leaf'],
+      all: true,
+      scoreFn: (results) => {
+        const pathScore = results[0]?.score ?? 0
+        const leafScore = results[1]?.score ?? 0
 
-    if (!query) return rows
-
-    return rows.filter((row) => row.path.toLocaleLowerCase().includes(query))
+        return Math.max(pathScore, leafScore * 2)
+      },
+    })
+    return results.map((obj) => obj.obj)
   })
 
   const selectedFieldRow = createMemo<DevtoolsMountedFieldRow | null>(() => {
