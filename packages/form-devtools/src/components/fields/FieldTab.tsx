@@ -105,7 +105,7 @@ export function FieldTab() {
                     >
                       <ItemMedia
                         variant="default"
-                        class="group self-stretch! items-start"
+                        class="group self-stretch! items-start outline-hidden"
                         asChild={(innerProps) => (
                           <button
                             {...innerProps()}
@@ -124,7 +124,7 @@ export function FieldTab() {
                           />
                         )}
                       >
-                        <BookmarkIcon class="group-aria-pressed:fill-current size-4.5" />
+                        <BookmarkIcon class="text-foreground/80 group-focus-visible:scale-110 group-focus-visible:text-foreground group-hover:text-foreground transition-transform group-aria-pressed:text-foreground group-aria-pressed:fill-foreground size-4.5" />
                       </ItemMedia>
                       <ItemContent>
                         <Listbox.ItemText

@@ -11,7 +11,7 @@ import { createFieldListSearch } from '@/hooks/createFieldListSearch'
 import { useFormDevtoolsStore } from '@/stores/formDevtoolsStore'
 
 export function FieldListSearch() {
-  const { fieldSearchQuery, setFieldSearchQuery } =
+  const { fieldSearchQuery, setFieldSearchQuery, setFieldFilterPipeline } =
     useFormDevtoolsStore().fieldList
   const {
     Provider,
@@ -23,6 +23,7 @@ export function FieldListSearch() {
   } = createFieldListSearch({
     query: fieldSearchQuery,
     setQuery: setFieldSearchQuery,
+    setFilterPipeline: setFieldFilterPipeline,
   })
 
   return (

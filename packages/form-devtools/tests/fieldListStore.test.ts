@@ -30,6 +30,7 @@ beforeEach(() => {
 afterEach(() => {
   fieldList.setSubscribedFormId(null)
   fieldList.setFieldSearchQuery('')
+  fieldList.setFieldFilterPipeline([])
   fieldList.clearRows()
   disposeStore()
 })
@@ -85,6 +86,39 @@ describe('field list store', () => {
     expect(fieldList.visibleFieldRows().map((row) => row.path)).toEqual([
       'user.email',
     ])
+    expect(fieldList.fieldRows()).toHaveLength(3)
+  })
+
+  it('filters visible rows through each predicate before fuzzy search', () => {
+    fieldList.setSubscribedFormId(formA)
+    fieldList.applySnapshot({
+      formInstanceId: formA,
+      fields: [
+        field('user.name', 'field-name'),
+        field('user.email', 'field-email'),
+        field('settings.theme', 'field-theme'),
+      ],
+    })
+    fieldList.setFieldPinned('field-name', true)
+    fieldList.setFieldPinned('field-theme', true)
+    let predicateCalls = 0
+    fieldList.setFieldFilterPipeline([
+      (row) => {
+        predicateCalls++
+        return fieldList.isFieldPinned(row.fieldId)
+      },
+      (row) => row.path.startsWith('user.'),
+    ])
+
+    expect(fieldList.visibleFieldRows().map((row) => row.path)).toEqual([
+      'user.name',
+    ])
+    const callsAfterFiltering = predicateCalls
+
+    fieldList.setFieldSearchQuery('email')
+
+    expect(fieldList.visibleFieldRows()).toEqual([])
+    expect(predicateCalls).toBe(callsAfterFiltering)
     expect(fieldList.fieldRows()).toHaveLength(3)
   })
 

@@ -17,9 +17,17 @@ import {
   SquareIcon,
   XIcon,
 } from 'lucide-solid'
-import { createMemo, createSignal, createUniqueId } from 'solid-js'
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  createUniqueId,
+  onCleanup,
+} from 'solid-js'
 import type { Accessor, ParentProps, Setter } from 'solid-js'
 import type { LucideIcon } from 'lucide-solid'
+import type { FieldRowFilterPredicate } from '@/stores/fieldListStore'
+import { isFieldPinned } from '@/stores/fieldListStore'
 
 const mentionRegex = /(?:^|\s)@(\S*)/
 
@@ -38,8 +46,7 @@ export interface FieldListFilter {
   icon: LucideIcon
   description: string
   aliases?: Array<string>
-  // TODO add
-  // predicate: (field: any) => boolean
+  predicate?: FieldRowFilterPredicate
 }
 
 const allFieldFilters: Array<FieldListFilter> = [
@@ -98,6 +105,7 @@ const allFieldFilters: Array<FieldListFilter> = [
     aliases: ['Pinned', 'Selected'],
     description: 'Is bookmarked in the devtools',
     icon: BookmarkIcon,
+    predicate: (field) => isFieldPinned(field.fieldId),
   },
   {
     label: 'Mounted',
@@ -145,11 +153,13 @@ function getFilters(selection: Array<string>): Array<FieldListFilter> {
 interface FieldListSearchArgs {
   query: Accessor<string>
   setQuery: Setter<string>
+  setFilterPipeline: Setter<Array<FieldRowFilterPredicate>>
 }
 
 export function createFieldListSearch({
   query,
   setQuery,
+  setFilterPipeline,
 }: FieldListSearchArgs) {
   const uid = createUniqueId()
   const ids = {
@@ -160,6 +170,16 @@ export function createFieldListSearch({
   const [selectedTags, setSelectedTags] = createSignal<Array<FieldListFilter>>(
     [],
   )
+
+  createEffect(() => {
+    setFilterPipeline(
+      selectedTags().flatMap((filter) =>
+        filter.predicate ? [filter.predicate] : [],
+      ),
+    )
+  })
+
+  onCleanup(() => setFilterPipeline([]))
 
   const activeMention = createMemo(() => {
     const match = query().match(mentionRegex)

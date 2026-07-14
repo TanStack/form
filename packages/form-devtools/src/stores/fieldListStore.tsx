@@ -37,6 +37,14 @@ export const [pinnedFieldIds, setPinnedFieldIds] = createSignal<
 
 export const [fieldSearchQuery, setFieldSearchQuery] = createSignal('')
 
+export type FieldRowFilterPredicate = (
+  field: DevtoolsMountedFieldRow,
+) => boolean
+
+export const [fieldFilterPipeline, setFieldFilterPipeline] = createSignal<
+  Array<FieldRowFilterPredicate>
+>([])
+
 export function isFieldPinned(fieldId: FieldId): boolean {
   return pinnedFieldIds().includes(fieldId)
 }
@@ -68,8 +76,16 @@ export function createFieldListComputations() {
     Array.from(rowsByPath().values()).sort(compareFieldRowsByPath),
   )
 
+  const filteredFieldRows = createMemo(() => {
+    const predicates = fieldFilterPipeline()
+
+    return fieldRows().filter((field) =>
+      predicates.every((predicate) => predicate(field)),
+    )
+  })
+
   const visibleFieldRows = createMemo(() => {
-    const results = fuzzysort.go(fieldSearchQuery(), fieldRows(), {
+    const results = fuzzysort.go(fieldSearchQuery(), filteredFieldRows(), {
       keys: ['path', 'leaf'],
       all: true,
       scoreFn: (results) => {
@@ -125,6 +141,7 @@ export function createFieldListComputations() {
 
   return {
     fieldRows,
+    filteredFieldRows,
     visibleFieldRows,
     fieldsListCollection,
     selectedFieldRow,
@@ -192,6 +209,8 @@ export const fieldListCache = {
   toggleFieldPinned,
   fieldSearchQuery,
   setFieldSearchQuery,
+  fieldFilterPipeline,
+  setFieldFilterPipeline,
   clearRows: clearFieldRows,
   applySnapshot: applyFieldListSnapshot,
 }
