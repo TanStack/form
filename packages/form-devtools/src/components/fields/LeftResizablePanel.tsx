@@ -10,11 +10,13 @@ function SidebarRail(props: SplitterResizeTriggerProps) {
   return (
     <Splitter.ResizeTrigger
       class={cn(
-        'outline-none z-20 hidden w-2 transition-all ease-linear after:absolute after:inset-y-0 after:inset-s-1/2 after:w-2 hover:after:bg-sidebar-border sm:flex ltr:-translate-x-1/2 rtl:-translate-x-1/2 cursor-col-resize',
+        'ring-offset-background focus-visible:ring-1 focus-visible:ring-border relative flex w-px items-center justify-center bg-border  after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2   focus-visible:outline-hidden data-[orientation=vertical]:h-px data-[orientation=vertical]:w-full data-[orientation=vertical]:after:left-0 data-[orientation=vertical]:after:h-1 data-[orientation=vertical]:after:w-full data-[orientation=vertical]:after:translate-x-0 data-[orientation=vertical]:after:-translate-y-1/2 [&[data-orientation=vertical]>div]:rotate-90',
         local.class,
       )}
       {...others}
-    />
+    >
+      <Splitter.ResizeTriggerIndicator class="z-10 flex h-6 w-1 shrink-0 rounded-lg bg-border" />
+    </Splitter.ResizeTrigger>
   )
 }
 
@@ -29,7 +31,7 @@ export function LeftResizablePanel(props: LeftResizablePanelProps) {
     <>
       <Splitter.Panel
         id={props.sidebarPanelId}
-        class={cn('size-full bg-sidebar p-2', props.class)}
+        class={cn('size-full p-2', props.class)}
       >
         {props.children}
       </Splitter.Panel>
