@@ -5,6 +5,7 @@ import {
 } from '../../src/FieldApi/fieldState.lib'
 import { canPruneField } from '../../src/FieldApi/fieldTree.lib'
 import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
+import { installDevtoolsBridge } from '../../src/devtoolsBridge.lib'
 
 describe('field - lifecycle', () => {
   describe('_isMounted and atom', () => {
@@ -27,6 +28,79 @@ describe('field - lifecycle', () => {
       const state = field.atom.get()
       expect(state.value).toBe('hello')
       expect(state.meta).toMatchObject(defaultFieldMeta)
+    })
+  })
+
+  describe('devtools bridge notifications', () => {
+    it('notifies field mount and final unmount transitions only', () => {
+      const form = new InternalFormApi({ defaultValues: { name: '' } })
+      const field = form._getOrCreateFieldApi({ name: 'name' })
+      const mountField = vi.fn()
+      const unmountField = vi.fn()
+      const uninstallBridge = installDevtoolsBridge({
+        mountField,
+        unmountField,
+      })
+
+      try {
+        const unregister1 = field._register()
+        const unregister2 = field._register()
+
+        expect(mountField).toHaveBeenCalledOnce()
+        expect(mountField).toHaveBeenCalledWith(field)
+
+        unregister1()
+        expect(unmountField).not.toHaveBeenCalled()
+
+        unregister2()
+        expect(unmountField).toHaveBeenCalledOnce()
+        expect(unmountField).toHaveBeenCalledWith(field, 'name')
+      } finally {
+        uninstallBridge()
+      }
+    })
+
+    it('notifies field moves with the previous path', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b'] },
+      })
+      const field0 = form._getOrCreateFieldApi({ name: 'items[0]' })
+      const field1 = form._getOrCreateFieldApi({ name: 'items[1]' })
+      const moveField = vi.fn()
+      const uninstallBridge = installDevtoolsBridge({ moveField })
+
+      try {
+        form.swapFieldValues('items', 0, 1)
+
+        expect(moveField).toHaveBeenCalledWith(field0, 'items[0]')
+        expect(moveField).toHaveBeenCalledWith(field1, 'items[1]')
+        expect(field0.name).toBe('items[1]')
+        expect(field1.name).toBe('items[0]')
+      } finally {
+        uninstallBridge()
+      }
+    })
+
+    it('notifies removed field subtrees with previous paths', () => {
+      const form = new InternalFormApi({
+        defaultValues: { user: { name: '' } },
+      })
+      const parent = form._getOrCreateFieldApi({ name: 'user' })
+      const child = form._getOrCreateFieldApi({ name: 'user.name' })
+      const removeFieldSubtree = vi.fn()
+      const uninstallBridge = installDevtoolsBridge({ removeFieldSubtree })
+
+      try {
+        parent._kill()
+
+        expect(removeFieldSubtree).toHaveBeenCalledOnce()
+        expect(removeFieldSubtree).toHaveBeenCalledWith(form, [
+          { field: parent, previousPath: 'user' },
+          { field: child, previousPath: 'user.name' },
+        ])
+      } finally {
+        uninstallBridge()
+      }
     })
   })
 

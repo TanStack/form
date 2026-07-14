@@ -1,4 +1,5 @@
 import type { AnyInternalFormApi } from './FormApi/FormApi.lib'
+import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
 
 /**
  * Optional hooks installed by `@tanstack/form-devtools`.
@@ -31,6 +32,34 @@ export interface FormDevtoolsBridge {
    * the bridge should ignore updates that do not change Devtools-visible data.
    */
   updateForm?: (form: AnyInternalFormApi) => void
+  /**
+   * Called when a field's component registration count transitions from 0 to 1.
+   *
+   * Use this to add mounted fields to Devtools-owned field-list state.
+   */
+  mountField?: (field: AnyInternalFieldApi) => void
+  /**
+   * Called when a field's component registration count transitions from 1 to 0.
+   *
+   * `previousPath` is captured before the field can be pruned or moved, so the
+   * bridge can clean up path-indexed state without reading stale tree data.
+   */
+  unmountField?: (field: AnyInternalFieldApi, previousPath: string) => void
+  /**
+   * Called after a field moves to a new path, usually because of array
+   * operations such as move, swap, insert, or remove.
+   */
+  moveField?: (field: AnyInternalFieldApi, previousPath: string) => void
+  /**
+   * Called after a field subtree is removed from the form field tree.
+   *
+   * The field objects are passed only as live internals for the installed
+   * bridge. Event payload conversion still belongs to `@tanstack/form-devtools`.
+   */
+  removeFieldSubtree?: (
+    form: AnyInternalFormApi,
+    fields: Array<{ field: AnyInternalFieldApi; previousPath: string }>,
+  ) => void
 }
 
 let activeBridge: FormDevtoolsBridge | null = null

@@ -11,6 +11,7 @@ import {
   setIndexedError,
 } from '../validation.lib'
 import { runFieldListenerPipeline } from '../listeners.lib'
+import { devtools } from '../devtoolsBridge.lib'
 import {
   attachWatchingListenerField,
   attachWatchingValidatorField,
@@ -996,9 +997,13 @@ export class InternalFieldApi<
       return () => {}
     }
 
-    const isFirstMount = this._refCount === 0 && !this._mountValidationRan
+    const isMountTransition = this._refCount === 0
+    const isFirstMount = isMountTransition && !this._mountValidationRan
     this._refCount++
     this._getOrCreateAtoms()
+    if (isMountTransition) {
+      devtools().mountField?.(this)
+    }
 
     this._notifyListener('mount', new WeakSet())
 
@@ -1049,7 +1054,12 @@ export class InternalFieldApi<
   _unregister(): void {
     if (this._isKilled) return
 
+    const previousPath = this.name
+    const isUnmountTransition = this._refCount === 1
     this._refCount--
+    if (isUnmountTransition) {
+      devtools().unmountField?.(this, previousPath)
+    }
     this._notifyListener('unmount', new WeakSet())
 
     if (this._refCount <= 0) {
@@ -1076,7 +1086,11 @@ export class InternalFieldApi<
    * @private
    */
   _moveTo(newSegment: NameSegment): void {
+    const previousPath = this.name
     moveFieldToSegment(this, newSegment)
+    if (this.name !== previousPath) {
+      devtools().moveField?.(this, previousPath)
+    }
   }
 
   /**

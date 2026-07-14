@@ -7,3 +7,4 @@ type Branding<T> = {
 type Branded<TConstraint, TBrand> = TConstraint & Branding<TBrand>
 
 export type FormId = Branded<string, 'instanceId'>
+export type FieldId = Branded<string, 'fieldId'>

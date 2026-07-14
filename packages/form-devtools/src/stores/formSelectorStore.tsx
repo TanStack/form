@@ -10,7 +10,14 @@ export const [mountedForms, setMountedForms] = createSignal<
 export const [requestedFormId, setRequestedFormId] =
   createSignal<FormId | null>(null)
 
-export const selectedForm = createMemo<DevtoolsMountedForm | null>(() => {
+export const formSelectorCache = {
+  mountedForms,
+  setMountedForms,
+  requestedFormId,
+  setRequestedFormId,
+}
+
+function getSelectedForm(): DevtoolsMountedForm | null {
   const opts = mountedForms()
   const requestedId = requestedFormId()
 
@@ -23,14 +30,38 @@ export const selectedForm = createMemo<DevtoolsMountedForm | null>(() => {
 
   // The user selected form may be (temporarily) unmounted and nonexistent, so don't preserve it
   return opts.find((opt) => opt.instanceId === requestedId) ?? fallbackChoice
-})
+}
+
+export function createFormSelectorComputations() {
+  const selectedForm = createMemo(getSelectedForm)
+
+  return { selectedForm }
+}
+
+let mountedEventConsumers = 0
+let cleanupMountedFormEvents: (() => void) | undefined
 
 export function mountFormSelectorEvents(): () => void {
-  const cleanup = formDevtoolsEventClient.on('mounted-forms-changed', (event) =>
-    setMountedForms(event.payload.forms),
-  )
+  if (mountedEventConsumers === 0) {
+    cleanupMountedFormEvents = formDevtoolsEventClient.on(
+      'mounted-forms-changed',
+      (event) => setMountedForms(event.payload.forms),
+    )
 
-  formDevtoolsEventClient.emit('request-mounted-forms', {})
+    formDevtoolsEventClient.emit('request-mounted-forms', {})
+  }
 
-  return cleanup
+  mountedEventConsumers++
+  let isMounted = true
+
+  return () => {
+    if (!isMounted) return
+    isMounted = false
+    mountedEventConsumers--
+
+    if (mountedEventConsumers === 0) {
+      cleanupMountedFormEvents?.()
+      cleanupMountedFormEvents = undefined
+    }
+  }
 }

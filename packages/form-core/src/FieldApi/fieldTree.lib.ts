@@ -1,5 +1,6 @@
 import { batch } from '@tanstack/store'
 import { cancelPipelineCache } from '../utils.lib'
+import { devtools } from '../devtoolsBridge.lib'
 import {
   detachWatchingListenerField,
   detachWatchingValidatorField,
@@ -279,8 +280,17 @@ export function killField(
     listenerEvent?: FieldListenerTriggers
   } = {},
 ) {
+  let removedFields: Array<{
+    field: AnyInternalFieldApi
+    previousPath: string
+  }> = []
+
   batch(() => {
     const nodesToKill = collectFieldSubtree(field)
+    removedFields = nodesToKill.map((node) => ({
+      field: node,
+      previousPath: node.name,
+    }))
     const nodesToKillSet = new Set(nodesToKill)
     const fieldsToPruneAfterKill = new Set<AnyInternalFieldApi>()
 
@@ -393,6 +403,10 @@ export function killField(
       return changed ? fieldErrors : prev
     })
   })
+
+  if (removedFields.length > 0) {
+    devtools().removeFieldSubtree?.(field.form, removedFields)
+  }
 }
 
 export function canPruneField(field: AnyInternalFieldApi): boolean {

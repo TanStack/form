@@ -50,7 +50,7 @@
   },
   "sideEffects": [
     "**/*.css",
-    "**/devtoolsBridge.lib.*"
+    "**/bridge/index.*"
   ],
   "engines": {
     "node": ">=18"
