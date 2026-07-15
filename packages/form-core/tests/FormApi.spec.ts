@@ -102,6 +102,9 @@ describe('form api', () => {
     expect(meta).toMatchObject({
       isValidating: false,
       isBlurred: false,
+      // `setFieldValue` marks the newly created meta as touched and dirty.
+      isTouched: true,
+      isDirty: true,
       errors: [],
       errorSourceMap: {},
     })
