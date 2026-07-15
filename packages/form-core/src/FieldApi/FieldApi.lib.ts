@@ -644,6 +644,7 @@ export class InternalFieldApi<
 
       return newMeta
     })
+    devtools().updateField?.(this)
   }
 
   /**

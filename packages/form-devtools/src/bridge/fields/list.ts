@@ -4,29 +4,59 @@ import type {
   AnyInternalFieldApi,
   AnyInternalFormApi,
 } from '@tanstack/form-core/internals'
-import type { DevtoolsMountedFieldRow } from '../../eventClientTypes'
-import type { FormId } from '../../types/branded'
+import type {
+  DevtoolsMountedFieldPatch,
+  DevtoolsMountedFieldScaffold,
+  DevtoolsMountedFieldSummaryPatch,
+} from '../../eventClientTypes'
+import type { FieldId, FormId } from '../../types/branded'
 import type { MountedFormsController } from '../forms/mountedForms'
 import type { FieldIdentityController } from './identity'
+import {
+  diffBaselinePatches,
+  toDevtoolsMountedFieldSummaryPatch,
+} from '@/fieldSummaryMeta'
 
 interface FieldListController {
   dispose: () => void
   fieldMounted: (field: AnyInternalFieldApi) => void
   fieldMoved: (field: AnyInternalFieldApi, previousPath: string) => void
-  fieldSubtreeRemoved: (form: AnyInternalFormApi) => void
+  fieldUpdated: (field: AnyInternalFieldApi) => void
+  fieldSubtreeRemoved: (
+    form: AnyInternalFormApi,
+    fields: Array<AnyInternalFieldApi>,
+  ) => void
   fieldUnmounted: (field: AnyInternalFieldApi, previousPath: string) => void
   formMounted: (form: AnyInternalFormApi) => void
   formUnmounted: (formInstanceId: FormId) => void
   getMountedFieldRowsSnapshot: (
     form: AnyInternalFormApi,
-  ) => Array<DevtoolsMountedFieldRow>
+  ) => Array<DevtoolsMountedFieldScaffold>
+}
+
+type PendingStructure = 'upsert' | 'remove'
+
+interface PendingFieldChange {
+  fieldId: FieldId
+  field: AnyInternalFieldApi
+  structure?: PendingStructure
+  summary: boolean
+}
+
+interface PendingFormChanges {
+  form: AnyInternalFormApi
+  fields: Map<FieldId, PendingFieldChange>
 }
 
 export function getMountedFieldRowsSnapshot(
   form: AnyInternalFormApi,
   identity: Pick<FieldIdentityController, 'getFieldId'>,
-): Array<DevtoolsMountedFieldRow> {
-  const fields: Array<DevtoolsMountedFieldRow> = []
+  onSummary?: (
+    field: AnyInternalFieldApi,
+    summary: DevtoolsMountedFieldSummaryPatch | undefined,
+  ) => void,
+): Array<DevtoolsMountedFieldScaffold> {
+  const fields: Array<DevtoolsMountedFieldScaffold> = []
   const stack = [...form._fieldRootNode._children]
 
   while (stack.length > 0) {
@@ -37,13 +67,13 @@ export function getMountedFieldRowsSnapshot(
 
     if (!field._isMounted) continue
 
+    const summary = toDevtoolsMountedFieldSummaryPatch(field.state.meta)
+    onSummary?.(field, summary)
+
     fields.push({
-      path: field.name,
       fieldId: identity.getFieldId(field),
-      leaf:
-        typeof field._segment === 'string'
-          ? field._segment
-          : `[${field._segment}]`,
+      path: field.name,
+      ...(summary ? { summary } : {}),
     })
   }
 
@@ -58,11 +88,26 @@ export function createFieldListController({
   mountedForms: MountedFormsController
 }): FieldListController {
   const subscribedFormIds = new Set<FormId>()
+  const sparseSummaryByField = new WeakMap<
+    AnyInternalFieldApi,
+    DevtoolsMountedFieldSummaryPatch
+  >()
+  const pendingChanges = new Map<FormId, PendingFormChanges>()
+  let flushScheduled = false
+  let disposed = false
+
+  const cacheSummary = (
+    field: AnyInternalFieldApi,
+    summary: DevtoolsMountedFieldSummaryPatch | undefined,
+  ): void => {
+    if (summary) sparseSummaryByField.set(field, summary)
+    else sparseSummaryByField.delete(field)
+  }
 
   const createSnapshot = (
     form: AnyInternalFormApi,
-  ): Array<DevtoolsMountedFieldRow> =>
-    getMountedFieldRowsSnapshot(form, identity)
+  ): Array<DevtoolsMountedFieldScaffold> =>
+    getMountedFieldRowsSnapshot(form, identity, cacheSummary)
 
   const emitSnapshot = (
     formInstanceId: FormId,
@@ -70,6 +115,7 @@ export function createFieldListController({
       formInstanceId,
     ),
   ): void => {
+    pendingChanges.delete(formInstanceId)
     formDevtoolsEventClient.emit('field-list-snapshot', {
       formInstanceId,
       fields: form ? createSnapshot(form) : [],
@@ -85,6 +131,118 @@ export function createFieldListController({
     emitSnapshot(formInstanceId, form)
   }
 
+  const flushPendingChanges = (): void => {
+    flushScheduled = false
+    if (disposed) return
+
+    const batches = Array.from(pendingChanges.entries())
+    pendingChanges.clear()
+
+    for (const [formInstanceId, batch] of batches) {
+      if (
+        !subscribedFormIds.has(formInstanceId) ||
+        !mountedForms.isMounted(batch.form)
+      ) {
+        continue
+      }
+
+      const upsert: Array<DevtoolsMountedFieldPatch> = []
+      const remove: Array<FieldId> = []
+
+      for (const change of batch.fields.values()) {
+        const fieldIsMounted =
+          change.field._isMounted && !change.field._isKilled
+        const shouldRemove =
+          change.structure === 'remove' ||
+          (!fieldIsMounted && change.structure !== undefined)
+
+        if (shouldRemove) {
+          sparseSummaryByField.delete(change.field)
+          remove.push(change.fieldId)
+          continue
+        }
+
+        if (!fieldIsMounted) continue
+
+        const previousSummary = sparseSummaryByField.get(change.field)
+        const currentSummary = toDevtoolsMountedFieldSummaryPatch(
+          change.field.state.meta,
+        )
+        const summaryDifference = change.summary
+          ? diffBaselinePatches(previousSummary, currentSummary)
+          : {}
+
+        cacheSummary(change.field, currentSummary)
+
+        const patch: DevtoolsMountedFieldPatch = {
+          fieldId: change.fieldId,
+          ...(change.structure === 'upsert' ? { path: change.field.name } : {}),
+          ...(summaryDifference.set
+            ? { setSummary: summaryDifference.set }
+            : {}),
+          ...(summaryDifference.clear
+            ? { clearSummary: summaryDifference.clear }
+            : {}),
+        }
+
+        if (
+          patch.path !== undefined ||
+          patch.setSummary !== undefined ||
+          patch.clearSummary !== undefined
+        ) {
+          upsert.push(patch)
+        }
+      }
+
+      if (upsert.length === 0 && remove.length === 0) continue
+
+      formDevtoolsEventClient.emit('field-list-patch', {
+        formInstanceId,
+        ...(upsert.length > 0 ? { upsert } : {}),
+        ...(remove.length > 0 ? { remove } : {}),
+      })
+    }
+  }
+
+  const scheduleFlush = (): void => {
+    if (flushScheduled) return
+    flushScheduled = true
+    queueMicrotask(flushPendingChanges)
+  }
+
+  const queueFieldChange = (
+    field: AnyInternalFieldApi,
+    structure?: PendingStructure,
+    summary = true,
+  ): void => {
+    const form = field.form
+    if (!mountedForms.isMounted(form)) return
+
+    const formInstanceId = mountedForms.getFormInstanceId(form)
+    if (!subscribedFormIds.has(formInstanceId)) return
+
+    const fieldId =
+      structure === 'remove'
+        ? identity.getExistingFieldId(field)
+        : identity.getFieldId(field)
+    if (!fieldId) return
+
+    let formChanges = pendingChanges.get(formInstanceId)
+    if (!formChanges) {
+      formChanges = { form, fields: new Map() }
+      pendingChanges.set(formInstanceId, formChanges)
+    }
+
+    const previous = formChanges.fields.get(fieldId)
+    formChanges.fields.set(fieldId, {
+      fieldId,
+      field,
+      structure: structure ?? previous?.structure,
+      summary: summary || previous?.summary === true,
+    })
+    scheduleFlush()
+  }
+
   const cleanupSubscribeListener = formDevtoolsEventClient.on(
     'field-list-subscribe',
     (event) => {
@@ -96,22 +254,33 @@ export function createFieldListController({
   const cleanupUnsubscribeListener = formDevtoolsEventClient.on(
     'field-list-unsubscribe',
     (event) => {
-      subscribedFormIds.delete(event.payload.formInstanceId)
+      const { formInstanceId } = event.payload
+      subscribedFormIds.delete(formInstanceId)
+      pendingChanges.delete(formInstanceId)
     },
   )
 
   return {
     dispose: () => {
+      disposed = true
+      pendingChanges.clear()
       cleanupSubscribeListener()
       cleanupUnsubscribeListener()
     },
-    fieldMounted: (field) => emitSubscribedSnapshot(field.form),
-    fieldMoved: (field, _previousPath) => emitSubscribedSnapshot(field.form),
-    fieldSubtreeRemoved: emitSubscribedSnapshot,
+    fieldMounted: (field) => queueFieldChange(field, 'upsert'),
+    fieldMoved: (field, _previousPath) => queueFieldChange(field, 'upsert'),
+    fieldUpdated: (field) => {
+      if (!field._isMounted) return
+      queueFieldChange(field)
+    },
+    fieldSubtreeRemoved: (_form, fields) => {
+      for (const field of fields) queueFieldChange(field, 'remove', false)
+    },
     fieldUnmounted: (field, _previousPath) =>
-      emitSubscribedSnapshot(field.form),
+      queueFieldChange(field, 'remove', false),
     formMounted: emitSubscribedSnapshot,
     formUnmounted: (formInstanceId) => {
+      pendingChanges.delete(formInstanceId)
       emitSnapshot(formInstanceId, null)
       subscribedFormIds.delete(formInstanceId)
     },

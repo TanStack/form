@@ -20,7 +20,18 @@ describe('form devtools bridge field snapshots', () => {
       expect(rows).toHaveLength(1)
       expect(row.path).toBe('name')
       expect(row.fieldId).toEqual(expect.any(String))
-      expect(Object.keys(row).sort()).toEqual(['fieldId', 'leaf', 'path'])
+      expect(row.summary).toBeUndefined()
+      expect(Object.keys(row).sort()).toEqual(['fieldId', 'path'])
+
+      mountedField.handleChange('Grace')
+      expect(getMountedFieldRowsSnapshot(form, identity)[0]?.summary).toEqual({
+        isDirty: true,
+      })
+
+      mountedField._setMeta((meta) => ({ ...meta, isDirty: false }))
+      expect(
+        getMountedFieldRowsSnapshot(form, identity)[0]?.summary,
+      ).toBeUndefined()
     } finally {
       unregister()
     }
@@ -66,9 +77,7 @@ describe('form devtools bridge field snapshots', () => {
       form.removeFieldValue('items', 0)
 
       const rows = getMountedFieldRowsSnapshot(form, identity)
-      expect(rows).toEqual([
-        { path: 'items[0]', fieldId: movedFieldId, leaf: '[0]' },
-      ])
+      expect(rows).toEqual([{ path: 'items[0]', fieldId: movedFieldId }])
     } finally {
       unregisterRemoved()
       unregisterMoved()

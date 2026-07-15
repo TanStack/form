@@ -5,13 +5,24 @@ export interface DevtoolsMountedForm {
   instanceId: FormId
 }
 
-export type DevtoolsMountedFieldSummary = Record<string, never>
+export interface DevtoolsMountedFieldSummary {
+  isDirty: boolean
+}
 
-export interface DevtoolsMountedFieldRow {
-  path: string
+export type DevtoolsMountedFieldSummaryPatch =
+  Partial<DevtoolsMountedFieldSummary>
+
+export interface DevtoolsMountedFieldScaffold {
   fieldId: FieldId
-  leaf: string
-  summary?: DevtoolsMountedFieldSummary
+  path: string
+  summary?: DevtoolsMountedFieldSummaryPatch
+}
+
+export interface DevtoolsMountedFieldPatch {
+  fieldId: FieldId
+  path?: string
+  setSummary?: DevtoolsMountedFieldSummaryPatch
+  clearSummary?: Array<keyof DevtoolsMountedFieldSummary>
 }
 
 export type FormDevtoolsEventMap = {
@@ -27,6 +38,11 @@ export type FormDevtoolsEventMap = {
   }
   'field-list-snapshot': {
     formInstanceId: FormId
-    fields: Array<DevtoolsMountedFieldRow>
+    fields: Array<DevtoolsMountedFieldScaffold>
+  }
+  'field-list-patch': {
+    formInstanceId: FormId
+    upsert?: Array<DevtoolsMountedFieldPatch>
+    remove?: Array<FieldId>
   }
 }

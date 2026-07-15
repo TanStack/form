@@ -33,6 +33,14 @@ export interface FormDevtoolsBridge {
    */
   updateForm?: (form: AnyInternalFormApi) => void
   /**
+   * Called after a field's meta state updates.
+   *
+   * Use this for Devtools data derived from field meta, such as field-list
+   * summary flags. This hook may run often, so the bridge should ignore fields
+   * whose form is not currently subscribed.
+   */
+  updateField?: (field: AnyInternalFieldApi) => void
+  /**
    * Called when a field's component registration count transitions from 0 to 1.
    *
    * Use this to add mounted fields to Devtools-owned field-list state.

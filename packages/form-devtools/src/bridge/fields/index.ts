@@ -4,7 +4,7 @@ import type {
   AnyInternalFieldApi,
   AnyInternalFormApi,
 } from '@tanstack/form-core/internals'
-import type { DevtoolsMountedFieldRow } from '../../eventClientTypes'
+import type { DevtoolsMountedFieldScaffold } from '../../eventClientTypes'
 import type { FormId } from '../../types/branded'
 import type { MountedFormsController } from '../forms/mountedForms'
 
@@ -13,6 +13,7 @@ interface FieldsController {
   mountForm: (form: AnyInternalFormApi) => void
   unmountForm: (formInstanceId: FormId) => void
   mountField: (field: AnyInternalFieldApi) => void
+  updateField: (field: AnyInternalFieldApi) => void
   unmountField: (field: AnyInternalFieldApi, previousPath: string) => void
   moveField: (field: AnyInternalFieldApi, previousPath: string) => void
   removeFieldSubtree: (
@@ -21,7 +22,7 @@ interface FieldsController {
   ) => void
   getMountedFieldRowsSnapshot: (
     form: AnyInternalFormApi,
-  ) => Array<DevtoolsMountedFieldRow>
+  ) => Array<DevtoolsMountedFieldScaffold>
 }
 
 export function createFieldsController(
@@ -36,14 +37,18 @@ export function createFieldsController(
     mountForm: fieldList.formMounted,
     unmountForm: fieldList.formUnmounted,
     mountField: fieldList.fieldMounted,
+    updateField: fieldList.fieldUpdated,
     unmountField: fieldList.fieldUnmounted,
     moveField: fieldList.fieldMoved,
     removeFieldSubtree: (form, fields) => {
+      fieldList.fieldSubtreeRemoved(
+        form,
+        fields.map(({ field }) => field),
+      )
+
       for (const { field } of fields) {
         identity.deleteField(field)
       }
-
-      fieldList.fieldSubtreeRemoved(form)
     },
   }
 }

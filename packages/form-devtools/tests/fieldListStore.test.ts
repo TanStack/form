@@ -1,20 +1,16 @@
 import { createRoot } from 'solid-js'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { nameToFieldNodeSegments } from '@tanstack/form-core/internals'
+import { defaultDevtoolsMountedFieldSummary } from '../src/fieldSummaryMeta'
 import { createFormDevtoolsStore } from '../src/stores/formDevtoolsStore'
 import type { FormDevtoolsStore } from '../src/stores/formDevtoolsStore'
-import type { DevtoolsMountedFieldRow } from '../src/eventClientTypes'
+import type { DevtoolsMountedFieldScaffold } from '../src/eventClientTypes'
 import type { FormId } from '../src/types/branded'
 
 const formA = 'form-a' as FormId
 const formB = 'form-b' as FormId
 
-function field(path: string, fieldId: string): DevtoolsMountedFieldRow {
-  return {
-    path,
-    fieldId: fieldId,
-    leaf: String(nameToFieldNodeSegments(path).at(-1) ?? path),
-  }
+function field(path: string, fieldId: string): DevtoolsMountedFieldScaffold {
+  return { path, fieldId }
 }
 
 let fieldList!: FormDevtoolsStore['fieldList']
@@ -70,6 +66,116 @@ describe('field list store', () => {
     expect(fieldList.fieldRows()).toEqual([])
   })
 
+  it('stores only non-default summaries and hydrates at consumption', () => {
+    fieldList.setSubscribedFormId(formA)
+    fieldList.applySnapshot({
+      formInstanceId: formA,
+      fields: [
+        field('user.name', 'field-name'),
+        {
+          ...field('user.email', 'field-email'),
+          summary: { isDirty: true },
+        },
+      ],
+    })
+
+    expect(fieldList.fieldSparseMetaById().size).toBe(1)
+    expect(fieldList.getFieldSummary('field-name')).toBe(
+      defaultDevtoolsMountedFieldSummary,
+    )
+    expect(fieldList.getFieldSummary('field-email')).toEqual({
+      isDirty: true,
+    })
+    expect(fieldList.getFieldSummary('another-pristine-field')).toBe(
+      fieldList.getFieldSummary('field-name'),
+    )
+  })
+
+  it('applies meta-only patches without replacing scaffold maps', () => {
+    fieldList.setSubscribedFormId(formA)
+    fieldList.applySnapshot({
+      formInstanceId: formA,
+      fields: [field('user.name', 'field-name')],
+    })
+    const pathMap = fieldList.rowsByPath()
+    const idMap = fieldList.rowsByFieldId()
+
+    fieldList.applyPatch({
+      formInstanceId: formA,
+      upsert: [{ fieldId: 'field-name', setSummary: { isDirty: true } }],
+    })
+
+    expect(fieldList.rowsByPath()).toBe(pathMap)
+    expect(fieldList.rowsByFieldId()).toBe(idMap)
+    expect(fieldList.getFieldSummary('field-name')).toEqual({ isDirty: true })
+
+    fieldList.applyPatch({
+      formInstanceId: formA,
+      upsert: [{ fieldId: 'field-name', clearSummary: ['isDirty'] }],
+    })
+
+    expect(fieldList.fieldSparseMetaById().size).toBe(0)
+    expect(fieldList.getFieldSummary('field-name')).toBe(
+      defaultDevtoolsMountedFieldSummary,
+    )
+  })
+
+  it('keeps selection and pins by field identity across path patches', () => {
+    fieldList.setSubscribedFormId(formA)
+    fieldList.applySnapshot({
+      formInstanceId: formA,
+      fields: [field('items[0]', 'field-item')],
+    })
+    fieldList.setSelectedFieldPath('items[0]')
+    fieldList.setFieldPinned('field-item', true)
+
+    fieldList.applyPatch({
+      formInstanceId: formA,
+      upsert: [{ fieldId: 'field-item', path: 'items[1]' }],
+    })
+
+    expect(fieldList.selectedFieldPath()).toBe('items[1]')
+    expect(fieldList.pinnedFieldIds()).toEqual(['field-item'])
+    expect(fieldList.rowsByPath().has('items[0]')).toBe(false)
+
+    fieldList.applyPatch({
+      formInstanceId: formA,
+      remove: ['field-item'],
+    })
+
+    expect(fieldList.selectedFieldPath()).toBeNull()
+    expect(fieldList.pinnedFieldIds()).toEqual([])
+    expect(fieldList.fieldRows()).toEqual([])
+  })
+
+  it('applies path swaps atomically without dropping sparse meta or pins', () => {
+    fieldList.setSubscribedFormId(formA)
+    fieldList.applySnapshot({
+      formInstanceId: formA,
+      fields: [
+        { ...field('items[0]', 'field-0'), summary: { isDirty: true } },
+        field('items[1]', 'field-1'),
+      ],
+    })
+    fieldList.setSelectedFieldPath('items[0]')
+    fieldList.setFieldPinned('field-0', true)
+    fieldList.setFieldPinned('field-1', true)
+
+    fieldList.applyPatch({
+      formInstanceId: formA,
+      upsert: [
+        { fieldId: 'field-0', path: 'items[1]' },
+        { fieldId: 'field-1', path: 'items[0]' },
+      ],
+    })
+
+    expect(fieldList.selectedFieldPath()).toBe('items[1]')
+    expect(fieldList.pinnedFieldIds()).toEqual(['field-0', 'field-1'])
+    expect(fieldList.getFieldSummary('field-0')).toEqual({ isDirty: true })
+    expect(fieldList.rowsByPath().get('items[0]')?.fieldId).toBe('field-1')
+    expect(fieldList.rowsByPath().get('items[1]')?.fieldId).toBe('field-0')
+  })
+
   it('filters visible rows by field path without changing stored rows', () => {
     fieldList.setSubscribedFormId(formA)
     fieldList.applySnapshot({
@@ -120,6 +226,32 @@ describe('field list store', () => {
     expect(fieldList.visibleFieldRows()).toEqual([])
     expect(predicateCalls).toBe(callsAfterFiltering)
     expect(fieldList.fieldRows()).toHaveLength(3)
+  })
+
+  it('does not subscribe filtering to sparse meta without a meta filter', () => {
+    fieldList.setSubscribedFormId(formA)
+    fieldList.applySnapshot({
+      formInstanceId: formA,
+      fields: [field('user.name', 'field-name')],
+    })
+    let predicateCalls = 0
+    fieldList.setFieldFilterPipeline([
+      (row) => {
+        predicateCalls++
+        return row.path.startsWith('user.')
+      },
+    ])
+
+    expect(fieldList.visibleFieldRows()).toHaveLength(1)
+    const callsBeforeMetaPatch = predicateCalls
+
+    fieldList.applyPatch({
+      formInstanceId: formA,
+      upsert: [{ fieldId: 'field-name', setSummary: { isDirty: true } }],
+    })
+
+    expect(fieldList.visibleFieldRows()).toHaveLength(1)
+    expect(predicateCalls).toBe(callsBeforeMetaPatch)
   })
 
   it('clears a stale selected path when a replacement snapshot omits it', () => {

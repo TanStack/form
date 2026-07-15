@@ -27,7 +27,10 @@ import {
 import type { Accessor, ParentProps, Setter } from 'solid-js'
 import type { LucideIcon } from 'lucide-solid'
 import type { FieldRowFilterPredicate } from '@/stores/fieldListStore'
-import { isFieldPinned } from '@/stores/fieldListStore'
+import {
+  createFieldSummaryFilterPredicate,
+  isFieldPinned,
+} from '@/stores/fieldListStore'
 
 const mentionRegex = /(?:^|\s)@(\S*)/
 
@@ -73,6 +76,9 @@ const allFieldFilters: Array<FieldListFilter> = [
     aliases: ['Not pristine', 'Not clean', 'Unclean', 'Changed'],
     description: 'Has been dirtied',
     icon: PencilIcon,
+    predicate: createFieldSummaryFilterPredicate(
+      (_field, summary) => summary.isDirty,
+    ),
   },
   {
     label: 'Pristine',
@@ -81,6 +87,9 @@ const allFieldFilters: Array<FieldListFilter> = [
     aliases: ['Not dirty', 'Clean', 'Unchanged'],
     description: 'Has not been dirtied',
     icon: PencilSparklesIcon,
+    predicate: createFieldSummaryFilterPredicate(
+      (_field, summary) => !summary.isDirty,
+    ),
   },
   {
     label: 'Touched',

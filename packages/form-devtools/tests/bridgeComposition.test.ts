@@ -24,6 +24,7 @@ describe('form devtools bridge composition', () => {
       mountForm: vi.fn(),
       unmountForm: vi.fn(),
       mountField: vi.fn(),
+      updateField: vi.fn(),
       unmountField: vi.fn(),
       moveField: vi.fn(),
       removeFieldSubtree: vi.fn(),
@@ -34,6 +35,7 @@ describe('form devtools bridge composition', () => {
     bridge.mountForm?.(form)
     bridge.updateForm?.(form)
     bridge.mountField?.(field)
+    bridge.updateField?.(field)
     bridge.unmountField?.(field, 'name')
     bridge.moveField?.(field, 'previousName')
     bridge.removeFieldSubtree?.(form, removedFields)
@@ -42,6 +44,7 @@ describe('form devtools bridge composition', () => {
     expect(fields.mountForm).toHaveBeenCalledWith(form)
     expect(fields.unmountForm).toHaveBeenCalledWith(formInstanceId)
     expect(fields.mountField).toHaveBeenCalledWith(field)
+    expect(fields.updateField).toHaveBeenCalledWith(field)
     expect(fields.unmountField).toHaveBeenCalledWith(field, 'name')
     expect(fields.moveField).toHaveBeenCalledWith(field, 'previousName')
     expect(fields.removeFieldSubtree).toHaveBeenCalledWith(form, removedFields)
@@ -59,6 +62,7 @@ describe('form devtools bridge composition', () => {
       mountForm: vi.fn(),
       unmountForm: vi.fn(),
       mountField: vi.fn(),
+      updateField: vi.fn(),
       unmountField: vi.fn(),
       moveField: vi.fn(),
       removeFieldSubtree: vi.fn(),

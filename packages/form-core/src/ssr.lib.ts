@@ -4,6 +4,7 @@ import { parseStandardSchemaIssues } from './standardSchema.lib'
 import { cancelPipelineCache, createPipelineCache, evaluate } from './utils.lib'
 import { runValidatorPipeline } from './validation.lib'
 import { createErrorMap } from './validation.public'
+import { devtools } from './devtoolsBridge.lib'
 import type { FormOptions } from './FormApi/FormApi.public'
 import type { FormErrorMeta } from './FormApi/formState.lib'
 import type { InternalFormApi } from './FormApi/FormApi.lib'
@@ -49,11 +50,11 @@ function resetFieldMetaForServerState(form: InternalFormApi<any, any, any>) {
       field._pipelineCache = null
     }
 
-    field._atoms.meta?.set((prev) =>
-      prev === defaultInternalBaseFieldMeta
-        ? prev
-        : defaultInternalBaseFieldMeta,
-    )
+    const metaAtom = field._atoms.meta
+    if (metaAtom && metaAtom.get() !== defaultInternalBaseFieldMeta) {
+      metaAtom.set(defaultInternalBaseFieldMeta)
+      devtools().updateField?.(field)
+    }
   }
 }
 

@@ -81,6 +81,46 @@ describe('field - lifecycle', () => {
       }
     })
 
+    it('notifies field meta updates for changed fields and their parents', () => {
+      const form = new InternalFormApi({
+        defaultValues: { user: { name: '' } },
+      })
+      const parent = form._getOrCreateFieldApi({ name: 'user' })
+      const child = form._getOrCreateFieldApi({ name: 'user.name' })
+      const updateField = vi.fn()
+      const uninstallBridge = installDevtoolsBridge({ updateField })
+
+      try {
+        child.handleChange('changed')
+
+        expect(child.meta.isDirty).toBe(true)
+        expect(parent.meta.isDirty).toBe(true)
+        expect(updateField).toHaveBeenCalledWith(child)
+        expect(updateField).toHaveBeenCalledWith(parent)
+      } finally {
+        uninstallBridge()
+      }
+    })
+
+    it('notifies field value updates even when summary meta is unchanged', () => {
+      const form = new InternalFormApi({ defaultValues: { name: '' } })
+      const field = form._getOrCreateFieldApi({ name: 'name' })
+      const updateField = vi.fn()
+      const uninstallBridge = installDevtoolsBridge({ updateField })
+
+      try {
+        field.handleChange('first')
+        updateField.mockClear()
+
+        field.handleChange('second')
+
+        expect(field.meta.isDirty).toBe(true)
+        expect(updateField).toHaveBeenCalledWith(field)
+      } finally {
+        uninstallBridge()
+      }
+    })
+
     it('notifies removed field subtrees with previous paths', () => {
       const form = new InternalFormApi({
         defaultValues: { user: { name: '' } },

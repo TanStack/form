@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
 import { InternalFormApi } from '../src/FormApi/FormApi.lib'
+import { installDevtoolsBridge } from '../src/devtoolsBridge.lib'
 import {
   formOptions,
   initialServerFormState,
@@ -455,5 +456,29 @@ describe('server validation', () => {
 
     expect(serverValidator).not.toHaveBeenCalled()
     expect(form.state.errors).toEqual([{ message: 'Server name error' }])
+  })
+
+  it('notifies Devtools when server state directly resets field meta', () => {
+    const options = formOptions({ defaultValues: { name: '' } })
+    const form = new InternalFormApi(options)
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+    field.handleChange('client value')
+    const updateField = vi.fn()
+    const uninstallBridge = installDevtoolsBridge({ updateField })
+
+    try {
+      form._update({
+        ...options,
+        serverState: {
+          ...initialServerFormState,
+          values: { name: 'server value' },
+        },
+      } as never)
+
+      expect(field.meta.isDirty).toBe(false)
+      expect(updateField).toHaveBeenCalledWith(field)
+    } finally {
+      uninstallBridge()
+    }
   })
 })

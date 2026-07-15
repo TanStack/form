@@ -490,6 +490,8 @@ export class InternalFormApi<
 
       this._notifyFieldChange(field, updateOptions)
     })
+
+    if (field) devtools().updateField?.(field)
   }
 
   resetField = <TFieldName extends DeepKeys<TFormData>>(

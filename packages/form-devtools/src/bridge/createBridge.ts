@@ -18,6 +18,7 @@ export interface FieldsBridgeController {
   mountForm: (form: AnyInternalFormApi) => void
   unmountForm: (formInstanceId: FormId) => void
   mountField: (field: AnyInternalFieldApi) => void
+  updateField: (field: AnyInternalFieldApi) => void
   unmountField: (field: AnyInternalFieldApi, previousPath: string) => void
   moveField: (field: AnyInternalFieldApi, previousPath: string) => void
   removeFieldSubtree: (
@@ -44,6 +45,7 @@ export function createFormDevtoolsBridge({
     },
     updateForm: mountedForms.updateForm,
     mountField: fields.mountField,
+    updateField: fields.updateField,
     unmountField: fields.unmountField,
     moveField: fields.moveField,
     removeFieldSubtree: fields.removeFieldSubtree,

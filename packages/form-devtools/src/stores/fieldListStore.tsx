@@ -7,25 +7,39 @@ import {
 } from 'solid-js'
 import fuzzysort from 'fuzzysort'
 import { createListCollection } from '@ark-ui/solid'
+import { nameToFieldNodeSegments } from '@tanstack/form-core/internals'
 import type { Accessor } from 'solid-js'
 import type {
-  DevtoolsMountedFieldRow,
+  DevtoolsMountedFieldPatch,
+  DevtoolsMountedFieldScaffold,
+  DevtoolsMountedFieldSummary,
+  DevtoolsMountedFieldSummaryPatch,
   DevtoolsMountedForm,
 } from '@/eventClientTypes'
 import type { FieldId, FormId } from '@/types/branded'
 import { compareFieldPaths } from '@/bridge/utils'
 import { formDevtoolsEventClient } from '@/eventClient.lib'
+import {
+  defaultDevtoolsMountedFieldSummary,
+  hydrateDevtoolsMountedFieldSummary,
+} from '@/fieldSummaryMeta'
+
+export type DevtoolsFieldListRow = Omit<DevtoolsMountedFieldScaffold, 'summary'>
 
 export const [subscribedFormId, setSubscribedFormId] =
   createSignal<FormId | null>(null)
 
 export const [rowsByPath, setRowsByPath] = createSignal<
-  Map<string, DevtoolsMountedFieldRow>
->(new Map())
+  Map<string, DevtoolsFieldListRow>
+>(new Map(), { equals: false })
 
 export const [rowsByFieldId, setRowsByFieldId] = createSignal<
-  Map<FieldId, DevtoolsMountedFieldRow>
->(new Map())
+  Map<FieldId, DevtoolsFieldListRow>
+>(new Map(), { equals: false })
+
+export const [fieldSparseMetaById, setFieldSparseMetaById] = createSignal<
+  Map<FieldId, DevtoolsMountedFieldSummaryPatch>
+>(new Map(), { equals: false })
 
 export const [selectedFieldPath, setSelectedFieldPath] = createSignal<
   string | null
@@ -37,13 +51,25 @@ export const [pinnedFieldIds, setPinnedFieldIds] = createSignal<
 
 export const [fieldSearchQuery, setFieldSearchQuery] = createSignal('')
 
-export type FieldRowFilterPredicate = (
-  field: DevtoolsMountedFieldRow,
-) => boolean
+export type FieldRowFilterPredicate = {
+  (field: DevtoolsFieldListRow, summary: DevtoolsMountedFieldSummary): boolean
+  usesSummary?: boolean
+}
+
+export function createFieldSummaryFilterPredicate(
+  predicate: FieldRowFilterPredicate,
+): FieldRowFilterPredicate {
+  predicate.usesSummary = true
+  return predicate
+}
 
 export const [fieldFilterPipeline, setFieldFilterPipeline] = createSignal<
   Array<FieldRowFilterPredicate>
 >([])
+
+export function getFieldSummary(fieldId: FieldId): DevtoolsMountedFieldSummary {
+  return hydrateDevtoolsMountedFieldSummary(fieldSparseMetaById().get(fieldId))
+}
 
 export function isFieldPinned(fieldId: FieldId): boolean {
   return pinnedFieldIds().includes(fieldId)
@@ -65,10 +91,16 @@ export function toggleFieldPinned(fieldId: FieldId): void {
 }
 
 function compareFieldRowsByPath(
-  a: DevtoolsMountedFieldRow,
-  b: DevtoolsMountedFieldRow,
+  a: DevtoolsFieldListRow,
+  b: DevtoolsFieldListRow,
 ): number {
   return compareFieldPaths(a.path, b.path)
+}
+
+function getFieldPathLeaf(path: string): string {
+  const leaf = nameToFieldNodeSegments(path).at(-1)
+  if (leaf === undefined) return path
+  return typeof leaf === 'number' ? `[${leaf}]` : leaf
 }
 
 export function createFieldListComputations() {
@@ -78,15 +110,21 @@ export function createFieldListComputations() {
 
   const filteredFieldRows = createMemo(() => {
     const predicates = fieldFilterPipeline()
+    const rows = fieldRows()
+    if (predicates.length === 0) return rows
+    const usesSummary = predicates.some((predicate) => predicate.usesSummary)
 
-    return fieldRows().filter((field) =>
-      predicates.every((predicate) => predicate(field)),
-    )
+    return rows.filter((field) => {
+      const summary = usesSummary
+        ? getFieldSummary(field.fieldId)
+        : defaultDevtoolsMountedFieldSummary
+      return predicates.every((predicate) => predicate(field, summary))
+    })
   })
 
   const visibleFieldRows = createMemo(() => {
     const results = fuzzysort.go(fieldSearchQuery(), filteredFieldRows(), {
-      keys: ['path', 'leaf'],
+      keys: ['path', (field) => getFieldPathLeaf(field.path)],
       all: true,
       scoreFn: (results) => {
         const pathScore = results[0]?.score ?? 0
@@ -98,7 +136,7 @@ export function createFieldListComputations() {
     return results.map((obj) => obj.obj)
   })
 
-  const selectedFieldRow = createMemo<DevtoolsMountedFieldRow | null>(() => {
+  const selectedFieldRow = createMemo<DevtoolsFieldListRow | null>(() => {
     const requestedPath = selectedFieldPath()
     const rows = fieldRows()
 
@@ -112,7 +150,7 @@ export function createFieldListComputations() {
   const mainPanelFieldRows = createMemo(() => {
     const selected = selectedFieldRow()
     const seenFieldIds = new Set<FieldId>()
-    const rows: Array<DevtoolsMountedFieldRow> = []
+    const rows: Array<DevtoolsFieldListRow> = []
 
     if (selected) {
       seenFieldIds.add(selected.fieldId)
@@ -153,9 +191,29 @@ export function clearFieldRows(): void {
   batch(() => {
     setRowsByPath(new Map())
     setRowsByFieldId(new Map())
+    setFieldSparseMetaById(new Map())
     setSelectedFieldPath(null)
     setPinnedFieldIds([])
   })
+}
+
+function normalizeSummaryPatch(
+  patch: DevtoolsMountedFieldSummaryPatch | undefined,
+): DevtoolsMountedFieldSummaryPatch | undefined {
+  if (!patch) return undefined
+
+  let normalized: DevtoolsMountedFieldSummaryPatch | undefined
+  for (const key of Object.keys(patch) as Array<
+    keyof DevtoolsMountedFieldSummary
+  >) {
+    const value = patch[key]
+    if (Object.is(value, defaultDevtoolsMountedFieldSummary[key])) {
+      continue
+    }
+    normalized ??= {}
+    normalized[key] = value
+  }
+  return normalized
 }
 
 export function applyFieldListSnapshot({
@@ -163,25 +221,43 @@ export function applyFieldListSnapshot({
   fields,
 }: {
   formInstanceId: FormId
-  fields: Array<DevtoolsMountedFieldRow>
+  fields: Array<DevtoolsMountedFieldScaffold>
 }): void {
   if (formInstanceId !== subscribedFormId()) return
 
-  const nextRowsByPath = new Map<string, DevtoolsMountedFieldRow>()
-  const nextRowsByFieldId = new Map<FieldId, DevtoolsMountedFieldRow>()
+  const currentRowsByPath = rowsByPath()
+  const selectedId = selectedFieldPath()
+    ? currentRowsByPath.get(selectedFieldPath()!)?.fieldId
+    : undefined
+  const nextRowsByPath = new Map<string, DevtoolsFieldListRow>()
+  const nextRowsByFieldId = new Map<FieldId, DevtoolsFieldListRow>()
+  const nextSparseMetaById = new Map<
+    FieldId,
+    DevtoolsMountedFieldSummaryPatch
+  >()
 
-  for (const field of fields) {
+  for (const { summary, ...field } of fields) {
     nextRowsByPath.set(field.path, field)
     nextRowsByFieldId.set(field.fieldId, field)
+
+    const normalizedSummary = normalizeSummaryPatch(summary)
+    if (normalizedSummary) {
+      nextSparseMetaById.set(field.fieldId, normalizedSummary)
+    }
   }
 
   batch(() => {
     setRowsByPath(nextRowsByPath)
     setRowsByFieldId(nextRowsByFieldId)
+    setFieldSparseMetaById(nextSparseMetaById)
 
-    const requestedPath = selectedFieldPath()
-    if (requestedPath && !nextRowsByPath.has(requestedPath)) {
-      setSelectedFieldPath(null)
+    if (selectedId) {
+      setSelectedFieldPath(nextRowsByFieldId.get(selectedId)?.path ?? null)
+    } else {
+      const requestedPath = selectedFieldPath()
+      if (requestedPath && !nextRowsByPath.has(requestedPath)) {
+        setSelectedFieldPath(null)
+      }
     }
 
     const nextPinnedFieldIds = pinnedFieldIds().filter((fieldId) =>
@@ -193,6 +269,157 @@ export function applyFieldListSnapshot({
   })
 }
 
+function applySummaryChanges(
+  fieldId: FieldId,
+  setSummary: DevtoolsMountedFieldSummaryPatch | undefined,
+  clearSummary: Array<keyof DevtoolsMountedFieldSummary> | undefined,
+): boolean {
+  if (!setSummary && !clearSummary) return false
+
+  const metaById = fieldSparseMetaById()
+  const current = metaById.get(fieldId)
+  let next = current
+  let changed = false
+
+  const mutate = () => (next === current ? { ...current } : next!)
+
+  for (const key of clearSummary ?? []) {
+    if (!Object.hasOwn(next ?? {}, key)) continue
+    next = mutate()
+    delete next[key]
+    changed = true
+  }
+
+  for (const key of Object.keys(setSummary ?? {}) as Array<
+    keyof DevtoolsMountedFieldSummary
+  >) {
+    const value = setSummary![key]
+    const isBaseline = Object.is(value, defaultDevtoolsMountedFieldSummary[key])
+    const hasKey = Object.hasOwn(next ?? {}, key)
+
+    if (isBaseline) {
+      if (!hasKey) continue
+      next = mutate()
+      delete next[key]
+      changed = true
+      continue
+    }
+
+    if (hasKey && Object.is(next?.[key], value)) continue
+    next = mutate()
+    next[key] = value
+    changed = true
+  }
+
+  if (!changed) return false
+
+  if (next && Object.keys(next).length > 0) metaById.set(fieldId, next)
+  else metaById.delete(fieldId)
+  return true
+}
+
+export function applyFieldListPatch({
+  formInstanceId,
+  upsert = [],
+  remove = [],
+}: {
+  formInstanceId: FormId
+  upsert?: Array<DevtoolsMountedFieldPatch>
+  remove?: Array<FieldId>
+}): void {
+  if (formInstanceId !== subscribedFormId()) return
+
+  const byPath = rowsByPath()
+  const byFieldId = rowsByFieldId()
+  const metaById = fieldSparseMetaById()
+  let scaffoldChanged = false
+  let summaryChanged = false
+  let selectedPath = selectedFieldPath()
+  const selectedFieldId = selectedPath
+    ? byPath.get(selectedPath)?.fieldId
+    : undefined
+  let nextPinnedFieldIds: ReadonlyArray<FieldId> | undefined
+  const removedIds = new Set<FieldId>()
+
+  for (const fieldId of remove) {
+    const row = byFieldId.get(fieldId)
+    if (!row) {
+      if (metaById.delete(fieldId)) summaryChanged = true
+      continue
+    }
+
+    byFieldId.delete(fieldId)
+    byPath.delete(row.path)
+    scaffoldChanged = true
+    if (metaById.delete(fieldId)) summaryChanged = true
+    if (selectedPath === row.path) selectedPath = null
+    removedIds.add(fieldId)
+  }
+
+  // Remove every moving field's old path before assigning any final path. This
+  // keeps swaps and cycles from temporarily displacing another moving field.
+  for (const patch of upsert) {
+    if (patch.path === undefined) continue
+    const row = byFieldId.get(patch.fieldId)
+    if (!row || row.path === patch.path) continue
+    byPath.delete(row.path)
+  }
+
+  for (const patch of upsert) {
+    let row = byFieldId.get(patch.fieldId)
+
+    if (patch.path !== undefined) {
+      const displaced = byPath.get(patch.path)
+      if (displaced && displaced.fieldId !== patch.fieldId) {
+        byFieldId.delete(displaced.fieldId)
+        if (metaById.delete(displaced.fieldId)) summaryChanged = true
+        removedIds.add(displaced.fieldId)
+        if (selectedPath === displaced.path) selectedPath = null
+      }
+
+      if (!row || row.path !== patch.path) {
+        row = { fieldId: patch.fieldId, path: patch.path }
+        byPath.set(row.path, row)
+        byFieldId.set(row.fieldId, row)
+        scaffoldChanged = true
+      }
+    }
+
+    if (!row) continue
+    if (
+      applySummaryChanges(patch.fieldId, patch.setSummary, patch.clearSummary)
+    ) {
+      summaryChanged = true
+    }
+  }
+
+  if (removedIds.size > 0) {
+    const currentPins = pinnedFieldIds()
+    const nextPins = currentPins.filter((id) => !removedIds.has(id))
+    if (nextPins.length !== currentPins.length) {
+      nextPinnedFieldIds = nextPins
+    }
+  }
+
+  if (selectedFieldId) {
+    selectedPath = byFieldId.get(selectedFieldId)?.path ?? null
+  } else if (selectedPath && !byPath.has(selectedPath)) {
+    selectedPath = null
+  }
+
+  batch(() => {
+    if (scaffoldChanged) {
+      setRowsByPath(byPath)
+      setRowsByFieldId(byFieldId)
+    }
+    if (summaryChanged) setFieldSparseMetaById(metaById)
+    if (selectedPath !== selectedFieldPath()) {
+      setSelectedFieldPath(selectedPath)
+    }
+    if (nextPinnedFieldIds) setPinnedFieldIds(nextPinnedFieldIds)
+  })
+}
+
 export const fieldListCache = {
   subscribedFormId,
   setSubscribedFormId,
@@ -200,6 +427,9 @@ export const fieldListCache = {
   setRowsByPath,
   rowsByFieldId,
   setRowsByFieldId,
+  fieldSparseMetaById,
+  setFieldSparseMetaById,
+  getFieldSummary,
   selectedFieldPath,
   setSelectedFieldPath,
   pinnedFieldIds,
@@ -211,35 +441,45 @@ export const fieldListCache = {
   setFieldSearchQuery,
   fieldFilterPipeline,
   setFieldFilterPipeline,
+  createFieldSummaryFilterPredicate,
   clearRows: clearFieldRows,
   applySnapshot: applyFieldListSnapshot,
+  applyPatch: applyFieldListPatch,
 }
 
-let snapshotEventConsumers = 0
-let cleanupSnapshotEvents: (() => void) | undefined
+let fieldListEventConsumers = 0
+let cleanupFieldListEvents: (() => void) | undefined
 // Devtools roots share the cache, so bridge subscriptions must stay active
 // until the final root using a form releases them.
 const subscriptionConsumers = new Map<FormId, number>()
 
-function retainSnapshotEvents(): () => void {
-  if (snapshotEventConsumers === 0) {
-    cleanupSnapshotEvents = formDevtoolsEventClient.on(
+function retainFieldListEvents(): () => void {
+  if (fieldListEventConsumers === 0) {
+    const cleanupSnapshotEvents = formDevtoolsEventClient.on(
       'field-list-snapshot',
       (event) => applyFieldListSnapshot(event.payload),
     )
+    const cleanupPatchEvents = formDevtoolsEventClient.on(
+      'field-list-patch',
+      (event) => applyFieldListPatch(event.payload),
+    )
+    cleanupFieldListEvents = () => {
+      cleanupSnapshotEvents()
+      cleanupPatchEvents()
+    }
   }
 
-  snapshotEventConsumers++
+  fieldListEventConsumers++
   let isRetained = true
 
   return () => {
     if (!isRetained) return
     isRetained = false
-    snapshotEventConsumers--
+    fieldListEventConsumers--
 
-    if (snapshotEventConsumers === 0) {
-      cleanupSnapshotEvents?.()
-      cleanupSnapshotEvents = undefined
+    if (fieldListEventConsumers === 0) {
+      cleanupFieldListEvents?.()
+      cleanupFieldListEvents = undefined
     }
   }
 }
@@ -282,7 +522,7 @@ export function mountFieldListEvents(
   selectedForm: Accessor<DevtoolsMountedForm | null>,
 ): () => void {
   return createRoot((dispose) => {
-    const releaseSnapshotEvents = retainSnapshotEvents()
+    const releaseFieldListEvents = retainFieldListEvents()
     let activeFormId: FormId | null = null
     let releaseFormSubscription: (() => void) | undefined
 
@@ -303,7 +543,7 @@ export function mountFieldListEvents(
 
     return () => {
       releaseFormSubscription?.()
-      releaseSnapshotEvents()
+      releaseFieldListEvents()
       dispose()
     }
   })
