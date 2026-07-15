@@ -9,7 +9,7 @@ import type { FieldId } from '../src/types/branded'
 const disposers: Array<() => void> = []
 
 function field(path: string, fieldId: string) {
-  return { path, fieldId: fieldId as FieldId }
+  return { path, pathLeaf: path, fieldId: fieldId as FieldId }
 }
 
 function meta(isDirty: boolean) {

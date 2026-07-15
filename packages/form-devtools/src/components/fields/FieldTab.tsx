@@ -1,20 +1,11 @@
-import { Listbox, Splitter } from '@ark-ui/solid'
+import { Splitter } from '@ark-ui/solid'
 import { For, Show, createSignal } from 'solid-js'
-import { BookmarkIcon } from 'lucide-solid'
 import { DevtoolsTab } from '../header/TabsNav'
 import { Separator } from '../ui/separator'
 import { ScrollArea } from '../ui/scroll-area'
-import {
-  Item,
-  ItemContent,
-  ItemDescription,
-  ItemGroup,
-  ItemMedia,
-  ItemTitle,
-} from '../ui/item'
-import { LeftResizablePanel } from './LeftResizablePanel'
-import { FieldListSearch } from './listSearch/FieldListSearch'
-import { FieldListMetaBadges } from './FieldListMetaBadges'
+import { LeftResizablePanel } from './leftPanel/LeftResizablePanel'
+import { FieldListSearch } from './leftPanel/listSearch/FieldListSearch'
+import { FieldList } from './leftPanel/FieldList'
 import type { SplitterPanelData } from '@ark-ui/solid'
 import { useFormDevtoolsStore } from '@/stores/formDevtoolsStore'
 
@@ -32,30 +23,8 @@ const panels: Array<SplitterPanelData> = [
 ]
 
 export function FieldTab() {
-  const { formSelector, fieldList } = useFormDevtoolsStore()
-  const { selectedForm } = formSelector
-  const {
-    fieldRows,
-    selectedFieldRow,
-    setSelectedFieldPath,
-    fieldsListCollection,
-    mainPanelFieldRows,
-    isFieldPinned,
-    toggleFieldPinned,
-  } = fieldList
+  const { mainPanelFieldRows } = useFormDevtoolsStore().fieldList
   const [size, setSize] = createSignal([0.25, 0.75])
-
-  const emptyMessage = () => {
-    if (!selectedForm()) return 'No form selected'
-    if (fieldRows().length === 0) return 'No mounted fields'
-    return 'No matching fields'
-  }
-
-  const selectedRow = () => {
-    const id = selectedFieldRow()?.fieldId
-    if (id) return [id]
-    return []
-  }
 
   return (
     <DevtoolsTab value="field" disableScroll>
@@ -72,77 +41,7 @@ export function FieldTab() {
           <FieldListSearch />
           <Separator />
           <ScrollArea class="min-h-0">
-            <Listbox.Root
-              collection={fieldsListCollection()}
-              value={selectedRow()}
-              onValueChange={(details) => {
-                const row = fieldsListCollection().items.find(
-                  (item) => item.fieldId === details.value[0],
-                )
-                if (row) setSelectedFieldPath(row.path)
-              }}
-              selectionMode="single"
-              deselectable
-            >
-              <Listbox.Empty class="flex w-full justify-center py-2 text-center text-sm text-muted-foreground">
-                {emptyMessage()}
-              </Listbox.Empty>
-              <Listbox.Content
-                asChild={(innerProps) => (
-                  <ItemGroup {...innerProps()} class="gap-2 outline-none" />
-                )}
-              >
-                <For each={fieldsListCollection().items}>
-                  {(item) => (
-                    <Listbox.Item
-                      item={item}
-                      asChild={(innerProps) => (
-                        <Item
-                          class="group cursor-pointer hover:bg-muted/40 data-highlighted:not-data-selected:bg-muted/50 data-selected:bg-muted/50 flex-nowrap"
-                          {...innerProps()}
-                        />
-                      )}
-                    >
-                      <ItemMedia
-                        variant="default"
-                        class="group self-stretch! items-start outline-hidden"
-                        asChild={(innerProps) => (
-                          <button
-                            {...innerProps()}
-                            type="button"
-                            title={
-                              isFieldPinned(item.fieldId)
-                                ? 'Remove bookmark'
-                                : 'Bookmark'
-                            }
-                            aria-pressed={isFieldPinned(item.fieldId)}
-                            onPointerDown={(event) => event.stopPropagation()}
-                            onClick={(event) => {
-                              event.stopPropagation()
-                              toggleFieldPinned(item.fieldId)
-                            }}
-                          />
-                        )}
-                      >
-                        <BookmarkIcon class="text-foreground/80 group-focus-visible:scale-110 group-focus-visible:text-foreground group-hover:text-foreground transition-transform group-aria-pressed:text-foreground group-aria-pressed:fill-foreground size-4.5" />
-                      </ItemMedia>
-                      <ItemContent>
-                        <Listbox.ItemText
-                          asChild={(innerProps) => (
-                            <ItemTitle {...innerProps()} class="truncate" />
-                          )}
-                        >
-                          {item.path}
-                        </Listbox.ItemText>
-                        <ItemDescription class="flex flex-wrap gap-2">
-                          <FieldListMetaBadges fieldId={item.fieldId} />
-                        </ItemDescription>
-                      </ItemContent>
-                    </Listbox.Item>
-                  )}
-                </For>
-              </Listbox.Content>
-            </Listbox.Root>
+            <FieldList />
           </ScrollArea>
         </LeftResizablePanel>
         <Splitter.Panel id={mainId} class="size-full min-w-0 p-3">

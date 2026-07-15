@@ -205,6 +205,40 @@ describe('field list store', () => {
     expect(fieldList.fieldRows()).toHaveLength(3)
   })
 
+  it('exposes a path leaf that stays aligned when a field moves', () => {
+    fieldList.setSubscribedFormId(formA)
+    fieldList.applySnapshot({
+      formInstanceId: formA,
+      fields: [
+        field('user.name', 'field-name'),
+        field('items[0]', 'field-item'),
+      ],
+    })
+
+    expect(
+      fieldList.visibleFieldRows().map(({ path, pathLeaf }) => ({
+        path,
+        pathLeaf,
+      })),
+    ).toEqual([
+      { path: 'items[0]', pathLeaf: '[0]' },
+      { path: 'user.name', pathLeaf: 'name' },
+    ])
+
+    fieldList.applyPatch({
+      formInstanceId: formA,
+      upsert: [{ fieldId: 'field-name', path: 'user.email' }],
+    })
+
+    expect(
+      fieldList.visibleFieldRows().find(
+        ({ fieldId }) => fieldId === 'field-name',
+      ),
+    ).toMatchObject({ path: 'user.email', pathLeaf: 'email' })
+    expect(fieldList.rowsByPath().get('user.email')?.pathLeaf).toBe('email')
+    expect(fieldList.rowsByPath().has('user.name')).toBe(false)
+  })
+
   it('filters visible rows through each predicate before fuzzy search', () => {
     fieldList.setSubscribedFormId(formA)
     fieldList.applySnapshot({

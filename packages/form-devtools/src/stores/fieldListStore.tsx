@@ -24,7 +24,11 @@ import {
   hydrateDevtoolsMountedFieldSummary,
 } from '@/fieldSummaryMeta'
 
-export type DevtoolsFieldListRow = Omit<DevtoolsMountedFieldScaffold, 'summary'>
+export type DevtoolsFieldListRow = Readonly<
+  Omit<DevtoolsMountedFieldScaffold, 'summary'> & {
+    pathLeaf: string
+  }
+>
 
 export const [subscribedFormId, setSubscribedFormId] =
   createSignal<FormId | null>(null)
@@ -103,6 +107,15 @@ function getFieldPathLeaf(path: string): string {
   return typeof leaf === 'number' ? `[${leaf}]` : leaf
 }
 
+function createFieldListRow(
+  field: Omit<DevtoolsMountedFieldScaffold, 'summary'>,
+): DevtoolsFieldListRow {
+  return {
+    ...field,
+    pathLeaf: getFieldPathLeaf(field.path),
+  }
+}
+
 export function createFieldListComputations() {
   const fieldRows = createMemo(() =>
     Array.from(rowsByPath().values()).sort(compareFieldRowsByPath),
@@ -124,7 +137,7 @@ export function createFieldListComputations() {
 
   const visibleFieldRows = createMemo(() => {
     const results = fuzzysort.go(fieldSearchQuery(), filteredFieldRows(), {
-      keys: ['path', (field) => getFieldPathLeaf(field.path)],
+      keys: ['path', 'pathLeaf'],
       all: true,
       scoreFn: (results) => {
         const pathScore = results[0]?.score ?? 0
@@ -245,12 +258,13 @@ export function applyFieldListSnapshot({
   >()
 
   for (const { summary, ...field } of fields) {
-    nextRowsByPath.set(field.path, field)
-    nextRowsByFieldId.set(field.fieldId, field)
+    const row = createFieldListRow(field)
+    nextRowsByPath.set(row.path, row)
+    nextRowsByFieldId.set(row.fieldId, row)
 
     const normalizedSummary = normalizeSummaryPatch(summary)
     if (normalizedSummary) {
-      nextSparseMetaById.set(field.fieldId, normalizedSummary)
+      nextSparseMetaById.set(row.fieldId, normalizedSummary)
     }
   }
 
@@ -386,7 +400,10 @@ export function applyFieldListPatch({
       }
 
       if (!row || row.path !== patch.path) {
-        row = { fieldId: patch.fieldId, path: patch.path }
+        row = createFieldListRow({
+          fieldId: patch.fieldId,
+          path: patch.path,
+        })
         byPath.set(row.path, row)
         byFieldId.set(row.fieldId, row)
         scaffoldChanged = true

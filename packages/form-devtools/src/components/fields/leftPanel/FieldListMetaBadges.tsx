@@ -1,5 +1,5 @@
 import { Show } from 'solid-js'
-import { FieldMetaBadge } from './FieldMetaBadge'
+import { FieldMetaBadge } from '../FieldMetaBadge'
 import type { FieldId } from '@/types/branded'
 import { useFormDevtoolsStore } from '@/stores/formDevtoolsStore'
 

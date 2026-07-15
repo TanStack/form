@@ -13,13 +13,21 @@ import { cn } from '@/utils'
  *
  * @example
  * ```tsx
- * <ScrollArea class="h-40">
+ * <ScrollArea class="h-40" horizontalScrollbar>
  *   <div class="p-4">Scrollable content</div>
  * </ScrollArea>
  * ```
  */
-function ScrollArea(props: ScrollAreaPrimitive.RootProps) {
-  const [local, others] = splitProps(props, ['class', 'children'])
+interface ScrollAreaProps extends ScrollAreaPrimitive.RootProps {
+  horizontalScrollbar?: boolean
+}
+
+function ScrollArea(props: ScrollAreaProps) {
+  const [local, others] = splitProps(props, [
+    'class',
+    'children',
+    'horizontalScrollbar',
+  ])
 
   return (
     <ScrollAreaPrimitive.Root
@@ -39,28 +47,14 @@ function ScrollArea(props: ScrollAreaPrimitive.RootProps) {
         </ScrollAreaPrimitive.Content>
       </ScrollAreaPrimitive.Viewport>
       <ScrollBar />
+      {local.horizontalScrollbar && <ScrollBar orientation="horizontal" />}
       <ScrollAreaPrimitive.Corner data-slot="scroll-area-corner" />
     </ScrollAreaPrimitive.Root>
   )
 }
 
 /**
- * An optional scrollbar part for ScrollArea.
- *
- * ScrollArea renders a vertical scrollbar by default; add ScrollBar when a
- * horizontal scrollbar is needed for wide content.
- *
- * @example
- * ```tsx
- * <ScrollArea class="w-72 whitespace-nowrap">
- *   <div class="flex w-max gap-4 p-4">
- *     <span>Overview</span>
- *     <span>Analytics</span>
- *     <span>Reports</span>
- *   </div>
- *   <ScrollBar orientation="horizontal" />
- * </ScrollArea>
- * ```
+ * The styled scrollbar part used by ScrollArea.
  */
 function ScrollBar(props: ScrollAreaPrimitive.ScrollbarProps) {
   const [local, others] = splitProps(props, ['class', 'orientation'])

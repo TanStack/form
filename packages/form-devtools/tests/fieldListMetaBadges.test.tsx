@@ -1,6 +1,6 @@
 import { render } from 'solid-js/web'
 import { afterEach, describe, expect, it } from 'vitest'
-import { FieldListMetaBadges } from '../src/components/fields/FieldListMetaBadges'
+import { FieldListMetaBadges } from '../src/components/fields/leftPanel/FieldListMetaBadges'
 import {
   FormDevtoolsStoreProvider,
   useFormDevtoolsStore,
