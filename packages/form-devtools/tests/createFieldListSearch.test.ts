@@ -13,7 +13,7 @@ function field(path: string, fieldId: string) {
 }
 
 function meta(isDirty: boolean) {
-  return { isDirty, isTouched: false }
+  return { isDirty, isTouched: false, validity: 'valid' as const }
 }
 
 afterEach(() => {
@@ -115,5 +115,72 @@ describe('field list search', () => {
     expect(
       pristinePredicate(field('pristine', 'field-pristine'), meta(false)),
     ).toBe(true)
+  })
+
+  it('filters Invalid and Valid rows from hydrated summaries', async () => {
+    let search!: ReturnType<typeof createFieldListSearch>
+    let activePipeline!: () => Array<FieldRowFilterPredicate>
+
+    const dispose = render(() => {
+      const [query, setQuery] = createSignal('')
+      const [filterPipeline, setFilterPipeline] = createSignal<
+        Array<FieldRowFilterPredicate>
+      >([])
+
+      activePipeline = filterPipeline
+      search = createFieldListSearch({
+        query,
+        setQuery,
+        setFilterPipeline,
+      })
+
+      return null
+    }, document.createElement('div'))
+    disposers.push(dispose)
+
+    search.tagsInputApi().addValue('invalid')
+    await Promise.resolve()
+
+    const invalidPredicate = activePipeline()[0]!
+    expect(invalidPredicate.usesSummary).toBe(true)
+    expect(
+      invalidPredicate(field('invalid', 'field-invalid'), {
+        ...meta(false),
+        validity: 'invalid',
+      }),
+    ).toBe(true)
+    expect(
+      invalidPredicate(field('hidden', 'field-hidden'), {
+        ...meta(false),
+        validity: 'invalidHidden',
+      }),
+    ).toBe(true)
+    expect(invalidPredicate(field('valid', 'field-valid'), meta(false))).toBe(
+      false,
+    )
+    expect(
+      search.tagsSuggestions().items.map((filter) => filter.id),
+    ).not.toContain('valid')
+
+    search.clearSelection()
+    search.tagsInputApi().addValue('valid')
+    await Promise.resolve()
+
+    const validPredicate = activePipeline()[0]!
+    expect(
+      validPredicate(field('invalid', 'field-invalid'), {
+        ...meta(false),
+        validity: 'invalid',
+      }),
+    ).toBe(false)
+    expect(
+      validPredicate(field('hidden', 'field-hidden'), {
+        ...meta(false),
+        validity: 'invalidHidden',
+      }),
+    ).toBe(false)
+    expect(validPredicate(field('valid', 'field-valid'), meta(false))).toBe(
+      true,
+    )
   })
 })

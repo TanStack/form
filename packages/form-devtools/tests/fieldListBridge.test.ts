@@ -62,6 +62,30 @@ describe('field list bridge', () => {
       await flushPatches()
       expect(patches).toHaveLength(patchCount)
 
+      field._setMeta((meta) => ({
+        ...meta,
+        _fieldValidatorErrors: [[{ message: 'Invalid name' }]],
+      }))
+      fields.updateField(field)
+      await flushPatches()
+      expect(field.meta.isValid).toBe(false)
+      expect(patches.at(-1)).toEqual({
+        formInstanceId: instanceId,
+        upsert: [{ fieldId, setSummary: { validity: 'invalid' } }],
+      })
+
+      field._setMeta((meta) => ({
+        ...meta,
+        _fieldValidatorErrors: [[]],
+      }))
+      fields.updateField(field)
+      await flushPatches()
+      expect(field.meta.isValid).toBe(true)
+      expect(patches.at(-1)).toEqual({
+        formInstanceId: instanceId,
+        upsert: [{ fieldId, clearSummary: ['validity'] }],
+      })
+
       field._setMeta((meta) => ({ ...meta, isDirty: false }))
       fields.updateField(field)
       await flushPatches()

@@ -197,6 +197,14 @@ export function clearFieldRows(): void {
   })
 }
 
+function setSummaryValue<TKey extends keyof DevtoolsMountedFieldSummary>(
+  summary: DevtoolsMountedFieldSummaryPatch,
+  key: TKey,
+  value: DevtoolsMountedFieldSummary[TKey] | undefined,
+): void {
+  summary[key] = value
+}
+
 function normalizeSummaryPatch(
   patch: DevtoolsMountedFieldSummaryPatch | undefined,
 ): DevtoolsMountedFieldSummaryPatch | undefined {
@@ -211,7 +219,7 @@ function normalizeSummaryPatch(
       continue
     }
     normalized ??= {}
-    normalized[key] = value
+    setSummaryValue(normalized, key, value)
   }
   return normalized
 }
@@ -307,7 +315,7 @@ function applySummaryChanges(
 
     if (hasKey && Object.is(next?.[key], value)) continue
     next = mutate()
-    next[key] = value
+    setSummaryValue(next, key, value)
     changed = true
   }
 

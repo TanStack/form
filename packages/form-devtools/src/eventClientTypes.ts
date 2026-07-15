@@ -5,9 +5,12 @@ export interface DevtoolsMountedForm {
   instanceId: FormId
 }
 
+export type DevtoolsMountedFieldValidity = 'valid' | 'invalidHidden' | 'invalid'
+
 export interface DevtoolsMountedFieldSummary {
   isDirty: boolean
   isTouched: boolean
+  validity: DevtoolsMountedFieldValidity
 }
 
 export type DevtoolsMountedFieldSummaryPatch =

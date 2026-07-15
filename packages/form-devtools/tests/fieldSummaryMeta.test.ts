@@ -33,6 +33,23 @@ describe('field summary meta', () => {
         isTouched: true,
       }),
     ).toEqual({ isTouched: true })
+    expect(
+      toDevtoolsMountedFieldSummaryPatch({
+        ...defaultFieldMeta,
+        isValid: false,
+        isInvalid: true,
+      }),
+    ).toEqual({ validity: 'invalid' })
+    expect(
+      toDevtoolsMountedFieldSummaryPatch({
+        ...defaultFieldMeta,
+        original: {
+          ...defaultFieldMeta.original,
+          isValid: false,
+          isInvalid: true,
+        },
+      }),
+    ).toEqual({ validity: 'invalidHidden' })
   })
 
   it('hydrates sparse patches against the Devtools baseline', () => {
@@ -45,10 +62,19 @@ describe('field summary meta', () => {
     expect(hydrateDevtoolsMountedFieldSummary({ isDirty: true })).toEqual({
       isDirty: true,
       isTouched: false,
+      validity: 'valid',
     })
     expect(hydrateDevtoolsMountedFieldSummary({ isTouched: true })).toEqual({
       isDirty: false,
       isTouched: true,
+      validity: 'valid',
+    })
+    expect(
+      hydrateDevtoolsMountedFieldSummary({ validity: 'invalidHidden' }),
+    ).toEqual({
+      isDirty: false,
+      isTouched: false,
+      validity: 'invalidHidden',
     })
   })
 

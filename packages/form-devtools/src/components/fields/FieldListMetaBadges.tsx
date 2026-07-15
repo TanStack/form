@@ -12,6 +12,12 @@ export function FieldListMetaBadges(props: FieldListMetaBadgesProps) {
   const meta = () => getFieldSummary(props.fieldId)
   return (
     <>
+      <Show when={meta().validity === 'invalid'}>
+        <FieldMetaBadge kind="invalid" />
+      </Show>
+      <Show when={meta().validity === 'invalidHidden'}>
+        <FieldMetaBadge kind="invalidHidden" />
+      </Show>
       <Show when={meta().isDirty}>
         <FieldMetaBadge kind="dirty" />
       </Show>

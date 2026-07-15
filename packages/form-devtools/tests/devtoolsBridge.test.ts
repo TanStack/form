@@ -38,6 +38,47 @@ describe('form devtools bridge field snapshots', () => {
       expect(
         getMountedFieldRowsSnapshot(form, identity)[0]?.summary,
       ).toBeUndefined()
+
+      mountedField._setMeta((meta) => ({
+        ...meta,
+        _fieldValidatorErrors: [[{ message: 'Invalid name' }]],
+      }))
+      expect(getMountedFieldRowsSnapshot(form, identity)[0]?.summary).toEqual({
+        validity: 'invalid',
+      })
+
+      mountedField._setMeta((meta) => ({
+        ...meta,
+        _fieldValidatorErrors: [[]],
+      }))
+      expect(
+        getMountedFieldRowsSnapshot(form, identity)[0]?.summary,
+      ).toBeUndefined()
+    } finally {
+      unregister()
+    }
+  })
+
+  it('distinguishes errors hidden by error visibility', () => {
+    const identity = createFieldIdentityController()
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      errorVisibility: () => false,
+    })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+    const unregister = field._register()
+
+    try {
+      field._setMeta((meta) => ({
+        ...meta,
+        _fieldValidatorErrors: [[{ message: 'Invalid name' }]],
+      }))
+
+      expect(field.meta.isValid).toBe(true)
+      expect(field.meta.original.isValid).toBe(false)
+      expect(getMountedFieldRowsSnapshot(form, identity)[0]?.summary).toEqual({
+        validity: 'invalidHidden',
+      })
     } finally {
       unregister()
     }

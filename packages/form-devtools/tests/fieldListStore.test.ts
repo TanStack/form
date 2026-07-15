@@ -86,6 +86,7 @@ describe('field list store', () => {
     expect(fieldList.getFieldSummary('field-email')).toEqual({
       isDirty: true,
       isTouched: false,
+      validity: 'valid',
     })
     expect(fieldList.getFieldSummary('another-pristine-field')).toBe(
       fieldList.getFieldSummary('field-name'),
@@ -111,6 +112,7 @@ describe('field list store', () => {
     expect(fieldList.getFieldSummary('field-name')).toEqual({
       isDirty: true,
       isTouched: false,
+      validity: 'valid',
     })
 
     fieldList.applyPatch({
@@ -178,6 +180,7 @@ describe('field list store', () => {
     expect(fieldList.getFieldSummary('field-0')).toEqual({
       isDirty: true,
       isTouched: false,
+      validity: 'valid',
     })
     expect(fieldList.rowsByPath().get('items[0]')?.fieldId).toBe('field-1')
     expect(fieldList.rowsByPath().get('items[1]')?.fieldId).toBe('field-0')

@@ -3,11 +3,13 @@ import type { InternalFieldMeta } from '@tanstack/form-core/internals'
 import type {
   DevtoolsMountedFieldSummary,
   DevtoolsMountedFieldSummaryPatch,
+  DevtoolsMountedFieldValidity,
 } from './eventClientTypes'
 
 export const defaultDevtoolsMountedFieldSummary = Object.freeze({
   isDirty: defaultFieldMeta.isDirty,
   isTouched: defaultFieldMeta.isTouched,
+  validity: toDevtoolsMountedFieldValidity(defaultFieldMeta),
 }) satisfies DevtoolsMountedFieldSummary
 
 export function toDevtoolsMountedFieldSummary(
@@ -16,7 +18,17 @@ export function toDevtoolsMountedFieldSummary(
   return {
     isDirty: meta.isDirty,
     isTouched: meta.isTouched,
+    validity: toDevtoolsMountedFieldValidity(meta),
   }
+}
+
+function toDevtoolsMountedFieldValidity(
+  meta: InternalFieldMeta,
+): DevtoolsMountedFieldValidity {
+  // The public projection can be valid while original meta retains hidden errors.
+  if (!meta.isValid) return 'invalid'
+  if (!meta.original.isValid) return 'invalidHidden'
+  return 'valid'
 }
 
 export function createBaselinePatch<T extends object>(

@@ -26,7 +26,7 @@ function StoreCapture(props: { onStore: (store: FormDevtoolsStore) => void }) {
 }
 
 describe('field list meta badges', () => {
-  it('renders touched only while the sparse summary is touched', () => {
+  it('renders active non-default summary badges', () => {
     disposers.push(connectTestEventBus())
     const container = document.createElement('div')
     let store!: FormDevtoolsStore
@@ -44,17 +44,33 @@ describe('field list meta badges', () => {
     store.fieldList.setSubscribedFormId(formId)
     store.fieldList.applySnapshot({
       formInstanceId: formId,
-      fields: [{ fieldId, path: 'name', summary: { isTouched: true } }],
+      fields: [
+        {
+          fieldId,
+          path: 'name',
+          summary: { isTouched: true, validity: 'invalidHidden' },
+        },
+      ],
     })
 
     expect(container.textContent).toContain('Touched')
+    expect(container.textContent).toContain('Invalid (hidden)')
     expect(container.textContent).not.toContain('Dirty')
 
     store.fieldList.applyPatch({
       formInstanceId: formId,
-      upsert: [{ fieldId, clearSummary: ['isTouched'] }],
+      upsert: [{ fieldId, setSummary: { validity: 'invalid' } }],
+    })
+
+    expect(container.textContent).toContain('Invalid')
+    expect(container.textContent).not.toContain('Invalid (hidden)')
+
+    store.fieldList.applyPatch({
+      formInstanceId: formId,
+      upsert: [{ fieldId, clearSummary: ['isTouched', 'validity'] }],
     })
 
     expect(container.textContent).not.toContain('Touched')
+    expect(container.textContent).not.toContain('Invalid')
   })
 })

@@ -60,6 +60,9 @@ const allFieldFilters: Array<FieldListFilter> = [
     aliases: ['Not valid', 'Errors'],
     description: 'Has shown or hidden errors',
     icon: XIcon,
+    predicate: createFieldSummaryFilterPredicate(
+      (_field, summary) => summary.validity !== 'valid',
+    ),
   },
   {
     label: 'Valid',
@@ -68,6 +71,9 @@ const allFieldFilters: Array<FieldListFilter> = [
     aliases: ['Not invalid', 'No errors'],
     description: 'Has no stored errors',
     icon: CheckIcon,
+    predicate: createFieldSummaryFilterPredicate(
+      (_field, summary) => summary.validity === 'valid',
+    ),
   },
   {
     label: 'Dirty',
