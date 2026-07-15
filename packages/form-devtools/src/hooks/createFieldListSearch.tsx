@@ -9,6 +9,10 @@ import fuzzysort from 'fuzzysort'
 import {
   BookmarkIcon,
   CheckIcon,
+  EqualIcon,
+  EqualNotIcon,
+  EyeIcon,
+  EyeOffIcon,
   PencilIcon,
   PencilSparklesIcon,
   PointerIcon,
@@ -40,6 +44,7 @@ type FieldFilterGroup =
   | 'valid'
   | 'mounted'
   | 'touched'
+  | 'blurred'
   | 'defaultValue'
 
 export interface FieldListFilter {
@@ -117,6 +122,50 @@ const allFieldFilters: Array<FieldListFilter> = [
     icon: PointerOffIcon,
     predicate: createFieldSummaryFilterPredicate(
       (_field, summary) => !summary.isTouched,
+    ),
+  },
+  {
+    label: 'Blurred',
+    id: 'blurred',
+    group: 'blurred',
+    aliases: ['Was blurred', 'Visited'],
+    description: 'Has lost focus at least once',
+    icon: EyeOffIcon,
+    predicate: createFieldSummaryFilterPredicate(
+      (_field, summary) => summary.isBlurred,
+    ),
+  },
+  {
+    label: 'Not blurred',
+    id: 'not-blurred',
+    group: 'blurred',
+    aliases: ['Never blurred', 'Not visited'],
+    description: 'Was not focused or has not lost it yet',
+    icon: EyeIcon,
+    predicate: createFieldSummaryFilterPredicate(
+      (_field, summary) => !summary.isBlurred,
+    ),
+  },
+  {
+    label: 'Default value',
+    id: 'default-value',
+    group: 'defaultValue',
+    aliases: ['Initial value', 'Unchanged value', 'Same value'],
+    description: 'Matches its default value',
+    icon: EqualIcon,
+    predicate: createFieldSummaryFilterPredicate(
+      (_field, summary) => summary.isDefaultValue,
+    ),
+  },
+  {
+    label: 'Non-default value',
+    id: 'non-default-value',
+    group: 'defaultValue',
+    aliases: ['Modified value', 'Changed value', 'Different value'],
+    description: 'Does not match its default value',
+    icon: EqualNotIcon,
+    predicate: createFieldSummaryFilterPredicate(
+      (_field, summary) => !summary.isDefaultValue,
     ),
   },
   {

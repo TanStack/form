@@ -86,6 +86,8 @@ describe('field list store', () => {
     expect(fieldList.getFieldSummary('field-email')).toEqual({
       isDirty: true,
       isTouched: false,
+      isBlurred: false,
+      isDefaultValue: true,
       validity: 'valid',
     })
     expect(fieldList.getFieldSummary('another-pristine-field')).toBe(
@@ -112,6 +114,8 @@ describe('field list store', () => {
     expect(fieldList.getFieldSummary('field-name')).toEqual({
       isDirty: true,
       isTouched: false,
+      isBlurred: false,
+      isDefaultValue: true,
       validity: 'valid',
     })
 
@@ -180,6 +184,8 @@ describe('field list store', () => {
     expect(fieldList.getFieldSummary('field-0')).toEqual({
       isDirty: true,
       isTouched: false,
+      isBlurred: false,
+      isDefaultValue: true,
       validity: 'valid',
     })
     expect(fieldList.rowsByPath().get('items[0]')?.fieldId).toBe('field-1')

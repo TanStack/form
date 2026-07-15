@@ -51,7 +51,7 @@ export function FieldListItems() {
           <ItemContent>
             <Listbox.ItemText
               asChild={(innerProps) => (
-                <ItemTitle {...innerProps()} class="gap-0" />
+                <ItemTitle {...innerProps()} class="gap-0 font-mono" />
               )}
             >
               <FieldLabel path={item.path} leaf={item.pathLeaf} />

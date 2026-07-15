@@ -10,6 +10,8 @@ export type DevtoolsMountedFieldValidity = 'valid' | 'invalidHidden' | 'invalid'
 export interface DevtoolsMountedFieldSummary {
   isDirty: boolean
   isTouched: boolean
+  isBlurred: boolean
+  isDefaultValue: boolean
   validity: DevtoolsMountedFieldValidity
 }
 

@@ -21,6 +21,7 @@ import {
   setIndexedError,
 } from '../validation.lib'
 import { transformFieldOptionsFieldNames } from '../FieldApi/FieldApi.lib'
+import { visitFieldSubtree } from '../FieldApi/fieldTraversal.lib'
 import { hasFieldMetaErrors } from '../FieldApi/fieldState.lib'
 import { parseStandardSchemaIssues } from '../standardSchema.lib'
 import { createErrorMap } from '../validation.public'
@@ -394,11 +395,7 @@ export class InternalFormGroupApi<
     const root = this.form._tryGetFieldApi(this.name)
     if (!root) return
 
-    const visit = (field: AnyInternalFieldApi) => {
-      visitor(field)
-      field._children.forEach(visit)
-    }
-    visit(root)
+    visitFieldSubtree(root, visitor)
   }
 
   async _runFieldValidations(

@@ -11,6 +11,11 @@ import {
   getChildContributionStates,
   isPrunableMeta,
 } from './fieldState.lib'
+import {
+  collectFieldSubtree,
+  visitAllFormFields,
+  visitFieldAndAncestors,
+} from './fieldTraversal.lib'
 import type { FieldListenerTriggers } from '../listeners.public'
 import type {
   AnyInternalFieldApi,
@@ -43,21 +48,6 @@ const rootCounterContributionKeys: Array<RootCounterContributionKey> = [
   'touched',
   'validating',
 ]
-
-function collectFieldSubtree(
-  field: AnyInternalFieldApi,
-): Array<AnyInternalFieldApi> {
-  const stack: Array<AnyInternalFieldApi> = [field]
-  const fields: Array<AnyInternalFieldApi> = []
-
-  while (stack.length > 0) {
-    const node = stack.pop()!
-    fields.push(node)
-    stack.push(...node._children)
-  }
-
-  return fields
-}
 
 function clearWatchedSourceReference(
   listenToFields: FieldListenToFields | null,
@@ -423,28 +413,19 @@ export function canPruneField(field: AnyInternalFieldApi): boolean {
 }
 
 export function pruneFieldIfUnused(field: AnyInternalFieldApi): void {
-  let node: AnyInternalFieldApi | InternalRootFieldApi = field
-
-  while (!node._isRoot) {
-    if (!canPruneField(node)) {
-      break
-    }
+  visitFieldAndAncestors(field, (node) => {
+    if (!canPruneField(node)) return false
 
     node._parent._removeChild(node._segment)
-
-    node = node._parent
-  }
+    return undefined
+  })
 }
 
 export function touchAllFieldsAndCollectSubmitValidators(
   root: InternalRootFieldApi,
 ): Array<AnyInternalFieldApi> {
   const fieldsWithValidators: Array<AnyInternalFieldApi> = []
-  const stack = [...root._children]
-
-  while (stack.length > 0) {
-    const field = stack.pop()!
-
+  visitAllFormFields(root, (field) => {
     field._notifyEvent(
       {
         causeValidation: false,
@@ -458,12 +439,10 @@ export function touchAllFieldsAndCollectSubmitValidators(
       'submit',
     )
 
-    stack.push(...field._children)
-
     if (field._validators && field._validators.length > 0) {
       fieldsWithValidators.push(field)
     }
-  }
+  })
 
   return fieldsWithValidators
 }

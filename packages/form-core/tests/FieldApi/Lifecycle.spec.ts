@@ -102,9 +102,12 @@ describe('field - lifecycle', () => {
       }
     })
 
-    it('notifies field value updates even when summary meta is unchanged', () => {
-      const form = new InternalFormApi({ defaultValues: { name: '' } })
-      const field = form._getOrCreateFieldApi({ name: 'name' })
+    it('notifies field value updates for the field and its parents even when summary meta is unchanged', () => {
+      const form = new InternalFormApi({
+        defaultValues: { user: { name: '' } },
+      })
+      const parent = form._getOrCreateFieldApi({ name: 'user' })
+      const field = form._getOrCreateFieldApi({ name: 'user.name' })
       const updateField = vi.fn()
       const uninstallBridge = installDevtoolsBridge({ updateField })
 
@@ -115,6 +118,28 @@ describe('field - lifecycle', () => {
         field.handleChange('second')
 
         expect(field.meta.isDirty).toBe(true)
+        expect(updateField).toHaveBeenCalledWith(field)
+        expect(updateField).toHaveBeenCalledWith(parent)
+      } finally {
+        uninstallBridge()
+      }
+    })
+
+    it('notifies field and default value updates that bypass field change events', () => {
+      const form = new InternalFormApi({ defaultValues: { name: '' } })
+      const field = form._getOrCreateFieldApi({ name: 'name' })
+      const updateField = vi.fn()
+      const uninstallBridge = installDevtoolsBridge({ updateField })
+
+      try {
+        field.handleChange('changed')
+        updateField.mockClear()
+
+        form.resetField('name')
+        expect(updateField).toHaveBeenCalledWith(field)
+
+        updateField.mockClear()
+        form._update({ defaultValues: { name: 'new default' } })
         expect(updateField).toHaveBeenCalledWith(field)
       } finally {
         uninstallBridge()

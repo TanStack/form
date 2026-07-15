@@ -1,4 +1,5 @@
 export * from './FieldApi/FieldApi.lib'
+export * from './FieldApi/fieldTraversal.lib'
 export * from './FieldApi/fieldState.lib'
 export * from './FormApi/FormApi.lib'
 export * from './FormGroupApi/FormGroupApi.lib'

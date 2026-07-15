@@ -36,6 +36,18 @@ describe('field summary meta', () => {
     expect(
       toDevtoolsMountedFieldSummaryPatch({
         ...defaultFieldMeta,
+        isBlurred: true,
+      }),
+    ).toEqual({ isBlurred: true })
+    expect(
+      toDevtoolsMountedFieldSummaryPatch({
+        ...defaultFieldMeta,
+        isDefaultValue: false,
+      }),
+    ).toEqual({ isDefaultValue: false })
+    expect(
+      toDevtoolsMountedFieldSummaryPatch({
+        ...defaultFieldMeta,
         isValid: false,
         isInvalid: true,
       }),
@@ -62,11 +74,15 @@ describe('field summary meta', () => {
     expect(hydrateDevtoolsMountedFieldSummary({ isDirty: true })).toEqual({
       isDirty: true,
       isTouched: false,
+      isBlurred: false,
+      isDefaultValue: true,
       validity: 'valid',
     })
     expect(hydrateDevtoolsMountedFieldSummary({ isTouched: true })).toEqual({
       isDirty: false,
       isTouched: true,
+      isBlurred: false,
+      isDefaultValue: true,
       validity: 'valid',
     })
     expect(
@@ -74,6 +90,8 @@ describe('field summary meta', () => {
     ).toEqual({
       isDirty: false,
       isTouched: false,
+      isBlurred: false,
+      isDefaultValue: true,
       validity: 'invalidHidden',
     })
   })

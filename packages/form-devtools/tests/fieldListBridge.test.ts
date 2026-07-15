@@ -53,14 +53,41 @@ describe('field list bridge', () => {
       expect(snapshots).toHaveLength(1)
       expect(patches.at(-1)).toEqual({
         formInstanceId: instanceId,
-        upsert: [{ fieldId, setSummary: { isDirty: true, isTouched: true } }],
+        upsert: [
+          {
+            fieldId,
+            setSummary: {
+              isDirty: true,
+              isTouched: true,
+              isDefaultValue: false,
+            },
+          },
+        ],
       })
 
       const patchCount = patches.length
       field._setMeta((meta) => ({ ...meta, isBlurred: true }))
       fields.updateField(field)
       await flushPatches()
-      expect(patches).toHaveLength(patchCount)
+      expect(patches).toHaveLength(patchCount + 1)
+      expect(patches.at(-1)).toEqual({
+        formInstanceId: instanceId,
+        upsert: [{ fieldId, setSummary: { isBlurred: true } }],
+      })
+
+      field._setMeta((meta) => ({ ...meta, isBlurred: false }))
+      fields.updateField(field)
+      await flushPatches()
+      expect(patches.at(-1)).toEqual({
+        formInstanceId: instanceId,
+        upsert: [{ fieldId, clearSummary: ['isBlurred'] }],
+      })
+
+      const patchCountAfterBlur = patches.length
+      field._setMeta((meta) => ({ ...meta, isValidating: true }))
+      fields.updateField(field)
+      await flushPatches()
+      expect(patches).toHaveLength(patchCountAfterBlur)
 
       field._setMeta((meta) => ({
         ...meta,
@@ -84,6 +111,20 @@ describe('field list bridge', () => {
       expect(patches.at(-1)).toEqual({
         formInstanceId: instanceId,
         upsert: [{ fieldId, clearSummary: ['validity'] }],
+      })
+
+      field.handleChange('', {
+        markAsDirty: false,
+        markAsTouched: false,
+        causeValidation: false,
+      })
+      fields.updateField(field)
+      await flushPatches()
+      expect(field.meta.isDefaultValue).toBe(true)
+      expect(field.meta.isDirty).toBe(true)
+      expect(patches.at(-1)).toEqual({
+        formInstanceId: instanceId,
+        upsert: [{ fieldId, clearSummary: ['isDefaultValue'] }],
       })
 
       field._setMeta((meta) => ({ ...meta, isDirty: false }))
@@ -117,6 +158,7 @@ describe('field list bridge', () => {
       expect(snapshots.at(-1)?.fields[0]?.summary).toEqual({
         isDirty: true,
         isTouched: true,
+        isDefaultValue: false,
       })
 
       const patchCountBeforeUnmount = patches.length
@@ -244,11 +286,59 @@ describe('field list bridge', () => {
         expect.arrayContaining([
           {
             fieldId: fieldIds.get('user'),
-            setSummary: { isDirty: true, isTouched: true },
+            setSummary: {
+              isDirty: true,
+              isTouched: true,
+              isDefaultValue: false,
+            },
           },
           {
             fieldId: fieldIds.get('user.name'),
-            setSummary: { isDirty: true, isTouched: true },
+            setSummary: {
+              isDirty: true,
+              isTouched: true,
+              isDefaultValue: false,
+            },
+          },
+        ]),
+      )
+
+      patches.length = 0
+      child.handleChange('', { causeValidation: false })
+      expect(parent.meta.isDefaultValue).toBe(true)
+      expect(child.meta.isDefaultValue).toBe(true)
+      await flushPatches()
+
+      expect(patches).toHaveLength(1)
+      expect(patches[0]?.upsert).toEqual(
+        expect.arrayContaining([
+          {
+            fieldId: fieldIds.get('user'),
+            clearSummary: ['isDefaultValue'],
+          },
+          {
+            fieldId: fieldIds.get('user.name'),
+            clearSummary: ['isDefaultValue'],
+          },
+        ]),
+      )
+
+      patches.length = 0
+      form._update({
+        defaultValues: { user: { name: 'new default' } },
+      })
+      await flushPatches()
+
+      expect(patches).toHaveLength(1)
+      expect(patches[0]?.upsert).toEqual(
+        expect.arrayContaining([
+          {
+            fieldId: fieldIds.get('user'),
+            setSummary: { isDefaultValue: false },
+          },
+          {
+            fieldId: fieldIds.get('user.name'),
+            setSummary: { isDefaultValue: false },
           },
         ]),
       )

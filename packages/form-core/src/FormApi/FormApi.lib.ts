@@ -19,6 +19,10 @@ import {
 } from '../utils.lib'
 import { InternalRootFieldApi } from '../FieldApi/RootFieldApi.lib'
 import {
+  visitAllFormFields,
+  visitFieldAndAncestors,
+} from '../FieldApi/fieldTraversal.lib'
+import {
   clearIndexedErrorsFromSource,
   isAggregateError,
   isErrorResult,
@@ -184,6 +188,22 @@ function applyDefaultValuesPreservingTouchedFields<TFormData>(
   }
 
   return nextValues
+}
+
+function notifyDevtoolsFieldValueUpdate(
+  field: AnyInternalFieldApi | null | undefined,
+): void {
+  const updateField = devtools().updateField
+  if (!field || !updateField) return
+
+  visitFieldAndAncestors(field, updateField)
+}
+
+function notifyDevtoolsDefaultValuesUpdate(form: AnyInternalFormApi): void {
+  const updateField = devtools().updateField
+  if (!updateField) return
+
+  visitAllFormFields(form._fieldRootNode, updateField)
 }
 
 export class InternalFormApi<
@@ -464,6 +484,7 @@ export class InternalFormApi<
       this._options.serverState ?? null,
       options.defaultValues,
     )
+    if (didDefaultValuesChange) notifyDevtoolsDefaultValuesUpdate(this)
     devtools().updateForm?.(this)
   }
 
@@ -491,7 +512,7 @@ export class InternalFormApi<
       this._notifyFieldChange(field, updateOptions)
     })
 
-    if (field) devtools().updateField?.(field)
+    notifyDevtoolsFieldValueUpdate(field)
   }
 
   resetField = <TFieldName extends DeepKeys<TFormData>>(
@@ -504,6 +525,7 @@ export class InternalFormApi<
     )
 
     field?._children.forEach((child) => child._kill({ listenerEvent: 'reset' }))
+    notifyDevtoolsFieldValueUpdate(field)
   }
 
   // TODO type safety: DeepKeys that extend undefined?

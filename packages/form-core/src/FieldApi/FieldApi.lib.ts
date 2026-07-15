@@ -32,6 +32,7 @@ import {
   pruneFieldIfUnused,
   updateChildContributionCount,
 } from './fieldTree.lib'
+import { visitFieldAndAncestors } from './fieldTraversal.lib'
 import type { InternalRootFieldApi } from './RootFieldApi.lib'
 import type {
   DeepKeys,
@@ -667,18 +668,15 @@ export class InternalFieldApi<
   _triggerValidationCascade(event: 'change' | 'blur' | 'submit'): void {
     if (this._isKilled) return
 
-    let current: AnyInternalFieldApi | InternalRootFieldApi = this
     const seenValidatorFields = new WeakSet<AnyInternalFieldApi>()
 
-    while (!current._isRoot) {
-      if (current._isKilled) {
-        break
-      }
+    visitFieldAndAncestors(this, (current) => {
+      if (current._isKilled) return false
 
       current._runFieldValidation(event)
       current._notifyValidator(event, seenValidatorFields)
-      current = current._parent
-    }
+      return undefined
+    })
 
     const group = this.form._getNearestFormGroupForField(this.name)
     if (group) {
@@ -866,12 +864,10 @@ export class InternalFieldApi<
     // Not sure if we lose this context, so might as well
     const originalField = this
 
-    let currNode: AnyInternalFieldApi | InternalRootFieldApi = this
-
     batch(() => {
       const seenListenerFields = new WeakSet<AnyInternalFieldApi>()
 
-      while (!currNode._isRoot) {
+      visitFieldAndAncestors(this, (currNode) => {
         const isOriginalField = currNode === originalField
         const { isSelfDirty, isSelfTouched, isBlurred } = currNode.meta
         const shouldUpdateDirty = isOriginalField && markAsDirty && !isSelfDirty
@@ -891,12 +887,9 @@ export class InternalFieldApi<
 
         currNode._notifyListener(event, seenListenerFields)
 
-        if (doPropagate) {
-          currNode = currNode._parent
-        } else {
-          break
-        }
-      }
+        if (!doPropagate) return false
+        return undefined
+      })
     })
 
     if (causeValidation) {

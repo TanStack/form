@@ -1,5 +1,6 @@
 import { batch } from '@tanstack/store'
 import { defaultInternalBaseFieldMeta } from './FieldApi/fieldState.lib'
+import { visitAllFormFields } from './FieldApi/fieldTraversal.lib'
 import { parseStandardSchemaIssues } from './standardSchema.lib'
 import { cancelPipelineCache, createPipelineCache, evaluate } from './utils.lib'
 import { runValidatorPipeline } from './validation.lib'
@@ -39,10 +40,7 @@ function createInitialFieldErrors(
 }
 
 function resetFieldMetaForServerState(form: InternalFormApi<any, any, any>) {
-  const stack = [...form._fieldRootNode._children]
-
-  for (const field of stack) {
-    stack.push(...field._children)
+  visitAllFormFields(form._fieldRootNode, (field) => {
     field._defaultValueCache = null
 
     if (field._pipelineCache) {
@@ -55,7 +53,7 @@ function resetFieldMetaForServerState(form: InternalFormApi<any, any, any>) {
       metaAtom.set(defaultInternalBaseFieldMeta)
       devtools().updateField?.(field)
     }
-  }
+  })
 }
 
 function resetToServerState<TFormData>(

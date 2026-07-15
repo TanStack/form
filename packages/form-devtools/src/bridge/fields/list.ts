@@ -1,3 +1,4 @@
+import { visitAllFormFields } from '@tanstack/form-core/internals'
 import { formDevtoolsEventClient } from '../../eventClient.lib'
 import { compareFieldPaths } from '../utils'
 import type {
@@ -57,15 +58,9 @@ export function getMountedFieldRowsSnapshot(
   ) => void,
 ): Array<DevtoolsMountedFieldScaffold> {
   const fields: Array<DevtoolsMountedFieldScaffold> = []
-  const stack = [...form._fieldRootNode._children]
 
-  while (stack.length > 0) {
-    const field = stack.pop()!
-    if (field._isKilled) continue
-
-    stack.push(...field._children)
-
-    if (!field._isMounted) continue
+  visitAllFormFields(form._fieldRootNode, (field) => {
+    if (field._isKilled || !field._isMounted) return
 
     const summary = toDevtoolsMountedFieldSummaryPatch(field.state.meta)
     onSummary?.(field, summary)
@@ -75,7 +70,7 @@ export function getMountedFieldRowsSnapshot(
       path: field.name,
       ...(summary ? { summary } : {}),
     })
-  }
+  })
 
   return fields.sort((left, right) => compareFieldPaths(left.path, right.path))
 }

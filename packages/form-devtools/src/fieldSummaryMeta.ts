@@ -9,6 +9,8 @@ import type {
 export const defaultDevtoolsMountedFieldSummary = Object.freeze({
   isDirty: defaultFieldMeta.isDirty,
   isTouched: defaultFieldMeta.isTouched,
+  isBlurred: defaultFieldMeta.isBlurred,
+  isDefaultValue: defaultFieldMeta.isDefaultValue,
   validity: toDevtoolsMountedFieldValidity(defaultFieldMeta),
 }) satisfies DevtoolsMountedFieldSummary
 
@@ -18,6 +20,8 @@ export function toDevtoolsMountedFieldSummary(
   return {
     isDirty: meta.isDirty,
     isTouched: meta.isTouched,
+    isBlurred: meta.isBlurred,
+    isDefaultValue: meta.isDefaultValue,
     validity: toDevtoolsMountedFieldValidity(meta),
   }
 }

@@ -11,13 +11,13 @@ const fieldMetaBadgeVariants = cva('', {
       neutral: 'bg-transparent text-foreground border-border',
       change: 'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300',
       success:
-        'bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300',
-      information: 'bg-sky-50 text-sky-700 dark:bg-sky-950 dark:text-sky-300',
-      interaction:
-        'bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
-      failure: 'bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300',
+        'bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300',
+      information:
+        'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+      interaction: 'bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300',
+      failure: 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300',
       caution:
-        'bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300',
+        'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300',
     },
   },
   defaultVariants: {

@@ -3,13 +3,14 @@ interface FieldLabelProps {
   leaf?: string
 }
 export function FieldLabel(props: FieldLabelProps) {
-  if (props.leaf === undefined) return props.path
+  if (props.leaf === undefined)
+    return <span class="font-mono">{props.path}</span>
   return (
     <>
-      <span class="text-muted-foreground">
+      <span class="font-mono text-muted-foreground">
         {props.path.slice(0, -1 * props.leaf.length)}
       </span>
-      {props.leaf}
+      <span class="font-mono font-bold">{props.leaf}</span>
     </>
   )
 }

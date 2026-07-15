@@ -13,7 +13,13 @@ function field(path: string, fieldId: string) {
 }
 
 function meta(isDirty: boolean) {
-  return { isDirty, isTouched: false, validity: 'valid' as const }
+  return {
+    isDirty,
+    isTouched: false,
+    isBlurred: false,
+    isDefaultValue: true,
+    validity: 'valid' as const,
+  }
 }
 
 afterEach(() => {
@@ -182,5 +188,118 @@ describe('field list search', () => {
     expect(validPredicate(field('valid', 'field-valid'), meta(false))).toBe(
       true,
     )
+  })
+
+  it('filters Blurred and Not blurred rows from hydrated summaries', async () => {
+    let search!: ReturnType<typeof createFieldListSearch>
+    let activePipeline!: () => Array<FieldRowFilterPredicate>
+
+    const dispose = render(() => {
+      const [query, setQuery] = createSignal('')
+      const [filterPipeline, setFilterPipeline] = createSignal<
+        Array<FieldRowFilterPredicate>
+      >([])
+
+      activePipeline = filterPipeline
+      search = createFieldListSearch({
+        query,
+        setQuery,
+        setFilterPipeline,
+      })
+
+      return null
+    }, document.createElement('div'))
+    disposers.push(dispose)
+
+    search.tagsInputApi().addValue('blurred')
+    await Promise.resolve()
+
+    const blurredPredicate = activePipeline()[0]!
+    expect(blurredPredicate.usesSummary).toBe(true)
+    expect(
+      blurredPredicate(field('blurred', 'field-blurred'), {
+        ...meta(false),
+        isBlurred: true,
+      }),
+    ).toBe(true)
+    expect(
+      blurredPredicate(field('not-blurred', 'field-not-blurred'), meta(false)),
+    ).toBe(false)
+    expect(
+      search.tagsSuggestions().items.map((filter) => filter.id),
+    ).not.toContain('not-blurred')
+
+    search.clearSelection()
+    search.tagsInputApi().addValue('not-blurred')
+    await Promise.resolve()
+
+    const notBlurredPredicate = activePipeline()[0]!
+    expect(
+      notBlurredPredicate(field('blurred', 'field-blurred'), {
+        ...meta(false),
+        isBlurred: true,
+      }),
+    ).toBe(false)
+    expect(
+      notBlurredPredicate(
+        field('not-blurred', 'field-not-blurred'),
+        meta(false),
+      ),
+    ).toBe(true)
+  })
+
+  it('filters Default and Non-default value rows from hydrated summaries', async () => {
+    let search!: ReturnType<typeof createFieldListSearch>
+    let activePipeline!: () => Array<FieldRowFilterPredicate>
+
+    const dispose = render(() => {
+      const [query, setQuery] = createSignal('')
+      const [filterPipeline, setFilterPipeline] = createSignal<
+        Array<FieldRowFilterPredicate>
+      >([])
+
+      activePipeline = filterPipeline
+      search = createFieldListSearch({
+        query,
+        setQuery,
+        setFilterPipeline,
+      })
+
+      return null
+    }, document.createElement('div'))
+    disposers.push(dispose)
+
+    search.tagsInputApi().addValue('non-default-value')
+    await Promise.resolve()
+
+    const nonDefaultPredicate = activePipeline()[0]!
+    expect(nonDefaultPredicate.usesSummary).toBe(true)
+    expect(
+      nonDefaultPredicate(field('changed', 'field-changed'), {
+        ...meta(false),
+        isDefaultValue: false,
+      }),
+    ).toBe(true)
+    expect(
+      nonDefaultPredicate(field('default', 'field-default'), meta(false)),
+    ).toBe(false)
+    expect(
+      search.tagsSuggestions().items.map((filter) => filter.id),
+    ).not.toContain('default-value')
+
+    search.clearSelection()
+    search.tagsInputApi().addValue('default-value')
+    await Promise.resolve()
+
+    const defaultPredicate = activePipeline()[0]!
+    expect(
+      defaultPredicate(field('changed', 'field-changed'), {
+        ...meta(false),
+        isDefaultValue: false,
+      }),
+    ).toBe(false)
+    expect(
+      defaultPredicate(field('default', 'field-default'), meta(false)),
+    ).toBe(true)
   })
 })

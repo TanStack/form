@@ -48,13 +48,20 @@ describe('field list meta badges', () => {
         {
           fieldId,
           path: 'name',
-          summary: { isTouched: true, validity: 'invalidHidden' },
+          summary: {
+            isTouched: true,
+            isBlurred: true,
+            isDefaultValue: false,
+            validity: 'invalidHidden',
+          },
         },
       ],
     })
 
     expect(container.textContent).toContain('Touched')
+    expect(container.textContent).toContain('Blurred')
     expect(container.textContent).toContain('Invalid (hidden)')
+    expect(container.textContent).toContain('Non-default value')
     expect(container.textContent).not.toContain('Dirty')
 
     store.fieldList.applyPatch({
@@ -67,10 +74,22 @@ describe('field list meta badges', () => {
 
     store.fieldList.applyPatch({
       formInstanceId: formId,
-      upsert: [{ fieldId, clearSummary: ['isTouched', 'validity'] }],
+      upsert: [
+        {
+          fieldId,
+          clearSummary: [
+            'isTouched',
+            'isBlurred',
+            'isDefaultValue',
+            'validity',
+          ],
+        },
+      ],
     })
 
     expect(container.textContent).not.toContain('Touched')
+    expect(container.textContent).not.toContain('Blurred')
     expect(container.textContent).not.toContain('Invalid')
+    expect(container.textContent).not.toContain('Non-default value')
   })
 })

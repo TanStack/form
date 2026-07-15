@@ -27,14 +27,36 @@ describe('form devtools bridge field snapshots', () => {
       expect(getMountedFieldRowsSnapshot(form, identity)[0]?.summary).toEqual({
         isDirty: true,
         isTouched: true,
+        isDefaultValue: false,
       })
 
       mountedField._setMeta((meta) => ({ ...meta, isDirty: false }))
       expect(getMountedFieldRowsSnapshot(form, identity)[0]?.summary).toEqual({
         isTouched: true,
+        isDefaultValue: false,
       })
 
       mountedField._setMeta((meta) => ({ ...meta, isTouched: false }))
+      expect(getMountedFieldRowsSnapshot(form, identity)[0]?.summary).toEqual({
+        isDefaultValue: false,
+      })
+
+      mountedField._setMeta((meta) => ({ ...meta, isBlurred: true }))
+      expect(getMountedFieldRowsSnapshot(form, identity)[0]?.summary).toEqual({
+        isBlurred: true,
+        isDefaultValue: false,
+      })
+
+      mountedField._setMeta((meta) => ({ ...meta, isBlurred: false }))
+      expect(getMountedFieldRowsSnapshot(form, identity)[0]?.summary).toEqual({
+        isDefaultValue: false,
+      })
+
+      mountedField.handleChange('Ada', {
+        markAsDirty: false,
+        markAsTouched: false,
+        causeValidation: false,
+      })
       expect(
         getMountedFieldRowsSnapshot(form, identity)[0]?.summary,
       ).toBeUndefined()
@@ -124,7 +146,13 @@ describe('form devtools bridge field snapshots', () => {
       form.removeFieldValue('items', 0)
 
       const rows = getMountedFieldRowsSnapshot(form, identity)
-      expect(rows).toEqual([{ path: 'items[0]', fieldId: movedFieldId }])
+      expect(rows).toEqual([
+        {
+          path: 'items[0]',
+          fieldId: movedFieldId,
+          summary: { isDefaultValue: false },
+        },
+      ])
     } finally {
       unregisterRemoved()
       unregisterMoved()
