@@ -1,5 +1,6 @@
 import { Switch as SwitchPrimitive } from '@ark-ui/solid'
-import { splitProps, type JSX } from 'solid-js'
+import { splitProps } from 'solid-js'
+import type { JSX } from 'solid-js'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/utils'
 

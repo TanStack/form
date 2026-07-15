@@ -12,6 +12,10 @@ function field(path: string, fieldId: string) {
   return { path, fieldId: fieldId as FieldId }
 }
 
+function meta(isDirty: boolean) {
+  return { isDirty, isTouched: false }
+}
+
 afterEach(() => {
   for (const dispose of disposers.splice(0)) dispose()
   setPinnedFieldIds([])
@@ -47,12 +51,8 @@ describe('field list search', () => {
     setPinnedFieldIds(['field-pinned'])
     const predicate = activePipeline()[0]!
 
-    expect(predicate(field('pinned', 'field-pinned'), { isDirty: false })).toBe(
-      true,
-    )
-    expect(predicate(field('other', 'field-other'), { isDirty: false })).toBe(
-      false,
-    )
+    expect(predicate(field('pinned', 'field-pinned'), meta(false))).toBe(true)
+    expect(predicate(field('other', 'field-other'), meta(false))).toBe(false)
 
     search.tagsInputApi().addValue('dirty')
     await Promise.resolve()
@@ -60,12 +60,12 @@ describe('field list search', () => {
     expect(activePipeline()).toHaveLength(2)
     expect(
       activePipeline().every((activePredicate) =>
-        activePredicate(field('pinned', 'field-pinned'), { isDirty: true }),
+        activePredicate(field('pinned', 'field-pinned'), meta(true)),
       ),
     ).toBe(true)
     expect(
       activePipeline().every((activePredicate) =>
-        activePredicate(field('pristine', 'field-pinned'), { isDirty: false }),
+        activePredicate(field('pristine', 'field-pinned'), meta(false)),
       ),
     ).toBe(false)
 
@@ -100,24 +100,20 @@ describe('field list search', () => {
 
     const dirtyPredicate = activePipeline()[0]!
     expect(dirtyPredicate.usesSummary).toBe(true)
+    expect(dirtyPredicate(field('dirty', 'field-dirty'), meta(true))).toBe(true)
     expect(
-      dirtyPredicate(field('dirty', 'field-dirty'), { isDirty: true }),
-    ).toBe(true)
-    expect(
-      dirtyPredicate(field('pristine', 'field-pristine'), { isDirty: false }),
+      dirtyPredicate(field('pristine', 'field-pristine'), meta(false)),
     ).toBe(false)
     search.clearSelection()
     search.tagsInputApi().addValue('pristine')
     await Promise.resolve()
 
     const pristinePredicate = activePipeline()[0]!
+    expect(pristinePredicate(field('dirty', 'field-dirty'), meta(true))).toBe(
+      false,
+    )
     expect(
-      pristinePredicate(field('dirty', 'field-dirty'), { isDirty: true }),
-    ).toBe(false)
-    expect(
-      pristinePredicate(field('pristine', 'field-pristine'), {
-        isDirty: false,
-      }),
+      pristinePredicate(field('pristine', 'field-pristine'), meta(false)),
     ).toBe(true)
   })
 })

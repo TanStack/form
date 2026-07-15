@@ -85,6 +85,7 @@ describe('field list store', () => {
     )
     expect(fieldList.getFieldSummary('field-email')).toEqual({
       isDirty: true,
+      isTouched: false,
     })
     expect(fieldList.getFieldSummary('another-pristine-field')).toBe(
       fieldList.getFieldSummary('field-name'),
@@ -107,7 +108,10 @@ describe('field list store', () => {
 
     expect(fieldList.rowsByPath()).toBe(pathMap)
     expect(fieldList.rowsByFieldId()).toBe(idMap)
-    expect(fieldList.getFieldSummary('field-name')).toEqual({ isDirty: true })
+    expect(fieldList.getFieldSummary('field-name')).toEqual({
+      isDirty: true,
+      isTouched: false,
+    })
 
     fieldList.applyPatch({
       formInstanceId: formA,
@@ -171,7 +175,10 @@ describe('field list store', () => {
 
     expect(fieldList.selectedFieldPath()).toBe('items[1]')
     expect(fieldList.pinnedFieldIds()).toEqual(['field-0', 'field-1'])
-    expect(fieldList.getFieldSummary('field-0')).toEqual({ isDirty: true })
+    expect(fieldList.getFieldSummary('field-0')).toEqual({
+      isDirty: true,
+      isTouched: false,
+    })
     expect(fieldList.rowsByPath().get('items[0]')?.fieldId).toBe('field-1')
     expect(fieldList.rowsByPath().get('items[1]')?.fieldId).toBe('field-0')
   })

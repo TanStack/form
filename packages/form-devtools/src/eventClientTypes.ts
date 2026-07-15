@@ -7,6 +7,7 @@ export interface DevtoolsMountedForm {
 
 export interface DevtoolsMountedFieldSummary {
   isDirty: boolean
+  isTouched: boolean
 }
 
 export type DevtoolsMountedFieldSummaryPatch =

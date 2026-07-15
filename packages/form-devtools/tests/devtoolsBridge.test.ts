@@ -26,9 +26,15 @@ describe('form devtools bridge field snapshots', () => {
       mountedField.handleChange('Grace')
       expect(getMountedFieldRowsSnapshot(form, identity)[0]?.summary).toEqual({
         isDirty: true,
+        isTouched: true,
       })
 
       mountedField._setMeta((meta) => ({ ...meta, isDirty: false }))
+      expect(getMountedFieldRowsSnapshot(form, identity)[0]?.summary).toEqual({
+        isTouched: true,
+      })
+
+      mountedField._setMeta((meta) => ({ ...meta, isTouched: false }))
       expect(
         getMountedFieldRowsSnapshot(form, identity)[0]?.summary,
       ).toBeUndefined()

@@ -98,6 +98,9 @@ const allFieldFilters: Array<FieldListFilter> = [
     aliases: ['Changed', 'Blurred'],
     description: 'Has been touched, either by change or blur',
     icon: PointerIcon,
+    predicate: createFieldSummaryFilterPredicate(
+      (_field, summary) => summary.isTouched,
+    ),
   },
   {
     label: 'Untouched',
@@ -106,6 +109,9 @@ const allFieldFilters: Array<FieldListFilter> = [
     aliases: ['Not Changed', 'Not Blurred'],
     description: 'Has not been changed or blurred',
     icon: PointerOffIcon,
+    predicate: createFieldSummaryFilterPredicate(
+      (_field, summary) => !summary.isTouched,
+    ),
   },
   {
     label: 'Bookmarked',

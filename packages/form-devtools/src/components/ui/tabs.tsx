@@ -1,8 +1,8 @@
-import { cva, type VariantProps } from 'class-variance-authority'
+import { cva } from 'class-variance-authority'
 import { Tabs as TabsPrimitive } from '@ark-ui/solid'
-
-import { cn } from '@/utils'
 import { splitProps } from 'solid-js'
+import type { VariantProps } from 'class-variance-authority'
+import { cn } from '@/utils'
 
 /**
  * The root container that coordinates tab selection and orientation.

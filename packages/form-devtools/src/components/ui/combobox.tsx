@@ -3,7 +3,8 @@ import {
   useComboboxContext,
 } from '@ark-ui/solid'
 import { CheckIcon, ChevronDownIcon, XIcon } from 'lucide-solid'
-import { For, Show, splitProps, type Accessor, type JSX } from 'solid-js'
+import { For, Show, splitProps } from 'solid-js'
+import type { Accessor, JSX } from 'solid-js'
 import type { CollectionItem } from '@ark-ui/solid'
 import { Button } from '@/components/ui/button'
 import {
@@ -124,7 +125,7 @@ type ComboboxValueProps<T extends CollectionItem = CollectionItem> = Omit<
   JSX.HTMLElementTags['span'],
   'children'
 > & {
-  children?: JSX.Element | ((items: T[]) => JSX.Element)
+  children?: JSX.Element | ((items: Array<T>) => JSX.Element)
   placeholder?: JSX.Element
 }
 
@@ -141,7 +142,7 @@ function ComboboxValue<T extends CollectionItem = CollectionItem>(
 
   const selectedContent = () => {
     if (typeof local.children === 'function') {
-      return local.children(combobox().selectedItems as T[])
+      return local.children(combobox().selectedItems as Array<T>)
     }
 
     return local.children ?? combobox().valueAsString
@@ -369,7 +370,7 @@ function ComboboxCollection<T extends CollectionItem = CollectionItem>(
 
   return (
     <div data-slot="combobox-collection" class={local.class} {...others}>
-      <For each={combobox().collection.items as T[]}>{local.children}</For>
+      <For each={combobox().collection.items as Array<T>}>{local.children}</For>
     </div>
   )
 }

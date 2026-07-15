@@ -7,6 +7,7 @@ import type {
 
 export const defaultDevtoolsMountedFieldSummary = Object.freeze({
   isDirty: defaultFieldMeta.isDirty,
+  isTouched: defaultFieldMeta.isTouched,
 }) satisfies DevtoolsMountedFieldSummary
 
 export function toDevtoolsMountedFieldSummary(
@@ -14,6 +15,7 @@ export function toDevtoolsMountedFieldSummary(
 ): DevtoolsMountedFieldSummary {
   return {
     isDirty: meta.isDirty,
+    isTouched: meta.isTouched,
   }
 }
 

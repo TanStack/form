@@ -53,7 +53,7 @@ describe('field list bridge', () => {
       expect(snapshots).toHaveLength(1)
       expect(patches.at(-1)).toEqual({
         formInstanceId: instanceId,
-        upsert: [{ fieldId, setSummary: { isDirty: true } }],
+        upsert: [{ fieldId, setSummary: { isDirty: true, isTouched: true } }],
       })
 
       const patchCount = patches.length
@@ -70,6 +70,14 @@ describe('field list bridge', () => {
         upsert: [{ fieldId, clearSummary: ['isDirty'] }],
       })
 
+      field._setMeta((meta) => ({ ...meta, isTouched: false }))
+      fields.updateField(field)
+      await flushPatches()
+      expect(patches.at(-1)).toEqual({
+        formInstanceId: instanceId,
+        upsert: [{ fieldId, clearSummary: ['isTouched'] }],
+      })
+
       formDevtoolsEventClient.emit('field-list-unsubscribe', {
         formInstanceId: instanceId,
       })
@@ -82,7 +90,10 @@ describe('field list bridge', () => {
       formDevtoolsEventClient.emit('field-list-subscribe', {
         formInstanceId: instanceId,
       })
-      expect(snapshots.at(-1)?.fields[0]?.summary).toEqual({ isDirty: true })
+      expect(snapshots.at(-1)?.fields[0]?.summary).toEqual({
+        isDirty: true,
+        isTouched: true,
+      })
 
       const patchCountBeforeUnmount = patches.length
       field._setMeta((meta) => ({ ...meta, isDirty: false }))
@@ -209,11 +220,11 @@ describe('field list bridge', () => {
         expect.arrayContaining([
           {
             fieldId: fieldIds.get('user'),
-            setSummary: { isDirty: true },
+            setSummary: { isDirty: true, isTouched: true },
           },
           {
             fieldId: fieldIds.get('user.name'),
-            setSummary: { isDirty: true },
+            setSummary: { isDirty: true, isTouched: true },
           },
         ]),
       )

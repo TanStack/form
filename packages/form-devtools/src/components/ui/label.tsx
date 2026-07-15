@@ -1,5 +1,6 @@
-import { ark, type HTMLArkProps } from '@ark-ui/solid/factory'
+import { ark } from '@ark-ui/solid/factory'
 import { splitProps } from 'solid-js'
+import type { HTMLArkProps } from '@ark-ui/solid/factory'
 import { cn } from '@/utils'
 
 // Ported from the original shadcn/ui + Radix UI + React component.

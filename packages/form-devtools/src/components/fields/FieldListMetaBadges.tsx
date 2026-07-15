@@ -15,6 +15,9 @@ export function FieldListMetaBadges(props: FieldListMetaBadgesProps) {
       <Show when={meta().isDirty}>
         <FieldMetaBadge kind="dirty" />
       </Show>
+      <Show when={meta().isTouched}>
+        <FieldMetaBadge kind="touched" />
+      </Show>
     </>
   )
 }

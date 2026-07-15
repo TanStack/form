@@ -27,6 +27,12 @@ describe('field summary meta', () => {
         isPristine: false,
       }),
     ).toEqual({ isDirty: true })
+    expect(
+      toDevtoolsMountedFieldSummaryPatch({
+        ...defaultFieldMeta,
+        isTouched: true,
+      }),
+    ).toEqual({ isTouched: true })
   })
 
   it('hydrates sparse patches against the Devtools baseline', () => {
@@ -38,6 +44,11 @@ describe('field summary meta', () => {
     )
     expect(hydrateDevtoolsMountedFieldSummary({ isDirty: true })).toEqual({
       isDirty: true,
+      isTouched: false,
+    })
+    expect(hydrateDevtoolsMountedFieldSummary({ isTouched: true })).toEqual({
+      isDirty: false,
+      isTouched: true,
     })
   })
 

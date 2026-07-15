@@ -1,5 +1,6 @@
+import { splitProps } from 'solid-js'
+import type { JSX } from 'solid-js'
 import { cn } from '@/utils'
-import { splitProps, type JSX } from 'solid-js'
 
 // Ported from the original shadcn/ui + Radix UI + React component.
 // This wraps the Ark UI + SolidJS primitive and preserves shadcn's Tailwind-based
