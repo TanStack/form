@@ -5,6 +5,7 @@ import { useFormDevtoolsStore } from '@/stores/formDevtoolsStore'
 
 interface FieldListMetaBadgesProps {
   fieldId: FieldId
+  isMounted: boolean | undefined
 }
 export function FieldListMetaBadges(props: FieldListMetaBadgesProps) {
   const { getFieldSummary } = useFormDevtoolsStore().fieldList
@@ -20,6 +21,9 @@ export function FieldListMetaBadges(props: FieldListMetaBadgesProps) {
 
   return (
     <>
+      <Show when={props.isMounted === false}>
+        <FieldMetaBadge kind="unmounted" />
+      </Show>
       <Show when={meta().isDirty}>
         <FieldMetaBadge kind="dirty" />
       </Show>

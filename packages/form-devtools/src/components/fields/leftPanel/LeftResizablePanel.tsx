@@ -31,7 +31,7 @@ export function LeftResizablePanel(props: LeftResizablePanelProps) {
     <>
       <Splitter.Panel
         id={props.sidebarPanelId}
-        class={cn('size-full p-2', props.class)}
+        class={cn('size-full', props.class)}
       >
         {props.children}
       </Splitter.Panel>

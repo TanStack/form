@@ -16,6 +16,7 @@ export const defaultDevtoolsMountedFieldSummary = Object.freeze({
   isBlurred: defaultFieldMeta.isBlurred,
   isLongValidating: false,
   isDefaultValue: defaultFieldMeta.isDefaultValue,
+  hasSelfErrors: false,
   validity: toDevtoolsMountedFieldValidity(defaultFieldMeta),
 }) satisfies DevtoolsMountedFieldSummary
 
@@ -29,6 +30,7 @@ export function toDevtoolsMountedFieldSummary(
     isBlurred: meta.isBlurred,
     isLongValidating: projection.isLongValidating ?? false,
     isDefaultValue: meta.isDefaultValue,
+    hasSelfErrors: meta.original.errors.length > 0,
     validity: toDevtoolsMountedFieldValidity(meta),
   }
 }

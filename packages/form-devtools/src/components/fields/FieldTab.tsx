@@ -36,11 +36,13 @@ export function FieldTab() {
         <LeftResizablePanel
           sidebarPanelId={sidebarId}
           mainPanelId={mainId}
-          class="grid gap-2 grid-rows-[auto_auto_1fr]"
+          class="grid gap-2 grid-rows-[auto_1fr]"
         >
-          <FieldListSearch />
-          <Separator />
-          <ScrollArea class="min-h-0">
+          <div class="flex flex-col gap-2 px-2 pt-2">
+            <FieldListSearch />
+            <Separator />
+          </div>
+          <ScrollArea class="min-h-0 px-2">
             <FieldList />
           </ScrollArea>
         </LeftResizablePanel>

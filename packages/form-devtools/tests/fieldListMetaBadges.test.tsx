@@ -35,7 +35,7 @@ describe('field list meta badges', () => {
         () => (
           <FormDevtoolsStoreProvider>
             <StoreCapture onStore={(value) => (store = value)} />
-            <FieldListMetaBadges fieldId={fieldId} />
+            <FieldListMetaBadges fieldId={fieldId} isMounted />
           </FormDevtoolsStoreProvider>
         ),
         container,

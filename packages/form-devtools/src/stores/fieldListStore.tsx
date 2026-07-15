@@ -57,6 +57,7 @@ export const [fieldSearchQuery, setFieldSearchQuery] = createSignal('')
 
 export type FieldRowFilterPredicate = {
   (field: DevtoolsFieldListRow, summary: DevtoolsMountedFieldSummary): boolean
+  bypassesDefaultInclusion?: boolean
   usesSummary?: boolean
 }
 
@@ -112,6 +113,7 @@ function createFieldListRow(
 ): DevtoolsFieldListRow {
   return {
     ...field,
+    isMounted: field.isMounted ?? true,
     pathLeaf: getFieldPathLeaf(field.path),
   }
 }
@@ -124,13 +126,27 @@ export function createFieldListComputations() {
   const filteredFieldRows = createMemo(() => {
     const predicates = fieldFilterPipeline()
     const rows = fieldRows()
-    if (predicates.length === 0) return rows
+    const bypassesDefaultInclusion = predicates.some(
+      (predicate) => predicate.bypassesDefaultInclusion,
+    )
     const usesSummary = predicates.some((predicate) => predicate.usesSummary)
 
     return rows.filter((field) => {
-      const summary = usesSummary
+      const needsSummary =
+        usesSummary ||
+        (!bypassesDefaultInclusion && field.isMounted === false)
+      const summary = needsSummary
         ? getFieldSummary(field.fieldId)
         : defaultDevtoolsMountedFieldSummary
+
+      if (
+        !bypassesDefaultInclusion &&
+        field.isMounted === false &&
+        !summary.hasSelfErrors
+      ) {
+        return false
+      }
+
       return predicates.every((predicate) => predicate(field, summary))
     })
   })
@@ -151,13 +167,13 @@ export function createFieldListComputations() {
 
   const selectedFieldRow = createMemo<DevtoolsFieldListRow | null>(() => {
     const requestedPath = selectedFieldPath()
-    const rows = fieldRows()
+    const fallback = visibleFieldRows()[0] ?? null
 
     if (requestedPath) {
-      return rowsByPath().get(requestedPath) ?? rows[0] ?? null
+      return rowsByPath().get(requestedPath) ?? fallback
     }
 
-    return rows[0] ?? null
+    return fallback
   })
 
   const mainPanelFieldRows = createMemo(() => {
@@ -399,15 +415,34 @@ export function applyFieldListPatch({
         if (selectedPath === displaced.path) selectedPath = null
       }
 
-      if (!row || row.path !== patch.path) {
+      const isMounted = patch.isMounted ?? row?.isMounted ?? true
+      if (
+        !row ||
+        row.path !== patch.path ||
+        row.isMounted !== isMounted
+      ) {
         row = createFieldListRow({
           fieldId: patch.fieldId,
           path: patch.path,
+          isMounted,
         })
         byPath.set(row.path, row)
         byFieldId.set(row.fieldId, row)
         scaffoldChanged = true
       }
+    } else if (
+      row &&
+      patch.isMounted !== undefined &&
+      row.isMounted !== patch.isMounted
+    ) {
+      row = createFieldListRow({
+        fieldId: row.fieldId,
+        path: row.path,
+        isMounted: patch.isMounted,
+      })
+      byPath.set(row.path, row)
+      byFieldId.set(row.fieldId, row)
+      scaffoldChanged = true
     }
 
     if (!row) continue

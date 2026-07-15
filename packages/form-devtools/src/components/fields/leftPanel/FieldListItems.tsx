@@ -57,7 +57,10 @@ export function FieldListItems() {
               <FieldLabel path={item.path} leaf={item.pathLeaf} />
             </Listbox.ItemText>
             <ItemDescription class="flex flex-wrap gap-2">
-              <FieldListMetaBadges fieldId={item.fieldId} />
+              <FieldListMetaBadges
+                fieldId={item.fieldId}
+                isMounted={item.isMounted}
+              />
             </ItemDescription>
           </ItemContent>
         </Listbox.Item>

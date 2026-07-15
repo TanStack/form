@@ -57,6 +57,13 @@ export interface FieldListFilter {
   predicate?: FieldRowFilterPredicate
 }
 
+function createMountedFilterPredicate(
+  predicate: FieldRowFilterPredicate,
+): FieldRowFilterPredicate {
+  predicate.bypassesDefaultInclusion = true
+  return predicate
+}
+
 const allFieldFilters: Array<FieldListFilter> = [
   {
     label: 'Invalid',
@@ -184,6 +191,9 @@ const allFieldFilters: Array<FieldListFilter> = [
     aliases: ['Visible'],
     description: 'Is rendered in a component',
     icon: SquareIcon,
+    predicate: createMountedFilterPredicate(
+      (field) => field.isMounted !== false,
+    ),
   },
   {
     label: 'Unmounted',
@@ -192,6 +202,9 @@ const allFieldFilters: Array<FieldListFilter> = [
     aliases: ['Invisible', 'Not mounted'],
     description: 'Is not currently rendered',
     icon: SquareDashedIcon,
+    predicate: createMountedFilterPredicate(
+      (field) => field.isMounted === false,
+    ),
   },
 ]
 
@@ -299,6 +312,7 @@ export function createFieldListSearch({
     ids,
 
     collection: tagsCollection(),
+    disableLayer: true,
 
     inputValue: query(),
     value: [],

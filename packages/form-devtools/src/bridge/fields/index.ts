@@ -20,7 +20,7 @@ interface FieldsController {
     form: AnyInternalFormApi,
     fields: Array<{ field: AnyInternalFieldApi; previousPath: string }>,
   ) => void
-  getMountedFieldRowsSnapshot: (
+  getFieldRowsSnapshot: (
     form: AnyInternalFormApi,
   ) => Array<DevtoolsMountedFieldScaffold>
 }
@@ -33,7 +33,7 @@ export function createFieldsController(
 
   return {
     dispose: fieldList.dispose,
-    getMountedFieldRowsSnapshot: fieldList.getMountedFieldRowsSnapshot,
+    getFieldRowsSnapshot: fieldList.getFieldRowsSnapshot,
     mountForm: fieldList.formMounted,
     unmountForm: fieldList.formUnmounted,
     mountField: fieldList.fieldMounted,

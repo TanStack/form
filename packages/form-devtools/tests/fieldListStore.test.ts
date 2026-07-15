@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { defaultDevtoolsMountedFieldSummary } from '../src/fieldSummaryMeta'
 import { createFormDevtoolsStore } from '../src/stores/formDevtoolsStore'
 import type { FormDevtoolsStore } from '../src/stores/formDevtoolsStore'
+import type { FieldRowFilterPredicate } from '../src/stores/fieldListStore'
 import type { DevtoolsMountedFieldScaffold } from '../src/eventClientTypes'
 import type { FormId } from '../src/types/branded'
 
@@ -66,6 +67,49 @@ describe('field list store', () => {
     expect(fieldList.fieldRows()).toEqual([])
   })
 
+  it('bypasses default inclusion when filtering by mounted state', () => {
+    fieldList.setSubscribedFormId(formA)
+    fieldList.applySnapshot({
+      formInstanceId: formA,
+      fields: [
+        field('z.mounted', 'field-mounted'),
+        {
+          ...field('a.unmounted.valid', 'field-unmounted-valid'),
+          isMounted: false,
+        },
+        {
+          ...field('b.unmounted.invalid', 'field-unmounted-invalid'),
+          isMounted: false,
+          summary: { validity: 'invalidHidden' },
+        },
+        {
+          ...field('c.unmounted.self-invalid', 'field-unmounted-self-invalid'),
+          isMounted: false,
+          summary: { hasSelfErrors: true, validity: 'invalidHidden' },
+        },
+      ],
+    })
+
+    expect(fieldList.visibleFieldRows().map((row) => row.path)).toEqual([
+      'c.unmounted.self-invalid',
+      'z.mounted',
+    ])
+    expect(fieldList.selectedFieldRow()?.path).toBe(
+      'c.unmounted.self-invalid',
+    )
+
+    const unmountedPredicate: FieldRowFilterPredicate = (row) =>
+      row.isMounted === false
+    unmountedPredicate.bypassesDefaultInclusion = true
+    fieldList.setFieldFilterPipeline([unmountedPredicate])
+
+    expect(fieldList.visibleFieldRows().map((row) => row.path)).toEqual([
+      'a.unmounted.valid',
+      'b.unmounted.invalid',
+      'c.unmounted.self-invalid',
+    ])
+  })
+
   it('stores only non-default summaries and hydrates at consumption', () => {
     fieldList.setSubscribedFormId(formA)
     fieldList.applySnapshot({
@@ -89,6 +133,7 @@ describe('field list store', () => {
       isBlurred: false,
       isLongValidating: false,
       isDefaultValue: true,
+      hasSelfErrors: false,
       validity: 'valid',
     })
     expect(fieldList.getFieldSummary('another-pristine-field')).toBe(
@@ -118,6 +163,7 @@ describe('field list store', () => {
       isBlurred: false,
       isLongValidating: false,
       isDefaultValue: true,
+      hasSelfErrors: false,
       validity: 'valid',
     })
 
@@ -189,6 +235,7 @@ describe('field list store', () => {
       isBlurred: false,
       isLongValidating: false,
       isDefaultValue: true,
+      hasSelfErrors: false,
       validity: 'valid',
     })
     expect(fieldList.rowsByPath().get('items[0]')?.fieldId).toBe('field-1')

@@ -73,6 +73,17 @@ describe('field summary meta', () => {
         },
       }),
     ).toEqual({ validity: 'invalidHidden' })
+    expect(
+      toDevtoolsMountedFieldSummaryPatch({
+        ...defaultFieldMeta,
+        original: {
+          ...defaultFieldMeta.original,
+          errors: [{ message: 'Hidden error' }],
+          isValid: false,
+          isInvalid: true,
+        },
+      }),
+    ).toEqual({ hasSelfErrors: true, validity: 'invalidHidden' })
   })
 
   it('hydrates sparse patches against the Devtools baseline', () => {
@@ -88,6 +99,7 @@ describe('field summary meta', () => {
       isBlurred: false,
       isLongValidating: false,
       isDefaultValue: true,
+      hasSelfErrors: false,
       validity: 'valid',
     })
     expect(hydrateDevtoolsMountedFieldSummary({ isTouched: true })).toEqual({
@@ -96,6 +108,7 @@ describe('field summary meta', () => {
       isBlurred: false,
       isLongValidating: false,
       isDefaultValue: true,
+      hasSelfErrors: false,
       validity: 'valid',
     })
     expect(
@@ -106,6 +119,7 @@ describe('field summary meta', () => {
       isBlurred: false,
       isLongValidating: true,
       isDefaultValue: true,
+      hasSelfErrors: false,
       validity: 'valid',
     })
     expect(
@@ -116,6 +130,7 @@ describe('field summary meta', () => {
       isBlurred: false,
       isLongValidating: false,
       isDefaultValue: true,
+      hasSelfErrors: false,
       validity: 'invalidHidden',
     })
   })

@@ -33,7 +33,7 @@ interface FieldListController {
   fieldUnmounted: (field: AnyInternalFieldApi, previousPath: string) => void
   formMounted: (form: AnyInternalFormApi) => void
   formUnmounted: (formInstanceId: FormId) => void
-  getMountedFieldRowsSnapshot: (
+  getFieldRowsSnapshot: (
     form: AnyInternalFormApi,
   ) => Array<DevtoolsMountedFieldScaffold>
 }
@@ -52,7 +52,7 @@ interface PendingFormChanges {
   fields: Map<FieldId, PendingFieldChange>
 }
 
-interface MountedFieldRowsSnapshotOptions {
+interface FieldRowsSnapshotOptions {
   getSummary?: (
     field: AnyInternalFieldApi,
   ) => DevtoolsMountedFieldSummaryPatch | undefined
@@ -62,19 +62,24 @@ interface MountedFieldRowsSnapshotOptions {
   ) => void
 }
 
-export function getMountedFieldRowsSnapshot(
+function isFormGroupField(field: AnyInternalFieldApi): boolean {
+  const group = field.form._getNearestFormGroupForField(field.name)
+  return group !== null && String(group.name) === field.name
+}
+
+export function getFieldRowsSnapshot(
   form: AnyInternalFormApi,
   identity: Pick<FieldIdentityController, 'getFieldId'>,
   {
     getSummary = (field) =>
       toDevtoolsMountedFieldSummaryPatch(field.state.meta),
     onSummary,
-  }: MountedFieldRowsSnapshotOptions = {},
+  }: FieldRowsSnapshotOptions = {},
 ): Array<DevtoolsMountedFieldScaffold> {
   const fields: Array<DevtoolsMountedFieldScaffold> = []
 
   visitAllFormFields(form._fieldRootNode, (field) => {
-    if (field._isKilled || !field._isMounted) return
+    if (field._isKilled || isFormGroupField(field)) return
 
     const summary = getSummary(field)
     onSummary?.(field, summary)
@@ -82,6 +87,7 @@ export function getMountedFieldRowsSnapshot(
     fields.push({
       fieldId: identity.getFieldId(field),
       path: field.name,
+      ...(field._isMounted ? {} : { isMounted: false }),
       ...(summary ? { summary } : {}),
     })
   })
@@ -101,6 +107,7 @@ export function createFieldListController({
     AnyInternalFieldApi,
     DevtoolsMountedFieldSummaryPatch
   >()
+  const mountedStateByField = new WeakMap<AnyInternalFieldApi, boolean>()
   const pendingChanges = new Map<FormId, PendingFormChanges>()
   let flushScheduled = false
   let disposed = false
@@ -155,9 +162,12 @@ export function createFieldListController({
   const createSnapshot = (
     form: AnyInternalFormApi,
   ): Array<DevtoolsMountedFieldScaffold> =>
-    getMountedFieldRowsSnapshot(form, identity, {
+    getFieldRowsSnapshot(form, identity, {
       getSummary: getObservedSummary,
-      onSummary: cacheSummary,
+      onSummary: (field, summary) => {
+        cacheSummary(field, summary)
+        mountedStateByField.set(field, field._isMounted)
+      },
     })
 
   const emitSnapshot = (
@@ -201,19 +211,19 @@ export function createFieldListController({
       const remove: Array<FieldId> = []
 
       for (const change of batch.fields.values()) {
-        const fieldIsMounted =
-          change.field._isMounted && !change.field._isKilled
+        const wasIncluded = mountedStateByField.has(change.field)
+        const previousMounted = mountedStateByField.get(change.field)
         const shouldRemove =
           change.structure === 'remove' ||
-          (!fieldIsMounted && change.structure !== undefined)
+          change.field._isKilled ||
+          isFormGroupField(change.field)
 
         if (shouldRemove) {
           sparseSummaryByField.delete(change.field)
-          remove.push(change.fieldId)
+          mountedStateByField.delete(change.field)
+          if (wasIncluded) remove.push(change.fieldId)
           continue
         }
-
-        if (!fieldIsMounted) continue
 
         const previousSummary = sparseSummaryByField.get(change.field)
         const currentSummary = getProjectedSummary(change.field)
@@ -222,10 +232,19 @@ export function createFieldListController({
           : {}
 
         cacheSummary(change.field, currentSummary)
+        mountedStateByField.set(change.field, change.field._isMounted)
 
         const patch: DevtoolsMountedFieldPatch = {
           fieldId: change.fieldId,
-          ...(change.structure === 'upsert' ? { path: change.field.name } : {}),
+          ...(change.structure === 'upsert' || !wasIncluded
+            ? {
+                path: change.field.name,
+                ...(previousMounted !== change.field._isMounted &&
+                (previousMounted !== undefined || !change.field._isMounted)
+                  ? { isMounted: change.field._isMounted }
+                  : {}),
+              }
+            : {}),
           ...(summaryDifference.set
             ? { setSummary: summaryDifference.set }
             : {}),
@@ -236,6 +255,7 @@ export function createFieldListController({
 
         if (
           patch.path !== undefined ||
+          patch.isMounted !== undefined ||
           patch.setSummary !== undefined ||
           patch.clearSummary !== undefined
         ) {
@@ -334,7 +354,7 @@ export function createFieldListController({
       queueFieldChange(field, 'upsert')
     },
     fieldUpdated: (field) => {
-      if (!field._isMounted) {
+      if (field._isKilled) {
         longValidation.remove(field)
         return
       }
@@ -349,7 +369,7 @@ export function createFieldListController({
     },
     fieldUnmounted: (field, _previousPath) => {
       longValidation.remove(field)
-      queueFieldChange(field, 'remove', false)
+      queueFieldChange(field, 'upsert', false)
     },
     formMounted: emitSubscribedSnapshot,
     formUnmounted: (formInstanceId) => {
@@ -358,6 +378,6 @@ export function createFieldListController({
       emitSnapshot(formInstanceId, null)
       subscribedFormIds.delete(formInstanceId)
     },
-    getMountedFieldRowsSnapshot: createSnapshot,
+    getFieldRowsSnapshot: createSnapshot,
   }
 }

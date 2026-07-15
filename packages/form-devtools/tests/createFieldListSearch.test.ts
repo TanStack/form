@@ -19,6 +19,7 @@ function meta(isDirty: boolean) {
     isBlurred: false,
     isLongValidating: false,
     isDefaultValue: true,
+    hasSelfErrors: false,
     validity: 'valid' as const,
   }
 }
@@ -75,6 +76,12 @@ describe('field list search', () => {
         activePredicate(field('pristine', 'field-pinned'), meta(false)),
       ),
     ).toBe(false)
+
+    search.tagsInputApi().addValue('unmounted')
+    await Promise.resolve()
+
+    expect(activePipeline()).toHaveLength(3)
+    expect(activePipeline()[2]?.bypassesDefaultInclusion).toBe(true)
 
     expect(
       search.tagsSuggestions().items.map((filter) => filter.id),

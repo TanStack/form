@@ -1,5 +1,6 @@
 import {
   InternalFormApi,
+  InternalFormGroupApi,
   installDevtoolsBridge,
 } from '@tanstack/form-core/internals'
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -107,7 +108,12 @@ describe('field list bridge', () => {
       expect(field.meta.isValid).toBe(false)
       expect(patches.at(-1)).toEqual({
         formInstanceId: instanceId,
-        upsert: [{ fieldId, setSummary: { validity: 'invalid' } }],
+        upsert: [
+          {
+            fieldId,
+            setSummary: { hasSelfErrors: true, validity: 'invalid' },
+          },
+        ],
       })
 
       field._setMeta((meta) => ({
@@ -119,7 +125,7 @@ describe('field list bridge', () => {
       expect(field.meta.isValid).toBe(true)
       expect(patches.at(-1)).toEqual({
         formInstanceId: instanceId,
-        upsert: [{ fieldId, clearSummary: ['validity'] }],
+        upsert: [{ fieldId, clearSummary: ['hasSelfErrors', 'validity'] }],
       })
 
       field.handleChange('', {
@@ -181,6 +187,143 @@ describe('field list bridge', () => {
       cleanupPatchListener()
       cleanupSnapshotListener()
       unregisterField()
+      fields.dispose()
+      mountedForms.dispose()
+      disconnectEventBus()
+    }
+  })
+
+  it('retains unmounted fields while their errors change', async () => {
+    const disconnectEventBus = connectTestEventBus()
+    const mountedForms = createMountedFormsController()
+    const fields = createFieldsController(mountedForms)
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+    const unregisterField = field._register()
+    const snapshots: Array<FieldListSnapshot> = []
+    const patches: Array<FieldListPatch> = []
+    const cleanupSnapshotListener = formDevtoolsEventClient.on(
+      'field-list-snapshot',
+      (event) => snapshots.push(event.payload),
+    )
+    const cleanupPatchListener = formDevtoolsEventClient.on(
+      'field-list-patch',
+      (event) => patches.push(event.payload),
+    )
+
+    try {
+      mountedForms.mountForm(form)
+      const { instanceId } = mountedForms.getMountedFormsSnapshot()[0]!
+      formDevtoolsEventClient.emit('field-list-subscribe', {
+        formInstanceId: instanceId,
+      })
+      const fieldId = snapshots[0]!.fields[0]!.fieldId
+
+      unregisterField()
+      fields.unmountField(field, 'name')
+      await flushPatches()
+      expect(patches.at(-1)).toEqual({
+        formInstanceId: instanceId,
+        upsert: [{ fieldId, path: 'name', isMounted: false }],
+      })
+
+      field._setMeta((meta) => ({
+        ...meta,
+        _fieldValidatorErrors: [[{ message: 'Invalid name' }]],
+      }))
+      fields.updateField(field)
+      await flushPatches()
+      expect(patches.at(-1)).toEqual({
+        formInstanceId: instanceId,
+        upsert: [
+          {
+            fieldId,
+            setSummary: { hasSelfErrors: true, validity: 'invalid' },
+          },
+        ],
+      })
+
+      field._setMeta((meta) => ({
+        ...meta,
+        _fieldValidatorErrors: [[]],
+      }))
+      fields.updateField(field)
+      await flushPatches()
+      expect(patches.at(-1)).toEqual({
+        formInstanceId: instanceId,
+        upsert: [{ fieldId, clearSummary: ['hasSelfErrors', 'validity'] }],
+      })
+    } finally {
+      cleanupPatchListener()
+      cleanupSnapshotListener()
+      fields.dispose()
+      mountedForms.dispose()
+      disconnectEventBus()
+    }
+  })
+
+  it('removes and restores a field when FormGroup ownership changes', async () => {
+    const disconnectEventBus = connectTestEventBus()
+    const mountedForms = createMountedFormsController()
+    const fields = createFieldsController(mountedForms)
+    const bridge = createFormDevtoolsBridge({ fields, mountedForms })
+    const uninstallBridge = installDevtoolsBridge(bridge)
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: '' } },
+    })
+    form._getOrCreateFieldApi({ name: 'guestDetails' })
+    const nameField = form._getOrCreateFieldApi({
+      name: 'guestDetails.name',
+    })
+    const unregisterName = nameField._register()
+    const snapshots: Array<FieldListSnapshot> = []
+    const patches: Array<FieldListPatch> = []
+    const cleanupSnapshotListener = formDevtoolsEventClient.on(
+      'field-list-snapshot',
+      (event) => snapshots.push(event.payload),
+    )
+    const cleanupPatchListener = formDevtoolsEventClient.on(
+      'field-list-patch',
+      (event) => patches.push(event.payload),
+    )
+    let group: InternalFormGroupApi<any, any, any, any, any, any> | undefined
+
+    try {
+      mountedForms.mountForm(form)
+      const { instanceId } = mountedForms.getMountedFormsSnapshot()[0]!
+      formDevtoolsEventClient.emit('field-list-subscribe', {
+        formInstanceId: instanceId,
+      })
+      const groupFieldId = snapshots[0]!.fields.find(
+        (field) => field.path === 'guestDetails',
+      )!.fieldId
+
+      group = new InternalFormGroupApi({ form, name: 'guestDetails' })
+      await flushPatches()
+      expect(patches.at(-1)).toEqual({
+        formInstanceId: instanceId,
+        remove: [groupFieldId],
+      })
+
+      group._cleanup()
+      group = undefined
+      await flushPatches()
+      expect(patches.at(-1)).toEqual({
+        formInstanceId: instanceId,
+        upsert: [
+          {
+            fieldId: groupFieldId,
+            path: 'guestDetails',
+            isMounted: false,
+          },
+        ],
+      })
+    } finally {
+      group?._cleanup()
+      cleanupPatchListener()
+      cleanupSnapshotListener()
+      unregisterName()
+      uninstallBridge()
       fields.dispose()
       mountedForms.dispose()
       disconnectEventBus()
@@ -454,9 +597,16 @@ describe('field list bridge', () => {
       fields.unmountField(transient, 'transient')
       await flushPatches()
 
-      const transientId = patches.at(-1)?.remove?.[0]
-      expect(transientId).toEqual(expect.any(String))
-      expect(patches.at(-1)?.upsert).toBeUndefined()
+      expect(patches.at(-1)).toEqual({
+        formInstanceId: instanceId,
+        upsert: [
+          {
+            fieldId: expect.any(String),
+            path: 'transient',
+            isMounted: false,
+          },
+        ],
+      })
 
       patches.length = 0
       unregisterStable()

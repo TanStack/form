@@ -341,10 +341,14 @@ export class InternalFormApi<
 
   _registerFormGroup(group: AnyFormGroupApi): void {
     this._formGroups.add(group)
+    const groupField = this._tryGetFieldApi(String(group.name))
+    if (groupField) devtools().updateField?.(groupField)
   }
 
   _unregisterFormGroup(group: AnyFormGroupApi): void {
     this._formGroups.delete(group)
+    const groupField = this._tryGetFieldApi(String(group.name))
+    if (groupField) devtools().updateField?.(groupField)
   }
 
   _getNearestFormGroupForField(fieldName: string): AnyFormGroupApi | null {

@@ -13,6 +13,7 @@ export interface DevtoolsMountedFieldSummary {
   isBlurred: boolean
   isLongValidating: boolean
   isDefaultValue: boolean
+  hasSelfErrors: boolean
   validity: DevtoolsMountedFieldValidity
 }
 
@@ -22,12 +23,14 @@ export type DevtoolsMountedFieldSummaryPatch =
 export interface DevtoolsMountedFieldScaffold {
   fieldId: FieldId
   path: string
+  isMounted?: boolean
   summary?: DevtoolsMountedFieldSummaryPatch
 }
 
 export interface DevtoolsMountedFieldPatch {
   fieldId: FieldId
   path?: string
+  isMounted?: boolean
   setSummary?: DevtoolsMountedFieldSummaryPatch
   clearSummary?: Array<keyof DevtoolsMountedFieldSummary>
 }
