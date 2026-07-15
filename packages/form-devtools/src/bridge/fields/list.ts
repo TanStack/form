@@ -1,6 +1,7 @@
 import { visitAllFormFields } from '@tanstack/form-core/internals'
 import { formDevtoolsEventClient } from '../../eventClient.lib'
 import { compareFieldPaths } from '../utils'
+import { createDelayedActivationController } from './delayedActivation'
 import type {
   AnyInternalFieldApi,
   AnyInternalFormApi,
@@ -17,6 +18,8 @@ import {
   diffBaselinePatches,
   toDevtoolsMountedFieldSummaryPatch,
 } from '@/fieldSummaryMeta'
+
+export const FIELD_LIST_LONG_VALIDATION_DELAY_MS = 300
 
 interface FieldListController {
   dispose: () => void
@@ -49,20 +52,31 @@ interface PendingFormChanges {
   fields: Map<FieldId, PendingFieldChange>
 }
 
-export function getMountedFieldRowsSnapshot(
-  form: AnyInternalFormApi,
-  identity: Pick<FieldIdentityController, 'getFieldId'>,
+interface MountedFieldRowsSnapshotOptions {
+  getSummary?: (
+    field: AnyInternalFieldApi,
+  ) => DevtoolsMountedFieldSummaryPatch | undefined
   onSummary?: (
     field: AnyInternalFieldApi,
     summary: DevtoolsMountedFieldSummaryPatch | undefined,
-  ) => void,
+  ) => void
+}
+
+export function getMountedFieldRowsSnapshot(
+  form: AnyInternalFormApi,
+  identity: Pick<FieldIdentityController, 'getFieldId'>,
+  {
+    getSummary = (field) =>
+      toDevtoolsMountedFieldSummaryPatch(field.state.meta),
+    onSummary,
+  }: MountedFieldRowsSnapshotOptions = {},
 ): Array<DevtoolsMountedFieldScaffold> {
   const fields: Array<DevtoolsMountedFieldScaffold> = []
 
   visitAllFormFields(form._fieldRootNode, (field) => {
     if (field._isKilled || !field._isMounted) return
 
-    const summary = toDevtoolsMountedFieldSummaryPatch(field.state.meta)
+    const summary = getSummary(field)
     onSummary?.(field, summary)
 
     fields.push({
@@ -91,6 +105,45 @@ export function createFieldListController({
   let flushScheduled = false
   let disposed = false
 
+  const isFieldListSubscribed = (field: AnyInternalFieldApi): boolean => {
+    if (!mountedForms.isMounted(field.form)) return false
+    return subscribedFormIds.has(mountedForms.getFormInstanceId(field.form))
+  }
+
+  const longValidation = createDelayedActivationController({
+    delayMs: FIELD_LIST_LONG_VALIDATION_DELAY_MS,
+    canActivate: (field: AnyInternalFieldApi) =>
+      !disposed &&
+      field._isMounted &&
+      !field._isKilled &&
+      field.state.meta.isValidating &&
+      isFieldListSubscribed(field),
+    onChange: (field: AnyInternalFieldApi) => queueFieldChange(field),
+  })
+
+  const observeLongValidation = (field: AnyInternalFieldApi): void => {
+    if (!field._isMounted || field._isKilled || !isFieldListSubscribed(field)) {
+      longValidation.remove(field)
+      return
+    }
+
+    longValidation.observe(field, field.state.meta.isValidating)
+  }
+
+  const getProjectedSummary = (
+    field: AnyInternalFieldApi,
+  ): DevtoolsMountedFieldSummaryPatch | undefined =>
+    toDevtoolsMountedFieldSummaryPatch(field.state.meta, {
+      isLongValidating: longValidation.isActive(field),
+    })
+
+  const getObservedSummary = (
+    field: AnyInternalFieldApi,
+  ): DevtoolsMountedFieldSummaryPatch | undefined => {
+    observeLongValidation(field)
+    return getProjectedSummary(field)
+  }
+
   const cacheSummary = (
     field: AnyInternalFieldApi,
     summary: DevtoolsMountedFieldSummaryPatch | undefined,
@@ -102,7 +155,10 @@ export function createFieldListController({
   const createSnapshot = (
     form: AnyInternalFormApi,
   ): Array<DevtoolsMountedFieldScaffold> =>
-    getMountedFieldRowsSnapshot(form, identity, cacheSummary)
+    getMountedFieldRowsSnapshot(form, identity, {
+      getSummary: getObservedSummary,
+      onSummary: cacheSummary,
+    })
 
   const emitSnapshot = (
     formInstanceId: FormId,
@@ -160,9 +216,7 @@ export function createFieldListController({
         if (!fieldIsMounted) continue
 
         const previousSummary = sparseSummaryByField.get(change.field)
-        const currentSummary = toDevtoolsMountedFieldSummaryPatch(
-          change.field.state.meta,
-        )
+        const currentSummary = getProjectedSummary(change.field)
         const summaryDifference = change.summary
           ? diffBaselinePatches(previousSummary, currentSummary)
           : {}
@@ -205,11 +259,11 @@ export function createFieldListController({
     queueMicrotask(flushPendingChanges)
   }
 
-  const queueFieldChange = (
+  function queueFieldChange(
     field: AnyInternalFieldApi,
     structure?: PendingStructure,
     summary = true,
-  ): void => {
+  ): void {
     const form = field.form
     if (!mountedForms.isMounted(form)) return
 
@@ -238,6 +292,13 @@ export function createFieldListController({
     scheduleFlush()
   }
 
+  const removeLongValidationForForm = (formInstanceId: FormId): void => {
+    const form = mountedForms.getMountedForm(formInstanceId)
+    if (!form) return
+
+    longValidation.removeWhere((field) => field.form === form)
+  }
+
   const cleanupSubscribeListener = formDevtoolsEventClient.on(
     'field-list-subscribe',
     (event) => {
@@ -250,6 +311,7 @@ export function createFieldListController({
     'field-list-unsubscribe',
     (event) => {
       const { formInstanceId } = event.payload
+      removeLongValidationForForm(formInstanceId)
       subscribedFormIds.delete(formInstanceId)
       pendingChanges.delete(formInstanceId)
     },
@@ -259,22 +321,39 @@ export function createFieldListController({
     dispose: () => {
       disposed = true
       pendingChanges.clear()
+      longValidation.dispose()
       cleanupSubscribeListener()
       cleanupUnsubscribeListener()
     },
-    fieldMounted: (field) => queueFieldChange(field, 'upsert'),
-    fieldMoved: (field, _previousPath) => queueFieldChange(field, 'upsert'),
+    fieldMounted: (field) => {
+      observeLongValidation(field)
+      queueFieldChange(field, 'upsert')
+    },
+    fieldMoved: (field, _previousPath) => {
+      observeLongValidation(field)
+      queueFieldChange(field, 'upsert')
+    },
     fieldUpdated: (field) => {
-      if (!field._isMounted) return
+      if (!field._isMounted) {
+        longValidation.remove(field)
+        return
+      }
+      observeLongValidation(field)
       queueFieldChange(field)
     },
     fieldSubtreeRemoved: (_form, fields) => {
-      for (const field of fields) queueFieldChange(field, 'remove', false)
+      for (const field of fields) {
+        longValidation.remove(field)
+        queueFieldChange(field, 'remove', false)
+      }
     },
-    fieldUnmounted: (field, _previousPath) =>
-      queueFieldChange(field, 'remove', false),
+    fieldUnmounted: (field, _previousPath) => {
+      longValidation.remove(field)
+      queueFieldChange(field, 'remove', false)
+    },
     formMounted: emitSubscribedSnapshot,
     formUnmounted: (formInstanceId) => {
+      removeLongValidationForForm(formInstanceId)
       pendingChanges.delete(formInstanceId)
       emitSnapshot(formInstanceId, null)
       subscribedFormIds.delete(formInstanceId)

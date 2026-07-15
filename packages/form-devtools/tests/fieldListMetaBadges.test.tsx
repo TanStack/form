@@ -51,6 +51,7 @@ describe('field list meta badges', () => {
           summary: {
             isTouched: true,
             isBlurred: true,
+            isLongValidating: true,
             isDefaultValue: false,
             validity: 'invalidHidden',
           },
@@ -58,8 +59,9 @@ describe('field list meta badges', () => {
       ],
     })
 
-    expect(container.textContent).toContain('Touched')
+    expect(container.textContent).not.toContain('Touched')
     expect(container.textContent).toContain('Blurred')
+    expect(container.textContent).toContain('Validating')
     expect(container.textContent).toContain('Invalid (hidden)')
     expect(container.textContent).toContain('Non-default value')
     expect(container.textContent).not.toContain('Dirty')
@@ -70,6 +72,7 @@ describe('field list meta badges', () => {
     })
 
     expect(container.textContent).toContain('Invalid')
+    expect(container.textContent).toContain('Validating')
     expect(container.textContent).not.toContain('Invalid (hidden)')
 
     store.fieldList.applyPatch({
@@ -80,6 +83,7 @@ describe('field list meta badges', () => {
           clearSummary: [
             'isTouched',
             'isBlurred',
+            'isLongValidating',
             'isDefaultValue',
             'validity',
           ],
@@ -89,6 +93,7 @@ describe('field list meta badges', () => {
 
     expect(container.textContent).not.toContain('Touched')
     expect(container.textContent).not.toContain('Blurred')
+    expect(container.textContent).not.toContain('Validating')
     expect(container.textContent).not.toContain('Invalid')
     expect(container.textContent).not.toContain('Non-default value')
   })

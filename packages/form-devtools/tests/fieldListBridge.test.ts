@@ -2,7 +2,7 @@ import {
   InternalFormApi,
   installDevtoolsBridge,
 } from '@tanstack/form-core/internals'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createFieldsController } from '../src/bridge/fields'
 import { createMountedFormsController } from '../src/bridge/forms/mountedForms'
 import { createFormDevtoolsBridge } from '../src/bridge/createBridge'
@@ -14,6 +14,10 @@ type FieldListSnapshot = FormDevtoolsEventMap['field-list-snapshot']
 type FieldListPatch = FormDevtoolsEventMap['field-list-patch']
 
 const flushPatches = () => Promise.resolve()
+
+afterEach(() => {
+  vi.useRealTimers()
+})
 
 describe('field list bridge', () => {
   it('uses snapshots for recovery and sparse patches for live meta', async () => {
@@ -85,6 +89,11 @@ describe('field list bridge', () => {
 
       const patchCountAfterBlur = patches.length
       field._setMeta((meta) => ({ ...meta, isValidating: true }))
+      fields.updateField(field)
+      await flushPatches()
+      expect(patches).toHaveLength(patchCountAfterBlur)
+
+      field._setMeta((meta) => ({ ...meta, isValidating: false }))
       fields.updateField(field)
       await flushPatches()
       expect(patches).toHaveLength(patchCountAfterBlur)
@@ -168,6 +177,241 @@ describe('field list bridge', () => {
       await flushPatches()
       expect(snapshots.at(-1)?.fields).toEqual([])
       expect(patches).toHaveLength(patchCountBeforeUnmount)
+    } finally {
+      cleanupPatchListener()
+      cleanupSnapshotListener()
+      unregisterField()
+      fields.dispose()
+      mountedForms.dispose()
+      disconnectEventBus()
+    }
+  })
+
+  it('activates long validation after 300 ms and clears it immediately', async () => {
+    vi.useFakeTimers()
+    const disconnectEventBus = connectTestEventBus()
+    const mountedForms = createMountedFormsController()
+    const fields = createFieldsController(mountedForms)
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+    const unregisterField = field._register()
+    const snapshots: Array<FieldListSnapshot> = []
+    const patches: Array<FieldListPatch> = []
+    const cleanupSnapshotListener = formDevtoolsEventClient.on(
+      'field-list-snapshot',
+      (event) => snapshots.push(event.payload),
+    )
+    const cleanupPatchListener = formDevtoolsEventClient.on(
+      'field-list-patch',
+      (event) => patches.push(event.payload),
+    )
+
+    try {
+      mountedForms.mountForm(form)
+      const { instanceId } = mountedForms.getMountedFormsSnapshot()[0]!
+      formDevtoolsEventClient.emit('field-list-subscribe', {
+        formInstanceId: instanceId,
+      })
+      const fieldId = snapshots[0]!.fields[0]!.fieldId
+
+      field._setMeta((meta) => ({ ...meta, isValidating: true }))
+      fields.updateField(field)
+      await flushPatches()
+      expect(patches).toEqual([])
+
+      await vi.advanceTimersByTimeAsync(150)
+      fields.updateField(field)
+      await flushPatches()
+      await vi.advanceTimersByTimeAsync(149)
+      expect(patches).toEqual([])
+
+      await vi.advanceTimersByTimeAsync(1)
+      await flushPatches()
+      expect(patches).toEqual([
+        {
+          formInstanceId: instanceId,
+          upsert: [{ fieldId, setSummary: { isLongValidating: true } }],
+        },
+      ])
+
+      field._setMeta((meta) => ({ ...meta, isValidating: false }))
+      fields.updateField(field)
+      await flushPatches()
+      expect(patches.at(-1)).toEqual({
+        formInstanceId: instanceId,
+        upsert: [{ fieldId, clearSummary: ['isLongValidating'] }],
+      })
+    } finally {
+      cleanupPatchListener()
+      cleanupSnapshotListener()
+      unregisterField()
+      fields.dispose()
+      mountedForms.dispose()
+      disconnectEventBus()
+    }
+  })
+
+  it('coalesces long validation for a field and its parent', async () => {
+    vi.useFakeTimers()
+    const disconnectEventBus = connectTestEventBus()
+    const mountedForms = createMountedFormsController()
+    const fields = createFieldsController(mountedForms)
+    const bridge = createFormDevtoolsBridge({ fields, mountedForms })
+    const uninstallBridge = installDevtoolsBridge(bridge)
+    const form = new InternalFormApi({
+      defaultValues: { user: { name: '' } },
+    })
+    const parent = form._getOrCreateFieldApi({ name: 'user' })
+    const child = form._getOrCreateFieldApi({ name: 'user.name' })
+    const unmountForm = form.mount()
+    const unregisterParent = parent._register()
+    const unregisterChild = child._register()
+    const snapshots: Array<FieldListSnapshot> = []
+    const patches: Array<FieldListPatch> = []
+    const cleanupSnapshotListener = formDevtoolsEventClient.on(
+      'field-list-snapshot',
+      (event) => snapshots.push(event.payload),
+    )
+    const cleanupPatchListener = formDevtoolsEventClient.on(
+      'field-list-patch',
+      (event) => patches.push(event.payload),
+    )
+
+    try {
+      const { instanceId } = mountedForms.getMountedFormsSnapshot()[0]!
+      formDevtoolsEventClient.emit('field-list-subscribe', {
+        formInstanceId: instanceId,
+      })
+      const fieldIds = new Map(
+        snapshots[0]!.fields.map((field) => [field.path, field.fieldId]),
+      )
+
+      child._setValidationCount((count) => count + 1)
+      child._setValidationCount((count) => count + 1)
+      await vi.advanceTimersByTimeAsync(300)
+      await flushPatches()
+
+      expect(patches).toHaveLength(1)
+      expect(patches[0]).toEqual({
+        formInstanceId: instanceId,
+        upsert: expect.arrayContaining([
+          {
+            fieldId: fieldIds.get('user'),
+            setSummary: { isLongValidating: true },
+          },
+          {
+            fieldId: fieldIds.get('user.name'),
+            setSummary: { isLongValidating: true },
+          },
+        ]),
+      })
+
+      child._setValidationCount((count) => count - 1)
+      await flushPatches()
+      expect(patches).toHaveLength(1)
+
+      child._setValidationCount((count) => count - 1)
+      await flushPatches()
+      expect(patches).toHaveLength(2)
+      expect(patches[1]).toEqual({
+        formInstanceId: instanceId,
+        upsert: expect.arrayContaining([
+          {
+            fieldId: fieldIds.get('user'),
+            clearSummary: ['isLongValidating'],
+          },
+          {
+            fieldId: fieldIds.get('user.name'),
+            clearSummary: ['isLongValidating'],
+          },
+        ]),
+      })
+    } finally {
+      cleanupPatchListener()
+      cleanupSnapshotListener()
+      unregisterChild()
+      unregisterParent()
+      unmountForm()
+      uninstallBridge()
+      fields.dispose()
+      mountedForms.dispose()
+      disconnectEventBus()
+    }
+  })
+
+  it('restarts observation after unsubscribe and preserves active recovery snapshots', async () => {
+    vi.useFakeTimers()
+    const disconnectEventBus = connectTestEventBus()
+    const mountedForms = createMountedFormsController()
+    const fields = createFieldsController(mountedForms)
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+    const unregisterField = field._register()
+    const snapshots: Array<FieldListSnapshot> = []
+    const patches: Array<FieldListPatch> = []
+    const cleanupSnapshotListener = formDevtoolsEventClient.on(
+      'field-list-snapshot',
+      (event) => snapshots.push(event.payload),
+    )
+    const cleanupPatchListener = formDevtoolsEventClient.on(
+      'field-list-patch',
+      (event) => patches.push(event.payload),
+    )
+
+    try {
+      mountedForms.mountForm(form)
+      const { instanceId } = mountedForms.getMountedFormsSnapshot()[0]!
+      formDevtoolsEventClient.emit('field-list-subscribe', {
+        formInstanceId: instanceId,
+      })
+      const fieldId = snapshots[0]!.fields[0]!.fieldId
+
+      field._setMeta((meta) => ({ ...meta, isValidating: true }))
+      fields.updateField(field)
+      await vi.advanceTimersByTimeAsync(150)
+      formDevtoolsEventClient.emit('field-list-unsubscribe', {
+        formInstanceId: instanceId,
+      })
+      expect(vi.getTimerCount()).toBe(0)
+
+      await vi.advanceTimersByTimeAsync(150)
+      expect(patches).toEqual([])
+
+      formDevtoolsEventClient.emit('field-list-subscribe', {
+        formInstanceId: instanceId,
+      })
+      expect(snapshots.at(-1)?.fields).toEqual([{ path: 'name', fieldId }])
+
+      await vi.advanceTimersByTimeAsync(300)
+      await flushPatches()
+      expect(patches.at(-1)).toEqual({
+        formInstanceId: instanceId,
+        upsert: [{ fieldId, setSummary: { isLongValidating: true } }],
+      })
+
+      formDevtoolsEventClient.emit('field-list-subscribe', {
+        formInstanceId: instanceId,
+      })
+      expect(snapshots.at(-1)?.fields).toEqual([
+        {
+          path: 'name',
+          fieldId,
+          summary: { isLongValidating: true },
+        },
+      ])
+
+      field._setMeta((meta) => ({ ...meta, isValidating: false }))
+      fields.updateField(field)
+      await flushPatches()
+      field._setMeta((meta) => ({ ...meta, isValidating: true }))
+      fields.updateField(field)
+      expect(vi.getTimerCount()).toBe(1)
+
+      mountedForms.unmountForm(form, fields.unmountForm)
+      expect(vi.getTimerCount()).toBe(0)
+      const patchCount = patches.length
+      await vi.advanceTimersByTimeAsync(300)
+      expect(patches).toHaveLength(patchCount)
     } finally {
       cleanupPatchListener()
       cleanupSnapshotListener()

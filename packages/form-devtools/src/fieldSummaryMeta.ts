@@ -6,21 +6,28 @@ import type {
   DevtoolsMountedFieldValidity,
 } from './eventClientTypes'
 
+export interface DevtoolsMountedFieldSummaryProjection {
+  isLongValidating?: boolean
+}
+
 export const defaultDevtoolsMountedFieldSummary = Object.freeze({
   isDirty: defaultFieldMeta.isDirty,
   isTouched: defaultFieldMeta.isTouched,
   isBlurred: defaultFieldMeta.isBlurred,
+  isLongValidating: false,
   isDefaultValue: defaultFieldMeta.isDefaultValue,
   validity: toDevtoolsMountedFieldValidity(defaultFieldMeta),
 }) satisfies DevtoolsMountedFieldSummary
 
 export function toDevtoolsMountedFieldSummary(
   meta: InternalFieldMeta,
+  projection: DevtoolsMountedFieldSummaryProjection = {},
 ): DevtoolsMountedFieldSummary {
   return {
     isDirty: meta.isDirty,
     isTouched: meta.isTouched,
     isBlurred: meta.isBlurred,
+    isLongValidating: projection.isLongValidating ?? false,
     isDefaultValue: meta.isDefaultValue,
     validity: toDevtoolsMountedFieldValidity(meta),
   }
@@ -53,9 +60,10 @@ export function createBaselinePatch<T extends object>(
 
 export function toDevtoolsMountedFieldSummaryPatch(
   meta: InternalFieldMeta,
+  projection?: DevtoolsMountedFieldSummaryProjection,
 ): DevtoolsMountedFieldSummaryPatch | undefined {
   return createBaselinePatch(
-    toDevtoolsMountedFieldSummary(meta),
+    toDevtoolsMountedFieldSummary(meta, projection),
     defaultDevtoolsMountedFieldSummary,
   )
 }

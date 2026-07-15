@@ -29,6 +29,9 @@ export function FieldListMetaBadges(props: FieldListMetaBadgesProps) {
       <Show when={meta().isBlurred}>
         <FieldMetaBadge kind="blurred" />
       </Show>
+      <Show when={meta().isLongValidating}>
+        <FieldMetaBadge kind="validating" />
+      </Show>
       <Show when={meta().validity === 'invalid'}>
         <FieldMetaBadge kind="invalid" />
       </Show>

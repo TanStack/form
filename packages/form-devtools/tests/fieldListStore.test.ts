@@ -87,6 +87,7 @@ describe('field list store', () => {
       isDirty: true,
       isTouched: false,
       isBlurred: false,
+      isLongValidating: false,
       isDefaultValue: true,
       validity: 'valid',
     })
@@ -115,6 +116,7 @@ describe('field list store', () => {
       isDirty: true,
       isTouched: false,
       isBlurred: false,
+      isLongValidating: false,
       isDefaultValue: true,
       validity: 'valid',
     })
@@ -185,6 +187,7 @@ describe('field list store', () => {
       isDirty: true,
       isTouched: false,
       isBlurred: false,
+      isLongValidating: false,
       isDefaultValue: true,
       validity: 'valid',
     })

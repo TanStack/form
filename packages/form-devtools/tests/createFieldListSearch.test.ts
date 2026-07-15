@@ -17,6 +17,7 @@ function meta(isDirty: boolean) {
     isDirty,
     isTouched: false,
     isBlurred: false,
+    isLongValidating: false,
     isDefaultValue: true,
     validity: 'valid' as const,
   }
@@ -78,6 +79,9 @@ describe('field list search', () => {
     expect(
       search.tagsSuggestions().items.map((filter) => filter.id),
     ).not.toContain('pristine')
+    expect(
+      search.tagsSuggestions().items.map((filter) => filter.id),
+    ).not.toContain('validating')
   })
 
   it('filters Dirty and Pristine rows from hydrated summaries', async () => {

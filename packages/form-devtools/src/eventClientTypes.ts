@@ -11,6 +11,7 @@ export interface DevtoolsMountedFieldSummary {
   isDirty: boolean
   isTouched: boolean
   isBlurred: boolean
+  isLongValidating: boolean
   isDefaultValue: boolean
   validity: DevtoolsMountedFieldValidity
 }
