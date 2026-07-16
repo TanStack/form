@@ -239,7 +239,18 @@ export function metaHelper<
       const nextFieldKey = updateIndex(fieldKey.toString(), direction)
       const nextFieldMeta = formApi.getFieldMeta(nextFieldKey)
       if (nextFieldMeta) {
-        formApi.setFieldMeta(fieldKey, nextFieldMeta)
+        // Transient async-validation state is bound to the specific field
+        // instance that started the validation; that instance settles its own
+        // counter against the original index once the promise resolves.
+        // Carrying it over to a shifted index would orphan the counter and
+        // leave `isValidating` stuck true. Array mutations re-trigger
+        // validation on the shifted fields, so it is safe to reset here.
+        // See https://github.com/TanStack/form/issues/2234
+        formApi.setFieldMeta(fieldKey, {
+          ...nextFieldMeta,
+          isValidating: false,
+          _pendingValidationsCount: 0,
+        })
       } else {
         formApi.setFieldMeta(fieldKey, getEmptyFieldMeta())
       }

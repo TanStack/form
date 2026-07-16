@@ -1394,6 +1394,11 @@ export class FieldApi<
    * Ends tracking an async validation, decrementing the counter and clearing isValidating if no validations remain.
    */
   private endValidation() {
+    // The field may have been removed (e.g. via an array `removeValue`) while
+    // this async validation was still in flight. In that case its meta has
+    // already been deleted, so bail out instead of resurrecting empty meta.
+    // See https://github.com/TanStack/form/issues/2234
+    if (this.getInfo().instance !== this) return
     this.setMeta((prev) => {
       const newCount = Math.max(0, prev._pendingValidationsCount - 1)
       return {

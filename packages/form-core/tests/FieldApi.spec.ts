@@ -652,6 +652,73 @@ describe('field api', () => {
     expect(form.state.canSubmit).toBe(true)
   })
 
+  it('should not leave isFieldsValidating stuck true when removing an array item while an async validation is in flight', async () => {
+    vi.useFakeTimers()
+    let resolve!: () => void
+    let promise = new Promise<void>((r) => {
+      resolve = r as never
+    })
+
+    const form = new FormApi({
+      defaultValues: {
+        list: [
+          { operator: 'a', value: '1' },
+          { operator: 'b', value: '2' },
+        ],
+      },
+    })
+
+    const arrayField = new FieldApi({ form, name: 'list' })
+
+    const makeRow = (i: number) => {
+      const operator = new FieldApi({
+        form,
+        name: `list[${i}].operator` as const,
+      })
+      const value = new FieldApi({
+        form,
+        name: `list[${i}].value` as const,
+        validators: {
+          onChangeListenTo: [`list[${i}].operator`],
+          onChangeAsyncDebounceMs: 0,
+          onChangeAsync: async () => {
+            await promise
+            return undefined
+          },
+        },
+      })
+      return { operator, value }
+    }
+
+    form.mount()
+    arrayField.mount()
+    const row0 = makeRow(0)
+    const row1 = makeRow(1)
+    row0.operator.mount()
+    row0.value.mount()
+    row1.operator.mount()
+    row1.value.mount()
+
+    // Kick off an async validation on row 1's value via its listened-to field
+    row1.operator.setValue('changed')
+    await Promise.resolve()
+    expect(form.getFieldMeta('list[1].value')?.isValidating).toBe(true)
+
+    // Remove row 0 while row 1's async validation is still pending: row 1's
+    // meta (with its in-flight validation counter) shifts down into row 0.
+    await arrayField.removeValue(0)
+
+    // Resolve the pending validation and let everything settle
+    resolve()
+    await vi.runAllTimersAsync()
+
+    expect(form.getFieldMeta('list[0].value')?.isValidating).toBe(false)
+    expect(form.getFieldMeta('list[0].value')?._pendingValidationsCount).toBe(0)
+    expect(form.state.isFieldsValidating).toBe(false)
+
+    vi.useRealTimers()
+  })
+
   it('should swap a value from an array value correctly', () => {
     const form = new FormApi({
       defaultValues: {
