@@ -20,13 +20,13 @@ function SidebarRail(props: SplitterResizeTriggerProps) {
   )
 }
 
-interface LeftResizablePanelProps extends ParentProps {
+interface ResizableSidebarProps extends ParentProps {
   sidebarPanelId: string
   mainPanelId: string
   class?: string
 }
 
-export function LeftResizablePanel(props: LeftResizablePanelProps) {
+export function ResizableSidebar(props: ResizableSidebarProps) {
   return (
     <>
       <Splitter.Panel

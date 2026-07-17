@@ -27,7 +27,7 @@ const fieldMetaBadgeVariants = cva('', {
 
 type BadgeVariantsProps = VariantProps<typeof fieldMetaBadgeVariants>
 
-type FieldMetaBadgeKind =
+export type FieldMetaBadgeKind =
   | 'dirty'
   | 'pristine'
   | 'valid'

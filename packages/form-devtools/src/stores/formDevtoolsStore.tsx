@@ -4,6 +4,7 @@ import {
   fieldListCache,
   mountFieldListEvents,
 } from './fieldListStore'
+import { createFieldDetailsStore } from './fieldDetailsStore'
 import {
   createFormSelectorComputations,
   formSelectorCache,
@@ -22,8 +23,11 @@ export function createFormDevtoolsStore() {
     ...createFieldListComputations(),
     mountEvents: () => mountFieldListEvents(formSelector.selectedForm),
   }
+  const fieldDetails = createFieldDetailsStore(() =>
+    fieldList.mainPanelFieldRows().map((field) => field.fieldId),
+  )
 
-  return { formSelector, fieldList }
+  return { formSelector, fieldList, fieldDetails }
 }
 
 export type FormDevtoolsStore = ReturnType<typeof createFormDevtoolsStore>

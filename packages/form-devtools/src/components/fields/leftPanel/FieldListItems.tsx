@@ -46,7 +46,7 @@ export function FieldListItems() {
               />
             )}
           >
-            <BookmarkIcon class="text-foreground/80 group-focus-visible:scale-110 group-focus-visible:text-foreground group-hover:text-foreground transition-transform group-aria-pressed:text-foreground group-aria-pressed:fill-foreground size-4.5" />
+            <BookmarkIcon class="size-4.5 -translate-y-px text-foreground/80 group-focus-visible:scale-110 group-focus-visible:text-foreground group-hover:text-foreground transition-transform group-aria-pressed:text-foreground group-aria-pressed:fill-foreground " />
           </ItemMedia>
           <ItemContent>
             <Listbox.ItemText

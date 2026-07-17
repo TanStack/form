@@ -3,7 +3,7 @@ import { For, Show, createSignal } from 'solid-js'
 import { DevtoolsTab } from '../header/TabsNav'
 import { Separator } from '../ui/separator'
 import { ScrollArea } from '../ui/scroll-area'
-import { LeftResizablePanel } from './leftPanel/LeftResizablePanel'
+import { ResizableSidebar } from '../ui/resizable-sidebar'
 import { FieldListSearch } from './leftPanel/listSearch/FieldListSearch'
 import { FieldList } from './leftPanel/FieldList'
 import type { SplitterPanelData } from '@ark-ui/solid'
@@ -22,6 +22,24 @@ const panels: Array<SplitterPanelData> = [
   },
 ]
 
+function Sidebar() {
+  return (
+    <ResizableSidebar
+      sidebarPanelId={sidebarId}
+      mainPanelId={mainId}
+      class="grid gap-2 grid-rows-[auto_1fr]"
+    >
+      <div class="flex flex-col gap-2 px-2 pt-2">
+        <FieldListSearch />
+        <Separator />
+      </div>
+      <ScrollArea class="min-h-0 px-2">
+        <FieldList />
+      </ScrollArea>
+    </ResizableSidebar>
+  )
+}
+
 export function FieldTab() {
   const { mainPanelFieldRows } = useFormDevtoolsStore().fieldList
   const [size, setSize] = createSignal([0.25, 0.75])
@@ -33,19 +51,7 @@ export function FieldTab() {
         size={size()}
         onResize={(details) => setSize(details.size)}
       >
-        <LeftResizablePanel
-          sidebarPanelId={sidebarId}
-          mainPanelId={mainId}
-          class="grid gap-2 grid-rows-[auto_1fr]"
-        >
-          <div class="flex flex-col gap-2 px-2 pt-2">
-            <FieldListSearch />
-            <Separator />
-          </div>
-          <ScrollArea class="min-h-0 px-2">
-            <FieldList />
-          </ScrollArea>
-        </LeftResizablePanel>
+        <Sidebar />
         <Splitter.Panel id={mainId} class="size-full min-w-0 p-3">
           <Show
             when={mainPanelFieldRows().length > 0}

@@ -1,7 +1,9 @@
-import { Show } from 'solid-js'
+import { For, Show, createMemo } from 'solid-js'
 import { FieldMetaBadge } from '../FieldMetaBadge'
+import type { FieldMetaBadgeKind } from '../FieldMetaBadge'
 import type { FieldId } from '@/types/branded'
 import { useFormDevtoolsStore } from '@/stores/formDevtoolsStore'
+import { ItemDescription } from '@/components/ui/item'
 
 interface FieldListMetaBadgesProps {
   fieldId: FieldId
@@ -11,40 +13,33 @@ export function FieldListMetaBadges(props: FieldListMetaBadgesProps) {
   const { getFieldSummary } = useFormDevtoolsStore().fieldList
 
   const meta = () => getFieldSummary(props.fieldId)
-  // Can happen during submission events where a field wasn't touched yet, but a dirtied / blurred field will
-  // always include touched. At least usually.
-  // We'll still allow filtering to be exact if the difference matters in the list.
-  const isOnlyTouched = () => {
+
+  const badges = createMemo(() => {
+    const output: Array<FieldMetaBadgeKind> = []
     const m = meta()
-    return !m.isDirty && !m.isBlurred && m.isTouched
-  }
+
+    // Can happen during submission events where a field wasn't touched yet, but a dirtied / blurred field will
+    // always include touched. At least usually.
+    // We'll still allow filtering to be exact if the difference matters in the list.
+    const isOnlyTouched = !m.isDirty && !m.isBlurred && m.isTouched
+
+    if (props.isMounted === false) output.push('unmounted')
+    if (m.isDirty) output.push('dirty')
+    if (isOnlyTouched) output.push('touched')
+    if (m.isBlurred) output.push('blurred')
+    if (m.isLongValidating) output.push('validating')
+    if (m.validity === 'invalid') output.push('invalid')
+    if (m.validity === 'invalidHidden') output.push('invalidHidden')
+    if (!m.isDefaultValue) output.push('nonDefaultValue')
+
+    return output
+  })
 
   return (
-    <>
-      <Show when={props.isMounted === false}>
-        <FieldMetaBadge kind="unmounted" />
-      </Show>
-      <Show when={meta().isDirty}>
-        <FieldMetaBadge kind="dirty" />
-      </Show>
-      <Show when={isOnlyTouched()}>
-        <FieldMetaBadge kind="touched" />
-      </Show>
-      <Show when={meta().isBlurred}>
-        <FieldMetaBadge kind="blurred" />
-      </Show>
-      <Show when={meta().isLongValidating}>
-        <FieldMetaBadge kind="validating" />
-      </Show>
-      <Show when={meta().validity === 'invalid'}>
-        <FieldMetaBadge kind="invalid" />
-      </Show>
-      <Show when={meta().validity === 'invalidHidden'}>
-        <FieldMetaBadge kind="invalidHidden" />
-      </Show>
-      <Show when={!meta().isDefaultValue}>
-        <FieldMetaBadge kind="nonDefaultValue" />
-      </Show>
-    </>
+    <Show when={badges().length > 0}>
+      <ItemDescription class="flex flex-wrap gap-2">
+        <For each={badges()}>{(badge) => <FieldMetaBadge kind={badge} />}</For>
+      </ItemDescription>
+    </Show>
   )
 }
