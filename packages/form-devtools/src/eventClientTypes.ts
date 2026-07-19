@@ -26,8 +26,6 @@ export type DevtoolsMountedFieldSummaryPatch =
 
 export interface DevtoolsMountedFieldScaffold {
   fieldId: FieldId
-  /** Omitted when the field is a direct child of the form root. */
-  parentFieldId?: FieldId
   path: string
   /** Omitted for a mounted field; `false` means the field is currently unmounted. */
   isMounted?: boolean
@@ -39,11 +37,6 @@ export interface DevtoolsMountedFieldPatch {
   fieldId: FieldId
   /** Omitted when this patch does not add the field or change its path. */
   path?: string
-  /**
-   * Present with `path` when the field has a parent field. Omitted with `path`
-   * for a direct child of the form root, and ignored when `path` is omitted.
-   */
-  parentFieldId?: FieldId
   /** Omitted when this patch does not change whether the field is mounted. */
   isMounted?: boolean
   /** Omitted when this patch does not set any sparse summary properties. */
@@ -89,6 +82,36 @@ export interface DevtoolsFieldError {
   error: { message: string }
   source: DevtoolsFieldErrorSource
   sourceEvent: string
+}
+
+export interface FieldErrorDebugReportRequest {
+  requestId: string
+  formInstanceId: FormId
+  fieldId: FieldId
+  error: DevtoolsFieldError
+}
+
+type FieldErrorSuspicion<
+  TKind extends string,
+  TEvidence extends Record<string, any> = Record<string, never>,
+> = {
+  kind: TKind
+  evidence: TEvidence
+}
+
+export type SchemaErrorUnmountedFieldSuspicion = FieldErrorSuspicion<
+  'schema-error-on-unmounted-field',
+  {
+    fieldPath: string
+    mountedAncestorPath: string
+  }
+>
+
+export type FieldErrorDebugSuspicion = SchemaErrorUnmountedFieldSuspicion
+
+export interface FieldErrorDebugReport {
+  requestId: string
+  suspicions: Array<FieldErrorDebugSuspicion>
 }
 
 export interface DevtoolsFieldDetailSubfieldsMeta {
@@ -166,4 +189,6 @@ export type FormDevtoolsEventMap = {
   'field-detail-subscribe': FieldDetailSubscriptionDescriptor
   'field-detail-unsubscribe': FieldDetailSubscriptionDescriptor
   'field-detail-changed': DevtoolsFieldDetail
+  'field-error-debug-report-request': FieldErrorDebugReportRequest
+  'field-error-debug-report': FieldErrorDebugReport
 }

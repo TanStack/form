@@ -1,12 +1,16 @@
-import { For, Show, createMemo } from 'solid-js'
-import { fieldErrorDebugCases } from './debugCases'
-import type { FieldErrorDebugDetails } from './debugCases'
+import { For, Show, createMemo, createSignal, onCleanup } from 'solid-js'
+import { getFieldErrorDebugDetails } from './suspicionViews'
+import type { FieldErrorDebugDetails } from './suspicionViews'
 import type { Accessor } from 'solid-js'
-import type { DevtoolsFieldError } from '@/eventClientTypes'
-import type { FieldId } from '@/types/branded'
+import type {
+  DevtoolsFieldError,
+  FieldErrorDebugReport,
+  FieldErrorDebugSuspicion,
+} from '@/eventClientTypes'
+import type { FieldId, FormId } from '@/types/branded'
 import { Button } from '@/components/ui/button'
 import { GitHubInvertocat } from '@/components/ui/github-invertocat'
-import { useFormDevtoolsStore } from '@/stores/formDevtoolsStore'
+import { requestFieldErrorDebugReport } from '@/debugReports'
 import {
   Card,
   CardAction,
@@ -25,71 +29,88 @@ import {
 } from '@/components/ui/accordion'
 
 type EvaluatedFieldErrorDebugDetails = FieldErrorDebugDetails & {
-  caseIndex: number
+  kind: FieldErrorDebugSuspicion['kind']
 }
 
 interface DebugInfoProps {
+  formInstanceId: FormId
   fieldId: FieldId
   error: DevtoolsFieldError
-  dismissedDebugCases: Accessor<ReadonlySet<number>>
-  onDismissDebugCase: (caseIndex: number) => void
+  dismissedDebugCases: Accessor<ReadonlySet<FieldErrorDebugSuspicion['kind']>>
+  onDismissDebugCase: (kind: FieldErrorDebugSuspicion['kind']) => void
 }
 
 export function DebugInfo(props: DebugInfoProps) {
-  const store = useFormDevtoolsStore()
-  const debug = createMemo(() => {
-    const details: Array<EvaluatedFieldErrorDebugDetails> = []
-    const context = {
+  const [report, setReport] = createSignal<FieldErrorDebugReport>()
+  const cancelRequest = requestFieldErrorDebugReport(
+    {
+      formInstanceId: props.formInstanceId,
       fieldId: props.fieldId,
       error: props.error,
-      store,
-    }
+    },
+    setReport,
+  )
+  onCleanup(cancelRequest)
 
-    for (let i = 0; i < fieldErrorDebugCases.length; i++) {
-      const result = fieldErrorDebugCases[i]?.evaluate(context)
-      if (result) details.push({ ...result, caseIndex: i })
-    }
-
-    return details
-  })
-
-  const remainingDebug = createMemo(() =>
-    debug().filter(
-      (details) => !props.dismissedDebugCases().has(details.caseIndex),
+  const remainingSuspicions = createMemo(() =>
+    (report()?.suspicions ?? []).filter(
+      (suspicion) => !props.dismissedDebugCases().has(suspicion.kind),
     ),
   )
-  const currentDebug = createMemo(() => remainingDebug()[0])
+  const currentDebug = createMemo<EvaluatedFieldErrorDebugDetails | undefined>(
+    () => {
+      const suspicion = remainingSuspicions()[0]
+      if (!suspicion) return undefined
+
+      return {
+        ...getFieldErrorDebugDetails(suspicion),
+        kind: suspicion.kind,
+      }
+    },
+  )
 
   return (
     <Card class="ring-0">
       <CardHeader>
         <CardTitle>{currentDebug()?.title ?? 'Debugging'}</CardTitle>
-        <Show when={!currentDebug()}>
+        <Show when={report() && !currentDebug()}>
           <CardDescription>No debugging guidance available</CardDescription>
         </Show>
         <CardAction>
           <Badge>Experimental</Badge>
         </CardAction>
       </CardHeader>
-      <Show
-        when={currentDebug()}
-        fallback={
-          <EmptyDebugDetails dismissedDebugCases={props.dismissedDebugCases} />
-        }
-      >
-        {(data) => (
-          <DebugDetails
-            data={data}
-            onDismissDebugCase={props.onDismissDebugCase}
-          />
-        )}
+      <Show when={report()} fallback={<LoadingDebugDetails />}>
+        <Show
+          when={currentDebug()}
+          fallback={
+            <EmptyDebugDetails
+              dismissedDebugCases={props.dismissedDebugCases}
+            />
+          }
+        >
+          {(data) => (
+            <DebugDetails
+              data={data}
+              onDismissDebugCase={props.onDismissDebugCase}
+            />
+          )}
+        </Show>
       </Show>
     </Card>
   )
 }
 
+function LoadingDebugDetails() {
+  return (
+    <CardContent class="text-sm text-muted-foreground">
+      Investigating this error…
+    </CardContent>
+  )
+}
+
 interface EmptyDebugDetailsProps {
-  dismissedDebugCases: Accessor<ReadonlySet<number>>
+  dismissedDebugCases: Accessor<ReadonlySet<FieldErrorDebugSuspicion['kind']>>
 }
 
 function EmptyDebugDetails(props: EmptyDebugDetailsProps) {
@@ -124,7 +145,7 @@ function EmptyDebugDetails(props: EmptyDebugDetailsProps) {
 
 interface DebugDetailsProps {
   data: Accessor<EvaluatedFieldErrorDebugDetails>
-  onDismissDebugCase: (caseIndex: number) => void
+  onDismissDebugCase: (kind: FieldErrorDebugSuspicion['kind']) => void
 }
 
 function DebugDetails(props: DebugDetailsProps) {
@@ -163,7 +184,7 @@ function DebugDetails(props: DebugDetailsProps) {
         <Button
           variant="outline"
           class="w-full"
-          onClick={() => props.onDismissDebugCase(props.data().caseIndex)}
+          onClick={() => props.onDismissDebugCase(props.data().kind)}
         >
           Not useful
         </Button>

@@ -4,8 +4,11 @@ import { FieldDetailErrorSourceText } from './FieldDetailErrorSourceText'
 import { ErrorExtraInfoPopover } from './ErrorExtraInfoPopover'
 import { DebugInfo } from './ErrorDebugInfoPopover'
 import type { Accessor } from 'solid-js'
-import type { DevtoolsFieldError } from '@/eventClientTypes'
-import type { FieldId } from '@/types/branded'
+import type {
+  DevtoolsFieldError,
+  FieldErrorDebugSuspicion,
+} from '@/eventClientTypes'
+import type { FieldId, FormId } from '@/types/branded'
 import {
   Item,
   ItemActions,
@@ -20,6 +23,7 @@ import {
 } from '@/components/ui/popover'
 
 interface FieldDetailErrorItemProps {
+  formInstanceId: FormId
   fieldId: FieldId
   error: DevtoolsFieldError
   hasHiddenErrors: Accessor<boolean>
@@ -30,13 +34,13 @@ export function FieldDetailErrorItem(props: FieldDetailErrorItemProps) {
     'debug' | 'info' | null
   >(null)
   const [dismissedDebugCases, setDismissedDebugCases] = createSignal<
-    ReadonlySet<number>
+    ReadonlySet<FieldErrorDebugSuspicion['kind']>
   >(new Set())
 
-  const dismissDebugCase = (caseIndex: number) => {
+  const dismissDebugCase = (kind: FieldErrorDebugSuspicion['kind']) => {
     setDismissedDebugCases((dismissed) => {
-      if (dismissed.has(caseIndex)) return dismissed
-      return new Set([...dismissed, caseIndex])
+      if (dismissed.has(kind)) return dismissed
+      return new Set([...dismissed, kind])
     })
   }
 
@@ -80,6 +84,7 @@ export function FieldDetailErrorItem(props: FieldDetailErrorItemProps) {
           </Match>
           <Match when={activePopover() === 'debug'}>
             <DebugInfo
+              formInstanceId={props.formInstanceId}
               fieldId={props.fieldId}
               error={props.error}
               dismissedDebugCases={dismissedDebugCases}

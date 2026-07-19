@@ -410,15 +410,9 @@ export function applyFieldListPatch({
       }
 
       const isMounted = patch.isMounted ?? row?.isMounted ?? true
-      if (
-        !row ||
-        row.path !== patch.path ||
-        row.parentFieldId !== patch.parentFieldId ||
-        row.isMounted !== isMounted
-      ) {
+      if (!row || row.path !== patch.path || row.isMounted !== isMounted) {
         row = createFieldListRow({
           fieldId: patch.fieldId,
-          parentFieldId: patch.parentFieldId,
           path: patch.path,
           isMounted,
         })
@@ -433,7 +427,6 @@ export function applyFieldListPatch({
     ) {
       row = createFieldListRow({
         fieldId: row.fieldId,
-        parentFieldId: row.parentFieldId,
         path: row.path,
         isMounted: patch.isMounted,
       })

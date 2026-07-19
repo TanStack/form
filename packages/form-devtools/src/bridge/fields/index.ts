@@ -1,5 +1,6 @@
 import { createFieldIdentityController } from './identity'
 import { createFieldDetailsController } from './details'
+import { createFieldDebugReportsController } from './debugReports'
 import { createFieldListController } from './list'
 import type {
   AnyInternalFieldApi,
@@ -32,9 +33,14 @@ export function createFieldsController(
   const identity = createFieldIdentityController()
   const fieldList = createFieldListController({ identity, mountedForms })
   const fieldDetails = createFieldDetailsController({ identity, mountedForms })
+  const fieldDebugReports = createFieldDebugReportsController({
+    identity,
+    mountedForms,
+  })
 
   return {
     dispose: () => {
+      fieldDebugReports.dispose()
       fieldDetails.dispose()
       fieldList.dispose()
     },

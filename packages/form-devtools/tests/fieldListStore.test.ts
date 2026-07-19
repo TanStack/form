@@ -70,23 +70,16 @@ describe('field list store', () => {
     expect(fieldList.fieldRows()).toEqual([])
   })
 
-  it('stores and replaces parent identity with structural field changes', () => {
+  it('keeps field identity through structural and mounted-state changes', () => {
     fieldList.setSubscribedFormId(formA)
     fieldList.applySnapshot({
       formInstanceId: formA,
       fields: [
         field('first', 'field-first'),
         field('second', 'field-second'),
-        {
-          ...field('first.child', 'field-child'),
-          parentFieldId: 'field-first',
-        },
+        field('first.child', 'field-child'),
       ],
     })
-
-    expect(fieldList.rowsByFieldId().get('field-child')?.parentFieldId).toBe(
-      'field-first',
-    )
 
     fieldList.applyPatch({
       formInstanceId: formA,
@@ -94,14 +87,13 @@ describe('field list store', () => {
         {
           fieldId: 'field-child',
           path: 'second.child',
-          parentFieldId: 'field-second',
         },
       ],
     })
 
     expect(fieldList.rowsByFieldId().get('field-child')).toMatchObject({
       path: 'second.child',
-      parentFieldId: 'field-second',
+      fieldId: 'field-child',
     })
 
     fieldList.applyPatch({
@@ -110,7 +102,8 @@ describe('field list store', () => {
     })
 
     expect(fieldList.rowsByFieldId().get('field-child')).toMatchObject({
-      parentFieldId: 'field-second',
+      fieldId: 'field-child',
+      path: 'second.child',
       isMounted: false,
     })
   })

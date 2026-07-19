@@ -71,6 +71,7 @@ export function FieldDetailErrors({ fieldId }: FieldDetailErrorsProps) {
                 <For each={errors()}>
                   {(error) => (
                     <FieldDetailErrorItem
+                      formInstanceId={data().formInstanceId}
                       fieldId={fieldId}
                       error={error}
                       hasHiddenErrors={hasHiddenErrors}
