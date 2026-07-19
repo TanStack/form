@@ -10,7 +10,7 @@ interface FieldListMetaBadgesProps {
   isMounted: boolean | undefined
 }
 export function FieldListMetaBadges(props: FieldListMetaBadgesProps) {
-  const { getFieldSummary } = useFormDevtoolsStore().fieldList
+  const { getFieldSummary } = useFormDevtoolsStore().fieldMeta
 
   const meta = () => getFieldSummary(props.fieldId)
 

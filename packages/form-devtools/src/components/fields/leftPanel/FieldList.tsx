@@ -28,8 +28,14 @@ export function FieldList() {
   }
 
   const handleRowSelect = (details: ListboxValueChangeDetails) => {
+    const selectedFieldId = details.value[0]
+    if (!selectedFieldId) {
+      setSelectedFieldPath(null)
+      return
+    }
+
     const row = fieldsListCollection().items.find(
-      (item) => item.fieldId === details.value[0],
+      (item) => item.fieldId === selectedFieldId,
     )
     if (row) setSelectedFieldPath(row.path)
   }

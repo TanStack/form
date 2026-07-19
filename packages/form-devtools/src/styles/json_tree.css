@@ -15,15 +15,13 @@
       @apply p-2;
     }
 
+    & [data-part='branch']:has(> [data-part='branch-control']:hover),
     & [data-part='item']:hover {
-      @apply bg-muted transition-transform hover:translate-x-0.75;
-    }
-
-    & [data-part='branch']:has(> [data-part='branch-control']:hover) {
       @apply bg-muted;
     }
 
-    & [data-part='branch']:not([data-depth='1']):hover {
+    & [data-part='branch']:not([data-depth='1']):hover,
+    & [data-part='item']:not([data-line='1']):hover {
       @apply transition-transform hover:translate-x-0.75;
     }
 

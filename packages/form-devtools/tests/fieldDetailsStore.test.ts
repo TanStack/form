@@ -1,8 +1,14 @@
 import { createRoot } from 'solid-js'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { createFormDevtoolsStore } from '../src/stores/formDevtoolsStore'
+import { formDevtoolsEventClient } from '../src/eventClient.lib'
+import { connectTestEventBus } from './testEventBus'
 import type { FormDevtoolsStore } from '../src/stores/formDevtoolsStore'
-import type { DevtoolsMountedFieldScaffold } from '../src/eventClientTypes'
+import type {
+  DevtoolsFieldDetail,
+  DevtoolsMountedFieldScaffold,
+  FieldDetailSubscriptionDescriptor,
+} from '../src/eventClientTypes'
 import type { FormId } from '../src/types/branded'
 
 const formA = 'form-a' as FormId
@@ -44,29 +50,29 @@ describe('field details store', () => {
     fieldList.setFieldPinned('field-email', true)
 
     expect(fieldDetails.getFieldDetailSettings('field-name')).toEqual({
-      includeDefaultValue: true,
+      includeValues: true,
       errorPayloadMode: 'full',
       debounceMs: 0,
     })
 
     fieldDetails.updateFieldDetailSettings('field-name', {
-      includeDefaultValue: false,
+      includeValues: false,
       errorPayloadMode: 'messages',
       debounceMs: 25,
     })
     fieldDetails.updateFieldDetailSettings('field-email', {
-      errorPayloadMode: 'validity',
+      errorPayloadMode: 'messages',
       debounceMs: -10,
     })
 
     expect(fieldDetails.getFieldDetailSettings('field-name')).toEqual({
-      includeDefaultValue: false,
+      includeValues: false,
       errorPayloadMode: 'messages',
       debounceMs: 25,
     })
     expect(fieldDetails.getFieldDetailSettings('field-email')).toEqual({
-      includeDefaultValue: true,
-      errorPayloadMode: 'validity',
+      includeValues: true,
+      errorPayloadMode: 'messages',
       debounceMs: 0,
     })
 
@@ -80,14 +86,14 @@ describe('field details store', () => {
     fieldDetails.resetFieldDetailSettings('field-name')
 
     expect(fieldDetails.getFieldDetailSettings('field-name')).toEqual({
-      includeDefaultValue: true,
+      includeValues: true,
       errorPayloadMode: 'full',
       debounceMs: 0,
     })
     expect(fieldDetails.fieldDetailSettingsById().has('field-name')).toBe(false)
     expect(
       fieldDetails.getFieldDetailSettings('field-email').errorPayloadMode,
-    ).toBe('validity')
+    ).toBe('messages')
   })
 
   it('keeps detail settings with a displayed field across path changes', () => {
@@ -98,7 +104,7 @@ describe('field details store', () => {
     })
     fieldList.setSelectedFieldPath('items[0]')
     fieldDetails.updateFieldDetailSettings('field-item', {
-      includeDefaultValue: false,
+      includeValues: false,
       debounceMs: 50,
     })
 
@@ -109,7 +115,7 @@ describe('field details store', () => {
 
     expect(fieldList.selectedFieldPath()).toBe('items[1]')
     expect(fieldDetails.getFieldDetailSettings('field-item')).toEqual({
-      includeDefaultValue: false,
+      includeValues: false,
       errorPayloadMode: 'full',
       debounceMs: 50,
     })
@@ -139,7 +145,7 @@ describe('field details store', () => {
     fieldList.setSelectedFieldPath('user.email')
 
     expect(fieldDetails.getFieldDetailSettings('field-name')).toEqual({
-      includeDefaultValue: true,
+      includeValues: true,
       errorPayloadMode: 'full',
       debounceMs: 0,
     })
@@ -168,7 +174,9 @@ describe('field details store', () => {
       remove: ['field-email'],
     })
 
-    expect(fieldDetails.fieldDetailSettingsById().has('field-email')).toBe(false)
+    expect(fieldDetails.fieldDetailSettingsById().has('field-email')).toBe(
+      false,
+    )
     expect(fieldDetails.fieldDetailSettingsById().has('field-name')).toBe(true)
 
     fieldList.applySnapshot({
@@ -182,5 +190,82 @@ describe('field details store', () => {
     fieldList.clearRows()
 
     expect(fieldDetails.fieldDetailSettingsById()).toEqual(new Map())
+  })
+
+  it('reconciles selected and pinned subscriptions and rejects stale details', () => {
+    const disconnectEventBus = connectTestEventBus()
+    const subscribed: Array<FieldDetailSubscriptionDescriptor> = []
+    const unsubscribed: Array<FieldDetailSubscriptionDescriptor> = []
+    const cleanupSubscribe = formDevtoolsEventClient.on(
+      'field-detail-subscribe',
+      (event) => subscribed.push(event.payload),
+    )
+    const cleanupUnsubscribe = formDevtoolsEventClient.on(
+      'field-detail-unsubscribe',
+      (event) => unsubscribed.push(event.payload),
+    )
+    let cleanupEvents: (() => void) | undefined
+
+    try {
+      fieldList.setSubscribedFormId(formA)
+      fieldList.applySnapshot({
+        formInstanceId: formA,
+        fields: [
+          field('user.name', 'field-name'),
+          field('user.email', 'field-email'),
+        ],
+      })
+      fieldList.setSelectedFieldPath('user.name')
+      fieldList.setFieldPinned('field-email', true)
+
+      cleanupEvents = fieldDetails.mountEvents()
+
+      expect(subscribed.map(({ fieldId }) => fieldId)).toEqual([
+        'field-name',
+        'field-email',
+      ])
+
+      const oldNameDescriptor = subscribed[0]!
+      const oldDetail = {
+        ...oldNameDescriptor,
+        state: { value: 'Ada', meta: {} as never },
+        defaultValue: '',
+      } satisfies DevtoolsFieldDetail
+      formDevtoolsEventClient.emit('field-detail-changed', oldDetail)
+      expect(fieldDetails.getFieldDetail('field-name')?.state.value).toBe('Ada')
+
+      fieldDetails.updateFieldDetailSettings('field-name', {
+        includeValues: false,
+        debounceMs: 50,
+      })
+
+      const newNameDescriptor = subscribed.at(-1)!
+      expect(newNameDescriptor).toMatchObject({
+        formInstanceId: formA,
+        fieldId: 'field-name',
+        settings: {
+          includeValues: false,
+          errorPayloadMode: 'full',
+          debounceMs: 50,
+        },
+      })
+      expect(unsubscribed).toContainEqual(oldNameDescriptor)
+      expect(fieldDetails.getFieldDetail('field-name')).toBeUndefined()
+
+      formDevtoolsEventClient.emit('field-detail-changed', oldDetail)
+      expect(fieldDetails.getFieldDetail('field-name')).toBeUndefined()
+
+      const newDetail = {
+        ...newNameDescriptor,
+        state: { meta: {} as never },
+      } satisfies DevtoolsFieldDetail
+      formDevtoolsEventClient.emit('field-detail-changed', newDetail)
+      expect(fieldDetails.getFieldDetail('field-name')).toBe(newDetail)
+    } finally {
+      cleanupEvents?.()
+      cleanupUnsubscribe()
+      cleanupSubscribe()
+      disconnectEventBus()
+    }
   })
 })

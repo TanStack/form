@@ -1,4 +1,5 @@
 import { createFieldIdentityController } from './identity'
+import { createFieldDetailsController } from './details'
 import { createFieldListController } from './list'
 import type {
   AnyInternalFieldApi,
@@ -30,17 +31,30 @@ export function createFieldsController(
 ): FieldsController {
   const identity = createFieldIdentityController()
   const fieldList = createFieldListController({ identity, mountedForms })
+  const fieldDetails = createFieldDetailsController({ identity, mountedForms })
 
   return {
-    dispose: fieldList.dispose,
+    dispose: () => {
+      fieldDetails.dispose()
+      fieldList.dispose()
+    },
     getFieldRowsSnapshot: fieldList.getFieldRowsSnapshot,
     mountForm: fieldList.formMounted,
-    unmountForm: fieldList.formUnmounted,
+    unmountForm: (formInstanceId) => {
+      const form = mountedForms.getMountedForm(formInstanceId)
+      fieldDetails.formUnmounted(formInstanceId)
+      fieldList.formUnmounted(formInstanceId)
+      if (form) identity.deleteForm(form)
+    },
     mountField: fieldList.fieldMounted,
     updateField: fieldList.fieldUpdated,
     unmountField: fieldList.fieldUnmounted,
-    moveField: fieldList.fieldMoved,
+    moveField: (field, previousPath) => {
+      fieldList.fieldMoved(field, previousPath)
+      fieldDetails.fieldMoved(field)
+    },
     removeFieldSubtree: (form, fields) => {
+      fieldDetails.fieldSubtreeRemoved(fields.map(({ field }) => field))
       fieldList.fieldSubtreeRemoved(
         form,
         fields.map(({ field }) => field),

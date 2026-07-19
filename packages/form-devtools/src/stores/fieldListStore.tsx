@@ -133,8 +133,7 @@ export function createFieldListComputations() {
 
     return rows.filter((field) => {
       const needsSummary =
-        usesSummary ||
-        (!bypassesDefaultInclusion && field.isMounted === false)
+        usesSummary || (!bypassesDefaultInclusion && field.isMounted === false)
       const summary = needsSummary
         ? getFieldSummary(field.fieldId)
         : defaultDevtoolsMountedFieldSummary
@@ -167,13 +166,8 @@ export function createFieldListComputations() {
 
   const selectedFieldRow = createMemo<DevtoolsFieldListRow | null>(() => {
     const requestedPath = selectedFieldPath()
-    const fallback = visibleFieldRows()[0] ?? null
-
-    if (requestedPath) {
-      return rowsByPath().get(requestedPath) ?? fallback
-    }
-
-    return fallback
+    if (!requestedPath) return null
+    return rowsByPath().get(requestedPath) ?? null
   })
 
   const mainPanelFieldRows = createMemo(() => {
@@ -419,10 +413,12 @@ export function applyFieldListPatch({
       if (
         !row ||
         row.path !== patch.path ||
+        row.parentFieldId !== patch.parentFieldId ||
         row.isMounted !== isMounted
       ) {
         row = createFieldListRow({
           fieldId: patch.fieldId,
+          parentFieldId: patch.parentFieldId,
           path: patch.path,
           isMounted,
         })
@@ -437,6 +433,7 @@ export function applyFieldListPatch({
     ) {
       row = createFieldListRow({
         fieldId: row.fieldId,
+        parentFieldId: row.parentFieldId,
         path: row.path,
         isMounted: patch.isMounted,
       })
@@ -489,7 +486,6 @@ export const fieldListCache = {
   setRowsByFieldId,
   fieldSparseMetaById,
   setFieldSparseMetaById,
-  getFieldSummary,
   selectedFieldPath,
   setSelectedFieldPath,
   pinnedFieldIds,

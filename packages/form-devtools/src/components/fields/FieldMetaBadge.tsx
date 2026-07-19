@@ -39,7 +39,6 @@ export type FieldMetaBadgeKind =
   | 'blurred'
   | 'defaultValue'
   | 'nonDefaultValue'
-  | 'mounted'
   | 'unmounted'
 
 const fieldMetaBadgeDefinitions: Record<
@@ -57,8 +56,7 @@ const fieldMetaBadgeDefinitions: Record<
   blurred: { label: 'Blurred', tone: 'interaction' },
   defaultValue: { label: 'Default value', tone: 'neutral' },
   nonDefaultValue: { label: 'Non-default value', tone: 'change' },
-  mounted: { label: 'Mounted', tone: 'neutral' },
-  unmounted: { label: 'Unmounted', tone: 'information' },
+  unmounted: { label: 'Not rendered', tone: 'information' },
 }
 
 type FieldMetaBadgeProps = { kind: FieldMetaBadgeKind } & HTMLArkProps<'span'>
@@ -66,14 +64,17 @@ type FieldMetaBadgeProps = { kind: FieldMetaBadgeKind } & HTMLArkProps<'span'>
 export function FieldMetaBadge(props: FieldMetaBadgeProps) {
   const [local, others] = splitProps(props, ['kind', 'class', 'children'])
 
-  const definition = fieldMetaBadgeDefinitions[local.kind]
+  const definition = () => fieldMetaBadgeDefinitions[local.kind]
 
   return (
     <Badge
-      class={cn(fieldMetaBadgeVariants({ tone: definition.tone }), local.class)}
+      class={cn(
+        fieldMetaBadgeVariants({ tone: definition().tone }),
+        local.class,
+      )}
       {...others}
     >
-      {local.children ?? definition.label}
+      {local.children ?? definition().label}
     </Badge>
   )
 }

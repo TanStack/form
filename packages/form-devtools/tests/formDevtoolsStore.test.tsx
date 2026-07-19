@@ -98,4 +98,42 @@ describe('form devtools store provider', () => {
     disposeSecond()
     expect(unsubscribeCount).toBe(1)
   })
+
+  it('retains shared field-detail subscriptions until the last instance releases them', () => {
+    let subscribeCount = 0
+    let unsubscribeCount = 0
+    let first!: FormDevtoolsStore
+    let second!: FormDevtoolsStore
+
+    formSelectorCache.setMountedForms([
+      { instanceId: 'form-a', label: 'Form A' },
+    ])
+    const cleanupSubscribe = formDevtoolsEventClient.on(
+      'field-detail-subscribe',
+      () => subscribeCount++,
+    )
+    const cleanupUnsubscribe = formDevtoolsEventClient.on(
+      'field-detail-unsubscribe',
+      () => unsubscribeCount++,
+    )
+    disposers.push(cleanupSubscribe, cleanupUnsubscribe)
+    const disposeFirst = renderStore((store) => (first = store))
+    const disposeSecond = renderStore((store) => (second = store))
+
+    first.fieldList.applySnapshot({
+      formInstanceId: 'form-a',
+      fields: [{ fieldId: 'field-name', path: 'name' }],
+    })
+    first.fieldList.setSelectedFieldPath('name')
+
+    expect(first.fieldList.mainPanelFieldRows()).toHaveLength(1)
+    expect(second.fieldList.mainPanelFieldRows()).toHaveLength(1)
+    expect(subscribeCount).toBe(1)
+
+    disposeFirst()
+    expect(unsubscribeCount).toBe(0)
+
+    disposeSecond()
+    expect(unsubscribeCount).toBe(1)
+  })
 })

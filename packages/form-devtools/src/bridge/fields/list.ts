@@ -67,6 +67,13 @@ function isFormGroupField(field: AnyInternalFieldApi): boolean {
   return group !== null && String(group.name) === field.name
 }
 
+function getParentFieldId(
+  field: AnyInternalFieldApi,
+  identity: Pick<FieldIdentityController, 'getFieldId'>,
+): FieldId | undefined {
+  return field._parent._isRoot ? undefined : identity.getFieldId(field._parent)
+}
+
 export function getFieldRowsSnapshot(
   form: AnyInternalFormApi,
   identity: Pick<FieldIdentityController, 'getFieldId'>,
@@ -86,6 +93,9 @@ export function getFieldRowsSnapshot(
 
     fields.push({
       fieldId: identity.getFieldId(field),
+      ...(!field._parent._isRoot
+        ? { parentFieldId: getParentFieldId(field, identity) }
+        : {}),
       path: field.name,
       ...(field._isMounted ? {} : { isMounted: false }),
       ...(summary ? { summary } : {}),
@@ -239,6 +249,11 @@ export function createFieldListController({
           ...(change.structure === 'upsert' || !wasIncluded
             ? {
                 path: change.field.name,
+                ...(!change.field._parent._isRoot
+                  ? {
+                      parentFieldId: getParentFieldId(change.field, identity),
+                    }
+                  : {}),
                 ...(previousMounted !== change.field._isMounted &&
                 (previousMounted !== undefined || !change.field._isMounted)
                   ? { isMounted: change.field._isMounted }

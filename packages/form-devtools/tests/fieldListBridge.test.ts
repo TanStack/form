@@ -803,8 +803,16 @@ describe('field list bridge', () => {
       expect(patches[0]).toEqual({
         formInstanceId: instanceId,
         upsert: expect.arrayContaining([
-          { fieldId: fieldIds.get('items[0]'), path: 'items[0]' },
-          { fieldId: fieldIds.get('items[1]'), path: 'items[1]' },
+          {
+            fieldId: fieldIds.get('items[0]'),
+            parentFieldId: fieldIds.get('items'),
+            path: 'items[0]',
+          },
+          {
+            fieldId: fieldIds.get('items[1]'),
+            parentFieldId: fieldIds.get('items'),
+            path: 'items[1]',
+          },
         ]),
       })
     } finally {

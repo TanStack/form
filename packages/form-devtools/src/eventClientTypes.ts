@@ -17,22 +17,128 @@ export interface DevtoolsMountedFieldSummary {
   validity: DevtoolsMountedFieldValidity
 }
 
+/**
+ * A sparse field summary. Properties are omitted when their values match the
+ * corresponding defaults in `defaultDevtoolsMountedFieldSummary`.
+ */
 export type DevtoolsMountedFieldSummaryPatch =
   Partial<DevtoolsMountedFieldSummary>
 
 export interface DevtoolsMountedFieldScaffold {
   fieldId: FieldId
+  /** Omitted when the field is a direct child of the form root. */
+  parentFieldId?: FieldId
   path: string
+  /** Omitted for a mounted field; `false` means the field is currently unmounted. */
   isMounted?: boolean
+  /** Omitted when every summary property has its default value. */
   summary?: DevtoolsMountedFieldSummaryPatch
 }
 
 export interface DevtoolsMountedFieldPatch {
   fieldId: FieldId
+  /** Omitted when this patch does not add the field or change its path. */
   path?: string
+  /**
+   * Present with `path` when the field has a parent field. Omitted with `path`
+   * for a direct child of the form root, and ignored when `path` is omitted.
+   */
+  parentFieldId?: FieldId
+  /** Omitted when this patch does not change whether the field is mounted. */
   isMounted?: boolean
+  /** Omitted when this patch does not set any sparse summary properties. */
   setSummary?: DevtoolsMountedFieldSummaryPatch
+  /** Omitted when no summary properties need to be restored to their defaults. */
   clearSummary?: Array<keyof DevtoolsMountedFieldSummary>
+}
+
+export type FieldErrorPayloadMode = 'full' | 'messages'
+
+export interface FieldDetailSettings {
+  includeValues: boolean
+  errorPayloadMode: FieldErrorPayloadMode
+  debounceMs: number
+}
+
+export interface FieldDetailSubscriptionDescriptor {
+  formInstanceId: FormId
+  fieldId: FieldId
+  settings: FieldDetailSettings
+}
+
+export type DevtoolsFieldValidatorType = 'schema' | 'callback'
+
+export type DevtoolsFieldErrorSource =
+  | {
+      scope: 'field' | 'form'
+      validatorIndex: number
+      validatorType: DevtoolsFieldValidatorType
+    }
+  | {
+      scope: 'formGroup'
+      formGroupPath: string
+      validatorIndex: number
+      validatorType: DevtoolsFieldValidatorType
+    }
+  | {
+      scope: 'onSubmit'
+      validatorType: 'callback'
+    }
+
+export interface DevtoolsFieldError {
+  error: { message: string }
+  source: DevtoolsFieldErrorSource
+  sourceEvent: string
+}
+
+export interface DevtoolsFieldDetailSubfieldsMeta {
+  isEveryValid: boolean
+  isAnyInvalid: boolean
+  isEveryPristine: boolean
+  isSomeDirty: boolean
+  isSomeTouched: boolean
+  isSomeValidating: boolean
+}
+
+export interface DevtoolsFieldDetailMeta {
+  isTouched: boolean
+  isDirty: boolean
+  isPristine: boolean
+  isDefaultValue: boolean
+  isBlurred: boolean
+  isValidating: boolean
+  isSelfTouched: boolean
+  isSelfDirty: boolean
+  isSelfValidating: boolean
+  isSelfValid: boolean
+  isValid: boolean
+  isInvalid: boolean
+  subfields: DevtoolsFieldDetailSubfieldsMeta
+  errors: Array<DevtoolsFieldError>
+  original: {
+    errors: Array<DevtoolsFieldError>
+    isValid: boolean
+    isInvalid: boolean
+  }
+}
+
+export interface DevtoolsFieldDetail extends FieldDetailSubscriptionDescriptor {
+  state: {
+    /**
+     * Omitted when `settings.includeValues` is `false`. When included, this is
+     * the field's actual value and may itself be `null` or `undefined`; use a
+     * property-presence check to distinguish that from omission.
+     */
+    value?: unknown
+    meta: DevtoolsFieldDetailMeta
+  }
+  /**
+   * Omitted when `settings.includeValues` is `false`. When included, this is
+   * the value resolved from the form's `defaultValues` at the field path and
+   * may itself be `null` or `undefined`; use a property-presence check to
+   * distinguish that from omission.
+   */
+  defaultValue?: unknown
 }
 
 export type FormDevtoolsEventMap = {
@@ -52,7 +158,12 @@ export type FormDevtoolsEventMap = {
   }
   'field-list-patch': {
     formInstanceId: FormId
+    /** Omitted when the batch contains no field additions or updates. */
     upsert?: Array<DevtoolsMountedFieldPatch>
+    /** Omitted when the batch contains no field removals. */
     remove?: Array<FieldId>
   }
+  'field-detail-subscribe': FieldDetailSubscriptionDescriptor
+  'field-detail-unsubscribe': FieldDetailSubscriptionDescriptor
+  'field-detail-changed': DevtoolsFieldDetail
 }

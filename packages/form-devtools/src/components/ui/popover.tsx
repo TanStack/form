@@ -1,7 +1,7 @@
-import { Popover as PopoverPrimitive } from '@ark-ui/solid'
-import { splitProps } from 'solid-js'
+import { Popover as PopoverPrimitive, usePopoverContext } from '@ark-ui/solid'
+import { Show, splitProps } from 'solid-js'
+import { Portal } from './portal'
 import type { JSX } from 'solid-js'
-
 import { cn } from '@/utils'
 
 /**
@@ -27,7 +27,7 @@ function Popover(props: PopoverPrimitive.RootProps) {
   return (
     <PopoverPrimitive.Root
       data-slot="popover"
-      portalled={local.portalled ?? false}
+      portalled={local.portalled ?? true}
       {...others}
     >
       {local.children}
@@ -64,6 +64,25 @@ function PopoverTrigger(props: PopoverPrimitive.TriggerProps) {
   )
 }
 
+function PopoverPositionedContent(props: PopoverPrimitive.ContentProps) {
+  const [local, others] = splitProps(props, ['children', 'class'])
+
+  return (
+    <PopoverPrimitive.Positioner data-slot="popover-positioner">
+      <PopoverPrimitive.Content
+        data-slot="popover-content"
+        class={cn(
+          'z-50 flex w-72 origin-(--transform-origin) flex-col gap-2.5 rounded-lg bg-popover p-2.5 text-sm text-popover-foreground shadow-md ring-1 ring-foreground/10 outline-hidden duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
+          local.class,
+        )}
+        {...others}
+      >
+        {local.children}
+      </PopoverPrimitive.Content>
+    </PopoverPrimitive.Positioner>
+  )
+}
+
 /**
  * The floating surface rendered when a Popover is open.
  *
@@ -82,21 +101,17 @@ function PopoverTrigger(props: PopoverPrimitive.TriggerProps) {
  * ```
  */
 function PopoverContent(props: PopoverPrimitive.ContentProps) {
-  const [local, others] = splitProps(props, ['children', 'class'])
+  const info = usePopoverContext()
 
   return (
-    <PopoverPrimitive.Positioner data-slot="popover-positioner">
-      <PopoverPrimitive.Content
-        data-slot="popover-content"
-        class={cn(
-          'z-50 flex w-72 origin-(--transform-origin) flex-col gap-2.5 rounded-lg bg-popover p-2.5 text-sm text-popover-foreground shadow-md ring-1 ring-foreground/10 outline-hidden duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
-          local.class,
-        )}
-        {...others}
-      >
-        {local.children}
-      </PopoverPrimitive.Content>
-    </PopoverPrimitive.Positioner>
+    <Show
+      when={info().portalled}
+      fallback={<PopoverPositionedContent {...props} />}
+    >
+      <Portal>
+        <PopoverPositionedContent {...props} />
+      </Portal>
+    </Show>
   )
 }
 

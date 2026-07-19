@@ -1,4 +1,5 @@
 @layer theme, base, components, utilities;
+@layer base.preflight, base.defaults;
 
 @import '@fontsource-variable/inter';
 
@@ -11,7 +12,7 @@
 @custom-variant dark (&:is(.tanstack-form-devtools[data-theme=dark], .tanstack-form-devtools[data-theme=dark] *));
 
 .tanstack-form-devtools {
-  @import 'tailwindcss/preflight.css' layer(base);
+  @import 'tailwindcss/preflight.css' layer(base.preflight);
 }
 
 @theme inline {
@@ -161,7 +162,7 @@
   --sidebar-ring: oklch(0.553 0.013 58.071);
 }
 
-@layer base {
+@layer base.defaults {
   .tanstack-form-devtools {
     @apply bg-background font-sans text-foreground text-base;
   }

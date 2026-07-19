@@ -4,6 +4,7 @@ import { DevtoolsTab } from '../header/TabsNav'
 import { Separator } from '../ui/separator'
 import { ScrollArea } from '../ui/scroll-area'
 import { ResizableSidebar } from '../ui/resizable-sidebar'
+import { FieldDetailCard } from './fieldDetails/FieldDetailCard'
 import { FieldListSearch } from './leftPanel/listSearch/FieldListSearch'
 import { FieldList } from './leftPanel/FieldList'
 import type { SplitterPanelData } from '@ark-ui/solid'
@@ -52,7 +53,7 @@ export function FieldTab() {
         onResize={(details) => setSize(details.size)}
       >
         <Sidebar />
-        <Splitter.Panel id={mainId} class="size-full min-w-0 p-3">
+        <Splitter.Panel id={mainId} class="size-full min-w-0 relative">
           <Show
             when={mainPanelFieldRows().length > 0}
             fallback={
@@ -61,20 +62,18 @@ export function FieldTab() {
               </div>
             }
           >
-            <div class="grid max-w-full gap-2">
-              <For each={mainPanelFieldRows()}>
-                {(field) => (
-                  <div class="grid max-w-full gap-2">
-                    <div class="text-xs font-medium uppercase text-muted-foreground">
-                      Field
-                    </div>
-                    <code class="block max-w-full overflow-hidden text-ellipsis whitespace-nowrap rounded-md border bg-muted px-2 py-1.5 font-mono text-sm">
-                      {field.path}
-                    </code>
-                  </div>
-                )}
-              </For>
-            </div>
+            <ScrollArea class="size-full">
+              <div class="p-3 flex flex-wrap gap-y-4 gap-2 content-evenly">
+                <For each={mainPanelFieldRows()}>
+                  {(field) => (
+                    <FieldDetailCard
+                      field={field}
+                      class="flex-initial w-fit max-w-150 min-w-0"
+                    />
+                  )}
+                </For>
+              </div>
+            </ScrollArea>
           </Show>
         </Splitter.Panel>
       </Splitter.Root>

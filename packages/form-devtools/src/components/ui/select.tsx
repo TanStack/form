@@ -9,6 +9,7 @@ import {
   splitProps,
   useContext,
 } from 'solid-js'
+import { Portal } from './portal'
 import type { Accessor, JSX } from 'solid-js'
 import type { ListCollection } from '@ark-ui/solid'
 import { cn } from '@/utils'
@@ -302,28 +303,30 @@ function SelectContent(props: SelectContentProps) {
   const align = () => local.align ?? 'center'
 
   return (
-    <SelectPrimitive.Positioner data-slot="select-positioner">
-      <SelectPrimitive.Content
-        data-slot="select-content"
-        data-align={align()}
-        data-align-trigger={position() === 'item-aligned'}
-        class={cn(
-          'relative z-50 max-h-[min(var(--available-height,20rem),20rem)] min-w-36 origin-(--transform-origin) overflow-hidden rounded-lg bg-popover text-popover-foreground shadow-md ring-1 ring-foreground/10 duration-100 data-[align-trigger=true]:animate-none data-[placement^=bottom]:slide-in-from-top-2 data-[placement^=left]:slide-in-from-right-2 data-[placement^=right]:slide-in-from-left-2 data-[placement^=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
-          position() === 'popper' &&
-            'data-[placement^=bottom]:translate-y-1 data-[placement^=left]:-translate-x-1 data-[placement^=right]:translate-x-1 data-[placement^=top]:-translate-y-1',
-          local.class,
-        )}
-        {...others}
-      >
-        <SelectPrimitive.List
-          data-slot="select-list"
-          data-position={position()}
-          class="max-h-[inherit] overflow-x-hidden overflow-y-auto data-[position=popper]:w-full data-[position=popper]:min-w-(--reference-width)"
+    <Portal>
+      <SelectPrimitive.Positioner data-slot="select-positioner">
+        <SelectPrimitive.Content
+          data-slot="select-content"
+          data-align={align()}
+          data-align-trigger={position() === 'item-aligned'}
+          class={cn(
+            'relative z-50 max-h-[min(var(--available-height,20rem),20rem)] min-w-36 origin-(--transform-origin) overflow-hidden rounded-lg bg-popover text-popover-foreground shadow-md ring-1 ring-foreground/10 duration-100 data-[align-trigger=true]:animate-none data-[placement^=bottom]:slide-in-from-top-2 data-[placement^=left]:slide-in-from-right-2 data-[placement^=right]:slide-in-from-left-2 data-[placement^=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
+            position() === 'popper' &&
+              'data-[placement^=bottom]:translate-y-1 data-[placement^=left]:-translate-x-1 data-[placement^=right]:translate-x-1 data-[placement^=top]:-translate-y-1',
+            local.class,
+          )}
+          {...others}
         >
-          {local.children}
-        </SelectPrimitive.List>
-      </SelectPrimitive.Content>
-    </SelectPrimitive.Positioner>
+          <SelectPrimitive.List
+            data-slot="select-list"
+            data-position={position()}
+            class="max-h-[inherit] overflow-x-hidden overflow-y-auto data-[position=popper]:w-full data-[position=popper]:min-w-(--reference-width)"
+          >
+            {local.children}
+          </SelectPrimitive.List>
+        </SelectPrimitive.Content>
+      </SelectPrimitive.Positioner>
+    </Portal>
   )
 }
 

@@ -15,11 +15,14 @@ function field(path: string, fieldId: string): DevtoolsMountedFieldScaffold {
 }
 
 let fieldList!: FormDevtoolsStore['fieldList']
+let fieldMeta!: FormDevtoolsStore['fieldMeta']
 let disposeStore!: () => void
 
 beforeEach(() => {
   createRoot((dispose) => {
-    fieldList = createFormDevtoolsStore().fieldList
+    const store = createFormDevtoolsStore()
+    fieldList = store.fieldList
+    fieldMeta = store.fieldMeta
     disposeStore = dispose
   })
 })
@@ -67,6 +70,51 @@ describe('field list store', () => {
     expect(fieldList.fieldRows()).toEqual([])
   })
 
+  it('stores and replaces parent identity with structural field changes', () => {
+    fieldList.setSubscribedFormId(formA)
+    fieldList.applySnapshot({
+      formInstanceId: formA,
+      fields: [
+        field('first', 'field-first'),
+        field('second', 'field-second'),
+        {
+          ...field('first.child', 'field-child'),
+          parentFieldId: 'field-first',
+        },
+      ],
+    })
+
+    expect(fieldList.rowsByFieldId().get('field-child')?.parentFieldId).toBe(
+      'field-first',
+    )
+
+    fieldList.applyPatch({
+      formInstanceId: formA,
+      upsert: [
+        {
+          fieldId: 'field-child',
+          path: 'second.child',
+          parentFieldId: 'field-second',
+        },
+      ],
+    })
+
+    expect(fieldList.rowsByFieldId().get('field-child')).toMatchObject({
+      path: 'second.child',
+      parentFieldId: 'field-second',
+    })
+
+    fieldList.applyPatch({
+      formInstanceId: formA,
+      upsert: [{ fieldId: 'field-child', isMounted: false }],
+    })
+
+    expect(fieldList.rowsByFieldId().get('field-child')).toMatchObject({
+      parentFieldId: 'field-second',
+      isMounted: false,
+    })
+  })
+
   it('bypasses default inclusion when filtering by mounted state', () => {
     fieldList.setSubscribedFormId(formA)
     fieldList.applySnapshot({
@@ -94,9 +142,8 @@ describe('field list store', () => {
       'c.unmounted.self-invalid',
       'z.mounted',
     ])
-    expect(fieldList.selectedFieldRow()?.path).toBe(
-      'c.unmounted.self-invalid',
-    )
+    expect(fieldList.selectedFieldRow()).toBeNull()
+    expect(fieldList.mainPanelFieldRows()).toEqual([])
 
     const unmountedPredicate: FieldRowFilterPredicate = (row) =>
       row.isMounted === false
@@ -124,10 +171,10 @@ describe('field list store', () => {
     })
 
     expect(fieldList.fieldSparseMetaById().size).toBe(1)
-    expect(fieldList.getFieldSummary('field-name')).toBe(
+    expect(fieldMeta.getFieldSummary('field-name')).toBe(
       defaultDevtoolsMountedFieldSummary,
     )
-    expect(fieldList.getFieldSummary('field-email')).toEqual({
+    expect(fieldMeta.getFieldSummary('field-email')).toEqual({
       isDirty: true,
       isTouched: false,
       isBlurred: false,
@@ -136,8 +183,8 @@ describe('field list store', () => {
       hasSelfErrors: false,
       validity: 'valid',
     })
-    expect(fieldList.getFieldSummary('another-pristine-field')).toBe(
-      fieldList.getFieldSummary('field-name'),
+    expect(fieldMeta.getFieldSummary('another-pristine-field')).toBe(
+      fieldMeta.getFieldSummary('field-name'),
     )
   })
 
@@ -157,7 +204,7 @@ describe('field list store', () => {
 
     expect(fieldList.rowsByPath()).toBe(pathMap)
     expect(fieldList.rowsByFieldId()).toBe(idMap)
-    expect(fieldList.getFieldSummary('field-name')).toEqual({
+    expect(fieldMeta.getFieldSummary('field-name')).toEqual({
       isDirty: true,
       isTouched: false,
       isBlurred: false,
@@ -173,7 +220,7 @@ describe('field list store', () => {
     })
 
     expect(fieldList.fieldSparseMetaById().size).toBe(0)
-    expect(fieldList.getFieldSummary('field-name')).toBe(
+    expect(fieldMeta.getFieldSummary('field-name')).toBe(
       defaultDevtoolsMountedFieldSummary,
     )
   })
@@ -229,7 +276,7 @@ describe('field list store', () => {
 
     expect(fieldList.selectedFieldPath()).toBe('items[1]')
     expect(fieldList.pinnedFieldIds()).toEqual(['field-0', 'field-1'])
-    expect(fieldList.getFieldSummary('field-0')).toEqual({
+    expect(fieldMeta.getFieldSummary('field-0')).toEqual({
       isDirty: true,
       isTouched: false,
       isBlurred: false,
@@ -287,9 +334,9 @@ describe('field list store', () => {
     })
 
     expect(
-      fieldList.visibleFieldRows().find(
-        ({ fieldId }) => fieldId === 'field-name',
-      ),
+      fieldList
+        .visibleFieldRows()
+        .find(({ fieldId }) => fieldId === 'field-name'),
     ).toMatchObject({ path: 'user.email', pathLeaf: 'email' })
     expect(fieldList.rowsByPath().get('user.email')?.pathLeaf).toBe('email')
     expect(fieldList.rowsByPath().has('user.name')).toBe(false)
@@ -368,7 +415,7 @@ describe('field list store', () => {
     })
 
     expect(fieldList.selectedFieldPath()).toBeNull()
-    expect(fieldList.selectedFieldRow()?.path).toBe('user.name')
+    expect(fieldList.selectedFieldRow()).toBeNull()
   })
 
   it('tracks pinned fields once and preserves the order they were pinned', () => {

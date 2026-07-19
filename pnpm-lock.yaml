@@ -942,6 +942,9 @@ importers:
       '@tanstack/form-core':
         specifier: workspace:*
         version: link:../form-core
+      '@tanstack/pacer-lite':
+        specifier: ^0.2.2
+        version: 0.2.2
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1

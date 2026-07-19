@@ -3,7 +3,7 @@ interface FieldLabelProps {
   leaf?: string
 }
 export function FieldLabel(props: FieldLabelProps) {
-  if (props.leaf === undefined)
+  if (props.leaf === undefined || props.leaf === props.path)
     return <span class="font-mono">{props.path}</span>
   return (
     <>

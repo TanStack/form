@@ -22,7 +22,7 @@ export function FieldListItems() {
           item={item}
           asChild={(innerProps) => (
             <Item
-              class="group cursor-pointer hover:bg-muted/40 data-highlighted:not-data-selected:bg-muted/50 data-selected:bg-muted/50 flex-nowrap"
+              class="group cursor-pointer hover:bg-muted data-highlighted:not-data-selected:bg-muted data-selected:bg-muted flex-nowrap"
               {...innerProps()}
             />
           )}

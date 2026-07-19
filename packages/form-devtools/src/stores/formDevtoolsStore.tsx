@@ -2,6 +2,7 @@ import { createContext, onCleanup, onMount, useContext } from 'solid-js'
 import {
   createFieldListComputations,
   fieldListCache,
+  getFieldSummary,
   mountFieldListEvents,
 } from './fieldListStore'
 import { createFieldDetailsStore } from './fieldDetailsStore'
@@ -23,11 +24,14 @@ export function createFormDevtoolsStore() {
     ...createFieldListComputations(),
     mountEvents: () => mountFieldListEvents(formSelector.selectedForm),
   }
-  const fieldDetails = createFieldDetailsStore(() =>
+  const fieldMeta = {
+    getFieldSummary,
+  }
+  const fieldDetails = createFieldDetailsStore(fieldList.subscribedFormId, () =>
     fieldList.mainPanelFieldRows().map((field) => field.fieldId),
   )
 
-  return { formSelector, fieldList, fieldDetails }
+  return { formSelector, fieldList, fieldMeta, fieldDetails }
 }
 
 export type FormDevtoolsStore = ReturnType<typeof createFormDevtoolsStore>
@@ -40,8 +44,10 @@ export function FormDevtoolsStoreProvider(props: { children?: JSX.Element }) {
   onMount(() => {
     const cleanupFormSelectorEvents = store.formSelector.mountEvents()
     const cleanupFieldListEvents = store.fieldList.mountEvents()
+    const cleanupFieldDetailEvents = store.fieldDetails.mountEvents()
 
     onCleanup(() => {
+      cleanupFieldDetailEvents()
       cleanupFormSelectorEvents()
       cleanupFieldListEvents()
     })

@@ -90,6 +90,24 @@ describe('form devtools bridge field snapshots', () => {
     }
   })
 
+  it('links nested field rows to their immediate parent identity', () => {
+    const identity = createFieldIdentityController()
+    const form = new InternalFormApi({
+      defaultValues: { user: { profile: { name: '' } } },
+    })
+    form._getOrCreateFieldApi({ name: 'user.profile.name' })
+
+    const rows = getFieldRowsSnapshot(form, identity)
+    const rowsByPath = new Map(rows.map((row) => [row.path, row]))
+    const user = rowsByPath.get('user')!
+    const profile = rowsByPath.get('user.profile')!
+    const name = rowsByPath.get('user.profile.name')!
+
+    expect(user.parentFieldId).toBeUndefined()
+    expect(profile.parentFieldId).toBe(user.fieldId)
+    expect(name.parentFieldId).toBe(profile.fieldId)
+  })
+
   it('keeps unmounted fields while their summaries change', () => {
     const identity = createFieldIdentityController()
     const form = new InternalFormApi({ defaultValues: { name: '' } })
@@ -141,6 +159,7 @@ describe('form devtools bridge field snapshots', () => {
       expect(getFieldRowsSnapshot(form, identity)).toEqual([
         {
           fieldId: expect.any(String),
+          parentFieldId: identity.getFieldId(parent),
           path: 'guestDetails.wrong',
           isMounted: false,
           summary: { hasSelfErrors: true, validity: 'invalid' },
@@ -221,6 +240,7 @@ describe('form devtools bridge field snapshots', () => {
       form.removeFieldValue('items', 0)
 
       const rows = getFieldRowsSnapshot(form, identity)
+      const parentFieldId = rows.find((row) => row.path === 'items')!.fieldId
       expect(rows).toHaveLength(2)
       expect(rows).toEqual(
         expect.arrayContaining([
@@ -237,6 +257,7 @@ describe('form devtools bridge field snapshots', () => {
           {
             path: 'items[0]',
             fieldId: movedFieldId,
+            parentFieldId,
             summary: { isDefaultValue: false },
           },
         ]),
