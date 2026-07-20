@@ -13,6 +13,8 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
+import { useFormDevtoolsStore } from '@/stores/formDevtoolsStore'
+import { cn } from '@/utils'
 
 interface FieldDetailCardProps {
   field: DevtoolsFieldListRow
@@ -20,20 +22,29 @@ interface FieldDetailCardProps {
 }
 
 export function FieldDetailCard(props: FieldDetailCardProps) {
+  const { selectedFieldRow, subscribedFormId } =
+    useFormDevtoolsStore().fieldList
+
   const path = () => props.field.path
   const leaf = () => props.field.pathLeaf
   const fieldId = () => props.field.fieldId
   const isMounted = () => props.field.isMounted
 
   return (
-    <Card class={props.class}>
+    <Card
+      class={cn('data-selected:ring-2 data-selected:ring-ring/50', props.class)}
+      data-selected={selectedFieldRow()?.fieldId === fieldId()}
+    >
       <CardHeader class="@container-normal items-center">
         <CardTitle class="items-center">
           <FieldLabel path={path()} leaf={leaf()} />
         </CardTitle>
         <FieldDetailMetaBadges fieldId={fieldId()} isMounted={isMounted()} />
         <CardAction class="ml-4">
-          <FieldDetailSettingsActions fieldId={fieldId()} />
+          <FieldDetailSettingsActions
+            fieldId={fieldId()}
+            formInstanceId={subscribedFormId()}
+          />
           <FieldDetailSettingsMenu fieldId={fieldId()} fieldPath={path()} />
         </CardAction>
       </CardHeader>

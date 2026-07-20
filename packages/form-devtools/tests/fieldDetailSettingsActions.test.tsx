@@ -51,24 +51,32 @@ describe('FieldDetailSettingsActions', () => {
     })
 
     const selectAction = async (label: string) => {
-      const trigger = Array.from(container.querySelectorAll('button')).find(
-        (button) => button.textContent?.includes('Emit event'),
+      const trigger = container.querySelector<HTMLButtonElement>(
+        'button[aria-label="Emit event"]',
       )
-      trigger?.click()
+      expect(trigger).not.toBeNull()
+      trigger!.click()
 
       await vi.waitFor(() => {
+        const openMenu = document.body.querySelector(
+          '[role="menu"][data-state="open"]',
+        )
         expect(
-          Array.from(document.body.querySelectorAll('[role="menuitem"]')).find(
-            (item) => item.textContent?.includes(label),
-          ),
+          Array.from(
+            openMenu?.querySelectorAll('[role="menuitem"]') ?? [],
+          ).find((item) => item.textContent.includes(label)),
         ).not.toBeUndefined()
       })
 
+      const openMenu = document.body.querySelector(
+        '[role="menu"][data-state="open"]',
+      )
       const item = Array.from(
-        document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'),
-      ).find((candidate) => candidate.textContent?.includes(label))
-      item?.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true }))
-      item?.click()
+        openMenu?.querySelectorAll<HTMLElement>('[role="menuitem"]') ?? [],
+      ).find((candidate) => candidate.textContent.includes(label))
+      expect(item).not.toBeUndefined()
+      item!.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true }))
+      item!.click()
     }
 
     await selectAction('.handleChange(')

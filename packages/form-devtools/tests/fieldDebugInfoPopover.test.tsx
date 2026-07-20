@@ -120,7 +120,7 @@ describe('field debug info popover', () => {
     await Promise.resolve()
     await respond({ suspicions: [validatorsWithoutTriggersSuspicion] })
 
-    expect(content()).toContain('Validators have no triggers')
+    expect(content()).toContain('Validators with triggers: []')
     expect(content()).toContain('profile.name')
     expect(content()).toContain('Form group')
     expect(content()).toContain('profile')

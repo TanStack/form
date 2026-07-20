@@ -4,7 +4,7 @@ import {
   RotateCcwIcon,
   SquareArrowRightExitIcon,
 } from 'lucide-solid'
-import type { FieldId } from '@/types/branded'
+import type { FieldId, FormId } from '@/types/branded'
 import type { MenuSelectionDetails } from '@ark-ui/solid'
 import { Button } from '@/components/ui/button'
 import { formDevtoolsEventClient } from '@/eventClient.lib'
@@ -17,28 +17,25 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useFormDevtoolsStore } from '@/stores/formDevtoolsStore'
 
 interface FieldDetailSettingsActionsProps {
   fieldId: FieldId
+  formInstanceId: FormId | null
 }
 
 export function FieldDetailSettingsActions(
   props: FieldDetailSettingsActionsProps,
 ) {
-  const fieldList = useFormDevtoolsStore().fieldList
-
   const emitRequest = (
     eventName:
       | 'field-handle-change-request'
       | 'field-handle-blur-request'
       | 'field-reset-request',
   ) => {
-    const formInstanceId = fieldList.subscribedFormId()
-    if (!formInstanceId) return
+    if (!props.formInstanceId) return
 
     formDevtoolsEventClient.emit(eventName, {
-      formInstanceId,
+      formInstanceId: props.formInstanceId,
       fieldId: props.fieldId,
     })
   }
@@ -62,6 +59,7 @@ export function FieldDetailSettingsActions(
       onSelect={handleDropdownSelect}
     >
       <DropdownMenuTrigger
+        aria-label="Emit event"
         asChild={(innerProps) => (
           <Button variant="ghost" size="icon-sm" {...innerProps()} />
         )}

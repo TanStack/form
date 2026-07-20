@@ -49,6 +49,7 @@ describe('field debug cases', () => {
       name: 'name',
       validators: [
         callbackValidator,
+        emptyTriggerValidator,
         {
           ...emptyTriggerValidator,
           runOnMount: true,
@@ -72,6 +73,27 @@ describe('field debug cases', () => {
           },
         },
       ])
+    } finally {
+      unregister()
+    }
+  })
+
+  it('does not report mount-only validators as empty-trigger validators', () => {
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+    const field = form._getOrCreateFieldApi({
+      name: 'name',
+      validators: [
+        {
+          ...emptyTriggerValidator,
+          runOnMount: true,
+          runOnSubmit: false,
+        },
+      ] as never,
+    })
+    const unregister = field._register()
+
+    try {
+      expect(getFieldDebugSuspicions({ field })).toEqual([])
     } finally {
       unregister()
     }
