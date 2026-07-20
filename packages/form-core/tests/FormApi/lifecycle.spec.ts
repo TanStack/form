@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
 import { installDevtoolsBridge } from '../../src/devtoolsBridge.lib'
+import { defaultInternalBaseFieldMeta } from '../../src/FieldApi/fieldState.lib'
 
 describe('form - lifecycle', () => {
   describe('initial state', () => {
@@ -342,26 +343,53 @@ describe('form - lifecycle', () => {
   describe('resetField', () => {
     it('should reset field', () => {
       const form = new InternalFormApi({ defaultValues: { name: 'hi' } })
-      form.setFieldValue('name', 'bye')
+      const field = form._getOrCreateFieldApi({ name: 'name' })
+      field.handleChange('bye')
+      field.handleBlur()
+      field._setMeta((prev) => ({
+        ...prev,
+        isValidating: true,
+        _validationCount: 1,
+        _arrayVersion: 1,
+        _fieldValidatorErrors: [[{ message: 'Reset me' }]],
+        _fieldValidatorErrorSourceEvents: ['change'],
+      }))
+
+      expect(field._getBaseMeta()).not.toBe(defaultInternalBaseFieldMeta)
+
       form.resetField('name')
 
-      vi.waitFor(() => {
-        expect(form.getFieldValue('name')).toEqual('hi')
-        expect(form.getFieldMeta('name')).toEqual(undefined)
-      })
+      expect(form.getFieldValue('name')).toEqual('hi')
+      expect(field._getBaseMeta()).toBe(defaultInternalBaseFieldMeta)
     })
 
-    it('kills descendant field nodes when resetting a parent field', () => {
+    it('recursively resets descendant fields without replacing them', () => {
       const form = new InternalFormApi({
         defaultValues: { person: { name: 'Alice' } },
       })
-      form._getOrCreateFieldApi({ name: 'person' })
-      form._getOrCreateFieldApi({ name: 'person.name' })
+      const parent = form._getOrCreateFieldApi({ name: 'person' })
+      const child = form._getOrCreateFieldApi({ name: 'person.name' })
+      parent._register()
+      child._register()
+
+      child.handleChange('Bob')
+      child.handleBlur()
+
+      expect(parent._getBaseMeta()).not.toBe(defaultInternalBaseFieldMeta)
+      expect(child._getBaseMeta()).not.toBe(defaultInternalBaseFieldMeta)
 
       form.resetField('person')
 
       expect(form.getFieldValue('person')).toEqual({ name: 'Alice' })
-      expect(form._tryGetFieldApi('person.name')).toBeNull()
+      expect(form._tryGetFieldApi('person')).toBe(parent)
+      expect(form._tryGetFieldApi('person.name')).toBe(child)
+      expect(parent._isKilled).toBe(false)
+      expect(child._isKilled).toBe(false)
+      expect(parent._isMounted).toBe(true)
+      expect(child._isMounted).toBe(true)
+      expect(parent._getBaseMeta()).toBe(defaultInternalBaseFieldMeta)
+      expect(child._getBaseMeta()).toBe(defaultInternalBaseFieldMeta)
+      expect(form.state.isTouched).toBe(false)
     })
 
     it('deletes a field through an explicit field override', () => {

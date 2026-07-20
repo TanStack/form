@@ -1,4 +1,5 @@
 import { EllipsisIcon } from 'lucide-solid'
+import { FieldDetailSettingsActions } from './FieldDetailSettingsActions'
 import type { FieldDetailSettings } from '@/eventClientTypes'
 import type { FieldId } from '@/types/branded'
 import { Button } from '@/components/ui/button'
@@ -6,6 +7,9 @@ import { Label } from '@/components/ui/label'
 import {
   Popover,
   PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
   PopoverTrigger,
 } from '@/components/ui/popover'
 import {
@@ -23,6 +27,7 @@ import {
 } from '@/components/ui/slider'
 import { Switch } from '@/components/ui/switch'
 import { useFormDevtoolsStore } from '@/stores/formDevtoolsStore'
+import { Separator } from '@/components/ui/separator'
 
 interface FieldDetailSettingsMenuProps {
   fieldId: FieldId
@@ -38,8 +43,9 @@ export function FieldDetailSettingsMenu({
   fieldId,
   fieldPath,
 }: FieldDetailSettingsMenuProps) {
+  const store = useFormDevtoolsStore()
   const { getFieldDetailSettings, updateFieldDetailSettings } =
-    useFormDevtoolsStore().fieldDetails
+    store.fieldDetails
 
   const settings = () => getFieldDetailSettings(fieldId)
 
@@ -49,7 +55,7 @@ export function FieldDetailSettingsMenu({
   const debounceLabel = () => formatDebounce({ value: settings().debounceMs })
 
   return (
-    <Popover positioning={{ placement: 'left' }}>
+    <Popover positioning={{ placement: 'right' }}>
       <PopoverTrigger
         asChild={(innerProps) => (
           <Button variant="ghost" size="icon-sm" {...innerProps()} />
@@ -58,10 +64,10 @@ export function FieldDetailSettingsMenu({
         <EllipsisIcon />
       </PopoverTrigger>
       <PopoverContent class="min-w-32 p-3 flex flex-col gap-4">
-        <div class="space-y-2">
-          <h4 class="leading-none font-medium">Field settings</h4>
-          <p class="text-sm text-muted-foreground">{fieldPath}</p>
-        </div>
+        <PopoverHeader>
+          <PopoverTitle>{fieldPath}</PopoverTitle>
+          <PopoverDescription>Settings</PopoverDescription>
+        </PopoverHeader>
         <Switch
           label="Listen for values data"
           checked={settings().includeValues}
@@ -113,6 +119,12 @@ export function FieldDetailSettingsMenu({
           <SliderValue>{debounceLabel()}</SliderValue>
           <SliderControl />
         </SliderRoot>
+        <Separator />
+
+        <FieldDetailSettingsActions
+          formInstanceId={store.fieldList.subscribedFormId()}
+          fieldId={fieldId}
+        />
       </PopoverContent>
     </Popover>
   )

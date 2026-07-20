@@ -69,6 +69,11 @@ export interface FieldDetailSubscriptionDescriptor {
   settings: FieldDetailSettings
 }
 
+export interface FieldActionRequest {
+  formInstanceId: FormId
+  fieldId: FieldId
+}
+
 export type DevtoolsFieldValidatorType = 'schema' | 'callback'
 
 export type DevtoolsFieldErrorSource =
@@ -293,6 +298,9 @@ export type FormDevtoolsEventMap = {
   'field-detail-subscribe': FieldDetailSubscriptionDescriptor
   'field-detail-unsubscribe': FieldDetailSubscriptionDescriptor
   'field-detail-changed': DevtoolsFieldDetail
+  'field-handle-change-request': FieldActionRequest
+  'field-handle-blur-request': FieldActionRequest
+  'field-reset-request': FieldActionRequest
   'field-error-debug-report-request': FieldErrorDebugReportRequest
   'field-error-debug-report': FieldErrorDebugReport
   'field-debug-report-request': FieldDebugReportRequest

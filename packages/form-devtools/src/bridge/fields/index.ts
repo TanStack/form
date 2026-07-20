@@ -4,6 +4,7 @@ import { createFieldDetailsController } from './details'
 import { createFieldErrorDebugReportsController } from './debugReports'
 import { createFieldDebugReportsController } from './fieldDebugReports'
 import { createFieldListController } from './list'
+import { createFieldActionsController } from './actions'
 import type {
   AnyInternalFieldApi,
   AnyInternalFormApi,
@@ -71,6 +72,10 @@ export function createFieldsController(
   mountedForms: MountedFormsController,
 ): FieldsController {
   const identity = createFieldIdentityController()
+  const fieldActions = createFieldActionsController({
+    identity,
+    mountedForms,
+  })
   const fieldList = createFieldListController({ identity, mountedForms })
   const fieldDetails = createFieldDetailsController({ identity, mountedForms })
   const fieldErrorDebugReports = createFieldErrorDebugReportsController({
@@ -88,6 +93,7 @@ export function createFieldsController(
       fieldErrorDebugReports.dispose()
       fieldDetails.dispose()
       fieldList.dispose()
+      fieldActions.dispose()
     },
     getFieldRowsSnapshot: fieldList.getFieldRowsSnapshot,
     mountForm: fieldList.formMounted,

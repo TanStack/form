@@ -1035,10 +1035,7 @@ export class InternalFieldApi<
   }
 
   reset = () => {
-    // TODO: add reset functionality
     this.form.resetField(this.name, { fieldApiOverride: this })
-
-    this._notifyListener('reset', new WeakSet())
   }
 
   /**

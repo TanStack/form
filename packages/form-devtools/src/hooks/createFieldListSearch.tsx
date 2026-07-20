@@ -18,7 +18,7 @@ import {
   PencilSparklesIcon,
   PointerIcon,
   PointerOffIcon,
-  SquareDashedIcon,
+  SquareArrowRightExitIcon,
   SquareIcon,
   XIcon,
 } from 'lucide-solid'
@@ -138,7 +138,7 @@ const allFieldFilters: Array<FieldListFilter> = [
     group: 'blurred',
     aliases: ['Was blurred', 'Visited'],
     description: 'Has lost focus at least once',
-    icon: SquareIcon,
+    icon: SquareArrowRightExitIcon,
     predicate: createFieldSummaryFilterPredicate(
       (_field, summary) => summary.isBlurred,
     ),
@@ -147,9 +147,9 @@ const allFieldFilters: Array<FieldListFilter> = [
     label: 'Not blurred',
     id: 'not-blurred',
     group: 'blurred',
-    aliases: ['Never blurred', 'Not visited'],
+    aliases: ['Never blurred', 'Not visited', 'Unblurred'],
     description: 'Was not focused or has not lost it yet',
-    icon: SquareDashedIcon,
+    icon: SquareIcon,
     predicate: createFieldSummaryFilterPredicate(
       (_field, summary) => !summary.isBlurred,
     ),

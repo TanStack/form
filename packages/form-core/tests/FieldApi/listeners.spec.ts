@@ -99,6 +99,28 @@ describe('field - listeners', () => {
     expect(listener).toHaveBeenCalledOnce()
   })
 
+  it('notifies reset listeners for a reset field and its descendants', () => {
+    const parentListener = vi.fn()
+    const childListener = vi.fn()
+
+    const form = new InternalFormApi({ defaultValues: { a: { b: '' } } })
+    const parent = form._getOrCreateFieldApi({
+      name: 'a',
+      listeners: [{ triggers: ['reset'], run: parentListener }],
+    })
+    const child = form._getOrCreateFieldApi({
+      name: 'a.b',
+      listeners: [{ triggers: ['reset'], run: childListener }],
+    })
+
+    parent.reset()
+
+    expect(parentListener).toHaveBeenCalledOnce()
+    expect(childListener).toHaveBeenCalledOnce()
+    expect(form._tryGetFieldApi('a')).toBe(parent)
+    expect(form._tryGetFieldApi('a.b')).toBe(child)
+  })
+
   it('notifies reset listeners when a form reset happens', () => {
     const parentListener = vi.fn()
     const childListener = vi.fn()

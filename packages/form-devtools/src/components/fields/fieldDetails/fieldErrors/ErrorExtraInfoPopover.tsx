@@ -41,7 +41,7 @@ export function ErrorExtraInfoPopover({
         </Show>
 
         {/** PLAN Maybe say "Next expected removal is during change/blur"? */}
-        <JsonTree value={error.error} defaultExpandedDepth={1} />
+        <JsonTree value={error.error} defaultExpandedDepth={1} copyable />
       </div>
     </>
   )

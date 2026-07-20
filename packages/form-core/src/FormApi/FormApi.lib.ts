@@ -19,9 +19,11 @@ import {
 } from '../utils.lib'
 import { InternalRootFieldApi } from '../FieldApi/RootFieldApi.lib'
 import {
+  collectFieldSubtree,
   visitAllFormFields,
   visitFieldAndAncestors,
 } from '../FieldApi/fieldTraversal.lib'
+import { defaultInternalBaseFieldMeta } from '../FieldApi/fieldState.lib'
 import {
   clearIndexedErrorsFromSource,
   isAggregateError,
@@ -524,11 +526,29 @@ export class InternalFormApi<
     opts?: FieldApiOverrideOptions,
   ) => {
     const field = opts?.fieldApiOverride ?? this._tryGetFieldApi(fieldName)
-    this._atoms.values.set((prev) =>
-      setBy(prev, fieldName, getBy(this.options.defaultValues, fieldName)),
-    )
+    const fields = field ? collectFieldSubtree(field) : []
 
-    field?._children.forEach((child) => child._kill({ listenerEvent: 'reset' }))
+    batch(() => {
+      this._atoms.values.set((prev) =>
+        setBy(prev, fieldName, getBy(this.options.defaultValues, fieldName)),
+      )
+
+      for (let index = fields.length - 1; index >= 0; index--) {
+        const current = fields[index]!
+
+        current._defaultValueCache = null
+        if (current._pipelineCache) {
+          cancelPipelineCache(current._pipelineCache)
+          current._pipelineCache = null
+        }
+        current._setMeta(() => defaultInternalBaseFieldMeta)
+      }
+    })
+
+    for (const current of fields) {
+      current._notifyListener('reset', new WeakSet())
+    }
+
     notifyDevtoolsFieldValueUpdate(field)
   }
 
