@@ -20,7 +20,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 
-export interface DebugInfoCopy {
+interface DebugInfoCopy {
   loading: JSX.Element
   empty: JSX.Element
   dismissed: JSX.Element

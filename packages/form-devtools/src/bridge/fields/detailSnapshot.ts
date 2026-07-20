@@ -312,7 +312,7 @@ function finalizeRelations(
     }))
 }
 
-export function getDevtoolsFieldRelations(
+function getDevtoolsFieldRelations(
   field: AnyInternalFieldApi,
   identity: Pick<FieldIdentityController, 'getFieldId'>,
 ): DevtoolsFieldRelations {

@@ -3,7 +3,7 @@ import { formDevtoolsEventClient } from '../eventClient.lib'
 import type { FormDevtoolsBridge } from '@tanstack/form-core/internals'
 import type { DevtoolsMountedForm } from '../eventClientTypes'
 
-export interface BridgeStatusController {
+interface BridgeStatusController {
   dispose: () => void
 }
 

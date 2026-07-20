@@ -7,7 +7,7 @@ import { formDevtoolsEventClient } from '@/eventClient.lib'
 export const BRIDGE_STATUS_RESPONSE_TIMEOUT_MS = 1_000
 export const BRIDGE_STATUS_HEARTBEAT_INTERVAL_MS = 5_000
 
-export type FormBridgeStatus = 'checking' | 'connected' | 'unavailable'
+type FormBridgeStatus = 'checking' | 'connected' | 'unavailable'
 
 export const [mountedForms, setMountedForms] = createSignal<
   Array<DevtoolsMountedForm>
@@ -90,7 +90,7 @@ function scheduleBridgeStatusHeartbeat(): void {
   }, BRIDGE_STATUS_HEARTBEAT_INTERVAL_MS)
 }
 
-export function requestBridgeStatus(showChecking = true): void {
+function requestBridgeStatus(showChecking = true): void {
   if (mountedEventConsumers === 0) return
 
   clearBridgeStatusResponseTimer()

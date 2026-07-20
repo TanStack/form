@@ -80,7 +80,7 @@ export function isFieldPinned(fieldId: FieldId): boolean {
   return pinnedFieldIds().includes(fieldId)
 }
 
-export function setFieldPinned(fieldId: FieldId, pinned: boolean): void {
+function setFieldPinned(fieldId: FieldId, pinned: boolean): void {
   setPinnedFieldIds((current) => {
     const isPinned = current.includes(fieldId)
 
@@ -91,7 +91,7 @@ export function setFieldPinned(fieldId: FieldId, pinned: boolean): void {
   })
 }
 
-export function toggleFieldPinned(fieldId: FieldId): void {
+function toggleFieldPinned(fieldId: FieldId): void {
   setFieldPinned(fieldId, !isFieldPinned(fieldId))
 }
 
@@ -210,7 +210,7 @@ export function createFieldListComputations() {
   }
 }
 
-export function clearFieldRows(): void {
+function clearFieldRows(): void {
   batch(() => {
     setRowsByPath(new Map())
     setRowsByFieldId(new Map())
@@ -247,7 +247,7 @@ function normalizeSummaryPatch(
   return normalized
 }
 
-export function applyFieldListSnapshot({
+function applyFieldListSnapshot({
   formInstanceId,
   fields,
 }: {
@@ -350,7 +350,7 @@ function applySummaryChanges(
   return true
 }
 
-export function applyFieldListPatch({
+function applyFieldListPatch({
   formInstanceId,
   upsert = [],
   remove = [],

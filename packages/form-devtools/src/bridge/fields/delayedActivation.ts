@@ -15,7 +15,7 @@ interface ActiveActivation {
 
 type Activation = PendingActivation | ActiveActivation
 
-export interface DelayedActivationController<TKey> {
+interface DelayedActivationController<TKey> {
   dispose: () => void
   isActive: (key: TKey) => boolean
   observe: (key: TKey, requested: boolean) => void

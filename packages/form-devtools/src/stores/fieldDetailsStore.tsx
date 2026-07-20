@@ -8,12 +8,7 @@ import type {
 import type { FieldId, FormId } from '@/types/branded'
 import { formDevtoolsEventClient } from '@/eventClient.lib'
 
-export type {
-  FieldDetailSettings,
-  FieldErrorPayloadMode,
-} from '@/eventClientTypes'
-
-export const defaultFieldDetailSettings = Object.freeze({
+const defaultFieldDetailSettings = Object.freeze({
   includeValues: true,
   errorPayloadMode: 'full',
   debounceMs: 0,
@@ -26,13 +21,11 @@ export const [fieldDetailsById, setFieldDetailsById] = createSignal<
   Map<FieldId, DevtoolsFieldDetail>
 >(new Map(), { equals: false })
 
-export function getFieldDetailSettings(fieldId: FieldId): FieldDetailSettings {
+function getFieldDetailSettings(fieldId: FieldId): FieldDetailSettings {
   return fieldDetailSettingsById().get(fieldId) ?? defaultFieldDetailSettings
 }
 
-export function getFieldDetail(
-  fieldId: FieldId,
-): DevtoolsFieldDetail | undefined {
+function getFieldDetail(fieldId: FieldId): DevtoolsFieldDetail | undefined {
   return fieldDetailsById().get(fieldId)
 }
 
@@ -40,7 +33,7 @@ function normalizeDebounceMs(debounceMs: number): number {
   return Number.isFinite(debounceMs) && debounceMs > 0 ? debounceMs : 0
 }
 
-export function areFieldDetailSettingsEqual(
+function areFieldDetailSettingsEqual(
   left: FieldDetailSettings,
   right: FieldDetailSettings,
 ): boolean {
@@ -60,7 +53,7 @@ function deleteFieldDetail(fieldId: FieldId): void {
   setFieldDetailsById(next)
 }
 
-export function updateFieldDetailSettings(
+function updateFieldDetailSettings(
   fieldId: FieldId,
   patch: Partial<FieldDetailSettings>,
 ): void {
@@ -89,7 +82,7 @@ export function updateFieldDetailSettings(
   })
 }
 
-export function resetFieldDetailSettings(fieldId: FieldId): void {
+function resetFieldDetailSettings(fieldId: FieldId): void {
   const current = fieldDetailSettingsById()
   if (!current.has(fieldId)) return
 
@@ -176,7 +169,7 @@ function retainDescriptor(
   }
 }
 
-export function applyFieldDetail(detail: DevtoolsFieldDetail): void {
+function applyFieldDetail(detail: DevtoolsFieldDetail): void {
   const descriptor: FieldDetailSubscriptionDescriptor = detail
   const retained = retainedDescriptors.get(getDescriptorKey(descriptor))
   if (!retained || !areDescriptorsEqual(retained.descriptor, descriptor)) {
@@ -223,7 +216,7 @@ const fieldDetailsCache = {
   applyDetail: applyFieldDetail,
 }
 
-export function mountFieldDetailEvents(
+function mountFieldDetailEvents(
   subscribedFormId: Accessor<FormId | null>,
   displayedFieldIds: Accessor<ReadonlyArray<FieldId>>,
 ): () => void {

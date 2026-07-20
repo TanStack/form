@@ -19,7 +19,7 @@ import {
   toDevtoolsMountedFieldSummaryPatch,
 } from '@/fieldSummaryMeta'
 
-export const FIELD_LIST_LONG_VALIDATION_DELAY_MS = 300
+const FIELD_LIST_LONG_VALIDATION_DELAY_MS = 300
 
 interface FieldListController {
   dispose: () => void

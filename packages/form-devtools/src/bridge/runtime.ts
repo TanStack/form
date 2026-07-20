@@ -4,7 +4,7 @@ import { createFieldsController } from './fields'
 import { createMountedFormsController } from './forms/mountedForms'
 import { createBridgeStatusController } from './status'
 
-export interface FormDevtoolsBridgeRuntime {
+interface FormDevtoolsBridgeRuntime {
   dispose: () => void
 }
 
@@ -20,7 +20,7 @@ function getRuntimeHost(host: object): FormDevtoolsBridgeRuntimeHost {
   return host as FormDevtoolsBridgeRuntimeHost
 }
 
-export function createFormDevtoolsBridgeRuntime(
+function createFormDevtoolsBridgeRuntime(
   host: object = globalThis,
 ): FormDevtoolsBridgeRuntime {
   const mountedForms = createMountedFormsController()

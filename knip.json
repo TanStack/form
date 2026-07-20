@@ -1,6 +1,18 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
-  "ignoreFiles": ["**/*.regressions.ts"],
+  "ignoreFiles": [
+    "**/*.regressions.ts"
+  ],
   "ignoreDependencies": ["@tanstack/react-start"],
-  "ignoreWorkspaces": ["examples/**"]
+  "ignoreWorkspaces": [
+    "examples/**"
+  ],
+  "ignoreIssues": {
+    "packages/form-devtools/src/components/ui/**": [
+      "exports",
+      "types",
+      "nsExports",
+      "nsTypes"
+    ]
+  }
 }

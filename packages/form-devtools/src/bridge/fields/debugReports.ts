@@ -4,7 +4,7 @@ import type { MountedFormsController } from '../forms/mountedForms'
 import type { FieldIdentityController } from './identity'
 import type { FieldErrorDebugReportRequest } from '../../eventClientTypes'
 
-export interface FieldErrorDebugReportsController {
+interface FieldErrorDebugReportsController {
   dispose: () => void
 }
 

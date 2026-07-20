@@ -21,7 +21,7 @@ interface ActiveFieldDetailSubscription {
   lastObservedMeta: InternalFieldMeta
 }
 
-export interface FieldDetailsController {
+interface FieldDetailsController {
   dispose: () => void
   fieldsUpdated: (fields: Iterable<AnyInternalFieldApi>) => void
   fieldSubtreeRemoved: (fields: Array<AnyInternalFieldApi>) => void

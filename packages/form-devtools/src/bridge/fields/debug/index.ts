@@ -4,7 +4,7 @@ import { serverErrorOnUnmountedField } from './serverErrorOnUnmountedField'
 import type { FieldErrorDebugCase, FieldErrorDebugCaseContext } from './types'
 import type { FieldErrorDebugSuspicion } from '../../../eventClientTypes'
 
-export type { FieldErrorDebugCase, FieldErrorDebugCaseContext } from './types'
+export type { FieldErrorDebugCase } from './types'
 
 /**
  * The order of these cases is important.
@@ -12,7 +12,7 @@ export type { FieldErrorDebugCase, FieldErrorDebugCaseContext } from './types'
  *
  * The most specific cases should be first.
  */
-export const fieldErrorDebugCases = [
+const fieldErrorDebugCases = [
   schemaErrorOnUnmountedField,
   serverErrorOnUnmountedField,
   errorsHidden,

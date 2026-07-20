@@ -7,7 +7,7 @@ import type {
   FieldErrorDebugReportRequest,
 } from './eventClientTypes'
 
-export type FieldDebugReportTarget = Omit<FieldDebugReportRequest, 'requestId'>
+type FieldDebugReportTarget = Omit<FieldDebugReportRequest, 'requestId'>
 
 export function requestFieldDebugReport(
   target: FieldDebugReportTarget,
@@ -39,7 +39,7 @@ export function requestFieldDebugReport(
   }
 }
 
-export type FieldErrorDebugReportTarget = Omit<
+type FieldErrorDebugReportTarget = Omit<
   FieldErrorDebugReportRequest,
   'requestId'
 >

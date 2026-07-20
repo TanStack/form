@@ -6,7 +6,7 @@ import type {
   DevtoolsMountedFieldValidity,
 } from './eventClientTypes'
 
-export interface DevtoolsMountedFieldSummaryProjection {
+interface DevtoolsMountedFieldSummaryProjection {
   isLongValidating?: boolean
 }
 
@@ -20,7 +20,7 @@ export const defaultDevtoolsMountedFieldSummary = Object.freeze({
   validity: toDevtoolsMountedFieldValidity(defaultFieldMeta),
 }) satisfies DevtoolsMountedFieldSummary
 
-export function toDevtoolsMountedFieldSummary(
+function toDevtoolsMountedFieldSummary(
   meta: InternalFieldMeta,
   projection: DevtoolsMountedFieldSummaryProjection = {},
 ): DevtoolsMountedFieldSummary {
@@ -83,7 +83,7 @@ export function hydrateDevtoolsMountedFieldSummary(
   }
 }
 
-export interface BaselinePatchDifference<T extends object> {
+interface BaselinePatchDifference<T extends object> {
   set?: Partial<T>
   clear?: Array<keyof T>
 }

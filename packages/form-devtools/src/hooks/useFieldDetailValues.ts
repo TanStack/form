@@ -2,7 +2,7 @@ import { createMemo } from 'solid-js'
 import type { FieldId } from '@/types/branded'
 import { useFormDevtoolsStore } from '@/stores/formDevtoolsStore'
 
-export type FieldDetailValuesState =
+type FieldDetailValuesState =
   | { status: 'disabled' }
   | { status: 'pending' }
   | {

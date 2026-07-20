@@ -4,7 +4,7 @@ import type { FieldActionRequest } from '../../eventClientTypes'
 import type { MountedFormsController } from '../forms/mountedForms'
 import type { FieldIdentityController } from './identity'
 
-export interface FieldActionsController {
+interface FieldActionsController {
   dispose: () => void
 }
 

@@ -196,7 +196,7 @@ export interface FieldDebugReport {
   suspicions: Array<FieldDebugSuspicion>
 }
 
-export interface DevtoolsFieldDetailSubfieldsMeta {
+interface DevtoolsFieldDetailSubfieldsMeta {
   isEveryValid: boolean
   isAnyInvalid: boolean
   isEveryPristine: boolean
