@@ -26,62 +26,62 @@
 
 /* Custom variants */
 @custom-variant data-open {
-  &:where([data-state="open"]),
-  &:where([data-open]:not([data-open="false"])) {
+  &:where([data-state='open']),
+  &:where([data-open]:not([data-open='false'])) {
     @slot;
   }
 }
 
 @custom-variant data-closed {
-  &:where([data-state="closed"]),
-  &:where([data-closed]:not([data-closed="false"])) {
+  &:where([data-state='closed']),
+  &:where([data-closed]:not([data-closed='false'])) {
     @slot;
   }
 }
 
 @custom-variant data-checked {
-  &:where([data-state="checked"]),
-  &:where([data-checked]:not([data-checked="false"])) {
+  &:where([data-state='checked']),
+  &:where([data-checked]:not([data-checked='false'])) {
     @slot;
   }
 }
 
 @custom-variant data-unchecked {
-  &:where([data-state="unchecked"]),
-  &:where([data-unchecked]:not([data-unchecked="false"])) {
+  &:where([data-state='unchecked']),
+  &:where([data-unchecked]:not([data-unchecked='false'])) {
     @slot;
   }
 }
 
 @custom-variant data-selected {
-  &:where([data-selected="true"]),
-  &:where([data-selected]:not([data-selected="false"])) {
+  &:where([data-selected='true']),
+  &:where([data-selected]:not([data-selected='false'])) {
     @slot;
   }
 }
 
 @custom-variant data-disabled {
-  &:where([data-disabled="true"]),
-  &:where([data-disabled]:not([data-disabled="false"])) {
+  &:where([data-disabled='true']),
+  &:where([data-disabled]:not([data-disabled='false'])) {
     @slot;
   }
 }
 
 @custom-variant data-active {
-  &:where([data-state="active"]),
-  &:where([data-active]:not([data-active="false"])) {
+  &:where([data-state='active']),
+  &:where([data-active]:not([data-active='false'])) {
     @slot;
   }
 }
 
 @custom-variant data-horizontal {
-  &:where([data-orientation="horizontal"]) {
+  &:where([data-orientation='horizontal']) {
     @slot;
   }
 }
 
 @custom-variant data-vertical {
-  &:where([data-orientation="vertical"]) {
+  &:where([data-orientation='vertical']) {
     @slot;
   }
 }
@@ -97,27 +97,27 @@
 
 /* scroll-fade */
 @property --scroll-fade-t {
-  syntax: "<length-percentage>";
+  syntax: '<length-percentage>';
   inherits: false;
   initial-value: 0px;
 }
 @property --scroll-fade-b {
-  syntax: "<length-percentage>";
+  syntax: '<length-percentage>';
   inherits: false;
   initial-value: 0px;
 }
 @property --scroll-fade-s {
-  syntax: "<length-percentage>";
+  syntax: '<length-percentage>';
   inherits: false;
   initial-value: 0px;
 }
 @property --scroll-fade-e {
-  syntax: "<length-percentage>";
+  syntax: '<length-percentage>';
   inherits: false;
   initial-value: 0px;
 }
 @property --scroll-fade-mask {
-  syntax: "*";
+  syntax: '*';
   inherits: false;
 }
 
@@ -127,12 +127,18 @@
       --scroll-fade-t: 0px;
     }
     to {
-      --scroll-fade-t: var(--_scroll-fade-size-t, var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10))));
+      --scroll-fade-t: var(
+        --_scroll-fade-size-t,
+        var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10)))
+      );
     }
   }
   @keyframes scroll-fade-reveal-b {
     from {
-      --scroll-fade-b: var(--_scroll-fade-size-b, var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10))));
+      --scroll-fade-b: var(
+        --_scroll-fade-size-b,
+        var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10)))
+      );
     }
     to {
       --scroll-fade-b: 0px;
@@ -143,12 +149,18 @@
       --scroll-fade-s: 0px;
     }
     to {
-      --scroll-fade-s: var(--_scroll-fade-size-s, var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10))));
+      --scroll-fade-s: var(
+        --_scroll-fade-size-s,
+        var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10)))
+      );
     }
   }
   @keyframes scroll-fade-reveal-e {
     from {
-      --scroll-fade-e: var(--_scroll-fade-size-e, var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10))));
+      --scroll-fade-e: var(
+        --_scroll-fade-size-e,
+        var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10)))
+      );
     }
     to {
       --scroll-fade-e: 0px;
@@ -252,7 +264,7 @@
     #000 calc(100% - var(--scroll-fade-e, 0px)),
     transparent 100%
   );
-  &:where([dir="rtl"], [dir="rtl"] *) {
+  &:where([dir='rtl'], [dir='rtl'] *) {
     --scroll-fade-inline: linear-gradient(
       to left,
       transparent 0,
@@ -422,7 +434,7 @@
     #000 var(--scroll-fade-s, 0px),
     #000 100%
   );
-  &:where([dir="rtl"], [dir="rtl"] *) {
+  &:where([dir='rtl'], [dir='rtl'] *) {
     --scroll-fade-mask: linear-gradient(
       to left,
       transparent 0,
@@ -460,7 +472,7 @@
     #000 calc(100% - var(--scroll-fade-e, 0px)),
     transparent 100%
   );
-  &:where([dir="rtl"], [dir="rtl"] *) {
+  &:where([dir='rtl'], [dir='rtl'] *) {
     --scroll-fade-mask: linear-gradient(
       to left,
       #000 0,
@@ -521,16 +533,16 @@
 
 /* shimmer */
 @property --shimmer-angle {
-  syntax: "<angle>";
+  syntax: '<angle>';
   inherits: true;
   initial-value: 20deg;
 }
 @property --shimmer-image {
-  syntax: "*";
+  syntax: '*';
   inherits: false;
 }
 @property --shimmer-text-fill {
-  syntax: "*";
+  syntax: '*';
   inherits: false;
 }
 
@@ -581,7 +593,7 @@
     );
   }
 
-  &:where([dir="rtl"], [dir="rtl"] *) {
+  &:where([dir='rtl'], [dir='rtl'] *) {
     animation-direction: reverse;
   }
 }
