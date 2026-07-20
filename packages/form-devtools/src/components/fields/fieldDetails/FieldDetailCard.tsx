@@ -3,6 +3,7 @@ import { FieldDetailMetaBadges } from './FieldDetailMetaBadges'
 import { FieldDetailSettingsMenu } from './FieldDetailSettingsMenu'
 import { FieldDetailValues } from './FieldDetailValues'
 import { FieldDetailErrors } from './fieldErrors/FieldDetailErrors'
+import { FieldDetailSettingsActions } from './FieldDetailSettingsActions'
 import type { DevtoolsFieldListRow } from '@/stores/fieldListStore'
 import {
   Card,
@@ -32,6 +33,7 @@ export function FieldDetailCard(props: FieldDetailCardProps) {
         </CardTitle>
         <FieldDetailMetaBadges fieldId={fieldId()} isMounted={isMounted()} />
         <CardAction class="ml-4">
+          <FieldDetailSettingsActions fieldId={fieldId()} />
           <FieldDetailSettingsMenu fieldId={fieldId()} fieldPath={path()} />
         </CardAction>
       </CardHeader>

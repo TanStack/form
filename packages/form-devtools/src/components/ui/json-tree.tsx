@@ -14,7 +14,7 @@ interface JsonTreeProps extends ComponentProps<'div'> {
   /**
    * The default expansion depth that the JSON viewer should have.
    */
-  defaultExpandedDepth: number
+  defaultExpandedDepth?: number
   /**
    * Whether or not the JSON tree should be copyable. If true,
    * adds a copy button on the top right of the tree.

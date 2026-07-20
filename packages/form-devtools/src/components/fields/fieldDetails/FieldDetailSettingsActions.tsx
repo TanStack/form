@@ -1,32 +1,44 @@
-import { PenIcon, RotateCcwIcon, SquareArrowRightExitIcon } from 'lucide-solid'
-import type { FieldId, FormId } from '@/types/branded'
+import {
+  PenIcon,
+  PlayIcon,
+  RotateCcwIcon,
+  SquareArrowRightExitIcon,
+} from 'lucide-solid'
+import type { FieldId } from '@/types/branded'
 import type { MenuSelectionDetails } from '@ark-ui/solid'
 import { Button } from '@/components/ui/button'
 import { formDevtoolsEventClient } from '@/eventClient.lib'
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { useFormDevtoolsStore } from '@/stores/formDevtoolsStore'
 
 interface FieldDetailSettingsActionsProps {
-  formInstanceId: FormId | null
   fieldId: FieldId
 }
 
-function EmitEventMenu(props: FieldDetailSettingsActionsProps) {
+export function FieldDetailSettingsActions(
+  props: FieldDetailSettingsActionsProps,
+) {
+  const fieldList = useFormDevtoolsStore().fieldList
+
   const emitRequest = (
     eventName:
       | 'field-handle-change-request'
       | 'field-handle-blur-request'
       | 'field-reset-request',
   ) => {
-    if (!props.formInstanceId) return
+    const formInstanceId = fieldList.subscribedFormId()
+    if (!formInstanceId) return
 
     formDevtoolsEventClient.emit(eventName, {
-      formInstanceId: props.formInstanceId,
+      formInstanceId,
       fieldId: props.fieldId,
     })
   }
@@ -50,35 +62,36 @@ function EmitEventMenu(props: FieldDetailSettingsActionsProps) {
       onSelect={handleDropdownSelect}
     >
       <DropdownMenuTrigger
-        asChild={(innerProps) => <Button variant="outline" {...innerProps()} />}
+        asChild={(innerProps) => (
+          <Button variant="ghost" size="icon-sm" {...innerProps()} />
+        )}
       >
-        Emit event
+        <PlayIcon />
       </DropdownMenuTrigger>
       <DropdownMenuContent class="font-mono">
-        <DropdownMenuItem value="emit-change">
-          <PenIcon />
-          .handleChange(<span class="text-muted-foreground">…</span>)
-        </DropdownMenuItem>
-        <DropdownMenuItem value="emit-blur">
-          <SquareArrowRightExitIcon />
-          .handleBlur()
-        </DropdownMenuItem>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuItem value="emit-change" class="cursor-pointer">
+            <PenIcon />
+            .handleChange(<span class="text-muted-foreground">…</span>)
+          </DropdownMenuItem>
+          <DropdownMenuItem value="emit-blur" class="cursor-pointer">
+            <SquareArrowRightExitIcon />
+            .handleBlur()
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem value="emit-reset" variant="destructive">
-          <RotateCcwIcon />
-          .reset()
-        </DropdownMenuItem>
+        <DropdownMenuGroup>
+          <DropdownMenuItem
+            value="emit-reset"
+            variant="destructive"
+            class="cursor-pointer"
+          >
+            <RotateCcwIcon />
+            .reset()
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
-}
-
-export function FieldDetailSettingsActions(
-  props: FieldDetailSettingsActionsProps,
-) {
-  return (
-    <>
-      <EmitEventMenu {...props} />
-    </>
   )
 }

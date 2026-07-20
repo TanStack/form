@@ -22,11 +22,7 @@ function ErrorsTab(props: ErrorsTabProps) {
     <TabsContent value={props.tabValue}>
       <Show
         when={props.data().state.meta.original.errors.length > 0}
-        fallback={
-          props.fallback ?? (
-            <p class="text-sm text-muted-foreground">No errors</p>
-          )
-        }
+        fallback={props.fallback ?? <JsonTree value={[]} />}
       >
         {props.children}
       </Show>
@@ -78,9 +74,7 @@ export function FieldDetailErrors(props: FieldDetailErrorsProps) {
               data={data}
               tabValue="ui"
               fallback={
-                props.isMounted === false ? (
-                  <p class="text-sm text-muted-foreground">No errors</p>
-                ) : (
+                props.isMounted === false ? undefined : (
                   <FieldNoErrorsItem
                     formInstanceId={data().formInstanceId}
                     fieldId={fieldId}

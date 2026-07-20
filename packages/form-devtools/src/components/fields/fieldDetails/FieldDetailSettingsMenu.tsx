@@ -1,5 +1,4 @@
 import { EllipsisIcon } from 'lucide-solid'
-import { FieldDetailSettingsActions } from './FieldDetailSettingsActions'
 import type { FieldDetailSettings } from '@/eventClientTypes'
 import type { FieldId } from '@/types/branded'
 import { Button } from '@/components/ui/button'
@@ -27,7 +26,6 @@ import {
 } from '@/components/ui/slider'
 import { Switch } from '@/components/ui/switch'
 import { useFormDevtoolsStore } from '@/stores/formDevtoolsStore'
-import { Separator } from '@/components/ui/separator'
 
 interface FieldDetailSettingsMenuProps {
   fieldId: FieldId
@@ -119,12 +117,6 @@ export function FieldDetailSettingsMenu({
           <SliderValue>{debounceLabel()}</SliderValue>
           <SliderControl />
         </SliderRoot>
-        <Separator />
-
-        <FieldDetailSettingsActions
-          formInstanceId={store.fieldList.subscribedFormId()}
-          fieldId={fieldId}
-        />
       </PopoverContent>
     </Popover>
   )
