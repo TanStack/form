@@ -2,6 +2,15 @@ import type { AnyInternalFormApi } from './FormApi/FormApi.lib'
 import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
 
 /**
+ * A listener or validator dependency edge affected by reconciliation.
+ */
+export interface FieldDependencyChange {
+  sourceField: AnyInternalFieldApi
+  watchingField: AnyInternalFieldApi
+  watcherIndex: number
+}
+
+/**
  * Optional hooks installed by `@tanstack/form-devtools`.
  *
  * The core package owns only this narrow lifecycle contract. It passes live
@@ -40,6 +49,17 @@ export interface FormDevtoolsBridge {
    * whose form is not currently subscribed.
    */
   updateField?: (field: AnyInternalFieldApi) => void
+  /**
+   * Called after a field is inserted into the form field trie.
+   */
+  fieldAdded?: (field: AnyInternalFieldApi) => void
+  /**
+   * Called after listener or validator dependency edges change. Attached and
+   * detached edges are both included so removed endpoints remain observable.
+   */
+  fieldDependenciesChanged?: (
+    changes: ReadonlyArray<FieldDependencyChange>,
+  ) => void
   /**
    * Called when a field's component registration count transitions from 0 to 1.
    *

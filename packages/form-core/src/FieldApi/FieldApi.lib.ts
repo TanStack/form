@@ -67,7 +67,6 @@ import type {
   InternalFieldMeta,
   InternalFieldState,
 } from './fieldState.lib'
-import type { WatchedFieldDependencyOperation } from './fieldTree.lib'
 
 export type AnyFieldApiOptions = FieldApiOptions<
   any,
@@ -258,6 +257,7 @@ export function getOrCreateFieldApi(
   })
 
   node._setChild(childNode)
+  devtools().fieldAdded?.(childNode)
 
   return getOrCreateFieldApi(childNode, segments, form, options)
 }
@@ -559,10 +559,10 @@ export class InternalFieldApi<
 
     this._listeners = reconciledListeners.items
     this._listenToFields = reconciledListeners.listenToFields
-    const dependencyOperations: Array<WatchedFieldDependencyOperation> = [
-      ...reconciledListeners.attach,
-      ...reconciledListeners.detach,
-    ]
+    const notifyDependencyChanges = devtools().fieldDependenciesChanged
+    const dependencyChanges = notifyDependencyChanges
+      ? [...reconciledListeners.attach, ...reconciledListeners.detach]
+      : null
 
     if (options.validators) {
       const reconciledValidators = reconcileWatchedValidatorFields({
@@ -579,10 +579,14 @@ export class InternalFieldApi<
 
       this._validators = reconciledValidators.items
       this._validateOnFields = reconciledValidators.listenToFields
-      dependencyOperations.push(
+      dependencyChanges?.push(
         ...reconciledValidators.attach,
         ...reconciledValidators.detach,
       )
+    }
+
+    if (dependencyChanges && dependencyChanges.length > 0) {
+      notifyDependencyChanges?.(dependencyChanges)
     }
   }
 

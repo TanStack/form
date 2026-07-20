@@ -145,6 +145,30 @@ export interface DevtoolsFieldDetailMeta {
   }
 }
 
+export type DevtoolsFieldRelationKind = 'listener' | 'validator'
+
+export interface DevtoolsFieldRelationCause {
+  kind: DevtoolsFieldRelationKind
+  /** Zero-based index in the corresponding listeners or validators array. */
+  itemIndex: number
+  /** Omitted when the configured watch path still matches the field's path. */
+  configuredPath?: string
+}
+
+export interface DevtoolsFieldRelation {
+  fieldId: FieldId
+  causes: Array<DevtoolsFieldRelationCause>
+}
+
+export interface DevtoolsFieldRelations {
+  /** Number of immediate, live children in the form's field trie. */
+  directChildCount: number
+  /** Source fields watched by this field's listeners or validators. */
+  listensTo: Array<DevtoolsFieldRelation>
+  /** Fields whose listeners or validators watch this field. */
+  listenedToBy: Array<DevtoolsFieldRelation>
+}
+
 export interface DevtoolsFieldDetail extends FieldDetailSubscriptionDescriptor {
   state: {
     /**
@@ -155,6 +179,7 @@ export interface DevtoolsFieldDetail extends FieldDetailSubscriptionDescriptor {
     value?: unknown
     meta: DevtoolsFieldDetailMeta
   }
+  relations: DevtoolsFieldRelations
   /**
    * Omitted when `settings.includeValues` is `false`. When included, this is
    * the value resolved from the form's `defaultValues` at the field path and

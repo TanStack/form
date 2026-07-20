@@ -1,6 +1,7 @@
 import type {
   AnyInternalFieldApi,
   AnyInternalFormApi,
+  FieldDependencyChange,
   FormDevtoolsBridge,
 } from '@tanstack/form-core/internals'
 import type { FormId } from '../types/branded'
@@ -19,6 +20,10 @@ export interface FieldsBridgeController {
   unmountForm: (formInstanceId: FormId) => void
   mountField: (field: AnyInternalFieldApi) => void
   updateField: (field: AnyInternalFieldApi) => void
+  fieldAdded: (field: AnyInternalFieldApi) => void
+  fieldDependenciesChanged: (
+    changes: ReadonlyArray<FieldDependencyChange>,
+  ) => void
   unmountField: (field: AnyInternalFieldApi, previousPath: string) => void
   moveField: (field: AnyInternalFieldApi, previousPath: string) => void
   removeFieldSubtree: (
@@ -46,6 +51,8 @@ export function createFormDevtoolsBridge({
     updateForm: mountedForms.updateForm,
     mountField: fields.mountField,
     updateField: fields.updateField,
+    fieldAdded: fields.fieldAdded,
+    fieldDependenciesChanged: fields.fieldDependenciesChanged,
     unmountField: fields.unmountField,
     moveField: fields.moveField,
     removeFieldSubtree: fields.removeFieldSubtree,

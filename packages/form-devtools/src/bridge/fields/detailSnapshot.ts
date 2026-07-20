@@ -1,6 +1,9 @@
 import { getBy, isStandardSchema } from '@tanstack/form-core/internals'
+import { compareFieldPaths } from '../utils'
 import type {
   AnyInternalFieldApi,
+  FieldListenToFields,
+  FieldWatchingFields,
   InternalFieldState,
 } from '@tanstack/form-core/internals'
 import type { ValidationIssue } from '@tanstack/form-core'
@@ -8,10 +11,16 @@ import type {
   DevtoolsFieldDetail,
   DevtoolsFieldError,
   DevtoolsFieldErrorSource,
+  DevtoolsFieldRelation,
+  DevtoolsFieldRelationCause,
+  DevtoolsFieldRelationKind,
+  DevtoolsFieldRelations,
   DevtoolsFieldValidatorType,
   FieldDetailSubscriptionDescriptor,
   FieldErrorPayloadMode,
 } from '../../eventClientTypes'
+import type { FieldId } from '../../types/branded'
+import type { FieldIdentityController } from './identity'
 
 function getValidatorType(
   validator: { run: unknown } | null | undefined,
@@ -170,15 +179,191 @@ function getDevtoolsFieldState(
   }
 }
 
+interface FieldRelationAccumulator {
+  fieldId: FieldId
+  path: string
+  causes: Array<DevtoolsFieldRelationCause>
+}
+
+function getRelationCause(
+  kind: DevtoolsFieldRelationKind,
+  itemIndex: number,
+  configuredPath: string | undefined,
+  currentPath: string,
+): DevtoolsFieldRelationCause {
+  return {
+    kind,
+    itemIndex,
+    ...(configuredPath && configuredPath !== currentPath
+      ? { configuredPath }
+      : {}),
+  }
+}
+
+function addRelation(
+  relations: Map<FieldId, FieldRelationAccumulator>,
+  field: AnyInternalFieldApi,
+  cause: DevtoolsFieldRelationCause,
+  identity: Pick<FieldIdentityController, 'getFieldId'>,
+): void {
+  if (field._isKilled) return
+
+  const fieldId = identity.getFieldId(field)
+  const existing = relations.get(fieldId)
+  if (existing) {
+    existing.causes.push(cause)
+    return
+  }
+
+  relations.set(fieldId, {
+    fieldId,
+    path: field.name,
+    causes: [cause],
+  })
+}
+
+function addListensToRelations(
+  relations: Map<FieldId, FieldRelationAccumulator>,
+  listenToFields: FieldListenToFields | null,
+  kind: DevtoolsFieldRelationKind,
+  identity: Pick<FieldIdentityController, 'getFieldId'>,
+): void {
+  listenToFields?.forEach((sourceMetas, itemIndex) => {
+    for (const sourceMeta of sourceMetas) {
+      addRelation(
+        relations,
+        sourceMeta.field,
+        getRelationCause(
+          kind,
+          itemIndex,
+          sourceMeta.name,
+          sourceMeta.field.name,
+        ),
+        identity,
+      )
+    }
+  })
+}
+
+function getConfiguredPath(
+  sourceField: AnyInternalFieldApi,
+  listenToFields: FieldListenToFields | null,
+  itemIndex: number,
+): string | undefined {
+  return listenToFields?.[itemIndex]?.find(
+    (sourceMeta) => sourceMeta.field === sourceField,
+  )?.name
+}
+
+function addListenedToByRelations(
+  relations: Map<FieldId, FieldRelationAccumulator>,
+  sourceField: AnyInternalFieldApi,
+  watchingFields: FieldWatchingFields | null,
+  getListenToFields: (
+    watchingField: AnyInternalFieldApi,
+  ) => FieldListenToFields | null,
+  kind: DevtoolsFieldRelationKind,
+  identity: Pick<FieldIdentityController, 'getFieldId'>,
+): void {
+  watchingFields?.forEach((itemIndexes, watchingField) => {
+    if (watchingField._isKilled) return
+
+    const listenToFields = getListenToFields(watchingField)
+    for (const itemIndex of itemIndexes) {
+      addRelation(
+        relations,
+        watchingField,
+        getRelationCause(
+          kind,
+          itemIndex,
+          getConfiguredPath(sourceField, listenToFields, itemIndex),
+          sourceField.name,
+        ),
+        identity,
+      )
+    }
+  })
+}
+
+function compareRelationCauses(
+  left: DevtoolsFieldRelationCause,
+  right: DevtoolsFieldRelationCause,
+): number {
+  if (left.kind !== right.kind) return left.kind === 'listener' ? -1 : 1
+  if (left.itemIndex !== right.itemIndex) {
+    return left.itemIndex - right.itemIndex
+  }
+  return (left.configuredPath ?? '').localeCompare(right.configuredPath ?? '')
+}
+
+function finalizeRelations(
+  relations: Map<FieldId, FieldRelationAccumulator>,
+): Array<DevtoolsFieldRelation> {
+  return Array.from(relations.values())
+    .sort((left, right) => {
+      const pathOrder = compareFieldPaths(left.path, right.path)
+      return (
+        pathOrder || String(left.fieldId).localeCompare(String(right.fieldId))
+      )
+    })
+    .map(({ fieldId, causes }) => ({
+      fieldId,
+      causes: causes.sort(compareRelationCauses),
+    }))
+}
+
+export function getDevtoolsFieldRelations(
+  field: AnyInternalFieldApi,
+  identity: Pick<FieldIdentityController, 'getFieldId'>,
+): DevtoolsFieldRelations {
+  const listensTo = new Map<FieldId, FieldRelationAccumulator>()
+  const listenedToBy = new Map<FieldId, FieldRelationAccumulator>()
+
+  addListensToRelations(listensTo, field._listenToFields, 'listener', identity)
+  addListensToRelations(
+    listensTo,
+    field._validateOnFields,
+    'validator',
+    identity,
+  )
+  addListenedToByRelations(
+    listenedToBy,
+    field,
+    field._watchingFields,
+    (watchingField) => watchingField._listenToFields,
+    'listener',
+    identity,
+  )
+  addListenedToByRelations(
+    listenedToBy,
+    field,
+    field._watchingValidatorFields,
+    (watchingField) => watchingField._validateOnFields,
+    'validator',
+    identity,
+  )
+
+  return {
+    directChildCount: field._children.reduce(
+      (count, child) => count + (child._isKilled ? 0 : 1),
+      0,
+    ),
+    listensTo: finalizeRelations(listensTo),
+    listenedToBy: finalizeRelations(listenedToBy),
+  }
+}
+
 export function getDevtoolsFieldDetail(
   field: AnyInternalFieldApi,
   descriptor: FieldDetailSubscriptionDescriptor,
+  identity: Pick<FieldIdentityController, 'getFieldId'>,
 ): DevtoolsFieldDetail {
   const state = field.atom.get()
 
   return {
     ...descriptor,
     state: getDevtoolsFieldState(field, state, descriptor),
+    relations: getDevtoolsFieldRelations(field, identity),
     ...(descriptor.settings.includeValues
       ? { defaultValue: getBy(field.form.options.defaultValues, field.name) }
       : {}),

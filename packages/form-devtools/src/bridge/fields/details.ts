@@ -23,7 +23,7 @@ interface ActiveFieldDetailSubscription {
 
 export interface FieldDetailsController {
   dispose: () => void
-  fieldMoved: (field: AnyInternalFieldApi) => void
+  fieldsUpdated: (fields: Iterable<AnyInternalFieldApi>) => void
   fieldSubtreeRemoved: (fields: Array<AnyInternalFieldApi>) => void
   formUnmounted: (formInstanceId: FormId) => void
 }
@@ -96,7 +96,11 @@ export function createFieldDetailsController({
 
     formDevtoolsEventClient.emit(
       'field-detail-changed',
-      getDevtoolsFieldDetail(subscription.field, subscription.descriptor),
+      getDevtoolsFieldDetail(
+        subscription.field,
+        subscription.descriptor,
+        identity,
+      ),
     )
   }
 
@@ -189,9 +193,12 @@ export function createFieldDetailsController({
         removeSubscription(key)
       }
     },
-    fieldMoved: (field) => {
+    fieldsUpdated: (fields) => {
+      const updatedFields = new Set<AnyInternalFieldApi>(fields)
+      if (updatedFields.size === 0) return
+
       for (const subscription of subscriptions.values()) {
-        if (subscription.field === field) scheduleDetail(subscription)
+        if (updatedFields.has(subscription.field)) scheduleDetail(subscription)
       }
     },
     fieldSubtreeRemoved: (fields) => {

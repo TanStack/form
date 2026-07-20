@@ -113,6 +113,11 @@ describe('FieldDetailCard', () => {
           },
         },
       },
+      relations: {
+        directChildCount: 0,
+        listensTo: [],
+        listenedToBy: [],
+      },
       defaultValue: 'Ada',
     } satisfies DevtoolsFieldDetail
 

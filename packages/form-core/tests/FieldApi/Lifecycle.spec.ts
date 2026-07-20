@@ -167,6 +167,52 @@ describe('field - lifecycle', () => {
         uninstallBridge()
       }
     })
+
+    it('notifies semantic field topology changes', () => {
+      const form = new InternalFormApi({
+        defaultValues: { parent: {}, source: '', target: '' },
+      })
+      form._getOrCreateFieldApi({ name: 'parent' })
+      const source = form._getOrCreateFieldApi({ name: 'source' })
+      const target = form._getOrCreateFieldApi({ name: 'target' })
+      const fieldAdded = vi.fn()
+      const fieldDependenciesChanged = vi.fn()
+      const uninstallBridge = installDevtoolsBridge({
+        fieldAdded,
+        fieldDependenciesChanged,
+      })
+
+      try {
+        const child = form._getOrCreateFieldApi({ name: 'parent.child' })
+
+        expect(fieldAdded).toHaveBeenCalledWith(child)
+        expect(form._tryGetFieldApi('parent.child')).toBe(child)
+
+        target._update({
+          listeners: [
+            {
+              triggers: ['change'],
+              watchFields: ['source'],
+              run: () => {},
+            },
+          ],
+        })
+
+        expect(fieldDependenciesChanged).toHaveBeenCalledWith([
+          { sourceField: source, watchingField: target, watcherIndex: 0 },
+        ])
+
+        fieldDependenciesChanged.mockClear()
+        target._kill()
+
+        expect(fieldDependenciesChanged).toHaveBeenCalledWith([
+          { sourceField: source, watchingField: target, watcherIndex: 0 },
+        ])
+        expect(source._watchingFields).toBeNull()
+      } finally {
+        uninstallBridge()
+      }
+    })
   })
 
   describe('_kill', () => {
@@ -385,7 +431,27 @@ describe('field - lifecycle', () => {
       expect(form.state.canSubmit).toBe(false)
     })
 
-    it('does not prune source fields while watched validators are attached', () => {
+    it('does not prune either endpoint while watched validators are attached', () => {
+      const form = new InternalFormApi({
+        defaultValues: { source: '', target: '' },
+      })
+      const sourceField = form._getOrCreateFieldApi({ name: 'source' })
+      const targetField = form._getOrCreateFieldApi({
+        name: 'target',
+        validators: [
+          {
+            triggers: ['change'],
+            watchFields: ['source'],
+            run: () => null,
+          },
+        ],
+      })
+
+      expect(canPruneField(sourceField)).toBe(false)
+      expect(canPruneField(targetField)).toBe(false)
+    })
+
+    it('prunes an unmounted watcher after its final source is killed', () => {
       const form = new InternalFormApi({
         defaultValues: { source: '', target: '' },
       })
@@ -401,7 +467,37 @@ describe('field - lifecycle', () => {
         ],
       })
 
-      expect(canPruneField(sourceField)).toBe(false)
+      sourceField._kill()
+
+      expect(form._tryGetFieldApi('source')).toBeNull()
+      expect(form._tryGetFieldApi('target')).toBeNull()
+    })
+
+    it('keeps a mounted watcher after its source is killed', () => {
+      const form = new InternalFormApi({
+        defaultValues: { source: '', target: '' },
+      })
+      const sourceField = form._getOrCreateFieldApi({ name: 'source' })
+      const targetField = form._getOrCreateFieldApi({
+        name: 'target',
+        listeners: [
+          {
+            triggers: ['change'],
+            watchFields: ['source'],
+            run: () => {},
+          },
+        ],
+      })
+      const unregisterTarget = targetField._register()
+
+      try {
+        sourceField._kill()
+
+        expect(form._tryGetFieldApi('target')).toBe(targetField)
+        expect(targetField._listenToFields).toBeNull()
+      } finally {
+        unregisterTarget()
+      }
     })
   })
 

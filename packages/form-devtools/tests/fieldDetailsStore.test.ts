@@ -18,6 +18,7 @@ function field(path: string, fieldId: string): DevtoolsMountedFieldScaffold {
 }
 
 let fieldList!: FormDevtoolsStore['fieldList']
+let fieldMeta!: FormDevtoolsStore['fieldMeta']
 let fieldDetails!: FormDevtoolsStore['fieldDetails']
 let disposeStore!: () => void
 
@@ -25,6 +26,7 @@ beforeEach(() => {
   createRoot((dispose) => {
     const store = createFormDevtoolsStore()
     fieldList = store.fieldList
+    fieldMeta = store.fieldMeta
     fieldDetails = store.fieldDetails
     disposeStore = dispose
   })
@@ -212,7 +214,10 @@ describe('field details store', () => {
         formInstanceId: formA,
         fields: [
           field('user.name', 'field-name'),
-          field('user.email', 'field-email'),
+          {
+            ...field('user.email', 'field-email'),
+            summary: { isDirty: true },
+          },
         ],
       })
       fieldList.setSelectedFieldPath('user.name')
@@ -229,10 +234,22 @@ describe('field details store', () => {
       const oldDetail = {
         ...oldNameDescriptor,
         state: { value: 'Ada', meta: {} as never },
+        relations: {
+          directChildCount: 0,
+          listensTo: [{ fieldId: 'field-email', causes: [] }],
+          listenedToBy: [],
+        },
         defaultValue: '',
       } satisfies DevtoolsFieldDetail
       formDevtoolsEventClient.emit('field-detail-changed', oldDetail)
       expect(fieldDetails.getFieldDetail('field-name')?.state.value).toBe('Ada')
+      const relatedFieldId =
+        fieldDetails.getFieldDetail('field-name')!.relations.listensTo[0]!
+          .fieldId
+      expect(fieldList.rowsByFieldId().get(relatedFieldId)?.path).toBe(
+        'user.email',
+      )
+      expect(fieldMeta.getFieldSummary(relatedFieldId).isDirty).toBe(true)
 
       fieldDetails.updateFieldDetailSettings('field-name', {
         includeValues: false,
@@ -258,6 +275,11 @@ describe('field details store', () => {
       const newDetail = {
         ...newNameDescriptor,
         state: { meta: {} as never },
+        relations: {
+          directChildCount: 0,
+          listensTo: [],
+          listenedToBy: [],
+        },
       } satisfies DevtoolsFieldDetail
       formDevtoolsEventClient.emit('field-detail-changed', newDetail)
       expect(fieldDetails.getFieldDetail('field-name')).toBe(newDetail)

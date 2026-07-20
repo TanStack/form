@@ -25,17 +25,24 @@ describe('form devtools bridge composition', () => {
       unmountForm: vi.fn(),
       mountField: vi.fn(),
       updateField: vi.fn(),
+      fieldAdded: vi.fn(),
+      fieldDependenciesChanged: vi.fn(),
       unmountField: vi.fn(),
       moveField: vi.fn(),
       removeFieldSubtree: vi.fn(),
     }
     const bridge = createFormDevtoolsBridge({ fields, mountedForms })
     const removedFields = [{ field, previousPath: 'name' }]
+    const dependencyChanges = [
+      { sourceField: field, watchingField: field, watcherIndex: 0 },
+    ]
 
     bridge.mountForm?.(form)
     bridge.updateForm?.(form)
     bridge.mountField?.(field)
     bridge.updateField?.(field)
+    bridge.fieldAdded?.(field)
+    bridge.fieldDependenciesChanged?.(dependencyChanges)
     bridge.unmountField?.(field, 'name')
     bridge.moveField?.(field, 'previousName')
     bridge.removeFieldSubtree?.(form, removedFields)
@@ -45,6 +52,10 @@ describe('form devtools bridge composition', () => {
     expect(fields.unmountForm).toHaveBeenCalledWith(formInstanceId)
     expect(fields.mountField).toHaveBeenCalledWith(field)
     expect(fields.updateField).toHaveBeenCalledWith(field)
+    expect(fields.fieldAdded).toHaveBeenCalledWith(field)
+    expect(fields.fieldDependenciesChanged).toHaveBeenCalledWith(
+      dependencyChanges,
+    )
     expect(fields.unmountField).toHaveBeenCalledWith(field, 'name')
     expect(fields.moveField).toHaveBeenCalledWith(field, 'previousName')
     expect(fields.removeFieldSubtree).toHaveBeenCalledWith(form, removedFields)
@@ -63,6 +74,8 @@ describe('form devtools bridge composition', () => {
       unmountForm: vi.fn(),
       mountField: vi.fn(),
       updateField: vi.fn(),
+      fieldAdded: vi.fn(),
+      fieldDependenciesChanged: vi.fn(),
       unmountField: vi.fn(),
       moveField: vi.fn(),
       removeFieldSubtree: vi.fn(),
