@@ -163,7 +163,28 @@ export type SchemaErrorsUnmountedDescendantsSuspicion = FieldSuspicion<
   }
 >
 
-export type FieldDebugSuspicion = SchemaErrorsUnmountedDescendantsSuspicion
+export type ValidatorWithoutTriggersLocation =
+  | {
+      scope: 'field' | 'form'
+      validatorIndex: number
+    }
+  | {
+      scope: 'formGroup'
+      formGroupPath: string
+      validatorIndex: number
+    }
+
+export type ValidatorsWithoutTriggersSuspicion = FieldSuspicion<
+  'validators-without-triggers',
+  {
+    fieldPath: string
+    validators: Array<ValidatorWithoutTriggersLocation>
+  }
+>
+
+export type FieldDebugSuspicion =
+  | SchemaErrorsUnmountedDescendantsSuspicion
+  | ValidatorsWithoutTriggersSuspicion
 
 export interface FieldDebugReport {
   requestId: string

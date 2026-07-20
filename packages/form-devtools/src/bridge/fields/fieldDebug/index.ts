@@ -1,4 +1,5 @@
 import { schemaErrorsOnUnmountedDescendants } from './schemaErrorsOnUnmountedDescendants'
+import { validatorsWithoutTriggers } from './validatorsWithoutTriggers'
 import type { FieldDebugCase, FieldDebugCaseContext } from './types'
 import type { FieldDebugSuspicion } from '../../../eventClientTypes'
 
@@ -6,6 +7,7 @@ export type { FieldDebugCase, FieldDebugCaseContext } from './types'
 
 export const fieldDebugCases = [
   schemaErrorsOnUnmountedDescendants,
+  validatorsWithoutTriggers,
 ] satisfies ReadonlyArray<FieldDebugCase>
 
 export function getFieldDebugSuspicions(

@@ -38,6 +38,21 @@ const suspicion = {
   },
 } satisfies FieldDebugSuspicion
 
+const validatorsWithoutTriggersSuspicion = {
+  kind: 'validators-without-triggers',
+  evidence: {
+    fieldPath: 'profile.name',
+    validators: [
+      { scope: 'field', validatorIndex: 0 },
+      {
+        scope: 'formGroup',
+        formGroupPath: 'profile',
+        validatorIndex: 1,
+      },
+    ],
+  },
+} satisfies FieldDebugSuspicion
+
 const disposers: Array<() => void> = []
 
 beforeEach(() => {
@@ -98,6 +113,26 @@ function renderNoErrorsItem() {
 }
 
 describe('field debug info popover', () => {
+  it('explains empty validator trigger arrays with their locations', async () => {
+    const { content, debugTrigger, respond } = renderNoErrorsItem()
+
+    debugTrigger.click()
+    await Promise.resolve()
+    await respond({ suspicions: [validatorsWithoutTriggersSuspicion] })
+
+    expect(content()).toContain('Validators have no triggers')
+    expect(content()).toContain('profile.name')
+    expect(content()).toContain('Form group')
+    expect(content()).toContain('profile')
+    expect(content()).toContain('#1')
+    expect(content()).toContain('#2')
+    expect(content()).toContain('triggers: []')
+    expect(content()).toContain('change')
+    expect(content()).toContain('blur')
+    expect(content()).toContain('Submit validation runs by default')
+    expect(content()).toContain('runOnMount: true')
+  })
+
   it('requests field guidance, renders aggregated paths, and retains dismissals', async () => {
     const { content, debugTrigger, dismiss, respond } = renderNoErrorsItem()
 

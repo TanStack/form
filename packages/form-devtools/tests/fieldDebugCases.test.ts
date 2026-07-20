@@ -1,4 +1,7 @@
-import { InternalFormApi } from '@tanstack/form-core/internals'
+import {
+  InternalFormApi,
+  InternalFormGroupApi,
+} from '@tanstack/form-core/internals'
 import { describe, expect, it } from 'vitest'
 import { getFieldDebugSuspicions } from '../src/bridge/fields/fieldDebug'
 import type { AnyInternalFieldApi } from '@tanstack/form-core/internals'
@@ -6,6 +9,11 @@ import type { FieldDebugCase } from '../src/bridge/fields/fieldDebug'
 
 const callbackValidator = {
   triggers: ['change'] as const,
+  run: () => null,
+}
+
+const emptyTriggerValidator = {
+  triggers: [] as [],
   run: () => null,
 }
 
@@ -28,13 +36,125 @@ function setFieldError(field: AnyInternalFieldApi) {
 }
 
 describe('field debug cases', () => {
-  it('aggregates schema errors on unmounted descendants in trie order', () => {
+  it('reports empty-trigger field and form validators in pipeline order', () => {
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      validators: [
+        emptyTriggerValidator,
+        callbackValidator,
+        emptyTriggerValidator,
+      ] as never,
+    })
+    const field = form._getOrCreateFieldApi({
+      name: 'name',
+      validators: [
+        callbackValidator,
+        {
+          ...emptyTriggerValidator,
+          runOnMount: true,
+          runOnSubmit: false,
+        },
+      ] as never,
+    })
+    const unregister = field._register()
+
+    try {
+      expect(getFieldDebugSuspicions({ field })).toEqual([
+        {
+          kind: 'validators-without-triggers',
+          evidence: {
+            fieldPath: 'name',
+            validators: [
+              { scope: 'field', validatorIndex: 1 },
+              { scope: 'form', validatorIndex: 0 },
+              { scope: 'form', validatorIndex: 2 },
+            ],
+          },
+        },
+      ])
+    } finally {
+      unregister()
+    }
+  })
+
+  it('uses the nearest form group instead of form validators', () => {
+    const form = new InternalFormApi({
+      defaultValues: { profile: { name: '' } },
+      validators: [emptyTriggerValidator] as never,
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'profile',
+      validators: [callbackValidator, emptyTriggerValidator] as never,
+    })
+    const field = form._getOrCreateFieldApi({
+      name: 'profile.name',
+      validators: [emptyTriggerValidator] as never,
+    })
+    const unregister = field._register()
+
+    try {
+      expect(getFieldDebugSuspicions({ field })).toEqual([
+        {
+          kind: 'validators-without-triggers',
+          evidence: {
+            fieldPath: 'profile.name',
+            validators: [
+              { scope: 'field', validatorIndex: 0 },
+              {
+                scope: 'formGroup',
+                formGroupPath: 'profile',
+                validatorIndex: 1,
+              },
+            ],
+          },
+        },
+      ])
+    } finally {
+      unregister()
+      group._cleanup()
+    }
+  })
+
+  it('does not fall back past the nearest form group', () => {
+    const form = new InternalFormApi({
+      defaultValues: { profile: { contact: { email: '' } } },
+      validators: [emptyTriggerValidator] as never,
+    })
+    const outerGroup = new InternalFormGroupApi({
+      form,
+      name: 'profile',
+      validators: [emptyTriggerValidator] as never,
+    })
+    const innerGroup = new InternalFormGroupApi({
+      form,
+      name: 'profile.contact',
+    })
+    const field = form._getOrCreateFieldApi({
+      name: 'profile.contact.email',
+      validators: [callbackValidator] as never,
+    })
+    const unregister = field._register()
+
+    try {
+      expect(getFieldDebugSuspicions({ field })).toEqual([])
+    } finally {
+      unregister()
+      innerGroup._cleanup()
+      outerGroup._cleanup()
+    }
+  })
+
+  it('keeps aggregated schema errors ahead of the empty-trigger tip', () => {
     const form = new InternalFormApi({
       defaultValues: {
         parent: { first: '', nested: { second: '' }, callback: '' },
       },
     })
-    const parent = form._getOrCreateFieldApi({ name: 'parent' })
+    const parent = form._getOrCreateFieldApi({
+      name: 'parent',
+      validators: [emptyTriggerValidator] as never,
+    })
     const first = form._getOrCreateFieldApi({
       name: 'parent.first',
       validators: [schemaValidator] as never,
@@ -61,6 +181,13 @@ describe('field debug cases', () => {
           evidence: {
             fieldPath: 'parent',
             unmountedDescendantPaths: ['parent.first', 'parent.nested.second'],
+          },
+        },
+        {
+          kind: 'validators-without-triggers',
+          evidence: {
+            fieldPath: 'parent',
+            validators: [{ scope: 'field', validatorIndex: 0 }],
           },
         },
       ])
@@ -108,13 +235,16 @@ describe('field debug cases', () => {
     })
     const parent = form._getOrCreateFieldApi({
       name: 'parent',
-      validators: [schemaValidator] as never,
+      validators: [schemaValidator, emptyTriggerValidator] as never,
     })
     const child = form._getOrCreateFieldApi({
       name: 'parent.child',
       validators: [schemaValidator] as never,
     })
-    const other = form._getOrCreateFieldApi({ name: 'other' })
+    const other = form._getOrCreateFieldApi({
+      name: 'other',
+      validators: [emptyTriggerValidator] as never,
+    })
     const otherChild = form._getOrCreateFieldApi({
       name: 'other.child',
       validators: [schemaValidator] as never,
@@ -151,8 +281,10 @@ describe('field debug cases', () => {
 
     try {
       expect(
-        getFieldDebugSuspicions({ field }, cases).map(
-          ({ evidence }) => evidence.unmountedDescendantPaths[0],
+        getFieldDebugSuspicions({ field }, cases).map(({ evidence }) =>
+          'unmountedDescendantPaths' in evidence
+            ? evidence.unmountedDescendantPaths[0]
+            : undefined,
         ),
       ).toEqual(['first', 'second'])
     } finally {

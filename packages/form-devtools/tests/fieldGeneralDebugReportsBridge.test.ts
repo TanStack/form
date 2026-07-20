@@ -17,6 +17,11 @@ const schemaValidator = {
   },
 }
 
+const emptyTriggerValidator = {
+  triggers: [] as [],
+  run: () => null,
+}
+
 describe('general field debug report bridge', () => {
   it('returns a correlated report built from the live field subtree', () => {
     const disconnectEventBus = connectTestEventBus()
@@ -87,6 +92,63 @@ describe('general field debug report bridge', () => {
     } finally {
       cleanupReports()
       unregisterParent()
+      fields.dispose()
+      mountedForms.dispose()
+      disconnectEventBus()
+    }
+  })
+
+  it('reports empty-trigger validators from the live validation route', () => {
+    const disconnectEventBus = connectTestEventBus()
+    const mountedForms = createMountedFormsController()
+    const fields = createFieldsController(mountedForms)
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      validators: [emptyTriggerValidator],
+    })
+    const field = form._getOrCreateFieldApi({
+      name: 'name',
+      validators: [emptyTriggerValidator] as never,
+    })
+    const unregister = field._register()
+    const reports: Array<FieldDebugReport> = []
+    const cleanupReports = formDevtoolsEventClient.on(
+      'field-debug-report',
+      (event) => reports.push(event.payload),
+    )
+
+    try {
+      mountedForms.mountForm(form)
+      const formInstanceId =
+        mountedForms.getMountedFormsSnapshot()[0]!.instanceId
+      const fieldId = fields.getFieldRowsSnapshot(form)[0]!.fieldId
+
+      formDevtoolsEventClient.emit('field-debug-report-request', {
+        requestId: 'request-empty-triggers',
+        formInstanceId,
+        fieldId,
+      })
+
+      expect(reports).toEqual([
+        {
+          requestId: 'request-empty-triggers',
+          suspicions: [
+            {
+              kind: 'validators-without-triggers',
+              evidence: {
+                fieldPath: 'name',
+                validators: [
+                  { scope: 'field', validatorIndex: 0 },
+                  { scope: 'form', validatorIndex: 0 },
+                ],
+              },
+            },
+          ],
+        },
+      ])
+    } finally {
+      cleanupReports()
+      unregister()
       fields.dispose()
       mountedForms.dispose()
       disconnectEventBus()
