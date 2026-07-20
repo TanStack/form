@@ -1,7 +1,8 @@
 import { For, Show, createMemo } from 'solid-js'
 import { FieldMetaBadge } from '../../FieldMetaBadge'
 import { FieldDetailErrorItem } from './FieldDetailErrorItem'
-import type { Accessor, ParentProps } from 'solid-js'
+import { FieldNoErrorsItem } from './FieldNoErrorsItem'
+import type { Accessor, JSX, ParentProps } from 'solid-js'
 import type { DevtoolsFieldDetail } from '@/eventClientTypes'
 import type { FieldId } from '@/types/branded'
 import { ItemGroup } from '@/components/ui/item'
@@ -13,6 +14,7 @@ import { JsonTree } from '@/components/ui/json-tree'
 interface ErrorsTabProps extends ParentProps {
   data: Accessor<DevtoolsFieldDetail>
   tabValue: 'ui' | 'json'
+  fallback?: JSX.Element
 }
 
 function ErrorsTab(props: ErrorsTabProps) {
@@ -20,7 +22,11 @@ function ErrorsTab(props: ErrorsTabProps) {
     <TabsContent value={props.tabValue}>
       <Show
         when={props.data().state.meta.original.errors.length > 0}
-        fallback={<p class="text-sm text-muted-foreground">No errors</p>}
+        fallback={
+          props.fallback ?? (
+            <p class="text-sm text-muted-foreground">No errors</p>
+          )
+        }
       >
         {props.children}
       </Show>
@@ -30,9 +36,11 @@ function ErrorsTab(props: ErrorsTabProps) {
 
 interface FieldDetailErrorsProps {
   fieldId: FieldId
+  isMounted: boolean | undefined
 }
 
-export function FieldDetailErrors({ fieldId }: FieldDetailErrorsProps) {
+export function FieldDetailErrors(props: FieldDetailErrorsProps) {
+  const fieldId = props.fieldId
   const { fieldDetails, fieldMeta } = useFormDevtoolsStore()
 
   const details = () => fieldDetails.getFieldDetail(fieldId)
@@ -66,7 +74,20 @@ export function FieldDetailErrors({ fieldId }: FieldDetailErrorsProps) {
               <TabsTrigger value="json">Array</TabsTrigger>
               <FieldMetaBadge kind={meta().validity} />
             </TabsList>
-            <ErrorsTab data={data} tabValue="ui">
+            <ErrorsTab
+              data={data}
+              tabValue="ui"
+              fallback={
+                props.isMounted === false ? (
+                  <p class="text-sm text-muted-foreground">No errors</p>
+                ) : (
+                  <FieldNoErrorsItem
+                    formInstanceId={data().formInstanceId}
+                    fieldId={fieldId}
+                  />
+                )
+              }
+            >
               <ItemGroup class="gap-2">
                 <For each={errors()}>
                   {(error) => (

@@ -1,21 +1,21 @@
 import { formDevtoolsEventClient } from '../../eventClient.lib'
-import { getFieldErrorDebugSuspicions } from './debug'
+import { getFieldDebugSuspicions } from './fieldDebug'
 import type { MountedFormsController } from '../forms/mountedForms'
 import type { FieldIdentityController } from './identity'
-import type { FieldErrorDebugReportRequest } from '../../eventClientTypes'
+import type { FieldDebugReportRequest } from '../../eventClientTypes'
 
-export interface FieldErrorDebugReportsController {
+export interface FieldDebugReportsController {
   dispose: () => void
 }
 
-export function createFieldErrorDebugReportsController({
+export function createFieldDebugReportsController({
   identity,
   mountedForms,
 }: {
   identity: FieldIdentityController
   mountedForms: MountedFormsController
-}): FieldErrorDebugReportsController {
-  const emitReport = (request: FieldErrorDebugReportRequest): void => {
+}): FieldDebugReportsController {
+  const emitReport = (request: FieldDebugReportRequest): void => {
     const form = mountedForms.getMountedForm(request.formInstanceId)
     const field = identity.getField(request.fieldId)
     const isValidTarget =
@@ -24,16 +24,14 @@ export function createFieldErrorDebugReportsController({
       field.form === form &&
       !field._isKilled
 
-    formDevtoolsEventClient.emit('field-error-debug-report', {
+    formDevtoolsEventClient.emit('field-debug-report', {
       requestId: request.requestId,
-      suspicions: isValidTarget
-        ? getFieldErrorDebugSuspicions({ field, error: request.error })
-        : [],
+      suspicions: isValidTarget ? getFieldDebugSuspicions({ field }) : [],
     })
   }
 
   const cleanupRequestListener = formDevtoolsEventClient.on(
-    'field-error-debug-report-request',
+    'field-debug-report-request',
     (event) => emitReport(event.payload),
   )
 

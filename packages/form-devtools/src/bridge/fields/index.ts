@@ -1,7 +1,8 @@
 import { visitFieldSubtree } from '@tanstack/form-core/internals'
 import { createFieldIdentityController } from './identity'
 import { createFieldDetailsController } from './details'
-import { createFieldDebugReportsController } from './debugReports'
+import { createFieldErrorDebugReportsController } from './debugReports'
+import { createFieldDebugReportsController } from './fieldDebugReports'
 import { createFieldListController } from './list'
 import type {
   AnyInternalFieldApi,
@@ -72,6 +73,10 @@ export function createFieldsController(
   const identity = createFieldIdentityController()
   const fieldList = createFieldListController({ identity, mountedForms })
   const fieldDetails = createFieldDetailsController({ identity, mountedForms })
+  const fieldErrorDebugReports = createFieldErrorDebugReportsController({
+    identity,
+    mountedForms,
+  })
   const fieldDebugReports = createFieldDebugReportsController({
     identity,
     mountedForms,
@@ -80,6 +85,7 @@ export function createFieldsController(
   return {
     dispose: () => {
       fieldDebugReports.dispose()
+      fieldErrorDebugReports.dispose()
       fieldDetails.dispose()
       fieldList.dispose()
     },

@@ -124,6 +124,35 @@ export interface FieldErrorDebugReport {
   suspicions: Array<FieldErrorDebugSuspicion>
 }
 
+export interface FieldDebugReportRequest {
+  requestId: string
+  formInstanceId: FormId
+  fieldId: FieldId
+}
+
+type FieldSuspicion<
+  TKind extends string,
+  TEvidence extends Record<string, any> = Record<string, never>,
+> = {
+  kind: TKind
+  evidence: TEvidence
+}
+
+export type SchemaErrorsUnmountedDescendantsSuspicion = FieldSuspicion<
+  'schema-errors-on-unmounted-descendants',
+  {
+    fieldPath: string
+    unmountedDescendantPaths: Array<string>
+  }
+>
+
+export type FieldDebugSuspicion = SchemaErrorsUnmountedDescendantsSuspicion
+
+export interface FieldDebugReport {
+  requestId: string
+  suspicions: Array<FieldDebugSuspicion>
+}
+
 export interface DevtoolsFieldDetailSubfieldsMeta {
   isEveryValid: boolean
   isAnyInvalid: boolean
@@ -228,4 +257,6 @@ export type FormDevtoolsEventMap = {
   'field-detail-changed': DevtoolsFieldDetail
   'field-error-debug-report-request': FieldErrorDebugReportRequest
   'field-error-debug-report': FieldErrorDebugReport
+  'field-debug-report-request': FieldDebugReportRequest
+  'field-debug-report': FieldDebugReport
 }

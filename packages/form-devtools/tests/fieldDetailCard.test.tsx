@@ -170,5 +170,25 @@ describe('FieldDetailCard', () => {
     expect(container.textContent).toContain('Touched')
     expect(container.textContent).toContain('Non-default value')
     expect(container.textContent).not.toContain('Invalid (hidden)')
+    expect(container.querySelector('[aria-label="Debug field"]')).toBeNull()
+
+    store.fieldDetails.applyDetail({
+      ...detail,
+      state: {
+        ...detail.state,
+        meta: {
+          ...detail.state.meta,
+          errors: [],
+          original: { errors: [], isValid: true, isInvalid: false },
+        },
+      },
+    })
+    expect(container.querySelector('[aria-label="Debug field"]')).not.toBeNull()
+
+    store.fieldList.applyPatch({
+      formInstanceId,
+      upsert: [{ fieldId: 'field-name', isMounted: false }],
+    })
+    expect(container.querySelector('[aria-label="Debug field"]')).toBeNull()
   })
 })
