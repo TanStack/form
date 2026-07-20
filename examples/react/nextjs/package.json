@@ -17,6 +17,8 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@tanstack/react-devtools": "^0.10.5",
+    "@tanstack/react-form-devtools": "^0.2.32",
     "@types/node": "^25.0.7",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",

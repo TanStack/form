@@ -117,7 +117,16 @@ export type SchemaErrorUnmountedFieldSuspicion = FieldErrorSuspicion<
   }
 >
 
-export type FieldErrorDebugSuspicion = SchemaErrorUnmountedFieldSuspicion
+export type ServerErrorUnmountedFieldSuspicion = FieldErrorSuspicion<
+  'server-error-on-unmounted-field',
+  {
+    fieldPath: string
+  }
+>
+
+export type FieldErrorDebugSuspicion =
+  | ServerErrorUnmountedFieldSuspicion
+  | SchemaErrorUnmountedFieldSuspicion
 
 export interface FieldErrorDebugReport {
   requestId: string

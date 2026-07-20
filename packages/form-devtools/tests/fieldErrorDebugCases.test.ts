@@ -27,7 +27,94 @@ const callbackError = {
   sourceEvent: 'change',
 } satisfies DevtoolsFieldError
 
+const serverError = {
+  error: { message: 'Server error' },
+  source: {
+    scope: 'form',
+    validatorIndex: 0,
+    validatorType: 'callback',
+  },
+  sourceEvent: 'server',
+} satisfies DevtoolsFieldError
+
 describe('field error debug cases', () => {
+  it('recognizes server errors on unmounted fields', () => {
+    const form = new InternalFormApi({
+      defaultValues: { firstName: '' },
+      validators: [
+        {
+          triggers: ['server'],
+          run: () => undefined,
+        },
+      ],
+    })
+    const field = form._getOrCreateFieldApi({ name: 'firstName' })
+
+    for (const validatorType of ['callback', 'schema'] as const) {
+      const error = {
+        ...serverError,
+        source: { ...serverError.source, validatorType },
+      }
+
+      expect(getFieldErrorDebugSuspicions({ field, error })).toEqual([
+        {
+          kind: 'server-error-on-unmounted-field',
+          evidence: { fieldPath: 'firstName' },
+        },
+      ])
+    }
+  })
+
+  it('requires an unmounted field, a server source event, and the matching server validator', () => {
+    const serverForm = new InternalFormApi({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          triggers: ['server'],
+          run: () => undefined,
+        },
+      ],
+    })
+    const serverField = serverForm._getOrCreateFieldApi({ name: 'name' })
+    const unregister = serverField._register()
+    const changeError = { ...serverError, sourceEvent: 'change' }
+
+    const changeForm = new InternalFormApi({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          triggers: ['change'],
+          run: () => undefined,
+        },
+      ],
+    })
+    const changeField = changeForm._getOrCreateFieldApi({ name: 'name' })
+
+    try {
+      expect(
+        getFieldErrorDebugSuspicions({
+          field: serverField,
+          error: serverError,
+        }),
+      ).toEqual([])
+      unregister()
+      expect(
+        getFieldErrorDebugSuspicions({
+          field: serverField,
+          error: changeError,
+        }),
+      ).toEqual([])
+      expect(
+        getFieldErrorDebugSuspicions({
+          field: changeField,
+          error: serverError,
+        }),
+      ).toEqual([])
+    } finally {
+      if (serverField._isMounted) unregister()
+    }
+  })
+
   it('uses the live trie to find the nearest mounted ancestor', () => {
     const form = new InternalFormApi({
       defaultValues: { grandparent: { parent: { child: '' } } },

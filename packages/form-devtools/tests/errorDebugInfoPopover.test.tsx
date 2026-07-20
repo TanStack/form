@@ -44,6 +44,13 @@ const suspicion = {
   },
 } as const
 
+const serverSuspicion = {
+  kind: 'server-error-on-unmounted-field',
+  evidence: {
+    fieldPath: 'firstName',
+  },
+} as const
+
 const disposers: Array<() => void> = []
 
 beforeEach(() => {
@@ -112,6 +119,20 @@ function renderErrorItem() {
 }
 
 describe('error debug info popover', () => {
+  it('explains why FormData omits an unmounted field', async () => {
+    const { content, debugTrigger, respond } = renderErrorItem()
+
+    debugTrigger.click()
+    await Promise.resolve()
+    await respond({ suspicions: [serverSuspicion] })
+
+    expect(content()).toContain('Server error in unmounted field')
+    expect(content()).toContain(
+      'FormData cannot emit a field that is missing from the DOM',
+    )
+    expect(content()).toContain('firstName')
+  })
+
   it('requests a report, renders typed evidence, and retains dismissals', async () => {
     const { content, debugTrigger, dismiss, respond } = renderErrorItem()
 

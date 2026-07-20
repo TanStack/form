@@ -1,10 +1,12 @@
 import { schemaErrorOnUnmountedField } from './schemaErrorOnUnmountedField'
+import { serverErrorOnUnmountedField } from './serverErrorOnUnmountedField'
 import type { FieldErrorDebugCase, FieldErrorDebugCaseContext } from './types'
 import type { FieldErrorDebugSuspicion } from '../../../eventClientTypes'
 
 export type { FieldErrorDebugCase, FieldErrorDebugCaseContext } from './types'
 
 export const fieldErrorDebugCases = [
+  serverErrorOnUnmountedField,
   schemaErrorOnUnmountedField,
 ] satisfies ReadonlyArray<FieldErrorDebugCase>
 

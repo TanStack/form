@@ -39,7 +39,7 @@ export function DebugInfoCard<TKind extends string>(
   props: DebugInfoCardProps<TKind>,
 ) {
   return (
-    <Card class="ring-0">
+    <Card class="ring-0 max-h-[calc(var(--available-height)-1rem)] overflow-y-auto">
       <CardHeader>
         <CardTitle>{props.currentDebug()?.title ?? 'Debugging'}</CardTitle>
         <Show when={!props.isLoading() && !props.currentDebug()}>
