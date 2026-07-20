@@ -33,7 +33,7 @@ export function TabsNav() {
     <Tabs.List class="inline-flex relative gap-2 z-0">
       <FormTabsTrigger value="field">Field</FormTabsTrigger>
       <FormTabsTrigger value="form">Form</FormTabsTrigger>
-      <FormTabsTrigger value="validation">Validation</FormTabsTrigger>
+      <FormTabsTrigger value="validation">Group</FormTabsTrigger>
       <TabIndicator />
     </Tabs.List>
   )

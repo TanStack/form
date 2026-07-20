@@ -27,8 +27,8 @@ export function Shell(props: DevtoolsProps) {
       <Header adapterName={props.adapterName} />
       <FieldTab />
       {/* TODO replace */}
-      <DevtoolsTab value="form">Form Stuff</DevtoolsTab>
-      <DevtoolsTab value="validation">Validation Stuff</DevtoolsTab>
+      <DevtoolsTab value="form">Coming soon!</DevtoolsTab>
+      <DevtoolsTab value="validation">Coming soon!</DevtoolsTab>
     </Tabs.Root>
   )
 }
