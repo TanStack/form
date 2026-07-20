@@ -51,6 +51,13 @@ const serverSuspicion = {
   },
 } as const
 
+const errorsHiddenSuspicion = {
+  kind: 'errors-hidden',
+  evidence: {
+    fieldPath: 'firstName',
+  },
+} as const
+
 const disposers: Array<() => void> = []
 
 beforeEach(() => {
@@ -119,6 +126,22 @@ function renderErrorItem() {
 }
 
 describe('error debug info popover', () => {
+  it('explains how to investigate hidden field errors', async () => {
+    const { content, debugTrigger, respond } = renderErrorItem()
+
+    debugTrigger.click()
+    await Promise.resolve()
+    await respond({ suspicions: [errorsHiddenSuspicion] })
+
+    expect(content()).toContain('Errors are hidden')
+    expect(content()).toContain('There are errors')
+    expect(content()).toContain('firstName')
+    expect(content()).toContain('errorVisibility')
+    expect(content()).toContain('handleChange')
+    expect(content()).toContain('handleBlur')
+    expect(content()).toContain('Did the callbacks get called?')
+  })
+
   it('explains why FormData omits an unmounted field', async () => {
     const { content, debugTrigger, respond } = renderErrorItem()
 
@@ -126,9 +149,9 @@ describe('error debug info popover', () => {
     await Promise.resolve()
     await respond({ suspicions: [serverSuspicion] })
 
-    expect(content()).toContain('Server error in unmounted field')
+    expect(content()).toContain('Server expected missing field')
     expect(content()).toContain(
-      'FormData cannot emit a field that is missing from the DOM',
+      'that field was not included in the submitted FormData',
     )
     expect(content()).toContain('firstName')
   })

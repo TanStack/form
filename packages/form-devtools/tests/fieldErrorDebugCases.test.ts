@@ -38,6 +38,59 @@ const serverError = {
 } satisfies DevtoolsFieldError
 
 describe('field error debug cases', () => {
+  it('recognizes errors hidden by the field error visibility policy', () => {
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      errorVisibility: () => false,
+    })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+    const unregister = field._register()
+
+    try {
+      field._setMeta((meta) => ({
+        ...meta,
+        _fieldValidatorErrors: [[{ message: 'Hidden error' }]],
+      }))
+
+      expect(field.state.meta.errors).toEqual([])
+      expect(field.state.meta.original.errors).toHaveLength(1)
+      expect(
+        getFieldErrorDebugSuspicions({ field, error: callbackError }),
+      ).toEqual([
+        {
+          kind: 'errors-hidden',
+          evidence: { fieldPath: 'name' },
+        },
+      ])
+    } finally {
+      unregister()
+    }
+  })
+
+  it('rejects visible errors and fields without errors for the hidden-errors check', () => {
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+    const unregister = field._register()
+
+    try {
+      expect(
+        getFieldErrorDebugSuspicions({ field, error: callbackError }),
+      ).toEqual([])
+
+      field._setMeta((meta) => ({
+        ...meta,
+        _fieldValidatorErrors: [[{ message: 'Visible error' }]],
+      }))
+
+      expect(field.state.meta.errors).toHaveLength(1)
+      expect(
+        getFieldErrorDebugSuspicions({ field, error: callbackError }),
+      ).toEqual([])
+    } finally {
+      unregister()
+    }
+  })
+
   it('recognizes server errors on unmounted fields', () => {
     const form = new InternalFormApi({
       defaultValues: { firstName: '' },

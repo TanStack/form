@@ -124,7 +124,15 @@ export type ServerErrorUnmountedFieldSuspicion = FieldErrorSuspicion<
   }
 >
 
+export type ErrorsHiddenSuspicion = FieldErrorSuspicion<
+  'errors-hidden',
+  {
+    fieldPath: string
+  }
+>
+
 export type FieldErrorDebugSuspicion =
+  | ErrorsHiddenSuspicion
   | ServerErrorUnmountedFieldSuspicion
   | SchemaErrorUnmountedFieldSuspicion
 
