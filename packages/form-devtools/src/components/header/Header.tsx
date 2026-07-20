@@ -5,16 +5,21 @@ import { Button } from '../ui/button'
 import { ButtonGroup } from '../ui/button-group'
 import { Code } from '../ui/code'
 import { LibraryLogo } from '../ui/tanstack-logo'
+import { BridgeStatusBadge } from './BridgeStatusBadge'
 import { FormSelector } from './FormSelector'
 import { TabsNav } from './TabsNav'
 import { formDevtoolsEventClient } from '@/eventClient.lib'
+import { useFormDevtoolsStore } from '@/stores/formDevtoolsStore'
 
 interface CryptidNameHintProps {
   class?: string
 }
 
 function CrypticNameHint(props: CryptidNameHintProps) {
+  const { requestBridgeStatus } = useFormDevtoolsStore().formSelector
+
   function handleRefreshClick() {
+    requestBridgeStatus()
     formDevtoolsEventClient.emit('request-mounted-forms', {})
   }
 
@@ -66,6 +71,7 @@ export function Header(props: HeaderProps) {
         <CrypticNameHint class="icon-sm" />
         <FormSelector />
       </ButtonGroup>
+      <BridgeStatusBadge />
       <TabsNav />
     </header>
   )

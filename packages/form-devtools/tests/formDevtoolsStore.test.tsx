@@ -19,6 +19,9 @@ afterEach(() => {
   for (const dispose of disposers.splice(0)) dispose()
   formSelectorCache.setMountedForms([])
   formSelectorCache.setRequestedFormId(null)
+  formSelectorCache.setBridgeStatus('checking')
+  formSelectorCache.setBridgeInstanceId(null)
+  formSelectorCache.setBridgeMountedFormCount(null)
 })
 
 function StoreCapture(props: { onStore: (store: FormDevtoolsStore) => void }) {

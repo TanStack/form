@@ -13,6 +13,7 @@ import {
   EqualNotIcon,
   EyeClosedIcon,
   EyeIcon,
+  ListTreeIcon,
   PencilIcon,
   PencilSparklesIcon,
   PointerIcon,
@@ -205,6 +206,14 @@ const allFieldFilters: Array<FieldListFilter> = [
     predicate: createMountedFilterPredicate(
       (field) => field.isMounted === false,
     ),
+  },
+  {
+    label: 'All',
+    id: 'all',
+    group: 'mounted',
+    description: 'All registered fields, whether rendered or unrendered',
+    icon: ListTreeIcon,
+    predicate: createMountedFilterPredicate(() => true),
   },
 ]
 

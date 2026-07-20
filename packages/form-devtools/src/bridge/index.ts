@@ -1,9 +1,6 @@
-import { installDevtoolsBridge } from '@tanstack/form-core/internals'
-import { createFormDevtoolsBridge } from './createBridge'
-import { createFieldsController } from './fields'
-import { createMountedFormsController } from './forms/mountedForms'
+import { getOrCreateFormDevtoolsBridgeRuntime } from './runtime'
 
-const mountedForms = createMountedFormsController()
-const fields = createFieldsController(mountedForms)
-
-installDevtoolsBridge(createFormDevtoolsBridge({ fields, mountedForms }))
+// Keep one backend runtime for the lifetime of the page. Re-evaluating a
+// distributed dependency must not discard mounted forms or active field
+// subscriptions. Reload the page to pick up backend or protocol changes.
+getOrCreateFormDevtoolsBridgeRuntime()

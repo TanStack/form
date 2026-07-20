@@ -5,6 +5,16 @@ export interface DevtoolsMountedForm {
   instanceId: FormId
 }
 
+export interface FormDevtoolsBridgeStatusRequest {
+  requestId: string
+}
+
+export interface FormDevtoolsBridgeStatusResponse {
+  requestId: string
+  bridgeInstanceId: string
+  mountedFormCount: number
+}
+
 export type DevtoolsMountedFieldValidity = 'valid' | 'invalidHidden' | 'invalid'
 
 export interface DevtoolsMountedFieldSummary {
@@ -190,6 +200,8 @@ export interface DevtoolsFieldDetail extends FieldDetailSubscriptionDescriptor {
 }
 
 export type FormDevtoolsEventMap = {
+  'bridge-status-request': FormDevtoolsBridgeStatusRequest
+  'bridge-status-response': FormDevtoolsBridgeStatusResponse
   'mounted-forms-changed': {
     forms: Array<DevtoolsMountedForm>
   }
