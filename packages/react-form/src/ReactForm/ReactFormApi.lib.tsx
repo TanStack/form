@@ -10,7 +10,7 @@ const useReactId =
   (React as typeof React & { useId?: () => string }).useId ?? (() => undefined)
 
 export interface InternalReactFormApi
-  extends AnyInternalFormApi, ReactTanStackFormComponents<any, any, any, any> {}
+  extends AnyInternalFormApi, ReactTanStackFormComponents<any, any, any> {}
 
 export function initializeForm(
   options: FormOptions<any, any, any>,

@@ -2,15 +2,13 @@ import type { ReadonlyAtom } from '@tanstack/store'
 import type {
   ConfigurableValidationTrigger,
   ErrorVisibility,
+  FormErrorTypes,
   FormErrors,
-  FormStandardSchemaValidatorOutputs,
   FormValidationError,
-  FormValidatorMetas,
   FormValidators,
   ParsedStandardSchemaIssues,
-  SubmitMeta,
-  ToFormValidatorMetas,
-  ValidationIssue,
+  ToFormErrorTypes,
+  ToFormSchemaOutputs,
 } from '../validation.public'
 import type { StandardSchemaV1Issue } from '../standardSchema.public'
 import type { FormListeners } from '../listeners.public'
@@ -38,11 +36,12 @@ export type ParseSubmitIssuesFn<in out TFormData> = (
 
 export interface FormSubmitContext<
   in out TFormData,
-  in out TFormValidatorMetas extends FormValidatorMetas,
+  out TSchemaOutputs,
+  in out TFormErrorTypes extends FormErrorTypes,
 > {
   value: TFormData
-  formApi: FormApi<TFormData, TFormValidatorMetas, any>
-  schemaOutputs: FormStandardSchemaValidatorOutputs<TFormValidatorMetas>
+  formApi: FormApi<TFormData, TFormErrorTypes>
+  schemaOutputs: TSchemaOutputs
   createValidationError: CreateValidationErrorFn<TFormData>
   parseIssues: ParseSubmitIssuesFn<TFormData>
 }
@@ -58,14 +57,12 @@ export interface FormOptions<
   defaultValues: TFormData
   errorVisibility?: ErrorVisibility<
     TFormData,
-    ToFormValidatorMetas<TFormValidators>,
-    SubmitMeta<ValidationIssue, ValidationIssue>
+    ToFormErrorTypes<TFormValidators, unknown>
   >
   validators?: TFormValidators
   listeners?: FormListeners<
     TFormData,
-    ToFormValidatorMetas<TFormValidators>,
-    SubmitMeta<ValidationIssue, ValidationIssue>
+    ToFormErrorTypes<TFormValidators, unknown>
   >
   serverState?: ServerFormState<
     NoInfer<TFormData>,
@@ -74,31 +71,27 @@ export interface FormOptions<
   onSubmit?: (
     context: FormSubmitContext<
       TFormData,
-      ToFormValidatorMetas<TFormValidators>
+      ToFormSchemaOutputs<TFormValidators>,
+      ToFormErrorTypes<TFormValidators, unknown>
     >,
   ) => TSubmitReturn
 }
 
 export interface FormApiOptions<
   in out TFormData,
-  in out TFormValidatorMetas extends FormValidatorMetas,
-  in out TSubmitMeta,
+  in out TFormErrorTypes extends FormErrorTypes,
 > {
   formId?: string
   defaultValues: TFormData
-  errorVisibility?: ErrorVisibility<TFormData, TFormValidatorMetas, TSubmitMeta>
+  errorVisibility?: ErrorVisibility<TFormData, TFormErrorTypes>
   validators?: FormValidators<TFormData>
-  listeners?: FormListeners<TFormData, TFormValidatorMetas, TSubmitMeta>
+  listeners?: FormListeners<TFormData, TFormErrorTypes>
   serverState?: ServerFormState<TFormData, any> | null
-  onSubmit?: (
-    context: FormSubmitContext<TFormData, TFormValidatorMetas>,
-  ) => unknown
 }
 
 export interface FormState<
   in out TFormData,
-  in out TFormValidatorMetas extends FormValidatorMetas,
-  in out TSubmitMeta,
+  in out TFormErrorTypes extends FormErrorTypes,
 > {
   /**
    * The current values of the form.
@@ -125,7 +118,7 @@ export interface FormState<
   /**
    * Array of form-level validation errors.
    */
-  errors: FormErrors<TFormValidatorMetas, TSubmitMeta>
+  errors: FormErrors<TFormErrorTypes>
   /**
    * Whether the form currently has no form-level or field-level errors.
    */
@@ -162,7 +155,7 @@ export interface FormState<
   submissionAttempts: number
 }
 
-export type AnyFormApi = FormApi<any, any, any>
+export type AnyFormApi = FormApi<any, any>
 
 export interface FormResetOptions {
   /**
@@ -188,13 +181,12 @@ export interface FormResetOptions {
 
 export interface FormApi<
   in out TFormData,
-  in out TFormValidatorMetas extends FormValidatorMetas,
-  in out TSubmitMeta,
+  in out TFormErrorTypes extends FormErrorTypes,
 >
   extends FormApiFieldMethods<TFormData>, FormApiArrayMethods<TFormData> {
-  atom: ReadonlyAtom<FormState<TFormData, TFormValidatorMetas, TSubmitMeta>>
-  readonly state: FormState<TFormData, TFormValidatorMetas, TSubmitMeta>
-  readonly options: FormApiOptions<TFormData, TFormValidatorMetas, TSubmitMeta>
+  atom: ReadonlyAtom<FormState<TFormData, TFormErrorTypes>>
+  readonly state: FormState<TFormData, TFormErrorTypes>
+  readonly options: FormApiOptions<TFormData, TFormErrorTypes>
   readonly formId: string
 
   /**

@@ -120,8 +120,8 @@ export type FieldGroupForm<
     never
   >,
   TFormData = any,
-> = FormApi<TFormData, any, any> &
-  ReactTanStackFormComponents<TFormData, any, any, TFieldComponents>
+> = FormApi<TFormData, any> &
+  ReactTanStackFormComponents<TFormData, any, TFieldComponents>
 
 export type FieldGroupFieldBindingForSlot<
   TFormData,

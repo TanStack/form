@@ -1,9 +1,73 @@
 import React from 'react'
 import { describe, expectTypeOf, it } from 'vitest'
 import { createFormHook, formOptions, useForm } from '../src'
-import type { ReactFormType, ValidationIssue } from '../src'
+import type {
+  ReactFormType,
+  StandardSchemaV1,
+  StandardSchemaV1Issue,
+  ValidationIssue,
+} from '../src'
+
+const emailSchema = {
+  '~standard': {
+    version: 1,
+    vendor: 'test',
+    validate: (value: unknown) => ({
+      value: value as { email: string },
+    }),
+  },
+} satisfies StandardSchemaV1<{ email: string }>
 
 describe('submit return', () => {
+  it('infers schema outputs and submit errors without a cycle', () => {
+    function Component() {
+      const form = useForm({
+        defaultValues: { email: '' },
+        validators: [
+          {
+            run: emailSchema,
+            triggers: [],
+          },
+        ],
+        onSubmit: ({ schemaOutputs, createValidationError }) => {
+          expectTypeOf(schemaOutputs).toEqualTypeOf<
+            readonly [{ email: string }]
+          >()
+
+          return createValidationError({
+            form: { message: '', fromSubmitForm: true as const },
+            fields: {
+              email: { message: '', fromSubmitField: true as const },
+            },
+          })
+        },
+      })
+
+      expectTypeOf(form.state.errors).toEqualTypeOf<
+        Array<StandardSchemaV1Issue | { message: string; fromSubmitForm: true }>
+      >()
+
+      // @ts-expect-error onSubmit is intentionally kept on internal options only.
+      void form.options.onSubmit
+
+      return (
+        <form.Field name="email">
+          {(field) => {
+            expectTypeOf(field.errors).toEqualTypeOf<
+              Array<
+                | StandardSchemaV1Issue
+                | { message: string; fromSubmitField: true }
+              >
+            >()
+            return null
+          }}
+        </form.Field>
+      )
+    }
+
+    void Component
+  })
+
   describe('formOptions', () => {
     it('should allow shared options to omit onSubmit', () => {
       const sharedOptionsWithoutSubmit = formOptions({

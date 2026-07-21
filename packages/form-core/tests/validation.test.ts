@@ -23,11 +23,10 @@ import type {
   DeepValue,
   FieldValidateResult,
   FieldValidator,
-  FormStandardSchemaValidatorOutputs,
   FormValidateResult,
   FormValidator,
   FormValidatorContext,
-  ToFormValidatorMetas,
+  ToFormSchemaOutputs,
   ValidationDebounceFn,
   ValidationPredicateFn,
 } from '../src'
@@ -935,13 +934,11 @@ describe('runFormValidatorPipeline', () => {
         })
         .transform(({ name }) => ({ upperName: name.toUpperCase() }))
 
-      type Output = FormStandardSchemaValidatorOutputs<
-        ToFormValidatorMetas<
-          [
-            { run: typeof lengthSchema; triggers: [] },
-            { run: typeof uppercaseSchema; triggers: [] },
-          ]
-        >
+      type Output = ToFormSchemaOutputs<
+        [
+          { run: typeof lengthSchema; triggers: [] },
+          { run: typeof uppercaseSchema; triggers: [] },
+        ]
       >
 
       expectTypeOf<Output>().toEqualTypeOf<

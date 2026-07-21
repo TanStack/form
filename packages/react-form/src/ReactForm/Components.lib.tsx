@@ -34,7 +34,7 @@ export function attachReactFormComponents(
 }
 
 type AnyFieldComponent = FunctionComponent<
-  ReactFormFieldProps<any, any, any, any, any, any, any, any, any>
+  ReactFormFieldProps<any, any, any, any, any, any, any, any>
 >
 
 function createFieldComponent(
@@ -72,7 +72,7 @@ function createArrayFieldComponent(
 }
 
 type AnySubscribeComponent = FunctionComponent<
-  ReactFormSubscribeProps<any, any, any, any>
+  ReactFormSubscribeProps<any, any, any>
 >
 
 function createSubscribeComponent(
@@ -88,7 +88,7 @@ function createSubscribeComponent(
 }
 
 type AnyFormGroupComponent = FunctionComponent<
-  ReactFormGroupProps<any, any, any, any, any, any, any>
+  ReactFormGroupProps<any, any, any, any, any, any>
 >
 
 function createFormGroupComponent(
@@ -96,7 +96,7 @@ function createFormGroupComponent(
 ): AnyFormGroupComponent {
   const TanStackFormGroup: AnyFormGroupComponent = (props) => {
     const groupRef =
-      React.useRef<InternalFormGroupApi<any, any, any, any, any, any>>(null)
+      React.useRef<InternalFormGroupApi<any, any, any, any, any>>(null)
 
     if (!groupRef.current) {
       groupRef.current = attachReactFormGroupComponents(
@@ -105,7 +105,7 @@ function createFormGroupComponent(
       )
     }
 
-    useEffect(() => groupRef.current?.update({ ...props, form } as never))
+    useEffect(() => groupRef.current?.update({ ...props, form }))
 
     React.useEffect(() => {
       const group = groupRef.current!
@@ -122,21 +122,16 @@ function createFormGroupComponent(
 }
 
 function attachReactFormGroupComponents(
-  group: InternalFormGroupApi<any, any, any, any, any, any>,
+  group: InternalFormGroupApi<any, any, any, any, any>,
   form: InternalReactFormApi,
 ) {
-  const resultGroup = group as InternalFormGroupApi<
-    any,
-    any,
-    any,
-    any,
-    any,
-    any
-  > & {
+  type FormGroupComponents = InternalFormGroupApi<any, any, any, any, any> & {
     Field: FunctionComponent<any>
     ArrayField: FunctionComponent<any>
     Subscribe: FunctionComponent<any>
   }
+
+  const resultGroup: FormGroupComponents = group as never
 
   resultGroup.Field = function Field(props) {
     const Field = form.Field

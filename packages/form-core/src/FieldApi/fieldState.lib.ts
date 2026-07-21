@@ -65,7 +65,6 @@ export interface InternalFieldState extends PublicFieldState<
   any,
   any,
   any,
-  any,
   any
 > {
   meta: InternalFieldMeta
@@ -249,12 +248,12 @@ function canReusePreviousMeta({
 
 function getErrorVisibility(
   field: AnyInternalFieldApi | undefined,
-): ErrorVisibility<any, any, any> | undefined {
+): ErrorVisibility<any, any> | undefined {
   return field?._errorVisibility ?? field?.form.options.errorVisibility
 }
 
 function shouldDisplayErrors(
-  errorVisibility: ErrorVisibility<any, any, any> | undefined,
+  errorVisibility: ErrorVisibility<any, any> | undefined,
   field: AnyInternalFieldApi | undefined,
   baseMeta: InternalBaseFieldMeta,
   value?: any,

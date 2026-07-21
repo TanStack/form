@@ -16,23 +16,23 @@ import type {
   FieldValidatorMeta,
   FieldValidators,
   FormApi,
+  FormErrorTypes,
   FormErrors,
   FormGroupStandardSchemaValidatorOutputs,
   FormGroupValidatorMeta,
   FormGroupValidators,
   FormOptions,
   FormState,
-  FormValidatorMeta,
   FormValidators,
   OnSubmitError,
   ParseSubmitIssuesFn,
   ReusableErrorVisibilityState,
   StandardSchemaV1Issue,
-  SubmitMeta,
   ToFieldValidatorMetas,
+  ToFormErrorTypes,
   ToFormGroupValidatorMetas,
-  ToFormValidatorMetas,
-  ToSubmitMeta,
+  ToFormSchemaOutputs,
+  ValidationAggregateError,
   ValidationErrorMap,
   ValidationIssue,
 } from '../src'
@@ -68,7 +68,7 @@ const emptyFieldValidators = defineFieldValidators([])
 type TestFormErrors<
   TFormValidators extends FormValidators<any>,
   TSubmitReturn,
-> = FormErrors<ToFormValidatorMetas<TFormValidators>, TSubmitReturn>
+> = FormErrors<ToFormErrorTypes<TFormValidators, TSubmitReturn>>
 
 type TestFieldErrors<
   TFieldValidators extends FieldValidators<any, any, any>,
@@ -78,8 +78,7 @@ type TestFieldErrors<
 > = FieldErrors<
   ToFieldValidatorMetas<TFieldValidators>,
   ToFormGroupValidatorMetas<TGroupValidators>,
-  ToFormValidatorMetas<TFormValidators>,
-  TSubmitReturn
+  ToFormErrorTypes<TFormValidators, TSubmitReturn>
 >
 
 describe('ErrorVisibility', () => {
@@ -94,8 +93,7 @@ describe('ErrorVisibility', () => {
         expectTypeOf(state).toEqualTypeOf<
           FormState<
             TestFormData,
-            ToFormValidatorMetas<typeof emptyFormValidators>,
-            SubmitMeta<ValidationIssue, ValidationIssue>
+            ToFormErrorTypes<typeof emptyFormValidators, unknown>
           >
         >()
         expectTypeOf(fieldState).toEqualTypeOf<ErrorVisibilityFieldState>()
@@ -116,8 +114,7 @@ describe('ErrorVisibility', () => {
       typeof emptyFieldValidators,
       [],
       TestFormData,
-      typeof emptyFormValidators,
-      never
+      ToFormErrorTypes<typeof emptyFormValidators, unknown>
     > = {
       name: 'name',
       errorVisibility: ({ fieldState }) => fieldState.value === '',
@@ -196,8 +193,7 @@ describe('ErrorVisibility', () => {
       typeof emptyFieldValidators,
       [],
       TestFormData,
-      typeof emptyFormValidators,
-      never
+      ToFormErrorTypes<typeof emptyFormValidators, unknown>
     > = {
       name: 'name',
       // @ts-expect-error String visibility presets were replaced by callbacks.
@@ -211,45 +207,38 @@ describe('ErrorVisibility', () => {
 
 describe('createErrorMap', () => {
   it('creates a typed error map shape', () => {
-    type ErrorMapFormData = {
+    type AggregateFormData = {
       name: string
       user: {
         age: number
       }
     }
 
-    const errors = createErrorMap<ErrorMapFormData>()
-    const initial: ValidationErrorMap<ErrorMapFormData> = {
-      form: 'Initial form error',
-      fields: { name: 'Initial name error' },
-    }
+    const errors = createErrorMap<AggregateFormData>()
 
-    expectTypeOf(errors).toEqualTypeOf<ValidationErrorMap<ErrorMapFormData>>()
-    expectTypeOf(createErrorMap<ErrorMapFormData>(initial)).toEqualTypeOf<
-      ValidationErrorMap<ErrorMapFormData>
+    expectTypeOf(errors).toEqualTypeOf<ValidationErrorMap<AggregateFormData>>()
+    expectTypeOf(errors.toResult()).toEqualTypeOf<
+      ValidationAggregateError<AggregateFormData> | undefined
     >()
-    expectTypeOf(
-      createErrorMap<ErrorMapFormData>({ form: 'Partial form error' }),
-    ).toEqualTypeOf<ValidationErrorMap<ErrorMapFormData>>()
 
     errors.form = 'Form error'
     errors.fields.name = 'Name is required'
     errors.fields['user.age'] = { message: 'Age is required' }
-    // @ts-expect-error Error map fields must use valid form keys.
+    // @ts-expect-error Aggregate field errors must use valid form keys.
     errors.fields.missing = 'Missing'
   })
 
-  it('infers the error map shape from form validator context', () => {
+  it('infers the aggregate error shape from form validator context', () => {
     const validators = defineFormValidators([
       {
         run: ({ createErrorMap }) => {
-          const errors = createErrorMap({ form: 'Form error' })
+          const errors = createErrorMap()
 
           errors.fields.name = 'Name is required'
-          // @ts-expect-error Error map fields must use valid form keys.
+          // @ts-expect-error Aggregate field errors must use valid form keys.
           errors.fields.missing = 'Missing'
 
-          return errors
+          return errors.toResult()
         },
         triggers: [],
       },
@@ -257,27 +246,6 @@ describe('createErrorMap', () => {
 
     expectTypeOf<
       TestFieldErrors<[], [], typeof validators, never>
-    >().toEqualTypeOf<Array<ValidationIssue>>()
-  })
-
-  it('accepts a partial initial error map from group validator context', () => {
-    const validators = defineGroupValidators([
-      {
-        run: ({ createErrorMap }) => {
-          const errors = createErrorMap({ form: 'Group error' })
-
-          errors.fields.name = 'Name is required'
-          // @ts-expect-error Error map fields must use valid group keys.
-          errors.fields.missing = 'Missing'
-
-          return errors
-        },
-        triggers: [],
-      },
-    ])
-
-    expectTypeOf<
-      TestFieldErrors<[], typeof validators, [], never>
     >().toEqualTypeOf<Array<ValidationIssue>>()
   })
 
@@ -383,7 +351,7 @@ describe('ValidationTriggerOption', () => {
       {
         run: ({ formApi }) => {
           expectTypeOf(formApi).toEqualTypeOf<
-            FormApi<TestFormData, any, any> | undefined
+            FormApi<TestFormData, any> | undefined
           >()
           // @ts-expect-error formApi can be undefined for server-triggered validators.
           void formApi.state.values
@@ -394,7 +362,7 @@ describe('ValidationTriggerOption', () => {
       {
         run: ({ formApi }) => {
           expectTypeOf(formApi).toEqualTypeOf<
-            FormApi<TestFormData, any, any> | undefined
+            FormApi<TestFormData, any> | undefined
           >()
           return undefined
         },
@@ -403,7 +371,7 @@ describe('ValidationTriggerOption', () => {
       {
         run: ({ formApi }) => {
           expectTypeOf(formApi).toEqualTypeOf<
-            FormApi<TestFormData, any, any> | undefined
+            FormApi<TestFormData, any> | undefined
           >()
           return undefined
         },
@@ -475,8 +443,8 @@ describe('ValidationTriggerOption', () => {
 
 describe('FormErrors', () => {
   it('should fall back omitted submit errors to ValidationIssue submit meta', () => {
-    expectTypeOf<ToSubmitMeta<unknown>>().not.toBeAny()
-    expectTypeOf<TestFormErrors<[], ToSubmitMeta<unknown>>>().toEqualTypeOf<
+    expectTypeOf<ToFormErrorTypes<[], unknown>>().not.toBeAny()
+    expectTypeOf<TestFormErrors<[], unknown>>().toEqualTypeOf<
       Array<ValidationIssue>
     >()
   })
@@ -702,17 +670,7 @@ describe('FormErrors', () => {
     >()
   })
 
-  it('should infer issues with fields metadata as form errors', () => {
-    const validators = defineFormValidators([
-      { run: () => ({ message: 'Required', fields: {} }), triggers: [] },
-    ])
-
-    expectTypeOf<TestFormErrors<typeof validators, never>>().toEqualTypeOf<
-      Array<{ message: string; fields: {} }>
-    >()
-  })
-
-  it('should extract error map errors', () => {
+  it('should extract aggregate errors', () => {
     const stringValidators = defineFormValidators([
       {
         run: () => ({ form: 'Custom', fields: { name: 'Too short' } }),
@@ -739,7 +697,7 @@ describe('FormErrors', () => {
     >().toEqualTypeOf<Array<{ message: string; errorCount: number }>>()
   })
 
-  it('should extract error maps with only field errors', () => {
+  it('should extract aggregate errors with only field errors', () => {
     const validators = defineFormValidators([
       {
         run: () => ({
@@ -754,7 +712,7 @@ describe('FormErrors', () => {
     >()
   })
 
-  it('should extract form errors from an empty-field error map', () => {
+  it('should extract aggregate form errors with an empty field map', () => {
     const validators = defineFormValidators([
       { run: () => ({ form: 'Form error', fields: {} }), triggers: [] },
     ])
@@ -775,7 +733,7 @@ describe('FormErrors', () => {
     >()
   })
 
-  it('should infer error map submit errors', () => {
+  it('should infer aggregate submit errors', () => {
     type SubmitReturn = OnSubmitError<{
       form: { message: string; formOnly: true }
       fields: { name: { message: string; fieldOnly: true } }
@@ -801,7 +759,7 @@ describe('FormErrors', () => {
     })
   })
 
-  it('should infer async error map submit errors', () => {
+  it('should infer async aggregate submit errors', () => {
     type SubmitReturn = Promise<
       | OnSubmitError<{
           form: { message: string; formOnly: true }
@@ -852,7 +810,7 @@ describe('FieldErrors', () => {
     >().toEqualTypeOf<Array<{ message: string; fieldOnly: true }>>()
   })
 
-  it('should infer field errors from form validator error maps', () => {
+  it('should infer field errors from aggregate form validators', () => {
     const formValidators = defineFormValidators([
       {
         run: () => ({
@@ -873,7 +831,7 @@ describe('FieldErrors', () => {
     >().toEqualTypeOf<Array<{ message: string; fieldOnly: true }>>()
   })
 
-  it('should infer field errors from group validator error maps', () => {
+  it('should infer field errors from aggregate group validators', () => {
     const groupValidators = defineGroupValidators([
       {
         run: () => ({
@@ -894,7 +852,7 @@ describe('FieldErrors', () => {
     >().toEqualTypeOf<Array<{ message: string; fromGroup: true }>>()
   })
 
-  it('should combine form error map and field validator errors', () => {
+  it('should combine form aggregate and field validator errors', () => {
     const formValidators = defineFormValidators([
       {
         run: () => ({
@@ -1097,7 +1055,7 @@ describe('FieldErrors', () => {
     >()
   })
 
-  it('should extract field errors from form validator error maps with no form error', () => {
+  it('should extract field errors from aggregate form validators with no form error', () => {
     const formValidators = defineFormValidators([
       {
         run: () => ({
@@ -1117,7 +1075,7 @@ describe('FieldErrors', () => {
     >().toEqualTypeOf<Array<{ message: string; fieldOnly: true }>>()
   })
 
-  it('should ignore empty error maps', () => {
+  it('should ignore empty aggregate field maps', () => {
     const formValidators = defineFormValidators([
       { run: () => ({ form: 'Form error', fields: {} }), triggers: [] },
     ])
@@ -1198,7 +1156,7 @@ describe('FieldErrors', () => {
   })
 })
 
-describe('validator metas', () => {
+describe('validator type transforms', () => {
   function defineFormValidators<
     const TFormValidators extends FormValidators<any>,
   >(validators: TFormValidators): TFormValidators {
@@ -1213,16 +1171,13 @@ describe('validator metas', () => {
       },
     ])
 
-    type Result = FormValidatorMeta<
-      { name: string },
-      StandardSchemaV1Issue,
-      StandardSchemaV1Issue
-    >
+    type Outputs = ToFormSchemaOutputs<typeof vs>
+    type Errors = ToFormErrorTypes<typeof vs, never>
 
-    type Metas = ToFormValidatorMetas<typeof vs>
-
-    expectTypeOf<Metas['length']>().toEqualTypeOf<1>()
-    expectTypeOf<Metas[0]>().toEqualTypeOf<Result>()
+    expectTypeOf<Outputs>().toEqualTypeOf<readonly [{ name: string }]>()
+    expectTypeOf<Errors>().toEqualTypeOf<
+      FormErrorTypes<StandardSchemaV1Issue, StandardSchemaV1Issue>
+    >()
   })
 
   it('it should transform based on runOnSubmit', () => {
@@ -1256,52 +1211,21 @@ describe('validator metas', () => {
       },
     ])
 
-    type FirstResult = FormValidatorMeta<
-      // Assume runOnSubmit is true if omitted
-      { name: string },
-      StandardSchemaV1Issue,
-      StandardSchemaV1Issue
-    >
-    type SecondResult = FormValidatorMeta<
-      // it was explicitly set false
-      undefined,
-      StandardSchemaV1Issue,
-      StandardSchemaV1Issue
-    >
-    type ThirdResult = FormValidatorMeta<
-      // it was explicitly set true
-      { name: string },
-      StandardSchemaV1Issue,
-      StandardSchemaV1Issue
-    >
-    type FourthResult = FormValidatorMeta<
-      // server-only validators still run on client submit by default
-      { name: string },
-      StandardSchemaV1Issue,
-      StandardSchemaV1Issue
-    >
-    type FifthResult = FormValidatorMeta<
-      // explicit runOnSubmit keeps the server-triggered validator on client submit
-      { name: string },
-      StandardSchemaV1Issue,
-      StandardSchemaV1Issue
-    >
-    type SixthResult = FormValidatorMeta<
-      // a mixed client/server validator keeps the normal client submit default
-      { name: string },
-      StandardSchemaV1Issue,
-      StandardSchemaV1Issue
-    >
+    type Outputs = ToFormSchemaOutputs<typeof vs>
 
-    type Metas = ToFormValidatorMetas<typeof vs>
-
-    expectTypeOf<Metas['length']>().toEqualTypeOf<6>()
-    expectTypeOf<Metas[0]>().toEqualTypeOf<FirstResult>()
-    expectTypeOf<Metas[1]>().toEqualTypeOf<SecondResult>()
-    expectTypeOf<Metas[2]>().toEqualTypeOf<ThirdResult>()
-    expectTypeOf<Metas[3]>().toEqualTypeOf<FourthResult>()
-    expectTypeOf<Metas[4]>().toEqualTypeOf<FifthResult>()
-    expectTypeOf<Metas[5]>().toEqualTypeOf<SixthResult>()
+    expectTypeOf<Outputs>().toEqualTypeOf<
+      readonly [
+        // Assume runOnSubmit is true if omitted.
+        { name: string },
+        // It was explicitly set false.
+        undefined,
+        // Explicit true, server-only, and mixed triggers all run on client submit.
+        { name: string },
+        { name: string },
+        { name: string },
+        { name: string },
+      ]
+    >()
   })
 
   it('should transform field validators', () => {

@@ -286,7 +286,7 @@ describe('field list bridge', () => {
       'field-list-patch',
       (event) => patches.push(event.payload),
     )
-    let group: InternalFormGroupApi<any, any, any, any, any, any> | undefined
+    let group: InternalFormGroupApi<any, any, any, any, any> | undefined
 
     try {
       mountedForms.mountForm(form)

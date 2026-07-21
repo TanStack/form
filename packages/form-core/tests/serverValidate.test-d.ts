@@ -203,7 +203,7 @@ describe('server validation types', () => {
             >()
             expectTypeOf(ctx.value).toEqualTypeOf<{ name: string }>()
             expectTypeOf(ctx.formApi).toEqualTypeOf<
-              FormApi<{ name: string }, any, any> | undefined
+              FormApi<{ name: string }, any> | undefined
             >()
             // @ts-expect-error formApi can be undefined for server-triggered validators.
             void ctx.formApi.state.values
@@ -214,7 +214,7 @@ describe('server validation types', () => {
         {
           run: ({ formApi }) => {
             expectTypeOf(formApi).toEqualTypeOf<
-              FormApi<{ name: string }, any, any> | undefined
+              FormApi<{ name: string }, any> | undefined
             >()
             return undefined
           },
@@ -223,7 +223,7 @@ describe('server validation types', () => {
         {
           run: ({ formApi }) => {
             expectTypeOf(formApi).toEqualTypeOf<
-              FormApi<{ name: string }, any, any> | undefined
+              FormApi<{ name: string }, any> | undefined
             >()
             return undefined
           },
@@ -232,7 +232,7 @@ describe('server validation types', () => {
         {
           run: ({ formApi }) => {
             expectTypeOf(formApi).toEqualTypeOf<
-              FormApi<{ name: string }, any, any> | undefined
+              FormApi<{ name: string }, any> | undefined
             >()
             return undefined
           },

@@ -1,46 +1,29 @@
-import type {
-  AnyFormApi,
-  FormApi,
-  FormValidatorMetas,
-} from '@tanstack/form-core'
+import type { AnyFormApi, FormApi, FormErrorTypes } from '@tanstack/form-core'
 import type { FunctionComponent } from 'react'
 import type { ReactTanStackFormComponents } from './Components.public'
 import type { AnyReactFormComponentMap } from '../AppForm/componentMap.public'
 
 type ExtendedFormApi<
   TFormData,
-  TFormValidatorMetas extends FormValidatorMetas,
-  TSubmitReturn,
+  TFormErrorTypes extends FormErrorTypes,
   TFieldComponents extends Record<string, FunctionComponent<any>>,
-> = FormApi<TFormData, TFormValidatorMetas, TSubmitReturn> &
-  ReactTanStackFormComponents<
-    TFormData,
-    TFormValidatorMetas,
-    TSubmitReturn,
-    TFieldComponents
-  >
+> = FormApi<TFormData, TFormErrorTypes> &
+  ReactTanStackFormComponents<TFormData, TFormErrorTypes, TFieldComponents>
 
 export type ReactFormApi<
   TFormData,
-  TFormValidatorMetas extends FormValidatorMetas,
-  TSubmitReturn,
+  TFormErrorTypes extends FormErrorTypes,
   TComponents extends AnyReactFormComponentMap,
 > = unknown extends TComponents['formComponents']
-  ? ExtendedFormApi<
-      TFormData,
-      TFormValidatorMetas,
-      TSubmitReturn,
-      TComponents['fieldComponents']
-    >
+  ? ExtendedFormApi<TFormData, TFormErrorTypes, TComponents['fieldComponents']>
   : ExtendedFormApi<
       TFormData,
-      TFormValidatorMetas,
-      TSubmitReturn,
+      TFormErrorTypes,
       TComponents['fieldComponents']
     > &
       TComponents['formComponents']
 
 export type AnyReactFormApi = AnyFormApi &
-  ReactTanStackFormComponents<any, any, any, any>
+  ReactTanStackFormComponents<any, any, any>
 
 export type { ReactFormComponentMap } from '../AppForm/componentMap.public'

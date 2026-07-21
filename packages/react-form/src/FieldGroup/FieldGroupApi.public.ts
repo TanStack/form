@@ -5,9 +5,9 @@ import type {
   FieldValidators,
   FormApiArrayMethods,
   FormApiFieldMethods,
+  FormErrorTypes,
   FormGroupValidatorMetas,
   FormState,
-  FormValidatorMetas,
 } from '@tanstack/form-core'
 import type { FunctionComponent } from 'react'
 import type { CrossVersionReactNode } from '../reactTypes.public'
@@ -30,8 +30,7 @@ type FieldGroupFieldPropsWithValidators<
     FieldValidators<TFieldData, TFieldName, DeepValue<TFieldData, TFieldName>>,
     FormGroupValidatorMetas,
     unknown,
-    FormValidatorMetas,
-    unknown,
+    FormErrorTypes,
     TFieldComponents
   >,
   'validators'
@@ -55,8 +54,7 @@ type FieldGroupFieldPropsWithoutValidators<
     [],
     FormGroupValidatorMetas,
     unknown,
-    FormValidatorMetas,
-    unknown,
+    FormErrorTypes,
     TFieldComponents
   >,
   'validators'
@@ -76,8 +74,7 @@ type FieldGroupArrayFieldPropsWithValidators<
     FieldValidators<TFieldData, TFieldName, DeepValue<TFieldData, TFieldName>>,
     FormGroupValidatorMetas,
     unknown,
-    FormValidatorMetas,
-    unknown,
+    FormErrorTypes,
     TFieldComponents
   >,
   'validators'
@@ -101,8 +98,7 @@ type FieldGroupArrayFieldPropsWithoutValidators<
     [],
     FormGroupValidatorMetas,
     unknown,
-    FormValidatorMetas,
-    unknown,
+    FormErrorTypes,
     TFieldComponents
   >,
   'validators'
@@ -152,8 +148,7 @@ export interface FieldGroupArrayFieldComponent<
 
 export type FieldGroupSubscribeProps<TSelected> = ReactFormSubscribeProps<
   unknown,
-  FormValidatorMetas,
-  unknown,
+  FormErrorTypes,
   TSelected
 >
 
@@ -178,8 +173,4 @@ export type AnyFieldGroupApi = FieldGroupApi<
   Record<string, FunctionComponent<any>>
 >
 
-export type FieldGroupFormState = FormState<
-  unknown,
-  FormValidatorMetas,
-  unknown
->
+export type FieldGroupFormState = FormState<unknown, FormErrorTypes>

@@ -10,8 +10,7 @@ import type { AnyInternalFieldApi } from '../FieldApi/FieldApi.lib'
 import type {
   FormErrors,
   FormValidators,
-  ToFormValidatorMetas,
-  ToSubmitMeta,
+  ToFormErrorTypes,
   ValidationIssue,
 } from '../validation.public'
 import type { Atom } from '@tanstack/store'
@@ -46,7 +45,7 @@ interface ClearFormValidatorErrorsFromSourceArgs {
   reconcileErrorFields?: boolean
 }
 
-type OverridableFormState = Omit<FormState<any, any, any>, 'values' | 'errors'>
+type OverridableFormState = Omit<FormState<any, any>, 'values' | 'errors'>
 
 export type FormStateOverrides = {
   [TKey in keyof OverridableFormState]?: () => OverridableFormState[TKey]
@@ -90,7 +89,7 @@ const eagerFormStateKeys = [
 
 // @ts-expect-error - Unused type, checks if formStateKeys is exhaustive
 type _IsExhaustiveKeys<
-  T extends (typeof formStateKeys)[number] = keyof FormState<any, any, any>,
+  T extends (typeof formStateKeys)[number] = keyof FormState<any, any>,
 > = T
 
 function getFormErrors(
@@ -280,8 +279,7 @@ function getFormStateValue<
   TSubmitReturn,
   TKey extends keyof FormState<
     TFormData,
-    ToFormValidatorMetas<TFormValidators>,
-    ToSubmitMeta<TSubmitReturn>
+    ToFormErrorTypes<TFormValidators, TSubmitReturn>
   >,
 >(
   form: InternalFormApi<TFormData, TFormValidators, TSubmitReturn>,
@@ -289,8 +287,7 @@ function getFormStateValue<
   overrides: FormStateOverrides = {},
 ): FormState<
   TFormData,
-  ToFormValidatorMetas<TFormValidators>,
-  ToSubmitMeta<TSubmitReturn>
+  ToFormErrorTypes<TFormValidators, TSubmitReturn>
 >[TKey] {
   switch (key) {
     case 'values':
@@ -308,8 +305,7 @@ function getFormStateValue<
         form._getIsDefaultValue()) as never
     case 'errors':
       return getFormErrors(form) as FormErrors<
-        ToFormValidatorMetas<TFormValidators>,
-        ToSubmitMeta<TSubmitReturn>
+        ToFormErrorTypes<TFormValidators, TSubmitReturn>
       > as never
     case 'isValid':
       return (overrides.isValid?.() ??
@@ -347,15 +343,10 @@ export function getFormStateSnapshot<
 >(
   form: InternalFormApi<TFormData, TFormValidators, TSubmitReturn>,
   overrides: FormStateOverrides = {},
-): FormState<
-  TFormData,
-  ToFormValidatorMetas<TFormValidators>,
-  ToSubmitMeta<TSubmitReturn>
-> {
+): FormState<TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>> {
   const result = {} as FormState<
     TFormData,
-    ToFormValidatorMetas<TFormValidators>,
-    ToSubmitMeta<TSubmitReturn>
+    ToFormErrorTypes<TFormValidators, TSubmitReturn>
   >
   for (const key of formStateKeys) {
     if (key === 'isDefaultValue') {
@@ -375,8 +366,8 @@ export function getFormStateSnapshot<
 }
 
 export function compareFormStateSnapshots(
-  prev: FormState<any, any, any>,
-  next: FormState<any, any, any>,
+  prev: FormState<any, any>,
+  next: FormState<any, any>,
 ): boolean {
   if (
     (prev as any)[formStateDefaultValuesVersionKey] !==
@@ -395,13 +386,13 @@ export function compareFormStateSnapshots(
 export function createFormStateProxy(
   form: InternalFormApi<any, any, any>,
   overrides: FormStateOverrides = {},
-): FormState<any, any, any> {
-  return new Proxy({} as FormState<any, any, any>, {
+): FormState<any, any> {
+  return new Proxy({} as FormState<any, any>, {
     get(_target, property) {
-      if (formStateKeys.includes(property as keyof FormState<any, any, any>)) {
+      if (formStateKeys.includes(property as keyof FormState<any, any>)) {
         return getFormStateValue(
           form,
-          property as keyof FormState<any, any, any>,
+          property as keyof FormState<any, any>,
           overrides,
         )
       }
@@ -409,7 +400,7 @@ export function createFormStateProxy(
     },
     ownKeys: () => formStateKeys,
     getOwnPropertyDescriptor(_target, property) {
-      if (formStateKeys.includes(property as keyof FormState<any, any, any>)) {
+      if (formStateKeys.includes(property as keyof FormState<any, any>)) {
         return { configurable: true, enumerable: true }
       }
       return undefined

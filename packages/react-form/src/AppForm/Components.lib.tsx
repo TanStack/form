@@ -20,12 +20,7 @@ import type {
 } from '../ReactForm/Components.public'
 import type { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
 
-type AnyReactAppFormApi = ReactAppFormApi<
-  any,
-  any,
-  any,
-  AnyReactFormComponentMap
->
+type AnyReactAppFormApi = ReactAppFormApi<any, any, AnyReactFormComponentMap>
 
 export function attachReactAppFormComponents(
   form: AnyInternalFormApi,
@@ -62,7 +57,7 @@ function createAppForm(form: AnyInternalFormApi): AppFormComponent {
 }
 
 type AnyFieldComponent = FunctionComponent<
-  ReactFormFieldProps<any, any, any, any, any, any, any, any, any>
+  ReactFormFieldProps<any, any, any, any, any, any, any, any>
 >
 
 function createFieldWithContext(
@@ -87,7 +82,7 @@ function createFieldWithContext(
 }
 
 type AnyFormGroupComponent = FunctionComponent<
-  ReactFormGroupProps<any, any, any, any, any, any, any>
+  ReactFormGroupProps<any, any, any, any, any, any>
 >
 
 function createFormGroupWithContext(
@@ -95,7 +90,7 @@ function createFormGroupWithContext(
 ): AnyFormGroupComponent {
   const TanStackFormGroup: AnyFormGroupComponent = (props) => {
     const groupRef =
-      React.useRef<InternalFormGroupApi<any, any, any, any, any, any>>(null)
+      React.useRef<InternalFormGroupApi<any, any, any, any, any>>(null)
 
     if (!groupRef.current) {
       groupRef.current = attachAppFormGroupComponents(
@@ -104,7 +99,7 @@ function createFormGroupWithContext(
       )
     }
 
-    React.useEffect(() => groupRef.current?.update({ ...props, form } as never))
+    React.useEffect(() => groupRef.current?.update({ ...props, form }))
 
     React.useEffect(() => {
       const group = groupRef.current!
@@ -121,21 +116,16 @@ function createFormGroupWithContext(
 }
 
 function attachAppFormGroupComponents(
-  group: InternalFormGroupApi<any, any, any, any, any, any>,
+  group: InternalFormGroupApi<any, any, any, any, any>,
   form: InternalReactFormApi,
 ) {
-  const resultGroup = group as InternalFormGroupApi<
-    any,
-    any,
-    any,
-    any,
-    any,
-    any
-  > & {
+  type GroupWithComponents = InternalFormGroupApi<any, any, any, any, any> & {
     Field: FunctionComponent<any>
     ArrayField: FunctionComponent<any>
     Subscribe: FunctionComponent<any>
   }
+
+  const resultGroup: GroupWithComponents = group as never
 
   resultGroup.Field = function Field(props) {
     const Field = form.Field

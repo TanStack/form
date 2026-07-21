@@ -74,7 +74,6 @@ export type AnyFieldApiOptions = FieldApiOptions<
   any,
   any,
   any,
-  any,
   any
 >
 export type AnyFieldValidator = FieldValidator<any, any, any>
@@ -289,7 +288,7 @@ export class InternalFieldApi<
   TFormData,
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
-> implements FieldApi<any, any, any, any, any, any, any> {
+> implements FieldApi<any, any, any, any, any, any> {
   readonly _isRoot = false
   _parent: AnyInternalFieldApi | InternalRootFieldApi
   _childrenMap: Map<NameSegment, AnyInternalFieldApi> = new Map()
@@ -297,7 +296,7 @@ export class InternalFieldApi<
   _atoms: FieldAtoms
   _validators: Array<AnyFieldValidator> | null
   _listeners: Array<AnyFieldListener> | null
-  _errorVisibility: ErrorVisibility<any, any, any> | undefined
+  _errorVisibility: ErrorVisibility<any, any> | undefined
   _errorBoundary: boolean
 
   // TODO implement
@@ -1085,7 +1084,7 @@ export class InternalFieldApi<
     return this.state.meta
   }
 
-  get errors(): FieldErrors<any, any, any, any> {
+  get errors(): FieldErrors<any, any, any> {
     return this.state.meta.errors
   }
 

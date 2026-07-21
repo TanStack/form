@@ -2,10 +2,10 @@ import type { ReadonlyAtom } from '@tanstack/store'
 import type { FormApi } from '../FormApi/FormApi.public'
 import type {
   ConfigurableValidationTrigger,
+  FormErrorTypes,
   FormGroupValidateResult,
   FormGroupValidatorMetas,
   FormGroupValidators,
-  FormValidatorMetas,
   ToFormGroupValidatorMetas,
 } from '../validation.public'
 
@@ -14,18 +14,16 @@ export interface FormGroupSubmitContext<
   in out TGroupName,
   in out TGroupValue,
   in out TGroupValidatorMetas extends FormGroupValidatorMetas,
-  in out TFormValidatorMetas extends FormValidatorMetas,
-  in out TSubmitReturn,
+  in out TFormErrorTypes extends FormErrorTypes,
 > {
   value: TGroupValue
-  formApi: FormApi<TFormData, TFormValidatorMetas, TSubmitReturn>
+  formApi: FormApi<TFormData, TFormErrorTypes>
   groupApi: FormGroupApi<
     TFormData,
     TGroupName,
     TGroupValue,
     TGroupValidatorMetas,
-    TFormValidatorMetas,
-    TSubmitReturn
+    TFormErrorTypes
   >
   schemaOutputs: FormGroupStandardSchemaValidatorOutputs<TGroupValidatorMetas>
 }
@@ -35,10 +33,9 @@ export interface FormGroupOptions<
   in out TGroupName,
   in out TGroupValue,
   in out TGroupValidators extends FormGroupValidators<TGroupValue>,
-  in out TFormValidatorMetas extends FormValidatorMetas,
-  in out TSubmitReturn,
+  in out TFormErrorTypes extends FormErrorTypes,
 > {
-  form: FormApi<TFormData, TFormValidatorMetas, TSubmitReturn>
+  form: FormApi<TFormData, TFormErrorTypes>
   name: TGroupName
   validators?: TGroupValidators
   onSubmit?: (
@@ -47,8 +44,7 @@ export interface FormGroupOptions<
       TGroupName,
       TGroupValue,
       ToFormGroupValidatorMetas<TGroupValidators>,
-      TFormValidatorMetas,
-      TSubmitReturn
+      TFormErrorTypes
     >,
   ) => void | Promise<void>
   onSubmitInvalid?: (
@@ -57,8 +53,7 @@ export interface FormGroupOptions<
       TGroupName,
       TGroupValue,
       ToFormGroupValidatorMetas<TGroupValidators>,
-      TFormValidatorMetas,
-      TSubmitReturn
+      TFormErrorTypes
     > & {
       errors: Array<FormGroupValidateResult<TGroupValue>>
     },
@@ -70,10 +65,9 @@ export interface FormGroupApiOptions<
   in out TGroupName,
   in out TGroupValue,
   in out TGroupValidatorMetas extends FormGroupValidatorMetas,
-  in out TFormValidatorMetas extends FormValidatorMetas,
-  in out TSubmitReturn,
+  in out TFormErrorTypes extends FormErrorTypes,
 > {
-  form: FormApi<TFormData, TFormValidatorMetas, TSubmitReturn>
+  form: FormApi<TFormData, TFormErrorTypes>
   name: TGroupName
   validators?: FormGroupValidators<TGroupValue>
   onSubmit?: (
@@ -82,8 +76,7 @@ export interface FormGroupApiOptions<
       TGroupName,
       TGroupValue,
       TGroupValidatorMetas,
-      TFormValidatorMetas,
-      TSubmitReturn
+      TFormErrorTypes
     >,
   ) => void | Promise<void>
   onSubmitInvalid?: (
@@ -92,8 +85,7 @@ export interface FormGroupApiOptions<
       TGroupName,
       TGroupValue,
       TGroupValidatorMetas,
-      TFormValidatorMetas,
-      TSubmitReturn
+      TFormErrorTypes
     > & {
       errors: Array<FormGroupValidateResult<TGroupValue>>
     },
@@ -136,18 +128,16 @@ export interface FormGroupApi<
   in out TGroupName,
   in out TGroupValue,
   in out TGroupValidatorMetas extends FormGroupValidatorMetas,
-  in out TFormValidatorMetas extends FormValidatorMetas,
-  in out TSubmitReturn,
+  in out TFormErrorTypes extends FormErrorTypes,
 > {
-  readonly form: FormApi<TFormData, TFormValidatorMetas, TSubmitReturn>
+  readonly form: FormApi<TFormData, TFormErrorTypes>
   readonly name: TGroupName
   readonly options: FormGroupApiOptions<
     TFormData,
     TGroupName,
     TGroupValue,
     TGroupValidatorMetas,
-    TFormValidatorMetas,
-    TSubmitReturn
+    TFormErrorTypes
   >
 
   atom: ReadonlyAtom<FormGroupState<TGroupValue, TGroupValidatorMetas>>

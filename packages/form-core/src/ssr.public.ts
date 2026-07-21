@@ -1,10 +1,10 @@
 import type { FormOptions } from './FormApi/FormApi.public'
 import type {
   FormValidateResult,
-  FormValidateResultFromMetas,
+  FormValidateResultFromErrorTypes,
   FormValidators,
   ServerFormStandardSchemaValidatorOutputs,
-  ToServerFormValidatorMetas,
+  ToServerFormErrorTypes,
 } from './validation.public'
 
 export {
@@ -16,9 +16,9 @@ export {
 export type ServerFormValidateResult<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
-> = FormValidateResultFromMetas<
+> = FormValidateResultFromErrorTypes<
   TFormData,
-  ToServerFormValidatorMetas<TFormValidators>
+  ToServerFormErrorTypes<TFormValidators>
 >
 
 export interface ServerValidationResult<

@@ -46,10 +46,10 @@ import type {
 } from './FormGroupApi.public'
 import type {
   ConfigurableValidationTrigger,
+  FormErrorTypes,
   FormGroupValidateResult,
   FormGroupValidator,
   FormGroupValidators,
-  FormValidatorMetas,
   ToFormGroupValidatorMetas,
   ValidationIssue,
 } from '../validation.public'
@@ -60,17 +60,15 @@ export class InternalFormGroupApi<
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
   const TGroupValidators extends FormGroupValidators<TFormData>,
-  TFormValidatorMetas extends FormValidatorMetas,
-  TSubmitReturn,
+  TFormErrorTypes extends FormErrorTypes,
 > implements FormGroupApi<
   TFormData,
   TGroupName,
   TGroupValue,
   ToFormGroupValidatorMetas<TGroupValidators>,
-  TFormValidatorMetas,
-  TSubmitReturn
+  TFormErrorTypes
 > {
-  readonly form: FormApi<TFormData, TFormValidatorMetas, TSubmitReturn> &
+  readonly form: FormApi<TFormData, TFormErrorTypes> &
     InternalFormApi<any, any, any>
   readonly name: TGroupName
   options: FormGroupApiOptions<
@@ -78,8 +76,7 @@ export class InternalFormGroupApi<
     TGroupName,
     TGroupValue,
     ToFormGroupValidatorMetas<TGroupValidators>,
-    TFormValidatorMetas,
-    TSubmitReturn
+    TFormErrorTypes
   >
   atom: ReadonlyAtom<
     FormGroupState<TGroupValue, ToFormGroupValidatorMetas<TGroupValidators>>
@@ -108,17 +105,11 @@ export class InternalFormGroupApi<
       TGroupName,
       TGroupValue,
       FormGroupValidators<TGroupValue>,
-      TFormValidatorMetas,
-      TSubmitReturn
+      TFormErrorTypes
     >,
   ) {
     this.options = options as never
-    this.form = options.form as unknown as FormApi<
-      TFormData,
-      TFormValidatorMetas,
-      TSubmitReturn
-    > &
-      InternalFormApi<any, any, any>
+    this.form = options.form as never
     this.name = options.name
     this._pipelineCache = createPipelineCache()
 
@@ -134,8 +125,7 @@ export class InternalFormGroupApi<
       TGroupName,
       TGroupValue,
       FormGroupValidators<TGroupValue>,
-      TFormValidatorMetas,
-      TSubmitReturn
+      TFormErrorTypes
     >,
   ) => {
     this.options = options as never

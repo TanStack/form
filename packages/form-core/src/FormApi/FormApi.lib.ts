@@ -26,9 +26,10 @@ import {
 import { defaultInternalBaseFieldMeta } from '../FieldApi/fieldState.lib'
 import {
   clearIndexedErrorsFromSource,
+  isAggregateError,
   isErrorResult,
   isValidationTriggerEnabled,
-  parseValidationResult,
+  normalizeValidationError,
   reconcileRoutedFieldErrors,
   runFormMountValidatorPipeline,
   runFormValidatorPipeline,
@@ -79,8 +80,9 @@ import type {
   FormValidateResult,
   FormValidationError,
   FormValidators,
-  ToFormValidatorMetas,
-  ToSubmitMeta,
+  ToFormErrorTypes,
+  ValidationAggregateError,
+  ValidationErrorInput,
   ValidationIssue,
   ValidationTrigger,
 } from '../validation.public'
@@ -88,7 +90,7 @@ import type { FormListenerTriggers } from '../listeners.public'
 import type { InternalFormGroupApi } from '../FormGroupApi/FormGroupApi.lib'
 import type { ServerFormState } from '../ssr.public'
 
-type AnyFormGroupApi = InternalFormGroupApi<any, any, any, any, any, any>
+type AnyFormGroupApi = InternalFormGroupApi<any, any, any, any, any>
 
 export interface FormMetaAtoms {
   isDirty: Atom<boolean>
@@ -211,8 +213,7 @@ export class InternalFormApi<
   TSubmitReturn,
 > implements FormApi<
   TFormData,
-  ToFormValidatorMetas<TFormValidators>,
-  ToSubmitMeta<TSubmitReturn>
+  ToFormErrorTypes<TFormValidators, TSubmitReturn>
 > {
   /**
    * Devtools use this to show what version of the library is being used.
@@ -220,11 +221,7 @@ export class InternalFormApi<
   static majorVersion = 2
 
   atom: ReadonlyAtom<
-    FormState<
-      TFormData,
-      ToFormValidatorMetas<TFormValidators>,
-      ToSubmitMeta<TSubmitReturn>
-    >
+    FormState<TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>>
   >
   _atoms: FormAtoms<TFormData>
   _fieldRootNode: InternalRootFieldApi
@@ -233,21 +230,19 @@ export class InternalFormApi<
   _lastUpdateDefaultValues: TFormData
   _pipelineCache: PipelineCache<any>
   _schemaOutputs: Array<any> = []
-  _formGroups = new Set<InternalFormGroupApi<any, any, any, any, any, any>>()
+  _formGroups = new Set<InternalFormGroupApi<any, any, any, any, any>>()
   _lastServerState: ServerFormState<TFormData, TFormValidators> | null = null
 
   get state(): FormState<
     TFormData,
-    ToFormValidatorMetas<TFormValidators>,
-    ToSubmitMeta<TSubmitReturn>
+    ToFormErrorTypes<TFormValidators, TSubmitReturn>
   > {
     return this.atom.get()
   }
 
   get options(): FormApiOptions<
     TFormData,
-    ToFormValidatorMetas<TFormValidators>,
-    ToSubmitMeta<TSubmitReturn>
+    ToFormErrorTypes<TFormValidators, TSubmitReturn>
   > & { formId: string } {
     return this._options as never
   }
@@ -868,31 +863,87 @@ export class InternalFormApi<
       this._schemaOutputs[result.validatorIndex] = result.schemaResult
     }
 
-    const parsedResult = parseValidationResult(result.result)
-    const resolvedFieldErrors = new Map<string, Array<ValidationIssue>>()
+    const aggregateError = isAggregateError(result.result)
 
-    for (const [fieldName, fieldErrors] of Object.entries(
-      parsedResult.subfields ?? {},
-    )) {
-      const resolvedName = this._resolveErrorFieldPath(fieldName)
-      resolvedFieldErrors.set(
-        resolvedName,
-        (resolvedFieldErrors.get(resolvedName) ?? []).concat(fieldErrors),
+    if (aggregateError) {
+      this._processAggregateError(
+        aggregateError,
+        result.validatorIndex,
+        sourceEvent,
       )
+      return
     }
 
     batch(() => {
       this._setFormValidatorError(
         result.validatorIndex,
-        parsedResult.self ?? [],
+        isErrorResult(result.result)
+          ? normalizeValidationError(result.result as ValidationErrorInput)
+          : [],
         sourceEvent,
       )
 
+      // Clear field-level errors from potential previous { fields: {} } errors
+      const oldFieldRefs =
+        this._atoms.meta.fieldErrors.get()[result.validatorIndex]
+
+      if (oldFieldRefs && oldFieldRefs.size > 0) {
+        for (const field of oldFieldRefs) {
+          this._clearFieldValidatorError(field, result.validatorIndex)
+        }
+
+        this._atoms.meta.fieldErrors.set((prev) => {
+          const fieldErrors = [...prev]
+          fieldErrors[result.validatorIndex] = new Set()
+          return fieldErrors
+        })
+        this._atoms.meta.errorFields.set((prev) =>
+          reconcileFormErrorFields(prev, oldFieldRefs),
+        )
+      }
+    })
+  }
+
+  /**
+   * Process a ValidationAggregateError by setting form-level and field-level errors.
+   */
+  _processAggregateError(
+    aggregateError: {
+      formError: ValidationErrorInput | null
+      fieldErrors: ValidationAggregateError<any>['fields']
+    },
+    validatorIndex: number,
+    sourceEvent: string,
+  ) {
+    const resolvedFieldErrors = new Map<string, Array<ValidationIssue>>()
+
+    for (const [fieldName, fieldError] of Object.entries(
+      aggregateError.fieldErrors,
+    )) {
+      const resolvedName = this._resolveErrorFieldPath(fieldName)
+      const errors = normalizeValidationError(fieldError)
+      resolvedFieldErrors.set(
+        resolvedName,
+        (resolvedFieldErrors.get(resolvedName) ?? []).concat(errors),
+      )
+    }
+
+    batch(() => {
+      // Handle form-level errors
+      this._setFormValidatorError(
+        validatorIndex,
+        aggregateError.formError
+          ? normalizeValidationError(aggregateError.formError)
+          : [],
+        sourceEvent,
+      )
+
+      // Handle field-level errors
       const fieldErrors = [...this._atoms.meta.fieldErrors.get()]
-      const oldFieldRefs = fieldErrors[result.validatorIndex]
+      const oldFieldRefs = fieldErrors[validatorIndex]
       const { fieldRefs, affectedFields, didFieldRefsChange } =
         reconcileRoutedFieldErrors(
-          result.validatorIndex,
+          validatorIndex,
           resolvedFieldErrors,
           oldFieldRefs,
           (fieldName) => this._getOrCreateFieldApi({ name: fieldName }),
@@ -902,7 +953,7 @@ export class InternalFormApi<
         )
 
       if (didFieldRefsChange) {
-        fieldErrors[result.validatorIndex] = fieldRefs
+        fieldErrors[validatorIndex] = fieldRefs
         this._atoms.meta.fieldErrors.set(fieldErrors)
       }
 

@@ -6,7 +6,7 @@ import type {
   ReadonlyStore,
   Store,
 } from '@tanstack/solid-store'
-import type { FormState, FormValidatorMetas } from '@tanstack/form-core'
+import type { FormErrorTypes, FormState } from '@tanstack/form-core'
 
 export type SubscribeSource<TValue> =
   | Atom<TValue>
@@ -35,14 +35,10 @@ export interface SubscribeProps<TSourceData, TSelected> {
  */
 export function Subscribe<
   TFormData,
-  TFormValidatorMetas extends FormValidatorMetas,
-  TSubmitReturn,
+  TFormErrorTypes extends FormErrorTypes,
   TSelected,
 >(
-  props: SubscribeProps<
-    FormState<TFormData, TFormValidatorMetas, TSubmitReturn>,
-    TSelected
-  >,
+  props: SubscribeProps<FormState<TFormData, TFormErrorTypes>, TSelected>,
 ): JSX.Element {
   const selected = useSelector(
     // Atom and store share the same selection protocol; union args need a widen for TS.

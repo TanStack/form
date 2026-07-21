@@ -5,8 +5,7 @@ import type { FieldGroupHelpers } from '../FieldGroup/withFields.public'
 import type {
   FormOptions,
   FormValidators,
-  ToFormValidatorMetas,
-  ToSubmitMeta,
+  ToFormErrorTypes,
 } from '@tanstack/form-core'
 
 export type UseAppFormHook<
@@ -19,8 +18,7 @@ export type UseAppFormHook<
   options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
 ) => ReactAppFormApi<
   TFormData,
-  ToFormValidatorMetas<TFormValidators>,
-  ToSubmitMeta<TSubmitReturn>,
+  ToFormErrorTypes<TFormValidators, TSubmitReturn>,
   TComponents
 >
 
@@ -32,5 +30,5 @@ export interface AppFormHookResult<
     TComponents['fieldComponents']
   >
   useAppForm: UseAppFormHook<TComponents>
-  useFormContext: () => ReactAppFormApi<any, any, any, TComponents>
+  useFormContext: () => ReactAppFormApi<any, any, TComponents>
 }

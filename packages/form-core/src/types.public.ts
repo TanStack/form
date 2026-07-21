@@ -38,6 +38,5 @@ export type FieldWithValue<TFieldValue> = FieldApi<
   any,
   any,
   any,
-  any,
   any
 >

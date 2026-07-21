@@ -149,7 +149,7 @@ export async function runSubmissionProcess<TFormData>(
   )
 
   try {
-    const maybeError = await form.options.onSubmit?.({
+    const maybeError = await form._options.onSubmit?.({
       formApi: form as never,
       schemaOutputs,
       value: form.state.values,

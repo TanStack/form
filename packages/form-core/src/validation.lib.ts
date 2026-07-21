@@ -1267,14 +1267,7 @@ export function runFieldMountValidatorPipeline({
 
 // ===== GROUP MOUNT VALIDATION =====
 
-type AnyInternalFormGroupApi = InternalFormGroupApi<
-  any,
-  any,
-  any,
-  any,
-  any,
-  any
->
+type AnyInternalFormGroupApi = InternalFormGroupApi<any, any, any, any, any>
 
 interface GroupMountValidatorPipelineArgs {
   pipeline: ReadonlyArray<FormGroupValidator<any>>
