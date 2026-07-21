@@ -40,17 +40,17 @@ import type { PipelineCache } from '../utils.lib'
 import type { PipelineResult } from '../validation.lib'
 import type {
   FormGroupApi,
-  FormGroupApiOptions,
   FormGroupOptions,
   FormGroupState,
 } from './FormGroupApi.public'
 import type {
   ConfigurableValidationTrigger,
   FormErrorTypes,
+  FormErrors,
   FormGroupValidateResult,
   FormGroupValidator,
   FormGroupValidators,
-  ToFormGroupValidatorMetas,
+  ToFormGroupErrorTypes,
   ValidationIssue,
 } from '../validation.public'
 import type { ReadonlyAtom } from '@tanstack/store'
@@ -59,27 +59,27 @@ export class InternalFormGroupApi<
   TFormData,
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
-  const TGroupValidators extends FormGroupValidators<TFormData>,
+  const TGroupValidators extends FormGroupValidators<TGroupValue>,
   TFormErrorTypes extends FormErrorTypes,
 > implements FormGroupApi<
   TFormData,
   TGroupName,
   TGroupValue,
-  ToFormGroupValidatorMetas<TGroupValidators>,
+  ToFormGroupErrorTypes<TGroupValidators>,
   TFormErrorTypes
 > {
   readonly form: FormApi<TFormData, TFormErrorTypes> &
     InternalFormApi<any, any, any>
   readonly name: TGroupName
-  options: FormGroupApiOptions<
+  options: FormGroupOptions<
     TFormData,
     TGroupName,
     TGroupValue,
-    ToFormGroupValidatorMetas<TGroupValidators>,
+    TGroupValidators,
     TFormErrorTypes
   >
   atom: ReadonlyAtom<
-    FormGroupState<TGroupValue, ToFormGroupValidatorMetas<TGroupValidators>>
+    FormGroupState<TGroupValue, ToFormGroupErrorTypes<TGroupValidators>>
   >
   _pipelineCache: PipelineCache<FormGroupValidateResult<TGroupValue>>
   _schemaOutputs: Array<any> = []
@@ -104,11 +104,11 @@ export class InternalFormGroupApi<
       TFormData,
       TGroupName,
       TGroupValue,
-      FormGroupValidators<TGroupValue>,
+      TGroupValidators,
       TFormErrorTypes
     >,
   ) {
-    this.options = options as never
+    this.options = options
     this.form = options.form as never
     this.name = options.name
     this._pipelineCache = createPipelineCache()
@@ -124,11 +124,11 @@ export class InternalFormGroupApi<
       TFormData,
       TGroupName,
       TGroupValue,
-      FormGroupValidators<TGroupValue>,
+      TGroupValidators,
       TFormErrorTypes
     >,
   ) => {
-    this.options = options as never
+    this.options = options
   }
 
   mount = (): void => {
@@ -162,13 +162,15 @@ export class InternalFormGroupApi<
 
   _getStateSnapshot(): FormGroupState<
     TGroupValue,
-    ToFormGroupValidatorMetas<TGroupValidators>
+    ToFormGroupErrorTypes<TGroupValidators>
   > {
     const groupField = this.form._tryGetFieldApi(this.name)
     const groupMeta = groupField?.meta
-    const groupErrors = groupField
-      ? this._getFieldErrorMeta(groupField._getBaseMeta()).errors.flat()
-      : []
+    const groupErrors = (
+      groupField
+        ? this._getFieldErrorMeta(groupField._getBaseMeta()).errors.flat()
+        : []
+    ) as FormErrors<ToFormGroupErrorTypes<TGroupValidators>>
     const isInvalid = groupField
       ? hasFieldMetaErrors(groupField._getBaseMeta())
       : false

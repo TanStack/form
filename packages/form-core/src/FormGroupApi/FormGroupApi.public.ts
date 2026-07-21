@@ -3,17 +3,19 @@ import type { FormApi } from '../FormApi/FormApi.public'
 import type {
   ConfigurableValidationTrigger,
   FormErrorTypes,
+  FormErrors,
   FormGroupValidateResult,
-  FormGroupValidatorMetas,
   FormGroupValidators,
-  ToFormGroupValidatorMetas,
+  ToFormGroupErrorTypes,
+  ToFormGroupSchemaOutputs,
 } from '../validation.public'
 
 export interface FormGroupSubmitContext<
   in out TFormData,
   in out TGroupName,
   in out TGroupValue,
-  in out TGroupValidatorMetas extends FormGroupValidatorMetas,
+  out TSchemaOutputs,
+  in out TGroupErrorTypes extends FormErrorTypes,
   in out TFormErrorTypes extends FormErrorTypes,
 > {
   value: TGroupValue
@@ -22,10 +24,10 @@ export interface FormGroupSubmitContext<
     TFormData,
     TGroupName,
     TGroupValue,
-    TGroupValidatorMetas,
+    TGroupErrorTypes,
     TFormErrorTypes
   >
-  schemaOutputs: FormGroupStandardSchemaValidatorOutputs<TGroupValidatorMetas>
+  schemaOutputs: TSchemaOutputs
 }
 
 export interface FormGroupOptions<
@@ -43,7 +45,8 @@ export interface FormGroupOptions<
       TFormData,
       TGroupName,
       TGroupValue,
-      ToFormGroupValidatorMetas<TGroupValidators>,
+      ToFormGroupSchemaOutputs<TGroupValidators>,
+      ToFormGroupErrorTypes<TGroupValidators>,
       TFormErrorTypes
     >,
   ) => void | Promise<void>
@@ -52,7 +55,8 @@ export interface FormGroupOptions<
       TFormData,
       TGroupName,
       TGroupValue,
-      ToFormGroupValidatorMetas<TGroupValidators>,
+      ToFormGroupSchemaOutputs<TGroupValidators>,
+      ToFormGroupErrorTypes<TGroupValidators>,
       TFormErrorTypes
     > & {
       errors: Array<FormGroupValidateResult<TGroupValue>>
@@ -64,41 +68,20 @@ export interface FormGroupApiOptions<
   in out TFormData,
   in out TGroupName,
   in out TGroupValue,
-  in out TGroupValidatorMetas extends FormGroupValidatorMetas,
   in out TFormErrorTypes extends FormErrorTypes,
 > {
   form: FormApi<TFormData, TFormErrorTypes>
   name: TGroupName
   validators?: FormGroupValidators<TGroupValue>
-  onSubmit?: (
-    context: FormGroupSubmitContext<
-      TFormData,
-      TGroupName,
-      TGroupValue,
-      TGroupValidatorMetas,
-      TFormErrorTypes
-    >,
-  ) => void | Promise<void>
-  onSubmitInvalid?: (
-    context: FormGroupSubmitContext<
-      TFormData,
-      TGroupName,
-      TGroupValue,
-      TGroupValidatorMetas,
-      TFormErrorTypes
-    > & {
-      errors: Array<FormGroupValidateResult<TGroupValue>>
-    },
-  ) => void | Promise<void>
 }
 
 export interface FormGroupState<
   in out TGroupValue,
-  in out TGroupValidationMetas extends FormGroupValidatorMetas,
+  in out TGroupErrorTypes extends FormErrorTypes,
 > {
   values: TGroupValue
   meta: unknown
-  errors: Array<TGroupValidationMetas[number]['groupError']>
+  errors: FormErrors<TGroupErrorTypes>
   isTouched: boolean
   isDirty: boolean
   isPristine: boolean
@@ -111,23 +94,11 @@ export interface FormGroupState<
   submissionAttempts: number
 }
 
-type MappedFormGroupsSchemaOutputs<
-  in out TGroupValidatorMetas extends FormGroupValidatorMetas,
-> = {
-  [K in keyof TGroupValidatorMetas]: TGroupValidatorMetas[K]['schemaSubmitOutput']
-}
-
-export type FormGroupStandardSchemaValidatorOutputs<
-  TGroupValidatorMetas extends FormGroupValidatorMetas,
-> = unknown extends TGroupValidatorMetas
-  ? Array<unknown>
-  : MappedFormGroupsSchemaOutputs<TGroupValidatorMetas>
-
 export interface FormGroupApi<
   in out TFormData,
   in out TGroupName,
   in out TGroupValue,
-  in out TGroupValidatorMetas extends FormGroupValidatorMetas,
+  in out TGroupErrorTypes extends FormErrorTypes,
   in out TFormErrorTypes extends FormErrorTypes,
 > {
   readonly form: FormApi<TFormData, TFormErrorTypes>
@@ -136,12 +107,11 @@ export interface FormGroupApi<
     TFormData,
     TGroupName,
     TGroupValue,
-    TGroupValidatorMetas,
     TFormErrorTypes
   >
 
-  atom: ReadonlyAtom<FormGroupState<TGroupValue, TGroupValidatorMetas>>
-  readonly state: FormGroupState<TGroupValue, TGroupValidatorMetas>
+  atom: ReadonlyAtom<FormGroupState<TGroupValue, TGroupErrorTypes>>
+  readonly state: FormGroupState<TGroupValue, TGroupErrorTypes>
   readonly value: TGroupValue
   validate: (
     signal?: ConfigurableValidationTrigger | 'submit',

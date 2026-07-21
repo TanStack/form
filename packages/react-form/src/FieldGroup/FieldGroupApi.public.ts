@@ -6,8 +6,8 @@ import type {
   FormApiArrayMethods,
   FormApiFieldMethods,
   FormErrorTypes,
-  FormGroupValidatorMetas,
   FormState,
+  ValidationIssue,
 } from '@tanstack/form-core'
 import type { FunctionComponent } from 'react'
 import type { CrossVersionReactNode } from '../reactTypes.public'
@@ -28,7 +28,7 @@ type FieldGroupFieldPropsWithValidators<
     TFieldName,
     DeepValue<TFieldData, TFieldName>,
     FieldValidators<TFieldData, TFieldName, DeepValue<TFieldData, TFieldName>>,
-    FormGroupValidatorMetas,
+    ValidationIssue,
     unknown,
     FormErrorTypes,
     TFieldComponents
@@ -52,7 +52,7 @@ type FieldGroupFieldPropsWithoutValidators<
     TFieldName,
     DeepValue<TFieldData, TFieldName>,
     [],
-    FormGroupValidatorMetas,
+    ValidationIssue,
     unknown,
     FormErrorTypes,
     TFieldComponents
@@ -72,7 +72,7 @@ type FieldGroupArrayFieldPropsWithValidators<
     TFieldName,
     DeepValue<TFieldData, TFieldName>,
     FieldValidators<TFieldData, TFieldName, DeepValue<TFieldData, TFieldName>>,
-    FormGroupValidatorMetas,
+    ValidationIssue,
     unknown,
     FormErrorTypes,
     TFieldComponents
@@ -96,7 +96,7 @@ type FieldGroupArrayFieldPropsWithoutValidators<
     TFieldName,
     DeepValue<TFieldData, TFieldName>,
     [],
-    FormGroupValidatorMetas,
+    ValidationIssue,
     unknown,
     FormErrorTypes,
     TFieldComponents

@@ -673,18 +673,6 @@ export type FormValidateResultFromErrorTypes<
       >
     }
 
-export interface FormGroupValidatorMeta<
-  out TSchemaSubmitOutput = unknown,
-  out TGroupError = unknown,
-  out TFieldError = unknown,
-> {
-  readonly schemaSubmitOutput: TSchemaSubmitOutput
-  readonly groupError: TGroupError
-  readonly fieldError: TFieldError
-}
-
-export type FormGroupValidatorMetas = ReadonlyArray<FormGroupValidatorMeta>
-
 type TryGetSchemaOutput<TValidator> = TValidator extends {
   readonly run: StandardSchemaV1<any, infer TOutput>
 }
@@ -718,92 +706,77 @@ type TryGetFieldError<TValidator> = TValidator extends {
     ? ExtractAggregateError<Awaited<TReturn>, 'field'>
     : never
 
-export type ParsedFormGroupValidator<
-  TGroupValidator extends FormGroupValidator<any>,
-> = TGroupValidator extends {
-  readonly run: any
-}
-  ? TGroupValidator extends { readonly runOnSubmit: false }
-    ? FormGroupValidatorMeta<
-        undefined,
-        TryGetFormError<TGroupValidator>,
-        TryGetFieldError<TGroupValidator>
-      >
-    : FormGroupValidatorMeta<
-        TryGetSchemaOutput<TGroupValidator>,
-        TryGetFormError<TGroupValidator>,
-        TryGetFieldError<TGroupValidator>
-      >
-  : never
-
-type MappedFormSchemaOutputs<
-  in out TFormValidators extends FormValidators<any>,
-> = {
-  [K in keyof TFormValidators]: TFormValidators[K] extends {
+type MappedSchemaOutputs<in out TValidators extends ReadonlyArray<unknown>> = {
+  [K in keyof TValidators]: TValidators[K] extends {
     readonly run: any
   }
-    ? TFormValidators[K] extends { readonly runOnSubmit: false }
+    ? TValidators[K] extends { readonly runOnSubmit: false }
       ? undefined
-      : TryGetSchemaOutput<TFormValidators[K]>
+      : TryGetSchemaOutput<TValidators[K]>
     : never
 }
 
-export type ToFormSchemaOutputs<TFormValidators extends FormValidators<any>> =
-  unknown extends TFormValidators
+type ToSchemaOutputs<
+  TValidators extends ReadonlyArray<unknown>,
+  TBroadValidators extends ReadonlyArray<unknown>,
+> = unknown extends TValidators
+  ? Array<unknown>
+  : TBroadValidators extends TValidators
     ? Array<unknown>
-    : FormValidators<any> extends TFormValidators
-      ? Array<unknown>
-      : MappedFormSchemaOutputs<TFormValidators>
+    : MappedSchemaOutputs<TValidators>
 
-type ExtractFormValidatorFormError<
-  TFormValidators extends FormValidators<any>,
-> = unknown extends TFormValidators
-  ? ValidationIssue
-  : FormValidators<any> extends TFormValidators
-    ? ValidationIssue
-    : TryGetFormError<TFormValidators[number]>
+export type ToFormSchemaOutputs<TFormValidators extends FormValidators<any>> =
+  ToSchemaOutputs<TFormValidators, FormValidators<any>>
 
-type ExtractFormValidatorFieldError<
-  TFormValidators extends FormValidators<any>,
-> = unknown extends TFormValidators
+export type ToFormGroupSchemaOutputs<
+  TGroupValidators extends FormGroupValidators<any>,
+> = ToSchemaOutputs<TGroupValidators, FormGroupValidators<any>>
+
+type ExtractValidatorFormError<
+  TValidators extends ReadonlyArray<unknown>,
+  TBroadValidators extends ReadonlyArray<unknown>,
+> = unknown extends TValidators
   ? ValidationIssue
-  : FormValidators<any> extends TFormValidators
+  : TBroadValidators extends TValidators
     ? ValidationIssue
-    : TryGetFieldError<TFormValidators[number]>
+    : TryGetFormError<TValidators[number]>
+
+type ExtractValidatorFieldError<
+  TValidators extends ReadonlyArray<unknown>,
+  TBroadValidators extends ReadonlyArray<unknown>,
+> = unknown extends TValidators
+  ? ValidationIssue
+  : TBroadValidators extends TValidators
+    ? ValidationIssue
+    : TryGetFieldError<TValidators[number]>
+
+type ToValidatorErrorTypes<
+  TValidators extends ReadonlyArray<unknown>,
+  TBroadValidators extends ReadonlyArray<unknown>,
+  TSubmitReturn,
+> = FormErrorTypes<
+  | ExtractValidatorFormError<TValidators, TBroadValidators>
+  | ExtractSubmitFormError<TSubmitReturn>,
+  | ExtractValidatorFieldError<TValidators, TBroadValidators>
+  | ExtractSubmitFieldError<TSubmitReturn>
+>
 
 export type ToFormErrorTypes<
   TFormValidators extends FormValidators<any>,
   TSubmitReturn,
-> = FormErrorTypes<
-  | ExtractFormValidatorFormError<TFormValidators>
-  | ExtractSubmitFormError<TSubmitReturn>,
-  | ExtractFormValidatorFieldError<TFormValidators>
-  | ExtractSubmitFieldError<TSubmitReturn>
->
+> = ToValidatorErrorTypes<TFormValidators, FormValidators<any>, TSubmitReturn>
 
-type ExtractFieldValidatorFieldError<
-  TFieldValidators extends FieldValidators<any, any, any>,
-> = unknown extends TFieldValidators
-  ? ValidationIssue
-  : FieldValidators<any, any, any> extends TFieldValidators
-    ? ValidationIssue
-    : TryGetFieldError<TFieldValidators[number]>
-
-type ExtractFormGroupValidatorFieldError<
-  TGroupValidatorMetas extends FormGroupValidatorMetas,
-> = unknown extends TGroupValidatorMetas
-  ? ValidationIssue
-  : FormGroupValidatorMetas extends TGroupValidatorMetas
-    ? ValidationIssue
-    : TGroupValidatorMetas[number]['fieldError']
+export type ToFormGroupErrorTypes<
+  TGroupValidators extends FormGroupValidators<any>,
+> = ToValidatorErrorTypes<TGroupValidators, FormGroupValidators<any>, never>
 
 export type ToFieldError<
   TFieldValidators extends FieldValidators<any, any, any>,
-  TGroupValidatorMetas extends FormGroupValidatorMetas,
+  TGroupFieldError,
   TFormErrorTypes extends FormErrorTypes,
 > =
-  | ExtractFieldValidatorFieldError<TFieldValidators>
-  | ExtractFormGroupValidatorFieldError<TGroupValidatorMetas>
+  | ExtractValidatorFieldError<TFieldValidators, FieldValidators<any, any, any>>
+  | (unknown extends TGroupFieldError ? ValidationIssue : TGroupFieldError)
   | ExtractFormFieldError<TFormErrorTypes>
 
 type MappedServerFormValidators<
@@ -841,17 +814,3 @@ export type ServerFormStandardSchemaValidatorOutputs<
   : FormValidators<any> extends TFormValidators
     ? Array<unknown>
     : MappedServerSchemaOutputs<TFormValidators>
-
-type MappedFormGroupValidatorMetas<
-  in out TGroupValidators extends FormGroupValidators<any>,
-> = {
-  [K in keyof TGroupValidators]: ParsedFormGroupValidator<TGroupValidators[K]>
-}
-
-export type ToFormGroupValidatorMetas<
-  TGroupValidators extends FormGroupValidators<any>,
-> = unknown extends TGroupValidators
-  ? FormGroupValidatorMetas
-  : FormGroupValidators<any> extends TGroupValidators
-    ? FormGroupValidatorMetas
-    : MappedFormGroupValidatorMetas<TGroupValidators>

@@ -17,8 +17,6 @@ import type {
   FormApi,
   FormErrorTypes,
   FormErrors,
-  FormGroupStandardSchemaValidatorOutputs,
-  FormGroupValidatorMeta,
   FormGroupValidators,
   FormOptions,
   FormState,
@@ -29,7 +27,8 @@ import type {
   StandardSchemaV1Issue,
   ToFieldError,
   ToFormErrorTypes,
-  ToFormGroupValidatorMetas,
+  ToFormGroupErrorTypes,
+  ToFormGroupSchemaOutputs,
   ToFormSchemaOutputs,
   ValidationAggregateError,
   ValidationErrorMap,
@@ -77,7 +76,7 @@ type TestFieldErrors<
 > = FieldErrors<
   ToFieldError<
     TFieldValidators,
-    ToFormGroupValidatorMetas<TGroupValidators>,
+    ToFormGroupErrorTypes<TGroupValidators>['fieldError'],
     ToFormErrorTypes<TFormValidators, TSubmitReturn>
   >
 >
@@ -1237,7 +1236,7 @@ describe('validator type transforms', () => {
       },
     ])
 
-    type Error = ToFieldError<typeof vs, [], FormErrorTypes<never, never>>
+    type Error = ToFieldError<typeof vs, never, FormErrorTypes<never, never>>
 
     expectTypeOf<Error>().toEqualTypeOf<{
       message: string
@@ -1261,27 +1260,36 @@ describe('validator type transforms', () => {
         }),
         triggers: [],
       },
+      {
+        run: schema,
+        runOnSubmit: false,
+        triggers: [],
+      },
     ])
 
-    type FirstResult = FormGroupValidatorMeta<
-      { nameLength: number },
-      StandardSchemaV1Issue,
-      StandardSchemaV1Issue
-    >
-    type SecondResult = FormGroupValidatorMeta<
-      undefined,
-      { message: string; fromGroup: true },
-      { message: string; fromGroupField: true }
-    >
+    type ErrorTypes = ToFormGroupErrorTypes<typeof vs>
+    type Outputs = ToFormGroupSchemaOutputs<typeof vs>
 
-    type Metas = ToFormGroupValidatorMetas<typeof vs>
-    type Outputs = FormGroupStandardSchemaValidatorOutputs<Metas>
-
-    expectTypeOf<Metas['length']>().toEqualTypeOf<2>()
-    expectTypeOf<Metas[0]>().toEqualTypeOf<FirstResult>()
-    expectTypeOf<Metas[1]>().toEqualTypeOf<SecondResult>()
-    expectTypeOf<Outputs['length']>().toEqualTypeOf<2>()
+    expectTypeOf<ErrorTypes>().toEqualTypeOf<
+      FormErrorTypes<
+        StandardSchemaV1Issue | { message: string; fromGroup: true },
+        StandardSchemaV1Issue | { message: string; fromGroupField: true }
+      >
+    >()
+    expectTypeOf<Outputs['length']>().toEqualTypeOf<3>()
     expectTypeOf<Outputs[0]>().toEqualTypeOf<{ nameLength: number }>()
     expectTypeOf<Outputs[1]>().toEqualTypeOf<undefined>()
+    expectTypeOf<Outputs[2]>().toEqualTypeOf<undefined>()
+  })
+
+  it('should normalize broad and empty group validator transforms', () => {
+    expectTypeOf<ToFormGroupErrorTypes<any>>().toEqualTypeOf<FormErrorTypes>()
+    expectTypeOf<ToFormGroupSchemaOutputs<any>>().toEqualTypeOf<
+      Array<unknown>
+    >()
+    expectTypeOf<ToFormGroupErrorTypes<[]>>().toEqualTypeOf<
+      FormErrorTypes<never, never>
+    >()
+    expectTypeOf<ToFormGroupSchemaOutputs<[]>>().toEqualTypeOf<[]>()
   })
 })

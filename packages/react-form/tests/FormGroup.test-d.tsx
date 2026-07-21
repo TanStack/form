@@ -1,11 +1,24 @@
 import React from 'react'
 import { expectTypeOf } from 'vitest'
 import { useForm } from '../src'
-import type { DeepKeys, FieldApi, ValidationIssue } from '../src'
+import type {
+  DeepKeys,
+  FieldApi,
+  FormErrorTypes,
+  FormGroupApi,
+  StandardSchemaV1,
+  StandardSchemaV1Issue,
+  ValidationIssue,
+} from '../src'
 
 type FieldErrorOf<TField> =
   TField extends FieldApi<any, any, infer TFieldError, any, any>
     ? TFieldError
+    : never
+
+type FormGroupErrorTypesOf<TGroup> =
+  TGroup extends FormGroupApi<any, any, any, infer TGroupErrorTypes, any>
+    ? TGroupErrorTypes
     : never
 
 function FormGroupTypes() {
@@ -63,6 +76,11 @@ function FormGroupTypes() {
         expectTypeOf(group.state.isDirty).toEqualTypeOf<boolean>()
         expectTypeOf(group.state.isPristine).toEqualTypeOf<boolean>()
         expectTypeOf(group.form.state.values.budget).toEqualTypeOf<number>()
+        expectTypeOf<FormGroupErrorTypesOf<typeof group>>().toEqualTypeOf<
+          FormErrorTypes<never, { message: string; fromGroup: true }>
+        >()
+        // @ts-expect-error onSubmit is intentionally kept on internal options only.
+        void group.options.onSubmit
         // @ts-expect-error group state values are scoped to guestDetails
         group.state.values.budget
         // @ts-expect-error isDefaultValue is exposed on form state and field meta, not group state
@@ -131,6 +149,55 @@ type GuestDetails = {
 type GroupValidationError = {
   message: string
   fromGroup: true
+}
+
+const guestDetailsSchema = {
+  '~standard': {
+    version: 1,
+    vendor: 'test',
+    validate: (value: unknown) => ({
+      value: {
+        nameLength: (value as GuestDetails).name.length,
+      },
+    }),
+  },
+} satisfies StandardSchemaV1<GuestDetails, { nameLength: number }>
+
+function FormGroupSubmitTypes() {
+  const form = useForm({
+    defaultValues: {
+      guestDetails: {
+        name: '',
+        emails: [''],
+      },
+    },
+  })
+
+  return (
+    <form.FormGroup
+      name="guestDetails"
+      validators={[
+        { run: guestDetailsSchema, triggers: [] },
+        {
+          run: guestDetailsSchema,
+          runOnSubmit: false,
+          triggers: [],
+        },
+      ]}
+      onSubmit={({ schemaOutputs, groupApi }) => {
+        expectTypeOf(schemaOutputs['length']).toEqualTypeOf<2>()
+        expectTypeOf(schemaOutputs[0]).toEqualTypeOf<{
+          nameLength: number
+        }>()
+        expectTypeOf(schemaOutputs[1]).toEqualTypeOf<undefined>()
+        expectTypeOf<FormGroupErrorTypesOf<typeof groupApi>>().toEqualTypeOf<
+          FormErrorTypes<StandardSchemaV1Issue, StandardSchemaV1Issue>
+        >()
+      }}
+    >
+      {() => null}
+    </form.FormGroup>
+  )
 }
 
 function FormGroupSubscribeTypes() {
@@ -310,6 +377,7 @@ function RootFieldTypes() {
 }
 
 void FormGroupTypes
+void FormGroupSubmitTypes
 void FormGroupSubscribeTypes
 void FormGroupSubscribeWithoutGroupErrorsTypes
 void RootFieldTypes

@@ -5,7 +5,6 @@ import type {
   ErrorVisibility,
   FieldValidators,
   FormErrorTypes,
-  FormGroupValidatorMetas,
   ToFieldError,
   FieldErrors as ValidationFieldErrors,
 } from '../validation.public'
@@ -196,7 +195,7 @@ export interface FieldApiOptions<
     TFieldName,
     TFieldValue
   >,
-  in out TGroupValidatorMetas extends FormGroupValidatorMetas,
+  in out TGroupFieldError,
   in out TFormData,
   in out TFormErrorTypes extends FormErrorTypes,
 > {
@@ -211,7 +210,7 @@ export interface FieldApiOptions<
     TFieldData,
     TFieldName,
     TFieldValue,
-    ToFieldError<TFieldValidators, TGroupValidatorMetas, TFormErrorTypes>,
+    ToFieldError<TFieldValidators, TGroupFieldError, TFormErrorTypes>,
     TFormData,
     TFormErrorTypes
   >
