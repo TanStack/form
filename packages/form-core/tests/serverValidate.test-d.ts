@@ -3,11 +3,13 @@ import { z } from 'zod'
 import { formOptions, serverValidateHelper, validateServerValues } from '../src'
 import type {
   FieldValidators,
-  FormOptions,
   FormApi,
   FormGroupValidators,
+  FormOptions,
   FormValidators,
+  ParsedStandardSchemaIssues,
   ServerFormState,
+  ServerFormValidateResult,
   ServerValidateFrameworkPlugin,
 } from '../src'
 
@@ -36,6 +38,13 @@ describe('server validation types', () => {
     expectTypeOf(result.values).toEqualTypeOf<{ name: string }>()
     expectTypeOf(result.schemaOutputs).toEqualTypeOf<
       readonly [{ nameLength: number }]
+    >()
+
+    type Values = { name: string }
+    type Validators = NonNullable<typeof options.validators>
+
+    expectTypeOf<null | ParsedStandardSchemaIssues<Values>>().toExtend<
+      ServerFormValidateResult<Values, Validators>
     >()
   })
 
@@ -66,6 +75,121 @@ describe('server validation types', () => {
     expectTypeOf(result.serverState).toEqualTypeOf<
       ServerFormState<Values, Validators>
     >()
+    type Result =
+      (typeof result.serverState.validationResults)[number]['result']
+
+    expectTypeOf<{
+      fields: {
+        name: 'Name is required'
+      }
+    }>().toExtend<Result>()
+  })
+
+  it('bases server state compatibility on server result types', () => {
+    type Values = { name: string }
+    interface BaseIssue {
+      message: string
+    }
+    interface DetailedIssue extends BaseIssue {
+      code: number
+    }
+    interface IncompatibleIssue extends BaseIssue {
+      reason: string
+    }
+
+    const detailedOptions = formOptions({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          run: (): DetailedIssue => ({ message: 'Invalid name', code: 400 }),
+          triggers: ['server'],
+        },
+      ],
+    })
+    const baseOptions = formOptions({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          run: (): BaseIssue => ({ message: 'Invalid name' }),
+          triggers: ['server'],
+        },
+      ],
+    })
+    const incompatibleOptions = formOptions({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          run: (): IncompatibleIssue => ({
+            message: 'Invalid name',
+            reason: 'missing',
+          }),
+          triggers: ['server'],
+        },
+      ],
+    })
+
+    type DetailedState = ServerFormState<
+      Values,
+      NonNullable<typeof detailedOptions.validators>
+    >
+    const detailedState = null as never as DetailedState
+
+    formOptions({
+      ...baseOptions,
+      serverState: detailedState,
+    })
+
+    formOptions({
+      ...incompatibleOptions,
+      // @ts-expect-error The serialized server error is incompatible.
+      serverState: detailedState,
+    })
+  })
+
+  it('ignores schema outputs and client-only errors for state compatibility', () => {
+    type Values = { name: string }
+
+    const lengthOptions = formOptions({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          run: z
+            .object({ name: z.string() })
+            .transform(({ name }) => name.length),
+          triggers: ['server'],
+        },
+        {
+          run: () => ({ message: 'Client A', clientA: true }),
+          triggers: ['change'],
+        },
+      ],
+    })
+    const uppercaseOptions = formOptions({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          run: z
+            .object({ name: z.string() })
+            .transform(({ name }) => name.toUpperCase()),
+          triggers: ['server'],
+        },
+        {
+          run: () => ({ message: 'Client B', clientB: true }),
+          triggers: ['blur'],
+        },
+      ],
+    })
+
+    type LengthState = ServerFormState<
+      Values,
+      NonNullable<typeof lengthOptions.validators>
+    >
+    type UppercaseState = ServerFormState<
+      Values,
+      NonNullable<typeof uppercaseOptions.validators>
+    >
+
+    expectTypeOf<LengthState>().toEqualTypeOf<UppercaseState>()
   })
 
   it('makes formApi optional for validators with server triggers', () => {

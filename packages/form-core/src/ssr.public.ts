@@ -1,9 +1,10 @@
 import type { FormOptions } from './FormApi/FormApi.public'
 import type {
   FormValidateResult,
+  FormValidateResultFromMetas,
   FormValidators,
   ServerFormStandardSchemaValidatorOutputs,
-  ToFormValidatorMetas,
+  ToServerFormValidatorMetas,
 } from './validation.public'
 
 export {
@@ -12,26 +13,37 @@ export {
   validateServerValues,
 } from './ssr.lib'
 
-export interface ServerValidationResult<in out TFormData> {
+export type ServerFormValidateResult<
+  TFormData,
+  TFormValidators extends FormValidators<TFormData>,
+> = FormValidateResultFromMetas<
+  TFormData,
+  ToServerFormValidatorMetas<TFormValidators>
+>
+
+export interface ServerValidationResult<
+  in out TFormData,
+  TResult = FormValidateResult<TFormData>,
+> {
   validatorIndex: number
-  result: FormValidateResult<TFormData>
+  result: TResult
   schemaResult: unknown | null
   hasSchemaResult?: boolean
 }
 
-export interface ServerFormState<
-  in out TFormData,
-  in out TFormValidators extends FormValidators<TFormData>,
-> {
+interface ServerFormStateByResult<in out TFormData, TResult> {
   values: TFormData | undefined
-  validationResults: Array<ServerValidationResult<TFormData>>
+  validationResults: Array<ServerValidationResult<TFormData, TResult>>
   submissionAttempts: number
-  /**
-   * @private
-   * Carries validator type information without adding runtime data.
-   */
-  readonly _formValidatorMetas?: ToFormValidatorMetas<TFormValidators>
 }
+
+export type ServerFormState<
+  TFormData,
+  TFormValidators extends FormValidators<TFormData>,
+> = ServerFormStateByResult<
+  TFormData,
+  ServerFormValidateResult<TFormData, TFormValidators>
+>
 
 export interface ServerValidateSuccess<
   in out TFormData,

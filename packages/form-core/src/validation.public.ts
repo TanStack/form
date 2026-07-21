@@ -374,27 +374,66 @@ export type ValidationErrorValue = ValidationIssue | string
 export type ValidationError = OneOrMany<ValidationIssue>
 export type ValidationErrorInput = OneOrMany<ValidationErrorValue>
 
-export interface ValidationErrorMap<in out TFormData> {
+export interface ValidationAggregateError<in out TFormData> {
   form?: ValidationErrorInput
   fields: Partial<Record<DeepKeys<TFormData>, ValidationErrorInput>>
 }
 
-/**
- * Creates a mutable validation error map.
- *
- * If an initial error map is provided, the same object is returned.
- */
-export function createErrorMap<TFormData>(
-  initial?: Partial<ValidationErrorMap<TFormData>>,
-): ValidationErrorMap<TFormData> {
-  if (!initial) return { fields: {} }
-
-  initial.fields ??= {}
-  return initial as ValidationErrorMap<TFormData>
+export interface ValidationErrorMap<in out TFormData> {
+  form?: ValidationErrorInput
+  fields: Partial<Record<DeepKeys<TFormData>, ValidationErrorInput>>
+  toResult: () => ValidationAggregateError<TFormData> | undefined
 }
 
 export type CreateErrorMapFn<in out TFormData> =
-  typeof createErrorMap<TFormData>
+  () => ValidationErrorMap<TFormData>
+
+const VALIDATION_ERROR_MAP = Symbol('VALIDATION_ERROR_MAP')
+
+export function isValidationErrorMap(
+  value: unknown,
+): value is ValidationErrorMap<any> {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    (value as { [VALIDATION_ERROR_MAP]?: true })[VALIDATION_ERROR_MAP] === true
+  )
+}
+
+export function createErrorMap<TFormData>(
+  defaults?: ValidationAggregateError<TFormData>,
+): ValidationErrorMap<TFormData> {
+  const errorMap: ValidationErrorMap<TFormData> = {
+    fields: defaults?.fields ?? {},
+    form: defaults ? defaults.form : undefined,
+    toResult: () => {
+      const resultFields: ValidationAggregateError<TFormData>['fields'] = {}
+
+      for (const fieldName of Object.keys(errorMap.fields) as Array<
+        DeepKeys<TFormData>
+      >) {
+        const fieldError = errorMap.fields[fieldName]
+
+        if (fieldError !== undefined) {
+          resultFields[fieldName] = fieldError
+        }
+      }
+
+      if (errorMap.form === undefined && Object.keys(resultFields).length === 0)
+        return undefined
+
+      return errorMap.form === undefined
+        ? { fields: resultFields }
+        : { form: errorMap.form, fields: resultFields }
+    },
+  }
+
+  Object.defineProperty(errorMap, VALIDATION_ERROR_MAP, {
+    value: true,
+  })
+
+  return errorMap
+}
 
 export interface ParsedStandardSchemaIssues<in out TFormData> {
   form: Array<StandardSchemaV1Issue>
@@ -438,10 +477,10 @@ export type ValidationResult = ValidValidationResult | ValidationErrorInput
 
 export type FormValidationError<TFormData> =
   | ValidationErrorInput
-  | ValidationErrorMap<TFormData>
+  | ValidationAggregateError<TFormData>
 export type FormValidateResult<TFormData> =
   | ValidationResult
-  | ValidationErrorMap<TFormData>
+  | ValidationAggregateError<TFormData>
 
 export type ValidatorFn<in TParameter, out TReturn> = (
   ...args: Array<TParameter>
@@ -483,10 +522,10 @@ export interface FormGroupValidatorContext<in out TGroupValue> {
 
 export type FormGroupValidationError<TGroupValue> =
   | ValidationErrorInput
-  | ValidationErrorMap<TGroupValue>
+  | ValidationAggregateError<TGroupValue>
 export type FormGroupValidateResult<TGroupValue> =
   | ValidationResult
-  | ValidationErrorMap<TGroupValue>
+  | ValidationAggregateError<TGroupValue>
 
 export type FormGroupValidatorFn<TGroupValue> = ValidatorFn<
   FormGroupValidatorContext<TGroupValue>,
@@ -571,12 +610,8 @@ type NormalizeValidationError<TError> =
 
 type ValidationErrorTarget = 'form' | 'field'
 
-type ExtractErrorMap<
-  TResult,
-  TTarget extends ValidationErrorTarget,
-> = TResult extends ValidationIssue
-  ? NormalizeValidationResult<TResult>
-  : TResult extends ValidationErrorMap<any>
+type ExtractAggregateError<TResult, TTarget extends ValidationErrorTarget> =
+  TResult extends ValidationAggregateError<any>
     ? TTarget extends 'form'
       ? TResult extends { form?: infer TError }
         ? NormalizeValidationResult<TError>
@@ -601,12 +636,12 @@ type ExtractSubmitValidationError<TSubmitReturn> =
       : never
     : never
 
-type ParseSubmitFormError<TSubmitReturn> = ExtractErrorMap<
+type ParseSubmitFormError<TSubmitReturn> = ExtractAggregateError<
   ExtractSubmitValidationError<TSubmitReturn>,
   'form'
 >
 
-type ParseSubmitFieldError<TSubmitReturn> = ExtractErrorMap<
+type ParseSubmitFieldError<TSubmitReturn> = ExtractAggregateError<
   ExtractSubmitValidationError<TSubmitReturn>,
   'field'
 >
@@ -693,6 +728,36 @@ export interface FormValidatorMeta<
 
 export type FormValidatorMetas = ReadonlyArray<FormValidatorMeta>
 
+type ValidationErrorValueFromMeta<TError> = unknown extends TError
+  ? ValidationErrorValue
+  :
+      | Extract<TError, ValidationIssue>
+      | (ValidationIssue extends TError ? string : never)
+
+type ValidationErrorInputFromMeta<TError> = [TError] extends [never]
+  ? never
+  : OneOrMany<ValidationErrorValueFromMeta<TError>>
+
+export type FormValidateResultFromMetas<
+  TFormData,
+  TFormValidatorMetas extends FormValidatorMetas,
+> =
+  | ValidValidationResult
+  | ValidationErrorInputFromMeta<TFormValidatorMetas[number]['formError']>
+  | {
+      form?: ValidationErrorInputFromMeta<
+        TFormValidatorMetas[number]['formError']
+      >
+      fields: Partial<
+        Record<
+          DeepKeys<TFormData>,
+          ValidationErrorInputFromMeta<
+            TFormValidatorMetas[number]['fieldError']
+          >
+        >
+      >
+    }
+
 export interface FieldValidatorMeta<out TFieldError = unknown> {
   readonly fieldError: TFieldError
 }
@@ -741,7 +806,7 @@ type TryGetFormError<TValidator> = TValidator extends {
 }
   ? StandardSchemaV1Issue
   : TValidator extends { readonly run: (...args: any) => infer TReturn }
-    ? ExtractErrorMap<Awaited<TReturn>, 'form'>
+    ? ExtractAggregateError<Awaited<TReturn>, 'form'>
     : never
 
 type TryGetFieldError<TValidator> = TValidator extends {
@@ -749,7 +814,7 @@ type TryGetFieldError<TValidator> = TValidator extends {
 }
   ? StandardSchemaV1Issue
   : TValidator extends { readonly run: (...args: any) => infer TReturn }
-    ? ExtractErrorMap<Awaited<TReturn>, 'field'>
+    ? ExtractAggregateError<Awaited<TReturn>, 'field'>
     : never
 
 export type ParsedFormValidator<TFormValidator extends FormValidator<any>> =
@@ -807,6 +872,24 @@ export type ToFormValidatorMetas<TFormValidators extends FormValidators<any>> =
     : FormValidators<any> extends TFormValidators
       ? FormValidatorMetas
       : MappedFormValidatorMetas<TFormValidators>
+
+type MappedServerFormValidatorMetas<
+  in out TFormValidators extends FormValidators<any>,
+> = {
+  [K in keyof TFormValidators]: HasServerTrigger<
+    TFormValidators[K]
+  > extends true
+    ? ParsedFormValidator<TFormValidators[K]>
+    : never
+}
+
+export type ToServerFormValidatorMetas<
+  TFormValidators extends FormValidators<any>,
+> = unknown extends TFormValidators
+  ? FormValidatorMetas
+  : FormValidators<any> extends TFormValidators
+    ? FormValidatorMetas
+    : MappedServerFormValidatorMetas<TFormValidators>
 
 type MappedServerSchemaOutputs<
   in out TFormValidators extends FormValidators<any>,

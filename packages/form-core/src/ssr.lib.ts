@@ -10,9 +10,10 @@ import type { FormOptions } from './FormApi/FormApi.public'
 import type { FormErrorMeta } from './FormApi/formState.lib'
 import type { InternalFormApi } from './FormApi/FormApi.lib'
 import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
-import type { FormValidateResult, FormValidators } from './validation.public'
+import type { FormValidators } from './validation.public'
 import type {
   ServerFormState,
+  ServerFormValidateResult,
   ServerValidateFrameworkPlugin,
   ServerValidateResult,
 } from './ssr.public'
@@ -149,7 +150,7 @@ export async function validateServerValues<
   }
 
   const pipelineResult = await runValidatorPipeline<
-    FormValidateResult<TFormData>
+    ServerFormValidateResult<TFormData, TFormValidators>
   >({
     pipeline,
     cache: createPipelineCache(),

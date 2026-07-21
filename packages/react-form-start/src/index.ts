@@ -211,7 +211,7 @@ export function start<TOnInvalidReturn = never, TOnValidReturn = never>(
     }
 
     return Object.assign(validate, {
-      getFormData: getFormData as () => Promise<
+      getFormData: getFormData as unknown as () => Promise<
         ServerFormState<TFormData, TFormValidators>
       >,
     })
