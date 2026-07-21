@@ -9,7 +9,7 @@ title: validateServerValues
 function validateServerValues<TFormData, TFormValidators, TSubmitReturn>(options, values): Promise<ServerValidateResult<TFormData, TFormValidators>>;
 ```
 
-Defined in: [packages/form-core/src/ssr.lib.ts:130](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.lib.ts#L130)
+Defined in: [packages/form-core/src/ssr.lib.ts:129](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.lib.ts#L129)
 
 ## Type Parameters
 
