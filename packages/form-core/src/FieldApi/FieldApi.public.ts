@@ -3,11 +3,10 @@ import type { FieldUpdateOptions, Updater } from '../types.public'
 import type { FormApi } from '../FormApi/FormApi.public'
 import type {
   ErrorVisibility,
-  FieldValidatorMetas,
   FieldValidators,
   FormErrorTypes,
   FormGroupValidatorMetas,
-  ToFieldValidatorMetas,
+  ToFieldError,
   FieldErrors as ValidationFieldErrors,
 } from '../validation.public'
 import type { FieldListeners } from '../listeners.public'
@@ -29,27 +28,15 @@ export interface SubfieldsMeta {
   isSomeValidating: boolean
 }
 
-export interface OriginalFieldMeta<
-  in out TFieldValidatorMetas extends FieldValidatorMetas,
-  in out TGroupValidatorMetas extends FormGroupValidatorMetas,
-  in out TFormErrorTypes extends FormErrorTypes,
-> {
-  errors: ValidationFieldErrors<
-    TFieldValidatorMetas,
-    TGroupValidatorMetas,
-    TFormErrorTypes
-  >
+export interface OriginalFieldMeta<in out TFieldError> {
+  errors: ValidationFieldErrors<TFieldError>
   isValid: boolean
   isInvalid: boolean
 }
 
-export type AnyFieldMeta = FieldMeta<any, any, any>
+export type AnyFieldMeta = FieldMeta<any>
 
-export interface FieldMeta<
-  in out TFieldValidatorMetas extends FieldValidatorMetas,
-  in out TGroupValidatorMetas extends FormGroupValidatorMetas,
-  in out TFormErrorTypes extends FormErrorTypes,
-> extends BaseFieldMeta {
+export interface FieldMeta<in out TFieldError> extends BaseFieldMeta {
   isPristine: boolean
   isDefaultValue: boolean
   isSelfTouched: boolean
@@ -59,29 +46,16 @@ export interface FieldMeta<
   isSelfValidating: boolean
   isValid: boolean
   subfields: SubfieldsMeta
-  errors: ValidationFieldErrors<
-    TFieldValidatorMetas,
-    TGroupValidatorMetas,
-    TFormErrorTypes
-  >
-  original: OriginalFieldMeta<
-    TFieldValidatorMetas,
-    TGroupValidatorMetas,
-    TFormErrorTypes
-  >
+  errors: ValidationFieldErrors<TFieldError>
+  original: OriginalFieldMeta<TFieldError>
 }
 
-export interface FieldState<
-  out TFieldValue,
-  in out TFieldValidatorMetas extends FieldValidatorMetas,
-  in out TGroupValidatorMetas extends FormGroupValidatorMetas,
-  in out TFormErrorTypes extends FormErrorTypes,
-> {
+export interface FieldState<out TFieldValue, in out TFieldError> {
   value: TFieldValue
-  meta: FieldMeta<TFieldValidatorMetas, TGroupValidatorMetas, TFormErrorTypes>
+  meta: FieldMeta<TFieldError>
 }
 
-export type AnyFieldApi = FieldApi<any, any, any, any, any, any>
+export type AnyFieldApi = FieldApi<any, any, any, any, any>
 
 type FieldArrayElement<TFieldValue> = TryGetArrayElementType<TFieldValue>
 
@@ -127,8 +101,7 @@ type FieldVoidFn = () => void
 export interface FieldApi<
   out TFieldName,
   in out TFieldValue,
-  in out TFieldValidatorMetas extends FieldValidatorMetas,
-  in out TGroupValidatorMetas extends FormGroupValidatorMetas,
+  in out TFieldError,
   in out TFormData,
   in out TFormErrorTypes extends FormErrorTypes,
 > {
@@ -199,24 +172,13 @@ export interface FieldApi<
    */
   filterValues: FieldFilterValuesFn<TFieldValue>
 
-  atom: ReadonlyAtom<
-    FieldState<
-      TFieldValue,
-      TFieldValidatorMetas,
-      TGroupValidatorMetas,
-      TFormErrorTypes
-    >
-  >
+  atom: ReadonlyAtom<FieldState<TFieldValue, TFieldError>>
 
   value: TFieldValue
 
-  meta: FieldMeta<TFieldValidatorMetas, TGroupValidatorMetas, TFormErrorTypes>
+  meta: FieldMeta<TFieldError>
 
-  errors: ValidationFieldErrors<
-    TFieldValidatorMetas,
-    TGroupValidatorMetas,
-    TFormErrorTypes
-  >
+  errors: ValidationFieldErrors<TFieldError>
 
   handleChange: FieldHandleChangeFn<TFieldValue>
 
@@ -234,7 +196,7 @@ export interface FieldApiOptions<
     TFieldName,
     TFieldValue
   >,
-  in out TGroupValidators extends FormGroupValidatorMetas,
+  in out TGroupValidatorMetas extends FormGroupValidatorMetas,
   in out TFormData,
   in out TFormErrorTypes extends FormErrorTypes,
 > {
@@ -249,8 +211,7 @@ export interface FieldApiOptions<
     TFieldData,
     TFieldName,
     TFieldValue,
-    ToFieldValidatorMetas<TFieldValidators>,
-    TGroupValidators,
+    ToFieldError<TFieldValidators, TGroupValidatorMetas, TFormErrorTypes>,
     TFormData,
     TFormErrorTypes
   >

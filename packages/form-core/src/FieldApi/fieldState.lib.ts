@@ -61,12 +61,7 @@ type DerivedMetaMarkers = {
   [derivedMetaSourceKey]?: InternalBaseFieldMeta
 }
 
-export interface InternalFieldState extends PublicFieldState<
-  any,
-  any,
-  any,
-  any
-> {
+export interface InternalFieldState extends PublicFieldState<any, any> {
   meta: InternalFieldMeta
 }
 

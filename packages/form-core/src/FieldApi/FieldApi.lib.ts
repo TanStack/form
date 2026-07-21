@@ -288,7 +288,7 @@ export class InternalFieldApi<
   TFormData,
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
-> implements FieldApi<any, any, any, any, any, any> {
+> implements FieldApi<any, any, any, any, any> {
   readonly _isRoot = false
   _parent: AnyInternalFieldApi | InternalRootFieldApi
   _childrenMap: Map<NameSegment, AnyInternalFieldApi> = new Map()
@@ -1084,7 +1084,7 @@ export class InternalFieldApi<
     return this.state.meta
   }
 
-  get errors(): FieldErrors<any, any, any> {
+  get errors(): FieldErrors<any> {
     return this.state.meta.errors
   }
 

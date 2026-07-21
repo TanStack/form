@@ -1,12 +1,7 @@
 import type { DeepKeys } from './deep-keys.public'
 import type { FormApi } from './FormApi/FormApi.public'
 import type { AnyFieldApi, FieldApi } from './FieldApi/FieldApi.public'
-import type {
-  FieldValidatorMetas,
-  FormErrorTypes,
-  FormGroupValidatorMetas,
-  ValidationTrigger,
-} from './validation.public'
+import type { FormErrorTypes, ValidationTrigger } from './validation.public'
 
 export type FormListenerTriggers = ValidationTrigger | 'mount' | 'reset'
 export type FieldListenerTriggers = FormListenerTriggers | 'unmount'
@@ -86,8 +81,7 @@ export type FormListeners<
 export interface FieldListenerContext<
   out TFieldName,
   in out TFieldValue,
-  in out TFieldValidatorMetas extends FieldValidatorMetas,
-  in out TGroupValidatorMetas extends FormGroupValidatorMetas,
+  in out TFieldError,
   in out TFormData,
   in out TFormErrorTypes extends FormErrorTypes,
 > {
@@ -95,8 +89,7 @@ export interface FieldListenerContext<
   fieldApi: FieldApi<
     TFieldName,
     TFieldValue,
-    TFieldValidatorMetas,
-    TGroupValidatorMetas,
+    TFieldError,
     TFormData,
     TFormErrorTypes
   >
@@ -106,37 +99,33 @@ export interface FieldListenerContext<
 export type FieldListenerFn<
   in TFieldName,
   in out TFieldValue,
-  in out TFieldValidatorMetas extends FieldValidatorMetas,
-  in out TGroupValidatorMetas extends FormGroupValidatorMetas,
+  in out TFieldError,
   in out TFormData,
   in out TFormErrorTypes extends FormErrorTypes,
 > = (
   context: FieldListenerContext<
     TFieldName,
     TFieldValue,
-    TFieldValidatorMetas,
-    TGroupValidatorMetas,
+    TFieldError,
     TFormData,
     TFormErrorTypes
   >,
 ) => void
 
-export type AnyFieldListener = FieldListener<any, any, any, any, any, any, any>
+export type AnyFieldListener = FieldListener<any, any, any, any, any, any>
 
 export interface FieldListener<
   in out TFieldData,
   in TFieldName,
   in out TFieldValue,
-  in out TFieldValidatorMetas extends FieldValidatorMetas,
-  in out TGroupValidatorMetas extends FormGroupValidatorMetas,
+  in out TFieldError,
   in out TFormData,
   in out TFormErrorTypes extends FormErrorTypes,
 > extends Listener<FieldListenerTriggers, TFieldData, TFieldValue> {
   run: FieldListenerFn<
     TFieldName,
     TFieldValue,
-    TFieldValidatorMetas,
-    TGroupValidatorMetas,
+    TFieldError,
     TFormData,
     TFormErrorTypes
   >
@@ -147,8 +136,7 @@ export type FieldListeners<
   TFieldData,
   TFieldName,
   TFieldValue,
-  TFieldValidatorMetas extends FieldValidatorMetas,
-  TGroupValidatorMetas extends FormGroupValidatorMetas,
+  TFieldError,
   TFormData,
   TFormErrorTypes extends FormErrorTypes,
 > = Array<
@@ -156,8 +144,7 @@ export type FieldListeners<
     TFieldData,
     TFieldName,
     TFieldValue,
-    TFieldValidatorMetas,
-    TGroupValidatorMetas,
+    TFieldError,
     TFormData,
     TFormErrorTypes
   >

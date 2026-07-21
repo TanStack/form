@@ -539,7 +539,7 @@ export interface FieldValidatorContext<
   event: ClientValidationTrigger
   signal: AbortSignal
   formApi: FormApi<TFormData, any>
-  fieldApi: FieldApi<TFieldName, TFieldValue, any, any, TFormData, any>
+  fieldApi: FieldApi<TFieldName, TFieldValue, any, TFormData, any>
   value: TFieldValue
   parseIssues: ParseFieldIssuesFn
 }
@@ -629,13 +629,6 @@ type ExtractSubmitFieldError<TSubmitReturn> = unknown extends TSubmitReturn
   ? ValidationIssue
   : ParseSubmitFieldError<TSubmitReturn>
 
-type IfBroad<
-  TBase,
-  TValue extends TBase,
-  TBroad,
-  TNarrow,
-> = TBase extends TValue ? TBroad : TNarrow
-
 type ExtractFormError<TFormErrorTypes extends FormErrorTypes> =
   unknown extends TFormErrorTypes['formError']
     ? ValidationIssue
@@ -650,24 +643,8 @@ export type FormErrors<TFormErrorTypes extends FormErrorTypes> = Array<
   ExtractFormError<TFormErrorTypes>
 >
 
-export type FieldErrors<
-  TFieldValidatorMetas extends FieldValidatorMetas,
-  TGroupValidatorMetas extends FormGroupValidatorMetas,
-  TFormErrorTypes extends FormErrorTypes,
-> = Array<
-  | IfBroad<
-      FieldValidatorMetas,
-      TFieldValidatorMetas,
-      ValidationIssue,
-      TFieldValidatorMetas[number]['fieldError']
-    >
-  | IfBroad<
-      FormGroupValidatorMetas,
-      TGroupValidatorMetas,
-      ValidationIssue,
-      TGroupValidatorMetas[number]['fieldError']
-    >
-  | ExtractFormFieldError<TFormErrorTypes>
+export type FieldErrors<TFieldError> = Array<
+  unknown extends TFieldError ? ValidationIssue : TFieldError
 >
 
 type ValidationErrorValueFromType<TError> = unknown extends TError
@@ -695,12 +672,6 @@ export type FormValidateResultFromErrorTypes<
         >
       >
     }
-
-export interface FieldValidatorMeta<out TFieldError = unknown> {
-  readonly fieldError: TFieldError
-}
-
-export type FieldValidatorMetas = ReadonlyArray<FieldValidatorMeta>
 
 export interface FormGroupValidatorMeta<
   out TSchemaSubmitOutput = unknown,
@@ -746,14 +717,6 @@ type TryGetFieldError<TValidator> = TValidator extends {
   : TValidator extends { readonly run: (...args: any) => infer TReturn }
     ? ExtractAggregateError<Awaited<TReturn>, 'field'>
     : never
-
-export type ParsedFieldValidator<
-  TFieldValidator extends FieldValidator<any, any, any>,
-> = TFieldValidator extends {
-  readonly run: any
-}
-  ? FieldValidatorMeta<TryGetFieldError<TFieldValidator>>
-  : never
 
 export type ParsedFormGroupValidator<
   TGroupValidator extends FormGroupValidator<any>,
@@ -818,6 +781,31 @@ export type ToFormErrorTypes<
   | ExtractSubmitFieldError<TSubmitReturn>
 >
 
+type ExtractFieldValidatorFieldError<
+  TFieldValidators extends FieldValidators<any, any, any>,
+> = unknown extends TFieldValidators
+  ? ValidationIssue
+  : FieldValidators<any, any, any> extends TFieldValidators
+    ? ValidationIssue
+    : TryGetFieldError<TFieldValidators[number]>
+
+type ExtractFormGroupValidatorFieldError<
+  TGroupValidatorMetas extends FormGroupValidatorMetas,
+> = unknown extends TGroupValidatorMetas
+  ? ValidationIssue
+  : FormGroupValidatorMetas extends TGroupValidatorMetas
+    ? ValidationIssue
+    : TGroupValidatorMetas[number]['fieldError']
+
+export type ToFieldError<
+  TFieldValidators extends FieldValidators<any, any, any>,
+  TGroupValidatorMetas extends FormGroupValidatorMetas,
+  TFormErrorTypes extends FormErrorTypes,
+> =
+  | ExtractFieldValidatorFieldError<TFieldValidators>
+  | ExtractFormGroupValidatorFieldError<TGroupValidatorMetas>
+  | ExtractFormFieldError<TFormErrorTypes>
+
 type MappedServerFormValidators<
   in out TFormValidators extends FormValidators<any>,
 > = {
@@ -853,20 +841,6 @@ export type ServerFormStandardSchemaValidatorOutputs<
   : FormValidators<any> extends TFormValidators
     ? Array<unknown>
     : MappedServerSchemaOutputs<TFormValidators>
-
-type MappedFieldValidatorMetas<
-  in out TFieldValidators extends FieldValidators<any, any, any>,
-> = {
-  [K in keyof TFieldValidators]: ParsedFieldValidator<TFieldValidators[K]>
-}
-
-export type ToFieldValidatorMetas<
-  TFieldValidators extends FieldValidators<any, any, any>,
-> = unknown extends TFieldValidators
-  ? FieldValidatorMetas
-  : FieldValidators<any, any, any> extends TFieldValidators
-    ? FieldValidatorMetas
-    : MappedFieldValidatorMetas<TFieldValidators>
 
 type MappedFormGroupValidatorMetas<
   in out TGroupValidators extends FormGroupValidators<any>,

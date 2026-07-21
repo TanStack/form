@@ -13,7 +13,6 @@ import type {
   ErrorVisibilityFieldState,
   FieldApiOptions,
   FieldErrors,
-  FieldValidatorMeta,
   FieldValidators,
   FormApi,
   FormErrorTypes,
@@ -28,7 +27,7 @@ import type {
   ParseSubmitIssuesFn,
   ReusableErrorVisibilityState,
   StandardSchemaV1Issue,
-  ToFieldValidatorMetas,
+  ToFieldError,
   ToFormErrorTypes,
   ToFormGroupValidatorMetas,
   ToFormSchemaOutputs,
@@ -76,9 +75,11 @@ type TestFieldErrors<
   TFormValidators extends FormValidators<any>,
   TSubmitReturn,
 > = FieldErrors<
-  ToFieldValidatorMetas<TFieldValidators>,
-  ToFormGroupValidatorMetas<TGroupValidators>,
-  ToFormErrorTypes<TFormValidators, TSubmitReturn>
+  ToFieldError<
+    TFieldValidators,
+    ToFormGroupValidatorMetas<TGroupValidators>,
+    ToFormErrorTypes<TFormValidators, TSubmitReturn>
+  >
 >
 
 describe('ErrorVisibility', () => {
@@ -1236,15 +1237,12 @@ describe('validator type transforms', () => {
       },
     ])
 
-    type Result = FieldValidatorMeta<{
+    type Error = ToFieldError<typeof vs, [], FormErrorTypes<never, never>>
+
+    expectTypeOf<Error>().toEqualTypeOf<{
       message: string
       fromField: true
-    }>
-
-    type Metas = ToFieldValidatorMetas<typeof vs>
-
-    expectTypeOf<Metas['length']>().toEqualTypeOf<1>()
-    expectTypeOf<Metas[0]>().toEqualTypeOf<Result>()
+    }>()
   })
 
   it('should transform group validators', () => {

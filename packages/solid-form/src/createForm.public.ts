@@ -12,9 +12,8 @@ import type {
   FormOptions,
   FormState,
   FormValidators,
-  ToFieldValidatorMetas,
+  ToFieldError,
   ToFormErrorTypes,
-  ToFormGroupValidatorMetas,
 } from '@tanstack/form-core'
 import type { Accessor, JSX } from 'solid-js'
 
@@ -51,8 +50,7 @@ export interface SolidFormFieldProps<
       FieldApi<
         TFieldName,
         TFieldValue,
-        ToFieldValidatorMetas<TFieldValidators>,
-        ToFormGroupValidatorMetas<[]>,
+        ToFieldError<TFieldValidators, [], TFormErrorTypes>,
         TFormData,
         TFormErrorTypes
       >
@@ -80,8 +78,7 @@ export interface SolidFormArrayFieldProps<
       FieldApi<
         TFieldName,
         TFieldValue,
-        ToFieldValidatorMetas<TFieldValidators>,
-        ToFormGroupValidatorMetas<[]>,
+        ToFieldError<TFieldValidators, [], TFormErrorTypes>,
         TFormData,
         TFormErrorTypes
       >

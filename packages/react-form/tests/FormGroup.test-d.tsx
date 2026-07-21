@@ -1,7 +1,12 @@
 import React from 'react'
 import { expectTypeOf } from 'vitest'
 import { useForm } from '../src'
-import type { DeepKeys, ValidationIssue } from '../src'
+import type { DeepKeys, FieldApi, ValidationIssue } from '../src'
+
+type FieldErrorOf<TField> =
+  TField extends FieldApi<any, any, infer TFieldError, any, any>
+    ? TFieldError
+    : never
 
 function FormGroupTypes() {
   const form = useForm({
@@ -80,6 +85,10 @@ function FormGroupTypes() {
                 expectTypeOf(field.errors).toEqualTypeOf<
                   Array<{ message: string; fromGroup: true }>
                 >()
+                expectTypeOf<FieldErrorOf<typeof field>>().toEqualTypeOf<{
+                  message: string
+                  fromGroup: true
+                }>()
                 // @ts-expect-error public field APIs expose atom, not store
                 field.store
                 return null

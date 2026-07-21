@@ -5,7 +5,6 @@ import type {
   FieldApi,
   FieldApiOptions,
   FieldListeners,
-  FieldValidatorMetas,
   FieldValidators,
   FormErrorTypes,
   FormGroupApi,
@@ -16,7 +15,7 @@ import type {
   FormGroupValidatorMetas,
   FormGroupValidators,
   FormState,
-  ToFieldValidatorMetas,
+  ToFieldError,
   ToFormGroupValidatorMetas,
 } from '@tanstack/form-core'
 import type { CrossVersionReactNode } from '../reactTypes.public'
@@ -87,19 +86,11 @@ type FieldComponentsMatchingType<
 export type ReactFieldApi<
   TFieldName,
   TFieldValue,
-  TFieldValidatorMetas extends FieldValidatorMetas,
-  TGroupValidatorMetas extends FormGroupValidatorMetas,
+  TFieldError,
   TFormData,
   TFormErrorTypes extends FormErrorTypes,
   TFieldComponents extends Record<string, FunctionComponent<any>>,
-> = FieldApi<
-  TFieldName,
-  TFieldValue,
-  TFieldValidatorMetas,
-  TGroupValidatorMetas,
-  TFormData,
-  TFormErrorTypes
-> &
+> = FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes> &
   FieldComponentsMatchingType<TFieldComponents, TFieldValue>
 
 /**
@@ -153,8 +144,7 @@ export interface ReactFormFieldProps<
     fieldApi: ReactFieldApi<
       TFieldName,
       TFieldValue,
-      ToFieldValidatorMetas<TFieldValidators>,
-      TGroupValidators,
+      ToFieldError<TFieldValidators, TGroupValidators, TFormErrorTypes>,
       TFormData,
       TFormErrorTypes,
       TFieldComponents
@@ -199,12 +189,12 @@ export type ReactFormFieldComponent<
   ): CrossVersionReactNode
 }
 
-type ReactFormFieldPropsForValidatorMetas<
+type ReactFormFieldPropsForError<
   TFieldData,
   TFieldName,
   TFieldValue,
   TFieldValidators extends FieldValidators<TFieldData, TFieldName, TFieldValue>,
-  TFieldValidatorMetas extends FieldValidatorMetas,
+  TFieldError,
   TGroupValidatorMetas extends FormGroupValidatorMetas,
   TFormData,
   TFormErrorTypes extends FormErrorTypes,
@@ -226,8 +216,7 @@ type ReactFormFieldPropsForValidatorMetas<
     TFieldData,
     TFieldName,
     TFieldValue,
-    TFieldValidatorMetas,
-    TGroupValidatorMetas,
+    TFieldError,
     TFormData,
     TFormErrorTypes
   >
@@ -235,8 +224,7 @@ type ReactFormFieldPropsForValidatorMetas<
     fieldApi: ReactFieldApi<
       TFieldName,
       TFieldValue,
-      TFieldValidatorMetas,
-      TGroupValidatorMetas,
+      TFieldError,
       TFormData,
       TFormErrorTypes,
       TFieldComponents
@@ -253,12 +241,16 @@ type ReactFormFieldPropsWithValidators<
   TFormData,
   TFormErrorTypes extends FormErrorTypes,
   TFieldComponents extends Record<string, FunctionComponent<any>>,
-> = ReactFormFieldPropsForValidatorMetas<
+> = ReactFormFieldPropsForError<
   TFieldData,
   TFieldName,
   TFieldValue,
   TFieldValidators,
-  ToFieldValidatorMetas<NoInfer<TFieldValidators>>,
+  ToFieldError<
+    NoInfer<TFieldValidators>,
+    TGroupValidatorMetas,
+    TFormErrorTypes
+  >,
   TGroupValidatorMetas,
   TFormData,
   TFormErrorTypes,
@@ -275,12 +267,12 @@ type ReactFormFieldPropsWithoutValidators<
   TFormData,
   TFormErrorTypes extends FormErrorTypes,
   TFieldComponents extends Record<string, FunctionComponent<any>>,
-> = ReactFormFieldPropsForValidatorMetas<
+> = ReactFormFieldPropsForError<
   TFieldData,
   TFieldName,
   TFieldValue,
   [],
-  [],
+  ToFieldError<[], TGroupValidatorMetas, TFormErrorTypes>,
   TGroupValidatorMetas,
   TFormData,
   TFormErrorTypes,
@@ -315,8 +307,7 @@ export interface ReactFormArrayFieldProps<
     fieldApi: ReactFieldApi<
       TFieldName,
       TFieldValue,
-      ToFieldValidatorMetas<TFieldValidators>,
-      TGroupValidatorMetas,
+      ToFieldError<TFieldValidators, TGroupValidatorMetas, TFormErrorTypes>,
       TFormData,
       TFormErrorTypes,
       TFieldComponents
@@ -361,12 +352,12 @@ export type ReactFormArrayFieldComponent<
   ): CrossVersionReactNode
 }
 
-type ReactFormArrayFieldPropsForValidatorMetas<
+type ReactFormArrayFieldPropsForError<
   TFieldData,
   TFieldName,
   TFieldValue,
   TFieldValidators extends FieldValidators<TFieldData, TFieldName, TFieldValue>,
-  TFieldValidatorMetas extends FieldValidatorMetas,
+  TFieldError,
   TGroupValidatorMetas extends FormGroupValidatorMetas,
   TFormData,
   TFormErrorTypes extends FormErrorTypes,
@@ -388,8 +379,7 @@ type ReactFormArrayFieldPropsForValidatorMetas<
     TFieldData,
     TFieldName,
     TFieldValue,
-    TFieldValidatorMetas,
-    TGroupValidatorMetas,
+    TFieldError,
     TFormData,
     TFormErrorTypes
   >
@@ -397,8 +387,7 @@ type ReactFormArrayFieldPropsForValidatorMetas<
     fieldApi: ReactFieldApi<
       TFieldName,
       TFieldValue,
-      TFieldValidatorMetas,
-      TGroupValidatorMetas,
+      TFieldError,
       TFormData,
       TFormErrorTypes,
       TFieldComponents
@@ -415,12 +404,16 @@ type ReactFormArrayFieldPropsWithValidators<
   TFormData,
   TFormErrorTypes extends FormErrorTypes,
   TFieldComponents extends Record<string, FunctionComponent<any>>,
-> = ReactFormArrayFieldPropsForValidatorMetas<
+> = ReactFormArrayFieldPropsForError<
   TFieldData,
   TFieldName,
   TFieldValue,
   TFieldValidators,
-  ToFieldValidatorMetas<NoInfer<TFieldValidators>>,
+  ToFieldError<
+    NoInfer<TFieldValidators>,
+    TGroupValidatorMetas,
+    TFormErrorTypes
+  >,
   TGroupValidatorMetas,
   TFormData,
   TFormErrorTypes,
@@ -437,12 +430,12 @@ type ReactFormArrayFieldPropsWithoutValidators<
   TFormData,
   TFormErrorTypes extends FormErrorTypes,
   TFieldComponents extends Record<string, FunctionComponent<any>>,
-> = ReactFormArrayFieldPropsForValidatorMetas<
+> = ReactFormArrayFieldPropsForError<
   TFieldData,
   TFieldName,
   TFieldValue,
   [],
-  [],
+  ToFieldError<[], TGroupValidatorMetas, TFormErrorTypes>,
   TGroupValidatorMetas,
   TFormData,
   TFormErrorTypes,
