@@ -33,7 +33,7 @@ This comes with a number of advantages:
 
 - **Predictable**: You can predict the state of your form at any point in time.
 - **Easier testing**: You can easily test your forms by passing in values and asserting on the output.
-- **Non-DOM support**: You can use TanStack Form with React Native, Three.js framework adapters, or any other framework renderer.
+- **Non-DOM support**: You can use TanStack Form with React Native, Three.js renderers, or any other framework renderer.
 - **Enhanced conditional logic**: You can easily conditionally show/hide fields based on the form state.
 - **Debugging**: You can easily log the form state to the console to debug issues.
 
