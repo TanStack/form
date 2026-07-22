@@ -77,7 +77,8 @@ describe('utils', () => {
 
     expect(getBy(source, 'user.names[0]')).toBe('Ada')
     expect(getBy(source, 'user.missing.name')).toBeUndefined()
-    expect(getBy({ user: null }, 'user.name')).toBeNull()
+    expect(getBy({ user: null }, 'user')).toBeNull()
+    expect(getBy({ user: null }, 'user.name')).toBeUndefined()
   })
 
   it('sets nested object values immutably', () => {

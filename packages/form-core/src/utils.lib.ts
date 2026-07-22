@@ -192,15 +192,7 @@ export function isNil<T>(input: T): input is Extract<T, undefined | null> {
 export function getBy(obj: unknown, path: string | Array<string>): any {
   const pathObj = nameToFieldNodeSegments(path)
 
-  return pathObj.reduce((current: any, pathPart) => {
-    if (current === null) return null
-
-    if (typeof current !== 'undefined') {
-      return current[pathPart]
-    }
-
-    return undefined
-  }, obj)
+  return pathObj.reduce((current: any, pathPart) => current?.[pathPart], obj)
 }
 
 /**
