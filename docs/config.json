@@ -420,10 +420,6 @@
       "label": "API Reference",
       "children": [
         {
-          "label": "JavaScript Reference",
-          "to": "reference/index"
-        },
-        {
           "label": "Classes / FieldApi",
           "to": "reference/classes/FieldApi"
         },
@@ -509,10 +505,6 @@
           "label": "react",
           "children": [
             {
-              "label": "React Reference",
-              "to": "framework/react/reference/index"
-            },
-            {
               "label": "Variables / Field",
               "to": "framework/react/reference/variables/Field"
             },
@@ -542,10 +534,6 @@
           "label": "preact",
           "children": [
             {
-              "label": "Preact Reference",
-              "to": "framework/preact/reference/index"
-            },
-            {
               "label": "Variables / Field",
               "to": "framework/preact/reference/variables/Field"
             },
@@ -570,10 +558,6 @@
         {
           "label": "vue",
           "children": [
-            {
-              "label": "Vue Reference",
-              "to": "framework/vue/reference/index"
-            },
             {
               "label": "Variables / Field",
               "to": "framework/vue/reference/variables/Field"
@@ -600,10 +584,6 @@
           "label": "solid",
           "children": [
             {
-              "label": "Solid Reference",
-              "to": "framework/solid/reference/index"
-            },
-            {
               "label": "Functions / createField",
               "to": "framework/solid/reference/functions/createField"
             },
@@ -629,10 +609,6 @@
           "label": "lit",
           "children": [
             {
-              "label": "Lit Reference",
-              "to": "framework/lit/reference/index"
-            },
-            {
               "label": "Classes / TanStackFormController",
               "to": "framework/lit/reference/classes/TanStackFormController"
             }
@@ -641,10 +617,6 @@
         {
           "label": "angular",
           "children": [
-            {
-              "label": "Angular Reference",
-              "to": "framework/angular/reference/index"
-            },
             {
               "label": "Classes / TanStackField",
               "to": "framework/angular/reference/classes/TanStackField"
