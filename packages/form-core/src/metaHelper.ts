@@ -75,6 +75,8 @@ export function metaHelper<
     toIndex: number,
   ) {
     bumpArrayVersion(field)
+    if (fromIndex === toIndex) return
+
     const affectedFields = getAffectedFields(field, fromIndex, 'move', toIndex)
 
     const startIndex = Math.min(fromIndex, toIndex)
@@ -137,6 +139,8 @@ export function metaHelper<
     secondIndex: number,
   ) {
     bumpArrayVersion(field)
+    if (index === secondIndex) return
+
     const affectedFields = getAffectedFields(field, index, 'swap', secondIndex)
 
     affectedFields.forEach((fieldKey) => {

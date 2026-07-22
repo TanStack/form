@@ -747,6 +747,32 @@ describe('field api', () => {
     expect(form.state.isFieldsValidating).toBe(false)
   })
 
+  it('should preserve transient async validation state when moving array field meta to the same index', () => {
+    const form = new FormApi({
+      defaultValues: {
+        list: [{ value: 'a' }, { value: 'b' }],
+      },
+    })
+    const arrayField = new FieldApi({ form, name: 'list' })
+    const value0 = new FieldApi({ form, name: 'list[0].value' })
+
+    form.mount()
+    arrayField.mount()
+    value0.mount()
+
+    form.setFieldMeta('list[0].value', (meta) => ({
+      ...meta,
+      isValidating: true,
+      _pendingValidationsCount: 1,
+    }))
+
+    arrayField.moveValue(0, 0, { dontValidate: true })
+
+    expect(form.getFieldMeta('list[0].value')?.isValidating).toBe(true)
+    expect(form.getFieldMeta('list[0].value')?._pendingValidationsCount).toBe(1)
+    expect(form.state.isFieldsValidating).toBe(true)
+  })
+
   it('should reset transient async validation state when swapping array field meta', () => {
     const form = new FormApi({
       defaultValues: {
@@ -773,6 +799,32 @@ describe('field api', () => {
     expect(form.getFieldMeta('list[1].value')?.isValidating).toBe(false)
     expect(form.getFieldMeta('list[1].value')?._pendingValidationsCount).toBe(0)
     expect(form.state.isFieldsValidating).toBe(false)
+  })
+
+  it('should preserve transient async validation state when swapping array field meta at the same index', () => {
+    const form = new FormApi({
+      defaultValues: {
+        list: [{ value: 'a' }, { value: 'b' }],
+      },
+    })
+    const arrayField = new FieldApi({ form, name: 'list' })
+    const value0 = new FieldApi({ form, name: 'list[0].value' })
+
+    form.mount()
+    arrayField.mount()
+    value0.mount()
+
+    form.setFieldMeta('list[0].value', (meta) => ({
+      ...meta,
+      isValidating: true,
+      _pendingValidationsCount: 1,
+    }))
+
+    arrayField.swapValues(0, 0, { dontValidate: true })
+
+    expect(form.getFieldMeta('list[0].value')?.isValidating).toBe(true)
+    expect(form.getFieldMeta('list[0].value')?._pendingValidationsCount).toBe(1)
+    expect(form.state.isFieldsValidating).toBe(true)
   })
 
   it('should swap a value from an array value correctly', () => {
