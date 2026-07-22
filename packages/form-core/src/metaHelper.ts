@@ -110,7 +110,10 @@ export function metaHelper<
 
         const fromMeta = fromFields.get(fromKey)
         if (fromMeta) {
-          formApi.setFieldMeta(fieldKey as DeepKeys<TFormData>, fromMeta)
+          formApi.setFieldMeta(
+            fieldKey as DeepKeys<TFormData>,
+            resetTransientValidationMeta(fromMeta),
+          )
         }
       })
   }
@@ -153,8 +156,10 @@ export function metaHelper<
         formApi.getFieldMeta(swappedKey),
       ]
 
-      if (meta1) formApi.setFieldMeta(swappedKey, meta1)
-      if (meta2) formApi.setFieldMeta(fieldKey, meta2)
+      if (meta1)
+        formApi.setFieldMeta(swappedKey, resetTransientValidationMeta(meta1))
+      if (meta2)
+        formApi.setFieldMeta(fieldKey, resetTransientValidationMeta(meta2))
     })
   }
 
@@ -239,22 +244,31 @@ export function metaHelper<
       const nextFieldKey = updateIndex(fieldKey.toString(), direction)
       const nextFieldMeta = formApi.getFieldMeta(nextFieldKey)
       if (nextFieldMeta) {
-        // Transient async-validation state is bound to the specific field
-        // instance that started the validation; that instance settles its own
-        // counter against the original index once the promise resolves.
-        // Carrying it over to a shifted index would orphan the counter and
-        // leave `isValidating` stuck true. Array mutations re-trigger
-        // validation on the shifted fields, so it is safe to reset here.
-        // See https://github.com/TanStack/form/issues/2234
-        formApi.setFieldMeta(fieldKey, {
-          ...nextFieldMeta,
-          isValidating: false,
-          _pendingValidationsCount: 0,
-        })
+        formApi.setFieldMeta(
+          fieldKey,
+          resetTransientValidationMeta(nextFieldMeta),
+        )
       } else {
         formApi.setFieldMeta(fieldKey, getEmptyFieldMeta())
       }
     })
+  }
+
+  function resetTransientValidationMeta(
+    meta: AnyFieldLikeMeta,
+  ): AnyFieldLikeMeta {
+    // Transient async-validation state is bound to the specific field instance
+    // that started the validation; that instance settles its own counter
+    // against the original index once the promise resolves. Carrying it over
+    // to a different array index would orphan the counter and leave
+    // `isValidating` stuck true. Array mutations re-trigger validation on the
+    // shifted fields, so it is safe to reset here.
+    // See https://github.com/TanStack/form/issues/2234
+    return {
+      ...meta,
+      isValidating: false,
+      _pendingValidationsCount: 0,
+    }
   }
 
   const getEmptyFieldMeta = (): AnyFieldLikeMeta => defaultFieldMeta

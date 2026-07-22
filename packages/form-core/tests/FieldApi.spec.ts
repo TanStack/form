@@ -719,6 +719,62 @@ describe('field api', () => {
     vi.useRealTimers()
   })
 
+  it('should reset transient async validation state when moving array field meta', () => {
+    const form = new FormApi({
+      defaultValues: {
+        list: [{ value: 'a' }, { value: 'b' }],
+      },
+    })
+    const arrayField = new FieldApi({ form, name: 'list' })
+    const value0 = new FieldApi({ form, name: 'list[0].value' })
+    const value1 = new FieldApi({ form, name: 'list[1].value' })
+
+    form.mount()
+    arrayField.mount()
+    value0.mount()
+    value1.mount()
+
+    form.setFieldMeta('list[0].value', (meta) => ({
+      ...meta,
+      isValidating: true,
+      _pendingValidationsCount: 1,
+    }))
+
+    arrayField.moveValue(0, 1, { dontValidate: true })
+
+    expect(form.getFieldMeta('list[1].value')?.isValidating).toBe(false)
+    expect(form.getFieldMeta('list[1].value')?._pendingValidationsCount).toBe(0)
+    expect(form.state.isFieldsValidating).toBe(false)
+  })
+
+  it('should reset transient async validation state when swapping array field meta', () => {
+    const form = new FormApi({
+      defaultValues: {
+        list: [{ value: 'a' }, { value: 'b' }],
+      },
+    })
+    const arrayField = new FieldApi({ form, name: 'list' })
+    const value0 = new FieldApi({ form, name: 'list[0].value' })
+    const value1 = new FieldApi({ form, name: 'list[1].value' })
+
+    form.mount()
+    arrayField.mount()
+    value0.mount()
+    value1.mount()
+
+    form.setFieldMeta('list[0].value', (meta) => ({
+      ...meta,
+      isValidating: true,
+      _pendingValidationsCount: 1,
+    }))
+
+    arrayField.swapValues(0, 1, { dontValidate: true })
+
+    expect(form.getFieldMeta('list[1].value')?.isValidating).toBe(false)
+    expect(form.getFieldMeta('list[1].value')?._pendingValidationsCount).toBe(0)
+    expect(form.state.isFieldsValidating).toBe(false)
+  })
+
   it('should swap a value from an array value correctly', () => {
     const form = new FormApi({
       defaultValues: {
