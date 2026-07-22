@@ -8,6 +8,7 @@ export default defineConfig([
     fixedExtension: false,
     dts: true,
     clean: true,
+    sourcemap: false,
   },
   {
     entry: { production: 'src/production.ts' },
@@ -16,5 +17,6 @@ export default defineConfig([
     fixedExtension: false,
     dts: true,
     clean: false,
+    sourcemap: false,
   },
 ])
