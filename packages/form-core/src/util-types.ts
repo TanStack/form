@@ -196,6 +196,60 @@ export type DeepKeysOfType<TData, TValue> = Extract<
   AnyDeepKeyAndValue<string, TValue>
 >['key']
 
+type IsEqual<TValue, TOther> = [TValue] extends [TOther]
+  ? [TOther] extends [TValue]
+    ? true
+    : false
+  : false
+
+/**
+ * Checks whether the form value can safely back a field group value.
+ * Extra form fields are allowed, but fields exposed by the field group must match exactly.
+ */
+type IsFieldGroupCompatible<TFormValue, TFieldGroupValue> = [
+  TFieldGroupValue,
+] extends [ReadonlyArray<infer TFieldGroupItem>]
+  ? [TFormValue] extends [ReadonlyArray<infer TFormItem>]
+    ? IsFieldGroupCompatible<TFormItem, TFieldGroupItem>
+    : false
+  : [TFieldGroupValue] extends [object]
+    ? [TFormValue] extends [object]
+      ? false extends {
+          [K in keyof TFieldGroupValue]-?: K extends keyof TFormValue
+            ? IsFieldGroupCompatible<TFormValue[K], TFieldGroupValue[K]>
+            : false
+        }[keyof TFieldGroupValue]
+        ? false
+        : true
+      : false
+    : IsEqual<TFormValue, TFieldGroupValue>
+
+/**
+ * The keys of an object or array, deeply nested and compatible with a field group value.
+ */
+export type DeepKeysOfFieldGroupType<TData, TValue> = unknown extends TData
+  ? string
+  : DeepKeysAndValues<TData> extends infer TDeepKeyAndValue
+    ? TDeepKeyAndValue extends AnyDeepKeyAndValue<infer TKey, infer TDeepValue>
+      ? IsFieldGroupCompatible<NonNullable<TDeepValue>, TValue> extends true
+        ? TKey
+        : never
+      : never
+    : never
+
+/**
+ * The keys of an object or array, deeply nested and compatible with a mapped field group value.
+ */
+export type DeepKeysOfFieldGroupFieldType<TData, TValue> = unknown extends TData
+  ? string
+  : DeepKeysAndValues<TData> extends infer TDeepKeyAndValue
+    ? TDeepKeyAndValue extends AnyDeepKeyAndValue<infer TKey, infer TDeepValue>
+      ? IsFieldGroupCompatible<TDeepValue, TValue> extends true
+        ? TKey
+        : never
+      : never
+    : never
+
 /**
  * Maps the deep keys of TFormData to the shallow keys of TFieldGroupData.
  *  Since using template strings as keys is impractical, it relies on shallow keys only.
@@ -207,6 +261,22 @@ export type FieldsMap<TFormData, TFieldGroupData> =
       ? never
       : {
           [K in keyof TFieldGroupData]: DeepKeysOfType<
+            TFormData,
+            TFieldGroupData[K]
+          >
+        }
+
+/**
+ * Maps the deep keys of TFormData to the shallow keys of TFieldGroupData with compatible field group value types.
+ *  Since using template strings as keys is impractical, it relies on shallow keys only.
+ */
+export type FieldGroupFieldsMap<TFormData, TFieldGroupData> =
+  TFieldGroupData extends any[]
+    ? never
+    : string extends keyof TFieldGroupData
+      ? never
+      : {
+          [K in keyof TFieldGroupData]: DeepKeysOfFieldGroupFieldType<
             TFormData,
             TFieldGroupData[K]
           >
