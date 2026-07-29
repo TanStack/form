@@ -26,6 +26,11 @@ describe('form - field state', () => {
       const form = new InternalFormApi({ defaultValues: { name: '' } })
       expect(form.getFieldValue('nonexistent')).toBeUndefined()
     })
+
+    it('returns undefined when a nested path traverses through null', () => {
+      const form = new InternalFormApi({ defaultValues: { user: null } })
+      expect(form.getFieldValue('user.name')).toBeUndefined()
+    })
   })
 
   describe('setFieldValue', () => {
