@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { render } from '@testing-library/vue'
-import { createSSRApp, defineComponent, h } from 'vue'
+import { createSSRApp, defineComponent, h, nextTick } from 'vue'
 import { renderToString } from 'vue/server-renderer'
 import { useForm } from '../src'
 
@@ -45,5 +45,27 @@ describe('useFormId', () => {
 
     expect(serverId).toBeTruthy()
     expect(clientId).toBe(serverId)
+  })
+
+  it('hydrates server-rendered markup without a mismatch', async () => {
+    const container = document.createElement('div')
+    container.innerHTML = await renderToString(createSSRApp(Comp))
+    document.body.appendChild(container)
+
+    const serverId = container.querySelector('form')?.id
+
+    // Vue reports hydration mismatches through `console.error`, so actually
+    // hydrate the server markup and assert none were raised.
+    const errors: Array<string> = []
+    const spy = vi
+      .spyOn(console, 'error')
+      .mockImplementation((...args) => void errors.push(args.join(' ')))
+
+    createSSRApp(Comp).mount(container)
+    await nextTick()
+    spy.mockRestore()
+
+    expect(errors.filter((e) => /hydration/i.test(e))).toEqual([])
+    expect(container.querySelector('form')?.id).toBe(serverId)
   })
 })
