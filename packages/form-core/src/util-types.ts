@@ -226,6 +226,8 @@ type IsFieldGroupCompatible<TFormValue, TFieldGroupValue> = [
 
 /**
  * The keys of an object or array, deeply nested and compatible with a field group value.
+ * This strips the container value's own nullability so `fields="key"` can target
+ * optional whole-object shapes.
  */
 export type DeepKeysOfFieldGroupType<TData, TValue> = unknown extends TData
   ? string
@@ -239,6 +241,8 @@ export type DeepKeysOfFieldGroupType<TData, TValue> = unknown extends TData
 
 /**
  * The keys of an object or array, deeply nested and compatible with a mapped field group value.
+ * This preserves leaf-value nullability so `fields={{ child: "key.child" }}`
+ * only accepts exact mapped field value compatibility.
  */
 export type DeepKeysOfFieldGroupFieldType<TData, TValue> = unknown extends TData
   ? string
