@@ -1,13 +1,16 @@
 import { describe, expect, expectTypeOf, it, vi } from 'vitest'
 import { z } from 'zod'
 import {
+  isErrorResult,
+  isValidationErrorMap,
+  parseValidationResult,
   reconcileRoutedFieldErrors,
   runFieldValidatorPipeline,
   runFormValidatorPipeline,
 } from '../src/validation.lib'
 import {
-  createErrorVisibility,
   createErrorMap,
+  createErrorVisibility,
   createValidator,
   createValidators,
   formOptions,
@@ -15,9 +18,9 @@ import {
 import { InternalFormApi } from '../src/FormApi/FormApi.lib'
 import type { PipelineResult } from '../src/validation.lib'
 import type {
+  ClientValidationTrigger,
   DeepKeys,
   DeepValue,
-  ClientValidationTrigger,
   FieldValidateResult,
   FieldValidator,
   FormStandardSchemaValidatorOutputs,
@@ -74,22 +77,123 @@ describe('validation public helpers', () => {
     expect(createErrorVisibility(visibility)).toBe(visibility)
   })
 
-  it('creates error maps that return aggregate validation results', () => {
+  it('creates mutable validation error maps', () => {
     const errors = createErrorMap<{ name: string; age: number }>()
 
-    expect(errors.toResult()).toBeUndefined()
-
+    expect(errors).toEqual({ fields: {} })
     errors.fields.name = undefined
-    expect(errors.toResult()).toBeUndefined()
-
     errors.fields.age = 'Age is required'
-    expect(errors.toResult()).toEqual({ fields: { age: 'Age is required' } })
-
     errors.form = 'Form is invalid'
-    expect(errors.toResult()).toEqual({
+
+    expect(errors).toEqual({
       form: 'Form is invalid',
-      fields: { age: 'Age is required' },
+      fields: { name: undefined, age: 'Age is required' },
     })
+  })
+
+  it('returns the prefilled validation error map', () => {
+    const initial = {
+      form: 'Form is invalid',
+      fields: { name: 'Name is required' },
+    }
+
+    const errors = createErrorMap(initial)
+
+    expect(errors).toBe(initial)
+  })
+
+  it('preserves falsy form errors in the initial error map', () => {
+    const initial = {
+      form: '',
+      fields: {},
+    }
+
+    const errors = createErrorMap(initial)
+
+    expect(errors).toBe(initial)
+    expect(errors).toHaveProperty('form', '')
+  })
+})
+
+describe('parseValidationResult', () => {
+  it('returns no stored errors for valid results', () => {
+    const validResults: Array<null | undefined | false | Array<never>> = [
+      null,
+      undefined,
+      false,
+      [],
+    ]
+
+    for (const result of validResults) {
+      expect(parseValidationResult(result)).toEqual({
+        self: null,
+        subfields: null,
+      })
+      expect(isErrorResult(result)).toBe(false)
+    }
+  })
+
+  it('normalizes errors owned by the validation boundary', () => {
+    const result = ['Required', { message: 'Must be valid' }]
+
+    expect(parseValidationResult(result)).toEqual({
+      self: [{ message: 'Required' }, { message: 'Must be valid' }],
+      subfields: null,
+    })
+    expect(isErrorResult(result)).toBe(true)
+  })
+
+  it('does not misinterpret an issue with fields metadata as an error map', () => {
+    const result = { message: 'Required', fields: {} }
+
+    expect(isValidationErrorMap(result)).toBe(false)
+    expect(parseValidationResult(result)).toEqual({
+      self: [result],
+      subfields: null,
+    })
+    expect(isErrorResult(result)).toBe(true)
+  })
+
+  it('normalizes and prunes error maps', () => {
+    const result = {
+      form: 'Form is invalid',
+      fields: {
+        name: 'Name is required',
+        age: [],
+        email: undefined,
+      },
+    }
+
+    expect(isValidationErrorMap(result)).toBe(true)
+    expect(parseValidationResult(result)).toEqual({
+      self: [{ message: 'Form is invalid' }],
+      subfields: {
+        name: [{ message: 'Name is required' }],
+      },
+    })
+    expect(isErrorResult(result)).toBe(true)
+  })
+
+  it('preserves an empty error map without storing an error', () => {
+    const result = { fields: {} }
+    const resultWithEmptyEntries = {
+      form: [],
+      fields: {
+        name: undefined,
+        age: [],
+      },
+    }
+
+    expect(parseValidationResult(result)).toEqual({
+      self: null,
+      subfields: {},
+    })
+    expect(parseValidationResult(resultWithEmptyEntries)).toEqual({
+      self: null,
+      subfields: {},
+    })
+    expect(isErrorResult(result)).toBe(false)
+    expect(isErrorResult(resultWithEmptyEntries)).toBe(false)
   })
 })
 
@@ -228,7 +332,7 @@ describe('runFormValidatorPipeline', () => {
         run: ({ createErrorMap }) => {
           const errors = createErrorMap()
           errors.fields.name = 'Name is required'
-          return errors.toResult()
+          return errors
         },
         triggers: [],
       },

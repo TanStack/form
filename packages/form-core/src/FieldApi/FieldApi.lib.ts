@@ -3,9 +3,8 @@ import { callUpdater, createPipelineCache, evaluate, getBy } from '../utils.lib'
 import {
   clearIndexedErrorsFromSource,
   hasIndexedErrorFromSource,
-  isErrorResult,
   isValidationTriggerEnabled,
-  normalizeValidationError,
+  parseValidationResult,
   runFieldMountValidatorPipeline,
   runFieldValidatorPipeline,
   setIndexedError,
@@ -723,14 +722,12 @@ export class InternalFieldApi<
     if (this._isKilled) return
 
     this._setMeta((prev) => {
-      const newError = isErrorResult(result.result)
-        ? normalizeValidationError(result.result)
-        : []
+      const { self } = parseValidationResult(result.result)
       const nextErrors = setIndexedError(
         prev._fieldValidatorErrors,
         prev._fieldValidatorErrorSourceEvents,
         result.validatorIndex,
-        newError,
+        self ?? [],
         sourceEvent,
       )
 

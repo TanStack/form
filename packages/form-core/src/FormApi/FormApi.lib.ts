@@ -26,10 +26,9 @@ import {
 import { defaultInternalBaseFieldMeta } from '../FieldApi/fieldState.lib'
 import {
   clearIndexedErrorsFromSource,
-  isAggregateError,
   isErrorResult,
   isValidationTriggerEnabled,
-  normalizeValidationError,
+  parseValidationResult,
   reconcileRoutedFieldErrors,
   runFormMountValidatorPipeline,
   runFormValidatorPipeline,
@@ -82,8 +81,6 @@ import type {
   FormValidators,
   ToFormValidatorMetas,
   ToSubmitMeta,
-  ValidationAggregateError,
-  ValidationErrorInput,
   ValidationIssue,
   ValidationTrigger,
 } from '../validation.public'
@@ -871,87 +868,31 @@ export class InternalFormApi<
       this._schemaOutputs[result.validatorIndex] = result.schemaResult
     }
 
-    const aggregateError = isAggregateError(result.result)
-
-    if (aggregateError) {
-      this._processAggregateError(
-        aggregateError,
-        result.validatorIndex,
-        sourceEvent,
-      )
-      return
-    }
-
-    batch(() => {
-      this._setFormValidatorError(
-        result.validatorIndex,
-        isErrorResult(result.result)
-          ? normalizeValidationError(result.result as ValidationErrorInput)
-          : [],
-        sourceEvent,
-      )
-
-      // Clear field-level errors from potential previous { fields: {} } errors
-      const oldFieldRefs =
-        this._atoms.meta.fieldErrors.get()[result.validatorIndex]
-
-      if (oldFieldRefs && oldFieldRefs.size > 0) {
-        for (const field of oldFieldRefs) {
-          this._clearFieldValidatorError(field, result.validatorIndex)
-        }
-
-        this._atoms.meta.fieldErrors.set((prev) => {
-          const fieldErrors = [...prev]
-          fieldErrors[result.validatorIndex] = new Set()
-          return fieldErrors
-        })
-        this._atoms.meta.errorFields.set((prev) =>
-          reconcileFormErrorFields(prev, oldFieldRefs),
-        )
-      }
-    })
-  }
-
-  /**
-   * Process a ValidationAggregateError by setting form-level and field-level errors.
-   */
-  _processAggregateError(
-    aggregateError: {
-      formError: ValidationErrorInput | null
-      fieldErrors: ValidationAggregateError<any>['fields']
-    },
-    validatorIndex: number,
-    sourceEvent: string,
-  ) {
+    const parsedResult = parseValidationResult(result.result)
     const resolvedFieldErrors = new Map<string, Array<ValidationIssue>>()
 
-    for (const [fieldName, fieldError] of Object.entries(
-      aggregateError.fieldErrors,
+    for (const [fieldName, fieldErrors] of Object.entries(
+      parsedResult.subfields ?? {},
     )) {
       const resolvedName = this._resolveErrorFieldPath(fieldName)
-      const errors = normalizeValidationError(fieldError)
       resolvedFieldErrors.set(
         resolvedName,
-        (resolvedFieldErrors.get(resolvedName) ?? []).concat(errors),
+        (resolvedFieldErrors.get(resolvedName) ?? []).concat(fieldErrors),
       )
     }
 
     batch(() => {
-      // Handle form-level errors
       this._setFormValidatorError(
-        validatorIndex,
-        aggregateError.formError
-          ? normalizeValidationError(aggregateError.formError)
-          : [],
+        result.validatorIndex,
+        parsedResult.self ?? [],
         sourceEvent,
       )
 
-      // Handle field-level errors
       const fieldErrors = [...this._atoms.meta.fieldErrors.get()]
-      const oldFieldRefs = fieldErrors[validatorIndex]
+      const oldFieldRefs = fieldErrors[result.validatorIndex]
       const { fieldRefs, affectedFields, didFieldRefsChange } =
         reconcileRoutedFieldErrors(
-          validatorIndex,
+          result.validatorIndex,
           resolvedFieldErrors,
           oldFieldRefs,
           (fieldName) => this._getOrCreateFieldApi({ name: fieldName }),
@@ -961,7 +902,7 @@ export class InternalFormApi<
         )
 
       if (didFieldRefsChange) {
-        fieldErrors[validatorIndex] = fieldRefs
+        fieldErrors[result.validatorIndex] = fieldRefs
         this._atoms.meta.fieldErrors.set(fieldErrors)
       }
 

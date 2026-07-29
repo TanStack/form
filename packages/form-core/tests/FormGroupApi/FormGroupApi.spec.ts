@@ -659,14 +659,18 @@ describe('FormGroupApi', () => {
     expect(group.state.errors).toEqual([{ message: 'Group error' }])
 
     result = {
-      form: 'Aggregate group error',
+      form: 'Group error from error map',
       fields: { name: 'Name error' },
     }
     await group.validate('submit')
 
-    expect(groupField.errors).toEqual([{ message: 'Aggregate group error' }])
+    expect(groupField.errors).toEqual([
+      { message: 'Group error from error map' },
+    ])
     expect(nameField.errors).toEqual([{ message: 'Name error' }])
-    expect(group.state.errors).toEqual([{ message: 'Aggregate group error' }])
+    expect(group.state.errors).toEqual([
+      { message: 'Group error from error map' },
+    ])
 
     result = { fields: { email: 'Email error' } }
     await group.validate('submit')
@@ -696,7 +700,7 @@ describe('FormGroupApi', () => {
                     name: 'Name is required',
                   },
                 }
-              : null,
+              : { fields: {} },
         },
       ],
     })

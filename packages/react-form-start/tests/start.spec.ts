@@ -50,7 +50,7 @@ const formOpts = formOptions({
           errors.fields.name = 'Name is required'
         }
 
-        return errors.toResult()
+        return errors
       },
     },
   ],

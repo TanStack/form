@@ -1,5 +1,5 @@
 import { LiteDebouncer } from '@tanstack/pacer-lite'
-import { createErrorMap, isValidationErrorMap } from './validation.public'
+import { createErrorMap } from './validation.public'
 import {
   isStandardSchema,
   parseStandardSchema,
@@ -24,8 +24,8 @@ import type {
   FormValidator,
   FormValidatorContext,
   ServerFormValidatorContext,
-  ValidationAggregateError,
   ValidationErrorInput,
+  ValidationErrorMap,
   ValidationIssue,
   ValidationPredicateContext,
   ValidationTriggerOption,
@@ -168,32 +168,89 @@ const THROWN_ERROR = Symbol('THROWN_ERROR')
 type AbortedCall = typeof ABORTED_CALL
 type ThrownError = { [THROWN_ERROR]: true; error: unknown }
 
-function resolveValidatorResult<TResult extends ValidateResult>(
-  result: TResult,
-): TResult {
-  if (isValidationErrorMap(result)) {
-    return result.toResult() as TResult
-  }
-
-  return result
-}
-
-/**
- * @private
- * Check if a validation result is considered an error.
- */
-export function isErrorResult<T extends ValidateResult>(
-  value: T,
-): value is Exclude<T, null | undefined | false> {
-  if (isNil(value) || value === false) return false
-  return true
-}
-
 export function normalizeValidationError(
   value: ValidationErrorInput | null | undefined,
 ): Array<ValidationIssue> {
   return normalizeToArray(value).map((error) =>
     typeof error === 'string' ? { message: error } : error,
+  )
+}
+
+export interface ParsedValidationResult {
+  self: Array<ValidationIssue> | null
+  subfields: Record<string, Array<ValidationIssue>> | null
+}
+
+/**
+ * @private
+ * Check whether a validation result is an error map.
+ */
+export function isValidationErrorMap(
+  value: unknown,
+): value is ValidationErrorMap<any> {
+  if (typeof value !== 'object') return false
+  if (value === null) return false
+  if (Array.isArray(value)) return false
+  if ('message' in value) return false
+  if (!('fields' in value)) return false
+  if (Object.keys(value).length > 2) return false
+
+  const fields = value.fields
+  if (typeof fields !== 'object') return false
+  if (fields === null) return false
+  if (Array.isArray(fields)) return false
+  return true
+}
+
+/**
+ * @private
+ * Normalize a validation result into errors owned by the validation boundary
+ * and errors routed to its subfields.
+ */
+export function parseValidationResult(
+  value: ValidateResult,
+): ParsedValidationResult {
+  if (isNil(value) || value === false) {
+    return { self: null, subfields: null }
+  }
+
+  if (isValidationErrorMap(value)) {
+    const normalizedSelf = normalizeValidationError(value.form)
+    const subfields: Record<string, Array<ValidationIssue>> = {}
+
+    for (const [fieldName, fieldError] of Object.entries(value.fields)) {
+      const normalizedFieldError = normalizeValidationError(fieldError)
+
+      if (normalizedFieldError.length > 0) {
+        subfields[fieldName] = normalizedFieldError
+      }
+    }
+
+    return {
+      self: normalizedSelf.length > 0 ? normalizedSelf : null,
+      subfields,
+    }
+  }
+
+  const normalizedSelf = normalizeValidationError(value)
+
+  return {
+    self: normalizedSelf.length > 0 ? normalizedSelf : null,
+    subfields: null,
+  }
+}
+
+/**
+ * @private
+ * Check if a validation result contains an error that would be stored.
+ */
+export function isErrorResult<T extends ValidateResult>(
+  value: T,
+): value is Exclude<T, null | undefined | false> {
+  const { self, subfields } = parseValidationResult(value)
+
+  return (
+    self !== null || (subfields !== null && Object.keys(subfields).length > 0)
   )
 }
 
@@ -333,32 +390,6 @@ export function reconcileRoutedFieldErrors(
   }
 }
 
-/**
- * Check if a validation result is a ValidationAggregateError.
- * If it is, return an object with formError and fieldErrors.
- * Otherwise, return null.
- */
-export function isAggregateError(value: FormValidateResult<any>): {
-  formError: ValidationErrorInput | null
-  fieldErrors: ValidationAggregateError<any>['fields']
-} | null {
-  if (!isErrorResult(value)) return null
-
-  const aggregateError = value
-
-  // A ValidationAggregateError must be an object with at least one of form or fields
-  if (typeof aggregateError === 'object' && !Array.isArray(aggregateError)) {
-    if ('fields' in aggregateError) {
-      return {
-        formError: aggregateError.form ?? null,
-        fieldErrors: aggregateError.fields,
-      }
-    }
-  }
-
-  return null
-}
-
 export interface PipelineResult<in out T> {
   validatorIndex: number
   result: T
@@ -455,7 +486,7 @@ async function executeValidator<TResult extends ValidateResult>(
   }
 
   return {
-    result: resolveValidatorResult((await validator.run(context)) as TResult),
+    result: (await validator.run(context)) as TResult,
     schemaResult: null,
     hasSchemaResult: false,
   }
@@ -991,7 +1022,7 @@ function executeMountValidator<TResult extends ValidateResult>(
           }
 
           return {
-            result: resolveValidatorResult(asyncResult as TResult),
+            result: asyncResult as TResult,
             schemaResult: null,
             hasSchemaResult: false,
           }
@@ -1001,7 +1032,7 @@ function executeMountValidator<TResult extends ValidateResult>(
 
     cleanup()
     return {
-      result: resolveValidatorResult(result as TResult),
+      result: result as TResult,
       schemaResult: null,
       hasSchemaResult: false,
     }

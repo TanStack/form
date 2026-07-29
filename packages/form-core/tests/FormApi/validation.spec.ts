@@ -616,7 +616,7 @@ describe('form - validation', () => {
       expect(form.state.canSubmit).toBe(false)
     })
 
-    it('sets field errors from synchronous aggregate mount validation immediately', () => {
+    it('sets field errors from a synchronous mount error map immediately', () => {
       const form = new InternalFormApi({
         defaultValues: { name: '' },
         validators: [
@@ -1208,6 +1208,39 @@ describe('form - validation', () => {
       expect(form._tryGetFieldApi('range.to')).toBeNull()
     })
 
+    it('clears explicit boundary errors when an error map becomes empty', async () => {
+      let hasError = true
+      const form = new InternalFormApi({
+        defaultValues: { range: { to: '' } },
+        validators: [
+          {
+            run: () => ({
+              fields: hasError
+                ? { 'range.to': { message: 'Explicit end date error' } }
+                : {},
+            }),
+            triggers: ['change'],
+          },
+        ],
+      })
+      const rangeField = form._getOrCreateFieldApi({
+        name: 'range',
+        errorBoundary: true,
+      })
+
+      await form.validate('change')
+      expect(rangeField.errors).toEqual([
+        { message: 'Explicit end date error' },
+      ])
+
+      hasError = false
+      const errors = await form.validate('change')
+
+      expect(errors).toEqual([])
+      expect(rangeField.errors).toEqual([])
+      expect(form.state.canSubmit).toBe(true)
+    })
+
     it('follows an error boundary field moved within an array', async () => {
       const form = new InternalFormApi({
         defaultValues: {
@@ -1270,7 +1303,7 @@ describe('form - validation', () => {
       expect(field.errors).toEqual([{ message: 'Name is required' }])
     })
 
-    it('keeps form state unchanged for aggregate validators without field errors', async () => {
+    it('keeps form state unchanged for validator error maps without field errors', async () => {
       const form = new InternalFormApi({
         defaultValues: { name: '' },
         validators: [
@@ -1283,8 +1316,9 @@ describe('form - validation', () => {
         ],
       })
 
-      await form.validate('change')
+      const errors = await form.validate('change')
 
+      expect(errors).toEqual([])
       expect(form.state.errors).toEqual([])
       expect(form.state.canSubmit).toBe(true)
     })

@@ -15,7 +15,7 @@ export const formOpts = formOptions({
           errors.fields.age = 'Client validation: You must be at least 8'
         }
 
-        return errors.toResult()
+        return errors
       },
     },
     {
@@ -33,7 +33,7 @@ export const formOpts = formOptions({
           errors.fields.age = 'Server validation: You must be at least 13'
         }
 
-        return errors.toResult()
+        return errors
       },
     },
   ],

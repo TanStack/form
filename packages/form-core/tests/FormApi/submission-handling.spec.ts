@@ -38,6 +38,26 @@ describe('form - submission handling', () => {
       expect(onSubmit).not.toHaveBeenCalled()
     })
 
+    it('submits successfully when a validator returns an empty error map', async () => {
+      const onSubmit = vi.fn()
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            run: () => ({ fields: {} }),
+            triggers: [],
+          },
+        ],
+        onSubmit,
+      })
+
+      const result = await form.handleSubmit()
+
+      expect(result).toEqual([])
+      expect(onSubmit).toHaveBeenCalledOnce()
+      expect(form.state.isSubmitSuccessful).toBe(true)
+    })
+
     it('returns field validator errors once and skips onSubmit', async () => {
       const onSubmit = vi.fn()
       const fieldValidatorFn = vi

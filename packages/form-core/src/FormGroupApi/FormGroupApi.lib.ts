@@ -11,10 +11,9 @@ import {
   clearIndexedErrorsFromSource,
   hasIndexedErrorFromSource,
   hasIndexedErrors,
-  isAggregateError,
   isErrorResult,
   isValidationTriggerEnabled,
-  normalizeValidationError,
+  parseValidationResult,
   reconcileRoutedFieldErrors,
   runGroupMountValidatorPipeline,
   runValidatorPipeline,
@@ -344,7 +343,7 @@ export class InternalFormGroupApi<
       this._schemaOutputs[result.validatorIndex] = result.schemaResult
     }
 
-    const aggregate = isAggregateError(result.result)
+    const parsedResult = parseValidationResult(result.result)
     const validatorIndex = result.validatorIndex
     const groupField = this.form._getOrCreateFieldApi({ name: this.name })
     const oldFieldRefs = this._fieldErrors[validatorIndex]
@@ -353,43 +352,28 @@ export class InternalFormGroupApi<
       this._setFieldValidatorError(
         groupField,
         validatorIndex,
-        aggregate
-          ? normalizeValidationError(aggregate.formError)
-          : isErrorResult(result.result)
-            ? normalizeValidationError(result.result as never)
-            : [],
+        parsedResult.self ?? [],
         sourceEvent,
       )
 
-      if (aggregate) {
-        const normalizedFieldErrors = Object.entries(aggregate.fieldErrors).map(
-          ([fieldName, fieldError]) =>
-            [
-              this._getPrefixedFieldName(fieldName),
-              normalizeValidationError(fieldError),
-            ] as const,
-        )
+      const normalizedFieldErrors = Object.entries(
+        parsedResult.subfields ?? {},
+      ).map(
+        ([fieldName, fieldErrors]) =>
+          [this._getPrefixedFieldName(fieldName), fieldErrors] as const,
+      )
 
-        const { fieldRefs } = reconcileRoutedFieldErrors(
-          validatorIndex,
-          normalizedFieldErrors,
-          oldFieldRefs,
-          (fieldName) => this.form._getOrCreateFieldApi({ name: fieldName }),
-          (field, index, errors) =>
-            this._setFieldValidatorError(field, index, errors, sourceEvent),
-          (field, index) => this._clearFieldValidatorError(field, index),
-        )
+      const { fieldRefs } = reconcileRoutedFieldErrors(
+        validatorIndex,
+        normalizedFieldErrors,
+        oldFieldRefs,
+        (fieldName) => this.form._getOrCreateFieldApi({ name: fieldName }),
+        (field, index, errors) =>
+          this._setFieldValidatorError(field, index, errors, sourceEvent),
+        (field, index) => this._clearFieldValidatorError(field, index),
+      )
 
-        this._fieldErrors[validatorIndex] = fieldRefs
-      } else {
-        if (oldFieldRefs) {
-          for (const field of oldFieldRefs) {
-            this._clearFieldValidatorError(field, validatorIndex)
-          }
-        }
-
-        this._fieldErrors[validatorIndex] = new Set()
-      }
+      this._fieldErrors[validatorIndex] = fieldRefs
     })
   }
 
