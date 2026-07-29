@@ -3,6 +3,7 @@ import { useSelector } from '@tanstack/vue-store'
 import { defineComponent, h, onMounted } from 'vue'
 import { Field } from './useField'
 import { FormGroup } from './useFormGroup'
+import { useFormId } from './useFormId'
 import type {
   FormAsyncValidateOrFn,
   FormOptions,
@@ -268,6 +269,8 @@ export function useForm<
     TSubmitMeta
   >,
 ) {
+  const fallbackFormId = useFormId()
+
   const formApi = (() => {
     const api = new FormApi<
       TParentData,
@@ -282,7 +285,7 @@ export function useForm<
       TFormOnDynamicAsync,
       TFormOnServer,
       TSubmitMeta
-    >(opts)
+    >({ ...opts, formId: opts?.formId ?? fallbackFormId })
 
     const extendedApi: typeof api &
       VueFormApi<
