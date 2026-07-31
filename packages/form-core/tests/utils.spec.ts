@@ -677,6 +677,30 @@ describe('evaluate', () => {
     expect(undefinedFalse).toEqual(false)
   })
 
+  it('uses a custom equals() method for value types like Temporal (#2195)', () => {
+    // Value types (Temporal.PlainDate, Luxon DateTime, ...) expose their state
+    // through private fields/getters, so they have no own enumerable keys and a
+    // non-plain prototype. Without delegating to `equals()`, two equal instances
+    // are reported as unequal, marking a reset field as permanently dirty.
+    class PlainDate {
+      #iso: string
+      constructor(iso: string) {
+        this.#iso = iso
+      }
+      equals(other: PlainDate) {
+        return this.#iso === other.#iso
+      }
+    }
+
+    expect(Object.keys(new PlainDate('2026-07-31'))).toEqual([])
+    expect(
+      evaluate(new PlainDate('2026-07-31'), new PlainDate('2026-07-31')),
+    ).toBe(true)
+    expect(
+      evaluate(new PlainDate('2026-07-31'), new PlainDate('2020-01-01')),
+    ).toBe(false)
+  })
+
   it('should test equality between arrays', () => {
     const arrayTrue = evaluate([], [])
     expect(arrayTrue).toEqual(true)

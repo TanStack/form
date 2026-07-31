@@ -514,6 +514,20 @@ export function evaluate<T>(objA: T, objB: T) {
     return true
   }
 
+  // Delegate to a custom value-equality method (Temporal types, Luxon DateTime,
+  // Immutable collections, etc.) when both operands share a constructor that
+  // exposes one. This must run before the no-enumerable-keys guard below, which
+  // would otherwise treat every such value as unequal since they expose their
+  // state through getters/private fields rather than own enumerable keys (#2195).
+  if (
+    objA.constructor === objB.constructor &&
+    typeof (objA as { equals?: unknown }).equals === 'function'
+  ) {
+    return (objA as unknown as { equals: (other: unknown) => boolean }).equals(
+      objB,
+    )
+  }
+
   const keysA = Object.keys(objA)
   const keysB = Object.keys(objB)
 
