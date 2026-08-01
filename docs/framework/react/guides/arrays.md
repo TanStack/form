@@ -3,15 +3,15 @@ id: arrays
 title: Arrays
 ---
 
-TanStack Form supports arrays of scalar values and objects. Use
-`form.ArrayField` at the list boundary, regular `form.Field` components for
-item values, and form-level methods for mutations.
+TanStack Form supports arrays of simple values and objects. When you want to treat the entire array as a single field value, using form.Field is perfectly valid.
+
+However, when each item is rendered as a separate field, wrapping the entire array in `form.Field` means that a change to any nested field can rerender the whole list.
 
 ## Render an array
 
-`ArrayField` subscribes to structural changes such as insertion, removal, and
-reordering. Editing one item can then rerender its `Field` without rerendering
-the entire list.
+Use `form.ArrayField` when each item in an array is rendered as its own field.
+
+`form.ArrayField` keeps updates to a minimum, so editing one item does not rerender the entire array. The list only rerenders when its structure changes, such as when an item is added, removed, or reordered.
 
 ```tsx
 import { useForm } from '@tanstack/react-form'
@@ -70,7 +70,7 @@ function PeopleForm() {
 
                 <button
                   type="button"
-                  onClick={() => form.removeFieldValue('people', index)}
+                  onClick={() => array.removeValue('people', index)}
                 >
                   Remove person
                 </button>
