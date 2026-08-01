@@ -669,7 +669,7 @@ function AddressFields({ form }: AddressFieldsProps) {
 
 ## Form groups and field groups
 
-Replace v1 `useFormGroup` usage with `form.FormGroup`. It is the v2 tool for
+Replace v1 form group usage with `form.FormGroup`. It is the v2 tool for
 multi-step forms and scoped validation when a section is part of one concrete
 form shape:
 
@@ -923,13 +923,10 @@ Client rendering still follows the same v2 field surface:
    mutators on its render prop or move them to path-based form methods.
 7. Return `createErrorMap(...)` directly from form, group, and server validators,
    and convert submitted endpoint errors to `createValidationError(...)`.
-8. Replace `useFormGroup` with `form.FormGroup`. If a rule exists only in
-   `FormGroup.validators` but is required by final submission, also represent
-   that rule at form scope.
-9. Revisit composition: use `formOptions(...)` for shared options,
+8. Revisit composition: use `formOptions(...)` for shared options,
    `ReactFormType<typeof formOpts>` for extracted form props,
    `form.FormGroup` for scoped sections, and `withFields(...)` for reusable
    field bundles.
-10. Re-run React integration tests around validation timing, field rerenders,
+9. Re-run React integration tests around validation timing, field rerenders,
     groups, server error hydration, and array mutations. These are the areas
     where v2 intentionally tightened behavior.
