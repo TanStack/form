@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/form-example-react-expo",
-  "main": "expo-router/entry",
+  "main": "index.ts",
   "private": true,
   "scripts": {
     "start": "expo start",

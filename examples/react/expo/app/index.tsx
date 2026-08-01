@@ -1,11 +1,11 @@
 import {
   Button,
-  SafeAreaView,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { type } from 'arktype'
 import { Schema as S } from 'effect'
