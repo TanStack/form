@@ -5,7 +5,7 @@ title: FormGroupValidatorMeta
 
 # Interface: FormGroupValidatorMeta\<TSchemaSubmitOutput, TGroupError, TFieldError\>
 
-Defined in: [packages/form-core/src/validation.public.ts:735](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L735)
+Defined in: [packages/form-core/src/validation.public.ts:702](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L702)
 
 ## Type Parameters
 
@@ -29,7 +29,7 @@ Defined in: [packages/form-core/src/validation.public.ts:735](https://github.com
 readonly fieldError: TFieldError;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:742](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L742)
+Defined in: [packages/form-core/src/validation.public.ts:709](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L709)
 
 ***
 
@@ -39,7 +39,7 @@ Defined in: [packages/form-core/src/validation.public.ts:742](https://github.com
 readonly groupError: TGroupError;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:741](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L741)
+Defined in: [packages/form-core/src/validation.public.ts:708](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L708)
 
 ***
 
@@ -49,4 +49,4 @@ Defined in: [packages/form-core/src/validation.public.ts:741](https://github.com
 readonly schemaSubmitOutput: TSchemaSubmitOutput;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:740](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L740)
+Defined in: [packages/form-core/src/validation.public.ts:707](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L707)

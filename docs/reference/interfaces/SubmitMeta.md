@@ -5,7 +5,7 @@ title: SubmitMeta
 
 # Interface: SubmitMeta\<TFormError, TFieldError\>
 
-Defined in: [packages/form-core/src/validation.public.ts:622](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L622)
+Defined in: [packages/form-core/src/validation.public.ts:589](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L589)
 
 ## Type Parameters
 
@@ -25,7 +25,7 @@ Defined in: [packages/form-core/src/validation.public.ts:622](https://github.com
 readonly fieldError: TFieldError;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:627](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L627)
+Defined in: [packages/form-core/src/validation.public.ts:594](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L594)
 
 ***
 
@@ -35,4 +35,4 @@ Defined in: [packages/form-core/src/validation.public.ts:627](https://github.com
 readonly formError: TFormError;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:626](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L626)
+Defined in: [packages/form-core/src/validation.public.ts:593](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L593)

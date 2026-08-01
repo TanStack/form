@@ -6,16 +6,26 @@ title: createErrorMap
 # Function: createErrorMap()
 
 ```ts
-function createErrorMap<TFormData>(): ValidationErrorMap<TFormData>;
+function createErrorMap<TFormData>(initial?): ValidationErrorMap<TFormData>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:403](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L403)
+Defined in: [packages/form-core/src/validation.public.ts:387](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L387)
+
+Creates a mutable validation error map.
+
+If an initial error map is provided, the same object is returned.
 
 ## Type Parameters
 
 ### TFormData
 
 `TFormData`
+
+## Parameters
+
+### initial?
+
+`Partial`\<[`ValidationErrorMap`](../interfaces/ValidationErrorMap.md)\<`TFormData`\>\>
 
 ## Returns
 

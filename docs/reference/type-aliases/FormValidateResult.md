@@ -8,10 +8,10 @@ title: FormValidateResult
 ```ts
 type FormValidateResult<TFormData> = 
   | ValidationResult
-| ValidationAggregateError<TFormData>;
+| ValidationErrorMap<TFormData>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:479](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L479)
+Defined in: [packages/form-core/src/validation.public.ts:442](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L442)
 
 ## Type Parameters
 

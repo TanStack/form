@@ -9,7 +9,7 @@ title: FormValidators
 type FormValidators<TFormData> = ReadonlyArray<FormValidator<TFormData>>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:508](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L508)
+Defined in: [packages/form-core/src/validation.public.ts:471](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L471)
 
 ## Type Parameters
 

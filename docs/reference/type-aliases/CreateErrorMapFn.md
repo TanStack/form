@@ -3,20 +3,16 @@ id: CreateErrorMapFn
 title: CreateErrorMapFn
 ---
 
-# Type Alias: CreateErrorMapFn()\<TFormData\>
+# Type Alias: CreateErrorMapFn\<TFormData\>
 
 ```ts
-type CreateErrorMapFn<TFormData> = () => ValidationErrorMap<TFormData>;
+type CreateErrorMapFn<TFormData> = typeof createErrorMap;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:388](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L388)
+Defined in: [packages/form-core/src/validation.public.ts:396](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L396)
 
 ## Type Parameters
 
 ### TFormData
 
 `TFormData`
-
-## Returns
-
-[`ValidationErrorMap`](../interfaces/ValidationErrorMap.md)\<`TFormData`\>

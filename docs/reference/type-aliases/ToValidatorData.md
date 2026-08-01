@@ -9,7 +9,7 @@ title: ToValidatorData
 type ToValidatorData<TFormValidators> = ToFormValidatorMetas<TFormValidators>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:893](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L893)
+Defined in: [packages/form-core/src/validation.public.ts:860](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L860)
 
 ## Type Parameters
 

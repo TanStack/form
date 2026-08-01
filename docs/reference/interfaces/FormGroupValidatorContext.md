@@ -5,7 +5,7 @@ title: FormGroupValidatorContext
 
 # Interface: FormGroupValidatorContext\<TGroupValue\>
 
-Defined in: [packages/form-core/src/validation.public.ts:510](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L510)
+Defined in: [packages/form-core/src/validation.public.ts:473](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L473)
 
 ## Type Parameters
 
@@ -15,13 +15,27 @@ Defined in: [packages/form-core/src/validation.public.ts:510](https://github.com
 
 ## Properties
 
-### createErrorMap
+### createErrorMap()
 
 ```ts
-createErrorMap: CreateErrorMapFn<TGroupValue>;
+createErrorMap: (initial?) => ValidationErrorMap<TGroupValue>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:518](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L518)
+Defined in: [packages/form-core/src/validation.public.ts:481](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L481)
+
+Creates a mutable validation error map.
+
+If an initial error map is provided, the same object is returned.
+
+#### Parameters
+
+##### initial?
+
+`Partial`\<[`ValidationErrorMap`](ValidationErrorMap.md)\<`TGroupValue`\>\>
+
+#### Returns
+
+[`ValidationErrorMap`](ValidationErrorMap.md)\<`TGroupValue`\>
 
 ***
 
@@ -31,7 +45,7 @@ Defined in: [packages/form-core/src/validation.public.ts:518](https://github.com
 event: ValidationTrigger;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:511](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L511)
+Defined in: [packages/form-core/src/validation.public.ts:474](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L474)
 
 ***
 
@@ -41,7 +55,7 @@ Defined in: [packages/form-core/src/validation.public.ts:511](https://github.com
 formApi: FormApi<any, any, any>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:513](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L513)
+Defined in: [packages/form-core/src/validation.public.ts:476](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L476)
 
 ***
 
@@ -51,7 +65,7 @@ Defined in: [packages/form-core/src/validation.public.ts:513](https://github.com
 groupApi: FormGroupApi<any, any, TGroupValue, any, any, any>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:514](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L514)
+Defined in: [packages/form-core/src/validation.public.ts:477](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L477)
 
 ***
 
@@ -61,7 +75,7 @@ Defined in: [packages/form-core/src/validation.public.ts:514](https://github.com
 parseIssues: ParseFormIssuesFn<TGroupValue>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:517](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L517)
+Defined in: [packages/form-core/src/validation.public.ts:480](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L480)
 
 ***
 
@@ -71,7 +85,7 @@ Defined in: [packages/form-core/src/validation.public.ts:517](https://github.com
 signal: AbortSignal;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:512](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L512)
+Defined in: [packages/form-core/src/validation.public.ts:475](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L475)
 
 ***
 
@@ -81,7 +95,7 @@ Defined in: [packages/form-core/src/validation.public.ts:512](https://github.com
 optional triggerFieldApi: AnyFieldApi;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:515](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L515)
+Defined in: [packages/form-core/src/validation.public.ts:478](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L478)
 
 ***
 
@@ -91,4 +105,4 @@ Defined in: [packages/form-core/src/validation.public.ts:515](https://github.com
 value: TGroupValue;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:516](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L516)
+Defined in: [packages/form-core/src/validation.public.ts:479](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L479)
