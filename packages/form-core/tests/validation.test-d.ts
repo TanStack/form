@@ -702,6 +702,16 @@ describe('FormErrors', () => {
     >()
   })
 
+  it('should infer issues with fields metadata as form errors', () => {
+    const validators = defineFormValidators([
+      { run: () => ({ message: 'Required', fields: {} }), triggers: [] },
+    ])
+
+    expectTypeOf<TestFormErrors<typeof validators, never>>().toEqualTypeOf<
+      Array<{ message: string; fields: {} }>
+    >()
+  })
+
   it('should extract error map errors', () => {
     const stringValidators = defineFormValidators([
       {

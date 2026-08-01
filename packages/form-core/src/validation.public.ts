@@ -571,8 +571,12 @@ type NormalizeValidationError<TError> =
 
 type ValidationErrorTarget = 'form' | 'field'
 
-type ExtractErrorMap<TResult, TTarget extends ValidationErrorTarget> =
-  TResult extends ValidationErrorMap<any>
+type ExtractErrorMap<
+  TResult,
+  TTarget extends ValidationErrorTarget,
+> = TResult extends ValidationIssue
+  ? NormalizeValidationResult<TResult>
+  : TResult extends ValidationErrorMap<any>
     ? TTarget extends 'form'
       ? TResult extends { form?: infer TError }
         ? NormalizeValidationResult<TError>

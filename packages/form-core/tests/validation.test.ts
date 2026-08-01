@@ -174,6 +174,23 @@ describe('parseValidationResult', () => {
     expect(isErrorResult(result)).toBe(true)
   })
 
+  it('recognizes error maps with additional metadata keys', () => {
+    const result = {
+      form: 'Form is invalid',
+      fields: { name: 'Name is required' },
+      source: 'server',
+    }
+
+    expect(isValidationErrorMap(result)).toBe(true)
+    expect(parseValidationResult(result)).toEqual({
+      self: [{ message: 'Form is invalid' }],
+      subfields: {
+        name: [{ message: 'Name is required' }],
+      },
+    })
+    expect(isErrorResult(result)).toBe(true)
+  })
+
   it('preserves an empty error map without storing an error', () => {
     const result = { fields: {} }
     const resultWithEmptyEntries = {

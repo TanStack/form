@@ -193,7 +193,6 @@ export function isValidationErrorMap(
   if (Array.isArray(value)) return false
   if ('message' in value) return false
   if (!('fields' in value)) return false
-  if (Object.keys(value).length > 2) return false
 
   const fields = value.fields
   if (typeof fields !== 'object') return false
