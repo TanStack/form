@@ -405,8 +405,8 @@ const form = useForm({
 })
 ```
 
-`createErrorMap` also accepts an initial `{ form, fields }` object. It no longer
-has a `toResult()` method; an empty returned map is treated as a valid result.
+`createErrorMap` also accepts an initial `{ form, fields }` object. An empty
+returned map is treated as a valid result.
 Field-level validators continue to return their own issue, string, issue array,
 or a valid result directly.
 
