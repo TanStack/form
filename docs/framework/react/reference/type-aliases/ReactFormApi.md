@@ -3,13 +3,13 @@ id: ReactFormApi
 title: ReactFormApi
 ---
 
-# Type Alias: ReactFormApi\<TFormData, TFormValidatorMetas, TSubmitReturn, TComponents\>
+# Type Alias: ReactFormApi\<TFormData, TFormErrorTypes, TComponents\>
 
 ```ts
-type ReactFormApi<TFormData, TFormValidatorMetas, TSubmitReturn, TComponents> = unknown extends TComponents["formComponents"] ? ExtendedFormApi<TFormData, TFormValidatorMetas, TSubmitReturn, TComponents["fieldComponents"]> : ExtendedFormApi<TFormData, TFormValidatorMetas, TSubmitReturn, TComponents["fieldComponents"]> & TComponents["formComponents"];
+type ReactFormApi<TFormData, TFormErrorTypes, TComponents> = unknown extends TComponents["formComponents"] ? ExtendedFormApi<TFormData, TFormErrorTypes, TComponents["fieldComponents"]> : ExtendedFormApi<TFormData, TFormErrorTypes, TComponents["fieldComponents"]> & TComponents["formComponents"];
 ```
 
-Defined in: [packages/react-form/src/ReactForm/formApiTypes.public.ts:23](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/formApiTypes.public.ts#L23)
+Defined in: [packages/react-form/src/ReactForm/formApiTypes.public.ts:13](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/formApiTypes.public.ts#L13)
 
 ## Type Parameters
 
@@ -17,13 +17,9 @@ Defined in: [packages/react-form/src/ReactForm/formApiTypes.public.ts:23](https:
 
 `TFormData`
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* `FormValidatorMetas`
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFormErrorTypes` *extends* `FormErrorTypes`
 
 ### TComponents
 

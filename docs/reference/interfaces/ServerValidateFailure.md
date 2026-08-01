@@ -5,7 +5,7 @@ title: ServerValidateFailure
 
 # Interface: ServerValidateFailure\<TFormData, TFormValidators\>
 
-Defined in: [packages/form-core/src/ssr.public.ts:45](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L45)
+Defined in: [packages/form-core/src/ssr.public.ts:57](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L57)
 
 ## Type Parameters
 
@@ -25,7 +25,7 @@ Defined in: [packages/form-core/src/ssr.public.ts:45](https://github.com/TanStac
 serverState: ServerFormState<TFormData, TFormValidators>;
 ```
 
-Defined in: [packages/form-core/src/ssr.public.ts:50](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L50)
+Defined in: [packages/form-core/src/ssr.public.ts:62](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L62)
 
 ***
 
@@ -35,4 +35,4 @@ Defined in: [packages/form-core/src/ssr.public.ts:50](https://github.com/TanStac
 success: false;
 ```
 
-Defined in: [packages/form-core/src/ssr.public.ts:49](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L49)
+Defined in: [packages/form-core/src/ssr.public.ts:61](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L61)

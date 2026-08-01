@@ -5,7 +5,7 @@ title: FormValidatorContext
 
 # Interface: FormValidatorContext\<TFormData\>
 
-Defined in: [packages/form-core/src/validation.public.ts:412](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L412)
+Defined in: [packages/form-core/src/validation.public.ts:399](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L399)
 
 ## Type Parameters
 
@@ -21,7 +21,7 @@ Defined in: [packages/form-core/src/validation.public.ts:412](https://github.com
 createErrorMap: (initial?) => ValidationErrorMap<TFormData>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:419](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L419)
+Defined in: [packages/form-core/src/validation.public.ts:406](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L406)
 
 Creates a mutable validation error map.
 
@@ -45,17 +45,17 @@ If an initial error map is provided, the same object is returned.
 event: ValidationTrigger | "server";
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:413](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L413)
+Defined in: [packages/form-core/src/validation.public.ts:400](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L400)
 
 ***
 
 ### formApi
 
 ```ts
-formApi: FormApi<TFormData, any, any> | undefined;
+formApi: FormApi<TFormData, any> | undefined;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:415](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L415)
+Defined in: [packages/form-core/src/validation.public.ts:402](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L402)
 
 ***
 
@@ -65,7 +65,7 @@ Defined in: [packages/form-core/src/validation.public.ts:415](https://github.com
 parseIssues: ParseFormIssuesFn<TFormData>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:418](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L418)
+Defined in: [packages/form-core/src/validation.public.ts:405](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L405)
 
 ***
 
@@ -75,7 +75,7 @@ Defined in: [packages/form-core/src/validation.public.ts:418](https://github.com
 signal: AbortSignal;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:414](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L414)
+Defined in: [packages/form-core/src/validation.public.ts:401](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L401)
 
 ***
 
@@ -85,7 +85,7 @@ Defined in: [packages/form-core/src/validation.public.ts:414](https://github.com
 optional triggerFieldApi: AnyFieldApi;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:416](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L416)
+Defined in: [packages/form-core/src/validation.public.ts:403](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L403)
 
 ***
 
@@ -95,4 +95,4 @@ Defined in: [packages/form-core/src/validation.public.ts:416](https://github.com
 value: TFormData;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:417](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L417)
+Defined in: [packages/form-core/src/validation.public.ts:404](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L404)

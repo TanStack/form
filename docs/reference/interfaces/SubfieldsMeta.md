@@ -5,7 +5,7 @@ title: SubfieldsMeta
 
 # Interface: SubfieldsMeta
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:23](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L23)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:21](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L21)
 
 ## Properties
 
@@ -15,7 +15,7 @@ Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:23](https://gith
 isAnyInvalid: boolean;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:25](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L25)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:23](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L23)
 
 ***
 
@@ -25,7 +25,7 @@ Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:25](https://gith
 isEveryPristine: boolean;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:26](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L26)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:24](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L24)
 
 ***
 
@@ -35,7 +35,7 @@ Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:26](https://gith
 isEveryValid: boolean;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:24](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L24)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:22](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L22)
 
 ***
 
@@ -45,7 +45,7 @@ Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:24](https://gith
 isSomeDirty: boolean;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:27](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L27)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:25](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L25)
 
 ***
 
@@ -55,7 +55,7 @@ Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:27](https://gith
 isSomeTouched: boolean;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:28](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L28)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:26](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L26)
 
 ***
 
@@ -65,4 +65,4 @@ Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:28](https://gith
 isSomeValidating: boolean;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:29](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L29)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:27](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L27)

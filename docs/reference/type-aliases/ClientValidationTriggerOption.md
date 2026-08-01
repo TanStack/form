@@ -9,7 +9,7 @@ title: ClientValidationTriggerOption
 type ClientValidationTriggerOption<TFormData, TValue, TScope> = ValidationTriggerOption<TFormData, TValue, ConfigurableValidationTrigger, TScope>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:348](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L348)
+Defined in: [packages/form-core/src/validation.public.ts:335](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L335)
 
 ## Type Parameters
 

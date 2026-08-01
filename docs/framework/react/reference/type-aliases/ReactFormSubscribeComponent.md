@@ -3,13 +3,13 @@ id: ReactFormSubscribeComponent
 title: ReactFormSubscribeComponent
 ---
 
-# Type Alias: ReactFormSubscribeComponent()\<TFormData, TFormValidatorMetas, TSubmitReturn\>
+# Type Alias: ReactFormSubscribeComponent()\<TFormData, TFormErrorTypes\>
 
 ```ts
-type ReactFormSubscribeComponent<TFormData, TFormValidatorMetas, TSubmitReturn> = <TSelected>(props) => CrossVersionReactNode;
+type ReactFormSubscribeComponent<TFormData, TFormErrorTypes> = <TSelected>(props) => CrossVersionReactNode;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:129](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L129)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:114](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L114)
 
 ## Type Parameters
 
@@ -17,13 +17,9 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:129](https:/
 
 `TFormData`
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* `FormValidatorMetas`
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFormErrorTypes` *extends* `FormErrorTypes`
 
 ## Type Parameters
 
@@ -35,7 +31,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:129](https:/
 
 ### props
 
-[`ReactFormSubscribeProps`](ReactFormSubscribeProps.md)\<`TFormData`, `TFormValidatorMetas`, `TSubmitReturn`, `TSelected`\>
+[`ReactFormSubscribeProps`](ReactFormSubscribeProps.md)\<`TFormData`, `TFormErrorTypes`, `TSelected`\>
 
 ## Returns
 

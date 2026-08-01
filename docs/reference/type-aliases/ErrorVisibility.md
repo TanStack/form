@@ -3,13 +3,13 @@ id: ErrorVisibility
 title: ErrorVisibility
 ---
 
-# Type Alias: ErrorVisibility()\<TFormData, TFormValidatorMetas, TSubmitReturn\>
+# Type Alias: ErrorVisibility()\<TFormData, TFormErrorTypes\>
 
 ```ts
-type ErrorVisibility<TFormData, TFormValidatorMetas, TSubmitReturn> = (context) => boolean;
+type ErrorVisibility<TFormData, TFormErrorTypes> = (context) => boolean;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:215](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L215)
+Defined in: [packages/form-core/src/validation.public.ts:214](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L214)
 
 Decides whether a field exposes its validation errors publicly.
 
@@ -23,19 +23,15 @@ form-wide.
 
 `TFormData`
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* [`ValidatorMetas`](ValidatorMetas.md)
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFormErrorTypes` *extends* [`FormErrorTypes`](../interfaces/FormErrorTypes.md)
 
 ## Parameters
 
 ### context
 
-[`ErrorVisibilityContext`](../interfaces/ErrorVisibilityContext.md)\<`TFormData`, `TFormValidatorMetas`, `TSubmitReturn`\>
+[`ErrorVisibilityContext`](../interfaces/ErrorVisibilityContext.md)\<`TFormData`, `TFormErrorTypes`\>
 
 ## Returns
 

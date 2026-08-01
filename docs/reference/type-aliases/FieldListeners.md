@@ -3,13 +3,13 @@ id: FieldListeners
 title: FieldListeners
 ---
 
-# Type Alias: FieldListeners\<TFieldData, TFieldName, TFieldValue, TFieldValidatorMetas, TGroupValidatorMetas, TFormData, TFormValidatorMetas, TSubmitReturn\>
+# Type Alias: FieldListeners\<TFieldData, TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes\>
 
 ```ts
-type FieldListeners<TFieldData, TFieldName, TFieldValue, TFieldValidatorMetas, TGroupValidatorMetas, TFormData, TFormValidatorMetas, TSubmitReturn> = FieldListener<TFieldData, TFieldName, TFieldValue, TFieldValidatorMetas, TGroupValidatorMetas, TFormData, TFormValidatorMetas, TSubmitReturn>[];
+type FieldListeners<TFieldData, TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes> = FieldListener<TFieldData, TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes>[];
 ```
 
-Defined in: [packages/form-core/src/listeners.public.ts:167](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L167)
+Defined in: [packages/form-core/src/listeners.public.ts:135](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L135)
 
 ## Type Parameters
 
@@ -25,22 +25,14 @@ Defined in: [packages/form-core/src/listeners.public.ts:167](https://github.com/
 
 `TFieldValue`
 
-### TFieldValidatorMetas
+### TFieldError
 
-`TFieldValidatorMetas` *extends* [`FieldValidatorMetas`](FieldValidatorMetas.md)
-
-### TGroupValidatorMetas
-
-`TGroupValidatorMetas` *extends* [`FormGroupValidatorMetas`](FormGroupValidatorMetas.md)
+`TFieldError`
 
 ### TFormData
 
 `TFormData`
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* [`FormValidatorMetas`](FormValidatorMetas.md)
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFormErrorTypes` *extends* [`FormErrorTypes`](../interfaces/FormErrorTypes.md)

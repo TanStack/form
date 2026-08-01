@@ -3,9 +3,9 @@ id: ReactTanStackFormComponents
 title: ReactTanStackFormComponents
 ---
 
-# Interface: ReactTanStackFormComponents\<TFormData, TFormValidatorMetas, TSubmitReturn, TFieldComponents\>
+# Interface: ReactTanStackFormComponents\<TFormData, TFormErrorTypes, TFieldComponents\>
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:796](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L796)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:717](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L717)
 
 ## Type Parameters
 
@@ -13,13 +13,9 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:796](https:/
 
 `TFormData`
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* `FormValidatorMetas`
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFormErrorTypes` *extends* `FormErrorTypes`
 
 ### TFieldComponents
 
@@ -30,20 +26,20 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:796](https:/
 ### ArrayField
 
 ```ts
-ArrayField: ReactFormArrayFieldComponent<TFormData, TFormValidatorMetas, TSubmitReturn, TFieldComponents>;
+ArrayField: ReactFormArrayFieldComponent<TFormData, TFormErrorTypes, TFieldComponents>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:812](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L812)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:727](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L727)
 
 ***
 
 ### Field
 
 ```ts
-Field: ReactFormFieldComponent<TFormData, TFormValidatorMetas, TSubmitReturn, TFieldComponents>;
+Field: ReactFormFieldComponent<TFormData, TFormErrorTypes, TFieldComponents>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:805](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L805)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:725](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L725)
 
 TODO docs
 
@@ -52,17 +48,17 @@ TODO docs
 ### FormGroup
 
 ```ts
-FormGroup: ReactFormGroupComponent<TFormData, TFormValidatorMetas, TSubmitReturn, TFieldComponents>;
+FormGroup: ReactFormGroupComponent<TFormData, TFormErrorTypes, TFieldComponents>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:825](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L825)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:735](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L735)
 
 ***
 
 ### Subscribe
 
 ```ts
-Subscribe: ReactFormSubscribeComponent<TFormData, TFormValidatorMetas, TSubmitReturn>;
+Subscribe: ReactFormSubscribeComponent<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:819](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L819)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:733](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L733)

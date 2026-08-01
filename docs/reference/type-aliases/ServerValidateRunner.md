@@ -9,7 +9,7 @@ title: ServerValidateRunner
 type ServerValidateRunner<TFormData, TFormValidators> = (values) => Promise<ServerValidateResult<TFormData, TFormValidators>>;
 ```
 
-Defined in: [packages/form-core/src/ssr.public.ts:87](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L87)
+Defined in: [packages/form-core/src/ssr.public.ts:99](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L99)
 
 ## Type Parameters
 

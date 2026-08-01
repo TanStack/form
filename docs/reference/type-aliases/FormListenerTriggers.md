@@ -9,4 +9,4 @@ title: FormListenerTriggers
 type FormListenerTriggers = ValidationTrigger | "mount" | "reset";
 ```
 
-Defined in: [packages/form-core/src/listeners.public.ts:11](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L11)
+Defined in: [packages/form-core/src/listeners.public.ts:6](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L6)

@@ -3,9 +3,9 @@ id: FieldListenerContext
 title: FieldListenerContext
 ---
 
-# Interface: FieldListenerContext\<TFieldName, TFieldValue, TFieldValidatorMetas, TGroupValidatorMetas, TFormData, TFormValidatorMetas, TSubmitReturn\>
+# Interface: FieldListenerContext\<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes\>
 
-Defined in: [packages/form-core/src/listeners.public.ts:92](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L92)
+Defined in: [packages/form-core/src/listeners.public.ts:81](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L81)
 
 ## Type Parameters
 
@@ -17,45 +17,37 @@ Defined in: [packages/form-core/src/listeners.public.ts:92](https://github.com/T
 
 `TFieldValue`
 
-### TFieldValidatorMetas
+### TFieldError
 
-`TFieldValidatorMetas` *extends* [`FieldValidatorMetas`](../type-aliases/FieldValidatorMetas.md)
-
-### TGroupValidatorMetas
-
-`TGroupValidatorMetas` *extends* [`FormGroupValidatorMetas`](../type-aliases/FormGroupValidatorMetas.md)
+`TFieldError`
 
 ### TFormData
 
 `TFormData`
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* [`FormValidatorMetas`](../type-aliases/FormValidatorMetas.md)
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFormErrorTypes` *extends* [`FormErrorTypes`](FormErrorTypes.md)
 
 ## Properties
 
 ### fieldApi
 
 ```ts
-fieldApi: FieldApi<TFieldName, TFieldValue, TFieldValidatorMetas, TGroupValidatorMetas, TFormData, TFormValidatorMetas, TSubmitReturn>;
+fieldApi: FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [packages/form-core/src/listeners.public.ts:102](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L102)
+Defined in: [packages/form-core/src/listeners.public.ts:89](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L89)
 
 ***
 
 ### formApi
 
 ```ts
-formApi: FormApi<TFormData, TFormValidatorMetas, TSubmitReturn>;
+formApi: FormApi<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [packages/form-core/src/listeners.public.ts:111](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L111)
+Defined in: [packages/form-core/src/listeners.public.ts:96](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L96)
 
 ***
 
@@ -65,4 +57,4 @@ Defined in: [packages/form-core/src/listeners.public.ts:111](https://github.com/
 value: TFieldValue;
 ```
 
-Defined in: [packages/form-core/src/listeners.public.ts:101](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L101)
+Defined in: [packages/form-core/src/listeners.public.ts:88](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L88)

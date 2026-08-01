@@ -3,37 +3,25 @@ id: OriginalFieldMeta
 title: OriginalFieldMeta
 ---
 
-# Interface: OriginalFieldMeta\<TFieldValidatorMetas, TGroupValidatorMetas, TFormValidatorMetas, TSubmitReturn\>
+# Interface: OriginalFieldMeta\<TFieldError\>
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:32](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L32)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:30](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L30)
 
 ## Type Parameters
 
-### TFieldValidatorMetas
+### TFieldError
 
-`TFieldValidatorMetas` *extends* [`FieldValidatorMetas`](../type-aliases/FieldValidatorMetas.md)
-
-### TGroupValidatorMetas
-
-`TGroupValidatorMetas` *extends* [`FormGroupValidatorMetas`](../type-aliases/FormGroupValidatorMetas.md)
-
-### TFormValidatorMetas
-
-`TFormValidatorMetas` *extends* [`FormValidatorMetas`](../type-aliases/FormValidatorMetas.md)
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFieldError`
 
 ## Properties
 
 ### errors
 
 ```ts
-errors: FieldErrors<TFieldValidatorMetas, TGroupValidatorMetas, TFormValidatorMetas, TSubmitReturn>;
+errors: FieldErrors<TFieldError>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:38](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L38)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:31](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L31)
 
 ***
 
@@ -43,7 +31,7 @@ Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:38](https://gith
 isInvalid: boolean;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:45](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L45)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:33](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L33)
 
 ***
 
@@ -53,4 +41,4 @@ Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:45](https://gith
 isValid: boolean;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:44](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L44)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:32](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L32)

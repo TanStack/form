@@ -6,10 +6,10 @@ title: ReusableErrorVisibility
 # Type Alias: ReusableErrorVisibility()
 
 ```ts
-type ReusableErrorVisibility = <TFormData, TFormValidatorMetas, TSubmitReturn>(context) => boolean;
+type ReusableErrorVisibility = <TFormData, TFormErrorTypes>(context) => boolean;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:245](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L245)
+Defined in: [packages/form-core/src/validation.public.ts:237](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L237)
 
 ## Type Parameters
 
@@ -17,19 +17,15 @@ Defined in: [packages/form-core/src/validation.public.ts:245](https://github.com
 
 `TFormData`
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* [`ValidatorMetas`](ValidatorMetas.md)
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFormErrorTypes` *extends* [`FormErrorTypes`](../interfaces/FormErrorTypes.md)
 
 ## Parameters
 
 ### context
 
-[`ErrorVisibilityContext`](../interfaces/ErrorVisibilityContext.md)\<`TFormData`, `TFormValidatorMetas`, `TSubmitReturn`\>
+[`ErrorVisibilityContext`](../interfaces/ErrorVisibilityContext.md)\<`TFormData`, `TFormErrorTypes`\>
 
 ## Returns
 

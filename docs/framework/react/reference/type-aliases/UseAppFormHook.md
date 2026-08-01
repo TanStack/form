@@ -6,10 +6,10 @@ title: UseAppFormHook
 # Type Alias: UseAppFormHook()\<TComponents\>
 
 ```ts
-type UseAppFormHook<TComponents> = <TFormData, TFormValidators, TSubmitReturn>(options) => ReactAppFormApi<TFormData, ToFormValidatorMetas<TFormValidators>, ToSubmitMeta<TSubmitReturn>, TComponents>;
+type UseAppFormHook<TComponents> = <TFormData, TFormValidators, TSubmitReturn>(options) => ReactAppFormApi<TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>, TComponents>;
 ```
 
-Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:12](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L12)
+Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:11](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L11)
 
 ## Type Parameters
 
@@ -39,4 +39,4 @@ Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:12](h
 
 ## Returns
 
-[`ReactAppFormApi`](ReactAppFormApi.md)\<`TFormData`, `ToFormValidatorMetas`\<`TFormValidators`\>, `ToSubmitMeta`\<`TSubmitReturn`\>, `TComponents`\>
+[`ReactAppFormApi`](ReactAppFormApi.md)\<`TFormData`, `ToFormErrorTypes`\<`TFormValidators`, `TSubmitReturn`\>, `TComponents`\>

@@ -3,15 +3,19 @@ id: ServerValidationResult
 title: ServerValidationResult
 ---
 
-# Interface: ServerValidationResult\<TFormData\>
+# Interface: ServerValidationResult\<TFormData, TResult\>
 
-Defined in: [packages/form-core/src/ssr.public.ts:15](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L15)
+Defined in: [packages/form-core/src/ssr.public.ts:24](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L24)
 
 ## Type Parameters
 
 ### TFormData
 
 `TFormData`
+
+### TResult
+
+`TResult` = [`FormValidateResult`](../type-aliases/FormValidateResult.md)\<`TFormData`\>
 
 ## Properties
 
@@ -21,17 +25,17 @@ Defined in: [packages/form-core/src/ssr.public.ts:15](https://github.com/TanStac
 optional hasSchemaResult: boolean;
 ```
 
-Defined in: [packages/form-core/src/ssr.public.ts:19](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L19)
+Defined in: [packages/form-core/src/ssr.public.ts:31](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L31)
 
 ***
 
 ### result
 
 ```ts
-result: FormValidateResult<TFormData>;
+result: TResult;
 ```
 
-Defined in: [packages/form-core/src/ssr.public.ts:17](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L17)
+Defined in: [packages/form-core/src/ssr.public.ts:29](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L29)
 
 ***
 
@@ -41,7 +45,7 @@ Defined in: [packages/form-core/src/ssr.public.ts:17](https://github.com/TanStac
 schemaResult: unknown;
 ```
 
-Defined in: [packages/form-core/src/ssr.public.ts:18](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L18)
+Defined in: [packages/form-core/src/ssr.public.ts:30](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L30)
 
 ***
 
@@ -51,4 +55,4 @@ Defined in: [packages/form-core/src/ssr.public.ts:18](https://github.com/TanStac
 validatorIndex: number;
 ```
 
-Defined in: [packages/form-core/src/ssr.public.ts:16](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L16)
+Defined in: [packages/form-core/src/ssr.public.ts:28](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L28)

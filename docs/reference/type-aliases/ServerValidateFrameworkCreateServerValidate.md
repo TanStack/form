@@ -9,7 +9,7 @@ title: ServerValidateFrameworkCreateServerValidate
 type ServerValidateFrameworkCreateServerValidate = <TFormData, TFormValidators, TSubmitReturn>(formOptions, pluginOptions?) => unknown;
 ```
 
-Defined in: [packages/form-core/src/ssr.public.ts:94](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L94)
+Defined in: [packages/form-core/src/ssr.public.ts:106](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L106)
 
 ## Type Parameters
 

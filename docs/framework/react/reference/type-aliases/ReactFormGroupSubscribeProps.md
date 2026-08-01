@@ -3,13 +3,13 @@ id: ReactFormGroupSubscribeProps
 title: ReactFormGroupSubscribeProps
 ---
 
-# Type Alias: ReactFormGroupSubscribeProps\<TGroupValue, TGroupValidatorMetas, TSelected\>
+# Type Alias: ReactFormGroupSubscribeProps\<TGroupValue, TGroupErrorTypes, TSelected\>
 
 ```ts
-type ReactFormGroupSubscribeProps<TGroupValue, TGroupValidatorMetas, TSelected> = ReactSubscribeProps<FormGroupState<TGroupValue, TGroupValidatorMetas>, TSelected>;
+type ReactFormGroupSubscribeProps<TGroupValue, TGroupErrorTypes, TSelected> = ReactSubscribeProps<FormGroupState<TGroupValue, TGroupErrorTypes>, TSelected>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:494](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L494)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:439](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L439)
 
 ## Type Parameters
 
@@ -17,9 +17,9 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:494](https:/
 
 `TGroupValue`
 
-### TGroupValidatorMetas
+### TGroupErrorTypes
 
-`TGroupValidatorMetas` *extends* `FormGroupValidatorMetas`
+`TGroupErrorTypes` *extends* `FormErrorTypes`
 
 ### TSelected
 

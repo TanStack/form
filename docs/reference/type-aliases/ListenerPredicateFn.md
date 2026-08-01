@@ -9,7 +9,7 @@ title: ListenerPredicateFn
 type ListenerPredicateFn<TFormData, TValue> = (context) => boolean;
 ```
 
-Defined in: [packages/form-core/src/listeners.public.ts:20](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L20)
+Defined in: [packages/form-core/src/listeners.public.ts:15](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L15)
 
 ## Type Parameters
 

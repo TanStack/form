@@ -3,13 +3,13 @@ id: SolidFormApi
 title: SolidFormApi
 ---
 
-# Interface: SolidFormApi\<TFormData, TFormValidatorMetas, TSubmitReturn\>
+# Interface: SolidFormApi\<TFormData, TFormErrorTypes\>
 
-Defined in: [packages/solid-form/src/createForm.public.ts:156](https://github.com/TanStack/form-v2/blob/main/packages/solid-form/src/createForm.public.ts#L156)
+Defined in: [packages/solid-form/src/createForm.public.ts:135](https://github.com/TanStack/form-v2/blob/main/packages/solid-form/src/createForm.public.ts#L135)
 
 ## Extends
 
-- `FormApi`\<`TFormData`, `TFormValidatorMetas`, `TSubmitReturn`\>.[`SolidTanStackFormComponents`](SolidTanStackFormComponents.md)\<`TFormData`, `TFormValidatorMetas`, `TSubmitReturn`\>
+- `FormApi`\<`TFormData`, `TFormErrorTypes`\>.[`SolidTanStackFormComponents`](SolidTanStackFormComponents.md)\<`TFormData`, `TFormErrorTypes`\>
 
 ## Type Parameters
 
@@ -17,13 +17,9 @@ Defined in: [packages/solid-form/src/createForm.public.ts:156](https://github.co
 
 `TFormData`
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* `FormValidatorMetas`
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFormErrorTypes` *extends* `FormErrorTypes`
 
 ## Properties
 
@@ -33,7 +29,7 @@ Defined in: [packages/solid-form/src/createForm.public.ts:156](https://github.co
 ArrayField: <TFieldName, TFieldValue, TFieldValidators>(props) => Element;
 ```
 
-Defined in: [packages/solid-form/src/createForm.public.ts:128](https://github.com/TanStack/form-v2/blob/main/packages/solid-form/src/createForm.public.ts#L128)
+Defined in: [packages/solid-form/src/createForm.public.ts:113](https://github.com/TanStack/form-v2/blob/main/packages/solid-form/src/createForm.public.ts#L113)
 
 #### Type Parameters
 
@@ -53,7 +49,7 @@ Defined in: [packages/solid-form/src/createForm.public.ts:128](https://github.co
 
 ##### props
 
-[`SolidFormArrayFieldProps`](SolidFormArrayFieldProps.md)\<`TFormData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `TFormValidatorMetas`, `TSubmitReturn`\>
+[`SolidFormArrayFieldProps`](SolidFormArrayFieldProps.md)\<`TFormData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `TFormErrorTypes`\>
 
 #### Returns
 
@@ -71,7 +67,7 @@ Defined in: [packages/solid-form/src/createForm.public.ts:128](https://github.co
 Field: <TFieldName, TFieldValue, TFieldValidators>(props) => Element;
 ```
 
-Defined in: [packages/solid-form/src/createForm.public.ts:110](https://github.com/TanStack/form-v2/blob/main/packages/solid-form/src/createForm.public.ts#L110)
+Defined in: [packages/solid-form/src/createForm.public.ts:96](https://github.com/TanStack/form-v2/blob/main/packages/solid-form/src/createForm.public.ts#L96)
 
 TODO docs
 
@@ -93,7 +89,7 @@ TODO docs
 
 ##### props
 
-[`SolidFormFieldProps`](SolidFormFieldProps.md)\<`TFormData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `TFormValidatorMetas`, `TSubmitReturn`\>
+[`SolidFormFieldProps`](SolidFormFieldProps.md)\<`TFormData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `TFormErrorTypes`\>
 
 #### Returns
 
@@ -111,7 +107,7 @@ TODO docs
 Subscribe: <TSelected>(props) => Element;
 ```
 
-Defined in: [packages/solid-form/src/createForm.public.ts:146](https://github.com/TanStack/form-v2/blob/main/packages/solid-form/src/createForm.public.ts#L146)
+Defined in: [packages/solid-form/src/createForm.public.ts:130](https://github.com/TanStack/form-v2/blob/main/packages/solid-form/src/createForm.public.ts#L130)
 
 #### Type Parameters
 
@@ -123,7 +119,7 @@ Defined in: [packages/solid-form/src/createForm.public.ts:146](https://github.co
 
 ##### props
 
-[`SolidFormSubscribeProps`](SolidFormSubscribeProps.md)\<`TFormData`, `TFormValidatorMetas`, `TSubmitReturn`, `TSelected`\>
+[`SolidFormSubscribeProps`](SolidFormSubscribeProps.md)\<`TFormData`, `TFormErrorTypes`, `TSelected`\>
 
 #### Returns
 

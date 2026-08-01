@@ -3,9 +3,9 @@ id: SolidFormSubscribeProps
 title: SolidFormSubscribeProps
 ---
 
-# Interface: SolidFormSubscribeProps\<TFormData, TFormValidatorMetas, TSubmitReturn, TSelected\>
+# Interface: SolidFormSubscribeProps\<TFormData, TFormErrorTypes, TSelected\>
 
-Defined in: [packages/solid-form/src/createForm.public.ts:22](https://github.com/TanStack/form-v2/blob/main/packages/solid-form/src/createForm.public.ts#L22)
+Defined in: [packages/solid-form/src/createForm.public.ts:20](https://github.com/TanStack/form-v2/blob/main/packages/solid-form/src/createForm.public.ts#L20)
 
 ## Type Parameters
 
@@ -13,13 +13,9 @@ Defined in: [packages/solid-form/src/createForm.public.ts:22](https://github.com
 
 `TFormData`
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* `FormValidatorMetas`
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFormErrorTypes` *extends* `FormErrorTypes`
 
 ### TSelected
 
@@ -33,7 +29,7 @@ Defined in: [packages/solid-form/src/createForm.public.ts:22](https://github.com
 children: Element | (state) => Element;
 ```
 
-Defined in: [packages/solid-form/src/createForm.public.ts:35](https://github.com/TanStack/form-v2/blob/main/packages/solid-form/src/createForm.public.ts#L35)
+Defined in: [packages/solid-form/src/createForm.public.ts:30](https://github.com/TanStack/form-v2/blob/main/packages/solid-form/src/createForm.public.ts#L30)
 
 ***
 
@@ -43,7 +39,7 @@ Defined in: [packages/solid-form/src/createForm.public.ts:35](https://github.com
 selector: (state) => TSelected;
 ```
 
-Defined in: [packages/solid-form/src/createForm.public.ts:32](https://github.com/TanStack/form-v2/blob/main/packages/solid-form/src/createForm.public.ts#L32)
+Defined in: [packages/solid-form/src/createForm.public.ts:29](https://github.com/TanStack/form-v2/blob/main/packages/solid-form/src/createForm.public.ts#L29)
 
 Select from the full form state. Children receive a Solid accessor for the
 selected value.
@@ -52,7 +48,7 @@ selected value.
 
 ##### state
 
-`FormState`\<`TFormData`, `TFormValidatorMetas`, `TSubmitReturn`\>
+`FormState`\<`TFormData`, `TFormErrorTypes`\>
 
 #### Returns
 

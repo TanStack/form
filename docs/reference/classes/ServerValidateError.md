@@ -5,7 +5,7 @@ title: ServerValidateError
 
 # ~~Class: ServerValidateError\<TFormData, TFormValidators\>~~
 
-Defined in: [packages/form-core/src/ssr.public.ts:71](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L71)
+Defined in: [packages/form-core/src/ssr.public.ts:83](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L83)
 
 ## Deprecated
 
@@ -38,7 +38,7 @@ Server validation failures are returned as
 new ServerValidateError<TFormData, TFormValidators>(options): ServerValidateError<TFormData, TFormValidators>;
 ```
 
-Defined in: [packages/form-core/src/ssr.public.ts:80](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L80)
+Defined in: [packages/form-core/src/ssr.public.ts:92](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L92)
 
 #### Parameters
 
@@ -112,7 +112,7 @@ Error.name
 serverState: ServerFormState<TFormData, TFormValidators>;
 ```
 
-Defined in: [packages/form-core/src/ssr.public.ts:78](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L78)
+Defined in: [packages/form-core/src/ssr.public.ts:90](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L90)
 
 #### Implementation of
 

@@ -3,13 +3,13 @@ id: FormListenerFn
 title: FormListenerFn
 ---
 
-# Type Alias: FormListenerFn()\<TFormData, TFormValidatorMetas, TSubmitReturn\>
+# Type Alias: FormListenerFn()\<TFormData, TFormErrorTypes\>
 
 ```ts
-type FormListenerFn<TFormData, TFormValidatorMetas, TSubmitReturn> = (context) => void;
+type FormListenerFn<TFormData, TFormErrorTypes> = (context) => void;
 ```
 
-Defined in: [packages/form-core/src/listeners.public.ts:68](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L68)
+Defined in: [packages/form-core/src/listeners.public.ts:62](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L62)
 
 ## Type Parameters
 
@@ -17,19 +17,15 @@ Defined in: [packages/form-core/src/listeners.public.ts:68](https://github.com/T
 
 `TFormData`
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* [`FormValidatorMetas`](FormValidatorMetas.md)
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFormErrorTypes` *extends* [`FormErrorTypes`](../interfaces/FormErrorTypes.md)
 
 ## Parameters
 
 ### context
 
-[`FormListenerContext`](../interfaces/FormListenerContext.md)\<`TFormData`, `TFormValidatorMetas`, `TSubmitReturn`\>
+[`FormListenerContext`](../interfaces/FormListenerContext.md)\<`TFormData`, `TFormErrorTypes`\>
 
 ## Returns
 

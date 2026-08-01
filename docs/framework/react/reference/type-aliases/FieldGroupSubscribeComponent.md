@@ -9,7 +9,7 @@ title: FieldGroupSubscribeComponent
 type FieldGroupSubscribeComponent = <TSelected>(props) => CrossVersionReactNode;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:160](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L160)
+Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:155](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L155)
 
 ## Type Parameters
 

@@ -9,7 +9,7 @@ title: ValidationPredicateFn
 type ValidationPredicateFn<TFormData, TValue, TScope> = (context) => boolean;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:319](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L319)
+Defined in: [packages/form-core/src/validation.public.ts:306](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L306)
 
 ## Type Parameters
 

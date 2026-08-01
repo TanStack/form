@@ -3,13 +3,13 @@ id: ReactFormGroupApi
 title: ReactFormGroupApi
 ---
 
-# Interface: ReactFormGroupApi\<TFormData, TGroupName, TGroupValue, TGroupValidatorMetas, TFormValidatorMetas, TSubmitReturn, TFieldComponents\>
+# Interface: ReactFormGroupApi\<TFormData, TGroupName, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents\>
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:598](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L598)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:533](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L533)
 
 ## Extends
 
-- `FormGroupApi`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidatorMetas`, `TFormValidatorMetas`, `TSubmitReturn`\>
+- `FormGroupApi`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupErrorTypes`, `TFormErrorTypes`\>
 
 ## Type Parameters
 
@@ -25,17 +25,13 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:598](https:/
 
 `TGroupValue`
 
-### TGroupValidatorMetas
+### TGroupErrorTypes
 
-`TGroupValidatorMetas` *extends* `FormGroupValidatorMetas`
+`TGroupErrorTypes` *extends* `FormErrorTypes`
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* `FormValidatorMetas`
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFormErrorTypes` *extends* `FormErrorTypes`
 
 ### TFieldComponents
 
@@ -46,27 +42,27 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:598](https:/
 ### ArrayField
 
 ```ts
-ArrayField: ReactFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupValidatorMetas, TFormValidatorMetas, TSubmitReturn, TFieldComponents>;
+ArrayField: ReactFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:622](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L622)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:554](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L554)
 
 ***
 
 ### Field
 
 ```ts
-Field: ReactFormGroupFieldComponent<TFormData, TGroupValue, TGroupValidatorMetas, TFormValidatorMetas, TSubmitReturn, TFieldComponents>;
+Field: ReactFormGroupFieldComponent<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:614](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L614)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:547](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L547)
 
 ***
 
 ### Subscribe
 
 ```ts
-Subscribe: ReactFormGroupSubscribeComponent<TGroupValue, TGroupValidatorMetas>;
+Subscribe: ReactFormGroupSubscribeComponent<TGroupValue, TGroupErrorTypes>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:630](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L630)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:561](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L561)

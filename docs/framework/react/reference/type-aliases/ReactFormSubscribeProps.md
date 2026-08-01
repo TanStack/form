@@ -3,13 +3,13 @@ id: ReactFormSubscribeProps
 title: ReactFormSubscribeProps
 ---
 
-# Type Alias: ReactFormSubscribeProps\<TFormData, TFormValidatorMetas, TSubmitReturn, TSelected\>
+# Type Alias: ReactFormSubscribeProps\<TFormData, TFormErrorTypes, TSelected\>
 
 ```ts
-type ReactFormSubscribeProps<TFormData, TFormValidatorMetas, TSubmitReturn, TSelected> = ReactSubscribeProps<FormState<TFormData, TFormValidatorMetas, TSubmitReturn>, TSelected>;
+type ReactFormSubscribeProps<TFormData, TFormErrorTypes, TSelected> = ReactSubscribeProps<FormState<TFormData, TFormErrorTypes>, TSelected>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:119](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L119)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:108](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L108)
 
 ## Type Parameters
 
@@ -17,13 +17,9 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:119](https:/
 
 `TFormData`
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* `FormValidatorMetas`
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFormErrorTypes` *extends* `FormErrorTypes`
 
 ### TSelected
 

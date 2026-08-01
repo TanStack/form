@@ -9,7 +9,7 @@ title: ParseSubmitIssuesFn
 type ParseSubmitIssuesFn<TFormData> = (issues) => OnSubmitError<ParsedStandardSchemaIssues<TFormData>>;
 ```
 
-Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:35](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L35)
+Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:33](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L33)
 
 ## Type Parameters
 

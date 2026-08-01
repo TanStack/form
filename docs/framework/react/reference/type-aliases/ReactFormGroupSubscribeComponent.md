@@ -3,13 +3,13 @@ id: ReactFormGroupSubscribeComponent
 title: ReactFormGroupSubscribeComponent
 ---
 
-# Type Alias: ReactFormGroupSubscribeComponent()\<TGroupValue, TGroupValidatorMetas\>
+# Type Alias: ReactFormGroupSubscribeComponent()\<TGroupValue, TGroupErrorTypes\>
 
 ```ts
-type ReactFormGroupSubscribeComponent<TGroupValue, TGroupValidatorMetas> = <TSelected>(props) => CrossVersionReactNode;
+type ReactFormGroupSubscribeComponent<TGroupValue, TGroupErrorTypes> = <TSelected>(props) => CrossVersionReactNode;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:503](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L503)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:448](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L448)
 
 ## Type Parameters
 
@@ -17,9 +17,9 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:503](https:/
 
 `TGroupValue`
 
-### TGroupValidatorMetas
+### TGroupErrorTypes
 
-`TGroupValidatorMetas` *extends* `FormGroupValidatorMetas`
+`TGroupErrorTypes` *extends* `FormErrorTypes`
 
 ## Type Parameters
 
@@ -31,7 +31,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:503](https:/
 
 ### props
 
-[`ReactFormGroupSubscribeProps`](ReactFormGroupSubscribeProps.md)\<`TGroupValue`, `TGroupValidatorMetas`, `TSelected`\>
+[`ReactFormGroupSubscribeProps`](ReactFormGroupSubscribeProps.md)\<`TGroupValue`, `TGroupErrorTypes`, `TSelected`\>
 
 ## Returns
 

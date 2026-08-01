@@ -3,13 +3,13 @@ id: ReactFieldApi
 title: ReactFieldApi
 ---
 
-# Type Alias: ReactFieldApi\<TFieldName, TFieldValue, TFieldValidatorMetas, TGroupValidatorMetas, TFormData, TFormValidatorMetas, TSubmitReturn, TFieldComponents\>
+# Type Alias: ReactFieldApi\<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes, TFieldComponents\>
 
 ```ts
-type ReactFieldApi<TFieldName, TFieldValue, TFieldValidatorMetas, TGroupValidatorMetas, TFormData, TFormValidatorMetas, TSubmitReturn, TFieldComponents> = FieldApi<TFieldName, TFieldValue, TFieldValidatorMetas, TGroupValidatorMetas, TFormData, TFormValidatorMetas, TSubmitReturn> & FieldComponentsMatchingType<TFieldComponents, TFieldValue>;
+type ReactFieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes, TFieldComponents> = FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes> & FieldComponentsMatchingType<TFieldComponents, TFieldValue>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:87](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L87)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:86](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L86)
 
 ## Type Parameters
 
@@ -21,25 +21,17 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:87](https://
 
 `TFieldValue`
 
-### TFieldValidatorMetas
+### TFieldError
 
-`TFieldValidatorMetas` *extends* `FieldValidatorMetas`
-
-### TGroupValidatorMetas
-
-`TGroupValidatorMetas` *extends* `FormGroupValidatorMetas`
+`TFieldError`
 
 ### TFormData
 
 `TFormData`
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* `FormValidatorMetas`
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFormErrorTypes` *extends* `FormErrorTypes`
 
 ### TFieldComponents
 

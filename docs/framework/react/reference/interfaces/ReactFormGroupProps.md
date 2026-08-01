@@ -3,13 +3,13 @@ id: ReactFormGroupProps
 title: ReactFormGroupProps
 ---
 
-# Interface: ReactFormGroupProps\<TFormData, TGroupName, TGroupValue, TGroupValidators, TFormValidatorMetas, TSubmitReturn, TFieldComponents\>
+# Interface: ReactFormGroupProps\<TFormData, TGroupName, TGroupValue, TGroupValidators, TFormErrorTypes, TFieldComponents\>
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:633](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L633)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:564](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L564)
 
 ## Extends
 
-- `Omit`\<`FormGroupOptions`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormValidatorMetas`, `TSubmitReturn`\>, `"form"`\>
+- `Omit`\<`FormGroupOptions`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormErrorTypes`\>, `"form"`\>
 
 ## Type Parameters
 
@@ -29,13 +29,9 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:633](https:/
 
 `TGroupValidators` *extends* `FormGroupValidators`\<`TGroupValue`\>
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* `FormValidatorMetas`
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFormErrorTypes` *extends* `FormErrorTypes`
 
 ### TFieldComponents
 
@@ -49,13 +45,13 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:633](https:/
 children: (groupApi) => ReactNode | Promise<ReactNode>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:652](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L652)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:581](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L581)
 
 #### Parameters
 
 ##### groupApi
 
-[`ReactFormGroupApi`](ReactFormGroupApi.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `ToFormGroupValidatorMetas`\<`TGroupValidators`\>, `TFormValidatorMetas`, `TSubmitReturn`, `TFieldComponents`\>
+[`ReactFormGroupApi`](ReactFormGroupApi.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `ToFormGroupErrorTypes`\<`TGroupValidators`\>, `TFormErrorTypes`, `TFieldComponents`\>
 
 #### Returns
 

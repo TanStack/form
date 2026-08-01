@@ -3,9 +3,9 @@ id: FormListener
 title: FormListener
 ---
 
-# Interface: FormListener\<TFormData, TFormValidatorMetas, TSubmitReturn\>
+# Interface: FormListener\<TFormData, TFormErrorTypes\>
 
-Defined in: [packages/form-core/src/listeners.public.ts:78](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L78)
+Defined in: [packages/form-core/src/listeners.public.ts:69](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L69)
 
 ## Extends
 
@@ -17,23 +17,19 @@ Defined in: [packages/form-core/src/listeners.public.ts:78](https://github.com/T
 
 `TFormData`
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* [`FormValidatorMetas`](../type-aliases/FormValidatorMetas.md)
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFormErrorTypes` *extends* [`FormErrorTypes`](FormErrorTypes.md)
 
 ## Properties
 
 ### run
 
 ```ts
-run: FormListenerFn<TFormData, TFormValidatorMetas, TSubmitReturn>;
+run: FormListenerFn<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [packages/form-core/src/listeners.public.ts:83](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L83)
+Defined in: [packages/form-core/src/listeners.public.ts:73](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L73)
 
 ***
 
@@ -45,7 +41,7 @@ optional triggerDebounceMs:
 | ListenerDebounceFn<TFormData, TFormData>;
 ```
 
-Defined in: [packages/form-core/src/listeners.public.ts:54](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L54)
+Defined in: [packages/form-core/src/listeners.public.ts:49](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L49)
 
 The debounce time in milliseconds for validation triggers (change, blur).
 Does not affect submit events, which always execute immediately.
@@ -68,7 +64,7 @@ Does not affect submit events, which always execute immediately.
 triggers: ListenerTriggerOption<FormListenerTriggers, TFormData, TFormData>[];
 ```
 
-Defined in: [packages/form-core/src/listeners.public.ts:55](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L55)
+Defined in: [packages/form-core/src/listeners.public.ts:50](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L50)
 
 #### Inherited from
 

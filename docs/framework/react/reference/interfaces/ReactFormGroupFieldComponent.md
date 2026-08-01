@@ -3,9 +3,9 @@ id: ReactFormGroupFieldComponent
 title: ReactFormGroupFieldComponent
 ---
 
-# Interface: ReactFormGroupFieldComponent()\<TFormData, TGroupValue, TGroupValidators, TFormValidatorMetas, TSubmitReturn, TFieldComponents\>
+# Interface: ReactFormGroupFieldComponent()\<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents\>
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:514](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L514)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:455](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L455)
 
 ## Type Parameters
 
@@ -17,17 +17,13 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:514](https:/
 
 `TGroupValue`
 
-### TGroupValidators
+### TGroupErrorTypes
 
-`TGroupValidators` *extends* `FormGroupValidatorMetas`
+`TGroupErrorTypes` *extends* `FormErrorTypes`
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* `FormValidatorMetas`
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFormErrorTypes` *extends* `FormErrorTypes`
 
 ### TFieldComponents
 
@@ -39,7 +35,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:514](https:/
 ReactFormGroupFieldComponent<TFieldName, TFieldValidators>(props): ReactNode | Promise<ReactNode>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:522](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L522)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:462](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L462)
 
 ### Type Parameters
 
@@ -55,7 +51,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:522](https:/
 
 #### props
 
-`ReactFormFieldPropsWithValidators`\<`TGroupValue`, `TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>, `TFieldValidators`, `TGroupValidators`, `TFormData`, `TFormValidatorMetas`, `TSubmitReturn`, `TFieldComponents`\>
+`ReactFormFieldPropsWithValidators`\<`TGroupValue`, `TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>, `TFieldValidators`, `TGroupErrorTypes`\[`"fieldError"`\], `TFormData`, `TFormErrorTypes`, `TFieldComponents`\>
 
 ### Returns
 
@@ -67,7 +63,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:522](https:/
 ReactFormGroupFieldComponent<TFieldName>(props): ReactNode | Promise<ReactNode>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:542](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L542)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:481](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L481)
 
 ### Type Parameters
 
@@ -79,7 +75,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:542](https:/
 
 #### props
 
-`ReactFormFieldPropsWithoutValidators`\<`TGroupValue`, `TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>, `TGroupValidators`, `TFormData`, `TFormValidatorMetas`, `TSubmitReturn`, `TFieldComponents`\>
+`ReactFormFieldPropsWithoutValidators`\<`TGroupValue`, `TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>, `TGroupErrorTypes`\[`"fieldError"`\], `TFormData`, `TFormErrorTypes`, `TFieldComponents`\>
 
 ### Returns
 

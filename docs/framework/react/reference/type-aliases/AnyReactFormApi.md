@@ -6,7 +6,7 @@ title: AnyReactFormApi
 # Type Alias: AnyReactFormApi
 
 ```ts
-type AnyReactFormApi = AnyFormApi & ReactTanStackFormComponents<any, any, any, any>;
+type AnyReactFormApi = AnyFormApi & ReactTanStackFormComponents<any, any, any>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/formApiTypes.public.ts:43](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/formApiTypes.public.ts#L43)
+Defined in: [packages/react-form/src/ReactForm/formApiTypes.public.ts:26](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/formApiTypes.public.ts#L26)

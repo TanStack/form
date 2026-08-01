@@ -3,16 +3,16 @@ id: ReactFormArrayFieldComponent
 title: ReactFormArrayFieldComponent
 ---
 
-# Type Alias: ReactFormArrayFieldComponent()\<TFormData, TFormValidatorMetas, TSubmitReturn, TFieldComponents\>
+# Type Alias: ReactFormArrayFieldComponent()\<TFormData, TFormErrorTypes, TFieldComponents\>
 
 ```ts
-type ReactFormArrayFieldComponent<TFormData, TFormValidatorMetas, TSubmitReturn, TFieldComponents> = {
+type ReactFormArrayFieldComponent<TFormData, TFormErrorTypes, TFieldComponents> = {
 <TFieldName, TFieldValidators>  (props): ReactNode | Promise<ReactNode>;
 <TFieldName>  (props): ReactNode | Promise<ReactNode>;
 };
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:356](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L356)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:314](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L314)
 
 ## Type Parameters
 
@@ -20,13 +20,9 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:356](https:/
 
 `TFormData`
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* `FormValidatorMetas`
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFormErrorTypes` *extends* `FormErrorTypes`
 
 ### TFieldComponents
 
@@ -52,7 +48,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:356](https:/
 
 #### props
 
-`ReactFormArrayFieldPropsWithValidators`\<`TFormData`, `TFieldName`, `DeepValue`\<`TFormData`, `TFieldName`\>, `TFieldValidators`, \[\], `TFormData`, `TFormValidatorMetas`, `TSubmitReturn`, `TFieldComponents`\>
+`ReactFormArrayFieldPropsWithValidators`\<`TFormData`, `TFieldName`, `DeepValue`\<`TFormData`, `TFieldName`\>, `TFieldValidators`, `never`, `TFormData`, `TFormErrorTypes`, `TFieldComponents`\>
 
 ### Returns
 
@@ -74,7 +70,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:356](https:/
 
 #### props
 
-`ReactFormArrayFieldPropsWithoutValidators`\<`TFormData`, `TFieldName`, `DeepValue`\<`TFormData`, `TFieldName`\>, \[\], `TFormData`, `TFormValidatorMetas`, `TSubmitReturn`, `TFieldComponents`\>
+`ReactFormArrayFieldPropsWithoutValidators`\<`TFormData`, `TFieldName`, `DeepValue`\<`TFormData`, `TFieldName`\>, `never`, `TFormData`, `TFormErrorTypes`, `TFieldComponents`\>
 
 ### Returns
 

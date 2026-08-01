@@ -5,7 +5,7 @@ title: ServerValidateFrameworkPlugin
 
 # Interface: ServerValidateFrameworkPlugin\<TCreateServerValidate\>
 
-Defined in: [packages/form-core/src/ssr.public.ts:103](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L103)
+Defined in: [packages/form-core/src/ssr.public.ts:115](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L115)
 
 ## Type Parameters
 
@@ -21,7 +21,7 @@ Defined in: [packages/form-core/src/ssr.public.ts:103](https://github.com/TanSta
 createServerValidate: TCreateServerValidate;
 ```
 
-Defined in: [packages/form-core/src/ssr.public.ts:108](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L108)
+Defined in: [packages/form-core/src/ssr.public.ts:120](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L120)
 
 ***
 
@@ -31,4 +31,4 @@ Defined in: [packages/form-core/src/ssr.public.ts:108](https://github.com/TanSta
 id: `react-form-${string}`;
 ```
 
-Defined in: [packages/form-core/src/ssr.public.ts:107](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L107)
+Defined in: [packages/form-core/src/ssr.public.ts:119](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L119)

@@ -3,9 +3,9 @@ id: FieldApiOptions
 title: FieldApiOptions
 ---
 
-# Interface: FieldApiOptions\<TFieldData, TFieldName, TFieldValue, TFieldValidators, TGroupValidators, TFormData, TFormValidatorMetas, TSubmitReturn\>
+# Interface: FieldApiOptions\<TFieldData, TFieldName, TFieldValue, TFieldValidators, TGroupFieldError, TFormData, TFormErrorTypes\>
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:247](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L247)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:189](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L189)
 
 ## Type Parameters
 
@@ -25,21 +25,17 @@ Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:247](https://git
 
 `TFieldValidators` *extends* [`FieldValidators`](../type-aliases/FieldValidators.md)\<`TFieldData`, `TFieldName`, `TFieldValue`\>
 
-### TGroupValidators
+### TGroupFieldError
 
-`TGroupValidators` *extends* [`FormGroupValidatorMetas`](../type-aliases/FormGroupValidatorMetas.md)
+`TGroupFieldError`
 
 ### TFormData
 
 `TFormData`
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* [`FormValidatorMetas`](../type-aliases/FormValidatorMetas.md)
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFormErrorTypes` *extends* [`FormErrorTypes`](FormErrorTypes.md)
 
 ## Properties
 
@@ -49,7 +45,7 @@ Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:247](https://git
 optional errorBoundary: boolean;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:270](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L270)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:207](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L207)
 
 Route descendant field errors from form-level validation to this field.
 
@@ -58,20 +54,20 @@ Route descendant field errors from form-level validation to this field.
 ### errorVisibility?
 
 ```ts
-optional errorVisibility: ErrorVisibility<TFormData, TFormValidatorMetas, TSubmitReturn>;
+optional errorVisibility: ErrorVisibility<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:262](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L262)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:203](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L203)
 
 ***
 
 ### listeners?
 
 ```ts
-optional listeners: FieldListeners<TFieldData, TFieldName, TFieldValue, ToFieldValidatorMetas<TFieldValidators>, TGroupValidators, TFormData, TFormValidatorMetas, TSubmitReturn>;
+optional listeners: FieldListeners<TFieldData, TFieldName, TFieldValue, ToFieldError<TFieldValidators, TGroupFieldError, TFormErrorTypes>, TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:272](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L272)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:209](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L209)
 
 ***
 
@@ -81,7 +77,7 @@ Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:272](https://git
 name: TFieldName;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:261](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L261)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:202](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L202)
 
 ***
 
@@ -91,4 +87,4 @@ Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:261](https://git
 optional validators: TFieldValidators;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:271](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L271)
+Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:208](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L208)

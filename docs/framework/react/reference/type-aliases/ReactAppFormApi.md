@@ -3,10 +3,10 @@ id: ReactAppFormApi
 title: ReactAppFormApi
 ---
 
-# Type Alias: ReactAppFormApi\<TFormData, TFormValidatorMetas, TSubmitReturn, TComponents\>
+# Type Alias: ReactAppFormApi\<TFormData, TFormErrorTypes, TComponents\>
 
 ```ts
-type ReactAppFormApi<TFormData, TFormValidatorMetas, TSubmitReturn, TComponents> = ReactFormApi<TFormData, TFormValidatorMetas, TSubmitReturn, TComponents> & object;
+type ReactAppFormApi<TFormData, TFormErrorTypes, TComponents> = ReactFormApi<TFormData, TFormErrorTypes, TComponents> & object;
 ```
 
 Defined in: [packages/react-form/src/AppForm/ReactAppFormApi.public.tsx:11](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/AppForm/ReactAppFormApi.public.tsx#L11)
@@ -25,13 +25,9 @@ AppForm: AppFormComponent;
 
 `TFormData`
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* `FormValidatorMetas`
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFormErrorTypes` *extends* `FormErrorTypes`
 
 ### TComponents
 

@@ -3,9 +3,9 @@ id: FieldListener
 title: FieldListener
 ---
 
-# Interface: FieldListener\<TFieldData, TFieldName, TFieldValue, TFieldValidatorMetas, TGroupValidatorMetas, TFormData, TFormValidatorMetas, TSubmitReturn\>
+# Interface: FieldListener\<TFieldData, TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes\>
 
-Defined in: [packages/form-core/src/listeners.public.ts:145](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L145)
+Defined in: [packages/form-core/src/listeners.public.ts:117](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L117)
 
 ## Extends
 
@@ -25,35 +25,27 @@ Defined in: [packages/form-core/src/listeners.public.ts:145](https://github.com/
 
 `TFieldValue`
 
-### TFieldValidatorMetas
+### TFieldError
 
-`TFieldValidatorMetas` *extends* [`FieldValidatorMetas`](../type-aliases/FieldValidatorMetas.md)
-
-### TGroupValidatorMetas
-
-`TGroupValidatorMetas` *extends* [`FormGroupValidatorMetas`](../type-aliases/FormGroupValidatorMetas.md)
+`TFieldError`
 
 ### TFormData
 
 `TFormData`
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* [`FormValidatorMetas`](../type-aliases/FormValidatorMetas.md)
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFormErrorTypes` *extends* [`FormErrorTypes`](FormErrorTypes.md)
 
 ## Properties
 
 ### run
 
 ```ts
-run: FieldListenerFn<TFieldName, TFieldValue, TFieldValidatorMetas, TGroupValidatorMetas, TFormData, TFormValidatorMetas, TSubmitReturn>;
+run: FieldListenerFn<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [packages/form-core/src/listeners.public.ts:155](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L155)
+Defined in: [packages/form-core/src/listeners.public.ts:125](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L125)
 
 ***
 
@@ -65,7 +57,7 @@ optional triggerDebounceMs:
 | ListenerDebounceFn<TFieldData, TFieldValue>;
 ```
 
-Defined in: [packages/form-core/src/listeners.public.ts:54](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L54)
+Defined in: [packages/form-core/src/listeners.public.ts:49](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L49)
 
 The debounce time in milliseconds for validation triggers (change, blur).
 Does not affect submit events, which always execute immediately.
@@ -88,7 +80,7 @@ Does not affect submit events, which always execute immediately.
 triggers: ListenerTriggerOption<FieldListenerTriggers, TFieldData, TFieldValue>[];
 ```
 
-Defined in: [packages/form-core/src/listeners.public.ts:55](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L55)
+Defined in: [packages/form-core/src/listeners.public.ts:50](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L50)
 
 #### Inherited from
 
@@ -102,4 +94,4 @@ Defined in: [packages/form-core/src/listeners.public.ts:55](https://github.com/T
 optional watchFields: DeepKeys<TFieldData>[];
 ```
 
-Defined in: [packages/form-core/src/listeners.public.ts:164](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L164)
+Defined in: [packages/form-core/src/listeners.public.ts:132](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L132)

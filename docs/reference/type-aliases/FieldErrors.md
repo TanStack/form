@@ -3,32 +3,16 @@ id: FieldErrors
 title: FieldErrors
 ---
 
-# Type Alias: FieldErrors\<TFieldValidatorMetas, TGroupValidatorMetas, TFormValidatorMetas, TSubmitReturn\>
+# Type Alias: FieldErrors\<TFieldError\>
 
 ```ts
-type FieldErrors<TFieldValidatorMetas, TGroupValidatorMetas, TFormValidatorMetas, TSubmitReturn> = (
-  | IfBroad<FieldValidatorMetas, TFieldValidatorMetas, ValidationIssue, TFieldValidatorMetas[number]["fieldError"]>
-  | IfBroad<FormGroupValidatorMetas, TGroupValidatorMetas, ValidationIssue, TGroupValidatorMetas[number]["fieldError"]>
-  | IfBroad<FormValidatorMetas, TFormValidatorMetas, ValidationIssue, TFormValidatorMetas[number]["fieldError"]>
-  | ExtractSubmitFieldError<TSubmitReturn>)[];
+type FieldErrors<TFieldError> = unknown extends TFieldError ? ValidationIssue : TFieldError[];
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:657](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L657)
+Defined in: [packages/form-core/src/validation.public.ts:611](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L611)
 
 ## Type Parameters
 
-### TFieldValidatorMetas
+### TFieldError
 
-`TFieldValidatorMetas` *extends* [`FieldValidatorMetas`](FieldValidatorMetas.md)
-
-### TGroupValidatorMetas
-
-`TGroupValidatorMetas` *extends* [`FormGroupValidatorMetas`](FormGroupValidatorMetas.md)
-
-### TFormValidatorMetas
-
-`TFormValidatorMetas` *extends* [`FormValidatorMetas`](FormValidatorMetas.md)
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFieldError`

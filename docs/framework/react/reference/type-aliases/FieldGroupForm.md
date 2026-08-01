@@ -6,7 +6,7 @@ title: FieldGroupForm
 # Type Alias: FieldGroupForm\<TFieldComponents, TFormData\>
 
 ```ts
-type FieldGroupForm<TFieldComponents, TFormData> = FormApi<TFormData, any, any> & ReactTanStackFormComponents<TFormData, any, any, TFieldComponents>;
+type FieldGroupForm<TFieldComponents, TFormData> = FormApi<TFormData, any> & ReactTanStackFormComponents<TFormData, any, TFieldComponents>;
 ```
 
 Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:117](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L117)

@@ -6,10 +6,10 @@ title: createForm
 # Function: createForm()
 
 ```ts
-function createForm<TData, TFormValidators, TSubmitReturn>(options): SolidFormApi<TData, ToFormValidatorMetas<TFormValidators>, ToSubmitMeta<TSubmitReturn>>;
+function createForm<TData, TFormValidators, TSubmitReturn>(options): SolidFormApi<TData, ToFormErrorTypes<TFormValidators, TSubmitReturn>>;
 ```
 
-Defined in: [packages/solid-form/src/createForm.public.ts:172](https://github.com/TanStack/form-v2/blob/main/packages/solid-form/src/createForm.public.ts#L172)
+Defined in: [packages/solid-form/src/createForm.public.ts:143](https://github.com/TanStack/form-v2/blob/main/packages/solid-form/src/createForm.public.ts#L143)
 
 TODO docs
 
@@ -35,4 +35,4 @@ TODO docs
 
 ## Returns
 
-[`SolidFormApi`](../interfaces/SolidFormApi.md)\<`TData`, `ToFormValidatorMetas`\<`TFormValidators`\>, `ToSubmitMeta`\<`TSubmitReturn`\>\>
+[`SolidFormApi`](../interfaces/SolidFormApi.md)\<`TData`, `ToFormErrorTypes`\<`TFormValidators`, `TSubmitReturn`\>\>

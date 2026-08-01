@@ -6,7 +6,7 @@ title: FieldGroupFormState
 # Type Alias: FieldGroupFormState
 
 ```ts
-type FieldGroupFormState = FormState<unknown, FormValidatorMetas, unknown>;
+type FieldGroupFormState = FormState<unknown, FormErrorTypes>;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:181](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L181)
+Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:176](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L176)

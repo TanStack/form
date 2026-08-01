@@ -3,9 +3,9 @@ id: FormApi
 title: FormApi
 ---
 
-# Interface: FormApi\<TFormData, TFormValidatorMetas, TSubmitMeta\>
+# Interface: FormApi\<TFormData, TFormErrorTypes\>
 
-Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:189](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L189)
+Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:182](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L182)
 
 ## Extends
 
@@ -17,23 +17,19 @@ Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:189](https://githu
 
 `TFormData`
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* [`FormValidatorMetas`](../type-aliases/FormValidatorMetas.md)
-
-### TSubmitMeta
-
-`TSubmitMeta`
+`TFormErrorTypes` *extends* [`FormErrorTypes`](FormErrorTypes.md)
 
 ## Properties
 
 ### atom
 
 ```ts
-atom: ReadonlyAtom<FormState<TFormData, TFormValidatorMetas, TSubmitMeta>>;
+atom: ReadonlyAtom<FormState<TFormData, TFormErrorTypes>>;
 ```
 
-Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:195](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L195)
+Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:187](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L187)
 
 ***
 
@@ -93,7 +89,7 @@ Optional update options including a custom `thisArg` for the predicate
 readonly formId: string;
 ```
 
-Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:198](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L198)
+Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:190](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L190)
 
 ***
 
@@ -123,7 +119,7 @@ TODO
 handleSubmit: () => Promise<FormValidationError<TFormData>[]>;
 ```
 
-Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:215](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L215)
+Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:207](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L207)
 
 TODO for later: submit meta
 
@@ -202,10 +198,10 @@ Optional update options
 ### options
 
 ```ts
-readonly options: FormApiOptions<TFormData, TFormValidatorMetas, TSubmitMeta>;
+readonly options: FormApiOptions<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:197](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L197)
+Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:189](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L189)
 
 ***
 
@@ -273,7 +269,7 @@ Optional update options
 reset: (values?, opts?) => void;
 ```
 
-Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:227](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L227)
+Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:219](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L219)
 
 Reset form values, metadata, validation state, and mounted fields.
 
@@ -338,10 +334,10 @@ TODO
 ### state
 
 ```ts
-readonly state: FormState<TFormData, TFormValidatorMetas, TSubmitMeta>;
+readonly state: FormState<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:196](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L196)
+Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:188](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L188)
 
 ***
 
@@ -380,7 +376,7 @@ The index of the second value to swap
 validate: (signal) => Promise<FormValidationError<TFormData>[]>;
 ```
 
-Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:207](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L207)
+Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:199](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L199)
 
 TODO expand on it
 

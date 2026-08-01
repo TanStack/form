@@ -3,13 +3,13 @@ id: ReactFormFieldProps
 title: ReactFormFieldProps
 ---
 
-# Interface: ReactFormFieldProps\<TFieldData, TFieldName, TFieldValue, TFieldValidators, TGroupValidators, TFormData, TFormValidatorMetas, TSubmitReturn, TFieldComponents\>
+# Interface: ReactFormFieldProps\<TFieldData, TFieldName, TFieldValue, TFieldValidators, TGroupFieldError, TFormData, TFormErrorTypes, TFieldComponents\>
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:142](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L142)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:121](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L121)
 
 ## Extends
 
-- `FieldApiOptions`\<`TFieldData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `TGroupValidators`, `TFormData`, `TFormValidatorMetas`, `TSubmitReturn`\>
+- `FieldApiOptions`\<`TFieldData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `TGroupFieldError`, `TFormData`, `TFormErrorTypes`\>
 
 ## Type Parameters
 
@@ -29,21 +29,17 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:142](https:/
 
 `TFieldValidators` *extends* `FieldValidators`\<`TFieldData`, `TFieldName`, `TFieldValue`\>
 
-### TGroupValidators
+### TGroupFieldError
 
-`TGroupValidators` *extends* `FormGroupValidatorMetas`
+`TGroupFieldError`
 
 ### TFormData
 
 `TFormData`
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* `FormValidatorMetas`
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFormErrorTypes` *extends* `FormErrorTypes`
 
 ### TFieldComponents
 
@@ -57,13 +53,13 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:142](https:/
 children: (fieldApi) => ReactNode | Promise<ReactNode>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:166](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L166)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:143](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L143)
 
 #### Parameters
 
 ##### fieldApi
 
-[`ReactFieldApi`](../type-aliases/ReactFieldApi.md)\<`TFieldName`, `TFieldValue`, `ToFieldValidatorMetas`\<`TFieldValidators`\>, `TGroupValidators`, `TFormData`, `TFormValidatorMetas`, `TSubmitReturn`, `TFieldComponents`\>
+[`ReactFieldApi`](../type-aliases/ReactFieldApi.md)\<`TFieldName`, `TFieldValue`, `ToFieldError`\<`TFieldValidators`, `TGroupFieldError`, `TFormErrorTypes`\>, `TFormData`, `TFormErrorTypes`, `TFieldComponents`\>
 
 #### Returns
 

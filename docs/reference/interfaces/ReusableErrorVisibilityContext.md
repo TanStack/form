@@ -5,7 +5,7 @@ title: ReusableErrorVisibilityContext
 
 # Interface: ReusableErrorVisibilityContext
 
-Defined in: [packages/form-core/src/validation.public.ts:240](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L240)
+Defined in: [packages/form-core/src/validation.public.ts:232](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L232)
 
 ## Properties
 
@@ -15,7 +15,7 @@ Defined in: [packages/form-core/src/validation.public.ts:240](https://github.com
 fieldState: ErrorVisibilityFieldState;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:242](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L242)
+Defined in: [packages/form-core/src/validation.public.ts:234](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L234)
 
 ***
 
@@ -25,4 +25,4 @@ Defined in: [packages/form-core/src/validation.public.ts:242](https://github.com
 state: ReusableErrorVisibilityState;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:241](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L241)
+Defined in: [packages/form-core/src/validation.public.ts:233](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L233)

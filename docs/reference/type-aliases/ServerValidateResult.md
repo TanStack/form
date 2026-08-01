@@ -11,7 +11,7 @@ type ServerValidateResult<TFormData, TFormValidators> =
 | ServerValidateFailure<TFormData, TFormValidators>;
 ```
 
-Defined in: [packages/form-core/src/ssr.public.ts:53](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L53)
+Defined in: [packages/form-core/src/ssr.public.ts:65](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L65)
 
 ## Type Parameters
 

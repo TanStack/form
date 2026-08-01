@@ -6,7 +6,7 @@ title: Subscribe
 # Function: Subscribe()
 
 ```ts
-function Subscribe<TFormData, TFormValidatorMetas, TSubmitReturn, TSelected>(props): Element;
+function Subscribe<TFormData, TFormErrorTypes, TSelected>(props): Element;
 ```
 
 Defined in: [packages/solid-form/src/Subscribe.public.ts:36](https://github.com/TanStack/form-v2/blob/main/packages/solid-form/src/Subscribe.public.ts#L36)
@@ -21,13 +21,9 @@ This is useful for opting into state re-renders for specific parts of the form s
 
 `TFormData`
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* `FormValidatorMetas`
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFormErrorTypes` *extends* `FormErrorTypes`\<`ValidationIssue`, `ValidationIssue`\>
 
 ### TSelected
 
@@ -37,7 +33,7 @@ This is useful for opting into state re-renders for specific parts of the form s
 
 ### props
 
-[`SubscribeProps`](../interfaces/SubscribeProps.md)\<`FormState`\<`TFormData`, `TFormValidatorMetas`, `TSubmitReturn`\>, `TSelected`\>
+[`SubscribeProps`](../interfaces/SubscribeProps.md)\<`FormState`\<`TFormData`, `TFormErrorTypes`\>, `TSelected`\>
 
 ## Returns
 

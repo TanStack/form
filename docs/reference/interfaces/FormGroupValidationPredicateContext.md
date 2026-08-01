@@ -5,7 +5,7 @@ title: FormGroupValidationPredicateContext
 
 # Interface: FormGroupValidationPredicateContext\<TGroupValue\>
 
-Defined in: [packages/form-core/src/validation.public.ts:292](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L292)
+Defined in: [packages/form-core/src/validation.public.ts:279](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L279)
 
 ## Extends
 
@@ -25,7 +25,7 @@ Defined in: [packages/form-core/src/validation.public.ts:292](https://github.com
 optional fieldApi: AnyFieldApi;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:282](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L282)
+Defined in: [packages/form-core/src/validation.public.ts:269](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L269)
 
 The field associated with this validation, if any.
 
@@ -43,10 +43,10 @@ BaseValidationPredicateContext.fieldApi
 ### formApi
 
 ```ts
-formApi: FormApi<any, any, any>;
+formApi: FormApi<any, any>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:275](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L275)
+Defined in: [packages/form-core/src/validation.public.ts:262](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L262)
 
 #### Inherited from
 
@@ -59,10 +59,10 @@ BaseValidationPredicateContext.formApi
 ### groupApi
 
 ```ts
-groupApi: FormGroupApi<any, any, TGroupValue, any, any, any>;
+groupApi: FormGroupApi<any, any, TGroupValue, any, any>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:295](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L295)
+Defined in: [packages/form-core/src/validation.public.ts:282](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L282)
 
 ***
 
@@ -72,7 +72,7 @@ Defined in: [packages/form-core/src/validation.public.ts:295](https://github.com
 scope: "group";
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:274](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L274)
+Defined in: [packages/form-core/src/validation.public.ts:261](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L261)
 
 #### Inherited from
 
@@ -88,7 +88,7 @@ BaseValidationPredicateContext.scope
 value: TGroupValue;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:283](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L283)
+Defined in: [packages/form-core/src/validation.public.ts:270](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L270)
 
 #### Inherited from
 

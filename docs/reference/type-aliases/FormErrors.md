@@ -3,22 +3,16 @@ id: FormErrors
 title: FormErrors
 ---
 
-# Type Alias: FormErrors\<TFormValidatorMetas, TSubmitReturn\>
+# Type Alias: FormErrors\<TFormErrorTypes\>
 
 ```ts
-type FormErrors<TFormValidatorMetas, TSubmitReturn> = (
-  | IfBroad<FormValidatorMetas, TFormValidatorMetas, ValidationIssue, TFormValidatorMetas[number]["formError"]>
-  | ExtractSubmitFormError<TSubmitReturn>)[];
+type FormErrors<TFormErrorTypes> = ExtractFormError<TFormErrorTypes>[];
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:644](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L644)
+Defined in: [packages/form-core/src/validation.public.ts:607](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L607)
 
 ## Type Parameters
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* [`FormValidatorMetas`](FormValidatorMetas.md)
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFormErrorTypes` *extends* [`FormErrorTypes`](../interfaces/FormErrorTypes.md)

@@ -9,7 +9,7 @@ title: serverValidateHelper
 function serverValidateHelper<TFramework>(options): ServerValidateHelperResult<TFramework>;
 ```
 
-Defined in: [packages/form-core/src/ssr.lib.ts:202](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.lib.ts#L202)
+Defined in: [packages/form-core/src/ssr.lib.ts:203](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.lib.ts#L203)
 
 ## Type Parameters
 

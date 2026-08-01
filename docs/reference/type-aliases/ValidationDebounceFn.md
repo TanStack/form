@@ -9,7 +9,7 @@ title: ValidationDebounceFn
 type ValidationDebounceFn<TFormData, TValue, TScope> = (context) => number;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:325](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L325)
+Defined in: [packages/form-core/src/validation.public.ts:312](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L312)
 
 ## Type Parameters
 

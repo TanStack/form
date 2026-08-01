@@ -5,7 +5,7 @@ title: ListenerPredicateContext
 
 # Interface: ListenerPredicateContext\<TFormData, TValue\>
 
-Defined in: [packages/form-core/src/listeners.public.ts:14](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L14)
+Defined in: [packages/form-core/src/listeners.public.ts:9](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L9)
 
 ## Type Parameters
 
@@ -22,10 +22,10 @@ Defined in: [packages/form-core/src/listeners.public.ts:14](https://github.com/T
 ### formApi
 
 ```ts
-formApi: FormApi<TFormData, any, any>;
+formApi: FormApi<TFormData, any>;
 ```
 
-Defined in: [packages/form-core/src/listeners.public.ts:15](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L15)
+Defined in: [packages/form-core/src/listeners.public.ts:10](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L10)
 
 ***
 
@@ -35,7 +35,7 @@ Defined in: [packages/form-core/src/listeners.public.ts:15](https://github.com/T
 optional triggerFieldApi: AnyFieldApi;
 ```
 
-Defined in: [packages/form-core/src/listeners.public.ts:16](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L16)
+Defined in: [packages/form-core/src/listeners.public.ts:11](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L11)
 
 ***
 
@@ -45,4 +45,4 @@ Defined in: [packages/form-core/src/listeners.public.ts:16](https://github.com/T
 value: TValue;
 ```
 
-Defined in: [packages/form-core/src/listeners.public.ts:17](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L17)
+Defined in: [packages/form-core/src/listeners.public.ts:12](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L12)

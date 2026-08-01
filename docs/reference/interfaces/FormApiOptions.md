@@ -3,9 +3,9 @@ id: FormApiOptions
 title: FormApiOptions
 ---
 
-# Interface: FormApiOptions\<TFormData, TFormValidatorMetas, TSubmitMeta\>
+# Interface: FormApiOptions\<TFormData, TFormErrorTypes\>
 
-Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:82](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L82)
+Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:80](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L80)
 
 ## Type Parameters
 
@@ -13,13 +13,9 @@ Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:82](https://github
 
 `TFormData`
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* [`FormValidatorMetas`](../type-aliases/FormValidatorMetas.md)
-
-### TSubmitMeta
-
-`TSubmitMeta`
+`TFormErrorTypes` *extends* [`FormErrorTypes`](FormErrorTypes.md)
 
 ## Properties
 
@@ -29,17 +25,17 @@ Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:82](https://github
 defaultValues: TFormData;
 ```
 
-Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:88](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L88)
+Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:85](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L85)
 
 ***
 
 ### errorVisibility?
 
 ```ts
-optional errorVisibility: ErrorVisibility<TFormData, TFormValidatorMetas, TSubmitMeta>;
+optional errorVisibility: ErrorVisibility<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:89](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L89)
+Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:86](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L86)
 
 ***
 
@@ -49,47 +45,29 @@ Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:89](https://github
 optional formId: string;
 ```
 
-Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:87](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L87)
+Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:84](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L84)
 
 ***
 
 ### listeners?
 
 ```ts
-optional listeners: FormListeners<TFormData, TFormValidatorMetas, TSubmitMeta>;
+optional listeners: FormListeners<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:91](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L91)
-
-***
-
-### onSubmit()?
-
-```ts
-optional onSubmit: (context) => unknown;
-```
-
-Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:93](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L93)
-
-#### Parameters
-
-##### context
-
-[`FormSubmitContext`](FormSubmitContext.md)\<`TFormData`, `TFormValidatorMetas`\>
-
-#### Returns
-
-`unknown`
+Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:88](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L88)
 
 ***
 
 ### serverState?
 
 ```ts
-optional serverState: ServerFormState<TFormData, any> | null;
+optional serverState: 
+  | ServerFormState<TFormData, any>
+  | null;
 ```
 
-Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:92](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L92)
+Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:89](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L89)
 
 ***
 
@@ -99,4 +77,4 @@ Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:92](https://github
 optional validators: FormValidators<TFormData>;
 ```
 
-Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:90](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L90)
+Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:87](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L87)

@@ -3,7 +3,7 @@ id: FormGroupOptions
 title: FormGroupOptions
 ---
 
-# Interface: FormGroupOptions\<TFormData, TGroupName, TGroupValue, TGroupValidators, TFormValidatorMetas, TSubmitReturn\>
+# Interface: FormGroupOptions\<TFormData, TGroupName, TGroupValue, TGroupValidators, TFormErrorTypes\>
 
 Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:33](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L33)
 
@@ -25,23 +25,19 @@ Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:33](http
 
 `TGroupValidators` *extends* [`FormGroupValidators`](../type-aliases/FormGroupValidators.md)\<`TGroupValue`\>
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* [`FormValidatorMetas`](../type-aliases/FormValidatorMetas.md)
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFormErrorTypes` *extends* [`FormErrorTypes`](FormErrorTypes.md)
 
 ## Properties
 
 ### form
 
 ```ts
-form: FormApi<TFormData, TFormValidatorMetas, TSubmitReturn>;
+form: FormApi<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:41](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L41)
+Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:40](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L40)
 
 ***
 
@@ -51,7 +47,7 @@ Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:41](http
 name: TGroupName;
 ```
 
-Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:42](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L42)
+Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:41](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L41)
 
 ***
 
@@ -61,13 +57,13 @@ Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:42](http
 optional onSubmit: (context) => void | Promise<void>;
 ```
 
-Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:44](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L44)
+Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:43](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L43)
 
 #### Parameters
 
 ##### context
 
-[`FormGroupSubmitContext`](FormGroupSubmitContext.md)\<`TFormData`, `TGroupName`, `TGroupValue`, [`ToFormGroupValidatorMetas`](../type-aliases/ToFormGroupValidatorMetas.md)\<`TGroupValidators`\>, `TFormValidatorMetas`, `TSubmitReturn`\>
+[`FormGroupSubmitContext`](FormGroupSubmitContext.md)\<`TFormData`, `TGroupName`, `TGroupValue`, [`ToFormGroupSchemaOutputs`](../type-aliases/ToFormGroupSchemaOutputs.md)\<`TGroupValidators`\>, [`ToFormGroupErrorTypes`](../type-aliases/ToFormGroupErrorTypes.md)\<`TGroupValidators`\>, `TFormErrorTypes`\>
 
 #### Returns
 
@@ -81,13 +77,13 @@ Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:44](http
 optional onSubmitInvalid: (context) => void | Promise<void>;
 ```
 
-Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:54](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L54)
+Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:53](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L53)
 
 #### Parameters
 
 ##### context
 
-[`FormGroupSubmitContext`](FormGroupSubmitContext.md)\<`TFormData`, `TGroupName`, `TGroupValue`, [`ToFormGroupValidatorMetas`](../type-aliases/ToFormGroupValidatorMetas.md)\<`TGroupValidators`\>, `TFormValidatorMetas`, `TSubmitReturn`\> & `object`
+[`FormGroupSubmitContext`](FormGroupSubmitContext.md)\<`TFormData`, `TGroupName`, `TGroupValue`, [`ToFormGroupSchemaOutputs`](../type-aliases/ToFormGroupSchemaOutputs.md)\<`TGroupValidators`\>, [`ToFormGroupErrorTypes`](../type-aliases/ToFormGroupErrorTypes.md)\<`TGroupValidators`\>, `TFormErrorTypes`\> & `object`
 
 #### Returns
 
@@ -101,4 +97,4 @@ Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:54](http
 optional validators: TGroupValidators;
 ```
 
-Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:43](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L43)
+Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:42](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L42)

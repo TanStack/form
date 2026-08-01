@@ -5,7 +5,7 @@ title: ListenerTriggerConfig
 
 # Interface: ListenerTriggerConfig\<TTriggers, TFormData, TValue\>
 
-Defined in: [packages/form-core/src/listeners.public.ts:24](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L24)
+Defined in: [packages/form-core/src/listeners.public.ts:19](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L19)
 
 ## Type Parameters
 
@@ -29,7 +29,7 @@ Defined in: [packages/form-core/src/listeners.public.ts:24](https://github.com/T
 trigger: TTriggers;
 ```
 
-Defined in: [packages/form-core/src/listeners.public.ts:29](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L29)
+Defined in: [packages/form-core/src/listeners.public.ts:24](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L24)
 
 ***
 
@@ -41,4 +41,4 @@ optional when:
 | ListenerPredicateFn<TFormData, TValue>;
 ```
 
-Defined in: [packages/form-core/src/listeners.public.ts:30](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L30)
+Defined in: [packages/form-core/src/listeners.public.ts:25](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L25)

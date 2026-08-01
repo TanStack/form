@@ -3,13 +3,13 @@ id: SolidFormFieldProps
 title: SolidFormFieldProps
 ---
 
-# Interface: SolidFormFieldProps\<TFormData, TFieldName, TFieldValue, TFieldValidators, TFormValidatorMetas, TSubmitReturn\>
+# Interface: SolidFormFieldProps\<TFormData, TFieldName, TFieldValue, TFieldValidators, TFormErrorTypes\>
 
-Defined in: [packages/solid-form/src/createForm.public.ts:38](https://github.com/TanStack/form-v2/blob/main/packages/solid-form/src/createForm.public.ts#L38)
+Defined in: [packages/solid-form/src/createForm.public.ts:33](https://github.com/TanStack/form-v2/blob/main/packages/solid-form/src/createForm.public.ts#L33)
 
 ## Extends
 
-- `FieldApiOptions`\<`TFormData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, \[\], `TFormData`, `TFormValidatorMetas`, `TSubmitReturn`\>
+- `FieldApiOptions`\<`TFormData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `never`, `TFormData`, `TFormErrorTypes`\>
 
 ## Type Parameters
 
@@ -29,13 +29,9 @@ Defined in: [packages/solid-form/src/createForm.public.ts:38](https://github.com
 
 `TFieldValidators` *extends* `FieldValidators`\<`TFormData`, `TFieldName`, `TFieldValue`\>
 
-### TFormValidatorMetas
+### TFormErrorTypes
 
-`TFormValidatorMetas` *extends* `FormValidatorMetas`
-
-### TSubmitReturn
-
-`TSubmitReturn`
+`TFormErrorTypes` *extends* `FormErrorTypes`
 
 ## Properties
 
@@ -45,13 +41,13 @@ Defined in: [packages/solid-form/src/createForm.public.ts:38](https://github.com
 children: (fieldApi) => Element;
 ```
 
-Defined in: [packages/solid-form/src/createForm.public.ts:55](https://github.com/TanStack/form-v2/blob/main/packages/solid-form/src/createForm.public.ts#L55)
+Defined in: [packages/solid-form/src/createForm.public.ts:48](https://github.com/TanStack/form-v2/blob/main/packages/solid-form/src/createForm.public.ts#L48)
 
 #### Parameters
 
 ##### fieldApi
 
-`Accessor`\<`FieldApi`\<`TFieldName`, `TFieldValue`, `ToFieldValidatorMetas`\<`TFieldValidators`\>, \[\], `TFormData`, `TFormValidatorMetas`, `TSubmitReturn`\>\>
+`Accessor`\<`FieldApi`\<`TFieldName`, `TFieldValue`, `ToFieldError`\<`TFieldValidators`, `never`, `TFormErrorTypes`\>, `TFormData`, `TFormErrorTypes`\>\>
 
 #### Returns
 

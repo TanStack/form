@@ -6,10 +6,10 @@ title: ReactFormType
 # Type Alias: ReactFormType\<TOptions\>
 
 ```ts
-type ReactFormType<TOptions> = TOptions extends AppFormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn, infer TComponents> ? ReactFormApi<TFormData, ToFormValidatorMetas<TFormValidators>, ReactFormTypeSubmitMeta<TSubmitReturn>, TComponents> : TOptions extends FormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn> ? ReactFormApi<TFormData, ToFormValidatorMetas<TFormValidators>, ReactFormTypeSubmitMeta<TSubmitReturn>, DefaultReactFormComponentMap> : never;
+type ReactFormType<TOptions> = TOptions extends AppFormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn, infer TComponents> ? ReactFormApi<TFormData, ReactFormTypeErrorTypes<TFormValidators, TSubmitReturn>, TComponents> : TOptions extends FormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn> ? ReactFormApi<TFormData, ReactFormTypeErrorTypes<TFormValidators, TSubmitReturn>, DefaultReactFormComponentMap> : never;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/formType.public.ts:24](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/formType.public.ts#L24)
+Defined in: [packages/react-form/src/ReactForm/formType.public.ts:27](https://github.com/TanStack/form-v2/blob/main/packages/react-form/src/ReactForm/formType.public.ts#L27)
 
 ## Type Parameters
 
