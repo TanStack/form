@@ -1,6 +1,7 @@
 import { describe, expectTypeOf, it } from 'vitest'
 import { z } from 'zod'
-import { formOptions, serverValidateHelper, validateServerValues } from '../src'
+import { validateServerValues } from '../src/internals'
+import { formOptions, serverValidateHelper } from '../src'
 import type {
   FieldValidators,
   FormApi,
@@ -9,7 +10,6 @@ import type {
   FormValidators,
   ParsedStandardSchemaIssues,
   ServerFormState,
-  ServerFormValidateResult,
   ServerValidateFrameworkPlugin,
 } from '../src'
 
@@ -43,9 +43,12 @@ describe('server validation types', () => {
     type Values = { name: string }
     type Validators = NonNullable<typeof options.validators>
 
-    expectTypeOf<null | ParsedStandardSchemaIssues<Values>>().toExtend<
-      ServerFormValidateResult<Values, Validators>
-    >()
+    type ValidationResult = ServerFormState<
+      Values,
+      Validators
+    >['validationResults'][number]['result']
+
+    expectTypeOf<null | ParsedStandardSchemaIssues<Values>>().toExtend<ValidationResult>()
   })
 
   it('preserves validator generics on failed server validation results', async () => {

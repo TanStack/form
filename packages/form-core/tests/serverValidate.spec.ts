@@ -2,11 +2,8 @@ import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
 import { InternalFormApi } from '../src/FormApi/FormApi.lib'
 import { installDevtoolsBridge } from '../src/devtoolsBridge.lib'
-import {
-  formOptions,
-  initialServerFormState,
-  validateServerValues,
-} from '../src'
+import { validateServerValues } from '../src/internals'
+import { formOptions, initialServerFormState } from '../src'
 import type {
   FormValidators,
   ServerValidateFailure,

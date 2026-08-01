@@ -1,30 +1,35 @@
 import type { FormOptions } from './FormApi/FormApi.public'
 import type {
-  FormValidateResult,
   FormValidateResultFromErrorTypes,
   FormValidators,
   ServerFormStandardSchemaValidatorOutputs,
   ToServerFormErrorTypes,
 } from './validation.public'
 
-export {
-  initialServerFormState,
-  serverValidateHelper,
-  validateServerValues,
-} from './ssr.lib'
+export const initialServerFormState: ServerFormState<any, any> = {
+  values: undefined,
+  validationResults: [],
+  submissionAttempts: 0,
+}
 
-export type ServerFormValidateResult<
-  TFormData,
-  TFormValidators extends FormValidators<TFormData>,
-> = FormValidateResultFromErrorTypes<
-  TFormData,
-  ToServerFormErrorTypes<TFormValidators>
->
+type ServerValidateHelperResult<
+  TFramework extends ServerValidateFrameworkPlugin,
+> = Omit<TFramework, 'id'> & {
+  initialServerFormState: ServerFormState<any, any>
+}
 
-export interface ServerValidationResult<
-  in out TFormData,
-  TResult = FormValidateResult<TFormData>,
-> {
+export function serverValidateHelper<
+  const TFramework extends ServerValidateFrameworkPlugin,
+>(options: { framework: TFramework }): ServerValidateHelperResult<TFramework> {
+  const { id: _unused, ...framework } = options.framework
+
+  return {
+    initialServerFormState,
+    ...framework,
+  }
+}
+
+interface ServerStateValidationResult<TResult> {
   validatorIndex: number
   result: TResult
   schemaResult: unknown | null
@@ -33,7 +38,7 @@ export interface ServerValidationResult<
 
 interface ServerFormStateByResult<in out TFormData, TResult> {
   values: TFormData | undefined
-  validationResults: Array<ServerValidationResult<TFormData, TResult>>
+  validationResults: Array<ServerStateValidationResult<TResult>>
   submissionAttempts: number
 }
 
@@ -42,7 +47,10 @@ export type ServerFormState<
   TFormValidators extends FormValidators<TFormData>,
 > = ServerFormStateByResult<
   TFormData,
-  ServerFormValidateResult<TFormData, TFormValidators>
+  FormValidateResultFromErrorTypes<
+    TFormData,
+    ToServerFormErrorTypes<TFormValidators>
+  >
 >
 
 export interface ServerValidateSuccess<
@@ -69,41 +77,7 @@ export type ServerValidateResult<
   | ServerValidateSuccess<TFormData, TFormValidators>
   | ServerValidateFailure<TFormData, TFormValidators>
 
-interface ServerValidateErrorState<
-  TFormData,
-  TFormValidators extends FormValidators<TFormData>,
-> {
-  serverState: ServerFormState<TFormData, TFormValidators>
-}
-
-/**
- * @deprecated Server validation failures are returned as
- * `ServerValidateFailure` instead of being thrown.
- */
-export class ServerValidateError<
-  TFormData,
-  TFormValidators extends FormValidators<TFormData>,
->
-  extends Error
-  implements ServerValidateErrorState<TFormData, TFormValidators>
-{
-  serverState: ServerFormState<TFormData, TFormValidators>
-
-  constructor(options: ServerValidateErrorState<TFormData, TFormValidators>) {
-    super('Your form has errors. Please check the fields and try again.')
-    this.name = 'ServerValidateError'
-    this.serverState = options.serverState
-  }
-}
-
-export type ServerValidateRunner<
-  TFormData,
-  TFormValidators extends FormValidators<TFormData>,
-> = (
-  values: TFormData,
-) => Promise<ServerValidateResult<TFormData, TFormValidators>>
-
-export type ServerValidateFrameworkCreateServerValidate = <
+type ServerValidateFrameworkCreateServerValidate = <
   TFormData,
   const TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,

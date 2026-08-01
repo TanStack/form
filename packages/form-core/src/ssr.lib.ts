@@ -10,19 +10,20 @@ import type { FormOptions } from './FormApi/FormApi.public'
 import type { FormErrorMeta } from './FormApi/formState.lib'
 import type { InternalFormApi } from './FormApi/FormApi.lib'
 import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
-import type { FormValidators } from './validation.public'
 import type {
-  ServerFormState,
-  ServerFormValidateResult,
-  ServerValidateFrameworkPlugin,
-  ServerValidateResult,
-} from './ssr.public'
+  FormValidateResultFromErrorTypes,
+  FormValidators,
+  ToServerFormErrorTypes,
+} from './validation.public'
+import type { ServerFormState, ServerValidateResult } from './ssr.public'
 
-type ServerValidateHelperResult<
-  TFramework extends ServerValidateFrameworkPlugin,
-> = Omit<TFramework, 'id'> & {
-  initialServerFormState: ServerFormState<any, any>
-}
+type ServerFormValidateResult<
+  TFormData,
+  TFormValidators extends FormValidators<TFormData>,
+> = FormValidateResultFromErrorTypes<
+  TFormData,
+  ToServerFormErrorTypes<TFormValidators>
+>
 
 function createInitialFormErrorMeta(validatorCount: number): FormErrorMeta {
   return {
@@ -121,12 +122,6 @@ export function applyServerState<TFormData>(
   resetToServerState(form, serverState, defaultValues)
 }
 
-export const initialServerFormState: ServerFormState<any, any> = {
-  values: undefined,
-  validationResults: [],
-  submissionAttempts: 0,
-}
-
 export async function validateServerValues<
   TFormData,
   const TFormValidators extends FormValidators<TFormData>,
@@ -197,16 +192,5 @@ export async function validateServerValues<
     success: true,
     values,
     schemaOutputs: schemaOutputs as never,
-  }
-}
-
-export function serverValidateHelper<
-  const TFramework extends ServerValidateFrameworkPlugin,
->(options: { framework: TFramework }): ServerValidateHelperResult<TFramework> {
-  const { id: _unused, ...framework } = options.framework
-
-  return {
-    initialServerFormState,
-    ...framework,
   }
 }

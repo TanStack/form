@@ -1,5 +1,5 @@
 import { decode } from 'decode-formdata'
-import { validateServerValues } from '@tanstack/form-core'
+import { validateServerValues } from '@tanstack/form-core/internals'
 import type {
   FormOptions,
   FormValidators,
