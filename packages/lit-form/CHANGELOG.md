@@ -1,5 +1,12 @@
 # @tanstack/lit-form
 
+## 1.25.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.33.3
+
 ## 1.25.2
 
 ### Patch Changes
