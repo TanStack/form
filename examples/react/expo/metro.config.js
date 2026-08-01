@@ -22,7 +22,6 @@ config.watchFolders = [
   path.resolve(monorepoRoot, 'node_modules/.pnpm'),
 ]
 
-config.resolver.unstable_enableSymlinks = true
 config.resolver.unstable_enablePackageExports = true
 
 // Resolve from app's node_modules first, then root .pnpm for transitive deps
