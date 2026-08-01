@@ -162,7 +162,6 @@ const form = useForm({
 
 <form.Field
   name="firstName"
-  errorVisibility={() => true}
   validators={[
     {
       runOnMount: true,
