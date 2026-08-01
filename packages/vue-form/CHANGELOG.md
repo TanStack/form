@@ -1,5 +1,16 @@
 # @tanstack/vue-form
 
+## 1.33.3
+
+### Patch Changes
+
+- [#2259](https://github.com/TanStack/form/pull/2259) [`0b9de8e`](https://github.com/TanStack/form/commit/0b9de8e9cbbad188c6291c92e69a641a1ddefb4d) - Generate the default `formId` with Vue's `useId` so it is SSR-safe, falling back to a random uuid on `vue@3.4` (where `useId` does not exist) and outside of a component instance.
+
+  Fixes [#2254](https://github.com/TanStack/form/issues/2254)
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.33.3
+
 ## 1.33.2
 
 ### Patch Changes

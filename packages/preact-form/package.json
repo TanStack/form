@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/preact-form",
-  "version": "1.30.2",
+  "version": "1.30.3",
   "description": "Powerful, type-safe forms for Preact.",
   "author": "tannerlinsley",
   "license": "MIT",
