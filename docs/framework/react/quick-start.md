@@ -118,7 +118,3 @@ The important pieces are:
 - `form.Subscribe` rerenders only its own children when the selected form state
   changes.
 - `form.handleSubmit()` validates the form before calling `onSubmit`.
-
-For application-wide field and form components, see
-[Form Composition](./guides/form-composition.md). For validation timing,
-schemas, and server errors, see [Form and Field Validation](./guides/validation.md).
