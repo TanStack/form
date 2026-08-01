@@ -244,8 +244,8 @@ export function createForm<
    * `FormApi` falls back to `uuid()` when no `formId` is given, which differs
    * between the server render and the client render. `createUniqueId` is
    * Solid's SSR-safe counterpart, so binding the id (`<form id={form.formId}>`)
-   * no longer produces a hydration mismatch. Mirrors `useFormId` in the react,
-   * preact and vue adapters.
+   * no longer produces a hydration mismatch. Mirrors `useFormId` in the React,
+   * Preact, and Vue adapters.
    */
   const fallbackFormId = createUniqueId()
   const api = new FormApi<
