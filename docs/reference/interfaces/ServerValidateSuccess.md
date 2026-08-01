@@ -5,7 +5,7 @@ title: ServerValidateSuccess
 
 # Interface: ServerValidateSuccess\<TFormData, TFormValidators\>
 
-Defined in: [packages/form-core/src/ssr.public.ts:48](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L48)
+Defined in: [ssr.public.ts:56](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L56)
 
 ## Type Parameters
 
@@ -25,7 +25,7 @@ Defined in: [packages/form-core/src/ssr.public.ts:48](https://github.com/TanStac
 schemaOutputs: ServerFormStandardSchemaValidatorOutputs<TFormValidators>;
 ```
 
-Defined in: [packages/form-core/src/ssr.public.ts:54](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L54)
+Defined in: [ssr.public.ts:62](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L62)
 
 ***
 
@@ -35,7 +35,7 @@ Defined in: [packages/form-core/src/ssr.public.ts:54](https://github.com/TanStac
 success: true;
 ```
 
-Defined in: [packages/form-core/src/ssr.public.ts:52](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L52)
+Defined in: [ssr.public.ts:60](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L60)
 
 ***
 
@@ -45,4 +45,4 @@ Defined in: [packages/form-core/src/ssr.public.ts:52](https://github.com/TanStac
 values: TFormData;
 ```
 
-Defined in: [packages/form-core/src/ssr.public.ts:53](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L53)
+Defined in: [ssr.public.ts:61](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L61)

@@ -5,7 +5,7 @@ title: FormOptions
 
 # Interface: FormOptions\<TFormData, TFormValidators, TSubmitReturn\>
 
-Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:51](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L51)
+Defined in: [FormApi/FormApi.public.ts:51](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L51)
 
 ## Type Parameters
 
@@ -29,7 +29,7 @@ Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:51](https://github
 defaultValues: TFormData;
 ```
 
-Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:57](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L57)
+Defined in: [FormApi/FormApi.public.ts:57](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L57)
 
 ***
 
@@ -39,7 +39,7 @@ Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:57](https://github
 optional errorVisibility: ErrorVisibility<TFormData, ToFormErrorTypes<TFormValidators, unknown>>;
 ```
 
-Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:58](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L58)
+Defined in: [FormApi/FormApi.public.ts:58](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L58)
 
 ***
 
@@ -49,7 +49,7 @@ Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:58](https://github
 optional formId: string;
 ```
 
-Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:56](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L56)
+Defined in: [FormApi/FormApi.public.ts:56](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L56)
 
 ***
 
@@ -59,7 +59,7 @@ Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:56](https://github
 optional listeners: FormListeners<TFormData, ToFormErrorTypes<TFormValidators, unknown>>;
 ```
 
-Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:63](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L63)
+Defined in: [FormApi/FormApi.public.ts:63](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L63)
 
 ***
 
@@ -69,7 +69,7 @@ Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:63](https://github
 optional onSubmit: (context) => TSubmitReturn;
 ```
 
-Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:71](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L71)
+Defined in: [FormApi/FormApi.public.ts:71](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L71)
 
 #### Parameters
 
@@ -91,7 +91,7 @@ optional serverState:
   | null;
 ```
 
-Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:67](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L67)
+Defined in: [FormApi/FormApi.public.ts:67](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L67)
 
 ***
 
@@ -101,4 +101,4 @@ Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:67](https://github
 optional validators: TFormValidators;
 ```
 
-Defined in: [packages/form-core/src/FormApi/FormApi.public.ts:62](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L62)
+Defined in: [FormApi/FormApi.public.ts:62](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L62)

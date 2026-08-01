@@ -9,7 +9,7 @@ title: ServerFormStandardSchemaValidatorOutputs
 type ServerFormStandardSchemaValidatorOutputs<TFormValidators> = unknown extends TFormValidators ? unknown[] : FormValidators<any> extends TFormValidators ? unknown[] : MappedServerSchemaOutputs<TFormValidators>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:775](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L775)
+Defined in: [validation.public.ts:775](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L775)
 
 ## Type Parameters
 

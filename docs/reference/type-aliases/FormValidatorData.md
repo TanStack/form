@@ -9,7 +9,7 @@ title: FormValidatorData
 type FormValidatorData<TFormValidators> = TFormValidators extends FormValidators<infer T> ? T : never;
 ```
 
-Defined in: [packages/form-core/src/utils.public.ts:52](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/utils.public.ts#L52)
+Defined in: [utils.public.ts:52](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/utils.public.ts#L52)
 
 ## Type Parameters
 

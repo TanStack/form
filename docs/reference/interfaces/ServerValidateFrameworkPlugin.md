@@ -5,13 +5,13 @@ title: ServerValidateFrameworkPlugin
 
 # Interface: ServerValidateFrameworkPlugin\<TCreateServerValidate\>
 
-Defined in: [packages/form-core/src/ssr.public.ts:115](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L115)
+Defined in: [ssr.public.ts:89](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L89)
 
 ## Type Parameters
 
 ### TCreateServerValidate
 
-`TCreateServerValidate` *extends* [`ServerValidateFrameworkCreateServerValidate`](../type-aliases/ServerValidateFrameworkCreateServerValidate.md) = [`ServerValidateFrameworkCreateServerValidate`](../type-aliases/ServerValidateFrameworkCreateServerValidate.md)
+`TCreateServerValidate` *extends* `ServerValidateFrameworkCreateServerValidate` = `ServerValidateFrameworkCreateServerValidate`
 
 ## Properties
 
@@ -21,7 +21,7 @@ Defined in: [packages/form-core/src/ssr.public.ts:115](https://github.com/TanSta
 createServerValidate: TCreateServerValidate;
 ```
 
-Defined in: [packages/form-core/src/ssr.public.ts:120](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L120)
+Defined in: [ssr.public.ts:94](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L94)
 
 ***
 
@@ -31,4 +31,4 @@ Defined in: [packages/form-core/src/ssr.public.ts:120](https://github.com/TanSta
 id: `react-form-${string}`;
 ```
 
-Defined in: [packages/form-core/src/ssr.public.ts:119](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L119)
+Defined in: [ssr.public.ts:93](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L93)

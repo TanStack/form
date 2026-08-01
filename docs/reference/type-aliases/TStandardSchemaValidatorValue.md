@@ -9,7 +9,7 @@ title: TStandardSchemaValidatorValue
 type TStandardSchemaValidatorValue<TData> = object;
 ```
 
-Defined in: [packages/form-core/src/standardSchema.public.ts:1](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/standardSchema.public.ts#L1)
+Defined in: [standardSchema.public.ts:1](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/standardSchema.public.ts#L1)
 
 ## Type Parameters
 
@@ -25,4 +25,4 @@ Defined in: [packages/form-core/src/standardSchema.public.ts:1](https://github.c
 value: TData;
 ```
 
-Defined in: [packages/form-core/src/standardSchema.public.ts:2](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/standardSchema.public.ts#L2)
+Defined in: [standardSchema.public.ts:2](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/standardSchema.public.ts#L2)

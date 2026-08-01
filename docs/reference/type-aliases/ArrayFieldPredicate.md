@@ -9,7 +9,7 @@ title: ArrayFieldPredicate
 type ArrayFieldPredicate<TFormData, TFieldName> = (value, index, array) => boolean;
 ```
 
-Defined in: [packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts:23](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L23)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:23](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L23)
 
 ## Type Parameters
 

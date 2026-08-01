@@ -9,7 +9,7 @@ title: ToFormErrorTypes
 type ToFormErrorTypes<TFormValidators, TSubmitReturn> = ToValidatorErrorTypes<TFormValidators, FormValidators<any>, TSubmitReturn>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:729](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L729)
+Defined in: [validation.public.ts:729](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L729)
 
 ## Type Parameters
 

@@ -5,7 +5,7 @@ title: FormErrorTypes
 
 # Interface: FormErrorTypes\<TFormError, TFieldError\>
 
-Defined in: [packages/form-core/src/validation.public.ts:564](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L564)
+Defined in: [validation.public.ts:564](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L564)
 
 ## Type Parameters
 
@@ -25,7 +25,7 @@ Defined in: [packages/form-core/src/validation.public.ts:564](https://github.com
 readonly fieldError: TFieldError;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:569](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L569)
+Defined in: [validation.public.ts:569](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L569)
 
 ***
 
@@ -35,4 +35,4 @@ Defined in: [packages/form-core/src/validation.public.ts:569](https://github.com
 readonly formError: TFormError;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:568](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L568)
+Defined in: [validation.public.ts:568](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L568)

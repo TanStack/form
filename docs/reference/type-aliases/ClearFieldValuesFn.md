@@ -9,7 +9,7 @@ title: ClearFieldValuesFn
 type ClearFieldValuesFn<TFormData> = <TFieldName>(arrayFieldName, options?) => void;
 ```
 
-Defined in: [packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts:67](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L67)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:67](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L67)
 
 ## Type Parameters
 

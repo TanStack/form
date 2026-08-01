@@ -5,13 +5,13 @@ title: FormOptionsApi
 
 # Interface: FormOptionsApi()
 
-Defined in: [packages/form-core/src/utils.public.ts:58](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/utils.public.ts#L58)
+Defined in: [utils.public.ts:58](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/utils.public.ts#L58)
 
 ```ts
 FormOptionsApi<TFormData, TFormValidators, TSubmitReturn>(options): FormOptions<TFormData, TFormValidators, TSubmitReturn>;
 ```
 
-Defined in: [packages/form-core/src/utils.public.ts:59](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/utils.public.ts#L59)
+Defined in: [utils.public.ts:59](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/utils.public.ts#L59)
 
 ## Type Parameters
 
@@ -45,7 +45,7 @@ Defined in: [packages/form-core/src/utils.public.ts:59](https://github.com/TanSt
 looseSchema: <TFormValidators, TFormData, TSubmitReturn>(options) => FormOptions<InferUnion<TFormData, FormValidatorData<TFormValidators>>, TFormValidators, TSubmitReturn>;
 ```
 
-Defined in: [packages/form-core/src/utils.public.ts:81](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/utils.public.ts#L81)
+Defined in: [utils.public.ts:81](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/utils.public.ts#L81)
 
 #### Type Parameters
 
@@ -79,7 +79,7 @@ Defined in: [packages/form-core/src/utils.public.ts:81](https://github.com/TanSt
 strictSchema: <TFormValidators, TFormData, TSubmitReturn>(options) => FormOptions<FormValidatorData<TFormValidators>, TFormValidators, TSubmitReturn>;
 ```
 
-Defined in: [packages/form-core/src/utils.public.ts:67](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/utils.public.ts#L67)
+Defined in: [utils.public.ts:67](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/utils.public.ts#L67)
 
 #### Type Parameters
 

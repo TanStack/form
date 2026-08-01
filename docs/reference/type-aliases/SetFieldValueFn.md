@@ -9,7 +9,7 @@ title: SetFieldValueFn
 type SetFieldValueFn<TFormData> = <TDeepKeys>(DeepKeys, value, options?) => void;
 ```
 
-Defined in: [packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts:4](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L4)
+Defined in: [FormApi/FormApiFieldMethods.types.public.ts:4](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L4)
 
 ## Type Parameters
 

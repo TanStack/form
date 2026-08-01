@@ -9,13 +9,13 @@ title: serverValidateHelper
 function serverValidateHelper<TFramework>(options): ServerValidateHelperResult<TFramework>;
 ```
 
-Defined in: [packages/form-core/src/ssr.lib.ts:203](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.lib.ts#L203)
+Defined in: [ssr.public.ts:21](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L21)
 
 ## Type Parameters
 
 ### TFramework
 
-`TFramework` *extends* [`ServerValidateFrameworkPlugin`](../interfaces/ServerValidateFrameworkPlugin.md)\<[`ServerValidateFrameworkCreateServerValidate`](../type-aliases/ServerValidateFrameworkCreateServerValidate.md)\>
+`TFramework` *extends* [`ServerValidateFrameworkPlugin`](../interfaces/ServerValidateFrameworkPlugin.md)\<`ServerValidateFrameworkCreateServerValidate`\>
 
 ## Parameters
 

@@ -11,7 +11,7 @@ type FormValidateResult<TFormData> =
 | ValidationErrorMap<TFormData>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:429](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L429)
+Defined in: [validation.public.ts:429](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L429)
 
 ## Type Parameters
 

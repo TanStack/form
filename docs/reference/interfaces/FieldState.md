@@ -5,7 +5,7 @@ title: FieldState
 
 # Interface: FieldState\<TFieldValue, TFieldError\>
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:52](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L52)
+Defined in: [FieldApi/FieldApi.public.ts:52](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L52)
 
 ## Type Parameters
 
@@ -25,7 +25,7 @@ Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:52](https://gith
 meta: FieldMeta<TFieldError>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:54](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L54)
+Defined in: [FieldApi/FieldApi.public.ts:54](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L54)
 
 ***
 
@@ -35,4 +35,4 @@ Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:54](https://gith
 value: TFieldValue;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:53](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L53)
+Defined in: [FieldApi/FieldApi.public.ts:53](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L53)

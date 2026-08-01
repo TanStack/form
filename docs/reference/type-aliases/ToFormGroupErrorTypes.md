@@ -9,7 +9,7 @@ title: ToFormGroupErrorTypes
 type ToFormGroupErrorTypes<TGroupValidators> = ToValidatorErrorTypes<TGroupValidators, FormGroupValidators<any>, never>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:734](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L734)
+Defined in: [validation.public.ts:734](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L734)
 
 ## Type Parameters
 

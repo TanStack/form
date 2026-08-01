@@ -9,4 +9,4 @@ title: initialServerFormState
 const initialServerFormState: ServerFormState<any, any>;
 ```
 
-Defined in: [packages/form-core/src/ssr.lib.ts:124](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.lib.ts#L124)
+Defined in: [ssr.public.ts:9](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/ssr.public.ts#L9)

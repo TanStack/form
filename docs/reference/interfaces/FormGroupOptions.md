@@ -5,7 +5,7 @@ title: FormGroupOptions
 
 # Interface: FormGroupOptions\<TFormData, TGroupName, TGroupValue, TGroupValidators, TFormErrorTypes\>
 
-Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:33](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L33)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:33](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L33)
 
 ## Type Parameters
 
@@ -37,7 +37,7 @@ Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:33](http
 form: FormApi<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:40](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L40)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:40](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L40)
 
 ***
 
@@ -47,7 +47,7 @@ Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:40](http
 name: TGroupName;
 ```
 
-Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:41](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L41)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:41](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L41)
 
 ***
 
@@ -57,7 +57,7 @@ Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:41](http
 optional onSubmit: (context) => void | Promise<void>;
 ```
 
-Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:43](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L43)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:43](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L43)
 
 #### Parameters
 
@@ -77,7 +77,7 @@ Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:43](http
 optional onSubmitInvalid: (context) => void | Promise<void>;
 ```
 
-Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:53](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L53)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:53](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L53)
 
 #### Parameters
 
@@ -97,4 +97,4 @@ Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:53](http
 optional validators: TGroupValidators;
 ```
 
-Defined in: [packages/form-core/src/FormGroupApi/FormGroupApi.public.ts:42](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L42)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:42](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L42)

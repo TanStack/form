@@ -9,7 +9,7 @@ title: FormListeners
 type FormListeners<TFormData, TFormErrorTypes> = FormListener<TFormData, TFormErrorTypes>[];
 ```
 
-Defined in: [packages/form-core/src/listeners.public.ts:76](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L76)
+Defined in: [listeners.public.ts:76](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/listeners.public.ts#L76)
 
 ## Type Parameters
 

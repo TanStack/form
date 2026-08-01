@@ -9,7 +9,7 @@ title: ToFormSchemaOutputs
 type ToFormSchemaOutputs<TFormValidators> = ToSchemaOutputs<TFormValidators, FormValidators<any>>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:693](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L693)
+Defined in: [validation.public.ts:693](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L693)
 
 ## Type Parameters
 

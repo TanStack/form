@@ -9,4 +9,4 @@ title: ValidatorScope
 type ValidatorScope = "form" | "group" | "field";
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:172](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L172)
+Defined in: [validation.public.ts:172](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L172)

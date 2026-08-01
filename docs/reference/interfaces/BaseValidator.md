@@ -5,7 +5,7 @@ title: BaseValidator
 
 # Interface: BaseValidator\<TValidator\>
 
-Defined in: [packages/form-core/src/validation.public.ts:11](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L11)
+Defined in: [validation.public.ts:11](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L11)
 
 ## Extended by
 
@@ -28,7 +28,7 @@ Defined in: [packages/form-core/src/validation.public.ts:11](https://github.com/
 optional bailIfInvalid: boolean;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:21](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L21)
+Defined in: [validation.public.ts:21](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L21)
 
 If `true`, this validator and all subsequent validators will be skipped if any previous validator has failed.
 If `false`, validators run regardless of earlier validation results.
@@ -47,4 +47,4 @@ false
 run: TValidator;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:14](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L14)
+Defined in: [validation.public.ts:14](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L14)

@@ -9,7 +9,7 @@ title: ToServerFormErrorTypes
 type ToServerFormErrorTypes<TFormValidators> = unknown extends TFormValidators ? FormErrorTypes : FormValidators<any> extends TFormValidators ? FormErrorTypes : ToFormErrorTypes<MappedServerFormValidators<TFormValidators>, never>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:757](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L757)
+Defined in: [validation.public.ts:757](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L757)
 
 ## Type Parameters
 

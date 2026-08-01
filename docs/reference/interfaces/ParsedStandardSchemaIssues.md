@@ -5,7 +5,7 @@ title: ParsedStandardSchemaIssues
 
 # Interface: ParsedStandardSchemaIssues\<TFormData\>
 
-Defined in: [packages/form-core/src/validation.public.ts:386](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L386)
+Defined in: [validation.public.ts:386](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L386)
 
 ## Type Parameters
 
@@ -21,7 +21,7 @@ Defined in: [packages/form-core/src/validation.public.ts:386](https://github.com
 fields: Partial<Record<DeepKeys<TFormData>, StandardSchemaV1Issue[]>>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:388](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L388)
+Defined in: [validation.public.ts:388](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L388)
 
 ***
 
@@ -31,4 +31,4 @@ Defined in: [packages/form-core/src/validation.public.ts:388](https://github.com
 form: StandardSchemaV1Issue[];
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:387](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L387)
+Defined in: [validation.public.ts:387](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L387)

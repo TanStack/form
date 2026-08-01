@@ -9,7 +9,7 @@ title: ArrayFieldValue
 type ArrayFieldValue<TFormData, TFieldName> = DeepValue<TFormData, TFieldName>;
 ```
 
-Defined in: [packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts:13](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L13)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:13](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L13)
 
 ## Type Parameters
 

@@ -5,7 +5,7 @@ title: FieldApi
 
 # Interface: FieldApi\<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes\>
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:100](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L100)
+Defined in: [FieldApi/FieldApi.public.ts:100](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L100)
 
 ## Type Parameters
 
@@ -37,7 +37,7 @@ Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:100](https://git
 atom: ReadonlyAtom<FieldState<TFieldValue, TFieldError>>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:174](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L174)
+Defined in: [FieldApi/FieldApi.public.ts:174](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L174)
 
 ***
 
@@ -47,7 +47,7 @@ Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:174](https://git
 clearValues: FieldClearValuesFn;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:156](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L156)
+Defined in: [FieldApi/FieldApi.public.ts:156](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L156)
 
 Clear all values from this field's array.
 If this field is not an array, this method will be ignored.
@@ -64,7 +64,7 @@ Optional update options
 errors: FieldErrors<TFieldError>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:180](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L180)
+Defined in: [FieldApi/FieldApi.public.ts:180](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L180)
 
 ***
 
@@ -74,7 +74,7 @@ Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:180](https://git
 filterValues: FieldFilterValuesFn<TFieldValue>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:172](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L172)
+Defined in: [FieldApi/FieldApi.public.ts:172](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L172)
 
 Filter the values in this field's array using a predicate function.
 If this field is not an array, this method will be ignored.
@@ -95,7 +95,7 @@ Optional update options including a custom `thisArg` for the predicate
 form: FormApi<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:110](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L110)
+Defined in: [FieldApi/FieldApi.public.ts:110](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L110)
 
 The form that owns this field.
 
@@ -107,7 +107,7 @@ The form that owns this field.
 handleBlur: FieldVoidFn;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:184](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L184)
+Defined in: [FieldApi/FieldApi.public.ts:184](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L184)
 
 ***
 
@@ -117,7 +117,7 @@ Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:184](https://git
 handleChange: FieldHandleChangeFn<TFieldValue>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:182](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L182)
+Defined in: [FieldApi/FieldApi.public.ts:182](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L182)
 
 ***
 
@@ -127,7 +127,7 @@ Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:182](https://git
 insertValue: FieldInsertValueFn<TFieldValue>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:149](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L149)
+Defined in: [FieldApi/FieldApi.public.ts:149](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L149)
 
 Insert a new value into this field's array at the specified index.
 If this field is not an array, this method will be ignored.
@@ -152,7 +152,7 @@ Optional update options
 meta: FieldMeta<TFieldError>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:178](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L178)
+Defined in: [FieldApi/FieldApi.public.ts:178](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L178)
 
 ***
 
@@ -162,7 +162,7 @@ Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:178](https://git
 moveValue: FieldMoveValueFn;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:132](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L132)
+Defined in: [FieldApi/FieldApi.public.ts:132](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L132)
 
 Move an element in this field's array from one index to another.
 If this field is not an array, this method will be ignored.
@@ -187,7 +187,7 @@ Optional update options
 pushValue: FieldPushValueFn<TFieldValue>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:140](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L140)
+Defined in: [FieldApi/FieldApi.public.ts:140](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L140)
 
 Push a new value into this field's array.
 If this field is not an array, this method will be ignored.
@@ -208,7 +208,7 @@ Optional update options
 removeValue: FieldRemoveValueFn;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:164](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L164)
+Defined in: [FieldApi/FieldApi.public.ts:164](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L164)
 
 Remove a value from this field's array at the specified index.
 If this field is not an array, this method will be ignored.
@@ -229,7 +229,7 @@ Optional update options
 reset: FieldVoidFn;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:186](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L186)
+Defined in: [FieldApi/FieldApi.public.ts:186](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L186)
 
 ***
 
@@ -239,7 +239,7 @@ Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:186](https://git
 swapValues: (indexA, indexB) => void;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:123](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L123)
+Defined in: [FieldApi/FieldApi.public.ts:123](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L123)
 
 Swap two elements in this field's array.
 If this field is not an array, this method will be ignored.
@@ -270,7 +270,7 @@ The index of the second element to swap
 value: TFieldValue;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:176](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L176)
+Defined in: [FieldApi/FieldApi.public.ts:176](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L176)
 
 ## Accessors
 
@@ -282,7 +282,7 @@ Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:176](https://git
 get name(): TFieldName;
 ```
 
-Defined in: [packages/form-core/src/FieldApi/FieldApi.public.ts:115](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L115)
+Defined in: [FieldApi/FieldApi.public.ts:115](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L115)
 
 The name of the field.
 

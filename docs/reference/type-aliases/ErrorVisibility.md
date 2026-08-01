@@ -9,7 +9,7 @@ title: ErrorVisibility
 type ErrorVisibility<TFormData, TFormErrorTypes> = (context) => boolean;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:214](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L214)
+Defined in: [validation.public.ts:214](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L214)
 
 Decides whether a field exposes its validation errors publicly.
 

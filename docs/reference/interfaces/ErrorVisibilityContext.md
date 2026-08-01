@@ -5,7 +5,7 @@ title: ErrorVisibilityContext
 
 # Interface: ErrorVisibilityContext\<TFormData, TFormErrorTypes\>
 
-Defined in: [packages/form-core/src/validation.public.ts:199](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L199)
+Defined in: [validation.public.ts:199](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L199)
 
 ## Type Parameters
 
@@ -25,7 +25,7 @@ Defined in: [packages/form-core/src/validation.public.ts:199](https://github.com
 fieldState: ErrorVisibilityFieldState;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:204](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L204)
+Defined in: [validation.public.ts:204](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L204)
 
 ***
 
@@ -35,4 +35,4 @@ Defined in: [packages/form-core/src/validation.public.ts:204](https://github.com
 state: FormState<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:203](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L203)
+Defined in: [validation.public.ts:203](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L203)

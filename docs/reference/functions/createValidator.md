@@ -9,7 +9,7 @@ title: createValidator
 function createValidator<TOptions>(options): <TValidator>(run) => ValidatorWithRun<InferFormDataFromValidator<TValidator>, InferFormDataFromValidator<TValidator>, TOptions, TValidator>;
 ```
 
-Defined in: [packages/form-core/src/validation.public.ts:125](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L125)
+Defined in: [validation.public.ts:125](https://github.com/TanStack/form-v2/blob/main/packages/form-core/src/validation.public.ts#L125)
 
 ## Type Parameters
 
