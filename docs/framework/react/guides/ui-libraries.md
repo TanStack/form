@@ -75,8 +75,7 @@ the UI library's richer object at the component boundary if necessary.
 ## Reuse the adapter
 
 If the same wiring appears throughout the application, extract a component that
-accepts `FieldWithValue<T>` or register it with `createFormHook`. See
-[Form Composition](./form-composition.md) for both patterns.
+accepts `FieldWithValue<T>` or register it with `createFormHook`.
 
 The repository's `examples/react/ui-integration/shadcn` example demonstrates a
 larger component system with branded fields, lazy-loaded controls, labels,
