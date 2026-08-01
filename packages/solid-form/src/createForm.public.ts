@@ -41,7 +41,7 @@ export interface SolidFormFieldProps<
   TFieldName,
   TFieldValue,
   TFieldValidators,
-  [],
+  never,
   TFormData,
   TFormErrorTypes
 > {
@@ -69,7 +69,7 @@ export interface SolidFormArrayFieldProps<
   TFieldName,
   TFieldValue,
   TFieldValidators,
-  [],
+  never,
   TFormData,
   TFormErrorTypes
 > {

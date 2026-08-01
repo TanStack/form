@@ -1,7 +1,8 @@
 import { createSignal } from 'solid-js'
 import { render } from 'solid-js/web'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, expectTypeOf, it } from 'vitest'
 import { createForm } from '../src'
+import type { ValidationIssue } from '../src'
 
 describe('Solid FormApi', () => {
   it('should create a form from a Solid options accessor', () => {
@@ -68,5 +69,56 @@ describe('Solid FormApi', () => {
     )
 
     dispose()
+  })
+
+  it('types root field listener errors without a group error', () => {
+    function Component() {
+      const form = createForm(() => ({
+        defaultValues: { name: '', items: [''] },
+      }))
+
+      return (
+        <>
+          <form.Field
+            name="name"
+            listeners={[
+              {
+                triggers: ['change'],
+                run: ({ fieldApi }) => {
+                  expectTypeOf(fieldApi.errors).toEqualTypeOf<
+                    Array<ValidationIssue>
+                  >()
+                },
+              },
+            ]}
+          >
+            {(field) => {
+              expectTypeOf(field().errors).toEqualTypeOf<
+                Array<ValidationIssue>
+              >()
+              return null
+            }}
+          </form.Field>
+
+          <form.ArrayField
+            name="items"
+            listeners={[
+              {
+                triggers: ['change'],
+                run: ({ fieldApi }) => {
+                  expectTypeOf(fieldApi.errors).toEqualTypeOf<
+                    Array<ValidationIssue>
+                  >()
+                },
+              },
+            ]}
+          >
+            {() => null}
+          </form.ArrayField>
+        </>
+      )
+    }
+
+    void Component
   })
 })
