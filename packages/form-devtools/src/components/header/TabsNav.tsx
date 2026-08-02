@@ -15,11 +15,11 @@ function FormTabsTrigger(props: FormTabsTriggerProps) {
   return (
     <Tabs.Trigger
       value={props.value}
-      asChild={(props) => (
+      asChild={(triggerProps) => (
         <Button
           variant="ghost"
           class="rounded-b-none h-10 pb-2 px-4 border-b-0 bg-transparent hover:bg-transparent dark:bg-transparent dark:hover:bg-transparent"
-          {...props()}
+          {...triggerProps()}
         ></Button>
       )}
     >
@@ -49,7 +49,9 @@ export function DevtoolsTab(props: DevtoolsTabProps) {
     <Tabs.Content
       class="min-h-0 flex-1"
       value={props.value}
-      asChild={(props) => <main {...props()} class="overflow-hidden" />}
+      asChild={(contentProps) => (
+        <main {...contentProps()} class="overflow-hidden" />
+      )}
     >
       <Show when={!props.disableScroll} fallback={props.children}>
         <ScrollArea class="size-full">{props.children}</ScrollArea>

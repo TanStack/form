@@ -7,7 +7,6 @@ export type BuiltInType =
   | Primitive
   | Date
   | RegExp
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   | Function
 
 export type Editable<T> = T extends BuiltInType
