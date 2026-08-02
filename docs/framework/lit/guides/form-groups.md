@@ -87,16 +87,16 @@ export class MyForm extends LitElement {
               (group) => html`
                 <form
                   @submit=${(e: Event) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  // Use `group.handleSubmit()` to submit the sub-form, but not the parent form
-                  group.handleSubmit()
-                }}
+                    e.preventDefault()
+                    e.stopPropagation()
+                    // Use `group.handleSubmit()` to submit the sub-form, but not the parent form
+                    group.handleSubmit()
+                  }}
                 >
                   ${this.#form.field(
-                  { name: 'step1.name' },
-                  (field) => html`<!-- ... -->`,
-                )}
+                    { name: 'step1.name' },
+                    (field) => html`<!-- ... -->`,
+                  )}
                 </form>
               `,
             )
@@ -115,15 +115,15 @@ export class MyForm extends LitElement {
               (group) => html`
                 <form
                   @submit=${(e: Event) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  group.handleSubmit()
-                }}
+                    e.preventDefault()
+                    e.stopPropagation()
+                    group.handleSubmit()
+                  }}
                 >
                   ${this.#form.field(
-                  { name: 'step2.age' },
-                  (field) => html`<!-- ... -->`,
-                )}
+                    { name: 'step2.age' },
+                    (field) => html`<!-- ... -->`,
+                  )}
                 </form>
               `,
             )
