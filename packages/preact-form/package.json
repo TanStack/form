@@ -27,23 +27,12 @@
     "test:lib": "vitest",
     "test:lib:dev": "pnpm run test:lib --watch",
     "test:build": "publint --strict",
-    "build": "vite build"
+    "build": "tsdown"
   },
   "type": "module",
-  "types": "dist/esm/index.d.ts",
-  "main": "dist/cjs/index.cjs",
-  "module": "dist/esm/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": {
-      "import": {
-        "types": "./dist/esm/index.d.ts",
-        "default": "./dist/esm/index.js"
-      },
-      "require": {
-        "types": "./dist/cjs/index.d.cts",
-        "default": "./dist/cjs/index.cjs"
-      }
-    },
+    ".": "./dist/index.js",
     "./package.json": "./package.json"
   },
   "sideEffects": false,
@@ -56,10 +45,10 @@
     "@tanstack/preact-store": "^0.13.1"
   },
   "devDependencies": {
+    "@eslint-react/eslint-plugin": "^5.18.1",
     "@preact/preset-vite": "^2.10.2",
     "@testing-library/preact": "^3.2.4",
-    "preact": "^10.26.4",
-    "vite": "^7.2.2"
+    "preact": "^10.26.4"
   },
   "peerDependencies": {
     "preact": ">10.11.0"

@@ -15,8 +15,7 @@ export function setInternalTanStackCookie(
 }
 
 export function getInternalTanStackCookie():
-  | ServerFormState<any, any>
-  | undefined {
+  ServerFormState<any, any> | undefined {
   const cookie = getCookie(INTERNALS_COOKIE_NAME)
   if (!cookie) return undefined
 

@@ -370,9 +370,7 @@ function DefineFieldsTypes() {
   }>()
   expectTypeOf<DefinedFieldBindings>().toEqualTypeOf<{
     readonly name:
-      | 'user.name'
-      | `user.emails[${number}].value`
-      | `tags[${number}]`
+      'user.name' | `user.emails[${number}].value` | `tags[${number}]`
     readonly age: 'user.age'
     readonly emails: 'user.emails'
   }>()

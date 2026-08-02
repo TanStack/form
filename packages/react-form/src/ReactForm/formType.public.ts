@@ -26,8 +26,7 @@ type ReactFormTypeErrorTypes<
 
 export type ReactFormType<
   TOptions extends
-    | AnyFormOptions
-    | AppFormOptions<any, any, any, AnyReactFormComponentMap>,
+    AnyFormOptions | AppFormOptions<any, any, any, AnyReactFormComponentMap>,
 > =
   TOptions extends AppFormOptions<
     infer TFormData,

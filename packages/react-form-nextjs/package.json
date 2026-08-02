@@ -45,5 +45,8 @@
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
     "decode-formdata": "^0.9.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.1"
   }
 }

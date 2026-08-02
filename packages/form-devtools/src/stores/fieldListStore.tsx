@@ -151,7 +151,7 @@ export function createFieldListComputations() {
   })
 
   const visibleFieldRows = createMemo(() => {
-    const results = fuzzysort.go(fieldSearchQuery(), filteredFieldRows(), {
+    const matches = fuzzysort.go(fieldSearchQuery(), filteredFieldRows(), {
       keys: ['path', 'pathLeaf'],
       all: true,
       scoreFn: (results) => {
@@ -161,7 +161,7 @@ export function createFieldListComputations() {
         return Math.max(pathScore, leafScore * 2)
       },
     })
-    return results.map((obj) => obj.obj)
+    return matches.map((obj) => obj.obj)
   })
 
   const selectedFieldRow = createMemo<DevtoolsFieldListRow | null>(() => {

@@ -72,9 +72,7 @@ export type ValidateContext =
   | FieldValidateContext
   | FormGroupValidateContext
 type ValidateResult =
-  | FormValidateResult<any>
-  | FormGroupValidateResult<any>
-  | FieldValidateResult
+  FormValidateResult<any> | FormGroupValidateResult<any> | FieldValidateResult
 type AnyPipelineValidator =
   | FormValidator<any>
   | FormGroupValidator<any>

@@ -1,9 +1,9 @@
 import { defineConfig } from 'vitest/config'
-import react from '@vitejs/plugin-react'
+import preact from '@preact/preset-vite'
 import packageJson from './package.json' with { type: 'json' }
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [preact()],
   test: {
     name: packageJson.name,
     dir: './tests',

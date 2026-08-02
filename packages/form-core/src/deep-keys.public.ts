@@ -43,9 +43,7 @@ type UndefinedForMissingKey<T, TKey extends string | number> =
     : never
 
 type ValueForKeyOrUndefined<T, TKey extends string | number> =
-  | ValueForKey<T, TKey>
-  | UndefinedForMissingKey<T, TKey>
-  | UndefinedIfNullish<T>
+  ValueForKey<T, TKey> | UndefinedForMissingKey<T, TKey> | UndefinedIfNullish<T>
 
 type ArrayAccessor<TParent extends AnyDeepKeyAndValue> =
   `${TParent['key'] extends never ? '' : TParent['key']}[${number}]`
@@ -186,8 +184,7 @@ type MostSpecificKey<TValue extends AnyDeepKeyAndValue> = MostSpecificKeyImpl<
 >
 
 type LongerPrefix<TPrefix extends string> =
-  | `${TPrefix}.${string}`
-  | `${TPrefix}[${string}`
+  `${TPrefix}.${string}` | `${TPrefix}[${string}`
 
 type HasLonger<TAll extends AnyDeepKeyAndValue, TName extends string> =
   Extract<TAll, { key: LongerPrefix<TName> }> extends never ? false : true

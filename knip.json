@@ -1,8 +1,16 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "ignoreFiles": ["**/*.regressions.ts"],
-  "ignoreDependencies": ["@tanstack/react-start"],
-  "ignoreWorkspaces": ["examples/**"],
+  "ignoreWorkspaces": [
+    "examples/**",
+    "packages/angular-form",
+    "packages/lit-form",
+    "packages/preact-form",
+    "packages/solid-form-devtools",
+    "packages/svelte-form",
+    "packages/vue-form",
+    "packages/form-devtools"
+  ],
   "ignoreIssues": {
     "packages/form-devtools/src/components/ui/**": [
       "exports",

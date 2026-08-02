@@ -3,12 +3,7 @@ import type { FormValidators } from './validation.public'
 
 type Primitive = string | number | boolean | bigint | symbol | null | undefined
 
-export type BuiltInType =
-  | Primitive
-  | Date
-  | RegExp
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-  | Function
+export type BuiltInType = Primitive | Date | RegExp | Function
 
 export type Editable<T> = T extends BuiltInType
   ? T | null | undefined

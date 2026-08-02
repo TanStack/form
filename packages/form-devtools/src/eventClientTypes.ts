@@ -188,8 +188,7 @@ export type ValidatorsWithoutTriggersSuspicion = FieldSuspicion<
 >
 
 export type FieldDebugSuspicion =
-  | SchemaErrorsUnmountedDescendantsSuspicion
-  | ValidatorsWithoutTriggersSuspicion
+  SchemaErrorsUnmountedDescendantsSuspicion | ValidatorsWithoutTriggersSuspicion
 
 export interface FieldDebugReport {
   requestId: string

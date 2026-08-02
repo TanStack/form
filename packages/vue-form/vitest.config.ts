@@ -1,15 +1,20 @@
 import { defineConfig } from 'vitest/config'
-import solid from 'vite-plugin-solid'
 import packageJson from './package.json' with { type: 'json' }
+import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
-  plugins: [solid()],
+  plugins: [vue()],
   test: {
     name: packageJson.name,
     dir: './tests',
     watch: false,
     environment: 'jsdom',
     setupFiles: ['./tests/test-setup.ts'],
-    globals: true,
+    coverage: { enabled: true, provider: 'istanbul', include: ['src/**/*'] },
+    typecheck: { enabled: true },
+  },
+  esbuild: {
+    jsxFactory: 'h',
+    jsxFragment: 'Fragment',
   },
 })

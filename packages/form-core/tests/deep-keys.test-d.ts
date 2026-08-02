@@ -119,8 +119,7 @@ describe('DeepKeys', () => {
 
   it('should handle unions and intersections', () => {
     type DiscriminatedUnion = { name: string } & (
-      | { variant: 'foo' }
-      | { variant: 'bar'; baz: boolean }
+      { variant: 'foo' } | { variant: 'bar'; baz: boolean }
     )
     type ExpectedKeys = 'name' | 'variant' | 'baz'
 
@@ -205,11 +204,7 @@ describe('DeepKeys', () => {
     }
 
     type ExpectedKeys =
-      | 'nullable'
-      | 'nullable.a'
-      | 'nullable.b'
-      | 'nullable.b.c'
-      | 'nullable.b.e'
+      'nullable' | 'nullable.a' | 'nullable.b' | 'nullable.b.c' | 'nullable.b.e'
 
     expectTypeOf<DeepKeys<NullishNested>>().toEqualTypeOf<ExpectedKeys>()
   })
@@ -312,10 +307,7 @@ describe('DeepKeys', () => {
     type UserArray = Array<User>
 
     type ExpectedKeys =
-      | `[${number}]`
-      | `[${number}].name`
-      | `[${number}].id`
-      | `[${number}].age`
+      `[${number}]` | `[${number}].name` | `[${number}].id` | `[${number}].age`
 
     expectTypeOf<DeepKeys<UserArray>>().toEqualTypeOf<ExpectedKeys>()
   })
@@ -578,8 +570,7 @@ describe('DeepValue', () => {
 
   it('should handle unions and intersections', () => {
     type DiscriminatedUnion = { name: string } & (
-      | { variant: 'foo' }
-      | { variant: 'bar'; baz: boolean }
+      { variant: 'foo' } | { variant: 'bar'; baz: boolean }
     )
     type Expect<TKey extends string> = DeepValue<DiscriminatedUnion, TKey>
 
@@ -1055,13 +1046,7 @@ describe('DeepValue', () => {
     }
 
     type ExpectedKeys =
-      | 'a'
-      | `a.${string}`
-      | 'b'
-      | 'obj'
-      | 'obj.c'
-      | `obj.c.${string}`
-      | 'obj.d'
+      'a' | `a.${string}` | 'b' | 'obj' | 'obj.c' | `obj.c.${string}` | 'obj.d'
 
     expectTypeOf<DeepKeys<ObjectWithAny>>().toEqualTypeOf<ExpectedKeys>()
 

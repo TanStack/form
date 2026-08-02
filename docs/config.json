@@ -23,6 +23,14 @@
           "to": "installation"
         },
         {
+          "label": "Quick Start",
+          "to": "quick-start"
+        },
+        {
+          "label": "Migrating from v1",
+          "to": "migrate-from-v1"
+        },
+        {
           "label": "Philosophy",
           "to": "philosophy"
         },
@@ -109,16 +117,8 @@
           "label": "react",
           "children": [
             {
-              "label": "Basic Concepts",
-              "to": "framework/react/guides/basic-concepts"
-            },
-            {
               "label": "Form Validation",
               "to": "framework/react/guides/validation"
-            },
-            {
-              "label": "Dynamic Validation",
-              "to": "framework/react/guides/dynamic-validation"
             },
             {
               "label": "Async Initial Values",
@@ -129,48 +129,12 @@
               "to": "framework/react/guides/arrays"
             },
             {
-              "label": "Form Groups",
-              "to": "framework/react/guides/form-groups"
-            },
-            {
-              "label": "Linked Fields",
-              "to": "framework/react/guides/linked-fields"
-            },
-            {
-              "label": "Reactivity",
-              "to": "framework/react/guides/reactivity"
-            },
-            {
-              "label": "Listeners",
-              "to": "framework/react/guides/listeners"
-            },
-            {
-              "label": "Custom Errors",
-              "to": "framework/react/guides/custom-errors"
-            },
-            {
-              "label": "Submission Handling",
-              "to": "framework/react/guides/submission-handling"
-            },
-            {
               "label": "UI Libraries",
               "to": "framework/react/guides/ui-libraries"
             },
             {
-              "label": "Focus Management",
-              "to": "framework/react/guides/focus-management"
-            },
-            {
-              "label": "Form Composition",
-              "to": "framework/react/guides/form-composition"
-            },
-            {
               "label": "React Native",
               "to": "framework/react/guides/react-native"
-            },
-            {
-              "label": "SSR/TanStack Start/Next.js",
-              "to": "framework/react/guides/ssr"
             },
             {
               "label": "Debugging",
@@ -181,327 +145,15 @@
               "to": "framework/react/guides/devtools"
             }
           ]
-        },
-        {
-          "label": "preact",
-          "children": [
-            {
-              "label": "Basic Concepts",
-              "to": "framework/preact/guides/basic-concepts"
-            },
-            {
-              "label": "Form Validation",
-              "to": "framework/preact/guides/validation"
-            },
-            {
-              "label": "Dynamic Validation",
-              "to": "framework/preact/guides/dynamic-validation"
-            },
-            {
-              "label": "Async Initial Values",
-              "to": "framework/preact/guides/async-initial-values"
-            },
-            {
-              "label": "Arrays",
-              "to": "framework/preact/guides/arrays"
-            },
-            {
-              "label": "Form Groups",
-              "to": "framework/preact/guides/form-groups"
-            },
-            {
-              "label": "Linked Fields",
-              "to": "framework/preact/guides/linked-fields"
-            },
-            {
-              "label": "Reactivity",
-              "to": "framework/preact/guides/reactivity"
-            },
-            {
-              "label": "Listeners",
-              "to": "framework/preact/guides/listeners"
-            },
-            {
-              "label": "Custom Errors",
-              "to": "framework/preact/guides/custom-errors"
-            },
-            {
-              "label": "Submission Handling",
-              "to": "framework/preact/guides/submission-handling"
-            },
-            {
-              "label": "UI Libraries",
-              "to": "framework/preact/guides/ui-libraries"
-            },
-            {
-              "label": "Focus Management",
-              "to": "framework/preact/guides/focus-management"
-            },
-            {
-              "label": "Form Composition",
-              "to": "framework/preact/guides/form-composition"
-            },
-            {
-              "label": "Debugging",
-              "to": "framework/preact/guides/debugging"
-            }
-          ]
-        },
-        {
-          "label": "vue",
-          "children": [
-            {
-              "label": "Basic Concepts",
-              "to": "framework/vue/guides/basic-concepts"
-            },
-            {
-              "label": "Form Validation",
-              "to": "framework/vue/guides/validation"
-            },
-            {
-              "label": "Dynamic Validation",
-              "to": "framework/vue/guides/dynamic-validation"
-            },
-            {
-              "label": "Async Initial Values",
-              "to": "framework/vue/guides/async-initial-values"
-            },
-            {
-              "label": "Arrays",
-              "to": "framework/vue/guides/arrays"
-            },
-            {
-              "label": "Form Groups",
-              "to": "framework/vue/guides/form-groups"
-            },
-            {
-              "label": "Linked Fields",
-              "to": "framework/vue/guides/linked-fields"
-            }
-          ]
-        },
-        {
-          "label": "angular",
-          "children": [
-            {
-              "label": "Basic Concepts",
-              "to": "framework/angular/guides/basic-concepts"
-            },
-            {
-              "label": "Form Validation",
-              "to": "framework/angular/guides/validation"
-            },
-            {
-              "label": "Dynamic Validation",
-              "to": "framework/angular/guides/dynamic-validation"
-            },
-            {
-              "label": "Arrays",
-              "to": "framework/angular/guides/arrays"
-            },
-            {
-              "label": "Form Groups",
-              "to": "framework/angular/guides/form-groups"
-            },
-            {
-              "label": "Form Composition",
-              "to": "framework/angular/guides/form-composition"
-            }
-          ]
-        },
-        {
-          "label": "solid",
-          "children": [
-            {
-              "label": "Basic Concepts",
-              "to": "framework/solid/guides/basic-concepts"
-            },
-            {
-              "label": "Form Validation",
-              "to": "framework/solid/guides/validation"
-            },
-            {
-              "label": "Dynamic Validation",
-              "to": "framework/solid/guides/dynamic-validation"
-            },
-            {
-              "label": "Async Initial Values",
-              "to": "framework/solid/guides/async-initial-values"
-            },
-            {
-              "label": "Arrays",
-              "to": "framework/solid/guides/arrays"
-            },
-            {
-              "label": "Form Groups",
-              "to": "framework/solid/guides/form-groups"
-            },
-            {
-              "label": "Linked Fields",
-              "to": "framework/solid/guides/linked-fields"
-            },
-            {
-              "label": "Form Composition",
-              "to": "framework/solid/guides/form-composition"
-            }
-          ]
-        },
-        {
-          "label": "lit",
-          "children": [
-            {
-              "label": "Basic Concepts",
-              "to": "framework/lit/guides/basic-concepts"
-            },
-            {
-              "label": "Form Validation",
-              "to": "framework/lit/guides/validation"
-            },
-            {
-              "label": "Dynamic Validation",
-              "to": "framework/lit/guides/dynamic-validation"
-            },
-            {
-              "label": "Arrays",
-              "to": "framework/lit/guides/arrays"
-            },
-            {
-              "label": "Form Groups",
-              "to": "framework/lit/guides/form-groups"
-            },
-            {
-              "label": "Form Composition",
-              "to": "framework/lit/guides/form-composition"
-            }
-          ]
-        },
-        {
-          "label": "svelte",
-          "children": [
-            {
-              "label": "Basic Concepts",
-              "to": "framework/svelte/guides/basic-concepts"
-            },
-            {
-              "label": "Form Validation",
-              "to": "framework/svelte/guides/validation"
-            },
-            {
-              "label": "Dynamic Validation",
-              "to": "framework/svelte/guides/dynamic-validation"
-            },
-            {
-              "label": "Async Initial Values",
-              "to": "framework/svelte/guides/async-initial-values"
-            },
-            {
-              "label": "Arrays",
-              "to": "framework/svelte/guides/arrays"
-            },
-            {
-              "label": "Form Groups",
-              "to": "framework/svelte/guides/form-groups"
-            },
-            {
-              "label": "Linked Fields",
-              "to": "framework/svelte/guides/linked-fields"
-            },
-            {
-              "label": "Form Composition",
-              "to": "framework/svelte/guides/form-composition"
-            }
-          ]
         }
       ]
     },
     {
-      "collapsible": true,
-      "defaultCollapsed": true,
       "label": "API Reference",
       "children": [
         {
-          "label": "JavaScript Reference",
+          "label": "Core API Reference",
           "to": "reference/index"
-        },
-        {
-          "label": "Classes / FieldApi",
-          "to": "reference/classes/FieldApi"
-        },
-        {
-          "label": "Classes / FormApi",
-          "to": "reference/classes/FormApi"
-        },
-        {
-          "label": "Functions / formOptions",
-          "to": "reference/functions/formOptions"
-        },
-        {
-          "label": "Functions / mergeForm",
-          "to": "reference/functions/mergeForm"
-        },
-        {
-          "label": "Interfaces / FieldApiOptions",
-          "to": "reference/interfaces/FieldApiOptions"
-        },
-        {
-          "label": "Interfaces / FieldOptions",
-          "to": "reference/interfaces/FieldOptions"
-        },
-        {
-          "label": "Interfaces / FieldValidators",
-          "to": "reference/interfaces/FieldValidators"
-        },
-        {
-          "label": "Interfaces / FormOptions",
-          "to": "reference/interfaces/FormOptions"
-        },
-        {
-          "label": "Interfaces / FormValidators",
-          "to": "reference/interfaces/FormValidators"
-        },
-        {
-          "label": "Types / DeepKeys",
-          "to": "reference/type-aliases/DeepKeys"
-        },
-        {
-          "label": "Types / DeepValue",
-          "to": "reference/type-aliases/DeepValue"
-        },
-        {
-          "label": "Types / FieldInfo",
-          "to": "reference/type-aliases/FieldInfo"
-        },
-        {
-          "label": "Types / FieldMeta",
-          "to": "reference/type-aliases/FieldMeta"
-        },
-        {
-          "label": "Types / FieldState",
-          "to": "reference/type-aliases/FieldState"
-        },
-        {
-          "label": "Types / BaseFormState",
-          "to": "reference/type-aliases/BaseFormState"
-        },
-        {
-          "label": "Types / DerivedFormState",
-          "to": "reference/type-aliases/DerivedFormState"
-        },
-        {
-          "label": "Types / Updater",
-          "to": "reference/type-aliases/Updater"
-        },
-        {
-          "label": "Types / UpdaterFn",
-          "to": "reference/type-aliases/UpdaterFn"
-        },
-        {
-          "label": "Types / ValidationError",
-          "to": "reference/type-aliases/ValidationError"
-        },
-        {
-          "label": "Types / ValidationMeta",
-          "to": "reference/type-aliases/ValidationMeta"
         }
       ],
       "frameworks": [
@@ -511,30 +163,6 @@
             {
               "label": "React Reference",
               "to": "framework/react/reference/index"
-            },
-            {
-              "label": "Variables / Field",
-              "to": "framework/react/reference/variables/Field"
-            },
-            {
-              "label": "Functions / useField",
-              "to": "framework/react/reference/functions/useField"
-            },
-            {
-              "label": "Functions / useForm",
-              "to": "framework/react/reference/functions/useForm"
-            },
-            {
-              "label": "Functions / useTransform",
-              "to": "framework/react/reference/functions/useTransform"
-            },
-            {
-              "label": "Types / FieldComponent",
-              "to": "framework/react/reference/type-aliases/FieldComponent"
-            },
-            {
-              "label": "Types / UseField",
-              "to": "framework/react/reference/type-aliases/UseField"
             }
           ]
         },
@@ -544,26 +172,6 @@
             {
               "label": "Preact Reference",
               "to": "framework/preact/reference/index"
-            },
-            {
-              "label": "Variables / Field",
-              "to": "framework/preact/reference/variables/Field"
-            },
-            {
-              "label": "Functions / useField",
-              "to": "framework/preact/reference/functions/useField"
-            },
-            {
-              "label": "Functions / useForm",
-              "to": "framework/preact/reference/functions/useForm"
-            },
-            {
-              "label": "Types / FieldComponent",
-              "to": "framework/preact/reference/type-aliases/FieldComponent"
-            },
-            {
-              "label": "Types / UseField",
-              "to": "framework/preact/reference/type-aliases/UseField"
             }
           ]
         },
@@ -573,68 +181,6 @@
             {
               "label": "Vue Reference",
               "to": "framework/vue/reference/index"
-            },
-            {
-              "label": "Variables / Field",
-              "to": "framework/vue/reference/variables/Field"
-            },
-            {
-              "label": "Functions / useField",
-              "to": "framework/vue/reference/functions/useField"
-            },
-            {
-              "label": "Functions / useForm",
-              "to": "framework/vue/reference/functions/useForm"
-            },
-            {
-              "label": "Types / FieldComponent",
-              "to": "framework/vue/reference/type-aliases/FieldComponent"
-            },
-            {
-              "label": "Types / UseField",
-              "to": "framework/vue/reference/type-aliases/UseField"
-            }
-          ]
-        },
-        {
-          "label": "solid",
-          "children": [
-            {
-              "label": "Solid Reference",
-              "to": "framework/solid/reference/index"
-            },
-            {
-              "label": "Functions / createField",
-              "to": "framework/solid/reference/functions/createField"
-            },
-            {
-              "label": "Functions / createForm",
-              "to": "framework/solid/reference/functions/createForm"
-            },
-            {
-              "label": "Functions / Field",
-              "to": "framework/solid/reference/functions/Field"
-            },
-            {
-              "label": "Types / CreateField",
-              "to": "framework/solid/reference/type-aliases/CreateField"
-            },
-            {
-              "label": "Types / FieldComponent",
-              "to": "framework/solid/reference/type-aliases/FieldComponent"
-            }
-          ]
-        },
-        {
-          "label": "lit",
-          "children": [
-            {
-              "label": "Lit Reference",
-              "to": "framework/lit/reference/index"
-            },
-            {
-              "label": "Classes / TanStackFormController",
-              "to": "framework/lit/reference/classes/TanStackFormController"
             }
           ]
         },
@@ -644,18 +190,24 @@
             {
               "label": "Angular Reference",
               "to": "framework/angular/reference/index"
-            },
+            }
+          ]
+        },
+        {
+          "label": "solid",
+          "children": [
             {
-              "label": "Classes / TanStackField",
-              "to": "framework/angular/reference/classes/TanStackField"
-            },
+              "label": "Solid Reference",
+              "to": "framework/solid/reference/index"
+            }
+          ]
+        },
+        {
+          "label": "lit",
+          "children": [
             {
-              "label": "Functions / injectForm",
-              "to": "framework/angular/reference/functions/injectForm"
-            },
-            {
-              "label": "Functions / injectStore",
-              "to": "framework/angular/reference/functions/injectStore"
+              "label": "Lit Reference",
+              "to": "framework/lit/reference/index"
             }
           ]
         }
@@ -673,186 +225,60 @@
               "to": "framework/react/examples/simple"
             },
             {
-              "label": "Multi-Step Wizard",
-              "to": "framework/react/examples/multi-step-wizard"
+              "label": "Basic",
+              "to": "framework/react/examples/basic"
+            },
+            {
+              "label": "Form Splitting",
+              "to": "framework/react/examples/basic-splitting-form"
             },
             {
               "label": "Arrays",
               "to": "framework/react/examples/array"
             },
             {
+              "label": "Field Groups",
+              "to": "framework/react/examples/field-groups"
+            },
+            {
               "label": "Form Composition",
               "to": "framework/react/examples/large-form"
             },
             {
-              "label": "Dynamic Validation",
-              "to": "framework/react/examples/dynamic"
-            },
-            {
-              "label": "TanStack Query Integration",
-              "to": "framework/react/examples/query-integration"
+              "label": "Multi-Step Wizard",
+              "to": "framework/react/examples/multi-step-wizard"
             },
             {
               "label": "Standard Schema",
               "to": "framework/react/examples/standard-schema"
             },
             {
-              "label": "TanStack Start",
-              "to": "framework/react/examples/tanstack-start"
+              "label": "TanStack Query Integration",
+              "to": "framework/react/examples/query-integration"
+            },
+            {
+              "label": "React Compiler",
+              "to": "framework/react/examples/compiler"
+            },
+            {
+              "label": "Expo",
+              "to": "framework/react/examples/expo"
+            },
+            {
+              "label": "Next.js",
+              "to": "framework/react/examples/nextjs"
             },
             {
               "label": "Next Server Actions",
               "to": "framework/react/examples/next-server-actions"
             },
             {
-              "label": "Remix",
-              "to": "framework/react/examples/remix"
+              "label": "Next Server Actions with Zod",
+              "to": "framework/react/examples/next-server-actions-zod"
             },
             {
-              "label": "UI Libraries",
-              "to": "framework/react/examples/ui-libraries"
-            },
-            {
-              "label": "Field Errors From Form Validators",
-              "to": "framework/react/examples/field-errors-from-form-validators"
-            },
-            {
-              "label": "Devtools",
-              "to": "framework/react/examples/devtools"
-            }
-          ]
-        },
-        {
-          "label": "vue",
-          "children": [
-            {
-              "label": "Simple",
-              "to": "framework/vue/examples/simple"
-            },
-            {
-              "label": "Multi-Step Wizard",
-              "to": "framework/vue/examples/multi-step-wizard"
-            },
-            {
-              "label": "Arrays",
-              "to": "framework/vue/examples/array"
-            },
-            {
-              "label": "Standard Schema",
-              "to": "framework/vue/examples/standard-schema"
-            }
-          ]
-        },
-        {
-          "label": "angular",
-          "children": [
-            {
-              "label": "Simple",
-              "to": "framework/angular/examples/simple"
-            },
-            {
-              "label": "Multi-Step Wizard",
-              "to": "framework/angular/examples/multi-step-wizard"
-            },
-            {
-              "label": "Arrays",
-              "to": "framework/angular/examples/array"
-            },
-            {
-              "label": "Form Composition",
-              "to": "framework/angular/examples/large-form"
-            },
-            {
-              "label": "Standard Schema",
-              "to": "framework/angular/examples/standard-schema"
-            }
-          ]
-        },
-        {
-          "label": "solid",
-          "children": [
-            {
-              "label": "Simple",
-              "to": "framework/solid/examples/simple"
-            },
-            {
-              "label": "Multi-Step Wizard",
-              "to": "framework/solid/examples/multi-step-wizard"
-            },
-            {
-              "label": "Arrays",
-              "to": "framework/solid/examples/array"
-            },
-            {
-              "label": "Form Composition",
-              "to": "framework/solid/examples/large-form"
-            },
-            {
-              "label": "Standard Schema",
-              "to": "framework/solid/examples/standard-schema"
-            }
-          ]
-        },
-        {
-          "label": "lit",
-          "children": [
-            {
-              "label": "Simple",
-              "to": "framework/lit/examples/simple"
-            },
-            {
-              "label": "Multi-Step Wizard",
-              "to": "framework/lit/examples/multi-step-wizard"
-            },
-            {
-              "label": "Array",
-              "to": "framework/lit/examples/array"
-            },
-            {
-              "label": "UI Libraries",
-              "to": "framework/lit/examples/ui-libraries"
-            },
-            {
-              "label": "Standard Schema",
-              "to": "framework/lit/examples/standard-schema"
-            }
-          ]
-        },
-        {
-          "label": "preact",
-          "children": [
-            {
-              "label": "Simple",
-              "to": "framework/preact/examples/simple"
-            },
-            {
-              "label": "Multi-Step Wizard",
-              "to": "framework/preact/examples/multi-step-wizard"
-            }
-          ]
-        },
-        {
-          "label": "svelte",
-          "children": [
-            {
-              "label": "Simple",
-              "to": "framework/svelte/examples/simple"
-            },
-            {
-              "label": "Multi-Step Wizard",
-              "to": "framework/svelte/examples/multi-step-wizard"
-            },
-            {
-              "label": "Arrays",
-              "to": "framework/svelte/examples/array"
-            },
-            {
-              "label": "Standard Schema",
-              "to": "framework/svelte/examples/standard-schema"
-            },
-            {
-              "label": "Form Composition",
-              "to": "framework/svelte/examples/large-form"
+              "label": "TanStack Start",
+              "to": "framework/react/examples/tanstack-start"
             }
           ]
         }

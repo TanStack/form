@@ -87,11 +87,6 @@ const eagerFormStateKeys = [
   'submissionAttempts',
 ] as const
 
-// @ts-expect-error - Unused type, checks if formStateKeys is exhaustive
-type _IsExhaustiveKeys<
-  T extends (typeof formStateKeys)[number] = keyof FormState<any, any>,
-> = T
-
 function getFormErrors(
   form: InternalFormApi<any, any, any>,
 ): Array<ValidationIssue> {

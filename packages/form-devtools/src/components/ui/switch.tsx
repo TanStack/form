@@ -109,7 +109,7 @@ function SwitchLabel(props: SwitchLabelProps) {
           {...switchLabelProps({ class: local.class })}
           data-slot="switch-label"
           // Remember - Root is the label here, not the "label text"
-          asChild={(labelProps) => <span {...labelProps()} />}
+          asChild={(spanProps) => <span {...spanProps()} />}
         />
       )}
     />

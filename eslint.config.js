@@ -1,9 +1,11 @@
 // @ts-check
 
+import { defineConfig } from 'eslint/config'
+
 // @ts-ignore Needed due to moduleResolution Node vs Bundler
 import { tanstackConfig } from '@tanstack/eslint-config'
 
-export default [
+export default defineConfig([
   ...tanstackConfig,
   {
     name: 'tanstack/temp',
@@ -18,4 +20,4 @@ export default [
       'no-empty': 'off',
     },
   },
-]
+])

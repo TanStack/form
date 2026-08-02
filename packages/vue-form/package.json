@@ -28,23 +28,12 @@
     "test:lib": "vitest",
     "test:lib:dev": "pnpm run test:lib --watch",
     "test:build": "publint --strict",
-    "build": "vite build"
+    "build": "tsdown"
   },
   "type": "module",
-  "types": "dist/esm/index.d.ts",
-  "main": "dist/cjs/index.cjs",
-  "module": "dist/esm/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": {
-      "import": {
-        "types": "./dist/esm/index.d.ts",
-        "default": "./dist/esm/index.js"
-      },
-      "require": {
-        "types": "./dist/cjs/index.d.cts",
-        "default": "./dist/cjs/index.cjs"
-      }
-    },
+    ".": "./dist/index.js",
     "./package.json": "./package.json"
   },
   "sideEffects": false,
@@ -57,9 +46,11 @@
     "@tanstack/vue-store": "^0.11.0"
   },
   "devDependencies": {
+    "@testing-library/vue": "^8.1.0",
     "@vitejs/plugin-vue": "^5.2.4",
-    "vite": "^7.2.2",
-    "vue": "^3.5.13"
+    "unplugin-vue": "^7.2.0",
+    "vue": "^3.5.13",
+    "vue-tsc": "^3.3.9"
   },
   "peerDependencies": {
     "vue": "^3.4.0"

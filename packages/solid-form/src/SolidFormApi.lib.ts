@@ -26,8 +26,6 @@ export function initializeForm(
     props: SolidFormFieldProps<any, any, any, any, any>,
   ) {
     const fieldOptions = mergeProps(props, { form })
-    // This isn't unnecessary? You stupid
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     const fieldApi = createField(() => fieldOptions as never)
 
     return props.children(fieldApi)
@@ -37,8 +35,6 @@ export function initializeForm(
     props: SolidFormArrayFieldProps<Array<any>, any, any, any, any>,
   ) {
     const fieldOptions = mergeProps(props, { form })
-    // This isn't unnecessary? You stupid
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     const fieldApi = createArrayField(() => fieldOptions as never)
 
     return props.children(fieldApi)
