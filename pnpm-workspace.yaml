@@ -2,41 +2,26 @@ cleanupUnusedCatalogs: true
 linkWorkspacePackages: true
 preferWorkspacePackages: true
 blockExoticSubdeps: true
-trustPolicy: 'no-downgrade'
+trustPolicy: no-downgrade
 trustPolicyExclude:
-  - 'ua-parser-js@1.0.41 || 0.7.41' # React Native Web & Expo Devices; UAP v2 is not MIT
-  - 'chokidar@4.0.3' # Angular via Sass. See https://github.com/angular/angular-cli/pull/33235#issuecomment-4546209387
-  - 'semver@6.3.1 || 5.7.2' # Angular Devkit
-  - 'eslint-import-resolver-typescript@3.10.1' # Expo
-
+- ua-parser-js@1.0.41 || 0.7.41
+- chokidar@4.0.3
+- semver@6.3.1 || 5.7.2
+- eslint-import-resolver-typescript@3.10.1
 packages:
-  - 'benchmarks/*'
-  - packages/**
-  - examples/angular/**
-  - examples/react/**
-  - examples/preact/**
-  - examples/solid/**
-  - examples/vue/**
-  - examples/lit/**
-  - examples/svelte/**
-
+- packages/**
+- examples/react/**
+- '!examples/react/ui-integration'
+- 'examples/react/ui-integration/**'
+- examples/solid/**
 allowBuilds:
-  # root dependency
   nx: true
-  unrs-resolver: false # not directly required for build
+  unrs-resolver: false
   esbuild: true
   msw: true
-
-  # nx, @vitejs/plugin-react-swc, terser-webpack-plugin
   '@swc/core': true
-
-  # @angular/build
-  '@parcel/watcher': false # optional dep of @angular/build
-  lmdb: false # optional dep of @angular/build
-  msgpackr-extract: false # optional dep of @angular/build
-
-  # @tanstack/vue-store
-  vue-demi: false # only required for vue 2 support
-
-  # nextJs
-  sharp: false # not directly required for build
+  '@parcel/watcher': false
+  lmdb: false
+  msgpackr-extract: false
+  vue-demi: false
+  sharp: false

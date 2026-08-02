@@ -57,7 +57,7 @@
     "@angular/platform-browser-dynamic": "^21.2.14",
     "@testing-library/angular": "^19.3.0",
     "ng-packagr": "^21.2.3",
-    "typescript": "5.9.3",
+    "typescript": "^6.0.2",
     "vite-tsconfig-paths": "^5.1.4",
     "zone.js": "0.15.1"
   },
