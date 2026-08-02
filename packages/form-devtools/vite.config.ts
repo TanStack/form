@@ -66,7 +66,7 @@ export default defineConfig({
     name: packageJson.name,
     dir: './tests',
     watch: false,
-    environment: 'happy-dom',
+    environment: 'jsdom',
     globals: true,
   },
 })
