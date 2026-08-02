@@ -53,6 +53,7 @@ overrides:
   '@tanstack/react-form-nextjs': 'workspace:*'
   '@tanstack/react-form-remix': 'workspace:*'
   '@tanstack/react-form-start': 'workspace:*'
-  '@tanstack/solid-form': 'workspace:*'
-   # Too young to use currently, upgrade in a few days
+  '@tanstack/solid-form':
+    'workspace:*'
+    # Too young to use currently, upgrade in a few days
   'tinyexec': '1.1.2'

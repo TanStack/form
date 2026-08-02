@@ -249,16 +249,16 @@ bailing:
 
 Useful translations:
 
-| v1 | v2 |
-| --- | --- |
-| `validators.onMount` | validator with `runOnMount: true` |
-| `validators.onChange` | validator with `triggers: ['change']` |
-| `validators.onBlur` | validator with `triggers: ['blur']` |
-| `validators.onSubmit` | validator with `triggers: []`, or rely on submit running validators by default |
-| `onChangeAsync` | async `run` with `triggers: ['change']` |
-| `onChangeAsyncDebounceMs` | `triggerDebounceMs` |
-| `onChangeListenTo` / `onBlurListenTo` | `watchFields` |
-| `validationLogic: revalidateLogic()` | migrate to explicit `triggers`, `when`, `runOnSubmit`, and `bailIfInvalid` rules |
+| v1                                    | v2                                                                               |
+| ------------------------------------- | -------------------------------------------------------------------------------- |
+| `validators.onMount`                  | validator with `runOnMount: true`                                                |
+| `validators.onChange`                 | validator with `triggers: ['change']`                                            |
+| `validators.onBlur`                   | validator with `triggers: ['blur']`                                              |
+| `validators.onSubmit`                 | validator with `triggers: []`, or rely on submit running validators by default   |
+| `onChangeAsync`                       | async `run` with `triggers: ['change']`                                          |
+| `onChangeAsyncDebounceMs`             | `triggerDebounceMs`                                                              |
+| `onChangeListenTo` / `onBlurListenTo` | `watchFields`                                                                    |
+| `validationLogic: revalidateLogic()`  | migrate to explicit `triggers`, `when`, `runOnSubmit`, and `bailIfInvalid` rules |
 
 Submission is separate from the `triggers` list: every validator runs during
 submission by default. An empty `triggers: []` therefore means "no change or
@@ -786,11 +786,7 @@ import { createFormHook, getFormHookHelpers } from '@tanstack/react-form'
 const { fieldComponent } = getFormHookHelpers()
 const AppTextField = fieldComponent.strict(StringField, 'field')
 
-const {
-  appFormOptions,
-  useAppForm,
-  getAppFieldGroupHelpers,
-} = createFormHook({
+const { appFormOptions, useAppForm, getAppFieldGroupHelpers } = createFormHook({
   fieldComponents: {
     TextField: AppTextField,
   },
@@ -928,5 +924,5 @@ Client rendering still follows the same v2 field surface:
    `form.FormGroup` for scoped sections, and `withFields(...)` for reusable
    field bundles.
 9. Re-run React integration tests around validation timing, field rerenders,
-    groups, server error hydration, and array mutations. These are the areas
-    where v2 intentionally tightened behavior.
+   groups, server error hydration, and array mutations. These are the areas
+   where v2 intentionally tightened behavior.

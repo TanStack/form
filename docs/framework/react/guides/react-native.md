@@ -24,9 +24,7 @@ export function AccountForm() {
           {
             triggers: ['change', 'blur'],
             run: ({ value }) =>
-              Number(value) >= 13
-                ? undefined
-                : 'You must be at least 13',
+              Number(value) >= 13 ? undefined : 'You must be at least 13',
           },
         ]}
       >

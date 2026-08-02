@@ -5,10 +5,6 @@ title: "@tanstack/lit-form"
 
 # @tanstack/lit-form
 
-## Classes
+## Variables
 
-- [TanStackFormController](classes/TanStackFormController.md)
-
-## Functions
-
-- [getFormType](functions/getFormType.md)
+- [msg](variables/msg.md)
