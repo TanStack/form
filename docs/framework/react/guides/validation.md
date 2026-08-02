@@ -19,7 +19,8 @@ change and blur triggers.
   validators={[
     {
       triggers: ['change'],
-      run: ({ value }) => (value >= 13 ? undefined : 'You must be at least 13'),
+      run: ({ value }) =>
+        value >= 13 ? undefined : 'You must be at least 13',
     },
     {
       triggers: ['blur'],
@@ -226,7 +227,9 @@ root-form support is planned but not yet implemented. Subscribe to `canSubmit`
 and `isSubmitting` to reflect that state in the submit UI:
 
 ```tsx
-<form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+<form.Subscribe
+  selector={(state) => [state.canSubmit, state.isSubmitting]}
+>
   {([canSubmit, isSubmitting]) => (
     <button type="submit" disabled={!canSubmit || isSubmitting}>
       {isSubmitting ? 'Submitting…' : 'Submit'}
