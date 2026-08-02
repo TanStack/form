@@ -1,9 +1,8 @@
-import { defineConfig, mergeConfig } from 'vitest/config'
-import { tanstackViteConfig } from '@tanstack/vite-config'
+import { defineConfig } from 'vitest/config'
+import packageJson from './package.json' with { type: 'json' }
 import vue from '@vitejs/plugin-vue'
-import packageJson from './package.json'
 
-const config = defineConfig({
+export default defineConfig({
   plugins: [vue()],
   test: {
     name: packageJson.name,
@@ -19,11 +18,3 @@ const config = defineConfig({
     jsxFragment: 'Fragment',
   },
 })
-
-export default mergeConfig(
-  config,
-  tanstackViteConfig({
-    entry: './src/index.ts',
-    srcDir: './src',
-  }),
-)
