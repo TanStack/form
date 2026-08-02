@@ -47,7 +47,6 @@ function createAppForm(form: AnyInternalFormApi): AppFormComponent {
   const AppForm: FunctionComponent<{
     children: Exclude<CrossVersionReactNode, Promise<any>>
   }> = function AppFormComponent(props) {
-    // eslint-disable-next-line @eslint-react/no-context-provider
     return <FormContext.Provider value={form as never} {...props} />
   }
 
@@ -69,7 +68,6 @@ function createFieldWithContext(
     const field = useValueFieldSubscription(fieldApi)
 
     return (
-      // eslint-disable-next-line @eslint-react/no-context-provider
       <FieldContext.Provider value={field}>
         {props.children(field) as never}
       </FieldContext.Provider>
@@ -128,14 +126,12 @@ function attachAppFormGroupComponents(
   const resultGroup: GroupWithComponents = group as never
 
   resultGroup.Field = function Field(props) {
-    const Field = form.Field
-    return <Field {...(group._getFormFieldOptions(props) as any)} />
+    return <form.Field {...(group._getFormFieldOptions(props) as any)} />
   }
   resultGroup.Field.displayName = 'TanStackForm.FormGroup.Field'
 
   resultGroup.ArrayField = function ArrayField(props) {
-    const ArrayField = form.ArrayField
-    return <ArrayField {...(group._getFormFieldOptions(props) as any)} />
+    return <form.ArrayField {...(group._getFormFieldOptions(props) as any)} />
   }
   resultGroup.ArrayField.displayName = 'TanStackForm.FormGroup.ArrayField'
 
