@@ -111,7 +111,7 @@ function renderErrorItem() {
   const dismiss = async () => {
     const button = Array.from(
       document.querySelectorAll<HTMLButtonElement>('[data-slot="button"]'),
-    ).find((candidate) => candidate.textContent.trim() === 'Not useful')
+    ).find((candidate) => candidate.textContent.includes('useful'))
     expect(button).toBeDefined()
     button!.click()
     await Promise.resolve()

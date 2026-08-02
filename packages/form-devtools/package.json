@@ -1,12 +1,12 @@
 {
   "name": "@tanstack/form-devtools",
-  "version": "0.0.0",
-  "description": "Devtools for TanStack Form v2",
-  "author": "Tanner Linsley",
+  "version": "0.2.32",
+  "description": "Devtools, for TanStack form.",
+  "author": "tannerlinsley",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TanStack/form-v2.git",
+    "url": "git+https://github.com/TanStack/form.git",
     "directory": "packages/form-devtools"
   },
   "homepage": "https://tanstack.com/form",
@@ -15,7 +15,6 @@
     "url": "https://github.com/sponsors/tannerlinsley"
   },
   "keywords": [
-    "solid",
     "tanstack",
     "form",
     "devtools"
