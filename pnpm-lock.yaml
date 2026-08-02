@@ -1041,9 +1041,6 @@ importers:
       preact:
         specifier: ^10.26.4
         version: 10.29.8
-      vite:
-        specifier: ^8.1.2
-        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
 
   packages/react-form:
     dependencies:
@@ -1116,15 +1113,6 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^6.0.1
         version: 6.0.5(babel-plugin-react-compiler@1.0.0)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
-
-  packages/react-form-remix:
-    dependencies:
-      '@tanstack/form-core':
-        specifier: workspace:*
-        version: link:../form-core
-      decode-formdata:
-        specifier: ^0.9.0
-        version: 0.9.0
 
   packages/react-form-start:
     dependencies:
