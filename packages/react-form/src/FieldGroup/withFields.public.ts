@@ -85,10 +85,9 @@ export type FieldGroupFieldNames<
 }
 
 export type FieldGroupFieldData<TFields extends FieldGroupFields> = {
-  [TFieldName in keyof TFields]: TFields[TFieldName] extends FieldGroupFieldSlot<
-    infer TValue,
-    any
-  >
+  [
+    TFieldName in keyof TFields
+  ]: TFields[TFieldName] extends FieldGroupFieldSlot<infer TValue, any>
     ? TValue
     : never
 }

@@ -355,9 +355,7 @@ Usage:
 
 ```tsx
 // sharedOpts.ts
-const formOpts = formOptions({
-  /* ... */
-})
+const formOpts = formOptions({/* ... */})
 
 function ParentComponent() {
   const form = useAppForm({ ...formOptions /* ... */ })

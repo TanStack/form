@@ -9,10 +9,7 @@ import type {
 import type { FormErrorTypes, FormState } from '@tanstack/form-core'
 
 export type SubscribeSource<TValue> =
-  | Atom<TValue>
-  | ReadonlyAtom<TValue>
-  | Store<TValue>
-  | ReadonlyStore<TValue>
+  Atom<TValue> | ReadonlyAtom<TValue> | Store<TValue> | ReadonlyStore<TValue>
 
 /**
  * Subscribe to `form.atom` (full form state). The selector receives the full

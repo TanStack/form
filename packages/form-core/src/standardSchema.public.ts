@@ -32,8 +32,7 @@ interface StandardSchemaV1Props<out TInput = unknown, out TOutput = TInput> {
   readonly validate: (
     value: unknown,
   ) =>
-    | StandardSchemaV1Result<TOutput>
-    | Promise<StandardSchemaV1Result<TOutput>>
+    StandardSchemaV1Result<TOutput> | Promise<StandardSchemaV1Result<TOutput>>
   /**
    * Inferred types associated with the schema.
    */
@@ -43,8 +42,7 @@ interface StandardSchemaV1Props<out TInput = unknown, out TOutput = TInput> {
  * The result interface of the validate function.
  */
 type StandardSchemaV1Result<TOutput> =
-  | StandardSchemaV1SuccessResult<TOutput>
-  | StandardSchemaV1FailureResult
+  StandardSchemaV1SuccessResult<TOutput> | StandardSchemaV1FailureResult
 /**
  * The result interface if validation succeeds.
  */
@@ -79,8 +77,7 @@ export interface StandardSchemaV1Issue {
    * The path of the issue, if any.
    */
   readonly path?:
-    | ReadonlyArray<PropertyKey | StandardSchemaV1PathSegment>
-    | undefined
+    ReadonlyArray<PropertyKey | StandardSchemaV1PathSegment> | undefined
 }
 /**
  * The path segment interface of the issue.

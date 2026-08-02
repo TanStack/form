@@ -67,11 +67,13 @@ type FilteredFieldComponents<
     [K in keyof TFieldComponents]: any
   } = UnwrappedFieldComponents<TFieldComponents>,
 > = {
-  [K in keyof TFieldComponents as CompatibleFieldKey<
-    K,
-    TUnwrappedFieldComponents[K],
-    TTargetValue
-  >]: TFieldComponents[K]
+  [
+    K in keyof TFieldComponents as CompatibleFieldKey<
+      K,
+      TUnwrappedFieldComponents[K],
+      TTargetValue
+    >
+  ]: TFieldComponents[K]
 }
 
 type FieldComponentsMatchingType<

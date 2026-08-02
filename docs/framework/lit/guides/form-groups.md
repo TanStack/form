@@ -70,61 +70,65 @@ export class MyForm extends LitElement {
 
   render() {
     return html`
-      ${this.step === 0
-        ? this.#form.group(
-            {
-              name: 'step1',
-              onGroupSubmit: () => {
-                // We can move the step forward when validation passes
-                this.step++
+      ${
+        this.step === 0
+          ? this.#form.group(
+              {
+                name: 'step1',
+                onGroupSubmit: () => {
+                  // We can move the step forward when validation passes
+                  this.step++
+                },
+                onGroupSubmitInvalid: () => {
+                  // Or handle invalid submissions, just like a top-level form
+                },
+                onSubmitMeta: {} as SomeType,
               },
-              onGroupSubmitInvalid: () => {
-                // Or handle invalid submissions, just like a top-level form
-              },
-              onSubmitMeta: {} as SomeType,
-            },
-            (group) => html`
-              <form
-                @submit=${(e: Event) => {
+              (group) => html`
+                <form
+                  @submit=${(e: Event) => {
                   e.preventDefault()
                   e.stopPropagation()
                   // Use `group.handleSubmit()` to submit the sub-form, but not the parent form
                   group.handleSubmit()
                 }}
-              >
-                ${this.#form.field(
+                >
+                  ${this.#form.field(
                   { name: 'step1.name' },
                   (field) => html`<!-- ... -->`,
                 )}
-              </form>
-            `,
-          )
-        : nothing}
-      ${this.step === 1
-        ? this.#form.group(
-            {
-              name: 'step2',
-              onGroupSubmit: () => {
-                // Then, use `this.#form.api.handleSubmit()` to submit the entire form
-                this.#form.api.handleSubmit()
+                </form>
+              `,
+            )
+          : nothing
+      }
+      ${
+        this.step === 1
+          ? this.#form.group(
+              {
+                name: 'step2',
+                onGroupSubmit: () => {
+                  // Then, use `this.#form.api.handleSubmit()` to submit the entire form
+                  this.#form.api.handleSubmit()
+                },
               },
-            },
-            (group) => html`
-              <form
-                @submit=${(e: Event) => {
+              (group) => html`
+                <form
+                  @submit=${(e: Event) => {
                   e.preventDefault()
                   e.stopPropagation()
                   group.handleSubmit()
                 }}
-              >
-                ${this.#form.field(
+                >
+                  ${this.#form.field(
                   { name: 'step2.age' },
                   (field) => html`<!-- ... -->`,
                 )}
-              </form>
-            `,
-          )
-        : nothing}
+                </form>
+              `,
+            )
+          : nothing
+      }
     `
   }
 }

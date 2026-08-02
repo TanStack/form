@@ -4,16 +4,16 @@ preferWorkspacePackages: true
 blockExoticSubdeps: true
 trustPolicy: no-downgrade
 trustPolicyExclude:
-- ua-parser-js@1.0.41 || 0.7.41
-- chokidar@4.0.3
-- semver@6.3.1 || 5.7.2
-- eslint-import-resolver-typescript@3.10.1
+  - ua-parser-js@1.0.41 || 0.7.41
+  - chokidar@4.0.3
+  - semver@6.3.1 || 5.7.2
+  - eslint-import-resolver-typescript@3.10.1
 packages:
-- packages/**
-- examples/react/**
-- '!examples/react/ui-integration'
-- 'examples/react/ui-integration/**'
-- examples/solid/**
+  - packages/**
+  - examples/react/**
+  - '!examples/react/ui-integration'
+  - 'examples/react/ui-integration/**'
+  - examples/solid/**
 allowBuilds:
   nx: true
   unrs-resolver: false

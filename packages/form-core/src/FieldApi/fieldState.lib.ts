@@ -15,9 +15,7 @@ import type {
 import type { Atom, ReadonlyAtom } from '@tanstack/store'
 
 export type ChildContributionKey =
-  | RootCounterContributionKey
-  | 'dirty'
-  | 'error'
+  RootCounterContributionKey | 'dirty' | 'error'
 type ChildContributionCounts = Record<ChildContributionKey, number>
 export type ChildContributionStates = Record<ChildContributionKey, boolean>
 

@@ -36,8 +36,7 @@ export interface Validator<
    * @default true
    */
   runOnSubmit?:
-    | boolean
-    | ValidationPredicateFn<TFormData, TContextValue, TScope>
+    boolean | ValidationPredicateFn<TFormData, TContextValue, TScope>
   /**
    * Whether this validator should be called once when the form is constructed.
    *
@@ -51,8 +50,7 @@ export interface Validator<
    * @default 0
    */
   triggerDebounceMs?:
-    | number
-    | ValidationDebounceFn<TFormData, TContextValue, TScope>
+    number | ValidationDebounceFn<TFormData, TContextValue, TScope>
   triggers: Array<
     ValidationTriggerOption<TFormData, TContextValue, TTrigger, TScope>
   >
@@ -424,11 +422,9 @@ export type ValidValidationResult = null | undefined | false
 export type ValidationResult = ValidValidationResult | ValidationErrorInput
 
 export type FormValidationError<TFormData> =
-  | ValidationErrorInput
-  | ValidationErrorMap<TFormData>
+  ValidationErrorInput | ValidationErrorMap<TFormData>
 export type FormValidateResult<TFormData> =
-  | ValidationResult
-  | ValidationErrorMap<TFormData>
+  ValidationResult | ValidationErrorMap<TFormData>
 
 export type ValidatorFn<in TParameter, out TReturn> = (
   ...args: Array<TParameter>
@@ -450,8 +446,7 @@ export interface FormValidator<in out TFormData> extends BaseValidator<
   runOnSubmit?: boolean | ValidationPredicateFn<TFormData, TFormData, 'form'>
   runOnMount?: boolean
   triggerDebounceMs?:
-    | number
-    | ValidationDebounceFn<TFormData, TFormData, 'form'>
+    number | ValidationDebounceFn<TFormData, TFormData, 'form'>
   triggers: Array<FormValidationTriggerOption<TFormData, TFormData, 'form'>>
 }
 
@@ -469,11 +464,9 @@ export interface FormGroupValidatorContext<in out TGroupValue> {
 }
 
 export type FormGroupValidationError<TGroupValue> =
-  | ValidationErrorInput
-  | ValidationErrorMap<TGroupValue>
+  ValidationErrorInput | ValidationErrorMap<TGroupValue>
 export type FormGroupValidateResult<TGroupValue> =
-  | ValidationResult
-  | ValidationErrorMap<TGroupValue>
+  ValidationResult | ValidationErrorMap<TGroupValue>
 
 export type FormGroupValidatorFn<TGroupValue> = ValidatorFn<
   FormGroupValidatorContext<TGroupValue>,
@@ -614,9 +607,8 @@ export type FieldErrors<TFieldError> = Array<
 
 type ValidationErrorValueFromType<TError> = unknown extends TError
   ? ValidationErrorValue
-  :
-      | Extract<TError, ValidationIssue>
-      | (ValidationIssue extends TError ? string : never)
+  : | Extract<TError, ValidationIssue>
+    | (ValidationIssue extends TError ? string : never)
 
 type ValidationErrorInputFromType<TError> = [TError] extends [never]
   ? never
