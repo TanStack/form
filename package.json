@@ -59,7 +59,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "^25.0.7",
     "@vitest/coverage-istanbul": "4.1.7",
-    "eslint": "^9.39.2",
+    "eslint": "^10.8.0",
     "jsdom": "^27.2.0",
     "knip": "^6.31.0",
     "markdown-link-extractor": "^4.0.3",

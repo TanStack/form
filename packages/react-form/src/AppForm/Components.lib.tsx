@@ -47,6 +47,7 @@ function createAppForm(form: AnyInternalFormApi): AppFormComponent {
   const AppForm: FunctionComponent<{
     children: Exclude<CrossVersionReactNode, Promise<any>>
   }> = function AppFormComponent(props) {
+    // eslint-disable-next-line @eslint-react/no-context-provider
     return <FormContext.Provider value={form as never} {...props} />
   }
 
@@ -68,6 +69,7 @@ function createFieldWithContext(
     const field = useValueFieldSubscription(fieldApi)
 
     return (
+      // eslint-disable-next-line @eslint-react/no-context-provider
       <FieldContext.Provider value={field}>
         {props.children(field) as never}
       </FieldContext.Provider>
