@@ -51,7 +51,8 @@ change and blur triggers.
 
 Additional controls include:
 
-- `runOnMount`: run once when the field or form is constructed.
+- `runOnMount`: run once when the form is constructed or when a field or form
+  group first mounts.
 - `runOnSubmit`: disable or conditionally enable submit-time execution.
 - `triggerDebounceMs`: debounce change and blur execution.
 - `bailIfInvalid`: skip this and subsequent validators when an earlier one
@@ -98,16 +99,16 @@ const form = useForm({
           errors.fields.phone = 'Phone is required when email is empty'
         }
 
-        return errors.toResult()
+        return errors
       },
     },
   ],
 })
 ```
 
-Subscribe to `form.state.errors` through `form.Subscribe` or `form.atom` to
-render form-level issues. Field-routed issues appear in the corresponding
-`field.errors`.
+Use `form.Subscribe` to reactively select form-level issues from
+`form.state.errors`. Lower-level integrations can subscribe to `form.atom`.
+Field-routed issues appear in the corresponding `field.errors`.
 
 ## Asynchronous validation and debouncing
 
@@ -159,9 +160,10 @@ const form = useForm({
 })
 ```
 
-Schema paths are routed to matching fields. Parsed outputs are available in
-`schemaOutputs` during submit; the form's editable value remains the schema
-input type.
+Schema paths are routed to matching fields. Parsed outputs are available by
+validator index in `schemaOutputs` during submit (for example,
+`schemaOutputs[0]`); `value` remains the form's raw editable state rather than
+the parsed output.
 
 For custom schema routing, call a schema's safe parse API inside `run` and pass
 its issues to the provided `parseIssues` helper.
@@ -183,7 +185,18 @@ Use `watchFields` when one field's validity depends on another:
           : 'End date must be on or after the start date',
     },
   ]}
-/>
+>
+  {(field) => (
+    <input
+      name={field.name}
+      type="date"
+      value={field.value}
+      onBlur={field.handleBlur}
+      onChange={(event) => field.handleChange(event.target.value)}
+      aria-invalid={field.meta.isInvalid}
+    />
+  )}
+</form.Field>
 ```
 
 ## Return errors from submission
@@ -208,9 +221,10 @@ onSubmit: async ({ value, createValidationError }) => {
 
 ## Prevent invalid submission
 
-`form.handleSubmit()` blocks `onSubmit` when validation fails and calls
-`onSubmitInvalid` when configured. Subscribe to `canSubmit` and `isSubmitting`
-to reflect that state in the submit UI:
+`form.handleSubmit()` skips `onSubmit` when validation fails and resolves with
+the validation errors. `onSubmitInvalid` is currently available on form groups;
+root-form support is planned but not yet implemented. Subscribe to `canSubmit`
+and `isSubmitting` to reflect that state in the submit UI:
 
 ```tsx
 <form.Subscribe
