@@ -837,7 +837,7 @@ Key changes:
 
 - Import `serverValidateHelper` from `@tanstack/react-form`, then import the
   framework adapter from `@tanstack/react-form-start`,
-  `@tanstack/react-form-nextjs`, or `@tanstack/react-form-remix`.
+  `@tanstack/react-form-nextjs`.
 - Share common form configuration with `formOptions(...)`.
 - Return the `createErrorMap()` map directly from framework/server validators
   when routing form and field errors.
@@ -849,6 +849,7 @@ Key changes:
   `{ success: true, values, schemaOutputs }` or
   `{ success: false, serverState }`. Pass the failure's `serverState` back to
   `useForm({ ...formOpts, serverState })` on the client.
+- `@tanstack/react-form-remix` was removed.
 
 For example, a Start adapter is configured separately from the shared form
 options:
