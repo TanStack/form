@@ -10,6 +10,19 @@ import type {
   ToFormGroupSchemaOutputs,
 } from '../validation.public'
 
+/**
+ * Context passed to a form group's `onSubmit` after group validation succeeds.
+ *
+ * @example
+ * ```ts
+ * {
+ *   // ...
+ *   onSubmit: async ({ value }) => {
+ *     await saveGuestDetails(value)
+ *   },
+ * }
+ * ```
+ */
 export interface FormGroupSubmitContext<
   in out TFormData,
   in out TGroupName,
@@ -18,8 +31,11 @@ export interface FormGroupSubmitContext<
   in out TGroupErrorTypes extends FormErrorTypes,
   in out TFormErrorTypes extends FormErrorTypes,
 > {
+  /** The group values for this submission. */
   value: TGroupValue
+  /** The parent form API handling this submission. */
   formApi: FormApi<TFormData, TFormErrorTypes>
+  /** The group API handling this submission. */
   groupApi: FormGroupApi<
     TFormData,
     TGroupName,
@@ -27,7 +43,58 @@ export interface FormGroupSubmitContext<
     TGroupErrorTypes,
     TFormErrorTypes
   >
+  /**
+   * The submit outputs produced by the group's schema validators, ordered by
+   * validator index.
+   *
+   * @example
+   * ```ts
+   * {
+   *   // ...
+   *   onSubmit: async ({ schemaOutputs }) => {
+   *     const validatedGuestDetails = schemaOutputs[0]
+   *     setStep(step => step + 1)
+   *   },
+   * }
+   * ```
+   */
   schemaOutputs: TSchemaOutputs
+}
+
+/**
+ * Context passed to a form group's `onSubmitInvalid` when submission fails.
+ *
+ * @example
+ * ```ts
+ * {
+ *   // ...
+ *   onSubmitInvalid: ({ groupApi }) => {
+ *     document
+ *       .querySelector<HTMLElement>('[aria-invalid="true"]')
+ *       ?.focus()
+ *   },
+ * }
+ * ```
+ */
+export interface FormGroupSubmitInvalidContext<
+  in out TFormData,
+  in out TGroupName,
+  in out TGroupValue,
+  in out TGroupErrorTypes extends FormErrorTypes,
+  in out TFormErrorTypes extends FormErrorTypes,
+> {
+  /** The group values for the failed submission. */
+  value: TGroupValue
+  /** The parent form API handling the failed submission. */
+  formApi: FormApi<TFormData, TFormErrorTypes>
+  /** The group API handling the failed submission. */
+  groupApi: FormGroupApi<
+    TFormData,
+    TGroupName,
+    TGroupValue,
+    TGroupErrorTypes,
+    TFormErrorTypes
+  >
 }
 
 export interface FormGroupOptions<
@@ -40,6 +107,20 @@ export interface FormGroupOptions<
   form: FormApi<TFormData, TFormErrorTypes>
   name: TGroupName
   validators?: TGroupValidators
+  /**
+   * Called after group submission validation succeeds. The callback is awaited
+   * before submission finishes.
+   *
+   * @example
+   * ```ts
+   * {
+   *   // ...
+   *   onSubmit: () => {
+   *     setStep(step => step + 1)
+   *   },
+   * }
+   * ```
+   */
   onSubmit?: (
     context: FormGroupSubmitContext<
       TFormData,
@@ -50,17 +131,30 @@ export interface FormGroupOptions<
       TFormErrorTypes
     >,
   ) => void | Promise<void>
+  /**
+   * Called when group validation fails or validation or submission throws. The
+   * callback is awaited before submission finishes.
+   *
+   * @example
+   * ```ts
+   * {
+   *   // ...
+   *   onSubmitInvalid: ({ groupApi }) => {
+   *     document
+   *       .querySelector<HTMLElement>('[aria-invalid="true"]')
+   *       ?.focus()
+   *   },
+   * }
+   * ```
+   */
   onSubmitInvalid?: (
-    context: FormGroupSubmitContext<
+    context: FormGroupSubmitInvalidContext<
       TFormData,
       TGroupName,
       TGroupValue,
-      ToFormGroupSchemaOutputs<TGroupValidators>,
       ToFormGroupErrorTypes<TGroupValidators>,
       TFormErrorTypes
-    > & {
-      errors: Array<FormGroupValidateResult<TGroupValue>>
-    },
+    >,
   ) => void | Promise<void>
 }
 
@@ -114,7 +208,7 @@ export interface FormGroupApi<
   readonly state: FormGroupState<TGroupValue, TGroupErrorTypes>
   readonly value: TGroupValue
   validate: (
-    signal?: ConfigurableValidationTrigger | 'submit',
+    signal: ConfigurableValidationTrigger | 'submit',
   ) => Promise<Array<FormGroupValidateResult<TGroupValue>>>
   handleSubmit: () => Promise<Array<FormGroupValidateResult<TGroupValue>>>
   reset: () => void

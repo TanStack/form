@@ -37,7 +37,6 @@ import type {
 import type { FormStateOverrides } from '../FormApi/formState.lib'
 import type { DeepKeys, DeepValue } from '../deep-keys.public'
 import type { PipelineCache } from '../utils.lib'
-import type { PipelineResult } from '../validation.lib'
 import type {
   FormGroupApi,
   FormGroupOptions,
@@ -54,6 +53,11 @@ import type {
   ValidationIssue,
 } from '../validation.public'
 import type { ReadonlyAtom } from '@tanstack/store'
+
+interface FormGroupValidationOutcome<TGroupValue> {
+  errors: Array<FormGroupValidateResult<TGroupValue>>
+  hasException: boolean
+}
 
 export class InternalFormGroupApi<
   TFormData,
@@ -378,27 +382,25 @@ export class InternalFormGroupApi<
 
   async _runFieldValidations(
     signal: ConfigurableValidationTrigger | 'submit',
-  ): Promise<Array<FormGroupValidateResult<TGroupValue>>> {
+  ): Promise<FormGroupValidationOutcome<TGroupValue>> {
     const fieldValidationPromises: Array<
-      Promise<Array<FormGroupValidateResult<TGroupValue>>>
+      ReturnType<AnyInternalFieldApi['_runFieldValidation']>
     > = []
 
     this._visitGroupFields((field) => {
-      fieldValidationPromises.push(
-        field
-          ._runFieldValidation(signal)
-          .then(
-            (result) =>
-              result.results
-                .map(({ result: fieldResult }) => fieldResult)
-                .filter(isErrorResult) as Array<
-                FormGroupValidateResult<TGroupValue>
-              >,
-          ),
-      )
+      fieldValidationPromises.push(field._runFieldValidation(signal))
     })
 
-    return (await Promise.all(fieldValidationPromises)).flat()
+    const results = await Promise.all(fieldValidationPromises)
+
+    return {
+      errors: results.flatMap((result) =>
+        result.results
+          .map(({ result: fieldResult }) => fieldResult)
+          .filter(isErrorResult),
+      ),
+      hasException: results.some((result) => result.thrownError !== null),
+    }
   }
 
   _hasFieldEventError(
@@ -525,10 +527,10 @@ export class InternalFormGroupApi<
     this._fieldErrors = []
   }
 
-  validate = async (
-    signal: ConfigurableValidationTrigger | 'submit' = 'submit',
+  _validate = async (
+    signal: ConfigurableValidationTrigger | 'submit',
     opts?: { triggerFieldApi?: AnyInternalFieldApi },
-  ): Promise<Array<FormGroupValidateResult<TGroupValue>>> => {
+  ): Promise<FormGroupValidationOutcome<TGroupValue>> => {
     if (signal !== 'submit' && opts?.triggerFieldApi) {
       this._clearEventErrors(opts.triggerFieldApi, 'submit', signal)
       if (signal === 'blur') {
@@ -538,18 +540,18 @@ export class InternalFormGroupApi<
 
     const pipeline = this.options.validators
     if (!pipeline || pipeline.length === 0) {
-      const fieldErrors = await this._runFieldValidations(signal)
+      const fieldOutcome = await this._runFieldValidations(signal)
       this._errors.set([])
       this._clearRoutedErrors()
-      return fieldErrors
+      return fieldOutcome
     }
 
     this._isValidating.set(true)
     try {
-      const fieldErrorsPromise = this._runFieldValidations(signal)
-      const results: {
-        results: Array<PipelineResult<FormGroupValidateResult<TGroupValue>>>
-      } = await runValidatorPipeline<FormGroupValidateResult<TGroupValue>>({
+      const fieldOutcomePromise = this._runFieldValidations(signal)
+      const results = await runValidatorPipeline<
+        FormGroupValidateResult<TGroupValue>
+      >({
         pipeline: pipeline as ReadonlyArray<FormGroupValidator<any>>,
         cache: this._pipelineCache,
         context: {
@@ -584,20 +586,30 @@ export class InternalFormGroupApi<
               result,
           )
           .filter(isErrorResult)
-      const fieldErrors = await fieldErrorsPromise
+      const fieldOutcome = await fieldOutcomePromise
       const errors: Array<FormGroupValidateResult<TGroupValue>> = [
         ...groupErrors,
-        ...fieldErrors,
+        ...fieldOutcome.errors,
       ]
 
       batch(() => {
         this._errors.set(groupErrors)
       })
 
-      return errors
+      return {
+        errors,
+        hasException: results.thrownError !== null || fieldOutcome.hasException,
+      }
     } finally {
       this._isValidating.set(false)
     }
+  }
+
+  validate = async (
+    signal: ConfigurableValidationTrigger | 'submit',
+    opts?: { triggerFieldApi?: AnyInternalFieldApi },
+  ): Promise<Array<FormGroupValidateResult<TGroupValue>>> => {
+    return (await this._validate(signal, opts)).errors
   }
 
   handleSubmit = async (): Promise<
@@ -608,21 +620,37 @@ export class InternalFormGroupApi<
     this._isSubmitSuccessful.set(false)
 
     try {
-      const errors: Array<FormGroupValidateResult<TGroupValue>> =
-        await this.validate('submit')
-      const context = {
-        value: this.value,
+      const validationOutcome = await this._validate('submit')
+      const value = this.value
+      const invalidContext = {
+        value,
+        formApi: this.form,
+        groupApi: this,
+      } as never
+
+      if (
+        validationOutcome.errors.length > 0 ||
+        validationOutcome.hasException ||
+        this.state.isInvalid
+      ) {
+        await this.options.onSubmitInvalid?.(invalidContext)
+        return validationOutcome.errors
+      }
+
+      const submitContext = {
+        value,
         formApi: this.form,
         groupApi: this,
         schemaOutputs: this._schemaOutputs,
       } as never
 
-      if (errors.length > 0 || this.state.isInvalid) {
-        await this.options.onSubmitInvalid?.(Object.assign(context, { errors }))
-        return errors
+      try {
+        await this.options.onSubmit?.(submitContext)
+      } catch (error) {
+        await this.options.onSubmitInvalid?.(invalidContext)
+        throw error
       }
 
-      await this.options.onSubmit?.(context)
       this._isSubmitSuccessful.set(true)
       return []
     } finally {

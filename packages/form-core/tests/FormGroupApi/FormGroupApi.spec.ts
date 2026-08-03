@@ -238,6 +238,157 @@ describe('FormGroupApi', () => {
     expect(form.state.submissionAttempts).toBe(0)
   })
 
+  it('awaits onSubmitInvalid with only the group invalid context', async () => {
+    let finishInvalidSubmit!: () => void
+    const onSubmit = vi.fn()
+    const onSubmitInvalid = vi.fn(
+      () =>
+        new Promise<void>((resolve) => {
+          finishInvalidSubmit = resolve
+        }),
+    )
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: '' } },
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [
+        {
+          run: () => 'Group is invalid',
+          triggers: [],
+        },
+      ],
+      onSubmit,
+      onSubmitInvalid,
+    })
+
+    const submitPromise = group.handleSubmit()
+    await vi.waitFor(() => {
+      expect(finishInvalidSubmit).toBeTypeOf('function')
+    })
+
+    expect(onSubmit).not.toHaveBeenCalled()
+    expect(onSubmitInvalid).toHaveBeenCalledWith({
+      value: { name: '' },
+      formApi: form,
+      groupApi: group,
+    })
+    expect(group.state.isSubmitting).toBe(true)
+    expect(group.state.isSubmitSuccessful).toBe(false)
+
+    finishInvalidSubmit()
+    await expect(submitPromise).resolves.toEqual(['Group is invalid'])
+    expect(group.state.isSubmitting).toBe(false)
+  })
+
+  it('calls onSubmitInvalid when a group validator throws', async () => {
+    const error = new Error('Group validator failed')
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const onSubmit = vi.fn()
+    const onSubmitInvalid = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: '' } },
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [
+        {
+          run: () => {
+            throw error
+          },
+          triggers: [],
+        },
+      ],
+      onSubmit,
+      onSubmitInvalid,
+    })
+
+    try {
+      await expect(group.handleSubmit()).resolves.toEqual([])
+
+      expect(onSubmit).not.toHaveBeenCalled()
+      expect(onSubmitInvalid).toHaveBeenCalledWith({
+        value: { name: '' },
+        formApi: form,
+        groupApi: group,
+      })
+      expect(group.state.isSubmitSuccessful).toBe(false)
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Validator threw an error:',
+        error,
+      )
+    } finally {
+      consoleSpy.mockRestore()
+    }
+  })
+
+  it('calls onSubmitInvalid when a grouped field validator throws', async () => {
+    const error = new Error('Field validator failed')
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const onSubmit = vi.fn()
+    const onSubmitInvalid = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: '' } },
+    })
+    form._getOrCreateFieldApi({
+      name: 'guestDetails.name',
+      validators: [
+        {
+          run: () => {
+            throw error
+          },
+          triggers: [],
+        },
+      ],
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      onSubmit,
+      onSubmitInvalid,
+    })
+
+    try {
+      await expect(group.handleSubmit()).resolves.toEqual([])
+
+      expect(onSubmit).not.toHaveBeenCalled()
+      expect(onSubmitInvalid).toHaveBeenCalledOnce()
+      expect(group.state.isSubmitSuccessful).toBe(false)
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Validator threw an error:',
+        error,
+      )
+    } finally {
+      consoleSpy.mockRestore()
+    }
+  })
+
+  it('calls onSubmitInvalid and preserves a rejected group onSubmit', async () => {
+    const error = new Error('Group submit failed')
+    const onSubmitInvalid = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: 'Tony' } },
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      onSubmit: () => Promise.reject(error),
+      onSubmitInvalid,
+    })
+
+    await expect(group.handleSubmit()).rejects.toBe(error)
+
+    expect(onSubmitInvalid).toHaveBeenCalledWith({
+      value: { name: 'Tony' },
+      formApi: form,
+      groupApi: group,
+    })
+    expect(group.state.isSubmitting).toBe(false)
+    expect(group.state.isSubmitSuccessful).toBe(false)
+  })
+
   it('passes group validator schema outputs to onSubmit', async () => {
     const onSubmit = vi.fn()
     const form = new InternalFormApi({

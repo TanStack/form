@@ -136,9 +136,27 @@ export async function runSubmissionProcess<TFormData>(
     })
   }
 
-  if (submissionData.hasFailed) {
-    cleanup()
+  const finishInvalidSubmission = async (
+    value: TFormData,
+  ): Promise<Array<FormValidationError<TFormData>>> => {
+    try {
+      await form._options.onSubmitInvalid?.({
+        value,
+        formApi: form as never,
+      })
+    } finally {
+      cleanup()
+    }
+
+    if (hasResettedFormDuringSubmit()) {
+      return []
+    }
+
     return errorResults
+  }
+
+  if (submissionData.hasFailed) {
+    return finishInvalidSubmission(form.state.values)
   }
 
   const schemaOutputs: any = Array.from(
@@ -147,14 +165,15 @@ export async function runSubmissionProcess<TFormData>(
       return form._schemaOutputs[i]
     },
   )
+  const value = form.state.values
 
   try {
     const maybeError = await form._options.onSubmit?.({
       formApi: form as never,
       schemaOutputs,
-      value: form.state.values,
+      value,
       createValidationError,
-      parseIssues: createParseIssues(form.state.values),
+      parseIssues: createParseIssues(value),
     })
 
     if (hasResettedFormDuringSubmit()) {
@@ -205,9 +224,12 @@ export async function runSubmissionProcess<TFormData>(
         'submit',
       )
     }
-    // Cleanup regardless of error result or not
-    cleanup()
   })
 
+  if (submissionData.hasFailed) {
+    return finishInvalidSubmission(value)
+  }
+
+  cleanup()
   return errorResults
 }

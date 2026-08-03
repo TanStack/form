@@ -194,8 +194,22 @@ function FormGroupSubmitTypes() {
           FormErrorTypes<StandardSchemaV1Issue, StandardSchemaV1Issue>
         >()
       }}
+      onSubmitInvalid={(context) => {
+        expectTypeOf<keyof typeof context>().toEqualTypeOf<
+          'value' | 'formApi' | 'groupApi'
+        >()
+        expectTypeOf(context.value).toEqualTypeOf<GuestDetails>()
+        expectTypeOf<
+          FormGroupErrorTypesOf<typeof context.groupApi>
+        >().toEqualTypeOf<
+          FormErrorTypes<StandardSchemaV1Issue, StandardSchemaV1Issue>
+        >()
+      }}
     >
-      {() => null}
+      {(group) => {
+        void group.validate('submit')
+        return null
+      }}
     </form.FormGroup>
   )
 }
