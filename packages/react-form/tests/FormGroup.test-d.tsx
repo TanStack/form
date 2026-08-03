@@ -93,11 +93,11 @@ function FormGroupTypes() {
                   field.form.state.values.budget,
                 ).toEqualTypeOf<number>()
                 expectTypeOf(field.errors).toEqualTypeOf<
-                  Array<ValidationIssue | GroupValidationError>
+                  Array<GroupValidationError>
                 >()
-                expectTypeOf<FieldErrorOf<typeof field>>().toEqualTypeOf<
-                  ValidationIssue | GroupValidationError
-                >()
+                expectTypeOf<
+                  FieldErrorOf<typeof field>
+                >().toEqualTypeOf<GroupValidationError>()
                 // @ts-expect-error public field APIs expose atom, not store
                 field.store
                 return null
@@ -110,7 +110,7 @@ function FormGroupTypes() {
                   triggers: [],
                   run: ({ fieldApi }) => {
                     expectTypeOf(fieldApi.errors).toEqualTypeOf<
-                      Array<ValidationIssue | GroupValidationError>
+                      Array<GroupValidationError>
                     >()
                   },
                 },
@@ -360,9 +360,9 @@ function FormGroupWithoutValidatorsTypes() {
     <form.FormGroup name="guestDetails">
       {(group) => {
         expectTypeOf<FormGroupErrorTypesOf<typeof group>>().toEqualTypeOf<
-          FormErrorTypes<ValidationIssue, ValidationIssue>
+          FormErrorTypes<never, never>
         >()
-        expectTypeOf(group.state.errors).toEqualTypeOf<Array<ValidationIssue>>()
+        expectTypeOf(group.state.errors).toEqualTypeOf<Array<never>>()
         return null
       }}
     </form.FormGroup>

@@ -842,10 +842,8 @@ describe('FormErrors', () => {
     >().toEqualTypeOf<Array<ValidationIssue>>()
   })
 
-  it('should fall back to ValidationIssue if `any` was used', () => {
-    expectTypeOf<TestFormErrors<any, never>>().toEqualTypeOf<
-      Array<ValidationIssue>
-    >()
+  it('should ignore broad validators and preserve the submit fallback', () => {
+    expectTypeOf<TestFormErrors<any, never>>().toEqualTypeOf<Array<never>>()
 
     expectTypeOf<TestFormErrors<any, any>>().toEqualTypeOf<
       Array<ValidationIssue>
@@ -982,7 +980,7 @@ describe('FieldErrors', () => {
         typeof emptyFormValidators,
         never
       >
-    >().toEqualTypeOf<Array<never>>()
+    >().toEqualTypeOf<Array<ValidationIssue>>()
 
     const mixedFieldValidators = defineFieldValidators([
       { run: () => null, triggers: [] },
@@ -1146,7 +1144,7 @@ describe('FieldErrors', () => {
         typeof formValidators,
         never
       >
-    >().toEqualTypeOf<Array<never>>()
+    >().toEqualTypeOf<Array<ValidationIssue>>()
   })
 
   it('should infer field errors from submit returns', () => {
@@ -1303,6 +1301,21 @@ describe('validator type transforms', () => {
     }>()
   })
 
+  it('should fall back only after resolving all field error sources', () => {
+    expectTypeOf<
+      ToFieldError<[], never, FormErrorTypes<never, never>>
+    >().toEqualTypeOf<ValidationIssue>()
+
+    type FormFieldError = {
+      message: string
+      fromForm: true
+    }
+
+    expectTypeOf<
+      ToFieldError<any, any, FormErrorTypes<never, FormFieldError>>
+    >().toEqualTypeOf<FormFieldError>()
+  })
+
   it('should transform group validators', () => {
     const schema = z
       .object({ name: z.string() })
@@ -1341,8 +1354,13 @@ describe('validator type transforms', () => {
     expectTypeOf<Outputs[2]>().toEqualTypeOf<undefined>()
   })
 
-  it('should normalize broad and empty group validator transforms', () => {
-    expectTypeOf<ToFormGroupErrorTypes<any>>().toEqualTypeOf<FormErrorTypes>()
+  it('should normalize broad and empty validator transforms', () => {
+    expectTypeOf<ToFormErrorTypes<any, never>>().toEqualTypeOf<
+      FormErrorTypes<never, never>
+    >()
+    expectTypeOf<ToFormGroupErrorTypes<any>>().toEqualTypeOf<
+      FormErrorTypes<never, never>
+    >()
     expectTypeOf<ToFormGroupSchemaOutputs<any>>().toEqualTypeOf<
       Array<unknown>
     >()
