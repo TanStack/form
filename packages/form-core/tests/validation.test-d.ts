@@ -20,6 +20,7 @@ import type {
   FormGroupValidators,
   FormOptions,
   FormState,
+  FormSubmitInvalidContext,
   FormValidators,
   OnSubmitError,
   ParseSubmitIssuesFn,
@@ -469,6 +470,27 @@ describe('ValidationTriggerOption', () => {
 })
 
 describe('FormErrors', () => {
+  it('exposes only value and formApi in the invalid submit context', () => {
+    expectTypeOf<
+      keyof FormSubmitInvalidContext<TestFormData, FormErrorTypes>
+    >().toEqualTypeOf<'value' | 'formApi'>()
+
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      onSubmitInvalid: (context) => {
+        expectTypeOf(context.value).toEqualTypeOf<{ name: string }>()
+        expectTypeOf(context.formApi.state.values).toEqualTypeOf<{
+          name: string
+        }>()
+        expectTypeOf<keyof typeof context>().toEqualTypeOf<
+          'value' | 'formApi'
+        >()
+      },
+    })
+
+    void form
+  })
+
   it('should fall back omitted submit errors to ValidationIssue submit meta', () => {
     expectTypeOf<ToFormErrorTypes<[], unknown>>().not.toBeAny()
     expectTypeOf<TestFormErrors<[], unknown>>().toEqualTypeOf<

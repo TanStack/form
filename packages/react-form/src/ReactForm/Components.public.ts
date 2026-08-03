@@ -11,7 +11,7 @@ import type {
   FormGroupOptions,
   FormGroupState,
   FormGroupSubmitContext,
-  FormGroupValidateResult,
+  FormGroupSubmitInvalidContext,
   FormGroupValidators,
   FormState,
   ToFieldError,
@@ -662,16 +662,13 @@ type ReactFormGroupPropsForTypes<
     >,
   ) => void | Promise<void>
   onSubmitInvalid?: (
-    context: FormGroupSubmitContext<
+    context: FormGroupSubmitInvalidContext<
       TFormData,
       TGroupName,
       TGroupValue,
-      TSchemaOutputs,
       TGroupErrorTypes,
       TFormErrorTypes
-    > & {
-      errors: Array<FormGroupValidateResult<TGroupValue>>
-    },
+    >,
   ) => void | Promise<void>
   children: (
     groupApi: ReactFormGroupApi<

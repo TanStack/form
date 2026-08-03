@@ -34,16 +34,112 @@ export type ParseSubmitIssuesFn<in out TFormData> = (
   issues: ReadonlyArray<StandardSchemaV1Issue>,
 ) => OnSubmitError<ParsedStandardSchemaIssues<TFormData>>
 
+/**
+ * Context passed to `onSubmit` after submission validation succeeds.
+ *
+ * @example
+ * ```ts
+ * {
+ *   // ...
+ *   onSubmit: async ({ value, createValidationError }) => {
+ *     const result = await saveUser(value)
+ *
+ *     if (!result.ok) {
+ *       return createValidationError(result.error)
+ *     }
+ *   },
+ * }
+ * ```
+ */
 export interface FormSubmitContext<
   in out TFormData,
   out TSchemaOutputs,
   in out TFormErrorTypes extends FormErrorTypes,
 > {
+  /** The form values for this submission. */
   value: TFormData
+  /** The form API handling this submission. */
   formApi: FormApi<TFormData, TFormErrorTypes>
+  /**
+   * The submit outputs produced by the form's schema validators, ordered by
+   * validator index.
+   *
+   * @example
+   * ```ts
+   * {
+   *   // ...
+   *   onSubmit: async ({ schemaOutputs }) => {
+   *     const validatedUser = schemaOutputs[0]
+   *     await saveUser(validatedUser)
+   *   },
+   * }
+   * ```
+   */
   schemaOutputs: TSchemaOutputs
+  /**
+   * Creates a validation error that can be returned from `onSubmit`.
+   *
+   * @example
+   * ```ts
+   * {
+   *   // ...
+   *   onSubmit: async ({ value, createValidationError }) => {
+   *     const result = await saveUser(value)
+   *
+   *     if (result.status === 409) {
+   *       return createValidationError({
+   *         form: 'A user with this email already exists',
+   *         fields: {},
+   *       })
+   *     }
+   *   },
+   * }
+   * ```
+   */
   createValidationError: CreateValidationErrorFn<TFormData>
+  /**
+   * Parses Standard Schema issues into an error returnable from `onSubmit`.
+   *
+   * @example
+   * ```ts
+   * {
+   *   // ...
+   *   onSubmit: async ({ value, parseIssues }) => {
+   *     const result = await saveUser(value)
+   *
+   *     if (!result.ok) {
+   *       return parseIssues(result.issues)
+   *     }
+   *   },
+   * }
+   * ```
+   */
   parseIssues: ParseSubmitIssuesFn<TFormData>
+}
+
+/**
+ * Context passed to `onSubmitInvalid` when a submission fails.
+ *
+ * @example
+ * ```ts
+ * {
+ *   // ...
+ *   onSubmitInvalid: () => {
+ *     document
+ *       .querySelector<HTMLElement>('[aria-invalid="true"]')
+ *       ?.focus()
+ *   },
+ * }
+ * ```
+ */
+export interface FormSubmitInvalidContext<
+  in out TFormData,
+  in out TFormErrorTypes extends FormErrorTypes,
+> {
+  /** The form values for the failed submission. */
+  value: TFormData
+  /** The form API handling the failed submission. */
+  formApi: FormApi<TFormData, TFormErrorTypes>
 }
 
 export type AnyFormOptions = FormOptions<any, any, any>
@@ -68,6 +164,22 @@ export interface FormOptions<
     NoInfer<TFormData>,
     NoInfer<TFormValidators>
   > | null
+  /**
+   * Called after submission validation succeeds.
+   *
+   * Return an error created with `createValidationError` or `parseIssues` to
+   * mark the submission as invalid.
+   *
+   * @example
+   * ```ts
+   * {
+   *   // ...
+   *   onSubmit: async ({ value }) => {
+   *     await saveUser(value)
+   *   },
+   * }
+   * ```
+   */
   onSubmit?: (
     context: FormSubmitContext<
       TFormData,
@@ -75,6 +187,28 @@ export interface FormOptions<
       ToFormErrorTypes<TFormValidators, unknown>
     >,
   ) => TSubmitReturn
+  /**
+   * Called when validation fails, `onSubmit` returns an error, or validation
+   * or submission throws. The callback is awaited before submission finishes.
+   *
+   * @example
+   * ```ts
+   * {
+   *   // ...
+   *   onSubmitInvalid: () => {
+   *     document
+   *       .querySelector<HTMLElement>('[aria-invalid="true"]')
+   *       ?.focus()
+   *   },
+   * }
+   * ```
+   */
+  onSubmitInvalid?: (
+    context: FormSubmitInvalidContext<
+      TFormData,
+      ToFormErrorTypes<TFormValidators, unknown>
+    >,
+  ) => void | Promise<void>
 }
 
 export interface FormApiOptions<
