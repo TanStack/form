@@ -480,6 +480,98 @@ describe('FormGroup', () => {
     })
   })
 
+  it('routes descendant Standard Schema group errors to an error boundary field', async () => {
+    type StayDates = {
+      dateRange: {
+        from: Date | undefined
+        to: Date | undefined
+      }
+      arrivalTime: string
+    }
+
+    const stayDatesSchema = {
+      '~standard': {
+        version: 1,
+        vendor: 'test',
+        validate: () => ({
+          issues: [
+            {
+              message: 'Please select a start date.',
+              path: ['dateRange', 'from'],
+            },
+            {
+              message: 'Please select an end date.',
+              path: ['dateRange', 'to'],
+            },
+            {
+              message: 'Please select an arrival time.',
+              path: ['arrivalTime'],
+            },
+          ],
+        }),
+      },
+    } satisfies StandardSchemaV1<StayDates>
+
+    function Component() {
+      const form = useForm({
+        defaultValues: {
+          stayDates: {
+            dateRange: {
+              from: undefined,
+              to: undefined,
+            },
+            arrivalTime: '',
+          },
+        } satisfies { stayDates: StayDates },
+      })
+
+      return (
+        <form.FormGroup
+          name="stayDates"
+          validators={[
+            {
+              triggers: [],
+              run: stayDatesSchema,
+            },
+          ]}
+        >
+          {(group) => (
+            <>
+              <group.Field name="dateRange" errorBoundary>
+                {(field) => (
+                  <span data-testid="date-range-errors">
+                    {field.errors.map((error) => error.message).join(',')}
+                  </span>
+                )}
+              </group.Field>
+              <group.Field name="arrivalTime">
+                {(field) => (
+                  <span data-testid="arrival-time-errors">
+                    {field.errors.map((error) => error.message).join(',')}
+                  </span>
+                )}
+              </group.Field>
+              <button onClick={() => group.handleSubmit()}>Continue</button>
+            </>
+          )}
+        </form.FormGroup>
+      )
+    }
+
+    const { getByText, getByTestId } = render(<Component />)
+
+    await user.click(getByText('Continue'))
+
+    await vi.waitFor(() => {
+      expect(getByTestId('arrival-time-errors')).toHaveTextContent(
+        'Please select an arrival time.',
+      )
+      expect(getByTestId('date-range-errors')).toHaveTextContent(
+        'Please select a start date.,Please select an end date.',
+      )
+    })
+  })
+
   it('does not add a DOM-rendering StepForm helper', () => {
     function Component() {
       const form = useForm({ defaultValues: { guestDetails: { name: '' } } })

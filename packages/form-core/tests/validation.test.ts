@@ -214,12 +214,28 @@ describe('parseValidationResult', () => {
 })
 
 describe('reconcileRoutedFieldErrors', () => {
+  it('sets errors on already-resolved field refs', () => {
+    const field = { name: 'name' } as AnyInternalFieldApi
+    const errors = [{ message: 'Name is required' }]
+    const setFieldError = vi.fn()
+    const result = reconcileRoutedFieldErrors(
+      2,
+      [[field, errors]],
+      undefined,
+      setFieldError,
+      vi.fn(),
+    )
+
+    expect(setFieldError).toHaveBeenCalledWith(field, 2, errors)
+    expect(result.fieldRefs).toEqual(new Set([field]))
+    expect(result.affectedFields).toEqual(new Set([field]))
+  })
+
   it('reports unchanged refs when no new or old field refs exist', () => {
     const result = reconcileRoutedFieldErrors(
       0,
       [],
       undefined,
-      (fieldName) => ({ name: fieldName }) as AnyInternalFieldApi,
       vi.fn(),
       vi.fn(),
     )
@@ -234,7 +250,6 @@ describe('reconcileRoutedFieldErrors', () => {
       0,
       [],
       new Set(),
-      (fieldName) => ({ name: fieldName }) as AnyInternalFieldApi,
       vi.fn(),
       vi.fn(),
     )
@@ -249,7 +264,6 @@ describe('reconcileRoutedFieldErrors', () => {
       0,
       [],
       new Set([field]),
-      (fieldName) => ({ name: fieldName }) as AnyInternalFieldApi,
       vi.fn(),
       clearFieldError,
     )

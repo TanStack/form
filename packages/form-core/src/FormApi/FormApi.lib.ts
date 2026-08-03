@@ -744,22 +744,47 @@ export class InternalFormApi<
     )
   }
 
-  _resolveErrorFieldPath(fieldName: string): string {
-    let current: AnyInternalFieldApi | InternalRootFieldApi =
-      this._fieldRootNode
-    let boundary: AnyInternalFieldApi | null = null
+  /**
+   * Resolve relative field errors from a validation scope to their concrete
+   * field targets, coalescing errors captured by the same boundary.
+   */
+  _resolveRoutedFieldErrors(
+    fieldErrors: Iterable<readonly [string, Array<ValidationIssue>]>,
+    routingRoot: AnyInternalFieldApi | InternalRootFieldApi = this
+      ._fieldRootNode,
+  ): Map<AnyInternalFieldApi, Array<ValidationIssue>> {
+    const resolvedFieldErrors = new Map<
+      AnyInternalFieldApi,
+      Array<ValidationIssue>
+    >()
 
-    for (const segment of nameToFieldNodeSegments(fieldName)) {
-      const child: AnyInternalFieldApi | undefined = current._getChild(segment)
-      if (!child) break
+    for (const [fieldName, errors] of fieldErrors) {
+      const segments = nameToFieldNodeSegments(fieldName)
+      let current = routingRoot
+      let boundary: AnyInternalFieldApi | null =
+        routingRoot._isRoot || !routingRoot._errorBoundary ? null : routingRoot
 
-      if (child._errorBoundary) {
-        boundary = child
+      for (const segment of segments) {
+        const child: AnyInternalFieldApi | undefined =
+          current._getChild(segment)
+        if (!child) break
+
+        if (child._errorBoundary) {
+          boundary = child
+        }
+        current = child
       }
-      current = child
+
+      const target =
+        boundary ?? getOrCreateFieldApi(routingRoot, segments.slice(), this)
+
+      resolvedFieldErrors.set(
+        target,
+        (resolvedFieldErrors.get(target) ?? []).concat(errors),
+      )
     }
 
-    return boundary?.name ?? fieldName
+    return resolvedFieldErrors
   }
 
   _setFormValidatorError(
@@ -857,17 +882,9 @@ export class InternalFormApi<
     }
 
     const parsedResult = parseValidationResult(result.result)
-    const resolvedFieldErrors = new Map<string, Array<ValidationIssue>>()
-
-    for (const [fieldName, fieldErrors] of Object.entries(
-      parsedResult.subfields ?? {},
-    )) {
-      const resolvedName = this._resolveErrorFieldPath(fieldName)
-      resolvedFieldErrors.set(
-        resolvedName,
-        (resolvedFieldErrors.get(resolvedName) ?? []).concat(fieldErrors),
-      )
-    }
+    const resolvedFieldErrors = this._resolveRoutedFieldErrors(
+      Object.entries(parsedResult.subfields ?? {}),
+    )
 
     batch(() => {
       this._setFormValidatorError(
@@ -883,7 +900,6 @@ export class InternalFormApi<
           result.validatorIndex,
           resolvedFieldErrors,
           oldFieldRefs,
-          (fieldName) => this._getOrCreateFieldApi({ name: fieldName }),
           (field, index, errors) =>
             this._setFieldValidatorError(field, index, errors, sourceEvent),
           (field, index) => this._clearFieldValidatorError(field, index),

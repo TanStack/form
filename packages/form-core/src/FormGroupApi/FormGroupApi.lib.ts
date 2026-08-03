@@ -340,27 +340,25 @@ export class InternalFormGroupApi<
     const validatorIndex = result.validatorIndex
     const groupField = this.form._getOrCreateFieldApi({ name: this.name })
     const oldFieldRefs = this._fieldErrors[validatorIndex]
+    const resolvedFieldErrors = this.form._resolveRoutedFieldErrors(
+      Object.entries(parsedResult.subfields ?? {}),
+      groupField,
+    )
+    const groupFieldErrors = resolvedFieldErrors.get(groupField) ?? []
+    resolvedFieldErrors.delete(groupField)
 
     batch(() => {
       this._setFieldValidatorError(
         groupField,
         validatorIndex,
-        parsedResult.self ?? [],
+        (parsedResult.self ?? []).concat(groupFieldErrors),
         sourceEvent,
-      )
-
-      const normalizedFieldErrors = Object.entries(
-        parsedResult.subfields ?? {},
-      ).map(
-        ([fieldName, fieldErrors]) =>
-          [this._getPrefixedFieldName(fieldName), fieldErrors] as const,
       )
 
       const { fieldRefs } = reconcileRoutedFieldErrors(
         validatorIndex,
-        normalizedFieldErrors,
+        resolvedFieldErrors,
         oldFieldRefs,
-        (fieldName) => this.form._getOrCreateFieldApi({ name: fieldName }),
         (field, index, errors) =>
           this._setFieldValidatorError(field, index, errors, sourceEvent),
         (field, index) => this._clearFieldValidatorError(field, index),
