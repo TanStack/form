@@ -10,13 +10,10 @@ import type {
   FormGroupApi,
   FormGroupOptions,
   FormGroupState,
-  FormGroupSubmitContext,
-  FormGroupSubmitInvalidContext,
   FormGroupValidators,
   FormState,
   ToFieldError,
   ToFormGroupErrorTypes,
-  ToFormGroupSchemaOutputs,
 } from '@tanstack/form-core'
 import type { CrossVersionReactNode } from '../reactTypes.public'
 import type {
@@ -585,97 +582,7 @@ export interface ReactFormGroupProps<
       TFormData,
       TGroupName,
       TGroupValue,
-      ToFormGroupErrorTypes<TGroupValidators>,
-      TFormErrorTypes,
-      TFieldComponents
-    >,
-  ) => CrossVersionReactNode
-}
-
-type ReactFormGroupPropsWithValidators<
-  TFormData,
-  TGroupName,
-  TGroupValue,
-  TGroupValidators extends FormGroupValidators<TGroupValue>,
-  TFormErrorTypes extends FormErrorTypes,
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
-> = ReactFormGroupPropsForTypes<
-  TFormData,
-  TGroupName,
-  TGroupValue,
-  TGroupValidators,
-  ToFormGroupSchemaOutputs<NoInfer<TGroupValidators>>,
-  ToFormGroupErrorTypes<NoInfer<TGroupValidators>>,
-  TFormErrorTypes,
-  TFieldComponents
-> & {
-  validators: TGroupValidators
-}
-
-type ReactFormGroupPropsWithoutValidators<
-  TFormData,
-  TGroupName,
-  TGroupValue,
-  TFormErrorTypes extends FormErrorTypes,
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
-> = ReactFormGroupPropsForTypes<
-  TFormData,
-  TGroupName,
-  TGroupValue,
-  [],
-  ToFormGroupSchemaOutputs<[]>,
-  ToFormGroupErrorTypes<[]>,
-  TFormErrorTypes,
-  TFieldComponents
-> & {
-  validators?: undefined
-}
-
-type ReactFormGroupPropsForTypes<
-  TFormData,
-  TGroupName,
-  TGroupValue,
-  TGroupValidators extends FormGroupValidators<TGroupValue>,
-  TSchemaOutputs,
-  TGroupErrorTypes extends FormErrorTypes,
-  TFormErrorTypes extends FormErrorTypes,
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
-> = Omit<
-  ReactFormGroupProps<
-    TFormData,
-    TGroupName,
-    TGroupValue,
-    TGroupValidators,
-    TFormErrorTypes,
-    TFieldComponents
-  >,
-  'children' | 'onSubmit' | 'onSubmitInvalid' | 'validators'
-> & {
-  onSubmit?: (
-    context: FormGroupSubmitContext<
-      TFormData,
-      TGroupName,
-      TGroupValue,
-      TSchemaOutputs,
-      TGroupErrorTypes,
-      TFormErrorTypes
-    >,
-  ) => void | Promise<void>
-  onSubmitInvalid?: (
-    context: FormGroupSubmitInvalidContext<
-      TFormData,
-      TGroupName,
-      TGroupValue,
-      TGroupErrorTypes,
-      TFormErrorTypes
-    >,
-  ) => void | Promise<void>
-  children: (
-    groupApi: ReactFormGroupApi<
-      TFormData,
-      TGroupName,
-      TGroupValue,
-      TGroupErrorTypes,
+      ToFormGroupErrorTypes<NoInfer<TGroupValidators>>,
       TFormErrorTypes,
       TFieldComponents
     >,
@@ -693,20 +600,11 @@ export interface ReactFormGroupComponent<
       DeepValue<TFormData, TGroupName>
     >,
   >(
-    props: ReactFormGroupPropsWithValidators<
+    props: ReactFormGroupProps<
       TFormData,
       TGroupName,
       DeepValue<TFormData, TGroupName>,
       TGroupValidators,
-      TFormErrorTypes,
-      TFieldComponents
-    >,
-  ): CrossVersionReactNode
-  <TGroupName extends DeepKeys<TFormData>>(
-    props: ReactFormGroupPropsWithoutValidators<
-      TFormData,
-      TGroupName,
-      DeepValue<TFormData, TGroupName>,
       TFormErrorTypes,
       TFieldComponents
     >,

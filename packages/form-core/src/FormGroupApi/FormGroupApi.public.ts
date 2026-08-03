@@ -126,8 +126,8 @@ export interface FormGroupOptions<
       TFormData,
       TGroupName,
       TGroupValue,
-      ToFormGroupSchemaOutputs<TGroupValidators>,
-      ToFormGroupErrorTypes<TGroupValidators>,
+      ToFormGroupSchemaOutputs<NoInfer<TGroupValidators>>,
+      ToFormGroupErrorTypes<NoInfer<TGroupValidators>>,
       TFormErrorTypes
     >,
   ) => void | Promise<void>
@@ -152,7 +152,7 @@ export interface FormGroupOptions<
       TFormData,
       TGroupName,
       TGroupValue,
-      ToFormGroupErrorTypes<TGroupValidators>,
+      ToFormGroupErrorTypes<NoInfer<TGroupValidators>>,
       TFormErrorTypes
     >,
   ) => void | Promise<void>

@@ -347,6 +347,29 @@ function FormGroupSubscribeWithoutGroupErrorsTypes() {
   )
 }
 
+function FormGroupWithoutValidatorsTypes() {
+  const form = useForm({
+    defaultValues: {
+      guestDetails: {
+        name: '',
+      },
+    },
+    validators: [],
+  })
+
+  return (
+    <form.FormGroup name="guestDetails">
+      {(group) => {
+        expectTypeOf<FormGroupErrorTypesOf<typeof group>>().toEqualTypeOf<
+          FormErrorTypes<ValidationIssue, ValidationIssue>
+        >()
+        expectTypeOf(group.state.errors).toEqualTypeOf<Array<ValidationIssue>>()
+        return null
+      }}
+    </form.FormGroup>
+  )
+}
+
 function RootFieldTypes() {
   const form = useForm({
     defaultValues: {
@@ -386,4 +409,5 @@ void FormGroupTypes
 void FormGroupSubmitTypes
 void FormGroupSubscribeTypes
 void FormGroupSubscribeWithoutGroupErrorsTypes
+void FormGroupWithoutValidatorsTypes
 void RootFieldTypes
