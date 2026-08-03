@@ -345,14 +345,13 @@ export interface ReactFormGroupComponent<
 > {
   <
     TGroupName extends DeepKeys<TFormData>,
-    const TGroupValidators extends FormGroupValidators<
-      DeepValue<TFormData, TGroupName>
-    >,
+    TGroupValue extends DeepValue<TFormData, TGroupName>,
+    const TGroupValidators extends FormGroupValidators<TGroupValue>,
   >(
     props: ReactFormGroupProps<
       TFormData,
       TGroupName,
-      DeepValue<TFormData, TGroupName>,
+      TGroupValue,
       TGroupValidators,
       TFormErrorTypes,
       TFieldComponents
