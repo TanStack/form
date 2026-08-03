@@ -11,10 +11,8 @@ export const serverErrorOnUnmountedField = {
     }
 
     const validator =
-      field.form.options.validators?.[error.source.validatorIndex]
-    const hasServerTrigger = validator?.triggers.some(
-      (trigger) => trigger === 'server',
-    )
+      field.form._options.validators?.[error.source.validatorIndex]
+    const hasServerTrigger = validator?.triggers.includes('server')
 
     if (!hasServerTrigger) return undefined
 

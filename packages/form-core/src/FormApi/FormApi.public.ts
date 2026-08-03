@@ -211,18 +211,6 @@ export interface FormOptions<
   ) => void | Promise<void>
 }
 
-export interface FormApiOptions<
-  in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
-> {
-  formId?: string
-  defaultValues: TFormData
-  errorVisibility?: ErrorVisibility<TFormData, TFormErrorTypes>
-  validators?: FormValidators<TFormData>
-  listeners?: FormListeners<TFormData, TFormErrorTypes>
-  serverState?: ServerFormState<TFormData, any> | null
-}
-
 export interface FormState<
   in out TFormData,
   in out TFormErrorTypes extends FormErrorTypes,
@@ -320,7 +308,8 @@ export interface FormApi<
   extends FormApiFieldMethods<TFormData>, FormApiArrayMethods<TFormData> {
   atom: ReadonlyAtom<FormState<TFormData, TFormErrorTypes>>
   readonly state: FormState<TFormData, TFormErrorTypes>
-  readonly options: FormApiOptions<TFormData, TFormErrorTypes>
+  /** The current baseline values used by `reset()` and `isDefaultValue`. */
+  readonly defaultValues: TFormData
   readonly formId: string
 
   /**

@@ -160,7 +160,7 @@ export async function runSubmissionProcess<TFormData>(
   }
 
   const schemaOutputs: any = Array.from(
-    { length: form.options.validators?.length ?? 0 },
+    { length: form._options.validators?.length ?? 0 },
     (_, i) => {
       return form._schemaOutputs[i]
     },
@@ -184,7 +184,7 @@ export async function runSubmissionProcess<TFormData>(
     if (isSubmitError<TFormData>(maybeError)) {
       form._processValidationResult(
         {
-          validatorIndex: form.options.validators?.length ?? 0,
+          validatorIndex: form._options.validators?.length ?? 0,
           result: maybeError,
           schemaResult: null,
         },
@@ -194,7 +194,7 @@ export async function runSubmissionProcess<TFormData>(
     } else {
       form._processValidationResult(
         {
-          validatorIndex: form.options.validators?.length ?? 0,
+          validatorIndex: form._options.validators?.length ?? 0,
           result: null,
           schemaResult: null,
         },
@@ -217,7 +217,7 @@ export async function runSubmissionProcess<TFormData>(
 
       form._processValidationResult(
         {
-          validatorIndex: form.options.validators?.length ?? 0,
+          validatorIndex: form._options.validators?.length ?? 0,
           result: submissionData.submitError,
           schemaResult: null,
         },

@@ -63,7 +63,7 @@ function resetToServerState<TFormData>(
   serverState: ServerFormState<TFormData, any>,
   defaultValues: TFormData,
 ): void {
-  const validatorCount = form.options.validators?.length ?? 0
+  const validatorCount = form._options.validators?.length ?? 0
   const values = serverState.values ?? defaultValues
   const shouldUpdateDefaultValues = !evaluate(
     values,

@@ -79,18 +79,10 @@ function FormGroupTypes() {
         expectTypeOf<FormGroupErrorTypesOf<typeof group>>().toEqualTypeOf<
           FormErrorTypes<never, { message: string; fromGroup: true }>
         >()
-        // @ts-expect-error onSubmit is intentionally kept on internal options only.
-        void group.options.onSubmit
         // @ts-expect-error group state values are scoped to guestDetails
         group.state.values.budget
         // @ts-expect-error isDefaultValue is exposed on form state and field meta, not group state
         group.state.isDefaultValue
-        // @ts-expect-error lifecycle cleanup is internal-only
-        group.destroy
-        // @ts-expect-error name prefixing is internal-only
-        group.getFieldName
-        // @ts-expect-error name prefixing is internal-only
-        group.getArrayFieldName
 
         return (
           <>

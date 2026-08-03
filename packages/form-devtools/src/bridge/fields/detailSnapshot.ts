@@ -110,13 +110,13 @@ export function getDevtoolsFieldErrors(
         formGroupPath: group ? String(group.name) : '(unknown form group)',
         validatorIndex,
         validatorType: getValidatorType(
-          group?.options.validators?.[validatorIndex],
+          group?._options.validators?.[validatorIndex],
         ),
       }),
     })
   }
 
-  const formValidators = field.form.options.validators ?? []
+  const formValidators = field.form._options.validators ?? []
   appendErrors({
     destination: errors,
     errorBuckets: meta._formValidatorErrors,
@@ -365,7 +365,7 @@ export function getDevtoolsFieldDetail(
     state: getDevtoolsFieldState(field, state, descriptor),
     relations: getDevtoolsFieldRelations(field, identity),
     ...(descriptor.settings.includeValues
-      ? { defaultValue: getBy(field.form.options.defaultValues, field.name) }
+      ? { defaultValue: getBy(field.form.defaultValues, field.name) }
       : {}),
   }
 }

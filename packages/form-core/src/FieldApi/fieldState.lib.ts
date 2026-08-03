@@ -242,7 +242,7 @@ function canReusePreviousMeta({
 function getErrorVisibility(
   field: AnyInternalFieldApi | undefined,
 ): ErrorVisibility<any, any> | undefined {
-  return field?._errorVisibility ?? field?.form.options.errorVisibility
+  return field?._errorVisibility ?? field?.form._options.errorVisibility
 }
 
 function shouldDisplayErrors(

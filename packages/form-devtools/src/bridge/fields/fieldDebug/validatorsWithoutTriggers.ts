@@ -34,7 +34,7 @@ export const validatorsWithoutTriggers = {
     if (group) {
       appendValidatorsWithoutTriggers(
         validators,
-        group.options.validators ?? null,
+        group._options.validators ?? null,
         (validatorIndex) => ({
           scope: 'formGroup',
           formGroupPath: String(group.name),
@@ -44,7 +44,7 @@ export const validatorsWithoutTriggers = {
     } else {
       appendValidatorsWithoutTriggers(
         validators,
-        field.form.options.validators ?? null,
+        field.form._options.validators ?? null,
         (validatorIndex) => ({ scope: 'form', validatorIndex }),
       )
     }

@@ -47,7 +47,6 @@ import {
 } from './formState.lib'
 import type {
   FormApi,
-  FormApiOptions,
   FormOptions,
   FormResetOptions,
   FormState,
@@ -237,11 +236,8 @@ export class InternalFormApi<
     return this.atom.get()
   }
 
-  get options(): FormApiOptions<
-    TFormData,
-    ToFormErrorTypes<TFormValidators, TSubmitReturn>
-  > & { formId: string } {
-    return this._options as never
+  get defaultValues(): TFormData {
+    return this._options.defaultValues
   }
   get formId(): string {
     return this._options.formId
@@ -268,7 +264,7 @@ export class InternalFormApi<
 
   _getCachedIsDefaultValue(
     values: unknown = this._atoms.values.get(),
-    defaultValues: unknown = this.options.defaultValues,
+    defaultValues: unknown = this.defaultValues,
   ): boolean | undefined {
     return getDefaultValueCacheResult(
       this._defaultValueCache,
@@ -281,7 +277,7 @@ export class InternalFormApi<
   _getIsDefaultValue(): boolean {
     void this._atoms.defaultValuesVersion.get()
     const values = this._atoms.values.get()
-    const defaultValues = this.options.defaultValues
+    const defaultValues = this.defaultValues
     const cached = this._getCachedIsDefaultValue(values, defaultValues)
     if (cached !== undefined) return cached
 
@@ -392,7 +388,7 @@ export class InternalFormApi<
       values !== undefined && opts?.updateDefaultValues !== false
 
     if (shouldUpdateDefaultValues) {
-      this._options = { ...this.options, defaultValues: values } as never
+      this._options = { ...this._options, defaultValues: values }
     }
 
     cancelPipelineCache(this._pipelineCache)
@@ -408,7 +404,7 @@ export class InternalFormApi<
       this._fieldRootNode._children.forEach((child) =>
         child._kill({ listenerEvent: 'reset' }),
       )
-      const validatorCount = this.options.validators?.length ?? 0
+      const validatorCount = this._options.validators?.length ?? 0
       this._atoms.meta.isDirty.set(false)
       this._atoms.meta.touchedFieldCount.set(0)
       this._atoms.meta.formErrors.set(
@@ -433,7 +429,7 @@ export class InternalFormApi<
   }
 
   _update(options: FormOptions<TFormData, TFormValidators, any>) {
-    const oldOptions = this.options
+    const oldOptions = this._options
     const didDefaultValuesChange = !evaluate(
       options.defaultValues,
       this._lastUpdateDefaultValues,
@@ -519,7 +515,7 @@ export class InternalFormApi<
 
     batch(() => {
       this._atoms.values.set((prev) =>
-        setBy(prev, fieldName, getBy(this.options.defaultValues, fieldName)),
+        setBy(prev, fieldName, getBy(this.defaultValues, fieldName)),
       )
 
       for (let index = fields.length - 1; index >= 0; index--) {
@@ -660,11 +656,11 @@ export class InternalFormApi<
     trigger: FormListenerTriggers,
     triggerFieldApi: AnyInternalFieldApi | null,
   ) {
-    if (!this.options.listeners) return
-    if (this.options.listeners.length === 0) return
+    if (!this._options.listeners) return
+    if (this._options.listeners.length === 0) return
 
     runFormListenerPipeline({
-      pipeline: this.options.listeners,
+      pipeline: this._options.listeners,
       context: {
         event: trigger,
         formApi: this,
@@ -678,7 +674,7 @@ export class InternalFormApi<
     sourceEvent: string,
     event: Exclude<ValidationTrigger, 'submit'>,
   ) {
-    const validatorCount = this.options.validators?.length ?? 0
+    const validatorCount = this._options.validators?.length ?? 0
     const formErrors = this._atoms.meta.formErrors.get()
     const fieldErrors = this._atoms.meta.fieldErrors.get()
     const fieldFormErrorCount =
@@ -691,7 +687,7 @@ export class InternalFormApi<
     const eventErrorIndexes: Array<number> = []
 
     for (let i = 0; i < validatorCount; i++) {
-      const validator = this.options.validators?.[i]
+      const validator = this._options.validators?.[i]
       if (!validator) continue
 
       const runsOnEvent = validator.triggers.some((trigger) =>
@@ -907,7 +903,7 @@ export class InternalFormApi<
   }
 
   _runMountValidation(): void {
-    const pipeline = this.options.validators
+    const pipeline = this._options.validators
     if (!pipeline || pipeline.length === 0) return
 
     this._setValidationCount((count) => count + 1)
@@ -940,7 +936,7 @@ export class InternalFormApi<
       hasFailedBefore?: boolean
     },
   ): Promise<FormValidatorPipelineResult> {
-    const pipeline = this.options.validators
+    const pipeline = this._options.validators
     if (!pipeline)
       return {
         results: [],

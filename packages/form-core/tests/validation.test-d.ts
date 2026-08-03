@@ -517,7 +517,7 @@ describe('FormErrors', () => {
       },
     })
 
-    expectTypeOf(form.options.defaultValues).toEqualTypeOf<{ name: string }>()
+    expectTypeOf(form.defaultValues).toEqualTypeOf<{ name: string }>()
   })
 
   it('should preserve run arity when creating a validator array', () => {
@@ -580,7 +580,7 @@ describe('FormErrors', () => {
       },
     })
 
-    expectTypeOf(form.options.defaultValues).toEqualTypeOf<{ name: string }>()
+    expectTypeOf(form.defaultValues).toEqualTypeOf<{ name: string }>()
   })
 
   it('should infer the error type from the validator', () => {
