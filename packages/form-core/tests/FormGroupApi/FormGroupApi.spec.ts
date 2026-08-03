@@ -102,7 +102,7 @@ describe('FormGroupApi', () => {
       onSubmit,
     })
 
-    expect(group.options.onSubmit).toBe(onSubmit)
+    expect(group._options.onSubmit).toBe(onSubmit)
   })
 
   it('prefixes field options declared through a group', () => {

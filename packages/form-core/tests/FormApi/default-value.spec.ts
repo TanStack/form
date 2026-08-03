@@ -79,7 +79,7 @@ describe('form - isDefaultValue', () => {
     form.reset({ name: 'reset default' })
 
     expect(form.state.values).toEqual({ name: 'reset default' })
-    expect(form.options.defaultValues).toEqual({ name: 'reset default' })
+    expect(form.defaultValues).toEqual({ name: 'reset default' })
     expect(form.state.isDefaultValue).toBe(true)
   })
 
@@ -90,7 +90,7 @@ describe('form - isDefaultValue', () => {
     form.reset({ name: 'reset value' }, { updateDefaultValues: false })
 
     expect(form.state.values).toEqual({ name: 'reset value' })
-    expect(form.options.defaultValues).toEqual({ name: '' })
+    expect(form.defaultValues).toEqual({ name: '' })
     expect(form.state.isDirty).toBe(false)
     expect(form.state.isDefaultValue).toBe(false)
 

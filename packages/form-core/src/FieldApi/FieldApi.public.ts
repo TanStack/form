@@ -210,7 +210,7 @@ export interface FieldApiOptions<
     TFieldData,
     TFieldName,
     TFieldValue,
-    ToFieldError<TFieldValidators, TGroupFieldError, TFormErrorTypes>,
+    ToFieldError<NoInfer<TFieldValidators>, TGroupFieldError, TFormErrorTypes>,
     TFormData,
     TFormErrorTypes
   >

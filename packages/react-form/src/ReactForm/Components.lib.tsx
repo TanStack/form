@@ -34,7 +34,7 @@ export function attachReactFormComponents(
 }
 
 type AnyFieldComponent = FunctionComponent<
-  ReactFormFieldProps<any, any, any, any, any, any, any, any>
+  ReactFormFieldProps<any, any, any, any, never, any, any, any>
 >
 
 function createFieldComponent(

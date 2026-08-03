@@ -426,7 +426,7 @@ export class InternalFieldApi<
 
   _getCachedIsDefaultValue(
     value: unknown = this._getValue(),
-    defaultValue: unknown = getBy(this.form.options.defaultValues, this.name),
+    defaultValue: unknown = getBy(this.form.defaultValues, this.name),
   ): boolean | undefined {
     return getDefaultValueCacheResult(
       this._defaultValueCache,
@@ -438,7 +438,7 @@ export class InternalFieldApi<
 
   _getIsDefaultValue(value: unknown = this._getValue()): boolean {
     void this.form._atoms.defaultValuesVersion.get()
-    const defaultValue = getBy(this.form.options.defaultValues, this.name)
+    const defaultValue = getBy(this.form.defaultValues, this.name)
     const cached = this._getCachedIsDefaultValue(value, defaultValue)
     if (cached !== undefined) return cached
 

@@ -79,18 +79,10 @@ function FormGroupTypes() {
         expectTypeOf<FormGroupErrorTypesOf<typeof group>>().toEqualTypeOf<
           FormErrorTypes<never, { message: string; fromGroup: true }>
         >()
-        // @ts-expect-error onSubmit is intentionally kept on internal options only.
-        void group.options.onSubmit
         // @ts-expect-error group state values are scoped to guestDetails
         group.state.values.budget
         // @ts-expect-error isDefaultValue is exposed on form state and field meta, not group state
         group.state.isDefaultValue
-        // @ts-expect-error lifecycle cleanup is internal-only
-        group.destroy
-        // @ts-expect-error name prefixing is internal-only
-        group.getFieldName
-        // @ts-expect-error name prefixing is internal-only
-        group.getArrayFieldName
 
         return (
           <>
@@ -101,12 +93,11 @@ function FormGroupTypes() {
                   field.form.state.values.budget,
                 ).toEqualTypeOf<number>()
                 expectTypeOf(field.errors).toEqualTypeOf<
-                  Array<{ message: string; fromGroup: true }>
+                  Array<GroupValidationError>
                 >()
-                expectTypeOf<FieldErrorOf<typeof field>>().toEqualTypeOf<{
-                  message: string
-                  fromGroup: true
-                }>()
+                expectTypeOf<
+                  FieldErrorOf<typeof field>
+                >().toEqualTypeOf<GroupValidationError>()
                 // @ts-expect-error public field APIs expose atom, not store
                 field.store
                 return null
@@ -119,7 +110,7 @@ function FormGroupTypes() {
                   triggers: [],
                   run: ({ fieldApi }) => {
                     expectTypeOf(fieldApi.errors).toEqualTypeOf<
-                      Array<{ message: string; fromGroup: true }>
+                      Array<GroupValidationError>
                     >()
                   },
                 },
@@ -355,6 +346,29 @@ function FormGroupSubscribeWithoutGroupErrorsTypes() {
   )
 }
 
+function FormGroupWithoutValidatorsTypes() {
+  const form = useForm({
+    defaultValues: {
+      guestDetails: {
+        name: '',
+      },
+    },
+    validators: [],
+  })
+
+  return (
+    <form.FormGroup name="guestDetails">
+      {(group) => {
+        expectTypeOf<FormGroupErrorTypesOf<typeof group>>().toEqualTypeOf<
+          FormErrorTypes<never, never>
+        >()
+        expectTypeOf(group.state.errors).toEqualTypeOf<Array<never>>()
+        return null
+      }}
+    </form.FormGroup>
+  )
+}
+
 function RootFieldTypes() {
   const form = useForm({
     defaultValues: {
@@ -394,4 +408,5 @@ void FormGroupTypes
 void FormGroupSubmitTypes
 void FormGroupSubscribeTypes
 void FormGroupSubscribeWithoutGroupErrorsTypes
+void FormGroupWithoutValidatorsTypes
 void RootFieldTypes

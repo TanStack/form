@@ -75,7 +75,7 @@ export class InternalFormGroupApi<
   readonly form: FormApi<TFormData, TFormErrorTypes> &
     InternalFormApi<any, any, any>
   readonly name: TGroupName
-  options: FormGroupOptions<
+  _options: FormGroupOptions<
     TFormData,
     TGroupName,
     TGroupValue,
@@ -112,7 +112,7 @@ export class InternalFormGroupApi<
       TFormErrorTypes
     >,
   ) {
-    this.options = options
+    this._options = options
     this.form = options.form as never
     this.name = options.name
     this._pipelineCache = createPipelineCache()
@@ -132,13 +132,13 @@ export class InternalFormGroupApi<
       TFormErrorTypes
     >,
   ) => {
-    this.options = options
+    this._options = options
   }
 
   mount = (): void => {
     this.form._registerFormGroup(this)
 
-    const pipeline = this.options.validators
+    const pipeline = this._options.validators
     if (!pipeline || pipeline.length === 0) return
 
     this._isValidating.set(true)
@@ -225,10 +225,7 @@ export class InternalFormGroupApi<
         const value = getBy(this.form._atoms.values.get(), this.name)
         if (field) return field._getIsDefaultValue(value)
         void this.form._atoms.defaultValuesVersion.get()
-        return evaluate(
-          getBy(this.form.options.defaultValues, this.name),
-          value,
-        )
+        return evaluate(getBy(this.form.defaultValues, this.name), value)
       },
       isValid: () => {
         const meta = this.form._tryGetFieldApi(this.name)?._getBaseMeta()
@@ -444,7 +441,7 @@ export class InternalFormGroupApi<
     sourceEvent: string,
     event: ConfigurableValidationTrigger,
   ) {
-    const validatorCount = this.options.validators?.length ?? 0
+    const validatorCount = this._options.validators?.length ?? 0
     const groupField = this.form._tryGetFieldApi(this.name)
     const eventErrorCount = Math.max(
       validatorCount,
@@ -457,7 +454,7 @@ export class InternalFormGroupApi<
     const eventErrorIndexes: Array<number> = []
 
     for (let i = 0; i < validatorCount; i++) {
-      const validator = this.options.validators?.[i]
+      const validator = this._options.validators?.[i]
       const runsOnEvent = validator?.triggers.some((trigger) =>
         isValidationTriggerEnabled(trigger, {
           scope: 'group',
@@ -538,7 +535,7 @@ export class InternalFormGroupApi<
       }
     }
 
-    const pipeline = this.options.validators
+    const pipeline = this._options.validators
     if (!pipeline || pipeline.length === 0) {
       const fieldOutcome = await this._runFieldValidations(signal)
       this._errors.set([])
@@ -633,7 +630,7 @@ export class InternalFormGroupApi<
         validationOutcome.hasException ||
         this.state.isInvalid
       ) {
-        await this.options.onSubmitInvalid?.(invalidContext)
+        await this._options.onSubmitInvalid?.(invalidContext)
         return validationOutcome.errors
       }
 
@@ -645,9 +642,9 @@ export class InternalFormGroupApi<
       } as never
 
       try {
-        await this.options.onSubmit?.(submitContext)
+        await this._options.onSubmit?.(submitContext)
       } catch (error) {
-        await this.options.onSubmitInvalid?.(invalidContext)
+        await this._options.onSubmitInvalid?.(invalidContext)
         throw error
       }
 
@@ -663,7 +660,7 @@ export class InternalFormGroupApi<
     this._pipelineCache = createPipelineCache()
     this._schemaOutputs = []
     this.form._atoms.values.set((prev: TFormData) =>
-      setBy(prev, this.name, getBy(this.form.options.defaultValues, this.name)),
+      setBy(prev, this.name, getBy(this.form.defaultValues, this.name)),
     )
     batch(() => {
       this._visitGroupFields((field) => {

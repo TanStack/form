@@ -126,8 +126,8 @@ export interface FormGroupOptions<
       TFormData,
       TGroupName,
       TGroupValue,
-      ToFormGroupSchemaOutputs<TGroupValidators>,
-      ToFormGroupErrorTypes<TGroupValidators>,
+      ToFormGroupSchemaOutputs<NoInfer<TGroupValidators>>,
+      ToFormGroupErrorTypes<NoInfer<TGroupValidators>>,
       TFormErrorTypes
     >,
   ) => void | Promise<void>
@@ -152,21 +152,10 @@ export interface FormGroupOptions<
       TFormData,
       TGroupName,
       TGroupValue,
-      ToFormGroupErrorTypes<TGroupValidators>,
+      ToFormGroupErrorTypes<NoInfer<TGroupValidators>>,
       TFormErrorTypes
     >,
   ) => void | Promise<void>
-}
-
-export interface FormGroupApiOptions<
-  in out TFormData,
-  in out TGroupName,
-  in out TGroupValue,
-  in out TFormErrorTypes extends FormErrorTypes,
-> {
-  form: FormApi<TFormData, TFormErrorTypes>
-  name: TGroupName
-  validators?: FormGroupValidators<TGroupValue>
 }
 
 export interface FormGroupState<
@@ -197,12 +186,6 @@ export interface FormGroupApi<
 > {
   readonly form: FormApi<TFormData, TFormErrorTypes>
   readonly name: TGroupName
-  readonly options: FormGroupApiOptions<
-    TFormData,
-    TGroupName,
-    TGroupValue,
-    TFormErrorTypes
-  >
 
   atom: ReadonlyAtom<FormGroupState<TGroupValue, TGroupErrorTypes>>
   readonly state: FormGroupState<TGroupValue, TGroupErrorTypes>

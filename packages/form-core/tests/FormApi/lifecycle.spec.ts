@@ -29,7 +29,6 @@ describe('form - lifecycle', () => {
       })
 
       expect(form.formId).toBe('profile-form')
-      expect(form.options.formId).toBe('profile-form')
     })
 
     it('generates and preserves a formId when one is not supplied', () => {
@@ -42,7 +41,6 @@ describe('form - lifecycle', () => {
       form._update({ defaultValues: { name: 'async' } })
 
       expect(form.formId).toBe(formId)
-      expect(form.options.formId).toBe(formId)
     })
 
     it('supports changing a supplied formId during update', () => {
@@ -57,7 +55,6 @@ describe('form - lifecycle', () => {
       })
 
       expect(form.formId).toBe('renamed-profile-form')
-      expect(form.options.formId).toBe('renamed-profile-form')
     })
 
     it('notifies an installed devtools bridge during form lifecycle hooks', () => {
@@ -207,7 +204,7 @@ describe('form - lifecycle', () => {
       field.handleChange('bye')
       form.reset({ name: 'reset default' })
       expect(form.state.values).toEqual({ name: 'reset default' })
-      expect(form.options.defaultValues).toEqual({ name: 'reset default' })
+      expect(form.defaultValues).toEqual({ name: 'reset default' })
     })
 
     it('resets form state and does not update default values', () => {
@@ -218,7 +215,7 @@ describe('form - lifecycle', () => {
       field.handleChange('bye')
       form.reset({ name: 'reset state' }, { updateDefaultValues: false })
       expect(form.state.values).toEqual({ name: 'reset state' })
-      expect(form.options.defaultValues).toEqual({ name: '' })
+      expect(form.defaultValues).toEqual({ name: '' })
     })
 
     it('does not let a repeated _update default overwrite reset values', () => {
@@ -229,13 +226,13 @@ describe('form - lifecycle', () => {
       form._update({ defaultValues: { name: 'async' } })
 
       expect(form.state.values).toEqual({ name: 'reset default' })
-      expect(form.options.defaultValues).toEqual({ name: 'reset default' })
+      expect(form.defaultValues).toEqual({ name: 'reset default' })
       expect(form.state.isDefaultValue).toBe(true)
 
       form._update({ defaultValues: { name: 'new async' } })
 
       expect(form.state.values).toEqual({ name: 'new async' })
-      expect(form.options.defaultValues).toEqual({ name: 'new async' })
+      expect(form.defaultValues).toEqual({ name: 'new async' })
       expect(form.state.isDefaultValue).toBe(true)
     })
 

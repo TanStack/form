@@ -46,9 +46,7 @@ describe('submit return', () => {
       expectTypeOf(form.state.errors).toEqualTypeOf<
         Array<StandardSchemaV1Issue | { message: string; fromSubmitForm: true }>
       >()
-
-      // @ts-expect-error onSubmit is intentionally kept on internal options only.
-      void form.options.onSubmit
+      expectTypeOf(form.defaultValues).toEqualTypeOf<{ email: string }>()
 
       return (
         <form.Field name="email">

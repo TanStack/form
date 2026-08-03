@@ -594,7 +594,7 @@ type ExtractFormError<TFormErrorTypes extends FormErrorTypes> =
 
 type ExtractFormFieldError<TFormErrorTypes extends FormErrorTypes> =
   unknown extends TFormErrorTypes['fieldError']
-    ? ValidationIssue
+    ? never
     : TFormErrorTypes['fieldError']
 
 export type FormErrors<TFormErrorTypes extends FormErrorTypes> = Array<
@@ -693,18 +693,18 @@ type ExtractValidatorFormError<
   TValidators extends ReadonlyArray<unknown>,
   TBroadValidators extends ReadonlyArray<unknown>,
 > = unknown extends TValidators
-  ? ValidationIssue
+  ? never
   : TBroadValidators extends TValidators
-    ? ValidationIssue
+    ? never
     : TryGetFormError<TValidators[number]>
 
 type ExtractValidatorFieldError<
   TValidators extends ReadonlyArray<unknown>,
   TBroadValidators extends ReadonlyArray<unknown>,
 > = unknown extends TValidators
-  ? ValidationIssue
+  ? never
   : TBroadValidators extends TValidators
-    ? ValidationIssue
+    ? never
     : TryGetFieldError<TValidators[number]>
 
 type ToValidatorErrorTypes<
@@ -727,14 +727,19 @@ export type ToFormGroupErrorTypes<
   TGroupValidators extends FormGroupValidators<any>,
 > = ToValidatorErrorTypes<TGroupValidators, FormGroupValidators<any>, never>
 
+type FallbackToValidationIssue<TFieldError> = [TFieldError] extends [never]
+  ? ValidationIssue
+  : TFieldError
+
 export type ToFieldError<
   TFieldValidators extends FieldValidators<any, any, any>,
   TGroupFieldError,
   TFormErrorTypes extends FormErrorTypes,
-> =
+> = FallbackToValidationIssue<
   | ExtractValidatorFieldError<TFieldValidators, FieldValidators<any, any, any>>
-  | (unknown extends TGroupFieldError ? ValidationIssue : TGroupFieldError)
+  | (unknown extends TGroupFieldError ? never : TGroupFieldError)
   | ExtractFormFieldError<TFormErrorTypes>
+>
 
 type MappedServerFormValidators<
   in out TFormValidators extends FormValidators<any>,

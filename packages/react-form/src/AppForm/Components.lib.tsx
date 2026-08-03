@@ -57,7 +57,7 @@ function createAppForm(form: AnyInternalFormApi): AppFormComponent {
 }
 
 type AnyFieldComponent = FunctionComponent<
-  ReactFormFieldProps<any, any, any, any, any, any, any, any>
+  ReactFormFieldProps<any, any, any, any, never, any, any, any>
 >
 
 function createFieldWithContext(

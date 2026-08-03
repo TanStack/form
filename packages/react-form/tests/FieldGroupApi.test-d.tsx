@@ -267,13 +267,13 @@ function FieldGroupApiTypes() {
         {() => null}
       </fields.Field>
 
-      {/* @ts-expect-error watchFields only accepts virtual field paths */}
       <fields.Field
         name="guest.age"
         validators={[
           {
             run: () => undefined,
             triggers: ['change'],
+            // @ts-expect-error watchFields only accepts virtual field paths
             watchFields: ['unknown'],
           },
         ]}
