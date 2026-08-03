@@ -202,7 +202,7 @@ export interface FieldApiOptions<
   name: TFieldName
   errorVisibility?: ErrorVisibility<TFormData, TFormErrorTypes>
   /**
-   * Route descendant field errors from form-level validation to this field.
+   * Route descendant field errors from form and form group validators to this field.
    */
   errorBoundary?: boolean
   validators?: TFieldValidators

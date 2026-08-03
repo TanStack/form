@@ -1,12 +1,12 @@
 import React from 'react'
 import { expectTypeOf } from 'vitest'
+import { z } from 'zod'
 import { useForm } from '../src'
 import type {
   DeepKeys,
   FieldApi,
   FormErrorTypes,
   FormGroupApi,
-  StandardSchemaV1,
   StandardSchemaV1Issue,
   ValidationIssue,
 } from '../src'
@@ -142,17 +142,12 @@ type GroupValidationError = {
   fromGroup: true
 }
 
-const guestDetailsSchema = {
-  '~standard': {
-    version: 1,
-    vendor: 'test',
-    validate: (value: unknown) => ({
-      value: {
-        nameLength: (value as GuestDetails).name.length,
-      },
-    }),
-  },
-} satisfies StandardSchemaV1<GuestDetails, { nameLength: number }>
+const guestDetailsSchema = z
+  .object({
+    name: z.string(),
+    emails: z.array(z.string()),
+  })
+  .transform(({ name }) => ({ nameLength: name.length }))
 
 function FormGroupSubmitTypes() {
   const form = useForm({

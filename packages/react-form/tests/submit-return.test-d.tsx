@@ -1,22 +1,14 @@
 import React from 'react'
 import { describe, expectTypeOf, it } from 'vitest'
+import { z } from 'zod'
 import { createFormHook, formOptions, useForm } from '../src'
 import type {
   ReactFormType,
-  StandardSchemaV1,
   StandardSchemaV1Issue,
   ValidationIssue,
 } from '../src'
 
-const emailSchema = {
-  '~standard': {
-    version: 1,
-    vendor: 'test',
-    validate: (value: unknown) => ({
-      value: value as { email: string },
-    }),
-  },
-} satisfies StandardSchemaV1<{ email: string }>
+const emailSchema = z.object({ email: z.string() })
 
 describe('submit return', () => {
   it('infers schema outputs and submit errors without a cycle', () => {

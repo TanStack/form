@@ -345,9 +345,8 @@ export function clearIndexedErrorsFromSource(
 
 export function reconcileRoutedFieldErrors(
   validatorIndex: number,
-  fieldErrors: Iterable<readonly [string, Array<ValidationIssue>]>,
+  fieldErrors: Iterable<readonly [AnyInternalFieldApi, Array<ValidationIssue>]>,
   oldFieldRefs: Set<AnyInternalFieldApi> | undefined,
-  getField: (fieldName: string) => AnyInternalFieldApi,
   setFieldError: (
     field: AnyInternalFieldApi,
     validatorIndex: number,
@@ -363,8 +362,7 @@ export function reconcileRoutedFieldErrors(
   const affectedFields = new Set<AnyInternalFieldApi>()
   const newFieldRefs = new Set<AnyInternalFieldApi>()
 
-  for (const [fieldName, fieldError] of fieldErrors) {
-    const field = getField(fieldName)
+  for (const [field, fieldError] of fieldErrors) {
     setFieldError(field, validatorIndex, fieldError)
     newFieldRefs.add(field)
     affectedFields.add(field)

@@ -832,6 +832,143 @@ describe('FormGroupApi', () => {
     expect(group.state.errors).toEqual([])
   })
 
+  it('routes descendant Standard Schema issues to a field error boundary', async () => {
+    const form = new InternalFormApi({
+      defaultValues: {
+        stayDates: {
+          dateRange: { from: '', to: '' },
+          arrivalTime: '',
+        },
+      },
+    })
+    const dateRangeField = form._getOrCreateFieldApi({
+      name: 'stayDates.dateRange',
+      errorBoundary: true,
+    })
+    const arrivalTimeField = form._getOrCreateFieldApi({
+      name: 'stayDates.arrivalTime',
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'stayDates',
+      validators: [
+        {
+          triggers: [],
+          run: z.object({
+            dateRange: z.object({
+              from: z.string().min(1, 'Start date is required'),
+              to: z.string().min(1, 'End date is required'),
+            }),
+            arrivalTime: z.string().min(1, 'Arrival time is required'),
+          }),
+        },
+      ],
+    })
+
+    await group.validate('submit')
+
+    expect(dateRangeField.errors).toEqual([
+      expect.objectContaining({ message: 'Start date is required' }),
+      expect.objectContaining({ message: 'End date is required' }),
+    ])
+    expect(arrivalTimeField.errors).toEqual([
+      expect.objectContaining({ message: 'Arrival time is required' }),
+    ])
+    expect(form._tryGetFieldApi('stayDates.dateRange.from')).toBeNull()
+    expect(form._tryGetFieldApi('stayDates.dateRange.to')).toBeNull()
+    expect(group.state.isInvalid).toBe(true)
+
+    dateRangeField.handleChange(
+      { from: '2026-08-10', to: '2026-08-12' },
+      { causeValidation: false },
+    )
+    arrivalTimeField.handleChange('15:00', { causeValidation: false })
+    await group.validate('submit')
+
+    expect(dateRangeField.errors).toEqual([])
+    expect(arrivalTimeField.errors).toEqual([])
+    expect(group.state.isInvalid).toBe(false)
+  })
+
+  it('combines group self and descendant errors at a group root error boundary', async () => {
+    const form = new InternalFormApi({
+      defaultValues: {
+        stayDates: {
+          dateRange: { from: '', to: '' },
+        },
+      },
+    })
+    const groupField = form._getOrCreateFieldApi({
+      name: 'stayDates',
+      errorBoundary: true,
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'stayDates',
+      validators: [
+        {
+          triggers: [],
+          run: () => ({
+            form: 'Stay dates are invalid',
+            fields: {
+              'dateRange.from': 'Start date is required',
+              'dateRange.to': 'End date is required',
+            },
+          }),
+        },
+      ],
+    })
+
+    await group.validate('submit')
+
+    expect(groupField.errors).toEqual([
+      { message: 'Stay dates are invalid' },
+      { message: 'Start date is required' },
+      { message: 'End date is required' },
+    ])
+    expect(group.state.errors).toEqual(groupField.errors)
+    expect(form._tryGetFieldApi('stayDates.dateRange.from')).toBeNull()
+    expect(form._tryGetFieldApi('stayDates.dateRange.to')).toBeNull()
+  })
+
+  it('does not route group errors to a boundary outside the group', async () => {
+    const form = new InternalFormApi({
+      defaultValues: {
+        booking: {
+          stayDates: {
+            dateRange: { to: '' },
+          },
+        },
+      },
+    })
+    const bookingField = form._getOrCreateFieldApi({
+      name: 'booking',
+      errorBoundary: true,
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'booking.stayDates',
+      validators: [
+        {
+          triggers: [],
+          run: () => ({
+            fields: {
+              'dateRange.to': 'End date is required',
+            },
+          }),
+        },
+      ],
+    })
+
+    await group.validate('submit')
+
+    expect(bookingField.errors).toEqual([])
+    expect(
+      form._tryGetFieldApi('booking.stayDates.dateRange.to')?.errors,
+    ).toEqual([{ message: 'End date is required' }])
+    expect(group.state.isInvalid).toBe(true)
+  })
+
   it('clears routed group field errors when validation later passes', async () => {
     let shouldError = true
     const form = new InternalFormApi({

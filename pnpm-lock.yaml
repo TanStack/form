@@ -480,7 +480,7 @@ importers:
         version: link:../../../packages/react-form-nextjs
       next:
         specifier: 16.2.12
-        version: 16.2.12(@babel/core@8.0.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.102.0)
+        version: 16.2.12(@babel/core@7.29.7)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.102.0)
       react:
         specifier: 19.2.4
         version: 19.2.4
@@ -511,7 +511,7 @@ importers:
         version: link:../../../packages/react-form-nextjs
       next:
         specifier: 16.2.12
-        version: 16.2.12(@babel/core@8.0.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.102.0)
+        version: 16.2.12(@babel/core@7.29.7)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.102.0)
       react:
         specifier: 19.2.4
         version: 19.2.4
@@ -545,7 +545,7 @@ importers:
         version: link:../../../packages/react-form-nextjs
       next:
         specifier: 16.2.12
-        version: 16.2.12(@babel/core@8.0.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.102.0)
+        version: 16.2.12(@babel/core@7.29.7)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.102.0)
       react:
         specifier: 19.2.4
         version: 19.2.4
@@ -1009,6 +1009,9 @@ importers:
       vite-plugin-solid:
         specifier: ^2.11.10
         version: 2.11.14(@testing-library/jest-dom@6.10.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
 
   packages/lit-form:
     dependencies:
@@ -1072,6 +1075,9 @@ importers:
       react:
         specifier: 19.2.4
         version: 19.2.4
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
 
   packages/react-form-devtools:
     dependencies:
@@ -21920,7 +21926,7 @@ snapshots:
 
   negotiator@1.0.0: {}
 
-  next@16.2.12(@babel/core@8.0.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.102.0):
+  next@16.2.12(@babel/core@7.29.7)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.102.0):
     dependencies:
       '@next/env': 16.2.12
       '@swc/helpers': 0.5.15
@@ -21929,7 +21935,7 @@ snapshots:
       postcss: 8.4.31
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
-      styled-jsx: 5.1.6(@babel/core@8.0.1)(react@19.2.4)
+      styled-jsx: 5.1.6(@babel/core@7.29.7)(react@19.2.4)
     optionalDependencies:
       '@next/swc-darwin-arm64': 16.2.12
       '@next/swc-darwin-x64': 16.2.12
@@ -23958,12 +23964,12 @@ snapshots:
 
   structured-headers@0.4.1: {}
 
-  styled-jsx@5.1.6(@babel/core@8.0.1)(react@19.2.4):
+  styled-jsx@5.1.6(@babel/core@7.29.7)(react@19.2.4):
     dependencies:
       client-only: 0.0.1
       react: 19.2.4
     optionalDependencies:
-      '@babel/core': 8.0.1
+      '@babel/core': 7.29.7
 
   styleq@0.1.3: {}
 
