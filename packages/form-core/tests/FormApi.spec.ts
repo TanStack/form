@@ -1972,9 +1972,9 @@ describe('form api', () => {
     form.setFieldValue('other', 'thing')
 
     // 3) Submit again -> the form-level validator must re-run, clear the stale
-    //    errors, and the form should submit. Currently `_handleSubmit` bails on
-    //    the stale `isFieldsValid === false` before `validate('submit')` re-runs,
-    //    so the errors never clear and the form can never be submitted.
+    //    errors, and the form should submit. Before this fix, `_handleSubmit`
+    //    bailed on the stale `isFieldsValid === false` before `validate('submit')`
+    //    re-ran, so the errors never cleared and the form could never be submitted.
     await form.handleSubmit()
     expect(form.state.fieldMeta.name?.errorMap.onSubmit).toBeUndefined()
     expect(form.state.fieldMeta.other?.errorMap.onSubmit).toBeUndefined()
