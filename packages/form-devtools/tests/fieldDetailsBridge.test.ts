@@ -4,6 +4,7 @@ import {
   installDevtoolsBridge,
 } from '@tanstack/form-core/internals'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { z } from 'zod'
 import { createFieldsController } from '../src/bridge/fields'
 import { createFieldIdentityController } from '../src/bridge/fields/identity'
 import { createMountedFormsController } from '../src/bridge/forms/mountedForms'
@@ -25,13 +26,7 @@ const callbackValidator = {
 
 const schemaValidator = {
   triggers: ['change'] as const,
-  run: {
-    '~standard': {
-      version: 1,
-      vendor: 'field-detail-test',
-      validate: () => ({ value: undefined }),
-    },
-  },
+  run: z.unknown(),
 }
 
 function descriptor(
@@ -72,7 +67,7 @@ describe('field detail snapshots', () => {
       validators: [callbackValidator, schemaValidator] as never,
     })
     const unregister = field._register()
-    const subscription = descriptor('form' as FormId, 'field' as FieldId)
+    const subscription = descriptor('form', 'field')
 
     try {
       field._setMeta((meta) => ({
@@ -216,7 +211,7 @@ describe('field detail snapshots', () => {
     })
     const source = form._getOrCreateFieldApi({ name: 'source' })
     const other = form._getOrCreateFieldApi({ name: 'other' })
-    const subscription = descriptor('form' as FormId, 'field' as FieldId)
+    const subscription = descriptor('form', 'field')
 
     const parentDetail = getDevtoolsFieldDetail(parent, subscription, identity)
     expect(parentDetail.relations.directChildCount).toBe(1)

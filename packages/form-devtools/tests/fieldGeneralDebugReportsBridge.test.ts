@@ -1,5 +1,6 @@
 import { InternalFormApi } from '@tanstack/form-core/internals'
 import { describe, expect, it } from 'vitest'
+import { z } from 'zod'
 import { createFieldsController } from '../src/bridge/fields'
 import { createMountedFormsController } from '../src/bridge/forms/mountedForms'
 import { formDevtoolsEventClient } from '../src/eventClient.lib'
@@ -8,13 +9,7 @@ import type { FieldDebugReport } from '../src/eventClientTypes'
 
 const schemaValidator = {
   triggers: ['change'] as const,
-  run: {
-    '~standard': {
-      version: 1,
-      vendor: 'field-debug-bridge-test',
-      validate: () => ({ value: undefined }),
-    },
-  },
+  run: z.unknown(),
 }
 
 const emptyTriggerValidator = {

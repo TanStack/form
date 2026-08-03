@@ -3,6 +3,7 @@ import {
   InternalFormGroupApi,
 } from '@tanstack/form-core/internals'
 import { describe, expect, it } from 'vitest'
+import { z } from 'zod'
 import { getFieldDebugSuspicions } from '../src/bridge/fields/fieldDebug'
 import type { AnyInternalFieldApi } from '@tanstack/form-core/internals'
 import type { FieldDebugCase } from '../src/bridge/fields/fieldDebug'
@@ -19,13 +20,7 @@ const emptyTriggerValidator = {
 
 const schemaValidator = {
   triggers: ['change'] as const,
-  run: {
-    '~standard': {
-      version: 1,
-      vendor: 'field-debug-test',
-      validate: () => ({ value: undefined }),
-    },
-  },
+  run: z.unknown(),
 }
 
 function setFieldError(field: AnyInternalFieldApi) {

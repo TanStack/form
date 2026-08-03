@@ -80,7 +80,8 @@
     "resize-observer-polyfill": "^1.5.1",
     "solid-js": "^1.9.13",
     "vite": "^8.1.2",
-    "vite-plugin-solid": "^2.11.10"
+    "vite-plugin-solid": "^2.11.10",
+    "zod": "^4.4.3"
   },
   "peerDependencies": {
     "solid-js": ">=1.9.5"

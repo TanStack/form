@@ -2,9 +2,10 @@ import { describe, expect, it, vi } from 'vitest'
 import { render } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
 import React, { useState } from 'react'
+import { z } from 'zod'
 import { createFormHook, getFormHookHelpers, useForm } from '../src'
 import type { AnyInternalFormApi } from '@tanstack/form-core/internals'
-import type { FieldWithValue, StandardSchemaV1 } from '@tanstack/form-core'
+import type { FieldWithValue } from '@tanstack/form-core'
 
 const user = userEvent.setup()
 
@@ -403,26 +404,10 @@ describe('FormGroup', () => {
 
   it('renders Standard Schema group errors through AppForm field components', async () => {
     const formRef = { current: null as AnyInternalFormApi | null }
-    const validate = vi.fn((value: unknown) => {
-      const step = value as { name: string }
-      return step.name.length >= 2
-        ? { value: step }
-        : {
-            issues: [
-              {
-                message: 'Name must be at least 2 characters',
-                path: ['name'],
-              },
-            ],
-          }
+    const step1Schema = z.object({
+      name: z.string().min(2, 'Name must be at least 2 characters'),
     })
-    const step1Schema = {
-      '~standard': {
-        version: 1,
-        vendor: 'test',
-        validate,
-      },
-    } satisfies StandardSchemaV1<{ name: string }>
+    const validate = vi.spyOn(step1Schema['~standard'], 'validate')
 
     function Component() {
       const form = useAppForm({
@@ -481,48 +466,36 @@ describe('FormGroup', () => {
   })
 
   it('routes descendant Standard Schema group errors to an error boundary field', async () => {
-    type StayDates = {
-      dateRange: {
-        from: Date | undefined
-        to: Date | undefined
-      }
-      arrivalTime: string
-    }
-
-    const stayDatesSchema = {
-      '~standard': {
-        version: 1,
-        vendor: 'test',
-        validate: () => ({
-          issues: [
-            {
-              message: 'Please select a start date.',
-              path: ['dateRange', 'from'],
-            },
-            {
-              message: 'Please select an end date.',
-              path: ['dateRange', 'to'],
-            },
-            {
-              message: 'Please select an arrival time.',
-              path: ['arrivalTime'],
-            },
-          ],
-        }),
+    const stayDatesSchema = z.object({
+      dateRange: z.object({
+        from: z
+          .date()
+          .optional()
+          .refine(
+            (value) => value !== undefined,
+            'Please select a start date.',
+          ),
+        to: z
+          .date()
+          .optional()
+          .refine((value) => value !== undefined, 'Please select an end date.'),
+      }),
+      arrivalTime: z.string().min(1, 'Please select an arrival time.'),
+    })
+    type StayDates = z.input<typeof stayDatesSchema>
+    const defaultValues: { stayDates: StayDates } = {
+      stayDates: {
+        dateRange: {
+          from: undefined,
+          to: undefined,
+        },
+        arrivalTime: '',
       },
-    } satisfies StandardSchemaV1<StayDates>
+    }
 
     function Component() {
       const form = useForm({
-        defaultValues: {
-          stayDates: {
-            dateRange: {
-              from: undefined,
-              to: undefined,
-            },
-            arrivalTime: '',
-          },
-        } satisfies { stayDates: StayDates },
+        defaultValues,
       })
 
       return (
