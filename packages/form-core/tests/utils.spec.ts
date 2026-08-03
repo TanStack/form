@@ -701,6 +701,19 @@ describe('evaluate', () => {
     ).toBe(false)
   })
 
+  it('does not delegate to equals() when only one operand exposes it', () => {
+    // Plain object literals share the `Object` constructor, so a one-sided
+    // `equals` property must not hijack the comparison — otherwise
+    // `evaluate({ equals: () => true }, {})` would report structurally
+    // different objects as equal.
+    expect(evaluate({ equals: () => true } as unknown, {} as unknown)).toBe(
+      false,
+    )
+    expect(evaluate({} as unknown, { equals: () => true } as unknown)).toBe(
+      false,
+    )
+  })
+
   it('should test equality between arrays', () => {
     const arrayTrue = evaluate([], [])
     expect(arrayTrue).toEqual(true)

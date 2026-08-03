@@ -519,9 +519,13 @@ export function evaluate<T>(objA: T, objB: T) {
   // exposes one. This must run before the no-enumerable-keys guard below, which
   // would otherwise treat every such value as unequal since they expose their
   // state through getters/private fields rather than own enumerable keys (#2195).
+  // Both operands must expose the method: plain object literals also share the
+  // `Object` constructor, so a one-sided `equals` (e.g. `{ equals: () => true }`
+  // vs `{}`) must fall through to structural comparison instead of delegating.
   if (
     objA.constructor === objB.constructor &&
-    typeof (objA as { equals?: unknown }).equals === 'function'
+    typeof (objA as { equals?: unknown }).equals === 'function' &&
+    typeof (objB as { equals?: unknown }).equals === 'function'
   ) {
     return (objA as unknown as { equals: (other: unknown) => boolean }).equals(
       objB,
