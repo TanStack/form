@@ -5,7 +5,7 @@ title: FormResetOptions
 
 # Interface: FormResetOptions
 
-Defined in: [FormApi/FormApi.public.ts:294](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L294)
+Defined in: [FormApi/FormApi.public.ts:282](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L282)
 
 ## Properties
 
@@ -15,7 +15,7 @@ Defined in: [FormApi/FormApi.public.ts:294](https://github.com/TanStack/form/blo
 optional updateDefaultValues: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:313](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L313)
+Defined in: [FormApi/FormApi.public.ts:301](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L301)
 
 Whether `reset(values)` should also update the form's `defaultValues`
 baseline.

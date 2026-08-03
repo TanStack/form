@@ -9,4 +9,4 @@ title: AnyFormApi
 type AnyFormApi = FormApi<any, any>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:292](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L292)
+Defined in: [FormApi/FormApi.public.ts:280](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L280)

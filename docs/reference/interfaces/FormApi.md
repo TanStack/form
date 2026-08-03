@@ -5,7 +5,7 @@ title: FormApi
 
 # Interface: FormApi\<TFormData, TFormErrorTypes\>
 
-Defined in: [FormApi/FormApi.public.ts:316](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L316)
+Defined in: [FormApi/FormApi.public.ts:304](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L304)
 
 ## Extends
 
@@ -29,7 +29,7 @@ Defined in: [FormApi/FormApi.public.ts:316](https://github.com/TanStack/form/blo
 atom: ReadonlyAtom<FormState<TFormData, TFormErrorTypes>>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:321](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L321)
+Defined in: [FormApi/FormApi.public.ts:309](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L309)
 
 ***
 
@@ -51,6 +51,18 @@ The name of the array field
 #### Inherited from
 
 [`FormApiArrayMethods`](FormApiArrayMethods.md).[`clearFieldValues`](FormApiArrayMethods.md#clearfieldvalues)
+
+***
+
+### defaultValues
+
+```ts
+readonly defaultValues: TFormData;
+```
+
+Defined in: [FormApi/FormApi.public.ts:312](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L312)
+
+The current baseline values used by `reset()` and `isDefaultValue`.
 
 ***
 
@@ -89,7 +101,7 @@ Optional update options including a custom `thisArg` for the predicate
 readonly formId: string;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:324](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L324)
+Defined in: [FormApi/FormApi.public.ts:313](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L313)
 
 ***
 
@@ -119,7 +131,7 @@ TODO
 handleSubmit: () => Promise<FormValidationError<TFormData>[]>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:341](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L341)
+Defined in: [FormApi/FormApi.public.ts:330](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L330)
 
 TODO for later: submit meta
 
@@ -195,16 +207,6 @@ Optional update options
 
 ***
 
-### options
-
-```ts
-readonly options: FormApiOptions<TFormData, TFormErrorTypes>;
-```
-
-Defined in: [FormApi/FormApi.public.ts:323](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L323)
-
-***
-
 ### pushFieldValue
 
 ```ts
@@ -269,7 +271,7 @@ Optional update options
 reset: (values?, opts?) => void;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:353](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L353)
+Defined in: [FormApi/FormApi.public.ts:342](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L342)
 
 Reset form values, metadata, validation state, and mounted fields.
 
@@ -337,7 +339,7 @@ TODO
 readonly state: FormState<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:322](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L322)
+Defined in: [FormApi/FormApi.public.ts:310](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L310)
 
 ***
 
@@ -376,7 +378,7 @@ The index of the second value to swap
 validate: (signal) => Promise<FormValidationError<TFormData>[]>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:333](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L333)
+Defined in: [FormApi/FormApi.public.ts:322](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L322)
 
 TODO expand on it
 

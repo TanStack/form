@@ -6,13 +6,13 @@ title: ToFieldError
 # Type Alias: ToFieldError\<TFieldValidators, TGroupFieldError, TFormErrorTypes\>
 
 ```ts
-type ToFieldError<TFieldValidators, TGroupFieldError, TFormErrorTypes> = 
+type ToFieldError<TFieldValidators, TGroupFieldError, TFormErrorTypes> = FallbackToValidationIssue<
   | ExtractValidatorFieldError<TFieldValidators, FieldValidators<any, any, any>>
-  | unknown extends TGroupFieldError ? ValidationIssue : TGroupFieldError
-| ExtractFormFieldError<TFormErrorTypes>;
+  | unknown extends TGroupFieldError ? never : TGroupFieldError
+| ExtractFormFieldError<TFormErrorTypes>>;
 ```
 
-Defined in: [validation.public.ts:730](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L730)
+Defined in: [validation.public.ts:734](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L734)
 
 ## Type Parameters
 

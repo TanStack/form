@@ -64,7 +64,10 @@ Defined in: [FieldApi/FieldApi.public.ts:203](https://github.com/TanStack/form/b
 ### listeners?
 
 ```ts
-optional listeners: FieldListeners<TFieldData, TFieldName, TFieldValue, ToFieldError<TFieldValidators, TGroupFieldError, TFormErrorTypes>, TFormData, TFormErrorTypes>;
+optional listeners: FieldListeners<TFieldData, TFieldName, TFieldValue, FallbackToValidationIssue<
+  | ExtractValidatorFieldError<NoInfer<TFieldValidators>, FieldValidators<any, any, any>>
+  | ExtractFormFieldError<TFormErrorTypes>
+| unknown extends TGroupFieldError ? never : TGroupFieldError>, TFormData, TFormErrorTypes>;
 ```
 
 Defined in: [FieldApi/FieldApi.public.ts:209](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L209)
