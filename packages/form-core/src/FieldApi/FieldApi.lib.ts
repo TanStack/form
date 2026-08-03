@@ -61,6 +61,7 @@ import type {
 } from '../validation.public'
 import type {
   ChildContributionStates,
+  DerivedMetaMarkers,
   FieldAtoms,
   InternalBaseFieldMeta,
   InternalFieldMeta,
@@ -348,11 +349,21 @@ export class InternalFieldApi<
       metaAtom = createAtom(defaultInternalBaseFieldMeta)
     }
     if (!storeAtom) {
+      const markers: DerivedMetaMarkers = {
+        source: undefined,
+        canDisplayErrors: undefined,
+      }
       storeAtom = createAtom<InternalFieldState>((prev) => {
         const newMeta = metaAtom.get()
         const value = this._getValue()
 
-        const meta = deriveFromBaseFieldMeta(newMeta, prev?.meta, this, value)
+        const meta = deriveFromBaseFieldMeta(
+          newMeta,
+          prev?.meta,
+          this,
+          value,
+          markers,
+        )
 
         if (prev?.meta === meta && prev.value === value) {
           return prev

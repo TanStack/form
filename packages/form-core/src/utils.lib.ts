@@ -29,30 +29,27 @@ export function nameToFieldNodeSegments(
   if (typeof nameOrSegments !== 'string') return nameOrSegments.slice()
 
   const result: NameSegments = []
-  let s = ''
+  let start = 0
 
   for (let i = 0; i < nameOrSegments.length; i++) {
     switch (nameOrSegments.charCodeAt(i)) {
       case 0x2e: // '.'
       case 0x5b: // '['
-        if (s.length > 0) {
-          result.push(s)
-          s = ''
+        if (i > start) {
+          result.push(nameOrSegments.slice(start, i))
         }
+        start = i + 1
         break
       case 0x5d: // ']'
-        if (s.length > 0) {
-          result.push(parseInt(s, 10))
-          s = ''
+        if (i > start) {
+          result.push(parseInt(nameOrSegments.slice(start, i), 10))
         }
-        break
-      default:
-        s += nameOrSegments.charAt(i)
+        start = i + 1
         break
     }
   }
-  if (s.length > 0) {
-    result.push(s)
+  if (start < nameOrSegments.length) {
+    result.push(nameOrSegments.slice(start))
   }
 
   return result
