@@ -4,7 +4,6 @@ import type {
   DeepValue,
   FieldApi,
   FieldApiOptions,
-  FieldListeners,
   FieldValidators,
   FormErrorTypes,
   FormGroupApi,
@@ -143,7 +142,11 @@ export interface ReactFormFieldProps<
     fieldApi: ReactFieldApi<
       TFieldName,
       TFieldValue,
-      ToFieldError<TFieldValidators, TGroupFieldError, TFormErrorTypes>,
+      ToFieldError<
+        NoInfer<TFieldValidators>,
+        TGroupFieldError,
+        TFormErrorTypes
+      >,
       TFormData,
       TFormErrorTypes,
       TFieldComponents
@@ -164,7 +167,7 @@ export type ReactFormFieldComponent<
       DeepValue<TFormData, TFieldName>
     >,
   >(
-    props: ReactFormFieldPropsWithValidators<
+    props: ReactFormFieldProps<
       TFormData,
       TFieldName,
       DeepValue<TFormData, TFieldName>,
@@ -175,139 +178,6 @@ export type ReactFormFieldComponent<
       TFieldComponents
     >,
   ): CrossVersionReactNode
-  <TFieldName extends DeepKeys<TFormData>>(
-    props: ReactFormFieldPropsWithoutValidators<
-      TFormData,
-      TFieldName,
-      DeepValue<TFormData, TFieldName>,
-      never,
-      TFormData,
-      TFormErrorTypes,
-      TFieldComponents
-    >,
-  ): CrossVersionReactNode
-}
-
-type ReactFormFieldPropsForError<
-  TFieldData,
-  TFieldName,
-  TFieldValue,
-  TFieldValidators extends FieldValidators<TFieldData, TFieldName, TFieldValue>,
-  TFieldError,
-  TGroupFieldError,
-  TFormData,
-  TFormErrorTypes extends FormErrorTypes,
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
-> = Omit<
-  ReactFormFieldProps<
-    TFieldData,
-    TFieldName,
-    TFieldValue,
-    TFieldValidators,
-    TGroupFieldError,
-    TFormData,
-    TFormErrorTypes,
-    TFieldComponents
-  >,
-  'children' | 'listeners' | 'validators'
-> & {
-  listeners?: FieldListeners<
-    TFieldData,
-    TFieldName,
-    TFieldValue,
-    TFieldError,
-    TFormData,
-    TFormErrorTypes
-  >
-  children: (
-    fieldApi: ReactFieldApi<
-      TFieldName,
-      TFieldValue,
-      TFieldError,
-      TFormData,
-      TFormErrorTypes,
-      TFieldComponents
-    >,
-  ) => CrossVersionReactNode
-}
-
-type ReactFormFieldPropsWithValidators<
-  TFieldData,
-  TFieldName,
-  TFieldValue,
-  TFieldValidators extends FieldValidators<TFieldData, TFieldName, TFieldValue>,
-  TGroupFieldError,
-  TFormData,
-  TFormErrorTypes extends FormErrorTypes,
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
-> = ReactFormFieldPropsForError<
-  TFieldData,
-  TFieldName,
-  TFieldValue,
-  TFieldValidators,
-  ToFieldError<NoInfer<TFieldValidators>, TGroupFieldError, TFormErrorTypes>,
-  TGroupFieldError,
-  TFormData,
-  TFormErrorTypes,
-  TFieldComponents
-> & {
-  validators: TFieldValidators
-}
-
-type ReactFormFieldPropsWithoutValidators<
-  TFieldData,
-  TFieldName,
-  TFieldValue,
-  TGroupFieldError,
-  TFormData,
-  TFormErrorTypes extends FormErrorTypes,
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
-> = ReactFormFieldPropsForError<
-  TFieldData,
-  TFieldName,
-  TFieldValue,
-  [],
-  ToFieldError<[], TGroupFieldError, TFormErrorTypes>,
-  TGroupFieldError,
-  TFormData,
-  TFormErrorTypes,
-  TFieldComponents
-> & {
-  validators?: undefined
-}
-
-export interface ReactFormArrayFieldProps<
-  in out TFieldData,
-  in out TFieldName,
-  in out TFieldValue,
-  in out TFieldValidators extends FieldValidators<
-    TFieldData,
-    TFieldName,
-    TFieldValue
-  >,
-  in out TGroupFieldError,
-  in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
-  in out TFieldComponents extends Record<string, FunctionComponent<any>>,
-> extends FieldApiOptions<
-  TFieldData,
-  TFieldName,
-  TFieldValue,
-  TFieldValidators,
-  TGroupFieldError,
-  TFormData,
-  TFormErrorTypes
-> {
-  children: (
-    fieldApi: ReactFieldApi<
-      TFieldName,
-      TFieldValue,
-      ToFieldError<TFieldValidators, TGroupFieldError, TFormErrorTypes>,
-      TFormData,
-      TFormErrorTypes,
-      TFieldComponents
-    >,
-  ) => CrossVersionReactNode
 }
 
 export type ReactFormArrayFieldComponent<
@@ -323,7 +193,7 @@ export type ReactFormArrayFieldComponent<
       DeepValue<TFormData, TFieldName>
     >,
   >(
-    props: ReactFormArrayFieldPropsWithValidators<
+    props: ReactFormFieldProps<
       TFormData,
       TFieldName,
       DeepValue<TFormData, TFieldName>,
@@ -334,105 +204,6 @@ export type ReactFormArrayFieldComponent<
       TFieldComponents
     >,
   ): CrossVersionReactNode
-  <TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>>(
-    props: ReactFormArrayFieldPropsWithoutValidators<
-      TFormData,
-      TFieldName,
-      DeepValue<TFormData, TFieldName>,
-      never,
-      TFormData,
-      TFormErrorTypes,
-      TFieldComponents
-    >,
-  ): CrossVersionReactNode
-}
-
-type ReactFormArrayFieldPropsForError<
-  TFieldData,
-  TFieldName,
-  TFieldValue,
-  TFieldValidators extends FieldValidators<TFieldData, TFieldName, TFieldValue>,
-  TFieldError,
-  TGroupFieldError,
-  TFormData,
-  TFormErrorTypes extends FormErrorTypes,
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
-> = Omit<
-  ReactFormArrayFieldProps<
-    TFieldData,
-    TFieldName,
-    TFieldValue,
-    TFieldValidators,
-    TGroupFieldError,
-    TFormData,
-    TFormErrorTypes,
-    TFieldComponents
-  >,
-  'children' | 'listeners' | 'validators'
-> & {
-  listeners?: FieldListeners<
-    TFieldData,
-    TFieldName,
-    TFieldValue,
-    TFieldError,
-    TFormData,
-    TFormErrorTypes
-  >
-  children: (
-    fieldApi: ReactFieldApi<
-      TFieldName,
-      TFieldValue,
-      TFieldError,
-      TFormData,
-      TFormErrorTypes,
-      TFieldComponents
-    >,
-  ) => CrossVersionReactNode
-}
-
-type ReactFormArrayFieldPropsWithValidators<
-  TFieldData,
-  TFieldName,
-  TFieldValue,
-  TFieldValidators extends FieldValidators<TFieldData, TFieldName, TFieldValue>,
-  TGroupFieldError,
-  TFormData,
-  TFormErrorTypes extends FormErrorTypes,
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
-> = ReactFormArrayFieldPropsForError<
-  TFieldData,
-  TFieldName,
-  TFieldValue,
-  TFieldValidators,
-  ToFieldError<NoInfer<TFieldValidators>, TGroupFieldError, TFormErrorTypes>,
-  TGroupFieldError,
-  TFormData,
-  TFormErrorTypes,
-  TFieldComponents
-> & {
-  validators: TFieldValidators
-}
-
-type ReactFormArrayFieldPropsWithoutValidators<
-  TFieldData,
-  TFieldName,
-  TFieldValue,
-  TGroupFieldError,
-  TFormData,
-  TFormErrorTypes extends FormErrorTypes,
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
-> = ReactFormArrayFieldPropsForError<
-  TFieldData,
-  TFieldName,
-  TFieldValue,
-  [],
-  ToFieldError<[], TGroupFieldError, TFormErrorTypes>,
-  TGroupFieldError,
-  TFormData,
-  TFormErrorTypes,
-  TFieldComponents
-> & {
-  validators?: undefined
 }
 
 export type ReactFormGroupSubscribeProps<
@@ -466,22 +237,11 @@ export interface ReactFormGroupFieldComponent<
       DeepValue<TGroupValue, TFieldName>
     >,
   >(
-    props: ReactFormFieldPropsWithValidators<
+    props: ReactFormFieldProps<
       TGroupValue,
       TFieldName,
       DeepValue<TGroupValue, TFieldName>,
       TFieldValidators,
-      TGroupErrorTypes['fieldError'],
-      TFormData,
-      TFormErrorTypes,
-      TFieldComponents
-    >,
-  ): CrossVersionReactNode
-  <TFieldName extends DeepKeys<TGroupValue>>(
-    props: ReactFormFieldPropsWithoutValidators<
-      TGroupValue,
-      TFieldName,
-      DeepValue<TGroupValue, TFieldName>,
       TGroupErrorTypes['fieldError'],
       TFormData,
       TFormErrorTypes,
@@ -505,22 +265,11 @@ export type ReactFormGroupArrayFieldComponent<
       DeepValue<TGroupValue, TFieldName>
     >,
   >(
-    props: ReactFormArrayFieldPropsWithValidators<
+    props: ReactFormFieldProps<
       TGroupValue,
       TFieldName,
       DeepValue<TGroupValue, TFieldName>,
       TFieldValidators,
-      TGroupErrorTypes['fieldError'],
-      TFormData,
-      TFormErrorTypes,
-      TFieldComponents
-    >,
-  ): CrossVersionReactNode
-  <TFieldName extends DeepKeysWhereValueIncludes<TGroupValue, Array<any>>>(
-    props: ReactFormArrayFieldPropsWithoutValidators<
-      TGroupValue,
-      TFieldName,
-      DeepValue<TGroupValue, TFieldName>,
       TGroupErrorTypes['fieldError'],
       TFormData,
       TFormErrorTypes,

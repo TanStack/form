@@ -53,6 +53,7 @@ describe('submit return', () => {
           {(field) => {
             expectTypeOf(field.errors).toEqualTypeOf<
               Array<
+                | ValidationIssue
                 | StandardSchemaV1Issue
                 | { message: string; fromSubmitField: true }
               >
