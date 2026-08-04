@@ -1,5 +1,11 @@
 # @tanstack/form-core
 
+## 1.33.4
+
+### Patch Changes
+
+- [#2269](https://github.com/TanStack/form/pull/2269) [`1620181`](https://github.com/TanStack/form/commit/1620181aeb513517cd840f6fb8e2d3f1ddf627ce) - Improve field snapshot and metadata re-use strategy.
+
 ## 1.33.3
 
 ## 1.33.2
