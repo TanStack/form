@@ -49,14 +49,13 @@ export interface FormGroupFieldErrorMeta {
 export interface InternalBaseFieldMeta extends BaseFieldMeta, MetaExtension {}
 export interface InternalFieldMeta extends AnyPublicFieldMeta, MetaExtension {}
 
-const derivedMetaSourceKey = Symbol('tanstack-form-derived-meta-source')
-const derivedMetaCanDisplayErrorsKey = Symbol(
-  'tanstack-form-derived-meta-can-display-errors',
-)
-
-type DerivedMetaMarkers = {
-  [derivedMetaCanDisplayErrorsKey]?: boolean
-  [derivedMetaSourceKey]?: InternalBaseFieldMeta
+/**
+ * @private
+ * Used to track the prev meta for a field
+ */
+export interface DerivedMetaMarkers {
+  source: InternalBaseFieldMeta | undefined
+  canDisplayErrors: boolean | undefined
 }
 
 export interface InternalFieldState extends PublicFieldState<any, any> {
@@ -118,6 +117,7 @@ export function deriveFromBaseFieldMeta(
   previousMeta: InternalFieldMeta | undefined,
   field: AnyInternalFieldApi | undefined,
   value?: any,
+  markers?: DerivedMetaMarkers,
 ): InternalFieldMeta {
   const isDefaultValue = field ? field._getIsDefaultValue(value) : true
   const errorVisibility = getErrorVisibility(field)
@@ -152,10 +152,12 @@ export function deriveFromBaseFieldMeta(
 
   if (
     previousMeta &&
+    markers &&
     canReusePreviousMeta({
       baseMeta,
       canDisplayErrors,
       isDefaultValue,
+      markers,
       originalErrors,
       previousMeta,
     })
@@ -184,55 +186,32 @@ export function deriveFromBaseFieldMeta(
     subfields,
     isPristine: !isDirty,
   }
-  return markDerivedMeta(result, baseMeta, canDisplayErrors)
-}
 
-function markDerivedMeta(
-  meta: InternalFieldMeta,
-  baseMeta: InternalBaseFieldMeta,
-  canDisplayErrors: boolean,
-): InternalFieldMeta {
-  Object.defineProperties(meta, {
-    [derivedMetaCanDisplayErrorsKey]: {
-      value: canDisplayErrors,
-    },
-    [derivedMetaSourceKey]: {
-      value: baseMeta,
-    },
-  })
+  if (markers) {
+    markers.source = baseMeta
+    markers.canDisplayErrors = canDisplayErrors
+  }
 
-  return meta
-}
-
-function getDerivedMetaSource(
-  meta: (InternalFieldMeta & DerivedMetaMarkers) | undefined,
-): InternalBaseFieldMeta | undefined {
-  return meta?.[derivedMetaSourceKey]
-}
-
-function getDerivedMetaCanDisplayErrors(
-  meta: (InternalFieldMeta & DerivedMetaMarkers) | undefined,
-): boolean | undefined {
-  return meta?.[derivedMetaCanDisplayErrorsKey]
+  return result
 }
 
 function canReusePreviousMeta({
   baseMeta,
   canDisplayErrors,
   isDefaultValue,
+  markers,
   originalErrors,
   previousMeta,
 }: {
   baseMeta: InternalBaseFieldMeta
   canDisplayErrors: boolean
   isDefaultValue: boolean
+  markers: DerivedMetaMarkers
   originalErrors: Array<ValidationIssue>
   previousMeta: InternalFieldMeta
 }): boolean {
-  if (getDerivedMetaSource(previousMeta) !== baseMeta) return false
-  if (getDerivedMetaCanDisplayErrors(previousMeta) !== canDisplayErrors) {
-    return false
-  }
+  if (markers.source !== baseMeta) return false
+  if (markers.canDisplayErrors !== canDisplayErrors) return false
   if (previousMeta.isDefaultValue !== isDefaultValue) return false
   if (previousMeta.original.errors !== originalErrors) return false
 
