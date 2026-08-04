@@ -47,7 +47,7 @@ optional errorBoundary: boolean;
 
 Defined in: [FieldApi/FieldApi.public.ts:207](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L207)
 
-Route descendant field errors from form-level validation to this field.
+Route descendant field errors from form and form group validators to this field.
 
 ***
 
