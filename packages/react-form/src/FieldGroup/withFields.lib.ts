@@ -1,5 +1,9 @@
 import React from 'react'
-import { InternalFieldGroupApi } from '@tanstack/form-core/internals'
+import {
+  InternalFieldGroupApi,
+  defineFieldGroupFieldsRuntime,
+  fieldGroupHelperRuntime,
+} from '@tanstack/form-core/internals'
 import type { InternalFieldGroupBindings } from '@tanstack/form-core/internals'
 import type { FunctionComponent } from 'react'
 import type { AnyFieldGroupApi } from './FieldGroupApi.public'
@@ -45,12 +49,28 @@ function attachReactFieldGroupComponents(
   }) as never
 }
 
-export function withFieldsRuntime(
-  _fields: AnyFieldGroupApi,
+export function defineFieldGroupRuntime<
+  TFields extends Record<string, unknown>,
+>(defineFieldGroupFn: (helperRuntime: any) => TFields) {
+  const fields = defineFieldGroupFieldsRuntime(
+    defineFieldGroupFn(fieldGroupHelperRuntime),
+  )
+
+  return {
+    fields,
+    bindComponent: (
+      Component: (props: any) => unknown,
+      fieldsPropName: string,
+    ) => withFieldsRuntime(fields, Component, fieldsPropName),
+  }
+}
+
+function withFieldsRuntime(
+  fields: Record<string, unknown>,
   Component: (props: any) => unknown,
   fieldsPropName: string,
 ) {
-  const fieldNames = Object.keys(_fields as unknown as Record<string, unknown>)
+  const fieldNames = Object.keys(fields)
 
   const FieldGroupComponent = (props: any) => {
     const { form, ...restProps } = props

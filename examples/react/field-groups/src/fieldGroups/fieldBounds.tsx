@@ -1,21 +1,19 @@
-import { getFieldGroupHelpers } from '@tanstack/react-form'
+import { defineFieldGroup } from '@tanstack/react-form'
 import { z } from 'zod'
 import { StringField } from '../StringField'
 
 export const boundsSchema = z.coerce.number<string>().int()
 
-const { defineFields, helper, withFields } = getFieldGroupHelpers()
-
 // Example 1: a field group can package field-specific options.
 // `value` is a virtual field name. Callers bind it to a real field path like
 // `minPrice` or `minAge`, but this component never needs to know that path.
-// `helper.strict<string>()` means callers can only bind exact string fields.
-const lowerBoundFields = defineFields({
-  value: helper.strict<string>(),
-})
+// `strict<string>()` means callers can only bind exact string fields.
+const lowerBound = defineFieldGroup(({ strict }) => ({
+  value: strict<string>(),
+}))
 
 interface LowerBoundFieldProps {
-  fields: typeof lowerBoundFields
+  fields: typeof lowerBound.fields
   label: string
 }
 
@@ -48,8 +46,7 @@ function LowerBoundFieldComponent(props: LowerBoundFieldProps) {
   )
 }
 
-export const LowerBoundField = withFields(
-  lowerBoundFields,
+export const LowerBoundField = lowerBound.bindComponent(
   LowerBoundFieldComponent,
   'fields',
 )
@@ -57,13 +54,13 @@ export const LowerBoundField = withFields(
 // Example 2: a field group can depend on multiple fields without depending on
 // a specific form shape. `value` is the field this component renders, while
 // `lowerBound` is only read/watched by the validator below.
-const upperBoundFields = defineFields({
-  value: helper.strict<string>(),
-  lowerBound: helper.strict<string>(),
-})
+const upperBound = defineFieldGroup(({ strict }) => ({
+  value: strict<string>(),
+  lowerBound: strict<string>(),
+}))
 
 interface UpperBoundFieldProps {
-  fields: typeof upperBoundFields
+  fields: typeof upperBound.fields
   label: string
 }
 
@@ -116,8 +113,7 @@ function UpperBoundFieldComponent(props: UpperBoundFieldProps) {
   )
 }
 
-export const UpperBoundField = withFields(
-  upperBoundFields,
+export const UpperBoundField = upperBound.bindComponent(
   UpperBoundFieldComponent,
   'fields',
 )

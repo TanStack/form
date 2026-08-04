@@ -1,19 +1,17 @@
-import { getFieldGroupHelpers, useSelector } from '@tanstack/react-form'
+import { defineFieldGroup, useSelector } from '@tanstack/react-form'
 import { FieldError } from '../FieldError'
 import type { FieldWithValue } from '@tanstack/react-form'
-
-const { defineFields, helper, withFields } = getFieldGroupHelpers()
 
 // DateRangeField needs two string fields, but it does not care where they live.
 // These virtual names are the only field names available inside the group.
 // For example, this file can use `start` and `end`, but not `dateRanges[0]`.
-const dateRangeFields = defineFields({
+const fieldGroup = defineFieldGroup((helper) => ({
   start: helper.strict<string>(),
   end: helper.strict<string>(),
-})
+}))
 
 interface DateRangeFieldProps {
-  fields: typeof dateRangeFields
+  fields: typeof fieldGroup.fields
   label: string
 }
 
@@ -58,8 +56,7 @@ function DateRangeFieldComponent(props: DateRangeFieldProps) {
   )
 }
 
-export const DateRangeField = withFields(
-  dateRangeFields,
+export const DateRangeField = fieldGroup.bindComponent(
   DateRangeFieldComponent,
   'fields',
 )
