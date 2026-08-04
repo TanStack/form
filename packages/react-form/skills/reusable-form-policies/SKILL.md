@@ -169,13 +169,11 @@ interface SharedProps {
 Correct:
 
 ```tsx
-const { defineFields, helper, withFields } = getFieldGroupHelpers()
+const sharedFieldGroup = defineFieldGroup(({ strict }) => ({
+  value: strict<string>(),
+}))
 
-const sharedFields = defineFields({
-  value: helper.strict<string>(),
-})
-
-function SharedImpl({ fields }: { fields: typeof sharedFields }) {
+function SharedImpl({ fields }: { fields: typeof sharedFieldGroup.fields }) {
   return (
     <fields.Field name="value">
       {(field) => <input value={field.value} />}
@@ -183,7 +181,7 @@ function SharedImpl({ fields }: { fields: typeof sharedFields }) {
   )
 }
 
-export const SharedField = withFields(sharedFields, SharedImpl, 'fields')
+export const SharedField = sharedFieldGroup.bindComponent(SharedImpl, 'fields')
 ```
 
 Different form APIs do not form a useful union for field names and methods.

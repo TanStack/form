@@ -43,7 +43,7 @@ This page is a starting checklist for migrating React apps from v1 to v2.
   typed as `ReactFormType<typeof formOpts>`.
 - Replace `useFormGroup` with `form.FormGroup` for scoped sections of the same
   form.
-- Replace `withFieldGroup` with `getFieldGroupHelpers().withFields(...)` for
+- Replace `withFieldGroup` with `defineFieldGroup(...).bindComponent(...)` for
   reusable field bundles that map virtual field names to different concrete
   form paths.
 - Update CommonJS integrations to consume ESM. The v2 packages do not publish
@@ -708,21 +708,23 @@ For a field inside a mounted group, scalar state exposed to `errorVisibility`
 (such as `submissionAttempts` and `isDirty`) is scoped to the nearest group.
 The callback's `values` and `errors` remain form-wide.
 
-v1's `withFieldGroup` HOC was removed. v2 replaces it with field-group helpers
-for reusable field bundles. Use `getFieldGroupHelpers()` when a component should
-not care where its fields live in the parent form:
+v1's `withFieldGroup` HOC was removed. v2 replaces it with
+`defineFieldGroup(...)` for reusable field bundles. Use it when a component
+should not care where its fields live in the parent form:
 
 ```tsx
-import { getFieldGroupHelpers } from '@tanstack/react-form'
+import { defineFieldGroup } from '@tanstack/react-form'
 
-const { defineFields, helper, withFields } = getFieldGroupHelpers()
+const rangeFieldGroup = defineFieldGroup(({ strict }) => ({
+  lower: strict<string>(),
+  upper: strict<string>(),
+}))
 
-const rangeFields = defineFields({
-  lower: helper.strict<string>(),
-  upper: helper.strict<string>(),
-})
-
-function RangeFieldsImpl({ fields }: { fields: typeof rangeFields }) {
+function RangeFieldsImpl({
+  fields,
+}: {
+  fields: typeof rangeFieldGroup.fields
+}) {
   return (
     <>
       <fields.Field name="lower">
@@ -759,7 +761,10 @@ function RangeFieldsImpl({ fields }: { fields: typeof rangeFields }) {
   )
 }
 
-export const RangeFields = withFields(rangeFields, RangeFieldsImpl, 'fields')
+export const RangeFields = rangeFieldGroup.bindComponent(
+  RangeFieldsImpl,
+  'fields',
+)
 ```
 
 Then bind virtual names to concrete paths wherever the group is used:
@@ -777,8 +782,7 @@ Then bind virtual names to concrete paths wherever the group is used:
 Use this v2 pattern to migrate v1 `withFieldGroup` components that were reused
 against different field paths. If you are using app form components from
 `createFormHook`, wrap components that expect an injected field API with
-`getFormHookHelpers()`, then get the same field-group helper shape from
-`getAppFieldGroupHelpers`:
+`getFormHookHelpers()`, then define field groups with `defineAppFieldGroup`:
 
 ```tsx
 import { createFormHook, getFormHookHelpers } from '@tanstack/react-form'
@@ -786,14 +790,20 @@ import { createFormHook, getFormHookHelpers } from '@tanstack/react-form'
 const { fieldComponent } = getFormHookHelpers()
 const AppTextField = fieldComponent.strict(StringField, 'field')
 
-const { appFormOptions, useAppForm, getAppFieldGroupHelpers } = createFormHook({
+const {
+  appFormOptions,
+  useAppForm,
+  defineAppFieldGroup,
+} = createFormHook({
   fieldComponents: {
     TextField: AppTextField,
   },
   formComponents: {},
 })
 
-const { defineFields, helper, withFields } = getAppFieldGroupHelpers()
+const contactFieldGroup = defineAppFieldGroup(({ strict }) => ({
+  name: strict<string>(),
+}))
 ```
 
 ## Listeners
@@ -820,11 +830,12 @@ listeners additionally support `unmount`.
 ```
 
 For cross-field field listeners, put the source fields in `watchFields`. In
-`form.FormGroup` and `withFields` components, `watchFields` uses the scoped or
-virtual field names and v2 resolves them to the concrete form paths. Form-level
-listeners instead observe propagated events and receive an optional source
-field as `triggerFieldApi`. It is present for propagated field changes and
-blurs, but absent for form-originated events such as mount, reset, and submit.
+`form.FormGroup` and field-group-bound components, `watchFields` uses the scoped
+or virtual field names and v2 resolves them to the concrete form paths.
+Form-level listeners instead observe propagated events and receive an optional
+source field as `triggerFieldApi`. It is present for propagated field changes
+and blurs, but absent for form-originated events such as mount, reset, and
+submit.
 
 ## Server and framework integrations
 
@@ -922,8 +933,8 @@ Client rendering still follows the same v2 field surface:
    and convert submitted endpoint errors to `createValidationError(...)`.
 8. Revisit composition: use `formOptions(...)` for shared options,
    `ReactFormType<typeof formOpts>` for extracted form props,
-   `form.FormGroup` for scoped sections, and `withFields(...)` for reusable
-   field bundles.
+   `form.FormGroup` for scoped sections, and
+   `defineFieldGroup(...).bindComponent(...)` for reusable field bundles.
 9. Re-run React integration tests around validation timing, field rerenders,
    groups, server error hydration, and array mutations. These are the areas
    where v2 intentionally tightened behavior.
