@@ -26,6 +26,44 @@ export interface AppFormHookResult<
   in out TComponents extends AnyReactFormComponentMap,
 > {
   appFormOptions: AppFormOptionsApi<TComponents>
+  /**
+   * Defines a field group whose fields expose the field components registered
+   * with `createFormHook`.
+   *
+   * @example
+   * ```tsx
+   * const { defineAppFieldGroup } = createFormHook({
+   *   fieldComponents: {
+   *     TextField,
+   *   },
+   *   formComponents: {},
+   * })
+   *
+   * const passwordFieldGroup = defineAppFieldGroup(({ strict }) => ({
+   *   password: strict<string>(),
+   *   confirmPassword: strict<string>(),
+   * }))
+   *
+   * interface PasswordFieldsProps {
+   *   fields: typeof passwordFieldGroup.fields
+   * }
+   *
+   * function PasswordFields({ fields }: PasswordFieldsProps) {
+   *   return (
+   *     <>
+   *       <fields.Field name="password">
+   *         {(field) => <field.TextField label="Password" />}
+   *       </fields.Field>
+   *       <fields.Field name="confirmPassword">
+   *         {(field) => (
+   *           <field.TextField label="Confirm password" />
+   *         )}
+   *       </fields.Field>
+   *     </>
+   *   )
+   * }
+   * ```
+   */
   defineAppFieldGroup: DefineFieldGroupFn<TComponents['fieldComponents']>
   useAppForm: UseAppFormHook<TComponents>
   useFormContext: () => ReactAppFormApi<any, any, TComponents>

@@ -155,6 +155,52 @@ export type FieldGroupFieldsPropName<
     : never
 }[keyof TProps]
 
+/**
+ * Wraps a component that accepts a field-group API and returns a component
+ * that accepts a form plus virtual-to-concrete field bindings.
+ *
+ * @example
+ * ```tsx
+ * const passwordFieldGroup = defineFieldGroup(({ strict }) => ({
+ *   password: strict<string>(),
+ *   confirmPassword: strict<string>(),
+ * }))
+ *
+ * interface PasswordFieldsProps {
+ *   fields: typeof passwordFieldGroup.fields
+ * }
+ *
+ * function PasswordFields({ fields }: PasswordFieldsProps) {
+ *   // ...
+ * }
+ *
+ * const PasswordSection = passwordFieldGroup.bindComponent(
+ *   PasswordFields,
+ *   'fields',
+ * )
+ *
+ * function AccountForm() {
+ *   const form = useForm({
+ *     defaultValues: {
+ *       account: {
+ *         password: '',
+ *         confirmPassword: '',
+ *       },
+ *     },
+ *   })
+ *
+ *   return (
+ *     <PasswordSection
+ *       form={form}
+ *       fields={{
+ *         password: 'account.password',
+ *         confirmPassword: 'account.confirmPassword',
+ *       }}
+ *     />
+ *   )
+ * }
+ * ```
+ */
 export type FieldGroupWithFieldsFn<
   TFieldGroup extends ReactFieldGroup<any, any>,
 > = <
@@ -175,7 +221,31 @@ export type FieldGroupWithFieldsFn<
 ) => CrossVersionReactNode
 
 export interface FieldGroupHelper {
+  /**
+   * Declares a virtual field whose value type must exactly match the value type
+   * of the concrete form field it binds to.
+   *
+   * @example
+   * ```tsx
+   * const passwordFieldGroup = defineFieldGroup(({ strict }) => ({
+   *   password: strict<string>(),
+   *   confirmPassword: strict<string>(),
+   * }))
+   * ```
+   */
   strict: <TValue>() => StrictFieldGroupFieldSlot<TValue>
+  /**
+   * Declares a virtual field that can bind to form fields with an overlapping
+   * non-nullish value type instead of requiring an exact type match.
+   *
+   * @example
+   * ```tsx
+   * const passwordFieldGroup = defineFieldGroup(({ loose }) => ({
+   *   password: loose<string>(),
+   *   confirmPassword: loose<string>(),
+   * }))
+   * ```
+   */
   loose: <TValue>() => LooseFieldGroupFieldSlot<TValue>
 }
 
@@ -183,17 +253,134 @@ export interface FieldGroupDefinition<
   TFields extends FieldGroupFields,
   TFieldComponents extends Record<string, FunctionComponent<any>>,
 > {
+  /**
+   * The virtual field-group API injected into the component passed to
+   * `bindComponent`.
+   */
   fields: ReactFieldGroup<TFields, TFieldComponents>
+  /**
+   * Binds a component's field-group API prop to concrete paths in a parent
+   * form.
+   *
+   * The returned component accepts the original component props except for the
+   * injected field-group API prop. It adds a `form` prop and reuses the injected
+   * prop name for the virtual-to-concrete field binding map.
+   *
+   * @example
+   * ```tsx
+   * const passwordFieldGroup = defineFieldGroup(({ strict }) => ({
+   *   password: strict<string>(),
+   *   confirmPassword: strict<string>(),
+   * }))
+   *
+   * interface PasswordFieldsProps {
+   *   fields: typeof passwordFieldGroup.fields
+   *   legend: string
+   * }
+   *
+   * function PasswordFields({ fields, legend }: PasswordFieldsProps) {
+   *   return (
+   *     <fieldset>
+   *       <legend>{legend}</legend>
+   *       <fields.Field name="password">
+   *         {(field) => (
+   *           <input
+   *             type="password"
+   *             value={field.value}
+   *             onChange={(event) => field.handleChange(event.target.value)}
+   *           />
+   *         )}
+   *       </fields.Field>
+   *       <fields.Field name="confirmPassword">
+   *         {(field) => (
+   *           <input
+   *             type="password"
+   *             value={field.value}
+   *             onChange={(event) => field.handleChange(event.target.value)}
+   *           />
+   *         )}
+   *       </fields.Field>
+   *     </fieldset>
+   *   )
+   * }
+   *
+   * const PasswordSection = passwordFieldGroup.bindComponent(
+   *   PasswordFields,
+   *   'fields',
+   * )
+   *
+   * <PasswordSection
+   *   form={form}
+   *   legend="Choose a password"
+   *   fields={{
+   *     password: 'account.password',
+   *     confirmPassword: 'account.confirmPassword',
+   *   }}
+   * />
+   * ```
+   */
   bindComponent: FieldGroupWithFieldsFn<
     ReactFieldGroup<TFields, TFieldComponents>
   >
 }
 
+/**
+ * Signature shared by `defineFieldGroup` and app-form field-group definers.
+ */
 export type DefineFieldGroupFn<
   TFieldComponents extends Record<string, FunctionComponent<any>>,
 > = <const TFields extends FieldGroupFields>(
   defineFn: (helper: FieldGroupHelper) => TFields,
 ) => FieldGroupDefinition<TFields, TFieldComponents>
 
+/**
+ * Defines a reusable group of virtual fields that can be bound to concrete
+ * paths in different parent forms.
+ *
+ * Use `strict` when a binding must have exactly the declared value type. Use
+ * `loose` when bindings may have an overlapping non-nullish value type.
+ *
+ * @example
+ * ```tsx
+ * const passwordFieldGroup = defineFieldGroup(({ strict }) => ({
+ *   password: strict<string>(),
+ *   confirmPassword: strict<string>(),
+ * }))
+ *
+ * interface PasswordFieldsProps {
+ *   fields: typeof passwordFieldGroup.fields
+ * }
+ *
+ * function PasswordFields({ fields }: PasswordFieldsProps) {
+ *   return (
+ *     <>
+ *       <fields.Field name="password">
+ *         {(field) => (
+ *           <input
+ *             type="password"
+ *             value={field.value}
+ *             onChange={(event) => field.handleChange(event.target.value)}
+ *           />
+ *         )}
+ *       </fields.Field>
+ *       <fields.Field name="confirmPassword">
+ *         {(field) => (
+ *           <input
+ *             type="password"
+ *             value={field.value}
+ *             onChange={(event) => field.handleChange(event.target.value)}
+ *           />
+ *         )}
+ *       </fields.Field>
+ *     </>
+ *   )
+ * }
+ *
+ * export const PasswordSection = passwordFieldGroup.bindComponent(
+ *   PasswordFields,
+ *   'fields',
+ * )
+ * ```
+ */
 export const defineFieldGroup: DefineFieldGroupFn<Record<never, never>> =
   defineFieldGroupRuntime as never
