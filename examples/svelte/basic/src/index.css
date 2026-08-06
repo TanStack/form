@@ -1,0 +1,43 @@
+#root {
+  width: 70rem;
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  min-height: 100svh;
+  box-sizing: border-box;
+  font-family: system-ui, sans-serif;
+}
+
+button {
+  margin: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+}
+
+label {
+  display: grid;
+  gap: 0.35rem;
+  margin: 1rem auto;
+  max-width: 18rem;
+}
+
+input {
+  border: 1px solid #d4d4d8;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+}
+
+small {
+  min-height: 1.25rem;
+  color: #dc2626;
+  white-space: pre-line;
+}
+
+label.validating > input {
+  border-color: #93c5fd;
+}
+
+input[aria-invalid='true'] {
+  border-color: #fca5a5;
+  background: #fef2f2;
+}
