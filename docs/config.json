@@ -191,6 +191,31 @@
               "to": "framework/solid/guides/debugging"
             }
           ]
+        },
+        {
+          "label": "svelte",
+          "children": [
+            {
+              "label": "Form Validation",
+              "to": "framework/svelte/guides/validation"
+            },
+            {
+              "label": "Async Initial Values",
+              "to": "framework/svelte/guides/async-initial-values"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/svelte/guides/arrays"
+            },
+            {
+              "label": "UI Libraries",
+              "to": "framework/svelte/guides/ui-libraries"
+            },
+            {
+              "label": "Debugging",
+              "to": "framework/svelte/guides/debugging"
+            }
+          ]
         }
       ]
     },
@@ -391,6 +416,47 @@
             {
               "label": "TanStack Query Integration",
               "to": "framework/solid/examples/query-integration"
+            }
+          ]
+        },
+        {
+          "label": "svelte",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "framework/svelte/examples/simple"
+            },
+            {
+              "label": "Basic",
+              "to": "framework/svelte/examples/basic"
+            },
+            {
+              "label": "Form Splitting",
+              "to": "framework/svelte/examples/basic-splitting-form"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/svelte/examples/array"
+            },
+            {
+              "label": "Field Groups",
+              "to": "framework/svelte/examples/field-groups"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/svelte/examples/large-form"
+            },
+            {
+              "label": "Multi-Step Wizard",
+              "to": "framework/svelte/examples/multi-step-wizard"
+            },
+            {
+              "label": "Standard Schema",
+              "to": "framework/svelte/examples/standard-schema"
+            },
+            {
+              "label": "TanStack Query Integration",
+              "to": "framework/svelte/examples/query-integration"
             }
           ]
         }
