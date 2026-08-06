@@ -1,160 +1,27 @@
-import { createRenderEffect, onCleanup, untrack } from 'solid-js'
-import { initializeForm } from './SolidFormApi.lib'
+import { createInternalForm, initializeForm } from './SolidFormApi.lib'
 import type {
-  DeepKeys,
-  DeepKeysWhereValueIncludes,
-  DeepValue,
-  FieldApi,
-  FieldApiOptions,
-  FieldValidators,
-  FormApi,
-  FormErrorTypes,
   FormOptions,
-  FormState,
   FormValidators,
-  ToFieldError,
   ToFormErrorTypes,
 } from '@tanstack/form-core'
-import type { Accessor, JSX } from 'solid-js'
+import type { Accessor } from 'solid-js'
+import type { SolidFormApi } from './formApiTypes.public'
+import type { DefaultSolidFormComponentMap } from './AppForm/componentMap.public'
 
-export interface SolidFormSubscribeProps<
+export type CreateFormHook = <
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
-  TSelected,
-> {
-  /**
-   * Select from the full form state. Children receive a Solid accessor for the
-   * selected value.
-   */
-  selector: (state: FormState<TFormData, TFormErrorTypes>) => TSelected
-  children: JSX.Element | ((state: Accessor<TSelected>) => JSX.Element)
-}
-
-export interface SolidFormFieldProps<
-  TFormData,
-  TFieldName extends DeepKeys<TFormData>,
-  TFieldValue extends DeepValue<TFormData, TFieldName>,
-  TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
-  TFormErrorTypes extends FormErrorTypes,
-> extends FieldApiOptions<
-  TFormData,
-  TFieldName,
-  TFieldValue,
-  TFieldValidators,
-  never,
-  TFormData,
-  TFormErrorTypes
-> {
-  children: (
-    fieldApi: Accessor<
-      FieldApi<
-        TFieldName,
-        TFieldValue,
-        ToFieldError<TFieldValidators, never, TFormErrorTypes>,
-        TFormData,
-        TFormErrorTypes
-      >
-    >,
-  ) => JSX.Element
-}
-
-export interface SolidFormArrayFieldProps<
-  TFormData,
-  TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
-  TFieldValue extends DeepValue<TFormData, TFieldName>,
-  TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
-  TFormErrorTypes extends FormErrorTypes,
-> extends FieldApiOptions<
-  TFormData,
-  TFieldName,
-  TFieldValue,
-  TFieldValidators,
-  never,
-  TFormData,
-  TFormErrorTypes
-> {
-  children: (
-    fieldApi: Accessor<
-      FieldApi<
-        TFieldName,
-        TFieldValue,
-        ToFieldError<TFieldValidators, never, TFormErrorTypes>,
-        TFormData,
-        TFormErrorTypes
-      >
-    >,
-  ) => JSX.Element
-}
-
-export interface SolidTanStackFormComponents<
-  TFormData,
-  TFormErrorTypes extends FormErrorTypes,
-> {
-  /**
-   * TODO docs
-   */
-  Field: <
-    TFieldName extends DeepKeys<TFormData>,
-    TFieldValue extends DeepValue<TFormData, TFieldName>,
-    TFieldValidators extends FieldValidators<
-      TFormData,
-      TFieldName,
-      TFieldValue
-    >,
-  >(
-    props: SolidFormFieldProps<
-      TFormData,
-      TFieldName,
-      TFieldValue,
-      TFieldValidators,
-      TFormErrorTypes
-    >,
-  ) => JSX.Element
-  ArrayField: <
-    TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
-    TFieldValue extends DeepValue<TFormData, TFieldName>,
-    TFieldValidators extends FieldValidators<
-      TFormData,
-      TFieldName,
-      TFieldValue
-    >,
-  >(
-    props: SolidFormArrayFieldProps<
-      TFormData,
-      TFieldName,
-      TFieldValue,
-      TFieldValidators,
-      TFormErrorTypes
-    >,
-  ) => JSX.Element
-  Subscribe: <TSelected>(
-    props: SolidFormSubscribeProps<TFormData, TFormErrorTypes, TSelected>,
-  ) => JSX.Element
-}
-
-export interface SolidFormApi<TFormData, TFormErrorTypes extends FormErrorTypes>
-  extends
-    FormApi<TFormData, TFormErrorTypes>,
-    SolidTanStackFormComponents<TFormData, TFormErrorTypes> {}
-
-/**
- * TODO docs
- */
-export function createForm<
-  TData,
-  const TFormValidators extends FormValidators<TData>,
+  const TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
 >(
-  options: Accessor<FormOptions<TData, TFormValidators, TSubmitReturn>>,
-): SolidFormApi<TData, ToFormErrorTypes<TFormValidators, TSubmitReturn>> {
-  const form = untrack(() => initializeForm(options()))
+  options: Accessor<FormOptions<TFormData, TFormValidators, TSubmitReturn>>,
+) => SolidFormApi<
+  TFormData,
+  ToFormErrorTypes<TFormValidators, TSubmitReturn>,
+  DefaultSolidFormComponentMap
+>
 
-  createRenderEffect(() => {
-    form._update(options() as never)
-  })
-
-  const unmount = form.mount()
-  onCleanup(unmount)
-
-  return form as never
+function createFormHook(options: Accessor<FormOptions<any, any, any>>) {
+  return createInternalForm(options, initializeForm)
 }
+
+export const createForm = createFormHook as never as CreateFormHook
