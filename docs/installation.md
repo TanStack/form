@@ -8,6 +8,7 @@ TanStack Form is compatible with various front-end frameworks, including React, 
 <!-- ::start:tabs variant="package-managers" -->
 
 react: @tanstack/react-form
+preact: @tanstack/preact-form
 
 <!-- ::end:tabs -->
 
