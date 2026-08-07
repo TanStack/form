@@ -184,4 +184,7 @@ async function verifyLinks() {
   }
 }
 
-verifyLinks().catch(console.error)
+verifyLinks().catch((error) => {
+  console.error(error)
+  process.exitCode = 1
+})
