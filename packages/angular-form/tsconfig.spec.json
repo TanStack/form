@@ -5,7 +5,8 @@
     "target": "es2016",
     "types": ["vitest/globals", "node"],
     "paths": {
-      "@tanstack/form-core": ["../form-core/src"]
+      "@tanstack/form-core": ["../form-core/src"],
+      "@tanstack/form-core/internals": ["../form-core/src/internals.ts"]
     }
   },
   "files": ["tests/test-setup.ts"],
