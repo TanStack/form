@@ -141,6 +141,31 @@
               "to": "framework/react/guides/devtools"
             }
           ]
+        },
+        {
+          "label": "vue",
+          "children": [
+            {
+              "label": "Form Validation",
+              "to": "framework/vue/guides/validation"
+            },
+            {
+              "label": "Async Initial Values",
+              "to": "framework/vue/guides/async-initial-values"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/vue/guides/arrays"
+            },
+            {
+              "label": "UI Libraries",
+              "to": "framework/vue/guides/ui-libraries"
+            },
+            {
+              "label": "Debugging",
+              "to": "framework/vue/guides/debugging"
+            }
+          ]
         }
       ]
     },
@@ -275,6 +300,31 @@
             {
               "label": "TanStack Start",
               "to": "framework/react/examples/tanstack-start"
+            }
+          ]
+        },
+        {
+          "label": "vue",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "framework/vue/examples/simple"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/vue/examples/array"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/vue/examples/large-form"
+            },
+            {
+              "label": "Multi-Step Wizard",
+              "to": "framework/vue/examples/multi-step-wizard"
+            },
+            {
+              "label": "Standard Schema",
+              "to": "framework/vue/examples/standard-schema"
             }
           ]
         }
