@@ -1,5 +1,6 @@
 export * from './FormApi'
 export * from './FieldApi'
+export * from './FormGroupApi'
 export * from './utils'
 export * from './util-types'
 export * from './types'

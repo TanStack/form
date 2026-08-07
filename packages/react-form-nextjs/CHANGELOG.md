@@ -1,5 +1,42 @@
 # @tanstack/react-form-nextjs
 
+## 1.33.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/react-form@1.33.3
+
+## 1.33.2
+
+### Patch Changes
+
+- Updated dependencies [[`d756476`](https://github.com/TanStack/form/commit/d756476b3ce5e6618a062b929a4a256fa0f4d683)]:
+  - @tanstack/react-form@1.33.2
+
+## 1.33.1
+
+### Patch Changes
+
+- [#2236](https://github.com/TanStack/form/pull/2236) [`3c57f6d`](https://github.com/TanStack/form/commit/3c57f6d4311f823ab39374417edb5fae544ad15a) - Remove peerdep for TanStack Start
+
+- Updated dependencies [[`df52a12`](https://github.com/TanStack/form/commit/df52a12c8772cb025bfba6773c5ff0a488211662)]:
+  - @tanstack/react-form@1.33.1
+
+## 1.33.0
+
+### Patch Changes
+
+- Updated dependencies [[`808f158`](https://github.com/TanStack/form/commit/808f158b62c08f69689a7b652c35989d717f9014)]:
+  - @tanstack/react-form@1.33.0
+
+## 1.32.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/react-form@1.32.1
+
 ## 1.32.0
 
 ### Patch Changes

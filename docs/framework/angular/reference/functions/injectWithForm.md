@@ -9,7 +9,7 @@ title: injectWithForm
 function injectWithForm<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta>(_opts?): TanStackWithFormRef<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta>;
 ```
 
-Defined in: [with-form-injectable.ts:59](https://github.com/TanStack/form/blob/main/packages/angular-form/src/with-form-injectable.ts#L59)
+Defined in: [angular-form/src/with-form-injectable.ts:59](https://github.com/TanStack/form/blob/main/packages/angular-form/src/with-form-injectable.ts#L59)
 
 Injects the form provided by an ancestor `[tanstack-with-form]` directive.
 

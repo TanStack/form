@@ -9,7 +9,7 @@ title: ValidationLogicFn
 type ValidationLogicFn = (props) => void;
 ```
 
-Defined in: [packages/form-core/src/ValidationLogic.ts:56](https://github.com/TanStack/form/blob/main/packages/form-core/src/ValidationLogic.ts#L56)
+Defined in: [packages/form-core/src/ValidationLogic.ts:63](https://github.com/TanStack/form/blob/main/packages/form-core/src/ValidationLogic.ts#L63)
 
 ## Parameters
 

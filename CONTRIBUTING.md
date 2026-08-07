@@ -23,7 +23,7 @@ If you have been assigned to fix an issue or develop a new feature, please follo
   pnpm install
   ```
 
-  - We use [pnpm](https://pnpm.io/) v9 for package management (run in case of pnpm-related issues).
+  - We use [pnpm](https://pnpm.io/) for package management - please make sure to use the version mentioned in `package.json`
 
     ```bash
     corepack enable && corepack prepare

@@ -5,7 +5,7 @@ title: TanStackWithForm
 
 # Class: TanStackWithForm\<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta\>
 
-Defined in: [with-form.ts:14](https://github.com/TanStack/form/blob/main/packages/angular-form/src/with-form.ts#L14)
+Defined in: [angular-form/src/with-form.ts:14](https://github.com/TanStack/form/blob/main/packages/angular-form/src/with-form.ts#L14)
 
 ## Type Parameters
 
@@ -65,7 +65,7 @@ Defined in: [with-form.ts:14](https://github.com/TanStack/form/blob/main/package
 new TanStackWithForm<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta>(): TanStackWithForm<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta>;
 ```
 
-Defined in: [with-form.ts:48](https://github.com/TanStack/form/blob/main/packages/angular-form/src/with-form.ts#L48)
+Defined in: [angular-form/src/with-form.ts:48](https://github.com/TanStack/form/blob/main/packages/angular-form/src/with-form.ts#L48)
 
 #### Returns
 
@@ -79,7 +79,7 @@ Defined in: [with-form.ts:48](https://github.com/TanStack/form/blob/main/package
 base: TanStackWithFormInjectable;
 ```
 
-Defined in: [with-form.ts:46](https://github.com/TanStack/form/blob/main/packages/angular-form/src/with-form.ts#L46)
+Defined in: [angular-form/src/with-form.ts:46](https://github.com/TanStack/form/blob/main/packages/angular-form/src/with-form.ts#L46)
 
 ***
 
@@ -89,4 +89,4 @@ Defined in: [with-form.ts:46](https://github.com/TanStack/form/blob/main/package
 form: InputSignal<FormApi<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta>>;
 ```
 
-Defined in: [with-form.ts:28](https://github.com/TanStack/form/blob/main/packages/angular-form/src/with-form.ts#L28)
+Defined in: [angular-form/src/with-form.ts:28](https://github.com/TanStack/form/blob/main/packages/angular-form/src/with-form.ts#L28)

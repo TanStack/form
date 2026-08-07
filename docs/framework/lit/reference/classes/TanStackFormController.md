@@ -5,7 +5,7 @@ title: TanStackFormController
 
 # Class: TanStackFormController\<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta\>
 
-Defined in: [tanstack-form-controller.ts:222](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L222)
+Defined in: [tanstack-form-controller.ts:226](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L226)
 
 ## Type Parameters
 
@@ -69,7 +69,7 @@ Defined in: [tanstack-form-controller.ts:222](https://github.com/TanStack/form/b
 new TanStackFormController<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta>(host, config?): TanStackFormController<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta>;
 ```
 
-Defined in: [tanstack-form-controller.ts:254](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L254)
+Defined in: [tanstack-form-controller.ts:255](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L255)
 
 #### Parameters
 
@@ -93,7 +93,7 @@ Defined in: [tanstack-form-controller.ts:254](https://github.com/TanStack/form/b
 api: FormApi<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta>;
 ```
 
-Defined in: [tanstack-form-controller.ts:239](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L239)
+Defined in: [tanstack-form-controller.ts:240](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L240)
 
 ## Methods
 
@@ -103,7 +103,7 @@ Defined in: [tanstack-form-controller.ts:239](https://github.com/TanStack/form/b
 field<TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync>(fieldConfig, render): object;
 ```
 
-Defined in: [tanstack-form-controller.ts:298](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L298)
+Defined in: [tanstack-form-controller.ts:300](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L300)
 
 #### Type Parameters
 
@@ -191,13 +191,95 @@ render: renderCallback<TParentData, TName, TData, TOnMount, TOnChange, TOnChange
 
 ***
 
+### group()
+
+```ts
+group<TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TGroupSubmitMeta>(groupConfig, render): unknown;
+```
+
+Defined in: [tanstack-form-controller.ts:390](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L390)
+
+#### Type Parameters
+
+##### TName
+
+`TName` *extends* `string`
+
+##### TData
+
+`TData`
+
+##### TOnMount
+
+`TOnMount` *extends* `FormGroupValidateOrFn`\<`TParentData`, `TName`, `TData`\> \| `undefined`
+
+##### TOnChange
+
+`TOnChange` *extends* `FormGroupValidateOrFn`\<`TParentData`, `TName`, `TData`\> \| `undefined`
+
+##### TOnChangeAsync
+
+`TOnChangeAsync` *extends* 
+  \| `FormGroupAsyncValidateOrFn`\<`TParentData`, `TName`, `TData`\>
+  \| `undefined`
+
+##### TOnBlur
+
+`TOnBlur` *extends* `FormGroupValidateOrFn`\<`TParentData`, `TName`, `TData`\> \| `undefined`
+
+##### TOnBlurAsync
+
+`TOnBlurAsync` *extends* 
+  \| `FormGroupAsyncValidateOrFn`\<`TParentData`, `TName`, `TData`\>
+  \| `undefined`
+
+##### TOnSubmit
+
+`TOnSubmit` *extends* `FormGroupValidateOrFn`\<`TParentData`, `TName`, `TData`\> \| `undefined`
+
+##### TOnSubmitAsync
+
+`TOnSubmitAsync` *extends* 
+  \| `FormGroupAsyncValidateOrFn`\<`TParentData`, `TName`, `TData`\>
+  \| `undefined`
+
+##### TOnDynamic
+
+`TOnDynamic` *extends* `FormGroupValidateOrFn`\<`TParentData`, `TName`, `TData`\> \| `undefined`
+
+##### TOnDynamicAsync
+
+`TOnDynamicAsync` *extends* 
+  \| `FormGroupAsyncValidateOrFn`\<`TParentData`, `TName`, `TData`\>
+  \| `undefined`
+
+##### TGroupSubmitMeta
+
+`TGroupSubmitMeta`
+
+#### Parameters
+
+##### groupConfig
+
+`Omit`\<`FormGroupApiOptions`\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TGroupSubmitMeta`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnDynamic`, `TFormOnDynamicAsync`, `TFormOnServer`, `TSubmitMeta`\>, `"form"`\>
+
+##### render
+
+`groupRenderCallback`\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TGroupSubmitMeta`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnDynamic`, `TFormOnDynamicAsync`, `TFormOnServer`, `TSubmitMeta`\>
+
+#### Returns
+
+`unknown`
+
+***
+
 ### hostConnected()
 
 ```ts
 hostConnected(): void;
 ```
 
-Defined in: [tanstack-form-controller.ts:288](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L288)
+Defined in: [tanstack-form-controller.ts:296](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L296)
 
 Called when the host is connected to the component tree. For custom
 element hosts, this corresponds to the `connectedCallback()` lifecycle,
@@ -221,7 +303,7 @@ ReactiveController.hostConnected
 hostDisconnected(): void;
 ```
 
-Defined in: [tanstack-form-controller.ts:294](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L294)
+Defined in: [tanstack-form-controller.ts:298](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L298)
 
 Called when the host is disconnected from the component tree. For custom
 element hosts, this corresponds to the `disconnectedCallback()` lifecycle,

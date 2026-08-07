@@ -1,10 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, waitFor, within } from '@testing-library/preact'
 import { userEvent } from '@testing-library/user-event'
-import { useState } from 'preact/hooks'
-import { useForm, useStore } from '../src/index'
+import { useStore } from '@tanstack/preact-store'
+import { useForm } from '../src/index'
 import { sleep } from './utils'
-import type { AnyFieldApi } from '../src/index'
 
 let user: ReturnType<typeof userEvent.setup>
 

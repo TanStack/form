@@ -66,6 +66,7 @@ describe('field api', () => {
       errorMap: {},
       errorSourceMap: {},
       _arrayVersion: 0,
+      _pendingValidationsCount: 0,
     })
   })
 
@@ -599,16 +600,18 @@ describe('field api', () => {
     expect(subField2.state.meta.errorMap.onChange).toStrictEqual('Required')
     expect(subField3.state.value).toBe('world')
     expect(subField3.state.meta.errorMap.onChange).toStrictEqual(undefined)
-    expect(form.getFieldInfo('people[0].name').instance?.state.value).toBe(
-      'hello',
-    )
-    expect(form.getFieldInfo('people[1].name').instance?.state.value).toBe('')
-    expect(form.getFieldInfo('people[2].name').instance?.state.value).toBe(
-      'world',
-    )
+    expect(
+      form.getFieldInfo('people[0].name').instance?.store.state.value,
+    ).toBe('hello')
+    expect(
+      form.getFieldInfo('people[1].name').instance?.store.state.value,
+    ).toBe('')
+    expect(
+      form.getFieldInfo('people[2].name').instance?.store.state.value,
+    ).toBe('world')
   })
 
-  it('should remove remove the last subfield from an array field correctly', async () => {
+  it('should remove the last subfield from an array field correctly', async () => {
     const form = new FormApi({
       defaultValues: {
         people: [{ name: '' }],

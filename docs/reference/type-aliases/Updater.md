@@ -9,7 +9,7 @@ title: Updater
 type Updater<TInput, TOutput> = TOutput | UpdaterFn<TInput, TOutput>;
 ```
 
-Defined in: [packages/form-core/src/utils.ts:15](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.ts#L15)
+Defined in: [packages/form-core/src/utils.ts:16](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.ts#L16)
 
 ## Type Parameters
 

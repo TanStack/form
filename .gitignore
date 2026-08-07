@@ -28,6 +28,7 @@ size-plugin.json
 stats-hydration.json
 stats.json
 stats.html
+*.cpuprofile
 .vscode/settings.json
 
 *.log

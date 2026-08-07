@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { useStore } from '@tanstack/react-store'
+import { useSelector } from '@tanstack/react-store'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
@@ -169,28 +169,34 @@ export function useField<
     name: opts.name,
   }))
 
-  const [fieldApi, setFieldApi] = useState(() => {
+  const [fieldApiState, setFieldApi] = useState(() => {
     return new FieldApi({
       ...opts,
     })
   })
+
+  let fieldApi = fieldApiState
 
   // We only want to
   // update on name changes since those are at risk of becoming stale. The field
   // state must be up to date for the internal JSX render.
   // The other options can freely be in `fieldApi.update`
   if (prevOptions.form !== opts.form || prevOptions.name !== opts.name) {
-    setFieldApi(
-      new FieldApi({
-        ...opts,
-      }),
-    )
+    // Adjusting state during render: create the new FieldApi and use it for the
+    // rest of this render so the render prop reads state at the current `name`.
+    // Otherwise the discarded render still runs to completion with the stale
+    // instance, briefly surfacing `undefined` for shifted array items on removal.
+    // See: https://github.com/TanStack/form/issues/2238
+    fieldApi = new FieldApi({
+      ...opts,
+    })
+    setFieldApi(fieldApi)
     setPrevOptions({ form: opts.form, name: opts.name })
   }
 
   // For array mode, only track length changes to avoid re-renders when child properties change
   // See: https://github.com/TanStack/form/issues/1925
-  const reactiveStateValue = useStore(
+  const reactiveStateValue = useSelector(
     fieldApi.store,
     (opts.mode === 'array'
       ? (state) => state.meta._arrayVersion || 0
@@ -198,27 +204,27 @@ export function useField<
       state: typeof fieldApi.state,
     ) => TData | number,
   )
-  const reactiveMetaIsTouched = useStore(
+  const reactiveMetaIsTouched = useSelector(
     fieldApi.store,
     (state) => state.meta.isTouched,
   )
-  const reactiveMetaIsBlurred = useStore(
+  const reactiveMetaIsBlurred = useSelector(
     fieldApi.store,
     (state) => state.meta.isBlurred,
   )
-  const reactiveMetaIsDirty = useStore(
+  const reactiveMetaIsDirty = useSelector(
     fieldApi.store,
     (state) => state.meta.isDirty,
   )
-  const reactiveMetaErrorMap = useStore(
+  const reactiveMetaErrorMap = useSelector(
     fieldApi.store,
     (state) => state.meta.errorMap,
   )
-  const reactiveMetaErrorSourceMap = useStore(
+  const reactiveMetaErrorSourceMap = useSelector(
     fieldApi.store,
     (state) => state.meta.errorSourceMap,
   )
-  const reactiveMetaIsValidating = useStore(
+  const reactiveMetaIsValidating = useSelector(
     fieldApi.store,
     (state) => state.meta.isValidating,
   )

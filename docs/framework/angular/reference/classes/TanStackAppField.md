@@ -5,7 +5,7 @@ title: TanStackAppField
 
 # Class: TanStackAppField\<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta\>
 
-Defined in: [app-field.ts:20](https://github.com/TanStack/form/blob/main/packages/angular-form/src/app-field.ts#L20)
+Defined in: [angular-form/src/app-field.ts:20](https://github.com/TanStack/form/blob/main/packages/angular-form/src/app-field.ts#L20)
 
 ## Extends
 
@@ -113,7 +113,7 @@ Defined in: [app-field.ts:20](https://github.com/TanStack/form/blob/main/package
 new TanStackAppField<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta>(): TanStackAppField<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta>;
 ```
 
-Defined in: [app-field.ts:79](https://github.com/TanStack/form/blob/main/packages/angular-form/src/app-field.ts#L79)
+Defined in: [angular-form/src/app-field.ts:79](https://github.com/TanStack/form/blob/main/packages/angular-form/src/app-field.ts#L79)
 
 #### Returns
 
@@ -131,7 +131,7 @@ Defined in: [app-field.ts:79](https://github.com/TanStack/form/blob/main/package
 _api: Signal<FieldApi<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta>>;
 ```
 
-Defined in: [tanstack-field.ts:150](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L150)
+Defined in: [angular-form/src/tanstack-field.ts:150](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L150)
 
 #### Inherited from
 
@@ -145,7 +145,7 @@ Defined in: [tanstack-field.ts:150](https://github.com/TanStack/form/blob/main/p
 asyncAlways: InputSignalWithTransform<boolean, unknown>;
 ```
 
-Defined in: [tanstack-field.ts:75](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L75)
+Defined in: [angular-form/src/tanstack-field.ts:75](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L75)
 
 #### Inherited from
 
@@ -159,7 +159,7 @@ Defined in: [tanstack-field.ts:75](https://github.com/TanStack/form/blob/main/pa
 asyncDebounceMs: InputSignalWithTransform<number, unknown>;
 ```
 
-Defined in: [tanstack-field.ts:72](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L72)
+Defined in: [angular-form/src/tanstack-field.ts:72](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L72)
 
 #### Inherited from
 
@@ -173,7 +173,7 @@ Defined in: [tanstack-field.ts:72](https://github.com/TanStack/form/blob/main/pa
 base: TanStackFieldInjectable<any>;
 ```
 
-Defined in: [app-field.ts:77](https://github.com/TanStack/form/blob/main/packages/angular-form/src/app-field.ts#L77)
+Defined in: [angular-form/src/app-field.ts:77](https://github.com/TanStack/form/blob/main/packages/angular-form/src/app-field.ts#L77)
 
 ***
 
@@ -183,7 +183,7 @@ Defined in: [app-field.ts:77](https://github.com/TanStack/form/blob/main/package
 cd: ChangeDetectorRef;
 ```
 
-Defined in: [tanstack-field.ts:237](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L237)
+Defined in: [angular-form/src/tanstack-field.ts:237](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L237)
 
 #### Inherited from
 
@@ -195,11 +195,11 @@ Defined in: [tanstack-field.ts:237](https://github.com/TanStack/form/blob/main/p
 
 ```ts
 defaultMeta: InputSignal<
-  | Partial<FieldMeta<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync>>
+  | Partial<FieldLikeMeta<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync>>
 | undefined>;
 ```
 
-Defined in: [tanstack-field.ts:117](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L117)
+Defined in: [angular-form/src/tanstack-field.ts:117](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L117)
 
 #### Inherited from
 
@@ -213,7 +213,7 @@ Defined in: [tanstack-field.ts:117](https://github.com/TanStack/form/blob/main/p
 defaultValue: InputSignal<NoInfer<TData> | undefined>;
 ```
 
-Defined in: [tanstack-field.ts:71](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L71)
+Defined in: [angular-form/src/tanstack-field.ts:71](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L71)
 
 #### Inherited from
 
@@ -227,7 +227,7 @@ Defined in: [tanstack-field.ts:71](https://github.com/TanStack/form/blob/main/pa
 disableErrorFlat: InputSignal<boolean | undefined>;
 ```
 
-Defined in: [tanstack-field.ts:148](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L148)
+Defined in: [angular-form/src/tanstack-field.ts:148](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L148)
 
 #### Inherited from
 
@@ -241,7 +241,7 @@ Defined in: [tanstack-field.ts:148](https://github.com/TanStack/form/blob/main/p
 injector: Injector;
 ```
 
-Defined in: [tanstack-field.ts:221](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L221)
+Defined in: [angular-form/src/tanstack-field.ts:221](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L221)
 
 #### Inherited from
 
@@ -257,7 +257,7 @@ listeners: InputSignal<
 | undefined>;
 ```
 
-Defined in: [tanstack-field.ts:116](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L116)
+Defined in: [angular-form/src/tanstack-field.ts:116](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L116)
 
 #### Inherited from
 
@@ -271,7 +271,7 @@ Defined in: [tanstack-field.ts:116](https://github.com/TanStack/form/blob/main/p
 mode: InputSignal<"value" | "array" | undefined>;
 ```
 
-Defined in: [tanstack-field.ts:146](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L146)
+Defined in: [angular-form/src/tanstack-field.ts:146](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L146)
 
 #### Inherited from
 
@@ -285,7 +285,7 @@ Defined in: [tanstack-field.ts:146](https://github.com/TanStack/form/blob/main/p
 name: InputSignal<TName>;
 ```
 
-Defined in: [tanstack-field.ts:70](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L70)
+Defined in: [angular-form/src/tanstack-field.ts:70](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L70)
 
 #### Inherited from
 
@@ -299,7 +299,7 @@ Defined in: [tanstack-field.ts:70](https://github.com/TanStack/form/blob/main/pa
 options: Signal<FieldApiOptions<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta>>;
 ```
 
-Defined in: [tanstack-field.ts:182](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L182)
+Defined in: [angular-form/src/tanstack-field.ts:182](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L182)
 
 #### Inherited from
 
@@ -313,7 +313,7 @@ Defined in: [tanstack-field.ts:182](https://github.com/TanStack/form/blob/main/p
 tanstackField: InputSignal<FormApi<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta>>;
 ```
 
-Defined in: [tanstack-field.ts:78](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L78)
+Defined in: [angular-form/src/tanstack-field.ts:78](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L78)
 
 #### Inherited from
 
@@ -329,7 +329,7 @@ validators: InputSignal<
 | undefined>;
 ```
 
-Defined in: [tanstack-field.ts:96](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L96)
+Defined in: [angular-form/src/tanstack-field.ts:96](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L96)
 
 #### Inherited from
 
@@ -345,7 +345,7 @@ Defined in: [tanstack-field.ts:96](https://github.com/TanStack/form/blob/main/pa
 get api(): FieldApi<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta>;
 ```
 
-Defined in: [tanstack-field.ts:154](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L154)
+Defined in: [angular-form/src/tanstack-field.ts:154](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L154)
 
 ##### Returns
 
@@ -363,7 +363,7 @@ Defined in: [tanstack-field.ts:154](https://github.com/TanStack/form/blob/main/p
 ngOnInit(): void;
 ```
 
-Defined in: [tanstack-field.ts:239](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L239)
+Defined in: [angular-form/src/tanstack-field.ts:239](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L239)
 
 A callback method that is invoked immediately after the
 default change detector has checked the directive's

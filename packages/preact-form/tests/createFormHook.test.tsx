@@ -2,7 +2,8 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { render } from '@testing-library/preact'
 import { formOptions } from '@tanstack/form-core'
 import userEvent from '@testing-library/user-event'
-import { createFormHook, createFormHookContexts, useStore } from '../src'
+import { useStore } from '@tanstack/preact-store'
+import { createFormHook, createFormHookContexts } from '../src'
 
 let user: ReturnType<typeof userEvent.setup>
 

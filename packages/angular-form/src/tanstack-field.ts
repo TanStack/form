@@ -22,8 +22,8 @@ import { injectStore } from '@tanstack/angular-store'
 import type {
   DeepKeys,
   DeepValue,
+  FieldLikeMeta,
   FieldListeners,
-  FieldMeta,
   FieldValidators,
   FormAsyncValidateOrFn,
   FormValidateOrFn,
@@ -117,7 +117,7 @@ export class TanStackField<
   defaultMeta =
     input<
       Partial<
-        FieldMeta<
+        FieldLikeMeta<
           TParentData,
           TName,
           TData,

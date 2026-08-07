@@ -12,7 +12,7 @@ type LensFieldComponent<TLensData, TParentSubmitMeta, ExtendedApi> = <TName, TDa
 }) => ReturnType<FunctionComponent>;
 ```
 
-Defined in: [packages/preact-form/src/useField.tsx:596](https://github.com/TanStack/form/blob/main/packages/preact-form/src/useField.tsx#L596)
+Defined in: [packages/preact-form/src/useField.tsx:547](https://github.com/TanStack/form/blob/main/packages/preact-form/src/useField.tsx#L547)
 
 A type alias representing a field component for a form lens data type.
 

@@ -1,4 +1,5 @@
 import type { AnyFormApi, FormValidators } from './FormApi'
+import type { AnyFormGroupApi } from './FormGroupApi'
 
 export interface ValidationLogicValidatorsFn {
   // TODO: Type this properly
@@ -20,6 +21,12 @@ export interface ValidationLogicValidatorsFn {
 export interface ValidationLogicProps {
   // TODO: Type this properly
   form: AnyFormApi
+  /**
+   * Set when the validators being processed belong to a `FormGroupApi`.
+   * Allows validation strategies (e.g. `revalidateLogic`) to gate their
+   * behavior on the group's own state instead of the parent form's.
+   */
+  group?: AnyFormGroupApi
   // TODO: Type this properly
   validators:
     | FormValidators<any, any, any, any, any, any, any, any, any, any>
@@ -88,8 +95,15 @@ export const revalidateLogic =
 
     const validatorsToAdd = [] as ValidationLogicValidatorsFn[]
 
-    const modeToWatch =
-      props.form.state.submissionAttempts === 0 ? mode : modeAfterSubmission
+    // When validating a `FormGroupApi`'s own validators, gate on the group's
+    // submission attempts so a group's `onDynamic` validator only flips into
+    // `modeAfterSubmission` after that group itself has been submitted.
+    // Otherwise (form-level validators), gate on the parent form.
+    const submissionAttempts = props.group
+      ? props.group.state.meta.submissionAttempts
+      : props.form.state.submissionAttempts
+
+    const modeToWatch = submissionAttempts === 0 ? mode : modeAfterSubmission
 
     if ([modeToWatch, 'submit'].includes(props.event.type)) {
       validatorsToAdd.push(dynamicValidator)

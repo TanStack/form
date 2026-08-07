@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { useStore } from '@tanstack/svelte-store'
+  import { useSelector } from '@tanstack/svelte-store'
 
   // Don't bother typing this out, this component is only usable through a wrapper
   interface Props {
@@ -10,7 +10,7 @@
 
   let { children, store, selector = (state) => state }: Props = $props()
 
-  const value = useStore(store, selector)
+  const value = useSelector(store, selector)
 </script>
 
 {@render children(value.current)}

@@ -1,5 +1,11 @@
 import { createStore } from '@tanstack/store'
 import { concatenatePaths, getBy, makePathArray } from './utils'
+import type {
+  AnyFieldLikeMetaBase,
+  FormLikeAPI,
+  UpdateMetaOptions,
+  ValidationCause,
+} from './types'
 import type { ReadonlyStore } from '@tanstack/store'
 import type { Updater } from './utils'
 import type {
@@ -7,18 +13,13 @@ import type {
   FormAsyncValidateOrFn,
   FormValidateOrFn,
 } from './FormApi'
-import type { AnyFieldMetaBase, FieldOptions } from './FieldApi'
+import type { FieldOptions } from './FieldApi'
 import type {
   DeepKeys,
   DeepKeysOfType,
   DeepValue,
   FieldsMap,
 } from './util-types'
-import type {
-  FieldManipulator,
-  UpdateMetaOptions,
-  ValidationCause,
-} from './types'
 
 export type AnyFieldGroupApi = FieldGroupApi<
   any,
@@ -127,7 +128,7 @@ export class FieldGroupApi<
   in out TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TSubmitMeta = never,
-> implements FieldManipulator<TFieldGroupData, TSubmitMeta> {
+> implements FormLikeAPI<TFieldGroupData, TSubmitMeta> {
   /**
    * The form that called this field group.
    */
@@ -368,7 +369,7 @@ export class FieldGroupApi<
    */
   setFieldMeta = <TField extends DeepKeys<TFieldGroupData>>(
     field: TField,
-    updater: Updater<AnyFieldMetaBase>,
+    updater: Updater<AnyFieldLikeMetaBase>,
   ) => {
     return this.form.setFieldMeta(this.getFormFieldName(field), updater)
   }

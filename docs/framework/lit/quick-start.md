@@ -63,7 +63,7 @@ export class TestForm extends LitElement {
               type="text"
               placeholder="First Name"
               @blur="${() => field.handleBlur()}"
-              .value="${field.getValue()}"
+              .value="${field.state.value}"
               @input="${(event: InputEvent) => {
                 if (event.currentTarget) {
                   const newValue = (event.currentTarget as HTMLInputElement)

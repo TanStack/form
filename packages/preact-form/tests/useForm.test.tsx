@@ -2,7 +2,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, waitFor } from '@testing-library/preact'
 import { userEvent } from '@testing-library/user-event'
 import { useCallback, useEffect, useState } from 'preact/hooks'
-import { mergeForm, useForm, useStore } from '../src/index'
+import { useStore } from '@tanstack/preact-store'
+import { mergeForm, useForm } from '../src/index'
 import { sleep } from './utils'
 
 let user: ReturnType<typeof userEvent.setup>
@@ -484,7 +485,7 @@ describe('useForm', () => {
     expect(getByText(error)).toBeInTheDocument()
   })
 
-  it("should set field errors from the the form's onChangeAsync validator", async () => {
+  it("should set field errors from the form's onChangeAsync validator", async () => {
     function Comp() {
       const form = useForm({
         defaultValues: {

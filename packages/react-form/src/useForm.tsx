@@ -1,11 +1,13 @@
 'use client'
 
 import { FormApi, functionalUpdate, mergeAndUpdate } from '@tanstack/form-core'
-import { useStore } from '@tanstack/react-store'
+import { useSelector } from '@tanstack/react-store'
 import { useMemo, useRef, useState } from 'react'
 import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import { useFormId } from './useFormId'
+import { FormGroup } from './useFormGroup'
+import type { FormGroupComponent } from './useFormGroup'
 import type {
   AnyFormApi,
   AnyFormState,
@@ -38,6 +40,20 @@ export interface ReactFormApi<
    * A React component to render form fields. With this, you can render and manage individual form fields.
    */
   Field: FieldComponent<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    TOnServer,
+    TSubmitMeta
+  >
+  FormGroup: FormGroupComponent<
     TFormData,
     TOnMount,
     TOnChange,
@@ -145,7 +161,7 @@ function LocalSubscribe({
   form: AnyFormApi
   selector?: (state: AnyFormState) => AnyFormState
 }>): ReturnType<FunctionComponent> {
-  const data = useStore(form.store, selector)
+  const data = useSelector(form.store, selector)
 
   return <>{functionalUpdate(children, data)}</>
 }
@@ -240,6 +256,10 @@ export function useForm<
 
     extendedApi.Field = function APIField(props) {
       return <Field {...props} form={formApi} />
+    }
+
+    extendedApi.FormGroup = function APIFormGroup(props) {
+      return <FormGroup {...props} form={formApi} />
     }
 
     extendedApi.Subscribe = function Subscribe(props: any) {

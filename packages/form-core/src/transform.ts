@@ -120,6 +120,7 @@ export function mergeAndUpdate<
     values: null,
     validationMetaMap: null,
     fieldMetaBase: null,
+    formGroupStateBase: null,
     isSubmitting: null,
     isSubmitted: null,
     isValidating: null,

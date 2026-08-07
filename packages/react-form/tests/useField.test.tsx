@@ -962,6 +962,86 @@ describe('useField', () => {
     expect(fn).toHaveBeenCalledWith({ people: [{ name: 'John', age: 0 }] })
   })
 
+  it('should not surface undefined for shifted items when a non-last stably-keyed array item is removed', async () => {
+    // Regression test for https://github.com/TanStack/form/issues/2238
+    // When array items are keyed by a stable id (not index), removing a
+    // non-last item changes the `name` prop of the surviving items. The field
+    // must read state at its current `name` on that render, never `undefined`.
+    const observedValues: Array<string | undefined> = []
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          sections: [] as Array<{ id: string; title: string }>,
+        },
+      })
+
+      let nextId = 0
+
+      return (
+        <form.Field name="sections" mode="array">
+          {(field) => {
+            return (
+              <div>
+                {field.state.value.map((section, i) => {
+                  return (
+                    <form.Field key={section.id} name={`sections[${i}].title`}>
+                      {(subField) => {
+                        observedValues.push(subField.state.value)
+                        return (
+                          <label>
+                            <div>Title for section {section.id}</div>
+                            <input
+                              value={subField.state.value}
+                              onChange={(e) =>
+                                subField.handleChange(e.target.value)
+                              }
+                            />
+                          </label>
+                        )
+                      }}
+                    </form.Field>
+                  )
+                })}
+                <button
+                  type="button"
+                  onClick={() =>
+                    field.pushValue({
+                      id: `id-${(nextId += 1)}`,
+                      title: `Section ${field.state.value.length + 1}`,
+                    })
+                  }
+                >
+                  Add section
+                </button>
+                <button type="button" onClick={() => field.removeValue(0)}>
+                  Remove first section
+                </button>
+              </div>
+            )
+          }}
+        </form.Field>
+      )
+    }
+
+    const { getByText, findByLabelText } = render(<Comp />)
+
+    await user.click(getByText('Add section'))
+    await user.click(getByText('Add section'))
+
+    await findByLabelText('Title for section id-1')
+    await findByLabelText('Title for section id-2')
+
+    observedValues.length = 0
+    await user.click(getByText('Remove first section'))
+
+    // The surviving item (previously `sections[1]`) shifts to `sections[0]`.
+    // Its value must remain "Section 2" and never render as `undefined`.
+    const survivingInput = await findByLabelText('Title for section id-2')
+    expect((survivingInput as HTMLInputElement).value).toBe('Section 2')
+    expect(observedValues).not.toContain(undefined)
+  })
+
   it('should handle sync linked fields', async () => {
     const fn = vi.fn()
     function Comp() {
@@ -1524,6 +1604,44 @@ describe('useField', () => {
     expect(renderCount.arrayField).toBeGreaterThan(before)
     expect(getByTestId('item-0')).toHaveTextContent('Jane')
     expect(getByTestId('item-1')).toHaveTextContent('John')
+  })
+
+  it('should rerender array field when async defaultValues resolve', async () => {
+    // Regression test for https://github.com/TanStack/form/issues/2178
+    // When async defaultValues arrive after initial render, array fields in
+    // mode="array" must re-render because _arrayVersion is used as the
+    // reactivity signal (not value length).
+    type Person = { name: string }
+    type FormData = { people: Person[] }
+
+    function Comp({ defaultValues }: { defaultValues?: FormData }) {
+      const form = useForm({ defaultValues })
+
+      return (
+        <form.Field name="people" mode="array">
+          {(field) => {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            const val = field.state.value ?? []
+            return (
+              <ol data-testid="list">
+                {val.map((person, i) => (
+                  <li key={i} data-testid={`item-${i}`}>
+                    {person.name}
+                  </li>
+                ))}
+              </ol>
+            )
+          }}
+        </form.Field>
+      )
+    }
+
+    const { getByTestId, rerender } = render(<Comp />)
+    expect(getByTestId('list').children).toHaveLength(0)
+
+    rerender(<Comp defaultValues={{ people: [{ name: 'Alice' }] }} />)
+    await waitFor(() => expect(getByTestId('list').children).toHaveLength(1))
+    expect(getByTestId('item-0')).toHaveTextContent('Alice')
   })
 
   it('should handle defaultValue without setstate-in-render error', async () => {

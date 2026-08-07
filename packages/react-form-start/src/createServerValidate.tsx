@@ -50,7 +50,7 @@ interface CreateServerValidateOptions<
 }
 
 const serverFn = createServerFn({ method: 'POST' })
-  .inputValidator(
+  .validator(
     (data: { formData: unknown; info?: unknown; defaultOpts: unknown }) => {
       return data
     },
@@ -166,5 +166,5 @@ export const createServerValidate =
       TSubmitMeta
     >,
   ) =>
-  (formData: FormData, info?: Parameters<typeof decode>[1]) =>
+  (formData: FormData, info?: FormDataInfo) =>
     serverFn({ data: { defaultOpts, formData, info } })

@@ -237,10 +237,7 @@ Finally, in the parent component, create the form with `injectForm` and pass it 
 ```angular-ts
 // app.component.ts
 import { Component } from '@angular/core'
-import {
-  TanStackWithForm,
-  injectForm,
-} from '@tanstack/angular-form'
+import { TanStackWithForm, injectForm } from '@tanstack/angular-form'
 import { ChildForm } from './child-form.component'
 import { peopleFormOpts } from './shared-form'
 
