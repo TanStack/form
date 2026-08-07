@@ -23,10 +23,6 @@
           "to": "installation"
         },
         {
-          "label": "Quick Start",
-          "to": "quick-start"
-        },
-        {
           "label": "Migrating from v1",
           "to": "migrate-from-v1"
         },
