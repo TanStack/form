@@ -13,6 +13,7 @@ packages:
   - examples/react/**
   - '!examples/react/ui-integration'
   - 'examples/react/ui-integration/**'
+  - examples/vue/**
   - examples/solid/**
 allowBuilds:
   nx: true
