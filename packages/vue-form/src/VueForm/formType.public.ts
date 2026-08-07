@@ -20,8 +20,7 @@ type VueFormTypeErrorTypes<
 
 export type VueFormType<
   TOptions extends
-    | AnyFormOptions
-    | AppFormOptions<any, any, any, AnyVueFormComponentMap>,
+    AnyFormOptions | AppFormOptions<any, any, any, AnyVueFormComponentMap>,
 > =
   TOptions extends AppFormOptions<
     infer TFormData,

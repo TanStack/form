@@ -44,11 +44,13 @@ type FilteredFieldComponents<
   TFieldComponents extends Record<string, Component>,
   TTargetValue,
 > = {
-  [K in keyof TFieldComponents as CompatibleFieldKey<
-    K,
-    TFieldComponents[K],
-    TTargetValue
-  >]: TFieldComponents[K]
+  [
+    K in keyof TFieldComponents as CompatibleFieldKey<
+      K,
+      TFieldComponents[K],
+      TTargetValue
+    >
+  ]: TFieldComponents[K]
 }
 
 type FieldComponentsMatchingType<
