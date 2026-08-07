@@ -1,0 +1,19 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "useDefineForClassFields": false,
+    "paths": {
+      "@tanstack/angular-form": ["../../../packages/angular-form/src"],
+      "@tanstack/form-core": ["../../../packages/form-core/src"],
+      "@tanstack/form-core/internals": [
+        "../../../packages/form-core/src/internals.ts"
+      ]
+    }
+  },
+  "include": ["src", "vite.config.ts"]
+}
