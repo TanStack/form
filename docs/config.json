@@ -141,6 +141,31 @@
               "to": "framework/react/guides/devtools"
             }
           ]
+        },
+        {
+          "label": "preact",
+          "children": [
+            {
+              "label": "Form Validation",
+              "to": "framework/preact/guides/validation"
+            },
+            {
+              "label": "Async Initial Values",
+              "to": "framework/preact/guides/async-initial-values"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/preact/guides/arrays"
+            },
+            {
+              "label": "UI Libraries",
+              "to": "framework/preact/guides/ui-libraries"
+            },
+            {
+              "label": "Debugging",
+              "to": "framework/preact/guides/debugging"
+            }
+          ]
         }
       ]
     },
@@ -275,6 +300,47 @@
             {
               "label": "TanStack Start",
               "to": "framework/react/examples/tanstack-start"
+            }
+          ]
+        },
+        {
+          "label": "preact",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "framework/preact/examples/simple"
+            },
+            {
+              "label": "Basic",
+              "to": "framework/preact/examples/basic"
+            },
+            {
+              "label": "Form Splitting",
+              "to": "framework/preact/examples/basic-splitting-form"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/preact/examples/array"
+            },
+            {
+              "label": "Field Groups",
+              "to": "framework/preact/examples/field-groups"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/preact/examples/large-form"
+            },
+            {
+              "label": "Multi-Step Wizard",
+              "to": "framework/preact/examples/multi-step-wizard"
+            },
+            {
+              "label": "Standard Schema",
+              "to": "framework/preact/examples/standard-schema"
+            },
+            {
+              "label": "TanStack Query Integration",
+              "to": "framework/preact/examples/query-integration"
             }
           ]
         }
