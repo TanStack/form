@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/preact-form",
-  "version": "1.30.3",
+  "version": "1.33.3",
   "description": "Powerful, type-safe forms for Preact.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -14,6 +14,12 @@
     "type": "github",
     "url": "https://github.com/sponsors/tannerlinsley"
   },
+  "keywords": [
+    "preact",
+    "tanstack",
+    "form",
+    "tanstack-intent"
+  ],
   "scripts": {
     "clean": "premove ./dist ./coverage",
     "test:eslint": "eslint ./src ./tests",
@@ -36,6 +42,9 @@
     "./package.json": "./package.json"
   },
   "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
   "files": [
     "dist",
     "src"
@@ -48,7 +57,8 @@
     "@eslint-react/eslint-plugin": "^5.18.1",
     "@preact/preset-vite": "^2.10.2",
     "@testing-library/preact": "^3.2.4",
-    "preact": "^10.26.4"
+    "preact": "^10.26.4",
+    "zod": "^4.4.3"
   },
   "peerDependencies": {
     "preact": ">10.11.0"

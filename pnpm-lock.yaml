@@ -1047,6 +1047,9 @@ importers:
       preact:
         specifier: ^10.26.4
         version: 10.29.8
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
 
   packages/react-form:
     dependencies:
