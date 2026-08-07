@@ -1,5 +1,5 @@
 {
-  "name": "@tanstack/form-example-vue-standard-schema",
+  "name": "@tanstack/form-example-vue-large-form",
   "private": true,
   "type": "module",
   "scripts": {
@@ -11,13 +11,7 @@
   },
   "dependencies": {
     "@tanstack/vue-form": "^1.33.3",
-    "arktype": "^2.1.22",
-    "effect": "^3.17.14",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "valibot": "^1.1.0",
-    "vue": "^3.6.0-rc.2",
-    "zod": "^3.25.76"
+    "vue": "^3.6.0-rc.2"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.4",
