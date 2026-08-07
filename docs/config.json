@@ -141,6 +141,31 @@
               "to": "framework/react/guides/devtools"
             }
           ]
+        },
+        {
+          "label": "solid",
+          "children": [
+            {
+              "label": "Form Validation",
+              "to": "framework/solid/guides/validation"
+            },
+            {
+              "label": "Async Initial Values",
+              "to": "framework/solid/guides/async-initial-values"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/solid/guides/arrays"
+            },
+            {
+              "label": "UI Libraries",
+              "to": "framework/solid/guides/ui-libraries"
+            },
+            {
+              "label": "Debugging",
+              "to": "framework/solid/guides/debugging"
+            }
+          ]
         }
       ]
     },
