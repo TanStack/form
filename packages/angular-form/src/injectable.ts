@@ -10,13 +10,7 @@ export class TanStackFieldInjectable<
   TFormErrorTypes extends FormErrorTypes = any,
 > {
   _api = signal<
-    FieldApi<
-      TFieldName,
-      TFieldValue,
-      TFieldError,
-      TFormData,
-      TFormErrorTypes
-    >
+    FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes>
   >(null as never)
 
   get api() {
@@ -25,6 +19,8 @@ export class TanStackFieldInjectable<
 }
 
 /** Injects the field provided by an ancestor `tanstack-app-field` directive. */
-export function injectField<TFieldValue>(): TanStackFieldInjectable<TFieldValue> {
+export function injectField<
+  TFieldValue,
+>(): TanStackFieldInjectable<TFieldValue> {
   return inject(TanStackFieldInjectable<TFieldValue>)
 }

@@ -27,11 +27,7 @@ export type AngularFieldApi<
   TFormData,
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
-  TFieldValidators extends FieldValidators<
-    TFormData,
-    TFieldName,
-    TFieldValue
-  >,
+  TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
   TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
 > = FieldApi<
@@ -198,9 +194,7 @@ export class TanStackField<
   TSubmitReturn
 > {
   tanstackField =
-    input.required<
-      InternalFormApi<TFormData, TFormValidators, TSubmitReturn>
-    >()
+    input.required<InternalFormApi<TFormData, TFormValidators, TSubmitReturn>>()
   protected readonly isArrayField = false
   protected getForm() {
     return this.tanstackField()
@@ -232,9 +226,7 @@ export class TanStackArrayField<
   TSubmitReturn
 > {
   tanstackArrayField =
-    input.required<
-      InternalFormApi<TFormData, TFormValidators, TSubmitReturn>
-    >()
+    input.required<InternalFormApi<TFormData, TFormValidators, TSubmitReturn>>()
   protected readonly isArrayField = true
   protected getForm() {
     return this.tanstackArrayField()

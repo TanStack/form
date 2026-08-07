@@ -29,7 +29,10 @@ describe('TanStackField', () => {
           />
           <output data-testid="value">{{ field.api.value }}</output>
         </ng-container>
-        <button type="button" (click)="form.reset({ firstName: 'Katherine', lastName: 'Johnson' })">
+        <button
+          type="button"
+          (click)="form.reset({ firstName: 'Katherine', lastName: 'Johnson' })"
+        >
           Reset
         </button>
       `,
@@ -87,7 +90,9 @@ describe('TanStackField', () => {
         {
           triggers: ['change'] as const,
           run: (({ value }) =>
-            value.length < 3 ? { message: changeMessage } : undefined) satisfies FieldValidatorFn<
+            value.length < 3
+              ? { message: changeMessage }
+              : undefined) satisfies FieldValidatorFn<
             Person,
             'firstName',
             string
@@ -96,7 +101,9 @@ describe('TanStackField', () => {
         {
           triggers: ['blur'] as const,
           run: (({ value }) =>
-            value === 'Ada' ? { message: blurMessage } : undefined) satisfies FieldValidatorFn<
+            value === 'Ada'
+              ? { message: blurMessage }
+              : undefined) satisfies FieldValidatorFn<
             Person,
             'firstName',
             string

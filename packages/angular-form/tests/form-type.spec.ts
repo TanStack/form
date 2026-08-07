@@ -1,15 +1,7 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  input,
-} from '@angular/core'
+import { ChangeDetectionStrategy, Component, input } from '@angular/core'
 import { render } from '@testing-library/angular'
 import { describe, expect, it } from 'vitest'
-import {
-  TanStackField,
-  formOptions,
-  injectForm,
-} from '../src/index'
+import { TanStackField, formOptions, injectForm } from '../src/index'
 import type { AngularFormType } from '../src/index'
 
 describe('AngularFormType', () => {
@@ -24,11 +16,7 @@ describe('AngularFormType', () => {
       changeDetection: ChangeDetectionStrategy.OnPush,
       imports: [TanStackField],
       template: `
-        <ng-container
-          [tanstackField]="form()"
-          name="lastName"
-          #field="field"
-        >
+        <ng-container [tanstackField]="form()" name="lastName" #field="field">
           <label [for]="field.api.name">Last name:</label>
           <input
             [id]="field.api.name"

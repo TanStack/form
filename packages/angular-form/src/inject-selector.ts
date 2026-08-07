@@ -1,10 +1,6 @@
 import { injectSelector as injectAngularSelector } from '@tanstack/angular-store'
 import type { Signal } from '@angular/core'
-import type {
-  FormApi,
-  FormErrorTypes,
-  FormState,
-} from '@tanstack/form-core'
+import type { FormApi, FormErrorTypes, FormState } from '@tanstack/form-core'
 import type { InjectSelectorOptions } from '@tanstack/angular-store'
 
 /** Selects form state as an Angular signal. */

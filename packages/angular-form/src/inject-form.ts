@@ -1,9 +1,4 @@
-import {
-  ChangeDetectorRef,
-  DestroyRef,
-  effect,
-  inject,
-} from '@angular/core'
+import { ChangeDetectorRef, DestroyRef, effect, inject } from '@angular/core'
 import { injectSelector } from '@tanstack/angular-store'
 import { InternalFormApi } from '@tanstack/form-core/internals'
 import type { FormOptions, FormValidators } from '@tanstack/form-core'
@@ -16,11 +11,9 @@ export function injectForm<
   const TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
 >(options: FormOptions<TFormData, TFormValidators, TSubmitReturn>) {
-  const form = new InternalFormApi<
-    TFormData,
-    TFormValidators,
-    TSubmitReturn
-  >(options)
+  const form = new InternalFormApi<TFormData, TFormValidators, TSubmitReturn>(
+    options,
+  )
   const destroyRef = inject(DestroyRef)
   const changeDetector = inject(ChangeDetectorRef, { optional: true })
   const state = injectSelector(form.atom)
