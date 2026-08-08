@@ -471,8 +471,8 @@ export function FieldInfo(props: { field: Accessor<AnyFieldApi> }) {
             )}
           </For>
         </em>
-       </Show>
-       <Show when={props.field().meta.isValidating}>Validating...</Show>
+      </Show>
+      <Show when={props.field().meta.isValidating}>Validating...</Show>
     </>
   )
 }
@@ -612,6 +612,7 @@ export class TanStackFormDemo extends LitElement {
   }
 }
 ```
+
 <!-- ::end:framework -->
 
 > Other framework adapters are coming soon and are already supported in the stable version of TanStack Form.
