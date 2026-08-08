@@ -191,6 +191,31 @@
               "to": "framework/solid/guides/debugging"
             }
           ]
+        },
+        {
+          "label": "lit",
+          "children": [
+            {
+              "label": "Form Validation",
+              "to": "framework/lit/guides/validation"
+            },
+            {
+              "label": "Async Initial Values",
+              "to": "framework/lit/guides/async-initial-values"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/lit/guides/arrays"
+            },
+            {
+              "label": "UI Libraries",
+              "to": "framework/lit/guides/ui-libraries"
+            },
+            {
+              "label": "Debugging",
+              "to": "framework/lit/guides/debugging"
+            }
+          ]
         }
       ]
     },
@@ -391,6 +416,47 @@
             {
               "label": "TanStack Query Integration",
               "to": "framework/solid/examples/query-integration"
+            }
+          ]
+        },
+        {
+          "label": "lit",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "framework/lit/examples/simple"
+            },
+            {
+              "label": "Basic",
+              "to": "framework/lit/examples/basic"
+            },
+            {
+              "label": "Form Splitting",
+              "to": "framework/lit/examples/basic-splitting-form"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/lit/examples/array"
+            },
+            {
+              "label": "Field Groups",
+              "to": "framework/lit/examples/field-groups"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/lit/examples/large-form"
+            },
+            {
+              "label": "Multi-Step Wizard",
+              "to": "framework/lit/examples/multi-step-wizard"
+            },
+            {
+              "label": "Standard Schema",
+              "to": "framework/lit/examples/standard-schema"
+            },
+            {
+              "label": "TanStack Query Integration",
+              "to": "framework/lit/examples/query-integration"
             }
           ]
         }

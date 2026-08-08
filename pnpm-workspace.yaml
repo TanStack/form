@@ -15,6 +15,7 @@ packages:
   - 'examples/react/ui-integration/**'
   - examples/vue/**
   - examples/solid/**
+  - examples/lit/**
 allowBuilds:
   nx: true
   unrs-resolver: false
