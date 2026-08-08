@@ -1,0 +1,24 @@
+{
+  "name": "@tanstack/form-example-preact-standard-schema",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port=3309",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test:types": "tsc"
+  },
+  "dependencies": {
+    "@tanstack/preact-form": "^1.33.3",
+    "arktype": "^2.1.22",
+    "effect": "^3.17.14",
+    "preact": "^10.26.4",
+    "valibot": "^1.1.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.10.2",
+    "typescript": "^6.0.2",
+    "vite": "^8.1.2"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "@tanstack/form-example-preact-large-form",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port=3306",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test:types": "tsc"
+  },
+  "dependencies": {
+    "@tanstack/preact-form": "^1.33.3",
+    "preact": "^10.26.4"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.10.2",
+    "typescript": "^6.0.2",
+    "vite": "^8.1.2"
+  }
+}

@@ -16,6 +16,7 @@ packages:
   - examples/vue/**
   - examples/solid/**
   - examples/angular/**
+  - examples/preact/**
   - examples/lit/**
 allowBuilds:
   nx: true
