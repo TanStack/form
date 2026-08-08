@@ -32,7 +32,9 @@ jobs:
       - name: Run Tests
         run: pnpm run test:ci
       - name: Verify Release Mode
-        run: pnpm run changeset:verify-release -- ${{ github.ref_name }}
+        env:
+          RELEASE_BRANCH: ${{ github.ref_name }}
+        run: pnpm run changeset:verify-release -- "$RELEASE_BRANCH"
       - name: Run Changesets (version or publish)
         id: changesets
         uses: changesets/action@6a0a831ff30acef54f2c6aa1cbbc1096b066edaf # v1.7.0
