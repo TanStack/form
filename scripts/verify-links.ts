@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, statSync } from 'node:fs'
-import { extname, resolve } from 'node:path'
+import { extname, relative, resolve, sep } from 'node:path'
 import { glob } from 'tinyglobby'
 // @ts-ignore Could not find a declaration file for module 'markdown-link-extractor'.
 import markdownLinkExtractor from 'markdown-link-extractor'
@@ -35,11 +35,13 @@ function stripExtension(p: string): string {
 function resolveDocTarget(absPath: string): { path: string; exists: boolean } {
   // Examples live outside /docs: /docs/framework/{framework}/examples/{name}
   // is served from /examples/{framework}/{name}
-  if (absPath.includes('/examples/')) {
-    const examplePath = absPath.replace(
-      /\/docs\/framework\/([^/]+)\/examples\//,
-      '/examples/$1/',
-    )
+  const [root, framework, section, ...rest] = relative(
+    resolve('docs'),
+    absPath,
+  ).split(sep)
+
+  if (root === 'framework' && framework && section === 'examples') {
+    const examplePath = resolve('examples', framework, ...rest)
     return {
       path: examplePath,
       exists: existsSync(examplePath) && statSync(examplePath).isDirectory(),
