@@ -1,5 +1,5 @@
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
-import { createComputed, onMount } from 'solid-js'
+import { createComputed, createUniqueId, onMount } from 'solid-js'
 import { useSelector } from '@tanstack/solid-store'
 import { Field, createField } from './createField'
 import { FormGroup } from './createFormGroup'
@@ -240,6 +240,14 @@ export function createForm<
   >,
 ) {
   const options = opts?.()
+  /**
+   * `FormApi` falls back to `uuid()` when no `formId` is given, which differs
+   * between the server render and the client render. `createUniqueId` is
+   * Solid's SSR-safe counterpart, so binding the id (`<form id={form.formId}>`)
+   * no longer produces a hydration mismatch. Mirrors `useFormId` in the React,
+   * Preact, and Vue adapters.
+   */
+  const fallbackFormId = createUniqueId()
   const api = new FormApi<
     TParentData,
     TFormOnMount,
@@ -253,7 +261,7 @@ export function createForm<
     TFormOnDynamicAsync,
     TFormOnServer,
     TSubmitMeta
-  >(options)
+  >({ ...options, formId: options?.formId ?? fallbackFormId })
   const extendedApi: typeof api &
     SolidFormApi<
       TParentData,
