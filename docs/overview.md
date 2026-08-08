@@ -180,6 +180,152 @@ export function FieldInfo({ field }: { field: AnyFieldApi }) {
 
 <!-- ::end:tabs -->
 
+# Preact
+
+In the example below, you can see TanStack Form in action with the Preact framework adapter:
+
+[Open in CodeSandbox](https://codesandbox.io/s/github/tanstack/form/tree/alpha/examples/preact/simple)
+
+<!-- ::start:tabs variant="files" -->
+
+```tsx title="App.tsx"
+import { render } from 'preact'
+import { useForm } from '@tanstack/preact-form'
+
+import { FieldInfo } from './FieldInfo.tsx'
+
+export default function App() {
+  const form = useForm({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+    },
+    onSubmit: async ({ value }) => {
+      console.log(value)
+    },
+  })
+
+  return (
+    <div>
+      <h1>Simple Form Example</h1>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault()
+          event.stopPropagation()
+          void form.handleSubmit()
+        }}
+      >
+        <div>
+          <form.Field
+            name="firstName"
+            validators={[
+              {
+                run: ({ value }) =>
+                  !value
+                    ? 'A first name is required'
+                    : value.length < 3
+                      ? 'First name must be at least 3 characters'
+                      : undefined,
+                triggers: ['change'],
+              },
+              {
+                run: async ({ value }) => {
+                  await new Promise((resolve) => setTimeout(resolve, 1000))
+                  return (
+                    value.includes('error') &&
+                    'No "error" allowed in first name'
+                  )
+                },
+                triggers: ['change'],
+                triggerDebounceMs: 500,
+              },
+            ]}
+          >
+            {(field) => (
+              <>
+                <label htmlFor={field.name}>First Name:</label>
+                <input
+                  id={field.name}
+                  name={field.name}
+                  value={field.value}
+                  onBlur={field.handleBlur}
+                  onInput={(event) =>
+                    field.handleChange(event.currentTarget.value)
+                  }
+                  aria-invalid={field.meta.isInvalid}
+                />
+                <FieldInfo field={field} />
+              </>
+            )}
+          </form.Field>
+        </div>
+        <div>
+          <form.Field name="lastName">
+            {(field) => (
+              <>
+                <label htmlFor={field.name}>Last Name:</label>
+                <input
+                  id={field.name}
+                  name={field.name}
+                  value={field.value}
+                  onBlur={field.handleBlur}
+                  onInput={(event) =>
+                    field.handleChange(event.currentTarget.value)
+                  }
+                  aria-invalid={field.meta.isInvalid}
+                />
+                <FieldInfo field={field} />
+              </>
+            )}
+          </form.Field>
+        </div>
+        <form.Subscribe
+          selector={(state) => [state.canSubmit, state.isSubmitting]}
+        >
+          {([canSubmit, isSubmitting]) => (
+            <>
+              <button type="submit" disabled={!canSubmit || isSubmitting}>
+                {isSubmitting ? '...' : 'Submit'}
+              </button>
+              <button
+                type="reset"
+                onClick={(event) => {
+                  event.preventDefault()
+                  form.reset()
+                }}
+              >
+                Reset
+              </button>
+            </>
+          )}
+        </form.Subscribe>
+      </form>
+    </div>
+  )
+}
+
+render(<App />, document.getElementById('root')!)
+```
+
+```tsx title="FieldInfo.tsx"
+import type { AnyFieldApi } from '@tanstack/preact-form'
+
+export function FieldInfo({ field }: { field: AnyFieldApi }) {
+  return (
+    <>
+      {field.meta.isTouched && field.meta.isInvalid ? (
+        <em role="alert">
+          {field.errors.map((error) => error.message).join(', ')}
+        </em>
+      ) : null}
+      {field.meta.isValidating ? 'Validating...' : null}
+    </>
+  )
+}
+```
+
+<!-- ::end:tabs -->
+
 # Solid
 
 In the example below, you can see TanStack Form in action with the Solid framework adapter:

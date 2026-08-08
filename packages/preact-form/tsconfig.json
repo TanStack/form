@@ -3,10 +3,8 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
-    "moduleResolution": "Bundler",
-    "paths": {
-      "@tanstack/form-core": ["../form-core/src"]
-    }
+    "moduleResolution": "Bundler"
   },
-  "include": ["src", "tests", "eslint.config.js", "vite.config.ts"]
+  "include": ["src", "tests", "vitest.config.ts"],
+  "exclude": ["eslint.config.js"]
 }
