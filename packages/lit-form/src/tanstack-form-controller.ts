@@ -653,9 +653,25 @@ function attachGroupMethods(
 ): AnyInternalFormGroupApi {
   const result = group as AnyInternalFormGroupApi
   result.field = (options, render) =>
-    fieldDirective(form, group._getFormFieldOptions(options), render, false)
+    fieldDirective(
+      form,
+      group._getFormFieldOptions(options, (base, overrides) => ({
+        ...base,
+        ...overrides,
+      })),
+      render,
+      false,
+    )
   result.arrayField = (options, render) =>
-    fieldDirective(form, group._getFormFieldOptions(options), render, true)
+    fieldDirective(
+      form,
+      group._getFormFieldOptions(options, (base, overrides) => ({
+        ...base,
+        ...overrides,
+      })),
+      render,
+      true,
+    )
   result.subscribe = (selector, render, when) =>
     subscribeDirective(group.atom, selector, render, when)
   return result

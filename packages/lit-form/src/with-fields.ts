@@ -206,7 +206,10 @@ function createFieldGroupApi(
   }
   const atom = createAtom(values, { compare: shallow })
   const resolveOptions = (options: { name: string }) =>
-    transformFieldOptionsFieldNames(options, resolveName)
+    transformFieldOptionsFieldNames(options, resolveName, (base, overrides) => ({
+      ...base,
+      ...overrides,
+    }))
 
   return {
     atom,
