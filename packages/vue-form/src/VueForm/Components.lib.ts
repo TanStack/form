@@ -16,6 +16,7 @@ import {
 import { useField } from './useField.lib'
 import type { Component, InjectionKey, Slots } from 'vue'
 import type {
+  AnyFieldApiOptions,
   AnyInternalFieldApi,
   AnyInternalFormApi,
   InternalFormGroupApi as InternalFormGroupApiType,
@@ -134,12 +135,17 @@ function forwardToField(
   group: InternalFormGroupApiType<any, any, any, any, any>,
 ) {
   return defineComponent(
-    (_props, context) => () =>
-      h(
+    (_props, context) => () => {
+      const options = { ...context.attrs } as unknown as AnyFieldApiOptions
+      return h(
         component,
-        group._getFormFieldOptions({ ...context.attrs } as never) as never,
+        group._getFormFieldOptions(options, (base, overrides) => ({
+          ...base,
+          ...overrides,
+        })) as never,
         context.slots,
-      ),
+      )
+    },
     { inheritAttrs: false },
   )
 }

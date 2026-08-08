@@ -7,6 +7,7 @@ import {
   h,
   nextTick,
   reactive,
+  ref,
 } from 'vue'
 import { renderToString } from 'vue/server-renderer'
 import {
@@ -223,6 +224,100 @@ describe('Vue adapter parity', () => {
     expect(view.getByTestId('group-name')).toHaveTextContent('Rodney')
   })
 
+  it('reactively updates FormGroup field names', async () => {
+    let showLastName!: () => void
+
+    const Component = defineComponent(() => {
+      const fieldName = ref<'firstName' | 'lastName'>('firstName')
+      showLastName = () => {
+        fieldName.value = 'lastName'
+      }
+      const form = useForm({
+        defaultValues: {
+          guest: { firstName: 'Tony', lastName: 'Hawk' },
+        },
+      })
+
+      return () => (
+        <form.FormGroup name="guest">
+          {({ group }: { group: any }) => (
+            <group.Field name={fieldName.value}>
+              {({ field }: { field: AnyFieldApi }) => (
+                <output data-testid="group-field">
+                  {field.name}:{field.value}
+                </output>
+              )}
+            </group.Field>
+          )}
+        </form.FormGroup>
+      )
+    })
+
+    const view = render(Component)
+    expect(view.getByTestId('group-field')).toHaveTextContent(
+      'guest.firstName:Tony',
+    )
+
+    showLastName()
+
+    await waitFor(() =>
+      expect(view.getByTestId('group-field')).toHaveTextContent(
+        'guest.lastName:Hawk',
+      ),
+    )
+  })
+
+  it('reactively updates FormGroup field listeners', async () => {
+    const firstListener = vi.fn()
+    const secondListener = vi.fn()
+    let useSecondListener!: () => void
+    let change!: (value: string) => void
+
+    const Component = defineComponent(() => {
+      const usesSecondListener = ref(false)
+      useSecondListener = () => {
+        usesSecondListener.value = true
+      }
+      const form = useForm({
+        defaultValues: { guest: { name: '' } },
+      })
+
+      return () => (
+        <form.FormGroup name="guest">
+          {({ group }: { group: any }) => (
+            <group.Field
+              name="name"
+              listeners={[
+                {
+                  triggers: ['change'],
+                  run: usesSecondListener.value
+                    ? secondListener
+                    : firstListener,
+                },
+              ]}
+            >
+              {({ field }: { field: AnyFieldApi }) => {
+                change = field.handleChange
+                return null
+              }}
+            </group.Field>
+          )}
+        </form.FormGroup>
+      )
+    })
+
+    render(Component)
+    change('First')
+    expect(firstListener).toHaveBeenCalledOnce()
+
+    useSecondListener()
+    await nextTick()
+    change('Second')
+
+    expect(firstListener).toHaveBeenCalledOnce()
+    expect(secondListener).toHaveBeenCalledOnce()
+  })
+
   it('composes typed field components through Vue injection', () => {
     const TextField = defineComponent<{
       field: FieldWithValue<string>
@@ -297,6 +392,49 @@ describe('Vue adapter parity', () => {
     const view = render(Component)
     await fireEvent.update(view.getByLabelText('Profile name'), 'Rodney')
     expect(getName()).toBe('Rodney')
+  })
+
+  it('reactively updates reusable field group bindings', async () => {
+    const { helper, defineFields, withFields } = getFieldGroupHelpers()
+    const nameFields = defineFields({ name: helper.strict<string>() })
+    const NameFields = withFields(
+      nameFields,
+      defineComponent<{ fields: typeof nameFields }>(
+        (props) => () => (
+          <props.fields.Field name="name">
+            {({ field }: { field: AnyFieldApi }) => (
+              <output data-testid="logical-field">
+                {field.name}:{field.value}
+              </output>
+            )}
+          </props.fields.Field>
+        ),
+        { props: ['fields'] },
+      ),
+      'fields',
+    )
+    let showSecond!: () => void
+
+    const Component = defineComponent(() => {
+      const binding = ref<'first' | 'second'>('first')
+      showSecond = () => {
+        binding.value = 'second'
+      }
+      const form = useForm({
+        defaultValues: { first: 'One', second: 'Two' },
+      })
+
+      return () => <NameFields form={form} fields={{ name: binding.value }} />
+    })
+
+    const view = render(Component)
+    expect(view.getByTestId('logical-field')).toHaveTextContent('first:One')
+
+    showSecond()
+
+    await waitFor(() =>
+      expect(view.getByTestId('logical-field')).toHaveTextContent('second:Two'),
+    )
   })
 
   it('provides composed form components with form context', () => {
