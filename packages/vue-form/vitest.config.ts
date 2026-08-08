@@ -13,8 +13,11 @@ export default defineConfig({
     coverage: { enabled: true, provider: 'istanbul', include: ['src/**/*'] },
     typecheck: { enabled: true },
   },
-  esbuild: {
-    jsxFactory: 'h',
-    jsxFragment: 'Fragment',
+  oxc: {
+    jsx: {
+      runtime: 'classic',
+      pragma: 'h',
+      pragmaFrag: 'Fragment',
+    },
   },
 })

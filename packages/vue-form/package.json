@@ -17,14 +17,7 @@
   "scripts": {
     "clean": "premove ./dist ./coverage",
     "test:eslint": "eslint ./src ./tests",
-    "test:types": "pnpm run \"/^test:types:ts[0-9]{2}$/\"",
-    "test:types:ts54": "node ../../node_modules/typescript54/lib/tsc.js",
-    "test:types:ts55": "node ../../node_modules/typescript55/lib/tsc.js",
-    "test:types:ts56": "node ../../node_modules/typescript56/lib/tsc.js",
-    "test:types:ts57": "node ../../node_modules/typescript57/lib/tsc.js",
-    "test:types:ts58": "node ../../node_modules/typescript58/lib/tsc.js",
-    "test:types:ts59": "tsc",
-    "fixme:test:lib": "pnpm run test:2 && pnpm run test:2.7 && pnpm run test:3",
+    "test:types": "vue-tsc --noEmit",
     "test:lib": "vitest",
     "test:lib:dev": "pnpm run test:lib --watch",
     "test:build": "publint --strict",
@@ -49,10 +42,10 @@
     "@testing-library/vue": "^8.1.0",
     "@vitejs/plugin-vue": "^5.2.4",
     "unplugin-vue": "^7.2.0",
-    "vue": "^3.5.13",
+    "vue": "^3.6.0-rc.2",
     "vue-tsc": "^3.3.9"
   },
   "peerDependencies": {
-    "vue": "^3.4.0"
+    "vue": "^3.6.0-rc.2"
   }
 }
