@@ -56,7 +56,11 @@ function resolveFieldProps<TProps extends { name: string }>(
   props: TProps,
   resolveName: (name: string) => string,
 ): TProps {
-  return transformFieldOptionsFieldNames(props, resolveName)
+  return transformFieldOptionsFieldNames(
+    props,
+    resolveName,
+    (base, overrides) => ({ ...base, ...overrides }),
+  )
 }
 
 function createFieldGroupApi(

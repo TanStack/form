@@ -110,6 +110,48 @@ describe('Solid adapter parity', () => {
     dispose()
   })
 
+  it('reactively updates form group field names', () => {
+    let showLastName!: () => void
+
+    function Component() {
+      const [fieldName, setFieldName] = createSignal<'firstName' | 'lastName'>(
+        'firstName',
+      )
+      showLastName = () => setFieldName('lastName')
+      const form = createForm(() => ({
+        defaultValues: {
+          guest: { firstName: 'Tony', lastName: 'Hawk' },
+        },
+      }))
+
+      return (
+        <form.FormGroup name="guest">
+          {(group) => (
+            <group.Field name={fieldName()}>
+              {(field) => (
+                <span data-testid="group-field">
+                  {field().name}:{field().value}
+                </span>
+              )}
+            </group.Field>
+          )}
+        </form.FormGroup>
+      )
+    }
+
+    const { container, dispose } = mount(() => <Component />)
+    expect(
+      container.querySelector('[data-testid="group-field"]')?.textContent,
+    ).toBe('guest.firstName:Tony')
+
+    showLastName()
+
+    expect(
+      container.querySelector('[data-testid="group-field"]')?.textContent,
+    ).toBe('guest.lastName:Hawk')
+    dispose()
+  })
+
   it('supports app field components through Solid context', () => {
     function TextField(props: {
       field: Accessor<FieldWithValue<string>>

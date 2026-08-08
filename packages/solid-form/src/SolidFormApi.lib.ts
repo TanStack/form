@@ -122,14 +122,14 @@ function attachSolidFormGroupComponents(
   resultGroup.Field = function Field(props) {
     return createComponent(
       form.Field as Component<any>,
-      group._getFormFieldOptions(props) as any,
+      group._getFormFieldOptions(props, mergeProps) as any,
     )
   }
 
   resultGroup.ArrayField = function ArrayField(props) {
     return createComponent(
       form.ArrayField as Component<any>,
-      group._getFormFieldOptions(props) as any,
+      group._getFormFieldOptions(props, mergeProps) as any,
     )
   }
 

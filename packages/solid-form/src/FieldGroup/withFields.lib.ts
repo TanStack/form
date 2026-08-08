@@ -3,7 +3,7 @@ import {
   getBy,
   transformFieldOptionsFieldNames,
 } from '@tanstack/form-core/internals'
-import { createComponent, createMemo, mergeProps, splitProps } from 'solid-js'
+import { createComponent, mergeProps, splitProps } from 'solid-js'
 import type { Component } from 'solid-js'
 import type { AnyFieldGroupApi } from './FieldGroupApi.public'
 
@@ -47,21 +47,11 @@ function resolveFieldProps<TProps extends { name: string }>(
   props: TProps,
   resolveName: (name: string) => string,
 ): TProps {
-  const resolved = createMemo(() =>
-    transformFieldOptionsFieldNames({ ...props }, resolveName),
+  return transformFieldOptionsFieldNames(
+    props,
+    resolveName,
+    (base, overrides) => mergeProps(base, overrides) as TProps,
   )
-
-  return mergeProps(props, {
-    get name() {
-      return resolved().name
-    },
-    get validators() {
-      return (resolved() as any).validators
-    },
-    get listeners() {
-      return (resolved() as any).listeners
-    },
-  }) as TProps
 }
 
 function createFieldGroupApi(
