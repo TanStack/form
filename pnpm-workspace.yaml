@@ -13,8 +13,10 @@ packages:
   - examples/react/**
   - '!examples/react/ui-integration'
   - 'examples/react/ui-integration/**'
+  - examples/vue/**
   - examples/solid/**
   - examples/preact/**
+  - examples/lit/**
 allowBuilds:
   nx: true
   unrs-resolver: false

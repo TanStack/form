@@ -102,6 +102,171 @@ importers:
         specifier: ^4.0.17
         version: 4.1.10(@types/node@25.9.5)(@vitest/coverage-istanbul@4.1.7(vitest@4.1.10))(jsdom@27.4.0)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
 
+  examples/lit/array:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/lit/basic:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/lit/basic-splitting-form:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/lit/field-groups:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/lit/large-form:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/lit/multi-step-wizard:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/lit/query-integration:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      '@tanstack/query-core':
+        specifier: ^5.89.0
+        version: 5.101.4
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/lit/simple:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/lit/standard-schema:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      arktype:
+        specifier: ^2.1.22
+        version: 2.2.3
+      effect:
+        specifier: ^3.17.14
+        version: 3.22.1
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+      valibot:
+        specifier: ^1.1.0
+        version: 1.4.2(typescript@6.0.3)
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
   examples/preact/array:
     dependencies:
       '@tanstack/preact-form':
@@ -1067,6 +1232,323 @@ importers:
         specifier: ^8.1.2
         version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
 
+  examples/solid/array:
+    dependencies:
+      '@tanstack/solid-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/solid-form
+      solid-js:
+        specifier: ^1.9.13
+        version: 1.9.14
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+      vite-plugin-solid:
+        specifier: ^2.11.10
+        version: 2.11.14(@testing-library/jest-dom@6.10.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+
+  examples/solid/basic:
+    dependencies:
+      '@tanstack/solid-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/solid-form
+      solid-js:
+        specifier: ^1.9.13
+        version: 1.9.14
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+      vite-plugin-solid:
+        specifier: ^2.11.10
+        version: 2.11.14(@testing-library/jest-dom@6.10.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+
+  examples/solid/basic-splitting-form:
+    dependencies:
+      '@tanstack/solid-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/solid-form
+      solid-js:
+        specifier: ^1.9.13
+        version: 1.9.14
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+      vite-plugin-solid:
+        specifier: ^2.11.10
+        version: 2.11.14(@testing-library/jest-dom@6.10.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+
+  examples/solid/field-groups:
+    dependencies:
+      '@tanstack/solid-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/solid-form
+      solid-js:
+        specifier: ^1.9.13
+        version: 1.9.14
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+      vite-plugin-solid:
+        specifier: ^2.11.10
+        version: 2.11.14(@testing-library/jest-dom@6.10.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+
+  examples/solid/large-form:
+    dependencies:
+      '@tanstack/solid-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/solid-form
+      solid-js:
+        specifier: ^1.9.13
+        version: 1.9.14
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+      vite-plugin-solid:
+        specifier: ^2.11.10
+        version: 2.11.14(@testing-library/jest-dom@6.10.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+
+  examples/solid/multi-step-wizard:
+    dependencies:
+      '@tanstack/solid-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/solid-form
+      solid-js:
+        specifier: ^1.9.13
+        version: 1.9.14
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+      vite-plugin-solid:
+        specifier: ^2.11.10
+        version: 2.11.14(@testing-library/jest-dom@6.10.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+
+  examples/solid/query-integration:
+    dependencies:
+      '@tanstack/solid-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/solid-form
+      '@tanstack/solid-query':
+        specifier: ^5.89.0
+        version: 5.101.4(solid-js@1.9.14)
+      solid-js:
+        specifier: ^1.9.13
+        version: 1.9.14
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+      vite-plugin-solid:
+        specifier: ^2.11.10
+        version: 2.11.14(@testing-library/jest-dom@6.10.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+
+  examples/solid/simple:
+    dependencies:
+      '@tanstack/solid-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/solid-form
+      solid-js:
+        specifier: ^1.9.13
+        version: 1.9.14
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+      vite-plugin-solid:
+        specifier: ^2.11.10
+        version: 2.11.14(@testing-library/jest-dom@6.10.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+
+  examples/solid/standard-schema:
+    dependencies:
+      '@tanstack/solid-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/solid-form
+      arktype:
+        specifier: ^2.1.22
+        version: 2.2.3
+      effect:
+        specifier: ^3.17.14
+        version: 3.22.1
+      solid-js:
+        specifier: ^1.9.13
+        version: 1.9.14
+      valibot:
+        specifier: ^1.1.0
+        version: 1.4.2(typescript@6.0.3)
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+      vite-plugin-solid:
+        specifier: ^2.11.10
+        version: 2.11.14(@testing-library/jest-dom@6.10.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+
+  examples/vue/array:
+    dependencies:
+      '@tanstack/vue-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/vue-form
+      vue:
+        specifier: ^3.6.0-rc.2
+        version: 3.6.0-rc.2(typescript@6.0.3)
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: ^5.2.4
+        version: 5.2.4(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))(vue@3.6.0-rc.2(typescript@6.0.3))
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+      vue-tsc:
+        specifier: ^3.3.9
+        version: 3.3.9(typescript@6.0.3)
+
+  examples/vue/large-form:
+    dependencies:
+      '@tanstack/vue-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/vue-form
+      vue:
+        specifier: ^3.6.0-rc.2
+        version: 3.6.0-rc.2(typescript@6.0.3)
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: ^5.2.4
+        version: 5.2.4(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))(vue@3.6.0-rc.2(typescript@6.0.3))
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+      vue-tsc:
+        specifier: ^3.3.9
+        version: 3.3.9(typescript@6.0.3)
+
+  examples/vue/multi-step-wizard:
+    dependencies:
+      '@tanstack/vue-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/vue-form
+      vue:
+        specifier: ^3.6.0-rc.2
+        version: 3.6.0-rc.2(typescript@6.0.3)
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: ^5.2.4
+        version: 5.2.4(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))(vue@3.6.0-rc.2(typescript@6.0.3))
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+      vue-tsc:
+        specifier: ^3.3.9
+        version: 3.3.9(typescript@6.0.3)
+
+  examples/vue/simple:
+    dependencies:
+      '@tanstack/vue-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/vue-form
+      vue:
+        specifier: ^3.6.0-rc.2
+        version: 3.6.0-rc.2(typescript@6.0.3)
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: ^5.2.4
+        version: 5.2.4(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))(vue@3.6.0-rc.2(typescript@6.0.3))
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+      vue-tsc:
+        specifier: ^3.3.9
+        version: 3.3.9(typescript@6.0.3)
+
+  examples/vue/standard-schema:
+    dependencies:
+      '@tanstack/vue-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/vue-form
+      arktype:
+        specifier: ^2.1.22
+        version: 2.2.3
+      effect:
+        specifier: ^3.17.14
+        version: 3.22.1
+      valibot:
+        specifier: ^1.1.0
+        version: 1.4.2(typescript@6.0.3)
+      vue:
+        specifier: ^3.6.0-rc.2
+        version: 3.6.0-rc.2(typescript@6.0.3)
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: ^5.2.4
+        version: 5.2.4(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))(vue@3.6.0-rc.2(typescript@6.0.3))
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+      vue-tsc:
+        specifier: ^3.3.9
+        version: 3.3.9(typescript@6.0.3)
+
   packages/angular-form:
     dependencies:
       '@tanstack/angular-store':
@@ -1157,7 +1639,7 @@ importers:
         version: 0.5.3(csstype@3.2.3)(solid-js@1.9.14)
       '@tanstack/devtools-utils':
         specifier: ^0.5.0
-        version: 0.5.1(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(@types/react@19.2.18)(preact@10.29.8)(react@19.2.4)(solid-js@1.9.14)(vue@3.5.40(typescript@6.0.3))
+        version: 0.5.1(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(@types/react@19.2.18)(preact@10.29.8)(react@19.2.4)(solid-js@1.9.14)
       '@tanstack/form-core':
         specifier: workspace:*
         version: link:../form-core
@@ -1281,7 +1763,7 @@ importers:
         version: 0.12.5(csstype@3.2.3)(solid-js@1.9.14)
       '@tanstack/devtools-utils':
         specifier: ^0.5.0
-        version: 0.5.1(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(@types/react@19.2.18)(preact@10.29.8)(react@19.2.4)(solid-js@1.9.14)(vue@3.5.40(typescript@6.0.3))
+        version: 0.5.1(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(@types/react@19.2.18)(preact@10.29.8)(react@19.2.4)(solid-js@1.9.14)
       '@tanstack/form-devtools':
         specifier: workspace:*
         version: link:../form-devtools
@@ -1360,7 +1842,7 @@ importers:
     dependencies:
       '@tanstack/devtools-utils':
         specifier: ^0.5.0
-        version: 0.5.1(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(@types/react@19.2.18)(preact@10.29.8)(react@19.2.4)(solid-js@1.9.14)(vue@3.5.40(typescript@6.0.3))
+        version: 0.5.1(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(@types/react@19.2.18)(preact@10.29.8)(react@19.2.4)(solid-js@1.9.14)
       '@tanstack/form-devtools':
         specifier: workspace:*
         version: link:../form-devtools
@@ -1404,20 +1886,20 @@ importers:
         version: link:../form-core
       '@tanstack/vue-store':
         specifier: ^0.11.0
-        version: 0.11.0(vue@3.5.40(typescript@6.0.3))
+        version: 0.11.0(vue@3.6.0-rc.2(typescript@6.0.3))
     devDependencies:
       '@testing-library/vue':
         specifier: ^8.1.0
-        version: 8.1.0(@vue/compiler-dom@3.5.40)(@vue/compiler-sfc@3.5.40)(@vue/server-renderer@3.5.40)(vue@3.5.40(typescript@6.0.3))
+        version: 8.1.0(@vue/compiler-dom@3.6.0-rc.2)(vue@3.6.0-rc.2(typescript@6.0.3))
       '@vitejs/plugin-vue':
         specifier: ^5.2.4
-        version: 5.2.4(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))(vue@3.5.40(typescript@6.0.3))
+        version: 5.2.4(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))(vue@3.6.0-rc.2(typescript@6.0.3))
       unplugin-vue:
         specifier: ^7.2.0
-        version: 7.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(rolldown@1.2.1)(rollup@4.62.4)(sass@1.102.0)(terser@5.49.0)(vue@3.5.40(typescript@6.0.3))(yaml@2.9.0)
+        version: 7.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(rolldown@1.2.1)(rollup@4.62.4)(sass@1.102.0)(terser@5.49.0)(vue@3.6.0-rc.2(typescript@6.0.3))(yaml@2.9.0)
       vue:
-        specifier: ^3.5.13
-        version: 3.5.40(typescript@6.0.3)
+        specifier: ^3.6.0-rc.2
+        version: 3.6.0-rc.2(typescript@6.0.3)
       vue-tsc:
         specifier: ^3.3.9
         version: 3.3.9(typescript@6.0.3)
@@ -5930,6 +6412,11 @@ packages:
     resolution: {integrity: sha512-hTWqJtqIFFdvuCl8WXNyrodp2L9zo2G37xKRrcVmVRWpAB2h+U1LuRAfS4tsFTiWOIoE/B+WDVFB8JpoEdw6jQ==}
     engines: {node: '>=20.19'}
 
+  '@tanstack/solid-query@5.101.4':
+    resolution: {integrity: sha512-w+QNX4al4zkfOfO6FYILouPX3yAxLANvBNz0cZqaBrSRKfBP3qNC179wu/eS2w1asH+QqEeI0rR2/s7gRGxnFA==}
+    peerDependencies:
+      solid-js: ^1.6.0
+
   '@tanstack/solid-store@0.11.0':
     resolution: {integrity: sha512-2isL0ZnnyI1iN0V+QPrxE3OcPndohBgVlBcHZYoAOIAiU1WoWjVy0q5gb0suPu1Id0h5cKC23JnwzQTxWDZD0w==}
     peerDependencies:
@@ -6434,14 +6921,23 @@ packages:
   '@vue/compiler-core@3.5.40':
     resolution: {integrity: sha512-39E8IgOhTbVDnoJFMKc2DvYnypcZwUqgUhQkccva/0m6FUwtIKSGV7n1hpVmYcFaoRAwf9pBcwnKlCEsN63ZEQ==}
 
+  '@vue/compiler-core@3.6.0-rc.2':
+    resolution: {integrity: sha512-Xx79h4EpJktQBShelXNKaRuvn9N6YsYL1j+RXdvPKzI+8tohYziBJbxOFGAkdcOKBwKc2SIWV4DOlTAMhE96yQ==}
+
   '@vue/compiler-dom@3.5.40':
     resolution: {integrity: sha512-pwkx4vqlqOspFstrcmzwkKLePVMD3PT65imRzLhanU2V1Fj4K13g6OXjanOyzw3aTAuRk84BOmY8f3rEHqPaVA==}
 
-  '@vue/compiler-sfc@3.5.40':
-    resolution: {integrity: sha512-gIf497P4kpuALcvs5n3AEg1Vdn0pSY4XbjASIfHNYF1/MP3T2Mf2STERTubysBxCRxzJGJYtF/O7vwJrxFB3Vw==}
+  '@vue/compiler-dom@3.6.0-rc.2':
+    resolution: {integrity: sha512-dRTdTdi/KXzHYIkHtyjGxepTIxnsZ/hB3v1osnS8c4MeycAyzkSoZW6OZkXXN4oVVVU6NKXds1XtKAEKVVw7nA==}
 
-  '@vue/compiler-ssr@3.5.40':
-    resolution: {integrity: sha512-rrE5xiXG663+vHCHa3J9p2z5OcBRjXmoqenprJxAFQxg5pSshzeBiCE6pu46axapRJ2Adk0YDA2BRZVjiHXnhg==}
+  '@vue/compiler-sfc@3.6.0-rc.2':
+    resolution: {integrity: sha512-EZWTNh0UwdxvrBJkFc6+dqfwuUSdTVHDIohQcGDPCqGaYTHOfUL20b+grEAzlyxB741KrVBUb7qqpes92hAh2w==}
+
+  '@vue/compiler-ssr@3.6.0-rc.2':
+    resolution: {integrity: sha512-lqHSdQTmlhKX3dNEvR1TcspUzDlTR82T7BYLDzfvTwAqGXxAI2WJfyGJPcNpPjPKYEMI9JRGF32DU8TlHLx1AA==}
+
+  '@vue/compiler-vapor@3.6.0-rc.2':
+    resolution: {integrity: sha512-QbrA01pbj9xemF2McgBopyaOwj3kQGN0W1GW5EdFXORIT4fQQJpmUOj40h99S3bk09gLs5bFTRS4YE+Oyw/F9w==}
 
   '@vue/compiler-vue2@2.7.16':
     resolution: {integrity: sha512-qYC3Psj9S/mfu9uVi5WvNZIzq+xnXMhOwbTFKKDD7b1lhpnn71jXSFdTQ+WsIEk0ONCd7VV2IMm7ONl6tbQ86A==}
@@ -6460,17 +6956,28 @@ packages:
   '@vue/reactivity@3.5.40':
     resolution: {integrity: sha512-B7ot9UlUZOi1zbq61/LvE88ZLTV8IlajTdiZTAEiDQgrnIMIZoPr9kGw0Zw46ObW62O9+H/Be3kMbfb7kYPQZA==}
 
-  '@vue/runtime-core@3.5.40':
-    resolution: {integrity: sha512-KAZLweuZ6uUJPK1PMSQPgBU5gCjgrrfjUhSglmU9NhH+Zjepa8cnwSydPWDWHDwOgY4g3VcZ+PljbiHlURNCbw==}
+  '@vue/reactivity@3.6.0-rc.2':
+    resolution: {integrity: sha512-B01EoSTcaVQiJwZDoSoeKYClVgj60BHN43oHEcxXhPVLdxsXI0SOiQuskUskQDZn2ma08llICKJohL60o+UamA==}
 
-  '@vue/runtime-dom@3.5.40':
-    resolution: {integrity: sha512-ZfrX8ssZQds900L9pr8AuK05ddnMsR4MPMZr8cPN9GoqoPWcXLhjvvbIA2SMv+7a97sJ1vv9pj/zxK0Cq/eEFQ==}
+  '@vue/runtime-core@3.6.0-rc.2':
+    resolution: {integrity: sha512-qFV61Hbg6LyEGxJiVRJYuiIfryxrfO4+cgW1esxtkR1/pvemULwG6KpFImsJDwcC+YxrtvndXGM5PRVwUCGuiA==}
 
-  '@vue/server-renderer@3.5.40':
-    resolution: {integrity: sha512-XNJym9WpevhTVt1HuwOrCRJ5Q+9z4BjTMrDtjTrvx74SmUll8spNTw6whWJa9mEkO4PKn5TihI/bm/8ds2QVJw==}
+  '@vue/runtime-dom@3.6.0-rc.2':
+    resolution: {integrity: sha512-clIE/xk0b61t30BPKoOXZep253nhWdjyw7iac53yy2KN0nxAupkb6x3ImOI9iljjXqOW5lYdNVHNxNlcx3iA1Q==}
+
+  '@vue/runtime-vapor@3.6.0-rc.2':
+    resolution: {integrity: sha512-8EpxbNyT629k/52el4D7PxXmZtiYhJRBHPXJR7CZw0OluiADtT9W8J+XB83EVlzHmFUysXcd+mGWmuHwIhuHZA==}
+    peerDependencies:
+      '@vue/runtime-dom': 3.6.0-rc.2
+
+  '@vue/server-renderer@3.6.0-rc.2':
+    resolution: {integrity: sha512-TIsqoYljs6b0wfoCDhv4EeU3Du2a8gTadkaTGMjIYLTLlO4p8r4VdDqfNp/ZMAm87bW4ST1naBMRe+bXQBpAeQ==}
 
   '@vue/shared@3.5.40':
     resolution: {integrity: sha512-WxnBtruIqOoV3rA4jeKDWzrYI5h7Cp4+pjwDi8kWGHz+IslhiN+wguLVVhtv2l8VoU02rzDCVfDjgCl1lNpZVg==}
+
+  '@vue/shared@3.6.0-rc.2':
+    resolution: {integrity: sha512-Tz44lKLjxhWRu3GJ38768dc2hW4XhDtTB5aUo5fCMis6YDyFzwQYkrD/B9SuQ1v/ailv6UVR3wSHiujNXSjMCQ==}
 
   '@vue/test-utils@2.4.11':
     resolution: {integrity: sha512-GDqaqZsA6m2E5vNzej0aYiIb6BX8xV9pNSbbbXKOfEYwg7ZNblVX8suyqmUBThq8VIrgAJNxn+z72hVtUeiWHA==}
@@ -12104,8 +12611,8 @@ packages:
     peerDependencies:
       typescript: '>=5.0.0'
 
-  vue@3.5.40:
-    resolution: {integrity: sha512-+8PJ4SJXdn/cHGImF4CKdxlWHIN5Dkt7DoufRREM6h6uVCx2m7QxgcEQmmzyOK8A9mcafg7sFbJFYsdFVubTig==}
+  vue@3.6.0-rc.2:
+    resolution: {integrity: sha512-pBgoISqETcufJ1e92vVW2/D5MEbCm2XHlC/5dq3hWq8s17tx9v5BEdYv4hojJ0yEEDidYxUL7itS+vV32wfZrw==}
     peerDependencies:
       typescript: '*'
     peerDependenciesMeta:
@@ -16905,14 +17412,13 @@ snapshots:
     transitivePeerDependencies:
       - csstype
 
-  '@tanstack/devtools-utils@0.5.1(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(@types/react@19.2.18)(preact@10.29.8)(react@19.2.4)(solid-js@1.9.14)(vue@3.5.40(typescript@6.0.3))':
+  '@tanstack/devtools-utils@0.5.1(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(@types/react@19.2.18)(preact@10.29.8)(react@19.2.4)(solid-js@1.9.14)':
     optionalDependencies:
       '@angular/core': 22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)
       '@types/react': 19.2.18
       preact: 10.29.8
       react: 19.2.4
       solid-js: 1.9.14
-      vue: 3.5.40(typescript@6.0.3)
 
   '@tanstack/devtools-vite@0.7.2(@emnapi/core@2.0.0-alpha.3)(@emnapi/runtime@2.0.0-alpha.3)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))':
     dependencies:
@@ -17259,6 +17765,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@tanstack/solid-query@5.101.4(solid-js@1.9.14)':
+    dependencies:
+      '@tanstack/query-core': 5.101.4
+      solid-js: 1.9.14
+
   '@tanstack/solid-store@0.11.0(solid-js@1.9.14)':
     dependencies:
       '@tanstack/store': 0.11.0
@@ -17409,11 +17920,11 @@ snapshots:
       - typescript
       - vite
 
-  '@tanstack/vue-store@0.11.0(vue@3.5.40(typescript@6.0.3))':
+  '@tanstack/vue-store@0.11.0(vue@3.6.0-rc.2(typescript@6.0.3))':
     dependencies:
       '@tanstack/store': 0.11.0
-      vue: 3.5.40(typescript@6.0.3)
-      vue-demi: 0.14.10(vue@3.5.40(typescript@6.0.3))
+      vue: 3.6.0-rc.2(typescript@6.0.3)
+      vue-demi: 0.14.10(vue@3.6.0-rc.2(typescript@6.0.3))
 
   '@testing-library/angular@19.4.1(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(@angular/platform-browser@22.1.0(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)))(@angular/router@22.1.0(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(@angular/platform-browser@22.1.0(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)))(rxjs@7.8.2))(@testing-library/dom@10.4.1)':
     dependencies:
@@ -17499,14 +18010,12 @@ snapshots:
     dependencies:
       '@testing-library/dom': 10.4.1
 
-  '@testing-library/vue@8.1.0(@vue/compiler-dom@3.5.40)(@vue/compiler-sfc@3.5.40)(@vue/server-renderer@3.5.40)(vue@3.5.40(typescript@6.0.3))':
+  '@testing-library/vue@8.1.0(@vue/compiler-dom@3.6.0-rc.2)(vue@3.6.0-rc.2(typescript@6.0.3))':
     dependencies:
       '@babel/runtime': 7.29.7
       '@testing-library/dom': 9.3.4
-      '@vue/test-utils': 2.4.11(@vue/compiler-dom@3.5.40)(@vue/server-renderer@3.5.40)(vue@3.5.40(typescript@6.0.3))
-      vue: 3.5.40(typescript@6.0.3)
-    optionalDependencies:
-      '@vue/compiler-sfc': 3.5.40
+      '@vue/test-utils': 2.4.11(@vue/compiler-dom@3.6.0-rc.2)(vue@3.6.0-rc.2(typescript@6.0.3))
+      vue: 3.6.0-rc.2(typescript@6.0.3)
     transitivePeerDependencies:
       - '@vue/compiler-dom'
       - '@vue/server-renderer'
@@ -17797,10 +18306,10 @@ snapshots:
     optionalDependencies:
       babel-plugin-react-compiler: 1.0.0
 
-  '@vitejs/plugin-vue@5.2.4(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))(vue@3.5.40(typescript@6.0.3))':
+  '@vitejs/plugin-vue@5.2.4(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))(vue@3.6.0-rc.2(typescript@6.0.3))':
     dependencies:
       vite: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
-      vue: 3.5.40(typescript@6.0.3)
+      vue: 3.6.0-rc.2(typescript@6.0.3)
 
   '@vitest/coverage-istanbul@4.1.7(vitest@4.1.10)':
     dependencies:
@@ -17887,27 +18396,49 @@ snapshots:
       estree-walker: 2.0.2
       source-map-js: 1.2.1
 
+  '@vue/compiler-core@3.6.0-rc.2':
+    dependencies:
+      '@babel/parser': 7.29.8
+      '@vue/shared': 3.6.0-rc.2
+      entities: 7.0.1
+      estree-walker: 2.0.2
+      source-map-js: 1.2.1
+
   '@vue/compiler-dom@3.5.40':
     dependencies:
       '@vue/compiler-core': 3.5.40
       '@vue/shared': 3.5.40
 
-  '@vue/compiler-sfc@3.5.40':
+  '@vue/compiler-dom@3.6.0-rc.2':
+    dependencies:
+      '@vue/compiler-core': 3.6.0-rc.2
+      '@vue/shared': 3.6.0-rc.2
+
+  '@vue/compiler-sfc@3.6.0-rc.2':
     dependencies:
       '@babel/parser': 7.29.8
-      '@vue/compiler-core': 3.5.40
-      '@vue/compiler-dom': 3.5.40
-      '@vue/compiler-ssr': 3.5.40
-      '@vue/shared': 3.5.40
+      '@vue/compiler-core': 3.6.0-rc.2
+      '@vue/compiler-dom': 3.6.0-rc.2
+      '@vue/compiler-ssr': 3.6.0-rc.2
+      '@vue/compiler-vapor': 3.6.0-rc.2
+      '@vue/shared': 3.6.0-rc.2
       estree-walker: 2.0.2
       magic-string: 0.30.21
       postcss: 8.5.25
       source-map-js: 1.2.1
 
-  '@vue/compiler-ssr@3.5.40':
+  '@vue/compiler-ssr@3.6.0-rc.2':
     dependencies:
-      '@vue/compiler-dom': 3.5.40
-      '@vue/shared': 3.5.40
+      '@vue/compiler-dom': 3.6.0-rc.2
+      '@vue/shared': 3.6.0-rc.2
+
+  '@vue/compiler-vapor@3.6.0-rc.2':
+    dependencies:
+      '@babel/parser': 7.29.8
+      '@vue/compiler-dom': 3.6.0-rc.2
+      '@vue/shared': 3.6.0-rc.2
+      estree-walker: 2.0.2
+      source-map-js: 1.2.1
 
   '@vue/compiler-vue2@2.7.16':
     dependencies:
@@ -17941,34 +18472,44 @@ snapshots:
     dependencies:
       '@vue/shared': 3.5.40
 
-  '@vue/runtime-core@3.5.40':
+  '@vue/reactivity@3.6.0-rc.2':
     dependencies:
-      '@vue/reactivity': 3.5.40
-      '@vue/shared': 3.5.40
+      '@vue/shared': 3.6.0-rc.2
 
-  '@vue/runtime-dom@3.5.40':
+  '@vue/runtime-core@3.6.0-rc.2':
     dependencies:
-      '@vue/reactivity': 3.5.40
-      '@vue/runtime-core': 3.5.40
-      '@vue/shared': 3.5.40
+      '@vue/reactivity': 3.6.0-rc.2
+      '@vue/shared': 3.6.0-rc.2
+
+  '@vue/runtime-dom@3.6.0-rc.2':
+    dependencies:
+      '@vue/reactivity': 3.6.0-rc.2
+      '@vue/runtime-core': 3.6.0-rc.2
+      '@vue/shared': 3.6.0-rc.2
       csstype: 3.2.3
 
-  '@vue/server-renderer@3.5.40':
+  '@vue/runtime-vapor@3.6.0-rc.2(@vue/runtime-dom@3.6.0-rc.2)':
     dependencies:
-      '@vue/compiler-ssr': 3.5.40
-      '@vue/runtime-dom': 3.5.40
-      '@vue/shared': 3.5.40
+      '@vue/reactivity': 3.6.0-rc.2
+      '@vue/runtime-dom': 3.6.0-rc.2
+      '@vue/shared': 3.6.0-rc.2
+
+  '@vue/server-renderer@3.6.0-rc.2':
+    dependencies:
+      '@vue/compiler-ssr': 3.6.0-rc.2
+      '@vue/runtime-dom': 3.6.0-rc.2
+      '@vue/shared': 3.6.0-rc.2
 
   '@vue/shared@3.5.40': {}
 
-  '@vue/test-utils@2.4.11(@vue/compiler-dom@3.5.40)(@vue/server-renderer@3.5.40)(vue@3.5.40(typescript@6.0.3))':
+  '@vue/shared@3.6.0-rc.2': {}
+
+  '@vue/test-utils@2.4.11(@vue/compiler-dom@3.6.0-rc.2)(vue@3.6.0-rc.2(typescript@6.0.3))':
     dependencies:
-      '@vue/compiler-dom': 3.5.40
+      '@vue/compiler-dom': 3.6.0-rc.2
       js-beautify: 1.15.4
-      vue: 3.5.40(typescript@6.0.3)
+      vue: 3.6.0-rc.2(typescript@6.0.3)
       vue-component-type-helpers: 3.3.9
-    optionalDependencies:
-      '@vue/server-renderer': 3.5.40
 
   '@xmldom/xmldom@0.8.13': {}
 
@@ -24514,7 +25055,7 @@ snapshots:
 
   unpipe@1.0.0: {}
 
-  unplugin-vue@7.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(rolldown@1.2.1)(rollup@4.62.4)(sass@1.102.0)(terser@5.49.0)(vue@3.5.40(typescript@6.0.3))(yaml@2.9.0):
+  unplugin-vue@7.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(rolldown@1.2.1)(rollup@4.62.4)(sass@1.102.0)(terser@5.49.0)(vue@3.6.0-rc.2(typescript@6.0.3))(yaml@2.9.0):
     dependencies:
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
@@ -24522,7 +25063,7 @@ snapshots:
       obug: 2.1.4
       unplugin: 3.3.0(esbuild@0.28.1)(rolldown@1.2.1)(rollup@4.62.4)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
       vite: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
-      vue: 3.5.40(typescript@6.0.3)
+      vue: 3.6.0-rc.2(typescript@6.0.3)
     transitivePeerDependencies:
       - '@farmfe/core'
       - '@rspack/core'
@@ -24860,9 +25401,9 @@ snapshots:
 
   vue-component-type-helpers@3.3.9: {}
 
-  vue-demi@0.14.10(vue@3.5.40(typescript@6.0.3)):
+  vue-demi@0.14.10(vue@3.6.0-rc.2(typescript@6.0.3)):
     dependencies:
-      vue: 3.5.40(typescript@6.0.3)
+      vue: 3.6.0-rc.2(typescript@6.0.3)
 
   vue-eslint-parser@10.4.1(eslint@10.8.0(jiti@2.7.0)):
     dependencies:
@@ -24882,13 +25423,14 @@ snapshots:
       '@vue/language-core': 3.3.9
       typescript: 6.0.3
 
-  vue@3.5.40(typescript@6.0.3):
+  vue@3.6.0-rc.2(typescript@6.0.3):
     dependencies:
-      '@vue/compiler-dom': 3.5.40
-      '@vue/compiler-sfc': 3.5.40
-      '@vue/runtime-dom': 3.5.40
-      '@vue/server-renderer': 3.5.40
-      '@vue/shared': 3.5.40
+      '@vue/compiler-dom': 3.6.0-rc.2
+      '@vue/compiler-sfc': 3.6.0-rc.2
+      '@vue/runtime-dom': 3.6.0-rc.2
+      '@vue/runtime-vapor': 3.6.0-rc.2(@vue/runtime-dom@3.6.0-rc.2)
+      '@vue/server-renderer': 3.6.0-rc.2
+      '@vue/shared': 3.6.0-rc.2
     optionalDependencies:
       typescript: 6.0.3
 

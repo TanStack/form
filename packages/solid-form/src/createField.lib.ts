@@ -1,7 +1,14 @@
-import { shallow, useSelector } from '@tanstack/solid-store'
-import { createMemo, createRenderEffect, onCleanup } from 'solid-js'
+import { shallow } from '@tanstack/solid-store'
+import {
+  createMemo,
+  createRenderEffect,
+  createSignal,
+  onCleanup,
+  untrack,
+} from 'solid-js'
 import type { AnyFieldApi, FieldApiOptions } from '@tanstack/form-core'
 import type {
+  AnyInternalFieldApi,
   AnyInternalFormApi,
   InternalBaseFieldMeta,
 } from '@tanstack/form-core/internals'
@@ -19,15 +26,51 @@ interface InternalFieldProps extends FieldApiOptions<
   form: AnyInternalFormApi
 }
 
-export function createField(
-  options: Accessor<InternalFieldProps>,
-): Accessor<AnyFieldApi> {
-  const fieldApi = createMemo(() => {
-    const opts = options()
+function createFieldSelector<TSelected>(
+  fieldApi: Accessor<AnyInternalFieldApi>,
+  selector: (field: AnyInternalFieldApi) => TSelected,
+  compare: (previous: TSelected, next: TSelected) => boolean,
+): Accessor<TSelected> {
+  const [selected, setSelected] = createSignal<TSelected>(
+    selector(fieldApi()),
+    { equals: compare },
+  )
 
-    return opts.form._getOrCreateFieldApi({
-      ...opts,
-      name: opts.name,
+  createRenderEffect(() => {
+    const field = fieldApi()
+    setSelected(() => selector(field))
+
+    const subscription = field.atom.subscribe(() => {
+      setSelected(() => selector(field))
+    })
+
+    onCleanup(() => subscription.unsubscribe())
+  })
+
+  return selected
+}
+
+function createInternalField(
+  options: Accessor<InternalFieldProps>,
+): Accessor<AnyInternalFieldApi> {
+  const initialForm = untrack(options).form
+  const [resetVersion, setResetVersion] = createSignal(
+    initialForm._atoms.resetVersion.get(),
+  )
+  const resetSubscription = initialForm._atoms.resetVersion.subscribe(
+    (version) => setResetVersion(version),
+  )
+  onCleanup(() => resetSubscription.unsubscribe())
+
+  const fieldApi = createMemo(() => {
+    const reactiveOptions = options()
+    const form = reactiveOptions.form
+    const name = reactiveOptions.name
+    void resetVersion()
+
+    return form._getOrCreateFieldApi({
+      ...untrack(options),
+      name,
     })
   })
 
@@ -40,9 +83,21 @@ export function createField(
     onCleanup(cleanup)
   })
 
-  const state = useSelector(fieldApi().atom, (value) => value, {
-    compare: shallow,
-  })
+  return fieldApi
+}
+
+export function createField(
+  options: Accessor<InternalFieldProps>,
+): Accessor<AnyFieldApi> {
+  const fieldApi = createInternalField(options)
+  const state = createFieldSelector(
+    fieldApi,
+    (field) => ({
+      value: field.value,
+      meta: field.meta,
+    }),
+    shallow,
+  )
 
   return createMemo(
     () => {
@@ -57,37 +112,19 @@ export function createField(
 export function createArrayField(
   options: Accessor<InternalFieldProps>,
 ): Accessor<AnyFieldApi> {
-  const fieldApi = createMemo(() => {
-    const opts = options()
-
-    return opts.form._getOrCreateFieldApi({
-      ...opts,
-      name: opts.name,
-    })
-  })
-
-  createRenderEffect(() => {
-    fieldApi()._update(options())
-  })
-
-  createRenderEffect(() => {
-    const cleanup = fieldApi()._register()
-    onCleanup(cleanup)
-  })
-
-  const valueLength = useSelector(
-    fieldApi().atom,
-    (state) => state.value.length,
-  )
-  const arrayVersion = useSelector(
-    fieldApi().atom,
-    (state) => (state.meta as never as InternalBaseFieldMeta)._arrayVersion,
+  const fieldApi = createInternalField(options)
+  const arrayState = createFieldSelector(
+    fieldApi,
+    (field) => ({
+      length: field.value.length,
+      version: (field.meta as InternalBaseFieldMeta)._arrayVersion,
+    }),
+    shallow,
   )
 
   return createMemo(
     () => {
-      valueLength()
-      arrayVersion()
+      arrayState()
       return fieldApi()
     },
     undefined,

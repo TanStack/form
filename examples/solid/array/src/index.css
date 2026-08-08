@@ -1,0 +1,76 @@
+#root {
+  max-width: 100%;
+  margin: 0 5rem;
+  text-align: center;
+  border-inline: 1px solid var(--border);
+  min-height: 100svh;
+  box-sizing: border-box;
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --color-text: #08060d;
+}
+
+#root button {
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: var(--color-text);
+  background: #f4f3ec;
+  border: 2px solid transparent;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  transition: border-color 0.3s;
+  margin-inline: 0.5rem;
+  margin-top: 0.5rem;
+  font-family: ui-monospace, Consolas, monospace;
+  display: inline-flex;
+  cursor: pointer;
+}
+
+#root button:hover {
+  border: 2px solid rgba(8, 6, 13, 0.5);
+}
+
+#root ul {
+  list-style: none;
+  margin: 0;
+  padding: 2rem 0 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8em, 1fr));
+  gap: 0.75rem;
+}
+
+#root li {
+  min-width: 0;
+}
+
+#root li label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+#root input {
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid #ccc;
+  border-radius: 0.4rem;
+  font-size: 1rem;
+}
+
+#root #itemsAmount {
+  max-width: 10rem;
+  text-align: end;
+}
+
+#root li input:focus {
+  outline: none;
+  border-color: #646cff;
+  box-shadow: 0 0 0 2px rgba(100, 108, 255, 0.2);
+}

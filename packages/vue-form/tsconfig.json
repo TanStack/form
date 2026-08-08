@@ -4,10 +4,8 @@
     "jsx": "preserve",
     "jsxImportSource": "vue",
     "moduleResolution": "Bundler",
-    "types": ["vue/jsx", "@testing-library/jest-dom"],
-    "paths": {
-      "@tanstack/form-core": ["../form-core/src"]
-    }
+    "types": ["vue/jsx", "@testing-library/jest-dom"]
   },
-  "include": ["src", "tests", "eslint.config.js", "vite.config.ts"]
+  "include": ["src", "tests", "vitest.config.ts"],
+  "exclude": ["eslint.config.js"]
 }

@@ -1,0 +1,21 @@
+{
+  "name": "@tanstack/form-example-vue-large-form",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port=3003",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test:types": "vue-tsc --noEmit"
+  },
+  "dependencies": {
+    "@tanstack/vue-form": "^1.33.3",
+    "vue": "^3.6.0-rc.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.4",
+    "typescript": "^6.0.2",
+    "vite": "^8.1.2",
+    "vue-tsc": "^3.3.9"
+  }
+}

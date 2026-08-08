@@ -1,0 +1,19 @@
+{
+  "name": "@tanstack/form-example-lit-large-form",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port=3406",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test:types": "tsc"
+  },
+  "dependencies": {
+    "@tanstack/lit-form": "^1.33.3",
+    "lit": "^3.3.1"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.2",
+    "vite": "^8.1.2"
+  }
+}
