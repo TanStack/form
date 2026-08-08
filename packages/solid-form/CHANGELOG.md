@@ -1,5 +1,14 @@
 # @tanstack/solid-form
 
+## 1.33.4
+
+### Patch Changes
+
+- [#2263](https://github.com/TanStack/form/pull/2263) [`d7fd741`](https://github.com/TanStack/form/commit/d7fd741ea6bfcb762a556a52c9fa6cc146da22af) - Generate the default `formId` with Solid's `createUniqueId` so it is SSR-safe. Previously, when no `formId` was configured, `createForm` did not provide a fallback, so `FormApi` generated a random UUID that differed between the server render and the client render. Binding that generated id (`<form id={form.formId}>`) produced a hydration mismatch under SolidStart. An explicitly provided `formId` was already forwarded and is unchanged. This mirrors the existing behaviour of the React, Preact, and Vue adapters.
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.33.4
+
 ## 1.33.3
 
 ### Patch Changes
