@@ -166,6 +166,31 @@
               "to": "framework/vue/guides/debugging"
             }
           ]
+        },
+        {
+          "label": "solid",
+          "children": [
+            {
+              "label": "Form Validation",
+              "to": "framework/solid/guides/validation"
+            },
+            {
+              "label": "Async Initial Values",
+              "to": "framework/solid/guides/async-initial-values"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/solid/guides/arrays"
+            },
+            {
+              "label": "UI Libraries",
+              "to": "framework/solid/guides/ui-libraries"
+            },
+            {
+              "label": "Debugging",
+              "to": "framework/solid/guides/debugging"
+            }
+          ]
         }
       ]
     },
@@ -325,6 +350,47 @@
             {
               "label": "Standard Schema",
               "to": "framework/vue/examples/standard-schema"
+            }
+          ]
+        },
+        {
+          "label": "solid",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "framework/solid/examples/simple"
+            },
+            {
+              "label": "Basic",
+              "to": "framework/solid/examples/basic"
+            },
+            {
+              "label": "Form Splitting",
+              "to": "framework/solid/examples/basic-splitting-form"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/solid/examples/array"
+            },
+            {
+              "label": "Field Groups",
+              "to": "framework/solid/examples/field-groups"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/solid/examples/large-form"
+            },
+            {
+              "label": "Multi-Step Wizard",
+              "to": "framework/solid/examples/multi-step-wizard"
+            },
+            {
+              "label": "Standard Schema",
+              "to": "framework/solid/examples/standard-schema"
+            },
+            {
+              "label": "TanStack Query Integration",
+              "to": "framework/solid/examples/query-integration"
             }
           ]
         }

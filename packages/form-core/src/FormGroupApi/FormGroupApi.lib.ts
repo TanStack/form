@@ -260,9 +260,12 @@ export class InternalFormGroupApi<
 
   _getFormFieldOptions<TOptions extends AnyFieldApiOptions>(
     options: TOptions,
+    mergeOptions: (props: TOptions, overrides: Partial<TOptions>) => TOptions,
   ): AnyFieldApiOptions {
-    return transformFieldOptionsFieldNames(options, (fieldName) =>
-      this._getPrefixedFieldName(fieldName),
+    return transformFieldOptionsFieldNames(
+      options,
+      (fieldName) => this._getPrefixedFieldName(fieldName),
+      mergeOptions,
     )
   }
 

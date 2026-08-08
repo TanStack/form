@@ -180,123 +180,159 @@ export function FieldInfo({ field }: { field: AnyFieldApi }) {
 
 <!-- ::end:tabs -->
 
-# Vue
+# Solid
 
-In the example below, you can see TanStack Form in action with the Vue framework adapter:
+In the example below, you can see TanStack Form in action with the Solid framework adapter:
 
-[Open in CodeSandbox](https://codesandbox.io/s/github/tanstack/form/tree/alpha/examples/vue/simple)
+[Open in CodeSandbox](https://codesandbox.io/s/github/tanstack/form/tree/alpha/examples/solid/simple)
 
 <!-- ::start:tabs variant="files" -->
 
-```vue title="App.vue"
-<script setup lang="ts">
-import { useForm } from '@tanstack/vue-form'
-import FieldInfo from './FieldInfo.vue'
+```tsx title="App.tsx"
+import { render } from 'solid-js/web'
+import { createForm } from '@tanstack/solid-form'
+import { FieldInfo } from './FieldInfo.tsx'
 
-const form = useForm({
-  defaultValues: {
-    firstName: '',
-    lastName: '',
-  },
-  onSubmit: async ({ value }) => {
-    // Do something with form data
-    console.log(value)
-  },
-})
+function App() {
+  const form = createForm(() => ({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+    },
+    onSubmit: async ({ value }) => {
+      console.log(value)
+    },
+  }))
 
-async function validateFirstName({ value }: { value: string }) {
-  await new Promise((resolve) => setTimeout(resolve, 1000))
-  return value.includes('error') && 'No "error" allowed in first name'
-}
-</script>
-
-<template>
-  <div>
-    <h1>Simple Form Example</h1>
-    <form @submit.prevent.stop="form.handleSubmit()">
-      <div>
-        <form.Field
-          name="firstName"
-          :validators="[
-            {
-              run: ({ value }) =>
-                !value
-                  ? 'A first name is required'
-                  : value.length < 3
-                    ? 'First name must be at least 3 characters'
-                    : undefined,
-              triggers: ['change'],
-            },
-            {
-              run: validateFirstName,
-              triggers: ['change'],
-              triggerDebounceMs: 500,
-            },
-          ]"
-          v-slot="{ field }"
-        >
-          <label :for="field.name">First Name:</label>
-          <input
-            :id="field.name"
-            :name="field.name"
-            :value="field.value"
-            :aria-invalid="field.meta.isInvalid"
-            @blur="field.handleBlur"
-            @input="
-              field.handleChange(($event.target as HTMLInputElement).value)
-            "
-          />
-          <FieldInfo :field="field" />
-        </form.Field>
-      </div>
-      <div>
-        <form.Field name="lastName" v-slot="{ field }">
-          <label :for="field.name">Last Name:</label>
-          <input
-            :id="field.name"
-            :name="field.name"
-            :value="field.value"
-            :aria-invalid="field.meta.isInvalid"
-            @blur="field.handleBlur"
-            @input="
-              field.handleChange(($event.target as HTMLInputElement).value)
-            "
-          />
-          <FieldInfo :field="field" />
-        </form.Field>
-      </div>
-      <form.Subscribe
-        :selector="(state) => [state.canSubmit, state.isSubmitting] as const"
-        v-slot="[canSubmit, isSubmitting]"
+  return (
+    <div>
+      <h1>Simple Form Example</h1>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault()
+          event.stopPropagation()
+          form.handleSubmit()
+        }}
       >
-        <button type="submit" :disabled="!canSubmit || isSubmitting">
-          {{ isSubmitting ? '...' : 'Submit' }}
-        </button>
-        <button type="reset" @click.prevent="form.reset()">Reset</button>
-      </form.Subscribe>
-    </form>
-  </div>
-</template>
+        <div>
+          <form.Field
+            name="firstName"
+            validators={[
+              {
+                run: ({ value }) =>
+                  !value
+                    ? 'A first name is required'
+                    : value.length < 3
+                      ? 'First name must be at least 3 characters'
+                      : undefined,
+                triggers: ['change'],
+              },
+              {
+                run: async ({ value }) => {
+                  await new Promise((resolve) => setTimeout(resolve, 1000))
+                  return (
+                    value.includes('error') &&
+                    'No "error" allowed in first name'
+                  )
+                },
+                triggers: ['change'],
+                triggerDebounceMs: 500,
+              },
+            ]}
+          >
+            {(field) => (
+              <>
+                <label for={field().name}>First Name:</label>
+                <input
+                  id={field().name}
+                  name={field().name}
+                  value={field().value}
+                  onBlur={field().handleBlur}
+                  onInput={(event) =>
+                    field().handleChange(event.currentTarget.value)
+                  }
+                  aria-invalid={field().meta.isInvalid}
+                />
+                <FieldInfo field={field} />
+              </>
+            )}
+          </form.Field>
+        </div>
+        <div>
+          <form.Field name="lastName">
+            {(field) => (
+              <>
+                <label for={field().name}>Last Name:</label>
+                <input
+                  id={field().name}
+                  name={field().name}
+                  value={field().value}
+                  onBlur={field().handleBlur}
+                  onInput={(event) =>
+                    field().handleChange(event.currentTarget.value)
+                  }
+                  aria-invalid={field().meta.isInvalid}
+                />
+                <FieldInfo field={field} />
+              </>
+            )}
+          </form.Field>
+        </div>
+        <form.Subscribe
+          selector={(state) => [state.canSubmit, state.isSubmitting] as const}
+        >
+          {(state) => (
+            <>
+              <button type="submit" disabled={!state()[0] || state()[1]}>
+                {state()[1] ? '...' : 'Submit'}
+              </button>
+              <button
+                type="reset"
+                onClick={(event) => {
+                  event.preventDefault()
+                  form.reset()
+                }}
+              >
+                Reset
+              </button>
+            </>
+          )}
+        </form.Subscribe>
+      </form>
+    </div>
+  )
+}
+
+render(() => <App />, document.getElementById('root')!)
 ```
 
-```vue title="FieldInfo.vue"
-<script setup lang="ts">
-import type { AnyFieldApi } from '@tanstack/vue-form'
+```tsx title="FieldInfo.tsx"
+import { For, Show } from 'solid-js'
+import type { Accessor } from 'solid-js'
+import type { AnyFieldApi } from '@tanstack/solid-form'
 
-defineProps<{ field: AnyFieldApi }>()
-</script>
-
-<template>
-  <template v-if="field.meta.isTouched && field.meta.isInvalid">
-    <em role="alert">
-      {{ field.errors.map((error) => error.message).join(', ') }}
-    </em>
-  </template>
-  <span v-if="field.meta.isValidating" aria-live="polite"> Validating... </span>
-</template>
+export function FieldInfo(props: { field: Accessor<AnyFieldApi> }) {
+  return (
+    <>
+      <Show when={props.field().meta.isTouched && props.field().meta.isInvalid}>
+        <em role="alert">
+          <For each={props.field().errors}>
+            {(error, index) => (
+              <>
+                {index() > 0 ? ', ' : ''}
+                {error.message}
+              </>
+            )}
+          </For>
+        </em>
+      </Show>
+      <Show when={props.field().meta.isValidating}>Validating...</Show>
+    </>
+  )
+}
 ```
 
-<!-- ::end:tabs  -->
+<!-- ::end:tabs -->
 
 <!-- ::end:framework -->
 
