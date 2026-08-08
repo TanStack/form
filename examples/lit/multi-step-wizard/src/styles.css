@@ -1,0 +1,27 @@
+#root {
+  display: block;
+  max-width: 32rem;
+  margin: 0 auto;
+  font-family: system-ui, sans-serif;
+}
+
+#root form,
+#root label {
+  display: grid;
+  gap: 0.75rem;
+}
+
+#root input,
+#root button {
+  font: inherit;
+  padding: 0.55rem 0.7rem;
+}
+
+#root .actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+#root small {
+  color: #b42318;
+}

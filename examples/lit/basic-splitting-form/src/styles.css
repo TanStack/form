@@ -1,0 +1,24 @@
+#root {
+  display: block;
+  max-width: 32rem;
+  margin: 0 auto;
+  font-family: system-ui, sans-serif;
+}
+
+#root form,
+#root label {
+  display: grid;
+  gap: 0.5rem;
+}
+
+#root input,
+#root button {
+  font: inherit;
+  padding: 0.55rem 0.7rem;
+}
+
+#root small {
+  min-height: 1.25rem;
+  color: #b42318;
+  white-space: pre-line;
+}

@@ -1,0 +1,38 @@
+#root {
+  width: 70rem;
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  font-family: system-ui, sans-serif;
+}
+
+#root form,
+#root label {
+  display: grid;
+  gap: 0.5rem;
+}
+
+#root form {
+  max-width: 24rem;
+  margin: auto;
+}
+
+#root input,
+#root button {
+  font: inherit;
+  padding: 0.55rem 0.7rem;
+}
+
+#root small {
+  min-height: 1.25rem;
+  color: #b42318;
+  white-space: pre-line;
+}
+
+#root input[aria-invalid='true'] {
+  border-color: #b42318;
+}
+
+#root .validating {
+  opacity: 0.7;
+}

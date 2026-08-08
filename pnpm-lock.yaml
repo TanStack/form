@@ -102,6 +102,171 @@ importers:
         specifier: ^4.0.17
         version: 4.1.10(@types/node@25.9.5)(@vitest/coverage-istanbul@4.1.7(vitest@4.1.10))(jsdom@27.4.0)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
 
+  examples/lit/array:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/lit/basic:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/lit/basic-splitting-form:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/lit/field-groups:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/lit/large-form:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/lit/multi-step-wizard:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/lit/query-integration:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      '@tanstack/query-core':
+        specifier: ^5.89.0
+        version: 5.101.4
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/lit/simple:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/lit/standard-schema:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      arktype:
+        specifier: ^2.1.22
+        version: 2.2.3
+      effect:
+        specifier: ^3.17.14
+        version: 3.22.1
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+      valibot:
+        specifier: ^1.1.0
+        version: 1.4.2(typescript@6.0.3)
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
   examples/react/array:
     dependencies:
       '@tanstack/pacer-lite':
