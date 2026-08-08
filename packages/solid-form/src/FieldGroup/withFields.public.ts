@@ -1,8 +1,8 @@
 import {
-  defineFieldsRuntime,
-  helperRuntime,
-  withFieldsRuntime,
-} from './withFields.lib'
+  defineFieldGroupFieldsRuntime as defineFieldsRuntime,
+  fieldGroupHelperRuntime as helperRuntime,
+} from '@tanstack/form-core/internals'
+import { withFieldsRuntime } from './withFields.lib'
 import type {
   DeepKeys,
   DeepKeysWhereValueIncludes,

@@ -234,6 +234,34 @@ describe('FieldGroup', () => {
     expect(getByTestId('field')).toHaveTextContent('anything.bar:Updated')
   })
 
+  it('updates logical field bindings when props change', async () => {
+    function Component() {
+      const [binding, setBinding] = React.useState<'first' | 'second'>('first')
+      const form = useForm({
+        defaultValues: {
+          first: { bar: 'One' },
+          second: { bar: 'Two' },
+        },
+      })
+
+      return (
+        <>
+          <NestedFields form={form} fields={{ foo: binding }} />
+          <button type="button" onClick={() => setBinding('second')}>
+            Show second
+          </button>
+        </>
+      )
+    }
+
+    const { getByRole, getByTestId } = render(<Component />)
+    expect(getByTestId('field')).toHaveTextContent('first.bar:One')
+
+    await user.click(getByRole('button', { name: 'Show second' }))
+
+    expect(getByTestId('field')).toHaveTextContent('second.bar:Two')
+  })
+
   it('exposes subscribed field meta from field group children', () => {
     const MetaFields = withFields(
       nestedFields,

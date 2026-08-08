@@ -124,20 +124,19 @@ export function transformFieldOptionsFieldNames<
     get name() {
       return transformFieldName(options.name)
     },
+    get validators() {
+      return transformFieldOptionItemsWithWatchedFields(
+        options.validators,
+        transformFieldName,
+      )
+    },
+    get listeners() {
+      return transformFieldOptionItemsWithWatchedFields(
+        options.listeners,
+        transformFieldName,
+      )
+    },
   } as Partial<TFieldOptions>
-
-  if (options.validators) {
-    overrides.validators = transformFieldOptionItemsWithWatchedFields(
-      options.validators,
-      transformFieldName,
-    )
-  }
-  if (options.listeners) {
-    overrides.listeners = transformFieldOptionItemsWithWatchedFields(
-      options.listeners,
-      transformFieldName,
-    ) as never
-  }
 
   return mergeOptions(fieldOptions, overrides)
 }

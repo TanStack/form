@@ -152,6 +152,53 @@ describe('Solid adapter parity', () => {
     dispose()
   })
 
+  it('reactively updates form group field listeners', () => {
+    const firstListener = vi.fn()
+    const secondListener = vi.fn()
+    let useSecondListener!: () => void
+    let change!: (value: string) => void
+
+    function Component() {
+      const [usesSecondListener, setUsesSecondListener] = createSignal(false)
+      useSecondListener = () => setUsesSecondListener(true)
+      const form = createForm(() => ({
+        defaultValues: { guest: { name: '' } },
+      }))
+
+      return (
+        <form.FormGroup name="guest">
+          {(group) => (
+            <group.Field
+              name="name"
+              listeners={[
+                {
+                  triggers: ['change'],
+                  run: usesSecondListener() ? secondListener : firstListener,
+                },
+              ]}
+            >
+              {(field) => {
+                change = field().handleChange
+                return null
+              }}
+            </group.Field>
+          )}
+        </form.FormGroup>
+      )
+    }
+
+    const { dispose } = mount(() => <Component />)
+    change('First')
+    expect(firstListener).toHaveBeenCalledOnce()
+
+    useSecondListener()
+    change('Second')
+
+    expect(firstListener).toHaveBeenCalledOnce()
+    expect(secondListener).toHaveBeenCalledOnce()
+    dispose()
+  })
+
   it('supports app field components through Solid context', () => {
     function TextField(props: {
       field: Accessor<FieldWithValue<string>>
