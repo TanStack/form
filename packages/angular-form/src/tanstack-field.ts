@@ -28,8 +28,7 @@ import type {
 } from '@tanstack/form-core/internals'
 
 export type AngularFieldSource =
-  | AnyInternalFormApi
-  | InternalFormGroupApi<any, any, any, any, any>
+  AnyInternalFormApi | InternalFormGroupApi<any, any, any, any, any>
 
 export type AngularFieldData<TSource extends AngularFieldSource> =
   TSource extends InternalFormGroupApi<any, any, infer TGroupValue, any, any>
@@ -46,14 +45,30 @@ type AngularParentFormData<TSource extends AngularFieldSource> =
       : never
 
 type AngularSourceFormErrorTypes<TSource extends AngularFieldSource> =
-  TSource extends InternalFormGroupApi<any, any, any, any, infer TFormErrorTypes>
+  TSource extends InternalFormGroupApi<
+    any,
+    any,
+    any,
+    any,
+    infer TFormErrorTypes
+  >
     ? TFormErrorTypes
-    : TSource extends InternalFormApi<any, infer TFormValidators, infer TSubmitReturn>
+    : TSource extends InternalFormApi<
+          any,
+          infer TFormValidators,
+          infer TSubmitReturn
+        >
       ? ToFormErrorTypes<TFormValidators, TSubmitReturn>
       : never
 
 type AngularSourceGroupFieldError<TSource extends AngularFieldSource> =
-  TSource extends InternalFormGroupApi<any, any, any, infer TGroupValidators, any>
+  TSource extends InternalFormGroupApi<
+    any,
+    any,
+    any,
+    infer TGroupValidators,
+    any
+  >
     ? ToFormGroupErrorTypes<TGroupValidators>['fieldError']
     : never
 

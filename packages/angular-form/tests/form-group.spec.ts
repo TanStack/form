@@ -16,11 +16,7 @@ describe('TanStackFormGroup', () => {
           name="guest"
           #group="formGroup"
         >
-          <ng-container
-            [tanstackField]="group.api"
-            name="name"
-            #name="field"
-          >
+          <ng-container [tanstackField]="group.api" name="name" #name="field">
             <button type="button" (click)="name.api.handleChange('A')">
               Change name
             </button>

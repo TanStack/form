@@ -1,10 +1,7 @@
 import { Directive, effect, inject } from '@angular/core'
 import { TanStackFieldInjectable } from './injectable'
 import { TanStackArrayField, TanStackField } from './tanstack-field'
-import type {
-  AngularFieldData,
-  AngularFieldSource,
-} from './tanstack-field'
+import type { AngularFieldData, AngularFieldSource } from './tanstack-field'
 import type { DeepKeys, DeepValue, FieldValidators } from '@tanstack/form-core'
 
 @Directive({
@@ -21,12 +18,7 @@ export class TanStackAppField<
     TFieldName,
     TFieldValue
   >,
-> extends TanStackField<
-  TSource,
-  TFieldName,
-  TFieldValue,
-  TFieldValidators
-> {
+> extends TanStackField<TSource, TFieldName, TFieldValue, TFieldValidators> {
   private readonly injectable = inject(
     TanStackFieldInjectable,
   ) as TanStackFieldInjectable<any>

@@ -251,11 +251,7 @@ submitGroup(event: SubmitEvent, group: { handleSubmit: () => unknown }) {
   #profile="formGroup"
 >
   <form (submit)="submitGroup($event, profile.api)">
-    <ng-container
-      [tanstackField]="profile.api"
-      name="name"
-      #name="field"
-    >
+    <ng-container [tanstackField]="profile.api" name="name" #name="field">
       <input
         [name]="name.api.name"
         [value]="name.api.value"
