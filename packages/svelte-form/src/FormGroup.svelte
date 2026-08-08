@@ -60,9 +60,15 @@
     form: AnyInternalFormApi & Record<string, any>,
   ) {
     group.Field = (internals: any, props: any) =>
-      form.Field(internals, group._getFormFieldOptions(props))
+      form.Field(
+        internals,
+        group._getFormFieldOptions(props, withComponentProps),
+      )
     group.ArrayField = (internals: any, props: any) =>
-      form.ArrayField(internals, group._getFormFieldOptions(props))
+      form.ArrayField(
+        internals,
+        group._getFormFieldOptions(props, withComponentProps),
+      )
     group.Subscribe = (internals: any, props: any) =>
       form._Subscribe(
         internals,

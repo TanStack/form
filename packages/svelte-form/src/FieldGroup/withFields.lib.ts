@@ -67,7 +67,11 @@ function createFieldGroupApi(
           property === 'listeners'
         ) {
           return Reflect.get(
-            transformFieldOptionsFieldNames({ ...target }, resolveName),
+            transformFieldOptionsFieldNames(
+              { ...target },
+              resolveName,
+              withComponentProps,
+            ),
             property,
           )
         }
