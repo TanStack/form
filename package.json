@@ -39,6 +39,7 @@
     "generate-docs": "node scripts/generate-docs.ts",
     "changeset": "changeset",
     "changeset:publish": "changeset publish",
+    "changeset:verify-release": "node scripts/verify-release-mode.ts",
     "changeset:version": "changeset version && pnpm install --no-frozen-lockfile && pnpm format"
   },
   "nx": {

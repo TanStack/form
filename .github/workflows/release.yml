@@ -6,7 +6,7 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 env:
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
@@ -31,10 +31,13 @@ jobs:
         uses: TanStack/config/.github/setup@99d23c6212f36eff17d30a21e58da77f55a4cfe9 # main
       - name: Run Tests
         run: pnpm run test:ci
+      - name: Verify Release Mode
+        run: pnpm run changeset:verify-release -- ${{ github.ref_name }}
       - name: Run Changesets (version or publish)
         id: changesets
         uses: changesets/action@6a0a831ff30acef54f2c6aa1cbbc1096b066edaf # v1.7.0
         with:
+          branch: ${{ github.ref_name }}
           version: pnpm run changeset:version
           publish: pnpm run changeset:publish
           commit: 'ci: Version Packages'
