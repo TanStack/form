@@ -6,6 +6,68 @@ import { TanStackField, TanStackFormGroup, injectForm } from '../src/index'
 import type { FormGroupValidators } from '@tanstack/form-core'
 
 describe('TanStackFormGroup', () => {
+  it('maps group-relative field options through the core group API', async () => {
+    @Component({
+      standalone: true,
+      imports: [TanStackField, TanStackFormGroup],
+      template: `
+        <ng-container
+          [tanstackFormGroup]="form"
+          name="guest"
+          #group="formGroup"
+        >
+          <ng-container
+            [tanstackField]="group.api"
+            name="name"
+            #name="field"
+          >
+            <button type="button" (click)="name.api.handleChange('A')">
+              Change name
+            </button>
+          </ng-container>
+          <ng-container
+            [tanstackField]="group.api"
+            name="confirmation"
+            [validators]="fieldValidators"
+            [listeners]="fieldListeners"
+            #confirmation="field"
+          >
+            <output>{{ confirmation.api.name }}</output>
+          </ng-container>
+        </ng-container>
+      `,
+    })
+    class TestComponent {
+      validator = vi.fn(() => undefined)
+      listener = vi.fn()
+      fieldValidators = [
+        {
+          triggers: ['change'] as const,
+          watchFields: ['name'] as const,
+          run: this.validator,
+        },
+      ]
+      fieldListeners = [
+        {
+          triggers: ['change'] as const,
+          watchFields: ['name'] as const,
+          run: this.listener,
+        },
+      ]
+      form = injectForm({
+        defaultValues: { guest: { name: '', confirmation: '' } },
+      })
+    }
+
+    const screen = await render(TestComponent)
+    const user = userEvent.setup()
+
+    expect(screen.getByText('guest.confirmation')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Change name' }))
+    expect(screen.fixture.componentInstance.validator).toHaveBeenCalled()
+    expect(screen.fixture.componentInstance.listener).toHaveBeenCalled()
+  })
+
   it('validates and submits one scoped section of a form', async () => {
     @Component({
       standalone: true,
@@ -20,8 +82,8 @@ describe('TanStackFormGroup', () => {
         >
           <form (submit)="submitGroup($event, group.api)">
             <ng-container
-              [tanstackField]="form"
-              [name]="group.fieldName('name')"
+              [tanstackField]="group.api"
+              name="name"
               #field="field"
             >
               <input

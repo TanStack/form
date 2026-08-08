@@ -80,15 +80,6 @@ export class TanStackFormGroup<
     return this.group
   }
 
-  /** Resolves a group-relative field name to its concrete form path. */
-  fieldName<TFieldName extends DeepKeys<TGroupValue>>(
-    name: TFieldName,
-  ): DeepKeys<TFormData> {
-    const relativeName = String(name)
-    const separator = relativeName.startsWith('[') ? '' : '.'
-    return `${String(this.name())}${separator}${relativeName}` as DeepKeys<TFormData>
-  }
-
   constructor() {
     effect(() => this.api.update(this.getOptions() as never))
 

@@ -32,8 +32,8 @@ import type { wizardFormOptions } from './shared-form'
         <app-text-field
           label="Step 1 Name"
           tanstack-app-field
-          [tanstackField]="form()"
-          [name]="group.fieldName('name')"
+          [tanstackField]="group.api"
+          name="name"
         />
         <button type="submit" [disabled]="group.api.state.isSubmitting">
           Next

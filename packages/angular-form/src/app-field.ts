@@ -2,11 +2,10 @@ import { Directive, effect, inject } from '@angular/core'
 import { TanStackFieldInjectable } from './injectable'
 import { TanStackArrayField, TanStackField } from './tanstack-field'
 import type {
-  DeepKeys,
-  DeepValue,
-  FieldValidators,
-  FormValidators,
-} from '@tanstack/form-core'
+  AngularFieldData,
+  AngularFieldSource,
+} from './tanstack-field'
+import type { DeepKeys, DeepValue, FieldValidators } from '@tanstack/form-core'
 
 @Directive({
   selector: '[tanstack-app-field]',
@@ -14,23 +13,19 @@ import type {
   providers: [TanStackFieldInjectable],
 })
 export class TanStackAppField<
-  TFormData,
-  const TFieldName extends DeepKeys<TFormData>,
-  TFieldValue extends DeepValue<TFormData, TFieldName>,
+  TSource extends AngularFieldSource,
+  const TFieldName extends DeepKeys<AngularFieldData<TSource>>,
+  TFieldValue extends DeepValue<AngularFieldData<TSource>, TFieldName>,
   const TFieldValidators extends FieldValidators<
-    TFormData,
+    AngularFieldData<TSource>,
     TFieldName,
     TFieldValue
   >,
-  const TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
 > extends TanStackField<
-  TFormData,
+  TSource,
   TFieldName,
   TFieldValue,
-  TFieldValidators,
-  TFormValidators,
-  TSubmitReturn
+  TFieldValidators
 > {
   private readonly injectable = inject(
     TanStackFieldInjectable,
@@ -48,23 +43,19 @@ export class TanStackAppField<
   providers: [TanStackFieldInjectable],
 })
 export class TanStackAppArrayField<
-  TFormData,
-  const TFieldName extends DeepKeys<TFormData>,
-  TFieldValue extends DeepValue<TFormData, TFieldName>,
+  TSource extends AngularFieldSource,
+  const TFieldName extends DeepKeys<AngularFieldData<TSource>>,
+  TFieldValue extends DeepValue<AngularFieldData<TSource>, TFieldName>,
   const TFieldValidators extends FieldValidators<
-    TFormData,
+    AngularFieldData<TSource>,
     TFieldName,
     TFieldValue
   >,
-  const TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
 > extends TanStackArrayField<
-  TFormData,
+  TSource,
   TFieldName,
   TFieldValue,
-  TFieldValidators,
-  TFormValidators,
-  TSubmitReturn
+  TFieldValidators
 > {
   private readonly injectable = inject(
     TanStackFieldInjectable,

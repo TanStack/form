@@ -32,8 +32,8 @@ import type { wizardFormOptions } from './shared-form'
         <app-text-field
           label="Step 2 Name"
           tanstack-app-field
-          [tanstackField]="form()"
-          [name]="group.fieldName('name')"
+          [tanstackField]="group.api"
+          name="name"
         />
         <div class="actions">
           <button type="button" (click)="back()()">Back</button>

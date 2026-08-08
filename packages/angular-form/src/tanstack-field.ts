@@ -6,6 +6,7 @@ import {
   input,
   signal,
 } from '@angular/core'
+import { InternalFormGroupApi } from '@tanstack/form-core/internals'
 import type {
   DeepKeys,
   DeepValue,
@@ -16,12 +17,66 @@ import type {
   FormValidators,
   ToFieldError,
   ToFormErrorTypes,
+  ToFormGroupErrorTypes,
 } from '@tanstack/form-core'
 import type {
+  AnyFieldApiOptions,
   AnyInternalFieldApi,
+  AnyInternalFormApi,
   InternalBaseFieldMeta,
   InternalFormApi,
 } from '@tanstack/form-core/internals'
+
+export type AngularFieldSource =
+  | AnyInternalFormApi
+  | InternalFormGroupApi<any, any, any, any, any>
+
+export type AngularFieldData<TSource extends AngularFieldSource> =
+  TSource extends InternalFormGroupApi<any, any, infer TGroupValue, any, any>
+    ? TGroupValue
+    : TSource extends InternalFormApi<infer TFormData, any, any>
+      ? TFormData
+      : never
+
+type AngularParentFormData<TSource extends AngularFieldSource> =
+  TSource extends InternalFormGroupApi<infer TFormData, any, any, any, any>
+    ? TFormData
+    : TSource extends InternalFormApi<infer TFormData, any, any>
+      ? TFormData
+      : never
+
+type AngularSourceFormErrorTypes<TSource extends AngularFieldSource> =
+  TSource extends InternalFormGroupApi<any, any, any, any, infer TFormErrorTypes>
+    ? TFormErrorTypes
+    : TSource extends InternalFormApi<any, infer TFormValidators, infer TSubmitReturn>
+      ? ToFormErrorTypes<TFormValidators, TSubmitReturn>
+      : never
+
+type AngularSourceGroupFieldError<TSource extends AngularFieldSource> =
+  TSource extends InternalFormGroupApi<any, any, any, infer TGroupValidators, any>
+    ? ToFormGroupErrorTypes<TGroupValidators>['fieldError']
+    : never
+
+type AngularSourceFieldApi<
+  TSource extends AngularFieldSource,
+  TFieldName extends DeepKeys<AngularFieldData<TSource>>,
+  TFieldValue extends DeepValue<AngularFieldData<TSource>, TFieldName>,
+  TFieldValidators extends FieldValidators<
+    AngularFieldData<TSource>,
+    TFieldName,
+    TFieldValue
+  >,
+> = FieldApi<
+  TFieldName,
+  TFieldValue,
+  ToFieldError<
+    TFieldValidators,
+    AngularSourceGroupFieldError<TSource>,
+    AngularSourceFormErrorTypes<TSource>
+  >,
+  AngularParentFormData<TSource>,
+  AngularSourceFormErrorTypes<TSource>
+>
 
 export type AngularFieldApi<
   TFormData,
@@ -44,16 +99,14 @@ export type AngularFieldApi<
 
 @Directive()
 abstract class TanStackFieldBase<
-  TFormData,
-  const TFieldName extends DeepKeys<TFormData>,
-  TFieldValue extends DeepValue<TFormData, TFieldName>,
+  TSource extends AngularFieldSource,
+  const TFieldName extends DeepKeys<AngularFieldData<TSource>>,
+  TFieldValue extends DeepValue<AngularFieldData<TSource>, TFieldName>,
   const TFieldValidators extends FieldValidators<
-    TFormData,
+    AngularFieldData<TSource>,
     TFieldName,
     TFieldValue
   >,
-  const TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
 > {
   name = input.required<TFieldName>()
   validators = input<NoInfer<TFieldValidators>>()
@@ -61,59 +114,69 @@ abstract class TanStackFieldBase<
     input<
       NoInfer<
         FieldListeners<
-          TFormData,
+          AngularFieldData<TSource>,
           TFieldName,
           TFieldValue,
           ToFieldError<
             TFieldValidators,
-            never,
-            ToFormErrorTypes<TFormValidators, TSubmitReturn>
+            AngularSourceGroupFieldError<TSource>,
+            AngularSourceFormErrorTypes<TSource>
           >,
-          TFormData,
-          ToFormErrorTypes<TFormValidators, TSubmitReturn>
+          AngularParentFormData<TSource>,
+          AngularSourceFormErrorTypes<TSource>
         >
       >
     >()
   errorVisibility =
     input<
       ErrorVisibility<
-        TFormData,
-        ToFormErrorTypes<TFormValidators, TSubmitReturn>
+        AngularParentFormData<TSource>,
+        AngularSourceFormErrorTypes<TSource>
       >
     >()
   errorBoundary = input<boolean>()
 
   protected abstract readonly isArrayField: boolean
-  protected abstract getForm(): InternalFormApi<
-    TFormData,
-    TFormValidators,
-    TSubmitReturn
-  >
+  protected abstract getSource(): TSource
 
   private readonly changeDetector = inject(ChangeDetectorRef)
   private readonly resetVersion = signal(0)
 
-  private getFieldOptions() {
-    return {
+  private getFieldOptions(): AnyFieldApiOptions {
+    const options = {
+      name: this.name(),
       validators: this.validators(),
       listeners: this.listeners(),
       errorVisibility: this.errorVisibility(),
       errorBoundary: this.errorBoundary(),
     }
+
+    const source = this.getSource()
+    if (!(source instanceof InternalFormGroupApi)) return options as never
+
+    return source._getFormFieldOptions<AnyFieldApiOptions>(
+      options as AnyFieldApiOptions,
+      (base, overrides) => ({ ...base, ...overrides }),
+    )
+  }
+
+  private getForm(): AnyInternalFormApi {
+    const source = this.getSource()
+    return source instanceof InternalFormGroupApi ? source.form : source
   }
 
   private getFieldApi() {
     void this.resetVersion()
-    return this.getForm()._getOrCreateFieldApi({ name: this.name() } as never)
+    return this.getForm()._getOrCreateFieldApi({
+      name: this.getFieldOptions().name,
+    })
   }
 
-  get api(): AngularFieldApi<
-    TFormData,
+  get api(): AngularSourceFieldApi<
+    TSource,
     TFieldName,
     TFieldValue,
-    TFieldValidators,
-    TFormValidators,
-    TSubmitReturn
+    TFieldValidators
   > {
     // Angular may evaluate an exported directive reference before constructor
     // effects run, so resolve the form-owned API synchronously from the inputs.
@@ -175,28 +238,23 @@ abstract class TanStackFieldBase<
   exportAs: 'field',
 })
 export class TanStackField<
-  TFormData,
-  const TFieldName extends DeepKeys<TFormData>,
-  TFieldValue extends DeepValue<TFormData, TFieldName>,
+  TSource extends AngularFieldSource,
+  const TFieldName extends DeepKeys<AngularFieldData<TSource>>,
+  TFieldValue extends DeepValue<AngularFieldData<TSource>, TFieldName>,
   const TFieldValidators extends FieldValidators<
-    TFormData,
+    AngularFieldData<TSource>,
     TFieldName,
     TFieldValue
   >,
-  const TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
 > extends TanStackFieldBase<
-  TFormData,
+  TSource,
   TFieldName,
   TFieldValue,
-  TFieldValidators,
-  TFormValidators,
-  TSubmitReturn
+  TFieldValidators
 > {
-  tanstackField =
-    input.required<InternalFormApi<TFormData, TFormValidators, TSubmitReturn>>()
+  tanstackField = input.required<TSource>()
   protected readonly isArrayField = false
-  protected getForm() {
+  protected getSource() {
     return this.tanstackField()
   }
 }
@@ -207,28 +265,23 @@ export class TanStackField<
   exportAs: 'arrayField',
 })
 export class TanStackArrayField<
-  TFormData,
-  const TFieldName extends DeepKeys<TFormData>,
-  TFieldValue extends DeepValue<TFormData, TFieldName>,
+  TSource extends AngularFieldSource,
+  const TFieldName extends DeepKeys<AngularFieldData<TSource>>,
+  TFieldValue extends DeepValue<AngularFieldData<TSource>, TFieldName>,
   const TFieldValidators extends FieldValidators<
-    TFormData,
+    AngularFieldData<TSource>,
     TFieldName,
     TFieldValue
   >,
-  const TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
 > extends TanStackFieldBase<
-  TFormData,
+  TSource,
   TFieldName,
   TFieldValue,
-  TFieldValidators,
-  TFormValidators,
-  TSubmitReturn
+  TFieldValidators
 > {
-  tanstackArrayField =
-    input.required<InternalFormApi<TFormData, TFormValidators, TSubmitReturn>>()
+  tanstackArrayField = input.required<TSource>()
   protected readonly isArrayField = true
-  protected getForm() {
+  protected getSource() {
     return this.tanstackArrayField()
   }
 }
