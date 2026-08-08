@@ -790,11 +790,7 @@ import { createFormHook, getFormHookHelpers } from '@tanstack/react-form'
 const { fieldComponent } = getFormHookHelpers()
 const AppTextField = fieldComponent.strict(StringField, 'field')
 
-const {
-  appFormOptions,
-  useAppForm,
-  defineAppFieldGroup,
-} = createFormHook({
+const { appFormOptions, useAppForm, defineAppFieldGroup } = createFormHook({
   fieldComponents: {
     TextField: AppTextField,
   },
