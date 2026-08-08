@@ -108,26 +108,37 @@ function transformFieldOptionItemsWithWatchedFields<
 }
 
 export function transformFieldOptionsFieldNames<
-  TFieldOptions extends { name: string },
+  TFieldOptions extends AnyFieldApiOptions,
 >(
   fieldOptions: TFieldOptions,
   transformFieldName: (fieldName: string) => string,
+  mergeOptions: (
+    props: TFieldOptions,
+    overrides: Partial<TFieldOptions>,
+  ) => TFieldOptions,
 ): TFieldOptions {
   const options = fieldOptions as TFieldOptions &
     FieldOptionsWithFieldNameReferences
 
-  return {
-    ...fieldOptions,
-    name: transformFieldName(options.name),
-    validators: transformFieldOptionItemsWithWatchedFields(
-      options.validators,
-      transformFieldName,
-    ),
-    listeners: transformFieldOptionItemsWithWatchedFields(
-      options.listeners,
-      transformFieldName,
-    ),
-  }
+  const overrides = {
+    get name() {
+      return transformFieldName(options.name)
+    },
+    get validators() {
+      return transformFieldOptionItemsWithWatchedFields(
+        options.validators,
+        transformFieldName,
+      )
+    },
+    get listeners() {
+      return transformFieldOptionItemsWithWatchedFields(
+        options.listeners,
+        transformFieldName,
+      )
+    },
+  } as Partial<TFieldOptions>
+
+  return mergeOptions(fieldOptions, overrides)
 }
 
 export interface DefaultValueCacheEntry {

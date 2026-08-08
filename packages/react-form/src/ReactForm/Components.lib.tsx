@@ -134,12 +134,26 @@ function attachReactFormGroupComponents(
   const resultGroup: FormGroupComponents = group as never
 
   resultGroup.Field = function Field(props) {
-    return <form.Field {...(group._getFormFieldOptions(props) as any)} />
+    return (
+      <form.Field
+        {...(group._getFormFieldOptions(props, (base, overrides) => ({
+          ...base,
+          ...overrides,
+        })) as any)}
+      />
+    )
   }
   resultGroup.Field.displayName = 'TanStackForm.FormGroup.Field'
 
   resultGroup.ArrayField = function ArrayField(props) {
-    return <form.ArrayField {...(group._getFormFieldOptions(props) as any)} />
+    return (
+      <form.ArrayField
+        {...(group._getFormFieldOptions(props, (base, overrides) => ({
+          ...base,
+          ...overrides,
+        })) as any)}
+      />
+    )
   }
   resultGroup.ArrayField.displayName = 'TanStackForm.FormGroup.ArrayField'
 

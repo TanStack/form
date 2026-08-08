@@ -114,21 +114,24 @@ describe('FormGroupApi', () => {
       name: 'guestDetails',
     })
 
-    const options = group._getFormFieldOptions({
-      name: 'name',
-      validators: [
-        { triggers: ['change'], watchFields: ['age'], run: (): null => null },
-        { triggers: ['blur'], run: (): null => null },
-      ],
-      listeners: [
-        {
-          triggers: ['change'],
-          watchFields: ['age'],
-          run: (): undefined => undefined,
-        },
-        { triggers: ['blur'], run: (): undefined => undefined },
-      ],
-    })
+    const options = group._getFormFieldOptions(
+      {
+        name: 'name',
+        validators: [
+          { triggers: ['change'], watchFields: ['age'], run: (): null => null },
+          { triggers: ['blur'], run: (): null => null },
+        ],
+        listeners: [
+          {
+            triggers: ['change'],
+            watchFields: ['age'],
+            run: (): undefined => undefined,
+          },
+          { triggers: ['blur'], run: (): undefined => undefined },
+        ],
+      },
+      (props, overrides) => ({ ...props, ...overrides }),
+    )
 
     expect(options.name).toBe('guestDetails.name')
     expect(options.validators?.[0]?.watchFields).toEqual(['guestDetails.age'])
@@ -146,9 +149,12 @@ describe('FormGroupApi', () => {
       name: 'guestDetails',
     })
 
-    const options = group._getFormFieldOptions({
-      name: 'name',
-    })
+    const options = group._getFormFieldOptions(
+      {
+        name: 'name',
+      },
+      (props, overrides) => ({ ...props, ...overrides }),
+    )
 
     expect(options.name).toBe('guestDetails.name')
     expect(options.validators).toBeUndefined()

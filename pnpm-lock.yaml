@@ -875,6 +875,198 @@ importers:
         specifier: ^8.1.2
         version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
 
+  examples/solid/array:
+    dependencies:
+      '@tanstack/solid-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/solid-form
+      solid-js:
+        specifier: ^1.9.13
+        version: 1.9.14
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+      vite-plugin-solid:
+        specifier: ^2.11.10
+        version: 2.11.14(@testing-library/jest-dom@6.10.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+
+  examples/solid/basic:
+    dependencies:
+      '@tanstack/solid-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/solid-form
+      solid-js:
+        specifier: ^1.9.13
+        version: 1.9.14
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+      vite-plugin-solid:
+        specifier: ^2.11.10
+        version: 2.11.14(@testing-library/jest-dom@6.10.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+
+  examples/solid/basic-splitting-form:
+    dependencies:
+      '@tanstack/solid-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/solid-form
+      solid-js:
+        specifier: ^1.9.13
+        version: 1.9.14
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+      vite-plugin-solid:
+        specifier: ^2.11.10
+        version: 2.11.14(@testing-library/jest-dom@6.10.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+
+  examples/solid/field-groups:
+    dependencies:
+      '@tanstack/solid-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/solid-form
+      solid-js:
+        specifier: ^1.9.13
+        version: 1.9.14
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+      vite-plugin-solid:
+        specifier: ^2.11.10
+        version: 2.11.14(@testing-library/jest-dom@6.10.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+
+  examples/solid/large-form:
+    dependencies:
+      '@tanstack/solid-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/solid-form
+      solid-js:
+        specifier: ^1.9.13
+        version: 1.9.14
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+      vite-plugin-solid:
+        specifier: ^2.11.10
+        version: 2.11.14(@testing-library/jest-dom@6.10.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+
+  examples/solid/multi-step-wizard:
+    dependencies:
+      '@tanstack/solid-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/solid-form
+      solid-js:
+        specifier: ^1.9.13
+        version: 1.9.14
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+      vite-plugin-solid:
+        specifier: ^2.11.10
+        version: 2.11.14(@testing-library/jest-dom@6.10.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+
+  examples/solid/query-integration:
+    dependencies:
+      '@tanstack/solid-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/solid-form
+      '@tanstack/solid-query':
+        specifier: ^5.89.0
+        version: 5.101.4(solid-js@1.9.14)
+      solid-js:
+        specifier: ^1.9.13
+        version: 1.9.14
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+      vite-plugin-solid:
+        specifier: ^2.11.10
+        version: 2.11.14(@testing-library/jest-dom@6.10.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+
+  examples/solid/simple:
+    dependencies:
+      '@tanstack/solid-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/solid-form
+      solid-js:
+        specifier: ^1.9.13
+        version: 1.9.14
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+      vite-plugin-solid:
+        specifier: ^2.11.10
+        version: 2.11.14(@testing-library/jest-dom@6.10.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+
+  examples/solid/standard-schema:
+    dependencies:
+      '@tanstack/solid-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/solid-form
+      arktype:
+        specifier: ^2.1.22
+        version: 2.2.3
+      effect:
+        specifier: ^3.17.14
+        version: 3.22.1
+      solid-js:
+        specifier: ^1.9.13
+        version: 1.9.14
+      valibot:
+        specifier: ^1.1.0
+        version: 1.4.2(typescript@6.0.3)
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+      vite-plugin-solid:
+        specifier: ^2.11.10
+        version: 2.11.14(@testing-library/jest-dom@6.10.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+
   packages/angular-form:
     dependencies:
       '@tanstack/angular-store':
@@ -5734,6 +5926,11 @@ packages:
   '@tanstack/router-utils@1.162.2':
     resolution: {integrity: sha512-hTWqJtqIFFdvuCl8WXNyrodp2L9zo2G37xKRrcVmVRWpAB2h+U1LuRAfS4tsFTiWOIoE/B+WDVFB8JpoEdw6jQ==}
     engines: {node: '>=20.19'}
+
+  '@tanstack/solid-query@5.101.4':
+    resolution: {integrity: sha512-w+QNX4al4zkfOfO6FYILouPX3yAxLANvBNz0cZqaBrSRKfBP3qNC179wu/eS2w1asH+QqEeI0rR2/s7gRGxnFA==}
+    peerDependencies:
+      solid-js: ^1.6.0
 
   '@tanstack/solid-store@0.11.0':
     resolution: {integrity: sha512-2isL0ZnnyI1iN0V+QPrxE3OcPndohBgVlBcHZYoAOIAiU1WoWjVy0q5gb0suPu1Id0h5cKC23JnwzQTxWDZD0w==}
@@ -17063,6 +17260,11 @@ snapshots:
       tinyglobby: 0.2.17
     transitivePeerDependencies:
       - supports-color
+
+  '@tanstack/solid-query@5.101.4(solid-js@1.9.14)':
+    dependencies:
+      '@tanstack/query-core': 5.101.4
+      solid-js: 1.9.14
 
   '@tanstack/solid-store@0.11.0(solid-js@1.9.14)':
     dependencies:
