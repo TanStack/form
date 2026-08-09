@@ -2350,7 +2350,7 @@ importers:
         specifier: ^7.1.1
         version: 7.1.1(eslint@10.8.1(jiti@2.7.0))
       react:
-        specifier: ^19.2.8
+        specifier: 19.2.8
         version: 19.2.8
       zod:
         specifier: ^4.4.3
@@ -2384,7 +2384,7 @@ importers:
         specifier: ^7.1.1
         version: 7.1.1(eslint@10.8.1(jiti@2.7.0))
       react:
-        specifier: ^19.2.8
+        specifier: 19.2.8
         version: 19.2.8
 
   packages/react-form-nextjs:
