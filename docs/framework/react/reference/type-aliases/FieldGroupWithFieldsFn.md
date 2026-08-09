@@ -6,10 +6,10 @@ title: FieldGroupWithFieldsFn
 # Type Alias: FieldGroupWithFieldsFn
 
 ```ts
-type FieldGroupWithFieldsFn = <TFieldGroup, TProps, TFieldsPropName>(fields, Component, fieldsPropName) => <TFormData>(props) => CrossVersionReactNode;
+type FieldGroupWithFieldsFn = <TFieldGroup, TProps, TFieldsPropName>(fields, Component, fieldsPropName) => <TFormData>(props) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:162](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L162)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:161](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L161)
 
 ## Type Parameters
 
@@ -33,7 +33,7 @@ Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:162](https:
 
 ### Component
 
-(`props`) => [`CrossVersionReactNode`](CrossVersionReactNode.md)
+(`props`) => `ReactNode`
 
 ### fieldsPropName
 
@@ -41,4 +41,4 @@ Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:162](https:
 
 ## Returns
 
-\<`TFormData`\>(`props`) => [`CrossVersionReactNode`](CrossVersionReactNode.md)
+\<`TFormData`\>(`props`) => `ReactNode`

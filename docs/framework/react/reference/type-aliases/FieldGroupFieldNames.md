@@ -9,7 +9,7 @@ title: FieldGroupFieldNames
 type FieldGroupFieldNames<TFieldData, TFields> = { [TFieldName in keyof TFields]: FieldGroupFieldNameForSlot<TFieldData, TFields[TFieldName]> };
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:77](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L77)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:76](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L76)
 
 ## Type Parameters
 

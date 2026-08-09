@@ -6,10 +6,10 @@ title: FieldGroupSubscribeComponent
 # Type Alias: FieldGroupSubscribeComponent
 
 ```ts
-type FieldGroupSubscribeComponent = <TSelected>(props) => CrossVersionReactNode;
+type FieldGroupSubscribeComponent = <TSelected>(props) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:70](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L70)
+Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:69](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L69)
 
 ## Type Parameters
 
@@ -25,4 +25,4 @@ Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:70](http
 
 ## Returns
 
-[`CrossVersionReactNode`](CrossVersionReactNode.md)
+`ReactNode`

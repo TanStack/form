@@ -6,10 +6,10 @@ title: ReactFormArrayFieldComponent
 # Type Alias: ReactFormArrayFieldComponent\<TFormData, TFormErrorTypes, TFieldComponents\>
 
 ```ts
-type ReactFormArrayFieldComponent<TFormData, TFormErrorTypes, TFieldComponents> = <TFieldName, TFieldValidators>(props) => ReactNode | Promise<ReactNode>;
+type ReactFormArrayFieldComponent<TFormData, TFormErrorTypes, TFieldComponents> = <TFieldName, TFieldValidators>(props) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:183](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L183)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:181](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L181)
 
 ## Type Parameters
 
@@ -43,4 +43,4 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:183](https:/
 
 ## Returns
 
-`ReactNode` \| `Promise`\<`ReactNode`\>
+`ReactNode`

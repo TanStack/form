@@ -50,7 +50,6 @@ title: "@tanstack/react-form"
 - [AnyReactFormApi](type-aliases/AnyReactFormApi.md)
 - [AnyReactFormComponentMap](type-aliases/AnyReactFormComponentMap.md)
 - [AppFormComponent](type-aliases/AppFormComponent.md)
-- [CrossVersionReactNode](type-aliases/CrossVersionReactNode.md)
 - [DefaultReactFormComponentMap](type-aliases/DefaultReactFormComponentMap.md)
 - [DefineFieldsFn](type-aliases/DefineFieldsFn.md)
 - [FieldGroupDefinition](type-aliases/FieldGroupDefinition.md)

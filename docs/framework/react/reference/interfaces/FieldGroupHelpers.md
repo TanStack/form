@@ -5,7 +5,7 @@ title: FieldGroupHelpers
 
 # Interface: FieldGroupHelpers\<TFieldComponents\>
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:199](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L199)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:198](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L198)
 
 ## Type Parameters
 
@@ -21,7 +21,7 @@ Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:199](https:
 defineFields: DefineFieldsFn<TFieldComponents>;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:203](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L203)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:202](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L202)
 
 ***
 
@@ -31,7 +31,7 @@ Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:203](https:
 helper: FieldGroupHelper;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:202](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L202)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:201](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L201)
 
 ***
 
@@ -41,4 +41,4 @@ Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:202](https:
 withFields: FieldGroupWithFieldsFn;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:204](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L204)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:203](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L203)

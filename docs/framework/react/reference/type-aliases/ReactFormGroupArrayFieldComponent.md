@@ -6,10 +6,10 @@ title: ReactFormGroupArrayFieldComponent
 # Type Alias: ReactFormGroupArrayFieldComponent\<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents\>
 
 ```ts
-type ReactFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents> = <TFieldName, TFieldValidators>(props) => ReactNode | Promise<ReactNode>;
+type ReactFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents> = <TFieldName, TFieldValidators>(props) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:253](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L253)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:251](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L251)
 
 ## Type Parameters
 
@@ -51,4 +51,4 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:253](https:/
 
 ## Returns
 
-`ReactNode` \| `Promise`\<`ReactNode`\>
+`ReactNode`

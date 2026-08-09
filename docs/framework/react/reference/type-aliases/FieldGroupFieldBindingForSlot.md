@@ -9,7 +9,7 @@ title: FieldGroupFieldBindingForSlot
 type FieldGroupFieldBindingForSlot<TFormData, TSlot> = TSlot extends FieldGroupFieldSlot<infer TValue, infer TMode> ? TMode extends "strict" ? FieldGroupFieldNameForSlot<TFormData, TSlot> : DeepKeysWhereValueIncludes<TFormData, TValue> : never;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:125](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L125)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:124](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L124)
 
 ## Type Parameters
 

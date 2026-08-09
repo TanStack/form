@@ -5,7 +5,7 @@ title: OriginalFieldMeta
 
 # Interface: OriginalFieldMeta\<TFieldError\>
 
-Defined in: [FieldApi/FieldApi.public.ts:30](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L30)
+Defined in: [FieldApi/FieldApi.public.ts:30](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L30)
 
 ## Type Parameters
 
@@ -21,7 +21,7 @@ Defined in: [FieldApi/FieldApi.public.ts:30](https://github.com/TanStack/form/bl
 errors: FieldErrors<TFieldError>;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:31](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L31)
+Defined in: [FieldApi/FieldApi.public.ts:31](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L31)
 
 ***
 
@@ -31,7 +31,7 @@ Defined in: [FieldApi/FieldApi.public.ts:31](https://github.com/TanStack/form/bl
 isInvalid: boolean;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:33](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L33)
+Defined in: [FieldApi/FieldApi.public.ts:33](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L33)
 
 ***
 
@@ -41,4 +41,4 @@ Defined in: [FieldApi/FieldApi.public.ts:33](https://github.com/TanStack/form/bl
 isValid: boolean;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:32](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L32)
+Defined in: [FieldApi/FieldApi.public.ts:32](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L32)

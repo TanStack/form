@@ -5,7 +5,7 @@ title: TanStackFormController
 
 # Class: TanStackFormController\<TFormData, TFormValidators, TSubmitReturn\>
 
-Defined in: [tanstack-form-controller.ts:177](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L177)
+Defined in: [tanstack-form-controller.ts:177](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L177)
 
 ## Type Parameters
 
@@ -35,7 +35,7 @@ Defined in: [tanstack-form-controller.ts:177](https://github.com/TanStack/form/b
 new TanStackFormController<TFormData, TFormValidators, TSubmitReturn>(host, options): TanStackFormController<TFormData, TFormValidators, TSubmitReturn>;
 ```
 
-Defined in: [tanstack-form-controller.ts:204](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L204)
+Defined in: [tanstack-form-controller.ts:204](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L204)
 
 #### Parameters
 
@@ -61,7 +61,7 @@ Defined in: [tanstack-form-controller.ts:204](https://github.com/TanStack/form/b
 get api(): FormApi<TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>>;
 ```
 
-Defined in: [tanstack-form-controller.ts:197](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L197)
+Defined in: [tanstack-form-controller.ts:197](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L197)
 
 ##### Returns
 
@@ -75,7 +75,7 @@ Defined in: [tanstack-form-controller.ts:197](https://github.com/TanStack/form/b
 arrayField<TFieldName, TFieldValidators>(options, render): unknown;
 ```
 
-Defined in: [tanstack-form-controller.ts:269](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L269)
+Defined in: [tanstack-form-controller.ts:269](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L269)
 
 #### Type Parameters
 
@@ -113,7 +113,7 @@ Defined in: [tanstack-form-controller.ts:269](https://github.com/TanStack/form/b
 field<TFieldName, TFieldValidators>(options, render): unknown;
 ```
 
-Defined in: [tanstack-form-controller.ts:232](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L232)
+Defined in: [tanstack-form-controller.ts:232](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L232)
 
 #### Type Parameters
 
@@ -151,7 +151,7 @@ Defined in: [tanstack-form-controller.ts:232](https://github.com/TanStack/form/b
 formGroup<TGroupName, TGroupValue, TGroupValidators>(options, render): unknown;
 ```
 
-Defined in: [tanstack-form-controller.ts:319](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L319)
+Defined in: [tanstack-form-controller.ts:319](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L319)
 
 #### Type Parameters
 
@@ -189,7 +189,7 @@ Defined in: [tanstack-form-controller.ts:319](https://github.com/TanStack/form/b
 hostConnected(): void;
 ```
 
-Defined in: [tanstack-form-controller.ts:213](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L213)
+Defined in: [tanstack-form-controller.ts:213](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L213)
 
 Called when the host is connected to the component tree. For custom
 element hosts, this corresponds to the `connectedCallback()` lifecycle,
@@ -213,7 +213,7 @@ ReactiveController.hostConnected
 hostDisconnected(): void;
 ```
 
-Defined in: [tanstack-form-controller.ts:218](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L218)
+Defined in: [tanstack-form-controller.ts:218](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L218)
 
 Called when the host is disconnected from the component tree. For custom
 element hosts, this corresponds to the `disconnectedCallback()` lifecycle,
@@ -241,7 +241,7 @@ subscribe<TSelected>(
    when?): unknown;
 ```
 
-Defined in: [tanstack-form-controller.ts:306](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L306)
+Defined in: [tanstack-form-controller.ts:306](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L306)
 
 #### Type Parameters
 
@@ -279,7 +279,7 @@ Defined in: [tanstack-form-controller.ts:306](https://github.com/TanStack/form/b
 update(options): void;
 ```
 
-Defined in: [tanstack-form-controller.ts:228](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L228)
+Defined in: [tanstack-form-controller.ts:228](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L228)
 
 Updates reactive form options without replacing the form instance.
 
