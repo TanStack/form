@@ -5,37 +5,36 @@
     createQuery,
     keepPreviousData,
   } from '@tanstack/svelte-query'
-  import { get } from 'svelte/store'
   import FieldInfo from './FieldInfo.svelte'
   import { db, sleep } from './mock-db.js'
   import type { StoredUser } from './mock-db.js'
 
   const emptyUser: StoredUser = { firstName: '', lastName: '' }
-  const userQuery = createQuery({
+  const userQuery = createQuery(() => ({
     queryKey: ['data'],
     queryFn: () => db.getData(),
     placeholderData: keepPreviousData,
-  })
-  const saveUserMutation = createMutation<StoredUser, Error, StoredUser>({
+  }))
+  const saveUserMutation = createMutation(() => ({
     mutationFn: (value: StoredUser) => db.saveUser(value),
     onSuccess: async () => {
-      await get(userQuery).refetch()
+      await userQuery.refetch()
     },
-  })
+  }))
   const form = createForm(() => ({
-    defaultValues: $userQuery.data ?? emptyUser,
+    defaultValues: userQuery.data ?? emptyUser,
     onSubmit: async ({ formApi, value }) => {
-      await get(saveUserMutation).mutateAsync(value)
+      await saveUserMutation.mutateAsync(value)
       formApi.reset(value)
     },
     errorVisibility: ({ fieldState }) => fieldState.meta.isTouched,
   }))
 </script>
 
-{#if $userQuery.isPending}
+{#if userQuery.isPending}
   <p>Loading...</p>
-{:else if $userQuery.isError}
-  <p role="alert">{$userQuery.error.message}</p>
+{:else if userQuery.isError}
+  <p role="alert">{userQuery.error.message}</p>
 {:else}
   <div>
     <h1>Query Integration Form Example</h1>
