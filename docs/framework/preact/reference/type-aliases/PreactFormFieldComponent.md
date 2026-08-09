@@ -3,7 +3,7 @@ id: PreactFormFieldComponent
 title: PreactFormFieldComponent
 ---
 
-# Type Alias: PreactFormFieldComponent()\<TFormData, TFormErrorTypes, TFieldComponents\>
+# Type Alias: PreactFormFieldComponent\<TFormData, TFormErrorTypes, TFieldComponents\>
 
 ```ts
 type PreactFormFieldComponent<TFormData, TFormErrorTypes, TFieldComponents> = <TFieldName, TFieldValidators>(props) => ComponentChildren;

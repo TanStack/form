@@ -3,7 +3,7 @@ id: ErrorVisibility
 title: ErrorVisibility
 ---
 
-# Type Alias: ErrorVisibility()\<TFormData, TFormErrorTypes\>
+# Type Alias: ErrorVisibility\<TFormData, TFormErrorTypes\>
 
 ```ts
 type ErrorVisibility<TFormData, TFormErrorTypes> = (context) => boolean;

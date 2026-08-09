@@ -3,7 +3,7 @@ id: StoreActionsFactory
 title: StoreActionsFactory
 ---
 
-# Type Alias: StoreActionsFactory()\<T, TActions\>
+# Type Alias: StoreActionsFactory\<T, TActions\>
 
 ```ts
 type StoreActionsFactory<T, TActions> = (store) => TActions;

@@ -45,7 +45,7 @@ Defined in: [packages/vue-form/src/AppForm/appFormOptions.public.ts:22](https://
 
 ## Properties
 
-### looseSchema()
+### looseSchema
 
 ```ts
 looseSchema: <TFormValidators, TFormData, TSubmitReturn>(options) => AppFormOptions<InferUnion<TFormData, FormValidatorData<TFormValidators>>, TFormValidators, TSubmitReturn, TComponents>;
@@ -79,7 +79,7 @@ Defined in: [packages/vue-form/src/AppForm/appFormOptions.public.ts:43](https://
 
 ***
 
-### strictSchema()
+### strictSchema
 
 ```ts
 strictSchema: <TFormValidators, TFormData, TSubmitReturn>(options) => AppFormOptions<FormValidatorData<TFormValidators>, TFormValidators, TSubmitReturn, TComponents>;

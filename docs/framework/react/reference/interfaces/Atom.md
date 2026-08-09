@@ -19,7 +19,7 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 
 ## Properties
 
-### get()
+### get
 
 ```ts
 get: () => T;

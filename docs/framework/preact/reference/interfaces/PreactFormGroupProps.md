@@ -39,7 +39,7 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:310](https
 
 ## Properties
 
-### children()
+### children
 
 ```ts
 children: (groupApi) => ComponentChildren;

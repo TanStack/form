@@ -15,10 +15,10 @@ Defined in: node\_modules/.pnpm/@tanstack+preact-store@0.13.1\_preact@10.29.8/no
 
 ## Properties
 
-### compare()?
+### compare?
 
 ```ts
-optional compare: (a, b) => boolean;
+optional compare?: (a, b) => boolean;
 ```
 
 Defined in: node\_modules/.pnpm/@tanstack+preact-store@0.13.1\_preact@10.29.8/node\_modules/@tanstack/preact-store/dist/useSelector.d.ts:3

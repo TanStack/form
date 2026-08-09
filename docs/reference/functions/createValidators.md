@@ -33,22 +33,4 @@ Defined in: [validation.public.ts:138](https://github.com/TanStack/form/blob/mai
 
 ## Returns
 
-```ts
-<TRuns>(...runs): ValidatorsFromOptionsAndRuns<TFormData, TContextValue, TOptions, TRuns>;
-```
-
-### Type Parameters
-
-#### TRuns
-
-`TRuns` *extends* `ValidatorRunsFromOptions`\<`TOptions`\>
-
-### Parameters
-
-#### runs
-
-...`TRuns`
-
-### Returns
-
-`ValidatorsFromOptionsAndRuns`\<`TFormData`, `TContextValue`, `TOptions`, `TRuns`\>
+\<`TRuns`\>(...`runs`) => `ValidatorsFromOptionsAndRuns`\<`TFormData`, `TContextValue`, `TOptions`, `TRuns`\>

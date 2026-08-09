@@ -3,7 +3,7 @@ id: ArrayFieldPredicate
 title: ArrayFieldPredicate
 ---
 
-# Type Alias: ArrayFieldPredicate()\<TFormData, TFieldName\>
+# Type Alias: ArrayFieldPredicate\<TFormData, TFieldName\>
 
 ```ts
 type ArrayFieldPredicate<TFormData, TFieldName> = (value, index, array) => boolean;

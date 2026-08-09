@@ -9,7 +9,7 @@ Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:166](https:
 
 ## Properties
 
-### loose()
+### loose
 
 ```ts
 loose: <TValue>() => LooseFieldGroupFieldSlot<TValue>;
@@ -29,7 +29,7 @@ Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:168](https:
 
 ***
 
-### strict()
+### strict
 
 ```ts
 strict: <TValue>() => StrictFieldGroupFieldSlot<TValue>;

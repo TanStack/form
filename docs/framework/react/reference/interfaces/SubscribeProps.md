@@ -28,14 +28,14 @@ FormState.
 children: 
   | ReactNode
   | Promise<ReactNode>
-| (state) => ReactNode | Promise<ReactNode>;
+  | ((state) => ReactNode | Promise<ReactNode>);
 ```
 
 Defined in: [packages/react-form/src/Subscribe.public.tsx:28](https://github.com/TanStack/form/blob/main/packages/react-form/src/Subscribe.public.tsx#L28)
 
 ***
 
-### selector()
+### selector
 
 ```ts
 selector: (state) => TSelected;
@@ -68,10 +68,10 @@ Defined in: [packages/react-form/src/Subscribe.public.tsx:18](https://github.com
 
 ***
 
-### when()?
+### when?
 
 ```ts
-optional when: (selected) => boolean;
+optional when?: (selected) => boolean;
 ```
 
 Defined in: [packages/react-form/src/Subscribe.public.tsx:27](https://github.com/TanStack/form/blob/main/packages/react-form/src/Subscribe.public.tsx#L27)

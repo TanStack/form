@@ -15,7 +15,7 @@ Defined in: [validation.public.ts:455](https://github.com/TanStack/form/blob/mai
 
 ## Properties
 
-### createErrorMap()
+### createErrorMap
 
 ```ts
 createErrorMap: (initial?) => ValidationErrorMap<TGroupValue>;
@@ -92,7 +92,7 @@ Defined in: [validation.public.ts:457](https://github.com/TanStack/form/blob/mai
 ### triggerFieldApi?
 
 ```ts
-optional triggerFieldApi: AnyFieldApi;
+optional triggerFieldApi?: AnyFieldApi;
 ```
 
 Defined in: [validation.public.ts:460](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L460)

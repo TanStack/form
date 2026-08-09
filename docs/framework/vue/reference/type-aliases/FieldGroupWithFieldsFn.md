@@ -3,7 +3,7 @@ id: FieldGroupWithFieldsFn
 title: FieldGroupWithFieldsFn
 ---
 
-# Type Alias: FieldGroupWithFieldsFn()
+# Type Alias: FieldGroupWithFieldsFn
 
 ```ts
 type FieldGroupWithFieldsFn = <TFieldGroup, TProps, TFieldsPropName>(fields, component, fieldsPropName) => <TFormData>(props) => VueComponentInstance<Omit<TProps, TFieldsPropName | "form"> & object & { [TPropName in TFieldsPropName]: FieldGroupFieldBindingsOf<TFieldGroup, TFormData> } & Record<string, any>, {
@@ -42,18 +42,5 @@ Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:142](https://
 
 ## Returns
 
-```ts
-<TFormData>(props): VueComponentInstance<Omit<TProps, TFieldsPropName | "form"> & object & { [TPropName in TFieldsPropName]: FieldGroupFieldBindingsOf<TFieldGroup, TFormData> } & Record<string, any>, {
-}>;
-```
-
-### Parameters
-
-#### props
-
-`Omit`\<`TProps`, `TFieldsPropName` \| `"form"`\> & `object` & `{ [TPropName in TFieldsPropName]: FieldGroupFieldBindingsOf<TFieldGroup, TFormData> }` & `PublicProps`
-
-### Returns
-
-`VueComponentInstance`\<`Omit`\<`TProps`, `TFieldsPropName` \| `"form"`\> & `object` & `{ [TPropName in TFieldsPropName]: FieldGroupFieldBindingsOf<TFieldGroup, TFormData> }` & `Record`\<`string`, `any`\>, \{
+\<`TFormData`\>(`props`) => `VueComponentInstance`\<`Omit`\<`TProps`, `TFieldsPropName` \| `"form"`\> & `object` & `{ [TPropName in TFieldsPropName]: FieldGroupFieldBindingsOf<TFieldGroup, TFormData> }` & `Record`\<`string`, `any`\>, \{
 \}\>

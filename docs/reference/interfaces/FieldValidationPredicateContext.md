@@ -60,7 +60,7 @@ BaseValidationPredicateContext.formApi
 ### groupApi?
 
 ```ts
-optional groupApi: undefined;
+optional groupApi?: undefined;
 ```
 
 Defined in: [validation.public.ts:287](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L287)

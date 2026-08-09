@@ -19,7 +19,7 @@ Defined in: [packages/vue-form/src/Subscribe.public.ts:14](https://github.com/Ta
 
 ## Properties
 
-### selector()
+### selector
 
 ```ts
 selector: (state) => TSelected;
@@ -49,10 +49,10 @@ Defined in: [packages/vue-form/src/Subscribe.public.ts:15](https://github.com/Ta
 
 ***
 
-### when()?
+### when?
 
 ```ts
-optional when: (selected) => boolean;
+optional when?: (selected) => boolean;
 ```
 
 Defined in: [packages/vue-form/src/Subscribe.public.ts:17](https://github.com/TanStack/form/blob/main/packages/vue-form/src/Subscribe.public.ts#L17)

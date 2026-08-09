@@ -8,11 +8,11 @@ title: injectSelector
 ```ts
 function injectSelector<TFormData, TFormErrorTypes, TSelected>(
    form, 
-   selector, 
+   selector?, 
 options?): Signal<TSelected>;
 ```
 
-Defined in: [angular-form/src/inject-selector.ts:7](https://github.com/TanStack/form/blob/main/packages/angular-form/src/inject-selector.ts#L7)
+Defined in: [inject-selector.ts:7](https://github.com/TanStack/form/blob/main/packages/angular-form/src/inject-selector.ts#L7)
 
 Selects form state as an Angular signal.
 
@@ -36,7 +36,7 @@ Selects form state as an Angular signal.
 
 `FormApi`\<`TFormData`, `TFormErrorTypes`\>
 
-### selector
+### selector?
 
 (`state`) => `TSelected`
 

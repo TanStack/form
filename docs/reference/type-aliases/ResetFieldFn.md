@@ -3,7 +3,7 @@ id: ResetFieldFn
 title: ResetFieldFn
 ---
 
-# Type Alias: ResetFieldFn()\<TFormData\>
+# Type Alias: ResetFieldFn\<TFormData\>
 
 ```ts
 type ResetFieldFn<TFormData> = <TDeepKeys>(DeepKeys) => void;

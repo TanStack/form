@@ -3,7 +3,7 @@ id: ReactFormGroupSubscribeComponent
 title: ReactFormGroupSubscribeComponent
 ---
 
-# Type Alias: ReactFormGroupSubscribeComponent()\<TGroupValue, TGroupErrorTypes\>
+# Type Alias: ReactFormGroupSubscribeComponent\<TGroupValue, TGroupErrorTypes\>
 
 ```ts
 type ReactFormGroupSubscribeComponent<TGroupValue, TGroupErrorTypes> = <TSelected>(props) => CrossVersionReactNode;

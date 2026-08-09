@@ -15,10 +15,10 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 
 ## Properties
 
-### compare()?
+### compare?
 
 ```ts
-optional compare: (prev, next) => boolean;
+optional compare?: (prev, next) => boolean;
 ```
 
 Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/types.d.ts:34

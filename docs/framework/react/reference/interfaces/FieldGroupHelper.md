@@ -9,7 +9,7 @@ Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:181](https:
 
 ## Properties
 
-### loose()
+### loose
 
 ```ts
 loose: <TValue>() => LooseFieldGroupFieldSlot<TValue>;
@@ -29,7 +29,7 @@ Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:183](https:
 
 ***
 
-### strict()
+### strict
 
 ```ts
 strict: <TValue>() => StrictFieldGroupFieldSlot<TValue>;

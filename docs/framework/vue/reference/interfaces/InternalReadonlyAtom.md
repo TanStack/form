@@ -35,7 +35,7 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 
 ***
 
-### \_update()
+### \_update
 
 ```ts
 _update: (getValue?) => boolean;
@@ -49,7 +49,7 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 
 ##### getValue?
 
-`T` | (`snapshot`) => `T`
+`T` \| ((`snapshot`) => `T`)
 
 #### Returns
 
@@ -64,7 +64,7 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 ### deps?
 
 ```ts
-optional deps: Link;
+optional deps?: Link;
 ```
 
 Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/alien.d.ts:3
@@ -80,7 +80,7 @@ ReactiveNode.deps
 ### depsTail?
 
 ```ts
-optional depsTail: Link;
+optional depsTail?: Link;
 ```
 
 Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/alien.d.ts:4
@@ -109,7 +109,7 @@ ReactiveNode.flags
 
 ***
 
-### get()
+### get
 
 ```ts
 get: () => T;
@@ -130,7 +130,7 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 ### subs?
 
 ```ts
-optional subs: Link;
+optional subs?: Link;
 ```
 
 Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/alien.d.ts:5
@@ -160,7 +160,7 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 ### subsTail?
 
 ```ts
-optional subsTail: Link;
+optional subsTail?: Link;
 ```
 
 Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/alien.d.ts:6

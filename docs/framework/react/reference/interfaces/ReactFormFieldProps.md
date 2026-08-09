@@ -47,7 +47,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:119](https:/
 
 ## Properties
 
-### children()
+### children
 
 ```ts
 children: (fieldApi) => ReactNode | Promise<ReactNode>;

@@ -35,7 +35,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:127](https://github.co
 
 ## Properties
 
-### children()
+### children
 
 ```ts
 children: (fieldApi) => Element;

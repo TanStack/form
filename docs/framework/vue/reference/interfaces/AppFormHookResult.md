@@ -25,7 +25,7 @@ Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:24](htt
 
 ***
 
-### getAppFieldGroupHelpers()
+### getAppFieldGroupHelpers
 
 ```ts
 getAppFieldGroupHelpers: () => FieldGroupHelpers<TComponents["fieldComponents"]>;
@@ -49,7 +49,7 @@ Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:28](htt
 
 ***
 
-### useFormContext()
+### useFormContext
 
 ```ts
 useFormContext: () => VueAppFormApi<any, any, TComponents>;

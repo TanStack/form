@@ -3,7 +3,7 @@ id: ValidatorFn
 title: ValidatorFn
 ---
 
-# Type Alias: ValidatorFn()\<TParameter, TReturn\>
+# Type Alias: ValidatorFn\<TParameter, TReturn\>
 
 ```ts
 type ValidatorFn<TParameter, TReturn> = (...args) => TReturn | Promise<TReturn>;

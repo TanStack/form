@@ -3,7 +3,7 @@ id: VueFormGroupComponent
 title: VueFormGroupComponent
 ---
 
-# Type Alias: VueFormGroupComponent()\<TFormData, TFormErrorTypes, TFieldComponents\>
+# Type Alias: VueFormGroupComponent\<TFormData, TFormErrorTypes, TFieldComponents\>
 
 ```ts
 type VueFormGroupComponent<TFormData, TFormErrorTypes, TFieldComponents> = <TGroupName, TGroupValue, TGroupValidators>(props) => VueComponentInstance<VueFormGroupProps<TFormData, TGroupName, TGroupValue, TGroupValidators, TFormErrorTypes, TFieldComponents>, {

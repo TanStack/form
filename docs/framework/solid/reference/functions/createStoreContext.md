@@ -32,7 +32,7 @@ typed when read back with `useStoreContext()`.
 
 `object`
 
-### StoreProvider()
+### StoreProvider
 
 ```ts
 StoreProvider: (props) => Element;
@@ -50,7 +50,7 @@ StoreProvider: (props) => Element;
 
 `Element`
 
-### useStoreContext()
+### useStoreContext
 
 ```ts
 useStoreContext: () => TValue;

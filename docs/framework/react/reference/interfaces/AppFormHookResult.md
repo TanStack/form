@@ -25,7 +25,7 @@ Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:28](h
 
 ***
 
-### getAppFieldGroupHelpers()
+### getAppFieldGroupHelpers
 
 ```ts
 getAppFieldGroupHelpers: () => FieldGroupHelpers<TComponents["fieldComponents"]>;
@@ -49,7 +49,7 @@ Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:32](h
 
 ***
 
-### useFormContext()
+### useFormContext
 
 ```ts
 useFormContext: () => ReactAppFormApi<any, any, TComponents>;

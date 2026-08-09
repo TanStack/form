@@ -111,7 +111,7 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 
 ##### observerOrFn
 
-[`Observer`](../type-aliases/Observer.md)\<`T`\> | (`value`) => `void`
+[`Observer`](../type-aliases/Observer.md)\<`T`\> \| ((`value`) => `void`)
 
 #### Returns
 

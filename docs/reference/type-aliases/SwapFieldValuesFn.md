@@ -3,7 +3,7 @@ id: SwapFieldValuesFn
 title: SwapFieldValuesFn
 ---
 
-# Type Alias: SwapFieldValuesFn()\<TFormData\>
+# Type Alias: SwapFieldValuesFn\<TFormData\>
 
 ```ts
 type SwapFieldValuesFn<TFormData> = <TFieldName>(arrayFieldName, indexA, indexB, options?) => void;

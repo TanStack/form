@@ -3,7 +3,7 @@ id: ParseSubmitIssuesFn
 title: ParseSubmitIssuesFn
 ---
 
-# Type Alias: ParseSubmitIssuesFn()\<TFormData\>
+# Type Alias: ParseSubmitIssuesFn\<TFormData\>
 
 ```ts
 type ParseSubmitIssuesFn<TFormData> = (issues) => OnSubmitError<ParsedStandardSchemaIssues<TFormData>>;

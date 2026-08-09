@@ -3,7 +3,7 @@ id: FieldGroupSubscribeComponent
 title: FieldGroupSubscribeComponent
 ---
 
-# Type Alias: FieldGroupSubscribeComponent()
+# Type Alias: FieldGroupSubscribeComponent
 
 ```ts
 type FieldGroupSubscribeComponent = <TSelected>(props) => JSX.Element;

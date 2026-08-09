@@ -50,7 +50,7 @@ Defined in: [packages/vue-form/src/VueForm/Components.public.ts:97](https://gith
 ### \[fieldComponentsType\]?
 
 ```ts
-readonly optional [fieldComponentsType]: TFieldComponents;
+readonly optional [fieldComponentsType]?: TFieldComponents;
 ```
 
 Defined in: [packages/vue-form/src/VueForm/Components.public.ts:119](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L119)

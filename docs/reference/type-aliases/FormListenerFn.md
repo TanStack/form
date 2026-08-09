@@ -3,7 +3,7 @@ id: FormListenerFn
 title: FormListenerFn
 ---
 
-# Type Alias: FormListenerFn()\<TFormData, TFormErrorTypes\>
+# Type Alias: FormListenerFn\<TFormData, TFormErrorTypes\>
 
 ```ts
 type FormListenerFn<TFormData, TFormErrorTypes> = (context) => void;

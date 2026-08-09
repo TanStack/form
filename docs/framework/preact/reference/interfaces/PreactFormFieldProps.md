@@ -47,7 +47,7 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:113](https
 
 ## Properties
 
-### children()
+### children
 
 ```ts
 children: (fieldApi) => ComponentChildren;

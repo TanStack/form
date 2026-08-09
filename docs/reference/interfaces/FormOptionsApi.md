@@ -39,7 +39,7 @@ Defined in: [utils.public.ts:54](https://github.com/TanStack/form/blob/main/pack
 
 ## Properties
 
-### looseSchema()
+### looseSchema
 
 ```ts
 looseSchema: <TFormValidators, TFormData, TSubmitReturn>(options) => FormOptions<InferUnion<TFormData, FormValidatorData<TFormValidators>>, TFormValidators, TSubmitReturn>;
@@ -73,7 +73,7 @@ Defined in: [utils.public.ts:76](https://github.com/TanStack/form/blob/main/pack
 
 ***
 
-### strictSchema()
+### strictSchema
 
 ```ts
 strictSchema: <TFormValidators, TFormData, TSubmitReturn>(options) => FormOptions<FormValidatorData<TFormValidators>, TFormValidators, TSubmitReturn>;

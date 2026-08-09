@@ -25,7 +25,7 @@ Defined in: [packages/preact-form/src/AppForm/createFormHookTypes.public.ts:28](
 
 ***
 
-### getAppFieldGroupHelpers()
+### getAppFieldGroupHelpers
 
 ```ts
 getAppFieldGroupHelpers: () => FieldGroupHelpers<TComponents["fieldComponents"]>;
@@ -49,7 +49,7 @@ Defined in: [packages/preact-form/src/AppForm/createFormHookTypes.public.ts:32](
 
 ***
 
-### useFormContext()
+### useFormContext
 
 ```ts
 useFormContext: () => PreactAppFormApi<any, any, TComponents>;

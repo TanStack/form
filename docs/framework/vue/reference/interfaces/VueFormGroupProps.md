@@ -42,7 +42,7 @@ Defined in: [packages/vue-form/src/VueForm/Components.public.ts:374](https://git
 ### \[fieldComponentsType\]?
 
 ```ts
-readonly optional [fieldComponentsType]: TFieldComponents;
+readonly optional [fieldComponentsType]?: TFieldComponents;
 ```
 
 Defined in: [packages/vue-form/src/VueForm/Components.public.ts:391](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L391)

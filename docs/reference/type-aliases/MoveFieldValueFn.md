@@ -3,7 +3,7 @@ id: MoveFieldValueFn
 title: MoveFieldValueFn
 ---
 
-# Type Alias: MoveFieldValueFn()\<TFormData\>
+# Type Alias: MoveFieldValueFn\<TFormData\>
 
 ```ts
 type MoveFieldValueFn<TFormData> = <TFieldName>(arrayFieldName, fromIndex, toIndex, options?) => void;

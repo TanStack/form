@@ -39,7 +39,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:312](https:/
 
 ## Properties
 
-### children()
+### children
 
 ```ts
 children: (groupApi) => ReactNode | Promise<ReactNode>;

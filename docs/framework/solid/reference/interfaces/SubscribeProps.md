@@ -22,14 +22,14 @@ Defined in: [packages/solid-form/src/Subscribe.public.ts:14](https://github.com/
 ### children
 
 ```ts
-children: Element | (state) => Element;
+children: Element | ((state) => Element);
 ```
 
 Defined in: [packages/solid-form/src/Subscribe.public.ts:18](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Subscribe.public.ts#L18)
 
 ***
 
-### selector()
+### selector
 
 ```ts
 selector: (state) => TSelected;
@@ -59,10 +59,10 @@ Defined in: [packages/solid-form/src/Subscribe.public.ts:15](https://github.com/
 
 ***
 
-### when()?
+### when?
 
 ```ts
-optional when: (selected) => boolean;
+optional when?: (selected) => boolean;
 ```
 
 Defined in: [packages/solid-form/src/Subscribe.public.ts:17](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Subscribe.public.ts#L17)

@@ -15,10 +15,10 @@ Defined in: node\_modules/.pnpm/@tanstack+react-store@0.11.0\_react-dom@19.2.4\_
 
 ## Properties
 
-### compare()?
+### compare?
 
 ```ts
-optional compare: (a, b) => boolean;
+optional compare?: (a, b) => boolean;
 ```
 
 Defined in: node\_modules/.pnpm/@tanstack+react-store@0.11.0\_react-dom@19.2.4\_react@19.2.4\_\_react@19.2.4/node\_modules/@tanstack/react-store/dist/useSelector.d.ts:3

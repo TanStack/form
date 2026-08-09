@@ -3,7 +3,7 @@ id: FieldGroupWithFieldsFn
 title: FieldGroupWithFieldsFn
 ---
 
-# Type Alias: FieldGroupWithFieldsFn()
+# Type Alias: FieldGroupWithFieldsFn
 
 ```ts
 type FieldGroupWithFieldsFn = <TFieldGroup, TProps, TFieldsPropName>(fields, Component, fieldsPropName) => <TFormData>(props) => CrossVersionReactNode;
@@ -41,22 +41,4 @@ Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:162](https:
 
 ## Returns
 
-```ts
-<TFormData>(props): CrossVersionReactNode;
-```
-
-### Type Parameters
-
-#### TFormData
-
-`TFormData`
-
-### Parameters
-
-#### props
-
-`Omit`\<`TProps`, `TFieldsPropName` \| `"form"`\> & `object` & `{ [TPropName in TFieldsPropName]: FieldGroupFieldBindingsOf<TFieldGroup, TFormData> }`
-
-### Returns
-
-[`CrossVersionReactNode`](CrossVersionReactNode.md)
+\<`TFormData`\>(`props`) => [`CrossVersionReactNode`](CrossVersionReactNode.md)

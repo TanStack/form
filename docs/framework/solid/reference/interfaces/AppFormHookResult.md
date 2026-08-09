@@ -25,7 +25,7 @@ Defined in: [packages/solid-form/src/AppForm/createFormHookTypes.public.ts:27](h
 
 ***
 
-### getAppFieldGroupHelpers()
+### getAppFieldGroupHelpers
 
 ```ts
 getAppFieldGroupHelpers: () => FieldGroupHelpers<TComponents["fieldComponents"]>;
@@ -49,7 +49,7 @@ Defined in: [packages/solid-form/src/AppForm/createFormHookTypes.public.ts:31](h
 
 ***
 
-### useFormContext()
+### useFormContext
 
 ```ts
 useFormContext: () => SolidAppFormApi<any, any, TComponents>;

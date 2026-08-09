@@ -24,7 +24,7 @@ Defined in: [validation.public.ts:443](https://github.com/TanStack/form/blob/mai
 ### bailIfInvalid?
 
 ```ts
-optional bailIfInvalid: boolean;
+optional bailIfInvalid?: boolean;
 ```
 
 Defined in: [validation.public.ts:21](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L21)
@@ -63,7 +63,7 @@ Defined in: [validation.public.ts:14](https://github.com/TanStack/form/blob/main
 ### runOnMount?
 
 ```ts
-optional runOnMount: boolean;
+optional runOnMount?: boolean;
 ```
 
 Defined in: [validation.public.ts:447](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L447)
@@ -73,7 +73,7 @@ Defined in: [validation.public.ts:447](https://github.com/TanStack/form/blob/mai
 ### runOnSubmit?
 
 ```ts
-optional runOnSubmit: 
+optional runOnSubmit?: 
   | boolean
 | ValidationPredicateFn<TFormData, TFormData, "form">;
 ```
@@ -85,7 +85,7 @@ Defined in: [validation.public.ts:446](https://github.com/TanStack/form/blob/mai
 ### triggerDebounceMs?
 
 ```ts
-optional triggerDebounceMs: 
+optional triggerDebounceMs?: 
   | number
 | ValidationDebounceFn<TFormData, TFormData, "form">;
 ```

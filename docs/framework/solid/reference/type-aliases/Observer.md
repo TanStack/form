@@ -19,10 +19,10 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 
 ## Properties
 
-### complete()?
+### complete?
 
 ```ts
-optional complete: () => void;
+optional complete?: () => void;
 ```
 
 Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/types.d.ts:11
@@ -33,10 +33,10 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 
 ***
 
-### error()?
+### error?
 
 ```ts
-optional error: (err) => void;
+optional error?: (err) => void;
 ```
 
 Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/types.d.ts:10
@@ -53,10 +53,10 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 
 ***
 
-### next()?
+### next?
 
 ```ts
-optional next: (value) => void;
+optional next?: (value) => void;
 ```
 
 Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/types.d.ts:9

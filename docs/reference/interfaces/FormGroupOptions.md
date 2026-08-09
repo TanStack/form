@@ -51,10 +51,10 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:108](https://github.com/TanStac
 
 ***
 
-### onSubmit()?
+### onSubmit?
 
 ```ts
-optional onSubmit: (context) => void | Promise<void>;
+optional onSubmit?: (context) => void | Promise<void>;
 ```
 
 Defined in: [FormGroupApi/FormGroupApi.public.ts:124](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L124)
@@ -85,10 +85,10 @@ before submission finishes.
 
 ***
 
-### onSubmitInvalid()?
+### onSubmitInvalid?
 
 ```ts
-optional onSubmitInvalid: (context) => void | Promise<void>;
+optional onSubmitInvalid?: (context) => void | Promise<void>;
 ```
 
 Defined in: [FormGroupApi/FormGroupApi.public.ts:150](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L150)
@@ -124,7 +124,7 @@ callback is awaited before submission finishes.
 ### validators?
 
 ```ts
-optional validators: TGroupValidators;
+optional validators?: TGroupValidators;
 ```
 
 Defined in: [FormGroupApi/FormGroupApi.public.ts:109](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L109)

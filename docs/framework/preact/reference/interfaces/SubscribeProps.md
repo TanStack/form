@@ -25,14 +25,14 @@ FormState.
 ### children
 
 ```ts
-children: ComponentChildren | (state) => ComponentChildren;
+children: ComponentChildren | ((state) => ComponentChildren);
 ```
 
 Defined in: [packages/preact-form/src/Subscribe.public.tsx:28](https://github.com/TanStack/form/blob/main/packages/preact-form/src/Subscribe.public.tsx#L28)
 
 ***
 
-### selector()
+### selector
 
 ```ts
 selector: (state) => TSelected;
@@ -65,10 +65,10 @@ Defined in: [packages/preact-form/src/Subscribe.public.tsx:18](https://github.co
 
 ***
 
-### when()?
+### when?
 
 ```ts
-optional when: (selected) => boolean;
+optional when?: (selected) => boolean;
 ```
 
 Defined in: [packages/preact-form/src/Subscribe.public.tsx:27](https://github.com/TanStack/form/blob/main/packages/preact-form/src/Subscribe.public.tsx#L27)

@@ -54,6 +54,8 @@ If this field is not an array, this method will be ignored.
 
 #### Param
 
+**options**
+
 Optional update options
 
 ***
@@ -81,9 +83,13 @@ If this field is not an array, this method will be ignored.
 
 #### Param
 
+**predicate**
+
 The predicate function to filter values. Returns true to keep the value, false to remove it.
 
 #### Param
+
+**options**
 
 Optional update options including a custom `thisArg` for the predicate
 
@@ -134,13 +140,19 @@ If this field is not an array, this method will be ignored.
 
 #### Param
 
+**index**
+
 The index at which to insert the value
 
 #### Param
 
+**value**
+
 The value to insert
 
 #### Param
+
+**options**
 
 Optional update options
 
@@ -169,13 +181,19 @@ If this field is not an array, this method will be ignored.
 
 #### Param
 
+**fromIndex**
+
 The current index of the element to move
 
 #### Param
 
+**toIndex**
+
 The index to move the element to
 
 #### Param
+
+**options**
 
 Optional update options
 
@@ -194,9 +212,13 @@ If this field is not an array, this method will be ignored.
 
 #### Param
 
+**value**
+
 The value to push into the array
 
 #### Param
+
+**options**
 
 Optional update options
 
@@ -215,9 +237,13 @@ If this field is not an array, this method will be ignored.
 
 #### Param
 
+**index**
+
 The index of the value to remove
 
 #### Param
+
+**options**
 
 Optional update options
 
@@ -233,7 +259,7 @@ Defined in: [FieldApi/FieldApi.public.ts:186](https://github.com/TanStack/form/b
 
 ***
 
-### swapValues()
+### swapValues
 
 ```ts
 swapValues: (indexA, indexB) => void;

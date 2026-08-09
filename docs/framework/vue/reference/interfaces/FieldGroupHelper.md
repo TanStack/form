@@ -9,7 +9,7 @@ Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:171](https://
 
 ## Properties
 
-### loose()
+### loose
 
 ```ts
 loose: <TValue>() => LooseFieldGroupFieldSlot<TValue>;
@@ -29,7 +29,7 @@ Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:173](https://
 
 ***
 
-### strict()
+### strict
 
 ```ts
 strict: <TValue>() => StrictFieldGroupFieldSlot<TValue>;

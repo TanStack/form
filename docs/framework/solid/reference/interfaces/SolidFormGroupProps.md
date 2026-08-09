@@ -39,7 +39,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:328](https://github.co
 
 ## Properties
 
-### children()
+### children
 
 ```ts
 children: (groupApi) => Element;

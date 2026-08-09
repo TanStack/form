@@ -35,7 +35,7 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 
 ***
 
-### \_update()
+### \_update
 
 ```ts
 _update: (getValue?) => boolean;
@@ -49,7 +49,7 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 
 ##### getValue?
 
-`T` | (`snapshot`) => `T`
+`T` \| ((`snapshot`) => `T`)
 
 #### Returns
 
@@ -57,7 +57,7 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 
 ***
 
-### get()
+### get
 
 ```ts
 get: () => T;

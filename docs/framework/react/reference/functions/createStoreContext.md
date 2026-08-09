@@ -31,7 +31,7 @@ typed when read back with `useStoreContext()`.
 
 `object`
 
-### StoreProvider()
+### StoreProvider
 
 ```ts
 StoreProvider: (props) => ReactElement;
@@ -47,7 +47,7 @@ StoreProvider: (props) => ReactElement;
 
 `ReactElement`
 
-### useStoreContext()
+### useStoreContext
 
 ```ts
 useStoreContext: () => TValue;

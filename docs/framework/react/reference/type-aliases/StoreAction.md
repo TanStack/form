@@ -3,7 +3,7 @@ id: StoreAction
 title: StoreAction
 ---
 
-# Type Alias: StoreAction()
+# Type Alias: StoreAction
 
 ```ts
 type StoreAction = (...args) => any;

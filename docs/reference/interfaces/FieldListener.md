@@ -52,7 +52,7 @@ Defined in: [listeners.public.ts:125](https://github.com/TanStack/form/blob/main
 ### triggerDebounceMs?
 
 ```ts
-optional triggerDebounceMs: 
+optional triggerDebounceMs?: 
   | number
 | ListenerDebounceFn<TFieldData, TFieldValue>;
 ```
@@ -91,7 +91,7 @@ Defined in: [listeners.public.ts:50](https://github.com/TanStack/form/blob/main/
 ### watchFields?
 
 ```ts
-optional watchFields: DeepKeys<TFieldData>[];
+optional watchFields?: DeepKeys<TFieldData>[];
 ```
 
 Defined in: [listeners.public.ts:132](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L132)

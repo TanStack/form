@@ -3,7 +3,7 @@ id: AppFormComponent
 title: AppFormComponent
 ---
 
-# Type Alias: AppFormComponent()
+# Type Alias: AppFormComponent
 
 ```ts
 type AppFormComponent = (props) => VueComponentInstance<{

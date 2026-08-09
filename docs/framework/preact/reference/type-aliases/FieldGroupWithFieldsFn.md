@@ -3,7 +3,7 @@ id: FieldGroupWithFieldsFn
 title: FieldGroupWithFieldsFn
 ---
 
-# Type Alias: FieldGroupWithFieldsFn()
+# Type Alias: FieldGroupWithFieldsFn
 
 ```ts
 type FieldGroupWithFieldsFn = <TFieldGroup, TProps, TFieldsPropName>(fields, Component, fieldsPropName) => <TFormData>(props) => CrossVersionPreactNode;
@@ -41,22 +41,4 @@ Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:162](https
 
 ## Returns
 
-```ts
-<TFormData>(props): CrossVersionPreactNode;
-```
-
-### Type Parameters
-
-#### TFormData
-
-`TFormData`
-
-### Parameters
-
-#### props
-
-`Omit`\<`TProps`, `TFieldsPropName` \| `"form"`\> & `object` & `{ [TPropName in TFieldsPropName]: FieldGroupFieldBindingsOf<TFieldGroup, TFormData> }`
-
-### Returns
-
-[`CrossVersionPreactNode`](CrossVersionPreactNode.md)
+\<`TFormData`\>(`props`) => [`CrossVersionPreactNode`](CrossVersionPreactNode.md)

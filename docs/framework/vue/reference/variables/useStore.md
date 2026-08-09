@@ -3,7 +3,7 @@ id: useStore
 title: useStore
 ---
 
-# ~~Variable: useStore()~~
+# ~~Variable: useStore~~
 
 ```ts
 const useStore: <TSource, TSelected>(source, selector?, compare?) => Readonly<Ref<TSelected>>;

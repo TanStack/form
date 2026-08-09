@@ -29,7 +29,7 @@ atom.set(43);
 
 ## Properties
 
-### get()
+### get
 
 ```ts
 get: () => T;

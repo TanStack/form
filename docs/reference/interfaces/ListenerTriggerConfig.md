@@ -36,7 +36,7 @@ Defined in: [listeners.public.ts:24](https://github.com/TanStack/form/blob/main/
 ### when?
 
 ```ts
-optional when: 
+optional when?: 
   | boolean
 | ListenerPredicateFn<TFormData, TValue>;
 ```

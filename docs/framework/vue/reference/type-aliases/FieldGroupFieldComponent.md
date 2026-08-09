@@ -3,7 +3,7 @@ id: FieldGroupFieldComponent
 title: FieldGroupFieldComponent
 ---
 
-# Type Alias: FieldGroupFieldComponent()\<TFieldData, TFieldComponents\>
+# Type Alias: FieldGroupFieldComponent\<TFieldData, TFieldComponents\>
 
 ```ts
 type FieldGroupFieldComponent<TFieldData, TFieldComponents> = <TFieldName>(props) => VueComponentInstance<VueFormFieldProps<TFieldData, TFieldName, DeepValue<TFieldData, TFieldName>, FieldValidators<TFieldData, TFieldName, DeepValue<TFieldData, TFieldName>>, ValidationIssue, unknown, FormErrorTypes, TFieldComponents>, {

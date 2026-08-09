@@ -28,7 +28,7 @@ Defined in: [validation.public.ts:364](https://github.com/TanStack/form/blob/mai
 ### form?
 
 ```ts
-optional form: ValidationErrorInput;
+optional form?: ValidationErrorInput;
 ```
 
 Defined in: [validation.public.ts:363](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L363)
