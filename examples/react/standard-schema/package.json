@@ -12,8 +12,8 @@
     "@tanstack/react-form": "^1.33.3",
     "arktype": "^2.1.22",
     "effect": "^3.17.14",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
     "valibot": "^1.1.0",
     "zod": "^4.4.3"
   },
@@ -23,7 +23,7 @@
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
-    "vite": "^8.1.2"
+    "vite": "^8.2.1"
   },
   "browserslist": {
     "production": [

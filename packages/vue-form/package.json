@@ -36,11 +36,11 @@
   ],
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
-    "@tanstack/vue-store": "^0.11.0"
+    "@tanstack/vue-store": "^0.11.1"
   },
   "devDependencies": {
     "@testing-library/vue": "^8.1.0",
-    "@vitejs/plugin-vue": "^5.2.4",
+    "@vitejs/plugin-vue": "^6.0.8",
     "unplugin-vue": "^7.2.0",
     "vue": "^3.6.0-rc.2",
     "vue-tsc": "^3.3.9"

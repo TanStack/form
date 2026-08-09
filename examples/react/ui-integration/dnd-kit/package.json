@@ -12,8 +12,8 @@
     "@dnd-kit/helpers": "^0.5.0",
     "@dnd-kit/react": "^0.5.0",
     "@tanstack/react-form": "^1.33.3",
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
   },
   "devDependencies": {
     "@tanstack/react-devtools": "^0.10.5",
@@ -22,6 +22,6 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
     "typescript": "^6.0.2",
-    "vite": "^8.1.2"
+    "vite": "^8.2.1"
   }
 }

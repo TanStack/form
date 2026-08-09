@@ -11,9 +11,9 @@
   "dependencies": {
     "@tanstack/react-form": "^1.33.3",
     "@tanstack/react-form-nextjs": "^1.33.3",
-    "next": "16.2.12",
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "next": "16.3.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -22,8 +22,8 @@
     "@types/node": "^25.0.7",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
-    "eslint": "^10.8.0",
-    "eslint-config-next": "16.2.12",
+    "eslint": "^10.8.1",
+    "eslint-config-next": "16.3.0",
     "tailwindcss": "^4.3.2",
     "typescript": "^6.0.2"
   }
