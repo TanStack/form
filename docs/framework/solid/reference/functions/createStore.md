@@ -11,7 +11,7 @@ title: createStore
 function createStore<T>(getValue): ReadonlyStore<T>;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/store.d.ts:30
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/store.d.ts:30
 
 ### Type Parameters
 
@@ -35,7 +35,7 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 function createStore<T>(initialValue): Store<T>;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/store.d.ts:31
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/store.d.ts:31
 
 ### Type Parameters
 
@@ -59,7 +59,7 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 function createStore<T, TActions>(initialValue, actions): Store<T, TActions>;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/store.d.ts:32
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/store.d.ts:32
 
 ### Type Parameters
 

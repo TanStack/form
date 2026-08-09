@@ -5,7 +5,7 @@ title: Atom
 
 # Interface: Atom\<T\>
 
-Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/types.d.ts:29
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/types.d.ts:29
 
 ## Extends
 
@@ -25,7 +25,7 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 get: () => T;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/types.d.ts:20
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/types.d.ts:20
 
 #### Returns
 
@@ -43,7 +43,7 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 set: (fn) => void & (value) => void;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/types.d.ts:31
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/types.d.ts:31
 
 Sets the value of the atom using a function.
 
@@ -55,7 +55,7 @@ Sets the value of the atom using a function.
 subscribe: (observer) => Subscription & (next, error?, complete?) => Subscription;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/types.d.ts:17
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/types.d.ts:17
 
 #### Inherited from
 

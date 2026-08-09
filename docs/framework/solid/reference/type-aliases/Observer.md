@@ -9,7 +9,7 @@ title: Observer
 type Observer<T> = object;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/types.d.ts:8
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/types.d.ts:8
 
 ## Type Parameters
 
@@ -25,7 +25,7 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 optional complete?: () => void;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/types.d.ts:11
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/types.d.ts:11
 
 #### Returns
 
@@ -39,7 +39,7 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 optional error?: (err) => void;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/types.d.ts:10
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/types.d.ts:10
 
 #### Parameters
 
@@ -59,7 +59,7 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 optional next?: (value) => void;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/types.d.ts:9
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/types.d.ts:9
 
 #### Parameters
 

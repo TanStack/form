@@ -5,7 +5,7 @@ title: InternalReadonlyAtom
 
 # Interface: InternalReadonlyAtom\<T\>
 
-Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/types.d.ts:37
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/types.d.ts:37
 
 ## Extends
 
@@ -25,7 +25,7 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 _snapshot: T;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/types.d.ts:25
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/types.d.ts:25
 
 **`Internal`**
 
@@ -41,7 +41,7 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 _update: (getValue?) => boolean;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/types.d.ts:27
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/types.d.ts:27
 
 **`Internal`**
 
@@ -67,7 +67,7 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 optional deps?: Link;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/alien.d.ts:3
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/alien.d.ts:3
 
 #### Inherited from
 
@@ -83,7 +83,7 @@ ReactiveNode.deps
 optional depsTail?: Link;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/alien.d.ts:4
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/alien.d.ts:4
 
 #### Inherited from
 
@@ -96,10 +96,10 @@ ReactiveNode.depsTail
 ### flags
 
 ```ts
-flags: ReactiveFlags;
+flags: number;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/alien.d.ts:7
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/alien.d.ts:7
 
 #### Inherited from
 
@@ -115,7 +115,7 @@ ReactiveNode.flags
 get: () => T;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/types.d.ts:20
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/types.d.ts:20
 
 #### Returns
 
@@ -133,7 +133,7 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 optional subs?: Link;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/alien.d.ts:5
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/alien.d.ts:5
 
 #### Inherited from
 
@@ -149,7 +149,7 @@ ReactiveNode.subs
 subscribe: (observer) => Subscription & (next, error?, complete?) => Subscription;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/types.d.ts:17
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/types.d.ts:17
 
 #### Inherited from
 
@@ -163,7 +163,7 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 optional subsTail?: Link;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/alien.d.ts:6
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/alien.d.ts:6
 
 #### Inherited from
 

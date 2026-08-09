@@ -5,7 +5,7 @@ title: AtomOptions
 
 # Interface: AtomOptions\<T\>
 
-Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/types.d.ts:33
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/types.d.ts:33
 
 ## Type Parameters
 
@@ -21,7 +21,7 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 optional compare?: (prev, next) => boolean;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/types.d.ts:34
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/types.d.ts:34
 
 #### Parameters
 

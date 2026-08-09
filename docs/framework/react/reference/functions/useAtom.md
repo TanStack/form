@@ -9,7 +9,7 @@ title: useAtom
 function useAtom<TValue>(atom, options?): [TValue, (fn) => void & (value) => void];
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+react-store@0.11.0\_react-dom@19.2.4\_react@19.2.4\_\_react@19.2.4/node\_modules/@tanstack/react-store/dist/useAtom.d.ts:16
+Defined in: node\_modules/.pnpm/@tanstack+react-store@0.11.0\_react-dom@19.2.8\_react@19.2.8\_\_react@19.2.8/node\_modules/@tanstack/react-store/dist/useAtom.d.ts:16
 
 Returns the current atom value together with a stable setter.
 

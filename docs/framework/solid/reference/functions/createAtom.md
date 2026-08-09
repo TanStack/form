@@ -11,7 +11,7 @@ title: createAtom
 function createAtom<T>(getValue, options?): ReadonlyAtom<T>;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/atom.d.ts:17
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/atom.d.ts:17
 
 ### Type Parameters
 
@@ -39,7 +39,7 @@ Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/s
 function createAtom<T>(initialValue, options?): Atom<T>;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/atom.d.ts:18
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/atom.d.ts:18
 
 ### Type Parameters
 
