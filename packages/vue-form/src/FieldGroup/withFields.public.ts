@@ -1,8 +1,4 @@
-import {
-  defineFieldGroupFieldsRuntime as defineFieldsRuntime,
-  fieldGroupHelperRuntime as helperRuntime,
-} from '@tanstack/form-core/internals'
-import { withFieldsRuntime } from './withFields.lib'
+import { defineFieldGroupRuntime } from './withFields.lib'
 import type {
   DeepKeys,
   DeepKeysWhereValueIncludes,
@@ -89,14 +85,14 @@ export type FieldGroupFieldsOf<TFieldGroup> = TFieldGroup extends {
   ? TFields
   : never
 
-export type FieldGroupDefinition<
+export type VueFieldGroup<
   TFields extends FieldGroupFields,
   TFieldComponents extends Record<string, Component> = Record<never, never>,
 > = FieldGroupApi<FieldGroupFieldData<TFields>, TFieldComponents> & {
   readonly [fieldGroupFieldsSymbol]: TFields
 }
 export type FieldGroupFieldComponentsOf<TFieldGroup> =
-  TFieldGroup extends FieldGroupDefinition<any, infer TFieldComponents>
+  TFieldGroup extends VueFieldGroup<any, infer TFieldComponents>
     ? TFieldComponents
     : never
 export type FieldGroupForm<
@@ -129,7 +125,7 @@ export type FieldGroupFieldBindingsOf<TFieldGroup, TFormData> =
     : never
 export type FieldGroupFieldsPropName<
   TProps,
-  TFieldGroup extends FieldGroupDefinition<any, any>,
+  TFieldGroup extends VueFieldGroup<any, any>,
 > = {
   [TPropName in keyof TProps]-?: IsSame<
     TProps[TPropName],
@@ -139,14 +135,12 @@ export type FieldGroupFieldsPropName<
     : never
 }[keyof TProps]
 
-export type FieldGroupWithFieldsFn = <
-  TFieldGroup extends FieldGroupDefinition<any, any>,
-  TProps extends object,
-  const TFieldsPropName extends PropertyKey,
->(
-  fields: TFieldGroup,
+export type FieldGroupWithFieldsFn<
+  TFieldGroup extends VueFieldGroup<any, any>,
+> = <TProps extends object, const TFieldsPropName extends PropertyKey>(
   component: Component & (new (props: TProps & PublicProps) => any),
-  fieldsPropName: TFieldsPropName & keyof TProps,
+  fieldsPropName: TFieldsPropName &
+    FieldGroupFieldsPropName<TProps, TFieldGroup>,
 ) => new <TFormData>(
   props: Omit<TProps, TFieldsPropName | 'form'> & {
     form: FieldGroupForm<FieldGroupFieldComponentsOf<TFieldGroup>, TFormData>
@@ -172,31 +166,26 @@ export interface FieldGroupHelper {
   strict: <TValue>() => StrictFieldGroupFieldSlot<TValue>
   loose: <TValue>() => LooseFieldGroupFieldSlot<TValue>
 }
-const helper: FieldGroupHelper = helperRuntime as never
-export type DefineFieldsFn<TFieldComponents extends Record<string, Component>> =
-  <const TFields extends FieldGroupFields>(
-    fields: TFields,
-  ) => FieldGroupDefinition<TFields, TFieldComponents>
-const defineFields: DefineFieldsFn<Record<never, never>> =
-  defineFieldsRuntime as never
-const withFields: FieldGroupWithFieldsFn = withFieldsRuntime as never
 
-export interface FieldGroupHelpers<
+export interface FieldGroupDefinition<
+  TFields extends FieldGroupFields,
   TFieldComponents extends Record<string, Component>,
 > {
-  helper: FieldGroupHelper
-  defineFields: DefineFieldsFn<TFieldComponents>
-  withFields: FieldGroupWithFieldsFn
+  /** The virtual field-group API injected into the bound component. */
+  fields: VueFieldGroup<TFields, TFieldComponents>
+  /** Binds a component's virtual field API to concrete paths in a form. */
+  bindComponent: FieldGroupWithFieldsFn<
+    VueFieldGroup<TFields, TFieldComponents>
+  >
 }
 
-function createFieldGroupHelpers<
+/** Signature shared by `defineFieldGroup` and app-form field-group definers. */
+export type DefineFieldGroupFn<
   TFieldComponents extends Record<string, Component>,
->(): FieldGroupHelpers<TFieldComponents> {
-  return { helper, defineFields: defineFields as never, withFields }
-}
+> = <const TFields extends FieldGroupFields>(
+  defineFn: (helper: FieldGroupHelper) => TFields,
+) => FieldGroupDefinition<TFields, TFieldComponents>
 
-export function getFieldGroupHelpers(): FieldGroupHelpers<
-  Record<never, never>
-> {
-  return createFieldGroupHelpers()
-}
+/** Defines a reusable group of virtual fields. */
+export const defineFieldGroup: DefineFieldGroupFn<Record<never, never>> =
+  defineFieldGroupRuntime as never

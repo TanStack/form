@@ -1,4 +1,8 @@
-import { InternalFieldGroupApi } from '@tanstack/form-core/internals'
+import {
+  InternalFieldGroupApi,
+  defineFieldGroupFieldsRuntime,
+  fieldGroupHelperRuntime,
+} from '@tanstack/form-core/internals'
 import { computed, defineComponent, h } from 'vue'
 import type { Component } from 'vue'
 import type {
@@ -46,12 +50,26 @@ function attachVueFieldGroupComponents(
   }) as never
 }
 
-export function withFieldsRuntime(
-  fields: AnyFieldGroupApi,
+export function defineFieldGroupRuntime<
+  TFields extends Record<string, unknown>,
+>(defineFieldGroupFn: (helperRuntime: any) => TFields) {
+  const fields = defineFieldGroupFieldsRuntime(
+    defineFieldGroupFn(fieldGroupHelperRuntime),
+  )
+
+  return {
+    fields,
+    bindComponent: (component: Component, fieldsPropName: string) =>
+      withFieldsRuntime(fields, component, fieldsPropName),
+  }
+}
+
+function withFieldsRuntime(
+  fields: Record<string, unknown>,
   component: Component,
   fieldsPropName: string,
 ) {
-  const fieldNames = Object.keys(fields as unknown as Record<string, unknown>)
+  const fieldNames = Object.keys(fields)
 
   return defineComponent(
     (_props, context) => {

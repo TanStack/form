@@ -2,7 +2,7 @@
 import { defineComponent, h } from 'vue'
 import {
   createFormHook,
-  getFieldGroupHelpers,
+  defineFieldGroup,
   getFormHookHelpers,
   useForm,
 } from '../src'
@@ -28,19 +28,36 @@ const TextField = defineComponent<{
 
 const { fieldComponent } = getFormHookHelpers()
 const AppTextField = fieldComponent.strict(TextField, 'field')
-const { useAppForm } = createFormHook({
+const { defineAppFieldGroup, useAppForm } = createFormHook({
   fieldComponents: { AppTextField },
   formComponents: {},
 })
 const appForm = useAppForm({ defaultValues: { name: 'Tony', age: 42 } })
 
-const { helper, defineFields, withFields } = getFieldGroupHelpers()
-const reusableFields = defineFields({ email: helper.strict<string>() })
-const ReusableFields = defineComponent<{ fields: typeof reusableFields }>({
+const appReusableFieldGroup = defineAppFieldGroup(({ strict }) => ({
+  name: strict<string>(),
+}))
+const AppReusableFields = defineComponent<{
+  fields: typeof appReusableFieldGroup.fields
+}>({
   props: ['fields'],
   setup: () => () => null,
 })
-const Reusable = withFields(reusableFields, ReusableFields, 'fields')
+const AppReusable = appReusableFieldGroup.bindComponent(
+  AppReusableFields,
+  'fields',
+)
+
+const reusableFieldGroup = defineFieldGroup(({ strict }) => ({
+  email: strict<string>(),
+}))
+const ReusableFields = defineComponent<{
+  fields: typeof reusableFieldGroup.fields
+}>({
+  props: ['fields'],
+  setup: () => () => null,
+})
+const Reusable = reusableFieldGroup.bindComponent(ReusableFields, 'fields')
 </script>
 
 <template>
@@ -77,6 +94,8 @@ const Reusable = withFields(reusableFields, ReusableFields, 'fields')
   <form.ArrayField name="name" />
 
   <Reusable :form="form" :fields="{ email: 'guest.email' }" />
+
+  <AppReusable :form="appForm" :fields="{ name: 'name' }" />
 
   <!-- @vue-expect-error strict string slots reject array-valued paths -->
   <Reusable :form="form" :fields="{ email: 'people' }" />
