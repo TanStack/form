@@ -1,5 +1,5 @@
 import { describe, expectTypeOf, it } from 'vitest'
-import { formOptions, getFieldGroupHelpers } from '../src/index.js'
+import { defineFieldGroup, formOptions } from '../src/index.js'
 import type { LitFormType, ValidationIssue } from '../src/index.js'
 
 const options = formOptions({
@@ -42,11 +42,11 @@ function assertControllerTypes(form: Form) {
   form.arrayField({ name: 'name' }, () => null)
 }
 
-const { defineFields, helper, withFields } = getFieldGroupHelpers()
-const reusableFields = defineFields({ value: helper.strict<string>() })
-const ReusableField = withFields(
-  reusableFields,
-  (props: { fields: typeof reusableFields }) =>
+const reusableFieldGroup = defineFieldGroup(({ strict }) => ({
+  value: strict<string>(),
+}))
+const ReusableField = reusableFieldGroup.bindComponent(
+  (props: { fields: typeof reusableFieldGroup.fields }) =>
     props.fields.field({ name: 'value' }, () => null),
   'fields',
 )

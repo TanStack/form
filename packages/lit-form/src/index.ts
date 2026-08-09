@@ -8,11 +8,19 @@ export type {
   LitFormGroupApi,
   LitSubscribeMethod,
 } from './tanstack-form-controller.js'
-export { getFieldGroupHelpers } from './with-fields.js'
+export { defineFieldGroup } from './with-fields.js'
 export type {
+  AnyFieldGroupFieldSlot,
+  DefineFieldGroupFn,
   FieldGroupDefinition,
   FieldGroupFieldBindings,
+  FieldGroupFieldBindingsOf,
   FieldGroupFieldData,
   FieldGroupFieldSlot,
+  FieldGroupFields,
+  FieldGroupFieldsOf,
+  FieldGroupHelper,
+  FieldGroupWithFieldsFn,
+  LitFieldGroup,
   LitFieldGroupApi,
 } from './with-fields.js'

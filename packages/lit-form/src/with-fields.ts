@@ -1,6 +1,8 @@
 import { Directive, PartType, directive } from 'lit/directive.js'
 import { createAtom, shallow } from '@tanstack/lit-store'
 import {
+  defineFieldGroupFieldsRuntime,
+  fieldGroupHelperRuntime,
   getBy,
   transformFieldOptionsFieldNames,
 } from '@tanstack/form-core/internals'
@@ -34,7 +36,7 @@ export interface FieldGroupFieldSlot<
   readonly [fieldGroupFieldSlotValueSymbol]: TValue
 }
 
-type AnyFieldGroupFieldSlot = FieldGroupFieldSlot<any>
+export type AnyFieldGroupFieldSlot = FieldGroupFieldSlot<any>
 
 type IsSame<TTypeA, TTypeB> = [TTypeA] extends [TTypeB]
   ? [TTypeB] extends [TTypeA]
@@ -63,7 +65,7 @@ type FieldGroupFieldNameForSlot<
     : never
 }[DeepKeys<TFieldData>]
 
-type FieldGroupFields = Record<string, AnyFieldGroupFieldSlot>
+export type FieldGroupFields = Record<string, AnyFieldGroupFieldSlot>
 
 export type FieldGroupFieldData<TFields extends FieldGroupFields> = {
   [
@@ -85,10 +87,17 @@ export type LitFieldGroupApi<TFieldData> = LitFieldMethods<
     atom: ReadonlyAtom<TFieldData>
   }
 
-export type FieldGroupDefinition<TFields extends FieldGroupFields> =
-  LitFieldGroupApi<FieldGroupFieldData<TFields>> & {
-    readonly [fieldGroupFieldsSymbol]: TFields
-  }
+export type FieldGroupFieldsOf<TFieldGroup> = TFieldGroup extends {
+  readonly [fieldGroupFieldsSymbol]: infer TFields
+}
+  ? TFields
+  : never
+
+export type LitFieldGroup<TFields extends FieldGroupFields> = LitFieldGroupApi<
+  FieldGroupFieldData<TFields>
+> & {
+  readonly [fieldGroupFieldsSymbol]: TFields
+}
 
 type FieldGroupFieldBindingForSlot<
   TFormData,
@@ -110,10 +119,15 @@ export type FieldGroupFieldBindings<
   >
 }
 
-type FieldGroupFieldsPropName<TProps, TFields extends FieldGroupFields> = {
+export type FieldGroupFieldBindingsOf<TFieldGroup, TFormData> =
+  FieldGroupFieldsOf<TFieldGroup> extends FieldGroupFields
+    ? FieldGroupFieldBindings<FieldGroupFieldsOf<TFieldGroup>, TFormData>
+    : never
+
+type FieldGroupFieldsPropName<TProps, TFieldGroup> = {
   [TPropName in keyof TProps]-?: IsSame<
     TProps[TPropName],
-    FieldGroupDefinition<TFields>
+    TFieldGroup
   > extends true
     ? TPropName
     : never
@@ -121,36 +135,42 @@ type FieldGroupFieldsPropName<TProps, TFields extends FieldGroupFields> = {
 
 type AnyLitForm<TFormData = any> = TanStackFormController<TFormData, any, any>
 
-type FieldGroupWithFieldsFn = <
-  const TFields extends FieldGroupFields,
+export type FieldGroupWithFieldsFn<
+  TFieldGroup extends {
+    readonly [fieldGroupFieldsSymbol]: FieldGroupFields
+  },
+> = <
   TProps extends object,
-  TFieldsPropName extends FieldGroupFieldsPropName<TProps, TFields>,
+  TFieldsPropName extends FieldGroupFieldsPropName<TProps, TFieldGroup>,
 >(
-  fields: FieldGroupDefinition<TFields>,
   render: (props: TProps) => unknown,
   fieldsPropName: TFieldsPropName,
 ) => <TFormData>(
   props: Omit<TProps, TFieldsPropName | 'form'> & {
     form: AnyLitForm<TFormData>
   } & {
-    [TPropName in TFieldsPropName]: FieldGroupFieldBindings<TFields, TFormData>
+    [TPropName in TFieldsPropName]: FieldGroupFieldBindingsOf<
+      TFieldGroup,
+      TFormData
+    >
   },
 ) => unknown
 
-interface FieldGroupHelper {
+export interface FieldGroupHelper {
   strict: <TValue>() => FieldGroupFieldSlot<TValue, 'strict'>
   loose: <TValue>() => FieldGroupFieldSlot<TValue, 'loose'>
 }
 
-type DefineFieldsFn = <const TFields extends FieldGroupFields>(
-  fields: TFields,
-) => FieldGroupDefinition<TFields>
-
-export interface FieldGroupHelpers {
-  helper: FieldGroupHelper
-  defineFields: DefineFieldsFn
-  withFields: FieldGroupWithFieldsFn
+export interface FieldGroupDefinition<TFields extends FieldGroupFields> {
+  /** The virtual field-group API injected into the bound renderer. */
+  fields: LitFieldGroup<TFields>
+  /** Binds a renderer's virtual field API to concrete paths in a form. */
+  bindComponent: FieldGroupWithFieldsFn<LitFieldGroup<TFields>>
 }
+
+export type DefineFieldGroupFn = <const TFields extends FieldGroupFields>(
+  defineFn: (helper: FieldGroupHelper) => TFields,
+) => FieldGroupDefinition<TFields>
 
 type FieldBindings = Record<string, string>
 
@@ -306,15 +326,7 @@ class ReusableFieldGroupDirective extends Directive {
 
 const reusableFieldGroupDirective = directive(ReusableFieldGroupDirective)
 
-const helper: FieldGroupHelper = {
-  strict: () => null as never,
-  loose: () => null as never,
-}
-
-const defineFields = ((fields: FieldGroupFields) =>
-  fields) as unknown as DefineFieldsFn
-
-const withFields = ((
+const withFieldsRuntime = (
   fields: FieldGroupFields,
   render: (props: Record<string, unknown>) => unknown,
   fieldsPropName: string,
@@ -334,8 +346,20 @@ const withFields = ((
       rest,
     )
   }
-}) as unknown as FieldGroupWithFieldsFn
-
-export function getFieldGroupHelpers(): FieldGroupHelpers {
-  return { helper, defineFields, withFields }
 }
+
+export const defineFieldGroup = ((
+  defineFn: (helper: FieldGroupHelper) => FieldGroupFields,
+) => {
+  const fields = defineFieldGroupFieldsRuntime(
+    defineFn(fieldGroupHelperRuntime as never),
+  )
+
+  return {
+    fields,
+    bindComponent: (
+      render: (props: Record<string, unknown>) => unknown,
+      fieldsPropName: string,
+    ) => withFieldsRuntime(fields, render, fieldsPropName),
+  }
+}) as unknown as DefineFieldGroupFn

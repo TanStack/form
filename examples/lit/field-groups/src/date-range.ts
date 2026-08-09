@@ -1,16 +1,14 @@
 import { html } from 'lit'
-import { getFieldGroupHelpers } from '@tanstack/lit-form'
+import { defineFieldGroup } from '@tanstack/lit-form'
 import { stringField } from './string-field'
 
-const { defineFields, helper, withFields } = getFieldGroupHelpers()
-
-const dateRangeFields = defineFields({
-  start: helper.strict<string>(),
-  end: helper.strict<string>(),
-})
+const dateRangeFieldGroup = defineFieldGroup(({ strict }) => ({
+  start: strict<string>(),
+  end: strict<string>(),
+}))
 
 function dateRangeField(props: {
-  fields: typeof dateRangeFields
+  fields: typeof dateRangeFieldGroup.fields
   label: string
 }) {
   return html`
@@ -46,8 +44,7 @@ function dateRangeField(props: {
   `
 }
 
-export const DateRangeField = withFields(
-  dateRangeFields,
+export const DateRangeField = dateRangeFieldGroup.bindComponent(
   dateRangeField,
   'fields',
 )

@@ -5,8 +5,8 @@ import { describe, expect, expectTypeOf, it, vi } from 'vitest'
 import { userEvent } from '@testing-library/user-event'
 import {
   TanStackFormController,
+  defineFieldGroup,
   formOptions,
-  getFieldGroupHelpers,
   getFormType,
 } from '../src/index.js'
 import { defineOnce, mount } from './utils.js'
@@ -222,13 +222,11 @@ class FormGroupElement extends LitElement {
   }
 }
 
-const { defineFields, helper, withFields } = getFieldGroupHelpers()
-const reusableNameFields = defineFields({
-  value: helper.strict<string>(),
-})
-const ReusableNameField = withFields(
-  reusableNameFields,
-  (props: { fields: typeof reusableNameFields; label: string }) =>
+const reusableNameFieldGroup = defineFieldGroup(({ strict }) => ({
+  value: strict<string>(),
+}))
+const ReusableNameField = reusableNameFieldGroup.bindComponent(
+  (props: { fields: typeof reusableNameFieldGroup.fields; label: string }) =>
     props.fields.field(
       { name: 'value' },
       (field) => html`
