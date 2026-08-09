@@ -12,6 +12,7 @@ angular: @tanstack/angular-form
 preact: @tanstack/preact-form
 vue: @tanstack/vue-form
 solid: @tanstack/solid-form
+svelte: @tanstack/svelte-form
 lit: @tanstack/lit-form
 
 <!-- ::end:tabs -->

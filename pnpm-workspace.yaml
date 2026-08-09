@@ -15,8 +15,9 @@ packages:
   - 'examples/react/ui-integration/**'
   - examples/vue/**
   - examples/solid/**
-  - examples/angular/**
+  - examples/svelte/*
   - examples/preact/**
+  - examples/angular/**
   - examples/lit/**
 allowBuilds:
   nx: true
