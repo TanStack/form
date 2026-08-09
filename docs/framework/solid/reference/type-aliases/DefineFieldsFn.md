@@ -9,7 +9,7 @@ title: DefineFieldsFn
 type DefineFieldsFn<TFieldComponents> = <TFields>(fields) => FieldGroupDefinition<TFields, TFieldComponents>;
 ```
 
-Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:171](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L171)
+Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:171](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L171)
 
 ## Type Parameters
 

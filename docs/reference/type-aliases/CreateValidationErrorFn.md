@@ -9,7 +9,7 @@ title: CreateValidationErrorFn
 type CreateValidationErrorFn<TFormData> = <TError>(error) => OnSubmitError<TError>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:27](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L27)
+Defined in: [FormApi/FormApi.public.ts:27](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L27)
 
 ## Type Parameters
 

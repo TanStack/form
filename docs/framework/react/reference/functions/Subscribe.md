@@ -6,10 +6,10 @@ title: Subscribe
 # Function: Subscribe()
 
 ```ts
-function Subscribe<TSourceData, TSelected>(props): ReactNode | Promise<ReactNode>;
+function Subscribe<TSourceData, TSelected>(props): ReactNode;
 ```
 
-Defined in: [packages/react-form/src/Subscribe.public.tsx:38](https://github.com/TanStack/form/blob/main/packages/react-form/src/Subscribe.public.tsx#L38)
+Defined in: [packages/react-form/src/Subscribe.public.tsx:36](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/Subscribe.public.tsx#L36)
 
 A React component that allows you to subscribe to source state.
 
@@ -33,4 +33,4 @@ This is useful for opting into state re-renders for specific parts of the state.
 
 ## Returns
 
-`ReactNode` \| `Promise`\<`ReactNode`\>
+`ReactNode`

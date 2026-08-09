@@ -9,7 +9,7 @@ title: FieldGroupDefinition
 type FieldGroupDefinition<TFields, TFieldComponents> = FieldGroupApi<FieldGroupFieldData<TFields>, TFieldComponents> & object;
 ```
 
-Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:91](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L91)
+Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:91](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L91)
 
 ## Type Declaration
 

@@ -5,7 +5,7 @@ title: FieldGroupHelper
 
 # Interface: FieldGroupHelper
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:181](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L181)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:180](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L180)
 
 ## Properties
 
@@ -15,7 +15,7 @@ Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:181](https:
 loose: <TValue>() => LooseFieldGroupFieldSlot<TValue>;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:183](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L183)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:182](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L182)
 
 #### Type Parameters
 
@@ -35,7 +35,7 @@ Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:183](https:
 strict: <TValue>() => StrictFieldGroupFieldSlot<TValue>;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:182](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L182)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:181](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L181)
 
 #### Type Parameters
 

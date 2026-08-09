@@ -6,10 +6,10 @@ title: ReactFormGroupSubscribeComponent
 # Type Alias: ReactFormGroupSubscribeComponent\<TGroupValue, TGroupErrorTypes\>
 
 ```ts
-type ReactFormGroupSubscribeComponent<TGroupValue, TGroupErrorTypes> = <TSelected>(props) => CrossVersionReactNode;
+type ReactFormGroupSubscribeComponent<TGroupValue, TGroupErrorTypes> = <TSelected>(props) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:218](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L218)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:216](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L216)
 
 ## Type Parameters
 
@@ -35,4 +35,4 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:218](https:/
 
 ## Returns
 
-[`CrossVersionReactNode`](CrossVersionReactNode.md)
+`ReactNode`

@@ -9,7 +9,7 @@ title: FieldGroupFieldsOf
 type FieldGroupFieldsOf<TFieldGroup> = TFieldGroup extends object ? TFields : never;
 ```
 
-Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:85](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L85)
+Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:85](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L85)
 
 ## Type Parameters
 

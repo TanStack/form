@@ -6,10 +6,10 @@ title: ReactFormSubscribeComponent
 # Type Alias: ReactFormSubscribeComponent\<TFormData, TFormErrorTypes\>
 
 ```ts
-type ReactFormSubscribeComponent<TFormData, TFormErrorTypes> = <TSelected>(props) => CrossVersionReactNode;
+type ReactFormSubscribeComponent<TFormData, TFormErrorTypes> = <TSelected>(props) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:112](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L112)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:110](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L110)
 
 ## Type Parameters
 
@@ -35,4 +35,4 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:112](https:/
 
 ## Returns
 
-[`CrossVersionReactNode`](CrossVersionReactNode.md)
+`ReactNode`

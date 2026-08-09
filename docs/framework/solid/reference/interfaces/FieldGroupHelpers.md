@@ -5,7 +5,7 @@ title: FieldGroupHelpers
 
 # Interface: FieldGroupHelpers\<TFieldComponents\>
 
-Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:180](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L180)
+Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:180](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L180)
 
 ## Type Parameters
 
@@ -21,7 +21,7 @@ Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:180](https:
 defineFields: DefineFieldsFn<TFieldComponents>;
 ```
 
-Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:184](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L184)
+Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:184](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L184)
 
 ***
 
@@ -31,7 +31,7 @@ Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:184](https:
 helper: FieldGroupHelper;
 ```
 
-Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:183](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L183)
+Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:183](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L183)
 
 ***
 
@@ -41,4 +41,4 @@ Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:183](https:
 withFields: FieldGroupWithFieldsFn;
 ```
 
-Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:185](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L185)
+Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:185](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L185)

@@ -5,7 +5,7 @@ title: FieldGroupArrayFieldComponent
 
 # Interface: FieldGroupArrayFieldComponent()\<TFieldData, TFieldComponents\>
 
-Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:42](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L42)
+Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:41](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L41)
 
 ## Type Parameters
 
@@ -18,10 +18,10 @@ Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:42](http
 `TFieldComponents` *extends* `Record`\<`string`, `FunctionComponent`\<`any`\>\>
 
 ```ts
-FieldGroupArrayFieldComponent<TFieldName>(props): ReactNode | Promise<ReactNode>;
+FieldGroupArrayFieldComponent<TFieldName>(props): ReactNode;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:46](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L46)
+Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:45](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L45)
 
 ## Type Parameters
 
@@ -37,4 +37,4 @@ Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:46](http
 
 ## Returns
 
-`ReactNode` \| `Promise`\<`ReactNode`\>
+`ReactNode`

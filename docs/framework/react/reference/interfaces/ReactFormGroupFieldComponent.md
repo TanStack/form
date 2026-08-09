@@ -5,7 +5,7 @@ title: ReactFormGroupFieldComponent
 
 # Interface: ReactFormGroupFieldComponent()\<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents\>
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:225](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L225)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:223](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L223)
 
 ## Type Parameters
 
@@ -30,10 +30,10 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:225](https:/
 `TFieldComponents` *extends* `Record`\<`string`, `FunctionComponent`\<`any`\>\>
 
 ```ts
-ReactFormGroupFieldComponent<TFieldName, TFieldValidators>(props): ReactNode | Promise<ReactNode>;
+ReactFormGroupFieldComponent<TFieldName, TFieldValidators>(props): ReactNode;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:232](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L232)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:230](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L230)
 
 ## Type Parameters
 
@@ -53,4 +53,4 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:232](https:/
 
 ## Returns
 
-`ReactNode` \| `Promise`\<`ReactNode`\>
+`ReactNode`

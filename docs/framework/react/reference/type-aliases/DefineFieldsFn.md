@@ -9,7 +9,7 @@ title: DefineFieldsFn
 type DefineFieldsFn<TFieldComponents> = <TFields>(fields) => FieldGroupDefinition<TFields, TFieldComponents>;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:188](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L188)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:187](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L187)
 
 ## Type Parameters
 

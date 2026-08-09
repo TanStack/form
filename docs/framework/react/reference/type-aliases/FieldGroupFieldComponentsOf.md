@@ -9,7 +9,7 @@ title: FieldGroupFieldComponentsOf
 type FieldGroupFieldComponentsOf<TFieldGroup> = TFieldGroup extends FieldGroupDefinition<any, infer TFieldComponents> ? TFieldComponents : never;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:111](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L111)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:110](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L110)
 
 ## Type Parameters
 

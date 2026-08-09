@@ -1,6 +1,6 @@
 import { brandComponentFactory, wrapField } from './fieldComponentHelpers.lib'
-import type { CrossVersionReactNode } from '../reactTypes.public'
 import type { FieldWithValue } from '@tanstack/form-core'
+import type { ReactNode } from 'react'
 
 type ExactFieldBrand<out TValue> = {
   readonly __tanstackFieldExactType: TValue
@@ -10,11 +10,9 @@ type AcceptsFieldBrand<out TAcceptedValue> = {
   readonly __tanstackFieldAcceptsType: TAcceptedValue
 }
 
-type AnyFieldComponent = (props: any) => CrossVersionReactNode
+type AnyFieldComponent = (props: any) => ReactNode
 
-type PropsOf<TComponent> = TComponent extends (
-  props: infer TProps,
-) => CrossVersionReactNode
+type PropsOf<TComponent> = TComponent extends (props: infer TProps) => ReactNode
   ? TProps
   : never
 

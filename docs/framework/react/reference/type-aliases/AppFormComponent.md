@@ -7,8 +7,8 @@ title: AppFormComponent
 
 ```ts
 type AppFormComponent = FunctionComponent<{
-  children: Exclude<CrossVersionReactNode, Promise<any>>;
+  children: Exclude<ReactNode, Promise<any>>;
 }>;
 ```
 
-Defined in: [packages/react-form/src/AppForm/ReactAppFormApi.public.tsx:7](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/ReactAppFormApi.public.tsx#L7)
+Defined in: [packages/react-form/src/AppForm/ReactAppFormApi.public.tsx:6](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/AppForm/ReactAppFormApi.public.tsx#L6)

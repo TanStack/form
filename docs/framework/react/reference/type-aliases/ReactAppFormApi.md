@@ -9,7 +9,7 @@ title: ReactAppFormApi
 type ReactAppFormApi<TFormData, TFormErrorTypes, TComponents> = ReactFormApi<TFormData, TFormErrorTypes, TComponents> & object;
 ```
 
-Defined in: [packages/react-form/src/AppForm/ReactAppFormApi.public.tsx:11](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/ReactAppFormApi.public.tsx#L11)
+Defined in: [packages/react-form/src/AppForm/ReactAppFormApi.public.tsx:10](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/AppForm/ReactAppFormApi.public.tsx#L10)
 
 ## Type Declaration
 

@@ -9,7 +9,7 @@ title: FieldGroupFieldNames
 type FieldGroupFieldNames<TFieldData, TFields> = { [TFieldName in keyof TFields]: FieldGroupFieldNameForSlot<TFieldData, TFields[TFieldName]> };
 ```
 
-Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:69](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L69)
+Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:69](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L69)
 
 ## Type Parameters
 
