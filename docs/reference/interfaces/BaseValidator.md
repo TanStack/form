@@ -25,7 +25,7 @@ Defined in: [validation.public.ts:11](https://github.com/TanStack/form/blob/main
 ### bailIfInvalid?
 
 ```ts
-optional bailIfInvalid: boolean;
+optional bailIfInvalid?: boolean;
 ```
 
 Defined in: [validation.public.ts:21](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L21)

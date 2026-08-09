@@ -51,7 +51,7 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:187](https://github.com/TanStac
 
 ***
 
-### handleSubmit()
+### handleSubmit
 
 ```ts
 handleSubmit: () => Promise<FormGroupValidateResult<TGroupValue>[]>;
@@ -75,7 +75,7 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:188](https://github.com/TanStac
 
 ***
 
-### reset()
+### reset
 
 ```ts
 reset: () => void;
@@ -99,7 +99,7 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:191](https://github.com/TanStac
 
 ***
 
-### validate()
+### validate
 
 ```ts
 validate: (signal) => Promise<FormGroupValidateResult<TGroupValue>[]>;
@@ -111,7 +111,8 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:193](https://github.com/TanStac
 
 ##### signal
 
-`"submit"` | [`ConfigurableValidationTrigger`](../type-aliases/ConfigurableValidationTrigger.md)
+  \| `"submit"`
+  \| [`ConfigurableValidationTrigger`](../type-aliases/ConfigurableValidationTrigger.md)
 
 #### Returns
 

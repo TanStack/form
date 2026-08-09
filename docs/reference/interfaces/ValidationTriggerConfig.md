@@ -40,7 +40,7 @@ Defined in: [validation.public.ts:322](https://github.com/TanStack/form/blob/mai
 ### when?
 
 ```ts
-optional when: 
+optional when?: 
   | boolean
 | ValidationPredicateFn<TFormData, TValue, TScope>;
 ```

@@ -32,7 +32,7 @@ Defined in: [listeners.public.ts:10](https://github.com/TanStack/form/blob/main/
 ### triggerFieldApi?
 
 ```ts
-optional triggerFieldApi: AnyFieldApi;
+optional triggerFieldApi?: AnyFieldApi;
 ```
 
 Defined in: [listeners.public.ts:11](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L11)

@@ -22,7 +22,7 @@ Defined in: [validation.public.ts:271](https://github.com/TanStack/form/blob/mai
 ### fieldApi?
 
 ```ts
-optional fieldApi: AnyFieldApi;
+optional fieldApi?: AnyFieldApi;
 ```
 
 Defined in: [validation.public.ts:267](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L267)
@@ -59,7 +59,7 @@ BaseValidationPredicateContext.formApi
 ### groupApi?
 
 ```ts
-optional groupApi: undefined;
+optional groupApi?: undefined;
 ```
 
 Defined in: [validation.public.ts:274](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L274)

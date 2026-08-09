@@ -3,7 +3,7 @@ id: GetFieldValueFn
 title: GetFieldValueFn
 ---
 
-# Type Alias: GetFieldValueFn()\<TFormData\>
+# Type Alias: GetFieldValueFn\<TFormData\>
 
 ```ts
 type GetFieldValueFn<TFormData> = <TDeepKeys>(DeepKeys) => DeepValue<TFormData, TDeepKeys>;

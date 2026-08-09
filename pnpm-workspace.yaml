@@ -30,3 +30,5 @@ allowBuilds:
   msgpackr-extract: false
   vue-demi: false
   sharp: false
+minimumReleaseAgeExclude:
+  - '@tanstack/typedoc-config@0.3.4'

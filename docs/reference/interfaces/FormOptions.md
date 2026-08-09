@@ -36,7 +36,7 @@ Defined in: [FormApi/FormApi.public.ts:153](https://github.com/TanStack/form/blo
 ### errorVisibility?
 
 ```ts
-optional errorVisibility: ErrorVisibility<TFormData, ToFormErrorTypes<TFormValidators, unknown>>;
+optional errorVisibility?: ErrorVisibility<TFormData, ToFormErrorTypes<TFormValidators, unknown>>;
 ```
 
 Defined in: [FormApi/FormApi.public.ts:154](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L154)
@@ -46,7 +46,7 @@ Defined in: [FormApi/FormApi.public.ts:154](https://github.com/TanStack/form/blo
 ### formId?
 
 ```ts
-optional formId: string;
+optional formId?: string;
 ```
 
 Defined in: [FormApi/FormApi.public.ts:152](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L152)
@@ -56,17 +56,17 @@ Defined in: [FormApi/FormApi.public.ts:152](https://github.com/TanStack/form/blo
 ### listeners?
 
 ```ts
-optional listeners: FormListeners<TFormData, ToFormErrorTypes<TFormValidators, unknown>>;
+optional listeners?: FormListeners<TFormData, ToFormErrorTypes<TFormValidators, unknown>>;
 ```
 
 Defined in: [FormApi/FormApi.public.ts:159](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L159)
 
 ***
 
-### onSubmit()?
+### onSubmit?
 
 ```ts
-optional onSubmit: (context) => TSubmitReturn;
+optional onSubmit?: (context) => TSubmitReturn;
 ```
 
 Defined in: [FormApi/FormApi.public.ts:183](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L183)
@@ -99,10 +99,10 @@ mark the submission as invalid.
 
 ***
 
-### onSubmitInvalid()?
+### onSubmitInvalid?
 
 ```ts
-optional onSubmitInvalid: (context) => void | Promise<void>;
+optional onSubmitInvalid?: (context) => void | Promise<void>;
 ```
 
 Defined in: [FormApi/FormApi.public.ts:206](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L206)
@@ -138,7 +138,7 @@ or submission throws. The callback is awaited before submission finishes.
 ### serverState?
 
 ```ts
-optional serverState: 
+optional serverState?: 
   | ServerFormState<NoInfer<TFormData>, NoInfer<TFormValidators>>
   | null;
 ```
@@ -150,7 +150,7 @@ Defined in: [FormApi/FormApi.public.ts:163](https://github.com/TanStack/form/blo
 ### validators?
 
 ```ts
-optional validators: TFormValidators;
+optional validators?: TFormValidators;
 ```
 
 Defined in: [FormApi/FormApi.public.ts:158](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L158)

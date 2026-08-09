@@ -12,7 +12,7 @@ Defined in: [types.public.ts:6](https://github.com/TanStack/form/blob/main/packa
 ### causeValidation?
 
 ```ts
-optional causeValidation: boolean;
+optional causeValidation?: boolean;
 ```
 
 Defined in: [types.public.ts:30](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.public.ts#L30)
@@ -30,7 +30,7 @@ true
 ### markAsBlurred?
 
 ```ts
-optional markAsBlurred: boolean;
+optional markAsBlurred?: boolean;
 ```
 
 Defined in: [types.public.ts:24](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.public.ts#L24)
@@ -44,7 +44,7 @@ Whether to mark the field as blurred from the update.
 ### markAsDirty?
 
 ```ts
-optional markAsDirty: boolean;
+optional markAsDirty?: boolean;
 ```
 
 Defined in: [types.public.ts:18](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.public.ts#L18)
@@ -62,7 +62,7 @@ true
 ### markAsTouched?
 
 ```ts
-optional markAsTouched: boolean;
+optional markAsTouched?: boolean;
 ```
 
 Defined in: [types.public.ts:12](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.public.ts#L12)

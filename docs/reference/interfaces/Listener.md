@@ -31,7 +31,7 @@ Defined in: [listeners.public.ts:38](https://github.com/TanStack/form/blob/main/
 ### triggerDebounceMs?
 
 ```ts
-optional triggerDebounceMs: 
+optional triggerDebounceMs?: 
   | number
 | ListenerDebounceFn<TFormData, TValue>;
 ```

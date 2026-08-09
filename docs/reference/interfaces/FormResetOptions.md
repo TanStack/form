@@ -12,7 +12,7 @@ Defined in: [FormApi/FormApi.public.ts:282](https://github.com/TanStack/form/blo
 ### updateDefaultValues?
 
 ```ts
-optional updateDefaultValues: boolean;
+optional updateDefaultValues?: boolean;
 ```
 
 Defined in: [FormApi/FormApi.public.ts:301](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L301)

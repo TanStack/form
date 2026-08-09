@@ -5,7 +5,7 @@ title: TanStackField
 
 # Class: TanStackField\<TSource, TFieldName, TFieldValue, TFieldValidators\>
 
-Defined in: [angular-form/src/tanstack-field.ts:255](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L255)
+Defined in: [tanstack-field.ts:255](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L255)
 
 ## Extends
 
@@ -41,7 +41,7 @@ Defined in: [angular-form/src/tanstack-field.ts:255](https://github.com/TanStack
 new TanStackField<TSource, TFieldName, TFieldValue, TFieldValidators>(): TanStackField<TSource, TFieldName, TFieldValue, TFieldValidators>;
 ```
 
-Defined in: [angular-form/src/tanstack-field.ts:201](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L201)
+Defined in: [tanstack-field.ts:201](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L201)
 
 #### Returns
 
@@ -66,7 +66,7 @@ TanStackFieldBase<
 errorBoundary: InputSignal<boolean | undefined>;
 ```
 
-Defined in: [angular-form/src/tanstack-field.ts:152](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L152)
+Defined in: [tanstack-field.ts:152](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L152)
 
 #### Inherited from
 
@@ -84,7 +84,7 @@ errorVisibility: InputSignal<
 | undefined>;
 ```
 
-Defined in: [angular-form/src/tanstack-field.ts:145](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L145)
+Defined in: [tanstack-field.ts:145](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L145)
 
 #### Inherited from
 
@@ -100,7 +100,7 @@ TanStackFieldBase.errorVisibility
 protected readonly isArrayField: false = false;
 ```
 
-Defined in: [angular-form/src/tanstack-field.ts:271](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L271)
+Defined in: [tanstack-field.ts:271](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L271)
 
 #### Overrides
 
@@ -121,7 +121,7 @@ listeners: InputSignal<
 | undefined>;
 ```
 
-Defined in: [angular-form/src/tanstack-field.ts:128](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L128)
+Defined in: [tanstack-field.ts:128](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L128)
 
 #### Inherited from
 
@@ -137,7 +137,7 @@ TanStackFieldBase.listeners
 name: InputSignal<TFieldName>;
 ```
 
-Defined in: [angular-form/src/tanstack-field.ts:126](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L126)
+Defined in: [tanstack-field.ts:126](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L126)
 
 #### Inherited from
 
@@ -153,7 +153,7 @@ TanStackFieldBase.name
 tanstackField: InputSignal<TSource>;
 ```
 
-Defined in: [angular-form/src/tanstack-field.ts:270](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L270)
+Defined in: [tanstack-field.ts:270](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L270)
 
 ***
 
@@ -163,7 +163,7 @@ Defined in: [angular-form/src/tanstack-field.ts:270](https://github.com/TanStack
 validators: InputSignal<NoInfer<TFieldValidators> | undefined>;
 ```
 
-Defined in: [angular-form/src/tanstack-field.ts:127](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L127)
+Defined in: [tanstack-field.ts:127](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L127)
 
 #### Inherited from
 
@@ -181,7 +181,7 @@ TanStackFieldBase.validators
 get api(): AngularSourceFieldApi<TSource, TFieldName, TFieldValue, TFieldValidators>;
 ```
 
-Defined in: [angular-form/src/tanstack-field.ts:190](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L190)
+Defined in: [tanstack-field.ts:190](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L190)
 
 ##### Returns
 
@@ -201,7 +201,7 @@ TanStackFieldBase.api
 protected getSource(): TSource;
 ```
 
-Defined in: [angular-form/src/tanstack-field.ts:272](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L272)
+Defined in: [tanstack-field.ts:272](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L272)
 
 #### Returns
 

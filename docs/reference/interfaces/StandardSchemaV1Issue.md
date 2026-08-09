@@ -26,7 +26,7 @@ The error message of the issue.
 ### path?
 
 ```ts
-readonly optional path: readonly (PropertyKey | StandardSchemaV1PathSegment)[];
+readonly optional path?: readonly (PropertyKey | StandardSchemaV1PathSegment)[];
 ```
 
 Defined in: [standardSchema.public.ts:79](https://github.com/TanStack/form/blob/main/packages/form-core/src/standardSchema.public.ts#L79)
