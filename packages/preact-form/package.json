@@ -51,10 +51,10 @@
   ],
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
-    "@tanstack/preact-store": "^0.13.1"
+    "@tanstack/preact-store": "^0.13.2"
   },
   "devDependencies": {
-    "@eslint-react/eslint-plugin": "^5.18.1",
+    "@eslint-react/eslint-plugin": "^5.18.3",
     "@preact/preset-vite": "^2.10.2",
     "@testing-library/preact": "^3.2.4",
     "preact": "^10.26.4",

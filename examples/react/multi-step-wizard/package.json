@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@tanstack/react-form": "^1.33.3",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
     "zod": "^4.4.3"
   },
   "devDependencies": {
@@ -20,7 +20,7 @@
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
-    "vite": "^8.1.2"
+    "vite": "^8.2.1"
   },
   "browserslist": {
     "production": [

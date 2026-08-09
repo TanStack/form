@@ -49,7 +49,7 @@
   ],
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
-    "@tanstack/lit-store": "^0.13.2"
+    "@tanstack/lit-store": "^0.14.1"
   },
   "devDependencies": {
     "lit": "^3.3.1"
