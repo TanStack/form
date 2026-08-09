@@ -14,11 +14,11 @@ import type {
   ToFieldError,
   ToFormGroupErrorTypes,
 } from '@tanstack/form-core'
-import type { CrossVersionReactNode } from '../reactTypes.public'
 import type {
   FunctionComponent,
   LazyExoticComponent,
   MemoExoticComponent,
+  ReactNode,
 } from 'react'
 
 type ExactFieldBrand<out TValue> = {
@@ -98,9 +98,7 @@ export type ReactFieldApi<
 interface ReactSubscribeProps<in out TSourceData, in out TSelected> {
   selector: (state: TSourceData) => TSelected
   when?: (selected: NoInfer<TSelected>) => boolean
-  children:
-    | ((state: NoInfer<TSelected>) => CrossVersionReactNode)
-    | CrossVersionReactNode
+  children: ((state: NoInfer<TSelected>) => ReactNode) | ReactNode
 }
 
 export type ReactFormSubscribeProps<
@@ -114,7 +112,7 @@ export type ReactFormSubscribeComponent<
   in out TFormErrorTypes extends FormErrorTypes,
 > = <TSelected>(
   props: ReactFormSubscribeProps<TFormData, TFormErrorTypes, TSelected>,
-) => CrossVersionReactNode
+) => ReactNode
 
 export interface ReactFormFieldProps<
   in out TFieldData,
@@ -151,7 +149,7 @@ export interface ReactFormFieldProps<
       TFormErrorTypes,
       TFieldComponents
     >,
-  ) => CrossVersionReactNode
+  ) => ReactNode
 }
 
 export type ReactFormFieldComponent<
@@ -177,7 +175,7 @@ export type ReactFormFieldComponent<
       TFormErrorTypes,
       TFieldComponents
     >,
-  ): CrossVersionReactNode
+  ): ReactNode
 }
 
 export type ReactFormArrayFieldComponent<
@@ -203,7 +201,7 @@ export type ReactFormArrayFieldComponent<
       TFormErrorTypes,
       TFieldComponents
     >,
-  ): CrossVersionReactNode
+  ): ReactNode
 }
 
 export type ReactFormGroupSubscribeProps<
@@ -220,7 +218,7 @@ export type ReactFormGroupSubscribeComponent<
   in out TGroupErrorTypes extends FormErrorTypes,
 > = <TSelected>(
   props: ReactFormGroupSubscribeProps<TGroupValue, TGroupErrorTypes, TSelected>,
-) => CrossVersionReactNode
+) => ReactNode
 
 export interface ReactFormGroupFieldComponent<
   in out TFormData,
@@ -247,7 +245,7 @@ export interface ReactFormGroupFieldComponent<
       TFormErrorTypes,
       TFieldComponents
     >,
-  ): CrossVersionReactNode
+  ): ReactNode
 }
 
 export type ReactFormGroupArrayFieldComponent<
@@ -275,7 +273,7 @@ export type ReactFormGroupArrayFieldComponent<
       TFormErrorTypes,
       TFieldComponents
     >,
-  ): CrossVersionReactNode
+  ): ReactNode
 }
 
 export interface ReactFormGroupApi<
@@ -335,7 +333,7 @@ export interface ReactFormGroupProps<
       TFormErrorTypes,
       TFieldComponents
     >,
-  ) => CrossVersionReactNode
+  ) => ReactNode
 }
 
 export interface ReactFormGroupComponent<
@@ -356,7 +354,7 @@ export interface ReactFormGroupComponent<
       TFormErrorTypes,
       TFieldComponents
     >,
-  ): CrossVersionReactNode
+  ): ReactNode
 }
 
 export interface ReactTanStackFormComponents<

@@ -8,7 +8,7 @@ import {
 import { useField } from './useField.lib'
 import type { AnyInternalFormApi } from '@tanstack/form-core/internals'
 import type { InternalReactFormApi } from './ReactFormApi.lib'
-import type { FunctionComponent } from 'react'
+import type { FunctionComponent, ReactNode } from 'react'
 import type {
   ReactFormFieldProps,
   ReactFormGroupProps,
@@ -53,7 +53,10 @@ function createFieldComponent(
   return TanStackFormField
 }
 
-type AnyArrayFieldComponent = FunctionComponent<any>
+type AnyArrayFieldComponent = {
+  (props: any): ReactNode
+  displayName?: string
+}
 
 function createArrayFieldComponent(
   form: AnyInternalFormApi,
@@ -71,9 +74,10 @@ function createArrayFieldComponent(
   return TanStackFormArrayField
 }
 
-type AnySubscribeComponent = FunctionComponent<
-  ReactFormSubscribeProps<any, any, any>
->
+type AnySubscribeComponent = {
+  (props: ReactFormSubscribeProps<any, any, any>): ReactNode
+  displayName?: string
+}
 
 function createSubscribeComponent(
   form: AnyInternalFormApi,

@@ -7,13 +7,12 @@ import { useValueFieldSubscription } from '../ReactForm/fieldSubscriptions.lib'
 import { Subscribe } from '../Subscribe.public'
 import { FieldContext, FormContext } from './contexts.lib'
 import type { AnyInternalFormApi } from '@tanstack/form-core/internals'
-import type { FunctionComponent } from 'react'
+import type { FunctionComponent, ReactNode } from 'react'
 import type {
   AppFormComponent,
   ReactAppFormApi,
 } from './ReactAppFormApi.public'
 import type { AnyReactFormComponentMap } from './componentMap.public'
-import type { CrossVersionReactNode } from '../reactTypes.public'
 import type {
   ReactFormFieldProps,
   ReactFormGroupProps,
@@ -45,7 +44,7 @@ export function attachReactAppFormComponents(
 
 function createAppForm(form: AnyInternalFormApi): AppFormComponent {
   const AppForm: FunctionComponent<{
-    children: Exclude<CrossVersionReactNode, Promise<any>>
+    children: Exclude<ReactNode, Promise<any>>
   }> = function AppFormComponent(props) {
     // eslint-disable-next-line @eslint-react/no-context-provider
     return <FormContext.Provider value={form as never} {...props} />

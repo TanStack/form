@@ -1,11 +1,10 @@
 import type { FormErrorTypes } from '@tanstack/form-core'
 import type { ReactFormApi } from '../ReactForm/formApiTypes.public'
-import type { FunctionComponent } from 'react'
-import type { CrossVersionReactNode } from '../reactTypes.public'
+import type { FunctionComponent, ReactNode } from 'react'
 import type { AnyReactFormComponentMap } from './componentMap.public'
 
 export type AppFormComponent = FunctionComponent<{
-  children: Exclude<CrossVersionReactNode, Promise<any>>
+  children: Exclude<ReactNode, Promise<any>>
 }>
 
 export type ReactAppFormApi<
