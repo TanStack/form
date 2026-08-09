@@ -3,13 +3,13 @@ id: ListenerPredicateFn
 title: ListenerPredicateFn
 ---
 
-# Type Alias: ListenerPredicateFn()\<TFormData, TValue\>
+# Type Alias: ListenerPredicateFn\<TFormData, TValue\>
 
 ```ts
 type ListenerPredicateFn<TFormData, TValue> = (context) => boolean;
 ```
 
-Defined in: [listeners.public.ts:15](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L15)
+Defined in: [listeners.public.ts:15](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/listeners.public.ts#L15)
 
 ## Type Parameters
 

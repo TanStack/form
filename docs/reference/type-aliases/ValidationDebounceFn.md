@@ -3,13 +3,13 @@ id: ValidationDebounceFn
 title: ValidationDebounceFn
 ---
 
-# Type Alias: ValidationDebounceFn()\<TFormData, TValue, TScope\>
+# Type Alias: ValidationDebounceFn\<TFormData, TValue, TScope\>
 
 ```ts
 type ValidationDebounceFn<TFormData, TValue, TScope> = (context) => number;
 ```
 
-Defined in: [validation.public.ts:310](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L310)
+Defined in: [validation.public.ts:310](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L310)
 
 ## Type Parameters
 

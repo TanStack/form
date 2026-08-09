@@ -6,9 +6,14 @@ title: Quick Start
 TanStack Form is a headless, type-safe form library. It owns form state and
 validation while leaving markup, styling, and component choice to you.
 
-The Form v2 Vue adapter requires Vue 3.6 or newer. Vue 3.6 provides the
-component and composition behavior needed to preserve form and field types
-across templates and extracted components.
+The Form v2 Vue adapter requires Vue 3.6 or newer. At the time of writing, Vue
+3.6 is available as a release candidate but has not yet been released as
+stable. We hope it will be stable by the time TanStack Form v2 becomes stable.
+
+Vue 3.6 provides the component and composition behavior needed for Form
+Composition to work correctly and to preserve form and field types across
+templates and extracted components. Setting this minimum in v2 from the start
+avoids introducing a breaking Vue version requirement later.
 
 Install the Vue adapter:
 

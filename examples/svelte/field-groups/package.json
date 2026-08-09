@@ -1,0 +1,23 @@
+{
+  "name": "@tanstack/form-example-svelte-field-groups",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port=3105",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test:types": "svelte-check --tsconfig ./tsconfig.json"
+  },
+  "dependencies": {
+    "@tanstack/svelte-form": "^1.33.3",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^7.2.0",
+    "@tsconfig/svelte": "^5.0.5",
+    "svelte": "^5.39.4",
+    "svelte-check": "^4.7.5",
+    "typescript": "^6.0.2",
+    "vite": "^8.2.1"
+  }
+}

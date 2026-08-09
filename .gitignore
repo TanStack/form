@@ -47,3 +47,5 @@ stats.html
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 tsconfig.vitest-temp.json
+
+.nx/migrate-runs

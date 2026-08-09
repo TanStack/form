@@ -3,13 +3,13 @@ id: ClearFieldValuesFn
 title: ClearFieldValuesFn
 ---
 
-# Type Alias: ClearFieldValuesFn()\<TFormData\>
+# Type Alias: ClearFieldValuesFn\<TFormData\>
 
 ```ts
 type ClearFieldValuesFn<TFormData> = <TFieldName>(arrayFieldName, options?) => void;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:67](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L67)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:67](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L67)
 
 ## Type Parameters
 

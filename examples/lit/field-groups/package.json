@@ -1,0 +1,20 @@
+{
+  "name": "@tanstack/form-example-lit-field-groups",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port=3405",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test:types": "tsc"
+  },
+  "dependencies": {
+    "@tanstack/lit-form": "^1.33.3",
+    "lit": "^3.3.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.2",
+    "vite": "^8.2.1"
+  }
+}

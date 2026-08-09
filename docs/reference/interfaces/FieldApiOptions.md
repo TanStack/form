@@ -5,7 +5,7 @@ title: FieldApiOptions
 
 # Interface: FieldApiOptions\<TFieldData, TFieldName, TFieldValue, TFieldValidators, TGroupFieldError, TFormData, TFormErrorTypes\>
 
-Defined in: [FieldApi/FieldApi.public.ts:189](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L189)
+Defined in: [FieldApi/FieldApi.public.ts:189](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L189)
 
 ## Type Parameters
 
@@ -42,10 +42,10 @@ Defined in: [FieldApi/FieldApi.public.ts:189](https://github.com/TanStack/form/b
 ### errorBoundary?
 
 ```ts
-optional errorBoundary: boolean;
+optional errorBoundary?: boolean;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:207](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L207)
+Defined in: [FieldApi/FieldApi.public.ts:207](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L207)
 
 Route descendant field errors from form and form group validators to this field.
 
@@ -54,23 +54,23 @@ Route descendant field errors from form and form group validators to this field.
 ### errorVisibility?
 
 ```ts
-optional errorVisibility: ErrorVisibility<TFormData, TFormErrorTypes>;
+optional errorVisibility?: ErrorVisibility<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:203](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L203)
+Defined in: [FieldApi/FieldApi.public.ts:203](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L203)
 
 ***
 
 ### listeners?
 
 ```ts
-optional listeners: FieldListeners<TFieldData, TFieldName, TFieldValue, FallbackToValidationIssue<
+optional listeners?: FieldListeners<TFieldData, TFieldName, TFieldValue, FallbackToValidationIssue<
   | ExtractValidatorFieldError<NoInfer<TFieldValidators>, FieldValidators<any, any, any>>
   | ExtractFormFieldError<TFormErrorTypes>
 | unknown extends TGroupFieldError ? never : TGroupFieldError>, TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:209](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L209)
+Defined in: [FieldApi/FieldApi.public.ts:209](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L209)
 
 ***
 
@@ -80,14 +80,14 @@ Defined in: [FieldApi/FieldApi.public.ts:209](https://github.com/TanStack/form/b
 name: TFieldName;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:202](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L202)
+Defined in: [FieldApi/FieldApi.public.ts:202](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L202)
 
 ***
 
 ### validators?
 
 ```ts
-optional validators: TFieldValidators;
+optional validators?: TFieldValidators;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:208](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L208)
+Defined in: [FieldApi/FieldApi.public.ts:208](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L208)

@@ -6,7 +6,8 @@
     "moduleResolution": "Bundler",
     "useDefineForClassFields": false,
     "paths": {
-      "@tanstack/form-core": ["../form-core/src"]
+      "@tanstack/form-core": ["../form-core/src"],
+      "@tanstack/form-core/internals": ["../form-core/src/internals.ts"]
     }
   },
   "include": ["src", "tests", "eslint.config.js", "vite.config.ts"]

@@ -3,13 +3,13 @@ id: ReusableErrorVisibility
 title: ReusableErrorVisibility
 ---
 
-# Type Alias: ReusableErrorVisibility()
+# Type Alias: ReusableErrorVisibility
 
 ```ts
 type ReusableErrorVisibility = <TFormData, TFormErrorTypes>(context) => boolean;
 ```
 
-Defined in: [validation.public.ts:235](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L235)
+Defined in: [validation.public.ts:235](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L235)
 
 ## Type Parameters
 

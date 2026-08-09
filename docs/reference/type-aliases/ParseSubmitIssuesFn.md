@@ -3,13 +3,13 @@ id: ParseSubmitIssuesFn
 title: ParseSubmitIssuesFn
 ---
 
-# Type Alias: ParseSubmitIssuesFn()\<TFormData\>
+# Type Alias: ParseSubmitIssuesFn\<TFormData\>
 
 ```ts
 type ParseSubmitIssuesFn<TFormData> = (issues) => OnSubmitError<ParsedStandardSchemaIssues<TFormData>>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:33](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L33)
+Defined in: [FormApi/FormApi.public.ts:33](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L33)
 
 ## Type Parameters
 

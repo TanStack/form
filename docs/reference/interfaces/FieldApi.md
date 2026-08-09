@@ -5,7 +5,7 @@ title: FieldApi
 
 # Interface: FieldApi\<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes\>
 
-Defined in: [FieldApi/FieldApi.public.ts:100](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L100)
+Defined in: [FieldApi/FieldApi.public.ts:100](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L100)
 
 ## Type Parameters
 
@@ -37,7 +37,7 @@ Defined in: [FieldApi/FieldApi.public.ts:100](https://github.com/TanStack/form/b
 atom: ReadonlyAtom<FieldState<TFieldValue, TFieldError>>;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:174](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L174)
+Defined in: [FieldApi/FieldApi.public.ts:174](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L174)
 
 ***
 
@@ -47,12 +47,14 @@ Defined in: [FieldApi/FieldApi.public.ts:174](https://github.com/TanStack/form/b
 clearValues: FieldClearValuesFn;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:156](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L156)
+Defined in: [FieldApi/FieldApi.public.ts:156](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L156)
 
 Clear all values from this field's array.
 If this field is not an array, this method will be ignored.
 
 #### Param
+
+**options**
 
 Optional update options
 
@@ -64,7 +66,7 @@ Optional update options
 errors: FieldErrors<TFieldError>;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:180](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L180)
+Defined in: [FieldApi/FieldApi.public.ts:180](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L180)
 
 ***
 
@@ -74,16 +76,20 @@ Defined in: [FieldApi/FieldApi.public.ts:180](https://github.com/TanStack/form/b
 filterValues: FieldFilterValuesFn<TFieldValue>;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:172](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L172)
+Defined in: [FieldApi/FieldApi.public.ts:172](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L172)
 
 Filter the values in this field's array using a predicate function.
 If this field is not an array, this method will be ignored.
 
 #### Param
 
+**predicate**
+
 The predicate function to filter values. Returns true to keep the value, false to remove it.
 
 #### Param
+
+**options**
 
 Optional update options including a custom `thisArg` for the predicate
 
@@ -95,7 +101,7 @@ Optional update options including a custom `thisArg` for the predicate
 form: FormApi<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:110](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L110)
+Defined in: [FieldApi/FieldApi.public.ts:110](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L110)
 
 The form that owns this field.
 
@@ -107,7 +113,7 @@ The form that owns this field.
 handleBlur: FieldVoidFn;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:184](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L184)
+Defined in: [FieldApi/FieldApi.public.ts:184](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L184)
 
 ***
 
@@ -117,7 +123,7 @@ Defined in: [FieldApi/FieldApi.public.ts:184](https://github.com/TanStack/form/b
 handleChange: FieldHandleChangeFn<TFieldValue>;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:182](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L182)
+Defined in: [FieldApi/FieldApi.public.ts:182](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L182)
 
 ***
 
@@ -127,20 +133,26 @@ Defined in: [FieldApi/FieldApi.public.ts:182](https://github.com/TanStack/form/b
 insertValue: FieldInsertValueFn<TFieldValue>;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:149](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L149)
+Defined in: [FieldApi/FieldApi.public.ts:149](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L149)
 
 Insert a new value into this field's array at the specified index.
 If this field is not an array, this method will be ignored.
 
 #### Param
 
+**index**
+
 The index at which to insert the value
 
 #### Param
 
+**value**
+
 The value to insert
 
 #### Param
+
+**options**
 
 Optional update options
 
@@ -152,7 +164,7 @@ Optional update options
 meta: FieldMeta<TFieldError>;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:178](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L178)
+Defined in: [FieldApi/FieldApi.public.ts:178](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L178)
 
 ***
 
@@ -162,20 +174,26 @@ Defined in: [FieldApi/FieldApi.public.ts:178](https://github.com/TanStack/form/b
 moveValue: FieldMoveValueFn;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:132](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L132)
+Defined in: [FieldApi/FieldApi.public.ts:132](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L132)
 
 Move an element in this field's array from one index to another.
 If this field is not an array, this method will be ignored.
 
 #### Param
 
+**fromIndex**
+
 The current index of the element to move
 
 #### Param
 
+**toIndex**
+
 The index to move the element to
 
 #### Param
+
+**options**
 
 Optional update options
 
@@ -187,16 +205,20 @@ Optional update options
 pushValue: FieldPushValueFn<TFieldValue>;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:140](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L140)
+Defined in: [FieldApi/FieldApi.public.ts:140](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L140)
 
 Push a new value into this field's array.
 If this field is not an array, this method will be ignored.
 
 #### Param
 
+**value**
+
 The value to push into the array
 
 #### Param
+
+**options**
 
 Optional update options
 
@@ -208,16 +230,20 @@ Optional update options
 removeValue: FieldRemoveValueFn;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:164](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L164)
+Defined in: [FieldApi/FieldApi.public.ts:164](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L164)
 
 Remove a value from this field's array at the specified index.
 If this field is not an array, this method will be ignored.
 
 #### Param
 
+**index**
+
 The index of the value to remove
 
 #### Param
+
+**options**
 
 Optional update options
 
@@ -229,17 +255,17 @@ Optional update options
 reset: FieldVoidFn;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:186](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L186)
+Defined in: [FieldApi/FieldApi.public.ts:186](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L186)
 
 ***
 
-### swapValues()
+### swapValues
 
 ```ts
 swapValues: (indexA, indexB) => void;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:123](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L123)
+Defined in: [FieldApi/FieldApi.public.ts:123](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L123)
 
 Swap two elements in this field's array.
 If this field is not an array, this method will be ignored.
@@ -270,7 +296,7 @@ The index of the second element to swap
 value: TFieldValue;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:176](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L176)
+Defined in: [FieldApi/FieldApi.public.ts:176](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L176)
 
 ## Accessors
 
@@ -282,7 +308,7 @@ Defined in: [FieldApi/FieldApi.public.ts:176](https://github.com/TanStack/form/b
 get name(): TFieldName;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:115](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L115)
+Defined in: [FieldApi/FieldApi.public.ts:115](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L115)
 
 The name of the field.
 

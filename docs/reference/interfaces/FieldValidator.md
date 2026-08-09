@@ -5,7 +5,7 @@ title: FieldValidator
 
 # Interface: FieldValidator\<TFormData, TFieldName, TFieldValue\>
 
-Defined in: [validation.public.ts:508](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L508)
+Defined in: [validation.public.ts:508](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L508)
 
 ## Extends
 
@@ -32,10 +32,10 @@ Defined in: [validation.public.ts:508](https://github.com/TanStack/form/blob/mai
 ### bailIfInvalid?
 
 ```ts
-optional bailIfInvalid: boolean;
+optional bailIfInvalid?: boolean;
 ```
 
-Defined in: [validation.public.ts:21](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L21)
+Defined in: [validation.public.ts:21](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L21)
 
 If `true`, this validator and all subsequent validators will be skipped if any previous validator has failed.
 If `false`, validators run regardless of earlier validation results.
@@ -60,7 +60,7 @@ run:
 | StandardSchemaV1<TFieldValue, any>;
 ```
 
-Defined in: [validation.public.ts:14](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L14)
+Defined in: [validation.public.ts:14](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L14)
 
 #### Inherited from
 
@@ -71,10 +71,10 @@ Defined in: [validation.public.ts:14](https://github.com/TanStack/form/blob/main
 ### runOnMount?
 
 ```ts
-optional runOnMount: boolean;
+optional runOnMount?: boolean;
 ```
 
-Defined in: [validation.public.ts:45](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L45)
+Defined in: [validation.public.ts:45](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L45)
 
 Whether this validator should be called once when the form is constructed.
 
@@ -93,12 +93,12 @@ false
 ### runOnSubmit?
 
 ```ts
-optional runOnSubmit: 
+optional runOnSubmit?: 
   | boolean
 | ValidationPredicateFn<TFormData, TFieldValue, "field">;
 ```
 
-Defined in: [validation.public.ts:38](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L38)
+Defined in: [validation.public.ts:38](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L38)
 
 TODO docs
 
@@ -119,12 +119,12 @@ true
 ### triggerDebounceMs?
 
 ```ts
-optional triggerDebounceMs: 
+optional triggerDebounceMs?: 
   | number
 | ValidationDebounceFn<TFormData, TFieldValue, "field">;
 ```
 
-Defined in: [validation.public.ts:52](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L52)
+Defined in: [validation.public.ts:52](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L52)
 
 The debounce time in milliseconds for validation triggers (change, blur).
 Does not affect submit events, which always execute immediately.
@@ -147,7 +147,7 @@ Does not affect submit events, which always execute immediately.
 triggers: ValidationTriggerOption<TFormData, TFieldValue, ConfigurableValidationTrigger, "field">[];
 ```
 
-Defined in: [validation.public.ts:54](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L54)
+Defined in: [validation.public.ts:54](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L54)
 
 #### Inherited from
 
@@ -158,7 +158,7 @@ Defined in: [validation.public.ts:54](https://github.com/TanStack/form/blob/main
 ### watchFields?
 
 ```ts
-optional watchFields: DeepKeys<TFormData>[];
+optional watchFields?: DeepKeys<TFormData>[];
 ```
 
-Defined in: [validation.public.ts:520](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L520)
+Defined in: [validation.public.ts:520](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L520)

@@ -74,6 +74,6 @@ If the same wiring appears throughout the application, extract a component
 whose props include `FieldWithValue<T>`, then register it with `createFormHook`
 when it should be available as a typed app field component.
 
-The repository's [Vue large-form example](../examples/large-form) demonstrates
+The repository's Vue large-form example demonstrates
 `getFormHookHelpers`, `createFormHook`, injected app fields, and a reusable
 field group.

@@ -5,8 +5,7 @@ import type {
   DeepValue,
   FormApi,
 } from '@tanstack/form-core'
-import type { FunctionComponent } from 'react'
-import type { CrossVersionReactNode } from '../reactTypes.public'
+import type { FunctionComponent, ReactNode } from 'react'
 import type { ReactTanStackFormComponents } from '../ReactForm/Components.public'
 import type { FieldGroupApi } from './FieldGroupApi.public'
 
@@ -207,7 +206,7 @@ export type FieldGroupWithFieldsFn<
   TProps extends object,
   TFieldsPropName extends FieldGroupFieldsPropName<TProps, TFieldGroup>,
 >(
-  Component: (props: TProps) => CrossVersionReactNode,
+  Component: (props: TProps) => ReactNode,
   fieldsPropName: TFieldsPropName,
 ) => <TFormData>(
   props: Omit<TProps, TFieldsPropName | 'form'> & {
@@ -218,7 +217,7 @@ export type FieldGroupWithFieldsFn<
       TFormData
     >
   },
-) => CrossVersionReactNode
+) => ReactNode
 
 export interface FieldGroupHelper {
   /**

@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@tanstack/react-form": "^1.33.3",
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
   },
   "devDependencies": {
     "@types/react": "^19.2.8",
@@ -19,7 +19,7 @@
     "@vitejs/plugin-react": "^6.0.1",
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint-plugin-react-compiler": "19.1.0-rc.2",
-    "vite": "^8.1.2"
+    "vite": "^8.2.1"
   },
   "browserslist": {
     "production": [

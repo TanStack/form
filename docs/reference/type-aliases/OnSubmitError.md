@@ -9,7 +9,7 @@ title: OnSubmitError
 type OnSubmitError<TFormValidationError> = TFormValidationError & object;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:21](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L21)
+Defined in: [FormApi/FormApi.public.ts:21](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L21)
 
 ## Type Declaration
 

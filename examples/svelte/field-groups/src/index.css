@@ -1,0 +1,29 @@
+#root {
+  width: 70rem;
+  max-width: 100%;
+  margin: 0 auto;
+  font-family: system-ui, sans-serif;
+}
+
+section,
+fieldset {
+  margin: 1rem 0;
+  padding: 1rem;
+}
+
+label {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.75rem 0;
+  max-width: 20rem;
+}
+
+input,
+button {
+  padding: 0.5rem 0.75rem;
+}
+
+small {
+  color: #dc2626;
+  white-space: pre-line;
+}

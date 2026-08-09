@@ -9,8 +9,7 @@ import type {
   FormState,
   ValidationIssue,
 } from '@tanstack/form-core'
-import type { FunctionComponent } from 'react'
-import type { CrossVersionReactNode } from '../reactTypes.public'
+import type { FunctionComponent, ReactNode } from 'react'
 import type {
   ReactFormFieldProps,
   ReactFormSubscribeProps,
@@ -79,7 +78,7 @@ export interface FieldGroupFieldComponent<
       FormErrorTypes,
       TFieldComponents
     >,
-  ): CrossVersionReactNode
+  ): ReactNode
 }
 
 export interface FieldGroupArrayFieldComponent<
@@ -141,7 +140,7 @@ export interface FieldGroupArrayFieldComponent<
       FormErrorTypes,
       TFieldComponents
     >,
-  ): CrossVersionReactNode
+  ): ReactNode
 }
 
 export type FieldGroupSubscribeProps<TSelected> = ReactFormSubscribeProps<
@@ -170,7 +169,7 @@ export type FieldGroupSubscribeProps<TSelected> = ReactFormSubscribeProps<
  */
 export type FieldGroupSubscribeComponent = <TSelected>(
   props: FieldGroupSubscribeProps<TSelected>,
-) => CrossVersionReactNode
+) => ReactNode
 
 export interface FieldGroupApi<
   in out TFieldData,

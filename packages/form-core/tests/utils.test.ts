@@ -123,12 +123,24 @@ describe('utils', () => {
     expect(evaluate(1, '1' as never)).toBe(false)
     expect(evaluate(new Date(1), new Date(1))).toBe(true)
     expect(evaluate(new Date(1), new Date(2))).toBe(false)
-    expect(evaluate(new File(['a'], 'a.txt'), new File(['a'], 'a.txt'))).toBe(
-      true,
-    )
-    expect(evaluate(new File(['a'], 'a.txt'), new File(['b'], 'b.txt'))).toBe(
-      false,
-    )
+    expect(
+      evaluate(
+        new File(['a'], 'a.txt', { lastModified: 1 }),
+        new File(['a'], 'a.txt', { lastModified: 1 }),
+      ),
+    ).toBe(true)
+    expect(
+      evaluate(
+        new File(['a'], 'a.txt', { lastModified: 1 }),
+        new File(['b'], 'b.txt', { lastModified: 1 }),
+      ),
+    ).toBe(false)
+    expect(
+      evaluate(
+        new File(['a'], 'a.txt', { lastModified: 1 }),
+        new File(['a'], 'a.txt', { lastModified: 2 }),
+      ),
+    ).toBe(false)
     expect(evaluate(new Map([['a', 1]]), new Map([['a', 1]]))).toBe(true)
     expect(evaluate(new Map([['a', 1]]), new Map([['a', 2]]))).toBe(false)
     expect(evaluate(new Map([['a', 1]]), new Map())).toBe(false)

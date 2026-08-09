@@ -3,13 +3,13 @@ id: MoveFieldValueFn
 title: MoveFieldValueFn
 ---
 
-# Type Alias: MoveFieldValueFn()\<TFormData\>
+# Type Alias: MoveFieldValueFn\<TFormData\>
 
 ```ts
 type MoveFieldValueFn<TFormData> = <TFieldName>(arrayFieldName, fromIndex, toIndex, options?) => void;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:41](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L41)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:41](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L41)
 
 ## Type Parameters
 

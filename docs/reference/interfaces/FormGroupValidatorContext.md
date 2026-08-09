@@ -5,7 +5,7 @@ title: FormGroupValidatorContext
 
 # Interface: FormGroupValidatorContext\<TGroupValue\>
 
-Defined in: [validation.public.ts:455](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L455)
+Defined in: [validation.public.ts:455](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L455)
 
 ## Type Parameters
 
@@ -15,13 +15,13 @@ Defined in: [validation.public.ts:455](https://github.com/TanStack/form/blob/mai
 
 ## Properties
 
-### createErrorMap()
+### createErrorMap
 
 ```ts
 createErrorMap: (initial?) => ValidationErrorMap<TGroupValue>;
 ```
 
-Defined in: [validation.public.ts:463](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L463)
+Defined in: [validation.public.ts:463](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L463)
 
 Creates a mutable validation error map.
 
@@ -45,7 +45,7 @@ If an initial error map is provided, the same object is returned.
 event: ValidationTrigger;
 ```
 
-Defined in: [validation.public.ts:456](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L456)
+Defined in: [validation.public.ts:456](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L456)
 
 ***
 
@@ -55,7 +55,7 @@ Defined in: [validation.public.ts:456](https://github.com/TanStack/form/blob/mai
 formApi: FormApi<any, any>;
 ```
 
-Defined in: [validation.public.ts:458](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L458)
+Defined in: [validation.public.ts:458](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L458)
 
 ***
 
@@ -65,7 +65,7 @@ Defined in: [validation.public.ts:458](https://github.com/TanStack/form/blob/mai
 groupApi: FormGroupApi<any, any, TGroupValue, any, any>;
 ```
 
-Defined in: [validation.public.ts:459](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L459)
+Defined in: [validation.public.ts:459](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L459)
 
 ***
 
@@ -75,7 +75,7 @@ Defined in: [validation.public.ts:459](https://github.com/TanStack/form/blob/mai
 parseIssues: ParseFormIssuesFn<TGroupValue>;
 ```
 
-Defined in: [validation.public.ts:462](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L462)
+Defined in: [validation.public.ts:462](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L462)
 
 ***
 
@@ -85,17 +85,17 @@ Defined in: [validation.public.ts:462](https://github.com/TanStack/form/blob/mai
 signal: AbortSignal;
 ```
 
-Defined in: [validation.public.ts:457](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L457)
+Defined in: [validation.public.ts:457](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L457)
 
 ***
 
 ### triggerFieldApi?
 
 ```ts
-optional triggerFieldApi: AnyFieldApi;
+optional triggerFieldApi?: AnyFieldApi;
 ```
 
-Defined in: [validation.public.ts:460](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L460)
+Defined in: [validation.public.ts:460](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L460)
 
 ***
 
@@ -105,4 +105,4 @@ Defined in: [validation.public.ts:460](https://github.com/TanStack/form/blob/mai
 value: TGroupValue;
 ```
 
-Defined in: [validation.public.ts:461](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L461)
+Defined in: [validation.public.ts:461](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L461)

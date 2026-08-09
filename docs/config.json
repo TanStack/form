@@ -143,6 +143,31 @@
           ]
         },
         {
+          "label": "preact",
+          "children": [
+            {
+              "label": "Form Validation",
+              "to": "framework/preact/guides/validation"
+            },
+            {
+              "label": "Async Initial Values",
+              "to": "framework/preact/guides/async-initial-values"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/preact/guides/arrays"
+            },
+            {
+              "label": "UI Libraries",
+              "to": "framework/preact/guides/ui-libraries"
+            },
+            {
+              "label": "Debugging",
+              "to": "framework/preact/guides/debugging"
+            }
+          ]
+        },
+        {
           "label": "vue",
           "children": [
             {
@@ -191,15 +216,135 @@
               "to": "framework/solid/guides/debugging"
             }
           ]
+        },
+        {
+          "label": "lit",
+          "children": [
+            {
+              "label": "Form Validation",
+              "to": "framework/lit/guides/validation"
+            },
+            {
+              "label": "Async Initial Values",
+              "to": "framework/lit/guides/async-initial-values"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/lit/guides/arrays"
+            },
+            {
+              "label": "UI Libraries",
+              "to": "framework/lit/guides/ui-libraries"
+            },
+            {
+              "label": "Debugging",
+              "to": "framework/lit/guides/debugging"
+            }
+          ]
+        },
+        {
+          "label": "svelte",
+          "children": [
+            {
+              "label": "Form Validation",
+              "to": "framework/svelte/guides/validation"
+            },
+            {
+              "label": "Async Initial Values",
+              "to": "framework/svelte/guides/async-initial-values"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/svelte/guides/arrays"
+            },
+            {
+              "label": "UI Libraries",
+              "to": "framework/svelte/guides/ui-libraries"
+            },
+            {
+              "label": "Debugging",
+              "to": "framework/svelte/guides/debugging"
+            }
+          ]
         }
       ]
     },
     {
+      "collapsible": true,
+      "defaultCollapsed": true,
       "label": "API Reference",
       "children": [
         {
           "label": "Core API Reference",
           "to": "reference/index"
+        },
+        {
+          "label": "Interfaces / FieldApi",
+          "to": "reference/interfaces/FieldApi"
+        },
+        {
+          "label": "Interfaces / FormApi",
+          "to": "reference/interfaces/FormApi"
+        },
+        {
+          "label": "Variables / formOptions",
+          "to": "reference/variables/formOptions"
+        },
+        {
+          "label": "Functions / createValidator",
+          "to": "reference/functions/createValidator"
+        },
+        {
+          "label": "Functions / createValidators",
+          "to": "reference/functions/createValidators"
+        },
+        {
+          "label": "Interfaces / FieldApiOptions",
+          "to": "reference/interfaces/FieldApiOptions"
+        },
+        {
+          "label": "Interfaces / FormOptions",
+          "to": "reference/interfaces/FormOptions"
+        },
+        {
+          "label": "Types / FieldValidators",
+          "to": "reference/type-aliases/FieldValidators"
+        },
+        {
+          "label": "Types / FormValidators",
+          "to": "reference/type-aliases/FormValidators"
+        },
+        {
+          "label": "Types / DeepKeys",
+          "to": "reference/type-aliases/DeepKeys"
+        },
+        {
+          "label": "Types / DeepValue",
+          "to": "reference/type-aliases/DeepValue"
+        },
+        {
+          "label": "Types / AnyFieldMeta",
+          "to": "reference/type-aliases/AnyFieldMeta"
+        },
+        {
+          "label": "Interfaces / FormState",
+          "to": "reference/interfaces/FormState"
+        },
+        {
+          "label": "Types / Updater",
+          "to": "reference/type-aliases/Updater"
+        },
+        {
+          "label": "Types / UpdateFn",
+          "to": "reference/type-aliases/UpdateFn"
+        },
+        {
+          "label": "Types / ValidationError",
+          "to": "reference/type-aliases/ValidationError"
+        },
+        {
+          "label": "Interfaces / ValidationIssue",
+          "to": "reference/interfaces/ValidationIssue"
         }
       ],
       "frameworks": [
@@ -209,6 +354,34 @@
             {
               "label": "React Reference",
               "to": "framework/react/reference/index"
+            },
+            {
+              "label": "Variables / useForm",
+              "to": "framework/react/reference/variables/useForm"
+            },
+            {
+              "label": "Functions / createFormHook",
+              "to": "framework/react/reference/functions/createFormHook"
+            },
+            {
+              "label": "Functions / Subscribe",
+              "to": "framework/react/reference/functions/Subscribe"
+            },
+            {
+              "label": "Interfaces / FieldGroupApi",
+              "to": "framework/react/reference/interfaces/FieldGroupApi"
+            },
+            {
+              "label": "Types / ReactFieldApi",
+              "to": "framework/react/reference/type-aliases/ReactFieldApi"
+            },
+            {
+              "label": "Types / ReactFormApi",
+              "to": "framework/react/reference/type-aliases/ReactFormApi"
+            },
+            {
+              "label": "Types / ReactAppFormApi",
+              "to": "framework/react/reference/type-aliases/ReactAppFormApi"
             }
           ]
         },
@@ -218,6 +391,34 @@
             {
               "label": "Preact Reference",
               "to": "framework/preact/reference/index"
+            },
+            {
+              "label": "Variables / useForm",
+              "to": "framework/preact/reference/variables/useForm"
+            },
+            {
+              "label": "Functions / createFormHook",
+              "to": "framework/preact/reference/functions/createFormHook"
+            },
+            {
+              "label": "Functions / Subscribe",
+              "to": "framework/preact/reference/functions/Subscribe"
+            },
+            {
+              "label": "Interfaces / FieldGroupApi",
+              "to": "framework/preact/reference/interfaces/FieldGroupApi"
+            },
+            {
+              "label": "Types / PreactFieldApi",
+              "to": "framework/preact/reference/type-aliases/PreactFieldApi"
+            },
+            {
+              "label": "Types / PreactFormApi",
+              "to": "framework/preact/reference/type-aliases/PreactFormApi"
+            },
+            {
+              "label": "Types / PreactAppFormApi",
+              "to": "framework/preact/reference/type-aliases/PreactAppFormApi"
             }
           ]
         },
@@ -227,6 +428,34 @@
             {
               "label": "Vue Reference",
               "to": "framework/vue/reference/index"
+            },
+            {
+              "label": "Variables / useForm",
+              "to": "framework/vue/reference/variables/useForm"
+            },
+            {
+              "label": "Variables / Subscribe",
+              "to": "framework/vue/reference/variables/Subscribe"
+            },
+            {
+              "label": "Functions / createFormHook",
+              "to": "framework/vue/reference/functions/createFormHook"
+            },
+            {
+              "label": "Interfaces / FieldGroupApi",
+              "to": "framework/vue/reference/interfaces/FieldGroupApi"
+            },
+            {
+              "label": "Types / VueFieldApi",
+              "to": "framework/vue/reference/type-aliases/VueFieldApi"
+            },
+            {
+              "label": "Types / VueFormApi",
+              "to": "framework/vue/reference/type-aliases/VueFormApi"
+            },
+            {
+              "label": "Types / VueAppFormApi",
+              "to": "framework/vue/reference/type-aliases/VueAppFormApi"
             }
           ]
         },
@@ -236,6 +465,26 @@
             {
               "label": "Angular Reference",
               "to": "framework/angular/reference/index"
+            },
+            {
+              "label": "Classes / TanStackField",
+              "to": "framework/angular/reference/classes/TanStackField"
+            },
+            {
+              "label": "Classes / TanStackFormGroup",
+              "to": "framework/angular/reference/classes/TanStackFormGroup"
+            },
+            {
+              "label": "Functions / injectField",
+              "to": "framework/angular/reference/functions/injectField"
+            },
+            {
+              "label": "Functions / injectForm",
+              "to": "framework/angular/reference/functions/injectForm"
+            },
+            {
+              "label": "Functions / injectSelector",
+              "to": "framework/angular/reference/functions/injectSelector"
             }
           ]
         },
@@ -245,6 +494,34 @@
             {
               "label": "Solid Reference",
               "to": "framework/solid/reference/index"
+            },
+            {
+              "label": "Variables / createForm",
+              "to": "framework/solid/reference/variables/createForm"
+            },
+            {
+              "label": "Functions / createFormHook",
+              "to": "framework/solid/reference/functions/createFormHook"
+            },
+            {
+              "label": "Functions / Subscribe",
+              "to": "framework/solid/reference/functions/Subscribe"
+            },
+            {
+              "label": "Interfaces / FieldGroupApi",
+              "to": "framework/solid/reference/interfaces/FieldGroupApi"
+            },
+            {
+              "label": "Types / SolidFieldApi",
+              "to": "framework/solid/reference/type-aliases/SolidFieldApi"
+            },
+            {
+              "label": "Types / SolidFormApi",
+              "to": "framework/solid/reference/type-aliases/SolidFormApi"
+            },
+            {
+              "label": "Types / SolidAppFormApi",
+              "to": "framework/solid/reference/type-aliases/SolidAppFormApi"
             }
           ]
         },
@@ -254,6 +531,22 @@
             {
               "label": "Lit Reference",
               "to": "framework/lit/reference/index"
+            },
+            {
+              "label": "Classes / TanStackFormController",
+              "to": "framework/lit/reference/classes/TanStackFormController"
+            },
+            {
+              "label": "Functions / getFormType",
+              "to": "framework/lit/reference/functions/getFormType"
+            },
+            {
+              "label": "Functions / getFieldGroupHelpers",
+              "to": "framework/lit/reference/functions/getFieldGroupHelpers"
+            },
+            {
+              "label": "Types / LitFormGroupApi",
+              "to": "framework/lit/reference/type-aliases/LitFormGroupApi"
             }
           ]
         }
@@ -329,6 +622,47 @@
           ]
         },
         {
+          "label": "preact",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "framework/preact/examples/simple"
+            },
+            {
+              "label": "Basic",
+              "to": "framework/preact/examples/basic"
+            },
+            {
+              "label": "Form Splitting",
+              "to": "framework/preact/examples/basic-splitting-form"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/preact/examples/array"
+            },
+            {
+              "label": "Field Groups",
+              "to": "framework/preact/examples/field-groups"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/preact/examples/large-form"
+            },
+            {
+              "label": "Multi-Step Wizard",
+              "to": "framework/preact/examples/multi-step-wizard"
+            },
+            {
+              "label": "Standard Schema",
+              "to": "framework/preact/examples/standard-schema"
+            },
+            {
+              "label": "TanStack Query Integration",
+              "to": "framework/preact/examples/query-integration"
+            }
+          ]
+        },
+        {
           "label": "vue",
           "children": [
             {
@@ -391,6 +725,88 @@
             {
               "label": "TanStack Query Integration",
               "to": "framework/solid/examples/query-integration"
+            }
+          ]
+        },
+        {
+          "label": "lit",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "framework/lit/examples/simple"
+            },
+            {
+              "label": "Basic",
+              "to": "framework/lit/examples/basic"
+            },
+            {
+              "label": "Form Splitting",
+              "to": "framework/lit/examples/basic-splitting-form"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/lit/examples/array"
+            },
+            {
+              "label": "Field Groups",
+              "to": "framework/lit/examples/field-groups"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/lit/examples/large-form"
+            },
+            {
+              "label": "Multi-Step Wizard",
+              "to": "framework/lit/examples/multi-step-wizard"
+            },
+            {
+              "label": "Standard Schema",
+              "to": "framework/lit/examples/standard-schema"
+            },
+            {
+              "label": "TanStack Query Integration",
+              "to": "framework/lit/examples/query-integration"
+            }
+          ]
+        },
+        {
+          "label": "svelte",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "framework/svelte/examples/simple"
+            },
+            {
+              "label": "Basic",
+              "to": "framework/svelte/examples/basic"
+            },
+            {
+              "label": "Form Splitting",
+              "to": "framework/svelte/examples/basic-splitting-form"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/svelte/examples/array"
+            },
+            {
+              "label": "Field Groups",
+              "to": "framework/svelte/examples/field-groups"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/svelte/examples/large-form"
+            },
+            {
+              "label": "Multi-Step Wizard",
+              "to": "framework/svelte/examples/multi-step-wizard"
+            },
+            {
+              "label": "Standard Schema",
+              "to": "framework/svelte/examples/standard-schema"
+            },
+            {
+              "label": "TanStack Query Integration",
+              "to": "framework/svelte/examples/query-integration"
             }
           ]
         }

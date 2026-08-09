@@ -5,7 +5,7 @@ title: FormListener
 
 # Interface: FormListener\<TFormData, TFormErrorTypes\>
 
-Defined in: [listeners.public.ts:69](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L69)
+Defined in: [listeners.public.ts:69](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/listeners.public.ts#L69)
 
 ## Extends
 
@@ -29,19 +29,19 @@ Defined in: [listeners.public.ts:69](https://github.com/TanStack/form/blob/main/
 run: FormListenerFn<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [listeners.public.ts:73](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L73)
+Defined in: [listeners.public.ts:73](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/listeners.public.ts#L73)
 
 ***
 
 ### triggerDebounceMs?
 
 ```ts
-optional triggerDebounceMs: 
+optional triggerDebounceMs?: 
   | number
 | ListenerDebounceFn<TFormData, TFormData>;
 ```
 
-Defined in: [listeners.public.ts:49](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L49)
+Defined in: [listeners.public.ts:49](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/listeners.public.ts#L49)
 
 The debounce time in milliseconds for validation triggers (change, blur).
 Does not affect submit events, which always execute immediately.
@@ -64,7 +64,7 @@ Does not affect submit events, which always execute immediately.
 triggers: ListenerTriggerOption<FormListenerTriggers, TFormData, TFormData>[];
 ```
 
-Defined in: [listeners.public.ts:50](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L50)
+Defined in: [listeners.public.ts:50](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/listeners.public.ts#L50)
 
 #### Inherited from
 

@@ -1,0 +1,18 @@
+---
+id: FieldGroupFieldSlotValue
+title: FieldGroupFieldSlotValue
+---
+
+# Type Alias: FieldGroupFieldSlotValue\<TSlot\>
+
+```ts
+type FieldGroupFieldSlotValue<TSlot> = TSlot extends FieldGroupFieldSlot<infer TValue> ? TValue : never;
+```
+
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:41](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L41)
+
+## Type Parameters
+
+### TSlot
+
+`TSlot`

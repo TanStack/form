@@ -1,4 +1,7 @@
-# Migrating from TanStack Form v1
+---
+id: migrate-from-v1
+title: Migrating from v1
+---
 
 TanStack Form v2 keeps the same core idea as v1: create a form with
 `useForm`, render fields from the returned form API, and submit with
@@ -46,8 +49,31 @@ This page is a starting checklist for migrating React apps from v1 to v2.
 - Replace `withFieldGroup` with `defineFieldGroup(...).bindComponent(...)` for
   reusable field bundles that map virtual field names to different concrete
   form paths.
+- Upgrade Vue to version 3.6 or newer when using the Vue adapter. Form
+  Composition relies on behavior introduced in Vue 3.6.
 - Update CommonJS integrations to consume ESM. The v2 packages do not publish
   a CommonJS build and require Node.js 18 or newer.
+- Upgrade React to version 18 or newer. The v2 React adapter no longer supports
+  React 17.
+- Update CommonJS integrations to consume ESM. The v2 packages do not publish
+  a CommonJS build and require Node.js 18 or newer.
+
+## React version
+
+The v2 React adapter supports React 18 and 19. React 17 is no longer supported,
+so upgrade `react`, `react-dom`, and their corresponding type packages before
+migrating. If you imported `CrossVersionReactNode` from `@tanstack/react-form`,
+import `ReactNode` from `react` instead.
+
+## Vue version
+
+The v2 Vue adapter requires Vue 3.6 or newer. At the time of writing, Vue 3.6
+has not yet been released as stable and is available as a release candidate.
+We hope Vue 3.6 will be stable by the time TanStack Form v2 becomes stable.
+
+Form Composition relies on Vue 3.6 behavior to work correctly. Requiring it
+from the start lets the Vue adapter support Form Composition without adding a
+breaking minimum-version change later in the v2 release line.
 
 ## Package format
 

@@ -3,13 +3,13 @@ id: UpdateFn
 title: UpdateFn
 ---
 
-# Type Alias: UpdateFn()\<TValue\>
+# Type Alias: UpdateFn\<TValue\>
 
 ```ts
 type UpdateFn<TValue> = (previousValue) => TValue;
 ```
 
-Defined in: [types.public.ts:3](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.public.ts#L3)
+Defined in: [types.public.ts:3](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/types.public.ts#L3)
 
 ## Type Parameters
 

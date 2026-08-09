@@ -1,0 +1,21 @@
+{
+  "name": "@tanstack/form-example-preact-multi-step-wizard",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port=3307",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test:types": "tsc"
+  },
+  "dependencies": {
+    "@tanstack/preact-form": "^1.33.3",
+    "preact": "^10.26.4",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.10.2",
+    "typescript": "^6.0.2",
+    "vite": "^8.2.1"
+  }
+}

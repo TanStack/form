@@ -9,7 +9,7 @@ title: createValidator
 function createValidator<TOptions>(options): <TValidator>(run) => ValidatorWithRun<InferFormDataFromValidator<TValidator>, InferFormDataFromValidator<TValidator>, TOptions, TValidator>;
 ```
 
-Defined in: [validation.public.ts:123](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L123)
+Defined in: [validation.public.ts:123](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L123)
 
 ## Type Parameters
 
@@ -25,22 +25,4 @@ Defined in: [validation.public.ts:123](https://github.com/TanStack/form/blob/mai
 
 ## Returns
 
-```ts
-<TValidator>(run): ValidatorWithRun<InferFormDataFromValidator<TValidator>, InferFormDataFromValidator<TValidator>, TOptions, TValidator>;
-```
-
-### Type Parameters
-
-#### TValidator
-
-`TValidator` *extends* `ValidatorRun`
-
-### Parameters
-
-#### run
-
-`TValidator`
-
-### Returns
-
-`ValidatorWithRun`\<`InferFormDataFromValidator`\<`TValidator`\>, `InferFormDataFromValidator`\<`TValidator`\>, `TOptions`, `TValidator`\>
+\<`TValidator`\>(`run`) => `ValidatorWithRun`\<`InferFormDataFromValidator`\<`TValidator`\>, `InferFormDataFromValidator`\<`TValidator`\>, `TOptions`, `TValidator`\>

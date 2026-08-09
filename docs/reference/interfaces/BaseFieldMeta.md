@@ -5,7 +5,7 @@ title: BaseFieldMeta
 
 # Interface: BaseFieldMeta
 
-Defined in: [FieldApi/FieldApi.public.ts:14](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L14)
+Defined in: [FieldApi/FieldApi.public.ts:14](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L14)
 
 ## Extended by
 
@@ -19,7 +19,7 @@ Defined in: [FieldApi/FieldApi.public.ts:14](https://github.com/TanStack/form/bl
 isBlurred: boolean;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:17](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L17)
+Defined in: [FieldApi/FieldApi.public.ts:17](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L17)
 
 ***
 
@@ -29,7 +29,7 @@ Defined in: [FieldApi/FieldApi.public.ts:17](https://github.com/TanStack/form/bl
 isDirty: boolean;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:16](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L16)
+Defined in: [FieldApi/FieldApi.public.ts:16](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L16)
 
 ***
 
@@ -39,7 +39,7 @@ Defined in: [FieldApi/FieldApi.public.ts:16](https://github.com/TanStack/form/bl
 isTouched: boolean;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:15](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L15)
+Defined in: [FieldApi/FieldApi.public.ts:15](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L15)
 
 ***
 
@@ -49,4 +49,4 @@ Defined in: [FieldApi/FieldApi.public.ts:15](https://github.com/TanStack/form/bl
 isValidating: boolean;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:18](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L18)
+Defined in: [FieldApi/FieldApi.public.ts:18](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L18)

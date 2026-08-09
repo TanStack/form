@@ -1,0 +1,22 @@
+---
+id: FieldGroupFieldBindings
+title: FieldGroupFieldBindings
+---
+
+# Type Alias: FieldGroupFieldBindings\<TFields, TFormData\>
+
+```ts
+type FieldGroupFieldBindings<TFields, TFormData> = { [TFieldName in keyof TFields]: FieldGroupFieldBindingForSlot<TFormData, TFields[TFieldName]> };
+```
+
+Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:122](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L122)
+
+## Type Parameters
+
+### TFields
+
+`TFields` *extends* [`FieldGroupFields`](FieldGroupFields.md)
+
+### TFormData
+
+`TFormData` = `any`
