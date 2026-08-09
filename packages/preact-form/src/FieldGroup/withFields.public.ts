@@ -1,8 +1,4 @@
-import {
-  defineFieldsRuntime,
-  helperRuntime,
-  withFieldsRuntime,
-} from './withFields.lib'
+import { defineFieldGroupRuntime } from './withFields.lib'
 import type {
   DeepKeys,
   DeepKeysWhereValueIncludes,
@@ -98,7 +94,7 @@ export type FieldGroupFieldsOf<TFieldGroup> = TFieldGroup extends {
   ? TFields
   : never
 
-export type FieldGroupDefinition<
+export type PreactFieldGroup<
   TFields extends FieldGroupFields,
   TFieldComponents extends Record<string, FunctionComponent<any>> = Record<
     never,
@@ -109,7 +105,7 @@ export type FieldGroupDefinition<
 }
 
 export type FieldGroupFieldComponentsOf<TFieldGroup> =
-  TFieldGroup extends FieldGroupDefinition<any, infer TFieldComponents>
+  TFieldGroup extends PreactFieldGroup<any, infer TFieldComponents>
     ? TFieldComponents
     : never
 
@@ -149,7 +145,7 @@ export type FieldGroupFieldBindingsOf<TFieldGroup, TFormData> =
 
 export type FieldGroupFieldsPropName<
   TProps,
-  TFieldGroup extends FieldGroupDefinition<any, any>,
+  TFieldGroup extends PreactFieldGroup<any, any>,
 > = {
   [TPropName in keyof TProps]-?: IsSame<
     TProps[TPropName],
@@ -159,12 +155,12 @@ export type FieldGroupFieldsPropName<
     : never
 }[keyof TProps]
 
-export type FieldGroupWithFieldsFn = <
-  TFieldGroup extends FieldGroupDefinition<any, any>,
+export type FieldGroupWithFieldsFn<
+  TFieldGroup extends PreactFieldGroup<any, any>,
+> = <
   TProps extends object,
   TFieldsPropName extends FieldGroupFieldsPropName<TProps, TFieldGroup>,
 >(
-  fields: TFieldGroup,
   Component: (props: TProps) => CrossVersionPreactNode,
   fieldsPropName: TFieldsPropName,
 ) => <TFormData>(
@@ -183,39 +179,25 @@ export interface FieldGroupHelper {
   loose: <TValue>() => LooseFieldGroupFieldSlot<TValue>
 }
 
-const helper: FieldGroupHelper = helperRuntime as never
+export interface FieldGroupDefinition<
+  TFields extends FieldGroupFields,
+  TFieldComponents extends Record<string, FunctionComponent<any>>,
+> {
+  /** The virtual field-group API injected into the bound component. */
+  fields: PreactFieldGroup<TFields, TFieldComponents>
+  /** Binds a component's virtual field API to concrete paths in a form. */
+  bindComponent: FieldGroupWithFieldsFn<
+    PreactFieldGroup<TFields, TFieldComponents>
+  >
+}
 
-export type DefineFieldsFn<
+/** Signature shared by `defineFieldGroup` and app-form field-group definers. */
+export type DefineFieldGroupFn<
   TFieldComponents extends Record<string, FunctionComponent<any>>,
 > = <const TFields extends FieldGroupFields>(
-  fields: TFields,
+  defineFn: (helper: FieldGroupHelper) => TFields,
 ) => FieldGroupDefinition<TFields, TFieldComponents>
 
-const defineFields: DefineFieldsFn<Record<never, never>> =
-  defineFieldsRuntime as never
-
-const withFields: FieldGroupWithFieldsFn = withFieldsRuntime as never
-
-export interface FieldGroupHelpers<
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
-> {
-  helper: FieldGroupHelper
-  defineFields: DefineFieldsFn<TFieldComponents>
-  withFields: FieldGroupWithFieldsFn
-}
-
-function createFieldGroupHelpers<
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
->(): FieldGroupHelpers<TFieldComponents> {
-  return {
-    helper,
-    defineFields: defineFields as never,
-    withFields,
-  }
-}
-
-export function getFieldGroupHelpers(): FieldGroupHelpers<
-  Record<never, never>
-> {
-  return createFieldGroupHelpers()
-}
+/** Defines a reusable group of virtual fields. */
+export const defineFieldGroup: DefineFieldGroupFn<Record<never, never>> =
+  defineFieldGroupRuntime as never

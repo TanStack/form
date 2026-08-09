@@ -1,6 +1,8 @@
 import Preact from 'preact/compat'
 import { createAtom, shallow } from '@tanstack/preact-store'
 import {
+  defineFieldGroupFieldsRuntime,
+  fieldGroupHelperRuntime,
   getBy,
   transformFieldOptionsFieldNames,
 } from '@tanstack/form-core/internals'
@@ -148,21 +150,28 @@ function createFieldGroupApi(
   } as never
 }
 
-export const helperRuntime = {
-  strict: () => null,
-  loose: () => null,
+export function defineFieldGroupRuntime<
+  TFields extends Record<string, unknown>,
+>(defineFieldGroupFn: (helperRuntime: any) => TFields) {
+  const fields = defineFieldGroupFieldsRuntime(
+    defineFieldGroupFn(fieldGroupHelperRuntime),
+  )
+
+  return {
+    fields,
+    bindComponent: (
+      Component: (props: any) => unknown,
+      fieldsPropName: string,
+    ) => withFieldsRuntime(fields, Component, fieldsPropName),
+  }
 }
 
-export function defineFieldsRuntime<TFields>(fields: TFields): TFields {
-  return fields
-}
-
-export function withFieldsRuntime(
-  _fields: AnyFieldGroupApi,
+function withFieldsRuntime(
+  fields: Record<string, unknown>,
   Component: (props: any) => unknown,
   fieldsPropName: string,
 ) {
-  const fieldNames = Object.keys(_fields as unknown as Record<string, unknown>)
+  const fieldNames = Object.keys(fields)
 
   const FieldGroupComponent = (props: any) => {
     const { form, ...restProps } = props

@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { render } from '@testing-library/preact'
 import { userEvent } from '@testing-library/user-event'
 import Preact from 'preact/compat'
-import { getFieldGroupHelpers, useForm, useSelector } from '../src'
+import { defineFieldGroup, useForm, useSelector } from '../src'
 
 const user = userEvent.setup()
 
@@ -18,11 +18,10 @@ function RenderCounter({
   return <>{children}</>
 }
 
-const { defineFields, helper, withFields } = getFieldGroupHelpers()
-
-const nestedFields = defineFields({
-  foo: helper.strict<{ bar: string }>(),
-})
+const { fields: nestedFields, bindComponent: bindNestedFields } =
+  defineFieldGroup(({ strict }) => ({
+    foo: strict<{ bar: string }>(),
+  }))
 
 interface NestedFieldsProps {
   fields: typeof nestedFields
@@ -48,12 +47,13 @@ function NestedFieldsImpl({ fields }: NestedFieldsProps) {
   )
 }
 
-const NestedFields = withFields(nestedFields, NestedFieldsImpl, 'fields')
+const NestedFields = bindNestedFields(NestedFieldsImpl, 'fields')
 
-const passwordFields = defineFields({
-  password: helper.strict<string>(),
-  confirmPassword: helper.strict<string>(),
-})
+const { fields: passwordFields, bindComponent: bindPasswordFields } =
+  defineFieldGroup(({ strict }) => ({
+    password: strict<string>(),
+    confirmPassword: strict<string>(),
+  }))
 
 interface PasswordFieldsProps {
   fields: typeof passwordFields
@@ -88,12 +88,13 @@ function PasswordFieldsImpl({ fields, listener }: PasswordFieldsProps) {
   )
 }
 
-const PasswordFields = withFields(passwordFields, PasswordFieldsImpl, 'fields')
+const PasswordFields = bindPasswordFields(PasswordFieldsImpl, 'fields')
 
-const rangeFields = defineFields({
-  lower: helper.strict<string>(),
-  upper: helper.strict<string>(),
-})
+const { fields: rangeFields, bindComponent: bindRangeFields } =
+  defineFieldGroup(({ strict }) => ({
+    lower: strict<string>(),
+    upper: strict<string>(),
+  }))
 
 interface RangeFieldsProps {
   fields: typeof rangeFields
@@ -136,7 +137,7 @@ function RangeFieldsImpl({ fields, onRender }: RangeFieldsProps) {
   )
 }
 
-const RangeFields = withFields(rangeFields, RangeFieldsImpl, 'fields')
+const RangeFields = bindRangeFields(RangeFieldsImpl, 'fields')
 
 interface RangeValuesFieldsProps {
   fields: typeof rangeFields
@@ -172,15 +173,12 @@ function RangeValuesFieldsImpl({ fields }: RangeValuesFieldsProps) {
   )
 }
 
-const RangeValuesFields = withFields(
-  rangeFields,
-  RangeValuesFieldsImpl,
-  'fields',
-)
+const RangeValuesFields = bindRangeFields(RangeValuesFieldsImpl, 'fields')
 
-const memoizedInputFields = defineFields({
-  value: helper.strict<string>(),
-})
+const { fields: memoizedInputFields, bindComponent: bindMemoizedInputFields } =
+  defineFieldGroup(({ strict }) => ({
+    value: strict<string>(),
+  }))
 
 interface MemoizedInputProps {
   field: {
@@ -221,8 +219,7 @@ function MemoizedInputFieldsImpl({
   )
 }
 
-const MemoizedInputFields = withFields(
-  memoizedInputFields,
+const MemoizedInputFields = bindMemoizedInputFields(
   MemoizedInputFieldsImpl,
   'fields',
 )
@@ -251,8 +248,7 @@ describe('FieldGroup', () => {
   })
 
   it('exposes subscribed field meta from field group children', () => {
-    const MetaFields = withFields(
-      nestedFields,
+    const MetaFields = bindNestedFields(
       ({ fields }: NestedFieldsProps) => (
         <fields.Field name="foo.bar">
           {(field) => (
