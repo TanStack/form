@@ -1,14 +1,12 @@
-import { getAppFieldGroupHelpers } from '../../hooks/form'
+import { defineAppFieldGroup } from '../../hooks/form'
 
-const { defineFields, helper, withFields } = getAppFieldGroupHelpers()
-
-const emergencyContactFields = defineFields({
-  fullName: helper.strict<string>(),
-  phone: helper.strict<string>(),
-})
+const emergencyContactFieldGroup = defineAppFieldGroup(({ strict }) => ({
+  fullName: strict<string>(),
+  phone: strict<string>(),
+}))
 
 function EmergencyContactFields(props: {
-  fields: typeof emergencyContactFields
+  fields: typeof emergencyContactFieldGroup.fields
 }) {
   return (
     <>
@@ -22,8 +20,5 @@ function EmergencyContactFields(props: {
   )
 }
 
-export const FieldGroupEmergencyContact = withFields(
-  emergencyContactFields,
-  EmergencyContactFields,
-  'fields',
-)
+export const FieldGroupEmergencyContact =
+  emergencyContactFieldGroup.bindComponent(EmergencyContactFields, 'fields')

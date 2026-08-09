@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from 'vitest'
 import {
   createForm,
   createFormHook,
-  getFieldGroupHelpers,
+  defineFieldGroup,
   getFormHookHelpers,
   useSelector,
 } from '../src'
@@ -398,10 +398,11 @@ describe('Solid adapter parity', () => {
   })
 })
 
-const { defineFields, helper, withFields } = getFieldGroupHelpers()
-const nameFields = defineFields({ name: helper.strict<string>() })
+const nameFieldGroup = defineFieldGroup(({ strict }) => ({
+  name: strict<string>(),
+}))
 
-function NameFieldsImpl(props: { fields: typeof nameFields }) {
+function NameFieldsImpl(props: { fields: typeof nameFieldGroup.fields }) {
   const values = useSelector(props.fields.atom)
   return (
     <>
@@ -423,7 +424,7 @@ function NameFieldsImpl(props: { fields: typeof nameFields }) {
   )
 }
 
-const NameFields = withFields(nameFields, NameFieldsImpl, 'fields')
+const NameFields = nameFieldGroup.bindComponent(NameFieldsImpl, 'fields')
 
 describe('Solid reusable field groups', () => {
   it('maps logical names and forwards methods and atoms', () => {

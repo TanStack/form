@@ -1,17 +1,15 @@
-import { getFieldGroupHelpers, useSelector } from '@tanstack/solid-form'
+import { defineFieldGroup, useSelector } from '@tanstack/solid-form'
 import { FieldError } from '../FieldError'
 import type { Accessor } from 'solid-js'
 import type { FieldWithValue } from '@tanstack/solid-form'
 
-const { defineFields, helper, withFields } = getFieldGroupHelpers()
-
-const dateRangeFields = defineFields({
-  start: helper.strict<string>(),
-  end: helper.strict<string>(),
-})
+const dateRangeFieldGroup = defineFieldGroup(({ strict }) => ({
+  start: strict<string>(),
+  end: strict<string>(),
+}))
 
 interface DateRangeFieldProps {
-  fields: typeof dateRangeFields
+  fields: typeof dateRangeFieldGroup.fields
   label: string
 }
 
@@ -49,8 +47,7 @@ function DateRangeFieldComponent(props: DateRangeFieldProps) {
   )
 }
 
-export const DateRangeField = withFields(
-  dateRangeFields,
+export const DateRangeField = dateRangeFieldGroup.bindComponent(
   DateRangeFieldComponent,
   'fields',
 )

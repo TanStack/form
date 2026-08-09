@@ -2,8 +2,8 @@ import { expectTypeOf } from 'vitest'
 import {
   createForm,
   createFormHook,
+  defineFieldGroup,
   formOptions,
-  getFieldGroupHelpers,
   getFormHookHelpers,
 } from '../src'
 import type { Accessor } from 'solid-js'
@@ -109,7 +109,7 @@ function NumberField(props: { field: Accessor<FieldWithValue<number>> }) {
 const { fieldComponent } = getFormHookHelpers()
 const Text = fieldComponent.strict(TextField, 'field')
 const Number = fieldComponent.strict(NumberField, 'field')
-const { useAppForm, getAppFieldGroupHelpers } = createFormHook({
+const { useAppForm, defineAppFieldGroup } = createFormHook({
   fieldComponents: { Text, Number },
   formComponents: {},
 })
@@ -142,13 +142,12 @@ function AppFormTypes() {
   )
 }
 
-const { helper, defineFields, withFields } = getFieldGroupHelpers()
-const profileFields = defineFields({
-  name: helper.strict<string>(),
-  age: helper.strict<number>(),
-})
+const profileFieldGroup = defineFieldGroup(({ strict }) => ({
+  name: strict<string>(),
+  age: strict<number>(),
+}))
 
-function ProfileFields(props: { fields: typeof profileFields }) {
+function ProfileFields(props: { fields: typeof profileFieldGroup.fields }) {
   return (
     <props.fields.Field name="name">
       {(field) => {
@@ -159,7 +158,7 @@ function ProfileFields(props: { fields: typeof profileFields }) {
   )
 }
 
-const Profile = withFields(profileFields, ProfileFields, 'fields')
+const Profile = profileFieldGroup.bindComponent(ProfileFields, 'fields')
 
 function FieldGroupBindingsTypes() {
   const form = createForm(() => ({
@@ -185,13 +184,11 @@ function FieldGroupBindingsTypes() {
   )
 }
 
-const { defineFields: defineAppFields, helper: appHelper } =
-  getAppFieldGroupHelpers()
-const appFields = defineAppFields({
-  name: appHelper.strict<string>(),
-})
+const appFieldGroup = defineAppFieldGroup(({ strict }) => ({
+  name: strict<string>(),
+}))
 
-function AppFields(props: { fields: typeof appFields }) {
+function AppFields(props: { fields: typeof appFieldGroup.fields }) {
   return (
     <props.fields.Field name="name">
       {(field) => <field.Text label="Name" />}
@@ -199,8 +196,11 @@ function AppFields(props: { fields: typeof appFields }) {
   )
 }
 
+const BoundAppFields = appFieldGroup.bindComponent(AppFields, 'fields')
+
 void FormAndGroupTypes
 void SharedFormChild
 void AppFormTypes
 void FieldGroupBindingsTypes
 void AppFields
+void BoundAppFields
