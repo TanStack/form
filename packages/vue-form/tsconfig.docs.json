@@ -1,4 +1,10 @@
 {
   "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@tanstack/form-core": ["../form-core/src"],
+      "@tanstack/form-core/internals": ["../form-core/src/internals.ts"]
+    }
+  },
   "exclude": ["tests", "eslint.config.js", "vite.config.ts"]
 }
