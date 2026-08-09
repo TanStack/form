@@ -5,8 +5,8 @@ import { describe, expect, expectTypeOf, it, vi } from 'vitest'
 import { userEvent } from '@testing-library/user-event'
 import {
   TanStackFormController,
+  defineFieldGroup,
   formOptions,
-  getFieldGroupHelpers,
   getFormType,
 } from '../src/index.js'
 import { defineOnce, mount } from './utils.js'
@@ -222,14 +222,13 @@ class FormGroupElement extends LitElement {
   }
 }
 
-const { defineFields, helper, withFields } = getFieldGroupHelpers()
-const reusableNameFields = defineFields({
-  value: helper.strict<string>(),
-})
-const ReusableNameField = withFields(
-  reusableNameFields,
-  (props: { fields: typeof reusableNameFields; label: string }) =>
-    props.fields.field(
+const reusableNameFieldGroup = defineFieldGroup(({ strict }) => ({
+  value: strict<string>(),
+  items: strict<Array<string>>(),
+}))
+const ReusableNameField = reusableNameFieldGroup.bindComponent(
+  (props: { fields: typeof reusableNameFieldGroup.fields; label: string }) => {
+    const nameField = props.fields.field(
       { name: 'value' },
       (field) => html`
         <label>
@@ -244,19 +243,34 @@ const ReusableNameField = withFields(
           />
         </label>
       `,
-    ),
+    )
+
+    return html`
+      ${nameField}
+      <button
+        id="moveReusableItem"
+        @click=${() => props.fields.moveFieldValue('items', 0, 2)}
+      >
+        Move item
+      </button>
+    `
+  },
   'fields',
 )
 
 class ReusableFieldGroupElement extends LitElement {
   form = new TanStackFormController(this, {
-    defaultValues: { profile: { name: '' }, count: 0 },
+    defaultValues: {
+      profile: { name: '' },
+      lists: { names: ['a', 'b', 'c'] },
+      count: 0,
+    },
   })
 
   render() {
     return ReusableNameField({
       form: this.form,
-      fields: { value: 'profile.name' },
+      fields: { value: 'profile.name', items: 'lists.names' },
       label: 'Name',
     })
   }
@@ -395,6 +409,17 @@ describe('TanStackFormController', () => {
     )
 
     expect(element.form.api.getFieldValue('profile.name')).toBe('Ada')
+
+    await userEvent.click(
+      element.shadowRoot!.querySelector<HTMLButtonElement>(
+        '#moveReusableItem',
+      )!,
+    )
+    expect(element.form.api.getFieldValue('lists.names')).toEqual([
+      'b',
+      'c',
+      'a',
+    ])
   })
 
   it('derives reusable controller types from formOptions', () => {

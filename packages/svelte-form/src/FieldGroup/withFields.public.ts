@@ -1,8 +1,4 @@
-import {
-  defineFieldsRuntime,
-  helperRuntime,
-  withFieldsRuntime,
-} from './withFields.lib'
+import { defineFieldGroupRuntime } from './withFields.lib'
 import type {
   DeepKeys,
   DeepKeysWhereValueIncludes,
@@ -85,7 +81,7 @@ export type FieldGroupFieldsOf<TGroup> = TGroup extends {
 }
   ? TFields
   : never
-export type FieldGroupDefinition<
+export type SvelteFieldGroup<
   TFields extends FieldGroupFields,
   TFieldComponents extends Record<string, Component<any>> = Record<
     never,
@@ -136,12 +132,12 @@ export type FieldGroupFieldsPropName<TProps, TGroup> = {
     : never
 }[keyof TProps]
 
-export type FieldGroupWithFieldsFn = <
+export type FieldGroupWithFieldsFn<
   TGroup extends { readonly [fieldGroupFieldsSymbol]: FieldGroupFields },
+> = <
   TProps extends object,
   TPropName extends FieldGroupFieldsPropName<TProps, TGroup>,
 >(
-  fields: TGroup,
   Component: Component<TProps>,
   fieldsPropName: TPropName,
 ) => (new <TFormData>(
@@ -160,23 +156,24 @@ export interface FieldGroupHelper {
   strict: <TValue>() => StrictFieldGroupFieldSlot<TValue>
   loose: <TValue>() => LooseFieldGroupFieldSlot<TValue>
 }
-const helper: FieldGroupHelper = helperRuntime as never
-export type DefineFieldsFn<TComponents extends Record<string, Component<any>>> =
-  <const TFields extends FieldGroupFields>(
-    fields: TFields,
-  ) => FieldGroupDefinition<TFields, TComponents>
-const defineFields: DefineFieldsFn<Record<never, never>> =
-  defineFieldsRuntime as never
-const withFields: FieldGroupWithFieldsFn = withFieldsRuntime as never
-export interface FieldGroupHelpers<
+
+export interface FieldGroupDefinition<
+  TFields extends FieldGroupFields,
   TComponents extends Record<string, Component<any>>,
 > {
-  helper: FieldGroupHelper
-  defineFields: DefineFieldsFn<TComponents>
-  withFields: FieldGroupWithFieldsFn
+  /** The virtual field-group API injected into the bound component. */
+  fields: SvelteFieldGroup<TFields, TComponents>
+  /** Binds a component's virtual field API to concrete paths in a form. */
+  bindComponent: FieldGroupWithFieldsFn<SvelteFieldGroup<TFields, TComponents>>
 }
-export function getFieldGroupHelpers(): FieldGroupHelpers<
-  Record<never, never>
-> {
-  return { helper, defineFields, withFields }
-}
+
+/** Signature shared by `defineFieldGroup` and app-form field-group definers. */
+export type DefineFieldGroupFn<
+  TComponents extends Record<string, Component<any>>,
+> = <const TFields extends FieldGroupFields>(
+  defineFn: (helper: FieldGroupHelper) => TFields,
+) => FieldGroupDefinition<TFields, TComponents>
+
+/** Defines a reusable group of virtual fields. */
+export const defineFieldGroup: DefineFieldGroupFn<Record<never, never>> =
+  defineFieldGroupRuntime as never

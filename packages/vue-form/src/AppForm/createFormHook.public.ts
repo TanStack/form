@@ -1,5 +1,5 @@
 import { useInternalForm } from '../VueForm/VueFormApi.lib'
-import { getFieldGroupHelpers } from '../FieldGroup/withFields.public'
+import { defineFieldGroup } from '../FieldGroup/withFields.public'
 import { createAppFormInitializer } from './initializeAppForm.lib'
 import { useFormContext } from './contexts.lib'
 import type { AppFormOptionsApi } from './appFormOptions.public'
@@ -26,7 +26,7 @@ export function createFormHook<
   return {
     useFormContext: useFormContext as never,
     appFormOptions,
-    getAppFieldGroupHelpers: getFieldGroupHelpers,
+    defineAppFieldGroup: defineFieldGroup,
     useAppForm: useExtendedForm as never as UseAppFormHook<TComponents>,
   }
 }

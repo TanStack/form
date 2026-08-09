@@ -1,15 +1,14 @@
-import { getFieldGroupHelpers } from '@tanstack/svelte-form'
+import { defineFieldGroup } from '@tanstack/svelte-form'
 import DateRangeFields from './DateRangeFields.svelte'
 
-const { defineFields, helper, withFields } = getFieldGroupHelpers()
+const dateRangeFieldGroup = defineFieldGroup(({ strict }) => ({
+  start: strict<string>(),
+  end: strict<string>(),
+}))
 
-export const dateRangeFields = defineFields({
-  start: helper.strict<string>(),
-  end: helper.strict<string>(),
-})
+export const dateRangeFields = dateRangeFieldGroup.fields
 
-export const DateRangeField = withFields(
-  dateRangeFields,
+export const DateRangeField = dateRangeFieldGroup.bindComponent(
   DateRangeFields,
   'fields',
 )

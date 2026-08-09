@@ -1,17 +1,15 @@
-import { getFieldGroupHelpers } from '@tanstack/solid-form'
+import { defineFieldGroup } from '@tanstack/solid-form'
 import { z } from 'zod'
 import { StringField } from '../StringField'
 
 export const boundsSchema = z.coerce.number<string>().int()
 
-const { defineFields, helper, withFields } = getFieldGroupHelpers()
-
-const lowerBoundFields = defineFields({
-  value: helper.strict<string>(),
-})
+const lowerBoundFieldGroup = defineFieldGroup(({ strict }) => ({
+  value: strict<string>(),
+}))
 
 interface LowerBoundFieldProps {
-  fields: typeof lowerBoundFields
+  fields: typeof lowerBoundFieldGroup.fields
   label: string
 }
 
@@ -39,19 +37,18 @@ function LowerBoundFieldComponent(props: LowerBoundFieldProps) {
   )
 }
 
-export const LowerBoundField = withFields(
-  lowerBoundFields,
+export const LowerBoundField = lowerBoundFieldGroup.bindComponent(
   LowerBoundFieldComponent,
   'fields',
 )
 
-const upperBoundFields = defineFields({
-  value: helper.strict<string>(),
-  lowerBound: helper.strict<string>(),
-})
+const upperBoundFieldGroup = defineFieldGroup(({ strict }) => ({
+  value: strict<string>(),
+  lowerBound: strict<string>(),
+}))
 
 interface UpperBoundFieldProps {
-  fields: typeof upperBoundFields
+  fields: typeof upperBoundFieldGroup.fields
   label: string
 }
 
@@ -95,8 +92,7 @@ function UpperBoundFieldComponent(props: UpperBoundFieldProps) {
   )
 }
 
-export const UpperBoundField = withFields(
-  upperBoundFields,
+export const UpperBoundField = upperBoundFieldGroup.bindComponent(
   UpperBoundFieldComponent,
   'fields',
 )

@@ -20,6 +20,49 @@ export interface FieldGroupFieldComponent<
   in out TFieldData,
   in out TFieldComponents extends Record<string, FunctionComponent<any>>,
 > {
+  /**
+   * Renders a field from this field group.
+   *
+   * The field name is automatically connected to the form section where the
+   * field group is used.
+   *
+   * @example
+   * ```tsx
+   * const passwordFieldGroup = defineFieldGroup(({ strict }) => ({
+   *   password: strict<string>(),
+   *   confirmPassword: strict<string>(),
+   * }))
+   *
+   * interface PasswordFieldsProps {
+   *   fields: typeof passwordFieldGroup.fields
+   * }
+   *
+   * function PasswordFields({ fields }: PasswordFieldsProps) {
+   *   return (
+   *     <>
+   *       <fields.Field name="password">
+   *         {(field) => (
+   *           <input
+   *             type="password"
+   *             value={field.value}
+   *             onChange={(event) => field.handleChange(event.target.value)}
+   *           />
+   *         )}
+   *       </fields.Field>
+   *       <fields.Field name="confirmPassword">
+   *         {(field) => (
+   *           <input
+   *             type="password"
+   *             value={field.value}
+   *             onChange={(event) => field.handleChange(event.target.value)}
+   *           />
+   *         )}
+   *       </fields.Field>
+   *     </>
+   *   )
+   * }
+   * ```
+   */
   <const TFieldName extends DeepKeys<TFieldData>>(
     props: ReactFormFieldProps<
       TFieldData,
@@ -42,6 +85,46 @@ export interface FieldGroupArrayFieldComponent<
   in out TFieldData,
   in out TFieldComponents extends Record<string, FunctionComponent<any>>,
 > {
+  /**
+   * Renders an array field from this field group.
+   *
+   * The field name is automatically connected to the form section where the
+   * field group is used.
+   *
+   * @example
+   * ```tsx
+   * const contactFieldGroup = defineFieldGroup(({ strict }) => ({
+   *   emails: strict<Array<{ value: string }>>(),
+   * }))
+   *
+   * interface ContactFieldsProps {
+   *   fields: typeof contactFieldGroup.fields
+   * }
+   *
+   * function ContactFields({ fields }: ContactFieldsProps) {
+   *   return (
+   *     <fields.ArrayField name="emails">
+   *       {(emails) => (
+   *         <>
+   *           {emails.value.map((_, index) => (
+   *             <fields.Field key={index} name={`emails[${index}].value`}>
+   *               {(field) => (
+   *                 <input
+   *                   value={field.value}
+   *                   onChange={(event) =>
+   *                     field.handleChange(event.target.value)
+   *                   }
+   *                 />
+   *               )}
+   *             </fields.Field>
+   *           ))}
+   *         </>
+   *       )}
+   *     </fields.ArrayField>
+   *   )
+   * }
+   * ```
+   */
   <const TFieldName extends DeepKeysWhereValueIncludes<TFieldData, Array<any>>>(
     props: ReactFormFieldProps<
       TFieldData,
@@ -66,6 +149,24 @@ export type FieldGroupSubscribeProps<TSelected> = ReactFormSubscribeProps<
   TSelected
 >
 
+/**
+ * Reads form state from inside a field-group component.
+ *
+ * Because a field group can be used with different forms, `state.values`
+ * cannot be safely typed here and is provided as `unknown`.
+ *
+ * To read values from this field group, use its `atom` with `useSelector`
+ * instead.
+ *
+ * @example
+ * ```tsx
+ * <fields.Subscribe selector={(state) => state.submissionAttempts}>
+ *   {(submissionAttempts) => (
+ *     <span>Submit attempts: {submissionAttempts}</span>
+ *   )}
+ * </fields.Subscribe>
+ * ```
+ */
 export type FieldGroupSubscribeComponent = <TSelected>(
   props: FieldGroupSubscribeProps<TSelected>,
 ) => ReactNode

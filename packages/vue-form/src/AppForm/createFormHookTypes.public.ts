@@ -1,7 +1,7 @@
 import type { AppFormOptionsApi } from './appFormOptions.public'
 import type { AnyVueFormComponentMap } from './componentMap.public'
 import type { VueAppFormApi } from './VueAppFormApi.public'
-import type { FieldGroupHelpers } from '../FieldGroup/withFields.public'
+import type { DefineFieldGroupFn } from '../FieldGroup/withFields.public'
 import type {
   FormOptions,
   FormValidators,
@@ -22,9 +22,7 @@ export type UseAppFormHook<TComponents extends AnyVueFormComponentMap> = <
 
 export interface AppFormHookResult<TComponents extends AnyVueFormComponentMap> {
   appFormOptions: AppFormOptionsApi<TComponents>
-  getAppFieldGroupHelpers: () => FieldGroupHelpers<
-    TComponents['fieldComponents']
-  >
+  defineAppFieldGroup: DefineFieldGroupFn<TComponents['fieldComponents']>
   useAppForm: UseAppFormHook<TComponents>
   useFormContext: () => VueAppFormApi<any, any, TComponents>
 }

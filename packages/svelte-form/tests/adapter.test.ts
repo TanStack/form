@@ -61,6 +61,8 @@ describe('Svelte Form v2 adapter', () => {
     expect(getByTestId('logical-field')).toHaveTextContent(
       'profile.name:Updated',
     )
+    await user.click(getByRole('button', { name: 'Move logical item' }))
+    expect(getByTestId('logical-items')).toHaveTextContent('b,c,a')
   })
 
   it('prefixes watched fields, preserves field registration, and isolates array updates', async () => {

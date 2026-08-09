@@ -1,4 +1,8 @@
-import { InternalFieldGroupApi } from '@tanstack/form-core/internals'
+import {
+  InternalFieldGroupApi,
+  defineFieldGroupFieldsRuntime,
+  fieldGroupHelperRuntime,
+} from '@tanstack/form-core/internals'
 import { createComponent, mergeProps, splitProps } from 'solid-js'
 import type { Component } from 'solid-js'
 import type { InternalFieldGroupBindings } from '@tanstack/form-core/internals'
@@ -28,12 +32,26 @@ function attachSolidFieldGroupComponents(
   }) as never
 }
 
-export function withFieldsRuntime(
-  fields: AnyFieldGroupApi,
+export function defineFieldGroupRuntime<
+  TFields extends Record<string, unknown>,
+>(defineFieldGroupFn: (helperRuntime: any) => TFields) {
+  const fields = defineFieldGroupFieldsRuntime(
+    defineFieldGroupFn(fieldGroupHelperRuntime),
+  )
+
+  return {
+    fields,
+    bindComponent: (Component: Component<any>, fieldsPropName: string) =>
+      withFieldsRuntime(fields, Component, fieldsPropName),
+  }
+}
+
+function withFieldsRuntime(
+  fields: Record<string, unknown>,
   Component: Component<any>,
   fieldsPropName: string,
 ) {
-  const fieldNames = Object.keys(fields as unknown as Record<string, unknown>)
+  const fieldNames = Object.keys(fields)
 
   return function FieldGroupComponent(props: any) {
     const [localProps, restProps] = splitProps(props, ['form', fieldsPropName])

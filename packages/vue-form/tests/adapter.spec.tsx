@@ -12,7 +12,7 @@ import {
 import { renderToString } from 'vue/server-renderer'
 import {
   createFormHook,
-  getFieldGroupHelpers,
+  defineFieldGroup,
   getFormHookHelpers,
   useForm,
 } from '../src'
@@ -362,9 +362,12 @@ describe('Vue adapter parity', () => {
   })
 
   it('binds reusable field groups to concrete form paths', async () => {
-    const { helper, defineFields, withFields } = getFieldGroupHelpers()
-    const profileFields = defineFields({ name: helper.strict<string>() })
-    const ProfileFields = defineComponent<{ fields: typeof profileFields }>(
+    const profileFieldGroup = defineFieldGroup(({ strict }) => ({
+      name: strict<string>(),
+    }))
+    const ProfileFields = defineComponent<{
+      fields: typeof profileFieldGroup.fields
+    }>(
       (props) => () => (
         <props.fields.Field name="name">
           {({ field }: { field: AnyFieldApi }) => (
@@ -380,7 +383,7 @@ describe('Vue adapter parity', () => {
       ),
       { props: ['fields'] },
     )
-    const Profile = withFields(profileFields, ProfileFields, 'fields')
+    const Profile = profileFieldGroup.bindComponent(ProfileFields, 'fields')
     let getName!: () => string
 
     const Component = defineComponent(() => {
@@ -395,11 +398,11 @@ describe('Vue adapter parity', () => {
   })
 
   it('reactively updates reusable field group bindings', async () => {
-    const { helper, defineFields, withFields } = getFieldGroupHelpers()
-    const nameFields = defineFields({ name: helper.strict<string>() })
-    const NameFields = withFields(
-      nameFields,
-      defineComponent<{ fields: typeof nameFields }>(
+    const nameFieldGroup = defineFieldGroup(({ strict }) => ({
+      name: strict<string>(),
+    }))
+    const NameFields = nameFieldGroup.bindComponent(
+      defineComponent<{ fields: typeof nameFieldGroup.fields }>(
         (props) => () => (
           <props.fields.Field name="name">
             {({ field }: { field: AnyFieldApi }) => (

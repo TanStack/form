@@ -135,9 +135,9 @@ interface SharedProps {
 Correct:
 
 ```ts
-const sharedFields = defineFields({
-  value: helper.strict<string>(),
-})
+const sharedFieldGroup = defineFieldGroup(({ strict }) => ({
+  value: strict<string>(),
+}))
 ```
 
 Use field groups for cross-form shared sections; `ReactFormType` is for one known shared options type.
@@ -162,7 +162,7 @@ Correct:
 </fields.Field>
 ```
 
-Inside the group, use virtual paths defined by `defineFields`; real paths are supplied through `withFields` bindings.
+Inside the group, use virtual paths defined by `defineFieldGroup`; real paths are supplied through the field bindings passed to the component created by `bindComponent`.
 
 Source: TanStack/form-v2:packages/react-form/tests/FieldGroupApi.test-d.tsx
 

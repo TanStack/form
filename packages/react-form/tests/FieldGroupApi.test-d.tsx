@@ -2,7 +2,7 @@ import React from 'react'
 import { expectTypeOf } from 'vitest'
 import {
   createFormHook,
-  getFieldGroupHelpers,
+  defineFieldGroup,
   getFormHookHelpers,
   useForm,
   useSelector,
@@ -45,30 +45,22 @@ type FieldComponents = {
 
 declare const fields: FieldGroupApi<BookingFields, FieldComponents>
 declare const form: FieldGroupForm
-const { helper, defineFields, withFields } = getFieldGroupHelpers()
-const { getAppFieldGroupHelpers: getHookAppFieldGroupHelpers } = createFormHook(
-  {
-    fieldComponents: {
-      TextField,
-    },
-    formComponents: {},
+const { defineAppFieldGroup } = createFormHook({
+  fieldComponents: {
+    TextField,
   },
-)
-const { defineFields: defineAppFields, helper: appHelper } =
-  getHookAppFieldGroupHelpers()
-const stringSlot = helper.strict<string>()
-const looseStringSlot = helper.loose<string>()
-const numberSlot = helper.strict<number>()
-const emailsSlot = helper.strict<Array<{ value: string }>>()
-
-const definedFields = defineFields({
-  name: stringSlot,
-  age: numberSlot,
-  emails: emailsSlot,
+  formComponents: {},
 })
-const looseDefinedFields = defineFields({
-  name: looseStringSlot,
-})
+const { fields: definedFields, bindComponent: bindDefinedFields } =
+  defineFieldGroup(({ strict }) => ({
+    name: strict<string>(),
+    age: strict<number>(),
+    emails: strict<Array<{ value: string }>>(),
+  }))
+const { fields: looseDefinedFields, bindComponent: bindLooseDefinedFields } =
+  defineFieldGroup(({ loose }) => ({
+    name: loose<string>(),
+  }))
 const invalidWatchFieldValidators: FieldValidators<
   BookingFields,
   'guest.age',
@@ -82,14 +74,19 @@ const invalidWatchFieldValidators: FieldValidators<
   },
 ]
 void invalidWatchFieldValidators
-const appDefinedFields = defineAppFields({
-  name: appHelper.strict<string>(),
-})
-const hookAppDefinedFields = defineAppFields({
-  name: appHelper.strict<string>(),
-})
+const { fields: appDefinedFields } = defineAppFieldGroup(({ strict }) => ({
+  name: strict<string>(),
+}))
+const { fields: hookAppDefinedFields } = defineAppFieldGroup(({ strict }) => ({
+  name: strict<string>(),
+}))
 
 type DefinedFieldsSpec = FieldGroupFieldsOf<typeof definedFields>
+type LooseDefinedFieldsSpec = FieldGroupFieldsOf<typeof looseDefinedFields>
+declare const stringSlot: DefinedFieldsSpec['name']
+declare const looseStringSlot: LooseDefinedFieldsSpec['name']
+declare const numberSlot: DefinedFieldsSpec['age']
+declare const emailsSlot: DefinedFieldsSpec['emails']
 type FieldNameTestData = {
   exactString: string
   literalString: 'literal'
@@ -139,20 +136,15 @@ function DefinedFieldsImpl(props: DefinedFieldsProps) {
   )
 }
 
-const WrappedDefinedFields = withFields(
-  definedFields,
-  DefinedFieldsImpl,
-  'fields',
-)
+const WrappedDefinedFields = bindDefinedFields(DefinedFieldsImpl, 'fields')
 
 function MismatchedFieldsImpl(props: MismatchedFieldsProps) {
   return <props.fields.Field name="name">{() => null}</props.fields.Field>
 }
 
-withFields(
-  definedFields,
+bindDefinedFields(
   MismatchedFieldsImpl,
-  // @ts-expect-error fieldsPropName must point to the matching defineFields result
+  // @ts-expect-error fieldsPropName must point to the matching field group
   'fields',
 )
 
@@ -162,12 +154,11 @@ function RenamedDefinedFieldsImpl(props: RenamedDefinedFieldsProps) {
   )
 }
 
-withFields(definedFields, RenamedDefinedFieldsImpl, 'fieldGroup')
+bindDefinedFields(RenamedDefinedFieldsImpl, 'fieldGroup')
 
-withFields(
-  definedFields,
+bindDefinedFields(
   RenamedDefinedFieldsImpl,
-  // @ts-expect-error fieldsPropName must be the prop containing the defineFields result
+  // @ts-expect-error fieldsPropName must be the prop containing the field group
   'fields',
 )
 
@@ -179,8 +170,7 @@ function LooseDefinedFieldsImpl(props: LooseDefinedFieldsProps) {
   return <props.fields.Field name="name">{() => null}</props.fields.Field>
 }
 
-const WrappedLooseDefinedFields = withFields(
-  looseDefinedFields,
+const WrappedLooseDefinedFields = bindLooseDefinedFields(
   LooseDefinedFieldsImpl,
   'fields',
 )
@@ -311,7 +301,7 @@ function FieldGroupApiTypes() {
   )
 }
 
-function DefineFieldsTypes() {
+function DefineFieldGroupTypes() {
   const formWithSubmitReturn = useForm({
     defaultValues: {
       user: {
@@ -395,7 +385,7 @@ function DefineFieldsTypes() {
     readonly age: typeof numberSlot
     readonly emails: typeof emailsSlot
   }>()
-  // @ts-expect-error defineFields exposes the FieldGroupApi shape, not raw spec keys
+  // @ts-expect-error fields exposes the FieldGroupApi shape, not raw spec keys
   definedFields.name
 
   expectTypeOf(definedFields.getFieldValue('name')).toEqualTypeOf<string>()
@@ -405,7 +395,7 @@ function DefineFieldsTypes() {
     readonly age: number
     readonly emails: Array<{ value: string }>
   }>()
-  // @ts-expect-error defineFields returns a FieldGroupApi for the defined fields
+  // @ts-expect-error fields only exposes the defined virtual fields
   definedFields.getFieldValue('unknown')
 
   return (
@@ -521,4 +511,4 @@ function DefineFieldsTypes() {
 }
 
 void FieldGroupApiTypes
-void DefineFieldsTypes
+void DefineFieldGroupTypes

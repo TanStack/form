@@ -1,7 +1,7 @@
 import type { AppFormOptionsApi } from './appFormOptions.public'
 import type { AnySvelteFormComponentMap } from './componentMap.public'
 import type { SvelteAppFormApi } from './SvelteAppFormApi.public'
-import type { FieldGroupHelpers } from '../FieldGroup/withFields.public'
+import type { DefineFieldGroupFn } from '../FieldGroup/withFields.public'
 import type {
   FormOptions,
   FormValidators,
@@ -24,9 +24,7 @@ export interface AppFormHookResult<
   TComponents extends AnySvelteFormComponentMap,
 > {
   appFormOptions: AppFormOptionsApi<TComponents>
-  getAppFieldGroupHelpers: () => FieldGroupHelpers<
-    TComponents['fieldComponents']
-  >
+  defineAppFieldGroup: DefineFieldGroupFn<TComponents['fieldComponents']>
   useAppForm: UseAppFormHook<TComponents>
   useFormContext: () => SvelteAppFormApi<any, any, TComponents>
 }

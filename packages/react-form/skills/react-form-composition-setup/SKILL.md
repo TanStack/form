@@ -144,16 +144,18 @@ Use this when a child section belongs to one known form. Use field groups when t
 ### Reuse sections across forms with field groups
 
 ```tsx
-import { getFieldGroupHelpers } from '@tanstack/react-form'
+import { defineFieldGroup } from '@tanstack/react-form'
 
-const { defineFields, helper, withFields } = getFieldGroupHelpers()
+const dateRangeFieldGroup = defineFieldGroup(({ strict }) => ({
+  start: strict<string>(),
+  end: strict<string>(),
+}))
 
-const dateRangeFields = defineFields({
-  start: helper.strict<string>(),
-  end: helper.strict<string>(),
-})
-
-function DateRangeImpl({ fields }: { fields: typeof dateRangeFields }) {
+function DateRangeImpl({
+  fields,
+}: {
+  fields: typeof dateRangeFieldGroup.fields
+}) {
   return (
     <>
       <fields.Field name="start">
@@ -166,7 +168,10 @@ function DateRangeImpl({ fields }: { fields: typeof dateRangeFields }) {
   )
 }
 
-export const DateRange = withFields(dateRangeFields, DateRangeImpl, 'fields')
+export const DateRange = dateRangeFieldGroup.bindComponent(
+  DateRangeImpl,
+  'fields',
+)
 ```
 
 Inside a field group, use virtual names such as `start`; callers bind those names to real paths.
@@ -294,13 +299,11 @@ interface SharedSectionProps {
 Correct:
 
 ```tsx
-const { defineFields, helper, withFields } = getFieldGroupHelpers()
+const sharedFieldGroup = defineFieldGroup(({ strict }) => ({
+  value: strict<string>(),
+}))
 
-const sharedFields = defineFields({
-  value: helper.strict<string>(),
-})
-
-function SharedSection({ fields }: { fields: typeof sharedFields }) {
+function SharedSection({ fields }: { fields: typeof sharedFieldGroup.fields }) {
   return (
     <fields.Field name="value">
       {(field) => <input value={field.value} />}
@@ -308,8 +311,7 @@ function SharedSection({ fields }: { fields: typeof sharedFields }) {
   )
 }
 
-export const BoundSharedSection = withFields(
-  sharedFields,
+export const BoundSharedSection = sharedFieldGroup.bindComponent(
   SharedSection,
   'fields',
 )

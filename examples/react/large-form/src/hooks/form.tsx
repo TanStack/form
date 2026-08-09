@@ -16,7 +16,7 @@ function SubscribeButton({ label }: { label: string }) {
 
 export const {
   appFormOptions,
-  getAppFieldGroupHelpers,
+  defineAppFieldGroup,
   useAppForm,
   useFormContext,
 } = createFormHook({
