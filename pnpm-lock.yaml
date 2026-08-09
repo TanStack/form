@@ -621,6 +621,8 @@ importers:
         specifier: ^8.2.1
         version: 8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
 
+  examples/lit/ui-libraries: {}
+
   examples/preact/array:
     dependencies:
       '@tanstack/preact-form':
@@ -964,6 +966,12 @@ importers:
         specifier: ^8.2.1
         version: 8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
 
+  examples/react/composition: {}
+
+  examples/react/devtools: {}
+
+  examples/react/dynamic: {}
+
   examples/react/expo:
     dependencies:
       '@expo/vector-icons':
@@ -1076,6 +1084,8 @@ importers:
         specifier: 6.0.3
         version: 6.0.3
 
+  examples/react/field-errors-from-form-validators: {}
+
   examples/react/field-groups:
     dependencies:
       '@tanstack/pacer-lite':
@@ -1146,6 +1156,8 @@ importers:
       vite:
         specifier: ^8.2.1
         version: 8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/react/large-form copy: {}
 
   examples/react/multi-step-wizard:
     dependencies:
@@ -1289,7 +1301,7 @@ importers:
         specifier: 16.3.0
         version: 16.3.0(@typescript-eslint/parser@8.66.0(eslint@10.8.1(jiti@2.7.0))(typescript@6.0.3))(eslint-plugin-import-x@4.17.1(@typescript-eslint/utils@8.66.0(eslint@10.8.1(jiti@2.7.0))(typescript@6.0.3))(eslint-import-resolver-node@0.3.10)(eslint@10.8.1(jiti@2.7.0)))(eslint@10.8.1(jiti@2.7.0))(typescript@6.0.3)
       tailwindcss:
-        specifier: ^4.3.2
+        specifier: ^4.3.3
         version: 4.3.3
       typescript:
         specifier: ^6.0.2
@@ -1328,6 +1340,8 @@ importers:
       vite:
         specifier: ^8.2.1
         version: 8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/react/remix: {}
 
   examples/react/simple:
     dependencies:
@@ -1434,7 +1448,7 @@ importers:
         version: 4.4.3
     devDependencies:
       '@tailwindcss/vite':
-        specifier: ^4.3.2
+        specifier: ^4.3.3
         version: 4.3.3(vite@8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
       '@tanstack/react-devtools':
         specifier: ^0.10.5
@@ -1458,7 +1472,7 @@ importers:
         specifier: ^3.0.260311-beta
         version: 3.0.260311-beta(chokidar@5.0.0)(dotenv@17.4.2)(jiti@2.7.0)(lru-cache@11.5.2)(rollup@4.62.4)(vite@8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
       tailwindcss:
-        specifier: ^4.3.2
+        specifier: ^4.3.3
         version: 4.3.3
       typescript:
         specifier: ^6.0.2
@@ -1586,13 +1600,15 @@ importers:
         specifier: ^8.2.1
         version: 8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
 
+  examples/react/ui-libraries: {}
+
   examples/solid/array:
     dependencies:
       '@tanstack/solid-form':
         specifier: ^1.33.3
         version: link:../../../packages/solid-form
       solid-js:
-        specifier: ^1.9.13
+        specifier: ^1.9.14
         version: 1.9.14
     devDependencies:
       typescript:
@@ -1602,7 +1618,7 @@ importers:
         specifier: ^8.2.1
         version: 8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
       vite-plugin-solid:
-        specifier: ^2.11.10
+        specifier: ^2.11.14
         version: 2.11.14(@testing-library/jest-dom@7.0.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
 
   examples/solid/basic:
@@ -1611,7 +1627,7 @@ importers:
         specifier: ^1.33.3
         version: link:../../../packages/solid-form
       solid-js:
-        specifier: ^1.9.13
+        specifier: ^1.9.14
         version: 1.9.14
     devDependencies:
       typescript:
@@ -1621,7 +1637,7 @@ importers:
         specifier: ^8.2.1
         version: 8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
       vite-plugin-solid:
-        specifier: ^2.11.10
+        specifier: ^2.11.14
         version: 2.11.14(@testing-library/jest-dom@7.0.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
 
   examples/solid/basic-splitting-form:
@@ -1630,7 +1646,7 @@ importers:
         specifier: ^1.33.3
         version: link:../../../packages/solid-form
       solid-js:
-        specifier: ^1.9.13
+        specifier: ^1.9.14
         version: 1.9.14
     devDependencies:
       typescript:
@@ -1640,8 +1656,10 @@ importers:
         specifier: ^8.2.1
         version: 8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
       vite-plugin-solid:
-        specifier: ^2.11.10
+        specifier: ^2.11.14
         version: 2.11.14(@testing-library/jest-dom@7.0.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+
+  examples/solid/devtools: {}
 
   examples/solid/field-groups:
     dependencies:
@@ -1649,7 +1667,7 @@ importers:
         specifier: ^1.33.3
         version: link:../../../packages/solid-form
       solid-js:
-        specifier: ^1.9.13
+        specifier: ^1.9.14
         version: 1.9.14
       zod:
         specifier: ^4.4.3
@@ -1662,7 +1680,7 @@ importers:
         specifier: ^8.2.1
         version: 8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
       vite-plugin-solid:
-        specifier: ^2.11.10
+        specifier: ^2.11.14
         version: 2.11.14(@testing-library/jest-dom@7.0.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
 
   examples/solid/large-form:
@@ -1671,7 +1689,7 @@ importers:
         specifier: ^1.33.3
         version: link:../../../packages/solid-form
       solid-js:
-        specifier: ^1.9.13
+        specifier: ^1.9.14
         version: 1.9.14
     devDependencies:
       typescript:
@@ -1681,7 +1699,7 @@ importers:
         specifier: ^8.2.1
         version: 8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
       vite-plugin-solid:
-        specifier: ^2.11.10
+        specifier: ^2.11.14
         version: 2.11.14(@testing-library/jest-dom@7.0.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
 
   examples/solid/multi-step-wizard:
@@ -1690,7 +1708,7 @@ importers:
         specifier: ^1.33.3
         version: link:../../../packages/solid-form
       solid-js:
-        specifier: ^1.9.13
+        specifier: ^1.9.14
         version: 1.9.14
       zod:
         specifier: ^4.4.3
@@ -1703,7 +1721,7 @@ importers:
         specifier: ^8.2.1
         version: 8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
       vite-plugin-solid:
-        specifier: ^2.11.10
+        specifier: ^2.11.14
         version: 2.11.14(@testing-library/jest-dom@7.0.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
 
   examples/solid/query-integration:
@@ -1715,7 +1733,7 @@ importers:
         specifier: ^5.89.0
         version: 5.101.4(solid-js@1.9.14)
       solid-js:
-        specifier: ^1.9.13
+        specifier: ^1.9.14
         version: 1.9.14
     devDependencies:
       typescript:
@@ -1725,7 +1743,7 @@ importers:
         specifier: ^8.2.1
         version: 8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
       vite-plugin-solid:
-        specifier: ^2.11.10
+        specifier: ^2.11.14
         version: 2.11.14(@testing-library/jest-dom@7.0.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
 
   examples/solid/simple:
@@ -1734,7 +1752,7 @@ importers:
         specifier: ^1.33.3
         version: link:../../../packages/solid-form
       solid-js:
-        specifier: ^1.9.13
+        specifier: ^1.9.14
         version: 1.9.14
     devDependencies:
       typescript:
@@ -1744,7 +1762,7 @@ importers:
         specifier: ^8.2.1
         version: 8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
       vite-plugin-solid:
-        specifier: ^2.11.10
+        specifier: ^2.11.14
         version: 2.11.14(@testing-library/jest-dom@7.0.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
 
   examples/solid/standard-schema:
@@ -1759,7 +1777,7 @@ importers:
         specifier: ^3.17.14
         version: 3.22.1
       solid-js:
-        specifier: ^1.9.13
+        specifier: ^1.9.14
         version: 1.9.14
       valibot:
         specifier: ^1.1.0
@@ -1775,7 +1793,7 @@ importers:
         specifier: ^8.2.1
         version: 8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
       vite-plugin-solid:
-        specifier: ^2.11.10
+        specifier: ^2.11.14
         version: 2.11.14(@testing-library/jest-dom@7.0.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
 
   examples/svelte/array:
@@ -2226,20 +2244,20 @@ importers:
         specifier: ^5.38.1
         version: 5.38.1(solid-js@1.9.14)
       '@fontsource-variable/inter':
-        specifier: ^5.2.8
+        specifier: ^5.3.0
         version: 5.3.0
       '@tanstack/devtools':
-        specifier: ^0.12.2
-        version: 0.12.5(csstype@3.2.3)(solid-js@1.9.14)
+        specifier: ^0.13.0
+        version: 0.13.0(csstype@3.2.3)(solid-js@1.9.14)
       '@tanstack/devtools-event-client':
-        specifier: ^0.4.3
-        version: 0.4.4
-      '@tanstack/devtools-ui':
-        specifier: ^0.5.2
-        version: 0.5.3(csstype@3.2.3)(solid-js@1.9.14)
-      '@tanstack/devtools-utils':
         specifier: ^0.5.0
-        version: 0.5.1(@angular/core@22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2))(@types/react@19.2.18)(preact@10.29.8)(react@19.2.8)(solid-js@1.9.14)
+        version: 0.5.0
+      '@tanstack/devtools-ui':
+        specifier: ^0.6.0
+        version: 0.6.0(csstype@3.2.3)(solid-js@1.9.14)
+      '@tanstack/devtools-utils':
+        specifier: ^0.6.0
+        version: 0.6.0(@angular/core@22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2))(@types/react@19.2.18)(preact@10.29.8)(react@19.2.8)(solid-js@1.9.14)(svelte@5.56.8(@typescript-eslint/types@8.66.0))
       '@tanstack/form-core':
         specifier: workspace:*
         version: link:../form-core
@@ -2262,26 +2280,26 @@ importers:
         specifier: ^3.6.0
         version: 3.6.0
       tailwindcss:
-        specifier: ^4.3.2
+        specifier: ^4.3.3
         version: 4.3.3
       tw-animate-css:
         specifier: ^1.4.0
         version: 1.4.0
     devDependencies:
       '@tailwindcss/vite':
-        specifier: ^4.3.2
+        specifier: ^4.3.3
         version: 4.3.3(vite@8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
       resize-observer-polyfill:
         specifier: ^1.5.1
         version: 1.5.1
       solid-js:
-        specifier: ^1.9.13
+        specifier: ^1.9.14
         version: 1.9.14
       vite:
         specifier: ^8.2.1
         version: 8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
       vite-plugin-solid:
-        specifier: ^2.11.10
+        specifier: ^2.11.14
         version: 2.11.14(@testing-library/jest-dom@7.0.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
       zod:
         specifier: ^4.4.3
@@ -2359,11 +2377,11 @@ importers:
   packages/react-form-devtools:
     dependencies:
       '@tanstack/devtools':
-        specifier: ^0.12.2
-        version: 0.12.5(csstype@3.2.3)(solid-js@1.9.14)
+        specifier: ^0.13.0
+        version: 0.13.0(csstype@3.2.3)(solid-js@1.9.14)
       '@tanstack/devtools-utils':
-        specifier: ^0.5.0
-        version: 0.5.1(@angular/core@22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2))(@types/react@19.2.18)(preact@10.29.8)(react@19.2.8)(solid-js@1.9.14)
+        specifier: ^0.6.0
+        version: 0.6.0(@angular/core@22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2))(@types/react@19.2.18)(preact@10.29.8)(react@19.2.8)(solid-js@1.9.14)(svelte@5.56.8(@typescript-eslint/types@8.66.0))
       '@tanstack/form-devtools':
         specifier: workspace:*
         version: link:../form-devtools
@@ -2400,6 +2418,8 @@ importers:
         specifier: ^6.0.1
         version: 6.0.5(babel-plugin-react-compiler@1.0.0)(vite@8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
 
+  packages/react-form-remix: {}
+
   packages/react-form-start:
     dependencies:
       '@tanstack/form-core':
@@ -2428,21 +2448,21 @@ importers:
         specifier: ^0.11.1
         version: 0.11.1(solid-js@1.9.14)
       vite-plugin-solid:
-        specifier: ^2.11.10
+        specifier: ^2.11.14
         version: 2.11.14(@testing-library/jest-dom@7.0.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
     devDependencies:
       '@types/node':
         specifier: ^25.0.7
         version: 25.9.5
       solid-js:
-        specifier: ^1.9.13
+        specifier: ^1.9.14
         version: 1.9.14
 
   packages/solid-form-devtools:
     dependencies:
       '@tanstack/devtools-utils':
-        specifier: ^0.5.0
-        version: 0.5.1(@angular/core@22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2))(@types/react@19.2.18)(preact@10.29.8)(react@19.2.8)(solid-js@1.9.14)
+        specifier: ^0.6.0
+        version: 0.6.0(@angular/core@22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2))(@types/react@19.2.18)(preact@10.29.8)(react@19.2.8)(solid-js@1.9.14)(svelte@5.56.8(@typescript-eslint/types@8.66.0))
       '@tanstack/form-devtools':
         specifier: workspace:*
         version: link:../form-devtools
@@ -2451,7 +2471,7 @@ importers:
         version: 1.9.14
     devDependencies:
       vite-plugin-solid:
-        specifier: ^2.11.10
+        specifier: ^2.11.14
         version: 2.11.14(@testing-library/jest-dom@7.0.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/svelte-form:
@@ -6683,20 +6703,14 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  '@tanstack/devtools-ui@0.5.3':
-    resolution: {integrity: sha512-iJjwWtdXhUGpeHyyW9+3NhXhmlVFhh3v3UBNKCouykG9UFXEtneVVNXgSRpd70DeYJFmvKOY19LafKRI5/cM7A==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      solid-js: '>=1.9.7'
-
   '@tanstack/devtools-ui@0.6.0':
     resolution: {integrity: sha512-CVaM6rT6Nl5ijo83vJYFa2SjofvpuOl/uOvbYGhBrRgUhhelNHhx8zZX+hnZCHmIr0/lzM65hsocnZ72592Rvg==}
     engines: {node: '>=18'}
     peerDependencies:
       solid-js: '>=1.9.7'
 
-  '@tanstack/devtools-utils@0.5.1':
-    resolution: {integrity: sha512-yXw2PNY7cOjvx5sU03vNQoH4LG0TSTT7d/TpUpJTpjQQHoehTTjBHQyki8RGIAW6iHJ7K4/DVZgrRiP7hicInQ==}
+  '@tanstack/devtools-utils@0.6.0':
+    resolution: {integrity: sha512-ebYkWwe/OqzkgQzqGlJ5fyjaNX/CSBKluGOAW9KvhKeAM6+/kQ7+BQGqWQUnXE5CQ6pjtjyyLkYBEQ2vmctaug==}
     engines: {node: '>=18'}
     hasBin: true
     peerDependencies:
@@ -6705,6 +6719,7 @@ packages:
       preact: '>=10.0.0'
       react: '>=17.0.0'
       solid-js: '>=1.9.7'
+      svelte: '>=5.0.0'
       vue: '>=3.2.0'
     peerDependenciesMeta:
       '@angular/core':
@@ -6717,6 +6732,8 @@ packages:
         optional: true
       solid-js:
         optional: true
+      svelte:
+        optional: true
       vue:
         optional: true
 
@@ -6726,13 +6743,6 @@ packages:
     hasBin: true
     peerDependencies:
       vite: ^6.0.0 || ^7.0.0 || ^8.0.0
-
-  '@tanstack/devtools@0.12.5':
-    resolution: {integrity: sha512-JdxTSeVdjJheycgz4c7qbldNKDCEDWlWr1l9dZBhd9sOmRBT5Z70ka9Eb8mb+FUnalcOIB62IDSR/iSxAIUD8Q==}
-    engines: {node: '>=18'}
-    hasBin: true
-    peerDependencies:
-      solid-js: '>=1.9.7'
 
   '@tanstack/devtools@0.13.0':
     resolution: {integrity: sha512-p/nOH9bS/OO/u3402zPjoGu+Mz6Fzi/iRqJuYghuuYRUY32kZt+C0/d+pP/bi6/2JTi1FdT6oEXI2lWlA5tXxw==}
@@ -13453,6 +13463,18 @@ packages:
       utf-8-validate:
         optional: true
 
+  ws@8.21.3:
+    resolution: {integrity: sha512-201TZ/kPWxoPr/OKWjquZR1SWKXcvxdH+e1xrx89b3YbmzLMFCLfnaG1HFIgWzJOEWZ7MvpK++odZufgYR50Rw==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+
   wsl-utils@0.3.1:
     resolution: {integrity: sha512-g/eziiSUNBSsdDJtCLB8bdYEUMj4jR7AGeUo96p/3dTafgjHhpF4RiCFPiRILwjQoDXx5MqkBr4fwWtR3Ky4Wg==}
     engines: {node: '>=20'}
@@ -17805,7 +17827,7 @@ snapshots:
 
   '@tanstack/devtools-event-bus@0.4.2':
     dependencies:
-      ws: 8.21.1
+      ws: 8.21.3
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -17813,15 +17835,6 @@ snapshots:
   '@tanstack/devtools-event-client@0.4.4': {}
 
   '@tanstack/devtools-event-client@0.5.0': {}
-
-  '@tanstack/devtools-ui@0.5.3(csstype@3.2.3)(solid-js@1.9.14)':
-    dependencies:
-      clsx: 2.1.1
-      dayjs: 1.11.21
-      goober: 2.1.19(csstype@3.2.3)
-      solid-js: 1.9.14
-    transitivePeerDependencies:
-      - csstype
 
   '@tanstack/devtools-ui@0.6.0(csstype@3.2.3)(solid-js@1.9.14)':
     dependencies:
@@ -17832,13 +17845,14 @@ snapshots:
     transitivePeerDependencies:
       - csstype
 
-  '@tanstack/devtools-utils@0.5.1(@angular/core@22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2))(@types/react@19.2.18)(preact@10.29.8)(react@19.2.8)(solid-js@1.9.14)':
+  '@tanstack/devtools-utils@0.6.0(@angular/core@22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2))(@types/react@19.2.18)(preact@10.29.8)(react@19.2.8)(solid-js@1.9.14)(svelte@5.56.8(@typescript-eslint/types@8.66.0))':
     optionalDependencies:
       '@angular/core': 22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2)
       '@types/react': 19.2.18
       preact: 10.29.8
       react: 19.2.8
       solid-js: 1.9.14
+      svelte: 5.56.8(@typescript-eslint/types@8.66.0)
 
   '@tanstack/devtools-vite@0.7.2(@emnapi/core@2.0.0-alpha.3)(@emnapi/runtime@2.0.0-alpha.3)(vite@8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))':
     dependencies:
@@ -17854,22 +17868,6 @@ snapshots:
       - '@emnapi/core'
       - '@emnapi/runtime'
       - bufferutil
-      - utf-8-validate
-
-  '@tanstack/devtools@0.12.5(csstype@3.2.3)(solid-js@1.9.14)':
-    dependencies:
-      '@solid-primitives/event-listener': 2.4.6(solid-js@1.9.14)
-      '@solid-primitives/keyboard': 1.3.7(solid-js@1.9.14)
-      '@solid-primitives/resize-observer': 2.2.0(solid-js@1.9.14)
-      '@tanstack/devtools-client': 0.0.8
-      '@tanstack/devtools-event-bus': 0.4.2
-      '@tanstack/devtools-ui': 0.6.0(csstype@3.2.3)(solid-js@1.9.14)
-      clsx: 2.1.1
-      goober: 2.1.19(csstype@3.2.3)
-      solid-js: 1.9.14
-    transitivePeerDependencies:
-      - bufferutil
-      - csstype
       - utf-8-validate
 
   '@tanstack/devtools@0.13.0(csstype@3.2.3)(solid-js@1.9.14)':
@@ -26149,6 +26147,8 @@ snapshots:
   ws@7.5.13: {}
 
   ws@8.21.1: {}
+
+  ws@8.21.3: {}
 
   wsl-utils@0.3.1:
     dependencies:

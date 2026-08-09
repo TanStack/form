@@ -44,11 +44,11 @@
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
     "@tanstack/solid-store": "^0.11.1",
-    "vite-plugin-solid": "^2.11.10"
+    "vite-plugin-solid": "^2.11.14"
   },
   "devDependencies": {
     "@types/node": "^25.0.7",
-    "solid-js": "^1.9.13"
+    "solid-js": "^1.9.14"
   },
   "peerDependencies": {
     "solid-js": ">=1.9.5"
