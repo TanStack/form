@@ -1,5 +1,7 @@
 import { createAtom, shallow } from '@tanstack/svelte-store'
 import {
+  defineFieldGroupFieldsRuntime,
+  fieldGroupHelperRuntime,
   getBy,
   transformFieldOptionsFieldNames,
 } from '@tanstack/form-core/internals'
@@ -122,20 +124,26 @@ function createFieldGroupApi(
   } as never
 }
 
-export const helperRuntime = {
-  strict: () => null,
-  loose: () => null,
-}
-export function defineFieldsRuntime<TFields>(fields: TFields): TFields {
-  return fields
+export function defineFieldGroupRuntime<
+  TFields extends Record<string, unknown>,
+>(defineFieldGroupFn: (helperRuntime: any) => TFields) {
+  const fields = defineFieldGroupFieldsRuntime(
+    defineFieldGroupFn(fieldGroupHelperRuntime),
+  )
+
+  return {
+    fields,
+    bindComponent: (Component: Component<any>, fieldsPropName: string) =>
+      withFieldsRuntime(fields, Component, fieldsPropName),
+  }
 }
 
-export function withFieldsRuntime(
-  fields: AnyFieldGroupApi,
+function withFieldsRuntime(
+  fields: Record<string, unknown>,
   Component: Component<any>,
   fieldsPropName: string,
 ) {
-  const fieldNames = Object.keys(fields as unknown as Record<string, unknown>)
+  const fieldNames = Object.keys(fields)
   return ((internals: any, props: any) => {
     const form = props.form
     if (!form) {

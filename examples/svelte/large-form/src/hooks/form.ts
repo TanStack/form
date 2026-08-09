@@ -7,7 +7,7 @@ const AppTextField = fieldComponent.strict(TextField, 'field')
 
 export const {
   appFormOptions,
-  getAppFieldGroupHelpers,
+  defineAppFieldGroup,
   useAppForm,
   useFormContext,
 } = createFormHook({

@@ -1,15 +1,12 @@
-import { getAppFieldGroupHelpers } from '../../hooks/form.js'
+import { defineAppFieldGroup } from '../../hooks/form.js'
 import EmergencyContactFields from './EmergencyContactFields.svelte'
 
-const { defineFields, helper, withFields } = getAppFieldGroupHelpers()
+const emergencyContactFieldGroup = defineAppFieldGroup(({ strict }) => ({
+  fullName: strict<string>(),
+  phone: strict<string>(),
+}))
 
-export const emergencyContactFields = defineFields({
-  fullName: helper.strict<string>(),
-  phone: helper.strict<string>(),
-})
+export const emergencyContactFields = emergencyContactFieldGroup.fields
 
-export const FieldGroupEmergencyContact = withFields(
-  emergencyContactFields,
-  EmergencyContactFields,
-  'fields',
-)
+export const FieldGroupEmergencyContact =
+  emergencyContactFieldGroup.bindComponent(EmergencyContactFields, 'fields')
