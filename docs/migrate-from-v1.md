@@ -46,8 +46,20 @@ This page is a starting checklist for migrating React apps from v1 to v2.
 - Replace `withFieldGroup` with `getFieldGroupHelpers().withFields(...)` for
   reusable field bundles that map virtual field names to different concrete
   form paths.
+- Upgrade Vue to version 3.6 or newer when using the Vue adapter. Form
+  Composition relies on behavior introduced in Vue 3.6.
 - Update CommonJS integrations to consume ESM. The v2 packages do not publish
   a CommonJS build and require Node.js 18 or newer.
+
+## Vue version
+
+The v2 Vue adapter requires Vue 3.6 or newer. At the time of writing, Vue 3.6
+has not yet been released as stable and is available as a release candidate.
+We hope Vue 3.6 will be stable by the time TanStack Form v2 becomes stable.
+
+Form Composition relies on Vue 3.6 behavior to work correctly. Requiring it
+from the start lets the Vue adapter support Form Composition without adding a
+breaking minimum-version change later in the v2 release line.
 
 ## Package format
 
