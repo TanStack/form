@@ -1,4 +1,7 @@
-# Migrating from TanStack Form v1
+---
+id: migrate-from-v1
+title: Migrating from v1
+---
 
 TanStack Form v2 keeps the same core idea as v1: create a form with
 `useForm`, render fields from the returned form API, and submit with
