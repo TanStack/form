@@ -16,6 +16,9 @@ packages:
   - examples/vue/**
   - examples/solid/**
   - examples/svelte/*
+  - examples/preact/**
+  - examples/angular/**
+  - examples/lit/**
 allowBuilds:
   nx: true
   unrs-resolver: false

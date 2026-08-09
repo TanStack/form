@@ -100,7 +100,718 @@ importers:
         version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
       vitest:
         specifier: ^4.0.17
-        version: 4.1.10(@types/node@25.9.5)(@vitest/coverage-istanbul@4.1.7(vitest@4.1.10))(jsdom@27.4.0)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 4.1.10(@types/node@25.9.5)(@vitest/coverage-istanbul@4.1.7)(jsdom@27.4.0)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+
+  examples/angular/array:
+    dependencies:
+      '@angular/common':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2)
+      '@angular/compiler':
+        specifier: ^22.1.0
+        version: 22.1.0
+      '@angular/core':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)
+      '@angular/platform-browser':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))
+      '@tanstack/angular-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/angular-form
+      rxjs:
+        specifier: ^7.8.2
+        version: 7.8.2
+      tslib:
+        specifier: ^2.8.1
+        version: 2.8.1
+    devDependencies:
+      '@analogjs/vite-plugin-angular':
+        specifier: ^2.6.4
+        version: 2.6.4(d295a2b8212755ff8e5c1235a564ab37)
+      '@angular/compiler-cli':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/compiler@22.1.0)(typescript@6.0.3)
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/angular/basic:
+    dependencies:
+      '@angular/common':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2)
+      '@angular/compiler':
+        specifier: ^22.1.0
+        version: 22.1.0
+      '@angular/core':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)
+      '@angular/platform-browser':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))
+      '@tanstack/angular-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/angular-form
+      rxjs:
+        specifier: ^7.8.2
+        version: 7.8.2
+      tslib:
+        specifier: ^2.8.1
+        version: 2.8.1
+    devDependencies:
+      '@analogjs/vite-plugin-angular':
+        specifier: ^2.6.4
+        version: 2.6.4(d295a2b8212755ff8e5c1235a564ab37)
+      '@angular/compiler-cli':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/compiler@22.1.0)(typescript@6.0.3)
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/angular/basic-splitting-form:
+    dependencies:
+      '@angular/common':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2)
+      '@angular/compiler':
+        specifier: ^22.1.0
+        version: 22.1.0
+      '@angular/core':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)
+      '@angular/platform-browser':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))
+      '@tanstack/angular-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/angular-form
+      rxjs:
+        specifier: ^7.8.2
+        version: 7.8.2
+      tslib:
+        specifier: ^2.8.1
+        version: 2.8.1
+    devDependencies:
+      '@analogjs/vite-plugin-angular':
+        specifier: ^2.6.4
+        version: 2.6.4(d295a2b8212755ff8e5c1235a564ab37)
+      '@angular/compiler-cli':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/compiler@22.1.0)(typescript@6.0.3)
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/angular/field-groups:
+    dependencies:
+      '@angular/common':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2)
+      '@angular/compiler':
+        specifier: ^22.1.0
+        version: 22.1.0
+      '@angular/core':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)
+      '@angular/platform-browser':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))
+      '@tanstack/angular-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/angular-form
+      rxjs:
+        specifier: ^7.8.2
+        version: 7.8.2
+      tslib:
+        specifier: ^2.8.1
+        version: 2.8.1
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      '@analogjs/vite-plugin-angular':
+        specifier: ^2.6.4
+        version: 2.6.4(d295a2b8212755ff8e5c1235a564ab37)
+      '@angular/compiler-cli':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/compiler@22.1.0)(typescript@6.0.3)
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/angular/large-form:
+    dependencies:
+      '@angular/common':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2)
+      '@angular/compiler':
+        specifier: ^22.1.0
+        version: 22.1.0
+      '@angular/core':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)
+      '@angular/platform-browser':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))
+      '@tanstack/angular-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/angular-form
+      rxjs:
+        specifier: ^7.8.2
+        version: 7.8.2
+      tslib:
+        specifier: ^2.8.1
+        version: 2.8.1
+    devDependencies:
+      '@analogjs/vite-plugin-angular':
+        specifier: ^2.6.4
+        version: 2.6.4(d295a2b8212755ff8e5c1235a564ab37)
+      '@angular/compiler-cli':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/compiler@22.1.0)(typescript@6.0.3)
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/angular/multi-step-wizard:
+    dependencies:
+      '@angular/common':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2)
+      '@angular/compiler':
+        specifier: ^22.1.0
+        version: 22.1.0
+      '@angular/core':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)
+      '@angular/platform-browser':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))
+      '@tanstack/angular-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/angular-form
+      rxjs:
+        specifier: ^7.8.2
+        version: 7.8.2
+      tslib:
+        specifier: ^2.8.1
+        version: 2.8.1
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      '@analogjs/vite-plugin-angular':
+        specifier: ^2.6.4
+        version: 2.6.4(d295a2b8212755ff8e5c1235a564ab37)
+      '@angular/compiler-cli':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/compiler@22.1.0)(typescript@6.0.3)
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/angular/query-integration:
+    dependencies:
+      '@angular/common':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2)
+      '@angular/compiler':
+        specifier: ^22.1.0
+        version: 22.1.0
+      '@angular/core':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)
+      '@angular/platform-browser':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))
+      '@tanstack/angular-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/angular-form
+      '@tanstack/angular-query-experimental':
+        specifier: ^5.101.4
+        version: 5.101.4(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))
+      rxjs:
+        specifier: ^7.8.2
+        version: 7.8.2
+      tslib:
+        specifier: ^2.8.1
+        version: 2.8.1
+    devDependencies:
+      '@analogjs/vite-plugin-angular':
+        specifier: ^2.6.4
+        version: 2.6.4(d295a2b8212755ff8e5c1235a564ab37)
+      '@angular/compiler-cli':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/compiler@22.1.0)(typescript@6.0.3)
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/angular/simple:
+    dependencies:
+      '@angular/common':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2)
+      '@angular/compiler':
+        specifier: ^22.1.0
+        version: 22.1.0
+      '@angular/core':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)
+      '@angular/platform-browser':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))
+      '@tanstack/angular-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/angular-form
+      rxjs:
+        specifier: ^7.8.2
+        version: 7.8.2
+      tslib:
+        specifier: ^2.8.1
+        version: 2.8.1
+    devDependencies:
+      '@analogjs/vite-plugin-angular':
+        specifier: ^2.6.4
+        version: 2.6.4(d295a2b8212755ff8e5c1235a564ab37)
+      '@angular/compiler-cli':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/compiler@22.1.0)(typescript@6.0.3)
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/angular/standard-schema:
+    dependencies:
+      '@angular/common':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2)
+      '@angular/compiler':
+        specifier: ^22.1.0
+        version: 22.1.0
+      '@angular/core':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)
+      '@angular/platform-browser':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))
+      '@tanstack/angular-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/angular-form
+      arktype:
+        specifier: ^2.1.22
+        version: 2.2.3
+      effect:
+        specifier: ^3.17.14
+        version: 3.22.1
+      rxjs:
+        specifier: ^7.8.2
+        version: 7.8.2
+      tslib:
+        specifier: ^2.8.1
+        version: 2.8.1
+      valibot:
+        specifier: ^1.1.0
+        version: 1.4.2(typescript@6.0.3)
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      '@analogjs/vite-plugin-angular':
+        specifier: ^2.6.4
+        version: 2.6.4(d295a2b8212755ff8e5c1235a564ab37)
+      '@angular/compiler-cli':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/compiler@22.1.0)(typescript@6.0.3)
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/lit/array:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/lit/basic:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/lit/basic-splitting-form:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/lit/field-groups:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/lit/large-form:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/lit/multi-step-wizard:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/lit/query-integration:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      '@tanstack/query-core':
+        specifier: ^5.89.0
+        version: 5.101.4
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/lit/simple:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/lit/standard-schema:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/lit-form
+      arktype:
+        specifier: ^2.1.22
+        version: 2.2.3
+      effect:
+        specifier: ^3.17.14
+        version: 3.22.1
+      lit:
+        specifier: ^3.3.1
+        version: 3.3.3
+      valibot:
+        specifier: ^1.1.0
+        version: 1.4.2(typescript@6.0.3)
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/preact/array:
+    dependencies:
+      '@tanstack/preact-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/preact-form
+      preact:
+        specifier: ^10.26.4
+        version: 10.29.8
+    devDependencies:
+      '@preact/preset-vite':
+        specifier: ^2.10.2
+        version: 2.10.6(@babel/core@8.0.1)(preact@10.29.8)(rollup@4.62.4)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/preact/basic:
+    dependencies:
+      '@tanstack/preact-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/preact-form
+      preact:
+        specifier: ^10.26.4
+        version: 10.29.8
+    devDependencies:
+      '@preact/preset-vite':
+        specifier: ^2.10.2
+        version: 2.10.6(@babel/core@8.0.1)(preact@10.29.8)(rollup@4.62.4)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/preact/basic-splitting-form:
+    dependencies:
+      '@tanstack/preact-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/preact-form
+      preact:
+        specifier: ^10.26.4
+        version: 10.29.8
+    devDependencies:
+      '@preact/preset-vite':
+        specifier: ^2.10.2
+        version: 2.10.6(@babel/core@8.0.1)(preact@10.29.8)(rollup@4.62.4)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/preact/field-groups:
+    dependencies:
+      '@tanstack/preact-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/preact-form
+      preact:
+        specifier: ^10.26.4
+        version: 10.29.8
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      '@preact/preset-vite':
+        specifier: ^2.10.2
+        version: 2.10.6(@babel/core@8.0.1)(preact@10.29.8)(rollup@4.62.4)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/preact/large-form:
+    dependencies:
+      '@tanstack/preact-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/preact-form
+      preact:
+        specifier: ^10.26.4
+        version: 10.29.8
+    devDependencies:
+      '@preact/preset-vite':
+        specifier: ^2.10.2
+        version: 2.10.6(@babel/core@8.0.1)(preact@10.29.8)(rollup@4.62.4)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/preact/multi-step-wizard:
+    dependencies:
+      '@tanstack/preact-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/preact-form
+      preact:
+        specifier: ^10.26.4
+        version: 10.29.8
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      '@preact/preset-vite':
+        specifier: ^2.10.2
+        version: 2.10.6(@babel/core@8.0.1)(preact@10.29.8)(rollup@4.62.4)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/preact/query-integration:
+    dependencies:
+      '@tanstack/preact-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/preact-form
+      '@tanstack/react-query':
+        specifier: ^5.89.0
+        version: 5.101.4(react@19.2.4)
+      preact:
+        specifier: ^10.26.4
+        version: 10.29.8
+    devDependencies:
+      '@preact/preset-vite':
+        specifier: ^2.10.2
+        version: 2.10.6(@babel/core@8.0.1)(preact@10.29.8)(rollup@4.62.4)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/preact/simple:
+    dependencies:
+      '@tanstack/preact-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/preact-form
+      preact:
+        specifier: ^10.26.4
+        version: 10.29.8
+    devDependencies:
+      '@preact/preset-vite':
+        specifier: ^2.10.2
+        version: 2.10.6(@babel/core@8.0.1)(preact@10.29.8)(rollup@4.62.4)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  examples/preact/standard-schema:
+    dependencies:
+      '@tanstack/preact-form':
+        specifier: ^1.33.3
+        version: link:../../../packages/preact-form
+      arktype:
+        specifier: ^2.1.22
+        version: 2.2.3
+      effect:
+        specifier: ^3.17.14
+        version: 3.22.1
+      preact:
+        specifier: ^10.26.4
+        version: 10.29.8
+      valibot:
+        specifier: ^1.1.0
+        version: 1.4.2(typescript@6.0.3)
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      '@preact/preset-vite':
+        specifier: ^2.10.2
+        version: 2.10.6(@babel/core@8.0.1)(preact@10.29.8)(rollup@4.62.4)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.2
+        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
 
   examples/react/array:
     dependencies:
@@ -1067,252 +1778,6 @@ importers:
         specifier: ^2.11.10
         version: 2.11.14(@testing-library/jest-dom@6.10.0(@testing-library/dom@10.4.1))(solid-js@1.9.14)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
 
-  examples/svelte/array:
-    dependencies:
-      '@tanstack/svelte-form':
-        specifier: ^1.33.3
-        version: link:../../../packages/svelte-form
-    devDependencies:
-      '@sveltejs/vite-plugin-svelte':
-        specifier: ^5.1.1
-        version: 5.1.1(svelte@5.56.8(@typescript-eslint/types@8.65.0))(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
-      '@tsconfig/svelte':
-        specifier: ^5.0.5
-        version: 5.0.8
-      svelte:
-        specifier: ^5.39.4
-        version: 5.56.8(@typescript-eslint/types@8.65.0)
-      svelte-check:
-        specifier: ^4.3.1
-        version: 4.7.4(picomatch@4.0.5)(svelte@5.56.8(@typescript-eslint/types@8.65.0))(typescript@6.0.3)
-      typescript:
-        specifier: ^6.0.2
-        version: 6.0.3
-      vite:
-        specifier: ^8.1.2
-        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
-
-  examples/svelte/basic:
-    dependencies:
-      '@tanstack/svelte-form':
-        specifier: ^1.33.3
-        version: link:../../../packages/svelte-form
-    devDependencies:
-      '@sveltejs/vite-plugin-svelte':
-        specifier: ^5.1.1
-        version: 5.1.1(svelte@5.56.8(@typescript-eslint/types@8.65.0))(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
-      '@tsconfig/svelte':
-        specifier: ^5.0.5
-        version: 5.0.8
-      svelte:
-        specifier: ^5.39.4
-        version: 5.56.8(@typescript-eslint/types@8.65.0)
-      svelte-check:
-        specifier: ^4.3.1
-        version: 4.7.4(picomatch@4.0.5)(svelte@5.56.8(@typescript-eslint/types@8.65.0))(typescript@6.0.3)
-      typescript:
-        specifier: ^6.0.2
-        version: 6.0.3
-      vite:
-        specifier: ^8.1.2
-        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
-
-  examples/svelte/basic-splitting-form:
-    dependencies:
-      '@tanstack/svelte-form':
-        specifier: ^1.33.3
-        version: link:../../../packages/svelte-form
-    devDependencies:
-      '@sveltejs/vite-plugin-svelte':
-        specifier: ^5.1.1
-        version: 5.1.1(svelte@5.56.8(@typescript-eslint/types@8.65.0))(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
-      '@tsconfig/svelte':
-        specifier: ^5.0.5
-        version: 5.0.8
-      svelte:
-        specifier: ^5.39.4
-        version: 5.56.8(@typescript-eslint/types@8.65.0)
-      svelte-check:
-        specifier: ^4.3.1
-        version: 4.7.4(picomatch@4.0.5)(svelte@5.56.8(@typescript-eslint/types@8.65.0))(typescript@6.0.3)
-      typescript:
-        specifier: ^6.0.2
-        version: 6.0.3
-      vite:
-        specifier: ^8.1.2
-        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
-
-  examples/svelte/field-groups:
-    dependencies:
-      '@tanstack/svelte-form':
-        specifier: ^1.33.3
-        version: link:../../../packages/svelte-form
-      zod:
-        specifier: ^4.4.3
-        version: 4.4.3
-    devDependencies:
-      '@sveltejs/vite-plugin-svelte':
-        specifier: ^5.1.1
-        version: 5.1.1(svelte@5.56.8(@typescript-eslint/types@8.65.0))(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
-      '@tsconfig/svelte':
-        specifier: ^5.0.5
-        version: 5.0.8
-      svelte:
-        specifier: ^5.39.4
-        version: 5.56.8(@typescript-eslint/types@8.65.0)
-      svelte-check:
-        specifier: ^4.3.1
-        version: 4.7.4(picomatch@4.0.5)(svelte@5.56.8(@typescript-eslint/types@8.65.0))(typescript@6.0.3)
-      typescript:
-        specifier: ^6.0.2
-        version: 6.0.3
-      vite:
-        specifier: ^8.1.2
-        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
-
-  examples/svelte/large-form:
-    dependencies:
-      '@tanstack/svelte-form':
-        specifier: ^1.33.3
-        version: link:../../../packages/svelte-form
-    devDependencies:
-      '@sveltejs/vite-plugin-svelte':
-        specifier: ^5.1.1
-        version: 5.1.1(svelte@5.56.8(@typescript-eslint/types@8.65.0))(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
-      '@tsconfig/svelte':
-        specifier: ^5.0.5
-        version: 5.0.8
-      svelte:
-        specifier: ^5.39.4
-        version: 5.56.8(@typescript-eslint/types@8.65.0)
-      svelte-check:
-        specifier: ^4.3.1
-        version: 4.7.4(picomatch@4.0.5)(svelte@5.56.8(@typescript-eslint/types@8.65.0))(typescript@6.0.3)
-      typescript:
-        specifier: ^6.0.2
-        version: 6.0.3
-      vite:
-        specifier: ^8.1.2
-        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
-
-  examples/svelte/multi-step-wizard:
-    dependencies:
-      '@tanstack/svelte-form':
-        specifier: ^1.33.3
-        version: link:../../../packages/svelte-form
-      zod:
-        specifier: ^4.4.3
-        version: 4.4.3
-    devDependencies:
-      '@sveltejs/vite-plugin-svelte':
-        specifier: ^5.1.1
-        version: 5.1.1(svelte@5.56.8(@typescript-eslint/types@8.65.0))(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
-      '@tsconfig/svelte':
-        specifier: ^5.0.5
-        version: 5.0.8
-      svelte:
-        specifier: ^5.39.4
-        version: 5.56.8(@typescript-eslint/types@8.65.0)
-      svelte-check:
-        specifier: ^4.3.1
-        version: 4.7.4(picomatch@4.0.5)(svelte@5.56.8(@typescript-eslint/types@8.65.0))(typescript@6.0.3)
-      typescript:
-        specifier: ^6.0.2
-        version: 6.0.3
-      vite:
-        specifier: ^8.1.2
-        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
-
-  examples/svelte/query-integration:
-    dependencies:
-      '@tanstack/svelte-form':
-        specifier: ^1.33.3
-        version: link:../../../packages/svelte-form
-      '@tanstack/svelte-query':
-        specifier: ^5.89.0
-        version: 5.90.2(svelte@5.56.8(@typescript-eslint/types@8.65.0))
-    devDependencies:
-      '@sveltejs/vite-plugin-svelte':
-        specifier: ^5.1.1
-        version: 5.1.1(svelte@5.56.8(@typescript-eslint/types@8.65.0))(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
-      '@tsconfig/svelte':
-        specifier: ^5.0.5
-        version: 5.0.8
-      svelte:
-        specifier: ^5.39.4
-        version: 5.56.8(@typescript-eslint/types@8.65.0)
-      svelte-check:
-        specifier: ^4.3.1
-        version: 4.7.4(picomatch@4.0.5)(svelte@5.56.8(@typescript-eslint/types@8.65.0))(typescript@6.0.3)
-      typescript:
-        specifier: ^6.0.2
-        version: 6.0.3
-      vite:
-        specifier: ^8.1.2
-        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
-
-  examples/svelte/simple:
-    dependencies:
-      '@tanstack/svelte-form':
-        specifier: ^1.33.3
-        version: link:../../../packages/svelte-form
-    devDependencies:
-      '@sveltejs/vite-plugin-svelte':
-        specifier: ^5.1.1
-        version: 5.1.1(svelte@5.56.8(@typescript-eslint/types@8.65.0))(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
-      '@tsconfig/svelte':
-        specifier: ^5.0.5
-        version: 5.0.8
-      svelte:
-        specifier: ^5.39.4
-        version: 5.56.8(@typescript-eslint/types@8.65.0)
-      svelte-check:
-        specifier: ^4.3.1
-        version: 4.7.4(picomatch@4.0.5)(svelte@5.56.8(@typescript-eslint/types@8.65.0))(typescript@6.0.3)
-      typescript:
-        specifier: ^6.0.2
-        version: 6.0.3
-      vite:
-        specifier: ^8.1.2
-        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
-
-  examples/svelte/standard-schema:
-    dependencies:
-      '@tanstack/svelte-form':
-        specifier: ^1.33.3
-        version: link:../../../packages/svelte-form
-      arktype:
-        specifier: ^2.1.22
-        version: 2.2.3
-      effect:
-        specifier: ^3.17.14
-        version: 3.22.1
-      valibot:
-        specifier: ^1.1.0
-        version: 1.4.2(typescript@6.0.3)
-      zod:
-        specifier: ^4.4.3
-        version: 4.4.3
-    devDependencies:
-      '@sveltejs/vite-plugin-svelte':
-        specifier: ^5.1.1
-        version: 5.1.1(svelte@5.56.8(@typescript-eslint/types@8.65.0))(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
-      '@tsconfig/svelte':
-        specifier: ^5.0.5
-        version: 5.0.8
-      svelte:
-        specifier: ^5.39.4
-        version: 5.56.8(@typescript-eslint/types@8.65.0)
-      svelte-check:
-        specifier: ^4.3.1
-        version: 4.7.4(picomatch@4.0.5)(svelte@5.56.8(@typescript-eslint/types@8.65.0))(typescript@6.0.3)
-      typescript:
-        specifier: ^6.0.2
-        version: 6.0.3
-      vite:
-        specifier: ^8.1.2
-        version: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
-
   examples/vue/array:
     dependencies:
       '@tanstack/vue-form':
@@ -1610,6 +2075,9 @@ importers:
       preact:
         specifier: ^10.26.4
         version: 10.29.8
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
 
   packages/react-form:
     dependencies:
@@ -6049,6 +6517,12 @@ packages:
     peerDependencies:
       vite: ^5.2.0 || ^6 || ^7 || ^8
 
+  '@tanstack/angular-query-experimental@5.101.4':
+    resolution: {integrity: sha512-6JznduBS7eTKRLGl2RoI+Y0nBLayJrbGQPyn8DLsJrNimYPLlUyIZV9GZLsq3aYoyjuaxwbDRWz2eZEWhtSk3Q==}
+    peerDependencies:
+      '@angular/common': '>=16.0.0'
+      '@angular/core': '>=16.0.0'
+
   '@tanstack/angular-store@0.11.0':
     resolution: {integrity: sha512-MZXax5LbzrmX8SERXv3GlzURkqJ+EW7tMTn3Hw7dFmOBxknNpMUbbzHUgpco7W1dNavnrQVdYJ1Sz5JcQ00qvg==}
     peerDependencies:
@@ -6162,8 +6636,8 @@ packages:
   '@tanstack/query-core@5.101.4':
     resolution: {integrity: sha512-gNwcvOJcRbLWPOLG/2OBm+zM+Yv+MKsXKEOWC57USuZDEsI71hEErQsiEGx5wX9rzWWkfwM0fVSPoiIFSsxfiw==}
 
-  '@tanstack/query-core@5.90.2':
-    resolution: {integrity: sha512-k/TcR3YalnzibscALLwxeiLUub6jN5EDLwKDiO7q5f4ICEoptJ+n9+7vcEFy5/x/i6Q+Lb/tXrsKCggf5uQJXQ==}
+  '@tanstack/query-devtools@5.101.4':
+    resolution: {integrity: sha512-z5IPHnDX3aUWeTWlRKLyooBQekaCAw4xRpZqPQ390RiWTDBcTynjpPT221BArw0u2+pnQMdGvPQI9YNNubBcmA==}
 
   '@tanstack/react-devtools@0.10.9':
     resolution: {integrity: sha512-lS6mtccEmUaodsWiRORGM/MGKT0jgzcy5v+eY6pzOPxEgzTHUDhca+WGxShFqKxmF4oneRxXjww1gkvMrWq6uw==}
@@ -6345,11 +6819,6 @@ packages:
   '@tanstack/store@0.9.3':
     resolution: {integrity: sha512-8reSzl/qGWGGVKhBoxXPMWzATSbZLZFWhwBAFO9NAyp0TxzfBP0mIrGb8CP8KrQTmvzXlR/vFPPUrHTLBGyFyw==}
 
-  '@tanstack/svelte-query@5.90.2':
-    resolution: {integrity: sha512-owjnp0w8sOXlMhLZhucHrsYvCjgjHrVyII/wlqMGefxKFyroZS3xCwTee+IUx7UHbL+QmKr/HQTeTqhgxmxPQw==}
-    peerDependencies:
-      svelte: ^3.54.0 || ^4.0.0 || ^5.0.0
-
   '@tanstack/svelte-store@0.12.0':
     resolution: {integrity: sha512-XhXlU3jIO/WxikfeVczRdsAvRWzsLBh8Ic6sC7nzfzvMbPut7ZSdCbE7/usfm0bMjVGMmZmyzZy2xRu73QYWAA==}
     peerDependencies:
@@ -6465,9 +6934,6 @@ packages:
 
   '@ts-morph/common@0.27.0':
     resolution: {integrity: sha512-Wf29UqxWDpc+i61k3oIOzcUfQt79PIT9y/MWfAGlrkjg6lBC1hwDECLXPVJAhWjiGbfBCxZd65F/LIZF3+jeJQ==}
-
-  '@tsconfig/svelte@5.0.8':
-    resolution: {integrity: sha512-UkNnw1/oFEfecR8ypyHIQuWYdkPvHiwcQ78sh+ymIiYoF+uc5H1UBetbjyqT+vgGJ3qQN6nhucJviX6HesWtKQ==}
 
   '@tybys/wasm-util@0.10.3':
     resolution: {integrity: sha512-F3fo1MYrRJYL3zER0OUOmkutjr1Vp23m7OsSgp7nq4SP6OqX6C/56XFIPAl5bt3zaBRjmW7SGz3u/6LwFpYcOg==}
@@ -12788,6 +13254,20 @@ snapshots:
       - '@emnapi/core'
       - '@emnapi/runtime'
 
+  '@analogjs/vite-plugin-angular@2.6.4(d295a2b8212755ff8e5c1235a564ab37)':
+    dependencies:
+      magic-string: 0.30.21
+      obug: 2.1.4
+      oxc-parser: 0.121.0(@emnapi/core@2.0.0-alpha.3)(@emnapi/runtime@2.0.0-alpha.3)
+      tinyglobby: 0.2.17
+      ts-morph: 21.0.1
+    optionalDependencies:
+      '@angular/build': 22.1.2(@angular/compiler-cli@22.1.0(@angular/compiler@22.1.0)(typescript@6.0.3))(@angular/compiler@22.1.0)(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(@angular/platform-browser@22.1.0(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)))(@types/node@25.9.5)(chokidar@5.0.0)(jiti@2.7.0)(less@4.8.1)(ng-packagr@22.1.0(@angular/compiler-cli@22.1.0(@angular/compiler@22.1.0)(typescript@6.0.3))(tailwindcss@4.3.3)(tslib@2.8.1)(typescript@6.0.3))(postcss@8.5.25)(rollup@4.62.4)(tailwindcss@4.3.3)(terser@5.49.0)(tslib@2.8.1)(typescript@6.0.3)(vitest@4.1.10(@types/node@25.9.5)(@vitest/coverage-istanbul@4.1.7(vitest@4.1.10))(jsdom@27.4.0)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)))(yaml@2.9.0)
+      vite: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+    transitivePeerDependencies:
+      - '@emnapi/core'
+      - '@emnapi/runtime'
+
   '@analogjs/vitest-angular@2.6.4(@analogjs/vite-plugin-angular@2.6.4(7cf96ef1fdb8ccb0ef3a7ecff022175d))(@angular-devkit/architect@0.2201.2(chokidar@5.0.0))(@angular-devkit/schematics@22.1.2(chokidar@5.0.0))(vitest@4.1.10(@types/node@25.9.5)(@vitest/coverage-istanbul@4.1.7(vitest@4.1.10))(jsdom@27.4.0)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)))(zone.js@0.16.2)':
     dependencies:
       '@analogjs/vite-plugin-angular': 2.6.4(7cf96ef1fdb8ccb0ef3a7ecff022175d)
@@ -12880,6 +13360,63 @@ snapshots:
       - terser
       - tsx
       - yaml
+
+  '@angular/build@22.1.2(@angular/compiler-cli@22.1.0(@angular/compiler@22.1.0)(typescript@6.0.3))(@angular/compiler@22.1.0)(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(@angular/platform-browser@22.1.0(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)))(@types/node@25.9.5)(chokidar@5.0.0)(jiti@2.7.0)(less@4.8.1)(ng-packagr@22.1.0(@angular/compiler-cli@22.1.0(@angular/compiler@22.1.0)(typescript@6.0.3))(tailwindcss@4.3.3)(tslib@2.8.1)(typescript@6.0.3))(postcss@8.5.25)(rollup@4.62.4)(tailwindcss@4.3.3)(terser@5.49.0)(tslib@2.8.1)(typescript@6.0.3)(vitest@4.1.10(@types/node@25.9.5)(@vitest/coverage-istanbul@4.1.7(vitest@4.1.10))(jsdom@27.4.0)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)))(yaml@2.9.0)':
+    dependencies:
+      '@ampproject/remapping': 2.3.0
+      '@angular-devkit/architect': 0.2201.2(chokidar@5.0.0)
+      '@angular/compiler': 22.1.0
+      '@angular/compiler-cli': 22.1.0(@angular/compiler@22.1.0)(typescript@6.0.3)
+      '@babel/core': 8.0.1
+      '@babel/helper-annotate-as-pure': 8.0.0
+      '@babel/helper-split-export-declaration': 7.24.7
+      '@inquirer/confirm': 6.1.1(@types/node@25.9.5)
+      '@vitejs/plugin-basic-ssl': 2.3.0(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+      beasties: 0.4.3
+      browserslist: 4.28.7
+      esbuild: 0.28.1
+      https-proxy-agent: 9.1.0
+      jsonc-parser: 3.3.1
+      listr2: 10.2.2
+      magic-string: 1.0.0
+      mrmime: 2.0.1
+      oxc-parser: 0.142.0
+      parse5-html-rewriting-stream: 8.0.1
+      picomatch: 4.0.5
+      piscina: 5.2.0
+      rolldown: 1.2.0
+      sass: 1.101.0
+      semver: 7.8.5
+      source-map-support: 0.5.21
+      tinyglobby: 0.2.17
+      tslib: 2.8.1
+      typescript: 6.0.3
+      vite: 8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)
+      watchpack: 2.5.2
+    optionalDependencies:
+      '@angular/core': 22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)
+      '@angular/platform-browser': 22.1.0(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))
+      less: 4.8.1
+      lmdb: 3.5.6
+      ng-packagr: 22.1.0(@angular/compiler-cli@22.1.0(@angular/compiler@22.1.0)(typescript@6.0.3))(tailwindcss@4.3.3)(tslib@2.8.1)(typescript@6.0.3)
+      postcss: 8.5.25
+      rollup: 4.62.4
+      tailwindcss: 4.3.3
+      vitest: 4.1.10(@types/node@25.9.5)(@vitest/coverage-istanbul@4.1.7)(jsdom@27.4.0)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+    transitivePeerDependencies:
+      - '@types/node'
+      - '@vitejs/devtools'
+      - chokidar
+      - jiti
+      - kerberos
+      - sass-embedded
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+      - tsx
+      - yaml
+    optional: true
 
   '@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2)':
     dependencies:
@@ -17266,6 +17803,14 @@ snapshots:
       tailwindcss: 4.3.3
       vite: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
 
+  '@tanstack/angular-query-experimental@5.101.4(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))':
+    dependencies:
+      '@angular/common': 22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2)
+      '@angular/core': 22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)
+      '@tanstack/query-core': 5.101.4
+    optionalDependencies:
+      '@tanstack/query-devtools': 5.101.4
+
   '@tanstack/angular-store@0.11.0(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))':
     dependencies:
       '@angular/common': 22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2)
@@ -17397,7 +17942,8 @@ snapshots:
 
   '@tanstack/query-core@5.101.4': {}
 
-  '@tanstack/query-core@5.90.2': {}
+  '@tanstack/query-devtools@5.101.4':
+    optional: true
 
   '@tanstack/react-devtools@0.10.9(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(csstype@3.2.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(solid-js@1.9.14)':
     dependencies:
@@ -17791,11 +18337,6 @@ snapshots:
 
   '@tanstack/store@0.9.3': {}
 
-  '@tanstack/svelte-query@5.90.2(svelte@5.56.8(@typescript-eslint/types@8.65.0))':
-    dependencies:
-      '@tanstack/query-core': 5.90.2
-      svelte: 5.56.8(@typescript-eslint/types@8.65.0)
-
   '@tanstack/svelte-store@0.12.0(svelte@5.56.8(@typescript-eslint/types@8.65.0))':
     dependencies:
       '@tanstack/store': 0.11.0
@@ -17908,7 +18449,7 @@ snapshots:
       svelte: 5.56.8(@typescript-eslint/types@8.65.0)
     optionalDependencies:
       vite: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
-      vitest: 4.1.10(@types/node@25.9.5)(@vitest/coverage-istanbul@4.1.7(vitest@4.1.10))(jsdom@27.4.0)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+      vitest: 4.1.10(@types/node@25.9.5)(@vitest/coverage-istanbul@4.1.7)(jsdom@27.4.0)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
 
   '@testing-library/user-event@14.6.1(@testing-library/dom@10.4.1)':
     dependencies:
@@ -17936,8 +18477,6 @@ snapshots:
       fast-glob: 3.3.3
       minimatch: 10.2.6
       path-browserify: 1.0.1
-
-  '@tsconfig/svelte@5.0.8': {}
 
   '@tybys/wasm-util@0.10.3':
     dependencies:
@@ -18229,7 +18768,7 @@ snapshots:
       magicast: 0.5.4
       obug: 2.1.4
       tinyrainbow: 3.1.1
-      vitest: 4.1.10(@types/node@25.9.5)(@vitest/coverage-istanbul@4.1.7(vitest@4.1.10))(jsdom@27.4.0)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+      vitest: 4.1.10(@types/node@25.9.5)(@vitest/coverage-istanbul@4.1.7)(jsdom@27.4.0)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
     transitivePeerDependencies:
       - supports-color
 
@@ -25272,7 +25811,7 @@ snapshots:
     transitivePeerDependencies:
       - msw
 
-  vitest@4.1.10(@types/node@25.9.5)(@vitest/coverage-istanbul@4.1.7(vitest@4.1.10))(jsdom@27.4.0)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)):
+  vitest@4.1.10(@types/node@25.9.5)(@vitest/coverage-istanbul@4.1.7)(jsdom@27.4.0)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)):
     dependencies:
       '@vitest/expect': 4.1.10
       '@vitest/mocker': 4.1.10(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))

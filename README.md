@@ -1,5 +1,19 @@
 <div align="center">
-  <img src="./media/header_form.png" >
+  <picture>
+    <source
+      media="(prefers-color-scheme: dark)"
+      srcset="https://tanstack.com/api/readme/form.png?theme=dark"
+    />
+    <source
+      media="(prefers-color-scheme: light)"
+      srcset="https://tanstack.com/api/readme/form.png"
+    />
+    <img
+      src="https://tanstack.com/api/readme/form.png"
+      alt="TanStack Form"
+      width="900"
+    />
+  </picture>
 </div>
 
 <br />
