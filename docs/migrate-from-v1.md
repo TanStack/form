@@ -58,7 +58,6 @@ This page is a starting checklist for migrating React apps from v1 to v2.
 - Update CommonJS integrations to consume ESM. The v2 packages do not publish
   a CommonJS build and require Node.js 18 or newer.
 
-
 ## React version
 
 The v2 React adapter supports React 18 and 19. React 17 is no longer supported,
