@@ -50,7 +50,7 @@ await generateReferenceDocs({
     },
     {
       name: 'solid-form',
-      entryPoints: [resolve(__dirname, '../packages/solid-form/src/index.tsx')],
+      entryPoints: [resolve(__dirname, '../packages/solid-form/src/index.ts')],
       tsconfig: resolve(__dirname, '../packages/solid-form/tsconfig.docs.json'),
       outputDir: resolve(__dirname, '../docs/framework/solid/reference'),
       exclude: ['packages/form-core/**/*'],

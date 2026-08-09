@@ -6,5 +6,5 @@
       "@tanstack/form-core/internals": ["../form-core/src/internals.ts"]
     }
   },
-  "exclude": ["tests", "eslint.config.js", "vite.config.ts"]
+  "include": ["src"]
 }
