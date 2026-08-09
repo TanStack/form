@@ -17,6 +17,10 @@
   {/snippet}
 </fields.Field>
 <span data-testid="logical-value">{values.current.name}</span>
+<span data-testid="logical-items">{values.current.items.join(',')}</span>
 <button type="button" onclick={() => fields.setFieldValue('name', 'Updated')}>
   Update logical
+</button>
+<button type="button" onclick={() => fields.moveFieldValue('items', 0, 2)}>
+  Move logical item
 </button>

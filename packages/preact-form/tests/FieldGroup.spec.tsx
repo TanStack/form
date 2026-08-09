@@ -224,6 +224,29 @@ const MemoizedInputFields = bindMemoizedInputFields(
   'fields',
 )
 
+const { fields: arrayFields, bindComponent: bindArrayFields } =
+  defineFieldGroup(({ strict }) => ({
+    items: strict<Array<string>>(),
+  }))
+
+const ArrayFields = bindArrayFields(
+  ({ fields }: { fields: typeof arrayFields }) => {
+    const values = useSelector(fields.atom)
+    return (
+      <>
+        <span data-testid="array-values">{values.items.join(',')}</span>
+        <button
+          type="button"
+          onClick={() => fields.moveFieldValue('items', 0, 2)}
+        >
+          Move item
+        </button>
+      </>
+    )
+  },
+  'fields',
+)
+
 describe('FieldGroup', () => {
   it('resolves nested logical field names and forwards field methods', async () => {
     function Component() {
@@ -399,5 +422,23 @@ describe('FieldGroup', () => {
     await user.type(getByLabelText('Lower'), '2')
 
     expect(getByTestId('values')).toHaveTextContent('12:5')
+  })
+
+  it('forwards array methods from the core field group API', async () => {
+    function Component() {
+      const form = useForm({
+        defaultValues: {
+          nested: { items: ['a', 'b', 'c'] },
+        },
+      })
+
+      return <ArrayFields form={form} fields={{ items: 'nested.items' }} />
+    }
+
+    const { getByRole, getByTestId } = render(<Component />)
+
+    await user.click(getByRole('button', { name: 'Move item' }))
+
+    expect(getByTestId('array-values')).toHaveTextContent('b,c,a')
   })
 })

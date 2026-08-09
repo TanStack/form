@@ -1,10 +1,9 @@
 import { Directive, PartType, directive } from 'lit/directive.js'
 import { createAtom, shallow } from '@tanstack/lit-store'
 import {
+  InternalFieldGroupApi,
   defineFieldGroupFieldsRuntime,
   fieldGroupHelperRuntime,
-  getBy,
-  transformFieldOptionsFieldNames,
 } from '@tanstack/form-core/internals'
 import type {
   DeepKeys,
@@ -15,8 +14,9 @@ import type {
   FormErrorTypes,
   ValidationIssue,
 } from '@tanstack/form-core'
-import type { Atom, ReadonlyAtom } from '@tanstack/lit-store'
+import type { ReadonlyAtom } from '@tanstack/lit-store'
 import type { Part, PartInfo } from 'lit/directive.js'
+import type { InternalFieldGroupBindings } from '@tanstack/form-core/internals'
 import type {
   LitFieldMethods,
   LitSubscribeMethod,
@@ -172,71 +172,17 @@ export type DefineFieldGroupFn = <const TFields extends FieldGroupFields>(
   defineFn: (helper: FieldGroupHelper) => TFields,
 ) => FieldGroupDefinition<TFields>
 
-type FieldBindings = Record<string, string>
-
-interface ResolvedNameCacheEntry {
-  binding: string
-  name: string
-}
-
-function getRootSegmentEnd(name: string): number {
-  const dotIndex = name.indexOf('.')
-  const arrayIndex = name.indexOf('[')
-  if (dotIndex === -1) return arrayIndex === -1 ? name.length : arrayIndex
-  if (arrayIndex === -1) return dotIndex
-  return Math.min(dotIndex, arrayIndex)
-}
-
-function resolveFieldName(
-  bindings: FieldBindings,
-  cache: Map<string, ResolvedNameCacheEntry>,
-  fieldName: string,
-) {
-  const rootEnd = getRootSegmentEnd(fieldName)
-  const rootName = fieldName.slice(0, rootEnd)
-  const binding = bindings[rootName]
-  if (binding === undefined) {
-    throw new Error(
-      `TanStack Form: Missing field group binding for "${rootName}".`,
-    )
-  }
-  const cached = cache.get(fieldName)
-  if (cached?.binding === binding) return cached.name
-  const name = `${binding}${fieldName.slice(rootEnd)}`
-  cache.set(fieldName, { binding, name })
-  return name
-}
-
-function createFieldGroupApi(
+function attachLitFieldGroupMethods(
+  group: InternalFieldGroupApi,
   form: AnyLitForm,
-  bindings: Atom<FieldBindings>,
-  fieldNames: Array<string>,
 ): LitFieldGroupApi<any> {
-  const runtimeForm = form.api as any
-  const cache = new Map<string, ResolvedNameCacheEntry>()
-  const resolveName = (name: string) =>
-    resolveFieldName(bindings.get(), cache, name)
-  const values = () => {
-    const result: Record<string, unknown> = {}
-    const formValues = runtimeForm.atom.get().values
-    for (const name of fieldNames) {
-      result[name] = getBy(formValues, resolveName(name))
-    }
-    return result
-  }
-  const atom = createAtom(values, { compare: shallow })
   const resolveOptions = (options: { name: string }) =>
-    transformFieldOptionsFieldNames(
-      options,
-      resolveName,
-      (base, overrides) => ({
-        ...base,
-        ...overrides,
-      }),
-    )
+    group._getFormFieldOptions(options, (base, overrides) => ({
+      ...base,
+      ...overrides,
+    }))
 
-  return {
-    atom,
+  return Object.assign(group, {
     field: (options: { name: string }, render: (field: any) => unknown) =>
       form.field(resolveOptions(options) as never, render),
     arrayField: (options: { name: string }, render: (field: any) => unknown) =>
@@ -245,43 +191,17 @@ function createFieldGroupApi(
       selector: (value: any) => any,
       render: (value: any) => unknown,
       when?: (value: any) => boolean,
-    ) => form.subscribe(() => selector(values()), render, when),
-    getFieldValue: (name: string) =>
-      runtimeForm.getFieldValue(resolveName(name)),
-    setFieldValue: (name: string, value: unknown, options?: unknown) =>
-      runtimeForm.setFieldValue(resolveName(name), value, options),
-    resetField: (name: string) => runtimeForm.resetField(resolveName(name)),
-    swapFieldValues: (
-      name: string,
-      indexA: number,
-      indexB: number,
-      options?: unknown,
-    ) =>
-      runtimeForm.swapFieldValues(resolveName(name), indexA, indexB, options),
-    pushFieldValue: (name: string, value: unknown, options?: unknown) =>
-      runtimeForm.pushFieldValue(resolveName(name), value, options),
-    insertFieldValue: (
-      name: string,
-      index: number,
-      value: unknown,
-      options?: unknown,
-    ) => runtimeForm.insertFieldValue(resolveName(name), index, value, options),
-    clearFieldValues: (name: string, options?: unknown) =>
-      runtimeForm.clearFieldValues(resolveName(name), options),
-    removeFieldValue: (name: string, index: number, options?: unknown) =>
-      runtimeForm.removeFieldValue(resolveName(name), index, options),
-    filterFieldValues: (
-      name: string,
-      predicate: (...args: Array<any>) => boolean,
-      options?: unknown,
-    ) => runtimeForm.filterFieldValues(resolveName(name), predicate, options),
-  } as never
+    ) => form.subscribe(() => selector(group.atom.get()), render, when),
+  }) as never
 }
 
 class ReusableFieldGroupDirective extends Directive {
   private form?: AnyLitForm
   private fieldNames?: Array<string>
-  private bindings = createAtom<FieldBindings>({}, { compare: shallow })
+  private bindings = createAtom<InternalFieldGroupBindings>(
+    {},
+    { compare: shallow },
+  )
   private api?: LitFieldGroupApi<any>
 
   constructor(partInfo: PartInfo) {
@@ -301,14 +221,21 @@ class ReusableFieldGroupDirective extends Directive {
     if (this.form !== form || this.fieldNames !== fieldNames || !this.api) {
       this.form = form
       this.fieldNames = fieldNames
-      this.api = createFieldGroupApi(form, this.bindings, fieldNames)
+      this.api = attachLitFieldGroupMethods(
+        new InternalFieldGroupApi({
+          form: form.api as never,
+          fieldNames,
+          getBindings: () => this.bindings.get(),
+        }),
+        form,
+      )
     }
     return render({ ...props, [propName]: this.api })
   }
 
   render(
     form: AnyLitForm,
-    bindings: FieldBindings,
+    bindings: InternalFieldGroupBindings,
     fieldNames: Array<string>,
     render: (props: Record<string, unknown>) => unknown,
     propName: string,
@@ -339,7 +266,7 @@ const withFieldsRuntime = (
     }
     return reusableFieldGroupDirective(
       form as AnyLitForm,
-      bindings as FieldBindings,
+      bindings as InternalFieldGroupBindings,
       fieldNames,
       render,
       fieldsPropName,
