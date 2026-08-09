@@ -9,7 +9,7 @@ title: createStoreContext
 function createStoreContext<TValue>(): object;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+solid-store@0.11.0\_solid-js@1.9.14/node\_modules/@tanstack/solid-store/dist/createStoreContext.d.ts:43
+Defined in: node\_modules/.pnpm/@tanstack+solid-store@0.11.1\_solid-js@1.9.14/node\_modules/@tanstack/solid-store/dist/createStoreContext.d.ts:43
 
 Creates a typed Solid context for sharing a bundle of atoms and stores with a
 subtree.

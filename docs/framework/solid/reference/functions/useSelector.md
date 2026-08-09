@@ -12,7 +12,7 @@ function useSelector<TSource, TSelected>(
 options?): Accessor<TSelected>;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+solid-store@0.11.0\_solid-js@1.9.14/node\_modules/@tanstack/solid-store/dist/useSelector.d.ts:34
+Defined in: node\_modules/.pnpm/@tanstack+solid-store@0.11.1\_solid-js@1.9.14/node\_modules/@tanstack/solid-store/dist/useSelector.d.ts:34
 
 Selects a slice of state from an atom or store and subscribes the component
 to that selection.

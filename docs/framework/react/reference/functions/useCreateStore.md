@@ -11,7 +11,7 @@ title: useCreateStore
 function useCreateStore<T>(getValue): ReadonlyStore<T>;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+react-store@0.11.0\_react-dom@19.2.4\_react@19.2.4\_\_react@19.2.4/node\_modules/@tanstack/react-store/dist/useCreateStore.d.ts:17
+Defined in: node\_modules/.pnpm/@tanstack+react-store@0.11.0\_react-dom@19.2.8\_react@19.2.8\_\_react@19.2.8/node\_modules/@tanstack/react-store/dist/useCreateStore.d.ts:17
 
 Creates a stable store instance for the lifetime of the component.
 
@@ -47,7 +47,7 @@ const counterStore = useCreateStore({ count: 0 })
 function useCreateStore<T>(initialValue): Store<T>;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+react-store@0.11.0\_react-dom@19.2.4\_react@19.2.4\_\_react@19.2.4/node\_modules/@tanstack/react-store/dist/useCreateStore.d.ts:18
+Defined in: node\_modules/.pnpm/@tanstack+react-store@0.11.0\_react-dom@19.2.8\_react@19.2.8\_\_react@19.2.8/node\_modules/@tanstack/react-store/dist/useCreateStore.d.ts:18
 
 Creates a stable store instance for the lifetime of the component.
 
@@ -83,7 +83,7 @@ const counterStore = useCreateStore({ count: 0 })
 function useCreateStore<T, TActions>(initialValue, actions): Store<T, TActions>;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+react-store@0.11.0\_react-dom@19.2.4\_react@19.2.4\_\_react@19.2.4/node\_modules/@tanstack/react-store/dist/useCreateStore.d.ts:19
+Defined in: node\_modules/.pnpm/@tanstack+react-store@0.11.0\_react-dom@19.2.8\_react@19.2.8\_\_react@19.2.8/node\_modules/@tanstack/react-store/dist/useCreateStore.d.ts:19
 
 Creates a stable store instance for the lifetime of the component.
 
