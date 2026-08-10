@@ -5,7 +5,7 @@ title: SolidFormArrayFieldComponent
 
 # Interface: SolidFormArrayFieldComponent()\<TFormData, TFormErrorTypes, TFieldComponents\>
 
-Defined in: [packages/solid-form/src/Components.public.ts:170](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/Components.public.ts#L170)
+Defined in: [packages/solid-form/src/Components.public.ts:170](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L170)
 
 ## Type Parameters
 
@@ -25,7 +25,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:170](https://github.co
 SolidFormArrayFieldComponent<TFieldName, TFieldValidators>(props): Element;
 ```
 
-Defined in: [packages/solid-form/src/Components.public.ts:175](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/Components.public.ts#L175)
+Defined in: [packages/solid-form/src/Components.public.ts:175](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L175)
 
 ## Type Parameters
 

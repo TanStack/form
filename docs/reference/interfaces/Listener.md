@@ -5,7 +5,7 @@ title: Listener
 
 # Interface: Listener\<TTriggers, TFormData, TValue\>
 
-Defined in: [listeners.public.ts:38](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/listeners.public.ts#L38)
+Defined in: [listeners.public.ts:38](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L38)
 
 ## Extended by
 
@@ -36,7 +36,7 @@ optional triggerDebounceMs?:
 | ListenerDebounceFn<TFormData, TValue>;
 ```
 
-Defined in: [listeners.public.ts:49](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/listeners.public.ts#L49)
+Defined in: [listeners.public.ts:49](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L49)
 
 The debounce time in milliseconds for validation triggers (change, blur).
 Does not affect submit events, which always execute immediately.
@@ -55,4 +55,4 @@ Does not affect submit events, which always execute immediately.
 triggers: ListenerTriggerOption<TTriggers, TFormData, TValue>[];
 ```
 
-Defined in: [listeners.public.ts:50](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/listeners.public.ts#L50)
+Defined in: [listeners.public.ts:50](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L50)

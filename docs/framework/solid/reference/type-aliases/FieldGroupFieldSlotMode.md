@@ -9,4 +9,4 @@ title: FieldGroupFieldSlotMode
 type FieldGroupFieldSlotMode = "strict" | "loose";
 ```
 
-Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:19](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L19)
+Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:15](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L15)

@@ -9,7 +9,7 @@ title: FieldGroupFieldData
 type FieldGroupFieldData<TFields> = { [TFieldName in keyof TFields]: TFields[TFieldName] extends FieldGroupFieldSlot<infer TValue, any> ? TValue : never };
 ```
 
-Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:78](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L78)
+Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:74](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L74)
 
 ## Type Parameters
 

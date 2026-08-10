@@ -5,7 +5,7 @@ title: FieldGroupHelper
 
 # Interface: FieldGroupHelper
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:180](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L180)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:222](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L222)
 
 ## Properties
 
@@ -15,7 +15,10 @@ Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:180](https:
 loose: <TValue>() => LooseFieldGroupFieldSlot<TValue>;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:182](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L182)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:248](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L248)
+
+Declares a virtual field that can bind to form fields with an overlapping
+non-nullish value type instead of requiring an exact type match.
 
 #### Type Parameters
 
@@ -27,6 +30,15 @@ Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:182](https:
 
 [`LooseFieldGroupFieldSlot`](../type-aliases/LooseFieldGroupFieldSlot.md)\<`TValue`\>
 
+#### Example
+
+```tsx
+const passwordFieldGroup = defineFieldGroup(({ loose }) => ({
+  password: loose<string>(),
+  confirmPassword: loose<string>(),
+}))
+```
+
 ***
 
 ### strict
@@ -35,7 +47,10 @@ Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:182](https:
 strict: <TValue>() => StrictFieldGroupFieldSlot<TValue>;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:181](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L181)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:235](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L235)
+
+Declares a virtual field whose value type must exactly match the value type
+of the concrete form field it binds to.
 
 #### Type Parameters
 
@@ -46,3 +61,12 @@ Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:181](https:
 #### Returns
 
 [`StrictFieldGroupFieldSlot`](../type-aliases/StrictFieldGroupFieldSlot.md)\<`TValue`\>
+
+#### Example
+
+```tsx
+const passwordFieldGroup = defineFieldGroup(({ strict }) => ({
+  password: strict<string>(),
+  confirmPassword: strict<string>(),
+}))
+```

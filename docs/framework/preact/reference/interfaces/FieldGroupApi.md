@@ -5,7 +5,7 @@ title: FieldGroupApi
 
 # Interface: FieldGroupApi\<TFieldData, TFieldComponents\>
 
-Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:74](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts#L74)
+Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:74](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts#L74)
 
 ## Extends
 
@@ -29,7 +29,7 @@ Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:74](htt
 ArrayField: FieldGroupArrayFieldComponent<TFieldData, TFieldComponents>;
 ```
 
-Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:82](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts#L82)
+Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:82](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts#L82)
 
 ***
 
@@ -39,7 +39,7 @@ Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:82](htt
 atom: ReadonlyAtom<TFieldData>;
 ```
 
-Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:80](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts#L80)
+Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:80](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts#L80)
 
 ***
 
@@ -49,7 +49,7 @@ Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:80](htt
 Field: FieldGroupFieldComponent<TFieldData, TFieldComponents>;
 ```
 
-Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:81](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts#L81)
+Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:81](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts#L81)
 
 ***
 
@@ -59,4 +59,4 @@ Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:81](htt
 Subscribe: FieldGroupSubscribeComponent;
 ```
 
-Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:83](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts#L83)
+Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:83](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts#L83)

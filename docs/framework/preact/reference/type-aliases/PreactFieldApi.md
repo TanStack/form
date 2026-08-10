@@ -9,7 +9,7 @@ title: PreactFieldApi
 type PreactFieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes, TFieldComponents> = FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes> & FieldComponentsMatchingType<TFieldComponents, TFieldValue>;
 ```
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:78](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L78)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:78](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L78)
 
 ## Type Parameters
 

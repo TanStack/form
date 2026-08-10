@@ -5,7 +5,7 @@ title: FieldGroupHelper
 
 # Interface: FieldGroupHelper
 
-Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:166](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L166)
+Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:162](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L162)
 
 ## Properties
 
@@ -15,7 +15,7 @@ Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:166](https:
 loose: <TValue>() => LooseFieldGroupFieldSlot<TValue>;
 ```
 
-Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:168](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L168)
+Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:164](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L164)
 
 #### Type Parameters
 
@@ -35,7 +35,7 @@ Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:168](https:
 strict: <TValue>() => StrictFieldGroupFieldSlot<TValue>;
 ```
 
-Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:167](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L167)
+Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:163](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L163)
 
 #### Type Parameters
 

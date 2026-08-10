@@ -3,19 +3,21 @@ id: FieldGroupWithFieldsFn
 title: FieldGroupWithFieldsFn
 ---
 
-# Type Alias: FieldGroupWithFieldsFn
+# Type Alias: FieldGroupWithFieldsFn\<TFieldGroup\>
 
 ```ts
-type FieldGroupWithFieldsFn = <TFieldGroup, TProps, TFieldsPropName>(fields, Component, fieldsPropName) => <TFormData>(props) => JSX.Element;
+type FieldGroupWithFieldsFn<TFieldGroup> = <TProps, TFieldsPropName>(Component, fieldsPropName) => <TFormData>(props) => JSX.Element;
 ```
 
-Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:147](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L147)
+Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:143](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L143)
 
 ## Type Parameters
 
 ### TFieldGroup
 
-`TFieldGroup` *extends* [`FieldGroupDefinition`](FieldGroupDefinition.md)\<`any`, `any`\>
+`TFieldGroup` *extends* [`SolidFieldGroup`](SolidFieldGroup.md)\<`any`, `any`\>
+
+## Type Parameters
 
 ### TProps
 
@@ -26,10 +28,6 @@ Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:147](https:
 `TFieldsPropName` *extends* [`FieldGroupFieldsPropName`](FieldGroupFieldsPropName.md)\<`TProps`, `TFieldGroup`\>
 
 ## Parameters
-
-### fields
-
-`TFieldGroup`
 
 ### Component
 

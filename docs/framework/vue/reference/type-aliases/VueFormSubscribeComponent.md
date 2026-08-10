@@ -11,7 +11,7 @@ type VueFormSubscribeComponent<TFormData, TFormErrorTypes> = <TSelected>(props) 
 }>;
 ```
 
-Defined in: [packages/vue-form/src/VueForm/Components.public.ts:86](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L86)
+Defined in: [packages/vue-form/src/VueForm/Components.public.ts:86](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L86)
 
 ## Type Parameters
 

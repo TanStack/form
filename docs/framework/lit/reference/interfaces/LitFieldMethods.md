@@ -5,7 +5,7 @@ title: LitFieldMethods
 
 # Interface: LitFieldMethods\<TFieldData, TGroupFieldError, TFormData, TFormErrorTypes\>
 
-Defined in: [tanstack-form-controller.ts:81](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L81)
+Defined in: [tanstack-form-controller.ts:81](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L81)
 
 ## Type Parameters
 
@@ -33,7 +33,7 @@ Defined in: [tanstack-form-controller.ts:81](https://github.com/LeCarbonator/tan
 arrayField<TFieldName, TFieldValidators>(options, render): unknown;
 ```
 
-Defined in: [tanstack-form-controller.ts:117](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L117)
+Defined in: [tanstack-form-controller.ts:117](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L117)
 
 #### Type Parameters
 
@@ -67,7 +67,7 @@ Defined in: [tanstack-form-controller.ts:117](https://github.com/LeCarbonator/ta
 field<TFieldName, TFieldValidators>(options, render): unknown;
 ```
 
-Defined in: [tanstack-form-controller.ts:87](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L87)
+Defined in: [tanstack-form-controller.ts:87](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L87)
 
 #### Type Parameters
 

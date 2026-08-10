@@ -11,4 +11,4 @@ type AppFormComponent = FunctionComponent<{
 }>;
 ```
 
-Defined in: [packages/react-form/src/AppForm/ReactAppFormApi.public.tsx:6](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/AppForm/ReactAppFormApi.public.tsx#L6)
+Defined in: [packages/react-form/src/AppForm/ReactAppFormApi.public.tsx:6](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/ReactAppFormApi.public.tsx#L6)

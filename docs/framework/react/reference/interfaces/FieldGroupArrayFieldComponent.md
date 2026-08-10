@@ -5,7 +5,7 @@ title: FieldGroupArrayFieldComponent
 
 # Interface: FieldGroupArrayFieldComponent()\<TFieldData, TFieldComponents\>
 
-Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:41](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L41)
+Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:84](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L84)
 
 ## Type Parameters
 
@@ -21,7 +21,12 @@ Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:41](http
 FieldGroupArrayFieldComponent<TFieldName>(props): ReactNode;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:45](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L45)
+Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:128](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L128)
+
+Renders an array field from this field group.
+
+The field name is automatically connected to the form section where the
+field group is used.
 
 ## Type Parameters
 
@@ -38,3 +43,38 @@ Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:45](http
 ## Returns
 
 `ReactNode`
+
+## Example
+
+```tsx
+const contactFieldGroup = defineFieldGroup(({ strict }) => ({
+  emails: strict<Array<{ value: string }>>(),
+}))
+
+interface ContactFieldsProps {
+  fields: typeof contactFieldGroup.fields
+}
+
+function ContactFields({ fields }: ContactFieldsProps) {
+  return (
+    <fields.ArrayField name="emails">
+      {(emails) => (
+        <>
+          {emails.value.map((_, index) => (
+            <fields.Field key={index} name={`emails[${index}].value`}>
+              {(field) => (
+                <input
+                  value={field.value}
+                  onChange={(event) =>
+                    field.handleChange(event.target.value)
+                  }
+                />
+              )}
+            </fields.Field>
+          ))}
+        </>
+      )}
+    </fields.ArrayField>
+  )
+}
+```

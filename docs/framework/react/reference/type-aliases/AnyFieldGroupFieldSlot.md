@@ -9,4 +9,4 @@ title: AnyFieldGroupFieldSlot
 type AnyFieldGroupFieldSlot = FieldGroupFieldSlot<any>;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:29](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L29)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:25](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L25)

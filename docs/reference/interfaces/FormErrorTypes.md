@@ -5,7 +5,7 @@ title: FormErrorTypes
 
 # Interface: FormErrorTypes\<TFormError, TFieldError\>
 
-Defined in: [validation.public.ts:557](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L557)
+Defined in: [validation.public.ts:557](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L557)
 
 ## Type Parameters
 
@@ -25,7 +25,7 @@ Defined in: [validation.public.ts:557](https://github.com/LeCarbonator/tanstack-
 readonly fieldError: TFieldError;
 ```
 
-Defined in: [validation.public.ts:562](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L562)
+Defined in: [validation.public.ts:562](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L562)
 
 ***
 
@@ -35,4 +35,4 @@ Defined in: [validation.public.ts:562](https://github.com/LeCarbonator/tanstack-
 readonly formError: TFormError;
 ```
 
-Defined in: [validation.public.ts:561](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L561)
+Defined in: [validation.public.ts:561](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L561)

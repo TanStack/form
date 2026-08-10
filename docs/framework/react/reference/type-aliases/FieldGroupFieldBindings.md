@@ -9,7 +9,7 @@ title: FieldGroupFieldBindings
 type FieldGroupFieldBindings<TFields, TFormData> = { [TFieldName in keyof TFields]: FieldGroupFieldBindingForSlot<TFormData, TFields[TFieldName]> };
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:134](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L134)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:130](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L130)
 
 ## Type Parameters
 

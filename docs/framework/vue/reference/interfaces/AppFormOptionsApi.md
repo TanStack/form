@@ -5,7 +5,7 @@ title: AppFormOptionsApi
 
 # Interface: AppFormOptionsApi()\<TComponents\>
 
-Defined in: [packages/vue-form/src/AppForm/appFormOptions.public.ts:21](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/AppForm/appFormOptions.public.ts#L21)
+Defined in: [packages/vue-form/src/AppForm/appFormOptions.public.ts:21](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/appFormOptions.public.ts#L21)
 
 ## Type Parameters
 
@@ -17,7 +17,7 @@ Defined in: [packages/vue-form/src/AppForm/appFormOptions.public.ts:21](https://
 AppFormOptionsApi<TFormData, TFormValidators, TSubmitReturn>(options): AppFormOptions<TFormData, TFormValidators, TSubmitReturn, TComponents>;
 ```
 
-Defined in: [packages/vue-form/src/AppForm/appFormOptions.public.ts:22](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/AppForm/appFormOptions.public.ts#L22)
+Defined in: [packages/vue-form/src/AppForm/appFormOptions.public.ts:22](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/appFormOptions.public.ts#L22)
 
 ## Type Parameters
 
@@ -51,7 +51,7 @@ Defined in: [packages/vue-form/src/AppForm/appFormOptions.public.ts:22](https://
 looseSchema: <TFormValidators, TFormData, TSubmitReturn>(options) => AppFormOptions<InferUnion<TFormData, FormValidatorData<TFormValidators>>, TFormValidators, TSubmitReturn, TComponents>;
 ```
 
-Defined in: [packages/vue-form/src/AppForm/appFormOptions.public.ts:43](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/AppForm/appFormOptions.public.ts#L43)
+Defined in: [packages/vue-form/src/AppForm/appFormOptions.public.ts:43](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/appFormOptions.public.ts#L43)
 
 #### Type Parameters
 
@@ -85,7 +85,7 @@ Defined in: [packages/vue-form/src/AppForm/appFormOptions.public.ts:43](https://
 strictSchema: <TFormValidators, TFormData, TSubmitReturn>(options) => AppFormOptions<FormValidatorData<TFormValidators>, TFormValidators, TSubmitReturn, TComponents>;
 ```
 
-Defined in: [packages/vue-form/src/AppForm/appFormOptions.public.ts:30](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/AppForm/appFormOptions.public.ts#L30)
+Defined in: [packages/vue-form/src/AppForm/appFormOptions.public.ts:30](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/appFormOptions.public.ts#L30)
 
 #### Type Parameters
 

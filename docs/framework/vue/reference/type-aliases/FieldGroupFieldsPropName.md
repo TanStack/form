@@ -9,7 +9,7 @@ title: FieldGroupFieldsPropName
 type FieldGroupFieldsPropName<TProps, TFieldGroup> = { [TPropName in keyof TProps]-?: IsSame<TProps[TPropName], TFieldGroup> extends true ? TPropName : never }[keyof TProps];
 ```
 
-Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:130](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L130)
+Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:126](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L126)
 
 ## Type Parameters
 
@@ -19,4 +19,4 @@ Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:130](https://
 
 ### TFieldGroup
 
-`TFieldGroup` *extends* [`FieldGroupDefinition`](FieldGroupDefinition.md)\<`any`, `any`\>
+`TFieldGroup` *extends* [`VueFieldGroup`](VueFieldGroup.md)\<`any`, `any`\>

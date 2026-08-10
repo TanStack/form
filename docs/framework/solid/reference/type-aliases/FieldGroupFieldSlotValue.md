@@ -9,7 +9,7 @@ title: FieldGroupFieldSlotValue
 type FieldGroupFieldSlotValue<TSlot> = TSlot extends FieldGroupFieldSlot<infer TValue> ? TValue : never;
 ```
 
-Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:36](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L36)
+Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:32](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L32)
 
 ## Type Parameters
 

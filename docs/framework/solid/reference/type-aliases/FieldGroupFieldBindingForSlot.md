@@ -9,7 +9,7 @@ title: FieldGroupFieldBindingForSlot
 type FieldGroupFieldBindingForSlot<TFormData, TSlot> = TSlot extends FieldGroupFieldSlot<infer TValue, infer TMode> ? TMode extends "strict" ? FieldGroupFieldNameForSlot<TFormData, TSlot> : DeepKeysWhereValueIncludes<TFormData, TValue> : never;
 ```
 
-Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:113](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L113)
+Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:109](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L109)
 
 ## Type Parameters
 

@@ -9,7 +9,7 @@ title: getFormType
 function getFormType<TOptions>(_formOptions): LitFormType<TOptions>;
 ```
 
-Defined in: [get-form-type.ts:26](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/lit-form/src/get-form-type.ts#L26)
+Defined in: [get-form-type.ts:26](https://github.com/TanStack/form/blob/main/packages/lit-form/src/get-form-type.ts#L26)
 
 Type-only helper for declaring a child element's form property from shared
 `formOptions`. It intentionally has no runtime value.

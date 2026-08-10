@@ -13,7 +13,7 @@ type FieldGroupArrayFieldComponent<TFieldData, TFieldComponents> = <TFieldName>(
 }>;
 ```
 
-Defined in: [packages/vue-form/src/FieldGroup/FieldGroupApi.public.ts:70](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/FieldGroup/FieldGroupApi.public.ts#L70)
+Defined in: [packages/vue-form/src/FieldGroup/FieldGroupApi.public.ts:70](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/FieldGroupApi.public.ts#L70)
 
 ## Type Parameters
 

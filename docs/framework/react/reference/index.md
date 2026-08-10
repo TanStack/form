@@ -20,10 +20,10 @@ title: "@tanstack/react-form"
 - [BaseAtom](interfaces/BaseAtom.md)
 - [FieldGroupApi](interfaces/FieldGroupApi.md)
 - [FieldGroupArrayFieldComponent](interfaces/FieldGroupArrayFieldComponent.md)
+- [FieldGroupDefinition](interfaces/FieldGroupDefinition.md)
 - [FieldGroupFieldComponent](interfaces/FieldGroupFieldComponent.md)
 - [FieldGroupFieldSlot](interfaces/FieldGroupFieldSlot.md)
 - [FieldGroupHelper](interfaces/FieldGroupHelper.md)
-- [FieldGroupHelpers](interfaces/FieldGroupHelpers.md)
 - [FormHookHelpers](interfaces/FormHookHelpers.md)
 - [InternalBaseAtom](interfaces/InternalBaseAtom.md)
 - [InternalReadonlyAtom](interfaces/InternalReadonlyAtom.md)
@@ -51,8 +51,7 @@ title: "@tanstack/react-form"
 - [AnyReactFormComponentMap](type-aliases/AnyReactFormComponentMap.md)
 - [AppFormComponent](type-aliases/AppFormComponent.md)
 - [DefaultReactFormComponentMap](type-aliases/DefaultReactFormComponentMap.md)
-- [DefineFieldsFn](type-aliases/DefineFieldsFn.md)
-- [FieldGroupDefinition](type-aliases/FieldGroupDefinition.md)
+- [DefineFieldGroupFn](type-aliases/DefineFieldGroupFn.md)
 - [FieldGroupFieldBindingForSlot](type-aliases/FieldGroupFieldBindingForSlot.md)
 - [FieldGroupFieldBindings](type-aliases/FieldGroupFieldBindings.md)
 - [FieldGroupFieldBindingsOf](type-aliases/FieldGroupFieldBindingsOf.md)
@@ -76,6 +75,7 @@ title: "@tanstack/react-form"
 - [Observer](type-aliases/Observer.md)
 - [ReactAppFormApi](type-aliases/ReactAppFormApi.md)
 - [ReactFieldApi](type-aliases/ReactFieldApi.md)
+- [ReactFieldGroup](type-aliases/ReactFieldGroup.md)
 - [ReactFormApi](type-aliases/ReactFormApi.md)
 - [ReactFormArrayFieldComponent](type-aliases/ReactFormArrayFieldComponent.md)
 - [ReactFormFieldComponent](type-aliases/ReactFormFieldComponent.md)
@@ -96,6 +96,7 @@ title: "@tanstack/react-form"
 
 ## Variables
 
+- [defineFieldGroup](variables/defineFieldGroup.md)
 - [useForm](variables/useForm.md)
 - [~~useStore~~](variables/useStore.md)
 
@@ -109,7 +110,6 @@ title: "@tanstack/react-form"
 - [createStore](functions/createStore.md)
 - [createStoreContext](functions/createStoreContext.md)
 - [flush](functions/flush.md)
-- [getFieldGroupHelpers](functions/getFieldGroupHelpers.md)
 - [getFormHookHelpers](functions/getFormHookHelpers.md)
 - [shallow](functions/shallow.md)
 - [Subscribe](functions/Subscribe.md)

@@ -5,7 +5,7 @@ title: PreactFormGroupProps
 
 # Interface: PreactFormGroupProps\<TFormData, TGroupName, TGroupValue, TGroupValidators, TFormErrorTypes, TFieldComponents\>
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:310](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L310)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:310](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L310)
 
 ## Extends
 
@@ -45,7 +45,7 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:310](https
 children: (groupApi) => ComponentChildren;
 ```
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:327](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L327)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:327](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L327)
 
 #### Parameters
 

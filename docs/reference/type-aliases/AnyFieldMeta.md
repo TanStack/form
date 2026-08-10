@@ -9,4 +9,4 @@ title: AnyFieldMeta
 type AnyFieldMeta = FieldMeta<any>;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:36](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L36)
+Defined in: [FieldApi/FieldApi.public.ts:36](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L36)

@@ -9,7 +9,7 @@ title: FieldGroupFieldSlotModeOf
 type FieldGroupFieldSlotModeOf<TSlot> = TSlot extends FieldGroupFieldSlot<any, infer TMode> ? TMode : never;
 ```
 
-Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:39](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L39)
+Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:35](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L35)
 
 ## Type Parameters
 

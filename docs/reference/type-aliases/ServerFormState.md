@@ -9,7 +9,7 @@ title: ServerFormState
 type ServerFormState<TFormData, TFormValidators> = ServerFormStateByResult<TFormData, FormValidateResultFromErrorTypes<TFormData, ToServerFormErrorTypes<TFormValidators>>>;
 ```
 
-Defined in: [ssr.public.ts:45](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/ssr.public.ts#L45)
+Defined in: [ssr.public.ts:45](https://github.com/TanStack/form/blob/main/packages/form-core/src/ssr.public.ts#L45)
 
 ## Type Parameters
 

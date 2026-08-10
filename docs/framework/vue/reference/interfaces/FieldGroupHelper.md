@@ -5,7 +5,7 @@ title: FieldGroupHelper
 
 # Interface: FieldGroupHelper
 
-Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:171](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L171)
+Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:165](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L165)
 
 ## Properties
 
@@ -15,7 +15,7 @@ Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:171](https://
 loose: <TValue>() => LooseFieldGroupFieldSlot<TValue>;
 ```
 
-Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:173](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L173)
+Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:167](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L167)
 
 #### Type Parameters
 
@@ -35,7 +35,7 @@ Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:173](https://
 strict: <TValue>() => StrictFieldGroupFieldSlot<TValue>;
 ```
 
-Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:172](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L172)
+Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:166](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L166)
 
 #### Type Parameters
 

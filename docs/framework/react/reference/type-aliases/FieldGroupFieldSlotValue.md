@@ -9,7 +9,7 @@ title: FieldGroupFieldSlotValue
 type FieldGroupFieldSlotValue<TSlot> = TSlot extends FieldGroupFieldSlot<infer TValue> ? TValue : never;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:41](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L41)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:37](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L37)
 
 ## Type Parameters
 

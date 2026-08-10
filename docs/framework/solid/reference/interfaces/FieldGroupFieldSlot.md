@@ -5,7 +5,7 @@ title: FieldGroupFieldSlot
 
 # Interface: FieldGroupFieldSlot\<TValue, TMode\>
 
-Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:20](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L20)
+Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:16](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L16)
 
 ## Type Parameters
 
@@ -25,7 +25,7 @@ Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:20](https:/
 readonly [fieldGroupFieldSlotValueSymbol]: TValue;
 ```
 
-Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:25](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L25)
+Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:21](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L21)
 
 ***
 
@@ -35,4 +35,4 @@ Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:25](https:/
 readonly mode: TMode;
 ```
 
-Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:24](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L24)
+Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:20](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L20)

@@ -9,7 +9,7 @@ title: FieldGroupSubscribeProps
 type FieldGroupSubscribeProps<TSelected> = SolidFormSubscribeProps<unknown, FormErrorTypes, TSelected>;
 ```
 
-Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:63](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts#L63)
+Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:63](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts#L63)
 
 ## Type Parameters
 

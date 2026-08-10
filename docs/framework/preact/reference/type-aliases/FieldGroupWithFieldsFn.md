@@ -3,19 +3,21 @@ id: FieldGroupWithFieldsFn
 title: FieldGroupWithFieldsFn
 ---
 
-# Type Alias: FieldGroupWithFieldsFn
+# Type Alias: FieldGroupWithFieldsFn\<TFieldGroup\>
 
 ```ts
-type FieldGroupWithFieldsFn = <TFieldGroup, TProps, TFieldsPropName>(fields, Component, fieldsPropName) => <TFormData>(props) => CrossVersionPreactNode;
+type FieldGroupWithFieldsFn<TFieldGroup> = <TProps, TFieldsPropName>(Component, fieldsPropName) => <TFormData>(props) => CrossVersionPreactNode;
 ```
 
-Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:162](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/FieldGroup/withFields.public.ts#L162)
+Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:158](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/withFields.public.ts#L158)
 
 ## Type Parameters
 
 ### TFieldGroup
 
-`TFieldGroup` *extends* [`FieldGroupDefinition`](FieldGroupDefinition.md)\<`any`, `any`\>
+`TFieldGroup` *extends* [`PreactFieldGroup`](PreactFieldGroup.md)\<`any`, `any`\>
+
+## Type Parameters
 
 ### TProps
 
@@ -26,10 +28,6 @@ Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:162](https
 `TFieldsPropName` *extends* [`FieldGroupFieldsPropName`](FieldGroupFieldsPropName.md)\<`TProps`, `TFieldGroup`\>
 
 ## Parameters
-
-### fields
-
-`TFieldGroup`
 
 ### Component
 
