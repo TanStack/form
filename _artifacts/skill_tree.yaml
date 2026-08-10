@@ -32,7 +32,7 @@ skills:
       - packages/form-core/src/FieldApi/fieldState.lib.ts
       - examples/react/array/src/index.tsx
       - examples/react/basic-splitting-form/src/index.tsx
-      - examples/react/ui-integration/shadcn/src/components/form/app-form.ts
+      - examples/react/ui-integration-shadcn/src/components/form/app-form.ts
   - name: Reusable Form Policies
     slug: reusable-form-policies
     type: framework
@@ -49,7 +49,7 @@ skills:
       - packages/react-form/tests/submit-return.test-d.tsx
       - packages/form-core/tests/validation.test.ts
       - packages/form-core/tests/validation.test-d.ts
-      - examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx
+      - examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
     references:
       - references/reusable-policy-boundaries.md
   - name: Choosing Form Options Modes
@@ -64,8 +64,8 @@ skills:
       - packages/react-form/src/AppForm/appFormOptions.public.ts
       - packages/form-core/tests/validation.test.ts
       - packages/form-core/tests/validation.test-d.ts
-      - examples/react/ui-integration/shadcn/src/app/booking/schema.ts
-      - examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx
+      - examples/react/ui-integration-shadcn/src/app/booking/schema.ts
+      - examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
       - https://standardschema.dev/
       - https://zod.dev/library-authors
       - https://valibot.dev/guides/integrate-valibot/
@@ -126,7 +126,7 @@ skills:
       - packages/form-core/tests/validation.test-d.ts
       - packages/form-core/tests/FormApi/validation.spec.ts
       - packages/form-core/tests/FormGroupApi/FormGroupApi.spec.ts
-      - examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx
+      - examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
     references:
       - references/error-visibility-policies.md
   - name: Type Error Debugging
@@ -163,10 +163,10 @@ skills:
       - examples/react/array/src/index.tsx
       - examples/react/basic-splitting-form/src/index.tsx
       - examples/react/field-groups/src/index.tsx
-      - examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx
-      - examples/react/ui-integration/shadcn/src/app/booking/booking-form.tsx
-      - examples/react/ui-integration/dnd-kit/src/singleList/index.tsx
-      - examples/react/ui-integration/dnd-kit/src/twoLists/index.tsx
+      - examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
+      - examples/react/ui-integration-shadcn/src/app/booking/booking-form.tsx
+      - examples/react/ui-integration-dnd-kit/src/singleList/index.tsx
+      - examples/react/ui-integration-dnd-kit/src/twoLists/index.tsx
     references:
       - references/example-scenarios.md
 tensions:

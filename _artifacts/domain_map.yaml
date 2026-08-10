@@ -323,7 +323,7 @@ skill_candidates:
       - packages/form-core/src/FieldApi/fieldState.lib.ts
       - examples/react/array/src/index.tsx
       - examples/react/basic-splitting-form/src/index.tsx
-      - examples/react/ui-integration/shadcn/src/components/form/app-form.ts
+      - examples/react/ui-integration-shadcn/src/components/form/app-form.ts
     teaches:
       - 'Prefer adapter APIs over constructing core APIs directly.'
       - 'Use render-prop field APIs and subscriptions instead of copying form state into component state.'
@@ -357,7 +357,7 @@ skill_candidates:
           - packages/react-form/src/ReactForm/ReactFormApi.lib.tsx
           - packages/react-form/src/Subscribe.public.tsx
           - packages/react-form/src/ReactForm/fieldSubscriptions.lib.ts
-          - examples/react/ui-integration/dnd-kit/src/twoLists/index.tsx
+          - examples/react/ui-integration-dnd-kit/src/twoLists/index.tsx
       - name: core_as_user_entrypoint
         symptom: 'Example imports @tanstack/form-core or constructs FormApi in React application code.'
         correction: 'Use @tanstack/react-form APIs; treat core as concept and implementation source.'
@@ -369,7 +369,7 @@ skill_candidates:
         correction: 'Wrap custom form components in the app-form provider pattern created by createFormHook.'
         evidence:
           - packages/react-form/src/AppForm/contexts.lib.ts
-          - examples/react/ui-integration/shadcn/src/components/form/app-form.ts
+          - examples/react/ui-integration-shadcn/src/components/form/app-form.ts
       - name: over_specific_shared_form_type
         symptom: 'A reusable child form prop rejects a parent form once onSubmit is added.'
         correction: 'Keep shared options without onSubmit when reusable children should stay submit-agnostic.'
@@ -427,7 +427,7 @@ skill_candidates:
       - packages/react-form/tests/submit-return.test-d.tsx
       - packages/form-core/tests/validation.test.ts
       - packages/form-core/tests/validation.test-d.ts
-      - examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx
+      - examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
     teaches:
       - 'Use ReactFormType<typeof sharedOptions> as the helper type for split form sections that receive a form prop.'
       - 'ReactFormType splitting reduces nesting in one known form; AppForm reduces repeated field JSX; field groups cover sections reused across different forms or paths.'
@@ -453,13 +453,13 @@ skill_candidates:
         correction: 'Move default visible-error behavior into form-level errorVisibility, or extract a named createErrorVisibility helper.'
         evidence:
           - packages/form-core/tests/validation.test-d.ts
-          - examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx
+          - examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
       - name: duplicated_validator_config_without_intent
         symptom: 'Trigger, debounce, runOnSubmit, or bailIfInvalid config is copied without explaining the intended workflow.'
         correction: 'Extract a named createValidator/createValidators helper and document the behavior intent.'
         evidence:
           - packages/form-core/tests/validation.test.ts
-          - examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx
+          - examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
       - name: reusable_visibility_reads_concrete_values
         symptom: 'A reusable createErrorVisibility callback tries to read a concrete property such as state.values.name.'
         correction: 'Keep reusable policies value-agnostic, or use an inline errorVisibility callback when concrete typed values are needed.'
@@ -483,7 +483,7 @@ skill_candidates:
       - packages/react-form/src/AppForm/appFormOptions.public.ts
       - packages/form-core/tests/validation.test.ts
       - packages/form-core/tests/validation.test-d.ts
-      - examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx
+      - examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
     teaches:
       - 'The option helpers are runtime identity helpers with type-level meaning.'
       - 'Default formOptions infers from defaultValues; those values are taken at face value and drive validator callback value types.'
@@ -542,7 +542,7 @@ skill_candidates:
         correction: 'Start from Zod-as-ruleset guidance unless the specific schema is deliberately written as a transform pipeline.'
         evidence:
           - maintainer_guidance.schema_ecosystem
-          - examples/react/ui-integration/shadcn/src/app/booking/schema.ts
+          - examples/react/ui-integration-shadcn/src/app/booking/schema.ts
   - id: schema-driven-forms
     title: Schema Driven Forms
     status: reviewed
@@ -561,7 +561,7 @@ skill_candidates:
       - packages/form-core/src/FormApi/FormApi.public.ts
       - packages/form-core/tests/validation.test.ts
       - packages/form-core/tests/validation.test-d.ts
-      - examples/react/ui-integration/shadcn/src/app/booking/schema.ts
+      - examples/react/ui-integration-shadcn/src/app/booking/schema.ts
       - examples/react/field-groups/src/index.tsx
     teaches:
       - 'Use Standard Schema-compatible validators in form or field validators.'
@@ -593,7 +593,7 @@ skill_candidates:
         correction: 'Extract a named createValidator/createValidators helper when the policy has semantic meaning, and document why that behavior exists.'
         evidence:
           - packages/form-core/tests/validation.test.ts
-          - examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx
+          - examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
       - name: schema_metadata_expectation
         symptom: 'Example tries to infer required labels, descriptions, or UI decorations from Standard Schema metadata.'
         correction: 'Keep UI metadata explicit or schema-library-specific; Standard Schema does not standardize metadata.'
@@ -698,7 +698,7 @@ skill_candidates:
       - packages/form-core/tests/validation.test-d.ts
       - packages/form-core/tests/FormApi/validation.spec.ts
       - packages/form-core/tests/FormGroupApi/FormGroupApi.spec.ts
-      - examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx
+      - examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
     teaches:
       - 'errorVisibility is a callback, not a string preset.'
       - 'Use form-level errorVisibility to control default visible-error behavior instead of scattering local checks like field.meta.isTouched && field.meta.isInvalid.'
@@ -721,7 +721,7 @@ skill_candidates:
         correction: 'Move default visible-error behavior into form-level errorVisibility.'
         evidence:
           - maintainer_guidance
-          - examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx
+          - examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
       - name: checking_visible_errors_inside_visibility
         symptom: 'Visibility callback tries to inspect fieldState.meta.errors or validity.'
         correction: 'Base visibility on pre-filter meta such as isBlurred, isTouched, isDirty, or submissionAttempts.'
@@ -738,7 +738,7 @@ skill_candidates:
         correction: 'Extract a named helper and use comments or JSDoc to document the intended user behavior.'
         evidence:
           - packages/form-core/tests/validation.test.ts
-          - examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx
+          - examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
       - name: group_submit_scope_surprise
         symptom: 'A wizard section expects form-level submit attempts and group-level submit attempts to be interchangeable.'
         correction: 'Account for nearest group scoping when using state.submissionAttempts in grouped forms.'
@@ -864,17 +864,17 @@ skill_candidates:
       - 'examples/react/array'
       - 'examples/react/basic-splitting-form'
       - 'examples/react/field-groups'
-      - 'examples/react/ui-integration/shadcn'
-      - 'examples/react/ui-integration/dnd-kit'
+      - 'examples/react/ui-integration-shadcn'
+      - 'examples/react/ui-integration-dnd-kit'
     sources:
       - examples/react/basic/src/index.tsx
       - examples/react/array/src/index.tsx
       - examples/react/basic-splitting-form/src/index.tsx
       - examples/react/field-groups/src/index.tsx
-      - examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx
-      - examples/react/ui-integration/shadcn/src/app/booking/booking-form.tsx
-      - examples/react/ui-integration/dnd-kit/src/singleList/index.tsx
-      - examples/react/ui-integration/dnd-kit/src/twoLists/index.tsx
+      - examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
+      - examples/react/ui-integration-shadcn/src/app/booking/booking-form.tsx
+      - examples/react/ui-integration-dnd-kit/src/singleList/index.tsx
+      - examples/react/ui-integration-dnd-kit/src/twoLists/index.tsx
     teaches:
       - 'Examples are scaffolding targets for maintainers in this private repository, and future users experience them as reference examples.'
       - 'Examples should model user journeys, not just newly added core behavior.'
@@ -890,12 +890,12 @@ skill_candidates:
         evidence:
           - maintainer_guidance.adapter_first
           - examples/react/basic/src/index.tsx
-          - examples/react/ui-integration/shadcn/src/app/booking/booking-form.tsx
+          - examples/react/ui-integration-shadcn/src/app/booking/booking-form.tsx
       - name: dnd_multi_list_index_model
         symptom: 'Multi-list drag-and-drop stores items as a single indexed array and races React with the DnD library.'
         correction: 'Use stable item IDs with separate order arrays for cross-list movement.'
         evidence:
-          - examples/react/ui-integration/dnd-kit/src/twoLists/index.tsx
+          - examples/react/ui-integration-dnd-kit/src/twoLists/index.tsx
       - name: native_reset_surprise
         symptom: 'A reset button triggers browser-native reset instead of form.reset semantics.'
         correction: 'Prevent default button behavior and call form.reset intentionally.'
