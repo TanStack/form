@@ -592,32 +592,12 @@
               "to": "framework/react/examples/standard-schema"
             },
             {
-              "label": "TanStack Query Integration",
-              "to": "framework/react/examples/query-integration"
-            },
-            {
               "label": "React Compiler",
               "to": "framework/react/examples/compiler"
             },
             {
               "label": "Expo",
               "to": "framework/react/examples/expo"
-            },
-            {
-              "label": "Next.js",
-              "to": "framework/react/examples/nextjs"
-            },
-            {
-              "label": "Next Server Actions",
-              "to": "framework/react/examples/next-server-actions"
-            },
-            {
-              "label": "Next Server Actions with Zod",
-              "to": "framework/react/examples/next-server-actions-zod"
-            },
-            {
-              "label": "TanStack Start",
-              "to": "framework/react/examples/tanstack-start"
             }
           ]
         },
@@ -655,10 +635,6 @@
             {
               "label": "Standard Schema",
               "to": "framework/preact/examples/standard-schema"
-            },
-            {
-              "label": "TanStack Query Integration",
-              "to": "framework/preact/examples/query-integration"
             }
           ]
         },
@@ -684,6 +660,43 @@
             {
               "label": "Standard Schema",
               "to": "framework/vue/examples/standard-schema"
+            }
+          ]
+        },
+        {
+          "label": "angular",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "framework/angular/examples/simple"
+            },
+            {
+              "label": "Basic",
+              "to": "framework/angular/examples/basic"
+            },
+            {
+              "label": "Form Splitting",
+              "to": "framework/angular/examples/basic-splitting-form"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/angular/examples/array"
+            },
+            {
+              "label": "Field Groups",
+              "to": "framework/angular/examples/field-groups"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/angular/examples/large-form"
+            },
+            {
+              "label": "Multi-Step Wizard",
+              "to": "framework/angular/examples/multi-step-wizard"
+            },
+            {
+              "label": "Standard Schema",
+              "to": "framework/angular/examples/standard-schema"
             }
           ]
         },
@@ -721,10 +734,6 @@
             {
               "label": "Standard Schema",
               "to": "framework/solid/examples/standard-schema"
-            },
-            {
-              "label": "TanStack Query Integration",
-              "to": "framework/solid/examples/query-integration"
             }
           ]
         },
@@ -762,10 +771,6 @@
             {
               "label": "Standard Schema",
               "to": "framework/lit/examples/standard-schema"
-            },
-            {
-              "label": "TanStack Query Integration",
-              "to": "framework/lit/examples/query-integration"
             }
           ]
         },
@@ -803,10 +808,101 @@
             {
               "label": "Standard Schema",
               "to": "framework/svelte/examples/standard-schema"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Framework & Library Integrations",
+      "children": [],
+      "frameworks": [
+        {
+          "label": "react",
+          "children": [
+            {
+              "label": "TanStack Query",
+              "to": "framework/react/examples/query-integration"
             },
             {
-              "label": "TanStack Query Integration",
+              "label": "Next.js",
+              "to": "framework/react/examples/nextjs"
+            },
+            {
+              "label": "Next Server Actions",
+              "to": "framework/react/examples/next-server-actions"
+            },
+            {
+              "label": "Next Server Actions with Zod",
+              "to": "framework/react/examples/next-server-actions-zod"
+            },
+            {
+              "label": "TanStack Start",
+              "to": "framework/react/examples/tanstack-start"
+            }
+          ]
+        },
+        {
+          "label": "preact",
+          "children": [
+            {
+              "label": "TanStack Query",
+              "to": "framework/preact/examples/query-integration"
+            }
+          ]
+        },
+        {
+          "label": "angular",
+          "children": [
+            {
+              "label": "TanStack Query",
+              "to": "framework/angular/examples/query-integration"
+            }
+          ]
+        },
+        {
+          "label": "solid",
+          "children": [
+            {
+              "label": "TanStack Query",
+              "to": "framework/solid/examples/query-integration"
+            }
+          ]
+        },
+        {
+          "label": "lit",
+          "children": [
+            {
+              "label": "TanStack Query",
+              "to": "framework/lit/examples/query-integration"
+            }
+          ]
+        },
+        {
+          "label": "svelte",
+          "children": [
+            {
+              "label": "TanStack Query",
               "to": "framework/svelte/examples/query-integration"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "UI Integrations",
+      "children": [],
+      "frameworks": [
+        {
+          "label": "react",
+          "children": [
+            {
+              "label": "DnD Kit",
+              "to": "framework/react/examples/ui-integration-dnd-kit"
+            },
+            {
+              "label": "shadcn/ui",
+              "to": "framework/react/examples/ui-integration-shadcn"
             }
           ]
         }

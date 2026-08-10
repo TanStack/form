@@ -16,7 +16,7 @@ sources:
   - TanStack/form-v2:packages/form-core/src/FieldApi/fieldState.lib.ts
   - TanStack/form-v2:packages/form-core/tests/validation.test-d.ts
   - TanStack/form-v2:packages/form-core/tests/FormGroupApi/FormGroupApi.spec.ts
-  - TanStack/form-v2:examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx
+  - TanStack/form-v2:examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
 ---
 
 # TanStack React Form - Error Visibility Workflows

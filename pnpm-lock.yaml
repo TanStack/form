@@ -1467,7 +1467,7 @@ importers:
         specifier: ^8.2.1
         version: 8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
 
-  examples/react/ui-integration/dnd-kit:
+  examples/react/ui-integration-dnd-kit:
     dependencies:
       '@dnd-kit/helpers':
         specifier: ^0.5.0
@@ -1477,7 +1477,7 @@ importers:
         version: 0.5.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@tanstack/react-form':
         specifier: ^1.33.3
-        version: link:../../../../packages/react-form
+        version: link:../../../packages/react-form
       react:
         specifier: 19.2.8
         version: 19.2.8
@@ -1490,7 +1490,7 @@ importers:
         version: 0.10.9(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(csstype@3.2.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(solid-js@1.9.14)
       '@tanstack/react-form-devtools':
         specifier: ^0.2.32
-        version: link:../../../../packages/react-form-devtools
+        version: link:../../../packages/react-form-devtools
       '@types/react':
         specifier: ^19.2.8
         version: 19.2.18
@@ -1507,7 +1507,7 @@ importers:
         specifier: ^8.2.1
         version: 8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
 
-  examples/react/ui-integration/shadcn:
+  examples/react/ui-integration-shadcn:
     dependencies:
       '@fontsource-variable/inter':
         specifier: ^5.2.8
@@ -1520,7 +1520,7 @@ importers:
         version: 0.2.2
       '@tanstack/react-form':
         specifier: ^1.33.3
-        version: link:../../../../packages/react-form
+        version: link:../../../packages/react-form
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -1569,7 +1569,7 @@ importers:
         version: 0.10.9(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(csstype@3.2.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(solid-js@1.9.14)
       '@tanstack/react-form-devtools':
         specifier: ^0.2.32
-        version: link:../../../../packages/react-form-devtools
+        version: link:../../../packages/react-form-devtools
       '@types/react':
         specifier: ^19.2.8
         version: 19.2.18

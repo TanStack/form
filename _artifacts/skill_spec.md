@@ -107,7 +107,7 @@ Source trail:
 - `examples/react/basic-splitting-form/src/FormSection.tsx`
 - `examples/react/basic-splitting-form/src/StringField.tsx`
 - `examples/react/basic-splitting-form/src/FieldError.tsx`
-- `examples/react/ui-integration/shadcn/src/components/form/app-form.ts`
+- `examples/react/ui-integration-shadcn/src/components/form/app-form.ts`
 
 ### Cross-Cutting: Reusable Form Policies
 
@@ -148,7 +148,7 @@ Source trail:
 - `packages/react-form/tests/submit-return.test-d.tsx`
 - `packages/form-core/tests/validation.test.ts`
 - `packages/form-core/tests/validation.test-d.ts`
-- `examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx`
+- `examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx`
 
 ### 2. Choosing Form Options Modes
 
@@ -199,8 +199,8 @@ Source trail:
 - `packages/react-form/src/AppForm/appFormOptions.public.ts`
 - `packages/form-core/tests/validation.test.ts`
 - `packages/form-core/tests/validation.test-d.ts`
-- `examples/react/ui-integration/shadcn/src/app/booking/schema.ts`
-- `examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx`
+- `examples/react/ui-integration-shadcn/src/app/booking/schema.ts`
+- `examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx`
 - `https://standardschema.dev/`
 - `https://zod.dev/library-authors`
 - `https://valibot.dev/guides/integrate-valibot/`
@@ -333,7 +333,7 @@ Source trail:
 - `packages/form-core/tests/validation.test-d.ts`
 - `packages/form-core/tests/FormApi/validation.spec.ts`
 - `packages/form-core/tests/FormGroupApi/FormGroupApi.spec.ts`
-- `examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx`
+- `examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx`
 
 ### 6. Type Error Debugging
 
@@ -430,10 +430,10 @@ Source trail:
 - `examples/react/array/src/index.tsx`
 - `examples/react/basic-splitting-form/src/index.tsx`
 - `examples/react/field-groups/src/index.tsx`
-- `examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx`
-- `examples/react/ui-integration/shadcn/src/app/booking/booking-form.tsx`
-- `examples/react/ui-integration/dnd-kit/src/singleList/index.tsx`
-- `examples/react/ui-integration/dnd-kit/src/twoLists/index.tsx`
+- `examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx`
+- `examples/react/ui-integration-shadcn/src/app/booking/booking-form.tsx`
+- `examples/react/ui-integration-dnd-kit/src/singleList/index.tsx`
+- `examples/react/ui-integration-dnd-kit/src/twoLists/index.tsx`
 
 ## Cross-Skill Relationships
 

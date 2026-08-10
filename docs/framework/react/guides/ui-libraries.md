@@ -77,6 +77,6 @@ the UI library's richer object at the component boundary if necessary.
 If the same wiring appears throughout the application, extract a component that
 accepts `FieldWithValue<T>` or register it with `createFormHook`.
 
-The repository's `examples/react/ui-integration/shadcn` example demonstrates a
+The repository's `examples/react/ui-integration-shadcn` example demonstrates a
 larger component system with branded fields, lazy-loaded controls, labels,
 descriptions, and accessible error rendering.

@@ -17,8 +17,8 @@ sources:
   - TanStack/form-v2:examples/react/array/src/index.tsx
   - TanStack/form-v2:examples/react/basic-splitting-form/src/index.tsx
   - TanStack/form-v2:examples/react/field-groups/src/index.tsx
-  - TanStack/form-v2:examples/react/ui-integration/shadcn/src/app/booking/booking-form.tsx
-  - TanStack/form-v2:examples/react/ui-integration/dnd-kit/src/twoLists/index.tsx
+  - TanStack/form-v2:examples/react/ui-integration-shadcn/src/app/booking/booking-form.tsx
+  - TanStack/form-v2:examples/react/ui-integration-dnd-kit/src/twoLists/index.tsx
 ---
 
 This skill builds on `react-form-composition-setup`. Read it first for adapter-first form structure.
@@ -231,7 +231,7 @@ type BoardValues = {
 
 Cross-list movement needs stable item IDs and separate order arrays.
 
-Source: TanStack/form-v2:examples/react/ui-integration/dnd-kit/src/twoLists/index.tsx
+Source: TanStack/form-v2:examples/react/ui-integration-dnd-kit/src/twoLists/index.tsx
 
 ## References
 

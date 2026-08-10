@@ -16,7 +16,7 @@ sources:
   - TanStack/form-v2:packages/form-core/src/utils.public.ts
   - TanStack/form-v2:packages/react-form/src/AppForm/appFormOptions.public.ts
   - TanStack/form-v2:packages/form-core/tests/validation.test-d.ts
-  - TanStack/form-v2:examples/react/ui-integration/shadcn/src/app/booking/schema.ts
+  - TanStack/form-v2:examples/react/ui-integration-shadcn/src/app/booking/schema.ts
 ---
 
 # TanStack React Form - Choosing Form Options Modes
@@ -255,7 +255,7 @@ const options = formOptions.looseSchema({
 
 For form work, Zod often behaves like a ruleset unless the specific schema is intentionally a transform pipeline.
 
-Source: maintainer interview, TanStack/form-v2:examples/react/ui-integration/shadcn/src/app/booking/schema.ts
+Source: maintainer interview, TanStack/form-v2:examples/react/ui-integration-shadcn/src/app/booking/schema.ts
 
 ## References
 

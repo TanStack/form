@@ -19,7 +19,7 @@ sources:
   - TanStack/form-v2:examples/react/basic-splitting-form/src/sharedForm.ts
   - TanStack/form-v2:packages/react-form/tests/submit-return.test-d.tsx
   - TanStack/form-v2:packages/form-core/src/validation.public.ts
-  - TanStack/form-v2:examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx
+  - TanStack/form-v2:examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
 ---
 
 This skill builds on `react-form-composition-setup` and `error-visibility-workflows`. Read those first for composition and visibility fundamentals.
@@ -260,7 +260,7 @@ const validateAfterBlurThenWhileInvalid = createValidator({
 
 A semantic helper preserves why the timing exists when examples evolve.
 
-Source: TanStack/form-v2:examples/react/ui-integration/shadcn/src/app/booking/shared-form.tsx
+Source: TanStack/form-v2:examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
 
 ## References
 
