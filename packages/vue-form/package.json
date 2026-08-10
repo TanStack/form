@@ -31,8 +31,7 @@
   },
   "sideEffects": false,
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "dependencies": {
     "@tanstack/form-core": "workspace:*",

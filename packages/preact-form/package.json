@@ -46,8 +46,7 @@
     "node": ">=18"
   },
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "dependencies": {
     "@tanstack/form-core": "workspace:*",

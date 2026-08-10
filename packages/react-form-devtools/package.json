@@ -51,8 +51,7 @@
     "node": ">=18"
   },
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "dependencies": {
     "@tanstack/devtools": "^0.12.2",

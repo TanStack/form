@@ -39,8 +39,7 @@
     "node": ">=18"
   },
   "files": [
-    "dist/",
-    "src"
+    "dist/"
   ],
   "dependencies": {
     "@tanstack/pacer-lite": "^0.2.2",
