@@ -17,5 +17,5 @@
     "@tanstack/svelte-form": "1.33.3",
     "@tanstack/vue-form": "1.33.3"
   },
-  "changesets": []
+  "changesets": ["v2-alpha"]
 }
