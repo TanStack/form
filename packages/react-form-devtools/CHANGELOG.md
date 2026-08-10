@@ -1,5 +1,16 @@
 # @tanstack/react-form-devtools
 
+## 1.0.0-alpha.0
+
+### Major Changes
+
+- [#2288](https://github.com/TanStack/form/pull/2288) [`e68d53b`](https://github.com/TanStack/form/commit/e68d53b6882904f4606eae3481d11a0ca50ccd24) - Release the first alpha of TanStack Form v2.
+
+### Patch Changes
+
+- Updated dependencies [[`e68d53b`](https://github.com/TanStack/form/commit/e68d53b6882904f4606eae3481d11a0ca50ccd24)]:
+  - @tanstack/form-devtools@1.0.0-alpha.0
+
 ## 0.2.32
 
 ### Patch Changes

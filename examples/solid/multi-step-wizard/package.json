@@ -9,7 +9,7 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/solid-form": "^1.33.3",
+    "@tanstack/solid-form": "^2.0.0-alpha.0",
     "solid-js": "^1.9.13",
     "zod": "^4.4.3"
   },

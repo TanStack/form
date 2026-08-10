@@ -9,7 +9,7 @@
     "test:types": "vue-tsc --noEmit"
   },
   "dependencies": {
-    "@tanstack/vue-form": "^1.33.3",
+    "@tanstack/vue-form": "^2.0.0-alpha.0",
     "arktype": "^2.1.22",
     "effect": "^3.17.14",
     "valibot": "^1.1.0",

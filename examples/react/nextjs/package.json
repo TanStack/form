@@ -9,8 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@tanstack/react-form": "^1.33.3",
-    "@tanstack/react-form-nextjs": "^1.33.3",
+    "@tanstack/react-form": "^2.0.0-alpha.0",
+    "@tanstack/react-form-nextjs": "^2.0.0-alpha.0",
     "next": "16.3.0",
     "react": "19.2.8",
     "react-dom": "19.2.8"
@@ -18,7 +18,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@tanstack/react-devtools": "^0.10.5",
-    "@tanstack/react-form-devtools": "^0.2.32",
+    "@tanstack/react-form-devtools": "^1.0.0-alpha.0",
     "@types/node": "^25.0.7",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
