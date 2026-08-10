@@ -6,7 +6,8 @@
   ],
   "commit": false,
   "access": "public",
-  "baseBranch": "main",
+  "baseBranch": "alpha",
+  "privatePackages": { "version": false, "tag": false },
   "updateInternalDependencies": "patch",
   "fixed": [
     [

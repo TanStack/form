@@ -1,0 +1,21 @@
+{
+  "mode": "pre",
+  "tag": "alpha",
+  "initialVersions": {
+    "@tanstack/template-example-react-nextjs": "0.1.0",
+    "@tanstack/angular-form": "1.33.3",
+    "@tanstack/form-core": "1.33.3",
+    "@tanstack/form-devtools": "0.2.32",
+    "@tanstack/lit-form": "1.33.3",
+    "@tanstack/preact-form": "1.30.3",
+    "@tanstack/react-form": "1.33.3",
+    "@tanstack/react-form-devtools": "0.2.32",
+    "@tanstack/react-form-nextjs": "1.33.3",
+    "@tanstack/react-form-start": "1.33.3",
+    "@tanstack/solid-form": "1.33.3",
+    "@tanstack/solid-form-devtools": "0.2.32",
+    "@tanstack/svelte-form": "1.33.3",
+    "@tanstack/vue-form": "1.33.3"
+  },
+  "changesets": []
+}
