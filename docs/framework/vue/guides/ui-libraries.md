@@ -74,6 +74,9 @@ If the same wiring appears throughout the application, extract a component
 whose props include `FieldWithValue<T>`, then register it with `createFormHook`
 when it should be available as a typed app field component.
 
+For the helper types used when passing a form or field to an extracted
+component, see [Splitting forms](../../../splitting-forms).
+
 The repository's Vue large-form example demonstrates
 `getFormHookHelpers`, `createFormHook`, injected app fields, and a reusable
 field group.
