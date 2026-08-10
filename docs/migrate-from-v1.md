@@ -580,6 +580,8 @@ The v2 array example calls out the performance reason for this change:
 `ArrayField` lets the array shell rerender when the array structure changes
 without forcing the whole list to rerender for every item value change.
 
+For current usage and adapter-specific examples, see [Arrays](./arrays).
+
 ## Shared form options
 
 For extracted components, v1 composition examples often use a custom

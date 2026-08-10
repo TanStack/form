@@ -111,6 +111,10 @@
         {
           "label": "Splitting Forms",
           "to": "splitting-forms"
+        },
+        {
+          "label": "Arrays",
+          "to": "arrays"
         }
       ],
       "frameworks": [
@@ -124,10 +128,6 @@
             {
               "label": "Async Initial Values",
               "to": "framework/react/guides/async-initial-values"
-            },
-            {
-              "label": "Arrays",
-              "to": "framework/react/guides/arrays"
             },
             {
               "label": "UI Libraries",
@@ -159,10 +159,6 @@
               "to": "framework/preact/guides/async-initial-values"
             },
             {
-              "label": "Arrays",
-              "to": "framework/preact/guides/arrays"
-            },
-            {
               "label": "UI Libraries",
               "to": "framework/preact/guides/ui-libraries"
             },
@@ -182,10 +178,6 @@
             {
               "label": "Async Initial Values",
               "to": "framework/vue/guides/async-initial-values"
-            },
-            {
-              "label": "Arrays",
-              "to": "framework/vue/guides/arrays"
             },
             {
               "label": "UI Libraries",
@@ -209,10 +201,6 @@
               "to": "framework/solid/guides/async-initial-values"
             },
             {
-              "label": "Arrays",
-              "to": "framework/solid/guides/arrays"
-            },
-            {
               "label": "UI Libraries",
               "to": "framework/solid/guides/ui-libraries"
             },
@@ -234,10 +222,6 @@
               "to": "framework/lit/guides/async-initial-values"
             },
             {
-              "label": "Arrays",
-              "to": "framework/lit/guides/arrays"
-            },
-            {
               "label": "UI Libraries",
               "to": "framework/lit/guides/ui-libraries"
             },
@@ -257,10 +241,6 @@
             {
               "label": "Async Initial Values",
               "to": "framework/svelte/guides/async-initial-values"
-            },
-            {
-              "label": "Arrays",
-              "to": "framework/svelte/guides/arrays"
             },
             {
               "label": "UI Libraries",
