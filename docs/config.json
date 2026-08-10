@@ -541,8 +541,8 @@
               "to": "framework/lit/reference/functions/getFormType"
             },
             {
-              "label": "Functions / getFieldGroupHelpers",
-              "to": "framework/lit/reference/functions/getFieldGroupHelpers"
+              "label": "Variables / defineFieldGroup",
+              "to": "framework/lit/reference/variables/defineFieldGroup"
             },
             {
               "label": "Types / LitFormGroupApi",
