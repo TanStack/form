@@ -1,12 +1,12 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-const releaseBranch = process.argv[2]
+const releaseBranch = process.env.RELEASE_BRANCH
 const prereleaseBranches = new Set(['alpha', 'beta', 'rc'])
 const preStatePath = path.resolve('.changeset/pre.json')
 
 if (!releaseBranch) {
-  throw new Error('Expected the release branch as the first argument')
+  throw new Error('Expected the RELEASE_BRANCH environment variable')
 }
 
 if (releaseBranch === 'main') {

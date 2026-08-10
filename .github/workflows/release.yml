@@ -34,7 +34,7 @@ jobs:
       - name: Verify Release Mode
         env:
           RELEASE_BRANCH: ${{ github.ref_name }}
-        run: pnpm run changeset:verify-release -- "$RELEASE_BRANCH"
+        run: pnpm run changeset:verify-release
       - name: Run Changesets (version or publish)
         id: changesets
         uses: changesets/action@6a0a831ff30acef54f2c6aa1cbbc1096b066edaf # v1.7.0
