@@ -7,13 +7,13 @@ TanStack Form is compatible with various front-end frameworks, including React, 
 
 <!-- ::start:tabs variant="package-managers" -->
 
-react: @tanstack/react-form
-angular: @tanstack/angular-form
-preact: @tanstack/preact-form
-vue: @tanstack/vue-form
-solid: @tanstack/solid-form
-svelte: @tanstack/svelte-form
-lit: @tanstack/lit-form
+react: @tanstack/react-form@alpha
+angular: @tanstack/angular-form@alpha
+preact: @tanstack/preact-form@alpha
+vue: @tanstack/vue-form@alpha
+solid: @tanstack/solid-form@alpha
+svelte: @tanstack/svelte-form@alpha
+lit: @tanstack/lit-form@alpha
 
 <!-- ::end:tabs -->
 
@@ -32,8 +32,8 @@ If you're using a meta-framework, TanStack Form provides additional adapters to 
 
 <!-- ::start:tabs variant="package-manager" -->
 
-react: @tanstack/react-form-start
-react: @tanstack/react-form-nextjs
+react: @tanstack/react-form-start@alpha
+react: @tanstack/react-form-nextjs@alpha
 
 <!-- ::end:tabs -->
 
@@ -55,8 +55,8 @@ Developer tools are available using [TanStack Devtools](https://tanstack.com/dev
 
 <!-- ::start:tabs variant="package-manager" -->
 
-react: @tanstack/react-devtools
-react: @tanstack/react-form-devtools
+react: @tanstack/react-devtools@alpha
+react: @tanstack/react-form-devtools@alpha
 
 <!-- ::end:tabs -->
 
