@@ -106,5 +106,8 @@ needs the type of one concrete form. Use
 `getFieldGroupHelpers().withFields(...)` when a reusable bundle should accept
 typed virtual names that callers map to different concrete paths.
 
+For the helper types used when passing a form or field to an extracted
+component, see [Splitting forms](../../../splitting-forms).
+
 See the repository's `examples/lit/basic-splitting-form` and
 `examples/lit/field-groups` examples for both patterns.

@@ -121,6 +121,11 @@ inject its field API:
 ```
 
 Import `TanStackAppField`, `TanStackField`, and the reusable field component in
-the parent. The repository's `examples/angular/basic-splitting-form` and
+the parent.
+
+For the helper types used when passing a form or field to an extracted
+component, see [Splitting forms](../../../splitting-forms).
+
+The repository's `examples/angular/basic-splitting-form` and
 `examples/angular/large-form` examples demonstrate this pattern with typed
 child components.

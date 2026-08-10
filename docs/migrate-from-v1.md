@@ -609,7 +609,8 @@ const form = useForm({
 })
 ```
 
-When typing extracted components, prefer the v2 public types:
+When typing extracted components, prefer the v2 public types covered in
+[Splitting forms](./splitting-forms):
 
 ```tsx
 import type { AnyReactFormApi, FieldWithValue } from '@tanstack/react-form'

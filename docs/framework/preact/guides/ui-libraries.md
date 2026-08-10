@@ -76,5 +76,10 @@ the UI library's richer object at the component boundary if necessary.
 
 If the same wiring appears throughout the application, extract a Preact
 component that accepts `FieldWithValue<T>` or register it with
-`createFormHook`. The repository's `examples/preact/large-form` example
-demonstrates reusable field and form components with the v2 Preact adapter.
+`createFormHook`.
+
+For the helper types used when passing a form or field to an extracted
+component, see [Splitting forms](../../../splitting-forms).
+
+The repository's `examples/preact/large-form` example demonstrates reusable
+field and form components with the v2 Preact adapter.

@@ -107,7 +107,12 @@
     },
     {
       "label": "Guides",
-      "children": [],
+      "children": [
+        {
+          "label": "Splitting Forms",
+          "to": "splitting-forms"
+        }
+      ],
       "frameworks": [
         {
           "label": "react",
