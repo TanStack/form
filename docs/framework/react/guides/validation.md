@@ -507,6 +507,40 @@ function App() {
 }
 ```
 
+Here is the same example with Valibot:
+
+```tsx
+import * as v from 'valibot'
+
+const userSchema = v.object({
+  age: v.pipe(
+    v.number(),
+    v.minValue(13, 'You must be 13 to make an account'),
+  ),
+})
+
+function App() {
+  const form = useForm({
+    defaultValues: {
+      age: 0,
+    },
+    validators: {
+      onChange: userSchema,
+    },
+  })
+  return (
+    <div>
+      <form.Field
+        name="age"
+        children={(field) => {
+          return <>{/* ... */}</>
+        }}
+      />
+    </div>
+  )
+}
+```
+
 Async validators at the form- and field-level are supported as well:
 
 ```tsx
