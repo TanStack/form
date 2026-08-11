@@ -1,5 +1,11 @@
 # @tanstack/form-core
 
+## 1.33.5
+
+### Patch Changes
+
+- [#2318](https://github.com/TanStack/form/pull/2318) [`146ba25`](https://github.com/TanStack/form/commit/146ba25205afe46c2a8bfc1f2ef82609255772dc) - Preserve sibling fields whose names share a prefix when deleting a field.
+
 ## 1.33.4
 
 ## 1.33.3
