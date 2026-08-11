@@ -1,3 +1,5 @@
-base_branches:
-  - alpha
-  - main
+reviews:
+  auto_review:
+    base_branches:
+      - alpha
+      - main
