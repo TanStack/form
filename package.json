@@ -36,6 +36,7 @@
     "watch": "pnpm run build:all && nx watch --all -- pnpm run build:all",
     "dev": "pnpm run watch",
     "format": "prettier --experimental-cli --ignore-unknown '**/*' --write",
+    "pregenerate-docs": "pnpm --dir packages/form-core build",
     "generate-docs": "node scripts/generate-docs.ts",
     "changeset": "changeset",
     "changeset:publish": "changeset publish",

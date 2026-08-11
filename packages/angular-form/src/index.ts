@@ -1,13 +1,9 @@
 export * from '@tanstack/form-core'
 
-export { TanStackAppArrayField, TanStackAppField } from './app-field'
-export { injectForm } from './inject-form'
-export { injectSelector } from './inject-selector'
-export { TanStackFormGroup } from './form-group'
-export {
-  TanStackArrayField,
-  TanStackField,
-  type AngularFieldApi,
-} from './tanstack-field'
-export { TanStackFieldInjectable, injectField } from './injectable'
-export type { AngularFormType, AnyAngularFormApi } from './form-type'
+export * from './app-field'
+export * from './inject-form'
+export * from './inject-selector'
+export * from './form-group'
+export * from './tanstack-field'
+export * from './injectable'
+export type * from './form-type'
