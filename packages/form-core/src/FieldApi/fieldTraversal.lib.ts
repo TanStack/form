@@ -1,11 +1,18 @@
 import type { AnyInternalFieldApi } from './FieldApi.lib'
 import type { InternalRootFieldApi } from './RootFieldApi.lib'
 
-type FieldVisitor = (field: AnyInternalFieldApi) => void | false
+const stop = Symbol('stop field traversal')
+type FieldTraversalStop = typeof stop
+
+type FieldVisitor = (
+  field: AnyInternalFieldApi,
+  stop: FieldTraversalStop,
+) => void | FieldTraversalStop
 
 /**
  * Visits a field node followed by each of its ancestors, stopping before the
- * synthetic root node. Return `false` from the visitor to stop the traversal.
+ * synthetic root node. Return the visitor's `stop` argument to stop the
+ * traversal.
  *
  * The next parent is captured before the visitor runs, so removing or
  * reparenting the current node does not change the ancestor chain being walked.
@@ -18,7 +25,7 @@ export function visitFieldAndAncestors(
 
   while (!current._isRoot) {
     const parent: AnyInternalFieldApi | InternalRootFieldApi = current._parent
-    if (visitor(current) === false) return
+    if (visitor(current, stop) === stop) return
     current = parent
   }
 }
@@ -39,7 +46,7 @@ function visitFields(
 
   while (stack.length > 0) {
     const field = stack.pop()!
-    if (visitor(field) === false) return
+    if (visitor(field, stop) === stop) return
 
     const children = field._children
     for (let index = children.length - 1; index >= 0; index--) {
@@ -50,7 +57,7 @@ function visitFields(
 
 /**
  * Visits a field node and its descendants in insertion-order preorder. The
- * starting field is included. Return `false` from the visitor to stop the
+ * starting field is included. Return the visitor's `stop` argument to stop the
  * entire traversal, not only the current branch.
  *
  * A node's children are read after its visitor runs, so structural mutations
@@ -66,7 +73,7 @@ export function visitFieldSubtree(
 /**
  * Visits every field in a form trie in insertion-order preorder. The synthetic
  * root node is excluded; traversal starts at each of its field children. Return
- * `false` from the visitor to stop the entire traversal.
+ * the visitor's `stop` argument to stop the entire traversal.
  *
  * A node's children are read after its visitor runs, so structural mutations
  * made by the visitor affect which descendants are visited.

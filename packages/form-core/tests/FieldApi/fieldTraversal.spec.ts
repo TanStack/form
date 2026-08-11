@@ -65,19 +65,19 @@ describe('field traversal', () => {
     ])
   })
 
-  it('stops ancestor and subtree traversal when the visitor returns false', () => {
+  it('stops ancestor and subtree traversal when the visitor returns stop', () => {
     const { section, deep } = createFieldTree()
     const ancestors: Array<string> = []
     const subtree: Array<string> = []
 
-    visitFieldAndAncestors(deep, (field) => {
+    visitFieldAndAncestors(deep, (field, stop) => {
       ancestors.push(field.name)
-      if (field.name === 'section.second') return false
+      if (field.name === 'section.second') return stop
       return undefined
     })
-    visitFieldSubtree(section, (field) => {
+    visitFieldSubtree(section, (field, stop) => {
       subtree.push(field.name)
-      if (field.name === 'section.second') return false
+      if (field.name === 'section.second') return stop
       return undefined
     })
 

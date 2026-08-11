@@ -651,8 +651,8 @@ export class InternalFieldApi<
 
     const seenValidatorFields = new WeakSet<AnyInternalFieldApi>()
 
-    visitFieldAndAncestors(this, (current) => {
-      if (current._isKilled) return false
+    visitFieldAndAncestors(this, (current, stop) => {
+      if (current._isKilled) return stop
 
       current._runFieldValidation(event)
       current._notifyValidator(event, seenValidatorFields)
@@ -848,7 +848,7 @@ export class InternalFieldApi<
     batch(() => {
       const seenListenerFields = new WeakSet<AnyInternalFieldApi>()
 
-      visitFieldAndAncestors(this, (currNode) => {
+      visitFieldAndAncestors(this, (currNode, stop) => {
         const isOriginalField = currNode === originalField
         const { isSelfDirty, isSelfTouched, isBlurred } = currNode.meta
         const shouldUpdateDirty = isOriginalField && markAsDirty && !isSelfDirty
@@ -868,7 +868,7 @@ export class InternalFieldApi<
 
         currNode._notifyListener(event, seenListenerFields)
 
-        if (!doPropagate) return false
+        if (!doPropagate) return stop
         return undefined
       })
     })
