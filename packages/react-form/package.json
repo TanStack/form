@@ -40,7 +40,6 @@
   },
   "files": [
     "dist",
-    "src",
     "skills"
   ],
   "dependencies": {
