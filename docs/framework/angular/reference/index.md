@@ -17,6 +17,8 @@ title: "@tanstack/angular-form"
 ## Type Aliases
 
 - [AngularFieldApi](type-aliases/AngularFieldApi.md)
+- [AngularFieldData](type-aliases/AngularFieldData.md)
+- [AngularFieldSource](type-aliases/AngularFieldSource.md)
 - [AngularFormType](type-aliases/AngularFormType.md)
 - [AnyAngularFormApi](type-aliases/AnyAngularFormApi.md)
 

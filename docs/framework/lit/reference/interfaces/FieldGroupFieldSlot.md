@@ -15,7 +15,7 @@ Defined in: [with-fields.ts:31](https://github.com/TanStack/form/blob/main/packa
 
 ### TMode
 
-`TMode` *extends* `FieldGroupFieldSlotMode` = `FieldGroupFieldSlotMode`
+`TMode` *extends* [`FieldGroupFieldSlotMode`](../type-aliases/FieldGroupFieldSlotMode.md) = [`FieldGroupFieldSlotMode`](../type-aliases/FieldGroupFieldSlotMode.md)
 
 ## Properties
 

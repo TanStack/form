@@ -25,6 +25,7 @@ title: "@tanstack/lit-form"
 - [FieldGroupFieldBindingsOf](type-aliases/FieldGroupFieldBindingsOf.md)
 - [FieldGroupFieldData](type-aliases/FieldGroupFieldData.md)
 - [FieldGroupFields](type-aliases/FieldGroupFields.md)
+- [FieldGroupFieldSlotMode](type-aliases/FieldGroupFieldSlotMode.md)
 - [FieldGroupFieldsOf](type-aliases/FieldGroupFieldsOf.md)
 - [FieldGroupWithFieldsFn](type-aliases/FieldGroupWithFieldsFn.md)
 - [LitFieldGroup](type-aliases/LitFieldGroup.md)
