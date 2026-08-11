@@ -2,6 +2,7 @@ import path from 'node:path'
 import { defineConfig } from 'vitest/config'
 import solid from 'vite-plugin-solid'
 import tailwindcss from '@tailwindcss/vite'
+import { playwright } from '@vitest/browser-playwright'
 import packageJson from './package.json' with { type: 'json' }
 
 const normalizeChunkPath = (id: string | null | undefined) =>
@@ -66,8 +67,11 @@ export default defineConfig({
     name: packageJson.name,
     dir: './tests',
     watch: false,
-    environment: 'jsdom',
-    setupFiles: ['tests/test-setup.ts'],
     globals: true,
+    browser: {
+      enabled: true,
+      provider: playwright(),
+      instances: [{ browser: 'chromium', headless: true }],
+    },
   },
 })
