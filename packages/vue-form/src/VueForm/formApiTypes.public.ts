@@ -26,6 +26,32 @@ export type VueFormApi<
     > &
       TComponents['formComponents']
 
+/**
+ * A Vue form API whose form data and error types are erased.
+ *
+ * Use it for reusable Vue components that only need core form operations and
+ * the `Field`, `ArrayField`, `Subscribe`, or `FormGroup` components common to
+ * every Vue form. Field paths and values are not checked against a particular
+ * form shape; use `VueFormType` when a component depends on one known form.
+ *
+ * @example
+ * ```vue
+ * <script setup lang="ts">
+ * defineProps<{ form: AnyVueFormApi }>()
+ * </script>
+ *
+ * <template>
+ *   <form.Subscribe
+ *     :selector="(state) => state.isSubmitting"
+ *     v-slot="isSubmitting"
+ *   >
+ *     <button type="submit" :disabled="isSubmitting">
+ *       {{ isSubmitting ? 'Saving...' : 'Save' }}
+ *     </button>
+ *   </form.Subscribe>
+ * </template>
+ * ```
+ */
 export type AnyVueFormApi = AnyFormApi &
   VueTanStackFormComponents<any, any, any>
 

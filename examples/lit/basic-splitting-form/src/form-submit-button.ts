@@ -1,8 +1,7 @@
 import { html } from 'lit'
-import type { LitFormType } from '@tanstack/lit-form'
-import type { sharedFormOptions } from './shared-form'
+import type { AnyLitFormApi } from '@tanstack/lit-form'
 
-export function formSubmitButton(form: LitFormType<typeof sharedFormOptions>) {
+export function formSubmitButton(form: AnyLitFormApi) {
   return form.subscribe(
     (state) => [state.canSubmit, state.isSubmitting] as const,
     ([canSubmit, isSubmitting]) => html`

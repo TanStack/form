@@ -23,6 +23,30 @@ export type PreactFormApi<
     > &
       TComponents['formComponents']
 
+/**
+ * A Preact form API whose form data and error types are erased.
+ *
+ * Use it for reusable Preact components that only need core form operations
+ * and the `Field`, `ArrayField`, `Subscribe`, or `FormGroup` components common
+ * to every Preact form. Field paths and values are not checked against a
+ * particular form shape; use `PreactFormType` when a component depends on one
+ * known form.
+ *
+ * @example
+ * ```tsx
+ * function FormSubmitButton({ form }: { form: AnyPreactFormApi }) {
+ *   return (
+ *     <form.Subscribe selector={(state) => state.isSubmitting}>
+ *       {(isSubmitting) => (
+ *         <button type="submit" disabled={isSubmitting}>
+ *           {isSubmitting ? 'Saving...' : 'Save'}
+ *         </button>
+ *       )}
+ *     </form.Subscribe>
+ *   )
+ * }
+ * ```
+ */
 export type AnyPreactFormApi = AnyFormApi &
   PreactTanStackFormComponents<any, any, any>
 

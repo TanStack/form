@@ -24,6 +24,33 @@ type ReactFormTypeErrorTypes<
   ? any
   : ToFormErrorTypes<TFormValidators, TSubmitReturn>
 
+/**
+ * Derives the React form API type represented by a reusable options object.
+ *
+ * Use it to type props for components that belong to one known form shape. It
+ * preserves the inferred form data and any components registered through
+ * `appFormOptions`. Options such as `onSubmit` can be defined either in the
+ * shared options or when the form is created in the component.
+ *
+ * @example
+ * ```tsx
+ * const profileOptions = formOptions({
+ *   defaultValues: { name: '' },
+ * })
+ *
+ * type ProfileForm = ReactFormType<typeof profileOptions>
+ *
+ * function NameField(props: {
+ *   form: ProfileForm
+ * }) {
+ *   return (
+ *     <props.form.Field name="name">
+ *       {(field) => <input value={field.value} />}
+ *     </props.form.Field>
+ *   )
+ * }
+ * ```
+ */
 export type ReactFormType<
   TOptions extends
     AnyFormOptions | AppFormOptions<any, any, any, AnyReactFormComponentMap>,

@@ -1,6 +1,10 @@
 import { describe, expectTypeOf, it } from 'vitest'
 import { defineFieldGroup, formOptions } from '../src/index.js'
-import type { LitFormType, ValidationIssue } from '../src/index.js'
+import type {
+  AnyLitFormApi,
+  LitFormType,
+  ValidationIssue,
+} from '../src/index.js'
 
 const options = formOptions({
   defaultValues: {
@@ -59,6 +63,7 @@ function assertReusableFieldTypes(form: Form) {
 
 describe('Lit controller types', () => {
   it('infers fields, arrays, and form groups', () => {
+    expectTypeOf<Form>().toExtend<AnyLitFormApi>()
     expectTypeOf(assertControllerTypes).toBeFunction()
     expectTypeOf(assertReusableFieldTypes).toBeFunction()
   })
