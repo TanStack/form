@@ -1,6 +1,7 @@
 import { useClipboard } from '@ark-ui/solid'
 import { Show, splitProps } from 'solid-js'
-import { CheckIcon, CopyIcon } from 'lucide-solid'
+import CheckIcon from 'lucide-solid/icons/check'
+import CopyIcon from 'lucide-solid/icons/copy'
 import { Button } from './button'
 import type { ButtonProps } from './button'
 import { cn } from '@/utils'

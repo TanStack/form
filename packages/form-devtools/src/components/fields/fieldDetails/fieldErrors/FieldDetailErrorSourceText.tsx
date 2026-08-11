@@ -1,4 +1,4 @@
-import { DotIcon } from 'lucide-solid'
+import DotIcon from 'lucide-solid/icons/dot'
 import { Show } from 'solid-js'
 import type { DevtoolsFieldErrorSource } from '@/eventClientTypes'
 

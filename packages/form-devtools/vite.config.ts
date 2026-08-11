@@ -8,7 +8,7 @@ const normalizeChunkPath = (id: string | null | undefined) =>
   id?.replaceAll(path.sep, '/')
 
 const componentsEntry = normalizeChunkPath(
-  path.resolve(__dirname, './src/components/index.tsx'),
+  path.resolve(import.meta.dirname, './src/components/index.tsx'),
 )
 
 const isBareImport = (id: string) =>
@@ -41,7 +41,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      '@': path.resolve(import.meta.dirname, './src'),
     },
   },
   build: {

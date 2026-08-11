@@ -1,6 +1,7 @@
 import { TagsInput } from '@ark-ui/solid'
 import { For, Show } from 'solid-js'
-import { FunnelXIcon, SearchIcon } from 'lucide-solid'
+import FunnelXIcon from 'lucide-solid/icons/funnel-x'
+import SearchIcon from 'lucide-solid/icons/search'
 import { InputGroupAddon, InputGroupButton } from '../../../ui/input-group'
 import { FieldSearchControl } from './FieldSearchControl'
 import { FieldFilterChip } from './FieldFilterChip'

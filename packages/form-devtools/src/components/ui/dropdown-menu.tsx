@@ -1,5 +1,6 @@
 import { Menu as DropdownMenuPrimitive } from '@ark-ui/solid'
-import { CheckIcon, ChevronRightIcon } from 'lucide-solid'
+import CheckIcon from 'lucide-solid/icons/check'
+import ChevronRightIcon from 'lucide-solid/icons/chevron-right'
 import { createUniqueId, splitProps } from 'solid-js'
 import type { JSX } from 'solid-js'
 import { Portal } from '@/components/ui/portal'

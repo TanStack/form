@@ -1,5 +1,7 @@
 import { Select as SelectPrimitive, createListCollection } from '@ark-ui/solid'
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from 'lucide-solid'
+import CheckIcon from 'lucide-solid/icons/check'
+import ChevronDownIcon from 'lucide-solid/icons/chevron-down'
+import ChevronUpIcon from 'lucide-solid/icons/chevron-up'
 import {
   createContext,
   createEffect,

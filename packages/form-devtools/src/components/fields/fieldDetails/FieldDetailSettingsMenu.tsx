@@ -1,4 +1,4 @@
-import { EllipsisIcon } from 'lucide-solid'
+import EllipsisIcon from 'lucide-solid/icons/ellipsis'
 import type { FieldDetailSettings } from '@/eventClientTypes'
 import type { FieldId } from '@/types/branded'
 import { Button } from '@/components/ui/button'

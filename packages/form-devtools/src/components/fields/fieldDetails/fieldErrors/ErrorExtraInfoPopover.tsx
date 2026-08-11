@@ -1,5 +1,6 @@
 import { Show } from 'solid-js'
-import { EyeDashedIcon, TimerIcon } from 'lucide-solid'
+import EyeDashedIcon from 'lucide-solid/icons/eye-dashed'
+import TimerIcon from 'lucide-solid/icons/timer'
 import { FieldDetailErrorSourceText } from './FieldDetailErrorSourceText'
 import type { Accessor } from 'solid-js'
 import type { DevtoolsFieldError } from '@/eventClientTypes'

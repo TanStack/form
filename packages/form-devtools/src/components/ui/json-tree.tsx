@@ -1,5 +1,5 @@
 import { JsonTreeView } from '@ark-ui/solid'
-import { ChevronRightIcon } from 'lucide-solid'
+import ChevronRightIcon from 'lucide-solid/icons/chevron-right'
 import { Show, splitProps } from 'solid-js'
 import { ScrollArea } from './scroll-area'
 import { CopyButton } from './copy-button'

@@ -1,4 +1,5 @@
-import { BugIcon, InfoIcon } from 'lucide-solid'
+import BugIcon from 'lucide-solid/icons/bug'
+import InfoIcon from 'lucide-solid/icons/info'
 import { Match, Switch, createSignal } from 'solid-js'
 import { FieldDetailErrorSourceText } from './FieldDetailErrorSourceText'
 import { ErrorExtraInfoPopover } from './ErrorExtraInfoPopover'
