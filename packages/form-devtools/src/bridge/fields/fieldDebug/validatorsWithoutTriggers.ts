@@ -30,7 +30,7 @@ export const validatorsWithoutTriggers = {
       (validatorIndex) => ({ scope: 'field', validatorIndex }),
     )
 
-    const group = field.form._getNearestFormGroupForField(field.name)
+    const group = field._getFormGroup()
     if (group) {
       appendValidatorsWithoutTriggers(
         validators,

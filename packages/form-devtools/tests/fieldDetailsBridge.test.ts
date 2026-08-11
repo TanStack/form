@@ -80,15 +80,10 @@ describe('field detail snapshots', () => {
           [{ message: 'Field schema', path: ['name'] } as never],
         ],
         _fieldValidatorErrorSourceEvents: ['change', 'blur'],
-        _formGroupValidatorErrors: new Map([
-          [
-            group._errorOwner,
-            {
-              errors: [[{ message: 'Group schema', path: ['name'] } as never]],
-              errorSourceEvents: ['server'],
-            },
-          ],
-        ]),
+        _formGroupValidatorErrors: {
+          errors: [[{ message: 'Group schema', path: ['name'] } as never]],
+          errorSourceEvents: ['server'],
+        },
         _formValidatorErrors: [
           [{ message: 'Form callback', code: 'form-code' } as never],
           [{ message: 'Form schema', path: ['profile', 'name'] } as never],

@@ -94,7 +94,7 @@ describe('field debug cases', () => {
     }
   })
 
-  it('uses the nearest form group instead of form validators', () => {
+  it('uses the containing form group instead of form validators', () => {
     const form = new InternalFormApi({
       defaultValues: { profile: { name: '' } },
       validators: [emptyTriggerValidator] as never,
@@ -133,17 +133,12 @@ describe('field debug cases', () => {
     }
   })
 
-  it('does not fall back past the nearest form group', () => {
+  it('does not fall back to form validators when the group has none', () => {
     const form = new InternalFormApi({
       defaultValues: { profile: { contact: { email: '' } } },
       validators: [emptyTriggerValidator] as never,
     })
-    const outerGroup = new InternalFormGroupApi({
-      form,
-      name: 'profile',
-      validators: [emptyTriggerValidator] as never,
-    })
-    const innerGroup = new InternalFormGroupApi({
+    const group = new InternalFormGroupApi({
       form,
       name: 'profile.contact',
     })
@@ -157,8 +152,7 @@ describe('field debug cases', () => {
       expect(getFieldDebugSuspicions({ field })).toEqual([])
     } finally {
       unregister()
-      innerGroup._cleanup()
-      outerGroup._cleanup()
+      group._cleanup()
     }
   })
 

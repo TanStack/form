@@ -205,8 +205,8 @@ export interface ErrorVisibilityContext<
 /**
  * Decides whether a field exposes its validation errors publicly.
  *
- * For fields inside a registered form group, scalar meta properties read from
- * `state` are scoped to the nearest group. `values` and `errors` remain
+ * For fields inside a form group, scalar meta properties read from `state` are
+ * scoped to the containing group. `values` and `errors` remain
  * form-wide.
  */
 export type ErrorVisibility<

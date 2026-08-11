@@ -29,7 +29,7 @@ export const childContributionKeys: Array<ChildContributionKey> = [
 interface MetaExtension {
   _formValidatorErrors: Array<Array<ValidationIssue>>
   _formValidatorErrorSourceEvents: Array<string | null>
-  _formGroupValidatorErrors: Map<object, FormGroupFieldErrorMeta>
+  _formGroupValidatorErrors: FormGroupFieldErrorMeta | null
   _fieldValidatorErrors: Array<Array<ValidationIssue>>
   _fieldValidatorErrorSourceEvents: Array<string | null>
   childContributionCounts: ChildContributionCounts
@@ -87,7 +87,7 @@ export const defaultInternalBaseFieldMeta: InternalBaseFieldMeta = {
   _fieldValidatorErrorSourceEvents: [],
   _formValidatorErrors: [],
   _formValidatorErrorSourceEvents: [],
-  _formGroupValidatorErrors: new Map(),
+  _formGroupValidatorErrors: null,
   _arrayVersion: 0,
 }
 
@@ -232,7 +232,7 @@ function shouldDisplayErrors(
   isDefaultValue = true,
 ): boolean {
   if (!field || !errorVisibility) return true
-  const group = field.form._getNearestFormGroupForField(field.name)
+  const group = field._getFormGroup()
   const stateOverrides = group?._getScopedFormStateOverrides()
 
   return errorVisibility({
@@ -295,8 +295,10 @@ export function getChildContributionStates(
   }
 }
 
-function hasValidatorErrors(errors: Array<Array<ValidationIssue>>): boolean {
-  return errors.some((validatorErrors) => validatorErrors.length > 0)
+function hasValidatorErrors(
+  errors: Array<Array<ValidationIssue>> | undefined,
+): boolean {
+  return errors?.some((validatorErrors) => validatorErrors.length > 0) ?? false
 }
 
 export function isPrunableMeta(meta: InternalBaseFieldMeta): boolean {
@@ -307,7 +309,7 @@ export function isPrunableMeta(meta: InternalBaseFieldMeta): boolean {
   if (meta._validationCount !== 0) return false
   if (meta._arrayVersion !== 0) return false
   if (hasValidatorErrors(meta._fieldValidatorErrors)) return false
-  if (hasFormGroupValidatorErrors(meta._formGroupValidatorErrors)) return false
+  if (hasValidatorErrors(meta._formGroupValidatorErrors?.errors)) return false
   if (hasValidatorErrors(meta._formValidatorErrors)) return false
 
   return childContributionKeys.every(
@@ -329,26 +331,13 @@ function getErrorsFromBaseMeta(
     result = previousMeta.original.errors
   } else {
     result = baseMeta._fieldValidatorErrors
-      .concat(
-        Array.from(baseMeta._formGroupValidatorErrors.values()).flatMap(
-          (groupErrors) => groupErrors.errors,
-        ),
-      )
+      .concat(baseMeta._formGroupValidatorErrors?.errors ?? [])
       .concat(baseMeta._formValidatorErrors)
       // ValidationError is OneOrMany, TypeScript doesn't realize that
       // flat also takes care of that
       .flat()
   }
   return result
-}
-
-export function hasFormGroupValidatorErrors(
-  groupErrors: Map<object, FormGroupFieldErrorMeta>,
-): boolean {
-  for (const { errors } of groupErrors.values()) {
-    if (hasValidatorErrors(errors)) return true
-  }
-  return false
 }
 
 export function hasFieldMetaErrors(meta: InternalBaseFieldMeta): boolean {

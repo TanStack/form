@@ -63,8 +63,7 @@ interface FieldRowsSnapshotOptions {
 }
 
 function isFormGroupField(field: AnyInternalFieldApi): boolean {
-  const group = field.form._getNearestFormGroupForField(field.name)
-  return group !== null && String(group.name) === field.name
+  return field._formGroup !== null
 }
 
 export function getFieldRowsSnapshot(

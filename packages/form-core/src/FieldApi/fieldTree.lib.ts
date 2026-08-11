@@ -330,6 +330,7 @@ export function killField(
 
       node._isKilled = true
       node._refCount = 0
+      node._formGroup = null
       node._defaultValueCache = null
       node._atoms.store = undefined
       if (node._pipelineCache) {
@@ -409,6 +410,7 @@ export function canPruneField(field: AnyInternalFieldApi): boolean {
   if (field._isKilled) return false
 
   if (field._refCount > 0) return false
+  if (field._formGroup) return false
   if (field._childrenMap.size > 0) return false
   if (field._watchingFields) return false
   if (field._watchingValidatorFields) return false
@@ -428,8 +430,8 @@ export function pruneFieldIfUnused(field: AnyInternalFieldApi): void {
     ? new Array<{ field: AnyInternalFieldApi; previousPath: string }>()
     : null
 
-  visitFieldAndAncestors(field, (node) => {
-    if (!canPruneField(node)) return false
+  visitFieldAndAncestors(field, (node, stop) => {
+    if (!canPruneField(node)) return stop
 
     removedFields?.push({ field: node, previousPath: node.name })
     node._parent._removeChild(node._segment)

@@ -50,6 +50,7 @@ import type {
 import type { ResolvedInternalFieldUpdateOptions } from '../types.lib'
 import type { FieldUpdateOptions, Updater } from '../types.public'
 import type { AnyInternalFormApi } from '../FormApi/FormApi.lib'
+import type { AnyInternalFormGroupApi } from '../FormGroupApi/FormGroupApi.lib'
 import type { ReadonlyAtom } from '@tanstack/store'
 import type { FieldApi, FieldApiOptions } from './FieldApi.public'
 import type {
@@ -310,6 +311,8 @@ export class InternalFieldApi<
   _listeners: Array<AnyFieldListener> | null
   _errorVisibility: ErrorVisibility<any, any> | undefined
   _errorBoundary: boolean
+  /** The form group occupying this trie node. */
+  _formGroup: AnyInternalFormGroupApi | null = null
 
   // TODO implement
   /**
@@ -659,7 +662,7 @@ export class InternalFieldApi<
       return undefined
     })
 
-    const group = this.form._getNearestFormGroupForField(this.name)
+    const group = this._getFormGroup()
     if (group) {
       group.validate(event, { triggerFieldApi: this })
       return
@@ -1082,6 +1085,30 @@ export class InternalFieldApi<
 
   _pruneIfUnused(): void {
     pruneFieldIfUnused(this)
+  }
+
+  /** Updates the form group occupying this trie node. */
+  _setFormGroup(formGroup: AnyInternalFormGroupApi | null): void {
+    if (this._formGroup === formGroup) return
+
+    this._formGroup = formGroup
+    devtools().updateField?.(this)
+
+    if (!formGroup) this._pruneIfUnused()
+  }
+
+  /** Returns the form group containing this trie node, if one exists. */
+  _getFormGroup(): AnyInternalFormGroupApi | null {
+    let formGroup: AnyInternalFormGroupApi | null = null
+
+    visitFieldAndAncestors(this, (field, stop) => {
+      if (!field._formGroup) return
+
+      formGroup = field._formGroup
+      return stop
+    })
+
+    return formGroup
   }
 
   _getValue(): any {

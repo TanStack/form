@@ -95,10 +95,9 @@ export function getDevtoolsFieldErrors(
     }),
   })
 
-  for (const [owner, groupErrors] of meta._formGroupValidatorErrors) {
-    const group = Array.from(field.form._formGroups).find(
-      (candidate) => candidate._errorOwner === owner,
-    )
+  const groupErrors = meta._formGroupValidatorErrors
+  if (groupErrors) {
+    const containingGroup = field._getFormGroup()
 
     appendErrors({
       destination: errors,
@@ -107,10 +106,12 @@ export function getDevtoolsFieldErrors(
       mode,
       getSource: (validatorIndex) => ({
         scope: 'formGroup',
-        formGroupPath: group ? String(group.name) : '(unknown form group)',
+        formGroupPath: containingGroup
+          ? String(containingGroup.name)
+          : '(unknown form group)',
         validatorIndex,
         validatorType: getValidatorType(
-          group?._options.validators?.[validatorIndex],
+          containingGroup?._options.validators?.[validatorIndex],
         ),
       }),
     })

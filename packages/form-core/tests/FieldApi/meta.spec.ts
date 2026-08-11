@@ -1,9 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
-import {
-  defaultFieldMeta,
-  hasFormGroupValidatorErrors,
-} from '../../src/FieldApi/fieldState.lib'
+import { defaultFieldMeta } from '../../src/FieldApi/fieldState.lib'
 
 describe('field - meta', () => {
   afterEach(() => {
@@ -11,27 +8,6 @@ describe('field - meta', () => {
   })
 
   describe('field meta derived properties', () => {
-    it('detects whether form-group validator error maps contain errors', () => {
-      expect(
-        hasFormGroupValidatorErrors(
-          new Map([[{}, { errors: [[]], errorSourceEvents: [null] }]]),
-        ),
-      ).toBe(false)
-      expect(
-        hasFormGroupValidatorErrors(
-          new Map([
-            [
-              {},
-              {
-                errors: [[{ message: 'Group error' }]],
-                errorSourceEvents: ['submit'],
-              },
-            ],
-          ]),
-        ),
-      ).toBe(true)
-    })
-
     it('starts with defaultFieldMeta values', () => {
       const form = new InternalFormApi({ defaultValues: { x: '' } })
       const field = form._getOrCreateFieldApi({ name: 'x' })

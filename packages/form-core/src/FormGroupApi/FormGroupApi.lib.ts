@@ -3,7 +3,6 @@ import {
   cancelPipelineCache,
   concatenateFieldNames,
   createPipelineCache,
-  evaluate,
   getBy,
   setBy,
 } from '../utils.lib'
@@ -21,7 +20,10 @@ import {
 } from '../validation.lib'
 import { transformFieldOptionsFieldNames } from '../FieldApi/FieldApi.lib'
 import { visitFieldSubtree } from '../FieldApi/fieldTraversal.lib'
-import { hasFieldMetaErrors } from '../FieldApi/fieldState.lib'
+import {
+  deriveFromBaseFieldMeta,
+  hasFieldMetaErrors,
+} from '../FieldApi/fieldState.lib'
 import { parseStandardSchemaIssues } from '../standardSchema.lib'
 import { createErrorMap } from '../validation.public'
 import type { FormApi } from '../FormApi/FormApi.public'
@@ -31,8 +33,10 @@ import type {
   AnyInternalFieldApi,
 } from '../FieldApi/FieldApi.lib'
 import type {
+  DerivedMetaMarkers,
   FormGroupFieldErrorMeta,
   InternalBaseFieldMeta,
+  InternalFieldMeta,
 } from '../FieldApi/fieldState.lib'
 import type { FormStateOverrides } from '../FormApi/formState.lib'
 import type { DeepKeys, DeepValue } from '../deep-keys.public'
@@ -59,6 +63,19 @@ interface FormGroupValidationOutcome<TGroupValue> {
   hasException: boolean
 }
 
+const emptyFormGroupFieldErrorMeta: FormGroupFieldErrorMeta = {
+  errors: [],
+  errorSourceEvents: [],
+}
+
+export type AnyInternalFormGroupApi = InternalFormGroupApi<
+  any,
+  any,
+  any,
+  any,
+  any
+>
+
 export class InternalFormGroupApi<
   TFormData,
   TGroupName extends DeepKeys<TFormData>,
@@ -74,7 +91,8 @@ export class InternalFormGroupApi<
 > {
   readonly form: FormApi<TFormData, TFormErrorTypes> &
     InternalFormApi<any, any, any>
-  readonly name: TGroupName
+  /** The trie node occupied by this form group. */
+  _groupField: AnyInternalFieldApi
   _options: FormGroupOptions<
     TFormData,
     TGroupName,
@@ -87,16 +105,20 @@ export class InternalFormGroupApi<
   >
   _pipelineCache: PipelineCache<FormGroupValidateResult<TGroupValue>>
   _schemaOutputs: Array<any> = []
-  _errorOwner = {}
-  _fieldErrors: Array<Set<AnyInternalFieldApi> | undefined> = []
-  _errors = createAtom<Array<FormGroupValidateResult<TGroupValue>>>([])
+  /** Tracks the trie nodes receiving routed errors from each validator. */
+  _routedErrorFields: Array<Set<AnyInternalFieldApi> | undefined> = []
   _isSubmitting = createAtom(false)
   _isSubmitSuccessful = createAtom(false)
-  _isValidating = createAtom(false)
   _submissionAttempts = createAtom(0)
+  /** Invalidates group state when reset or remount replaces its trie node. */
+  _groupFieldVersion = createAtom(0)
 
   get state() {
     return this.atom.get()
+  }
+
+  get name(): TGroupName {
+    return this._groupField.name as TGroupName
   }
 
   get value(): TGroupValue {
@@ -114,13 +136,109 @@ export class InternalFormGroupApi<
   ) {
     this._options = options
     this.form = options.form as never
-    this.name = options.name
+    this._groupField = this.form._getOrCreateFieldApi({ name: options.name })
+    this._groupField._setFormGroup(this)
     this._pipelineCache = createPipelineCache()
 
-    this.atom = createAtom(() => this._getStateSnapshot(), {
-      compare: shallow,
-    })
-    this.form._registerFormGroup(this)
+    const groupMetaMarkers: DerivedMetaMarkers = {
+      source: undefined,
+      canDisplayErrors: undefined,
+    }
+
+    this.atom = createAtom<
+      FormGroupState<TGroupValue, ToFormGroupErrorTypes<TGroupValidators>>
+    >(
+      (prev) => {
+        void this._groupFieldVersion.get()
+
+        const groupField = this._groupField
+        const groupBaseMeta = groupField._getBaseMeta()
+        const groupValue = this.value
+        const previousGroupMeta = prev?.meta as InternalFieldMeta | undefined
+        const groupMeta = deriveFromBaseFieldMeta(
+          groupBaseMeta,
+          previousGroupMeta,
+          groupField,
+          groupValue,
+          groupMetaMarkers,
+        )
+        const groupErrorMeta = groupBaseMeta._formGroupValidatorErrors
+        let groupErrors: FormErrors<ToFormGroupErrorTypes<TGroupValidators>>
+
+        if (
+          prev &&
+          previousGroupMeta?._formGroupValidatorErrors === groupErrorMeta
+        ) {
+          groupErrors = prev.errors
+        } else if (groupErrorMeta) {
+          groupErrors = groupErrorMeta.errors.flat() as never
+        } else {
+          groupErrors = []
+        }
+
+        const isInvalid = hasFieldMetaErrors(groupBaseMeta)
+        const isTouched = groupMeta.isTouched
+        const isDirty = groupMeta.isDirty
+
+        return {
+          values: groupValue,
+          meta: groupMeta,
+          errors: groupErrors,
+          isTouched,
+          isDirty,
+          isPristine: !isDirty,
+          isValid: !isInvalid,
+          isInvalid,
+          canSubmit: !this._isSubmitting.get() && !isInvalid,
+          isSubmitting: this._isSubmitting.get(),
+          isSubmitSuccessful: this._isSubmitSuccessful.get(),
+          isValidating: groupMeta.isValidating,
+          submissionAttempts: this._submissionAttempts.get(),
+        }
+      },
+      { compare: shallow },
+    )
+  }
+
+  /** Attaches this group to the trie node at the given path. */
+  _attachToFieldTrie(name: string): void {
+    const groupField = this.form._getOrCreateFieldApi({ name })
+
+    if (groupField !== this._groupField) {
+      this._groupField = groupField
+      this._groupFieldVersion.set((version) => version + 1)
+    }
+
+    groupField._setFormGroup(this)
+  }
+
+  /** Marks the backing trie node as validating until the returned callback runs. */
+  _startValidation(): () => void {
+    const groupField = this._groupField
+    const pipelineCache = this._pipelineCache
+    let isComplete = false
+
+    groupField._setValidationCount((count) => count + 1)
+
+    return () => {
+      if (isComplete) return
+      isComplete = true
+
+      // Reset and cleanup replace the cache after clearing the node count, so
+      // an old completion must not decrement a newer validation run.
+      if (this._pipelineCache !== pipelineCache) return
+
+      groupField._setValidationCount((count) => Math.max(0, count - 1))
+    }
+  }
+
+  /** Cancels group validation and clears it from the backing trie node. */
+  _cancelValidation(): void {
+    const groupField = this._groupField
+
+    cancelPipelineCache(this._pipelineCache)
+    this._pipelineCache = createPipelineCache()
+    groupField._setValidationCount(() => 0)
   }
 
   update = (
@@ -136,12 +254,12 @@ export class InternalFormGroupApi<
   }
 
   mount = (): void => {
-    this.form._registerFormGroup(this)
+    this._attachToFieldTrie(this.name)
 
     const pipeline = this._options.validators
     if (!pipeline || pipeline.length === 0) return
 
-    this._isValidating.set(true)
+    const finishValidation = this._startValidation()
 
     const { didRun, asyncPromise } = runGroupMountValidatorPipeline({
       pipeline: pipeline as ReadonlyArray<FormGroupValidator<any>>,
@@ -150,105 +268,53 @@ export class InternalFormGroupApi<
     })
 
     if (!didRun) {
-      this._isValidating.set(false)
+      finishValidation()
       return
     }
 
     if (asyncPromise) {
-      void asyncPromise.finally(() => {
-        this._isValidating.set(false)
-      })
+      void asyncPromise.finally(finishValidation)
       return
     }
 
-    this._isValidating.set(false)
-  }
-
-  _getStateSnapshot(): FormGroupState<
-    TGroupValue,
-    ToFormGroupErrorTypes<TGroupValidators>
-  > {
-    const groupField = this.form._tryGetFieldApi(this.name)
-    const groupMeta = groupField?.meta
-    const groupErrors = (
-      groupField
-        ? this._getFieldErrorMeta(groupField._getBaseMeta()).errors.flat()
-        : []
-    ) as FormErrors<ToFormGroupErrorTypes<TGroupValidators>>
-    const isInvalid = groupField
-      ? hasFieldMetaErrors(groupField._getBaseMeta())
-      : false
-    const isTouched = groupMeta?.isTouched ?? false
-    const isDirty = groupMeta?.isDirty ?? false
-    const isValidating =
-      this._isValidating.get() || (groupMeta?.isValidating ?? false)
-
-    return {
-      values: this.value,
-      meta: groupMeta,
-      errors: groupErrors,
-      isTouched,
-      isDirty,
-      isPristine: !isDirty,
-      isValid: !isInvalid,
-      isInvalid,
-      canSubmit: !this._isSubmitting.get() && !isInvalid,
-      isSubmitting: this._isSubmitting.get(),
-      isSubmitSuccessful: this._isSubmitSuccessful.get(),
-      isValidating,
-      submissionAttempts: this._submissionAttempts.get(),
-    }
+    finishValidation()
   }
 
   _getScopedFormStateOverrides(): FormStateOverrides {
     return {
       isTouched: () => {
-        const meta = this.form._tryGetFieldApi(this.name)?._getBaseMeta()
-        return meta
-          ? meta.isTouched || meta.childContributionCounts.touched > 0
-          : false
+        const meta = this._groupField._getBaseMeta()
+        return meta.isTouched || meta.childContributionCounts.touched > 0
       },
       isDirty: () => {
-        const meta = this.form._tryGetFieldApi(this.name)?._getBaseMeta()
-        return meta
-          ? meta.isDirty || meta.childContributionCounts.dirty > 0
-          : false
+        const meta = this._groupField._getBaseMeta()
+        return meta.isDirty || meta.childContributionCounts.dirty > 0
       },
       isPristine: () => {
-        const meta = this.form._tryGetFieldApi(this.name)?._getBaseMeta()
-        return meta
-          ? !meta.isDirty && meta.childContributionCounts.dirty === 0
-          : true
+        const meta = this._groupField._getBaseMeta()
+        return !meta.isDirty && meta.childContributionCounts.dirty === 0
       },
       isDefaultValue: () => {
-        const field = this.form._tryGetFieldApi(this.name)
         const value = getBy(this.form._atoms.values.get(), this.name)
-        if (field) return field._getIsDefaultValue(value)
-        void this.form._atoms.defaultValuesVersion.get()
-        return evaluate(getBy(this.form.defaultValues, this.name), value)
+        return this._groupField._getIsDefaultValue(value)
       },
       isValid: () => {
-        const meta = this.form._tryGetFieldApi(this.name)?._getBaseMeta()
-        return meta ? !hasFieldMetaErrors(meta) : true
+        return !hasFieldMetaErrors(this._groupField._getBaseMeta())
       },
       isInvalid: () => {
-        const meta = this.form._tryGetFieldApi(this.name)?._getBaseMeta()
-        return meta ? hasFieldMetaErrors(meta) : false
+        return hasFieldMetaErrors(this._groupField._getBaseMeta())
       },
       canSubmit: () => {
-        const meta = this.form._tryGetFieldApi(this.name)?._getBaseMeta()
-        return !this._isSubmitting.get() && !(meta && hasFieldMetaErrors(meta))
+        return (
+          !this._isSubmitting.get() &&
+          !hasFieldMetaErrors(this._groupField._getBaseMeta())
+        )
       },
       isSubmitting: () => this._isSubmitting.get(),
       isSubmitSuccessful: () => this._isSubmitSuccessful.get(),
       isValidating: () => {
-        const meta = this.form._tryGetFieldApi(this.name)?._getBaseMeta()
-        return (
-          this._isValidating.get() ||
-          (meta
-            ? meta.isValidating || meta.childContributionCounts.validating > 0
-            : false)
-        )
+        const meta = this._groupField._getBaseMeta()
+        return meta.isValidating || meta.childContributionCounts.validating > 0
       },
       submissionAttempts: () => this._submissionAttempts.get(),
     }
@@ -273,13 +339,11 @@ export class InternalFormGroupApi<
     meta: InternalBaseFieldMeta,
     groupErrors: FormGroupFieldErrorMeta,
   ): InternalBaseFieldMeta {
-    const formGroupValidatorErrors = new Map(meta._formGroupValidatorErrors)
+    const formGroupValidatorErrors = hasIndexedErrors(groupErrors.errors)
+      ? groupErrors
+      : null
 
-    if (hasIndexedErrors(groupErrors.errors)) {
-      formGroupValidatorErrors.set(this._errorOwner, groupErrors)
-    } else {
-      formGroupValidatorErrors.delete(this._errorOwner)
-    }
+    if (meta._formGroupValidatorErrors === formGroupValidatorErrors) return meta
 
     return {
       ...meta,
@@ -310,12 +374,7 @@ export class InternalFormGroupApi<
   }
 
   _getFieldErrorMeta(meta: InternalBaseFieldMeta): FormGroupFieldErrorMeta {
-    return (
-      meta._formGroupValidatorErrors.get(this._errorOwner) ?? {
-        errors: [],
-        errorSourceEvents: [],
-      }
-    )
+    return meta._formGroupValidatorErrors ?? emptyFormGroupFieldErrorMeta
   }
 
   _clearFieldValidatorError(
@@ -341,8 +400,8 @@ export class InternalFormGroupApi<
 
     const parsedResult = parseValidationResult(result.result)
     const validatorIndex = result.validatorIndex
-    const groupField = this.form._getOrCreateFieldApi({ name: this.name })
-    const oldFieldRefs = this._fieldErrors[validatorIndex]
+    const groupField = this._groupField
+    const oldFieldRefs = this._routedErrorFields[validatorIndex]
     const resolvedFieldErrors = this.form._resolveRoutedFieldErrors(
       Object.entries(parsedResult.subfields ?? {}),
       groupField,
@@ -367,15 +426,12 @@ export class InternalFormGroupApi<
         (field, index) => this._clearFieldValidatorError(field, index),
       )
 
-      this._fieldErrors[validatorIndex] = fieldRefs
+      this._routedErrorFields[validatorIndex] = fieldRefs
     })
   }
 
   _visitGroupFields(visitor: (field: AnyInternalFieldApi) => void) {
-    const root = this.form._tryGetFieldApi(this.name)
-    if (!root) return
-
-    visitFieldSubtree(root, visitor)
+    visitFieldSubtree(this._groupField, visitor)
   }
 
   async _runFieldValidations(
@@ -443,13 +499,11 @@ export class InternalFormGroupApi<
     event: ConfigurableValidationTrigger,
   ) {
     const validatorCount = this._options.validators?.length ?? 0
-    const groupField = this.form._tryGetFieldApi(this.name)
+    const groupField = this._groupField
     const eventErrorCount = Math.max(
       validatorCount,
-      this._fieldErrors.length,
-      groupField
-        ? this._getFieldErrorMeta(groupField._getBaseMeta()).errors.length
-        : 0,
+      this._routedErrorFields.length,
+      this._getFieldErrorMeta(groupField._getBaseMeta()).errors.length,
       this._getFieldErrorMeta(field._getBaseMeta()).errors.length,
     )
     const eventErrorIndexes: Array<number> = []
@@ -478,20 +532,18 @@ export class InternalFormGroupApi<
     if (eventErrorIndexes.length === 0) return
 
     batch(() => {
-      if (groupField) {
-        this._clearFieldEventErrors(groupField, eventErrorIndexes, sourceEvent)
-      }
+      this._clearFieldEventErrors(groupField, eventErrorIndexes, sourceEvent)
 
       const indexesToClearFromField: Array<number> = []
       for (const validatorIndex of eventErrorIndexes) {
-        const fieldRefs = this._fieldErrors[validatorIndex]
+        const fieldRefs = this._routedErrorFields[validatorIndex]
         if (
           fieldRefs?.has(field) &&
           this._hasFieldEventError(field, validatorIndex, sourceEvent)
         ) {
           const nextFieldRefs = new Set(fieldRefs)
           nextFieldRefs.delete(field)
-          this._fieldErrors[validatorIndex] = nextFieldRefs
+          this._routedErrorFields[validatorIndex] = nextFieldRefs
           indexesToClearFromField.push(validatorIndex)
         }
       }
@@ -504,25 +556,22 @@ export class InternalFormGroupApi<
 
   _clearRoutedErrors() {
     const fields = new Set<AnyInternalFieldApi>()
-    const groupField = this.form._tryGetFieldApi(this.name)
-    if (groupField) fields.add(groupField)
-    for (const fieldRefs of this._fieldErrors) {
+    fields.add(this._groupField)
+    for (const fieldRefs of this._routedErrorFields) {
       for (const field of fieldRefs ?? []) fields.add(field)
     }
 
     for (const field of fields) {
       field._setMeta((prev) => {
-        if (!prev._formGroupValidatorErrors.has(this._errorOwner)) return prev
-        const groupErrors = new Map(prev._formGroupValidatorErrors)
-        groupErrors.delete(this._errorOwner)
+        if (!prev._formGroupValidatorErrors) return prev
         return {
           ...prev,
-          _formGroupValidatorErrors: groupErrors,
+          _formGroupValidatorErrors: null,
         }
       })
       field._pruneIfUnused()
     }
-    this._fieldErrors = []
+    this._routedErrorFields = []
   }
 
   _validate = async (
@@ -539,12 +588,11 @@ export class InternalFormGroupApi<
     const pipeline = this._options.validators
     if (!pipeline || pipeline.length === 0) {
       const fieldOutcome = await this._runFieldValidations(signal)
-      this._errors.set([])
       this._clearRoutedErrors()
       return fieldOutcome
     }
 
-    this._isValidating.set(true)
+    const finishValidation = this._startValidation()
     try {
       const fieldOutcomePromise = this._runFieldValidations(signal)
       const results = await runValidatorPipeline<
@@ -590,16 +638,12 @@ export class InternalFormGroupApi<
         ...fieldOutcome.errors,
       ]
 
-      batch(() => {
-        this._errors.set(groupErrors)
-      })
-
       return {
         errors,
         hasException: results.thrownError !== null || fieldOutcome.hasException,
       }
     } finally {
-      this._isValidating.set(false)
+      finishValidation()
     }
   }
 
@@ -657,8 +701,7 @@ export class InternalFormGroupApi<
   }
 
   reset = () => {
-    cancelPipelineCache(this._pipelineCache)
-    this._pipelineCache = createPipelineCache()
+    this._cancelValidation()
     this._schemaOutputs = []
     this.form._atoms.values.set((prev: TFormData) =>
       setBy(prev, this.name, getBy(this.form.defaultValues, this.name)),
@@ -675,26 +718,21 @@ export class InternalFormGroupApi<
           }
         })
       })
-      this._errors.set([])
       this._isSubmitting.set(false)
       this._isSubmitSuccessful.set(false)
-      this._isValidating.set(false)
       this._submissionAttempts.set(0)
       this._clearRoutedErrors()
     })
   }
 
   _cleanup() {
-    this.form._unregisterFormGroup(this)
-    cancelPipelineCache(this._pipelineCache)
-    this._pipelineCache = createPipelineCache()
+    this._cancelValidation()
     this._schemaOutputs = []
     batch(() => {
-      this._errors.set([])
       this._isSubmitting.set(false)
       this._isSubmitSuccessful.set(false)
-      this._isValidating.set(false)
       this._clearRoutedErrors()
     })
+    this._groupField._setFormGroup(null)
   }
 }
