@@ -70,7 +70,11 @@ export default defineConfig({
     globals: true,
     browser: {
       enabled: true,
-      provider: playwright(),
+      // CI runners (ubuntu-latest) ship with Google Chrome preinstalled, so
+      // use it rather than downloading playwright's own browser build
+      provider: playwright(
+        process.env.CI ? { launchOptions: { channel: 'chrome' } } : {},
+      ),
       instances: [{ browser: 'chromium', headless: true }],
     },
   },
