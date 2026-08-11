@@ -513,10 +513,7 @@ Here is the same example with Valibot:
 import * as v from 'valibot'
 
 const userSchema = v.object({
-  age: v.pipe(
-    v.number(),
-    v.minValue(13, 'You must be 13 to make an account'),
-  ),
+  age: v.pipe(v.number(), v.minValue(13, 'You must be 13 to make an account')),
 })
 
 function App() {
