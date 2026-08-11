@@ -3360,6 +3360,41 @@ describe('field api', () => {
       expect(form.fieldInfo.otherField).toBeDefined()
     })
 
+    it('should preserve sibling fields whose names share a prefix', () => {
+      const form = new FormApi({
+        defaultValues: {
+          email: 'user@example.com',
+          emailVerified: true,
+          items: [{ price: 10, priceCurrency: 'USD' }],
+        },
+      })
+
+      form.mount()
+
+      const email = new FieldApi({ form, name: 'email' })
+      const emailVerified = new FieldApi({ form, name: 'emailVerified' })
+      const price = new FieldApi({ form, name: 'items[0].price' })
+      const priceCurrency = new FieldApi({
+        form,
+        name: 'items[0].priceCurrency',
+      })
+
+      email.mount()
+      emailVerified.mount()
+      price.mount()
+      priceCurrency.mount()
+
+      form.deleteField('email')
+      form.deleteField('items[0].price')
+
+      expect(form.getFieldValue('emailVerified')).toBe(true)
+      expect(form.fieldInfo.emailVerified).toBeDefined()
+      expect(form.state.fieldMeta.emailVerified).toBeDefined()
+      expect(form.getFieldValue('items[0].priceCurrency')).toBe('USD')
+      expect(form.fieldInfo['items[0].priceCurrency']).toBeDefined()
+      expect(form.state.fieldMeta['items[0].priceCurrency']).toBeDefined()
+    })
+
     it('should remove field value and clean up fieldInfo entry', () => {
       const form = new FormApi({
         defaultValues: {
