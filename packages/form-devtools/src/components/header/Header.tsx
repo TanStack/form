@@ -1,4 +1,4 @@
-import { RefreshCcwIcon } from 'lucide-solid'
+import RefreshCcwIcon from 'lucide-solid/icons/refresh-ccw'
 import { InternalFormApi } from '@tanstack/form-core/internals'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
 import { Button } from '../ui/button'

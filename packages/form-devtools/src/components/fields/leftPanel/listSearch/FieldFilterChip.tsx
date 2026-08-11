@@ -1,5 +1,5 @@
 import { TagsInput } from '@ark-ui/solid'
-import { XIcon } from 'lucide-solid'
+import XIcon from 'lucide-solid/icons/x'
 import type { FieldListFilter } from '@/hooks/createFieldListSearch'
 import { Button } from '@/components/ui/button'
 

@@ -2,13 +2,14 @@ import path from 'node:path'
 import { defineConfig } from 'vitest/config'
 import solid from 'vite-plugin-solid'
 import tailwindcss from '@tailwindcss/vite'
+import { playwright } from '@vitest/browser-playwright'
 import packageJson from './package.json' with { type: 'json' }
 
 const normalizeChunkPath = (id: string | null | undefined) =>
   id?.replaceAll(path.sep, '/')
 
 const componentsEntry = normalizeChunkPath(
-  path.resolve(__dirname, './src/components/index.tsx'),
+  path.resolve(import.meta.dirname, './src/components/index.tsx'),
 )
 
 const isBareImport = (id: string) =>
@@ -41,7 +42,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      '@': path.resolve(import.meta.dirname, './src'),
     },
   },
   build: {
@@ -66,8 +67,15 @@ export default defineConfig({
     name: packageJson.name,
     dir: './tests',
     watch: false,
-    environment: 'jsdom',
-    setupFiles: ['tests/test-setup.ts'],
     globals: true,
+    browser: {
+      enabled: true,
+      // CI runners (ubuntu-latest) ship with Google Chrome preinstalled, so
+      // use it rather than downloading playwright's own browser build
+      provider: playwright(
+        process.env.CI ? { launchOptions: { channel: 'chrome' } } : {},
+      ),
+      instances: [{ browser: 'chromium', headless: true }],
+    },
   },
 })

@@ -1,4 +1,4 @@
-import { BugIcon } from 'lucide-solid'
+import BugIcon from 'lucide-solid/icons/bug'
 import { createSignal } from 'solid-js'
 import { FieldDebugInfo } from '../fieldDebug/FieldDebugInfoPopover'
 import type { FieldDebugSuspicion } from '@/eventClientTypes'

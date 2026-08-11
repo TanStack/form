@@ -6,22 +6,20 @@ import {
   useTagsInput,
 } from '@ark-ui/solid'
 import fuzzysort from 'fuzzysort'
-import {
-  BookmarkIcon,
-  CheckIcon,
-  EqualIcon,
-  EqualNotIcon,
-  EyeClosedIcon,
-  EyeIcon,
-  ListTreeIcon,
-  PencilIcon,
-  PencilSparklesIcon,
-  PointerIcon,
-  PointerOffIcon,
-  SquareArrowRightExitIcon,
-  SquareIcon,
-  XIcon,
-} from 'lucide-solid'
+import BookmarkIcon from 'lucide-solid/icons/bookmark'
+import CheckIcon from 'lucide-solid/icons/check'
+import EqualIcon from 'lucide-solid/icons/equal'
+import EqualNotIcon from 'lucide-solid/icons/equal-not'
+import EyeClosedIcon from 'lucide-solid/icons/eye-closed'
+import EyeIcon from 'lucide-solid/icons/eye'
+import ListTreeIcon from 'lucide-solid/icons/list-tree'
+import PencilIcon from 'lucide-solid/icons/pencil'
+import PencilSparklesIcon from 'lucide-solid/icons/pencil-sparkles'
+import PointerIcon from 'lucide-solid/icons/pointer'
+import PointerOffIcon from 'lucide-solid/icons/pointer-off'
+import SquareArrowRightExitIcon from 'lucide-solid/icons/square-arrow-right-exit'
+import SquareIcon from 'lucide-solid/icons/square'
+import XIcon from 'lucide-solid/icons/x'
 import {
   createEffect,
   createMemo,

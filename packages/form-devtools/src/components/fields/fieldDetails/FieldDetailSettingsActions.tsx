@@ -1,9 +1,7 @@
-import {
-  PenIcon,
-  PlayIcon,
-  RotateCcwIcon,
-  SquareArrowRightExitIcon,
-} from 'lucide-solid'
+import PenIcon from 'lucide-solid/icons/pen'
+import PlayIcon from 'lucide-solid/icons/play'
+import RotateCcwIcon from 'lucide-solid/icons/rotate-ccw'
+import SquareArrowRightExitIcon from 'lucide-solid/icons/square-arrow-right-exit'
 import type { FieldId, FormId } from '@/types/branded'
 import type { MenuSelectionDetails } from '@ark-ui/solid'
 import { Button } from '@/components/ui/button'

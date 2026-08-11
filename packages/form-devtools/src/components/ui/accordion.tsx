@@ -1,5 +1,6 @@
 import { Accordion as AccordionPrimitive } from '@ark-ui/solid'
-import { ChevronDownIcon, ChevronUpIcon } from 'lucide-solid'
+import ChevronDownIcon from 'lucide-solid/icons/chevron-down'
+import ChevronUpIcon from 'lucide-solid/icons/chevron-up'
 import { splitProps } from 'solid-js'
 import { cn } from '@/utils'
 

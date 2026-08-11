@@ -1,6 +1,6 @@
 import { Listbox } from '@ark-ui/solid'
 import { For } from 'solid-js'
-import { BookmarkIcon } from 'lucide-solid'
+import BookmarkIcon from 'lucide-solid/icons/bookmark'
 import {
   Item,
   ItemContent,

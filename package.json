@@ -60,6 +60,7 @@
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.3",
     "@types/node": "^25.0.7",
+    "@vitest/browser-playwright": "^4.0.17",
     "@vitest/coverage-istanbul": "4.1.10",
     "eslint": "^10.8.1",
     "jsdom": "^27.2.0",

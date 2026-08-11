@@ -18,6 +18,15 @@ export default defineConfig([
       '@typescript-eslint/require-await': 'off',
       'no-async-promise-executor': 'off',
       'no-empty': 'off',
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector:
+            "ImportDeclaration[source.value='lucide-solid'][importKind!='type'] > ImportSpecifier[importKind!='type'][imported.name=/Icon$/]",
+          message:
+            "Import icons from 'lucide-solid/icons/{name}' instead of the 'lucide-solid' barrel.",
+        },
+      ],
     },
   },
 ])
