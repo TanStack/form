@@ -2691,7 +2691,7 @@ export class FormApi<
   deleteField = <TField extends DeepKeys<TFormData>>(field: TField) => {
     const subFieldsToDelete = Object.keys(this.fieldInfo).filter((f) => {
       const fieldStr = field.toString()
-      return f !== fieldStr && f.startsWith(fieldStr)
+      return f.startsWith(`${fieldStr}.`) || f.startsWith(`${fieldStr}[`)
     })
 
     const fieldsToDelete = [...subFieldsToDelete, field]
