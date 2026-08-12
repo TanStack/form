@@ -557,6 +557,48 @@ export interface FormResetOptions {
 }
 
 /**
+ * Runs submission validation and submits current values when validation
+ * succeeds.
+ *
+ * Registered fields are marked touched, field validators run before form
+ * validators, and `onSubmit` is awaited only when validation succeeds.
+ * Validation error results and errors returned by `onSubmit` through
+ * `createValidationError` are stored as error state. `onSubmitInvalid` is
+ * awaited after a failed attempt.
+ *
+ * Calls made while an attempt is in progress return the same promise instead
+ * of starting another attempt.
+ *
+ * @returns A promise resolving to the error results produced by field and
+ * form validation, plus any validation error returned by `onSubmit` through
+ * `createValidationError`. The array is empty if none are produced.
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ */
+export type HandleSubmitFn<in out TFormData> = () => Promise<
+  Array<FormValidationError<TFormData>>
+>
+
+/**
+ * Resets form values, metadata, validation state, and mounted fields.
+ *
+ * Calling without values restores the current `defaultValues`. Supplying
+ * values sets the current values and also updates `defaultValues` to those
+ * values. This can apply expected values immediately while fresh data is
+ * fetched from the backend.
+ *
+ * Results from validation or submission work pending at reset are discarded.
+ *
+ * @param values - Values to apply, or omit to restore `defaultValues`.
+ * @param opts - Options controlling whether supplied values replace
+ * `defaultValues`.
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ */
+export type ResetFn<in out TFormData> = (
+  values?: TFormData,
+  opts?: FormResetOptions,
+) => void
+
+/**
  * Core API for reading and updating state, validating values, and handling
  * submission.
  *
@@ -621,11 +663,11 @@ export interface FormApi<
    * Calls made while an attempt is in progress return the same promise instead
    * of starting another attempt.
    *
-   * @returns A promise resolving to the error results produced by field and
+   * The returned promise resolves to the error results produced by field and
    * form validation, plus any validation error returned by `onSubmit` through
    * `createValidationError`. The array is empty if none are produced.
    */
-  handleSubmit: () => Promise<Array<FormValidationError<TFormData>>>
+  handleSubmit: HandleSubmitFn<TFormData>
   /**
    * Reset form values, metadata, validation state, and mounted fields.
    *
@@ -637,9 +679,8 @@ export interface FormApi<
    *
    * Results from validation or submission work pending at reset are discarded.
    *
-   * @param values - Values to apply, or omit to restore `defaultValues`.
-   * @param opts - Options controlling whether supplied values replace
-   * `defaultValues`.
+   * Pass `{ updateDefaultValues: false }` as the options argument to preserve
+   * the existing `defaultValues` when supplying values.
    */
-  reset: (values?: TFormData, opts?: FormResetOptions) => void
+  reset: ResetFn<TFormData>
 }

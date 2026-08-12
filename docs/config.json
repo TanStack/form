@@ -404,11 +404,11 @@
         },
         {
           "label": "form.handleSubmit()",
-          "to": "reference/interfaces/FormApi#handlesubmit"
+          "to": "reference/type-aliases/HandleSubmitFn"
         },
         {
           "label": "form.reset()",
-          "to": "reference/interfaces/FormApi#reset"
+          "to": "reference/type-aliases/ResetFn"
         },
         {
           "label": "FormApi",

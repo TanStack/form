@@ -5,7 +5,7 @@ title: FormApi
 
 # Interface: FormApi\<TFormData, TFormErrorTypes\>
 
-Defined in: [FormApi/FormApi.public.ts:568](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L568)
+Defined in: [FormApi/FormApi.public.ts:610](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L610)
 
 Core API for reading and updating state, validating values, and handling
 submission.
@@ -38,7 +38,7 @@ Library-managed. Do not specify explicitly.
 atom: ReadonlyAtom<FormState<TFormData, TFormErrorTypes>>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:579](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L579)
+Defined in: [FormApi/FormApi.public.ts:621](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L621)
 
 Read-only atom containing reactive `FormState` snapshots.
 
@@ -81,7 +81,7 @@ formApi.clearFieldValues('items')
 readonly defaultValues: TFormData;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:583](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L583)
+Defined in: [FormApi/FormApi.public.ts:625](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L625)
 
 The current baseline values used by `reset()` and `isDefaultValue`.
 
@@ -122,7 +122,7 @@ formApi.filterFieldValues('items', (item) => item % 2 === 0)
 readonly formId: string;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:590](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L590)
+Defined in: [FormApi/FormApi.public.ts:632](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L632)
 
 Stable identifier supplied by `FormOptions.formId` or generated at
 creation.
@@ -163,10 +163,10 @@ be resolved at runtime.
 ### handleSubmit
 
 ```ts
-handleSubmit: () => Promise<FormValidationError<TFormData>[]>;
+handleSubmit: HandleSubmitFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:628](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L628)
+Defined in: [FormApi/FormApi.public.ts:670](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L670)
 
 Runs submission validation and submits current values when validation
 succeeds.
@@ -180,11 +180,7 @@ awaited after a failed attempt.
 Calls made while an attempt is in progress return the same promise instead
 of starting another attempt.
 
-#### Returns
-
-`Promise`\<[`FormValidationError`](../type-aliases/FormValidationError.md)\<`TFormData`\>[]\>
-
-A promise resolving to the error results produced by field and
+The returned promise resolves to the error results produced by field and
 form validation, plus any validation error returned by `onSubmit` through
 `createValidationError`. The array is empty if none are produced.
 
@@ -314,10 +310,10 @@ formApi.removeFieldValue('items', 1)
 ### reset
 
 ```ts
-reset: (values?, opts?) => void;
+reset: ResetFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:644](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L644)
+Defined in: [FormApi/FormApi.public.ts:685](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L685)
 
 Reset form values, metadata, validation state, and mounted fields.
 
@@ -329,24 +325,8 @@ data is fetched from the backend.
 
 Results from validation or submission work pending at reset are discarded.
 
-#### Parameters
-
-##### values?
-
-`TFormData`
-
-Values to apply, or omit to restore `defaultValues`.
-
-##### opts?
-
-[`FormResetOptions`](FormResetOptions.md)
-
-Options controlling whether supplied values replace
-`defaultValues`.
-
-#### Returns
-
-`void`
+Pass `{ updateDefaultValues: false }` as the options argument to preserve
+the existing `defaultValues` when supplying values.
 
 ***
 
@@ -412,7 +392,7 @@ formApi.setFieldValue('visitCount', (count) => count + 1)
 readonly state: FormState<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:581](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L581)
+Defined in: [FormApi/FormApi.public.ts:623](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L623)
 
 Current values, validation status, and submission metadata.
 
@@ -455,7 +435,7 @@ formApi.swapFieldValues('items', 0, 2)
 validate: (signal) => Promise<FormValidationError<TFormData>[]>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:607](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L607)
+Defined in: [FormApi/FormApi.public.ts:649](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L649)
 
 Runs form-level validators enabled for the specified `'change'` or
 `'blur'` trigger.
