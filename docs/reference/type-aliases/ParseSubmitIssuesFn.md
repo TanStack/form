@@ -9,7 +9,7 @@ title: ParseSubmitIssuesFn
 type ParseSubmitIssuesFn<TFormData> = (issues) => OnSubmitError<ParsedStandardSchemaIssues<TFormData>>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:76](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L76)
+Defined in: [FormApi/FormApi.public.ts:76](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L76)
 
 Converts Standard Schema issues into an `onSubmit` validation error.
 

@@ -5,7 +5,7 @@ title: FormApiFieldMethods
 
 # Interface: FormApiFieldMethods\<TFormData\>
 
-Defined in: [FormApi/FormApiFieldMethods.types.public.ts:85](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L85)
+Defined in: [FormApi/FormApiFieldMethods.types.public.ts:85](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L85)
 
 Type-safe methods for reading, updating, and resetting individual field
 values.
@@ -30,7 +30,7 @@ Library-managed. Do not specify explicitly.
 getFieldValue: GetFieldValueFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiFieldMethods.types.public.ts:114](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L114)
+Defined in: [FormApi/FormApiFieldMethods.types.public.ts:114](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L114)
 
 Reads the current value at a field path.
 
@@ -55,7 +55,7 @@ be resolved at runtime.
 resetField: ResetFieldFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiFieldMethods.types.public.ts:131](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L131)
+Defined in: [FormApi/FormApiFieldMethods.types.public.ts:131](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L131)
 
 Restores a field path from `defaultValues` and resets state for its field
 subtree.
@@ -80,7 +80,7 @@ formApi.resetField('profile.name')
 setFieldValue: SetFieldValueFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiFieldMethods.types.public.ts:99](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L99)
+Defined in: [FormApi/FormApiFieldMethods.types.public.ts:99](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L99)
 
 Updates the current value at a field path.
 

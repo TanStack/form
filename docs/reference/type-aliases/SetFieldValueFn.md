@@ -9,7 +9,7 @@ title: SetFieldValueFn
 type SetFieldValueFn<TFormData> = <TDeepKeys>(DeepKeys, value, options?) => void;
 ```
 
-Defined in: [FormApi/FormApiFieldMethods.types.public.ts:23](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L23)
+Defined in: [FormApi/FormApiFieldMethods.types.public.ts:23](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L23)
 
 Updates the current value at a field path.
 

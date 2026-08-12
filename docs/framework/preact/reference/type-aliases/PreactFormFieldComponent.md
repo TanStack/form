@@ -9,7 +9,7 @@ title: PreactFormFieldComponent
 type PreactFormFieldComponent<TFormData, TFormErrorTypes, TFieldComponents> = <TFieldName, TFieldValidators>(props) => ComponentChildren;
 ```
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:151](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L151)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:151](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L151)
 
 ## Type Parameters
 

@@ -5,7 +5,7 @@ title: ServerValidateFrameworkPlugin
 
 # Interface: ServerValidateFrameworkPlugin\<TCreateServerValidate\>
 
-Defined in: [ssr.public.ts:89](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/ssr.public.ts#L89)
+Defined in: [ssr.public.ts:89](https://github.com/TanStack/form/blob/main/packages/form-core/src/ssr.public.ts#L89)
 
 ## Type Parameters
 
@@ -21,7 +21,7 @@ Defined in: [ssr.public.ts:89](https://github.com/LeCarbonator/tanstack-form/blo
 createServerValidate: TCreateServerValidate;
 ```
 
-Defined in: [ssr.public.ts:94](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/ssr.public.ts#L94)
+Defined in: [ssr.public.ts:94](https://github.com/TanStack/form/blob/main/packages/form-core/src/ssr.public.ts#L94)
 
 ***
 
@@ -31,4 +31,4 @@ Defined in: [ssr.public.ts:94](https://github.com/LeCarbonator/tanstack-form/blo
 id: `react-form-${string}`;
 ```
 
-Defined in: [ssr.public.ts:93](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/ssr.public.ts#L93)
+Defined in: [ssr.public.ts:93](https://github.com/TanStack/form/blob/main/packages/form-core/src/ssr.public.ts#L93)

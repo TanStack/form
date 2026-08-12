@@ -5,7 +5,7 @@ title: ParsedStandardSchemaIssues
 
 # Interface: ParsedStandardSchemaIssues\<TFormData\>
 
-Defined in: [validation.public.ts:384](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L384)
+Defined in: [validation.public.ts:384](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L384)
 
 ## Type Parameters
 
@@ -21,7 +21,7 @@ Defined in: [validation.public.ts:384](https://github.com/LeCarbonator/tanstack-
 fields: Partial<Record<DeepKeys<TFormData>, StandardSchemaV1Issue[]>>;
 ```
 
-Defined in: [validation.public.ts:386](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L386)
+Defined in: [validation.public.ts:386](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L386)
 
 ***
 
@@ -31,4 +31,4 @@ Defined in: [validation.public.ts:386](https://github.com/LeCarbonator/tanstack-
 form: StandardSchemaV1Issue[];
 ```
 
-Defined in: [validation.public.ts:385](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L385)
+Defined in: [validation.public.ts:385](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L385)

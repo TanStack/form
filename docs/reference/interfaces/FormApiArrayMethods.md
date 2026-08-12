@@ -5,7 +5,7 @@ title: FormApiArrayMethods
 
 # Interface: FormApiArrayMethods\<TFormData\>
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:290](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L290)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:290](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L290)
 
 Methods for adding, removing, moving, and filtering array field elements.
 
@@ -29,7 +29,7 @@ Library-managed. Do not specify explicitly.
 clearFieldValues: ClearFieldValuesFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:378](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L378)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:378](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L378)
 
 Removes every element from an array field.
 
@@ -53,7 +53,7 @@ formApi.clearFieldValues('items')
 filterFieldValues: FilterFieldValuesFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:414](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L414)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:414](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L414)
 
 Keeps the elements that satisfy a predicate.
 
@@ -78,7 +78,7 @@ formApi.filterFieldValues('items', (item) => item % 2 === 0)
 insertFieldValue: InsertFieldValueFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:362](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L362)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:362](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L362)
 
 Inserts an element at an index in an array field.
 
@@ -105,7 +105,7 @@ formApi.insertFieldValue('items', 1, 'new item')
 moveFieldValue: MoveFieldValueFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:327](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L327)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:327](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L327)
 
 Moves an element to another index in an array field.
 
@@ -132,7 +132,7 @@ formApi.moveFieldValue('items', 0, 2)
 pushFieldValue: PushFieldValueFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:343](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L343)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:343](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L343)
 
 Appends an element to an array field.
 
@@ -156,7 +156,7 @@ formApi.pushFieldValue('items', 'new item')
 removeFieldValue: RemoveFieldValueFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:397](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L397)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:397](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L397)
 
 Removes an element from an array field.
 
@@ -183,7 +183,7 @@ formApi.removeFieldValue('items', 1)
 swapFieldValues: SwapFieldValuesFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:308](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L308)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:308](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L308)
 
 Swaps two elements in an array field.
 

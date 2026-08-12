@@ -9,7 +9,7 @@ title: FormGroupValidatorFn
 type FormGroupValidatorFn<TGroupValue> = ValidatorFn<FormGroupValidatorContext<TGroupValue>, FormGroupValidateResult<TGroupValue>>;
 ```
 
-Defined in: [validation.public.ts:471](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L471)
+Defined in: [validation.public.ts:471](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L471)
 
 ## Type Parameters
 

@@ -9,7 +9,7 @@ title: SolidFormType
 type SolidFormType<TOptions> = TOptions extends AppFormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn, infer TComponents> ? SolidFormApi<TFormData, SolidFormTypeErrorTypes<TFormValidators, TSubmitReturn>, TComponents> : TOptions extends FormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn> ? SolidFormApi<TFormData, SolidFormTypeErrorTypes<TFormValidators, TSubmitReturn>, DefaultSolidFormComponentMap> : never;
 ```
 
-Defined in: [packages/solid-form/src/formType.public.ts:50](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/formType.public.ts#L50)
+Defined in: [packages/solid-form/src/formType.public.ts:50](https://github.com/TanStack/form/blob/main/packages/solid-form/src/formType.public.ts#L50)
 
 Derives the Solid form API type represented by a reusable options object.
 

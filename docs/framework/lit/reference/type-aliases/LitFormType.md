@@ -9,7 +9,7 @@ title: LitFormType
 type LitFormType<TOptions> = TOptions extends FormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn> ? TanStackFormController<TFormData, TFormValidators, LitFormTypeSubmitReturn<TSubmitReturn>> : never;
 ```
 
-Defined in: [get-form-type.ts:58](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/lit-form/src/get-form-type.ts#L58)
+Defined in: [get-form-type.ts:58](https://github.com/TanStack/form/blob/main/packages/lit-form/src/get-form-type.ts#L58)
 
 Derives the Lit form controller type represented by a reusable options
 object.

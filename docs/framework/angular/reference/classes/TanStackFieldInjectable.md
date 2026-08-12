@@ -5,7 +5,7 @@ title: TanStackFieldInjectable
 
 # Class: TanStackFieldInjectable\<TFieldValue, TFieldName, TFieldError, TFormData, TFormErrorTypes\>
 
-Defined in: [injectable.ts:5](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/angular-form/src/injectable.ts#L5)
+Defined in: [injectable.ts:5](https://github.com/TanStack/form/blob/main/packages/angular-form/src/injectable.ts#L5)
 
 ## Type Parameters
 
@@ -49,7 +49,7 @@ new TanStackFieldInjectable<TFieldValue, TFieldName, TFieldError, TFormData, TFo
 _api: WritableSignal<FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes>>;
 ```
 
-Defined in: [injectable.ts:12](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/angular-form/src/injectable.ts#L12)
+Defined in: [injectable.ts:12](https://github.com/TanStack/form/blob/main/packages/angular-form/src/injectable.ts#L12)
 
 ## Accessors
 
@@ -61,7 +61,7 @@ Defined in: [injectable.ts:12](https://github.com/LeCarbonator/tanstack-form/blo
 get api(): FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [injectable.ts:16](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/angular-form/src/injectable.ts#L16)
+Defined in: [injectable.ts:16](https://github.com/TanStack/form/blob/main/packages/angular-form/src/injectable.ts#L16)
 
 ##### Returns
 

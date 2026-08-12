@@ -9,7 +9,7 @@ title: CreateValidationErrorFn
 type CreateValidationErrorFn<TFormData> = <TError>(error) => OnSubmitError<TError>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:61](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L61)
+Defined in: [FormApi/FormApi.public.ts:61](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L61)
 
 Marks a validation error for processing as an `onSubmit` failure.
 

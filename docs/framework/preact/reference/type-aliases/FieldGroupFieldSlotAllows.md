@@ -9,7 +9,7 @@ title: FieldGroupFieldSlotAllows
 type FieldGroupFieldSlotAllows<TSlot, TValue> = TSlot extends FieldGroupFieldSlot<infer TAcceptedValue, infer TMode> ? TMode extends "strict" ? IsSame<TValue, TAcceptedValue> : [TValue] extends [TAcceptedValue] ? true : false : false;
 ```
 
-Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:50](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/FieldGroup/withFields.public.ts#L50)
+Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:50](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/withFields.public.ts#L50)
 
 ## Type Parameters
 

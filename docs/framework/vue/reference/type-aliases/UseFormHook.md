@@ -9,7 +9,7 @@ title: UseFormHook
 type UseFormHook<TComponents> = <TFormData, TFormValidators, TSubmitReturn>(options) => VueFormApi<TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>, TComponents>;
 ```
 
-Defined in: [packages/vue-form/src/VueForm/useForm.public.ts:13](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/VueForm/useForm.public.ts#L13)
+Defined in: [packages/vue-form/src/VueForm/useForm.public.ts:13](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/useForm.public.ts#L13)
 
 ## Type Parameters
 

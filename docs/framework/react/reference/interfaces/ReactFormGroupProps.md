@@ -5,7 +5,7 @@ title: ReactFormGroupProps
 
 # Interface: ReactFormGroupProps\<TFormData, TGroupName, TGroupValue, TGroupValidators, TFormErrorTypes, TFieldComponents\>
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:310](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L310)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:310](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L310)
 
 ## Extends
 
@@ -45,7 +45,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:310](https:/
 children: (groupApi) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:327](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L327)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:327](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L327)
 
 #### Parameters
 

@@ -9,7 +9,7 @@ title: SvelteFormSubscribeComponent
 type SvelteFormSubscribeComponent<TFormData, TFormErrorTypes> = <TSelected>(options) => SvelteComponent & Component<any> & WithoutFunction<Component>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:89](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/svelte-form/src/Components.public.ts#L89)
+Defined in: [packages/svelte-form/src/Components.public.ts:89](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L89)
 
 ## Type Parameters
 

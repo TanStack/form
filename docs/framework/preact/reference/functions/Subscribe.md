@@ -9,7 +9,7 @@ title: Subscribe
 function Subscribe<TSourceData, TSelected>(props): ComponentChildren;
 ```
 
-Defined in: [packages/preact-form/src/Subscribe.public.tsx:38](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/Subscribe.public.tsx#L38)
+Defined in: [packages/preact-form/src/Subscribe.public.tsx:38](https://github.com/TanStack/form/blob/main/packages/preact-form/src/Subscribe.public.tsx#L38)
 
 A Preact component that allows you to subscribe to source state.
 

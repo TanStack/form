@@ -9,7 +9,7 @@ title: FieldGroupFieldSlotAllows
 type FieldGroupFieldSlotAllows<TSlot, TValue> = TSlot extends FieldGroupFieldSlot<infer TAccepted, infer TMode> ? TMode extends "strict" ? IsSame<TValue, TAccepted> : [TValue] extends [TAccepted] ? true : false : false;
 ```
 
-Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:48](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L48)
+Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:48](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L48)
 
 ## Type Parameters
 

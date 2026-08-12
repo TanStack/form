@@ -9,7 +9,7 @@ title: InsertFieldValueFn
 type InsertFieldValueFn<TFormData> = <TFieldName>(arrayFieldName, index, value, options?) => void;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:190](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L190)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:190](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L190)
 
 Inserts an element at an index in an array field.
 

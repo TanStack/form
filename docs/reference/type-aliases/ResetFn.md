@@ -9,7 +9,7 @@ title: ResetFn
 type ResetFn<TFormData> = (values?, opts?) => void;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:596](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L596)
+Defined in: [FormApi/FormApi.public.ts:596](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L596)
 
 Resets form values, metadata, validation state, and mounted fields.
 

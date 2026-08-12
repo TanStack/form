@@ -5,7 +5,7 @@ title: SolidFormGroupProps
 
 # Interface: SolidFormGroupProps\<TFormData, TGroupName, TGroupValue, TGroupValidators, TFormErrorTypes, TFieldComponents\>
 
-Defined in: [packages/solid-form/src/Components.public.ts:328](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/Components.public.ts#L328)
+Defined in: [packages/solid-form/src/Components.public.ts:328](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L328)
 
 ## Extends
 
@@ -45,7 +45,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:328](https://github.co
 children: (groupApi) => Element;
 ```
 
-Defined in: [packages/solid-form/src/Components.public.ts:345](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/Components.public.ts#L345)
+Defined in: [packages/solid-form/src/Components.public.ts:345](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L345)
 
 #### Parameters
 

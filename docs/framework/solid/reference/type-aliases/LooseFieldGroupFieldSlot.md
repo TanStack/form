@@ -9,7 +9,7 @@ title: LooseFieldGroupFieldSlot
 type LooseFieldGroupFieldSlot<TValue> = FieldGroupFieldSlot<TValue, "loose">;
 ```
 
-Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:28](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L28)
+Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:28](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L28)
 
 ## Type Parameters
 

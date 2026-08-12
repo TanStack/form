@@ -5,7 +5,7 @@ title: FormGroupSubmitContext
 
 # Interface: FormGroupSubmitContext\<TFormData, TGroupName, TGroupValue, TSchemaOutputs, TGroupErrorTypes, TFormErrorTypes\>
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:26](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L26)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:26](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L26)
 
 Context passed to a form group's `onSubmit` after group validation succeeds.
 
@@ -54,7 +54,7 @@ Context passed to a form group's `onSubmit` after group validation succeeds.
 formApi: FormApi<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:37](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L37)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:37](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L37)
 
 The parent form API handling this submission.
 
@@ -66,7 +66,7 @@ The parent form API handling this submission.
 groupApi: FormGroupApi<TFormData, TGroupName, TGroupValue, TGroupErrorTypes, TFormErrorTypes>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:39](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L39)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:39](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L39)
 
 The group API handling this submission.
 
@@ -78,7 +78,7 @@ The group API handling this submission.
 schemaOutputs: TSchemaOutputs;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:61](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L61)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:61](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L61)
 
 The submit outputs produced by the group's schema validators, ordered by
 validator index.
@@ -103,6 +103,6 @@ validator index.
 value: TGroupValue;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:35](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L35)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:35](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L35)
 
 The group values for this submission.

@@ -9,7 +9,7 @@ title: ArrayFieldName
 type ArrayFieldName<TFormData> = DeepKeysWhereValueIncludes<TFormData, ReadonlyArray<any>>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:16](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L16)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:16](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L16)
 
 Field paths whose value type includes a mutable or readonly array.
 

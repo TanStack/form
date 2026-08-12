@@ -5,7 +5,7 @@ title: SolidFormGroupArrayFieldComponent
 
 # Interface: SolidFormGroupArrayFieldComponent()\<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents\>
 
-Defined in: [packages/solid-form/src/Components.public.ts:240](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/Components.public.ts#L240)
+Defined in: [packages/solid-form/src/Components.public.ts:240](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L240)
 
 ## Type Parameters
 
@@ -33,7 +33,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:240](https://github.co
 SolidFormGroupArrayFieldComponent<TFieldName, TFieldValidators>(props): Element;
 ```
 
-Defined in: [packages/solid-form/src/Components.public.ts:247](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/Components.public.ts#L247)
+Defined in: [packages/solid-form/src/Components.public.ts:247](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L247)
 
 ## Type Parameters
 

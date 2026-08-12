@@ -9,7 +9,7 @@ title: NullableSchemaData
 type NullableSchemaData<TFormValidators> = Editable<FormValidatorData<TFormValidators>>;
 ```
 
-Defined in: [utils.public.ts:50](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/utils.public.ts#L50)
+Defined in: [utils.public.ts:50](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L50)
 
 ## Type Parameters
 

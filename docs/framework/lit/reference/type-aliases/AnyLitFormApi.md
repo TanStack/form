@@ -9,7 +9,7 @@ title: AnyLitFormApi
 type AnyLitFormApi = TanStackFormController<any, any, any>;
 ```
 
-Defined in: [get-form-type.ts:31](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/lit-form/src/get-form-type.ts#L31)
+Defined in: [get-form-type.ts:31](https://github.com/TanStack/form/blob/main/packages/lit-form/src/get-form-type.ts#L31)
 
 A Lit form controller whose form data, validator, and submit types are
 erased.

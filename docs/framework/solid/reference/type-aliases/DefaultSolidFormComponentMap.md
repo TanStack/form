@@ -9,4 +9,4 @@ title: DefaultSolidFormComponentMap
 type DefaultSolidFormComponentMap = SolidFormComponentMap<Record<never, never>, Record<never, never>>;
 ```
 
-Defined in: [packages/solid-form/src/AppForm/componentMap.public.ts:16](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/AppForm/componentMap.public.ts#L16)
+Defined in: [packages/solid-form/src/AppForm/componentMap.public.ts:16](https://github.com/TanStack/form/blob/main/packages/solid-form/src/AppForm/componentMap.public.ts#L16)

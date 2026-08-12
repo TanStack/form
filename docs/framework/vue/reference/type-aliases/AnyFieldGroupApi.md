@@ -9,4 +9,4 @@ title: AnyFieldGroupApi
 type AnyFieldGroupApi = FieldGroupApi<any, Record<string, Component>>;
 ```
 
-Defined in: [packages/vue-form/src/FieldGroup/FieldGroupApi.public.ts:147](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/FieldGroup/FieldGroupApi.public.ts#L147)
+Defined in: [packages/vue-form/src/FieldGroup/FieldGroupApi.public.ts:147](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/FieldGroupApi.public.ts#L147)

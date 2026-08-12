@@ -5,7 +5,7 @@ title: SvelteFormSelectors
 
 # Interface: SvelteFormSelectors\<TFormData, TFormErrorTypes\>
 
-Defined in: [packages/svelte-form/src/formApiTypes.public.ts:14](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/svelte-form/src/formApiTypes.public.ts#L14)
+Defined in: [packages/svelte-form/src/formApiTypes.public.ts:14](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/formApiTypes.public.ts#L14)
 
 ## Type Parameters
 
@@ -25,7 +25,7 @@ Defined in: [packages/svelte-form/src/formApiTypes.public.ts:14](https://github.
 useSelector: <TSelected>(selector?) => object;
 ```
 
-Defined in: [packages/svelte-form/src/formApiTypes.public.ts:18](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/svelte-form/src/formApiTypes.public.ts#L18)
+Defined in: [packages/svelte-form/src/formApiTypes.public.ts:18](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/formApiTypes.public.ts#L18)
 
 #### Type Parameters
 

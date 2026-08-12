@@ -5,7 +5,7 @@ title: VueFormGroupApi
 
 # Interface: VueFormGroupApi\<TFormData, TGroupName, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents\>
 
-Defined in: [packages/vue-form/src/VueForm/Components.public.ts:343](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L343)
+Defined in: [packages/vue-form/src/VueForm/Components.public.ts:343](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L343)
 
 ## Extends
 
@@ -45,7 +45,7 @@ Defined in: [packages/vue-form/src/VueForm/Components.public.ts:343](https://git
 ArrayField: VueFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents>;
 ```
 
-Defined in: [packages/vue-form/src/VueForm/Components.public.ts:364](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L364)
+Defined in: [packages/vue-form/src/VueForm/Components.public.ts:364](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L364)
 
 ***
 
@@ -55,7 +55,7 @@ Defined in: [packages/vue-form/src/VueForm/Components.public.ts:364](https://git
 Field: VueFormGroupFieldComponent<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents>;
 ```
 
-Defined in: [packages/vue-form/src/VueForm/Components.public.ts:357](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L357)
+Defined in: [packages/vue-form/src/VueForm/Components.public.ts:357](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L357)
 
 ***
 
@@ -65,4 +65,4 @@ Defined in: [packages/vue-form/src/VueForm/Components.public.ts:357](https://git
 Subscribe: VueFormGroupSubscribeComponent<TGroupValue, TGroupErrorTypes>;
 ```
 
-Defined in: [packages/vue-form/src/VueForm/Components.public.ts:371](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L371)
+Defined in: [packages/vue-form/src/VueForm/Components.public.ts:371](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L371)

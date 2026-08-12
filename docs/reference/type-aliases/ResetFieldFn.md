@@ -9,7 +9,7 @@ title: ResetFieldFn
 type ResetFieldFn<TFormData> = <TDeepKeys>(DeepKeys) => void;
 ```
 
-Defined in: [FormApi/FormApiFieldMethods.types.public.ts:73](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L73)
+Defined in: [FormApi/FormApiFieldMethods.types.public.ts:73](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L73)
 
 Restores a field path from `defaultValues` and resets state for its field
 subtree.

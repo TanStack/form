@@ -9,7 +9,7 @@ title: ClearFieldValuesFn
 type ClearFieldValuesFn<TFormData> = <TFieldName>(arrayFieldName, options?) => void;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:218](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L218)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:218](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L218)
 
 Removes every element from an array field.
 

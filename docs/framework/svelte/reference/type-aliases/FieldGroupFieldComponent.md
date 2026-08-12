@@ -9,7 +9,7 @@ title: FieldGroupFieldComponent
 type FieldGroupFieldComponent<TFieldData, TFieldComponents> = <TFieldName>(options) => SvelteComponent & Component<any> & WithoutFunction<Component>;
 ```
 
-Defined in: [packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts:24](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts#L24)
+Defined in: [packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts:24](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts#L24)
 
 ## Type Parameters
 

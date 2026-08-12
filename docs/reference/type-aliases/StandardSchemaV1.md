@@ -9,7 +9,7 @@ title: StandardSchemaV1
 type StandardSchemaV1<TInput, TOutput> = object;
 ```
 
-Defined in: [standardSchema.public.ts:10](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/standardSchema.public.ts#L10)
+Defined in: [standardSchema.public.ts:10](https://github.com/TanStack/form/blob/main/packages/form-core/src/standardSchema.public.ts#L10)
 
 The Standard Schema interface.
 
@@ -31,6 +31,6 @@ The Standard Schema interface.
 readonly ~standard: StandardSchemaV1Props<TInput, TOutput>;
 ```
 
-Defined in: [standardSchema.public.ts:14](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/standardSchema.public.ts#L14)
+Defined in: [standardSchema.public.ts:14](https://github.com/TanStack/form/blob/main/packages/form-core/src/standardSchema.public.ts#L14)
 
 The Standard Schema properties.

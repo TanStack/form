@@ -5,7 +5,7 @@ title: FieldGroupArrayFieldComponent
 
 # Interface: FieldGroupArrayFieldComponent()\<TFieldData, TFieldComponents\>
 
-Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:41](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts#L41)
+Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:41](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts#L41)
 
 ## Type Parameters
 
@@ -21,7 +21,7 @@ Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:41](http
 FieldGroupArrayFieldComponent<TFieldName>(props): Element;
 ```
 
-Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:45](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts#L45)
+Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:45](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts#L45)
 
 ## Type Parameters
 

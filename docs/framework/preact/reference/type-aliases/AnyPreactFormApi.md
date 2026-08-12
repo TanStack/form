@@ -9,7 +9,7 @@ title: AnyPreactFormApi
 type AnyPreactFormApi = AnyFormApi & PreactTanStackFormComponents<any, any, any>;
 ```
 
-Defined in: [packages/preact-form/src/PreactForm/formApiTypes.public.ts:50](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/PreactForm/formApiTypes.public.ts#L50)
+Defined in: [packages/preact-form/src/PreactForm/formApiTypes.public.ts:50](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/formApiTypes.public.ts#L50)
 
 A Preact form API whose form data and error types are erased.
 

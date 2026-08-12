@@ -5,7 +5,7 @@ title: FormApi
 
 # Interface: FormApi\<TFormData, TFormErrorTypes\>
 
-Defined in: [FormApi/FormApi.public.ts:610](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L610)
+Defined in: [FormApi/FormApi.public.ts:610](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L610)
 
 Core API for reading and updating state, validating values, and handling
 submission.
@@ -38,7 +38,7 @@ Library-managed. Do not specify explicitly.
 atom: ReadonlyAtom<FormState<TFormData, TFormErrorTypes>>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:621](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L621)
+Defined in: [FormApi/FormApi.public.ts:621](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L621)
 
 Read-only atom containing reactive `FormState` snapshots.
 
@@ -53,7 +53,7 @@ use `state`.
 clearFieldValues: ClearFieldValuesFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:378](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L378)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:378](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L378)
 
 Removes every element from an array field.
 
@@ -81,7 +81,7 @@ formApi.clearFieldValues('items')
 readonly defaultValues: TFormData;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:625](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L625)
+Defined in: [FormApi/FormApi.public.ts:625](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L625)
 
 The current baseline values used by `reset()` and `isDefaultValue`.
 
@@ -93,7 +93,7 @@ The current baseline values used by `reset()` and `isDefaultValue`.
 filterFieldValues: FilterFieldValuesFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:414](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L414)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:414](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L414)
 
 Keeps the elements that satisfy a predicate.
 
@@ -122,7 +122,7 @@ formApi.filterFieldValues('items', (item) => item % 2 === 0)
 readonly formId: string;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:632](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L632)
+Defined in: [FormApi/FormApi.public.ts:632](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L632)
 
 Stable identifier supplied by `FormOptions.formId` or generated at
 creation.
@@ -137,7 +137,7 @@ It is preserved across option updates until a new `formId` is supplied.
 getFieldValue: GetFieldValueFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiFieldMethods.types.public.ts:114](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L114)
+Defined in: [FormApi/FormApiFieldMethods.types.public.ts:114](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L114)
 
 Reads the current value at a field path.
 
@@ -166,7 +166,7 @@ be resolved at runtime.
 handleSubmit: HandleSubmitFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:670](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L670)
+Defined in: [FormApi/FormApi.public.ts:670](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L670)
 
 Runs submission validation and submits current values when validation
 succeeds.
@@ -192,7 +192,7 @@ form validation, plus any validation error returned by `onSubmit` through
 insertFieldValue: InsertFieldValueFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:362](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L362)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:362](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L362)
 
 Inserts an element at an index in an array field.
 
@@ -223,7 +223,7 @@ formApi.insertFieldValue('items', 1, 'new item')
 moveFieldValue: MoveFieldValueFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:327](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L327)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:327](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L327)
 
 Moves an element to another index in an array field.
 
@@ -254,7 +254,7 @@ formApi.moveFieldValue('items', 0, 2)
 pushFieldValue: PushFieldValueFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:343](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L343)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:343](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L343)
 
 Appends an element to an array field.
 
@@ -282,7 +282,7 @@ formApi.pushFieldValue('items', 'new item')
 removeFieldValue: RemoveFieldValueFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:397](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L397)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:397](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L397)
 
 Removes an element from an array field.
 
@@ -313,7 +313,7 @@ formApi.removeFieldValue('items', 1)
 reset: ResetFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:685](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L685)
+Defined in: [FormApi/FormApi.public.ts:685](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L685)
 
 Reset form values, metadata, validation state, and mounted fields.
 
@@ -336,7 +336,7 @@ the existing `defaultValues` when supplying values.
 resetField: ResetFieldFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiFieldMethods.types.public.ts:131](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L131)
+Defined in: [FormApi/FormApiFieldMethods.types.public.ts:131](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L131)
 
 Restores a field path from `defaultValues` and resets state for its field
 subtree.
@@ -365,7 +365,7 @@ formApi.resetField('profile.name')
 setFieldValue: SetFieldValueFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiFieldMethods.types.public.ts:99](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L99)
+Defined in: [FormApi/FormApiFieldMethods.types.public.ts:99](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L99)
 
 Updates the current value at a field path.
 
@@ -392,7 +392,7 @@ formApi.setFieldValue('visitCount', (count) => count + 1)
 readonly state: FormState<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:623](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L623)
+Defined in: [FormApi/FormApi.public.ts:623](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L623)
 
 Current values, validation status, and submission metadata.
 
@@ -404,7 +404,7 @@ Current values, validation status, and submission metadata.
 swapFieldValues: SwapFieldValuesFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:308](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L308)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:308](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L308)
 
 Swaps two elements in an array field.
 
@@ -435,7 +435,7 @@ formApi.swapFieldValues('items', 0, 2)
 validate: (signal) => Promise<FormValidationError<TFormData>[]>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:649](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L649)
+Defined in: [FormApi/FormApi.public.ts:649](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L649)
 
 Runs form-level validators enabled for the specified `'change'` or
 `'blur'` trigger.

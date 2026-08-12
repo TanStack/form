@@ -9,4 +9,4 @@ title: ValidationTrigger
 type ValidationTrigger = "change" | "blur" | "submit";
 ```
 
-Defined in: [validation.public.ts:165](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L165)
+Defined in: [validation.public.ts:165](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L165)

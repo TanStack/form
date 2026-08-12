@@ -5,7 +5,7 @@ title: SvelteFormGroupApi
 
 # Interface: SvelteFormGroupApi\<TFormData, TGroupName, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents\>
 
-Defined in: [packages/svelte-form/src/Components.public.ts:266](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/svelte-form/src/Components.public.ts#L266)
+Defined in: [packages/svelte-form/src/Components.public.ts:266](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L266)
 
 ## Extends
 
@@ -45,7 +45,7 @@ Defined in: [packages/svelte-form/src/Components.public.ts:266](https://github.c
 ArrayField: SvelteFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:287](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/svelte-form/src/Components.public.ts#L287)
+Defined in: [packages/svelte-form/src/Components.public.ts:287](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L287)
 
 ***
 
@@ -55,7 +55,7 @@ Defined in: [packages/svelte-form/src/Components.public.ts:287](https://github.c
 Field: SvelteFormGroupFieldComponent<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:280](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/svelte-form/src/Components.public.ts#L280)
+Defined in: [packages/svelte-form/src/Components.public.ts:280](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L280)
 
 ***
 
@@ -65,4 +65,4 @@ Defined in: [packages/svelte-form/src/Components.public.ts:280](https://github.c
 Subscribe: SvelteFormGroupSubscribeComponent<TGroupValue, TGroupErrorTypes>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:294](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/svelte-form/src/Components.public.ts#L294)
+Defined in: [packages/svelte-form/src/Components.public.ts:294](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L294)

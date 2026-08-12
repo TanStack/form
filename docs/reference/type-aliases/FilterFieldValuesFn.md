@@ -9,7 +9,7 @@ title: FilterFieldValuesFn
 type FilterFieldValuesFn<TFormData> = <TFieldName>(arrayFieldName, predicate, options?) => void;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:277](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L277)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:277](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L277)
 
 Keeps the elements that satisfy a predicate.
 

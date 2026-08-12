@@ -9,7 +9,7 @@ title: ArrayFieldPredicate
 type ArrayFieldPredicate<TFormData, TFieldName> = (value, index, array) => boolean;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:65](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L65)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:65](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L65)
 
 Selects which elements `filterFieldValues` keeps.
 
