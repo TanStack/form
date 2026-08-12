@@ -5,7 +5,7 @@ title: ServerValidateSuccess
 
 # Interface: ServerValidateSuccess\<TFormData, TFormValidators\>
 
-Defined in: [ssr.public.ts:56](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/ssr.public.ts#L56)
+Defined in: [ssr.public.ts:56](https://github.com/TanStack/form/blob/main/packages/form-core/src/ssr.public.ts#L56)
 
 ## Type Parameters
 
@@ -25,7 +25,7 @@ Defined in: [ssr.public.ts:56](https://github.com/LeCarbonator/tanstack-form/blo
 schemaOutputs: ServerFormStandardSchemaValidatorOutputs<TFormValidators>;
 ```
 
-Defined in: [ssr.public.ts:62](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/ssr.public.ts#L62)
+Defined in: [ssr.public.ts:62](https://github.com/TanStack/form/blob/main/packages/form-core/src/ssr.public.ts#L62)
 
 ***
 
@@ -35,7 +35,7 @@ Defined in: [ssr.public.ts:62](https://github.com/LeCarbonator/tanstack-form/blo
 success: true;
 ```
 
-Defined in: [ssr.public.ts:60](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/ssr.public.ts#L60)
+Defined in: [ssr.public.ts:60](https://github.com/TanStack/form/blob/main/packages/form-core/src/ssr.public.ts#L60)
 
 ***
 
@@ -45,4 +45,4 @@ Defined in: [ssr.public.ts:60](https://github.com/LeCarbonator/tanstack-form/blo
 values: TFormData;
 ```
 
-Defined in: [ssr.public.ts:61](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/ssr.public.ts#L61)
+Defined in: [ssr.public.ts:61](https://github.com/TanStack/form/blob/main/packages/form-core/src/ssr.public.ts#L61)

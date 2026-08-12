@@ -13,7 +13,7 @@ type VueFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupErrorTypes, T
 }>;
 ```
 
-Defined in: [packages/vue-form/src/VueForm/Components.public.ts:289](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L289)
+Defined in: [packages/vue-form/src/VueForm/Components.public.ts:289](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L289)
 
 ## Type Parameters
 

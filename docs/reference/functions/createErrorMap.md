@@ -9,7 +9,7 @@ title: createErrorMap
 function createErrorMap<TFormData>(initial?): ValidationErrorMap<TFormData>;
 ```
 
-Defined in: [validation.public.ts:372](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L372)
+Defined in: [validation.public.ts:372](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L372)
 
 Creates a mutable validation error map.
 

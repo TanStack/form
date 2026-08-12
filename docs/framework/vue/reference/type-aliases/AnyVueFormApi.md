@@ -9,7 +9,7 @@ title: AnyVueFormApi
 type AnyVueFormApi = AnyFormApi & VueTanStackFormComponents<any, any, any>;
 ```
 
-Defined in: [packages/vue-form/src/VueForm/formApiTypes.public.ts:55](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/VueForm/formApiTypes.public.ts#L55)
+Defined in: [packages/vue-form/src/VueForm/formApiTypes.public.ts:55](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/formApiTypes.public.ts#L55)
 
 A Vue form API whose form data and error types are erased.
 

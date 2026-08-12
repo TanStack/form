@@ -9,7 +9,7 @@ title: SvelteFieldApi
 type SvelteFieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes, TFieldComponents> = FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes> & FieldComponentsMatchingType<TFieldComponents, TFieldValue>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:67](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/svelte-form/src/Components.public.ts#L67)
+Defined in: [packages/svelte-form/src/Components.public.ts:67](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L67)
 
 ## Type Parameters
 

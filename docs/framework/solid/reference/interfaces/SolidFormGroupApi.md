@@ -5,7 +5,7 @@ title: SolidFormGroupApi
 
 # Interface: SolidFormGroupApi\<TFormData, TGroupName, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents\>
 
-Defined in: [packages/solid-form/src/Components.public.ts:268](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/Components.public.ts#L268)
+Defined in: [packages/solid-form/src/Components.public.ts:268](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L268)
 
 ## Extends
 
@@ -45,7 +45,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:268](https://github.co
 ArrayField: SolidFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents>;
 ```
 
-Defined in: [packages/solid-form/src/Components.public.ts:289](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/Components.public.ts#L289)
+Defined in: [packages/solid-form/src/Components.public.ts:289](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L289)
 
 ***
 
@@ -55,7 +55,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:289](https://github.co
 Field: SolidFormGroupFieldComponent<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents>;
 ```
 
-Defined in: [packages/solid-form/src/Components.public.ts:282](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/Components.public.ts#L282)
+Defined in: [packages/solid-form/src/Components.public.ts:282](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L282)
 
 ***
 
@@ -65,4 +65,4 @@ Defined in: [packages/solid-form/src/Components.public.ts:282](https://github.co
 Subscribe: SolidFormGroupSubscribeComponent<TGroupValue, TGroupErrorTypes>;
 ```
 
-Defined in: [packages/solid-form/src/Components.public.ts:296](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/Components.public.ts#L296)
+Defined in: [packages/solid-form/src/Components.public.ts:296](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L296)

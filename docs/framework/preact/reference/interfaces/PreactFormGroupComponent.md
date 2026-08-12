@@ -5,7 +5,7 @@ title: PreactFormGroupComponent
 
 # Interface: PreactFormGroupComponent()\<TFormData, TFormErrorTypes, TFieldComponents\>
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:339](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L339)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:339](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L339)
 
 ## Type Parameters
 
@@ -25,7 +25,7 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:339](https
 PreactFormGroupComponent<TGroupName, TGroupValue, TGroupValidators>(props): ComponentChildren;
 ```
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:344](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L344)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:344](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L344)
 
 ## Type Parameters
 

@@ -9,7 +9,7 @@ title: UseAppFormHook
 type UseAppFormHook<TComponents> = <TFormData, TFormValidators, TSubmitReturn>(options) => ReactAppFormApi<TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>, TComponents>;
 ```
 
-Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:11](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L11)
+Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:11](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L11)
 
 ## Type Parameters
 

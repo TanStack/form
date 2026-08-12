@@ -5,7 +5,7 @@ title: SolidFormFieldProps
 
 # Interface: SolidFormFieldProps\<TFieldData, TFieldName, TFieldValue, TFieldValidators, TGroupFieldError, TFormData, TFormErrorTypes, TFieldComponents\>
 
-Defined in: [packages/solid-form/src/Components.public.ts:93](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/Components.public.ts#L93)
+Defined in: [packages/solid-form/src/Components.public.ts:93](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L93)
 
 ## Extends
 
@@ -57,7 +57,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:93](https://github.com
 children: (fieldApi) => Element;
 ```
 
-Defined in: [packages/solid-form/src/Components.public.ts:111](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/Components.public.ts#L111)
+Defined in: [packages/solid-form/src/Components.public.ts:111](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L111)
 
 #### Parameters
 

@@ -9,4 +9,4 @@ title: AnyFieldGroupFieldSlot
 type AnyFieldGroupFieldSlot = FieldGroupFieldSlot<any>;
 ```
 
-Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:26](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/FieldGroup/withFields.public.ts#L26)
+Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:26](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/withFields.public.ts#L26)

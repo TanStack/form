@@ -13,7 +13,7 @@ type AppFormComponent = (props) => VueComponentInstance<{
 }>;
 ```
 
-Defined in: [packages/vue-form/src/AppForm/VueAppFormApi.public.ts:7](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/AppForm/VueAppFormApi.public.ts#L7)
+Defined in: [packages/vue-form/src/AppForm/VueAppFormApi.public.ts:7](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/VueAppFormApi.public.ts#L7)
 
 ## Parameters
 

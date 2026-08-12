@@ -5,7 +5,7 @@ title: FieldGroupArrayFieldComponent
 
 # Interface: FieldGroupArrayFieldComponent()\<TFieldData, TFieldComponents\>
 
-Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:84](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L84)
+Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:84](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L84)
 
 ## Type Parameters
 
@@ -21,7 +21,7 @@ Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:84](http
 FieldGroupArrayFieldComponent<TFieldName>(props): ReactNode;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:128](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L128)
+Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:128](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L128)
 
 Renders an array field from this field group.
 

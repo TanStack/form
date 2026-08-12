@@ -5,7 +5,7 @@ title: FieldGroupHelper
 
 # Interface: FieldGroupHelper
 
-Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:155](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L155)
+Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:155](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L155)
 
 ## Properties
 
@@ -15,7 +15,7 @@ Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:155](https
 loose: <TValue>() => LooseFieldGroupFieldSlot<TValue>;
 ```
 
-Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:157](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L157)
+Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:157](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L157)
 
 #### Type Parameters
 
@@ -35,7 +35,7 @@ Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:157](https
 strict: <TValue>() => StrictFieldGroupFieldSlot<TValue>;
 ```
 
-Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:156](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L156)
+Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:156](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L156)
 
 #### Type Parameters
 

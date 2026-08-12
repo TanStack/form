@@ -9,7 +9,7 @@ title: GetFieldValueFn
 type GetFieldValueFn<TFormData> = <TDeepKeys>(DeepKeys) => DeepValue<TFormData, TDeepKeys>;
 ```
 
-Defined in: [FormApi/FormApiFieldMethods.types.public.ts:12](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L12)
+Defined in: [FormApi/FormApiFieldMethods.types.public.ts:12](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L12)
 
 ## Type Parameters
 

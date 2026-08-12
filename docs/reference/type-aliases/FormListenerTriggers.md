@@ -9,7 +9,7 @@ title: FormListenerTriggers
 type FormListenerTriggers = ValidationTrigger | "mount" | "reset";
 ```
 
-Defined in: [listeners.public.ts:17](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/listeners.public.ts#L17)
+Defined in: [listeners.public.ts:17](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L17)
 
 Events that can invoke a listener configured on a form.
 

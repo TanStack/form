@@ -5,7 +5,7 @@ title: PreactTanStackFormComponents
 
 # Interface: PreactTanStackFormComponents\<TFormData, TFormErrorTypes, TFieldComponents\>
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:360](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L360)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:360](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L360)
 
 ## Type Parameters
 
@@ -29,7 +29,7 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:360](https
 ArrayField: PreactFormArrayFieldComponent<TFormData, TFormErrorTypes, TFieldComponents>;
 ```
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:370](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L370)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:370](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L370)
 
 ***
 
@@ -39,7 +39,7 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:370](https
 Field: PreactFormFieldComponent<TFormData, TFormErrorTypes, TFieldComponents>;
 ```
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:368](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L368)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:368](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L368)
 
 TODO docs
 
@@ -51,7 +51,7 @@ TODO docs
 FormGroup: PreactFormGroupComponent<TFormData, TFormErrorTypes, TFieldComponents>;
 ```
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:378](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L378)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:378](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L378)
 
 ***
 
@@ -61,4 +61,4 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:378](https
 Subscribe: PreactFormSubscribeComponent<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:376](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L376)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:376](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L376)

@@ -9,4 +9,4 @@ title: DefaultReactFormComponentMap
 type DefaultReactFormComponentMap = ReactFormComponentMap<Record<never, never>, Record<never, never>>;
 ```
 
-Defined in: [packages/react-form/src/AppForm/componentMap.public.ts:16](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/AppForm/componentMap.public.ts#L16)
+Defined in: [packages/react-form/src/AppForm/componentMap.public.ts:16](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/componentMap.public.ts#L16)

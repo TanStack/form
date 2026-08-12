@@ -9,7 +9,7 @@ title: Subscribe
 function Subscribe<TSourceData, TSelected>(props): ReactNode;
 ```
 
-Defined in: [packages/react-form/src/Subscribe.public.tsx:36](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/Subscribe.public.tsx#L36)
+Defined in: [packages/react-form/src/Subscribe.public.tsx:36](https://github.com/TanStack/form/blob/main/packages/react-form/src/Subscribe.public.tsx#L36)
 
 A React component that allows you to subscribe to source state.
 

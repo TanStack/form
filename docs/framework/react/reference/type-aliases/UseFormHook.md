@@ -9,7 +9,7 @@ title: UseFormHook
 type UseFormHook<TComponents> = <TFormData, TFormValidators, TSubmitReturn>(options) => ReactFormApi<TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>, TComponents>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/useForm.public.ts:13](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/ReactForm/useForm.public.ts#L13)
+Defined in: [packages/react-form/src/ReactForm/useForm.public.ts:13](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/useForm.public.ts#L13)
 
 ## Type Parameters
 

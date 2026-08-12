@@ -9,7 +9,7 @@ title: AngularFieldApi
 type AngularFieldApi<TFormData, TFieldName, TFieldValue, TFieldValidators, TFormValidators, TSubmitReturn> = FieldApi<TFieldName, TFieldValue, ToFieldError<TFieldValidators, never, ToFormErrorTypes<TFormValidators, TSubmitReturn>>, TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>>;
 ```
 
-Defined in: [tanstack-field.ts:96](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/angular-form/src/tanstack-field.ts#L96)
+Defined in: [tanstack-field.ts:96](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L96)
 
 ## Type Parameters
 
