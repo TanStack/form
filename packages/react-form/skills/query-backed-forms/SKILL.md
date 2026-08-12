@@ -8,15 +8,15 @@ description: >
 metadata:
   type: composition
   library: '@tanstack/react-form'
-  library_version: '0.0.0'
+  library_version: '2.0.0-alpha.0'
 requires:
   - react-form-composition-setup
 sources:
-  - TanStack/form-v2:packages/react-form/tests/useForm.spec.tsx
-  - TanStack/form-v2:packages/form-core/src/FormApi/FormApi.lib.ts
-  - TanStack/form-v2:packages/form-core/src/FormApi/FormApi.public.ts
-  - TanStack/form-v2:packages/form-core/src/FormApi/handleSubmit.lib.ts
-  - TanStack/form-v2:packages/form-core/tests/FormApi/submission-handling.spec.ts
+  - TanStack/form:packages/react-form/tests/useForm.spec.tsx
+  - TanStack/form:packages/form-core/src/FormApi/FormApi.lib.ts
+  - TanStack/form:packages/form-core/src/FormApi/FormApi.public.ts
+  - TanStack/form:packages/form-core/src/FormApi/handleSubmit.lib.ts
+  - TanStack/form:packages/form-core/tests/FormApi/submission-handling.spec.ts
 ---
 
 This skill builds on `react-form-composition-setup`. Read it first for React form wiring and subscriptions.
@@ -185,7 +185,7 @@ onSubmit: async ({ value }) => {
 
 Return or await the endpoint promise so `isSubmitting` covers the request.
 
-Source: TanStack/form-v2:packages/form-core/tests/FormApi/submission-handling.spec.ts
+Source: TanStack/form:packages/form-core/tests/FormApi/submission-handling.spec.ts
 
 ### HIGH Storing transient failures as validation
 
@@ -233,7 +233,7 @@ onSubmit: async ({ createValidationError }) => {
 
 Validation failures are returned values; thrown or rejected errors are submit failures.
 
-Source: TanStack/form-v2:packages/form-core/src/FormApi/FormApi.public.ts
+Source: TanStack/form:packages/form-core/src/FormApi/FormApi.public.ts
 
 ### MEDIUM Ignoring the loading UI tradeoff
 

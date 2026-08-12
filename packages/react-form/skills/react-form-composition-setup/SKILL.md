@@ -10,14 +10,14 @@ metadata:
   type: framework
   library: '@tanstack/react-form'
   framework: react
-  library_version: '0.0.0'
+  library_version: '2.0.0-alpha.0'
 requires: []
 sources:
-  - TanStack/form-v2:packages/react-form/src/ReactForm/Components.public.ts
-  - TanStack/form-v2:packages/react-form/src/ReactForm/fieldSubscriptions.lib.ts
-  - TanStack/form-v2:packages/react-form/src/AppForm/createFormHook.public.ts
-  - TanStack/form-v2:packages/react-form/src/FieldGroup/withFields.public.ts
-  - TanStack/form-v2:examples/react/array/src/index.tsx
+  - TanStack/form:packages/react-form/src/ReactForm/Components.public.ts
+  - TanStack/form:packages/react-form/src/ReactForm/fieldSubscriptions.lib.ts
+  - TanStack/form:packages/react-form/src/AppForm/createFormHook.public.ts
+  - TanStack/form:packages/react-form/src/FieldGroup/withFields.public.ts
+  - TanStack/form:examples/react/array/src/index.tsx
 ---
 
 # TanStack React Form - Composition Setup
@@ -203,7 +203,7 @@ return (
 
 The hook result is stable; selectors and subscriptions are the reactive boundary.
 
-Source: TanStack/form-v2:packages/react-form/src/ReactForm/ReactFormApi.lib.tsx
+Source: TanStack/form:packages/react-form/src/ReactForm/ReactFormApi.lib.tsx
 
 ### HIGH Asserting field names or children
 
@@ -225,7 +225,7 @@ Correct:
 
 Field names and render-prop children are inferred; assertions usually hide the wrong boundary.
 
-Source: maintainer interview, TanStack/form-v2:packages/react-form/src/ReactForm/Components.public.ts
+Source: maintainer interview, TanStack/form:packages/react-form/src/ReactForm/Components.public.ts
 
 ### HIGH Treating ArrayField as every array value
 
@@ -247,7 +247,7 @@ Correct:
 
 Use `ArrayField` when rendering child fields from an array; a whole array value can be a normal `Field`.
 
-Source: TanStack/form-v2:packages/react-form/src/ReactForm/fieldSubscriptions.lib.ts
+Source: TanStack/form:packages/react-form/src/ReactForm/fieldSubscriptions.lib.ts
 
 ### HIGH Rendering list fields through Field
 
@@ -281,7 +281,7 @@ Correct:
 
 The `Field` subscriber follows the whole array `value`; `ArrayField` follows array length and array version for list rendering.
 
-Source: TanStack/form-v2:examples/react/array/src/index.tsx
+Source: TanStack/form:examples/react/array/src/index.tsx
 
 ### HIGH Unioning ReactFormType forms
 
@@ -319,4 +319,4 @@ export const BoundSharedSection = sharedFieldGroup.bindComponent(
 
 TypeScript cannot usefully narrow a union of different form APIs; field groups are the reusable cross-form abstraction.
 
-Source: maintainer interview, TanStack/form-v2:packages/react-form/src/FieldGroup/withFields.public.ts
+Source: maintainer interview, TanStack/form:packages/react-form/src/FieldGroup/withFields.public.ts

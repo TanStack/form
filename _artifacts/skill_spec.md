@@ -55,7 +55,7 @@ Primary APIs:
 - `form.ArrayField`
 - `form.Subscribe`
 - `form.FormGroup`
-- `withFields`
+- `defineFieldGroup`
 
 Core guidance:
 
@@ -377,7 +377,7 @@ Important failure modes:
 - Calling `createValidators` with fewer or more run functions than option configs.
 - Using root-form field names or values inside a `FormGroup` validator or grouped field.
 - Passing real form paths into a field group API where virtual paths are required.
-- Providing an incomplete `withFields` binding map, passing the internal defined-fields object as a binding, or omitting the required `form` prop.
+- Providing an incomplete `bindComponent` binding map or omitting the required `form` prop.
 - Reading `form.store` or `field.store` instead of public `atom` APIs.
 - Treating `fieldComponent.strict/loose` as schema mode selection.
 - Passing a submit-specific form type to a reusable child that should accept several submit handlers.

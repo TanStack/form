@@ -54,6 +54,7 @@
     "@changesets/changelog-github": "^0.7.0",
     "@changesets/cli": "^2.30.0",
     "@tanstack/eslint-config": "0.4.0",
+    "@tanstack/intent": "^0.3.6",
     "@tanstack/typedoc-config": "0.3.4",
     "@tanstack/vite-config": "0.6.0",
     "@testing-library/jest-dom": "^7.0.0",

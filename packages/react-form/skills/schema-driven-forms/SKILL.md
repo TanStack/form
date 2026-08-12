@@ -9,15 +9,15 @@ metadata:
   type: framework
   library: '@tanstack/react-form'
   framework: react
-  library_version: '0.0.0'
+  library_version: '2.0.0-alpha.0'
 requires:
   - choosing-form-options-modes
 sources:
-  - TanStack/form-v2:packages/form-core/src/standardSchema.public.ts
-  - TanStack/form-v2:packages/form-core/src/standardSchema.lib.ts
-  - TanStack/form-v2:packages/form-core/src/FormApi/FormApi.public.ts
-  - TanStack/form-v2:packages/form-core/tests/validation.test.ts
-  - TanStack/form-v2:packages/form-core/tests/FormApi/submission-handling.spec.ts
+  - TanStack/form:packages/form-core/src/standardSchema.public.ts
+  - TanStack/form:packages/form-core/src/standardSchema.lib.ts
+  - TanStack/form:packages/form-core/src/FormApi/FormApi.public.ts
+  - TanStack/form:packages/form-core/tests/validation.test.ts
+  - TanStack/form:packages/form-core/tests/FormApi/submission-handling.spec.ts
 ---
 
 This skill builds on `choosing-form-options-modes`. Read it first to pick default, strict schema, or loose schema mode.
@@ -149,7 +149,7 @@ onSubmit: ({ schemaOutputs }) => {
 
 Schema output is stored separately so form state can remain editable.
 
-Source: TanStack/form-v2:packages/form-core/tests/validation.test.ts
+Source: TanStack/form:packages/form-core/tests/validation.test.ts
 
 ### HIGH Throwing validation errors
 
@@ -175,7 +175,7 @@ onSubmit: ({ createValidationError }) => {
 
 Thrown errors are submit failures; validation errors must be returned values.
 
-Source: TanStack/form-v2:packages/form-core/tests/FormApi/submission-handling.spec.ts
+Source: TanStack/form:packages/form-core/tests/FormApi/submission-handling.spec.ts
 
 ### HIGH Returning raw schema errors
 
@@ -199,7 +199,7 @@ onSubmit: ({ value, parseIssues }) => {
 
 `parseIssues` maps Standard Schema issue paths into form and field validation state.
 
-Source: TanStack/form-v2:packages/form-core/src/FormApi/FormApi.public.ts
+Source: TanStack/form:packages/form-core/src/FormApi/FormApi.public.ts
 
 ### MEDIUM Mapping paths by hand
 
@@ -226,7 +226,7 @@ return parseIssues([
 
 Let Standard Schema issue paths route nested and array errors when possible.
 
-Source: TanStack/form-v2:packages/form-core/src/standardSchema.public.ts
+Source: TanStack/form:packages/form-core/src/standardSchema.public.ts
 
 ### MEDIUM Inferring UI metadata from Standard Schema
 

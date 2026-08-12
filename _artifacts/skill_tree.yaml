@@ -2,13 +2,13 @@ schema_version: 1
 status: reviewed
 library:
   name: TanStack Form v2
-  version: '0.0.0'
-  repository: https://github.com/TanStack/form-v2
+  version: '2.0.0-alpha.0'
+  repository: https://github.com/TanStack/form
   description: 'Headless form state, validation, schema, and adapter APIs for TanStack Form v2, with React as the primary skill target.'
 generated_from:
   domain_map: _artifacts/domain_map.yaml
   skill_spec: _artifacts/skill_spec.md
-generated_at: '2026-06-25'
+generated_at: '2026-08-12'
 layout:
   kind: flat
   reason: 'The reviewed skills are task-focused and independently discoverable; no router skill is needed for 8 skills.'
@@ -23,16 +23,11 @@ skills:
     package: packages/react-form
     description: 'Use when building adapter-first React forms with useForm, form.Field, form.ArrayField, form.Subscribe, AppForm, ReactFormType, field groups, reusable field components, or UI-library bindings.'
     sources:
-      - packages/react-form/src/ReactForm/Components.public.ts
-      - packages/react-form/src/ReactForm/fieldSubscriptions.lib.ts
-      - packages/react-form/src/AppForm/createFormHook.public.ts
-      - packages/react-form/src/FieldGroup/withFields.public.ts
-      - packages/react-form/tests/submit-return.test-d.tsx
-      - packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts
-      - packages/form-core/src/FieldApi/fieldState.lib.ts
-      - examples/react/array/src/index.tsx
-      - examples/react/basic-splitting-form/src/index.tsx
-      - examples/react/ui-integration-shadcn/src/components/form/app-form.ts
+      - TanStack/form:packages/react-form/src/ReactForm/Components.public.ts
+      - TanStack/form:packages/react-form/src/ReactForm/fieldSubscriptions.lib.ts
+      - TanStack/form:packages/react-form/src/AppForm/createFormHook.public.ts
+      - TanStack/form:packages/react-form/src/FieldGroup/withFields.public.ts
+      - TanStack/form:examples/react/array/src/index.tsx
   - name: Reusable Form Policies
     slug: reusable-form-policies
     type: framework
@@ -44,12 +39,11 @@ skills:
       - react-form-composition-setup
       - error-visibility-workflows
     sources:
-      - examples/react/basic-splitting-form/src/FormSection.tsx
-      - examples/react/basic-splitting-form/src/sharedForm.ts
-      - packages/react-form/tests/submit-return.test-d.tsx
-      - packages/form-core/tests/validation.test.ts
-      - packages/form-core/tests/validation.test-d.ts
-      - examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
+      - TanStack/form:examples/react/basic-splitting-form/src/FormSection.tsx
+      - TanStack/form:examples/react/basic-splitting-form/src/sharedForm.ts
+      - TanStack/form:packages/react-form/tests/submit-return.test-d.tsx
+      - TanStack/form:packages/form-core/src/validation.public.ts
+      - TanStack/form:examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
     references:
       - references/reusable-policy-boundaries.md
   - name: Choosing Form Options Modes
@@ -60,17 +54,10 @@ skills:
     package: packages/react-form
     description: 'Use when choosing between default formOptions, formOptions.strictSchema, formOptions.looseSchema, appFormOptions, and schema-source typing for React forms.'
     sources:
-      - packages/form-core/src/utils.public.ts
-      - packages/react-form/src/AppForm/appFormOptions.public.ts
-      - packages/form-core/tests/validation.test.ts
-      - packages/form-core/tests/validation.test-d.ts
-      - examples/react/ui-integration-shadcn/src/app/booking/schema.ts
-      - examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
-      - https://standardschema.dev/
-      - https://zod.dev/library-authors
-      - https://valibot.dev/guides/integrate-valibot/
-      - https://arktype.io/docs/integrations
-      - https://effect.website/docs/schema/standard-schema/
+      - TanStack/form:packages/form-core/src/utils.public.ts
+      - TanStack/form:packages/react-form/src/AppForm/appFormOptions.public.ts
+      - TanStack/form:packages/form-core/tests/validation.test-d.ts
+      - TanStack/form:examples/react/ui-integration-shadcn/src/app/booking/schema.ts
     references:
       - references/schema-option-modes.md
       - references/standard-schema-library-leanings.md
@@ -84,13 +71,11 @@ skills:
     requires:
       - choosing-form-options-modes
     sources:
-      - packages/form-core/src/standardSchema.public.ts
-      - packages/form-core/src/standardSchema.lib.ts
-      - packages/form-core/src/FormApi/FormApi.public.ts
-      - packages/form-core/tests/validation.test.ts
-      - packages/form-core/tests/validation.test-d.ts
-      - packages/form-core/tests/FormApi/submission-handling.spec.ts
-      - examples/react/field-groups/src/index.tsx
+      - TanStack/form:packages/form-core/src/standardSchema.public.ts
+      - TanStack/form:packages/form-core/src/standardSchema.lib.ts
+      - TanStack/form:packages/form-core/src/FormApi/FormApi.public.ts
+      - TanStack/form:packages/form-core/tests/validation.test.ts
+      - TanStack/form:packages/form-core/tests/FormApi/submission-handling.spec.ts
     references:
       - references/schema-validation-and-submit-output.md
   - name: Query Backed Forms
@@ -103,13 +88,11 @@ skills:
     requires:
       - react-form-composition-setup
     sources:
-      - packages/react-form/tests/useForm.spec.tsx
-      - packages/form-core/src/FormApi/FormApi.lib.ts
-      - packages/form-core/src/FormApi/FormApi.public.ts
-      - packages/form-core/src/FormApi/handleSubmit.lib.ts
-      - packages/form-core/tests/FormApi/default-value.spec.ts
-      - packages/form-core/tests/FormApi/submission-handling.spec.ts
-      - maintainer_guidance.query_shape
+      - TanStack/form:packages/react-form/tests/useForm.spec.tsx
+      - TanStack/form:packages/form-core/src/FormApi/FormApi.lib.ts
+      - TanStack/form:packages/form-core/src/FormApi/FormApi.public.ts
+      - TanStack/form:packages/form-core/src/FormApi/handleSubmit.lib.ts
+      - TanStack/form:packages/form-core/tests/FormApi/submission-handling.spec.ts
     references:
       - references/query-backed-defaults-and-submit.md
   - name: Error Visibility Workflows
@@ -120,13 +103,11 @@ skills:
     package: packages/react-form
     description: 'Use when implementing errorVisibility callbacks, createErrorVisibility helpers, show-after-blur, show-after-submit, grouped submission attempts, fieldState.meta visibility, or reusable validation trigger policies.'
     sources:
-      - packages/form-core/src/validation.public.ts
-      - packages/form-core/src/FieldApi/fieldState.lib.ts
-      - packages/form-core/src/utils.public.ts
-      - packages/form-core/tests/validation.test-d.ts
-      - packages/form-core/tests/FormApi/validation.spec.ts
-      - packages/form-core/tests/FormGroupApi/FormGroupApi.spec.ts
-      - examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
+      - TanStack/form:packages/form-core/src/validation.public.ts
+      - TanStack/form:packages/form-core/src/FieldApi/fieldState.lib.ts
+      - TanStack/form:packages/form-core/tests/validation.test-d.ts
+      - TanStack/form:packages/form-core/tests/FormGroupApi/FormGroupApi.spec.ts
+      - TanStack/form:examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
     references:
       - references/error-visibility-policies.md
   - name: Type Error Debugging
@@ -140,13 +121,11 @@ skills:
       - react-form-composition-setup
       - choosing-form-options-modes
     sources:
-      - packages/form-core/tests/validation.test-d.ts
-      - packages/form-core/tests/deep-keys.test-d.ts
-      - packages/react-form/tests/submit-return.test-d.tsx
-      - packages/react-form/tests/FormGroup.test-d.tsx
-      - packages/react-form/tests/FieldGroupApi.test-d.tsx
-      - packages/react-form/src/AppForm/getFormHookHelpers.public.ts
-      - packages/react-form/src/FieldGroup/withFields.public.ts
+      - TanStack/form:packages/form-core/tests/validation.test-d.ts
+      - TanStack/form:packages/form-core/tests/deep-keys.test-d.ts
+      - TanStack/form:packages/react-form/tests/submit-return.test-d.tsx
+      - TanStack/form:packages/react-form/tests/FormGroup.test-d.tsx
+      - TanStack/form:packages/react-form/tests/FieldGroupApi.test-d.tsx
     references:
       - references/type-error-boundaries.md
   - name: Examples Authoring
@@ -159,14 +138,12 @@ skills:
     requires:
       - react-form-composition-setup
     sources:
-      - examples/react/basic/src/index.tsx
-      - examples/react/array/src/index.tsx
-      - examples/react/basic-splitting-form/src/index.tsx
-      - examples/react/field-groups/src/index.tsx
-      - examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
-      - examples/react/ui-integration-shadcn/src/app/booking/booking-form.tsx
-      - examples/react/ui-integration-dnd-kit/src/singleList/index.tsx
-      - examples/react/ui-integration-dnd-kit/src/twoLists/index.tsx
+      - TanStack/form:examples/react/basic/src/index.tsx
+      - TanStack/form:examples/react/array/src/index.tsx
+      - TanStack/form:examples/react/basic-splitting-form/src/index.tsx
+      - TanStack/form:examples/react/field-groups/src/index.tsx
+      - TanStack/form:examples/react/ui-integration-shadcn/src/app/booking/booking-form.tsx
+      - TanStack/form:examples/react/ui-integration-dnd-kit/src/twoLists/index.tsx
     references:
       - references/example-scenarios.md
 tensions:

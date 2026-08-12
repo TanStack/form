@@ -9,16 +9,16 @@ description: >
 metadata:
   type: lifecycle
   library: '@tanstack/react-form'
-  library_version: '0.0.0'
+  library_version: '2.0.0-alpha.0'
 requires:
   - react-form-composition-setup
 sources:
-  - TanStack/form-v2:examples/react/basic/src/index.tsx
-  - TanStack/form-v2:examples/react/array/src/index.tsx
-  - TanStack/form-v2:examples/react/basic-splitting-form/src/index.tsx
-  - TanStack/form-v2:examples/react/field-groups/src/index.tsx
-  - TanStack/form-v2:examples/react/ui-integration-shadcn/src/app/booking/booking-form.tsx
-  - TanStack/form-v2:examples/react/ui-integration-dnd-kit/src/twoLists/index.tsx
+  - TanStack/form:examples/react/basic/src/index.tsx
+  - TanStack/form:examples/react/array/src/index.tsx
+  - TanStack/form:examples/react/basic-splitting-form/src/index.tsx
+  - TanStack/form:examples/react/field-groups/src/index.tsx
+  - TanStack/form:examples/react/ui-integration-shadcn/src/app/booking/booking-form.tsx
+  - TanStack/form:examples/react/ui-integration-dnd-kit/src/twoLists/index.tsx
 ---
 
 This skill builds on `react-form-composition-setup`. Read it first for adapter-first form structure.
@@ -181,7 +181,7 @@ return (
 
 Example UI that changes with form state must use `form.Subscribe` or `useSelector`.
 
-Source: TanStack/form-v2:examples/react/basic/src/index.tsx
+Source: TanStack/form:examples/react/basic/src/index.tsx
 
 ### HIGH Letting native reset fight form reset
 
@@ -207,7 +207,7 @@ Correct:
 
 Prevent browser-native reset behavior when the example is teaching form reset semantics.
 
-Source: TanStack/form-v2:examples/react/basic/src/index.tsx
+Source: TanStack/form:examples/react/basic/src/index.tsx
 
 ### MEDIUM Modeling multi-list DnD as one indexed array
 
@@ -231,7 +231,7 @@ type BoardValues = {
 
 Cross-list movement needs stable item IDs and separate order arrays.
 
-Source: TanStack/form-v2:examples/react/ui-integration-dnd-kit/src/twoLists/index.tsx
+Source: TanStack/form:examples/react/ui-integration-dnd-kit/src/twoLists/index.tsx
 
 ## References
 

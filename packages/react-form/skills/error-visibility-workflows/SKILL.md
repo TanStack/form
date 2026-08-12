@@ -3,20 +3,21 @@ name: error-visibility-workflows
 description: >
   Use when implementing TanStack React Form v2 errorVisibility callbacks,
   createErrorVisibility helpers, show-after-blur, show-after-submit,
-  show-after-blur-or-submit, fieldState.meta visibility, state.submissionAttempts,
-  form group scoped submission attempts, and reusable validator trigger policies.
+  show-after-blur-or-submit, fieldState.meta visibility,
+  state.submissionAttempts, form group scoped submission attempts, and reusable
+  validator trigger policies.
 metadata:
   type: framework
   library: '@tanstack/react-form'
   framework: react
-  library_version: '0.0.0'
+  library_version: '2.0.0-alpha.0'
 requires: []
 sources:
-  - TanStack/form-v2:packages/form-core/src/validation.public.ts
-  - TanStack/form-v2:packages/form-core/src/FieldApi/fieldState.lib.ts
-  - TanStack/form-v2:packages/form-core/tests/validation.test-d.ts
-  - TanStack/form-v2:packages/form-core/tests/FormGroupApi/FormGroupApi.spec.ts
-  - TanStack/form-v2:examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
+  - TanStack/form:packages/form-core/src/validation.public.ts
+  - TanStack/form:packages/form-core/src/FieldApi/fieldState.lib.ts
+  - TanStack/form:packages/form-core/tests/validation.test-d.ts
+  - TanStack/form:packages/form-core/tests/FormGroupApi/FormGroupApi.spec.ts
+  - TanStack/form:examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
 ---
 
 # TanStack React Form - Error Visibility Workflows
@@ -105,8 +106,7 @@ const rewardEarlyPunishLate = createValidator({
     'blur',
     {
       trigger: 'change',
-      when: ({ triggerFieldApi }) =>
-        triggerFieldApi !== undefined && triggerFieldApi.meta.isInvalid,
+      when: ({ fieldApi }) => fieldApi !== undefined && fieldApi.meta.isInvalid,
     },
   ],
 })
@@ -138,7 +138,7 @@ const form = useForm({
 
 `errorVisibility` is callback-based.
 
-Source: TanStack/form-v2:packages/form-core/src/validation.public.ts
+Source: TanStack/form:packages/form-core/src/validation.public.ts
 
 ### HIGH Checking visible errors inside visibility
 
@@ -156,7 +156,7 @@ errorVisibility: ({ fieldState }) => fieldState.meta.isBlurred
 
 Visibility receives pre-filter meta; visible errors are the result of the callback.
 
-Source: TanStack/form-v2:packages/form-core/src/FieldApi/fieldState.lib.ts
+Source: TanStack/form:packages/form-core/src/FieldApi/fieldState.lib.ts
 
 ### HIGH Repeating local showErrors conditions
 
@@ -202,7 +202,7 @@ const form = useForm({
 
 Reusable visibility policies are form-agnostic and receive `values: unknown`.
 
-Source: TanStack/form-v2:packages/form-core/src/validation.public.ts
+Source: TanStack/form:packages/form-core/src/validation.public.ts
 
 ### MEDIUM Ignoring group-scoped submissions
 
@@ -221,7 +221,7 @@ errorVisibility: ({ state, fieldState }) =>
 
 Inside a registered form group, scalar state reads are scoped to the nearest group.
 
-Source: TanStack/form-v2:packages/form-core/src/validation.public.ts
+Source: TanStack/form:packages/form-core/src/validation.public.ts
 
 ## References
 

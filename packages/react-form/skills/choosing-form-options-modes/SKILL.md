@@ -1,22 +1,23 @@
 ---
 name: choosing-form-options-modes
 description: >
-  Use when choosing TanStack React Form v2 formOptions, formOptions.strictSchema,
-  formOptions.looseSchema, appFormOptions, appFormOptions.strictSchema, or
-  appFormOptions.looseSchema. Covers defaultValues-first inference, schema-source
-  typing, Standard Schema validators, pipeline schemas, ruleset schemas, nullish
-  editable defaults, and schemaOutputs in onSubmit.
+  Use when choosing TanStack React Form v2 formOptions,
+  formOptions.strictSchema, formOptions.looseSchema, appFormOptions,
+  appFormOptions.strictSchema, or appFormOptions.looseSchema. Covers
+  defaultValues-first inference, schema-source typing, Standard Schema
+  validators, pipeline schemas, ruleset schemas, nullish editable defaults, and
+  schemaOutputs in onSubmit.
 metadata:
   type: framework
   library: '@tanstack/react-form'
   framework: react
-  library_version: '0.0.0'
+  library_version: '2.0.0-alpha.0'
 requires: []
 sources:
-  - TanStack/form-v2:packages/form-core/src/utils.public.ts
-  - TanStack/form-v2:packages/react-form/src/AppForm/appFormOptions.public.ts
-  - TanStack/form-v2:packages/form-core/tests/validation.test-d.ts
-  - TanStack/form-v2:examples/react/ui-integration-shadcn/src/app/booking/schema.ts
+  - TanStack/form:packages/form-core/src/utils.public.ts
+  - TanStack/form:packages/react-form/src/AppForm/appFormOptions.public.ts
+  - TanStack/form:packages/form-core/tests/validation.test-d.ts
+  - TanStack/form:examples/react/ui-integration-shadcn/src/app/booking/schema.ts
 ---
 
 # TanStack React Form - Choosing Form Options Modes
@@ -152,7 +153,7 @@ const options = formOptions.strictSchema({
 
 `strictSchema` and `looseSchema` are runtime identity helpers with type-level meaning; validators perform validation.
 
-Source: TanStack/form-v2:packages/form-core/src/utils.public.ts
+Source: TanStack/form:packages/form-core/src/utils.public.ts
 
 ### HIGH Using default options for schema-owned typing
 
@@ -231,7 +232,7 @@ onSubmit: ({ schemaOutputs }) => {
 
 Raw `value` remains form state; parsed Standard Schema output is exposed through `schemaOutputs`.
 
-Source: TanStack/form-v2:packages/form-core/tests/validation.test.ts
+Source: TanStack/form:packages/form-core/tests/validation.test.ts
 
 ### MEDIUM Treating Zod input as pipeline intent
 
@@ -255,7 +256,7 @@ const options = formOptions.looseSchema({
 
 For form work, Zod often behaves like a ruleset unless the specific schema is intentionally a transform pipeline.
 
-Source: maintainer interview, TanStack/form-v2:examples/react/ui-integration-shadcn/src/app/booking/schema.ts
+Source: maintainer interview, TanStack/form:examples/react/ui-integration-shadcn/src/app/booking/schema.ts
 
 ## References
 

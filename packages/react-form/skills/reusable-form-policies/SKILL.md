@@ -2,24 +2,24 @@
 name: reusable-form-policies
 description: >
   Use when extracting TanStack React Form v2 behavior into named reusable
-  helpers: ReactFormType split-form props, shared formOptions or
-  appFormOptions, createErrorVisibility callbacks, createValidator or
-  createValidators configs, rewardEarlyPunishLate-style policies, and
-  reusable visibility or validation workflow comments.
+  helpers: ReactFormType split-form props, shared formOptions or appFormOptions,
+  createErrorVisibility callbacks, createValidator or createValidators configs,
+  rewardEarlyPunishLate-style policies, and reusable visibility or validation
+  workflow comments.
 metadata:
   type: framework
   library: '@tanstack/react-form'
   framework: react
-  library_version: '0.0.0'
+  library_version: '2.0.0-alpha.0'
 requires:
   - react-form-composition-setup
   - error-visibility-workflows
 sources:
-  - TanStack/form-v2:examples/react/basic-splitting-form/src/FormSection.tsx
-  - TanStack/form-v2:examples/react/basic-splitting-form/src/sharedForm.ts
-  - TanStack/form-v2:packages/react-form/tests/submit-return.test-d.tsx
-  - TanStack/form-v2:packages/form-core/src/validation.public.ts
-  - TanStack/form-v2:examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
+  - TanStack/form:examples/react/basic-splitting-form/src/FormSection.tsx
+  - TanStack/form:examples/react/basic-splitting-form/src/sharedForm.ts
+  - TanStack/form:packages/react-form/tests/submit-return.test-d.tsx
+  - TanStack/form:packages/form-core/src/validation.public.ts
+  - TanStack/form:examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
 ---
 
 This skill builds on `react-form-composition-setup` and `error-visibility-workflows`. Read those first for composition and visibility fundamentals.
@@ -48,8 +48,7 @@ export const rewardEarlyPunishLate = createValidator({
     'blur',
     {
       trigger: 'change',
-      when: ({ triggerFieldApi }) =>
-        triggerFieldApi !== undefined && triggerFieldApi.meta.isInvalid,
+      when: ({ fieldApi }) => fieldApi !== undefined && fieldApi.meta.isInvalid,
     },
   ],
 })
@@ -116,8 +115,7 @@ export const validateAfterBlurThenWhileInvalid = createValidator({
     'blur',
     {
       trigger: 'change',
-      when: ({ triggerFieldApi }) =>
-        triggerFieldApi !== undefined && triggerFieldApi.meta.isInvalid,
+      when: ({ fieldApi }) => fieldApi !== undefined && fieldApi.meta.isInvalid,
     },
   ],
   triggerDebounceMs: 250,
@@ -154,7 +152,7 @@ interface ContactSectionProps {
 
 Hand-written form shapes drop field-name inference and usually miss submit variance.
 
-Source: TanStack/form-v2:examples/react/basic-splitting-form/src/FormSection.tsx
+Source: TanStack/form:examples/react/basic-splitting-form/src/FormSection.tsx
 
 ### HIGH Reusing sections through form unions
 
@@ -209,7 +207,7 @@ export const showAfterBlurOrSubmit = createErrorVisibility(
 
 Form-level visibility makes the default workflow explicit and reusable.
 
-Source: TanStack/form-v2:packages/form-core/src/validation.public.ts
+Source: TanStack/form:packages/form-core/src/validation.public.ts
 
 ### MEDIUM Reading concrete values in reusable visibility
 
@@ -230,7 +228,7 @@ const policy = createErrorVisibility(
 
 Reusable visibility receives `values: unknown`; use an inline `errorVisibility` when the policy needs typed form values.
 
-Source: TanStack/form-v2:packages/form-core/src/validation.public.ts
+Source: TanStack/form:packages/form-core/src/validation.public.ts
 
 ### MEDIUM Copying validator config without intent
 
@@ -250,8 +248,7 @@ const validateAfterBlurThenWhileInvalid = createValidator({
     'blur',
     {
       trigger: 'change',
-      when: ({ triggerFieldApi }) =>
-        triggerFieldApi !== undefined && triggerFieldApi.meta.isInvalid,
+      when: ({ fieldApi }) => fieldApi !== undefined && fieldApi.meta.isInvalid,
     },
   ],
   triggerDebounceMs: 300,
@@ -260,7 +257,7 @@ const validateAfterBlurThenWhileInvalid = createValidator({
 
 A semantic helper preserves why the timing exists when examples evolve.
 
-Source: TanStack/form-v2:examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
+Source: TanStack/form:examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
 
 ## References
 

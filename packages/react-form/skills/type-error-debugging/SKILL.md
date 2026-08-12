@@ -10,16 +10,16 @@ metadata:
   type: framework
   library: '@tanstack/react-form'
   framework: react
-  library_version: '0.0.0'
+  library_version: '2.0.0-alpha.0'
 requires:
   - react-form-composition-setup
   - choosing-form-options-modes
 sources:
-  - TanStack/form-v2:packages/form-core/tests/validation.test-d.ts
-  - TanStack/form-v2:packages/form-core/tests/deep-keys.test-d.ts
-  - TanStack/form-v2:packages/react-form/tests/submit-return.test-d.tsx
-  - TanStack/form-v2:packages/react-form/tests/FormGroup.test-d.tsx
-  - TanStack/form-v2:packages/react-form/tests/FieldGroupApi.test-d.tsx
+  - TanStack/form:packages/form-core/tests/validation.test-d.ts
+  - TanStack/form:packages/form-core/tests/deep-keys.test-d.ts
+  - TanStack/form:packages/react-form/tests/submit-return.test-d.tsx
+  - TanStack/form:packages/react-form/tests/FormGroup.test-d.tsx
+  - TanStack/form:packages/react-form/tests/FieldGroupApi.test-d.tsx
 ---
 
 This skill builds on `react-form-composition-setup` and `choosing-form-options-modes`. Read those first for the intended API boundaries.
@@ -142,7 +142,7 @@ const sharedFieldGroup = defineFieldGroup(({ strict }) => ({
 
 Use field groups for cross-form shared sections; `ReactFormType` is for one known shared options type.
 
-Source: TanStack/form-v2:packages/react-form/tests/FieldGroupApi.test-d.tsx
+Source: TanStack/form:packages/react-form/tests/FieldGroupApi.test-d.tsx
 
 ### HIGH Passing real paths inside field groups
 
@@ -164,7 +164,7 @@ Correct:
 
 Inside the group, use virtual paths defined by `defineFieldGroup`; real paths are supplied through the field bindings passed to the component created by `bindComponent`.
 
-Source: TanStack/form-v2:packages/react-form/tests/FieldGroupApi.test-d.tsx
+Source: TanStack/form:packages/react-form/tests/FieldGroupApi.test-d.tsx
 
 ### MEDIUM Reusable visibility reads typed values
 
@@ -184,7 +184,7 @@ const policy = createErrorVisibility(
 
 `createErrorVisibility` is form-agnostic, so `state.values` is unknown.
 
-Source: TanStack/form-v2:packages/form-core/tests/validation.test-d.ts
+Source: TanStack/form:packages/form-core/tests/validation.test-d.ts
 
 ### MEDIUM Mismatching createValidators arity
 
@@ -212,7 +212,7 @@ const validators = makeValidators(emailSchema, serverSchema)
 
 `createValidators` expects one run function for each options object.
 
-Source: TanStack/form-v2:packages/form-core/tests/validation.test-d.ts
+Source: TanStack/form:packages/form-core/tests/validation.test-d.ts
 
 ### MEDIUM Confusing schema strict with field strict
 
@@ -233,7 +233,7 @@ const options = formOptions.strictSchema({
 
 Field component strict/loose controls component value compatibility; schema strict/loose controls form option inference.
 
-Source: TanStack/form-v2:packages/react-form/src/AppForm/getFormHookHelpers.public.ts
+Source: TanStack/form:packages/react-form/src/AppForm/getFormHookHelpers.public.ts
 
 ## References
 

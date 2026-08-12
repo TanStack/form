@@ -6,8 +6,8 @@ generated_from:
   workflow: '@tanstack/intent domain-discovery'
   phase: 5
 repository:
-  root: /home/luca/repos/tanstack/form-v2
-  package_manager: pnpm@11.8.0
+  root: /home/luca/repos/tanstack/form
+  package_manager: pnpm@11.21.0
   monorepo: true
   workspace_sources:
     - package.json
@@ -130,6 +130,32 @@ maintainer_guidance:
     - non_validation_error_state_ownership
     - ui_library_behavior_itself
     - solid_first_examples
+coverage:
+  ignored_packages:
+    - name: '@tanstack/angular-form'
+      reason: 'Current reviewed skills are React adapter-first.'
+    - name: '@tanstack/form-core'
+      reason: 'Covered as the behavior source for React adapter skills, not as a direct user workflow entrypoint.'
+    - name: '@tanstack/form-devtools'
+      reason: 'Devtools workflows are excluded while the package is still changing.'
+    - name: '@tanstack/lit-form'
+      reason: 'Current reviewed skills are React adapter-first.'
+    - name: '@tanstack/preact-form'
+      reason: 'Current reviewed skills are React adapter-first.'
+    - name: '@tanstack/react-form-devtools'
+      reason: 'Devtools workflows are excluded while the package is still changing.'
+    - name: '@tanstack/react-form-nextjs'
+      reason: 'Framework-server integrations are outside the current reviewed skill scope.'
+    - name: '@tanstack/react-form-start'
+      reason: 'Framework-server integrations are outside the current reviewed skill scope.'
+    - name: '@tanstack/solid-form'
+      reason: 'Solid-first coverage remains deferred until the adapter has the planned pieces.'
+    - name: '@tanstack/solid-form-devtools'
+      reason: 'Devtools workflows are excluded while the package is still changing.'
+    - name: '@tanstack/svelte-form'
+      reason: 'Current reviewed skills are React adapter-first.'
+    - name: '@tanstack/vue-form'
+      reason: 'Current reviewed skills are React adapter-first.'
 domain_boundaries:
   in_scope:
     - 'React adapter-first form setup.'
@@ -762,7 +788,7 @@ skill_candidates:
       - 'fieldComponent.loose'
       - 'fieldBrand.strict'
       - 'fieldBrand.loose'
-      - 'getFieldGroupHelpers'
+      - 'defineFieldGroup'
       - 'DeepKeys'
       - 'DeepValue'
     sources:
@@ -817,11 +843,11 @@ skill_candidates:
           - packages/react-form/tests/FormGroup.test-d.tsx
       - name: field_group_virtual_path_mismatch
         symptom: 'A field group method, watchFields entry, Field, or ArrayField rejects a real form path.'
-        correction: 'Use the virtual paths defined by defineFields inside the field group; map them to real paths only through withFields bindings.'
+        correction: 'Use the virtual paths declared by defineFieldGroup inside the field group; map them to real paths only through the bindings passed to a bindComponent result.'
         evidence:
           - packages/react-form/tests/FieldGroupApi.test-d.tsx
       - name: field_group_binding_map_mismatch
-        symptom: 'withFields rejects a binding map as incomplete, wrong, or as the internal defineFields object.'
+        symptom: 'A component created by bindComponent rejects a binding map as incomplete or incompatible.'
         correction: 'Provide every defined field binding, pass real form paths as bindings, and include the required form prop.'
         evidence:
           - packages/react-form/tests/FieldGroupApi.test-d.tsx
