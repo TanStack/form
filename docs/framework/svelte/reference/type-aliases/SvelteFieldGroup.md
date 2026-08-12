@@ -9,7 +9,7 @@ title: SvelteFieldGroup
 type SvelteFieldGroup<TFields, TFieldComponents> = FieldGroupApi<FieldGroupFieldData<TFields>, TFieldComponents> & object;
 ```
 
-Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:84](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L84)
+Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:84](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L84)
 
 ## Type Declaration
 

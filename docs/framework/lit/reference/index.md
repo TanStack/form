@@ -20,6 +20,7 @@ title: "@tanstack/lit-form"
 ## Type Aliases
 
 - [AnyFieldGroupFieldSlot](type-aliases/AnyFieldGroupFieldSlot.md)
+- [AnyLitFormApi](type-aliases/AnyLitFormApi.md)
 - [DefineFieldGroupFn](type-aliases/DefineFieldGroupFn.md)
 - [FieldGroupFieldBindings](type-aliases/FieldGroupFieldBindings.md)
 - [FieldGroupFieldBindingsOf](type-aliases/FieldGroupFieldBindingsOf.md)

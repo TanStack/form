@@ -9,7 +9,7 @@ title: ReactFormFieldComponent
 type ReactFormFieldComponent<TFormData, TFormErrorTypes, TFieldComponents> = <TFieldName, TFieldValidators>(props) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:155](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L155)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:155](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L155)
 
 ## Type Parameters
 

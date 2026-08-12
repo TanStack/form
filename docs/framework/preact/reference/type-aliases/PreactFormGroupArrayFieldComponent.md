@@ -9,7 +9,7 @@ title: PreactFormGroupArrayFieldComponent
 type PreactFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents> = <TFieldName, TFieldValidators>(props) => ComponentChildren;
 ```
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:251](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L251)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:251](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L251)
 
 ## Type Parameters
 

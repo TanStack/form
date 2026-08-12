@@ -5,7 +5,7 @@ title: ReactFormGroupFieldComponent
 
 # Interface: ReactFormGroupFieldComponent()\<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents\>
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:223](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L223)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:223](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L223)
 
 ## Type Parameters
 
@@ -33,7 +33,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:223](https:/
 ReactFormGroupFieldComponent<TFieldName, TFieldValidators>(props): ReactNode;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:230](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L230)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:230](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L230)
 
 ## Type Parameters
 

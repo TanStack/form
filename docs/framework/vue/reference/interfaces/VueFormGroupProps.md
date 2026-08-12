@@ -5,7 +5,7 @@ title: VueFormGroupProps
 
 # Interface: VueFormGroupProps\<TFormData, TGroupName, TGroupValue, TGroupValidators, TFormErrorTypes, TFieldComponents\>
 
-Defined in: [packages/vue-form/src/VueForm/Components.public.ts:374](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L374)
+Defined in: [packages/vue-form/src/VueForm/Components.public.ts:374](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L374)
 
 ## Extends
 
@@ -45,4 +45,4 @@ Defined in: [packages/vue-form/src/VueForm/Components.public.ts:374](https://git
 readonly optional [fieldComponentsType]?: TFieldComponents;
 ```
 
-Defined in: [packages/vue-form/src/VueForm/Components.public.ts:391](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L391)
+Defined in: [packages/vue-form/src/VueForm/Components.public.ts:391](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L391)

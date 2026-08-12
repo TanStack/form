@@ -386,7 +386,7 @@ field.swapValues(indexA, indexB)
 field.moveValue(fromIndex, toIndex)
 
 // Keep the items accepted by a predicate.
-field.filterValues((value, i) => isEnabled(value)))
+field.filterValues((value, i) => isEnabled(value))
 
 // Remove every item.
 field.clearValues()

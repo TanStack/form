@@ -5,7 +5,7 @@ title: SubfieldsMeta
 
 # Interface: SubfieldsMeta
 
-Defined in: [FieldApi/FieldApi.public.ts:21](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L21)
+Defined in: [FieldApi/FieldApi.public.ts:21](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L21)
 
 ## Properties
 
@@ -15,7 +15,7 @@ Defined in: [FieldApi/FieldApi.public.ts:21](https://github.com/TanStack/form/bl
 isAnyInvalid: boolean;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:23](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L23)
+Defined in: [FieldApi/FieldApi.public.ts:23](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L23)
 
 ***
 
@@ -25,7 +25,7 @@ Defined in: [FieldApi/FieldApi.public.ts:23](https://github.com/TanStack/form/bl
 isEveryPristine: boolean;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:24](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L24)
+Defined in: [FieldApi/FieldApi.public.ts:24](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L24)
 
 ***
 
@@ -35,7 +35,7 @@ Defined in: [FieldApi/FieldApi.public.ts:24](https://github.com/TanStack/form/bl
 isEveryValid: boolean;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:22](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L22)
+Defined in: [FieldApi/FieldApi.public.ts:22](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L22)
 
 ***
 
@@ -45,7 +45,7 @@ Defined in: [FieldApi/FieldApi.public.ts:22](https://github.com/TanStack/form/bl
 isSomeDirty: boolean;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:25](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L25)
+Defined in: [FieldApi/FieldApi.public.ts:25](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L25)
 
 ***
 
@@ -55,7 +55,7 @@ Defined in: [FieldApi/FieldApi.public.ts:25](https://github.com/TanStack/form/bl
 isSomeTouched: boolean;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:26](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L26)
+Defined in: [FieldApi/FieldApi.public.ts:26](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L26)
 
 ***
 
@@ -65,4 +65,4 @@ Defined in: [FieldApi/FieldApi.public.ts:26](https://github.com/TanStack/form/bl
 isSomeValidating: boolean;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:27](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L27)
+Defined in: [FieldApi/FieldApi.public.ts:27](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L27)

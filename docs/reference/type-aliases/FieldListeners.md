@@ -9,7 +9,11 @@ title: FieldListeners
 type FieldListeners<TFieldData, TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes> = FieldListener<TFieldData, TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes>[];
 ```
 
-Defined in: [listeners.public.ts:135](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L135)
+Defined in: [listeners.public.ts:402](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/listeners.public.ts#L402)
+
+Listener configurations evaluated in array order for each field event.
+
+A debounced listener may execute after later, non-debounced listeners.
 
 ## Type Parameters
 
@@ -36,3 +40,21 @@ Defined in: [listeners.public.ts:135](https://github.com/TanStack/form/blob/main
 ### TFormErrorTypes
 
 `TFormErrorTypes` *extends* [`FormErrorTypes`](../interfaces/FormErrorTypes.md)
+
+## Example
+
+```ts
+listeners: [
+  {
+    triggers: ['change', 'blur'],
+    triggerDebounceMs: 200,
+    watchFields: ['displayName'],
+    run: ({ value, formApi }) => {
+      saveContact({
+        displayName: formApi.getFieldValue('displayName'),
+        email: value,
+      })
+    },
+  },
+],
+```

@@ -9,7 +9,7 @@ title: PreactFormSubscribeComponent
 type PreactFormSubscribeComponent<TFormData, TFormErrorTypes> = <TSelected>(props) => CrossVersionPreactNode;
 ```
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:106](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L106)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:106](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L106)
 
 ## Type Parameters
 

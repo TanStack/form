@@ -9,4 +9,4 @@ title: FieldGroupFields
 type FieldGroupFields = Record<string, AnyFieldGroupFieldSlot>;
 ```
 
-Defined in: [with-fields.ts:68](https://github.com/TanStack/form/blob/main/packages/lit-form/src/with-fields.ts#L68)
+Defined in: [with-fields.ts:68](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/lit-form/src/with-fields.ts#L68)

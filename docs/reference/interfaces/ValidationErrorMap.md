@@ -5,7 +5,7 @@ title: ValidationErrorMap
 
 # Interface: ValidationErrorMap\<TFormData\>
 
-Defined in: [validation.public.ts:362](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L362)
+Defined in: [validation.public.ts:362](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L362)
 
 ## Type Parameters
 
@@ -21,7 +21,7 @@ Defined in: [validation.public.ts:362](https://github.com/TanStack/form/blob/mai
 fields: Partial<Record<DeepKeys<TFormData>, ValidationErrorInput>>;
 ```
 
-Defined in: [validation.public.ts:364](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L364)
+Defined in: [validation.public.ts:364](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L364)
 
 ***
 
@@ -31,4 +31,4 @@ Defined in: [validation.public.ts:364](https://github.com/TanStack/form/blob/mai
 optional form?: ValidationErrorInput;
 ```
 
-Defined in: [validation.public.ts:363](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L363)
+Defined in: [validation.public.ts:363](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L363)

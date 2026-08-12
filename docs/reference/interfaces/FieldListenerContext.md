@@ -5,7 +5,9 @@ title: FieldListenerContext
 
 # Interface: FieldListenerContext\<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes\>
 
-Defined in: [listeners.public.ts:81](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L81)
+Defined in: [listeners.public.ts:264](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/listeners.public.ts#L264)
+
+Context passed to a field listener.
 
 ## Type Parameters
 
@@ -37,7 +39,12 @@ Defined in: [listeners.public.ts:81](https://github.com/TanStack/form/blob/main/
 fieldApi: FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [listeners.public.ts:89](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L89)
+Defined in: [listeners.public.ts:279](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/listeners.public.ts#L279)
+
+The field that owns the listener.
+
+This remains the listening field when an event arrives through
+`watchFields`.
 
 ***
 
@@ -47,7 +54,9 @@ Defined in: [listeners.public.ts:89](https://github.com/TanStack/form/blob/main/
 formApi: FormApi<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [listeners.public.ts:96](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L96)
+Defined in: [listeners.public.ts:287](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/listeners.public.ts#L287)
+
+The form that owns the field.
 
 ***
 
@@ -57,4 +66,6 @@ Defined in: [listeners.public.ts:96](https://github.com/TanStack/form/blob/main/
 value: TFieldValue;
 ```
 
-Defined in: [listeners.public.ts:88](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L88)
+Defined in: [listeners.public.ts:272](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/listeners.public.ts#L272)
+
+The listening field's value captured when the event occurred.

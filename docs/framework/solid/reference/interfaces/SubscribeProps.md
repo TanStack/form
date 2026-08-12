@@ -5,7 +5,7 @@ title: SubscribeProps
 
 # Interface: SubscribeProps\<TSourceData, TSelected\>
 
-Defined in: [packages/solid-form/src/Subscribe.public.ts:14](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Subscribe.public.ts#L14)
+Defined in: [packages/solid-form/src/Subscribe.public.ts:14](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/Subscribe.public.ts#L14)
 
 ## Type Parameters
 
@@ -25,7 +25,7 @@ Defined in: [packages/solid-form/src/Subscribe.public.ts:14](https://github.com/
 children: Element | ((state) => Element);
 ```
 
-Defined in: [packages/solid-form/src/Subscribe.public.ts:18](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Subscribe.public.ts#L18)
+Defined in: [packages/solid-form/src/Subscribe.public.ts:18](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/Subscribe.public.ts#L18)
 
 ***
 
@@ -35,7 +35,7 @@ Defined in: [packages/solid-form/src/Subscribe.public.ts:18](https://github.com/
 selector: (state) => TSelected;
 ```
 
-Defined in: [packages/solid-form/src/Subscribe.public.ts:16](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Subscribe.public.ts#L16)
+Defined in: [packages/solid-form/src/Subscribe.public.ts:16](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/Subscribe.public.ts#L16)
 
 #### Parameters
 
@@ -55,7 +55,7 @@ Defined in: [packages/solid-form/src/Subscribe.public.ts:16](https://github.com/
 source: SubscribeSource<TSourceData>;
 ```
 
-Defined in: [packages/solid-form/src/Subscribe.public.ts:15](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Subscribe.public.ts#L15)
+Defined in: [packages/solid-form/src/Subscribe.public.ts:15](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/Subscribe.public.ts#L15)
 
 ***
 
@@ -65,7 +65,7 @@ Defined in: [packages/solid-form/src/Subscribe.public.ts:15](https://github.com/
 optional when?: (selected) => boolean;
 ```
 
-Defined in: [packages/solid-form/src/Subscribe.public.ts:17](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Subscribe.public.ts#L17)
+Defined in: [packages/solid-form/src/Subscribe.public.ts:17](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/Subscribe.public.ts#L17)
 
 #### Parameters
 

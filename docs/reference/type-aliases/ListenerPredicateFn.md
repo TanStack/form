@@ -9,7 +9,12 @@ title: ListenerPredicateFn
 type ListenerPredicateFn<TFormData, TValue> = (context) => boolean;
 ```
 
-Defined in: [listeners.public.ts:15](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L15)
+Defined in: [listeners.public.ts:61](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/listeners.public.ts#L61)
+
+Decides whether a listener is enabled for a matching event.
+
+The predicate is only called after its configured trigger matches the
+current event.
 
 ## Type Parameters
 
@@ -30,3 +35,9 @@ Defined in: [listeners.public.ts:15](https://github.com/TanStack/form/blob/main/
 ## Returns
 
 `boolean`
+
+## Example
+
+```ts
+when: ({ formApi }) => formApi.state.isDirty,
+```

@@ -5,7 +5,7 @@ title: SubscribeProps
 
 # Interface: SubscribeProps\<TSourceData, TSelected\>
 
-Defined in: [packages/vue-form/src/Subscribe.public.ts:14](https://github.com/TanStack/form/blob/main/packages/vue-form/src/Subscribe.public.ts#L14)
+Defined in: [packages/vue-form/src/Subscribe.public.ts:14](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/Subscribe.public.ts#L14)
 
 ## Type Parameters
 
@@ -25,7 +25,7 @@ Defined in: [packages/vue-form/src/Subscribe.public.ts:14](https://github.com/Ta
 selector: (state) => TSelected;
 ```
 
-Defined in: [packages/vue-form/src/Subscribe.public.ts:16](https://github.com/TanStack/form/blob/main/packages/vue-form/src/Subscribe.public.ts#L16)
+Defined in: [packages/vue-form/src/Subscribe.public.ts:16](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/Subscribe.public.ts#L16)
 
 #### Parameters
 
@@ -45,7 +45,7 @@ Defined in: [packages/vue-form/src/Subscribe.public.ts:16](https://github.com/Ta
 source: SubscribeSource<TSourceData>;
 ```
 
-Defined in: [packages/vue-form/src/Subscribe.public.ts:15](https://github.com/TanStack/form/blob/main/packages/vue-form/src/Subscribe.public.ts#L15)
+Defined in: [packages/vue-form/src/Subscribe.public.ts:15](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/Subscribe.public.ts#L15)
 
 ***
 
@@ -55,7 +55,7 @@ Defined in: [packages/vue-form/src/Subscribe.public.ts:15](https://github.com/Ta
 optional when?: (selected) => boolean;
 ```
 
-Defined in: [packages/vue-form/src/Subscribe.public.ts:17](https://github.com/TanStack/form/blob/main/packages/vue-form/src/Subscribe.public.ts#L17)
+Defined in: [packages/vue-form/src/Subscribe.public.ts:17](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/Subscribe.public.ts#L17)
 
 #### Parameters
 
