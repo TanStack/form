@@ -26,6 +26,29 @@ export type SolidFormApi<
     > &
       TComponents['formComponents']
 
+/**
+ * A Solid form API whose form data and error types are erased.
+ *
+ * Use it for reusable Solid components that only need core form operations and
+ * the `Field`, `ArrayField`, `Subscribe`, or `FormGroup` components common to
+ * every Solid form. Field paths and values are not checked against a particular
+ * form shape; use `SolidFormType` when a component depends on one known form.
+ *
+ * @example
+ * ```tsx
+ * function FormSubmitButton(props: { form: AnySolidFormApi }) {
+ *   return (
+ *     <props.form.Subscribe selector={(state) => state.isSubmitting}>
+ *       {(isSubmitting) => (
+ *         <button type="submit" disabled={isSubmitting()}>
+ *           {isSubmitting() ? 'Saving...' : 'Save'}
+ *         </button>
+ *       )}
+ *     </props.form.Subscribe>
+ *   )
+ * }
+ * ```
+ */
 export type AnySolidFormApi = AnyFormApi &
   SolidTanStackFormComponents<any, any, any>
 

@@ -5,7 +5,7 @@ title: FieldGroupFieldSlot
 
 # Interface: FieldGroupFieldSlot\<TValue, TMode\>
 
-Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:23](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L23)
+Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:23](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L23)
 
 ## Type Parameters
 
@@ -25,7 +25,7 @@ Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:23](https:
 readonly [fieldGroupFieldSlotValueSymbol]: TValue;
 ```
 
-Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:28](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L28)
+Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:28](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L28)
 
 ***
 
@@ -35,4 +35,4 @@ Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:28](https:
 readonly mode: TMode;
 ```
 
-Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:27](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L27)
+Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:27](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L27)

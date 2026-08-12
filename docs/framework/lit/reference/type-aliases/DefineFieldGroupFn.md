@@ -9,7 +9,7 @@ title: DefineFieldGroupFn
 type DefineFieldGroupFn = <TFields>(defineFn) => FieldGroupDefinition<TFields>;
 ```
 
-Defined in: [with-fields.ts:171](https://github.com/TanStack/form/blob/main/packages/lit-form/src/with-fields.ts#L171)
+Defined in: [with-fields.ts:171](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/lit-form/src/with-fields.ts#L171)
 
 ## Type Parameters
 

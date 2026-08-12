@@ -11,7 +11,7 @@ type VueFormGroupSubscribeComponent<TGroupValue, TGroupErrorTypes> = <TSelected>
 }>;
 ```
 
-Defined in: [packages/vue-form/src/VueForm/Components.public.ts:224](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L224)
+Defined in: [packages/vue-form/src/VueForm/Components.public.ts:224](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L224)
 
 ## Type Parameters
 

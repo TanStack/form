@@ -32,6 +32,21 @@ export interface FieldUpdateOptions {
 
 export type OneOrMany<TValue> = TValue | Array<TValue>
 
+/**
+ * A field API that preserves its value type while erasing its name, error, and
+ * owning form types.
+ *
+ * Use it for reusable value-specific UI or helpers that should accept the same
+ * value type at any field path. Value reads and updates remain typed without
+ * tying the reusable code to one path or form shape.
+ *
+ * @example
+ * ```ts
+ * function trimField(field: FieldWithValue<string>) {
+ *   field.handleChange((value) => value.trim())
+ * }
+ * ```
+ */
 export type FieldWithValue<TFieldValue> = FieldApi<
   any,
   TFieldValue,

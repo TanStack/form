@@ -9,7 +9,7 @@ title: injectForm
 function injectForm<TFormData, TFormValidators, TSubmitReturn>(options): InternalFormApi<TFormData, TFormValidators, TSubmitReturn>;
 ```
 
-Defined in: [inject-form.ts:9](https://github.com/TanStack/form/blob/main/packages/angular-form/src/inject-form.ts#L9)
+Defined in: [inject-form.ts:9](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/angular-form/src/inject-form.ts#L9)
 
 Creates and mounts a v2 form in the current Angular injection context.
 

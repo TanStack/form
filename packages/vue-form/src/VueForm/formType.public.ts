@@ -18,6 +18,27 @@ type VueFormTypeErrorTypes<
   ? any
   : ToFormErrorTypes<TFormValidators, TSubmitReturn>
 
+/**
+ * Derives the Vue form API type represented by a reusable options object.
+ *
+ * Use it to type props for components that belong to one known form shape. It
+ * preserves the inferred form data and any components registered through
+ * `appFormOptions`. Options such as `onSubmit` can be defined either in the
+ * shared options or when the form is created in the component.
+ *
+ * @example
+ * ```ts
+ * const profileOptions = formOptions({
+ *   defaultValues: { name: '' },
+ * })
+ *
+ * type ProfileForm = VueFormType<typeof profileOptions>
+ *
+ * const props = defineProps<{
+ *   form: ProfileForm
+ * }>()
+ * ```
+ */
 export type VueFormType<
   TOptions extends
     AnyFormOptions | AppFormOptions<any, any, any, AnyVueFormComponentMap>,

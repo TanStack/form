@@ -5,7 +5,7 @@ title: SvelteFormFieldProps
 
 # Interface: SvelteFormFieldProps\<TFieldData, TFieldName, TFieldValue, TFieldValidators, TGroupFieldError, TFormData, TFormErrorTypes, TFieldComponents\>
 
-Defined in: [packages/svelte-form/src/Components.public.ts:100](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L100)
+Defined in: [packages/svelte-form/src/Components.public.ts:100](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/svelte-form/src/Components.public.ts#L100)
 
 ## Extends
 
@@ -56,4 +56,4 @@ children: Snippet<[SvelteFieldApi<TFieldName, TFieldValue, FallbackToValidationI
 | ExtractFormFieldError<TFormErrorTypes>>, TFormData, TFormErrorTypes, TFieldComponents>]>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:118](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L118)
+Defined in: [packages/svelte-form/src/Components.public.ts:118](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/svelte-form/src/Components.public.ts#L118)

@@ -54,6 +54,23 @@ export interface FieldState<out TFieldValue, in out TFieldError> {
   meta: FieldMeta<TFieldError>
 }
 
+/**
+ * A field API whose field name, value, error, and owning form types are erased.
+ *
+ * Use it for reusable helpers that only need members shared by every field,
+ * such as a generic error display. Because value and update types are erased,
+ * prefer `FieldWithValue<TFieldValue>` when a helper reads or changes a field
+ * value.
+ *
+ * @example
+ * ```ts
+ * function getFieldErrorText(field: AnyFieldApi) {
+ *   if (field.meta.isValid) return ''
+ *
+ *   return field.errors.map((error) => error.message).join(', ')
+ * }
+ * ```
+ */
 export type AnyFieldApi = FieldApi<any, any, any, any, any>
 
 type FieldArrayElement<TFieldValue> = TryGetArrayElementType<TFieldValue>

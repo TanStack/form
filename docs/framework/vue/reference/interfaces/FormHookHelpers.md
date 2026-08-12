@@ -5,7 +5,7 @@ title: FormHookHelpers
 
 # Interface: FormHookHelpers
 
-Defined in: [packages/vue-form/src/AppForm/getFormHookHelpers.public.ts:93](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/getFormHookHelpers.public.ts#L93)
+Defined in: [packages/vue-form/src/AppForm/getFormHookHelpers.public.ts:93](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/AppForm/getFormHookHelpers.public.ts#L93)
 
 ## Properties
 
@@ -15,7 +15,7 @@ Defined in: [packages/vue-form/src/AppForm/getFormHookHelpers.public.ts:93](http
 fieldBrand: FieldBrandHelper;
 ```
 
-Defined in: [packages/vue-form/src/AppForm/getFormHookHelpers.public.ts:94](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/getFormHookHelpers.public.ts#L94)
+Defined in: [packages/vue-form/src/AppForm/getFormHookHelpers.public.ts:94](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/AppForm/getFormHookHelpers.public.ts#L94)
 
 ***
 
@@ -25,4 +25,4 @@ Defined in: [packages/vue-form/src/AppForm/getFormHookHelpers.public.ts:94](http
 fieldComponent: FieldComponentHelper;
 ```
 
-Defined in: [packages/vue-form/src/AppForm/getFormHookHelpers.public.ts:95](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/getFormHookHelpers.public.ts#L95)
+Defined in: [packages/vue-form/src/AppForm/getFormHookHelpers.public.ts:95](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/AppForm/getFormHookHelpers.public.ts#L95)

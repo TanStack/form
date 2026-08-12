@@ -9,7 +9,7 @@ title: SwapFieldValuesFn
 type SwapFieldValuesFn<TFormData> = <TFieldName>(arrayFieldName, indexA, indexB, options?) => void;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:32](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L32)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:32](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L32)
 
 ## Type Parameters
 

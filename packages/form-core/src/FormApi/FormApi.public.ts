@@ -277,6 +277,13 @@ export interface FormState<
   submissionAttempts: number
 }
 
+/**
+ * A core form API whose value and error types are erased.
+ *
+ * Use it for reusable helpers that only need operations shared by every form.
+ * Field paths and values are not type-checked through this alias, and it does
+ * not include component helpers added by a framework adapter.
+ */
 export type AnyFormApi = FormApi<any, any>
 
 export interface FormResetOptions {

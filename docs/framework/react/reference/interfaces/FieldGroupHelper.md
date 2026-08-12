@@ -5,7 +5,7 @@ title: FieldGroupHelper
 
 # Interface: FieldGroupHelper
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:222](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L222)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:222](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L222)
 
 ## Properties
 
@@ -15,7 +15,7 @@ Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:222](https:
 loose: <TValue>() => LooseFieldGroupFieldSlot<TValue>;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:248](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L248)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:248](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L248)
 
 Declares a virtual field that can bind to form fields with an overlapping
 non-nullish value type instead of requiring an exact type match.
@@ -47,7 +47,7 @@ const passwordFieldGroup = defineFieldGroup(({ loose }) => ({
 strict: <TValue>() => StrictFieldGroupFieldSlot<TValue>;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:235](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L235)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:235](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L235)
 
 Declares a virtual field whose value type must exactly match the value type
 of the concrete form field it binds to.

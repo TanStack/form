@@ -9,7 +9,7 @@ title: SvelteFormGroupComponent
 type SvelteFormGroupComponent<TFormData, TFormErrorTypes, TFieldComponents> = <TGroupName, TGroupValue, TGroupValidators>(options) => SvelteComponent & Component<any> & WithoutFunction<Component>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:328](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L328)
+Defined in: [packages/svelte-form/src/Components.public.ts:328](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/svelte-form/src/Components.public.ts#L328)
 
 ## Type Parameters
 

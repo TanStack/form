@@ -9,7 +9,7 @@ title: PreactAppFormApi
 type PreactAppFormApi<TFormData, TFormErrorTypes, TComponents> = PreactFormApi<TFormData, TFormErrorTypes, TComponents> & object;
 ```
 
-Defined in: [packages/preact-form/src/AppForm/PreactAppFormApi.public.tsx:11](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/PreactAppFormApi.public.tsx#L11)
+Defined in: [packages/preact-form/src/AppForm/PreactAppFormApi.public.tsx:11](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/AppForm/PreactAppFormApi.public.tsx#L11)
 
 ## Type Declaration
 

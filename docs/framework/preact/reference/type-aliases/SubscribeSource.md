@@ -13,7 +13,7 @@ type SubscribeSource<TValue> =
 | ReadonlyStore<TValue>;
 ```
 
-Defined in: [packages/preact-form/src/Subscribe.public.tsx:10](https://github.com/TanStack/form/blob/main/packages/preact-form/src/Subscribe.public.tsx#L10)
+Defined in: [packages/preact-form/src/Subscribe.public.tsx:10](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/Subscribe.public.tsx#L10)
 
 ## Type Parameters
 

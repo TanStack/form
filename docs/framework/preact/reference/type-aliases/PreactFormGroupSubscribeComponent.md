@@ -9,7 +9,7 @@ title: PreactFormGroupSubscribeComponent
 type PreactFormGroupSubscribeComponent<TGroupValue, TGroupErrorTypes> = <TSelected>(props) => CrossVersionPreactNode;
 ```
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:212](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L212)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:212](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L212)
 
 ## Type Parameters
 
