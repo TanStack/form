@@ -358,13 +358,13 @@
       ]
     },
     {
-      "label": "Listener API Reference",
+      "label": "Form Listener API Reference",
       "collapsible": true,
       "defaultCollapsed": true,
       "children": [
         {
-          "label": "FormListeners",
-          "to": "reference/type-aliases/FormListeners"
+          "label": "FormListener",
+          "to": "reference/interfaces/FormListener"
         },
         {
           "label": "FormListenerTriggers",
@@ -375,8 +375,19 @@
           "to": "reference/type-aliases/FormListenerFn"
         },
         {
-          "label": "FieldListeners",
-          "to": "reference/type-aliases/FieldListeners"
+          "label": "FormListenerContext",
+          "to": "reference/interfaces/FormListenerContext"
+        }
+      ]
+    },
+    {
+      "label": "Field Listener API Reference",
+      "collapsible": true,
+      "defaultCollapsed": true,
+      "children": [
+        {
+          "label": "FieldListener",
+          "to": "reference/interfaces/FieldListener"
         },
         {
           "label": "FieldListenerTriggers",
@@ -387,16 +398,8 @@
           "to": "reference/type-aliases/FieldListenerFn"
         },
         {
-          "label": "ListenerTriggerOption",
-          "to": "reference/type-aliases/ListenerTriggerOption"
-        },
-        {
-          "label": "ListenerPredicateFn",
-          "to": "reference/type-aliases/ListenerPredicateFn"
-        },
-        {
-          "label": "ListenerDebounceFn",
-          "to": "reference/type-aliases/ListenerDebounceFn"
+          "label": "FieldListenerContext",
+          "to": "reference/interfaces/FieldListenerContext"
         }
       ]
     },

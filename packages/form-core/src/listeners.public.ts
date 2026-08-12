@@ -11,7 +11,7 @@ import type { FormErrorTypes, ValidationTrigger } from './validation.public'
  * - `'blur'`: A field was marked as blurred.
  * - `'submit'`: A submission attempt started. The listener runs before
  *   submission validation.
- * - `'mount'`: `formApi.mount()` was called.
+ * - `'mount'`: The component using the form was mounted.
  * - `'reset'`: The form finished resetting its values and state.
  */
 export type FormListenerTriggers = ValidationTrigger | 'mount' | 'reset'
@@ -202,10 +202,15 @@ export interface FormListenerContext<
   in out TFormErrorTypes extends FormErrorTypes,
 > {
   /**
-   * The field that caused the form event, when the event originated from a
-   * field.
+   * The field that caused the event when available.
    *
-   * This is `undefined` for `'mount'`, `'reset'`, and `'submit'` events.
+   * Some form events are initiated by the form itself, so no field causes
+   * them. `triggerFieldApi` is always `undefined` for:
+   *
+   * - `'mount'`, when the component using the form is mounted.
+   * - `'reset'`, when the form is reset.
+   * - `'submit'`, when a submission attempt starts.
+   *
    */
   triggerFieldApi?: AnyFieldApi
   /** The form that owns the listener. */
@@ -243,6 +248,27 @@ export type AnyFormListener = FormListener<any, any>
  *
  * Form listeners can observe field changes and blurs as well as form
  * submission, mounting, and resetting.
+ *
+ * @example
+ * ```ts
+ * formOptions({
+ *   defaultValues: { displayName: '' },
+ *   listeners: [
+ *     {
+ *       triggers: [
+ *         {
+ *           trigger: 'change',
+ *           when: ({ value }) => value.displayName.length > 0,
+ *         },
+ *       ],
+ *       triggerDebounceMs: 200,
+ *       run: ({ value }) => {
+ *         saveDraft(value)
+ *       },
+ *     },
+ *   ],
+ * })
+ * ```
  *
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
  * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
@@ -383,6 +409,23 @@ export type AnyFieldListener = FieldListener<any, any, any, any, any, any>
  * `'change'` and `'blur'` events from descendant fields propagate to their
  * ancestor field listeners. Use `watchFields` to receive matching events from
  * other fields.
+ *
+ * @example
+ * ```ts
+ * listeners: [
+ *   {
+ *     triggers: ['change', 'blur'],
+ *     triggerDebounceMs: 200,
+ *     watchFields: ['displayName'],
+ *     run: ({ value, formApi }) => {
+ *       saveContact({
+ *         displayName: formApi.getFieldValue('displayName'),
+ *         email: value,
+ *       })
+ *     },
+ *   },
+ * ],
+ * ```
  *
  * @typeParam TFieldData - Library-managed. Do not specify explicitly.
  * @typeParam TFieldName - Library-managed. Do not specify explicitly.
