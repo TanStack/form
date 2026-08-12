@@ -578,6 +578,22 @@ export class InternalFormGroupApi<
     this._routedErrorFields = []
   }
 
+  // TODO: Remove this targeted cleanup when routed errors migrate to the new
+  // error state structure. Until then, replacement must drop stale field refs.
+  _removeRoutedErrorFields(fieldsToRemove: ReadonlySet<AnyInternalFieldApi>) {
+    for (let index = 0; index < this._routedErrorFields.length; index++) {
+      const fieldRefs = this._routedErrorFields[index]
+      if (!fieldRefs) continue
+
+      const liveFieldRefs = new Set(
+        Array.from(fieldRefs).filter((field) => !fieldsToRemove.has(field)),
+      )
+      if (liveFieldRefs.size !== fieldRefs.size) {
+        this._routedErrorFields[index] = liveFieldRefs
+      }
+    }
+  }
+
   _validate = async (
     signal: ConfigurableValidationTrigger | 'submit',
     opts?: { triggerFieldApi?: AnyInternalFieldApi },

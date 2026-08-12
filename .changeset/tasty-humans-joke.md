@@ -2,4 +2,4 @@
 '@tanstack/form-core': patch
 ---
 
-Refactor: Migrate Form Groups's storage and accessing
+Refactor: Store Form Groups on trie nodes instead of the form instance

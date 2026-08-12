@@ -388,6 +388,43 @@ describe('FormGroupApi', () => {
     await vi.waitFor(() => expect(validator).toHaveBeenCalledOnce())
   })
 
+  it('drops killed routed fields while preserving live routed fields', async () => {
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: '', email: '' } },
+    })
+    const nameField = form._getOrCreateFieldApi({
+      name: 'guestDetails.name',
+    })
+    const emailField = form._getOrCreateFieldApi({
+      name: 'guestDetails.email',
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [
+        {
+          triggers: [],
+          run: () => ({
+            fields: {
+              name: 'Name is required',
+              email: 'Email is required',
+            },
+          }),
+        },
+      ],
+    })
+
+    await group.validate('submit')
+    expect(group._routedErrorFields[0]).toEqual(
+      new Set([nameField, emailField]),
+    )
+
+    form.deleteField('guestDetails.name')
+
+    expect(nameField._isKilled).toBe(true)
+    expect(group._routedErrorFields[0]).toEqual(new Set([emailField]))
+  })
+
   it('clears backing-node validation when cleanup cancels a group run', async () => {
     const validator = vi.fn(() => new Promise<null>(() => {}))
     const form = new InternalFormApi({

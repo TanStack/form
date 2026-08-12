@@ -265,9 +265,22 @@ function notifyFieldSubtreeListeners(
 function prepareFormGroupsForFieldReplacement(
   fields: ReadonlyArray<AnyInternalFieldApi>,
 ): () => void {
+  const fieldsToReplace = new Set(fields)
   const formGroups = fields.flatMap((field) =>
     field._formGroup ? [{ group: field._formGroup, name: field.name }] : [],
   )
+  const affectedFormGroups = new Set(formGroups.map(({ group }) => group))
+
+  const replacementRoot = fields[0]
+  if (replacementRoot) {
+    visitFieldAndAncestors(replacementRoot, (field) => {
+      if (field._formGroup) affectedFormGroups.add(field._formGroup)
+    })
+  }
+
+  for (const group of affectedFormGroups) {
+    group._removeRoutedErrorFields(fieldsToReplace)
+  }
 
   for (const { group } of formGroups) {
     group._cancelValidation()
