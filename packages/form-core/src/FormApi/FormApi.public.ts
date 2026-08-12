@@ -158,10 +158,10 @@ export interface FormSubmitContext<
    * {
    *   // ...
    *   onSubmit: async ({ value, parseIssues }) => {
-   *     const result = await saveUser(value)
+   *     const result = zodSchema.safeParse(value)
    *
-   *     if (!result.ok) {
-   *       return parseIssues(result.issues)
+   *     if (!result.success) {
+   *       return parseIssues(result.error.issues)
    *     }
    *   },
    * }
