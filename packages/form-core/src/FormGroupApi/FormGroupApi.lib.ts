@@ -110,6 +110,8 @@ export class InternalFormGroupApi<
   _isSubmitting = createAtom(false)
   _isSubmitSuccessful = createAtom(false)
   _submissionAttempts = createAtom(0)
+  /** Callbacks that remove validation-count increments made by this group. */
+  _validationCountCleanups = new Set<() => void>()
   /** Invalidates group state when reset or remount replaces its trie node. */
   _groupFieldVersion = createAtom(0)
 
@@ -212,33 +214,31 @@ export class InternalFormGroupApi<
     groupField._setFormGroup(this)
   }
 
-  /** Marks the backing trie node as validating until the returned callback runs. */
-  _startValidation(): () => void {
-    const groupField = this._groupField
-    const pipelineCache = this._pipelineCache
+  /** Adds a group-owned validation contribution to a field. */
+  _startValidation(field = this._groupField): () => void {
     let isComplete = false
 
-    groupField._setValidationCount((count) => count + 1)
+    field._setValidationCount((count) => count + 1)
 
-    return () => {
+    const finishValidation = () => {
       if (isComplete) return
       isComplete = true
-
-      // Reset and cleanup replace the cache after clearing the node count, so
-      // an old completion must not decrement a newer validation run.
-      if (this._pipelineCache !== pipelineCache) return
-
-      groupField._setValidationCount((count) => Math.max(0, count - 1))
+      this._validationCountCleanups.delete(finishValidation)
+      field._setValidationCount((count) => Math.max(0, count - 1))
     }
+
+    this._validationCountCleanups.add(finishValidation)
+
+    return finishValidation
   }
 
-  /** Cancels group validation and clears it from the backing trie node. */
+  /** Cancels group validation and clears its field-meta contributions. */
   _cancelValidation(): void {
-    const groupField = this._groupField
-
     cancelPipelineCache(this._pipelineCache)
     this._pipelineCache = createPipelineCache()
-    groupField._setValidationCount(() => 0)
+    for (const finishValidation of Array.from(this._validationCountCleanups)) {
+      finishValidation()
+    }
   }
 
   update = (
@@ -442,7 +442,11 @@ export class InternalFormGroupApi<
     > = []
 
     this._visitGroupFields((field) => {
-      fieldValidationPromises.push(field._runFieldValidation(signal))
+      fieldValidationPromises.push(
+        field._runFieldValidation(signal, {
+          _startValidation: () => this._startValidation(field),
+        }),
+      )
     })
 
     const results = await Promise.all(fieldValidationPromises)

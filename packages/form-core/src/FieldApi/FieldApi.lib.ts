@@ -680,6 +680,7 @@ export class InternalFieldApi<
     options?: {
       onResult?: boolean
       onlyRunValidatorIndeces?: Array<number> | null
+      _startValidation?: () => () => void
     },
   ): Promise<FieldValidatorPipelineResult> {
     if (this._isKilled)
@@ -698,7 +699,14 @@ export class InternalFieldApi<
         thrownError: null,
       }
 
-    this._setValidationCount((count) => count + 1)
+    let finishValidation = options?._startValidation?.()
+    if (!finishValidation) {
+      this._setValidationCount((count) => count + 1)
+      finishValidation = () => {
+        this._setValidationCount((count) => Math.max(0, count - 1))
+      }
+    }
+
     try {
       return await runFieldValidatorPipeline({
         pipeline: validators,
@@ -715,7 +723,7 @@ export class InternalFieldApi<
         validatorIndecesToRun: options?.onlyRunValidatorIndeces ?? null,
       })
     } finally {
-      this._setValidationCount((count) => Math.max(0, count - 1))
+      finishValidation()
     }
   }
 

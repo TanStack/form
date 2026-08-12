@@ -83,7 +83,6 @@ import type {
   ValidationTrigger,
 } from '../validation.public'
 import type { FormListenerTriggers } from '../listeners.public'
-import type { AnyInternalFormGroupApi } from '../FormGroupApi/FormGroupApi.lib'
 import type { ServerFormState } from '../ssr.public'
 
 export interface FormMetaAtoms {
@@ -363,21 +362,10 @@ export class InternalFormApi<
     this._schemaOutputs = []
     this._defaultValueCache = null
 
-    const formGroups: Array<{ group: AnyInternalFormGroupApi; name: string }> =
-      []
-    visitAllFormFields(this._fieldRootNode, (field) => {
-      if (field._formGroup) {
-        formGroups.push({ group: field._formGroup, name: field.name })
-      }
-    })
-
     batch(() => {
       this._atoms.resetVersion.set((version) => version + 1)
       if (shouldUpdateDefaultValues) {
         this._atoms.defaultValuesVersion.set((version) => version + 1)
-      }
-      for (const { group } of formGroups) {
-        group._cancelValidation()
       }
       this._fieldRootNode._children.forEach((child) =>
         child._kill({ listenerEvent: 'reset' }),
@@ -401,9 +389,6 @@ export class InternalFormApi<
       this._atoms.meta.isSubmitSuccessful.set(false)
       this._atoms.meta.submissionAttempts.set(0)
       this._atoms.values.set(values ?? this._options.defaultValues)
-      for (const { group, name } of formGroups) {
-        group._attachToFieldTrie(name)
-      }
     })
 
     this._notifyFormListener('reset', null)

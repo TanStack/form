@@ -262,6 +262,28 @@ function notifyFieldSubtreeListeners(
   }
 }
 
+function prepareFormGroupsForFieldReplacement(
+  fields: ReadonlyArray<AnyInternalFieldApi>,
+): () => void {
+  const formGroups = fields.flatMap((field) =>
+    field._formGroup ? [{ group: field._formGroup, name: field.name }] : [],
+  )
+
+  for (const { group } of formGroups) {
+    group._cancelValidation()
+  }
+
+  return () => {
+    if (formGroups.length === 0) return
+
+    batch(() => {
+      for (const { group, name } of formGroups) {
+        group._attachToFieldTrie(name)
+      }
+    })
+  }
+}
+
 export function killField(
   field: AnyInternalFieldApi,
   options: {
@@ -276,6 +298,7 @@ export function killField(
     field: AnyInternalFieldApi
     previousPath: string
   }> = []
+  let reattachFormGroups = () => {}
 
   batch(() => {
     const nodesToKill = collectFieldSubtree(field)
@@ -285,6 +308,8 @@ export function killField(
     }))
     const nodesToKillSet = new Set(nodesToKill)
     const fieldsToPruneAfterKill = new Set<AnyInternalFieldApi>()
+
+    reattachFormGroups = prepareFormGroupsForFieldReplacement(nodesToKill)
 
     if (options.listenerEvent) {
       notifyFieldSubtreeListeners(field, options.listenerEvent)
@@ -404,6 +429,7 @@ export function killField(
   if (dependencyChanges && dependencyChanges.length > 0) {
     bridge.fieldDependenciesChanged?.(dependencyChanges)
   }
+  reattachFormGroups()
 }
 
 export function canPruneField(field: AnyInternalFieldApi): boolean {

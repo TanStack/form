@@ -180,6 +180,56 @@ describe('FormGroupApi', () => {
     expect(form.state.isValidating).toBe(false)
   })
 
+  it('only removes group-owned validation counts when canceled', async () => {
+    const resolvers: Array<(value: null) => void> = []
+    const fieldValidator = vi.fn(
+      () =>
+        new Promise<null>((resolve) => {
+          resolvers.push(resolve)
+        }),
+    )
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: '' } },
+    })
+    const groupField = form._getOrCreateFieldApi({
+      name: 'guestDetails',
+      validators: [{ triggers: [], run: fieldValidator }],
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [{ triggers: [], run: () => null }],
+    })
+
+    const groupValidation = group.validate('submit')
+    await vi.waitFor(() => expect(fieldValidator).toHaveBeenCalledOnce())
+    const independentValidation = groupField._runFieldValidation('submit')
+    await vi.waitFor(() => expect(fieldValidator).toHaveBeenCalledTimes(2))
+
+    expect(groupField._getBaseMeta()._validationCount).toBe(3)
+
+    group.reset()
+
+    expect(groupField._getBaseMeta()._validationCount).toBe(1)
+    expect(groupField.meta.isSelfValidating).toBe(true)
+    expect(groupField.meta.isValidating).toBe(true)
+    expect(form.state.isValidating).toBe(true)
+
+    resolvers[0]!(null)
+    await groupValidation
+
+    expect(groupField._getBaseMeta()._validationCount).toBe(1)
+    expect(groupField.meta.isSelfValidating).toBe(true)
+    expect(groupField.meta.isValidating).toBe(true)
+
+    resolvers[1]!(null)
+    await independentValidation
+
+    expect(groupField._getBaseMeta()._validationCount).toBe(0)
+    expect(groupField.meta.isValidating).toBe(false)
+    expect(form.state.isValidating).toBe(false)
+  })
+
   it('cancels group validation before replacing trie nodes on form reset', async () => {
     const resolvers: Array<(value: null) => void> = []
     const validator = vi.fn(
@@ -307,6 +357,35 @@ describe('FormGroupApi', () => {
     expect(group._groupField).not.toBe(initialGroupField)
     expect(group._groupField._formGroup).toBe(group)
     expect(form._tryGetFieldApi('guestDetails')).toBe(group._groupField)
+  })
+
+  it('reattaches its trie node when the backing field is deleted', async () => {
+    const validator = vi.fn(() => null)
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: '' } },
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [{ triggers: ['change'], run: validator }],
+    })
+    const initialGroupField = group._groupField
+
+    form.deleteField('guestDetails')
+
+    expect(initialGroupField._isKilled).toBe(true)
+    expect(initialGroupField._formGroup).toBeNull()
+    expect(group._groupField).not.toBe(initialGroupField)
+    expect(group._groupField._isKilled).toBe(false)
+    expect(group._groupField._formGroup).toBe(group)
+    expect(form._tryGetFieldApi('guestDetails')).toBe(group._groupField)
+
+    const nameField = form._getOrCreateFieldApi({
+      name: 'guestDetails.name',
+    })
+    nameField.handleChange('Tony')
+
+    await vi.waitFor(() => expect(validator).toHaveBeenCalledOnce())
   })
 
   it('clears backing-node validation when cleanup cancels a group run', async () => {
