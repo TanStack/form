@@ -11,7 +11,7 @@ type SubscribeComponent = <TSourceData, TSelected>(props) => InstanceType<VueCom
 }>>;
 ```
 
-Defined in: [packages/vue-form/src/Subscribe.public.ts:20](https://github.com/TanStack/form/blob/main/packages/vue-form/src/Subscribe.public.ts#L20)
+Defined in: [packages/vue-form/src/Subscribe.public.ts:20](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/Subscribe.public.ts#L20)
 
 ## Parameters
 

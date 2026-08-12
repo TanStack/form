@@ -5,7 +5,7 @@ title: SolidFormComponentMap
 
 # Interface: SolidFormComponentMap\<TFormComponents, TFieldComponents\>
 
-Defined in: [packages/solid-form/src/AppForm/componentMap.public.ts:3](https://github.com/TanStack/form/blob/main/packages/solid-form/src/AppForm/componentMap.public.ts#L3)
+Defined in: [packages/solid-form/src/AppForm/componentMap.public.ts:3](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/AppForm/componentMap.public.ts#L3)
 
 ## Type Parameters
 
@@ -25,7 +25,7 @@ Defined in: [packages/solid-form/src/AppForm/componentMap.public.ts:3](https://g
 fieldComponents: TFieldComponents;
 ```
 
-Defined in: [packages/solid-form/src/AppForm/componentMap.public.ts:8](https://github.com/TanStack/form/blob/main/packages/solid-form/src/AppForm/componentMap.public.ts#L8)
+Defined in: [packages/solid-form/src/AppForm/componentMap.public.ts:8](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/AppForm/componentMap.public.ts#L8)
 
 ***
 
@@ -35,4 +35,4 @@ Defined in: [packages/solid-form/src/AppForm/componentMap.public.ts:8](https://g
 formComponents: TFormComponents;
 ```
 
-Defined in: [packages/solid-form/src/AppForm/componentMap.public.ts:7](https://github.com/TanStack/form/blob/main/packages/solid-form/src/AppForm/componentMap.public.ts#L7)
+Defined in: [packages/solid-form/src/AppForm/componentMap.public.ts:7](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/AppForm/componentMap.public.ts#L7)

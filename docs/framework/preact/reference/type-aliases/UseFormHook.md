@@ -9,7 +9,7 @@ title: UseFormHook
 type UseFormHook<TComponents> = <TFormData, TFormValidators, TSubmitReturn>(options) => PreactFormApi<TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>, TComponents>;
 ```
 
-Defined in: [packages/preact-form/src/PreactForm/useForm.public.ts:13](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/useForm.public.ts#L13)
+Defined in: [packages/preact-form/src/PreactForm/useForm.public.ts:13](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/PreactForm/useForm.public.ts#L13)
 
 ## Type Parameters
 

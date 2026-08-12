@@ -5,7 +5,7 @@ title: FieldGroupFieldComponent
 
 # Interface: FieldGroupFieldComponent()\<TFieldData, TFieldComponents\>
 
-Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:20](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts#L20)
+Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:20](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts#L20)
 
 ## Type Parameters
 
@@ -21,7 +21,7 @@ Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:20](htt
 FieldGroupFieldComponent<TFieldName>(props): ComponentChildren;
 ```
 
-Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:24](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts#L24)
+Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:24](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts#L24)
 
 ## Type Parameters
 

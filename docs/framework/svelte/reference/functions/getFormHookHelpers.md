@@ -9,7 +9,7 @@ title: getFormHookHelpers
 function getFormHookHelpers(): FormHookHelpers;
 ```
 
-Defined in: [packages/svelte-form/src/AppForm/getFormHookHelpers.public.ts:71](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/AppForm/getFormHookHelpers.public.ts#L71)
+Defined in: [packages/svelte-form/src/AppForm/getFormHookHelpers.public.ts:71](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/svelte-form/src/AppForm/getFormHookHelpers.public.ts#L71)
 
 ## Returns
 

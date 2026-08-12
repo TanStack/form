@@ -11,7 +11,7 @@ type FieldGroupSubscribeComponent = <TSelected>(props) => VueComponentInstance<F
 }>;
 ```
 
-Defined in: [packages/vue-form/src/FieldGroup/FieldGroupApi.public.ts:126](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/FieldGroupApi.public.ts#L126)
+Defined in: [packages/vue-form/src/FieldGroup/FieldGroupApi.public.ts:126](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/FieldGroup/FieldGroupApi.public.ts#L126)
 
 ## Parameters
 

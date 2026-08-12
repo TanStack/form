@@ -9,4 +9,4 @@ title: AnyFieldGroupFieldSlot
 type AnyFieldGroupFieldSlot = FieldGroupFieldSlot<any>;
 ```
 
-Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:24](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L24)
+Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:24](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L24)

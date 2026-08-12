@@ -9,7 +9,7 @@ title: SolidAppFormApi
 type SolidAppFormApi<TFormData, TFormErrorTypes, TComponents> = SolidFormApi<TFormData, TFormErrorTypes, TComponents> & object;
 ```
 
-Defined in: [packages/solid-form/src/AppForm/SolidAppFormApi.public.ts:8](https://github.com/TanStack/form/blob/main/packages/solid-form/src/AppForm/SolidAppFormApi.public.ts#L8)
+Defined in: [packages/solid-form/src/AppForm/SolidAppFormApi.public.ts:8](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/AppForm/SolidAppFormApi.public.ts#L8)
 
 ## Type Declaration
 

@@ -9,4 +9,4 @@ title: FieldGroupFieldSlotMode
 type FieldGroupFieldSlotMode = "strict" | "loose";
 ```
 
-Defined in: [with-fields.ts:29](https://github.com/TanStack/form/blob/main/packages/lit-form/src/with-fields.ts#L29)
+Defined in: [with-fields.ts:29](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/lit-form/src/with-fields.ts#L29)

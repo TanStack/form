@@ -11,7 +11,7 @@ type ListenerTriggerOption<TTriggers, TFormData, TValue> =
 | ListenerTriggerConfig<TTriggers, TFormData, TValue>;
 ```
 
-Defined in: [listeners.public.ts:106](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L106)
+Defined in: [listeners.public.ts:124](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/listeners.public.ts#L124)
 
 A listener event, optionally paired with a condition that enables it.
 
@@ -25,13 +25,19 @@ enables the trigger unconditionally.
 
 `TTriggers` *extends* [`FieldListenerTriggers`](FieldListenerTriggers.md)
 
+Library-managed. Do not specify explicitly.
+
 ### TFormData
 
 `TFormData`
 
+Library-managed. Do not specify explicitly.
+
 ### TValue
 
 `TValue`
+
+Library-managed. Do not specify explicitly.
 
 ## Example
 

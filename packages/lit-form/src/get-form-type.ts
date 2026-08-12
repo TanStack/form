@@ -52,6 +52,8 @@ export type AnyLitFormApi = TanStackFormController<any, any, any>
  *   `)
  * }
  * ```
+ *
+ * @typeParam TOptions - The reusable form options from which the controller derives its form data, validator, and submit-result types.
  */
 export type LitFormType<TOptions extends AnyFormOptions> =
   TOptions extends FormOptions<

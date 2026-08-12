@@ -1,10 +1,5 @@
 {
   "$schema": "https://raw.githubusercontent.com/TanStack/tanstack.com/main/tanstack-docs-config.schema.json",
-  "docSearch": {
-    "appId": "",
-    "apiKey": "",
-    "indexName": "tanstack-form"
-  },
   "sections": [
     {
       "label": "Community Resources",
@@ -363,15 +358,127 @@
       ]
     },
     {
-      "label": "API Reference",
+      "label": "FormApi Reference",
+      "collapsible": true,
+      "defaultCollapsed": true,
       "children": [
         {
-          "label": "Form Listeners",
-          "to": "reference/type-aliases/FormListeners"
+          "label": "form.setFieldValue()",
+          "to": "reference/type-aliases/SetFieldValueFn"
         },
         {
-          "label": "Field Listeners",
-          "to": "reference/type-aliases/FieldListeners"
+          "label": "form.getFieldValue()",
+          "to": "reference/type-aliases/GetFieldValueFn"
+        },
+        {
+          "label": "form.resetField()",
+          "to": "reference/type-aliases/ResetFieldFn"
+        },
+        {
+          "label": "form.swapFieldValues()",
+          "to": "reference/type-aliases/SwapFieldValuesFn"
+        },
+        {
+          "label": "form.moveFieldValue()",
+          "to": "reference/type-aliases/MoveFieldValueFn"
+        },
+        {
+          "label": "form.pushFieldValue()",
+          "to": "reference/type-aliases/PushFieldValueFn"
+        },
+        {
+          "label": "form.insertFieldValue()",
+          "to": "reference/type-aliases/InsertFieldValueFn"
+        },
+        {
+          "label": "form.clearFieldValues()",
+          "to": "reference/type-aliases/ClearFieldValuesFn"
+        },
+        {
+          "label": "form.removeFieldValue()",
+          "to": "reference/type-aliases/RemoveFieldValueFn"
+        },
+        {
+          "label": "form.filterFieldValues()",
+          "to": "reference/type-aliases/FilterFieldValuesFn"
+        },
+        {
+          "label": "form.handleSubmit()",
+          "to": "reference/type-aliases/HandleSubmitFn"
+        },
+        {
+          "label": "form.reset()",
+          "to": "reference/type-aliases/ResetFn"
+        },
+        {
+          "label": "FormApi",
+          "to": "reference/interfaces/FormApi"
+        },
+        {
+          "label": "FormOptions",
+          "to": "reference/interfaces/FormOptions"
+        },
+        {
+          "label": "FormState",
+          "to": "reference/interfaces/FormState"
+        },
+        {
+          "label": "FormResetOptions",
+          "to": "reference/interfaces/FormResetOptions"
+        },
+        {
+          "label": "FormSubmitContext",
+          "to": "reference/interfaces/FormSubmitContext"
+        },
+        {
+          "label": "FormSubmitInvalidContext",
+          "to": "reference/interfaces/FormSubmitInvalidContext"
+        }
+      ]
+    },
+    {
+      "label": "Form Listener API Reference",
+      "collapsible": true,
+      "defaultCollapsed": true,
+      "children": [
+        {
+          "label": "FormListener",
+          "to": "reference/interfaces/FormListener"
+        },
+        {
+          "label": "FormListenerTriggers",
+          "to": "reference/type-aliases/FormListenerTriggers"
+        },
+        {
+          "label": "FormListenerFn",
+          "to": "reference/type-aliases/FormListenerFn"
+        },
+        {
+          "label": "FormListenerContext",
+          "to": "reference/interfaces/FormListenerContext"
+        }
+      ]
+    },
+    {
+      "label": "Field Listener API Reference",
+      "collapsible": true,
+      "defaultCollapsed": true,
+      "children": [
+        {
+          "label": "FieldListener",
+          "to": "reference/interfaces/FieldListener"
+        },
+        {
+          "label": "FieldListenerTriggers",
+          "to": "reference/type-aliases/FieldListenerTriggers"
+        },
+        {
+          "label": "FieldListenerFn",
+          "to": "reference/type-aliases/FieldListenerFn"
+        },
+        {
+          "label": "FieldListenerContext",
+          "to": "reference/interfaces/FieldListenerContext"
         }
       ]
     },

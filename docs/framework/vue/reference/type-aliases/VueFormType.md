@@ -9,7 +9,7 @@ title: VueFormType
 type VueFormType<TOptions> = TOptions extends AppFormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn, infer TComponents> ? VueFormApi<TFormData, VueFormTypeErrorTypes<TFormValidators, TSubmitReturn>, TComponents> : TOptions extends FormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn> ? VueFormApi<TFormData, VueFormTypeErrorTypes<TFormValidators, TSubmitReturn>, DefaultVueFormComponentMap> : never;
 ```
 
-Defined in: [packages/vue-form/src/VueForm/formType.public.ts:42](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/formType.public.ts#L42)
+Defined in: [packages/vue-form/src/VueForm/formType.public.ts:44](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/VueForm/formType.public.ts#L44)
 
 Derives the Vue form API type represented by a reusable options object.
 
@@ -25,6 +25,8 @@ shared options or when the form is created in the component.
 `TOptions` *extends* 
   \| `AnyFormOptions`
   \| [`AppFormOptions`](../interfaces/AppFormOptions.md)\<`any`, `any`, `any`, [`AnyVueFormComponentMap`](AnyVueFormComponentMap.md)\>
+
+The reusable form or app-form options from which the API derives its form data, error, and registered-component types.
 
 ## Example
 

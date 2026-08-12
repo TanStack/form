@@ -9,4 +9,4 @@ title: FieldGroupFields
 type FieldGroupFields = Record<string, AnyFieldGroupFieldSlot>;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:70](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L70)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:70](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L70)

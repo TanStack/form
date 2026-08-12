@@ -9,7 +9,7 @@ title: getFormHookHelpers
 function getFormHookHelpers(): FormHookHelpers;
 ```
 
-Defined in: [packages/react-form/src/AppForm/getFormHookHelpers.public.ts:101](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/getFormHookHelpers.public.ts#L101)
+Defined in: [packages/react-form/src/AppForm/getFormHookHelpers.public.ts:101](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/AppForm/getFormHookHelpers.public.ts#L101)
 
 ## Returns
 

@@ -9,7 +9,7 @@ title: SvelteAppFormApi
 type SvelteAppFormApi<TFormData, TFormErrorTypes, TComponents> = SvelteFormApi<TFormData, TFormErrorTypes, TComponents> & object;
 ```
 
-Defined in: [packages/svelte-form/src/AppForm/SvelteAppFormApi.public.ts:8](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/AppForm/SvelteAppFormApi.public.ts#L8)
+Defined in: [packages/svelte-form/src/AppForm/SvelteAppFormApi.public.ts:8](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/svelte-form/src/AppForm/SvelteAppFormApi.public.ts#L8)
 
 ## Type Declaration
 

@@ -9,7 +9,7 @@ title: FieldGroupWithFieldsFn
 type FieldGroupWithFieldsFn<TFieldGroup> = <TProps, TFieldsPropName>(Component, fieldsPropName) => <TFormData>(props) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:203](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L203)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:203](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L203)
 
 Wraps a component that accepts a field-group API and returns a component
 that accepts a form plus virtual-to-concrete field bindings.
