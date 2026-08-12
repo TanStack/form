@@ -152,7 +152,7 @@ isValidating: boolean;
 
 Defined in: [FormApi/FormApi.public.ts:271](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L271)
 
-Whether the form or any field is currently validating.
+Whether the form, any form group, or any field is currently validating.
 
 ***
 
