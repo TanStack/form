@@ -9,4 +9,4 @@ title: ValidatorTrigger
 type ValidatorTrigger = ConfigurableValidationTrigger;
 ```
 
-Defined in: [validation.public.ts:169](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L169)
+Defined in: [validation.public.ts:169](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L169)

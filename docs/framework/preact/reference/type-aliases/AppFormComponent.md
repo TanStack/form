@@ -11,4 +11,4 @@ type AppFormComponent = FunctionComponent<{
 }>;
 ```
 
-Defined in: [packages/preact-form/src/AppForm/PreactAppFormApi.public.tsx:7](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/PreactAppFormApi.public.tsx#L7)
+Defined in: [packages/preact-form/src/AppForm/PreactAppFormApi.public.tsx:7](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/AppForm/PreactAppFormApi.public.tsx#L7)

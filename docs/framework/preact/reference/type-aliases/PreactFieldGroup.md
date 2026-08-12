@@ -9,7 +9,7 @@ title: PreactFieldGroup
 type PreactFieldGroup<TFields, TFieldComponents> = FieldGroupApi<FieldGroupFieldData<TFields>, TFieldComponents> & object;
 ```
 
-Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:97](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/withFields.public.ts#L97)
+Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:97](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/FieldGroup/withFields.public.ts#L97)
 
 ## Type Declaration
 

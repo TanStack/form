@@ -5,7 +5,7 @@ title: SolidFormFieldComponent
 
 # Interface: SolidFormFieldComponent()\<TFormData, TFormErrorTypes, TFieldComponents\>
 
-Defined in: [packages/solid-form/src/Components.public.ts:144](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L144)
+Defined in: [packages/solid-form/src/Components.public.ts:144](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/Components.public.ts#L144)
 
 ## Type Parameters
 
@@ -25,7 +25,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:144](https://github.co
 SolidFormFieldComponent<TFieldName, TFieldValidators>(props): Element;
 ```
 
-Defined in: [packages/solid-form/src/Components.public.ts:149](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L149)
+Defined in: [packages/solid-form/src/Components.public.ts:149](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/Components.public.ts#L149)
 
 ## Type Parameters
 

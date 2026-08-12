@@ -13,7 +13,7 @@ type VueFormFieldComponent<TFormData, TFormErrorTypes, TFieldComponents> = <TFie
 }>;
 ```
 
-Defined in: [packages/vue-form/src/VueForm/Components.public.ts:122](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L122)
+Defined in: [packages/vue-form/src/VueForm/Components.public.ts:122](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L122)
 
 ## Type Parameters
 

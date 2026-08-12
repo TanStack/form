@@ -10,7 +10,7 @@ type FieldGroupWithFieldsFn<TFieldGroup> = <TProps, TFieldsPropName>(component, 
 }>;
 ```
 
-Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:138](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L138)
+Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:138](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L138)
 
 ## Type Parameters
 

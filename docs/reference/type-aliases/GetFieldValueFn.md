@@ -9,7 +9,11 @@ title: GetFieldValueFn
 type GetFieldValueFn<TFormData> = <TDeepKeys>(DeepKeys) => DeepValue<TFormData, TDeepKeys>;
 ```
 
-Defined in: [FormApi/FormApiFieldMethods.types.public.ts:12](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L12)
+Defined in: [FormApi/FormApiFieldMethods.types.public.ts:47](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiFieldMethods.types.public.ts#L47)
+
+Reads the current value at a field path.
+
+This is a read-only operation and does not create a `FieldApi` for the path.
 
 ## Type Parameters
 
@@ -17,11 +21,15 @@ Defined in: [FormApi/FormApiFieldMethods.types.public.ts:12](https://github.com/
 
 `TFormData`
 
+Library-managed. Do not specify explicitly.
+
 ## Type Parameters
 
 ### TDeepKeys
 
 `TDeepKeys` *extends* [`DeepKeys`](DeepKeys.md)\<`TFormData`\>
+
+Library-managed. Do not specify explicitly.
 
 ## Parameters
 
@@ -29,6 +37,17 @@ Defined in: [FormApi/FormApiFieldMethods.types.public.ts:12](https://github.com/
 
 `TDeepKeys`
 
+The field path to read.
+
 ## Returns
 
 [`DeepValue`](DeepValue.md)\<`TFormData`, `TDeepKeys`\>
+
+The current value at the path, or `undefined` when the path cannot
+be resolved at runtime.
+
+## Example
+
+```ts
+const name = formApi.getFieldValue('profile.name')
+```

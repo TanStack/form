@@ -9,7 +9,7 @@ title: defineFieldGroup
 const defineFieldGroup: DefineFieldGroupFn<Record<never, never>>;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:384](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L384)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:384](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L384)
 
 Defines a reusable group of virtual fields that can be bound to concrete
 paths in different parent forms.

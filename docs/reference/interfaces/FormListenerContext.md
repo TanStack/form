@@ -5,7 +5,7 @@ title: FormListenerContext
 
 # Interface: FormListenerContext\<TFormData, TFormErrorTypes\>
 
-Defined in: [listeners.public.ts:168](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L168)
+Defined in: [listeners.public.ts:200](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/listeners.public.ts#L200)
 
 Context passed to a form listener.
 
@@ -15,9 +15,13 @@ Context passed to a form listener.
 
 `TFormData`
 
+Library-managed. Do not specify explicitly.
+
 ### TFormErrorTypes
 
 `TFormErrorTypes` *extends* [`FormErrorTypes`](FormErrorTypes.md)
+
+Library-managed. Do not specify explicitly.
 
 ## Properties
 
@@ -27,7 +31,7 @@ Context passed to a form listener.
 formApi: FormApi<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [listeners.public.ts:180](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L180)
+Defined in: [listeners.public.ts:217](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/listeners.public.ts#L217)
 
 The form that owns the listener.
 
@@ -39,12 +43,16 @@ The form that owns the listener.
 optional triggerFieldApi?: AnyFieldApi;
 ```
 
-Defined in: [listeners.public.ts:178](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L178)
+Defined in: [listeners.public.ts:215](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/listeners.public.ts#L215)
 
-The field that caused the form event, when the event originated from a
-field.
+The field that caused the event when available.
 
-This is `undefined` for `'mount'`, `'reset'`, and `'submit'` events.
+Some form events are initiated by the form itself, so no field causes
+them. `triggerFieldApi` is always `undefined` for:
+
+- `'mount'`, when the component using the form is mounted.
+- `'reset'`, when the form is reset.
+- `'submit'`, when a submission attempt starts.
 
 ***
 
@@ -54,6 +62,6 @@ This is `undefined` for `'mount'`, `'reset'`, and `'submit'` events.
 value: TFormData;
 ```
 
-Defined in: [listeners.public.ts:182](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L182)
+Defined in: [listeners.public.ts:219](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/listeners.public.ts#L219)
 
 The form values captured when the event occurred.

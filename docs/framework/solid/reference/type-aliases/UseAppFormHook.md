@@ -9,7 +9,7 @@ title: UseAppFormHook
 type UseAppFormHook<TComponents> = <TFormData, TFormValidators, TSubmitReturn>(options) => SolidAppFormApi<TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>, TComponents>;
 ```
 
-Defined in: [packages/solid-form/src/AppForm/createFormHookTypes.public.ts:12](https://github.com/TanStack/form/blob/main/packages/solid-form/src/AppForm/createFormHookTypes.public.ts#L12)
+Defined in: [packages/solid-form/src/AppForm/createFormHookTypes.public.ts:12](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/AppForm/createFormHookTypes.public.ts#L12)
 
 ## Type Parameters
 

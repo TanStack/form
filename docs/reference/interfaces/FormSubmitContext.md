@@ -5,7 +5,7 @@ title: FormSubmitContext
 
 # Interface: FormSubmitContext\<TFormData, TSchemaOutputs, TFormErrorTypes\>
 
-Defined in: [FormApi/FormApi.public.ts:54](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L54)
+Defined in: [FormApi/FormApi.public.ts:101](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L101)
 
 Context passed to `onSubmit` after submission validation succeeds.
 
@@ -30,13 +30,19 @@ Context passed to `onSubmit` after submission validation succeeds.
 
 `TFormData`
 
+Library-managed. Do not specify explicitly.
+
 ### TSchemaOutputs
 
 `TSchemaOutputs`
 
+Library-managed. Do not specify explicitly.
+
 ### TFormErrorTypes
 
 `TFormErrorTypes` *extends* [`FormErrorTypes`](FormErrorTypes.md)
+
+Library-managed. Do not specify explicitly.
 
 ## Properties
 
@@ -46,9 +52,12 @@ Context passed to `onSubmit` after submission validation succeeds.
 createValidationError: CreateValidationErrorFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:99](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L99)
+Defined in: [FormApi/FormApi.public.ts:149](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L149)
 
 Creates a validation error that can be returned from `onSubmit`.
+
+Return the created error from `onSubmit` to add its form- and field-level
+errors to validation state.
 
 #### Example
 
@@ -76,7 +85,7 @@ Creates a validation error that can be returned from `onSubmit`.
 formApi: FormApi<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:62](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L62)
+Defined in: [FormApi/FormApi.public.ts:109](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L109)
 
 The form API handling this submission.
 
@@ -88,9 +97,12 @@ The form API handling this submission.
 parseIssues: ParseSubmitIssuesFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:117](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L117)
+Defined in: [FormApi/FormApi.public.ts:170](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L170)
 
 Parses Standard Schema issues into an error returnable from `onSubmit`.
+
+Issue paths are mapped to fields in the submitted value. Return the parsed
+error from `onSubmit` to add those errors to validation state.
 
 #### Example
 
@@ -98,10 +110,10 @@ Parses Standard Schema issues into an error returnable from `onSubmit`.
 {
   // ...
   onSubmit: async ({ value, parseIssues }) => {
-    const result = await saveUser(value)
+    const result = zodSchema.safeParse(value)
 
-    if (!result.ok) {
-      return parseIssues(result.issues)
+    if (!result.success) {
+      return parseIssues(result.error.issues)
     }
   },
 }
@@ -115,7 +127,7 @@ Parses Standard Schema issues into an error returnable from `onSubmit`.
 schemaOutputs: TSchemaOutputs;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:78](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L78)
+Defined in: [FormApi/FormApi.public.ts:125](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L125)
 
 The submit outputs produced by the form's schema validators, ordered by
 validator index.
@@ -140,6 +152,6 @@ validator index.
 value: TFormData;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:60](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L60)
+Defined in: [FormApi/FormApi.public.ts:107](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L107)
 
 The form values for this submission.

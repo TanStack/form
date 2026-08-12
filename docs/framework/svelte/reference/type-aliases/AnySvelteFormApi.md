@@ -9,7 +9,7 @@ title: AnySvelteFormApi
 type AnySvelteFormApi = AnyFormApi & SvelteTanStackFormComponents<any, any, any> & SvelteFormSelectors<any, any>;
 ```
 
-Defined in: [packages/svelte-form/src/formApiTypes.public.ts:68](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/formApiTypes.public.ts#L68)
+Defined in: [packages/svelte-form/src/formApiTypes.public.ts:68](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/svelte-form/src/formApiTypes.public.ts#L68)
 
 A Svelte form API whose form data and error types are erased.
 

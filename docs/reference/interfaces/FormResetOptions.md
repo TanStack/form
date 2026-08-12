@@ -5,7 +5,16 @@ title: FormResetOptions
 
 # Interface: FormResetOptions
 
-Defined in: [FormApi/FormApi.public.ts:289](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L289)
+Defined in: [FormApi/FormApi.public.ts:526](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L526)
+
+Options controlling whether `reset(values)` replaces the default-value
+baseline.
+
+## Example
+
+```ts
+formApi.reset(savedValues, { updateDefaultValues: false })
+```
 
 ## Properties
 
@@ -15,7 +24,7 @@ Defined in: [FormApi/FormApi.public.ts:289](https://github.com/TanStack/form/blo
 optional updateDefaultValues?: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:308](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L308)
+Defined in: [FormApi/FormApi.public.ts:556](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L556)
 
 Whether `reset(values)` should also update the form's `defaultValues`
 baseline.
@@ -33,3 +42,15 @@ but `state.isDefaultValue` may be `false` if the provided reset values do
 not deeply equal the preserved defaults.
 
 This option is ignored when no reset values are provided.
+
+#### Example
+
+```ts
+const originalDefaults = formApi.defaultValues
+
+formApi.reset(savedDraft, { updateDefaultValues: false })
+// `savedDraft` is current, but `originalDefaults` remains the baseline.
+
+formApi.reset()
+// Restores `originalDefaults`, not `savedDraft`.
+```

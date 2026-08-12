@@ -11,7 +11,7 @@ type ValidatorOptions<TFormData, TContextValue, TTrigger, TScope> = Omit<Validat
   | ValidatorFn<any, any>, TContextValue, TTrigger, TScope>, "run" | "triggers"> & object;
 ```
 
-Defined in: [validation.public.ts:59](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L59)
+Defined in: [validation.public.ts:59](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/validation.public.ts#L59)
 
 ## Type Declaration
 

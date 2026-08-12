@@ -5,7 +5,7 @@ title: FormHookHelpers
 
 # Interface: FormHookHelpers
 
-Defined in: [packages/preact-form/src/AppForm/getFormHookHelpers.public.ts:98](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/getFormHookHelpers.public.ts#L98)
+Defined in: [packages/preact-form/src/AppForm/getFormHookHelpers.public.ts:98](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/AppForm/getFormHookHelpers.public.ts#L98)
 
 ## Properties
 
@@ -15,7 +15,7 @@ Defined in: [packages/preact-form/src/AppForm/getFormHookHelpers.public.ts:98](h
 fieldBrand: FieldBrandHelper;
 ```
 
-Defined in: [packages/preact-form/src/AppForm/getFormHookHelpers.public.ts:99](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/getFormHookHelpers.public.ts#L99)
+Defined in: [packages/preact-form/src/AppForm/getFormHookHelpers.public.ts:99](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/AppForm/getFormHookHelpers.public.ts#L99)
 
 ***
 
@@ -25,4 +25,4 @@ Defined in: [packages/preact-form/src/AppForm/getFormHookHelpers.public.ts:99](h
 fieldComponent: FieldComponentHelper;
 ```
 
-Defined in: [packages/preact-form/src/AppForm/getFormHookHelpers.public.ts:100](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/getFormHookHelpers.public.ts#L100)
+Defined in: [packages/preact-form/src/AppForm/getFormHookHelpers.public.ts:100](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/AppForm/getFormHookHelpers.public.ts#L100)

@@ -5,7 +5,12 @@ title: FormState
 
 # Interface: FormState\<TFormData, TFormErrorTypes\>
 
-Defined in: [FormApi/FormApi.public.ts:214](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L214)
+Defined in: [FormApi/FormApi.public.ts:398](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L398)
+
+A snapshot of current values, validation status, and submission metadata.
+
+Read the latest snapshot from `formApi.state` or subscribe to
+`formApi.atom`.
 
 ## Type Parameters
 
@@ -13,9 +18,13 @@ Defined in: [FormApi/FormApi.public.ts:214](https://github.com/TanStack/form/blo
 
 `TFormData`
 
+Library-managed. Do not specify explicitly.
+
 ### TFormErrorTypes
 
 `TFormErrorTypes` *extends* [`FormErrorTypes`](FormErrorTypes.md)
+
+Library-managed. Do not specify explicitly.
 
 ## Properties
 
@@ -25,12 +34,15 @@ Defined in: [FormApi/FormApi.public.ts:214](https://github.com/TanStack/form/blo
 canSubmit: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:258](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L258)
+Defined in: [FormApi/FormApi.public.ts:476](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L476)
 
-Whether the form can currently be submitted.
+Whether no submission is running and validation state has no known errors.
 
-This is an optimistic button affordance: `true` until validation has found
-errors, then `false` while errors are known or the form is submitting.
+This is optimistic: validation does not need to have run, and pending
+validation alone does not make it `false`. `handleSubmit()` still runs
+submission validation.
+
+* Equivalent to `isValid && !isSubmitting`.
 
 ***
 
@@ -40,9 +52,13 @@ errors, then `false` while errors are known or the form is submitting.
 errors: FormErrors<TFormErrorTypes>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:243](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L243)
+Defined in: [FormApi/FormApi.public.ts:450](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L450)
 
-Array of form-level validation errors.
+Form-level errors from validators and `onSubmit`.
+
+Errors are flattened in validator order, with `onSubmit` errors last.
+Errors routed to fields are exposed through the corresponding field APIs
+and are not included here.
 
 ***
 
@@ -52,9 +68,13 @@ Array of form-level validation errors.
 isDefaultValue: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:239](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L239)
+Defined in: [FormApi/FormApi.public.ts:442](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L442)
 
-Whether the current form values are deeply equal to the default values.
+Whether current values deeply match `formApi.defaultValues`.
+
+Unlike `isDirty` and `isPristine`, this compares current values with their
+defaults rather than tracking whether edits have occurred. Reverting an
+edit can make it `true` while `isDirty` remains `true`.
 
 ***
 
@@ -64,11 +84,16 @@ Whether the current form values are deeply equal to the default values.
 isDirty: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:231](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L231)
+Defined in: [FormApi/FormApi.public.ts:423](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L423)
 
-Whether the form has been dirtied. The opposite of `isPristine`.
+Whether a value update has marked state as dirty.
 
-TODO add link to persistent dirty model? Or maybe a reference to isDefaultValue?
+This records whether a dirty-marking update has occurred, not whether
+current values match their defaults. Once `true`, it remains `true` even if
+values return to their defaults. `formApi.reset()` clears it.
+
+* Equivalent to `!isPristine`.
+* Use `isDefaultValue` to check whether current values match their defaults.
 
 ***
 
@@ -78,9 +103,14 @@ TODO add link to persistent dirty model? Or maybe a reference to isDefaultValue?
 isInvalid: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:251](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L251)
+Defined in: [FormApi/FormApi.public.ts:466](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L466)
 
-Whether the form currently has form-level or field-level errors.
+Whether validation state contains at least one form- or field-level error.
+
+This is the exact inverse of `isValid`. Field `errorVisibility` does not
+affect it.
+
+* Equivalent to `!isValid`.
 
 ***
 
@@ -90,9 +120,16 @@ Whether the form currently has form-level or field-level errors.
 isPristine: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:235](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L235)
+Defined in: [FormApi/FormApi.public.ts:434](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L434)
 
-Whether the form has not yet been dirtied. The opposite of `isDirty`.
+Whether state has not been marked dirty.
+
+This records whether a dirty-marking update has occurred, not whether
+current values match their defaults. Once `false`, it remains `false` even
+if values return to their defaults. `formApi.reset()` restores it.
+
+* Equivalent to `!isDirty`.
+* Use `isDefaultValue` to check whether current values match their defaults.
 
 ***
 
@@ -102,9 +139,13 @@ Whether the form has not yet been dirtied. The opposite of `isDirty`.
 isSubmitSuccessful: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:267](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L267)
+Defined in: [FormApi/FormApi.public.ts:491](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L491)
 
-Whether the latest submission completed without validation or submit errors.
+Whether the latest completed submission finished without validation errors
+or an `onSubmit` failure.
+
+It starts as `false`, updates when an attempt finishes, and is cleared by
+`formApi.reset()`.
 
 ***
 
@@ -114,9 +155,12 @@ Whether the latest submission completed without validation or submit errors.
 isSubmitting: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:263](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L263)
+Defined in: [FormApi/FormApi.public.ts:483](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L483)
 
-Whether the form is currently in the process of submitting.
+Whether a submission attempt is in progress.
+
+This includes submission validation and the time spent awaiting `onSubmit`
+or `onSubmitInvalid`.
 
 ***
 
@@ -126,9 +170,12 @@ Whether the form is currently in the process of submitting.
 isTouched: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:225](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L225)
+Defined in: [FormApi/FormApi.public.ts:412](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L412)
 
-Whether the form has been touched.
+Whether at least one field is currently touched.
+
+Field changes mark fields as touched by default, and submission marks all
+registered fields as touched. Resets clear the touched state.
 
 ***
 
@@ -138,9 +185,12 @@ Whether the form has been touched.
 isValid: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:247](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L247)
+Defined in: [FormApi/FormApi.public.ts:457](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L457)
 
-Whether the form currently has no form-level or field-level errors.
+Whether validation state contains no form- or field-level errors.
+
+* Equivalent to `!isInvalid`.
+* A field error hidden by `errorVisibility` still makes this `false`.
 
 ***
 
@@ -150,9 +200,12 @@ Whether the form currently has no form-level or field-level errors.
 isValidating: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:271](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L271)
+Defined in: [FormApi/FormApi.public.ts:498](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L498)
 
-Whether the form, any form group, or any field is currently validating.
+Whether any form-, group-, or field-level validation is pending.
+
+It remains `true` until all concurrent validation work finishes or is
+canceled. Pending validation does not by itself make `canSubmit` `false`.
 
 ***
 
@@ -162,11 +215,12 @@ Whether the form, any form group, or any field is currently validating.
 submissionAttempts: number;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:277](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L277)
+Defined in: [FormApi/FormApi.public.ts:505](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L505)
 
-The number of times a submission has been attempted, regardless of its success.
+Number of submission attempts started since the last reset.
 
-If the form is reset, this will revert back to 0.
+An attempt is counted before validation begins, whether it succeeds or
+fails. `formApi.reset()` returns the count to `0`.
 
 ***
 
@@ -176,6 +230,6 @@ If the form is reset, this will revert back to 0.
 values: TFormData;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:221](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L221)
+Defined in: [FormApi/FormApi.public.ts:405](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L405)
 
-The current values of the form.
+Current values after field edits, resets, or default-value updates.

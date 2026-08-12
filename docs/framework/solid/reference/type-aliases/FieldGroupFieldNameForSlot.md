@@ -9,7 +9,7 @@ title: FieldGroupFieldNameForSlot
 type FieldGroupFieldNameForSlot<TFieldData, TSlot> = { [TFieldName in DeepKeys<TFieldData>]: FieldGroupFieldSlotAllows<TSlot, DeepValue<TFieldData, TFieldName>> extends true ? TFieldName : never }[DeepKeys<TFieldData>];
 ```
 
-Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:52](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L52)
+Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:52](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L52)
 
 ## Type Parameters
 

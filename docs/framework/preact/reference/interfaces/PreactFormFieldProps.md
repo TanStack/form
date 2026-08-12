@@ -5,7 +5,7 @@ title: PreactFormFieldProps
 
 # Interface: PreactFormFieldProps\<TFieldData, TFieldName, TFieldValue, TFieldValidators, TGroupFieldError, TFormData, TFormErrorTypes, TFieldComponents\>
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:113](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L113)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:113](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L113)
 
 ## Extends
 
@@ -53,7 +53,7 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:113](https
 children: (fieldApi) => ComponentChildren;
 ```
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:135](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L135)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:135](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L135)
 
 #### Parameters
 

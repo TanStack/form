@@ -5,7 +5,7 @@ title: FieldGroupFieldSlot
 
 # Interface: FieldGroupFieldSlot\<TValue, TMode\>
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:17](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L17)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:17](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L17)
 
 ## Type Parameters
 
@@ -25,7 +25,7 @@ Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:17](https:/
 readonly [fieldGroupFieldSlotValueSymbol]: TValue;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:22](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L22)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:22](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L22)
 
 ***
 
@@ -35,4 +35,4 @@ Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:22](https:/
 readonly mode: TMode;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:21](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L21)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:21](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L21)

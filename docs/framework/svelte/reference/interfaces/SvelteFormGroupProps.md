@@ -5,7 +5,7 @@ title: SvelteFormGroupProps
 
 # Interface: SvelteFormGroupProps\<TFormData, TGroupName, TGroupValue, TGroupValidators, TFormErrorTypes, TFieldComponents\>
 
-Defined in: [packages/svelte-form/src/Components.public.ts:297](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L297)
+Defined in: [packages/svelte-form/src/Components.public.ts:297](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/svelte-form/src/Components.public.ts#L297)
 
 ## Extends
 
@@ -45,4 +45,4 @@ Defined in: [packages/svelte-form/src/Components.public.ts:297](https://github.c
 children: Snippet<[SvelteFormGroupApi<TFormData, TGroupName, TGroupValue, ToFormGroupErrorTypes<NoInfer<TGroupValidators>>, TFormErrorTypes, TFieldComponents>]>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:314](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L314)
+Defined in: [packages/svelte-form/src/Components.public.ts:314](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/svelte-form/src/Components.public.ts#L314)

@@ -5,7 +5,9 @@ title: FormApiArrayMethods
 
 # Interface: FormApiArrayMethods\<TFormData\>
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:90](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L90)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:290](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L290)
+
+Methods for adding, removing, moving, and filtering array field elements.
 
 ## Extended by
 
@@ -17,6 +19,8 @@ Defined in: [FormApi/FormApiArrayMethods.types.public.ts:90](https://github.com/
 
 `TFormData`
 
+Library-managed. Do not specify explicitly.
+
 ## Properties
 
 ### clearFieldValues
@@ -25,16 +29,21 @@ Defined in: [FormApi/FormApiArrayMethods.types.public.ts:90](https://github.com/
 clearFieldValues: ClearFieldValuesFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:134](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L134)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:378](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L378)
 
-Clear all values from an array field.
-If the field is not an array, this method will be ignored.
+Removes every element from an array field.
 
-#### Param
+A runtime value that is not an array produces a warning and is left
+unchanged. By default, the update marks the array field as touched and
+dirty, notifies change listeners, and runs change validation.
 
-**arrayFieldName**
+#### Example
 
-The name of the array field
+```ts
+// items: ['first', 'second']
+formApi.clearFieldValues('items')
+// items: []
+```
 
 ***
 
@@ -44,28 +53,22 @@ The name of the array field
 filterFieldValues: FilterFieldValuesFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:152](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L152)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:414](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L414)
 
-Filter the values in an array field using a predicate function.
-If the field is not an array, this method will be ignored.
+Keeps the elements that satisfy a predicate.
 
-#### Param
+`options.thisArg` sets the predicate's `this` value. A runtime value that is
+not an array produces a warning and is left unchanged. By default, the
+update marks the array field as touched and dirty, notifies change
+listeners, and runs change validation.
 
-**arrayFieldName**
+#### Example
 
-The name of the array field
-
-#### Param
-
-**predicate**
-
-The predicate function to filter values. Returns true to keep the value, false to remove it.
-
-#### Param
-
-**options**
-
-Optional update options including a custom `thisArg` for the predicate
+```ts
+// items: [1, 2, 3, 4]
+formApi.filterFieldValues('items', (item) => item % 2 === 0)
+// items: [2, 4]
+```
 
 ***
 
@@ -75,34 +78,24 @@ Optional update options including a custom `thisArg` for the predicate
 insertFieldValue: InsertFieldValueFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:127](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L127)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:362](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L362)
 
-Insert a value into an array field at the specified index.
-If the field is not an array, this method will be ignored.
+Inserts an element at an index in an array field.
 
-#### Param
+The index must be between `0` and `array.length`; passing `array.length`
+appends the element. An out-of-range index or a runtime value that is not
+an array produces a warning and leaves the value unchanged.
 
-**arrayFieldName**
+By default, the update marks the array field as touched and dirty, notifies
+change listeners, and runs change validation.
 
-The name of the array field
+#### Example
 
-#### Param
-
-**index**
-
-The index at which to insert the value
-
-#### Param
-
-**value**
-
-The value to insert
-
-#### Param
-
-**options**
-
-Optional update options
+```ts
+// items: ['first', 'second']
+formApi.insertFieldValue('items', 1, 'new item')
+// items: ['first', 'new item', 'second']
+```
 
 ***
 
@@ -112,34 +105,24 @@ Optional update options
 moveFieldValue: MoveFieldValueFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:108](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L108)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:327](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L327)
 
-Move a value in an array field from one index to another.
-If the field is not an array, this method will be ignored.
+Moves an element to another index in an array field.
 
-#### Param
+Both indices must be between `0` and `array.length - 1`. Passing equal
+indices does nothing. Out-of-range indices or a runtime value that is not
+an array produce a warning and leave the value unchanged.
 
-**arrayFieldName**
+By default, the update marks the array field as touched and dirty, notifies
+change listeners, and runs change validation.
 
-The name of the array field
+#### Example
 
-#### Param
-
-**fromIndex**
-
-The current index of the value to move
-
-#### Param
-
-**toIndex**
-
-The index to move the value to
-
-#### Param
-
-**options**
-
-Optional update options
+```ts
+// items: ['first', 'second', 'third']
+formApi.moveFieldValue('items', 0, 2)
+// items: ['second', 'third', 'first']
+```
 
 ***
 
@@ -149,28 +132,21 @@ Optional update options
 pushFieldValue: PushFieldValueFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:117](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L117)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:343](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L343)
 
-Push a value into an array field.
-If the field is not an array, this method will be ignored.
+Appends an element to an array field.
 
-#### Param
+A runtime value that is not an array produces a warning and is left
+unchanged. By default, the update marks the array field as touched and
+dirty, notifies change listeners, and runs change validation.
 
-**arrayFieldName**
+#### Example
 
-The name of the array field
-
-#### Param
-
-**value**
-
-The value to push
-
-#### Param
-
-**options**
-
-Optional update options
+```ts
+// items: ['first', 'second']
+formApi.pushFieldValue('items', 'new item')
+// items: ['first', 'second', 'new item']
+```
 
 ***
 
@@ -180,28 +156,24 @@ Optional update options
 removeFieldValue: RemoveFieldValueFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:143](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L143)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:397](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L397)
 
-Remove a value from an array field at the specified index.
-If the field is not an array, this method will be ignored.
+Removes an element from an array field.
 
-#### Param
+The index must be between `0` and `array.length - 1`. An out-of-range index
+or a runtime value that is not an array produces a warning and leaves the
+value unchanged.
 
-**arrayFieldName**
+By default, the update marks the array field as touched and dirty, notifies
+change listeners, and runs change validation.
 
-The name of the array field
+#### Example
 
-#### Param
-
-**index**
-
-The index of the value to remove
-
-#### Param
-
-**options**
-
-Optional update options
+```ts
+// items: ['first', 'second', 'third']
+formApi.removeFieldValue('items', 1)
+// items: ['first', 'third']
+```
 
 ***
 
@@ -211,25 +183,21 @@ Optional update options
 swapFieldValues: SwapFieldValuesFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApiArrayMethods.types.public.ts:98](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L98)
+Defined in: [FormApi/FormApiArrayMethods.types.public.ts:308](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L308)
 
-Swap two values in an array field.
-If the field is not an array, this method will be ignored.
+Swaps two elements in an array field.
 
-#### Param
+Both indices must be between `0` and `array.length - 1`. Passing equal
+indices does nothing. Out-of-range indices or a runtime value that is not
+an array produce a warning and leave the value unchanged.
 
-**arrayFieldName**
+By default, the update marks the array field as touched and dirty, notifies
+change listeners, and runs change validation.
 
-The name of the array field
+#### Example
 
-#### Param
-
-**indexA**
-
-The index of the first value to swap
-
-#### Param
-
-**indexB**
-
-The index of the second value to swap
+```ts
+// items: ['first', 'second', 'third']
+formApi.swapFieldValues('items', 0, 2)
+// items: ['third', 'second', 'first']
+```

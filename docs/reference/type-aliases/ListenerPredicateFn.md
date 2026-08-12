@@ -9,7 +9,7 @@ title: ListenerPredicateFn
 type ListenerPredicateFn<TFormData, TValue> = (context) => boolean;
 ```
 
-Defined in: [listeners.public.ts:61](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L61)
+Defined in: [listeners.public.ts:69](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/form-core/src/listeners.public.ts#L69)
 
 Decides whether a listener is enabled for a matching event.
 
@@ -22,9 +22,13 @@ current event.
 
 `TFormData`
 
+Library-managed. Do not specify explicitly.
+
 ### TValue
 
 `TValue`
+
+Library-managed. Do not specify explicitly.
 
 ## Parameters
 

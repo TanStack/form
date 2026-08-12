@@ -9,7 +9,7 @@ title: SvelteFormGroupArrayFieldComponent
 type SvelteFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents> = <TFieldName, TFieldValidators>(options) => SvelteComponent & Component<any> & WithoutFunction<Component>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:236](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L236)
+Defined in: [packages/svelte-form/src/Components.public.ts:236](https://github.com/LeCarbonator/tanstack-form/blob/main/packages/svelte-form/src/Components.public.ts#L236)
 
 ## Type Parameters
 
