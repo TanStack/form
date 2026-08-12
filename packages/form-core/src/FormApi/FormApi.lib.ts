@@ -83,10 +83,7 @@ import type {
   ValidationTrigger,
 } from '../validation.public'
 import type { FormListenerTriggers } from '../listeners.public'
-import type { InternalFormGroupApi } from '../FormGroupApi/FormGroupApi.lib'
 import type { ServerFormState } from '../ssr.public'
-
-type AnyFormGroupApi = InternalFormGroupApi<any, any, any, any, any>
 
 export interface FormMetaAtoms {
   isDirty: Atom<boolean>
@@ -193,14 +190,14 @@ function notifyDevtoolsFieldValueUpdate(
   const updateField = devtools().updateField
   if (!field || !updateField) return
 
-  visitFieldAndAncestors(field, updateField)
+  visitFieldAndAncestors(field, (current) => updateField(current))
 }
 
 function notifyDevtoolsDefaultValuesUpdate(form: AnyInternalFormApi): void {
   const updateField = devtools().updateField
   if (!updateField) return
 
-  visitAllFormFields(form._fieldRootNode, updateField)
+  visitAllFormFields(form._fieldRootNode, (current) => updateField(current))
 }
 
 export class InternalFormApi<
@@ -226,7 +223,6 @@ export class InternalFormApi<
   _lastUpdateDefaultValues: TFormData
   _pipelineCache: PipelineCache<any>
   _schemaOutputs: Array<any> = []
-  _formGroups = new Set<InternalFormGroupApi<any, any, any, any, any>>()
   _lastServerState: ServerFormState<TFormData, TFormValidators> | null = null
 
   get state(): FormState<
@@ -324,36 +320,6 @@ export class InternalFormApi<
       didCleanup = true
       devtools().unmountForm?.(this)
     }
-  }
-
-  _registerFormGroup(group: AnyFormGroupApi): void {
-    this._formGroups.add(group)
-    const groupField = this._tryGetFieldApi(String(group.name))
-    if (groupField) devtools().updateField?.(groupField)
-  }
-
-  _unregisterFormGroup(group: AnyFormGroupApi): void {
-    this._formGroups.delete(group)
-    const groupField = this._tryGetFieldApi(String(group.name))
-    if (groupField) devtools().updateField?.(groupField)
-  }
-
-  _getNearestFormGroupForField(fieldName: string): AnyFormGroupApi | null {
-    let nearest: AnyFormGroupApi | null = null
-    for (const group of this._formGroups) {
-      const groupName = String(group.name)
-      const isContained =
-        fieldName === groupName ||
-        fieldName.startsWith(`${groupName}.`) ||
-        fieldName.startsWith(`${groupName}[`)
-
-      if (!isContained) continue
-
-      if (!nearest || groupName.length > String(nearest.name).length) {
-        nearest = group
-      }
-    }
-    return nearest
   }
 
   _clearFormValidationSource(sourceEvent: string): void {

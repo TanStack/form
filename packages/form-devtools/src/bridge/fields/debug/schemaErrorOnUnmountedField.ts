@@ -8,11 +8,11 @@ export const schemaErrorOnUnmountedField = {
     }
 
     let mountedAncestorPath: string | undefined
-    visitFieldAndAncestors(field, (candidate) => {
+    visitFieldAndAncestors(field, (candidate, stop) => {
       if (candidate === field || !candidate._isMounted) return
 
       mountedAncestorPath = candidate.name
-      return false
+      return stop
     })
 
     if (!mountedAncestorPath) return undefined

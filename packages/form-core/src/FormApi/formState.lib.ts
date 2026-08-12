@@ -129,27 +129,20 @@ function hasFormValidatorFieldEventError(
   )
 }
 
-function hasFormGroupValidatorErrors(
-  groupErrors: ReturnType<
-    AnyInternalFieldApi['_getBaseMeta']
-  >['_formGroupValidatorErrors'],
-): boolean {
-  for (const { errors } of groupErrors.values()) {
-    if (hasIndexedErrors(errors)) return true
-  }
-
-  return false
-}
-
 function hasFieldErrors(field: AnyInternalFieldApi): boolean {
   const meta = field._getBaseMeta()
 
-  return (
-    hasIndexedErrors(meta._fieldValidatorErrors) ||
-    hasFormGroupValidatorErrors(meta._formGroupValidatorErrors) ||
-    hasIndexedErrors(meta._formValidatorErrors) ||
-    meta.childContributionCounts.error > 0
-  )
+  if (hasIndexedErrors(meta._fieldValidatorErrors)) return true
+  if (hasIndexedErrors(meta._formValidatorErrors)) return true
+  if (meta.childContributionCounts.error > 0) return true
+
+  if (meta._formGroupValidatorErrors !== null) {
+    if (hasIndexedErrors(meta._formGroupValidatorErrors.errors)) {
+      return true
+    }
+  }
+
+  return false
 }
 
 export function reconcileFormErrorFields(

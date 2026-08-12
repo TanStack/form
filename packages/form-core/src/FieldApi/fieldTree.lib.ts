@@ -262,6 +262,41 @@ function notifyFieldSubtreeListeners(
   }
 }
 
+function prepareFormGroupsForFieldReplacement(
+  fields: ReadonlyArray<AnyInternalFieldApi>,
+): () => void {
+  const fieldsToReplace = new Set(fields)
+  const formGroups = fields.flatMap((field) =>
+    field._formGroup ? [{ group: field._formGroup, name: field.name }] : [],
+  )
+  const affectedFormGroups = new Set(formGroups.map(({ group }) => group))
+
+  const replacementRoot = fields[0]
+  if (replacementRoot) {
+    visitFieldAndAncestors(replacementRoot, (field) => {
+      if (field._formGroup) affectedFormGroups.add(field._formGroup)
+    })
+  }
+
+  for (const group of affectedFormGroups) {
+    group._removeRoutedErrorFields(fieldsToReplace)
+  }
+
+  for (const { group } of formGroups) {
+    group._cancelValidation()
+  }
+
+  return () => {
+    if (formGroups.length === 0) return
+
+    batch(() => {
+      for (const { group, name } of formGroups) {
+        group._attachToFieldTrie(name)
+      }
+    })
+  }
+}
+
 export function killField(
   field: AnyInternalFieldApi,
   options: {
@@ -276,6 +311,7 @@ export function killField(
     field: AnyInternalFieldApi
     previousPath: string
   }> = []
+  let reattachFormGroups = () => {}
 
   batch(() => {
     const nodesToKill = collectFieldSubtree(field)
@@ -285,6 +321,8 @@ export function killField(
     }))
     const nodesToKillSet = new Set(nodesToKill)
     const fieldsToPruneAfterKill = new Set<AnyInternalFieldApi>()
+
+    reattachFormGroups = prepareFormGroupsForFieldReplacement(nodesToKill)
 
     if (options.listenerEvent) {
       notifyFieldSubtreeListeners(field, options.listenerEvent)
@@ -330,6 +368,7 @@ export function killField(
 
       node._isKilled = true
       node._refCount = 0
+      node._formGroup = null
       node._defaultValueCache = null
       node._atoms.store = undefined
       if (node._pipelineCache) {
@@ -403,12 +442,14 @@ export function killField(
   if (dependencyChanges && dependencyChanges.length > 0) {
     bridge.fieldDependenciesChanged?.(dependencyChanges)
   }
+  reattachFormGroups()
 }
 
 export function canPruneField(field: AnyInternalFieldApi): boolean {
   if (field._isKilled) return false
 
   if (field._refCount > 0) return false
+  if (field._formGroup) return false
   if (field._childrenMap.size > 0) return false
   if (field._watchingFields) return false
   if (field._watchingValidatorFields) return false
@@ -428,8 +469,8 @@ export function pruneFieldIfUnused(field: AnyInternalFieldApi): void {
     ? new Array<{ field: AnyInternalFieldApi; previousPath: string }>()
     : null
 
-  visitFieldAndAncestors(field, (node) => {
-    if (!canPruneField(node)) return false
+  visitFieldAndAncestors(field, (node, stop) => {
+    if (!canPruneField(node)) return stop
 
     removedFields?.push({ field: node, previousPath: node.name })
     node._parent._removeChild(node._segment)

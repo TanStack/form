@@ -266,7 +266,7 @@ export interface FormState<
    */
   isSubmitSuccessful: boolean
   /**
-   * Whether the form or any field is currently validating.
+   * Whether the form, any form group, or any field is currently validating.
    */
   isValidating: boolean
   /**

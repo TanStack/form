@@ -50,6 +50,7 @@ import type {
 import type { ResolvedInternalFieldUpdateOptions } from '../types.lib'
 import type { FieldUpdateOptions, Updater } from '../types.public'
 import type { AnyInternalFormApi } from '../FormApi/FormApi.lib'
+import type { AnyInternalFormGroupApi } from '../FormGroupApi/FormGroupApi.lib'
 import type { ReadonlyAtom } from '@tanstack/store'
 import type { FieldApi, FieldApiOptions } from './FieldApi.public'
 import type {
@@ -310,6 +311,8 @@ export class InternalFieldApi<
   _listeners: Array<AnyFieldListener> | null
   _errorVisibility: ErrorVisibility<any, any> | undefined
   _errorBoundary: boolean
+  /** The form group occupying this trie node. */
+  _formGroup: AnyInternalFormGroupApi | null = null
 
   // TODO implement
   /**
@@ -651,15 +654,15 @@ export class InternalFieldApi<
 
     const seenValidatorFields = new WeakSet<AnyInternalFieldApi>()
 
-    visitFieldAndAncestors(this, (current) => {
-      if (current._isKilled) return false
+    visitFieldAndAncestors(this, (current, stop) => {
+      if (current._isKilled) return stop
 
       current._runFieldValidation(event)
       current._notifyValidator(event, seenValidatorFields)
       return undefined
     })
 
-    const group = this.form._getNearestFormGroupForField(this.name)
+    const group = this._getFormGroup()
     if (group) {
       group.validate(event, { triggerFieldApi: this })
       return
@@ -677,6 +680,7 @@ export class InternalFieldApi<
     options?: {
       onResult?: boolean
       onlyRunValidatorIndeces?: Array<number> | null
+      _startValidation?: () => () => void
     },
   ): Promise<FieldValidatorPipelineResult> {
     if (this._isKilled)
@@ -695,7 +699,14 @@ export class InternalFieldApi<
         thrownError: null,
       }
 
-    this._setValidationCount((count) => count + 1)
+    let finishValidation = options?._startValidation?.()
+    if (!finishValidation) {
+      this._setValidationCount((count) => count + 1)
+      finishValidation = () => {
+        this._setValidationCount((count) => Math.max(0, count - 1))
+      }
+    }
+
     try {
       return await runFieldValidatorPipeline({
         pipeline: validators,
@@ -712,7 +723,7 @@ export class InternalFieldApi<
         validatorIndecesToRun: options?.onlyRunValidatorIndeces ?? null,
       })
     } finally {
-      this._setValidationCount((count) => Math.max(0, count - 1))
+      finishValidation()
     }
   }
 
@@ -848,7 +859,7 @@ export class InternalFieldApi<
     batch(() => {
       const seenListenerFields = new WeakSet<AnyInternalFieldApi>()
 
-      visitFieldAndAncestors(this, (currNode) => {
+      visitFieldAndAncestors(this, (currNode, stop) => {
         const isOriginalField = currNode === originalField
         const { isSelfDirty, isSelfTouched, isBlurred } = currNode.meta
         const shouldUpdateDirty = isOriginalField && markAsDirty && !isSelfDirty
@@ -868,7 +879,7 @@ export class InternalFieldApi<
 
         currNode._notifyListener(event, seenListenerFields)
 
-        if (!doPropagate) return false
+        if (!doPropagate) return stop
         return undefined
       })
     })
@@ -1082,6 +1093,30 @@ export class InternalFieldApi<
 
   _pruneIfUnused(): void {
     pruneFieldIfUnused(this)
+  }
+
+  /** Updates the form group occupying this trie node. */
+  _setFormGroup(formGroup: AnyInternalFormGroupApi | null): void {
+    if (this._formGroup === formGroup) return
+
+    this._formGroup = formGroup
+    devtools().updateField?.(this)
+
+    if (!formGroup) this._pruneIfUnused()
+  }
+
+  /** Returns the form group containing this trie node, if one exists. */
+  _getFormGroup(): AnyInternalFormGroupApi | null {
+    let formGroup: AnyInternalFormGroupApi | null = null
+
+    visitFieldAndAncestors(this, (field, stop) => {
+      if (!field._formGroup) return
+
+      formGroup = field._formGroup
+      return stop
+    })
+
+    return formGroup
   }
 
   _getValue(): any {

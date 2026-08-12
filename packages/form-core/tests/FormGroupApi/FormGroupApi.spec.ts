@@ -35,6 +35,37 @@ describe('FormGroupApi', () => {
     expect(group.state.isValidating).toBe(false)
   })
 
+  it('keeps flattened group errors stable while their bucket is unchanged', async () => {
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: '' } },
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [
+        {
+          triggers: [],
+          run: () => 'Group error',
+        },
+      ],
+    })
+
+    await group.validate('submit')
+
+    const previousState = group.state
+    const previousErrors = previousState.errors
+
+    group._groupFieldVersion.set((version) => version + 1)
+
+    expect(group.state).toBe(previousState)
+    expect(group.state.errors).toBe(previousErrors)
+
+    group._isSubmitting.set(true)
+
+    expect(group.state).not.toBe(previousState)
+    expect(group.state.errors).toBe(previousErrors)
+  })
+
   it('tracks async group mount validation', async () => {
     let resolve!: (value: string) => void
     const result = new Promise<string>((res) => {
@@ -57,11 +88,189 @@ describe('FormGroupApi', () => {
 
     group.mount()
     expect(group.state.isValidating).toBe(true)
+    expect(group._groupField.meta.isSelfValidating).toBe(true)
+    expect(group._groupField.meta.isValidating).toBe(true)
+    expect(form.state.isValidating).toBe(true)
 
     resolve('Async group error')
     await vi.waitFor(() => expect(group.state.isValidating).toBe(false))
 
+    expect(group._groupField.meta.isSelfValidating).toBe(false)
+    expect(group._groupField.meta.isValidating).toBe(false)
+    expect(form.state.isValidating).toBe(false)
     expect(group.state.errors).toEqual([{ message: 'Async group error' }])
+  })
+
+  it('tracks overlapping group validation on the backing node and form', async () => {
+    const resolvers: Array<(value: null) => void> = []
+    const validator = vi.fn(
+      () =>
+        new Promise<null>((resolve) => {
+          resolvers.push(resolve)
+        }),
+    )
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: '' } },
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [{ triggers: [], run: validator }],
+    })
+
+    const firstValidation = group.validate('submit')
+    await vi.waitFor(() => expect(validator).toHaveBeenCalledOnce())
+
+    const secondValidation = group.validate('submit')
+    await vi.waitFor(() => expect(validator).toHaveBeenCalledTimes(2))
+    await firstValidation
+
+    expect(group._groupField._getBaseMeta()._validationCount).toBe(1)
+    expect(group._groupField.meta.isSelfValidating).toBe(true)
+    expect(group.state.isValidating).toBe(true)
+    expect(form.state.isValidating).toBe(true)
+
+    resolvers[1]!(null)
+    await secondValidation
+
+    expect(group._groupField._getBaseMeta()._validationCount).toBe(0)
+    expect(group._groupField.meta.isSelfValidating).toBe(false)
+    expect(group.state.isValidating).toBe(false)
+    expect(form.state.isValidating).toBe(false)
+  })
+
+  it('does not let validation canceled by group reset clear a newer run', async () => {
+    const resolvers: Array<(value: null) => void> = []
+    const validator = vi.fn(
+      () =>
+        new Promise<null>((resolve) => {
+          resolvers.push(resolve)
+        }),
+    )
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: '' } },
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [{ triggers: [], run: validator }],
+    })
+
+    const canceledValidation = group.validate('submit')
+    await vi.waitFor(() => expect(validator).toHaveBeenCalledOnce())
+
+    group.reset()
+
+    expect(group.state.isValidating).toBe(false)
+    expect(form.state.isValidating).toBe(false)
+
+    const currentValidation = group.validate('submit')
+    await vi.waitFor(() => expect(validator).toHaveBeenCalledTimes(2))
+    await canceledValidation
+
+    expect(group._groupField._getBaseMeta()._validationCount).toBe(1)
+    expect(group.state.isValidating).toBe(true)
+    expect(form.state.isValidating).toBe(true)
+
+    resolvers[1]!(null)
+    await currentValidation
+
+    expect(group._groupField._getBaseMeta()._validationCount).toBe(0)
+    expect(group.state.isValidating).toBe(false)
+    expect(form.state.isValidating).toBe(false)
+  })
+
+  it('only removes group-owned validation counts when canceled', async () => {
+    const resolvers: Array<(value: null) => void> = []
+    const fieldValidator = vi.fn(
+      () =>
+        new Promise<null>((resolve) => {
+          resolvers.push(resolve)
+        }),
+    )
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: '' } },
+    })
+    const groupField = form._getOrCreateFieldApi({
+      name: 'guestDetails',
+      validators: [{ triggers: [], run: fieldValidator }],
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [{ triggers: [], run: () => null }],
+    })
+
+    const groupValidation = group.validate('submit')
+    await vi.waitFor(() => expect(fieldValidator).toHaveBeenCalledOnce())
+    const independentValidation = groupField._runFieldValidation('submit')
+    await vi.waitFor(() => expect(fieldValidator).toHaveBeenCalledTimes(2))
+
+    expect(groupField._getBaseMeta()._validationCount).toBe(3)
+
+    group.reset()
+
+    expect(groupField._getBaseMeta()._validationCount).toBe(1)
+    expect(groupField.meta.isSelfValidating).toBe(true)
+    expect(groupField.meta.isValidating).toBe(true)
+    expect(form.state.isValidating).toBe(true)
+
+    resolvers[0]!(null)
+    await groupValidation
+
+    expect(groupField._getBaseMeta()._validationCount).toBe(1)
+    expect(groupField.meta.isSelfValidating).toBe(true)
+    expect(groupField.meta.isValidating).toBe(true)
+
+    resolvers[1]!(null)
+    await independentValidation
+
+    expect(groupField._getBaseMeta()._validationCount).toBe(0)
+    expect(groupField.meta.isValidating).toBe(false)
+    expect(form.state.isValidating).toBe(false)
+  })
+
+  it('cancels group validation before replacing trie nodes on form reset', async () => {
+    const resolvers: Array<(value: null) => void> = []
+    const validator = vi.fn(
+      () =>
+        new Promise<null>((resolve) => {
+          resolvers.push(resolve)
+        }),
+    )
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: '' } },
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [{ triggers: [], run: validator }],
+    })
+
+    const canceledValidation = group.validate('submit')
+    await vi.waitFor(() => expect(validator).toHaveBeenCalledOnce())
+    const previousGroupField = group._groupField
+
+    form.reset()
+
+    expect(group._groupField).not.toBe(previousGroupField)
+    expect(group.state.isValidating).toBe(false)
+    expect(form.state.isValidating).toBe(false)
+
+    const currentValidation = group.validate('submit')
+    await vi.waitFor(() => expect(validator).toHaveBeenCalledTimes(2))
+    await canceledValidation
+
+    expect(group._groupField._getBaseMeta()._validationCount).toBe(1)
+    expect(group.state.isValidating).toBe(true)
+    expect(form.state.isValidating).toBe(true)
+
+    resolvers[1]!(null)
+    await currentValidation
+
+    expect(group._groupField._getBaseMeta()._validationCount).toBe(0)
+    expect(group.state.isValidating).toBe(false)
+    expect(form.state.isValidating).toBe(false)
   })
 
   it('skips group mount validation when no validator opts in', () => {
@@ -103,6 +312,140 @@ describe('FormGroupApi', () => {
     })
 
     expect(group._options.onSubmit).toBe(onSubmit)
+  })
+
+  it('stores the group on its trie node and follows that node when it moves', () => {
+    const form = new InternalFormApi({
+      defaultValues: {
+        items: [{ name: 'first' }, { name: 'second' }],
+      },
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'items[1]',
+    })
+    const groupField = form._tryGetFieldApi('items[1]')
+
+    expect(groupField).toBe(group._groupField)
+    expect(groupField?._formGroup).toBe(group)
+
+    form.moveFieldValue('items', 1, 0)
+
+    expect(group._groupField).toBe(groupField)
+    expect(group.name).toBe('items[0]')
+    expect(group.value).toEqual({ name: 'second' })
+    expect(form._tryGetFieldApi('items[0]')?._formGroup).toBe(group)
+  })
+
+  it('detaches and reattaches its trie node across cleanup and remount', () => {
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: '' } },
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+    })
+    const initialGroupField = group._groupField
+
+    group._cleanup()
+
+    expect(initialGroupField._formGroup).toBeNull()
+    expect(form._tryGetFieldApi('guestDetails')).toBeNull()
+
+    group.mount()
+
+    expect(group._groupField).not.toBe(initialGroupField)
+    expect(group._groupField._formGroup).toBe(group)
+    expect(form._tryGetFieldApi('guestDetails')).toBe(group._groupField)
+  })
+
+  it('reattaches its trie node when the backing field is deleted', async () => {
+    const validator = vi.fn(() => null)
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: '' } },
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [{ triggers: ['change'], run: validator }],
+    })
+    const initialGroupField = group._groupField
+
+    form.deleteField('guestDetails')
+
+    expect(initialGroupField._isKilled).toBe(true)
+    expect(initialGroupField._formGroup).toBeNull()
+    expect(group._groupField).not.toBe(initialGroupField)
+    expect(group._groupField._isKilled).toBe(false)
+    expect(group._groupField._formGroup).toBe(group)
+    expect(form._tryGetFieldApi('guestDetails')).toBe(group._groupField)
+
+    const nameField = form._getOrCreateFieldApi({
+      name: 'guestDetails.name',
+    })
+    nameField.handleChange('Tony')
+
+    await vi.waitFor(() => expect(validator).toHaveBeenCalledOnce())
+  })
+
+  it('drops killed routed fields while preserving live routed fields', async () => {
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: '', email: '' } },
+    })
+    const nameField = form._getOrCreateFieldApi({
+      name: 'guestDetails.name',
+    })
+    const emailField = form._getOrCreateFieldApi({
+      name: 'guestDetails.email',
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [
+        {
+          triggers: [],
+          run: () => ({
+            fields: {
+              name: 'Name is required',
+              email: 'Email is required',
+            },
+          }),
+        },
+      ],
+    })
+
+    await group.validate('submit')
+    expect(group._routedErrorFields[0]).toEqual(
+      new Set([nameField, emailField]),
+    )
+
+    form.deleteField('guestDetails.name')
+
+    expect(nameField._isKilled).toBe(true)
+    expect(group._routedErrorFields[0]).toEqual(new Set([emailField]))
+  })
+
+  it('clears backing-node validation when cleanup cancels a group run', async () => {
+    const validator = vi.fn(() => new Promise<null>(() => {}))
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: '' } },
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [{ triggers: [], run: validator }],
+    })
+    const groupField = group._groupField
+    const validation = group.validate('submit')
+    await vi.waitFor(() => expect(validator).toHaveBeenCalledOnce())
+
+    group._cleanup()
+    await validation
+
+    expect(groupField._getBaseMeta()._validationCount).toBe(0)
+    expect(group.state.isValidating).toBe(false)
+    expect(form.state.isValidating).toBe(false)
+    expect(form._tryGetFieldApi('guestDetails')).toBeNull()
   })
 
   it('prefixes field options declared through a group', () => {
@@ -538,7 +881,7 @@ describe('FormGroupApi', () => {
     expect(overrides.isDefaultValue?.()).toBe(false)
   })
 
-  it('scopes submit-attempt error visibility to the nearest group', async () => {
+  it('scopes submit-attempt error visibility to the containing group', async () => {
     const form = new InternalFormApi({
       defaultValues: { guestDetails: { name: '' } },
       errorVisibility: ({ state }) => state.submissionAttempts > 0,
@@ -579,7 +922,7 @@ describe('FormGroupApi', () => {
     expect(nameField.errors).toEqual([{ message: 'Name is required' }])
   })
 
-  it('scopes scalar error visibility state to the nearest group', async () => {
+  it('scopes scalar error visibility state to the containing group', async () => {
     const states: Array<Record<string, boolean>> = []
     const form = new InternalFormApi({
       defaultValues: {
@@ -675,9 +1018,7 @@ describe('FormGroupApi', () => {
     await group.validate('submit')
 
     expect(nameField.errors).toEqual([{ message: 'Name is required' }])
-    expect(
-      nameField._getBaseMeta()._formGroupValidatorErrors.get(group._errorOwner),
-    ).toEqual({
+    expect(nameField._getBaseMeta()._formGroupValidatorErrors).toEqual({
       errors: [[{ message: 'Name is required' }]],
       errorSourceEvents: ['submit'],
     })
@@ -736,9 +1077,7 @@ describe('FormGroupApi', () => {
       { message: 'Group name error' },
       { message: 'Root name error' },
     ])
-    expect(
-      nameField._getBaseMeta()._formGroupValidatorErrors.get(group._errorOwner),
-    ).toEqual({
+    expect(nameField._getBaseMeta()._formGroupValidatorErrors).toEqual({
       errors: [[{ message: 'Group name error' }]],
       errorSourceEvents: ['submit'],
     })
@@ -747,46 +1086,53 @@ describe('FormGroupApi', () => {
     ])
   })
 
-  it('keeps overlapping group validator errors independently owned', async () => {
+  it('keeps sibling group validator errors independently owned', async () => {
     const form = new InternalFormApi({
-      defaultValues: { guestDetails: { name: '' } },
+      defaultValues: {
+        guestDetails: { name: '' },
+        billingDetails: { name: '' },
+      },
     })
-    const nameField = form._getOrCreateFieldApi({ name: 'guestDetails.name' })
-    const parentGroup = new InternalFormGroupApi({
+    const guestName = form._getOrCreateFieldApi({
+      name: 'guestDetails.name',
+    })
+    const billingName = form._getOrCreateFieldApi({
+      name: 'billingDetails.name',
+    })
+    const guestGroup = new InternalFormGroupApi({
       form,
       name: 'guestDetails',
       validators: [
         {
           triggers: [],
-          run: () => ({ fields: { name: 'Parent error' } }),
+          run: () => ({ fields: { name: 'Guest error' } }),
         },
       ],
     })
-    const childGroup = new InternalFormGroupApi({
+    const billingGroup = new InternalFormGroupApi({
       form,
-      name: 'guestDetails.name',
+      name: 'billingDetails',
       validators: [
         {
           triggers: [],
-          run: () => 'Child error',
+          run: () => ({ fields: { name: 'Billing error' } }),
         },
       ],
     })
 
-    await parentGroup.validate('submit')
-    await childGroup.validate('submit')
+    await guestGroup.validate('submit')
+    await billingGroup.validate('submit')
 
-    expect(nameField.errors).toEqual([
-      { message: 'Parent error' },
-      { message: 'Child error' },
-    ])
-    expect(parentGroup.state.isInvalid).toBe(true)
-    expect(childGroup.state.isInvalid).toBe(true)
+    expect(guestName.errors).toEqual([{ message: 'Guest error' }])
+    expect(billingName.errors).toEqual([{ message: 'Billing error' }])
+    expect(guestGroup.state.isInvalid).toBe(true)
+    expect(billingGroup.state.isInvalid).toBe(true)
 
-    childGroup.reset()
+    guestGroup.reset()
 
-    expect(nameField.errors).toEqual([{ message: 'Parent error' }])
-    expect(parentGroup.state.isInvalid).toBe(true)
+    expect(guestName.errors).toEqual([])
+    expect(billingName.errors).toEqual([{ message: 'Billing error' }])
+    expect(billingGroup.state.isInvalid).toBe(true)
   })
 
   it('routes group-level errors to the field at the group name', async () => {
@@ -1068,6 +1414,8 @@ describe('FormGroupApi', () => {
     const validating = nameField._runFieldValidation('submit')
 
     await vi.waitFor(() => expect(group.state.isValidating).toBe(true))
+    expect(group._groupField.meta.isSelfValidating).toBe(false)
+    expect(group._groupField.meta.isValidating).toBe(true)
     resolveValidation()
     await validating
     expect(group.state.isValidating).toBe(false)
@@ -1222,6 +1570,39 @@ describe('FormGroupApi', () => {
     guestField.handleChange('Tony Hawk')
 
     await vi.waitFor(() => expect(rootValidator).toHaveBeenCalledTimes(2))
+  })
+
+  it('reattaches active groups after a form reset', async () => {
+    const rootValidator = vi.fn(() => null)
+    const groupValidator = vi.fn(() => 'Group error')
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: '' } },
+      validators: [{ triggers: ['change'], run: rootValidator }],
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [{ triggers: ['change'], run: groupValidator }],
+    })
+    const initialGroupField = group._groupField
+
+    await group.validate('submit')
+    expect(group.state.isInvalid).toBe(true)
+
+    form.reset()
+
+    expect(initialGroupField._isKilled).toBe(true)
+    expect(group._groupField).not.toBe(initialGroupField)
+    expect(group._groupField._formGroup).toBe(group)
+    expect(group.state.isValid).toBe(true)
+
+    const nameField = form._getOrCreateFieldApi({
+      name: 'guestDetails.name',
+    })
+    nameField.handleChange('Tony')
+
+    await vi.waitFor(() => expect(groupValidator).toHaveBeenCalledTimes(2))
+    expect(rootValidator).not.toHaveBeenCalled()
   })
 
   it('only clears the changed field when a group validator conditionally skips change', async () => {

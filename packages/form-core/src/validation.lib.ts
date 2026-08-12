@@ -33,7 +33,7 @@ import type {
 } from './validation.public'
 import type { InternalFormApi } from './FormApi/FormApi.lib'
 import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
-import type { InternalFormGroupApi } from './FormGroupApi/FormGroupApi.lib'
+import type { AnyInternalFormGroupApi } from './FormGroupApi/FormGroupApi.lib'
 
 type FormValidateContext = {
   scope: 'form'
@@ -1262,8 +1262,6 @@ export function runFieldMountValidatorPipeline({
 }
 
 // ===== GROUP MOUNT VALIDATION =====
-
-type AnyInternalFormGroupApi = InternalFormGroupApi<any, any, any, any, any>
 
 interface GroupMountValidatorPipelineArgs {
   pipeline: ReadonlyArray<FormGroupValidator<any>>
