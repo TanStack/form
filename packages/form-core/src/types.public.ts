@@ -46,6 +46,8 @@ export type OneOrMany<TValue> = TValue | Array<TValue>
  *   field.handleChange((value) => value.trim())
  * }
  * ```
+ *
+ * @typeParam TFieldValue - The value type preserved across field reads and update methods.
  */
 export type FieldWithValue<TFieldValue> = FieldApi<
   any,

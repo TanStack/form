@@ -51,6 +51,8 @@ export type AnyAngularFormApi = AnyInternalFormApi
  *   form = input.required<ProfileForm>()
  * }
  * ```
+ *
+ * @typeParam TOptions - The reusable form options from which the API derives its form data, validator, and submit-result types.
  */
 export type AngularFormType<TOptions extends AnyFormOptions> =
   TOptions extends FormOptions<

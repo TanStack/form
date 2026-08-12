@@ -50,6 +50,8 @@ type ReactFormTypeErrorTypes<
  *   )
  * }
  * ```
+ *
+ * @typeParam TOptions - The reusable form or app-form options from which the API derives its form data, error, and registered-component types.
  */
 export type ReactFormType<
   TOptions extends

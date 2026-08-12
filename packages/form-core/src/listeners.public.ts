@@ -31,7 +31,12 @@ export type FormListenerTriggers = ValidationTrigger | 'mount' | 'reset'
  */
 export type FieldListenerTriggers = FormListenerTriggers | 'unmount'
 
-/** Context used to conditionally enable or debounce a listener. */
+/**
+ * Context used to conditionally enable or debounce a listener.
+ *
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ * @typeParam TValue - Library-managed. Do not specify explicitly.
+ */
 export interface ListenerPredicateContext<in out TFormData, out TValue> {
   /** The form associated with the listener event. */
   formApi: FormApi<TFormData, any>
@@ -57,12 +62,21 @@ export interface ListenerPredicateContext<in out TFormData, out TValue> {
  * ```ts
  * when: ({ formApi }) => formApi.state.isDirty,
  * ```
+ *
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ * @typeParam TValue - Library-managed. Do not specify explicitly.
  */
 export type ListenerPredicateFn<in out TFormData, in out TValue> = (
   context: ListenerPredicateContext<TFormData, TValue>,
 ) => boolean
 
-/** Configures a listener trigger with an optional condition. */
+/**
+ * Configures a listener trigger with an optional condition.
+ *
+ * @typeParam TTriggers - Library-managed. Do not specify explicitly.
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ * @typeParam TValue - Library-managed. Do not specify explicitly.
+ */
 export interface ListenerTriggerConfig<
   out TTriggers extends FieldListenerTriggers,
   in out TFormData,
@@ -102,6 +116,10 @@ export interface ListenerTriggerConfig<
  *   },
  * ],
  * ```
+ *
+ * @typeParam TTriggers - Library-managed. Do not specify explicitly.
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ * @typeParam TValue - Library-managed. Do not specify explicitly.
  */
 export type ListenerTriggerOption<
   TTriggers extends FieldListenerTriggers,
@@ -122,12 +140,21 @@ export type ListenerTriggerOption<
  * triggerDebounceMs: ({ triggerFieldApi }) =>
  *   triggerFieldApi?.name === 'search' ? 300 : 0,
  * ```
+ *
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ * @typeParam TValue - Library-managed. Do not specify explicitly.
  */
 export type ListenerDebounceFn<in out TFormData, in out TValue> = (
   context: ListenerPredicateContext<TFormData, TValue>,
 ) => number
 
-/** Configuration shared by form and field listeners. */
+/**
+ * Configuration shared by form and field listeners.
+ *
+ * @typeParam TTriggers - Library-managed. Do not specify explicitly.
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ * @typeParam TValue - Library-managed. Do not specify explicitly.
+ */
 export interface Listener<
   out TTriggers extends FieldListenerTriggers,
   in out TFormData,
@@ -164,7 +191,12 @@ export interface Listener<
   triggers: Array<ListenerTriggerOption<TTriggers, TFormData, TValue>>
 }
 
-/** Context passed to a form listener. */
+/**
+ * Context passed to a form listener.
+ *
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
+ */
 export interface FormListenerContext<
   in out TFormData,
   in out TFormErrorTypes extends FormErrorTypes,
@@ -194,6 +226,9 @@ export interface FormListenerContext<
  *   saveDraft(value)
  * },
  * ```
+ *
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
  */
 export type FormListenerFn<
   in out TFormData,
@@ -208,6 +243,9 @@ export type AnyFormListener = FormListener<any, any>
  *
  * Form listeners can observe field changes and blurs as well as form
  * submission, mounting, and resetting.
+ *
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
  */
 export interface FormListener<
   in out TFormData,
@@ -254,13 +292,24 @@ export interface FormListener<
  *   ],
  * })
  * ```
+ *
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
  */
 export type FormListeners<
   TFormData,
   TFormErrorTypes extends FormErrorTypes,
 > = Array<FormListener<TFormData, TFormErrorTypes>>
 
-/** Context passed to a field listener. */
+/**
+ * Context passed to a field listener.
+ *
+ * @typeParam TFieldName - Library-managed. Do not specify explicitly.
+ * @typeParam TFieldValue - Library-managed. Do not specify explicitly.
+ * @typeParam TFieldError - Library-managed. Do not specify explicitly.
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
+ */
 export interface FieldListenerContext<
   out TFieldName,
   in out TFieldValue,
@@ -302,6 +351,12 @@ export interface FieldListenerContext<
  *   }
  * },
  * ```
+ *
+ * @typeParam TFieldName - Library-managed. Do not specify explicitly.
+ * @typeParam TFieldValue - Library-managed. Do not specify explicitly.
+ * @typeParam TFieldError - Library-managed. Do not specify explicitly.
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
  */
 export type FieldListenerFn<
   in TFieldName,
@@ -328,6 +383,13 @@ export type AnyFieldListener = FieldListener<any, any, any, any, any, any>
  * `'change'` and `'blur'` events from descendant fields propagate to their
  * ancestor field listeners. Use `watchFields` to receive matching events from
  * other fields.
+ *
+ * @typeParam TFieldData - Library-managed. Do not specify explicitly.
+ * @typeParam TFieldName - Library-managed. Do not specify explicitly.
+ * @typeParam TFieldValue - Library-managed. Do not specify explicitly.
+ * @typeParam TFieldError - Library-managed. Do not specify explicitly.
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
  */
 export interface FieldListener<
   in out TFieldData,
@@ -398,6 +460,13 @@ export interface FieldListener<
  *   },
  * ],
  * ```
+ *
+ * @typeParam TFieldData - Library-managed. Do not specify explicitly.
+ * @typeParam TFieldName - Library-managed. Do not specify explicitly.
+ * @typeParam TFieldValue - Library-managed. Do not specify explicitly.
+ * @typeParam TFieldError - Library-managed. Do not specify explicitly.
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
  */
 export type FieldListeners<
   TFieldData,

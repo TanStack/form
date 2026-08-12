@@ -1,10 +1,5 @@
 {
   "$schema": "https://raw.githubusercontent.com/TanStack/tanstack.com/main/tanstack-docs-config.schema.json",
-  "docSearch": {
-    "appId": "",
-    "apiKey": "",
-    "indexName": "tanstack-form"
-  },
   "sections": [
     {
       "label": "Community Resources",
@@ -363,15 +358,45 @@
       ]
     },
     {
-      "label": "API Reference",
+      "label": "Listener API Reference",
+      "collapsible": true,
+      "defaultCollapsed": true,
       "children": [
         {
-          "label": "Form Listeners",
+          "label": "FormListeners",
           "to": "reference/type-aliases/FormListeners"
         },
         {
-          "label": "Field Listeners",
+          "label": "FormListenerTriggers",
+          "to": "reference/type-aliases/FormListenerTriggers"
+        },
+        {
+          "label": "FormListenerFn",
+          "to": "reference/type-aliases/FormListenerFn"
+        },
+        {
+          "label": "FieldListeners",
           "to": "reference/type-aliases/FieldListeners"
+        },
+        {
+          "label": "FieldListenerTriggers",
+          "to": "reference/type-aliases/FieldListenerTriggers"
+        },
+        {
+          "label": "FieldListenerFn",
+          "to": "reference/type-aliases/FieldListenerFn"
+        },
+        {
+          "label": "ListenerTriggerOption",
+          "to": "reference/type-aliases/ListenerTriggerOption"
+        },
+        {
+          "label": "ListenerPredicateFn",
+          "to": "reference/type-aliases/ListenerPredicateFn"
+        },
+        {
+          "label": "ListenerDebounceFn",
+          "to": "reference/type-aliases/ListenerDebounceFn"
         }
       ]
     },
