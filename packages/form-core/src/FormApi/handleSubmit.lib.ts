@@ -196,8 +196,6 @@ export async function runSubmissionProcess<TFormData>(
     if (isErrorResult(submissionData.submitError)) {
       submissionData.hasFailed = true
       errorResults.push(submissionData.submitError)
-
-      form._processSubmitValidationResult(submissionData.submitError, 'submit')
     }
   })
 

@@ -357,7 +357,11 @@ describe('FormGroupApi', () => {
       validators: [{ run: () => null, triggers: [] }],
     })
 
-    expect(warn).toHaveBeenCalled()
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining(
+        'length of the validator array should not change',
+      ),
+    )
     warn.mockRestore()
   })
 

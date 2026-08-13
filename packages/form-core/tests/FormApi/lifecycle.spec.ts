@@ -160,7 +160,11 @@ describe('form - lifecycle', () => {
         ],
       })
 
-      expect(warn).toHaveBeenCalled()
+      expect(warn).toHaveBeenCalledWith(
+        expect.stringContaining(
+          'length of the validator array should not change',
+        ),
+      )
       warn.mockRestore()
     })
 

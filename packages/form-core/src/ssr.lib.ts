@@ -126,12 +126,6 @@ export async function validateServerValues<
   values: TFormData,
 ): Promise<ServerValidateResult<TFormData, TFormValidators>> {
   const pipeline = options.validators
-  const validatorInstances = reconcileValidatorInstances({
-    definitions: pipeline,
-    instances: null,
-    owner: options,
-    scope: 'form',
-  })
 
   if (!pipeline || pipeline.length === 0) {
     return {
@@ -140,6 +134,13 @@ export async function validateServerValues<
       schemaOutputs: [] as never,
     }
   }
+
+  const validatorInstances = reconcileValidatorInstances({
+    definitions: pipeline,
+    instances: null,
+    owner: options,
+    scope: 'form',
+  })
 
   try {
     const pipelineResult = await runValidatorPipeline<

@@ -686,15 +686,17 @@ export class InternalFormApi<
   }
 
   _clearSubmitErrors(field: AnyInternalFieldApi | null): void {
-    this._setFormValidationSourceError(this._onSubmitSource, [], '')
+    batch(() => {
+      this._setFormValidationSourceError(this._onSubmitSource, [], '')
 
-    if (!field || !this._onSubmitSource.errorTargets?.has(field)) return
+      if (!field || !this._onSubmitSource.errorTargets?.has(field)) return
 
-    this._clearFieldValidationSourceError(field, this._onSubmitSource)
-    this._atoms.meta.errorFields.set((prev) =>
-      reconcileFormErrorFields(prev, [field]),
-    )
-    field._pruneIfUnused()
+      this._clearFieldValidationSourceError(field, this._onSubmitSource)
+      this._atoms.meta.errorFields.set((prev) =>
+        reconcileFormErrorFields(prev, [field]),
+      )
+      field._pruneIfUnused()
+    })
   }
 
   _tryGetFieldApi(
