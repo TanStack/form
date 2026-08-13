@@ -159,12 +159,8 @@ export async function runSubmissionProcess<TFormData>(
     return finishInvalidSubmission(form.state.values)
   }
 
-  const schemaOutputs: any = Array.from(
-    { length: form._options.validators?.length ?? 0 },
-    (_, i) => {
-      return form._schemaOutputs[i]
-    },
-  )
+  const schemaOutputs =
+    form._validatorInstances?.map((v) => v.schemaOutput) ?? []
   const value = form.state.values
 
   try {
@@ -180,26 +176,12 @@ export async function runSubmissionProcess<TFormData>(
       return []
     }
 
-    // Attach onSubmit errors at the end of the validators array
+    // Store onSubmit errors separately from installed validator instances.
     if (isSubmitError<TFormData>(maybeError)) {
-      form._processValidationResult(
-        {
-          validatorIndex: form._options.validators?.length ?? 0,
-          result: maybeError,
-          schemaResult: null,
-        },
-        'submit',
-      )
+      form._processSubmitValidationResult(maybeError, 'submit')
       submissionData.submitError = maybeError
     } else {
-      form._processValidationResult(
-        {
-          validatorIndex: form._options.validators?.length ?? 0,
-          result: null,
-          schemaResult: null,
-        },
-        'submit',
-      )
+      form._processSubmitValidationResult(null, 'submit')
     }
   } catch (e) {
     if (hasResettedFormDuringSubmit()) {
@@ -214,15 +196,6 @@ export async function runSubmissionProcess<TFormData>(
     if (isErrorResult(submissionData.submitError)) {
       submissionData.hasFailed = true
       errorResults.push(submissionData.submitError)
-
-      form._processValidationResult(
-        {
-          validatorIndex: form._options.validators?.length ?? 0,
-          result: submissionData.submitError,
-          schemaResult: null,
-        },
-        'submit',
-      )
     }
   })
 

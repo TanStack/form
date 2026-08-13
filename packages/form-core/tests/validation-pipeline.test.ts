@@ -5,6 +5,7 @@ import {
   runFormValidatorPipeline,
 } from '../src/validation'
 import { InternalFormApi } from '../src/FormApi/FormApi.lib'
+import { reconcileValidatorInstances } from '../src/ValidatorInstance.lib'
 import type { PipelineResult } from '../src/validation'
 import type {
   ClientValidationTrigger,
@@ -20,6 +21,7 @@ import type {
   ValidationPredicateFn,
 } from '../src'
 import type { AnyInternalFieldApi } from '../src/FieldApi/FieldApi.lib'
+import type { StandardSchemaV1 } from '../src/standardSchema.public'
 
 describe('runFormValidatorPipeline', () => {
   type Event = Exclude<FormValidatorContext<any>['event'], 'server'>
@@ -32,8 +34,14 @@ describe('runFormValidatorPipeline', () => {
     form: InternalFormApi<T, any, any>,
     pipeline: Array<FormValidator<T>>,
   ) {
+    const validatorInstances = reconcileValidatorInstances({
+      definitions: pipeline,
+      instances: null,
+      owner: form,
+      scope: 'form',
+    })!
     return {
-      pipeline,
+      pipeline: validatorInstances,
       runWithContext: (args: {
         event: Event
         field?: AnyInternalFieldApi
@@ -49,7 +57,7 @@ describe('runFormValidatorPipeline', () => {
           },
           hasFailedBefore: args.hasFailedBefore ?? false,
           onResult: args.onResult,
-          pipeline: pipeline,
+          pipeline: validatorInstances,
         }).then((res) => res.results)
       },
     }
@@ -64,8 +72,14 @@ describe('runFormValidatorPipeline', () => {
     field: AnyInternalFieldApi,
     pipeline: Array<FieldValidator<TFormData, TFieldName, TFieldValue>>,
   ) {
+    const validatorInstances = reconcileValidatorInstances({
+      definitions: pipeline,
+      instances: null,
+      owner: field,
+      scope: 'field',
+    })!
     return {
-      pipeline,
+      pipeline: validatorInstances,
       runWithContext: (args: {
         event: ClientValidationTrigger
         onResult?: (result: PipelineResult<FieldValidateResult>) => void
@@ -78,7 +92,7 @@ describe('runFormValidatorPipeline', () => {
             fieldApi: field,
           },
           onResult: args.onResult,
-          pipeline,
+          pipeline: validatorInstances,
         }).then((res) => res.results)
       },
     }
@@ -100,6 +114,66 @@ describe('runFormValidatorPipeline', () => {
         schemaResult: null,
       }),
     )
+  })
+
+  it('should preserve form-owned data for form validation contexts', async () => {
+    const formApi = getForm({ users: [{ name: 'test' }] })
+    const field = formApi._getOrCreateFieldApi({ name: 'users[0].name' })
+    const issues = [
+      { message: 'Invalid name', path: ['users', 0, 'name'] as const },
+    ]
+    const run = vi.fn(({ triggerFieldApi, value, parseIssues }) => {
+      expect(triggerFieldApi).toBe(field)
+      expect(value).toBe(formApi.state.values)
+      expect(parseIssues(issues)).toEqual({
+        form: issues,
+        fields: { 'users[0].name': issues },
+      })
+      return null
+    })
+    const { runWithContext } = getPipeline(formApi, [
+      { run, triggers: ['change'] },
+    ])
+
+    await runWithContext({ event: 'change', field })
+
+    expect(run).toHaveBeenCalledOnce()
+  })
+
+  it('should preserve form-owned data for field validation contexts', async () => {
+    const formApi = getForm({ users: [{ name: 'test' }] })
+    const field = formApi._getOrCreateFieldApi({ name: 'users[0].name' })
+    const issues = [
+      { message: 'Invalid name', path: ['users', 0, 'name'] as const },
+    ]
+    const run = vi.fn((context) => {
+      const fieldContext = context as typeof context & {
+        fieldApi: AnyInternalFieldApi
+      }
+
+      expect(fieldContext.fieldApi).toBe(field)
+      expect(fieldContext).not.toHaveProperty('triggerFieldApi')
+      expect(fieldContext.value).toBe(formApi.state.values)
+      expect(fieldContext.parseIssues(issues)).toEqual({
+        form: issues,
+        fields: { 'users[0].name': issues },
+      })
+      return null
+    })
+    const { pipeline } = getPipeline(formApi, [{ run, triggers: ['change'] }])
+
+    await runFormValidatorPipeline({
+      context: {
+        scope: 'field',
+        event: 'change',
+        formApi,
+        fieldApi: field,
+      } as never,
+      hasFailedBefore: false,
+      pipeline,
+    })
+
+    expect(run).toHaveBeenCalledOnce()
   })
 
   it('should provide error map helpers to form validators', async () => {
@@ -303,11 +377,32 @@ describe('runFormValidatorPipeline', () => {
     expect(run).toHaveBeenCalledOnce()
   })
 
+  it('should settle as aborted when a disposed validator cannot create a debouncer', async () => {
+    const formApi = getForm({ name: '' })
+    const run = vi.fn(() => ({ message: 'foo' }))
+    const onResult = vi.fn()
+    const { pipeline, runWithContext } = getPipeline(formApi, [
+      {
+        run,
+        triggers: ['change'],
+        triggerDebounceMs: 100,
+      },
+    ])
+
+    pipeline[0]!.dispose()
+
+    await expect(
+      runWithContext({ event: 'change', onResult }),
+    ).resolves.toEqual([])
+    expect(run).not.toHaveBeenCalled()
+    expect(onResult).not.toHaveBeenCalled()
+  })
+
   it('should debounce validation with a function', async () => {
     vi.useFakeTimers()
 
-    const formApi = getForm({ name: 'test' })
-    const field = formApi._getOrCreateFieldApi({ name: 'name' })
+    const form = getForm({ name: 'test' })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
     const run = vi.fn(() => ({ message: 'foo' }))
     const triggerDebounceMs = vi.fn(({ scope, formApi, fieldApi, value }) => {
       expect(scope).toBe('form')
@@ -318,7 +413,7 @@ describe('runFormValidatorPipeline', () => {
       return 100
     })
 
-    const { runWithContext } = getPipeline(formApi, [
+    const { runWithContext } = getPipeline(form, [
       {
         run,
         triggers: ['change'],
@@ -610,7 +705,7 @@ describe('runFormValidatorPipeline', () => {
     const run = vi.fn(() => validationResult)
     const onResult = vi.fn()
 
-    const { runWithContext } = getPipeline(formApi, [
+    const { runWithContext, pipeline } = getPipeline(formApi, [
       {
         run,
         triggers: ['change'],
@@ -633,7 +728,7 @@ describe('runFormValidatorPipeline', () => {
     expect(onResult).toHaveBeenCalledOnce()
     expect(onResult).toHaveBeenCalledWith(
       expect.objectContaining({
-        validatorIndex: 0,
+        validatorInstance: pipeline[0],
         result: validationResult,
       }),
     )
@@ -819,7 +914,7 @@ describe('runFormValidatorPipeline', () => {
         age: z.number().min(0),
       })
 
-      const { runWithContext } = getPipeline(formApi, [
+      const { runWithContext, pipeline } = getPipeline(formApi, [
         {
           run: schema,
           triggers: [],
@@ -834,6 +929,165 @@ describe('runFormValidatorPipeline', () => {
         name: 'test',
         age: 25,
       })
+      expect(pipeline[0]?.hasSchemaOutput).toBe(true)
+      expect(pipeline[0]?.schemaOutput).toEqual({
+        name: 'test',
+        age: 25,
+      })
+    })
+
+    it.each(['change', 'blur'] as const)(
+      'does not store schema output during %s validation',
+      async (event) => {
+        const formApi = getForm({ name: 'test' })
+        const schema = z.object({ name: z.string() })
+        const { runWithContext, pipeline } = getPipeline(formApi, [
+          {
+            run: schema,
+            triggers: [event],
+          },
+        ])
+
+        const results = await runWithContext({ event })
+
+        expect(results[0]?.schemaResult).toEqual({ name: 'test' })
+        expect(pipeline[0]?.hasSchemaOutput).toBe(false)
+      },
+    )
+
+    it('does not store field schema output during submit validation', async () => {
+      const formApi = getForm({ name: 'test' })
+      const field = formApi._getOrCreateFieldApi({ name: 'name' })
+      const schema = z.string().transform((name) => name.toUpperCase())
+      const { runWithContext, pipeline } = getFieldPipeline(formApi, field, [
+        {
+          run: schema,
+          triggers: [],
+        },
+      ])
+
+      const results = await runWithContext({ event: 'submit' })
+
+      expect(results[0]?.schemaResult).toBe('TEST')
+      expect(pipeline[0]?.hasSchemaOutput).toBe(false)
+    })
+
+    it('commits schema output before notifying onResult', async () => {
+      const formApi = getForm({ name: 'test' })
+      const schema = z.object({ name: z.string() })
+      const { runWithContext, pipeline } = getPipeline(formApi, [
+        {
+          run: schema,
+          triggers: [],
+        },
+      ])
+      const onResult = vi.fn(() => {
+        expect(pipeline[0]?.hasSchemaOutput).toBe(true)
+        expect(pipeline[0]?.schemaOutput).toEqual({ name: 'test' })
+      })
+
+      await runWithContext({ event: 'submit', onResult })
+
+      expect(onResult).toHaveBeenCalledOnce()
+    })
+
+    it('does not commit stale async schema output', async () => {
+      const formApi = getForm({ name: 'stale' })
+      let resolveFirst!: (result: { value: { name: string } }) => void
+      const firstResult = new Promise<{ value: { name: string } }>(
+        (resolve) => {
+          resolveFirst = resolve
+        },
+      )
+      const schema = {
+        '~standard': {
+          version: 1,
+          vendor: 'test',
+          validate: vi
+            .fn()
+            .mockReturnValueOnce(firstResult)
+            .mockReturnValueOnce({ value: { name: 'current' } }),
+        },
+      } satisfies StandardSchemaV1<{ name: string }, { name: string }>
+      const { runWithContext, pipeline } = getPipeline(formApi, [
+        {
+          run: schema,
+          triggers: [],
+        },
+      ])
+
+      const staleValidation = runWithContext({ event: 'submit' })
+      formApi.setFieldValue('name', 'current')
+      const currentValidation = runWithContext({ event: 'submit' })
+
+      await Promise.all([staleValidation, currentValidation])
+      expect(pipeline[0]?.schemaOutput).toEqual({ name: 'current' })
+
+      resolveFirst({ value: { name: 'stale' } })
+      await new Promise((resolve) => setTimeout(resolve, 0))
+
+      expect(pipeline[0]?.schemaOutput).toEqual({ name: 'current' })
+    })
+
+    it('clears schema output before a validator is skipped by bailIfInvalid', async () => {
+      const formApi = getForm({ name: 'test' })
+      let shouldFail = false
+      const { runWithContext, pipeline } = getPipeline(formApi, [
+        {
+          run: () => (shouldFail ? 'Invalid' : null),
+          triggers: [],
+        },
+        {
+          bailIfInvalid: true,
+          run: z.object({ name: z.string() }),
+          triggers: [],
+        },
+      ])
+
+      await runWithContext({ event: 'submit' })
+      expect(pipeline[1]?.hasSchemaOutput).toBe(true)
+
+      shouldFail = true
+      await runWithContext({ event: 'submit' })
+
+      expect(pipeline[1]?.hasSchemaOutput).toBe(false)
+      expect(pipeline[1]?.schemaOutput).toBeUndefined()
+    })
+
+    it('aborts pending schema output before a dynamic predicate skips the validator', async () => {
+      const formApi = getForm({ name: 'stale' })
+      let shouldRunOnSubmit = true
+      let resolveSchema!: (result: { value: { name: string } }) => void
+      const schemaResult = new Promise<{ value: { name: string } }>(
+        (resolve) => {
+          resolveSchema = resolve
+        },
+      )
+      const schema = {
+        '~standard': {
+          version: 1,
+          vendor: 'test',
+          validate: () => schemaResult,
+        },
+      } satisfies StandardSchemaV1<{ name: string }, { name: string }>
+      const { runWithContext, pipeline } = getPipeline(formApi, [
+        {
+          run: schema,
+          runOnSubmit: () => shouldRunOnSubmit,
+          triggers: [],
+        },
+      ])
+
+      const staleValidation = runWithContext({ event: 'submit' })
+      shouldRunOnSubmit = false
+      await runWithContext({ event: 'submit' })
+      await staleValidation
+
+      resolveSchema({ value: { name: 'stale' } })
+      await new Promise((resolve) => setTimeout(resolve, 0))
+
+      expect(pipeline[0]?.hasSchemaOutput).toBe(false)
+      expect(pipeline[0]?.schemaOutput).toBeUndefined()
     })
 
     it('should validate form with a failing zod schema', async () => {
@@ -1013,7 +1267,6 @@ describe('runFormValidatorPipeline', () => {
       const schema = z.object({
         name: z
           .string()
-          // eslint-disable-next-line @typescript-eslint/require-await
           .refine(async (val) => val.length > 0, 'Name is required'),
       })
 

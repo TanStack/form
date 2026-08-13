@@ -12,17 +12,14 @@ import {
   runMaybeDebouncedValidator,
   shouldRunValidator,
 } from './execution.lib'
-import type { PipelineCache } from '../utils.lib'
-import type {
-  FieldValidateResult,
-  FieldValidator,
-  FormValidateResult,
-  FormValidator,
-} from '../validation.public'
+import type { AnyInternalValidatorInstance } from '../ValidatorInstance.lib'
 import type { AnyInternalFieldApi } from '../FieldApi/FieldApi.lib'
 import type {
+  FieldValidateResult,
+  FormValidateResult,
+} from '../validation.public'
+import type {
   AbortedCall,
-  AnyPipelineValidator,
   AnyValidatorContext,
   FieldInputContext,
   FormInputContext,
@@ -34,25 +31,24 @@ import type {
 } from './execution.lib'
 
 export interface PipelineResult<in out T> {
-  validatorIndex: number
+  validatorInstance: AnyInternalValidatorInstance
   result: T
   schemaResult: any | null
   hasSchemaResult?: boolean
 }
 
 interface PendingPipelineResult<in out T> {
-  validatorIndex: number
+  validatorInstance: AnyInternalValidatorInstance
   result: T
 }
 
 interface ValidatorPipelineArgs<in out TResult extends ValidateResult> {
   context: InputContext
-  cache: PipelineCache<TResult>
-  pipeline: ReadonlyArray<AnyPipelineValidator>
+  pipeline: ReadonlyArray<AnyInternalValidatorInstance>
   hasFailedBefore: boolean
   getContext: (inputContext: ValidateContext) => AnyValidatorContext
   scope: 'field' | 'form'
-  validatorIndecesToRun?: Array<number> | null
+  validatorInstancesToRun?: ReadonlySet<AnyInternalValidatorInstance> | null
   onResult?: (result: PipelineResult<TResult>) => void
 }
 
@@ -64,9 +60,16 @@ type PendingPromises<TResult> = Array<
   >
 >
 
+/**
+ * Accepts a batch of pending results into the pipeline's instance-keyed map.
+ *
+ * Aborted and thrown results are excluded. Submit schema output is committed
+ * before `onResult` observes the accepted result.
+ */
 async function flushPendingResults<TResult extends ValidateResult>(
   pending: PendingPromises<TResult>,
-  results: Array<PipelineResult<TResult>>,
+  results: Map<AnyInternalValidatorInstance, PipelineResult<TResult>>,
+  shouldCommitSchemaOutput: boolean,
   onResult?: (result: PipelineResult<TResult>) => void,
 ): Promise<{ hasErrors: boolean; thrownError: unknown | null }> {
   let hasErrors = false
@@ -97,13 +100,16 @@ async function flushPendingResults<TResult extends ValidateResult>(
       }
 
       const publicResult: PipelineResult<TResult> = {
-        validatorIndex: result.validatorIndex,
+        validatorInstance: result.validatorInstance,
         result: executionResult.result,
         schemaResult: executionResult.schemaResult,
         hasSchemaResult: executionResult.hasSchemaResult,
       }
 
-      results[result.validatorIndex] = publicResult
+      if (shouldCommitSchemaOutput) {
+        result.validatorInstance.setSchemaOutput(executionResult)
+      }
+      results.set(result.validatorInstance, publicResult)
       onResult?.(publicResult)
     }),
   )
@@ -111,29 +117,52 @@ async function flushPendingResults<TResult extends ValidateResult>(
   return { hasErrors, thrownError }
 }
 
+/**
+ * Runs eligible validator instances while preserving configured result order.
+ *
+ * Pending validators are flushed before `bailIfInvalid` decisions. Form and
+ * group submit pipelines first cancel prior executions and clear prior schema
+ * outputs so skipped validators cannot expose stale submit data.
+ */
 export async function runValidatorPipeline<TResult extends ValidateResult>({
   pipeline,
   context,
-  cache,
   hasFailedBefore = false,
   getContext,
   onResult,
   scope,
-  validatorIndecesToRun = null,
+  validatorInstancesToRun = null,
 }: ValidatorPipelineArgs<TResult>): Promise<{
   results: Array<PipelineResult<TResult>>
   hasErrors: boolean
   thrownError: unknown | null
 }> {
   let pending: PendingPromises<TResult> = []
-  const results: Array<PipelineResult<TResult>> = []
+  const results = new Map<
+    AnyInternalValidatorInstance,
+    PipelineResult<TResult>
+  >()
+  const shouldCommitSchemaOutput =
+    context.event === 'submit' && context.scope !== 'field'
+
+  if (shouldCommitSchemaOutput) {
+    pipeline.forEach((validatorInstance) => {
+      validatorInstance.cancelExecution()
+      validatorInstance.clearSchemaOutput()
+    })
+  }
 
   let hasErrors = hasFailedBefore
   let thrownError: unknown | null = null
 
   const flush = async (): Promise<void> => {
     const { hasErrors: didError, thrownError: flushedThrownError } =
-      await flushPendingResults(pending, results, onResult)
+      await flushPendingResults(
+        pending,
+        results,
+        shouldCommitSchemaOutput,
+        onResult,
+      )
 
     pending = []
     hasErrors ||= didError
@@ -142,10 +171,13 @@ export async function runValidatorPipeline<TResult extends ValidateResult>({
     }
   }
 
-  for (let i = 0; i < pipeline.length; i++) {
-    const validator = pipeline[i]!
+  for (const validatorInstance of pipeline) {
+    const validator = validatorInstance.definition
 
-    if (validatorIndecesToRun && !validatorIndecesToRun.includes(i)) {
+    if (
+      validatorInstancesToRun &&
+      !validatorInstancesToRun.has(validatorInstance)
+    ) {
       continue
     }
 
@@ -162,10 +194,8 @@ export async function runValidatorPipeline<TResult extends ValidateResult>({
     }
 
     const promise = runMaybeDebouncedValidator<TResult>({
-      validator,
+      validatorInstance,
       context,
-      validatorIndex: i,
-      cache,
       onExecute: (ctx) => {
         return executeValidator<TResult>(validator, getContext(ctx), scope)
       },
@@ -174,7 +204,7 @@ export async function runValidatorPipeline<TResult extends ValidateResult>({
         ValidatorExecutionResult<TResult> | AbortedCall | ThrownError
       >
     >((result) => ({
-      validatorIndex: i,
+      validatorInstance,
       result,
     }))
 
@@ -184,15 +214,17 @@ export async function runValidatorPipeline<TResult extends ValidateResult>({
   await flush()
 
   return {
-    // Shouldn't happen, but in case we have sparse arrays
-    results: results.filter(Boolean),
+    results: pipeline.flatMap((validatorInstance) => {
+      const result = results.get(validatorInstance)
+      return result ? [result] : []
+    }),
     hasErrors,
     thrownError,
   }
 }
 
 interface FormValidatorPipelineArgs {
-  pipeline: ReadonlyArray<FormValidator<any>>
+  pipeline: ReadonlyArray<AnyInternalValidatorInstance>
   context: FormInputContext
   /**
    * @private
@@ -208,46 +240,45 @@ export interface FormValidatorPipelineResult {
   thrownError: unknown | null
 }
 
+/** Runs the shared pipeline with form-scoped values and issue parsing. */
 export function runFormValidatorPipeline({
   pipeline,
   context,
   onResult,
   hasFailedBefore,
 }: FormValidatorPipelineArgs): Promise<FormValidatorPipelineResult> {
-  const cache = context.formApi._pipelineCache
-
   return runValidatorPipeline<FormValidateResult<any>>({
     pipeline,
     context,
     onResult,
-    cache,
     hasFailedBefore,
     getContext: (ctx) => {
       if (isServerValidateContext(ctx)) {
         throw new Error('Server validation cannot run through client pipeline')
       }
 
-      if (!isFieldValidateContext(ctx)) {
-        return {
-          event: ctx.event,
-          triggerFieldApi: ctx.triggerFieldApi,
-          formApi: ctx.formApi,
-          signal: ctx.signal,
-          value: ctx.formApi.state.values,
-          createErrorMap,
-          parseIssues: (issues) =>
-            parseStandardSchemaIssues(issues, ctx.formApi.state.values, 'form'),
-        }
-      }
-      return {
+      const formValidationContext = {
         event: ctx.event,
-        fieldApi: ctx.fieldApi,
         formApi: ctx.formApi,
         signal: ctx.signal,
         value: ctx.formApi.state.values,
         createErrorMap,
-        parseIssues: (issues) =>
+        parseIssues: (
+          issues: Parameters<typeof parseStandardSchemaIssues>[0],
+        ) =>
           parseStandardSchemaIssues(issues, ctx.formApi.state.values, 'form'),
+      }
+
+      if (!isFieldValidateContext(ctx)) {
+        return {
+          ...formValidationContext,
+          triggerFieldApi: ctx.triggerFieldApi,
+        }
+      }
+
+      return {
+        ...formValidationContext,
+        fieldApi: ctx.fieldApi,
       }
     },
     scope: 'form',
@@ -255,7 +286,7 @@ export function runFormValidatorPipeline({
 }
 
 interface FieldValidatorPipelineArgs {
-  pipeline: Array<FieldValidator<any, any, any>>
+  pipeline: ReadonlyArray<AnyInternalValidatorInstance>
   context: FieldInputContext
   onResult?: (result: PipelineResult<FieldValidateResult>) => void
   /**
@@ -263,7 +294,7 @@ interface FieldValidatorPipelineArgs {
    * When an incoming watched field notifies, we should only run validators
    * that are actually interested in it.
    */
-  validatorIndecesToRun?: Array<number> | null
+  validatorInstancesToRun?: ReadonlySet<AnyInternalValidatorInstance> | null
 }
 
 export interface FieldValidatorPipelineResult {
@@ -272,11 +303,16 @@ export interface FieldValidatorPipelineResult {
   thrownError: unknown | null
 }
 
+/**
+ * Runs the shared pipeline with field-scoped values and issue parsing.
+ *
+ * Killed fields resolve to an empty result without executing validators.
+ */
 export function runFieldValidatorPipeline({
   pipeline,
   context,
   onResult,
-  validatorIndecesToRun = null,
+  validatorInstancesToRun = null,
 }: FieldValidatorPipelineArgs): Promise<FieldValidatorPipelineResult> {
   const fieldApi = context.fieldApi as AnyInternalFieldApi
 
@@ -287,13 +323,10 @@ export function runFieldValidatorPipeline({
       thrownError: null,
     })
 
-  const cache = fieldApi._getOrCreatePipelineCache()
-
   return runValidatorPipeline<FieldValidateResult>({
     pipeline,
     context,
     onResult,
-    cache,
     // No use case for configuring this outside of field pipeline yet
     hasFailedBefore: false,
     getContext: (ctx) => {
@@ -311,6 +344,6 @@ export function runFieldValidatorPipeline({
       }
     },
     scope: 'field',
-    validatorIndecesToRun,
+    validatorInstancesToRun,
   })
 }

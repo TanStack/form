@@ -5,6 +5,7 @@ import {
 import { describe, expect, it } from 'vitest'
 import { createFieldIdentityController } from '../src/bridge/fields/identity'
 import { getFieldRowsSnapshot } from '../src/bridge/fields/list'
+import { setFieldValidatorErrors } from './testUtils'
 
 describe('form devtools bridge field snapshots', () => {
   it('includes mounted and unmounted fields and omits raw values', () => {
@@ -67,19 +68,13 @@ describe('form devtools bridge field snapshots', () => {
       })
       expect(getFieldRowsSnapshot(form, identity)[0]?.summary).toBeUndefined()
 
-      mountedField._setMeta((meta) => ({
-        ...meta,
-        _fieldValidatorErrors: [[{ message: 'Invalid name' }]],
-      }))
+      setFieldValidatorErrors(mountedField, [{ message: 'Invalid name' }])
       expect(getFieldRowsSnapshot(form, identity)[0]?.summary).toEqual({
         hasSelfErrors: true,
         validity: 'invalid',
       })
 
-      mountedField._setMeta((meta) => ({
-        ...meta,
-        _fieldValidatorErrors: [[]],
-      }))
+      setFieldValidatorErrors(mountedField, [])
       expect(getFieldRowsSnapshot(form, identity)[0]?.summary).toBeUndefined()
     } finally {
       unregister()
@@ -116,10 +111,7 @@ describe('form devtools bridge field snapshots', () => {
       { fieldId, path: 'name', isMounted: false },
     ])
 
-    field._setMeta((meta) => ({
-      ...meta,
-      _fieldValidatorErrors: [[{ message: 'Invalid name' }]],
-    }))
+    setFieldValidatorErrors(field, [{ message: 'Invalid name' }])
     expect(getFieldRowsSnapshot(form, identity)).toEqual([
       {
         fieldId,
@@ -129,10 +121,7 @@ describe('form devtools bridge field snapshots', () => {
       },
     ])
 
-    field._setMeta((meta) => ({
-      ...meta,
-      _fieldValidatorErrors: [[]],
-    }))
+    setFieldValidatorErrors(field, [])
     expect(getFieldRowsSnapshot(form, identity)).toEqual([
       { fieldId, path: 'name', isMounted: false },
     ])
@@ -148,10 +137,7 @@ describe('form devtools bridge field snapshots', () => {
     const group = new InternalFormGroupApi({ form, name: 'guestDetails' })
 
     try {
-      child._setMeta((meta) => ({
-        ...meta,
-        _fieldValidatorErrors: [[{ message: 'Invalid field' }]],
-      }))
+      setFieldValidatorErrors(child, [{ message: 'Invalid field' }])
 
       expect(parent.state.meta.isValid).toBe(false)
       expect(getFieldRowsSnapshot(form, identity)).toEqual([
@@ -177,10 +163,7 @@ describe('form devtools bridge field snapshots', () => {
     const unregister = field._register()
 
     try {
-      field._setMeta((meta) => ({
-        ...meta,
-        _fieldValidatorErrors: [[{ message: 'Invalid name' }]],
-      }))
+      setFieldValidatorErrors(field, [{ message: 'Invalid name' }])
 
       expect(field.meta.isValid).toBe(true)
       expect(field.meta.original.isValid).toBe(false)

@@ -1,10 +1,11 @@
-import { LiteDebouncer } from '@tanstack/pacer-lite'
 import {
   isStandardSchema,
   parseStandardSchema,
   parseStandardSchemaIssues,
 } from '../standardSchema.lib'
-import type { PipelineCache } from '../utils.lib'
+import type { AnyInternalValidatorInstance } from '../ValidatorInstance.lib'
+import type { InternalFormApi } from '../FormApi/FormApi.lib'
+import type { AnyInternalFieldApi } from '../FieldApi/FieldApi.lib'
 import type {
   FieldValidateResult,
   FieldValidator,
@@ -20,8 +21,6 @@ import type {
   ValidationTriggerOption,
   Validator,
 } from '../validation.public'
-import type { InternalFormApi } from '../FormApi/FormApi.lib'
-import type { AnyInternalFieldApi } from '../FieldApi/FieldApi.lib'
 
 type FormValidateContext = {
   scope: 'form'
@@ -61,7 +60,7 @@ export type ValidateContext =
   | FormGroupValidateContext
 export type ValidateResult =
   FormValidateResult<any> | FormGroupValidateResult<any> | FieldValidateResult
-export type AnyPipelineValidator =
+type AnyPipelineValidator =
   | FormValidator<any>
   | FormGroupValidator<any>
   | FieldValidator<any, any, any>
@@ -76,36 +75,48 @@ function isServerContext(ctx: InputContext): ctx is ServerFormInputContext {
   return ctx.event === 'server'
 }
 
+/** Narrows an input context to a field-owned validation pipeline. */
 function isFieldContext(ctx: InputContext): ctx is FieldInputContext {
   return ctx.scope === 'field'
 }
 
+/** Narrows an input context to a form-group-owned validation pipeline. */
 function isGroupContext(ctx: InputContext): ctx is FormGroupInputContext {
   return ctx.scope === 'group'
 }
 
+/** Narrows an executing context to the server pipeline variant. */
 export function isServerValidateContext(
   ctx: ValidateContext,
 ): ctx is ServerPipelineValidateContext {
   return ctx.event === 'server'
 }
 
+/** Narrows an executing context to the field pipeline variant. */
 export function isFieldValidateContext(
   ctx: ValidateContext,
 ): ctx is FieldValidateContext {
   return ctx.scope === 'field'
 }
 
+/** Checks whether a configured trigger is the server-only trigger. */
 function isServerTrigger(
   trigger: ValidationTriggerOption<any, any, any> | 'server',
 ): boolean {
   return trigger === 'server'
 }
 
+/** Checks whether a validator participates in server validation. */
 function hasServerTrigger(validator: AnyPipelineValidator): boolean {
   return validator.triggers.some(isServerTrigger)
 }
 
+/**
+ * Creates the scope-specific context passed to predicate and debounce callbacks.
+ *
+ * Values are read when the callback is evaluated so it observes the owning
+ * form, group, or field's current state.
+ */
 function getPredicateContext(
   context: Exclude<InputContext, ServerFormInputContext>,
 ): ValidationPredicateContext<any, any> {
@@ -136,6 +147,7 @@ function getPredicateContext(
   }
 }
 
+/** Parses Standard Schema issues as errors owned directly by a field. */
 export function parseFieldIssues(
   issues: Parameters<FieldValidatorContext<any, any, any>['parseIssues']>[0],
 ) {
@@ -147,7 +159,6 @@ export const THROWN_ERROR = Symbol('THROWN_ERROR')
 
 export type AbortedCall = typeof ABORTED_CALL
 export type ThrownError = { [THROWN_ERROR]: true; error: unknown }
-
 export interface ValidatorExecutionResult<in out TResult> {
   result: TResult
   schemaResult: any | null
@@ -162,9 +173,8 @@ interface PendingDebouncedCall<in out TResult extends ValidateResult> {
   reject: (error: unknown) => void
 }
 
-export type ValidationDebouncer<TResult extends ValidateResult> = LiteDebouncer<
-  (call: PendingDebouncedCall<TResult>) => void
->
+type PipelineValidatorInstance<TResult extends ValidateResult> =
+  AnyInternalValidatorInstance<(call: PendingDebouncedCall<TResult>) => void>
 
 function getEnabledState(
   booleanOrFn: boolean | ((context: any) => boolean),
@@ -176,6 +186,7 @@ function getEnabledState(
   return booleanOrFn(getPredicateContext(context))
 }
 
+/** Resolves a static delay or evaluates its callback outside server context. */
 function getDebounceMs(
   numberOrFn: number | ((context: any) => number),
   context: InputContext,
@@ -186,6 +197,12 @@ function getDebounceMs(
   return numberOrFn(getPredicateContext(context))
 }
 
+/**
+ * Checks whether a trigger matches the current event and passes its condition.
+ *
+ * String triggers match directly. Object triggers additionally evaluate their
+ * `when` predicate, which defaults to enabled.
+ */
 export function isValidationTriggerEnabled(
   trigger: ValidationTriggerOption<any, any, any> | 'server',
   context: InputContext,
@@ -203,6 +220,7 @@ export function isValidationTriggerEnabled(
   return getEnabledState(enabled, context)
 }
 
+/** Selects a validator using server, submit, or configured event semantics. */
 export function shouldRunValidator(
   validator: AnyPipelineValidator,
   context: InputContext,
@@ -222,6 +240,12 @@ export function shouldRunValidator(
   )
 }
 
+/**
+ * Executes a validator and normalizes its result for pipeline processing.
+ *
+ * Standard Schema validators retain their parsed output and presence marker;
+ * function validators produce only a validation result.
+ */
 export async function executeValidator<TResult extends ValidateResult>(
   validator: AnyPipelineValidator,
   context: AnyValidatorContext,
@@ -241,25 +265,18 @@ export async function executeValidator<TResult extends ValidateResult>(
 interface RunMaybeDebouncedValidatorArgs<
   in out TResult extends ValidateResult,
 > {
-  validator: AnyPipelineValidator
+  validatorInstance: PipelineValidatorInstance<TResult>
   context: InputContext
-  validatorIndex: number
-  cache: PipelineCache<TResult>
   onExecute: (
     inputContext: ValidateContext,
   ) => Promise<ValidatorExecutionResult<TResult>>
 }
 
-function clearAbortController<TResult extends ValidateResult>(
-  cache: PipelineCache<TResult>,
-  cacheKey: number,
-  abortController: AbortController,
-): void {
-  if (cache.validatorAbortControllers.get(cacheKey) === abortController) {
-    cache.validatorAbortControllers.delete(cacheKey)
-  }
-}
-
+/**
+ * Creates a promise that resolves with the internal sentinel when aborted.
+ *
+ * Call `cleanup` after the race settles to release the signal listener.
+ */
 function createAbortPromise(signal: AbortSignal): {
   promise: Promise<AbortedCall>
   cleanup: () => void
@@ -288,6 +305,12 @@ function createAbortPromise(signal: AbortSignal): {
   }
 }
 
+/**
+ * Races validator execution against its abort signal.
+ *
+ * Abortion suppresses the eventual execution result without requiring the
+ * underlying validator promise to support cancellation.
+ */
 async function executeWithAbort<TResult extends ValidateResult>(
   context: ValidateContext,
   onExecute: (
@@ -310,6 +333,7 @@ async function executeWithAbort<TResult extends ValidateResult>(
   }
 }
 
+/** Resolves debounce duration, forcing immediate submit and server execution. */
 function getValidatorDebounceMs(
   validator: AnyPipelineValidator,
   context: InputContext,
@@ -321,80 +345,55 @@ function getValidatorDebounceMs(
   return getDebounceMs(triggerDebounceMs, context)
 }
 
-function abortPreviousValidatorRun<TResult extends ValidateResult>(
-  cache: PipelineCache<TResult>,
-  cacheKey: number,
-): void {
-  // AbortControllers are scoped to the validator instead of the whole pipeline.
-  // Mostly because different validators can have different debounces and they
-  // can be triggered by unrelated validation signals
-  cache.validatorAbortControllers.get(cacheKey)?.abort()
-}
-
-export function createValidatorAbortContext<TResult extends ValidateResult>(
-  cache: PipelineCache<TResult>,
-  cacheKey: number,
+/**
+ * Installs the next abort controller on a stable validator instance.
+ *
+ * Installation aborts any previous execution. The returned cleanup clears the
+ * controller only if it is still the instance's active controller.
+ */
+export function createValidatorAbortContext(
+  validatorInstance: AnyInternalValidatorInstance,
   opts?: { cancelDebouncer?: boolean },
 ): {
   abortController: AbortController
   signal: AbortSignal
   cleanup: () => void
 } {
-  abortPreviousValidatorRun(cache, cacheKey)
-
   if (opts?.cancelDebouncer) {
-    cache.validatorDebouncers.get(cacheKey)?.cancel()
+    validatorInstance.debouncer?.cancel()
   }
 
   const abortController = new AbortController()
   const signal = abortController.signal
 
-  cache.validatorAbortControllers.set(cacheKey, abortController)
+  validatorInstance.setAbortController(abortController)
 
   return {
     abortController,
     signal,
     cleanup: () => {
-      clearAbortController(cache, cacheKey, abortController)
+      validatorInstance.clearAbortController(abortController)
     },
   }
 }
 
-function getOrCreateDebouncer<TResult extends ValidateResult>(
-  cache: PipelineCache<TResult>,
-  cacheKey: number,
-  fn: (call: PendingDebouncedCall<TResult>) => void,
-  wait: number,
-): ValidationDebouncer<TResult> {
-  let debouncer = cache.validatorDebouncers.get(cacheKey)
-
-  if (!debouncer) {
-    debouncer = new LiteDebouncer(fn, {
-      wait,
-    })
-
-    cache.validatorDebouncers.set(cacheKey, debouncer)
-  } else {
-    debouncer.fn = fn
-    debouncer.options.wait = wait
-  }
-
-  return debouncer
-}
-
+/**
+ * Runs one validator immediately or through its instance-owned debouncer.
+ *
+ * Abort and thrown-error sentinels keep stale or exceptional executions out of
+ * normal result processing. Every settlement releases its abort resources.
+ */
 export function runMaybeDebouncedValidator<TResult extends ValidateResult>({
-  validator,
+  validatorInstance,
   context,
-  validatorIndex,
-  cache,
   onExecute,
 }: RunMaybeDebouncedValidatorArgs<TResult>): Promise<
   ValidatorExecutionResult<TResult> | AbortedCall | ThrownError
 > {
-  const cacheKey = validatorIndex
+  const validator = validatorInstance.definition
   const debounceMs = getValidatorDebounceMs(validator, context)
 
-  const { signal, cleanup } = createValidatorAbortContext(cache, cacheKey)
+  const { signal, cleanup } = createValidatorAbortContext(validatorInstance)
 
   const validationContext: ValidateContext = {
     ...context,
@@ -425,7 +424,7 @@ export function runMaybeDebouncedValidator<TResult extends ValidateResult>({
     }
 
     const onAbort = () => {
-      cache.validatorDebouncers.get(cacheKey)?.cancel()
+      validatorInstance.debouncer?.cancel()
       settle(ABORTED_CALL)
     }
 
@@ -440,26 +439,23 @@ export function runMaybeDebouncedValidator<TResult extends ValidateResult>({
     }
 
     if (debounceMs <= 0) {
-      cache.validatorDebouncers.get(cacheKey)?.cancel()
+      validatorInstance.debouncer?.cancel()
       run(validationContext)
       return
     }
 
-    const debouncer = getOrCreateDebouncer(
-      cache,
-      cacheKey,
-      (call) => {
-        executeWithAbort(call.context, onExecute).then(
-          call.resolve,
-          (error) => {
-            console.error('Validator threw an error:', error)
-            const thrownError: ThrownError = { [THROWN_ERROR]: true, error }
-            call.resolve(thrownError)
-          },
-        )
-      },
-      debounceMs,
-    )
+    const debouncer = validatorInstance.getOrCreateDebouncer((call) => {
+      executeWithAbort(call.context, onExecute).then(call.resolve, (error) => {
+        console.error('Validator threw an error:', error)
+        const thrownError: ThrownError = { [THROWN_ERROR]: true, error }
+        call.resolve(thrownError)
+      })
+    }, debounceMs)
+
+    if (!debouncer) {
+      settle(ABORTED_CALL)
+      return
+    }
 
     debouncer.maybeExecute({
       context: validationContext,

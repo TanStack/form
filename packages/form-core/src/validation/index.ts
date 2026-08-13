@@ -1,21 +1,21 @@
 export {
-  clearIndexedErrorsFromSource,
-  hasIndexedErrorFromSource,
-  hasIndexedErrors,
+  clearValidationSourceErrorsFromEvent,
+  getValidationSourceErrors,
+  hasValidationSourceErrorFromEvent,
   isErrorResult,
   isValidationErrorMap,
   normalizeValidationError,
   parseValidationResult,
   reconcileRoutedFieldErrors,
-  setIndexedError,
+  setValidationSourceError,
 } from './errors.lib'
-export type { ParsedValidationResult } from './errors.lib'
-export { isValidationTriggerEnabled } from './execution.lib'
 export type {
-  InputContext,
-  ValidateContext,
-  ValidationDebouncer,
-} from './execution.lib'
+  ParsedValidationResult,
+  ValidationSourceErrorMap,
+  ValidationSourceErrorState,
+} from './errors.lib'
+export { isValidationTriggerEnabled } from './execution.lib'
+export type { InputContext, ValidateContext } from './execution.lib'
 export {
   runFieldValidatorPipeline,
   runFormValidatorPipeline,

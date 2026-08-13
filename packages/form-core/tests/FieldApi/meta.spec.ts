@@ -1,6 +1,32 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
+import { InternalFormGroupApi } from '../../src/FormGroupApi/FormGroupApi.lib'
 import { defaultFieldMeta } from '../../src/FieldApi/fieldState.lib'
+import { reconcileValidatorInstances } from '../../src/ValidatorInstance.lib'
+import type { AnyInternalFieldApi } from '../../src/FieldApi/FieldApi.lib'
+import type { ValidationIssue } from '../../src/validation.public'
+import type { ValidationSourceErrorMap } from '../../src/validation'
+
+function setFieldValidatorErrors(
+  field: AnyInternalFieldApi,
+  errors: Array<ValidationIssue>,
+): void {
+  field._validatorInstances ??= reconcileValidatorInstances({
+    definitions: [{ run: () => null, triggers: [] }],
+    instances: null,
+    owner: field,
+    scope: 'field',
+  })
+  const validatorInstance = field._validatorInstances![0]!
+
+  field._setMeta((prev) => ({
+    ...prev,
+    _validationSourceErrors:
+      errors.length > 0
+        ? new Map([[validatorInstance, { errors, sourceEvent: 'test' }]])
+        : null,
+  }))
+}
 
 describe('field - meta', () => {
   afterEach(() => {
@@ -8,6 +34,82 @@ describe('field - meta', () => {
   })
 
   describe('field meta derived properties', () => {
+    it('orders validator errors by scope and pipeline index', () => {
+      const form = new InternalFormApi({
+        defaultValues: { profile: { name: '' } },
+        validators: [
+          { run: () => null, triggers: [] },
+          { run: () => null, triggers: [] },
+        ],
+      })
+      const group = new InternalFormGroupApi({
+        form,
+        name: 'profile',
+        validators: [
+          { run: () => null, triggers: [] },
+          { run: () => null, triggers: [] },
+        ],
+      })
+      const field = form._getOrCreateFieldApi({
+        name: 'profile.name',
+        validators: [
+          { run: () => null, triggers: [] },
+          { run: () => null, triggers: [] },
+        ],
+      })
+      const [fieldFirst, fieldSecond] = field._validatorInstances!
+      const [groupFirst, groupSecond] = group._validatorInstances!
+      const [formFirst, formSecond] = form._validatorInstances!
+
+      const validationSourceErrors: ValidationSourceErrorMap = new Map()
+      // Deliberately reverse both scope and pipeline insertion order.
+      validationSourceErrors.set(form._onSubmitSource, {
+        errors: [{ message: 'onSubmit' }],
+        sourceEvent: 'submit',
+      })
+      validationSourceErrors.set(formSecond!, {
+        errors: [{ message: 'form 1' }],
+        sourceEvent: '',
+      })
+      validationSourceErrors.set(formFirst!, {
+        errors: [{ message: 'form 0' }],
+        sourceEvent: '',
+      })
+      validationSourceErrors.set(groupSecond!, {
+        errors: [{ message: 'group 1' }],
+        sourceEvent: '',
+      })
+      validationSourceErrors.set(groupFirst!, {
+        errors: [{ message: 'group 0' }],
+        sourceEvent: '',
+      })
+      validationSourceErrors.set(fieldSecond!, {
+        errors: [{ message: 'field 1' }],
+        sourceEvent: '',
+      })
+      validationSourceErrors.set(fieldFirst!, {
+        errors: [{ message: 'field 0' }],
+        sourceEvent: '',
+      })
+
+      field._setMeta((prev) => ({
+        ...prev,
+        _validationSourceErrors: validationSourceErrors,
+      }))
+
+      expect(field.meta.original.errors.map((error) => error.message)).toEqual([
+        'field 0',
+        'field 1',
+        'group 0',
+        'group 1',
+        'form 0',
+        'form 1',
+        'onSubmit',
+      ])
+
+      group._cleanup()
+    })
+
     it('starts with defaultFieldMeta values', () => {
       const form = new InternalFormApi({ defaultValues: { x: '' } })
       const field = form._getOrCreateFieldApi({ name: 'x' })
@@ -118,10 +220,7 @@ describe('field - meta', () => {
       const parent = form._getOrCreateFieldApi({ name: 'a' })
       const child = form._getOrCreateFieldApi({ name: 'a.b' })
 
-      child._setMeta((prev) => ({
-        ...prev,
-        _fieldValidatorErrors: [[{ message: 'Required' }]],
-      }))
+      setFieldValidatorErrors(child, [{ message: 'Required' }])
 
       vi.waitFor(() => {
         expect(child.meta.isSelfValid).toBe(false)
@@ -142,17 +241,11 @@ describe('field - meta', () => {
       const parent = form._getOrCreateFieldApi({ name: 'a' })
       const child = form._getOrCreateFieldApi({ name: 'a.b' })
 
-      child._setMeta((prev) => ({
-        ...prev,
-        _fieldValidatorErrors: [[{ message: 'Required' }]],
-      }))
+      setFieldValidatorErrors(child, [{ message: 'Required' }])
 
       expect(parent._getBaseMeta().childContributionCounts.error).toBe(1)
 
-      child._setMeta((prev) => ({
-        ...prev,
-        _fieldValidatorErrors: [[]],
-      }))
+      setFieldValidatorErrors(child, [])
 
       expect(parent._getBaseMeta().childContributionCounts.error).toBe(0)
     })
@@ -162,14 +255,8 @@ describe('field - meta', () => {
       const parent = form._getOrCreateFieldApi({ name: 'a' })
       const child = form._getOrCreateFieldApi({ name: 'a.b' })
 
-      parent._setMeta((prev) => ({
-        ...prev,
-        _fieldValidatorErrors: [[{ message: 'Parent error' }]],
-      }))
-      child._setMeta((prev) => ({
-        ...prev,
-        _fieldValidatorErrors: [[{ message: 'Child error' }]],
-      }))
+      setFieldValidatorErrors(parent, [{ message: 'Parent error' }])
+      setFieldValidatorErrors(child, [{ message: 'Child error' }])
 
       vi.waitFor(() => {
         expect(parent.meta.isSelfValid).toBe(false)

@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
 import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
 import { InternalFormGroupApi } from '../../src/FormGroupApi/FormGroupApi.lib'
+import { validationSourceScopes } from '../../src/ValidationSourceInstance.lib'
 
 describe('FormGroupApi', () => {
   it('runs synchronous mount validators and stores group errors', () => {
@@ -314,6 +315,82 @@ describe('FormGroupApi', () => {
     expect(group._options.onSubmit).toBe(onSubmit)
   })
 
+  it('keeps group validator instances stable by slot across updates', () => {
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: 'Tony' } },
+    })
+    const firstDefinition = { run: () => null, triggers: [] }
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [firstDefinition],
+    })
+    const instance = group._validatorInstances?.[0]
+    const nextDefinition = { run: () => null, triggers: [] }
+
+    group.update({
+      form,
+      name: 'guestDetails',
+      validators: [nextDefinition],
+    })
+
+    expect(group._validatorInstances?.[0]).toBe(instance)
+    expect(instance?.definition).toBe(nextDefinition)
+    expect(instance?.owner).toBe(group)
+    expect(instance?.scope).toBe(validationSourceScopes.group)
+    expect(instance?.revision).toBe(1)
+  })
+
+  it('warns when the group validator array length changes after initialization', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: 'Tony' } },
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+    })
+
+    group.update({
+      form,
+      name: 'guestDetails',
+      validators: [{ run: () => null, triggers: [] }],
+    })
+
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining(
+        'length of the validator array should not change',
+      ),
+    )
+    warn.mockRestore()
+  })
+
+  it('resets validator runtime during cleanup and preserves remount identity', () => {
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: 'Tony' } },
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [{ run: () => null, triggers: [] }],
+    })
+    const instance = group._validatorInstances?.[0]
+    const abortController = new AbortController()
+    instance?.setAbortController(abortController)
+    instance?.setSchemaOutput({
+      schemaResult: 'output',
+      hasSchemaResult: true,
+    })
+
+    group._cleanup()
+    group.mount()
+
+    expect(group._validatorInstances?.[0]).toBe(instance)
+    expect(abortController.signal.aborted).toBe(true)
+    expect(instance?.hasSchemaOutput).toBe(false)
+    expect(instance?.disposed).toBe(false)
+  })
+
   it('stores the group on its trie node and follows that node when it moves', () => {
     const form = new InternalFormApi({
       defaultValues: {
@@ -415,14 +492,15 @@ describe('FormGroupApi', () => {
     })
 
     await group.validate('submit')
-    expect(group._routedErrorFields[0]).toEqual(
+    const validatorInstance = group._validatorInstances![0]!
+    expect(validatorInstance.errorTargets).toEqual(
       new Set([nameField, emailField]),
     )
 
     form.deleteField('guestDetails.name')
 
     expect(nameField._isKilled).toBe(true)
-    expect(group._routedErrorFields[0]).toEqual(new Set([emailField]))
+    expect(validatorInstance.errorTargets).toEqual(new Set([emailField]))
   })
 
   it('clears backing-node validation when cleanup cancels a group run', async () => {
@@ -769,6 +847,39 @@ describe('FormGroupApi', () => {
     )
   })
 
+  it('clears prior group schema output when a dynamic submit predicate skips the validator', async () => {
+    let shouldRunOnSubmit = true
+    const onSubmit = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: 'Tony' } },
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [
+        {
+          run: z.object({ name: z.string() }),
+          runOnSubmit: () => shouldRunOnSubmit,
+          triggers: [],
+        },
+      ],
+      onSubmit,
+    })
+
+    await group.handleSubmit()
+    expect(onSubmit).toHaveBeenLastCalledWith(
+      expect.objectContaining({ schemaOutputs: [{ name: 'Tony' }] }),
+    )
+
+    shouldRunOnSubmit = false
+    await group.handleSubmit()
+
+    expect(onSubmit).toHaveBeenLastCalledWith(
+      expect.objectContaining({ schemaOutputs: [undefined] }),
+    )
+    expect(group._validatorInstances?.[0]?.hasSchemaOutput).toBe(false)
+  })
+
   it('keeps submission lifecycle independent between sibling groups', async () => {
     let resolveSubmit!: () => void
     const submitting = new Promise<void>((resolve) => {
@@ -1018,10 +1129,14 @@ describe('FormGroupApi', () => {
     await group.validate('submit')
 
     expect(nameField.errors).toEqual([{ message: 'Name is required' }])
-    expect(nameField._getBaseMeta()._formGroupValidatorErrors).toEqual({
-      errors: [[{ message: 'Name is required' }]],
-      errorSourceEvents: ['submit'],
+    const validatorInstance = group._validatorInstances![0]!
+    expect(
+      nameField._getBaseMeta()._validationSourceErrors?.get(validatorInstance),
+    ).toEqual({
+      errors: [{ message: 'Name is required' }],
+      sourceEvent: 'submit',
     })
+    expect(nameField._getBaseMeta()._validationSourceErrors?.size).toBe(1)
     expect(nameField.meta.isInvalid).toBe(true)
   })
 
@@ -1077,13 +1192,22 @@ describe('FormGroupApi', () => {
       { message: 'Group name error' },
       { message: 'Root name error' },
     ])
-    expect(nameField._getBaseMeta()._formGroupValidatorErrors).toEqual({
-      errors: [[{ message: 'Group name error' }]],
-      errorSourceEvents: ['submit'],
+    expect(
+      nameField
+        ._getBaseMeta()
+        ._validationSourceErrors?.get(group._validatorInstances![0]!),
+    ).toEqual({
+      errors: [{ message: 'Group name error' }],
+      sourceEvent: 'submit',
     })
-    expect(nameField._getBaseMeta()._formValidatorErrors).toEqual([
-      [{ message: 'Root name error' }],
-    ])
+    expect(
+      nameField
+        ._getBaseMeta()
+        ._validationSourceErrors?.get(form._validatorInstances![0]!),
+    ).toEqual({
+      errors: [{ message: 'Root name error' }],
+      sourceEvent: 'submit',
+    })
   })
 
   it('keeps sibling group validator errors independently owned', async () => {

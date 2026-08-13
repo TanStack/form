@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
 import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
+import type { StandardSchemaV1 } from '../../src/standardSchema.public'
 
 describe('form - validation', () => {
   describe('validate', () => {
@@ -402,7 +403,6 @@ describe('form - validation', () => {
             triggers: ['blur'],
           },
           {
-            // eslint-disable-next-line @typescript-eslint/require-await
             run: async () => ({ message: 'Async error' }),
             triggers: ['blur'],
           },
@@ -439,7 +439,6 @@ describe('form - validation', () => {
             triggers: ['blur'],
           },
           {
-            // eslint-disable-next-line @typescript-eslint/require-await
             run: async () => ({ message: 'Async error' }),
             triggers: ['blur'],
           },
@@ -795,6 +794,65 @@ describe('form - validation', () => {
 
         expect(consoleSpy).toHaveBeenCalledWith(error)
         expect(form.state.errors).toEqual([])
+      } finally {
+        consoleSpy.mockRestore()
+      }
+    })
+
+    it('logs rejected asynchronous mount validator errors without storing them', async () => {
+      const error = new Error('Async mount validator failed')
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+      try {
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              runOnMount: true,
+              triggers: [],
+              run: () => Promise.reject(error),
+            },
+          ],
+        })
+
+        await vi.waitFor(() => expect(form.state.isValidating).toBe(false))
+
+        expect(consoleSpy).toHaveBeenCalledWith(error)
+        expect(form.state.errors).toEqual([])
+        expect(form._validatorInstances![0]!.abortController).toBeNull()
+      } finally {
+        consoleSpy.mockRestore()
+      }
+    })
+
+    it('logs rejected mount schema errors without storing them', async () => {
+      const error = new Error('Mount schema failed')
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+      const schema = {
+        '~standard': {
+          version: 1,
+          vendor: 'test',
+          validate: () => Promise.reject(error),
+        },
+      } satisfies StandardSchemaV1
+
+      try {
+        const form = new InternalFormApi({
+          defaultValues: { name: '' },
+          validators: [
+            {
+              run: schema,
+              runOnMount: true,
+              triggers: [],
+            },
+          ],
+        })
+
+        await vi.waitFor(() => expect(form.state.isValidating).toBe(false))
+
+        expect(consoleSpy).toHaveBeenCalledWith(error)
+        expect(form.state.errors).toEqual([])
+        expect(form._validatorInstances![0]!.abortController).toBeNull()
       } finally {
         consoleSpy.mockRestore()
       }
@@ -1655,6 +1713,19 @@ describe('form - validation', () => {
       void field.atom
       field.handleChange('New value')
       await vi.runAllTimersAsync()
+      const formValidatorInstance = form._validatorInstances![0]!
+      expect(form._tryGetFieldApi('name')).toBe(field)
+      expect(Array.from(formValidatorInstance.errorTargets ?? [])).toEqual([
+        field,
+      ])
+      expect(
+        field
+          ._getBaseMeta()
+          ._validationSourceErrors?.get(formValidatorInstance),
+      ).toEqual({
+        errors: [{ message: 'Form-level error' }],
+        sourceEvent: 'change',
+      })
       expect(field.errors).toEqual([{ message: 'Form-level error' }])
     })
 

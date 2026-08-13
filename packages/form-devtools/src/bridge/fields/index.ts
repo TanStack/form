@@ -37,12 +37,21 @@ interface FieldsController {
 
 function addForwardRelations(
   fields: Set<AnyInternalFieldApi>,
-  relationGroups:
-    | AnyInternalFieldApi['_listenToFields']
-    | AnyInternalFieldApi['_validateOnFields'],
+  relationGroups: AnyInternalFieldApi['_listenToFields'],
 ): void {
   relationGroups?.forEach((relations) => {
     for (const relation of relations) fields.add(relation.field)
+  })
+}
+
+function addValidatorForwardRelations(
+  fields: Set<AnyInternalFieldApi>,
+  field: AnyInternalFieldApi,
+): void {
+  field._validatorInstances?.forEach((validatorInstance) => {
+    validatorInstance.resolvedWatchFields?.forEach((sourceField) =>
+      fields.add(sourceField),
+    )
   })
 }
 
@@ -63,7 +72,7 @@ function addRelationNeighborhood(
 ): void {
   fields.add(field)
   addForwardRelations(fields, field._listenToFields)
-  addForwardRelations(fields, field._validateOnFields)
+  addValidatorForwardRelations(fields, field)
   addReverseRelations(fields, field._watchingFields)
   addReverseRelations(fields, field._watchingValidatorFields)
 }

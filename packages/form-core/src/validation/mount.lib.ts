@@ -7,23 +7,16 @@ import {
 import { isPromiseLike } from '../utils.lib'
 import { isErrorResult } from './errors.lib'
 import { createValidatorAbortContext, parseFieldIssues } from './execution.lib'
-import type { PipelineCache } from '../utils.lib'
-import type {
-  FieldValidateResult,
-  FieldValidator,
-  FormGroupValidateResult,
-  FormGroupValidator,
-  FormValidateResult,
-  FormValidator,
-} from '../validation.public'
+import type { AnyInternalValidatorInstance } from '../ValidatorInstance.lib'
 import type { InternalFormApi } from '../FormApi/FormApi.lib'
 import type { AnyInternalFieldApi } from '../FieldApi/FieldApi.lib'
 import type { AnyInternalFormGroupApi } from '../FormGroupApi/FormGroupApi.lib'
 import type {
-  AnyPipelineValidator,
-  AnyValidatorContext,
-  ValidateResult,
-} from './execution.lib'
+  FieldValidateResult,
+  FormGroupValidateResult,
+  FormValidateResult,
+} from '../validation.public'
+import type { AnyValidatorContext, ValidateResult } from './execution.lib'
 import type { PipelineResult } from './pipeline.lib'
 
 type MountValidationExecutionResult<in out TResult extends ValidateResult> = {
@@ -33,7 +26,7 @@ type MountValidationExecutionResult<in out TResult extends ValidateResult> = {
 }
 
 interface FormMountValidatorPipelineArgs {
-  pipeline: ReadonlyArray<FormValidator<any>>
+  pipeline: ReadonlyArray<AnyInternalValidatorInstance>
   formApi: InternalFormApi<any, any, any>
   onResult?: (result: PipelineResult<FormValidateResult<any>>) => void
 }
@@ -44,13 +37,15 @@ export interface FormMountValidatorPipelineResult {
 }
 
 interface MountValidatorPipelineArgs<in out TResult extends ValidateResult> {
-  pipeline: ReadonlyArray<AnyPipelineValidator>
-  cache: PipelineCache<TResult>
+  pipeline: ReadonlyArray<AnyInternalValidatorInstance>
   getContext: (signal: AbortSignal) => AnyValidatorContext
   scope: 'field' | 'form'
   onResult?: (result: PipelineResult<TResult>) => void
 }
 
+/**
+ * Creates the neutral result used when mount validation is aborted or throws.
+ */
 function createEmptyMountValidationResult<
   TResult extends ValidateResult,
 >(): MountValidationExecutionResult<TResult> {
@@ -61,13 +56,19 @@ function createEmptyMountValidationResult<
   }
 }
 
+/**
+ * Publishes one mount execution result and reports whether it contains errors.
+ *
+ * Mount schema outputs remain on the immediate result and are not persisted on
+ * the validator instance.
+ */
 function processMountValidationExecutionResult<TResult extends ValidateResult>(
-  validatorIndex: number,
+  validatorInstance: AnyInternalValidatorInstance,
   executionResult: MountValidationExecutionResult<TResult>,
   onResult?: (result: PipelineResult<TResult>) => void,
 ): boolean {
   const result: PipelineResult<TResult> = {
-    validatorIndex,
+    validatorInstance,
     result: executionResult.result,
     schemaResult: executionResult.schemaResult,
     hasSchemaResult: executionResult.hasSchemaResult,
@@ -78,20 +79,23 @@ function processMountValidationExecutionResult<TResult extends ValidateResult>(
   return isErrorResult(executionResult.result)
 }
 
+/**
+ * Executes one mount validator immediately without trigger debounce.
+ *
+ * Aborted async results and thrown validators become neutral mount results;
+ * thrown errors are logged after execution resources are released.
+ */
 function executeMountValidator<TResult extends ValidateResult>(
-  cache: PipelineCache<TResult>,
   getContext: MountValidatorPipelineArgs<TResult>['getContext'],
   scope: 'field' | 'form',
-  validator: AnyPipelineValidator,
-  validatorIndex: number,
+  validatorInstance: AnyInternalValidatorInstance,
 ):
   | MountValidationExecutionResult<TResult>
   | PromiseLike<MountValidationExecutionResult<TResult>> {
-  const { signal, cleanup } = createValidatorAbortContext(
-    cache,
-    validatorIndex,
-    { cancelDebouncer: true },
-  )
+  const validator = validatorInstance.definition
+  const { signal, cleanup } = createValidatorAbortContext(validatorInstance, {
+    cancelDebouncer: true,
+  })
 
   const context = getContext(signal)
 
@@ -104,6 +108,10 @@ function executeMountValidator<TResult extends ValidateResult>(
           }
 
           return result
+        })
+        .catch((error) => {
+          console.error(error)
+          return createEmptyMountValidationResult<TResult>()
         })
         .finally(cleanup) as unknown as PromiseLike<
         MountValidationExecutionResult<TResult>
@@ -125,6 +133,10 @@ function executeMountValidator<TResult extends ValidateResult>(
             hasSchemaResult: false,
           }
         })
+        .catch((error) => {
+          console.error(error)
+          return createEmptyMountValidationResult<TResult>()
+        })
         .finally(cleanup)
     }
 
@@ -141,11 +153,16 @@ function executeMountValidator<TResult extends ValidateResult>(
   }
 }
 
+/**
+ * Continues mount validation sequentially after the first asynchronous result.
+ *
+ * Later validators still honor `runOnMount` and `bailIfInvalid` in configured
+ * order.
+ */
 async function continueMountValidationFromAsyncResult<
   TResult extends ValidateResult,
 >(
-  pipeline: ReadonlyArray<AnyPipelineValidator>,
-  cache: PipelineCache<TResult>,
+  pipeline: ReadonlyArray<AnyInternalValidatorInstance>,
   getContext: MountValidatorPipelineArgs<TResult>['getContext'],
   scope: 'field' | 'form',
   startIndex: number,
@@ -158,7 +175,7 @@ async function continueMountValidationFromAsyncResult<
   const firstExecutionResult = await firstResult
   if (
     processMountValidationExecutionResult(
-      startIndex,
+      pipeline[startIndex]!,
       firstExecutionResult,
       onResult,
     )
@@ -167,29 +184,39 @@ async function continueMountValidationFromAsyncResult<
   }
 
   for (let i = startIndex + 1; i < pipeline.length; i++) {
-    const validator = pipeline[i]!
+    const validatorInstance = pipeline[i]!
+    const validator = validatorInstance.definition
     if (validator.runOnMount !== true) continue
 
     if (validator.bailIfInvalid && hasFailed) break
 
     const result = executeMountValidator<TResult>(
-      cache,
       getContext,
       scope,
-      validator,
-      i,
+      validatorInstance,
     )
     const executionResult = isPromiseLike(result) ? await result : result
 
-    if (processMountValidationExecutionResult(i, executionResult, onResult)) {
+    if (
+      processMountValidationExecutionResult(
+        validatorInstance,
+        executionResult,
+        onResult,
+      )
+    ) {
       hasFailed = true
     }
   }
 }
 
+/**
+ * Starts all eligible synchronous mount work and exposes async continuation.
+ *
+ * The pipeline returns synchronously until it encounters its first promise;
+ * remaining eligible validators then continue through `asyncPromise`.
+ */
 function runMountValidatorPipeline<TResult extends ValidateResult>({
   pipeline,
-  cache,
   getContext,
   scope,
   onResult,
@@ -200,7 +227,11 @@ function runMountValidatorPipeline<TResult extends ValidateResult>({
       asyncPromise: null,
     }
 
-  if (!pipeline.some((validator) => validator.runOnMount === true))
+  if (
+    !pipeline.some(
+      (validatorInstance) => validatorInstance.definition.runOnMount === true,
+    )
+  )
     return {
       didRun: false,
       asyncPromise: null,
@@ -209,7 +240,8 @@ function runMountValidatorPipeline<TResult extends ValidateResult>({
   let hasFailed = false
 
   for (let i = 0; i < pipeline.length; i++) {
-    const validator = pipeline[i]!
+    const validatorInstance = pipeline[i]!
+    const validator = validatorInstance.definition
     if (validator.runOnMount !== true) continue
 
     if (validator.bailIfInvalid && hasFailed) {
@@ -220,11 +252,9 @@ function runMountValidatorPipeline<TResult extends ValidateResult>({
     }
 
     const result = executeMountValidator<TResult>(
-      cache,
       getContext,
       scope,
-      validator,
-      i,
+      validatorInstance,
     )
 
     if (isPromiseLike(result)) {
@@ -232,7 +262,6 @@ function runMountValidatorPipeline<TResult extends ValidateResult>({
         didRun: true,
         asyncPromise: continueMountValidationFromAsyncResult(
           pipeline,
-          cache,
           getContext,
           scope,
           i,
@@ -243,7 +272,9 @@ function runMountValidatorPipeline<TResult extends ValidateResult>({
       }
     }
 
-    if (processMountValidationExecutionResult(i, result, onResult)) {
+    if (
+      processMountValidationExecutionResult(validatorInstance, result, onResult)
+    ) {
       hasFailed = true
     }
   }
@@ -254,6 +285,7 @@ function runMountValidatorPipeline<TResult extends ValidateResult>({
   }
 }
 
+/** Runs mount validation with form-scoped values and routed issue parsing. */
 export function runFormMountValidatorPipeline({
   pipeline,
   formApi,
@@ -261,7 +293,6 @@ export function runFormMountValidatorPipeline({
 }: FormMountValidatorPipelineArgs): FormMountValidatorPipelineResult {
   return runMountValidatorPipeline<FormValidateResult<any>>({
     pipeline,
-    cache: formApi._pipelineCache,
     getContext: (signal) => ({
       event: 'mount' as never,
       signal,
@@ -277,11 +308,12 @@ export function runFormMountValidatorPipeline({
 }
 
 interface FieldMountValidatorPipelineArgs {
-  pipeline: ReadonlyArray<FieldValidator<any, any, any>>
+  pipeline: ReadonlyArray<AnyInternalValidatorInstance>
   fieldApi: AnyInternalFieldApi
   onResult?: (result: PipelineResult<FieldValidateResult>) => void
 }
 
+/** Runs mount validation with the field's current value and issue parser. */
 export function runFieldMountValidatorPipeline({
   pipeline,
   fieldApi,
@@ -289,7 +321,6 @@ export function runFieldMountValidatorPipeline({
 }: FieldMountValidatorPipelineArgs): FormMountValidatorPipelineResult {
   return runMountValidatorPipeline<FieldValidateResult>({
     pipeline,
-    cache: fieldApi._getOrCreatePipelineCache(),
     getContext: (signal) => ({
       event: 'mount' as never,
       signal,
@@ -306,11 +337,12 @@ export function runFieldMountValidatorPipeline({
 // ===== GROUP MOUNT VALIDATION =====
 
 interface GroupMountValidatorPipelineArgs {
-  pipeline: ReadonlyArray<FormGroupValidator<any>>
+  pipeline: ReadonlyArray<AnyInternalValidatorInstance>
   groupApi: AnyInternalFormGroupApi
   onResult?: (result: PipelineResult<FormGroupValidateResult<any>>) => void
 }
 
+/** Runs mount validation with group-scoped values and routed issue parsing. */
 export function runGroupMountValidatorPipeline({
   pipeline,
   groupApi,
@@ -318,7 +350,6 @@ export function runGroupMountValidatorPipeline({
 }: GroupMountValidatorPipelineArgs): FormMountValidatorPipelineResult {
   return runMountValidatorPipeline<FormGroupValidateResult<any>>({
     pipeline,
-    cache: groupApi._pipelineCache,
     getContext: (signal) => ({
       event: 'mount' as never,
       signal,

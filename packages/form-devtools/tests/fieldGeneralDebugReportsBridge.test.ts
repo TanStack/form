@@ -5,6 +5,7 @@ import { createFieldsController } from '../src/bridge/fields'
 import { createMountedFormsController } from '../src/bridge/forms/mountedForms'
 import { formDevtoolsEventClient } from '../src/eventClient.lib'
 import { connectTestEventBus } from './testEventBus'
+import { setFieldValidatorErrors } from './testUtils'
 import type { FieldDebugReport } from '../src/eventClientTypes'
 
 const schemaValidator = {
@@ -37,10 +38,7 @@ describe('general field debug report bridge', () => {
       (event) => reports.push(event.payload),
     )
 
-    child._setMeta((meta) => ({
-      ...meta,
-      _fieldValidatorErrors: [[{ message: 'Child error' }]],
-    }))
+    setFieldValidatorErrors(child, [{ message: 'Child error' }])
 
     try {
       mountedForms.mountForm(form)
@@ -71,10 +69,7 @@ describe('general field debug report bridge', () => {
         },
       ])
 
-      parent._setMeta((meta) => ({
-        ...meta,
-        _fieldValidatorErrors: [[{ message: 'Parent error' }]],
-      }))
+      setFieldValidatorErrors(parent, [{ message: 'Parent error' }])
       formDevtoolsEventClient.emit('field-debug-report-request', {
         requestId: 'parent-now-has-errors',
         formInstanceId,

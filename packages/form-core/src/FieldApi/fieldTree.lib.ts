@@ -22,6 +22,7 @@ import type {
   AnyInternalFieldApi,
   FieldListenToFields,
   FieldWatchingFields,
+  FieldWatchingValidatorFields,
 } from './FieldApi.lib'
 import type {
   InternalRootFieldApi,
@@ -31,7 +32,7 @@ import type { ChildContributionStates } from './fieldState.lib'
 import type { NameSegment } from '../utils.lib'
 
 type DetachWatchingFieldFn = (
-  operation: FieldDependencyChange,
+  operation: Extract<FieldDependencyChange, { kind: 'listener' }>,
   options?: { pruneSourceField?: boolean },
 ) => void
 
@@ -87,7 +88,12 @@ function detachOutgoingWatchedFields({
 }) {
   listenToFields?.forEach((sourceMetas, watcherIndex) => {
     for (const { field: sourceField } of sourceMetas) {
-      const change = { sourceField, watchingField: field, watcherIndex }
+      const change = {
+        kind: 'listener' as const,
+        sourceField,
+        watchingField: field,
+        watcherIndex,
+      }
       detach(change, { pruneSourceField: false })
       dependencyChanges?.push(change)
 
@@ -126,7 +132,12 @@ function detachIncomingWatchedFields({
 
   for (const [watchingField, watcherIndexes] of Array.from(watchingFields)) {
     for (const watcherIndex of Array.from(watcherIndexes)) {
-      const change = { sourceField, watchingField, watcherIndex }
+      const change = {
+        kind: 'listener' as const,
+        sourceField,
+        watchingField,
+        watcherIndex,
+      }
       detach(change, { pruneSourceField: false })
       dependencyChanges?.push(change)
       setListenToFields(
@@ -137,6 +148,94 @@ function detachIncomingWatchedFields({
           watcherIndex,
         ),
       )
+      if (!nodesToKill.has(watchingField)) {
+        fieldsToPruneAfterKill.add(watchingField)
+      }
+    }
+  }
+}
+
+/**
+ * Detaches watched-field dependencies owned by validators on a field being killed.
+ *
+ * Validator instances hold the forward references in `resolvedWatchFields`,
+ * while each watched source field holds the reverse registration in
+ * `_watchingValidatorFields`. The reverse registrations must be removed before
+ * the instances are disposed. Surviving source fields are queued for pruning
+ * after the complete kill pass to avoid recursively mutating the field tree
+ * during cleanup.
+ */
+function detachWatchedValidatorFields({
+  field,
+  nodesToKill,
+  fieldsToPruneAfterKill,
+  dependencyChanges,
+}: {
+  field: AnyInternalFieldApi
+  nodesToKill: Set<AnyInternalFieldApi>
+  fieldsToPruneAfterKill: Set<AnyInternalFieldApi>
+  dependencyChanges: Array<FieldDependencyChange> | null
+}) {
+  field._validatorInstances?.forEach((validatorInstance) => {
+    validatorInstance.resolvedWatchFields?.forEach((sourceField) => {
+      const change = {
+        kind: 'validator' as const,
+        sourceField,
+        watchingField: field,
+        validatorInstance,
+      }
+      detachWatchingValidatorField(change, { pruneSourceField: false })
+      dependencyChanges?.push(change)
+
+      if (!nodesToKill.has(sourceField)) {
+        fieldsToPruneAfterKill.add(sourceField)
+      }
+    })
+    validatorInstance.resolvedWatchFields = null
+  })
+}
+
+/**
+ * Detaches validators on other fields that watch a source field being killed.
+ *
+ * This removes the source field's reverse registrations and the corresponding
+ * forward references from each surviving validator instance. Surviving
+ * watching fields are queued for pruning after the complete kill pass.
+ */
+function detachWatchingValidatorFields({
+  sourceField,
+  watchingFields,
+  nodesToKill,
+  fieldsToPruneAfterKill,
+  dependencyChanges,
+}: {
+  sourceField: AnyInternalFieldApi
+  watchingFields: FieldWatchingValidatorFields | null
+  nodesToKill: Set<AnyInternalFieldApi>
+  fieldsToPruneAfterKill: Set<AnyInternalFieldApi>
+  dependencyChanges: Array<FieldDependencyChange> | null
+}) {
+  if (!watchingFields) return
+
+  for (const [watchingField, validatorInstances] of Array.from(
+    watchingFields,
+  )) {
+    for (const validatorInstance of Array.from(validatorInstances)) {
+      const change = {
+        kind: 'validator' as const,
+        sourceField,
+        watchingField,
+        validatorInstance,
+      }
+      detachWatchingValidatorField(change, { pruneSourceField: false })
+      dependencyChanges?.push(change)
+
+      validatorInstance.resolvedWatchFields?.forEach((resolvedField, name) => {
+        if (resolvedField === sourceField) {
+          validatorInstance.deleteResolvedWatchField(name)
+        }
+      })
+
       if (!nodesToKill.has(watchingField)) {
         fieldsToPruneAfterKill.add(watchingField)
       }
@@ -165,15 +264,12 @@ function detachLinkedFieldReferences({
   })
   field._listenToFields = null
 
-  detachOutgoingWatchedFields({
+  detachWatchedValidatorFields({
     field,
-    listenToFields: field._validateOnFields,
-    detach: detachWatchingValidatorField,
     nodesToKill,
     fieldsToPruneAfterKill,
     dependencyChanges,
   })
-  field._validateOnFields = null
 
   detachIncomingWatchedFields({
     sourceField: field,
@@ -189,17 +285,12 @@ function detachLinkedFieldReferences({
   })
   field._watchingFields = null
 
-  detachIncomingWatchedFields({
+  detachWatchingValidatorFields({
     sourceField: field,
     watchingFields: field._watchingValidatorFields,
-    detach: detachWatchingValidatorField,
     nodesToKill,
     fieldsToPruneAfterKill,
     dependencyChanges,
-    getListenToFields: (watchingField) => watchingField._validateOnFields,
-    setListenToFields: (watchingField, listenToFields) => {
-      watchingField._validateOnFields = listenToFields
-    },
   })
   field._watchingValidatorFields = null
 }
@@ -340,6 +431,9 @@ export function killField(
 
     for (const node of nodesToKill) {
       const nodeMeta = node._atoms.meta?.get()
+      nodeMeta?._validationSourceErrors?.forEach((_error, validationSource) =>
+        validationSource.deleteErrorTarget(node),
+      )
       detachLinkedFieldReferences({
         field: node,
         nodesToKill: nodesToKillSet,
@@ -375,6 +469,8 @@ export function killField(
         cancelPipelineCache(node._pipelineCache)
         node._pipelineCache = null
       }
+      node._validatorInstances?.forEach((instance) => instance.dispose())
+      node._validatorInstances = null
       node._childrenMap.clear()
       node._parent._removeChild(node._segment)
     }
@@ -405,35 +501,6 @@ export function killField(
 
       return prev
     })
-
-    field.form._atoms.meta.fieldErrors.set((prev) => {
-      const fieldErrors = [...prev]
-      let changed = false
-
-      for (let i = 0; i < fieldErrors.length; i++) {
-        const currFieldErrors = fieldErrors[i]
-        if (!currFieldErrors || currFieldErrors.size === 0) continue
-
-        let next: Set<AnyInternalFieldApi> | undefined
-
-        for (const node of currFieldErrors) {
-          if (nodesToKillSet.has(node)) {
-            if (!next) {
-              next = new Set(currFieldErrors)
-            }
-
-            next.delete(node)
-          }
-        }
-
-        if (next) {
-          fieldErrors[i] = next
-          changed = true
-        }
-      }
-
-      return changed ? fieldErrors : prev
-    })
   })
 
   if (removedFields.length > 0) {
@@ -456,7 +523,9 @@ export function canPruneField(field: AnyInternalFieldApi): boolean {
   // Watched source maps retain and notify this field, so keep both endpoints
   // reachable from the form trie while an outgoing link is active.
   if (field._listenToFields) return false
-  if (field._validateOnFields) return false
+  if (field._validatorInstances?.some((v) => v.resolvedWatchFields)) {
+    return false
+  }
   const meta = field._atoms.meta?.get() ?? defaultInternalBaseFieldMeta
   if (!isPrunableMeta(meta)) return false
 
@@ -500,7 +569,7 @@ export function touchAllFieldsAndCollectSubmitValidators(
       'submit',
     )
 
-    if (field._validators && field._validators.length > 0) {
+    if (field._validatorInstances && field._validatorInstances.length > 0) {
       fieldsWithValidators.push(field)
     }
   })

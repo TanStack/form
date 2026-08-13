@@ -5,6 +5,7 @@ import {
 import { describe, expect, it } from 'vitest'
 import { z } from 'zod'
 import { getFieldDebugSuspicions } from '../src/bridge/fields/fieldDebug'
+import { setFieldValidatorErrors } from './testUtils'
 import type { AnyInternalFieldApi } from '@tanstack/form-core/internals'
 import type { FieldDebugCase } from '../src/bridge/fields/fieldDebug'
 
@@ -24,10 +25,7 @@ const schemaValidator = {
 }
 
 function setFieldError(field: AnyInternalFieldApi) {
-  field._setMeta((meta) => ({
-    ...meta,
-    _fieldValidatorErrors: [[{ message: 'Invalid' }]],
-  }))
+  setFieldValidatorErrors(field, [{ message: 'Invalid' }])
 }
 
 describe('field debug cases', () => {

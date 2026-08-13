@@ -1,4 +1,6 @@
 import { evaluate, isNil, normalizeToArray } from '../utils.lib'
+import { compareValidationSources } from '../ValidationSourceInstance.lib'
+import type { AnyInternalValidationSourceInstance } from '../ValidationSourceInstance.lib'
 import type { AnyInternalFieldApi } from '../FieldApi/FieldApi.lib'
 import type {
   FieldValidateResult,
@@ -26,8 +28,9 @@ export interface ParsedValidationResult {
 }
 
 /**
- * @private
- * Check whether a validation result is an error map.
+ * Checks whether a validation result is a routable form-style error map.
+ *
+ * Issue objects are excluded even though they are also object values.
  */
 export function isValidationErrorMap(
   value: unknown,
@@ -46,9 +49,11 @@ export function isValidationErrorMap(
 }
 
 /**
- * @private
- * Normalize a validation result into errors owned by the validation boundary
+ * Normalizes a validation result into errors owned by the validation boundary
  * and errors routed to its subfields.
+ *
+ * Empty error collections collapse to `null` so callers can distinguish them
+ * from errors that must be stored.
  */
 export function parseValidationResult(
   value: ValidateResult,
@@ -84,8 +89,7 @@ export function parseValidationResult(
 }
 
 /**
- * @private
- * Check if a validation result contains an error that would be stored.
+ * Checks whether a validation result contains an error that would be stored.
  */
 export function isErrorResult<T extends ValidateResult>(
   value: T,
@@ -97,108 +101,127 @@ export function isErrorResult<T extends ValidateResult>(
   )
 }
 
-export function hasIndexedErrorFromSource(
-  errors: Array<Array<ValidationIssue>>,
-  errorSourceEvents: Array<string | null>,
-  index: number,
-  sourceEvent: string,
-): boolean {
-  const error = errors[index]
-  if (!error) return false
-  if (error.length === 0) return false
-  if (errorSourceEvents[index] !== sourceEvent) return false
-  return true
+export interface ValidationSourceErrorState {
+  errors: Array<ValidationIssue>
+  sourceEvent: string
 }
 
-export function hasIndexedErrors(
-  errors: Array<Array<ValidationIssue>>,
+export type ValidationSourceErrorMap = Map<
+  AnyInternalValidationSourceInstance,
+  ValidationSourceErrorState
+>
+
+/** Checks whether a source's stored errors came from a specific event. */
+export function hasValidationSourceErrorFromEvent(
+  errorMap: ValidationSourceErrorMap | null,
+  validationSource: AnyInternalValidationSourceInstance,
+  sourceEvent: string,
 ): boolean {
-  return errors.some((validatorErrors) => validatorErrors.length > 0)
+  return errorMap?.get(validationSource)?.sourceEvent === sourceEvent
 }
 
-export function setIndexedError(
-  errors: Array<Array<ValidationIssue>>,
-  errorSourceEvents: Array<string | null>,
-  index: number,
-  error: Array<ValidationIssue>,
+/**
+ * Applies one validation source's errors with copy-on-write map semantics.
+ *
+ * Empty errors remove the source. Returns `null` when the stored value and
+ * source event already match, allowing atom owners to preserve identity.
+ */
+export function setValidationSourceError(
+  errorMap: ValidationSourceErrorMap | null,
+  validationSource: AnyInternalValidationSourceInstance,
+  errors: Array<ValidationIssue>,
   sourceEvent: string,
-): {
-  errors: Array<Array<ValidationIssue>>
-  errorSourceEvents: Array<string | null>
-} | null {
-  const nextSourceEvent = error.length > 0 ? sourceEvent : null
-  const prevError = errors[index] ?? []
-
+): { errorMap: ValidationSourceErrorMap | null } | null {
+  const previous = errorMap?.get(validationSource)
   if (
-    evaluate(prevError, error) &&
-    errorSourceEvents[index] === nextSourceEvent
+    previous &&
+    evaluate(previous.errors, errors) &&
+    previous.sourceEvent === sourceEvent
   ) {
     return null
   }
+  if (!previous && errors.length === 0) return null
 
-  const nextLength = Math.max(
-    errors.length,
-    errorSourceEvents.length,
-    index + 1,
-  )
-  const nextErrors = Array.from(
-    { length: nextLength },
-    (_, errorIndex) => errors[errorIndex] ?? [],
-  )
-  const nextErrorSourceEvents = Array.from(
-    { length: nextLength },
-    (_, errorIndex) => errorSourceEvents[errorIndex] ?? null,
-  )
-  nextErrors[index] = error
-  nextErrorSourceEvents[index] = nextSourceEvent
-
-  return {
-    errors: nextErrors,
-    errorSourceEvents: nextErrorSourceEvents,
+  const next = errorMap ? new Map(errorMap) : new Map()
+  if (errors.length > 0) {
+    next.set(validationSource, { errors, sourceEvent })
+  } else {
+    next.delete(validationSource)
   }
+
+  return { errorMap: next.size > 0 ? next : null }
 }
 
-export function clearIndexedErrorsFromSource(
-  errors: Array<Array<ValidationIssue>>,
-  errorSourceEvents: Array<string | null>,
-  indexes: Array<number>,
+/**
+ * Removes errors from selected sources only when their source event matches.
+ *
+ * The map is cloned lazily and `null` is returned when no entry changes.
+ */
+export function clearValidationSourceErrorsFromEvent(
+  errorMap: ValidationSourceErrorMap | null,
+  validationSources: Iterable<AnyInternalValidationSourceInstance>,
   sourceEvent: string,
-): {
-  errors: Array<Array<ValidationIssue>>
-  errorSourceEvents: Array<string | null>
-} | null {
-  let nextErrors: Array<Array<ValidationIssue>> | null = null
-  let nextErrorSourceEvents: Array<string | null> | null = null
+): { errorMap: ValidationSourceErrorMap | null } | null {
+  if (!errorMap) return null
 
-  for (const index of indexes) {
+  let next: ValidationSourceErrorMap | null = null
+  for (const validationSource of validationSources) {
     if (
-      hasIndexedErrorFromSource(errors, errorSourceEvents, index, sourceEvent)
+      !hasValidationSourceErrorFromEvent(
+        errorMap,
+        validationSource,
+        sourceEvent,
+      )
     ) {
-      nextErrors ??= errors.slice()
-      nextErrorSourceEvents ??= errorSourceEvents.slice()
-      nextErrors[index] = []
-      nextErrorSourceEvents[index] = null
+      continue
     }
+
+    if (!next) {
+      next = new Map(errorMap)
+    }
+    next.delete(validationSource)
   }
 
-  if (!nextErrors || !nextErrorSourceEvents) return null
-
-  return {
-    errors: nextErrors,
-    errorSourceEvents: nextErrorSourceEvents,
-  }
+  if (!next) return null
+  return { errorMap: next.size > 0 ? next : null }
 }
 
+/**
+ * Flattens stored issues by scope priority and then pipeline position.
+ */
+export function getValidationSourceErrors(
+  errorMap: ValidationSourceErrorMap | null,
+  validationSources?: ReadonlyArray<AnyInternalValidationSourceInstance> | null,
+): Array<ValidationIssue> {
+  if (!errorMap) return []
+
+  const sources = Array.from(validationSources ?? errorMap.keys()).sort(
+    compareValidationSources,
+  )
+  return sources.flatMap(
+    (validationSource) => errorMap.get(validationSource)?.errors ?? [],
+  )
+}
+
+/**
+ * Reconciles the fields currently receiving routed errors from one source.
+ *
+ * Current targets are written, stale targets are cleared, and both the next
+ * target set and all affected fields are returned to the owner.
+ */
 export function reconcileRoutedFieldErrors(
-  validatorIndex: number,
+  validationSource: AnyInternalValidationSourceInstance,
   fieldErrors: Iterable<readonly [AnyInternalFieldApi, Array<ValidationIssue>]>,
   oldFieldRefs: Set<AnyInternalFieldApi> | undefined,
   setFieldError: (
     field: AnyInternalFieldApi,
-    validatorIndex: number,
+    validationSource: AnyInternalValidationSourceInstance,
     errors: Array<ValidationIssue>,
   ) => void,
-  clearFieldError: (field: AnyInternalFieldApi, validatorIndex: number) => void,
+  clearFieldError: (
+    field: AnyInternalFieldApi,
+    validationSource: AnyInternalValidationSourceInstance,
+  ) => void,
 ): {
   fieldRefs: Set<AnyInternalFieldApi>
   affectedFields: Set<AnyInternalFieldApi>
@@ -209,7 +232,7 @@ export function reconcileRoutedFieldErrors(
   const newFieldRefs = new Set<AnyInternalFieldApi>()
 
   for (const [field, fieldError] of fieldErrors) {
-    setFieldError(field, validatorIndex, fieldError)
+    setFieldError(field, validationSource, fieldError)
     newFieldRefs.add(field)
     affectedFields.add(field)
     staleFieldRefs?.delete(field)
@@ -217,16 +240,18 @@ export function reconcileRoutedFieldErrors(
 
   if (staleFieldRefs) {
     for (const field of staleFieldRefs) {
-      clearFieldError(field, validatorIndex)
+      clearFieldError(field, validationSource)
       affectedFields.add(field)
     }
   }
 
+  const didFieldRefsChange =
+    newFieldRefs.size > 0 ||
+    (oldFieldRefs !== undefined && oldFieldRefs.size > 0)
+
   return {
     fieldRefs: newFieldRefs,
     affectedFields,
-    didFieldRefsChange:
-      newFieldRefs.size > 0 ||
-      (oldFieldRefs !== undefined && oldFieldRefs.size > 0),
+    didFieldRefsChange,
   }
 }

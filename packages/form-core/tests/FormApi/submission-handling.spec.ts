@@ -477,6 +477,35 @@ describe('form - submission handling', () => {
       )
     })
 
+    it('clears prior schema output when a dynamic submit predicate skips the validator', async () => {
+      let shouldRunOnSubmit = true
+      const onSubmit = vi.fn()
+      const form = new InternalFormApi({
+        defaultValues: { name: 'test' },
+        validators: [
+          {
+            run: z.object({ name: z.string() }),
+            runOnSubmit: () => shouldRunOnSubmit,
+            triggers: [],
+          },
+        ],
+        onSubmit,
+      })
+
+      await form.handleSubmit()
+      expect(onSubmit).toHaveBeenLastCalledWith(
+        expect.objectContaining({ schemaOutputs: [{ name: 'test' }] }),
+      )
+
+      shouldRunOnSubmit = false
+      await form.handleSubmit()
+
+      expect(onSubmit).toHaveBeenLastCalledWith(
+        expect.objectContaining({ schemaOutputs: [undefined] }),
+      )
+      expect(form._validatorInstances?.[0]?.hasSchemaOutput).toBe(false)
+    })
+
     it('skips bailIfInvalid form validators when field validators fail first', async () => {
       const formValidatorFn = vi
         .fn()

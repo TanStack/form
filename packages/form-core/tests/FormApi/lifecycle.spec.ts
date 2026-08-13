@@ -1,7 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
 import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
+import { validationSourceScopes } from '../../src/ValidationSourceInstance.lib'
 import { installDevtoolsBridge } from '../../src/devtoolsBridge.lib'
 import { defaultInternalBaseFieldMeta } from '../../src/FieldApi/fieldState.lib'
+import { InternalValidatorInstance } from '../../src/ValidatorInstance.lib'
 
 describe('form - lifecycle', () => {
   describe('initial state', () => {
@@ -159,9 +161,76 @@ describe('form - lifecycle', () => {
       })
 
       expect(warn).toHaveBeenCalledWith(
-        'TanStack Form: The length of the validator array should not change after initialization',
+        expect.stringContaining(
+          'length of the validator array should not change',
+        ),
       )
       warn.mockRestore()
+    })
+
+    it('keeps form validator instances stable by slot across updates', () => {
+      const firstDefinition = { run: () => null, triggers: [] }
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [firstDefinition],
+      })
+      const instance = form._validatorInstances?.[0]
+      const nextDefinition = { run: () => null, triggers: [] }
+
+      form._update({
+        defaultValues: { name: '' },
+        validators: [nextDefinition],
+      })
+
+      expect(form._validatorInstances?.[0]).toBe(instance)
+      expect(instance?.definition).toBe(nextDefinition)
+      expect(instance?.owner).toBe(form)
+      expect(instance?.scope).toBe(validationSourceScopes.form)
+      expect(instance?.revision).toBe(1)
+    })
+
+    it('keeps the onSubmit source stable across callback updates', () => {
+      const form = new InternalFormApi<any, any, any>({
+        defaultValues: { name: '' },
+      })
+      const onSubmitSource = form._onSubmitSource
+
+      form._update({
+        defaultValues: { name: '' },
+        onSubmit: () => null,
+      })
+      expect(form._onSubmitSource).toBe(onSubmitSource)
+
+      form._update({
+        defaultValues: { name: '' },
+        onSubmit: () => ({ message: 'updated' }),
+      })
+
+      expect(form._onSubmitSource).toBe(onSubmitSource)
+      expect(onSubmitSource.owner).toBe(form)
+      expect(onSubmitSource.scope).toBe(validationSourceScopes.onSubmit)
+      expect(onSubmitSource.index).toBe(0)
+    })
+
+    it('resets form validator runtime without replacing its instance', () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [{ run: () => null, triggers: [] }],
+      })
+      const instance = form._validatorInstances?.[0]
+      const abortController = new AbortController()
+      instance?.setAbortController(abortController)
+      instance?.setSchemaOutput({
+        schemaResult: 'output',
+        hasSchemaResult: true,
+      })
+
+      form.reset()
+
+      expect(form._validatorInstances?.[0]).toBe(instance)
+      expect(abortController.signal.aborted).toBe(true)
+      expect(instance?.hasSchemaOutput).toBe(false)
+      expect(instance?.disposed).toBe(false)
     })
 
     it('should only apply options to the leaf node', async () => {
@@ -341,6 +410,11 @@ describe('form - lifecycle', () => {
     it('should reset field', () => {
       const form = new InternalFormApi({ defaultValues: { name: 'hi' } })
       const field = form._getOrCreateFieldApi({ name: 'name' })
+      const validatorInstance = new InternalValidatorInstance({
+        definition: { run: () => null, triggers: [] },
+        owner: field,
+        scope: 'field',
+      })
       field.handleChange('bye')
       field.handleBlur()
       field._setMeta((prev) => ({
@@ -348,8 +422,12 @@ describe('form - lifecycle', () => {
         isValidating: true,
         _validationCount: 1,
         _arrayVersion: 1,
-        _fieldValidatorErrors: [[{ message: 'Reset me' }]],
-        _fieldValidatorErrorSourceEvents: ['change'],
+        _validationSourceErrors: new Map([
+          [
+            validatorInstance,
+            { errors: [{ message: 'Reset me' }], sourceEvent: 'change' },
+          ],
+        ]),
       }))
 
       expect(field._getBaseMeta()).not.toBe(defaultInternalBaseFieldMeta)
@@ -420,10 +498,20 @@ describe('form - lifecycle', () => {
       expect(form.state.errors).toEqual([
         expect.objectContaining({ message: 'Submission failed' }),
       ])
+      expect(
+        form._atoms.meta.formErrors
+          .get()
+          .validationSourceErrors?.get(form._onSubmitSource)?.errors,
+      ).toEqual([expect.objectContaining({ message: 'Submission failed' })])
 
       field.handleChange('Alice')
 
       expect(form.state.errors).toEqual([])
+      expect(
+        form._atoms.meta.formErrors
+          .get()
+          .validationSourceErrors?.get(form._onSubmitSource),
+      ).toBeUndefined()
     })
 
     it('clears form-level submit errors when any field blurs', async () => {
@@ -578,11 +666,20 @@ describe('form - lifecycle', () => {
       await form.handleSubmit()
       expect(nameField.errors).toEqual([{ message: 'Name is required' }])
       expect(emailField.errors).toEqual([{ message: 'Email is required' }])
+      expect(
+        nameField
+          ._getBaseMeta()
+          ._validationSourceErrors?.get(form._onSubmitSource)?.errors,
+      ).toEqual([{ message: 'Name is required' }])
+      expect(form._onSubmitSource.errorTargets).toEqual(
+        new Set([nameField, emailField]),
+      )
 
       nameField.handleChange('Alice')
 
       expect(nameField.errors).toEqual([])
       expect(emailField.errors).toEqual([{ message: 'Email is required' }])
+      expect(form._onSubmitSource.errorTargets).toEqual(new Set([emailField]))
     })
 
     it('only clears field-level submit errors for the field that blurs', async () => {
