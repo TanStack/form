@@ -109,6 +109,10 @@ function executeMountValidator<TResult extends ValidateResult>(
 
           return result
         })
+        .catch((error) => {
+          console.error(error)
+          return createEmptyMountValidationResult<TResult>()
+        })
         .finally(cleanup) as unknown as PromiseLike<
         MountValidationExecutionResult<TResult>
       >
@@ -128,6 +132,10 @@ function executeMountValidator<TResult extends ValidateResult>(
             schemaResult: null,
             hasSchemaResult: false,
           }
+        })
+        .catch((error) => {
+          console.error(error)
+          return createEmptyMountValidationResult<TResult>()
         })
         .finally(cleanup)
     }
