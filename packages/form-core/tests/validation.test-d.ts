@@ -1285,6 +1285,72 @@ describe('validator type transforms', () => {
     >()
   })
 
+  it('makes schema outputs optional when runOnSubmit is dynamic', () => {
+    const dynamicRunOnSubmit = true as boolean
+    const vs = defineFormValidators([
+      {
+        run: z.object({ name: z.string() }),
+        triggers: [],
+      },
+      {
+        run: z.object({ name: z.string() }),
+        triggers: [],
+        runOnSubmit: true,
+      },
+      {
+        run: z.object({ name: z.string() }),
+        triggers: [],
+        runOnSubmit: false,
+      },
+      {
+        run: z.object({ name: z.string() }),
+        triggers: [],
+        runOnSubmit: dynamicRunOnSubmit,
+      },
+      {
+        run: z.object({ name: z.string() }),
+        triggers: [],
+        runOnSubmit: () => true,
+      },
+      {
+        run: z.object({ name: z.string() }),
+        triggers: [],
+        runOnSubmit: () => false,
+      },
+      {
+        run: z.object({ name: z.string() }),
+        triggers: [],
+        runOnSubmit: () => dynamicRunOnSubmit,
+      },
+      {
+        run: z.object({ name: z.string() }),
+        triggers: [],
+        runOnSubmit: undefined,
+      },
+    ])
+
+    type Output = { name: string }
+    type Outputs = ToFormSchemaOutputs<typeof vs>
+    type Expected = readonly [
+      // An omitted runOnSubmit defaults to true, so the output is guaranteed.
+      Output,
+      // A literal true always runs the validator during submit.
+      Output,
+      // A literal false always skips the validator during submit.
+      undefined,
+      // A broad boolean may skip the validator at runtime.
+      Output | undefined,
+      // Predicates currently always assume dynamic results. Types are here if you plan to tighten it in the future.
+      Output | undefined,
+      Output | undefined,
+      Output | undefined,
+      // An explicit undefined receives the same true default as an omitted property.
+      Output,
+    ]
+
+    expectTypeOf<Outputs>().toEqualTypeOf<Expected>()
+  })
+
   it('should transform field validators', () => {
     const vs = defineFieldValidators([
       {
