@@ -17,5 +17,12 @@
     "@tanstack/svelte-form": "1.33.3",
     "@tanstack/vue-form": "1.33.3"
   },
-  "changesets": ["v2-alpha"]
+  "changesets": [
+    "gentle-forms-default",
+    "legal-animals-design",
+    "odd-comics-push",
+    "shy-hairs-follow",
+    "tasty-humans-joke",
+    "v2-alpha"
+  ]
 }

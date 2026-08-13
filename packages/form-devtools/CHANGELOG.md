@@ -1,5 +1,14 @@
 # @tanstack/form-devtools
 
+## 1.0.0-alpha.1
+
+### Patch Changes
+
+- [#2333](https://github.com/TanStack/form/pull/2333) [`4341660`](https://github.com/TanStack/form/commit/43416603987c14a2c9435ba367488068805589a6) - Refactor: Use stable validator identity instead of index
+
+- Updated dependencies [[`547cbea`](https://github.com/TanStack/form/commit/547cbea2eebeb0b9ec8a6e9141d35fbf4d963429), [`46c12c7`](https://github.com/TanStack/form/commit/46c12c773932c0e7c89a2deb9c4aadd747973348), [`4341660`](https://github.com/TanStack/form/commit/43416603987c14a2c9435ba367488068805589a6), [`fc424c0`](https://github.com/TanStack/form/commit/fc424c072197e70549460ca221c687562d138b9b)]:
+  - @tanstack/form-core@2.0.0-alpha.1
+
 ## 1.0.0-alpha.0
 
 ### Major Changes

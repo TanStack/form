@@ -9,7 +9,7 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/preact-form": "^2.0.0-alpha.0",
+    "@tanstack/preact-form": "^2.0.0-alpha.1",
     "@tanstack/react-query": "^5.89.0",
     "preact": "^10.26.4"
   },
