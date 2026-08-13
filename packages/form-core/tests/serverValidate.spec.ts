@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
 import { InternalFormApi } from '../src/FormApi/FormApi.lib'
+import { InternalValidatorInstance } from '../src/ValidatorInstance.lib'
 import { installDevtoolsBridge } from '../src/devtoolsBridge.lib'
 import { validateServerValues } from '../src/internals'
 import { formOptions, initialServerFormState } from '../src'
@@ -140,6 +141,10 @@ describe('server validation', () => {
   })
 
   it('returns values and schema outputs when server validation succeeds', async () => {
+    const setSchemaOutput = vi.spyOn(
+      InternalValidatorInstance.prototype,
+      'setSchemaOutput',
+    )
     const options = formOptions({
       defaultValues: { name: '' },
       validators: [
@@ -154,12 +159,49 @@ describe('server validation', () => {
       ],
     })
 
+    try {
+      const result = expectServerValidateSuccess(
+        await validateServerValues(options, { name: 'Tony' }),
+      )
+
+      expect(result.values).toEqual({ name: 'Tony' })
+      expect(result.schemaOutputs).toEqual([{ nameLength: 4 }])
+      expect(setSchemaOutput).not.toHaveBeenCalled()
+    } finally {
+      setSchemaOutput.mockRestore()
+    }
+  })
+
+  it('aligns server schema outputs with all validator slots', async () => {
+    const options = formOptions({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          run: z.object({ name: z.string() }),
+          triggers: ['change'],
+        },
+        {
+          run: () => null,
+          triggers: ['server'],
+        },
+        {
+          run: z
+            .object({ name: z.string() })
+            .transform(({ name }) => ({ nameLength: name.length })),
+          triggers: ['server'],
+        },
+      ],
+    })
+
     const result = expectServerValidateSuccess(
       await validateServerValues(options, { name: 'Tony' }),
     )
 
-    expect(result.values).toEqual({ name: 'Tony' })
-    expect(result.schemaOutputs).toEqual([{ nameLength: 4 }])
+    expect(result.schemaOutputs).toEqual([
+      undefined,
+      undefined,
+      { nameLength: 4 },
+    ])
   })
 
   it('returns a serializable server state when validation fails', async () => {
@@ -453,6 +495,35 @@ describe('server validation', () => {
 
     expect(serverValidator).not.toHaveBeenCalled()
     expect(form.state.errors).toEqual([{ message: 'Server name error' }])
+  })
+
+  it('does not restore serialized schema output during hydration', () => {
+    const options = formOptions({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          run: z.object({ name: z.string() }).transform(() => undefined),
+          triggers: ['server'],
+        },
+      ],
+      serverState: {
+        values: { name: 'Tony' },
+        validationResults: [
+          {
+            validatorIndex: 0,
+            result: null,
+            schemaResult: undefined,
+            hasSchemaResult: true,
+          },
+        ],
+        submissionAttempts: 1,
+      },
+    })
+
+    const form = new InternalFormApi(options)
+
+    expect(form._validatorInstances?.[0]?.hasSchemaOutput).toBe(false)
+    expect(form._validatorInstances?.[0]?.schemaOutput).toBeUndefined()
   })
 
   it('notifies Devtools when server state directly resets field meta', () => {

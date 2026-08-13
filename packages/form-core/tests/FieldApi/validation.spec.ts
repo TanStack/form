@@ -318,25 +318,33 @@ describe('field - linked validators', () => {
     })
     const unregister = targetField._register()
     const sourceField = form._getOrCreateFieldApi({ name: 'source' })
+    const [otherValidatorInstance, sourceValidatorInstance] =
+      targetField._validatorInstances!
 
     sourceField.handleChange('source')
     await vi.runOnlyPendingTimersAsync()
 
     expect(otherValidator).not.toHaveBeenCalled()
     expect(sourceValidator).toHaveBeenCalledOnce()
-    expect(targetField.meta._fieldValidatorErrors[0]).toEqual([])
-    expect(targetField.meta._fieldValidatorErrors[1]).toEqual([
-      { message: 'source error' },
-    ])
+    expect(
+      targetField.meta._validationSourceErrors?.get(otherValidatorInstance!),
+    ).toBeUndefined()
+    expect(
+      targetField.meta._validationSourceErrors?.get(sourceValidatorInstance!)
+        ?.errors,
+    ).toEqual([{ message: 'source error' }])
     expect(targetField.errors).toEqual([{ message: 'source error' }])
 
     sourceField.handleChange('updated source')
     await vi.runOnlyPendingTimersAsync()
 
-    expect(targetField.meta._fieldValidatorErrors[0]).toEqual([])
-    expect(targetField.meta._fieldValidatorErrors[1]).toEqual([
-      { message: 'updated source error' },
-    ])
+    expect(
+      targetField.meta._validationSourceErrors?.get(otherValidatorInstance!),
+    ).toBeUndefined()
+    expect(
+      targetField.meta._validationSourceErrors?.get(sourceValidatorInstance!)
+        ?.errors,
+    ).toEqual([{ message: 'updated source error' }])
     expect(targetField.errors).toEqual([{ message: 'updated source error' }])
 
     unregister()
@@ -394,14 +402,17 @@ describe('field - linked validators', () => {
       ],
     })
     const sourceField = form._getOrCreateFieldApi({ name: 'source' })
+    const validatorInstance = targetField._validatorInstances![0]!
 
     expect(sourceField._watchingValidatorFields?.has(targetField)).toBe(true)
-    expect(targetField._validateOnFields?.[0]?.[0]?.field).toBe(sourceField)
+    expect(validatorInstance.resolvedWatchFields?.get('source')).toBe(
+      sourceField,
+    )
 
     form.deleteField('target')
 
     expect(sourceField._watchingValidatorFields).toBeNull()
-    expect(targetField._validateOnFields).toBeNull()
+    expect(validatorInstance.resolvedWatchFields).toBeNull()
     expect(targetField._isKilled).toBe(true)
     expect(form._tryGetFieldApi('source')).toBeNull()
     expect(form._tryGetFieldApi('target')).toBeNull()

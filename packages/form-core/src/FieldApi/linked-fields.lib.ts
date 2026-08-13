@@ -1,7 +1,7 @@
 import type {
-  AnyFieldValidator,
   AnyInternalFieldApi,
   FieldListenToFields,
+  InternalFieldValidatorInstance,
 } from './FieldApi.lib'
 import type { AnyInternalFormApi } from '../FormApi/FormApi.lib'
 import type { AnyFieldListener } from '../listeners.public'
@@ -14,9 +14,17 @@ interface ListenToFieldsMeta {
 }
 
 interface WatchFieldOperation {
+  kind: 'listener'
   sourceField: AnyInternalFieldApi
   watchingField: AnyInternalFieldApi
   watcherIndex: WatcherIndex
+}
+
+export interface ValidatorWatchFieldOperation {
+  kind: 'validator'
+  sourceField: AnyInternalFieldApi
+  watchingField: AnyInternalFieldApi
+  validatorInstance: InternalFieldValidatorInstance
 }
 
 export interface DetachWatchingFieldOptions {
@@ -83,6 +91,7 @@ function reconcileWatchedFields<TItem extends { watchFields?: Array<string> }>({
         // Field reference and name are mismatched, so detach to reattach to actual
         if (prevMeta) {
           detach.push({
+            kind: 'listener',
             sourceField: prevMeta.field,
             watchingField: field,
             watcherIndex,
@@ -91,6 +100,7 @@ function reconcileWatchedFields<TItem extends { watchFields?: Array<string> }>({
         }
 
         attach.push({
+          kind: 'listener',
           sourceField,
           watchingField: field,
           watcherIndex,
@@ -102,6 +112,7 @@ function reconcileWatchedFields<TItem extends { watchFields?: Array<string> }>({
 
   for (const [key, prevMeta] of prevByKey.entries()) {
     detach.push({
+      kind: 'listener',
       sourceField: prevMeta.field,
       watchingField: field,
       watcherIndex: ofWatcherKey(key)[0],
@@ -136,22 +147,64 @@ export function reconcileWatchedListenerFields({
 }
 
 export function reconcileWatchedValidatorFields({
-  nextValidators,
-  prevListenToFields,
+  validatorInstances,
   field,
   form,
 }: {
-  nextValidators: Array<AnyFieldValidator> | null | undefined
-  prevListenToFields: FieldListenToFields | null
+  validatorInstances: ReadonlyArray<InternalFieldValidatorInstance> | null
   field: AnyInternalFieldApi
   form: AnyInternalFormApi
-}): ReconciledWatchedFields<AnyFieldValidator> {
-  return reconcileWatchedFields({
-    nextItems: nextValidators,
-    prevListenToFields,
-    field,
-    form,
+}): {
+  attach: Array<ValidatorWatchFieldOperation>
+  detach: Array<ValidatorWatchFieldOperation>
+} {
+  const attach: Array<ValidatorWatchFieldOperation> = []
+  const detach: Array<ValidatorWatchFieldOperation> = []
+
+  validatorInstances?.forEach((validatorInstance) => {
+    const previous = validatorInstance.resolvedWatchFields
+    const next = new Map<string, AnyInternalFieldApi>()
+    const names = [...new Set(validatorInstance.definition.watchFields ?? [])]
+
+    for (const name of names) {
+      const sourceField = form._getOrCreateFieldApi({ name })
+      next.set(name, sourceField)
+
+      const previousField = previous?.get(name)
+      if (previousField === sourceField) continue
+
+      if (previousField) {
+        detach.push({
+          kind: 'validator',
+          sourceField: previousField,
+          watchingField: field,
+          validatorInstance,
+        })
+      }
+
+      attach.push({
+        kind: 'validator',
+        sourceField,
+        watchingField: field,
+        validatorInstance,
+      })
+    }
+
+    previous?.forEach((sourceField, name) => {
+      if (next.has(name)) return
+
+      detach.push({
+        kind: 'validator',
+        sourceField,
+        watchingField: field,
+        validatorInstance,
+      })
+    })
+
+    validatorInstance.resolvedWatchFields = next.size > 0 ? next : null
   })
+
+  return { attach, detach }
 }
 
 function attachWatchingField(
@@ -232,26 +285,49 @@ export function detachWatchingListenerField(
   )
 }
 
-export function attachWatchingValidatorField(operation: WatchFieldOperation) {
-  attachWatchingField(
-    (source) => source._watchingValidatorFields,
-    (source, watchingFields) => {
-      source._watchingValidatorFields = watchingFields
-    },
-    operation,
-  )
+export function attachWatchingValidatorField({
+  sourceField,
+  watchingField,
+  validatorInstance,
+}: ValidatorWatchFieldOperation) {
+  let watchingFields = sourceField._watchingValidatorFields
+  if (!watchingFields) {
+    watchingFields = new Map()
+    sourceField._watchingValidatorFields = watchingFields
+  }
+
+  let instances = watchingFields.get(watchingField)
+  if (!instances) {
+    instances = new Set()
+    watchingFields.set(watchingField, instances)
+  }
+
+  instances.add(validatorInstance)
 }
 
 export function detachWatchingValidatorField(
-  operation: WatchFieldOperation,
+  {
+    sourceField,
+    watchingField,
+    validatorInstance,
+  }: ValidatorWatchFieldOperation,
   options?: DetachWatchingFieldOptions,
 ) {
-  detachWatchingField(
-    (source) => source._watchingValidatorFields,
-    (source) => {
-      source._watchingValidatorFields = null
-    },
-    operation,
-    options,
-  )
+  const watchingFields = sourceField._watchingValidatorFields
+  if (!watchingFields) return
+
+  const instances = watchingFields.get(watchingField)
+  if (!instances) return
+
+  instances.delete(validatorInstance)
+  if (instances.size === 0) {
+    watchingFields.delete(watchingField)
+    if (watchingFields.size === 0) {
+      sourceField._watchingValidatorFields = null
+    }
+  }
+
+  if (options?.pruneSourceField !== false) {
+    sourceField._pruneIfUnused()
+  }
 }

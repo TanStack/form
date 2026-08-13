@@ -402,7 +402,6 @@ describe('form - validation', () => {
             triggers: ['blur'],
           },
           {
-            // eslint-disable-next-line @typescript-eslint/require-await
             run: async () => ({ message: 'Async error' }),
             triggers: ['blur'],
           },
@@ -439,7 +438,6 @@ describe('form - validation', () => {
             triggers: ['blur'],
           },
           {
-            // eslint-disable-next-line @typescript-eslint/require-await
             run: async () => ({ message: 'Async error' }),
             triggers: ['blur'],
           },
@@ -1655,6 +1653,19 @@ describe('form - validation', () => {
       void field.atom
       field.handleChange('New value')
       await vi.runAllTimersAsync()
+      const formValidatorInstance = form._validatorInstances![0]!
+      expect(form._tryGetFieldApi('name')).toBe(field)
+      expect(Array.from(formValidatorInstance.errorTargets ?? [])).toEqual([
+        field,
+      ])
+      expect(
+        field
+          ._getBaseMeta()
+          ._validationSourceErrors?.get(formValidatorInstance),
+      ).toEqual({
+        errors: [{ message: 'Form-level error' }],
+        sourceEvent: 'change',
+      })
       expect(field.errors).toEqual([{ message: 'Form-level error' }])
     })
 

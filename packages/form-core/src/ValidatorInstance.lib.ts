@@ -1,4 +1,5 @@
 import { LiteDebouncer } from '@tanstack/pacer-lite'
+import { InternalValidationSourceInstance } from './ValidationSourceInstance.lib'
 import type { StandardSchemaV1 } from './standardSchema.public'
 import type {
   BaseValidator,
@@ -12,6 +13,11 @@ export type InternalValidatorDefinition = BaseValidator<
 
 export type ValidatorInstanceDebouncedFn = (...args: Array<any>) => any
 
+export type AnyInternalValidatorInstance<
+  TDebouncedFn extends ValidatorInstanceDebouncedFn =
+    ValidatorInstanceDebouncedFn,
+> = InternalValidatorInstance<any, any, any, any, any, TDebouncedFn>
+
 export interface InternalValidatorInstanceOptions<
   out TDefinition extends InternalValidatorDefinition,
   out TOwner,
@@ -19,17 +25,32 @@ export interface InternalValidatorInstanceOptions<
   definition: TDefinition
   owner: TOwner
   scope: ValidatorScope
+  index?: number
 }
 
 /** Stable runtime instances correlated with validator definitions by slot. */
 export type InternalValidatorInstances<
   TDefinition extends InternalValidatorDefinition,
   TOwner,
-> = Array<InternalValidatorInstance<TDefinition, TOwner>> | null
+  TErrorTarget = unknown,
+  TWatchedField = unknown,
+  TSchemaOutput = unknown,
+> = Array<
+  InternalValidatorInstance<
+    TDefinition,
+    TOwner,
+    TErrorTarget,
+    TWatchedField,
+    TSchemaOutput
+  >
+> | null
 
 export interface ReconcileValidatorInstancesOptions<
   TDefinition extends InternalValidatorDefinition,
   TOwner,
+  TErrorTarget = unknown,
+  TWatchedField = unknown,
+  TSchemaOutput = unknown,
 > {
   /** The latest validator definitions installed on the owner. */
   definitions: ReadonlyArray<TDefinition> | null | undefined
@@ -41,11 +62,27 @@ export interface ReconcileValidatorInstancesOptions<
    */
   previousDefinitions?: ReadonlyArray<TDefinition> | null
   /** The owner's currently installed instances, if it has any. */
-  instances: InternalValidatorInstances<TDefinition, TOwner>
+  instances: InternalValidatorInstances<
+    TDefinition,
+    TOwner,
+    TErrorTarget,
+    TWatchedField,
+    TSchemaOutput
+  >
   /** The validation boundary that owns every reconciled instance. */
   owner: TOwner
   /** The form, group, or field scope shared by the reconciled instances. */
   scope: ValidatorScope
+  /** Cleans owner-specific state before an instance is permanently disposed. */
+  onBeforeDispose?: (
+    instance: InternalValidatorInstance<
+      TDefinition,
+      TOwner,
+      TErrorTarget,
+      TWatchedField,
+      TSchemaOutput
+    >,
+  ) => void
 }
 
 /**
@@ -59,12 +96,7 @@ export class InternalValidatorInstance<
   TSchemaOutput = unknown,
   TDebouncedFn extends ValidatorInstanceDebouncedFn =
     ValidatorInstanceDebouncedFn,
-> {
-  /** The validation boundary that owns this installed validator occurrence. */
-  readonly owner: TOwner
-  /** The form, group, or field scope in which the validator executes. */
-  readonly scope: ValidatorScope
-
+> extends InternalValidationSourceInstance<TOwner, TErrorTarget> {
   /** The current validator definition associated with this stable instance. */
   definition: TDefinition
   /** The controller for the active execution, or `null` when none is active. */
@@ -72,19 +104,15 @@ export class InternalValidatorInstance<
   /** The lazily created debouncer for this validator's pending execution. */
   debouncer: LiteDebouncer<TDebouncedFn> | null = null
   /**
-   * The most recently stored Standard Schema output.
+   * The Standard Schema output assigned by the latest form or group submit.
    *
-   * Consult `hasSchemaOutput` because `undefined` can itself be a stored output.
+   * Submit pipelines cancel prior executions and clear this before evaluating
+   * their validators. Field and non-submit pipelines do not assign it. Consult
+   * `hasSchemaOutput` because `undefined` can itself be a stored output.
    */
   schemaOutput: TSchemaOutput | undefined
-  /** Whether `schemaOutput` has been assigned, including to `undefined`. */
+  /** Whether the current submit pipeline assigned `schemaOutput`. */
   hasSchemaOutput = false
-  /**
-   * Targets currently receiving errors routed from this validator.
-   *
-   * The set is allocated on first use and returns to `null` when empty.
-   */
-  errorTargets: Set<TErrorTarget> | null = null
   /**
    * Resolved fields referenced by this validator's `watchFields` definition.
    *
@@ -99,22 +127,15 @@ export class InternalValidatorInstance<
    * Assigning the same definition again still advances the revision.
    */
   revision = 0
-  /**
-   * Whether this instance has been permanently disposed.
-   *
-   * Mutation helpers become no-ops after disposal.
-   */
-  disposed = false
-
   /** Creates the runtime state for one installed validator occurrence. */
   constructor({
     definition,
     owner,
     scope,
+    index,
   }: InternalValidatorInstanceOptions<TDefinition, TOwner>) {
+    super({ owner, scope, index })
     this.definition = definition
-    this.owner = owner
-    this.scope = scope
   }
 
   /**
@@ -182,17 +203,21 @@ export class InternalValidatorInstance<
   }
 
   /**
-   * Stores the latest Standard Schema output and marks it as present.
+   * Stores a submit pipeline's Standard Schema output when its result has one.
    *
-   * An explicit `undefined` is still considered a stored output. The operation
-   * is ignored after disposal.
+   * A result without a schema output leaves the current state unchanged. An
+   * explicit `undefined` is still considered a stored output. The operation is
+   * ignored after disposal.
    *
-   * @param schemaOutput - The output produced by the validator's schema.
+   * @param result - The accepted result produced by the validator pipeline.
    */
-  setSchemaOutput(schemaOutput: TSchemaOutput): void {
-    if (this.disposed) return
+  setSchemaOutput(result: {
+    schemaResult: TSchemaOutput | null
+    hasSchemaResult: boolean
+  }): void {
+    if (this.disposed || !result.hasSchemaResult) return
 
-    this.schemaOutput = schemaOutput
+    this.schemaOutput = result.schemaResult as TSchemaOutput
     this.hasSchemaOutput = true
   }
 
@@ -201,33 +226,6 @@ export class InternalValidatorInstance<
     if (this.disposed) return
 
     this._clearSchemaOutput()
-  }
-
-  /**
-   * Records a target receiving errors from this validator.
-   *
-   * The backing set is allocated lazily. The operation is ignored after disposal.
-   *
-   * @param errorTarget - The target receiving routed validation errors.
-   */
-  addErrorTarget(errorTarget: TErrorTarget): void {
-    if (this.disposed) return
-
-    if (!this.errorTargets) {
-      this.errorTargets = new Set()
-    }
-    this.errorTargets.add(errorTarget)
-  }
-
-  /**
-   * Stops tracking an error target.
-   *
-   * @param errorTarget - The target whose routed-error association is removed.
-   */
-  deleteErrorTarget(errorTarget: TErrorTarget): void {
-    if (this.disposed) return
-
-    this.errorTargets?.delete(errorTarget)
   }
 
   /**
@@ -252,6 +250,9 @@ export class InternalValidatorInstance<
     if (this.disposed) return
 
     this.resolvedWatchFields?.delete(name)
+    if (this.resolvedWatchFields?.size === 0) {
+      this.resolvedWatchFields = null
+    }
   }
 
   /** Marks mount validation as completed for this occurrence. */
@@ -259,6 +260,13 @@ export class InternalValidatorInstance<
     if (this.disposed) return
 
     this.didRunOnMount = true
+  }
+
+  /** Allows a lifecycle owner to run mount validation again after remounting. */
+  resetMountValidation(): void {
+    if (this.disposed) return
+
+    this.didRunOnMount = false
   }
 
   /**
@@ -280,28 +288,20 @@ export class InternalValidatorInstance<
    * preserved. The operation is ignored after disposal.
    */
   resetRuntime(): void {
-    if (this.disposed) return
-
-    this._cancelExecution()
-    this._clearSchemaOutput()
-    this.errorTargets = null
+    super.resetRuntime()
   }
 
-  /**
-   * Permanently disposes this validator occurrence and its runtime resources.
-   *
-   * Disposal cancels execution, releases outputs and collections, clears the
-   * mount marker, and is idempotent. Mutation helpers subsequently become no-ops.
-   */
-  dispose(): void {
-    if (this.disposed) return
-
+  /** Releases validator-specific runtime state during reset or disposal. */
+  protected override _resetRuntime(): void {
     this._cancelExecution()
     this._clearSchemaOutput()
-    this.errorTargets = null
+  }
+
+  /** Releases validator-only collections and mount state during disposal. */
+  protected override _disposeRuntime(): void {
+    this._resetRuntime()
     this.resolvedWatchFields = null
     this.didRunOnMount = false
-    this.disposed = true
   }
 
   /** Cancels and releases execution resources without checking disposal state. */
@@ -330,16 +330,29 @@ export class InternalValidatorInstance<
 export function reconcileValidatorInstances<
   TDefinition extends InternalValidatorDefinition,
   TOwner,
+  TErrorTarget = unknown,
+  TWatchedField = unknown,
+  TSchemaOutput = unknown,
 >({
   definitions,
   previousDefinitions,
   instances,
   owner,
   scope,
+  onBeforeDispose,
 }: ReconcileValidatorInstancesOptions<
   TDefinition,
-  TOwner
->): InternalValidatorInstances<TDefinition, TOwner> {
+  TOwner,
+  TErrorTarget,
+  TWatchedField,
+  TSchemaOutput
+>): InternalValidatorInstances<
+  TDefinition,
+  TOwner,
+  TErrorTarget,
+  TWatchedField,
+  TSchemaOutput
+> {
   if (
     previousDefinitions !== undefined &&
     (previousDefinitions?.length ?? 0) !== (definitions?.length ?? 0)
@@ -350,7 +363,9 @@ export function reconcileValidatorInstances<
   }
 
   if (!definitions || definitions.length === 0) {
-    instances?.forEach((instance) => instance.dispose())
+    instances?.forEach((instance) => {
+      instance.dispose(onBeforeDispose)
+    })
     return null
   }
 
@@ -362,16 +377,21 @@ export function reconcileValidatorInstances<
     if (instance) {
       instance.updateDefinition(definition)
     } else {
-      nextInstances[index] = new InternalValidatorInstance({
-        definition,
-        owner,
-        scope,
-      })
+      nextInstances[index] = new InternalValidatorInstance<
+        TDefinition,
+        TOwner,
+        TErrorTarget,
+        TWatchedField,
+        TSchemaOutput
+      >({ definition, owner, scope, index })
     }
   })
 
   for (let index = definitions.length; index < nextInstances.length; index++) {
-    nextInstances[index]?.dispose()
+    const instance = nextInstances[index]
+    if (!instance) continue
+
+    instance.dispose(onBeforeDispose)
   }
   nextInstances.length = definitions.length
 

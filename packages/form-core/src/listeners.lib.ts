@@ -115,7 +115,7 @@ function getListenerDebounceMs(
 }
 
 function getOrCreateDebouncer(
-  cache: PipelineCache<any>,
+  cache: PipelineCache,
   cacheKey: number,
   fn: (context: ListenerContext) => void,
   wait: number,
@@ -155,7 +155,7 @@ function runListener<TContext extends InputContext>({
   listener: AnyListener
   context: TContext
   listenerIndex: number
-  cache: PipelineCache<any>
+  cache: PipelineCache
   getContext: (inputContext: TContext) => ListenerContext
 }): void {
   const cacheKey = listenerIndex
@@ -185,7 +185,7 @@ function runListenerPipeline<TContext extends InputContext>({
 }: {
   pipeline: ReadonlyArray<AnyListener>
   context: TContext
-  cache: PipelineCache<any>
+  cache: PipelineCache
   getContext: (inputContext: TContext) => ListenerContext
 }): void {
   pipeline.forEach((listener, listenerIndex) => {

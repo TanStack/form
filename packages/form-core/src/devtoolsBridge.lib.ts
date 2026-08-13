@@ -1,14 +1,29 @@
 import type { AnyInternalFormApi } from './FormApi/FormApi.lib'
-import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
+import type {
+  AnyInternalFieldApi,
+  InternalFieldValidatorInstance,
+} from './FieldApi/FieldApi.lib'
 
 /**
  * A listener or validator dependency edge affected by reconciliation.
  */
-export interface FieldDependencyChange {
+interface BaseFieldDependencyChange {
   sourceField: AnyInternalFieldApi
   watchingField: AnyInternalFieldApi
+}
+
+export interface FieldListenerDependencyChange extends BaseFieldDependencyChange {
+  kind: 'listener'
   watcherIndex: number
 }
+
+export interface FieldValidatorDependencyChange extends BaseFieldDependencyChange {
+  kind: 'validator'
+  validatorInstance: InternalFieldValidatorInstance
+}
+
+export type FieldDependencyChange =
+  FieldListenerDependencyChange | FieldValidatorDependencyChange
 
 /**
  * Optional hooks installed by `@tanstack/form-devtools`.

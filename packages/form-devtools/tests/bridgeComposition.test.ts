@@ -34,7 +34,12 @@ describe('form devtools bridge composition', () => {
     const bridge = createFormDevtoolsBridge({ fields, mountedForms })
     const removedFields = [{ field, previousPath: 'name' }]
     const dependencyChanges = [
-      { sourceField: field, watchingField: field, watcherIndex: 0 },
+      {
+        kind: 'listener' as const,
+        sourceField: field,
+        watchingField: field,
+        watcherIndex: 0,
+      },
     ]
 
     bridge.mountForm?.(form)

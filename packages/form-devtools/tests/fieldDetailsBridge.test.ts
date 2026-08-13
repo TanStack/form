@@ -12,6 +12,11 @@ import { getDevtoolsFieldDetail } from '../src/bridge/fields/detailSnapshot'
 import { createFormDevtoolsBridge } from '../src/bridge/createBridge'
 import { formDevtoolsEventClient } from '../src/eventClient.lib'
 import { connectTestEventBus } from './testEventBus'
+import { setFieldValidatorErrors } from './testUtils'
+import type {
+  AnyInternalValidationSourceInstance,
+  ValidationSourceErrorState,
+} from '@tanstack/form-core/internals'
 import type {
   DevtoolsFieldDetail,
   FieldDetailSubscriptionDescriptor,
@@ -70,26 +75,73 @@ describe('field detail snapshots', () => {
     const subscription = descriptor('form', 'field')
 
     try {
+      const [fieldCallback, fieldSchema] = field._validatorInstances!
+      const groupSchema = group._validatorInstances![0]!
+      const [formCallback, formSchema] = form._validatorInstances!
       field._setMeta((meta) => ({
         ...meta,
-        _fieldValidatorErrors: [
+        _validationSourceErrors: new Map<
+          AnyInternalValidationSourceInstance,
+          ValidationSourceErrorState
+        >([
           [
-            { message: 'Field callback', code: 'field-code' } as never,
-            { message: 'Field callback second', code: 'field-code-2' } as never,
+            fieldCallback!,
+            {
+              errors: [
+                { message: 'Field callback', code: 'field-code' } as never,
+                {
+                  message: 'Field callback second',
+                  code: 'field-code-2',
+                } as never,
+              ],
+              sourceEvent: 'change',
+            },
           ],
-          [{ message: 'Field schema', path: ['name'] } as never],
-        ],
-        _fieldValidatorErrorSourceEvents: ['change', 'blur'],
-        _formGroupValidatorErrors: {
-          errors: [[{ message: 'Group schema', path: ['name'] } as never]],
-          errorSourceEvents: ['server'],
-        },
-        _formValidatorErrors: [
-          [{ message: 'Form callback', code: 'form-code' } as never],
-          [{ message: 'Form schema', path: ['profile', 'name'] } as never],
-          [{ message: 'Submit callback', code: 'submit-code' } as never],
-        ],
-        _formValidatorErrorSourceEvents: ['change', 'server', 'submit'],
+          [
+            fieldSchema!,
+            {
+              errors: [{ message: 'Field schema', path: ['name'] } as never],
+              sourceEvent: 'blur',
+            },
+          ],
+          [
+            groupSchema,
+            {
+              errors: [{ message: 'Group schema', path: ['name'] } as never],
+              sourceEvent: 'server',
+            },
+          ],
+          [
+            formCallback!,
+            {
+              errors: [
+                { message: 'Form callback', code: 'form-code' } as never,
+              ],
+              sourceEvent: 'change',
+            },
+          ],
+          [
+            formSchema!,
+            {
+              errors: [
+                {
+                  message: 'Form schema',
+                  path: ['profile', 'name'],
+                } as never,
+              ],
+              sourceEvent: 'server',
+            },
+          ],
+          [
+            form._onSubmitSource,
+            {
+              errors: [
+                { message: 'Submit callback', code: 'submit-code' } as never,
+              ],
+              sourceEvent: 'submit',
+            },
+          ],
+        ]),
       }))
 
       const full = getDevtoolsFieldDetail(field, subscription, identity)
@@ -587,11 +639,7 @@ describe('field detail bridge', () => {
       expect(details.at(-1)?.state.value).toBe('Ada')
       expect(details.at(-1)?.state.meta.isDirty).toBe(true)
 
-      field._setMeta((meta) => ({
-        ...meta,
-        _fieldValidatorErrors: [[{ message: 'Keep this field' }]],
-        _fieldValidatorErrorSourceEvents: ['change'],
-      }))
+      setFieldValidatorErrors(field, [{ message: 'Keep this field' }])
       unregister()
       await new Promise((resolve) => setTimeout(resolve, 0))
       field.handleChange('Grace')

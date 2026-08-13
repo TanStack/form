@@ -4,6 +4,7 @@ import {
 } from '@tanstack/form-core/internals'
 import { describe, expect, it } from 'vitest'
 import { getFieldErrorDebugSuspicions } from '../src/bridge/fields/debug'
+import { setFieldValidatorErrors } from './testUtils'
 import type { FieldErrorDebugCase } from '../src/bridge/fields/debug'
 import type { DevtoolsFieldError } from '../src/eventClientTypes'
 
@@ -47,10 +48,7 @@ describe('field error debug cases', () => {
     const unregister = field._register()
 
     try {
-      field._setMeta((meta) => ({
-        ...meta,
-        _fieldValidatorErrors: [[{ message: 'Hidden error' }]],
-      }))
+      setFieldValidatorErrors(field, [{ message: 'Hidden error' }])
 
       expect(field.state.meta.errors).toEqual([])
       expect(field.state.meta.original.errors).toHaveLength(1)
@@ -77,10 +75,7 @@ describe('field error debug cases', () => {
         getFieldErrorDebugSuspicions({ field, error: callbackError }),
       ).toEqual([])
 
-      field._setMeta((meta) => ({
-        ...meta,
-        _fieldValidatorErrors: [[{ message: 'Visible error' }]],
-      }))
+      setFieldValidatorErrors(field, [{ message: 'Visible error' }])
 
       expect(field.state.meta.errors).toHaveLength(1)
       expect(

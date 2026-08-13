@@ -4,6 +4,7 @@ import {
   InternalValidatorInstance,
   reconcileValidatorInstances,
 } from '../src/ValidatorInstance.lib'
+import { validationSourceScopes } from '../src/ValidationSourceInstance.lib'
 
 type TestDebouncedFn = (value: string) => void
 
@@ -35,6 +36,15 @@ describe('InternalValidatorInstance', () => {
     vi.useRealTimers()
   })
 
+  it('uses the shared scope priorities for validation source ordering', () => {
+    expect(validationSourceScopes).toEqual({
+      field: 0,
+      group: 1,
+      form: 2,
+      onSubmit: 3,
+    })
+  })
+
   it('stores its installation and starts with empty runtime state', () => {
     const first = createInstance()
     const second = createInstance()
@@ -42,7 +52,8 @@ describe('InternalValidatorInstance', () => {
     expect(first).not.toBe(second)
     expect(first.definition.run()).toEqual({ message: 'initial' })
     expect(first.owner).toEqual({ name: 'name' })
-    expect(first.scope).toBe('field')
+    expect(first.scope).toBe(validationSourceScopes.field)
+    expect(first.index).toBe(0)
     expect(first.abortController).toBeNull()
     expect(first.debouncer).toBeNull()
     expect(first.schemaOutput).toBeUndefined()
@@ -57,6 +68,9 @@ describe('InternalValidatorInstance', () => {
     first.deleteErrorTarget('temporary')
     first.setResolvedWatchField('temporary', { name: 'temporary' })
     first.deleteResolvedWatchField('temporary')
+
+    expect(first.errorTargets).toBeNull()
+    expect(first.resolvedWatchFields).toBeNull()
 
     expectTypeOf(first.definition).toEqualTypeOf<
       ReturnType<typeof createDefinition>
@@ -82,7 +96,10 @@ describe('InternalValidatorInstance', () => {
     const watchedField = { name: 'source' }
 
     instance.setAbortController(abortController)
-    instance.setSchemaOutput('output')
+    instance.setSchemaOutput({
+      schemaResult: 'output',
+      hasSchemaResult: true,
+    })
     instance.addErrorTarget('target')
     instance.setResolvedWatchField('source', watchedField)
     instance.markMountValidationRan()
@@ -159,7 +176,17 @@ describe('InternalValidatorInstance', () => {
   it('distinguishes an unset schema output from an undefined output', () => {
     const instance = createInstance()
 
-    instance.setSchemaOutput(undefined)
+    instance.setSchemaOutput({
+      schemaResult: 'ignored',
+      hasSchemaResult: false,
+    })
+    expect(instance.schemaOutput).toBeUndefined()
+    expect(instance.hasSchemaOutput).toBe(false)
+
+    instance.setSchemaOutput({
+      schemaResult: undefined,
+      hasSchemaResult: true,
+    })
     expect(instance.schemaOutput).toBeUndefined()
     expect(instance.hasSchemaOutput).toBe(true)
 
@@ -180,7 +207,10 @@ describe('InternalValidatorInstance', () => {
     instance.updateDefinition(definition)
     instance.setAbortController(abortController)
     const debouncer = instance.getOrCreateDebouncer(debouncedFn, 100)
-    instance.setSchemaOutput('output')
+    instance.setSchemaOutput({
+      schemaResult: 'output',
+      hasSchemaResult: true,
+    })
     instance.addErrorTarget('target')
     instance.setResolvedWatchField('source', watchedField)
     instance.markMountValidationRan()
@@ -200,7 +230,7 @@ describe('InternalValidatorInstance', () => {
     expect(instance.didRunOnMount).toBe(true)
     expect(instance.definition).toBe(definition)
     expect(instance.owner).toBe(owner)
-    expect(instance.scope).toBe('field')
+    expect(instance.scope).toBe(validationSourceScopes.field)
     expect(instance.revision).toBe(1)
     expect(instance.disposed).toBe(false)
   })
@@ -214,16 +244,27 @@ describe('InternalValidatorInstance', () => {
 
     instance.setAbortController(abortController)
     const debouncer = instance.getOrCreateDebouncer(debouncedFn, 100)
-    instance.setSchemaOutput('output')
+    instance.setSchemaOutput({
+      schemaResult: 'output',
+      hasSchemaResult: true,
+    })
     instance.addErrorTarget('target')
     instance.setResolvedWatchField('source', { name: 'source' })
     instance.markMountValidationRan()
     debouncer?.maybeExecute('cancelled')
 
-    instance.dispose()
-    instance.dispose()
+    const onBeforeDispose = vi.fn((disposingInstance: typeof instance) => {
+      expect(disposingInstance).toBe(instance)
+      expect(disposingInstance.disposed).toBe(false)
+      expect(disposingInstance.errorTargets).toEqual(new Set(['target']))
+      expect(disposingInstance.resolvedWatchFields?.has('source')).toBe(true)
+    })
+
+    instance.dispose(onBeforeDispose)
+    instance.dispose(onBeforeDispose)
     await vi.advanceTimersByTimeAsync(100)
 
+    expect(onBeforeDispose).toHaveBeenCalledOnce()
     expect(abortController.signal.aborted).toBe(true)
     expect(debouncedFn).not.toHaveBeenCalled()
     expect(instance.abortController).toBeNull()
@@ -241,7 +282,10 @@ describe('InternalValidatorInstance', () => {
     instance.setAbortController(nextController)
     instance.clearAbortController(nextController)
     const nextDebouncer = instance.getOrCreateDebouncer(nextDebouncedFn, 100)
-    instance.setSchemaOutput('ignored')
+    instance.setSchemaOutput({
+      schemaResult: 'ignored',
+      hasSchemaResult: true,
+    })
     instance.clearSchemaOutput()
     instance.addErrorTarget('ignored')
     instance.deleteErrorTarget('target')
@@ -314,6 +358,31 @@ describe('reconcileValidatorInstances', () => {
     expect(secondInstance?.disposed).toBe(true)
   })
 
+  it('runs owner cleanup before disposing removed instances', () => {
+    const owner = { name: 'field' }
+    const initial = reconcileValidatorInstances({
+      definitions: [createDefinition('first'), createDefinition('second')],
+      instances: null,
+      owner,
+      scope: 'field',
+    })
+    const removedInstance = initial![1]!
+    const onBeforeDispose = vi.fn((instance) => {
+      expect(instance.disposed).toBe(false)
+    })
+
+    reconcileValidatorInstances({
+      definitions: [createDefinition('next')],
+      instances: initial,
+      owner,
+      scope: 'field',
+      onBeforeDispose,
+    })
+
+    expect(onBeforeDispose).toHaveBeenCalledWith(removedInstance)
+    expect(removedInstance.disposed).toBe(true)
+  })
+
   it('creates added slots and disposes all slots when cleared', () => {
     const owner = { name: 'group' }
     const firstDefinition = createDefinition('first')
@@ -338,7 +407,9 @@ describe('reconcileValidatorInstances', () => {
     expect(firstInstance?.revision).toBe(1)
     expect(secondInstance?.definition).toBe(secondDefinition)
     expect(secondInstance?.owner).toBe(owner)
-    expect(secondInstance?.scope).toBe('group')
+    expect(secondInstance?.scope).toBe(validationSourceScopes.group)
+    expect(firstInstance?.index).toBe(0)
+    expect(secondInstance?.index).toBe(1)
 
     expect(
       reconcileValidatorInstances({

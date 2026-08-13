@@ -2,9 +2,12 @@ import { getBy, isStandardSchema } from '@tanstack/form-core/internals'
 import { compareFieldPaths } from '../utils'
 import type {
   AnyInternalFieldApi,
+  AnyInternalValidatorInstance,
   FieldListenToFields,
   FieldWatchingFields,
+  FieldWatchingValidatorFields,
   InternalFieldState,
+  ValidationSourceErrorMap,
 } from '@tanstack/form-core/internals'
 import type { ValidationIssue } from '@tanstack/form-core'
 import type {
@@ -41,26 +44,27 @@ function projectError(
   return error
 }
 
-function appendErrors({
+function appendValidatorErrors({
   destination,
-  errorBuckets,
-  errorSourceEvents,
+  errorMap,
+  validatorInstances,
   getSource,
   mode,
 }: {
   destination: Array<DevtoolsFieldError>
-  errorBuckets: Array<Array<ValidationIssue>>
-  errorSourceEvents: Array<string | null>
+  errorMap: ValidationSourceErrorMap | null
+  validatorInstances: ReadonlyArray<AnyInternalValidatorInstance> | null
   getSource: (
     validatorIndex: number,
     sourceEvent: string,
   ) => DevtoolsFieldErrorSource
   mode: FieldErrorPayloadMode
 }): void {
-  errorBuckets.forEach((errors, validatorIndex) => {
-    if (errors.length === 0) return
+  validatorInstances?.forEach((validatorInstance, validatorIndex) => {
+    const errorState = errorMap?.get(validatorInstance)
+    if (!errorState) return
 
-    const sourceEvent = errorSourceEvents[validatorIndex] ?? 'unknown'
+    const { errors, sourceEvent } = errorState
     const source = getSource(validatorIndex, sourceEvent)
 
     for (const error of errors) {
@@ -83,26 +87,27 @@ export function getDevtoolsFieldErrors(
   const errors: Array<DevtoolsFieldError> = []
   const meta = state.meta
 
-  appendErrors({
+  appendValidatorErrors({
     destination: errors,
-    errorBuckets: meta._fieldValidatorErrors,
-    errorSourceEvents: meta._fieldValidatorErrorSourceEvents,
+    errorMap: meta._validationSourceErrors,
+    validatorInstances: field._validatorInstances,
     mode,
     getSource: (validatorIndex) => ({
       scope: 'field',
       validatorIndex,
-      validatorType: getValidatorType(field._validators?.[validatorIndex]),
+      validatorType: getValidatorType(
+        field._validatorInstances?.[validatorIndex]?.definition,
+      ),
     }),
   })
 
-  const groupErrors = meta._formGroupValidatorErrors
-  if (groupErrors) {
+  if (meta._validationSourceErrors) {
     const containingGroup = field._getFormGroup()
 
-    appendErrors({
+    appendValidatorErrors({
       destination: errors,
-      errorBuckets: groupErrors.errors,
-      errorSourceEvents: groupErrors.errorSourceEvents,
+      errorMap: meta._validationSourceErrors,
+      validatorInstances: containingGroup?._validatorInstances ?? null,
       mode,
       getSource: (validatorIndex) => ({
         scope: 'formGroup',
@@ -111,33 +116,39 @@ export function getDevtoolsFieldErrors(
           : '(unknown form group)',
         validatorIndex,
         validatorType: getValidatorType(
-          containingGroup?._options.validators?.[validatorIndex],
+          containingGroup?._validatorInstances?.[validatorIndex]?.definition,
         ),
       }),
     })
   }
 
-  const formValidators = field.form._options.validators ?? []
-  appendErrors({
+  appendValidatorErrors({
     destination: errors,
-    errorBuckets: meta._formValidatorErrors,
-    errorSourceEvents: meta._formValidatorErrorSourceEvents,
+    errorMap: meta._validationSourceErrors,
+    validatorInstances: field.form._validatorInstances,
     mode,
-    getSource: (validatorIndex, sourceEvent) => {
-      if (
-        validatorIndex === formValidators.length &&
-        sourceEvent === 'submit'
-      ) {
-        return { scope: 'onSubmit', validatorType: 'callback' }
-      }
-
-      return {
-        scope: 'form',
-        validatorIndex,
-        validatorType: getValidatorType(formValidators[validatorIndex]),
-      }
-    },
+    getSource: (validatorIndex) => ({
+      scope: 'form',
+      validatorIndex,
+      validatorType: getValidatorType(
+        field.form._validatorInstances?.[validatorIndex]?.definition,
+      ),
+    }),
   })
+
+  const onSubmitErrorState = meta._validationSourceErrors?.get(
+    field.form._onSubmitSource,
+  )
+  if (onSubmitErrorState) {
+    const { errors: submitErrors, sourceEvent } = onSubmitErrorState
+    for (const error of submitErrors) {
+      errors.push({
+        error: projectError(error, mode),
+        source: { scope: 'onSubmit', validatorType: 'callback' },
+        sourceEvent,
+      })
+    }
+  }
 
   return errors
 }
@@ -286,6 +297,63 @@ function addListenedToByRelations(
   })
 }
 
+function addValidatorListensToRelations(
+  relations: Map<FieldId, FieldRelationAccumulator>,
+  field: AnyInternalFieldApi,
+  identity: Pick<FieldIdentityController, 'getFieldId'>,
+): void {
+  field._validatorInstances?.forEach((validatorInstance, itemIndex) => {
+    validatorInstance.resolvedWatchFields?.forEach(
+      (sourceField, configuredPath) => {
+        addRelation(
+          relations,
+          sourceField,
+          getRelationCause(
+            'validator',
+            itemIndex,
+            configuredPath,
+            sourceField.name,
+          ),
+          identity,
+        )
+      },
+    )
+  })
+}
+
+function addValidatorListenedToByRelations(
+  relations: Map<FieldId, FieldRelationAccumulator>,
+  sourceField: AnyInternalFieldApi,
+  watchingFields: FieldWatchingValidatorFields | null,
+  identity: Pick<FieldIdentityController, 'getFieldId'>,
+): void {
+  watchingFields?.forEach((validatorInstances, watchingField) => {
+    if (watchingField._isKilled) return
+
+    for (const validatorInstance of validatorInstances) {
+      const itemIndex =
+        watchingField._validatorInstances?.indexOf(validatorInstance) ?? -1
+      if (itemIndex < 0) continue
+
+      let configuredPath: string | undefined
+      validatorInstance.resolvedWatchFields?.forEach((field, path) => {
+        if (field === sourceField) configuredPath = path
+      })
+      addRelation(
+        relations,
+        watchingField,
+        getRelationCause(
+          'validator',
+          itemIndex,
+          configuredPath,
+          sourceField.name,
+        ),
+        identity,
+      )
+    }
+  })
+}
+
 function compareRelationCauses(
   left: DevtoolsFieldRelationCause,
   right: DevtoolsFieldRelationCause,
@@ -321,12 +389,7 @@ function getDevtoolsFieldRelations(
   const listenedToBy = new Map<FieldId, FieldRelationAccumulator>()
 
   addListensToRelations(listensTo, field._listenToFields, 'listener', identity)
-  addListensToRelations(
-    listensTo,
-    field._validateOnFields,
-    'validator',
-    identity,
-  )
+  addValidatorListensToRelations(listensTo, field, identity)
   addListenedToByRelations(
     listenedToBy,
     field,
@@ -335,12 +398,10 @@ function getDevtoolsFieldRelations(
     'listener',
     identity,
   )
-  addListenedToByRelations(
+  addValidatorListenedToByRelations(
     listenedToBy,
     field,
     field._watchingValidatorFields,
-    (watchingField) => watchingField._validateOnFields,
-    'validator',
     identity,
   )
 

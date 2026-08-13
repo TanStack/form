@@ -1,19 +1,16 @@
-import type { AnyFieldValidator } from '@tanstack/form-core/internals'
+import type { AnyInternalValidatorInstance } from '@tanstack/form-core/internals'
 import type { ValidatorsWithoutTriggersSuspicion } from '../../../eventClientTypes'
 import type { FieldDebugCase } from './types'
-import type { FormGroupValidator, FormValidator } from '@tanstack/form-core'
 
 type ValidatorLocation =
   ValidatorsWithoutTriggersSuspicion['evidence']['validators'][number]
 
 function appendValidatorsWithoutTriggers(
   locations: Array<ValidatorLocation>,
-  validators: ReadonlyArray<
-    AnyFieldValidator | FormGroupValidator<any> | FormValidator<any>
-  > | null,
+  validatorInstances: ReadonlyArray<AnyInternalValidatorInstance> | null,
   getLocation: (validatorIndex: number) => ValidatorLocation,
 ): void {
-  validators?.forEach((validator, validatorIndex) => {
+  validatorInstances?.forEach(({ definition: validator }, validatorIndex) => {
     if (validator.triggers.length === 0 && !validator.runOnMount) {
       locations.push(getLocation(validatorIndex))
     }
@@ -26,7 +23,7 @@ export const validatorsWithoutTriggers = {
 
     appendValidatorsWithoutTriggers(
       validators,
-      field._validators,
+      field._validatorInstances,
       (validatorIndex) => ({ scope: 'field', validatorIndex }),
     )
 
@@ -34,7 +31,7 @@ export const validatorsWithoutTriggers = {
     if (group) {
       appendValidatorsWithoutTriggers(
         validators,
-        group._options.validators ?? null,
+        group._validatorInstances,
         (validatorIndex) => ({
           scope: 'formGroup',
           formGroupPath: String(group.name),
@@ -44,7 +41,7 @@ export const validatorsWithoutTriggers = {
     } else {
       appendValidatorsWithoutTriggers(
         validators,
-        field.form._options.validators ?? null,
+        field.form._validatorInstances,
         (validatorIndex) => ({ scope: 'form', validatorIndex }),
       )
     }

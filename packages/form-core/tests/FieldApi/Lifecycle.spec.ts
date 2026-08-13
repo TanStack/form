@@ -5,6 +5,7 @@ import {
 } from '../../src/FieldApi/fieldState.lib'
 import { canPruneField } from '../../src/FieldApi/fieldTree.lib'
 import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
+import { validationSourceScopes } from '../../src/ValidationSourceInstance.lib'
 import { installDevtoolsBridge } from '../../src/devtoolsBridge.lib'
 
 describe('field - lifecycle', () => {
@@ -48,7 +49,7 @@ describe('field - lifecycle', () => {
       expect(field._validatorInstances?.[0]).toBe(instance)
       expect(instance?.definition).toBe(nextDefinition)
       expect(instance?.owner).toBe(field)
-      expect(instance?.scope).toBe('field')
+      expect(instance?.scope).toBe(validationSourceScopes.field)
       expect(instance?.revision).toBe((initialRevision ?? 0) + 1)
 
       field._update({})
@@ -71,7 +72,10 @@ describe('field - lifecycle', () => {
       const instance = field._validatorInstances?.[0]
       const abortController = new AbortController()
       instance?.setAbortController(abortController)
-      instance?.setSchemaOutput('output')
+      instance?.setSchemaOutput({
+        schemaResult: 'output',
+        hasSchemaResult: true,
+      })
 
       field.reset()
 
@@ -255,14 +259,24 @@ describe('field - lifecycle', () => {
         })
 
         expect(fieldDependenciesChanged).toHaveBeenCalledWith([
-          { sourceField: source, watchingField: target, watcherIndex: 0 },
+          {
+            kind: 'listener',
+            sourceField: source,
+            watchingField: target,
+            watcherIndex: 0,
+          },
         ])
 
         fieldDependenciesChanged.mockClear()
         target._kill()
 
         expect(fieldDependenciesChanged).toHaveBeenCalledWith([
-          { sourceField: source, watchingField: target, watcherIndex: 0 },
+          {
+            kind: 'listener',
+            sourceField: source,
+            watchingField: target,
+            watcherIndex: 0,
+          },
         ])
         expect(source._watchingFields).toBeNull()
       } finally {
@@ -334,12 +348,16 @@ describe('field - lifecycle', () => {
 
     it('ignores validation results that arrive after a field is killed', () => {
       const form = new InternalFormApi({ defaultValues: { x: '' } })
-      const field = form._getOrCreateFieldApi({ name: 'x' })
+      const field = form._getOrCreateFieldApi({
+        name: 'x',
+        validators: [{ run: () => null, triggers: [] }],
+      })
+      const validatorInstance = field._validatorInstances![0]!
 
       field._kill()
       field._processValidationResult(
         {
-          validatorIndex: 0,
+          validatorInstance,
           result: { message: 'Too late' },
           schemaResult: null,
         },
@@ -460,7 +478,23 @@ describe('field - lifecycle', () => {
       field._kill()
 
       expect(form.state.canSubmit).toBe(true)
-      expect(form._atoms.meta.fieldErrors.get()[0]?.size).toBe(0)
+      expect(form._validatorInstances?.[0]?.errorTargets).toBeNull()
+    })
+
+    it('removes killed fields from onSubmit routed error bookkeeping', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        onSubmit: ({ createValidationError }) =>
+          createValidationError({ fields: { name: 'Name is required' } }),
+      })
+      const field = form._getOrCreateFieldApi({ name: 'name' })
+
+      await form.handleSubmit()
+      expect(form._onSubmitSource.errorTargets).toEqual(new Set([field]))
+
+      field._kill()
+
+      expect(form._onSubmitSource.errorTargets).toBeNull()
     })
 
     it('preserves routed errors for fields outside the killed subtree', async () => {

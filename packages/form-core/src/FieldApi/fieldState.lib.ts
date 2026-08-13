@@ -1,4 +1,5 @@
 import { createFormStateProxy } from '../FormApi/formState.lib'
+import { getValidationSourceErrors } from '../validation'
 import type { RootCounterContributionKey } from './RootFieldApi.lib'
 import type { AnyInternalFieldApi } from './FieldApi.lib'
 import type {
@@ -12,6 +13,7 @@ import type {
   ErrorVisibilityFieldState,
   ValidationIssue,
 } from '../validation.public'
+import type { ValidationSourceErrorMap } from '../validation'
 import type { Atom, ReadonlyAtom } from '@tanstack/store'
 
 export type ChildContributionKey =
@@ -27,11 +29,13 @@ export const childContributionKeys: Array<ChildContributionKey> = [
 ]
 
 interface MetaExtension {
-  _formValidatorErrors: Array<Array<ValidationIssue>>
-  _formValidatorErrorSourceEvents: Array<string | null>
-  _formGroupValidatorErrors: FormGroupFieldErrorMeta | null
-  _fieldValidatorErrors: Array<Array<ValidationIssue>>
-  _fieldValidatorErrorSourceEvents: Array<string | null>
+  /**
+   * Validation errors targeting this field, keyed by stable source instance.
+   *
+   * Derived errors are ordered by field, group, and form scope, then by each
+   * scope's validator pipeline order rather than this map's insertion order.
+   */
+  _validationSourceErrors: ValidationSourceErrorMap | null
   childContributionCounts: ChildContributionCounts
   _validationCount: number
   /**
@@ -39,11 +43,6 @@ interface MetaExtension {
    * Used to rerender for ArrayField components
    */
   _arrayVersion: number
-}
-
-export interface FormGroupFieldErrorMeta {
-  errors: Array<Array<ValidationIssue>>
-  errorSourceEvents: Array<string | null>
 }
 
 export interface InternalBaseFieldMeta extends BaseFieldMeta, MetaExtension {}
@@ -83,11 +82,7 @@ export const defaultInternalBaseFieldMeta: InternalBaseFieldMeta = {
     validating: 0,
   },
   _validationCount: 0,
-  _fieldValidatorErrors: [],
-  _fieldValidatorErrorSourceEvents: [],
-  _formValidatorErrors: [],
-  _formValidatorErrorSourceEvents: [],
-  _formGroupValidatorErrors: null,
+  _validationSourceErrors: null,
   _arrayVersion: 0,
 }
 
@@ -295,10 +290,10 @@ export function getChildContributionStates(
   }
 }
 
-function hasValidatorErrors(
-  errors: Array<Array<ValidationIssue>> | undefined,
+function hasValidationSourceErrors(
+  errors: ValidationSourceErrorMap | null,
 ): boolean {
-  return errors?.some((validatorErrors) => validatorErrors.length > 0) ?? false
+  return errors !== null && errors.size > 0
 }
 
 export function isPrunableMeta(meta: InternalBaseFieldMeta): boolean {
@@ -308,9 +303,7 @@ export function isPrunableMeta(meta: InternalBaseFieldMeta): boolean {
   if (meta.isValidating) return false
   if (meta._validationCount !== 0) return false
   if (meta._arrayVersion !== 0) return false
-  if (hasValidatorErrors(meta._fieldValidatorErrors)) return false
-  if (hasValidatorErrors(meta._formGroupValidatorErrors?.errors)) return false
-  if (hasValidatorErrors(meta._formValidatorErrors)) return false
+  if (hasValidationSourceErrors(meta._validationSourceErrors)) return false
 
   return childContributionKeys.every(
     (key) => meta.childContributionCounts[key] === 0,
@@ -323,26 +316,18 @@ function getErrorsFromBaseMeta(
 ): Array<ValidationIssue> {
   let result: Array<ValidationIssue>
   if (
-    previousMeta?._fieldValidatorErrors === baseMeta._fieldValidatorErrors &&
-    previousMeta._formGroupValidatorErrors ===
-      baseMeta._formGroupValidatorErrors &&
-    previousMeta._formValidatorErrors === baseMeta._formValidatorErrors
+    previousMeta?._validationSourceErrors === baseMeta._validationSourceErrors
   ) {
     result = previousMeta.original.errors
   } else {
-    result = baseMeta._fieldValidatorErrors
-      .concat(baseMeta._formGroupValidatorErrors?.errors ?? [])
-      .concat(baseMeta._formValidatorErrors)
-      // ValidationError is OneOrMany, TypeScript doesn't realize that
-      // flat also takes care of that
-      .flat()
+    result = getValidationSourceErrors(baseMeta._validationSourceErrors)
   }
   return result
 }
 
 export function hasFieldMetaErrors(meta: InternalBaseFieldMeta): boolean {
   return (
-    getErrorsFromBaseMeta(meta).length > 0 ||
+    hasValidationSourceErrors(meta._validationSourceErrors) ||
     meta.childContributionCounts.error > 0
   )
 }

@@ -9,6 +9,7 @@ import { createMountedFormsController } from '../src/bridge/forms/mountedForms'
 import { createFormDevtoolsBridge } from '../src/bridge/createBridge'
 import { formDevtoolsEventClient } from '../src/eventClient.lib'
 import { connectTestEventBus } from './testEventBus'
+import { setFieldValidatorErrors } from './testUtils'
 import type { FormDevtoolsEventMap } from '../src/eventClientTypes'
 
 type FieldListSnapshot = FormDevtoolsEventMap['field-list-snapshot']
@@ -99,10 +100,7 @@ describe('field list bridge', () => {
       await flushPatches()
       expect(patches).toHaveLength(patchCountAfterBlur)
 
-      field._setMeta((meta) => ({
-        ...meta,
-        _fieldValidatorErrors: [[{ message: 'Invalid name' }]],
-      }))
+      setFieldValidatorErrors(field, [{ message: 'Invalid name' }])
       fields.updateField(field)
       await flushPatches()
       expect(field.meta.isValid).toBe(false)
@@ -116,10 +114,7 @@ describe('field list bridge', () => {
         ],
       })
 
-      field._setMeta((meta) => ({
-        ...meta,
-        _fieldValidatorErrors: [[]],
-      }))
+      setFieldValidatorErrors(field, [])
       fields.updateField(field)
       await flushPatches()
       expect(field.meta.isValid).toBe(true)
@@ -227,10 +222,7 @@ describe('field list bridge', () => {
         upsert: [{ fieldId, path: 'name', isMounted: false }],
       })
 
-      field._setMeta((meta) => ({
-        ...meta,
-        _fieldValidatorErrors: [[{ message: 'Invalid name' }]],
-      }))
+      setFieldValidatorErrors(field, [{ message: 'Invalid name' }])
       fields.updateField(field)
       await flushPatches()
       expect(patches.at(-1)).toEqual({
@@ -243,10 +235,7 @@ describe('field list bridge', () => {
         ],
       })
 
-      field._setMeta((meta) => ({
-        ...meta,
-        _fieldValidatorErrors: [[]],
-      }))
+      setFieldValidatorErrors(field, [])
       fields.updateField(field)
       await flushPatches()
       expect(patches.at(-1)).toEqual({

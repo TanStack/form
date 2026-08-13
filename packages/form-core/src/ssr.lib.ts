@@ -3,9 +3,10 @@ import { defaultInternalBaseFieldMeta } from './FieldApi/fieldState.lib'
 import { visitAllFormFields } from './FieldApi/fieldTraversal.lib'
 import { parseStandardSchemaIssues } from './standardSchema.lib'
 import { cancelPipelineCache, createPipelineCache, evaluate } from './utils.lib'
-import { runValidatorPipeline } from './validation.lib'
+import { runValidatorPipeline } from './validation'
 import { createErrorMap } from './validation.public'
 import { devtools } from './devtoolsBridge.lib'
+import { reconcileValidatorInstances } from './ValidatorInstance.lib'
 import type { FormOptions } from './FormApi/FormApi.public'
 import type { FormErrorMeta } from './FormApi/formState.lib'
 import type { InternalFormApi } from './FormApi/FormApi.lib'
@@ -25,20 +26,10 @@ type ServerFormValidateResult<
   ToServerFormErrorTypes<TFormValidators>
 >
 
-function createInitialFormErrorMeta(validatorCount: number): FormErrorMeta {
+function createInitialFormErrorMeta(): FormErrorMeta {
   return {
-    errors: Array.from({ length: validatorCount }, () => []),
-    errorSourceEvents: Array.from({ length: validatorCount }, () => null),
+    validationSourceErrors: null,
   }
-}
-
-function createInitialFieldErrors(
-  validatorCount: number,
-): Array<Set<AnyInternalFieldApi>> {
-  return Array.from(
-    { length: validatorCount },
-    () => new Set<AnyInternalFieldApi>(),
-  )
 }
 
 function resetFieldMetaForServerState(form: InternalFormApi<any, any, any>) {
@@ -49,6 +40,7 @@ function resetFieldMetaForServerState(form: InternalFormApi<any, any, any>) {
       cancelPipelineCache(field._pipelineCache)
       field._pipelineCache = null
     }
+    field._validatorInstances?.forEach((instance) => instance.resetRuntime())
 
     const metaAtom = field._atoms.meta
     if (metaAtom && metaAtom.get() !== defaultInternalBaseFieldMeta) {
@@ -63,7 +55,6 @@ function resetToServerState<TFormData>(
   serverState: ServerFormState<TFormData, any>,
   defaultValues: TFormData,
 ): void {
-  const validatorCount = form._options.validators?.length ?? 0
   const values = serverState.values ?? defaultValues
   const shouldUpdateDefaultValues = !evaluate(
     values,
@@ -72,7 +63,8 @@ function resetToServerState<TFormData>(
 
   cancelPipelineCache(form._pipelineCache)
   form._pipelineCache = createPipelineCache()
-  form._schemaOutputs = []
+  form._validatorInstances?.forEach((instance) => instance.resetRuntime())
+  form._onSubmitSource.resetRuntime()
   form._defaultValueCache = null
 
   if (shouldUpdateDefaultValues) {
@@ -90,8 +82,7 @@ function resetToServerState<TFormData>(
     form._atoms.values.set(values)
     form._atoms.meta.isDirty.set(false)
     form._atoms.meta.touchedFieldCount.set(0)
-    form._atoms.meta.formErrors.set(createInitialFormErrorMeta(validatorCount))
-    form._atoms.meta.fieldErrors.set(createInitialFieldErrors(validatorCount))
+    form._atoms.meta.formErrors.set(createInitialFormErrorMeta())
     form._atoms.meta.errorFields.set(new Set<AnyInternalFieldApi>())
     form._atoms.meta.fieldValidationCount.set(0)
     form._atoms.meta.validationCount.set(0)
@@ -100,7 +91,11 @@ function resetToServerState<TFormData>(
     form._atoms.meta.submissionAttempts.set(serverState.submissionAttempts)
 
     for (const result of serverState.validationResults) {
-      form._processValidationResult(result, 'server')
+      const validatorInstance =
+        form._validatorInstances?.[result.validatorIndex]
+      if (!validatorInstance) continue
+
+      form._processValidationResult({ ...result, validatorInstance }, 'server')
     }
   })
 }
@@ -131,24 +126,25 @@ export async function validateServerValues<
   values: TFormData,
 ): Promise<ServerValidateResult<TFormData, TFormValidators>> {
   const pipeline = options.validators
-  const schemaOutputs: Array<unknown> = Array.from(
-    { length: pipeline?.length ?? 0 },
-    () => undefined,
-  )
+  const validatorInstances = reconcileValidatorInstances({
+    definitions: pipeline,
+    instances: null,
+    owner: options,
+    scope: 'form',
+  })
 
   if (!pipeline || pipeline.length === 0) {
     return {
       success: true,
       values,
-      schemaOutputs: schemaOutputs as never,
+      schemaOutputs: [] as never,
     }
   }
 
   const pipelineResult = await runValidatorPipeline<
     ServerFormValidateResult<TFormData, TFormValidators>
   >({
-    pipeline,
-    cache: createPipelineCache(),
+    pipeline: validatorInstances ?? [],
     context: {
       scope: 'server',
       event: 'server',
@@ -168,21 +164,33 @@ export async function validateServerValues<
   })
 
   if (pipelineResult.thrownError !== null) {
+    validatorInstances?.forEach((instance) => instance.dispose())
     throw pipelineResult.thrownError
   }
 
-  for (const result of pipelineResult.results) {
-    if (result.hasSchemaResult) {
-      schemaOutputs[result.validatorIndex] = result.schemaResult
-    }
-  }
+  const schemaOutputs =
+    validatorInstances?.map((instance) => {
+      const result = pipelineResult.results.find(
+        (r) => r.validatorInstance === instance,
+      )
+      return result?.hasSchemaResult ? result.schemaResult : undefined
+    }) ?? []
+
+  const validationResults = pipelineResult.results.map((result) => ({
+    validatorIndex: validatorInstances?.indexOf(result.validatorInstance) ?? -1,
+    result: result.result,
+    schemaResult: result.schemaResult,
+    hasSchemaResult: result.hasSchemaResult,
+  }))
+
+  validatorInstances?.forEach((instance) => instance.dispose())
 
   if (pipelineResult.hasErrors) {
     return {
       success: false,
       serverState: {
         values,
-        validationResults: pipelineResult.results,
+        validationResults,
         submissionAttempts: 1,
       },
     }

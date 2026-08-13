@@ -2,12 +2,6 @@ import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
 
 // type
 import type { FieldUpdateOptions, OneOrMany, Updater } from './types.public'
-import type { ValidationDebouncer } from './validation.lib'
-import type {
-  FieldValidateResult,
-  FormGroupValidateResult,
-  FormValidateResult,
-} from './validation.public'
 import type { ListenerDebouncer } from './listeners.lib'
 import type {
   InternalFieldUpdateOptions,
@@ -94,42 +88,21 @@ export function getTargetField(
   return field
 }
 
-export interface PipelineCache<
-  in out TResult extends
-    | FormValidateResult<any>
-    | FormGroupValidateResult<any>
-    | FieldValidateResult,
-> {
+export interface PipelineCache {
   listenerDebouncers: Map<number, ListenerDebouncer>
-  validatorDebouncers: Map<number, ValidationDebouncer<TResult>>
-  validatorAbortControllers: Map<number, AbortController>
 }
 
-export function createPipelineCache(): PipelineCache<any> {
+export function createPipelineCache(): PipelineCache {
   return {
     listenerDebouncers: new Map(),
-    validatorDebouncers: new Map(),
-    validatorAbortControllers: new Map(),
   }
 }
 
-export function cancelPipelineCache(cache: PipelineCache<any>): void {
-  for (const abortController of Array.from(
-    cache.validatorAbortControllers.values(),
-  )) {
-    abortController.abort()
-  }
-
-  for (const debouncer of cache.validatorDebouncers.values()) {
-    debouncer.cancel()
-  }
-
+export function cancelPipelineCache(cache: PipelineCache): void {
   for (const debouncer of cache.listenerDebouncers.values()) {
     debouncer.cancel()
   }
 
-  cache.validatorAbortControllers.clear()
-  cache.validatorDebouncers.clear()
   cache.listenerDebouncers.clear()
 }
 
