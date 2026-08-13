@@ -17,7 +17,7 @@ import {
   runGroupMountValidatorPipeline,
   runValidatorPipeline,
   setIndexedError,
-} from '../validation.lib'
+} from '../validation'
 import { transformFieldOptionsFieldNames } from '../FieldApi/FieldApi.lib'
 import { visitFieldSubtree } from '../FieldApi/fieldTraversal.lib'
 import {

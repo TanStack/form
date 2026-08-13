@@ -33,7 +33,7 @@ import {
   runFormMountValidatorPipeline,
   runFormValidatorPipeline,
   setIndexedError,
-} from '../validation.lib'
+} from '../validation'
 import { runFormListenerPipeline } from '../listeners.lib'
 import { applyServerState } from '../ssr.lib'
 import { devtools } from '../devtoolsBridge.lib'
@@ -54,10 +54,7 @@ import type {
 import type { FormErrorMeta } from './formState.lib'
 import type { DeepKeys } from '../deep-keys.public'
 import type { PipelineCache } from '../utils.lib'
-import type {
-  FormValidatorPipelineResult,
-  PipelineResult,
-} from '../validation.lib'
+import type { FormValidatorPipelineResult, PipelineResult } from '../validation'
 import type {
   AnyFieldApiOptions,
   AnyInternalFieldApi,

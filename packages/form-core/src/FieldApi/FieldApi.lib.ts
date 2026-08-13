@@ -8,7 +8,7 @@ import {
   runFieldMountValidatorPipeline,
   runFieldValidatorPipeline,
   setIndexedError,
-} from '../validation.lib'
+} from '../validation'
 import { runFieldListenerPipeline } from '../listeners.lib'
 import { devtools } from '../devtoolsBridge.lib'
 import {
@@ -46,7 +46,7 @@ import type { NameSegment, NameSegments, PipelineCache } from '../utils.lib'
 import type {
   FieldValidatorPipelineResult,
   PipelineResult,
-} from '../validation.lib'
+} from '../validation'
 import type { ResolvedInternalFieldUpdateOptions } from '../types.lib'
 import type { FieldUpdateOptions, Updater } from '../types.public'
 import type { AnyInternalFormApi } from '../FormApi/FormApi.lib'
