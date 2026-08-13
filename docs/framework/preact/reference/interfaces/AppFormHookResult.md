@@ -60,7 +60,7 @@ function NameField({ form }: { form: ProfileForm }) {
 defineAppFieldGroup: DefineFieldGroupFn<TComponents["fieldComponents"]>;
 ```
 
-Defined in: [packages/preact-form/src/AppForm/createFormHookTypes.public.ts:83](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/createFormHookTypes.public.ts#L83)
+Defined in: [packages/preact-form/src/AppForm/createFormHookTypes.public.ts:90](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/createFormHookTypes.public.ts#L90)
 
 Defines a reusable field group whose fields expose the field components
 registered with `createFormHook`.
@@ -68,6 +68,13 @@ registered with `createFormHook`.
 #### Example
 
 ```tsx
+const { defineAppFieldGroup } = createFormHook({
+  fieldComponents: {
+    TextField,
+  },
+  formComponents: {},
+})
+
 const contactFields = defineAppFieldGroup(({ strict }) => ({
   name: strict<string>(),
   email: strict<string>(),
@@ -94,7 +101,7 @@ function ContactFields({
 useAppForm: UseAppFormHook<TComponents>;
 ```
 
-Defined in: [packages/preact-form/src/AppForm/createFormHookTypes.public.ts:108](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/createFormHookTypes.public.ts#L108)
+Defined in: [packages/preact-form/src/AppForm/createFormHookTypes.public.ts:115](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/createFormHookTypes.public.ts#L115)
 
 Creates a Preact form API extended with the field and form components
 registered with `createFormHook`.
@@ -128,7 +135,7 @@ function ProfileForm() {
 useFormContext: () => PreactAppFormApi<any, any, TComponents>;
 ```
 
-Defined in: [packages/preact-form/src/AppForm/createFormHookTypes.public.ts:132](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/createFormHookTypes.public.ts#L132)
+Defined in: [packages/preact-form/src/AppForm/createFormHookTypes.public.ts:139](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/createFormHookTypes.public.ts#L139)
 
 Reads the current App Form API from the nearest `form.AppForm` provider.
 
