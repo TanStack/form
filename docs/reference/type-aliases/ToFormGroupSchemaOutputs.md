@@ -9,7 +9,7 @@ title: ToFormGroupSchemaOutputs
 type ToFormGroupSchemaOutputs<TGroupValidators> = ToSchemaOutputs<TGroupValidators, FormGroupValidators<any>>;
 ```
 
-Defined in: [validation.public.ts:688](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L688)
+Defined in: [validation.public.ts:699](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L699)
 
 ## Type Parameters
 
