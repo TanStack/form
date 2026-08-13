@@ -7,6 +7,10 @@ title: ReactFormComponentMap
 
 Defined in: [packages/react-form/src/AppForm/componentMap.public.ts:3](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/componentMap.public.ts#L3)
 
+## Extended by
+
+- [`CreateFormHookOptions`](CreateFormHookOptions.md)
+
 ## Type Parameters
 
 ### TFormComponents

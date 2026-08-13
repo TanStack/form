@@ -3,3 +3,6 @@ reviews:
     base_branches:
       - alpha
       - main
+  path_filters:
+    - '!docs/reference/**'
+    - '!docs/framework/*/reference/**'
