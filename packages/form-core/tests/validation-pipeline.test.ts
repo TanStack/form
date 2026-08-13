@@ -317,6 +317,27 @@ describe('runFormValidatorPipeline', () => {
     expect(run).toHaveBeenCalledOnce()
   })
 
+  it('should settle as aborted when a disposed validator cannot create a debouncer', async () => {
+    const formApi = getForm({ name: '' })
+    const run = vi.fn(() => ({ message: 'foo' }))
+    const onResult = vi.fn()
+    const { pipeline, runWithContext } = getPipeline(formApi, [
+      {
+        run,
+        triggers: ['change'],
+        triggerDebounceMs: 100,
+      },
+    ])
+
+    pipeline[0]!.dispose()
+
+    await expect(
+      runWithContext({ event: 'change', onResult }),
+    ).resolves.toEqual([])
+    expect(run).not.toHaveBeenCalled()
+    expect(onResult).not.toHaveBeenCalled()
+  })
+
   it('should debounce validation with a function', async () => {
     vi.useFakeTimers()
 

@@ -452,7 +452,12 @@ export function runMaybeDebouncedValidator<TResult extends ValidateResult>({
       })
     }, debounceMs)
 
-    debouncer?.maybeExecute({
+    if (!debouncer) {
+      settle(ABORTED_CALL)
+      return
+    }
+
+    debouncer.maybeExecute({
       context: validationContext,
       resolve: settle,
       // This should not be called anymore since we handle errors in the
