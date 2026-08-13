@@ -141,64 +141,66 @@ export async function validateServerValues<
     }
   }
 
-  const pipelineResult = await runValidatorPipeline<
-    ServerFormValidateResult<TFormData, TFormValidators>
-  >({
-    pipeline: validatorInstances ?? [],
-    context: {
-      scope: 'server',
-      event: 'server',
-      formApi: undefined,
-    },
-    hasFailedBefore: false,
-    getContext: (ctx) => ({
-      event: 'server',
-      signal: ctx.signal,
-      formApi: undefined,
-      value: values,
-      createErrorMap,
-      parseIssues: (issues) =>
-        parseStandardSchemaIssues(issues, values, 'form'),
-    }),
-    scope: 'form',
-  })
-
-  if (pipelineResult.thrownError !== null) {
-    validatorInstances?.forEach((instance) => instance.dispose())
-    throw pipelineResult.thrownError
-  }
-
-  const schemaOutputs =
-    validatorInstances?.map((instance) => {
-      const result = pipelineResult.results.find(
-        (r) => r.validatorInstance === instance,
-      )
-      return result?.hasSchemaResult ? result.schemaResult : undefined
-    }) ?? []
-
-  const validationResults = pipelineResult.results.map((result) => ({
-    validatorIndex: validatorInstances?.indexOf(result.validatorInstance) ?? -1,
-    result: result.result,
-    schemaResult: result.schemaResult,
-    hasSchemaResult: result.hasSchemaResult,
-  }))
-
-  validatorInstances?.forEach((instance) => instance.dispose())
-
-  if (pipelineResult.hasErrors) {
-    return {
-      success: false,
-      serverState: {
-        values,
-        validationResults,
-        submissionAttempts: 1,
+  try {
+    const pipelineResult = await runValidatorPipeline<
+      ServerFormValidateResult<TFormData, TFormValidators>
+    >({
+      pipeline: validatorInstances ?? [],
+      context: {
+        scope: 'server',
+        event: 'server',
+        formApi: undefined,
       },
-    }
-  }
+      hasFailedBefore: false,
+      getContext: (ctx) => ({
+        event: 'server',
+        signal: ctx.signal,
+        formApi: undefined,
+        value: values,
+        createErrorMap,
+        parseIssues: (issues) =>
+          parseStandardSchemaIssues(issues, values, 'form'),
+      }),
+      scope: 'form',
+    })
 
-  return {
-    success: true,
-    values,
-    schemaOutputs: schemaOutputs as never,
+    if (pipelineResult.thrownError !== null) {
+      throw pipelineResult.thrownError
+    }
+
+    const schemaOutputs =
+      validatorInstances?.map((instance) => {
+        const result = pipelineResult.results.find(
+          (r) => r.validatorInstance === instance,
+        )
+        return result?.hasSchemaResult ? result.schemaResult : undefined
+      }) ?? []
+
+    const validationResults = pipelineResult.results.map((result) => ({
+      validatorIndex:
+        validatorInstances?.indexOf(result.validatorInstance) ?? -1,
+      result: result.result,
+      schemaResult: result.schemaResult,
+      hasSchemaResult: result.hasSchemaResult,
+    }))
+
+    if (pipelineResult.hasErrors) {
+      return {
+        success: false,
+        serverState: {
+          values,
+          validationResults,
+          submissionAttempts: 1,
+        },
+      }
+    }
+
+    return {
+      success: true,
+      values,
+      schemaOutputs: schemaOutputs as never,
+    }
+  } finally {
+    validatorInstances?.forEach((instance) => instance.dispose())
   }
 }

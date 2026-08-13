@@ -68,6 +68,63 @@ describe('server validation', () => {
     expect(serverValidator).toHaveBeenCalledOnce()
   })
 
+  it('disposes every validator once when the server pipeline rejects', async () => {
+    const error = new Error('Pipeline failed')
+    const disposeSpy = vi.spyOn(InternalValidatorInstance.prototype, 'dispose')
+    const options = formOptions({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          run: () => null,
+          get triggers(): ['server'] {
+            throw error
+          },
+        },
+        {
+          run: () => null,
+          triggers: ['server'],
+        },
+      ],
+    })
+
+    try {
+      await expect(validateServerValues(options, { name: '' })).rejects.toBe(
+        error,
+      )
+      expect(disposeSpy).toHaveBeenCalledTimes(2)
+      expect(new Set(disposeSpy.mock.instances).size).toBe(2)
+    } finally {
+      disposeSpy.mockRestore()
+    }
+  })
+
+  it('rethrows validator errors after disposing their instance once', async () => {
+    const error = new Error('Validator failed')
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const disposeSpy = vi.spyOn(InternalValidatorInstance.prototype, 'dispose')
+    const options = formOptions({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          run: () => {
+            throw error
+          },
+          triggers: ['server'],
+        },
+      ],
+    })
+
+    try {
+      await expect(validateServerValues(options, { name: '' })).rejects.toBe(
+        error,
+      )
+      expect(disposeSpy).toHaveBeenCalledOnce()
+    } finally {
+      disposeSpy.mockRestore()
+      consoleSpy.mockRestore()
+    }
+  })
+
   it('runs server-only validators during client submit by default', async () => {
     const serverValidator = vi.fn(() => 'Server error')
     const form = new InternalFormApi(
