@@ -636,6 +636,19 @@ type TryGetSchemaOutput<TValidator> = TValidator extends {
   ? TOutput
   : undefined
 
+type TryGetSubmitSchemaOutput<TValidator> =
+  TryGetSchemaOutput<TValidator> extends infer TOutput
+    ? TValidator extends { readonly runOnSubmit: infer TRunOnSubmit }
+      ? [TRunOnSubmit] extends [false]
+        ? undefined // User explicitly set runOnSubmit: false -> guaranteed undefined
+        : TRunOnSubmit extends (...args: Array<any>) => boolean
+          ? TOutput | undefined // Callback could dynamically be true or false -> union
+          : false extends TRunOnSubmit
+            ? TOutput | undefined // the explicit variable is boolean, so also dynamic -> union
+            : TOutput
+      : TOutput // default, which is guaranteed present
+    : never
+
 type ValidatorTriggers<TValidator> = TValidator extends {
   readonly triggers: infer TTriggers
 }
@@ -667,9 +680,7 @@ type MappedSchemaOutputs<in out TValidators extends ReadonlyArray<unknown>> = {
   [K in keyof TValidators]: TValidators[K] extends {
     readonly run: any
   }
-    ? TValidators[K] extends { readonly runOnSubmit: false }
-      ? undefined
-      : TryGetSchemaOutput<TValidators[K]>
+    ? TryGetSubmitSchemaOutput<TValidators[K]>
     : never
 }
 
