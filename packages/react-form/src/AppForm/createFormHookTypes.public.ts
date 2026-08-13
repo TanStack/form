@@ -20,11 +20,11 @@ import type {
 /**
  * Form defaults that do not participate in form value inference.
  *
- * This type is limited to `formId`, `errorVisibility`, `listeners`,
- * `serverState`, and `onSubmitInvalid`. Callback contexts expose form values
- * as `unknown`, so value-dependent behavior remains local to `useAppForm`.
- * Options passed to `useAppForm` override these defaults, including when an
- * option is explicitly `undefined`.
+ * This type is limited to `formId`, `errorVisibility`, `listeners`, and
+ * `onSubmitInvalid`. Callback contexts expose form values as `unknown`, so
+ * value-dependent behavior remains local to `useAppForm`. Options passed to
+ * `useAppForm` override these defaults, including when an option is explicitly
+ * `undefined`.
  *
  * @example
  * ```tsx

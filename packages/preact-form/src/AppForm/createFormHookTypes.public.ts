@@ -62,6 +62,13 @@ export interface AppFormHookResult<
    *
    * @example
    * ```tsx
+   * const { defineAppFieldGroup } = createFormHook({
+   *   fieldComponents: {
+   *     TextField,
+   *   },
+   *   formComponents: {},
+   * })
+   *
    * const contactFields = defineAppFieldGroup(({ strict }) => ({
    *   name: strict<string>(),
    *   email: strict<string>(),

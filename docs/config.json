@@ -379,7 +379,7 @@
               "to": "framework/react/reference/interfaces/AppFormHookResult"
             },
             {
-              "label": "getFormHookHelpers()",
+              "label": "FormHookHelpers",
               "to": "framework/react/reference/interfaces/FormHookHelpers"
             },
             {

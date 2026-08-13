@@ -63,6 +63,7 @@ function InferenceRemainsLocal() {
       tags: [''],
       group: { count: 0 },
     },
+    serverState: undefined,
   })
 
   expectTypeOf(form.state.values).toEqualTypeOf<{
@@ -124,6 +125,15 @@ createFormHook({
   defaultFormOptions: {
     // @ts-expect-error defaultValues must remain an inference source
     defaultValues: { name: '' },
+  },
+})
+
+createFormHook({
+  fieldComponents: {},
+  formComponents: {},
+  defaultFormOptions: {
+    // @ts-expect-error serverState must remain local to an individual form
+    serverState: undefined,
   },
 })
 
