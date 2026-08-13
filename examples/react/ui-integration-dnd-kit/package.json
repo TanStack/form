@@ -11,13 +11,13 @@
   "dependencies": {
     "@dnd-kit/helpers": "^0.5.0",
     "@dnd-kit/react": "^0.5.0",
-    "@tanstack/react-form": "^2.0.0-alpha.0",
+    "@tanstack/react-form": "^2.0.0-alpha.1",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
   "devDependencies": {
     "@tanstack/react-devtools": "^0.10.5",
-    "@tanstack/react-form-devtools": "^1.0.0-alpha.0",
+    "@tanstack/react-form-devtools": "^1.0.0-alpha.1",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",

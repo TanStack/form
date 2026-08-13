@@ -9,7 +9,7 @@
     "test:types": "svelte-check --tsconfig ./tsconfig.json"
   },
   "dependencies": {
-    "@tanstack/svelte-form": "^2.0.0-alpha.0",
+    "@tanstack/svelte-form": "^2.0.0-alpha.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {
