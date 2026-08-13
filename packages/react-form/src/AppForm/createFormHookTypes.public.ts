@@ -42,7 +42,7 @@ import type {
  */
 export type CreateFormHookDefaultFormOptions = Pick<
   FormOptions<unknown, FormValidators<unknown>, unknown>,
-  'formId' | 'errorVisibility' | 'listeners' | 'serverState' | 'onSubmitInvalid'
+  'formId' | 'errorVisibility' | 'listeners' | 'onSubmitInvalid'
 >
 
 /**
