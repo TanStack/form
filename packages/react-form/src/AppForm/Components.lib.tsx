@@ -18,6 +18,10 @@ import type {
   ReactFormGroupProps,
 } from '../ReactForm/Components.public'
 import type { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
+import type {
+  CreateFormHookDefaultFieldOptions,
+  CreateFormHookDefaultFormGroupOptions,
+} from './createFormHookTypes.public'
 
 type AnyReactAppFormApi = ReactAppFormApi<any, any, AnyReactFormComponentMap>
 
@@ -25,21 +29,51 @@ export function attachReactAppFormComponents(
   form: AnyInternalFormApi,
   formComponents: Record<string, FunctionComponent<any>>,
   fieldComponents: Record<string, FunctionComponent<any>>,
+  defaultFieldOptions: CreateFormHookDefaultFieldOptions | undefined,
+  defaultFormGroupOptions: CreateFormHookDefaultFormGroupOptions | undefined,
 ): AnyReactAppFormApi {
   const resultForm = attachReactFormComponents(
     form,
     fieldComponents,
   ) as never as AnyReactAppFormApi
-  resultForm.AppForm = createAppForm(form)
-  resultForm.Field = createFieldWithContext(
-    form,
-    fieldComponents,
-  ) as AnyReactAppFormApi['Field']
-  resultForm.FormGroup = createFormGroupWithContext(
+  const fieldWithoutDefaults = createFieldWithContext(form, fieldComponents)
+  const arrayFieldWithoutDefaults =
+    resultForm.ArrayField as FunctionComponent<any>
+  const formGroupWithoutDefaults = createFormGroupWithContext(
     resultForm as any,
+    fieldWithoutDefaults,
+    arrayFieldWithoutDefaults,
+  )
+
+  resultForm.AppForm = createAppForm(form)
+  resultForm.Field = withDefaultOptions(
+    fieldWithoutDefaults,
+    defaultFieldOptions,
+  ) as AnyReactAppFormApi['Field']
+  resultForm.ArrayField = withDefaultOptions(
+    arrayFieldWithoutDefaults,
+    defaultFieldOptions,
+  ) as AnyReactAppFormApi['ArrayField']
+  resultForm.FormGroup = withDefaultOptions(
+    formGroupWithoutDefaults,
+    defaultFormGroupOptions,
   ) as AnyReactAppFormApi['FormGroup']
 
   return Object.assign(resultForm, formComponents)
+}
+
+function withDefaultOptions(
+  Component: FunctionComponent<any>,
+  defaultOptions: object | undefined,
+): FunctionComponent<any> {
+  if (!defaultOptions) return Component
+
+  const ComponentWithDefaultOptions: FunctionComponent<any> = (props) => (
+    <Component {...defaultOptions} {...props} />
+  )
+  ComponentWithDefaultOptions.displayName = Component.displayName
+
+  return ComponentWithDefaultOptions
 }
 
 function createAppForm(form: AnyInternalFormApi): AppFormComponent {
@@ -86,6 +120,8 @@ type AnyFormGroupComponent = FunctionComponent<
 
 function createFormGroupWithContext(
   form: InternalReactFormApi,
+  fieldWithoutDefaults: FunctionComponent<any>,
+  arrayFieldWithoutDefaults: FunctionComponent<any>,
 ): AnyFormGroupComponent {
   const TanStackFormGroup: AnyFormGroupComponent = (props) => {
     const groupRef =
@@ -94,7 +130,8 @@ function createFormGroupWithContext(
     if (!groupRef.current) {
       groupRef.current = attachAppFormGroupComponents(
         new InternalFormGroupApi({ ...props, form } as never),
-        form,
+        fieldWithoutDefaults,
+        arrayFieldWithoutDefaults,
       )
     }
 
@@ -116,7 +153,8 @@ function createFormGroupWithContext(
 
 function attachAppFormGroupComponents(
   group: InternalFormGroupApi<any, any, any, any, any>,
-  form: InternalReactFormApi,
+  fieldWithoutDefaults: FunctionComponent<any>,
+  arrayFieldWithoutDefaults: FunctionComponent<any>,
 ) {
   type GroupWithComponents = InternalFormGroupApi<any, any, any, any, any> & {
     Field: FunctionComponent<any>
@@ -125,10 +163,12 @@ function attachAppFormGroupComponents(
   }
 
   const resultGroup: GroupWithComponents = group as never
+  const FieldWithoutDefaults = fieldWithoutDefaults
+  const ArrayFieldWithoutDefaults = arrayFieldWithoutDefaults
 
   resultGroup.Field = function Field(props) {
     return (
-      <form.Field
+      <FieldWithoutDefaults
         {...(group._getFormFieldOptions(props, (base, overrides) => ({
           ...base,
           ...overrides,
@@ -140,7 +180,7 @@ function attachAppFormGroupComponents(
 
   resultGroup.ArrayField = function ArrayField(props) {
     return (
-      <form.ArrayField
+      <ArrayFieldWithoutDefaults
         {...(group._getFormFieldOptions(props, (base, overrides) => ({
           ...base,
           ...overrides,

@@ -1,0 +1,146 @@
+import React from 'react'
+import { expectTypeOf } from 'vitest'
+import { createFormHook } from '../src'
+import type {
+  CreateFormHookDefaultFieldOptions,
+  CreateFormHookDefaultFormGroupOptions,
+  CreateFormHookDefaultFormOptions,
+} from '../src'
+
+const { useAppForm } = createFormHook({
+  fieldComponents: {},
+  formComponents: {},
+  defaultFormOptions: {
+    errorVisibility: ({ state, fieldState }) => {
+      expectTypeOf(state.values).toBeUnknown()
+      expectTypeOf(fieldState.value).toBeAny()
+      return true
+    },
+    listeners: [
+      {
+        triggers: [],
+        run: ({ value, formApi }) => {
+          expectTypeOf(value).toBeUnknown()
+          expectTypeOf(formApi.state.values).toBeUnknown()
+        },
+      },
+    ],
+    onSubmitInvalid: ({ value, formApi }) => {
+      expectTypeOf(value).toBeUnknown()
+      expectTypeOf(formApi.state.values).toBeUnknown()
+    },
+  },
+  defaultFieldOptions: {
+    errorVisibility: ({ state, fieldState }) => {
+      expectTypeOf(state.values).toBeUnknown()
+      expectTypeOf(fieldState.value).toBeAny()
+      return true
+    },
+    listeners: [
+      {
+        triggers: [],
+        run: ({ value, fieldApi, formApi }) => {
+          expectTypeOf(value).toBeUnknown()
+          expectTypeOf(fieldApi.value).toBeUnknown()
+          expectTypeOf(formApi.state.values).toBeUnknown()
+        },
+      },
+    ],
+  },
+  defaultFormGroupOptions: {
+    onSubmitInvalid: ({ value, formApi, groupApi }) => {
+      expectTypeOf(value).toBeUnknown()
+      expectTypeOf(formApi.state.values).toBeUnknown()
+      expectTypeOf(groupApi.value).toBeUnknown()
+    },
+  },
+})
+
+function InferenceRemainsLocal() {
+  const form = useAppForm({
+    defaultValues: {
+      name: '',
+      tags: [''],
+      group: { count: 0 },
+    },
+  })
+
+  expectTypeOf(form.state.values).toEqualTypeOf<{
+    name: string
+    tags: Array<string>
+    group: { count: number }
+  }>()
+
+  return (
+    <>
+      <form.Field name="name">
+        {(field) => {
+          expectTypeOf(field.value).toEqualTypeOf<string>()
+          return null
+        }}
+      </form.Field>
+      <form.ArrayField name="tags">
+        {(field) => {
+          expectTypeOf(field.value).toEqualTypeOf<Array<string>>()
+          return null
+        }}
+      </form.ArrayField>
+      <form.FormGroup name="group">
+        {(group) => {
+          expectTypeOf(group.value).toEqualTypeOf<{ count: number }>()
+          return null
+        }}
+      </form.FormGroup>
+    </>
+  )
+}
+
+void InferenceRemainsLocal
+
+expectTypeOf<
+  Extract<
+    keyof CreateFormHookDefaultFormOptions,
+    'defaultValues' | 'validators' | 'onSubmit'
+  >
+>().toBeNever()
+
+expectTypeOf<
+  Extract<
+    keyof CreateFormHookDefaultFieldOptions,
+    'name' | 'defaultValues' | 'validators' | 'onSubmit'
+  >
+>().toBeNever()
+
+expectTypeOf<
+  Extract<
+    keyof CreateFormHookDefaultFormGroupOptions,
+    'form' | 'name' | 'defaultValues' | 'validators' | 'onSubmit'
+  >
+>().toBeNever()
+
+createFormHook({
+  fieldComponents: {},
+  formComponents: {},
+  defaultFormOptions: {
+    // @ts-expect-error defaultValues must remain an inference source
+    defaultValues: { name: '' },
+  },
+})
+
+createFormHook({
+  fieldComponents: {},
+  formComponents: {},
+  defaultFieldOptions: {
+    // @ts-expect-error validators must remain local to a field
+    validators: [],
+  },
+})
+
+createFormHook({
+  fieldComponents: {},
+  formComponents: {},
+  defaultFormGroupOptions: {
+    // @ts-expect-error onSubmit must remain local to a form group
+    onSubmit: () => {},
+  },
+})
