@@ -165,7 +165,7 @@ async function continueMountValidationFromAsyncResult<
   pipeline: ReadonlyArray<AnyInternalValidatorInstance>,
   getContext: MountValidatorPipelineArgs<TResult>['getContext'],
   scope: 'field' | 'form',
-  startInstance: AnyInternalValidatorInstance,
+  startIndex: number,
   firstResult: PromiseLike<MountValidationExecutionResult<TResult>>,
   hasFailedBefore: boolean,
   onResult?: (result: PipelineResult<TResult>) => void,
@@ -175,7 +175,7 @@ async function continueMountValidationFromAsyncResult<
   const firstExecutionResult = await firstResult
   if (
     processMountValidationExecutionResult(
-      startInstance,
+      pipeline[startIndex]!,
       firstExecutionResult,
       onResult,
     )
@@ -183,7 +183,6 @@ async function continueMountValidationFromAsyncResult<
     hasFailed = true
   }
 
-  const startIndex = pipeline.indexOf(startInstance)
   for (let i = startIndex + 1; i < pipeline.length; i++) {
     const validatorInstance = pipeline[i]!
     const validator = validatorInstance.definition
@@ -240,7 +239,8 @@ function runMountValidatorPipeline<TResult extends ValidateResult>({
 
   let hasFailed = false
 
-  for (const validatorInstance of pipeline) {
+  for (let i = 0; i < pipeline.length; i++) {
+    const validatorInstance = pipeline[i]!
     const validator = validatorInstance.definition
     if (validator.runOnMount !== true) continue
 
@@ -264,7 +264,7 @@ function runMountValidatorPipeline<TResult extends ValidateResult>({
           pipeline,
           getContext,
           scope,
-          validatorInstance,
+          i,
           result,
           hasFailed,
           onResult,

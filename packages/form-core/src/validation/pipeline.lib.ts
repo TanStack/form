@@ -257,27 +257,28 @@ export function runFormValidatorPipeline({
         throw new Error('Server validation cannot run through client pipeline')
       }
 
-      if (!isFieldValidateContext(ctx)) {
-        return {
-          event: ctx.event,
-          triggerFieldApi: ctx.triggerFieldApi,
-          formApi: ctx.formApi,
-          signal: ctx.signal,
-          value: ctx.formApi.state.values,
-          createErrorMap,
-          parseIssues: (issues) =>
-            parseStandardSchemaIssues(issues, ctx.formApi.state.values, 'form'),
-        }
-      }
-      return {
+      const formValidationContext = {
         event: ctx.event,
-        fieldApi: ctx.fieldApi,
         formApi: ctx.formApi,
         signal: ctx.signal,
         value: ctx.formApi.state.values,
         createErrorMap,
-        parseIssues: (issues) =>
+        parseIssues: (
+          issues: Parameters<typeof parseStandardSchemaIssues>[0],
+        ) =>
           parseStandardSchemaIssues(issues, ctx.formApi.state.values, 'form'),
+      }
+
+      if (!isFieldValidateContext(ctx)) {
+        return {
+          ...formValidationContext,
+          triggerFieldApi: ctx.triggerFieldApi,
+        }
+      }
+
+      return {
+        ...formValidationContext,
+        fieldApi: ctx.fieldApi,
       }
     },
     scope: 'form',
