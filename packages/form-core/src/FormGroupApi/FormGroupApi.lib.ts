@@ -26,6 +26,7 @@ import {
 } from '../FieldApi/fieldState.lib'
 import { parseStandardSchemaIssues } from '../standardSchema.lib'
 import { createErrorMap } from '../validation.public'
+import { reconcileValidatorInstances } from '../ValidatorInstance.lib'
 import type { FormApi } from '../FormApi/FormApi.public'
 import type { InternalFormApi } from '../FormApi/FormApi.lib'
 import type {
@@ -57,6 +58,7 @@ import type {
   ValidationIssue,
 } from '../validation.public'
 import type { ReadonlyAtom } from '@tanstack/store'
+import type { InternalValidatorInstances } from '../ValidatorInstance.lib'
 
 interface FormGroupValidationOutcome<TGroupValue> {
   errors: Array<FormGroupValidateResult<TGroupValue>>
@@ -100,6 +102,17 @@ export class InternalFormGroupApi<
     TGroupValidators,
     TFormErrorTypes
   >
+  /** Stable runtime instances correlated with `_options.validators` by slot. */
+  _validatorInstances: InternalValidatorInstances<
+    TGroupValidators[number],
+    InternalFormGroupApi<
+      TFormData,
+      TGroupName,
+      TGroupValue,
+      TGroupValidators,
+      TFormErrorTypes
+    >
+  >
   atom: ReadonlyAtom<
     FormGroupState<TGroupValue, ToFormGroupErrorTypes<TGroupValidators>>
   >
@@ -141,6 +154,12 @@ export class InternalFormGroupApi<
     this._groupField = this.form._getOrCreateFieldApi({ name: options.name })
     this._groupField._setFormGroup(this)
     this._pipelineCache = createPipelineCache()
+    this._validatorInstances = reconcileValidatorInstances({
+      definitions: this._options.validators,
+      instances: null,
+      owner: this,
+      scope: 'group',
+    })
 
     const groupMetaMarkers: DerivedMetaMarkers = {
       source: undefined,
@@ -250,7 +269,15 @@ export class InternalFormGroupApi<
       TFormErrorTypes
     >,
   ) => {
+    const previousValidators = this._options.validators
     this._options = options
+    this._validatorInstances = reconcileValidatorInstances({
+      definitions: this._options.validators,
+      previousDefinitions: previousValidators ?? null,
+      instances: this._validatorInstances,
+      owner: this,
+      scope: 'group',
+    })
   }
 
   mount = (): void => {
@@ -722,6 +749,7 @@ export class InternalFormGroupApi<
 
   reset = () => {
     this._cancelValidation()
+    this._validatorInstances?.forEach((instance) => instance.resetRuntime())
     this._schemaOutputs = []
     this.form._atoms.values.set((prev: TFormData) =>
       setBy(prev, this.name, getBy(this.form.defaultValues, this.name)),
@@ -747,6 +775,7 @@ export class InternalFormGroupApi<
 
   _cleanup() {
     this._cancelValidation()
+    this._validatorInstances?.forEach((instance) => instance.resetRuntime())
     this._schemaOutputs = []
     batch(() => {
       this._isSubmitting.set(false)

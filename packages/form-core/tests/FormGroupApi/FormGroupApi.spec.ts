@@ -314,6 +314,75 @@ describe('FormGroupApi', () => {
     expect(group._options.onSubmit).toBe(onSubmit)
   })
 
+  it('keeps group validator instances stable by slot across updates', () => {
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: 'Tony' } },
+    })
+    const firstDefinition = { run: () => null, triggers: [] }
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [firstDefinition],
+    })
+    const instance = group._validatorInstances?.[0]
+    const nextDefinition = { run: () => null, triggers: [] }
+
+    group.update({
+      form,
+      name: 'guestDetails',
+      validators: [nextDefinition],
+    })
+
+    expect(group._validatorInstances?.[0]).toBe(instance)
+    expect(instance?.definition).toBe(nextDefinition)
+    expect(instance?.owner).toBe(group)
+    expect(instance?.scope).toBe('group')
+    expect(instance?.revision).toBe(1)
+  })
+
+  it('warns when the group validator array length changes after initialization', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: 'Tony' } },
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+    })
+
+    group.update({
+      form,
+      name: 'guestDetails',
+      validators: [{ run: () => null, triggers: [] }],
+    })
+
+    expect(warn).toHaveBeenCalled()
+    warn.mockRestore()
+  })
+
+  it('resets validator runtime during cleanup and preserves remount identity', () => {
+    const form = new InternalFormApi({
+      defaultValues: { guestDetails: { name: 'Tony' } },
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+      validators: [{ run: () => null, triggers: [] }],
+    })
+    const instance = group._validatorInstances?.[0]
+    const abortController = new AbortController()
+    instance?.setAbortController(abortController)
+    instance?.setSchemaOutput('output')
+
+    group._cleanup()
+    group.mount()
+
+    expect(group._validatorInstances?.[0]).toBe(instance)
+    expect(abortController.signal.aborted).toBe(true)
+    expect(instance?.hasSchemaOutput).toBe(false)
+    expect(instance?.disposed).toBe(false)
+  })
+
   it('stores the group on its trie node and follows that node when it moves', () => {
     const form = new InternalFormApi({
       defaultValues: {

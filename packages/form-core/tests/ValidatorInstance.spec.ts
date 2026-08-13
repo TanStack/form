@@ -1,6 +1,9 @@
 import { afterEach, describe, expect, expectTypeOf, it, vi } from 'vitest'
 import { LiteDebouncer } from '@tanstack/pacer-lite'
-import { InternalValidatorInstance } from '../src/ValidatorInstance.lib'
+import {
+  InternalValidatorInstance,
+  reconcileValidatorInstances,
+} from '../src/ValidatorInstance.lib'
 
 type TestDebouncedFn = (value: string) => void
 
@@ -258,5 +261,94 @@ describe('InternalValidatorInstance', () => {
     expect(instance.didRunOnMount).toBe(false)
     expect(nextController.signal.aborted).toBe(false)
     expect(nextDebouncer).toBeNull()
+  })
+})
+
+describe('reconcileValidatorInstances', () => {
+  it('normalizes missing and empty definitions to null', () => {
+    const owner = { name: 'form' }
+
+    expect(
+      reconcileValidatorInstances({
+        definitions: undefined,
+        instances: null,
+        owner,
+        scope: 'form',
+      }),
+    ).toBeNull()
+    expect(
+      reconcileValidatorInstances({
+        definitions: [],
+        instances: null,
+        owner,
+        scope: 'form',
+      }),
+    ).toBeNull()
+  })
+
+  it('preserves retained slots and disposes removed slots', () => {
+    const owner = { name: 'field' }
+    const firstDefinition = createDefinition('first')
+    const secondDefinition = createDefinition('second')
+    const initial = reconcileValidatorInstances({
+      definitions: [firstDefinition, secondDefinition],
+      instances: null,
+      owner,
+      scope: 'field',
+    })
+    const firstInstance = initial?.[0]
+    const secondInstance = initial?.[1]
+    const nextDefinition = createDefinition('next')
+
+    const next = reconcileValidatorInstances({
+      definitions: [nextDefinition],
+      instances: initial,
+      owner,
+      scope: 'field',
+    })
+
+    expect(next).toBe(initial)
+    expect(next).toEqual([firstInstance])
+    expect(firstInstance?.definition).toBe(nextDefinition)
+    expect(firstInstance?.revision).toBe(1)
+    expect(secondInstance?.disposed).toBe(true)
+  })
+
+  it('creates added slots and disposes all slots when cleared', () => {
+    const owner = { name: 'group' }
+    const firstDefinition = createDefinition('first')
+    const initial = reconcileValidatorInstances({
+      definitions: [firstDefinition],
+      instances: null,
+      owner,
+      scope: 'group',
+    })
+    const firstInstance = initial?.[0]
+    const secondDefinition = createDefinition('second')
+
+    const expanded = reconcileValidatorInstances({
+      definitions: [firstDefinition, secondDefinition],
+      instances: initial,
+      owner,
+      scope: 'group',
+    })
+    const secondInstance = expanded?.[1]
+
+    expect(expanded).toBe(initial)
+    expect(firstInstance?.revision).toBe(1)
+    expect(secondInstance?.definition).toBe(secondDefinition)
+    expect(secondInstance?.owner).toBe(owner)
+    expect(secondInstance?.scope).toBe('group')
+
+    expect(
+      reconcileValidatorInstances({
+        definitions: null,
+        instances: expanded,
+        owner,
+        scope: 'group',
+      }),
+    ).toBeNull()
+    expect(firstInstance?.disposed).toBe(true)
+    expect(secondInstance?.disposed).toBe(true)
   })
 })

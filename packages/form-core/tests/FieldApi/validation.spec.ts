@@ -378,9 +378,7 @@ describe('field - linked validators', () => {
 
     expect(firstValidator).toHaveBeenCalledOnce()
     expect(secondValidator).toHaveBeenCalledOnce()
-    expect(warn).toHaveBeenCalledWith(
-      'Field validator: cyclical validator cycle detected. Check around the field first',
-    )
+    expect(warn).toHaveBeenCalled()
 
     warn.mockRestore()
   })

@@ -375,6 +375,8 @@ export function killField(
         cancelPipelineCache(node._pipelineCache)
         node._pipelineCache = null
       }
+      node._validatorInstances?.forEach((instance) => instance.dispose())
+      node._validatorInstances = null
       node._childrenMap.clear()
       node._parent._removeChild(node._segment)
     }

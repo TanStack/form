@@ -37,6 +37,7 @@ import {
 import { runFormListenerPipeline } from '../listeners.lib'
 import { applyServerState } from '../ssr.lib'
 import { devtools } from '../devtoolsBridge.lib'
+import { reconcileValidatorInstances } from '../ValidatorInstance.lib'
 import { runSubmissionProcess } from './handleSubmit.lib'
 import { ArrayMethods } from './array-methods.lib'
 import {
@@ -84,6 +85,7 @@ import type {
 } from '../validation.public'
 import type { FormListenerTriggers } from '../listeners.public'
 import type { ServerFormState } from '../ssr.public'
+import type { InternalValidatorInstances } from '../ValidatorInstance.lib'
 
 export interface FormMetaAtoms {
   isDirty: Atom<boolean>
@@ -220,6 +222,11 @@ export class InternalFormApi<
   _fieldRootNode: InternalRootFieldApi
   _defaultValueCache: DefaultValueCacheEntry | null = null
   _options: InternalFormOptions<TFormData, TFormValidators, any>
+  /** Stable runtime instances correlated with `_options.validators` by slot. */
+  _validatorInstances: InternalValidatorInstances<
+    TFormValidators[number],
+    InternalFormApi<TFormData, TFormValidators, TSubmitReturn>
+  >
   _lastUpdateDefaultValues: TFormData
   _pipelineCache: PipelineCache<any>
   _schemaOutputs: Array<any> = []
@@ -300,6 +307,12 @@ export class InternalFormApi<
     this.atom = createAtom(() => getFormStateSnapshot(this), {
       compare: compareFormStateSnapshots,
     })
+    this._validatorInstances = reconcileValidatorInstances({
+      definitions: this._options.validators,
+      instances: null,
+      owner: this,
+      scope: 'form',
+    })
 
     applyServerState(
       this,
@@ -359,6 +372,7 @@ export class InternalFormApi<
 
     cancelPipelineCache(this._pipelineCache)
     this._pipelineCache = createPipelineCache()
+    this._validatorInstances?.forEach((instance) => instance.resetRuntime())
     this._schemaOutputs = []
     this._defaultValueCache = null
 
@@ -411,13 +425,13 @@ export class InternalFormApi<
       formId: options.formId ?? oldOptions.formId,
     }
 
-    if (
-      (options.validators?.length ?? 0) !== (oldOptions.validators?.length ?? 0)
-    ) {
-      console.warn(
-        'TanStack Form: The length of the validator array should not change after initialization',
-      )
-    }
+    this._validatorInstances = reconcileValidatorInstances({
+      definitions: this._options.validators,
+      previousDefinitions: oldOptions.validators ?? null,
+      instances: this._validatorInstances,
+      owner: this,
+      scope: 'form',
+    })
 
     if (didDefaultValuesChange) {
       batch(() => {
@@ -492,6 +506,9 @@ export class InternalFormApi<
           cancelPipelineCache(current._pipelineCache)
           current._pipelineCache = null
         }
+        current._validatorInstances?.forEach((instance) =>
+          instance.resetRuntime(),
+        )
         current._setMeta(() => defaultInternalBaseFieldMeta)
       }
     })

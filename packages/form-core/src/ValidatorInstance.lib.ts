@@ -21,6 +21,33 @@ export interface InternalValidatorInstanceOptions<
   scope: ValidatorScope
 }
 
+/** Stable runtime instances correlated with validator definitions by slot. */
+export type InternalValidatorInstances<
+  TDefinition extends InternalValidatorDefinition,
+  TOwner,
+> = Array<InternalValidatorInstance<TDefinition, TOwner>> | null
+
+export interface ReconcileValidatorInstancesOptions<
+  TDefinition extends InternalValidatorDefinition,
+  TOwner,
+> {
+  /** The latest validator definitions installed on the owner. */
+  definitions: ReadonlyArray<TDefinition> | null | undefined
+  /**
+   * The definitions installed before an update.
+   *
+   * Omit during initialization. Pass `null` when updating an owner that
+   * previously had no validators.
+   */
+  previousDefinitions?: ReadonlyArray<TDefinition> | null
+  /** The owner's currently installed instances, if it has any. */
+  instances: InternalValidatorInstances<TDefinition, TOwner>
+  /** The validation boundary that owns every reconciled instance. */
+  owner: TOwner
+  /** The form, group, or field scope shared by the reconciled instances. */
+  scope: ValidatorScope
+}
+
 /**
  * Runtime state owned by one installed validator occurrence.
  */
@@ -290,4 +317,63 @@ export class InternalValidatorInstance<
     this.schemaOutput = undefined
     this.hasSchemaOutput = false
   }
+}
+
+/**
+ * Correlates validator definitions with their stable runtime instances by slot.
+ *
+ * Retained slots preserve their instance and receive the latest definition.
+ * Added slots create instances, while removed slots are permanently disposed.
+ * Missing and empty definition collections are normalized to `null`.
+ * Updates with a different definition count emit the shared invariant warning.
+ */
+export function reconcileValidatorInstances<
+  TDefinition extends InternalValidatorDefinition,
+  TOwner,
+>({
+  definitions,
+  previousDefinitions,
+  instances,
+  owner,
+  scope,
+}: ReconcileValidatorInstancesOptions<
+  TDefinition,
+  TOwner
+>): InternalValidatorInstances<TDefinition, TOwner> {
+  if (
+    previousDefinitions !== undefined &&
+    (previousDefinitions?.length ?? 0) !== (definitions?.length ?? 0)
+  ) {
+    console.warn(
+      'TanStack Form: The length of the validator array should not change after initialization',
+    )
+  }
+
+  if (!definitions || definitions.length === 0) {
+    instances?.forEach((instance) => instance.dispose())
+    return null
+  }
+
+  const nextInstances = instances ?? []
+
+  definitions.forEach((definition, index) => {
+    const instance = nextInstances[index]
+
+    if (instance) {
+      instance.updateDefinition(definition)
+    } else {
+      nextInstances[index] = new InternalValidatorInstance({
+        definition,
+        owner,
+        scope,
+      })
+    }
+  })
+
+  for (let index = definitions.length; index < nextInstances.length; index++) {
+    nextInstances[index]?.dispose()
+  }
+  nextInstances.length = definitions.length
+
+  return nextInstances
 }

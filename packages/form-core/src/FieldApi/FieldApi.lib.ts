@@ -11,6 +11,7 @@ import {
 } from '../validation.lib'
 import { runFieldListenerPipeline } from '../listeners.lib'
 import { devtools } from '../devtoolsBridge.lib'
+import { reconcileValidatorInstances } from '../ValidatorInstance.lib'
 import {
   attachWatchingListenerField,
   attachWatchingValidatorField,
@@ -52,6 +53,7 @@ import type { FieldUpdateOptions, Updater } from '../types.public'
 import type { AnyInternalFormApi } from '../FormApi/FormApi.lib'
 import type { AnyInternalFormGroupApi } from '../FormGroupApi/FormGroupApi.lib'
 import type { ReadonlyAtom } from '@tanstack/store'
+import type { InternalValidatorInstances } from '../ValidatorInstance.lib'
 import type { FieldApi, FieldApiOptions } from './FieldApi.public'
 import type {
   ErrorVisibility,
@@ -308,6 +310,11 @@ export class InternalFieldApi<
   _defaultValueCache: DefaultValueCacheEntry | null = null
   _atoms: FieldAtoms
   _validators: Array<AnyFieldValidator> | null
+  /** Stable runtime instances correlated with `_validators` by slot. */
+  _validatorInstances: InternalValidatorInstances<
+    AnyFieldValidator,
+    InternalFieldApi<TFormData, TFieldName, TFieldValue>
+  >
   _listeners: Array<AnyFieldListener> | null
   _errorVisibility: ErrorVisibility<any, any> | undefined
   _errorBoundary: boolean
@@ -517,6 +524,12 @@ export class InternalFieldApi<
     reconciledValidators.attach.forEach(attachWatchingValidatorField)
     this._validators = reconciledValidators.items
     this._validateOnFields = reconciledValidators.listenToFields
+    this._validatorInstances = reconcileValidatorInstances({
+      definitions: this._validators,
+      instances: null,
+      owner: this,
+      scope: 'field',
+    })
   }
 
   _update(options: Omit<AnyFieldApiOptions, 'name' | 'form'>) {
@@ -545,6 +558,7 @@ export class InternalFieldApi<
       : null
 
     if (options.validators) {
+      const previousValidators = this._validators
       const reconciledValidators = reconcileWatchedValidatorFields({
         field: this,
         prevListenToFields: this._validateOnFields,
@@ -559,6 +573,13 @@ export class InternalFieldApi<
 
       this._validators = reconciledValidators.items
       this._validateOnFields = reconciledValidators.listenToFields
+      this._validatorInstances = reconcileValidatorInstances({
+        definitions: this._validators,
+        previousDefinitions: previousValidators,
+        instances: this._validatorInstances,
+        owner: this,
+        scope: 'field',
+      })
       dependencyChanges?.push(
         ...reconciledValidators.attach,
         ...reconciledValidators.detach,

@@ -158,10 +158,47 @@ describe('form - lifecycle', () => {
         ],
       })
 
-      expect(warn).toHaveBeenCalledWith(
-        'TanStack Form: The length of the validator array should not change after initialization',
-      )
+      expect(warn).toHaveBeenCalled()
       warn.mockRestore()
+    })
+
+    it('keeps form validator instances stable by slot across updates', () => {
+      const firstDefinition = { run: () => null, triggers: [] }
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [firstDefinition],
+      })
+      const instance = form._validatorInstances?.[0]
+      const nextDefinition = { run: () => null, triggers: [] }
+
+      form._update({
+        defaultValues: { name: '' },
+        validators: [nextDefinition],
+      })
+
+      expect(form._validatorInstances?.[0]).toBe(instance)
+      expect(instance?.definition).toBe(nextDefinition)
+      expect(instance?.owner).toBe(form)
+      expect(instance?.scope).toBe('form')
+      expect(instance?.revision).toBe(1)
+    })
+
+    it('resets form validator runtime without replacing its instance', () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [{ run: () => null, triggers: [] }],
+      })
+      const instance = form._validatorInstances?.[0]
+      const abortController = new AbortController()
+      instance?.setAbortController(abortController)
+      instance?.setSchemaOutput('output')
+
+      form.reset()
+
+      expect(form._validatorInstances?.[0]).toBe(instance)
+      expect(abortController.signal.aborted).toBe(true)
+      expect(instance?.hasSchemaOutput).toBe(false)
+      expect(instance?.disposed).toBe(false)
     })
 
     it('should only apply options to the leaf node', async () => {

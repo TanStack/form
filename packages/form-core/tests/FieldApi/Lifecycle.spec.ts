@@ -31,6 +31,62 @@ describe('field - lifecycle', () => {
     })
   })
 
+  describe('validator instances', () => {
+    it('keeps instances stable by slot and distinguishes omitted validators from an empty array', () => {
+      const form = new InternalFormApi({ defaultValues: { x: '' } })
+      const firstDefinition = { run: () => null, triggers: [] }
+      const field = form._getOrCreateFieldApi({
+        name: 'x',
+        validators: [firstDefinition],
+      })
+      const instance = field._validatorInstances?.[0]
+      const initialRevision = instance?.revision
+      const nextDefinition = { run: () => null, triggers: [] }
+
+      field._update({ validators: [nextDefinition] })
+
+      expect(field._validatorInstances?.[0]).toBe(instance)
+      expect(instance?.definition).toBe(nextDefinition)
+      expect(instance?.owner).toBe(field)
+      expect(instance?.scope).toBe('field')
+      expect(instance?.revision).toBe((initialRevision ?? 0) + 1)
+
+      field._update({})
+      expect(field._validatorInstances?.[0]).toBe(instance)
+
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      field._update({ validators: [] })
+      expect(field._validatorInstances).toBeNull()
+      expect(instance?.disposed).toBe(true)
+      expect(warn).toHaveBeenCalled()
+      warn.mockRestore()
+    })
+
+    it('resets runtime on field reset and disposes instances on kill', () => {
+      const form = new InternalFormApi({ defaultValues: { x: '' } })
+      const field = form._getOrCreateFieldApi({
+        name: 'x',
+        validators: [{ run: () => null, triggers: [] }],
+      })
+      const instance = field._validatorInstances?.[0]
+      const abortController = new AbortController()
+      instance?.setAbortController(abortController)
+      instance?.setSchemaOutput('output')
+
+      field.reset()
+
+      expect(field._validatorInstances?.[0]).toBe(instance)
+      expect(abortController.signal.aborted).toBe(true)
+      expect(instance?.hasSchemaOutput).toBe(false)
+      expect(instance?.disposed).toBe(false)
+
+      field._kill()
+
+      expect(field._validatorInstances).toBeNull()
+      expect(instance?.disposed).toBe(true)
+    })
+  })
+
   describe('devtools bridge notifications', () => {
     it('notifies field mount and final unmount transitions only', () => {
       const form = new InternalFormApi({ defaultValues: { name: '' } })
