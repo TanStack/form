@@ -358,6 +358,59 @@
       ]
     },
     {
+      "label": "Form Composition API Reference",
+      "collapsible": true,
+      "defaultCollapsed": true,
+      "children": [],
+      "frameworks": [
+        {
+          "label": "react",
+          "children": [
+            {
+              "label": "createFormHook()",
+              "to": "framework/react/reference/functions/createFormHook"
+            },
+            {
+              "label": "CreateFormHookOptions",
+              "to": "framework/react/reference/interfaces/CreateFormHookOptions"
+            },
+            {
+              "label": "AppFormHookResult",
+              "to": "framework/react/reference/interfaces/AppFormHookResult"
+            },
+            {
+              "label": "FormHookHelpers",
+              "to": "framework/react/reference/interfaces/FormHookHelpers"
+            },
+            {
+              "label": "FieldBrandHelper",
+              "to": "framework/react/reference/interfaces/FieldBrandHelper"
+            },
+            {
+              "label": "FieldComponentHelper",
+              "to": "framework/react/reference/interfaces/FieldComponentHelper"
+            },
+            {
+              "label": "defineFieldGroup()",
+              "to": "framework/react/reference/variables/defineFieldGroup"
+            },
+            {
+              "label": "FieldGroupApi",
+              "to": "framework/react/reference/interfaces/FieldGroupApi"
+            },
+            {
+              "label": "FieldGroupDefinition",
+              "to": "framework/react/reference/interfaces/FieldGroupDefinition"
+            },
+            {
+              "label": "FieldGroupHelper",
+              "to": "framework/react/reference/interfaces/FieldGroupHelper"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "label": "FormApi Reference",
       "collapsible": true,
       "defaultCollapsed": true,

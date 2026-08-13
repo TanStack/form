@@ -6,23 +6,33 @@ title: createFormHook
 # Function: createFormHook()
 
 ```ts
-function createFormHook<TComponents>(createOptions): AppFormHookResult<TComponents>;
+function createFormHook<TFormComponents, TFieldComponents>(createOptions): AppFormHookResult<{
+  fieldComponents: TFieldComponents;
+  formComponents: TFormComponents;
+}>;
 ```
 
-Defined in: [packages/react-form/src/AppForm/createFormHook.public.ts:20](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHook.public.ts#L20)
+Defined in: [packages/react-form/src/AppForm/createFormHook.public.ts:21](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHook.public.ts#L21)
 
 ## Type Parameters
 
-### TComponents
+### TFormComponents
 
-`TComponents` *extends* [`AnyReactFormComponentMap`](../type-aliases/AnyReactFormComponentMap.md)
+`TFormComponents` *extends* `Record`\<`string`, `FunctionComponent`\<`any`\>\>
+
+### TFieldComponents
+
+`TFieldComponents` *extends* `Record`\<`string`, `FunctionComponent`\<`any`\>\>
 
 ## Parameters
 
 ### createOptions
 
-`TComponents`
+[`CreateFormHookOptions`](../interfaces/CreateFormHookOptions.md)\<`TFormComponents`, `TFieldComponents`\>
 
 ## Returns
 
-[`AppFormHookResult`](../interfaces/AppFormHookResult.md)\<`TComponents`\>
+[`AppFormHookResult`](../interfaces/AppFormHookResult.md)\<\{
+  `fieldComponents`: `TFieldComponents`;
+  `formComponents`: `TFormComponents`;
+\}\>
