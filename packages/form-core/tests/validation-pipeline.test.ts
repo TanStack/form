@@ -116,6 +116,66 @@ describe('runFormValidatorPipeline', () => {
     )
   })
 
+  it('should preserve form-owned data for form validation contexts', async () => {
+    const formApi = getForm({ users: [{ name: 'test' }] })
+    const field = formApi._getOrCreateFieldApi({ name: 'users[0].name' })
+    const issues = [
+      { message: 'Invalid name', path: ['users', 0, 'name'] as const },
+    ]
+    const run = vi.fn(({ triggerFieldApi, value, parseIssues }) => {
+      expect(triggerFieldApi).toBe(field)
+      expect(value).toBe(formApi.state.values)
+      expect(parseIssues(issues)).toEqual({
+        form: issues,
+        fields: { 'users[0].name': issues },
+      })
+      return null
+    })
+    const { runWithContext } = getPipeline(formApi, [
+      { run, triggers: ['change'] },
+    ])
+
+    await runWithContext({ event: 'change', field })
+
+    expect(run).toHaveBeenCalledOnce()
+  })
+
+  it('should preserve form-owned data for field validation contexts', async () => {
+    const formApi = getForm({ users: [{ name: 'test' }] })
+    const field = formApi._getOrCreateFieldApi({ name: 'users[0].name' })
+    const issues = [
+      { message: 'Invalid name', path: ['users', 0, 'name'] as const },
+    ]
+    const run = vi.fn((context) => {
+      const fieldContext = context as typeof context & {
+        fieldApi: AnyInternalFieldApi
+      }
+
+      expect(fieldContext.fieldApi).toBe(field)
+      expect(fieldContext).not.toHaveProperty('triggerFieldApi')
+      expect(fieldContext.value).toBe(formApi.state.values)
+      expect(fieldContext.parseIssues(issues)).toEqual({
+        form: issues,
+        fields: { 'users[0].name': issues },
+      })
+      return null
+    })
+    const { pipeline } = getPipeline(formApi, [{ run, triggers: ['change'] }])
+
+    await runFormValidatorPipeline({
+      context: {
+        scope: 'field',
+        event: 'change',
+        formApi,
+        fieldApi: field,
+      } as never,
+      hasFailedBefore: false,
+      pipeline,
+    })
+
+    expect(run).toHaveBeenCalledOnce()
+  })
+
   it('should provide error map helpers to form validators', async () => {
     const formApi = getForm({ name: '' })
     const { runWithContext } = getPipeline(formApi, [
