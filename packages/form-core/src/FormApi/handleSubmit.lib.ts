@@ -1,5 +1,5 @@
 import { batch } from '@tanstack/store'
-import { isErrorResult } from '../validation.lib'
+import { isErrorResult } from '../validation'
 import { parseStandardSchemaIssues } from '../standardSchema.lib'
 import { isNotNil } from '../utils.lib'
 import type { InternalFormApi } from './FormApi.lib'

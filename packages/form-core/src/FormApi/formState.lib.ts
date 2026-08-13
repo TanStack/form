@@ -3,7 +3,7 @@ import {
   clearIndexedErrorsFromSource,
   hasIndexedErrorFromSource,
   hasIndexedErrors,
-} from '../validation.lib'
+} from '../validation'
 import type { FormState } from './FormApi.public'
 import type { InternalFormApi } from './FormApi.lib'
 import type { AnyInternalFieldApi } from '../FieldApi/FieldApi.lib'

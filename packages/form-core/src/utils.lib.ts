@@ -2,7 +2,7 @@ import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
 
 // type
 import type { FieldUpdateOptions, OneOrMany, Updater } from './types.public'
-import type { ValidationDebouncer } from './validation.lib'
+import type { ValidationDebouncer } from './validation'
 import type {
   FieldValidateResult,
   FormGroupValidateResult,
