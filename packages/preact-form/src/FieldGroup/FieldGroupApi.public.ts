@@ -67,7 +67,7 @@ export type FieldGroupSubscribeProps<TSelected> = PreactFormSubscribeProps<
   TSelected
 >
 
-export type FieldGroupSubscribeComponent = <TSelected>(
+export type FieldGroupSubscribeComponent = <const TSelected>(
   props: FieldGroupSubscribeProps<TSelected>,
 ) => CrossVersionPreactNode
 

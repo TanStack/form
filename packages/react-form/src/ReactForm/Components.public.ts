@@ -110,7 +110,7 @@ export type ReactFormSubscribeProps<
 export type ReactFormSubscribeComponent<
   in out TFormData,
   in out TFormErrorTypes extends FormErrorTypes,
-> = <TSelected>(
+> = <const TSelected>(
   props: ReactFormSubscribeProps<TFormData, TFormErrorTypes, TSelected>,
 ) => ReactNode
 
@@ -216,7 +216,7 @@ export type ReactFormGroupSubscribeProps<
 export type ReactFormGroupSubscribeComponent<
   in out TGroupValue,
   in out TGroupErrorTypes extends FormErrorTypes,
-> = <TSelected>(
+> = <const TSelected>(
   props: ReactFormGroupSubscribeProps<TGroupValue, TGroupErrorTypes, TSelected>,
 ) => ReactNode
 

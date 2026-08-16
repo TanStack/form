@@ -146,7 +146,7 @@ export interface LitFieldMethods<
 }
 
 export interface LitSubscribeMethod<TState> {
-  subscribe<TSelected>(
+  subscribe<const TSelected>(
     selector: (state: TState) => TSelected,
     render: RenderCallback<NoInfer<TSelected>>,
     when?: (selected: NoInfer<TSelected>) => boolean,
@@ -303,7 +303,7 @@ export class TanStackFormController<
     )
   }
 
-  subscribe<TSelected>(
+  subscribe<const TSelected>(
     selector: (
       state: FormState<
         TFormData,
