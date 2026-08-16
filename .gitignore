@@ -34,6 +34,8 @@ stats.html
 .cursor
 .claude
 .codex
+AGENTS.md
+.agents
 
 *.log
 .cache
