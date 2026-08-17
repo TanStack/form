@@ -31,17 +31,20 @@ export function useField(
 
   const fieldApi = useMemo(() => {
     void resetVersion
-    const field = options.form._getOrCreateFieldApi({
-      ...optionsRef.current,
-      name: options.name,
-    })
+    const field = options.form._getOrCreateFieldApi(
+      {
+        ...optionsRef.current,
+        name: options.name,
+      },
+      'field',
+    )
     if (fieldComponents === null) return field
     Object.assign(field, fieldComponents)
 
     return field
   }, [options.name, options.form, resetVersion, fieldComponents])
 
-  useEffect(() => fieldApi._update(options))
+  useEffect(() => fieldApi._update(options, 'field'))
 
   useEffect(() => {
     const cleanup = fieldApi._register()

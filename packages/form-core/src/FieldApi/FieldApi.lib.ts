@@ -131,19 +131,31 @@ export function transformFieldOptionsFieldNames<
     get name() {
       return transformFieldName(options.name)
     },
-    get validators() {
-      return transformFieldOptionItemsWithWatchedFields(
-        options.validators,
-        transformFieldName,
-      )
-    },
-    get listeners() {
-      return transformFieldOptionItemsWithWatchedFields(
-        options.listeners,
-        transformFieldName,
-      )
-    },
   } as Partial<TFieldOptions>
+
+  if (Object.hasOwn(options, 'validators')) {
+    Object.defineProperty(overrides, 'validators', {
+      enumerable: true,
+      get() {
+        return transformFieldOptionItemsWithWatchedFields(
+          options.validators,
+          transformFieldName,
+        )
+      },
+    })
+  }
+
+  if (Object.hasOwn(options, 'listeners')) {
+    Object.defineProperty(overrides, 'listeners', {
+      enumerable: true,
+      get() {
+        return transformFieldOptionItemsWithWatchedFields(
+          options.listeners,
+          transformFieldName,
+        )
+      },
+    })
+  }
 
   return mergeOptions(fieldOptions, overrides)
 }

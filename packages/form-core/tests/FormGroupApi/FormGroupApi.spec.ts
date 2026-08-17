@@ -590,7 +590,7 @@ describe('FormGroupApi', () => {
     expect(options.listeners?.[1]).not.toHaveProperty('watchFields')
   })
 
-  it('leaves absent watched-field lists undefined when prefixing field options', () => {
+  it('preserves omitted field options while prefixing field names', () => {
     const form = new InternalFormApi({
       defaultValues: { guestDetails: { name: '' } },
     })
@@ -607,8 +607,20 @@ describe('FormGroupApi', () => {
     )
 
     expect(options.name).toBe('guestDetails.name')
-    expect(options.validators).toBeUndefined()
-    expect(options.listeners).toBeUndefined()
+    expect(options).not.toHaveProperty('validators')
+    expect(options).not.toHaveProperty('listeners')
+
+    const explicitUndefined = group._getFormFieldOptions(
+      {
+        name: 'name',
+        validators: undefined,
+        listeners: undefined,
+      },
+      (props, overrides) => ({ ...props, ...overrides }),
+    )
+
+    expect(explicitUndefined).toHaveProperty('validators', undefined)
+    expect(explicitUndefined).toHaveProperty('listeners', undefined)
   })
 
   it('exposes subtree values and field meta', () => {
