@@ -104,6 +104,8 @@ title: "@tanstack/form-core"
 - [FormListenerFn](type-aliases/FormListenerFn.md)
 - [FormListeners](type-aliases/FormListeners.md)
 - [FormListenerTriggers](type-aliases/FormListenerTriggers.md)
+- [FormOptionsLooseSchemaFn](type-aliases/FormOptionsLooseSchemaFn.md)
+- [FormOptionsStrictSchemaFn](type-aliases/FormOptionsStrictSchemaFn.md)
 - [FormValidateResult](type-aliases/FormValidateResult.md)
 - [FormValidateResultFromErrorTypes](type-aliases/FormValidateResultFromErrorTypes.md)
 - [FormValidationError](type-aliases/FormValidationError.md)
