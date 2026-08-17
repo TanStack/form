@@ -41,7 +41,7 @@ export function StateHeader(props: StateHeaderProps) {
   return (
     <div class={styles().stateHeader}>
       <div class={styles().stateTitle}>Form state</div>
-      <div style={{ display: 'flex', 'align-items': 'center', gap: '16px' }}>
+      <div class={styles().stateHeaderRow}>
         <div class={styles().infoGrid}>
           <div class={styles().infoLabel}>Key</div>
           <div class={styles().infoValueMono}>{state()!.id}</div>
