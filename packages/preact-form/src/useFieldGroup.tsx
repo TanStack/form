@@ -4,7 +4,7 @@ import { useSelector } from '@tanstack/preact-store'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
   AnyFieldGroupApi,
-  DeepKeysOfType,
+  DeepKeysOfNonNullableType,
   FieldGroupState,
   FieldsMap,
   FormAsyncValidateOrFn,
@@ -35,7 +35,7 @@ export type AppFieldExtendedPreactFieldGroupApi<
   TFormData,
   TFieldGroupData,
   TFields extends
-    | DeepKeysOfType<TFormData, TFieldGroupData | null | undefined>
+    | DeepKeysOfNonNullableType<TFormData, TFieldGroupData>
     | FieldsMap<TFormData, TFieldGroupData>,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
   TOnChange extends undefined | FormValidateOrFn<TFormData>,
@@ -91,7 +91,7 @@ export function useFieldGroup<
   TFormData,
   TFieldGroupData,
   TFields extends
-    | DeepKeysOfType<TFormData, TFieldGroupData | null | undefined>
+    | DeepKeysOfNonNullableType<TFormData, TFieldGroupData>
     | FieldsMap<TFormData, TFieldGroupData>,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
   TOnChange extends undefined | FormValidateOrFn<TFormData>,
