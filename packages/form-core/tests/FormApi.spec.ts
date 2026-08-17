@@ -682,6 +682,40 @@ describe('form api', () => {
     expect(field3.state.meta.errors).toStrictEqual([])
   })
 
+  it('should not mark shifted siblings as touched when removing array values', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['a', 'b', 'c', 'd', 'e'],
+      },
+    })
+    form.mount()
+    // Since validation runs through the field, a field must be mounted for that array
+    new FieldApi({ form, name: 'names' }).mount()
+
+    const fields = [0, 1, 2, 3, 4].map((i) => {
+      const field = new FieldApi({ form, name: `names[${i}]` as const })
+      field.mount()
+      return field
+    })
+
+    // The user never interacts with any field
+    expect(fields.map((f) => f.state.meta.isTouched)).toStrictEqual([
+      false,
+      false,
+      false,
+      false,
+      false,
+    ])
+
+    await form.removeFieldValue('names', 2)
+
+    expect(form.getFieldValue('names')).toStrictEqual(['a', 'b', 'd', 'e'])
+    // Removing a value must not touch the siblings that merely shifted
+    expect(fields.slice(0, 4).map((f) => f.state.meta.isTouched)).toStrictEqual(
+      [false, false, false, false],
+    )
+  })
+
   it('should shift meta (nested) when removing array values', async () => {
     const form = new FormApi({
       defaultValues: {
