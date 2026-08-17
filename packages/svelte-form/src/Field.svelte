@@ -79,14 +79,17 @@
     const fieldApi = $derived.by(() => {
       resetVersion.current
       const current = options()
-      return current.form._getOrCreateFieldApi({
-        ...current,
-        name: current.name,
-      } as never)
+      return current.form._getOrCreateFieldApi(
+        {
+          ...current,
+          name: current.name,
+        } as never,
+        'field',
+      )
     })
 
     $effect.pre(() => {
-      fieldApi._update(options() as InternalFieldOptions)
+      fieldApi._update(options() as InternalFieldOptions, 'field')
     })
 
     $effect(() => fieldApi._register())
