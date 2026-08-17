@@ -13,7 +13,7 @@ describe('field - lifecycle', () => {
     it('resolves defaults during construction and updates', () => {
       const calls: Array<string> = []
       const form = new InternalFormApi(
-        { defaultValues: { name: '', internal: '', group: '' } },
+        { defaultValues: { name: '', internal: '' } },
         {
           field: {
             errorBoundary: true,
@@ -28,7 +28,6 @@ describe('field - lifecycle', () => {
         { name: 'internal' },
         'internal',
       )
-      const groupField = form._getOrCreateFieldApi({ name: 'group' }, 'group')
       const field = form._getOrCreateFieldApi({
         name: 'name',
         listeners: [
@@ -37,7 +36,6 @@ describe('field - lifecycle', () => {
       })
 
       expect(internalField._errorBoundary).toBe(false)
-      expect(groupField._errorBoundary).toBe(false)
       field.handleChange('initial')
       expect(field._errorBoundary).toBe(true)
       expect(calls).toEqual(['default', 'incoming'])

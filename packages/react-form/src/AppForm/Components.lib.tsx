@@ -1,12 +1,18 @@
 import React from 'react'
 
 import { InternalFormGroupApi } from '@tanstack/form-core/internals'
-import { attachReactFormComponents } from '../ReactForm/Components.lib'
+import {
+  attachReactFormComponents,
+  createArrayFieldComponent,
+} from '../ReactForm/Components.lib'
 import { useField } from '../ReactForm/useField.lib'
 import { useValueFieldSubscription } from '../ReactForm/fieldSubscriptions.lib'
 import { Subscribe } from '../Subscribe.public'
 import { FieldContext, FormContext } from './contexts.lib'
-import type { AnyInternalFormApi } from '@tanstack/form-core/internals'
+import type {
+  AnyInternalFormApi,
+  FieldOptionsScope,
+} from '@tanstack/form-core/internals'
 import type { FunctionComponent, ReactNode } from 'react'
 import type {
   AppFormComponent,
@@ -18,10 +24,6 @@ import type {
   ReactFormGroupProps,
 } from '../ReactForm/Components.public'
 import type { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
-import type {
-  CreateFormHookDefaultFieldOptions,
-  CreateFormHookDefaultFormGroupOptions,
-} from './createFormHookTypes.public'
 
 type AnyReactAppFormApi = ReactAppFormApi<any, any, AnyReactFormComponentMap>
 
@@ -29,51 +31,31 @@ export function attachReactAppFormComponents(
   form: AnyInternalFormApi,
   formComponents: Record<string, FunctionComponent<any>>,
   fieldComponents: Record<string, FunctionComponent<any>>,
-  defaultFieldOptions: CreateFormHookDefaultFieldOptions | undefined,
-  defaultFormGroupOptions: CreateFormHookDefaultFormGroupOptions | undefined,
 ): AnyReactAppFormApi {
   const resultForm = attachReactFormComponents(
     form,
     fieldComponents,
   ) as never as AnyReactAppFormApi
-  const fieldWithoutDefaults = createFieldWithContext(form, fieldComponents)
-  const arrayFieldWithoutDefaults =
-    resultForm.ArrayField as FunctionComponent<any>
-  const formGroupWithoutDefaults = createFormGroupWithContext(
+  const field = createFieldWithContext(form, fieldComponents, 'field')
+  const arrayField = resultForm.ArrayField as FunctionComponent<any>
+  const groupField = createFieldWithContext(form, fieldComponents, 'field')
+  const groupArrayField = createArrayFieldComponent(
+    form,
+    fieldComponents,
+    'field',
+  ) as FunctionComponent<any>
+  const formGroup = createFormGroupWithContext(
     resultForm as any,
-    fieldWithoutDefaults,
-    arrayFieldWithoutDefaults,
+    groupField,
+    groupArrayField,
   )
 
   resultForm.AppForm = createAppForm(form)
-  resultForm.Field = withDefaultOptions(
-    fieldWithoutDefaults,
-    defaultFieldOptions,
-  ) as AnyReactAppFormApi['Field']
-  resultForm.ArrayField = withDefaultOptions(
-    arrayFieldWithoutDefaults,
-    defaultFieldOptions,
-  ) as AnyReactAppFormApi['ArrayField']
-  resultForm.FormGroup = withDefaultOptions(
-    formGroupWithoutDefaults,
-    defaultFormGroupOptions,
-  ) as AnyReactAppFormApi['FormGroup']
+  resultForm.Field = field as AnyReactAppFormApi['Field']
+  resultForm.ArrayField = arrayField as AnyReactAppFormApi['ArrayField']
+  resultForm.FormGroup = formGroup as AnyReactAppFormApi['FormGroup']
 
   return Object.assign(resultForm, formComponents)
-}
-
-function withDefaultOptions(
-  Component: FunctionComponent<any>,
-  defaultOptions: object | undefined,
-): FunctionComponent<any> {
-  if (!defaultOptions) return Component
-
-  const ComponentWithDefaultOptions: FunctionComponent<any> = (props) => (
-    <Component {...defaultOptions} {...props} />
-  )
-  ComponentWithDefaultOptions.displayName = Component.displayName
-
-  return ComponentWithDefaultOptions
 }
 
 function createAppForm(form: AnyInternalFormApi): AppFormComponent {
@@ -96,9 +78,10 @@ type AnyFieldComponent = FunctionComponent<
 function createFieldWithContext(
   form: AnyInternalFormApi,
   fieldComponents: Record<string, FunctionComponent<any>>,
+  scope: FieldOptionsScope,
 ) {
   const TanStackFormField: AnyFieldComponent = (props) => {
-    const fieldApi = useField({ ...props, form }, fieldComponents)
+    const fieldApi = useField({ ...props, form }, fieldComponents, scope)
     const field = useValueFieldSubscription(fieldApi)
 
     return (
@@ -120,8 +103,8 @@ type AnyFormGroupComponent = FunctionComponent<
 
 function createFormGroupWithContext(
   form: InternalReactFormApi,
-  fieldWithoutDefaults: FunctionComponent<any>,
-  arrayFieldWithoutDefaults: FunctionComponent<any>,
+  groupField: FunctionComponent<any>,
+  groupArrayField: FunctionComponent<any>,
 ): AnyFormGroupComponent {
   const TanStackFormGroup: AnyFormGroupComponent = (props) => {
     const groupRef =
@@ -130,8 +113,8 @@ function createFormGroupWithContext(
     if (!groupRef.current) {
       groupRef.current = attachAppFormGroupComponents(
         new InternalFormGroupApi({ ...props, form } as never),
-        fieldWithoutDefaults,
-        arrayFieldWithoutDefaults,
+        groupField,
+        groupArrayField,
       )
     }
 
@@ -153,8 +136,8 @@ function createFormGroupWithContext(
 
 function attachAppFormGroupComponents(
   group: InternalFormGroupApi<any, any, any, any, any>,
-  fieldWithoutDefaults: FunctionComponent<any>,
-  arrayFieldWithoutDefaults: FunctionComponent<any>,
+  groupField: FunctionComponent<any>,
+  groupArrayField: FunctionComponent<any>,
 ) {
   type GroupWithComponents = InternalFormGroupApi<any, any, any, any, any> & {
     Field: FunctionComponent<any>
@@ -163,12 +146,12 @@ function attachAppFormGroupComponents(
   }
 
   const resultGroup: GroupWithComponents = group as never
-  const FieldWithoutDefaults = fieldWithoutDefaults
-  const ArrayFieldWithoutDefaults = arrayFieldWithoutDefaults
+  const GroupField = groupField
+  const GroupArrayField = groupArrayField
 
   resultGroup.Field = function Field(props) {
     return (
-      <FieldWithoutDefaults
+      <GroupField
         {...(group._getFormFieldOptions(props, (base, overrides) => ({
           ...base,
           ...overrides,
@@ -180,7 +163,7 @@ function attachAppFormGroupComponents(
 
   resultGroup.ArrayField = function ArrayField(props) {
     return (
-      <ArrayFieldWithoutDefaults
+      <GroupArrayField
         {...(group._getFormFieldOptions(props, (base, overrides) => ({
           ...base,
           ...overrides,

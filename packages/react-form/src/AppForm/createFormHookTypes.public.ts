@@ -7,119 +7,22 @@ import type { ReactAppFormApi } from './ReactAppFormApi.public'
 import type { DefineFieldGroupFn } from '../FieldGroup/withFields.public'
 import type { FunctionComponent } from 'react'
 import type {
-  FieldApiOptions,
-  FieldValidators,
-  FormErrorTypes,
-  FormGroupOptions,
-  FormGroupValidators,
+  DefaultFieldOptions,
+  DefaultFormGroupOptions,
+  DefaultFormOptions,
   FormOptions,
   FormValidators,
   ToFormErrorTypes,
 } from '@tanstack/form-core'
 
 /**
- * Form defaults that do not participate in form value inference.
- *
- * This type is limited to `formId`, `errorVisibility`, `listeners`, and
- * `onSubmitInvalid`. Callback contexts expose form values as `unknown`, so
- * value-dependent behavior remains local to `useAppForm`. Options passed to
- * `useAppForm` override these defaults, including when an option is explicitly
- * `undefined`.
- *
- * @example
- * ```tsx
- * const { useAppForm } = createFormHook({
- *   formComponents: {},
- *   fieldComponents: {},
- *   defaultFormOptions: {
- *     errorVisibility: ({ fieldState }) => fieldState.meta.isBlurred,
- *     onSubmitInvalid: () => {
- *       document.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus()
- *     },
- *   },
- * })
- * ```
- */
-export type CreateFormHookDefaultFormOptions = Pick<
-  FormOptions<unknown, FormValidators<unknown>, unknown>,
-  'formId' | 'errorVisibility' | 'listeners' | 'onSubmitInvalid'
->
-
-/**
- * Direct field defaults that do not participate in field value inference.
- *
- * This type is limited to `errorVisibility`, `errorBoundary`, and `listeners`.
- * Listener contexts expose form and field values as `unknown`, and callbacks
- * do not receive the concrete value types inferred by the consuming field
- * component. Options passed to a direct `form.Field` or `form.ArrayField`
- * override these defaults, including when an option is explicitly
- * `undefined`.
- *
- * @example
- * ```tsx
- * const { useAppForm } = createFormHook({
- *   formComponents: {},
- *   fieldComponents: {},
- *   defaultFieldOptions: {
- *     errorVisibility: ({ fieldState }) => fieldState.meta.isBlurred,
- *     errorBoundary: true,
- *   },
- * })
- * ```
- */
-export type CreateFormHookDefaultFieldOptions = Pick<
-  FieldApiOptions<
-    unknown,
-    string,
-    unknown,
-    FieldValidators<unknown, string, unknown>,
-    never,
-    unknown,
-    FormErrorTypes
-  >,
-  'errorVisibility' | 'errorBoundary' | 'listeners'
->
-
-/**
- * Form group defaults that do not participate in group value inference.
- *
- * This type is limited to `onSubmitInvalid`. Its callback context exposes the
- * form and group values as `unknown`, so value-dependent behavior remains
- * local to the `form.FormGroup` component. Options passed to
- * `form.FormGroup` override these defaults, including when an option is
- * explicitly `undefined`.
- *
- * @example
- * ```tsx
- * const { useAppForm } = createFormHook({
- *   formComponents: {},
- *   fieldComponents: {},
- *   defaultFormGroupOptions: {
- *     onSubmitInvalid: ({ groupApi }) => {
- *       console.error('Invalid group', groupApi.name)
- *     },
- *   },
- * })
- * ```
- */
-export type CreateFormHookDefaultFormGroupOptions = Pick<
-  FormGroupOptions<
-    unknown,
-    string,
-    unknown,
-    FormGroupValidators<unknown>,
-    FormErrorTypes
-  >,
-  'onSubmitInvalid'
->
-
-/**
  * Configures the components and reusable defaults returned by
  * `createFormHook`.
  *
- * Default objects are shallowly applied before the corresponding usage-site
- * options. A usage-site property always takes precedence, including when its
- * value is explicitly `undefined`.
+ * Default objects are resolved by form core before the corresponding
+ * usage-site options. Non-listener properties always take precedence,
+ * including when explicitly set to `undefined`. Listener arrays follow the
+ * configured `listenersMerge` strategy.
  *
  * @example
  * ```tsx
@@ -147,8 +50,9 @@ export interface CreateFormHookOptions<
   /**
    * Defaults for every form created by `useAppForm`.
    *
-   * Options passed to `useAppForm` override these defaults, including when an
-   * option is explicitly `undefined`.
+   * Non-listener options passed to `useAppForm` override these defaults,
+   * including when explicitly set to `undefined`. Listener arrays follow
+   * `listenersMerge`.
    *
    * @example
    * ```tsx
@@ -157,13 +61,13 @@ export interface CreateFormHookOptions<
    * },
    * ```
    */
-  defaultFormOptions?: CreateFormHookDefaultFormOptions
+  defaultFormOptions?: DefaultFormOptions
   /**
-   * Defaults for direct `form.Field` and `form.ArrayField` components.
+   * Defaults for every field and array-field component owned by the form.
    *
-   * Options passed to the component override these defaults, including when
-   * an option is explicitly `undefined`. These defaults do not apply to
-   * `group.Field` or `group.ArrayField`.
+   * Non-listener options passed to the component override these defaults,
+   * including when explicitly set to `undefined`. Listener arrays follow
+   * `listenersMerge`. This includes `group.Field` and `group.ArrayField`.
    *
    * @example
    * ```tsx
@@ -172,7 +76,7 @@ export interface CreateFormHookOptions<
    * },
    * ```
    */
-  defaultFieldOptions?: CreateFormHookDefaultFieldOptions
+  defaultFieldOptions?: DefaultFieldOptions
   /**
    * Defaults for every `form.FormGroup` component.
    *
@@ -188,7 +92,7 @@ export interface CreateFormHookOptions<
    * },
    * ```
    */
-  defaultFormGroupOptions?: CreateFormHookDefaultFormGroupOptions
+  defaultFormGroupOptions?: DefaultFormGroupOptions
 }
 
 export type UseAppFormHook<

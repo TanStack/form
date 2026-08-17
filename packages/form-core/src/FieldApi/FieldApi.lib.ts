@@ -272,7 +272,7 @@ export interface InternalFieldApiParams extends Omit<
   validators?: FieldValidators<any, any, any>
 }
 
-export type FieldOptionsScope = 'internal' | 'field' | 'group'
+export type FieldOptionsScope = 'internal' | 'field'
 
 interface ListenToFieldsMeta {
   field: AnyInternalFieldApi

@@ -20,6 +20,7 @@ import {
 import { parseStandardSchemaIssues } from '../standardSchema.lib'
 import { createErrorMap } from '../validation.public'
 import { reconcileValidatorInstances } from '../ValidatorInstance.lib'
+import { resolveDefaultOptions } from '../defaultOptions.lib'
 import type { FormApi } from '../FormApi/FormApi.public'
 import type { InternalFormApi } from '../FormApi/FormApi.lib'
 import type {
@@ -134,10 +135,15 @@ export class InternalFormGroupApi<
       TFormErrorTypes
     >,
   ) {
-    this._options = options
     this.form = options.form as never
+    const resolvedOptions = resolveDefaultOptions(
+      options,
+      this.form._defaultOptions?.formGroup,
+    )
+
+    this._options = resolvedOptions
     this._groupField = this.form._getOrCreateFieldApi(
-      { name: options.name },
+      { name: resolvedOptions.name },
       'internal',
     )
     this._groupField._setFormGroup(this)
@@ -263,7 +269,10 @@ export class InternalFormGroupApi<
     >,
   ) => {
     const previousValidators = this._options.validators
-    this._options = options
+    this._options = resolveDefaultOptions(
+      options,
+      this.form._defaultOptions?.formGroup,
+    )
     this._validatorInstances = reconcileValidatorInstances<
       TGroupValidators[number],
       AnyInternalFormGroupApi,

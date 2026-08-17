@@ -315,6 +315,35 @@ describe('FormGroupApi', () => {
     expect(group._options.onSubmit).toBe(onSubmit)
   })
 
+  it('resolves default group options during construction and updates', () => {
+    const defaultOnSubmitInvalid = vi.fn()
+    const overriddenOnSubmitInvalid = vi.fn()
+    const form = new InternalFormApi(
+      { defaultValues: { guestDetails: { name: 'Tony' } } },
+      { formGroup: { onSubmitInvalid: defaultOnSubmitInvalid } },
+    )
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'guestDetails',
+    })
+
+    expect(group._options.onSubmitInvalid).toBe(defaultOnSubmitInvalid)
+
+    group.update({
+      form,
+      name: 'guestDetails',
+      onSubmitInvalid: overriddenOnSubmitInvalid,
+    })
+    expect(group._options.onSubmitInvalid).toBe(overriddenOnSubmitInvalid)
+
+    group.update({
+      form,
+      name: 'guestDetails',
+      onSubmitInvalid: undefined,
+    })
+    expect(group._options.onSubmitInvalid).toBeUndefined()
+  })
+
   it('keeps group validator instances stable by slot across updates', () => {
     const form = new InternalFormApi({
       defaultValues: { guestDetails: { name: 'Tony' } },
