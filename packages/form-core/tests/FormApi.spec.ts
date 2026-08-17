@@ -174,6 +174,32 @@ describe('form api', () => {
     expect(form.state.values).toEqual({ name: 'initial' })
   })
 
+  it('should not revert values when update() is called with unchanged component props after reset()', () => {
+    const originalValues = { name: 'original' }
+    const form = new FormApi({ defaultValues: originalValues })
+    form.mount()
+
+    form.reset({ name: 'after-submit' })
+    expect(form.state.values).toEqual({ name: 'after-submit' })
+
+    // Simulate framework re-render: update() called with original (unchanged) component props. Before the fix, reset() mutated this.options.defaultValues, causing a false delta that overwrote the reset values.
+    form.update({ defaultValues: originalValues })
+    expect(form.state.values).toEqual({ name: 'after-submit' })
+  })
+
+  it('should preserve the reset baseline when update() is called with unchanged component props', () => {
+    const originalValues = { name: 'original' }
+    const form = new FormApi({ defaultValues: originalValues })
+    form.mount()
+
+    form.reset({ name: 'after-submit' })
+    form.update({ defaultValues: originalValues })
+
+    // A subsequent reset() with no args uses the reset baseline, not the component default.
+    form.reset()
+    expect(form.state.values).toEqual({ name: 'after-submit' })
+  })
+
   it('should prioritize field-level defaultValue over form-level defaultValues on reset', () => {
     const form = new FormApi({
       defaultValues: {
