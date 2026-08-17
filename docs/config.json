@@ -250,94 +250,6 @@
       ]
     },
     {
-      "label": "Form creation",
-      "collapsible": true,
-      "defaultCollapsed": true,
-      "children": [
-        {
-          "label": "formOptions()",
-          "to": "reference/variables/formOptions"
-        },
-        {
-          "label": "formOptions.strictSchema()",
-          "to": "reference/type-aliases/FormOptionsStrictSchemaFn"
-        },
-        {
-          "label": "formOptions.looseSchema()",
-          "to": "reference/type-aliases/FormOptionsLooseSchemaFn"
-        },
-        {
-          "label": "FormOptions",
-          "to": "reference/interfaces/FormOptions"
-        }
-      ],
-      "frameworks": [
-        {
-          "label": "react",
-          "children": [
-            {
-              "label": "useForm()",
-              "to": "framework/react/reference/variables/useForm"
-            }
-          ]
-        },
-        {
-          "label": "preact",
-          "children": [
-            {
-              "label": "useForm()",
-              "to": "framework/preact/reference/variables/useForm"
-            }
-          ]
-        },
-        {
-          "label": "vue",
-          "children": [
-            {
-              "label": "useForm()",
-              "to": "framework/vue/reference/variables/useForm"
-            }
-          ]
-        },
-        {
-          "label": "angular",
-          "children": [
-            {
-              "label": "injectForm()",
-              "to": "framework/angular/reference/functions/injectForm"
-            }
-          ]
-        },
-        {
-          "label": "solid",
-          "children": [
-            {
-              "label": "createForm()",
-              "to": "framework/solid/reference/variables/createForm"
-            }
-          ]
-        },
-        {
-          "label": "lit",
-          "children": [
-            {
-              "label": "TanStackFormController",
-              "to": "framework/lit/reference/classes/TanStackFormController"
-            }
-          ]
-        },
-        {
-          "label": "svelte",
-          "children": [
-            {
-              "label": "createForm()",
-              "to": "framework/svelte/reference/variables/createForm"
-            }
-          ]
-        }
-      ]
-    },
-    {
       "label": "Recommended Types",
       "collapsible": true,
       "defaultCollapsed": false,
@@ -445,6 +357,95 @@
         }
       ]
     },
+    {
+      "label": "Form creation",
+      "collapsible": true,
+      "defaultCollapsed": true,
+      "children": [
+        {
+          "label": "formOptions()",
+          "to": "reference/variables/formOptions"
+        },
+        {
+          "label": "formOptions.strictSchema()",
+          "to": "reference/type-aliases/FormOptionsStrictSchemaFn"
+        },
+        {
+          "label": "formOptions.looseSchema()",
+          "to": "reference/type-aliases/FormOptionsLooseSchemaFn"
+        },
+        {
+          "label": "FormOptions",
+          "to": "reference/interfaces/FormOptions"
+        }
+      ],
+      "frameworks": [
+        {
+          "label": "react",
+          "children": [
+            {
+              "label": "useForm()",
+              "to": "framework/react/reference/variables/useForm"
+            }
+          ]
+        },
+        {
+          "label": "preact",
+          "children": [
+            {
+              "label": "useForm()",
+              "to": "framework/preact/reference/variables/useForm"
+            }
+          ]
+        },
+        {
+          "label": "vue",
+          "children": [
+            {
+              "label": "useForm()",
+              "to": "framework/vue/reference/variables/useForm"
+            }
+          ]
+        },
+        {
+          "label": "angular",
+          "children": [
+            {
+              "label": "injectForm()",
+              "to": "framework/angular/reference/functions/injectForm"
+            }
+          ]
+        },
+        {
+          "label": "solid",
+          "children": [
+            {
+              "label": "createForm()",
+              "to": "framework/solid/reference/variables/createForm"
+            }
+          ]
+        },
+        {
+          "label": "lit",
+          "children": [
+            {
+              "label": "TanStackFormController",
+              "to": "framework/lit/reference/classes/TanStackFormController"
+            }
+          ]
+        },
+        {
+          "label": "svelte",
+          "children": [
+            {
+              "label": "createForm()",
+              "to": "framework/svelte/reference/variables/createForm"
+            }
+          ]
+        }
+      ]
+    },
+
     {
       "label": "Form Composition API Reference",
       "collapsible": true,

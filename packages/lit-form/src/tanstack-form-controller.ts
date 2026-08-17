@@ -174,6 +174,38 @@ export type LitFormGroupApi<
   > &
   LitSubscribeMethod<FormGroupState<TGroupValue, TGroupErrorTypes>>
 
+/**
+ * Owns a form for a Lit reactive-controller host and provides Lit-specific
+ * field, form-group, and subscription render helpers.
+ *
+ * `defaultValues` establish the initial state and inferred form value type.
+ * The form mounts when its host connects and is cleaned up when the host
+ * disconnects. Call `update(...)` to apply later options without replacing the
+ * form instance, and access the framework-agnostic form API through `api`.
+ *
+ * @example
+ * ```ts
+ * class ProfileForm extends LitElement {
+ *   private form = new TanStackFormController(this, {
+ *     defaultValues: { name: '' },
+ *     onSubmit: ({ value }) => saveProfile(value),
+ *   })
+ *
+ *   render() {
+ *     return html`<form
+ *       @submit=${(event: SubmitEvent) => {
+ *         event.preventDefault()
+ *         void this.form.api.handleSubmit()
+ *       }}
+ *     ></form>`
+ *   }
+ * }
+ * ```
+ *
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ * @typeParam TFormValidators - Library-managed. Do not specify explicitly.
+ * @typeParam TSubmitReturn - Library-managed. Do not specify explicitly.
+ */
 export class TanStackFormController<
   TFormData,
   const TFormValidators extends FormValidators<TFormData>,
@@ -201,6 +233,11 @@ export class TanStackFormController<
     return this.#form
   }
 
+  /**
+   * @param host - The Lit host that owns the controller and form lifecycle.
+   * @param options - The initial form options. `defaultValues` drive form value
+   * inference.
+   */
   constructor(
     host: ReactiveControllerHost,
     options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
