@@ -78,7 +78,7 @@ function reconcileWatchedFields<TItem extends { watchFields?: Array<string> }>({
       if (names.length === 0) return
 
       nextListenToFields[watcherIndex] = names.map((name) => {
-        const sourceField = form._getOrCreateFieldApi({ name })
+        const sourceField = form._getOrCreateFieldApi({ name }, 'internal')
         const key = toWatcherKey(watcherIndex, name)
         const prevMeta = prevByKey.get(key)
 
@@ -167,7 +167,7 @@ export function reconcileWatchedValidatorFields({
     const names = [...new Set(validatorInstance.definition.watchFields ?? [])]
 
     for (const name of names) {
-      const sourceField = form._getOrCreateFieldApi({ name })
+      const sourceField = form._getOrCreateFieldApi({ name }, 'internal')
       next.set(name, sourceField)
 
       const previousField = previous?.get(name)

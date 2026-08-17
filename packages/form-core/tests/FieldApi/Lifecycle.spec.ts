@@ -9,6 +9,109 @@ import { validationSourceScopes } from '../../src/ValidationSourceInstance.lib'
 import { installDevtoolsBridge } from '../../src/devtoolsBridge.lib'
 
 describe('field - lifecycle', () => {
+  describe('default options', () => {
+    it('resolves defaults during construction and updates', () => {
+      const calls: Array<string> = []
+      const form = new InternalFormApi(
+        { defaultValues: { name: '', internal: '', group: '' } },
+        {
+          field: {
+            errorBoundary: true,
+            listenersMerge: 'append',
+            listeners: [
+              { triggers: ['change'], run: () => calls.push('default') },
+            ],
+          },
+        },
+      )
+      const internalField = form._getOrCreateFieldApi(
+        { name: 'internal' },
+        'internal',
+      )
+      const groupField = form._getOrCreateFieldApi({ name: 'group' }, 'group')
+      const field = form._getOrCreateFieldApi({
+        name: 'name',
+        listeners: [
+          { triggers: ['change'], run: () => calls.push('incoming') },
+        ],
+      })
+
+      expect(internalField._errorBoundary).toBe(false)
+      expect(groupField._errorBoundary).toBe(false)
+      field.handleChange('initial')
+      expect(field._errorBoundary).toBe(true)
+      expect(calls).toEqual(['default', 'incoming'])
+
+      calls.length = 0
+      field._update({
+        errorBoundary: false,
+        listeners: [{ triggers: ['change'], run: () => calls.push('updated') }],
+      })
+      field.handleChange('updated')
+      expect(field._errorBoundary).toBe(false)
+      expect(calls).toEqual(['default', 'updated'])
+    })
+
+    it('configures a newly created field once', () => {
+      const form = new InternalFormApi({ defaultValues: { x: '' } })
+      const validator = { run: () => null, triggers: [] }
+
+      const field = form._getOrCreateFieldApi({
+        name: 'x',
+        validators: [validator],
+      })
+
+      expect(field._fieldOptionsInitialized).toBe(true)
+      expect(field._validatorInstances?.[0]?.definition).toBe(validator)
+      expect(field._validatorInstances?.[0]?.revision).toBe(0)
+    })
+
+    it('updates an internal field once when it is first configured', () => {
+      const form = new InternalFormApi(
+        { defaultValues: { x: '' } },
+        { field: { errorBoundary: true } },
+      )
+      const field = form._getOrCreateFieldApi({ name: 'x' }, 'internal')
+      const update = vi.spyOn(field, '_update')
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const initialValidator = { run: () => null, triggers: [] }
+
+      expect(field._errorBoundary).toBe(false)
+
+      const configuredField = form._getOrCreateFieldApi({
+        name: 'x',
+        validators: [initialValidator],
+      })
+
+      expect(configuredField).toBe(field)
+      expect(field._fieldOptionsInitialized).toBe(true)
+      expect(field._errorBoundary).toBe(true)
+      expect(update).toHaveBeenCalledOnce()
+      expect(field._validatorInstances?.[0]?.definition).toBe(initialValidator)
+      expect(field._validatorInstances?.[0]?.revision).toBe(0)
+      expect(warn).not.toHaveBeenCalled()
+
+      update.mockClear()
+      const nextValidator = { run: () => null, triggers: [] }
+      form._getOrCreateFieldApi({
+        name: 'x',
+        validators: [nextValidator],
+      })
+
+      expect(update).not.toHaveBeenCalled()
+      expect(field._validatorInstances?.[0]?.definition).toBe(initialValidator)
+
+      field._update({ validators: [nextValidator] })
+
+      expect(field._validatorInstances?.[0]?.definition).toBe(nextValidator)
+      expect(field._validatorInstances?.[0]?.revision).toBe(1)
+      expect(warn).not.toHaveBeenCalled()
+
+      update.mockRestore()
+      warn.mockRestore()
+    })
+  })
+
   describe('_isMounted and atom', () => {
     it('is false before the atom is accessed', () => {
       const form = new InternalFormApi({ defaultValues: { x: '' } })

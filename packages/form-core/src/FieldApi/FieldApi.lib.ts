@@ -11,6 +11,7 @@ import {
 import { runFieldListenerPipeline } from '../listeners.lib'
 import { devtools } from '../devtoolsBridge.lib'
 import { reconcileValidatorInstances } from '../ValidatorInstance.lib'
+import { resolveDefaultOptions } from '../defaultOptions.lib'
 import {
   attachWatchingListenerField,
   attachWatchingValidatorField,
@@ -193,6 +194,7 @@ export function getOrCreateFieldApi(
   segments: NameSegments,
   form: AnyInternalFormApi,
   options?: Omit<AnyFieldApiOptions, 'name'>,
+  scope: FieldOptionsScope = 'field',
 ): AnyInternalFieldApi {
   const segment = segments.shift()
   if (segment === undefined) {
@@ -200,39 +202,38 @@ export function getOrCreateFieldApi(
     if (node._isRoot) {
       throw new Error('Root node cannot be a field API')
     }
-    // Say we internally make a field for data storage:
-    // form._getOrCreateFieldApi({ name: 'foo' })
-
-    // later in the render cycle, a user renders a component that actually does
-    // form._getOrCreateFieldApi({ name: 'foo', validators: [...] })
-
-    // This would be too late! Even worse, we're going to send an error that validators
-    // changed length when the user did nothing wrong
-    // TODO
-    if (options) {
-      node._update(options)
+    // Internal trie nodes defer their options until they are first requested as
+    // a configured field. Adapter updates handle subsequent option changes.
+    if (scope !== 'internal' && !node._fieldOptionsInitialized) {
+      node._update(options ?? {}, scope)
     }
     return node
   }
 
   let childNode = node._getChild(segment)
   if (childNode) {
-    return getOrCreateFieldApi(childNode, segments, form, options)
+    return getOrCreateFieldApi(childNode, segments, form, options, scope)
   }
 
-  childNode = new InternalFieldApi({
-    segment,
-    parent: node,
-    form: form,
-    // We're creating fields on our way to the leaf, so don't
-    // pass options like listeners etc.
-    ...(segments.length === 0 ? options : {}),
-  })
+  childNode = new InternalFieldApi(
+    {
+      segment,
+      parent: node,
+      form: form,
+    },
+    'internal',
+  )
 
   node._setChild(childNode)
+  if (segments.length === 0) {
+    const field = getOrCreateFieldApi(childNode, segments, form, options, scope)
+    devtools().fieldAdded?.(childNode)
+    return field
+  }
+
   devtools().fieldAdded?.(childNode)
 
-  return getOrCreateFieldApi(childNode, segments, form, options)
+  return getOrCreateFieldApi(childNode, segments, form, options, scope)
 }
 
 /**
@@ -270,6 +271,8 @@ export interface InternalFieldApiParams extends Omit<
   form: AnyInternalFormApi
   validators?: FieldValidators<any, any, any>
 }
+
+export type FieldOptionsScope = 'internal' | 'field' | 'group'
 
 interface ListenToFieldsMeta {
   field: AnyInternalFieldApi
@@ -324,6 +327,8 @@ export class InternalFieldApi<
   _watchingValidatorFields: FieldWatchingValidatorFields | null
   /** Lazily allocated runtime state for debounced field listeners. */
   _pipelineCache: PipelineCache | null = null
+  /** Whether this trie node has received usage-site field options. */
+  _fieldOptionsInitialized: boolean
   _isKilled = false
 
   _segmentValue: NameSegment
@@ -468,15 +473,23 @@ export class InternalFieldApi<
     return this._setDefaultValueCache(value, defaultValue, isDefaultValue)
   }
 
-  constructor({
-    segment,
-    parent,
-    validators,
-    form,
-    listeners,
-    errorVisibility,
-    errorBoundary,
-  }: InternalFieldApiParams) {
+  constructor(
+    options: InternalFieldApiParams,
+    scope: FieldOptionsScope = 'field',
+  ) {
+    this._fieldOptionsInitialized = scope !== 'internal'
+    const defaultOptions =
+      scope === 'field' ? options.form._defaultOptions?.field : undefined
+    const {
+      segment,
+      parent,
+      validators,
+      form,
+      listeners,
+      errorVisibility,
+      errorBoundary,
+    } = resolveDefaultOptions(options, defaultOptions)
+
     this._segmentValue = segment
     this._parent = parent
     this.form = form
@@ -523,16 +536,25 @@ export class InternalFieldApi<
     reconciledValidators.attach.forEach(attachWatchingValidatorField)
   }
 
-  _update(options: Omit<AnyFieldApiOptions, 'name' | 'form'>) {
+  _update(
+    options: Omit<AnyFieldApiOptions, 'name' | 'form'>,
+    scope: FieldOptionsScope = 'field',
+  ) {
     if (this._isKilled) return
 
-    this._errorVisibility = options.errorVisibility
-    this._errorBoundary = options.errorBoundary ?? false
+    const isInitializing =
+      scope !== 'internal' && !this._fieldOptionsInitialized
+    const defaultOptions =
+      scope === 'field' ? this.form._defaultOptions?.field : undefined
+    const resolvedOptions = resolveDefaultOptions(options, defaultOptions)
+
+    this._errorVisibility = resolvedOptions.errorVisibility
+    this._errorBoundary = resolvedOptions.errorBoundary ?? false
 
     const reconciledListeners = reconcileWatchedListenerFields({
       field: this,
       prevListenToFields: this._listenToFields,
-      nextListeners: options.listeners,
+      nextListeners: resolvedOptions.listeners,
       form: this.form,
     })
 
@@ -549,13 +571,13 @@ export class InternalFieldApi<
         ? [...reconciledListeners.attach, ...reconciledListeners.detach]
         : null
 
-    if (options.validators) {
+    if (resolvedOptions.validators) {
       const previousValidators = this._validatorInstances?.map(
         (instance) => instance.definition,
       )
       const nextValidators =
-        options.validators.length > 0
-          ? (options.validators as Array<AnyFieldValidator>)
+        resolvedOptions.validators.length > 0
+          ? (resolvedOptions.validators as Array<AnyFieldValidator>)
           : null
       this._validatorInstances = reconcileValidatorInstances<
         AnyFieldValidator,
@@ -564,7 +586,9 @@ export class InternalFieldApi<
         AnyInternalFieldApi
       >({
         definitions: nextValidators,
-        previousDefinitions: previousValidators ?? null,
+        previousDefinitions: isInitializing
+          ? undefined
+          : (previousValidators ?? null),
         instances: this._validatorInstances,
         owner: this,
         scope: 'field',
@@ -602,6 +626,10 @@ export class InternalFieldApi<
 
     if (dependencyChanges && dependencyChanges.length > 0) {
       notifyDependencyChanges?.(dependencyChanges)
+    }
+
+    if (scope !== 'internal') {
+      this._fieldOptionsInitialized = true
     }
   }
 

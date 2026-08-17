@@ -136,7 +136,10 @@ export class InternalFormGroupApi<
   ) {
     this._options = options
     this.form = options.form as never
-    this._groupField = this.form._getOrCreateFieldApi({ name: options.name })
+    this._groupField = this.form._getOrCreateFieldApi(
+      { name: options.name },
+      'internal',
+    )
     this._groupField._setFormGroup(this)
     this._validatorInstances = reconcileValidatorInstances<
       TGroupValidators[number],
@@ -214,7 +217,7 @@ export class InternalFormGroupApi<
 
   /** Attaches this group to the trie node at the given path. */
   _attachToFieldTrie(name: string): void {
-    const groupField = this.form._getOrCreateFieldApi({ name })
+    const groupField = this.form._getOrCreateFieldApi({ name }, 'internal')
 
     if (groupField !== this._groupField) {
       this._groupField = groupField
