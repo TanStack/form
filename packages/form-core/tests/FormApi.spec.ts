@@ -1913,6 +1913,84 @@ describe('form api', () => {
     expect(formSubmit).toHaveBeenCalledOnce()
   })
 
+  it('should create field meta from form async submit validation errors', async () => {
+    vi.useFakeTimers()
+
+    const form = new FormApi({
+      defaultValues: {
+        age: 0,
+      },
+      validators: {
+        onSubmitAsync: async ({ value }) => {
+          await sleep(1)
+          return value.age > 0
+            ? undefined
+            : { fields: { age: 'age must be greater than 0' } }
+        },
+      },
+      asyncDebounceMs: 1,
+    })
+
+    form.mount()
+
+    expect(form.state.fieldMeta.age).toBeUndefined()
+
+    form.handleSubmit()
+    await vi.runAllTimersAsync()
+
+    expect(form.state.fieldMeta.age).toBeDefined()
+    expect(form.state.fieldMeta.age?.errorMap.onSubmit).toBe(
+      'age must be greater than 0',
+    )
+  })
+
+  it('should run field-level onBlur validators on re-submission to clear stale errors', async () => {
+    // Regression: stale onBlur errors could prevent re-submission because
+    // canSubmit became false and _handleSubmit returned early before running
+    // validateAllFields, which would have re-evaluated and cleared the error.
+    // See: https://github.com/TanStack/form/issues/2034
+    const onSubmit = vi.fn()
+    const onSubmitInvalid = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: { type: 'PIN', pin: '' },
+      onSubmit,
+      onSubmitInvalid,
+    })
+    form.mount()
+
+    // PIN field with an onBlur validator that is only required when type === 'PIN'
+    const pinField = new FieldApi({
+      form,
+      name: 'pin',
+      validators: {
+        onBlur: ({ value }) =>
+          form.getFieldValue('type') === 'PIN' && !value
+            ? 'PIN is required'
+            : undefined,
+      },
+    })
+    pinField.mount()
+
+    // Simulate user touching and blurring the PIN field while type is 'PIN'
+    pinField.handleBlur()
+    expect(pinField.state.meta.errorMap.onBlur).toBe('PIN is required')
+
+    // First submit: form is invalid, onSubmitInvalid is called
+    await form.handleSubmit()
+    expect(onSubmitInvalid).toHaveBeenCalledTimes(1)
+    expect(onSubmit).not.toHaveBeenCalled()
+
+    // User switches type to 'Card' — PIN is no longer required
+    form.setFieldValue('type', 'Card')
+
+    // Second submit: the onBlur error is stale (PIN field still has it), but
+    // re-running validators on submit should clear it since type !== 'PIN'
+    await form.handleSubmit()
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+    expect(onSubmitInvalid).toHaveBeenCalledTimes(1) // not called again
+  })
+
   it('should run all types of async validation on fields during submit', async () => {
     vi.useFakeTimers()
 
@@ -3029,6 +3107,69 @@ describe('form api', () => {
     expect(form.state.isFieldsValid).toBe(true)
     expect(form.state.canSubmit).toBe(true)
     expect(passconfirmField.state.meta.errors.length).toBe(0)
+  })
+
+  it('should not leave linked fields stuck in isValidating when multiple setValue calls trigger concurrent async validation', async () => {
+    vi.useFakeTimers()
+    const validationFn = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        street: '',
+        houseNo: '',
+        zipCode: '',
+        city: '',
+      },
+    })
+
+    form.mount()
+
+    const street = new FieldApi({
+      form,
+      name: 'street',
+      validators: {
+        onChangeListenTo: ['houseNo', 'zipCode', 'city'],
+        onChangeAsyncDebounceMs: 300,
+        onChangeAsync: async () => {
+          await sleep(500)
+          await validationFn()
+          return undefined
+        },
+      },
+    })
+    const houseNo = new FieldApi({ form, name: 'houseNo' })
+    const zipCode = new FieldApi({ form, name: 'zipCode' })
+    const city = new FieldApi({ form, name: 'city' })
+
+    street.mount()
+    houseNo.mount()
+    zipCode.mount()
+    city.mount()
+
+    // Simulate browser autofill: all fields set in rapid succession
+    street.setValue('Foo Street')
+    houseNo.setValue('2')
+    zipCode.setValue('12345')
+    city.setValue('Barrington')
+
+    // Run debounce + async validation
+    try {
+      await vi.runAllTimersAsync()
+
+      expect.soft(validationFn).toHaveBeenCalledTimes(1)
+
+      expect.soft(street.getMeta().isValidating).toBe(false)
+      expect.soft(houseNo.getMeta().isValidating).toBe(false)
+      expect.soft(zipCode.getMeta().isValidating).toBe(false)
+      expect.soft(city.getMeta().isValidating).toBe(false)
+
+      expect.soft(form.state.isFieldsValidating).toBe(false)
+      expect.soft(form.state.isFieldsValid).toBe(true)
+      expect.soft(form.state.isValid).toBe(true)
+      expect.soft(form.state.canSubmit).toBe(true)
+    } finally {
+      vi.useRealTimers()
+    }
   })
 
   it("should set field errors from the form's onMount validator", async () => {

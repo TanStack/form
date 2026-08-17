@@ -38,3 +38,4 @@ title: "@tanstack/react-form"
 - [useFieldGroup](functions/useFieldGroup.md)
 - [useForm](functions/useForm.md)
 - [useFormGroup](functions/useFormGroup.md)
+- [useSelector](functions/useSelector.md)

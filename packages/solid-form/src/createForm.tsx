@@ -1,6 +1,6 @@
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
-import { createComputed, onMount } from 'solid-js'
-import { useStore } from '@tanstack/solid-store'
+import { createComputed, createUniqueId, onMount } from 'solid-js'
+import { useSelector } from '@tanstack/solid-store'
 import { Field, createField } from './createField'
 import { FormGroup } from './createFormGroup'
 import type {
@@ -55,6 +55,44 @@ export interface SolidFormApi<
     TFormOnServer,
     TSubmitMeta
   >
+  useSelector: <
+    TSelected = NoInfer<
+      FormState<
+        TParentData,
+        TFormOnMount,
+        TFormOnChange,
+        TFormOnChangeAsync,
+        TFormOnBlur,
+        TFormOnBlurAsync,
+        TFormOnSubmit,
+        TFormOnSubmitAsync,
+        TFormOnDynamic,
+        TFormOnDynamicAsync,
+        TFormOnServer
+      >
+    >,
+  >(
+    selector?: (
+      state: NoInfer<
+        FormState<
+          TParentData,
+          TFormOnMount,
+          TFormOnChange,
+          TFormOnChangeAsync,
+          TFormOnBlur,
+          TFormOnBlurAsync,
+          TFormOnSubmit,
+          TFormOnSubmitAsync,
+          TFormOnDynamic,
+          TFormOnDynamicAsync,
+          TFormOnServer
+        >
+      >,
+    ) => TSelected,
+  ) => () => TSelected
+  /**
+   * @deprecated Use `form.useSelector` instead.
+   */
   useStore: <
     TSelected = NoInfer<
       FormState<
@@ -202,6 +240,14 @@ export function createForm<
   >,
 ) {
   const options = opts?.()
+  /**
+   * `FormApi` falls back to `uuid()` when no `formId` is given, which differs
+   * between the server render and the client render. `createUniqueId` is
+   * Solid's SSR-safe counterpart, so binding the id (`<form id={form.formId}>`)
+   * no longer produces a hydration mismatch. Mirrors `useFormId` in the React,
+   * Preact, and Vue adapters.
+   */
+  const fallbackFormId = createUniqueId()
   const api = new FormApi<
     TParentData,
     TFormOnMount,
@@ -215,7 +261,7 @@ export function createForm<
     TFormOnDynamicAsync,
     TFormOnServer,
     TSubmitMeta
-  >(options)
+  >({ ...options, formId: options?.formId ?? fallbackFormId })
   const extendedApi: typeof api &
     SolidFormApi<
       TParentData,
@@ -234,9 +280,11 @@ export function createForm<
 
   extendedApi.Field = (props) => <Field {...props} form={api} />
   extendedApi.FormGroup = (props) => <FormGroup {...props} form={api} />
-  extendedApi.useStore = (selector) => useStore(api.store, selector)
+  extendedApi.useSelector = (selector) => useSelector(api.store, selector)
+  /** @deprecated Use `form.useSelector` instead. */
+  extendedApi.useStore = extendedApi.useSelector
   extendedApi.Subscribe = (props) =>
-    functionalUpdate(props.children, useStore(api.store, props.selector))
+    functionalUpdate(props.children, useSelector(api.store, props.selector))
 
   onMount(api.mount)
 

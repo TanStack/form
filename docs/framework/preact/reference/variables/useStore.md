@@ -11,7 +11,7 @@ const useStore: <TSource, TSelected>(source, selector?, compare?) => TSelected;
 
 Defined in: node\_modules/.pnpm/@tanstack+preact-store@0.13.1\_preact@10.29.2/node\_modules/@tanstack/preact-store/dist/useStore.d.ts:12
 
-Deprecated alias for useSelector.
+Deprecated alias for [useSelector](../functions/useSelector.md).
 
 ## Type Parameters
 

@@ -11,7 +11,7 @@ const useStore: <TSource, TSelected>(source, selector?, compare?) => Accessor<TS
 
 Defined in: node\_modules/.pnpm/@tanstack+solid-store@0.11.0\_solid-js@1.9.13/node\_modules/@tanstack/solid-store/dist/useStore.d.ts:14
 
-Deprecated alias for useSelector.
+Deprecated alias for [useSelector](../functions/useSelector.md).
 
 ## Type Parameters
 

@@ -161,7 +161,7 @@ errors: (
   | UnwrapOneLevelOfArray<UnwrapFieldAsyncValidateOrFn<TName, TOnDynamicAsync, TFormOnDynamicAsync>>)[];
 ```
 
-Defined in: [packages/form-core/src/types.ts:650](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L650)
+Defined in: [packages/form-core/src/types.ts:660](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L660)
 
 An array of errors related to the field value.
 
@@ -197,7 +197,7 @@ FieldLikeMeta.isBlurred
 isDefaultValue: boolean;
 ```
 
-Defined in: [packages/form-core/src/types.ts:694](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L694)
+Defined in: [packages/form-core/src/types.ts:704](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L704)
 
 A flag indicating whether the field's current value is the default value
 
@@ -263,7 +263,7 @@ Defined in: [packages/form-core/src/FormGroupApi.ts:825](https://github.com/TanS
 isPristine: boolean;
 ```
 
-Defined in: [packages/form-core/src/types.ts:686](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L686)
+Defined in: [packages/form-core/src/types.ts:696](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L696)
 
 A flag that is `true` if the field's value has not been modified by the user. Opposite of `isDirty`.
 

@@ -39,3 +39,4 @@ title: "@tanstack/preact-form"
 - [useFieldGroup](functions/useFieldGroup.md)
 - [useForm](functions/useForm.md)
 - [useFormGroup](functions/useFormGroup.md)
+- [useSelector](functions/useSelector.md)

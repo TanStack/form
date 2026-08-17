@@ -258,18 +258,18 @@ const FieldGroupPasswordFields = withFieldGroup({
 
   // Optional, but adds props to the `render` function in addition to `form`
   props: {
-    // These default values are also for type-checking and are not used at runtime
+    // These props are set as default values for the `render` function
     title: 'Password',
   },
   // Internally, you will have access to a `group` instead of a `form`
   render: function Render(props) {
     // access reactive values using the group store
-    const password = useStore(
+    const password = useSelector(
       props.group.store,
       (state) => state.values.password,
     )
     // or the form itself
-    const isSubmitting = useStore(
+    const isSubmitting = useSelector(
       props.group.form.store,
       (state) => state.isSubmitting,
     )

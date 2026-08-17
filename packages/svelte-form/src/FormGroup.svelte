@@ -9,7 +9,7 @@
     type FormAsyncValidateOrFn,
     type FormValidateOrFn,
   } from '@tanstack/form-core'
-  import { useStore } from '@tanstack/svelte-store'
+  import { useSelector } from '@tanstack/svelte-store'
   import { onMount, type Snippet } from 'svelte'
 
   export function createFormGroup<
@@ -108,7 +108,7 @@
       api.update(current)
     })
 
-    const storeSub = useStore(api.store)
+    const storeSub = useSelector(api.store)
     Object.defineProperty(extendedApi, 'state', {
       get() {
         return storeSub.current

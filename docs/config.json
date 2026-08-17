@@ -468,16 +468,8 @@
           "to": "reference/type-aliases/DeepValue"
         },
         {
-          "label": "Types / FieldInfo",
-          "to": "reference/type-aliases/FieldInfo"
-        },
-        {
-          "label": "Types / FieldMeta",
-          "to": "reference/type-aliases/FieldMeta"
-        },
-        {
-          "label": "Types / FieldState",
-          "to": "reference/type-aliases/FieldState"
+          "label": "Types / AnyFieldMeta",
+          "to": "reference/type-aliases/AnyFieldMeta"
         },
         {
           "label": "Types / BaseFormState",
@@ -523,10 +515,6 @@
             {
               "label": "Functions / useForm",
               "to": "framework/react/reference/functions/useForm"
-            },
-            {
-              "label": "Functions / useTransform",
-              "to": "framework/react/reference/functions/useTransform"
             },
             {
               "label": "Types / FieldComponent",
@@ -589,10 +577,6 @@
             {
               "label": "Types / FieldComponent",
               "to": "framework/vue/reference/type-aliases/FieldComponent"
-            },
-            {
-              "label": "Types / UseField",
-              "to": "framework/vue/reference/type-aliases/UseField"
             }
           ]
         },
@@ -614,10 +598,6 @@
             {
               "label": "Functions / Field",
               "to": "framework/solid/reference/functions/Field"
-            },
-            {
-              "label": "Types / CreateField",
-              "to": "framework/solid/reference/type-aliases/CreateField"
             },
             {
               "label": "Types / FieldComponent",

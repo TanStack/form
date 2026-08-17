@@ -1,5 +1,5 @@
 import { FieldGroupApi, functionalUpdate } from '@tanstack/form-core'
-import { useStore } from '@tanstack/solid-store'
+import { useSelector } from '@tanstack/solid-store'
 import { onCleanup, onMount } from 'solid-js'
 import type { Component, JSX, ParentProps } from 'solid-js'
 import type {
@@ -201,7 +201,7 @@ export function createFieldGroup<
     <form.Field {...(api.getFormFieldOptions(props) as any)} />
   )
   extendedApi.Subscribe = (props) => {
-    const data = useStore(api.store, props.selector)
+    const data = useSelector(api.store, props.selector)
 
     return functionalUpdate(props.children, data()) as Element
   }

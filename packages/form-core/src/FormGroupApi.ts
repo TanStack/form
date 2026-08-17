@@ -1750,7 +1750,7 @@ export class FormGroupApi<
         continue
       }
 
-      this.form.setFieldMeta(fullName as never, (prev) => ({
+      this.form.setFieldMeta(fullName as never, (prev = defaultFieldMeta) => ({
         ...prev,
         errorMap: {
           ...prev.errorMap,

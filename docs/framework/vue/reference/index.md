@@ -31,3 +31,4 @@ title: "@tanstack/vue-form"
 - [useField](functions/useField.md)
 - [useForm](functions/useForm.md)
 - [useFormGroup](functions/useFormGroup.md)
+- [useSelector](functions/useSelector.md)

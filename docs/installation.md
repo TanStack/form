@@ -3,7 +3,7 @@ id: installation
 title: Installation
 ---
 
-TanStack Form is compatible with various front-end frameworks, including React, Vue, and Solid. Install the corresponding adapter for your framework using your preferred package manager:
+TanStack Form is compatible with various front-end frameworks, including React, Vue, Angular, Solid, Lit, and Svelte. Install the corresponding adapter for your framework using your preferred package manager:
 
 <!-- ::start:tabs variant="package-managers" -->
 

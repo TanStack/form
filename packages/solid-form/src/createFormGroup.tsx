@@ -6,7 +6,7 @@ import {
   onCleanup,
   onMount,
 } from 'solid-js'
-import { useStore } from '@tanstack/solid-store'
+import { useSelector } from '@tanstack/solid-store'
 import type {
   DeepKeys,
   DeepValue,
@@ -114,7 +114,7 @@ function makeFormGroupReactive<
 > {
   const [group, setGroup] = createSignal(formGroupApi, { equals: false })
   // Handle shallow comparison to make sure that Derived doesn't create a new setGroup call every time
-  const store = useStore(formGroupApi.store, (store) => store)
+  const store = useSelector(formGroupApi.store, (store) => store)
   // Run before initial render
   createComputed(() => {
     // Use the store to track dependencies

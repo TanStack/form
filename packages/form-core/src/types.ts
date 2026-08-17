@@ -452,17 +452,17 @@ export type UnwrapFieldValidateOrFn<
             : undefined
           : undefined
       : never)
-  | ([TValidateOrFn] extends [FieldValidateFn<any, any, any>]
-      ? ReturnType<TValidateOrFn>
-      : [TValidateOrFn] extends [StandardSchemaV1<any, any>]
-        ? // TODO: Check if `disableErrorFlat` is enabled, if so, return StandardSchemaV1Issue[][]
-          StandardSchemaV1Issue[]
+  | ([TValidateOrFn] extends [StandardSchemaV1<any, any>]
+      ? // TODO: Check if `disableErrorFlat` is enabled, if so, return StandardSchemaV1Issue[][]
+        StandardSchemaV1Issue[]
+      : [TValidateOrFn] extends [FieldValidateFn<any, any, any>]
+        ? ReturnType<TValidateOrFn>
         : undefined)
-  | ([TValidateOrFn] extends [FormGroupValidateFn<any, any, any>]
-      ? ReturnType<TValidateOrFn>
-      : [TValidateOrFn] extends [StandardSchemaV1<any, any>]
-        ? // TODO: Check if `disableErrorFlat` is enabled, if so, return StandardSchemaV1Issue[][]
-          StandardSchemaV1Issue[]
+  | ([TValidateOrFn] extends [StandardSchemaV1<any, any>]
+      ? // TODO: Check if `disableErrorFlat` is enabled, if so, return StandardSchemaV1Issue[][]
+        StandardSchemaV1Issue[]
+      : [TValidateOrFn] extends [FormGroupValidateFn<any, any, any>]
+        ? ReturnType<TValidateOrFn>
         : undefined)
 
 /**
@@ -553,6 +553,16 @@ export type FieldLikeMetaBase<
    * A flag indicating whether the field is currently being validated.
    */
   isValidating: boolean
+
+  /**
+   * @private
+   * Counter for tracking active async validations to prevent race conditions
+   * when multiple validations finish at the same time.
+   *
+   * NOTE: This field is intentionally internal (prefixed with `_`) and is not
+   * part of the public API — do not read or rely on it from external code.
+   */
+  _pendingValidationsCount: number
 
   /**
    * @private a counter that is incremented every time a structural array

@@ -9,8 +9,8 @@ title: UnwrapFieldValidateOrFn
 type UnwrapFieldValidateOrFn<TName, TValidateOrFn, TFormValidateOrFn> = 
   | [TFormValidateOrFn] extends [StandardSchemaV1<any, infer TStandardOut>] ? TName extends keyof TStandardOut ? StandardSchemaV1Issue[] : undefined : undefined
   | UnwrapFormValidateOrFnForInner<TFormValidateOrFn> extends infer TFormValidateVal ? TFormValidateVal extends object ? [DeepValue<TFormValidateVal, TName>] extends [never] ? undefined : StandardSchemaV1Issue[] : TFormValidateVal extends object ? TName extends keyof TFormValidateVal["fields"] ? TFormValidateVal["fields"][TName] : undefined : undefined : never
-  | [TValidateOrFn] extends [FieldValidateFn<any, any, any>] ? ReturnType<TValidateOrFn> : [TValidateOrFn] extends [StandardSchemaV1<any, any>] ? StandardSchemaV1Issue[] : undefined
-  | [TValidateOrFn] extends [FormGroupValidateFn<any, any, any>] ? ReturnType<TValidateOrFn> : [TValidateOrFn] extends [StandardSchemaV1<any, any>] ? StandardSchemaV1Issue[] : undefined;
+  | [TValidateOrFn] extends [StandardSchemaV1<any, any>] ? StandardSchemaV1Issue[] : [TValidateOrFn] extends [FieldValidateFn<any, any, any>] ? ReturnType<TValidateOrFn> : undefined
+  | [TValidateOrFn] extends [StandardSchemaV1<any, any>] ? StandardSchemaV1Issue[] : [TValidateOrFn] extends [FormGroupValidateFn<any, any, any>] ? ReturnType<TValidateOrFn> : undefined;
 ```
 
 Defined in: [packages/form-core/src/types.ts:431](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L431)

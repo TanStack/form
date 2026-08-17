@@ -19,6 +19,7 @@ Events that can be "listened" to are:
 - `onBlur`
 - `onMount`
 - `onSubmit`
+- `onUnmount`
 
 ```tsx
 function App() {
