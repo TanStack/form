@@ -64,11 +64,14 @@
   Show
 </button>
 
+{#snippet expectTuple(_value: readonly [boolean, number])}{/snippet}
+
 <form.Subscribe
-  selector={(state) => state.values.visible}
-  when={(visible) => visible}
+  selector={(state) => [state.values.visible, state.submissionAttempts]}
+  when={([visible]) => visible}
 >
-  {#snippet children()}
+  {#snippet children(selected)}
+    {@render expectTuple(selected)}
     <span data-testid="visible">Visible</span>
   {/snippet}
 </form.Subscribe>

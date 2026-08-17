@@ -66,7 +66,7 @@ export type FieldGroupSubscribeProps<TSelected> = SolidFormSubscribeProps<
   TSelected
 >
 
-export type FieldGroupSubscribeComponent = <TSelected>(
+export type FieldGroupSubscribeComponent = <const TSelected>(
   props: FieldGroupSubscribeProps<TSelected>,
 ) => JSX.Element
 

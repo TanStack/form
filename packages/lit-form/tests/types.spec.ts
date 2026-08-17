@@ -17,6 +17,14 @@ const options = formOptions({
 type Form = LitFormType<typeof options>
 
 function assertControllerTypes(form: Form) {
+  form.subscribe(
+    (state) => [state.values.name, state.submissionAttempts],
+    (selected) => {
+      expectTypeOf(selected).toEqualTypeOf<readonly [string, number]>()
+      return null
+    },
+  )
+
   form.field({ name: 'name' }, (field) => {
     expectTypeOf(field.value).toEqualTypeOf<string>()
     expectTypeOf(field.errors).toEqualTypeOf<Array<ValidationIssue>>()

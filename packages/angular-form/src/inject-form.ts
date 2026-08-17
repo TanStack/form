@@ -4,7 +4,36 @@ import { InternalFormApi } from '@tanstack/form-core/internals'
 import type { FormOptions, FormValidators } from '@tanstack/form-core'
 
 /**
- * Creates and mounts a v2 form in the current Angular injection context.
+ * Creates and mounts a form in the current Angular injection context.
+ *
+ * `defaultValues` establish the initial state and inferred form value type.
+ * Form state changes notify Angular change detection, including OnPush
+ * components, and the form is cleaned up when the injection context is
+ * destroyed.
+ *
+ * Call this in a component field initializer, constructor, provider factory,
+ * or another active injection context.
+ *
+ * @example
+ * ```ts
+ * @Component({
+ *   selector: 'app-profile-form',
+ *   template: `<form></form>`,
+ * })
+ * class ProfileFormComponent {
+ *   form = injectForm({
+ *     defaultValues: { name: '' },
+ *     onSubmit: ({ value }) => saveProfile(value),
+ *   })
+ * }
+ * ```
+ *
+ * @param options - The initial form options. `defaultValues` drive form value
+ * inference.
+ * @returns The mounted form API registered for injection-context cleanup.
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ * @typeParam TFormValidators - Library-managed. Do not specify explicitly.
+ * @typeParam TSubmitReturn - Library-managed. Do not specify explicitly.
  */
 export function injectForm<
   TFormData,

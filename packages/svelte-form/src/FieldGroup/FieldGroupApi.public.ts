@@ -71,7 +71,7 @@ export type FieldGroupArrayFieldComponent<
   Component<any> &
   WithoutFunction<Component>
 
-export type FieldGroupSubscribeComponent = (new <TSelected>(
+export type FieldGroupSubscribeComponent = (new <const TSelected>(
   options: ComponentConstructorOptions<
     SvelteFormSubscribeProps<unknown, FormErrorTypes, TSelected>
   >,

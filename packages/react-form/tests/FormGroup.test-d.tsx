@@ -399,9 +399,27 @@ function RootFieldTypes() {
   )
 }
 
+function RootSubscribeTypes() {
+  const form = useForm({
+    defaultValues: { name: '' },
+  })
+
+  return (
+    <form.Subscribe
+      selector={(state) => [state.values.name, state.submissionAttempts]}
+    >
+      {(selected) => {
+        expectTypeOf(selected).toEqualTypeOf<readonly [string, number]>()
+        return null
+      }}
+    </form.Subscribe>
+  )
+}
+
 void FormGroupTypes
 void FormGroupSubmitTypes
 void FormGroupSubscribeTypes
 void FormGroupSubscribeWithoutGroupErrorsTypes
 void FormGroupWithoutValidatorsTypes
 void RootFieldTypes
+void RootSubscribeTypes

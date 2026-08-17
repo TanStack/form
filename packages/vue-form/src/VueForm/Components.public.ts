@@ -86,7 +86,7 @@ export type VueFormSubscribeProps<
 export type VueFormSubscribeComponent<
   in out TFormData,
   in out TFormErrorTypes extends FormErrorTypes,
-> = new <TSelected>(
+> = new <const TSelected>(
   props: VueFormSubscribeProps<TFormData, TFormErrorTypes, TSelected> &
     PublicProps,
 ) => VueComponentInstance<
@@ -224,7 +224,7 @@ export type VueFormGroupSubscribeProps<
 export type VueFormGroupSubscribeComponent<
   in out TGroupValue,
   in out TGroupErrorTypes extends FormErrorTypes,
-> = new <TSelected>(
+> = new <const TSelected>(
   props: VueFormGroupSubscribeProps<TGroupValue, TGroupErrorTypes, TSelected> &
     PublicProps,
 ) => VueComponentInstance<

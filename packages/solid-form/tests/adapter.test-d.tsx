@@ -9,6 +9,23 @@ import {
 import type { Accessor } from 'solid-js'
 import type { FieldWithValue, SolidFormType, ValidationIssue } from '../src'
 
+function SubscribeTypes() {
+  const form = createForm(() => ({
+    defaultValues: { name: '' },
+  }))
+
+  return (
+    <form.Subscribe
+      selector={(state) => [state.values.name, state.submissionAttempts]}
+    >
+      {(selected) => {
+        expectTypeOf(selected()).toEqualTypeOf<readonly [string, number]>()
+        return null
+      }}
+    </form.Subscribe>
+  )
+}
+
 function FormAndGroupTypes() {
   const form = createForm(() => ({
     defaultValues: {
@@ -199,6 +216,7 @@ function AppFields(props: { fields: typeof appFieldGroup.fields }) {
 const BoundAppFields = appFieldGroup.bindComponent(AppFields, 'fields')
 
 void FormAndGroupTypes
+void SubscribeTypes
 void SharedFormChild
 void AppFormTypes
 void FieldGroupBindingsTypes

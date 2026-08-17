@@ -86,7 +86,7 @@ export type SolidFormSubscribeProps<
 export type SolidFormSubscribeComponent<
   TFormData,
   TFormErrorTypes extends FormErrorTypes,
-> = <TSelected>(
+> = <const TSelected>(
   props: SolidFormSubscribeProps<TFormData, TFormErrorTypes, TSelected>,
 ) => JSX.Element
 
@@ -205,7 +205,7 @@ export type SolidFormGroupSubscribeProps<
 export type SolidFormGroupSubscribeComponent<
   TGroupValue,
   TGroupErrorTypes extends FormErrorTypes,
-> = <TSelected>(
+> = <const TSelected>(
   props: SolidFormGroupSubscribeProps<TGroupValue, TGroupErrorTypes, TSelected>,
 ) => JSX.Element
 

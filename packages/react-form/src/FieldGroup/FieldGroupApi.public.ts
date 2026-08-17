@@ -167,7 +167,7 @@ export type FieldGroupSubscribeProps<TSelected> = ReactFormSubscribeProps<
  * </fields.Subscribe>
  * ```
  */
-export type FieldGroupSubscribeComponent = <TSelected>(
+export type FieldGroupSubscribeComponent = <const TSelected>(
   props: FieldGroupSubscribeProps<TSelected>,
 ) => ReactNode
 

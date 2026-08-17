@@ -123,7 +123,7 @@ export type FieldGroupSubscribeProps<TSelected> = VueFormSubscribeProps<
   TSelected
 >
 
-export type FieldGroupSubscribeComponent = new <TSelected>(
+export type FieldGroupSubscribeComponent = new <const TSelected>(
   props: FieldGroupSubscribeProps<TSelected> & PublicProps,
 ) => VueComponentInstance<
   FieldGroupSubscribeProps<TSelected>,

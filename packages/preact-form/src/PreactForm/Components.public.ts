@@ -106,7 +106,7 @@ export type PreactFormSubscribeProps<
 export type PreactFormSubscribeComponent<
   in out TFormData,
   in out TFormErrorTypes extends FormErrorTypes,
-> = <TSelected>(
+> = <const TSelected>(
   props: PreactFormSubscribeProps<TFormData, TFormErrorTypes, TSelected>,
 ) => CrossVersionPreactNode
 
@@ -212,7 +212,7 @@ export type PreactFormGroupSubscribeProps<
 export type PreactFormGroupSubscribeComponent<
   in out TGroupValue,
   in out TGroupErrorTypes extends FormErrorTypes,
-> = <TSelected>(
+> = <const TSelected>(
   props: PreactFormGroupSubscribeProps<
     TGroupValue,
     TGroupErrorTypes,

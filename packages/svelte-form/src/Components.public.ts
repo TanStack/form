@@ -89,7 +89,7 @@ export type SvelteFormSubscribeProps<
 export type SvelteFormSubscribeComponent<
   TFormData,
   TFormErrorTypes extends FormErrorTypes,
-> = (new <TSelected>(
+> = (new <const TSelected>(
   options: ComponentConstructorOptions<
     SvelteFormSubscribeProps<TFormData, TFormErrorTypes, TSelected>
   >,
@@ -192,7 +192,7 @@ export type SvelteFormArrayFieldComponent<
 export type SvelteFormGroupSubscribeComponent<
   TGroupValue,
   TGroupErrorTypes extends FormErrorTypes,
-> = (new <TSelected>(
+> = (new <const TSelected>(
   options: ComponentConstructorOptions<
     SvelteSubscribeProps<
       FormGroupState<TGroupValue, TGroupErrorTypes>,

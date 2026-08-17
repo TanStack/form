@@ -16,6 +16,13 @@ const form = useForm({
   },
 })
 
+const TupleConsumer = defineComponent<{
+  value: readonly [string, number]
+}>({
+  props: ['value'],
+  setup: () => () => null,
+})
+
 const TextField = defineComponent<{
   field: FieldWithValue<string>
   label: string
@@ -61,6 +68,13 @@ const Reusable = reusableFieldGroup.bindComponent(ReusableFields, 'fields')
 </script>
 
 <template>
+  <form.Subscribe
+    :selector="(state) => [state.values.name, state.submissionAttempts]"
+    v-slot="selected"
+  >
+    <TupleConsumer :value="selected" />
+  </form.Subscribe>
+
   <form.Field name="name" v-slot="{ field }">
     {{ field.value.toUpperCase() }}
     {{ field.meta.isTouched }}
