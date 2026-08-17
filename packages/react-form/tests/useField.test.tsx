@@ -1644,6 +1644,48 @@ describe('useField', () => {
     expect(getByTestId('item-0')).toHaveTextContent('Alice')
   })
 
+  it('should rerender array field when reset to a shorter array', async () => {
+    // Regression test for https://github.com/TanStack/form/issues/2228
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          items: [1, 2, 3],
+        },
+      })
+
+      return (
+        <>
+          <button
+            data-testid="reset"
+            type="button"
+            onClick={() => form.reset({ items: [4] })}
+          >
+            Reset
+          </button>
+          <form.Field name="items" mode="array">
+            {(field) => (
+              <ol data-testid="list">
+                {field.state.value.map((item, i) => (
+                  <li key={i} data-testid={`item-${i}`}>
+                    {item}
+                  </li>
+                ))}
+              </ol>
+            )}
+          </form.Field>
+        </>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+    expect(getByTestId('list').children).toHaveLength(3)
+
+    await user.click(getByTestId('reset'))
+
+    expect(getByTestId('list').children).toHaveLength(1)
+    expect(getByTestId('item-0')).toHaveTextContent('4')
+  })
+
   it('should handle defaultValue without setstate-in-render error', async () => {
     // Spy on console.error before rendering
     const consoleErrorSpy = vi.spyOn(console, 'error')
