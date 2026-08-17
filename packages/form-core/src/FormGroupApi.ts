@@ -1646,7 +1646,7 @@ export class FormGroupApi<
       if (!field.instance) continue
       // TODO: How to handle FormGroups?
       if (!(field.instance instanceof FieldApi)) continue
-      if (field.instance.name.startsWith(this.name)) {
+      if (isFieldInGroup(this.name, field.instance.name)) {
         relatedFields.push(field.instance)
       }
     }

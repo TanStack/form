@@ -1628,7 +1628,7 @@ export class FieldApi<
     const encompassingGroups = opts?.skipGroupValidation
       ? []
       : Array.from(this.form.formGroupApis).filter((group) =>
-          this.name.startsWith(group.name),
+          isFieldInGroup(group.name, this.name),
         )
 
     // Attempt to sync validate first
