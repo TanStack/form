@@ -144,6 +144,33 @@ describe('form api', () => {
     form.handleSubmit()
   })
 
+  it('should not overwrite reset(newValues) when update() is called with stale options afterwards', async () => {
+    // Simulates the race condition from issue #1681:
+    // reset(newValues) is called inside onSubmit, then the framework calls
+    // update(originalOpts) on the next render - the new values must survive.
+    const originalOptions = { defaultValues: { name: '' } }
+    const form = new FormApi(originalOptions)
+    form.mount()
+
+    form.setFieldValue('name', 'test')
+    await form.handleSubmit()
+
+    // Simulate reset() inside onSubmit having been called with new values
+    form.reset({ name: 'test' })
+
+    // State should now reflect the reset values
+    expect(form.state.values).toEqual({ name: 'test' })
+    expect(form.options.defaultValues).toEqual({ name: 'test' })
+
+    // Simulate the framework calling update() with the original (stale) options
+    // – this is what useIsomorphicLayoutEffect does after every render
+    form.update(originalOptions)
+
+    // Values and defaultValues must NOT revert to the original empty string
+    expect(form.state.values).toEqual({ name: 'test' })
+    expect(form.options.defaultValues).toEqual({ name: 'test' })
+  })
+
   it('should reset and set the new default values that are restored after an empty reset', () => {
     const form = new FormApi({ defaultValues: { name: 'initial' } })
     form.mount()
