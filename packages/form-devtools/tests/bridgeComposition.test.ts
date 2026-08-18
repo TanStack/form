@@ -10,7 +10,10 @@ import type { FormId } from '../src/types/branded'
 describe('form devtools bridge composition', () => {
   it('routes form and field lifecycle events to their purpose controllers', () => {
     const form = new InternalFormApi({ defaultValues: { name: '' } })
-    const field = form._getOrCreateFieldApi({ name: 'name' })
+    const field = form._getOrCreateFieldApi({
+      name: 'name',
+      listeners: [{ triggers: ['change'], run: () => {} }],
+    })
     const formInstanceId = 'form-instance' as FormId
     const mountedForms: MountedFormsBridgeController = {
       mountForm: vi.fn(() => true),
@@ -38,7 +41,7 @@ describe('form devtools bridge composition', () => {
         kind: 'listener' as const,
         sourceField: field,
         watchingField: field,
-        watcherIndex: 0,
+        listenerInstance: field._listenerInstances![0]!,
       },
     ]
 

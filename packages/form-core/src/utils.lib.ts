@@ -2,7 +2,6 @@ import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
 
 // type
 import type { FieldUpdateOptions, OneOrMany, Updater } from './types.public'
-import type { ListenerDebouncer } from './listeners.lib'
 import type {
   InternalFieldUpdateOptions,
   ResolvedInternalFieldUpdateOptions,
@@ -86,24 +85,6 @@ export function getTargetField(
     field = formApi._getOrCreateFieldApi({ name: fieldName })
   }
   return field
-}
-
-export interface PipelineCache {
-  listenerDebouncers: Map<number, ListenerDebouncer>
-}
-
-export function createPipelineCache(): PipelineCache {
-  return {
-    listenerDebouncers: new Map(),
-  }
-}
-
-export function cancelPipelineCache(cache: PipelineCache): void {
-  for (const debouncer of cache.listenerDebouncers.values()) {
-    debouncer.cancel()
-  }
-
-  cache.listenerDebouncers.clear()
 }
 
 /*

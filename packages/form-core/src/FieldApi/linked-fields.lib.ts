@@ -1,23 +1,15 @@
 import type {
   AnyInternalFieldApi,
-  FieldListenToFields,
+  InternalFieldListenerInstance,
   InternalFieldValidatorInstance,
 } from './FieldApi.lib'
 import type { AnyInternalFormApi } from '../FormApi/FormApi.lib'
-import type { AnyFieldListener } from '../listeners.public'
 
-type WatcherIndex = number
-
-interface ListenToFieldsMeta {
-  field: AnyInternalFieldApi
-  name: string
-}
-
-interface WatchFieldOperation {
+export interface ListenerWatchFieldOperation {
   kind: 'listener'
   sourceField: AnyInternalFieldApi
   watchingField: AnyInternalFieldApi
-  watcherIndex: WatcherIndex
+  listenerInstance: InternalFieldListenerInstance
 }
 
 export interface ValidatorWatchFieldOperation {
@@ -31,119 +23,65 @@ export interface DetachWatchingFieldOptions {
   pruneSourceField?: boolean
 }
 
-interface ReconciledWatchedFields<in out TItem> {
-  items: Array<TItem> | null
-  listenToFields: FieldListenToFields | null
-  attach: Array<WatchFieldOperation>
-  detach: Array<WatchFieldOperation>
-}
-
-type WatcherKey = `${number}:${string}`
-
-function toWatcherKey(watcherIndex: number, name: string): WatcherKey {
-  return `${watcherIndex}:${name}`
-}
-function ofWatcherKey(key: WatcherKey): [watcherIndex: number, name: string] {
-  const [watcherIndex, name] = key.split(':') as [number, string]
-  return [Number(watcherIndex), name]
-}
-
-function reconcileWatchedFields<TItem extends { watchFields?: Array<string> }>({
-  nextItems,
-  prevListenToFields,
+export function reconcileWatchedListenerFields({
+  listenerInstances,
   field,
   form,
 }: {
-  nextItems: Array<TItem> | null | undefined
-  prevListenToFields: FieldListenToFields | null
+  listenerInstances: ReadonlyArray<InternalFieldListenerInstance> | null
   field: AnyInternalFieldApi
   form: AnyInternalFormApi
-}): ReconciledWatchedFields<TItem> {
-  const normalizedItems = nextItems && nextItems.length > 0 ? nextItems : null
-  const prevByKey = new Map<WatcherKey, ListenToFieldsMeta>()
+}): {
+  attach: Array<ListenerWatchFieldOperation>
+  detach: Array<ListenerWatchFieldOperation>
+} {
+  const attach: Array<ListenerWatchFieldOperation> = []
+  const detach: Array<ListenerWatchFieldOperation> = []
 
-  prevListenToFields?.forEach((prevMetas, watcherIndex) => {
-    for (const prevMeta of prevMetas) {
-      prevByKey.set(toWatcherKey(watcherIndex, prevMeta.name), prevMeta)
-    }
-  })
+  listenerInstances?.forEach((listenerInstance) => {
+    const previous = listenerInstance.resolvedWatchFields
+    const next = new Map<string, AnyInternalFieldApi>()
+    const names = [...new Set(listenerInstance.definition.watchFields ?? [])]
 
-  const nextListenToFields: FieldListenToFields = []
-  const attach: Array<WatchFieldOperation> = []
-  const detach: Array<WatchFieldOperation> = []
+    for (const name of names) {
+      const sourceField = form._getOrCreateFieldApi({ name })
+      next.set(name, sourceField)
 
-  if (normalizedItems) {
-    normalizedItems.forEach(({ watchFields = [] }, watcherIndex) => {
-      const names = [...new Set(watchFields)]
-      if (names.length === 0) return
+      const previousField = previous?.get(name)
+      if (previousField === sourceField) continue
 
-      nextListenToFields[watcherIndex] = names.map((name) => {
-        const sourceField = form._getOrCreateFieldApi({ name })
-        const key = toWatcherKey(watcherIndex, name)
-        const prevMeta = prevByKey.get(key)
-
-        // Changed or unchanged name, it resolved back to the same field
-        if (prevMeta?.field === sourceField) {
-          prevByKey.delete(key)
-          return prevMeta
-        }
-
-        // Field reference and name are mismatched, so detach to reattach to actual
-        if (prevMeta) {
-          detach.push({
-            kind: 'listener',
-            sourceField: prevMeta.field,
-            watchingField: field,
-            watcherIndex,
-          })
-          prevByKey.delete(key)
-        }
-
-        attach.push({
+      if (previousField) {
+        detach.push({
           kind: 'listener',
-          sourceField,
+          sourceField: previousField,
           watchingField: field,
-          watcherIndex,
+          listenerInstance,
         })
-        return { name, field: sourceField }
+      }
+
+      attach.push({
+        kind: 'listener',
+        sourceField,
+        watchingField: field,
+        listenerInstance,
+      })
+    }
+
+    previous?.forEach((sourceField, name) => {
+      if (next.has(name)) return
+
+      detach.push({
+        kind: 'listener',
+        sourceField,
+        watchingField: field,
+        listenerInstance,
       })
     })
-  }
 
-  for (const [key, prevMeta] of prevByKey.entries()) {
-    detach.push({
-      kind: 'listener',
-      sourceField: prevMeta.field,
-      watchingField: field,
-      watcherIndex: ofWatcherKey(key)[0],
-    })
-  }
-
-  return {
-    items: normalizedItems,
-    listenToFields: nextListenToFields.length > 0 ? nextListenToFields : null,
-    attach,
-    detach,
-  }
-}
-
-export function reconcileWatchedListenerFields({
-  nextListeners,
-  prevListenToFields,
-  field,
-  form,
-}: {
-  nextListeners: Array<AnyFieldListener> | null | undefined
-  prevListenToFields: FieldListenToFields | null
-  field: AnyInternalFieldApi
-  form: AnyInternalFormApi
-}): ReconciledWatchedFields<AnyFieldListener> {
-  return reconcileWatchedFields({
-    nextItems: nextListeners,
-    prevListenToFields,
-    field,
-    form,
+    listenerInstance.resolvedWatchFields = next.size > 0 ? next : null
   })
+
+  return { attach, detach }
 }
 
 export function reconcileWatchedValidatorFields({
@@ -207,82 +145,48 @@ export function reconcileWatchedValidatorFields({
   return { attach, detach }
 }
 
-function attachWatchingField(
-  getWatchingFields: (
-    sourceField: AnyInternalFieldApi,
-  ) => Map<AnyInternalFieldApi, Set<number>> | null,
-  setWatchingFields: (
-    sourceField: AnyInternalFieldApi,
-    watchingFields: Map<AnyInternalFieldApi, Set<number>>,
-  ) => void,
-  { sourceField, watchingField, watcherIndex }: WatchFieldOperation,
-) {
-  let watchingFields = getWatchingFields(sourceField)
+export function attachWatchingListenerField({
+  sourceField,
+  watchingField,
+  listenerInstance,
+}: ListenerWatchFieldOperation) {
+  let watchingFields = sourceField._watchingListenerFields
   if (!watchingFields) {
     watchingFields = new Map()
-    setWatchingFields(sourceField, watchingFields)
+    sourceField._watchingListenerFields = watchingFields
   }
 
-  let indices = watchingFields.get(watchingField)
-
-  if (!indices) {
-    indices = new Set()
-    watchingFields.set(watchingField, indices)
+  let instances = watchingFields.get(watchingField)
+  if (!instances) {
+    instances = new Set()
+    watchingFields.set(watchingField, instances)
   }
 
-  indices.add(watcherIndex)
+  instances.add(listenerInstance)
 }
 
-function detachWatchingField(
-  getWatchingFields: (
-    sourceField: AnyInternalFieldApi,
-  ) => Map<AnyInternalFieldApi, Set<number>> | null,
-  clearWatchingFields: (sourceField: AnyInternalFieldApi) => void,
-  { sourceField, watchingField, watcherIndex }: WatchFieldOperation,
+export function detachWatchingListenerField(
+  { sourceField, watchingField, listenerInstance }: ListenerWatchFieldOperation,
   options: DetachWatchingFieldOptions = {},
 ) {
-  const watchingFields = getWatchingFields(sourceField)
+  const watchingFields = sourceField._watchingListenerFields
   if (!watchingFields) return
 
-  const indices = watchingFields.get(watchingField)
-  if (!indices) return
+  const instances = watchingFields.get(watchingField)
+  if (!instances) return
 
-  indices.delete(watcherIndex)
+  instances.delete(listenerInstance)
 
-  if (indices.size === 0) {
+  if (instances.size === 0) {
     watchingFields.delete(watchingField)
     if (watchingFields.size === 0) {
-      clearWatchingFields(sourceField)
+      sourceField._watchingListenerFields = null
     }
   }
 
   if (options.pruneSourceField !== false) {
     sourceField._pruneIfUnused()
   }
-}
-
-export function attachWatchingListenerField(operation: WatchFieldOperation) {
-  attachWatchingField(
-    (source) => source._watchingFields,
-    (source, watchingFields) => {
-      source._watchingFields = watchingFields
-    },
-    operation,
-  )
-}
-
-export function detachWatchingListenerField(
-  operation: WatchFieldOperation,
-  options?: DetachWatchingFieldOptions,
-) {
-  detachWatchingField(
-    (source) => source._watchingFields,
-    (source) => {
-      source._watchingFields = null
-    },
-    operation,
-    options,
-  )
 }
 
 export function attachWatchingValidatorField({

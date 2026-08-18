@@ -3,8 +3,7 @@ import { compareFieldPaths } from '../utils'
 import type {
   AnyInternalFieldApi,
   AnyInternalValidatorInstance,
-  FieldListenToFields,
-  FieldWatchingFields,
+  FieldWatchingListenerFields,
   FieldWatchingValidatorFields,
   InternalFieldState,
   ValidationSourceErrorMap,
@@ -234,61 +233,55 @@ function addRelation(
   })
 }
 
-function addListensToRelations(
+function addListenerListensToRelations(
   relations: Map<FieldId, FieldRelationAccumulator>,
-  listenToFields: FieldListenToFields | null,
-  kind: DevtoolsFieldRelationKind,
+  field: AnyInternalFieldApi,
   identity: Pick<FieldIdentityController, 'getFieldId'>,
 ): void {
-  listenToFields?.forEach((sourceMetas, itemIndex) => {
-    for (const sourceMeta of sourceMetas) {
-      addRelation(
-        relations,
-        sourceMeta.field,
-        getRelationCause(
-          kind,
-          itemIndex,
-          sourceMeta.name,
-          sourceMeta.field.name,
-        ),
-        identity,
-      )
-    }
+  field._listenerInstances?.forEach((listenerInstance, itemIndex) => {
+    listenerInstance.resolvedWatchFields?.forEach(
+      (sourceField, configuredPath) => {
+        addRelation(
+          relations,
+          sourceField,
+          getRelationCause(
+            'listener',
+            itemIndex,
+            configuredPath,
+            sourceField.name,
+          ),
+          identity,
+        )
+      },
+    )
   })
 }
 
-function getConfiguredPath(
-  sourceField: AnyInternalFieldApi,
-  listenToFields: FieldListenToFields | null,
-  itemIndex: number,
-): string | undefined {
-  return listenToFields?.[itemIndex]?.find(
-    (sourceMeta) => sourceMeta.field === sourceField,
-  )?.name
-}
-
-function addListenedToByRelations(
+function addListenerListenedToByRelations(
   relations: Map<FieldId, FieldRelationAccumulator>,
   sourceField: AnyInternalFieldApi,
-  watchingFields: FieldWatchingFields | null,
-  getListenToFields: (
-    watchingField: AnyInternalFieldApi,
-  ) => FieldListenToFields | null,
-  kind: DevtoolsFieldRelationKind,
+  watchingFields: FieldWatchingListenerFields | null,
   identity: Pick<FieldIdentityController, 'getFieldId'>,
 ): void {
-  watchingFields?.forEach((itemIndexes, watchingField) => {
+  watchingFields?.forEach((listenerInstances, watchingField) => {
     if (watchingField._isKilled) return
 
-    const listenToFields = getListenToFields(watchingField)
-    for (const itemIndex of itemIndexes) {
+    for (const listenerInstance of listenerInstances) {
+      const itemIndex =
+        watchingField._listenerInstances?.indexOf(listenerInstance) ?? -1
+      if (itemIndex < 0) continue
+
+      let configuredPath: string | undefined
+      listenerInstance.resolvedWatchFields?.forEach((field, path) => {
+        if (field === sourceField) configuredPath = path
+      })
       addRelation(
         relations,
         watchingField,
         getRelationCause(
-          kind,
+          'listener',
           itemIndex,
-          getConfiguredPath(sourceField, listenToFields, itemIndex),
+          configuredPath,
           sourceField.name,
         ),
         identity,
@@ -388,14 +381,12 @@ function getDevtoolsFieldRelations(
   const listensTo = new Map<FieldId, FieldRelationAccumulator>()
   const listenedToBy = new Map<FieldId, FieldRelationAccumulator>()
 
-  addListensToRelations(listensTo, field._listenToFields, 'listener', identity)
+  addListenerListensToRelations(listensTo, field, identity)
   addValidatorListensToRelations(listensTo, field, identity)
-  addListenedToByRelations(
+  addListenerListenedToByRelations(
     listenedToBy,
     field,
-    field._watchingFields,
-    (watchingField) => watchingField._listenToFields,
-    'listener',
+    field._watchingListenerFields,
     identity,
   )
   addValidatorListenedToByRelations(

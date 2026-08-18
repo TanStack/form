@@ -1,5 +1,5 @@
 import { batch, createAtom } from '@tanstack/store'
-import { callUpdater, createPipelineCache, evaluate, getBy } from '../utils.lib'
+import { callUpdater, evaluate, getBy } from '../utils.lib'
 import {
   clearValidationSourceErrorsFromEvent,
   isValidationTriggerEnabled,
@@ -11,6 +11,7 @@ import {
 import { runFieldListenerPipeline } from '../listeners.lib'
 import { devtools } from '../devtoolsBridge.lib'
 import { reconcileValidatorInstances } from '../ValidatorInstance.lib'
+import { reconcileListenerInstances } from '../ListenerInstance.lib'
 import {
   attachWatchingListenerField,
   attachWatchingValidatorField,
@@ -42,7 +43,7 @@ import type {
   AnyFieldListener,
   FieldListenerTriggers,
 } from '../listeners.public'
-import type { NameSegment, NameSegments, PipelineCache } from '../utils.lib'
+import type { NameSegment, NameSegments } from '../utils.lib'
 import type {
   FieldValidatorPipelineResult,
   PipelineResult,
@@ -57,6 +58,10 @@ import type {
   InternalValidatorInstance,
   InternalValidatorInstances,
 } from '../ValidatorInstance.lib'
+import type {
+  InternalListenerInstance,
+  InternalListenerInstances,
+} from '../ListenerInstance.lib'
 import type { FieldApi, FieldApiOptions } from './FieldApi.public'
 import type {
   ErrorVisibility,
@@ -271,19 +276,21 @@ export interface InternalFieldApiParams extends Omit<
   validators?: FieldValidators<any, any, any>
 }
 
-interface ListenToFieldsMeta {
-  field: AnyInternalFieldApi
-  name: string
-}
-
-export type FieldWatchingFields = Map<AnyInternalFieldApi, Set<number>>
-export type FieldListenToFields = Array<Array<ListenToFieldsMeta>>
+export type FieldWatchingListenerFields = Map<
+  AnyInternalFieldApi,
+  Set<InternalFieldListenerInstance>
+>
 export type FieldWatchingValidatorFields = Map<
   AnyInternalFieldApi,
   Set<InternalFieldValidatorInstance>
 >
 
 export type AnyInternalFieldApi = InternalFieldApi<any, any, any>
+export type InternalFieldListenerInstance = InternalListenerInstance<
+  AnyFieldListener,
+  AnyInternalFieldApi,
+  AnyInternalFieldApi
+>
 export type InternalFieldValidatorInstance = InternalValidatorInstance<
   AnyFieldValidator,
   AnyInternalFieldApi,
@@ -308,7 +315,12 @@ export class InternalFieldApi<
     AnyInternalFieldApi,
     AnyInternalFieldApi
   >
-  _listeners: Array<AnyFieldListener> | null
+  /** Stable runtime instances for this field's listener definitions. */
+  _listenerInstances: InternalListenerInstances<
+    AnyFieldListener,
+    AnyInternalFieldApi,
+    AnyInternalFieldApi
+  >
   _errorVisibility: ErrorVisibility<any, any> | undefined
   _errorBoundary: boolean
   /** The form group occupying this trie node. */
@@ -319,11 +331,8 @@ export class InternalFieldApi<
    * @private
    * Fields that are listening to this one.
    */
-  _watchingFields: FieldWatchingFields | null
-  _listenToFields: FieldListenToFields | null
+  _watchingListenerFields: FieldWatchingListenerFields | null
   _watchingValidatorFields: FieldWatchingValidatorFields | null
-  /** Lazily allocated runtime state for debounced field listeners. */
-  _pipelineCache: PipelineCache | null = null
   _isKilled = false
 
   _segmentValue: NameSegment
@@ -393,15 +402,6 @@ export class InternalFieldApi<
 
     this._atoms = required
     return required
-  }
-
-  /** Returns the listener runtime cache, allocating it on first use. */
-  _getOrCreatePipelineCache(): PipelineCache {
-    if (!this._pipelineCache) {
-      this._pipelineCache = createPipelineCache()
-    }
-
-    return this._pipelineCache
   }
 
   get atom(): ReadonlyAtom<InternalFieldState> {
@@ -487,10 +487,17 @@ export class InternalFieldApi<
     this._errorVisibility = errorVisibility
     this._errorBoundary = errorBoundary ?? false
     this._atoms = {}
-    this._listeners = null
-    this._watchingFields = null
-    this._listenToFields = null
+    this._watchingListenerFields = null
     this._watchingValidatorFields = null
+    this._listenerInstances = reconcileListenerInstances<
+      AnyFieldListener,
+      AnyInternalFieldApi,
+      AnyInternalFieldApi
+    >({
+      definitions: listeners,
+      instances: null,
+      owner: this,
+    })
     this._validatorInstances = reconcileValidatorInstances<
       AnyFieldValidator,
       AnyInternalFieldApi,
@@ -505,14 +512,11 @@ export class InternalFieldApi<
 
     const reconciledListeners = reconcileWatchedListenerFields({
       field: this,
-      prevListenToFields: this._listenToFields,
-      nextListeners: listeners,
+      listenerInstances: this._listenerInstances,
       form,
     })
 
     reconciledListeners.attach.forEach(attachWatchingListenerField)
-    this._listeners = reconciledListeners.items
-    this._listenToFields = reconciledListeners.listenToFields
 
     const reconciledValidators = reconcileWatchedValidatorFields({
       field: this,
@@ -529,10 +533,40 @@ export class InternalFieldApi<
     this._errorVisibility = options.errorVisibility
     this._errorBoundary = options.errorBoundary ?? false
 
+    const notifyDependencyChanges = devtools().fieldDependenciesChanged
+    const dependencyChanges: Array<FieldDependencyChange> | null =
+      notifyDependencyChanges ? [] : null
+
+    const previousListeners = this._listenerInstances?.map(
+      (instance) => instance.definition,
+    )
+    this._listenerInstances = reconcileListenerInstances<
+      AnyFieldListener,
+      AnyInternalFieldApi,
+      AnyInternalFieldApi
+    >({
+      definitions: options.listeners,
+      previousDefinitions: previousListeners ?? null,
+      instances: this._listenerInstances,
+      owner: this,
+      onBeforeDispose: (listenerInstance) => {
+        listenerInstance.resolvedWatchFields?.forEach((sourceField) => {
+          const operation = {
+            kind: 'listener' as const,
+            sourceField,
+            watchingField: this,
+            listenerInstance,
+          }
+          detachWatchingListenerField(operation)
+          dependencyChanges?.push(operation)
+        })
+        listenerInstance.resolvedWatchFields = null
+      },
+    })
+
     const reconciledListeners = reconcileWatchedListenerFields({
       field: this,
-      prevListenToFields: this._listenToFields,
-      nextListeners: options.listeners,
+      listenerInstances: this._listenerInstances,
       form: this.form,
     })
 
@@ -540,14 +574,10 @@ export class InternalFieldApi<
       detachWatchingListenerField(operation),
     )
     reconciledListeners.attach.forEach(attachWatchingListenerField)
-
-    this._listeners = reconciledListeners.items
-    this._listenToFields = reconciledListeners.listenToFields
-    const notifyDependencyChanges = devtools().fieldDependenciesChanged
-    const dependencyChanges: Array<FieldDependencyChange> | null =
-      notifyDependencyChanges
-        ? [...reconciledListeners.attach, ...reconciledListeners.detach]
-        : null
+    dependencyChanges?.push(
+      ...reconciledListeners.attach,
+      ...reconciledListeners.detach,
+    )
 
     if (options.validators) {
       const previousValidators = this._validatorInstances?.map(
@@ -954,7 +984,7 @@ export class InternalFieldApi<
   _notifyListener(
     trigger: FieldListenerTriggers,
     seenFields: WeakSet<AnyInternalFieldApi>,
-    onlyRunListenerIndeces: Array<number> | null = null,
+    onlyRunListenerInstances: ReadonlySet<InternalFieldListenerInstance> | null = null,
   ) {
     if (this._isKilled) return
 
@@ -969,32 +999,32 @@ export class InternalFieldApi<
 
     seenFields.add(this)
 
-    if (this._listeners) {
+    if (this._listenerInstances) {
       runFieldListenerPipeline({
-        pipeline: this._listeners,
+        pipeline: this._listenerInstances,
         context: {
           event: trigger,
           fieldApi: this,
           formApi: this.form,
         },
-        listenerIndecesToRun: onlyRunListenerIndeces,
+        listenerInstancesToRun: onlyRunListenerInstances,
       })
     }
 
-    const watchingFields = this._watchingFields
+    const watchingFields = this._watchingListenerFields
     if (!watchingFields) return
 
-    for (const [watchingField, listenerIndeces] of watchingFields) {
+    for (const [watchingField, listenerInstances] of watchingFields) {
       if (watchingField._isKilled) {
         watchingFields.delete(watchingField)
         continue
       }
 
-      watchingField._notifyListener(trigger, seenFields, [...listenerIndeces])
+      watchingField._notifyListener(trigger, seenFields, listenerInstances)
     }
 
     if (watchingFields.size === 0) {
-      this._watchingFields = null
+      this._watchingListenerFields = null
     }
   }
 

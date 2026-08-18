@@ -7,8 +7,6 @@ import {
 } from '../FieldApi/FieldApi.lib'
 import {
   callUpdater,
-  cancelPipelineCache,
-  createPipelineCache,
   evaluate,
   getBy,
   getTargetField,
@@ -38,6 +36,7 @@ import { runFormListenerPipeline } from '../listeners.lib'
 import { applyServerState } from '../ssr.lib'
 import { devtools } from '../devtoolsBridge.lib'
 import { reconcileValidatorInstances } from '../ValidatorInstance.lib'
+import { reconcileListenerInstances } from '../ListenerInstance.lib'
 import { InternalValidationSourceInstance } from '../ValidationSourceInstance.lib'
 import { runSubmissionProcess } from './handleSubmit.lib'
 import { ArrayMethods } from './array-methods.lib'
@@ -55,7 +54,6 @@ import type {
 } from './FormApi.public'
 import type { FormErrorMeta } from './formState.lib'
 import type { DeepKeys } from '../deep-keys.public'
-import type { PipelineCache } from '../utils.lib'
 import type { FormValidatorPipelineResult, PipelineResult } from '../validation'
 import type {
   AnyFieldApiOptions,
@@ -82,7 +80,8 @@ import type {
   ValidationIssue,
   ValidationTrigger,
 } from '../validation.public'
-import type { FormListenerTriggers } from '../listeners.public'
+import type { AnyFormListener, FormListenerTriggers } from '../listeners.public'
+import type { InternalListenerInstances } from '../ListenerInstance.lib'
 import type { ServerFormState } from '../ssr.public'
 import type {
   InternalValidatorInstance,
@@ -229,7 +228,11 @@ export class InternalFormApi<
     AnyInternalFieldApi
   >
   _lastUpdateDefaultValues: TFormData
-  _pipelineCache: PipelineCache
+  /** Stable runtime instances correlated with `_options.listeners` by slot. */
+  _listenerInstances: InternalListenerInstances<
+    AnyFormListener,
+    AnyInternalFormApi
+  >
   _lastServerState: ServerFormState<TFormData, TFormValidators> | null = null
 
   get state(): FormState<
@@ -294,7 +297,6 @@ export class InternalFormApi<
   constructor(options: FormOptions<TFormData, TFormValidators, any>) {
     this._options = { ...options, formId: options.formId ?? uuid() }
     this._lastUpdateDefaultValues = options.defaultValues
-    this._pipelineCache = createPipelineCache()
     this._atoms = {
       values: createAtom(options.defaultValues),
       meta: createInitialFormMetaAtoms(),
@@ -309,6 +311,11 @@ export class InternalFormApi<
 
     this.atom = createAtom(() => getFormStateSnapshot(this), {
       compare: compareFormStateSnapshots,
+    })
+    this._listenerInstances = reconcileListenerInstances({
+      definitions: this._options.listeners,
+      instances: null,
+      owner: this,
     })
     this._validatorInstances = reconcileValidatorInstances<
       TFormValidators[number],
@@ -367,8 +374,7 @@ export class InternalFormApi<
       this._options = { ...this._options, defaultValues: values }
     }
 
-    cancelPipelineCache(this._pipelineCache)
-    this._pipelineCache = createPipelineCache()
+    this._listenerInstances?.forEach((instance) => instance.resetRuntime())
     this._validatorInstances?.forEach((instance) => instance.resetRuntime())
     this._onSubmitSource.resetRuntime()
     this._defaultValueCache = null
@@ -412,6 +418,13 @@ export class InternalFormApi<
         : oldOptions.defaultValues,
       formId: options.formId ?? oldOptions.formId,
     }
+
+    this._listenerInstances = reconcileListenerInstances({
+      definitions: this._options.listeners,
+      previousDefinitions: oldOptions.listeners ?? null,
+      instances: this._listenerInstances,
+      owner: this,
+    })
 
     this._validatorInstances = reconcileValidatorInstances<
       TFormValidators[number],
@@ -496,10 +509,9 @@ export class InternalFormApi<
         const current = fields[index]!
 
         current._defaultValueCache = null
-        if (current._pipelineCache) {
-          cancelPipelineCache(current._pipelineCache)
-          current._pipelineCache = null
-        }
+        current._listenerInstances?.forEach((instance) =>
+          instance.resetRuntime(),
+        )
         current._validatorInstances?.forEach((instance) =>
           instance.resetRuntime(),
         )
@@ -633,11 +645,10 @@ export class InternalFormApi<
     trigger: FormListenerTriggers,
     triggerFieldApi: AnyInternalFieldApi | null,
   ) {
-    if (!this._options.listeners) return
-    if (this._options.listeners.length === 0) return
+    if (!this._listenerInstances) return
 
     runFormListenerPipeline({
-      pipeline: this._options.listeners,
+      pipeline: this._listenerInstances,
       context: {
         event: trigger,
         formApi: this,
