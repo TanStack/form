@@ -1,33 +1,45 @@
 import { InternalFormApi } from '@tanstack/form-core/internals'
 import { attachReactAppFormComponents } from './Components.lib'
-import type { FormOptions } from '@tanstack/form-core'
+import type {
+  DefaultFieldOptions,
+  DefaultFormGroupOptions,
+  DefaultFormOptions,
+  DefaultOptions,
+  FormOptions,
+} from '@tanstack/form-core'
 import type { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
 import type { FunctionComponent } from 'react'
-import type {
-  CreateFormHookDefaultFieldOptions,
-  CreateFormHookDefaultFormGroupOptions,
-  CreateFormHookDefaultFormOptions,
-} from './createFormHookTypes.public'
 
 interface AnyCreateFormHookOptions {
   formComponents: Record<string, FunctionComponent<any>>
   fieldComponents: Record<string, FunctionComponent<any>>
-  defaultFormOptions?: CreateFormHookDefaultFormOptions
-  defaultFieldOptions?: CreateFormHookDefaultFieldOptions
-  defaultFormGroupOptions?: CreateFormHookDefaultFormGroupOptions
+  defaultFormOptions?: DefaultFormOptions
+  defaultFieldOptions?: DefaultFieldOptions
+  defaultFormGroupOptions?: DefaultFormGroupOptions
 }
 
 export function createAppFormInitializer(
   createOptions: AnyCreateFormHookOptions,
 ): (options: FormOptions<any, any, any>) => InternalReactFormApi {
+  const hasDefaultOptions =
+    createOptions.defaultFormOptions ||
+    createOptions.defaultFieldOptions ||
+    createOptions.defaultFormGroupOptions
+
+  const defaultOptions: DefaultOptions | undefined = hasDefaultOptions
+    ? {
+        form: createOptions.defaultFormOptions,
+        field: createOptions.defaultFieldOptions,
+        formGroup: createOptions.defaultFormGroupOptions,
+      }
+    : undefined
+
   return (options) => {
-    const form = new InternalFormApi(options)
+    const form = new InternalFormApi(options, defaultOptions)
     const extendedForm = attachReactAppFormComponents(
       form,
       createOptions.formComponents,
       createOptions.fieldComponents,
-      createOptions.defaultFieldOptions,
-      createOptions.defaultFormGroupOptions,
     )
 
     return extendedForm as never

@@ -18,6 +18,7 @@ title: "@tanstack/solid-form"
 - [Atom](interfaces/Atom.md)
 - [AtomOptions](interfaces/AtomOptions.md)
 - [BaseAtom](interfaces/BaseAtom.md)
+- [CreateFormHookOptions](interfaces/CreateFormHookOptions.md)
 - [FieldGroupApi](interfaces/FieldGroupApi.md)
 - [FieldGroupArrayFieldComponent](interfaces/FieldGroupArrayFieldComponent.md)
 - [FieldGroupDefinition](interfaces/FieldGroupDefinition.md)

@@ -1,16 +1,41 @@
 import { InternalFormApi } from '@tanstack/form-core/internals'
 import { attachPreactAppFormComponents } from './Components.lib'
-import type { FormOptions } from '@tanstack/form-core'
+import type {
+  DefaultFieldOptions,
+  DefaultFormGroupOptions,
+  DefaultFormOptions,
+  DefaultOptions,
+  FormOptions,
+} from '@tanstack/form-core'
 import type { InternalPreactFormApi } from '../PreactForm/PreactFormApi.lib'
-import type { AnyPreactFormComponentMap } from './componentMap.public'
+import type { FunctionComponent } from 'preact/compat'
 
-export function createAppFormInitializer<
-  TComponents extends AnyPreactFormComponentMap,
->(
-  createOptions: TComponents,
+interface AnyCreateFormHookOptions {
+  formComponents: Record<string, FunctionComponent<any>>
+  fieldComponents: Record<string, FunctionComponent<any>>
+  defaultFormOptions?: DefaultFormOptions
+  defaultFieldOptions?: DefaultFieldOptions
+  defaultFormGroupOptions?: DefaultFormGroupOptions
+}
+
+export function createAppFormInitializer(
+  createOptions: AnyCreateFormHookOptions,
 ): (options: FormOptions<any, any, any>) => InternalPreactFormApi {
+  const hasDefaultOptions =
+    createOptions.defaultFormOptions ||
+    createOptions.defaultFieldOptions ||
+    createOptions.defaultFormGroupOptions
+
+  const defaultOptions: DefaultOptions | undefined = hasDefaultOptions
+    ? {
+        form: createOptions.defaultFormOptions,
+        field: createOptions.defaultFieldOptions,
+        formGroup: createOptions.defaultFormGroupOptions,
+      }
+    : undefined
+
   return (options) => {
-    const form = new InternalFormApi(options)
+    const form = new InternalFormApi(options, defaultOptions)
     const extendedForm = attachPreactAppFormComponents(
       form,
       createOptions.formComponents,

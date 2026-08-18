@@ -9,6 +9,7 @@ title: "@tanstack/form-core"
 
 - [BaseFieldMeta](interfaces/BaseFieldMeta.md)
 - [BaseValidator](interfaces/BaseValidator.md)
+- [DefaultOptions](interfaces/DefaultOptions.md)
 - [ErrorVisibilityContext](interfaces/ErrorVisibilityContext.md)
 - [ErrorVisibilityFieldMeta](interfaces/ErrorVisibilityFieldMeta.md)
 - [ErrorVisibilityFieldState](interfaces/ErrorVisibilityFieldState.md)
@@ -85,6 +86,10 @@ title: "@tanstack/form-core"
 - [DeepKeys](type-aliases/DeepKeys.md)
 - [DeepKeysWhereValueIncludes](type-aliases/DeepKeysWhereValueIncludes.md)
 - [DeepValue](type-aliases/DeepValue.md)
+- [DefaultFieldOptions](type-aliases/DefaultFieldOptions.md)
+- [DefaultFormGroupOptions](type-aliases/DefaultFormGroupOptions.md)
+- [DefaultFormOptions](type-aliases/DefaultFormOptions.md)
+- [DefaultListenersMergeMode](type-aliases/DefaultListenersMergeMode.md)
 - [Editable](type-aliases/Editable.md)
 - [ErrorVisibility](type-aliases/ErrorVisibility.md)
 - [FieldErrors](type-aliases/FieldErrors.md)

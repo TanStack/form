@@ -9,7 +9,7 @@ title: UseAppFormHook
 type UseAppFormHook<TComponents> = <TFormData, TFormValidators, TSubmitReturn>(options) => PreactAppFormApi<TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>, TComponents>;
 ```
 
-Defined in: [packages/preact-form/src/AppForm/createFormHookTypes.public.ts:11](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/createFormHookTypes.public.ts#L11)
+Defined in: [packages/preact-form/src/AppForm/createFormHookTypes.public.ts:98](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/createFormHookTypes.public.ts#L98)
 
 ## Type Parameters
 

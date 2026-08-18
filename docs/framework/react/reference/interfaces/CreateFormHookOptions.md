@@ -5,14 +5,15 @@ title: CreateFormHookOptions
 
 # Interface: CreateFormHookOptions\<TFormComponents, TFieldComponents\>
 
-Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:143](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L143)
+Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:46](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L46)
 
 Configures the components and reusable defaults returned by
 `createFormHook`.
 
-Default objects are shallowly applied before the corresponding usage-site
-options. A usage-site property always takes precedence, including when its
-value is explicitly `undefined`.
+Default objects are resolved by form core before the corresponding
+usage-site options. Non-listener properties always take precedence,
+including when explicitly set to `undefined`. Listener arrays follow the
+configured `listenersMerge` strategy.
 
 ## Example
 
@@ -54,16 +55,16 @@ Library-managed. Do not specify explicitly.
 ### defaultFieldOptions?
 
 ```ts
-optional defaultFieldOptions?: CreateFormHookDefaultFieldOptions;
+optional defaultFieldOptions?: DefaultFieldOptions;
 ```
 
-Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:175](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L175)
+Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:79](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L79)
 
-Defaults for direct `form.Field` and `form.ArrayField` components.
+Defaults for every field and array-field component owned by the form.
 
-Options passed to the component override these defaults, including when
-an option is explicitly `undefined`. These defaults do not apply to
-`group.Field` or `group.ArrayField`.
+Non-listener options passed to the component override these defaults,
+including when explicitly set to `undefined`. Listener arrays follow
+`listenersMerge`. This includes `group.Field` and `group.ArrayField`.
 
 #### Example
 
@@ -78,10 +79,10 @@ defaultFieldOptions: {
 ### defaultFormGroupOptions?
 
 ```ts
-optional defaultFormGroupOptions?: CreateFormHookDefaultFormGroupOptions;
+optional defaultFormGroupOptions?: DefaultFormGroupOptions;
 ```
 
-Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:191](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L191)
+Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:95](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L95)
 
 Defaults for every `form.FormGroup` component.
 
@@ -103,15 +104,16 @@ defaultFormGroupOptions: {
 ### defaultFormOptions?
 
 ```ts
-optional defaultFormOptions?: CreateFormHookDefaultFormOptions;
+optional defaultFormOptions?: DefaultFormOptions;
 ```
 
-Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:160](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L160)
+Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:64](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L64)
 
 Defaults for every form created by `useAppForm`.
 
-Options passed to `useAppForm` override these defaults, including when an
-option is explicitly `undefined`.
+Non-listener options passed to `useAppForm` override these defaults,
+including when explicitly set to `undefined`. Listener arrays follow
+`listenersMerge`.
 
 #### Example
 

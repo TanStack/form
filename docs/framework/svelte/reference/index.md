@@ -18,6 +18,7 @@ title: "@tanstack/svelte-form"
 - [Atom](interfaces/Atom.md)
 - [AtomOptions](interfaces/AtomOptions.md)
 - [BaseAtom](interfaces/BaseAtom.md)
+- [CreateFormHookOptions](interfaces/CreateFormHookOptions.md)
 - [FieldGroupApi](interfaces/FieldGroupApi.md)
 - [FieldGroupDefinition](interfaces/FieldGroupDefinition.md)
 - [FieldGroupFieldSlot](interfaces/FieldGroupFieldSlot.md)

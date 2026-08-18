@@ -82,7 +82,7 @@ export function getTargetField(
   } else if (options._skipFieldCreation) {
     field = formApi._tryGetFieldApi(fieldName)
   } else {
-    field = formApi._getOrCreateFieldApi({ name: fieldName })
+    field = formApi._getOrCreateFieldApi({ name: fieldName }, 'internal')
   }
   return field
 }

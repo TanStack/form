@@ -38,6 +38,7 @@ import { devtools } from '../devtoolsBridge.lib'
 import { reconcileValidatorInstances } from '../ValidatorInstance.lib'
 import { reconcileListenerInstances } from '../ListenerInstance.lib'
 import { InternalValidationSourceInstance } from '../ValidationSourceInstance.lib'
+import { resolveDefaultOptions } from '../defaultOptions.lib'
 import { runSubmissionProcess } from './handleSubmit.lib'
 import { ArrayMethods } from './array-methods.lib'
 import {
@@ -59,6 +60,7 @@ import type {
   AnyFieldApiOptions,
   AnyInternalFieldApi,
   DefaultValueCacheEntry,
+  FieldOptionsScope,
 } from '../FieldApi/FieldApi.lib'
 import type {
   InternalBaseFieldMeta,
@@ -88,6 +90,7 @@ import type {
   InternalValidatorInstances,
 } from '../ValidatorInstance.lib'
 import type { AnyInternalValidationSourceInstance } from '../ValidationSourceInstance.lib'
+import type { DefaultOptions } from '../defaultOptions.public'
 
 export interface FormMetaAtoms {
   isDirty: Atom<boolean>
@@ -215,6 +218,7 @@ export class InternalFormApi<
   _atoms: FormAtoms<TFormData>
   _fieldRootNode: InternalRootFieldApi
   _defaultValueCache: DefaultValueCacheEntry | null = null
+  readonly _defaultOptions: DefaultOptions | undefined
   _options: InternalFormOptions<TFormData, TFormValidators, any>
   /** Stable runtime instances correlated with `_options.validators` by slot. */
   _validatorInstances: InternalValidatorInstances<
@@ -294,11 +298,20 @@ export class InternalFormApi<
     )
   }
 
-  constructor(options: FormOptions<TFormData, TFormValidators, any>) {
-    this._options = { ...options, formId: options.formId ?? uuid() }
-    this._lastUpdateDefaultValues = options.defaultValues
+  constructor(
+    options: FormOptions<TFormData, TFormValidators, any>,
+    defaultOptions?: DefaultOptions,
+  ) {
+    this._defaultOptions = defaultOptions
+    const resolvedOptions = resolveDefaultOptions(options, defaultOptions?.form)
+
+    this._options = {
+      ...resolvedOptions,
+      formId: resolvedOptions.formId ?? uuid(),
+    }
+    this._lastUpdateDefaultValues = resolvedOptions.defaultValues
     this._atoms = {
-      values: createAtom(options.defaultValues),
+      values: createAtom(resolvedOptions.defaultValues),
       meta: createInitialFormMetaAtoms(),
       resetVersion: createAtom(0),
       defaultValuesVersion: createAtom(0),
@@ -333,7 +346,7 @@ export class InternalFormApi<
     applyServerState(
       this,
       this._options.serverState ?? null,
-      options.defaultValues,
+      resolvedOptions.defaultValues,
     )
     this._runMountValidation()
   }
@@ -403,20 +416,24 @@ export class InternalFormApi<
   }
 
   _update(options: FormOptions<TFormData, TFormValidators, any>) {
+    const resolvedOptions = resolveDefaultOptions(
+      options,
+      this._defaultOptions?.form,
+    )
     const oldOptions = this._options
     const didDefaultValuesChange = !evaluate(
-      options.defaultValues,
+      resolvedOptions.defaultValues,
       this._lastUpdateDefaultValues,
     )
 
-    this._lastUpdateDefaultValues = options.defaultValues
+    this._lastUpdateDefaultValues = resolvedOptions.defaultValues
     this._defaultValueCache = null
     this._options = {
-      ...options,
+      ...resolvedOptions,
       defaultValues: didDefaultValuesChange
-        ? options.defaultValues
+        ? resolvedOptions.defaultValues
         : oldOptions.defaultValues,
-      formId: options.formId ?? oldOptions.formId,
+      formId: resolvedOptions.formId ?? oldOptions.formId,
     }
 
     this._listenerInstances = reconcileListenerInstances({
@@ -444,12 +461,12 @@ export class InternalFormApi<
       batch(() => {
         this._atoms.defaultValuesVersion.set((version) => version + 1)
         if (this._atoms.meta.touchedFieldCount.get() === 0) {
-          this._atoms.values.set(options.defaultValues)
+          this._atoms.values.set(resolvedOptions.defaultValues)
         } else {
           this._atoms.values.set((prev) =>
             applyDefaultValuesPreservingTouchedFields(
               prev,
-              options.defaultValues,
+              resolvedOptions.defaultValues,
               this,
             ),
           )
@@ -460,7 +477,7 @@ export class InternalFormApi<
     applyServerState(
       this,
       this._options.serverState ?? null,
-      options.defaultValues,
+      resolvedOptions.defaultValues,
     )
     if (didDefaultValuesChange) notifyDevtoolsDefaultValuesUpdate(this)
     devtools().updateForm?.(this)
@@ -721,6 +738,7 @@ export class InternalFormApi<
 
   _getOrCreateFieldApi(
     options: Omit<AnyFieldApiOptions, 'form'>,
+    scope: FieldOptionsScope = 'field',
   ): AnyInternalFieldApi {
     const { name, ...restOpts } = options
 
@@ -731,6 +749,7 @@ export class InternalFormApi<
       nameToFieldNodeSegments(name),
       this,
       fieldOptions,
+      scope,
     )
   }
 
@@ -766,7 +785,14 @@ export class InternalFormApi<
       }
 
       const target =
-        boundary ?? getOrCreateFieldApi(routingRoot, segments.slice(), this)
+        boundary ??
+        getOrCreateFieldApi(
+          routingRoot,
+          segments.slice(),
+          this,
+          undefined,
+          'internal',
+        )
 
       resolvedFieldErrors.set(
         target,

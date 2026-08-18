@@ -68,14 +68,17 @@ function createInternalField(
     const name = reactiveOptions.name
     void resetVersion()
 
-    return form._getOrCreateFieldApi({
-      ...untrack(options),
-      name,
-    })
+    return form._getOrCreateFieldApi(
+      {
+        ...untrack(options),
+        name,
+      },
+      'field',
+    )
   })
 
   createRenderEffect(() => {
-    fieldApi()._update(options())
+    fieldApi()._update(options(), 'field')
   })
 
   createRenderEffect(() => {

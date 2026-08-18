@@ -2,37 +2,57 @@ import React from 'react'
 import { fireEvent, render, waitFor } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { createFormHook } from '../src'
-import type { AnyInternalFieldApi } from '@tanstack/form-core/internals'
+import type {
+  AnyInternalFieldApi,
+  AnyInternalFormApi,
+} from '@tanstack/form-core/internals'
 
 describe('createFormHook defaults', () => {
   it('uses default form options and lets usage options override them', () => {
+    const defaultErrorVisibility = () => true
+    const overriddenErrorVisibility = () => false
     const { useAppForm } = createFormHook({
       fieldComponents: {},
       formComponents: {},
       defaultFormOptions: {
-        formId: 'default-form-id',
+        errorVisibility: defaultErrorVisibility,
       },
     })
 
+    const getErrorVisibility = (form: unknown) =>
+      (form as AnyInternalFormApi)._options.errorVisibility
+
     function DefaultForm() {
       const form = useAppForm({ defaultValues: { name: '' } })
-      return <span data-testid="default">{form.formId}</span>
+      return (
+        <span data-testid="default">
+          {String(getErrorVisibility(form) === defaultErrorVisibility)}
+        </span>
+      )
     }
 
     function OverriddenForm() {
       const form = useAppForm({
         defaultValues: { name: '' },
-        formId: 'overridden-form-id',
+        errorVisibility: overriddenErrorVisibility,
       })
-      return <span data-testid="overridden">{form.formId}</span>
+      return (
+        <span data-testid="overridden">
+          {String(getErrorVisibility(form) === overriddenErrorVisibility)}
+        </span>
+      )
     }
 
     function UndefinedForm() {
       const form = useAppForm({
         defaultValues: { name: '' },
-        formId: undefined,
+        errorVisibility: undefined,
       })
-      return <span data-testid="undefined">{form.formId}</span>
+      return (
+        <span data-testid="undefined">
+          {String(getErrorVisibility(form) === undefined)}
+        </span>
+      )
     }
 
     const { getByTestId } = render(
@@ -43,13 +63,76 @@ describe('createFormHook defaults', () => {
       </>,
     )
 
-    expect(getByTestId('default')).toHaveTextContent('default-form-id')
-    expect(getByTestId('overridden')).toHaveTextContent('overridden-form-id')
-    expect(getByTestId('undefined')).not.toHaveTextContent('default-form-id')
-    expect(getByTestId('undefined')).not.toBeEmptyDOMElement()
+    expect(getByTestId('default')).toHaveTextContent('true')
+    expect(getByTestId('overridden')).toHaveTextContent('true')
+    expect(getByTestId('undefined')).toHaveTextContent('true')
   })
 
-  it('applies field defaults only to direct fields and array fields', () => {
+  it('resolves form and field listener merge modes in core', () => {
+    const formCalls: Array<string> = []
+    const fieldCalls: Array<string> = []
+    const { useAppForm } = createFormHook({
+      fieldComponents: {},
+      formComponents: {},
+      defaultFormOptions: {
+        listenersMerge: 'append',
+        listeners: [
+          {
+            triggers: ['change'],
+            run: () => formCalls.push('default'),
+          },
+        ],
+      },
+      defaultFieldOptions: {
+        listenersMerge: 'prepend',
+        listeners: [
+          {
+            triggers: ['change'],
+            run: () => fieldCalls.push('default'),
+          },
+        ],
+      },
+    })
+
+    function Component() {
+      const form = useAppForm({
+        defaultValues: { name: '' },
+        listeners: [
+          {
+            triggers: ['change'],
+            run: () => formCalls.push('local'),
+          },
+        ],
+      })
+
+      return (
+        <form.Field
+          name="name"
+          listeners={[
+            {
+              triggers: ['change'],
+              run: () => fieldCalls.push('local'),
+            },
+          ]}
+        >
+          {(field) => (
+            <button
+              data-testid="change"
+              onClick={() => field.handleChange('updated')}
+            />
+          )}
+        </form.Field>
+      )
+    }
+
+    const { getByTestId } = render(<Component />)
+    fireEvent.click(getByTestId('change'))
+
+    expect(formCalls).toEqual(['default', 'local'])
+    expect(fieldCalls).toEqual(['local', 'default'])
+  })
+
+  it('applies field defaults to direct and grouped fields', () => {
     const { useAppForm } = createFormHook({
       fieldComponents: {},
       formComponents: {},
@@ -127,8 +210,8 @@ describe('createFormHook defaults', () => {
     expect(getByTestId('direct-array')).toHaveTextContent('true')
     expect(getByTestId('overridden')).toHaveTextContent('false')
     expect(getByTestId('undefined')).toHaveTextContent('false')
-    expect(getByTestId('group-field')).toHaveTextContent('false')
-    expect(getByTestId('group-array')).toHaveTextContent('false')
+    expect(getByTestId('group-field')).toHaveTextContent('true')
+    expect(getByTestId('group-array')).toHaveTextContent('true')
   })
 
   it('uses default form group options and permits all override forms', async () => {

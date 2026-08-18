@@ -44,7 +44,7 @@ export function reconcileWatchedListenerFields({
     const names = [...new Set(listenerInstance.definition.watchFields ?? [])]
 
     for (const name of names) {
-      const sourceField = form._getOrCreateFieldApi({ name })
+      const sourceField = form._getOrCreateFieldApi({ name }, 'internal')
       next.set(name, sourceField)
 
       const previousField = previous?.get(name)
@@ -105,7 +105,7 @@ export function reconcileWatchedValidatorFields({
     const names = [...new Set(validatorInstance.definition.watchFields ?? [])]
 
     for (const name of names) {
-      const sourceField = form._getOrCreateFieldApi({ name })
+      const sourceField = form._getOrCreateFieldApi({ name }, 'internal')
       next.set(name, sourceField)
 
       const previousField = previous?.get(name)
