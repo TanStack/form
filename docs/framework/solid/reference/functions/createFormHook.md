@@ -6,23 +6,33 @@ title: createFormHook
 # Function: createFormHook()
 
 ```ts
-function createFormHook<TComponents>(createOptions): AppFormHookResult<TComponents>;
+function createFormHook<TFormComponents, TFieldComponents>(createOptions): AppFormHookResult<{
+  fieldComponents: TFieldComponents;
+  formComponents: TFormComponents;
+}>;
 ```
 
 Defined in: [packages/solid-form/src/AppForm/createFormHook.public.ts:18](https://github.com/TanStack/form/blob/main/packages/solid-form/src/AppForm/createFormHook.public.ts#L18)
 
 ## Type Parameters
 
-### TComponents
+### TFormComponents
 
-`TComponents` *extends* [`AnySolidFormComponentMap`](../type-aliases/AnySolidFormComponentMap.md)
+`TFormComponents` *extends* `Record`\<`string`, `Component`\<`any`\>\>
+
+### TFieldComponents
+
+`TFieldComponents` *extends* `Record`\<`string`, `Component`\<`any`\>\>
 
 ## Parameters
 
 ### createOptions
 
-`TComponents`
+[`CreateFormHookOptions`](../interfaces/CreateFormHookOptions.md)\<`TFormComponents`, `TFieldComponents`\>
 
 ## Returns
 
-[`AppFormHookResult`](../interfaces/AppFormHookResult.md)\<`TComponents`\>
+[`AppFormHookResult`](../interfaces/AppFormHookResult.md)\<\{
+  `fieldComponents`: `TFieldComponents`;
+  `formComponents`: `TFormComponents`;
+\}\>

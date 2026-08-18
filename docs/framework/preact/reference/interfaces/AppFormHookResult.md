@@ -5,7 +5,7 @@ title: AppFormHookResult
 
 # Interface: AppFormHookResult\<TComponents\>
 
-Defined in: [packages/preact-form/src/AppForm/createFormHookTypes.public.ts:31](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/createFormHookTypes.public.ts#L31)
+Defined in: [packages/preact-form/src/AppForm/createFormHookTypes.public.ts:118](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/createFormHookTypes.public.ts#L118)
 
 App Form hooks and helpers bound to the components registered with
 `createFormHook`.
@@ -26,7 +26,7 @@ Library-managed. Do not specify explicitly.
 appFormOptions: AppFormOptionsApi<TComponents>;
 ```
 
-Defined in: [packages/preact-form/src/AppForm/createFormHookTypes.public.ts:58](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/createFormHookTypes.public.ts#L58)
+Defined in: [packages/preact-form/src/AppForm/createFormHookTypes.public.ts:145](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/createFormHookTypes.public.ts#L145)
 
 Defines reusable form options that retain the components registered with
 `createFormHook`.
@@ -60,7 +60,7 @@ function NameField({ form }: { form: ProfileForm }) {
 defineAppFieldGroup: DefineFieldGroupFn<TComponents["fieldComponents"]>;
 ```
 
-Defined in: [packages/preact-form/src/AppForm/createFormHookTypes.public.ts:90](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/createFormHookTypes.public.ts#L90)
+Defined in: [packages/preact-form/src/AppForm/createFormHookTypes.public.ts:177](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/createFormHookTypes.public.ts#L177)
 
 Defines a reusable field group whose fields expose the field components
 registered with `createFormHook`.
@@ -101,7 +101,7 @@ function ContactFields({
 useAppForm: UseAppFormHook<TComponents>;
 ```
 
-Defined in: [packages/preact-form/src/AppForm/createFormHookTypes.public.ts:115](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/createFormHookTypes.public.ts#L115)
+Defined in: [packages/preact-form/src/AppForm/createFormHookTypes.public.ts:202](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/createFormHookTypes.public.ts#L202)
 
 Creates a Preact form API extended with the field and form components
 registered with `createFormHook`.
@@ -135,7 +135,7 @@ function ProfileForm() {
 useFormContext: () => PreactAppFormApi<any, any, TComponents>;
 ```
 
-Defined in: [packages/preact-form/src/AppForm/createFormHookTypes.public.ts:139](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/createFormHookTypes.public.ts#L139)
+Defined in: [packages/preact-form/src/AppForm/createFormHookTypes.public.ts:226](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/createFormHookTypes.public.ts#L226)
 
 Reads the current App Form API from the nearest `form.AppForm` provider.
 

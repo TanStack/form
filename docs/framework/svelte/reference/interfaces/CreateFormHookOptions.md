@@ -5,19 +5,19 @@ title: CreateFormHookOptions
 
 # Interface: CreateFormHookOptions\<TFormComponents, TFieldComponents\>
 
-Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:46](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L46)
+Defined in: [packages/svelte-form/src/AppForm/createFormHookTypes.public.ts:46](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/AppForm/createFormHookTypes.public.ts#L46)
 
 Configures the components and reusable defaults returned by
 `createFormHook`.
 
-Default objects are resolved by form core before the corresponding
-usage-site options. Non-listener properties always take precedence,
+Form core resolves each default object before the corresponding usage-site
+options. Non-listener properties passed at the usage site take precedence,
 including when explicitly set to `undefined`. Listener arrays follow the
 configured `listenersMerge` strategy.
 
 ## Example
 
-```tsx
+```ts
 const { useAppForm } = createFormHook({
   formComponents: {},
   fieldComponents: {
@@ -34,19 +34,19 @@ const { useAppForm } = createFormHook({
 
 ## Extends
 
-- [`ReactFormComponentMap`](ReactFormComponentMap.md)\<`TFormComponents`, `TFieldComponents`\>
+- [`SvelteFormComponentMap`](SvelteFormComponentMap.md)\<`TFormComponents`, `TFieldComponents`\>
 
 ## Type Parameters
 
 ### TFormComponents
 
-`TFormComponents` *extends* `Record`\<`string`, `FunctionComponent`\<`any`\>\>
+`TFormComponents` *extends* `Record`\<`string`, `Component`\<`any`\>\>
 
 Library-managed. Do not specify explicitly.
 
 ### TFieldComponents
 
-`TFieldComponents` *extends* `Record`\<`string`, `FunctionComponent`\<`any`\>\>
+`TFieldComponents` *extends* `Record`\<`string`, `Component`\<`any`\>\>
 
 Library-managed. Do not specify explicitly.
 
@@ -58,7 +58,7 @@ Library-managed. Do not specify explicitly.
 optional defaultFieldOptions?: DefaultFieldOptions;
 ```
 
-Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:79](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L79)
+Defined in: [packages/svelte-form/src/AppForm/createFormHookTypes.public.ts:79](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/AppForm/createFormHookTypes.public.ts#L79)
 
 Defaults for every field and array-field component owned by the form.
 
@@ -68,7 +68,7 @@ including when explicitly set to `undefined`. Listener arrays follow
 
 #### Example
 
-```tsx
+```ts
 defaultFieldOptions: {
   errorVisibility: ({ fieldState }) => fieldState.meta.isBlurred,
 },
@@ -82,7 +82,7 @@ defaultFieldOptions: {
 optional defaultFormGroupOptions?: DefaultFormGroupOptions;
 ```
 
-Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:95](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L95)
+Defined in: [packages/svelte-form/src/AppForm/createFormHookTypes.public.ts:95](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/AppForm/createFormHookTypes.public.ts#L95)
 
 Defaults for every `form.FormGroup` component.
 
@@ -91,7 +91,7 @@ an option is explicitly `undefined`.
 
 #### Example
 
-```tsx
+```ts
 defaultFormGroupOptions: {
   onSubmitInvalid: ({ groupApi }) => {
     console.error('Invalid group', groupApi.name)
@@ -107,17 +107,17 @@ defaultFormGroupOptions: {
 optional defaultFormOptions?: DefaultFormOptions;
 ```
 
-Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:64](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L64)
+Defined in: [packages/svelte-form/src/AppForm/createFormHookTypes.public.ts:64](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/AppForm/createFormHookTypes.public.ts#L64)
 
 Defaults for every form created by `useAppForm`.
 
-Non-listener options passed to `useAppForm` override these defaults,
-including when explicitly set to `undefined`. Listener arrays follow
-`listenersMerge`.
+Non-listener options returned by the `useAppForm` options accessor
+override these defaults, including when explicitly set to `undefined`.
+Listener arrays follow `listenersMerge`.
 
 #### Example
 
-```tsx
+```ts
 defaultFormOptions: {
   errorVisibility: ({ state }) => state.submissionAttempts > 0,
 },
@@ -131,11 +131,11 @@ defaultFormOptions: {
 fieldComponents: TFieldComponents;
 ```
 
-Defined in: [packages/react-form/src/AppForm/componentMap.public.ts:8](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/componentMap.public.ts#L8)
+Defined in: [packages/svelte-form/src/AppForm/componentMap.public.ts:8](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/AppForm/componentMap.public.ts#L8)
 
 #### Inherited from
 
-[`ReactFormComponentMap`](ReactFormComponentMap.md).[`fieldComponents`](ReactFormComponentMap.md#fieldcomponents)
+[`SvelteFormComponentMap`](SvelteFormComponentMap.md).[`fieldComponents`](SvelteFormComponentMap.md#fieldcomponents)
 
 ***
 
@@ -145,8 +145,8 @@ Defined in: [packages/react-form/src/AppForm/componentMap.public.ts:8](https://g
 formComponents: TFormComponents;
 ```
 
-Defined in: [packages/react-form/src/AppForm/componentMap.public.ts:7](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/componentMap.public.ts#L7)
+Defined in: [packages/svelte-form/src/AppForm/componentMap.public.ts:7](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/AppForm/componentMap.public.ts#L7)
 
 #### Inherited from
 
-[`ReactFormComponentMap`](ReactFormComponentMap.md).[`formComponents`](ReactFormComponentMap.md#formcomponents)
+[`SvelteFormComponentMap`](SvelteFormComponentMap.md).[`formComponents`](SvelteFormComponentMap.md#formcomponents)
