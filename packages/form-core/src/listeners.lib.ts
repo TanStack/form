@@ -137,7 +137,7 @@ function runListener<TContext extends InputContext>({
   }
 
   const debouncer = listenerInstance.getOrCreateDebouncer(
-    (ctx: ListenerContext) => executeListener(listener, ctx),
+    (ctx: ListenerContext) => executeListener(listenerInstance.definition, ctx),
     debounceMs,
   )
 
