@@ -1,17 +1,42 @@
 import { InternalFormApi } from '@tanstack/form-core/internals'
 import { attachVueAppFormComponents } from './Components.lib'
-import type { FormOptions } from '@tanstack/form-core'
+import type {
+  DefaultFieldOptions,
+  DefaultFormGroupOptions,
+  DefaultFormOptions,
+  DefaultOptions,
+  FormOptions,
+} from '@tanstack/form-core'
 import type { InternalVueFormApi } from '../VueForm/VueFormApi.lib'
-import type { AnyVueFormComponentMap } from './componentMap.public'
+import type { Component } from 'vue'
 
-export function createAppFormInitializer<
-  TComponents extends AnyVueFormComponentMap,
->(
-  createOptions: TComponents,
+interface AnyCreateFormHookOptions {
+  formComponents: Record<string, Component>
+  fieldComponents: Record<string, Component>
+  defaultFormOptions?: DefaultFormOptions
+  defaultFieldOptions?: DefaultFieldOptions
+  defaultFormGroupOptions?: DefaultFormGroupOptions
+}
+
+export function createAppFormInitializer(
+  createOptions: AnyCreateFormHookOptions,
 ): (options: FormOptions<any, any, any>) => InternalVueFormApi {
+  const hasDefaultOptions =
+    createOptions.defaultFormOptions ||
+    createOptions.defaultFieldOptions ||
+    createOptions.defaultFormGroupOptions
+
+  const defaultOptions: DefaultOptions | undefined = hasDefaultOptions
+    ? {
+        form: createOptions.defaultFormOptions,
+        field: createOptions.defaultFieldOptions,
+        formGroup: createOptions.defaultFormGroupOptions,
+      }
+    : undefined
+
   return (options) =>
     attachVueAppFormComponents(
-      new InternalFormApi(options),
+      new InternalFormApi(options, defaultOptions),
       createOptions.formComponents,
       createOptions.fieldComponents,
     ) as never

@@ -1,16 +1,41 @@
 import { InternalFormApi } from '@tanstack/form-core/internals'
 import { attachSolidAppFormComponents } from './Components.lib'
-import type { FormOptions } from '@tanstack/form-core'
+import type {
+  DefaultFieldOptions,
+  DefaultFormGroupOptions,
+  DefaultFormOptions,
+  DefaultOptions,
+  FormOptions,
+} from '@tanstack/form-core'
 import type { InternalSolidFormApi } from '../SolidFormApi.lib'
-import type { AnySolidFormComponentMap } from './componentMap.public'
+import type { Component } from 'solid-js'
 
-export function createAppFormInitializer<
-  TComponents extends AnySolidFormComponentMap,
->(
-  createOptions: TComponents,
+interface AnyCreateFormHookOptions {
+  formComponents: Record<string, Component<any>>
+  fieldComponents: Record<string, Component<any>>
+  defaultFormOptions?: DefaultFormOptions
+  defaultFieldOptions?: DefaultFieldOptions
+  defaultFormGroupOptions?: DefaultFormGroupOptions
+}
+
+export function createAppFormInitializer(
+  createOptions: AnyCreateFormHookOptions,
 ): (options: FormOptions<any, any, any>) => InternalSolidFormApi {
+  const hasDefaultOptions =
+    createOptions.defaultFormOptions ||
+    createOptions.defaultFieldOptions ||
+    createOptions.defaultFormGroupOptions
+
+  const defaultOptions: DefaultOptions | undefined = hasDefaultOptions
+    ? {
+        form: createOptions.defaultFormOptions,
+        field: createOptions.defaultFieldOptions,
+        formGroup: createOptions.defaultFormGroupOptions,
+      }
+    : undefined
+
   return (options) => {
-    const form = new InternalFormApi(options)
+    const form = new InternalFormApi(options, defaultOptions)
     return attachSolidAppFormComponents(
       form,
       createOptions.formComponents,

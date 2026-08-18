@@ -2,15 +2,16 @@ import React from 'react'
 import { expectTypeOf } from 'vitest'
 import { createFormHook } from '../src'
 import type {
-  CreateFormHookDefaultFieldOptions,
-  CreateFormHookDefaultFormGroupOptions,
-  CreateFormHookDefaultFormOptions,
+  DefaultFieldOptions,
+  DefaultFormGroupOptions,
+  DefaultFormOptions,
 } from '../src'
 
 const { useAppForm } = createFormHook({
   fieldComponents: {},
   formComponents: {},
   defaultFormOptions: {
+    listenersMerge: 'append',
     errorVisibility: ({ state, fieldState }) => {
       expectTypeOf(state.values).toBeUnknown()
       expectTypeOf(fieldState.value).toBeAny()
@@ -31,6 +32,7 @@ const { useAppForm } = createFormHook({
     },
   },
   defaultFieldOptions: {
+    listenersMerge: 'prepend',
     errorVisibility: ({ state, fieldState }) => {
       expectTypeOf(state.values).toBeUnknown()
       expectTypeOf(fieldState.value).toBeAny()
@@ -100,24 +102,33 @@ void InferenceRemainsLocal
 
 expectTypeOf<
   Extract<
-    keyof CreateFormHookDefaultFormOptions,
-    'defaultValues' | 'validators' | 'onSubmit'
+    keyof DefaultFormOptions,
+    'formId' | 'defaultValues' | 'validators' | 'onSubmit'
   >
 >().toBeNever()
 
 expectTypeOf<
   Extract<
-    keyof CreateFormHookDefaultFieldOptions,
+    keyof DefaultFieldOptions,
     'name' | 'defaultValues' | 'validators' | 'onSubmit'
   >
 >().toBeNever()
 
 expectTypeOf<
   Extract<
-    keyof CreateFormHookDefaultFormGroupOptions,
+    keyof DefaultFormGroupOptions,
     'form' | 'name' | 'defaultValues' | 'validators' | 'onSubmit'
   >
 >().toBeNever()
+
+createFormHook({
+  fieldComponents: {},
+  formComponents: {},
+  defaultFormOptions: {
+    // @ts-expect-error formId belongs to an individual form instance
+    formId: 'profile',
+  },
+})
 
 createFormHook({
   fieldComponents: {},

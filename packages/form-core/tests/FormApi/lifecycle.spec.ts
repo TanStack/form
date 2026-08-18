@@ -254,6 +254,39 @@ describe('form - lifecycle', () => {
     // TODO extend with default state
   })
 
+  describe('default options', () => {
+    it('resolves defaults during construction and updates', () => {
+      const calls: Array<string> = []
+      const form = new InternalFormApi(
+        {
+          defaultValues: { name: '' },
+          listeners: [
+            { triggers: ['change'], run: () => calls.push('incoming') },
+          ],
+        },
+        {
+          form: {
+            listenersMerge: 'append',
+            listeners: [
+              { triggers: ['change'], run: () => calls.push('default') },
+            ],
+          },
+        },
+      )
+
+      form.setFieldValue('name', 'initial')
+      expect(calls).toEqual(['default', 'incoming'])
+
+      calls.length = 0
+      form._update({
+        defaultValues: { name: '' },
+        listeners: [{ triggers: ['change'], run: () => calls.push('updated') }],
+      })
+      form.setFieldValue('name', 'updated')
+      expect(calls).toEqual(['default', 'updated'])
+    })
+  })
+
   describe('reset', () => {
     it('resets form state', () => {
       const form = new InternalFormApi({ defaultValues: { name: '' } })

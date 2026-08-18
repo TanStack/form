@@ -21,10 +21,13 @@ export function useField(
 
   const createField = () => {
     const current = options()
-    const field = current.form._getOrCreateFieldApi({
-      ...current,
-      name: current.name,
-    } as never)
+    const field = current.form._getOrCreateFieldApi(
+      {
+        ...current,
+        name: current.name,
+      } as never,
+      'field',
+    )
     if (fieldComponents !== null) Object.assign(field, fieldComponents)
     return field
   }
@@ -40,7 +43,7 @@ export function useField(
   )
 
   watchEffect(() => {
-    fieldApi.value._update(options() as never)
+    fieldApi.value._update(options() as never, 'field')
   })
 
   let mounted = false

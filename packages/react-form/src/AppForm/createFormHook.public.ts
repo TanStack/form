@@ -30,10 +30,7 @@ export function createFormHook<
   const initializeAppForm = createAppFormInitializer(createOptions)
 
   function useExtendedForm(hookOptions: FormOptions<any, any, any>) {
-    const form = useInternalForm(
-      { ...createOptions.defaultFormOptions, ...hookOptions },
-      initializeAppForm,
-    )
+    const form = useInternalForm(hookOptions, initializeAppForm)
     return form
   }
   const useAppForm = useExtendedForm as never as UseAppFormHook<{
