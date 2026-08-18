@@ -17,9 +17,11 @@ describe('createFormHook defaults', () => {
       view.getByRole('button', { name: 'Change grouped array field' }),
     )
 
-    expect(view.getByTestId('form-calls')).toHaveTextContent('4')
+    expect(view.getByTestId('form-calls')).toHaveTextContent(
+      'default,local,default,local,default,local,default,local',
+    )
     expect(view.getByTestId('field-calls')).toHaveTextContent(
-      'direct,directArray,group.field,group.array',
+      'local:direct,default:direct,default:directArray,default:group.field,default:group.array',
     )
 
     await user.click(view.getByRole('button', { name: 'Submit group' }))

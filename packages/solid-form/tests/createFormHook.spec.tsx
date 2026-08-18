@@ -33,7 +33,7 @@ describe('createFormHook defaults', () => {
         listeners: [
           {
             triggers: ['change'],
-            run: () => formCalls.push('form'),
+            run: () => formCalls.push('default'),
           },
         ],
       },
@@ -42,7 +42,8 @@ describe('createFormHook defaults', () => {
         listeners: [
           {
             triggers: ['change'],
-            run: ({ fieldApi }) => fieldCalls.push(String(fieldApi.name)),
+            run: ({ fieldApi }) =>
+              fieldCalls.push(`default:${String(fieldApi.name)}`),
           },
         ],
       },
@@ -61,11 +62,26 @@ describe('createFormHook defaults', () => {
             array: ['one'],
           },
         },
+        listeners: [
+          {
+            triggers: ['change'],
+            run: () => formCalls.push('local'),
+          },
+        ],
       }))
 
       return (
         <>
-          <form.Field name="direct">
+          <form.Field
+            name="direct"
+            listeners={[
+              {
+                triggers: ['change'],
+                run: ({ fieldApi }) =>
+                  fieldCalls.push(`local:${String(fieldApi.name)}`),
+              },
+            ]}
+          >
             {(field) => {
               changeDirect = () => field().handleChange('changed')
               return null
@@ -119,12 +135,22 @@ describe('createFormHook defaults', () => {
     changeGrouped()
     changeGroupedArray()
 
-    expect(formCalls).toEqual(['form', 'form', 'form', 'form'])
+    expect(formCalls).toEqual([
+      'default',
+      'local',
+      'default',
+      'local',
+      'default',
+      'local',
+      'default',
+      'local',
+    ])
     expect(fieldCalls).toEqual([
-      'direct',
-      'directArray',
-      'group.field',
-      'group.array',
+      'local:direct',
+      'default:direct',
+      'default:directArray',
+      'default:group.field',
+      'default:group.array',
     ])
 
     await submitGroup()

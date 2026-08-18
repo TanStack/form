@@ -3,7 +3,7 @@
 <script lang="ts">
   import { createFormHook } from '../../src/index.js'
 
-  let formCalls = $state(0)
+  let formCalls = $state<Array<string>>([])
   let fieldCalls = $state<Array<string>>([])
   let invalidCalls = $state(0)
   const { useAppForm } = createFormHook({
@@ -14,7 +14,9 @@
       listeners: [
         {
           triggers: ['change'],
-          run: () => formCalls++,
+          run: () => {
+            formCalls = [...formCalls, 'default']
+          },
         },
       ],
     },
@@ -24,7 +26,10 @@
         {
           triggers: ['change'],
           run: ({ fieldApi }) => {
-            fieldCalls = [...fieldCalls, String(fieldApi.name)]
+            fieldCalls = [
+              ...fieldCalls,
+              `default:${String(fieldApi.name)}`,
+            ]
           },
         },
       ],
@@ -44,10 +49,28 @@
         array: ['one'],
       },
     },
+    listeners: [
+      {
+        triggers: ['change'],
+        run: () => {
+          formCalls = [...formCalls, 'local']
+        },
+      },
+    ],
   }))
 </script>
 
-<form.Field name="direct">
+<form.Field
+  name="direct"
+  listeners={[
+    {
+      triggers: ['change'],
+      run: ({ fieldApi }) => {
+        fieldCalls = [...fieldCalls, `local:${String(fieldApi.name)}`]
+      },
+    },
+  ]}
+>
   {#snippet children(field)}
     <button
       type="button"
@@ -103,6 +126,6 @@
   {/snippet}
 </form.FormGroup>
 
-<output data-testid="form-calls">{formCalls}</output>
+<output data-testid="form-calls">{formCalls.join(',')}</output>
 <output data-testid="field-calls">{fieldCalls.join(',')}</output>
 <output data-testid="invalid-calls">{invalidCalls}</output>
