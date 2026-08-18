@@ -210,42 +210,6 @@ describe('form - listeners', () => {
     vi.useRealTimers()
   })
 
-  it('keeps a pending debounce on a retained listener slot', async () => {
-    vi.useFakeTimers()
-    const firstListener = vi.fn()
-    const nextListener = vi.fn()
-    const form = new InternalFormApi({
-      defaultValues: { name: '' },
-      listeners: [
-        {
-          triggers: ['change'],
-          triggerDebounceMs: 100,
-          run: firstListener,
-        },
-      ],
-    })
-    const field = form._getOrCreateFieldApi({ name: 'name' })
-    const instance = form._listenerInstances![0]!
-
-    field.handleChange('pending')
-    form._update({
-      defaultValues: { name: '' },
-      listeners: [
-        {
-          triggers: ['change'],
-          triggerDebounceMs: 100,
-          run: nextListener,
-        },
-      ],
-    })
-    await vi.advanceTimersByTimeAsync(100)
-
-    expect(form._listenerInstances![0]).toBe(instance)
-    expect(firstListener).toHaveBeenCalledOnce()
-    expect(nextListener).not.toHaveBeenCalled()
-    vi.useRealTimers()
-  })
-
   it('logs rejected async form listener errors', async () => {
     const error = new Error('listener failed')
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})

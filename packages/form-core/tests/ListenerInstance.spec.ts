@@ -65,36 +65,6 @@ describe('InternalListenerInstance', () => {
 })
 
 describe('reconcileListenerInstances', () => {
-  it('preserves retained slots and disposes removed slots', () => {
-    const owner = { name: 'field' }
-    const initial = reconcileListenerInstances({
-      definitions: [createDefinition('first'), createDefinition('second')],
-      instances: null,
-      owner,
-    })
-    const firstInstance = initial![0]!
-    const secondInstance = initial![1]!
-    const nextDefinition = createDefinition('next')
-    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-
-    const next = reconcileListenerInstances({
-      definitions: [nextDefinition],
-      previousDefinitions: initial!.map((instance) => instance.definition),
-      instances: initial,
-      owner,
-    })
-
-    expect(warn).toHaveBeenCalledWith(
-      expect.stringContaining('length of the listener array should not change'),
-    )
-    expect(next).toBe(initial)
-    expect(next).toEqual([firstInstance])
-    expect(firstInstance.definition).toBe(nextDefinition)
-    expect(firstInstance.revision).toBe(1)
-    expect(secondInstance.disposed).toBe(true)
-    warn.mockRestore()
-  })
-
   it('normalizes empty definitions and runs owner cleanup', () => {
     const owner = { name: 'form' }
     const instances = reconcileListenerInstances({

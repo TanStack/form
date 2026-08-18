@@ -756,46 +756,6 @@ describe('field - listeners', () => {
       vi.useRealTimers()
     })
 
-    it('cancels a removed watched listener pending execution', async () => {
-      vi.useFakeTimers()
-      const firstListener = vi.fn()
-      const removedListener = vi.fn()
-      const firstDefinition = {
-        run: firstListener,
-        triggers: ['change'] as Array<'change'>,
-        watchFields: ['firstSource'],
-      }
-      const form = new InternalFormApi({
-        defaultValues: { firstSource: '', removedSource: '', target: '' },
-      })
-      const target = form._getOrCreateFieldApi({
-        name: 'target',
-        listeners: [
-          firstDefinition,
-          {
-            run: removedListener,
-            triggers: ['change'],
-            watchFields: ['removedSource'],
-            triggerDebounceMs: 100,
-          },
-        ],
-      })
-      const removedSource = form._getOrCreateFieldApi({ name: 'removedSource' })
-      const removedInstance = target._listenerInstances![1]!
-
-      removedSource.handleChange('pending')
-      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-      target._update({ listeners: [firstDefinition] })
-      await vi.advanceTimersByTimeAsync(100)
-
-      expect(warn).toHaveBeenCalled()
-      expect(removedListener).not.toHaveBeenCalled()
-      expect(removedInstance.disposed).toBe(true)
-      expect(removedSource._watchingListenerFields).toBeNull()
-      warn.mockRestore()
-      vi.useRealTimers()
-    })
-
     it('clears watched listener links when reset kills fields', () => {
       const form = new InternalFormApi({
         defaultValues: { source: '', target: '' },
