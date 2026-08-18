@@ -189,6 +189,45 @@ describe('form - lifecycle', () => {
       expect(instance?.revision).toBe(1)
     })
 
+    it('keeps form listener instances stable and warns on length changes', () => {
+      const firstDefinition = {
+        run: () => {},
+        triggers: ['change'] as Array<'change'>,
+      }
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        listeners: [firstDefinition],
+      })
+      const instance = form._listenerInstances?.[0]
+      const nextDefinition = {
+        run: () => {},
+        triggers: ['blur'] as Array<'blur'>,
+      }
+
+      form._update({
+        defaultValues: { name: '' },
+        listeners: [nextDefinition],
+      })
+
+      expect(form._listenerInstances?.[0]).toBe(instance)
+      expect(instance?.definition).toBe(nextDefinition)
+      expect(instance?.owner).toBe(form)
+      expect(instance?.index).toBe(0)
+      expect(instance?.revision).toBe(1)
+
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      form._update({ defaultValues: { name: '' }, listeners: [] })
+
+      expect(warn).toHaveBeenCalledWith(
+        expect.stringContaining(
+          'length of the listener array should not change',
+        ),
+      )
+      expect(form._listenerInstances).toBeNull()
+      expect(instance?.disposed).toBe(true)
+      warn.mockRestore()
+    })
+
     it('keeps the onSubmit source stable across callback updates', () => {
       const form = new InternalFormApi<any, any, any>({
         defaultValues: { name: '' },

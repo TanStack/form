@@ -720,6 +720,42 @@ describe('field - listeners', () => {
       expect(listener3).toHaveBeenCalledOnce()
     })
 
+    it('keeps debounced watched listeners isolated by stable instance', async () => {
+      vi.useFakeTimers()
+      const firstListener = vi.fn()
+      const secondListener = vi.fn()
+      const form = new InternalFormApi({
+        defaultValues: { firstSource: '', secondSource: '', target: '' },
+      })
+      form._getOrCreateFieldApi({
+        name: 'target',
+        listeners: [
+          {
+            run: firstListener,
+            triggers: ['change'],
+            watchFields: ['firstSource'],
+            triggerDebounceMs: 100,
+          },
+          {
+            run: secondListener,
+            triggers: ['change'],
+            watchFields: ['secondSource'],
+            triggerDebounceMs: 100,
+          },
+        ],
+      })
+      const firstSource = form._getOrCreateFieldApi({ name: 'firstSource' })
+      const secondSource = form._getOrCreateFieldApi({ name: 'secondSource' })
+
+      secondSource.handleChange('second')
+      firstSource.handleChange('first')
+      await vi.advanceTimersByTimeAsync(100)
+
+      expect(firstListener).toHaveBeenCalledOnce()
+      expect(secondListener).toHaveBeenCalledOnce()
+      vi.useRealTimers()
+    })
+
     it('clears watched listener links when reset kills fields', () => {
       const form = new InternalFormApi({
         defaultValues: { source: '', target: '' },
@@ -732,13 +768,15 @@ describe('field - listeners', () => {
       })
       const sourceField = form._getOrCreateFieldApi({ name: 'source' })
 
-      expect(sourceField._watchingFields?.has(targetField)).toBe(true)
-      expect(targetField._listenToFields?.[0]?.[0]?.field).toBe(sourceField)
+      expect(sourceField._watchingListenerFields?.has(targetField)).toBe(true)
+      expect(
+        targetField._listenerInstances?.[0]?.resolvedWatchFields?.get('source'),
+      ).toBe(sourceField)
 
       form.reset()
 
-      expect(sourceField._watchingFields).toBeNull()
-      expect(targetField._listenToFields).toBeNull()
+      expect(sourceField._watchingListenerFields).toBeNull()
+      expect(targetField._listenerInstances).toBeNull()
       expect(sourceField._isKilled).toBe(true)
       expect(targetField._isKilled).toBe(true)
       expect(form._tryGetFieldApi('source')).toBeNull()

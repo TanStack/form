@@ -1,7 +1,6 @@
-import { LiteDebouncer } from '@tanstack/pacer-lite'
-import type { PipelineCache } from './utils.lib'
 import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
 import type { InternalFormApi } from './FormApi/FormApi.lib'
+import type { AnyInternalListenerInstance } from './ListenerInstance.lib'
 import type {
   AnyFieldListener,
   AnyFormListener,
@@ -32,10 +31,6 @@ type InputContext = FormInputContext | FieldInputContext
 type ListenerContext =
   FormListenerContext<any, any> | FieldListenerContext<any, any, any, any, any>
 type AnyListener = AnyFormListener | AnyFieldListener
-
-export type ListenerDebouncer = LiteDebouncer<
-  (context: ListenerContext) => void
->
 
 function isFormContext(ctx: InputContext): ctx is FormInputContext {
   return 'triggerFieldApi' in ctx
@@ -114,28 +109,6 @@ function getListenerDebounceMs(
   return getDebounceMs(triggerDebounceMs, context)
 }
 
-function getOrCreateDebouncer(
-  cache: PipelineCache,
-  cacheKey: number,
-  fn: (context: ListenerContext) => void,
-  wait: number,
-): ListenerDebouncer {
-  let debouncer = cache.listenerDebouncers.get(cacheKey)
-
-  if (!debouncer) {
-    debouncer = new LiteDebouncer(fn, {
-      wait,
-    })
-
-    cache.listenerDebouncers.set(cacheKey, debouncer)
-  } else {
-    debouncer.fn = fn
-    debouncer.options.wait = wait
-  }
-
-  return debouncer
-}
-
 function executeListener(
   listener: AnyListener,
   context: ListenerContext,
@@ -146,19 +119,15 @@ function executeListener(
 }
 
 function runListener<TContext extends InputContext>({
-  listener,
+  listenerInstance,
   context,
-  listenerIndex,
-  cache,
   getContext,
 }: {
-  listener: AnyListener
+  listenerInstance: AnyInternalListenerInstance
   context: TContext
-  listenerIndex: number
-  cache: PipelineCache
   getContext: (inputContext: TContext) => ListenerContext
 }): void {
-  const cacheKey = listenerIndex
+  const listener = listenerInstance.definition as AnyListener
   const debounceMs = getListenerDebounceMs(listener, context)
   const listenerContext = getContext(context)
 
@@ -167,44 +136,48 @@ function runListener<TContext extends InputContext>({
     return
   }
 
-  const debouncer = getOrCreateDebouncer(
-    cache,
-    cacheKey,
-    (ctx) => executeListener(listener, ctx),
+  const debouncer = listenerInstance.getOrCreateDebouncer(
+    (ctx: ListenerContext) => executeListener(listenerInstance.definition, ctx),
     debounceMs,
   )
 
-  debouncer.maybeExecute(listenerContext)
+  debouncer?.maybeExecute(listenerContext)
 }
 
 function runListenerPipeline<TContext extends InputContext>({
   pipeline,
   context,
-  cache,
   getContext,
+  listenerInstancesToRun = null,
 }: {
-  pipeline: ReadonlyArray<AnyListener>
+  pipeline: ReadonlyArray<AnyInternalListenerInstance>
   context: TContext
-  cache: PipelineCache
   getContext: (inputContext: TContext) => ListenerContext
+  listenerInstancesToRun?: ReadonlySet<AnyInternalListenerInstance> | null
 }): void {
-  pipeline.forEach((listener, listenerIndex) => {
+  pipeline.forEach((listenerInstance) => {
+    if (
+      listenerInstancesToRun &&
+      !listenerInstancesToRun.has(listenerInstance)
+    ) {
+      return
+    }
+
+    const listener = listenerInstance.definition as AnyListener
     if (!shouldRunListener(listener, context)) {
       return
     }
 
     runListener({
-      listener,
+      listenerInstance,
       context,
-      listenerIndex,
-      cache,
       getContext,
     })
   })
 }
 
 interface FormListenerPipelineArgs {
-  pipeline: ReadonlyArray<AnyFormListener>
+  pipeline: ReadonlyArray<AnyInternalListenerInstance>
   context: FormInputContext
 }
 
@@ -212,11 +185,9 @@ export function runFormListenerPipeline({
   pipeline,
   context,
 }: FormListenerPipelineArgs): void {
-  const cache = context.formApi._pipelineCache
   return runListenerPipeline({
     pipeline,
     context,
-    cache,
     getContext: (ctx) => ({
       formApi: ctx.formApi,
       triggerFieldApi: ctx.triggerFieldApi,
@@ -226,33 +197,27 @@ export function runFormListenerPipeline({
 }
 
 interface FieldListenerPipelineArgs {
-  pipeline: ReadonlyArray<AnyFieldListener>
+  pipeline: ReadonlyArray<AnyInternalListenerInstance>
   context: FieldInputContext
   /**
    * @private
    * When an incoming watched field notifies, we should only run listeners
    * that are actually interested in it.
    */
-  listenerIndecesToRun: Array<number> | null
+  listenerInstancesToRun: ReadonlySet<AnyInternalListenerInstance> | null
 }
 
 export function runFieldListenerPipeline({
-  pipeline: incomingPipeline,
+  pipeline,
   context,
-  listenerIndecesToRun,
+  listenerInstancesToRun,
 }: FieldListenerPipelineArgs): void {
   if (context.fieldApi._isKilled) return
-
-  const cache = context.fieldApi._getOrCreatePipelineCache()
-
-  const pipeline = listenerIndecesToRun
-    ? incomingPipeline.filter((_, i) => listenerIndecesToRun.includes(i))
-    : incomingPipeline
 
   return runListenerPipeline({
     pipeline,
     context,
-    cache,
+    listenerInstancesToRun,
     getContext: (ctx) => ({
       value: ctx.fieldApi.value,
       fieldApi: context.fieldApi,

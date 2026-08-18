@@ -2,7 +2,7 @@ import { batch } from '@tanstack/store'
 import { defaultInternalBaseFieldMeta } from './FieldApi/fieldState.lib'
 import { visitAllFormFields } from './FieldApi/fieldTraversal.lib'
 import { parseStandardSchemaIssues } from './standardSchema.lib'
-import { cancelPipelineCache, createPipelineCache, evaluate } from './utils.lib'
+import { evaluate } from './utils.lib'
 import { runValidatorPipeline } from './validation'
 import { createErrorMap } from './validation.public'
 import { devtools } from './devtoolsBridge.lib'
@@ -36,10 +36,7 @@ function resetFieldMetaForServerState(form: InternalFormApi<any, any, any>) {
   visitAllFormFields(form._fieldRootNode, (field) => {
     field._defaultValueCache = null
 
-    if (field._pipelineCache) {
-      cancelPipelineCache(field._pipelineCache)
-      field._pipelineCache = null
-    }
+    field._listenerInstances?.forEach((instance) => instance.resetRuntime())
     field._validatorInstances?.forEach((instance) => instance.resetRuntime())
 
     const metaAtom = field._atoms.meta
@@ -61,8 +58,7 @@ function resetToServerState<TFormData>(
     form._options.defaultValues,
   )
 
-  cancelPipelineCache(form._pipelineCache)
-  form._pipelineCache = createPipelineCache()
+  form._listenerInstances?.forEach((instance) => instance.resetRuntime())
   form._validatorInstances?.forEach((instance) => instance.resetRuntime())
   form._onSubmitSource.resetRuntime()
   form._defaultValueCache = null

@@ -1,6 +1,7 @@
 import type { AnyInternalFormApi } from './FormApi/FormApi.lib'
 import type {
   AnyInternalFieldApi,
+  InternalFieldListenerInstance,
   InternalFieldValidatorInstance,
 } from './FieldApi/FieldApi.lib'
 
@@ -14,7 +15,7 @@ interface BaseFieldDependencyChange {
 
 export interface FieldListenerDependencyChange extends BaseFieldDependencyChange {
   kind: 'listener'
-  watcherIndex: number
+  listenerInstance: InternalFieldListenerInstance
 }
 
 export interface FieldValidatorDependencyChange extends BaseFieldDependencyChange {

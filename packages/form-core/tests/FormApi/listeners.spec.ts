@@ -210,6 +210,55 @@ describe('form - listeners', () => {
     vi.useRealTimers()
   })
 
+  it('uses the updated listener definition when a pending debounce executes', async () => {
+    vi.useFakeTimers()
+    const listenerA = vi.fn()
+    const listenerB = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      listeners: [
+        {
+          triggers: ['change'],
+          triggerDebounceMs: 300,
+          run: listenerA,
+        },
+      ],
+    })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+    const listenerInstance = form._listenerInstances?.[0]
+
+    field.handleChange('Alice')
+    await vi.advanceTimersByTimeAsync(100)
+
+    form._update({
+      defaultValues: { name: '' },
+      listeners: [
+        {
+          triggers: ['change'],
+          triggerDebounceMs: 300,
+          run: listenerB,
+        },
+      ],
+    })
+
+    expect(form._listenerInstances?.[0]).toBe(listenerInstance)
+
+    await vi.advanceTimersByTimeAsync(199)
+    expect(listenerA).not.toHaveBeenCalled()
+    expect(listenerB).not.toHaveBeenCalled()
+
+    await vi.advanceTimersByTimeAsync(1)
+    expect(listenerA).not.toHaveBeenCalled()
+    expect(listenerB).toHaveBeenCalledOnce()
+    expect(listenerB).toHaveBeenCalledWith({
+      formApi: form,
+      triggerFieldApi: field,
+      value: { name: 'Alice' },
+    })
+
+    vi.useRealTimers()
+  })
+
   it('logs rejected async form listener errors', async () => {
     const error = new Error('listener failed')
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})

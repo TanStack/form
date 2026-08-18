@@ -1,5 +1,4 @@
 import { batch } from '@tanstack/store'
-import { cancelPipelineCache } from '../utils.lib'
 import { devtools } from '../devtoolsBridge.lib'
 import {
   detachWatchingListenerField,
@@ -20,8 +19,7 @@ import type { FieldListenerTriggers } from '../listeners.public'
 import type { FieldDependencyChange } from '../devtoolsBridge.lib'
 import type {
   AnyInternalFieldApi,
-  FieldListenToFields,
-  FieldWatchingFields,
+  FieldWatchingListenerFields,
   FieldWatchingValidatorFields,
 } from './FieldApi.lib'
 import type {
@@ -31,123 +29,73 @@ import type {
 import type { ChildContributionStates } from './fieldState.lib'
 import type { NameSegment } from '../utils.lib'
 
-type DetachWatchingFieldFn = (
-  operation: Extract<FieldDependencyChange, { kind: 'listener' }>,
-  options?: { pruneSourceField?: boolean },
-) => void
-
 const rootCounterContributionKeys: Array<RootCounterContributionKey> = [
   'touched',
   'validating',
 ]
 
-function clearWatchedSourceReference(
-  listenToFields: FieldListenToFields | null,
-  sourceField: AnyInternalFieldApi,
-  watcherIndex: number,
-): FieldListenToFields | null {
-  if (!listenToFields) return null
-
-  const sourceMetas = listenToFields[watcherIndex]
-  if (!sourceMetas) return listenToFields
-
-  const nextSourceMetas = sourceMetas.filter(
-    (sourceMeta) => sourceMeta.field !== sourceField,
-  )
-  if (nextSourceMetas.length === sourceMetas.length) {
-    return listenToFields
-  }
-
-  if (nextSourceMetas.length > 0) {
-    listenToFields[watcherIndex] = nextSourceMetas
-  } else {
-    delete listenToFields[watcherIndex]
-  }
-
-  return listenToFields.some(
-    (sourceMetasForIndex) => sourceMetasForIndex.length > 0,
-  )
-    ? listenToFields
-    : null
-}
-
-function detachOutgoingWatchedFields({
+function detachWatchedListenerFields({
   field,
-  listenToFields,
-  detach,
   nodesToKill,
   fieldsToPruneAfterKill,
   dependencyChanges,
 }: {
   field: AnyInternalFieldApi
-  listenToFields: FieldListenToFields | null
-  detach: DetachWatchingFieldFn
   nodesToKill: Set<AnyInternalFieldApi>
   fieldsToPruneAfterKill: Set<AnyInternalFieldApi>
   dependencyChanges: Array<FieldDependencyChange> | null
 }) {
-  listenToFields?.forEach((sourceMetas, watcherIndex) => {
-    for (const { field: sourceField } of sourceMetas) {
+  field._listenerInstances?.forEach((listenerInstance) => {
+    listenerInstance.resolvedWatchFields?.forEach((sourceField) => {
       const change = {
         kind: 'listener' as const,
         sourceField,
         watchingField: field,
-        watcherIndex,
+        listenerInstance,
       }
-      detach(change, { pruneSourceField: false })
+      detachWatchingListenerField(change, { pruneSourceField: false })
       dependencyChanges?.push(change)
 
       if (!nodesToKill.has(sourceField)) {
         fieldsToPruneAfterKill.add(sourceField)
       }
-    }
+    })
+    listenerInstance.resolvedWatchFields = null
   })
 }
 
-function detachIncomingWatchedFields({
+function detachWatchingListenerFields({
   sourceField,
   watchingFields,
-  detach,
   nodesToKill,
   fieldsToPruneAfterKill,
   dependencyChanges,
-  getListenToFields,
-  setListenToFields,
 }: {
   sourceField: AnyInternalFieldApi
-  watchingFields: FieldWatchingFields | null
-  detach: DetachWatchingFieldFn
+  watchingFields: FieldWatchingListenerFields | null
   nodesToKill: Set<AnyInternalFieldApi>
   fieldsToPruneAfterKill: Set<AnyInternalFieldApi>
   dependencyChanges: Array<FieldDependencyChange> | null
-  getListenToFields: (
-    watchingField: AnyInternalFieldApi,
-  ) => FieldListenToFields | null
-  setListenToFields: (
-    watchingField: AnyInternalFieldApi,
-    listenToFields: FieldListenToFields | null,
-  ) => void
 }) {
   if (!watchingFields) return
 
-  for (const [watchingField, watcherIndexes] of Array.from(watchingFields)) {
-    for (const watcherIndex of Array.from(watcherIndexes)) {
+  for (const [watchingField, listenerInstances] of Array.from(watchingFields)) {
+    for (const listenerInstance of Array.from(listenerInstances)) {
       const change = {
         kind: 'listener' as const,
         sourceField,
         watchingField,
-        watcherIndex,
+        listenerInstance,
       }
-      detach(change, { pruneSourceField: false })
+      detachWatchingListenerField(change, { pruneSourceField: false })
       dependencyChanges?.push(change)
-      setListenToFields(
-        watchingField,
-        clearWatchedSourceReference(
-          getListenToFields(watchingField),
-          sourceField,
-          watcherIndex,
-        ),
-      )
+
+      listenerInstance.resolvedWatchFields?.forEach((resolvedField, name) => {
+        if (resolvedField === sourceField) {
+          listenerInstance.deleteResolvedWatchField(name)
+        }
+      })
+
       if (!nodesToKill.has(watchingField)) {
         fieldsToPruneAfterKill.add(watchingField)
       }
@@ -254,15 +202,12 @@ function detachLinkedFieldReferences({
   fieldsToPruneAfterKill: Set<AnyInternalFieldApi>
   dependencyChanges: Array<FieldDependencyChange> | null
 }) {
-  detachOutgoingWatchedFields({
+  detachWatchedListenerFields({
     field,
-    listenToFields: field._listenToFields,
-    detach: detachWatchingListenerField,
     nodesToKill,
     fieldsToPruneAfterKill,
     dependencyChanges,
   })
-  field._listenToFields = null
 
   detachWatchedValidatorFields({
     field,
@@ -271,19 +216,14 @@ function detachLinkedFieldReferences({
     dependencyChanges,
   })
 
-  detachIncomingWatchedFields({
+  detachWatchingListenerFields({
     sourceField: field,
-    watchingFields: field._watchingFields,
-    detach: detachWatchingListenerField,
+    watchingFields: field._watchingListenerFields,
     nodesToKill,
     fieldsToPruneAfterKill,
     dependencyChanges,
-    getListenToFields: (watchingField) => watchingField._listenToFields,
-    setListenToFields: (watchingField, listenToFields) => {
-      watchingField._listenToFields = listenToFields
-    },
   })
-  field._watchingFields = null
+  field._watchingListenerFields = null
 
   detachWatchingValidatorFields({
     sourceField: field,
@@ -465,10 +405,8 @@ export function killField(
       node._formGroup = null
       node._defaultValueCache = null
       node._atoms.store = undefined
-      if (node._pipelineCache) {
-        cancelPipelineCache(node._pipelineCache)
-        node._pipelineCache = null
-      }
+      node._listenerInstances?.forEach((instance) => instance.dispose())
+      node._listenerInstances = null
       node._validatorInstances?.forEach((instance) => instance.dispose())
       node._validatorInstances = null
       node._childrenMap.clear()
@@ -518,11 +456,13 @@ export function canPruneField(field: AnyInternalFieldApi): boolean {
   if (field._refCount > 0) return false
   if (field._formGroup) return false
   if (field._childrenMap.size > 0) return false
-  if (field._watchingFields) return false
+  if (field._watchingListenerFields) return false
   if (field._watchingValidatorFields) return false
   // Watched source maps retain and notify this field, so keep both endpoints
   // reachable from the form trie while an outgoing link is active.
-  if (field._listenToFields) return false
+  if (field._listenerInstances?.some((v) => v.resolvedWatchFields)) {
+    return false
+  }
   if (field._validatorInstances?.some((v) => v.resolvedWatchFields)) {
     return false
   }

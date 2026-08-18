@@ -35,12 +35,14 @@ interface FieldsController {
   ) => Array<DevtoolsMountedFieldScaffold>
 }
 
-function addForwardRelations(
+function addListenerForwardRelations(
   fields: Set<AnyInternalFieldApi>,
-  relationGroups: AnyInternalFieldApi['_listenToFields'],
+  field: AnyInternalFieldApi,
 ): void {
-  relationGroups?.forEach((relations) => {
-    for (const relation of relations) fields.add(relation.field)
+  field._listenerInstances?.forEach((listenerInstance) => {
+    listenerInstance.resolvedWatchFields?.forEach((sourceField) =>
+      fields.add(sourceField),
+    )
   })
 }
 
@@ -58,7 +60,7 @@ function addValidatorForwardRelations(
 function addReverseRelations(
   fields: Set<AnyInternalFieldApi>,
   relationGroups:
-    | AnyInternalFieldApi['_watchingFields']
+    | AnyInternalFieldApi['_watchingListenerFields']
     | AnyInternalFieldApi['_watchingValidatorFields'],
 ): void {
   relationGroups?.forEach((_indexes, watchingField) => {
@@ -71,9 +73,9 @@ function addRelationNeighborhood(
   field: AnyInternalFieldApi,
 ): void {
   fields.add(field)
-  addForwardRelations(fields, field._listenToFields)
+  addListenerForwardRelations(fields, field)
   addValidatorForwardRelations(fields, field)
-  addReverseRelations(fields, field._watchingFields)
+  addReverseRelations(fields, field._watchingListenerFields)
   addReverseRelations(fields, field._watchingValidatorFields)
 }
 

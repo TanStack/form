@@ -192,6 +192,81 @@ describe('field - lifecycle', () => {
     })
   })
 
+  describe('listener instances', () => {
+    it('keeps instances stable by slot and distinguishes omitted listeners from an empty array', () => {
+      const form = new InternalFormApi({ defaultValues: { x: '' } })
+      const firstDefinition = {
+        run: () => {},
+        triggers: ['change'] as Array<'change'>,
+      }
+      const field = form._getOrCreateFieldApi({
+        name: 'x',
+        listeners: [firstDefinition],
+      })
+      const instance = field._listenerInstances?.[0]
+      const initialRevision = instance?.revision
+      const nextDefinition = {
+        run: () => {},
+        triggers: ['blur'] as Array<'blur'>,
+      }
+
+      field._update({ listeners: [nextDefinition] })
+
+      expect(field._listenerInstances?.[0]).toBe(instance)
+      expect(instance?.definition).toBe(nextDefinition)
+      expect(instance?.owner).toBe(field)
+      expect(instance?.index).toBe(0)
+      expect(instance?.revision).toBe((initialRevision ?? 0) + 1)
+
+      field._update({})
+      expect(field._listenerInstances?.[0]).toBe(instance)
+
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      field._update({ listeners: [] })
+
+      expect(warn).toHaveBeenCalledWith(
+        expect.stringContaining(
+          'length of the listener array should not change',
+        ),
+      )
+      expect(field._listenerInstances).toBeNull()
+      expect(instance?.disposed).toBe(true)
+      warn.mockRestore()
+    })
+
+    it('resets runtime on field reset and disposes instances on kill', async () => {
+      vi.useFakeTimers()
+      const listener = vi.fn()
+      const form = new InternalFormApi({ defaultValues: { x: '' } })
+      const field = form._getOrCreateFieldApi({
+        name: 'x',
+        listeners: [
+          {
+            run: listener,
+            triggers: ['change'],
+            triggerDebounceMs: 100,
+          },
+        ],
+      })
+      const instance = field._listenerInstances?.[0]
+
+      field.handleChange('pending')
+      field.reset()
+      await vi.advanceTimersByTimeAsync(100)
+
+      expect(listener).not.toHaveBeenCalled()
+      expect(field._listenerInstances?.[0]).toBe(instance)
+      expect(instance?.debouncer).toBeNull()
+      expect(instance?.disposed).toBe(false)
+
+      field._kill()
+
+      expect(field._listenerInstances).toBeNull()
+      expect(instance?.disposed).toBe(true)
+      vi.useRealTimers()
+    })
+  })
+
   describe('devtools bridge notifications', () => {
     it('notifies field mount and final unmount transitions only', () => {
       const form = new InternalFormApi({ defaultValues: { name: '' } })
@@ -358,13 +433,14 @@ describe('field - lifecycle', () => {
             },
           ],
         })
+        const listenerInstance = target._listenerInstances![0]!
 
         expect(fieldDependenciesChanged).toHaveBeenCalledWith([
           {
             kind: 'listener',
             sourceField: source,
             watchingField: target,
-            watcherIndex: 0,
+            listenerInstance,
           },
         ])
 
@@ -376,10 +452,10 @@ describe('field - lifecycle', () => {
             kind: 'listener',
             sourceField: source,
             watchingField: target,
-            watcherIndex: 0,
+            listenerInstance,
           },
         ])
-        expect(source._watchingFields).toBeNull()
+        expect(source._watchingListenerFields).toBeNull()
       } finally {
         uninstallBridge()
       }
@@ -685,7 +761,9 @@ describe('field - lifecycle', () => {
         sourceField._kill()
 
         expect(form._tryGetFieldApi('target')).toBe(targetField)
-        expect(targetField._listenToFields).toBeNull()
+        expect(
+          targetField._listenerInstances?.[0]?.resolvedWatchFields,
+        ).toBeNull()
       } finally {
         unregisterTarget()
       }
