@@ -1944,6 +1944,43 @@ describe('form api', () => {
     )
   })
 
+  it('re-runs a form-level onSubmit validator on re-submission when only a form-level validator exists (#2248)', async () => {
+    const onSubmit = vi.fn()
+    const form = new FormApi({
+      defaultValues: { name: '', other: '' },
+      validators: {
+        onSubmit: ({ value }) => {
+          const fields: Record<string, string> = {}
+          if (!value.name) fields.name = 'Required'
+          if (!value.other) fields.other = 'Required'
+          return Object.keys(fields).length ? { fields } : undefined
+        },
+      },
+      canSubmitWhenInvalid: true,
+      onSubmit,
+    })
+    form.mount()
+
+    // 1) Submit empty -> the form-level validator flags both fields.
+    await form.handleSubmit()
+    expect(form.state.fieldMeta.name?.errorMap.onSubmit).toBe('Required')
+    expect(form.state.fieldMeta.other?.errorMap.onSubmit).toBe('Required')
+    expect(onSubmit).not.toHaveBeenCalled()
+
+    // 2) Fill both fields so the form-level validator would now pass.
+    form.setFieldValue('name', 'John')
+    form.setFieldValue('other', 'thing')
+
+    // 3) Submit again -> the form-level validator must re-run, clear the stale
+    //    errors, and the form should submit. Before this fix, `_handleSubmit`
+    //    bailed on the stale `isFieldsValid === false` before `validate('submit')`
+    //    re-ran, so the errors never cleared and the form could never be submitted.
+    await form.handleSubmit()
+    expect(form.state.fieldMeta.name?.errorMap.onSubmit).toBeUndefined()
+    expect(form.state.fieldMeta.other?.errorMap.onSubmit).toBeUndefined()
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+  })
+
   it('should run field-level onBlur validators on re-submission to clear stale errors', async () => {
     // Regression: stale onBlur errors could prevent re-submission because
     // canSubmit became false and _handleSubmit returned early before running
