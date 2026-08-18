@@ -193,7 +193,7 @@ describe('field - lifecycle', () => {
   })
 
   describe('listener instances', () => {
-    it('keeps instances stable by slot and warns when the length changes', () => {
+    it('keeps instances stable by slot and distinguishes omitted listeners from an empty array', () => {
       const form = new InternalFormApi({ defaultValues: { x: '' } })
       const firstDefinition = {
         run: () => {},
@@ -217,6 +217,9 @@ describe('field - lifecycle', () => {
       expect(instance?.owner).toBe(field)
       expect(instance?.index).toBe(0)
       expect(instance?.revision).toBe((initialRevision ?? 0) + 1)
+
+      field._update({})
+      expect(field._listenerInstances?.[0]).toBe(instance)
 
       const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
       field._update({ listeners: [] })

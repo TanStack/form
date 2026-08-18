@@ -571,49 +571,51 @@ export class InternalFieldApi<
     const dependencyChanges: Array<FieldDependencyChange> | null =
       notifyDependencyChanges ? [] : null
 
-    const previousListeners = this._listenerInstances?.map(
-      (instance) => instance.definition,
-    )
-    this._listenerInstances = reconcileListenerInstances<
-      AnyFieldListener,
-      AnyInternalFieldApi,
-      AnyInternalFieldApi
-    >({
-      definitions: resolvedOptions.listeners,
-      previousDefinitions: isInitializing
-        ? undefined
-        : (previousListeners ?? null),
-      instances: this._listenerInstances,
-      owner: this,
-      onBeforeDispose: (listenerInstance) => {
-        listenerInstance.resolvedWatchFields?.forEach((sourceField) => {
-          const operation = {
-            kind: 'listener' as const,
-            sourceField,
-            watchingField: this,
-            listenerInstance,
-          }
-          detachWatchingListenerField(operation)
-          dependencyChanges?.push(operation)
-        })
-        listenerInstance.resolvedWatchFields = null
-      },
-    })
+    if (resolvedOptions.listeners) {
+      const previousListeners = this._listenerInstances?.map(
+        (instance) => instance.definition,
+      )
+      this._listenerInstances = reconcileListenerInstances<
+        AnyFieldListener,
+        AnyInternalFieldApi,
+        AnyInternalFieldApi
+      >({
+        definitions: resolvedOptions.listeners,
+        previousDefinitions: isInitializing
+          ? undefined
+          : (previousListeners ?? null),
+        instances: this._listenerInstances,
+        owner: this,
+        onBeforeDispose: (listenerInstance) => {
+          listenerInstance.resolvedWatchFields?.forEach((sourceField) => {
+            const operation = {
+              kind: 'listener' as const,
+              sourceField,
+              watchingField: this,
+              listenerInstance,
+            }
+            detachWatchingListenerField(operation)
+            dependencyChanges?.push(operation)
+          })
+          listenerInstance.resolvedWatchFields = null
+        },
+      })
 
-    const reconciledListeners = reconcileWatchedListenerFields({
-      field: this,
-      listenerInstances: this._listenerInstances,
-      form: this.form,
-    })
+      const reconciledListeners = reconcileWatchedListenerFields({
+        field: this,
+        listenerInstances: this._listenerInstances,
+        form: this.form,
+      })
 
-    reconciledListeners.detach.forEach((operation) =>
-      detachWatchingListenerField(operation),
-    )
-    reconciledListeners.attach.forEach(attachWatchingListenerField)
-    dependencyChanges?.push(
-      ...reconciledListeners.attach,
-      ...reconciledListeners.detach,
-    )
+      reconciledListeners.detach.forEach((operation) =>
+        detachWatchingListenerField(operation),
+      )
+      reconciledListeners.attach.forEach(attachWatchingListenerField)
+      dependencyChanges?.push(
+        ...reconciledListeners.attach,
+        ...reconciledListeners.detach,
+      )
+    }
 
     if (resolvedOptions.validators) {
       const previousValidators = this._validatorInstances?.map(
