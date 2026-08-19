@@ -35,7 +35,7 @@ Defined in: [packages/vue-form/src/VueForm/useForm.public.ts:13](https://github.
 
 ### options
 
-`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`\>
+`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>
 
 ## Returns
 

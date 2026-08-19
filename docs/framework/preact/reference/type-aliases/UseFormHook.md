@@ -35,7 +35,7 @@ Defined in: [packages/preact-form/src/PreactForm/useForm.public.ts:13](https://g
 
 ### options
 
-`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`\>
+`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>
 
 ## Returns
 

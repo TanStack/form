@@ -35,7 +35,7 @@ Defined in: [packages/solid-form/src/AppForm/createFormHookTypes.public.ts:98](h
 
 ### options
 
-`Accessor`\<`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`\>\>
+`Accessor`\<`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>\>
 
 ## Returns
 

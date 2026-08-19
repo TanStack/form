@@ -5,7 +5,7 @@ title: ValidationTriggerConfig
 
 # Interface: ValidationTriggerConfig\<TFormData, TValue, TTrigger, TScope\>
 
-Defined in: [validation.public.ts:316](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L316)
+Defined in: [validation.public.ts:331](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L331)
 
 ## Type Parameters
 
@@ -33,7 +33,7 @@ Defined in: [validation.public.ts:316](https://github.com/TanStack/form/blob/mai
 trigger: TTrigger;
 ```
 
-Defined in: [validation.public.ts:322](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L322)
+Defined in: [validation.public.ts:337](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L337)
 
 ***
 
@@ -45,4 +45,4 @@ optional when?:
 | ValidationPredicateFn<TFormData, TValue, TScope>;
 ```
 
-Defined in: [validation.public.ts:323](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L323)
+Defined in: [validation.public.ts:338](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L338)

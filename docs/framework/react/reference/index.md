@@ -13,8 +13,6 @@ title: "@tanstack/react-form"
 ## Interfaces
 
 - [AppFormHookResult](interfaces/AppFormHookResult.md)
-- [AppFormOptions](interfaces/AppFormOptions.md)
-- [AppFormOptionsApi](interfaces/AppFormOptionsApi.md)
 - [Atom](interfaces/Atom.md)
 - [AtomOptions](interfaces/AtomOptions.md)
 - [BaseAtom](interfaces/BaseAtom.md)

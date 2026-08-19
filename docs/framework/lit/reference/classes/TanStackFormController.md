@@ -81,7 +81,7 @@ The Lit host that owns the controller and form lifecycle.
 
 ##### options
 
-`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`\>
+`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>
 
 The initial form options. `defaultValues` drive form value
 inference.
@@ -114,7 +114,7 @@ Defined in: [tanstack-form-controller.ts:229](https://github.com/TanStack/form/b
 arrayField<TFieldName, TFieldValidators>(options, render): unknown;
 ```
 
-Defined in: [tanstack-form-controller.ts:306](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L306)
+Defined in: [tanstack-form-controller.ts:308](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L308)
 
 #### Type Parameters
 
@@ -152,7 +152,7 @@ Defined in: [tanstack-form-controller.ts:306](https://github.com/TanStack/form/b
 field<TFieldName, TFieldValidators>(options, render): unknown;
 ```
 
-Defined in: [tanstack-form-controller.ts:269](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L269)
+Defined in: [tanstack-form-controller.ts:271](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L271)
 
 #### Type Parameters
 
@@ -190,7 +190,7 @@ Defined in: [tanstack-form-controller.ts:269](https://github.com/TanStack/form/b
 formGroup<TGroupName, TGroupValue, TGroupValidators>(options, render): unknown;
 ```
 
-Defined in: [tanstack-form-controller.ts:356](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L356)
+Defined in: [tanstack-form-controller.ts:358](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L358)
 
 #### Type Parameters
 
@@ -280,7 +280,7 @@ subscribe<TSelected>(
    when?): unknown;
 ```
 
-Defined in: [tanstack-form-controller.ts:343](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L343)
+Defined in: [tanstack-form-controller.ts:345](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L345)
 
 #### Type Parameters
 
@@ -326,7 +326,7 @@ Updates reactive form options without replacing the form instance.
 
 ##### options
 
-`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`\>
+`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>
 
 #### Returns
 

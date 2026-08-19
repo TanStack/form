@@ -3,16 +3,17 @@ id: FormOptionsLooseSchemaFn
 title: FormOptionsLooseSchemaFn
 ---
 
-# Type Alias: FormOptionsLooseSchemaFn
+# Type Alias: FormOptionsLooseSchemaFn\<TComponents\>
 
 ```ts
-type FormOptionsLooseSchemaFn = <TFormValidators, TFormData, TSubmitReturn>(options) => FormOptions<InferUnion<TFormData, FormValidatorData<TFormValidators>>, TFormValidators, TSubmitReturn>;
+type FormOptionsLooseSchemaFn<TComponents> = <TFormValidators, TFormData, TSubmitReturn>(options) => FormOptions<InferUnion<TFormData, FormValidatorData<TFormValidators>>, TFormValidators, TSubmitReturn, TComponents>;
 ```
 
-Defined in: [utils.public.ts:150](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L150)
+Defined in: [utils.public.ts:192](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L192)
 
 Infers the form data shape from a Standard Schema validator while allowing
-editable defaults to contain `null` or `undefined` values.
+editable defaults to omit properties or contain `null` or `undefined`
+values.
 
 Use this when the schema represents the final valid shape but the UI needs
 intermediate empty states, such as an unselected date. Raw form state
@@ -22,8 +23,16 @@ corresponding `schemaOutputs` entry during submission.
 At runtime, this returns the original options object and does not run the
 schema.
 
-Include the schema in `validators` to provide the type inference and
-perform validation.
+`validators` must contain at least one Standard Schema to provide the type
+inference and perform validation.
+
+## Type Parameters
+
+### TComponents
+
+`TComponents`
+
+Library-managed. Do not specify explicitly.
 
 ## Type Parameters
 
@@ -49,22 +58,21 @@ Library-managed. Do not specify explicitly.
 
 ### options
 
-[`FormOptions`](../interfaces/FormOptions.md)\<`TFormData`, `TFormValidators`, `TSubmitReturn`\>
+[`StandardSchemaFormOptions`](StandardSchemaFormOptions.md)\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>
 
 ## Returns
 
-[`FormOptions`](../interfaces/FormOptions.md)\<[`InferUnion`](InferUnion.md)\<`TFormData`, [`FormValidatorData`](FormValidatorData.md)\<`TFormValidators`\>\>, `TFormValidators`, `TSubmitReturn`\>
+[`FormOptions`](../interfaces/FormOptions.md)\<[`InferUnion`](InferUnion.md)\<`TFormData`, [`FormValidatorData`](FormValidatorData.md)\<`TFormValidators`\>\>, `TFormValidators`, `TSubmitReturn`, `TComponents`\>
 
 The original options object, normalized to `FormOptions` with
-nullable and undefined editable states merged into the schema's input
-shape.
+omitted, nullable, and undefined editable states merged into the schema's
+input shape.
 
 ## Remarks
 
-**Important:** Although this returns the original object unchanged at
-runtime, its type is normalized to `FormOptions`. Optional properties such
-as `validators` therefore remain optional even when supplied. This
-tradeoff enables safer inference and reuse.
+**Important:** Although schema-mode inputs require `validators`, this
+returns a type normalized to `FormOptions`, where `validators` is optional.
+This tradeoff enables safer inference and reuse.
 
 ## Example
 

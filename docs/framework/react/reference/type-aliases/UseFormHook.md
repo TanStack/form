@@ -35,7 +35,7 @@ Defined in: [packages/react-form/src/ReactForm/useForm.public.ts:13](https://git
 
 ### options
 
-`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`\>
+`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>
 
 ## Returns
 

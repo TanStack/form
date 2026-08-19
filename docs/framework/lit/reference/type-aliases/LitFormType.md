@@ -6,7 +6,7 @@ title: LitFormType
 # Type Alias: LitFormType\<TOptions\>
 
 ```ts
-type LitFormType<TOptions> = TOptions extends FormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn> ? TanStackFormController<TFormData, TFormValidators, LitFormTypeSubmitReturn<TSubmitReturn>> : never;
+type LitFormType<TOptions> = TOptions extends FormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn, unknown> ? TanStackFormController<TFormData, TFormValidators, LitFormTypeSubmitReturn<TSubmitReturn>> : never;
 ```
 
 Defined in: [get-form-type.ts:58](https://github.com/TanStack/form/blob/main/packages/lit-form/src/get-form-type.ts#L58)

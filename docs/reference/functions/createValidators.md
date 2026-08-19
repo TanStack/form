@@ -9,7 +9,7 @@ title: createValidators
 function createValidators<TFormData, TContextValue, TOptions>(options): <TRuns>(...runs) => ValidatorsFromOptionsAndRuns<TFormData, TContextValue, TOptions, TRuns>;
 ```
 
-Defined in: [validation.public.ts:138](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L138)
+Defined in: [validation.public.ts:153](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L153)
 
 ## Type Parameters
 

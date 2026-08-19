@@ -29,7 +29,7 @@ Defined in: [packages/solid-form/src/createForm.public.ts:11](https://github.com
 
 ### options
 
-`Accessor`\<`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`\>\>
+`Accessor`\<`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>\>
 
 ## Returns
 

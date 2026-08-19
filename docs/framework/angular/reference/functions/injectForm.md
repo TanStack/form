@@ -45,7 +45,7 @@ Library-managed. Do not specify explicitly.
 
 ### options
 
-`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`\>
+`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>
 
 The initial form options. `defaultValues` drive form value
 inference.

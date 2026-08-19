@@ -5,7 +5,7 @@ title: FieldValidatorContext
 
 # Interface: FieldValidatorContext\<TFieldName, TFieldValue, TFormData\>
 
-Defined in: [validation.public.ts:488](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L488)
+Defined in: [validation.public.ts:503](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L503)
 
 ## Type Parameters
 
@@ -29,7 +29,7 @@ Defined in: [validation.public.ts:488](https://github.com/TanStack/form/blob/mai
 event: ValidationTrigger;
 ```
 
-Defined in: [validation.public.ts:493](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L493)
+Defined in: [validation.public.ts:508](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L508)
 
 ***
 
@@ -39,7 +39,7 @@ Defined in: [validation.public.ts:493](https://github.com/TanStack/form/blob/mai
 fieldApi: FieldApi<TFieldName, TFieldValue, any, TFormData, any>;
 ```
 
-Defined in: [validation.public.ts:496](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L496)
+Defined in: [validation.public.ts:511](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L511)
 
 ***
 
@@ -49,7 +49,7 @@ Defined in: [validation.public.ts:496](https://github.com/TanStack/form/blob/mai
 formApi: FormApi<TFormData, any>;
 ```
 
-Defined in: [validation.public.ts:495](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L495)
+Defined in: [validation.public.ts:510](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L510)
 
 ***
 
@@ -59,7 +59,7 @@ Defined in: [validation.public.ts:495](https://github.com/TanStack/form/blob/mai
 parseIssues: ParseFieldIssuesFn;
 ```
 
-Defined in: [validation.public.ts:498](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L498)
+Defined in: [validation.public.ts:513](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L513)
 
 ***
 
@@ -69,7 +69,7 @@ Defined in: [validation.public.ts:498](https://github.com/TanStack/form/blob/mai
 signal: AbortSignal;
 ```
 
-Defined in: [validation.public.ts:494](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L494)
+Defined in: [validation.public.ts:509](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L509)
 
 ***
 
@@ -79,4 +79,4 @@ Defined in: [validation.public.ts:494](https://github.com/TanStack/form/blob/mai
 value: TFieldValue;
 ```
 
-Defined in: [validation.public.ts:497](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L497)
+Defined in: [validation.public.ts:512](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L512)

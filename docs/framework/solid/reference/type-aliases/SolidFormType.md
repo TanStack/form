@@ -6,10 +6,10 @@ title: SolidFormType
 # Type Alias: SolidFormType\<TOptions\>
 
 ```ts
-type SolidFormType<TOptions> = TOptions extends AppFormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn, infer TComponents> ? SolidFormApi<TFormData, SolidFormTypeErrorTypes<TFormValidators, TSubmitReturn>, TComponents> : TOptions extends FormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn> ? SolidFormApi<TFormData, SolidFormTypeErrorTypes<TFormValidators, TSubmitReturn>, DefaultSolidFormComponentMap> : never;
+type SolidFormType<TOptions> = TOptions extends FormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn, infer TComponents> ? SolidFormApi<TFormData, SolidFormTypeErrorTypes<TFormValidators, TSubmitReturn>, TComponents extends AnySolidFormComponentMap ? TComponents : DefaultSolidFormComponentMap> : never;
 ```
 
-Defined in: [packages/solid-form/src/formType.public.ts:50](https://github.com/TanStack/form/blob/main/packages/solid-form/src/formType.public.ts#L50)
+Defined in: [packages/solid-form/src/formType.public.ts:49](https://github.com/TanStack/form/blob/main/packages/solid-form/src/formType.public.ts#L49)
 
 Derives the Solid form API type represented by a reusable options object.
 
@@ -22,9 +22,7 @@ shared options or when the form is created in the component.
 
 ### TOptions
 
-`TOptions` *extends* 
-  \| `AnyFormOptions`
-  \| [`AppFormOptions`](../interfaces/AppFormOptions.md)\<`any`, `any`, `any`, [`AnySolidFormComponentMap`](AnySolidFormComponentMap.md)\>
+`TOptions` *extends* `AnyFormOptions`
 
 The reusable form or app-form options from which the API derives its form data, error, and registered-component types.
 

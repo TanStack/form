@@ -12,7 +12,7 @@ function createFormHook<TFormComponents, TFieldComponents>(createOptions): AppFo
 }>;
 ```
 
-Defined in: [packages/preact-form/src/AppForm/createFormHook.public.ts:21](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/createFormHook.public.ts#L21)
+Defined in: [packages/preact-form/src/AppForm/createFormHook.public.ts:20](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/createFormHook.public.ts#L20)
 
 ## Type Parameters
 

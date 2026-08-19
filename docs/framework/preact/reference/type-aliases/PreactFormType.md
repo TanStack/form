@@ -6,10 +6,10 @@ title: PreactFormType
 # Type Alias: PreactFormType\<TOptions\>
 
 ```ts
-type PreactFormType<TOptions> = TOptions extends AppFormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn, infer TComponents> ? PreactFormApi<TFormData, PreactFormTypeErrorTypes<TFormValidators, TSubmitReturn>, TComponents> : TOptions extends FormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn> ? PreactFormApi<TFormData, PreactFormTypeErrorTypes<TFormValidators, TSubmitReturn>, DefaultPreactFormComponentMap> : never;
+type PreactFormType<TOptions> = TOptions extends FormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn, infer TComponents> ? PreactFormApi<TFormData, PreactFormTypeErrorTypes<TFormValidators, TSubmitReturn>, TComponents extends AnyPreactFormComponentMap ? TComponents : DefaultPreactFormComponentMap> : never;
 ```
 
-Defined in: [packages/preact-form/src/PreactForm/formType.public.ts:56](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/formType.public.ts#L56)
+Defined in: [packages/preact-form/src/PreactForm/formType.public.ts:55](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/formType.public.ts#L55)
 
 Derives the Preact form API type represented by a reusable options object.
 
@@ -22,9 +22,7 @@ shared options or when the form is created in the component.
 
 ### TOptions
 
-`TOptions` *extends* 
-  \| `AnyFormOptions`
-  \| [`AppFormOptions`](../interfaces/AppFormOptions.md)\<`any`, `any`, `any`, [`AnyPreactFormComponentMap`](AnyPreactFormComponentMap.md)\>
+`TOptions` *extends* `AnyFormOptions`
 
 The reusable form or app-form options from which the API derives its form data, error, and registered-component types.
 

@@ -9,7 +9,7 @@ title: createForm
 const createForm: CreateFormHook;
 ```
 
-Defined in: [packages/solid-form/src/createForm.public.ts:58](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.public.ts#L58)
+Defined in: [packages/solid-form/src/createForm.public.ts:62](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.public.ts#L62)
 
 Creates a Solid form whose instance and lifecycle are owned by the current
 reactive owner.

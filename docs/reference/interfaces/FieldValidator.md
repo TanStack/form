@@ -5,7 +5,7 @@ title: FieldValidator
 
 # Interface: FieldValidator\<TFormData, TFieldName, TFieldValue\>
 
-Defined in: [validation.public.ts:508](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L508)
+Defined in: [validation.public.ts:523](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L523)
 
 ## Extends
 
@@ -161,4 +161,4 @@ Defined in: [validation.public.ts:54](https://github.com/TanStack/form/blob/main
 optional watchFields?: DeepKeys<TFormData>[];
 ```
 
-Defined in: [validation.public.ts:520](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L520)
+Defined in: [validation.public.ts:535](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L535)

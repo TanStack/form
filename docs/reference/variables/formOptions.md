@@ -6,10 +6,10 @@ title: formOptions
 # Variable: formOptions
 
 ```ts
-const formOptions: FormOptionsApi;
+const formOptions: FormOptionsApi<unknown>;
 ```
 
-Defined in: [utils.public.ts:323](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L323)
+Defined in: [utils.public.ts:372](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L372)
 
 Keeps form data, validator, and submission types inferred when options are
 declared separately from a framework's form creation API.
@@ -17,8 +17,8 @@ declared separately from a framework's form creation API.
 The regular helper takes `defaultValues` at face value as the form data
 shape. For schema-driven inference, use `formOptions.strictSchema` when the
 schema defines an input-to-output boundary, or `formOptions.looseSchema` when
-the schema defines the shape but editable defaults need `null` or
-`undefined` values.
+the schema defines the shape but editable defaults may omit properties or
+need `null` or `undefined` values.
 
 At runtime, this is an identity helper: it returns the original options
 object and does not create a form or run validation.

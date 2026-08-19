@@ -15,7 +15,7 @@ type FormValidateResultFromErrorTypes<TFormData, TFormErrorTypes> =
 };
 ```
 
-Defined in: [validation.public.ts:617](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L617)
+Defined in: [validation.public.ts:632](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L632)
 
 ## Type Parameters
 

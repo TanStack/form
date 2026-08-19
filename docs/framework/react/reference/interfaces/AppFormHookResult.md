@@ -23,7 +23,7 @@ Library-managed. Do not specify explicitly.
 ### appFormOptions
 
 ```ts
-appFormOptions: AppFormOptionsApi<TComponents>;
+appFormOptions: FormOptionsApi<TComponents>;
 ```
 
 Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:145](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L145)

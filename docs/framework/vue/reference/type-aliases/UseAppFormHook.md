@@ -35,7 +35,7 @@ Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:98](htt
 
 ### options
 
-`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`\>
+`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>
 
 ## Returns
 

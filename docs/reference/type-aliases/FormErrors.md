@@ -9,7 +9,7 @@ title: FormErrors
 type FormErrors<TFormErrorTypes> = ExtractFormError<TFormErrorTypes>[];
 ```
 
-Defined in: [validation.public.ts:600](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L600)
+Defined in: [validation.public.ts:615](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L615)
 
 ## Type Parameters
 

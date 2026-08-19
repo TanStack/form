@@ -35,7 +35,7 @@ Defined in: [packages/preact-form/src/AppForm/createFormHookTypes.public.ts:98](
 
 ### options
 
-`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`\>
+`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>
 
 ## Returns
 

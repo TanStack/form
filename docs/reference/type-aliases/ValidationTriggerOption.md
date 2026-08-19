@@ -11,7 +11,7 @@ type ValidationTriggerOption<TFormData, TValue, TTrigger, TScope> =
 | ValidationTriggerConfig<TFormData, TValue, TTrigger, TScope>;
 ```
 
-Defined in: [validation.public.ts:326](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L326)
+Defined in: [validation.public.ts:341](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L341)
 
 ## Type Parameters
 

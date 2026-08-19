@@ -6,7 +6,7 @@ title: DefaultFormOptions
 # Type Alias: DefaultFormOptions
 
 ```ts
-type DefaultFormOptions = Pick<FormOptions<unknown, FormValidators<unknown>, unknown>, "errorVisibility" | "listeners" | "onSubmitInvalid"> & DefaultListenersMergeOptions;
+type DefaultFormOptions = Pick<FormOptions<unknown, FormValidators<unknown>, unknown, unknown>, "errorVisibility" | "listeners" | "onSubmitInvalid"> & DefaultListenersMergeOptions;
 ```
 
 Defined in: [defaultOptions.public.ts:58](https://github.com/TanStack/form/blob/main/packages/form-core/src/defaultOptions.public.ts#L58)

@@ -6,10 +6,10 @@ title: ReactFormType
 # Type Alias: ReactFormType\<TOptions\>
 
 ```ts
-type ReactFormType<TOptions> = TOptions extends AppFormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn, infer TComponents> ? ReactFormApi<TFormData, ReactFormTypeErrorTypes<TFormValidators, TSubmitReturn>, TComponents> : TOptions extends FormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn> ? ReactFormApi<TFormData, ReactFormTypeErrorTypes<TFormValidators, TSubmitReturn>, DefaultReactFormComponentMap> : never;
+type ReactFormType<TOptions> = TOptions extends FormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn, infer TComponents> ? ReactFormApi<TFormData, ReactFormTypeErrorTypes<TFormValidators, TSubmitReturn>, TComponents extends AnyReactFormComponentMap ? TComponents : DefaultReactFormComponentMap> : never;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/formType.public.ts:56](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/formType.public.ts#L56)
+Defined in: [packages/react-form/src/ReactForm/formType.public.ts:55](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/formType.public.ts#L55)
 
 Derives the React form API type represented by a reusable options object.
 
@@ -22,9 +22,7 @@ shared options or when the form is created in the component.
 
 ### TOptions
 
-`TOptions` *extends* 
-  \| `AnyFormOptions`
-  \| [`AppFormOptions`](../interfaces/AppFormOptions.md)\<`any`, `any`, `any`, [`AnyReactFormComponentMap`](AnyReactFormComponentMap.md)\>
+`TOptions` *extends* `AnyFormOptions`
 
 The reusable form or app-form options from which the API derives its form data, error, and registered-component types.
 

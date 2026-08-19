@@ -35,7 +35,7 @@ Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:98](h
 
 ### options
 
-`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`\>
+`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>
 
 ## Returns
 

@@ -5,7 +5,7 @@ title: FormValidator
 
 # Interface: FormValidator\<TFormData\>
 
-Defined in: [validation.public.ts:443](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L443)
+Defined in: [validation.public.ts:458](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L458)
 
 ## Extends
 
@@ -66,7 +66,7 @@ Defined in: [validation.public.ts:14](https://github.com/TanStack/form/blob/main
 optional runOnMount?: boolean;
 ```
 
-Defined in: [validation.public.ts:447](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L447)
+Defined in: [validation.public.ts:462](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L462)
 
 ***
 
@@ -78,7 +78,7 @@ optional runOnSubmit?:
 | ValidationPredicateFn<TFormData, TFormData, "form">;
 ```
 
-Defined in: [validation.public.ts:446](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L446)
+Defined in: [validation.public.ts:461](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L461)
 
 ***
 
@@ -90,7 +90,7 @@ optional triggerDebounceMs?:
 | ValidationDebounceFn<TFormData, TFormData, "form">;
 ```
 
-Defined in: [validation.public.ts:448](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L448)
+Defined in: [validation.public.ts:463](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L463)
 
 ***
 
@@ -100,4 +100,4 @@ Defined in: [validation.public.ts:448](https://github.com/TanStack/form/blob/mai
 triggers: FormValidationTriggerOption<TFormData, TFormData, "form">[];
 ```
 
-Defined in: [validation.public.ts:450](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L450)
+Defined in: [validation.public.ts:465](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L465)

@@ -6,10 +6,10 @@ title: createValidator
 # Function: createValidator()
 
 ```ts
-function createValidator<TOptions>(options): <TValidator>(run) => ValidatorWithRun<InferFormDataFromValidator<TValidator>, InferFormDataFromValidator<TValidator>, TOptions, TValidator>;
+function createValidator<TOptions>(options): <TValidator>(run) => CreatedValidator<TOptions, TValidator>;
 ```
 
-Defined in: [validation.public.ts:123](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L123)
+Defined in: [validation.public.ts:143](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L143)
 
 ## Type Parameters
 
@@ -25,4 +25,4 @@ Defined in: [validation.public.ts:123](https://github.com/TanStack/form/blob/mai
 
 ## Returns
 
-\<`TValidator`\>(`run`) => `ValidatorWithRun`\<`InferFormDataFromValidator`\<`TValidator`\>, `InferFormDataFromValidator`\<`TValidator`\>, `TOptions`, `TValidator`\>
+\<`TValidator`\>(`run`) => [`CreatedValidator`](../type-aliases/CreatedValidator.md)\<`TOptions`, `TValidator`\>

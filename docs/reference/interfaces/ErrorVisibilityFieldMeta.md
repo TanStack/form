@@ -5,7 +5,7 @@ title: ErrorVisibilityFieldMeta
 
 # Interface: ErrorVisibilityFieldMeta
 
-Defined in: [validation.public.ts:179](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L179)
+Defined in: [validation.public.ts:194](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L194)
 
 ## Properties
 
@@ -15,7 +15,7 @@ Defined in: [validation.public.ts:179](https://github.com/TanStack/form/blob/mai
 isBlurred: boolean;
 ```
 
-Defined in: [validation.public.ts:186](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L186)
+Defined in: [validation.public.ts:201](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L201)
 
 ***
 
@@ -25,7 +25,7 @@ Defined in: [validation.public.ts:186](https://github.com/TanStack/form/blob/mai
 isDefaultValue: boolean;
 ```
 
-Defined in: [validation.public.ts:185](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L185)
+Defined in: [validation.public.ts:200](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L200)
 
 ***
 
@@ -35,7 +35,7 @@ Defined in: [validation.public.ts:185](https://github.com/TanStack/form/blob/mai
 isDirty: boolean;
 ```
 
-Defined in: [validation.public.ts:182](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L182)
+Defined in: [validation.public.ts:197](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L197)
 
 ***
 
@@ -45,7 +45,7 @@ Defined in: [validation.public.ts:182](https://github.com/TanStack/form/blob/mai
 isPristine: boolean;
 ```
 
-Defined in: [validation.public.ts:184](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L184)
+Defined in: [validation.public.ts:199](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L199)
 
 ***
 
@@ -55,7 +55,7 @@ Defined in: [validation.public.ts:184](https://github.com/TanStack/form/blob/mai
 isSelfDirty: boolean;
 ```
 
-Defined in: [validation.public.ts:183](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L183)
+Defined in: [validation.public.ts:198](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L198)
 
 ***
 
@@ -65,7 +65,7 @@ Defined in: [validation.public.ts:183](https://github.com/TanStack/form/blob/mai
 isSelfTouched: boolean;
 ```
 
-Defined in: [validation.public.ts:181](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L181)
+Defined in: [validation.public.ts:196](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L196)
 
 ***
 
@@ -75,7 +75,7 @@ Defined in: [validation.public.ts:181](https://github.com/TanStack/form/blob/mai
 isSelfValidating: boolean;
 ```
 
-Defined in: [validation.public.ts:188](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L188)
+Defined in: [validation.public.ts:203](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L203)
 
 ***
 
@@ -85,7 +85,7 @@ Defined in: [validation.public.ts:188](https://github.com/TanStack/form/blob/mai
 isTouched: boolean;
 ```
 
-Defined in: [validation.public.ts:180](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L180)
+Defined in: [validation.public.ts:195](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L195)
 
 ***
 
@@ -95,7 +95,7 @@ Defined in: [validation.public.ts:180](https://github.com/TanStack/form/blob/mai
 isValidating: boolean;
 ```
 
-Defined in: [validation.public.ts:187](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L187)
+Defined in: [validation.public.ts:202](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L202)
 
 ***
 
@@ -105,4 +105,4 @@ Defined in: [validation.public.ts:187](https://github.com/TanStack/form/blob/mai
 subfields: ErrorVisibilitySubfieldsMeta;
 ```
 
-Defined in: [validation.public.ts:189](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L189)
+Defined in: [validation.public.ts:204](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L204)

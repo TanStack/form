@@ -3,13 +3,13 @@ id: FormOptionsStrictSchemaFn
 title: FormOptionsStrictSchemaFn
 ---
 
-# Type Alias: FormOptionsStrictSchemaFn
+# Type Alias: FormOptionsStrictSchemaFn\<TComponents\>
 
 ```ts
-type FormOptionsStrictSchemaFn = <TFormValidators, TFormData, TSubmitReturn>(options) => FormOptions<FormValidatorData<TFormValidators>, TFormValidators, TSubmitReturn>;
+type FormOptionsStrictSchemaFn<TComponents> = <TFormValidators, TFormData, TSubmitReturn>(options) => FormOptions<FormValidatorData<TFormValidators>, TFormValidators, TSubmitReturn, TComponents>;
 ```
 
-Defined in: [utils.public.ts:93](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L93)
+Defined in: [utils.public.ts:128](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L128)
 
 Infers the form data type from a Standard Schema validator and requires
 `defaultValues` to match the schema input.
@@ -21,8 +21,16 @@ from the corresponding `schemaOutputs` entry during submission.
 At runtime, this returns the original options object and does not run the
 schema.
 
-Include the schema in `validators` to provide the type inference and
-perform validation.
+`validators` must contain at least one Standard Schema to provide the type
+inference and perform validation.
+
+## Type Parameters
+
+### TComponents
+
+`TComponents`
+
+Library-managed. Do not specify explicitly.
 
 ## Type Parameters
 
@@ -48,21 +56,20 @@ Library-managed. Do not specify explicitly.
 
 ### options
 
-[`FormOptions`](../interfaces/FormOptions.md)\<`TFormData`, `TFormValidators`, `TSubmitReturn`\>
+[`StandardSchemaFormOptions`](StandardSchemaFormOptions.md)\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>
 
 ## Returns
 
-[`FormOptions`](../interfaces/FormOptions.md)\<[`FormValidatorData`](FormValidatorData.md)\<`TFormValidators`\>, `TFormValidators`, `TSubmitReturn`\>
+[`FormOptions`](../interfaces/FormOptions.md)\<[`FormValidatorData`](FormValidatorData.md)\<`TFormValidators`\>, `TFormValidators`, `TSubmitReturn`, `TComponents`\>
 
 The original options object, normalized to `FormOptions` with the
 schema's input shape.
 
 ## Remarks
 
-**Important:** Although this returns the original object unchanged at
-runtime, its type is normalized to `FormOptions`. Optional properties such
-as `validators` therefore remain optional even when supplied. This
-tradeoff enables safer inference and reuse.
+**Important:** Although schema-mode inputs require `validators`, this
+returns a type normalized to `FormOptions`, where `validators` is optional.
+This tradeoff enables safer inference and reuse.
 
 ## Example
 

@@ -29,7 +29,7 @@ Defined in: [packages/svelte-form/src/createForm.public.ts:10](https://github.co
 
 ### options
 
-() => `FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`\>
+() => `FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>
 
 ## Returns
 

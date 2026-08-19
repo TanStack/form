@@ -5,7 +5,7 @@ title: FormValidationPredicateContext
 
 # Interface: FormValidationPredicateContext\<TFormData\>
 
-Defined in: [validation.public.ts:271](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L271)
+Defined in: [validation.public.ts:286](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L286)
 
 ## Extends
 
@@ -25,7 +25,7 @@ Defined in: [validation.public.ts:271](https://github.com/TanStack/form/blob/mai
 optional fieldApi?: AnyFieldApi;
 ```
 
-Defined in: [validation.public.ts:267](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L267)
+Defined in: [validation.public.ts:282](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L282)
 
 The field associated with this validation, if any.
 
@@ -46,7 +46,7 @@ BaseValidationPredicateContext.fieldApi
 formApi: FormApi<TFormData, any>;
 ```
 
-Defined in: [validation.public.ts:260](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L260)
+Defined in: [validation.public.ts:275](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L275)
 
 #### Inherited from
 
@@ -62,7 +62,7 @@ BaseValidationPredicateContext.formApi
 optional groupApi?: undefined;
 ```
 
-Defined in: [validation.public.ts:274](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L274)
+Defined in: [validation.public.ts:289](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L289)
 
 ***
 
@@ -72,7 +72,7 @@ Defined in: [validation.public.ts:274](https://github.com/TanStack/form/blob/mai
 scope: "form";
 ```
 
-Defined in: [validation.public.ts:259](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L259)
+Defined in: [validation.public.ts:274](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L274)
 
 #### Inherited from
 
@@ -88,7 +88,7 @@ BaseValidationPredicateContext.scope
 value: TFormData;
 ```
 
-Defined in: [validation.public.ts:268](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L268)
+Defined in: [validation.public.ts:283](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L283)
 
 #### Inherited from
 

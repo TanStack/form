@@ -18,7 +18,7 @@ Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:110](ht
 ### appFormOptions
 
 ```ts
-appFormOptions: AppFormOptionsApi<TComponents>;
+appFormOptions: FormOptionsApi<TComponents>;
 ```
 
 Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:111](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/createFormHookTypes.public.ts#L111)

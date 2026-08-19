@@ -3,9 +3,9 @@ id: FormOptionsApi
 title: FormOptionsApi
 ---
 
-# Interface: FormOptionsApi()
+# Interface: FormOptionsApi()\<TComponents\>
 
-Defined in: [utils.public.ts:169](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L169)
+Defined in: [utils.public.ts:219](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L219)
 
 The callable API exposed by `formOptions`, including its schema-driven
 inference modes.
@@ -13,11 +13,19 @@ inference modes.
 Use `formOptions` directly instead of naming this interface in application
 code.
 
+## Type Parameters
+
+### TComponents
+
+`TComponents`
+
+Library-managed. Do not specify explicitly.
+
 ```ts
-FormOptionsApi<TFormData, TFormValidators, TSubmitReturn>(options): FormOptions<TFormData, TFormValidators, TSubmitReturn>;
+FormOptionsApi<TFormData, TFormValidators, TSubmitReturn>(options): FormOptions<TFormData, TFormValidators, TSubmitReturn, TComponents>;
 ```
 
-Defined in: [utils.public.ts:190](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L190)
+Defined in: [utils.public.ts:240](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L240)
 
 Keeps types inferred from `defaultValues`, validators, and submission
 callbacks when form options are declared separately.
@@ -50,11 +58,11 @@ Library-managed. Do not specify explicitly.
 
 ### options
 
-[`FormOptions`](FormOptions.md)\<`TFormData`, `TFormValidators`, `TSubmitReturn`\>
+[`FormOptions`](FormOptions.md)\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>
 
 ## Returns
 
-[`FormOptions`](FormOptions.md)\<`TFormData`, `TFormValidators`, `TSubmitReturn`\>
+[`FormOptions`](FormOptions.md)\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `TComponents`\>
 
 The original options object, normalized to `FormOptions` with its
 inferred form data, validator, and submission types.
@@ -71,13 +79,14 @@ tradeoff enables safer inference and reuse.
 ### looseSchema
 
 ```ts
-looseSchema: FormOptionsLooseSchemaFn;
+looseSchema: FormOptionsLooseSchemaFn<TComponents>;
 ```
 
-Defined in: [utils.public.ts:282](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L282)
+Defined in: [utils.public.ts:331](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L331)
 
 Infers the form data shape from a Standard Schema validator while allowing
-editable defaults to contain `null` or `undefined` values.
+editable defaults to omit properties or contain `null` or `undefined`
+values.
 
 Use this when the schema represents the final valid shape but the UI needs
 intermediate empty states, such as an unselected date. Raw form state
@@ -87,15 +96,14 @@ corresponding `schemaOutputs` entry during submission.
 At runtime, this returns the original options object and does not run the
 schema.
 
-Include the schema in `validators` to provide the type inference and
-perform validation.
+`validators` must contain at least one Standard Schema to provide the type
+inference and perform validation.
 
 #### Remarks
 
-**Important:** Although this returns the original object unchanged at
-runtime, its type is normalized to `FormOptions`. Optional properties such
-as `validators` therefore remain optional even when supplied. This
-tradeoff enables safer inference and reuse.
+**Important:** Although schema-mode inputs require `validators`, this
+returns a type normalized to `FormOptions`, where `validators` is optional.
+This tradeoff enables safer inference and reuse.
 
 #### Example
 
@@ -115,8 +123,8 @@ const bookingOptions = formOptions.looseSchema({
 #### Returns
 
 The original options object, normalized to `FormOptions` with
-nullable and undefined editable states merged into the schema's input
-shape.
+omitted, nullable, and undefined editable states merged into the schema's
+input shape.
 
 #### Type Param
 
@@ -141,10 +149,10 @@ Library-managed. Do not specify explicitly.
 ### strictSchema
 
 ```ts
-strictSchema: FormOptionsStrictSchemaFn;
+strictSchema: FormOptionsStrictSchemaFn<TComponents>;
 ```
 
-Defined in: [utils.public.ts:238](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L238)
+Defined in: [utils.public.ts:287](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L287)
 
 Infers the form data type from a Standard Schema validator and requires
 `defaultValues` to match the schema input.
@@ -156,15 +164,14 @@ from the corresponding `schemaOutputs` entry during submission.
 At runtime, this returns the original options object and does not run the
 schema.
 
-Include the schema in `validators` to provide the type inference and
-perform validation.
+`validators` must contain at least one Standard Schema to provide the type
+inference and perform validation.
 
 #### Remarks
 
-**Important:** Although this returns the original object unchanged at
-runtime, its type is normalized to `FormOptions`. Optional properties such
-as `validators` therefore remain optional even when supplied. This
-tradeoff enables safer inference and reuse.
+**Important:** Although schema-mode inputs require `validators`, this
+returns a type normalized to `FormOptions`, where `validators` is optional.
+This tradeoff enables safer inference and reuse.
 
 #### Example
 

@@ -12,7 +12,7 @@ type ToFieldError<TFieldValidators, TGroupFieldError, TFormErrorTypes> = Fallbac
 | ExtractFormFieldError<TFormErrorTypes>>;
 ```
 
-Defined in: [validation.public.ts:745](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L745)
+Defined in: [validation.public.ts:760](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L760)
 
 ## Type Parameters
 
