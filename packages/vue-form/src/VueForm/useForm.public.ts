@@ -15,14 +15,14 @@ export type UseFormHook<in out TComponents extends AnyVueFormComponentMap> = <
   const TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
 >(
-  options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
+  options: FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>,
 ) => VueFormApi<
   TFormData,
   ToFormErrorTypes<TFormValidators, TSubmitReturn>,
   TComponents
 >
 
-function useFormHook(options: FormOptions<any, any, any>) {
+function useFormHook(options: FormOptions<any, any, any, unknown>) {
   return useInternalForm(options, initializeForm)
 }
 

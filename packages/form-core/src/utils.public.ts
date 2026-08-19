@@ -89,19 +89,21 @@ export type NullableSchemaData<TFormValidators extends FormValidators<any>> =
  * @typeParam TFormValidators - Library-managed. Do not specify explicitly.
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
  * @typeParam TSubmitReturn - Library-managed. Do not specify explicitly.
+ * @typeParam TComponents - Library-managed. Do not specify explicitly.
  */
-export type FormOptionsStrictSchemaFn = <
+export type FormOptionsStrictSchemaFn<TComponents> = <
   const TFormValidators extends FormValidators<any>,
   // Not quite sure why, but using FormValidatorData directly in the generic breaks things.
   // Probably something recursive going on that resolves it to `never`?
   TFormData extends FormValidatorData<TFormValidators>,
   TSubmitReturn,
 >(
-  options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
+  options: FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>,
 ) => FormOptions<
   FormValidatorData<TFormValidators>,
   TFormValidators,
-  TSubmitReturn
+  TSubmitReturn,
+  TComponents
 >
 
 /**
@@ -146,18 +148,20 @@ export type FormOptionsStrictSchemaFn = <
  * @typeParam TFormValidators - Library-managed. Do not specify explicitly.
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
  * @typeParam TSubmitReturn - Library-managed. Do not specify explicitly.
+ * @typeParam TComponents - Library-managed. Do not specify explicitly.
  *
  */
-export type FormOptionsLooseSchemaFn = <
+export type FormOptionsLooseSchemaFn<TComponents> = <
   const TFormValidators extends FormValidators<any>,
   const TFormData extends NullableSchemaData<TFormValidators>,
   TSubmitReturn,
 >(
-  options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
+  options: FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>,
 ) => FormOptions<
   InferUnion<TFormData, FormValidatorData<TFormValidators>>,
   TFormValidators,
-  TSubmitReturn
+  TSubmitReturn,
+  TComponents
 >
 
 /**
@@ -166,8 +170,10 @@ export type FormOptionsLooseSchemaFn = <
  *
  * Use `formOptions` directly instead of naming this interface in application
  * code.
+ *
+ * @typeParam TComponents - Library-managed. Do not specify explicitly.
  */
-export interface FormOptionsApi {
+export interface FormOptionsApi<out TComponents> {
   /**
    * Keeps types inferred from `defaultValues`, validators, and submission
    * callbacks when form options are declared separately.
@@ -193,8 +199,8 @@ export interface FormOptionsApi {
     const TFormValidators extends FormValidators<TFormData>,
     TSubmitReturn,
   >(
-    options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
-  ): FormOptions<TFormData, TFormValidators, TSubmitReturn>
+    options: FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>,
+  ): FormOptions<TFormData, TFormValidators, TSubmitReturn, TComponents>
 
   /**
    * Infers the form data type from a Standard Schema validator and requires
@@ -236,7 +242,7 @@ export interface FormOptionsApi {
    * @typeParam TFormData - Library-managed. Do not specify explicitly.
    * @typeParam TSubmitReturn - Library-managed. Do not specify explicitly.
    */
-  strictSchema: FormOptionsStrictSchemaFn
+  strictSchema: FormOptionsStrictSchemaFn<TComponents>
 
   /**
    * Infers the form data shape from a Standard Schema validator while allowing
@@ -281,7 +287,7 @@ export interface FormOptionsApi {
    * @typeParam TFormData - Library-managed. Do not specify explicitly.
    * @typeParam TSubmitReturn - Library-managed. Do not specify explicitly.
    */
-  looseSchema: FormOptionsLooseSchemaFn
+  looseSchema: FormOptionsLooseSchemaFn<TComponents>
 }
 
 /**
@@ -324,7 +330,7 @@ export interface FormOptionsApi {
  */
 const formOptions = ((opts) => {
   return opts
-}) as FormOptionsApi
+}) as FormOptionsApi<unknown>
 
 formOptions.strictSchema = (opts) => opts
 formOptions.looseSchema = (opts) => opts as never

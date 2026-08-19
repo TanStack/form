@@ -1,4 +1,3 @@
-import type { AppFormOptionsApi } from './appFormOptions.public'
 import type {
   AnyVueFormComponentMap,
   VueFormComponentMap,
@@ -11,6 +10,7 @@ import type {
   DefaultFormGroupOptions,
   DefaultFormOptions,
   FormOptions,
+  FormOptionsApi,
   FormValidators,
   ToFormErrorTypes,
 } from '@tanstack/form-core'
@@ -100,7 +100,7 @@ export type UseAppFormHook<TComponents extends AnyVueFormComponentMap> = <
   const TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
 >(
-  options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
+  options: FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>,
 ) => VueAppFormApi<
   TFormData,
   ToFormErrorTypes<TFormValidators, TSubmitReturn>,
@@ -108,7 +108,7 @@ export type UseAppFormHook<TComponents extends AnyVueFormComponentMap> = <
 >
 
 export interface AppFormHookResult<TComponents extends AnyVueFormComponentMap> {
-  appFormOptions: AppFormOptionsApi<TComponents>
+  appFormOptions: FormOptionsApi<TComponents>
   defineAppFieldGroup: DefineFieldGroupFn<TComponents['fieldComponents']>
   useAppForm: UseAppFormHook<TComponents>
   useFormContext: () => VueAppFormApi<any, any, TComponents>

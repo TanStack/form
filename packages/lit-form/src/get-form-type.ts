@@ -59,7 +59,8 @@ export type LitFormType<TOptions extends AnyFormOptions> =
   TOptions extends FormOptions<
     infer TFormData,
     infer TFormValidators,
-    infer TSubmitReturn
+    infer TSubmitReturn,
+    unknown
   >
     ? TanStackFormController<
         TFormData,

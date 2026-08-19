@@ -2,18 +2,17 @@ import { useInternalForm } from '../PreactForm/PreactFormApi.lib'
 import { defineFieldGroup } from '../FieldGroup/withFields.public'
 import { createAppFormInitializer } from './initializeAppForm.lib'
 import { useFormContext } from './contexts.lib'
-import type { AppFormOptionsApi } from './appFormOptions.public'
 import type {
   AppFormHookResult,
   CreateFormHookOptions,
   UseAppFormHook,
 } from './createFormHookTypes.public'
 import type { FunctionComponent } from 'preact/compat'
-import type { FormOptions } from '@tanstack/form-core'
+import type { FormOptions, FormOptionsApi } from '@tanstack/form-core'
 
 const appFormOptions = ((opts) => {
   return opts
-}) as AppFormOptionsApi<any>
+}) as FormOptionsApi<any>
 
 appFormOptions.strictSchema = (opts) => opts as never
 appFormOptions.looseSchema = (opts) => opts as never
@@ -29,7 +28,7 @@ export function createFormHook<
 }> {
   const initializeAppForm = createAppFormInitializer(createOptions)
 
-  function useExtendedForm(hookOptions: FormOptions<any, any, any>) {
+  function useExtendedForm(hookOptions: FormOptions<any, any, any, unknown>) {
     const form = useInternalForm(hookOptions, initializeAppForm)
     return form
   }

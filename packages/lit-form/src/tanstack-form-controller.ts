@@ -240,7 +240,7 @@ export class TanStackFormController<
    */
   constructor(
     host: ReactiveControllerHost,
-    options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
+    options: FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>,
   ) {
     this.#form = new InternalFormApi(options)
     new TanStackStoreSelector(host, () => this.#form._atoms.resetVersion)
@@ -262,7 +262,9 @@ export class TanStackFormController<
   }
 
   /** Updates reactive form options without replacing the form instance. */
-  update(options: FormOptions<TFormData, TFormValidators, TSubmitReturn>) {
+  update(
+    options: FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>,
+  ) {
     this.#form._update(options)
   }
 

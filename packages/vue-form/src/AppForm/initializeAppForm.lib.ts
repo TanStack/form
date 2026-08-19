@@ -20,7 +20,7 @@ interface AnyCreateFormHookOptions {
 
 export function createAppFormInitializer(
   createOptions: AnyCreateFormHookOptions,
-): (options: FormOptions<any, any, any>) => InternalVueFormApi {
+): (options: FormOptions<any, any, any, unknown>) => InternalVueFormApi {
   const hasDefaultOptions =
     createOptions.defaultFormOptions ||
     createOptions.defaultFieldOptions ||

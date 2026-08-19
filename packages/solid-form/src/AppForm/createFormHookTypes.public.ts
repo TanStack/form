@@ -1,5 +1,4 @@
 import type { Accessor, Component } from 'solid-js'
-import type { AppFormOptionsApi } from './appFormOptions.public'
 import type {
   AnySolidFormComponentMap,
   SolidFormComponentMap,
@@ -11,6 +10,7 @@ import type {
   DefaultFormGroupOptions,
   DefaultFormOptions,
   FormOptions,
+  FormOptionsApi,
   FormValidators,
   ToFormErrorTypes,
 } from '@tanstack/form-core'
@@ -100,7 +100,9 @@ export type UseAppFormHook<TComponents extends AnySolidFormComponentMap> = <
   TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
 >(
-  options: Accessor<FormOptions<TFormData, TFormValidators, TSubmitReturn>>,
+  options: Accessor<
+    FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>
+  >,
 ) => SolidAppFormApi<
   TFormData,
   ToFormErrorTypes<TFormValidators, TSubmitReturn>,
@@ -110,7 +112,7 @@ export type UseAppFormHook<TComponents extends AnySolidFormComponentMap> = <
 export interface AppFormHookResult<
   TComponents extends AnySolidFormComponentMap,
 > {
-  appFormOptions: AppFormOptionsApi<TComponents>
+  appFormOptions: FormOptionsApi<TComponents>
   defineAppFieldGroup: DefineFieldGroupFn<TComponents['fieldComponents']>
   useAppForm: UseAppFormHook<TComponents>
   useFormContext: () => SolidAppFormApi<any, any, TComponents>

@@ -39,7 +39,7 @@ export function injectForm<
   TFormData,
   const TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
->(options: FormOptions<TFormData, TFormValidators, TSubmitReturn>) {
+>(options: FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>) {
   const form = new InternalFormApi<TFormData, TFormValidators, TSubmitReturn>(
     options,
   )

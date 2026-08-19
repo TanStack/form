@@ -154,7 +154,7 @@ type InternalFormOptions<
   TFormData,
   TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
-> = FormOptions<TFormData, TFormValidators, TSubmitReturn> & {
+> = FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown> & {
   formId: string
 }
 
@@ -299,7 +299,7 @@ export class InternalFormApi<
   }
 
   constructor(
-    options: FormOptions<TFormData, TFormValidators, any>,
+    options: FormOptions<TFormData, TFormValidators, any, unknown>,
     defaultOptions?: DefaultOptions,
   ) {
     this._defaultOptions = defaultOptions
@@ -415,7 +415,7 @@ export class InternalFormApi<
     this._notifyFormListener('reset', null)
   }
 
-  _update(options: FormOptions<TFormData, TFormValidators, any>) {
+  _update(options: FormOptions<TFormData, TFormValidators, any, unknown>) {
     const resolvedOptions = resolveDefaultOptions(
       options,
       this._defaultOptions?.form,

@@ -13,14 +13,18 @@ export type CreateFormHook = <
   const TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
 >(
-  options: Accessor<FormOptions<TFormData, TFormValidators, TSubmitReturn>>,
+  options: Accessor<
+    FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>
+  >,
 ) => SolidFormApi<
   TFormData,
   ToFormErrorTypes<TFormValidators, TSubmitReturn>,
   DefaultSolidFormComponentMap
 >
 
-function createFormHook(options: Accessor<FormOptions<any, any, any>>) {
+function createFormHook(
+  options: Accessor<FormOptions<any, any, any, unknown>>,
+) {
   return createInternalForm(options, initializeForm)
 }
 

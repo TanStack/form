@@ -2,11 +2,11 @@ import { describe, expectTypeOf, it } from 'vitest'
 import z from 'zod'
 import { InternalFormApi } from '../src/FormApi/FormApi.lib'
 import {
-  createErrorMap,
   createErrorVisibility,
   createValidator,
   createValidators,
   formOptions,
+  createErrorMap as importCreateErrorMap,
 } from '../src'
 import type {
   AnyFieldApi,
@@ -86,7 +86,8 @@ describe('ErrorVisibility', () => {
     const options: FormOptions<
       TestFormData,
       typeof emptyFormValidators,
-      never
+      never,
+      unknown
     > = {
       defaultValues: { name: '' },
       errorVisibility: ({ state, fieldState }) => {
@@ -177,10 +178,11 @@ describe('ErrorVisibility', () => {
   })
 
   it('rejects removed string presets', () => {
-    const formOptions: FormOptions<
+    const formOpts: FormOptions<
       TestFormData,
       typeof emptyFormValidators,
-      never
+      never,
+      unknown
     > = {
       defaultValues: { name: '' },
       // @ts-expect-error String visibility presets were replaced by callbacks.
@@ -200,7 +202,7 @@ describe('ErrorVisibility', () => {
       errorVisibility: 'always',
     }
 
-    void formOptions
+    void formOpts
     void fieldOptions
   })
 })
@@ -214,18 +216,18 @@ describe('createErrorMap', () => {
       }
     }
 
-    const errors = createErrorMap<ErrorMapFormData>()
+    const errors = importCreateErrorMap<ErrorMapFormData>()
     const initial: ValidationErrorMap<ErrorMapFormData> = {
       form: 'Initial form error',
       fields: { name: 'Initial name error' },
     }
 
     expectTypeOf(errors).toEqualTypeOf<ValidationErrorMap<ErrorMapFormData>>()
-    expectTypeOf(createErrorMap<ErrorMapFormData>(initial)).toEqualTypeOf<
+    expectTypeOf(importCreateErrorMap<ErrorMapFormData>(initial)).toEqualTypeOf<
       ValidationErrorMap<ErrorMapFormData>
     >()
     expectTypeOf(
-      createErrorMap<ErrorMapFormData>({ form: 'Partial form error' }),
+      importCreateErrorMap<ErrorMapFormData>({ form: 'Partial form error' }),
     ).toEqualTypeOf<ValidationErrorMap<ErrorMapFormData>>()
 
     errors.form = 'Form error'
@@ -623,7 +625,6 @@ describe('FormErrors', () => {
 
   it('should normalize async errors', () => {
     const validators = defineFormValidators([
-      // eslint-disable-next-line @typescript-eslint/require-await
       { run: async () => ['First error', 'Second error'], triggers: [] },
     ])
 
@@ -1214,12 +1215,6 @@ describe('FieldErrors', () => {
 })
 
 describe('validator type transforms', () => {
-  function defineFormValidators<
-    const TFormValidators extends FormValidators<any>,
-  >(validators: TFormValidators): TFormValidators {
-    return validators
-  }
-
   it('it should transform a schema', () => {
     const vs = defineFormValidators([
       {

@@ -316,7 +316,12 @@ describe('server validation types', () => {
         const TFormValidators extends FormValidators<TFormData>,
         TSubmitReturn,
       >(
-        _options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
+        _options: FormOptions<
+          TFormData,
+          TFormValidators,
+          TSubmitReturn,
+          unknown
+        >,
       ) => {
         return (values: TFormData) => Promise.resolve(values)
       },
@@ -346,7 +351,12 @@ describe('server validation types', () => {
         const TFormValidators extends FormValidators<TFormData>,
         TSubmitReturn,
       >(
-        _options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
+        _options: FormOptions<
+          TFormData,
+          TFormValidators,
+          TSubmitReturn,
+          unknown
+        >,
         _pluginOptions?: { field: keyof TFormData },
       ) => {
         return Object.assign((values: TFormData) => Promise.resolve(values), {

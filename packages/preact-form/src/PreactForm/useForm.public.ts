@@ -16,14 +16,14 @@ export type UseFormHook<in out TComponents extends AnyPreactFormComponentMap> =
     const TFormValidators extends FormValidators<TFormData>,
     TSubmitReturn,
   >(
-    options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
+    options: FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>,
   ) => PreactFormApi<
     TFormData,
     ToFormErrorTypes<TFormValidators, TSubmitReturn>,
     TComponents
   >
 
-function useFormHook(options: FormOptions<any, any, any>) {
+function useFormHook(options: FormOptions<any, any, any, unknown>) {
   const form = useInternalForm(options, initializeForm)
   return form
 }

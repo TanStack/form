@@ -56,7 +56,7 @@ interface DefaultListenersMergeOptions {
  * ```
  */
 export type DefaultFormOptions = Pick<
-  FormOptions<unknown, FormValidators<unknown>, unknown>,
+  FormOptions<unknown, FormValidators<unknown>, unknown, unknown>,
   'errorVisibility' | 'listeners' | 'onSubmitInvalid'
 > &
   DefaultListenersMergeOptions

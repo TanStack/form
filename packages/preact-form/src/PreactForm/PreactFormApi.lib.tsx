@@ -14,7 +14,7 @@ export interface InternalPreactFormApi
   extends AnyInternalFormApi, PreactTanStackFormComponents<any, any, any> {}
 
 export function initializeForm(
-  options: FormOptions<any, any, any>,
+  options: FormOptions<any, any, any, unknown>,
 ): InternalPreactFormApi {
   const form = new InternalFormApi(options)
 
@@ -24,8 +24,10 @@ export function initializeForm(
 }
 
 export function useInternalForm(
-  options: FormOptions<any, any, any>,
-  initializeFn: (options: FormOptions<any, any, any>) => InternalPreactFormApi,
+  options: FormOptions<any, any, any, unknown>,
+  initializeFn: (
+    options: FormOptions<any, any, any, unknown>,
+  ) => InternalPreactFormApi,
 ) {
   const preactFormId = usePreactId()
   const resolvedOptions =

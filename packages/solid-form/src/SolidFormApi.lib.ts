@@ -144,14 +144,16 @@ function attachSolidFormGroupComponents(
 }
 
 export function initializeForm(
-  options: FormOptions<any, any, any>,
+  options: FormOptions<any, any, any, unknown>,
 ): InternalSolidFormApi {
   return attachSolidFormComponents(new InternalFormApi(options), null)
 }
 
 export function createInternalForm(
-  options: () => FormOptions<any, any, any>,
-  initializeFn: (options: FormOptions<any, any, any>) => InternalSolidFormApi,
+  options: () => FormOptions<any, any, any, unknown>,
+  initializeFn: (
+    options: FormOptions<any, any, any, unknown>,
+  ) => InternalSolidFormApi,
 ) {
   const solidFormId = createUniqueId()
   const resolveOptions = () => {

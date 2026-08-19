@@ -1,4 +1,3 @@
-import type { AppFormOptionsApi } from './appFormOptions.public'
 import type {
   AnyPreactFormComponentMap,
   PreactFormComponentMap,
@@ -11,6 +10,7 @@ import type {
   DefaultFormGroupOptions,
   DefaultFormOptions,
   FormOptions,
+  FormOptionsApi,
   FormValidators,
   ToFormErrorTypes,
 } from '@tanstack/form-core'
@@ -102,7 +102,7 @@ export type UseAppFormHook<
   TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
 >(
-  options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
+  options: FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>,
 ) => PreactAppFormApi<
   TFormData,
   ToFormErrorTypes<TFormValidators, TSubmitReturn>,
@@ -142,7 +142,7 @@ export interface AppFormHookResult<
    * }
    * ```
    */
-  appFormOptions: AppFormOptionsApi<TComponents>
+  appFormOptions: FormOptionsApi<TComponents>
   /**
    * Defines a reusable field group whose fields expose the field components
    * registered with `createFormHook`.

@@ -4,7 +4,6 @@ import type {
   FormValidators,
   ToFormErrorTypes,
 } from '@tanstack/form-core'
-import type { AppFormOptions } from '../AppForm/appFormOptions.public'
 import type {
   AnyReactFormComponentMap,
   DefaultReactFormComponentMap,
@@ -53,11 +52,8 @@ type ReactFormTypeErrorTypes<
  *
  * @typeParam TOptions - The reusable form or app-form options from which the API derives its form data, error, and registered-component types.
  */
-export type ReactFormType<
-  TOptions extends
-    AnyFormOptions | AppFormOptions<any, any, any, AnyReactFormComponentMap>,
-> =
-  TOptions extends AppFormOptions<
+export type ReactFormType<TOptions extends AnyFormOptions> =
+  TOptions extends FormOptions<
     infer TFormData,
     infer TFormValidators,
     infer TSubmitReturn,
@@ -66,16 +62,8 @@ export type ReactFormType<
     ? ReactFormApi<
         TFormData,
         ReactFormTypeErrorTypes<TFormValidators, TSubmitReturn>,
-        TComponents
+        TComponents extends AnyReactFormComponentMap
+          ? TComponents
+          : DefaultReactFormComponentMap
       >
-    : TOptions extends FormOptions<
-          infer TFormData,
-          infer TFormValidators,
-          infer TSubmitReturn
-        >
-      ? ReactFormApi<
-          TFormData,
-          ReactFormTypeErrorTypes<TFormValidators, TSubmitReturn>,
-          DefaultReactFormComponentMap
-        >
-      : never
+    : never

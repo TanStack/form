@@ -9,14 +9,16 @@ export interface InternalVueFormApi
   extends AnyInternalFormApi, VueTanStackFormComponents<any, any, any> {}
 
 export function initializeForm(
-  options: FormOptions<any, any, any>,
+  options: FormOptions<any, any, any, unknown>,
 ): InternalVueFormApi {
   return attachVueFormComponents(new InternalFormApi(options), null)
 }
 
 export function useInternalForm(
-  options: FormOptions<any, any, any>,
-  initializeFn: (options: FormOptions<any, any, any>) => InternalVueFormApi,
+  options: FormOptions<any, any, any, unknown>,
+  initializeFn: (
+    options: FormOptions<any, any, any, unknown>,
+  ) => InternalVueFormApi,
 ) {
   const vueFormId = useId()
   const resolveOptions = () =>

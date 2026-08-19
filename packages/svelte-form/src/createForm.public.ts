@@ -12,14 +12,19 @@ export type CreateForm = <
   const TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
 >(
-  options: () => FormOptions<TFormData, TFormValidators, TSubmitReturn>,
+  options: () => FormOptions<
+    TFormData,
+    TFormValidators,
+    TSubmitReturn,
+    unknown
+  >,
 ) => SvelteFormApi<
   TFormData,
   ToFormErrorTypes<TFormValidators, TSubmitReturn>,
   DefaultSvelteFormComponentMap
 >
 
-function createFormImpl(options: () => FormOptions<any, any, any>) {
+function createFormImpl(options: () => FormOptions<any, any, any, unknown>) {
   return createInternalForm(options, initializeForm)
 }
 

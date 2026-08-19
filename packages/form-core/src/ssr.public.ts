@@ -82,7 +82,7 @@ type ServerValidateFrameworkCreateServerValidate = <
   const TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
 >(
-  formOptions: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
+  formOptions: FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>,
   pluginOptions?: any,
 ) => unknown
 
