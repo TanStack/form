@@ -81,6 +81,84 @@ type TestFieldErrors<
   >
 >
 
+describe('formOptions', () => {
+  it('infers form data from defaultValues', () => {
+    const options = formOptions({
+      defaultValues: {
+        name: '',
+        age: 0,
+      },
+      validators: [],
+    })
+
+    expectTypeOf(options.defaultValues).toEqualTypeOf<{
+      name: string
+      age: number
+    }>()
+  })
+
+  it('infers form data from a strict schema', () => {
+    const options = formOptions.strictSchema({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          run: z.object({ name: z.string() }),
+          triggers: ['change'],
+        },
+      ],
+    })
+
+    expectTypeOf(options.defaultValues).toEqualTypeOf<{ name: string }>()
+  })
+
+  it('rejects strict schema options without a schema', () => {
+    // @ts-expect-error Schema modes require a Standard Schema validator.
+    const options = formOptions.strictSchema({
+      defaultValues: { name: '' },
+    })
+
+    void options
+  })
+
+  it('allows loose schema defaults to omit properties', () => {
+    const options = formOptions.looseSchema({
+      defaultValues: {
+        address: {
+          city: null,
+        },
+      },
+      validators: [
+        {
+          run: z.object({
+            name: z.string(),
+            address: z.object({
+              city: z.string(),
+              postcode: z.number(),
+            }),
+          }),
+          triggers: ['change'],
+        },
+      ],
+    })
+
+    expectTypeOf(options.defaultValues).toEqualTypeOf<{
+      name: string | undefined
+      address: {
+        city: string | null
+        postcode: number | undefined
+      }
+    }>()
+  })
+
+  it('rejects loose schema options without a schema', () => {
+    // @ts-expect-error Schema modes require a Standard Schema validator.
+    const options = formOptions.looseSchema({
+      defaultValues: { name: '' },
+    })
+
+    void options
+  })
+})
 describe('ErrorVisibility', () => {
   it('types callback scoped and pre-visibility field state', () => {
     const options: FormOptions<
