@@ -171,6 +171,29 @@ export interface FormSubmitContext<
 }
 
 /**
+ * Handles a form submission after submission validation succeeds.
+ *
+ * A returned promise is awaited before submission finishes. Return an error
+ * created by the submission context's `createValidationError` or `parseIssues`
+ * helper to mark the submission as invalid.
+ *
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ * @typeParam TFormValidators - Library-managed. Do not specify explicitly.
+ * @typeParam TSubmitReturn - Library-managed. Do not specify explicitly.
+ */
+export type FormSubmitFn<
+  in out TFormData,
+  in out TFormValidators extends FormValidators<TFormData>,
+  in out TSubmitReturn,
+> = (
+  context: FormSubmitContext<
+    TFormData,
+    ToFormSchemaOutputs<TFormValidators>,
+    ToFormErrorTypes<TFormValidators, unknown>
+  >,
+) => TSubmitReturn
+
+/**
  * Context passed to `onSubmitInvalid` when a submission fails.
  *
  * @example
@@ -352,13 +375,7 @@ export interface FormOptions<
    * }
    * ```
    */
-  onSubmit?: (
-    context: FormSubmitContext<
-      TFormData,
-      ToFormSchemaOutputs<TFormValidators>,
-      ToFormErrorTypes<TFormValidators, unknown>
-    >,
-  ) => TSubmitReturn
+  onSubmit?: FormSubmitFn<TFormData, TFormValidators, TSubmitReturn>
   /**
    * Called after an invalid submission is detected.
    *

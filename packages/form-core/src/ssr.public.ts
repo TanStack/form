@@ -29,14 +29,14 @@ export function serverValidateHelper<
   }
 }
 
-interface ServerStateValidationResult<TResult> {
+interface ServerStateValidationResult<out TResult> {
   validatorIndex: number
   result: TResult
   schemaResult: unknown | null
   hasSchemaResult?: boolean
 }
 
-interface ServerFormStateByResult<in out TFormData, TResult> {
+interface ServerFormStateByResult<in out TFormData, out TResult> {
   values: TFormData | undefined
   validationResults: Array<ServerStateValidationResult<TResult>>
   submissionAttempts: number
