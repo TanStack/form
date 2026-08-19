@@ -14,7 +14,7 @@ export type Editable<T> = T extends BuiltInType
       : T | null | undefined
 
 type EditableObject<in out T extends object> = {
-  [K in keyof T]: Editable<T[K]>
+  [K in keyof T]?: Editable<T[K]>
 }
 
 export type InferUnion<TBase, TIncoming> = TBase extends BuiltInType
@@ -106,7 +106,8 @@ export type FormOptionsStrictSchemaFn = <
 
 /**
  * Infers the form data shape from a Standard Schema validator while allowing
- * editable defaults to contain `null` or `undefined` values.
+ * editable defaults to omit properties or contain `null` or `undefined`
+ * values.
  *
  * Use this when the schema represents the final valid shape but the UI needs
  * intermediate empty states, such as an unselected date. Raw form state
@@ -140,8 +141,8 @@ export type FormOptionsStrictSchemaFn = <
  * ```
  *
  * @returns The original options object, normalized to `FormOptions` with
- * nullable and undefined editable states merged into the schema's input
- * shape.
+ * omitted, nullable, and undefined editable states merged into the schema's
+ * input shape.
  * @typeParam TFormValidators - Library-managed. Do not specify explicitly.
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
  * @typeParam TSubmitReturn - Library-managed. Do not specify explicitly.
@@ -239,7 +240,8 @@ export interface FormOptionsApi {
 
   /**
    * Infers the form data shape from a Standard Schema validator while allowing
-   * editable defaults to contain `null` or `undefined` values.
+   * editable defaults to omit properties or contain `null` or `undefined`
+   * values.
    *
    * Use this when the schema represents the final valid shape but the UI needs
    * intermediate empty states, such as an unselected date. Raw form state
@@ -273,8 +275,8 @@ export interface FormOptionsApi {
    * ```
    *
    * @returns The original options object, normalized to `FormOptions` with
-   * nullable and undefined editable states merged into the schema's input
-   * shape.
+   * omitted, nullable, and undefined editable states merged into the schema's
+   * input shape.
    * @typeParam TFormValidators - Library-managed. Do not specify explicitly.
    * @typeParam TFormData - Library-managed. Do not specify explicitly.
    * @typeParam TSubmitReturn - Library-managed. Do not specify explicitly.
@@ -289,8 +291,8 @@ export interface FormOptionsApi {
  * The regular helper takes `defaultValues` at face value as the form data
  * shape. For schema-driven inference, use `formOptions.strictSchema` when the
  * schema defines an input-to-output boundary, or `formOptions.looseSchema` when
- * the schema defines the shape but editable defaults need `null` or
- * `undefined` values.
+ * the schema defines the shape but editable defaults may omit properties or
+ * need `null` or `undefined` values.
  *
  * At runtime, this is an identity helper: it returns the original options
  * object and does not create a form or run validation.
