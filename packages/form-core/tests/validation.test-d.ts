@@ -111,15 +111,6 @@ describe('formOptions', () => {
     expectTypeOf(options.defaultValues).toEqualTypeOf<{ name: string }>()
   })
 
-  it('rejects strict schema options without a schema', () => {
-    // @ts-expect-error Schema modes require a Standard Schema validator.
-    const options = formOptions.strictSchema({
-      defaultValues: { name: '' },
-    })
-
-    void options
-  })
-
   it('allows loose schema defaults to omit properties', () => {
     const options = formOptions.looseSchema({
       defaultValues: {
@@ -150,8 +141,7 @@ describe('formOptions', () => {
     }>()
   })
 
-  it('rejects loose schema options without a schema', () => {
-    // @ts-expect-error Schema modes require a Standard Schema validator.
+  it('accepts loose schema options without a schema', () => {
     const options = formOptions.looseSchema({
       defaultValues: { name: '' },
     })
@@ -159,6 +149,7 @@ describe('formOptions', () => {
     void options
   })
 })
+
 describe('ErrorVisibility', () => {
   it('types callback scoped and pre-visibility field state', () => {
     const options: FormOptions<
