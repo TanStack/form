@@ -2232,6 +2232,7 @@ export class FormApi<
           } catch (e: unknown) {
             rawError = e as ValidationError
           }
+          if (controller.signal.aborted) return resolve(undefined)
           const { formError, fieldErrors: fieldErrorsFromNormalizeError } =
             normalizeError<TFormData>(rawError)
 
