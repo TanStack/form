@@ -12,3 +12,5 @@
 Refactor: Form option types are now no longer adapter-specific
 
 Fix: `formOptions.looseSchema`/`strictSchema` now error on missing schema
+
+Fix: `formOptions.looseSchema` now accepts optional `defaultValues` props
