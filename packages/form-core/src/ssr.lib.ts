@@ -118,7 +118,7 @@ export async function validateServerValues<
   const TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
 >(
-  options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
+  options: FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>,
   values: TFormData,
 ): Promise<ServerValidateResult<TFormData, TFormValidators>> {
   const pipeline = options.validators

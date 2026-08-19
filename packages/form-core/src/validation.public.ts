@@ -94,6 +94,26 @@ type InferFormDataFromValidator<TValidator extends ValidatorRun> =
           ? TGroupValue
           : any
 
+/**
+ * The validator produced by applying a run function or Standard Schema to a
+ * reusable `createValidator` configuration.
+ *
+ * This type is inferred from `createValidator`; application code normally
+ * does not need to name it directly.
+ *
+ * @typeParam TOptions - Library-managed. Do not specify explicitly.
+ * @typeParam TRun - Library-managed. Do not specify explicitly.
+ */
+export type CreatedValidator<
+  TOptions extends ValidatorOptions<any, any>,
+  TRun extends ValidatorRun,
+> = ValidatorWithRun<
+  InferFormDataFromValidator<TRun>,
+  InferFormDataFromValidator<TRun>,
+  TOptions,
+  TRun
+>
+
 type ValidatorRunsFromOptions<
   in out TOptions extends readonly [
     ValidatorOptions<any, any, any>,
@@ -126,12 +146,7 @@ export function createValidator<
   options: TOptions,
 ): <const TValidator extends ValidatorRun>(
   run: TValidator,
-) => ValidatorWithRun<
-  InferFormDataFromValidator<TValidator>,
-  InferFormDataFromValidator<TValidator>,
-  TOptions,
-  TValidator
-> {
+) => CreatedValidator<TOptions, TValidator> {
   return (run: ValidatorRun) => ({ ...options, run }) as never
 }
 

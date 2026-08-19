@@ -24,7 +24,7 @@ type NextCreateServerValidate = <
   const TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
 >(
-  options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
+  options: FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>,
 ) => NextServerValidate<TFormData, TFormValidators>
 
 function decodeFormData<TFormData>(
@@ -44,7 +44,12 @@ export function next(
       const TFormValidators extends FormValidators<TFormData>,
       TSubmitReturn,
     >(
-      formOptions: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
+      formOptions: FormOptions<
+        TFormData,
+        TFormValidators,
+        TSubmitReturn,
+        unknown
+      >,
     ) => {
       return async (formData) => {
         const values = decodeFormData<TFormData>(formData, options.info)

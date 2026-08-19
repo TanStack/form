@@ -1,4 +1,3 @@
-import type { AppFormOptionsApi } from './appFormOptions.public'
 import type {
   AnySvelteFormComponentMap,
   SvelteFormComponentMap,
@@ -11,6 +10,7 @@ import type {
   DefaultFormGroupOptions,
   DefaultFormOptions,
   FormOptions,
+  FormOptionsApi,
   FormValidators,
   ToFormErrorTypes,
 } from '@tanstack/form-core'
@@ -100,7 +100,12 @@ export type UseAppFormHook<TComponents extends AnySvelteFormComponentMap> = <
   TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
 >(
-  options: () => FormOptions<TFormData, TFormValidators, TSubmitReturn>,
+  options: () => FormOptions<
+    TFormData,
+    TFormValidators,
+    TSubmitReturn,
+    unknown
+  >,
 ) => SvelteAppFormApi<
   TFormData,
   ToFormErrorTypes<TFormValidators, TSubmitReturn>,
@@ -110,7 +115,7 @@ export type UseAppFormHook<TComponents extends AnySvelteFormComponentMap> = <
 export interface AppFormHookResult<
   TComponents extends AnySvelteFormComponentMap,
 > {
-  appFormOptions: AppFormOptionsApi<TComponents>
+  appFormOptions: FormOptionsApi<TComponents>
   defineAppFieldGroup: DefineFieldGroupFn<TComponents['fieldComponents']>
   useAppForm: UseAppFormHook<TComponents>
   useFormContext: () => SvelteAppFormApi<any, any, TComponents>

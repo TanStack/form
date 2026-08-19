@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import z from 'zod'
 import {
   createErrorMap,
   createErrorVisibility,
@@ -10,10 +11,20 @@ import {
 describe('validation public helpers', () => {
   it('returns form options unchanged at runtime', () => {
     const options = { defaultValues: { name: 'Ada' } }
+    const triggers: Array<'change'> = ['change']
+    const schemaOptions = {
+      ...options,
+      validators: [
+        {
+          run: z.object({ name: z.string() }),
+          triggers,
+        },
+      ],
+    }
 
     expect(formOptions(options)).toBe(options)
-    expect(formOptions.strictSchema(options)).toBe(options)
-    expect(formOptions.looseSchema(options)).toBe(options)
+    expect(formOptions.strictSchema(schemaOptions)).toBe(schemaOptions)
+    expect(formOptions.looseSchema(schemaOptions)).toBe(schemaOptions)
   })
 
   it('creates validators by pairing options with run functions', () => {

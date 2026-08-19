@@ -13,7 +13,7 @@ export interface InternalReactFormApi
   extends AnyInternalFormApi, ReactTanStackFormComponents<any, any, any> {}
 
 export function initializeForm(
-  options: FormOptions<any, any, any>,
+  options: FormOptions<any, any, any, unknown>,
 ): InternalReactFormApi {
   const form = new InternalFormApi(options)
 
@@ -23,8 +23,10 @@ export function initializeForm(
 }
 
 export function useInternalForm(
-  options: FormOptions<any, any, any>,
-  initializeFn: (options: FormOptions<any, any, any>) => InternalReactFormApi,
+  options: FormOptions<any, any, any, unknown>,
+  initializeFn: (
+    options: FormOptions<any, any, any, unknown>,
+  ) => InternalReactFormApi,
 ) {
   const reactFormId = useReactId()
   const resolvedOptions =

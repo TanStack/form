@@ -80,7 +80,7 @@ export type StartCreateServerValidate<
   const TFormValidators extends FormValidators<TFormData>,
   TSubmitReturn,
 >(
-  formOptions: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
+  formOptions: FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>,
   options?: StartCreateServerValidateOptions<TFormData>,
 ) => StartServerValidateAction<
   TFormData,
@@ -161,7 +161,12 @@ export function start<TOnInvalidReturn = never, TOnValidReturn = never>(
     const TFormValidators extends FormValidators<TFormData>,
     TSubmitReturn,
   >(
-    formOptions: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
+    formOptions: FormOptions<
+      TFormData,
+      TFormValidators,
+      TSubmitReturn,
+      unknown
+    >,
     formValidateOptions?: StartCreateServerValidateOptions<TFormData>,
   ): StartServerValidateAction<
     TFormData,

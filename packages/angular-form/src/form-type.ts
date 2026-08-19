@@ -58,7 +58,8 @@ export type AngularFormType<TOptions extends AnyFormOptions> =
   TOptions extends FormOptions<
     infer TFormData,
     infer TFormValidators,
-    infer TSubmitReturn
+    infer TSubmitReturn,
+    unknown
   >
     ? InternalFormApi<
         TFormData,

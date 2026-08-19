@@ -2,11 +2,11 @@ import { describe, expectTypeOf, it } from 'vitest'
 import z from 'zod'
 import { InternalFormApi } from '../src/FormApi/FormApi.lib'
 import {
-  createErrorMap,
   createErrorVisibility,
   createValidator,
   createValidators,
   formOptions,
+  createErrorMap as importCreateErrorMap,
 } from '../src'
 import type {
   AnyFieldApi,
@@ -81,12 +81,91 @@ type TestFieldErrors<
   >
 >
 
+describe('formOptions', () => {
+  it('infers form data from defaultValues', () => {
+    const options = formOptions({
+      defaultValues: {
+        name: '',
+        age: 0,
+      },
+      validators: [],
+    })
+
+    expectTypeOf(options.defaultValues).toEqualTypeOf<{
+      name: string
+      age: number
+    }>()
+  })
+
+  it('infers form data from a strict schema', () => {
+    const options = formOptions.strictSchema({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          run: z.object({ name: z.string() }),
+          triggers: ['change'],
+        },
+      ],
+    })
+
+    expectTypeOf(options.defaultValues).toEqualTypeOf<{ name: string }>()
+  })
+
+  it('rejects strict schema options without a schema', () => {
+    // @ts-expect-error Schema modes require a Standard Schema validator.
+    const options = formOptions.strictSchema({
+      defaultValues: { name: '' },
+    })
+
+    void options
+  })
+
+  it('allows loose schema defaults to omit properties', () => {
+    const options = formOptions.looseSchema({
+      defaultValues: {
+        address: {
+          city: null,
+        },
+      },
+      validators: [
+        {
+          run: z.object({
+            name: z.string(),
+            address: z.object({
+              city: z.string(),
+              postcode: z.number(),
+            }),
+          }),
+          triggers: ['change'],
+        },
+      ],
+    })
+
+    expectTypeOf(options.defaultValues).toEqualTypeOf<{
+      name: string | undefined
+      address: {
+        city: string | null
+        postcode: number | undefined
+      }
+    }>()
+  })
+
+  it('rejects loose schema options without a schema', () => {
+    // @ts-expect-error Schema modes require a Standard Schema validator.
+    const options = formOptions.looseSchema({
+      defaultValues: { name: '' },
+    })
+
+    void options
+  })
+})
 describe('ErrorVisibility', () => {
   it('types callback scoped and pre-visibility field state', () => {
     const options: FormOptions<
       TestFormData,
       typeof emptyFormValidators,
-      never
+      never,
+      unknown
     > = {
       defaultValues: { name: '' },
       errorVisibility: ({ state, fieldState }) => {
@@ -177,10 +256,11 @@ describe('ErrorVisibility', () => {
   })
 
   it('rejects removed string presets', () => {
-    const formOptions: FormOptions<
+    const formOpts: FormOptions<
       TestFormData,
       typeof emptyFormValidators,
-      never
+      never,
+      unknown
     > = {
       defaultValues: { name: '' },
       // @ts-expect-error String visibility presets were replaced by callbacks.
@@ -200,7 +280,7 @@ describe('ErrorVisibility', () => {
       errorVisibility: 'always',
     }
 
-    void formOptions
+    void formOpts
     void fieldOptions
   })
 })
@@ -214,18 +294,18 @@ describe('createErrorMap', () => {
       }
     }
 
-    const errors = createErrorMap<ErrorMapFormData>()
+    const errors = importCreateErrorMap<ErrorMapFormData>()
     const initial: ValidationErrorMap<ErrorMapFormData> = {
       form: 'Initial form error',
       fields: { name: 'Initial name error' },
     }
 
     expectTypeOf(errors).toEqualTypeOf<ValidationErrorMap<ErrorMapFormData>>()
-    expectTypeOf(createErrorMap<ErrorMapFormData>(initial)).toEqualTypeOf<
+    expectTypeOf(importCreateErrorMap<ErrorMapFormData>(initial)).toEqualTypeOf<
       ValidationErrorMap<ErrorMapFormData>
     >()
     expectTypeOf(
-      createErrorMap<ErrorMapFormData>({ form: 'Partial form error' }),
+      importCreateErrorMap<ErrorMapFormData>({ form: 'Partial form error' }),
     ).toEqualTypeOf<ValidationErrorMap<ErrorMapFormData>>()
 
     errors.form = 'Form error'
@@ -623,7 +703,6 @@ describe('FormErrors', () => {
 
   it('should normalize async errors', () => {
     const validators = defineFormValidators([
-      // eslint-disable-next-line @typescript-eslint/require-await
       { run: async () => ['First error', 'Second error'], triggers: [] },
     ])
 
@@ -1214,12 +1293,6 @@ describe('FieldErrors', () => {
 })
 
 describe('validator type transforms', () => {
-  function defineFormValidators<
-    const TFormValidators extends FormValidators<any>,
-  >(validators: TFormValidators): TFormValidators {
-    return validators
-  }
-
   it('it should transform a schema', () => {
     const vs = defineFormValidators([
       {

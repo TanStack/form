@@ -1,4 +1,5 @@
 import type { FormOptions } from './FormApi/FormApi.public'
+import type { StandardSchemaV1 } from './standardSchema.public'
 import type { FormValidators } from './validation.public'
 
 type Primitive = string | number | boolean | bigint | symbol | null | undefined
@@ -14,7 +15,7 @@ export type Editable<T> = T extends BuiltInType
       : T | null | undefined
 
 type EditableObject<in out T extends object> = {
-  [K in keyof T]: Editable<T[K]>
+  [K in keyof T]?: Editable<T[K]>
 }
 
 export type InferUnion<TBase, TIncoming> = TBase extends BuiltInType
@@ -50,6 +51,40 @@ export type FormValidatorData<TFormValidators extends FormValidators<any>> =
 export type NullableSchemaData<TFormValidators extends FormValidators<any>> =
   Editable<FormValidatorData<TFormValidators>>
 
+type FormValidatorsWithStandardSchema<
+  TFormValidators extends FormValidators<any>,
+> =
+  Extract<
+    TFormValidators[number],
+    { readonly run: StandardSchemaV1<any, any> }
+  > extends never
+    ? never
+    : TFormValidators
+
+/**
+ * Form options accepted by a schema mode when `validators` is statically known
+ * to contain at least one Standard Schema.
+ *
+ * Empty and callback-only validator collections are rejected because they
+ * cannot provide schema-owned form data inference. Application code normally
+ * receives this type through `formOptions.strictSchema`,
+ * `formOptions.looseSchema`, or an equivalent `appFormOptions` method rather
+ * than naming it directly.
+ *
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ * @typeParam TFormValidators - Library-managed. Do not specify explicitly.
+ * @typeParam TSubmitReturn - Library-managed. Do not specify explicitly.
+ * @typeParam TComponents - Library-managed. Do not specify explicitly.
+ */
+export type StandardSchemaFormOptions<
+  TFormData,
+  TFormValidators extends FormValidators<TFormData>,
+  TSubmitReturn,
+  TComponents,
+> = FormOptions<TFormData, TFormValidators, TSubmitReturn, TComponents> & {
+  validators: FormValidatorsWithStandardSchema<TFormValidators>
+}
+
 /**
  * Infers the form data type from a Standard Schema validator and requires
  * `defaultValues` to match the schema input.
@@ -61,14 +96,13 @@ export type NullableSchemaData<TFormValidators extends FormValidators<any>> =
  * At runtime, this returns the original options object and does not run the
  * schema.
  *
- * Include the schema in `validators` to provide the type inference and
- * perform validation.
+ * `validators` must contain at least one Standard Schema to provide the type
+ * inference and perform validation.
  *
  * @remarks
- * **Important:** Although this returns the original object unchanged at
- * runtime, its type is normalized to `FormOptions`. Optional properties such
- * as `validators` therefore remain optional even when supplied. This
- * tradeoff enables safer inference and reuse.
+ * **Important:** Although schema-mode inputs require `validators`, this
+ * returns a type normalized to `FormOptions`, where `validators` is optional.
+ * This tradeoff enables safer inference and reuse.
  *
  * @example
  * ```ts
@@ -89,24 +123,32 @@ export type NullableSchemaData<TFormValidators extends FormValidators<any>> =
  * @typeParam TFormValidators - Library-managed. Do not specify explicitly.
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
  * @typeParam TSubmitReturn - Library-managed. Do not specify explicitly.
+ * @typeParam TComponents - Library-managed. Do not specify explicitly.
  */
-export type FormOptionsStrictSchemaFn = <
+export type FormOptionsStrictSchemaFn<TComponents> = <
   const TFormValidators extends FormValidators<any>,
   // Not quite sure why, but using FormValidatorData directly in the generic breaks things.
   // Probably something recursive going on that resolves it to `never`?
   TFormData extends FormValidatorData<TFormValidators>,
   TSubmitReturn,
 >(
-  options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
+  options: StandardSchemaFormOptions<
+    TFormData,
+    TFormValidators,
+    TSubmitReturn,
+    unknown
+  >,
 ) => FormOptions<
   FormValidatorData<TFormValidators>,
   TFormValidators,
-  TSubmitReturn
+  TSubmitReturn,
+  TComponents
 >
 
 /**
  * Infers the form data shape from a Standard Schema validator while allowing
- * editable defaults to contain `null` or `undefined` values.
+ * editable defaults to omit properties or contain `null` or `undefined`
+ * values.
  *
  * Use this when the schema represents the final valid shape but the UI needs
  * intermediate empty states, such as an unselected date. Raw form state
@@ -116,14 +158,13 @@ export type FormOptionsStrictSchemaFn = <
  * At runtime, this returns the original options object and does not run the
  * schema.
  *
- * Include the schema in `validators` to provide the type inference and
- * perform validation.
+ * `validators` must contain at least one Standard Schema to provide the type
+ * inference and perform validation.
  *
  * @remarks
- * **Important:** Although this returns the original object unchanged at
- * runtime, its type is normalized to `FormOptions`. Optional properties such
- * as `validators` therefore remain optional even when supplied. This
- * tradeoff enables safer inference and reuse.
+ * **Important:** Although schema-mode inputs require `validators`, this
+ * returns a type normalized to `FormOptions`, where `validators` is optional.
+ * This tradeoff enables safer inference and reuse.
  *
  * @example
  * ```ts
@@ -140,23 +181,30 @@ export type FormOptionsStrictSchemaFn = <
  * ```
  *
  * @returns The original options object, normalized to `FormOptions` with
- * nullable and undefined editable states merged into the schema's input
- * shape.
+ * omitted, nullable, and undefined editable states merged into the schema's
+ * input shape.
  * @typeParam TFormValidators - Library-managed. Do not specify explicitly.
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
  * @typeParam TSubmitReturn - Library-managed. Do not specify explicitly.
+ * @typeParam TComponents - Library-managed. Do not specify explicitly.
  *
  */
-export type FormOptionsLooseSchemaFn = <
+export type FormOptionsLooseSchemaFn<TComponents> = <
   const TFormValidators extends FormValidators<any>,
   const TFormData extends NullableSchemaData<TFormValidators>,
   TSubmitReturn,
 >(
-  options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
+  options: StandardSchemaFormOptions<
+    TFormData,
+    TFormValidators,
+    TSubmitReturn,
+    unknown
+  >,
 ) => FormOptions<
   InferUnion<TFormData, FormValidatorData<TFormValidators>>,
   TFormValidators,
-  TSubmitReturn
+  TSubmitReturn,
+  TComponents
 >
 
 /**
@@ -165,8 +213,10 @@ export type FormOptionsLooseSchemaFn = <
  *
  * Use `formOptions` directly instead of naming this interface in application
  * code.
+ *
+ * @typeParam TComponents - Library-managed. Do not specify explicitly.
  */
-export interface FormOptionsApi {
+export interface FormOptionsApi<out TComponents> {
   /**
    * Keeps types inferred from `defaultValues`, validators, and submission
    * callbacks when form options are declared separately.
@@ -192,8 +242,8 @@ export interface FormOptionsApi {
     const TFormValidators extends FormValidators<TFormData>,
     TSubmitReturn,
   >(
-    options: FormOptions<TFormData, TFormValidators, TSubmitReturn>,
-  ): FormOptions<TFormData, TFormValidators, TSubmitReturn>
+    options: FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>,
+  ): FormOptions<TFormData, TFormValidators, TSubmitReturn, TComponents>
 
   /**
    * Infers the form data type from a Standard Schema validator and requires
@@ -206,14 +256,13 @@ export interface FormOptionsApi {
    * At runtime, this returns the original options object and does not run the
    * schema.
    *
-   * Include the schema in `validators` to provide the type inference and
-   * perform validation.
+   * `validators` must contain at least one Standard Schema to provide the type
+   * inference and perform validation.
    *
    * @remarks
-   * **Important:** Although this returns the original object unchanged at
-   * runtime, its type is normalized to `FormOptions`. Optional properties such
-   * as `validators` therefore remain optional even when supplied. This
-   * tradeoff enables safer inference and reuse.
+   * **Important:** Although schema-mode inputs require `validators`, this
+   * returns a type normalized to `FormOptions`, where `validators` is optional.
+   * This tradeoff enables safer inference and reuse.
    *
    * @example
    * ```ts
@@ -235,11 +284,12 @@ export interface FormOptionsApi {
    * @typeParam TFormData - Library-managed. Do not specify explicitly.
    * @typeParam TSubmitReturn - Library-managed. Do not specify explicitly.
    */
-  strictSchema: FormOptionsStrictSchemaFn
+  strictSchema: FormOptionsStrictSchemaFn<TComponents>
 
   /**
    * Infers the form data shape from a Standard Schema validator while allowing
-   * editable defaults to contain `null` or `undefined` values.
+   * editable defaults to omit properties or contain `null` or `undefined`
+   * values.
    *
    * Use this when the schema represents the final valid shape but the UI needs
    * intermediate empty states, such as an unselected date. Raw form state
@@ -249,14 +299,13 @@ export interface FormOptionsApi {
    * At runtime, this returns the original options object and does not run the
    * schema.
    *
-   * Include the schema in `validators` to provide the type inference and
-   * perform validation.
+   * `validators` must contain at least one Standard Schema to provide the type
+   * inference and perform validation.
    *
    * @remarks
-   * **Important:** Although this returns the original object unchanged at
-   * runtime, its type is normalized to `FormOptions`. Optional properties such
-   * as `validators` therefore remain optional even when supplied. This
-   * tradeoff enables safer inference and reuse.
+   * **Important:** Although schema-mode inputs require `validators`, this
+   * returns a type normalized to `FormOptions`, where `validators` is optional.
+   * This tradeoff enables safer inference and reuse.
    *
    * @example
    * ```ts
@@ -273,13 +322,13 @@ export interface FormOptionsApi {
    * ```
    *
    * @returns The original options object, normalized to `FormOptions` with
-   * nullable and undefined editable states merged into the schema's input
-   * shape.
+   * omitted, nullable, and undefined editable states merged into the schema's
+   * input shape.
    * @typeParam TFormValidators - Library-managed. Do not specify explicitly.
    * @typeParam TFormData - Library-managed. Do not specify explicitly.
    * @typeParam TSubmitReturn - Library-managed. Do not specify explicitly.
    */
-  looseSchema: FormOptionsLooseSchemaFn
+  looseSchema: FormOptionsLooseSchemaFn<TComponents>
 }
 
 /**
@@ -289,8 +338,8 @@ export interface FormOptionsApi {
  * The regular helper takes `defaultValues` at face value as the form data
  * shape. For schema-driven inference, use `formOptions.strictSchema` when the
  * schema defines an input-to-output boundary, or `formOptions.looseSchema` when
- * the schema defines the shape but editable defaults need `null` or
- * `undefined` values.
+ * the schema defines the shape but editable defaults may omit properties or
+ * need `null` or `undefined` values.
  *
  * At runtime, this is an identity helper: it returns the original options
  * object and does not create a form or run validation.
@@ -322,7 +371,7 @@ export interface FormOptionsApi {
  */
 const formOptions = ((opts) => {
   return opts
-}) as FormOptionsApi
+}) as FormOptionsApi<unknown>
 
 formOptions.strictSchema = (opts) => opts
 formOptions.looseSchema = (opts) => opts as never

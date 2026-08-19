@@ -171,6 +171,29 @@ export interface FormSubmitContext<
 }
 
 /**
+ * Handles a form submission after submission validation succeeds.
+ *
+ * A returned promise is awaited before submission finishes. Return an error
+ * created by the submission context's `createValidationError` or `parseIssues`
+ * helper to mark the submission as invalid.
+ *
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ * @typeParam TFormValidators - Library-managed. Do not specify explicitly.
+ * @typeParam TSubmitReturn - Library-managed. Do not specify explicitly.
+ */
+export type FormSubmitFn<
+  in out TFormData,
+  in out TFormValidators extends FormValidators<TFormData>,
+  in out TSubmitReturn,
+> = (
+  context: FormSubmitContext<
+    TFormData,
+    ToFormSchemaOutputs<TFormValidators>,
+    ToFormErrorTypes<TFormValidators, unknown>
+  >,
+) => TSubmitReturn
+
+/**
  * Context passed to `onSubmitInvalid` when a submission fails.
  *
  * @example
@@ -204,7 +227,9 @@ export interface FormSubmitInvalidContext<
  * Use this alias only when reusable code does not need type-safe access to
  * values, validators, or submission results.
  */
-export type AnyFormOptions = FormOptions<any, any, any>
+export type AnyFormOptions = FormOptions<any, any, any, any>
+
+declare const formOptionsComponentsSymbol: unique symbol
 
 /**
  * Configures initial values, validation, listeners, and submission.
@@ -226,12 +251,15 @@ export type AnyFormOptions = FormOptions<any, any, any>
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
  * @typeParam TFormValidators - Library-managed. Do not specify explicitly.
  * @typeParam TSubmitReturn - Library-managed. Do not specify explicitly.
+ * @typeParam TComponents - Library-managed. Do not specify explicitly.
  */
 export interface FormOptions<
   in out TFormData,
   in out TFormValidators extends FormValidators<TFormData>,
   in out TSubmitReturn,
+  out TComponents,
 > {
+  readonly [formOptionsComponentsSymbol]?: TComponents
   /**
    * A stable identifier for this form.
    *
@@ -352,13 +380,7 @@ export interface FormOptions<
    * }
    * ```
    */
-  onSubmit?: (
-    context: FormSubmitContext<
-      TFormData,
-      ToFormSchemaOutputs<TFormValidators>,
-      ToFormErrorTypes<TFormValidators, unknown>
-    >,
-  ) => TSubmitReturn
+  onSubmit?: FormSubmitFn<TFormData, TFormValidators, TSubmitReturn>
   /**
    * Called after an invalid submission is detected.
    *

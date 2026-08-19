@@ -56,14 +56,16 @@ export function attachSvelteFormComponents(
 }
 
 export function initializeForm(
-  options: FormOptions<any, any, any>,
+  options: FormOptions<any, any, any, unknown>,
 ): InternalSvelteFormApi {
   return attachSvelteFormComponents(new InternalFormApi(options), null)
 }
 
 export function createInternalForm(
-  options: () => FormOptions<any, any, any>,
-  initialize: (options: FormOptions<any, any, any>) => InternalSvelteFormApi,
+  options: () => FormOptions<any, any, any, unknown>,
+  initialize: (
+    options: FormOptions<any, any, any, unknown>,
+  ) => InternalSvelteFormApi,
 ): InternalSvelteFormApi {
   const form = initialize(options())
 

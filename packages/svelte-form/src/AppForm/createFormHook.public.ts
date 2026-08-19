@@ -2,16 +2,15 @@ import { createInternalForm } from '../createForm.svelte'
 import { defineFieldGroup } from '../FieldGroup/withFields.public'
 import { createAppFormInitializer } from './initializeAppForm.lib'
 import { useFormContext } from './contexts.lib'
-import type { AppFormOptionsApi } from './appFormOptions.public'
 import type {
   AppFormHookResult,
   CreateFormHookOptions,
   UseAppFormHook,
 } from './createFormHookTypes.public'
 import type { Component } from 'svelte'
-import type { FormOptions } from '@tanstack/form-core'
+import type { FormOptions, FormOptionsApi } from '@tanstack/form-core'
 
-const appFormOptions = ((opts: unknown) => opts) as AppFormOptionsApi<any>
+const appFormOptions = ((opts: unknown) => opts) as FormOptionsApi<any>
 appFormOptions.strictSchema = (opts) => opts as never
 appFormOptions.looseSchema = (opts) => opts as never
 
@@ -26,7 +25,7 @@ export function createFormHook<
 }> {
   const initializeAppForm = createAppFormInitializer(createOptions)
 
-  function useExtendedForm(options: () => FormOptions<any, any, any>) {
+  function useExtendedForm(options: () => FormOptions<any, any, any, unknown>) {
     return createInternalForm(options, initializeAppForm)
   }
   const useAppForm = useExtendedForm as never as UseAppFormHook<{
