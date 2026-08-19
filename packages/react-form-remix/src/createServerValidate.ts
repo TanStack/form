@@ -99,12 +99,11 @@ export const createServerValidate =
       })
     }
 
-    const values = (info
-      ? decode(formData, info)
-      : decode(formData)) as never as TFormData
+    const values = info ? decode(formData, info) : decode(formData)
+    const validationValues = values as never as TFormData
 
     const onServerError = (await runValidator({
-      value: values,
+      value: validationValues,
       validationSource: 'form',
     })) as UnwrapFormAsyncValidateOrFn<TOnServer> | undefined
 
@@ -120,7 +119,7 @@ export const createServerValidate =
       errorMap: {
         onServer: onServerError,
       },
-      values,
+      values: validationValues,
       errors: onServerErrorVal ? [onServerErrorVal] : [],
     }
 
