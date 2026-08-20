@@ -9,7 +9,7 @@ title: formOptions
 const formOptions: FormOptionsApi<unknown>;
 ```
 
-Defined in: [utils.public.ts:372](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L372)
+Defined in: [utils.public.ts:373](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L373)
 
 Keeps form data, validator, and submission types inferred when options are
 declared separately from a framework's form creation API.

@@ -146,7 +146,6 @@ title: "@tanstack/form-core"
 - [ServerValidateResult](type-aliases/ServerValidateResult.md)
 - [ServerValidationTrigger](type-aliases/ServerValidationTrigger.md)
 - [SetFieldValueFn](type-aliases/SetFieldValueFn.md)
-- [StandardSchemaFormOptions](type-aliases/StandardSchemaFormOptions.md)
 - [StandardSchemaV1](type-aliases/StandardSchemaV1.md)
 - [SwapFieldValuesFn](type-aliases/SwapFieldValuesFn.md)
 - [ToFieldError](type-aliases/ToFieldError.md)

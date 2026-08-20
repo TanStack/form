@@ -6,25 +6,23 @@ title: FormOptionsLooseSchemaFn
 # Type Alias: FormOptionsLooseSchemaFn\<TComponents\>
 
 ```ts
-type FormOptionsLooseSchemaFn<TComponents> = <TFormValidators, TFormData, TSubmitReturn>(options) => FormOptions<InferUnion<TFormData, FormValidatorData<TFormValidators>>, TFormValidators, TSubmitReturn, TComponents>;
+type FormOptionsLooseSchemaFn<TComponents> = <TSchema, TFormData, TFormValidators, TSubmitReturn>(schema, options) => FormOptions<InferUnion<TFormData, StandardSchemaInput<TSchema>>, TFormValidators, TSubmitReturn, TComponents>;
 ```
 
-Defined in: [utils.public.ts:192](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L192)
+Defined in: [utils.public.ts:174](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L174)
 
-Infers the form data shape from a Standard Schema validator while allowing
-editable defaults to omit properties or contain `null` or `undefined`
-values.
+Types loose schema form options using a separate schema as the source of the
+final valid form shape.
 
-Use this when the schema represents the final valid shape but the UI needs
-intermediate empty states, such as an unselected date. Raw form state
-remains available as `value`; read each validator's parsed output from the
-corresponding `schemaOutputs` entry during submission.
+`defaultValues` infer an editable form shape constrained by the schema input,
+so properties may be omitted or contain `null` or `undefined`. Callback
+validator `value` parameters use that editable shape merged with the schema
+input.
 
-At runtime, this returns the original options object and does not run the
-schema.
-
-`validators` must contain at least one Standard Schema to provide the type
-inference and perform validation.
+The first argument is used only by TypeScript and is ignored at runtime.
+Include the schema in `validators` as well when it should validate the form.
+Parsed results are available in the corresponding `schemaOutputs` entries
+during submission.
 
 ## Type Parameters
 
@@ -36,15 +34,21 @@ Library-managed. Do not specify explicitly.
 
 ## Type Parameters
 
-### TFormValidators
+### TSchema
 
-`TFormValidators` *extends* [`FormValidators`](FormValidators.md)\<`any`\>
+`TSchema` *extends* [`StandardSchemaV1`](StandardSchemaV1.md)\<`any`, `any`\>
 
 Library-managed. Do not specify explicitly.
 
 ### TFormData
 
-`TFormData` *extends* [`NullableSchemaData`](NullableSchemaData.md)\<`TFormValidators`\>
+`TFormData` *extends* [`Editable`](Editable.md)\<`StandardSchemaInput`\<`TSchema`\>\>
+
+Library-managed. Do not specify explicitly.
+
+### TFormValidators
+
+`TFormValidators` *extends* [`FormValidators`](FormValidators.md)\<`NoInfer`\<[`InferUnion`](InferUnion.md)\<`TFormData`, `StandardSchemaInput`\<`TSchema`\>\>\>\>
 
 Library-managed. Do not specify explicitly.
 
@@ -56,35 +60,39 @@ Library-managed. Do not specify explicitly.
 
 ## Parameters
 
+### schema
+
+`TSchema`
+
+Supplies the final valid form shape without registering a
+validator.
+
 ### options
 
-[`StandardSchemaFormOptions`](StandardSchemaFormOptions.md)\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>
+`LooseSchemaFormOptions`\<`StandardSchemaInput`\<`TSchema`\>, `TFormData`, `TFormValidators`, `TSubmitReturn`\>
+
+The form options used to infer the editable form shape.
 
 ## Returns
 
-[`FormOptions`](../interfaces/FormOptions.md)\<[`InferUnion`](InferUnion.md)\<`TFormData`, [`FormValidatorData`](FormValidatorData.md)\<`TFormValidators`\>\>, `TFormValidators`, `TSubmitReturn`, `TComponents`\>
+[`FormOptions`](../interfaces/FormOptions.md)\<[`InferUnion`](InferUnion.md)\<`TFormData`, `StandardSchemaInput`\<`TSchema`\>\>, `TFormValidators`, `TSubmitReturn`, `TComponents`\>
 
-The original options object, normalized to `FormOptions` with
-omitted, nullable, and undefined editable states merged into the schema's
-input shape.
-
-## Remarks
-
-**Important:** Although schema-mode inputs require `validators`, this
-returns a type normalized to `FormOptions`, where `validators` is optional.
-This tradeoff enables safer inference and reuse.
+The original options object, normalized to `FormOptions` with the
+editable states merged into the schema input.
 
 ## Example
 
 ```ts
-const bookingOptions = formOptions.looseSchema({
+const bookingSchema = z.object({ startDate: z.date() })
+const bookingOptions = formOptions.looseSchema(bookingSchema, {
   defaultValues: { startDate: null },
   validators: [
+    { triggers: ['blur'], run: bookingSchema },
     {
-      triggers: ['blur'],
-      run: z.object({ startDate: z.date() }),
+      triggers: ['change'],
+      run: ({ value }) =>
+        value.startDate === null ? 'Choose a date' : undefined,
     },
   ],
-  onSubmit: ({ schemaOutputs }) => saveBooking(schemaOutputs[0]),
 })
 ```

@@ -5,7 +5,7 @@ title: FormOptionsApi
 
 # Interface: FormOptionsApi()\<TComponents\>
 
-Defined in: [utils.public.ts:219](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L219)
+Defined in: [utils.public.ts:205](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L205)
 
 The callable API exposed by `formOptions`, including its schema-driven
 inference modes.
@@ -25,7 +25,7 @@ Library-managed. Do not specify explicitly.
 FormOptionsApi<TFormData, TFormValidators, TSubmitReturn>(options): FormOptions<TFormData, TFormValidators, TSubmitReturn, TComponents>;
 ```
 
-Defined in: [utils.public.ts:240](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L240)
+Defined in: [utils.public.ts:226](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L226)
 
 Keeps types inferred from `defaultValues`, validators, and submission
 callbacks when form options are declared separately.
@@ -82,7 +82,7 @@ tradeoff enables safer inference and reuse.
 looseSchema: FormOptionsLooseSchemaFn<TComponents>;
 ```
 
-Defined in: [utils.public.ts:331](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L331)
+Defined in: [utils.public.ts:332](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L332)
 
 Infers the form data shape from a Standard Schema validator while allowing
 editable defaults to omit properties or contain `null` or `undefined`
@@ -93,27 +93,34 @@ intermediate empty states, such as an unselected date. Raw form state
 remains available as `value`; read each validator's parsed output from the
 corresponding `schemaOutputs` entry during submission.
 
-At runtime, this returns the original options object and does not run the
-schema.
-
-`validators` must contain at least one Standard Schema to provide the type
-inference and perform validation.
+Pass the schema as the first argument and the options as the second.
+`defaultValues` infer an editable form shape constrained by the schema
+input, and callbacks receive that shape merged with the schema input. The
+first argument is ignored at runtime; include the schema in `validators`
+when it should run.
 
 #### Remarks
 
-**Important:** Although schema-mode inputs require `validators`, this
-returns a type normalized to `FormOptions`, where `validators` is optional.
-This tradeoff enables safer inference and reuse.
+**Important:** Although this returns the original object unchanged at
+runtime, its type is normalized to `FormOptions`. Optional properties such
+as `validators` therefore remain optional even when supplied. This
+tradeoff enables safer inference and reuse.
 
 #### Example
 
 ```ts
-const bookingOptions = formOptions.looseSchema({
+const bookingSchema = z.object({ startDate: z.date() })
+const bookingOptions = formOptions.looseSchema(bookingSchema, {
   defaultValues: { startDate: null },
   validators: [
     {
       triggers: ['blur'],
-      run: z.object({ startDate: z.date() }),
+      run: bookingSchema,
+    },
+    {
+      triggers: ['change'],
+      run: ({ value }) =>
+        value.startDate === null ? 'Choose a date' : undefined,
     },
   ],
   onSubmit: ({ schemaOutputs }) => saveBooking(schemaOutputs[0]),
@@ -125,6 +132,12 @@ const bookingOptions = formOptions.looseSchema({
 The original options object, normalized to `FormOptions` with
 omitted, nullable, and undefined editable states merged into the schema's
 input shape.
+
+#### Type Param
+
+**TSchema**
+
+Library-managed. Do not specify explicitly.
 
 #### Type Param
 
@@ -152,7 +165,7 @@ Library-managed. Do not specify explicitly.
 strictSchema: FormOptionsStrictSchemaFn<TComponents>;
 ```
 
-Defined in: [utils.public.ts:287](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L287)
+Defined in: [utils.public.ts:280](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L280)
 
 Infers the form data type from a Standard Schema validator and requires
 `defaultValues` to match the schema input.
@@ -161,27 +174,33 @@ Use this when the schema represents an input-to-output pipeline. Raw form
 state remains available as `value`; read each validator's parsed output
 from the corresponding `schemaOutputs` entry during submission.
 
-At runtime, this returns the original options object and does not run the
-schema.
-
-`validators` must contain at least one Standard Schema to provide the type
-inference and perform validation.
+Pass the schema as the first argument and the options as the second. This
+fixes the form data to the schema input before the options are inferred, so
+each callback receives a typed `value`. The first argument is ignored at
+runtime; include the schema in `validators` when it should run.
 
 #### Remarks
 
-**Important:** Although schema-mode inputs require `validators`, this
-returns a type normalized to `FormOptions`, where `validators` is optional.
-This tradeoff enables safer inference and reuse.
+**Important:** Although this returns the original object unchanged at
+runtime, its type is normalized to `FormOptions`. Optional properties such
+as `validators` therefore remain optional even when supplied. This
+tradeoff enables safer inference and reuse.
 
 #### Example
 
 ```ts
-const profileOptions = formOptions.strictSchema({
+const profileSchema = z.object({ name: z.string().min(1) })
+const profileOptions = formOptions.strictSchema(profileSchema, {
   defaultValues: { name: '' },
   validators: [
     {
       triggers: ['change'],
-      run: z.object({ name: z.string().min(1) }),
+      run: profileSchema,
+    },
+    {
+      triggers: ['change'],
+      run: ({ value }) =>
+        value.name.length === 0 ? 'Name is required' : undefined,
     },
   ],
   onSubmit: ({ schemaOutputs }) => saveProfile(schemaOutputs[0]),
@@ -192,6 +211,12 @@ const profileOptions = formOptions.strictSchema({
 
 The original options object, normalized to `FormOptions` with the
 schema's input shape.
+
+#### Type Param
+
+**TSchema**
+
+Library-managed. Do not specify explicitly.
 
 #### Type Param
 

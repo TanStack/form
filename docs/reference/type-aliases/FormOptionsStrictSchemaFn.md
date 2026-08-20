@@ -6,23 +6,22 @@ title: FormOptionsStrictSchemaFn
 # Type Alias: FormOptionsStrictSchemaFn\<TComponents\>
 
 ```ts
-type FormOptionsStrictSchemaFn<TComponents> = <TFormValidators, TFormData, TSubmitReturn>(options) => FormOptions<FormValidatorData<TFormValidators>, TFormValidators, TSubmitReturn, TComponents>;
+type FormOptionsStrictSchemaFn<TComponents> = <TSchema, TFormValidators, TSubmitReturn>(schema, options) => FormOptions<StandardSchemaInput<TSchema>, TFormValidators, TSubmitReturn, TComponents>;
 ```
 
-Defined in: [utils.public.ts:128](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L128)
+Defined in: [utils.public.ts:114](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L114)
 
-Infers the form data type from a Standard Schema validator and requires
-`defaultValues` to match the schema input.
+Types strict form options using a separate schema as the source of the form
+data type.
 
-Use this when the schema represents an input-to-output pipeline. Raw form
-state remains available as `value`; read each validator's parsed output
-from the corresponding `schemaOutputs` entry during submission.
+The schema input fixes the form data type before the options are inferred,
+so `defaultValues` and each callback validator's `value` use the exact
+schema input type.
 
-At runtime, this returns the original options object and does not run the
-schema.
-
-`validators` must contain at least one Standard Schema to provide the type
-inference and perform validation.
+The first argument is used only by TypeScript and is ignored at runtime.
+Include the schema in `validators` as well when it should validate the form.
+Parsed results are available in the corresponding `schemaOutputs` entries
+during submission.
 
 ## Type Parameters
 
@@ -34,15 +33,15 @@ Library-managed. Do not specify explicitly.
 
 ## Type Parameters
 
-### TFormValidators
+### TSchema
 
-`TFormValidators` *extends* [`FormValidators`](FormValidators.md)\<`any`\>
+`TSchema` *extends* [`StandardSchemaV1`](StandardSchemaV1.md)\<`any`, `any`\>
 
 Library-managed. Do not specify explicitly.
 
-### TFormData
+### TFormValidators
 
-`TFormData` *extends* [`FormValidatorData`](FormValidatorData.md)\<`TFormValidators`\>
+`TFormValidators` *extends* [`FormValidators`](FormValidators.md)\<`StandardSchemaInput`\<`TSchema`\>\>
 
 Library-managed. Do not specify explicitly.
 
@@ -54,34 +53,38 @@ Library-managed. Do not specify explicitly.
 
 ## Parameters
 
+### schema
+
+`TSchema`
+
+Supplies the form data type without registering a validator.
+
 ### options
 
-[`StandardSchemaFormOptions`](StandardSchemaFormOptions.md)\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>
+[`FormOptions`](../interfaces/FormOptions.md)\<`StandardSchemaInput`\<`TSchema`\>, `TFormValidators`, `TSubmitReturn`, `unknown`\>
+
+The form options to type against the schema input.
 
 ## Returns
 
-[`FormOptions`](../interfaces/FormOptions.md)\<[`FormValidatorData`](FormValidatorData.md)\<`TFormValidators`\>, `TFormValidators`, `TSubmitReturn`, `TComponents`\>
+[`FormOptions`](../interfaces/FormOptions.md)\<`StandardSchemaInput`\<`TSchema`\>, `TFormValidators`, `TSubmitReturn`, `TComponents`\>
 
 The original options object, normalized to `FormOptions` with the
-schema's input shape.
-
-## Remarks
-
-**Important:** Although schema-mode inputs require `validators`, this
-returns a type normalized to `FormOptions`, where `validators` is optional.
-This tradeoff enables safer inference and reuse.
+schema input as its form data type.
 
 ## Example
 
 ```ts
-const profileOptions = formOptions.strictSchema({
+const profileSchema = z.object({ name: z.string().min(1) })
+const profileOptions = formOptions.strictSchema(profileSchema, {
   defaultValues: { name: '' },
   validators: [
+    { triggers: ['change'], run: profileSchema },
     {
       triggers: ['change'],
-      run: z.object({ name: z.string().min(1) }),
+      run: ({ value }) =>
+        value.name.length === 0 ? 'Name is required' : undefined,
     },
   ],
-  onSubmit: ({ schemaOutputs }) => saveProfile(schemaOutputs[0]),
 })
 ```
