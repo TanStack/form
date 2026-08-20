@@ -98,11 +98,12 @@ describe('formOptions', () => {
   })
 
   it('infers form data from a strict schema', () => {
-    const options = formOptions.strictSchema({
+    const schema = z.object({ name: z.string() })
+    const options = formOptions.strictSchema(schema, {
       defaultValues: { name: '' },
       validators: [
         {
-          run: z.object({ name: z.string() }),
+          run: schema,
           triggers: ['change'],
         },
       ],
@@ -113,7 +114,7 @@ describe('formOptions', () => {
 
   it('infers schema input and output from schema-only validators', () => {
     const schema = z.object({ age: z.string().transform(Number) })
-    const options = formOptions.strictSchema({
+    const options = formOptions.strictSchema(schema, {
       defaultValues: { age: '' },
       validators: [{ run: schema, triggers: ['change'] }],
       onSubmit: ({ value, schemaOutputs }) => {
@@ -230,7 +231,14 @@ describe('formOptions', () => {
   })
 
   it('allows loose schema defaults to omit properties', () => {
-    const options = formOptions.looseSchema({
+    const schema = z.object({
+      name: z.string(),
+      address: z.object({
+        city: z.string(),
+        postcode: z.number(),
+      }),
+    })
+    const options = formOptions.looseSchema(schema, {
       defaultValues: {
         address: {
           city: null,
@@ -238,13 +246,7 @@ describe('formOptions', () => {
       },
       validators: [
         {
-          run: z.object({
-            name: z.string(),
-            address: z.object({
-              city: z.string(),
-              postcode: z.number(),
-            }),
-          }),
+          run: schema,
           triggers: ['change'],
         },
       ],
@@ -451,11 +453,12 @@ describe('ErrorVisibility', () => {
     const showErrorsAfterSubmit = createErrorVisibility(
       ({ state }) => state.submissionAttempts > 0,
     )
-    const options = formOptions.strictSchema({
+    const schema = z.object({ name: z.string() })
+    const options = formOptions.strictSchema(schema, {
       defaultValues: { name: '' },
       validators: [
         {
-          run: z.object({ name: z.string() }),
+          run: schema,
           triggers: ['change'],
         },
       ],

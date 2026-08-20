@@ -376,10 +376,11 @@ are `undefined`. Validators with literal `runOnSubmit: false` are skipped during
 submission, and their slots are typed as `undefined`. Use the parsed entry when
 an endpoint expects the schema's output type.
 
-For schema-led option inference, `formOptions.strictSchema(...)` uses the
-schema input as the form shape, while `formOptions.looseSchema(...)` permits
-editable nullish defaults and combines them with the schema shape. These option
-helpers only affect types; the validators still perform the runtime parsing.
+For schema-led option inference, pass the schema first and the options second.
+`formOptions.strictSchema(...)` uses the schema input as the form shape, while
+`formOptions.looseSchema(...)` permits editable nullish defaults and combines
+them with the schema shape. These option helpers only affect types; the
+validators still perform the runtime parsing.
 
 When manually calling a schema, return `parseIssues(...)` with the failed issue
 array. In a field validator it produces field issues; in a form or group

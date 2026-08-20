@@ -24,8 +24,6 @@ describe('validation public helpers', () => {
     }
 
     expect(formOptions(options)).toBe(options)
-    expect(formOptions.strictSchema(schemaOptions)).toBe(schemaOptions)
-    expect(formOptions.looseSchema(schemaOptions)).toBe(schemaOptions)
     expect(formOptions.strictSchema(schema, schemaOptions)).toBe(schemaOptions)
     expect(formOptions.looseSchema(schema, schemaOptions)).toBe(schemaOptions)
   })

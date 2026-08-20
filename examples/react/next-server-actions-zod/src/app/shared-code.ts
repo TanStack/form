@@ -9,7 +9,7 @@ export const serverSchema = z.object({
   age: z.number().min(12),
 })
 
-export const formOpts = formOptions.strictSchema({
+export const formOpts = formOptions.strictSchema(clientSchema, {
   defaultValues: {
     age: 0,
   },

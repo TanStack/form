@@ -11,8 +11,8 @@
 
 Refactor: Adapter `formOptions`/`appFormOptions` no longer shim the core types and runtime.
 
-Feat: `formOptions.looseSchema` and `formOptions.strictSchema` now accept a schema as
-first parameter. This locks down inference to get the best type safety out of it vs. the object alone.
+BREAKING: `formOptions.looseSchema` and `formOptions.strictSchema` now require a schema as
+first parameter. This locks down inference to get the best type safety out of it vs. the options object alone.
 
-Fix: `formOptions.looseSchema` now allows `defaultValues` as optional property too instead of
-requiring it to be explicitly undefined.
+Fix: `formOptions.looseSchema` now allows `defaultValues` to omit properties instead of
+requiring them to be explicitly undefined.
