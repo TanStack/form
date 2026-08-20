@@ -1,3 +1,4 @@
+import { formOptions } from '@tanstack/form-core'
 import { useInternalForm } from '../VueForm/VueFormApi.lib'
 import { defineFieldGroup } from '../FieldGroup/withFields.public'
 import { createAppFormInitializer } from './initializeAppForm.lib'
@@ -8,11 +9,7 @@ import type {
   UseAppFormHook,
 } from './createFormHookTypes.public'
 import type { Component } from 'vue'
-import type { FormOptions, FormOptionsApi } from '@tanstack/form-core'
-
-const appFormOptions = ((opts: unknown) => opts) as FormOptionsApi<any>
-appFormOptions.strictSchema = (opts) => opts as never
-appFormOptions.looseSchema = (opts) => opts as never
+import type { FormOptions } from '@tanstack/form-core'
 
 export function createFormHook<
   const TFormComponents extends Record<string, Component>,
@@ -31,7 +28,7 @@ export function createFormHook<
 
   return {
     useFormContext: useFormContext as never,
-    appFormOptions,
+    appFormOptions: formOptions as never,
     defineAppFieldGroup: defineFieldGroup as never,
     useAppForm: useExtendedForm as never as UseAppFormHook<{
       formComponents: TFormComponents

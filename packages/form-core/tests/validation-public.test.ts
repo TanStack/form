@@ -12,19 +12,20 @@ describe('validation public helpers', () => {
   it('returns form options unchanged at runtime', () => {
     const options = { defaultValues: { name: 'Ada' } }
     const triggers: Array<'change'> = ['change']
+    const schema = z.object({ name: z.string() })
     const schemaOptions = {
       ...options,
       validators: [
         {
-          run: z.object({ name: z.string() }),
+          run: schema,
           triggers,
         },
       ],
     }
 
     expect(formOptions(options)).toBe(options)
-    expect(formOptions.strictSchema(schemaOptions)).toBe(schemaOptions)
-    expect(formOptions.looseSchema(schemaOptions)).toBe(schemaOptions)
+    expect(formOptions.strictSchema(schema, schemaOptions)).toBe(schemaOptions)
+    expect(formOptions.looseSchema(schema, schemaOptions)).toBe(schemaOptions)
   })
 
   it('creates validators by pairing options with run functions', () => {

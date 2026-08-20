@@ -9,8 +9,10 @@
 '@tanstack/vue-form': patch
 ---
 
-Refactor: Form option types are now no longer adapter-specific
+Refactor: Adapter `formOptions`/`appFormOptions` no longer shim the core types and runtime.
 
-Fix: `formOptions.looseSchema`/`strictSchema` now error on missing schema
+BREAKING: `formOptions.looseSchema` and `formOptions.strictSchema` now require a schema as
+first parameter. This locks down inference to get the best type safety out of it vs. the options object alone.
 
-Fix: `formOptions.looseSchema` now accepts optional `defaultValues` props
+Fix: `formOptions.looseSchema` now allows `defaultValues` to omit properties instead of
+requiring them to be explicitly undefined.

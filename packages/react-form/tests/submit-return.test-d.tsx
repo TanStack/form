@@ -198,6 +198,28 @@ describe('submit return', () => {
       formComponents: {},
     })
 
+    it('preserves registered components through schema-first overloads', () => {
+      const SubmitButton = () => null
+      const schema = z.object({ email: z.string() })
+      const { appFormOptions: componentFormOptions } = createFormHook({
+        fieldComponents: {},
+        formComponents: { SubmitButton },
+      })
+      const strictOptions = componentFormOptions.strictSchema(schema, {
+        defaultValues: { email: '' },
+      })
+      const looseOptions = componentFormOptions.looseSchema(schema, {
+        defaultValues: { email: null },
+      })
+
+      expectTypeOf<
+        ReactFormType<typeof strictOptions>['SubmitButton']
+      >().toEqualTypeOf<typeof SubmitButton>()
+      expectTypeOf<
+        ReactFormType<typeof looseOptions>['SubmitButton']
+      >().toEqualTypeOf<typeof SubmitButton>()
+    })
+
     it('should allow shared options to omit onSubmit', () => {
       const sharedOptionsWithoutSubmit = appFormOptions({
         defaultValues: { email: '' },
