@@ -1,5 +1,14 @@
 # @tanstack/form-devtools
 
+## 1.0.0-alpha.2
+
+### Patch Changes
+
+- [#2344](https://github.com/TanStack/form/pull/2344) [`63c9ea3`](https://github.com/TanStack/form/commit/63c9ea32b4efa95897e42a729406b89e0e92a708) - Refactor: Use stable listener identity instead of index
+
+- Updated dependencies [[`532cba4`](https://github.com/TanStack/form/commit/532cba44680609577f75020918cdf264dadf51dd), [`4e37c69`](https://github.com/TanStack/form/commit/4e37c69b8acc1428149ece979ffe2ba3190c15d3), [`c7e102b`](https://github.com/TanStack/form/commit/c7e102bcf134b12a402d6f80f6c3c63ce377a1e9), [`63c9ea3`](https://github.com/TanStack/form/commit/63c9ea32b4efa95897e42a729406b89e0e92a708)]:
+  - @tanstack/form-core@2.0.0-alpha.2
+
 ## 1.0.0-alpha.1
 
 ### Patch Changes

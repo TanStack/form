@@ -18,10 +18,14 @@
     "@tanstack/vue-form": "1.33.3"
   },
   "changesets": [
+    "cyan-papayas-search",
+    "forty-eyes-fall",
     "gentle-forms-default",
     "legal-animals-design",
     "odd-comics-push",
+    "polite-planets-deny",
     "shy-hairs-follow",
+    "stable-listeners-rest",
     "tasty-humans-joke",
     "v2-alpha"
   ]
