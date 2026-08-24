@@ -101,6 +101,53 @@ describe('Form fields', () => {
     expect(input).toHaveValue('new-value')
   })
 
+  it('rerenders an ArrayField for a same-length replacement', () => {
+    let renders = 0
+
+    function Component() {
+      const form = useForm({
+        defaultValues: { items: [{ label: 'A' }] },
+      })
+
+      return (
+        <>
+          <button
+            data-testid="replace-array"
+            onClick={() =>
+              form.setFieldValue('items', [{ label: 'B' }])
+            }
+          />
+          <button
+            data-testid="update-child"
+            onClick={() => form.setFieldValue('items[0].label', 'C')}
+          />
+          <form.ArrayField name="items">
+            {(field) => {
+              renders++
+              return (
+                <output data-testid="array">{field.value[0]!.label}</output>
+              )
+            }}
+          </form.ArrayField>
+        </>
+      )
+    }
+
+    const { getByTestId } = render(<Component />)
+    const initialRenders = renders
+
+    fireEvent.click(getByTestId('replace-array'))
+
+    expect(getByTestId('array')).toHaveTextContent('B')
+    expect(renders).toBeGreaterThan(initialRenders)
+
+    const replacementRenders = renders
+
+    fireEvent.click(getByTestId('update-child'))
+
+    expect(renders).toBe(replacementRenders)
+  })
+
   it('should have the correct meta when changing the field', async () => {
     function Component() {
       const form = useForm({ defaultValues: { name: 'tony-hawk' } })

@@ -502,7 +502,22 @@ export class InternalFormApi<
     updateOptions.fieldApiOverride = field
 
     batch(() => {
-      this._atoms.values.set((prev) => setBy(prev, fieldName, updater))
+      const previousValue = this.getFieldValue(fieldName)
+      const nextValue = callUpdater(updater, previousValue)
+      const replacedSameLengthArray =
+        Array.isArray(previousValue) &&
+        Array.isArray(nextValue) &&
+        previousValue !== nextValue &&
+        previousValue.length === nextValue.length
+
+      this._atoms.values.set((prev) => setBy(prev, fieldName, nextValue))
+
+      if (field && replacedSameLengthArray) {
+        field._setMeta((prev) => ({
+          ...prev,
+          _arrayVersion: prev._arrayVersion + 1,
+        }))
+      }
 
       this._notifyFieldChange(field, updateOptions)
     })
