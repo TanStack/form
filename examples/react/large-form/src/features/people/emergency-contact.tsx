@@ -13,13 +13,13 @@ function EmergencyContactFields({
   return (
     <>
       <fields.Field
-        name="fullName"
-        children={(field) => <field.TextField label="Full Name" />}
-      />
+        name="fullName">
+        {(field) => <field.TextField label="Full Name" />}
+      </fields.Field>
       <fields.Field
-        name="phone"
-        children={(field) => <field.TextField label="Phone" />}
-      />
+        name="phone">
+        {(field) => <field.TextField label="Phone" />}
+      </fields.Field>
     </>
   )
 }
