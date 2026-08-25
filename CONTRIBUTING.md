@@ -6,11 +6,22 @@ If you have questions about implementation details, help or support, then please
 
 ## Reporting Issues
 
-If you have found what you think is a bug, please [file an issue](https://github.com/TanStack/form/issues/new/choose). **PLEASE NOTE:** Issues that are identified as implementation questions or non-issues will be immediately closed and redirected to [GitHub Discussions](https://github.com/TanStack/form/discussions)
+If you have found what you think is a bug, first search the [open and closed issues](https://github.com/TanStack/form/issues?q=is%3Aissue) to make sure it has not already been reported. If you cannot find an existing report, use the [bug report template](https://github.com/TanStack/form/issues/new?template=bug_report.yml). **PLEASE NOTE:** Issues that are identified as implementation questions or non-issues will be immediately closed and redirected to [GitHub Discussions](https://github.com/TanStack/form/discussions).
 
 ## Suggesting new features
 
 If you are here to suggest a feature, first create an issue if it does not already exist. From there, we will discuss use-cases for the feature and then finally discuss how it could be implemented.
+
+## Pull Request Guidelines
+
+Every pull request must follow the [TanStack Form pull request template](.github/pull_request_template.md). Complete its description and checklist without removing or bypassing the required sections.
+
+- Search the [open and closed pull requests](https://github.com/TanStack/form/pulls?q=is%3Apr) before starting work to avoid duplicating an existing contribution.
+- Keep each pull request focused on one change or topic. Pull requests that combine unrelated changes will be closed with a request to split them into separately reviewable contributions.
+- Write a concise description that clearly explains what changed and why. Follow the sections in the pull request template; a long, unstructured description makes a contribution harder to review.
+- You may use AI tools to help generate code, but you remain responsible for understanding, testing, and verifying every submitted change. Do not submit unreviewed, low-quality, or irrelevant generated code.
+- Do not mass-submit unrelated or low-quality AI-generated pull requests. We treat that behavior as spam and may close the pull requests, block the contributor, and report the GitHub account.
+- Every change that affects a published package must include a changeset. Create it with `pnpm changeset`; documentation, CI, and development-only changes do not require one.
 
 ## Development
 
