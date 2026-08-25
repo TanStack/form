@@ -209,10 +209,35 @@ const MemoizedInputFields = bindMemoizedInputFields(
 )
 
 describe('FieldGroup', () => {
+  it('defaults omitted bindings to same-named form fields', async () => {
+    function Component() {
+      const form = useForm({
+        defaultValues: {
+          foo: {
+            bar: 'Initial',
+          },
+        },
+      })
+
+      return <NestedFields form={form} />
+    }
+
+    const { getByRole, getByTestId } = render(<Component />)
+
+    expect(getByTestId('field')).toHaveTextContent('foo.bar:Initial')
+
+    await user.click(getByRole('button', { name: 'Update' }))
+
+    expect(getByTestId('field')).toHaveTextContent('foo.bar:Updated')
+  })
+
   it('resolves nested logical field names and forwards field methods', async () => {
     function Component() {
       const form = useForm({
         defaultValues: {
+          foo: {
+            bar: 'Identity',
+          },
           anything: {
             bar: 'Initial',
           },
@@ -330,13 +355,7 @@ describe('FieldGroup', () => {
         },
       })
 
-      return (
-        <MemoizedInputFields
-          form={form}
-          fields={{ value: 'value' }}
-          onRender={onRender}
-        />
-      )
+      return <MemoizedInputFields form={form} onRender={onRender} />
     }
 
     const { getByLabelText } = render(<Component />)

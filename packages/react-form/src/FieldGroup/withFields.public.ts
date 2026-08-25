@@ -142,6 +142,37 @@ export type FieldGroupFieldBindingsOf<TFieldGroup, TFormData> =
     ? FieldGroupFieldBindings<FieldGroupFieldsOf<TFieldGroup>, TFormData>
     : never
 
+type FieldGroupIdentityBindings<TFields extends FieldGroupFields> = {
+  [TFieldName in keyof TFields]: Extract<TFieldName, string>
+}
+
+type FieldsPropsDefinition<
+  TFieldGroup extends ReactFieldGroup<any, any>,
+  TFormData,
+  TFieldsPropName extends PropertyKey,
+> = {
+  [TPropName in TFieldsPropName]: FieldGroupFieldBindingsOf<
+    TFieldGroup,
+    TFormData
+  >
+}
+
+type FieldGroupFieldBindingsProp<
+  TFieldGroup extends ReactFieldGroup<any, any>,
+  TFormData,
+  TFieldsPropName extends PropertyKey,
+> = unknown extends TFormData
+  ? FieldsPropsDefinition<TFieldGroup, TFormData, TFieldsPropName>
+  : FieldGroupFieldsOf<TFieldGroup> extends infer TFields extends
+        FieldGroupFields
+    ? FieldGroupIdentityBindings<TFields> extends FieldGroupFieldBindings<
+        TFields,
+        TFormData
+      >
+      ? Partial<FieldsPropsDefinition<TFieldGroup, TFormData, TFieldsPropName>>
+      : FieldsPropsDefinition<TFieldGroup, TFormData, TFieldsPropName>
+    : never
+
 export type FieldGroupFieldsPropName<
   TProps,
   TFieldGroup extends ReactFieldGroup<any, any>,
@@ -156,7 +187,12 @@ export type FieldGroupFieldsPropName<
 
 /**
  * Wraps a component that accepts a field-group API and returns a component
- * that accepts a form plus virtual-to-concrete field bindings.
+ * that accepts a form and, when needed, virtual-to-concrete field bindings.
+ *
+ * If every virtual field name is already a compatible path in the form, the
+ * returned component binds those paths automatically when the bindings prop is
+ * omitted. A complete bindings map can still reroute them. Otherwise, the
+ * bindings prop is required.
  *
  * @example
  * ```tsx
@@ -199,6 +235,8 @@ export type FieldGroupFieldsPropName<
  *   )
  * }
  * ```
+ *
+ * @typeParam TFieldGroup - Library-managed. Do not specify explicitly.
  */
 export type FieldGroupWithFieldsFn<
   TFieldGroup extends ReactFieldGroup<any, any>,
@@ -211,12 +249,7 @@ export type FieldGroupWithFieldsFn<
 ) => <TFormData>(
   props: Omit<TProps, TFieldsPropName | 'form'> & {
     form: FieldGroupForm<FieldGroupFieldComponentsOf<TFieldGroup>, TFormData>
-  } & {
-    [TPropName in TFieldsPropName]: FieldGroupFieldBindingsOf<
-      TFieldGroup,
-      TFormData
-    >
-  },
+  } & FieldGroupFieldBindingsProp<TFieldGroup, TFormData, TFieldsPropName>,
 ) => ReactNode
 
 export interface FieldGroupHelper {
@@ -262,8 +295,11 @@ export interface FieldGroupDefinition<
    * form.
    *
    * The returned component accepts the original component props except for the
-   * injected field-group API prop. It adds a `form` prop and reuses the injected
-   * prop name for the virtual-to-concrete field binding map.
+   * injected field-group API prop and adds a `form` prop. When every virtual
+   * field name is already a compatible form path, those paths bind
+   * automatically when the bindings prop is omitted. A complete bindings map
+   * can still reroute them. Otherwise, the injected prop name is reused for the
+   * required virtual-to-concrete field binding map.
    *
    * @example
    * ```tsx

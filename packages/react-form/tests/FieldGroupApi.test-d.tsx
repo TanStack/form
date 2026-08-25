@@ -315,6 +315,18 @@ function DefineFieldGroupTypes() {
     } satisfies FieldBindingFormData,
     onSubmit: () => 'submitted' as const,
   })
+  const formWithIdentityBindings = useForm({
+    defaultValues: {
+      name: '',
+      age: 0,
+      emails: [] as Array<{ value: string }>,
+      alternate: {
+        name: '',
+        age: 0,
+        emails: [] as Array<{ value: string }>,
+      },
+    },
+  })
 
   expectTypeOf(stringSlot.mode).toEqualTypeOf<'strict'>()
   expectTypeOf(looseStringSlot.mode).toEqualTypeOf<'loose'>()
@@ -400,6 +412,25 @@ function DefineFieldGroupTypes() {
 
   return (
     <>
+      <WrappedDefinedFields form={formWithIdentityBindings} label="Identity" />
+
+      <WrappedDefinedFields
+        form={formWithIdentityBindings}
+        label="Rerouted"
+        fields={{
+          name: 'alternate.name',
+          age: 'alternate.age',
+          emails: 'alternate.emails',
+        }}
+      />
+
+      <WrappedDefinedFields
+        form={formWithIdentityBindings}
+        label="Incomplete"
+        // @ts-expect-error optional field bindings still need every defined field
+        fields={{ name: 'name' }}
+      />
+
       <WrappedDefinedFields
         form={formWithSubmitReturn}
         label="User"
@@ -429,6 +460,9 @@ function DefineFieldGroupTypes() {
           emails: 'user.emails',
         }}
       />
+
+      {/* @ts-expect-error non-identity field bindings remain required */}
+      <WrappedDefinedFields form={typedForm} label="User" />
 
       <WrappedDefinedFields
         form={typedForm}
