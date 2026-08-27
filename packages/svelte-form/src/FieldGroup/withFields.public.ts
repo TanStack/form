@@ -1,10 +1,5 @@
 import { defineFieldGroupRuntime } from './withFields.lib'
-import type {
-  DeepKeys,
-  DeepKeysWhereValueIncludes,
-  DeepValue,
-  FormApi,
-} from '@tanstack/form-core'
+import type { DeepKeys, DeepValue, FormApi } from '@tanstack/form-core'
 import type {
   Component,
   ComponentConstructorOptions,
@@ -110,12 +105,7 @@ export type FieldGroupForm<
 export type FieldGroupFieldBindingForSlot<
   TData,
   TSlot extends AnyFieldGroupFieldSlot,
-> =
-  TSlot extends FieldGroupFieldSlot<infer TValue, infer TMode>
-    ? TMode extends 'strict'
-      ? FieldGroupFieldNameForSlot<TData, TSlot>
-      : DeepKeysWhereValueIncludes<TData, TValue>
-    : never
+> = FieldGroupFieldNameForSlot<TData, TSlot>
 export type FieldGroupFieldBindings<
   TFields extends FieldGroupFields,
   TData = any,

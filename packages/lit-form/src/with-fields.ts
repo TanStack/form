@@ -7,7 +7,6 @@ import {
 } from '@tanstack/form-core/internals'
 import type {
   DeepKeys,
-  DeepKeysWhereValueIncludes,
   DeepValue,
   FormApiArrayMethods,
   FormApiFieldMethods,
@@ -102,12 +101,7 @@ export type LitFieldGroup<TFields extends FieldGroupFields> = LitFieldGroupApi<
 type FieldGroupFieldBindingForSlot<
   TFormData,
   TSlot extends AnyFieldGroupFieldSlot,
-> =
-  TSlot extends FieldGroupFieldSlot<infer TValue, infer TMode>
-    ? TMode extends 'strict'
-      ? FieldGroupFieldNameForSlot<TFormData, TSlot>
-      : DeepKeysWhereValueIncludes<TFormData, TValue>
-    : never
+> = FieldGroupFieldNameForSlot<TFormData, TSlot>
 
 export type FieldGroupFieldBindings<
   TFields extends FieldGroupFields,
