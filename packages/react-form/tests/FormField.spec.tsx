@@ -113,9 +113,7 @@ describe('Form fields', () => {
         <>
           <button
             data-testid="replace-array"
-            onClick={() =>
-              form.setFieldValue('items', [{ label: 'B' }])
-            }
+            onClick={() => form.setFieldValue('items', [{ label: 'B' }])}
           />
           <button
             data-testid="update-child"
