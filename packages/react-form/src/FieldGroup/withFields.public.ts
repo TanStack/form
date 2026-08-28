@@ -257,8 +257,8 @@ export interface FieldGroupHelper {
    */
   strict: <TValue>() => StrictFieldGroupFieldSlot<TValue>
   /**
-   * Declares a virtual field that can bind to form fields with an overlapping
-   * non-nullish value type instead of requiring an exact type match.
+   * Declares a virtual field that can bind to form fields whose value type is
+   * assignable to the declared type.
    *
    * @example
    * ```tsx
@@ -363,7 +363,8 @@ export type DefineFieldGroupFn<
  * paths in different parent forms.
  *
  * Use `strict` when a binding must have exactly the declared value type. Use
- * `loose` when bindings may have an overlapping non-nullish value type.
+ * `loose` when a binding may have the declared type or a narrower assignable
+ * type.
  *
  * @example
  * ```tsx

@@ -121,6 +121,10 @@
               "to": "framework/react/guides/validation"
             },
             {
+              "label": "Field Groups",
+              "to": "framework/react/guides/field-groups"
+            },
+            {
               "label": "Async Initial Values",
               "to": "framework/react/guides/async-initial-values"
             },

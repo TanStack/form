@@ -80,6 +80,9 @@ accepts `FieldWithValue<T>` or register it with `createFormHook`.
 For the helper types used when passing a form or field to an extracted
 component, see [Splitting forms](../../../splitting-forms).
 
+To reuse several related fields together across different form shapes, see
+[Field groups](./field-groups).
+
 The repository's `examples/react/ui-integration-shadcn` example demonstrates a
 larger component system with branded fields, lazy-loaded controls, labels,
 descriptions, and accessible error rendering.
