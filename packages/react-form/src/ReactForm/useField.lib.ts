@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useSelector } from '@tanstack/react-store'
-import type { FunctionComponent } from 'react'
 import type {
   AnyInternalFieldApi,
   FieldOptionsScope,
@@ -23,7 +22,6 @@ interface InternalFieldProps extends ReactFormFieldProps<
 
 export function useField(
   options: InternalFieldProps,
-  fieldComponents: Record<string, FunctionComponent<any>> | null,
   scope: FieldOptionsScope,
 ): AnyInternalFieldApi {
   const optionsRef = useRef(options)
@@ -40,11 +38,8 @@ export function useField(
       },
       scope,
     )
-    if (fieldComponents === null) return field
-    Object.assign(field, fieldComponents)
-
     return field
-  }, [options.name, options.form, resetVersion, fieldComponents, scope])
+  }, [options.name, options.form, resetVersion, scope])
 
   useEffect(() => fieldApi._update(options, scope))
 

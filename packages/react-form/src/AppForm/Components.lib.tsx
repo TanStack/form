@@ -33,11 +33,10 @@ type AnyFieldComponent = FunctionComponent<
 
 export function createFieldWithContext(
   form: InternalReactFormApi,
-  fieldComponents: Record<string, FunctionComponent<any>>,
   scope: FieldOptionsScope,
 ) {
   const TanStackFormField: AnyFieldComponent = (props) => {
-    const fieldApi = useField({ ...props, form }, fieldComponents, scope)
+    const fieldApi = useField({ ...props, form }, scope)
     const field = useValueFieldSubscription(fieldApi)
 
     return (

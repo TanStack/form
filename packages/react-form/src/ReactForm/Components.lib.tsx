@@ -21,11 +21,10 @@ type AnyFieldComponent = FunctionComponent<
 
 export function createFieldComponent(
   form: InternalReactFormApi,
-  fieldComponents: Record<string, FunctionComponent<any>> | null,
   scope: FieldOptionsScope,
 ): AnyFieldComponent {
   const TanStackFormField: AnyFieldComponent = (props) => {
-    const fieldApi = useField({ ...props, form }, fieldComponents, scope)
+    const fieldApi = useField({ ...props, form }, scope)
     const field = useValueFieldSubscription(fieldApi)
 
     return props.children(field)
@@ -43,11 +42,10 @@ type AnyArrayFieldComponent = {
 
 export function createArrayFieldComponent(
   form: InternalReactFormApi,
-  fieldComponents: Record<string, FunctionComponent<any>> | null,
   scope: FieldOptionsScope,
 ): AnyArrayFieldComponent {
   const TanStackFormArrayField: AnyArrayFieldComponent = (props) => {
-    const fieldApi = useField({ ...props, form }, fieldComponents, scope)
+    const fieldApi = useField({ ...props, form }, scope)
     const field = useArrayFieldSubscription(fieldApi)
 
     return props.children(field)
@@ -81,7 +79,6 @@ type AnyFormGroupComponent = FunctionComponent<
 
 export function createFormGroupComponent(
   form: InternalReactFormApi,
-  fieldComponents: Record<string, FunctionComponent<any>> | null,
 ): AnyFormGroupComponent {
   const TanStackFormGroup: AnyFormGroupComponent = (props) => {
     const groupRef =
@@ -91,7 +88,6 @@ export function createFormGroupComponent(
       groupRef.current = attachReactFormGroupComponents(
         new InternalFormGroupApi({ ...props, form } as never),
         form,
-        fieldComponents,
       )
     }
 
@@ -114,7 +110,6 @@ export function createFormGroupComponent(
 function attachReactFormGroupComponents(
   group: InternalFormGroupApi<any, any, any, any, any>,
   form: InternalReactFormApi,
-  fieldComponents: Record<string, FunctionComponent<any>> | null,
 ) {
   type FormGroupComponents = InternalFormGroupApi<any, any, any, any, any> & {
     Field: FunctionComponent<any>
@@ -123,12 +118,8 @@ function attachReactFormGroupComponents(
   }
 
   const resultGroup: FormGroupComponents = group as never
-  const GroupField = createFieldComponent(form, fieldComponents, 'field')
-  const GroupArrayField = createArrayFieldComponent(
-    form,
-    fieldComponents,
-    'field',
-  )
+  const GroupField = createFieldComponent(form, 'field')
+  const GroupArrayField = createArrayFieldComponent(form, 'field')
 
   resultGroup.Field = function Field(props) {
     return (

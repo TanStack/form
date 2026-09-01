@@ -8,6 +8,40 @@ import type {
 } from '@tanstack/form-core/internals'
 
 describe('createFormHook', () => {
+  it('provides registered components to fields created during mount validation', () => {
+    const SharedComponent = () => <span>Shared field component</span>
+    const { useAppForm } = createFormHook({
+      fieldComponents: { SharedComponent },
+      formComponents: {},
+    })
+
+    function Component() {
+      const form = useAppForm({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            runOnMount: true,
+            triggers: [],
+            run: () => ({ fields: { name: 'Name is required' } }),
+          },
+        ],
+      })
+
+      return (
+        <form.Field name="name">
+          {(field) => {
+            const { SharedComponent: DestructuredComponent } = field
+            return <DestructuredComponent />
+          }}
+        </form.Field>
+      )
+    }
+
+    const { getByText } = render(<Component />)
+
+    expect(getByText('Shared field component')).toBeInTheDocument()
+  })
+
   it('supports destructuring registered form components', () => {
     const SharedComponent = () => <span>Shared component</span>
     const { useAppForm } = createFormHook({

@@ -8,7 +8,6 @@ import {
   createSubscribeComponent,
 } from './Components.lib'
 import type { DefaultOptions, FormOptions } from '@tanstack/form-core'
-import type { FunctionComponent } from 'react'
 import type { ReactTanStackFormComponents } from './Components.public'
 
 const useReactId =
@@ -26,19 +25,16 @@ export class InternalReactFormApi
   constructor(
     options: FormOptions<any, any, any, unknown>,
     defaultOptions?: DefaultOptions,
-    fieldComponents: Record<string, FunctionComponent<any>> | null = null,
   ) {
     super(options, defaultOptions)
     this.Field = createFieldComponent(
       this,
-      fieldComponents,
       'field',
     ) as InternalReactFormApi['Field']
-    this.ArrayField = createArrayFieldComponent(this, fieldComponents, 'field')
+    this.ArrayField = createArrayFieldComponent(this, 'field')
     this.Subscribe = createSubscribeComponent(this)
     this.FormGroup = createFormGroupComponent(
       this,
-      fieldComponents,
     ) as InternalReactFormApi['FormGroup']
   }
 }

@@ -1,5 +1,6 @@
 import { createArrayFieldComponent } from '../ReactForm/Components.lib'
 import { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
+import { createInternalReactAppFieldApiClass } from './ReactAppFieldApi.lib'
 import {
   createAppForm,
   createFieldWithContext,
@@ -28,23 +29,29 @@ export function createInternalReactAppFormApiClass<
   formComponents: TFormComponents,
   fieldComponents: FormComponents,
 ): InternalReactAppFormApiConstructor<TFormComponents> {
+  const InternalReactAppFieldApi =
+    createInternalReactAppFieldApiClass(fieldComponents)
+
   class InternalReactAppFormApi
     extends InternalReactFormApi
     implements InternalReactAppFormApiInstance
   {
     AppForm: AppFormComponent
 
+    override get _FieldApi(): typeof InternalReactAppFieldApi {
+      return InternalReactAppFieldApi
+    }
+
     constructor(
       options: FormOptions<any, any, any, unknown>,
       defaultOptions?: DefaultOptions,
     ) {
-      super(options, defaultOptions, fieldComponents)
+      super(options, defaultOptions)
 
-      const field = createFieldWithContext(this, fieldComponents, 'field')
-      const groupField = createFieldWithContext(this, fieldComponents, 'field')
+      const field = createFieldWithContext(this, 'field')
+      const groupField = createFieldWithContext(this, 'field')
       const groupArrayField = createArrayFieldComponent(
         this,
-        fieldComponents,
         'field',
       ) as FunctionComponent<any>
 
