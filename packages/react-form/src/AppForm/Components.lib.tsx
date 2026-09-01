@@ -1,55 +1,20 @@
 import React from 'react'
 
 import { InternalFormGroupApi } from '@tanstack/form-core/internals'
-import { createArrayFieldComponent } from '../ReactForm/Components.lib'
 import { useField } from '../ReactForm/useField.lib'
 import { useValueFieldSubscription } from '../ReactForm/fieldSubscriptions.lib'
 import { Subscribe } from '../Subscribe.public'
 import { FieldContext, FormContext } from './contexts.lib'
 import type { FieldOptionsScope } from '@tanstack/form-core/internals'
 import type { FunctionComponent, ReactNode } from 'react'
-import type {
-  AppFormComponent,
-  ReactAppFormApi,
-} from './ReactAppFormApi.public'
-import type { AnyReactFormComponentMap } from './componentMap.public'
+import type { AppFormComponent } from './ReactAppFormApi.public'
 import type {
   ReactFormFieldProps,
   ReactFormGroupProps,
 } from '../ReactForm/Components.public'
 import type { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
 
-type AnyReactAppFormApi = ReactAppFormApi<any, any, AnyReactFormComponentMap>
-
-export function attachReactAppFormComponents(
-  form: InternalReactFormApi,
-  formComponents: Record<string, FunctionComponent<any>>,
-  fieldComponents: Record<string, FunctionComponent<any>>,
-): AnyReactAppFormApi {
-  const resultForm = form as never as AnyReactAppFormApi
-  const field = createFieldWithContext(form, fieldComponents, 'field')
-  const arrayField = resultForm.ArrayField as FunctionComponent<any>
-  const groupField = createFieldWithContext(form, fieldComponents, 'field')
-  const groupArrayField = createArrayFieldComponent(
-    form,
-    fieldComponents,
-    'field',
-  ) as FunctionComponent<any>
-  const formGroup = createFormGroupWithContext(
-    resultForm as any,
-    groupField,
-    groupArrayField,
-  )
-
-  resultForm.AppForm = createAppForm(form)
-  resultForm.Field = field as AnyReactAppFormApi['Field']
-  resultForm.ArrayField = arrayField as AnyReactAppFormApi['ArrayField']
-  resultForm.FormGroup = formGroup as AnyReactAppFormApi['FormGroup']
-
-  return Object.assign(resultForm, formComponents)
-}
-
-function createAppForm(form: InternalReactFormApi): AppFormComponent {
+export function createAppForm(form: InternalReactFormApi): AppFormComponent {
   const AppForm: FunctionComponent<{
     children: Exclude<ReactNode, Promise<any>>
   }> = function AppFormComponent(props) {
@@ -66,7 +31,7 @@ type AnyFieldComponent = FunctionComponent<
   ReactFormFieldProps<any, any, any, any, never, any, any, any>
 >
 
-function createFieldWithContext(
+export function createFieldWithContext(
   form: InternalReactFormApi,
   fieldComponents: Record<string, FunctionComponent<any>>,
   scope: FieldOptionsScope,
@@ -92,7 +57,7 @@ type AnyFormGroupComponent = FunctionComponent<
   ReactFormGroupProps<any, any, any, any, any, any>
 >
 
-function createFormGroupWithContext(
+export function createFormGroupWithContext(
   form: InternalReactFormApi,
   groupField: FunctionComponent<any>,
   groupArrayField: FunctionComponent<any>,

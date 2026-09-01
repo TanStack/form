@@ -1,5 +1,5 @@
-import { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
-import { attachReactAppFormComponents } from './Components.lib'
+import { createInternalReactAppFormApiClass } from './ReactAppFormApi.lib'
+import type { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
 import type {
   DefaultFieldOptions,
   DefaultFormGroupOptions,
@@ -20,6 +20,10 @@ interface AnyCreateFormHookOptions {
 export function createAppFormInitializer(
   createOptions: AnyCreateFormHookOptions,
 ): (options: FormOptions<any, any, any, unknown>) => InternalReactFormApi {
+  const InternalReactAppFormApi = createInternalReactAppFormApiClass(
+    createOptions.formComponents,
+    createOptions.fieldComponents,
+  )
   const hasDefaultOptions =
     createOptions.defaultFormOptions ||
     createOptions.defaultFieldOptions ||
@@ -34,17 +38,6 @@ export function createAppFormInitializer(
     : undefined
 
   return (options) => {
-    const form = new InternalReactFormApi(
-      options,
-      defaultOptions,
-      createOptions.fieldComponents,
-    )
-    const extendedForm = attachReactAppFormComponents(
-      form,
-      createOptions.formComponents,
-      createOptions.fieldComponents,
-    )
-
-    return extendedForm as never
+    return new InternalReactAppFormApi(options, defaultOptions)
   }
 }
