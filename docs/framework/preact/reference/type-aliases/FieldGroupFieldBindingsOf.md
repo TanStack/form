@@ -9,7 +9,7 @@ title: FieldGroupFieldBindingsOf
 type FieldGroupFieldBindingsOf<TFieldGroup, TFormData> = FieldGroupFieldsOf<TFieldGroup> extends FieldGroupFields ? FieldGroupFieldBindings<FieldGroupFieldsOf<TFieldGroup>, TFormData> : never;
 ```
 
-Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:141](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/withFields.public.ts#L141)
+Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:48](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/withFields.public.ts#L48)
 
 ## Type Parameters
 

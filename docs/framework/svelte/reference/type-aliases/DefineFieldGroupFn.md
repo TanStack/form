@@ -9,7 +9,7 @@ title: DefineFieldGroupFn
 type DefineFieldGroupFn<TComponents> = <TFields>(defineFn) => FieldGroupDefinition<TFields, TComponents>;
 ```
 
-Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:171](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L171)
+Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:93](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L93)
 
 Signature shared by `defineFieldGroup` and app-form field-group definers.
 
@@ -23,7 +23,7 @@ Signature shared by `defineFieldGroup` and app-form field-group definers.
 
 ### TFields
 
-`TFields` *extends* [`FieldGroupFields`](FieldGroupFields.md)
+`TFields` *extends* `FieldGroupFields`
 
 ## Parameters
 

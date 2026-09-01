@@ -9,7 +9,7 @@ title: FieldGroupWithFieldsFn
 type FieldGroupWithFieldsFn<TGroup> = <TProps, TPropName>(Component, fieldsPropName) => <TFormData>(options) => SvelteComponent & Component<any> & WithoutFunction<Component>;
 ```
 
-Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:135](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L135)
+Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:60](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L60)
 
 ## Type Parameters
 
@@ -25,7 +25,7 @@ Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:135](https
 
 ### TPropName
 
-`TPropName` *extends* [`FieldGroupFieldsPropName`](FieldGroupFieldsPropName.md)\<`TProps`, `TGroup`\>
+`TPropName` *extends* `FieldGroupFieldsPropName`\<`TProps`, `TGroup`\>
 
 ## Parameters
 

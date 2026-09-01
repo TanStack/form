@@ -5,13 +5,13 @@ title: FieldGroupDefinition
 
 # Interface: FieldGroupDefinition\<TFields, TFieldComponents\>
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:251](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L251)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:123](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L123)
 
 ## Type Parameters
 
 ### TFields
 
-`TFields` *extends* [`FieldGroupFields`](../type-aliases/FieldGroupFields.md)
+`TFields` *extends* `FieldGroupFields`
 
 ### TFieldComponents
 
@@ -25,14 +25,17 @@ Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:251](https:
 bindComponent: FieldGroupWithFieldsFn<ReactFieldGroup<TFields, TFieldComponents>>;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:321](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L321)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:196](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L196)
 
 Binds a component's field-group API prop to concrete paths in a parent
 form.
 
 The returned component accepts the original component props except for the
-injected field-group API prop. It adds a `form` prop and reuses the injected
-prop name for the virtual-to-concrete field binding map.
+injected field-group API prop and adds a `form` prop. When every virtual
+field name is already a compatible form path, those paths bind
+automatically when the bindings prop is omitted. A complete bindings map
+can still reroute them. Otherwise, the injected prop name is reused for the
+required virtual-to-concrete field binding map.
 
 #### Example
 
@@ -96,7 +99,7 @@ const PasswordSection = passwordFieldGroup.bindComponent(
 fields: ReactFieldGroup<TFields, TFieldComponents>;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:259](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L259)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:131](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L131)
 
 The virtual field-group API injected into the component passed to
 `bindComponent`.

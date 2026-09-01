@@ -9,7 +9,7 @@ title: FieldGroupWithFieldsFn
 type FieldGroupWithFieldsFn<TFieldGroup> = <TProps, TFieldsPropName>(render, fieldsPropName) => <TFormData>(props) => unknown;
 ```
 
-Defined in: [with-fields.ts:138](https://github.com/TanStack/form/blob/main/packages/lit-form/src/with-fields.ts#L138)
+Defined in: [with-fields.ts:62](https://github.com/TanStack/form/blob/main/packages/lit-form/src/with-fields.ts#L62)
 
 ## Type Parameters
 

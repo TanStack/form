@@ -9,7 +9,7 @@ title: VueFieldGroup
 type VueFieldGroup<TFields, TFieldComponents> = FieldGroupApi<FieldGroupFieldData<TFields>, TFieldComponents> & object;
 ```
 
-Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:88](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L88)
+Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:23](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L23)
 
 ## Type Declaration
 
@@ -23,7 +23,7 @@ readonly [fieldGroupFieldsSymbol]: TFields;
 
 ### TFields
 
-`TFields` *extends* [`FieldGroupFields`](FieldGroupFields.md)
+`TFields` *extends* `FieldGroupFields`
 
 ### TFieldComponents
 

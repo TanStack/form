@@ -9,7 +9,7 @@ title: FieldGroupForm
 type FieldGroupForm<TFieldComponents, TFormData> = FormApi<TFormData, any> & PreactTanStackFormComponents<TFormData, any, TFieldComponents>;
 ```
 
-Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:112](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/withFields.public.ts#L112)
+Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:39](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/withFields.public.ts#L39)
 
 ## Type Parameters
 

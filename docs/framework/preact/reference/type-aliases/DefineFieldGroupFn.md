@@ -9,7 +9,7 @@ title: DefineFieldGroupFn
 type DefineFieldGroupFn<TFieldComponents> = <TFields>(defineFn) => FieldGroupDefinition<TFields, TFieldComponents>;
 ```
 
-Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:195](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/withFields.public.ts#L195)
+Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:84](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/withFields.public.ts#L84)
 
 Signature shared by `defineFieldGroup` and app-form field-group definers.
 
@@ -23,7 +23,7 @@ Signature shared by `defineFieldGroup` and app-form field-group definers.
 
 ### TFields
 
-`TFields` *extends* [`FieldGroupFields`](FieldGroupFields.md)
+`TFields` *extends* `FieldGroupFields`
 
 ## Parameters
 

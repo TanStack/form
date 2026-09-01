@@ -9,7 +9,7 @@ title: FieldGroupWithFieldsFn
 type FieldGroupWithFieldsFn<TFieldGroup> = <TProps, TFieldsPropName>(Component, fieldsPropName) => <TFormData>(props) => CrossVersionPreactNode;
 ```
 
-Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:158](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/withFields.public.ts#L158)
+Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:53](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/withFields.public.ts#L53)
 
 ## Type Parameters
 
@@ -25,7 +25,7 @@ Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:158](https
 
 ### TFieldsPropName
 
-`TFieldsPropName` *extends* [`FieldGroupFieldsPropName`](FieldGroupFieldsPropName.md)\<`TProps`, `TFieldGroup`\>
+`TFieldsPropName` *extends* `FieldGroupFieldsPropName`\<`TProps`, `TFieldGroup`\>
 
 ## Parameters
 

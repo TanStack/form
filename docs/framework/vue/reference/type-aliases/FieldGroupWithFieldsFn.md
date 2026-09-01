@@ -6,11 +6,11 @@ title: FieldGroupWithFieldsFn
 # Type Alias: FieldGroupWithFieldsFn\<TFieldGroup\>
 
 ```ts
-type FieldGroupWithFieldsFn<TFieldGroup> = <TProps, TFieldsPropName>(component, fieldsPropName) => <TFormData>(props) => VueComponentInstance<Omit<TProps, TFieldsPropName | "form"> & object & { [TPropName in TFieldsPropName]: FieldGroupFieldBindingsOf<TFieldGroup, TFormData> } & Record<string, any>, {
+type FieldGroupWithFieldsFn<TFieldGroup> = <TProps, TFieldsPropName>(component, fieldsPropName) => <TFormData>(props) => VueComponentInstance<Omit<TProps, TFieldsPropName | "form"> & object & FieldGroupFieldBindingsInstanceProp<TFieldGroup, TFormData, TFieldsPropName> & Record<string, any>, {
 }>;
 ```
 
-Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:138](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L138)
+Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:68](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L68)
 
 ## Type Parameters
 
@@ -36,9 +36,9 @@ Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:138](https://
 
 ### fieldsPropName
 
-`TFieldsPropName` & [`FieldGroupFieldsPropName`](FieldGroupFieldsPropName.md)\<`TProps`, `TFieldGroup`\>
+`TFieldsPropName` & `FieldGroupFieldsPropName`\<`TProps`, `TFieldGroup`\>
 
 ## Returns
 
-\<`TFormData`\>(`props`) => `VueComponentInstance`\<`Omit`\<`TProps`, `TFieldsPropName` \| `"form"`\> & `object` & `{ [TPropName in TFieldsPropName]: FieldGroupFieldBindingsOf<TFieldGroup, TFormData> }` & `Record`\<`string`, `any`\>, \{
+\<`TFormData`\>(`props`) => `VueComponentInstance`\<`Omit`\<`TProps`, `TFieldsPropName` \| `"form"`\> & `object` & `FieldGroupFieldBindingsInstanceProp`\<`TFieldGroup`, `TFormData`, `TFieldsPropName`\> & `Record`\<`string`, `any`\>, \{
 \}\>

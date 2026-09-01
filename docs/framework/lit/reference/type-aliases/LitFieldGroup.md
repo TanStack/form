@@ -9,7 +9,7 @@ title: LitFieldGroup
 type LitFieldGroup<TFields> = LitFieldGroupApi<FieldGroupFieldData<TFields>> & object;
 ```
 
-Defined in: [with-fields.ts:96](https://github.com/TanStack/form/blob/main/packages/lit-form/src/with-fields.ts#L96)
+Defined in: [with-fields.ts:49](https://github.com/TanStack/form/blob/main/packages/lit-form/src/with-fields.ts#L49)
 
 ## Type Declaration
 
@@ -23,4 +23,4 @@ readonly [fieldGroupFieldsSymbol]: TFields;
 
 ### TFields
 
-`TFields` *extends* [`FieldGroupFields`](FieldGroupFields.md)
+`TFields` *extends* `FieldGroupFields`

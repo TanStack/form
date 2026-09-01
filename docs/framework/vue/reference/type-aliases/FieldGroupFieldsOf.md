@@ -9,7 +9,7 @@ title: FieldGroupFieldsOf
 type FieldGroupFieldsOf<TFieldGroup> = TFieldGroup extends object ? TFields : never;
 ```
 
-Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:82](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L82)
+Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:17](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L17)
 
 ## Type Parameters
 
