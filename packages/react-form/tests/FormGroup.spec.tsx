@@ -118,7 +118,7 @@ describe('FormGroup', () => {
     expect(getByTestId('app-field-name')).toHaveTextContent('guestDetails.name')
   })
 
-  it('uses the AppForm field provider subscription for field context', async () => {
+  it('uses one AppForm field provider subscription for field context', async () => {
     const subscribe = vi.fn()
     const unsubscribe = vi.fn()
     const instrumentedAtoms = new WeakSet<object>()
@@ -169,7 +169,7 @@ describe('FormGroup', () => {
 
     await vi.waitFor(() => {
       expect(subscribe.mock.calls.length - unsubscribe.mock.calls.length).toBe(
-        2,
+        1,
       )
     })
 
