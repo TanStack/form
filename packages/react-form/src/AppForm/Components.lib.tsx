@@ -1,18 +1,12 @@
 import React from 'react'
 
 import { InternalFormGroupApi } from '@tanstack/form-core/internals'
-import {
-  attachReactFormComponents,
-  createArrayFieldComponent,
-} from '../ReactForm/Components.lib'
+import { createArrayFieldComponent } from '../ReactForm/Components.lib'
 import { useField } from '../ReactForm/useField.lib'
 import { useValueFieldSubscription } from '../ReactForm/fieldSubscriptions.lib'
 import { Subscribe } from '../Subscribe.public'
 import { FieldContext, FormContext } from './contexts.lib'
-import type {
-  AnyInternalFormApi,
-  FieldOptionsScope,
-} from '@tanstack/form-core/internals'
+import type { FieldOptionsScope } from '@tanstack/form-core/internals'
 import type { FunctionComponent, ReactNode } from 'react'
 import type {
   AppFormComponent,
@@ -28,14 +22,11 @@ import type { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
 type AnyReactAppFormApi = ReactAppFormApi<any, any, AnyReactFormComponentMap>
 
 export function attachReactAppFormComponents(
-  form: AnyInternalFormApi,
+  form: InternalReactFormApi,
   formComponents: Record<string, FunctionComponent<any>>,
   fieldComponents: Record<string, FunctionComponent<any>>,
 ): AnyReactAppFormApi {
-  const resultForm = attachReactFormComponents(
-    form,
-    fieldComponents,
-  ) as never as AnyReactAppFormApi
+  const resultForm = form as never as AnyReactAppFormApi
   const field = createFieldWithContext(form, fieldComponents, 'field')
   const arrayField = resultForm.ArrayField as FunctionComponent<any>
   const groupField = createFieldWithContext(form, fieldComponents, 'field')
@@ -58,7 +49,7 @@ export function attachReactAppFormComponents(
   return Object.assign(resultForm, formComponents)
 }
 
-function createAppForm(form: AnyInternalFormApi): AppFormComponent {
+function createAppForm(form: InternalReactFormApi): AppFormComponent {
   const AppForm: FunctionComponent<{
     children: Exclude<ReactNode, Promise<any>>
   }> = function AppFormComponent(props) {
@@ -76,7 +67,7 @@ type AnyFieldComponent = FunctionComponent<
 >
 
 function createFieldWithContext(
-  form: AnyInternalFormApi,
+  form: InternalReactFormApi,
   fieldComponents: Record<string, FunctionComponent<any>>,
   scope: FieldOptionsScope,
 ) {

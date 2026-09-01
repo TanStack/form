@@ -1,4 +1,4 @@
-import { InternalFormApi } from '@tanstack/form-core/internals'
+import { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
 import { attachReactAppFormComponents } from './Components.lib'
 import type {
   DefaultFieldOptions,
@@ -7,7 +7,6 @@ import type {
   DefaultOptions,
   FormOptions,
 } from '@tanstack/form-core'
-import type { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
 import type { FunctionComponent } from 'react'
 
 interface AnyCreateFormHookOptions {
@@ -35,7 +34,11 @@ export function createAppFormInitializer(
     : undefined
 
   return (options) => {
-    const form = new InternalFormApi(options, defaultOptions)
+    const form = new InternalReactFormApi(
+      options,
+      defaultOptions,
+      createOptions.fieldComponents,
+    )
     const extendedForm = attachReactAppFormComponents(
       form,
       createOptions.formComponents,

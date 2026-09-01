@@ -6,10 +6,7 @@ import {
   useValueFieldSubscription,
 } from './fieldSubscriptions.lib'
 import { useField } from './useField.lib'
-import type {
-  AnyInternalFormApi,
-  FieldOptionsScope,
-} from '@tanstack/form-core/internals'
+import type { FieldOptionsScope } from '@tanstack/form-core/internals'
 import type { InternalReactFormApi } from './ReactFormApi.lib'
 import type { FunctionComponent, ReactNode } from 'react'
 import type {
@@ -18,36 +15,12 @@ import type {
   ReactFormSubscribeProps,
 } from './Components.public'
 
-export function attachReactFormComponents(
-  form: AnyInternalFormApi,
-  fieldComponents: Record<string, FunctionComponent<any>> | null,
-): InternalReactFormApi {
-  const resultForm = form as InternalReactFormApi
-  resultForm.Field = createFieldComponent(
-    form,
-    fieldComponents,
-    'field',
-  ) as InternalReactFormApi['Field']
-  resultForm.ArrayField = createArrayFieldComponent(
-    form,
-    fieldComponents,
-    'field',
-  )
-  resultForm.Subscribe = createSubscribeComponent(form)
-  resultForm.FormGroup = createFormGroupComponent(
-    resultForm,
-    fieldComponents,
-  ) as InternalReactFormApi['FormGroup']
-
-  return resultForm
-}
-
 type AnyFieldComponent = FunctionComponent<
   ReactFormFieldProps<any, any, any, any, never, any, any, any>
 >
 
-function createFieldComponent(
-  form: AnyInternalFormApi,
+export function createFieldComponent(
+  form: InternalReactFormApi,
   fieldComponents: Record<string, FunctionComponent<any>> | null,
   scope: FieldOptionsScope,
 ): AnyFieldComponent {
@@ -69,7 +42,7 @@ type AnyArrayFieldComponent = {
 }
 
 export function createArrayFieldComponent(
-  form: AnyInternalFormApi,
+  form: InternalReactFormApi,
   fieldComponents: Record<string, FunctionComponent<any>> | null,
   scope: FieldOptionsScope,
 ): AnyArrayFieldComponent {
@@ -90,8 +63,8 @@ type AnySubscribeComponent = {
   displayName?: string
 }
 
-function createSubscribeComponent(
-  form: AnyInternalFormApi,
+export function createSubscribeComponent(
+  form: InternalReactFormApi,
 ): AnySubscribeComponent {
   const TanStackFormSubscribe: AnySubscribeComponent = (props) => {
     return <Subscribe source={form.atom} {...props} />
@@ -106,7 +79,7 @@ type AnyFormGroupComponent = FunctionComponent<
   ReactFormGroupProps<any, any, any, any, any, any>
 >
 
-function createFormGroupComponent(
+export function createFormGroupComponent(
   form: InternalReactFormApi,
   fieldComponents: Record<string, FunctionComponent<any>> | null,
 ): AnyFormGroupComponent {
