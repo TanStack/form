@@ -5,7 +5,6 @@ import {
 } from '@tanstack/form-core/internals'
 import { createComponent, mergeProps, splitProps } from 'solid-js'
 import type { Component } from 'solid-js'
-import type { InternalFieldGroupBindings } from '@tanstack/form-core/internals'
 import type { AnyFieldGroupApi } from './FieldGroupApi.public'
 
 function attachSolidFieldGroupComponents(
@@ -64,8 +63,7 @@ function withFieldsRuntime(
       new InternalFieldGroupApi({
         form,
         fieldNames,
-        getBindings: () =>
-          localProps[fieldsPropName] as InternalFieldGroupBindings,
+        getBindings: () => localProps[fieldsPropName],
       }),
       form,
     )

@@ -397,6 +397,42 @@ describe('Vue adapter parity', () => {
     expect(getName()).toBe('Rodney')
   })
 
+  it('defaults omitted bindings to same-named form fields', async () => {
+    const nameFieldGroup = defineFieldGroup(({ strict }) => ({
+      name: strict<string>(),
+    }))
+    const NameFields = nameFieldGroup.bindComponent(
+      defineComponent<{ fields: typeof nameFieldGroup.fields }>(
+        (props) => () => (
+          <props.fields.Field name="name">
+            {({ field }: { field: AnyFieldApi }) => (
+              <input
+                aria-label="Name"
+                value={field.value}
+                onInput={(event) =>
+                  field.handleChange((event.target as HTMLInputElement).value)
+                }
+              />
+            )}
+          </props.fields.Field>
+        ),
+        { props: ['fields'] },
+      ),
+      'fields',
+    )
+    let getName!: () => string
+
+    const Component = defineComponent(() => {
+      const form = useForm({ defaultValues: { name: 'Tony' } })
+      getName = () => form.state.values.name
+      return () => <NameFields form={form} />
+    })
+
+    const view = render(Component)
+    await fireEvent.update(view.getByLabelText('Name'), 'Rodney')
+    expect(getName()).toBe('Rodney')
+  })
+
   it('reactively updates reusable field group bindings', async () => {
     const nameFieldGroup = defineFieldGroup(({ strict }) => ({
       name: strict<string>(),

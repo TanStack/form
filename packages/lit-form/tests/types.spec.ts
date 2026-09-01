@@ -63,8 +63,21 @@ const ReusableField = reusableFieldGroup.bindComponent(
   'fields',
 )
 
+const identityFieldGroup = defineFieldGroup(({ strict }) => ({
+  name: strict<string>(),
+}))
+const IdentityField = identityFieldGroup.bindComponent(
+  (props: { fields: typeof identityFieldGroup.fields }) =>
+    props.fields.field({ name: 'name' }, () => null),
+  'fields',
+)
+
 function assertReusableFieldTypes(form: Form) {
+  IdentityField({ form })
+  IdentityField({ form, fields: { name: 'profile.email' } })
   ReusableField({ form, fields: { value: 'profile.email' } })
+  // @ts-expect-error Non-identity field bindings remain required.
+  ReusableField({ form })
   // @ts-expect-error Strict string slots reject non-string fields.
   ReusableField({ form, fields: { value: 'items' } })
 }

@@ -71,21 +71,18 @@ function withFieldsRuntime(
   fieldsPropName: string,
 ) {
   const fieldNames = Object.keys(fields)
-  const identityBindings = Object.fromEntries(
-    fieldNames.map((fieldName) => [fieldName, fieldName]),
-  )
 
   const FieldGroupComponent = (props: any) => {
     const { form, ...restProps } = props
-    const bindingsRef = React.useRef<InternalFieldGroupBindings>(
-      props[fieldsPropName] ?? identityBindings,
+    const bindingsRef = React.useRef<InternalFieldGroupBindings | undefined>(
+      props[fieldsPropName],
     )
 
     if (!form) {
       throw new Error('TanStack Form: Field groups must receive a `form` prop.')
     }
 
-    bindingsRef.current = props[fieldsPropName] ?? identityBindings
+    bindingsRef.current = props[fieldsPropName]
 
     const fieldGroupApi = React.useMemo(
       () =>

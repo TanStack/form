@@ -11,7 +11,7 @@ export type InternalFieldGroupBindings = Record<string, string>
 export interface InternalFieldGroupOptions {
   form: AnyInternalFormApi
   fieldNames: ReadonlyArray<string>
-  getBindings: () => InternalFieldGroupBindings
+  getBindings: () => InternalFieldGroupBindings | undefined
 }
 
 interface ResolvedNameCacheEntry {
@@ -32,7 +32,7 @@ export class InternalFieldGroupApi {
   readonly atom: ReadonlyAtom<Record<string, unknown>>
   readonly form: AnyInternalFormApi
   readonly fieldNames: ReadonlyArray<string>
-  private readonly getBindings: () => InternalFieldGroupBindings
+  private readonly getBindings: () => InternalFieldGroupBindings | undefined
   private readonly resolvedNameCache = new Map<string, ResolvedNameCacheEntry>()
 
   constructor(options: InternalFieldGroupOptions) {
@@ -58,9 +58,12 @@ export class InternalFieldGroupApi {
   }
 
   _resolveFieldName(fieldName: string): string {
+    const bindings = this.getBindings()
+    if (bindings === undefined) return fieldName
+
     const rootEnd = getRootSegmentEnd(fieldName)
     const rootName = fieldName.slice(0, rootEnd)
-    const binding = this.getBindings()[rootName]
+    const binding = bindings[rootName]
 
     if (binding === undefined) {
       throw new Error(

@@ -1,81 +1,21 @@
 import { defineFieldGroupRuntime } from './withFields.lib'
-import type { DeepKeys, DeepValue, FormApi } from '@tanstack/form-core'
+import type {
+  FieldGroupFieldBindings,
+  FieldGroupFieldBindingsProps,
+  FieldGroupFieldData,
+  FieldGroupFields,
+  FieldGroupFieldsPropName,
+  FieldGroupHelper,
+  FormApi,
+} from '@tanstack/form-core'
 import type { Component, PublicProps } from 'vue'
 import type { VueTanStackFormComponents } from '../VueForm/Components.public'
 import type { FieldGroupApi } from './FieldGroupApi.public'
 import type { VueComponentInstance } from '../vueTypes.lib'
 
-declare const fieldGroupFieldSlotValueSymbol: unique symbol
 declare const fieldGroupFieldsSymbol: unique symbol
-
-export type FieldGroupFieldSlotMode = 'strict' | 'loose'
-export interface FieldGroupFieldSlot<
-  out TValue,
-  out TMode extends FieldGroupFieldSlotMode = FieldGroupFieldSlotMode,
-> {
-  readonly mode: TMode
-  readonly [fieldGroupFieldSlotValueSymbol]: TValue
-}
-export type AnyFieldGroupFieldSlot = FieldGroupFieldSlot<any>
-export type StrictFieldGroupFieldSlot<TValue> = FieldGroupFieldSlot<
-  TValue,
-  'strict'
->
-export type LooseFieldGroupFieldSlot<TValue> = FieldGroupFieldSlot<
-  TValue,
-  'loose'
->
-export type FieldGroupFieldSlotValue<TSlot> =
-  TSlot extends FieldGroupFieldSlot<infer TValue> ? TValue : never
-export type FieldGroupFieldSlotModeOf<TSlot> =
-  TSlot extends FieldGroupFieldSlot<any, infer TMode> ? TMode : never
-
-type IsSame<TTypeA, TTypeB> = [TTypeA] extends [TTypeB]
-  ? [TTypeB] extends [TTypeA]
-    ? true
-    : false
-  : false
-
-export type FieldGroupFieldSlotAllows<TSlot, TValue> =
-  TSlot extends FieldGroupFieldSlot<infer TAcceptedValue, infer TMode>
-    ? TMode extends 'strict'
-      ? IsSame<TValue, TAcceptedValue>
-      : [TValue] extends [TAcceptedValue]
-        ? true
-        : false
-    : false
-
-export type FieldGroupFieldNameForSlot<
-  TFieldData,
-  TSlot extends AnyFieldGroupFieldSlot,
-> = {
-  [TFieldName in DeepKeys<TFieldData>]: FieldGroupFieldSlotAllows<
-    TSlot,
-    DeepValue<TFieldData, TFieldName>
-  > extends true
-    ? TFieldName
-    : never
-}[DeepKeys<TFieldData>]
-
-export type FieldGroupFields = Record<string, AnyFieldGroupFieldSlot>
-export type FieldGroupFieldNames<
-  TFieldData,
-  TFields extends FieldGroupFields,
-> = {
-  [TFieldName in keyof TFields]: FieldGroupFieldNameForSlot<
-    TFieldData,
-    TFields[TFieldName]
-  >
-}
-export type FieldGroupFieldData<TFields extends FieldGroupFields> = {
-  [
-    TFieldName in keyof TFields
-  ]: TFields[TFieldName] extends FieldGroupFieldSlot<infer TValue, any>
-    ? TValue
-    : never
-}
 export type FieldGroupFieldsOf<TFieldGroup> = TFieldGroup extends {
-  readonly [fieldGroupFieldsSymbol]: infer TFields
+  readonly [fieldGroupFieldsSymbol]: infer TFields extends FieldGroupFields
 }
   ? TFields
   : never
@@ -96,34 +36,34 @@ export type FieldGroupForm<
 > = FormApi<TFormData, any> &
   VueTanStackFormComponents<TFormData, any, TFieldComponents>
 
-export type FieldGroupFieldBindingForSlot<
-  TFormData,
-  TSlot extends AnyFieldGroupFieldSlot,
-> = FieldGroupFieldNameForSlot<TFormData, TSlot>
-export type FieldGroupFieldBindings<
-  TFields extends FieldGroupFields,
-  TFormData = any,
-> = {
-  [TFieldName in keyof TFields]: FieldGroupFieldBindingForSlot<
-    TFormData,
-    TFields[TFieldName]
-  >
-}
 export type FieldGroupFieldBindingsOf<TFieldGroup, TFormData> =
   FieldGroupFieldsOf<TFieldGroup> extends FieldGroupFields
     ? FieldGroupFieldBindings<FieldGroupFieldsOf<TFieldGroup>, TFormData>
     : never
-export type FieldGroupFieldsPropName<
-  TProps,
+
+type FieldsPropsDefinition<
   TFieldGroup extends VueFieldGroup<any, any>,
+  TFormData,
+  TFieldsPropName extends PropertyKey,
 > = {
-  [TPropName in keyof TProps]-?: IsSame<
-    TProps[TPropName],
-    TFieldGroup
-  > extends true
-    ? TPropName
-    : never
-}[keyof TProps]
+  [TPropName in TFieldsPropName]: FieldGroupFieldBindingsOf<
+    TFieldGroup,
+    TFormData
+  >
+}
+
+type FieldGroupFieldBindingsInstanceProp<
+  TFieldGroup extends VueFieldGroup<any, any>,
+  TFormData,
+  TFieldsPropName extends PropertyKey,
+> =
+  // The direct branch preserves TFormData inference from Vue component props.
+  | FieldsPropsDefinition<TFieldGroup, TFormData, TFieldsPropName>
+  | FieldGroupFieldBindingsProps<
+      FieldGroupFieldsOf<TFieldGroup>,
+      TFormData,
+      TFieldsPropName
+    >
 
 export type FieldGroupWithFieldsFn<
   TFieldGroup extends VueFieldGroup<any, any>,
@@ -134,28 +74,23 @@ export type FieldGroupWithFieldsFn<
 ) => new <TFormData>(
   props: Omit<TProps, TFieldsPropName | 'form'> & {
     form: FieldGroupForm<FieldGroupFieldComponentsOf<TFieldGroup>, TFormData>
-  } & {
-    [TPropName in TFieldsPropName]: FieldGroupFieldBindingsOf<
-      TFieldGroup,
-      TFormData
-    >
-  } & PublicProps,
+  } & FieldGroupFieldBindingsProps<
+      FieldGroupFieldsOf<TFieldGroup>,
+      TFormData,
+      TFieldsPropName
+    > &
+    PublicProps,
 ) => VueComponentInstance<
   Omit<TProps, TFieldsPropName | 'form'> & {
     form: FieldGroupForm<FieldGroupFieldComponentsOf<TFieldGroup>, TFormData>
-  } & {
-    [TPropName in TFieldsPropName]: FieldGroupFieldBindingsOf<
+  } & FieldGroupFieldBindingsInstanceProp<
       TFieldGroup,
-      TFormData
-    >
-  } & Record<string, any>,
+      TFormData,
+      TFieldsPropName
+    > &
+    Record<string, any>,
   {}
 >
-
-export interface FieldGroupHelper {
-  strict: <TValue>() => StrictFieldGroupFieldSlot<TValue>
-  loose: <TValue>() => LooseFieldGroupFieldSlot<TValue>
-}
 
 export interface FieldGroupDefinition<
   TFields extends FieldGroupFields,
