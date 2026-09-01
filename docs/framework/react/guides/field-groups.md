@@ -457,7 +457,7 @@ Use `loose<T>()` when the concrete field type may be narrower than `T`.
 
 ## Usage in Form Composition
 
-Since each `createFormHook` can define its own field components, `defineFormGroup` does not know of them ahead of time.
+Since each `createFormHook` can define its own field components, `defineFieldGroup` does not know of them ahead of time.
 If you want to use field components in field groups, use `defineAppFieldGroup` instead. The remaining syntax is exactly the same.
 
 <!-- ::start:tabs variant="files" -->
