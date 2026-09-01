@@ -1,5 +1,6 @@
 import { batch, createAtom } from '@tanstack/store'
 import {
+  InternalFieldApi,
   getDefaultValueCacheResult,
   getOrCreateFieldApi,
   shouldCacheDefaultValue,
@@ -212,6 +213,8 @@ export class InternalFormApi<
    */
   static majorVersion = 2
 
+  // Allows adapters to control which InternalFieldApi subclass creates fields.
+  _FieldApi = InternalFieldApi
   atom: ReadonlyAtom<
     FormState<TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>>
   >
