@@ -1,6 +1,6 @@
 import { FormApi } from '@tanstack/form-core'
 import { useSelector } from '@tanstack/vue-store'
-import { defineComponent, h, onMounted } from 'vue'
+import { defineComponent, h, onMounted, onUnmounted } from 'vue'
 import { Field } from './useField'
 import { FormGroup } from './useFormGroup'
 import { useFormId } from './useFormId'
@@ -351,7 +351,20 @@ export function useForm<
     return extendedApi
   })()
 
-  onMounted(formApi.mount)
+  // `mount()` returns a teardown function. Vue, unlike React's `useEffect`,
+  // ignores a value returned from `onMounted`, so it has to be held and invoked
+  // from `onUnmounted` — otherwise the devtools event listeners and store
+  // subscription registered by `mount()` are never released.
+  let cleanupMount: (() => void) | undefined
+
+  onMounted(() => {
+    cleanupMount = formApi.mount()
+  })
+
+  onUnmounted(() => {
+    cleanupMount?.()
+    cleanupMount = undefined
+  })
 
   // formApi.useStore((state) => state.isSubmitting)
   formApi.update(opts)
