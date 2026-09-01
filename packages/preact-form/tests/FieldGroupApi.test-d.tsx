@@ -61,6 +61,9 @@ const { fields: looseDefinedFields, bindComponent: bindLooseDefinedFields } =
   defineFieldGroup(({ loose }) => ({
     name: loose<string>(),
   }))
+const { fields: looseNullableNumberFields } = defineFieldGroup(({ loose }) => ({
+  value: loose<number | null>(),
+}))
 const invalidWatchFieldValidators: FieldValidators<
   BookingFields,
   'guest.age',
@@ -83,14 +86,22 @@ const { fields: hookAppDefinedFields } = defineAppFieldGroup(({ strict }) => ({
 
 type DefinedFieldsSpec = FieldGroupFieldsOf<typeof definedFields>
 type LooseDefinedFieldsSpec = FieldGroupFieldsOf<typeof looseDefinedFields>
+type LooseNullableNumberFieldsSpec = FieldGroupFieldsOf<
+  typeof looseNullableNumberFields
+>
 declare const stringSlot: DefinedFieldsSpec['name']
 declare const looseStringSlot: LooseDefinedFieldsSpec['name']
+declare const looseNullableNumberSlot: LooseNullableNumberFieldsSpec['value']
 declare const numberSlot: DefinedFieldsSpec['age']
 declare const emailsSlot: DefinedFieldsSpec['emails']
 type FieldNameTestData = {
   exactString: string
   literalString: 'literal'
   stringOrNumber: string | number
+  exactNumber: number
+  nullableNumber: number | null
+  nullOnly: null
+  stringOrNull: string | null
   nested: {
     value: 'literal'
   }
@@ -182,6 +193,10 @@ type DefinedFieldBindings = FieldGroupFieldBindings<
 type LooseDefinedFieldBindings = FieldGroupFieldBindings<
   FieldGroupFieldsOf<typeof looseDefinedFields>,
   FieldBindingFormData
+>
+type LooseNullableNumberBindings = FieldGroupFieldBindings<
+  FieldGroupFieldsOf<typeof looseNullableNumberFields>,
+  FieldNameTestData
 >
 
 function FieldGroupApiTypes() {
@@ -315,6 +330,18 @@ function DefineFieldGroupTypes() {
     } satisfies FieldBindingFormData,
     onSubmit: () => 'submitted' as const,
   })
+  const formWithIdentityBindings = useForm({
+    defaultValues: {
+      name: '',
+      age: 0,
+      emails: [] as Array<{ value: string }>,
+      alternate: {
+        name: '',
+        age: 0,
+        emails: [] as Array<{ value: string }>,
+      },
+    },
+  })
 
   expectTypeOf(stringSlot.mode).toEqualTypeOf<'strict'>()
   expectTypeOf(looseStringSlot.mode).toEqualTypeOf<'loose'>()
@@ -339,6 +366,12 @@ function DefineFieldGroupTypes() {
   >().toEqualTypeOf<true>()
   expectTypeOf<
     FieldGroupFieldSlotAllows<typeof looseStringSlot, string | number>
+  >().toEqualTypeOf<false>()
+  expectTypeOf<
+    FieldGroupFieldSlotAllows<typeof looseNullableNumberSlot, null>
+  >().toEqualTypeOf<true>()
+  expectTypeOf<
+    FieldGroupFieldSlotAllows<typeof looseNullableNumberSlot, string | null>
   >().toEqualTypeOf<false>()
   expectTypeOf<
     FieldGroupFieldNameForSlot<FieldNameTestData, typeof stringSlot>
@@ -368,9 +401,11 @@ function DefineFieldGroupTypes() {
     readonly name:
       | 'user.name'
       | 'literalName'
-      | 'stringOrNumber'
       | `user.emails[${number}].value`
       | `tags[${number}]`
+  }>()
+  expectTypeOf<LooseNullableNumberBindings>().toEqualTypeOf<{
+    readonly value: 'exactNumber' | 'nullableNumber' | 'nullOnly'
   }>()
 
   expectTypeOf(definedFields).toExtend<
@@ -400,6 +435,25 @@ function DefineFieldGroupTypes() {
 
   return (
     <>
+      <WrappedDefinedFields form={formWithIdentityBindings} label="Identity" />
+
+      <WrappedDefinedFields
+        form={formWithIdentityBindings}
+        label="Rerouted"
+        fields={{
+          name: 'alternate.name',
+          age: 'alternate.age',
+          emails: 'alternate.emails',
+        }}
+      />
+
+      <WrappedDefinedFields
+        form={formWithIdentityBindings}
+        label="Incomplete"
+        // @ts-expect-error optional field bindings still need every defined field
+        fields={{ name: 'name' }}
+      />
+
       <WrappedDefinedFields
         form={formWithSubmitReturn}
         label="User"
@@ -430,6 +484,9 @@ function DefineFieldGroupTypes() {
         }}
       />
 
+      {/* @ts-expect-error non-identity field bindings remain required */}
+      <WrappedDefinedFields form={typedForm} label="User" />
+
       <WrappedDefinedFields
         form={typedForm}
         label="User"
@@ -459,13 +516,16 @@ function DefineFieldGroupTypes() {
 
       <WrappedLooseDefinedFields
         form={typedForm}
-        fields={{ name: 'stringOrNumber' }}
+        fields={{
+          // @ts-expect-error loose field bindings reject wider value types
+          name: 'stringOrNumber',
+        }}
       />
 
       <WrappedLooseDefinedFields
         form={typedForm}
         fields={{
-          // @ts-expect-error loose field bindings use DeepKeysWhereValueIncludes
+          // @ts-expect-error loose field bindings require assignable value types
           name: 'user.age',
         }}
       />

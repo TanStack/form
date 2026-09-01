@@ -4,6 +4,7 @@ import { userEvent } from '@testing-library/user-event'
 import BaseForm from './adapter/BaseForm.svelte'
 import AppForm from './adapter/AppForm.svelte'
 import FieldGroup from './adapter/FieldGroup.svelte'
+import IdentityFieldGroup from './adapter/IdentityFieldGroup.svelte'
 import ParityForm from './adapter/ParityForm.svelte'
 
 const user = userEvent.setup()
@@ -61,6 +62,16 @@ describe('Svelte Form v2 adapter', () => {
     expect(getByTestId('logical-field')).toHaveTextContent(
       'profile.name:Updated',
     )
+    await user.click(getByRole('button', { name: 'Move logical item' }))
+    expect(getByTestId('logical-items')).toHaveTextContent('b,c,a')
+  })
+
+  it('defaults omitted bindings to same-named form fields', async () => {
+    const { getByRole, getByTestId } = render(IdentityFieldGroup)
+    expect(getByTestId('logical-field')).toHaveTextContent('name:Initial')
+    await user.click(getByRole('button', { name: 'Update logical' }))
+    expect(getByTestId('logical-value')).toHaveTextContent('Updated')
+    expect(getByTestId('logical-field')).toHaveTextContent('name:Updated')
     await user.click(getByRole('button', { name: 'Move logical item' }))
     expect(getByTestId('logical-items')).toHaveTextContent('b,c,a')
   })

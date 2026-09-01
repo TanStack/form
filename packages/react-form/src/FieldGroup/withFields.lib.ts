@@ -74,7 +74,7 @@ function withFieldsRuntime(
 
   const FieldGroupComponent = (props: any) => {
     const { form, ...restProps } = props
-    const bindingsRef = React.useRef<InternalFieldGroupBindings>(
+    const bindingsRef = React.useRef<InternalFieldGroupBindings | undefined>(
       props[fieldsPropName],
     )
 

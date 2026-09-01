@@ -109,7 +109,10 @@ const Reusable = reusableFieldGroup.bindComponent(ReusableFields, 'fields')
 
   <Reusable :form="form" :fields="{ email: 'guest.email' }" />
 
-  <AppReusable :form="appForm" :fields="{ name: 'name' }" />
+  <AppReusable :form="appForm" />
+
+  <!-- @vue-expect-error non-identity field bindings remain required -->
+  <Reusable :form="form" />
 
   <!-- @vue-expect-error strict string slots reject array-valued paths -->
   <Reusable :form="form" :fields="{ email: 'people' }" />

@@ -276,10 +276,27 @@ class ReusableFieldGroupElement extends LitElement {
   }
 }
 
+class IdentityFieldGroupElement extends LitElement {
+  form = new TanStackFormController(this, {
+    defaultValues: {
+      value: '',
+      items: ['a', 'b', 'c'],
+    },
+  })
+
+  render() {
+    return ReusableNameField({
+      form: this.form,
+      label: 'Name',
+    })
+  }
+}
+
 defineOnce('test-lit-form', TestFormElement)
 defineOnce('test-lit-array-form', ArrayFormElement)
 defineOnce('test-lit-form-group', FormGroupElement)
 defineOnce('test-lit-reusable-field-group', ReusableFieldGroupElement)
+defineOnce('test-lit-identity-field-group', IdentityFieldGroupElement)
 
 describe('TanStackFormController', () => {
   it('owns v2 fields and mirrors user input', async () => {
@@ -420,6 +437,26 @@ describe('TanStackFormController', () => {
       'c',
       'a',
     ])
+  })
+
+  it('defaults omitted bindings to same-named form fields', async () => {
+    const element = await mount<IdentityFieldGroupElement>(
+      'test-lit-identity-field-group',
+    )
+
+    await userEvent.type(
+      element.shadowRoot!.querySelector<HTMLInputElement>('#reusableName')!,
+      'Ada',
+    )
+
+    expect(element.form.api.getFieldValue('value')).toBe('Ada')
+
+    await userEvent.click(
+      element.shadowRoot!.querySelector<HTMLButtonElement>(
+        '#moveReusableItem',
+      )!,
+    )
+    expect(element.form.api.getFieldValue('items')).toEqual(['b', 'c', 'a'])
   })
 
   it('derives reusable controller types from formOptions', () => {

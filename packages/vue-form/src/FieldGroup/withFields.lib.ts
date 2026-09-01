@@ -85,7 +85,8 @@ function withFieldsRuntime(
           form,
           fieldNames,
           getBindings: () =>
-            context.attrs[fieldsPropName] as InternalFieldGroupBindings,
+            context.attrs[fieldsPropName] as
+              InternalFieldGroupBindings | undefined,
         }),
         form,
       )

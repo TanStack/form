@@ -427,6 +427,27 @@ function NameFieldsImpl(props: { fields: typeof nameFieldGroup.fields }) {
 const NameFields = nameFieldGroup.bindComponent(NameFieldsImpl, 'fields')
 
 describe('Solid reusable field groups', () => {
+  it('defaults omitted bindings to same-named form fields', () => {
+    function Component() {
+      const form = createForm(() => ({
+        defaultValues: { name: 'Initial' },
+      }))
+      return <NameFields form={form} />
+    }
+
+    const { container, dispose } = mount(() => <Component />)
+    expect(
+      container.querySelector('[data-testid="logical-field"]')?.textContent,
+    ).toBe('name:Initial')
+
+    container.querySelector('button')?.click()
+
+    expect(
+      container.querySelector('[data-testid="logical-value"]')?.textContent,
+    ).toBe('Updated')
+    dispose()
+  })
+
   it('maps logical names and forwards methods and atoms', () => {
     function Component() {
       const form = createForm(() => ({

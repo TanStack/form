@@ -17,6 +17,21 @@ function mergeWithDescriptors<TProps extends object>(
 }
 
 describe('InternalFieldGroupApi', () => {
+  it('defaults omitted bindings to same-named form fields', () => {
+    const form = new InternalFormApi({ defaultValues: { name: 'Tony' } })
+    const group = new InternalFieldGroupApi({
+      form,
+      fieldNames: ['name'],
+      getBindings: () => undefined,
+    })
+
+    expect(group.getFieldValue('name')).toBe('Tony')
+    expect(group.atom.get()).toEqual({ name: 'Tony' })
+
+    group.setFieldValue('name', 'Rodney')
+    expect(form.getFieldValue('name')).toBe('Rodney')
+  })
+
   it('resolves logical names, follows binding changes, and exposes values', () => {
     const form = new InternalFormApi({
       defaultValues: {

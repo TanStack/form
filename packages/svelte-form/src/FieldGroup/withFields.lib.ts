@@ -5,7 +5,6 @@ import {
 } from '@tanstack/form-core/internals'
 import { withComponentProps } from '../utils.lib.js'
 import type { Component } from 'svelte'
-import type { InternalFieldGroupBindings } from '@tanstack/form-core/internals'
 import type { AnyFieldGroupApi } from './FieldGroupApi.public'
 
 function attachSvelteFieldGroupComponents(
@@ -67,7 +66,7 @@ function withFieldsRuntime(
       new InternalFieldGroupApi({
         form,
         fieldNames,
-        getBindings: () => props[fieldsPropName] as InternalFieldGroupBindings,
+        getBindings: () => props[fieldsPropName],
       }),
       form,
     )

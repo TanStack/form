@@ -184,9 +184,28 @@ function FieldGroupBindingsTypes() {
       wrong: { name: 0, age: '' },
     },
   }))
+  const formWithIdentityBindings = createForm(() => ({
+    defaultValues: {
+      name: '',
+      age: 0,
+      alternate: { name: '', age: 0 },
+    },
+  }))
 
   return (
     <>
+      <Profile form={formWithIdentityBindings} />
+      <Profile
+        form={formWithIdentityBindings}
+        fields={{ name: 'alternate.name', age: 'alternate.age' }}
+      />
+      <Profile
+        form={formWithIdentityBindings}
+        // @ts-expect-error optional field bindings still need every defined field
+        fields={{ name: 'name' }}
+      />
+      {/* @ts-expect-error non-identity field bindings remain required */}
+      <Profile form={form} />
       <Profile form={form} fields={{ name: 'user.name', age: 'user.age' }} />
       <Profile
         form={form}

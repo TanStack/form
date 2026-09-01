@@ -74,7 +74,7 @@ function withFieldsRuntime(
 
   const FieldGroupComponent = (props: any) => {
     const { form, ...restProps } = props
-    const bindingsRef = Preact.useRef<InternalFieldGroupBindings>(
+    const bindingsRef = Preact.useRef<InternalFieldGroupBindings | undefined>(
       props[fieldsPropName],
     )
 
@@ -90,7 +90,7 @@ function withFieldsRuntime(
           new InternalFieldGroupApi({
             form,
             fieldNames,
-            getBindings: () => bindingsRef.current!,
+            getBindings: () => bindingsRef.current,
           }),
           form,
         ),

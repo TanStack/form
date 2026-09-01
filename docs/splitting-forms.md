@@ -87,6 +87,9 @@ export function ProfileForm() {
 
 <!-- ::end:tabs -->
 
+> [!NOTE] Sharing between forms
+> If the section should work with multiple forms instead of only one, use [field groups](./framework/react/guides/field-groups).
+
 # Preact
 
 Preact's `PreactFormType` derives the form prop from the shared options. The
