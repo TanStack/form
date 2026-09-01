@@ -5,7 +5,7 @@ import type { AnyInternalFieldApi } from '@tanstack/form-core/internals'
 export function useValueFieldSubscription(
   fieldApi: AnyInternalFieldApi,
 ): AnyInternalFieldApi {
-  const state = useSelector(fieldApi.atom)
+  const state = useSelector(fieldApi.atom, state => state)
 
   return useMemo(() => {
     void state
