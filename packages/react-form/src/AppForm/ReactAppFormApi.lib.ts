@@ -12,7 +12,7 @@ import type { AppFormComponent } from './ReactAppFormApi.public'
 
 type FormComponents = Record<string, FunctionComponent<any>>
 
-export interface InternalReactAppFormApiInstance extends InternalReactFormApi {
+interface InternalReactAppFormApiInstance extends InternalReactFormApi {
   AppForm: AppFormComponent
 }
 
