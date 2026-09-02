@@ -497,7 +497,7 @@
             },
             {
               "label": "FieldGroupHelper",
-              "to": "framework/react/reference/interfaces/FieldGroupHelper"
+              "to": "reference/interfaces/FieldGroupHelper"
             }
           ]
         }

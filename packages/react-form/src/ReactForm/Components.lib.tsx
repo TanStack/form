@@ -6,10 +6,7 @@ import {
   useValueFieldSubscription,
 } from './fieldSubscriptions.lib'
 import { useField } from './useField.lib'
-import type {
-  AnyInternalFormApi,
-  FieldOptionsScope,
-} from '@tanstack/form-core/internals'
+import type { FieldOptionsScope } from '@tanstack/form-core/internals'
 import type { InternalReactFormApi } from './ReactFormApi.lib'
 import type { FunctionComponent, ReactNode } from 'react'
 import type {
@@ -18,41 +15,16 @@ import type {
   ReactFormSubscribeProps,
 } from './Components.public'
 
-export function attachReactFormComponents(
-  form: AnyInternalFormApi,
-  fieldComponents: Record<string, FunctionComponent<any>> | null,
-): InternalReactFormApi {
-  const resultForm = form as InternalReactFormApi
-  resultForm.Field = createFieldComponent(
-    form,
-    fieldComponents,
-    'field',
-  ) as InternalReactFormApi['Field']
-  resultForm.ArrayField = createArrayFieldComponent(
-    form,
-    fieldComponents,
-    'field',
-  )
-  resultForm.Subscribe = createSubscribeComponent(form)
-  resultForm.FormGroup = createFormGroupComponent(
-    resultForm,
-    fieldComponents,
-  ) as InternalReactFormApi['FormGroup']
-
-  return resultForm
-}
-
 type AnyFieldComponent = FunctionComponent<
   ReactFormFieldProps<any, any, any, any, never, any, any, any>
 >
 
-function createFieldComponent(
-  form: AnyInternalFormApi,
-  fieldComponents: Record<string, FunctionComponent<any>> | null,
+export function createFieldComponent(
+  form: InternalReactFormApi,
   scope: FieldOptionsScope,
 ): AnyFieldComponent {
   const TanStackFormField: AnyFieldComponent = (props) => {
-    const fieldApi = useField({ ...props, form }, fieldComponents, scope)
+    const fieldApi = useField({ ...props, form }, scope)
     const field = useValueFieldSubscription(fieldApi)
 
     return props.children(field)
@@ -69,12 +41,11 @@ type AnyArrayFieldComponent = {
 }
 
 export function createArrayFieldComponent(
-  form: AnyInternalFormApi,
-  fieldComponents: Record<string, FunctionComponent<any>> | null,
+  form: InternalReactFormApi,
   scope: FieldOptionsScope,
 ): AnyArrayFieldComponent {
   const TanStackFormArrayField: AnyArrayFieldComponent = (props) => {
-    const fieldApi = useField({ ...props, form }, fieldComponents, scope)
+    const fieldApi = useField({ ...props, form }, scope)
     const field = useArrayFieldSubscription(fieldApi)
 
     return props.children(field)
@@ -90,8 +61,8 @@ type AnySubscribeComponent = {
   displayName?: string
 }
 
-function createSubscribeComponent(
-  form: AnyInternalFormApi,
+export function createSubscribeComponent(
+  form: InternalReactFormApi,
 ): AnySubscribeComponent {
   const TanStackFormSubscribe: AnySubscribeComponent = (props) => {
     return <Subscribe source={form.atom} {...props} />
@@ -106,9 +77,8 @@ type AnyFormGroupComponent = FunctionComponent<
   ReactFormGroupProps<any, any, any, any, any, any>
 >
 
-function createFormGroupComponent(
+export function createFormGroupComponent(
   form: InternalReactFormApi,
-  fieldComponents: Record<string, FunctionComponent<any>> | null,
 ): AnyFormGroupComponent {
   const TanStackFormGroup: AnyFormGroupComponent = (props) => {
     const groupRef =
@@ -118,7 +88,6 @@ function createFormGroupComponent(
       groupRef.current = attachReactFormGroupComponents(
         new InternalFormGroupApi({ ...props, form } as never),
         form,
-        fieldComponents,
       )
     }
 
@@ -141,7 +110,6 @@ function createFormGroupComponent(
 function attachReactFormGroupComponents(
   group: InternalFormGroupApi<any, any, any, any, any>,
   form: InternalReactFormApi,
-  fieldComponents: Record<string, FunctionComponent<any>> | null,
 ) {
   type FormGroupComponents = InternalFormGroupApi<any, any, any, any, any> & {
     Field: FunctionComponent<any>
@@ -150,12 +118,8 @@ function attachReactFormGroupComponents(
   }
 
   const resultGroup: FormGroupComponents = group as never
-  const GroupField = createFieldComponent(form, fieldComponents, 'field')
-  const GroupArrayField = createArrayFieldComponent(
-    form,
-    fieldComponents,
-    'field',
-  )
+  const GroupField = createFieldComponent(form, 'field')
+  const GroupArrayField = createArrayFieldComponent(form, 'field')
 
   resultGroup.Field = function Field(props) {
     return (

@@ -7,7 +7,88 @@ import type {
   AnyInternalFormApi,
 } from '@tanstack/form-core/internals'
 
-describe('createFormHook defaults', () => {
+describe('createFormHook', () => {
+  it('provides registered components to fields created during mount validation', () => {
+    const SharedComponent = () => <span>Shared field component</span>
+    const { useAppForm } = createFormHook({
+      fieldComponents: { SharedComponent },
+      formComponents: {},
+    })
+
+    function Component() {
+      const form = useAppForm({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            runOnMount: true,
+            triggers: [],
+            run: () => ({ fields: { name: 'Name is required' } }),
+          },
+        ],
+      })
+
+      return (
+        <form.Field name="name">
+          {(field) => {
+            const { SharedComponent: DestructuredComponent } = field
+            return <DestructuredComponent />
+          }}
+        </form.Field>
+      )
+    }
+
+    const { getByText } = render(<Component />)
+
+    expect(getByText('Shared field component')).toBeInTheDocument()
+  })
+
+  it('supports destructuring registered form components', () => {
+    const SharedComponent = () => <span>Shared component</span>
+    const { useAppForm } = createFormHook({
+      fieldComponents: {},
+      formComponents: { SharedComponent },
+    })
+
+    /* eslint-disable @eslint-react/static-components -- False positive, component's created once */
+    function Component() {
+      const form = useAppForm({ defaultValues: { name: '' } })
+      const { SharedComponent: DestructuredComponent } = form
+
+      return <DestructuredComponent />
+    }
+    /* eslint-enable @eslint-react/static-components */
+
+    const { getByText } = render(<Component />)
+
+    expect(getByText('Shared component')).toBeInTheDocument()
+  })
+
+  it('renders inherited form components with per-instance AppForm context', () => {
+    function CurrentName() {
+      const form = useFormContext()
+      return <span data-testid="current-name">{form.state.values.name}</span>
+    }
+
+    const { useAppForm, useFormContext } = createFormHook({
+      fieldComponents: {},
+      formComponents: { CurrentName },
+    })
+
+    function Component() {
+      const form = useAppForm({ defaultValues: { name: 'Tony' } })
+
+      return (
+        <form.AppForm>
+          <form.CurrentName />
+        </form.AppForm>
+      )
+    }
+
+    const { getByTestId } = render(<Component />)
+
+    expect(getByTestId('current-name')).toHaveTextContent('Tony')
+  })
+
   it('uses default form options and lets usage options override them', () => {
     const defaultErrorVisibility = () => true
     const overriddenErrorVisibility = () => false

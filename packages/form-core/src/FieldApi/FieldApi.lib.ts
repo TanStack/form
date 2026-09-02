@@ -232,7 +232,7 @@ export function getOrCreateFieldApi(
     return getOrCreateFieldApi(childNode, segments, form, options, scope)
   }
 
-  childNode = new InternalFieldApi(
+  childNode = new form._FieldApi(
     {
       segment,
       parent: node,
