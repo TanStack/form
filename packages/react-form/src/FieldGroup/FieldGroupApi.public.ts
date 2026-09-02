@@ -14,11 +14,12 @@ import type {
   ReactFormFieldProps,
   ReactFormSubscribeProps,
 } from '../ReactForm/Components.public'
+import type { ReactComponentTree } from '../AppForm/componentMap.public'
 import type { ReadonlyAtom } from '@tanstack/react-store'
 
 export interface FieldGroupFieldComponent<
   in out TFieldData,
-  in out TFieldComponents extends Record<string, FunctionComponent<any>>,
+  in out TFieldComponents extends ReactComponentTree,
 > {
   /**
    * Renders a field from this field group.
@@ -83,7 +84,7 @@ export interface FieldGroupFieldComponent<
 
 export interface FieldGroupArrayFieldComponent<
   in out TFieldData,
-  in out TFieldComponents extends Record<string, FunctionComponent<any>>,
+  in out TFieldComponents extends ReactComponentTree,
 > {
   /**
    * Renders an array field from this field group.
@@ -173,8 +174,7 @@ export type FieldGroupSubscribeComponent = <const TSelected>(
 
 export interface FieldGroupApi<
   in out TFieldData,
-  in out TFieldComponents extends Record<string, FunctionComponent<any>> =
-    Record<never, never>,
+  in out TFieldComponents extends ReactComponentTree,
 >
   extends FormApiFieldMethods<TFieldData>, FormApiArrayMethods<TFieldData> {
   atom: ReadonlyAtom<TFieldData>

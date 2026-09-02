@@ -1,10 +1,8 @@
 import { InternalFieldApi } from '@tanstack/form-core/internals'
-import type { FunctionComponent } from 'react'
-
-type FieldComponents = Record<string, FunctionComponent<any>>
+import type { ReactComponentTree } from './componentMap.public'
 
 export function createInternalReactAppFieldApiClass(
-  fieldComponents: FieldComponents,
+  fieldComponents: ReactComponentTree,
 ): typeof InternalFieldApi {
   class InternalReactAppFieldApi extends InternalFieldApi<any, any, any> {}
 

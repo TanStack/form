@@ -1,10 +1,10 @@
 import type {
   AnyReactFormComponentMap,
+  ReactComponentTree,
   ReactFormComponentMap,
 } from './componentMap.public'
 import type { ReactAppFormApi } from './ReactAppFormApi.public'
 import type { DefineFieldGroupFn } from '../FieldGroup/withFields.public'
-import type { FunctionComponent } from 'react'
 import type {
   DefaultFieldOptions,
   DefaultFormGroupOptions,
@@ -27,9 +27,15 @@ import type {
  * @example
  * ```tsx
  * const { useAppForm } = createFormHook({
- *   formComponents: {},
+ *   formComponents: {
+ *     actions: {
+ *       SubmitButton,
+ *     },
+ *   },
  *   fieldComponents: {
- *     TextField,
+ *     inputs: {
+ *       TextField,
+ *     },
  *   },
  *   defaultFormOptions: {
  *     errorVisibility: ({ fieldState }) => fieldState.meta.isBlurred,
@@ -38,14 +44,18 @@ import type {
  *     errorBoundary: true,
  *   },
  * })
+ *
+ * // Registered namespaces retain their shape on the form and field APIs:
+ * // <form.actions.SubmitButton />
+ * // <field.inputs.TextField />
  * ```
  *
  * @typeParam TFormComponents - Library-managed. Do not specify explicitly.
  * @typeParam TFieldComponents - Library-managed. Do not specify explicitly.
  */
 export interface CreateFormHookOptions<
-  in out TFormComponents extends Record<string, FunctionComponent<any>>,
-  in out TFieldComponents extends Record<string, FunctionComponent<any>>,
+  in out TFormComponents extends ReactComponentTree,
+  in out TFieldComponents extends ReactComponentTree,
 > extends ReactFormComponentMap<TFormComponents, TFieldComponents> {
   /**
    * Defaults for every form created by `useAppForm`.

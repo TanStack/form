@@ -1,12 +1,14 @@
 import type { AnyFormApi, FormApi, FormErrorTypes } from '@tanstack/form-core'
-import type { FunctionComponent } from 'react'
 import type { ReactTanStackFormComponents } from './Components.public'
-import type { AnyReactFormComponentMap } from '../AppForm/componentMap.public'
+import type {
+  AnyReactFormComponentMap,
+  ReactComponentTree,
+} from '../AppForm/componentMap.public'
 
 type ExtendedFormApi<
   TFormData,
   TFormErrorTypes extends FormErrorTypes,
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
+  TFieldComponents extends ReactComponentTree,
 > = FormApi<TFormData, TFormErrorTypes> &
   ReactTanStackFormComponents<TFormData, TFormErrorTypes, TFieldComponents>
 

@@ -9,25 +9,24 @@ import {
 import type { DefaultOptions, FormOptions } from '@tanstack/form-core'
 import type { FunctionComponent } from 'react'
 import type { AppFormComponent } from './ReactAppFormApi.public'
-
-type FormComponents = Record<string, FunctionComponent<any>>
+import type { ReactComponentTree } from './componentMap.public'
 
 interface InternalReactAppFormApiInstance extends InternalReactFormApi {
   AppForm: AppFormComponent
 }
 
 type InternalReactAppFormApiConstructor<
-  TFormComponents extends FormComponents,
+  TFormComponents extends ReactComponentTree,
 > = new (
   options: FormOptions<any, any, any, unknown>,
   defaultOptions?: DefaultOptions,
 ) => InternalReactAppFormApiInstance & TFormComponents
 
 export function createInternalReactAppFormApiClass<
-  const TFormComponents extends FormComponents,
+  const TFormComponents extends ReactComponentTree,
 >(
   formComponents: TFormComponents,
-  fieldComponents: FormComponents,
+  fieldComponents: ReactComponentTree,
 ): InternalReactAppFormApiConstructor<TFormComponents> {
   const InternalReactAppFieldApi =
     createInternalReactAppFieldApiClass(fieldComponents)

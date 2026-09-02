@@ -8,12 +8,12 @@ import type {
   CreateFormHookOptions,
   UseAppFormHook,
 } from './createFormHookTypes.public'
-import type { FunctionComponent } from 'react'
+import type { ReactComponentTree } from './componentMap.public'
 import type { FormOptions } from '@tanstack/form-core'
 
 export function createFormHook<
-  const TFormComponents extends Record<string, FunctionComponent<any>>,
-  const TFieldComponents extends Record<string, FunctionComponent<any>>,
+  const TFormComponents extends ReactComponentTree,
+  const TFieldComponents extends ReactComponentTree,
 >(
   createOptions: CreateFormHookOptions<TFormComponents, TFieldComponents>,
 ): AppFormHookResult<{

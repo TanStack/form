@@ -1,11 +1,12 @@
 import React from 'react'
 import { fireEvent, render, waitFor } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import { createFormHook } from '../src'
+import { createFormHook, getFormHookHelpers } from '../src'
 import type {
   AnyInternalFieldApi,
   AnyInternalFormApi,
 } from '@tanstack/form-core/internals'
+import type { FieldWithValue } from '../src'
 
 describe('createFormHook', () => {
   it('provides registered components to fields created during mount validation', () => {
@@ -40,6 +41,53 @@ describe('createFormHook', () => {
     const { getByText } = render(<Component />)
 
     expect(getByText('Shared field component')).toBeInTheDocument()
+  })
+
+  it('supports nested field and form component trees', () => {
+    function FieldValue({ field }: { field: FieldWithValue<string> }) {
+      return <span>Field value: {field.value}</span>
+    }
+
+    function FormHeading() {
+      return <h1>Nested form component</h1>
+    }
+
+    const { fieldComponent } = getFormHookHelpers()
+    const FieldValueWithContext = fieldComponent.strict(FieldValue, 'field')
+    const { useAppForm } = createFormHook({
+      fieldComponents: {
+        display: {
+          values: {
+            FieldValue: FieldValueWithContext,
+          },
+        },
+      },
+      formComponents: {
+        layout: {
+          headings: {
+            FormHeading,
+          },
+        },
+      },
+    })
+
+    function Component() {
+      const form = useAppForm({ defaultValues: { name: 'Tony' } })
+
+      return (
+        <form.AppForm>
+          <form.layout.headings.FormHeading />
+          <form.Field name="name">
+            {(field) => <field.display.values.FieldValue />}
+          </form.Field>
+        </form.AppForm>
+      )
+    }
+
+    const { getByText } = render(<Component />)
+
+    expect(getByText('Nested form component')).toBeInTheDocument()
+    expect(getByText('Field value: Tony')).toBeInTheDocument()
   })
 
   it('supports destructuring registered form components', () => {

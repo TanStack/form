@@ -20,6 +20,7 @@ import type {
   MemoExoticComponent,
   ReactNode,
 } from 'react'
+import type { ReactComponentTree } from '../AppForm/componentMap.public'
 
 type ExactFieldBrand<out TValue> = {
   readonly __tanstackFieldExactType: TValue
@@ -50,30 +51,27 @@ type UnwrapComponent<TComponent> =
       ? UnwrapComponent<TInner>
       : TComponent
 
-type UnwrappedFieldComponents<
-  in out TFieldComponents extends Record<string, FunctionComponent<any>>,
-> = {
-  [K in keyof TFieldComponents]: UnwrapComponent<TFieldComponents[K]>
-}
-
 type FilteredFieldComponents<
-  in out TFieldComponents extends Record<string, FunctionComponent<any>>,
+  in out TFieldComponents extends ReactComponentTree,
   in out TTargetValue,
-  in out TUnwrappedFieldComponents extends {
-    [K in keyof TFieldComponents]: any
-  } = UnwrappedFieldComponents<TFieldComponents>,
 > = {
   [
-    K in keyof TFieldComponents as CompatibleFieldKey<
-      K,
-      TUnwrappedFieldComponents[K],
-      TTargetValue
-    >
-  ]: TFieldComponents[K]
+    K in keyof TFieldComponents as TFieldComponents[K] extends FunctionComponent<any>
+      ? CompatibleFieldKey<
+          K,
+          UnwrapComponent<TFieldComponents[K]>,
+          TTargetValue
+        >
+      : K
+  ]: TFieldComponents[K] extends infer TComp extends FunctionComponent<any>
+    ? TComp
+    : TFieldComponents[K] extends ReactComponentTree
+      ? FieldComponentsMatchingType<TFieldComponents[K], TTargetValue>
+      : never
 }
 
 type FieldComponentsMatchingType<
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
+  TFieldComponents extends ReactComponentTree,
   TTargetValue,
 > = unknown extends TTargetValue
   ? TFieldComponents
@@ -87,7 +85,7 @@ export type ReactFieldApi<
   TFieldError,
   TFormData,
   TFormErrorTypes extends FormErrorTypes,
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
+  TFieldComponents extends ReactComponentTree,
 > = FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes> &
   FieldComponentsMatchingType<TFieldComponents, TFieldValue>
 
@@ -126,7 +124,7 @@ export interface ReactFormFieldProps<
   in out TGroupFieldError,
   in out TFormData,
   in out TFormErrorTypes extends FormErrorTypes,
-  in out TFieldComponents extends Record<string, FunctionComponent<any>>,
+  in out TFieldComponents extends ReactComponentTree,
 > extends FieldApiOptions<
   TFieldData,
   TFieldName,
@@ -155,7 +153,7 @@ export interface ReactFormFieldProps<
 export type ReactFormFieldComponent<
   in out TFormData,
   in out TFormErrorTypes extends FormErrorTypes,
-  in out TFieldComponents extends Record<string, FunctionComponent<any>>,
+  in out TFieldComponents extends ReactComponentTree,
 > = {
   <
     TFieldName extends DeepKeys<TFormData>,
@@ -181,7 +179,7 @@ export type ReactFormFieldComponent<
 export type ReactFormArrayFieldComponent<
   in out TFormData,
   in out TFormErrorTypes extends FormErrorTypes,
-  in out TFieldComponents extends Record<string, FunctionComponent<any>>,
+  in out TFieldComponents extends ReactComponentTree,
 > = {
   <
     TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
@@ -225,7 +223,7 @@ export interface ReactFormGroupFieldComponent<
   in out TGroupValue,
   in out TGroupErrorTypes extends FormErrorTypes,
   in out TFormErrorTypes extends FormErrorTypes,
-  in out TFieldComponents extends Record<string, FunctionComponent<any>>,
+  in out TFieldComponents extends ReactComponentTree,
 > {
   <
     TFieldName extends DeepKeys<TGroupValue>,
@@ -253,7 +251,7 @@ export type ReactFormGroupArrayFieldComponent<
   in out TGroupValue,
   in out TGroupErrorTypes extends FormErrorTypes,
   in out TFormErrorTypes extends FormErrorTypes,
-  in out TFieldComponents extends Record<string, FunctionComponent<any>>,
+  in out TFieldComponents extends ReactComponentTree,
 > = {
   <
     TFieldName extends DeepKeysWhereValueIncludes<TGroupValue, Array<any>>,
@@ -282,7 +280,7 @@ export interface ReactFormGroupApi<
   in out TGroupValue,
   in out TGroupErrorTypes extends FormErrorTypes,
   in out TFormErrorTypes extends FormErrorTypes,
-  in out TFieldComponents extends Record<string, FunctionComponent<any>>,
+  in out TFieldComponents extends ReactComponentTree,
 > extends FormGroupApi<
   TFormData,
   TGroupName,
@@ -313,7 +311,7 @@ export interface ReactFormGroupProps<
   in out TGroupValue,
   in out TGroupValidators extends FormGroupValidators<TGroupValue>,
   in out TFormErrorTypes extends FormErrorTypes,
-  in out TFieldComponents extends Record<string, FunctionComponent<any>>,
+  in out TFieldComponents extends ReactComponentTree,
 > extends Omit<
   FormGroupOptions<
     TFormData,
@@ -339,7 +337,7 @@ export interface ReactFormGroupProps<
 export interface ReactFormGroupComponent<
   in out TFormData,
   in out TFormErrorTypes extends FormErrorTypes,
-  in out TFieldComponents extends Record<string, FunctionComponent<any>>,
+  in out TFieldComponents extends ReactComponentTree,
 > {
   <
     TGroupName extends DeepKeys<TFormData>,
@@ -360,7 +358,7 @@ export interface ReactFormGroupComponent<
 export interface ReactTanStackFormComponents<
   in out TFormData,
   in out TFormErrorTypes extends FormErrorTypes,
-  in out TFieldComponents extends Record<string, FunctionComponent<any>>,
+  in out TFieldComponents extends ReactComponentTree,
 > {
   /**
    * TODO docs
