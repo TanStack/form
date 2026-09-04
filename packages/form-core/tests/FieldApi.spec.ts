@@ -2542,6 +2542,58 @@ describe('field api', () => {
     vi.useRealTimers()
   })
 
+  it('should honour onDynamicAsyncDebounceMs on a linked field', async () => {
+    vi.useFakeTimers()
+
+    const fn = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        password: '',
+        confirm_password: '',
+      },
+    })
+
+    form.mount()
+
+    const passField = new FieldApi({
+      form,
+      name: 'password',
+    })
+
+    const passconfirmField = new FieldApi({
+      form,
+      name: 'confirm_password',
+      validators: {
+        onDynamicListenTo: ['password'],
+        onDynamicAsyncDebounceMs: 100,
+        onDynamicAsync: async ({ value, fieldApi }) => {
+          fn()
+          if (value !== fieldApi.form.getFieldValue('password')) {
+            return 'Passwords do not match'
+          }
+          return undefined
+        },
+      },
+    })
+
+    passField.mount()
+    passconfirmField.mount()
+
+    passField.setValue('one')
+
+    await vi.advanceTimersByTimeAsync(50)
+    expect(fn).not.toHaveBeenCalled()
+
+    await vi.advanceTimersByTimeAsync(50)
+    expect(fn).toHaveBeenCalledTimes(1)
+    expect(passconfirmField.state.meta.errors).toStrictEqual([
+      'Passwords do not match',
+    ])
+
+    vi.useRealTimers()
+  })
+
   it('should cancel linked field async validation when the target field unmounts', async () => {
     vi.useFakeTimers()
 

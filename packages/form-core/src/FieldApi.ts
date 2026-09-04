@@ -1532,8 +1532,12 @@ export class FieldApi<
 
           if (validatorCause === 'change') {
             modifiedValidators.onChangeAsync = modifiedValidators.onDynamicAsync
+            modifiedValidators.onChangeAsyncDebounceMs =
+              modifiedValidators.onDynamicAsyncDebounceMs
           } else if (validatorCause === 'blur') {
             modifiedValidators.onBlurAsync = modifiedValidators.onDynamicAsync
+            modifiedValidators.onBlurAsyncDebounceMs =
+              modifiedValidators.onDynamicAsyncDebounceMs
           }
 
           fieldOptions = {
