@@ -5,7 +5,7 @@ title: WithFieldGroupProps
 
 # Interface: WithFieldGroupProps\<TFieldGroupData, TFieldComponents, TFormComponents, TSubmitMeta, TRenderProps\>
 
-Defined in: [packages/solid-form/src/createFormHook.tsx:257](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createFormHook.tsx#L257)
+Defined in: [packages/solid-form/src/createFormHook.tsx:263](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createFormHook.tsx#L263)
 
 ## Extends
 
@@ -41,7 +41,7 @@ Defined in: [packages/solid-form/src/createFormHook.tsx:257](https://github.com/
 optional props: TRenderProps;
 ```
 
-Defined in: [packages/solid-form/src/createFormHook.tsx:265](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createFormHook.tsx#L265)
+Defined in: [packages/solid-form/src/createFormHook.tsx:271](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createFormHook.tsx#L271)
 
 ***
 
@@ -51,7 +51,7 @@ Defined in: [packages/solid-form/src/createFormHook.tsx:265](https://github.com/
 render: (props) => Element;
 ```
 
-Defined in: [packages/solid-form/src/createFormHook.tsx:266](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createFormHook.tsx#L266)
+Defined in: [packages/solid-form/src/createFormHook.tsx:272](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createFormHook.tsx#L272)
 
 #### Parameters
 

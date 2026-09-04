@@ -1,7 +1,8 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { render } from '@solidjs/testing-library'
 import { formOptions } from '@tanstack/form-core'
 import userEvent from '@testing-library/user-event'
+import { createEffect, createSignal } from 'solid-js'
 import { createFormHook, createFormHookContexts, useStore } from '../src'
 
 const user = userEvent.setup()
@@ -533,6 +534,129 @@ describe('createFormHook', () => {
     }
 
     render(() => <Parent />)
+  })
+
+  it('should keep props reactive in JSX when passed to withForm component', async () => {
+    const formOpts = formOptions({ defaultValues: { name: '' } })
+
+    const StatusForm = withForm({
+      ...formOpts,
+      props: {
+        status: 'idle' as 'idle' | 'loading',
+        count: 0,
+      },
+      render: (props) => (
+        <div>
+          <span data-testid="status">{props.status}</span>
+          <span data-testid="count">{props.count}</span>
+        </div>
+      ),
+    })
+
+    const Parent = () => {
+      const form = useAppForm(() => formOpts)
+      const [status, setStatus] = createSignal<'idle' | 'loading'>('idle')
+      const [count, setCount] = createSignal(0)
+      return (
+        <div>
+          <StatusForm form={form} status={status()} count={count()} />
+          <button data-testid="btn-status" onClick={() => setStatus('loading')}>
+            change
+          </button>
+          <button
+            data-testid="btn-count"
+            onClick={() => setCount((c) => c + 1)}
+          >
+            inc
+          </button>
+        </div>
+      )
+    }
+
+    const { getByTestId } = render(() => <Parent />)
+
+    expect(getByTestId('status')).toHaveTextContent('idle')
+    expect(getByTestId('count')).toHaveTextContent('0')
+
+    await user.click(getByTestId('btn-status'))
+    expect(getByTestId('status')).toHaveTextContent('loading')
+
+    await user.click(getByTestId('btn-count'))
+    expect(getByTestId('count')).toHaveTextContent('1')
+  })
+
+  it('should re-run createEffect when reactive props change in withForm render', async () => {
+    const formOpts = formOptions({ defaultValues: { name: '' } })
+    const spy = vi.fn()
+
+    const StatusForm = withForm({
+      ...formOpts,
+      props: { status: 'idle' as 'idle' | 'loading' },
+      render: (props) => {
+        createEffect(() => {
+          spy(props.status)
+        })
+        return <div data-testid="status">{props.status}</div>
+      },
+    })
+
+    const Parent = () => {
+      const form = useAppForm(() => formOpts)
+      const [status, setStatus] = createSignal<'idle' | 'loading'>('idle')
+      return (
+        <div>
+          <StatusForm form={form} status={status()} />
+          <button data-testid="btn" onClick={() => setStatus('loading')}>
+            change
+          </button>
+        </div>
+      )
+    }
+
+    const { getByTestId } = render(() => <Parent />)
+
+    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveBeenLastCalledWith('idle')
+
+    await user.click(getByTestId('btn'))
+    expect(spy).toHaveBeenCalledTimes(2)
+    expect(spy).toHaveBeenLastCalledWith('loading')
+  })
+
+  it('should keep props reactive in withFieldGroup component', async () => {
+    const formOpts = formOptions({
+      defaultValues: { person: { firstName: 'John' } },
+    })
+
+    const PersonGroup = withFieldGroup({
+      defaultValues: formOpts.defaultValues.person,
+      props: { label: 'default' },
+      render: (props) => (
+        <div>
+          <span data-testid="label">{props.label}</span>
+        </div>
+      ),
+    })
+
+    const Parent = () => {
+      const form = useAppForm(() => formOpts)
+      const [label, setLabel] = createSignal('initial')
+      return (
+        <div>
+          <PersonGroup form={form} fields="person" label={label()} />
+          <button data-testid="btn" onClick={() => setLabel('updated')}>
+            change
+          </button>
+        </div>
+      )
+    }
+
+    const { getByTestId } = render(() => <Parent />)
+
+    expect(getByTestId('label')).toHaveTextContent('initial')
+
+    await user.click(getByTestId('btn'))
+    expect(getByTestId('label')).toHaveTextContent('updated')
   })
 
   it('should accept formId and return it', async () => {

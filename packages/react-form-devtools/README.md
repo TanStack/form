@@ -1,6 +1,20 @@
 <img src="https://static.scarf.sh/a.png?x-pxid=be2d8a11-9712-4c1d-9963-580b2d4fb133" />
 
-![TanStack Form Header](https://github.com/TanStack/form/raw/main/media/repo-header.png)
+<picture>
+  <source
+    media="(prefers-color-scheme: dark)"
+    srcset="https://tanstack.com/api/readme/form.png?framework=react&theme=dark"
+  />
+  <source
+    media="(prefers-color-scheme: light)"
+    srcset="https://tanstack.com/api/readme/form.png?framework=react"
+  />
+  <img
+    src="https://tanstack.com/api/readme/form.png?framework=react"
+    alt="TanStack React Form"
+    width="900"
+  />
+</picture>
 
 Hooks for managing form state in React
 

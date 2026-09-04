@@ -9,7 +9,7 @@ title: injectField
 function injectField<T>(): TanStackFieldInjectable<T>;
 ```
 
-Defined in: [injectable.ts:39](https://github.com/TanStack/form/blob/main/packages/angular-form/src/injectable.ts#L39)
+Defined in: [angular-form/src/injectable.ts:39](https://github.com/TanStack/form/blob/main/packages/angular-form/src/injectable.ts#L39)
 
 ## Type Parameters
 
@@ -19,4 +19,4 @@ Defined in: [injectable.ts:39](https://github.com/TanStack/form/blob/main/packag
 
 ## Returns
 
-[`TanStackFieldInjectable`](../../classes/TanStackFieldInjectable.md)\<`T`\>
+[`TanStackFieldInjectable`](../classes/TanStackFieldInjectable.md)\<`T`\>

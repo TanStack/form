@@ -17,6 +17,7 @@ import type {
   ServerFormState,
   UnwrapFormAsyncValidateOrFn,
 } from '@tanstack/react-form'
+import type { FormDataInfo } from 'decode-formdata'
 
 interface CreateServerValidateOptions<
   TFormData,
@@ -32,33 +33,32 @@ interface CreateServerValidateOptions<
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   TSubmitMeta,
 > extends FormOptions<
-    TFormData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync,
-    TOnServer,
-    TSubmitMeta
-  > {
+  TFormData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
+  TOnServer,
+  TSubmitMeta
+> {
   onServerValidate: TOnServer
 }
 
 const serverFn = createServerFn({ method: 'POST' })
-  .inputValidator(
+  .validator(
     (data: { formData: unknown; info?: unknown; defaultOpts: unknown }) => {
       return data
     },
   )
-  .handler(async ({ data, ...props }) => {
-    console.log({ props, data })
+  .handler(async ({ data }) => {
     const { formData, info, defaultOpts } = data as {
       formData: FormData
-      info?: Parameters<typeof decode>[1]
+      info?: FormDataInfo
       defaultOpts: CreateServerValidateOptions<
         any,
         any,
@@ -98,7 +98,9 @@ const serverFn = createServerFn({ method: 'POST' })
 
     const referer = getRequestHeader('referer')!
 
-    const decodedData = decode(formData, info) as never as any
+    const decodedData = (info
+      ? decode(formData, info)
+      : decode(formData)) as never as any
 
     const onServerError = (await runValidator({
       value: decodedData,
@@ -164,5 +166,5 @@ export const createServerValidate =
       TSubmitMeta
     >,
   ) =>
-  (formData: FormData, info?: Parameters<typeof decode>[1]) =>
+  (formData: FormData, info?: FormDataInfo) =>
     serverFn({ data: { defaultOpts, formData, info } })

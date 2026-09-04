@@ -1,8 +1,13 @@
 import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
-import { FieldApi, FormApi, formEventClient } from '../src/index'
+import { FieldApi, FormApi, formEventClient, mergeForm } from '../src/index'
 import { sleep } from './utils'
-import type { AnyFieldApi, AnyFormApi } from '../src/index'
+import type {
+  AnyFieldApi,
+  AnyFormApi,
+  AnyFormState,
+  FormState,
+} from '../src/index'
 
 describe('form api', () => {
   it('should get default form state when default values are passed', () => {
@@ -167,6 +172,46 @@ describe('form api', () => {
     field.handleChange('')
     form.reset()
     expect(form.state.values).toEqual({ name: 'initial' })
+  })
+
+  it('should prioritize field-level defaultValue over form-level defaultValues on reset', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'form-default',
+        age: 25,
+      },
+    })
+    form.mount()
+
+    const nameField = new FieldApi({
+      form,
+      name: 'name',
+      defaultValue: 'field-default',
+    })
+    nameField.mount()
+
+    const ageField = new FieldApi({
+      form,
+      name: 'age',
+    })
+    ageField.mount()
+
+    // Change values
+    nameField.setValue('changed-name')
+    ageField.setValue(30)
+
+    expect(form.state.values).toEqual({
+      name: 'changed-name',
+      age: 30,
+    })
+
+    // Reset without arguments - field-level defaultValue should take priority
+    form.reset()
+
+    expect(form.state.values).toEqual({
+      name: 'field-default', // field's defaultValue, not form's
+      age: 25, // form's defaultValues (no field-level default)
+    })
   })
 
   it('should handle multiple fields with mixed mount states', () => {
@@ -1868,6 +1913,84 @@ describe('form api', () => {
     expect(formSubmit).toHaveBeenCalledOnce()
   })
 
+  it('should create field meta from form async submit validation errors', async () => {
+    vi.useFakeTimers()
+
+    const form = new FormApi({
+      defaultValues: {
+        age: 0,
+      },
+      validators: {
+        onSubmitAsync: async ({ value }) => {
+          await sleep(1)
+          return value.age > 0
+            ? undefined
+            : { fields: { age: 'age must be greater than 0' } }
+        },
+      },
+      asyncDebounceMs: 1,
+    })
+
+    form.mount()
+
+    expect(form.state.fieldMeta.age).toBeUndefined()
+
+    form.handleSubmit()
+    await vi.runAllTimersAsync()
+
+    expect(form.state.fieldMeta.age).toBeDefined()
+    expect(form.state.fieldMeta.age?.errorMap.onSubmit).toBe(
+      'age must be greater than 0',
+    )
+  })
+
+  it('should run field-level onBlur validators on re-submission to clear stale errors', async () => {
+    // Regression: stale onBlur errors could prevent re-submission because
+    // canSubmit became false and _handleSubmit returned early before running
+    // validateAllFields, which would have re-evaluated and cleared the error.
+    // See: https://github.com/TanStack/form/issues/2034
+    const onSubmit = vi.fn()
+    const onSubmitInvalid = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: { type: 'PIN', pin: '' },
+      onSubmit,
+      onSubmitInvalid,
+    })
+    form.mount()
+
+    // PIN field with an onBlur validator that is only required when type === 'PIN'
+    const pinField = new FieldApi({
+      form,
+      name: 'pin',
+      validators: {
+        onBlur: ({ value }) =>
+          form.getFieldValue('type') === 'PIN' && !value
+            ? 'PIN is required'
+            : undefined,
+      },
+    })
+    pinField.mount()
+
+    // Simulate user touching and blurring the PIN field while type is 'PIN'
+    pinField.handleBlur()
+    expect(pinField.state.meta.errorMap.onBlur).toBe('PIN is required')
+
+    // First submit: form is invalid, onSubmitInvalid is called
+    await form.handleSubmit()
+    expect(onSubmitInvalid).toHaveBeenCalledTimes(1)
+    expect(onSubmit).not.toHaveBeenCalled()
+
+    // User switches type to 'Card' — PIN is no longer required
+    form.setFieldValue('type', 'Card')
+
+    // Second submit: the onBlur error is stale (PIN field still has it), but
+    // re-running validators on submit should clear it since type !== 'PIN'
+    await form.handleSubmit()
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+    expect(onSubmitInvalid).toHaveBeenCalledTimes(1) // not called again
+  })
+
   it('should run all types of async validation on fields during submit', async () => {
     vi.useFakeTimers()
 
@@ -1940,7 +2063,7 @@ describe('form api', () => {
     ).toBeUndefined()
   })
 
-  it('should validate all fields consistently', async () => {
+  it('should validate all fields consistently - field level onChange validators', async () => {
     const form = new FormApi({
       defaultValues: {
         firstName: '',
@@ -1952,8 +2075,7 @@ describe('form api', () => {
       form,
       name: 'firstName',
       validators: {
-        onChange: ({ value }) =>
-          value.length > 0 ? undefined : 'first name is required',
+        onChange: ({ value }) => (value.length > 0 ? undefined : 'is required'),
       },
     })
 
@@ -1961,9 +2083,30 @@ describe('form api', () => {
     field.mount()
 
     await form.validateAllFields('change')
-    expect(field.getMeta().errorMap.onChange).toEqual('first name is required')
-    await form.validateAllFields('change')
-    expect(field.getMeta().errorMap.onChange).toEqual('first name is required')
+    expect(field.getMeta().errorMap.onChange).toEqual('is required')
+  })
+
+  it('should validate all fields consistently - field level onSubmit validators', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onSubmit: ({ value }) => (value.length > 0 ? undefined : 'is required'),
+      },
+    })
+
+    form.mount()
+    field.mount()
+
+    await form.validateAllFields('submit')
+    expect(field.getMeta().errorMap.onSubmit).toEqual('is required')
   })
 
   it('should validate a single field consistently if touched', async () => {
@@ -2966,6 +3109,69 @@ describe('form api', () => {
     expect(passconfirmField.state.meta.errors.length).toBe(0)
   })
 
+  it('should not leave linked fields stuck in isValidating when multiple setValue calls trigger concurrent async validation', async () => {
+    vi.useFakeTimers()
+    const validationFn = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        street: '',
+        houseNo: '',
+        zipCode: '',
+        city: '',
+      },
+    })
+
+    form.mount()
+
+    const street = new FieldApi({
+      form,
+      name: 'street',
+      validators: {
+        onChangeListenTo: ['houseNo', 'zipCode', 'city'],
+        onChangeAsyncDebounceMs: 300,
+        onChangeAsync: async () => {
+          await sleep(500)
+          await validationFn()
+          return undefined
+        },
+      },
+    })
+    const houseNo = new FieldApi({ form, name: 'houseNo' })
+    const zipCode = new FieldApi({ form, name: 'zipCode' })
+    const city = new FieldApi({ form, name: 'city' })
+
+    street.mount()
+    houseNo.mount()
+    zipCode.mount()
+    city.mount()
+
+    // Simulate browser autofill: all fields set in rapid succession
+    street.setValue('Foo Street')
+    houseNo.setValue('2')
+    zipCode.setValue('12345')
+    city.setValue('Barrington')
+
+    // Run debounce + async validation
+    try {
+      await vi.runAllTimersAsync()
+
+      expect.soft(validationFn).toHaveBeenCalledTimes(1)
+
+      expect.soft(street.getMeta().isValidating).toBe(false)
+      expect.soft(houseNo.getMeta().isValidating).toBe(false)
+      expect.soft(zipCode.getMeta().isValidating).toBe(false)
+      expect.soft(city.getMeta().isValidating).toBe(false)
+
+      expect.soft(form.state.isFieldsValidating).toBe(false)
+      expect.soft(form.state.isFieldsValid).toBe(true)
+      expect.soft(form.state.isValid).toBe(true)
+      expect.soft(form.state.canSubmit).toBe(true)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
   it("should set field errors from the form's onMount validator", async () => {
     const form = new FormApi({
       defaultValues: {
@@ -2995,6 +3201,36 @@ describe('form api', () => {
     expect(firstNameField.state.meta.errorMap.onMount).toBe(
       'first name is required',
     )
+  })
+
+  it("preserves field errors from the form's onMount validator before fields mount", () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+      validators: {
+        onMount: () => ({
+          fields: {
+            firstName: 'first name is required',
+          },
+        }),
+      },
+    })
+
+    form.mount()
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+
+    firstNameField.mount()
+
+    expect(firstNameField.state.meta.errorMap.onMount).toBe(
+      'first name is required',
+    )
+    expect(firstNameField.state.meta.errorSourceMap.onMount).toBe('form')
+    expect(firstNameField.state.meta.errors).toEqual(['first name is required'])
   })
 
   it('clears errors on all fields affected by form validation when condition resolves', () => {
@@ -4111,5 +4347,71 @@ describe('form api event client', () => {
     expect(logSpy).not.toHaveBeenCalled()
 
     logSpy.mockRestore()
+  })
+})
+
+describe('form transform', () => {
+  it('should transform state values on first load', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      transform: (baseForm) => {
+        return mergeForm(baseForm as AnyFormApi, {
+          values: {
+            name: 'Another',
+          },
+        })
+      },
+    })
+
+    form.mount()
+
+    expect(form.state.values.name).toBe('Another')
+  })
+
+  it('should transform form error map on first load', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      transform: (baseForm) => {
+        return mergeForm(baseForm as AnyFormApi, {
+          errorMap: {
+            onChange: 'Error',
+          },
+        })
+      },
+    })
+
+    form.mount()
+
+    expect(form.state.errorMap.onChange).toBe('Error')
+  })
+
+  it('should transform fields error map on first load', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      transform: (baseForm) => {
+        return mergeForm(baseForm as AnyFormApi, {
+          errorMap: {
+            onChange: { fields: { name: 'Error' } },
+          },
+        })
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      name: 'name',
+      form,
+    })
+
+    field.mount()
+
+    expect(field.state.meta.errorMap.onChange).toBe('Error')
   })
 })

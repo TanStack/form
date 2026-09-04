@@ -3,7 +3,7 @@ id: dynamic-validation
 title: Dynamic Validation
 ---
 
-In many cases, you want to change the validation rules based depending on the state of the form or other conditions. The most popular
+In many cases, you want to change the validation rules depending on the state of the form or other conditions. The most popular
 example of this is when you want to validate a field differently based on whether the user has submitted the form for the first time or not.
 
 We support this through our `onDynamic` validation function.
@@ -18,7 +18,7 @@ const form = useForm({
     firstName: '',
     lastName: '',
   },
-  // If this is omitted, onDynamic will not be called
+  // If this is omitted, `onDynamic` will not be called
   validationLogic: revalidateLogic(),
   validators: {
     onDynamic: ({ value }) => {
@@ -31,11 +31,12 @@ const form = useForm({
 })
 ```
 
-> By default `onDynamic` is not called, so you need to pass `revalidateLogic()` to the `validationLogic` option of `useForm`.
+> [!IMPORTANT]
+> By default, `onDynamic` is not called; therefore you must pass `revalidateLogic()` to the `validationLogic` option of `useForm`.
 
 ## Revalidation Options
 
-`revalidateLogic` allows you to specify when validation should be run and change the validation rules dynamically based on the current submission state of the form.
+`revalidateLogic` allows you to specify when validation should be run and to change the validation rules dynamically based on the current submission state of the form.
 
 It takes two arguments:
 
@@ -64,7 +65,7 @@ const form = useForm({
 
 ## Accessing Errors
 
-Just as you might access errors from an `onChange` or `onBlur` validation, you can access the errors from the `onDynamic` validation function using the `form.state.errorMap` object.
+Just as you might access errors from an `onChange` or `onBlur` validation, you can access errors from the `onDynamic` validation function using the `form.state.errorMap` object.
 
 ```tsx
 function App() {
@@ -177,7 +178,7 @@ function App() {
 
 ### Async Validation
 
-Async validation can also be used with `onDynamic` just like with other validation logic. You can even debounce the async validation to avoid excessive calls.
+Async validation can also be used with `onDynamicAsync` just like with other validation logic. You can even debounce the async validation to avoid excessive calls.
 
 ```tsx
 const form = useForm({

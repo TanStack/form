@@ -186,7 +186,7 @@ Example:
 
   // Subscribe to the form's error map so that updates to it will render
   // alternately, you can use `form.Subscribe`
-  const formErrorMap = form.useStore((state) => state.errorMap)
+  const formErrorMap = form.useSelector((state) => state.errorMap)
 </script>
 
 <div>
@@ -391,11 +391,6 @@ You can subscribe to it via `form.Subscribe` and use the value in order to, for 
     canSubmit: state.canSubmit,
     isSubmitting: state.isSubmitting,
   })}
-  children={(state) => (
-    <button type="submit" disabled={!state().canSubmit}>
-      {state().isSubmitting ? '...' : 'Submit'}
-    </button>
-  )}
 >
   {#snippet children(state)}
     <button type="submit" disabled={!state.canSubmit}>

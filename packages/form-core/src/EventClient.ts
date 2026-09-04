@@ -43,15 +43,15 @@ export type BroadcastFormId = {
 }
 
 type EventMap = {
-  'form-devtools:form-state': BroadcastFormState
-  'form-devtools:form-api': BroadcastFormApi
-  'form-devtools:form-submission': BroadcastFormSubmissionState
+  'form-state': BroadcastFormState
+  'form-api': BroadcastFormApi
+  'form-submission': BroadcastFormSubmissionState
 
-  'form-devtools:request-form-state': BroadcastFormId
-  'form-devtools:request-form-reset': BroadcastFormId
-  'form-devtools:request-form-force-submit': BroadcastFormId
+  'request-form-state': BroadcastFormId
+  'request-form-reset': BroadcastFormId
+  'request-form-force-submit': BroadcastFormId
 
-  'form-devtools:form-unmounted': BroadcastFormId
+  'form-unmounted': BroadcastFormId
 }
 
 export type EventClientEventMap = keyof EventMap

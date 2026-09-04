@@ -1,106 +1,69 @@
-import { Component, input } from '@angular/core'
+import { ChangeDetectionStrategy, Component } from '@angular/core'
 import {
   TanStackAppField,
   TanStackField,
-  injectField,
+  TanStackWithForm,
   injectForm,
   injectStore,
 } from '@tanstack/angular-form'
-import type {
-  FieldValidateAsyncFn,
-  FieldValidateFn,
-} from '@tanstack/angular-form'
-
-@Component({
-  selector: 'app-text-field',
-  standalone: true,
-  template: `
-    <label [for]="field.api.name">{{ label() }}</label>
-    <input
-      [id]="field.api.name"
-      [name]="field.api.name"
-      [value]="field.api.state.value"
-      (blur)="field.api.handleBlur()"
-      (input)="field.api.handleChange($any($event).target.value)"
-    />
-    @if (field.api.state.meta.isTouched) {
-      @for (error of field.api.state.meta.errors; track $index) {
-        <div style="color: red">
-          {{ error }}
-        </div>
-      }
-    }
-    @if (field.api.state.meta.isValidating) {
-      <p>Validating...</p>
-    }
-  `,
-})
-export class AppTextField {
-  label = input.required<string>()
-  field = injectField<string>()
-}
+import { TextField } from './components/text-field.component'
+import { AddressFields } from './features/people/address-fields.component'
+import { EmergencyContact } from './features/people/emergency-contact.component'
+import { peopleFormOpts } from './features/people/shared-form'
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [TanStackField, TanStackAppField, AppTextField],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    TanStackField,
+    TanStackAppField,
+    TanStackWithForm,
+    TextField,
+    AddressFields,
+    EmergencyContact,
+  ],
   template: `
     <form (submit)="handleSubmit($event)">
-      <div>
-        <app-text-field
-          label="First name:"
-          tanstack-app-field
-          [tanstackField]="form"
-          name="firstName"
-          [validators]="{
-            onChange: firstNameValidator,
-            onChangeAsyncDebounceMs: 500,
-            onChangeAsync: firstNameAsyncValidator,
-          }"
-        />
-      </div>
-      <div>
-        <app-text-field
-          label="Last name:"
-          tanstack-app-field
-          [tanstackField]="form"
-          name="lastName"
-        />
-      </div>
-      <button type="submit" [disabled]="!canSubmit()">
+      <h1>Personal Information</h1>
+      <app-text-field
+        label="Full Name"
+        tanstack-app-field
+        [tanstackField]="form"
+        name="fullName"
+      />
+      <app-text-field
+        label="Email"
+        tanstack-app-field
+        [tanstackField]="form"
+        name="email"
+      />
+      <app-text-field
+        label="Phone"
+        tanstack-app-field
+        [tanstackField]="form"
+        name="phone"
+      />
+
+      <app-address-fields tanstack-with-form [form]="form" />
+
+      <h2>Emergency Contact</h2>
+      <app-emergency-contact tanstack-with-form [form]="form" />
+
+      <button type="submit" [disabled]="isSubmitting()">
         {{ isSubmitting() ? '...' : 'Submit' }}
       </button>
-      <button type="reset" (click)="form.reset()">Reset</button>
     </form>
   `,
 })
 export class AppComponent {
-  firstNameValidator: FieldValidateFn<any, string, any> = ({ value }) =>
-    !value
-      ? 'A first name is required'
-      : value.length < 3
-        ? 'First name must be at least 3 characters'
-        : undefined
-
-  firstNameAsyncValidator: FieldValidateAsyncFn<any, string, any> = async ({
-    value,
-  }) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    return value.includes('error') && 'No "error" allowed in first name'
-  }
-
   form = injectForm({
-    defaultValues: {
-      firstName: '',
-      lastName: '',
-    },
-    onSubmit({ value }) {
-      // Do something with form data
-      console.log(value)
+    ...peopleFormOpts,
+    onSubmit: ({ value }) => {
+      alert(JSON.stringify(value, null, 2))
     },
   })
 
-  canSubmit = injectStore(this.form, (state) => state.canSubmit)
   isSubmitting = injectStore(this.form, (state) => state.isSubmitting)
 
   handleSubmit(event: SubmitEvent) {

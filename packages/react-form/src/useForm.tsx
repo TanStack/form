@@ -1,10 +1,13 @@
 'use client'
 
-import { FormApi, functionalUpdate, uuid } from '@tanstack/form-core'
-import { useStore } from '@tanstack/react-store'
-import { useMemo, useState } from 'react'
+import { FormApi, functionalUpdate, mergeAndUpdate } from '@tanstack/form-core'
+import { useSelector } from '@tanstack/react-store'
+import { useMemo, useRef, useState } from 'react'
 import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
+import { useFormId } from './useFormId'
+import { FormGroup } from './useFormGroup'
+import type { FormGroupComponent } from './useFormGroup'
 import type {
   AnyFormApi,
   AnyFormState,
@@ -15,7 +18,6 @@ import type {
 } from '@tanstack/form-core'
 import type { FunctionComponent, PropsWithChildren, ReactNode } from 'react'
 import type { FieldComponent } from './useField'
-import type { NoInfer } from '@tanstack/react-store'
 
 /**
  * Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned from `useForm`
@@ -38,6 +40,20 @@ export interface ReactFormApi<
    * A React component to render form fields. With this, you can render and manage individual form fields.
    */
   Field: FieldComponent<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    TOnServer,
+    TSubmitMeta
+  >
+  FormGroup: FormGroupComponent<
     TFormData,
     TOnMount,
     TOnChange,
@@ -139,13 +155,13 @@ export type ReactFormExtendedApi<
 
 function LocalSubscribe({
   form,
-  selector,
+  selector = (state) => state,
   children,
 }: PropsWithChildren<{
   form: AnyFormApi
-  selector: (state: AnyFormState) => AnyFormState
+  selector?: (state: AnyFormState) => AnyFormState
 }>): ReturnType<FunctionComponent> {
-  const data = useStore(form.store, selector)
+  const data = useSelector(form.store, selector)
 
   return <>{functionalUpdate(children, data)}</>
 }
@@ -184,7 +200,7 @@ export function useForm<
     TSubmitMeta
   >,
 ) {
-  const fallbackFormId = useState(() => uuid())[0]
+  const fallbackFormId = useFormId()
   const [prevFormId, setPrevFormId] = useState<string>(opts?.formId as never)
 
   const [formApi, setFormApi] = useState(() => {
@@ -226,6 +242,9 @@ export function useForm<
       TSubmitMeta
     > = {
       ...formApi,
+      handleSubmit: ((...props: never[]) => {
+        return formApi._handleSubmit(...props)
+      }) as typeof formApi.handleSubmit,
       // We must add all `get`ters from `core`'s `FormApi` here, as otherwise the spread operator won't catch those
       get formId(): string {
         return formApi._formId
@@ -237,6 +256,10 @@ export function useForm<
 
     extendedApi.Field = function APIField(props) {
       return <Field {...props} form={formApi} />
+    }
+
+    extendedApi.FormGroup = function APIFormGroup(props) {
+      return <FormGroup {...props} form={formApi} />
     }
 
     extendedApi.Subscribe = function Subscribe(props: any) {
@@ -260,6 +283,18 @@ export function useForm<
    */
   useIsomorphicLayoutEffect(() => {
     formApi.update(opts)
+  })
+
+  const hasRan = useRef(false)
+
+  useIsomorphicLayoutEffect(() => {
+    if (!hasRan.current) return
+    if (!opts?.transform) return
+    mergeAndUpdate(formApi, opts.transform as never)
+  }, [formApi, opts?.transform])
+
+  useIsomorphicLayoutEffect(() => {
+    hasRan.current = true
   })
 
   return extendedFormApi

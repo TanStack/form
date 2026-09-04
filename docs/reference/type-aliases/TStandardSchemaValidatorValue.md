@@ -19,7 +19,7 @@ Defined in: [packages/form-core/src/standardSchemaValidator.ts:3](https://github
 
 ### TSource
 
-`TSource` *extends* [`ValidationSource`](../ValidationSource.md) = [`ValidationSource`](../ValidationSource.md)
+`TSource` *extends* [`ValidationSource`](ValidationSource.md) = [`ValidationSource`](ValidationSource.md)
 
 ## Properties
 

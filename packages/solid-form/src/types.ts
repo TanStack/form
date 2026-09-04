@@ -9,7 +9,10 @@ import type {
   FormValidateOrFn,
 } from '@tanstack/form-core'
 
-interface FieldOptionsMode {
+/**
+ * @private
+ */
+export interface FieldOptionsMode {
   mode?: 'value' | 'array'
 }
 
@@ -45,7 +48,9 @@ export interface CreateFieldOptions<
   TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TSubmitMeta,
-> extends FieldApiOptions<
+>
+  extends
+    FieldApiOptions<
       TParentData,
       TName,
       TData,
@@ -93,7 +98,9 @@ export interface CreateFieldOptionsBound<
   TOnDynamicAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-> extends FieldOptions<
+>
+  extends
+    FieldOptions<
       TParentData,
       TName,
       TData,

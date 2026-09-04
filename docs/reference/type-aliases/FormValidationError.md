@@ -11,7 +11,7 @@ type FormValidationError<TFormData> =
 | GlobalFormValidationError<TFormData>;
 ```
 
-Defined in: [packages/form-core/src/types.ts:102](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L102)
+Defined in: [packages/form-core/src/types.ts:132](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L132)
 
 ## Type Parameters
 

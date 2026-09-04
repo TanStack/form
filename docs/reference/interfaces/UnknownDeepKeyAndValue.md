@@ -5,17 +5,17 @@ title: UnknownDeepKeyAndValue
 
 # Interface: UnknownDeepKeyAndValue\<TParent\>
 
-Defined in: [packages/form-core/src/util-types.ts:122](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L122)
+Defined in: [packages/form-core/src/util-types.ts:139](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L139)
 
 ## Extends
 
-- [`AnyDeepKeyAndValue`](../AnyDeepKeyAndValue.md)
+- [`AnyDeepKeyAndValue`](AnyDeepKeyAndValue.md)
 
 ## Type Parameters
 
 ### TParent
 
-`TParent` *extends* [`AnyDeepKeyAndValue`](../AnyDeepKeyAndValue.md)
+`TParent` *extends* [`AnyDeepKeyAndValue`](AnyDeepKeyAndValue.md)
 
 ## Properties
 
@@ -25,11 +25,11 @@ Defined in: [packages/form-core/src/util-types.ts:122](https://github.com/TanSta
 key: UnknownAccessor<TParent>;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:124](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L124)
+Defined in: [packages/form-core/src/util-types.ts:142](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L142)
 
 #### Overrides
 
-[`AnyDeepKeyAndValue`](../AnyDeepKeyAndValue.md).[`key`](../AnyDeepKeyAndValue.md#key)
+[`AnyDeepKeyAndValue`](AnyDeepKeyAndValue.md).[`key`](AnyDeepKeyAndValue.md#key)
 
 ***
 
@@ -39,8 +39,8 @@ Defined in: [packages/form-core/src/util-types.ts:124](https://github.com/TanSta
 value: unknown;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:125](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L125)
+Defined in: [packages/form-core/src/util-types.ts:143](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L143)
 
 #### Overrides
 
-[`AnyDeepKeyAndValue`](../AnyDeepKeyAndValue.md).[`value`](../AnyDeepKeyAndValue.md#value)
+[`AnyDeepKeyAndValue`](AnyDeepKeyAndValue.md).[`value`](AnyDeepKeyAndValue.md#value)

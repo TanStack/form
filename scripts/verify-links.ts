@@ -1,12 +1,20 @@
 import { existsSync, readFileSync, statSync } from 'node:fs'
-import path, { resolve } from 'node:path'
+import { extname, resolve } from 'node:path'
 import { glob } from 'tinyglobby'
 // @ts-ignore Could not find a declaration file for module 'markdown-link-extractor'.
 import markdownLinkExtractor from 'markdown-link-extractor'
 
+const errors: Array<{
+  file: string
+  link: string
+  resolvedPath: string
+  reason: string
+  nav?: string
+}> = []
+
 function isRelativeLink(link: string) {
   return (
-    link &&
+    !link.startsWith('/') &&
     !link.startsWith('http://') &&
     !link.startsWith('https://') &&
     !link.startsWith('//') &&
@@ -15,76 +23,74 @@ function isRelativeLink(link: string) {
   )
 }
 
-function normalizePath(p: string): string {
-  // Remove any trailing .md
-  p = p.replace(`${path.extname(p)}`, '')
-  return p
+/** Remove any trailing .md */
+function stripExtension(p: string): string {
+  return p.replace(`${extname(p)}`, '')
 }
 
-function fileExistsForLink(
-  link: string,
-  markdownFile: string,
-  errors: Array<any>,
-): boolean {
+/**
+ * Map a resolved `/docs` path to the file or directory that actually serves it,
+ * and report whether that target exists.
+ */
+function resolveDocTarget(absPath: string): { path: string; exists: boolean } {
+  // Examples live outside /docs: /docs/framework/{framework}/examples/{name}
+  // is served from /examples/{framework}/{name}
+  if (absPath.includes('/examples/')) {
+    const examplePath = absPath.replace(
+      /\/docs\/framework\/([^/]+)\/examples\//,
+      '/examples/$1/',
+    )
+    return {
+      path: examplePath,
+      exists: existsSync(examplePath) && statSync(examplePath).isDirectory(),
+    }
+  }
+
+  // Everything else is a markdown page
+  const mdPath = absPath.endsWith('.md') ? absPath : `${absPath}.md`
+  return { path: mdPath, exists: existsSync(mdPath) }
+}
+
+function relativeLinkExists(link: string, file: string): boolean {
   // Remove hash if present
-  const filePart = link.split('#')[0]
+  const linkWithoutHash = link.split('#')[0]
   // If the link is empty after removing hash, it's not a file
-  if (!filePart) return false
+  if (!linkWithoutHash) return false
 
-  // Normalize the markdown file path
-  markdownFile = normalizePath(markdownFile)
-
-  // Normalize the path
-  const normalizedPath = normalizePath(filePart)
+  // Strip the file/link extensions
+  const filePath = stripExtension(file)
+  const linkPath = stripExtension(linkWithoutHash)
 
   // Resolve the path relative to the markdown file's directory
-  let absPath = resolve(markdownFile, normalizedPath)
+  // Nav up a level to simulate how links are resolved on the web
+  const absPath = resolve(filePath, '..', linkPath)
 
   // Ensure the resolved path is within /docs
   const docsRoot = resolve('docs')
   if (!absPath.startsWith(docsRoot)) {
     errors.push({
       link,
-      markdownFile,
+      file,
       resolvedPath: absPath,
-      reason: 'navigates above /docs, invalid',
+      reason: 'Path outside /docs',
     })
     return false
   }
 
-  // Check if this is an example path
-  const isExample = absPath.includes('/examples/')
-
-  let exists = false
-
-  if (isExample) {
-    // Transform /docs/framework/{framework}/examples/ to /examples/{framework}/
-    absPath = absPath.replace(
-      /\/docs\/framework\/([^/]+)\/examples\//,
-      '/examples/$1/',
-    )
-    // For examples, we want to check if the directory exists
-    exists = existsSync(absPath) && statSync(absPath).isDirectory()
-  } else {
-    // For non-examples, we want to check if the .md file exists
-    if (!absPath.endsWith('.md')) {
-      absPath = `${absPath}.md`
-    }
-    exists = existsSync(absPath)
-  }
+  const { path: resolvedPath, exists } = resolveDocTarget(absPath)
 
   if (!exists) {
     errors.push({
       link,
-      markdownFile,
-      resolvedPath: absPath,
-      reason: 'not found',
+      file,
+      resolvedPath,
+      reason: 'Not found',
     })
   }
   return exists
 }
 
-async function findMarkdownLinks() {
+async function verifyMarkdownLinks() {
   // Find all markdown files in docs directory
   const markdownFiles = await glob('docs/**/*.md', {
     ignore: ['**/node_modules/**'],
@@ -92,35 +98,84 @@ async function findMarkdownLinks() {
 
   console.log(`Found ${markdownFiles.length} markdown files\n`)
 
-  const errors: Array<any> = []
-
   // Process each file
   for (const file of markdownFiles) {
     const content = readFileSync(file, 'utf-8')
-    const links: Array<any> = markdownLinkExtractor(content)
+    const links: Array<string> = markdownLinkExtractor(content)
 
-    const filteredLinks = links.filter((link: any) => {
-      if (typeof link === 'string') {
-        return isRelativeLink(link)
-      } else if (link && typeof link.href === 'string') {
-        return isRelativeLink(link.href)
-      }
-      return false
+    const relativeLinks = links.filter((link: string) => {
+      return isRelativeLink(link)
     })
 
-    if (filteredLinks.length > 0) {
-      filteredLinks.forEach((link) => {
-        const href = typeof link === 'string' ? link : link.href
-        fileExistsForLink(href, file, errors)
+    if (relativeLinks.length > 0) {
+      relativeLinks.forEach((link) => {
+        relativeLinkExists(link, file)
       })
     }
   }
+}
+
+interface ConfigNode {
+  label?: string
+  to?: string
+  children?: Array<ConfigNode>
+  frameworks?: Array<ConfigNode>
+}
+
+/**
+ * Every `to` in docs/config.json becomes a sidebar link on tanstack.com, so an
+ * entry pointing at a page that no longer exists renders as a 404. These are
+ * invisible to the markdown scan above, which only reads links written inside
+ * .md files.
+ */
+function verifyConfigLinks() {
+  const configPath = 'docs/config.json'
+  const config = JSON.parse(readFileSync(configPath, 'utf-8')) as {
+    sections?: Array<ConfigNode>
+  }
+
+  const docsRoot = resolve('docs')
+  let checked = 0
+
+  function walk(node: ConfigNode, breadcrumb: Array<string>) {
+    const trail = node.label ? [...breadcrumb, node.label] : breadcrumb
+
+    if (node.to) {
+      checked++
+      const { path: resolvedPath, exists } = resolveDocTarget(
+        resolve(docsRoot, node.to),
+      )
+
+      if (!exists) {
+        errors.push({
+          file: configPath,
+          link: node.to,
+          resolvedPath,
+          reason: 'Not found',
+          nav: trail.join(' > '),
+        })
+      }
+    }
+
+    node.children?.forEach((child) => walk(child, trail))
+    node.frameworks?.forEach((framework) => walk(framework, trail))
+  }
+
+  const sections = config.sections ?? []
+  sections.forEach((section) => walk(section, []))
+
+  console.log(`Found ${checked} nav entries in ${configPath}\n`)
+}
+
+async function verifyLinks() {
+  await verifyMarkdownLinks()
+  verifyConfigLinks()
 
   if (errors.length > 0) {
     console.log(`\n❌ Found ${errors.length} broken links:`)
     errors.forEach((err) => {
       console.log(
-        `${err.link}\n  in:    ${err.markdownFile}\n  path:  ${err.resolvedPath}\n  why:   ${err.reason}\n`,
+        `${err.file}${err.nav ? `\n  nav:       ${err.nav}` : ''}\n  link:      ${err.link}\n  resolved:  ${err.resolvedPath}\n  why:       ${err.reason}\n`,
       )
     })
     process.exit(1)
@@ -129,4 +184,7 @@ async function findMarkdownLinks() {
   }
 }
 
-findMarkdownLinks().catch(console.error)
+verifyLinks().catch((error) => {
+  console.error(error)
+  process.exitCode = 1
+})

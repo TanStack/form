@@ -1,5 +1,223 @@
 # @tanstack/angular-form
 
+## 1.33.5
+
+### Patch Changes
+
+- Updated dependencies [[`146ba25`](https://github.com/TanStack/form/commit/146ba25205afe46c2a8bfc1f2ef82609255772dc)]:
+  - @tanstack/form-core@1.33.5
+
+## 1.33.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.33.4
+
+## 1.33.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.33.3
+
+## 1.33.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.33.2
+
+## 1.33.1
+
+### Patch Changes
+
+- Updated dependencies [[`3c57f6d`](https://github.com/TanStack/form/commit/3c57f6d4311f823ab39374417edb5fae544ad15a), [`7b3012b`](https://github.com/TanStack/form/commit/7b3012b03e706cc409c2952964145a11a300d7fe), [`741da6b`](https://github.com/TanStack/form/commit/741da6bb659a319acaa55292564999fcbbc90012), [`3c57f6d`](https://github.com/TanStack/form/commit/3c57f6d4311f823ab39374417edb5fae544ad15a), [`6cd477a`](https://github.com/TanStack/form/commit/6cd477a97df9612019d8a2d9c97f2e86b1b59256), [`887a129`](https://github.com/TanStack/form/commit/887a1293375a168452e82b0fb482841ec02ad77f)]:
+  - @tanstack/form-core@1.33.1
+
+## 1.33.0
+
+### Minor Changes
+
+- [#2128](https://github.com/TanStack/form/pull/2128) [`808f158`](https://github.com/TanStack/form/commit/808f158b62c08f69689a7b652c35989d717f9014) - Added FormGroup API
+
+### Patch Changes
+
+- Updated dependencies [[`808f158`](https://github.com/TanStack/form/commit/808f158b62c08f69689a7b652c35989d717f9014)]:
+  - @tanstack/form-core@1.33.0
+
+## 1.32.1
+
+### Patch Changes
+
+- Updated dependencies [[`b402d7a`](https://github.com/TanStack/form/commit/b402d7ab134adca0d0d4647af12fde9b490c08f7), [`d0d941d`](https://github.com/TanStack/form/commit/d0d941dc1a4bd4ac15bb38a9ca1b4a863a3f418e)]:
+  - @tanstack/form-core@1.32.1
+
+## 1.32.0
+
+### Patch Changes
+
+- prevent full array re-renders in array mode ([#2171](https://github.com/TanStack/form/pull/2171))
+
+- re-render arrays when length doesn't change but values do ([#2172](https://github.com/TanStack/form/pull/2172))
+
+- Updated dependencies [[`5dd1ed4`](https://github.com/TanStack/form/commit/5dd1ed4e9eb0fb9c3f8909dfb58236c07c27739d), [`556e35e`](https://github.com/TanStack/form/commit/556e35e30ad75f536ae253960a371c32ae138e29), [`427b3d9`](https://github.com/TanStack/form/commit/427b3d9fd516b8222339ae7e8e38844f198c5d7a), [`01f51b5`](https://github.com/TanStack/form/commit/01f51b54f551e1cb052b222652fbf6e05c9f2b44), [`4d250c0`](https://github.com/TanStack/form/commit/4d250c0c10433484ba6f622d94ca1a56bd0768d0)]:
+  - @tanstack/form-core@1.32.0
+
+## 1.31.0
+
+### Minor Changes
+
+- Add tanstack-with-form API for more modular form usage ([#2163](https://github.com/TanStack/form/pull/2163))
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.31.0
+
+## 1.30.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.30.0
+
+## 1.29.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.29.3
+
+## 1.29.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.29.2
+
+## 1.29.1
+
+### Patch Changes
+
+- Updated dependencies [[`6b8aa1e`](https://github.com/TanStack/form/commit/6b8aa1e92d883dfbdddbd5f0393a31d2e7120d3d)]:
+  - @tanstack/form-core@1.29.1
+
+## 1.29.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.29.0
+
+## 1.28.6
+
+### Patch Changes
+
+- Updated dependencies [[`7a1428d`](https://github.com/TanStack/form/commit/7a1428d6ce2806069b3d7b8f8b2aacc26315b771)]:
+  - @tanstack/form-core@1.28.6
+
+## 1.28.5
+
+### Patch Changes
+
+- Updated dependencies [[`39932c1`](https://github.com/TanStack/form/commit/39932c1da28b5e4ea4b73f8b488d92fc100ccc41)]:
+  - @tanstack/form-core@1.28.5
+
+## 1.28.4
+
+### Patch Changes
+
+- Refactor internals for substancially faster performance ([#2035](https://github.com/TanStack/form/pull/2035))
+
+- Updated dependencies [[`f88faaf`](https://github.com/TanStack/form/commit/f88faaf72d265fdcbe99887421bd97dd03cb703e)]:
+  - @tanstack/form-core@1.28.4
+
+## 1.28.3
+
+### Patch Changes
+
+- form arrays now work again ([#2041](https://github.com/TanStack/form/pull/2041))
+
+- Updated dependencies [[`0b3952d`](https://github.com/TanStack/form/commit/0b3952d9805b4f1756829faa012e4112c14859a7)]:
+  - @tanstack/form-core@1.28.3
+
+## 1.28.2
+
+### Patch Changes
+
+- bump @tanstack/store dependency to 0.8.0 ([#2038](https://github.com/TanStack/form/pull/2038))
+
+- Updated dependencies [[`a07862d`](https://github.com/TanStack/form/commit/a07862de23ea008c7dd3821edd880b6ebc569016)]:
+  - @tanstack/form-core@1.28.2
+
+## 1.28.1
+
+### Patch Changes
+
+- Updated dependencies [[`72d970a`](https://github.com/TanStack/form/commit/72d970add6ab682d733e35a95e5e1f44efb695d2)]:
+  - @tanstack/form-core@1.28.1
+
+## 1.28.0
+
+### Patch Changes
+
+- fix: flatten errors consistently when validating before field mount ([#2003](https://github.com/TanStack/form/pull/2003))
+
+  Fixed an issue where `field.errors` was incorrectly nested as `[[error]]` instead of `[error]` when `form.validate()` was called manually before a field was mounted. The `flat(1)` operation is now applied by default unless `disableErrorFlat` is explicitly set to true, ensuring consistent error structure regardless of when validation occurs.
+
+- Updated dependencies [[`41faffe`](https://github.com/TanStack/form/commit/41faffee657e753b37132275c2255d29fdd3f325), [`7f2453b`](https://github.com/TanStack/form/commit/7f2453baf8c852adfab2475fa3f110f597b24c52)]:
+  - @tanstack/form-core@1.28.0
+
+## 1.27.7
+
+### Patch Changes
+
+- Updated dependencies [[`3519cce`](https://github.com/TanStack/form/commit/3519cce63072e87989bfa1b83b845e8d645d2725)]:
+  - @tanstack/form-core@1.27.7
+
+## 1.27.6
+
+### Patch Changes
+
+- Updated dependencies [[`c526378`](https://github.com/TanStack/form/commit/c5263786ed8b12144837ddb87f43c87fa4efc2d4)]:
+  - @tanstack/form-core@1.27.6
+
+## 1.27.5
+
+### Patch Changes
+
+- Updated dependencies [[`36fa503`](https://github.com/TanStack/form/commit/36fa503f21c59e68138a21de7038bf941a579b55), [`01b24a9`](https://github.com/TanStack/form/commit/01b24a9aa54f7d908830af352cacd51fddf65bbe)]:
+  - @tanstack/form-core@1.27.5
+
+## 1.27.4
+
+### Patch Changes
+
+- Updated dependencies [[`c753d5e`](https://github.com/TanStack/form/commit/c753d5eca5021c231bcdfd5f0a337156958fcde1)]:
+  - @tanstack/form-core@1.27.4
+
+## 1.27.3
+
+### Patch Changes
+
+- Updated dependencies [[`c2ecf5d`](https://github.com/TanStack/form/commit/c2ecf5d6df0034d2db982f9b55aed963d94a76a3)]:
+  - @tanstack/form-core@1.27.3
+
+## 1.27.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.27.2
+
+## 1.27.1
+
+### Patch Changes
+
+- Updated dependencies [[`3b080ec`](https://github.com/TanStack/form/commit/3b080ec1faefa9894c0f73880dbff680888e6a9a)]:
+  - @tanstack/form-core@1.27.1
+
 ## 1.27.0
 
 ### Patch Changes

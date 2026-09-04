@@ -95,9 +95,11 @@ function useProviderValue() {
       const id = e.payload.id
       const existingIndex = store.findIndex((item) => item.id === id)
 
-      if (existingIndex > -1 && store[existingIndex]) {
+      const existing = store[existingIndex]
+
+      if (existingIndex > -1 && existing) {
         const { id: _, ...rest } = e.payload
-        const newHistory = [rest, ...store[existingIndex].history].slice(0, 5)
+        const newHistory = [rest, ...existing.history].slice(0, 5)
         setStore(existingIndex, 'history', newHistory)
       }
     })

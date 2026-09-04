@@ -9,7 +9,7 @@ title: createFormHookContexts
 function createFormHookContexts(): object;
 ```
 
-Defined in: [packages/solid-form/src/createFormHook.tsx:63](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createFormHook.tsx#L63)
+Defined in: [packages/solid-form/src/createFormHook.tsx:69](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createFormHook.tsx#L69)
 
 ## Returns
 
@@ -51,4 +51,4 @@ useFormContext: () => SolidFormExtendedApi<Record<string, never>, any, any, any,
 
 #### Returns
 
-[`SolidFormExtendedApi`](../../type-aliases/SolidFormExtendedApi.md)\<`Record`\<`string`, `never`\>, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>
+[`SolidFormExtendedApi`](../type-aliases/SolidFormExtendedApi.md)\<`Record`\<`string`, `never`\>, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>

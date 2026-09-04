@@ -20,7 +20,7 @@ const form = useForm({
     "
   >
     <div>
-      <form.Field name="people">
+      <form.Field name="people" mode="array">
         <template v-slot="{ field }">
           <div>
             <form.Field

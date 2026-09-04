@@ -1,12 +1,12 @@
 {
   "name": "@tanstack/form-core",
-  "version": "1.27.0",
+  "version": "1.33.5",
   "description": "Powerful, type-safe, framework agnostic forms.",
   "author": "tannerlinsley",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/TanStack/form.git",
+    "url": "git+https://github.com/TanStack/form.git",
     "directory": "packages/form-core"
   },
   "homepage": "https://tanstack.com/form",
@@ -22,7 +22,8 @@
     "test:types:ts55": "node ../../node_modules/typescript55/lib/tsc.js",
     "test:types:ts56": "node ../../node_modules/typescript56/lib/tsc.js",
     "test:types:ts57": "node ../../node_modules/typescript57/lib/tsc.js",
-    "test:types:ts58": "tsc",
+    "test:types:ts58": "node ../../node_modules/typescript58/lib/tsc.js",
+    "test:types:ts59": "tsc",
     "test:lib": "vitest",
     "test:lib:dev": "pnpm run test:lib --watch",
     "test:build": "publint --strict",
@@ -51,9 +52,9 @@
     "src"
   ],
   "dependencies": {
-    "@tanstack/devtools-event-client": "^0.3.5",
-    "@tanstack/pacer": "^0.15.3",
-    "@tanstack/store": "^0.7.7"
+    "@tanstack/devtools-event-client": "^0.4.1",
+    "@tanstack/pacer-lite": "^0.1.1",
+    "@tanstack/store": "^0.11.0"
   },
   "devDependencies": {
     "arktype": "^2.1.22",

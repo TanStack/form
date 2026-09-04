@@ -22,8 +22,8 @@ import { injectStore } from '@tanstack/angular-store'
 import type {
   DeepKeys,
   DeepValue,
+  FieldLikeMeta,
   FieldListeners,
-  FieldMeta,
   FieldValidators,
   FormAsyncValidateOrFn,
   FormValidateOrFn,
@@ -66,8 +66,7 @@ export class TanStackField<
   TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TSubmitMeta,
-> implements OnInit
-{
+> implements OnInit {
   name = input.required<TName>()
   defaultValue = input<NoInfer<TData>>()
   asyncDebounceMs = input(undefined as never as number, {
@@ -118,7 +117,7 @@ export class TanStackField<
   defaultMeta =
     input<
       Partial<
-        FieldMeta<
+        FieldLikeMeta<
           TParentData,
           TName,
           TData,
@@ -238,25 +237,60 @@ export class TanStackField<
   cd = inject(ChangeDetectorRef)
 
   ngOnInit() {
-    const vals = injectStore(
+    // Subscribe to the pieces of field state that should trigger a re-render.
+    // For array mode, we only track the length of the array value to avoid
+    // re-renders when child properties change. Meta is tracked piece by piece
+    // so that consumers re-render when any meta property updates.
+    // See: https://github.com/TanStack/form/issues/1961
+    const injectorOpts = { injector: this.injector }
+    const isArrayMode = this.mode() === 'array'
+    const reactiveValue = injectStore(
       this._api().store,
-      this.mode() === 'array'
-        ? (state) => {
-            return [
-              state.meta,
-              Object.keys((state.value as unknown) ?? []).length,
-            ]
-          }
-        : undefined,
-      {
-        injector: this.injector,
-      },
+      (state) => (isArrayMode ? state.meta._arrayVersion || 0 : state.value),
+      injectorOpts,
+    )
+    const reactiveIsTouched = injectStore(
+      this._api().store,
+      (state) => state.meta.isTouched,
+      injectorOpts,
+    )
+    const reactiveIsBlurred = injectStore(
+      this._api().store,
+      (state) => state.meta.isBlurred,
+      injectorOpts,
+    )
+    const reactiveIsDirty = injectStore(
+      this._api().store,
+      (state) => state.meta.isDirty,
+      injectorOpts,
+    )
+    const reactiveErrorMap = injectStore(
+      this._api().store,
+      (state) => state.meta.errorMap,
+      injectorOpts,
+    )
+    const reactiveErrorSourceMap = injectStore(
+      this._api().store,
+      (state) => state.meta.errorSourceMap,
+      injectorOpts,
+    )
+    const reactiveIsValidating = injectStore(
+      this._api().store,
+      (state) => state.meta.isValidating,
+      injectorOpts,
     )
 
     effect(
       () => {
-        // Load bearing change detection check
-        const _values = vals()
+        // Load bearing change detection check — read every reactive source so
+        // the effect runs whenever any of them change.
+        reactiveValue()
+        reactiveIsTouched()
+        reactiveIsBlurred()
+        reactiveIsDirty()
+        reactiveErrorMap()
+        reactiveErrorSourceMap()
+        reactiveIsValidating()
         this.cd.markForCheck()
       },
       { injector: this.injector },

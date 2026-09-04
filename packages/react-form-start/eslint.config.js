@@ -20,6 +20,8 @@ export default [
       'react-hooks/exhaustive-deps': 'error',
       'react-hooks/rules-of-hooks': 'error',
       'react-compiler/react-compiler': 'error',
+      // Must be "off" to avoid moving `useContext` to `use`, which breaks React 17/18 usage.
+      '@eslint-react/no-use-context': 'off',
     },
   },
 ]

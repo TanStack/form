@@ -1,7 +1,7 @@
 import { expectTypeOf, it } from 'vitest'
 import { z } from 'zod'
-import { FieldApi, FormApi } from '../src/index'
-import type { StandardSchemaV1Issue } from '../src/index'
+import { FieldApi, FormApi } from '../src'
+import type { StandardSchemaV1Issue } from '../src'
 
 it('should type value properly', () => {
   const form = new FormApi({
@@ -238,7 +238,7 @@ it('should have the correct types returned from form validators in array', () =>
     },
   } as const)
 
-  expectTypeOf(form.state.errors).toEqualTypeOf<Array<'123' | undefined>>()
+  expectTypeOf(form.state.errors).toEqualTypeOf<Array<'123'>>()
 })
 
 it('should handle "fields" return types added to the field\'s errorMap itself', () => {
@@ -459,4 +459,26 @@ it('should allow setting manual errors with standard schema validators on the fi
     onServer: unknown
     onDynamic: undefined
   }>
+})
+
+it('should not allow promises to be returned from synchronous validators', () => {
+  const form = new FormApi({
+    defaultValues: { name: '' },
+  })
+
+  // This should cause a type error - Promise returns are not allowed in sync validators
+  new FieldApi({
+    form,
+    name: 'name',
+    validators: {
+      // @ts-expect-error synchronous validators should not return promises
+      onBlur: () => Promise.resolve('error'),
+      // @ts-expect-error synchronous validators should not return promises
+      onChange: () => Promise.resolve('error'),
+      // @ts-expect-error synchronous validators should not return promises
+      onDynamic: () => Promise.resolve('error'),
+      // @ts-expect-error synchronous validators should not return promises
+      onChange: () => Promise.resolve('error'),
+    },
+  })
 })

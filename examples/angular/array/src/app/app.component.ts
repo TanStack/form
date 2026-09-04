@@ -8,7 +8,12 @@ import { TanStackField, injectForm, injectStore } from '@tanstack/angular-form'
   template: `
     <form (submit)="handleSubmit($event)">
       <div>
-        <ng-container [tanstackField]="form" name="people" #people="field">
+        <ng-container
+          [tanstackField]="form"
+          name="people"
+          mode="array"
+          #people="field"
+        >
           <div>
             @for (_ of people.api.state.value; track $index) {
               <ng-container

@@ -225,6 +225,84 @@ describe('useField', () => {
     expect(getByText(error)).toBeInTheDocument()
   })
 
+  it('should keep field slot state reactive', async () => {
+    type Person = {
+      firstName: string
+    }
+
+    const serverError = 'First name is already taken'
+
+    const Comp = defineComponent(() => {
+      const form = useForm({
+        defaultValues: {
+          firstName: '',
+        } as Person,
+      })
+
+      function setServerError() {
+        form.setFieldMeta('firstName', (meta) => ({
+          ...meta,
+          errorMap: {
+            ...meta.errorMap,
+            onServer: serverError,
+          },
+          errorSourceMap: {
+            ...meta.errorSourceMap,
+            onServer: 'form',
+          },
+        }))
+      }
+
+      return () => (
+        <div>
+          <button onClick={() => form.reset({ firstName: 'Ada' })}>
+            Reset
+          </button>
+          <button onClick={setServerError}>Set server error</button>
+          <form.Field name="firstName">
+            {({
+              field,
+              state,
+            }: {
+              field: AnyFieldApi
+              state: AnyFieldApi['state']
+            }) => (
+              <div>
+                <input
+                  data-testid="fieldinput"
+                  value={state.value}
+                  onBlur={field.handleBlur}
+                  onInput={(e) =>
+                    field.handleChange((e.target as HTMLInputElement).value)
+                  }
+                />
+                <p data-testid="slotvalue">{state.value}</p>
+                <p data-testid="sloterror">{state.meta.errorMap.onServer}</p>
+              </div>
+            )}
+          </form.Field>
+        </div>
+      )
+    })
+
+    const { getByTestId, getByText } = render(Comp)
+    const input = getByTestId('fieldinput')
+
+    await user.type(input, 'Grace')
+    await waitFor(() =>
+      expect(getByTestId('slotvalue')).toHaveTextContent('Grace'),
+    )
+
+    await user.click(getByText('Reset'))
+    await waitFor(() => expect(input).toHaveValue('Ada'))
+    expect(getByTestId('slotvalue')).toHaveTextContent('Ada')
+
+    await user.click(getByText('Set server error'))
+    await waitFor(() =>
+      expect(getByTestId('sloterror')).toHaveTextContent(serverError),
+    )
+  })
+
   it('should handle arrays with subvalues', async () => {
     const fn = vi.fn()
 
@@ -400,5 +478,63 @@ describe('useField', () => {
 
     await user.click(await findByText('Submit'))
     expect(fn).toHaveBeenCalledWith({ people: [{ name: 'John', age: 0 }] })
+  })
+
+  it('should support array mode', async () => {
+    const Comp = defineComponent(() => {
+      const form = useForm({
+        defaultValues: {
+          test: ['a'],
+        },
+      })
+
+      return () => (
+        <form.Field name="test" mode="array">
+          {({ field }: { field: AnyFieldApi }) => (
+            <div>
+              <div data-testid="val">{JSON.stringify(field.state.value)}</div>
+              <button onClick={() => field.pushValue('b')}>push</button>
+            </div>
+          )}
+        </form.Field>
+      )
+    })
+
+    const { getByTestId, getByText } = render(Comp)
+    expect(getByTestId('val')).toHaveTextContent('["a"]')
+    await user.click(getByText('push'))
+    await waitFor(() =>
+      expect(getByTestId('val')).toHaveTextContent('["a","b"]'),
+    )
+  })
+
+  it('should rerender array mode field on swapFieldValues', async () => {
+    const Comp = defineComponent(() => {
+      const form = useForm({
+        defaultValues: {
+          test: ['a', 'b'],
+        },
+      })
+
+      return () => (
+        <form.Field name="test" mode="array">
+          {({ field }: { field: AnyFieldApi }) => (
+            <div>
+              <div data-testid="val">{JSON.stringify(field.state.value)}</div>
+              <button onClick={() => form.swapFieldValues('test', 0, 1)}>
+                swap
+              </button>
+            </div>
+          )}
+        </form.Field>
+      )
+    })
+
+    const { getByTestId, getByText } = render(Comp)
+    expect(getByTestId('val')).toHaveTextContent('["a","b"]')
+    await user.click(getByText('swap'))
+    await waitFor(() =>
+      expect(getByTestId('val')).toHaveTextContent('["b","a"]'),
+    )
   })
 })

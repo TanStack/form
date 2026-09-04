@@ -5,13 +5,13 @@ title: FormOptions
 
 # Interface: FormOptions\<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta\>
 
-Defined in: [packages/form-core/src/FormApi.ts:374](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L374)
+Defined in: [packages/form-core/src/FormApi.ts:450](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L450)
 
 An object representing the options for a form.
 
 ## Extends
 
-- [`BaseFormOptions`](../BaseFormOptions.md)\<`TFormData`, `TSubmitMeta`\>
+- [`BaseFormOptions`](BaseFormOptions.md)\<`TFormData`, `TSubmitMeta`\>
 
 ## Type Parameters
 
@@ -71,7 +71,7 @@ An object representing the options for a form.
 optional asyncAlways: boolean;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:413](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L413)
+Defined in: [packages/form-core/src/FormApi.ts:489](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L489)
 
 If true, always run async validation, even when sync validation has produced an error. Defaults to undefined.
 
@@ -83,7 +83,7 @@ If true, always run async validation, even when sync validation has produced an 
 optional asyncDebounceMs: number;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:417](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L417)
+Defined in: [packages/form-core/src/FormApi.ts:493](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L493)
 
 Optional time in milliseconds if you want to introduce a delay before firing off an async action.
 
@@ -95,7 +95,7 @@ Optional time in milliseconds if you want to introduce a delay before firing off
 optional canSubmitWhenInvalid: boolean;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:421](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L421)
+Defined in: [packages/form-core/src/FormApi.ts:497](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L497)
 
 If true, allows the form to be submitted in an invalid state i.e. canSubmit will remain true regardless of validation errors. Defaults to undefined.
 
@@ -107,7 +107,7 @@ If true, allows the form to be submitted in an invalid state i.e. canSubmit will
 optional defaultState: Partial<FormState<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer>>;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:395](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L395)
+Defined in: [packages/form-core/src/FormApi.ts:471](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L471)
 
 The default state for the form.
 
@@ -119,13 +119,13 @@ The default state for the form.
 optional defaultValues: TFormData;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:364](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L364)
+Defined in: [packages/form-core/src/FormApi.ts:440](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L440)
 
 Set initial values for your form.
 
 #### Inherited from
 
-[`BaseFormOptions`](../BaseFormOptions.md).[`defaultValues`](../BaseFormOptions.md#defaultvalues)
+[`BaseFormOptions`](BaseFormOptions.md).[`defaultValues`](BaseFormOptions.md#defaultvalues)
 
 ***
 
@@ -135,7 +135,7 @@ Set initial values for your form.
 optional formId: string;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:391](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L391)
+Defined in: [packages/form-core/src/FormApi.ts:467](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L467)
 
 The form name, used for devtools and identification
 
@@ -147,7 +147,7 @@ The form name, used for devtools and identification
 optional listeners: FormListeners<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta>;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:443](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L443)
+Defined in: [packages/form-core/src/FormApi.ts:519](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L519)
 
 form level listeners
 
@@ -159,7 +159,7 @@ form level listeners
 optional onSubmit: (props) => any;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:461](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L461)
+Defined in: [packages/form-core/src/FormApi.ts:537](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L537)
 
 A function to be called when the form is submitted, what should happen once the user submits a valid form returns `any` or a promise `Promise<any>`
 
@@ -169,7 +169,7 @@ A function to be called when the form is submitted, what should happen once the 
 
 ###### formApi
 
-[`FormApi`](../../classes/FormApi.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`\>
+[`FormApi`](../classes/FormApi.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`\>
 
 ###### meta
 
@@ -191,7 +191,7 @@ A function to be called when the form is submitted, what should happen once the 
 optional onSubmitInvalid: (props) => void;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:482](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L482)
+Defined in: [packages/form-core/src/FormApi.ts:558](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L558)
 
 Specify an action for scenarios where the user tries to submit an invalid form.
 
@@ -201,7 +201,7 @@ Specify an action for scenarios where the user tries to submit an invalid form.
 
 ###### formApi
 
-[`FormApi`](../../classes/FormApi.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`\>
+[`FormApi`](../classes/FormApi.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`\>
 
 ###### meta
 
@@ -223,23 +223,33 @@ Specify an action for scenarios where the user tries to submit an invalid form.
 optional onSubmitMeta: TSubmitMeta;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:368](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L368)
+Defined in: [packages/form-core/src/FormApi.ts:444](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L444)
 
 onSubmitMeta, the data passed from the handleSubmit handler, to the onSubmit function props
 
 #### Inherited from
 
-[`BaseFormOptions`](../BaseFormOptions.md).[`onSubmitMeta`](../BaseFormOptions.md#onsubmitmeta)
+[`BaseFormOptions`](BaseFormOptions.md).[`onSubmitMeta`](BaseFormOptions.md#onsubmitmeta)
 
 ***
 
-### transform?
+### transform()?
 
 ```ts
-optional transform: FormTransform<NoInfer<TFormData>, NoInfer<TOnMount>, NoInfer<TOnChange>, NoInfer<TOnChangeAsync>, NoInfer<TOnBlur>, NoInfer<TOnBlurAsync>, NoInfer<TOnSubmit>, NoInfer<TOnSubmitAsync>, NoInfer<TOnDynamic>, NoInfer<TOnDynamicAsync>, NoInfer<TOnServer>, NoInfer<TSubmitMeta>>;
+optional transform: (data) => unknown;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:500](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L500)
+Defined in: [packages/form-core/src/FormApi.ts:582](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L582)
+
+#### Parameters
+
+##### data
+
+`unknown`
+
+#### Returns
+
+`unknown`
 
 ***
 
@@ -249,7 +259,7 @@ Defined in: [packages/form-core/src/FormApi.ts:500](https://github.com/TanStack/
 optional validationLogic: ValidationLogicFn;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:438](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L438)
+Defined in: [packages/form-core/src/FormApi.ts:514](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L514)
 
 ***
 
@@ -259,6 +269,6 @@ Defined in: [packages/form-core/src/FormApi.ts:438](https://github.com/TanStack/
 optional validators: FormValidators<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync>;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:425](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L425)
+Defined in: [packages/form-core/src/FormApi.ts:501](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L501)
 
 A list of validators to pass to the form

@@ -20,7 +20,7 @@ type FieldComponent<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync
 }>>;
 ```
 
-Defined in: [packages/vue-form/src/useField.tsx:24](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L24)
+Defined in: [packages/vue-form/src/useField.tsx:25](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L25)
 
 ## Type Parameters
 
@@ -76,11 +76,11 @@ Defined in: [packages/vue-form/src/useField.tsx:24](https://github.com/TanStack/
 
 ### props
 
-[`FieldComponentBoundProps`](../FieldComponentBoundProps.md)\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`\> & `EmitsToProps`\<`EmitsOptions`\> & `PublicProps`
+[`FieldComponentBoundProps`](FieldComponentBoundProps.md)\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`\> & `EmitsToProps`\<`EmitsOptions`\> & `PublicProps`
 
 ## Returns
 
-`CreateComponentPublicInstanceWithMixins`\<[`FieldComponentBoundProps`](../FieldComponentBoundProps.md)\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`\>, \{
+`CreateComponentPublicInstanceWithMixins`\<[`FieldComponentBoundProps`](FieldComponentBoundProps.md)\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`\>, \{
 \}, \{
 \}, \{
 \}, \{

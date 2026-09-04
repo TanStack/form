@@ -202,7 +202,7 @@ export default function App() {
 
   // Subscribe to the form's error map so that updates to it will render
   // alternately, you can use `form.Subscribe`
-  const formErrorMap = form.useStore((state) => state.errorMap)
+  const formErrorMap = form.useSelector((state) => state.errorMap)
 
   return (
     <div>
@@ -464,7 +464,7 @@ TanStack Form natively supports all libraries following the [Standard Schema spe
 
 _Note:_ make sure to use the latest version of the schema libraries as older versions might not support Standard Schema yet.
 
-> Validation will not provide you with transformed values. See [submission handling](../submission-handling.md) for more information.
+> Validation will not provide you with transformed values. See [submission handling](./submission-handling.md) for more information.
 
 To use schemas from these libraries you can pass them to the `validators` props as you would do with a custom function:
 

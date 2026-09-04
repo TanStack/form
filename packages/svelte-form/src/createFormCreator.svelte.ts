@@ -13,7 +13,7 @@ import type {
 } from '@tanstack/form-core'
 import type { FieldComponent } from './types.js'
 import type { SvelteFormExtendedApi } from './createForm.svelte'
-import type { Component, Snippet, SvelteComponent } from 'svelte'
+import type { Component, Snippet } from 'svelte'
 
 /**
  * TypeScript inferencing is weird.
@@ -267,7 +267,55 @@ export function createFormCreator<
     return extendedForm
   }
 
+  function getFormType<
+    TFormData,
+    TOnMount extends undefined | FormValidateOrFn<TFormData>,
+    TOnChange extends undefined | FormValidateOrFn<TFormData>,
+    TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+    TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+    TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+    TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TSubmitMeta,
+  >(
+    _formProps: FormOptions<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TOnServer,
+      TSubmitMeta
+    >,
+  ): AppFieldExtendedSvelteFormApi<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    TOnServer,
+    TSubmitMeta,
+    TComponents,
+    TFormComponents
+  > {
+    return undefined as never
+  }
+
   return {
     createAppForm,
+    getFormType,
   }
 }

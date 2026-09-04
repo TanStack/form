@@ -10,15 +10,17 @@ We support this through our `onDynamic` validation function.
 
 ```angular-ts
 import { Component } from '@angular/core'
-import { TanStackField, injectForm, revalidateLogic } from '@tanstack/angular-form'
+import {
+  TanStackField,
+  injectForm,
+  revalidateLogic,
+} from '@tanstack/angular-form'
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [TanStackField],
-  template: `
-    <!-- Your form template here -->
-  `,
+  template: ` <!-- Your form template here --> `,
 })
 export class AppComponent {
   form = injectForm({
@@ -65,9 +67,7 @@ You can, for example, use the following to revalidate on blur after the first su
   selector: 'app-root',
   standalone: true,
   imports: [TanStackField],
-  template: `
-    <!-- Your form template here -->
-  `,
+  template: ` <!-- Your form template here --> `,
 })
 export class AppComponent {
   form = injectForm({
@@ -87,15 +87,18 @@ Just as you might access errors from an `onChange` or `onBlur` validation, you c
 
 ```angular-ts
 import { Component } from '@angular/core'
-import { TanStackField, injectForm, injectStore, revalidateLogic } from '@tanstack/angular-form'
+import {
+  TanStackField,
+  injectForm,
+  injectStore,
+  revalidateLogic,
+} from '@tanstack/angular-form'
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [TanStackField],
-  template: `
-    <p>{{ formErrorMap().onDynamic?.firstName }}</p>
-  `,
+  template: ` <p>{{ formErrorMap().onDynamic?.firstName }}</p> `,
 })
 export class AppComponent {
   form = injectForm({
@@ -121,7 +124,12 @@ You can use `onDynamic` validation alongside other validation logic, such as `on
 
 ```angular-ts
 import { Component } from '@angular/core'
-import { TanStackField, injectForm, injectStore, revalidateLogic } from '@tanstack/angular-form'
+import {
+  TanStackField,
+  injectForm,
+  injectStore,
+  revalidateLogic,
+} from '@tanstack/angular-form'
 
 @Component({
   selector: 'app-root',
@@ -167,7 +175,11 @@ You can also use `onDynamic` validation with fields, just like you would with ot
 
 ```angular-ts
 import { Component } from '@angular/core'
-import { TanStackField, injectForm, revalidateLogic } from '@tanstack/angular-form'
+import {
+  TanStackField,
+  injectForm,
+  revalidateLogic,
+} from '@tanstack/angular-form'
 import type { FieldValidateFn } from '@tanstack/angular-form'
 
 @Component({
@@ -180,7 +192,7 @@ import type { FieldValidateFn } from '@tanstack/angular-form'
         [tanstackField]="form"
         name="age"
         [validators]="{
-          onDynamic: ageValidator
+          onDynamic: ageValidator,
         }"
         #age="field"
       >
@@ -229,15 +241,17 @@ Async validation can also be used with `onDynamic` just like with other validati
 
 ```angular-ts
 import { Component } from '@angular/core'
-import { TanStackField, injectForm, revalidateLogic } from '@tanstack/angular-form'
+import {
+  TanStackField,
+  injectForm,
+  revalidateLogic,
+} from '@tanstack/angular-form'
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [TanStackField],
-  template: `
-    <!-- Your form template here -->
-  `,
+  template: ` <!-- Your form template here --> `,
 })
 export class AppComponent {
   form = injectForm({
@@ -266,16 +280,18 @@ You can also use standard schema validation libraries like Valibot or Zod with `
 
 ```angular-ts
 import { Component } from '@angular/core'
-import { TanStackField, injectForm, revalidateLogic } from '@tanstack/angular-form'
+import {
+  TanStackField,
+  injectForm,
+  revalidateLogic,
+} from '@tanstack/angular-form'
 import { z } from 'zod'
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [TanStackField],
-  template: `
-    <!-- Your form template here -->
-  `,
+  template: ` <!-- Your form template here --> `,
 })
 export class AppComponent {
   schema = z.object({

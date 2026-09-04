@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useStore } from '@tanstack/react-store'
+import { useSelector } from '@tanstack/react-store'
 import { FieldGroupApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
@@ -23,13 +23,13 @@ import type { LensFieldComponent } from './useField'
 
 function LocalSubscribe({
   lens,
-  selector,
+  selector = (state) => state,
   children,
 }: PropsWithChildren<{
   lens: AnyFieldGroupApi
-  selector: (state: FieldGroupState<any>) => FieldGroupState<any>
+  selector?: (state: FieldGroupState<any>) => FieldGroupState<any>
 }>): ReturnType<FunctionComponent> {
-  const data = useStore(lens.store, selector)
+  const data = useSelector(lens.store, selector)
 
   return <>{functionalUpdate(children, data)}</>
 }

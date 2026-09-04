@@ -48,7 +48,6 @@ it('should return all errors matching the right type from getAllErrors', () => {
       | 'onSubmitAsync'
       | { onBlur: true; onBlurNumber: number }
       | 'onBlurAsync'
-      | undefined
     )[]
   >()
 
@@ -365,14 +364,7 @@ it('should extract the form error type from a global form error', () => {
   >()
 
   expectTypeOf(form.state.errors).toEqualTypeOf<
-    (
-      | 'onMount'
-      | 'onChange'
-      | 'onChangeAsync'
-      | 'onBlur'
-      | 'onBlurAsync'
-      | undefined
-    )[]
+    ('onMount' | 'onChange' | 'onChangeAsync' | 'onBlur' | 'onBlurAsync')[]
   >
 })
 
@@ -446,4 +438,20 @@ it('listeners should be typed correctly when using formOptions', () => {
   })
 
   form.handleSubmit()
+})
+
+it('should not allow promises to be returned from synchronous validators', () => {
+  const form = new FormApi({
+    defaultValues: { name: '' },
+    validators: {
+      // @ts-expect-error synchronous validators should not return promises
+      onBlur: () => Promise.resolve('error'),
+      // @ts-expect-error synchronous validators should not return promises
+      onChange: () => Promise.resolve('error'),
+      // @ts-expect-error synchronous validators should not return promises
+      onDynamic: () => Promise.resolve('error'),
+      // @ts-expect-error synchronous validators should not return promises
+      onChange: () => Promise.resolve('error'),
+    },
+  })
 })

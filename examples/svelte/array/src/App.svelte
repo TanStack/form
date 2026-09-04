@@ -19,7 +19,7 @@
 >
   <h1>TanStack Form - Svelte Demo</h1>
 
-  <form.Field name="people">
+  <form.Field name="people" mode="array">
     {#snippet children(field)}
       <div>
         {#each field.state.value as person, i}

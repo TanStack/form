@@ -1,5 +1,169 @@
 # @tanstack/form-core
 
+## 1.33.5
+
+### Patch Changes
+
+- [#2318](https://github.com/TanStack/form/pull/2318) [`146ba25`](https://github.com/TanStack/form/commit/146ba25205afe46c2a8bfc1f2ef82609255772dc) - Preserve sibling fields whose names share a prefix when deleting a field.
+
+## 1.33.4
+
+## 1.33.3
+
+## 1.33.2
+
+## 1.33.1
+
+### Patch Changes
+
+- [#2236](https://github.com/TanStack/form/pull/2236) [`3c57f6d`](https://github.com/TanStack/form/commit/3c57f6d4311f823ab39374417edb5fae544ad15a) - Fix TS4023 declaration emit
+
+- [#2233](https://github.com/TanStack/form/pull/2233) [`7b3012b`](https://github.com/TanStack/form/commit/7b3012b03e706cc409c2952964145a11a300d7fe) - Fix `FormGroupApi.distributeFieldErrors` throwing `TypeError: Cannot read properties of undefined` when a group validator returns errors for a field that is not mounted yet
+
+- [#2120](https://github.com/TanStack/form/pull/2120) [`741da6b`](https://github.com/TanStack/form/commit/741da6bb659a319acaa55292564999fcbbc90012) - fix(form-core): clear stale onBlur errors on re-submission
+
+- [#2236](https://github.com/TanStack/form/pull/2236) [`3c57f6d`](https://github.com/TanStack/form/commit/3c57f6d4311f823ab39374417edb5fae544ad15a) - Fix arktype usage typing in validators
+
+- [#2056](https://github.com/TanStack/form/pull/2056) [`6cd477a`](https://github.com/TanStack/form/commit/6cd477a97df9612019d8a2d9c97f2e86b1b59256) - fix: create fieldMeta on async validation for fields with errors
+
+- [#2143](https://github.com/TanStack/form/pull/2143) [`887a129`](https://github.com/TanStack/form/commit/887a1293375a168452e82b0fb482841ec02ad77f) - fix race condition when listening to multiple Fields in onChangeListenTo
+
+## 1.33.0
+
+### Minor Changes
+
+- [#2128](https://github.com/TanStack/form/pull/2128) [`808f158`](https://github.com/TanStack/form/commit/808f158b62c08f69689a7b652c35989d717f9014) - Added FormGroup API
+
+## 1.32.1
+
+### Patch Changes
+
+- [#2190](https://github.com/TanStack/form/pull/2190) [`b402d7a`](https://github.com/TanStack/form/commit/b402d7ab134adca0d0d4647af12fde9b490c08f7) - Fix array async default values not updating
+
+- [#2152](https://github.com/TanStack/form/pull/2152) [`d0d941d`](https://github.com/TanStack/form/commit/d0d941dc1a4bd4ac15bb38a9ca1b4a863a3f418e) - Improve performance for mounting/unmounting <form.Field>
+
+## 1.32.0
+
+### Minor Changes
+
+- Introduced a **Prioritized Default System** that ensures consistency between field metadata and form reset behavior. This change prioritizes field-level default values over form-level defaults across `isDefaultValue` derivation, `form.reset()`, and `form.resetField()`. This ensures that field metadata accurately reflects the state the form would return to upon reset and prevents `undefined` from being incorrectly treated as a default when a value is explicitly specified. ([#2006](https://github.com/TanStack/form/pull/2006))
+
+### Patch Changes
+
+- `evaluate()` incorrectly treated distinct non-plain objects with no own enumerable keys (Temporal types, RegExp, getter-only class instances) as equal because the key-iteration loop vacuously succeeded. A guard now returns `false` for such objects, falling back to referential inequality. ([#2140](https://github.com/TanStack/form/pull/2140))
+
+- exclude undefined from FormState errors type ([`427b3d9`](https://github.com/TanStack/form/commit/427b3d9fd516b8222339ae7e8e38844f198c5d7a))
+
+- Prevent synchronous validators from returning Promises ([#1987](https://github.com/TanStack/form/pull/1987))
+
+- re-render arrays when length doesn't change but values do ([#2172](https://github.com/TanStack/form/pull/2172))
+
+## 1.31.0
+
+## 1.30.0
+
+## 1.29.3
+
+## 1.29.2
+
+## 1.29.1
+
+### Patch Changes
+
+- Ensure fieldName is passed to custom validation logic functions ([#2127](https://github.com/TanStack/form/pull/2127))
+
+## 1.29.0
+
+## 1.28.6
+
+### Patch Changes
+
+- fix(core): field unmount ([#2068](https://github.com/TanStack/form/pull/2068))
+
+## 1.28.5
+
+### Patch Changes
+
+- Upgrade packages and fixed theme pacakge missmatch ([#2072](https://github.com/TanStack/form/pull/2072))
+
+## 1.28.4
+
+### Patch Changes
+
+- Refactor internals for substancially faster performance ([#2035](https://github.com/TanStack/form/pull/2035))
+
+## 1.28.3
+
+### Patch Changes
+
+- form arrays now work again ([#2041](https://github.com/TanStack/form/pull/2041))
+
+## 1.28.2
+
+### Patch Changes
+
+- bump @tanstack/store dependency to 0.8.0 ([#2038](https://github.com/TanStack/form/pull/2038))
+
+## 1.28.1
+
+### Patch Changes
+
+- Fix various issues with SSR. Things should now work as-expected in many many more scenarios than before ([#1890](https://github.com/TanStack/form/pull/1890))
+
+## 1.28.0
+
+### Patch Changes
+
+- fix: flatten errors consistently when validating before field mount ([#2003](https://github.com/TanStack/form/pull/2003))
+
+  Fixed an issue where `field.errors` was incorrectly nested as `[[error]]` instead of `[error]` when `form.validate()` was called manually before a field was mounted. The `flat(1)` operation is now applied by default unless `disableErrorFlat` is explicitly set to true, ensuring consistent error structure regardless of when validation occurs.
+
+- run validation for fields without instances ([#2001](https://github.com/TanStack/form/pull/2001))
+
+## 1.27.7
+
+### Patch Changes
+
+- Fix double-rendering of Solid fields ([#1959](https://github.com/TanStack/form/pull/1959))
+
+## 1.27.6
+
+### Patch Changes
+
+- fix(form-core): Prevent runtime errors during validation ([#1948](https://github.com/TanStack/form/pull/1948))
+
+## 1.27.5
+
+### Patch Changes
+
+- fix(form-core): Resolve memory leaks for SSR / Devtools ([#1866](https://github.com/TanStack/form/pull/1866))
+
+- Ensure dynamically rendered fields receive form validation errors ([#1691](https://github.com/TanStack/form/pull/1691))
+
+## 1.27.4
+
+### Patch Changes
+
+- fix: prevent unnecessary re-renders when there are no async validators ([#1929](https://github.com/TanStack/form/pull/1929))
+
+  Fields were re-rendering twice on each keystroke because `isValidating` was being set to `true` then `false` even when there were no async validators to run. This fix checks if there are actual async validators before toggling the `isValidating` state.
+
+  Fixes #1130
+
+## 1.27.3
+
+### Patch Changes
+
+- Bump TanStack pacer to pacer-lite for reduced custom event emissions. ([#1876](https://github.com/TanStack/form/pull/1876))
+
+## 1.27.2
+
+## 1.27.1
+
+### Patch Changes
+
+- Fix issues with methods not being present in React adapter ([#1903](https://github.com/TanStack/form/pull/1903))
+
 ## 1.27.0
 
 ### Patch Changes

@@ -5,13 +5,13 @@ title: BaseFormOptions
 
 # Interface: BaseFormOptions\<TFormData, TSubmitMeta\>
 
-Defined in: [packages/form-core/src/FormApi.ts:360](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L360)
+Defined in: [packages/form-core/src/FormApi.ts:436](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L436)
 
 An object representing the base properties of a form, unrelated to any validators
 
 ## Extended by
 
-- [`FormOptions`](../FormOptions.md)
+- [`FormOptions`](FormOptions.md)
 
 ## Type Parameters
 
@@ -31,7 +31,7 @@ An object representing the base properties of a form, unrelated to any validator
 optional defaultValues: TFormData;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:364](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L364)
+Defined in: [packages/form-core/src/FormApi.ts:440](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L440)
 
 Set initial values for your form.
 
@@ -43,6 +43,6 @@ Set initial values for your form.
 optional onSubmitMeta: TSubmitMeta;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:368](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L368)
+Defined in: [packages/form-core/src/FormApi.ts:444](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L444)
 
 onSubmitMeta, the data passed from the handleSubmit handler, to the onSubmit function props

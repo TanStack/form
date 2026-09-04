@@ -369,6 +369,46 @@ describe('TanStackFieldDirective', () => {
     await findByText(onBlurError)
     expect(getByText(onBlurError)).toBeInTheDocument()
   })
+
+  it('should rerender array mode field on swapFieldValues', async () => {
+    @Component({
+      selector: 'test-component',
+      standalone: true,
+      changeDetection: ChangeDetectionStrategy.OnPush,
+      template: `
+        <ng-container
+          [tanstackField]="form"
+          name="test"
+          mode="array"
+          #f="field"
+        >
+          <div data-testid="val">{{ stringify(f.api.state.value) }}</div>
+          <button
+            data-testid="swap"
+            type="button"
+            (click)="form.swapFieldValues('test', 0, 1)"
+          >
+            swap
+          </button>
+        </ng-container>
+      `,
+      imports: [TanStackField],
+    })
+    class TestComponent {
+      form = injectForm({
+        defaultValues: {
+          test: ['a', 'b'] as string[],
+        },
+      })
+      stringify = (v: unknown) => JSON.stringify(v)
+    }
+
+    const { getByTestId } = await render(TestComponent)
+
+    expect(getByTestId('val')).toHaveTextContent('["a","b"]')
+    await user.click(getByTestId('swap'))
+    expect(getByTestId('val')).toHaveTextContent('["b","a"]')
+  })
 })
 
 describe('form should reset default value when resetting in onSubmit', () => {

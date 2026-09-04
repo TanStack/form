@@ -15,7 +15,7 @@ Defined in: [packages/form-core/src/formOptions.ts:23](https://github.com/TanSta
 
 ### TOptions
 
-`TOptions` *extends* `Partial`\<[`FormOptions`](../../interfaces/FormOptions.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`\>\>
+`TOptions` *extends* `Partial`\<[`FormOptions`](../interfaces/FormOptions.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`\>\>
 
 ### TFormData
 
@@ -69,7 +69,7 @@ Defined in: [packages/form-core/src/formOptions.ts:23](https://github.com/TanSta
 
 ### defaultOpts
 
-`Partial`\<[`FormOptions`](../../interfaces/FormOptions.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`\>\> & `TOptions`
+`Partial`\<[`FormOptions`](../interfaces/FormOptions.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`\>\> & `TOptions`
 
 ## Returns
 

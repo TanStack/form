@@ -5,17 +5,17 @@ title: ObjectDeepKeyAndValue
 
 # Interface: ObjectDeepKeyAndValue\<TParent, T, TKey\>
 
-Defined in: [packages/form-core/src/util-types.ts:97](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L97)
+Defined in: [packages/form-core/src/util-types.ts:114](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L114)
 
 ## Extends
 
-- [`AnyDeepKeyAndValue`](../AnyDeepKeyAndValue.md)
+- [`AnyDeepKeyAndValue`](AnyDeepKeyAndValue.md)
 
 ## Type Parameters
 
 ### TParent
 
-`TParent` *extends* [`AnyDeepKeyAndValue`](../AnyDeepKeyAndValue.md)
+`TParent` *extends* [`AnyDeepKeyAndValue`](AnyDeepKeyAndValue.md)
 
 ### T
 
@@ -23,7 +23,7 @@ Defined in: [packages/form-core/src/util-types.ts:97](https://github.com/TanStac
 
 ### TKey
 
-`TKey` *extends* [`AllObjectKeys`](../../type-aliases/AllObjectKeys.md)\<`T`\>
+`TKey` *extends* [`AllObjectKeys`](../type-aliases/AllObjectKeys.md)\<`T`\>
 
 ## Properties
 
@@ -33,11 +33,11 @@ Defined in: [packages/form-core/src/util-types.ts:97](https://github.com/TanStac
 key: ObjectAccessor<TParent, TKey>;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:102](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L102)
+Defined in: [packages/form-core/src/util-types.ts:119](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L119)
 
 #### Overrides
 
-[`AnyDeepKeyAndValue`](../AnyDeepKeyAndValue.md).[`key`](../AnyDeepKeyAndValue.md#key)
+[`AnyDeepKeyAndValue`](AnyDeepKeyAndValue.md).[`key`](AnyDeepKeyAndValue.md#key)
 
 ***
 
@@ -47,8 +47,8 @@ Defined in: [packages/form-core/src/util-types.ts:102](https://github.com/TanSta
 value: ObjectValue<TParent, T, TKey>;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:103](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L103)
+Defined in: [packages/form-core/src/util-types.ts:120](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L120)
 
 #### Overrides
 
-[`AnyDeepKeyAndValue`](../AnyDeepKeyAndValue.md).[`value`](../AnyDeepKeyAndValue.md#value)
+[`AnyDeepKeyAndValue`](AnyDeepKeyAndValue.md).[`value`](AnyDeepKeyAndValue.md#value)

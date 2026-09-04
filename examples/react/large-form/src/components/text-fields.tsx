@@ -1,10 +1,10 @@
-import { useStore } from '@tanstack/react-form'
+import { useSelector } from '@tanstack/react-form'
 import { useFieldContext } from '../hooks/form-context.tsx'
 
 export default function TextField({ label }: { label: string }) {
   const field = useFieldContext<string>()
 
-  const errors = useStore(field.store, (state) => state.meta.errors)
+  const errors = useSelector(field.store, (state) => state.meta.errors)
 
   return (
     <div>

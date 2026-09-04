@@ -9,7 +9,7 @@ title: createFormHook
 function createFormHook<TComponents, TFormComponents>(opts): object;
 ```
 
-Defined in: [packages/solid-form/src/createFormHook.tsx:294](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createFormHook.tsx#L294)
+Defined in: [packages/solid-form/src/createFormHook.tsx:300](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createFormHook.tsx#L300)
 
 ## Type Parameters
 
@@ -122,7 +122,7 @@ withFieldGroup: <TFieldGroupData, TSubmitMeta, TRenderProps>(__namedParameters) 
 
 ##### \_\_namedParameters
 
-[`WithFieldGroupProps`](../../interfaces/WithFieldGroupProps.md)\<`TFieldGroupData`, `TComponents`, `TFormComponents`, `TSubmitMeta`, `TRenderProps`\>
+[`WithFieldGroupProps`](../interfaces/WithFieldGroupProps.md)\<`TFieldGroupData`, `TComponents`, `TFormComponents`, `TSubmitMeta`, `TRenderProps`\>
 
 #### Returns
 
@@ -261,7 +261,7 @@ withForm: <TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync
 
 ##### \_\_namedParameters
 
-[`WithFormProps`](../../interfaces/WithFormProps.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`, `TComponents`, `TFormComponents`, `TRenderProps`\>
+[`WithFormProps`](../interfaces/WithFormProps.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`, `TComponents`, `TFormComponents`, `TRenderProps`\>
 
 #### Returns
 

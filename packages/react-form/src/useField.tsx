@@ -1,7 +1,7 @@
 'use client'
 
-import { useMemo, useRef, useState } from 'react'
-import { useStore } from '@tanstack/react-store'
+import { useMemo, useState } from 'react'
+import { useSelector } from '@tanstack/react-store'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
@@ -15,41 +15,8 @@ import type {
   FormAsyncValidateOrFn,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type { FunctionComponent, ReactElement, ReactNode } from 'react'
+import type { FunctionComponent, ReactNode } from 'react'
 import type { UseFieldOptions, UseFieldOptionsBound } from './types'
-
-interface ReactFieldApi<
-  TParentData,
-  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TPatentSubmitMeta,
-> {
-  /**
-   * A pre-bound and type-safe sub-field component using this field as a root.
-   */
-  Field: FieldComponent<
-    TParentData,
-    TFormOnMount,
-    TFormOnChange,
-    TFormOnChangeAsync,
-    TFormOnBlur,
-    TFormOnBlurAsync,
-    TFormOnSubmit,
-    TFormOnSubmitAsync,
-    TFormOnDynamic,
-    TFormOnDynamicAsync,
-    TFormOnServer,
-    TPatentSubmitMeta
-  >
-}
 
 /**
  * A type representing a hook for using a field in a form with the given form data type.
@@ -202,47 +169,62 @@ export function useField<
     name: opts.name,
   }))
 
-  const [fieldApi, setFieldApi] = useState(() => {
+  const [fieldApiState, setFieldApi] = useState(() => {
     return new FieldApi({
       ...opts,
     })
   })
+
+  let fieldApi = fieldApiState
 
   // We only want to
   // update on name changes since those are at risk of becoming stale. The field
   // state must be up to date for the internal JSX render.
   // The other options can freely be in `fieldApi.update`
   if (prevOptions.form !== opts.form || prevOptions.name !== opts.name) {
-    setFieldApi(
-      new FieldApi({
-        ...opts,
-      }),
-    )
+    // Adjusting state during render: create the new FieldApi and use it for the
+    // rest of this render so the render prop reads state at the current `name`.
+    // Otherwise the discarded render still runs to completion with the stale
+    // instance, briefly surfacing `undefined` for shifted array items on removal.
+    // See: https://github.com/TanStack/form/issues/2238
+    fieldApi = new FieldApi({
+      ...opts,
+    })
+    setFieldApi(fieldApi)
     setPrevOptions({ form: opts.form, name: opts.name })
   }
 
-  const reactiveStateValue = useStore(fieldApi.store, (state) => state.value)
-  const reactiveMetaIsTouched = useStore(
+  // For array mode, only track length changes to avoid re-renders when child properties change
+  // See: https://github.com/TanStack/form/issues/1925
+  const reactiveStateValue = useSelector(
+    fieldApi.store,
+    (opts.mode === 'array'
+      ? (state) => state.meta._arrayVersion || 0
+      : (state) => state.value) as (
+      state: typeof fieldApi.state,
+    ) => TData | number,
+  )
+  const reactiveMetaIsTouched = useSelector(
     fieldApi.store,
     (state) => state.meta.isTouched,
   )
-  const reactiveMetaIsBlurred = useStore(
+  const reactiveMetaIsBlurred = useSelector(
     fieldApi.store,
     (state) => state.meta.isBlurred,
   )
-  const reactiveMetaIsDirty = useStore(
+  const reactiveMetaIsDirty = useSelector(
     fieldApi.store,
     (state) => state.meta.isDirty,
   )
-  const reactiveMetaErrorMap = useStore(
+  const reactiveMetaErrorMap = useSelector(
     fieldApi.store,
     (state) => state.meta.errorMap,
   )
-  const reactiveMetaErrorSourceMap = useStore(
+  const reactiveMetaErrorSourceMap = useSelector(
     fieldApi.store,
     (state) => state.meta.errorSourceMap,
   )
-  const reactiveMetaIsValidating = useStore(
+  const reactiveMetaIsValidating = useSelector(
     fieldApi.store,
     (state) => state.meta.isValidating,
   )
@@ -253,7 +235,10 @@ export function useField<
       ...fieldApi,
       get state() {
         return {
-          value: reactiveStateValue,
+          // For array mode, reactiveStateValue is the length (for reactivity tracking),
+          // so we need to get the actual value from fieldApi
+          value:
+            opts.mode === 'array' ? fieldApi.state.value : reactiveStateValue,
           get meta() {
             return {
               ...fieldApi.state.meta,
@@ -293,27 +278,12 @@ export function useField<
       TFormOnDynamicAsync,
       TFormOnServer,
       TPatentSubmitMeta
-    > &
-      ReactFieldApi<
-        TParentData,
-        TFormOnMount,
-        TFormOnChange,
-        TFormOnChangeAsync,
-        TFormOnBlur,
-        TFormOnBlurAsync,
-        TFormOnSubmit,
-        TFormOnSubmitAsync,
-        TFormOnDynamic,
-        TFormOnDynamicAsync,
-        TFormOnServer,
-        TPatentSubmitMeta
-      > = reactiveFieldApi as never
-
-    extendedApi.Field = Field as never
+    > = reactiveFieldApi as never
 
     return extendedApi
   }, [
     fieldApi,
+    opts.mode,
     reactiveStateValue,
     reactiveMetaIsTouched,
     reactiveMetaIsBlurred,
@@ -332,18 +302,6 @@ export function useField<
   useIsomorphicLayoutEffect(() => {
     fieldApi.update(opts)
   })
-
-  useStore(
-    fieldApi.store,
-    opts.mode === 'array'
-      ? (state) => {
-          return [
-            state.meta,
-            Object.keys((state.value as unknown) ?? []).length,
-          ]
-        }
-      : undefined,
-  )
 
   return extendedFieldApi
 }
@@ -385,30 +343,30 @@ interface FieldComponentProps<
   TPatentSubmitMeta,
   ExtendedApi = {},
 > extends UseFieldOptions<
-    TParentData,
-    TName,
-    TData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync,
-    TFormOnMount,
-    TFormOnChange,
-    TFormOnChangeAsync,
-    TFormOnBlur,
-    TFormOnBlurAsync,
-    TFormOnSubmit,
-    TFormOnSubmitAsync,
-    TFormOnDynamic,
-    TFormOnDynamicAsync,
-    TFormOnServer,
-    TPatentSubmitMeta
-  > {
+  TParentData,
+  TName,
+  TData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
+  TFormOnMount,
+  TFormOnChange,
+  TFormOnChangeAsync,
+  TFormOnBlur,
+  TFormOnBlurAsync,
+  TFormOnSubmit,
+  TFormOnSubmitAsync,
+  TFormOnDynamic,
+  TFormOnDynamicAsync,
+  TFormOnServer,
+  TPatentSubmitMeta
+> {
   children: (
     fieldApi: FieldApi<
       TParentData,
@@ -473,19 +431,19 @@ interface FieldComponentBoundProps<
   TPatentSubmitMeta,
   ExtendedApi = {},
 > extends UseFieldOptionsBound<
-    TParentData,
-    TName,
-    TData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync
-  > {
+  TParentData,
+  TName,
+  TData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync
+> {
   children: (
     fieldApi: FieldApi<
       TParentData,

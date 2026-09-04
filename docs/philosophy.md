@@ -27,13 +27,13 @@ As a result, TanStack Form supports multiple methods for validation:
 
 ## Controlled is Cool
 
-In a world where controlled vs uncontrolled inputs are a hot topic, TanStack Form is firmly in the controlled camp.
+In a world where controlled vs. uncontrolled inputs are a hot topic, TanStack Form is firmly in the controlled camp.
 
 This comes with a number of advantages:
 
 - **Predictable**: You can predict the state of your form at any point in time.
 - **Easier testing**: You can easily test your forms by passing in values and asserting on the output.
-- **Non-DOM support**: You can use TanStack Form with React Native, Three.js framework adapters, or any other framework renderer.
+- **Non-DOM support**: You can use TanStack Form with React Native, Three.js renderers, or any other framework renderer.
 - **Enhanced conditional logic**: You can easily conditionally show/hide fields based on the form state.
 - **Debugging**: You can easily log the form state to the console to debug issues.
 
@@ -45,13 +45,13 @@ When writing sufficiently correct TanStack Form code, you should not be able to 
 
 Instead of:
 
-```typescript
+```ts
 useForm<MyForm>()
 ```
 
 You should do:
 
-```typescript
+```ts
 interface Person {
   name: string
   age: number
@@ -70,7 +70,7 @@ One of the main objectives of TanStack Form is that you should be wrapping it in
 
 To support this, we have a number of utilities that make it easier to build your own components and customized hooks:
 
-```typescript
+```ts
 // Exported from your own library with pre-bound components for your forms.
 export const { useAppForm, withForm } = createFormHook(/* options */)
 ```

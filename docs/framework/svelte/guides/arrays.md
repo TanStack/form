@@ -75,7 +75,7 @@ Finally, you can use a subfield like so:
     form.handleSubmit()
   }}
 >
-  <form.Field name="people">
+  <form.Field name="people" mode="array">
     {#snippet children(field)}
       <div>
         {#each field.state.value as person, i}

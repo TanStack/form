@@ -220,12 +220,12 @@ import { z } from 'zod'
 
 ## Reactivity
 
-`@tanstack/solid-form` offers various ways to subscribe to form and field state changes, most notably the `form.useStore` hook and the `form.Subscribe` component. These methods allow you to optimize your form's rendering performance by only updating components when necessary.
+`@tanstack/solid-form` offers various ways to subscribe to form and field state changes, most notably the `form.useSelector` hook and the `form.Subscribe` component. These methods allow you to optimize your form's rendering performance by only updating components when necessary.
 
 Example:
 
 ```tsx
-const firstName = form.useStore((state) => state.values.firstName)
+const firstName = form.useSelector((state) => state.values.firstName)
 //...
 <form.Subscribe
   selector={(state) => ({

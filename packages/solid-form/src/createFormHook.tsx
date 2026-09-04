@@ -1,7 +1,12 @@
-import { createContext, splitProps, useContext } from 'solid-js'
-import { createForm } from './createForm'
+import {
+  createComponent,
+  createContext,
+  mergeProps,
+  splitProps,
+  useContext,
+} from 'solid-js'
 import { createFieldGroup } from './createFieldGroup'
-import type { AppFieldExtendedSolidFieldGroupApi } from './createFieldGroup'
+import { createForm } from './createForm'
 import type {
   AnyFieldApi,
   AnyFormApi,
@@ -21,6 +26,7 @@ import type {
   ParentProps,
 } from 'solid-js'
 import type { FieldComponent } from './createField'
+import type { AppFieldExtendedSolidFieldGroupApi } from './createFieldGroup'
 import type { SolidFormExtendedApi } from './createForm'
 
 /**
@@ -215,19 +221,19 @@ export interface WithFormProps<
   TFormComponents extends Record<string, Component<any>>,
   TRenderProps extends Record<string, unknown> = Record<string, never>,
 > extends FormOptions<
-    TFormData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync,
-    TOnServer,
-    TSubmitMeta
-  > {
+  TFormData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
+  TOnServer,
+  TSubmitMeta
+> {
   // Optional, but adds props to the `render` function outside of `form`
   props?: TRenderProps
   render: (
@@ -357,7 +363,13 @@ export function createFormHook<
         <form.Field {...fieldProps}>
           {(field) => (
             <opts.fieldContext.Provider value={field}>
-              {childProps.children(Object.assign(field, opts.fieldComponents))}
+              {createComponent(
+                () =>
+                  childProps.children(
+                    Object.assign(field, opts.fieldComponents),
+                  ),
+                {},
+              )}
             </opts.fieldContext.Provider>
           )}
         </form.Field>
@@ -457,7 +469,11 @@ export function createFormHook<
     UnwrapOrAny<TFormComponents>,
     UnwrapOrAny<TRenderProps>
   >['render'] {
-    return (innerProps) => render({ ...props, ...innerProps })
+    return (innerProps) =>
+      createComponent(
+        render as Component<any>,
+        mergeProps(props ?? {}, innerProps),
+      )
   }
 
   function withFieldGroup<
@@ -542,8 +558,10 @@ export function createFormHook<
         formComponents: opts.formComponents,
       }
       const fieldGroupApi = createFieldGroup(() => fieldGroupProps)
-
-      return render({ ...props, ...innerProps, group: fieldGroupApi as any })
+      return createComponent(
+        render as Component<any>,
+        mergeProps(props ?? {}, innerProps, { group: fieldGroupApi as any }),
+      )
     }
   }
 

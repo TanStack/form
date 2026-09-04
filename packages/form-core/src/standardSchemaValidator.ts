@@ -86,8 +86,9 @@ export const standardSchemaValidators = {
 
     if (!result.issues) return
 
-    if (validationSource === 'field')
+    if (validationSource === 'field') {
       return result.issues as TStandardSchemaValidatorIssue<TSource>
+    }
     return transformFormIssues<TSource>(result.issues, value)
   },
   async validateAsync<TSource extends ValidationSource>(
@@ -101,8 +102,9 @@ export const standardSchemaValidators = {
 
     if (!result.issues) return
 
-    if (validationSource === 'field')
+    if (validationSource === 'field') {
       return result.issues as TStandardSchemaValidatorIssue<TSource>
+    }
     return transformFormIssues<TSource>(result.issues, value)
   },
 }

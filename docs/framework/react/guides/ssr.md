@@ -106,11 +106,11 @@ Finally, we'll use `getFormDataFromServer` in our loader to get the state from o
 
 ```tsx
 // app/routes/index.tsx
+import { createFileRoute } from '@tanstack/react-router'
 import {
-  createFileRoute
   mergeForm,
   useForm,
-  useStore,
+  useSelector,
   useTransform,
 } from '@tanstack/react-form-start'
 
@@ -128,7 +128,7 @@ function Home() {
     transform: useTransform((baseForm) => mergeForm(baseForm, state), [state]),
   })
 
-  const formErrors = useStore(form.store, (formState) => formState.errors)
+  const formErrors = useSelector(form.store, (formState) => formState.errors)
 
   return (
     <form action={handleForm.url} method="post" encType={'multipart/form-data'}>
@@ -183,7 +183,7 @@ This section focuses on integrating TanStack Form with `Next.js`, particularly u
 
 - Start a new `Next.js` project, following the steps in the [Next.js Documentation](https://nextjs.org/docs/getting-started/installation). Ensure you select `yes` for `Would you like to use App Router?` during the setup to access all new features provided by Next.js.
 - Install `@tanstack/react-form`
-- Install any [form validator](../validation#validation-through-schema-libraries) of your choice. [Optional]
+- Install any [form validator](./validation#validation-through-schema-libraries) of your choice. [Optional]
 
 ## App Router integration
 
@@ -256,10 +256,10 @@ Finally, we'll use `someAction` in our client-side form component.
 
 import { useActionState } from 'react'
 import {
-  initialFormState
+  initialFormState,
   mergeForm,
   useForm,
-  useStore,
+  useSelector,
   useTransform,
 } from '@tanstack/react-form-nextjs'
 import someAction from './action'
@@ -273,7 +273,7 @@ export const ClientComp = () => {
     transform: useTransform((baseForm) => mergeForm(baseForm, state!), [state]),
   })
 
-  const formErrors = useStore(form.store, (formState) => formState.errors)
+  const formErrors = useSelector(form.store, (formState) => formState.errors)
 
   return (
     <form action={action as never} onSubmit={() => form.handleSubmit()}>
@@ -338,7 +338,7 @@ Here, we're using [React's `useActionState` hook](https://playfulprogramming.com
 
 - Start a new `Remix` project, following the steps in the [Remix Documentation](https://remix.run/docs/en/main/start/quickstart).
 - Install `@tanstack/react-form`
-- Install any [form validator](../validation#validation-through-schema-libraries) of your choice. [Optional]
+- Install any [form validator](./validation#validation-through-schema-libraries) of your choice. [Optional]
 
 ## Remix integration
 
@@ -412,9 +412,9 @@ Finally, the `action` will be called when the form submits.
 import {
   Form,
   mergeForm,
-  useActionData
+  useActionData,
   useForm,
-  useStore,
+  useSelector,
   useTransform,
 } from '@tanstack/react-form'
 import {
@@ -443,7 +443,7 @@ export default function Index() {
     ),
   })
 
-  const formErrors = useStore(form.store, (formState) => formState.errors)
+  const formErrors = useSelector(form.store, (formState) => formState.errors)
 
   return (
     <Form method="post" onSubmit={() => form.handleSubmit()}>

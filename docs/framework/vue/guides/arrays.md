@@ -7,8 +7,7 @@ TanStack Form supports arrays as values in a form, including sub-object values i
 
 ## Basic Usage
 
-To use an array, you can use `field.state.value` on an array value in conjunction
-with [`Index` from `solid-js`](https://www.solidjs.com/tutorial/flow_index):
+To use an array, you can use `field.state.value` on an array value in conjunction with `v-for`:
 
 ```vue
 <script setup lang="ts">
@@ -23,7 +22,7 @@ const form = useForm({
 </script>
 
 <template>
-  <form.Field name="people">
+  <form.Field name="people" mode="array">
     <template v-slot="{ field, state }">
       <div>
         <form.Field
@@ -101,7 +100,7 @@ const form = useForm({
     "
   >
     <div>
-      <form.Field name="people">
+      <form.Field name="people" mode="array">
         <template v-slot="{ field, state }">
           <div>
             <form.Field

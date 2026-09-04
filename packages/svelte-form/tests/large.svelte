@@ -39,4 +39,4 @@
   </form.AppField>
 </form>
 
-<pre>{JSON.stringify(formState.current, null, 2)}</pre>
+<pre data-testid="form-state">{JSON.stringify(formState.current, null, 2)}</pre>
