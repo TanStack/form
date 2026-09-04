@@ -259,8 +259,27 @@ export interface FieldValidators<
    * @example z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })
    */
   onSubmitAsync?: TOnSubmitAsync
+  /**
+   * An optional function, whose run time is decided by the form's `validationLogic`
+   * rather than by a fixed event.
+   *
+   * It is not called under the default validation logic; pass `revalidateLogic()` to
+   * the form's `validationLogic` option to enable it.
+   *
+   * @example z.string().min(1)
+   */
   onDynamic?: RejectPromiseValidator<TOnDynamic>
+  /**
+   * An optional property similar to `onDynamic` but async validation.
+   *
+   * @example z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })
+   */
   onDynamicAsync?: TOnDynamicAsync
+  /**
+   * An optional number to represent how long the `onDynamicAsync` should wait before running
+   *
+   * If set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds
+   */
   onDynamicAsyncDebounceMs?: number
   /**
    * An optional list of field names that should trigger this field's `onDynamic` and `onDynamicAsync` events when its value changes
