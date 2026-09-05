@@ -5,7 +5,7 @@ title: FieldGroupFieldComponent
 
 # Interface: FieldGroupFieldComponent()\<TFieldData, TFieldComponents\>
 
-Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:19](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L19)
+Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:20](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L20)
 
 ## Type Parameters
 
@@ -15,13 +15,13 @@ Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:19](http
 
 ### TFieldComponents
 
-`TFieldComponents` *extends* `Record`\<`string`, `FunctionComponent`\<`any`\>\>
+`TFieldComponents` *extends* [`ReactComponentTree`](../type-aliases/ReactComponentTree.md)
 
 ```ts
 FieldGroupFieldComponent<TFieldName>(props): ReactNode;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:66](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L66)
+Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:67](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L67)
 
 Renders a field from this field group.
 

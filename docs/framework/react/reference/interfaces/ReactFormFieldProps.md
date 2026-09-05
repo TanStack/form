@@ -5,7 +5,7 @@ title: ReactFormFieldProps
 
 # Interface: ReactFormFieldProps\<TFieldData, TFieldName, TFieldValue, TFieldValidators, TGroupFieldError, TFormData, TFormErrorTypes, TFieldComponents\>
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:117](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L117)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:115](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L115)
 
 ## Extends
 
@@ -43,7 +43,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:117](https:/
 
 ### TFieldComponents
 
-`TFieldComponents` *extends* `Record`\<`string`, `FunctionComponent`\<`any`\>\>
+`TFieldComponents` *extends* [`ReactComponentTree`](../type-aliases/ReactComponentTree.md)
 
 ## Properties
 
@@ -53,7 +53,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:117](https:/
 children: (fieldApi) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:139](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L139)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:137](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L137)
 
 #### Parameters
 

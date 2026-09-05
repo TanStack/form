@@ -5,7 +5,7 @@ title: ReactFormComponentMap
 
 # Interface: ReactFormComponentMap\<TFormComponents, TFieldComponents\>
 
-Defined in: [packages/react-form/src/AppForm/componentMap.public.ts:3](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/componentMap.public.ts#L3)
+Defined in: [packages/react-form/src/AppForm/componentMap.public.ts:24](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/componentMap.public.ts#L24)
 
 ## Extended by
 
@@ -15,11 +15,11 @@ Defined in: [packages/react-form/src/AppForm/componentMap.public.ts:3](https://g
 
 ### TFormComponents
 
-`TFormComponents` *extends* `Record`\<`string`, `FunctionComponent`\<`any`\>\>
+`TFormComponents` *extends* [`ReactComponentTree`](../type-aliases/ReactComponentTree.md)
 
 ### TFieldComponents
 
-`TFieldComponents` *extends* `Record`\<`string`, `FunctionComponent`\<`any`\>\>
+`TFieldComponents` *extends* [`ReactComponentTree`](../type-aliases/ReactComponentTree.md)
 
 ## Properties
 
@@ -29,7 +29,9 @@ Defined in: [packages/react-form/src/AppForm/componentMap.public.ts:3](https://g
 fieldComponents: TFieldComponents;
 ```
 
-Defined in: [packages/react-form/src/AppForm/componentMap.public.ts:8](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/componentMap.public.ts#L8)
+Defined in: [packages/react-form/src/AppForm/componentMap.public.ts:31](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/componentMap.public.ts#L31)
+
+Components and component namespaces exposed on each App Field API.
 
 ***
 
@@ -39,4 +41,6 @@ Defined in: [packages/react-form/src/AppForm/componentMap.public.ts:8](https://g
 formComponents: TFormComponents;
 ```
 
-Defined in: [packages/react-form/src/AppForm/componentMap.public.ts:7](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/componentMap.public.ts#L7)
+Defined in: [packages/react-form/src/AppForm/componentMap.public.ts:29](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/componentMap.public.ts#L29)
+
+Components and component namespaces exposed on each App Form API.

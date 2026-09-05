@@ -9,7 +9,7 @@ title: DefineFieldGroupFn
 type DefineFieldGroupFn<TFieldComponents> = <TFields>(defineFn) => FieldGroupDefinition<TFields, TFieldComponents>;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:204](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L204)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:199](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L199)
 
 Signature shared by `defineFieldGroup` and app-form field-group definers.
 
@@ -17,7 +17,7 @@ Signature shared by `defineFieldGroup` and app-form field-group definers.
 
 ### TFieldComponents
 
-`TFieldComponents` *extends* `Record`\<`string`, `FunctionComponent`\<`any`\>\>
+`TFieldComponents` *extends* [`ReactComponentTree`](ReactComponentTree.md)
 
 ## Type Parameters
 

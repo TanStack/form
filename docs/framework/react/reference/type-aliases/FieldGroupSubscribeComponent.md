@@ -9,7 +9,7 @@ title: FieldGroupSubscribeComponent
 type FieldGroupSubscribeComponent = <TSelected>(props) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:170](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L170)
+Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:171](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L171)
 
 Reads form state from inside a field-group component.
 

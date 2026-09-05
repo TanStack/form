@@ -18,11 +18,11 @@ Defined in: [packages/react-form/src/AppForm/createFormHook.public.ts:14](https:
 
 ### TFormComponents
 
-`TFormComponents` *extends* `Record`\<`string`, `FunctionComponent`\<`any`\>\>
+`TFormComponents` *extends* [`ReactComponentTree`](../type-aliases/ReactComponentTree.md)
 
 ### TFieldComponents
 
-`TFieldComponents` *extends* `Record`\<`string`, `FunctionComponent`\<`any`\>\>
+`TFieldComponents` *extends* [`ReactComponentTree`](../type-aliases/ReactComponentTree.md)
 
 ## Parameters
 

@@ -9,7 +9,7 @@ title: ReactFormGroupSubscribeProps
 type ReactFormGroupSubscribeProps<TGroupValue, TGroupErrorTypes, TSelected> = ReactSubscribeProps<FormGroupState<TGroupValue, TGroupErrorTypes>, TSelected>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:207](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L207)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:205](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L205)
 
 ## Type Parameters
 

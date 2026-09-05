@@ -5,7 +5,7 @@ title: FieldGroupApi
 
 # Interface: FieldGroupApi\<TFieldData, TFieldComponents\>
 
-Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:174](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L174)
+Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:175](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L175)
 
 ## Extends
 
@@ -19,7 +19,7 @@ Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:174](htt
 
 ### TFieldComponents
 
-`TFieldComponents` *extends* `Record`\<`string`, `FunctionComponent`\<`any`\>\> = `Record`\<`never`, `never`\>
+`TFieldComponents` *extends* [`ReactComponentTree`](../type-aliases/ReactComponentTree.md)
 
 ## Properties
 

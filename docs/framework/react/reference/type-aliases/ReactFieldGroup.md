@@ -9,7 +9,7 @@ title: ReactFieldGroup
 type ReactFieldGroup<TFields, TFieldComponents> = FieldGroupApi<FieldGroupFieldData<TFields>, TFieldComponents> & object;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:23](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L23)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:24](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L24)
 
 ## Type Declaration
 
@@ -27,4 +27,4 @@ readonly [fieldGroupFieldsSymbol]: TFields;
 
 ### TFieldComponents
 
-`TFieldComponents` *extends* `Record`\<`string`, `FunctionComponent`\<`any`\>\> = `Record`\<`never`, `never`\>
+`TFieldComponents` *extends* [`ReactComponentTree`](ReactComponentTree.md) = `Record`\<`never`, `never`\>

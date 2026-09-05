@@ -9,7 +9,7 @@ title: ReactFieldApi
 type ReactFieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes, TFieldComponents> = FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes> & FieldComponentsMatchingType<TFieldComponents, TFieldValue>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:84](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L84)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:82](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L82)
 
 ## Type Parameters
 
@@ -35,4 +35,4 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:84](https://
 
 ### TFieldComponents
 
-`TFieldComponents` *extends* `Record`\<`string`, `FunctionComponent`\<`any`\>\>
+`TFieldComponents` *extends* [`ReactComponentTree`](ReactComponentTree.md)

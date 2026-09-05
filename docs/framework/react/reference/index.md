@@ -60,6 +60,7 @@ title: "@tanstack/react-form"
 - [FieldGroupWithFieldsFn](type-aliases/FieldGroupWithFieldsFn.md)
 - [Observer](type-aliases/Observer.md)
 - [ReactAppFormApi](type-aliases/ReactAppFormApi.md)
+- [ReactComponentTree](type-aliases/ReactComponentTree.md)
 - [ReactFieldApi](type-aliases/ReactFieldApi.md)
 - [ReactFieldGroup](type-aliases/ReactFieldGroup.md)
 - [ReactFormApi](type-aliases/ReactFormApi.md)
