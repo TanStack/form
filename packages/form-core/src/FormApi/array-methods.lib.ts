@@ -203,12 +203,6 @@ function swapFieldValues({
 
     if (!arrayField) return
 
-    // Since the length wasn't changed, we need to notify manually
-    arrayField._setMeta((prev) => ({
-      ...prev,
-      _arrayVersion: prev._arrayVersion + 1,
-    }))
-
     const fieldA = tryGetFieldApi(arrayField, [indexA])
 
     const fieldB = tryGetFieldApi(arrayField, [indexB])
@@ -266,11 +260,6 @@ function moveFieldValue({
 
     if (!arrayField) return
 
-    arrayField._setMeta((prev) => ({
-      ...prev,
-      _arrayVersion: prev._arrayVersion + 1,
-    }))
-
     const movingChild = tryGetFieldApi(arrayField, [fromIndex])
 
     for (const child of arrayField._children) {
@@ -311,11 +300,6 @@ function clearFieldValues({
     form.setFieldValue(arrayFieldName, [], updateOptions)
 
     if (!arrayField) return
-
-    arrayField._setMeta((prev) => ({
-      ...prev,
-      _arrayVersion: prev._arrayVersion + 1,
-    }))
 
     // Kill all child fields since the array is now empty
     // _kill() will remove each child from the parent's children
