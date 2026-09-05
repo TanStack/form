@@ -1513,6 +1513,14 @@ export class FieldApi<
 
               field.timeoutIds.validations[validateObj.cause] = setTimeout(
                 async () => {
+                  // The timer has fired, so this run is no longer waiting on a
+                  // debounce. Release the id right away: the branch above uses a
+                  // stored id to mean "a previous run is still pending" and
+                  // compensates for it with `endValidation()`. Leaving a fired id
+                  // behind makes the next run decrement the pending-validation
+                  // counter for a run that already finished, which clears
+                  // `isValidating` while that next run is still in flight.
+                  field.timeoutIds.validations[validateObj.cause] = null
                   if (controller.signal.aborted) return rawResolve(undefined)
                   try {
                     rawResolve(
