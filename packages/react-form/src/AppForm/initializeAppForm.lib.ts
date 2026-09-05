@@ -1,5 +1,6 @@
 import { createInternalReactAppFormApiClass } from './ReactAppFormApi.lib'
 import type { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
+import type { ReactComponentTree } from './componentMap.public'
 import type {
   DefaultFieldOptions,
   DefaultFormGroupOptions,
@@ -7,11 +8,10 @@ import type {
   DefaultOptions,
   FormOptions,
 } from '@tanstack/form-core'
-import type { FunctionComponent } from 'react'
 
 interface AnyCreateFormHookOptions {
-  formComponents: Record<string, FunctionComponent<any>>
-  fieldComponents: Record<string, FunctionComponent<any>>
+  formComponents: ReactComponentTree
+  fieldComponents: ReactComponentTree
   defaultFormOptions?: DefaultFormOptions
   defaultFieldOptions?: DefaultFieldOptions
   defaultFormGroupOptions?: DefaultFormGroupOptions

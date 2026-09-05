@@ -8,9 +8,10 @@ import type {
   FieldGroupHelper,
   FormApi,
 } from '@tanstack/form-core'
-import type { FunctionComponent, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import type { ReactTanStackFormComponents } from '../ReactForm/Components.public'
 import type { FieldGroupApi } from './FieldGroupApi.public'
+import type { ReactComponentTree } from '../AppForm/componentMap.public'
 
 declare const fieldGroupFieldsSymbol: unique symbol
 
@@ -22,10 +23,7 @@ export type FieldGroupFieldsOf<TFieldGroup> = TFieldGroup extends {
 
 export type ReactFieldGroup<
   TFields extends FieldGroupFields,
-  TFieldComponents extends Record<string, FunctionComponent<any>> = Record<
-    never,
-    never
-  >,
+  TFieldComponents extends ReactComponentTree = Record<never, never>,
 > = FieldGroupApi<FieldGroupFieldData<TFields>, TFieldComponents> & {
   readonly [fieldGroupFieldsSymbol]: TFields
 }
@@ -36,10 +34,7 @@ export type FieldGroupFieldComponentsOf<TFieldGroup> =
     : never
 
 export type FieldGroupForm<
-  TFieldComponents extends Record<string, FunctionComponent<any>> = Record<
-    never,
-    never
-  >,
+  TFieldComponents extends ReactComponentTree = Record<never, never>,
   TFormData = any,
 > = FormApi<TFormData, any> &
   ReactTanStackFormComponents<TFormData, any, TFieldComponents>
@@ -122,7 +117,7 @@ export type FieldGroupWithFieldsFn<
 
 export interface FieldGroupDefinition<
   TFields extends FieldGroupFields,
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
+  TFieldComponents extends ReactComponentTree,
 > {
   /**
    * The virtual field-group API injected into the component passed to
@@ -201,9 +196,9 @@ export interface FieldGroupDefinition<
 /**
  * Signature shared by `defineFieldGroup` and app-form field-group definers.
  */
-export type DefineFieldGroupFn<
-  TFieldComponents extends Record<string, FunctionComponent<any>>,
-> = <const TFields extends FieldGroupFields>(
+export type DefineFieldGroupFn<TFieldComponents extends ReactComponentTree> = <
+  const TFields extends FieldGroupFields,
+>(
   defineFn: (helper: FieldGroupHelper) => TFields,
 ) => FieldGroupDefinition<TFields, TFieldComponents>
 

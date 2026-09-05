@@ -1,10 +1,12 @@
 import React from 'react'
 import { expectTypeOf } from 'vitest'
-import { createFormHook } from '../src'
+import { createFormHook, getFormHookHelpers } from '../src'
 import type {
   DefaultFieldOptions,
   DefaultFormGroupOptions,
   DefaultFormOptions,
+  FieldWithValue,
+  ReactComponentTree,
 } from '../src'
 
 const { useAppForm } = createFormHook({
@@ -99,6 +101,155 @@ function InferenceRemainsLocal() {
 }
 
 void InferenceRemainsLocal
+
+function TextFieldComponent(props: {
+  field: FieldWithValue<string>
+  label: string
+}) {
+  return props.label
+}
+
+function NumberFieldComponent(props: { field: FieldWithValue<number> }) {
+  return String(props.field.value)
+}
+
+function FieldInfoComponent(props: { field: FieldWithValue<unknown> }) {
+  return String(props.field.value)
+}
+
+const { fieldComponent } = getFormHookHelpers()
+const TextField = fieldComponent.strict(TextFieldComponent, 'field')
+const NumberField = fieldComponent.strict(NumberFieldComponent, 'field')
+const FieldInfo = fieldComponent.loose(FieldInfoComponent, 'field')
+const MemoTextField = React.memo(TextField)
+const LazyTextField = React.lazy(() => Promise.resolve({ default: TextField }))
+
+const reusableFields = {
+  inputs: {
+    text: {
+      TextField,
+      MemoTextField,
+      LazyTextField,
+    },
+    numbers: {
+      NumberField,
+    },
+  },
+  feedback: {
+    FieldInfo,
+  },
+} satisfies ReactComponentTree
+
+function SubmitButton() {
+  return null
+}
+
+function FormStatus() {
+  return null
+}
+
+const {
+  useAppForm: useNestedAppForm,
+  defineAppFieldGroup: defineNestedAppFieldGroup,
+} = createFormHook({
+  fieldComponents: reusableFields,
+  formComponents: {
+    actions: {
+      SubmitButton,
+    },
+    layout: {
+      status: {
+        FormStatus,
+      },
+    },
+  },
+})
+
+const nestedAppFieldGroup = defineNestedAppFieldGroup(({ strict }) => ({
+  name: strict<string>(),
+  age: strict<number>(),
+}))
+
+function NestedComponentTrees() {
+  const form = useNestedAppForm({
+    defaultValues: {
+      name: '',
+      age: 0,
+      tags: [''],
+    },
+  })
+
+  return (
+    <>
+      <form.actions.SubmitButton />
+      <form.layout.status.FormStatus />
+      <form.Field name="name">
+        {(field) => {
+          expectTypeOf<keyof typeof field.inputs.numbers>().toBeNever()
+          return (
+            <>
+              <field.inputs.text.TextField label="Name" />
+              <field.inputs.text.MemoTextField label="Name" />
+              <field.inputs.text.LazyTextField label="Name" />
+              <field.feedback.FieldInfo />
+              {/* @ts-expect-error number-only leaves are filtered from string fields */}
+              <field.inputs.numbers.NumberField />
+            </>
+          )
+        }}
+      </form.Field>
+      <form.Field name="age">
+        {(field) => {
+          expectTypeOf<keyof typeof field.inputs.text>().toBeNever()
+          return (
+            <>
+              <field.inputs.numbers.NumberField />
+              {/* @ts-expect-error string-only leaves are filtered from number fields */}
+              <field.inputs.text.TextField label="Age" />
+            </>
+          )
+        }}
+      </form.Field>
+      <form.ArrayField name="tags">
+        {(field) => {
+          expectTypeOf<keyof typeof field.inputs.text>().toBeNever()
+          return <field.feedback.FieldInfo />
+        }}
+      </form.ArrayField>
+      <nestedAppFieldGroup.fields.Field name="name">
+        {(field) => (
+          <>
+            <field.inputs.text.TextField label="Name" />
+            {/* @ts-expect-error nested filtering is preserved by app field groups */}
+            <field.inputs.numbers.NumberField />
+          </>
+        )}
+      </nestedAppFieldGroup.fields.Field>
+    </>
+  )
+}
+
+void NestedComponentTrees
+
+createFormHook({
+  fieldComponents: {
+    invalid: {
+      // @ts-expect-error component-tree leaves must be React components
+      value: 'not a component',
+    },
+  },
+  formComponents: {},
+})
+
+createFormHook({
+  fieldComponents: {},
+  formComponents: {
+    invalid: {
+      // @ts-expect-error component-tree leaves must be React components
+      value: 123,
+    },
+  },
+})
 
 expectTypeOf<
   Extract<

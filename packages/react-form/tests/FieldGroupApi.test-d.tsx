@@ -409,11 +409,14 @@ function DefineFieldGroupTypes() {
   }>()
 
   expectTypeOf(definedFields).toExtend<
-    FieldGroupApi<{
-      name: string
-      age: number
-      emails: Array<{ value: string }>
-    }>
+    FieldGroupApi<
+      {
+        name: string
+        age: number
+        emails: Array<{ value: string }>
+      },
+      Record<never, never>
+    >
   >()
   expectTypeOf<DefinedFieldsSpec>().toEqualTypeOf<{
     readonly name: typeof stringSlot
