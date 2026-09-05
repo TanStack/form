@@ -9,7 +9,7 @@
     "test:types": "vue-tsc --noEmit"
   },
   "dependencies": {
-    "@tanstack/vue-form": "^2.0.0-alpha.2",
+    "@tanstack/vue-form": "^2.0.0-alpha.3",
     "vue": "^3.6.0-rc.2",
     "zod": "^4.4.3"
   },
