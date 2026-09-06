@@ -18,10 +18,11 @@ export interface FormDevtoolsReactInit extends DevtoolsPanelProps {}
  * Fix: track the previous theme in a ref. The effect dependency is [theme] only — it
  * fires only when the theme value changes, never on unrelated prop changes. The ref
  * guards against the initial mount where prevThemeRef.current is undefined (matching
- * an undefined theme on first render). Cleanup unmounts the old Solid instance before
- * the next mount with the updated props.
+ * an undefined theme on first render). Cleanup unmounts the old Solid instance both
+ * on theme change and on component teardown, releasing the Solid tree and its
+ * resources.
  */
-function FormDevtoolsPanel(props: DevtoolsPanelProps) {
+export function FormDevtoolsPanel(props: DevtoolsPanelProps) {
   const devToolRef = useRef<HTMLDivElement>(null)
   const devtools = useRef<InstanceType<typeof FormDevtoolsCore> | null>(null)
   const prevThemeRef = useRef<string | undefined>(undefined)
@@ -39,17 +40,27 @@ function FormDevtoolsPanel(props: DevtoolsPanelProps) {
 
     if (!devToolRef.current) return
 
-    devtools.current?.unmount()
-    devtools.current = new FormDevtoolsCore()
-    devtools.current.mount(devToolRef.current, props)
+    // Create a fresh instance for the new theme. The effect's cleanup function
+    // unmounts whichever instance is current at teardown time — whether that
+    // happens because the theme changed (next effect run) or because the
+    // component itself unmounted. This prevents the Solid tree from being
+    // orphaned when the panel closes.
+    const instance = new FormDevtoolsCore()
+    devtools.current = instance
+    instance.mount(devToolRef.current, props)
+
+    return () => {
+      instance.unmount()
+      if (devtools.current === instance) {
+        devtools.current = null
+      }
+    }
   }, [theme]) // NOTE: intentionally omits `props` — props changes on every render
   // (object identity); the ref guard above handles theme-change detection.
 
   return <div style={{ height: '100%' }} ref={devToolRef} />
 }
 
-function FormDevtoolsPanelNoOp(_props: DevtoolsPanelProps) {
+export function FormDevtoolsPanelNoOp(_props: DevtoolsPanelProps) {
   return null as unknown as React.ReactElement
 }
-
-export { FormDevtoolsPanel, FormDevtoolsPanelNoOp }
