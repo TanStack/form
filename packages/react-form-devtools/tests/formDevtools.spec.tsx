@@ -78,6 +78,10 @@ describe('FormDevtoolsPanel — integration with @testing-library/react + jsdom'
     const darkInstance = lastInstance.current
     expect(darkInstance).not.toBe(lightInstance)
     expect(darkInstance?.mount).toHaveBeenCalledTimes(1)
+    expect(darkInstance!.mount).toHaveBeenCalledWith(
+      expect.any(HTMLDivElement),
+      expect.objectContaining({ theme: 'dark' }),
+    )
     expect(darkInstance!.unmount).not.toHaveBeenCalled()
 
     unmount()
