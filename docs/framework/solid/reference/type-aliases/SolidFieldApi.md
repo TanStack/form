@@ -3,6 +3,8 @@ id: SolidFieldApi
 title: SolidFieldApi
 ---
 
+# Type Alias: SolidFieldApi\<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes, TFieldComponents\>
+
 ```ts
 type SolidFieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes, TFieldComponents> = Accessor<FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes>> & FieldComponentsMatchingType<TFieldComponents, TFieldValue>;
 ```

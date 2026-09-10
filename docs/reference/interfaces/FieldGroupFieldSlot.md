@@ -3,6 +3,8 @@ id: FieldGroupFieldSlot
 title: FieldGroupFieldSlot
 ---
 
+# Interface: FieldGroupFieldSlot\<TValue, TMode\>
+
 Defined in: [FieldGroup/fieldGroupTypes.public.ts:27](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroup/fieldGroupTypes.public.ts#L27)
 
 Describes the value type and matching rule for one virtual field in a

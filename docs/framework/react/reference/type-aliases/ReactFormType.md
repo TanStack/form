@@ -3,6 +3,8 @@ id: ReactFormType
 title: ReactFormType
 ---
 
+# Type Alias: ReactFormType\<TOptions\>
+
 ```ts
 type ReactFormType<TOptions> = TOptions extends FormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn, infer TComponents> ? ReactFormApi<TFormData, ReactFormTypeErrorTypes<TFormValidators, TSubmitReturn>, TComponents extends AnyReactFormComponentMap ? TComponents : DefaultReactFormComponentMap> : never;
 ```

@@ -3,6 +3,8 @@ id: ResetFn
 title: ResetFn
 ---
 
+# Type Alias: ResetFn\<TFormData\>
+
 ```ts
 type ResetFn<TFormData> = (values?, opts?) => void;
 ```

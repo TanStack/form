@@ -3,6 +3,8 @@ id: CreateFormHook
 title: CreateFormHook
 ---
 
+# Type Alias: CreateFormHook
+
 ```ts
 type CreateFormHook = <TFormData, TFormValidators, TSubmitReturn>(options) => SolidFormApi<TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>, DefaultSolidFormComponentMap>;
 ```

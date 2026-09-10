@@ -3,6 +3,8 @@ id: ValidationResult
 title: ValidationResult
 ---
 
+# Type Alias: ValidationResult
+
 ```ts
 type ValidationResult = 
   | ValidValidationResult

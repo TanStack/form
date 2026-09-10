@@ -3,6 +3,8 @@ id: VueFormType
 title: VueFormType
 ---
 
+# Type Alias: VueFormType\<TOptions\>
+
 ```ts
 type VueFormType<TOptions> = TOptions extends FormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn, infer TComponents> ? VueFormApi<TFormData, VueFormTypeErrorTypes<TFormValidators, TSubmitReturn>, TComponents extends AnyVueFormComponentMap ? TComponents : DefaultVueFormComponentMap> : never;
 ```

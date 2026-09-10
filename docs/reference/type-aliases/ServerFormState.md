@@ -3,6 +3,8 @@ id: ServerFormState
 title: ServerFormState
 ---
 
+# Type Alias: ServerFormState\<TFormData, TFormValidators\>
+
 ```ts
 type ServerFormState<TFormData, TFormValidators> = ServerFormStateByResult<TFormData, FormValidateResultFromErrorTypes<TFormData, ToServerFormErrorTypes<TFormValidators>>>;
 ```

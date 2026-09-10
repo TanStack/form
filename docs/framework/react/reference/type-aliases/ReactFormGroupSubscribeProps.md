@@ -3,6 +3,8 @@ id: ReactFormGroupSubscribeProps
 title: ReactFormGroupSubscribeProps
 ---
 
+# Type Alias: ReactFormGroupSubscribeProps\<TGroupValue, TGroupErrorTypes, TSelected\>
+
 ```ts
 type ReactFormGroupSubscribeProps<TGroupValue, TGroupErrorTypes, TSelected> = ReactSubscribeProps<FormGroupState<TGroupValue, TGroupErrorTypes>, TSelected>;
 ```

@@ -3,6 +3,8 @@ id: PreactFormGroupProps
 title: PreactFormGroupProps
 ---
 
+# Interface: PreactFormGroupProps\<TFormData, TGroupName, TGroupValue, TGroupValidators, TFormErrorTypes, TFieldComponents\>
+
 Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:310](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L310)
 
 ## Extends

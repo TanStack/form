@@ -3,6 +3,8 @@ id: AnyAngularFormApi
 title: AnyAngularFormApi
 ---
 
+# Type Alias: AnyAngularFormApi
+
 ```ts
 type AnyAngularFormApi = AnyInternalFormApi;
 ```

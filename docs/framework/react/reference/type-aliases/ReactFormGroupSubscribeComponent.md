@@ -3,6 +3,8 @@ id: ReactFormGroupSubscribeComponent
 title: ReactFormGroupSubscribeComponent
 ---
 
+# Type Alias: ReactFormGroupSubscribeComponent\<TGroupValue, TGroupErrorTypes\>
+
 ```ts
 type ReactFormGroupSubscribeComponent<TGroupValue, TGroupErrorTypes> = <TSelected>(props) => ReactNode;
 ```

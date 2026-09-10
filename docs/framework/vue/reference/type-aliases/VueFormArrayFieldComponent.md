@@ -3,6 +3,8 @@ id: VueFormArrayFieldComponent
 title: VueFormArrayFieldComponent
 ---
 
+# Type Alias: VueFormArrayFieldComponent\<TFormData, TFormErrorTypes, TFieldComponents\>
+
 ```ts
 type VueFormArrayFieldComponent<TFormData, TFormErrorTypes, TFieldComponents> = <TFieldName, TFieldValidators>(props) => VueComponentInstance<VueFormFieldProps<TFormData, TFieldName, DeepValue<TFormData, TFieldName>, TFieldValidators, never, TFormData, TFormErrorTypes, TFieldComponents>, {
   default: {

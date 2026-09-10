@@ -3,6 +3,8 @@ id: AnyFormOptions
 title: AnyFormOptions
 ---
 
+# Type Alias: AnyFormOptions
+
 ```ts
 type AnyFormOptions = FormOptions<any, any, any, any>;
 ```

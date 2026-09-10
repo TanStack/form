@@ -3,6 +3,8 @@ id: PushFieldValueFn
 title: PushFieldValueFn
 ---
 
+# Type Alias: PushFieldValueFn\<TFormData\>
+
 ```ts
 type PushFieldValueFn<TFormData> = <TFieldName>(arrayFieldName, value, options?) => void;
 ```

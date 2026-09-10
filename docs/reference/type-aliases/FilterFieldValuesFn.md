@@ -3,6 +3,8 @@ id: FilterFieldValuesFn
 title: FilterFieldValuesFn
 ---
 
+# Type Alias: FilterFieldValuesFn\<TFormData\>
+
 ```ts
 type FilterFieldValuesFn<TFormData> = <TFieldName>(arrayFieldName, predicate, options?) => void;
 ```

@@ -3,6 +3,8 @@ id: PreactFormGroupSubscribeComponent
 title: PreactFormGroupSubscribeComponent
 ---
 
+# Type Alias: PreactFormGroupSubscribeComponent\<TGroupValue, TGroupErrorTypes\>
+
 ```ts
 type PreactFormGroupSubscribeComponent<TGroupValue, TGroupErrorTypes> = <TSelected>(props) => CrossVersionPreactNode;
 ```

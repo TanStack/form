@@ -3,6 +3,8 @@ id: ValidatorScope
 title: ValidatorScope
 ---
 
+# Type Alias: ValidatorScope
+
 ```ts
 type ValidatorScope = "form" | "group" | "field";
 ```

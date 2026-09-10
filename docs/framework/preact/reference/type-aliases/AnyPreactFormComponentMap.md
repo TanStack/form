@@ -3,6 +3,8 @@ id: AnyPreactFormComponentMap
 title: AnyPreactFormComponentMap
 ---
 
+# Type Alias: AnyPreactFormComponentMap
+
 ```ts
 type AnyPreactFormComponentMap = PreactFormComponentMap<Record<string, FunctionComponent<any>>, Record<string, FunctionComponent<any>>>;
 ```

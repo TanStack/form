@@ -3,6 +3,8 @@ id: VueFormGroupApi
 title: VueFormGroupApi
 ---
 
+# Interface: VueFormGroupApi\<TFormData, TGroupName, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents\>
+
 Defined in: [packages/vue-form/src/VueForm/Components.public.ts:343](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L343)
 
 ## Extends

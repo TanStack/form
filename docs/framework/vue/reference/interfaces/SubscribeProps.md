@@ -3,6 +3,8 @@ id: SubscribeProps
 title: SubscribeProps
 ---
 
+# Interface: SubscribeProps\<TSourceData, TSelected\>
+
 Defined in: [packages/vue-form/src/Subscribe.public.ts:14](https://github.com/TanStack/form/blob/main/packages/vue-form/src/Subscribe.public.ts#L14)
 
 ## Type Parameters

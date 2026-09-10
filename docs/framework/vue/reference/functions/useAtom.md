@@ -3,6 +3,8 @@ id: useAtom
 title: useAtom
 ---
 
+# Function: useAtom()
+
 ```ts
 function useAtom<TValue>(atom, options?): [Readonly<Ref<TValue, TValue>>, (fn) => void & (value) => void];
 ```

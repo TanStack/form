@@ -3,6 +3,8 @@ id: FieldGroupFieldBindingsProps
 title: FieldGroupFieldBindingsProps
 ---
 
+# Type Alias: FieldGroupFieldBindingsProps\<TFields, TFormData, TFieldsPropName\>
+
 ```ts
 type FieldGroupFieldBindingsProps<TFields, TFormData, TFieldsPropName> = unknown extends TFormData ? FieldGroupFieldsPropsDefinition<TFields, TFormData, TFieldsPropName> : FieldGroupIdentityBindings<TFields> extends FieldGroupFieldBindings<TFields, TFormData> ? Partial<FieldGroupFieldsPropsDefinition<TFields, TFormData, TFieldsPropName>> : FieldGroupFieldsPropsDefinition<TFields, TFormData, TFieldsPropName>;
 ```

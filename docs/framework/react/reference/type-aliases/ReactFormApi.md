@@ -3,6 +3,8 @@ id: ReactFormApi
 title: ReactFormApi
 ---
 
+# Type Alias: ReactFormApi\<TFormData, TFormErrorTypes, TComponents\>
+
 ```ts
 type ReactFormApi<TFormData, TFormErrorTypes, TComponents> = unknown extends TComponents["formComponents"] ? ExtendedFormApi<TFormData, TFormErrorTypes, TComponents["fieldComponents"]> : ExtendedFormApi<TFormData, TFormErrorTypes, TComponents["fieldComponents"]> & TComponents["formComponents"];
 ```

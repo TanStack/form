@@ -3,6 +3,8 @@ id: FormListenerTriggers
 title: FormListenerTriggers
 ---
 
+# Type Alias: FormListenerTriggers
+
 ```ts
 type FormListenerTriggers = ValidationTrigger | "mount" | "reset";
 ```

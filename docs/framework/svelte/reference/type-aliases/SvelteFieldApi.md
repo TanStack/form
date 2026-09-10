@@ -3,6 +3,8 @@ id: SvelteFieldApi
 title: SvelteFieldApi
 ---
 
+# Type Alias: SvelteFieldApi\<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes, TFieldComponents\>
+
 ```ts
 type SvelteFieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes, TFieldComponents> = FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes> & FieldComponentsMatchingType<TFieldComponents, TFieldValue>;
 ```

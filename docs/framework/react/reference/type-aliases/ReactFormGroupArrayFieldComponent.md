@@ -3,6 +3,8 @@ id: ReactFormGroupArrayFieldComponent
 title: ReactFormGroupArrayFieldComponent
 ---
 
+# Type Alias: ReactFormGroupArrayFieldComponent\<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents\>
+
 ```ts
 type ReactFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents> = <TFieldName, TFieldValidators>(props) => ReactNode;
 ```

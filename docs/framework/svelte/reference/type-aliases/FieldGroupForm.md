@@ -3,6 +3,8 @@ id: FieldGroupForm
 title: FieldGroupForm
 ---
 
+# Type Alias: FieldGroupForm\<TFieldComponents, TFormData\>
+
 ```ts
 type FieldGroupForm<TFieldComponents, TFormData> = FormApi<TFormData, any> & SvelteTanStackFormComponents<TFormData, any, TFieldComponents>;
 ```

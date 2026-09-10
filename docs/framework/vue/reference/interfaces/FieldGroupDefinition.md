@@ -3,6 +3,8 @@ id: FieldGroupDefinition
 title: FieldGroupDefinition
 ---
 
+# Interface: FieldGroupDefinition\<TFields, TFieldComponents\>
+
 Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:95](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L95)
 
 ## Type Parameters

@@ -3,6 +3,8 @@ id: ValidationTrigger
 title: ValidationTrigger
 ---
 
+# Type Alias: ValidationTrigger
+
 ```ts
 type ValidationTrigger = "change" | "blur" | "submit";
 ```

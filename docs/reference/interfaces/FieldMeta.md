@@ -3,6 +3,8 @@ id: FieldMeta
 title: FieldMeta
 ---
 
+# Interface: FieldMeta\<TFieldError\>
+
 Defined in: [FieldApi/FieldApi.public.ts:38](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L38)
 
 ## Extends

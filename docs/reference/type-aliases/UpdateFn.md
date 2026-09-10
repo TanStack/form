@@ -3,6 +3,8 @@ id: UpdateFn
 title: UpdateFn
 ---
 
+# Type Alias: UpdateFn\<TValue\>
+
 ```ts
 type UpdateFn<TValue> = (previousValue) => TValue;
 ```

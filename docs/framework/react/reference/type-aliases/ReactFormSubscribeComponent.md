@@ -3,6 +3,8 @@ id: ReactFormSubscribeComponent
 title: ReactFormSubscribeComponent
 ---
 
+# Type Alias: ReactFormSubscribeComponent\<TFormData, TFormErrorTypes\>
+
 ```ts
 type ReactFormSubscribeComponent<TFormData, TFormErrorTypes> = <TSelected>(props) => ReactNode;
 ```

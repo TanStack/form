@@ -3,6 +3,8 @@ id: DefaultSvelteFormComponentMap
 title: DefaultSvelteFormComponentMap
 ---
 
+# Type Alias: DefaultSvelteFormComponentMap
+
 ```ts
 type DefaultSvelteFormComponentMap = SvelteFormComponentMap<Record<never, never>, Record<never, never>>;
 ```

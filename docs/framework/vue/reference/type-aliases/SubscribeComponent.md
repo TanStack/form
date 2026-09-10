@@ -3,6 +3,8 @@ id: SubscribeComponent
 title: SubscribeComponent
 ---
 
+# Type Alias: SubscribeComponent
+
 ```ts
 type SubscribeComponent = <TSourceData, TSelected>(props) => InstanceType<VueComponentWithSlots<SubscribeProps<TSourceData, TSelected>, {
   default: NoInfer<TSelected>;

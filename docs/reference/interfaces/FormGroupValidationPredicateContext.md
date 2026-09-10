@@ -3,6 +3,8 @@ id: FormGroupValidationPredicateContext
 title: FormGroupValidationPredicateContext
 ---
 
+# Interface: FormGroupValidationPredicateContext\<TGroupValue\>
+
 Defined in: [validation.public.ts:292](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L292)
 
 ## Extends

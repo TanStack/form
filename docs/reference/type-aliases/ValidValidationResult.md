@@ -3,6 +3,8 @@ id: ValidValidationResult
 title: ValidValidationResult
 ---
 
+# Type Alias: ValidValidationResult
+
 ```ts
 type ValidValidationResult = null | undefined | false;
 ```

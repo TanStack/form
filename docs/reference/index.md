@@ -3,6 +3,8 @@ id: "@tanstack/form-core"
 title: "@tanstack/form-core"
 ---
 
+# @tanstack/form-core
+
 ## Interfaces
 
 - [BaseFieldMeta](interfaces/BaseFieldMeta.md)

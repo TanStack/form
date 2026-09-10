@@ -3,6 +3,8 @@ id: StrictFieldGroupFieldSlot
 title: StrictFieldGroupFieldSlot
 ---
 
+# Type Alias: StrictFieldGroupFieldSlot\<TValue\>
+
 ```ts
 type StrictFieldGroupFieldSlot<TValue> = FieldGroupFieldSlot<TValue, "strict">;
 ```

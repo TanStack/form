@@ -3,6 +3,8 @@ id: SvelteFormSelectors
 title: SvelteFormSelectors
 ---
 
+# Interface: SvelteFormSelectors\<TFormData, TFormErrorTypes\>
+
 Defined in: [packages/svelte-form/src/formApiTypes.public.ts:14](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/formApiTypes.public.ts#L14)
 
 ## Type Parameters

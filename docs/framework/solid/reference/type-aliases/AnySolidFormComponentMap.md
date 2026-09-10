@@ -3,6 +3,8 @@ id: AnySolidFormComponentMap
 title: AnySolidFormComponentMap
 ---
 
+# Type Alias: AnySolidFormComponentMap
+
 ```ts
 type AnySolidFormComponentMap = SolidFormComponentMap<Record<string, Component<any>>, Record<string, Component<any>>>;
 ```

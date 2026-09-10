@@ -3,6 +3,8 @@ id: ListenerDebounceFn
 title: ListenerDebounceFn
 ---
 
+# Type Alias: ListenerDebounceFn\<TFormData, TValue\>
+
 ```ts
 type ListenerDebounceFn<TFormData, TValue> = (context) => number;
 ```

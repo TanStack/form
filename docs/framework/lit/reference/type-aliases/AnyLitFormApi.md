@@ -3,6 +3,8 @@ id: AnyLitFormApi
 title: AnyLitFormApi
 ---
 
+# Type Alias: AnyLitFormApi
+
 ```ts
 type AnyLitFormApi = TanStackFormController<any, any, any>;
 ```

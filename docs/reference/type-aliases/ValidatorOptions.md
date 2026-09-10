@@ -3,6 +3,8 @@ id: ValidatorOptions
 title: ValidatorOptions
 ---
 
+# Type Alias: ValidatorOptions\<TFormData, TContextValue, TTrigger, TScope\>
+
 ```ts
 type ValidatorOptions<TFormData, TContextValue, TTrigger, TScope> = Omit<Validator<TFormData, 
   | StandardSchemaV1<any, any>

@@ -3,6 +3,8 @@ id: VueFormGroupSubscribeComponent
 title: VueFormGroupSubscribeComponent
 ---
 
+# Type Alias: VueFormGroupSubscribeComponent\<TGroupValue, TGroupErrorTypes\>
+
 ```ts
 type VueFormGroupSubscribeComponent<TGroupValue, TGroupErrorTypes> = <TSelected>(props) => VueComponentInstance<VueFormGroupSubscribeProps<TGroupValue, TGroupErrorTypes, TSelected>, {
   default: NoInfer<TSelected>;

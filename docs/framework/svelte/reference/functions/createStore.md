@@ -3,6 +3,8 @@ id: createStore
 title: createStore
 ---
 
+# Function: createStore()
+
 ## Call Signature
 
 ```ts

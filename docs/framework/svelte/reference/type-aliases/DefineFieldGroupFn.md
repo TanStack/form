@@ -3,6 +3,8 @@ id: DefineFieldGroupFn
 title: DefineFieldGroupFn
 ---
 
+# Type Alias: DefineFieldGroupFn\<TComponents\>
+
 ```ts
 type DefineFieldGroupFn<TComponents> = <TFields>(defineFn) => FieldGroupDefinition<TFields, TComponents>;
 ```

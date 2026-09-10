@@ -3,6 +3,8 @@ id: getFormHookHelpers
 title: getFormHookHelpers
 ---
 
+# Function: getFormHookHelpers()
+
 ```ts
 function getFormHookHelpers(): FormHookHelpers;
 ```

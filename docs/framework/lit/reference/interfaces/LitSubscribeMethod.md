@@ -3,6 +3,8 @@ id: LitSubscribeMethod
 title: LitSubscribeMethod
 ---
 
+# Interface: LitSubscribeMethod\<TState\>
+
 Defined in: [tanstack-form-controller.ts:148](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L148)
 
 ## Type Parameters

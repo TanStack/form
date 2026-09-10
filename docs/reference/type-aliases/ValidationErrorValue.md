@@ -3,6 +3,8 @@ id: ValidationErrorValue
 title: ValidationErrorValue
 ---
 
+# Type Alias: ValidationErrorValue
+
 ```ts
 type ValidationErrorValue = ValidationIssue | string;
 ```

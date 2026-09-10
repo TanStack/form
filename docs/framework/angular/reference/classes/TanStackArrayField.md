@@ -3,6 +3,8 @@ id: TanStackArrayField
 title: TanStackArrayField
 ---
 
+# Class: TanStackArrayField\<TSource, TFieldName, TFieldValue, TFieldValidators\>
+
 Defined in: [tanstack-field.ts:282](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L282)
 
 ## Extends

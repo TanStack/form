@@ -3,6 +3,8 @@ id: ToServerFormErrorTypes
 title: ToServerFormErrorTypes
 ---
 
+# Type Alias: ToServerFormErrorTypes\<TFormValidators\>
+
 ```ts
 type ToServerFormErrorTypes<TFormValidators> = unknown extends TFormValidators ? FormErrorTypes : FormValidators<any> extends TFormValidators ? FormErrorTypes : ToFormErrorTypes<MappedServerFormValidators<TFormValidators>, never>;
 ```

@@ -3,6 +3,8 @@ id: ValidationDebounceFn
 title: ValidationDebounceFn
 ---
 
+# Type Alias: ValidationDebounceFn\<TFormData, TValue, TScope\>
+
 ```ts
 type ValidationDebounceFn<TFormData, TValue, TScope> = (context) => number;
 ```

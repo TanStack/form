@@ -3,6 +3,8 @@ id: SolidFormGroupComponent
 title: SolidFormGroupComponent
 ---
 
+# Interface: SolidFormGroupComponent()\<TFormData, TFormErrorTypes, TFieldComponents\>
+
 Defined in: [packages/solid-form/src/Components.public.ts:357](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L357)
 
 ## Type Parameters

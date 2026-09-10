@@ -3,6 +3,8 @@ id: FieldGroupWithFieldsFn
 title: FieldGroupWithFieldsFn
 ---
 
+# Type Alias: FieldGroupWithFieldsFn\<TFieldGroup\>
+
 ```ts
 type FieldGroupWithFieldsFn<TFieldGroup> = <TProps, TFieldsPropName>(component, fieldsPropName) => <TFormData>(props) => VueComponentInstance<Omit<TProps, TFieldsPropName | "form"> & object & FieldGroupFieldBindingsInstanceProp<TFieldGroup, TFormData, TFieldsPropName> & Record<string, any>, {
 }>;

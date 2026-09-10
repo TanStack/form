@@ -3,6 +3,8 @@ id: FormErrorTypes
 title: FormErrorTypes
 ---
 
+# Interface: FormErrorTypes\<TFormError, TFieldError\>
+
 Defined in: [validation.public.ts:572](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L572)
 
 ## Type Parameters

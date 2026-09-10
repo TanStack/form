@@ -3,6 +3,8 @@ id: TanStackAppArrayField
 title: TanStackAppArrayField
 ---
 
+# Class: TanStackAppArrayField\<TSource, TFieldName, TFieldValue, TFieldValidators\>
+
 Defined in: [app-field.ts:37](https://github.com/TanStack/form/blob/main/packages/angular-form/src/app-field.ts#L37)
 
 ## Extends

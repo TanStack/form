@@ -3,6 +3,8 @@ id: FieldErrors
 title: FieldErrors
 ---
 
+# Type Alias: FieldErrors\<TFieldError\>
+
 ```ts
 type FieldErrors<TFieldError> = unknown extends TFieldError ? ValidationIssue : TFieldError[];
 ```

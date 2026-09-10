@@ -3,6 +3,8 @@ id: FieldGroupDefinition
 title: FieldGroupDefinition
 ---
 
+# Interface: FieldGroupDefinition\<TFields\>
+
 Defined in: [with-fields.ts:82](https://github.com/TanStack/form/blob/main/packages/lit-form/src/with-fields.ts#L82)
 
 ## Type Parameters

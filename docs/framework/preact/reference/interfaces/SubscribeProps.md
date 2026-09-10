@@ -3,6 +3,8 @@ id: SubscribeProps
 title: SubscribeProps
 ---
 
+# Interface: SubscribeProps\<TSourceData, TSelected\>
+
 Defined in: [packages/preact-form/src/Subscribe.public.tsx:17](https://github.com/TanStack/form/blob/main/packages/preact-form/src/Subscribe.public.tsx#L17)
 
 Subscribe to `form.atom` (full form state). The selector receives the full

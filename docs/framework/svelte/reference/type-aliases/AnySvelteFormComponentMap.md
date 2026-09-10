@@ -3,6 +3,8 @@ id: AnySvelteFormComponentMap
 title: AnySvelteFormComponentMap
 ---
 
+# Type Alias: AnySvelteFormComponentMap
+
 ```ts
 type AnySvelteFormComponentMap = SvelteFormComponentMap<Record<string, Component<any>>, Record<string, Component<any>>>;
 ```

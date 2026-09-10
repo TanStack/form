@@ -3,6 +3,8 @@ id: ValidatorTrigger
 title: ValidatorTrigger
 ---
 
+# Type Alias: ValidatorTrigger
+
 ```ts
 type ValidatorTrigger = ConfigurableValidationTrigger;
 ```

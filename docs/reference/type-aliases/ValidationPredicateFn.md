@@ -3,6 +3,8 @@ id: ValidationPredicateFn
 title: ValidationPredicateFn
 ---
 
+# Type Alias: ValidationPredicateFn\<TFormData, TValue, TScope\>
+
 ```ts
 type ValidationPredicateFn<TFormData, TValue, TScope> = (context) => boolean;
 ```

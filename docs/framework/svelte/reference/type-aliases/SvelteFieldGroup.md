@@ -3,6 +3,8 @@ id: SvelteFieldGroup
 title: SvelteFieldGroup
 ---
 
+# Type Alias: SvelteFieldGroup\<TFields, TFieldComponents\>
+
 ```ts
 type SvelteFieldGroup<TFields, TFieldComponents> = FieldGroupApi<FieldGroupFieldData<TFields>, TFieldComponents> & object;
 ```

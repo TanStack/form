@@ -3,6 +3,8 @@ id: batch
 title: batch
 ---
 
+# Function: batch()
+
 ```ts
 function batch(fn): void;
 ```

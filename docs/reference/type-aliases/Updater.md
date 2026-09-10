@@ -3,6 +3,8 @@ id: Updater
 title: Updater
 ---
 
+# Type Alias: Updater\<TValue\>
+
 ```ts
 type Updater<TValue> = TValue | UpdateFn<TValue>;
 ```

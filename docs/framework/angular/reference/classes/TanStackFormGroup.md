@@ -3,6 +3,8 @@ id: TanStackFormGroup
 title: TanStackFormGroup
 ---
 
+# Class: TanStackFormGroup\<TFormData, TGroupName, TGroupValue, TGroupValidators, TFormValidators, TSubmitReturn\>
+
 Defined in: [form-group.ts:24](https://github.com/TanStack/form/blob/main/packages/angular-form/src/form-group.ts#L24)
 
 ## Type Parameters

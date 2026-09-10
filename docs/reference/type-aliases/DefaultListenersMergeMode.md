@@ -3,6 +3,8 @@ id: DefaultListenersMergeMode
 title: DefaultListenersMergeMode
 ---
 
+# Type Alias: DefaultListenersMergeMode
+
 ```ts
 type DefaultListenersMergeMode = "replace" | "append" | "prepend";
 ```

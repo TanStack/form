@@ -3,6 +3,8 @@ id: AppFormComponent
 title: AppFormComponent
 ---
 
+# Type Alias: AppFormComponent
+
 ```ts
 type AppFormComponent = FunctionComponent<{
   children: Exclude<ReactNode, Promise<any>>;

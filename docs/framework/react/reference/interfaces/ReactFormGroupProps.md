@@ -3,6 +3,8 @@ id: ReactFormGroupProps
 title: ReactFormGroupProps
 ---
 
+# Interface: ReactFormGroupProps\<TFormData, TGroupName, TGroupValue, TGroupValidators, TFormErrorTypes, TFieldComponents\>
+
 Defined in: [packages/react-form/src/ReactForm/Components.public.ts:308](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L308)
 
 ## Extends

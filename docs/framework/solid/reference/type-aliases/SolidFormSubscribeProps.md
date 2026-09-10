@@ -3,6 +3,8 @@ id: SolidFormSubscribeProps
 title: SolidFormSubscribeProps
 ---
 
+# Type Alias: SolidFormSubscribeProps\<TFormData, TFormErrorTypes, TSelected\>
+
 ```ts
 type SolidFormSubscribeProps<TFormData, TFormErrorTypes, TSelected> = SolidSubscribeProps<FormState<TFormData, TFormErrorTypes>, TSelected>;
 ```

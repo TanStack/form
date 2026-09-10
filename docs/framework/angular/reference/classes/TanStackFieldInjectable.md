@@ -3,6 +3,8 @@ id: TanStackFieldInjectable
 title: TanStackFieldInjectable
 ---
 
+# Class: TanStackFieldInjectable\<TFieldValue, TFieldName, TFieldError, TFormData, TFormErrorTypes\>
+
 Defined in: [injectable.ts:5](https://github.com/TanStack/form/blob/main/packages/angular-form/src/injectable.ts#L5)
 
 ## Type Parameters

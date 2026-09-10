@@ -3,6 +3,8 @@ id: FormGroupState
 title: FormGroupState
 ---
 
+# Interface: FormGroupState\<TGroupValue, TGroupErrorTypes\>
+
 Defined in: [FormGroupApi/FormGroupApi.public.ts:161](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L161)
 
 ## Type Parameters

@@ -3,6 +3,8 @@ id: ValidationPredicateContext
 title: ValidationPredicateContext
 ---
 
+# Type Alias: ValidationPredicateContext\<TFormData, TValue, TScope\>
+
 ```ts
 type ValidationPredicateContext<TFormData, TValue, TScope> = TScope extends "form" ? FormValidationPredicateContext<TFormData> : TScope extends "group" ? FormGroupValidationPredicateContext<TValue> : TScope extends "field" ? FieldValidationPredicateContext<TFormData, TValue> : never;
 ```

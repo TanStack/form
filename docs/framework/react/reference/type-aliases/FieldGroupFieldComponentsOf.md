@@ -3,6 +3,8 @@ id: FieldGroupFieldComponentsOf
 title: FieldGroupFieldComponentsOf
 ---
 
+# Type Alias: FieldGroupFieldComponentsOf\<TFieldGroup\>
+
 ```ts
 type FieldGroupFieldComponentsOf<TFieldGroup> = TFieldGroup extends ReactFieldGroup<any, infer TFieldComponents> ? TFieldComponents : never;
 ```

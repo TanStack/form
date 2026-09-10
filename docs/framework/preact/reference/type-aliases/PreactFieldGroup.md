@@ -3,6 +3,8 @@ id: PreactFieldGroup
 title: PreactFieldGroup
 ---
 
+# Type Alias: PreactFieldGroup\<TFields, TFieldComponents\>
+
 ```ts
 type PreactFieldGroup<TFields, TFieldComponents> = FieldGroupApi<FieldGroupFieldData<TFields>, TFieldComponents> & object;
 ```

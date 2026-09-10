@@ -3,6 +3,8 @@ id: ServerValidateResult
 title: ServerValidateResult
 ---
 
+# Type Alias: ServerValidateResult\<TFormData, TFormValidators\>
+
 ```ts
 type ServerValidateResult<TFormData, TFormValidators> = 
   | ServerValidateSuccess<TFormData, TFormValidators>

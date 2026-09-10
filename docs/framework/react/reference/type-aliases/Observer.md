@@ -3,6 +3,8 @@ id: Observer
 title: Observer
 ---
 
+# Type Alias: Observer\<T\>
+
 ```ts
 type Observer<T> = object;
 ```

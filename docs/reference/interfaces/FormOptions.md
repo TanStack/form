@@ -3,6 +3,8 @@ id: FormOptions
 title: FormOptions
 ---
 
+# Interface: FormOptions\<TFormData, TFormValidators, TSubmitReturn, TComponents\>
+
 Defined in: [FormApi/FormApi.public.ts:256](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L256)
 
 Configures initial values, validation, listeners, and submission.

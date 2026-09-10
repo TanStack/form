@@ -3,6 +3,8 @@ id: AnyAtom
 title: AnyAtom
 ---
 
+# Type Alias: AnyAtom
+
 ```ts
 type AnyAtom = BaseAtom<any>;
 ```

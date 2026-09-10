@@ -3,6 +3,8 @@ id: AnyVueFormComponentMap
 title: AnyVueFormComponentMap
 ---
 
+# Type Alias: AnyVueFormComponentMap
+
 ```ts
 type AnyVueFormComponentMap = VueFormComponentMap<Record<string, Component>, Record<string, Component>>;
 ```

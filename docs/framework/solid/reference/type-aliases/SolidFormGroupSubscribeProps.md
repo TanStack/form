@@ -3,6 +3,8 @@ id: SolidFormGroupSubscribeProps
 title: SolidFormGroupSubscribeProps
 ---
 
+# Type Alias: SolidFormGroupSubscribeProps\<TGroupValue, TGroupErrorTypes, TSelected\>
+
 ```ts
 type SolidFormGroupSubscribeProps<TGroupValue, TGroupErrorTypes, TSelected> = SolidSubscribeProps<FormGroupState<TGroupValue, TGroupErrorTypes>, TSelected>;
 ```

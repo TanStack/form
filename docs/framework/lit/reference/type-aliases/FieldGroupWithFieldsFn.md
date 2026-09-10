@@ -3,6 +3,8 @@ id: FieldGroupWithFieldsFn
 title: FieldGroupWithFieldsFn
 ---
 
+# Type Alias: FieldGroupWithFieldsFn\<TFieldGroup\>
+
 ```ts
 type FieldGroupWithFieldsFn<TFieldGroup> = <TProps, TFieldsPropName>(render, fieldsPropName) => <TFormData>(props) => unknown;
 ```

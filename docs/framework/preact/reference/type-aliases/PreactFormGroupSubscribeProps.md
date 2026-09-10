@@ -3,6 +3,8 @@ id: PreactFormGroupSubscribeProps
 title: PreactFormGroupSubscribeProps
 ---
 
+# Type Alias: PreactFormGroupSubscribeProps\<TGroupValue, TGroupErrorTypes, TSelected\>
+
 ```ts
 type PreactFormGroupSubscribeProps<TGroupValue, TGroupErrorTypes, TSelected> = PreactSubscribeProps<FormGroupState<TGroupValue, TGroupErrorTypes>, TSelected>;
 ```

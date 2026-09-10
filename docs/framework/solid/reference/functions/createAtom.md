@@ -3,6 +3,8 @@ id: createAtom
 title: createAtom
 ---
 
+# Function: createAtom()
+
 ## Call Signature
 
 ```ts

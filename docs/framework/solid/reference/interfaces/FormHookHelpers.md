@@ -3,6 +3,8 @@ id: FormHookHelpers
 title: FormHookHelpers
 ---
 
+# Interface: FormHookHelpers
+
 Defined in: [packages/solid-form/src/AppForm/getFormHookHelpers.public.ts:81](https://github.com/TanStack/form/blob/main/packages/solid-form/src/AppForm/getFormHookHelpers.public.ts#L81)
 
 ## Properties

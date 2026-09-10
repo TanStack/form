@@ -3,6 +3,8 @@ id: ClientValidationTrigger
 title: ClientValidationTrigger
 ---
 
+# Type Alias: ClientValidationTrigger
+
 ```ts
 type ClientValidationTrigger = ValidationTrigger;
 ```

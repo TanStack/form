@@ -3,6 +3,8 @@ id: ReadonlyStore
 title: ReadonlyStore
 ---
 
+# Class: ReadonlyStore\<T\>
+
 Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/store.d.ts:22
 
 ## Type Parameters

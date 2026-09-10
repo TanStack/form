@@ -3,6 +3,8 @@ id: ToFormSchemaOutputs
 title: ToFormSchemaOutputs
 ---
 
+# Type Alias: ToFormSchemaOutputs\<TFormValidators\>
+
 ```ts
 type ToFormSchemaOutputs<TFormValidators> = ToSchemaOutputs<TFormValidators, FormValidators<any>>;
 ```

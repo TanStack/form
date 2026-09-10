@@ -3,6 +3,8 @@ id: BuiltInType
 title: BuiltInType
 ---
 
+# Type Alias: BuiltInType
+
 ```ts
 type BuiltInType = Primitive | Date | RegExp | Function;
 ```

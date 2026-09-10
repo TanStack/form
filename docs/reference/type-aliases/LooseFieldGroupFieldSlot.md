@@ -3,6 +3,8 @@ id: LooseFieldGroupFieldSlot
 title: LooseFieldGroupFieldSlot
 ---
 
+# Type Alias: LooseFieldGroupFieldSlot\<TValue\>
+
 ```ts
 type LooseFieldGroupFieldSlot<TValue> = FieldGroupFieldSlot<TValue, "loose">;
 ```

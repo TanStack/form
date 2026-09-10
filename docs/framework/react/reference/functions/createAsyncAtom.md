@@ -3,6 +3,8 @@ id: createAsyncAtom
 title: createAsyncAtom
 ---
 
+# Function: createAsyncAtom()
+
 ```ts
 function createAsyncAtom<T>(getValue, options?): ReadonlyAtom<AsyncAtomState<T, unknown>>;
 ```

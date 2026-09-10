@@ -3,6 +3,8 @@ id: SolidFormApi
 title: SolidFormApi
 ---
 
+# Type Alias: SolidFormApi\<TFormData, TFormErrorTypes, TComponents\>
+
 ```ts
 type SolidFormApi<TFormData, TFormErrorTypes, TComponents> = unknown extends TComponents["formComponents"] ? ExtendedFormApi<TFormData, TFormErrorTypes, TComponents["fieldComponents"]> : ExtendedFormApi<TFormData, TFormErrorTypes, TComponents["fieldComponents"]> & TComponents["formComponents"];
 ```

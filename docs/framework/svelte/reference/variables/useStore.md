@@ -3,6 +3,8 @@ id: useStore
 title: useStore
 ---
 
+# ~~Variable: useStore~~
+
 ```ts
 const useStore: <TState, TSelected>(source, selector?, compare?) => object;
 ```

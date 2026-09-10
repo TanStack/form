@@ -3,6 +3,8 @@ id: FieldGroupFields
 title: FieldGroupFields
 ---
 
+# Type Alias: FieldGroupFields
+
 ```ts
 type FieldGroupFields = Record<string, AnyFieldGroupFieldSlot>;
 ```

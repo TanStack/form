@@ -3,6 +3,8 @@ id: FormHookHelpers
 title: FormHookHelpers
 ---
 
+# Interface: FormHookHelpers
+
 Defined in: [packages/preact-form/src/AppForm/getFormHookHelpers.public.ts:98](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/getFormHookHelpers.public.ts#L98)
 
 ## Properties

@@ -3,6 +3,8 @@ id: ReadonlyAtom
 title: ReadonlyAtom
 ---
 
+# Interface: ReadonlyAtom\<T\>
+
 Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/types.d.ts:49
 
 An atom that is read-only and cannot be set.

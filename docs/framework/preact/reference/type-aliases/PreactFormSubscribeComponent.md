@@ -3,6 +3,8 @@ id: PreactFormSubscribeComponent
 title: PreactFormSubscribeComponent
 ---
 
+# Type Alias: PreactFormSubscribeComponent\<TFormData, TFormErrorTypes\>
+
 ```ts
 type PreactFormSubscribeComponent<TFormData, TFormErrorTypes> = <TSelected>(props) => CrossVersionPreactNode;
 ```

@@ -3,6 +3,8 @@ id: FieldGroupSubscribeComponent
 title: FieldGroupSubscribeComponent
 ---
 
+# Type Alias: FieldGroupSubscribeComponent
+
 ```ts
 type FieldGroupSubscribeComponent = <TSelected>(options) => SvelteComponent & Component<any> & WithoutFunction<Component>;
 ```

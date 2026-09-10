@@ -3,6 +3,8 @@ id: PreactFormApi
 title: PreactFormApi
 ---
 
+# Type Alias: PreactFormApi\<TFormData, TFormErrorTypes, TComponents\>
+
 ```ts
 type PreactFormApi<TFormData, TFormErrorTypes, TComponents> = unknown extends TComponents["formComponents"] ? ExtendedFormApi<TFormData, TFormErrorTypes, TComponents["fieldComponents"]> : ExtendedFormApi<TFormData, TFormErrorTypes, TComponents["fieldComponents"]> & TComponents["formComponents"];
 ```

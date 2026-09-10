@@ -3,6 +3,8 @@ id: FormErrors
 title: FormErrors
 ---
 
+# Type Alias: FormErrors\<TFormErrorTypes\>
+
 ```ts
 type FormErrors<TFormErrorTypes> = ExtractFormError<TFormErrorTypes>[];
 ```

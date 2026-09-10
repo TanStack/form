@@ -3,6 +3,8 @@ id: FieldGroupHelper
 title: FieldGroupHelper
 ---
 
+# Interface: FieldGroupHelper
+
 Defined in: [FieldGroup/fieldGroupTypes.public.ts:259](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroup/fieldGroupTypes.public.ts#L259)
 
 Declares the virtual fields in a reusable field group and how their value

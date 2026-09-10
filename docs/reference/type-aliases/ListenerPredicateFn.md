@@ -3,6 +3,8 @@ id: ListenerPredicateFn
 title: ListenerPredicateFn
 ---
 
+# Type Alias: ListenerPredicateFn\<TFormData, TValue\>
+
 ```ts
 type ListenerPredicateFn<TFormData, TValue> = (context) => boolean;
 ```

@@ -3,6 +3,8 @@ id: AppFormComponent
 title: AppFormComponent
 ---
 
+# Type Alias: AppFormComponent
+
 ```ts
 type AppFormComponent = Component<{
   children: Snippet;

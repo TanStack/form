@@ -3,6 +3,8 @@ id: PreactFormSubscribeProps
 title: PreactFormSubscribeProps
 ---
 
+# Type Alias: PreactFormSubscribeProps\<TFormData, TFormErrorTypes, TSelected\>
+
 ```ts
 type PreactFormSubscribeProps<TFormData, TFormErrorTypes, TSelected> = PreactSubscribeProps<FormState<TFormData, TFormErrorTypes>, TSelected>;
 ```

@@ -3,6 +3,8 @@ id: ToFormErrorTypes
 title: ToFormErrorTypes
 ---
 
+# Type Alias: ToFormErrorTypes\<TFormValidators, TSubmitReturn\>
+
 ```ts
 type ToFormErrorTypes<TFormValidators, TSubmitReturn> = ToValidatorErrorTypes<TFormValidators, FormValidators<any>, TSubmitReturn>;
 ```

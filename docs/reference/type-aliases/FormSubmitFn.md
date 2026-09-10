@@ -3,6 +3,8 @@ id: FormSubmitFn
 title: FormSubmitFn
 ---
 
+# Type Alias: FormSubmitFn\<TFormData, TFormValidators, TSubmitReturn\>
+
 ```ts
 type FormSubmitFn<TFormData, TFormValidators, TSubmitReturn> = (context) => TSubmitReturn;
 ```

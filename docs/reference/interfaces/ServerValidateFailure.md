@@ -3,6 +3,8 @@ id: ServerValidateFailure
 title: ServerValidateFailure
 ---
 
+# Interface: ServerValidateFailure\<TFormData, TFormValidators\>
+
 Defined in: [ssr.public.ts:65](https://github.com/TanStack/form/blob/main/packages/form-core/src/ssr.public.ts#L65)
 
 ## Type Parameters

@@ -3,6 +3,8 @@ id: FieldGroupFieldBindings
 title: FieldGroupFieldBindings
 ---
 
+# Type Alias: FieldGroupFieldBindings\<TFields, TFormData\>
+
 ```ts
 type FieldGroupFieldBindings<TFields, TFormData> = { [TFieldName in keyof TFields]: FieldGroupFieldBindingForSlot<TFormData, TFields[TFieldName]> };
 ```

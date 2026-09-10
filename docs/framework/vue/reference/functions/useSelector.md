@@ -3,6 +3,8 @@ id: useSelector
 title: useSelector
 ---
 
+# Function: useSelector()
+
 ```ts
 function useSelector<TSource, TSelected>(
    source, 

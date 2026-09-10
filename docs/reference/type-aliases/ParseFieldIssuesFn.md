@@ -3,6 +3,8 @@ id: ParseFieldIssuesFn
 title: ParseFieldIssuesFn
 ---
 
+# Type Alias: ParseFieldIssuesFn
+
 ```ts
 type ParseFieldIssuesFn = (issues) => StandardSchemaV1Issue[];
 ```

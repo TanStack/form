@@ -3,6 +3,8 @@ id: DefaultReactFormComponentMap
 title: DefaultReactFormComponentMap
 ---
 
+# Type Alias: DefaultReactFormComponentMap
+
 ```ts
 type DefaultReactFormComponentMap = ReactFormComponentMap<Record<never, never>, Record<never, never>>;
 ```

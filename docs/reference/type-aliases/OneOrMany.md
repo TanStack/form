@@ -3,6 +3,8 @@ id: OneOrMany
 title: OneOrMany
 ---
 
+# Type Alias: OneOrMany\<TValue\>
+
 ```ts
 type OneOrMany<TValue> = TValue | TValue[];
 ```

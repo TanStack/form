@@ -3,6 +3,8 @@ id: OriginalFieldMeta
 title: OriginalFieldMeta
 ---
 
+# Interface: OriginalFieldMeta\<TFieldError\>
+
 Defined in: [FieldApi/FieldApi.public.ts:30](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L30)
 
 ## Type Parameters

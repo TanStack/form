@@ -3,6 +3,8 @@ id: AppFormHookResult
 title: AppFormHookResult
 ---
 
+# Interface: AppFormHookResult\<TComponents\>
+
 Defined in: [packages/solid-form/src/AppForm/createFormHookTypes.public.ts:112](https://github.com/TanStack/form/blob/main/packages/solid-form/src/AppForm/createFormHookTypes.public.ts#L112)
 
 ## Type Parameters

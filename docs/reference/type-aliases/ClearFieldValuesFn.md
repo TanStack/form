@@ -3,6 +3,8 @@ id: ClearFieldValuesFn
 title: ClearFieldValuesFn
 ---
 
+# Type Alias: ClearFieldValuesFn\<TFormData\>
+
 ```ts
 type ClearFieldValuesFn<TFormData> = <TFieldName>(arrayFieldName, options?) => void;
 ```

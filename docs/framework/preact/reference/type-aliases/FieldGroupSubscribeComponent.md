@@ -3,6 +3,8 @@ id: FieldGroupSubscribeComponent
 title: FieldGroupSubscribeComponent
 ---
 
+# Type Alias: FieldGroupSubscribeComponent
+
 ```ts
 type FieldGroupSubscribeComponent = <TSelected>(props) => CrossVersionPreactNode;
 ```

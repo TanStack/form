@@ -3,6 +3,8 @@ id: injectSelector
 title: injectSelector
 ---
 
+# Function: injectSelector()
+
 ```ts
 function injectSelector<TFormData, TFormErrorTypes, TSelected>(
    form, 

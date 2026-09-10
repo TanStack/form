@@ -3,6 +3,8 @@ id: initialServerFormState
 title: initialServerFormState
 ---
 
+# Variable: initialServerFormState
+
 ```ts
 const initialServerFormState: ServerFormState<any, any>;
 ```

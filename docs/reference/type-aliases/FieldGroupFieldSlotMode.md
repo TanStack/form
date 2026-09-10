@@ -3,6 +3,8 @@ id: FieldGroupFieldSlotMode
 title: FieldGroupFieldSlotMode
 ---
 
+# Type Alias: FieldGroupFieldSlotMode
+
 ```ts
 type FieldGroupFieldSlotMode = "strict" | "loose";
 ```

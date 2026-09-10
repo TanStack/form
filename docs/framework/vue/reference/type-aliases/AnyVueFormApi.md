@@ -3,6 +3,8 @@ id: AnyVueFormApi
 title: AnyVueFormApi
 ---
 
+# Type Alias: AnyVueFormApi
+
 ```ts
 type AnyVueFormApi = AnyFormApi & VueTanStackFormComponents<any, any, any>;
 ```

@@ -3,6 +3,8 @@ id: LitFormType
 title: LitFormType
 ---
 
+# Type Alias: LitFormType\<TOptions\>
+
 ```ts
 type LitFormType<TOptions> = TOptions extends FormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn, unknown> ? TanStackFormController<TFormData, TFormValidators, LitFormTypeSubmitReturn<TSubmitReturn>> : never;
 ```

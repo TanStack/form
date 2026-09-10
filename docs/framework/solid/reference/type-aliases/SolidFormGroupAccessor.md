@@ -3,6 +3,8 @@ id: SolidFormGroupAccessor
 title: SolidFormGroupAccessor
 ---
 
+# Type Alias: SolidFormGroupAccessor\<TFormData, TGroupName, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents\>
+
 ```ts
 type SolidFormGroupAccessor<TFormData, TGroupName, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents> = Accessor<SolidFormGroupApi<TFormData, TGroupName, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents>> & Pick<SolidFormGroupApi<TFormData, TGroupName, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents>, "Field" | "ArrayField" | "Subscribe">;
 ```

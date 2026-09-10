@@ -3,6 +3,8 @@ id: ReactFieldGroup
 title: ReactFieldGroup
 ---
 
+# Type Alias: ReactFieldGroup\<TFields, TFieldComponents\>
+
 ```ts
 type ReactFieldGroup<TFields, TFieldComponents> = FieldGroupApi<FieldGroupFieldData<TFields>, TFieldComponents> & object;
 ```

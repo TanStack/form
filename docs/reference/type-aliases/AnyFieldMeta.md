@@ -3,6 +3,8 @@ id: AnyFieldMeta
 title: AnyFieldMeta
 ---
 
+# Type Alias: AnyFieldMeta
+
 ```ts
 type AnyFieldMeta = FieldMeta<any>;
 ```

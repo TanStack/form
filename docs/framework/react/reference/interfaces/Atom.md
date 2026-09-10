@@ -3,6 +3,8 @@ id: Atom
 title: Atom
 ---
 
+# Interface: Atom\<T\>
+
 Defined in: node\_modules/.pnpm/@tanstack+store@0.11.0/node\_modules/@tanstack/store/dist/types.d.ts:29
 
 ## Extends

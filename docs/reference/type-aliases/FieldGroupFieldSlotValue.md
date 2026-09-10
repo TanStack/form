@@ -3,6 +3,8 @@ id: FieldGroupFieldSlotValue
 title: FieldGroupFieldSlotValue
 ---
 
+# Type Alias: FieldGroupFieldSlotValue\<TSlot\>
+
 ```ts
 type FieldGroupFieldSlotValue<TSlot> = TSlot extends FieldGroupFieldSlot<infer TValue> ? TValue : never;
 ```

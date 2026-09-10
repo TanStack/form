@@ -3,6 +3,8 @@ id: DeepKeys
 title: DeepKeys
 ---
 
+# Type Alias: DeepKeys\<T\>
+
 ```ts
 type DeepKeys<T> = unknown extends T ? string : DeepKeysAndValues<T>["key"];
 ```

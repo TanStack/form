@@ -3,6 +3,8 @@ id: AngularFieldApi
 title: AngularFieldApi
 ---
 
+# Type Alias: AngularFieldApi\<TFormData, TFieldName, TFieldValue, TFieldValidators, TFormValidators, TSubmitReturn\>
+
 ```ts
 type AngularFieldApi<TFormData, TFieldName, TFieldValue, TFieldValidators, TFormValidators, TSubmitReturn> = FieldApi<TFieldName, TFieldValue, ToFieldError<TFieldValidators, never, ToFormErrorTypes<TFormValidators, TSubmitReturn>>, TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>>;
 ```

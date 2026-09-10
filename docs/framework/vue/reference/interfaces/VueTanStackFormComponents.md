@@ -3,6 +3,8 @@ id: VueTanStackFormComponents
 title: VueTanStackFormComponents
 ---
 
+# Interface: VueTanStackFormComponents\<TFormData, TFormErrorTypes, TFieldComponents\>
+
 Defined in: [packages/vue-form/src/VueForm/Components.public.ts:435](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L435)
 
 ## Type Parameters

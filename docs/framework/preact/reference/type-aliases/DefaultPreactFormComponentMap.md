@@ -3,6 +3,8 @@ id: DefaultPreactFormComponentMap
 title: DefaultPreactFormComponentMap
 ---
 
+# Type Alias: DefaultPreactFormComponentMap
+
 ```ts
 type DefaultPreactFormComponentMap = PreactFormComponentMap<Record<never, never>, Record<never, never>>;
 ```

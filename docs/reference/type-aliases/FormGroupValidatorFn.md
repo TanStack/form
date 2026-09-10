@@ -3,6 +3,8 @@ id: FormGroupValidatorFn
 title: FormGroupValidatorFn
 ---
 
+# Type Alias: FormGroupValidatorFn\<TGroupValue\>
+
 ```ts
 type FormGroupValidatorFn<TGroupValue> = ValidatorFn<FormGroupValidatorContext<TGroupValue>, FormGroupValidateResult<TGroupValue>>;
 ```

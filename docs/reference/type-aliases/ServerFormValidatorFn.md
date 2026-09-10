@@ -3,6 +3,8 @@ id: ServerFormValidatorFn
 title: ServerFormValidatorFn
 ---
 
+# Type Alias: ServerFormValidatorFn\<TFormData\>
+
 ```ts
 type ServerFormValidatorFn<TFormData> = ValidatorFn<ServerFormValidatorContext<TFormData>, FormValidateResult<TFormData>>;
 ```

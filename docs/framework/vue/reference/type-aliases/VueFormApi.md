@@ -3,6 +3,8 @@ id: VueFormApi
 title: VueFormApi
 ---
 
+# Type Alias: VueFormApi\<TFormData, TFormErrorTypes, TComponents\>
+
 ```ts
 type VueFormApi<TFormData, TFormErrorTypes, TComponents> = unknown extends TComponents["formComponents"] ? ExtendedFormApi<TFormData, TFormErrorTypes, TComponents["fieldComponents"]> : ExtendedFormApi<TFormData, TFormErrorTypes, TComponents["fieldComponents"]> & TComponents["formComponents"];
 ```

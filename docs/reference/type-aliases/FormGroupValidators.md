@@ -3,6 +3,8 @@ id: FormGroupValidators
 title: FormGroupValidators
 ---
 
+# Type Alias: FormGroupValidators\<TGroupValue\>
+
 ```ts
 type FormGroupValidators<TGroupValue> = ReadonlyArray<FormGroupValidator<TGroupValue>>;
 ```

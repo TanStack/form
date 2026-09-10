@@ -3,6 +3,8 @@ id: SvelteFormGroupProps
 title: SvelteFormGroupProps
 ---
 
+# Interface: SvelteFormGroupProps\<TFormData, TGroupName, TGroupValue, TGroupValidators, TFormErrorTypes, TFieldComponents\>
+
 Defined in: [packages/svelte-form/src/Components.public.ts:297](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L297)
 
 ## Extends

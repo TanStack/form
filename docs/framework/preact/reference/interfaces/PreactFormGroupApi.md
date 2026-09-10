@@ -3,6 +3,8 @@ id: PreactFormGroupApi
 title: PreactFormGroupApi
 ---
 
+# Interface: PreactFormGroupApi\<TFormData, TGroupName, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents\>
+
 Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:279](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L279)
 
 ## Extends

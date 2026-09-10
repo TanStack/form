@@ -3,6 +3,8 @@ id: FieldGroupApi
 title: FieldGroupApi
 ---
 
+# Interface: FieldGroupApi\<TFieldData, TFieldComponents\>
+
 Defined in: [packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts:82](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts#L82)
 
 ## Extends

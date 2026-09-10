@@ -3,6 +3,8 @@ id: FormGroupSubmitContext
 title: FormGroupSubmitContext
 ---
 
+# Interface: FormGroupSubmitContext\<TFormData, TGroupName, TGroupValue, TSchemaOutputs, TGroupErrorTypes, TFormErrorTypes\>
+
 Defined in: [FormGroupApi/FormGroupApi.public.ts:26](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L26)
 
 Context passed to a form group's `onSubmit` after group validation succeeds.

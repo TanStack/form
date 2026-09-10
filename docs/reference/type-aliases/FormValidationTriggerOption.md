@@ -3,6 +3,8 @@ id: FormValidationTriggerOption
 title: FormValidationTriggerOption
 ---
 
+# Type Alias: FormValidationTriggerOption\<TFormData, TValue, TScope\>
+
 ```ts
 type FormValidationTriggerOption<TFormData, TValue, TScope> = 
   | ClientValidationTriggerOption<TFormData, TValue, TScope>

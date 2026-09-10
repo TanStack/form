@@ -3,6 +3,8 @@ id: SvelteFormGroupFieldComponent
 title: SvelteFormGroupFieldComponent
 ---
 
+# Type Alias: SvelteFormGroupFieldComponent\<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents\>
+
 ```ts
 type SvelteFormGroupFieldComponent<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents> = <TFieldName, TFieldValidators>(options) => SvelteComponent & Component<any> & WithoutFunction<Component>;
 ```

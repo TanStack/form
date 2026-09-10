@@ -3,6 +3,8 @@ id: FieldGroupFieldBindingForSlot
 title: FieldGroupFieldBindingForSlot
 ---
 
+# Type Alias: FieldGroupFieldBindingForSlot\<TFormData, TSlot\>
+
 ```ts
 type FieldGroupFieldBindingForSlot<TFormData, TSlot> = FieldGroupFieldNameForSlot<TFormData, TSlot>;
 ```

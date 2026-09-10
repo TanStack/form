@@ -3,6 +3,8 @@ id: ToFormGroupSchemaOutputs
 title: ToFormGroupSchemaOutputs
 ---
 
+# Type Alias: ToFormGroupSchemaOutputs\<TGroupValidators\>
+
 ```ts
 type ToFormGroupSchemaOutputs<TGroupValidators> = ToSchemaOutputs<TGroupValidators, FormGroupValidators<any>>;
 ```

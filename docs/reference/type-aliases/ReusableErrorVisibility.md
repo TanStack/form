@@ -3,6 +3,8 @@ id: ReusableErrorVisibility
 title: ReusableErrorVisibility
 ---
 
+# Type Alias: ReusableErrorVisibility
+
 ```ts
 type ReusableErrorVisibility = <TFormData, TFormErrorTypes>(context) => boolean;
 ```

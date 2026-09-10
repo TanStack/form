@@ -3,6 +3,8 @@ id: FieldGroupArrayFieldComponent
 title: FieldGroupArrayFieldComponent
 ---
 
+# Interface: FieldGroupArrayFieldComponent()\<TFieldData, TFieldComponents\>
+
 Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:41](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts#L41)
 
 ## Type Parameters

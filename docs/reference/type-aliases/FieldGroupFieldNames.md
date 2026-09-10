@@ -3,6 +3,8 @@ id: FieldGroupFieldNames
 title: FieldGroupFieldNames
 ---
 
+# Type Alias: FieldGroupFieldNames\<TFieldData, TFields\>
+
 ```ts
 type FieldGroupFieldNames<TFieldData, TFields> = { [TFieldName in keyof TFields]: FieldGroupFieldNameForSlot<TFieldData, TFields[TFieldName]> };
 ```

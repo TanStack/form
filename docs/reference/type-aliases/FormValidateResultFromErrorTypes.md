@@ -3,6 +3,8 @@ id: FormValidateResultFromErrorTypes
 title: FormValidateResultFromErrorTypes
 ---
 
+# Type Alias: FormValidateResultFromErrorTypes\<TFormData, TFormErrorTypes\>
+
 ```ts
 type FormValidateResultFromErrorTypes<TFormData, TFormErrorTypes> = 
   | ValidValidationResult

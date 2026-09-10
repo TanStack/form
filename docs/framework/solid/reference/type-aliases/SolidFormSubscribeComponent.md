@@ -3,6 +3,8 @@ id: SolidFormSubscribeComponent
 title: SolidFormSubscribeComponent
 ---
 
+# Type Alias: SolidFormSubscribeComponent\<TFormData, TFormErrorTypes\>
+
 ```ts
 type SolidFormSubscribeComponent<TFormData, TFormErrorTypes> = <TSelected>(props) => JSX.Element;
 ```
