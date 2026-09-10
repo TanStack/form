@@ -3,6 +3,8 @@ id: BroadcastFormSubmissionState
 title: BroadcastFormSubmissionState
 ---
 
+# Type Alias: BroadcastFormSubmissionState
+
 ```ts
 type BroadcastFormSubmissionState = 
   | {

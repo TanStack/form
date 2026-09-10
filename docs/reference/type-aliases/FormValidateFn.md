@@ -3,6 +3,8 @@ id: FormValidateFn
 title: FormValidateFn
 ---
 
+# Type Alias: FormValidateFn()\<TFormData\>
+
 ```ts
 type FormValidateFn<TFormData> = (props) => unknown;
 ```

@@ -3,6 +3,8 @@ id: BroadcastFormId
 title: BroadcastFormId
 ---
 
+# Type Alias: BroadcastFormId
+
 ```ts
 type BroadcastFormId = object;
 ```

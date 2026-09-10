@@ -3,6 +3,8 @@ id: ObjectDeepKeyAndValue
 title: ObjectDeepKeyAndValue
 ---
 
+# Interface: ObjectDeepKeyAndValue\<TParent, T, TKey\>
+
 Defined in: [packages/form-core/src/util-types.ts:114](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L114)
 
 ## Extends

@@ -3,6 +3,8 @@ id: FormGroupState
 title: FormGroupState
 ---
 
+# Interface: FormGroupState
+
 Defined in: [packages/form-core/src/FormGroupApi.ts:655](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L655)
 
 ## Extended by

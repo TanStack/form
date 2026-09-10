@@ -3,6 +3,8 @@ id: FormGroup
 title: FormGroup
 ---
 
+# Variable: FormGroup()
+
 ```ts
 const FormGroup: <TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TSubmitMeta, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta>(__namedParameters) => ReactNode | Promise<ReactNode>;
 ```

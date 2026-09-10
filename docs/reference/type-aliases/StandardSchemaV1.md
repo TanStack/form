@@ -3,6 +3,8 @@ id: StandardSchemaV1
 title: StandardSchemaV1
 ---
 
+# Type Alias: StandardSchemaV1\<Input, Output\>
+
 ```ts
 type StandardSchemaV1<Input, Output> = object;
 ```

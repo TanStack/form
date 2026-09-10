@@ -3,6 +3,8 @@ id: FormOptions
 title: FormOptions
 ---
 
+# Interface: FormOptions\<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta\>
+
 Defined in: [packages/form-core/src/FormApi.ts:450](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L450)
 
 An object representing the options for a form.

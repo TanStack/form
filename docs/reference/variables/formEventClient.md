@@ -3,6 +3,8 @@ id: formEventClient
 title: formEventClient
 ---
 
+# Variable: formEventClient
+
 ```ts
 const formEventClient: FormEventClient;
 ```

@@ -3,6 +3,8 @@ id: throttleFormState
 title: throttleFormState
 ---
 
+# Variable: throttleFormState()
+
 ```ts
 const throttleFormState: (...args) => void;
 ```

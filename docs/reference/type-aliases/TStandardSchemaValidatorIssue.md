@@ -3,6 +3,8 @@ id: TStandardSchemaValidatorIssue
 title: TStandardSchemaValidatorIssue
 ---
 
+# Type Alias: TStandardSchemaValidatorIssue\<TSource\>
+
 ```ts
 type TStandardSchemaValidatorIssue<TSource> = TSource extends "form" ? object : TSource extends "field" ? StandardSchemaV1Issue[] : never;
 ```

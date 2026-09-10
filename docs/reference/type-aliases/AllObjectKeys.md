@@ -3,6 +3,8 @@ id: AllObjectKeys
 title: AllObjectKeys
 ---
 
+# Type Alias: AllObjectKeys\<T\>
+
 ```ts
 type AllObjectKeys<T> = T extends any ? keyof T & string | number : never;
 ```

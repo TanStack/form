@@ -3,6 +3,8 @@ id: AllTupleKeys
 title: AllTupleKeys
 ---
 
+# Type Alias: AllTupleKeys\<T\>
+
 ```ts
 type AllTupleKeys<T> = T extends any ? keyof T & `${number}` : never;
 ```

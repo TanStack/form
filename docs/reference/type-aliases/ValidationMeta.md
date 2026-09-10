@@ -3,6 +3,8 @@ id: ValidationMeta
 title: ValidationMeta
 ---
 
+# Type Alias: ValidationMeta
+
 ```ts
 type ValidationMeta = object;
 ```

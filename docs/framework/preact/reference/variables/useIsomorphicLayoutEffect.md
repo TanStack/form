@@ -3,6 +3,8 @@ id: useIsomorphicLayoutEffect
 title: useIsomorphicLayoutEffect
 ---
 
+# Variable: useIsomorphicLayoutEffect()
+
 ```ts
 const useIsomorphicLayoutEffect: (effect, inputs?) => void;
 ```

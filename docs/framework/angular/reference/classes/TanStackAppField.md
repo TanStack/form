@@ -3,6 +3,8 @@ id: TanStackAppField
 title: TanStackAppField
 ---
 
+# Class: TanStackAppField\<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta\>
+
 Defined in: [angular-form/src/app-field.ts:20](https://github.com/TanStack/form/blob/main/packages/angular-form/src/app-field.ts#L20)
 
 ## Extends

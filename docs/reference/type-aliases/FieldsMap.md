@@ -3,6 +3,8 @@ id: FieldsMap
 title: FieldsMap
 ---
 
+# Type Alias: FieldsMap\<TFormData, TFieldGroupData\>
+
 ```ts
 type FieldsMap<TFormData, TFieldGroupData> = TFieldGroupData extends any[] ? never : string extends keyof TFieldGroupData ? never : { [K in keyof TFieldGroupData]: DeepKeysOfType<TFormData, TFieldGroupData[K]> };
 ```

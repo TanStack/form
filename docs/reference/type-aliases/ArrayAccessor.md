@@ -3,6 +3,8 @@ id: ArrayAccessor
 title: ArrayAccessor
 ---
 
+# Type Alias: ArrayAccessor\<TParent\>
+
 ```ts
 type ArrayAccessor<TParent> = `${TParent["key"] extends never ? "" : TParent["key"]}[${number}]`;
 ```

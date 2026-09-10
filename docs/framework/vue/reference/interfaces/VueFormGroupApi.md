@@ -3,6 +3,8 @@ id: VueFormGroupApi
 title: VueFormGroupApi
 ---
 
+# Interface: VueFormGroupApi\<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta\>
+
 Defined in: [packages/vue-form/src/useFormGroup.tsx:191](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useFormGroup.tsx#L191)
 
 ## Type Parameters

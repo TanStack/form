@@ -3,6 +3,8 @@ id: uuid
 title: uuid
 ---
 
+# Function: uuid()
+
 ```ts
 function uuid(): string;
 ```

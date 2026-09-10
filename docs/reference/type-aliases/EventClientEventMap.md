@@ -3,6 +3,8 @@ id: EventClientEventMap
 title: EventClientEventMap
 ---
 
+# Type Alias: EventClientEventMap
+
 ```ts
 type EventClientEventMap = keyof EventMap;
 ```

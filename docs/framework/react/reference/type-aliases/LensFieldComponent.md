@@ -3,6 +3,8 @@ id: LensFieldComponent
 title: LensFieldComponent
 ---
 
+# Type Alias: LensFieldComponent()\<TLensData, TParentSubmitMeta, ExtendedApi\>
+
 ```ts
 type LensFieldComponent<TLensData, TParentSubmitMeta, ExtendedApi> = <TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync>({
   children,

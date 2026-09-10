@@ -3,6 +3,8 @@ id: DeepRecord
 title: DeepRecord
 ---
 
+# Type Alias: DeepRecord\<T\>
+
 ```ts
 type DeepRecord<T> = { [TRecord in DeepKeysAndValues<T> as TRecord["key"]]: TRecord["value"] };
 ```

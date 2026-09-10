@@ -3,6 +3,8 @@ id: ServerFormState
 title: ServerFormState
 ---
 
+# Type Alias: ServerFormState\<TFormData, TOnServer\>
+
 ```ts
 type ServerFormState<TFormData, TOnServer> = Pick<FormState<TFormData, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, TOnServer>, "values" | "errors" | "errorMap">;
 ```

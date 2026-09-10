@@ -3,6 +3,8 @@ id: DeepKeyAndValueTuple
 title: DeepKeyAndValueTuple
 ---
 
+# Type Alias: DeepKeyAndValueTuple\<TParent, T, TAcc, TAllKeys\>
+
 ```ts
 type DeepKeyAndValueTuple<TParent, T, TAcc, TAllKeys> = TAllKeys extends any ? DeepKeysAndValuesImpl<NonNullable<T[TAllKeys]>, TupleDeepKeyAndValue<TParent, T, TAllKeys>, 
   | TAcc

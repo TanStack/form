@@ -3,6 +3,8 @@ id: VueFieldApi
 title: VueFieldApi
 ---
 
+# Interface: VueFieldApi\<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta\>
+
 Defined in: [packages/vue-form/src/useField.tsx:159](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L159)
 
 ## Type Parameters

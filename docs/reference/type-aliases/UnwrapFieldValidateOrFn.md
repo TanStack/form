@@ -3,6 +3,8 @@ id: UnwrapFieldValidateOrFn
 title: UnwrapFieldValidateOrFn
 ---
 
+# Type Alias: UnwrapFieldValidateOrFn\<TName, TValidateOrFn, TFormValidateOrFn\>
+
 ```ts
 type UnwrapFieldValidateOrFn<TName, TValidateOrFn, TFormValidateOrFn> = 
   | [TFormValidateOrFn] extends [StandardSchemaV1<any, infer TStandardOut>] ? TName extends keyof TStandardOut ? StandardSchemaV1Issue[] : undefined : undefined

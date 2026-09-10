@@ -3,6 +3,8 @@ id: deepCopy
 title: deepCopy
 ---
 
+# Function: deepCopy()
+
 ```ts
 function deepCopy<T>(obj): T;
 ```

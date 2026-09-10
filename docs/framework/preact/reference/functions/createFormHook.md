@@ -3,6 +3,8 @@ id: createFormHook
 title: createFormHook
 ---
 
+# Function: createFormHook()
+
 ```ts
 function createFormHook<TComponents, TFormComponents>(__namedParameters): object;
 ```

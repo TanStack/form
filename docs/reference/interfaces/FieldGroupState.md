@@ -3,6 +3,8 @@ id: FieldGroupState
 title: FieldGroupState
 ---
 
+# Interface: FieldGroupState\<TFieldGroupData\>
+
 Defined in: [packages/form-core/src/FieldGroupApi.ts:41](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L41)
 
 ## Type Parameters

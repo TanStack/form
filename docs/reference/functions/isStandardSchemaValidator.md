@@ -3,6 +3,8 @@ id: isStandardSchemaValidator
 title: isStandardSchemaValidator
 ---
 
+# Function: isStandardSchemaValidator()
+
 ```ts
 function isStandardSchemaValidator(validator): validator is StandardSchemaV1<unknown, unknown>;
 ```

@@ -3,6 +3,8 @@ id: DeepKeysOfType
 title: DeepKeysOfType
 ---
 
+# Type Alias: DeepKeysOfType\<TData, TValue\>
+
 ```ts
 type DeepKeysOfType<TData, TValue> = Extract<DeepKeysAndValues<TData>, AnyDeepKeyAndValue<string, TValue>>["key"];
 ```

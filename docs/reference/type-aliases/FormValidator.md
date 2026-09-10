@@ -3,6 +3,8 @@ id: FormValidator
 title: FormValidator
 ---
 
+# Type Alias: FormValidator\<TFormData, TType, TFn\>
+
 ```ts
 type FormValidator<TFormData, TType, TFn> = object;
 ```

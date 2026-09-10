@@ -3,6 +3,8 @@ id: TanStackWithForm
 title: TanStackWithForm
 ---
 
+# Class: TanStackWithForm\<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta\>
+
 Defined in: [angular-form/src/with-form.ts:14](https://github.com/TanStack/form/blob/main/packages/angular-form/src/with-form.ts#L14)
 
 ## Type Parameters

@@ -3,6 +3,8 @@ id: FormState
 title: FormState
 ---
 
+# Interface: FormState\<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer\>
+
 Defined in: [packages/form-core/src/FormApi.ts:793](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L793)
 
 An object representing the current state of the form.

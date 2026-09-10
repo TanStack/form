@@ -3,6 +3,8 @@ id: DeepKeyAndValueObject
 title: DeepKeyAndValueObject
 ---
 
+# Type Alias: DeepKeyAndValueObject\<TParent, T, TAcc, TAllKeys\>
+
 ```ts
 type DeepKeyAndValueObject<TParent, T, TAcc, TAllKeys> = TAllKeys extends any ? DeepKeysAndValuesImpl<NonNullable<T[TAllKeys]>, ObjectDeepKeyAndValue<TParent, T, TAllKeys>, 
   | TAcc

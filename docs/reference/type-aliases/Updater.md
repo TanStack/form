@@ -3,6 +3,8 @@ id: Updater
 title: Updater
 ---
 
+# Type Alias: Updater\<TInput, TOutput\>
+
 ```ts
 type Updater<TInput, TOutput> = TOutput | UpdaterFn<TInput, TOutput>;
 ```

@@ -3,6 +3,8 @@ id: DeepKeysAndValuesImpl
 title: DeepKeysAndValuesImpl
 ---
 
+# Type Alias: DeepKeysAndValuesImpl\<T, TParent, TAcc\>
+
 ```ts
 type DeepKeysAndValuesImpl<T, TParent, TAcc> = unknown extends T ? 
   | TAcc

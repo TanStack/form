@@ -3,6 +3,8 @@ id: FormGroupValidators
 title: FormGroupValidators
 ---
 
+# Interface: FormGroupValidators\<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync\>
+
 Defined in: [packages/form-core/src/FormGroupApi.ts:199](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L199)
 
 ## Type Parameters

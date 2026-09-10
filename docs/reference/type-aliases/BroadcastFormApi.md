@@ -3,6 +3,8 @@ id: BroadcastFormApi
 title: BroadcastFormApi
 ---
 
+# Type Alias: BroadcastFormApi
+
 ```ts
 type BroadcastFormApi = object;
 ```
