@@ -3,8 +3,6 @@ id: ArrayFieldValue
 title: ArrayFieldValue
 ---
 
-# Type Alias: ArrayFieldValue\<TFormData, TFieldName\>
-
 ```ts
 type ArrayFieldValue<TFormData, TFieldName> = DeepValue<TFormData, TFieldName>;
 ```

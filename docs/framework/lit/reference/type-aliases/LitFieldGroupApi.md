@@ -3,8 +3,6 @@ id: LitFieldGroupApi
 title: LitFieldGroupApi
 ---
 
-# Type Alias: LitFieldGroupApi\<TFieldData\>
-
 ```ts
 type LitFieldGroupApi<TFieldData> = LitFieldMethods<TFieldData, ValidationIssue, unknown, FormErrorTypes> & LitSubscribeMethod<TFieldData> & FormApiFieldMethods<TFieldData> & FormApiArrayMethods<TFieldData> & object;
 ```

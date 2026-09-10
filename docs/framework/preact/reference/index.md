@@ -3,8 +3,6 @@ id: "@tanstack/preact-form"
 title: "@tanstack/preact-form"
 ---
 
-# @tanstack/preact-form
-
 ## Classes
 
 - [ReadonlyStore](classes/ReadonlyStore.md)

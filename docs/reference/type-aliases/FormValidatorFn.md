@@ -3,8 +3,6 @@ id: FormValidatorFn
 title: FormValidatorFn
 ---
 
-# Type Alias: FormValidatorFn\<TFormData\>
-
 ```ts
 type FormValidatorFn<TFormData> = ValidatorFn<FormValidatorContext<TFormData>, FormValidateResult<TFormData>>;
 ```

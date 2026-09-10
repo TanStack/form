@@ -3,8 +3,6 @@ id: ReactComponentTree
 title: ReactComponentTree
 ---
 
-# Type Alias: ReactComponentTree
-
 ```ts
 type ReactComponentTree = object;
 ```

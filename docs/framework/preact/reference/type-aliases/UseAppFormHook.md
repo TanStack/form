@@ -3,8 +3,6 @@ id: UseAppFormHook
 title: UseAppFormHook
 ---
 
-# Type Alias: UseAppFormHook\<TComponents\>
-
 ```ts
 type UseAppFormHook<TComponents> = <TFormData, TFormValidators, TSubmitReturn>(options) => PreactAppFormApi<TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>, TComponents>;
 ```

@@ -3,8 +3,6 @@ id: AnyFormListener
 title: AnyFormListener
 ---
 
-# Type Alias: AnyFormListener
-
 ```ts
 type AnyFormListener = FormListener<any, any>;
 ```

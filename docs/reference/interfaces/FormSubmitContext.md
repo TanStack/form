@@ -3,8 +3,6 @@ id: FormSubmitContext
 title: FormSubmitContext
 ---
 
-# Interface: FormSubmitContext\<TFormData, TSchemaOutputs, TFormErrorTypes\>
-
 Defined in: [FormApi/FormApi.public.ts:101](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L101)
 
 Context passed to `onSubmit` after submission validation succeeds.

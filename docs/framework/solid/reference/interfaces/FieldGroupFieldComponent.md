@@ -3,8 +3,6 @@ id: FieldGroupFieldComponent
 title: FieldGroupFieldComponent
 ---
 
-# Interface: FieldGroupFieldComponent()\<TFieldData, TFieldComponents\>
-
 Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:19](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts#L19)
 
 ## Type Parameters

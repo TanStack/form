@@ -3,8 +3,6 @@ id: AppFormComponent
 title: AppFormComponent
 ---
 
-# Type Alias: AppFormComponent
-
 ```ts
 type AppFormComponent = FunctionComponent<{
   children: Exclude<CrossVersionPreactNode, Promise<any>>;

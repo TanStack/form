@@ -3,8 +3,6 @@ id: FieldGroupFieldSlotModeOf
 title: FieldGroupFieldSlotModeOf
 ---
 
-# Type Alias: FieldGroupFieldSlotModeOf\<TSlot\>
-
 ```ts
 type FieldGroupFieldSlotModeOf<TSlot> = TSlot extends FieldGroupFieldSlot<any, infer TMode> ? TMode : never;
 ```

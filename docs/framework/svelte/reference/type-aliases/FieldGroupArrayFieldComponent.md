@@ -3,8 +3,6 @@ id: FieldGroupArrayFieldComponent
 title: FieldGroupArrayFieldComponent
 ---
 
-# Type Alias: FieldGroupArrayFieldComponent\<TFieldData, TFieldComponents\>
-
 ```ts
 type FieldGroupArrayFieldComponent<TFieldData, TFieldComponents> = <TFieldName>(options) => SvelteComponent & Component<any> & WithoutFunction<Component>;
 ```

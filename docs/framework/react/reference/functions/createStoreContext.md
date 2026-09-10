@@ -3,8 +3,6 @@ id: createStoreContext
 title: createStoreContext
 ---
 
-# Function: createStoreContext()
-
 ```ts
 function createStoreContext<TValue>(): object;
 ```

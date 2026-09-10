@@ -3,8 +3,6 @@ id: AngularFormType
 title: AngularFormType
 ---
 
-# Type Alias: AngularFormType\<TOptions\>
-
 ```ts
 type AngularFormType<TOptions> = TOptions extends FormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn, unknown> ? InternalFormApi<TFormData, TFormValidators, AngularFormTypeSubmitReturn<TSubmitReturn>> : never;
 ```

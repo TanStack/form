@@ -3,8 +3,6 @@ id: SubscribeProps
 title: SubscribeProps
 ---
 
-# Interface: SubscribeProps\<TSourceData, TSelected\>
-
 Defined in: [packages/solid-form/src/Subscribe.public.ts:14](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Subscribe.public.ts#L14)
 
 ## Type Parameters

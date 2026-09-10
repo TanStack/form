@@ -3,8 +3,6 @@ id: SvelteFormArrayFieldComponent
 title: SvelteFormArrayFieldComponent
 ---
 
-# Type Alias: SvelteFormArrayFieldComponent\<TFormData, TFormErrorTypes, TFieldComponents\>
-
 ```ts
 type SvelteFormArrayFieldComponent<TFormData, TFormErrorTypes, TFieldComponents> = <TFieldName, TFieldValidators>(options) => SvelteComponent & Component<any> & WithoutFunction<Component>;
 ```

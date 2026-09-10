@@ -3,8 +3,6 @@ id: ArrayFieldElement
 title: ArrayFieldElement
 ---
 
-# Type Alias: ArrayFieldElement\<TFormData, TFieldName\>
-
 ```ts
 type ArrayFieldElement<TFormData, TFieldName> = TryGetArrayElementType<ArrayFieldValue<TFormData, TFieldName>>;
 ```

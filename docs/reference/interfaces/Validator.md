@@ -3,8 +3,6 @@ id: Validator
 title: Validator
 ---
 
-# Interface: Validator\<TFormData, TValidator, TContextValue, TTrigger, TScope\>
-
 Defined in: [validation.public.ts:24](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L24)
 
 ## Extends

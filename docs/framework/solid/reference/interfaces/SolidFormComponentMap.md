@@ -3,8 +3,6 @@ id: SolidFormComponentMap
 title: SolidFormComponentMap
 ---
 
-# Interface: SolidFormComponentMap\<TFormComponents, TFieldComponents\>
-
 Defined in: [packages/solid-form/src/AppForm/componentMap.public.ts:3](https://github.com/TanStack/form/blob/main/packages/solid-form/src/AppForm/componentMap.public.ts#L3)
 
 ## Extended by

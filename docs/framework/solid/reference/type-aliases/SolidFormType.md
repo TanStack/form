@@ -3,8 +3,6 @@ id: SolidFormType
 title: SolidFormType
 ---
 
-# Type Alias: SolidFormType\<TOptions\>
-
 ```ts
 type SolidFormType<TOptions> = TOptions extends FormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn, infer TComponents> ? SolidFormApi<TFormData, SolidFormTypeErrorTypes<TFormValidators, TSubmitReturn>, TComponents extends AnySolidFormComponentMap ? TComponents : DefaultSolidFormComponentMap> : never;
 ```

@@ -3,8 +3,6 @@ id: BaseAtom
 title: BaseAtom
 ---
 
-# Interface: BaseAtom\<T\>
-
 Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/types.d.ts:22
 
 ## Extends

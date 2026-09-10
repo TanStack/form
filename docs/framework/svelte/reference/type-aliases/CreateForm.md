@@ -3,8 +3,6 @@ id: CreateForm
 title: CreateForm
 ---
 
-# Type Alias: CreateForm
-
 ```ts
 type CreateForm = <TFormData, TFormValidators, TSubmitReturn>(options) => SvelteFormApi<TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>, DefaultSvelteFormComponentMap>;
 ```

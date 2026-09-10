@@ -3,8 +3,6 @@ id: FormValidator
 title: FormValidator
 ---
 
-# Interface: FormValidator\<TFormData\>
-
 Defined in: [validation.public.ts:458](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L458)
 
 ## Extends

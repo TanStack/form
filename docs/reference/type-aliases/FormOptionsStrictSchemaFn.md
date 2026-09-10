@@ -3,8 +3,6 @@ id: FormOptionsStrictSchemaFn
 title: FormOptionsStrictSchemaFn
 ---
 
-# Type Alias: FormOptionsStrictSchemaFn\<TComponents\>
-
 ```ts
 type FormOptionsStrictSchemaFn<TComponents> = <TSchema, TFormValidators, TSubmitReturn>(schema, options) => FormOptions<StandardSchemaInput<TSchema>, TFormValidators, TSubmitReturn, TComponents>;
 ```

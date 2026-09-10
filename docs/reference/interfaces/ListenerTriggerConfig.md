@@ -3,8 +3,6 @@ id: ListenerTriggerConfig
 title: ListenerTriggerConfig
 ---
 
-# Interface: ListenerTriggerConfig\<TTriggers, TFormData, TValue\>
-
 Defined in: [listeners.public.ts:80](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L80)
 
 Configures a listener trigger with an optional condition.

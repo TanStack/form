@@ -3,8 +3,6 @@ id: FieldGroupDefinition
 title: FieldGroupDefinition
 ---
 
-# Interface: FieldGroupDefinition\<TFields, TComponents\>
-
 Defined in: [packages/svelte-form/src/FieldGroup/withFields.public.ts:82](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/withFields.public.ts#L82)
 
 ## Type Parameters

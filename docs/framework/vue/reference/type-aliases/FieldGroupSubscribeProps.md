@@ -3,8 +3,6 @@ id: FieldGroupSubscribeProps
 title: FieldGroupSubscribeProps
 ---
 
-# Type Alias: FieldGroupSubscribeProps\<TSelected\>
-
 ```ts
 type FieldGroupSubscribeProps<TSelected> = VueFormSubscribeProps<unknown, FormErrorTypes, TSelected>;
 ```

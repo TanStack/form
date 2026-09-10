@@ -3,8 +3,6 @@ id: FormValidators
 title: FormValidators
 ---
 
-# Type Alias: FormValidators\<TFormData\>
-
 ```ts
 type FormValidators<TFormData> = ReadonlyArray<FormValidator<TFormData>>;
 ```

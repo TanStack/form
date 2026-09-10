@@ -3,8 +3,6 @@ id: SvelteFormGroupApi
 title: SvelteFormGroupApi
 ---
 
-# Interface: SvelteFormGroupApi\<TFormData, TGroupName, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents\>
-
 Defined in: [packages/svelte-form/src/Components.public.ts:266](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L266)
 
 ## Extends

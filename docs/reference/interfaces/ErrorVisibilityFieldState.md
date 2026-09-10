@@ -3,8 +3,6 @@ id: ErrorVisibilityFieldState
 title: ErrorVisibilityFieldState
 ---
 
-# Interface: ErrorVisibilityFieldState
-
 Defined in: [validation.public.ts:207](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L207)
 
 ## Properties

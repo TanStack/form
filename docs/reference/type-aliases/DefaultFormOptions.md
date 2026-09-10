@@ -3,8 +3,6 @@ id: DefaultFormOptions
 title: DefaultFormOptions
 ---
 
-# Type Alias: DefaultFormOptions
-
 ```ts
 type DefaultFormOptions = Pick<FormOptions<unknown, FormValidators<unknown>, unknown, unknown>, "errorVisibility" | "listeners" | "onSubmitInvalid"> & DefaultListenersMergeOptions;
 ```

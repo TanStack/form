@@ -3,8 +3,6 @@ id: ErrorVisibilityContext
 title: ErrorVisibilityContext
 ---
 
-# Interface: ErrorVisibilityContext\<TFormData, TFormErrorTypes\>
-
 Defined in: [validation.public.ts:212](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L212)
 
 ## Type Parameters

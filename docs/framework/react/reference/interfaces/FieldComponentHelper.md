@@ -3,8 +3,6 @@ id: FieldComponentHelper
 title: FieldComponentHelper
 ---
 
-# Interface: FieldComponentHelper
-
 Defined in: [packages/react-form/src/AppForm/getFormHookHelpers.public.ts:68](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/getFormHookHelpers.public.ts#L68)
 
 Wraps components that accept a field API prop so App Form can supply that

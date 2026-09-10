@@ -3,8 +3,6 @@ id: ServerFormStandardSchemaValidatorOutputs
 title: ServerFormStandardSchemaValidatorOutputs
 ---
 
-# Type Alias: ServerFormStandardSchemaValidatorOutputs\<TFormValidators\>
-
 ```ts
 type ServerFormStandardSchemaValidatorOutputs<TFormValidators> = unknown extends TFormValidators ? unknown[] : FormValidators<any> extends TFormValidators ? unknown[] : MappedServerSchemaOutputs<TFormValidators>;
 ```

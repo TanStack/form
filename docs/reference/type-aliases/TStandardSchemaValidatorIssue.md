@@ -3,8 +3,6 @@ id: TStandardSchemaValidatorIssue
 title: TStandardSchemaValidatorIssue
 ---
 
-# Type Alias: TStandardSchemaValidatorIssue
-
 ```ts
 type TStandardSchemaValidatorIssue = StandardSchemaV1Issue[];
 ```

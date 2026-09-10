@@ -3,8 +3,6 @@ id: VueFieldGroup
 title: VueFieldGroup
 ---
 
-# Type Alias: VueFieldGroup\<TFields, TFieldComponents\>
-
 ```ts
 type VueFieldGroup<TFields, TFieldComponents> = FieldGroupApi<FieldGroupFieldData<TFields>, TFieldComponents> & object;
 ```

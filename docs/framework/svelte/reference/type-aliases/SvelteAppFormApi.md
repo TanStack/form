@@ -3,8 +3,6 @@ id: SvelteAppFormApi
 title: SvelteAppFormApi
 ---
 
-# Type Alias: SvelteAppFormApi\<TFormData, TFormErrorTypes, TComponents\>
-
 ```ts
 type SvelteAppFormApi<TFormData, TFormErrorTypes, TComponents> = SvelteFormApi<TFormData, TFormErrorTypes, TComponents> & object;
 ```

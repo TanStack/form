@@ -3,8 +3,6 @@ id: ClientValidationTriggerOption
 title: ClientValidationTriggerOption
 ---
 
-# Type Alias: ClientValidationTriggerOption\<TFormData, TValue, TScope\>
-
 ```ts
 type ClientValidationTriggerOption<TFormData, TValue, TScope> = ValidationTriggerOption<TFormData, TValue, ConfigurableValidationTrigger, TScope>;
 ```

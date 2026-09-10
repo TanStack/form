@@ -3,8 +3,6 @@ id: useAtom
 title: useAtom
 ---
 
-# Function: useAtom()
-
 ```ts
 function useAtom<TValue>(atom, options?): [{
   current: TValue;

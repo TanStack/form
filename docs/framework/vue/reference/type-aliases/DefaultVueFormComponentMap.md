@@ -3,8 +3,6 @@ id: DefaultVueFormComponentMap
 title: DefaultVueFormComponentMap
 ---
 
-# Type Alias: DefaultVueFormComponentMap
-
 ```ts
 type DefaultVueFormComponentMap = VueFormComponentMap<Record<never, never>, Record<never, never>>;
 ```

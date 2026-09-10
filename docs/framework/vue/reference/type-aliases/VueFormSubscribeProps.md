@@ -3,8 +3,6 @@ id: VueFormSubscribeProps
 title: VueFormSubscribeProps
 ---
 
-# Type Alias: VueFormSubscribeProps\<TFormData, TFormErrorTypes, TSelected\>
-
 ```ts
 type VueFormSubscribeProps<TFormData, TFormErrorTypes, TSelected> = VueSubscribeProps<FormState<TFormData, TFormErrorTypes>, TSelected>;
 ```

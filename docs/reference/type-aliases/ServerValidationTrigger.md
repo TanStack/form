@@ -3,8 +3,6 @@ id: ServerValidationTrigger
 title: ServerValidationTrigger
 ---
 
-# Type Alias: ServerValidationTrigger
-
 ```ts
 type ServerValidationTrigger = "server";
 ```

@@ -3,8 +3,6 @@ id: TanStackAppField
 title: TanStackAppField
 ---
 
-# Class: TanStackAppField\<TSource, TFieldName, TFieldValue, TFieldValidators\>
-
 Defined in: [app-field.ts:12](https://github.com/TanStack/form/blob/main/packages/angular-form/src/app-field.ts#L12)
 
 ## Extends

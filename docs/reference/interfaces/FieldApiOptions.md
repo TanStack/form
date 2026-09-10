@@ -3,8 +3,6 @@ id: FieldApiOptions
 title: FieldApiOptions
 ---
 
-# Interface: FieldApiOptions\<TFieldData, TFieldName, TFieldValue, TFieldValidators, TGroupFieldError, TFormData, TFormErrorTypes\>
-
 Defined in: [FieldApi/FieldApi.public.ts:206](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L206)
 
 ## Type Parameters

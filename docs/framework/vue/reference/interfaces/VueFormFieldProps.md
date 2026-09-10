@@ -3,8 +3,6 @@ id: VueFormFieldProps
 title: VueFormFieldProps
 ---
 
-# Interface: VueFormFieldProps\<TFieldData, TFieldName, TFieldValue, TFieldValidators, TGroupFieldError, TFormData, TFormErrorTypes, TFieldComponents\>
-
 Defined in: [packages/vue-form/src/VueForm/Components.public.ts:97](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L97)
 
 ## Extends

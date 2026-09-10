@@ -3,8 +3,6 @@ id: SvelteFormSubscribeProps
 title: SvelteFormSubscribeProps
 ---
 
-# Type Alias: SvelteFormSubscribeProps\<TFormData, TFormErrorTypes, TSelected\>
-
 ```ts
 type SvelteFormSubscribeProps<TFormData, TFormErrorTypes, TSelected> = SvelteSubscribeProps<FormState<TFormData, TFormErrorTypes>, TSelected>;
 ```

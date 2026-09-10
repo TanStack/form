@@ -3,8 +3,6 @@ id: ListenerPredicateContext
 title: ListenerPredicateContext
 ---
 
-# Interface: ListenerPredicateContext\<TFormData, TValue\>
-
 Defined in: [listeners.public.ts:40](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L40)
 
 Context used to conditionally enable or debounce a listener.

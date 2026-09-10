@@ -3,8 +3,6 @@ id: PreactTanStackFormComponents
 title: PreactTanStackFormComponents
 ---
 
-# Interface: PreactTanStackFormComponents\<TFormData, TFormErrorTypes, TFieldComponents\>
-
 Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:360](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L360)
 
 ## Type Parameters

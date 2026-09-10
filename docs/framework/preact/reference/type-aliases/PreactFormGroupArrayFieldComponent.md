@@ -3,8 +3,6 @@ id: PreactFormGroupArrayFieldComponent
 title: PreactFormGroupArrayFieldComponent
 ---
 
-# Type Alias: PreactFormGroupArrayFieldComponent\<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents\>
-
 ```ts
 type PreactFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents> = <TFieldName, TFieldValidators>(props) => ComponentChildren;
 ```

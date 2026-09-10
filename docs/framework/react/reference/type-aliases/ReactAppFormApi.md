@@ -3,8 +3,6 @@ id: ReactAppFormApi
 title: ReactAppFormApi
 ---
 
-# Type Alias: ReactAppFormApi\<TFormData, TFormErrorTypes, TComponents\>
-
 ```ts
 type ReactAppFormApi<TFormData, TFormErrorTypes, TComponents> = ReactFormApi<TFormData, TFormErrorTypes, TComponents> & object;
 ```

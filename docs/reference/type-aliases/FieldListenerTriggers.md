@@ -3,8 +3,6 @@ id: FieldListenerTriggers
 title: FieldListenerTriggers
 ---
 
-# Type Alias: FieldListenerTriggers
-
 ```ts
 type FieldListenerTriggers = FormListenerTriggers | "unmount";
 ```

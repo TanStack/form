@@ -3,8 +3,6 @@ id: getFormType
 title: getFormType
 ---
 
-# Function: getFormType()
-
 ```ts
 function getFormType<TOptions>(_formOptions): LitFormType<TOptions>;
 ```

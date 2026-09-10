@@ -3,8 +3,6 @@ id: DefaultFormGroupOptions
 title: DefaultFormGroupOptions
 ---
 
-# Type Alias: DefaultFormGroupOptions
-
 ```ts
 type DefaultFormGroupOptions = Pick<FormGroupOptions<unknown, string, unknown, FormGroupValidators<unknown>, FormErrorTypes>, "onSubmitInvalid">;
 ```

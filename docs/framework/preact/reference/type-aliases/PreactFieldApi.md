@@ -3,8 +3,6 @@ id: PreactFieldApi
 title: PreactFieldApi
 ---
 
-# Type Alias: PreactFieldApi\<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes, TFieldComponents\>
-
 ```ts
 type PreactFieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes, TFieldComponents> = FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes> & FieldComponentsMatchingType<TFieldComponents, TFieldValue>;
 ```

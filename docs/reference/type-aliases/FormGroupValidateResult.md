@@ -3,8 +3,6 @@ id: FormGroupValidateResult
 title: FormGroupValidateResult
 ---
 
-# Type Alias: FormGroupValidateResult\<TGroupValue\>
-
 ```ts
 type FormGroupValidateResult<TGroupValue> = 
   | ValidationResult

@@ -3,8 +3,6 @@ id: RemoveFieldValueFn
 title: RemoveFieldValueFn
 ---
 
-# Type Alias: RemoveFieldValueFn\<TFormData\>
-
 ```ts
 type RemoveFieldValueFn<TFormData> = <TFieldName>(arrayFieldName, index, options?) => void;
 ```

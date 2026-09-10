@@ -3,8 +3,6 @@ id: SolidAppFormApi
 title: SolidAppFormApi
 ---
 
-# Type Alias: SolidAppFormApi\<TFormData, TFormErrorTypes, TComponents\>
-
 ```ts
 type SolidAppFormApi<TFormData, TFormErrorTypes, TComponents> = SolidFormApi<TFormData, TFormErrorTypes, TComponents> & object;
 ```

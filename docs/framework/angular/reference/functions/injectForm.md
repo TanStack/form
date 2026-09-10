@@ -3,8 +3,6 @@ id: injectForm
 title: injectForm
 ---
 
-# Function: injectForm()
-
 ```ts
 function injectForm<TFormData, TFormValidators, TSubmitReturn>(options): InternalFormApi<TFormData, TFormValidators, TSubmitReturn>;
 ```

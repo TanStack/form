@@ -3,8 +3,6 @@ id: ConfigurableValidationTrigger
 title: ConfigurableValidationTrigger
 ---
 
-# Type Alias: ConfigurableValidationTrigger
-
 ```ts
 type ConfigurableValidationTrigger = Exclude<ValidationTrigger, "submit">;
 ```

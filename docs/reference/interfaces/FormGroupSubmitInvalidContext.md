@@ -3,8 +3,6 @@ id: FormGroupSubmitInvalidContext
 title: FormGroupSubmitInvalidContext
 ---
 
-# Interface: FormGroupSubmitInvalidContext\<TFormData, TGroupName, TGroupValue, TGroupErrorTypes, TFormErrorTypes\>
-
 Defined in: [FormGroupApi/FormGroupApi.public.ts:79](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L79)
 
 Context passed to a form group's `onSubmitInvalid` when submission fails.

@@ -3,8 +3,6 @@ id: VueFormGroupSubscribeProps
 title: VueFormGroupSubscribeProps
 ---
 
-# Type Alias: VueFormGroupSubscribeProps\<TGroupValue, TGroupErrorTypes, TSelected\>
-
 ```ts
 type VueFormGroupSubscribeProps<TGroupValue, TGroupErrorTypes, TSelected> = VueSubscribeProps<FormGroupState<TGroupValue, TGroupErrorTypes>, TSelected>;
 ```

@@ -3,8 +3,6 @@ id: FieldGroupDefinition
 title: FieldGroupDefinition
 ---
 
-# Interface: FieldGroupDefinition\<TFields, TFieldComponents\>
-
 Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:118](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L118)
 
 ## Type Parameters

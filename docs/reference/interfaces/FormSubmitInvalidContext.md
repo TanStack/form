@@ -3,8 +3,6 @@ id: FormSubmitInvalidContext
 title: FormSubmitInvalidContext
 ---
 
-# Interface: FormSubmitInvalidContext\<TFormData, TFormErrorTypes\>
-
 Defined in: [FormApi/FormApi.public.ts:214](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L214)
 
 Context passed to `onSubmitInvalid` when a submission fails.

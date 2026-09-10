@@ -3,8 +3,6 @@ id: ValidationErrorInput
 title: ValidationErrorInput
 ---
 
-# Type Alias: ValidationErrorInput
-
 ```ts
 type ValidationErrorInput = OneOrMany<ValidationErrorValue>;
 ```

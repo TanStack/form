@@ -3,8 +3,6 @@ id: Listener
 title: Listener
 ---
 
-# Interface: Listener\<TTriggers, TFormData, TValue\>
-
 Defined in: [listeners.public.ts:158](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L158)
 
 Configuration shared by form and field listeners.

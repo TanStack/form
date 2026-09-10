@@ -3,8 +3,6 @@ id: createValidator
 title: createValidator
 ---
 
-# Function: createValidator()
-
 ```ts
 function createValidator<TOptions>(options): <TValidator>(run) => CreatedValidator<TOptions, TValidator>;
 ```

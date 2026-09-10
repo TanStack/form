@@ -3,8 +3,6 @@ id: FormHookHelpers
 title: FormHookHelpers
 ---
 
-# Interface: FormHookHelpers
-
 Defined in: [packages/vue-form/src/AppForm/getFormHookHelpers.public.ts:93](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/getFormHookHelpers.public.ts#L93)
 
 ## Properties

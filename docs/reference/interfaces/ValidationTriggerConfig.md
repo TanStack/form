@@ -3,8 +3,6 @@ id: ValidationTriggerConfig
 title: ValidationTriggerConfig
 ---
 
-# Interface: ValidationTriggerConfig\<TFormData, TValue, TTrigger, TScope\>
-
 Defined in: [validation.public.ts:331](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L331)
 
 ## Type Parameters

@@ -3,8 +3,6 @@ id: FieldValidatorFn
 title: FieldValidatorFn
 ---
 
-# Type Alias: FieldValidatorFn\<TFormData, TFieldName, TFieldValue\>
-
 ```ts
 type FieldValidatorFn<TFormData, TFieldName, TFieldValue> = ValidatorFn<FieldValidatorContext<TFieldName, TFieldValue, TFormData>, FieldValidateResult>;
 ```

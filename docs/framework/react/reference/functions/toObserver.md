@@ -3,8 +3,6 @@ id: toObserver
 title: toObserver
 ---
 
-# Function: toObserver()
-
 ```ts
 function toObserver<T>(
    nextHandler?, 

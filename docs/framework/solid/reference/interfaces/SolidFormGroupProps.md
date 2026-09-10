@@ -3,8 +3,6 @@ id: SolidFormGroupProps
 title: SolidFormGroupProps
 ---
 
-# Interface: SolidFormGroupProps\<TFormData, TGroupName, TGroupValue, TGroupValidators, TFormErrorTypes, TFieldComponents\>
-
 Defined in: [packages/solid-form/src/Components.public.ts:328](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L328)
 
 ## Extends

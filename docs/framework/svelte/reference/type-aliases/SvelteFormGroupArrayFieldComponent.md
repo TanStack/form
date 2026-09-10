@@ -3,8 +3,6 @@ id: SvelteFormGroupArrayFieldComponent
 title: SvelteFormGroupArrayFieldComponent
 ---
 
-# Type Alias: SvelteFormGroupArrayFieldComponent\<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents\>
-
 ```ts
 type SvelteFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents> = <TFieldName, TFieldValidators>(options) => SvelteComponent & Component<any> & WithoutFunction<Component>;
 ```

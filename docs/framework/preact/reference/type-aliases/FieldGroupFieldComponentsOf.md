@@ -3,8 +3,6 @@ id: FieldGroupFieldComponentsOf
 title: FieldGroupFieldComponentsOf
 ---
 
-# Type Alias: FieldGroupFieldComponentsOf\<TFieldGroup\>
-
 ```ts
 type FieldGroupFieldComponentsOf<TFieldGroup> = TFieldGroup extends PreactFieldGroup<any, infer TFieldComponents> ? TFieldComponents : never;
 ```

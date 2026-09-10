@@ -3,8 +3,6 @@ id: BaseFieldMeta
 title: BaseFieldMeta
 ---
 
-# Interface: BaseFieldMeta
-
 Defined in: [FieldApi/FieldApi.public.ts:14](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L14)
 
 ## Extended by
