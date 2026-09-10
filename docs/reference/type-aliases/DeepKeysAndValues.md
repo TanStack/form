@@ -3,8 +3,6 @@ id: DeepKeysAndValues
 title: DeepKeysAndValues
 ---
 
-# Type Alias: DeepKeysAndValues\<T\>
-
 ```ts
 type DeepKeysAndValues<T> = DeepKeysAndValuesImpl<T> extends AnyDeepKeyAndValue ? DeepKeysAndValuesImpl<T> : never;
 ```

@@ -3,8 +3,6 @@ id: UnwrapFormAsyncValidateOrFn
 title: UnwrapFormAsyncValidateOrFn
 ---
 
-# Type Alias: UnwrapFormAsyncValidateOrFn\<TValidateOrFn\>
-
 ```ts
 type UnwrapFormAsyncValidateOrFn<TValidateOrFn> = [TValidateOrFn] extends [FormValidateAsyncFn<any>] ? ExtractGlobalFormError<Awaited<ReturnType<TValidateOrFn>>> : [TValidateOrFn] extends [StandardSchemaV1<any, any>] ? Record<string, StandardSchemaV1Issue[]> : undefined;
 ```

@@ -3,8 +3,6 @@ id: TupleDeepKeyAndValue
 title: TupleDeepKeyAndValue
 ---
 
-# Interface: TupleDeepKeyAndValue\<TParent, T, TKey\>
-
 Defined in: [packages/form-core/src/util-types.ts:73](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L73)
 
 ## Extends

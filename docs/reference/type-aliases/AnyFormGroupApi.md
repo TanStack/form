@@ -3,8 +3,6 @@ id: AnyFormGroupApi
 title: AnyFormGroupApi
 ---
 
-# Type Alias: AnyFormGroupApi
-
 ```ts
 type AnyFormGroupApi = FormGroupApi<any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any>;
 ```

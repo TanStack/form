@@ -3,8 +3,6 @@ id: revalidateLogic
 title: revalidateLogic
 ---
 
-# Function: revalidateLogic()
-
 ```ts
 function revalidateLogic(__namedParameters): ValidationLogicFn;
 ```

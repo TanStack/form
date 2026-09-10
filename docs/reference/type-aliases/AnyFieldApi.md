@@ -3,8 +3,6 @@ id: AnyFieldApi
 title: AnyFieldApi
 ---
 
-# Type Alias: AnyFieldApi
-
 ```ts
 type AnyFieldApi = FieldApi<any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any>;
 ```

@@ -3,8 +3,6 @@ id: AnyFieldGroupApi
 title: AnyFieldGroupApi
 ---
 
-# Type Alias: AnyFieldGroupApi
-
 ```ts
 type AnyFieldGroupApi = FieldGroupApi<any, any, any, any, any, any, any, any, any, any, any, any, any, any>;
 ```
