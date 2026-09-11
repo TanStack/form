@@ -706,6 +706,13 @@ export class FieldApi<
     formListeners: Record<ListenerCause, ReturnType<typeof setTimeout> | null>
   }
 
+  private validationTimeouts: Partial<
+    Record<
+      ValidationCause,
+      { id: ReturnType<typeof setTimeout>; generation: number }
+    >
+  > = {}
+
   /**
    * Initializes a new `FieldApi` instance.
    */
@@ -1507,33 +1514,45 @@ export class FieldApi<
           let rawError!: ValidationError | undefined
           try {
             rawError = await new Promise((rawResolve, rawReject) => {
-              if (field.timeoutIds.validations[validateObj.cause]) {
-                clearTimeout(field.timeoutIds.validations[validateObj.cause]!)
-                field.endValidation()
+              const previousTimeout =
+                field.timeoutIds.validations[validateObj.cause]
+              if (previousTimeout) {
+                clearTimeout(previousTimeout)
+                const previousValidation =
+                  field.validationTimeouts[validateObj.cause]
+                // Only a timer owned by the pre-reset run loses its decrement.
+                if (
+                  previousValidation?.id !== previousTimeout ||
+                  previousValidation.generation === validationGeneration
+                ) {
+                  field.endValidation()
+                }
               }
 
-              field.timeoutIds.validations[validateObj.cause] = setTimeout(
-                async () => {
-                  if (controller.signal.aborted) return rawResolve(undefined)
-                  try {
-                    rawResolve(
-                      await this.runValidator({
-                        validate: validateObj.validate,
-                        value: {
-                          value: field.store.state.value,
-                          fieldApi: field,
-                          signal: controller.signal,
-                          validationSource: 'field',
-                        },
-                        type: 'validateAsync',
-                      }),
-                    )
-                  } catch (e) {
-                    rawReject(e)
-                  }
-                },
-                validateObj.debounceMs,
-              )
+              const timeoutId = setTimeout(async () => {
+                if (controller.signal.aborted) return rawResolve(undefined)
+                try {
+                  rawResolve(
+                    await this.runValidator({
+                      validate: validateObj.validate,
+                      value: {
+                        value: field.store.state.value,
+                        fieldApi: field,
+                        signal: controller.signal,
+                        validationSource: 'field',
+                      },
+                      type: 'validateAsync',
+                    }),
+                  )
+                } catch (e) {
+                  rawReject(e)
+                }
+              }, validateObj.debounceMs)
+              field.timeoutIds.validations[validateObj.cause] = timeoutId
+              field.validationTimeouts[validateObj.cause] = {
+                id: timeoutId,
+                generation: validationGeneration,
+              }
             })
           } catch (e: unknown) {
             rawError = e as ValidationError
