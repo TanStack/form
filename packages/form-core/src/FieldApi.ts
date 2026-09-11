@@ -1468,6 +1468,7 @@ export class FieldApi<
     // Check if there are actual async validators to run before setting isValidating
     // This prevents unnecessary re-renders when there are no async validators
     // See: https://github.com/TanStack/form/issues/1130
+    const validationGeneration = this.form._validationGeneration
     const hasAsyncValidators = validates.some((v) => v.validate)
     const linkedFieldsWithAsyncValidators = Array.from(
       new Set(
@@ -1597,6 +1598,9 @@ export class FieldApi<
 
     // Only reset isValidating if we set it to true earlier
     batch(() => {
+      // Reset replaces the counters; an older run no longer owns a decrement.
+      if (validationGeneration !== this.form._validationGeneration) return
+
       if (hasAsyncValidators) {
         this.endValidation()
       }
