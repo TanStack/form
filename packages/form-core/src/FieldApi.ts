@@ -1432,6 +1432,7 @@ export class FieldApi<
       >
     >,
   ) => {
+    const validationGeneration = this.form._validationGeneration
     const validates = getAsyncValidatorArray(cause, {
       ...this.options,
       form: this.form,
@@ -1442,6 +1443,7 @@ export class FieldApi<
 
     // Get the field-specific error messages that are coming from the form's validator
     const asyncFormValidationResults = await formValidationResultPromise
+    if (validationGeneration !== this.form._validationGeneration) return []
 
     const linkedFields = this.getLinkedFields(cause)
     const linkedFieldValidates = linkedFields.reduce(
@@ -1475,7 +1477,6 @@ export class FieldApi<
     // Check if there are actual async validators to run before setting isValidating
     // This prevents unnecessary re-renders when there are no async validators
     // See: https://github.com/TanStack/form/issues/1130
-    const validationGeneration = this.form._validationGeneration
     const hasAsyncValidators = validates.some((v) => v.validate)
     const linkedFieldsWithAsyncValidators = Array.from(
       new Set(

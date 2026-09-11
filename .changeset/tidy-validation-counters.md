@@ -2,4 +2,4 @@
 '@tanstack/form-core': patch
 ---
 
-Prevent field validations started before a form reset from clearing the validation status of newer runs when they finish or their pending debounce is canceled.
+Preserve field validation state across form resets by discarding stale work waiting for form validation and preventing older completions or debounce cancellations from decrementing current validation counters.
