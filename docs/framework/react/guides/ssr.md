@@ -200,6 +200,11 @@ export const formOpts = formOptions({
     firstName: '',
     age: 0,
   },
+  onServerValidate: ({ value }) => {
+    if (value.age < 12) {
+      return 'Server validation: You must be at least 12 to sign up'
+    }
+  },
 })
 ```
 
@@ -219,11 +224,6 @@ import { formOpts } from './shared-code'
 // Create the server action that will infer the types of the form from `formOpts`
 const serverValidate = createServerValidate({
   ...formOpts,
-  onServerValidate: ({ value }) => {
-    if (value.age < 12) {
-      return 'Server validation: You must be at least 12 to sign up'
-    }
-  },
 })
 
 export default async function someAction(prev: unknown, formData: FormData) {
@@ -278,7 +278,7 @@ export const ClientComp = () => {
   return (
     <form action={action as never} onSubmit={() => form.handleSubmit()}>
       {formErrors.map((error) => (
-        <p key={error as string}>{error}</p>
+        <p key={error}>{error}</p>
       ))}
 
       <form.Field
