@@ -197,6 +197,24 @@ export type DeepKeysOfType<TData, TValue> = Extract<
 >['key']
 
 /**
+ * The keys of an object or array, deeply nested and only with a nullable or optional array value.
+ */
+export type DeepKeysOfArray<TData> =
+  DeepKeysAndValues<TData> extends infer TKeyAndValue
+    ? TKeyAndValue extends AnyDeepKeyAndValue<string, any>
+      ? NonNullable<TKeyAndValue['value']> extends any[]
+        ? TKeyAndValue['key']
+        : never
+      : never
+    : never
+
+/**
+ * The item type of a nullable or optional array.
+ */
+export type ArrayElement<T> =
+  NonNullable<T> extends (infer TElement)[] ? TElement : never
+
+/**
  * Maps the deep keys of TFormData to the shallow keys of TFieldGroupData.
  *  Since using template strings as keys is impractical, it relies on shallow keys only.
  */

@@ -49,7 +49,9 @@ import type {
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
 import type { ReadonlyStore } from '@tanstack/store'
 import type {
+  ArrayElement,
   DeepKeys,
+  DeepKeysOfArray,
   DeepKeysOfType,
   DeepValue,
   UnwrapOneLevelOfArray,
@@ -2184,13 +2186,17 @@ export class FormGroupApi<
   }
 
   validateArrayFieldsStartingFrom = <
-    TField extends DeepKeysOfType<TParentData, any[]>,
+    TField extends DeepKeysOfArray<TParentData>,
   >(
     field: TField,
     index: number,
     cause: ValidationCause,
   ) => {
-    return this.form.validateArrayFieldsStartingFrom(field, index, cause)
+    return this.form.validateArrayFieldsStartingFrom(
+      field as never,
+      index,
+      cause,
+    )
   }
 
   validateField = <TField extends DeepKeysOfType<TParentData, any>>(
@@ -2232,49 +2238,49 @@ export class FormGroupApi<
     return this.form.deleteField(field)
   }
 
-  pushFieldValue = <TField extends DeepKeysOfType<TParentData, any[]>>(
+  pushFieldValue = <TField extends DeepKeysOfArray<TParentData>>(
     field: TField,
-    value: any,
+    value: ArrayElement<DeepValue<TParentData, TField>>,
   ) => {
-    return this.form.pushFieldValue(field, value)
+    return this.form.pushFieldValue(field as never, value)
   }
 
-  insertFieldValue = <TField extends DeepKeysOfType<TParentData, any[]>>(
-    field: TField,
-    index: number,
-    value: any,
-  ) => {
-    return this.form.insertFieldValue(field, index, value)
-  }
-
-  replaceFieldValue = <TField extends DeepKeysOfType<TParentData, any[]>>(
+  insertFieldValue = <TField extends DeepKeysOfArray<TParentData>>(
     field: TField,
     index: number,
-    value: any,
+    value: ArrayElement<DeepValue<TParentData, TField>>,
   ) => {
-    return this.form.replaceFieldValue(field, index, value)
+    return this.form.insertFieldValue(field as never, index, value)
   }
 
-  swapFieldValues = <TField extends DeepKeysOfType<TParentData, any[]>>(
+  replaceFieldValue = <TField extends DeepKeysOfArray<TParentData>>(
+    field: TField,
+    index: number,
+    value: ArrayElement<DeepValue<TParentData, TField>>,
+  ) => {
+    return this.form.replaceFieldValue(field as never, index, value)
+  }
+
+  swapFieldValues = <TField extends DeepKeysOfArray<TParentData>>(
     field: TField,
     index1: number,
     index2: number,
   ) => {
-    return this.form.swapFieldValues(field, index1, index2)
+    return this.form.swapFieldValues(field as never, index1, index2)
   }
 
-  moveFieldValues = <TField extends DeepKeysOfType<TParentData, any[]>>(
+  moveFieldValues = <TField extends DeepKeysOfArray<TParentData>>(
     field: TField,
     fromIndex: number,
     toIndex: number,
   ) => {
-    return this.form.moveFieldValues(field, fromIndex, toIndex)
+    return this.form.moveFieldValues(field as never, fromIndex, toIndex)
   }
 
-  clearFieldValues = <TField extends DeepKeysOfType<TParentData, any[]>>(
+  clearFieldValues = <TField extends DeepKeysOfArray<TParentData>>(
     field: TField,
   ) => {
-    return this.form.clearFieldValues(field)
+    return this.form.clearFieldValues(field as never)
   }
 
   resetField = <TField extends DeepKeysOfType<TParentData, any>>(
@@ -2283,11 +2289,11 @@ export class FormGroupApi<
     return this.form.resetField(field)
   }
 
-  removeFieldValue = <TField extends DeepKeysOfType<TParentData, any[]>>(
+  removeFieldValue = <TField extends DeepKeysOfArray<TParentData>>(
     field: TField,
     index: number,
   ) => {
-    return this.form.removeFieldValue(field, index)
+    return this.form.removeFieldValue(field as never, index)
   }
 
   areRelatedFieldsValid = () => {

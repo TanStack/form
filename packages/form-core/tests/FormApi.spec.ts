@@ -328,6 +328,67 @@ describe('form api', () => {
     ])
   })
 
+  it('should handle array helpers when optional array field values are missing', async () => {
+    type FormValues = {
+      optionalNames?: string[]
+      nullableNames: string[] | null
+    }
+
+    const form = new FormApi({
+      defaultValues: {
+        optionalNames: undefined,
+        nullableNames: null,
+      } as FormValues,
+    })
+    form.mount()
+
+    await form.insertFieldValue('optionalNames', 0, 'insert', {
+      dontValidate: true,
+    })
+    expect(form.getFieldValue('optionalNames')).toStrictEqual(['insert'])
+
+    form.setFieldValue('optionalNames', undefined)
+    await form.replaceFieldValue('optionalNames', 0, 'replace', {
+      dontValidate: true,
+    })
+    expect(form.getFieldValue('optionalNames')).toStrictEqual([])
+
+    form.setFieldValue('optionalNames', undefined)
+    await form.removeFieldValue('optionalNames', 0, { dontValidate: true })
+    expect(form.getFieldValue('optionalNames')).toStrictEqual([])
+
+    form.setFieldValue('optionalNames', undefined)
+    form.swapFieldValues('optionalNames', 0, 1, { dontValidate: true })
+    expect(form.getFieldValue('optionalNames')).toStrictEqual([])
+
+    form.setFieldValue('optionalNames', undefined)
+    form.moveFieldValues('optionalNames', 0, 1, { dontValidate: true })
+    expect(form.getFieldValue('optionalNames')).toStrictEqual([])
+
+    await form.insertFieldValue('nullableNames', 0, 'insert', {
+      dontValidate: true,
+    })
+    expect(form.getFieldValue('nullableNames')).toStrictEqual(['insert'])
+
+    form.setFieldValue('nullableNames', null)
+    await form.replaceFieldValue('nullableNames', 0, 'replace', {
+      dontValidate: true,
+    })
+    expect(form.getFieldValue('nullableNames')).toStrictEqual([])
+
+    form.setFieldValue('nullableNames', null)
+    await form.removeFieldValue('nullableNames', 0, { dontValidate: true })
+    expect(form.getFieldValue('nullableNames')).toStrictEqual([])
+
+    form.setFieldValue('nullableNames', null)
+    form.swapFieldValues('nullableNames', 0, 1, { dontValidate: true })
+    expect(form.getFieldValue('nullableNames')).toStrictEqual([])
+
+    form.setFieldValue('nullableNames', null)
+    form.moveFieldValues('nullableNames', 0, 1, { dontValidate: true })
+    expect(form.getFieldValue('nullableNames')).toStrictEqual([])
+  })
+
   it("should run onChange validation when pushing an array field's value", () => {
     const form = new FormApi({
       defaultValues: {

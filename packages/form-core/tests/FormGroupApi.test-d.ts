@@ -279,3 +279,45 @@ it('should type setValue updater properly', () => {
     return { name: 'updated' }
   })
 })
+
+it('should allow optional array fields for array-specific methods', () => {
+  type FormValues = {
+    step1: {
+      aliases?: string[]
+      relatives: { name: string }[] | undefined
+      title: string | undefined
+    }
+  }
+
+  const form = new FormApi({
+    defaultValues: {
+      step1: {
+        title: undefined,
+      },
+    } as FormValues,
+  })
+
+  const group = new FormGroupApi({
+    name: 'step1',
+    form,
+    onGroupSubmit: () => {},
+  })
+
+  group.pushFieldValue('step1.aliases', 'alias')
+  group.insertFieldValue('step1.aliases', 0, 'alias')
+  group.replaceFieldValue('step1.aliases', 0, 'alias')
+  group.removeFieldValue('step1.aliases', 0)
+  group.swapFieldValues('step1.aliases', 0, 1)
+  group.moveFieldValues('step1.aliases', 0, 1)
+  group.clearFieldValues('step1.aliases')
+  group.validateArrayFieldsStartingFrom('step1.aliases', 0, 'change')
+
+  group.pushFieldValue('step1.relatives', { name: 'relative' })
+  group.insertFieldValue('step1.relatives', 0, { name: 'relative' })
+  group.replaceFieldValue('step1.relatives', 0, { name: 'relative' })
+
+  // @ts-expect-error non-array fields are still rejected
+  group.removeFieldValue('step1.title', 0)
+  // @ts-expect-error array values must still match the array element type
+  group.pushFieldValue('step1.aliases', 1)
+})

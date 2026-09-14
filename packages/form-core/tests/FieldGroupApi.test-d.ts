@@ -168,6 +168,49 @@ describe('fieldGroupApi', () => {
     })
   })
 
+  it('should allow optional array fields for array-specific methods', () => {
+    type FormValues = {
+      nested: {
+        aliases?: string[]
+        title: string | undefined
+      }
+    }
+
+    const form = new FormApi({
+      defaultValues: {
+        nested: {
+          title: undefined,
+        },
+      } as FormValues,
+    })
+
+    const group = new FieldGroupApi({
+      form,
+      defaultValues: {
+        aliases: undefined,
+        title: undefined,
+      } as {
+        aliases?: string[]
+        title: string | undefined
+      },
+      fields: 'nested',
+    })
+
+    group.pushFieldValue('aliases', 'alias')
+    group.insertFieldValue('aliases', 0, 'alias')
+    group.replaceFieldValue('aliases', 0, 'alias')
+    group.removeFieldValue('aliases', 0)
+    group.swapFieldValues('aliases', 0, 1)
+    group.moveFieldValues('aliases', 0, 1)
+    group.clearFieldValues('aliases')
+    group.validateArrayFieldsStartingFrom('aliases', 0, 'change')
+
+    // @ts-expect-error non-array fields are still rejected
+    group.removeFieldValue('title', 0)
+    // @ts-expect-error array values must still match the array element type
+    group.pushFieldValue('aliases', 1)
+  })
+
   it('should allow null and undefined for fields when string', () => {
     type FormValues = {
       foo:

@@ -15,7 +15,9 @@ import type {
 } from './FormApi'
 import type { FieldOptions } from './FieldApi'
 import type {
+  ArrayElement,
   DeepKeys,
+  DeepKeysOfArray,
   DeepKeysOfType,
   DeepValue,
   FieldsMap,
@@ -312,14 +314,14 @@ export class FieldGroupApi<
    * Validates the children of a specified array in the form starting from a given index until the end using the correct handlers for a given validation type.
    */
   validateArrayFieldsStartingFrom = async <
-    TField extends DeepKeysOfType<TFieldGroupData, any[]>,
+    TField extends DeepKeysOfArray<TFieldGroupData>,
   >(
     field: TField,
     index: number,
     cause: ValidationCause,
   ) => {
     return this.form.validateArrayFieldsStartingFrom(
-      this.getFormFieldName(field),
+      this.getFormFieldName(field) as never,
       index,
       cause,
     )
@@ -399,15 +401,13 @@ export class FieldGroupApi<
   /**
    * Pushes a value into an array field.
    */
-  pushFieldValue = <TField extends DeepKeysOfType<TFieldGroupData, any[]>>(
+  pushFieldValue = <TField extends DeepKeysOfArray<TFieldGroupData>>(
     field: TField,
-    value: DeepValue<TFieldGroupData, TField> extends any[]
-      ? DeepValue<TFieldGroupData, TField>[number]
-      : never,
+    value: ArrayElement<DeepValue<TFieldGroupData, TField>>,
     opts?: UpdateMetaOptions,
   ) => {
     return this.form.pushFieldValue(
-      this.getFormFieldName(field),
+      this.getFormFieldName(field) as never,
       // since unknown doesn't extend an array, it types `value` as never.
       value as never,
       opts,
@@ -417,18 +417,14 @@ export class FieldGroupApi<
   /**
    * Insert a value into an array field at the specified index.
    */
-  insertFieldValue = async <
-    TField extends DeepKeysOfType<TFieldGroupData, any[]>,
-  >(
+  insertFieldValue = async <TField extends DeepKeysOfArray<TFieldGroupData>>(
     field: TField,
     index: number,
-    value: DeepValue<TFieldGroupData, TField> extends any[]
-      ? DeepValue<TFieldGroupData, TField>[number]
-      : never,
+    value: ArrayElement<DeepValue<TFieldGroupData, TField>>,
     opts?: UpdateMetaOptions,
   ) => {
     return this.form.insertFieldValue(
-      this.getFormFieldName(field),
+      this.getFormFieldName(field) as never,
       index,
       // since unknown doesn't extend an array, it types `value` as never.
       value as never,
@@ -439,18 +435,14 @@ export class FieldGroupApi<
   /**
    * Replaces a value into an array field at the specified index.
    */
-  replaceFieldValue = async <
-    TField extends DeepKeysOfType<TFieldGroupData, any[]>,
-  >(
+  replaceFieldValue = async <TField extends DeepKeysOfArray<TFieldGroupData>>(
     field: TField,
     index: number,
-    value: DeepValue<TFieldGroupData, TField> extends any[]
-      ? DeepValue<TFieldGroupData, TField>[number]
-      : never,
+    value: ArrayElement<DeepValue<TFieldGroupData, TField>>,
     opts?: UpdateMetaOptions,
   ) => {
     return this.form.replaceFieldValue(
-      this.getFormFieldName(field),
+      this.getFormFieldName(field) as never,
       index,
       // since unknown doesn't extend an array, it types `value` as never.
       value as never,
@@ -461,27 +453,29 @@ export class FieldGroupApi<
   /**
    * Removes a value from an array field at the specified index.
    */
-  removeFieldValue = async <
-    TField extends DeepKeysOfType<TFieldGroupData, any[]>,
-  >(
+  removeFieldValue = async <TField extends DeepKeysOfArray<TFieldGroupData>>(
     field: TField,
     index: number,
     opts?: UpdateMetaOptions,
   ) => {
-    return this.form.removeFieldValue(this.getFormFieldName(field), index, opts)
+    return this.form.removeFieldValue(
+      this.getFormFieldName(field) as never,
+      index,
+      opts,
+    )
   }
 
   /**
    * Swaps the values at the specified indices within an array field.
    */
-  swapFieldValues = <TField extends DeepKeysOfType<TFieldGroupData, any[]>>(
+  swapFieldValues = <TField extends DeepKeysOfArray<TFieldGroupData>>(
     field: TField,
     index1: number,
     index2: number,
     opts?: UpdateMetaOptions,
   ) => {
     return this.form.swapFieldValues(
-      this.getFormFieldName(field),
+      this.getFormFieldName(field) as never,
       index1,
       index2,
       opts,
@@ -491,25 +485,28 @@ export class FieldGroupApi<
   /**
    * Moves the value at the first specified index to the second specified index within an array field.
    */
-  moveFieldValues = <TField extends DeepKeysOfType<TFieldGroupData, any[]>>(
+  moveFieldValues = <TField extends DeepKeysOfArray<TFieldGroupData>>(
     field: TField,
     index1: number,
     index2: number,
     opts?: UpdateMetaOptions,
   ) => {
     return this.form.moveFieldValues(
-      this.getFormFieldName(field),
+      this.getFormFieldName(field) as never,
       index1,
       index2,
       opts,
     )
   }
 
-  clearFieldValues = <TField extends DeepKeysOfType<TFieldGroupData, any[]>>(
+  clearFieldValues = <TField extends DeepKeysOfArray<TFieldGroupData>>(
     field: TField,
     opts?: UpdateMetaOptions,
   ) => {
-    return this.form.clearFieldValues(this.getFormFieldName(field), opts)
+    return this.form.clearFieldValues(
+      this.getFormFieldName(field) as never,
+      opts,
+    )
   }
 
   /**

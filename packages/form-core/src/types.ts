@@ -5,7 +5,9 @@ import type {
   FieldValidateOrFn,
 } from './FieldApi'
 import type {
+  ArrayElement,
   DeepKeys,
+  DeepKeysOfArray,
   DeepKeysOfType,
   DeepValue,
   UnwrapOneLevelOfArray,
@@ -186,9 +188,7 @@ export interface FormLikeAPI<TFormData, TSubmitMeta> {
   /**
    * Validates the children of a specified array in the form starting from a given index until the end using the correct handlers for a given validation type.
    */
-  validateArrayFieldsStartingFrom: <
-    TField extends DeepKeysOfType<TFormData, any[]>,
-  >(
+  validateArrayFieldsStartingFrom: <TField extends DeepKeysOfArray<TFormData>>(
     field: TField,
     index: number,
     cause: ValidationCause,
@@ -247,42 +247,36 @@ export interface FormLikeAPI<TFormData, TSubmitMeta> {
   /**
    * Pushes a value into an array field.
    */
-  pushFieldValue: <TField extends DeepKeysOfType<TFormData, any[]>>(
+  pushFieldValue: <TField extends DeepKeysOfArray<TFormData>>(
     field: TField,
-    value: DeepValue<TFormData, TField> extends any[]
-      ? DeepValue<TFormData, TField>[number]
-      : never,
+    value: ArrayElement<DeepValue<TFormData, TField>>,
     opts?: UpdateMetaOptions,
   ) => void
 
   /**
    * Insert a value into an array field at the specified index.
    */
-  insertFieldValue: <TField extends DeepKeysOfType<TFormData, any[]>>(
+  insertFieldValue: <TField extends DeepKeysOfArray<TFormData>>(
     field: TField,
     index: number,
-    value: DeepValue<TFormData, TField> extends any[]
-      ? DeepValue<TFormData, TField>[number]
-      : never,
+    value: ArrayElement<DeepValue<TFormData, TField>>,
     opts?: UpdateMetaOptions,
   ) => Promise<void>
 
   /**
    * Replaces a value into an array field at the specified index.
    */
-  replaceFieldValue: <TField extends DeepKeysOfType<TFormData, any[]>>(
+  replaceFieldValue: <TField extends DeepKeysOfArray<TFormData>>(
     field: TField,
     index: number,
-    value: DeepValue<TFormData, TField> extends any[]
-      ? DeepValue<TFormData, TField>[number]
-      : never,
+    value: ArrayElement<DeepValue<TFormData, TField>>,
     opts?: UpdateMetaOptions,
   ) => Promise<void>
 
   /**
    * Removes a value from an array field at the specified index.
    */
-  removeFieldValue: <TField extends DeepKeysOfType<TFormData, any[]>>(
+  removeFieldValue: <TField extends DeepKeysOfArray<TFormData>>(
     field: TField,
     index: number,
     opts?: UpdateMetaOptions,
@@ -291,7 +285,7 @@ export interface FormLikeAPI<TFormData, TSubmitMeta> {
   /**
    * Swaps the values at the specified indices within an array field.
    */
-  swapFieldValues: <TField extends DeepKeysOfType<TFormData, any[]>>(
+  swapFieldValues: <TField extends DeepKeysOfArray<TFormData>>(
     field: TField,
     index1: number,
     index2: number,
@@ -301,7 +295,7 @@ export interface FormLikeAPI<TFormData, TSubmitMeta> {
   /**
    * Moves the value at the first specified index to the second specified index within an array field.
    */
-  moveFieldValues: <TField extends DeepKeysOfType<TFormData, any[]>>(
+  moveFieldValues: <TField extends DeepKeysOfArray<TFormData>>(
     field: TField,
     index1: number,
     index2: number,
@@ -311,7 +305,7 @@ export interface FormLikeAPI<TFormData, TSubmitMeta> {
   /**
    * Clear all values within an array field.
    */
-  clearFieldValues: <TField extends DeepKeysOfType<TFormData, any[]>>(
+  clearFieldValues: <TField extends DeepKeysOfArray<TFormData>>(
     field: TField,
     opts?: UpdateMetaOptions,
   ) => void
