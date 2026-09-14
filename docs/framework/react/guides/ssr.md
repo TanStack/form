@@ -15,10 +15,12 @@ Today we support the following meta-frameworks:
 
 This section focuses on integrating TanStack Form with TanStack Start.
 
+For a complete client-driven mutation workflow with field errors, pending state, optimistic rollback, loader refresh, and redirect after saving, see the [TanStack Start form guide](/start/latest/docs/framework/react/guide/tanstack-form).
+
 ### TanStack Start Prerequisites
 
-- Start a new `TanStack Start` project, following the steps in the [TanStack Start Quickstart Guide](https://tanstack.com/router/latest/docs/framework/react/guide/tanstack-start)
-- Install `@tanstack/react-form`
+- Start a new `TanStack Start` project, following the steps in the [TanStack Start Quickstart Guide](https://tanstack.com/start/latest/docs/framework/react/getting-started)
+- Install `@tanstack/react-form-start`
 
 ### Start integration
 
