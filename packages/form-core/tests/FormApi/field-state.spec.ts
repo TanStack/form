@@ -55,6 +55,59 @@ describe('form - field state', () => {
       expect(form.getFieldValue('count')).toBe(2)
     })
 
+    it('increments the array version for a same-length array replacement', () => {
+      const form = new InternalFormApi({ defaultValues: { items: ['a'] } })
+      const field = form._getOrCreateFieldApi({ name: 'items' })
+
+      form.setFieldValue('items', ['b'])
+
+      expect(form.getFieldValue('items')).toEqual(['b'])
+      expect(field.meta._arrayVersion).toBe(1)
+    })
+
+    it('increments the array version for an updater replacement', () => {
+      const form = new InternalFormApi({ defaultValues: { items: ['a'] } })
+      const field = form._getOrCreateFieldApi({ name: 'items' })
+
+      form.setFieldValue('items', (items: Array<string>) =>
+        items.map((item) => item.toUpperCase()),
+      )
+
+      expect(form.getFieldValue('items')).toEqual(['A'])
+      expect(field.meta._arrayVersion).toBe(1)
+    })
+
+    it('does not increment a parent array version for a nested field update', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: [{ label: 'a' }] },
+      })
+      const field = form._getOrCreateFieldApi({ name: 'items' })
+
+      form.setFieldValue('items[0].label', 'b')
+
+      expect(form.getFieldValue('items')).toEqual([{ label: 'b' }])
+      expect(field.meta._arrayVersion).toBe(0)
+    })
+
+    it('increments the array version only once for array helpers', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c'] },
+      })
+      const field = form._getOrCreateFieldApi({ name: 'items' })
+
+      form.swapFieldValues('items', 0, 1)
+      expect(field.meta._arrayVersion).toBe(1)
+
+      form.moveFieldValue('items', 0, 2)
+      expect(field.meta._arrayVersion).toBe(2)
+
+      form.clearFieldValues('items')
+      expect(field.meta._arrayVersion).toBe(2)
+
+      form.clearFieldValues('items')
+      expect(field.meta._arrayVersion).toBe(3)
+    })
+
     it('marks form isTouched and isDirty after a change', () => {
       const form = new InternalFormApi({ defaultValues: { name: '' } })
       const field = form._getOrCreateFieldApi({ name: 'name' })
