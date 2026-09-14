@@ -124,6 +124,54 @@ describe('useForm', () => {
     )
   })
 
+  it('should keep reset(values) called inside onSubmit while subscribed to isDirty', async () => {
+    // Reproduces https://github.com/TanStack/form/issues/1681
+    // A component-level `isDirty` subscription re-renders the component after
+    // reset(), which re-runs the `formApi.update(opts)` layout effect with the
+    // unchanged props defaultValues. That update must not clobber the values
+    // just set by reset() back to the original default values.
+    function Comp() {
+      const form = useForm({
+        defaultValues: { firstName: 'FirstName' },
+        onSubmit: () => {
+          form.reset({ firstName: 'ResetName' })
+        },
+      })
+
+      const isDirty = useStore(form.store, (state) => state.isDirty)
+
+      return (
+        <>
+          <form.Field
+            name="firstName"
+            children={(field) => (
+              <input
+                data-testid="firstName"
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+            )}
+          />
+          <p>isDirty: {String(isDirty)}</p>
+          <button onClick={form.handleSubmit}>Submit</button>
+        </>
+      )
+    }
+
+    const { getByTestId, getByText } = render(<Comp />)
+    const input = getByTestId('firstName') as HTMLInputElement
+
+    // make the form dirty, then submit -> reset({ firstName: 'ResetName' })
+    await user.type(input, 'X')
+    await user.click(getByText('Submit'))
+
+    // the reset values must survive the post-reset update() sync
+    await waitFor(() => expect(input.value).toBe('ResetName'))
+    // and the reset baseline should make the form pristine again
+    await waitFor(() => expect(getByText('isDirty: false')).toBeInTheDocument())
+  })
+
   it('should run on form mount', async () => {
     function Comp() {
       const [formMounted, setFormMounted] = useState(false)
