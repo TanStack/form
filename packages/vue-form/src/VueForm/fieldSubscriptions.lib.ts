@@ -37,6 +37,37 @@ export function createValueFieldSubscription(
   }))
 }
 
+/**
+ * Wraps a field API so reads made during a component render are tracked by
+ * Vue. Injected field components are separate component instances, so they
+ * do not rerender when only the parent `Field` subscription changes.
+ *
+ * Methods from the prototype chain are bound to the underlying field API so
+ * they never run with the proxy as `this`. Own properties, including the
+ * attached field components, are returned unchanged.
+ */
+export function trackFieldApi<TField extends object>(
+  field: TField,
+  selection: ShallowRef<unknown>,
+): TField {
+  const boundMethods = new Map<PropertyKey, unknown>()
+
+  return new Proxy(field, {
+    get(target, key) {
+      void selection.value
+      const value = Reflect.get(target, key, target)
+      if (typeof value !== 'function' || Object.hasOwn(target, key)) {
+        return value
+      }
+      if (!boundMethods.has(key)) boundMethods.set(key, value.bind(target))
+      return boundMethods.get(key)
+    },
+    set(target, key, value) {
+      return Reflect.set(target, key, value, target)
+    },
+  })
+}
+
 export function createArrayFieldSubscription(
   fieldApi: ShallowRef<AnyInternalFieldApi>,
 ) {

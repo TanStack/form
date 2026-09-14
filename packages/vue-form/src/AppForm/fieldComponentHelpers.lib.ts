@@ -10,7 +10,11 @@ export function wrapField(
     (_props, context) => {
       const field = useFieldContext()
       return () =>
-        h(component, { ...context.attrs, [fieldPropKey]: field }, context.slots)
+        h(
+          component,
+          { ...context.attrs, [fieldPropKey]: field.value },
+          context.slots,
+        )
     },
     { name: 'TanStackForm.FieldComponent', inheritAttrs: false },
   )
