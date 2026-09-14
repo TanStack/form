@@ -510,6 +510,12 @@ export interface FormOptions<
     TOnDynamic,
     TOnDynamicAsync
   >
+  /**
+   * Server-only validator used by `createServerValidate`. Specify it in shared
+   * `formOptions` so the client form infers `state.errors` / `errorMap.onServer`
+   * from the same function. This is not executed in the browser.
+   */
+  onServerValidate?: TOnServer
 
   validationLogic?: ValidationLogicFn
 
