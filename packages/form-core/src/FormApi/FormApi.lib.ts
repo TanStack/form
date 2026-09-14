@@ -510,7 +510,7 @@ export class InternalFormApi<
         previousValue !== nextValue &&
         previousValue.length === nextValue.length
 
-      this._atoms.values.set((prev) => setBy(prev, fieldName, nextValue))
+      this._atoms.values.set((prev) => setBy(prev, fieldName, () => nextValue))
 
       if (field && replacedSameLengthArray) {
         field._setMeta((prev) => ({
