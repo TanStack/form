@@ -1,6 +1,7 @@
 import { shallow, useSelector } from '@tanstack/vue-store'
 import { InternalFormGroupApi } from '@tanstack/form-core/internals'
 import {
+  computed,
   defineComponent,
   h,
   onMounted,
@@ -12,9 +13,10 @@ import { Subscribe } from '../Subscribe.public'
 import {
   createArrayFieldSubscription,
   createValueFieldSubscription,
+  trackFieldApi,
 } from './fieldSubscriptions.lib'
 import { useField } from './useField.lib'
-import type { Component, InjectionKey, Slots } from 'vue'
+import type { Component, ComputedRef, InjectionKey, Slots } from 'vue'
 import type {
   AnyFieldApiOptions,
   AnyInternalFieldApi,
@@ -26,7 +28,7 @@ import type { InternalVueFormApi } from './VueFormApi.lib'
 export function attachVueFormComponents(
   form: AnyInternalFormApi,
   fieldComponents: Record<string, Component> | null,
-  fieldContext?: InjectionKey<AnyInternalFieldApi>,
+  fieldContext?: InjectionKey<ComputedRef<AnyInternalFieldApi>>,
 ): InternalVueFormApi {
   const resultForm = form as InternalVueFormApi
   resultForm.Field = createFieldComponent(
@@ -50,7 +52,7 @@ function createFieldComponent(
   form: AnyInternalFormApi,
   fieldComponents: Record<string, Component> | null,
   array: boolean,
-  fieldContext?: InjectionKey<AnyInternalFieldApi>,
+  fieldContext?: InjectionKey<ComputedRef<AnyInternalFieldApi>>,
 ) {
   return defineComponent(
     (_props, context) => {
@@ -61,10 +63,16 @@ function createFieldComponent(
         : createValueFieldSubscription(fieldApi)
 
       if (fieldContext) {
-        // Field APIs are stable for a mounted name. Supplying the current API
-        // mirrors Vue v1 composition components while the parent subscription
-        // handles state-driven renders.
-        provide(fieldContext, fieldApi.value)
+        // Injected field components are separate component instances, so the
+        // parent subscription rerendering this slot does not update them when
+        // the field API object is unchanged. The field API can also be
+        // replaced for a mounted name (for example after `form.reset()`).
+        // Provide a computed, tracked view so injected components follow both
+        // the current API and its subscribed state.
+        provide(
+          fieldContext,
+          computed(() => trackFieldApi(fieldApi.value, selection)),
+        )
       }
 
       return () => {
