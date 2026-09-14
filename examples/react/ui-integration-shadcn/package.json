@@ -12,7 +12,7 @@
     "@fontsource-variable/inter": "^5.2.8",
     "@tailwindcss/vite": "^4.3.2",
     "@tanstack/pacer-lite": "^0.2.2",
-    "@tanstack/react-form": "^2.0.0-alpha.2",
+    "@tanstack/react-form": "^2.0.0-alpha.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.2.1",
@@ -30,7 +30,7 @@
   "devDependencies": {
     "@tanstack/devtools-vite": "^0.7.0",
     "@tanstack/react-devtools": "^0.10.5",
-    "@tanstack/react-form-devtools": "^1.0.0-alpha.2",
+    "@tanstack/react-form-devtools": "^1.0.0-alpha.3",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
