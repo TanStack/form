@@ -2162,6 +2162,63 @@ describe('form api', () => {
     expect(form.state.errors).toStrictEqual(['first name is required'])
   })
 
+  it('should not clear the form-level onSubmit error on blur when the value did not change', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+      validators: {
+        onSubmit: ({ value }) =>
+          value.firstName.length > 0 ? undefined : 'first name is required',
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+
+    field.mount()
+
+    await form.handleSubmit()
+    expect(form.state.errorMap.onSubmit).toBe('first name is required')
+
+    // Blurring the field without changing its value must keep the submit error:
+    // `blur` is not a value change, so the stale onSubmit error should remain.
+    field.handleBlur()
+    expect(form.state.errorMap.onSubmit).toBe('first name is required')
+  })
+
+  it('should clear the form-level onSubmit error once a valid value is entered', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+      validators: {
+        onSubmit: ({ value }) =>
+          value.firstName.length > 0 ? undefined : 'first name is required',
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+
+    field.mount()
+
+    await form.handleSubmit()
+    expect(form.state.errorMap.onSubmit).toBe('first name is required')
+
+    // Entering a valid value clears the stale submit error.
+    field.handleChange('John')
+    expect(form.state.errorMap.onSubmit).toBeUndefined()
+  })
+
   it('should run onChange validation during submit', async () => {
     const form = new FormApi({
       defaultValues: {
