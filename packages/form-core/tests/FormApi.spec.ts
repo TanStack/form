@@ -3521,6 +3521,38 @@ describe('form api', () => {
     expect(form.state.isSubmitSuccessful).toBe(false)
   })
 
+  it('should not call onSubmit again while a submission is in progress', async () => {
+    vi.useFakeTimers()
+    try {
+      const submitDelayMs = 1000
+      const expectedSubmitCount = 1
+      const onSubmit = vi.fn(async () => {
+        await sleep(submitDelayMs)
+      })
+      const form = new FormApi({
+        defaultValues: {
+          name: 'test',
+        },
+        onSubmit,
+      })
+
+      form.mount()
+
+      const firstSubmit = form.handleSubmit()
+      await vi.advanceTimersByTimeAsync(0)
+
+      const secondSubmit = form.handleSubmit()
+      await vi.advanceTimersByTimeAsync(0)
+
+      expect(onSubmit).toHaveBeenCalledTimes(expectedSubmitCount)
+
+      await vi.runAllTimersAsync()
+      await Promise.all([firstSubmit, secondSubmit])
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
   it('should reset the fields value and meta to default state', async () => {
     const form = new FormApi({
       defaultValues: {

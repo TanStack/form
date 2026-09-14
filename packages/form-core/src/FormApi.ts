@@ -2418,6 +2418,8 @@ export class FormApi<
    * Handles the form submission, performs validation, and calls the appropriate onSubmit or onSubmitInvalid callbacks.
    */
   _handleSubmit = async (submitMeta?: TSubmitMeta): Promise<void> => {
+    if (this.state.isSubmitting) return
+
     this.baseStore.setState((old) => ({
       ...old,
       // Submission attempts mark the form as not submitted
