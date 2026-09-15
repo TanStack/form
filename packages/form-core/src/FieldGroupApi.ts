@@ -205,7 +205,9 @@ export class FieldGroupApi<
 
     if (
       validators &&
-      (validators.onChangeListenTo || validators.onBlurListenTo)
+      (validators.onChangeListenTo ||
+        validators.onBlurListenTo ||
+        validators.onDynamicListenTo)
     ) {
       const newValidators = { ...validators }
 
@@ -220,6 +222,9 @@ export class FieldGroupApi<
         validators.onChangeListenTo,
       )
       newValidators.onBlurListenTo = remapListenTo(validators.onBlurListenTo)
+      newValidators.onDynamicListenTo = remapListenTo(
+        validators.onDynamicListenTo,
+      )
 
       newProps.validators = newValidators
     }

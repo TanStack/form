@@ -224,8 +224,21 @@ export interface FormValidators<
   onBlurAsyncDebounceMs?: number
   onSubmit?: RejectPromiseValidator<TOnSubmit>
   onSubmitAsync?: TOnSubmitAsync
+  /**
+   * Optional function that validates the form data, whose run time is decided by the form's
+   * `validationLogic` rather than by a fixed event, returns a `FormValidationError`.
+   *
+   * It is not called under the default validation logic; pass `revalidateLogic()` to the
+   * `validationLogic` option to enable it.
+   */
   onDynamic?: RejectPromiseValidator<TOnDynamic>
+  /**
+   * Optional onDynamic asynchronous validation method that returns a `FormValidationError` or a promise of `Promise<FormValidationError>`
+   */
   onDynamicAsync?: TOnDynamicAsync
+  /**
+   * The default time in milliseconds that if set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds.
+   */
   onDynamicAsyncDebounceMs?: number
 }
 
