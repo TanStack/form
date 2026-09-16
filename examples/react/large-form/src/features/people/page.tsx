@@ -19,18 +19,15 @@ export const PeoplePage = () => {
       }}
     >
       <h1>Personal Information</h1>
-      <form.Field
-        name="fullName"
-        children={(field) => <field.TextField label="Full Name" />}
-      />
-      <form.Field
-        name="email"
-        children={(field) => <field.TextField label="Email" />}
-      />
-      <form.Field
-        name="phone"
-        children={(field) => <field.TextField label="Phone" />}
-      />
+      <form.Field name="fullName">
+        {(field) => <field.TextField label="Full Name" />}
+      </form.Field>
+      <form.Field name="email">
+        {(field) => <field.TextField label="Email" />}
+      </form.Field>
+      <form.Field name="phone">
+        {(field) => <field.TextField label="Phone" />}
+      </form.Field>
       <AddressFields form={form} />
       <h2>Emergency Contact</h2>
       <FieldGroupEmergencyContact
