@@ -13,7 +13,7 @@
     "@angular/compiler": "^22.1.1",
     "@angular/core": "^22.1.1",
     "@angular/platform-browser": "^22.1.1",
-    "@tanstack/angular-form": "^2.0.0-alpha.2",
+    "@tanstack/angular-form": "^2.0.0-alpha.3",
     "arktype": "^2.1.22",
     "effect": "^3.17.14",
     "rxjs": "^7.8.2",
