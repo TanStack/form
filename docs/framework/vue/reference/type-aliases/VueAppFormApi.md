@@ -3,8 +3,6 @@ id: VueAppFormApi
 title: VueAppFormApi
 ---
 
-# Type Alias: VueAppFormApi\<TFormData, TFormErrorTypes, TComponents\>
-
 ```ts
 type VueAppFormApi<TFormData, TFormErrorTypes, TComponents> = VueFormApi<TFormData, TFormErrorTypes, TComponents> & object;
 ```

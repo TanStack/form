@@ -3,8 +3,6 @@ id: PreactFormGroupFieldComponent
 title: PreactFormGroupFieldComponent
 ---
 
-# Interface: PreactFormGroupFieldComponent()\<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents\>
-
 Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:223](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L223)
 
 ## Type Parameters

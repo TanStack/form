@@ -3,8 +3,6 @@ id: flush
 title: flush
 ---
 
-# Function: flush()
-
 ```ts
 function flush(): void;
 ```

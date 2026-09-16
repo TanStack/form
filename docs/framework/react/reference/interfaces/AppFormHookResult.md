@@ -3,8 +3,6 @@ id: AppFormHookResult
 title: AppFormHookResult
 ---
 
-# Interface: AppFormHookResult\<TComponents\>
-
 Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:128](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L128)
 
 App Form hooks and helpers bound to the components registered with

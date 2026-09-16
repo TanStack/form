@@ -3,8 +3,6 @@ id: FormListeners
 title: FormListeners
 ---
 
-# Type Alias: FormListeners\<TFormData, TFormErrorTypes\>
-
 ```ts
 type FormListeners<TFormData, TFormErrorTypes> = FormListener<TFormData, TFormErrorTypes>[];
 ```

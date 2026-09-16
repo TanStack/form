@@ -3,8 +3,6 @@ id: AnyReactFormComponentMap
 title: AnyReactFormComponentMap
 ---
 
-# Type Alias: AnyReactFormComponentMap
-
 ```ts
 type AnyReactFormComponentMap = ReactFormComponentMap<ReactComponentTree, ReactComponentTree>;
 ```

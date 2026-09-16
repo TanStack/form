@@ -3,8 +3,6 @@ id: FormListener
 title: FormListener
 ---
 
-# Interface: FormListener\<TFormData, TFormErrorTypes\>
-
 Defined in: [listeners.public.ts:276](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L276)
 
 A listener configured on a form.

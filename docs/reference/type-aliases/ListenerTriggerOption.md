@@ -3,8 +3,6 @@ id: ListenerTriggerOption
 title: ListenerTriggerOption
 ---
 
-# Type Alias: ListenerTriggerOption\<TTriggers, TFormData, TValue\>
-
 ```ts
 type ListenerTriggerOption<TTriggers, TFormData, TValue> = 
   | TTriggers

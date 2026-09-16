@@ -3,8 +3,6 @@ id: SvelteTanStackFormComponents
 title: SvelteTanStackFormComponents
 ---
 
-# Interface: SvelteTanStackFormComponents\<TFormData, TFormErrorTypes, TFieldComponents\>
-
 Defined in: [packages/svelte-form/src/Components.public.ts:351](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L351)
 
 ## Type Parameters

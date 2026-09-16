@@ -3,8 +3,6 @@ id: FormValidatorData
 title: FormValidatorData
 ---
 
-# Type Alias: FormValidatorData\<TFormValidators\>
-
 ```ts
 type FormValidatorData<TFormValidators> = TFormValidators extends FormValidators<infer T> ? T : never;
 ```

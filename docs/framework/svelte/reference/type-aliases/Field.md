@@ -3,8 +3,6 @@ id: Field
 title: Field
 ---
 
-# Type Alias: Field
-
 ```ts
 type Field = SvelteComponent;
 ```

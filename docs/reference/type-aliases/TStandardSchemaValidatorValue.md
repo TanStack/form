@@ -3,8 +3,6 @@ id: TStandardSchemaValidatorValue
 title: TStandardSchemaValidatorValue
 ---
 
-# Type Alias: TStandardSchemaValidatorValue\<TData\>
-
 ```ts
 type TStandardSchemaValidatorValue<TData> = object;
 ```

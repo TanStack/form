@@ -3,8 +3,6 @@ id: SolidFormGroupSubscribeComponent
 title: SolidFormGroupSubscribeComponent
 ---
 
-# Type Alias: SolidFormGroupSubscribeComponent\<TGroupValue, TGroupErrorTypes\>
-
 ```ts
 type SolidFormGroupSubscribeComponent<TGroupValue, TGroupErrorTypes> = <TSelected>(props) => JSX.Element;
 ```

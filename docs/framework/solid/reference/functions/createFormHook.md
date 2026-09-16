@@ -3,8 +3,6 @@ id: createFormHook
 title: createFormHook
 ---
 
-# Function: createFormHook()
-
 ```ts
 function createFormHook<TFormComponents, TFieldComponents>(createOptions): AppFormHookResult<{
   fieldComponents: TFieldComponents;

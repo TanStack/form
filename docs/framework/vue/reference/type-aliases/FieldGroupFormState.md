@@ -3,8 +3,6 @@ id: FieldGroupFormState
 title: FieldGroupFormState
 ---
 
-# Type Alias: FieldGroupFormState
-
 ```ts
 type FieldGroupFormState = FormState<unknown, FormErrorTypes>;
 ```

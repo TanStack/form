@@ -3,8 +3,6 @@ id: FieldGroupWithFieldsFn
 title: FieldGroupWithFieldsFn
 ---
 
-# Type Alias: FieldGroupWithFieldsFn\<TGroup\>
-
 ```ts
 type FieldGroupWithFieldsFn<TGroup> = <TProps, TPropName>(Component, fieldsPropName) => <TFormData>(options) => SvelteComponent & Component<any> & WithoutFunction<Component>;
 ```

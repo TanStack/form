@@ -3,8 +3,6 @@ id: FieldValidateResult
 title: FieldValidateResult
 ---
 
-# Type Alias: FieldValidateResult
-
 ```ts
 type FieldValidateResult = ValidationResult;
 ```

@@ -3,8 +3,6 @@ id: FormOptionsLooseSchemaFn
 title: FormOptionsLooseSchemaFn
 ---
 
-# Type Alias: FormOptionsLooseSchemaFn\<TComponents\>
-
 ```ts
 type FormOptionsLooseSchemaFn<TComponents> = <TSchema, TFormData, TFormValidators, TSubmitReturn>(schema, options) => FormOptions<InferUnion<TFormData, StandardSchemaInput<TSchema>>, TFormValidators, TSubmitReturn, TComponents>;
 ```

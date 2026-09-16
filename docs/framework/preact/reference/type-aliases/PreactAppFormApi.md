@@ -3,8 +3,6 @@ id: PreactAppFormApi
 title: PreactAppFormApi
 ---
 
-# Type Alias: PreactAppFormApi\<TFormData, TFormErrorTypes, TComponents\>
-
 ```ts
 type PreactAppFormApi<TFormData, TFormErrorTypes, TComponents> = PreactFormApi<TFormData, TFormErrorTypes, TComponents> & object;
 ```

@@ -3,8 +3,6 @@ id: serverValidateHelper
 title: serverValidateHelper
 ---
 
-# Function: serverValidateHelper()
-
 ```ts
 function serverValidateHelper<TFramework>(options): ServerValidateHelperResult<TFramework>;
 ```

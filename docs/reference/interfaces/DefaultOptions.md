@@ -3,8 +3,6 @@ id: DefaultOptions
 title: DefaultOptions
 ---
 
-# Interface: DefaultOptions
-
 Defined in: [defaultOptions.public.ts:132](https://github.com/TanStack/form/blob/main/packages/form-core/src/defaultOptions.public.ts#L132)
 
 Collects the reusable defaults owned by one form.

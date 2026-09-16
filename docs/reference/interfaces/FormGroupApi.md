@@ -3,8 +3,6 @@ id: FormGroupApi
 title: FormGroupApi
 ---
 
-# Interface: FormGroupApi\<TFormData, TGroupName, TGroupValue, TGroupErrorTypes, TFormErrorTypes\>
-
 Defined in: [FormGroupApi/FormGroupApi.public.ts:180](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L180)
 
 ## Type Parameters

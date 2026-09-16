@@ -3,8 +3,6 @@ id: StandardSchemaV1Issue
 title: StandardSchemaV1Issue
 ---
 
-# Interface: StandardSchemaV1Issue
-
 Defined in: [standardSchema.public.ts:71](https://github.com/TanStack/form/blob/main/packages/form-core/src/standardSchema.public.ts#L71)
 
 The issue interface of the failure output.

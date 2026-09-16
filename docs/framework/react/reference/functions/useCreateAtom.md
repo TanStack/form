@@ -3,8 +3,6 @@ id: useCreateAtom
 title: useCreateAtom
 ---
 
-# Function: useCreateAtom()
-
 ## Call Signature
 
 ```ts

@@ -3,8 +3,6 @@ id: FormGroupValidationError
 title: FormGroupValidationError
 ---
 
-# Type Alias: FormGroupValidationError\<TGroupValue\>
-
 ```ts
 type FormGroupValidationError<TGroupValue> = 
   | ValidationErrorInput

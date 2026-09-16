@@ -3,8 +3,6 @@ id: FormApiArrayMethods
 title: FormApiArrayMethods
 ---
 
-# Interface: FormApiArrayMethods\<TFormData\>
-
 Defined in: [FormApi/FormApiArrayMethods.types.public.ts:290](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts#L290)
 
 Methods for adding, removing, moving, and filtering array field elements.

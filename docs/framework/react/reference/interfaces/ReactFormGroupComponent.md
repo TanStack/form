@@ -3,8 +3,6 @@ id: ReactFormGroupComponent
 title: ReactFormGroupComponent
 ---
 
-# Interface: ReactFormGroupComponent()\<TFormData, TFormErrorTypes, TFieldComponents\>
-
 Defined in: [packages/react-form/src/ReactForm/Components.public.ts:337](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L337)
 
 ## Type Parameters

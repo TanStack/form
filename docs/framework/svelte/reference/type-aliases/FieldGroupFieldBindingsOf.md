@@ -3,8 +3,6 @@ id: FieldGroupFieldBindingsOf
 title: FieldGroupFieldBindingsOf
 ---
 
-# Type Alias: FieldGroupFieldBindingsOf\<TGroup, TData\>
-
 ```ts
 type FieldGroupFieldBindingsOf<TGroup, TData> = FieldGroupFieldsOf<TGroup> extends FieldGroupFields ? FieldGroupFieldBindings<FieldGroupFieldsOf<TGroup>, TData> : never;
 ```

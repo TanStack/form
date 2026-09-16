@@ -3,8 +3,6 @@ id: createErrorMap
 title: createErrorMap
 ---
 
-# Function: createErrorMap()
-
 ```ts
 function createErrorMap<TFormData>(initial?): ValidationErrorMap<TFormData>;
 ```

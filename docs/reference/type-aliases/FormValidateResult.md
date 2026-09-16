@@ -3,8 +3,6 @@ id: FormValidateResult
 title: FormValidateResult
 ---
 
-# Type Alias: FormValidateResult\<TFormData\>
-
 ```ts
 type FormValidateResult<TFormData> = 
   | ValidationResult

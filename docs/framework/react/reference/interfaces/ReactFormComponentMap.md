@@ -3,8 +3,6 @@ id: ReactFormComponentMap
 title: ReactFormComponentMap
 ---
 
-# Interface: ReactFormComponentMap\<TFormComponents, TFieldComponents\>
-
 Defined in: [packages/react-form/src/AppForm/componentMap.public.ts:24](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/componentMap.public.ts#L24)
 
 ## Extended by

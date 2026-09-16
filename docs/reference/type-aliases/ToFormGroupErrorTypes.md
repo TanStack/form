@@ -3,8 +3,6 @@ id: ToFormGroupErrorTypes
 title: ToFormGroupErrorTypes
 ---
 
-# Type Alias: ToFormGroupErrorTypes\<TGroupValidators\>
-
 ```ts
 type ToFormGroupErrorTypes<TGroupValidators> = ToValidatorErrorTypes<TGroupValidators, FormGroupValidators<any>, never>;
 ```

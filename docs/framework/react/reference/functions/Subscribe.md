@@ -3,8 +3,6 @@ id: Subscribe
 title: Subscribe
 ---
 
-# Function: Subscribe()
-
 ```ts
 function Subscribe<TSourceData, TSelected>(props): ReactNode;
 ```

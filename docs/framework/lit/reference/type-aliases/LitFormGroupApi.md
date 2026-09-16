@@ -3,8 +3,6 @@ id: LitFormGroupApi
 title: LitFormGroupApi
 ---
 
-# Type Alias: LitFormGroupApi\<TFormData, TGroupName, TGroupValue, TGroupErrorTypes, TFormErrorTypes\>
-
 ```ts
 type LitFormGroupApi<TFormData, TGroupName, TGroupValue, TGroupErrorTypes, TFormErrorTypes> = FormGroupApi<TFormData, TGroupName, TGroupValue, TGroupErrorTypes, TFormErrorTypes> & LitFieldMethods<TGroupValue, TGroupErrorTypes["fieldError"], TFormData, TFormErrorTypes> & LitSubscribeMethod<FormGroupState<TGroupValue, TGroupErrorTypes>>;
 ```

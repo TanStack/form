@@ -3,8 +3,6 @@ id: LitFieldGroup
 title: LitFieldGroup
 ---
 
-# Type Alias: LitFieldGroup\<TFields\>
-
 ```ts
 type LitFieldGroup<TFields> = LitFieldGroupApi<FieldGroupFieldData<TFields>> & object;
 ```

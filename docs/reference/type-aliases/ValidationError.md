@@ -3,8 +3,6 @@ id: ValidationError
 title: ValidationError
 ---
 
-# Type Alias: ValidationError
-
 ```ts
 type ValidationError = OneOrMany<ValidationIssue>;
 ```

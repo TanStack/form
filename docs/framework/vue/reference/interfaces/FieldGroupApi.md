@@ -3,8 +3,6 @@ id: FieldGroupApi
 title: FieldGroupApi
 ---
 
-# Interface: FieldGroupApi\<TFieldData, TFieldComponents\>
-
 Defined in: [packages/vue-form/src/FieldGroup/FieldGroupApi.public.ts:133](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/FieldGroupApi.public.ts#L133)
 
 ## Extends

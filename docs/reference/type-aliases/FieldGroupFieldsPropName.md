@@ -3,8 +3,6 @@ id: FieldGroupFieldsPropName
 title: FieldGroupFieldsPropName
 ---
 
-# Type Alias: FieldGroupFieldsPropName\<TProps, TFieldGroup\>
-
 ```ts
 type FieldGroupFieldsPropName<TProps, TFieldGroup> = { [TPropName in keyof TProps]-?: IsSame<TProps[TPropName], TFieldGroup> extends true ? TPropName : never }[keyof TProps];
 ```

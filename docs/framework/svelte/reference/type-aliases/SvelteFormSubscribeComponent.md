@@ -3,8 +3,6 @@ id: SvelteFormSubscribeComponent
 title: SvelteFormSubscribeComponent
 ---
 
-# Type Alias: SvelteFormSubscribeComponent\<TFormData, TFormErrorTypes\>
-
 ```ts
 type SvelteFormSubscribeComponent<TFormData, TFormErrorTypes> = <TSelected>(options) => SvelteComponent & Component<any> & WithoutFunction<Component>;
 ```

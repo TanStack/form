@@ -3,8 +3,6 @@ id: OnSubmitError
 title: OnSubmitError
 ---
 
-# Type Alias: OnSubmitError\<TFormValidationError\>
-
 ```ts
 type OnSubmitError<TFormValidationError> = TFormValidationError & object;
 ```

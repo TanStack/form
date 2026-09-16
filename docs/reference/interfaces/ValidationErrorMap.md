@@ -3,8 +3,6 @@ id: ValidationErrorMap
 title: ValidationErrorMap
 ---
 
-# Interface: ValidationErrorMap\<TFormData\>
-
 Defined in: [validation.public.ts:377](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L377)
 
 ## Type Parameters

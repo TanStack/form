@@ -3,8 +3,6 @@ id: ReactFormArrayFieldComponent
 title: ReactFormArrayFieldComponent
 ---
 
-# Type Alias: ReactFormArrayFieldComponent\<TFormData, TFormErrorTypes, TFieldComponents\>
-
 ```ts
 type ReactFormArrayFieldComponent<TFormData, TFormErrorTypes, TFieldComponents> = <TFieldName, TFieldValidators>(props) => ReactNode;
 ```

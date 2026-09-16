@@ -3,8 +3,6 @@ id: TanStackFormController
 title: TanStackFormController
 ---
 
-# Class: TanStackFormController\<TFormData, TFormValidators, TSubmitReturn\>
-
 Defined in: [tanstack-form-controller.ts:209](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L209)
 
 Owns a form for a Lit reactive-controller host and provides Lit-specific

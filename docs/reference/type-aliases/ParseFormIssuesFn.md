@@ -3,8 +3,6 @@ id: ParseFormIssuesFn
 title: ParseFormIssuesFn
 ---
 
-# Type Alias: ParseFormIssuesFn\<TFormData\>
-
 ```ts
 type ParseFormIssuesFn<TFormData> = (issues) => ParsedStandardSchemaIssues<TFormData>;
 ```

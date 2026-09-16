@@ -3,8 +3,6 @@ id: AnySvelteFormApi
 title: AnySvelteFormApi
 ---
 
-# Type Alias: AnySvelteFormApi
-
 ```ts
 type AnySvelteFormApi = AnyFormApi & SvelteTanStackFormComponents<any, any, any> & SvelteFormSelectors<any, any>;
 ```

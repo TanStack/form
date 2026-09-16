@@ -3,8 +3,6 @@ id: FormState
 title: FormState
 ---
 
-# Interface: FormState\<TFormData, TFormErrorTypes\>
-
 Defined in: [FormApi/FormApi.public.ts:420](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L420)
 
 A snapshot of current values, validation status, and submission metadata.

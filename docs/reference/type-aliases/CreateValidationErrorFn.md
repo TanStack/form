@@ -3,8 +3,6 @@ id: CreateValidationErrorFn
 title: CreateValidationErrorFn
 ---
 
-# Type Alias: CreateValidationErrorFn\<TFormData\>
-
 ```ts
 type CreateValidationErrorFn<TFormData> = <TError>(error) => OnSubmitError<TError>;
 ```

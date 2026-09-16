@@ -3,8 +3,6 @@ id: createValidators
 title: createValidators
 ---
 
-# Function: createValidators()
-
 ```ts
 function createValidators<TFormData, TContextValue, TOptions>(options): <TRuns>(...runs) => ValidatorsFromOptionsAndRuns<TFormData, TContextValue, TOptions, TRuns>;
 ```

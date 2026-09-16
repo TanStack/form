@@ -3,8 +3,6 @@ id: FieldGroupArrayFieldComponent
 title: FieldGroupArrayFieldComponent
 ---
 
-# Type Alias: FieldGroupArrayFieldComponent\<TFieldData, TFieldComponents\>
-
 ```ts
 type FieldGroupArrayFieldComponent<TFieldData, TFieldComponents> = <TFieldName>(props) => VueComponentInstance<VueFormFieldProps<TFieldData, TFieldName, DeepValue<TFieldData, TFieldName>, FieldValidators<TFieldData, TFieldName, DeepValue<TFieldData, TFieldName>>, ValidationIssue, unknown, FormErrorTypes, TFieldComponents>, {
   default: {

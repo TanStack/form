@@ -3,8 +3,6 @@ id: CrossVersionPreactNode
 title: CrossVersionPreactNode
 ---
 
-# Type Alias: CrossVersionPreactNode
-
 ```ts
 type CrossVersionPreactNode = ReturnType<FunctionComponent<{
 }>>;

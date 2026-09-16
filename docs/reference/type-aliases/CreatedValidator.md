@@ -3,8 +3,6 @@ id: CreatedValidator
 title: CreatedValidator
 ---
 
-# Type Alias: CreatedValidator\<TOptions, TRun\>
-
 ```ts
 type CreatedValidator<TOptions, TRun> = ValidatorWithRun<InferFormDataFromValidator<TRun>, InferFormDataFromValidator<TRun>, TOptions, TRun>;
 ```

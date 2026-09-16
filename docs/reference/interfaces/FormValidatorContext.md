@@ -3,8 +3,6 @@ id: FormValidatorContext
 title: FormValidatorContext
 ---
 
-# Interface: FormValidatorContext\<TFormData\>
-
 Defined in: [validation.public.ts:412](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L412)
 
 ## Type Parameters

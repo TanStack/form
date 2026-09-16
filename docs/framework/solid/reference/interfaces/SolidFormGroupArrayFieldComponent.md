@@ -3,8 +3,6 @@ id: SolidFormGroupArrayFieldComponent
 title: SolidFormGroupArrayFieldComponent
 ---
 
-# Interface: SolidFormGroupArrayFieldComponent()\<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents\>
-
 Defined in: [packages/solid-form/src/Components.public.ts:240](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L240)
 
 ## Type Parameters

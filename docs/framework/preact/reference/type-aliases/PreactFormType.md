@@ -3,8 +3,6 @@ id: PreactFormType
 title: PreactFormType
 ---
 
-# Type Alias: PreactFormType\<TOptions\>
-
 ```ts
 type PreactFormType<TOptions> = TOptions extends FormOptions<infer TFormData, infer TFormValidators, infer TSubmitReturn, infer TComponents> ? PreactFormApi<TFormData, PreactFormTypeErrorTypes<TFormValidators, TSubmitReturn>, TComponents extends AnyPreactFormComponentMap ? TComponents : DefaultPreactFormComponentMap> : never;
 ```

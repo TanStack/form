@@ -3,8 +3,6 @@ id: FieldGroupFieldData
 title: FieldGroupFieldData
 ---
 
-# Type Alias: FieldGroupFieldData\<TFields\>
-
 ```ts
 type FieldGroupFieldData<TFields> = { [TFieldName in keyof TFields]: TFields[TFieldName] extends FieldGroupFieldSlot<infer TValue, any> ? TValue : never };
 ```

@@ -3,8 +3,6 @@ id: FormListenerContext
 title: FormListenerContext
 ---
 
-# Interface: FormListenerContext\<TFormData, TFormErrorTypes\>
-
 Defined in: [listeners.public.ts:200](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L200)
 
 Context passed to a form listener.

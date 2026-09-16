@@ -3,8 +3,6 @@ id: AnyReactFormApi
 title: AnyReactFormApi
 ---
 
-# Type Alias: AnyReactFormApi
-
 ```ts
 type AnyReactFormApi = AnyFormApi & ReactTanStackFormComponents<any, any, any>;
 ```

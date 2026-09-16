@@ -3,8 +3,6 @@ id: FormResetOptions
 title: FormResetOptions
 ---
 
-# Interface: FormResetOptions
-
 Defined in: [FormApi/FormApi.public.ts:548](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L548)
 
 Options controlling whether `reset(values)` replaces the default-value

@@ -3,8 +3,6 @@ id: Selection
 title: Selection
 ---
 
-# Type Alias: Selection\<TSelected\>
-
 ```ts
 type Selection<TSelected> = Readable<TSelected>;
 ```

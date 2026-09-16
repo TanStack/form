@@ -3,8 +3,6 @@ id: FormHookHelpers
 title: FormHookHelpers
 ---
 
-# Interface: FormHookHelpers
-
 Defined in: [packages/svelte-form/src/AppForm/getFormHookHelpers.public.ts:66](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/AppForm/getFormHookHelpers.public.ts#L66)
 
 ## Properties

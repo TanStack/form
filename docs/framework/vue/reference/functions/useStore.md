@@ -3,8 +3,6 @@ id: _useStore
 title: _useStore
 ---
 
-# Function: \_useStore()
-
 ```ts
 function _useStore<TState, TActions, TSelected>(
    store, 

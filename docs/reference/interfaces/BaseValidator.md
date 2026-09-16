@@ -3,8 +3,6 @@ id: BaseValidator
 title: BaseValidator
 ---
 
-# Interface: BaseValidator\<TValidator\>
-
 Defined in: [validation.public.ts:11](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L11)
 
 ## Extended by

@@ -3,8 +3,6 @@ id: SubfieldsMeta
 title: SubfieldsMeta
 ---
 
-# Interface: SubfieldsMeta
-
 Defined in: [FieldApi/FieldApi.public.ts:21](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L21)
 
 ## Properties

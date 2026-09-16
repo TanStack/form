@@ -3,8 +3,6 @@ id: VueFormFieldComponent
 title: VueFormFieldComponent
 ---
 
-# Type Alias: VueFormFieldComponent\<TFormData, TFormErrorTypes, TFieldComponents\>
-
 ```ts
 type VueFormFieldComponent<TFormData, TFormErrorTypes, TFieldComponents> = <TFieldName, TFieldValidators>(props) => VueComponentInstance<VueFormFieldProps<TFormData, TFieldName, DeepValue<TFormData, TFieldName>, TFieldValidators, never, TFormData, TFormErrorTypes, TFieldComponents>, {
   default: {

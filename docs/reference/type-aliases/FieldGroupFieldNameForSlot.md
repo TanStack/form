@@ -3,8 +3,6 @@ id: FieldGroupFieldNameForSlot
 title: FieldGroupFieldNameForSlot
 ---
 
-# Type Alias: FieldGroupFieldNameForSlot\<TFieldData, TSlot\>
-
 ```ts
 type FieldGroupFieldNameForSlot<TFieldData, TSlot> = { [TFieldName in DeepKeys<TFieldData>]: FieldGroupFieldSlotAllows<TSlot, DeepValue<TFieldData, TFieldName>> extends true ? TFieldName : never }[DeepKeys<TFieldData>];
 ```

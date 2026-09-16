@@ -3,8 +3,6 @@ id: HandleSubmitFn
 title: HandleSubmitFn
 ---
 
-# Type Alias: HandleSubmitFn\<TFormData\>
-
 ```ts
 type HandleSubmitFn<TFormData> = () => Promise<FormValidationError<TFormData>[]>;
 ```

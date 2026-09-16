@@ -3,8 +3,6 @@ id: FieldGroupDefinition
 title: FieldGroupDefinition
 ---
 
-# Interface: FieldGroupDefinition\<TFields, TFieldComponents\>
-
 Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:71](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/withFields.public.ts#L71)
 
 ## Type Parameters

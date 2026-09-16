@@ -3,8 +3,6 @@ id: ReactTanStackFormComponents
 title: ReactTanStackFormComponents
 ---
 
-# Interface: ReactTanStackFormComponents\<TFormData, TFormErrorTypes, TFieldComponents\>
-
 Defined in: [packages/react-form/src/ReactForm/Components.public.ts:358](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L358)
 
 ## Type Parameters

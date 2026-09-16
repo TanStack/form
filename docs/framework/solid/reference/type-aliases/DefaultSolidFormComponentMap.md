@@ -3,8 +3,6 @@ id: DefaultSolidFormComponentMap
 title: DefaultSolidFormComponentMap
 ---
 
-# Type Alias: DefaultSolidFormComponentMap
-
 ```ts
 type DefaultSolidFormComponentMap = SolidFormComponentMap<Record<never, never>, Record<never, never>>;
 ```

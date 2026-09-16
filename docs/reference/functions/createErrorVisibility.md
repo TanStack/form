@@ -3,8 +3,6 @@ id: createErrorVisibility
 title: createErrorVisibility
 ---
 
-# Function: createErrorVisibility()
-
 ```ts
 function createErrorVisibility(visibility): ReusableErrorVisibility;
 ```

@@ -3,8 +3,6 @@ id: FormOptionsApi
 title: FormOptionsApi
 ---
 
-# Interface: FormOptionsApi()\<TComponents\>
-
 Defined in: [utils.public.ts:205](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L205)
 
 The callable API exposed by `formOptions`, including its schema-driven

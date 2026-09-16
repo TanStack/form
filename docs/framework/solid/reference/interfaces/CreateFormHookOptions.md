@@ -3,8 +3,6 @@ id: CreateFormHookOptions
 title: CreateFormHookOptions
 ---
 
-# Interface: CreateFormHookOptions\<TFormComponents, TFieldComponents\>
-
 Defined in: [packages/solid-form/src/AppForm/createFormHookTypes.public.ts:46](https://github.com/TanStack/form/blob/main/packages/solid-form/src/AppForm/createFormHookTypes.public.ts#L46)
 
 Configures the components and reusable defaults returned by

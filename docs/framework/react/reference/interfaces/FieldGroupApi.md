@@ -3,8 +3,6 @@ id: FieldGroupApi
 title: FieldGroupApi
 ---
 
-# Interface: FieldGroupApi\<TFieldData, TFieldComponents\>
-
 Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:175](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L175)
 
 ## Extends

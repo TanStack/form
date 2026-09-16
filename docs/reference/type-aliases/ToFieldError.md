@@ -3,8 +3,6 @@ id: ToFieldError
 title: ToFieldError
 ---
 
-# Type Alias: ToFieldError\<TFieldValidators, TGroupFieldError, TFormErrorTypes\>
-
 ```ts
 type ToFieldError<TFieldValidators, TGroupFieldError, TFormErrorTypes> = FallbackToValidationIssue<
   | ExtractValidatorFieldError<TFieldValidators, FieldValidators<any, any, any>>

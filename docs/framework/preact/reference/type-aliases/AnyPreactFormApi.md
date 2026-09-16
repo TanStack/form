@@ -3,8 +3,6 @@ id: AnyPreactFormApi
 title: AnyPreactFormApi
 ---
 
-# Type Alias: AnyPreactFormApi
-
 ```ts
 type AnyPreactFormApi = AnyFormApi & PreactTanStackFormComponents<any, any, any>;
 ```

@@ -3,8 +3,6 @@ id: FieldBrandHelper
 title: FieldBrandHelper
 ---
 
-# Interface: FieldBrandHelper
-
 Defined in: [packages/react-form/src/AppForm/getFormHookHelpers.public.ts:162](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/getFormHookHelpers.public.ts#L162)
 
 Adds field-value compatibility metadata to components without wrapping them

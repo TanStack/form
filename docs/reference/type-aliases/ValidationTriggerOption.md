@@ -3,8 +3,6 @@ id: ValidationTriggerOption
 title: ValidationTriggerOption
 ---
 
-# Type Alias: ValidationTriggerOption\<TFormData, TValue, TTrigger, TScope\>
-
 ```ts
 type ValidationTriggerOption<TFormData, TValue, TTrigger, TScope> = 
   | TTrigger

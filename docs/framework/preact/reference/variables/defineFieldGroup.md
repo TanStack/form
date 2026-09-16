@@ -3,8 +3,6 @@ id: defineFieldGroup
 title: defineFieldGroup
 ---
 
-# Variable: defineFieldGroup
-
 ```ts
 const defineFieldGroup: DefineFieldGroupFn<Record<never, never>>;
 ```

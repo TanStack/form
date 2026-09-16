@@ -3,8 +3,6 @@ id: ReusableErrorVisibilityState
 title: ReusableErrorVisibilityState
 ---
 
-# Type Alias: ReusableErrorVisibilityState
-
 ```ts
 type ReusableErrorVisibilityState = Omit<FormApi<any, any>["state"], "values"> & object;
 ```

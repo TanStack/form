@@ -3,8 +3,6 @@ id: DefaultFieldOptions
 title: DefaultFieldOptions
 ---
 
-# Type Alias: DefaultFieldOptions
-
 ```ts
 type DefaultFieldOptions = Pick<FieldApiOptions<unknown, string, unknown, FieldValidators<unknown, string, unknown>, never, unknown, FormErrorTypes>, "errorVisibility" | "errorBoundary" | "listeners"> & DefaultListenersMergeOptions;
 ```

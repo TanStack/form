@@ -3,8 +3,6 @@ id: AnySolidFormApi
 title: AnySolidFormApi
 ---
 
-# Type Alias: AnySolidFormApi
-
 ```ts
 type AnySolidFormApi = AnyFormApi & SolidTanStackFormComponents<any, any, any>;
 ```

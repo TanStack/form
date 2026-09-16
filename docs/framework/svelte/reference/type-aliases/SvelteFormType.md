@@ -3,8 +3,6 @@ id: SvelteFormType
 title: SvelteFormType
 ---
 
-# Type Alias: SvelteFormType\<TOptions\>
-
 ```ts
 type SvelteFormType<TOptions> = TOptions extends FormOptions<infer TData, infer TValidators, infer TSubmitReturn, infer TComponents> ? SvelteFormApi<TData, SvelteFormTypeErrorTypes<TValidators, TSubmitReturn>, TComponents extends AnySvelteFormComponentMap ? TComponents : DefaultSvelteFormComponentMap> : never;
 ```

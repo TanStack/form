@@ -3,8 +3,6 @@ id: SolidFormGroupApi
 title: SolidFormGroupApi
 ---
 
-# Interface: SolidFormGroupApi\<TFormData, TGroupName, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents\>
-
 Defined in: [packages/solid-form/src/Components.public.ts:268](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L268)
 
 ## Extends

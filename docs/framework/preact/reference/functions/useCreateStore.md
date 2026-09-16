@@ -3,8 +3,6 @@ id: useCreateStore
 title: useCreateStore
 ---
 
-# Function: useCreateStore()
-
 ## Call Signature
 
 ```ts

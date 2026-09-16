@@ -3,8 +3,6 @@ id: TryGetArrayElementType
 title: TryGetArrayElementType
 ---
 
-# Type Alias: TryGetArrayElementType\<TValue\>
-
 ```ts
 type TryGetArrayElementType<TValue> = TValue extends ReadonlyArray<infer TElement> ? TElement : never;
 ```

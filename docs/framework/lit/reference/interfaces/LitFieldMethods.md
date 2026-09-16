@@ -3,8 +3,6 @@ id: LitFieldMethods
 title: LitFieldMethods
 ---
 
-# Interface: LitFieldMethods\<TFieldData, TGroupFieldError, TFormData, TFormErrorTypes\>
-
 Defined in: [tanstack-form-controller.ts:81](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L81)
 
 ## Type Parameters

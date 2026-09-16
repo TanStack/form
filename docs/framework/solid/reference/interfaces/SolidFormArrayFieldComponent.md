@@ -3,8 +3,6 @@ id: SolidFormArrayFieldComponent
 title: SolidFormArrayFieldComponent
 ---
 
-# Interface: SolidFormArrayFieldComponent()\<TFormData, TFormErrorTypes, TFieldComponents\>
-
 Defined in: [packages/solid-form/src/Components.public.ts:170](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L170)
 
 ## Type Parameters

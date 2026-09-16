@@ -3,8 +3,6 @@ id: SolidFieldGroup
 title: SolidFieldGroup
 ---
 
-# Type Alias: SolidFieldGroup\<TFields, TFieldComponents\>
-
 ```ts
 type SolidFieldGroup<TFields, TFieldComponents> = FieldGroupApi<FieldGroupFieldData<TFields>, TFieldComponents> & object;
 ```

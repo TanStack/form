@@ -3,8 +3,6 @@ id: ServerValidateSuccess
 title: ServerValidateSuccess
 ---
 
-# Interface: ServerValidateSuccess\<TFormData, TFormValidators\>
-
 Defined in: [ssr.public.ts:56](https://github.com/TanStack/form/blob/main/packages/form-core/src/ssr.public.ts#L56)
 
 ## Type Parameters

@@ -3,8 +3,6 @@ id: ReactFormSubscribeProps
 title: ReactFormSubscribeProps
 ---
 
-# Type Alias: ReactFormSubscribeProps\<TFormData, TFormErrorTypes, TSelected\>
-
 ```ts
 type ReactFormSubscribeProps<TFormData, TFormErrorTypes, TSelected> = ReactSubscribeProps<FormState<TFormData, TFormErrorTypes>, TSelected>;
 ```

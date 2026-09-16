@@ -3,8 +3,6 @@ id: NullableSchemaData
 title: NullableSchemaData
 ---
 
-# Type Alias: NullableSchemaData\<TFormValidators\>
-
 ```ts
 type NullableSchemaData<TFormValidators> = Editable<FormValidatorData<TFormValidators>>;
 ```

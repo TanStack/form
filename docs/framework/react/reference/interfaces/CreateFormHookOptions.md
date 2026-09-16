@@ -3,8 +3,6 @@ id: CreateFormHookOptions
 title: CreateFormHookOptions
 ---
 
-# Interface: CreateFormHookOptions\<TFormComponents, TFieldComponents\>
-
 Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:56](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L56)
 
 Configures the components and reusable defaults returned by

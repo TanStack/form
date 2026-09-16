@@ -3,8 +3,6 @@ id: CreateErrorMapFn
 title: CreateErrorMapFn
 ---
 
-# Type Alias: CreateErrorMapFn\<TFormData\>
-
 ```ts
 type CreateErrorMapFn<TFormData> = typeof createErrorMap;
 ```

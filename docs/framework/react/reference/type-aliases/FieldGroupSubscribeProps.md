@@ -3,8 +3,6 @@ id: FieldGroupSubscribeProps
 title: FieldGroupSubscribeProps
 ---
 
-# Type Alias: FieldGroupSubscribeProps\<TSelected\>
-
 ```ts
 type FieldGroupSubscribeProps<TSelected> = ReactFormSubscribeProps<unknown, FormErrorTypes, TSelected>;
 ```

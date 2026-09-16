@@ -3,8 +3,6 @@ id: FormHookHelpers
 title: FormHookHelpers
 ---
 
-# Interface: FormHookHelpers
-
 Defined in: [packages/react-form/src/AppForm/getFormHookHelpers.public.ts:230](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/getFormHookHelpers.public.ts#L230)
 
 Helpers for preparing value-compatible field components for registration

@@ -3,8 +3,6 @@ id: SvelteFormGroupSubscribeComponent
 title: SvelteFormGroupSubscribeComponent
 ---
 
-# Type Alias: SvelteFormGroupSubscribeComponent\<TGroupValue, TGroupErrorTypes\>
-
 ```ts
 type SvelteFormGroupSubscribeComponent<TGroupValue, TGroupErrorTypes> = <TSelected>(options) => SvelteComponent & Component<any> & WithoutFunction<Component>;
 ```

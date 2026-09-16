@@ -3,8 +3,6 @@ id: VueFormComponentMap
 title: VueFormComponentMap
 ---
 
-# Interface: VueFormComponentMap\<TFormComponents, TFieldComponents\>
-
 Defined in: [packages/vue-form/src/AppForm/componentMap.public.ts:3](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/componentMap.public.ts#L3)
 
 ## Extended by

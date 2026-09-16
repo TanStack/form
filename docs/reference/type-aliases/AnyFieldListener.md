@@ -3,8 +3,6 @@ id: AnyFieldListener
 title: AnyFieldListener
 ---
 
-# Type Alias: AnyFieldListener
-
 ```ts
 type AnyFieldListener = FieldListener<any, any, any, any, any, any>;
 ```
