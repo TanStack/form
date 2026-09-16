@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { fireEvent, render } from '@testing-library/react'
+import { fireEvent, render, waitFor } from '@testing-library/react'
 import React, { useEffect, useState } from 'react'
 import { userEvent } from '@testing-library/user-event'
 import { useForm } from '../src'
@@ -414,6 +414,77 @@ describe('Form fields', () => {
     await user.clear(input)
     await user.type(input, 'after-reset')
     expect(input).toHaveValue('after-reset')
+  })
+
+  it('moves mounted fields onto the current field api after array mutations', async () => {
+    function Component() {
+      const form = useForm({
+        defaultValues: { issues: [{ title: 'A' }, { title: '' }] },
+        validators: [
+          {
+            triggers: ['change'],
+            run: ({ value }) => ({
+              fields: Object.fromEntries(
+                value.issues.map((issue, index) => [
+                  `issues[${index}].title`,
+                  issue.title ? undefined : 'Required',
+                ]),
+              ),
+            }),
+          },
+        ],
+      })
+
+      return (
+        <>
+          <button
+            data-testid="validate"
+            onClick={() => void form.handleSubmit()}
+          />
+          <form.ArrayField name="issues">
+            {(array) => (
+              <>
+                {array.value.map((_, index) => (
+                  <form.Field key={index} name={`issues[${index}].title`}>
+                    {(field) => (
+                      <>
+                        <input
+                          data-testid={`input-${index}`}
+                          value={field.value}
+                          onChange={(event) =>
+                            field.handleChange(event.target.value)
+                          }
+                        />
+                        <output data-testid={`errors-${index}`}>
+                          {field.errors.map((error) => error.message).join(',')}
+                        </output>
+                      </>
+                    )}
+                  </form.Field>
+                ))}
+                <button
+                  data-testid="remove-first"
+                  onClick={() => array.removeValue(0)}
+                />
+              </>
+            )}
+          </form.ArrayField>
+        </>
+      )
+    }
+
+    const { getByTestId, queryByTestId } = render(<Component />)
+
+    fireEvent.click(getByTestId('validate'))
+    await waitFor(() =>
+      expect(getByTestId('errors-1')).toHaveTextContent('Required'),
+    )
+
+    fireEvent.click(getByTestId('remove-first'))
+
+    await waitFor(() => expect(queryByTestId('input-1')).toBeNull())
+    expect(getByTestId('input-0')).toHaveValue('')
+    expect(getByTestId('errors-0')).toHaveTextContent('Required')
   })
 
   it('should remove unused field nodes', async () => {

@@ -1215,6 +1215,7 @@ export class InternalFieldApi<
     const previousPath = this.name
     moveFieldToSegment(this, newSegment)
     if (this.name !== previousPath) {
+      this.form._bumpFieldTreeVersion()
       devtools().moveField?.(this, previousPath)
     }
   }
@@ -1230,6 +1231,7 @@ export class InternalFieldApi<
     } = {},
   ) {
     killField(this, options)
+    this.form._bumpFieldTreeVersion()
   }
 
   _pruneIfUnused(): void {

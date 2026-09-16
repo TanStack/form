@@ -122,6 +122,13 @@ export interface FormAtoms<in out TFormData> {
   meta: FormMetaAtoms
   resetVersion: Atom<number>
   defaultValuesVersion: Atom<number>
+  /**
+   * Bumped whenever a field API changes the name it is reachable by, either
+   * because it was killed or because an array mutation moved it to another
+   * index. Adapters watch this to move mounted components onto the field API
+   * the form now uses for their name.
+   */
+  fieldTreeVersion: Atom<number>
 }
 
 function createInitialFormErrorMeta(): FormErrorMeta {
@@ -320,6 +327,7 @@ export class InternalFormApi<
       meta: createInitialFormMetaAtoms(),
       resetVersion: createAtom(0),
       defaultValuesVersion: createAtom(0),
+      fieldTreeVersion: createAtom(0),
     }
     this._fieldRootNode = new InternalRootFieldApi(this)
     this._onSubmitSource = new InternalValidationSourceInstance({
@@ -745,6 +753,15 @@ export class InternalFormApi<
       )
       field._pruneIfUnused()
     })
+  }
+
+  /**
+   * @private
+   * Signals that the name a field API is reachable by has changed, so mounted
+   * adapter components can resolve their name to the current field API.
+   */
+  _bumpFieldTreeVersion(): void {
+    this._atoms.fieldTreeVersion.set((version) => version + 1)
   }
 
   _tryGetFieldApi(
