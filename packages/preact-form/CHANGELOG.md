@@ -1,5 +1,16 @@
 # @tanstack/preact-form
 
+## 2.0.0-alpha.3
+
+### Minor Changes
+
+- [#2365](https://github.com/TanStack/form/pull/2365) [`f8bbc25`](https://github.com/TanStack/form/commit/f8bbc25affcf5560b1da0c9c357fd62ef2108dd9) - Feat: Field groups may now omit identity bindings like `fields={{ a: 'a' }}`
+
+### Patch Changes
+
+- Updated dependencies [[`f8bbc25`](https://github.com/TanStack/form/commit/f8bbc25affcf5560b1da0c9c357fd62ef2108dd9)]:
+  - @tanstack/form-core@2.0.0-alpha.3
+
 ## 2.0.0-alpha.2
 
 ### Minor Changes
