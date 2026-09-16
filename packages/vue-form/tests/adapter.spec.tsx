@@ -361,6 +361,120 @@ describe('Vue adapter parity', () => {
     expect(view.getByTestId('app-field')).toHaveTextContent('Name:name:Tony')
   })
 
+  const createComposedTextFieldHook = () => {
+    const TextField = defineComponent<{
+      field: FieldWithValue<string>
+      label: string
+    }>(
+      (props) => () => (
+        <label>
+          {props.label}
+          <input
+            aria-label={props.label}
+            aria-invalid={props.field.meta.isInvalid}
+            value={props.field.value}
+            onInput={(event) =>
+              props.field.handleChange((event.target as HTMLInputElement).value)
+            }
+          />
+          <output data-testid="composed-value">{props.field.value}</output>
+          <output data-testid="composed-errors">
+            {props.field.errors.map((error) => error.message).join(',')}
+          </output>
+        </label>
+      ),
+      { props: ['field', 'label'] },
+    )
+
+    const { fieldComponent } = getFormHookHelpers()
+    return createFormHook({
+      fieldComponents: {
+        AppTextField: fieldComponent.strict(TextField, 'field'),
+      },
+      formComponents: {},
+    })
+  }
+
+  it('rerenders composed field components when field state changes', async () => {
+    const { useAppForm } = createComposedTextFieldHook()
+
+    const Component = defineComponent(() => {
+      const form = useAppForm({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            triggers: ['change'],
+            run: ({ value, createErrorMap }) => {
+              const errors = createErrorMap()
+              if (value.name.length < 2) errors.fields.name = 'Too short'
+              return errors
+            },
+          },
+        ],
+      })
+      return () => (
+        <form.Field name="name">
+          {({ field }: { field: AnyFieldApi & { AppTextField: any } }) => (
+            <field.AppTextField label="Name" />
+          )}
+        </form.Field>
+      )
+    })
+
+    const view = render(Component)
+
+    await fireEvent.update(view.getByLabelText('Name'), 'T')
+    await waitFor(() => {
+      expect(view.getByTestId('composed-value')).toHaveTextContent('T')
+      expect(view.getByTestId('composed-errors')).toHaveTextContent('Too short')
+      expect(view.getByLabelText('Name')).toHaveAttribute(
+        'aria-invalid',
+        'true',
+      )
+    })
+
+    await fireEvent.update(view.getByLabelText('Name'), 'Tony')
+    await waitFor(() => {
+      expect(view.getByTestId('composed-value')).toHaveTextContent('Tony')
+      expect(view.getByTestId('composed-errors')).toBeEmptyDOMElement()
+      expect(view.getByLabelText('Name')).toHaveAttribute(
+        'aria-invalid',
+        'false',
+      )
+    })
+  })
+
+  it('keeps composed field components connected after form reset', async () => {
+    const { useAppForm } = createComposedTextFieldHook()
+    let formApi: any
+
+    const Component = defineComponent(() => {
+      const form = useAppForm({ defaultValues: { name: '' } })
+      formApi = form
+      return () => (
+        <form.Field name="name">
+          {({ field }: { field: AnyFieldApi & { AppTextField: any } }) => (
+            <field.AppTextField label="Name" />
+          )}
+        </form.Field>
+      )
+    })
+
+    const view = render(Component)
+
+    await fireEvent.update(view.getByLabelText('Name'), 'before')
+    expect(formApi.state.values.name).toBe('before')
+
+    formApi.reset()
+    await nextTick()
+
+    await fireEvent.update(view.getByLabelText('Name'), 'after')
+    expect(formApi.state.values.name).toBe('after')
+    await waitFor(() =>
+      expect(view.getByTestId('composed-value')).toHaveTextContent('after'),
+    )
+  })
+
   it('binds reusable field groups to concrete form paths', async () => {
     const profileFieldGroup = defineFieldGroup(({ strict }) => ({
       name: strict<string>(),
