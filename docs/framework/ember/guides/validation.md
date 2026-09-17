@@ -172,7 +172,7 @@ As shown above, each `<Field>` accepts its own validation rules via the `onChang
 Example:
 
 ```gjs
-import { createForm, Subscribe } from '@tanstack/ember-form';
+import { createForm } from '@tanstack/ember-form';
 
 const handleSubmit = async ({ value }) => {
   console.log(value);
@@ -197,20 +197,20 @@ const FormWithFormLevelValidation = createForm({
   <FormWithFormLevelValidation @onSubmit={{handleSubmit}} as |tanstackForm|>
     <div>
       {{!-- ... --}}
-      <Subscribe @form={{tanstackForm}} @selector={{onChangeErrorMap}} as |formError|>
+      <tanstackForm.Subscribe @selector={{onChangeErrorMap}} as |formError|>
         {{#if formError}}
           <div>
             <em>There was an error on the form: {{formError}}</em>
           </div>
         {{/if}}
-      </Subscribe>
+      </tanstackForm.Subscribe>
       {{!-- ... --}}
     </div>
   </FormWithFormLevelValidation>
 </template>
 ```
 
-`<Subscribe>` is the recommended way to read form state in templates — give it the yielded form block param (`tanstackForm`, or `f` in examples that include a `<form>` element) and a selector, and the slice is autotracked. (If you'd rather read state from JavaScript, e.g. a `@cached` getter, write a small child component that takes `@form` and calls `form.useStore(selector)` in its constructor.)
+In a template, read form state with the `<Subscribe>` component that the form yields. To read form state in JavaScript, call `form.useSelector(selector)` and read its autotracked `current` property.
 
 ## Asynchronous Functional Validation
 
@@ -402,7 +402,7 @@ The form state object has a `canSubmit` flag that is false when any field is inv
 You can subscribe to it via `<Subscribe>` and use the value in order to, for example, disable the submit button when the form is invalid (in practice, disabled buttons are not accessible, use `aria-disabled` instead).
 
 ```gjs
-import { createForm, Subscribe } from '@tanstack/ember-form';
+import { createForm } from '@tanstack/ember-form';
 
 // Pre-compute negation in the selector — strict-mode templates can't write
 // {{!state.canSubmit}} inline.
@@ -420,11 +420,11 @@ const FormWithSubmitGate = createForm({
     {{!-- ... --}}
 
     {{!-- Dynamic submit button --}}
-    <Subscribe @form={{tanstackForm}} @selector={{submitButtonState}} as |slice|>
+    <tanstackForm.Subscribe @selector={{submitButtonState}} as |slice|>
       <button type="submit" disabled={{slice.cantSubmit}}>
         {{if slice.isSubmitting "..." "Submit"}}
       </button>
-    </Subscribe>
+    </tanstackForm.Subscribe>
   </FormWithSubmitGate>
 </template>
 ```

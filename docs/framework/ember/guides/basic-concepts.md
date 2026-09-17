@@ -90,7 +90,7 @@ const handleSubmit = async ({ value }) => {
 </template>
 ```
 
-> The invocation yields a block param — `tanstackForm` in the examples above. Name it `tanstackForm` by default; a block param named `form` would shadow the HTML `<form>` element (in Glimmer strict mode `<form>` then resolves to the lexical binding and Glimmer tries to render the form object as a component). In examples that include a literal `<form>` element, use the short alias `f` instead. Use the block param to render fields (`<tanstackForm.Field>`) and to feed `<Subscribe @form={{tanstackForm}}>`.
+> The invocation yields a block param — `tanstackForm` in the examples above. Name it `tanstackForm` by default; a block param named `form` would shadow the HTML `<form>` element (in Glimmer strict mode `<form>` then resolves to the lexical binding and Glimmer tries to render the form object as a component). In examples that include a literal `<form>` element, use the short alias `f` instead. Use the block param to render fields (`<tanstackForm.Field>`) and to read form state (`<tanstackForm.Subscribe>`).
 
 ## Field
 
@@ -299,14 +299,14 @@ const FirstNameForm = createForm({
 
 ## Reactivity
 
-`@tanstack/ember-form` offers various ways to subscribe to form and field state changes, most notably the `form.useStore` method and the `<Subscribe>` component. These let you optimize your form's rendering by only updating components when necessary.
+`@tanstack/ember-form` offers various ways to subscribe to form and field state changes, most notably the `form.useSelector` method and the `<Subscribe>` component. These let you optimize your form's rendering by only updating components when necessary.
 
-`<Subscribe>` is the most ergonomic option when you want a reactive slice in a template — it takes the form (the yielded block param) and a selector and yields the selected slice to its block.
+In a template, use the `<Subscribe>` component that the form yields. It takes a selector and yields the selected state to its block.
 
 Example:
 
 ```gjs
-import { createForm, Subscribe } from '@tanstack/ember-form';
+import { createForm } from '@tanstack/ember-form';
 
 const submitButtonState = (state) => ({
   canSubmit: state.canSubmit,
@@ -322,20 +322,20 @@ const NameForm = createForm({
 
 <template>
   <NameForm as |tanstackForm|>
-    <Subscribe @form={{tanstackForm}} @selector={{firstNameSelector}} as |firstName|>
+    <tanstackForm.Subscribe @selector={{firstNameSelector}} as |firstName|>
       <p>First name: {{firstName}}</p>
-    </Subscribe>
+    </tanstackForm.Subscribe>
 
-    <Subscribe @form={{tanstackForm}} @selector={{submitButtonState}} as |slice|>
+    <tanstackForm.Subscribe @selector={{submitButtonState}} as |slice|>
       <button type="submit" disabled={{slice.cantSubmit}}>
         {{if slice.isSubmitting "..." "Submit"}}
       </button>
-    </Subscribe>
+    </tanstackForm.Subscribe>
   </NameForm>
 </template>
 ```
 
-> If you need `useStore` (an autotracked box that exposes the selected slice on `.current`), call it inside a child Glimmer component that receives the form as `@form` and constructs the box in its constructor. `useStore` exists for cases where you want to read state from JavaScript (e.g. a `@cached` getter) rather than from a template.
+> To read form state in JavaScript, call `form.useSelector(selector)`. It returns an object whose `current` property is autotracked. Read `current` from a getter or a template.
 
 > A note on boolean negation: in Ember strict-mode templates you cannot write `{{!state.canSubmit}}` inline. Either pre-compute the negated flag inside the selector (as above), expose it from a getter, or import a `not` helper. The selector approach keeps the work co-located with the rest of the slice.
 

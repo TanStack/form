@@ -1,15 +1,11 @@
 import Component from '@glimmer/component';
 import { cached } from '@glimmer/tracking';
-// `trackedObject` is re-exported from `@ember/reactive/collections` in
-// ember-source 6.8+, but that path isn't in @embroider/addon-dev's virtual
-// peer-deps list yet. Importing from `@glimmer/validator` (a virtual peer)
-// gets the same primitive without the resolution warning.
-import { trackedObject } from '@glimmer/validator';
 import { FieldApi } from '@tanstack/form-core';
 import { registerDestructor } from '@ember/destroyable';
+import { trackStore } from '../-private/track-store.ts';
 
+import type { FieldSignature } from '../types.ts';
 import type {
-  AnyFormApi,
   DeepKeys,
   DeepValue,
   FieldAsyncValidateOrFn,
@@ -18,104 +14,17 @@ import type {
   FormValidateOrFn,
 } from '@tanstack/form-core';
 
-export interface FieldSignature<
-  TParentData,
-  TName extends DeepKeys<TParentData>,
-  TData extends DeepValue<TParentData, TName>,
-  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChangeAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnBlurAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnSubmitAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnDynamicAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TParentSubmitMeta,
-> {
-  Args: {
-    /** The owning form returned from `createForm`. */
-    form: AnyFormApi;
-    /** Path into the form's data. */
-    name: TName;
-    /** Optional default value for this field. */
-    defaultValue?: TData;
-    /** Debounce duration for async validators (ms). */
-    asyncDebounceMs?: number;
-    /** Always run async validators (skip cache). */
-    asyncAlways?: boolean;
-    /** Initial field meta. */
-    defaultMeta?: unknown;
-    /** Field-level validators. */
-    validators?: unknown;
-    /** Field-level listeners. */
-    listeners?: unknown;
-    /** 'value' (default) or 'array' for managing array fields. */
-    mode?: 'value' | 'array';
-  };
-  Blocks: {
-    default: [
-      field: FieldApi<
-        TParentData,
-        TName,
-        TData,
-        TOnMount,
-        TOnChange,
-        TOnChangeAsync,
-        TOnBlur,
-        TOnBlurAsync,
-        TOnSubmit,
-        TOnSubmitAsync,
-        TOnDynamic,
-        TOnDynamicAsync,
-        TFormOnMount,
-        TFormOnChange,
-        TFormOnChangeAsync,
-        TFormOnBlur,
-        TFormOnBlurAsync,
-        TFormOnSubmit,
-        TFormOnSubmitAsync,
-        TFormOnDynamic,
-        TFormOnDynamicAsync,
-        TFormOnServer,
-        TParentSubmitMeta
-      >,
-    ];
-  };
-}
-
 /**
- * Field component for `@tanstack/ember-form`. Instantiates a `FieldApi` for
- * the given path, mounts it for the lifetime of this component, and yields
- * the field API to its block.
+ * Yields a `FieldApi` for `@name`.
  *
- * `field.state` reads a `trackedObject` snapshot of the underlying store, so
- * reads in templates rerender on store changes.
+ * `field.state` is autotracked.
  *
  * @example
  * ```gjs
- * <Field @form={{this.form}} @name="firstName" as |field|>
+ * <Field @form={{tanstackForm}} @name="firstName" as |field|>
  *   <input
  *     value={{field.state.value}}
- *     {{on "input" (fn this.handleInput field)}}
+ *     {{on "input" (fn handleInput field)}}
  *   />
  * </Field>
  * ```
@@ -179,132 +88,46 @@ export default class Field<
     TParentSubmitMeta
   >
 > {
-  #api: FieldApi<
-    TParentData,
-    TName,
-    TData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync,
-    TFormOnMount,
-    TFormOnChange,
-    TFormOnChangeAsync,
-    TFormOnBlur,
-    TFormOnBlurAsync,
-    TFormOnSubmit,
-    TFormOnSubmitAsync,
-    TFormOnDynamic,
-    TFormOnDynamicAsync,
-    TFormOnServer,
-    TParentSubmitMeta
-  >;
-
-  constructor(
-    owner: unknown,
-    args: FieldSignature<
-      TParentData,
-      TName,
-      TData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TOnDynamic,
-      TOnDynamicAsync,
-      TFormOnMount,
-      TFormOnChange,
-      TFormOnChangeAsync,
-      TFormOnBlur,
-      TFormOnBlurAsync,
-      TFormOnSubmit,
-      TFormOnSubmitAsync,
-      TFormOnDynamic,
-      TFormOnDynamicAsync,
-      TFormOnServer,
-      TParentSubmitMeta
-    >['Args'],
-  ) {
-    super(owner as never, args);
-
-    this.#api = new FieldApi(this.#fieldOptions as never);
-
-    // ⚠️ This shadows `state` on the FieldApi *instance* — replacing the
-    // prototype getter defined by form-core (which returns `this.store.state`
-    // synchronously) with one that returns a `trackedObject` mirror.
-    //
-    // Why this is necessary: consumers yield the api into a template and read
-    // `{{field.state.value}}`, `{{field.state.meta.errors}}`, etc. For those
-    // reads to trigger re-renders, the property accesses must go through
-    // Glimmer's autotracking. The store itself doesn't entangle reads — it
-    // only notifies subscribers — so without this shadow, templates would
-    // render the initial value and then never update.
-    //
-    // Why we don't subclass FieldApi: form-core constructs the instance for
-    // us (and also constructs sub-fields internally), so we can't hook the
-    // constructor cleanly. Instance-level `Object.defineProperty` is the
-    // narrowest available seam, and it stays compatible with every method on
-    // FieldApi that reads `this.state` because the override mirrors the same
-    // value (just sourced from a tracked proxy).
-    const state = trackedObject(this.#api.store.state) as object;
-    Object.defineProperty(this.#api, 'state', {
-      configurable: true,
-      get: () => state,
-    });
-
-    const cleanupMount = this.#api.mount();
-    const unsub = this.#api.store.subscribe(() => {
-      Object.assign(state, this.#api.store.state);
-    }).unsubscribe;
-
-    registerDestructor(this, () => {
-      unsub();
-      cleanupMount();
-    });
+  /**
+   * The `Field` that a form yields overrides this.
+   */
+  get form() {
+    return this.args.form;
   }
 
-  get #fieldOptions() {
-    return {
-      form: this.args.form,
-      name: this.args.name,
-      defaultValue: this.args.defaultValue,
-      asyncDebounceMs: this.args.asyncDebounceMs,
-      asyncAlways: this.args.asyncAlways,
-      defaultMeta: this.args.defaultMeta,
-      validators: this.args.validators,
-      listeners: this.args.listeners,
-      mode: this.args.mode,
-    };
+  get #options() {
+    return { ...this.args, form: this.form };
+  }
+
+  #api = this.#create();
+
+  #create() {
+    const api = new FieldApi(this.#options);
+    const readState = trackStore(api.store, this);
+
+    /**
+     * form-core defines `state` as a prototype getter,
+     * and autotracking cannot observe it.
+     *
+     * svelte-form shadows the getter on the instance in the same way.
+     */
+    Object.defineProperty(api, 'state', { get: readState });
+
+    registerDestructor(this, api.mount());
+
+    return api;
   }
 
   /**
-   * Mirrors svelte-form's `$effect.pre(() => api.update(opts))`. Reading this
-   * getter inside the template entangles with each `this.args.*` it touches,
-   * so any change to a passed-in argument re-runs `api.update(...)`. The
-   * leading underscore is a convention — public-but-internal — because
-   * templates invoke path lookups via `Reflect.get`, which can't reach
-   * `#private` fields.
+   * form-core documents `update` as free of side effects,
+   * so the field can apply the current args when it is read.
    */
   @cached
-  get _syncArgs() {
-    this.#api.update(this.#fieldOptions as never);
-    return null;
-  }
-
   get field() {
+    this.#api.update(this.#options);
+
     return this.#api;
   }
 
-  <template>
-    {{this._syncArgs}}
-    {{yield this.field}}
-  </template>
+  <template>{{yield this.field}}</template>
 }

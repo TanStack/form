@@ -64,7 +64,7 @@ const MyForm = createForm({
 Just as you might access errors from an `onChange` or `onBlur` validation, you can access the errors from the `onDynamic` validation function using the `state.errorMap` object yielded by `<Subscribe>`.
 
 ```gjs
-import { createForm, revalidateLogic, Subscribe } from '@tanstack/ember-form';
+import { createForm, revalidateLogic } from '@tanstack/ember-form';
 
 const onDynamicFirstName = (state) => state.errorMap.onDynamic?.firstName;
 
@@ -83,21 +83,21 @@ const MyForm = createForm({
 
 <template>
   <MyForm as |tanstackForm|>
-    <Subscribe @form={{tanstackForm}} @selector={{onDynamicFirstName}} as |error|>
+    <tanstackForm.Subscribe @selector={{onDynamicFirstName}} as |error|>
       <p>{{error}}</p>
-    </Subscribe>
+    </tanstackForm.Subscribe>
   </MyForm>
 </template>
 ```
 
-> `<Subscribe>` is the most ergonomic way to read form state in a template. If you'd rather read state in JavaScript (e.g. a `@cached` getter), write a tiny child component that takes `@form` and calls `form.useStore(selector)` in its constructor — `useStore` returns an autotracked box whose `.current` re-renders only when the selected slice changes.
+> `<Subscribe>` reads form state in a template. To read form state in JavaScript, call `form.useSelector(selector)` and read its autotracked `current` property.
 
 ## Usage with Other Validation Logic
 
 You can use `onDynamic` validation alongside other validation logic, such as `onChange` or `onBlur`.
 
 ```gjs
-import { createForm, revalidateLogic, Subscribe } from '@tanstack/ember-form';
+import { createForm, revalidateLogic } from '@tanstack/ember-form';
 
 const onChangeFirstName = (state) => state.errorMap.onChange?.firstName;
 const onDynamicLastName = (state) => state.errorMap.onDynamic?.lastName;
@@ -127,12 +127,12 @@ const MyForm = createForm({
 <template>
   <MyForm as |tanstackForm|>
     <div>
-      <Subscribe @form={{tanstackForm}} @selector={{onChangeFirstName}} as |error|>
+      <tanstackForm.Subscribe @selector={{onChangeFirstName}} as |error|>
         <p>{{error}}</p>
-      </Subscribe>
-      <Subscribe @form={{tanstackForm}} @selector={{onDynamicLastName}} as |error|>
+      </tanstackForm.Subscribe>
+      <tanstackForm.Subscribe @selector={{onDynamicLastName}} as |error|>
         <p>{{error}}</p>
-      </Subscribe>
+      </tanstackForm.Subscribe>
     </div>
   </MyForm>
 </template>

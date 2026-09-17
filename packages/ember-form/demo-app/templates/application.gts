@@ -29,6 +29,8 @@ const PersonForm = createForm({
   defaultValues: { firstName: 'Christian', lastName: '' } as Person,
 });
 
+const resetFor = (form: { reset: () => void }) => () => form.reset();
+
 const onSubmitFor =
   (form: { handleSubmit: () => void }) => (event: Event) => {
     event.preventDefault();
@@ -91,7 +93,7 @@ export default class ApplicationTemplate extends Component {
             {{if slice.isSubmitting "Submitting" "Submit"}}
           </button>
         </Subscribe>
-        <button type="button" {{on "click" f.reset}}>Reset</button>
+        <button type="button" {{on "click" (resetFor f)}}>Reset</button>
       </form>
     </PersonForm>
   </template>

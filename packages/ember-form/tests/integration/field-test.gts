@@ -39,6 +39,24 @@ module('Integration | Field', function (hooks) {
     assert.dom('#lastName').hasValue('');
   });
 
+  test('@defaultValue sets the value', async function (assert) {
+    await render(
+      <template>
+        <SampleForm as |tanstackForm|>
+          <tanstackForm.Field
+            @name="lastName"
+            @defaultValue="Lovelace"
+            as |field|
+          >
+            <output id="value">{{field.state.value}}</output>
+          </tanstackForm.Field>
+        </SampleForm>
+      </template>,
+    );
+
+    assert.dom('#value').hasText('Lovelace');
+  });
+
   test('user input updates field state reactively', async function (assert) {
     await render(<template>
       <SampleForm as |tanstackForm|>
