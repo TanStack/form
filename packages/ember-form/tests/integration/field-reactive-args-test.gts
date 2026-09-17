@@ -68,8 +68,6 @@ module('Integration | Field reactive args', function (hooks) {
     assert.dom('em.error').doesNotExist('clears after meeting min 3');
 
     await click('#swap');
-    // The swap re-binds @validators; the new validator must run on the next
-    // change. Trigger a change and check.
     await fillIn('#firstName', 'Joey');
     assert.dom('em.error').hasText('min 5', 'updated validator applied');
 

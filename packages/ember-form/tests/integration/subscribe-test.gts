@@ -38,6 +38,28 @@ module('Integration | Subscribe', function (hooks) {
     assert.dom('#snapshot').hasText('Ada');
   });
 
+  test('renders before a field that mounts later', async function (assert) {
+    await render(
+      <template>
+        <SampleForm as |tanstackForm|>
+          <Subscribe @form={{tanstackForm}} as |state|>
+            <output id="snapshot">{{state.values.firstName}}</output>
+          </Subscribe>
+
+          <tanstackForm.Field
+            @name="firstName"
+            @defaultValue="Ada"
+            as |field|
+          >
+            <input id="firstName" value={{field.state.value}} />
+          </tanstackForm.Field>
+        </SampleForm>
+      </template>,
+    );
+
+    assert.dom('#snapshot').hasText('Ada');
+  });
+
   test('omitted selector yields the full form state', async function (assert) {
     await render(<template>
       <GraceForm as |tanstackForm|>

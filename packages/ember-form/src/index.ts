@@ -1,13 +1,15 @@
 export * from '@tanstack/form-core'
 
-export {
-  createForm,
-  type EmberFormApi,
-  type EmberFormExtendedApi,
-} from './create-form.gts'
+export { createForm } from './create-form.gts'
+export { default as Field } from './components/field.gts'
+export { default as Subscribe } from './components/subscribe.gts'
 
-export { default as Field, type FieldSignature } from './components/field.gts'
-export {
-  default as Subscribe,
-  type SubscribeSignature,
-} from './components/subscribe.gts'
+export type {
+  EmberFormApi,
+  EmberFormExtendedApi,
+  FieldComponent,
+  FieldSignature,
+  FormComponentSignature,
+  SubscribeComponent,
+  SubscribeSignature,
+} from './types.ts'

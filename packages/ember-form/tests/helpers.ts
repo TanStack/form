@@ -1,7 +1,3 @@
-/**
- * Shared helpers for integration tests.
- */
-
 export interface Sample {
   firstName: string
   lastName: string

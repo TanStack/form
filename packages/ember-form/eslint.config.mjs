@@ -46,7 +46,7 @@ export default defineConfig([
       parserOptions: { ...esmParserOptions },
     },
     rules: {
-      // type-only declarations confuse the JS rule; rely on tsc/glint instead
+      // The JS rule reports type-only declarations. ember-tsc covers this.
       'no-unused-vars': 'off',
     },
   },
@@ -55,8 +55,7 @@ export default defineConfig([
     languageOptions: {
       parser: emberParser,
       parserOptions: { ...esmParserOptions },
-      // ember-source 7+ compiles these implicitly into template scope via
-      // build transforms, so they don't need imports.
+      // ember-source 7.1 puts these in template scope without an import.
       globals: {
         on: 'readonly',
         fn: 'readonly',

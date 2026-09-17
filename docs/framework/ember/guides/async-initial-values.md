@@ -79,55 +79,44 @@ export const PersonForm = createForm({
 ```gjs
 // page.gts
 import Component from '@glimmer/component';
-import { trackedFunction } from 'reactiveweb/function';
+import { getPromiseState } from 'reactiveweb/get-promise-state';
 import { PersonForm } from './person-form.gts';
+
+async function loadPerson() {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  return { firstName: 'FirstName', lastName: 'LastName' };
+}
 
 export default class PersonPage extends Component {
-  request = trackedFunction(this, async () => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    return { firstName: 'FirstName', lastName: 'LastName' };
-  });
+  request = loadPerson();
+
+  get person() {
+    return getPromiseState(this.request);
+  }
 
   <template>
-    {{#if this.request.isPending}}
+    {{#if this.person.isLoading}}
       <p>Loading...</p>
-    {{else if this.request.value}}
-      <PersonForm @defaultValues={{this.request.value}} />
+    {{else if this.person.error}}
+      <p>The person did not load.</p>
+    {{else}}
+      <PersonForm @defaultValues={{this.person.resolved}} />
     {{/if}}
   </template>
 }
 ```
 
-This will show a loading spinner until the data is fetched, and then it will render the form with the fetched data as the initial values. Because `<PersonForm>` is only invoked once `request.value` is defined, the form is constructed with the resolved values on mount.
+The page shows the loading text until the promise resolves. `<PersonForm>` renders only after that, so the form starts with the fetched values.
 
-> The example above uses [`reactiveweb`](https://github.com/universal-ember/reactiveweb)'s `trackedFunction`, but the pattern is the same with any data-loading primitive — Ember's route model, ember-resources, `Resource` from `@warp-drive/*`, or even a hand-rolled async getter. The key invariant is: don't invoke the form component until the data is ready.
-
-## Wrapping the form in a component that consumes the resolved data
-
-If you'd rather encapsulate the form invocation alongside other component-local state, write a Glimmer component that takes the resolved data as an arg and renders the form internally:
-
-```gjs
-// person-form-loader.gts
-import Component from '@glimmer/component';
-import { trackedFunction } from 'reactiveweb/function';
-import { PersonForm } from './person-form.gts';
-
-export default class PersonFormLoader extends Component {
-  request = trackedFunction(this, async () => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    return { firstName: 'FirstName', lastName: 'LastName' };
-  });
-
-  <template>
-    {{#if this.request.isPending}}
-      <p>Loading...</p>
-    {{else if this.request.value}}
-      <PersonForm @defaultValues={{this.request.value}} />
-    {{/if}}
-  </template>
-}
-```
+> The example uses `getPromiseState` from [`reactiveweb`](https://github.com/universal-ember/reactiveweb). It derives `isLoading`, `error`, and `resolved` from a promise, so the component has no loading flags of its own. Any other source of data works the same way: a route model, ember-resources, or warp-drive. Do not render the form until the data is ready.
 
 ## Updating defaults after the form is mounted
 
-If you'd rather invoke the form immediately and patch values in once data arrives, you can call `form.update({ defaultValues: ... })` (or `form.reset(values)`) from inside a child component that receives the form as `@form` (e.g. via a `<Subscribe>` selector or a `{{didUpdate}}` modifier triggered when the loaded data changes). Be aware that updating `defaultValues` after fields have been touched will not overwrite user input — that is by design.
+To render the form immediately, pass the loaded values as `@defaultValues` when they arrive. The form applies changed args by itself.
+
+```gjs
+<PersonForm @defaultValues={{this.person.resolved}} />
+```
+
+New default values do not replace the input of a user. A field that the user touched keeps its value.
