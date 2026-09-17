@@ -56,23 +56,19 @@ export function trackStore<TState extends object>(
 
   registerDestructor(parent, unsubscribe)
 
-  return new Proxy({} as TState, {
-    get(_target, key) {
-      void tags[key]
+  const view = {}
 
-      return Reflect.get(store.state, key)
-    },
-    has(_target, key) {
-      return Reflect.has(store.state, key)
-    },
-    ownKeys() {
-      return Reflect.ownKeys(store.state)
-    },
-    getOwnPropertyDescriptor(_target, key) {
-      const descriptor = Reflect.getOwnPropertyDescriptor(store.state, key)
+  // form-core never adds or removes a state key, so the first keys are all the keys.
+  for (const key of Reflect.ownKeys(store.state)) {
+    Object.defineProperty(view, key, {
+      enumerable: true,
+      get() {
+        void tags[key]
 
-      // A proxy must report a key as configurable when its target lacks the key.
-      return descriptor && { ...descriptor, configurable: true }
-    },
-  })
+        return (store.state as Keyed)[key]
+      },
+    })
+  }
+
+  return view as TState
 }
