@@ -5,5 +5,5 @@ import { cleanup, configure } from '@testing-library/react'
 afterEach(() => cleanup())
 
 configure({
-  reactStrictMode: process.env.VITEST_REACT_STRICT_MODE === 'true',
+  reactStrictMode: import.meta.env.VITEST_REACT_STRICT_MODE === 'true',
 })
