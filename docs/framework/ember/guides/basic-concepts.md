@@ -12,19 +12,19 @@ You can create options for your form so that they can be shared between multiple
 Example:
 
 ```ts
-import { formOptions } from '@tanstack/ember-form';
+import { formOptions } from '@tanstack/ember-form'
 
 interface Person {
-  firstName: string;
-  lastName: string;
-  hobbies: Array<string>;
+  firstName: string
+  lastName: string
+  hobbies: Array<string>
 }
 
-const defaultPerson: Person = { firstName: '', lastName: '', hobbies: [] };
+const defaultPerson: Person = { firstName: '', lastName: '', hobbies: [] }
 
 const formOpts = formOptions({
   defaultValues: defaultPerson,
-});
+})
 ```
 
 ## Form Component
@@ -131,7 +131,7 @@ Example:
 const {
   value,
   meta: { errors, isValidating },
-} = field.state;
+} = field.state
 ```
 
 There are four states in the metadata that can be useful to see how the user interacts with a field:
@@ -142,7 +142,7 @@ There are four states in the metadata that can be useful to see how the user int
 - _"isBlurred"_, after the field has been blurred
 
 ```ts
-const { isTouched, isDirty, isPristine, isBlurred } = field.state.meta;
+const { isTouched, isDirty, isPristine, isBlurred } = field.state.meta
 ```
 
 ![Field states](https://raw.githubusercontent.com/TanStack/form/main/docs/assets/field-states.png)
@@ -164,10 +164,10 @@ We have chosen the persistent 'dirty' state model. To also support a non-persist
 - _"isDefaultValue"_, whether the field's current value is the default value
 
 ```ts
-const { isDefaultValue, isTouched } = field.state.meta;
+const { isDefaultValue, isTouched } = field.state.meta
 
 // The following line will re-create the non-Persistent `dirty` functionality.
-const nonPersistentIsDirty = !isDefaultValue;
+const nonPersistentIsDirty = !isDefaultValue
 ```
 
 ![Field states extended](https://raw.githubusercontent.com/TanStack/form/main/docs/assets/field-states-extended.png)

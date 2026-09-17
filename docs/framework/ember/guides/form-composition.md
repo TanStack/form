@@ -15,14 +15,14 @@ You can create options for your form so that they can be shared between multiple
 
 ```ts
 // shared-form.ts
-import { formOptions } from '@tanstack/ember-form';
+import { formOptions } from '@tanstack/ember-form'
 
 export const peopleFormOpts = formOptions({
   defaultValues: {
     firstName: 'John',
     lastName: 'Doe',
   },
-});
+})
 ```
 
 ```gjs
@@ -163,14 +163,14 @@ To solve this, you can break forms into smaller Glimmer components that accept t
 
 ```ts
 // shared-form.ts
-import { formOptions } from '@tanstack/ember-form';
+import { formOptions } from '@tanstack/ember-form'
 
 export const peopleFormOpts = formOptions({
   defaultValues: {
     firstName: 'John',
     lastName: 'Doe',
   },
-});
+})
 ```
 
 ```gjs
@@ -371,14 +371,14 @@ export default class SubscribeButton extends Component {
 
 ```ts
 // /src/features/people/shared-form.ts, to be used across `people` features
-import { formOptions } from '@tanstack/ember-form';
+import { formOptions } from '@tanstack/ember-form'
 
 export const peopleFormOpts = formOptions({
   defaultValues: {
     firstName: 'John',
     lastName: 'Doe',
   },
-});
+})
 ```
 
 ```gjs

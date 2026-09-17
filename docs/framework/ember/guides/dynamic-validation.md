@@ -8,7 +8,7 @@ In many cases, you want to change the validation rules depending on the state of
 We support this through our `onDynamic` validation function.
 
 ```ts
-import { revalidateLogic, createForm } from '@tanstack/ember-form';
+import { revalidateLogic, createForm } from '@tanstack/ember-form'
 
 const MyForm = createForm({
   defaultValues: {
@@ -20,12 +20,12 @@ const MyForm = createForm({
   validators: {
     onDynamic: ({ value }) => {
       if (!value.firstName) {
-        return { firstName: 'A first name is required' };
+        return { firstName: 'A first name is required' }
       }
-      return undefined;
+      return undefined
     },
   },
-});
+})
 ```
 
 > By default `onDynamic` is not called, so you need to pass `revalidateLogic()` to the `validationLogic` option of `createForm`.
@@ -56,7 +56,7 @@ const MyForm = createForm({
     modeAfterSubmission: 'blur',
   }),
   // ...
-});
+})
 ```
 
 ## Accessing Errors
@@ -211,14 +211,14 @@ const UsernameForm = createForm({
     onDynamicAsyncDebounceMs: 500, // Debounce the async validation by 500ms
     onDynamicAsync: async ({ value }) => {
       if (!value.username) {
-        return { username: 'Username is required' };
+        return { username: 'Username is required' }
       }
       // Simulate an async validation
-      const isValid = await validateUsername(value.username);
-      return isValid ? undefined : { username: 'Username is already taken' };
+      const isValid = await validateUsername(value.username)
+      return isValid ? undefined : { username: 'Username is already taken' }
     },
   },
-});
+})
 ```
 
 ### Standard Schema Validation
@@ -226,13 +226,13 @@ const UsernameForm = createForm({
 You can also use standard schema validation libraries like Valibot or Zod with `onDynamic` validation. This allows you to define complex validation rules that can change dynamically based on the form state.
 
 ```ts
-import { z } from 'zod';
-import { createForm, revalidateLogic } from '@tanstack/ember-form';
+import { z } from 'zod'
+import { createForm, revalidateLogic } from '@tanstack/ember-form'
 
 const schema = z.object({
   firstName: z.string().min(1, 'A first name is required'),
   lastName: z.string().min(1, 'A last name is required'),
-});
+})
 
 const MyForm = createForm({
   defaultValues: {
@@ -243,5 +243,5 @@ const MyForm = createForm({
   validators: {
     onDynamic: schema,
   },
-});
+})
 ```
