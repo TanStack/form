@@ -1,18 +1,18 @@
-import babelParser from '@babel/eslint-parser/experimental-worker';
-import emberParser from 'ember-eslint-parser';
-import tsParser from '@typescript-eslint/parser';
-import js from '@eslint/js';
-import { defineConfig, globalIgnores } from 'eslint/config';
-import prettier from 'eslint-config-prettier';
-import ember from 'eslint-plugin-ember/recommended';
-import importPlugin from 'eslint-plugin-import';
-import n from 'eslint-plugin-n';
-import globals from 'globals';
+import babelParser from '@babel/eslint-parser/experimental-worker'
+import emberParser from 'ember-eslint-parser'
+import tsParser from '@typescript-eslint/parser'
+import js from '@eslint/js'
+import { defineConfig, globalIgnores } from 'eslint/config'
+import prettier from 'eslint-config-prettier'
+import ember from 'eslint-plugin-ember/recommended'
+import importPlugin from 'eslint-plugin-import'
+import n from 'eslint-plugin-n'
+import globals from 'globals'
 
 const esmParserOptions = {
   ecmaFeatures: { modules: true },
   ecmaVersion: 'latest',
-};
+}
 
 export default defineConfig([
   globalIgnores([
@@ -105,4 +105,4 @@ export default defineConfig([
       globals: { ...globals.node },
     },
   },
-]);
+])

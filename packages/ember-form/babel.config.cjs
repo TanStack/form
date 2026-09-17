@@ -3,9 +3,9 @@
  * It's only for the local editing experience
  * (and linting)
  */
-const { buildMacros } = require('@embroider/macros/babel');
+const { buildMacros } = require('@embroider/macros/babel')
 
-const macros = buildMacros();
+const macros = buildMacros()
 
 module.exports = {
   plugins: [
@@ -37,4 +37,4 @@ module.exports = {
   generatorOpts: {
     compact: false,
   },
-};
+}
