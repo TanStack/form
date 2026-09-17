@@ -102,7 +102,7 @@ export default class EditProfile extends Component {
 - Anything shared across every instance (such as `defaultValues` or validators that don't depend on per-instance state) goes into the `createForm` call. Anything per-instance — most notably `onSubmit`, which usually closes over component state — is passed as an arg on the invocation: `<SimpleFormExample @onSubmit={{handleSubmit}}>`.
 - The component yields the form, named `f` in the examples above. Use it to render fields (`<f.Field>`) and to read form state (`<f.Subscribe>`). [Why not `form`?](./guides/basic-concepts.md#why-not-form) explains the names.
 - `onSubmitFor` is a small module-level helper that produces a `submit` handler for a given form. It's a convenient way to keep `event.preventDefault()` plumbing out of every template without re-introducing class methods.
-- Common template built-ins like `on`, `fn`, `hash`, and `if` are compiled into scope by ember-source's template build transforms (ember-source 7+), so you don't need to import them.
+- From ember-source 7.1, templates can use `on`, `fn`, and `hash` without an import, and the examples in these docs rely on that. `@tanstack/ember-form` supports ember-source 6.8 or later. Before 7.1, import `on` from `@ember/modifier`, and import `fn` and `hash` from `@ember/helper`.
 - `handleInput` is defined at module scope rather than as a method, so we can use the standard `(fn handleInput field)` pattern without binding `this` for every render.
 
 From here, you'll be ready to explore all of the other features of TanStack Form!

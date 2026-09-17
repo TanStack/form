@@ -1,3 +1,5 @@
+import { fn } from '@ember/helper';
+import { on } from '@ember/modifier';
 import Component from '@glimmer/component';
 import { fillIn, render } from '@ember/test-helpers';
 import { module, test } from 'qunit';

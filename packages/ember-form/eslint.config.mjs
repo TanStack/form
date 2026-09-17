@@ -55,15 +55,6 @@ export default defineConfig([
     languageOptions: {
       parser: emberParser,
       parserOptions: { ...esmParserOptions },
-      // ember-source 7.1 puts these in template scope without an import.
-      globals: {
-        on: 'readonly',
-        fn: 'readonly',
-        hash: 'readonly',
-        array: 'readonly',
-        concat: 'readonly',
-        get: 'readonly',
-      },
     },
     rules: {
       'no-unused-vars': 'off',

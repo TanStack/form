@@ -1,3 +1,5 @@
+import { fn, hash } from '@ember/helper';
+import { on } from '@ember/modifier';
 import { blur, fillIn, focus, render, waitFor } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
