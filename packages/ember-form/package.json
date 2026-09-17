@@ -40,8 +40,8 @@
     "build": "rollup --config",
     "test:eslint": "eslint ./src ./tests",
     "test:types": "ember-tsc --noEmit",
-    "test:lib": "NODE_ENV=development vite build --mode=development --out-dir dist-tests && testem --file testem.cjs ci --port 0",
-    "test:lib:dev": "vite dev",
+    "test:browser": "NODE_ENV=development vite build --mode=development --out-dir dist-tests && testem --file testem.cjs ci --port 0",
+    "test:browser:dev": "vite dev",
     "test:build": "publint --strict",
     "prepack": "rollup --config",
     "start": "vite dev"

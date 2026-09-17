@@ -97,6 +97,25 @@ Everything else is re-exported from `@tanstack/form-core` (validators, types, he
 
 For the full guide — quick start, basic concepts, validation, dynamic validation, async initial values, arrays, linked fields, and form composition — see the [Ember docs in the TanStack/form repo](https://github.com/TanStack/form/tree/main/docs/framework/ember).
 
+## Development
+
+Ember projects test in a browser, because end users do not run node or a fake DOM. The tests render real components in Chrome and assert on the real DOM. This package has no jsdom tests.
+
+Build `@tanstack/form-core` one time, then run the checks from this directory:
+
+```sh
+pnpm --filter @tanstack/form-core build
+
+pnpm test:browser      # all tests, in headless Chrome
+pnpm test:browser:dev  # a dev server, to run and debug the tests in your own browser
+pnpm test:types        # source, tests, and demo app
+pnpm test:eslint
+```
+
+`tests/types/templates.gts` holds the type tests. Each `@glint-expect-error` comment marks a template that must not type-check, and `pnpm test:types` fails if one of them does.
+
+In CI, the browser tests run in their own job on the GitHub runner, because the Nx agents that run the other targets have no browser.
+
 ## License
 
 MIT — see the [root LICENSE](../../LICENSE).
