@@ -55,7 +55,6 @@
     "@angular/compiler-cli": "^22.1.1",
     "@angular/core": "^22.1.1",
     "@angular/platform-browser": "^22.1.1",
-    "@angular/platform-browser-dynamic": "^22.1.1",
     "@testing-library/angular": "^19.4.2",
     "ng-packagr": "^22.1.1",
     "typescript": "^6.0.2",

@@ -13,13 +13,11 @@ export default defineConfig(({ mode }) => ({
   ],
   optimizeDeps: {
     include: [
-      '@angular/compiler',
       '@angular/core',
       '@angular/core/testing',
       '@angular/common',
       '@angular/platform-browser',
-      '@angular/platform-browser-dynamic',
-      '@angular/platform-browser-dynamic/testing',
+      '@angular/platform-browser/testing',
       '@analogjs/vitest-angular/setup-snapshots',
       '@testing-library/angular',
       '@testing-library/jest-dom/vitest',
