@@ -103,7 +103,7 @@ export default class Field<
 
   #create() {
     const api = new FieldApi(this.#options);
-    const readState = trackStore(api.store, this);
+    const state = trackStore(api.store, this);
 
     /**
      * form-core defines `state` as a prototype getter,
@@ -111,7 +111,7 @@ export default class Field<
      *
      * svelte-form shadows the getter on the instance in the same way.
      */
-    Object.defineProperty(api, 'state', { get: readState });
+    Object.defineProperty(api, 'state', { get: () => state });
 
     registerDestructor(this, api.mount());
 
