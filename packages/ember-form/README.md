@@ -91,7 +91,7 @@ The component yields the `FormApi` with these additions:
 
 `Field` and `Subscribe` are also exports. The exports take the form as `@form`.
 
-> In a strict-mode template, a block param hides an HTML element of the same name. Name the yielded form `tanstackForm`. If the markup contains a `<form>` element, use a short name such as `f`.
+> In a strict-mode template, a name in scope hides the HTML element of the same name. Do not name the component or the yielded form `form`. The examples use `tanstackForm`, or `f` when the markup contains a `<form>` element.
 
 Everything else is re-exported from `@tanstack/form-core` (validators, types, helpers).
 

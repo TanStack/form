@@ -7,6 +7,8 @@ TanStack Form supports arrays as values in a form, including sub-object values i
 
 ## Basic Usage
 
+> The examples name the form component `PeopleForm` and the yielded form `tanstackForm`. [Why not `form`?](./basic-concepts.md#why-not-form) explains the names.
+
 To use an array, you can iterate over `field.state.value` with [`{{#each}}`](https://api.emberjs.com/ember/release/classes/Ember.Templates.helpers/methods/each):
 
 ```gjs
