@@ -5,6 +5,8 @@ title: Quick Start
 
 The bare minimum to get started with TanStack Form is to create a form and add a field. Keep in mind that this example does not include any validation or error handling... yet.
 
+## In a template-only component
+
 ```gjs
 import { createForm } from '@tanstack/ember-form';
 
@@ -49,7 +51,52 @@ const SimpleFormExample = createForm({
 </template>
 ```
 
-A few things worth pointing out:
+## In a class-based component
+
+`createForm` stays in module scope. The class passes its own state to the form as args, for example `@onSubmit`.
+
+```gjs
+import Component from '@glimmer/component';
+import { createForm } from '@tanstack/ember-form';
+
+const handleInput = (field, event) => field.handleChange(event.target.value);
+
+const onSubmitFor = (form) => (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  form.handleSubmit();
+};
+
+const ProfileForm = createForm({
+  defaultValues: {
+    fullName: '',
+  },
+});
+
+export default class EditProfile extends Component {
+  save = async ({ value }) => {
+    await this.args.onSave(value);
+  };
+
+  <template>
+    <ProfileForm @onSubmit={{this.save}} as |f|>
+      <form {{on "submit" (onSubmitFor f)}}>
+        <f.Field @name="fullName" as |field|>
+          <input
+            name={{field.name}}
+            value={{field.state.value}}
+            {{on "blur" field.handleBlur}}
+            {{on "input" (fn handleInput field)}}
+          />
+        </f.Field>
+        <button type="submit">Submit</button>
+      </form>
+    </ProfileForm>
+  </template>
+}
+```
+
+## Notes
 
 - `createForm({ ... })` is called at module scope. It returns a Glimmer component that you invoke in your template; the form's lifecycle (mount/unmount and store subscriptions) is tied to that invocation. The same `createForm` result can be invoked multiple times — each invocation is its own form instance.
 - Anything shared across every instance (such as `defaultValues` or validators that don't depend on per-instance state) goes into the `createForm` call. Anything per-instance — most notably `onSubmit`, which usually closes over component state — is passed as an arg on the invocation: `<SimpleFormExample @onSubmit={{handleSubmit}}>`.
