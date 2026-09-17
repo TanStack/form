@@ -1918,7 +1918,24 @@ export class FormApi<
     batch(() => {
       fieldsToValidate.forEach((nestedField) => {
         fieldValidationPromises.push(
-          Promise.resolve().then(() => this.validateField(nestedField, cause)),
+          Promise.resolve().then(() => {
+            // These fields were merely shifted by an array mutation, the user
+            // never interacted with them. Their value did change, so they
+            // still need to be validated, but `validateField` auto-touches as
+            // a side-effect — which would spuriously mark untouched siblings
+            // as touched. Remember the prior touched state and restore it for
+            // fields that weren't touched before.
+            const fieldInstance = this.fieldInfo[nestedField]?.instance
+            const wasTouched = fieldInstance?.store.state.meta.isTouched ?? true
+
+            const result = this.validateField(nestedField, cause)
+
+            if (fieldInstance && !wasTouched) {
+              fieldInstance.setMeta((prev) => ({ ...prev, isTouched: false }))
+            }
+
+            return result
+          }),
         )
       })
     })
