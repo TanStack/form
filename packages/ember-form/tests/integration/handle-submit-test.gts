@@ -1,4 +1,3 @@
-import { on } from '@ember/modifier';
 import Component from '@glimmer/component';
 import { click, render } from '@ember/test-helpers';
 import { module, test } from 'qunit';
