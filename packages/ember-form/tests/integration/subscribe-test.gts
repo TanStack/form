@@ -1,3 +1,5 @@
+import { fn } from '@ember/helper';
+import { on } from '@ember/modifier';
 import { fillIn, render } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
@@ -58,6 +60,42 @@ module('Integration | Subscribe', function (hooks) {
     );
 
     assert.dom('#snapshot').hasText('Ada');
+  });
+
+  test('a selector runs again only when a key that it reads changes', async function (assert) {
+    let calls = 0;
+
+    const pickIsSubmitting = (state: { isSubmitting: boolean }) => {
+      calls++;
+
+      return state.isSubmitting;
+    };
+
+    await render(
+      <template>
+        <SampleForm as |tanstackForm|>
+          <tanstackForm.Field @name="firstName" as |field|>
+            <input
+              id="firstName"
+              value={{field.state.value}}
+              {{on "input" (fn handleInput field)}}
+            />
+          </tanstackForm.Field>
+
+          <tanstackForm.Subscribe @selector={{pickIsSubmitting}} as |value|>
+            <output id="submitting">{{value}}</output>
+          </tanstackForm.Subscribe>
+        </SampleForm>
+      </template>,
+    );
+
+    const callsAfterRender = calls;
+
+    await fillIn('#firstName', 'Ada');
+    await fillIn('#firstName', 'Grace');
+
+    assert.dom('#firstName').hasValue('Grace');
+    assert.strictEqual(calls, callsAfterRender);
   });
 
   test('omitted selector yields the full form state', async function (assert) {

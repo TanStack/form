@@ -1,27 +1,30 @@
 import { trackedObject } from '@ember/reactive/collections'
 import { isDestroying, registerDestructor } from '@ember/destroyable'
 
-interface ReadableStore<TState> {
+interface ReadableStore<TState extends object> {
   state: TState
   subscribe: (listener: () => void) => { unsubscribe: () => void }
 }
 
+type Keyed = Record<string | symbol, unknown>
+
 /**
- * Returns a reader for `store.state` that autotracking can observe.
+ * Returns a view of `store.state` that autotracking can observe per key.
  *
- * The reader returns the live state, never a copy,
+ * A read returns the live value, never a copy,
  * so the value cannot lag behind the store.
+ *
+ * `trackedObject` compares with `Object.is`,
+ * so a key that keeps its value does not invalidate its readers.
  *
  * The subscription ends when `parent` is destroyed.
  */
-export function trackStore<TState>(
+export function trackStore<TState extends object>(
   store: ReadableStore<TState>,
   parent: object,
-): () => TState {
-  const tag = trackedObject({ version: 0 })
+): TState {
+  const tags = trackedObject({ ...store.state }) as Keyed
 
-  // A plain counter keeps `notify` from reading the tag that it dirties.
-  let version = 0
   let isScheduled = false
 
   function notify() {
@@ -29,7 +32,11 @@ export function trackStore<TState>(
 
     if (isDestroying(parent)) return
 
-    tag.version = ++version
+    const state = store.state as Keyed
+
+    for (const key of Reflect.ownKeys(state)) {
+      tags[key] = state[key]
+    }
   }
 
   /**
@@ -49,9 +56,23 @@ export function trackStore<TState>(
 
   registerDestructor(parent, unsubscribe)
 
-  return () => {
-    void tag.version
+  return new Proxy({} as TState, {
+    get(_target, key) {
+      void tags[key]
 
-    return store.state
-  }
+      return Reflect.get(store.state, key)
+    },
+    has(_target, key) {
+      return Reflect.has(store.state, key)
+    },
+    ownKeys() {
+      return Reflect.ownKeys(store.state)
+    },
+    getOwnPropertyDescriptor(_target, key) {
+      const descriptor = Reflect.getOwnPropertyDescriptor(store.state, key)
+
+      // A proxy must report a key as configurable when its target lacks the key.
+      return descriptor && { ...descriptor, configurable: true }
+    },
+  })
 }

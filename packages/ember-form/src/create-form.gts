@@ -130,7 +130,7 @@ export function createForm<
 
     #create() {
       const api = new FormApi(this.#options);
-      const readState = trackStore(api.store, this);
+      const state = trackStore(api.store, this);
 
       const extensions: Extensions = {
         Field: class extends Field<
@@ -153,8 +153,6 @@ export function createForm<
 
         useSelector: ((selector?: (state: typeof api.state) => unknown) => ({
           get current() {
-            const state = readState();
-
             return selector ? selector(state) : state;
           },
         })) as Extensions['useSelector'],

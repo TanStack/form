@@ -68,10 +68,10 @@ export default class Subscribe<
     return this.args.form;
   }
 
-  #readState = trackStore(this.form.store, this);
+  #state = trackStore(this.form.store, this);
 
   get selected(): TSelected {
-    const state = this.#readState();
+    const state = this.#state;
 
     return this.args.selector
       ? this.args.selector(state)
