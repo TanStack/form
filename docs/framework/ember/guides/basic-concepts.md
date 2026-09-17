@@ -90,7 +90,18 @@ const handleSubmit = async ({ value }) => {
 </template>
 ```
 
-> The invocation yields a block param — `tanstackForm` in the examples above. Name it `tanstackForm` by default; a block param named `form` would shadow the HTML `<form>` element (in Glimmer strict mode `<form>` then resolves to the lexical binding and Glimmer tries to render the form object as a component). In examples that include a literal `<form>` element, use the short alias `f` instead. Use the block param to render fields (`<tanstackForm.Field>`) and to read form state (`<tanstackForm.Subscribe>`).
+The component yields the form. Use it to render fields (`<tanstackForm.Field>`) and to read form state (`<tanstackForm.Subscribe>`).
+
+### Why not `form`?
+
+The other TanStack Form adapters name the result of `createForm` or `useForm` as `form`. In Ember, that name causes two problems.
+
+- `createForm` returns a component, and a template invokes a component by a capitalized name. The examples use names such as `MyForm`.
+- In a strict-mode template, a name in scope hides the HTML element of the same name. This applies to a block param, a `const`, and an import. If `form` is in scope, `<form>` no longer renders a form element. Glimmer tries to render the `form` value as a component.
+
+The examples name the yielded form `tanstackForm`. If the markup contains a `<form>` element, the examples use the short name `f`.
+
+A class property does not have this limit, because the template reads it as `this.form`.
 
 ## Field
 
