@@ -4,10 +4,10 @@ Powerful, type-safe forms for Ember, built on `@tanstack/form-core`.
 
 ## Compatibility
 
-- ember-source 6.8 or later
+- ember-source 7.1 or later
 - gjs and gts only
 
-From ember-source 7.1, templates can use `on`, `fn`, and `hash` without an import, and the examples rely on that. Before 7.1, import `on` from `@ember/modifier`, and import `fn` and `hash` from `@ember/helper`.
+From ember-source 7.1, templates can use `on`, `fn`, and `hash` without an import.
 
 ## Installation
 
@@ -114,7 +114,7 @@ pnpm test:eslint
 
 `tests/types/templates.gts` holds the type tests. Each `@glint-expect-error` comment marks a template that must not type-check, and `pnpm test:types` fails if one of them does.
 
-The tests import `on`, `fn`, and `hash`, because they must also compile on ember-source 6.8. CI runs them two times: on the installed version, and on 6.8.
+CI runs the browser tests two times: on the installed ember-source, and on 7.1, the oldest supported version.
 
 In CI, the browser tests run in their own job on the GitHub runner, because the Nx agents that run the other targets have no browser.
 

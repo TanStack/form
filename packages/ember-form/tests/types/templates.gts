@@ -1,4 +1,3 @@
-import { hash } from '@ember/helper';
 import { createForm, Field, Subscribe } from '@tanstack/ember-form';
 
 interface Person {
