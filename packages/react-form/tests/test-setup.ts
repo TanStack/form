@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 import '@testing-library/jest-dom/vitest'
 import { afterEach } from 'vitest'
 import { cleanup, configure } from '@testing-library/react'
