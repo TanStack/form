@@ -42,6 +42,34 @@ jobs:
           directory: packages
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+  test-browser:
+    name: Test (browser, ember-source ${{ matrix.ember-source || 'current' }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # '' keeps the version in the lockfile. '~7.1.0' is the oldest supported version.
+        ember-source: ['', '~7.1.0']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Setup Tools
+        uses: TanStack/config/.github/setup@99d23c6212f36eff17d30a21e58da77f55a4cfe9 # main
+      - name: Get base and head commits for `nx affected`
+        uses: nrwl/nx-set-shas@3e9ad7370203c1e93d109be57f3b72eb0eb511b1 # v4.4.0
+        with:
+          main-branch-name: main
+      - name: Install ember-source ${{ matrix.ember-source }}
+        if: ${{ matrix.ember-source != '' }}
+        run: pnpm --filter @tanstack/ember-form add --save-dev "ember-source@$EMBER_SOURCE"
+        env:
+          EMBER_SOURCE: ${{ matrix.ember-source }}
+      # Nx agents have no browser. This runner has Chrome.
+      - name: Run Browser Tests
+        run: pnpm run test:browser
   preview:
     name: Preview
     runs-on: ubuntu-latest

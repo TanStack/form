@@ -1,0 +1,14 @@
+# compiled output
+dist/
+dist-tests/
+declarations/
+
+# pack output (publint, dry-run publishes)
+*.tgz
+
+# caches
+.eslintcache
+.prettiercache
+
+# local-only files
+*.local

@@ -1,0 +1,100 @@
+import Component from '@glimmer/component';
+import { pageTitle } from 'ember-page-title';
+import { createForm, Subscribe } from '@tanstack/ember-form';
+
+interface Person {
+  firstName: string;
+  lastName: string;
+}
+
+const handleInput = (
+  field: { handleChange: (value: string) => void },
+  event: Event,
+) => {
+  field.handleChange((event.target as HTMLInputElement).value);
+};
+
+const tooShort = ({ value }: { value: string }) =>
+  value.length < 3 ? 'Not long enough' : undefined;
+
+const pickSubmitState = (state: {
+  canSubmit: boolean;
+  isSubmitting: boolean;
+}) => ({
+  cantSubmit: !state.canSubmit,
+  isSubmitting: state.isSubmitting,
+});
+
+const PersonForm = createForm({
+  defaultValues: { firstName: 'Christian', lastName: '' } as Person,
+});
+
+const resetFor = (form: { reset: () => void }) => () => form.reset();
+
+const onSubmitFor =
+  (form: { handleSubmit: () => void }) => (event: Event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    form.handleSubmit();
+  };
+
+export default class ApplicationTemplate extends Component {
+  onSubmit = async ({ value }: { value: Person }) => {
+    // eslint-disable-next-line no-console
+    console.log('submitted', value);
+  };
+
+  <template>
+    {{pageTitle "Demo App"}}
+
+    <h1>TanStack Form &mdash; Ember Demo</h1>
+
+    <PersonForm @onSubmit={{this.onSubmit}} as |f|>
+      <form {{on "submit" (onSubmitFor f)}}>
+        <f.Field
+          @name="firstName"
+          @validators={{hash onChange=tooShort}}
+          as |field|
+        >
+          <div>
+            <label for="firstName">First Name</label>
+            <input
+              id="firstName"
+              type="text"
+              placeholder="First Name"
+              value={{field.state.value}}
+              {{on "input" (fn handleInput field)}}
+            />
+          </div>
+        </f.Field>
+
+        <f.Field
+          @name="lastName"
+          @validators={{hash onChange=tooShort}}
+          as |field|
+        >
+          <div>
+            <label for="lastName">Last Name</label>
+            <input
+              id="lastName"
+              type="text"
+              placeholder="Last Name"
+              value={{field.state.value}}
+              {{on "input" (fn handleInput field)}}
+            />
+            {{#each field.state.meta.errors as |err|}}
+              <em>{{err}}</em>
+            {{/each}}
+          </div>
+        </f.Field>
+
+        <Subscribe @form={{f}} @selector={{pickSubmitState}} as |slice|>
+          <button type="submit" disabled={{slice.cantSubmit}}>
+            {{if slice.isSubmitting "Submitting" "Submit"}}
+          </button>
+        </Subscribe>
+        <button type="button" {{on "click" (resetFor f)}}>Reset</button>
+      </form>
+    </PersonForm>
+  </template>
+}
