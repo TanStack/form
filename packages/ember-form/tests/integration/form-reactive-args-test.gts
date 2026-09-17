@@ -1,10 +1,10 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { click, render } from '@ember/test-helpers';
+import { click, fillIn, render } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { createForm } from '@tanstack/ember-form';
-import type { Sample } from '../helpers.ts';
+import { handleInput, type Sample } from '../helpers.ts';
 
 const SampleForm = createForm({
   defaultValues: { firstName: 'Linus', lastName: 'Pauling' } as Sample,
@@ -44,5 +44,63 @@ module('Integration | form reactive args', function (hooks) {
     await click('#go');
 
     assert.deepEqual(calls, ['first', 'second']);
+  });
+
+  test('a changed @defaultValues updates an untouched field', async function (assert) {
+    class TestForm extends Component {
+      @tracked defaults: Sample = { firstName: 'Ada', lastName: '' };
+
+      load = () => {
+        this.defaults = { firstName: 'Grace', lastName: 'Hopper' };
+      };
+
+      <template>
+        <SampleForm @defaultValues={{this.defaults}} as |tanstackForm|>
+          <tanstackForm.Field @name="firstName" as |field|>
+            <input id="firstName" value={{field.state.value}} />
+          </tanstackForm.Field>
+        </SampleForm>
+
+        <button id="load" type="button" {{on "click" this.load}}>load</button>
+      </template>
+    }
+
+    await render(<template><TestForm /></template>);
+
+    assert.dom('#firstName').hasValue('Ada');
+
+    await click('#load');
+
+    assert.dom('#firstName').hasValue('Grace');
+  });
+
+  test('a changed @defaultValues keeps the input of the user', async function (assert) {
+    class TestForm extends Component {
+      @tracked defaults: Sample = { firstName: 'Ada', lastName: '' };
+
+      load = () => {
+        this.defaults = { firstName: 'Grace', lastName: 'Hopper' };
+      };
+
+      <template>
+        <SampleForm @defaultValues={{this.defaults}} as |tanstackForm|>
+          <tanstackForm.Field @name="firstName" as |field|>
+            <input
+              id="firstName"
+              value={{field.state.value}}
+              {{on "input" (fn handleInput field)}}
+            />
+          </tanstackForm.Field>
+        </SampleForm>
+
+        <button id="load" type="button" {{on "click" this.load}}>load</button>
+      </template>
+    }
+
+    await render(<template><TestForm /></template>);
+    await fillIn('#firstName', 'Hedy');
+    await click('#load');
+
+    assert.dom('#firstName').hasValue('Hedy');
   });
 });
