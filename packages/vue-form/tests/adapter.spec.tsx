@@ -1,4 +1,4 @@
-import { fireEvent, render, waitFor } from '@testing-library/vue'
+import { render } from 'vitest-browser-vue'
 import { describe, expect, it, vi } from 'vitest'
 import {
   Fragment,
@@ -28,10 +28,10 @@ describe('Vue adapter parity', () => {
       return () => <output data-testid="name">{form.state.values.name}</output>
     })
 
-    const view = render(Component)
+    const view = await render(Component)
     expect(formId).toBeTypeOf('string')
     expect(formId.length).toBeGreaterThan(0)
-    expect(view.getByTestId('name')).toHaveTextContent('Tony')
+    await expect.element(view.getByTestId('name')).toHaveTextContent('Tony')
     const initialFormId = formId
     await view.rerender({})
     expect(formId).toBe(initialFormId)
@@ -84,11 +84,11 @@ describe('Vue adapter parity', () => {
       )
     })
 
-    const view = render(Component)
+    const view = await render(Component)
     form.setFieldValue('name', 'Rodney')
     options.defaultValues = { name: 'Bob', age: 2 }
 
-    await waitFor(() => expect(view.getByText('Rodney:2')).toBeInTheDocument())
+    await expect.element(view.getByText('Rodney:2')).toBeInTheDocument()
   })
 
   it('renders fields reactively with the v2 field shape', async () => {
@@ -113,9 +113,11 @@ describe('Vue adapter parity', () => {
       )
     })
 
-    const view = render(Component)
-    await fireEvent.update(view.getByLabelText('Name'), 'Rodney')
-    expect(view.getByTestId('value')).toHaveTextContent('Rodney')
+    const view = await render(Component)
+    await view.getByLabelText('Name').fill('Rodney')
+    await expect.element(view.getByTestId('value')).toHaveTextContent(
+      'Rodney',
+    )
   })
 
   it('uses validator arrays and rerenders selected form state', async () => {
@@ -151,8 +153,10 @@ describe('Vue adapter parity', () => {
       )
     })
 
-    const view = render(Component)
-    expect(view.getByRole('alert')).toHaveTextContent('Name is required|false')
+    const view = await render(Component)
+    await expect
+      .element(view.getByRole('alert'))
+      .toHaveTextContent('Name is required|false')
   })
 
   it('only rerenders ArrayField slots for structural array changes', async () => {
@@ -175,16 +179,14 @@ describe('Vue adapter parity', () => {
       )
     })
 
-    const view = render(Component)
+    const view = await render(Component)
     const initialRenders = renders
     rename()
     await Promise.resolve()
     expect(renders).toBe(initialRenders)
 
     push()
-    await waitFor(() =>
-      expect(view.getByTestId('length')).toHaveTextContent('2'),
-    )
+    await expect.element(view.getByTestId('length')).toHaveTextContent('2')
     expect(renders).toBeGreaterThan(initialRenders)
   })
 
@@ -219,9 +221,11 @@ describe('Vue adapter parity', () => {
       )
     })
 
-    const view = render(Component)
-    await fireEvent.update(view.getByLabelText('Guest name'), 'Rodney')
-    expect(view.getByTestId('group-name')).toHaveTextContent('Rodney')
+    const view = await render(Component)
+    await view.getByLabelText('Guest name').fill('Rodney')
+    await expect
+      .element(view.getByTestId('group-name'))
+      .toHaveTextContent('Rodney')
   })
 
   it('reactively updates FormGroup field names', async () => {
@@ -253,18 +257,16 @@ describe('Vue adapter parity', () => {
       )
     })
 
-    const view = render(Component)
-    expect(view.getByTestId('group-field')).toHaveTextContent(
-      'guest.firstName:Tony',
-    )
+    const view = await render(Component)
+    await expect
+      .element(view.getByTestId('group-field'))
+      .toHaveTextContent('guest.firstName:Tony')
 
     showLastName()
 
-    await waitFor(() =>
-      expect(view.getByTestId('group-field')).toHaveTextContent(
-        'guest.lastName:Hawk',
-      ),
-    )
+    await expect
+      .element(view.getByTestId('group-field'))
+      .toHaveTextContent('guest.lastName:Hawk')
   })
 
   it('reactively updates FormGroup field listeners', async () => {
@@ -306,7 +308,7 @@ describe('Vue adapter parity', () => {
       )
     })
 
-    render(Component)
+    await render(Component)
     change('First')
     expect(firstListener).toHaveBeenCalledOnce()
 
@@ -318,7 +320,7 @@ describe('Vue adapter parity', () => {
     expect(secondListener).toHaveBeenCalledOnce()
   })
 
-  it('composes typed field components through Vue injection', () => {
+  it('composes typed field components through Vue injection', async () => {
     const TextField = defineComponent<{
       field: FieldWithValue<string>
       label: string
@@ -357,8 +359,10 @@ describe('Vue adapter parity', () => {
       )
     })
 
-    const view = render(Component)
-    expect(view.getByTestId('app-field')).toHaveTextContent('Name:name:Tony')
+    const view = await render(Component)
+    await expect
+      .element(view.getByTestId('app-field'))
+      .toHaveTextContent('Name:name:Tony')
   })
 
   it('binds reusable field groups to concrete form paths', async () => {
@@ -392,8 +396,8 @@ describe('Vue adapter parity', () => {
       return () => <Profile form={form} fields={{ name: 'user.name' }} />
     })
 
-    const view = render(Component)
-    await fireEvent.update(view.getByLabelText('Profile name'), 'Rodney')
+    const view = await render(Component)
+    await view.getByLabelText('Profile name').fill('Rodney')
     expect(getName()).toBe('Rodney')
   })
 
@@ -428,8 +432,8 @@ describe('Vue adapter parity', () => {
       return () => <NameFields form={form} />
     })
 
-    const view = render(Component)
-    await fireEvent.update(view.getByLabelText('Name'), 'Rodney')
+    const view = await render(Component)
+    await view.getByLabelText('Name').fill('Rodney')
     expect(getName()).toBe('Rodney')
   })
 
@@ -466,17 +470,19 @@ describe('Vue adapter parity', () => {
       return () => <NameFields form={form} fields={{ name: binding.value }} />
     })
 
-    const view = render(Component)
-    expect(view.getByTestId('logical-field')).toHaveTextContent('first:One')
+    const view = await render(Component)
+    await expect
+      .element(view.getByTestId('logical-field'))
+      .toHaveTextContent('first:One')
 
     showSecond()
 
-    await waitFor(() =>
-      expect(view.getByTestId('logical-field')).toHaveTextContent('second:Two'),
-    )
+    await expect
+      .element(view.getByTestId('logical-field'))
+      .toHaveTextContent('second:Two')
   })
 
-  it('provides composed form components with form context', () => {
+  it('provides composed form components with form context', async () => {
     function useComposedFormContext() {
       return composition.useFormContext()
     }
@@ -504,8 +510,10 @@ describe('Vue adapter parity', () => {
       )
     })
 
-    const view = render(Component)
-    expect(view.getByTestId('summary')).toHaveTextContent('Tony')
+    const view = await render(Component)
+    await expect
+      .element(view.getByTestId('summary'))
+      .toHaveTextContent('Tony')
   })
 
   it('applies Subscribe when predicates reactively', async () => {
@@ -523,13 +531,13 @@ describe('Vue adapter parity', () => {
       )
     })
 
-    const view = render(Component)
-    expect(view.queryByTestId('visible')).not.toBeInTheDocument()
+    const view = await render(Component)
+    await expect.element(view.getByTestId('visible')).not.toBeInTheDocument()
     show()
-    await waitFor(() => expect(view.getByTestId('visible')).toBeInTheDocument())
+    await expect.element(view.getByTestId('visible')).toBeInTheDocument()
   })
 
-  it('cleans up field registrations on unmount', () => {
+  it('cleans up field registrations on unmount', async () => {
     const onMount = vi.fn()
     const onUnmount = vi.fn()
     const Component = defineComponent(() => {
@@ -547,7 +555,7 @@ describe('Vue adapter parity', () => {
       )
     })
 
-    const view = render(Component)
+    const view = await render(Component)
     expect(onMount).toHaveBeenCalledOnce()
     view.unmount()
     expect(onUnmount).toHaveBeenCalledOnce()

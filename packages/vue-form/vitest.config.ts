@@ -7,21 +7,17 @@ export default defineConfig({
   plugins: [vue()],
   optimizeDeps: {
     include: [
-      '@testing-library/jest-dom/vitest',
-      '@testing-library/vue',
+      'vitest-browser-vue',
       'vue',
       'vue/server-renderer',
       '@tanstack/vue-store',
     ],
   },
-  define: {
-    'process.env': JSON.stringify({}),
-  },
   test: {
     name: packageJson.name,
     dir: './tests',
     watch: false,
-    setupFiles: ['./tests/test-setup.ts'],
+    setupFiles: ['vitest-browser-vue'],
     browser: {
       enabled: true,
       provider: playwright(
