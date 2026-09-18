@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core'
-import { render } from '@testing-library/angular'
+import { render } from 'vitest-browser-angular'
 import { describe, expect, it } from 'vitest'
 import { TanStackField, formOptions, injectForm } from '../src/index'
 import type { AngularFormType } from '../src/index'

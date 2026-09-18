@@ -19,15 +19,14 @@ export default defineConfig(({ mode }) => ({
       '@angular/platform-browser',
       '@angular/platform-browser/testing',
       '@analogjs/vitest-angular/setup-snapshots',
-      '@testing-library/angular',
-      '@testing-library/jest-dom/vitest',
+      'vitest-browser-angular',
     ],
   },
   test: {
     name: packageJson.name,
     dir: './tests',
     watch: false,
-    setupFiles: ['./tests/test-setup.ts'],
+    setupFiles: ['./tests/test-setup.ts', 'vitest-browser-angular'],
     browser: {
       enabled: true,
       provider: playwright(

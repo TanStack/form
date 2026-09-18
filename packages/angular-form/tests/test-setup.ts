@@ -1,5 +1,4 @@
 import '@analogjs/vitest-angular/setup-snapshots'
-import '@testing-library/jest-dom/vitest'
 
 import { NgModule, provideZonelessChangeDetection } from '@angular/core'
 import {
