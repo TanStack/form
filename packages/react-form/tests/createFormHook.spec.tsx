@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render, waitFor } from '@testing-library/react'
+import { render } from 'vitest-browser-react'
 import { describe, expect, it, vi } from 'vitest'
 import { createFormHook, getFormHookHelpers } from '../src'
 import type {
@@ -9,7 +9,7 @@ import type {
 import type { FieldWithValue } from '../src'
 
 describe('createFormHook', () => {
-  it('provides registered components to fields created during mount validation', () => {
+  it('provides registered components to fields created during mount validation', async () => {
     const SharedComponent = () => <span>Shared field component</span>
     const { useAppForm } = createFormHook({
       fieldComponents: { SharedComponent },
@@ -38,12 +38,12 @@ describe('createFormHook', () => {
       )
     }
 
-    const { getByText } = render(<Component />)
+    const { getByText } = await render(<Component />)
 
     expect(getByText('Shared field component')).toBeInTheDocument()
   })
 
-  it('supports nested field and form component trees', () => {
+  it('supports nested field and form component trees', async () => {
     function FieldValue({ field }: { field: FieldWithValue<string> }) {
       return <span>Field value: {field.value}</span>
     }
@@ -84,13 +84,13 @@ describe('createFormHook', () => {
       )
     }
 
-    const { getByText } = render(<Component />)
+    const { getByText } = await render(<Component />)
 
     expect(getByText('Nested form component')).toBeInTheDocument()
     expect(getByText('Field value: Tony')).toBeInTheDocument()
   })
 
-  it('supports destructuring registered form components', () => {
+  it('supports destructuring registered form components', async () => {
     const SharedComponent = () => <span>Shared component</span>
     const { useAppForm } = createFormHook({
       fieldComponents: {},
@@ -106,12 +106,12 @@ describe('createFormHook', () => {
     }
     /* eslint-enable @eslint-react/static-components */
 
-    const { getByText } = render(<Component />)
+    const { getByText } = await render(<Component />)
 
     expect(getByText('Shared component')).toBeInTheDocument()
   })
 
-  it('renders inherited form components with per-instance AppForm context', () => {
+  it('renders inherited form components with per-instance AppForm context', async () => {
     function CurrentName() {
       const form = useFormContext()
       return <span data-testid="current-name">{form.state.values.name}</span>
@@ -132,12 +132,12 @@ describe('createFormHook', () => {
       )
     }
 
-    const { getByTestId } = render(<Component />)
+    const { getByTestId } = await render(<Component />)
 
     expect(getByTestId('current-name')).toHaveTextContent('Tony')
   })
 
-  it('uses default form options and lets usage options override them', () => {
+  it('uses default form options and lets usage options override them', async () => {
     const defaultErrorVisibility = () => true
     const overriddenErrorVisibility = () => false
     const { useAppForm } = createFormHook({
@@ -184,7 +184,7 @@ describe('createFormHook', () => {
       )
     }
 
-    const { getByTestId } = render(
+    const { getByTestId } = await render(
       <>
         <DefaultForm />
         <OverriddenForm />
@@ -197,7 +197,7 @@ describe('createFormHook', () => {
     expect(getByTestId('undefined')).toHaveTextContent('true')
   })
 
-  it('resolves form and field listener merge modes in core', () => {
+  it('resolves form and field listener merge modes in core', async () => {
     const formCalls: Array<string> = []
     const fieldCalls: Array<string> = []
     const { useAppForm } = createFormHook({
@@ -254,14 +254,14 @@ describe('createFormHook', () => {
       )
     }
 
-    const { getByTestId } = render(<Component />)
-    fireEvent.click(getByTestId('change'))
+    const { getByTestId } = await render(<Component />)
+    await getByTestId('change').click()
 
     expect(formCalls).toEqual(['default', 'local'])
     expect(fieldCalls).toEqual(['local', 'default'])
   })
 
-  it('applies field defaults to direct and grouped fields', () => {
+  it('applies field defaults to direct and grouped fields', async () => {
     const { useAppForm } = createFormHook({
       fieldComponents: {},
       formComponents: {},
@@ -333,7 +333,7 @@ describe('createFormHook', () => {
       )
     }
 
-    const { getByTestId } = render(<Component />)
+    const { getByTestId } = await render(<Component />)
 
     expect(getByTestId('direct')).toHaveTextContent('true')
     expect(getByTestId('direct-array')).toHaveTextContent('true')
@@ -407,19 +407,21 @@ describe('createFormHook', () => {
       )
     }
 
-    const { getByTestId } = render(<Component />)
+    const { getByTestId } = await render(<Component />)
 
-    fireEvent.click(getByTestId('default'))
-    await waitFor(() => expect(defaultOnSubmitInvalid).toHaveBeenCalledOnce())
+    await getByTestId('default').click()
+    await vi.waitFor(() =>
+      expect(defaultOnSubmitInvalid).toHaveBeenCalledOnce(),
+    )
 
-    fireEvent.click(getByTestId('overridden'))
-    await waitFor(() =>
+    await getByTestId('overridden').click()
+    await vi.waitFor(() =>
       expect(overriddenOnSubmitInvalid).toHaveBeenCalledOnce(),
     )
     expect(defaultOnSubmitInvalid).toHaveBeenCalledOnce()
 
-    fireEvent.click(getByTestId('undefined'))
-    await waitFor(() => {
+    await getByTestId('undefined').click()
+    await vi.waitFor(() => {
       expect(undefinedValidator).toHaveBeenCalledOnce()
       expect(defaultOnSubmitInvalid).toHaveBeenCalledOnce()
       expect(overriddenOnSubmitInvalid).toHaveBeenCalledOnce()

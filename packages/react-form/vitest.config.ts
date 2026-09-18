@@ -7,8 +7,7 @@ export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
     include: [
-      '@testing-library/jest-dom/vitest',
-      '@testing-library/react',
+      'vitest-browser-react',
       'react',
       'react-dom',
       'react-dom/client',
@@ -19,7 +18,7 @@ export default defineConfig({
     name: packageJson.name,
     dir: './tests',
     watch: false,
-    setupFiles: ['./tests/test-setup.ts'],
+    setupFiles: ['vitest-browser-react', './tests/test-setup.ts'],
     globals: true,
     browser: {
       enabled: true,

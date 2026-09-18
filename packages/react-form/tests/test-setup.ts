@@ -1,9 +1,5 @@
 /// <reference types="vite/client" />
-import '@testing-library/jest-dom/vitest'
-import { afterEach } from 'vitest'
-import { cleanup, configure } from '@testing-library/react'
-// https://testing-library.com/docs/react-testing-library/api#cleanup
-afterEach(() => cleanup())
+import { configure } from 'vitest-browser-react/pure'
 
 configure({
   reactStrictMode: import.meta.env.VITEST_REACT_STRICT_MODE === 'true',

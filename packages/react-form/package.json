@@ -53,6 +53,7 @@
     "eslint-plugin-react-compiler": "19.1.0-rc.2",
     "eslint-plugin-react-hooks": "^7.1.1",
     "react": "19.2.8",
+    "vitest-browser-react": "^2.3.0",
     "zod": "^4.4.3"
   },
   "peerDependencies": {

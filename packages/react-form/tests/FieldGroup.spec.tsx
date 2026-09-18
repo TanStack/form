@@ -1,10 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
-import { render } from '@testing-library/react'
-import { userEvent } from '@testing-library/user-event'
+import { render } from 'vitest-browser-react'
+import { userEvent } from 'vitest/browser'
 import React from 'react'
 import { defineFieldGroup, useForm, useSelector } from '../src'
-
-const user = userEvent.setup()
 
 const { fields: nestedFields, bindComponent: bindNestedFields } =
   defineFieldGroup(({ strict }) => ({
@@ -222,11 +220,11 @@ describe('FieldGroup', () => {
       return <NestedFields form={form} />
     }
 
-    const { getByRole, getByTestId } = render(<Component />)
+    const { getByRole, getByTestId } = await render(<Component />)
 
     expect(getByTestId('field')).toHaveTextContent('foo.bar:Initial')
 
-    await user.click(getByRole('button', { name: 'Update' }))
+    await getByRole('button', { name: 'Update' }).click()
 
     expect(getByTestId('field')).toHaveTextContent('foo.bar:Updated')
   })
@@ -247,11 +245,11 @@ describe('FieldGroup', () => {
       return <NestedFields form={form} fields={{ foo: 'anything' }} />
     }
 
-    const { getByRole, getByTestId } = render(<Component />)
+    const { getByRole, getByTestId } = await render(<Component />)
 
     expect(getByTestId('field')).toHaveTextContent('anything.bar:Initial')
 
-    await user.click(getByRole('button', { name: 'Update' }))
+    await getByRole('button', { name: 'Update' }).click()
 
     expect(getByTestId('field')).toHaveTextContent('anything.bar:Updated')
   })
@@ -276,15 +274,15 @@ describe('FieldGroup', () => {
       )
     }
 
-    const { getByRole, getByTestId } = render(<Component />)
+    const { getByRole, getByTestId } = await render(<Component />)
     expect(getByTestId('field')).toHaveTextContent('first.bar:One')
 
-    await user.click(getByRole('button', { name: 'Show second' }))
+    await getByRole('button', { name: 'Show second' }).click()
 
     expect(getByTestId('field')).toHaveTextContent('second.bar:Two')
   })
 
-  it('exposes subscribed field meta from field group children', () => {
+  it('exposes subscribed field meta from field group children', async () => {
     const MetaFields = bindNestedFields(
       ({ fields }: NestedFieldsProps) => (
         <fields.Field name="foo.bar">
@@ -308,7 +306,7 @@ describe('FieldGroup', () => {
       return <MetaFields form={form} fields={{ foo: 'anything' }} />
     }
 
-    const { getByTestId } = render(<Component />)
+    const { getByTestId } = await render(<Component />)
 
     expect(getByTestId('meta')).toHaveTextContent('false')
   })
@@ -338,9 +336,9 @@ describe('FieldGroup', () => {
       )
     }
 
-    const { getByLabelText } = render(<Component />)
+    const { getByLabelText } = await render(<Component />)
 
-    await user.type(getByLabelText('Password'), 'a')
+    await userEvent.type(getByLabelText('Password'), 'a')
 
     expect(listener).toHaveBeenCalledOnce()
   })
@@ -358,10 +356,10 @@ describe('FieldGroup', () => {
       return <MemoizedInputFields form={form} onRender={onRender} />
     }
 
-    const { getByLabelText } = render(<Component />)
+    const { getByLabelText } = await render(<Component />)
     const input = getByLabelText('Memoized')
 
-    await user.type(input, 'abc')
+    await userEvent.type(input, 'abc')
 
     expect(input).toHaveValue('abc')
     expect(onRender).toHaveBeenCalledTimes(4)
@@ -393,10 +391,10 @@ describe('FieldGroup', () => {
       )
     }
 
-    const { getByLabelText } = render(<Component />)
+    const { getByLabelText } = await render(<Component />)
     const initialUpperRenderCount = onRender.upper.mock.calls.length
 
-    await user.type(getByLabelText('Lower'), '12')
+    await userEvent.type(getByLabelText('Lower'), '12')
 
     expect(getByLabelText('Lower')).toHaveValue('12')
     expect(onRender.lower).toHaveBeenCalledTimes(3)
@@ -423,11 +421,11 @@ describe('FieldGroup', () => {
       )
     }
 
-    const { getByLabelText, getByTestId } = render(<Component />)
+    const { getByLabelText, getByTestId } = await render(<Component />)
 
     expect(getByTestId('values')).toHaveTextContent('1:5')
 
-    await user.type(getByLabelText('Lower'), '2')
+    await userEvent.type(getByLabelText('Lower'), '2')
 
     expect(getByTestId('values')).toHaveTextContent('12:5')
   })
