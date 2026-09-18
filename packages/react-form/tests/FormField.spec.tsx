@@ -1,14 +1,12 @@
 import { describe, expect, it, vi } from 'vitest'
-import { fireEvent, render } from '@testing-library/react'
+import { render } from 'vitest-browser-react'
+import { userEvent } from 'vitest/browser'
 import React, { useEffect, useState } from 'react'
-import { userEvent } from '@testing-library/user-event'
 import { useForm } from '../src'
 import type { AnyInternalFormApi } from '@tanstack/form-core/internals'
 
-const user = userEvent.setup()
-
 describe('Form fields', () => {
-  it('should mount the field to the dom', () => {
+  it('should mount the field to the dom', async () => {
     function Component() {
       const form = useForm({ defaultValues: { name: 'tony-hawk' } })
       return (
@@ -18,13 +16,13 @@ describe('Form fields', () => {
       )
     }
 
-    const { getByTestId } = render(<Component />)
-    const input = getByTestId('name')
+    const screen = await render(<Component />)
+    const input = screen.getByTestId('name')
 
     expect(input).toHaveTextContent('tony-hawk')
   })
 
-  it('does not re-register fields during unrelated parent rerenders', () => {
+  it('does not re-register fields during unrelated parent rerenders', async () => {
     const onMount = vi.fn()
     const onUnmount = vi.fn()
 
@@ -50,21 +48,21 @@ describe('Form fields', () => {
       )
     }
 
-    const { getByTestId, unmount } = render(<Component />)
+    const screen = await render(<Component />)
 
-    expect(getByTestId('name')).toHaveTextContent('tony-hawk')
+    expect(screen.getByTestId('name')).toHaveTextContent('tony-hawk')
     expect(onMount.mock.calls.length - onUnmount.mock.calls.length).toBe(1)
 
     const initialMountCount = onMount.mock.calls.length
     const initialUnmountCount = onUnmount.mock.calls.length
 
-    fireEvent.click(getByTestId('rerender'))
+    await screen.getByTestId('rerender').click()
 
-    expect(getByTestId('rerender')).toHaveTextContent('1')
+    expect(screen.getByTestId('rerender')).toHaveTextContent('1')
     expect(onMount).toHaveBeenCalledTimes(initialMountCount)
     expect(onUnmount).toHaveBeenCalledTimes(initialUnmountCount)
 
-    unmount()
+    await screen.unmount()
 
     expect(onMount.mock.calls.length - onUnmount.mock.calls.length).toBe(0)
     expect(onUnmount).toHaveBeenCalledTimes(initialUnmountCount + 1)
@@ -91,17 +89,17 @@ describe('Form fields', () => {
       )
     }
 
-    const { getByLabelText } = render(<Component />)
-    const input = getByLabelText('name')
+    const screen = await render(<Component />)
+    const input = screen.getByLabelText('name')
     expect(input).toBeInTheDocument()
     expect(input).toHaveValue('tony-hawk')
 
-    await user.clear(input)
-    await user.type(input, 'new-value')
+    await input.clear()
+    await userEvent.type(input, 'new-value')
     expect(input).toHaveValue('new-value')
   })
 
-  it('rerenders an ArrayField for a same-length replacement', () => {
+  it('rerenders an ArrayField for a same-length replacement', async () => {
     let renders = 0
 
     function Component() {
@@ -131,17 +129,17 @@ describe('Form fields', () => {
       )
     }
 
-    const { getByTestId } = render(<Component />)
+    const screen = await render(<Component />)
     const initialRenders = renders
 
-    fireEvent.click(getByTestId('replace-array'))
+    await screen.getByTestId('replace-array').click()
 
-    expect(getByTestId('array')).toHaveTextContent('B')
+    expect(screen.getByTestId('array')).toHaveTextContent('B')
     expect(renders).toBeGreaterThan(initialRenders)
 
     const replacementRenders = renders
 
-    fireEvent.click(getByTestId('update-child'))
+    await screen.getByTestId('update-child').click()
 
     expect(renders).toBe(replacementRenders)
   })
@@ -179,14 +177,14 @@ describe('Form fields', () => {
       )
     }
 
-    const { getByLabelText, getByTestId } = render(<Component />)
-    const input = getByLabelText('name')
-    const isTouchedCheckbox = getByTestId('isTouched')
-    const isDirtyCheckbox = getByTestId('isDirty')
+    const screen = await render(<Component />)
+    const input = screen.getByLabelText('name')
+    const isTouchedCheckbox = screen.getByTestId('isTouched')
+    const isDirtyCheckbox = screen.getByTestId('isDirty')
 
     expect(isTouchedCheckbox).not.toBeChecked()
     expect(isDirtyCheckbox).not.toBeChecked()
-    await user.type(input, 'foo')
+    await userEvent.type(input, 'foo')
     expect(isTouchedCheckbox).toBeChecked()
     expect(isDirtyCheckbox).toBeChecked()
   })
@@ -216,21 +214,21 @@ describe('Form fields', () => {
       )
     }
 
-    const { getByLabelText, getByTestId } = render(<Component />)
-    const input = getByLabelText('name')
+    const screen = await render(<Component />)
+    const input = screen.getByLabelText('name')
 
-    expect(getByTestId('isDefaultValue')).toHaveTextContent('true')
-    await user.clear(input)
-    await user.type(input, 'rodney-mullen')
-    expect(getByTestId('isDefaultValue')).toHaveTextContent('false')
+    expect(screen.getByTestId('isDefaultValue')).toHaveTextContent('true')
+    await input.clear()
+    await userEvent.type(input, 'rodney-mullen')
+    expect(screen.getByTestId('isDefaultValue')).toHaveTextContent('false')
 
-    await user.clear(input)
-    await user.type(input, 'tony-hawk')
-    expect(getByTestId('isDefaultValue')).toHaveTextContent('true')
-    expect(getByTestId('isDirty')).toHaveTextContent('true')
+    await input.clear()
+    await userEvent.type(input, 'tony-hawk')
+    expect(screen.getByTestId('isDefaultValue')).toHaveTextContent('true')
+    expect(screen.getByTestId('isDirty')).toHaveTextContent('true')
   })
 
-  it('does not rerender unchanged field render props when another field changes', () => {
+  it('does not rerender unchanged field render props when another field changes', async () => {
     const renderCounts = {
       first: 0,
       middle: 0,
@@ -297,11 +295,11 @@ describe('Form fields', () => {
       )
     }
 
-    const { getByLabelText } = render(<Component />)
+    const screen = await render(<Component />)
     const initialCounts = { ...renderCounts }
-    const middleInput = getByLabelText('middle')
+    const middleInput = screen.getByLabelText('middle')
 
-    fireEvent.change(middleInput, { target: { value: 'updated' } })
+    await middleInput.fill('updated')
 
     expect(middleInput).toHaveValue('updated')
     expect(renderCounts.first).toBe(initialCounts.first)
@@ -309,7 +307,7 @@ describe('Form fields', () => {
     expect(renderCounts.middle).toBeGreaterThan(initialCounts.middle)
   })
 
-  it('rerenders a field when its meta changes without changing its value', () => {
+  it('rerenders a field when its meta changes without changing its value', async () => {
     const renderCounts = {
       first: 0,
       last: 0,
@@ -367,12 +365,16 @@ describe('Form fields', () => {
       )
     }
 
-    const { getByLabelText, getByTestId } = render(<Component />)
+    const screen = await render(<Component />)
     const initialCounts = { ...renderCounts }
 
-    fireEvent.blur(getByLabelText('first'))
+    const firstInput = screen.getByLabelText('first')
+    await firstInput.click()
+    firstInput.element().blur()
 
-    expect(getByTestId('first-blurred')).toHaveTextContent('true')
+    await expect
+      .element(screen.getByTestId('first-blurred'))
+      .toHaveTextContent('true')
     expect(renderCounts.first).toBeGreaterThan(initialCounts.first)
     expect(renderCounts.last).toBe(initialCounts.last)
   })
@@ -401,18 +403,18 @@ describe('Form fields', () => {
       )
     }
 
-    const { getByLabelText, getByTestId } = render(<Component />)
-    const input = getByLabelText('name')
+    const screen = await render(<Component />)
+    const input = screen.getByLabelText('name')
 
-    await user.clear(input)
-    await user.type(input, 'before-reset')
+    await input.clear()
+    await userEvent.type(input, 'before-reset')
     expect(input).toHaveValue('before-reset')
 
-    await user.click(getByTestId('reset'))
+    await screen.getByTestId('reset').click()
     expect(input).toHaveValue('tony-hawk')
 
-    await user.clear(input)
-    await user.type(input, 'after-reset')
+    await input.clear()
+    await userEvent.type(input, 'after-reset')
     expect(input).toHaveValue('after-reset')
   })
 
@@ -441,16 +443,16 @@ describe('Form fields', () => {
       )
     }
 
-    const { getByTestId } = render(<Component />)
-    const field = getByTestId('field')
+    const screen = await render(<Component />)
+    const field = screen.getByTestId('field')
 
     expect(field).toBeInTheDocument()
     // Field exists before unmount
     expect(formApi.current?._tryGetFieldApi('foo.bar')).not.toBeNull()
 
-    await user.click(getByTestId('off'))
+    await screen.getByTestId('off').click()
 
-    expect(field).not.toBeInTheDocument()
+    await expect.element(field).not.toBeInTheDocument()
     await vi.waitFor(
       () => {
         expect(formApi.current?._tryGetFieldApi('foo.bar')).toBeNull()

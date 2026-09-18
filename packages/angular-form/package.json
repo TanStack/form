@@ -55,11 +55,11 @@
     "@angular/compiler-cli": "^22.1.1",
     "@angular/core": "^22.1.1",
     "@angular/platform-browser": "^22.1.1",
-    "@angular/platform-browser-dynamic": "^22.1.1",
-    "@testing-library/angular": "^19.4.2",
+    "@angular/router": "^22.1.1",
     "ng-packagr": "^22.1.1",
     "typescript": "^6.0.2",
     "vite-tsconfig-paths": "^6.1.1",
+    "vitest-browser-angular": "^0.5.1",
     "zone.js": "0.16.2"
   },
   "peerDependencies": {

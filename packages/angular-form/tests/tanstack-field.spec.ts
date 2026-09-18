@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
-import { render } from '@testing-library/angular'
-import { userEvent } from '@testing-library/user-event'
+import { render } from 'vitest-browser-angular'
+import { userEvent } from 'vitest/browser'
 import { describe, expect, it, vi } from 'vitest'
 import {
   TanStackArrayField,
@@ -10,8 +10,6 @@ import {
 } from '../src/index'
 import { sleep } from './utils'
 import type { FieldValidatorFn } from '@tanstack/form-core'
-
-const user = userEvent.setup()
 
 describe('TanStackField', () => {
   it('reads and updates a form-level default value', async () => {
@@ -47,10 +45,10 @@ describe('TanStackField', () => {
     const input = screen.getByLabelText('First name')
 
     expect(input).toHaveValue('Ada')
-    await user.clear(input)
-    await user.type(input, 'Grace')
+    await input.clear()
+    await userEvent.type(input, 'Grace')
     expect(screen.getByTestId('value')).toHaveTextContent('Grace')
-    await user.click(screen.getByRole('button', { name: 'Reset' }))
+    await screen.getByRole('button', { name: 'Reset' }).click()
     expect(input).toHaveValue('Katherine')
   })
 
@@ -116,12 +114,12 @@ describe('TanStackField', () => {
     const screen = await render(TestComponent)
     const input = screen.getByLabelText('First name')
 
-    await user.click(input)
-    await user.tab()
-    expect(await screen.findByText(blurMessage)).toBeInTheDocument()
-    await user.click(input)
-    await user.clear(input)
-    await user.type(input, 'A')
+    await input.click()
+    await userEvent.tab()
+    await expect.element(screen.getByText(blurMessage)).toBeInTheDocument()
+    await input.click()
+    await input.clear()
+    await userEvent.type(input, 'A')
     expect(screen.getByText(changeMessage)).toBeInTheDocument()
   })
 
@@ -164,8 +162,10 @@ describe('TanStackField', () => {
     }
 
     const screen = await render(TestComponent)
-    await user.type(screen.getByLabelText('Name'), 'x')
-    expect(await screen.findByRole('alert')).toHaveTextContent('Async issue')
+    await userEvent.type(screen.getByLabelText('Name'), 'x')
+    await expect
+      .element(screen.getByRole('alert'))
+      .toHaveTextContent('Async issue')
   })
 
   it('supports ordered v2 field listeners', async () => {
@@ -195,7 +195,7 @@ describe('TanStackField', () => {
     }
 
     const screen = await render(TestComponent)
-    await user.type(screen.getByLabelText('Name'), 'A')
+    await userEvent.type(screen.getByLabelText('Name'), 'A')
     expect(listener).toHaveBeenCalled()
   })
 })
@@ -225,7 +225,7 @@ describe('TanStackArrayField', () => {
 
     const screen = await render(TestComponent)
     expect(screen.getByTestId('items')).toHaveTextContent('one,two')
-    await user.click(screen.getByRole('button', { name: 'Swap' }))
+    await screen.getByRole('button', { name: 'Swap' }).click()
     expect(screen.getByTestId('items')).toHaveTextContent('two,one')
   })
 })
@@ -252,8 +252,8 @@ describe('injectSelector', () => {
     }
 
     const screen = await render(TestComponent)
-    await user.clear(screen.getByLabelText('Name'))
-    await user.type(screen.getByLabelText('Name'), 'Grace')
+    await screen.getByLabelText('Name').clear()
+    await userEvent.type(screen.getByLabelText('Name'), 'Grace')
     expect(screen.getByTestId('name')).toHaveTextContent('Grace')
   })
 })

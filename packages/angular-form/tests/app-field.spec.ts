@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core'
-import { render } from '@testing-library/angular'
-import { userEvent } from '@testing-library/user-event'
+import { render } from 'vitest-browser-angular'
+import { userEvent } from 'vitest/browser'
 import { describe, expect, it } from 'vitest'
 import {
   TanStackAppField,
@@ -53,10 +53,9 @@ describe('TanStackAppField', () => {
 
     const screen = await render(AppComponent)
     const lastNameInput = screen.getByLabelText('Last name:')
-    const user = userEvent.setup()
     expect(lastNameInput).toHaveValue('Lovelace')
-    await user.clear(lastNameInput)
-    await user.type(lastNameInput, 'Hopper')
+    await lastNameInput.clear()
+    await userEvent.type(lastNameInput, 'Hopper')
     expect(screen.getByTestId('value')).toHaveTextContent('Hopper')
   })
 })

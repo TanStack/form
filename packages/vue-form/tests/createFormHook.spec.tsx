@@ -1,4 +1,4 @@
-import { fireEvent, render, waitFor } from '@testing-library/vue'
+import { render } from 'vitest-browser-vue'
 import { Fragment, defineComponent, h } from 'vue'
 import { describe, expect, it, vi } from 'vitest'
 import { createFormHook } from '../src'
@@ -110,12 +110,12 @@ describe('createFormHook defaults', () => {
       )
     })
 
-    const view = render(Component)
+    const view = await render(Component)
 
-    await fireEvent.click(view.getByLabelText('Change direct field'))
-    await fireEvent.click(view.getByLabelText('Change direct array field'))
-    await fireEvent.click(view.getByLabelText('Change grouped field'))
-    await fireEvent.click(view.getByLabelText('Change grouped array field'))
+    await view.getByLabelText('Change direct field').click()
+    await view.getByLabelText('Change direct array field').click()
+    await view.getByLabelText('Change grouped field').click()
+    await view.getByLabelText('Change grouped array field').click()
 
     expect(formCalls).toEqual(['form', 'form', 'form', 'form'])
     expect(fieldCalls).toEqual([
@@ -125,7 +125,7 @@ describe('createFormHook defaults', () => {
       'group.array',
     ])
 
-    await fireEvent.click(view.getByLabelText('Submit group'))
-    await waitFor(() => expect(onSubmitInvalid).toHaveBeenCalledOnce())
+    await view.getByLabelText('Submit group').click()
+    await vi.waitFor(() => expect(onSubmitInvalid).toHaveBeenCalledOnce())
   })
 })

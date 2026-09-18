@@ -1,17 +1,11 @@
-import {
-  act,
-  fireEvent,
-  render,
-  renderHook,
-  screen,
-} from '@testing-library/react'
+import { render, renderHook } from 'vitest-browser-react'
 import { describe, expect, it, vi } from 'vitest'
 import React, { useState } from 'react'
 import { useForm } from '../src'
 
 describe('useForm', () => {
-  it('should mount the form to the dom', () => {
-    const { result } = renderHook(() => {
+  it('should mount the form to the dom', async () => {
+    const { result } = await renderHook(() => {
       const form = useForm({ defaultValues: { name: 'tony-hawk' } })
 
       return form
@@ -20,8 +14,8 @@ describe('useForm', () => {
     expect(result.current.state.values).toEqual({ name: 'tony-hawk' })
   })
 
-  it('uses a supplied formId', () => {
-    const { result } = renderHook(() =>
+  it('uses a supplied formId', async () => {
+    const { result } = await renderHook(() =>
       useForm({
         formId: 'signup-form',
         defaultValues: { name: '' },
@@ -31,8 +25,8 @@ describe('useForm', () => {
     expect(result.current.formId).toBe('signup-form')
   })
 
-  it('creates a stable formId when one is not supplied', () => {
-    const { result, rerender } = renderHook(() =>
+  it('creates a stable formId when one is not supplied', async () => {
+    const { result, rerender } = await renderHook(() =>
       useForm({ defaultValues: { name: '' } }),
     )
     const formId = result.current.formId
@@ -40,13 +34,13 @@ describe('useForm', () => {
     expect(formId).toBeTypeOf('string')
     expect(formId.length).toBeGreaterThan(0)
 
-    rerender()
+    await rerender()
 
     expect(result.current.formId).toBe(formId)
   })
 
-  it('should support async defaultValues with useState', () => {
-    const { result } = renderHook(() => {
+  it('should support async defaultValues with useState', async () => {
+    const { result, act } = await renderHook(() => {
       const [defaultValues, setDefaultValues] = useState({ name: 'initial' })
       const form = useForm({ defaultValues })
       return { form, setDefaultValues }
@@ -54,15 +48,15 @@ describe('useForm', () => {
 
     expect(result.current.form.state.values).toEqual({ name: 'initial' })
 
-    act(() => {
+    await act(() => {
       result.current.setDefaultValues({ name: 'async-value' })
     })
 
     expect(result.current.form.state.values).toEqual({ name: 'async-value' })
   })
 
-  it('should not overwrite a touched field with async defaultValues', () => {
-    const { result } = renderHook(() => {
+  it('should not overwrite a touched field with async defaultValues', async () => {
+    const { result, act } = await renderHook(() => {
       const [defaultValues, setDefaultValues] = useState({
         name: 'initial',
         age: 0,
@@ -72,12 +66,12 @@ describe('useForm', () => {
     })
 
     // Touch the name field
-    act(() => {
+    await act(() => {
       result.current.form.setFieldValue('name', 'touched')
     })
 
     // Update defaultValues - name is touched so should NOT be overwritten
-    act(() => {
+    await act(() => {
       result.current.setDefaultValues({ name: 'new-default', age: 99 })
     })
 
@@ -86,7 +80,7 @@ describe('useForm', () => {
   })
 
   it('should overwrite field B if only field A was touched and B is not a child of A', async () => {
-    const { result } = renderHook(() => {
+    const { result, act } = await renderHook(() => {
       const [defaultValues, setDefaultValues] = useState({
         a: { nested: 'initial-a' },
         b: 'initial-b',
@@ -96,7 +90,7 @@ describe('useForm', () => {
     })
 
     // Touch field A
-    act(() => {
+    await act(() => {
       result.current.form.setFieldValue('a.nested', 'touched-a')
     })
 
@@ -105,7 +99,7 @@ describe('useForm', () => {
     })
 
     // Update defaultValues
-    act(() => {
+    await act(() => {
       result.current.setDefaultValues({
         a: { nested: 'new-a' },
         b: 'new-b',
@@ -119,7 +113,7 @@ describe('useForm', () => {
     })
   })
 
-  it('does not render with pre-validation state for synchronous runOnMount validation', () => {
+  it('does not render with pre-validation state for synchronous runOnMount validation', async () => {
     const renderStates: Array<{
       errors: Array<string>
       isValid: boolean
@@ -159,7 +153,7 @@ describe('useForm', () => {
       )
     }
 
-    render(<Component />)
+    const screen = await render(<Component />)
 
     expect(screen.getByTestId('form-state')).toHaveTextContent(
       'Name is required|false|false',
@@ -174,7 +168,7 @@ describe('useForm', () => {
     }
   })
 
-  it('updates form.Subscribe selectors for isDefaultValue', () => {
+  it('updates form.Subscribe selectors for isDefaultValue', async () => {
     function Component() {
       const form = useForm({ defaultValues: { name: 'tony-hawk' } })
 
@@ -199,14 +193,14 @@ describe('useForm', () => {
       )
     }
 
-    render(<Component />)
+    const screen = await render(<Component />)
 
     expect(screen.getByTestId('is-default-value')).toHaveTextContent('true')
 
-    fireEvent.click(screen.getByTestId('change'))
+    await screen.getByTestId('change').click()
     expect(screen.getByTestId('is-default-value')).toHaveTextContent('false')
 
-    fireEvent.click(screen.getByTestId('restore'))
+    await screen.getByTestId('restore').click()
     expect(screen.getByTestId('is-default-value')).toHaveTextContent('true')
   })
 
@@ -240,18 +234,18 @@ describe('useForm', () => {
       )
     }
 
-    const { unmount } = render(<Component />)
+    const screen = await render(<Component />)
 
     expect(validator).toHaveBeenCalledOnce()
     expect(screen.getByTestId('is-validating')).toHaveTextContent('true')
 
-    unmount()
+    await screen.unmount()
 
     await expect(
-      act(async () => {
+      (async () => {
         resolveValidation('Async mount error')
         await Promise.resolve()
-      }),
+      })(),
     ).resolves.toBeUndefined()
   })
 })

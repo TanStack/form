@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core'
-import { render } from '@testing-library/angular'
-import { userEvent } from '@testing-library/user-event'
+import { render } from 'vitest-browser-angular'
+import { userEvent } from 'vitest/browser'
 import { describe, expect, it, vi } from 'vitest'
 import { TanStackField, TanStackFormGroup, injectForm } from '../src/index'
 import type { FormGroupValidators } from '@tanstack/form-core'
@@ -56,12 +56,11 @@ describe('TanStackFormGroup', () => {
     }
 
     const screen = await render(TestComponent)
-    const user = userEvent.setup()
 
     expect(screen.getByText('guest.confirmation')).toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: 'Change name' }))
-    expect(screen.fixture.componentInstance.validator).toHaveBeenCalled()
-    expect(screen.fixture.componentInstance.listener).toHaveBeenCalled()
+    await screen.getByRole('button', { name: 'Change name' }).click()
+    expect(screen.componentClassInstance.validator).toHaveBeenCalled()
+    expect(screen.componentClassInstance.listener).toHaveBeenCalled()
   })
 
   it('validates and submits one scoped section of a form', async () => {
@@ -121,11 +120,12 @@ describe('TanStackFormGroup', () => {
     }
 
     const screen = await render(TestComponent)
-    const user = userEvent.setup()
-    await user.click(screen.getByRole('button', { name: 'Next' }))
-    expect(await screen.findByRole('alert')).toHaveTextContent('Enter a name')
-    await user.type(screen.getByLabelText('Name'), 'Ada')
-    await user.click(screen.getByRole('button', { name: 'Next' }))
+    await screen.getByRole('button', { name: 'Next' }).click()
+    await expect
+      .element(screen.getByRole('alert'))
+      .toHaveTextContent('Enter a name')
+    await userEvent.type(screen.getByLabelText('Name'), 'Ada')
+    await screen.getByRole('button', { name: 'Next' }).click()
     await vi.waitFor(() => {
       expect(screen.getByTestId('step')).toHaveTextContent('1')
     })

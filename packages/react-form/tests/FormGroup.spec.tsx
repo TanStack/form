@@ -1,13 +1,11 @@
 import { describe, expect, it, vi } from 'vitest'
-import { render } from '@testing-library/react'
-import { userEvent } from '@testing-library/user-event'
+import { render } from 'vitest-browser-react'
+import { userEvent } from 'vitest/browser'
 import React, { useState } from 'react'
 import { z } from 'zod'
 import { createFormHook, getFormHookHelpers, useForm } from '../src'
 import type { AnyInternalFormApi } from '@tanstack/form-core/internals'
 import type { FieldWithValue } from '@tanstack/form-core'
-
-const user = userEvent.setup()
 
 function FieldNameComp(props: { field: FieldWithValue<string> }) {
   return <span data-testid="app-field-name">{props.field.name}</span>
@@ -46,7 +44,7 @@ const { useAppForm } = createFormHook({
 })
 
 describe('FormGroup', () => {
-  it('renders from the normal form API and prefixes field names', () => {
+  it('renders from the normal form API and prefixes field names', async () => {
     function Component() {
       const form = useForm({
         defaultValues: { guestDetails: { name: 'Tony' } },
@@ -67,12 +65,12 @@ describe('FormGroup', () => {
       )
     }
 
-    const { getByTestId } = render(<Component />)
+    const { getByTestId } = await render(<Component />)
 
     expect(getByTestId('field')).toHaveTextContent('guestDetails.name:Tony')
   })
 
-  it('prefixes array field names', () => {
+  it('prefixes array field names', async () => {
     function Component() {
       const form = useForm({
         defaultValues: { guestDetails: { guests: ['Tony'] } },
@@ -89,12 +87,12 @@ describe('FormGroup', () => {
       )
     }
 
-    const { getByTestId } = render(<Component />)
+    const { getByTestId } = await render(<Component />)
 
     expect(getByTestId('array')).toHaveTextContent('guestDetails.guests')
   })
 
-  it('provides AppForm field context for group fields', () => {
+  it('provides AppForm field context for group fields', async () => {
     function Component() {
       const form = useAppForm({
         defaultValues: { guestDetails: { name: 'Tony' } },
@@ -113,7 +111,7 @@ describe('FormGroup', () => {
       )
     }
 
-    const { getByTestId } = render(<Component />)
+    const { getByTestId } = await render(<Component />)
 
     expect(getByTestId('app-field-name')).toHaveTextContent('guestDetails.name')
   })
@@ -165,7 +163,7 @@ describe('FormGroup', () => {
       )
     }
 
-    const { unmount } = render(<Component />)
+    const { unmount } = await render(<Component />)
 
     await vi.waitFor(() => {
       expect(subscribe.mock.calls.length - unsubscribe.mock.calls.length).toBe(
@@ -173,7 +171,7 @@ describe('FormGroup', () => {
       )
     })
 
-    unmount()
+    await unmount()
 
     await vi.waitFor(() => {
       expect(subscribe.mock.calls.length - unsubscribe.mock.calls.length).toBe(
@@ -221,9 +219,9 @@ describe('FormGroup', () => {
       )
     }
 
-    const { getByLabelText } = render(<Component />)
+    const { getByLabelText } = await render(<Component />)
 
-    await user.type(getByLabelText('Guest name'), 'A')
+    await userEvent.type(getByLabelText('Guest name'), 'A')
 
     expect(listener).toHaveBeenCalledOnce()
   })
@@ -270,9 +268,9 @@ describe('FormGroup', () => {
       )
     }
 
-    const { getByLabelText, getByTestId } = render(<Component />)
+    const { getByLabelText, getByTestId } = await render(<Component />)
 
-    await user.type(getByLabelText('Step 1 name'), 'A')
+    await userEvent.type(getByLabelText('Step 1 name'), 'A')
 
     await vi.waitFor(() => {
       expect(validator).toHaveBeenCalledOnce()
@@ -307,9 +305,9 @@ describe('FormGroup', () => {
       )
     }
 
-    const { getByText, getByTestId } = render(<Component />)
+    const { getByText, getByTestId } = await render(<Component />)
 
-    await user.click(getByText('Continue'))
+    await getByText('Continue').click()
 
     expect(getByTestId('step')).toHaveTextContent('1')
     expect(getByTestId('attempts')).toHaveTextContent('1')
@@ -347,9 +345,9 @@ describe('FormGroup', () => {
       )
     }
 
-    const { getByText, getByTestId } = render(<Component />)
+    const { getByText, getByTestId } = await render(<Component />)
 
-    await user.click(getByText('Continue'))
+    await getByText('Continue').click()
 
     expect(getByTestId('error')).toHaveTextContent('Name is required')
   })
@@ -391,9 +389,9 @@ describe('FormGroup', () => {
       )
     }
 
-    const { getByText, getByTestId } = render(<Component />)
+    const { getByText, getByTestId } = await render(<Component />)
 
-    await user.click(getByText('Continue'))
+    await getByText('Continue').click()
 
     await vi.waitFor(() => {
       expect(getByTestId('group-field-error')).toHaveTextContent(
@@ -446,9 +444,9 @@ describe('FormGroup', () => {
       )
     }
 
-    const { getByText, getByTestId } = render(<Component />)
+    const { getByText, getByTestId } = await render(<Component />)
 
-    await user.click(getByText('Submit'))
+    await getByText('Submit').click()
 
     await vi.waitFor(() => {
       expect(validate).toHaveBeenCalled()
@@ -531,9 +529,9 @@ describe('FormGroup', () => {
       )
     }
 
-    const { getByText, getByTestId } = render(<Component />)
+    const { getByText, getByTestId } = await render(<Component />)
 
-    await user.click(getByText('Continue'))
+    await getByText('Continue').click()
 
     await vi.waitFor(() => {
       expect(getByTestId('arrival-time-errors')).toHaveTextContent(
@@ -545,13 +543,13 @@ describe('FormGroup', () => {
     })
   })
 
-  it('does not add a DOM-rendering StepForm helper', () => {
+  it('does not add a DOM-rendering StepForm helper', async () => {
     function Component() {
       const form = useForm({ defaultValues: { guestDetails: { name: '' } } })
       return <span data-testid="exists">{String('StepForm' in form)}</span>
     }
 
-    const { getByTestId } = render(<Component />)
+    const { getByTestId } = await render(<Component />)
 
     expect(getByTestId('exists')).toHaveTextContent('false')
   })
@@ -607,17 +605,19 @@ describe('FormGroup', () => {
       )
     }
 
-    const { getByLabelText, getByText, getByTestId } = render(<Component />)
+    const { getByLabelText, getByText, getByTestId } = await render(
+      <Component />,
+    )
     const input = getByLabelText('Guest name')
 
-    await user.type(input, 'Preserved')
-    await user.clear(input)
-    await user.click(getByText('Continue'))
+    await userEvent.type(input, 'Preserved')
+    await input.clear()
+    await getByText('Continue').click()
 
     expect(getByTestId('error')).toHaveTextContent('Name is required')
 
-    await user.type(input, 'Still here')
-    await user.click(getByText('Unmount group'))
+    await userEvent.type(input, 'Still here')
+    await getByText('Unmount group').click()
 
     expect(getByTestId('error')).toHaveTextContent('')
     expect(formRef.current?.state.values).toEqual({
