@@ -45,9 +45,9 @@
   "devDependencies": {
     "@sveltejs/package": "^2.5.3",
     "@sveltejs/vite-plugin-svelte": "^7.2.0",
-    "@testing-library/svelte": "^5.2.8",
     "svelte": "^5.39.4",
-    "svelte-check": "^4.7.5"
+    "svelte-check": "^4.7.5",
+    "vitest-browser-svelte": "^3.1.0"
   },
   "peerDependencies": {
     "svelte": "^5.0.0"

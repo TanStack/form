@@ -1,15 +1,14 @@
 import { defineConfig } from 'vitest/config'
 import { defaultClientConditions } from 'vite'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
-import { svelteTesting } from '@testing-library/svelte/vite'
 import { playwright } from '@vitest/browser-playwright'
 import packageJson from './package.json' with { type: 'json' }
 
 export default defineConfig({
-  plugins: [svelte(), svelteTesting()],
+  plugins: [svelte()],
   optimizeDeps: {
     include: [
-      '@testing-library/jest-dom/vitest',
+      'vitest-browser-svelte',
       'svelte',
       '@tanstack/svelte-store',
       '@tanstack/form-core',
@@ -19,7 +18,7 @@ export default defineConfig({
     name: packageJson.name,
     dir: './tests',
     watch: false,
-    setupFiles: ['./tests/test-setup.ts'],
+    setupFiles: ['vitest-browser-svelte'],
     browser: {
       enabled: true,
       provider: playwright(
