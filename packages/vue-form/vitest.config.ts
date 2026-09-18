@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitest/config'
-import packageJson from './package.json' with { type: 'json' }
 import vue from '@vitejs/plugin-vue'
 import { playwright } from '@vitest/browser-playwright'
+import packageJson from './package.json' with { type: 'json' }
 
 export default defineConfig({
   plugins: [vue()],
@@ -13,6 +13,9 @@ export default defineConfig({
       'vue/server-renderer',
       '@tanstack/vue-store',
     ],
+  },
+  define: {
+    'process.env': JSON.stringify({}),
   },
   test: {
     name: packageJson.name,
