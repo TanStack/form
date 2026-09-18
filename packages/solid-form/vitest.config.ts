@@ -6,18 +6,12 @@ import packageJson from './package.json' with { type: 'json' }
 export default defineConfig({
   plugins: [solid()],
   optimizeDeps: {
-    include: [
-      '@testing-library/jest-dom/vitest',
-      'solid-js',
-      'solid-js/web',
-      '@tanstack/solid-store',
-    ],
+    include: ['solid-js', 'solid-js/web', '@tanstack/solid-store'],
   },
   test: {
     name: packageJson.name,
     dir: './tests',
     watch: false,
-    setupFiles: ['./tests/test-setup.ts'],
     globals: true,
     browser: {
       enabled: true,
