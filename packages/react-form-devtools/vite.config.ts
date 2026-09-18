@@ -8,8 +8,7 @@ const config = defineConfig({
   plugins: [react()],
   optimizeDeps: {
     include: [
-      '@testing-library/jest-dom/vitest',
-      '@testing-library/react',
+      'vitest-browser-react',
       'react',
       'react-dom',
       'react-dom/client',
@@ -22,7 +21,7 @@ const config = defineConfig({
     dir: './tests',
     watch: false,
     globals: true,
-    setupFiles: ['./tests/test-setup.ts'],
+    setupFiles: ['vitest-browser-react'],
     browser: {
       enabled: true,
       provider: playwright(
