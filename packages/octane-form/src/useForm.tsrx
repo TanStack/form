@@ -15,6 +15,7 @@ import type {
 	FormValidateOrFn,
 } from '@tanstack/form-core';
 import type { FieldComponent } from './useField.tsrx';
+import type { SubscribeComponent } from './types';
 
 type FormRenderable = unknown;
 type FormPropsWithChildren<P = object> = P & { children?: FormRenderable };
@@ -71,42 +72,21 @@ export interface OctaneFormApi<
 	/**
 	 * A `Subscribe` function that allows you to listen and react to changes in the form's state. It's especially useful when you need to execute side effects or render specific components in response to state updates.
 	 */
-	Subscribe: <
-		TSelected = NoInfer<
-			FormState<
-				TFormData,
-				TOnMount,
-				TOnChange,
-				TOnChangeAsync,
-				TOnBlur,
-				TOnBlurAsync,
-				TOnSubmit,
-				TOnSubmitAsync,
-				TOnDynamic,
-				TOnDynamicAsync,
-				TOnServer
-			>
-		>,
-	>(props: {
-		selector?: (
-			state: NoInfer<
-				FormState<
-					TFormData,
-					TOnMount,
-					TOnChange,
-					TOnChangeAsync,
-					TOnBlur,
-					TOnBlurAsync,
-					TOnSubmit,
-					TOnSubmitAsync,
-					TOnDynamic,
-					TOnDynamicAsync,
-					TOnServer
-				>
-			>,
-		) => TSelected;
-		children: ((state: NoInfer<TSelected>) => FormRenderable) | FormRenderable;
-	}) => ReturnType<FormFunctionComponent>;
+	Subscribe: SubscribeComponent<
+		FormState<
+			TFormData,
+			TOnMount,
+			TOnChange,
+			TOnChangeAsync,
+			TOnBlur,
+			TOnBlurAsync,
+			TOnSubmit,
+			TOnSubmitAsync,
+			TOnDynamic,
+			TOnDynamicAsync,
+			TOnServer
+		>
+	>;
 }
 
 /**

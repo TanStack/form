@@ -36,6 +36,53 @@ const { useAppForm, withForm, withFieldGroup } = createFormHook({
 });
 
 describe('createFormHook', () => {
+	it('should infer field group Subscribe state and selector results', () => {
+		withFieldGroup({
+			defaultValues: { name: '', age: 0 },
+			render: ({ group }) => (
+				<>
+					<group.Subscribe>
+						{(state) => {
+							expectTypeOf(state).toEqualTypeOf<typeof group.state>();
+							return <span>{state.values.name}</span>;
+						}}
+					</group.Subscribe>
+					<group.Subscribe selector={(state) => [state.values.name, state.values.age] as const}>
+						{([name, age]) => {
+							expectTypeOf(name).toEqualTypeOf<string>();
+							expectTypeOf(age).toEqualTypeOf<number>();
+							return <span>{name}: {age}</span>;
+						}}
+					</group.Subscribe>
+				</>
+			),
+		});
+	});
+
+	it('should distinguish field group Subscribe callbacks from static children', () => {
+		withFieldGroup({
+			defaultValues: { name: '', age: 0 },
+			render: ({ group }) => {
+				// @ts-expect-error Static children must not accept incompatible render callbacks.
+				const invalidInferred = <group.Subscribe selector={(state) => state.values.age}>{(age: string) => age}</group.Subscribe>;
+				// @ts-expect-error Explicit selection types must also enforce the callback type.
+				const invalidExplicit = <group.Subscribe<number> selector={(state) => state.values.age}>{(age: string) => age}</group.Subscribe>;
+
+				return (
+					<>
+						<group.Subscribe><span>Static child</span></group.Subscribe>
+						<group.Subscribe selector={(state) => state.values.name}>Static text</group.Subscribe>
+						<group.Subscribe>{42}</group.Subscribe>
+						<group.Subscribe>{null}</group.Subscribe>
+						<group.Subscribe>{[<span>First</span>, 'Second', false]}</group.Subscribe>
+						{invalidInferred}
+						{invalidExplicit}
+					</>
+				);
+			},
+		});
+	});
+
 	it('should not break with an infinite type on large schemas', () => {
 		const ActivityKind0_Names = ['Work', 'Rest', 'OnCall'] as const;
 		type ActivityKind0 = (typeof ActivityKind0_Names)[number];

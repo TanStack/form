@@ -1,3 +1,4 @@
+import type { OctaneNode } from 'octane';
 import type {
 	DeepKeys,
 	DeepValue,
@@ -9,6 +10,22 @@ import type {
 	FormState,
 	FormValidateOrFn,
 } from '@tanstack/form-core';
+
+/**
+ * Subscribe to selected state, or render static Octane children.
+ *
+ * OctaneNode includes unknown, so combining it directly with a render callback
+ * would erase the callback's contextual type. Infer static children separately
+ * and exclude functions so callbacks always receive the selected state.
+ */
+export interface SubscribeComponent<TState> {
+	<TSelected = NoInfer<TState>, TChildren = never>(props: {
+		selector?: (state: NoInfer<TState>) => TSelected;
+		children:
+			| ((state: NoInfer<TSelected>) => OctaneNode)
+			| (TChildren extends (...args: never[]) => unknown ? never : TChildren);
+	}): OctaneNode;
+}
 
 interface FieldOptionsMode {
 	mode?: 'value' | 'array';

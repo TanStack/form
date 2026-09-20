@@ -3,9 +3,9 @@ import { act, fireEvent, render } from '@octanejs/testing-library';
 import { useSelector } from '@tanstack/octane-store';
 import { useForm } from '../src';
 import { sleep } from './utils';
-import type { ReadonlyStore } from '@tanstack/octane-store';
+import type { AnyFormApi } from '../src';
 
-function DebugSubscribe({ store }: { store: ReadonlyStore<any> }) {
+function DebugSubscribe({ store }: { store: AnyFormApi['store'] }) {
 	const isFieldsValidating = useSelector(store, (s) => s.isFieldsValidating);
 	return <span data-testid="isFieldsValidating">{String(isFieldsValidating)}</span>;
 }
@@ -44,7 +44,7 @@ describe('Octane adapter - onChangeListenTo race', () => {
 								<input
 									data-testid="street"
 									value={field.state.value}
-									onInput={(e) => field.handleChange(e.target.value)}
+									onInput={(e) => field.handleChange(e.currentTarget.value)}
 								/>
 								<span data-testid="street-validating">{String(field.state.meta.isValidating)}</span>
 							</div>
@@ -58,7 +58,7 @@ describe('Octane adapter - onChangeListenTo race', () => {
 								<input
 									data-testid="houseNo"
 									value={field.state.value}
-									onInput={(e) => field.handleChange(e.target.value)}
+									onInput={(e) => field.handleChange(e.currentTarget.value)}
 								/>
 								<span data-testid="houseNo-validating">
 									{String(field.state.meta.isValidating)}
@@ -74,7 +74,7 @@ describe('Octane adapter - onChangeListenTo race', () => {
 								<input
 									data-testid="zipCode"
 									value={field.state.value}
-									onInput={(e) => field.handleChange(e.target.value)}
+									onInput={(e) => field.handleChange(e.currentTarget.value)}
 								/>
 								<span data-testid="zipCode-validating">
 									{String(field.state.meta.isValidating)}
@@ -90,7 +90,7 @@ describe('Octane adapter - onChangeListenTo race', () => {
 								<input
 									data-testid="city"
 									value={field.state.value}
-									onInput={(e) => field.handleChange(e.target.value)}
+									onInput={(e) => field.handleChange(e.currentTarget.value)}
 								/>
 								<span data-testid="city-validating">{String(field.state.meta.isValidating)}</span>
 							</div>

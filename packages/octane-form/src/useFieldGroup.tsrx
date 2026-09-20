@@ -12,6 +12,7 @@ import type {
 } from '@tanstack/form-core';
 import type { AppFieldExtendedOctaneFormApi } from './createFormHook.tsrx';
 import type { LensFieldComponent } from './useField.tsrx';
+import type { SubscribeComponent } from './types';
 
 type FieldGroupRenderable = unknown;
 type FieldGroupPropsWithChildren<P = object> = P & { children?: FieldGroupRenderable };
@@ -80,10 +81,7 @@ export type AppFieldExtendedOctaneFieldGroupApi<
 		/**
 		 * A `Subscribe` function that allows you to listen and react to changes in the form's state. It's especially useful when you need to execute side effects or render specific components in response to state updates.
 		 */
-		Subscribe: <TSelected = NoInfer<FieldGroupState<TFieldGroupData>>>(props: {
-			selector?: (state: NoInfer<FieldGroupState<TFieldGroupData>>) => TSelected;
-			children: ((state: NoInfer<TSelected>) => FieldGroupRenderable) | FieldGroupRenderable;
-		}) => ReturnType<FieldGroupFunctionComponent>;
+		Subscribe: SubscribeComponent<FieldGroupState<TFieldGroupData>>;
 	};
 
 export function useFieldGroup<

@@ -32,7 +32,7 @@ describe('useField', () => {
 									data-testid="fieldinput"
 									value={field.state.value}
 									onBlur={field.handleBlur}
-									onInput={(e) => field.handleChange(e.target.value)}
+									onInput={(e) => field.handleChange(e.currentTarget.value)}
 								/>
 							);
 						}}
@@ -71,7 +71,7 @@ describe('useField', () => {
 									data-testid="fieldinput"
 									value={field.state.value}
 									onBlur={field.handleBlur}
-									onInput={(e) => field.handleChange(e.target.value)}
+									onInput={(e) => field.handleChange(e.currentTarget.value)}
 								/>
 							);
 						}}
@@ -115,7 +115,7 @@ describe('useField', () => {
 									value={field.state.value}
 									onBlur={field.handleBlur}
 									onInput={(e) =>
-										field.setValue(e.target.value, {
+										field.setValue(e.currentTarget.value, {
 											dontUpdateMeta: true,
 										})
 									}
@@ -164,7 +164,7 @@ describe('useField', () => {
 									name={field.name}
 									value={field.state.value}
 									onBlur={field.handleBlur}
-									onInput={(e) => field.handleChange(e.target.value)}
+									onInput={(e) => field.handleChange(e.currentTarget.value)}
 								/>
 								<p>{field.getMeta().errorMap.onChange}</p>
 							</div>
@@ -213,7 +213,7 @@ describe('useField', () => {
 									name={field.name}
 									value={field.state.value}
 									onBlur={field.handleBlur}
-									onInput={(e) => field.handleChange(e.target.value)}
+									onInput={(e) => field.handleChange(e.currentTarget.value)}
 								/>
 								<p>{field.getMeta().errorMap.onChange}</p>
 								<p>{field.getMeta().errorMap.onBlur}</p>
@@ -261,7 +261,7 @@ describe('useField', () => {
 									checked={state.value}
 									type="checkbox"
 									onInput={(e) => {
-										handleChange(e.target.checked);
+										handleChange(e.currentTarget.checked);
 									}}
 								/>
 							</div>
@@ -278,7 +278,7 @@ describe('useField', () => {
 												<input
 													data-testid="first-field"
 													value={state.value}
-													onInput={(e) => handleChange(e.target.value)}
+													onInput={(e) => handleChange(e.currentTarget.value)}
 												/>
 											</label>
 										)}
@@ -294,7 +294,7 @@ describe('useField', () => {
 											<input
 												data-testid="second-field"
 												value={state.value}
-												onInput={(e) => handleChange(e.target.value)}
+												onInput={(e) => handleChange(e.currentTarget.value)}
 											/>
 										</label>
 									)}
@@ -347,7 +347,7 @@ describe('useField', () => {
 								data-testid="first-name"
 								value={field.state.value}
 								onBlur={field.handleBlur}
-								onInput={(e) => field.handleChange(e.target.value)}
+								onInput={(e) => field.handleChange(e.currentTarget.value)}
 							/>
 						)}
 					</form.Field>
@@ -366,7 +366,7 @@ describe('useField', () => {
 											data-testid="last-name"
 											value={field.state.value}
 											onBlur={field.handleBlur}
-											onInput={(e) => field.handleChange(e.target.value)}
+											onInput={(e) => field.handleChange(e.currentTarget.value)}
 										/>
 									)}
 								</form.Field>
@@ -436,7 +436,7 @@ describe('useField', () => {
 								data-testid="toggle"
 								type="checkbox"
 								checked={field.state.value}
-								onInput={(e) => field.handleChange(e.target.checked)}
+								onInput={(e) => field.handleChange(e.currentTarget.checked)}
 							/>
 						)}
 					</form.Field>
@@ -449,7 +449,7 @@ describe('useField', () => {
 										<input
 											data-testid="name"
 											value={field.state.value}
-											onInput={(e) => field.handleChange(e.target.value)}
+											onInput={(e) => field.handleChange(e.currentTarget.value)}
 										/>
 									)}
 								</form.Field>
@@ -507,7 +507,7 @@ describe('useField', () => {
 									name={field.name}
 									value={field.state.value}
 									onBlur={field.handleBlur}
-									onInput={(e) => field.handleChange(e.target.value)}
+									onInput={(e) => field.handleChange(e.currentTarget.value)}
 								/>
 								<p>{field.getMeta().errorMap.onChange}</p>
 							</div>
@@ -563,7 +563,7 @@ describe('useField', () => {
 									name={field.name}
 									value={field.state.value}
 									onBlur={field.handleBlur}
-									onInput={(e) => field.handleChange(e.target.value)}
+									onInput={(e) => field.handleChange(e.currentTarget.value)}
 								/>
 								<p>{field.getMeta().errorMap.onChange}</p>
 								<p>{field.getMeta().errorMap.onBlur}</p>
@@ -623,7 +623,7 @@ describe('useField', () => {
 									name={field.name}
 									value={field.state.value}
 									onBlur={field.handleBlur}
-									onInput={(e) => field.handleChange(e.target.value)}
+									onInput={(e) => field.handleChange(e.currentTarget.value)}
 								/>
 								<p>{field.getMeta().errors}</p>
 							</div>
@@ -676,7 +676,7 @@ describe('useField', () => {
 																	<div>Name for person {i}</div>
 																	<input
 																		value={subField.state.value}
-																		onInput={(e) => subField.handleChange(e.target.value)}
+																		onInput={(e) => subField.handleChange(e.currentTarget.value)}
 																	/>
 																</label>
 																<button onClick={() => field.removeValue(i)} type="button">
@@ -765,7 +765,7 @@ describe('useField', () => {
 																	<div>Name for person {i}</div>
 																	<input
 																		value={subField.state.value}
-																		onInput={(e) => subField.handleChange(e.target.value)}
+																		onInput={(e) => subField.handleChange(e.currentTarget.value)}
 																	/>
 																</label>
 																<button onClick={() => field.removeValue(i)} type="button">
@@ -852,7 +852,7 @@ describe('useField', () => {
 														<div>Title for section {section.id}</div>
 														<input
 															value={subField.state.value}
-															onInput={(e) => subField.handleChange(e.target.value)}
+															onInput={(e) => subField.handleChange(e.currentTarget.value)}
 														/>
 													</label>
 												);
@@ -920,7 +920,7 @@ describe('useField', () => {
 										<div>Password</div>
 										<input
 											value={field.state.value}
-											onInput={(e) => field.handleChange(e.target.value)}
+											onInput={(e) => field.handleChange(e.currentTarget.value)}
 										/>
 									</label>
 								</div>
@@ -946,7 +946,7 @@ describe('useField', () => {
 										<div>Confirm Password</div>
 										<input
 											value={field.state.value}
-											onInput={(e) => field.handleChange(e.target.value)}
+											onInput={(e) => field.handleChange(e.currentTarget.value)}
 										/>
 									</label>
 									{field.state.meta.errors.map((err) => {
@@ -1008,7 +1008,7 @@ describe('useField', () => {
 									name={field.name}
 									value={field.state.value}
 									onBlur={field.handleBlur}
-									onInput={(e) => field.handleChange(e.target.value)}
+									onInput={(e) => field.handleChange(e.currentTarget.value)}
 								/>
 								<p>{errors}</p>
 							</div>
@@ -1056,7 +1056,7 @@ describe('useField', () => {
 															<input
 																name={subField.name}
 																value={subField.state.value}
-																onInput={(e) => subField.handleChange(e.target.value)}
+																onInput={(e) => subField.handleChange(e.currentTarget.value)}
 															/>
 														</label>
 													</div>
@@ -1110,7 +1110,7 @@ describe('useField', () => {
 															<input
 																name={subField.name}
 																value={subField.state.value}
-																onInput={(e) => subField.handleChange(e.target.value)}
+																onInput={(e) => subField.handleChange(e.currentTarget.value)}
 															/>
 														</label>
 													</div>
@@ -1181,7 +1181,7 @@ describe('useField', () => {
 																<input
 																	name={subField.name}
 																	value={subField.state.value}
-																	onInput={(e) => subField.handleChange(e.target.value)}
+																	onInput={(e) => subField.handleChange(e.currentTarget.value)}
 																/>
 															</label>
 														</div>
@@ -1239,7 +1239,7 @@ describe('useField', () => {
 								<input
 									data-testid="field1"
 									value={field.state.value}
-									onInput={(e) => field.handleChange(e.target.value)}
+									onInput={(e) => field.handleChange(e.currentTarget.value)}
 								/>
 							);
 						}}
@@ -1251,7 +1251,7 @@ describe('useField', () => {
 								<input
 									data-testid="field2"
 									value={field.state.value}
-									onInput={(e) => field.handleChange(e.target.value)}
+									onInput={(e) => field.handleChange(e.currentTarget.value)}
 								/>
 							);
 						}}
@@ -1303,7 +1303,7 @@ describe('useField', () => {
 												<input
 													data-testid={`person-${i}`}
 													value={field.state.value}
-													onInput={(e) => field.handleChange(e.target.value)}
+													onInput={(e) => field.handleChange(e.currentTarget.value)}
 												/>
 											);
 										}}
@@ -1461,7 +1461,7 @@ describe('useField', () => {
 									data-testid={field.name}
 									id={field.name}
 									value={field.state.value}
-									onInput={(e) => field.handleChange(e.target.value)}
+									onInput={(e) => field.handleChange(e.currentTarget.value)}
 								/>
 							);
 						}}

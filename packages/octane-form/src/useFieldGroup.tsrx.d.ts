@@ -3,6 +3,7 @@ import { FieldGroupApi } from '@tanstack/form-core';
 import type { DeepKeysOfType, FieldGroupState, FieldsMap, FormAsyncValidateOrFn, FormValidateOrFn } from '@tanstack/form-core';
 import type { AppFieldExtendedOctaneFormApi } from './createFormHook.tsrx';
 import type { LensFieldComponent } from './useField.tsrx';
+import type { SubscribeComponent } from './types';
 type FieldGroupRenderable = unknown;
 type FieldGroupPropsWithChildren<P = object> = P & {
     children?: FieldGroupRenderable;
@@ -22,10 +23,7 @@ export type AppFieldExtendedOctaneFieldGroupApi<TFormData, TFieldGroupData, TFie
     /**
      * A `Subscribe` function that allows you to listen and react to changes in the form's state. It's especially useful when you need to execute side effects or render specific components in response to state updates.
      */
-    Subscribe: <TSelected = NoInfer<FieldGroupState<TFieldGroupData>>>(props: {
-        selector?: (state: NoInfer<FieldGroupState<TFieldGroupData>>) => TSelected;
-        children: ((state: NoInfer<TSelected>) => FieldGroupRenderable) | FieldGroupRenderable;
-    }) => ReturnType<FieldGroupFunctionComponent>;
+    Subscribe: SubscribeComponent<FieldGroupState<TFieldGroupData>>;
 };
 export declare function useFieldGroup<TFormData, TFieldGroupData, TFields extends DeepKeysOfType<TFormData, TFieldGroupData | null | undefined> | FieldsMap<TFormData, TFieldGroupData>, TOnMount extends undefined | FormValidateOrFn<TFormData>, TOnChange extends undefined | FormValidateOrFn<TFormData>, TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>, TOnBlur extends undefined | FormValidateOrFn<TFormData>, TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>, TOnSubmit extends undefined | FormValidateOrFn<TFormData>, TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>, TOnDynamic extends undefined | FormValidateOrFn<TFormData>, TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>, TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>, TComponents extends Record<string, FieldGroupComponentType<any>>, TFormComponents extends Record<string, FieldGroupComponentType<any>>, TSubmitMeta = never>(opts: {
     form: AppFieldExtendedOctaneFormApi<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta, TComponents, TFormComponents> | AppFieldExtendedOctaneFieldGroupApi<unknown, TFormData, string | FieldsMap<unknown, TFormData>, any, any, any, any, any, any, any, any, any, any, TSubmitMeta, TComponents, TFormComponents>;

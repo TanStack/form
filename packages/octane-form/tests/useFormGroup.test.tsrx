@@ -36,7 +36,7 @@ describe('form.FormGroup', () => {
 									<input
 										data-testid="step1-name"
 										value={field.state.value}
-										onInput={(e) => field.handleChange(e.target.value)}
+										onInput={(e) => field.handleChange(e.currentTarget.value)}
 									/>
 								)}
 							/>
@@ -75,7 +75,7 @@ describe('form.FormGroup', () => {
 									<input
 										data-testid="step1-name"
 										value={field.state.value}
-										onInput={(e) => field.handleChange(e.target.value)}
+										onInput={(e) => field.handleChange(e.currentTarget.value)}
 									/>
 								)}
 							/>
@@ -132,7 +132,7 @@ describe('form.FormGroup', () => {
 									<input
 										data-testid="step1-name"
 										value={field.state.value}
-										onInput={(e) => field.handleChange(e.target.value)}
+										onInput={(e) => field.handleChange(e.currentTarget.value)}
 									/>
 								)}
 							/>
@@ -196,7 +196,7 @@ describe('form.FormGroup', () => {
 									<input
 										data-testid="step1-name"
 										value={field.state.value}
-										onInput={(e) => field.handleChange(e.target.value)}
+										onInput={(e) => field.handleChange(e.currentTarget.value)}
 									/>
 								)}
 							/>

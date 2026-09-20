@@ -4,6 +4,81 @@ import type { FormAsyncValidateOrFn, FormValidateOrFn } from '../src/index';
 import type { OctaneFormExtendedApi } from '../src/useForm.tsrx';
 
 describe('useForm', () => {
+	it('should infer Subscribe selector results and reject incompatible callbacks', () => {
+		function Comp() {
+			const form = useForm({ defaultValues: { name: '', age: 0 } });
+
+			// @ts-expect-error A number selector cannot provide a string to the callback.
+			const invalidInferred = <form.Subscribe selector={(state) => state.values.age}>{(age: string) => age}</form.Subscribe>;
+			// @ts-expect-error Explicit selection types must also enforce the callback type.
+			const invalidExplicit = <form.Subscribe<number> selector={(state) => state.values.age}>{(age: string) => age}</form.Subscribe>;
+
+			return (
+				<>
+					<form.Subscribe selector={(state) => [state.values.name, state.values.age] as const}>
+						{([name, age]) => {
+							expectTypeOf(name).toEqualTypeOf<string>();
+							expectTypeOf(age).toEqualTypeOf<number>();
+							// @ts-expect-error The selected age is a number.
+							age.toUpperCase();
+							return <span>{name}: {age}</span>;
+						}}
+					</form.Subscribe>
+					{invalidInferred}
+					{invalidExplicit}
+				</>
+			);
+		}
+	});
+
+	it('should infer the whole form state when Subscribe has no selector', () => {
+		function Comp() {
+			const form = useForm({ defaultValues: { name: '', age: 0 } });
+
+			return (
+				<form.Subscribe>
+					{(state) => {
+						expectTypeOf(state).toEqualTypeOf<typeof form.state>();
+						return <span>{state.values.name}</span>;
+					}}
+				</form.Subscribe>
+			);
+		}
+	});
+
+	it('should accept static Octane children in Subscribe', () => {
+		function Comp() {
+			const form = useForm({ defaultValues: { name: '' } });
+
+			return (
+				<>
+					<form.Subscribe><span>Static child</span></form.Subscribe>
+					<form.Subscribe selector={(state) => state.values.name}>Static text</form.Subscribe>
+					<form.Subscribe>{42}</form.Subscribe>
+					<form.Subscribe>{null}</form.Subscribe>
+					<form.Subscribe>{[<span>First</span>, 'Second', false]}</form.Subscribe>
+				</>
+			);
+		}
+	});
+
+	it('should infer Subscribe callbacks combined with static children', () => {
+		function Comp({ showAge }: { showAge: boolean }) {
+			const form = useForm({ defaultValues: { name: '', age: 0 } });
+
+			return (
+				<form.Subscribe selector={(state) => state.values.age}>
+					{showAge
+						? (age) => {
+								expectTypeOf(age).toEqualTypeOf<number>();
+								return <span>{age}</span>;
+							}
+						: <span>Age hidden</span>}
+				</form.Subscribe>
+			);
+		}
+	});
+
 	it('should type onSubmit properly', () => {
 		function Comp() {
 			const form = useForm({

@@ -13,7 +13,7 @@ function TextField({ label }: { label: string }) {
 	return (
 		<label>
 			<div>{label}</div>
-			<input value={field.state.value} onInput={(e) => field.handleChange(e.target.value)} />
+			<input value={field.state.value} onInput={(e) => field.handleChange(e.currentTarget.value)} />
 		</label>
 	);
 }
@@ -261,7 +261,7 @@ describe('createFormHook', () => {
 									<div>{field.name}</div>
 									<input
 										value={field.state.value}
-										onInput={(e) => field.handleChange(e.target.value)}
+										onInput={(e) => field.handleChange(e.currentTarget.value)}
 									/>
 								</label>
 							)}
@@ -311,7 +311,7 @@ describe('createFormHook', () => {
 									<div>{field.name}</div>
 									<input
 										value={field.state.value}
-										onInput={(e) => field.handleChange(e.target.value)}
+										onInput={(e) => field.handleChange(e.currentTarget.value)}
 									/>
 								</label>
 							)}
@@ -692,7 +692,7 @@ describe('createFormHook', () => {
 						<input
 							data-testid="extended-input"
 							value={field.state.value}
-							onInput={(e) => field.handleChange(e.target.value)}
+							onInput={(e) => field.handleChange(e.currentTarget.value)}
 						/>
 					</label>
 				);
@@ -778,7 +778,7 @@ describe('createFormHook', () => {
 				return (
 					<label>
 						<div>{label}</div>
-						<input value={field.state.value} onInput={(e) => field.handleChange(e.target.value)} />
+						<input value={field.state.value} onInput={(e) => field.handleChange(e.currentTarget.value)} />
 					</label>
 				);
 			}
@@ -788,7 +788,7 @@ describe('createFormHook', () => {
 				return (
 					<label>
 						<div>{label}</div>
-						<input value={field.state.value} onInput={(e) => field.handleChange(e.target.value)} />
+						<input value={field.state.value} onInput={(e) => field.handleChange(e.currentTarget.value)} />
 					</label>
 				);
 			}
@@ -830,7 +830,7 @@ describe('createFormHook', () => {
 				return (
 					<label>
 						<div>{label}</div>
-						<input value={field.state.value} onInput={(e) => field.handleChange(e.target.value)} />
+						<input value={field.state.value} onInput={(e) => field.handleChange(e.currentTarget.value)} />
 					</label>
 				);
 			}
@@ -880,7 +880,7 @@ describe('createFormHook', () => {
 				return (
 					<label>
 						<div>{label}</div>
-						<input value={field.state.value} onInput={(e) => field.handleChange(e.target.value)} />
+						<input value={field.state.value} onInput={(e) => field.handleChange(e.currentTarget.value)} />
 					</label>
 				);
 			}
@@ -925,7 +925,7 @@ describe('createFormHook', () => {
 										data-testid="lastName"
 										value={field.state.value}
 										onBlur={field.handleBlur}
-										onInput={(e) => field.handleChange(e.target.value)}
+										onInput={(e) => field.handleChange(e.currentTarget.value)}
 									/>
 								</label>
 							)}
