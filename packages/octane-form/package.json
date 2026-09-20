@@ -63,7 +63,9 @@
     "@octanejs/testing-library": "^0.1.51",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/user-event": "^14.6.1",
+    "@tsrx/eslint-plugin": "^0.4.6",
     "@tsrx/typescript-plugin": "^0.4.6",
+    "eslint": "9.36.0",
     "octane": "^0.2.16",
     "vitest": "^3.2.4"
   }
