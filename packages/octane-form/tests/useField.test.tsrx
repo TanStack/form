@@ -1,10 +1,9 @@
-// Ported from @tanstack/react-form 1.33.2 to the Octane test renderer.
 import { describe, expect, it, vi } from 'vitest';
 import { render, waitFor, within } from '@octanejs/testing-library';
 import { userEvent } from '@testing-library/user-event';
 import { useState } from 'octane';
-import { useForm, useSelector } from '@tanstack/octane-form';
-import { sleep } from '../../conformance/utils';
+import { useForm, useSelector } from '../src';
+import { sleep } from './utils';
 
 const user = userEvent.setup();
 
@@ -1507,5 +1506,22 @@ describe('useField', () => {
 
 		expect(queryByText('a')).toBeInTheDocument();
 		expect(queryByText('never')).not.toBeInTheDocument();
+	});
+
+	it('should handle deeply nested values', async () => {
+		function Comp() {
+			const form = useForm({
+				defaultValues: {
+					name: { first: 'Test', last: 'User' },
+				},
+			});
+
+			return <form.Field name="name.last" children={(field) => <p>{field.state.value}</p>} />;
+		}
+
+		const { queryByText, findByText } = render(<Comp />);
+
+		expect(queryByText('Test')).not.toBeInTheDocument();
+		expect(await findByText('User')).toBeInTheDocument();
 	});
 });

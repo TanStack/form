@@ -1,10 +1,9 @@
-// Ported from @tanstack/react-form 1.33.2 to the Octane test renderer.
 import { describe, expect, it, vi } from 'vitest';
-import { render, waitFor } from '@octanejs/testing-library';
+import { render, renderHook, waitFor } from '@octanejs/testing-library';
 import { userEvent } from '@testing-library/user-event';
-import { useCallback, useEffect, useState } from 'octane';
-import { mergeForm, useForm, useSelector } from '@tanstack/octane-form';
-import { sleep } from '../../conformance/utils';
+import { act, useCallback, useEffect, useReducer, useState } from 'octane';
+import { FormApi, mergeForm, useForm, useSelector } from '../src';
+import { sleep } from './utils';
 
 const user = userEvent.setup();
 
@@ -1087,5 +1086,61 @@ describe('useForm', () => {
 		await user.clear(input);
 		await user.type(input, 'updated');
 		await waitFor(() => expect(stateValue).toHaveTextContent('updated'));
+	});
+
+	it('mounts a replacement form when an explicit formId is removed', async () => {
+		const mountedIds: string[] = [];
+
+		function Comp() {
+			const [formId, setFormId] = useState<string | undefined>('first');
+			const [, forceRender] = useReducer((count) => count + 1, 0);
+			const form = useForm({
+				formId,
+				listeners: {
+					onMount: () => mountedIds.push(formId ?? 'fallback'),
+				},
+			});
+
+			return <>
+				<span data-testid="dynamic-form-id">{form.formId}</span>
+				<button data-testid="clear-form-id" onClick={() => setFormId(undefined)}>
+					clear
+				</button>
+				<button data-testid="rerender-form" onClick={forceRender}>
+					rerender
+				</button>
+			</>;
+		}
+
+		const { getByTestId } = render(<Comp />);
+		const id = getByTestId('dynamic-form-id');
+		expect(id).toHaveTextContent('first');
+		expect(mountedIds).toEqual(['first']);
+
+		await user.click(getByTestId('clear-form-id'));
+		await waitFor(() => expect(mountedIds).toEqual(['first', 'fallback']));
+		expect(id).not.toHaveTextContent('first');
+		const fallbackId = id.textContent;
+		expect(fallbackId).not.toBe('');
+
+		await user.click(getByTestId('rerender-form'));
+		expect(id).toHaveTextContent(fallbackId!);
+		expect(mountedIds).toEqual(['first', 'fallback']);
+	});
+
+	it('keeps multiple subscriptions in the same component independent', () => {
+		const form = new FormApi({
+			defaultValues: { firstName: 'Ada', lastName: 'Lovelace' },
+		});
+		const { result } = renderHook(() => ({
+			firstName: useSelector(form.store, (state) => state.values.firstName),
+			lastName: useSelector(form.store, (state) => state.values.lastName),
+		}));
+
+		expect(result.current).toEqual({ firstName: 'Ada', lastName: 'Lovelace' });
+		act(() => form.setFieldValue('firstName', 'Grace'));
+		expect(result.current).toEqual({ firstName: 'Grace', lastName: 'Lovelace' });
+		act(() => form.setFieldValue('lastName', 'Hopper'));
+		expect(result.current).toEqual({ firstName: 'Grace', lastName: 'Hopper' });
 	});
 });

@@ -1,15 +1,12 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "octane",
     "paths": {
       "@tanstack/octane-form": ["./src"],
       "@tanstack/form-core": ["../form-core/src"]
     }
   },
-  "include": [
-    "src",
-    "tests",
-    "eslint.config.js",
-    "vitest.config.ts"
-  ]
+  "include": ["src", "tests", "*.config.js", "*.config.ts"]
 }

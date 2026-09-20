@@ -2,30 +2,37 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { octane } from 'octane/compiler/vite'
 import { defineConfig } from 'vitest/config'
+import packageJson from './package.json' with { type: 'json' }
 
 const root = dirname(fileURLToPath(import.meta.url))
 const alias = {
   '@tanstack/form-core': resolve(root, '../form-core/src/index.ts'),
   '@tanstack/octane-form': resolve(root, 'src/index.ts'),
-  '@tanstack/react-form': resolve(root, '../react-form/src/index.ts'),
 }
 
 export default defineConfig({
   test: {
     watch: false,
+    coverage: {
+      enabled: true,
+      provider: 'istanbul',
+      include: ['src/**/*'],
+      extension: ['.ts', '.tsrx'],
+    },
     projects: [
       {
-        plugins: [
-          octane({ ssr: false, hmr: false, exclude: ['/react-form/'] }),
-        ],
+        plugins: [octane({ ssr: false, hmr: false })],
         resolve: { alias },
         test: {
-          name: 'octane-form',
+          name: packageJson.name,
           root,
+          dir: './tests',
           environment: 'jsdom',
           globals: true,
-          include: ['tests/conformance/**/*.test.ts'],
-          setupFiles: ['tests/conformance/test-setup.ts'],
+          include: ['**/*.test.{ts,tsrx}'],
+          exclude: ['**/server.test.tsrx'],
+          setupFiles: ['./tests/test-setup.ts'],
+          typecheck: { enabled: true },
         },
       },
       {
@@ -43,10 +50,11 @@ export default defineConfig({
           ],
         },
         test: {
-          name: 'octane-form-ssr',
+          name: `${packageJson.name}:ssr`,
           root,
+          dir: './tests',
           environment: 'node',
-          include: ['tests/ssr/**/*.test.ts'],
+          include: ['**/server.test.tsrx'],
         },
       },
     ],

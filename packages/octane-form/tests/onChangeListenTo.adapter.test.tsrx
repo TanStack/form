@@ -1,11 +1,8 @@
-// Ported from @tanstack/react-form 1.33.2 to the Octane test renderer.
-// OCTANE DIVERGENCE: upstream renders this sole scenario under <StrictMode>.
-// Octane has no StrictMode double-invoke, so this file stays ordinary coverage.
 import { describe, expect, it, vi } from 'vitest';
 import { act, fireEvent, render } from '@octanejs/testing-library';
 import { useSelector } from '@tanstack/octane-store';
-import { useForm } from '@tanstack/octane-form';
-import { sleep } from '../../conformance/utils';
+import { useForm } from '../src';
+import { sleep } from './utils';
 import type { ReadonlyStore } from '@tanstack/octane-store';
 
 function DebugSubscribe({ store }: { store: ReadonlyStore<any> }) {

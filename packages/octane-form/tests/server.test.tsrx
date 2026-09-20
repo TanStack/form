@@ -1,6 +1,24 @@
 import { describe, expect, it } from 'vitest';
 import { renderToStaticMarkup } from 'octane/server';
-import { ServerForm } from '../_fixtures/server.tsrx';
+
+import { useForm } from '../src';
+
+function ServerForm() @{
+	const form = useForm({
+		defaultValues: {
+			name: 'Server Ada',
+		},
+	});
+
+	<form>
+		<form.Field name="name">
+			{(field) => <input id="name" value={field.state.value} />}
+		</form.Field>
+		<form.Subscribe selector={(state) => state.values.name}>
+			{(name) => <output id="name-output">{name}</output>}
+		</form.Subscribe>
+	</form>
+}
 
 describe('@tanstack/octane-form SSR', () => {
 	it('renders field and form snapshots without a DOM', () => {

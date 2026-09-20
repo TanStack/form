@@ -1,9 +1,8 @@
-// Ported from @tanstack/react-form 1.33.2 to the Octane test renderer.
 import { describe, expect, it } from 'vitest';
 import { render, waitFor } from '@octanejs/testing-library';
 import { formOptions } from '@tanstack/form-core';
 import userEvent from '@testing-library/user-event';
-import { createFormHook, createFormHookContexts, useSelector } from '@tanstack/octane-form';
+import { createFormHook, createFormHookContexts, useSelector } from '../src';
 
 const user = userEvent.setup();
 

@@ -1873,32 +1873,20 @@ importers:
         version: link:../form-core
       '@tanstack/octane-store':
         specifier: ^0.12.2
-        version: 0.12.2(octane@0.2.16(@typescript-eslint/types@8.59.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(svelte@5.55.9(@typescript-eslint/types@8.59.4))(typescript@5.9.3)(vite@7.3.3(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)))
+        version: 0.12.2(octane@0.2.16(@typescript-eslint/types@8.59.4)(react-dom@19.3.0(react@19.3.0))(react@19.1.0)(svelte@5.55.9(@typescript-eslint/types@8.59.4))(typescript@5.9.3)(vite@7.3.3(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)))
     devDependencies:
       '@octanejs/testing-library':
         specifier: ^0.1.51
-        version: 0.1.51(octane@0.2.16(@typescript-eslint/types@8.59.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(svelte@5.55.9(@typescript-eslint/types@8.59.4))(typescript@5.9.3)(vite@7.3.3(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)))
+        version: 0.1.51(octane@0.2.16(@typescript-eslint/types@8.59.4)(react-dom@19.3.0(react@19.3.0))(react@19.1.0)(svelte@5.55.9(@typescript-eslint/types@8.59.4))(typescript@5.9.3)(vite@7.3.3(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)))
       '@testing-library/jest-dom':
         specifier: ^6.8.0
         version: 6.9.1
       '@testing-library/user-event':
         specifier: ^14.6.1
         version: 14.6.7(@testing-library/dom@10.4.1)
-      '@tsrx/react':
-        specifier: ^0.3.4
-        version: 0.3.4(@typescript-eslint/types@8.59.4)(react@19.1.0)
-      esbuild:
-        specifier: ^0.28.2
-        version: 0.28.2
       octane:
         specifier: ^0.2.16
-        version: 0.2.16(@typescript-eslint/types@8.59.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(svelte@5.55.9(@typescript-eslint/types@8.59.4))(typescript@5.9.3)(vite@7.3.3(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0))
-      react:
-        specifier: 19.1.0
-        version: 19.1.0
-      react-dom:
-        specifier: 19.1.0
-        version: 19.1.0(react@19.1.0)
+        version: 0.2.16(@typescript-eslint/types@8.59.4)(react-dom@19.3.0(react@19.3.0))(react@19.1.0)(svelte@5.55.9(@typescript-eslint/types@8.59.4))(typescript@5.9.3)(vite@7.3.3(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0))
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/debug@4.1.13)(@types/node@24.12.4)(jiti@2.7.0)(jsdom@27.4.0(@noble/hashes@2.4.0)(supports-color@8.1.1))(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(sugarss@5.0.1(postcss@8.5.15))(supports-color@8.1.1)(terser@5.48.0)(yaml@2.9.0)
@@ -7880,16 +7868,6 @@ packages:
     resolution: {integrity: sha512-Y8KEKepbugOuASyNVPazVulmdQy25LDYxUMw6MdiAWKmUWZ6RXzct8RgyiMqoif74LPOcKw+qpWZH3LJpeC7WA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
-
-  '@tsrx/react-runtime@0.1.10':
-    resolution: {integrity: sha512-Az9OMPCXHGAsnPRztq065KimTPKmWbq6SAbilJ4y5VFZfE0Wwcn9mYyft9bPD010n+nrH/w598715FLoOlNwDA==}
-    peerDependencies:
-      react: '>=18'
-
-  '@tsrx/react@0.3.4':
-    resolution: {integrity: sha512-/Pel+fMfipoqMRr0N956/dnM/B1in3+IHL6V+vUkWR8KJJEVGlWDtIaGJFp+3IcmVaw/+YUyD3l1QCPYMDLYyQ==}
-    peerDependencies:
-      react: '>=18'
 
   '@tsrx/runtime@0.2.2':
     resolution: {integrity: sha512-EsqZjTKWd/qrwEEk7AtaKrmTvPZWRz+H06rJjgNAb1Om0RC45xX2hZjDlv/tE20o4gcOgSCfc/AzKTq6qXlp1A==}
@@ -19948,10 +19926,10 @@ snapshots:
   '@nx/nx-win32-x64-msvc@23.2.1':
     optional: true
 
-  '@octanejs/testing-library@0.1.51(octane@0.2.16(@typescript-eslint/types@8.59.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(svelte@5.55.9(@typescript-eslint/types@8.59.4))(typescript@5.9.3)(vite@7.3.3(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)))':
+  '@octanejs/testing-library@0.1.51(octane@0.2.16(@typescript-eslint/types@8.59.4)(react-dom@19.3.0(react@19.3.0))(react@19.1.0)(svelte@5.55.9(@typescript-eslint/types@8.59.4))(typescript@5.9.3)(vite@7.3.3(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)))':
     dependencies:
       '@testing-library/dom': 10.4.1
-      octane: 0.2.16(@typescript-eslint/types@8.59.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(svelte@5.55.9(@typescript-eslint/types@8.59.4))(typescript@5.9.3)(vite@7.3.3(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0))
+      octane: 0.2.16(@typescript-eslint/types@8.59.4)(react-dom@19.3.0(react@19.3.0))(react@19.1.0)(svelte@5.55.9(@typescript-eslint/types@8.59.4))(typescript@5.9.3)(vite@7.3.3(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0))
 
   '@one-ini/wasm@0.1.1': {}
 
@@ -21673,10 +21651,10 @@ snapshots:
       '@tanstack/store': 0.11.0
       lit: 3.3.3
 
-  '@tanstack/octane-store@0.12.2(octane@0.2.16(@typescript-eslint/types@8.59.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(svelte@5.55.9(@typescript-eslint/types@8.59.4))(typescript@5.9.3)(vite@7.3.3(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)))':
+  '@tanstack/octane-store@0.12.2(octane@0.2.16(@typescript-eslint/types@8.59.4)(react-dom@19.3.0(react@19.3.0))(react@19.1.0)(svelte@5.55.9(@typescript-eslint/types@8.59.4))(typescript@5.9.3)(vite@7.3.3(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)))':
     dependencies:
       '@tanstack/store': 0.11.1
-      octane: 0.2.16(@typescript-eslint/types@8.59.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(svelte@5.55.9(@typescript-eslint/types@8.59.4))(typescript@5.9.3)(vite@7.3.3(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0))
+      octane: 0.2.16(@typescript-eslint/types@8.59.4)(react-dom@19.3.0(react@19.3.0))(react@19.1.0)(svelte@5.55.9(@typescript-eslint/types@8.59.4))(typescript@5.9.3)(vite@7.3.3(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0))
 
   '@tanstack/pacer-lite@0.1.1': {}
 
@@ -22136,21 +22114,6 @@ snapshots:
     transitivePeerDependencies:
       - svelte
       - vite-plus
-
-  '@tsrx/react-runtime@0.1.10(react@19.1.0)':
-    dependencies:
-      '@tsrx/runtime': 0.2.2
-      react: 19.1.0
-
-  '@tsrx/react@0.3.4(@typescript-eslint/types@8.59.4)(react@19.1.0)':
-    dependencies:
-      '@tsrx/core': 0.2.4(@typescript-eslint/types@8.59.4)
-      '@tsrx/react-runtime': 0.1.10(react@19.1.0)
-      esrap: 2.3.7(@typescript-eslint/types@8.59.4)
-      react: 19.1.0
-      zimmerframe: 1.1.4
-    transitivePeerDependencies:
-      - '@typescript-eslint/types'
 
   '@tsrx/runtime@0.2.2': {}
 
@@ -24718,6 +24681,7 @@ snapshots:
       '@esbuild/win32-arm64': 0.28.2
       '@esbuild/win32-ia32': 0.28.2
       '@esbuild/win32-x64': 0.28.2
+    optional: true
 
   escalade@3.2.0: {}
 
@@ -28401,7 +28365,7 @@ snapshots:
 
   obug@2.1.1: {}
 
-  octane@0.2.16(@typescript-eslint/types@8.59.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(svelte@5.55.9(@typescript-eslint/types@8.59.4))(typescript@5.9.3)(vite@7.3.3(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)):
+  octane@0.2.16(@typescript-eslint/types@8.59.4)(react-dom@19.3.0(react@19.3.0))(react@19.1.0)(svelte@5.55.9(@typescript-eslint/types@8.59.4))(typescript@5.9.3)(vite@7.3.3(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)):
     dependencies:
       '@tsrx/core': 0.2.4(@typescript-eslint/types@8.59.4)
       '@tsrx/oxc': 0.13.0(svelte@5.55.9(@typescript-eslint/types@8.59.4))
@@ -28416,7 +28380,7 @@ snapshots:
       esrap: 2.3.7(@typescript-eslint/types@8.59.4)
     optionalDependencies:
       react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
+      react-dom: 19.3.0(react@19.3.0)
       typescript: 5.9.3
       vite: 7.3.3(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.100.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)
     transitivePeerDependencies:

@@ -23,7 +23,7 @@
     "test:types:ts58": "node ../../node_modules/typescript58/lib/tsc.js",
     "test:types:ts59": "tsc",
     "test:lib": "vitest",
-    "test:lib:dev": "vitest --watch",
+    "test:lib:dev": "pnpm run test:lib --watch",
     "test:build": "publint --strict",
     "build": "tsc -p tsconfig.build.json --noEmit"
   },
@@ -63,11 +63,7 @@
     "@octanejs/testing-library": "^0.1.51",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/user-event": "^14.6.1",
-    "@tsrx/react": "^0.3.4",
-    "esbuild": "^0.28.2",
     "octane": "^0.2.16",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
     "vitest": "^3.2.4"
   }
 }

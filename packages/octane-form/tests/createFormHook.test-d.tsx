@@ -2,28 +2,6 @@ import { describe, expectTypeOf, it } from 'vitest';
 import { formOptions } from '@tanstack/form-core';
 import { createFormHook, createFormHookContexts } from '../src';
 
-declare global {
-	namespace JSX {
-		type Element = unknown;
-
-		interface ElementClass {
-			[name: string]: unknown;
-		}
-
-		interface ElementChildrenAttribute {
-			children: {};
-		}
-
-		interface IntrinsicAttributes {
-			key?: unknown;
-		}
-
-		interface IntrinsicElements {
-			[name: string]: any;
-		}
-	}
-}
-
 const { fieldContext, useFieldContext, formContext, useFormContext } = createFormHookContexts();
 
 function Test() {
