@@ -1,109 +1,49 @@
-# @tanstack/octane-form
+<img src="https://static.scarf.sh/a.png?x-pxid=be2d8a11-9712-4c1d-9963-580b2d4fb133" />
 
-[TanStack Form](https://tanstack.com/form) bindings for the
-[Octane](https://github.com/octanejs/octane) UI framework.
+<picture>
+  <source
+    media="(prefers-color-scheme: dark)"
+    srcset="https://tanstack.com/api/readme/form.png?framework=octane&theme=dark"
+  />
+  <source
+    media="(prefers-color-scheme: light)"
+    srcset="https://tanstack.com/api/readme/form.png?framework=octane"
+  />
+  <img
+    src="https://tanstack.com/api/readme/form.png?framework=octane"
+    alt="TanStack Octane Form"
+    width="900"
+  />
+</picture>
 
-## Installation
+Hooks for managing form state in Octane
 
-```sh
-npm install @tanstack/octane-form
-pnpm add @tanstack/octane-form
-```
+<a href="https://twitter.com/intent/tweet?button_hashtag=TanStack" target="\_parent">
+  <img alt="#TanStack" src="https://img.shields.io/twitter/url?color=%2308a0e9&label=%23TanStack&style=social&url=https%3A%2F%2Ftwitter.com%2Fintent%2Ftweet%3Fbutton_hashtag%3DTanStack">
+</a><a href="https://discord.com/invite/WrRKjPJ" target="\_parent">
+  <img alt="" src="https://img.shields.io/badge/Discord-TanStack-%235865F2" />
+</a><a href="https://github.com/TanStack/form/actions?query=workflow%3A%22octane-form+tests%22">
+<img src="https://github.com/TanStack/form/workflows/octane-form%20tests/badge.svg" />
+</a><a href="https://www.npmjs.com/package/@tanstack/form-core" target="\_parent">
+  <img alt="" src="https://img.shields.io/npm/dm/@tanstack/form-core.svg" />
+</a><a href="https://bundlephobia.com/package/@tanstack/octane-form@latest" target="\_parent">
+  <img alt="" src="https://badgen.net/bundlephobia/minzip/@tanstack/octane-form" />
+</a><a href="#badge">
+    <img alt="semantic-release" src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg">
+  </a><a href="https://github.com/TanStack/form/discussions">
+  <img alt="Join the discussion on Github" src="https://img.shields.io/badge/Github%20Discussions%20%26%20Support-Chat%20now!-blue" />
+</a><a href="https://bestofjs.org/projects/tanstack-form"><img alt="Best of JS" src="https://img.shields.io/endpoint?url=https://bestofjs-serverless.now.sh/api/project-badge?fullName=TanStack%form%26since=daily" /></a><a href="https://github.com/TanStack/form/" target="\_parent">
+  <img alt="" src="https://img.shields.io/github/stars/TanStack/form.svg?style=social&label=Star" />
+</a><a href="https://twitter.com/tannerlinsley" target="\_parent">
+  <img alt="" src="https://img.shields.io/twitter/follow/tannerlinsley.svg?style=social&label=Follow" />
+</a> <a href="https://gitpod.io/from-referrer/">
+  <img src="https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod" alt="Gitpod Ready-to-Code"/>
+</a>
 
-This package ports `@tanstack/react-form@1.33.5` onto Octane while reusing
-`@tanstack/form-core@1.33.5` unchanged. The runtime export surface matches the
-React adapter, so migration starts by changing the package import:
+Enjoy this library? Try the entire [TanStack](https://tanstack.com)! [TanStack Table](https://github.com/TanStack/table), [TanStack Router](https://github.com/tanstack/router), [TanStack Virtual](https://github.com/tanstack/virtual), [React Charts](https://github.com/TanStack/react-charts), [React Ranger](https://github.com/TanStack/ranger)
 
-```ts
-// before
-import { useForm } from '@tanstack/react-form'
+## Visit [tanstack.com/form](https://tanstack.com/form) for docs, guides, API and more!
 
-// after
-import { useForm } from '@tanstack/octane-form'
-```
+### [Become a Sponsor!](https://github.com/sponsors/tannerlinsley/)
 
-The renderer-bearing adapter modules are authored as `.tsrx` and compiled by
-Octane. Matching `.tsrx.d.ts` companions are checked declaration emits of those
-implementations, preserving the complete generic surface for TypeScript
-consumers. Recursive contracts such as `extendForm` are named in the TSRX source
-rather than manually unrolled in declarations.
-
-Renderer-specific public types use Octane names, including `OctaneFormApi`,
-`OctaneFormExtendedApi`, `AppFieldExtendedOctaneFormApi`, and
-`AppFieldExtendedOctaneFieldGroupApi`.
-
-```tsx
-import { useForm } from '@tanstack/octane-form'
-
-export function ProfileForm() @{
-  const form = useForm({
-    defaultValues: { name: '' },
-    onSubmit: ({ value }) => console.log(value),
-  })
-
-  <form
-    onSubmit={(event) => {
-      event.preventDefault()
-      void form.handleSubmit()
-    }}
-  >
-    <form.Field
-      name="name"
-      validators={{
-        onChange: ({ value }) =>
-          value.length === 0 ? 'Name is required' : undefined,
-      }}
-    >
-      {(field) => (
-        <label>
-          Name
-          <input
-            value={field.state.value}
-            onBlur={field.handleBlur}
-            onInput={(event) => field.handleChange(event.target.value)}
-          />
-          @if (field.state.meta.errors.length > 0) {
-            <span>{field.state.meta.errors.join(', ')}</span>
-          }
-        </label>
-      )}
-    </form.Field>
-    <form.Subscribe selector={(state) => state.canSubmit}>
-      {(canSubmit) => <button disabled={!canSubmit}>Submit</button>}
-    </form.Subscribe>
-  </form>
-}
-```
-
-## API
-
-The adapter includes `useForm`, `useField`, `useFormGroup`, `useFieldGroup`,
-`createFormHook`, `createFormHookContexts`, and
-`useIsomorphicLayoutEffect`. It also re-exports `@tanstack/form-core` and the
-`useSelector`/`useStore` helpers from `@tanstack/octane-store`.
-
-Octane uses native DOM events. Text controls should call
-`field.handleChange()` from `onInput`; native `change` fires only on
-blur/commit. TanStack Form option names such as `onChange`, validators, and
-listener keys retain their upstream spelling.
-
-Server rendering through `octane/server` is supported. Field and form
-subscriptions render their initial snapshots without browser-only setup.
-
-## Verification
-
-The port runs TanStack Form's React adapter tests against Octane, including
-validation, async validation and debounce, linked fields, arrays, form groups,
-component contexts, submission, reset, and subscription behavior. A
-differential test compiles the same `.tsrx` form for Octane and React and
-compares its DOM after value, validation, array, and reset interactions. The
-upstream compile-time suite and an SSR fixture are also included.
-
-Current scope and verification status are tracked in the generated
-[bindings status table](../../docs/bindings-status.md), sourced from this
-package's [`status.json`](./status.json).
-
-## License
-
-MIT — contains source derived from
-[TanStack Form](https://github.com/TanStack/form) (MIT), adapted for Octane.
+<!-- Use the force, Luke -->
