@@ -2,9 +2,8 @@
 import { describe, expect, it, vi } from 'vitest';
 import { render, waitFor } from '@octanejs/testing-library';
 import { userEvent } from '@testing-library/user-event';
-import { useStore } from '@tanstack/octane-store';
 import { useCallback, useEffect, useState } from 'octane';
-import { mergeForm, useForm } from '@tanstack/octane-form';
+import { mergeForm, useForm, useSelector } from '@tanstack/octane-form';
 import { sleep } from '../../conformance/utils';
 
 const user = userEvent.setup();
@@ -177,7 +176,7 @@ describe('useForm', () => {
 					},
 				},
 			});
-			const onChangeError = useStore(form.store, (s) => s.errorMap.onChange);
+			const onChangeError = useSelector(form.store, (s) => s.errorMap.onChange);
 			return (
 				<>
 					<form.Field
@@ -223,7 +222,7 @@ describe('useForm', () => {
 				},
 			});
 
-			const errors = useStore(form.store, (s) => s.errors);
+			const errors = useSelector(form.store, (s) => s.errors);
 			return (
 				<>
 					<form.Field
@@ -272,7 +271,7 @@ describe('useForm', () => {
 					onChange: ({ value }) => (value.firstName === 'other' ? error : undefined),
 				},
 			});
-			const errors = useStore(form.store, (s) => s.errorMap);
+			const errors = useSelector(form.store, (s) => s.errorMap);
 			return (
 				<>
 					<form.Field
@@ -323,7 +322,7 @@ describe('useForm', () => {
 				},
 			});
 
-			const errors = useStore(form.store, (s) => s.errorMap);
+			const errors = useSelector(form.store, (s) => s.errorMap);
 			return (
 				<>
 					<form.Field
@@ -380,7 +379,7 @@ describe('useForm', () => {
 				},
 			});
 
-			const errors = useStore(form.store, (s) => s.errorMap);
+			const errors = useSelector(form.store, (s) => s.errorMap);
 			return (
 				<>
 					<form.Field
@@ -442,7 +441,7 @@ describe('useForm', () => {
 					},
 				},
 			});
-			const errors = useStore(form.store, (s) => s.errorMap);
+			const errors = useSelector(form.store, (s) => s.errorMap);
 			return (
 				<>
 					<form.Field
@@ -496,7 +495,7 @@ describe('useForm', () => {
 				},
 			});
 
-			const errors = useStore(form.store, (s) => s.errorMap);
+			const errors = useSelector(form.store, (s) => s.errorMap);
 
 			return (
 				<>
@@ -563,7 +562,7 @@ describe('useForm', () => {
 					},
 				},
 			});
-			const errors = useStore(form.store, (s) => s.errorMap);
+			const errors = useSelector(form.store, (s) => s.errorMap);
 
 			return (
 				<>
@@ -624,7 +623,7 @@ describe('useForm', () => {
 					},
 				},
 			});
-			const errors = useStore(form.store, (s) => s.errors);
+			const errors = useSelector(form.store, (s) => s.errors);
 
 			return (
 				<>
@@ -678,7 +677,7 @@ describe('useForm', () => {
 				},
 			});
 
-			const onChangeError = useStore(form.store, (s) => s.errorMap.onChange);
+			const onChangeError = useSelector(form.store, (s) => s.errorMap.onChange);
 
 			return (
 				<>
@@ -731,7 +730,7 @@ describe('useForm', () => {
 				},
 			});
 
-			const { errors } = useStore(form.store, (state) => ({
+			const { errors } = useSelector(form.store, (state) => ({
 				errors: state.errors,
 			}));
 
@@ -762,7 +761,7 @@ describe('useForm', () => {
 				},
 			});
 
-			const { values } = useStore(form.store, (v) => v);
+			const { values } = useSelector(form.store, (v) => v);
 
 			useEffect(() => {
 				fn(values);

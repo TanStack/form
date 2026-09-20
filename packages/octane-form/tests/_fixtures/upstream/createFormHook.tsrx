@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { render, waitFor } from '@octanejs/testing-library';
 import { formOptions } from '@tanstack/form-core';
 import userEvent from '@testing-library/user-event';
-import { createFormHook, createFormHookContexts, useStore } from '@tanstack/octane-form';
+import { createFormHook, createFormHookContexts, useSelector } from '@tanstack/octane-form';
 
 const user = userEvent.setup();
 
@@ -301,7 +301,7 @@ describe('createFormHook', () => {
 		const ChildForm = withFieldGroup({
 			defaultValues: formOpts.defaultValues.person,
 			render: function Render({ group }) {
-				const firstName = useStore(group.store, (state) => state.values.firstName);
+				const firstName = useSelector(group.store, (state) => state.values.firstName);
 				return (
 					<div>
 						<p>{firstName}</p>

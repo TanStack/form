@@ -3,8 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { render, waitFor, within } from '@octanejs/testing-library';
 import { userEvent } from '@testing-library/user-event';
 import { useState } from 'octane';
-import { useStore } from '@tanstack/octane-store';
-import { useForm } from '@tanstack/octane-form';
+import { useForm, useSelector } from '@tanstack/octane-form';
 import { sleep } from '../../conformance/utils';
 
 const user = userEvent.setup();
@@ -996,7 +995,7 @@ describe('useField', () => {
 					},
 				},
 			});
-			const errors = useStore(form.store, (s) => s.errors);
+			const errors = useSelector(form.store, (s) => s.errors);
 
 			return (
 				<>
@@ -1451,7 +1450,7 @@ describe('useField', () => {
 				},
 			});
 
-			const fieldOne = useStore(form.store, (state) => state.values.fieldOne);
+			const fieldOne = useSelector(form.store, (state) => state.values.fieldOne);
 
 			return (
 				<form>
