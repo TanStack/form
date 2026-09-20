@@ -52,6 +52,7 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "@testing-library/vue": "^8.1.0",
+    "@tsrx/prettier-plugin": "^0.4.6",
     "@types/node": "^24.1.0",
     "@vitest/coverage-istanbul": "^3.2.4",
     "eslint": "9.36.0",
