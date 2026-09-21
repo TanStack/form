@@ -349,7 +349,7 @@ function filterFieldValues({
   if (oldArray.length === filtered.length) {
     // Setting filtered array would be a no-op, but either way the user
     // tried to set a value
-    form._notifyFieldChange(arrayNode, updateOptions)
+    form._notifyFieldChange(arrayNode, updateOptions, form.state.values)
   } else {
     form.setFieldValue(arrayFieldName, filtered, updateOptions)
   }
