@@ -55,7 +55,9 @@
   "devDependencies": {
     "@eslint-react/eslint-plugin": "^5.18.3",
     "@preact/preset-vite": "^2.10.2",
+    "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/preact": "^3.2.4",
+    "@testing-library/user-event": "^14.6.7",
     "preact": "^10.26.4",
     "zod": "^4.4.3"
   },
