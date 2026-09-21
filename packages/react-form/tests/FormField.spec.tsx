@@ -372,9 +372,9 @@ describe('Form fields', () => {
     await firstInput.click()
     firstInput.element().blur()
 
-    await expect.element(screen.getByTestId('first-blurred')).toHaveTextContent(
-      'true',
-    )
+    await expect
+      .element(screen.getByTestId('first-blurred'))
+      .toHaveTextContent('true')
     expect(renderCounts.first).toBeGreaterThan(initialCounts.first)
     expect(renderCounts.last).toBe(initialCounts.last)
   })

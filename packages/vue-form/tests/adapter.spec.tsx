@@ -115,9 +115,7 @@ describe('Vue adapter parity', () => {
 
     const view = await render(Component)
     await view.getByLabelText('Name').fill('Rodney')
-    await expect.element(view.getByTestId('value')).toHaveTextContent(
-      'Rodney',
-    )
+    await expect.element(view.getByTestId('value')).toHaveTextContent('Rodney')
   })
 
   it('uses validator arrays and rerenders selected form state', async () => {
@@ -511,9 +509,7 @@ describe('Vue adapter parity', () => {
     })
 
     const view = await render(Component)
-    await expect
-      .element(view.getByTestId('summary'))
-      .toHaveTextContent('Tony')
+    await expect.element(view.getByTestId('summary')).toHaveTextContent('Tony')
   })
 
   it('applies Subscribe when predicates reactively', async () => {
