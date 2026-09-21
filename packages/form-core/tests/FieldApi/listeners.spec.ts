@@ -15,6 +15,76 @@ describe('field - listeners', () => {
     expect(listener).toHaveBeenCalledOnce()
   })
 
+  it('provides the previous field value to change listeners', () => {
+    const listener = vi.fn()
+
+    const form = new InternalFormApi({ defaultValues: { x: '' } })
+    const field = form._getOrCreateFieldApi({
+      name: 'x',
+      listeners: [{ triggers: ['change'], run: listener }],
+    })
+
+    field.handleChange('first')
+    field.handleChange('second')
+
+    expect(listener).toHaveBeenCalledTimes(2)
+    expect(listener).toHaveBeenNthCalledWith(1, {
+      value: 'first',
+      prevValue: '',
+      fieldApi: field,
+      formApi: form,
+    })
+    expect(listener).toHaveBeenNthCalledWith(2, {
+      value: 'second',
+      prevValue: 'first',
+      fieldApi: field,
+      formApi: form,
+    })
+  })
+
+  it('does not provide a previous value for non-change field events', () => {
+    const listener = vi.fn()
+
+    const form = new InternalFormApi({ defaultValues: { x: '' } })
+    const field = form._getOrCreateFieldApi({
+      name: 'x',
+      listeners: [{ triggers: ['blur'], run: listener }],
+    })
+
+    field.handleBlur()
+
+    expect(listener).toHaveBeenCalledOnce()
+    expect(listener).toHaveBeenCalledWith({
+      value: '',
+      prevValue: undefined,
+      fieldApi: field,
+      formApi: form,
+    })
+  })
+
+  it('gives an ancestor its own previous value when a descendant changes', () => {
+    const listener = vi.fn()
+
+    const form = new InternalFormApi({
+      defaultValues: { user: { name: '' } },
+    })
+    const parentField = form._getOrCreateFieldApi({
+      name: 'user',
+      listeners: [{ triggers: ['change'], run: listener }],
+    })
+    const childField = form._getOrCreateFieldApi({ name: 'user.name' })
+
+    childField.handleChange('Alice')
+
+    expect(listener).toHaveBeenCalledOnce()
+    expect(listener).toHaveBeenCalledWith({
+      value: { name: 'Alice' },
+      prevValue: { name: '' },
+      fieldApi: parentField,
+      formApi: form,
+    })
+  })
+
   it('blur listeners', () => {
     const listener = vi.fn()
 
@@ -201,6 +271,7 @@ describe('field - listeners', () => {
     expect(listener).toHaveBeenCalledOnce()
     expect(listener).toHaveBeenCalledWith({
       value: 'Alice',
+      prevValue: '',
       fieldApi: field,
       formApi: form,
     })
@@ -237,6 +308,7 @@ describe('field - listeners', () => {
       expect(watchedFieldListener).toHaveBeenCalledOnce()
       expect(watchedFieldListener).toHaveBeenCalledWith({
         value: '',
+        prevValue: '',
         fieldApi: targetField,
         formApi: form,
       })
@@ -421,6 +493,7 @@ describe('field - listeners', () => {
       expect(listener).toHaveBeenCalledOnce()
       expect(listener).toHaveBeenCalledWith({
         value: '',
+        prevValue: '',
         fieldApi: targetField,
         formApi: form,
       })
@@ -462,6 +535,7 @@ describe('field - listeners', () => {
       expect(listener).toHaveBeenCalledOnce()
       expect(listener).toHaveBeenCalledWith({
         value: '',
+        prevValue: '',
         fieldApi: targetField,
         formApi: form,
       })
