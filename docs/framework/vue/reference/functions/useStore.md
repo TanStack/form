@@ -10,7 +10,7 @@ function _useStore<TState, TActions, TSelected>(
    options?): [Readonly<Ref<TSelected, TSelected>>, [TActions] extends [never] ? (updater) => void : TActions];
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+vue-store@0.11.1\_vue@3.6.0-rc.2\_typescript@6.0.3\_/node\_modules/@tanstack/vue-store/dist/\_useStore.d.ts:24
+Defined in: node\_modules/.pnpm/@tanstack+vue-store@0.11.1\_vue@3.6.0-rc.9\_typescript@6.0.3\_/node\_modules/@tanstack/vue-store/dist/\_useStore.d.ts:24
 
 Experimental combined read+write hook for stores, mirroring useAtom's tuple
 pattern.

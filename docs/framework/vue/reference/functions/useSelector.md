@@ -10,7 +10,7 @@ function useSelector<TSource, TSelected>(
 options?): Readonly<Ref<TSelected>>;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+vue-store@0.11.1\_vue@3.6.0-rc.2\_typescript@6.0.3\_/node\_modules/@tanstack/vue-store/dist/useSelector.d.ts:33
+Defined in: node\_modules/.pnpm/@tanstack+vue-store@0.11.1\_vue@3.6.0-rc.9\_typescript@6.0.3\_/node\_modules/@tanstack/vue-store/dist/useSelector.d.ts:33
 
 Selects a slice of state from an atom or store and subscribes the component
 to that selection.
