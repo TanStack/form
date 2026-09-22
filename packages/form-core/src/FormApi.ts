@@ -1754,14 +1754,32 @@ export class FormApi<
 
     const shouldUpdateValues =
       options.defaultValues &&
-      !evaluate(options.defaultValues, oldOptions.defaultValues) &&
-      !this.state.isTouched
+      !evaluate(options.defaultValues, oldOptions.defaultValues)
 
     const shouldUpdateState =
       !evaluate(options.defaultState, oldOptions.defaultState) &&
       !this.state.isTouched
 
     if (!shouldUpdateValues && !shouldUpdateState) return
+
+    // Fields the user has already edited must keep their edited values, but
+    // untouched fields (including ones that have not mounted yet) should still
+    // receive their newly-arrived default values — even when a *different*
+    // field has already been touched. See #2229.
+    let nextValues = options.defaultValues
+    if (shouldUpdateValues && this.state.isTouched) {
+      for (const [fieldName, fieldMeta] of Object.entries(
+        this.state.fieldMeta,
+      )) {
+        if ((fieldMeta as AnyFieldLikeMeta | undefined)?.isTouched) {
+          nextValues = setBy(
+            nextValues,
+            fieldName,
+            getBy(this.state.values, fieldName),
+          )
+        }
+      }
+    }
 
     batch(() => {
       this.baseStore.setState(() =>
@@ -1774,7 +1792,7 @@ export class FormApi<
 
             shouldUpdateValues
               ? {
-                  values: options.defaultValues,
+                  values: nextValues,
                 }
               : {},
           ),
