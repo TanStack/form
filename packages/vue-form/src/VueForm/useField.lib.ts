@@ -18,18 +18,26 @@ export function useField(
 ): ShallowRef<AnyInternalFieldApi> {
   const initialOptions = options()
   const resetVersion = useSelector(initialOptions.form._atoms.resetVersion)
+  const fieldTreeVersion = useSelector(
+    initialOptions.form._atoms.fieldTreeVersion,
+  )
+
+  const adoptField = (field: AnyInternalFieldApi) => {
+    if (fieldComponents !== null) Object.assign(field, fieldComponents)
+    return field
+  }
 
   const createField = () => {
     const current = options()
-    const field = current.form._getOrCreateFieldApi(
-      {
-        ...current,
-        name: current.name,
-      } as never,
-      'field',
+    return adoptField(
+      current.form._getOrCreateFieldApi(
+        {
+          ...current,
+          name: current.name,
+        } as never,
+        'field',
+      ),
     )
-    if (fieldComponents !== null) Object.assign(field, fieldComponents)
-    return field
   }
 
   const fieldApi = shallowRef(createField())
@@ -38,6 +46,20 @@ export function useField(
     [() => options().form, () => options().name, resetVersion],
     () => {
       fieldApi.value = createField()
+    },
+    { flush: 'sync' },
+  )
+
+  // Array mutations kill or move field APIs while the components rendering
+  // them stay mounted under the same name. Follow the field API the form now
+  // uses for this name instead of holding on to a killed one.
+  watch(
+    fieldTreeVersion,
+    () => {
+      const current = options().form._tryGetFieldApi(options().name)
+      if (current && current !== fieldApi.value) {
+        fieldApi.value = adoptField(current)
+      }
     },
     { flush: 'sync' },
   )

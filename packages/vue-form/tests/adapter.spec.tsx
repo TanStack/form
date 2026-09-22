@@ -188,6 +188,126 @@ describe('Vue adapter parity', () => {
     expect(renders).toBeGreaterThan(initialRenders)
   })
 
+  it('moves mounted fields onto the current field api after array mutations', async () => {
+    let form!: any
+    const Component = defineComponent(() => {
+      form = useForm({
+        defaultValues: { issues: [{ title: 'A' }, { title: '' }] },
+        validators: [
+          {
+            triggers: ['change'],
+            run: ({ value }: { value: { issues: Array<{ title: string }> } }) => ({
+              fields: Object.fromEntries(
+                value.issues.map((issue, index) => [
+                  `issues[${index}].title`,
+                  issue.title ? undefined : 'Required',
+                ]),
+              ),
+            }),
+          },
+        ],
+      })
+
+      return () => (
+        <form.ArrayField name="issues">
+          {({ field: array }: { field: AnyFieldApi }) => (
+            <>
+              {array.value.map((_: unknown, index: number) => (
+                <form.Field key={index} name={`issues[${index}].title`}>
+                  {({ field }: { field: AnyFieldApi }) => (
+                    <>
+                      <input
+                        data-testid={`input-${index}`}
+                        value={field.value}
+                        onInput={(event: Event) =>
+                          field.handleChange(
+                            (event.target as HTMLInputElement).value,
+                          )
+                        }
+                      />
+                      <output data-testid={`errors-${index}`}>
+                        {field.errors
+                          .map((error: { message: string }) => error.message)
+                          .join(',')}
+                      </output>
+                    </>
+                  )}
+                </form.Field>
+              ))}
+            </>
+          )}
+        </form.ArrayField>
+      )
+    })
+
+    const view = render(Component)
+    await form.handleSubmit()
+    await waitFor(() =>
+      expect(view.getByTestId('errors-1')).toHaveTextContent('Required'),
+    )
+
+    form.removeFieldValue('issues', 0)
+
+    await waitFor(() => expect(view.queryByTestId('input-1')).toBeNull())
+    expect(view.getByTestId('input-0')).toHaveValue('')
+    expect(view.getByTestId('errors-0')).toHaveTextContent('Required')
+  })
+
+  it('moves mounted fields onto the current field api after a swap', async () => {
+    let form!: any
+    const Component = defineComponent(() => {
+      form = useForm({
+        defaultValues: { issues: [{ title: 'A' }, { title: '' }] },
+        validators: [
+          {
+            triggers: ['change'],
+            run: ({ value }: { value: { issues: Array<{ title: string }> } }) => ({
+              fields: Object.fromEntries(
+                value.issues.map((issue, index) => [
+                  `issues[${index}].title`,
+                  issue.title ? undefined : 'Required',
+                ]),
+              ),
+            }),
+          },
+        ],
+      })
+
+      return () => (
+        <form.ArrayField name="issues">
+          {({ field: array }: { field: AnyFieldApi }) => (
+            <>
+              {array.value.map((_: unknown, index: number) => (
+                <form.Field key={index} name={`issues[${index}].title`}>
+                  {({ field }: { field: AnyFieldApi }) => (
+                    <output data-testid={`errors-${index}`}>
+                      {field.errors
+                        .map((error: { message: string }) => error.message)
+                        .join(',')}
+                    </output>
+                  )}
+                </form.Field>
+              ))}
+            </>
+          )}
+        </form.ArrayField>
+      )
+    })
+
+    const view = render(Component)
+    await form.handleSubmit()
+    await waitFor(() =>
+      expect(view.getByTestId('errors-1')).toHaveTextContent('Required'),
+    )
+
+    form.swapFieldValues('issues', 0, 1)
+
+    await waitFor(() =>
+      expect(view.getByTestId('errors-0')).toHaveTextContent('Required'),
+    )
+    expect(view.getByTestId('errors-1')).toHaveTextContent('')
+  })
+
   it('prefixes FormGroup fields and keeps group state reactive', async () => {
     const Component = defineComponent(() => {
       const form = useForm({

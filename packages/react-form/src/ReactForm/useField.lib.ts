@@ -28,9 +28,14 @@ export function useField(
   optionsRef.current = options
 
   const resetVersion = useSelector(options.form._atoms.resetVersion)
+  // Array mutations kill or move field APIs while the components rendering
+  // them stay mounted under the same name. Resolve the name again so the
+  // component follows the field API the form now uses for it.
+  const fieldTreeVersion = useSelector(options.form._atoms.fieldTreeVersion)
 
   const fieldApi = useMemo(() => {
     void resetVersion
+    void fieldTreeVersion
     const field = options.form._getOrCreateFieldApi(
       {
         ...optionsRef.current,
@@ -39,7 +44,7 @@ export function useField(
       scope,
     )
     return field
-  }, [options.name, options.form, resetVersion, scope])
+  }, [options.name, options.form, resetVersion, fieldTreeVersion, scope])
 
   useEffect(() => fieldApi._update(options, scope))
 
