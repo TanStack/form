@@ -4,7 +4,7 @@
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
     "moduleResolution": "Bundler",
-    "types": ["vitest/browser"]
+    "types": ["vitest/browser", "node"]
   },
   "include": ["src", "tests", "vitest.config.ts"],
   "exclude": ["eslint.config.js"]
