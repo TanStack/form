@@ -1,0 +1,75 @@
+{
+  "name": "@tanstack/octane-form",
+  "version": "1.30.5",
+  "description": "Powerful, type-safe forms for Octane.",
+  "author": "tannerlinsley",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TanStack/form.git",
+    "directory": "packages/octane-form"
+  },
+  "homepage": "https://tanstack.com/form",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/tannerlinsley"
+  },
+  "scripts": {
+    "clean": "premove ./dist ./coverage",
+    "test:eslint": "eslint ./src ./tests ./localsrc",
+    "test:types": "pnpm run \"/^test:types:ts[0-9]{2}$/\"",
+    "test:types:ts56": "env-cmd -e ts56 -- tspc",
+    "test:types:ts57": "env-cmd -e ts57 -- tspc",
+    "test:types:ts58": "env-cmd -e ts58 -- tspc",
+    "test:types:ts59": "tspc",
+    "test:lib": "vitest",
+    "test:lib:dev": "pnpm run test:lib --watch",
+    "test:build": "publint --strict",
+    "build": "tspc -p tsconfig.build.json --noEmit"
+  },
+  "type": "module",
+  "types": "./src/index.ts",
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
+  "files": [
+    "src"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "octane": {
+    "hookSlots": {
+      "manual": [
+        "src"
+      ]
+    }
+  },
+  "dependencies": {
+    "@tanstack/form-core": "workspace:*",
+    "@tanstack/octane-store": "^0.12.2"
+  },
+  "peerDependencies": {
+    "octane": "^0.1.51 || ^0.2.0 || ^0.3.0"
+  },
+  "devDependencies": {
+    "@octanejs/testing-library": "^0.1.51",
+    "@testing-library/jest-dom": "^6.8.0",
+    "@tsrx/eslint-plugin": "^0.4.6",
+    "@tsrx/typescript-plugin": "0.4.6",
+    "@volar/language-core": "2.4.28",
+    "@volar/typescript": "2.4.28",
+    "env-cmd": "^11.0.0",
+    "eslint": "9.36.0",
+    "octane": "^0.2.16",
+    "ts-patch": "3.3.0",
+    "vitest": "^3.2.4"
+  }
+}

@@ -12,6 +12,8 @@ trustPolicyExclude:
   - 'vite@5.4.21' # Remix Run Dev
   - 'react-native-worklets@0.5.1' # Expo 56 fixes this but is too new; upgrade in a few days
   - 'eslint-import-resolver-typescript@3.10.1' # Same as above
+  - '@tsrx/prettier-plugin@0.4.7' # Required for TSRX fixes I needed to make upstream
+  - 'knip@6.37.0' # Required for TSRX usage
 
 # Too young to use currently, upgrade in a few days
 overrides: { 'tinyexec': '1.1.2' }

@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "jsxImportSource": "octane",
+    "plugins": [
+      { "name": "@tsrx/typescript-plugin" },
+      {
+        "transform": "./localsrc/program-transformer.cts",
+        "transformProgram": true
+      }
+    ],
+    "paths": {
+      "@tanstack/octane-form": ["./src"],
+      "@tanstack/form-core": ["../form-core/src"]
+    }
+  },
+  "include": ["src", "tests", "localsrc", "*.config.js", "*.config.ts"]
+}

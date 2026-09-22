@@ -160,8 +160,7 @@ describe('form.group directive', () => {
               )}
               <button type="submit" id="submit-group">Submit Group</button>
               <pre id="group-error">
-${String(group.state.meta.errorMap.onSubmit ?? '')}</pre
-              >
+${String(group.state.meta.errorMap.onSubmit ?? '')}</pre>
             </form>
           `,
         )}`

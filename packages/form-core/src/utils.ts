@@ -14,8 +14,7 @@ import type {
 export type UpdaterFn<TInput, TOutput = TInput> = (input: TInput) => TOutput
 
 export type Updater<TInput, TOutput = TInput> =
-  | TOutput
-  | UpdaterFn<TInput, TOutput>
+  TOutput | UpdaterFn<TInput, TOutput>
 
 /**
  * @private

@@ -40,20 +40,24 @@ export class WizardPage extends LitElement {
 
   render() {
     return html`
-      ${this.step === 0
-        ? html`<step1-form
-            .form=${this.form}
-            .step=${this.step}
-            .setStep=${this.setStep}
-          ></step1-form>`
-        : nothing}
-      ${this.step === 1
-        ? html`<step2-form
-            .form=${this.form}
-            .step=${this.step}
-            .setStep=${this.setStep}
-          ></step2-form>`
-        : nothing}
+      ${
+        this.step === 0
+          ? html`<step1-form
+              .form=${this.form}
+              .step=${this.step}
+              .setStep=${this.setStep}
+            ></step1-form>`
+          : nothing
+      }
+      ${
+        this.step === 1
+          ? html`<step2-form
+              .form=${this.form}
+              .step=${this.step}
+              .setStep=${this.setStep}
+            ></step2-form>`
+          : nothing
+      }
     `
   }
 }
