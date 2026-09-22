@@ -1,5 +1,10 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "ignoreDependencies": ["@tanstack/devtools"],
-  "ignoreWorkspaces": ["examples/**"]
+  "ignoreDependencies": ["@tanstack/devtools", "ts-node"],
+  "ignoreWorkspaces": ["examples/**"],
+  "workspaces": {
+    "packages/octane-form": {
+      "entry": ["src/index.ts", "localsrc/program-transformer.cts"]
+    }
+  }
 }
