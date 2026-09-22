@@ -21,7 +21,7 @@ export default defineConfig({
     },
     projects: [
       {
-        plugins: [octane({ ssr: false, hmr: false })],
+        plugins: [octane({ ssr: false, hmr: false }) as never],
         resolve: { alias },
         test: {
           name: packageJson.name,
@@ -36,7 +36,7 @@ export default defineConfig({
         },
       },
       {
-        plugins: [octane({ ssr: true, hmr: false })],
+        plugins: [octane({ ssr: true, hmr: false }) as never],
         resolve: {
           alias: [
             {
