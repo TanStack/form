@@ -3,8 +3,6 @@ id: injectStore
 title: injectStore
 ---
 
-# Function: injectStore()
-
 ```ts
 function injectStore<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta, TSelected>(form, selector?): Signal<TSelected>;
 ```

@@ -3,8 +3,6 @@ id: UseFieldOptions
 title: UseFieldOptions
 ---
 
-# Interface: UseFieldOptions\<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta\>
-
 Defined in: [packages/react-form/src/types.ts:20](https://github.com/TanStack/form/blob/main/packages/react-form/src/types.ts#L20)
 
 The field options.

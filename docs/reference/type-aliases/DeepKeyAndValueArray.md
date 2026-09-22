@@ -3,8 +3,6 @@ id: DeepKeyAndValueArray
 title: DeepKeyAndValueArray
 ---
 
-# Type Alias: DeepKeyAndValueArray\<TParent, T, TAcc\>
-
 ```ts
 type DeepKeyAndValueArray<TParent, T, TAcc> = DeepKeysAndValuesImpl<NonNullable<T[number]>, ArrayDeepKeyAndValue<TParent, T>, 
   | TAcc

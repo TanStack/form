@@ -3,8 +3,6 @@ id: StandardSchemaV1Issue
 title: StandardSchemaV1Issue
 ---
 
-# Interface: StandardSchemaV1Issue
-
 Defined in: [packages/form-core/src/standardSchemaValidator.ts:181](https://github.com/TanStack/form/blob/main/packages/form-core/src/standardSchemaValidator.ts#L181)
 
 The issue interface of the failure output.

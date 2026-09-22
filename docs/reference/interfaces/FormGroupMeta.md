@@ -3,8 +3,6 @@ id: FormGroupMeta
 title: FormGroupMeta
 ---
 
-# Interface: FormGroupMeta\<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync\>
-
 Defined in: [packages/form-core/src/FormGroupApi.ts:749](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L749)
 
 The `meta` shape exposed on `FormGroupApi.state.meta`. Mirrors

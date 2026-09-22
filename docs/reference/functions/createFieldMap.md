@@ -3,8 +3,6 @@ id: createFieldMap
 title: createFieldMap
 ---
 
-# Function: createFieldMap()
-
 ```ts
 function createFieldMap<T>(values): { [K in string | number | symbol]: K };
 ```

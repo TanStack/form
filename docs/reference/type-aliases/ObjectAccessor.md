@@ -3,8 +3,6 @@ id: ObjectAccessor
 title: ObjectAccessor
 ---
 
-# Type Alias: ObjectAccessor\<TParent, TKey\>
-
 ```ts
 type ObjectAccessor<TParent, TKey> = TParent["key"] extends never ? `${TKey}` : `${TParent["key"]}.${TKey}`;
 ```

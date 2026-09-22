@@ -3,8 +3,6 @@ id: FieldGroupApi
 title: FieldGroupApi
 ---
 
-# Class: FieldGroupApi\<TFormData, TFieldGroupData, TFields, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta\>
-
 Defined in: [packages/form-core/src/FieldGroupApi.ts:114](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L114)
 
 ## Type Parameters
