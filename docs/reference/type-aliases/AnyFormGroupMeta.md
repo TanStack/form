@@ -3,8 +3,6 @@ id: AnyFormGroupMeta
 title: AnyFormGroupMeta
 ---
 
-# Type Alias: AnyFormGroupMeta
-
 ```ts
 type AnyFormGroupMeta = FormGroupMeta<any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any>;
 ```

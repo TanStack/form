@@ -3,8 +3,6 @@ id: ValidationLogicValidatorsFn
 title: ValidationLogicValidatorsFn
 ---
 
-# Interface: ValidationLogicValidatorsFn
-
 Defined in: [packages/form-core/src/ValidationLogic.ts:4](https://github.com/TanStack/form/blob/main/packages/form-core/src/ValidationLogic.ts#L4)
 
 ## Properties

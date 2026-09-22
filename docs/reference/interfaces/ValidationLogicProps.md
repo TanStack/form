@@ -3,8 +3,6 @@ id: ValidationLogicProps
 title: ValidationLogicProps
 ---
 
-# Interface: ValidationLogicProps
-
 Defined in: [packages/form-core/src/ValidationLogic.ts:21](https://github.com/TanStack/form/blob/main/packages/form-core/src/ValidationLogic.ts#L21)
 
 ## Properties

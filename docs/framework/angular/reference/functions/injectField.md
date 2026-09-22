@@ -3,8 +3,6 @@ id: injectField
 title: injectField
 ---
 
-# Function: injectField()
-
 ```ts
 function injectField<T>(): TanStackFieldInjectable<T>;
 ```

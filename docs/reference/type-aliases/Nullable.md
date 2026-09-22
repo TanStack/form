@@ -3,8 +3,6 @@ id: Nullable
 title: Nullable
 ---
 
-# Type Alias: Nullable\<T\>
-
 ```ts
 type Nullable<T> = T & undefined | null;
 ```

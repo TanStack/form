@@ -3,8 +3,6 @@ id: AnyFormState
 title: AnyFormState
 ---
 
-# Type Alias: AnyFormState
-
 ```ts
 type AnyFormState = FormState<any, any, any, any, any, any, any, any, any, any, any>;
 ```

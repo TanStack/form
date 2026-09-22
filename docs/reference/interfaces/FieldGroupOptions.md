@@ -3,8 +3,6 @@ id: FieldGroupOptions
 title: FieldGroupOptions
 ---
 
-# Interface: FieldGroupOptions\<TFormData, TFieldGroupData, TFields, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta\>
-
 Defined in: [packages/form-core/src/FieldGroupApi.ts:51](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L51)
 
 An object representing the options for a field group.

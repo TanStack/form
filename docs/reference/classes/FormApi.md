@@ -3,8 +3,6 @@ id: FormApi
 title: FormApi
 ---
 
-# Class: FormApi\<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta\>
-
 Defined in: [packages/form-core/src/FormApi.ts:954](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L954)
 
 A class representing the Form API. It handles the logic and interactions with the form state.

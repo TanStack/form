@@ -3,8 +3,6 @@ id: TanStackFormGroup
 title: TanStackFormGroup
 ---
 
-# Class: TanStackFormGroup\<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TSubmitMeta, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta\>
-
 Defined in: [angular-form/src/tanstack-form-group.ts:34](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L34)
 
 ## Type Parameters

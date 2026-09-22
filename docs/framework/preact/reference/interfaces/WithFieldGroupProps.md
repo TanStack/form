@@ -3,8 +3,6 @@ id: WithFieldGroupProps
 title: WithFieldGroupProps
 ---
 
-# Interface: WithFieldGroupProps\<TFieldGroupData, TFieldComponents, TFormComponents, TSubmitMeta, TRenderProps\>
-
 Defined in: [packages/preact-form/src/createFormHook.tsx:257](https://github.com/TanStack/form/blob/main/packages/preact-form/src/createFormHook.tsx#L257)
 
 ## Extends

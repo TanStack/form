@@ -3,8 +3,6 @@ id: DeepValue
 title: DeepValue
 ---
 
-# Type Alias: DeepValue\<TValue, TAccessor\>
-
 ```ts
 type DeepValue<TValue, TAccessor> = unknown extends TValue ? TValue : TAccessor extends DeepKeys<TValue> ? DeepRecord<TValue>[TAccessor] : never;
 ```
