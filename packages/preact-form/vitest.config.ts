@@ -5,15 +5,6 @@ import packageJson from './package.json' with { type: 'json' }
 
 export default defineConfig({
   plugins: [preact()],
-  optimizeDeps: {
-    include: [
-      'vitest-browser-preact',
-      'preact',
-      'preact/hooks',
-      'preact/compat',
-      '@tanstack/preact-store',
-    ],
-  },
   test: {
     name: packageJson.name,
     dir: './tests',

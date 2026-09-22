@@ -5,14 +5,6 @@ import packageJson from './package.json' with { type: 'json' }
 
 export default defineConfig({
   plugins: [vue()],
-  optimizeDeps: {
-    include: [
-      'vitest-browser-vue',
-      'vue',
-      'vue/server-renderer',
-      '@tanstack/vue-store',
-    ],
-  },
   test: {
     name: packageJson.name,
     dir: './tests',

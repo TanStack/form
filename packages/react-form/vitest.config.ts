@@ -5,15 +5,6 @@ import packageJson from './package.json' with { type: 'json' }
 
 export default defineConfig({
   plugins: [react()],
-  optimizeDeps: {
-    include: [
-      'vitest-browser-react',
-      'react',
-      'react-dom',
-      'react-dom/client',
-      '@tanstack/react-store',
-    ],
-  },
   test: {
     name: packageJson.name,
     dir: './tests',

@@ -3,9 +3,6 @@ import { playwright } from '@vitest/browser-playwright'
 import packageJson from './package.json' with { type: 'json' }
 
 export default defineConfig({
-  optimizeDeps: {
-    include: ['@tanstack/store', '@tanstack/pacer-lite'],
-  },
   test: {
     name: packageJson.name,
     dir: './',

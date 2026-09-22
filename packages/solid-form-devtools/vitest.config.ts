@@ -5,9 +5,6 @@ import packageJson from './package.json' with { type: 'json' }
 
 export default defineConfig({
   plugins: [solid()],
-  optimizeDeps: {
-    include: ['solid-js', 'solid-js/web'],
-  },
   test: {
     name: packageJson.name,
     dir: './tests',
