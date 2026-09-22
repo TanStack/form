@@ -10,6 +10,8 @@ export default defineConfig({
     dir: './tests',
     watch: false,
     globals: true,
+    // Override vite-plugin-solid's jsdom default; tests run in the browser.
+    environment: 'node',
     browser: {
       enabled: true,
       provider: playwright(
