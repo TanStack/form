@@ -11,7 +11,6 @@
   },
   "type": "module",
   "scripts": {
-    "prepare": "node scripts/prepare-typescript.mjs",
     "clean": "pnpm --filter \"./packages/**\" run clean",
     "test": "pnpm run test:ci",
     "test:pr": "nx affected --targets=test:sherif,test:knip,test:docs,test:eslint,test:lib,test:types,test:build,build",
@@ -67,7 +66,6 @@
     "sherif": "^1.9.0",
     "tinyglobby": "^0.2.15",
     "ts-node": "^10.9.2",
-    "ts-patch": "3.3.0",
     "typescript": "5.9.3",
     "typescript54": "npm:typescript@5.4.5",
     "typescript55": "npm:typescript@5.5.4",
