@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Setup Tools
@@ -37,6 +37,6 @@ jobs:
         if: ${{ github.event_name == 'push' || github.event.inputs.generate-docs == true }}
         run: pnpm generate-docs
       - name: Apply fixes
-        uses: autofix-ci/action@7a166d7532b277f34e16238930461bf77f9d7ed8
+        uses: autofix-ci/action@c5b2d67aa2274e7b5a18224e8171550871fc7e4a # v1.3.4
         with:
           commit-message: 'ci: apply automated fixes and generate docs'
