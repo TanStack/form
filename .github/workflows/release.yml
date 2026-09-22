@@ -39,13 +39,13 @@ jobs:
         id: changesets
         uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
         with:
-          branch: ${{ github.ref_name }}
-          version: pnpm run changeset:version
-          publish: pnpm run changeset:publish
-          commit: 'ci: Version Packages'
-          title: 'ci: Version Packages'
+          pr-base-branch: ${{ github.ref_name }}
+          version-script: pnpm run changeset:version
+          publish-script: pnpm run changeset:publish
+          commit-message: 'ci: Version Packages'
+          pr-title: 'ci: Version Packages'
       - name: Comment on PRs about release
         if: steps.changesets.outputs.published == 'true'
         uses: TanStack/config/.github/comment-on-release@7bbdf583c2fc1a7f596283cd01e0e44c43f574f2 # main
         with:
-          published-packages: ${{ steps.changesets.outputs.publishedPackages }}
+          published-packages: ${{ steps.changesets.outputs.published-packages }}
