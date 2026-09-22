@@ -2106,13 +2106,16 @@ export class FormApi<
 
       /**
        *  when we have an error for onSubmit in the state, we want
-       *  to clear the error as soon as the user enters a valid value in the field
+       *  to clear the error as soon as the user enters a valid value in the field.
+       *  This must only happen on a value `change` - clearing it on `blur` (or any
+       *  other non-value cause like `mount`, `server` or `dynamic`) would wrongly
+       *  drop the submit error when the field is revalidated without being edited.
        */
       const submitErrKey = getErrorMapKey('submit')
       if (
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         this.state.errorMap?.[submitErrKey] &&
-        cause !== 'submit' &&
+        cause === 'change' &&
         !hasErrored
       ) {
         this.baseStore.setState((prev) => ({
