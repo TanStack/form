@@ -13,11 +13,12 @@ import {
   createArrayFieldSubscription,
   createValueFieldSubscription,
 } from './fieldSubscriptions.lib'
+import { createFieldView } from './fieldView.lib'
 import { useField } from './useField.lib'
+import type { AnyFieldApi } from '@tanstack/form-core'
 import type { Component, InjectionKey, Slots } from 'vue'
 import type {
   AnyFieldApiOptions,
-  AnyInternalFieldApi,
   AnyInternalFormApi,
   InternalFormGroupApi as InternalFormGroupApiType,
 } from '@tanstack/form-core/internals'
@@ -26,7 +27,7 @@ import type { InternalVueFormApi } from './VueFormApi.lib'
 export function attachVueFormComponents(
   form: AnyInternalFormApi,
   fieldComponents: Record<string, Component> | null,
-  fieldContext?: InjectionKey<AnyInternalFieldApi>,
+  fieldContext?: InjectionKey<AnyFieldApi>,
 ): InternalVueFormApi {
   const resultForm = form as InternalVueFormApi
   resultForm.Field = createFieldComponent(
@@ -50,26 +51,25 @@ function createFieldComponent(
   form: AnyInternalFormApi,
   fieldComponents: Record<string, Component> | null,
   array: boolean,
-  fieldContext?: InjectionKey<AnyInternalFieldApi>,
+  fieldContext?: InjectionKey<AnyFieldApi>,
 ) {
   return defineComponent(
     (_props, context) => {
       const options = () => ({ ...context.attrs, form }) as never
-      const fieldApi = useField(options, fieldComponents)
-      const selection = array
+      const fieldApi = useField(options)
+      const { selection, meta } = array
         ? createArrayFieldSubscription(fieldApi)
         : createValueFieldSubscription(fieldApi)
+      const field = createFieldView(fieldApi, selection, meta)
+      if (fieldComponents !== null) Object.assign(field, fieldComponents)
 
       if (fieldContext) {
-        // Field APIs are stable for a mounted name. Supplying the current API
-        // mirrors Vue v1 composition components while the parent subscription
-        // handles state-driven renders.
-        provide(fieldContext, fieldApi.value)
+        provide(fieldContext, field)
       }
 
       return () => {
         void selection.value
-        return context.slots.default?.({ field: fieldApi.value })
+        return context.slots.default?.({ field })
       }
     },
     {
