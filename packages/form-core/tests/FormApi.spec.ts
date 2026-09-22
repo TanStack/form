@@ -1232,6 +1232,41 @@ describe('form api', () => {
     expect(form.getFieldValue('name')).toEqual('two')
   })
 
+  it('should keep reset() values when a subsequent update() reuses the original props defaultValues', () => {
+    // Reproduces https://github.com/TanStack/form/issues/1681
+    // In react-form, `formApi.update(opts)` runs in a layout effect on every
+    // render. When `reset(newValues)` is called (e.g. inside onSubmit) it both
+    // changes the store and updates `options.defaultValues`, which triggers a
+    // re-render. The following `update()` still carries the *original* props
+    // `defaultValues`, which previously looked like a real change and clobbered
+    // the freshly reset values.
+    const form = new FormApi({
+      defaultValues: {
+        name: 'original',
+      },
+    })
+    form.mount()
+
+    // user edits the field -> form becomes touched
+    form.setFieldValue('name', 'edited')
+    expect(form.getFieldValue('name')).toEqual('edited')
+
+    // onSubmit calls reset with brand new default values
+    form.reset({ name: 'new-default' })
+    expect(form.getFieldValue('name')).toEqual('new-default')
+    expect(form.state.isTouched).toBe(false)
+
+    // re-render fires the layout effect with the UNCHANGED props defaultValues
+    form.update({
+      defaultValues: {
+        name: 'original',
+      },
+    })
+
+    // the reset values must survive: props defaultValues never actually changed
+    expect(form.getFieldValue('name')).toEqual('new-default')
+  })
+
   it('should delete field from the form', () => {
     const form = new FormApi({
       defaultValues: {
