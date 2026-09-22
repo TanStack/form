@@ -221,7 +221,7 @@ function suggestFilters(
 ): Array<FieldListFilter> {
   const keysResults = fuzzysort.go(query, suggestions, {
     keys: ['label', 'description', (filter) => filter.aliases?.join() ?? ''],
-    all: true,
+    limit: 0,
     threshold: 0.3,
     scoreFn: (results) => {
       const labelScore = results[0]?.score ?? 0
