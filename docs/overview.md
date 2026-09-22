@@ -425,7 +425,9 @@ function App() {
             )}
           </form.Field>
         </div>
-        <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting] as const}>
+        <form.Subscribe
+          selector={(state) => [state.canSubmit, state.isSubmitting] as const}
+        >
           {(state) => (
             <>
               <button type="submit" disabled={!state()[0] || state()[1]}>

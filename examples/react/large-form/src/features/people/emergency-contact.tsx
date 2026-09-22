@@ -12,12 +12,10 @@ function EmergencyContactFields({
 }) {
   return (
     <>
-      <fields.Field
-        name="fullName">
+      <fields.Field name="fullName">
         {(field) => <field.TextField label="Full Name" />}
       </fields.Field>
-      <fields.Field
-        name="phone">
+      <fields.Field name="phone">
         {(field) => <field.TextField label="Phone" />}
       </fields.Field>
     </>
