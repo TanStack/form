@@ -46,7 +46,7 @@
     "decode-formdata": "^0.9.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^6.0.1",
+    "@vitejs/plugin-react": "^6.1.1",
     "vitest-browser-react": "^2.3.0"
   }
 }

@@ -13,13 +13,13 @@
     "arktype": "^2.1.22",
     "effect": "^3.17.14",
     "valibot": "^1.1.0",
-    "vue": "^3.6.0-rc.2",
+    "vue": "^3.6.0-rc.9",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^6.0.8",
+    "@vitejs/plugin-vue": "^6.0.9",
     "typescript": "^6.0.2",
     "vite": "^8.2.1",
-    "vue-tsc": "^3.3.9"
+    "vue-tsc": "^3.3.11"
   }
 }
