@@ -283,14 +283,12 @@ describe('useForm', () => {
 
       return (
         <>
-          <button
-            data-testid="change"
-            onClick={() => form.setFieldValue('name', 'rodney-mullen')}
-          />
-          <button
-            data-testid="restore"
-            onClick={() => form.setFieldValue('name', 'tony-hawk')}
-          />
+          <button onClick={() => form.setFieldValue('name', 'rodney-mullen')}>
+            Change name
+          </button>
+          <button onClick={() => form.setFieldValue('name', 'tony-hawk')}>
+            Restore name
+          </button>
           <form.Subscribe selector={(state) => state.isDefaultValue}>
             {(isDefaultValue) => (
               <output data-testid="is-default-value">
@@ -306,10 +304,10 @@ describe('useForm', () => {
 
     expect(screen.getByTestId('is-default-value')).toHaveTextContent('true')
 
-    await screen.getByTestId('change').click()
+    await screen.getByRole('button', { name: 'Change name' }).click()
     expect(screen.getByTestId('is-default-value')).toHaveTextContent('false')
 
-    await screen.getByTestId('restore').click()
+    await screen.getByRole('button', { name: 'Restore name' }).click()
     expect(screen.getByTestId('is-default-value')).toHaveTextContent('true')
   })
 

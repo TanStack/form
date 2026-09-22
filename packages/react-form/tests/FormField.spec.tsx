@@ -32,9 +32,7 @@ describe('Form fields', () => {
 
       return (
         <>
-          <button data-testid="rerender" onClick={() => setCount(count + 1)}>
-            {count}
-          </button>
+          <button onClick={() => setCount(count + 1)}>Rerender {count}</button>
           <form.Field
             name="name"
             listeners={[
@@ -56,9 +54,10 @@ describe('Form fields', () => {
     const initialMountCount = onMount.mock.calls.length
     const initialUnmountCount = onUnmount.mock.calls.length
 
-    await screen.getByTestId('rerender').click()
+    const rerender = screen.getByRole('button', { name: /Rerender/ })
+    await rerender.click()
 
-    expect(screen.getByTestId('rerender')).toHaveTextContent('1')
+    expect(rerender).toHaveTextContent('Rerender 1')
     expect(onMount).toHaveBeenCalledTimes(initialMountCount)
     expect(onUnmount).toHaveBeenCalledTimes(initialUnmountCount)
 
@@ -109,14 +108,12 @@ describe('Form fields', () => {
 
       return (
         <>
-          <button
-            data-testid="replace-array"
-            onClick={() => form.setFieldValue('items', [{ label: 'B' }])}
-          />
-          <button
-            data-testid="update-child"
-            onClick={() => form.setFieldValue('items[0].label', 'C')}
-          />
+          <button onClick={() => form.setFieldValue('items', [{ label: 'B' }])}>
+            Replace array
+          </button>
+          <button onClick={() => form.setFieldValue('items[0].label', 'C')}>
+            Update child
+          </button>
           <form.ArrayField name="items">
             {(field) => {
               renders++
@@ -132,14 +129,14 @@ describe('Form fields', () => {
     const screen = await render(<Component />)
     const initialRenders = renders
 
-    await screen.getByTestId('replace-array').click()
+    await screen.getByRole('button', { name: 'Replace array' }).click()
 
     expect(screen.getByTestId('array')).toHaveTextContent('B')
     expect(renders).toBeGreaterThan(initialRenders)
 
     const replacementRenders = renders
 
-    await screen.getByTestId('update-child').click()
+    await screen.getByRole('button', { name: 'Update child' }).click()
 
     expect(renders).toBe(replacementRenders)
   })

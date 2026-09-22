@@ -245,17 +245,18 @@ describe('createFormHook', () => {
           ]}
         >
           {(field) => (
-            <button
-              data-testid="change"
-              onClick={() => field.handleChange('updated')}
+            <input
+              aria-label="Name"
+              value={field.value}
+              onChange={(event) => field.handleChange(event.target.value)}
             />
           )}
         </form.Field>
       )
     }
 
-    const { getByTestId } = await render(<Component />)
-    await getByTestId('change').click()
+    const { getByRole } = await render(<Component />)
+    await getByRole('textbox', { name: 'Name' }).fill('updated')
 
     expect(formCalls).toEqual(['default', 'local'])
     expect(fieldCalls).toEqual(['local', 'default'])
@@ -373,10 +374,9 @@ describe('createFormHook', () => {
             validators={[{ triggers: [], run: defaultValidator }]}
           >
             {(group) => (
-              <button
-                data-testid="default"
-                onClick={() => void group.handleSubmit()}
-              />
+              <button onClick={() => void group.handleSubmit()}>
+                Submit default group
+              </button>
             )}
           </form.FormGroup>
           <form.FormGroup
@@ -385,10 +385,9 @@ describe('createFormHook', () => {
             onSubmitInvalid={overriddenOnSubmitInvalid}
           >
             {(group) => (
-              <button
-                data-testid="overridden"
-                onClick={() => void group.handleSubmit()}
-              />
+              <button onClick={() => void group.handleSubmit()}>
+                Submit overridden group
+              </button>
             )}
           </form.FormGroup>
           <form.FormGroup
@@ -397,30 +396,29 @@ describe('createFormHook', () => {
             onSubmitInvalid={undefined}
           >
             {(group) => (
-              <button
-                data-testid="undefined"
-                onClick={() => void group.handleSubmit()}
-              />
+              <button onClick={() => void group.handleSubmit()}>
+                Submit undefined group
+              </button>
             )}
           </form.FormGroup>
         </>
       )
     }
 
-    const { getByTestId } = await render(<Component />)
+    const { getByRole } = await render(<Component />)
 
-    await getByTestId('default').click()
+    await getByRole('button', { name: 'Submit default group' }).click()
     await vi.waitFor(() =>
       expect(defaultOnSubmitInvalid).toHaveBeenCalledOnce(),
     )
 
-    await getByTestId('overridden').click()
+    await getByRole('button', { name: 'Submit overridden group' }).click()
     await vi.waitFor(() =>
       expect(overriddenOnSubmitInvalid).toHaveBeenCalledOnce(),
     )
     expect(defaultOnSubmitInvalid).toHaveBeenCalledOnce()
 
-    await getByTestId('undefined').click()
+    await getByRole('button', { name: 'Submit undefined group' }).click()
     await vi.waitFor(() => {
       expect(undefinedValidator).toHaveBeenCalledOnce()
       expect(defaultOnSubmitInvalid).toHaveBeenCalledOnce()
