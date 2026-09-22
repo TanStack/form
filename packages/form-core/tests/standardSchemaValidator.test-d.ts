@@ -119,4 +119,58 @@ describe('standard schema validator', () => {
       Promise<StandardSchemaV1Issue[] | undefined>
     >()
   })
+
+  it("Should not add `undefined` to the field's error array when only a form-level schema is present", () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+      validators: {
+        onChange: z.object({
+          firstName: z.string().min(1, 'Testing'),
+        }),
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+
+    // The unused validator slots must not leak `undefined` into the element
+    // union; the errors array is filtered before it reaches field meta.
+    expectTypeOf(field.getMeta().errors).toEqualTypeOf<
+      Array<StandardSchemaV1Issue>
+    >()
+
+    // Consequently the issues are iterable without a guard or a cast.
+    expectTypeOf(
+      field.getMeta().errors.map((issue) => issue.message),
+    ).toEqualTypeOf<Array<string>>()
+  })
+
+  it("Should keep `undefined` out of the error array while preserving a field validator's own return type", () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+      validators: {
+        onDynamic: z.object({
+          firstName: z.string().min(1, 'Testing'),
+        }),
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onDynamic: ({ value }) => (value ? undefined : ('Required' as const)),
+      },
+    })
+
+    expectTypeOf(field.getMeta().errors).toEqualTypeOf<
+      Array<StandardSchemaV1Issue | 'Required'>
+    >()
+  })
 })

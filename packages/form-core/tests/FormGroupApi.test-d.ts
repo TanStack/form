@@ -116,9 +116,7 @@ it('should type errors array from group validators', () => {
     },
   })
 
-  expectTypeOf(group.state.meta.errors).toEqualTypeOf<
-    Array<'change-error' | undefined>
-  >()
+  expectTypeOf(group.state.meta.errors).toEqualTypeOf<Array<'change-error'>>()
 })
 
 it('should type handleSubmit return as Promise<void>', () => {
