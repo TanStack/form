@@ -640,7 +640,7 @@ describe('useField', () => {
                           onClick={() => field.removeValue(i)}
                           type="button"
                         >
-                          Remove person
+                          Remove person{' '}
                           {i}
                         </button>
                       </div>
@@ -730,7 +730,7 @@ describe('useField', () => {
                           onClick={() => field.removeValue(i)}
                           type="button"
                         >
-                          Remove person
+                          Remove person{' '}
                           {i}
                         </button>
                       </div>

@@ -1008,7 +1008,7 @@ describe('useForm', () => {
           name="test"
           children={(field) => <p>
             {field.state.value}
-
+            {' '}
             {renders}
           </p>}
         />
