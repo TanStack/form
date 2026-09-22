@@ -162,8 +162,7 @@ export type FieldValidateOrFn<
   TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > =
-  | FieldValidateFn<TParentData, TName, TData>
-  | StandardSchemaV1<TData, unknown>
+  FieldValidateFn<TParentData, TName, TData> | StandardSchemaV1<TData, unknown>
 
 /**
  * @private
@@ -183,20 +182,16 @@ export interface FieldValidators<
   TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChangeAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnBlurAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnSubmitAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnDynamicAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldAsyncValidateOrFn<TParentData, TName, TData>,
 > {
   /**
    * An optional function, that runs on the mount event of input.
@@ -286,20 +281,16 @@ interface FieldExtraOptions<
   TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChangeAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnBlurAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnSubmitAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnDynamicAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldAsyncValidateOrFn<TParentData, TName, TData>,
 > {
   /**
    * A list of validators to pass to the field
@@ -335,20 +326,16 @@ export interface FieldOptions<
   TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChangeAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnBlurAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnSubmitAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnDynamicAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldAsyncValidateOrFn<TParentData, TName, TData>,
 >
   extends
     FieldExtraOptions<
@@ -385,49 +372,36 @@ export interface FieldApiOptions<
   in out TName extends DeepKeys<TParentData>,
   in out TData extends DeepValue<TParentData, TName>,
   in out TOnMount extends
-    | undefined
-    | FieldValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldValidateOrFn<TParentData, TName, TData>,
   in out TOnChange extends
-    | undefined
-    | FieldValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldValidateOrFn<TParentData, TName, TData>,
   in out TOnChangeAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   in out TOnBlur extends
-    | undefined
-    | FieldValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldValidateOrFn<TParentData, TName, TData>,
   in out TOnBlurAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   in out TOnSubmit extends
-    | undefined
-    | FieldValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldValidateOrFn<TParentData, TName, TData>,
   in out TOnSubmitAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   in out TOnDynamic extends
-    | undefined
-    | FieldValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldValidateOrFn<TParentData, TName, TData>,
   in out TOnDynamicAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   in out TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnChangeAsync extends
-    | undefined
-    | FormAsyncValidateOrFn<TParentData>,
+    undefined | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnBlurAsync extends
-    | undefined
-    | FormAsyncValidateOrFn<TParentData>,
+    undefined | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnSubmitAsync extends
-    | undefined
-    | FormAsyncValidateOrFn<TParentData>,
+    undefined | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnDynamicAsync extends
-    | undefined
-    | FormAsyncValidateOrFn<TParentData>,
+    undefined | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   in out TParentSubmitMeta,
 >
@@ -522,49 +496,36 @@ export class FieldApi<
   in out TName extends DeepKeys<TParentData>,
   in out TData extends DeepValue<TParentData, TName>,
   in out TOnMount extends
-    | undefined
-    | FieldValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldValidateOrFn<TParentData, TName, TData>,
   in out TOnChange extends
-    | undefined
-    | FieldValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldValidateOrFn<TParentData, TName, TData>,
   in out TOnChangeAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   in out TOnBlur extends
-    | undefined
-    | FieldValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldValidateOrFn<TParentData, TName, TData>,
   in out TOnBlurAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   in out TOnSubmit extends
-    | undefined
-    | FieldValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldValidateOrFn<TParentData, TName, TData>,
   in out TOnSubmitAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   in out TOnDynamic extends
-    | undefined
-    | FieldValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldValidateOrFn<TParentData, TName, TData>,
   in out TOnDynamicAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    undefined | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   in out TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnChangeAsync extends
-    | undefined
-    | FormAsyncValidateOrFn<TParentData>,
+    undefined | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnBlurAsync extends
-    | undefined
-    | FormAsyncValidateOrFn<TParentData>,
+    undefined | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnSubmitAsync extends
-    | undefined
-    | FormAsyncValidateOrFn<TParentData>,
+    undefined | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnDynamicAsync extends
-    | undefined
-    | FormAsyncValidateOrFn<TParentData>,
+    undefined | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   in out TParentSubmitMeta,
 > implements FieldLikeAPI<

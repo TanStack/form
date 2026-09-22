@@ -117,8 +117,7 @@ export type FormValidateFn<TFormData> = (props: {
  * @private
  */
 export type FormValidateOrFn<TFormData> =
-  | FormValidateFn<TFormData>
-  | StandardSchemaV1<TFormData, unknown>
+  FormValidateFn<TFormData> | StandardSchemaV1<TFormData, unknown>
 
 export type UnwrapFormValidateOrFn<
   TValidateOrFn extends undefined | FormValidateOrFn<any>,
@@ -171,8 +170,7 @@ type ValidationPromiseResult<TFormData> =
  * @private
  */
 export type FormAsyncValidateOrFn<TFormData> =
-  | FormValidateAsyncFn<TFormData>
-  | StandardSchemaV1<TFormData, unknown>
+  FormValidateAsyncFn<TFormData> | StandardSchemaV1<TFormData, unknown>
 
 export type UnwrapFormAsyncValidateOrFn<
   TValidateOrFn extends undefined | FormAsyncValidateOrFn<any>,
@@ -1120,8 +1118,7 @@ export class FormApi<
       ).state as never
       for (const errKey of Object.keys(baseStoreVal.errorMap)) {
         const errKeyMap = baseStoreVal.errorMap[errKey as never] as
-          | GlobalFormValidationError<any>
-          | undefined
+          GlobalFormValidationError<any> | undefined
         if (
           errKeyMap === undefined ||
           !isGlobalFormValidationError(errKeyMap)
@@ -1302,8 +1299,7 @@ export class FormApi<
           // The group's own field-meta entry (its `errorMap` is where the
           // group's own validators write via `setFieldMeta`).
           const ownFieldMeta = currFieldMeta[groupName] as
-            | AnyFieldLikeMeta
-            | undefined
+            AnyFieldLikeMeta | undefined
 
           // Aggregate validity / interaction flags across descendant fields
           // (excluding the group's own self-entry — its validity is tracked
@@ -2186,8 +2182,7 @@ export class FormApi<
     const promises: Promise<ValidationPromiseResult<TFormData>>[] = []
 
     let fieldErrorsFromFormValidators:
-      | Partial<Record<DeepKeys<TFormData>, ValidationError>>
-      | undefined
+      Partial<Record<DeepKeys<TFormData>, ValidationError>> | undefined
 
     for (const validateObj of validates) {
       if (!validateObj.validate) continue
@@ -2204,9 +2199,7 @@ export class FormApi<
       promises.push(
         new Promise<ValidationPromiseResult<TFormData>>(async (resolve) => {
           let rawError!:
-            | ValidationError
-            | FormValidationError<unknown>
-            | undefined
+            ValidationError | FormValidationError<unknown> | undefined
           try {
             rawError = await new Promise((rawResolve, rawReject) => {
               setTimeout(async () => {

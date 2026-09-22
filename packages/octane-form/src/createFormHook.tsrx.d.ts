@@ -464,12 +464,16 @@ type UseTypedAppFormContext<
 type FieldComponentExtension<
   TComponents extends Record<string, HookComponentType<any>>,
 > = Record<string, HookComponentType<any>> & {
-  [K in keyof TComponents]?: 'Error: field component names must be unique — this key already exists in the base form'
+  [
+    K in keyof TComponents
+  ]?: 'Error: field component names must be unique — this key already exists in the base form'
 }
 type FormComponentExtension<
   TComponents extends Record<string, HookComponentType<any>>,
 > = Record<string, HookComponentType<any>> & {
-  [K in keyof TComponents]?: 'Error: form component names must be unique — this key already exists in the base form'
+  [
+    K in keyof TComponents
+  ]?: 'Error: form component names must be unique — this key already exists in the base form'
 }
 export interface CreateFormHookReturn<
   TComponents extends Record<string, HookComponentType<any>>,

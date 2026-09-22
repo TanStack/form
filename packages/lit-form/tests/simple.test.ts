@@ -117,33 +117,37 @@ class TestForm extends LitElement {
                 .type=${'checkbox'}
               />
             </div>
-            ${field.state.value
-              ? this.form.field(
-                  {
-                    name: `jobTitle`,
-                    validators: {
-                      onChange: ({ value }) =>
-                        value.length === 0 ? 'Needs to have a job here' : null,
+            ${
+              field.state.value
+                ? this.form.field(
+                    {
+                      name: `jobTitle`,
+                      validators: {
+                        onChange: ({ value }) =>
+                          value.length === 0
+                            ? 'Needs to have a job here'
+                            : null,
+                      },
                     },
-                  },
-                  (subField) => {
-                    return html` <div>
-                      <label>Job Title</label>
-                      <input
-                        type="text"
-                        id="jobTitle"
-                        placeholder="Job Title"
-                        .value="${subField.state.value}"
-                        @blur="${() => subField.handleBlur()}"
-                        @input="${(e: Event) => {
-                          const target = e.target as HTMLInputElement
-                          subField.handleChange(target.value)
-                        }}"
-                      />
-                    </div>`
-                  },
-                )
-              : ''}
+                    (subField) => {
+                      return html` <div>
+                        <label>Job Title</label>
+                        <input
+                          type="text"
+                          id="jobTitle"
+                          placeholder="Job Title"
+                          .value="${subField.state.value}"
+                          @blur="${() => subField.handleBlur()}"
+                          @input="${(e: Event) => {
+                            const target = e.target as HTMLInputElement
+                            subField.handleChange(target.value)
+                          }}"
+                        />
+                      </div>`
+                    },
+                  )
+                : ''
+            }
           `
         })}
       </form>
