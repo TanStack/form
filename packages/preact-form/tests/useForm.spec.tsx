@@ -1,122 +1,235 @@
-import {
-  act,
-  fireEvent,
-  render,
-  renderHook,
-  screen,
-} from '@testing-library/preact'
+import { render } from 'vitest-browser-preact'
 import { describe, expect, it, vi } from 'vitest'
-import Preact, { useState } from 'preact/compat'
+import { useState } from 'preact/compat'
 import { useForm } from '../src'
 
 describe('useForm', () => {
   it('should mount the form to the dom', () => {
-    const { result } = renderHook(() => {
+    function Component() {
       const form = useForm({ defaultValues: { name: 'tony-hawk' } })
 
-      return form
-    })
+      return (
+        <form.Field name="name">
+          {(field) => (
+            <label>
+              Name
+              <input
+                value={field.value}
+                onChange={(event) =>
+                  field.handleChange(event.currentTarget.value)
+                }
+              />
+            </label>
+          )}
+        </form.Field>
+      )
+    }
 
-    expect(result.current.state.values).toEqual({ name: 'tony-hawk' })
+    const screen = render(<Component />)
+
+    expect(screen.getByRole('textbox', { name: 'Name' })).toHaveValue(
+      'tony-hawk',
+    )
   })
 
   it('uses a supplied formId', () => {
-    const { result } = renderHook(() =>
-      useForm({
+    function Component() {
+      const form = useForm({
         formId: 'signup-form',
         defaultValues: { name: '' },
-      }),
-    )
+      })
 
-    expect(result.current.formId).toBe('signup-form')
+      return <form id={form.formId} aria-label="Signup" />
+    }
+
+    const screen = render(<Component />)
+
+    expect(screen.getByRole('form', { name: 'Signup' })).toHaveAttribute(
+      'id',
+      'signup-form',
+    )
   })
 
   it('creates a stable formId when one is not supplied', () => {
-    const { result, rerender } = renderHook(() =>
-      useForm({ defaultValues: { name: '' } }),
-    )
-    const formId = result.current.formId
+    function Component() {
+      const form = useForm({ defaultValues: { name: '' } })
 
-    expect(formId).toBeTypeOf('string')
+      return <form id={form.formId} aria-label="Signup" />
+    }
+
+    const screen = render(<Component />)
+    const formElement = screen.getByRole('form', { name: 'Signup' })
+    const formId = formElement.element().id
+
     expect(formId.length).toBeGreaterThan(0)
 
-    rerender()
+    screen.rerender(<Component />)
 
-    expect(result.current.formId).toBe(formId)
+    expect(formElement).toHaveAttribute('id', formId)
   })
 
-  it('should support async defaultValues with useState', () => {
-    const { result } = renderHook(() => {
+  it('should support async defaultValues with useState', async () => {
+    function Component() {
       const [defaultValues, setDefaultValues] = useState({ name: 'initial' })
       const form = useForm({ defaultValues })
-      return { form, setDefaultValues }
-    })
 
-    expect(result.current.form.state.values).toEqual({ name: 'initial' })
+      return (
+        <>
+          <form.Field name="name">
+            {(field) => (
+              <label>
+                Name
+                <input
+                  value={field.value}
+                  onChange={(event) =>
+                    field.handleChange(event.currentTarget.value)
+                  }
+                />
+              </label>
+            )}
+          </form.Field>
+          <button onClick={() => setDefaultValues({ name: 'async-value' })}>
+            Load defaults
+          </button>
+        </>
+      )
+    }
 
-    act(() => {
-      result.current.setDefaultValues({ name: 'async-value' })
-    })
+    const screen = render(<Component />)
+    const name = screen.getByRole('textbox', { name: 'Name' })
 
-    expect(result.current.form.state.values).toEqual({ name: 'async-value' })
+    await expect.element(name).toHaveValue('initial')
+
+    await screen.getByRole('button', { name: 'Load defaults' }).click()
+
+    await expect.element(name).toHaveValue('async-value')
   })
 
-  it('should not overwrite a touched field with async defaultValues', () => {
-    const { result } = renderHook(() => {
+  it('should not overwrite a touched field with async defaultValues', async () => {
+    function Component() {
       const [defaultValues, setDefaultValues] = useState({
         name: 'initial',
         age: 0,
       })
       const form = useForm({ defaultValues })
-      return { form, setDefaultValues }
-    })
 
-    // Touch the name field
-    act(() => {
-      result.current.form.setFieldValue('name', 'touched')
-    })
+      return (
+        <>
+          <form.Field name="name">
+            {(field) => (
+              <label>
+                Name
+                <input
+                  value={field.value}
+                  onChange={(event) =>
+                    field.handleChange(event.currentTarget.value)
+                  }
+                />
+              </label>
+            )}
+          </form.Field>
+          <form.Field name="age">
+            {(field) => (
+              <label>
+                Age
+                <input
+                  type="number"
+                  value={field.value}
+                  onChange={(event) =>
+                    field.handleChange(event.currentTarget.valueAsNumber)
+                  }
+                />
+              </label>
+            )}
+          </form.Field>
+          <button
+            onClick={() => setDefaultValues({ name: 'new-default', age: 99 })}
+          >
+            Load defaults
+          </button>
+        </>
+      )
+    }
 
-    // Update defaultValues - name is touched so should NOT be overwritten
-    act(() => {
-      result.current.setDefaultValues({ name: 'new-default', age: 99 })
-    })
+    const screen = render(<Component />)
+    const name = screen.getByRole('textbox', { name: 'Name' })
+    const age = screen.getByRole('spinbutton', { name: 'Age' })
 
-    expect(result.current.form.state.values.name).toBe('touched')
-    expect(result.current.form.state.values.age).toBe(99)
+    await expect.element(name).toHaveValue('initial')
+    await expect.element(age).toHaveValue(0)
+
+    await name.fill('touched')
+
+    await expect.element(name).toHaveValue('touched')
+
+    await screen.getByRole('button', { name: 'Load defaults' }).click()
+
+    await expect.element(age).toHaveValue(99)
+    await expect.element(name).toHaveValue('touched')
   })
 
   it('should overwrite field B if only field A was touched and B is not a child of A', async () => {
-    const { result } = renderHook(() => {
+    function Component() {
       const [defaultValues, setDefaultValues] = useState({
         a: { nested: 'initial-a' },
         b: 'initial-b',
       })
       const form = useForm({ defaultValues })
-      return { form, setDefaultValues }
-    })
 
-    // Touch field A
-    act(() => {
-      result.current.form.setFieldValue('a.nested', 'touched-a')
-    })
+      return (
+        <>
+          <form.Field name="a.nested">
+            {(field) => (
+              <label>
+                Field A
+                <input
+                  value={field.value}
+                  onChange={(event) =>
+                    field.handleChange(event.currentTarget.value)
+                  }
+                />
+              </label>
+            )}
+          </form.Field>
+          <form.Field name="b">
+            {(field) => (
+              <label>
+                Field B
+                <input
+                  value={field.value}
+                  onChange={(event) =>
+                    field.handleChange(event.currentTarget.value)
+                  }
+                />
+              </label>
+            )}
+          </form.Field>
+          <button
+            onClick={() =>
+              setDefaultValues({ a: { nested: 'new-a' }, b: 'new-b' })
+            }
+          >
+            Load defaults
+          </button>
+        </>
+      )
+    }
 
-    await vi.waitFor(() => {
-      expect(result.current.form.state.values.a.nested).toBe('touched-a')
-    })
+    const screen = render(<Component />)
+    const fieldA = screen.getByRole('textbox', { name: 'Field A' })
+    const fieldB = screen.getByRole('textbox', { name: 'Field B' })
 
-    // Update defaultValues
-    act(() => {
-      result.current.setDefaultValues({
-        a: { nested: 'new-a' },
-        b: 'new-b',
-      })
-    })
+    await expect.element(fieldA).toHaveValue('initial-a')
+    await expect.element(fieldB).toHaveValue('initial-b')
 
-    await vi.waitFor(() => {
-      // A should keep its touched value, B should be overwritten
-      expect(result.current.form.state.values.a.nested).toBe('touched-a')
-      expect(result.current.form.state.values.b).toBe('new-b')
-    })
+    await fieldA.fill('touched-a')
+
+    await expect.element(fieldA).toHaveValue('touched-a')
+
+    await screen.getByRole('button', { name: 'Load defaults' }).click()
+
+    await expect.element(fieldB).toHaveValue('new-b')
+    await expect.element(fieldA).toHaveValue('touched-a')
   })
 
   it('does not render with pre-validation state for synchronous runOnMount validation', () => {
@@ -159,7 +272,7 @@ describe('useForm', () => {
       )
     }
 
-    render(<Component />)
+    const screen = render(<Component />)
 
     expect(screen.getByTestId('form-state')).toHaveTextContent(
       'Name is required|false|false',
@@ -174,20 +287,18 @@ describe('useForm', () => {
     }
   })
 
-  it('updates form.Subscribe selectors for isDefaultValue', () => {
+  it('updates form.Subscribe selectors for isDefaultValue', async () => {
     function Component() {
       const form = useForm({ defaultValues: { name: 'tony-hawk' } })
 
       return (
         <>
-          <button
-            data-testid="change"
-            onClick={() => form.setFieldValue('name', 'rodney-mullen')}
-          />
-          <button
-            data-testid="restore"
-            onClick={() => form.setFieldValue('name', 'tony-hawk')}
-          />
+          <button onClick={() => form.setFieldValue('name', 'rodney-mullen')}>
+            Change name
+          </button>
+          <button onClick={() => form.setFieldValue('name', 'tony-hawk')}>
+            Restore name
+          </button>
           <form.Subscribe selector={(state) => state.isDefaultValue}>
             {(isDefaultValue) => (
               <output data-testid="is-default-value">
@@ -199,15 +310,21 @@ describe('useForm', () => {
       )
     }
 
-    render(<Component />)
+    const screen = render(<Component />)
 
-    expect(screen.getByTestId('is-default-value')).toHaveTextContent('true')
+    await expect
+      .element(screen.getByTestId('is-default-value'))
+      .toHaveTextContent('true')
 
-    fireEvent.click(screen.getByTestId('change'))
-    expect(screen.getByTestId('is-default-value')).toHaveTextContent('false')
+    await screen.getByRole('button', { name: 'Change name' }).click()
+    await expect
+      .element(screen.getByTestId('is-default-value'))
+      .toHaveTextContent('false')
 
-    fireEvent.click(screen.getByTestId('restore'))
-    expect(screen.getByTestId('is-default-value')).toHaveTextContent('true')
+    await screen.getByRole('button', { name: 'Restore name' }).click()
+    await expect
+      .element(screen.getByTestId('is-default-value'))
+      .toHaveTextContent('true')
   })
 
   it('does not crash when asynchronous runOnMount validation resolves after unmount', async () => {
@@ -240,18 +357,20 @@ describe('useForm', () => {
       )
     }
 
-    const { unmount } = render(<Component />)
+    const screen = render(<Component />)
 
     expect(validator).toHaveBeenCalledOnce()
-    expect(screen.getByTestId('is-validating')).toHaveTextContent('true')
+    await expect
+      .element(screen.getByTestId('is-validating'))
+      .toHaveTextContent('true')
 
-    unmount()
+    screen.unmount()
 
     await expect(
-      act(async () => {
+      (async () => {
         resolveValidation('Async mount error')
         await Promise.resolve()
-      }),
+      })(),
     ).resolves.toBeUndefined()
   })
 })

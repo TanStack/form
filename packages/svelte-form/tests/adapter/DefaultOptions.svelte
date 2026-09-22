@@ -74,9 +74,10 @@
   {#snippet children(field)}
     <button
       type="button"
-      aria-label="Change direct field"
       onclick={() => field.handleChange('changed')}
-    ></button>
+    >
+      Change direct field
+    </button>
   {/snippet}
 </form.Field>
 
@@ -84,9 +85,10 @@
   {#snippet children(field)}
     <button
       type="button"
-      aria-label="Change direct array field"
       onclick={() => field.handleChange([...field.value, 'two'])}
-    ></button>
+    >
+      Change direct array field
+    </button>
   {/snippet}
 </form.ArrayField>
 
@@ -104,25 +106,28 @@
       {#snippet children(field)}
         <button
           type="button"
-          aria-label="Change grouped field"
           onclick={() => field.handleChange('changed')}
-        ></button>
+        >
+          Change grouped field
+        </button>
       {/snippet}
     </group.Field>
     <group.ArrayField name="array">
       {#snippet children(field)}
         <button
           type="button"
-          aria-label="Change grouped array field"
           onclick={() => field.handleChange([...field.value, 'two'])}
-        ></button>
+        >
+          Change grouped array field
+        </button>
       {/snippet}
     </group.ArrayField>
     <button
       type="button"
-      aria-label="Submit group"
       onclick={() => group.handleSubmit()}
-    ></button>
+    >
+      Submit group
+    </button>
   {/snippet}
 </form.FormGroup>
 

@@ -1,16 +1,15 @@
 import { describe, expect, it, vi } from 'vitest'
-import { render } from '@testing-library/preact'
-import { userEvent } from '@testing-library/user-event'
-import Preact from 'preact/compat'
+import { render } from 'vitest-browser-preact'
+import { userEvent } from 'vitest/browser'
+import { memo } from 'preact/compat'
 import { defineFieldGroup, useForm, useSelector } from '../src'
-
-const user = userEvent.setup()
+import type { ComponentChildren } from 'preact'
 
 function RenderCounter({
   children,
   onRender,
 }: {
-  children: Preact.ReactNode
+  children: ComponentChildren
   id: string
   onRender: () => void
 }) {
@@ -187,7 +186,7 @@ interface MemoizedInputProps {
   }
 }
 
-const MemoizedInput = Preact.memo(function MemoizedInputComponent({
+const MemoizedInput = memo(function MemoizedInputComponent({
   field,
 }: MemoizedInputProps) {
   return (
@@ -263,11 +262,15 @@ describe('FieldGroup', () => {
 
     const { getByRole, getByTestId } = render(<Component />)
 
-    expect(getByTestId('field')).toHaveTextContent('foo.bar:Initial')
+    await expect
+      .element(getByTestId('field'))
+      .toHaveTextContent('foo.bar:Initial')
 
-    await user.click(getByRole('button', { name: 'Update' }))
+    await userEvent.click(getByRole('button', { name: 'Update' }))
 
-    expect(getByTestId('field')).toHaveTextContent('foo.bar:Updated')
+    await expect
+      .element(getByTestId('field'))
+      .toHaveTextContent('foo.bar:Updated')
   })
 
   it('resolves nested logical field names and forwards field methods', async () => {
@@ -285,14 +288,18 @@ describe('FieldGroup', () => {
 
     const { getByRole, getByTestId } = render(<Component />)
 
-    expect(getByTestId('field')).toHaveTextContent('anything.bar:Initial')
+    await expect
+      .element(getByTestId('field'))
+      .toHaveTextContent('anything.bar:Initial')
 
-    await user.click(getByRole('button', { name: 'Update' }))
+    await userEvent.click(getByRole('button', { name: 'Update' }))
 
-    expect(getByTestId('field')).toHaveTextContent('anything.bar:Updated')
+    await expect
+      .element(getByTestId('field'))
+      .toHaveTextContent('anything.bar:Updated')
   })
 
-  it('exposes subscribed field meta from field group children', () => {
+  it('exposes subscribed field meta from field group children', async () => {
     const MetaFields = bindNestedFields(
       ({ fields }: NestedFieldsProps) => (
         <fields.Field name="foo.bar">
@@ -318,7 +325,7 @@ describe('FieldGroup', () => {
 
     const { getByTestId } = render(<Component />)
 
-    expect(getByTestId('meta')).toHaveTextContent('false')
+    await expect.element(getByTestId('meta')).toHaveTextContent('false')
   })
 
   it('resolves watched field names for listeners', async () => {
@@ -348,7 +355,7 @@ describe('FieldGroup', () => {
 
     const { getByLabelText } = render(<Component />)
 
-    await user.type(getByLabelText('Password'), 'a')
+    await userEvent.type(getByLabelText('Password'), 'a')
 
     expect(listener).toHaveBeenCalledOnce()
   })
@@ -369,9 +376,9 @@ describe('FieldGroup', () => {
     const { getByLabelText } = render(<Component />)
     const input = getByLabelText('Memoized')
 
-    await user.type(input, 'abc')
+    await userEvent.type(input, 'abc')
 
-    expect(input).toHaveValue('abc')
+    await expect.element(input).toHaveValue('abc')
     expect(onRender).toHaveBeenCalledTimes(4)
   })
 
@@ -404,9 +411,9 @@ describe('FieldGroup', () => {
     const { getByLabelText } = render(<Component />)
     const initialUpperRenderCount = onRender.upper.mock.calls.length
 
-    await user.type(getByLabelText('Lower'), '12')
+    await userEvent.type(getByLabelText('Lower'), '12')
 
-    expect(getByLabelText('Lower')).toHaveValue('12')
+    await expect.element(getByLabelText('Lower')).toHaveValue('12')
     expect(onRender.lower).toHaveBeenCalledTimes(3)
     expect(onRender.upper).toHaveBeenCalledTimes(initialUpperRenderCount)
   })
@@ -433,11 +440,11 @@ describe('FieldGroup', () => {
 
     const { getByLabelText, getByTestId } = render(<Component />)
 
-    expect(getByTestId('values')).toHaveTextContent('1:5')
+    await expect.element(getByTestId('values')).toHaveTextContent('1:5')
 
-    await user.type(getByLabelText('Lower'), '2')
+    await userEvent.type(getByLabelText('Lower'), '2')
 
-    expect(getByTestId('values')).toHaveTextContent('12:5')
+    await expect.element(getByTestId('values')).toHaveTextContent('12:5')
   })
 
   it('forwards array methods from the core field group API', async () => {
@@ -453,8 +460,8 @@ describe('FieldGroup', () => {
 
     const { getByRole, getByTestId } = render(<Component />)
 
-    await user.click(getByRole('button', { name: 'Move item' }))
+    await userEvent.click(getByRole('button', { name: 'Move item' }))
 
-    expect(getByTestId('array-values')).toHaveTextContent('b,c,a')
+    await expect.element(getByTestId('array-values')).toHaveTextContent('b,c,a')
   })
 })

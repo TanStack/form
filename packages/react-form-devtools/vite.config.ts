@@ -1,6 +1,7 @@
 import { defineConfig, mergeConfig } from 'vitest/config'
 import { tanstackViteConfig } from '@tanstack/vite-config'
 import react from '@vitejs/plugin-react'
+import { playwright } from '@vitest/browser-playwright'
 import packageJson from './package.json'
 
 const config = defineConfig({
@@ -9,8 +10,15 @@ const config = defineConfig({
     name: packageJson.name,
     dir: './tests',
     watch: false,
-    environment: 'jsdom',
-    setupFiles: ['./tests/test-setup.ts'],
+    globals: true,
+    setupFiles: ['vitest-browser-react'],
+    browser: {
+      enabled: true,
+      provider: playwright(
+        process.env.CI ? { launchOptions: { channel: 'chrome' } } : {},
+      ),
+      instances: [{ browser: 'chromium', headless: true }],
+    },
     typecheck: { enabled: true },
   },
 })

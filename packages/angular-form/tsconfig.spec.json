@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
     "target": "es2016",
-    "types": ["vitest/globals", "node"],
+    "types": ["vitest/globals", "vitest/browser", "node"],
     "paths": {
       "@tanstack/form-core": ["../form-core/src"],
       "@tanstack/form-core/internals": ["../form-core/src/internals.ts"]

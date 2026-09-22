@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitest/config'
-import packageJson from './package.json' with { type: 'json' }
 import vue from '@vitejs/plugin-vue'
+import { playwright } from '@vitest/browser-playwright'
+import packageJson from './package.json' with { type: 'json' }
 
 export default defineConfig({
   plugins: [vue()],
@@ -8,8 +9,14 @@ export default defineConfig({
     name: packageJson.name,
     dir: './tests',
     watch: false,
-    environment: 'jsdom',
-    setupFiles: ['./tests/test-setup.ts'],
+    setupFiles: ['vitest-browser-vue'],
+    browser: {
+      enabled: true,
+      provider: playwright(
+        process.env.CI ? { launchOptions: { channel: 'chrome' } } : {},
+      ),
+      instances: [{ browser: 'chromium', headless: true }],
+    },
     coverage: { enabled: true, provider: 'istanbul', include: ['src/**/*'] },
     typecheck: { enabled: true },
   },

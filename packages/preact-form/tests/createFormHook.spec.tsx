@@ -1,5 +1,4 @@
-import { fireEvent, render, waitFor } from '@testing-library/preact'
-import Preact from 'preact/compat'
+import { render } from 'vitest-browser-preact'
 import { describe, expect, it, vi } from 'vitest'
 import { createFormHook } from '../src'
 
@@ -66,18 +65,18 @@ describe('createFormHook defaults', () => {
             ]}
           >
             {(field) => (
-              <button
-                aria-label="Change direct field"
-                onClick={() => field.handleChange('changed')}
-              />
+              <button onClick={() => field.handleChange('changed')}>
+                Change direct field
+              </button>
             )}
           </form.Field>
           <form.ArrayField name="directArray">
             {(field) => (
               <button
-                aria-label="Change direct array field"
                 onClick={() => field.handleChange([...field.value, 'two'])}
-              />
+              >
+                Change direct array field
+              </button>
             )}
           </form.ArrayField>
           <form.FormGroup
@@ -93,26 +92,25 @@ describe('createFormHook defaults', () => {
               <>
                 <group.Field name="field">
                   {(field) => (
-                    <button
-                      aria-label="Change grouped field"
-                      onClick={() => field.handleChange('changed')}
-                    />
+                    <button onClick={() => field.handleChange('changed')}>
+                      Change grouped field
+                    </button>
                   )}
                 </group.Field>
                 <group.ArrayField name="array">
                   {(field) => (
                     <button
-                      aria-label="Change grouped array field"
                       onClick={() =>
                         field.handleChange([...field.value, 'two'])
                       }
-                    />
+                    >
+                      Change grouped array field
+                    </button>
                   )}
                 </group.ArrayField>
-                <button
-                  aria-label="Submit group"
-                  onClick={() => void group.handleSubmit()}
-                />
+                <button onClick={() => void group.handleSubmit()}>
+                  Submit group
+                </button>
               </>
             )}
           </form.FormGroup>
@@ -122,10 +120,14 @@ describe('createFormHook defaults', () => {
 
     const view = render(<Component />)
 
-    fireEvent.click(view.getByLabelText('Change direct field'))
-    fireEvent.click(view.getByLabelText('Change direct array field'))
-    fireEvent.click(view.getByLabelText('Change grouped field'))
-    fireEvent.click(view.getByLabelText('Change grouped array field'))
+    await view.getByRole('button', { name: 'Change direct field' }).click()
+    await view
+      .getByRole('button', { name: 'Change direct array field' })
+      .click()
+    await view.getByRole('button', { name: 'Change grouped field' }).click()
+    await view
+      .getByRole('button', { name: 'Change grouped array field' })
+      .click()
 
     expect(formCalls).toEqual([
       'default',
@@ -145,7 +147,7 @@ describe('createFormHook defaults', () => {
       'default:group.array',
     ])
 
-    fireEvent.click(view.getByLabelText('Submit group'))
-    await waitFor(() => expect(onSubmitInvalid).toHaveBeenCalledOnce())
+    await view.getByRole('button', { name: 'Submit group' }).click()
+    await vi.waitFor(() => expect(onSubmitInvalid).toHaveBeenCalledOnce())
   })
 })

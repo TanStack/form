@@ -68,6 +68,8 @@ export default defineConfig({
     dir: './tests',
     watch: false,
     globals: true,
+    // Override vite-plugin-solid's jsdom default; tests run in the browser.
+    environment: 'node',
     browser: {
       enabled: true,
       // CI runners (ubuntu-latest) ship with Google Chrome preinstalled, so

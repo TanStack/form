@@ -1,8 +1,7 @@
 /// <reference lib="dom" />
 import { LitElement, html } from 'lit'
-import '@testing-library/jest-dom'
 import { describe, expect, expectTypeOf, it, vi } from 'vitest'
-import { userEvent } from '@testing-library/user-event'
+import { userEvent } from 'vitest/browser'
 import {
   TanStackFormController,
   defineFieldGroup,
@@ -329,30 +328,28 @@ describe('TanStackFormController', () => {
 
   it('renders v2 validation issues and resets fields', async () => {
     const element = await mount<TestFormElement>('test-lit-form')
-    const user = userEvent.setup()
     const firstName =
       element.shadowRoot!.querySelector<HTMLInputElement>('#firstName')!
     const lastName =
       element.shadowRoot!.querySelector<HTMLInputElement>('#lastName')!
 
-    await user.type(lastName, 'Li')
+    await userEvent.type(lastName, 'Li')
     expect(element.shadowRoot!.querySelector('.last-error')).toHaveTextContent(
       'Use at least 3 characters',
     )
-    await user.type(firstName, ' Lovelace')
-    await user.click(element.shadowRoot!.querySelector('#reset')!)
+    await userEvent.type(firstName, ' Lovelace')
+    await userEvent.click(element.shadowRoot!.querySelector('#reset')!)
     await element.updateComplete
     expect(firstName).toHaveValue('Ada')
   })
 
   it('submits through the form API', async () => {
     const element = await mount<TestFormElement>('test-lit-form')
-    const user = userEvent.setup()
-    await user.type(
+    await userEvent.type(
       element.shadowRoot!.querySelector<HTMLInputElement>('#lastName')!,
       'Lovelace',
     )
-    await user.click(element.shadowRoot!.querySelector('#submit')!)
+    await userEvent.click(element.shadowRoot!.querySelector('#submit')!)
     await vi.waitFor(() => expect(element.submit).toHaveBeenCalledOnce())
   })
 
@@ -397,19 +394,18 @@ describe('TanStackFormController', () => {
 
   it('validates and submits a scoped form group', async () => {
     const element = await mount<FormGroupElement>('test-lit-form-group')
-    const user = userEvent.setup()
 
-    await user.click(element.shadowRoot!.querySelector('#continue')!)
+    await userEvent.click(element.shadowRoot!.querySelector('#continue')!)
     expect(element.shadowRoot!.querySelector('.group-error')).toHaveTextContent(
       'Enter a name',
     )
     expect(element.groupSubmit).not.toHaveBeenCalled()
 
-    await user.type(
+    await userEvent.type(
       element.shadowRoot!.querySelector<HTMLInputElement>('#profileName')!,
       'Ada',
     )
-    await user.click(element.shadowRoot!.querySelector('#continue')!)
+    await userEvent.click(element.shadowRoot!.querySelector('#continue')!)
 
     await vi.waitFor(() => expect(element.groupSubmit).toHaveBeenCalledOnce())
     expect(element.shadowRoot!.querySelector('#step')).toHaveTextContent('1')
