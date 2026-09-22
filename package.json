@@ -60,13 +60,13 @@
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.3",
     "@types/node": "^25.0.7",
-    "@vitest/browser-playwright": "^4.0.17",
-    "@vitest/coverage-istanbul": "4.1.10",
+    "@vitest/browser-playwright": "^5.0.1",
+    "@vitest/coverage-istanbul": "^5.0.1",
     "eslint": "^10.8.1",
     "jsdom": "^27.2.0",
     "knip": "^6.32.0",
     "markdown-link-extractor": "^4.0.3",
-    "nx": "^23.1.1",
+    "nx": "^23.2.1",
     "premove": "^4.0.0",
     "prettier": "^3.7.4",
     "publint": "^0.3.23",
@@ -82,7 +82,7 @@
     "typescript57": "npm:typescript@5.7.3",
     "typescript58": "npm:typescript@5.8.3",
     "vite": "^8.2.1",
-    "vitest": "^4.0.17"
+    "vitest": "^5.0.1"
   },
   "sherif": {
     "ignorePackage": [

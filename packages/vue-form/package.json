@@ -39,12 +39,12 @@
   },
   "devDependencies": {
     "@testing-library/vue": "^8.1.0",
-    "@vitejs/plugin-vue": "^6.0.8",
+    "@vitejs/plugin-vue": "^6.0.9",
     "unplugin-vue": "^7.2.0",
-    "vue": "^3.6.0-rc.2",
-    "vue-tsc": "^3.3.9"
+    "vue": "^3.6.0-rc.9",
+    "vue-tsc": "^3.3.11"
   },
   "peerDependencies": {
-    "vue": "^3.6.0-rc.2"
+    "vue": "^3.6.0-rc.9"
   }
 }
