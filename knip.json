@@ -1,10 +1,13 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "ignoreDependencies": ["@tanstack/devtools", "ts-node"],
+  "ignoreDependencies": ["@tanstack/devtools", "ts-node", "@vue/runtime-core", "@vue/reactivity"],
   "ignoreWorkspaces": ["examples/**"],
   "workspaces": {
     "packages/octane-form": {
-      "entry": ["src/index.ts", "localsrc/program-transformer.cts"]
+      "entry": ["localsrc/program-transformer.cts"]
     }
+  },
+  "compilers": {
+    "tsrx": true
   }
 }
