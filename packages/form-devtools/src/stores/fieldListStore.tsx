@@ -153,7 +153,8 @@ export function createFieldListComputations() {
   const visibleFieldRows = createMemo(() => {
     const matches = fuzzysort.go(fieldSearchQuery(), filteredFieldRows(), {
       keys: ['path', 'pathLeaf'],
-      all: true,
+      limit: 0,
+      threshold: 0,
       scoreFn: (results) => {
         const pathScore = results[0]?.score ?? 0
         const leafScore = results[1]?.score ?? 0

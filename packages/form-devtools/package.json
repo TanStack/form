@@ -68,7 +68,7 @@
     "@tanstack/pacer-lite": "^0.2.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "fuzzysort": "^3.1.0",
+    "fuzzysort": "^4.0.2",
     "lucide-solid": "^1.30.0",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.2",
