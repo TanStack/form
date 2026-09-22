@@ -51,20 +51,20 @@ describe('createFormHook defaults', () => {
         <>
           <form.Field name="direct">
             {({ field }: { field: AnyFieldApi }) => (
-              <button
-                aria-label="Change direct field"
-                onClick={() => field.handleChange('changed')}
-              />
+              <button onClick={() => field.handleChange('changed')}>
+                Change direct field
+              </button>
             )}
           </form.Field>
           <form.ArrayField name="directArray">
             {({ field }: { field: AnyFieldApi }) => (
               <button
-                aria-label="Change direct array field"
                 onClick={() =>
                   field.handleChange([...(field.value as Array<string>), 'two'])
                 }
-              />
+              >
+                Change direct array field
+              </button>
             )}
           </form.ArrayField>
           <form.FormGroup
@@ -80,29 +80,28 @@ describe('createFormHook defaults', () => {
               <>
                 <group.Field name="field">
                   {({ field }: { field: AnyFieldApi }) => (
-                    <button
-                      aria-label="Change grouped field"
-                      onClick={() => field.handleChange('changed')}
-                    />
+                    <button onClick={() => field.handleChange('changed')}>
+                      Change grouped field
+                    </button>
                   )}
                 </group.Field>
                 <group.ArrayField name="array">
                   {({ field }: { field: AnyFieldApi }) => (
                     <button
-                      aria-label="Change grouped array field"
                       onClick={() =>
                         field.handleChange([
                           ...(field.value as Array<string>),
                           'two',
                         ])
                       }
-                    />
+                    >
+                      Change grouped array field
+                    </button>
                   )}
                 </group.ArrayField>
-                <button
-                  aria-label="Submit group"
-                  onClick={() => void group.handleSubmit()}
-                />
+                <button onClick={() => void group.handleSubmit()}>
+                  Submit group
+                </button>
               </>
             )}
           </form.FormGroup>
@@ -112,10 +111,14 @@ describe('createFormHook defaults', () => {
 
     const view = await render(Component)
 
-    await view.getByLabelText('Change direct field').click()
-    await view.getByLabelText('Change direct array field').click()
-    await view.getByLabelText('Change grouped field').click()
-    await view.getByLabelText('Change grouped array field').click()
+    await view.getByRole('button', { name: 'Change direct field' }).click()
+    await view
+      .getByRole('button', { name: 'Change direct array field' })
+      .click()
+    await view.getByRole('button', { name: 'Change grouped field' }).click()
+    await view
+      .getByRole('button', { name: 'Change grouped array field' })
+      .click()
 
     expect(formCalls).toEqual(['form', 'form', 'form', 'form'])
     expect(fieldCalls).toEqual([
@@ -125,7 +128,7 @@ describe('createFormHook defaults', () => {
       'group.array',
     ])
 
-    await view.getByLabelText('Submit group').click()
+    await view.getByRole('button', { name: 'Submit group' }).click()
     await vi.waitFor(() => expect(onSubmitInvalid).toHaveBeenCalledOnce())
   })
 })
