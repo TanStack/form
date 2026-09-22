@@ -202,6 +202,9 @@ importers:
       '@testing-library/vue':
         specifier: ^8.1.0
         version: 8.1.0(@vue/compiler-dom@3.5.34)(@vue/compiler-sfc@3.5.34)(@vue/server-renderer@3.5.34(vue@3.5.34(typescript@5.9.3)))(vue@3.5.34(typescript@5.9.3))
+      '@tsrx/prettier-plugin':
+        specifier: 0.4.7
+        version: 0.4.7(@typescript-eslint/types@8.59.4)(prettier@3.8.3)
       '@types/node':
         specifier: ^24.1.0
         version: 24.12.4
@@ -7925,6 +7928,11 @@ packages:
     resolution: {integrity: sha512-Y8KEKepbugOuASyNVPazVulmdQy25LDYxUMw6MdiAWKmUWZ6RXzct8RgyiMqoif74LPOcKw+qpWZH3LJpeC7WA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
+
+  '@tsrx/prettier-plugin@0.4.7':
+    resolution: {integrity: sha512-zriN5yNnEqNvtHkjkt9eaBSek2Ho9wzdWecya7D9mtGOQiTvzPvSjXBNW0+74gCHehmt/ytT13xeKhB//bnedw==}
+    peerDependencies:
+      prettier: '>=2.0.0'
 
   '@tsrx/runtime@0.2.2':
     resolution: {integrity: sha512-EsqZjTKWd/qrwEEk7AtaKrmTvPZWRz+H06rJjgNAb1Om0RC45xX2hZjDlv/tE20o4gcOgSCfc/AzKTq6qXlp1A==}
@@ -22299,6 +22307,13 @@ snapshots:
     transitivePeerDependencies:
       - svelte
       - vite-plus
+
+  '@tsrx/prettier-plugin@0.4.7(@typescript-eslint/types@8.59.4)(prettier@3.8.3)':
+    dependencies:
+      '@tsrx/core': 0.2.4(@typescript-eslint/types@8.59.4)
+      prettier: 3.8.3
+    transitivePeerDependencies:
+      - '@typescript-eslint/types'
 
   '@tsrx/runtime@0.2.2': {}
 
