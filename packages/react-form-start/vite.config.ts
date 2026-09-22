@@ -7,14 +7,6 @@ import packageJson from './package.json'
 const config = defineConfig({
   plugins: [react()],
   optimizeDeps: {
-    include: [
-      'vitest-browser-react',
-      'react',
-      'react-dom',
-      'react-dom/client',
-      'devalue',
-      'decode-formdata',
-    ],
     exclude: ['@tanstack/react-start', '@tanstack/react-start/server'],
   },
   test: {

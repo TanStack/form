@@ -6,14 +6,6 @@ import packageJson from './package.json' with { type: 'json' }
 
 export default defineConfig({
   plugins: [svelte()],
-  optimizeDeps: {
-    include: [
-      'vitest-browser-svelte',
-      'svelte',
-      '@tanstack/svelte-store',
-      '@tanstack/form-core',
-    ],
-  },
   test: {
     name: packageJson.name,
     dir: './tests',

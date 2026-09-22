@@ -11,17 +11,6 @@ export default defineConfig(({ mode }) => ({
     tsconfigPaths({ projects: [tsconfigPath] }),
     angular({ tsconfig: tsconfigPath }),
   ],
-  optimizeDeps: {
-    include: [
-      '@angular/core',
-      '@angular/core/testing',
-      '@angular/common',
-      '@angular/platform-browser',
-      '@angular/platform-browser/testing',
-      '@analogjs/vitest-angular/setup-snapshots',
-      'vitest-browser-angular',
-    ],
-  },
   test: {
     name: packageJson.name,
     dir: './tests',

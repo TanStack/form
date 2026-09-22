@@ -6,16 +6,6 @@ import packageJson from './package.json'
 
 const config = defineConfig({
   plugins: [react()],
-  optimizeDeps: {
-    include: [
-      'vitest-browser-react',
-      'react',
-      'react-dom',
-      'react-dom/client',
-      '@tanstack/devtools',
-      '@tanstack/devtools-utils/react',
-    ],
-  },
   test: {
     name: packageJson.name,
     dir: './tests',
