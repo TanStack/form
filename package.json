@@ -63,7 +63,7 @@
     "@vitest/browser-playwright": "^5.0.1",
     "@vitest/coverage-istanbul": "^5.0.1",
     "eslint": "^10.8.1",
-    "jsdom": "^27.2.0",
+    "jsdom": "^30.1.0",
     "knip": "^6.32.0",
     "markdown-link-extractor": "^4.0.3",
     "nx": "^23.2.1",

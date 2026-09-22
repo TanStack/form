@@ -40,7 +40,7 @@
   "devDependencies": {
     "@testing-library/vue": "^8.1.0",
     "@vitejs/plugin-vue": "^6.0.9",
-    "unplugin-vue": "^7.2.0",
+    "unplugin-vue": "^8.0.0",
     "vue": "^3.6.0-rc.9",
     "vue-tsc": "^3.3.11"
   },
