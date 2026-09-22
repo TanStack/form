@@ -3,7 +3,8 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
-    "moduleResolution": "Bundler"
+    "moduleResolution": "Bundler",
+    "types": ["vitest/browser"]
   },
   "include": ["src", "tests", "vitest.config.ts"],
   "exclude": ["eslint.config.js"]

@@ -1,13 +1,6 @@
-import {
-  act,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from '@testing-library/preact'
-import { userEvent } from '@testing-library/user-event'
+import { render } from 'vitest-browser-preact'
 import { describe, expect, it, vi } from 'vitest'
-import Preact, { useState } from 'preact/compat'
+import { useState } from 'preact/compat'
 import { useForm } from '../src'
 
 describe('useForm', () => {
@@ -32,7 +25,7 @@ describe('useForm', () => {
       )
     }
 
-    render(<Component />)
+    const screen = render(<Component />)
 
     expect(screen.getByRole('textbox', { name: 'Name' })).toHaveValue(
       'tony-hawk',
@@ -49,7 +42,7 @@ describe('useForm', () => {
       return <form id={form.formId} aria-label="Signup" />
     }
 
-    render(<Component />)
+    const screen = render(<Component />)
 
     expect(screen.getByRole('form', { name: 'Signup' })).toHaveAttribute(
       'id',
@@ -64,22 +57,18 @@ describe('useForm', () => {
       return <form id={form.formId} aria-label="Signup" />
     }
 
-    const { rerender } = render(<Component />)
-    const formId = screen.getByRole('form', { name: 'Signup' }).id
+    const screen = render(<Component />)
+    const formElement = screen.getByRole('form', { name: 'Signup' })
+    const formId = formElement.element().id
 
     expect(formId.length).toBeGreaterThan(0)
 
-    rerender(<Component />)
+    screen.rerender(<Component />)
 
-    expect(screen.getByRole('form', { name: 'Signup' })).toHaveAttribute(
-      'id',
-      formId,
-    )
+    expect(formElement).toHaveAttribute('id', formId)
   })
 
   it('should support async defaultValues with useState', async () => {
-    const user = userEvent.setup()
-
     function Component() {
       const [defaultValues, setDefaultValues] = useState({ name: 'initial' })
       const form = useForm({ defaultValues })
@@ -106,22 +95,17 @@ describe('useForm', () => {
       )
     }
 
-    render(<Component />)
+    const screen = render(<Component />)
+    const name = screen.getByRole('textbox', { name: 'Name' })
 
-    expect(screen.getByRole('textbox', { name: 'Name' })).toHaveValue('initial')
+    await expect.element(name).toHaveValue('initial')
 
-    await user.click(screen.getByRole('button', { name: 'Load defaults' }))
+    await screen.getByRole('button', { name: 'Load defaults' }).click()
 
-    await waitFor(() => {
-      expect(screen.getByRole('textbox', { name: 'Name' })).toHaveValue(
-        'async-value',
-      )
-    })
+    await expect.element(name).toHaveValue('async-value')
   })
 
   it('should not overwrite a touched field with async defaultValues', async () => {
-    const user = userEvent.setup()
-
     function Component() {
       const [defaultValues, setDefaultValues] = useState({
         name: 'initial',
@@ -167,27 +151,24 @@ describe('useForm', () => {
       )
     }
 
-    render(<Component />)
-
+    const screen = render(<Component />)
     const name = screen.getByRole('textbox', { name: 'Name' })
-    expect(name).toHaveValue('initial')
-    expect(screen.getByRole('spinbutton', { name: 'Age' })).toHaveValue(0)
+    const age = screen.getByRole('spinbutton', { name: 'Age' })
 
-    await user.clear(name)
-    await user.type(name, 'touched')
-    expect(name).toHaveValue('touched')
+    await expect.element(name).toHaveValue('initial')
+    await expect.element(age).toHaveValue(0)
 
-    await user.click(screen.getByRole('button', { name: 'Load defaults' }))
+    await name.fill('touched')
 
-    await waitFor(() => {
-      expect(name).toHaveValue('touched')
-      expect(screen.getByRole('spinbutton', { name: 'Age' })).toHaveValue(99)
-    })
+    await expect.element(name).toHaveValue('touched')
+
+    await screen.getByRole('button', { name: 'Load defaults' }).click()
+
+    await expect.element(age).toHaveValue(99)
+    await expect.element(name).toHaveValue('touched')
   })
 
   it('should overwrite field B if only field A was touched and B is not a child of A', async () => {
-    const user = userEvent.setup()
-
     function Component() {
       const [defaultValues, setDefaultValues] = useState({
         a: { nested: 'initial-a' },
@@ -234,26 +215,21 @@ describe('useForm', () => {
       )
     }
 
-    render(<Component />)
-
+    const screen = render(<Component />)
     const fieldA = screen.getByRole('textbox', { name: 'Field A' })
-    expect(fieldA).toHaveValue('initial-a')
-    expect(screen.getByRole('textbox', { name: 'Field B' })).toHaveValue(
-      'initial-b',
-    )
+    const fieldB = screen.getByRole('textbox', { name: 'Field B' })
 
-    await user.clear(fieldA)
-    await user.type(fieldA, 'touched-a')
-    expect(fieldA).toHaveValue('touched-a')
+    await expect.element(fieldA).toHaveValue('initial-a')
+    await expect.element(fieldB).toHaveValue('initial-b')
 
-    await user.click(screen.getByRole('button', { name: 'Load defaults' }))
+    await fieldA.fill('touched-a')
 
-    await waitFor(() => {
-      expect(fieldA).toHaveValue('touched-a')
-      expect(screen.getByRole('textbox', { name: 'Field B' })).toHaveValue(
-        'new-b',
-      )
-    })
+    await expect.element(fieldA).toHaveValue('touched-a')
+
+    await screen.getByRole('button', { name: 'Load defaults' }).click()
+
+    await expect.element(fieldB).toHaveValue('new-b')
+    await expect.element(fieldA).toHaveValue('touched-a')
   })
 
   it('does not render with pre-validation state for synchronous runOnMount validation', () => {
@@ -296,7 +272,7 @@ describe('useForm', () => {
       )
     }
 
-    render(<Component />)
+    const screen = render(<Component />)
 
     expect(screen.getByTestId('form-state')).toHaveTextContent(
       'Name is required|false|false',
@@ -311,20 +287,18 @@ describe('useForm', () => {
     }
   })
 
-  it('updates form.Subscribe selectors for isDefaultValue', () => {
+  it('updates form.Subscribe selectors for isDefaultValue', async () => {
     function Component() {
       const form = useForm({ defaultValues: { name: 'tony-hawk' } })
 
       return (
         <>
-          <button
-            data-testid="change"
-            onClick={() => form.setFieldValue('name', 'rodney-mullen')}
-          />
-          <button
-            data-testid="restore"
-            onClick={() => form.setFieldValue('name', 'tony-hawk')}
-          />
+          <button onClick={() => form.setFieldValue('name', 'rodney-mullen')}>
+            Change name
+          </button>
+          <button onClick={() => form.setFieldValue('name', 'tony-hawk')}>
+            Restore name
+          </button>
           <form.Subscribe selector={(state) => state.isDefaultValue}>
             {(isDefaultValue) => (
               <output data-testid="is-default-value">
@@ -336,15 +310,21 @@ describe('useForm', () => {
       )
     }
 
-    render(<Component />)
+    const screen = render(<Component />)
 
-    expect(screen.getByTestId('is-default-value')).toHaveTextContent('true')
+    await expect
+      .element(screen.getByTestId('is-default-value'))
+      .toHaveTextContent('true')
 
-    fireEvent.click(screen.getByTestId('change'))
-    expect(screen.getByTestId('is-default-value')).toHaveTextContent('false')
+    await screen.getByRole('button', { name: 'Change name' }).click()
+    await expect
+      .element(screen.getByTestId('is-default-value'))
+      .toHaveTextContent('false')
 
-    fireEvent.click(screen.getByTestId('restore'))
-    expect(screen.getByTestId('is-default-value')).toHaveTextContent('true')
+    await screen.getByRole('button', { name: 'Restore name' }).click()
+    await expect
+      .element(screen.getByTestId('is-default-value'))
+      .toHaveTextContent('true')
   })
 
   it('does not crash when asynchronous runOnMount validation resolves after unmount', async () => {
@@ -377,18 +357,20 @@ describe('useForm', () => {
       )
     }
 
-    const { unmount } = render(<Component />)
+    const screen = render(<Component />)
 
     expect(validator).toHaveBeenCalledOnce()
-    expect(screen.getByTestId('is-validating')).toHaveTextContent('true')
+    await expect
+      .element(screen.getByTestId('is-validating'))
+      .toHaveTextContent('true')
 
-    unmount()
+    screen.unmount()
 
     await expect(
-      act(async () => {
+      (async () => {
         resolveValidation('Async mount error')
         await Promise.resolve()
-      }),
+      })(),
     ).resolves.toBeUndefined()
   })
 })

@@ -7,9 +7,7 @@ export default defineConfig({
   plugins: [preact()],
   optimizeDeps: {
     include: [
-      '@testing-library/jest-dom/vitest',
-      '@testing-library/preact',
-      '@testing-library/user-event',
+      'vitest-browser-preact',
       'preact',
       'preact/hooks',
       'preact/compat',
@@ -20,7 +18,6 @@ export default defineConfig({
     name: packageJson.name,
     dir: './tests',
     watch: false,
-    setupFiles: ['./tests/test-setup.ts'],
     globals: true,
     browser: {
       enabled: true,
