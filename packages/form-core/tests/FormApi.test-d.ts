@@ -282,6 +282,46 @@ it('should only allow array fields for array-specific methods', () => {
   const validate3 = form.validateArrayFieldsStartingFrom<RandomKeys>
 })
 
+it('should allow optional array fields for array-specific methods', () => {
+  type FormValues = {
+    aliases?: string[]
+    relatives: { name: string }[] | undefined
+    tags: string[] | null
+    title: string | undefined
+    empty: null
+    missing: undefined
+  }
+
+  const form = new FormApi({
+    defaultValues: {
+      title: undefined,
+    } as FormValues,
+  })
+
+  form.pushFieldValue('aliases', 'alias')
+  form.insertFieldValue('aliases', 0, 'alias')
+  form.replaceFieldValue('aliases', 0, 'alias')
+  form.removeFieldValue('aliases', 0)
+  form.swapFieldValues('aliases', 0, 1)
+  form.moveFieldValues('aliases', 0, 1)
+  form.clearFieldValues('aliases')
+  form.validateArrayFieldsStartingFrom('aliases', 0, 'change')
+
+  form.pushFieldValue('relatives', { name: 'relative' })
+  form.insertFieldValue('relatives', 0, { name: 'relative' })
+  form.replaceFieldValue('relatives', 0, { name: 'relative' })
+  form.pushFieldValue('tags', 'tag')
+
+  // @ts-expect-error non-array fields are still rejected
+  form.removeFieldValue('title', 0)
+  // @ts-expect-error null-only fields are still rejected
+  form.removeFieldValue('empty', 0)
+  // @ts-expect-error undefined-only fields are still rejected
+  form.removeFieldValue('missing', 0)
+  // @ts-expect-error array values must still match the array element type
+  form.pushFieldValue('aliases', 1)
+})
+
 it('should infer full field name union for form.resetField parameters', () => {
   type FormData = {
     shallow: string

@@ -31,7 +31,12 @@ import type {
   ValidationErrorMap,
 } from './types'
 import type { ReadonlyStore } from '@tanstack/store'
-import type { DeepKeys, DeepValue, RejectPromiseValidator } from './util-types'
+import type {
+  ArrayElement,
+  DeepKeys,
+  DeepValue,
+  RejectPromiseValidator,
+} from './util-types'
 import type {
   StandardSchemaV1,
   TStandardSchemaValidatorValue,
@@ -1102,12 +1107,9 @@ export class FieldApi<
   /**
    * Pushes a new value to the field.
    */
-  pushValue = (
-    value: TData extends any[] ? TData[number] : never,
-    options?: UpdateMetaOptions,
-  ) => {
+  pushValue = (value: ArrayElement<TData>, options?: UpdateMetaOptions) => {
     this.form.pushFieldValue(
-      this.name,
+      this.name as never,
       value as any,
       mergeOpts(options, { dontRunListeners: true }),
     )
@@ -1122,11 +1124,11 @@ export class FieldApi<
    */
   insertValue = (
     index: number,
-    value: TData extends any[] ? TData[number] : never,
+    value: ArrayElement<TData>,
     options?: UpdateMetaOptions,
   ) => {
     this.form.insertFieldValue(
-      this.name,
+      this.name as never,
       index,
       value as any,
       mergeOpts(options, { dontRunListeners: true }),
@@ -1142,11 +1144,11 @@ export class FieldApi<
    */
   replaceValue = (
     index: number,
-    value: TData extends any[] ? TData[number] : never,
+    value: ArrayElement<TData>,
     options?: UpdateMetaOptions,
   ) => {
     this.form.replaceFieldValue(
-      this.name,
+      this.name as never,
       index,
       value as any,
       mergeOpts(options, { dontRunListeners: true }),
@@ -1162,7 +1164,7 @@ export class FieldApi<
    */
   removeValue = (index: number, options?: UpdateMetaOptions) => {
     this.form.removeFieldValue(
-      this.name,
+      this.name as never,
       index,
       mergeOpts(options, { dontRunListeners: true }),
     )
@@ -1181,7 +1183,7 @@ export class FieldApi<
     options?: UpdateMetaOptions,
   ) => {
     this.form.swapFieldValues(
-      this.name,
+      this.name as never,
       aIndex,
       bIndex,
       mergeOpts(options, { dontRunListeners: true }),
@@ -1197,7 +1199,7 @@ export class FieldApi<
    */
   moveValue = (aIndex: number, bIndex: number, options?: UpdateMetaOptions) => {
     this.form.moveFieldValues(
-      this.name,
+      this.name as never,
       aIndex,
       bIndex,
       mergeOpts(options, { dontRunListeners: true }),
@@ -1213,7 +1215,7 @@ export class FieldApi<
    */
   clearValues = (options?: UpdateMetaOptions) => {
     this.form.clearFieldValues(
-      this.name,
+      this.name as never,
       mergeOpts(options, { dontRunListeners: true }),
     )
 

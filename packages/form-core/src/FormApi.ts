@@ -54,12 +54,23 @@ import type {
   FormGroupState,
 } from './FormGroupApi'
 import type {
+  ArrayElement,
   DeepKeys,
+  DeepKeysOfArray,
   DeepKeysOfType,
   DeepValue,
   RejectPromiseValidator,
 } from './util-types'
 import type { Updater } from './utils'
+
+/**
+ * Returns array field values as arrays so optional or nullable array helpers can operate safely.
+ */
+function getArrayFieldValue<TValue>(
+  value: TValue,
+): Array<ArrayElement<TValue>> {
+  return Array.isArray(value) ? value : []
+}
 
 /**
  * @private
@@ -1890,7 +1901,7 @@ export class FormApi<
    * Validates the children of a specified array in the form starting from a given index until the end using the correct handlers for a given validation type.
    */
   validateArrayFieldsStartingFrom = async <
-    TField extends DeepKeysOfType<TFormData, any[]>,
+    TField extends DeepKeysOfArray<TFormData>,
   >(
     field: TField,
     index: number,
@@ -2712,37 +2723,34 @@ export class FormApi<
   /**
    * Pushes a value into an array field.
    */
-  pushFieldValue = <TField extends DeepKeysOfType<TFormData, any[]>>(
+  pushFieldValue = <TField extends DeepKeysOfArray<TFormData>>(
     field: TField,
-    value: DeepValue<TFormData, TField> extends any[]
-      ? DeepValue<TFormData, TField>[number]
-      : never,
+    value: ArrayElement<DeepValue<TFormData, TField>>,
     options?: UpdateMetaOptions,
   ) => {
     this.setFieldValue(
       field,
-      (prev) => [...(Array.isArray(prev) ? prev : []), value] as any,
+      (prev) => [...getArrayFieldValue(prev), value] as any,
       options,
     )
 
     metaHelper(this).bumpArrayVersion(field)
   }
 
-  insertFieldValue = async <TField extends DeepKeysOfType<TFormData, any[]>>(
+  insertFieldValue = async <TField extends DeepKeysOfArray<TFormData>>(
     field: TField,
     index: number,
-    value: DeepValue<TFormData, TField> extends any[]
-      ? DeepValue<TFormData, TField>[number]
-      : never,
+    value: ArrayElement<DeepValue<TFormData, TField>>,
     options?: UpdateMetaOptions,
   ) => {
     this.setFieldValue(
       field,
       (prev) => {
+        const previousValue = getArrayFieldValue(prev)
         return [
-          ...(prev as DeepValue<TFormData, TField>[]).slice(0, index),
+          ...previousValue.slice(0, index),
           value,
-          ...(prev as DeepValue<TFormData, TField>[]).slice(index),
+          ...previousValue.slice(index),
         ] as any
       },
       mergeOpts(options, { dontValidate: true }),
@@ -2765,18 +2773,16 @@ export class FormApi<
   /**
    * Replaces a value into an array field at the specified index.
    */
-  replaceFieldValue = async <TField extends DeepKeysOfType<TFormData, any[]>>(
+  replaceFieldValue = async <TField extends DeepKeysOfArray<TFormData>>(
     field: TField,
     index: number,
-    value: DeepValue<TFormData, TField> extends any[]
-      ? DeepValue<TFormData, TField>[number]
-      : never,
+    value: ArrayElement<DeepValue<TFormData, TField>>,
     options?: UpdateMetaOptions,
   ) => {
     this.setFieldValue(
       field,
       (prev) => {
-        return (prev as DeepValue<TFormData, TField>[]).map((d, i) =>
+        return getArrayFieldValue(prev).map((d, i) =>
           i === index ? value : d,
         ) as any
       },
@@ -2796,7 +2802,7 @@ export class FormApi<
   /**
    * Removes a value from an array field at the specified index.
    */
-  removeFieldValue = async <TField extends DeepKeysOfType<TFormData, any[]>>(
+  removeFieldValue = async <TField extends DeepKeysOfArray<TFormData>>(
     field: TField,
     index: number,
     options?: UpdateMetaOptions,
@@ -2810,9 +2816,7 @@ export class FormApi<
     this.setFieldValue(
       field,
       (prev) => {
-        return (prev as DeepValue<TFormData, TField>[]).filter(
-          (_d, i) => i !== index,
-        ) as any
+        return getArrayFieldValue(prev).filter((_d, i) => i !== index) as any
       },
       mergeOpts(options, { dontValidate: true }),
     )
@@ -2836,7 +2840,7 @@ export class FormApi<
   /**
    * Swaps the values at the specified indices within an array field.
    */
-  swapFieldValues = <TField extends DeepKeysOfType<TFormData, any[]>>(
+  swapFieldValues = <TField extends DeepKeysOfArray<TFormData>>(
     field: TField,
     index1: number,
     index2: number,
@@ -2845,9 +2849,16 @@ export class FormApi<
     this.setFieldValue(
       field,
       (prev: any) => {
-        const prev1 = prev[index1]!
-        const prev2 = prev[index2]!
-        return setBy(setBy(prev, `${index1}`, prev2), `${index2}`, prev1)
+        const previousValue = getArrayFieldValue(prev)
+        if (!previousValue.length) return previousValue as any
+
+        const prev1 = previousValue[index1]!
+        const prev2 = previousValue[index2]!
+        return setBy(
+          setBy(previousValue, `${index1}`, prev2),
+          `${index2}`,
+          prev1,
+        )
       },
       mergeOpts(options, { dontValidate: true }),
     )
@@ -2868,7 +2879,7 @@ export class FormApi<
   /**
    * Moves the value at the first specified index to the second specified index within an array field.
    */
-  moveFieldValues = <TField extends DeepKeysOfType<TFormData, any[]>>(
+  moveFieldValues = <TField extends DeepKeysOfArray<TFormData>>(
     field: TField,
     index1: number,
     index2: number,
@@ -2877,7 +2888,10 @@ export class FormApi<
     this.setFieldValue(
       field,
       (prev: any) => {
-        const next: any = [...prev]
+        const previousValue = getArrayFieldValue(prev)
+        if (!previousValue.length) return previousValue as any
+
+        const next: any = [...previousValue]
         next.splice(index2, 0, next.splice(index1, 1)[0])
         return next
       },
@@ -2900,7 +2914,7 @@ export class FormApi<
   /**
    * Clear all values within an array field.
    */
-  clearFieldValues = <TField extends DeepKeysOfType<TFormData, any[]>>(
+  clearFieldValues = <TField extends DeepKeysOfArray<TFormData>>(
     field: TField,
     options?: UpdateMetaOptions,
   ) => {

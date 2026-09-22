@@ -149,6 +149,56 @@ it('should type an array sub-field properly', () => {
   expectTypeOf(field.state.value).toEqualTypeOf<string>()
 })
 
+it('should allow optional array fields to use array value methods', () => {
+  type FormValues = {
+    aliases?: string[]
+    relatives: { name: string }[] | undefined
+    tags: string[] | null
+    title: string | undefined
+  }
+
+  const form = new FormApi({
+    defaultValues: {
+      title: undefined,
+    } as FormValues,
+  })
+
+  const aliases = new FieldApi({
+    form,
+    name: 'aliases',
+  })
+  const relatives = new FieldApi({
+    form,
+    name: 'relatives',
+  })
+  const tags = new FieldApi({
+    form,
+    name: 'tags',
+  })
+  const title = new FieldApi({
+    form,
+    name: 'title',
+  })
+
+  aliases.pushValue('alias')
+  aliases.insertValue(0, 'alias')
+  aliases.replaceValue(0, 'alias')
+  aliases.removeValue(0)
+  aliases.swapValues(0, 1)
+  aliases.moveValue(0, 1)
+  aliases.clearValues()
+
+  relatives.pushValue({ name: 'relative' })
+  relatives.insertValue(0, { name: 'relative' })
+  relatives.replaceValue(0, { name: 'relative' })
+  tags.pushValue('tag')
+
+  // @ts-expect-error non-array fields are still rejected
+  title.pushValue('title')
+  // @ts-expect-error array values must still match the array element type
+  aliases.pushValue(1)
+})
+
 it('should have the correct types returned from form validators', () => {
   const form = new FormApi({
     defaultValues: {
