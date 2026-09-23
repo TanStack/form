@@ -1189,6 +1189,78 @@ describe('form group api', () => {
     expect(step1NameField.state.meta.errors).toEqual([])
   })
 
+  it('should not treat a field whose name merely shares a prefix as related', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        step1: { name: 'test' },
+        step1Extra: '',
+      },
+    })
+
+    const step1Group = new FormGroupApi({
+      name: 'step1',
+      form,
+    })
+
+    const step1NameField = new FieldApi({
+      name: 'step1.name',
+      form,
+    })
+
+    const step1ExtraField = new FieldApi({
+      name: 'step1Extra',
+      form,
+      validators: {
+        onSubmit: () => 'Extra is invalid',
+      },
+    })
+
+    form.mount()
+    step1Group.mount()
+    step1NameField.mount()
+    step1ExtraField.mount()
+
+    await step1Group.handleSubmit()
+
+    expect(step1NameField.state.meta.isTouched).toBe(true)
+    expect(step1ExtraField.state.meta.isTouched).toBe(false)
+    expect(step1ExtraField.state.meta.errors).toEqual([])
+    expect(step1Group.areRelatedFieldsValid()).toBe(true)
+  })
+
+  it('should not cascade field validation into a group whose name merely shares a prefix', () => {
+    const form = new FormApi({
+      defaultValues: {
+        step1: { name: 'test' },
+        step1Extra: '',
+      },
+    })
+
+    const onChange = vi.fn(() => undefined)
+
+    const step1Group = new FormGroupApi({
+      name: 'step1',
+      form,
+      validators: {
+        onChange,
+      },
+    })
+
+    const step1ExtraField = new FieldApi({
+      name: 'step1Extra',
+      form,
+    })
+
+    form.mount()
+    step1Group.mount()
+    step1ExtraField.mount()
+
+    step1ExtraField.setMeta((prev) => ({ ...prev, isTouched: true }))
+    step1ExtraField.handleChange('changed')
+
+    expect(onChange).not.toHaveBeenCalled()
+  })
+
   describe('isFieldsValid / isGroupValid / isValid', () => {
     it('should be true on a pristine, valid group', () => {
       const form = new FormApi({
