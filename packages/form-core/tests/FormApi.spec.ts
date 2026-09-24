@@ -1420,6 +1420,44 @@ describe('form api', () => {
     })
   })
 
+  it('should ignore aborted async form-level validation results', async () => {
+    vi.useFakeTimers()
+
+    const form = new FormApi({
+      defaultValues: {
+        name: 'valid',
+      },
+      validators: {
+        onChangeAsyncDebounceMs: 0,
+        onChangeAsync: async ({ value }) => {
+          if (value.name === 'slow-invalid') {
+            await sleep(2000)
+            return 'Stale validation result'
+          }
+          await sleep(50)
+          return undefined
+        },
+      },
+    })
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+    form.mount()
+    field.mount()
+
+    field.setValue('slow-invalid')
+    await vi.advanceTimersByTimeAsync(0)
+    field.setValue('valid')
+    await vi.advanceTimersByTimeAsync(50)
+    expect(form.state.errors).toEqual([])
+
+    await vi.advanceTimersByTimeAsync(2000)
+    expect(form.state.errors).toEqual([])
+    expect(form.state.errorMap.onChange).toBeUndefined()
+    vi.useRealTimers()
+  })
+
   it('should run validation onBlur', () => {
     const form = new FormApi({
       defaultValues: {
