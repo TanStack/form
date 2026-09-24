@@ -608,4 +608,55 @@ describe('standard schema validator', () => {
       ])
     })
   })
+
+  it("should clean onMount errors when replacing an array field's value", async () => {
+    const schema = z.object({
+      people: z.array(
+        z.object({
+          firstName: z.string().min(3),
+          lastName: z.string().min(3),
+        }),
+      ),
+    })
+
+    const form = new FormApi({
+      defaultValues: {
+        people: [
+          {
+            firstName: '',
+            lastName: '',
+          },
+        ],
+      },
+      validators: {
+        onMount: schema,
+        onChange: schema,
+      },
+    })
+    form.mount()
+
+    // Since validation runs through the field, a field must be mounted for that array
+    new FieldApi({ form, name: 'people' }).mount()
+
+    await form.replaceFieldValue('people', 0, {
+      firstName: 'Chuck',
+      lastName: 'Norris',
+    })
+
+    expect(form.state.values).toStrictEqual({
+      people: [
+        {
+          firstName: 'Chuck',
+          lastName: 'Norris',
+        },
+      ],
+    })
+    expect.soft(form.state.fieldMetaBase['people']!.errorMap).toStrictEqual({})
+    expect
+      .soft(form.state.fieldMetaBase['people[0].firstName']!.errorMap)
+      .toStrictEqual({})
+    expect
+      .soft(form.state.fieldMetaBase['people[0].firstName']!.errorSourceMap)
+      .toStrictEqual({})
+  })
 })
