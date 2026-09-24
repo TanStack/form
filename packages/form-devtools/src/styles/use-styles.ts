@@ -65,6 +65,9 @@ const stylesFactory = (theme: 'light' | 'dark') => {
       overflow: hidden;
       min-height: 0;
       flex-shrink: 0;
+      width: var(--left-panel-width, 300px);
+      min-width: 150px;
+      max-width: 800px;
     `,
     rightPanel: css`
       background: ${t(colors.gray[100], colors.darkGray[800])};
@@ -348,6 +351,23 @@ const stylesFactory = (theme: 'light' | 'dark') => {
       transition:
         box-shadow 0.3s,
         background 0.3s;
+    `,
+    fieldWrapper: css`
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    `,
+    fieldItem: css`
+      margin-bottom: 16px;
+    `,
+    fieldName: css`
+      font-weight: bold;
+      margin-bottom: 4px;
+    `,
+    stateHeaderRow: css`
+      display: flex;
+      align-items: center;
+      gap: 16px;
     `,
   }
 }
