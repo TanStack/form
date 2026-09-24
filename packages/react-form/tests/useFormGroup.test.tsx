@@ -320,4 +320,70 @@ describe('form.FormGroup', () => {
     expect(button.disabled).toBe(false)
     expect(onGroupSubmit).toHaveBeenCalledTimes(1)
   })
+
+  // Regression test for https://github.com/TanStack/form/issues/2377
+  it('should not re-render sibling field components when a field value changes', async () => {
+    const step1NameRenderCount = { current: 0 }
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          step1: { name: '' },
+          step2: { name: '' },
+        },
+      })
+
+      return (
+        <form.FormGroup name="step1">
+          {() => (
+            <>
+              {/* This field is inside the same FormGroup as step1 */}
+              <FieldTracker
+                renderCount={step1NameRenderCount}
+                value={form.useField({ name: 'step1.name' }).state.value}
+              />
+              {/* This field is in a different group (step2) */}
+              <form.Field
+                name="step2.name"
+                children={(field) => (
+                  <input
+                    data-testid="step2-name"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                )}
+              />
+            </>
+          )}
+        </form.FormGroup>
+      )
+    }
+
+    function FieldTracker({
+      renderCount,
+      value,
+    }: {
+      renderCount: { current: number }
+      value: string
+    }) {
+      renderCount.current++
+      return <span data-testid="step1-name">{value}</span>
+    }
+
+    const { getByTestId } = render(<Comp />)
+    const initialStep1Renders = step1NameRenderCount.current
+
+    // Type in step2 field — this should NOT cause step1 field to re-render
+    await user.clear(getByTestId('step2-name'))
+    await user.type(getByTestId('step2-name'), 'hello')
+
+    await waitFor(() => {
+      expect(getByTestId('step1-name').textContent).toBe('')
+    })
+
+    // step1 name field should not have re-rendered when step2 (different group) changed
+    const step1RendersAfterStep2Change =
+      step1NameRenderCount.current - initialStep1Renders
+    expect(step1RendersAfterStep2Change).toBe(0)
+  })
 })
