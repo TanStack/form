@@ -10,7 +10,7 @@ function Test() {
   return null
 }
 
-const { useAppForm, withForm } = createFormHook({
+const { useAppForm, withForm, withFieldGroup } = createFormHook({
   fieldComponents: {
     Test,
   },
@@ -248,5 +248,40 @@ describe('createFormHook', () => {
       // @ts-expect-error Incorrect form opts
       <WithFormComponent form={incorrectAppForm} prop1="test" prop2={10} />
     )
+  })
+
+  it('withFieldGroup should reject nullish-only field-group paths', () => {
+    const groupFields = {
+      name: '',
+    }
+
+    type WrapperValues = {
+      namespace3: { name: string } | null | undefined
+      nope: null | undefined
+    }
+
+    const defaultValues: WrapperValues = {
+      namespace3: null,
+      nope: null,
+    }
+
+    const FieldGroup = withFieldGroup({
+      defaultValues: groupFields,
+      render: function Render({ group }) {
+        expectTypeOf(group.state.values).toEqualTypeOf<{
+          name: string
+        }>()
+        expectTypeOf(group.state.values.name).toEqualTypeOf<string>()
+        return null
+      },
+    })
+
+    const form = useAppForm(() => ({
+      defaultValues,
+    }))
+
+    const Component = <FieldGroup form={form} fields="namespace3" />
+    // @ts-expect-error nullish-only fields cannot produce the group shape
+    const WrongComponent = <FieldGroup form={form} fields="nope" />
   })
 })
