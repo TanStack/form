@@ -18,7 +18,7 @@ export default defineConfig({
       instances: [{ browser: 'chromium', headless: true }],
     },
     coverage: { enabled: true, provider: 'istanbul', include: ['src/**/*'] },
-    typecheck: { enabled: true },
+    typecheck: { enabled: true, checker: 'vue-tsc' },
   },
   oxc: {
     jsx: {

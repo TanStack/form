@@ -1,6 +1,6 @@
 import { inject } from 'vue'
 import type { InjectionKey } from 'vue'
-import type { AnyInternalFieldApi } from '@tanstack/form-core/internals'
+import type { AnyFieldApi } from '@tanstack/form-core'
 import type { InternalVueFormApi } from '../VueForm/VueFormApi.lib'
 
 export const FormContext = Symbol(
@@ -8,9 +8,9 @@ export const FormContext = Symbol(
 ) as InjectionKey<InternalVueFormApi>
 export const FieldContext = Symbol(
   'TanStackForm.FieldContext',
-) as InjectionKey<AnyInternalFieldApi>
+) as InjectionKey<AnyFieldApi>
 
-export function useFieldContext(): AnyInternalFieldApi {
+export function useFieldContext(): AnyFieldApi {
   const field = inject(FieldContext)
   if (field === undefined) {
     throw new Error(

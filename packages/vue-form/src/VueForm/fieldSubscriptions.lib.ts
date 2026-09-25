@@ -11,12 +11,17 @@ function createFieldSelection<TSelected>(
   selector: (field: AnyInternalFieldApi) => TSelected,
 ) {
   const selected = shallowRef(selector(fieldApi.value)) as ShallowRef<TSelected>
+  // Metadata can change without an array's structure changing. Keep it
+  // reactive for metadata consumers without invalidating value-only slots.
+  const meta = shallowRef(fieldApi.value.meta)
 
   watch(
     fieldApi,
     (field, _previous, onCleanup) => {
+      meta.value = field.meta
       selected.value = selector(field)
       const subscription = field.atom.subscribe(() => {
+        meta.value = field.meta
         const next = selector(field)
         if (!shallow(toRaw(selected.value), next)) selected.value = next
       })
@@ -25,7 +30,7 @@ function createFieldSelection<TSelected>(
     { immediate: true, flush: 'sync' },
   )
 
-  return selected
+  return { selection: selected, meta }
 }
 
 export function createValueFieldSubscription(
