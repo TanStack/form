@@ -1078,9 +1078,15 @@ importers:
 
   examples/react/compiler:
     dependencies:
+      '@tanstack/react-devtools':
+        specifier: ^0.10.5
+        version: 0.10.9(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(csstype@3.2.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(solid-js@1.9.14)
       '@tanstack/react-form':
         specifier: ^2.0.0-alpha.2
         version: link:../../../packages/react-form
+      '@tanstack/react-form-devtools':
+        specifier: ^1.0.0-alpha.2
+        version: link:../../../packages/react-form-devtools
       react:
         specifier: 19.2.8
         version: 19.2.8
@@ -1326,9 +1332,15 @@ importers:
 
   examples/react/next-server-actions:
     dependencies:
+      '@tanstack/react-devtools':
+        specifier: ^0.10.5
+        version: 0.10.9(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(csstype@3.2.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(solid-js@1.9.14)
       '@tanstack/react-form':
         specifier: ^2.0.0-alpha.2
         version: link:../../../packages/react-form
+      '@tanstack/react-form-devtools':
+        specifier: ^1.0.0-alpha.2
+        version: link:../../../packages/react-form-devtools
       '@tanstack/react-form-nextjs':
         specifier: ^2.0.0-alpha.2
         version: link:../../../packages/react-form-nextjs
@@ -1357,9 +1369,15 @@ importers:
 
   examples/react/next-server-actions-zod:
     dependencies:
+      '@tanstack/react-devtools':
+        specifier: ^0.10.5
+        version: 0.10.9(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(csstype@3.2.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(solid-js@1.9.14)
       '@tanstack/react-form':
         specifier: ^2.0.0-alpha.2
         version: link:../../../packages/react-form
+      '@tanstack/react-form-devtools':
+        specifier: ^1.0.0-alpha.2
+        version: link:../../../packages/react-form-devtools
       '@tanstack/react-form-nextjs':
         specifier: ^2.0.0-alpha.2
         version: link:../../../packages/react-form-nextjs
