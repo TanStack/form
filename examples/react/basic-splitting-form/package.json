@@ -1,5 +1,5 @@
 {
-  "name": "@tanstack/template-example-react-basic-splitting-form",
+  "name": "@tanstack/form-example-react-basic-splitting-form",
   "private": true,
   "type": "module",
   "scripts": {
