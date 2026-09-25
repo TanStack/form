@@ -1,5 +1,25 @@
 # @tanstack/angular-form
 
+## 2.0.0-alpha.3
+
+### Major Changes
+
+- Release the first alpha of TanStack Form v2.
+
+### Patch Changes
+
+- Refactor: Adapter `formOptions`/`appFormOptions` no longer shim the core types and runtime.
+
+  BREAKING: `formOptions.looseSchema` and `formOptions.strictSchema` now require a schema as
+  first parameter. This locks down inference to get the best type safety out of it vs. the options object alone.
+
+  Fix: `formOptions.looseSchema` now allows `defaultValues` to omit properties instead of
+  requiring them to be explicitly undefined.
+
+- Fix: Subscription selectors now infer tuple return values without requiring `as const`.
+- Updated dependencies [[`f8bbc25`](https://github.com/TanStack/form/commit/f8bbc25affcf5560b1da0c9c357fd62ef2108dd9)]:
+  - @tanstack/form-core@2.0.0-alpha.3
+
 ## 2.0.0-alpha.2
 
 ### Patch Changes
