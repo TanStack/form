@@ -2,7 +2,7 @@
   "mode": "pre",
   "tag": "alpha",
   "initialVersions": {
-    "@tanstack/template-example-react-nextjs": "0.1.0",
+    "@tanstack/form-example-react-nextjs": "0.1.0",
     "@tanstack/angular-form": "1.33.3",
     "@tanstack/form-core": "1.33.3",
     "@tanstack/form-devtools": "0.2.32",

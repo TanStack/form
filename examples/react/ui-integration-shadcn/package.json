@@ -1,5 +1,5 @@
 {
-  "name": "@tanstack/tanstack-form-example-react-shadcn-ui",
+  "name": "@tanstack/form-example-react-ui-integration-shadcn",
   "private": true,
   "type": "module",
   "scripts": {
