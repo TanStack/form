@@ -1,3 +1,4 @@
+import * as React from 'react'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { formDevtoolsPlugin } from '@tanstack/react-form-devtools'
 import { createRoot } from 'react-dom/client'
@@ -25,4 +26,8 @@ function App() {
   )
 }
 
-createRoot(document.getElementById('root')!).render(<App />)
+createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)

@@ -16,7 +16,7 @@ createRoot(rootElement).render(
     </QueryClientProvider>
 
     <TanStackDevtools
-      config={{ hideUntilHover: true }}
+      config={{ hideUntilHover: false }}
       plugins={[formDevtoolsPlugin()]}
     />
   </React.StrictMode>,

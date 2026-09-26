@@ -9,7 +9,9 @@
     "test:types": "tsc"
   },
   "dependencies": {
+    "@tanstack/react-devtools": "^0.10.5",
     "@tanstack/react-form": "^2.0.0-alpha.2",
+    "@tanstack/react-form-devtools": "^1.0.0-alpha.2",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
