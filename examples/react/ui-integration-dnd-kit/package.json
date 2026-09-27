@@ -1,5 +1,5 @@
 {
-  "name": "@tanstack/tanstack-form-example-react-dnd-kit",
+  "name": "@tanstack/form-example-react-ui-integration-dnd-kit",
   "private": true,
   "type": "module",
   "scripts": {

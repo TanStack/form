@@ -1,5 +1,5 @@
 {
-  "name": "@tanstack/template-example-react-field-group",
+  "name": "@tanstack/form-example-react-field-groups",
   "private": true,
   "type": "module",
   "scripts": {
