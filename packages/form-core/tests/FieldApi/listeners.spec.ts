@@ -664,11 +664,13 @@ describe('field - listeners', () => {
       expect(listener).toHaveBeenCalledTimes(2)
       expect(listener).toHaveBeenNthCalledWith(1, {
         value: '',
+        prevValue: '',
         fieldApi: targetField,
         formApi: form,
       })
       expect(listener).toHaveBeenNthCalledWith(2, {
         value: '',
+        prevValue: '',
         fieldApi: targetField,
         formApi: form,
       })
