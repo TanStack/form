@@ -60,7 +60,7 @@
     "@vitest/browser-playwright": "^5.0.1",
     "@vitest/coverage-istanbul": "^5.0.1",
     "eslint": "^10.8.1",
-    "knip": "^6.32.0",
+    "knip": "^6.38.0",
     "markdown-link-extractor": "^4.0.3",
     "nx": "^23.2.1",
     "premove": "^4.0.0",

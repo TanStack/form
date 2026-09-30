@@ -9,21 +9,20 @@ export const BRIDGE_STATUS_HEARTBEAT_INTERVAL_MS = 5_000
 
 type FormBridgeStatus = 'checking' | 'connected' | 'unavailable'
 
-export const [mountedForms, setMountedForms] = createSignal<
+const [mountedForms, setMountedForms] = createSignal<
   Array<DevtoolsMountedForm>
 >([])
 
-export const [requestedFormId, setRequestedFormId] =
-  createSignal<FormId | null>(null)
+const [requestedFormId, setRequestedFormId] = createSignal<FormId | null>(null)
 
-export const [bridgeStatus, setBridgeStatus] =
+const [bridgeStatus, setBridgeStatus] =
   createSignal<FormBridgeStatus>('checking')
 
-export const [bridgeInstanceId, setBridgeInstanceId] = createSignal<
-  string | null
->(null)
+const [bridgeInstanceId, setBridgeInstanceId] = createSignal<string | null>(
+  null,
+)
 
-export const [bridgeMountedFormCount, setBridgeMountedFormCount] = createSignal<
+const [bridgeMountedFormCount, setBridgeMountedFormCount] = createSignal<
   number | null
 >(null)
 

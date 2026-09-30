@@ -52,5 +52,3 @@ export const bookingFormSchema = z.object({
   addOns: addOnsSchema,
   specialRequests: specialRequestsSchema,
 })
-
-export type HotelStayPreferencesForm = z.input<typeof bookingFormSchema>

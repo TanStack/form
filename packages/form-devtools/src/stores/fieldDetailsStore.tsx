@@ -14,10 +14,11 @@ const defaultFieldDetailSettings = Object.freeze({
   debounceMs: 0,
 }) satisfies FieldDetailSettings
 
-export const [fieldDetailSettingsById, setFieldDetailSettingsById] =
-  createSignal<Map<FieldId, FieldDetailSettings>>(new Map(), { equals: false })
+const [fieldDetailSettingsById, setFieldDetailSettingsById] = createSignal<
+  Map<FieldId, FieldDetailSettings>
+>(new Map(), { equals: false })
 
-export const [fieldDetailsById, setFieldDetailsById] = createSignal<
+const [fieldDetailsById, setFieldDetailsById] = createSignal<
   Map<FieldId, DevtoolsFieldDetail>
 >(new Map(), { equals: false })
 

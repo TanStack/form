@@ -2,7 +2,7 @@ import { defineFieldGroup } from '@tanstack/solid-form'
 import { z } from 'zod'
 import { StringField } from '../StringField'
 
-export const boundsSchema = z.coerce.number<string>().int()
+const boundsSchema = z.coerce.number<string>().int()
 
 const lowerBoundFieldGroup = defineFieldGroup(({ strict }) => ({
   value: strict<string>(),

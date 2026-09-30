@@ -11,7 +11,6 @@
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.8",
     "@tailwindcss/vite": "^4.3.2",
-    "@tanstack/pacer-lite": "^0.2.2",
     "@tanstack/react-form": "^2.0.0-alpha.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
