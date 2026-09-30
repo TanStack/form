@@ -7,7 +7,7 @@ title: throttleFormState
 const throttleFormState: (...args) => void;
 ```
 
-Defined in: [packages/form-core/src/utils.ts:681](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.ts#L681)
+Defined in: [packages/form-core/src/utils.ts:680](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.ts#L680)
 
 ## Parameters
 

@@ -3,7 +3,7 @@ id: UseFieldOptionsBound
 title: UseFieldOptionsBound
 ---
 
-Defined in: [packages/preact-form/src/types.ts:82](https://github.com/TanStack/form/blob/main/packages/preact-form/src/types.ts#L82)
+Defined in: [packages/preact-form/src/types.ts:78](https://github.com/TanStack/form/blob/main/packages/preact-form/src/types.ts#L78)
 
 ## Extends
 

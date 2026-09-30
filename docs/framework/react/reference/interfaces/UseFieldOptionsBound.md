@@ -3,7 +3,7 @@ id: UseFieldOptionsBound
 title: UseFieldOptionsBound
 ---
 
-Defined in: [packages/react-form/src/types.ts:81](https://github.com/TanStack/form/blob/main/packages/react-form/src/types.ts#L81)
+Defined in: [packages/react-form/src/types.ts:77](https://github.com/TanStack/form/blob/main/packages/react-form/src/types.ts#L77)
 
 ## Extends
 

@@ -3,7 +3,7 @@ id: CreateFieldOptionsBound
 title: CreateFieldOptionsBound
 ---
 
-Defined in: [packages/solid-form/src/types.ts:80](https://github.com/TanStack/form/blob/main/packages/solid-form/src/types.ts#L80)
+Defined in: [packages/solid-form/src/types.ts:76](https://github.com/TanStack/form/blob/main/packages/solid-form/src/types.ts#L76)
 
 ## Extends
 

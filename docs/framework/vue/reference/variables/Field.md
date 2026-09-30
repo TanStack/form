@@ -20,7 +20,7 @@ const Field: <TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TO
 }>;
 ```
 
-Defined in: [packages/vue-form/src/useField.tsx:480](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L480)
+Defined in: [packages/vue-form/src/useField.tsx:464](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L464)
 
 ## Parameters
 

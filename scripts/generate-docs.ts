@@ -11,6 +11,7 @@ await generateReferenceDocs({
       entryPoints: [resolve(__dirname, '../packages/form-core/src/index.ts')],
       tsconfig: resolve(__dirname, '../packages/form-core/tsconfig.docs.json'),
       outputDir: resolve(__dirname, '../docs/reference'),
+      exclude: [],
     },
     {
       name: 'angular-form',
@@ -60,6 +61,16 @@ await generateReferenceDocs({
       entryPoints: [resolve(__dirname, '../packages/vue-form/src/index.ts')],
       tsconfig: resolve(__dirname, '../packages/vue-form/tsconfig.docs.json'),
       outputDir: resolve(__dirname, '../docs/framework/vue/reference'),
+      exclude: ['packages/form-core/**/*'],
+    },
+    {
+      name: 'octane-form',
+      entryPoints: [resolve(__dirname, '../packages/octane-form/src/index.ts')],
+      tsconfig: resolve(
+        __dirname,
+        '../packages/octane-form/tsconfig.docs.json',
+      ),
+      outputDir: resolve(__dirname, '../docs/framework/octane/reference'),
       exclude: ['packages/form-core/**/*'],
     },
   ],

@@ -7,7 +7,7 @@ title: FormGroupComponent
 type FormGroupComponent<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta, ExtendedApi> = <TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TSubmitMeta>(props) => JSXElement;
 ```
 
-Defined in: [packages/solid-form/src/createFormGroup.tsx:350](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createFormGroup.tsx#L350)
+Defined in: [packages/solid-form/src/createFormGroup.tsx:329](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createFormGroup.tsx#L329)
 
 A type alias representing a form group component for a specific form data type.
 

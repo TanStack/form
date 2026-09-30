@@ -7,7 +7,7 @@ title: useStore
 const useStore: <TSource, TSelected>(source, selector?, compare?) => Readonly<Ref<TSelected>>;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+vue-store@0.11.0\_vue@3.5.34\_typescript@5.9.3\_/node\_modules/@tanstack/vue-store/dist/useStore.d.ts:14
+Defined in: node\_modules/.pnpm/@tanstack+vue-store@0.11.1\_vue@3.5.43\_typescript@5.9.3\_/node\_modules/@tanstack/vue-store/dist/useStore.d.ts:14
 
 Deprecated alias for [useSelector](../functions/useSelector.md).
 

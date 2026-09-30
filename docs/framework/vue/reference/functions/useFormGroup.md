@@ -7,7 +7,7 @@ title: useFormGroup
 function useFormGroup<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TSubmitMeta, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta>(opts): object;
 ```
 
-Defined in: [packages/vue-form/src/useFormGroup.tsx:221](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useFormGroup.tsx#L221)
+Defined in: [packages/vue-form/src/useFormGroup.tsx:214](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useFormGroup.tsx#L214)
 
 ## Type Parameters
 

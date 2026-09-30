@@ -3,7 +3,7 @@ id: VueFormGroupApi
 title: VueFormGroupApi
 ---
 
-Defined in: [packages/vue-form/src/useFormGroup.tsx:191](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useFormGroup.tsx#L191)
+Defined in: [packages/vue-form/src/useFormGroup.tsx:184](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useFormGroup.tsx#L184)
 
 ## Type Parameters
 
@@ -63,4 +63,4 @@ Defined in: [packages/vue-form/src/useFormGroup.tsx:191](https://github.com/TanS
 FormGroup: FormGroupComponent<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta>;
 ```
 
-Defined in: [packages/vue-form/src/useFormGroup.tsx:205](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useFormGroup.tsx#L205)
+Defined in: [packages/vue-form/src/useFormGroup.tsx:198](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useFormGroup.tsx#L198)

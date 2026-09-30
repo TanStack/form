@@ -10,7 +10,7 @@ type FormGroupComponent<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeA
 }) => ReturnType<FunctionComponent>;
 ```
 
-Defined in: [packages/preact-form/src/useFormGroup.tsx:559](https://github.com/TanStack/form/blob/main/packages/preact-form/src/useFormGroup.tsx#L559)
+Defined in: [packages/preact-form/src/useFormGroup.tsx:531](https://github.com/TanStack/form/blob/main/packages/preact-form/src/useFormGroup.tsx#L531)
 
 ## Type Parameters
 

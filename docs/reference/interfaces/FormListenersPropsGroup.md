@@ -3,7 +3,7 @@ id: FormListenersPropsGroup
 title: FormListenersPropsGroup
 ---
 
-Defined in: [packages/form-core/src/FormApi.ts:232](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L232)
+Defined in: [packages/form-core/src/FormApi.ts:230](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L230)
 
 ## Type Parameters
 
@@ -63,7 +63,7 @@ Defined in: [packages/form-core/src/FormApi.ts:232](https://github.com/TanStack/
 formApi: FormApi<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta>;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:246](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L246)
+Defined in: [packages/form-core/src/FormApi.ts:244](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L244)
 
 ***
 
@@ -73,4 +73,4 @@ Defined in: [packages/form-core/src/FormApi.ts:246](https://github.com/TanStack/
 groupApi: AnyFormGroupApi;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:260](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L260)
+Defined in: [packages/form-core/src/FormApi.ts:258](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L258)
