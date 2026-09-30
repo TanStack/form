@@ -1,0 +1,16 @@
+---
+id: FieldGroupFieldsOf
+title: FieldGroupFieldsOf
+---
+
+```ts
+type FieldGroupFieldsOf<TFieldGroup> = TFieldGroup extends object ? TFields : never;
+```
+
+Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:17](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L17)
+
+## Type Parameters
+
+### TFieldGroup
+
+`TFieldGroup`
