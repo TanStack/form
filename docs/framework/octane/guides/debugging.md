@@ -20,8 +20,6 @@ const form = useForm({
 })
 ```
 
-For fetched data, see [Async Initial Values](./async-initial-values.md).
-
 ## Text values update only after blur
 
 Octane uses native DOM events. `onChange` follows the browser's commit behavior; use `onInput` to update a text field after each edit.

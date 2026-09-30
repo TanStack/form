@@ -272,10 +272,6 @@
               "to": "framework/octane/guides/dynamic-validation"
             },
             {
-              "label": "Async Initial Values",
-              "to": "framework/octane/guides/async-initial-values"
-            },
-            {
               "label": "Arrays",
               "to": "framework/octane/guides/arrays"
             },
@@ -302,10 +298,6 @@
             {
               "label": "Submission Handling",
               "to": "framework/octane/guides/submission-handling"
-            },
-            {
-              "label": "UI Libraries",
-              "to": "framework/octane/guides/ui-libraries"
             },
             {
               "label": "Focus Management",
