@@ -18,7 +18,10 @@ await generateReferenceDocs({
       entryPoints: [
         resolve(__dirname, '../packages/angular-form/src/index.ts'),
       ],
-      tsconfig: resolve(__dirname, '../packages/angular-form/tsconfig.docs.json'),
+      tsconfig: resolve(
+        __dirname,
+        '../packages/angular-form/tsconfig.docs.json',
+      ),
       outputDir: resolve(__dirname, '../docs/framework/angular/reference'),
       exclude: ['packages/form-core/**/*'],
     },
@@ -39,7 +42,10 @@ await generateReferenceDocs({
     {
       name: 'preact-form',
       entryPoints: [resolve(__dirname, '../packages/preact-form/src/index.ts')],
-      tsconfig: resolve(__dirname, '../packages/preact-form/tsconfig.docs.json'),
+      tsconfig: resolve(
+        __dirname,
+        '../packages/preact-form/tsconfig.docs.json',
+      ),
       outputDir: resolve(__dirname, '../docs/framework/preact/reference'),
       exclude: ['packages/form-core/**/*'],
     },
@@ -60,7 +66,10 @@ await generateReferenceDocs({
     {
       name: 'svelte-form',
       entryPoints: [resolve(__dirname, '../packages/svelte-form/src/index.ts')],
-      tsconfig: resolve(__dirname, '../packages/svelte-form/tsconfig.docs.json'),
+      tsconfig: resolve(
+        __dirname,
+        '../packages/svelte-form/tsconfig.docs.json',
+      ),
       outputDir: resolve(__dirname, '../docs/framework/svelte/reference'),
       exclude: ['packages/form-core/**/*'],
     },
