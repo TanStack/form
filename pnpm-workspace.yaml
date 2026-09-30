@@ -23,6 +23,7 @@ packages:
   - examples/angular/**
   - examples/react/**
   - examples/preact/**
+  - examples/octane/**
   - examples/solid/**
   - examples/vue/**
   - examples/lit/**

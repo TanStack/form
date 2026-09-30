@@ -812,6 +812,19 @@
           ]
         },
         {
+          "label": "octane",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "framework/octane/examples/simple"
+            },
+            {
+              "label": "Multi-Step Wizard",
+              "to": "framework/octane/examples/multi-step-wizard"
+            }
+          ]
+        },
+        {
           "label": "svelte",
           "children": [
             {
