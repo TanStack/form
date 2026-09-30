@@ -1,6 +1,10 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "ignoreFiles": ["**/*.regressions.ts"],
+  "ignoreDependencies": [
+    "ts-node",
+    "@playwright/test"
+  ],
   "ignoreWorkspaces": [
     "examples/**",
     "packages/angular-form",
@@ -9,6 +13,7 @@
     "packages/solid-form-devtools",
     "packages/svelte-form",
     "packages/vue-form",
+    "packages/octane-form",
     "packages/form-devtools"
   ],
   "ignoreIssues": {
