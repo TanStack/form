@@ -1,0 +1,9 @@
+{
+  // ts-patch transpiles this CommonJS transformer through ts-node. Keep that
+  // loader on TS 5.9; ts-patch's module-resolution defaults are invalid in TS 6.
+  // The transformer itself still checks TSRX with the invoking compiler.
+  "ts-node": {
+    "compiler": "typescript59"
+  },
+  "files": ["./program-transformer.cts"]
+}
