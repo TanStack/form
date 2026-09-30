@@ -11,7 +11,7 @@ type UnwrapFieldValidateOrFn<TName, TValidateOrFn, TFormValidateOrFn> =
   | [TValidateOrFn] extends [StandardSchemaV1<any, any>] ? StandardSchemaV1Issue[] : [TValidateOrFn] extends [FormGroupValidateFn<any, any, any>] ? ReturnType<TValidateOrFn> : undefined;
 ```
 
-Defined in: [packages/form-core/src/types.ts:431](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L431)
+Defined in: [packages/form-core/src/types.ts:423](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L423)
 
 ## Type Parameters
 

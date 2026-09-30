@@ -13,6 +13,7 @@ angular: @tanstack/angular-form
 solid: @tanstack/solid-form
 lit: @tanstack/lit-form
 svelte: @tanstack/svelte-form
+octane: @tanstack/octane-form
 
 <!-- ::end:tabs -->
 

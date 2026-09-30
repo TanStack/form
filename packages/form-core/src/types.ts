@@ -41,12 +41,7 @@ export type ValidationSource = 'form' | 'field'
  * @private
  */
 export type ValidationCause =
-  | 'change'
-  | 'blur'
-  | 'submit'
-  | 'mount'
-  | 'server'
-  | 'dynamic'
+  'change' | 'blur' | 'submit' | 'mount' | 'server' | 'dynamic'
 
 /**
  * @private
@@ -115,9 +110,7 @@ export type FormValidationErrorMap<
     | TOnChangeAsyncReturn
     | GlobalFormValidationError<TFormData>
   onBlur?:
-    | TOnBlurReturn
-    | TOnBlurAsyncReturn
-    | GlobalFormValidationError<TFormData>
+    TOnBlurReturn | TOnBlurAsyncReturn | GlobalFormValidationError<TFormData>
   onSubmit?:
     | TOnSubmitReturn
     | TOnSubmitAsyncReturn
@@ -130,8 +123,7 @@ export type FormValidationErrorMap<
 }
 
 export type FormValidationError<TFormData> =
-  | ValidationError
-  | GlobalFormValidationError<TFormData>
+  ValidationError | GlobalFormValidationError<TFormData>
 
 /**
  * @private
@@ -1061,20 +1053,16 @@ export interface FieldLikeApiOptions<
   in out TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnChangeAsync extends
-    | undefined
-    | FormAsyncValidateOrFn<TParentData>,
+    undefined | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnBlurAsync extends
-    | undefined
-    | FormAsyncValidateOrFn<TParentData>,
+    undefined | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnSubmitAsync extends
-    | undefined
-    | FormAsyncValidateOrFn<TParentData>,
+    undefined | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnDynamicAsync extends
-    | undefined
-    | FormAsyncValidateOrFn<TParentData>,
+    undefined | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   in out TParentSubmitMeta,
 > extends FieldLikeOptions<
@@ -1153,20 +1141,16 @@ export interface FieldLikeAPI<
   in out TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnChangeAsync extends
-    | undefined
-    | FormAsyncValidateOrFn<TParentData>,
+    undefined | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnBlurAsync extends
-    | undefined
-    | FormAsyncValidateOrFn<TParentData>,
+    undefined | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnSubmitAsync extends
-    | undefined
-    | FormAsyncValidateOrFn<TParentData>,
+    undefined | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnDynamicAsync extends
-    | undefined
-    | FormAsyncValidateOrFn<TParentData>,
+    undefined | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   in out TParentSubmitMeta,
   TExtraOptions = {},

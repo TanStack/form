@@ -543,9 +543,7 @@ The form state object has a `canSubmit` flag that is false when any field is inv
 You can subscribe to it via `form.Subscribe` and use the value in order to, for example, disable the submit button when the form is invalid (in practice, disabled buttons are not accessible, use `aria-disabled` instead).
 
 ```tsx
-const form = createForm(() => ({
-  /* ... */
-}))
+const form = createForm(() => ({/* ... */}))
 
 return (
   /* ... */

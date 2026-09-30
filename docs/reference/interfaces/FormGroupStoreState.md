@@ -3,7 +3,7 @@ id: FormGroupStoreState
 title: FormGroupStoreState
 ---
 
-Defined in: [packages/form-core/src/FormGroupApi.ts:859](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L859)
+Defined in: [packages/form-core/src/FormGroupApi.ts:800](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L800)
 
 ## Type Parameters
 
@@ -107,7 +107,7 @@ Defined in: [packages/form-core/src/FormGroupApi.ts:859](https://github.com/TanS
 meta: FormGroupMeta<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync>;
 ```
 
-Defined in: [packages/form-core/src/FormGroupApi.ts:916](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L916)
+Defined in: [packages/form-core/src/FormGroupApi.ts:844](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L844)
 
 The current metadata of the form group, including aggregated validity,
 group-level errors, and submission lifecycle.
@@ -120,6 +120,6 @@ group-level errors, and submission lifecycle.
 value: TData;
 ```
 
-Defined in: [packages/form-core/src/FormGroupApi.ts:911](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L911)
+Defined in: [packages/form-core/src/FormGroupApi.ts:839](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L839)
 
 The current value of the form group.

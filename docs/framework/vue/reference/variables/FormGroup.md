@@ -20,7 +20,7 @@ const FormGroup: <TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync
 }>;
 ```
 
-Defined in: [packages/vue-form/src/useFormGroup.tsx:450](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useFormGroup.tsx#L450)
+Defined in: [packages/vue-form/src/useFormGroup.tsx:422](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useFormGroup.tsx#L422)
 
 ## Parameters
 

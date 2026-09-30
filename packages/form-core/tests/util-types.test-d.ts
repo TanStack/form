@@ -133,8 +133,7 @@ expectTypeOf(
  * Properly handles discriminated unions like so:
  */
 type DiscriminatedUnion = { name: string } & (
-  | { variant: 'foo' }
-  | { variant: 'bar'; baz: boolean }
+  { variant: 'foo' } | { variant: 'bar'; baz: boolean }
 )
 expectTypeOf(0 as never as DeepKeys<DiscriminatedUnion>).toEqualTypeOf<
   'name' | 'variant' | 'baz'
@@ -243,8 +242,7 @@ expectTypeOf(0 as never as NestedObjectUnionC).toEqualTypeOf<string>()
 
 type NestedNullableObjectUnionCase = {
   nullable:
-    | { a?: number; b?: { c: boolean } | null }
-    | { b?: { c: string; e: number } }
+    { a?: number; b?: { c: boolean } | null } | { b?: { c: string; e: number } }
 }
 type NestedNullableObjectUnionA = DeepValue<
   NestedNullableObjectUnionCase,

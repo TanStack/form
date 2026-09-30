@@ -123,7 +123,7 @@ Defined in: [angular-form/src/tanstack-form-group.ts:34](https://github.com/TanS
 new TanStackFormGroup<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TSubmitMeta, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta>(): TanStackFormGroup<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TSubmitMeta, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta>;
 ```
 
-Defined in: [angular-form/src/tanstack-form-group.ts:303](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L303)
+Defined in: [angular-form/src/tanstack-form-group.ts:296](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L296)
 
 #### Returns
 
@@ -137,7 +137,7 @@ Defined in: [angular-form/src/tanstack-form-group.ts:303](https://github.com/Tan
 _api: Signal<FormGroupApi<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TSubmitMeta, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta>>;
 ```
 
-Defined in: [angular-form/src/tanstack-form-group.ts:224](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L224)
+Defined in: [angular-form/src/tanstack-form-group.ts:217](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L217)
 
 ***
 
@@ -147,7 +147,7 @@ Defined in: [angular-form/src/tanstack-form-group.ts:224](https://github.com/Tan
 asyncAlways: InputSignalWithTransform<boolean, unknown>;
 ```
 
-Defined in: [angular-form/src/tanstack-form-group.ts:79](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L79)
+Defined in: [angular-form/src/tanstack-form-group.ts:72](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L72)
 
 ***
 
@@ -157,7 +157,7 @@ Defined in: [angular-form/src/tanstack-form-group.ts:79](https://github.com/TanS
 asyncDebounceMs: InputSignalWithTransform<number, unknown>;
 ```
 
-Defined in: [angular-form/src/tanstack-form-group.ts:76](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L76)
+Defined in: [angular-form/src/tanstack-form-group.ts:69](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L69)
 
 ***
 
@@ -167,7 +167,7 @@ Defined in: [angular-form/src/tanstack-form-group.ts:76](https://github.com/TanS
 canSubmitWhenInvalid: InputSignalWithTransform<boolean, unknown>;
 ```
 
-Defined in: [angular-form/src/tanstack-form-group.ts:82](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L82)
+Defined in: [angular-form/src/tanstack-form-group.ts:75](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L75)
 
 ***
 
@@ -177,7 +177,7 @@ Defined in: [angular-form/src/tanstack-form-group.ts:82](https://github.com/TanS
 cd: ChangeDetectorRef;
 ```
 
-Defined in: [angular-form/src/tanstack-form-group.ts:317](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L317)
+Defined in: [angular-form/src/tanstack-form-group.ts:310](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L310)
 
 ***
 
@@ -189,7 +189,7 @@ defaultMeta: InputSignal<
 | undefined>;
 ```
 
-Defined in: [angular-form/src/tanstack-form-group.ts:125](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L125)
+Defined in: [angular-form/src/tanstack-form-group.ts:118](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L118)
 
 ***
 
@@ -199,7 +199,7 @@ Defined in: [angular-form/src/tanstack-form-group.ts:125](https://github.com/Tan
 defaultState: InputSignal<Partial<FormGroupState> | undefined>;
 ```
 
-Defined in: [angular-form/src/tanstack-form-group.ts:154](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L154)
+Defined in: [angular-form/src/tanstack-form-group.ts:147](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L147)
 
 ***
 
@@ -209,7 +209,7 @@ Defined in: [angular-form/src/tanstack-form-group.ts:154](https://github.com/Tan
 defaultValue: InputSignal<NoInfer<TData> | undefined>;
 ```
 
-Defined in: [angular-form/src/tanstack-form-group.ts:75](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L75)
+Defined in: [angular-form/src/tanstack-form-group.ts:68](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L68)
 
 ***
 
@@ -219,7 +219,7 @@ Defined in: [angular-form/src/tanstack-form-group.ts:75](https://github.com/TanS
 injector: Injector;
 ```
 
-Defined in: [angular-form/src/tanstack-form-group.ts:301](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L301)
+Defined in: [angular-form/src/tanstack-form-group.ts:294](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L294)
 
 ***
 
@@ -231,7 +231,7 @@ listeners: InputSignal<
 | undefined>;
 ```
 
-Defined in: [angular-form/src/tanstack-form-group.ts:123](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L123)
+Defined in: [angular-form/src/tanstack-form-group.ts:116](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L116)
 
 ***
 
@@ -241,7 +241,7 @@ Defined in: [angular-form/src/tanstack-form-group.ts:123](https://github.com/Tan
 mode: InputSignal<"value" | "array" | undefined>;
 ```
 
-Defined in: [angular-form/src/tanstack-form-group.ts:222](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L222)
+Defined in: [angular-form/src/tanstack-form-group.ts:215](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L215)
 
 ***
 
@@ -251,7 +251,7 @@ Defined in: [angular-form/src/tanstack-form-group.ts:222](https://github.com/Tan
 name: InputSignal<TName>;
 ```
 
-Defined in: [angular-form/src/tanstack-form-group.ts:74](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L74)
+Defined in: [angular-form/src/tanstack-form-group.ts:67](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L67)
 
 ***
 
@@ -261,7 +261,7 @@ Defined in: [angular-form/src/tanstack-form-group.ts:74](https://github.com/TanS
 onGroupSubmit: InputSignal<NoInfer<(props) => any | undefined> | undefined>;
 ```
 
-Defined in: [angular-form/src/tanstack-form-group.ts:158](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L158)
+Defined in: [angular-form/src/tanstack-form-group.ts:151](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L151)
 
 ***
 
@@ -271,7 +271,7 @@ Defined in: [angular-form/src/tanstack-form-group.ts:158](https://github.com/Tan
 onGroupSubmitInvalid: InputSignal<NoInfer<(props) => void | undefined> | undefined>;
 ```
 
-Defined in: [angular-form/src/tanstack-form-group.ts:190](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L190)
+Defined in: [angular-form/src/tanstack-form-group.ts:183](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L183)
 
 ***
 
@@ -281,7 +281,7 @@ Defined in: [angular-form/src/tanstack-form-group.ts:190](https://github.com/Tan
 onSubmitMeta: InputSignal<NoInfer<TSubmitMeta> | undefined>;
 ```
 
-Defined in: [angular-form/src/tanstack-form-group.ts:156](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L156)
+Defined in: [angular-form/src/tanstack-form-group.ts:149](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L149)
 
 ***
 
@@ -291,7 +291,7 @@ Defined in: [angular-form/src/tanstack-form-group.ts:156](https://github.com/Tan
 options: Signal<FormGroupApiOptions<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TSubmitMeta, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta>>;
 ```
 
-Defined in: [angular-form/src/tanstack-form-group.ts:257](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L257)
+Defined in: [angular-form/src/tanstack-form-group.ts:250](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L250)
 
 ***
 
@@ -301,7 +301,7 @@ Defined in: [angular-form/src/tanstack-form-group.ts:257](https://github.com/Tan
 tanstackFormGroup: InputSignal<FormApi<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta>>;
 ```
 
-Defined in: [angular-form/src/tanstack-form-group.ts:85](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L85)
+Defined in: [angular-form/src/tanstack-form-group.ts:78](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L78)
 
 ***
 
@@ -313,7 +313,7 @@ validators: InputSignal<
 | undefined>;
 ```
 
-Defined in: [angular-form/src/tanstack-form-group.ts:103](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L103)
+Defined in: [angular-form/src/tanstack-form-group.ts:96](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L96)
 
 ## Accessors
 
@@ -325,7 +325,7 @@ Defined in: [angular-form/src/tanstack-form-group.ts:103](https://github.com/Tan
 get api(): FormGroupApi<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TSubmitMeta, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta>;
 ```
 
-Defined in: [angular-form/src/tanstack-form-group.ts:228](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L228)
+Defined in: [angular-form/src/tanstack-form-group.ts:221](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L221)
 
 ##### Returns
 
@@ -339,7 +339,7 @@ Defined in: [angular-form/src/tanstack-form-group.ts:228](https://github.com/Tan
 ngOnInit(): void;
 ```
 
-Defined in: [angular-form/src/tanstack-form-group.ts:319](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L319)
+Defined in: [angular-form/src/tanstack-form-group.ts:312](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-form-group.ts#L312)
 
 A callback method that is invoked immediately after the
 default change detector has checked the directive's

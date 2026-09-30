@@ -34,19 +34,21 @@ export class TextField extends LitElement {
               field.handleChange((e.target as HTMLInputElement).value)}
           />
         </label>
-        ${field.state.meta.isTouched && field.state.meta.errors.length
-          ? repeat(
-              field.state.meta.errors,
-              (_, idx) => idx,
-              (error: unknown) => {
-                const message =
-                  error && typeof error === 'object' && 'message' in error
-                    ? String((error as { message: unknown }).message)
-                    : String(error)
-                return html`<div style="color: red">${message}</div>`
-              },
-            )
-          : nothing}
+        ${
+          field.state.meta.isTouched && field.state.meta.errors.length
+            ? repeat(
+                field.state.meta.errors,
+                (_, idx) => idx,
+                (error: unknown) => {
+                  const message =
+                    error && typeof error === 'object' && 'message' in error
+                      ? String((error as { message: unknown }).message)
+                      : String(error)
+                  return html`<div style="color: red">${message}</div>`
+                },
+              )
+            : nothing
+        }
         ${field.state.meta.isValidating ? html`<p>Validating...</p>` : nothing}
       </div>
     `

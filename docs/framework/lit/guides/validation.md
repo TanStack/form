@@ -38,9 +38,11 @@ import { html, nothing } from 'lit'
           field.handleChange(target.valueAsNumber)
         }}"
       />
-      ${!field.state.meta.isValid
-        ? html`<em role="alert">${field.state.meta.errors.join(', ')}</em>`
-        : nothing}
+      ${
+        !field.state.meta.isValid
+          ? html`<em role="alert">${field.state.meta.errors.join(', ')}</em>`
+          : nothing
+      }
     `
   },
 )}`
@@ -72,9 +74,11 @@ import { html, nothing } from 'lit'
           field.handleChange(target.valueAsNumber)
         }}"
       />
-      ${!field.state.meta.isValid
-        ? html`<em role="alert">${field.state.meta.errors.join(', ')}</em>`
-        : nothing}
+      ${
+        !field.state.meta.isValid
+          ? html`<em role="alert">${field.state.meta.errors.join(', ')}</em>`
+          : nothing
+      }
     `
   },
 )}`
@@ -107,9 +111,11 @@ import { html, nothing } from 'lit'
           field.handleChange(target.valueAsNumber)
         }}"
       />
-      ${!field.state.meta.isValid
-        ? html`<em role="alert">${field.state.meta.errors.join(', ')}</em>`
-        : nothing}
+      ${
+        !field.state.meta.isValid
+          ? html`<em role="alert">${field.state.meta.errors.join(', ')}</em>`
+          : nothing
+      }
     `
   },
 )}`
@@ -134,9 +140,11 @@ import { html, nothing } from 'lit'
   (field) => {
     return html`
       <!-- ... -->
-      ${!field.state.meta.isValid
-        ? html`<em>${field.state.meta.errors.join(',')}</em>`
-        : nothing}
+      ${
+        !field.state.meta.isValid
+          ? html`<em>${field.state.meta.errors.join(',')}</em>`
+          : nothing
+      }
     `
   },
 )}`
@@ -157,9 +165,11 @@ import { html, nothing } from 'lit'
   (field) => {
     return html`
       <!-- ... -->
-      ${field.state.meta.errorMap['onChange']
-        ? html`<em>${field.state.meta.errorMap['onChange']}</em>`
-        : nothing}
+      ${
+        field.state.meta.errorMap['onChange']
+          ? html`<em>${field.state.meta.errorMap['onChange']}</em>`
+          : nothing
+      }
     `
   },
 )}`
@@ -225,16 +235,18 @@ export class MyForm extends LitElement {
     return html`
       <div>
         <!-- ... -->
-        ${this.#form.api.state.errorMap.onChange
-          ? html`
-              <div>
-                <em
-                  >There was an error on the form:
-                  ${this.#form.api.state.errorMap.onChange}</em
-                >
-              </div>
-            `
-          : nothing}
+        ${
+          this.#form.api.state.errorMap.onChange
+            ? html`
+                <div>
+                  <em
+                    >There was an error on the form:
+                    ${this.#form.api.state.errorMap.onChange}</em
+                  >
+                </div>
+              `
+            : nothing
+        }
         <!-- ... -->
       </div>
     `
@@ -306,23 +318,27 @@ export class MyForm extends LitElement {
                   field.handleChange(target.valueAsNumber)
                 }}"
               />
-              ${!field.state.meta.isValid
-                ? html`<em role="alert"
-                    >${field.state.meta.errors.join(', ')}</em
-                  >`
-                : nothing}
+              ${
+                !field.state.meta.isValid
+                  ? html`<em role="alert"
+                      >${field.state.meta.errors.join(', ')}</em
+                    >`
+                  : nothing
+              }
             `,
           )}
-          ${this.#form.api.state.errorMap.onSubmit
-            ? html`
-                <div>
-                  <em
-                    >There was an error on the form:
-                    ${this.#form.api.state.errorMap.onSubmit}</em
-                  >
-                </div>
-              `
-            : nothing}
+          ${
+            this.#form.api.state.errorMap.onSubmit
+              ? html`
+                  <div>
+                    <em
+                      >There was an error on the form:
+                      ${this.#form.api.state.errorMap.onSubmit}</em
+                    >
+                  </div>
+                `
+              : nothing
+          }
           <!--...-->
         </form>
       </div>
@@ -400,9 +416,11 @@ import { html, nothing } from 'lit'
           field.handleChange(target.valueAsNumber)
         }}"
       />
-      ${!field.state.meta.isValid
-        ? html`<em role="alert">${field.state.meta.errors.join(', ')}</em>`
-        : nothing}
+      ${
+        !field.state.meta.isValid
+          ? html`<em role="alert">${field.state.meta.errors.join(', ')}</em>`
+          : nothing
+      }
     `
   },
 )}`
@@ -438,9 +456,11 @@ import { html, nothing } from 'lit'
           field.handleChange(target.valueAsNumber)
         }}"
       />
-      ${!field.state.meta.isValid
-        ? html`<em role="alert">${field.state.meta.errors.join(', ')}</em>`
-        : nothing}
+      ${
+        !field.state.meta.isValid
+          ? html`<em role="alert">${field.state.meta.errors.join(', ')}</em>`
+          : nothing
+      }
     `
   },
 )}`
@@ -613,9 +633,7 @@ You can access this flag via `this.#form.api.state` and use the value in order t
 
 ```ts
 class MyForm extends LitElement {
-  #form = new TanStackFormController(this, {
-    /* ... */
-  })
+  #form = new TanStackFormController(this, {/* ... */})
 
   render() {
     return html`

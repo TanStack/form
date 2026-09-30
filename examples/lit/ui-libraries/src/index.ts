@@ -120,43 +120,47 @@ export class TanStackFormDemo extends LitElement {
                               @blur="${() => employedField.handleBlur()}"
                             ></md-checkbox>
                           </div>
-                          ${employedField.state.value
-                            ? this.#form.field(
-                                {
-                                  name: `employees[${index}].jobTitle`,
-                                  defaultValue: '',
-                                  validators: {
-                                    onChange: ({ value }) => {
-                                      return value?.length === 0
-                                        ? 'Needs to have a job here'
-                                        : null
+                          ${
+                            employedField.state.value
+                              ? this.#form.field(
+                                  {
+                                    name: `employees[${index}].jobTitle`,
+                                    defaultValue: '',
+                                    validators: {
+                                      onChange: ({ value }) => {
+                                        return value?.length === 0
+                                          ? 'Needs to have a job here'
+                                          : null
+                                      },
                                     },
                                   },
-                                },
-                                (jobTitleField) => {
-                                  return html` <div>
-                                    <label>Job Title</label>
-                                    <md-filled-text-field
-                                      type="text"
-                                      placeholder="Job Title"
-                                      .value="${jobTitleField.state.value}"
-                                      @blur="${() =>
-                                        jobTitleField.handleBlur()}"
-                                      @input="${(e: Event) => {
-                                        const target =
-                                          e.target as HTMLInputElement
-                                        jobTitleField.handleChange(target.value)
-                                      }}"
-                                      .error="${!jobTitleField.state.meta
-                                        .isValid}"
-                                      .errorText="${jobTitleField.state.meta.errors.join(
-                                        ', ',
-                                      )}"
-                                    ></md-filled-text-field>
-                                  </div>`
-                                },
-                              )
-                            : ''} `
+                                  (jobTitleField) => {
+                                    return html` <div>
+                                      <label>Job Title</label>
+                                      <md-filled-text-field
+                                        type="text"
+                                        placeholder="Job Title"
+                                        .value="${jobTitleField.state.value}"
+                                        @blur="${() =>
+                                          jobTitleField.handleBlur()}"
+                                        @input="${(e: Event) => {
+                                          const target =
+                                            e.target as HTMLInputElement
+                                          jobTitleField.handleChange(
+                                            target.value,
+                                          )
+                                        }}"
+                                        .error="${!jobTitleField.state.meta
+                                          .isValid}"
+                                        .errorText="${jobTitleField.state.meta.errors.join(
+                                          ', ',
+                                        )}"
+                                      ></md-filled-text-field>
+                                    </div>`
+                                  },
+                                )
+                              : ''
+                          } `
                       },
                     )}
                   `

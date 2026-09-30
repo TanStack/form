@@ -3,7 +3,7 @@ id: FormGroupState
 title: FormGroupState
 ---
 
-Defined in: [packages/form-core/src/FormGroupApi.ts:655](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L655)
+Defined in: [packages/form-core/src/FormGroupApi.ts:609](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L609)
 
 ## Extended by
 
@@ -17,7 +17,7 @@ Defined in: [packages/form-core/src/FormGroupApi.ts:655](https://github.com/TanS
 isSubmitSuccessful: boolean;
 ```
 
-Defined in: [packages/form-core/src/FormGroupApi.ts:688](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L688)
+Defined in: [packages/form-core/src/FormGroupApi.ts:642](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L642)
 
 A boolean indicating if the last submission was successful.
 
@@ -29,7 +29,7 @@ A boolean indicating if the last submission was successful.
 isSubmitted: boolean;
 ```
 
-Defined in: [packages/form-core/src/FormGroupApi.ts:676](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L676)
+Defined in: [packages/form-core/src/FormGroupApi.ts:630](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L630)
 
 A boolean indicating if the `onSubmit` function has completed successfully.
 
@@ -45,7 +45,7 @@ Note: you can use isSubmitting to check if the form is currently submitting.
 isSubmitting: boolean;
 ```
 
-Defined in: [packages/form-core/src/FormGroupApi.ts:668](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L668)
+Defined in: [packages/form-core/src/FormGroupApi.ts:622](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L622)
 
 A boolean indicating if the form is currently in the process of being submitted after `handleSubmit` is called.
 
@@ -65,7 +65,7 @@ This is useful for displaying loading indicators or disabling form inputs during
 isValidating: boolean;
 ```
 
-Defined in: [packages/form-core/src/FormGroupApi.ts:680](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L680)
+Defined in: [packages/form-core/src/FormGroupApi.ts:634](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L634)
 
 A boolean indicating if the form or any of its fields are currently validating.
 
@@ -77,6 +77,6 @@ A boolean indicating if the form or any of its fields are currently validating.
 submissionAttempts: number;
 ```
 
-Defined in: [packages/form-core/src/FormGroupApi.ts:684](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L684)
+Defined in: [packages/form-core/src/FormGroupApi.ts:638](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L638)
 
 A counter for tracking the number of submission attempts.

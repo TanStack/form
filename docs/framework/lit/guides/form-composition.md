@@ -45,11 +45,13 @@ export class TextField extends LitElement {
             this.field.handleChange((e.target as HTMLInputElement).value)}
         />
       </label>
-      ${this.field.state.meta.isTouched && this.field.state.meta.errors.length
-        ? html`<div style="color: red">
-            ${this.field.state.meta.errors.join(', ')}
-          </div>`
-        : ''}
+      ${
+        this.field.state.meta.isTouched && this.field.state.meta.errors.length
+          ? html`<div style="color: red">
+              ${this.field.state.meta.errors.join(', ')}
+            </div>`
+          : ''
+      }
     `
   }
 }

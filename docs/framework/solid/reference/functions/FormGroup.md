@@ -7,7 +7,7 @@ title: FormGroup
 function FormGroup<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TSubmitMeta, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta>(props): Element;
 ```
 
-Defined in: [packages/solid-form/src/createFormGroup.tsx:524](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createFormGroup.tsx#L524)
+Defined in: [packages/solid-form/src/createFormGroup.tsx:485](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createFormGroup.tsx#L485)
 
 ## Type Parameters
 

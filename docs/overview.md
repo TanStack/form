@@ -779,18 +779,22 @@ export class TanStackFormDemo extends LitElement {
                     field.handleChange(target.value)
                   }}"
                 />
-                ${field.state.meta.isTouched && !field.state.meta.isValid
-                  ? html`${repeat(
-                      field.state.meta.errors,
-                      (__, idx) => idx,
-                      (error) => {
-                        return html`<div style="color: red;">${error}</div>`
-                      },
-                    )}`
-                  : nothing}
-                ${field.state.meta.isValidating
-                  ? html`<p>Validating...</p>`
-                  : nothing}
+                ${
+                  field.state.meta.isTouched && !field.state.meta.isValid
+                    ? html`${repeat(
+                        field.state.meta.errors,
+                        (__, idx) => idx,
+                        (error) => {
+                          return html`<div style="color: red;">${error}</div>`
+                        },
+                      )}`
+                    : nothing
+                }
+                ${
+                  field.state.meta.isValidating
+                    ? html`<p>Validating...</p>`
+                    : nothing
+                }
               </div>`
             },
           )}

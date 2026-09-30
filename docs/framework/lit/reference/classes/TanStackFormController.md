@@ -3,7 +3,7 @@ id: TanStackFormController
 title: TanStackFormController
 ---
 
-Defined in: [tanstack-form-controller.ts:226](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L226)
+Defined in: [tanstack-form-controller.ts:218](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L218)
 
 ## Type Parameters
 
@@ -67,7 +67,7 @@ Defined in: [tanstack-form-controller.ts:226](https://github.com/TanStack/form/b
 new TanStackFormController<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta>(host, config?): TanStackFormController<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta>;
 ```
 
-Defined in: [tanstack-form-controller.ts:255](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L255)
+Defined in: [tanstack-form-controller.ts:247](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L247)
 
 #### Parameters
 
@@ -91,7 +91,7 @@ Defined in: [tanstack-form-controller.ts:255](https://github.com/TanStack/form/b
 api: FormApi<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta>;
 ```
 
-Defined in: [tanstack-form-controller.ts:240](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L240)
+Defined in: [tanstack-form-controller.ts:232](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L232)
 
 ## Methods
 
@@ -101,7 +101,7 @@ Defined in: [tanstack-form-controller.ts:240](https://github.com/TanStack/form/b
 field<TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync>(fieldConfig, render): object;
 ```
 
-Defined in: [tanstack-form-controller.ts:300](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L300)
+Defined in: [tanstack-form-controller.ts:292](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L292)
 
 #### Type Parameters
 
@@ -195,7 +195,7 @@ render: renderCallback<TParentData, TName, TData, TOnMount, TOnChange, TOnChange
 group<TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TGroupSubmitMeta>(groupConfig, render): unknown;
 ```
 
-Defined in: [tanstack-form-controller.ts:390](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L390)
+Defined in: [tanstack-form-controller.ts:378](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L378)
 
 #### Type Parameters
 
@@ -277,7 +277,7 @@ Defined in: [tanstack-form-controller.ts:390](https://github.com/TanStack/form/b
 hostConnected(): void;
 ```
 
-Defined in: [tanstack-form-controller.ts:296](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L296)
+Defined in: [tanstack-form-controller.ts:288](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L288)
 
 Called when the host is connected to the component tree. For custom
 element hosts, this corresponds to the `connectedCallback()` lifecycle,
@@ -301,7 +301,7 @@ ReactiveController.hostConnected
 hostDisconnected(): void;
 ```
 
-Defined in: [tanstack-form-controller.ts:298](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L298)
+Defined in: [tanstack-form-controller.ts:290](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L290)
 
 Called when the host is disconnected from the component tree. For custom
 element hosts, this corresponds to the `disconnectedCallback()` lifecycle,
