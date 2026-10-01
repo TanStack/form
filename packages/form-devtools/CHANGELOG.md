@@ -1,5 +1,19 @@
 # @tanstack/form-devtools
 
+## 1.0.0-alpha.3
+
+### Major Changes
+
+- Release the first alpha of TanStack Form v2.
+
+### Patch Changes
+
+- Refactor: Use stable validator identity instead of index
+
+- Refactor: Use stable listener identity instead of index
+- Updated dependencies [[`f8bbc25`](https://github.com/TanStack/form/commit/f8bbc25affcf5560b1da0c9c357fd62ef2108dd9)]:
+  - @tanstack/form-core@2.0.0-alpha.3
+
 ## 1.0.0-alpha.2
 
 ### Patch Changes

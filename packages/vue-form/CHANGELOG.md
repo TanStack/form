@@ -1,5 +1,33 @@
 # @tanstack/vue-form
 
+## 2.0.0-alpha.3
+
+### Major Changes
+
+- Release the first alpha of TanStack Form v2.
+
+### Minor Changes
+
+- Feature: Specify default options for `createFormHook`
+
+- [#2365](https://github.com/TanStack/form/pull/2365) [`f8bbc25`](https://github.com/TanStack/form/commit/f8bbc25affcf5560b1da0c9c357fd62ef2108dd9) - Feat: Field groups may now omit identity bindings like `fields={{ a: 'a' }}`
+
+### Patch Changes
+
+- Refactor: Adapter `formOptions`/`appFormOptions` no longer shim the core types and runtime.
+
+  BREAKING: `formOptions.looseSchema` and `formOptions.strictSchema` now require a schema as
+  first parameter. This locks down inference to get the best type safety out of it vs. the options object alone.
+
+  Fix: `formOptions.looseSchema` now allows `defaultValues` to omit properties instead of
+  requiring them to be explicitly undefined.
+
+- Fix: Subscription selectors now infer tuple return values without requiring `as const`.
+
+- [#2401](https://github.com/TanStack/form/pull/2401) [`541abc8`](https://github.com/TanStack/form/commit/541abc8a1fca69cc2bb682da4f59bf9fc6defaf6) - Keep Vue field values and validation state reactive in child components, and keep slot and injected field handlers connected after resets and field name changes.
+- Updated dependencies [[`f8bbc25`](https://github.com/TanStack/form/commit/f8bbc25affcf5560b1da0c9c357fd62ef2108dd9)]:
+  - @tanstack/form-core@2.0.0-alpha.3
+
 ## 2.0.0-alpha.2
 
 ### Minor Changes
