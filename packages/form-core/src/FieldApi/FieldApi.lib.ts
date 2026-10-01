@@ -968,6 +968,7 @@ export class InternalFieldApi<
       'fieldApiOverride' | '_skipFieldCreation'
     >,
     event: 'change' | 'blur' | 'submit',
+    prevFormValues?: TFormData,
   ): void {
     if (this._isKilled) return
 
@@ -1013,7 +1014,12 @@ export class InternalFieldApi<
           }))
         }
 
-        currNode._notifyListener(event, seenListenerFields)
+        currNode._notifyListener(
+          event,
+          seenListenerFields,
+          null,
+          prevFormValues,
+        )
 
         if (!doPropagate) return stop
         return undefined
@@ -1029,6 +1035,7 @@ export class InternalFieldApi<
     trigger: FieldListenerTriggers,
     seenFields: WeakSet<AnyInternalFieldApi>,
     onlyRunListenerInstances: ReadonlySet<InternalFieldListenerInstance> | null = null,
+    prevFormValues?: TFormData,
   ) {
     if (this._isKilled) return
 
@@ -1050,6 +1057,10 @@ export class InternalFieldApi<
           event: trigger,
           fieldApi: this,
           formApi: this.form,
+          prevValue:
+            prevFormValues === undefined
+              ? undefined
+              : getBy(prevFormValues, this.name),
         },
         listenerInstancesToRun: onlyRunListenerInstances,
       })
@@ -1064,7 +1075,12 @@ export class InternalFieldApi<
         continue
       }
 
-      watchingField._notifyListener(trigger, seenFields, listenerInstances)
+      watchingField._notifyListener(
+        trigger,
+        seenFields,
+        listenerInstances,
+        prevFormValues,
+      )
     }
 
     if (watchingFields.size === 0) {

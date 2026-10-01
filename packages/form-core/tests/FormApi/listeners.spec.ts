@@ -17,6 +17,7 @@ describe('form - listeners', () => {
       formApi: form,
       triggerFieldApi: field,
       value: { name: 'Alice' },
+      prevValue: { name: '' },
     })
   })
 
@@ -34,6 +35,7 @@ describe('form - listeners', () => {
       formApi: form,
       triggerFieldApi: form._tryGetFieldApi('name') ?? undefined,
       value: { name: 'Alice' },
+      prevValue: { name: '' },
     })
   })
 
@@ -205,6 +207,7 @@ describe('form - listeners', () => {
       formApi: form,
       triggerFieldApi: field,
       value: { name: 'Alice' },
+      prevValue: { name: '' },
     })
 
     vi.useRealTimers()
@@ -254,6 +257,7 @@ describe('form - listeners', () => {
       formApi: form,
       triggerFieldApi: field,
       value: { name: 'Alice' },
+      prevValue: { name: '' },
     })
 
     vi.useRealTimers()
@@ -280,5 +284,82 @@ describe('form - listeners', () => {
     })
 
     consoleSpy.mockRestore()
+  })
+
+  it('provides the previous form values to change listeners', () => {
+    const listener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      listeners: [{ triggers: ['change'], run: listener }],
+    })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+
+    field.handleChange('Alice')
+    field.handleChange('Bob')
+
+    expect(listener).toHaveBeenCalledTimes(2)
+    expect(listener).toHaveBeenNthCalledWith(1, {
+      formApi: form,
+      triggerFieldApi: field,
+      value: { name: 'Alice' },
+      prevValue: { name: '' },
+    })
+    expect(listener).toHaveBeenNthCalledWith(2, {
+      formApi: form,
+      triggerFieldApi: field,
+      value: { name: 'Bob' },
+      prevValue: { name: 'Alice' },
+    })
+  })
+
+  it('does not provide a previous value for non-change form events', () => {
+    const listener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      listeners: [{ triggers: ['blur'], run: listener }],
+    })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+
+    field.handleBlur()
+
+    expect(listener).toHaveBeenCalledOnce()
+    expect(listener).toHaveBeenCalledWith({
+      formApi: form,
+      triggerFieldApi: field,
+      value: { name: '' },
+      prevValue: undefined,
+    })
+  })
+
+  it('gives a debounced listener the value from before the invoking change', async () => {
+    vi.useFakeTimers()
+    const listener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      listeners: [
+        {
+          triggers: ['change'],
+          triggerDebounceMs: 100,
+          run: listener,
+        },
+      ],
+    })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+
+    field.handleChange('A')
+    field.handleChange('Al')
+    field.handleChange('Ali')
+
+    await vi.advanceTimersByTimeAsync(100)
+
+    expect(listener).toHaveBeenCalledOnce()
+    expect(listener).toHaveBeenCalledWith({
+      formApi: form,
+      triggerFieldApi: field,
+      value: { name: 'Ali' },
+      prevValue: { name: 'Al' },
+    })
+
+    vi.useRealTimers()
   })
 })
