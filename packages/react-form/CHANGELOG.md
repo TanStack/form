@@ -1,5 +1,35 @@
 # @tanstack/react-form
 
+## 2.0.0-alpha.3
+
+### Major Changes
+
+- Release the first alpha of TanStack Form v2.
+
+### Minor Changes
+
+- Feature: Specify default options for `createFormHook`
+
+- Add default form, field, and form group options to `createFormHook`.
+
+- [#2365](https://github.com/TanStack/form/pull/2365) [`f8bbc25`](https://github.com/TanStack/form/commit/f8bbc25affcf5560b1da0c9c357fd62ef2108dd9) - Feat: Field groups may now omit identity bindings like `fields={{ a: 'a' }}`
+
+- [#2369](https://github.com/TanStack/form/pull/2369) [`28c693f`](https://github.com/TanStack/form/commit/28c693fdeccd4efcbbdbf68c76db05dd5b3b4be8) - Feat: Field and Form components can now be nested to create namespaces.
+
+### Patch Changes
+
+- Refactor: Adapter `formOptions`/`appFormOptions` no longer shim the core types and runtime.
+
+  BREAKING: `formOptions.looseSchema` and `formOptions.strictSchema` now require a schema as
+  first parameter. This locks down inference to get the best type safety out of it vs. the options object alone.
+
+  Fix: `formOptions.looseSchema` now allows `defaultValues` to omit properties instead of
+  requiring them to be explicitly undefined.
+
+- Fix: Subscription selectors now infer tuple return values without requiring `as const`.
+- Updated dependencies [[`f8bbc25`](https://github.com/TanStack/form/commit/f8bbc25affcf5560b1da0c9c357fd62ef2108dd9)]:
+  - @tanstack/form-core@2.0.0-alpha.3
+
 ## 2.0.0-alpha.2
 
 ### Minor Changes

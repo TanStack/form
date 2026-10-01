@@ -260,7 +260,7 @@ importers:
         specifier: ^22.1.1
         version: 22.1.1(@angular/common@22.1.1(@angular/core@22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2))
       '@tanstack/angular-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/angular-form
       rxjs:
         specifier: ^7.8.2
@@ -294,7 +294,7 @@ importers:
         specifier: ^22.1.1
         version: 22.1.1(@angular/common@22.1.1(@angular/core@22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2))
       '@tanstack/angular-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/angular-form
       rxjs:
         specifier: ^7.8.2
@@ -328,7 +328,7 @@ importers:
         specifier: ^22.1.1
         version: 22.1.1(@angular/common@22.1.1(@angular/core@22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2))
       '@tanstack/angular-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/angular-form
       rxjs:
         specifier: ^7.8.2
@@ -362,7 +362,7 @@ importers:
         specifier: ^22.1.1
         version: 22.1.1(@angular/common@22.1.1(@angular/core@22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2))
       '@tanstack/angular-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/angular-form
       rxjs:
         specifier: ^7.8.2
@@ -399,7 +399,7 @@ importers:
         specifier: ^22.1.1
         version: 22.1.1(@angular/common@22.1.1(@angular/core@22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2))
       '@tanstack/angular-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/angular-form
       rxjs:
         specifier: ^7.8.2
@@ -433,7 +433,7 @@ importers:
         specifier: ^22.1.1
         version: 22.1.1(@angular/common@22.1.1(@angular/core@22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2))
       '@tanstack/angular-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/angular-form
       rxjs:
         specifier: ^7.8.2
@@ -470,7 +470,7 @@ importers:
         specifier: ^22.1.1
         version: 22.1.1(@angular/common@22.1.1(@angular/core@22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2))
       '@tanstack/angular-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/angular-form
       '@tanstack/angular-query-experimental':
         specifier: ^5.101.4
@@ -507,7 +507,7 @@ importers:
         specifier: ^22.1.1
         version: 22.1.1(@angular/common@22.1.1(@angular/core@22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2))
       '@tanstack/angular-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/angular-form
       rxjs:
         specifier: ^7.8.2
@@ -541,7 +541,7 @@ importers:
         specifier: ^22.1.1
         version: 22.1.1(@angular/common@22.1.1(@angular/core@22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.1(@angular/compiler@22.1.1)(rxjs@7.8.2)(zone.js@0.16.2))
       '@tanstack/angular-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/angular-form
       arktype:
         specifier: ^2.1.22
@@ -575,7 +575,7 @@ importers:
   examples/lit/array:
     dependencies:
       '@tanstack/lit-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/lit-form
       lit:
         specifier: ^3.3.1
@@ -591,7 +591,7 @@ importers:
   examples/lit/basic:
     dependencies:
       '@tanstack/lit-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/lit-form
       lit:
         specifier: ^3.3.1
@@ -607,7 +607,7 @@ importers:
   examples/lit/basic-splitting-form:
     dependencies:
       '@tanstack/lit-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/lit-form
       lit:
         specifier: ^3.3.1
@@ -623,7 +623,7 @@ importers:
   examples/lit/field-groups:
     dependencies:
       '@tanstack/lit-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/lit-form
       lit:
         specifier: ^3.3.1
@@ -642,7 +642,7 @@ importers:
   examples/lit/large-form:
     dependencies:
       '@tanstack/lit-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/lit-form
       lit:
         specifier: ^3.3.1
@@ -658,7 +658,7 @@ importers:
   examples/lit/multi-step-wizard:
     dependencies:
       '@tanstack/lit-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/lit-form
       lit:
         specifier: ^3.3.1
@@ -677,7 +677,7 @@ importers:
   examples/lit/query-integration:
     dependencies:
       '@tanstack/lit-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/lit-form
       '@tanstack/query-core':
         specifier: ^5.89.0
@@ -696,7 +696,7 @@ importers:
   examples/lit/simple:
     dependencies:
       '@tanstack/lit-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/lit-form
       lit:
         specifier: ^3.3.1
@@ -712,7 +712,7 @@ importers:
   examples/lit/standard-schema:
     dependencies:
       '@tanstack/lit-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/lit-form
       arktype:
         specifier: ^2.1.22
@@ -740,7 +740,7 @@ importers:
   examples/preact/array:
     dependencies:
       '@tanstack/preact-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/preact-form
       preact:
         specifier: ^10.26.4
@@ -759,7 +759,7 @@ importers:
   examples/preact/basic:
     dependencies:
       '@tanstack/preact-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/preact-form
       preact:
         specifier: ^10.26.4
@@ -778,7 +778,7 @@ importers:
   examples/preact/basic-splitting-form:
     dependencies:
       '@tanstack/preact-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/preact-form
       preact:
         specifier: ^10.26.4
@@ -797,7 +797,7 @@ importers:
   examples/preact/field-groups:
     dependencies:
       '@tanstack/preact-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/preact-form
       preact:
         specifier: ^10.26.4
@@ -819,7 +819,7 @@ importers:
   examples/preact/large-form:
     dependencies:
       '@tanstack/preact-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/preact-form
       preact:
         specifier: ^10.26.4
@@ -838,7 +838,7 @@ importers:
   examples/preact/multi-step-wizard:
     dependencies:
       '@tanstack/preact-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/preact-form
       preact:
         specifier: ^10.26.4
@@ -860,7 +860,7 @@ importers:
   examples/preact/query-integration:
     dependencies:
       '@tanstack/preact-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/preact-form
       '@tanstack/react-query':
         specifier: ^5.89.0
@@ -882,7 +882,7 @@ importers:
   examples/preact/simple:
     dependencies:
       '@tanstack/preact-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/preact-form
       preact:
         specifier: ^10.26.4
@@ -901,7 +901,7 @@ importers:
   examples/preact/standard-schema:
     dependencies:
       '@tanstack/preact-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/preact-form
       arktype:
         specifier: ^2.1.22
@@ -932,7 +932,7 @@ importers:
   examples/react/array:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/react-form
       react:
         specifier: 19.2.8
@@ -945,7 +945,7 @@ importers:
         specifier: ^0.10.5
         version: 0.10.9(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(csstype@3.2.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(solid-js@1.9.14)
       '@tanstack/react-form-devtools':
-        specifier: ^1.0.0-alpha.2
+        specifier: ^1.0.0-alpha.3
         version: link:../../../packages/react-form-devtools
       '@types/react':
         specifier: ^19.2.8
@@ -966,7 +966,7 @@ importers:
   examples/react/basic:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/react-form
       react:
         specifier: 19.2.8
@@ -979,7 +979,7 @@ importers:
         specifier: ^0.10.5
         version: 0.10.9(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(csstype@3.2.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(solid-js@1.9.14)
       '@tanstack/react-form-devtools':
-        specifier: ^1.0.0-alpha.2
+        specifier: ^1.0.0-alpha.3
         version: link:../../../packages/react-form-devtools
       '@types/react':
         specifier: ^19.2.8
@@ -1000,7 +1000,7 @@ importers:
   examples/react/basic-splitting-form:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/react-form
       react:
         specifier: 19.2.8
@@ -1013,7 +1013,7 @@ importers:
         specifier: ^0.10.5
         version: 0.10.9(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(csstype@3.2.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(solid-js@1.9.14)
       '@tanstack/react-form-devtools':
-        specifier: ^1.0.0-alpha.2
+        specifier: ^1.0.0-alpha.3
         version: link:../../../packages/react-form-devtools
       '@types/react':
         specifier: ^19.2.8
@@ -1034,7 +1034,7 @@ importers:
   examples/react/compiler:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/react-form
       react:
         specifier: 19.2.8
@@ -1065,7 +1065,7 @@ importers:
   examples/react/expo:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/react-form
       '@tanstack/react-store':
         specifier: ^0.11.0
@@ -1153,7 +1153,7 @@ importers:
   examples/react/field-groups:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/react-form
       react:
         specifier: 19.2.8
@@ -1169,7 +1169,7 @@ importers:
         specifier: ^0.10.5
         version: 0.10.9(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(csstype@3.2.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(solid-js@1.9.14)
       '@tanstack/react-form-devtools':
-        specifier: ^1.0.0-alpha.2
+        specifier: ^1.0.0-alpha.3
         version: link:../../../packages/react-form-devtools
       '@types/react':
         specifier: ^19.2.8
@@ -1190,7 +1190,7 @@ importers:
   examples/react/large-form:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/react-form
       react:
         specifier: 19.2.8
@@ -1203,7 +1203,7 @@ importers:
         specifier: ^0.10.5
         version: 0.10.9(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(csstype@3.2.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(solid-js@1.9.14)
       '@tanstack/react-form-devtools':
-        specifier: ^1.0.0-alpha.2
+        specifier: ^1.0.0-alpha.3
         version: link:../../../packages/react-form-devtools
       '@types/react':
         specifier: ^19.2.8
@@ -1218,7 +1218,7 @@ importers:
   examples/react/multi-step-wizard:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/react-form
       react:
         specifier: 19.2.8
@@ -1234,7 +1234,7 @@ importers:
         specifier: ^0.10.5
         version: 0.10.9(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(csstype@3.2.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(solid-js@1.9.14)
       '@tanstack/react-form-devtools':
-        specifier: ^1.0.0-alpha.2
+        specifier: ^1.0.0-alpha.3
         version: link:../../../packages/react-form-devtools
       '@types/react':
         specifier: ^19.2.8
@@ -1249,10 +1249,10 @@ importers:
   examples/react/next-server-actions:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/react-form
       '@tanstack/react-form-nextjs':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/react-form-nextjs
       next:
         specifier: 16.3.0
@@ -1280,10 +1280,10 @@ importers:
   examples/react/next-server-actions-zod:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/react-form
       '@tanstack/react-form-nextjs':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/react-form-nextjs
       next:
         specifier: 16.3.0
@@ -1314,10 +1314,10 @@ importers:
   examples/react/nextjs:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/react-form
       '@tanstack/react-form-nextjs':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/react-form-nextjs
       next:
         specifier: 16.3.0
@@ -1336,7 +1336,7 @@ importers:
         specifier: ^0.10.5
         version: 0.10.9(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(csstype@3.2.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(solid-js@1.9.14)
       '@tanstack/react-form-devtools':
-        specifier: ^1.0.0-alpha.2
+        specifier: ^1.0.0-alpha.3
         version: link:../../../packages/react-form-devtools
       '@types/node':
         specifier: ^25.0.7
@@ -1360,7 +1360,7 @@ importers:
   examples/react/query-integration:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/react-form
       '@tanstack/react-query':
         specifier: ^5.89.0
@@ -1376,7 +1376,7 @@ importers:
         specifier: ^0.10.5
         version: 0.10.9(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(csstype@3.2.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(solid-js@1.9.14)
       '@tanstack/react-form-devtools':
-        specifier: ^1.0.0-alpha.2
+        specifier: ^1.0.0-alpha.3
         version: link:../../../packages/react-form-devtools
       '@types/react':
         specifier: ^19.2.8
@@ -1391,7 +1391,7 @@ importers:
   examples/react/simple:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/react-form
       react:
         specifier: 19.2.8
@@ -1404,7 +1404,7 @@ importers:
         specifier: ^0.10.5
         version: 0.10.9(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(csstype@3.2.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(solid-js@1.9.14)
       '@tanstack/react-form-devtools':
-        specifier: ^1.0.0-alpha.2
+        specifier: ^1.0.0-alpha.3
         version: link:../../../packages/react-form-devtools
       '@types/react':
         specifier: ^19.2.8
@@ -1419,7 +1419,7 @@ importers:
   examples/react/standard-schema:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/react-form
       arktype:
         specifier: ^2.1.22
@@ -1444,7 +1444,7 @@ importers:
         specifier: ^0.10.5
         version: 0.10.9(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(csstype@3.2.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(solid-js@1.9.14)
       '@tanstack/react-form-devtools':
-        specifier: ^1.0.0-alpha.2
+        specifier: ^1.0.0-alpha.3
         version: link:../../../packages/react-form-devtools
       '@types/react':
         specifier: ^19.2.8
@@ -1459,10 +1459,10 @@ importers:
   examples/react/tanstack-start:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/react-form
       '@tanstack/react-form-start':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/react-form-start
       '@tanstack/react-router':
         specifier: ^1.170.23
@@ -1484,7 +1484,7 @@ importers:
         specifier: ^0.10.5
         version: 0.10.9(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(csstype@3.2.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(solid-js@1.9.14)
       '@tanstack/react-form-devtools':
-        specifier: ^1.0.0-alpha.2
+        specifier: ^1.0.0-alpha.3
         version: link:../../../packages/react-form-devtools
       '@types/node':
         specifier: ^25.0.7
@@ -1517,7 +1517,7 @@ importers:
         specifier: ^0.5.0
         version: 0.5.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@tanstack/react-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/react-form
       react:
         specifier: 19.2.8
@@ -1530,7 +1530,7 @@ importers:
         specifier: ^0.10.5
         version: 0.10.9(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(csstype@3.2.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(solid-js@1.9.14)
       '@tanstack/react-form-devtools':
-        specifier: ^1.0.0-alpha.2
+        specifier: ^1.0.0-alpha.3
         version: link:../../../packages/react-form-devtools
       '@types/react':
         specifier: ^19.2.8
@@ -1557,7 +1557,7 @@ importers:
         specifier: ^4.3.2
         version: 4.3.3(vite@8.3.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1(supports-color@8.1.1))(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
       '@tanstack/react-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/react-form
       class-variance-authority:
         specifier: ^0.7.1
@@ -1606,7 +1606,7 @@ importers:
         specifier: ^0.10.5
         version: 0.10.9(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(csstype@3.2.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(solid-js@1.9.14)
       '@tanstack/react-form-devtools':
-        specifier: ^1.0.0-alpha.2
+        specifier: ^1.0.0-alpha.3
         version: link:../../../packages/react-form-devtools
       '@types/react':
         specifier: ^19.2.8
@@ -1627,7 +1627,7 @@ importers:
   examples/solid/array:
     dependencies:
       '@tanstack/solid-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/solid-form
       solid-js:
         specifier: ^1.9.13
@@ -1646,7 +1646,7 @@ importers:
   examples/solid/basic:
     dependencies:
       '@tanstack/solid-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/solid-form
       solid-js:
         specifier: ^1.9.13
@@ -1665,7 +1665,7 @@ importers:
   examples/solid/basic-splitting-form:
     dependencies:
       '@tanstack/solid-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/solid-form
       solid-js:
         specifier: ^1.9.13
@@ -1684,7 +1684,7 @@ importers:
   examples/solid/field-groups:
     dependencies:
       '@tanstack/solid-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/solid-form
       solid-js:
         specifier: ^1.9.13
@@ -1706,7 +1706,7 @@ importers:
   examples/solid/large-form:
     dependencies:
       '@tanstack/solid-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/solid-form
       solid-js:
         specifier: ^1.9.13
@@ -1725,7 +1725,7 @@ importers:
   examples/solid/multi-step-wizard:
     dependencies:
       '@tanstack/solid-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/solid-form
       solid-js:
         specifier: ^1.9.13
@@ -1747,7 +1747,7 @@ importers:
   examples/solid/query-integration:
     dependencies:
       '@tanstack/solid-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/solid-form
       '@tanstack/solid-query':
         specifier: ^5.89.0
@@ -1769,7 +1769,7 @@ importers:
   examples/solid/simple:
     dependencies:
       '@tanstack/solid-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/solid-form
       solid-js:
         specifier: ^1.9.13
@@ -1788,7 +1788,7 @@ importers:
   examples/solid/standard-schema:
     dependencies:
       '@tanstack/solid-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/solid-form
       arktype:
         specifier: ^2.1.22
@@ -1819,7 +1819,7 @@ importers:
   examples/svelte/array:
     dependencies:
       '@tanstack/svelte-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/svelte-form
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
@@ -1844,7 +1844,7 @@ importers:
   examples/svelte/basic:
     dependencies:
       '@tanstack/svelte-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/svelte-form
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
@@ -1869,7 +1869,7 @@ importers:
   examples/svelte/basic-splitting-form:
     dependencies:
       '@tanstack/svelte-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/svelte-form
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
@@ -1894,7 +1894,7 @@ importers:
   examples/svelte/field-groups:
     dependencies:
       '@tanstack/svelte-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/svelte-form
       zod:
         specifier: ^4.4.3
@@ -1922,7 +1922,7 @@ importers:
   examples/svelte/large-form:
     dependencies:
       '@tanstack/svelte-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/svelte-form
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
@@ -1947,7 +1947,7 @@ importers:
   examples/svelte/multi-step-wizard:
     dependencies:
       '@tanstack/svelte-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/svelte-form
       zod:
         specifier: ^4.4.3
@@ -1975,7 +1975,7 @@ importers:
   examples/svelte/query-integration:
     dependencies:
       '@tanstack/svelte-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/svelte-form
       '@tanstack/svelte-query':
         specifier: ^6.1.38
@@ -2003,7 +2003,7 @@ importers:
   examples/svelte/simple:
     dependencies:
       '@tanstack/svelte-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/svelte-form
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
@@ -2028,7 +2028,7 @@ importers:
   examples/svelte/standard-schema:
     dependencies:
       '@tanstack/svelte-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/svelte-form
       arktype:
         specifier: ^2.1.22
@@ -2065,7 +2065,7 @@ importers:
   examples/vue/array:
     dependencies:
       '@tanstack/vue-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/vue-form
       vue:
         specifier: ^3.6.0-rc.9
@@ -2087,7 +2087,7 @@ importers:
   examples/vue/large-form:
     dependencies:
       '@tanstack/vue-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/vue-form
       vue:
         specifier: ^3.6.0-rc.9
@@ -2109,7 +2109,7 @@ importers:
   examples/vue/multi-step-wizard:
     dependencies:
       '@tanstack/vue-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/vue-form
       vue:
         specifier: ^3.6.0-rc.9
@@ -2134,7 +2134,7 @@ importers:
   examples/vue/simple:
     dependencies:
       '@tanstack/vue-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/vue-form
       vue:
         specifier: ^3.6.0-rc.9
@@ -2156,7 +2156,7 @@ importers:
   examples/vue/standard-schema:
     dependencies:
       '@tanstack/vue-form':
-        specifier: ^2.0.0-alpha.2
+        specifier: ^2.0.0-alpha.3
         version: link:../../../packages/vue-form
       arktype:
         specifier: ^2.1.22
