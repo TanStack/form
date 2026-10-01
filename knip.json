@@ -1,22 +1,29 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "ignoreFiles": ["**/*.regressions.ts"],
-  "ignoreWorkspaces": [
-    "examples/**",
-    "packages/angular-form",
-    "packages/lit-form",
-    "packages/preact-form",
-    "packages/solid-form-devtools",
-    "packages/svelte-form",
-    "packages/vue-form",
-    "packages/form-devtools"
-  ],
+  "workspaces": {
+    "packages/vue-form": {
+      "entry": ["tests/type-inference.vue"]
+    },
+    "examples/react/expo": {
+      "ignoreDependencies": ["@tanstack/react-store", "use-sync-external-store"]
+    }
+  },
   "ignoreIssues": {
     "packages/form-devtools/src/components/ui/**": [
       "exports",
       "types",
       "nsExports",
       "nsTypes"
+    ],
+    "examples/react/ui-integration-shadcn/src/components/ui/**": [
+      "exports",
+      "types",
+      "nsExports",
+      "nsTypes"
+    ],
+    "examples/react/ui-integration-shadcn/src/components/ui/radio-group.tsx": [
+      "files"
     ]
   }
 }

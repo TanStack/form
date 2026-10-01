@@ -1,0 +1,20 @@
+---
+id: StoreAction
+title: StoreAction
+---
+
+```ts
+type StoreAction = (...args) => any;
+```
+
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/store.d.ts:4
+
+## Parameters
+
+### args
+
+...`any`[]
+
+## Returns
+
+`any`

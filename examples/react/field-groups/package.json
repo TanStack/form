@@ -9,7 +9,6 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/pacer-lite": "^0.2.2",
     "@tanstack/react-form": "^2.0.0-alpha.2",
     "react": "19.2.8",
     "react-dom": "19.2.8",

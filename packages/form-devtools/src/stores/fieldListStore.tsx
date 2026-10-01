@@ -30,30 +30,33 @@ export type DevtoolsFieldListRow = Readonly<
   }
 >
 
-export const [subscribedFormId, setSubscribedFormId] =
-  createSignal<FormId | null>(null)
+const [subscribedFormId, setSubscribedFormId] = createSignal<FormId | null>(
+  null,
+)
 
-export const [rowsByPath, setRowsByPath] = createSignal<
+const [rowsByPath, setRowsByPath] = createSignal<
   Map<string, DevtoolsFieldListRow>
 >(new Map(), { equals: false })
 
-export const [rowsByFieldId, setRowsByFieldId] = createSignal<
+const [rowsByFieldId, setRowsByFieldId] = createSignal<
   Map<FieldId, DevtoolsFieldListRow>
 >(new Map(), { equals: false })
 
-export const [fieldSparseMetaById, setFieldSparseMetaById] = createSignal<
+const [fieldSparseMetaById, setFieldSparseMetaById] = createSignal<
   Map<FieldId, DevtoolsMountedFieldSummaryPatch>
 >(new Map(), { equals: false })
 
-export const [selectedFieldPath, setSelectedFieldPath] = createSignal<
-  string | null
->(null)
+const [selectedFieldPath, setSelectedFieldPath] = createSignal<string | null>(
+  null,
+)
 
-export const [pinnedFieldIds, setPinnedFieldIds] = createSignal<
+const [pinnedFieldIds, setPinnedFieldIds] = createSignal<
   ReadonlyArray<FieldId>
 >([])
 
-export const [fieldSearchQuery, setFieldSearchQuery] = createSignal('')
+export { setPinnedFieldIds }
+
+const [fieldSearchQuery, setFieldSearchQuery] = createSignal('')
 
 export type FieldRowFilterPredicate = {
   (field: DevtoolsFieldListRow, summary: DevtoolsMountedFieldSummary): boolean
@@ -68,7 +71,7 @@ export function createFieldSummaryFilterPredicate(
   return predicate
 }
 
-export const [fieldFilterPipeline, setFieldFilterPipeline] = createSignal<
+const [fieldFilterPipeline, setFieldFilterPipeline] = createSignal<
   Array<FieldRowFilterPredicate>
 >([])
 
