@@ -2254,6 +2254,153 @@ describe('field api', () => {
     expect(fn).toHaveBeenCalledTimes(1)
   })
 
+  it('(control) should apply an onChangeAsync error once the validator settles, when no reset occurs', async () => {
+    vi.useFakeTimers()
+
+    const form = new FormApi({
+      defaultValues: {
+        email: '',
+      },
+    })
+    form.mount()
+
+    let resolveValidation!: (error: string | undefined) => void
+    const pendingValidation = new Promise<string | undefined>((resolve) => {
+      resolveValidation = resolve
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'email',
+      validators: {
+        onChangeAsyncDebounceMs: 0,
+        onChangeAsync: async () => await pendingValidation,
+      },
+    })
+
+    field.mount()
+
+    field.setValue('not-an-email')
+    await vi.runAllTimersAsync()
+
+    resolveValidation('not-an-email is not valid')
+    await vi.runAllTimersAsync()
+
+    expect(field.state.meta.errorMap.onChange).toBe('not-an-email is not valid')
+    expect(field.state.meta.errors).toStrictEqual(['not-an-email is not valid'])
+
+    vi.useRealTimers()
+  })
+
+  it('should not reapply a stale onChangeAsync error after form.reset() once a validation started before reset settles', async () => {
+    vi.useFakeTimers()
+
+    const form = new FormApi({
+      defaultValues: {
+        email: '',
+      },
+    })
+    form.mount()
+
+    let receivedValue: string | undefined
+    let resolveValidation!: (error: string | undefined) => void
+    const pendingValidation = new Promise<string | undefined>((resolve) => {
+      resolveValidation = resolve
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'email',
+      validators: {
+        onChangeAsyncDebounceMs: 0,
+        onChangeAsync: async ({ value }) => {
+          receivedValue = value
+          return await pendingValidation
+        },
+      },
+    })
+
+    field.mount()
+
+    field.setValue('not-an-email')
+    await vi.runAllTimersAsync()
+
+    expect(receivedValue).toBe('not-an-email')
+    expect(field.state.meta.isValidating).toBe(true)
+
+    form.reset()
+
+    expect(form.state.values.email).toBe('')
+    expect(field.state.meta.errorMap.onChange).toBeUndefined()
+    expect(field.state.meta.errors).toStrictEqual([])
+
+    resolveValidation('not-an-email is not valid')
+    await vi.runAllTimersAsync()
+
+    expect(form.state.values.email).toBe('')
+    expect(field.state.meta.errorMap.onChange).toBeUndefined()
+    expect(field.state.meta.errors).toStrictEqual([])
+
+    vi.useRealTimers()
+  })
+
+  it('should not let a stale pre-reset validation affect a new validation started after reset', async () => {
+    vi.useFakeTimers()
+
+    const form = new FormApi({
+      defaultValues: {
+        email: '',
+      },
+    })
+    form.mount()
+
+    let resolveA!: (error: string | undefined) => void
+    const pendingA = new Promise<string | undefined>((resolve) => {
+      resolveA = resolve
+    })
+    let resolveB!: (error: string | undefined) => void
+    let pendingB: Promise<string | undefined> | undefined
+
+    let callCount = 0
+    const field = new FieldApi({
+      form,
+      name: 'email',
+      validators: {
+        onChangeAsyncDebounceMs: 0,
+        onChangeAsync: async () => {
+          callCount += 1
+          if (callCount === 1) return await pendingA
+          pendingB = new Promise<string | undefined>((resolve) => {
+            resolveB = resolve
+          })
+          return await pendingB
+        },
+      },
+    })
+
+    field.mount()
+
+    field.setValue('bad-a')
+    await vi.runAllTimersAsync()
+    expect(field.state.meta.isValidating).toBe(true)
+
+    form.reset()
+
+    field.setValue('bad-b')
+    await vi.runAllTimersAsync()
+    expect(callCount).toBe(2)
+
+    resolveA('A is invalid')
+    await vi.runAllTimersAsync()
+    expect(field.state.meta.errorMap.onChange).toBeUndefined()
+
+    resolveB('B is invalid')
+    await vi.runAllTimersAsync()
+    expect(field.state.meta.errorMap.onChange).toBe('B is invalid')
+
+    vi.useRealTimers()
+  })
+
   it('should run onChange on a linked field', () => {
     const form = new FormApi({
       defaultValues: {
