@@ -11,6 +11,7 @@ import {
   mergeOpts,
   setBy,
   uuid,
+  yieldToPaint,
 } from '../src/index'
 
 describe('getBy', () => {
@@ -973,5 +974,11 @@ describe('uuid', () => {
     const parts = id.split('-')
     expect(parts[2]?.[0]).toBe('4')
     expect(['8', '9', 'a', 'b']).toContain(parts[3]?.[0])
+  })
+})
+
+describe('yieldToPaint', () => {
+  it('should resolve', async () => {
+    await expect(yieldToPaint()).resolves.toBeUndefined()
   })
 })
