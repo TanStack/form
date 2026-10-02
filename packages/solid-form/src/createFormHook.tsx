@@ -11,7 +11,7 @@ import type {
   AnyFieldApi,
   AnyFormApi,
   BaseFormOptions,
-  DeepKeysOfType,
+  DeepKeysOfNonNullableType,
   FieldApi,
   FieldsMap,
   FormAsyncValidateOrFn,
@@ -493,7 +493,7 @@ export function createFormHook<
   >): <
     TFormData,
     TFields extends
-      | DeepKeysOfType<TFormData, TFieldGroupData | null | undefined>
+      | DeepKeysOfNonNullableType<TFormData, TFieldGroupData>
       | FieldsMap<TFormData, TFieldGroupData>,
     TOnMount extends undefined | FormValidateOrFn<TFormData>,
     TOnChange extends undefined | FormValidateOrFn<TFormData>,
