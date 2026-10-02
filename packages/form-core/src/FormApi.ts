@@ -1066,6 +1066,12 @@ export class FormApi<
    * @private
    */
   private _devtoolsSubmissionOverride: boolean
+  /**
+   * @private
+   * Tracks whether `reset(values)` was called with explicit new default values.
+   * When true, `update()` must not overwrite those values with stale prop values.
+   */
+  private _defaultValuesOverridden: boolean = false
 
   /**
    * Constructs a new `FormApi` instance with the given form options.
@@ -1752,6 +1758,21 @@ export class FormApi<
     // Options need to be updated first so that when the store is updated, the state is correct for the derived state
     this.options = options
 
+    // If reset(newValues) was called, the incoming `options` still carries the
+    // original (pre-reset) defaultValues from the render closure. We must not
+    // let those stale values overwrite what reset() set, so we skip the
+    // shouldUpdateValues branch and clear the flag for the next render.
+    if (this._defaultValuesOverridden) {
+      this._defaultValuesOverridden = false
+      // Keep the defaultValues that reset() stored on this.options so that
+      // future renders compare against them correctly.
+      this.options = {
+        ...options,
+        defaultValues: oldOptions.defaultValues,
+      }
+      return
+    }
+
     const shouldUpdateValues =
       options.defaultValues &&
       !evaluate(options.defaultValues, oldOptions.defaultValues) &&
@@ -1816,6 +1837,7 @@ export class FormApi<
         ...this.options,
         defaultValues: values,
       }
+      this._defaultValuesOverridden = true
     }
 
     this.baseStore.setState(() => {
