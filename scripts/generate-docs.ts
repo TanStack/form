@@ -62,6 +62,58 @@ await generateReferenceDocs({
       outputDir: resolve(__dirname, '../docs/framework/vue/reference'),
       exclude: ['packages/form-core/**/*'],
     },
+    // The server adapters each re-export all of react-form on top of their own
+    // API, so they exclude it as well as form-core and get their own output
+    // directory -- all three export a `useTransform` and a `ServerValidateError`,
+    // which would otherwise overwrite each other.
+    {
+      name: 'react-form-nextjs',
+      entryPoints: [
+        resolve(__dirname, '../packages/react-form-nextjs/src/index.ts'),
+      ],
+      tsconfig: resolve(
+        __dirname,
+        '../packages/react-form-nextjs/tsconfig.docs.json',
+      ),
+      outputDir: resolve(__dirname, '../docs/framework/react/reference/nextjs'),
+      exclude: [
+        'packages/form-core/**/*',
+        'packages/react-form/**/*',
+        '**/react-store/**/*',
+      ],
+    },
+    {
+      name: 'react-form-remix',
+      entryPoints: [
+        resolve(__dirname, '../packages/react-form-remix/src/index.ts'),
+      ],
+      tsconfig: resolve(
+        __dirname,
+        '../packages/react-form-remix/tsconfig.docs.json',
+      ),
+      outputDir: resolve(__dirname, '../docs/framework/react/reference/remix'),
+      exclude: [
+        'packages/form-core/**/*',
+        'packages/react-form/**/*',
+        '**/react-store/**/*',
+      ],
+    },
+    {
+      name: 'react-form-start',
+      entryPoints: [
+        resolve(__dirname, '../packages/react-form-start/src/index.ts'),
+      ],
+      tsconfig: resolve(
+        __dirname,
+        '../packages/react-form-start/tsconfig.docs.json',
+      ),
+      outputDir: resolve(__dirname, '../docs/framework/react/reference/start'),
+      exclude: [
+        'packages/form-core/**/*',
+        'packages/react-form/**/*',
+        '**/react-store/**/*',
+      ],
+    },
   ],
 })
 
