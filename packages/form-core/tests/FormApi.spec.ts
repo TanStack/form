@@ -125,6 +125,23 @@ describe('form api', () => {
     })
   })
 
+  it('should bump array version when resetting to a shorter array', () => {
+    const form = new FormApi({
+      defaultValues: {
+        items: [1, 2, 3],
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({ form, name: 'items' })
+    field.mount()
+
+    form.reset({ items: [4] })
+
+    expect(form.getFieldValue('items')).toEqual([4])
+    expect(form.getFieldMeta('items')?._arrayVersion).toBe(1)
+  })
+
   it('form should reset default value when resetting in onSubmit', async () => {
     const defaultValues = {
       name: '',
