@@ -154,4 +154,26 @@ describe('useForm', () => {
 
     expectTypeOf(form.state.values).toExtend<PersonWithAge>()
   })
+
+  it('should infer form error types from onServerValidate in formOptions', () => {
+    const formOpts = formOptions({
+      defaultValues: {
+        firstName: '',
+        age: 0,
+      },
+      onServerValidate: ({ value }) => {
+        expectTypeOf(value.age).toEqualTypeOf<number>()
+        if (value.age < 12) {
+          return 'Server validation: You must be at least 12 to sign up' as const
+        }
+        return undefined
+      },
+    })
+
+    const form = useForm({ ...formOpts })
+
+    expectTypeOf(form.state.errors).toEqualTypeOf<
+      'Server validation: You must be at least 12 to sign up'[]
+    >()
+  })
 })

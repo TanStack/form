@@ -319,4 +319,33 @@ describe('formOptions', () => {
       ('Too short!' | 'I just need an error')[]
     >()
   })
+
+  it('should infer form error types from onServerValidate in formOptions', () => {
+    const formOpts = formOptions({
+      defaultValues: {
+        firstName: '',
+        age: 0,
+      },
+      onServerValidate: ({ value }) => {
+        expectTypeOf(value.age).toEqualTypeOf<number>()
+        if (value.age < 12) {
+          return 'Server validation: You must be at least 12 to sign up' as const
+        }
+        return undefined
+      },
+    })
+
+    const form = new FormApi(formOpts)
+    expectTypeOf(form.state.errors).toEqualTypeOf<
+      'Server validation: You must be at least 12 to sign up'[]
+    >()
+    expectTypeOf(form.state.errorMap.onServer).toEqualTypeOf<
+      'Server validation: You must be at least 12 to sign up' | undefined
+    >()
+
+    const form2 = new FormApi({ ...formOpts })
+    expectTypeOf(form2.state.errors).toEqualTypeOf<
+      'Server validation: You must be at least 12 to sign up'[]
+    >()
+  })
 })

@@ -27,7 +27,7 @@ export const ClientComp = () => {
   return (
     <form action={action as never} onSubmit={() => form.handleSubmit()}>
       {formErrors.map((error) => (
-        <p key={error as unknown as string}>{error}</p>
+        <p key={error}>{error}</p>
       ))}
 
       <form.Field
