@@ -1,4 +1,5 @@
 import type {
+  AnyFormOptions,
   FormAsyncValidateOrFn,
   FormOptions,
   FormValidateOrFn,
@@ -21,22 +22,7 @@ without losing the benefits from the TOptions generic.
 */
 
 export function formOptions<
-  TOptions extends Partial<
-    FormOptions<
-      TFormData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TOnDynamic,
-      TOnDynamicAsync,
-      TOnServer,
-      TSubmitMeta
-    >
-  >,
+  TOptions,
   TFormData,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
   TOnChange extends undefined | FormValidateOrFn<TFormData>,
@@ -48,23 +34,25 @@ export function formOptions<
   TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
   TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TSubmitMeta = never,
+  /*
+   Defaulting this to never makes it no longer assignable to `AnyFieldApi` when using listeners for some reason.
+   Stick to the default `unknown` instead, as it will still prevent unsafe overwrites of `onSubmitMeta`.
+   */
+  TSubmitMeta,
 >(
-  defaultOpts: Partial<
-    FormOptions<
-      TFormData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TOnDynamic,
-      TOnDynamicAsync,
-      TOnServer,
-      TSubmitMeta
-    >
+  defaultOpts: FormOptions<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    TOnServer,
+    TSubmitMeta
   > &
     TOptions,
 ): TOptions {
