@@ -1232,6 +1232,54 @@ describe('form api', () => {
     expect(form.getFieldValue('name')).toEqual('two')
   })
 
+  it('should apply new default values to untouched fields after another field is edited', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+        asyncField: '',
+      },
+    })
+    form.mount()
+
+    // The user edits one field while async data for another is still loading.
+    form.setFieldValue('name', 'edited')
+
+    // The async default for `asyncField` resolves and is passed in via update().
+    form.update({
+      defaultValues: {
+        name: '',
+        asyncField: 'loaded default',
+      },
+    })
+
+    // The untouched field receives its newly-arrived default...
+    expect(form.getFieldValue('asyncField')).toEqual('loaded default')
+    // ...while the edited field keeps the user's value.
+    expect(form.getFieldValue('name')).toEqual('edited')
+  })
+
+  it('should apply new default values to untouched array fields after another field is edited', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+        asyncItems: [] as string[],
+      },
+    })
+    form.mount()
+
+    form.setFieldValue('name', 'edited')
+
+    form.update({
+      defaultValues: {
+        name: '',
+        asyncItems: ['a', 'b'],
+      },
+    })
+
+    expect(form.getFieldValue('asyncItems')).toEqual(['a', 'b'])
+    expect(form.getFieldValue('name')).toEqual('edited')
+  })
+
   it('should delete field from the form', () => {
     const form = new FormApi({
       defaultValues: {
