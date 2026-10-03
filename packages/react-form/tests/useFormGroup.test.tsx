@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, waitFor } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
+import { useState } from 'react'
 import { useForm } from '../src/index'
 
 const user = userEvent.setup()
@@ -319,5 +320,351 @@ describe('form.FormGroup', () => {
     await waitFor(() => expect(button.textContent).toBe('Continue'))
     expect(button.disabled).toBe(false)
     expect(onGroupSubmit).toHaveBeenCalledTimes(1)
+  })
+
+  it('should not rerender group children when a field changes and group state is not read', async () => {
+    const renderGroupChildren = vi.fn()
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          step1: { firstName: '', lastName: '' },
+        },
+      })
+
+      return (
+        <form.FormGroup name="step1">
+          {() => {
+            renderGroupChildren()
+            return (
+              <form.Field
+                name="step1.firstName"
+                children={(field) => (
+                  <input
+                    data-testid="first-name"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                )}
+              />
+            )
+          }}
+        </form.FormGroup>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+    const rendersAfterMount = renderGroupChildren.mock.calls.length
+
+    await user.type(getByTestId('first-name'), 'abc')
+
+    expect(getByTestId('first-name')).toHaveValue('abc')
+    expect(renderGroupChildren).toHaveBeenCalledTimes(rendersAfterMount)
+  })
+
+  it('should rerender for group meta it reads but not for unrelated value changes', async () => {
+    const renderGroupChildren = vi.fn()
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          step1: { firstName: '' },
+        },
+      })
+
+      return (
+        <form.FormGroup
+          name="step1"
+          validators={{
+            onChange: ({ value }) =>
+              value.firstName.includes('!')
+                ? 'No exclamation marks'
+                : undefined,
+          }}
+        >
+          {(group) => {
+            renderGroupChildren()
+            return (
+              <>
+                <form.Field
+                  name="step1.firstName"
+                  children={(field) => (
+                    <input
+                      data-testid="first-name"
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
+                  )}
+                />
+                <pre data-testid="group-errors">
+                  {JSON.stringify(group.state.meta.errorMap)}
+                </pre>
+              </>
+            )
+          }}
+        </form.FormGroup>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+    const rendersAfterMount = renderGroupChildren.mock.calls.length
+
+    await user.type(getByTestId('first-name'), 'abc')
+    expect(renderGroupChildren).toHaveBeenCalledTimes(rendersAfterMount)
+
+    await user.type(getByTestId('first-name'), '!')
+    await waitFor(() =>
+      expect(getByTestId('group-errors')).toHaveTextContent(
+        'No exclamation marks',
+      ),
+    )
+  })
+
+  it('should read the current group value in handlers without subscribing up front', async () => {
+    const onRead = vi.fn()
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          step1: { firstName: '' },
+        },
+      })
+
+      return (
+        <form.FormGroup name="step1">
+          {(group) => (
+            <>
+              <form.Field
+                name="step1.firstName"
+                children={(field) => (
+                  <input
+                    data-testid="first-name"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                )}
+              />
+              <button
+                data-testid="read-value"
+                onClick={() => onRead(group.state.value)}
+              />
+            </>
+          )}
+        </form.FormGroup>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+
+    await user.type(getByTestId('first-name'), 'abc')
+    await user.click(getByTestId('read-value'))
+
+    expect(onRead).toHaveBeenCalledWith({ firstName: 'abc' })
+  })
+
+  it('should expose the group store state through group.state', async () => {
+    const onRead = vi.fn()
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          step1: { firstName: 'initial' },
+        },
+      })
+
+      return (
+        <form.FormGroup name="step1">
+          {(group) => (
+            <button data-testid="read-state" onClick={() => onRead(group)} />
+          )}
+        </form.FormGroup>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+    await user.click(getByTestId('read-state'))
+
+    const group = onRead.mock.calls[0]![0]
+    expect(group.state).toEqual(group.store.state)
+    expect(group.state.meta).toEqual(group.store.state.meta)
+    expect(structuredClone(group.state)).toEqual(group.store.state)
+  })
+
+  it('should update group meta that is first read after it changed', async () => {
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          step1: { firstName: '' },
+        },
+      })
+      const [showValidity, setShowValidity] = useState(false)
+
+      return (
+        <>
+          <button
+            data-testid="show-validity"
+            onClick={() => setShowValidity(true)}
+          />
+          <form.FormGroup
+            name="step1"
+            validators={{
+              onChange: ({ value }) =>
+                value.firstName.includes('!')
+                  ? 'No exclamation marks'
+                  : undefined,
+            }}
+          >
+            {(group) => (
+              <>
+                <form.Field
+                  name="step1.firstName"
+                  children={(field) => (
+                    <input
+                      data-testid="first-name"
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
+                  )}
+                />
+                {showValidity && (
+                  <span data-testid="group-valid">
+                    {String(group.state.meta.isValid)}
+                  </span>
+                )}
+              </>
+            )}
+          </form.FormGroup>
+        </>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+
+    await user.type(getByTestId('first-name'), '!')
+    await user.click(getByTestId('show-validity'))
+    expect(getByTestId('group-valid')).toHaveTextContent('false')
+
+    await user.clear(getByTestId('first-name'))
+    await waitFor(() =>
+      expect(getByTestId('group-valid')).toHaveTextContent('true'),
+    )
+  })
+
+  it('should rerender for group meta read in a handler right after changing it', async () => {
+    const onRead = vi.fn()
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          step1: { firstName: '' },
+        },
+      })
+
+      return (
+        <form.FormGroup
+          name="step1"
+          validators={{
+            onChange: ({ value }) =>
+              value.firstName.includes('!')
+                ? 'No exclamation marks'
+                : undefined,
+          }}
+        >
+          {(group) => (
+            <>
+              <form.Field
+                name="step1.firstName"
+                children={(field) => (
+                  <button
+                    data-testid="invalidate"
+                    onClick={() => {
+                      field.handleChange('!')
+                      onRead(group.state.meta.isValid)
+                    }}
+                  />
+                )}
+              />
+              <span data-testid="group-valid">
+                {String(group.state.meta.isValid)}
+              </span>
+            </>
+          )}
+        </form.FormGroup>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+    expect(getByTestId('group-valid')).toHaveTextContent('true')
+
+    await user.click(getByTestId('invalidate'))
+
+    expect(onRead).toHaveBeenCalledWith(false)
+    await waitFor(() =>
+      expect(getByTestId('group-valid')).toHaveTextContent('false'),
+    )
+  })
+
+  it('should rerender for group meta first read by an independently rerendering child', async () => {
+    function GroupValidity({ readIsValid }: { readIsValid: () => boolean }) {
+      const [showValidity, setShowValidity] = useState(false)
+
+      return (
+        <>
+          <button
+            data-testid="show-validity"
+            onClick={() => setShowValidity(true)}
+          />
+          {showValidity && (
+            <span data-testid="group-valid">{String(readIsValid())}</span>
+          )}
+        </>
+      )
+    }
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          step1: { firstName: '' },
+        },
+      })
+
+      return (
+        <form.FormGroup
+          name="step1"
+          validators={{
+            onChange: ({ value }) =>
+              value.firstName.includes('!')
+                ? 'No exclamation marks'
+                : undefined,
+          }}
+        >
+          {(group) => (
+            <>
+              <form.Field
+                name="step1.firstName"
+                children={(field) => (
+                  <input
+                    data-testid="first-name"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                )}
+              />
+              <GroupValidity readIsValid={() => group.state.meta.isValid} />
+            </>
+          )}
+        </form.FormGroup>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+
+    await user.click(getByTestId('show-validity'))
+    expect(getByTestId('group-valid')).toHaveTextContent('true')
+
+    await user.type(getByTestId('first-name'), '!')
+    await waitFor(() =>
+      expect(getByTestId('group-valid')).toHaveTextContent('false'),
+    )
   })
 })
