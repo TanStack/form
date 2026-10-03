@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { useSelector } from '@tanstack/react-store'
-import { FormGroupApi, functionalUpdate } from '@tanstack/form-core'
+import { FormGroupApi, functionalUpdate, getBy } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
   DeepKeys,
@@ -203,9 +203,12 @@ export function useFormGroup<
     setPrevOptions({ form: opts.form, name: opts.name })
   }
 
+  // Subscribe to the form's baseStore with a path-based selector so this hook
+  // only re-renders when a field inside *this* group changes, not when any
+  // sibling group's value changes (fixes issue #2377).
   const reactiveStateValue = useSelector(
-    formGroupApi.store,
-    (state) => state.value,
+    formGroupApi.form.baseStore,
+    (state) => getBy(state.values, opts.name),
   )
 
   const reactiveMetaIsTouched = useSelector(
