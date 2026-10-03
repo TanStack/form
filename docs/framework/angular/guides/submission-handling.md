@@ -3,6 +3,97 @@ id: submission-handling
 title: Submission handling
 ---
 
+## Error handling
+
+When a user submits a form, there are several ways errors can occur — each requiring its own handling approach. TanStack Form gives you the flexibility to handle errors your way. To help you get started, here’s how to approach the three most common types of errors you’ll run into:
+
+- **Synchronous user errors** – Issues you can catch right away, like a field being left empty or text that's too short.
+- **Asynchronous user errors** – Issues that come up after submission, like finding out a username is already taken.
+- **Server errors** – Unexpected problems on the backend, such as a failed request or an unknown error.
+
+> [!TIP]
+> If you need help understanding how validation works in TanStack Form, be sure to check out the [form validation](../validation.md) guide!
+
+### Synchronous user errors
+
+These are validation issues that can be detected immediately on the client side, even before the form is submitted. They are typically managed using both form-level and field-level validators, as shown in the example below:
+
+```angular-ts
+@Component({
+  imports: [TanStackField],
+  template: `
+    <ng-container
+      [tanstackField]="form"
+      name="age"
+      [validators]="{
+        onChange: ageValidator
+      }"
+      #age="field"
+    >
+      <!-- label, input, etc. -->
+    </ng-container>
+  `,
+})
+export class AppComponent {
+  ageValidator: FieldValidateFn<any, any, any, any, number> = ({ value }) =>
+    value < 13 ? 'You must be 13 to make an account' : undefined
+
+  // ...
+}
+```
+
+### Asynchronous user errors
+
+Asynchronous errors usually occur after the form is submitted, often due to external checks — like verifying whether a username or email is already taken. These kinds of errors can be handled using the async variants of form and field validators.
+
+Since these requests are usually at form level, see how you can [set field-level errors from the form's validators](../validation.md).
+
+```angular-ts
+form = injectForm({
+  // ...
+  validators: {
+    onSubmitAsync: async ({ value }) => {
+      // Validate the value on the server
+      const response = await createAccount(value)
+
+      if (response.isError) {
+        // Username is taken, return an error
+        return 'Username is already taken!'
+      }
+
+      // The account creation was a success. There is no error that needs to be shown.
+      return null
+    },
+  },
+})
+```
+
+### Server errors
+
+Server errors are unexpected failures that happen during submission — like connectivity issues or internal server faults. These aren't related to user input and therefore **should not be part of form validation**.
+
+These kinds of errors are typically handled by an external library, such as `TanStack Query`:
+
+```angular-ts
+// Using TanStack Query for data mutations
+createAccountMutation = injectMutation(() => ({
+// ...
+}))
+
+form = injectForm({
+  // ...
+  onSubmit: async ({ value }) => {
+    // If an error happens, they are accessible through
+    // `createAccountMutation.error`
+    createAccountMutation.mutate(value, {
+      onSuccess: () => {
+        // handle success by navigate to another route e.g.
+      },
+    })
+  },
+})
+```
+
 ## Passing additional data to submission handling
 
 You may have multiple types of submission behaviour, for example, going back to another page or staying on the form.
