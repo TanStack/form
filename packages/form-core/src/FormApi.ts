@@ -1939,6 +1939,23 @@ export class FormApi<
     if (!fieldInstance) {
       const { hasErrored } = this.validateSync(cause)
 
+      // Clear stale onSubmit errors on this field when validation passes,
+      // mirroring what FieldApi.validateSync does for mounted fields.
+      if (!hasErrored && cause !== 'submit') {
+        const submitErrKey = getErrorMapKey('submit')
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (this.getFieldMeta(field)?.errorMap?.[submitErrKey]) {
+          this.setFieldMeta(field, (prev = defaultFieldMeta) => ({
+            ...prev,
+            errorMap: { ...prev.errorMap, [submitErrKey]: undefined },
+            errorSourceMap: {
+              ...prev.errorSourceMap,
+              [submitErrKey]: undefined,
+            },
+          }))
+        }
+      }
+
       if (hasErrored && !this.options.asyncAlways) {
         return this.getFieldMeta(field)?.errors ?? []
       }

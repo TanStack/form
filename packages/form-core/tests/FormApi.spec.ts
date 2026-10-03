@@ -2646,6 +2646,35 @@ describe('form api', () => {
     expect(form.state.errors).toStrictEqual([])
   })
 
+  it('should clear onSubmit field errors via setFieldValue without field instance mounted', async () => {
+    const validateMessage = 'first name is required'
+    const form = new FormApi({
+      defaultValues: { firstName: '' },
+      validators: {
+        onSubmit: ({ value }) => {
+          if (value.firstName.length === 0)
+            return { fields: { firstName: validateMessage } }
+          return null
+        },
+      },
+    })
+
+    form.mount()
+
+    await form.handleSubmit()
+    expect(form.state.isFieldsValid).toBe(false)
+    expect(form.state.canSubmit).toBe(false)
+    expect(form.state.fieldMeta.firstName?.errorMap.onSubmit).toBe(
+      validateMessage,
+    )
+
+    form.setFieldValue('firstName', 'John')
+
+    expect(form.state.fieldMeta.firstName?.errorMap.onSubmit).toBeUndefined()
+    expect(form.state.isFieldsValid).toBe(true)
+    expect(form.state.canSubmit).toBe(true)
+  })
+
   it('should run validators in order form sync -> field sync -> form async -> field async', async () => {
     const order: string[] = []
     const formAsyncChange = vi.fn().mockImplementation(async () => {
