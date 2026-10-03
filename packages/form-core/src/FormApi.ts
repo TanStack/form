@@ -2465,7 +2465,17 @@ export class FormApi<
       this.baseStore.setState((prev) => ({ ...prev, isSubmitting: false }))
     }
 
-    await this.validateAllFields('submit')
+    const fieldErrors = await this.validateAllFields('submit')
+
+    // A form-level validator owns its field errors (via `{ fields }`), so it must
+    // re-run on every submit to recompute/clear them; otherwise stale errors from
+    // a prior submit keep `isFieldsValid` false and gate the form off permanently
+    // when there are no field-level validators to clear them (#2248). Only run it
+    // here when no field-level validator errored this submit — if the fields are
+    // already invalid on their own, the form validator is skipped as before.
+    if (fieldErrors.length === 0) {
+      await this.validate('submit')
+    }
 
     if (!this.state.isFieldsValid) {
       done()
@@ -2487,8 +2497,6 @@ export class FormApi<
       })
       return
     }
-
-    await this.validate('submit')
 
     // Fields are invalid, do not submit
     if (!this.state.isValid) {
