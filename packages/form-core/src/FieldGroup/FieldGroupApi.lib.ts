@@ -154,6 +154,19 @@ export class InternalFieldGroupApi {
     options?: InternalFieldUpdateOptions,
   ) => this.form.clearFieldValues(this._resolveFieldName(fieldName), options)
 
+  replaceFieldValue = (
+    fieldName: string,
+    index: number,
+    value: unknown,
+    options?: InternalFieldUpdateOptions,
+  ) =>
+    this.form.replaceFieldValue(
+      this._resolveFieldName(fieldName),
+      index,
+      value,
+      options,
+    )
+
   removeFieldValue = (
     fieldName: string,
     index: number,

@@ -334,6 +334,100 @@ describe('form - field array methods', () => {
     })
   })
 
+  describe('replaceFieldValue', () => {
+    it('replaces the element at the specified index', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c'] },
+      })
+      form.replaceFieldValue('items', 1, 'x')
+      expect(form.getFieldValue('items')).toEqual(['a', 'x', 'c'])
+      form.replaceFieldValue('items', 0, 'y')
+      expect(form.getFieldValue('items')).toEqual(['y', 'x', 'c'])
+      form.replaceFieldValue('items', 2, 'z')
+      expect(form.getFieldValue('items')).toEqual(['y', 'x', 'z'])
+    })
+
+    it('warns when called on a non-array field', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const form = new InternalFormApi({ defaultValues: { name: '' } })
+      form.replaceFieldValue('name', 0, 'x')
+      expect(warn).toHaveBeenCalled()
+      expect(form.getFieldValue('name')).toBe('')
+      warn.mockRestore()
+    })
+
+    it('warns when index is negative', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
+      form.replaceFieldValue('items', -1, 'x')
+      expect(warn).toHaveBeenCalled()
+      expect(form.getFieldValue('items')).toEqual(['a', 'b'])
+      warn.mockRestore()
+    })
+
+    it('warns when index is out of bounds', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
+      form.replaceFieldValue('items', 2, 'x')
+      expect(warn).toHaveBeenCalled()
+      expect(form.getFieldValue('items')).toEqual(['a', 'b'])
+      warn.mockRestore()
+    })
+
+    it("updates the array field's meta", () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b'] },
+      })
+      const field = form._getOrCreateFieldApi({ name: 'items' })
+      form.replaceFieldValue('items', 1, 'x')
+      expect(field.meta.isDirty).toBe(true)
+      expect(field.meta.isTouched).toBe(true)
+    })
+
+    it('keeps child fields at their index', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: [{ name: 'a' }, { name: 'b' }] },
+      })
+      const field0 = form._getOrCreateFieldApi({ name: 'items[0].name' })
+      const field1 = form._getOrCreateFieldApi({ name: 'items[1].name' })
+
+      form.replaceFieldValue('items', 1, { name: 'x' })
+
+      expect(form._tryGetFieldApi('items[0].name')).toBe(field0)
+      expect(form._tryGetFieldApi('items[1].name')).toBe(field1)
+      expect(field0.value).toBe('a')
+      expect(field1.value).toBe('x')
+    })
+
+    it('runs change validation on the array field', () => {
+      const validator = vi.fn(() => undefined)
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b'] },
+      })
+      const field = form._getOrCreateFieldApi({
+        name: 'items',
+        validators: [{ run: validator, triggers: ['change'] }],
+      })
+      const unregister = field._register()
+
+      form.replaceFieldValue('items', 0, 'x')
+      expect(validator).toHaveBeenCalledWith(
+        expect.objectContaining({ event: 'change', value: ['x', 'b'] }),
+      )
+
+      unregister()
+    })
+
+    it('replaces values without creating a field node when meta updates are disabled', () => {
+      const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
+
+      form.replaceFieldValue('items', 1, 'x', withoutFieldMeta)
+
+      expect(form.getFieldValue('items')).toEqual(['a', 'x'])
+      expect(form._tryGetFieldApi('items')).toBeNull()
+    })
+  })
+
   describe('filterFieldValues', () => {
     it('filters array elements based on predicate', () => {
       const form = new InternalFormApi({

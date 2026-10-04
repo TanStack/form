@@ -1344,6 +1344,19 @@ export class InternalFieldApi<
     })
   }
 
+  replaceValue = (
+    index: number,
+    value: any,
+    options: FieldUpdateOptions = {},
+  ): void => {
+    if (this._isKilled) return
+
+    return this.form.replaceFieldValue(this.name, index, value, {
+      ...options,
+      fieldApiOverride: this,
+    })
+  }
+
   removeValue = (index: number, options: FieldUpdateOptions = {}): void => {
     if (this._isKilled) return
 

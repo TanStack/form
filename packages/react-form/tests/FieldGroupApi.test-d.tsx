@@ -223,6 +223,9 @@ function FieldGroupApiTypes() {
   fields.pushFieldValue('tags', 1)
   fields.insertFieldValue('emails', 0, { value: 'a@example.com' })
   fields.removeFieldValue('emails', 0)
+  fields.replaceFieldValue('emails', 0, { value: 'b@example.com' })
+  // @ts-expect-error replacement must match the virtual array element
+  fields.replaceFieldValue('emails', 0, 'b@example.com')
   fields.swapFieldValues('emails', 0, 1)
   fields.moveFieldValue('emails', 0, 1)
   fields.clearFieldValues('emails')

@@ -108,6 +108,47 @@ function insertFieldValue({
   })
 }
 
+function replaceFieldValue({
+  form,
+  arrayFieldName,
+  index,
+  value,
+  options,
+}: {
+  form: AnyInternalFormApi
+  arrayFieldName: string
+  index: number
+  value: any
+  options: InternalFieldUpdateOptions | undefined
+}): void {
+  if (
+    isInvalidArrayMethod(form, 'replaceFieldValue', arrayFieldName, {
+      bounds: [index],
+      allowEndIndex: false,
+    })
+  ) {
+    return
+  }
+
+  const updateOptions = resolveFieldUpdateOptions(options, 'change')
+  updateOptions.fieldApiOverride = getTargetField(
+    form,
+    arrayFieldName,
+    updateOptions,
+  )
+
+  // No indices shift, so the field at `index` keeps its state and reads the new value
+  form.setFieldValue(
+    arrayFieldName,
+    (prev: Array<any>) => {
+      const array = prev.slice()
+      array[index] = value
+      return array
+    },
+    updateOptions,
+  )
+}
+
 function removeFieldValue({
   form,
   arrayFieldName,
@@ -361,7 +402,7 @@ export const ArrayMethods = {
   removeValue: removeFieldValue,
   swapValues: swapFieldValues,
   moveValue: moveFieldValue,
-  // 'replaceFieldValue'
+  replaceValue: replaceFieldValue,
   clearValues: clearFieldValues,
   filterValues: filterFieldValues,
 }
