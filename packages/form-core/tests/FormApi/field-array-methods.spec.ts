@@ -374,6 +374,53 @@ describe('form - field array methods', () => {
       warn.mockRestore()
     })
 
+    it('warns when index is not an integer', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
+      const field = form._getOrCreateFieldApi({ name: 'items' })
+      form.replaceFieldValue('items', 0.5, 'x')
+      expect(warn).toHaveBeenCalled()
+      expect(form.getFieldValue('items')).toEqual(['a', 'b'])
+      expect(Object.keys(form.getFieldValue('items'))).toEqual(['0', '1'])
+      expect(field.meta.isDirty).toBe(false)
+      warn.mockRestore()
+    })
+
+    it("revalidates the replaced element's child fields", async () => {
+      const nameValidator = vi.fn(({ value }: { value: string }) =>
+        value ? undefined : 'required',
+      )
+      const form = new InternalFormApi({
+        defaultValues: { items: [{ name: 'a' }, { name: '' }] },
+      })
+      form._getOrCreateFieldApi({ name: 'items' })._register()
+      const otherField = form._getOrCreateFieldApi({
+        name: 'items[0].name',
+        validators: [{ run: nameValidator, triggers: ['change'] }],
+      })
+      const nameField = form._getOrCreateFieldApi({
+        name: 'items[1].name',
+        validators: [{ run: nameValidator, triggers: ['change'] }],
+      })
+      otherField._register()
+      nameField._register()
+
+      nameField.handleChange('')
+      await vi.waitFor(() =>
+        expect(nameField.errors).toEqual([{ message: 'required' }]),
+      )
+      nameValidator.mockClear()
+
+      form.replaceFieldValue('items', 1, { name: 'x' })
+
+      expect(form._tryGetFieldApi('items[1].name')).toBe(nameField)
+      await vi.waitFor(() => expect(nameField.errors).toEqual([]))
+      expect(nameValidator).toHaveBeenCalledTimes(1)
+      expect(nameValidator).toHaveBeenCalledWith(
+        expect.objectContaining({ event: 'change', value: 'x' }),
+      )
+    })
+
     it("updates the array field's meta", () => {
       const form = new InternalFormApi({
         defaultValues: { items: ['a', 'b'] },
