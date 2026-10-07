@@ -149,6 +149,28 @@ export interface UnknownDeepKeyAndValue<
   value: unknown
 }
 
+/**
+ * The accessor of a path below a point where a self-referencing type was cut
+ * off. Unlike `UnknownAccessor` it also accepts a bracket suffix, because the
+ * cut type can be an array that is directly nested in another array
+ * (e.g. `data[0][0]` for `type Json = Json[] | { [key: string]: Json }`).
+ */
+export type RecursiveAccessor<TParent extends AnyDeepKeyAndValue> =
+  TParent['key'] extends never
+    ? string
+    :
+        | `${TParent['key']}.${string}`
+        | `${TParent['key']}[${number}]`
+        | `${TParent['key']}[${number}].${string}`
+        | `${TParent['key']}[${number}][${string}`
+
+export interface RecursiveDeepKeyAndValue<
+  TParent extends AnyDeepKeyAndValue,
+> extends AnyDeepKeyAndValue {
+  key: RecursiveAccessor<TParent>
+  value: unknown
+}
+
 export type DeepKeysAndValues<T> =
   DeepKeysAndValuesImpl<T> extends AnyDeepKeyAndValue
     ? DeepKeysAndValuesImpl<T>
@@ -189,7 +211,7 @@ export type DeepKeysAndValuesImpl<
       ? TAcc
       : T extends ReadonlyArray<any>
         ? true extends IsVisited<T, TVisited>
-          ? TAcc | UnknownDeepKeyAndValue<TParent>
+          ? TAcc | RecursiveDeepKeyAndValue<TParent>
           : number extends T['length']
             ? DeepKeyAndValueArray<TParent, T, TAcc, TVisited>
             : DeepKeyAndValueTuple<TParent, T, TAcc, AllTupleKeys<T>, TVisited>
@@ -197,7 +219,7 @@ export type DeepKeysAndValuesImpl<
           ? TAcc | UnknownDeepKeyAndValue<TParent>
           : T extends object
             ? true extends IsVisited<T, TVisited>
-              ? TAcc | UnknownDeepKeyAndValue<TParent>
+              ? TAcc | RecursiveDeepKeyAndValue<TParent>
               : DeepKeyAndValueObject<
                   TParent,
                   T,

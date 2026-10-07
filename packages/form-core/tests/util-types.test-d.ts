@@ -558,6 +558,25 @@ describe('self-referencing types', () => {
     expectTypeOf<'name.foo'>().not.toExtend<Keys>()
   })
 
+  it('should accept consecutive array indexes below the point where a recursive array repeats', () => {
+    type Keys = DeepKeys<JsonForm>
+
+    expectTypeOf<'data[0][0]'>().toExtend<Keys>()
+    expectTypeOf<'data[0][0][1]'>().toExtend<Keys>()
+    expectTypeOf<'data[0][0].foo'>().toExtend<Keys>()
+    expectTypeOf<'data[0][0].foo[1][2].bar'>().toExtend<Keys>()
+    expectTypeOf<'data.foo[0][0]'>().toExtend<Keys>()
+    expectTypeOf<'data[0].foo[0][1]'>().toExtend<Keys>()
+    expectTypeOf<'data[0]foo'>().not.toExtend<Keys>()
+    expectTypeOf<'data[foo]'>().not.toExtend<Keys>()
+    expectTypeOf<'name[0]'>().not.toExtend<Keys>()
+  })
+
+  it('should resolve the value of a path with consecutive array indexes', () => {
+    expectTypeOf<DeepValue<JsonForm, 'data[0][0]'>>().not.toBeNever()
+    expectTypeOf<DeepValue<JsonForm, 'data[0][0].foo'>>().not.toBeNever()
+  })
+
   it('should stop expanding a recursive index signature at the point where it repeats', () => {
     expectTypeOf<DeepKeys<FieldValues>>().toEqualTypeOf<string>()
   })
