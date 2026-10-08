@@ -31,6 +31,9 @@ This page is a starting checklist for migrating React apps from v1 to v2.
 - Keep array mutations on the `ArrayField` render prop, such as
   `array.pushValue(...)`, or use path-based form methods such as
   `form.pushFieldValue(...)` when the control lives outside the render prop.
+- Rename `form.moveFieldValues` to `form.moveFieldValue`, and replace removed
+  form methods such as `setFieldMeta` and `validateField` as described in
+  [Removed and renamed form methods](#removed-and-renamed-form-methods).
 - Read errors from `field.errors`, `group.state.errors`, and
   `form.state.errors` as validation issue objects. Use `error.message` when
   rendering text.
@@ -582,6 +585,125 @@ The v2 array example calls out the performance reason for this change:
 without forcing the whole list to rerender for every item value change.
 
 For current usage and adapter-specific examples, see [Arrays](./arrays).
+
+## Removed and renamed form methods
+
+The v2 form API is smaller than v1's. It reads and updates values, mutates
+arrays, runs form-level validation, submits, and resets. Field metadata now
+lives on the field API, validators and submit results produce errors instead
+of code writing them directly, and nothing replaces the internal
+field-registry helpers.
+
+| v1                                                      | v2                                                                                                 |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `moveFieldValues(name, from, to)`                       | `moveFieldValue(name, from, to)`                                                                   |
+| `setFieldMeta(name, updater)`                           | `setFieldValue` update options, `handleSubmit()`, or `errorVisibility`                             |
+| `getFieldMeta(name)`                                    | `field.meta`                                                                                       |
+| `resetFieldMeta(...)`                                   | `resetField(name)`, `field.reset()`, or `reset(form.state.values, { updateDefaultValues: false })` |
+| `validateField(name, cause)`                            | validator `triggers` and `watchFields`                                                             |
+| `validateAllFields(cause)`                              | `handleSubmit()`                                                                                   |
+| `validateArrayFieldsStartingFrom(...)`                  | array methods run change validation unless `causeValidation: false`                                |
+| `validate(cause)`                                       | `validate('change' \| 'blur')`, which runs form-level validators only                              |
+| `getAllErrors()`                                        | `form.state.errors`, `field.errors`, `form.state.isValid`, or the `handleSubmit()` result          |
+| `setErrorMap(errorMap)`                                 | errors returned from validators, `createValidationError(...)` from `onSubmit`, or `serverState`    |
+| `deleteField(name)`                                     | `removeFieldValue` / `filterFieldValues` for array items, `setFieldValue` on the parent object     |
+| `getFieldInfo(name)`                                    | none; it exposed internal field registration                                                       |
+| `parseValuesWithSchema(schema)` and its `Async` variant | a schema validator plus `schemaOutputs` in `onSubmit`, or call the schema directly                 |
+| `getFormGroupMeta(name)`                                | `group.state` from `form.FormGroup`                                                                |
+
+### Field metadata
+
+v1 code often wrote field meta directly, for example to mark a field as touched
+when its value was set programmatically. In v2, meta is derived from updates.
+Pass `FieldUpdateOptions` to `setFieldValue`, the array methods, or
+`field.handleChange` to control what an update marks:
+
+```tsx
+// v1
+form.setFieldValue('firstName', 'Ada', {
+  dontUpdateMeta: true,
+  dontValidate: true,
+})
+form.setFieldMeta('firstName', (prev) => ({ ...prev, isTouched: true }))
+```
+
+```tsx
+// v2
+form.setFieldValue('firstName', 'Ada', {
+  markAsTouched: true,
+  markAsDirty: false,
+  causeValidation: false,
+})
+```
+
+| v1 update option   | v2 update option                             |
+| ------------------ | -------------------------------------------- |
+| `dontUpdateMeta`   | `markAsTouched: false`, `markAsDirty: false` |
+| `dontValidate`     | `causeValidation: false`                     |
+| `dontRunListeners` | none                                         |
+
+To touch every field before showing errors, call `form.handleSubmit()`, which
+marks all registered fields as touched. To show errors without touching fields,
+configure `errorVisibility` instead.
+
+Read meta from the field API, as `field.meta` in a render prop or with
+`useSelector(field.atom, (state) => state.meta)`. The form API does not look up
+meta by path.
+
+To clear meta, `form.resetField(name)` and `field.reset()` reset one field's
+value and meta. To clear every field's meta but keep the values the user
+entered, reset the form to its current values without moving the default
+baseline:
+
+```tsx
+form.reset(form.state.values, { updateDefaultValues: false })
+```
+
+This also clears form-level errors, submission state, and dirty history.
+
+### On-demand validation
+
+v2 has no public method that validates a single field or every field outside
+submission. Express when a field validates through its validators instead:
+
+- Use `triggers` to choose the events that run a validator.
+- Use `watchFields` to rerun a validator when another field changes, which
+  covers most v1 `validateField` calls made from another field's `onChange`.
+- Call `form.handleSubmit()` to validate every field and the form together.
+  Unlike `validateAllFields`, it also calls `onSubmit` when validation passes.
+  It resolves to the error results, so an empty array means everything is
+  valid.
+
+`form.validate('change')` and `form.validate('blur')` still exist, but they run
+form-level validators only. Field validators do not run.
+
+### Errors
+
+v2 does not write error maps directly. Return errors from a validator, or from
+`onSubmit` with `createValidationError(...)` as shown in
+[Errors and submit results](#errors-and-submit-results). For server-rendered
+errors, pass `serverState` to `useForm`.
+
+To read errors, `form.state.errors` holds form-level errors only. Errors routed
+to fields stay on the fields, available as `field.errors`. Use
+`form.state.isValid` to check both levels at once.
+
+### Schemas
+
+`parseValuesWithSchema` checked the current values against a schema without
+storing errors. To keep that behavior, call the schema yourself:
+
+```tsx
+const result = await schema['~standard'].validate(form.state.values)
+
+if (result.issues) {
+  // handle issues
+}
+```
+
+To validate with the schema and use its parsed output, add it to `validators`
+and read `schemaOutputs` in `onSubmit`, as described in
+[Standard schemas](#standard-schemas).
 
 ## Shared form options
 
