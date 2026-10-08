@@ -3,7 +3,7 @@ id: FieldApiOptions
 title: FieldApiOptions
 ---
 
-Defined in: [FieldApi/FieldApi.public.ts:206](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L206)
+Defined in: [FieldApi/FieldApi.public.ts:221](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L221)
 
 ## Type Parameters
 
@@ -43,7 +43,7 @@ Defined in: [FieldApi/FieldApi.public.ts:206](https://github.com/TanStack/form/b
 optional errorBoundary?: boolean;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:224](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L224)
+Defined in: [FieldApi/FieldApi.public.ts:239](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L239)
 
 Route descendant field errors from form and form group validators to this field.
 
@@ -55,7 +55,7 @@ Route descendant field errors from form and form group validators to this field.
 optional errorVisibility?: ErrorVisibility<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:220](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L220)
+Defined in: [FieldApi/FieldApi.public.ts:235](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L235)
 
 ***
 
@@ -68,7 +68,7 @@ optional listeners?: FieldListeners<TFieldData, TFieldName, TFieldValue, Fallbac
 | ExtractFormFieldError<TFormErrorTypes>>, TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:226](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L226)
+Defined in: [FieldApi/FieldApi.public.ts:241](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L241)
 
 ***
 
@@ -78,7 +78,7 @@ Defined in: [FieldApi/FieldApi.public.ts:226](https://github.com/TanStack/form/b
 name: TFieldName;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:219](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L219)
+Defined in: [FieldApi/FieldApi.public.ts:234](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L234)
 
 ***
 
@@ -88,4 +88,4 @@ Defined in: [FieldApi/FieldApi.public.ts:219](https://github.com/TanStack/form/b
 optional validators?: TFieldValidators;
 ```
 
-Defined in: [FieldApi/FieldApi.public.ts:225](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L225)
+Defined in: [FieldApi/FieldApi.public.ts:240](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L240)
