@@ -892,6 +892,46 @@ describe('field api', () => {
     storeunsub()
   })
 
+  it('should set isValidating on every async validation run', async () => {
+    // Test for https://github.com/TanStack/form/issues/2372
+    vi.useFakeTimers()
+
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onChangeAsync: async ({ value }) => {
+          await sleep(1000)
+          return value === 'admin' ? 'Username is already taken' : undefined
+        },
+      },
+    })
+
+    field.mount()
+
+    field.setValue('admin')
+    await vi.advanceTimersByTimeAsync(0)
+    expect(field.getMeta().isValidating).toBe(true)
+    await vi.runAllTimersAsync()
+    expect(field.getMeta().isValidating).toBe(false)
+    expect(field.getMeta().errors).toStrictEqual(['Username is already taken'])
+
+    field.setValue('asdf')
+    await vi.advanceTimersByTimeAsync(0)
+    expect(field.getMeta().isValidating).toBe(true)
+    await vi.runAllTimersAsync()
+    expect(field.getMeta().isValidating).toBe(false)
+    expect(field.getMeta().errors).toStrictEqual([])
+  })
+
   it('should run async validation onChange', async () => {
     vi.useFakeTimers()
 
