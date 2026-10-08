@@ -253,6 +253,38 @@ export type RemoveFieldValueFn<in out TFormData> = <
 ) => void
 
 /**
+ * Replaces the element at an index in an array field.
+ *
+ * An invalid index or a runtime value that is not an array produces a warning
+ * and leaves the value unchanged.
+ *
+ * By default, the update marks the array field as touched and dirty, notifies
+ * change listeners, and runs change validation.
+ *
+ * @example
+ * ```ts
+ * // items: ['first', 'second', 'third']
+ * formApi.replaceFieldValue('items', 1, 'new item')
+ * // items: ['first', 'new item', 'third']
+ * ```
+ *
+ * @param arrayFieldName - The array field path.
+ * @param index - The index to replace, from `0` through `array.length - 1`.
+ * @param value - The new element.
+ * @param options - Controls metadata updates and whether validation runs.
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ * @typeParam TFieldName - Library-managed. Do not specify explicitly.
+ */
+export type ReplaceFieldValueFn<in out TFormData> = <
+  TFieldName extends ArrayFieldName<TFormData>,
+>(
+  arrayFieldName: TFieldName,
+  index: number,
+  value: ArrayFieldElement<TFormData, TFieldName>,
+  options?: FieldUpdateOptions,
+) => void
+
+/**
  * Keeps the elements that satisfy a predicate.
  *
  * A runtime value that is not an array produces a warning and is left
@@ -395,6 +427,25 @@ export interface FormApiArrayMethods<in out TFormData> {
    * ```
    */
   removeFieldValue: RemoveFieldValueFn<TFormData>
+
+  /**
+   * Replaces the element at an index in an array field.
+   *
+   * The index must be between `0` and `array.length - 1`. An out-of-range index
+   * or a runtime value that is not an array produces a warning and leaves the
+   * value unchanged.
+   *
+   * By default, the update marks the array field as touched and dirty, notifies
+   * change listeners, and runs change validation.
+   *
+   * @example
+   * ```ts
+   * // items: ['first', 'second', 'third']
+   * formApi.replaceFieldValue('items', 1, 'new item')
+   * // items: ['first', 'new item', 'third']
+   * ```
+   */
+  replaceFieldValue: ReplaceFieldValueFn<TFormData>
 
   /**
    * Keeps the elements that satisfy a predicate.

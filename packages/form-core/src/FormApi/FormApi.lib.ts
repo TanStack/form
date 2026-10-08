@@ -598,6 +598,21 @@ export class InternalFormApi<
     })
   }
 
+  replaceFieldValue = (
+    arrayFieldName: string,
+    index: number,
+    value: any,
+    options?: InternalFieldUpdateOptions,
+  ): void => {
+    return ArrayMethods.replaceValue({
+      form: this,
+      arrayFieldName,
+      index,
+      value,
+      options,
+    })
+  }
+
   removeFieldValue = (
     arrayFieldName: string,
     index: number,

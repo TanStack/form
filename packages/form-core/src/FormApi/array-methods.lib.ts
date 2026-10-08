@@ -1,6 +1,8 @@
 import { batch } from '@tanstack/store'
 import { getTargetField, resolveFieldUpdateOptions } from '../utils.lib'
 import { tryGetFieldApi } from '../FieldApi/FieldApi.lib'
+import { collectFieldSubtree } from '../FieldApi/fieldTraversal.lib'
+import type { AnyInternalFieldApi } from '../FieldApi/FieldApi.lib'
 import type { AnyInternalFormApi } from './FormApi.lib'
 import type { InternalFieldUpdateOptions } from '../types.lib'
 
@@ -25,7 +27,7 @@ function isInvalidArrayMethod(
   }
   const maxIndex = allowEndIndex ? array.length : array.length - 1
   for (const index of bounds) {
-    if (index < 0 || index > maxIndex) {
+    if (!Number.isInteger(index) || index < 0 || index > maxIndex) {
       console.warn(
         `<form>.${methodName}: ${index} is out of bounds for '${arrayFieldName}', expected 0 - ${maxIndex}.`,
       )
@@ -106,6 +108,58 @@ function insertFieldValue({
       }
     }
   })
+}
+
+function replaceFieldValue({
+  form,
+  arrayFieldName,
+  index,
+  value,
+  options,
+}: {
+  form: AnyInternalFormApi
+  arrayFieldName: string
+  index: number
+  value: any
+  options: InternalFieldUpdateOptions | undefined
+}): void {
+  if (
+    isInvalidArrayMethod(form, 'replaceFieldValue', arrayFieldName, {
+      bounds: [index],
+      allowEndIndex: false,
+    })
+  ) {
+    return
+  }
+
+  const updateOptions = resolveFieldUpdateOptions(options, 'change')
+  const arrayField = getTargetField(form, arrayFieldName, updateOptions)
+  updateOptions.fieldApiOverride = arrayField
+
+  // No indices shift, so the field at `index` keeps its state and reads the new value
+  form.setFieldValue(
+    arrayFieldName,
+    (prev: Array<any>) => {
+      const array = prev.slice()
+      array[index] = value
+      return array
+    },
+    updateOptions,
+  )
+
+  if (!arrayField || !updateOptions.causeValidation) return
+
+  // The change cascade above only validates the array field and its ancestors.
+  // Revalidate the replaced element's existing subtree so errors computed
+  // for the old value don't linger.
+  const replacedField = tryGetFieldApi(arrayField, [index])
+  if (!replacedField) return
+
+  const seenValidatorFields = new WeakSet<AnyInternalFieldApi>()
+  for (const field of collectFieldSubtree(replacedField)) {
+    field._runFieldValidation('change')
+    field._notifyValidator('change', seenValidatorFields)
+  }
 }
 
 function removeFieldValue({
@@ -361,7 +415,7 @@ export const ArrayMethods = {
   removeValue: removeFieldValue,
   swapValues: swapFieldValues,
   moveValue: moveFieldValue,
-  // 'replaceFieldValue'
+  replaceValue: replaceFieldValue,
   clearValues: clearFieldValues,
   filterValues: filterFieldValues,
 }

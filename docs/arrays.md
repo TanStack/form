@@ -379,6 +379,9 @@ field.insertValue(index, value)
 // Remove the item at an index.
 field.removeValue(index)
 
+// Replace the item at an index.
+field.replaceValue(index, value)
+
 // Exchange two items.
 field.swapValues(indexA, indexB)
 
@@ -401,6 +404,9 @@ form.insertFieldValue('items', index, value)
 
 // Remove the item at an index.
 form.removeFieldValue('items', index)
+
+// Replace the item at an index.
+form.replaceFieldValue('items', index, value)
 
 // Exchange two items.
 form.swapFieldValues('items', indexA, indexB)

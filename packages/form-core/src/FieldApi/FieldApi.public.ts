@@ -94,6 +94,12 @@ type FieldInsertValueFn<in out TFieldValue> = (
 
 type FieldClearValuesFn = (options?: FieldUpdateOptions) => void
 
+type FieldReplaceValueFn<in out TFieldValue> = (
+  index: number,
+  value: FieldArrayElement<TFieldValue>,
+  options?: FieldUpdateOptions,
+) => void
+
 type FieldRemoveValueFn = (index: number, options?: FieldUpdateOptions) => void
 
 type FieldMoveValueFn = (
@@ -171,6 +177,15 @@ export interface FieldApi<
    * @param options - Optional update options
    */
   clearValues: FieldClearValuesFn
+
+  /**
+   * Replace the value at the specified index in this field's array.
+   * If this field is not an array, this method will be ignored.
+   * @param index - The index of the value to replace
+   * @param value - The new value
+   * @param options - Optional update options
+   */
+  replaceValue: FieldReplaceValueFn<TFieldValue>
 
   /**
    * Remove a value from this field's array at the specified index.
