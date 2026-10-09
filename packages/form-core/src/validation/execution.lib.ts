@@ -251,11 +251,11 @@ export async function executeValidator<TResult extends ValidateResult>(
   context: AnyValidatorContext,
   scope: 'field' | 'form',
 ): Promise<ValidatorExecutionResult<TResult>> {
-  if (isStandardSchema(validator.run)) {
-    return parseStandardSchema(validator.run, context.value, scope) as never
-  }
+  const result = isStandardSchema(validator.run)
+    ? await parseStandardSchema(validator.run, context.value, scope)
+    : await validator.run(context)
 
-  return normalizeValidatorResult((await validator.run(context)) as TResult)
+  return normalizeValidatorResult(result as TResult)
 }
 
 /** Separates explicitly branded outputs from ordinary validation returns. */

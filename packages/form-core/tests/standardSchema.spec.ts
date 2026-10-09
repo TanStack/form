@@ -4,6 +4,7 @@ import {
   parseStandardSchema,
   prefixSchemaToErrors,
 } from '../src/standardSchema.lib'
+import { VALIDATION_OUTPUT } from '../src/validationOutput.lib'
 import type {
   StandardSchemaV1,
   StandardSchemaV1Issue,
@@ -127,17 +128,15 @@ describe('standard schema validation', () => {
   })
 
   describe('parseStandardSchema', () => {
-    it('returns schema output for successful validation', async () => {
+    it('returns branded schema output for successful validation', async () => {
       const schema = getSchema((value) => ({
         value: { parsed: String(value).toUpperCase() },
       }))
 
-      await expect(
-        parseStandardSchema(schema, 'value', 'form'),
-      ).resolves.toEqual({
-        result: null,
-        output: { parsed: 'VALUE' },
-        hasOutput: true,
+      const result = await parseStandardSchema(schema, 'value', 'form')
+
+      expect(result).toEqual({
+        [VALIDATION_OUTPUT]: { parsed: 'VALUE' },
       })
     })
 
@@ -147,11 +146,9 @@ describe('standard schema validation', () => {
       ] satisfies Array<StandardSchemaV1Issue>
       const schema = getSchema(() => ({ issues }))
 
-      await expect(parseStandardSchema(schema, '', 'field')).resolves.toEqual({
-        result: issues,
-        output: null,
-        hasOutput: false,
-      })
+      const result = await parseStandardSchema(schema, '', 'field')
+
+      expect(result).toEqual(issues)
     })
 
     it('returns prefixed field errors for form scope', async () => {
@@ -160,17 +157,17 @@ describe('standard schema validation', () => {
       ] satisfies Array<StandardSchemaV1Issue>
       const schema = getSchema(() => Promise.resolve({ issues }))
 
-      await expect(
-        parseStandardSchema(schema, { users: [{ name: '' }] }, 'form'),
-      ).resolves.toEqual({
-        result: {
-          form: issues,
-          fields: {
-            'users[0].name': issues,
-          },
+      const result = await parseStandardSchema(
+        schema,
+        { users: [{ name: '' }] },
+        'form',
+      )
+
+      expect(result).toEqual({
+        form: issues,
+        fields: {
+          'users[0].name': issues,
         },
-        output: null,
-        hasOutput: false,
       })
     })
 
@@ -182,17 +179,13 @@ describe('standard schema validation', () => {
       ] satisfies Array<StandardSchemaV1Issue>
       const schema = getSchema(() => ({ issues }))
 
-      await expect(
-        parseStandardSchema(schema, { name: '' }, 'form'),
-      ).resolves.toEqual({
-        result: {
-          form: issues,
-          fields: {
-            name: [issues[2]],
-          },
+      const result = await parseStandardSchema(schema, { name: '' }, 'form')
+
+      expect(result).toEqual({
+        form: issues,
+        fields: {
+          name: [issues[2]],
         },
-        output: null,
-        hasOutput: false,
       })
     })
 

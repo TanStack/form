@@ -21,14 +21,12 @@ import type {
   FormGroupValidateResult,
   FormValidateResult,
 } from '../validation.public'
-import type { AnyValidatorContext, ValidateResult } from './execution.lib'
+import type {
+  AnyValidatorContext,
+  ValidateResult,
+  ValidatorExecutionResult,
+} from './execution.lib'
 import type { PipelineResult } from './pipeline.lib'
-
-type MountValidationExecutionResult<in out TResult extends ValidateResult> = {
-  result: TResult
-  output: any | null
-  hasOutput: boolean
-}
 
 interface FormMountValidatorPipelineArgs {
   pipeline: ReadonlyArray<AnyInternalValidatorInstance>
@@ -53,12 +51,8 @@ interface MountValidatorPipelineArgs<in out TResult extends ValidateResult> {
  */
 function createEmptyMountValidationResult<
   TResult extends ValidateResult,
->(): MountValidationExecutionResult<TResult> {
-  return {
-    result: null as TResult,
-    output: null,
-    hasOutput: false,
-  }
+>(): ValidatorExecutionResult<TResult> {
+  return normalizeValidatorResult(null as TResult)
 }
 
 /**
@@ -69,7 +63,7 @@ function createEmptyMountValidationResult<
  */
 function processMountValidationExecutionResult<TResult extends ValidateResult>(
   validatorInstance: AnyInternalValidatorInstance,
-  executionResult: MountValidationExecutionResult<TResult>,
+  executionResult: ValidatorExecutionResult<TResult>,
   onResult?: (result: PipelineResult<TResult>) => void,
 ): boolean {
   const result: PipelineResult<TResult> = {
@@ -95,8 +89,8 @@ function executeMountValidator<TResult extends ValidateResult>(
   scope: 'field' | 'form',
   validatorInstance: AnyInternalValidatorInstance,
 ):
-  | MountValidationExecutionResult<TResult>
-  | PromiseLike<MountValidationExecutionResult<TResult>> {
+  | ValidatorExecutionResult<TResult>
+  | PromiseLike<ValidatorExecutionResult<TResult>> {
   const validator = validatorInstance.definition
   const { signal, cleanup } = createValidatorAbortContext(validatorInstance, {
     cancelDebouncer: true,
@@ -112,22 +106,20 @@ function executeMountValidator<TResult extends ValidateResult>(
             return createEmptyMountValidationResult<TResult>()
           }
 
-          return result
+          return normalizeValidatorResult(result as TResult)
         })
         .catch((error) => {
           console.error(error)
           return createEmptyMountValidationResult<TResult>()
         })
-        .finally(cleanup) as unknown as PromiseLike<
-        MountValidationExecutionResult<TResult>
-      >
+        .finally(cleanup)
     }
 
     const result = validator.run(context)
 
     if (isPromiseLike(result)) {
       return Promise.resolve(result)
-        .then((asyncResult): MountValidationExecutionResult<TResult> => {
+        .then((asyncResult): ValidatorExecutionResult<TResult> => {
           if (signal.aborted) {
             return createEmptyMountValidationResult<TResult>()
           }
@@ -163,7 +155,7 @@ async function continueMountValidationFromAsyncResult<
   getContext: MountValidatorPipelineArgs<TResult>['getContext'],
   scope: 'field' | 'form',
   startIndex: number,
-  firstResult: PromiseLike<MountValidationExecutionResult<TResult>>,
+  firstResult: PromiseLike<ValidatorExecutionResult<TResult>>,
   hasFailedBefore: boolean,
   onResult?: (result: PipelineResult<TResult>) => void,
 ): Promise<void> {

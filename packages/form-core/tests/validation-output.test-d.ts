@@ -1,7 +1,7 @@
 import { describe, expectTypeOf, it } from 'vitest'
 import { z } from 'zod'
 import { formOptions } from '../src'
-import { validateServerValues } from '../src/internals'
+import { parseStandardSchema, validateServerValues } from '../src/internals'
 import type {
   FieldValidatorContext,
   FieldValidators,
@@ -31,6 +31,18 @@ function defineGroupValidators<const T extends FormGroupValidators<Data>>(
 }
 
 describe('validator output types', () => {
+  it('retains the schema output type in parsed output wrappers', () => {
+    const result = parseStandardSchema(
+      z.object({ name: z.string() }),
+      { name: 'Tony' },
+      'form',
+    )
+
+    expectTypeOf<
+      Extract<Awaited<typeof result>, ValidationOutput<unknown>>
+    >().toEqualTypeOf<ValidationOutput<{ name: string }>>()
+  })
+
   it('infers mixed schema and sync/async function outputs without raw error returns', () => {
     formOptions({
       defaultValues: { name: '' },
