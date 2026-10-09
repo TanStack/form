@@ -1,0 +1,36 @@
+---
+id: StoreActionsFactory
+title: StoreActionsFactory
+---
+
+```ts
+type StoreActionsFactory<T, TActions> = (store) => TActions;
+```
+
+Defined in: node\_modules/.pnpm/@tanstack+store@0.11.1/node\_modules/@tanstack/store/dist/store.d.ts:6
+
+## Type Parameters
+
+### T
+
+`T`
+
+### TActions
+
+`TActions` *extends* [`StoreActionMap`](StoreActionMap.md)
+
+## Parameters
+
+### store
+
+#### get
+
+[`Store`](../classes/Store.md)\<`T`\>\[`"get"`\]
+
+#### setState
+
+[`Store`](../classes/Store.md)\<`T`\>\[`"setState"`\]
+
+## Returns
+
+`TActions`

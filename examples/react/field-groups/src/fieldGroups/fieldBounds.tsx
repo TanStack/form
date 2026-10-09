@@ -2,7 +2,7 @@ import { defineFieldGroup } from '@tanstack/react-form'
 import { z } from 'zod'
 import { StringField } from '../StringField'
 
-export const boundsSchema = z.coerce.number<string>().int()
+const boundsSchema = z.coerce.number<string>().int()
 
 // Example 1: a field group can package field-specific options.
 // `value` is a virtual field name. Callers bind it to a real field path like

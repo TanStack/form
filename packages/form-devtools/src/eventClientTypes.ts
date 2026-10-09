@@ -5,7 +5,7 @@ export interface DevtoolsMountedForm {
   instanceId: FormId
 }
 
-export interface FormDevtoolsBridgeStatusRequest {
+interface FormDevtoolsBridgeStatusRequest {
   requestId: string
 }
 
@@ -114,7 +114,7 @@ type FieldErrorSuspicion<
   evidence: TEvidence
 }
 
-export type SchemaErrorUnmountedFieldSuspicion = FieldErrorSuspicion<
+type SchemaErrorUnmountedFieldSuspicion = FieldErrorSuspicion<
   'schema-error-on-unmounted-field',
   {
     fieldPath: string
@@ -122,14 +122,14 @@ export type SchemaErrorUnmountedFieldSuspicion = FieldErrorSuspicion<
   }
 >
 
-export type ServerErrorUnmountedFieldSuspicion = FieldErrorSuspicion<
+type ServerErrorUnmountedFieldSuspicion = FieldErrorSuspicion<
   'server-error-on-unmounted-field',
   {
     fieldPath: string
   }
 >
 
-export type ErrorsHiddenSuspicion = FieldErrorSuspicion<
+type ErrorsHiddenSuspicion = FieldErrorSuspicion<
   'errors-hidden',
   {
     fieldPath: string
@@ -160,7 +160,7 @@ type FieldSuspicion<
   evidence: TEvidence
 }
 
-export type SchemaErrorsUnmountedDescendantsSuspicion = FieldSuspicion<
+type SchemaErrorsUnmountedDescendantsSuspicion = FieldSuspicion<
   'schema-errors-on-unmounted-descendants',
   {
     fieldPath: string
@@ -168,7 +168,7 @@ export type SchemaErrorsUnmountedDescendantsSuspicion = FieldSuspicion<
   }
 >
 
-export type ValidatorWithoutTriggersLocation =
+type ValidatorWithoutTriggersLocation =
   | {
       scope: 'field' | 'form'
       validatorIndex: number
@@ -204,7 +204,7 @@ interface DevtoolsFieldDetailSubfieldsMeta {
   isSomeValidating: boolean
 }
 
-export interface DevtoolsFieldDetailMeta {
+interface DevtoolsFieldDetailMeta {
   isTouched: boolean
   isDirty: boolean
   isPristine: boolean

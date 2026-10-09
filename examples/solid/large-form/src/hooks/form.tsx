@@ -17,16 +17,14 @@ function SubscribeButton(props: { label: string }) {
   )
 }
 
-export const {
-  appFormOptions,
-  defineAppFieldGroup,
-  useAppForm,
-  useFormContext,
-} = createFormHook({
-  fieldComponents: {
-    TextField: AppTextField,
-  },
-  formComponents: {
-    SubscribeButton,
-  },
-})
+const { appFormOptions, defineAppFieldGroup, useAppForm, useFormContext } =
+  createFormHook({
+    fieldComponents: {
+      TextField: AppTextField,
+    },
+    formComponents: {
+      SubscribeButton,
+    },
+  })
+
+export { appFormOptions, defineAppFieldGroup, useAppForm }

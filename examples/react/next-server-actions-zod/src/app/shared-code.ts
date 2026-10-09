@@ -5,7 +5,7 @@ const clientSchema = z.object({
   age: z.number().min(8),
 })
 
-export const serverSchema = z.object({
+const serverSchema = z.object({
   age: z.number().min(12),
 })
 

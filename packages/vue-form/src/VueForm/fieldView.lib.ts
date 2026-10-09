@@ -43,6 +43,8 @@ export function createFieldView(
     insertValue: (index, value, options) =>
       fieldApi.value.insertValue(index, value, options),
     clearValues: (options) => fieldApi.value.clearValues(options),
+    replaceValue: (index, value, options) =>
+      fieldApi.value.replaceValue(index, value, options),
     removeValue: (index, options) => fieldApi.value.removeValue(index, options),
     filterValues: (predicate, options) =>
       fieldApi.value.filterValues(predicate, options),

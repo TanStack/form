@@ -327,6 +327,71 @@ describe('field - array methods', () => {
     })
   })
 
+  describe('replaceValue', () => {
+    it('replaces the element at the specified index', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c'] },
+      })
+      const field = form._getOrCreateFieldApi({ name: 'items' })
+
+      field.replaceValue(1, 'x')
+      expect(field.value).toEqual(['a', 'x', 'c'])
+      field.replaceValue(0, 'y')
+      expect(field.value).toEqual(['y', 'x', 'c'])
+      field.replaceValue(2, 'z')
+      expect(field.value).toEqual(['y', 'x', 'z'])
+    })
+
+    it('marks the field as dirty and touched', () => {
+      const form = new InternalFormApi({ defaultValues: { items: ['a'] } })
+      const field = form._getOrCreateFieldApi({ name: 'items' })
+
+      field.replaceValue(0, 'b')
+      expect(field.meta.isDirty).toBe(true)
+      expect(field.meta.isTouched).toBe(true)
+    })
+
+    it('warns when called on a non-array field', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const form = new InternalFormApi({ defaultValues: { name: '' } })
+      const field = form._getOrCreateFieldApi({ name: 'name' })
+
+      field.replaceValue(0, 'x')
+      expect(warn).toHaveBeenCalled()
+      expect(field.value).toBe('')
+      warn.mockRestore()
+    })
+
+    it('warns when index is out of bounds', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const form = new InternalFormApi({ defaultValues: { items: ['a', 'b'] } })
+      const field = form._getOrCreateFieldApi({ name: 'items' })
+
+      field.replaceValue(-1, 'x')
+      field.replaceValue(2, 'x')
+      expect(warn).toHaveBeenCalledTimes(2)
+      expect(field.value).toEqual(['a', 'b'])
+      warn.mockRestore()
+    })
+
+    it('keeps child fields in place', () => {
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c'] },
+      })
+      const arrayField = form._getOrCreateFieldApi({ name: 'items' })
+      const field0 = form._getOrCreateFieldApi({ name: 'items[0]' })
+      const field1 = form._getOrCreateFieldApi({ name: 'items[1]' })
+      const field2 = form._getOrCreateFieldApi({ name: 'items[2]' })
+
+      arrayField.replaceValue(1, 'x')
+
+      expect(form._tryGetFieldApi('items[0]')).toBe(field0)
+      expect(form._tryGetFieldApi('items[1]')).toBe(field1)
+      expect(form._tryGetFieldApi('items[2]')).toBe(field2)
+      expect(field1.value).toBe('x')
+    })
+  })
+
   describe('filterFieldValues', () => {
     it('filters array elements based on predicate', () => {
       const form = new InternalFormApi({

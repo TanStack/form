@@ -76,7 +76,6 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.2",
-    "resize-observer-polyfill": "^1.5.1",
     "solid-js": "^1.9.13",
     "vite": "^8.2.1",
     "vite-plugin-solid": "^2.11.14",
