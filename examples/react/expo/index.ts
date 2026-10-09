@@ -1,5 +1,10 @@
+import { StrictMode, createElement } from 'react'
 import { registerRootComponent } from 'expo'
 
 import App from './app/index'
 
-registerRootComponent(App)
+function Root() {
+  return createElement(StrictMode, null, createElement(App))
+}
+
+registerRootComponent(Root)
