@@ -136,8 +136,8 @@ describe('standard schema validation', () => {
         parseStandardSchema(schema, 'value', 'form'),
       ).resolves.toEqual({
         result: null,
-        schemaResult: { parsed: 'VALUE' },
-        hasSchemaResult: true,
+        output: { parsed: 'VALUE' },
+        hasOutput: true,
       })
     })
 
@@ -149,8 +149,8 @@ describe('standard schema validation', () => {
 
       await expect(parseStandardSchema(schema, '', 'field')).resolves.toEqual({
         result: issues,
-        schemaResult: null,
-        hasSchemaResult: false,
+        output: null,
+        hasOutput: false,
       })
     })
 
@@ -169,8 +169,8 @@ describe('standard schema validation', () => {
             'users[0].name': issues,
           },
         },
-        schemaResult: null,
-        hasSchemaResult: false,
+        output: null,
+        hasOutput: false,
       })
     })
 
@@ -191,8 +191,8 @@ describe('standard schema validation', () => {
             name: [issues[2]],
           },
         },
-        schemaResult: null,
-        hasSchemaResult: false,
+        output: null,
+        hasOutput: false,
       })
     })
 

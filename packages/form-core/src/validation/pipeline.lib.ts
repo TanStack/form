@@ -1,3 +1,4 @@
+import { createOutput } from '../validationOutput.lib'
 import { createErrorMap } from '../validation.public'
 import { parseStandardSchemaIssues } from '../standardSchema.lib'
 import { isNotNil } from '../utils.lib'
@@ -33,8 +34,8 @@ import type {
 export interface PipelineResult<in out T> {
   validatorInstance: AnyInternalValidatorInstance
   result: T
-  schemaResult: any | null
-  hasSchemaResult?: boolean
+  output: any | null
+  hasOutput?: boolean
 }
 
 interface PendingPipelineResult<in out T> {
@@ -63,13 +64,13 @@ type PendingPromises<TResult> = Array<
 /**
  * Accepts a batch of pending results into the pipeline's instance-keyed map.
  *
- * Aborted and thrown results are excluded. Submit schema output is committed
+ * Aborted and thrown results are excluded. Submit output is committed
  * before `onResult` observes the accepted result.
  */
 async function flushPendingResults<TResult extends ValidateResult>(
   pending: PendingPromises<TResult>,
   results: Map<AnyInternalValidatorInstance, PipelineResult<TResult>>,
-  shouldCommitSchemaOutput: boolean,
+  shouldCommitOutput: boolean,
   onResult?: (result: PipelineResult<TResult>) => void,
 ): Promise<{ hasErrors: boolean; thrownError: unknown | null }> {
   let hasErrors = false
@@ -102,12 +103,12 @@ async function flushPendingResults<TResult extends ValidateResult>(
       const publicResult: PipelineResult<TResult> = {
         validatorInstance: result.validatorInstance,
         result: executionResult.result,
-        schemaResult: executionResult.schemaResult,
-        hasSchemaResult: executionResult.hasSchemaResult,
+        output: executionResult.output,
+        hasOutput: executionResult.hasOutput,
       }
 
-      if (shouldCommitSchemaOutput) {
-        result.validatorInstance.setSchemaOutput(executionResult)
+      if (shouldCommitOutput) {
+        result.validatorInstance.setOutput(executionResult)
       }
       results.set(result.validatorInstance, publicResult)
       onResult?.(publicResult)
@@ -142,13 +143,13 @@ export async function runValidatorPipeline<TResult extends ValidateResult>({
     AnyInternalValidatorInstance,
     PipelineResult<TResult>
   >()
-  const shouldCommitSchemaOutput =
+  const shouldCommitOutput =
     context.event === 'submit' && context.scope !== 'field'
 
-  if (shouldCommitSchemaOutput) {
+  if (shouldCommitOutput) {
     pipeline.forEach((validatorInstance) => {
       validatorInstance.cancelExecution()
-      validatorInstance.clearSchemaOutput()
+      validatorInstance.clearOutput()
     })
   }
 
@@ -157,12 +158,7 @@ export async function runValidatorPipeline<TResult extends ValidateResult>({
 
   const flush = async (): Promise<void> => {
     const { hasErrors: didError, thrownError: flushedThrownError } =
-      await flushPendingResults(
-        pending,
-        results,
-        shouldCommitSchemaOutput,
-        onResult,
-      )
+      await flushPendingResults(pending, results, shouldCommitOutput, onResult)
 
     pending = []
     hasErrors ||= didError
@@ -263,6 +259,7 @@ export function runFormValidatorPipeline({
         signal: ctx.signal,
         value: ctx.formApi.state.values,
         createErrorMap,
+        createOutput,
         parseIssues: (
           issues: Parameters<typeof parseStandardSchemaIssues>[0],
         ) =>

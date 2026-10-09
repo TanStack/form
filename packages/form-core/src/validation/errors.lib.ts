@@ -1,4 +1,5 @@
-import { evaluate, isNil, normalizeToArray } from '../utils.lib'
+import { evaluate, normalizeToArray } from '../utils.lib'
+import { isSuccessfulValidationResult } from '../validationOutput.lib'
 import { compareValidationSources } from '../ValidationSourceInstance.lib'
 import type { AnyInternalValidationSourceInstance } from '../ValidationSourceInstance.lib'
 import type { AnyInternalFieldApi } from '../FieldApi/FieldApi.lib'
@@ -6,6 +7,7 @@ import type {
   FieldValidateResult,
   FormGroupValidateResult,
   FormValidateResult,
+  SuccessfulValidationResult,
   ValidationErrorInput,
   ValidationErrorMap,
   ValidationIssue,
@@ -58,7 +60,7 @@ export function isValidationErrorMap(
 export function parseValidationResult(
   value: ValidateResult,
 ): ParsedValidationResult {
-  if (isNil(value) || value === false) {
+  if (isSuccessfulValidationResult(value)) {
     return { self: null, subfields: null }
   }
 
@@ -93,7 +95,7 @@ export function parseValidationResult(
  */
 export function isErrorResult<T extends ValidateResult>(
   value: T,
-): value is Exclude<T, null | undefined | false> {
+): value is Exclude<T, SuccessfulValidationResult> {
   const { self, subfields } = parseValidationResult(value)
 
   return (

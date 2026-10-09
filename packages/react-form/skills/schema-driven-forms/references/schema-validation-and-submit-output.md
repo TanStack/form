@@ -2,7 +2,7 @@
 
 Schema validators can run alongside callback validators in the `validators` array.
 
-`schemaOutputs` is ordered by validator position. If a validator does not run on submit, its schema output slot can be absent or undefined.
+`validatorOutputs` is ordered by validator position. If a validator does not run on submit, its output slot is undefined. Custom form and group validators can return `createOutput(data)` from their context to populate their slot too.
 
 Use `createValidationError` for explicit form or field validation errors from submit code.
 

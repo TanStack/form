@@ -472,7 +472,7 @@ describe('form - submission handling', () => {
       expect(onSubmit).toHaveBeenCalledWith(
         expect.objectContaining({
           value: { name: 'test' },
-          schemaOutputs: [{ nameLength: 4 }, undefined],
+          validatorOutputs: [{ nameLength: 4 }, undefined],
         }),
       )
     })
@@ -494,16 +494,16 @@ describe('form - submission handling', () => {
 
       await form.handleSubmit()
       expect(onSubmit).toHaveBeenLastCalledWith(
-        expect.objectContaining({ schemaOutputs: [{ name: 'test' }] }),
+        expect.objectContaining({ validatorOutputs: [{ name: 'test' }] }),
       )
 
       shouldRunOnSubmit = false
       await form.handleSubmit()
 
       expect(onSubmit).toHaveBeenLastCalledWith(
-        expect.objectContaining({ schemaOutputs: [undefined] }),
+        expect.objectContaining({ validatorOutputs: [undefined] }),
       )
-      expect(form._validatorInstances?.[0]?.hasSchemaOutput).toBe(false)
+      expect(form._validatorInstances?.[0]?.hasOutput).toBe(false)
     })
 
     it('skips bailIfInvalid form validators when field validators fail first', async () => {

@@ -159,14 +159,13 @@ export async function runSubmissionProcess<TFormData>(
     return finishInvalidSubmission(form.state.values)
   }
 
-  const schemaOutputs =
-    form._validatorInstances?.map((v) => v.schemaOutput) ?? []
+  const validatorOutputs = form._validatorInstances?.map((v) => v.output) ?? []
   const value = form.state.values
 
   try {
     const maybeError = await form._options.onSubmit?.({
       formApi: form as never,
-      schemaOutputs,
+      validatorOutputs,
       value,
       createValidationError,
       parseIssues: createParseIssues(value),

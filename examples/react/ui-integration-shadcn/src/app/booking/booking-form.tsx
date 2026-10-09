@@ -100,7 +100,7 @@ export function BookingForm() {
     useStepper(0, 6)
   const form = useAppForm({
     ...bookingFormOptions,
-    onSubmit: async ({ schemaOutputs: [result] }) => {
+    onSubmit: async ({ validatorOutputs: [result] }) => {
       await new Promise((resolve) => setTimeout(resolve, 1000))
       alert('Form was submitted! See logs for result')
       console.log(result)

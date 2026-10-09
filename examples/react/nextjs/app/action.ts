@@ -24,7 +24,7 @@ export default async function someAction(_prev: unknown, formData: FormData) {
     return result.serverState
   }
 
-  console.log('validatedData', result.values, result.schemaOutputs)
+  console.log('validatedData', result.values, result.validatorOutputs)
 
   return initialServerFormState
 }

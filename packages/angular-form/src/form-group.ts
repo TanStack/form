@@ -10,6 +10,7 @@ import type {
   DeepKeys,
   DeepValue,
   FormGroupOptions,
+  FormGroupSubmitFn,
   FormGroupValidators,
   FormValidators,
   ToFormErrorTypes,
@@ -35,13 +36,13 @@ export class TanStackFormGroup<
   validators = input<NoInfer<TGroupValidators>>()
   onSubmit =
     input<
-      FormGroupOptions<
+      FormGroupSubmitFn<
         TFormData,
         TGroupName,
         TGroupValue,
         TGroupValidators,
         ToFormErrorTypes<TFormValidators, TSubmitReturn>
-      >['onSubmit']
+      >
     >()
   onSubmitInvalid =
     input<

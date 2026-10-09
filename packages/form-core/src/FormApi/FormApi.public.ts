@@ -8,7 +8,7 @@ import type {
   FormValidators,
   ParsedStandardSchemaIssues,
   ToFormErrorTypes,
-  ToFormSchemaOutputs,
+  ToFormOutputs,
 } from '../validation.public'
 import type { StandardSchemaV1Issue } from '../standardSchema.public'
 import type { FormListeners } from '../listeners.public'
@@ -95,12 +95,12 @@ export type ParseSubmitIssuesFn<in out TFormData> = (
  * ```
  *
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
- * @typeParam TSchemaOutputs - Library-managed. Do not specify explicitly.
+ * @typeParam TOutputs - Library-managed. Do not specify explicitly.
  * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
  */
 export interface FormSubmitContext<
   in out TFormData,
-  out TSchemaOutputs,
+  out TOutputs,
   in out TFormErrorTypes extends FormErrorTypes,
 > {
   /** The form values for this submission. */
@@ -108,21 +108,22 @@ export interface FormSubmitContext<
   /** The form API handling this submission. */
   formApi: FormApi<TFormData, TFormErrorTypes>
   /**
-   * The submit outputs produced by the form's schema validators, ordered by
-   * validator index.
+   * Schema outputs and `createOutput` payloads from this submission, ordered by
+   * validator index. Skipped validators and successful returns without an output
+   * contribute `undefined`.
    *
    * @example
    * ```ts
    * {
    *   // ...
-   *   onSubmit: async ({ schemaOutputs }) => {
-   *     const validatedUser = schemaOutputs[0]
+   *   onSubmit: async ({ validatorOutputs }) => {
+   *     const validatedUser = validatorOutputs[0]
    *     await saveUser(validatedUser)
    *   },
    * }
    * ```
    */
-  schemaOutputs: TSchemaOutputs
+  validatorOutputs: TOutputs
   /**
    * Creates a validation error that can be returned from `onSubmit`.
    *
@@ -188,7 +189,7 @@ export type FormSubmitFn<
 > = (
   context: FormSubmitContext<
     TFormData,
-    ToFormSchemaOutputs<TFormValidators>,
+    ToFormOutputs<TFormValidators>,
     ToFormErrorTypes<TFormValidators, unknown>
   >,
 ) => TSubmitReturn
