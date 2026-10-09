@@ -507,6 +507,7 @@ export class InternalFormApi<
     updateOptions.fieldApiOverride = field
 
     batch(() => {
+      const previousValues = this._atoms.values.get()
       const previousValue = this.getFieldValue(fieldName)
       const nextValue = callUpdater(updater, previousValue)
       const replacedSameLengthArray =
@@ -524,7 +525,7 @@ export class InternalFormApi<
         }))
       }
 
-      this._notifyFieldChange(field, updateOptions)
+      this._notifyFieldChange(field, updateOptions, previousValues)
     })
 
     notifyDevtoolsFieldValueUpdate(field)
@@ -679,6 +680,7 @@ export class InternalFormApi<
   _notifyFieldChange(
     field: AnyInternalFieldApi | null,
     options: ResolvedInternalFieldUpdateOptions,
+    prevValues?: TFormData,
   ) {
     this._clearEventErrors(field, 'submit', 'change')
     this._clearEventErrors(field, 'server', 'change')
@@ -689,13 +691,14 @@ export class InternalFormApi<
       this._atoms.meta.isDirty.set(true)
     }
 
-    field?._notifyEvent(options, 'change')
-    this._notifyFormListener('change', field)
+    field?._notifyEvent(options, 'change', prevValues)
+    this._notifyFormListener('change', field, prevValues)
   }
 
   _notifyFormListener(
     trigger: FormListenerTriggers,
     triggerFieldApi: AnyInternalFieldApi | null,
+    prevValue?: TFormData,
   ) {
     if (!this._listenerInstances) return
 
@@ -705,6 +708,7 @@ export class InternalFormApi<
         event: trigger,
         formApi: this,
         triggerFieldApi: triggerFieldApi ?? undefined,
+        prevValue,
       },
     })
   }
