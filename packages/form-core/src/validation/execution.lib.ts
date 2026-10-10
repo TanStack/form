@@ -3,6 +3,7 @@ import {
   parseStandardSchema,
   parseStandardSchemaIssues,
 } from '../standardSchema.lib'
+import { VALIDATION_OUTPUT, isValidationOutput } from '../validationOutput.lib'
 import type { AnyInternalValidatorInstance } from '../ValidatorInstance.lib'
 import type { InternalFormApi } from '../FormApi/FormApi.lib'
 import type { AnyInternalFieldApi } from '../FieldApi/FieldApi.lib'
@@ -41,7 +42,7 @@ type FieldValidateContext = Omit<
 > & { scope: 'field' }
 type FormGroupValidateContext = Omit<
   FormGroupValidatorContext<any>,
-  'value' | 'parseIssues' | 'createErrorMap'
+  'value' | 'parseIssues' | 'createErrorMap' | 'createOutput'
 > & { scope: 'group' }
 export type FormInputContext = Omit<FormValidateContext, 'signal'>
 type ServerFormInputContext = Omit<ServerPipelineValidateContext, 'signal'>
@@ -161,8 +162,8 @@ export type AbortedCall = typeof ABORTED_CALL
 export type ThrownError = { [THROWN_ERROR]: true; error: unknown }
 export interface ValidatorExecutionResult<in out TResult> {
   result: TResult
-  schemaResult: any | null
-  hasSchemaResult: boolean
+  output: any | null
+  hasOutput: boolean
 }
 
 interface PendingDebouncedCall<in out TResult extends ValidateResult> {
@@ -243,23 +244,33 @@ export function shouldRunValidator(
 /**
  * Executes a validator and normalizes its result for pipeline processing.
  *
- * Standard Schema validators retain their parsed output and presence marker;
- * function validators produce only a validation result.
+ * Schema and branded function outputs retain their payload and presence marker.
  */
 export async function executeValidator<TResult extends ValidateResult>(
   validator: AnyPipelineValidator,
   context: AnyValidatorContext,
   scope: 'field' | 'form',
 ): Promise<ValidatorExecutionResult<TResult>> {
-  if (isStandardSchema(validator.run)) {
-    return parseStandardSchema(validator.run, context.value, scope) as never
+  const result = isStandardSchema(validator.run)
+    ? await parseStandardSchema(validator.run, context.value, scope)
+    : await validator.run(context)
+
+  return normalizeValidatorResult(result as TResult)
+}
+
+/** Separates explicitly branded outputs from ordinary validation returns. */
+export function normalizeValidatorResult<TResult extends ValidateResult>(
+  result: TResult,
+): ValidatorExecutionResult<TResult> {
+  if (isValidationOutput(result)) {
+    return {
+      result: null as TResult,
+      output: result[VALIDATION_OUTPUT],
+      hasOutput: true,
+    }
   }
 
-  return {
-    result: (await validator.run(context)) as TResult,
-    schemaResult: null,
-    hasSchemaResult: false,
-  }
+  return { result, output: null, hasOutput: false }
 }
 
 interface RunMaybeDebouncedValidatorArgs<

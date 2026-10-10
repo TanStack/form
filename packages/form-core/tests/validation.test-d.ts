@@ -29,8 +29,8 @@ import type {
   ToFieldError,
   ToFormErrorTypes,
   ToFormGroupErrorTypes,
-  ToFormGroupSchemaOutputs,
-  ToFormSchemaOutputs,
+  ToFormGroupOutputs,
+  ToFormOutputs,
   ValidationErrorMap,
   ValidationIssue,
 } from '../src'
@@ -117,9 +117,11 @@ describe('formOptions', () => {
     const options = formOptions.strictSchema(schema, {
       defaultValues: { age: '' },
       validators: [{ run: schema, triggers: ['change'] }],
-      onSubmit: ({ value, schemaOutputs }) => {
+      onSubmit: ({ value, validatorOutputs }) => {
         expectTypeOf(value).toEqualTypeOf<{ age: string }>()
-        expectTypeOf(schemaOutputs).toEqualTypeOf<readonly [{ age: number }]>()
+        expectTypeOf(validatorOutputs).toEqualTypeOf<
+          readonly [{ age: number }]
+        >()
       },
     })
 
@@ -158,9 +160,9 @@ describe('formOptions', () => {
           triggers: ['blur'],
         },
       ],
-      onSubmit: ({ value, schemaOutputs }) => {
+      onSubmit: ({ value, validatorOutputs }) => {
         expectTypeOf(value).toEqualTypeOf<StrictValue>()
-        expectTypeOf(schemaOutputs).toEqualTypeOf<
+        expectTypeOf(validatorOutputs).toEqualTypeOf<
           readonly [undefined, { name: string; age: number }, undefined]
         >()
       },
@@ -183,8 +185,8 @@ describe('formOptions', () => {
           triggers: ['change'],
         },
       ],
-      onSubmit: ({ schemaOutputs }) => {
-        expectTypeOf(schemaOutputs).toEqualTypeOf<readonly [undefined]>()
+      onSubmit: ({ validatorOutputs }) => {
+        expectTypeOf(validatorOutputs).toEqualTypeOf<readonly [undefined]>()
       },
     })
 
@@ -805,8 +807,10 @@ describe('FormErrors', () => {
     const form = new InternalFormApi({
       defaultValues: { name: '' },
       validators: [withRequiredValue(z.object({ name: z.string() }))],
-      onSubmit: ({ schemaOutputs }) => {
-        expectTypeOf(schemaOutputs).toEqualTypeOf<readonly [{ name: string }]>()
+      onSubmit: ({ validatorOutputs }) => {
+        expectTypeOf(validatorOutputs).toEqualTypeOf<
+          readonly [{ name: string }]
+        >()
       },
     })
 
@@ -866,8 +870,8 @@ describe('FormErrors', () => {
     const form = new InternalFormApi({
       defaultValues: { name: '' },
       validators,
-      onSubmit: ({ schemaOutputs }) => {
-        expectTypeOf(schemaOutputs).toEqualTypeOf<
+      onSubmit: ({ validatorOutputs }) => {
+        expectTypeOf(validatorOutputs).toEqualTypeOf<
           readonly [{ name: string }, undefined]
         >()
       },
@@ -1514,7 +1518,7 @@ describe('validator type transforms', () => {
       },
     ])
 
-    type Outputs = ToFormSchemaOutputs<typeof vs>
+    type Outputs = ToFormOutputs<typeof vs>
     type Errors = ToFormErrorTypes<typeof vs, never>
 
     expectTypeOf<Outputs>().toEqualTypeOf<readonly [{ name: string }]>()
@@ -1554,7 +1558,7 @@ describe('validator type transforms', () => {
       },
     ])
 
-    type Outputs = ToFormSchemaOutputs<typeof vs>
+    type Outputs = ToFormOutputs<typeof vs>
 
     expectTypeOf<Outputs>().toEqualTypeOf<
       readonly [
@@ -1616,7 +1620,7 @@ describe('validator type transforms', () => {
     ])
 
     type Output = { name: string }
-    type Outputs = ToFormSchemaOutputs<typeof vs>
+    type Outputs = ToFormOutputs<typeof vs>
     type Expected = readonly [
       // An omitted runOnSubmit defaults to true, so the output is guaranteed.
       Output,
@@ -1692,7 +1696,7 @@ describe('validator type transforms', () => {
     ])
 
     type ErrorTypes = ToFormGroupErrorTypes<typeof vs>
-    type Outputs = ToFormGroupSchemaOutputs<typeof vs>
+    type Outputs = ToFormGroupOutputs<typeof vs>
 
     expectTypeOf<ErrorTypes>().toEqualTypeOf<
       FormErrorTypes<
@@ -1713,12 +1717,10 @@ describe('validator type transforms', () => {
     expectTypeOf<ToFormGroupErrorTypes<any>>().toEqualTypeOf<
       FormErrorTypes<never, never>
     >()
-    expectTypeOf<ToFormGroupSchemaOutputs<any>>().toEqualTypeOf<
-      Array<unknown>
-    >()
+    expectTypeOf<ToFormGroupOutputs<any>>().toEqualTypeOf<Array<unknown>>()
     expectTypeOf<ToFormGroupErrorTypes<[]>>().toEqualTypeOf<
       FormErrorTypes<never, never>
     >()
-    expectTypeOf<ToFormGroupSchemaOutputs<[]>>().toEqualTypeOf<[]>()
+    expectTypeOf<ToFormGroupOutputs<[]>>().toEqualTypeOf<[]>()
   })
 })

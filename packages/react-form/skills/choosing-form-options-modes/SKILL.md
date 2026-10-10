@@ -5,7 +5,7 @@ description: >
   formOptions.looseSchema, appFormOptions, appFormOptions.strictSchema, or
   appFormOptions.looseSchema. Covers defaultValues-first inference, schema-source
   typing, Standard Schema validators, pipeline schemas, ruleset schemas, nullish
-  editable defaults, and schemaOutputs in onSubmit.
+  editable defaults, and validatorOutputs in onSubmit.
 metadata:
   type: framework
   library: '@tanstack/react-form'
@@ -96,8 +96,8 @@ export const strictOptions = formOptions.strictSchema({
     name: '',
   },
   validators: [{ run: schema, triggers: ['change'] }],
-  onSubmit: ({ schemaOutputs }) => {
-    const parsed = schemaOutputs[0]
+  onSubmit: ({ validatorOutputs }) => {
+    const parsed = validatorOutputs[0]
     console.log(parsed.name)
   },
 })
@@ -120,8 +120,8 @@ export const looseOptions = formOptions.looseSchema({
     startDate: null,
   },
   validators: [{ run: schema, triggers: ['blur'] }],
-  onSubmit: ({ schemaOutputs }) => {
-    const parsed = schemaOutputs[0]
+  onSubmit: ({ validatorOutputs }) => {
+    const parsed = validatorOutputs[0]
     console.log(parsed.startDate.toISOString())
   },
 })
@@ -223,13 +223,13 @@ onSubmit: ({ value }) => {
 Correct:
 
 ```ts
-onSubmit: ({ schemaOutputs }) => {
-  const parsed = schemaOutputs[0]
+onSubmit: ({ validatorOutputs }) => {
+  const parsed = validatorOutputs[0]
   console.log(parsed.nameLength)
 }
 ```
 
-Raw `value` remains form state; parsed Standard Schema output is exposed through `schemaOutputs`.
+Raw `value` remains form state; parsed Standard Schema output is exposed through `validatorOutputs`.
 
 Source: TanStack/form-v2:packages/form-core/tests/validation.test.ts
 

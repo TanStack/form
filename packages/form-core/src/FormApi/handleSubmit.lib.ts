@@ -1,7 +1,10 @@
 import { batch } from '@tanstack/store'
-import { isErrorResult } from '../validation'
+import {
+  isErrorResult,
+  isValidationErrorMap,
+  parseValidationResult,
+} from '../validation'
 import { parseStandardSchemaIssues } from '../standardSchema.lib'
-import { isNotNil } from '../utils.lib'
 import type { InternalFormApi } from './FormApi.lib'
 import type {
   FormValidateResult,
@@ -14,12 +17,12 @@ import type {
   ParseSubmitIssuesFn,
 } from './FormApi.public'
 
-const SUBMIT_ERROR = Symbol('SUBMIT_ERROR')
+export const SUBMIT_ERROR = Symbol('SUBMIT_ERROR')
 
 function isSubmitError<TFormData>(
   value: unknown,
-): value is FormValidationError<TFormData> {
-  return isNotNil(value) && Boolean((value as any)[SUBMIT_ERROR])
+): value is OnSubmitError<FormValidationError<TFormData>> {
+  return typeof value === 'object' && value !== null && SUBMIT_ERROR in value
 }
 
 const createValidationError: CreateValidationErrorFn<any> = <
@@ -33,17 +36,7 @@ const createValidationError: CreateValidationErrorFn<any> = <
 function createSubmitError<TError extends FormValidationError<any>>(
   error: TError,
 ): OnSubmitError<TError> {
-  let output: OnSubmitError<TError>
-  if (typeof error === 'string') {
-    // strings can't retain symbols, so we gotta normalize early
-    output = { message: error } as any
-  } else {
-    output = error as any
-  }
-  const runtimeOutput = output as any
-  runtimeOutput[SUBMIT_ERROR] = true
-
-  return output
+  return { [SUBMIT_ERROR]: error }
 }
 
 function createParseIssues<TFormData>(
@@ -152,21 +145,27 @@ export async function runSubmissionProcess<TFormData>(
       return []
     }
 
-    return errorResults
+    // TODO ew. Resolve this differently, this is really bad.
+    return errorResults.flatMap<FormValidationError<TFormData>>((error) => {
+      const { self, subfields } = parseValidationResult(error)
+      if (isValidationErrorMap(error)) {
+        return [{ ...error, form: self ?? undefined, fields: subfields ?? {} }]
+      }
+      return self ?? []
+    })
   }
 
   if (submissionData.hasFailed) {
     return finishInvalidSubmission(form.state.values)
   }
 
-  const schemaOutputs =
-    form._validatorInstances?.map((v) => v.schemaOutput) ?? []
+  const validatorOutputs = form._validatorInstances?.map((v) => v.output) ?? []
   const value = form.state.values
 
   try {
     const maybeError = await form._options.onSubmit?.({
       formApi: form as never,
-      schemaOutputs,
+      validatorOutputs,
       value,
       createValidationError,
       parseIssues: createParseIssues(value),
@@ -178,8 +177,9 @@ export async function runSubmissionProcess<TFormData>(
 
     // Store onSubmit errors separately from installed validator instances.
     if (isSubmitError<TFormData>(maybeError)) {
-      form._processSubmitValidationResult(maybeError, 'submit')
-      submissionData.submitError = maybeError
+      const error = maybeError[SUBMIT_ERROR]
+      form._processSubmitValidationResult(error, 'submit')
+      submissionData.submitError = error
     } else {
       form._processSubmitValidationResult(null, 'submit')
     }

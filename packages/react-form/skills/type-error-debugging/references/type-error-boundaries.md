@@ -2,7 +2,7 @@
 
 Schema option mode: check whether defaults-first, strict schema, or loose schema matches the intended source of truth.
 
-Schema output: raw `value` is editable form state; parsed output is in `schemaOutputs`.
+Schema output: raw `value` is editable form state; parsed output is in `validatorOutputs`.
 
 Submit return: reusable child form props can become too specific if shared options include an `onSubmit` type.
 

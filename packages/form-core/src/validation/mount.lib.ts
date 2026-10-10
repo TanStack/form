@@ -1,3 +1,4 @@
+import { createOutput } from '../validationOutput.lib'
 import { createErrorMap } from '../validation.public'
 import {
   isStandardSchema,
@@ -6,7 +7,11 @@ import {
 } from '../standardSchema.lib'
 import { isPromiseLike } from '../utils.lib'
 import { isErrorResult } from './errors.lib'
-import { createValidatorAbortContext, parseFieldIssues } from './execution.lib'
+import {
+  createValidatorAbortContext,
+  normalizeValidatorResult,
+  parseFieldIssues,
+} from './execution.lib'
 import type { AnyInternalValidatorInstance } from '../ValidatorInstance.lib'
 import type { InternalFormApi } from '../FormApi/FormApi.lib'
 import type { AnyInternalFieldApi } from '../FieldApi/FieldApi.lib'
@@ -16,14 +21,12 @@ import type {
   FormGroupValidateResult,
   FormValidateResult,
 } from '../validation.public'
-import type { AnyValidatorContext, ValidateResult } from './execution.lib'
+import type {
+  AnyValidatorContext,
+  ValidateResult,
+  ValidatorExecutionResult,
+} from './execution.lib'
 import type { PipelineResult } from './pipeline.lib'
-
-type MountValidationExecutionResult<in out TResult extends ValidateResult> = {
-  result: TResult
-  schemaResult: any | null
-  hasSchemaResult: boolean
-}
 
 interface FormMountValidatorPipelineArgs {
   pipeline: ReadonlyArray<AnyInternalValidatorInstance>
@@ -48,30 +51,26 @@ interface MountValidatorPipelineArgs<in out TResult extends ValidateResult> {
  */
 function createEmptyMountValidationResult<
   TResult extends ValidateResult,
->(): MountValidationExecutionResult<TResult> {
-  return {
-    result: null as TResult,
-    schemaResult: null,
-    hasSchemaResult: false,
-  }
+>(): ValidatorExecutionResult<TResult> {
+  return normalizeValidatorResult(null as TResult)
 }
 
 /**
  * Publishes one mount execution result and reports whether it contains errors.
  *
- * Mount schema outputs remain on the immediate result and are not persisted on
+ * Mount outputs remain on the immediate result and are not persisted on
  * the validator instance.
  */
 function processMountValidationExecutionResult<TResult extends ValidateResult>(
   validatorInstance: AnyInternalValidatorInstance,
-  executionResult: MountValidationExecutionResult<TResult>,
+  executionResult: ValidatorExecutionResult<TResult>,
   onResult?: (result: PipelineResult<TResult>) => void,
 ): boolean {
   const result: PipelineResult<TResult> = {
     validatorInstance,
     result: executionResult.result,
-    schemaResult: executionResult.schemaResult,
-    hasSchemaResult: executionResult.hasSchemaResult,
+    output: executionResult.output,
+    hasOutput: executionResult.hasOutput,
   }
 
   onResult?.(result)
@@ -90,8 +89,8 @@ function executeMountValidator<TResult extends ValidateResult>(
   scope: 'field' | 'form',
   validatorInstance: AnyInternalValidatorInstance,
 ):
-  | MountValidationExecutionResult<TResult>
-  | PromiseLike<MountValidationExecutionResult<TResult>> {
+  | ValidatorExecutionResult<TResult>
+  | PromiseLike<ValidatorExecutionResult<TResult>> {
   const validator = validatorInstance.definition
   const { signal, cleanup } = createValidatorAbortContext(validatorInstance, {
     cancelDebouncer: true,
@@ -107,31 +106,25 @@ function executeMountValidator<TResult extends ValidateResult>(
             return createEmptyMountValidationResult<TResult>()
           }
 
-          return result
+          return normalizeValidatorResult(result as TResult)
         })
         .catch((error) => {
           console.error(error)
           return createEmptyMountValidationResult<TResult>()
         })
-        .finally(cleanup) as unknown as PromiseLike<
-        MountValidationExecutionResult<TResult>
-      >
+        .finally(cleanup)
     }
 
     const result = validator.run(context)
 
     if (isPromiseLike(result)) {
       return Promise.resolve(result)
-        .then((asyncResult): MountValidationExecutionResult<TResult> => {
+        .then((asyncResult): ValidatorExecutionResult<TResult> => {
           if (signal.aborted) {
             return createEmptyMountValidationResult<TResult>()
           }
 
-          return {
-            result: asyncResult as TResult,
-            schemaResult: null,
-            hasSchemaResult: false,
-          }
+          return normalizeValidatorResult(asyncResult as TResult)
         })
         .catch((error) => {
           console.error(error)
@@ -141,11 +134,7 @@ function executeMountValidator<TResult extends ValidateResult>(
     }
 
     cleanup()
-    return {
-      result: result as TResult,
-      schemaResult: null,
-      hasSchemaResult: false,
-    }
+    return normalizeValidatorResult(result as TResult)
   } catch (error) {
     cleanup()
     console.error(error)
@@ -166,7 +155,7 @@ async function continueMountValidationFromAsyncResult<
   getContext: MountValidatorPipelineArgs<TResult>['getContext'],
   scope: 'field' | 'form',
   startIndex: number,
-  firstResult: PromiseLike<MountValidationExecutionResult<TResult>>,
+  firstResult: PromiseLike<ValidatorExecutionResult<TResult>>,
   hasFailedBefore: boolean,
   onResult?: (result: PipelineResult<TResult>) => void,
 ): Promise<void> {
@@ -299,6 +288,7 @@ export function runFormMountValidatorPipeline({
       formApi,
       value: formApi.state.values,
       createErrorMap,
+      createOutput,
       parseIssues: (issues) =>
         parseStandardSchemaIssues(issues, formApi.state.values, 'form'),
     }),
@@ -358,6 +348,7 @@ export function runGroupMountValidatorPipeline({
       triggerFieldApi: undefined,
       value: groupApi.value,
       createErrorMap,
+      createOutput,
       parseIssues: (issues) =>
         parseStandardSchemaIssues(issues, groupApi.value, 'form'),
     }),

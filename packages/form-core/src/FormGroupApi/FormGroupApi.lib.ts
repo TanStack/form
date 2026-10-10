@@ -1,4 +1,5 @@
 import { batch, createAtom, shallow } from '@tanstack/store'
+import { createOutput } from '../validationOutput.lib'
 import { concatenateFieldNames, getBy, setBy } from '../utils.lib'
 import {
   clearValidationSourceErrorsFromEvent,
@@ -424,8 +425,8 @@ export class InternalFormGroupApi<
     result: {
       validatorInstance: InternalGroupValidatorInstance
       result: FormGroupValidateResult<TGroupValue>
-      schemaResult: any | null
-      hasSchemaResult?: boolean
+      output: any | null
+      hasOutput?: boolean
     },
     sourceEvent: string,
   ) {
@@ -685,6 +686,7 @@ export class InternalFormGroupApi<
           signal: ctx.signal,
           value: this.value,
           createErrorMap,
+          createOutput,
           parseIssues: (issues) =>
             parseStandardSchemaIssues(issues, this.value, 'form'),
         }),
@@ -751,9 +753,9 @@ export class InternalFormGroupApi<
         value,
         formApi: this.form,
         groupApi: this,
-        schemaOutputs: Array.from(
+        validatorOutputs: Array.from(
           this._validatorInstances ?? [],
-          (validatorInstance) => validatorInstance.schemaOutput,
+          (validatorInstance) => validatorInstance.output,
         ),
       } as never
 

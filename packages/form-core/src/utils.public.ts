@@ -83,7 +83,7 @@ type LooseSchemaFormOptions<
  *
  * The first argument is used only by TypeScript and is ignored at runtime.
  * Include the schema in `validators` as well when it should validate the form.
- * Parsed results are available in the corresponding `schemaOutputs` entries
+ * Parsed results are available in the corresponding `validatorOutputs` entries
  * during submission.
  *
  * @example
@@ -141,7 +141,7 @@ export type FormOptionsStrictSchemaFn<TComponents> = <
  *
  * The first argument is used only by TypeScript and is ignored at runtime.
  * Include the schema in `validators` as well when it should validate the form.
- * Parsed results are available in the corresponding `schemaOutputs` entries
+ * Parsed results are available in the corresponding `validatorOutputs` entries
  * during submission.
  *
  * @example
@@ -237,7 +237,7 @@ export interface FormOptionsApi<out TComponents> {
    *
    * Use this when the schema represents an input-to-output pipeline. Raw form
    * state remains available as `value`; read each validator's parsed output
-   * from the corresponding `schemaOutputs` entry during submission.
+   * from the corresponding `validatorOutputs` entry during submission.
    *
    * Pass the schema as the first argument and the options as the second. This
    * fixes the form data to the schema input before the options are inferred, so
@@ -266,7 +266,7 @@ export interface FormOptionsApi<out TComponents> {
    *         value.name.length === 0 ? 'Name is required' : undefined,
    *     },
    *   ],
-   *   onSubmit: ({ schemaOutputs }) => saveProfile(schemaOutputs[0]),
+   *   onSubmit: ({ validatorOutputs }) => saveProfile(validatorOutputs[0]),
    * })
    * ```
    *
@@ -287,7 +287,7 @@ export interface FormOptionsApi<out TComponents> {
    * Use this when the schema represents the final valid shape but the UI needs
    * intermediate empty states, such as an unselected date. Raw form state
    * remains available as `value`; read each validator's parsed output from the
-   * corresponding `schemaOutputs` entry during submission.
+   * corresponding `validatorOutputs` entry during submission.
    *
    * Pass the schema as the first argument and the options as the second.
    * `defaultValues` infer an editable form shape constrained by the schema
@@ -317,7 +317,7 @@ export interface FormOptionsApi<out TComponents> {
    *         value.startDate === null ? 'Choose a date' : undefined,
    *     },
    *   ],
-   *   onSubmit: ({ schemaOutputs }) => saveBooking(schemaOutputs[0]),
+   *   onSubmit: ({ validatorOutputs }) => saveBooking(validatorOutputs[0]),
    * })
    * ```
    *

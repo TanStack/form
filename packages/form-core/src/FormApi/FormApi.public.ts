@@ -8,18 +8,17 @@ import type {
   FormValidators,
   ParsedStandardSchemaIssues,
   ToFormErrorTypes,
-  ToFormSchemaOutputs,
+  ToFormOutputs,
 } from '../validation.public'
 import type { StandardSchemaV1Issue } from '../standardSchema.public'
 import type { FormListeners } from '../listeners.public'
 import type { FormApiArrayMethods } from './FormApiArrayMethods.types.public'
 import type { FormApiFieldMethods } from './FormApiFieldMethods.types.public'
 import type { ServerFormState } from '../ssr.public'
-
-declare const onSubmitErrorBrand: unique symbol
+import type { SUBMIT_ERROR } from './handleSubmit.lib'
 
 /**
- * A validation error marked for processing as an `onSubmit` failure.
+ * A validation error wrapped for processing as an `onSubmit` failure.
  *
  * Create this value with the `createValidationError` or `parseIssues` helper
  * provided to `onSubmit`, then return it from the callback so its form- and
@@ -43,18 +42,17 @@ declare const onSubmitErrorBrand: unique symbol
  */
 export type OnSubmitError<
   TFormValidationError extends FormValidationError<any>,
-> = TFormValidationError & {
-  /** Internal brand used to identify submit errors. Do not access directly. */
-  [onSubmitErrorBrand]: true
+> = {
+  readonly [SUBMIT_ERROR]: TFormValidationError
 }
 
 /**
- * Marks a validation error for processing as an `onSubmit` failure.
+ * Wraps a validation error for processing as an `onSubmit` failure without mutating it.
  *
  * Return the result from `onSubmit` to add its form- and field-level errors to
  * validation state.
  *
- * @param error - The form- or field-level validation error to mark.
+ * @param error - The form- or field-level validation error to wrap.
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
  * @typeParam TError - Library-managed. Do not specify explicitly.
  */
@@ -95,12 +93,12 @@ export type ParseSubmitIssuesFn<in out TFormData> = (
  * ```
  *
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
- * @typeParam TSchemaOutputs - Library-managed. Do not specify explicitly.
+ * @typeParam TOutputs - Library-managed. Do not specify explicitly.
  * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
  */
 export interface FormSubmitContext<
   in out TFormData,
-  out TSchemaOutputs,
+  out TOutputs,
   in out TFormErrorTypes extends FormErrorTypes,
 > {
   /** The form values for this submission. */
@@ -108,21 +106,22 @@ export interface FormSubmitContext<
   /** The form API handling this submission. */
   formApi: FormApi<TFormData, TFormErrorTypes>
   /**
-   * The submit outputs produced by the form's schema validators, ordered by
-   * validator index.
+   * Schema outputs and `createOutput` payloads from this submission, ordered by
+   * validator index. Skipped validators and successful returns without an output
+   * contribute `undefined`.
    *
    * @example
    * ```ts
    * {
    *   // ...
-   *   onSubmit: async ({ schemaOutputs }) => {
-   *     const validatedUser = schemaOutputs[0]
+   *   onSubmit: async ({ validatorOutputs }) => {
+   *     const validatedUser = validatorOutputs[0]
    *     await saveUser(validatedUser)
    *   },
    * }
    * ```
    */
-  schemaOutputs: TSchemaOutputs
+  validatorOutputs: TOutputs
   /**
    * Creates a validation error that can be returned from `onSubmit`.
    *
@@ -188,7 +187,7 @@ export type FormSubmitFn<
 > = (
   context: FormSubmitContext<
     TFormData,
-    ToFormSchemaOutputs<TFormValidators>,
+    ToFormOutputs<TFormValidators>,
     ToFormErrorTypes<TFormValidators, unknown>
   >,
 ) => TSubmitReturn

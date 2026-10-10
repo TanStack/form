@@ -34,14 +34,14 @@ export type InternalValidatorInstances<
   TOwner,
   TErrorTarget = unknown,
   TWatchedField = unknown,
-  TSchemaOutput = unknown,
+  TOutput = unknown,
 > = Array<
   InternalValidatorInstance<
     TDefinition,
     TOwner,
     TErrorTarget,
     TWatchedField,
-    TSchemaOutput
+    TOutput
   >
 > | null
 
@@ -50,7 +50,7 @@ export interface ReconcileValidatorInstancesOptions<
   TOwner,
   TErrorTarget = unknown,
   TWatchedField = unknown,
-  TSchemaOutput = unknown,
+  TOutput = unknown,
 > {
   /** The latest validator definitions installed on the owner. */
   definitions: ReadonlyArray<TDefinition> | null | undefined
@@ -67,7 +67,7 @@ export interface ReconcileValidatorInstancesOptions<
     TOwner,
     TErrorTarget,
     TWatchedField,
-    TSchemaOutput
+    TOutput
   >
   /** The validation boundary that owns every reconciled instance. */
   owner: TOwner
@@ -80,7 +80,7 @@ export interface ReconcileValidatorInstancesOptions<
       TOwner,
       TErrorTarget,
       TWatchedField,
-      TSchemaOutput
+      TOutput
     >,
   ) => void
 }
@@ -93,7 +93,7 @@ export class InternalValidatorInstance<
   TOwner,
   TErrorTarget = unknown,
   TWatchedField = unknown,
-  TSchemaOutput = unknown,
+  TOutput = unknown,
   TDebouncedFn extends ValidatorInstanceDebouncedFn =
     ValidatorInstanceDebouncedFn,
 > extends InternalValidationSourceInstance<TOwner, TErrorTarget> {
@@ -104,15 +104,15 @@ export class InternalValidatorInstance<
   /** The lazily created debouncer for this validator's pending execution. */
   debouncer: LiteDebouncer<TDebouncedFn> | null = null
   /**
-   * The Standard Schema output assigned by the latest form or group submit.
+   * The schema output or branded payload assigned by the latest form or group submit.
    *
    * Submit pipelines cancel prior executions and clear this before evaluating
    * their validators. Field and non-submit pipelines do not assign it. Consult
-   * `hasSchemaOutput` because `undefined` can itself be a stored output.
+   * `hasOutput` because `undefined` can itself be a stored output.
    */
-  schemaOutput: TSchemaOutput | undefined
-  /** Whether the current submit pipeline assigned `schemaOutput`. */
-  hasSchemaOutput = false
+  output: TOutput | undefined
+  /** Whether the current submit pipeline assigned `output`. */
+  hasOutput = false
   /**
    * Resolved fields referenced by this validator's `watchFields` definition.
    *
@@ -203,29 +203,26 @@ export class InternalValidatorInstance<
   }
 
   /**
-   * Stores a submit pipeline's Standard Schema output when its result has one.
+   * Stores a submit pipeline's schema output or branded payload when present.
    *
-   * A result without a schema output leaves the current state unchanged. An
+   * A result without an output leaves the current state unchanged. An
    * explicit `undefined` is still considered a stored output. The operation is
    * ignored after disposal.
    *
    * @param result - The accepted result produced by the validator pipeline.
    */
-  setSchemaOutput(result: {
-    schemaResult: TSchemaOutput | null
-    hasSchemaResult: boolean
-  }): void {
-    if (this.disposed || !result.hasSchemaResult) return
+  setOutput(result: { output: TOutput | null; hasOutput: boolean }): void {
+    if (this.disposed || !result.hasOutput) return
 
-    this.schemaOutput = result.schemaResult as TSchemaOutput
-    this.hasSchemaOutput = true
+    this.output = result.output as TOutput
+    this.hasOutput = true
   }
 
-  /** Clears the stored schema output and its presence marker. */
-  clearSchemaOutput(): void {
+  /** Clears the stored output and its presence marker. */
+  clearOutput(): void {
     if (this.disposed) return
 
-    this._clearSchemaOutput()
+    this._clearOutput()
   }
 
   /**
@@ -294,7 +291,7 @@ export class InternalValidatorInstance<
   /** Releases validator-specific runtime state during reset or disposal. */
   protected override _resetRuntime(): void {
     this._cancelExecution()
-    this._clearSchemaOutput()
+    this._clearOutput()
   }
 
   /** Releases validator-only collections and mount state during disposal. */
@@ -313,9 +310,9 @@ export class InternalValidatorInstance<
   }
 
   /** Clears the schema-output value and presence marker as one operation. */
-  private _clearSchemaOutput(): void {
-    this.schemaOutput = undefined
-    this.hasSchemaOutput = false
+  private _clearOutput(): void {
+    this.output = undefined
+    this.hasOutput = false
   }
 }
 
@@ -332,7 +329,7 @@ export function reconcileValidatorInstances<
   TOwner,
   TErrorTarget = unknown,
   TWatchedField = unknown,
-  TSchemaOutput = unknown,
+  TOutput = unknown,
 >({
   definitions,
   previousDefinitions,
@@ -345,13 +342,13 @@ export function reconcileValidatorInstances<
   TOwner,
   TErrorTarget,
   TWatchedField,
-  TSchemaOutput
+  TOutput
 >): InternalValidatorInstances<
   TDefinition,
   TOwner,
   TErrorTarget,
   TWatchedField,
-  TSchemaOutput
+  TOutput
 > {
   if (
     previousDefinitions !== undefined &&
@@ -382,7 +379,7 @@ export function reconcileValidatorInstances<
         TOwner,
         TErrorTarget,
         TWatchedField,
-        TSchemaOutput
+        TOutput
       >({ definition, owner, scope, index })
     }
   })

@@ -16,7 +16,7 @@ import type {
   FormValidateResult,
   FormValidator,
   FormValidatorContext,
-  ToFormSchemaOutputs,
+  ToFormOutputs,
   ValidationDebounceFn,
   ValidationPredicateFn,
 } from '../src'
@@ -111,7 +111,7 @@ describe('runFormValidatorPipeline', () => {
     expect(results).toContainEqual(
       expect.objectContaining({
         result: { message: 'foo' },
-        schemaResult: null,
+        output: null,
       }),
     )
   })
@@ -790,7 +790,7 @@ describe('runFormValidatorPipeline', () => {
         })
         .transform(({ name }) => ({ upperName: name.toUpperCase() }))
 
-      type Output = ToFormSchemaOutputs<
+      type Output = ToFormOutputs<
         [
           { run: typeof lengthSchema; triggers: [] },
           { run: typeof uppercaseSchema; triggers: [] },
@@ -819,9 +819,9 @@ describe('runFormValidatorPipeline', () => {
       new InternalFormApi({
         defaultValues: { name: '' },
         validators: [{ run: schema, triggers: [] }],
-        onSubmit: ({ value, schemaOutputs }) => {
+        onSubmit: ({ value, validatorOutputs }) => {
           expectTypeOf(value).toEqualTypeOf<{ name: string }>()
-          expectTypeOf(schemaOutputs).toEqualTypeOf<
+          expectTypeOf(validatorOutputs).toEqualTypeOf<
             readonly [{ nameLength: number }]
           >()
         },
@@ -840,9 +840,9 @@ describe('runFormValidatorPipeline', () => {
           { run: () => false, triggers: [] },
           { run: schema2, triggers: [] },
         ],
-        onSubmit: ({ value, schemaOutputs }) => {
+        onSubmit: ({ value, validatorOutputs }) => {
           expectTypeOf(value).toEqualTypeOf<{ name: string }>()
-          expectTypeOf(schemaOutputs).toEqualTypeOf<
+          expectTypeOf(validatorOutputs).toEqualTypeOf<
             readonly [{ nameLength: number }, undefined, { date: Date }]
           >()
         },
@@ -867,7 +867,7 @@ describe('runFormValidatorPipeline', () => {
       expect(onSubmit).toHaveBeenCalledWith(
         expect.objectContaining({
           value: { name: 'test' },
-          schemaOutputs: [{ nameLength: 4 }],
+          validatorOutputs: [{ nameLength: 4 }],
         }),
       )
     })
@@ -925,12 +925,12 @@ describe('runFormValidatorPipeline', () => {
 
       expect(results).toHaveLength(1)
       expect(results[0]?.result).toBeNull()
-      expect(results[0]?.schemaResult).toEqual({
+      expect(results[0]?.output).toEqual({
         name: 'test',
         age: 25,
       })
-      expect(pipeline[0]?.hasSchemaOutput).toBe(true)
-      expect(pipeline[0]?.schemaOutput).toEqual({
+      expect(pipeline[0]?.hasOutput).toBe(true)
+      expect(pipeline[0]?.output).toEqual({
         name: 'test',
         age: 25,
       })
@@ -950,8 +950,8 @@ describe('runFormValidatorPipeline', () => {
 
         const results = await runWithContext({ event })
 
-        expect(results[0]?.schemaResult).toEqual({ name: 'test' })
-        expect(pipeline[0]?.hasSchemaOutput).toBe(false)
+        expect(results[0]?.output).toEqual({ name: 'test' })
+        expect(pipeline[0]?.hasOutput).toBe(false)
       },
     )
 
@@ -968,8 +968,8 @@ describe('runFormValidatorPipeline', () => {
 
       const results = await runWithContext({ event: 'submit' })
 
-      expect(results[0]?.schemaResult).toBe('TEST')
-      expect(pipeline[0]?.hasSchemaOutput).toBe(false)
+      expect(results[0]?.output).toBe('TEST')
+      expect(pipeline[0]?.hasOutput).toBe(false)
     })
 
     it('commits schema output before notifying onResult', async () => {
@@ -982,8 +982,8 @@ describe('runFormValidatorPipeline', () => {
         },
       ])
       const onResult = vi.fn(() => {
-        expect(pipeline[0]?.hasSchemaOutput).toBe(true)
-        expect(pipeline[0]?.schemaOutput).toEqual({ name: 'test' })
+        expect(pipeline[0]?.hasOutput).toBe(true)
+        expect(pipeline[0]?.output).toEqual({ name: 'test' })
       })
 
       await runWithContext({ event: 'submit', onResult })
@@ -1021,12 +1021,12 @@ describe('runFormValidatorPipeline', () => {
       const currentValidation = runWithContext({ event: 'submit' })
 
       await Promise.all([staleValidation, currentValidation])
-      expect(pipeline[0]?.schemaOutput).toEqual({ name: 'current' })
+      expect(pipeline[0]?.output).toEqual({ name: 'current' })
 
       resolveFirst({ value: { name: 'stale' } })
       await new Promise((resolve) => setTimeout(resolve, 0))
 
-      expect(pipeline[0]?.schemaOutput).toEqual({ name: 'current' })
+      expect(pipeline[0]?.output).toEqual({ name: 'current' })
     })
 
     it('clears schema output before a validator is skipped by bailIfInvalid', async () => {
@@ -1045,29 +1045,27 @@ describe('runFormValidatorPipeline', () => {
       ])
 
       await runWithContext({ event: 'submit' })
-      expect(pipeline[1]?.hasSchemaOutput).toBe(true)
+      expect(pipeline[1]?.hasOutput).toBe(true)
 
       shouldFail = true
       await runWithContext({ event: 'submit' })
 
-      expect(pipeline[1]?.hasSchemaOutput).toBe(false)
-      expect(pipeline[1]?.schemaOutput).toBeUndefined()
+      expect(pipeline[1]?.hasOutput).toBe(false)
+      expect(pipeline[1]?.output).toBeUndefined()
     })
 
     it('aborts pending schema output before a dynamic predicate skips the validator', async () => {
       const formApi = getForm({ name: 'stale' })
       let shouldRunOnSubmit = true
       let resolveSchema!: (result: { value: { name: string } }) => void
-      const schemaResult = new Promise<{ value: { name: string } }>(
-        (resolve) => {
-          resolveSchema = resolve
-        },
-      )
+      const output = new Promise<{ value: { name: string } }>((resolve) => {
+        resolveSchema = resolve
+      })
       const schema = {
         '~standard': {
           version: 1,
           vendor: 'test',
-          validate: () => schemaResult,
+          validate: () => output,
         },
       } satisfies StandardSchemaV1<{ name: string }, { name: string }>
       const { runWithContext, pipeline } = getPipeline(formApi, [
@@ -1086,8 +1084,8 @@ describe('runFormValidatorPipeline', () => {
       resolveSchema({ value: { name: 'stale' } })
       await new Promise((resolve) => setTimeout(resolve, 0))
 
-      expect(pipeline[0]?.hasSchemaOutput).toBe(false)
-      expect(pipeline[0]?.schemaOutput).toBeUndefined()
+      expect(pipeline[0]?.hasOutput).toBe(false)
+      expect(pipeline[0]?.output).toBeUndefined()
     })
 
     it('should validate form with a failing zod schema', async () => {
@@ -1110,7 +1108,7 @@ describe('runFormValidatorPipeline', () => {
       expect(results).toEqual([
         getFieldErrorMatcher({ name: ['Name is required'] }),
       ])
-      expect(results[0]?.schemaResult).toBeNull()
+      expect(results[0]?.output).toBeNull()
     })
 
     it('should validate form with multiple errors from zod schema', async () => {
