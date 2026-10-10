@@ -1,5 +1,9 @@
 import { batch } from '@tanstack/store'
-import { isErrorResult } from '../validation'
+import {
+  isErrorResult,
+  isValidationErrorMap,
+  parseValidationResult,
+} from '../validation'
 import { parseStandardSchemaIssues } from '../standardSchema.lib'
 import type { InternalFormApi } from './FormApi.lib'
 import type {
@@ -141,7 +145,14 @@ export async function runSubmissionProcess<TFormData>(
       return []
     }
 
-    return errorResults
+    // TODO ew. Resolve this differently, this is really bad.
+    return errorResults.flatMap<FormValidationError<TFormData>>((error) => {
+      const { self, subfields } = parseValidationResult(error)
+      if (isValidationErrorMap(error)) {
+        return [{ ...error, form: self ?? undefined, fields: subfields ?? {} }]
+      }
+      return self ?? []
+    })
   }
 
   if (submissionData.hasFailed) {

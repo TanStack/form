@@ -167,7 +167,9 @@ describe('form - submission handling', () => {
       expect(form.state.isSubmitSuccessful).toBe(false)
 
       finishInvalidSubmit()
-      await expect(submitPromise).resolves.toEqual(['Submit error'])
+      await expect(submitPromise).resolves.toEqual([
+        { message: 'Submit error' },
+      ])
       expect(form.state.isSubmitting).toBe(false)
     })
 
