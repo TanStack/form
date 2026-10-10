@@ -15,11 +15,10 @@ import type { FormListeners } from '../listeners.public'
 import type { FormApiArrayMethods } from './FormApiArrayMethods.types.public'
 import type { FormApiFieldMethods } from './FormApiFieldMethods.types.public'
 import type { ServerFormState } from '../ssr.public'
-
-declare const onSubmitErrorBrand: unique symbol
+import type { SUBMIT_ERROR } from './handleSubmit.lib'
 
 /**
- * A validation error marked for processing as an `onSubmit` failure.
+ * A validation error wrapped for processing as an `onSubmit` failure.
  *
  * Create this value with the `createValidationError` or `parseIssues` helper
  * provided to `onSubmit`, then return it from the callback so its form- and
@@ -43,18 +42,17 @@ declare const onSubmitErrorBrand: unique symbol
  */
 export type OnSubmitError<
   TFormValidationError extends FormValidationError<any>,
-> = TFormValidationError & {
-  /** Internal brand used to identify submit errors. Do not access directly. */
-  [onSubmitErrorBrand]: true
+> = {
+  readonly [SUBMIT_ERROR]: TFormValidationError
 }
 
 /**
- * Marks a validation error for processing as an `onSubmit` failure.
+ * Wraps a validation error for processing as an `onSubmit` failure without mutating it.
  *
  * Return the result from `onSubmit` to add its form- and field-level errors to
  * validation state.
  *
- * @param error - The form- or field-level validation error to mark.
+ * @param error - The form- or field-level validation error to wrap.
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
  * @typeParam TError - Library-managed. Do not specify explicitly.
  */
