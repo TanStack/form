@@ -44,7 +44,7 @@ maintainer_guidance:
       properties:
         - 'defaultValues must align with the schema input type and should produce type errors when they do not.'
         - 'Callbacks may not have useful inference unless a schema is present in the validator array.'
-        - 'onSubmit should read the transform output from outputs instead of raw value.'
+        - 'onSubmit should read the transform output from validatorOutputs instead of raw value.'
     loose_schema:
       summary: 'Schema-source ruleset mode with editable defaults.'
       use_when:
@@ -54,7 +54,7 @@ maintainer_guidance:
         - 'The input is looser while the parsed submit output is still the schema output type.'
         - 'defaultValues must still align with the schema shape, but properties may also be null or undefined where editing requires it.'
         - 'Callbacks may not have useful inference unless a schema is present in the validator array.'
-        - 'onSubmit should read the transform output from outputs instead of raw value.'
+        - 'onSubmit should read the transform output from validatorOutputs instead of raw value.'
   schema_ecosystem:
     standard_schema:
       role: 'Most common integration shape.'
@@ -247,7 +247,7 @@ domains:
       - '@tanstack/form-core'
     core_questions:
       - 'Is the schema a pipeline from input A to output B, or a ruleset for confirming B?'
-      - 'Should submit logic read raw value or outputs?'
+      - 'Should submit logic read raw value or validatorOutputs?'
       - 'Do defaults need to be nullable or maybe undefined while editing?'
     related_skills:
       - choosing-form-options-modes
@@ -492,7 +492,7 @@ skill_candidates:
       - 'looseSchema uses the schema as a ruleset while allowing editable default values that include null or undefined where needed.'
       - 'looseSchema defaultValues must still align with the schema shape, but the input can be looser while output remains schema output.'
       - 'In schema modes, callbacks may not infer usefully unless a schema is present in the validator array.'
-      - 'In schema modes, onSubmit should read outputs instead of raw value.'
+      - 'In schema modes, onSubmit should read validatorOutputs instead of raw value.'
       - 'Use Standard Schema-capable libraries as heuristic examples only: Zod generally leans ruleset/firewall, Valibot generally leans pipeline, ArkType is mixed, and Effect Schema often leans pipeline/codec.'
     failure_modes:
       - name: expecting_option_helper_runtime_behavior
@@ -527,13 +527,13 @@ skill_candidates:
           - packages/form-core/tests/validation.test-d.ts
       - name: loose_pipeline_schema_loses_transform_intent
         symptom: 'Submit logic treats raw form value as if it were the transformed schema output.'
-        correction: 'Use strictSchema for pipeline schemas and read the transformed value from outputs.'
+        correction: 'Use strictSchema for pipeline schemas and read the transformed value from validatorOutputs.'
         evidence:
           - packages/form-core/tests/validation.test.ts
           - packages/form-core/tests/validation.test-d.ts
       - name: on_submit_reads_value_in_schema_mode
         symptom: 'onSubmit reads value even though strictSchema or looseSchema is being used.'
-        correction: 'Read the relevant outputs entry, because both schema modes preserve raw form value separately from parsed output.'
+        correction: 'Read the relevant validatorOutputs entry, because both schema modes preserve raw form value separately from parsed output.'
         evidence:
           - packages/form-core/tests/validation.test.ts
           - packages/form-core/src/FormApi/FormApi.public.ts
@@ -551,7 +551,7 @@ skill_candidates:
     purpose: 'Help users turn Standard Schema-compatible schemas into form validators, field errors, typed submit output, and realistic examples.'
     entrypoints:
       - 'validators'
-      - 'outputs'
+      - 'FormSubmitContext.validatorOutputs'
       - 'parseIssues'
       - 'createValidationError'
       - 'Standard Schema validators'
@@ -566,13 +566,13 @@ skill_candidates:
     teaches:
       - 'Use Standard Schema-compatible validators in form or field validators.'
       - 'Extract reusable validator trigger configs with createValidator or createValidators when the policy is complex enough to deserve a semantic name.'
-      - 'Read parsed schema output from onSubmit context.outputs.'
+      - 'Read parsed schema output from onSubmit context.validatorOutputs.'
       - 'Return validation errors as values through createValidationError or parseIssues; do not throw them.'
       - 'Let Standard Schema issue paths route field errors instead of hand-building brittle path maps.'
     failure_modes:
       - name: assuming_schema_output_replaces_value
         symptom: 'onSubmit reads value expecting transformed/coerced data.'
-        correction: 'Use outputs for parsed schema output; value remains form state.'
+        correction: 'Use validatorOutputs for parsed schema output; value remains form state.'
         evidence:
           - packages/form-core/src/FormApi/FormApi.public.ts
           - packages/form-core/tests/validation.test.ts

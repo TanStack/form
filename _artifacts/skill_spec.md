@@ -173,7 +173,7 @@ Core guidance:
 - Use `looseSchema` when the schema is a ruleset for confirming valid output, but editable defaults need nullable or undefined values, such as a date field that starts as `null`.
 - In `looseSchema`, default values must still align with the schema shape, but properties may also be `null` or `undefined` where editing requires it.
 - In both schema modes, callbacks may not have useful inference unless there is a schema in the validator array for the helper to infer from.
-- In both schema modes, `onSubmit` should read the parsed transform output from `outputs` rather than raw `value`.
+- In both schema modes, `onSubmit` should read the parsed transform output from `validatorOutputs` rather than raw `value`.
 - Treat pipeline-vs-ruleset as TanStack Form guidance, not a Standard Schema concept. Standard Schema only gives the shared validation/typing interface.
 - Explain the mental model as: is this schema a pipeline of constraints/transforms, or a firewall that only lets valid values through?
 - List current Standard Schema-capable libraries as examples with a general leaning, not as hard categories.
@@ -190,7 +190,7 @@ Important failure modes:
 - Using `looseSchema` but providing default values that no longer match the schema shape at all.
 - Using schema modes without putting a schema in the validator array, then expecting callbacks to infer from that schema.
 - Using loose schema mode for a true pipeline and then reading raw `value` as if it were parsed output.
-- Reading `value` in `onSubmit` for schema-mode forms instead of reading the corresponding `outputs` entry.
+- Reading `value` in `onSubmit` for schema-mode forms instead of reading the corresponding `validatorOutputs` entry.
 - Treating all Zod `input` and `output` differences as a real pipeline decision.
 
 Source trail:
@@ -214,7 +214,7 @@ Purpose: Help users take a Standard Schema-compatible schema and wire it into va
 Primary APIs:
 
 - `validators`
-- `outputs`
+- `FormSubmitContext.validatorOutputs`
 - `parseIssues`
 - `createValidationError`
 
@@ -222,7 +222,7 @@ Core guidance:
 
 - Configure schema validation through validators.
 - Extract reusable validator trigger configs with `createValidator` or `createValidators` when the behavior is complex enough to need a semantic name.
-- Read parsed schema output from `outputs`; raw `value` remains form state.
+- Read parsed schema output from `onSubmit` context's `validatorOutputs`; raw `value` remains form state.
 - Route submit validation errors as returned values through `createValidationError` or `parseIssues`; do not throw them.
 - Let Standard Schema issue paths route nested and array field errors when possible.
 - Keep UI metadata explicit or schema-library-specific; Standard Schema does not standardize it.
