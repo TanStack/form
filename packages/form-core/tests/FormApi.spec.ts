@@ -4236,6 +4236,102 @@ it('should preserve nested fields on resetField if defaultValues is not provided
   expect(form.state.values.nested.field.name).toEqual('Nested')
 })
 
+it.each([
+  ['undefined', undefined],
+  ['null', null],
+  ['an empty string', ''],
+  ['false', false],
+  ['0', 0],
+  ['a defined value', 'tony'],
+])(
+  'should reset a field to a form-level default of %s on resetField',
+  (_, defaultValue) => {
+    const form = new FormApi({
+      defaultValues: { name: defaultValue } as { name: unknown },
+    })
+    form.mount()
+
+    const field = new FieldApi({ form, name: 'name' })
+    field.mount()
+
+    field.setValue('hawk')
+    expect(field.getMeta().isDefaultValue).toBe(false)
+
+    form.resetField('name')
+
+    expect(form.state.values.name).toBe(defaultValue)
+    expect(field.state.value).toBe(defaultValue)
+    expect(field.getMeta().isDefaultValue).toBe(true)
+    expect(field.getMeta().isTouched).toBe(false)
+  },
+)
+
+it('should reset a field to undefined on resetField if its key is missing from defaultValues', () => {
+  const form = new FormApi({
+    defaultValues: {} as { name?: string },
+  })
+  form.mount()
+
+  const field = new FieldApi({ form, name: 'name' })
+  field.mount()
+
+  field.setValue('hawk')
+  form.resetField('name')
+
+  expect(form.state.values.name).toBeUndefined()
+  expect(field.getMeta().isDefaultValue).toBe(true)
+})
+
+it('should reset nested fields with undefined defaults on resetField without changing their siblings', () => {
+  const form = new FormApi({
+    defaultValues: {
+      nested: { name: undefined, age: 1 },
+      people: [{ name: undefined }, { name: 'second' }],
+    } as {
+      nested: { name?: string; age: number }
+      people: { name?: string }[]
+    },
+  })
+  form.mount()
+
+  form.setFieldValue('nested.name', 'Nested')
+  form.setFieldValue('nested.age', 2)
+  form.setFieldValue('people[0].name', 'first')
+  form.setFieldValue('people[1].name', 'changed')
+
+  form.resetField('nested.name')
+  form.resetField('people[0].name')
+
+  expect(form.state.values).toEqual({
+    nested: { name: undefined, age: 2 },
+    people: [{ name: undefined }, { name: 'changed' }],
+  })
+})
+
+it.each([
+  ['a defined value', 'tony'],
+  ['an empty string', ''],
+  ['false', false],
+  ['0', 0],
+])(
+  'should reset a field to a field-level default of %s on resetField if defaultValues is not provided',
+  (_, defaultValue) => {
+    const form = new FormApi({
+      defaultState: { values: { name: 'initial' } as { name: unknown } },
+    })
+    form.mount()
+
+    const field = new FieldApi({ form, name: 'name', defaultValue })
+    field.mount()
+
+    field.setValue('hawk')
+    form.resetField('name')
+
+    expect(form.state.values.name).toBe(defaultValue)
+    expect(field.getMeta().isDefaultValue).toBe(true)
+  },
+)
+
 it('should accept formId and return it', () => {
   const form = new FormApi({
     defaultValues: { age: 0 },
