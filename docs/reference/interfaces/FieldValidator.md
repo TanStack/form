@@ -3,7 +3,9 @@ id: FieldValidator
 title: FieldValidator
 ---
 
-Defined in: [validation.public.ts:523](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L523)
+Defined in: [validation.public.ts:983](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L983)
+
+Configures validation of a field's value, optionally reacting to related fields.
 
 ## Extends
 
@@ -17,13 +19,19 @@ Defined in: [validation.public.ts:523](https://github.com/TanStack/form/blob/mai
 
 `TFormData`
 
+Library-managed. Do not specify explicitly.
+
 ### TFieldName
 
 `TFieldName`
 
+Library-managed. Do not specify explicitly.
+
 ### TFieldValue
 
 `TFieldValue`
+
+Library-managed. Do not specify explicitly.
 
 ## Properties
 
@@ -33,10 +41,11 @@ Defined in: [validation.public.ts:523](https://github.com/TanStack/form/blob/mai
 optional bailIfInvalid?: boolean;
 ```
 
-Defined in: [validation.public.ts:21](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L21)
+Defined in: [validation.public.ts:29](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L29)
 
-If `true`, this validator and all subsequent validators will be skipped if any previous validator has failed.
-If `false`, validators run regardless of earlier validation results.
+If `true`, skips this and subsequent validators when earlier validation has failed.
+
+If `false`, earlier failures do not prevent this validator from running.
 
 #### Default
 
@@ -58,7 +67,9 @@ run:
 | StandardSchemaV1<TFieldValue, any>;
 ```
 
-Defined in: [validation.public.ts:14](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L14)
+Defined in: [validation.public.ts:21](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L21)
+
+The function or Standard Schema that validates the value in this validator's scope.
 
 #### Inherited from
 
@@ -72,9 +83,10 @@ Defined in: [validation.public.ts:14](https://github.com/TanStack/form/blob/main
 optional runOnMount?: boolean;
 ```
 
-Defined in: [validation.public.ts:45](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L45)
+Defined in: [validation.public.ts:64](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L64)
 
-Whether this validator should be called once when the form is constructed.
+Whether this validator runs when the form is constructed or when its field
+or form group first mounts.
 
 #### Default
 
@@ -96,11 +108,12 @@ optional runOnSubmit?:
 | ValidationPredicateFn<TFormData, TFieldValue, "field">;
 ```
 
-Defined in: [validation.public.ts:38](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L38)
+Defined in: [validation.public.ts:56](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L56)
 
-TODO docs
+Whether this validator runs during a submission attempt, independently of `triggers`.
 
-Whether this validator should be called during a submission attempt.
+Pass a boolean to enable or disable it, or pass a function that returns
+`true` to enable it for the current attempt.
 
 #### Default
 
@@ -122,10 +135,13 @@ optional triggerDebounceMs?:
 | ValidationDebounceFn<TFormData, TFieldValue, "field">;
 ```
 
-Defined in: [validation.public.ts:52](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L52)
+Defined in: [validation.public.ts:74](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L74)
 
-The debounce time in milliseconds for validation triggers (change, blur).
-Does not affect submit events, which always execute immediately.
+The delay in milliseconds before validation runs for change or blur events.
+
+Pass a number for a fixed delay, or pass a function that returns the delay
+for the current event. Repeated events restart the delay.
+Submission validation runs immediately.
 
 #### Default
 
@@ -145,7 +161,12 @@ Does not affect submit events, which always execute immediately.
 triggers: ValidationTriggerOption<TFormData, TFieldValue, ConfigurableValidationTrigger, "field">[];
 ```
 
-Defined in: [validation.public.ts:54](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L54)
+Defined in: [validation.public.ts:82](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L82)
+
+Change and blur events that can run this validator, optionally with conditions.
+
+An empty array disables change and blur validation. Configure submission
+separately with `runOnSubmit` and initial validation with `runOnMount`.
 
 #### Inherited from
 
@@ -159,4 +180,9 @@ Defined in: [validation.public.ts:54](https://github.com/TanStack/form/blob/main
 optional watchFields?: DeepKeys<TFormData>[];
 ```
 
-Defined in: [validation.public.ts:535](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L535)
+Defined in: [validation.public.ts:1001](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L1001)
+
+Other field paths whose change or blur events can run this validator.
+
+Events must still match an enabled entry in `triggers`. The validator
+receives its own field's value, even when a watched field caused the event.

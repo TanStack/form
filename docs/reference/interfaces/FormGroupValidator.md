@@ -3,7 +3,9 @@ id: FormGroupValidator
 title: FormGroupValidator
 ---
 
-Defined in: [validation.public.ts:491](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L491)
+Defined in: [validation.public.ts:918](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L918)
+
+Configures validation of a form group's value.
 
 ## Extends
 
@@ -17,6 +19,8 @@ Defined in: [validation.public.ts:491](https://github.com/TanStack/form/blob/mai
 
 `TGroupValue`
 
+Library-managed. Do not specify explicitly.
+
 ## Properties
 
 ### bailIfInvalid?
@@ -25,10 +29,11 @@ Defined in: [validation.public.ts:491](https://github.com/TanStack/form/blob/mai
 optional bailIfInvalid?: boolean;
 ```
 
-Defined in: [validation.public.ts:21](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L21)
+Defined in: [validation.public.ts:29](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L29)
 
-If `true`, this validator and all subsequent validators will be skipped if any previous validator has failed.
-If `false`, validators run regardless of earlier validation results.
+If `true`, skips this and subsequent validators when earlier validation has failed.
+
+If `false`, earlier failures do not prevent this validator from running.
 
 #### Default
 
@@ -50,7 +55,9 @@ run:
 | StandardSchemaV1<TGroupValue, any>;
 ```
 
-Defined in: [validation.public.ts:14](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L14)
+Defined in: [validation.public.ts:21](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L21)
+
+The function or Standard Schema that validates the value in this validator's scope.
 
 #### Inherited from
 
@@ -64,9 +71,10 @@ Defined in: [validation.public.ts:14](https://github.com/TanStack/form/blob/main
 optional runOnMount?: boolean;
 ```
 
-Defined in: [validation.public.ts:45](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L45)
+Defined in: [validation.public.ts:64](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L64)
 
-Whether this validator should be called once when the form is constructed.
+Whether this validator runs when the form is constructed or when its field
+or form group first mounts.
 
 #### Default
 
@@ -88,11 +96,12 @@ optional runOnSubmit?:
 | ValidationPredicateFn<TGroupValue, TGroupValue, "group">;
 ```
 
-Defined in: [validation.public.ts:38](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L38)
+Defined in: [validation.public.ts:56](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L56)
 
-TODO docs
+Whether this validator runs during a submission attempt, independently of `triggers`.
 
-Whether this validator should be called during a submission attempt.
+Pass a boolean to enable or disable it, or pass a function that returns
+`true` to enable it for the current attempt.
 
 #### Default
 
@@ -114,10 +123,13 @@ optional triggerDebounceMs?:
 | ValidationDebounceFn<TGroupValue, TGroupValue, "group">;
 ```
 
-Defined in: [validation.public.ts:52](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L52)
+Defined in: [validation.public.ts:74](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L74)
 
-The debounce time in milliseconds for validation triggers (change, blur).
-Does not affect submit events, which always execute immediately.
+The delay in milliseconds before validation runs for change or blur events.
+
+Pass a number for a fixed delay, or pass a function that returns the delay
+for the current event. Repeated events restart the delay.
+Submission validation runs immediately.
 
 #### Default
 
@@ -137,7 +149,12 @@ Does not affect submit events, which always execute immediately.
 triggers: ValidationTriggerOption<TGroupValue, TGroupValue, ConfigurableValidationTrigger, "group">[];
 ```
 
-Defined in: [validation.public.ts:54](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L54)
+Defined in: [validation.public.ts:82](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L82)
+
+Change and blur events that can run this validator, optionally with conditions.
+
+An empty array disables change and blur validation. Configure submission
+separately with `runOnSubmit` and initial validation with `runOnMount`.
 
 #### Inherited from
 

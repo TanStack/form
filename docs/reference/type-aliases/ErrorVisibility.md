@@ -7,13 +7,15 @@ title: ErrorVisibility
 type ErrorVisibility<TFormData, TFormErrorTypes> = (context) => boolean;
 ```
 
-Defined in: [validation.public.ts:227](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L227)
+Defined in: [validation.public.ts:340](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L340)
 
-Decides whether a field exposes its validation errors publicly.
+Returns `true` to show a field's validation errors in `field.errors`.
 
-For fields inside a form group, scalar meta properties read from `state` are
-scoped to the containing group. `values` and `errors` remain
-form-wide.
+Hidden errors remain available in `field.meta.original.errors`.
+
+For fields inside a form group, `state` properties such as `isTouched` and
+`submissionAttempts` describe the containing group. `values` and `errors`
+still describe the whole form.
 
 ## Type Parameters
 
@@ -21,9 +23,13 @@ form-wide.
 
 `TFormData`
 
+Library-managed. Do not specify explicitly.
+
 ### TFormErrorTypes
 
 `TFormErrorTypes` *extends* [`FormErrorTypes`](../interfaces/FormErrorTypes.md)
+
+Library-managed. Do not specify explicitly.
 
 ## Parameters
 

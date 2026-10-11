@@ -3,7 +3,9 @@ id: BaseValidator
 title: BaseValidator
 ---
 
-Defined in: [validation.public.ts:11](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L11)
+Defined in: [validation.public.ts:17](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L17)
+
+A validation function or Standard Schema with an optional rule to stop after earlier failures.
 
 ## Extended by
 
@@ -18,6 +20,8 @@ Defined in: [validation.public.ts:11](https://github.com/TanStack/form/blob/main
   \| [`StandardSchemaV1`](../type-aliases/StandardSchemaV1.md)
   \| [`ValidatorFn`](../type-aliases/ValidatorFn.md)\<`any`, `any`\>
 
+Library-managed. Do not specify explicitly.
+
 ## Properties
 
 ### bailIfInvalid?
@@ -26,10 +30,11 @@ Defined in: [validation.public.ts:11](https://github.com/TanStack/form/blob/main
 optional bailIfInvalid?: boolean;
 ```
 
-Defined in: [validation.public.ts:21](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L21)
+Defined in: [validation.public.ts:29](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L29)
 
-If `true`, this validator and all subsequent validators will be skipped if any previous validator has failed.
-If `false`, validators run regardless of earlier validation results.
+If `true`, skips this and subsequent validators when earlier validation has failed.
+
+If `false`, earlier failures do not prevent this validator from running.
 
 #### Default
 
@@ -45,4 +50,6 @@ false
 run: TValidator;
 ```
 
-Defined in: [validation.public.ts:14](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L14)
+Defined in: [validation.public.ts:21](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L21)
+
+The function or Standard Schema that validates the value in this validator's scope.

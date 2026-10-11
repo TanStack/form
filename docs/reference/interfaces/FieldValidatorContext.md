@@ -3,7 +3,9 @@ id: FieldValidatorContext
 title: FieldValidatorContext
 ---
 
-Defined in: [validation.public.ts:503](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L503)
+Defined in: [validation.public.ts:942](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L942)
+
+Values and helpers passed to a field validation function.
 
 ## Type Parameters
 
@@ -11,13 +13,19 @@ Defined in: [validation.public.ts:503](https://github.com/TanStack/form/blob/mai
 
 `TFieldName`
 
+Library-managed. Do not specify explicitly.
+
 ### TFieldValue
 
 `TFieldValue`
 
+Library-managed. Do not specify explicitly.
+
 ### TFormData
 
 `TFormData`
+
+Library-managed. Do not specify explicitly.
 
 ## Properties
 
@@ -27,7 +35,9 @@ Defined in: [validation.public.ts:503](https://github.com/TanStack/form/blob/mai
 event: ValidationTrigger;
 ```
 
-Defined in: [validation.public.ts:508](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L508)
+Defined in: [validation.public.ts:948](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L948)
+
+The event that caused this validation run.
 
 ***
 
@@ -37,7 +47,9 @@ Defined in: [validation.public.ts:508](https://github.com/TanStack/form/blob/mai
 fieldApi: FieldApi<TFieldName, TFieldValue, any, TFormData, any>;
 ```
 
-Defined in: [validation.public.ts:511](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L511)
+Defined in: [validation.public.ts:954](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L954)
+
+The field being validated, including when a watched field caused the event.
 
 ***
 
@@ -47,7 +59,9 @@ Defined in: [validation.public.ts:511](https://github.com/TanStack/form/blob/mai
 formApi: FormApi<TFormData, any>;
 ```
 
-Defined in: [validation.public.ts:510](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L510)
+Defined in: [validation.public.ts:952](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L952)
+
+The owning form. Read other field values here for cross-field validation.
 
 ***
 
@@ -57,7 +71,9 @@ Defined in: [validation.public.ts:510](https://github.com/TanStack/form/blob/mai
 parseIssues: ParseFieldIssuesFn;
 ```
 
-Defined in: [validation.public.ts:513](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L513)
+Defined in: [validation.public.ts:958](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L958)
+
+Converts Standard Schema issues into errors for this field, without routing their paths.
 
 ***
 
@@ -67,7 +83,9 @@ Defined in: [validation.public.ts:513](https://github.com/TanStack/form/blob/mai
 signal: AbortSignal;
 ```
 
-Defined in: [validation.public.ts:509](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L509)
+Defined in: [validation.public.ts:950](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L950)
+
+Aborted when this run is cancelled. Pass it to asynchronous work such as `fetch`.
 
 ***
 
@@ -77,4 +95,6 @@ Defined in: [validation.public.ts:509](https://github.com/TanStack/form/blob/mai
 value: TFieldValue;
 ```
 
-Defined in: [validation.public.ts:512](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L512)
+Defined in: [validation.public.ts:956](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L956)
+
+The current value of the field being validated.

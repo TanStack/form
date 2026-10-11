@@ -3,7 +3,9 @@ id: ErrorVisibilitySubfieldsMeta
 title: ErrorVisibilitySubfieldsMeta
 ---
 
-Defined in: [validation.public.ts:187](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L187)
+Defined in: [validation.public.ts:266](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L266)
+
+Descendant field state available when deciding whether to show errors.
 
 ## Properties
 
@@ -13,7 +15,9 @@ Defined in: [validation.public.ts:187](https://github.com/TanStack/form/blob/mai
 isEveryPristine: boolean;
 ```
 
-Defined in: [validation.public.ts:188](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L188)
+Defined in: [validation.public.ts:268](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L268)
+
+`true` when no descendant field is marked as dirty.
 
 ***
 
@@ -23,7 +27,9 @@ Defined in: [validation.public.ts:188](https://github.com/TanStack/form/blob/mai
 isSomeDirty: boolean;
 ```
 
-Defined in: [validation.public.ts:189](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L189)
+Defined in: [validation.public.ts:270](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L270)
+
+`true` when at least one descendant field is marked as dirty.
 
 ***
 
@@ -33,7 +39,9 @@ Defined in: [validation.public.ts:189](https://github.com/TanStack/form/blob/mai
 isSomeTouched: boolean;
 ```
 
-Defined in: [validation.public.ts:190](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L190)
+Defined in: [validation.public.ts:272](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L272)
+
+`true` when at least one descendant field is marked as touched.
 
 ***
 
@@ -43,4 +51,6 @@ Defined in: [validation.public.ts:190](https://github.com/TanStack/form/blob/mai
 isSomeValidating: boolean;
 ```
 
-Defined in: [validation.public.ts:191](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L191)
+Defined in: [validation.public.ts:274](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L274)
+
+`true` while at least one descendant field is validating.

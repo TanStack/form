@@ -3,7 +3,9 @@ id: ValidationTriggerConfig
 title: ValidationTriggerConfig
 ---
 
-Defined in: [validation.public.ts:331](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L331)
+Defined in: [validation.public.ts:506](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L506)
+
+A change or blur event with an optional condition for running validation.
 
 ## Type Parameters
 
@@ -11,17 +13,25 @@ Defined in: [validation.public.ts:331](https://github.com/TanStack/form/blob/mai
 
 `TFormData`
 
+Library-managed. Do not specify explicitly.
+
 ### TValue
 
 `TValue`
+
+Library-managed. Do not specify explicitly.
 
 ### TTrigger
 
 `TTrigger` *extends* [`ValidatorTrigger`](../type-aliases/ValidatorTrigger.md) = [`ValidatorTrigger`](../type-aliases/ValidatorTrigger.md)
 
+Library-managed. Do not specify explicitly.
+
 ### TScope
 
 `TScope` *extends* [`ValidatorScope`](../type-aliases/ValidatorScope.md) = [`ValidatorScope`](../type-aliases/ValidatorScope.md)
+
+Library-managed. Do not specify explicitly.
 
 ## Properties
 
@@ -31,7 +41,9 @@ Defined in: [validation.public.ts:331](https://github.com/TanStack/form/blob/mai
 trigger: TTrigger;
 ```
 
-Defined in: [validation.public.ts:337](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L337)
+Defined in: [validation.public.ts:513](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L513)
+
+The event to match before evaluating `when`.
 
 ***
 
@@ -43,4 +55,15 @@ optional when?:
 | ValidationPredicateFn<TFormData, TValue, TScope>;
 ```
 
-Defined in: [validation.public.ts:338](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L338)
+Defined in: [validation.public.ts:522](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L522)
+
+Whether this trigger enables validation when its event occurs.
+
+Pass a boolean to enable or disable it, or pass a function that returns
+`true` to enable it for the current event.
+
+#### Default
+
+```ts
+true
+```

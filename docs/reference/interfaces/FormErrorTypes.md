@@ -3,7 +3,9 @@ id: FormErrorTypes
 title: FormErrorTypes
 ---
 
-Defined in: [validation.public.ts:572](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L572)
+Defined in: [validation.public.ts:1051](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L1051)
+
+Inferred issue types for errors owned by a form or group and errors routed to its fields.
 
 ## Type Parameters
 
@@ -11,9 +13,13 @@ Defined in: [validation.public.ts:572](https://github.com/TanStack/form/blob/mai
 
 `TFormError` = [`ValidationIssue`](ValidationIssue.md)
 
+Library-managed. Do not specify explicitly.
+
 ### TFieldError
 
 `TFieldError` = [`ValidationIssue`](ValidationIssue.md)
+
+Library-managed. Do not specify explicitly.
 
 ## Properties
 
@@ -23,7 +29,9 @@ Defined in: [validation.public.ts:572](https://github.com/TanStack/form/blob/mai
 readonly fieldError: TFieldError;
 ```
 
-Defined in: [validation.public.ts:577](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L577)
+Defined in: [validation.public.ts:1058](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L1058)
+
+The issue type routed from form or group validation to individual fields.
 
 ***
 
@@ -33,4 +41,6 @@ Defined in: [validation.public.ts:577](https://github.com/TanStack/form/blob/mai
 readonly formError: TFormError;
 ```
 
-Defined in: [validation.public.ts:576](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L576)
+Defined in: [validation.public.ts:1056](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L1056)
+
+The issue type stored in the form or group's `state.errors`.

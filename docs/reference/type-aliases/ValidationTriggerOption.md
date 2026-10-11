@@ -9,7 +9,9 @@ type ValidationTriggerOption<TFormData, TValue, TTrigger, TScope> =
 | ValidationTriggerConfig<TFormData, TValue, TTrigger, TScope>;
 ```
 
-Defined in: [validation.public.ts:341](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L341)
+Defined in: [validation.public.ts:533](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L533)
+
+A validation event, either unconditional or configured with a `when` condition.
 
 ## Type Parameters
 
@@ -17,14 +19,22 @@ Defined in: [validation.public.ts:341](https://github.com/TanStack/form/blob/mai
 
 `TFormData`
 
+Library-managed. Do not specify explicitly.
+
 ### TValue
 
 `TValue`
+
+Library-managed. Do not specify explicitly.
 
 ### TTrigger
 
 `TTrigger` *extends* [`ValidatorTrigger`](ValidatorTrigger.md) = [`ValidatorTrigger`](ValidatorTrigger.md)
 
+Library-managed. Do not specify explicitly.
+
 ### TScope
 
 `TScope` *extends* [`ValidatorScope`](ValidatorScope.md) = [`ValidatorScope`](ValidatorScope.md)
+
+Library-managed. Do not specify explicitly.

@@ -3,7 +3,7 @@ id: FormApi
 title: FormApi
 ---
 
-Defined in: [FormApi/FormApi.public.ts:632](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L632)
+Defined in: [FormApi/FormApi.public.ts:631](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L631)
 
 Core API for reading and updating state, validating values, and handling
 submission.
@@ -36,7 +36,7 @@ Library-managed. Do not specify explicitly.
 atom: ReadonlyAtom<FormState<TFormData, TFormErrorTypes>>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:643](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L643)
+Defined in: [FormApi/FormApi.public.ts:642](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L642)
 
 Read-only atom containing reactive `FormState` snapshots.
 
@@ -79,7 +79,7 @@ formApi.clearFieldValues('items')
 readonly defaultValues: TFormData;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:647](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L647)
+Defined in: [FormApi/FormApi.public.ts:646](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L646)
 
 The current baseline values used by `reset()` and `isDefaultValue`.
 
@@ -120,7 +120,7 @@ formApi.filterFieldValues('items', (item) => item % 2 === 0)
 readonly formId: string;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:654](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L654)
+Defined in: [FormApi/FormApi.public.ts:653](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L653)
 
 Stable identifier supplied by `FormOptions.formId` or generated at
 creation.
@@ -164,7 +164,7 @@ be resolved at runtime.
 handleSubmit: HandleSubmitFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:692](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L692)
+Defined in: [FormApi/FormApi.public.ts:691](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L691)
 
 Runs submission validation and submits current values when validation
 succeeds.
@@ -342,7 +342,7 @@ formApi.replaceFieldValue('items', 1, 'new item')
 reset: ResetFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:707](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L707)
+Defined in: [FormApi/FormApi.public.ts:706](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L706)
 
 Reset form values, metadata, validation state, and mounted fields.
 
@@ -421,7 +421,7 @@ formApi.setFieldValue('visitCount', (count) => count + 1)
 readonly state: FormState<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:645](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L645)
+Defined in: [FormApi/FormApi.public.ts:644](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L644)
 
 Current values, validation status, and submission metadata.
 
@@ -464,7 +464,7 @@ formApi.swapFieldValues('items', 0, 2)
 validate: (signal) => Promise<FormValidationError<TFormData>[]>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:671](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L671)
+Defined in: [FormApi/FormApi.public.ts:670](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L670)
 
 Runs form-level validators enabled for the specified `'change'` or
 `'blur'` trigger.

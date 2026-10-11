@@ -3,7 +3,9 @@ id: ErrorVisibilityFieldMeta
 title: ErrorVisibilityFieldMeta
 ---
 
-Defined in: [validation.public.ts:194](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L194)
+Defined in: [validation.public.ts:278](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L278)
+
+Field state flags available to an error visibility policy.
 
 ## Properties
 
@@ -13,7 +15,9 @@ Defined in: [validation.public.ts:194](https://github.com/TanStack/form/blob/mai
 isBlurred: boolean;
 ```
 
-Defined in: [validation.public.ts:201](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L201)
+Defined in: [validation.public.ts:292](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L292)
+
+`true` when this field is marked as blurred.
 
 ***
 
@@ -23,7 +27,9 @@ Defined in: [validation.public.ts:201](https://github.com/TanStack/form/blob/mai
 isDefaultValue: boolean;
 ```
 
-Defined in: [validation.public.ts:200](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L200)
+Defined in: [validation.public.ts:290](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L290)
+
+`true` when the current value equals the field's default value.
 
 ***
 
@@ -33,7 +39,9 @@ Defined in: [validation.public.ts:200](https://github.com/TanStack/form/blob/mai
 isDirty: boolean;
 ```
 
-Defined in: [validation.public.ts:197](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L197)
+Defined in: [validation.public.ts:284](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L284)
+
+`true` when this field or a descendant is marked as dirty.
 
 ***
 
@@ -43,7 +51,9 @@ Defined in: [validation.public.ts:197](https://github.com/TanStack/form/blob/mai
 isPristine: boolean;
 ```
 
-Defined in: [validation.public.ts:199](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L199)
+Defined in: [validation.public.ts:288](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L288)
+
+`true` when neither this field nor its descendants are marked as dirty.
 
 ***
 
@@ -53,7 +63,9 @@ Defined in: [validation.public.ts:199](https://github.com/TanStack/form/blob/mai
 isSelfDirty: boolean;
 ```
 
-Defined in: [validation.public.ts:198](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L198)
+Defined in: [validation.public.ts:286](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L286)
+
+`true` when this field itself is marked as dirty.
 
 ***
 
@@ -63,7 +75,9 @@ Defined in: [validation.public.ts:198](https://github.com/TanStack/form/blob/mai
 isSelfTouched: boolean;
 ```
 
-Defined in: [validation.public.ts:196](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L196)
+Defined in: [validation.public.ts:282](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L282)
+
+`true` when this field itself is marked as touched.
 
 ***
 
@@ -73,7 +87,9 @@ Defined in: [validation.public.ts:196](https://github.com/TanStack/form/blob/mai
 isSelfValidating: boolean;
 ```
 
-Defined in: [validation.public.ts:203](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L203)
+Defined in: [validation.public.ts:296](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L296)
+
+`true` while this field itself is validating.
 
 ***
 
@@ -83,7 +99,9 @@ Defined in: [validation.public.ts:203](https://github.com/TanStack/form/blob/mai
 isTouched: boolean;
 ```
 
-Defined in: [validation.public.ts:195](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L195)
+Defined in: [validation.public.ts:280](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L280)
+
+`true` when this field or a descendant is marked as touched.
 
 ***
 
@@ -93,7 +111,9 @@ Defined in: [validation.public.ts:195](https://github.com/TanStack/form/blob/mai
 isValidating: boolean;
 ```
 
-Defined in: [validation.public.ts:202](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L202)
+Defined in: [validation.public.ts:294](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L294)
+
+`true` while this field or a descendant is validating.
 
 ***
 
@@ -103,4 +123,6 @@ Defined in: [validation.public.ts:202](https://github.com/TanStack/form/blob/mai
 subfields: ErrorVisibilitySubfieldsMeta;
 ```
 
-Defined in: [validation.public.ts:204](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L204)
+Defined in: [validation.public.ts:298](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L298)
+
+State flags for this field's descendants.

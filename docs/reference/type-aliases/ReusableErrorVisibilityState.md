@@ -7,12 +7,11 @@ title: ReusableErrorVisibilityState
 type ReusableErrorVisibilityState = Omit<FormApi<any, any>["state"], "values"> & object;
 ```
 
-Defined in: [validation.public.ts:238](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L238)
+Defined in: [validation.public.ts:350](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L350)
 
-The scoped state view available while declaring a reusable visibility policy.
+Form or group state available to a reusable error visibility policy.
 
-`values` remains unknown because a reusable policy is not associated with a
-particular form shape until it is assigned to a form or field option.
+`values` is `unknown` because the policy can be used with different form shapes.
 
 ## Type Declaration
 
@@ -21,3 +20,5 @@ particular form shape until it is assigned to a form or field option.
 ```ts
 values: unknown;
 ```
+
+Current form values, without assuming a particular form shape.

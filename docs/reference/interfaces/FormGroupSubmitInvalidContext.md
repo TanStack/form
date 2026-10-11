@@ -3,7 +3,7 @@ id: FormGroupSubmitInvalidContext
 title: FormGroupSubmitInvalidContext
 ---
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:79](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L79)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:80](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L80)
 
 Context passed to a form group's `onSubmitInvalid` when submission fails.
 
@@ -50,7 +50,7 @@ Context passed to a form group's `onSubmitInvalid` when submission fails.
 formApi: FormApi<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:89](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L89)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:90](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L90)
 
 The parent form API handling the failed submission.
 
@@ -62,7 +62,7 @@ The parent form API handling the failed submission.
 groupApi: FormGroupApi<TFormData, TGroupName, TGroupValue, TGroupErrorTypes, TFormErrorTypes>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:91](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L91)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:92](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L92)
 
 The group API handling the failed submission.
 
@@ -74,6 +74,6 @@ The group API handling the failed submission.
 value: TGroupValue;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:87](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L87)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:88](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L88)
 
 The group values for the failed submission.

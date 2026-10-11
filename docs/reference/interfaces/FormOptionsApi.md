@@ -89,7 +89,7 @@ values.
 Use this when the schema represents the final valid shape but the UI needs
 intermediate empty states, such as an unselected date. Raw form state
 remains available as `value`; read each validator's parsed output from the
-corresponding `schemaOutputs` entry during submission.
+corresponding `validatorOutputs` entry during submission.
 
 Pass the schema as the first argument and the options as the second.
 `defaultValues` infer an editable form shape constrained by the schema
@@ -121,7 +121,7 @@ const bookingOptions = formOptions.looseSchema(bookingSchema, {
         value.startDate === null ? 'Choose a date' : undefined,
     },
   ],
-  onSubmit: ({ schemaOutputs }) => saveBooking(schemaOutputs[0]),
+  onSubmit: ({ validatorOutputs }) => saveBooking(validatorOutputs[0]),
 })
 ```
 
@@ -170,7 +170,7 @@ Infers the form data type from a Standard Schema validator and requires
 
 Use this when the schema represents an input-to-output pipeline. Raw form
 state remains available as `value`; read each validator's parsed output
-from the corresponding `schemaOutputs` entry during submission.
+from the corresponding `validatorOutputs` entry during submission.
 
 Pass the schema as the first argument and the options as the second. This
 fixes the form data to the schema input before the options are inferred, so
@@ -201,7 +201,7 @@ const profileOptions = formOptions.strictSchema(profileSchema, {
         value.name.length === 0 ? 'Name is required' : undefined,
     },
   ],
-  onSubmit: ({ schemaOutputs }) => saveProfile(schemaOutputs[0]),
+  onSubmit: ({ validatorOutputs }) => saveProfile(validatorOutputs[0]),
 })
 ```
 

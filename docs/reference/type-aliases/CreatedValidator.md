@@ -7,13 +7,10 @@ title: CreatedValidator
 type CreatedValidator<TOptions, TRun> = ValidatorWithRun<InferFormDataFromValidator<TRun>, InferFormDataFromValidator<TRun>, TOptions, TRun>;
 ```
 
-Defined in: [validation.public.ts:107](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L107)
+Defined in: [validation.public.ts:140](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L140)
 
-The validator produced by applying a run function or Standard Schema to a
-reusable `createValidator` configuration.
-
-This type is inferred from `createValidator`; application code normally
-does not need to name it directly.
+A validator created by combining reusable options with a validation function
+or Standard Schema through `createValidator`.
 
 ## Type Parameters
 

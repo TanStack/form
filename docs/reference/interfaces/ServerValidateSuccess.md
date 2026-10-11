@@ -17,16 +17,6 @@ Defined in: [ssr.public.ts:56](https://github.com/TanStack/form/blob/main/packag
 
 ## Properties
 
-### schemaOutputs
-
-```ts
-schemaOutputs: ServerFormStandardSchemaValidatorOutputs<TFormValidators>;
-```
-
-Defined in: [ssr.public.ts:62](https://github.com/TanStack/form/blob/main/packages/form-core/src/ssr.public.ts#L62)
-
-***
-
 ### success
 
 ```ts
@@ -34,6 +24,20 @@ success: true;
 ```
 
 Defined in: [ssr.public.ts:60](https://github.com/TanStack/form/blob/main/packages/form-core/src/ssr.public.ts#L60)
+
+***
+
+### validatorOutputs
+
+```ts
+validatorOutputs: ToServerFormOutputs<TFormValidators>;
+```
+
+Defined in: [ssr.public.ts:67](https://github.com/TanStack/form/blob/main/packages/form-core/src/ssr.public.ts#L67)
+
+Schema outputs and `createOutput` payloads from this server validation,
+ordered by validator index. Validators without a server trigger or output
+contribute `undefined`. These are separate from client submission outputs.
 
 ***
 

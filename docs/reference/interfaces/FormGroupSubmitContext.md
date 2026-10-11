@@ -32,9 +32,9 @@ Context passed to a form group's `onSubmit` after group validation succeeds.
 
 `TGroupValue`
 
-### TSchemaOutputs
+### TOutputs
 
-`TSchemaOutputs`
+`TOutputs`
 
 ### TGroupErrorTypes
 
@@ -70,24 +70,25 @@ The group API handling this submission.
 
 ***
 
-### schemaOutputs
+### validatorOutputs
 
 ```ts
-schemaOutputs: TSchemaOutputs;
+validatorOutputs: TOutputs;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:61](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L61)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:62](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L62)
 
-The submit outputs produced by the group's schema validators, ordered by
-validator index.
+Schema outputs and `createOutput` payloads from this group submission,
+ordered by validator index. Skipped validators and successful returns
+without an output contribute `undefined`.
 
 #### Example
 
 ```ts
 {
   // ...
-  onSubmit: async ({ schemaOutputs }) => {
-    const validatedGuestDetails = schemaOutputs[0]
+  onSubmit: async ({ validatorOutputs }) => {
+    const validatedGuestDetails = validatorOutputs[0]
     setStep(step => step + 1)
   },
 }

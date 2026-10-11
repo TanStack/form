@@ -3,7 +3,7 @@ id: FormGroupOptions
 title: FormGroupOptions
 ---
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:100](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L100)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:118](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L118)
 
 ## Type Parameters
 
@@ -35,7 +35,7 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:100](https://github.com/TanStac
 form: FormApi<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:107](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L107)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:125](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L125)
 
 ***
 
@@ -45,30 +45,20 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:107](https://github.com/TanStac
 name: TGroupName;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:108](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L108)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:126](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L126)
 
 ***
 
 ### onSubmit?
 
 ```ts
-optional onSubmit?: (context) => void | Promise<void>;
+optional onSubmit?: FormGroupSubmitFn<TFormData, TGroupName, TGroupValue, TGroupValidators, TFormErrorTypes>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:124](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L124)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:142](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L142)
 
 Called after group submission validation succeeds. The callback is awaited
 before submission finishes.
-
-#### Parameters
-
-##### context
-
-[`FormGroupSubmitContext`](FormGroupSubmitContext.md)\<`TFormData`, `TGroupName`, `TGroupValue`, [`ToFormGroupSchemaOutputs`](../type-aliases/ToFormGroupSchemaOutputs.md)\<`NoInfer`\<`TGroupValidators`\>\>, [`ToFormGroupErrorTypes`](../type-aliases/ToFormGroupErrorTypes.md)\<`NoInfer`\<`TGroupValidators`\>\>, `TFormErrorTypes`\>
-
-#### Returns
-
-`void` \| `Promise`\<`void`\>
 
 #### Example
 
@@ -89,7 +79,7 @@ before submission finishes.
 optional onSubmitInvalid?: (context) => void | Promise<void>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:150](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L150)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:165](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L165)
 
 Called when group validation fails or validation or submission throws. The
 callback is awaited before submission finishes.
@@ -125,4 +115,4 @@ callback is awaited before submission finishes.
 optional validators?: TGroupValidators;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:109](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L109)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:127](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L127)

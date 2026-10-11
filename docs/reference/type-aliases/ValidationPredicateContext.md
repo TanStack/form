@@ -7,7 +7,9 @@ title: ValidationPredicateContext
 type ValidationPredicateContext<TFormData, TValue, TScope> = TScope extends "form" ? FormValidationPredicateContext<TFormData> : TScope extends "group" ? FormGroupValidationPredicateContext<TValue> : TScope extends "field" ? FieldValidationPredicateContext<TFormData, TValue> : never;
 ```
 
-Defined in: [validation.public.ts:307](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L307)
+Defined in: [validation.public.ts:459](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L459)
+
+Context for validator conditions and delay callbacks, narrowed by `scope`.
 
 ## Type Parameters
 
@@ -15,10 +17,16 @@ Defined in: [validation.public.ts:307](https://github.com/TanStack/form/blob/mai
 
 `TFormData`
 
+Library-managed. Do not specify explicitly.
+
 ### TValue
 
 `TValue`
 
+Library-managed. Do not specify explicitly.
+
 ### TScope
 
 `TScope` *extends* [`ValidatorScope`](ValidatorScope.md) = [`ValidatorScope`](ValidatorScope.md)
+
+Library-managed. Do not specify explicitly.

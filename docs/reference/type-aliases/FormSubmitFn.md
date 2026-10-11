@@ -7,7 +7,7 @@ title: FormSubmitFn
 type FormSubmitFn<TFormData, TFormValidators, TSubmitReturn> = (context) => TSubmitReturn;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:184](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L184)
+Defined in: [FormApi/FormApi.public.ts:183](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L183)
 
 Handles a form submission after submission validation succeeds.
 
@@ -39,7 +39,7 @@ Library-managed. Do not specify explicitly.
 
 ### context
 
-[`FormSubmitContext`](../interfaces/FormSubmitContext.md)\<`TFormData`, [`ToFormSchemaOutputs`](ToFormSchemaOutputs.md)\<`TFormValidators`\>, [`ToFormErrorTypes`](ToFormErrorTypes.md)\<`TFormValidators`, `unknown`\>\>
+[`FormSubmitContext`](../interfaces/FormSubmitContext.md)\<`TFormData`, [`ToFormOutputs`](ToFormOutputs.md)\<`TFormValidators`\>, [`ToFormErrorTypes`](ToFormErrorTypes.md)\<`TFormValidators`, `unknown`\>\>
 
 ## Returns
 

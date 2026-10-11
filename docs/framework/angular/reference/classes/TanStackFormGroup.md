@@ -3,7 +3,7 @@ id: TanStackFormGroup
 title: TanStackFormGroup
 ---
 
-Defined in: [form-group.ts:24](https://github.com/TanStack/form/blob/main/packages/angular-form/src/form-group.ts#L24)
+Defined in: [form-group.ts:25](https://github.com/TanStack/form/blob/main/packages/angular-form/src/form-group.ts#L25)
 
 ## Type Parameters
 
@@ -39,7 +39,7 @@ Defined in: [form-group.ts:24](https://github.com/TanStack/form/blob/main/packag
 new TanStackFormGroup<TFormData, TGroupName, TGroupValue, TGroupValidators, TFormValidators, TSubmitReturn>(): TanStackFormGroup<TFormData, TGroupName, TGroupValue, TGroupValidators, TFormValidators, TSubmitReturn>;
 ```
 
-Defined in: [form-group.ts:83](https://github.com/TanStack/form/blob/main/packages/angular-form/src/form-group.ts#L83)
+Defined in: [form-group.ts:84](https://github.com/TanStack/form/blob/main/packages/angular-form/src/form-group.ts#L84)
 
 #### Returns
 
@@ -53,17 +53,19 @@ Defined in: [form-group.ts:83](https://github.com/TanStack/form/blob/main/packag
 name: InputSignal<TGroupName>;
 ```
 
-Defined in: [form-group.ts:34](https://github.com/TanStack/form/blob/main/packages/angular-form/src/form-group.ts#L34)
+Defined in: [form-group.ts:35](https://github.com/TanStack/form/blob/main/packages/angular-form/src/form-group.ts#L35)
 
 ***
 
 ### onSubmit
 
 ```ts
-onSubmit: InputSignal<((context) => void | Promise<void>) | undefined>;
+onSubmit: InputSignal<
+  | FormGroupSubmitFn<TFormData, TGroupName, TGroupValue, TGroupValidators, ToFormErrorTypes<TFormValidators, TSubmitReturn>>
+| undefined>;
 ```
 
-Defined in: [form-group.ts:36](https://github.com/TanStack/form/blob/main/packages/angular-form/src/form-group.ts#L36)
+Defined in: [form-group.ts:37](https://github.com/TanStack/form/blob/main/packages/angular-form/src/form-group.ts#L37)
 
 ***
 
@@ -73,7 +75,7 @@ Defined in: [form-group.ts:36](https://github.com/TanStack/form/blob/main/packag
 onSubmitInvalid: InputSignal<((context) => void | Promise<void>) | undefined>;
 ```
 
-Defined in: [form-group.ts:46](https://github.com/TanStack/form/blob/main/packages/angular-form/src/form-group.ts#L46)
+Defined in: [form-group.ts:47](https://github.com/TanStack/form/blob/main/packages/angular-form/src/form-group.ts#L47)
 
 ***
 
@@ -83,7 +85,7 @@ Defined in: [form-group.ts:46](https://github.com/TanStack/form/blob/main/packag
 tanstackFormGroup: InputSignal<InternalFormApi<TFormData, TFormValidators, TSubmitReturn>>;
 ```
 
-Defined in: [form-group.ts:32](https://github.com/TanStack/form/blob/main/packages/angular-form/src/form-group.ts#L32)
+Defined in: [form-group.ts:33](https://github.com/TanStack/form/blob/main/packages/angular-form/src/form-group.ts#L33)
 
 ***
 
@@ -93,7 +95,7 @@ Defined in: [form-group.ts:32](https://github.com/TanStack/form/blob/main/packag
 validators: InputSignal<NoInfer<TGroupValidators> | undefined>;
 ```
 
-Defined in: [form-group.ts:35](https://github.com/TanStack/form/blob/main/packages/angular-form/src/form-group.ts#L35)
+Defined in: [form-group.ts:36](https://github.com/TanStack/form/blob/main/packages/angular-form/src/form-group.ts#L36)
 
 ## Accessors
 
@@ -105,7 +107,7 @@ Defined in: [form-group.ts:35](https://github.com/TanStack/form/blob/main/packag
 get api(): InternalFormGroupApi<TFormData, TGroupName, TGroupValue, TGroupValidators, ToFormErrorTypes<TFormValidators, TSubmitReturn>>;
 ```
 
-Defined in: [form-group.ts:76](https://github.com/TanStack/form/blob/main/packages/angular-form/src/form-group.ts#L76)
+Defined in: [form-group.ts:77](https://github.com/TanStack/form/blob/main/packages/angular-form/src/form-group.ts#L77)
 
 ##### Returns
 

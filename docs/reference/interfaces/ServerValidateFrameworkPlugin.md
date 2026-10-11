@@ -3,7 +3,7 @@ id: ServerValidateFrameworkPlugin
 title: ServerValidateFrameworkPlugin
 ---
 
-Defined in: [ssr.public.ts:89](https://github.com/TanStack/form/blob/main/packages/form-core/src/ssr.public.ts#L89)
+Defined in: [ssr.public.ts:94](https://github.com/TanStack/form/blob/main/packages/form-core/src/ssr.public.ts#L94)
 
 ## Type Parameters
 
@@ -19,7 +19,7 @@ Defined in: [ssr.public.ts:89](https://github.com/TanStack/form/blob/main/packag
 createServerValidate: TCreateServerValidate;
 ```
 
-Defined in: [ssr.public.ts:94](https://github.com/TanStack/form/blob/main/packages/form-core/src/ssr.public.ts#L94)
+Defined in: [ssr.public.ts:99](https://github.com/TanStack/form/blob/main/packages/form-core/src/ssr.public.ts#L99)
 
 ***
 
@@ -29,4 +29,4 @@ Defined in: [ssr.public.ts:94](https://github.com/TanStack/form/blob/main/packag
 id: `react-form-${string}`;
 ```
 
-Defined in: [ssr.public.ts:93](https://github.com/TanStack/form/blob/main/packages/form-core/src/ssr.public.ts#L93)
+Defined in: [ssr.public.ts:98](https://github.com/TanStack/form/blob/main/packages/form-core/src/ssr.public.ts#L98)

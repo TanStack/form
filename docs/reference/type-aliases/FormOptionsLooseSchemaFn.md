@@ -19,7 +19,7 @@ input.
 
 The first argument is used only by TypeScript and is ignored at runtime.
 Include the schema in `validators` as well when it should validate the form.
-Parsed results are available in the corresponding `schemaOutputs` entries
+Parsed results are available in the corresponding `validatorOutputs` entries
 during submission.
 
 ## Type Parameters

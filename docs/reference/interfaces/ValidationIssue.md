@@ -3,9 +3,9 @@ id: ValidationIssue
 title: ValidationIssue
 ---
 
-Defined in: [validation.public.ts:370](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L370)
+Defined in: [validation.public.ts:579](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L579)
 
-A single validation error with a unique identifier.
+A validation error with a display message.
 
 ## Properties
 
@@ -15,4 +15,6 @@ A single validation error with a unique identifier.
 message: string;
 ```
 
-Defined in: [validation.public.ts:371](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L371)
+Defined in: [validation.public.ts:581](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L581)
+
+The text to display for this error.
