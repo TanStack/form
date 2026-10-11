@@ -2,8 +2,8 @@ import type { FormOptions } from './FormApi/FormApi.public'
 import type {
   FormValidateResultFromErrorTypes,
   FormValidators,
-  ServerFormStandardSchemaValidatorOutputs,
   ToServerFormErrorTypes,
+  ToServerFormOutputs,
 } from './validation.public'
 
 export const initialServerFormState: ServerFormState<any, any> = {
@@ -32,8 +32,8 @@ export function serverValidateHelper<
 interface ServerStateValidationResult<out TResult> {
   validatorIndex: number
   result: TResult
-  schemaResult: unknown | null
-  hasSchemaResult?: boolean
+  output: unknown | null
+  hasOutput?: boolean
 }
 
 interface ServerFormStateByResult<in out TFormData, out TResult> {
@@ -59,7 +59,12 @@ export interface ServerValidateSuccess<
 > {
   success: true
   values: TFormData
-  schemaOutputs: ServerFormStandardSchemaValidatorOutputs<TFormValidators>
+  /**
+   * Schema outputs and `createOutput` payloads from this server validation,
+   * ordered by validator index. Validators without a server trigger or output
+   * contribute `undefined`. These are separate from client submission outputs.
+   */
+  validatorOutputs: ToServerFormOutputs<TFormValidators>
 }
 
 export interface ServerValidateFailure<

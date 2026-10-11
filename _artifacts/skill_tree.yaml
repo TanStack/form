@@ -80,7 +80,7 @@ skills:
     domain: schema-driven-forms
     path: packages/react-form/skills/schema-driven-forms/SKILL.md
     package: packages/react-form
-    description: 'Use when wiring Standard Schema-compatible validators, validators arrays, schemaOutputs, parseIssues, createValidationError, nested issue paths, and schema submit output into React forms.'
+    description: 'Use when wiring Standard Schema-compatible validators, validators arrays, outputs, parseIssues, createValidationError, nested issue paths, and schema submit output into React forms.'
     requires:
       - choosing-form-options-modes
     sources:

@@ -7,7 +7,7 @@ import type {
   FormGroupValidateResult,
   FormGroupValidators,
   ToFormGroupErrorTypes,
-  ToFormGroupSchemaOutputs,
+  ToFormGroupOutputs,
 } from '../validation.public'
 
 /**
@@ -27,7 +27,7 @@ export interface FormGroupSubmitContext<
   in out TFormData,
   in out TGroupName,
   in out TGroupValue,
-  out TSchemaOutputs,
+  out TOutputs,
   in out TGroupErrorTypes extends FormErrorTypes,
   in out TFormErrorTypes extends FormErrorTypes,
 > {
@@ -44,21 +44,22 @@ export interface FormGroupSubmitContext<
     TFormErrorTypes
   >
   /**
-   * The submit outputs produced by the group's schema validators, ordered by
-   * validator index.
+   * Schema outputs and `createOutput` payloads from this group submission,
+   * ordered by validator index. Skipped validators and successful returns
+   * without an output contribute `undefined`.
    *
    * @example
    * ```ts
    * {
    *   // ...
-   *   onSubmit: async ({ schemaOutputs }) => {
-   *     const validatedGuestDetails = schemaOutputs[0]
+   *   onSubmit: async ({ validatorOutputs }) => {
+   *     const validatedGuestDetails = validatorOutputs[0]
    *     setStep(step => step + 1)
    *   },
    * }
    * ```
    */
-  schemaOutputs: TSchemaOutputs
+  validatorOutputs: TOutputs
 }
 
 /**
@@ -97,6 +98,23 @@ export interface FormGroupSubmitInvalidContext<
   >
 }
 
+export type FormGroupSubmitFn<
+  in out TFormData,
+  in out TGroupName,
+  in out TGroupValue,
+  in out TGroupValidators extends FormGroupValidators<TGroupValue>,
+  in out TFormErrorTypes extends FormErrorTypes,
+> = (
+  context: FormGroupSubmitContext<
+    TFormData,
+    TGroupName,
+    TGroupValue,
+    ToFormGroupOutputs<NoInfer<TGroupValidators>>,
+    ToFormGroupErrorTypes<NoInfer<TGroupValidators>>,
+    TFormErrorTypes
+  >,
+) => void | Promise<void>
+
 export interface FormGroupOptions<
   in out TFormData,
   in out TGroupName,
@@ -121,16 +139,13 @@ export interface FormGroupOptions<
    * }
    * ```
    */
-  onSubmit?: (
-    context: FormGroupSubmitContext<
-      TFormData,
-      TGroupName,
-      TGroupValue,
-      ToFormGroupSchemaOutputs<NoInfer<TGroupValidators>>,
-      ToFormGroupErrorTypes<NoInfer<TGroupValidators>>,
-      TFormErrorTypes
-    >,
-  ) => void | Promise<void>
+  onSubmit?: FormGroupSubmitFn<
+    TFormData,
+    TGroupName,
+    TGroupValue,
+    TGroupValidators,
+    TFormErrorTypes
+  >
   /**
    * Called when group validation fails or validation or submission throws. The
    * callback is awaited before submission finishes.

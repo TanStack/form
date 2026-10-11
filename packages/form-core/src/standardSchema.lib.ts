@@ -1,4 +1,5 @@
 import { isNil } from './utils.lib'
+import { createOutput } from './validationOutput.lib'
 import type {
   StandardSchemaV1,
   StandardSchemaV1Issue,
@@ -6,9 +7,9 @@ import type {
 import type {
   FieldValidatorFn,
   FormGroupValidatorFn,
-  FormValidateResult,
   FormValidatorFn,
   ParsedStandardSchemaIssues,
+  ValidationOutput,
 } from './validation.public'
 
 export function prefixSchemaToErrors(
@@ -77,31 +78,17 @@ export function parseStandardSchema<TOutput>(
   schema: StandardSchemaV1<any, TOutput>,
   value: any,
   scope: 'form' | 'field',
-): Promise<{
-  result: FormValidateResult<any>
-  schemaResult: TOutput | null
-  hasSchemaResult: boolean
-}> {
+): Promise<
+  | ValidationOutput<TOutput>
+  | ParsedStandardSchemaIssues<any>
+  | Array<StandardSchemaV1Issue>
+> {
   return Promise.resolve(schema['~standard'].validate(value)).then((result) => {
     if (!result.issues) {
-      return {
-        result: null,
-        schemaResult: result.value,
-        hasSchemaResult: true,
-      }
+      return createOutput(result.value)
     }
 
-    const validationResult = parseStandardSchemaIssues(
-      result.issues,
-      value,
-      scope,
-    )
-
-    return {
-      result: validationResult,
-      schemaResult: null,
-      hasSchemaResult: false,
-    }
+    return parseStandardSchemaIssues(result.issues, value, scope)
   })
 }
 

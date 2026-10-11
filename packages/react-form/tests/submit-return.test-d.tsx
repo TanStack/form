@@ -20,10 +20,15 @@ describe('submit return', () => {
             run: emailSchema,
             triggers: [],
           },
+          {
+            run: ({ value, createOutput }) =>
+              createOutput({ normalizedEmail: value.email.trim() }),
+            triggers: [],
+          },
         ],
-        onSubmit: ({ schemaOutputs, createValidationError }) => {
-          expectTypeOf(schemaOutputs).toEqualTypeOf<
-            readonly [{ email: string }]
+        onSubmit: ({ validatorOutputs, createValidationError }) => {
+          expectTypeOf(validatorOutputs).toEqualTypeOf<
+            readonly [{ email: string }, { normalizedEmail: string }]
           >()
 
           return createValidationError({

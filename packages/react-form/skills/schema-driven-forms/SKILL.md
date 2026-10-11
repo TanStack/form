@@ -2,7 +2,7 @@
 name: schema-driven-forms
 description: >
   Use when wiring Standard Schema-compatible schemas into TanStack React Form v2
-  validators, schemaOutputs, parseIssues, createValidationError, field errors,
+  validators, validatorOutputs, parseIssues, createValidationError, field errors,
   nested issue paths, runOnSubmit behavior, and typed submit output. Load after
   choosing form option mode for schema-driven React forms.
 metadata:
@@ -24,7 +24,7 @@ This skill builds on `choosing-form-options-modes`. Read it first to pick defaul
 
 # TanStack React Form - Schema Driven Forms
 
-Put Standard Schema-compatible schemas in validators. Read parsed schema output from `schemaOutputs`; keep raw `value` as editable form state.
+Put Standard Schema-compatible schemas in validators. Read parsed schema output from `validatorOutputs`; keep raw `value` as editable form state.
 
 ## Setup
 
@@ -43,8 +43,8 @@ const profileOptions = formOptions.strictSchema({
     email: '',
   },
   validators: [{ run: profileSchema, triggers: ['blur'] }],
-  onSubmit: ({ schemaOutputs }) => {
-    const parsedProfile = schemaOutputs[0]
+  onSubmit: ({ validatorOutputs }) => {
+    const parsedProfile = validatorOutputs[0]
     console.log(parsedProfile.email)
   },
 })
@@ -141,8 +141,8 @@ onSubmit: ({ value }) => {
 Correct:
 
 ```ts
-onSubmit: ({ schemaOutputs }) => {
-  const parsed = schemaOutputs[0]
+onSubmit: ({ validatorOutputs }) => {
+  const parsed = validatorOutputs[0]
   console.log(parsed.nameLength)
 }
 ```

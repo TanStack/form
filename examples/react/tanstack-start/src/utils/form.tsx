@@ -21,7 +21,7 @@ export const handleForm = createServerFn({ method: 'POST' })
 
     console.info('validated form value', {
       values: result.values,
-      schemaOutputs: result.schemaOutputs,
+      validatorOutputs: result.validatorOutputs,
     })
 
     throw redirect({

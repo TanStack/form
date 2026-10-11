@@ -1,4 +1,5 @@
 import { batch } from '@tanstack/store'
+import { createOutput } from './validationOutput.lib'
 import { defaultInternalBaseFieldMeta } from './FieldApi/fieldState.lib'
 import { visitAllFormFields } from './FieldApi/fieldTraversal.lib'
 import { parseStandardSchemaIssues } from './standardSchema.lib'
@@ -127,7 +128,7 @@ export async function validateServerValues<
     return {
       success: true,
       values,
-      schemaOutputs: [] as never,
+      validatorOutputs: [] as never,
     }
   }
 
@@ -155,6 +156,7 @@ export async function validateServerValues<
         formApi: undefined,
         value: values,
         createErrorMap,
+        createOutput,
         parseIssues: (issues) =>
           parseStandardSchemaIssues(issues, values, 'form'),
       }),
@@ -165,20 +167,20 @@ export async function validateServerValues<
       throw pipelineResult.thrownError
     }
 
-    const schemaOutputs =
+    const validatorOutputs =
       validatorInstances?.map((instance) => {
         const result = pipelineResult.results.find(
           (r) => r.validatorInstance === instance,
         )
-        return result?.hasSchemaResult ? result.schemaResult : undefined
+        return result?.hasOutput ? result.output : undefined
       }) ?? []
 
     const validationResults = pipelineResult.results.map((result) => ({
       validatorIndex:
         validatorInstances?.indexOf(result.validatorInstance) ?? -1,
       result: result.result,
-      schemaResult: result.schemaResult,
-      hasSchemaResult: result.hasSchemaResult,
+      output: result.output,
+      hasOutput: result.hasOutput,
     }))
 
     if (pipelineResult.hasErrors) {
@@ -195,7 +197,7 @@ export async function validateServerValues<
     return {
       success: true,
       values,
-      schemaOutputs: schemaOutputs as never,
+      validatorOutputs: validatorOutputs as never,
     }
   } finally {
     validatorInstances?.forEach((instance) => instance.dispose())

@@ -56,8 +56,8 @@ describe('InternalValidatorInstance', () => {
     expect(first.index).toBe(0)
     expect(first.abortController).toBeNull()
     expect(first.debouncer).toBeNull()
-    expect(first.schemaOutput).toBeUndefined()
-    expect(first.hasSchemaOutput).toBe(false)
+    expect(first.output).toBeUndefined()
+    expect(first.hasOutput).toBe(false)
     expect(first.errorTargets).toBeNull()
     expect(first.resolvedWatchFields).toBeNull()
     expect(first.didRunOnMount).toBe(false)
@@ -81,7 +81,7 @@ describe('InternalValidatorInstance', () => {
       string,
       { name: string }
     > | null>()
-    expectTypeOf(first.schemaOutput).toEqualTypeOf<string | undefined>()
+    expectTypeOf(first.output).toEqualTypeOf<string | undefined>()
     expectTypeOf(
       first.debouncer,
     ).toEqualTypeOf<LiteDebouncer<TestDebouncedFn> | null>()
@@ -96,9 +96,9 @@ describe('InternalValidatorInstance', () => {
     const watchedField = { name: 'source' }
 
     instance.setAbortController(abortController)
-    instance.setSchemaOutput({
-      schemaResult: 'output',
-      hasSchemaResult: true,
+    instance.setOutput({
+      output: 'output',
+      hasOutput: true,
     })
     instance.addErrorTarget('target')
     instance.setResolvedWatchField('source', watchedField)
@@ -114,8 +114,8 @@ describe('InternalValidatorInstance', () => {
     expect(instance.revision).toBe(2)
     expect(instance.abortController).toBe(abortController)
     expect(instance.debouncer).toBe(debouncer)
-    expect(instance.schemaOutput).toBe('output')
-    expect(instance.hasSchemaOutput).toBe(true)
+    expect(instance.output).toBe('output')
+    expect(instance.hasOutput).toBe(true)
     expect(instance.errorTargets).toEqual(new Set(['target']))
     expect(instance.resolvedWatchFields?.get('source')).toBe(watchedField)
     expect(instance.didRunOnMount).toBe(true)
@@ -176,23 +176,23 @@ describe('InternalValidatorInstance', () => {
   it('distinguishes an unset schema output from an undefined output', () => {
     const instance = createInstance()
 
-    instance.setSchemaOutput({
-      schemaResult: 'ignored',
-      hasSchemaResult: false,
+    instance.setOutput({
+      output: 'ignored',
+      hasOutput: false,
     })
-    expect(instance.schemaOutput).toBeUndefined()
-    expect(instance.hasSchemaOutput).toBe(false)
+    expect(instance.output).toBeUndefined()
+    expect(instance.hasOutput).toBe(false)
 
-    instance.setSchemaOutput({
-      schemaResult: undefined,
-      hasSchemaResult: true,
+    instance.setOutput({
+      output: undefined,
+      hasOutput: true,
     })
-    expect(instance.schemaOutput).toBeUndefined()
-    expect(instance.hasSchemaOutput).toBe(true)
+    expect(instance.output).toBeUndefined()
+    expect(instance.hasOutput).toBe(true)
 
-    instance.clearSchemaOutput()
-    expect(instance.schemaOutput).toBeUndefined()
-    expect(instance.hasSchemaOutput).toBe(false)
+    instance.clearOutput()
+    expect(instance.output).toBeUndefined()
+    expect(instance.hasOutput).toBe(false)
   })
 
   it('resets runtime state while preserving its installation', async () => {
@@ -207,9 +207,9 @@ describe('InternalValidatorInstance', () => {
     instance.updateDefinition(definition)
     instance.setAbortController(abortController)
     const debouncer = instance.getOrCreateDebouncer(debouncedFn, 100)
-    instance.setSchemaOutput({
-      schemaResult: 'output',
-      hasSchemaResult: true,
+    instance.setOutput({
+      output: 'output',
+      hasOutput: true,
     })
     instance.addErrorTarget('target')
     instance.setResolvedWatchField('source', watchedField)
@@ -223,8 +223,8 @@ describe('InternalValidatorInstance', () => {
     expect(debouncedFn).not.toHaveBeenCalled()
     expect(instance.abortController).toBeNull()
     expect(instance.debouncer).toBeNull()
-    expect(instance.schemaOutput).toBeUndefined()
-    expect(instance.hasSchemaOutput).toBe(false)
+    expect(instance.output).toBeUndefined()
+    expect(instance.hasOutput).toBe(false)
     expect(instance.errorTargets).toBeNull()
     expect(instance.resolvedWatchFields?.get('source')).toBe(watchedField)
     expect(instance.didRunOnMount).toBe(true)
@@ -244,9 +244,9 @@ describe('InternalValidatorInstance', () => {
 
     instance.setAbortController(abortController)
     const debouncer = instance.getOrCreateDebouncer(debouncedFn, 100)
-    instance.setSchemaOutput({
-      schemaResult: 'output',
-      hasSchemaResult: true,
+    instance.setOutput({
+      output: 'output',
+      hasOutput: true,
     })
     instance.addErrorTarget('target')
     instance.setResolvedWatchField('source', { name: 'source' })
@@ -269,8 +269,8 @@ describe('InternalValidatorInstance', () => {
     expect(debouncedFn).not.toHaveBeenCalled()
     expect(instance.abortController).toBeNull()
     expect(instance.debouncer).toBeNull()
-    expect(instance.schemaOutput).toBeUndefined()
-    expect(instance.hasSchemaOutput).toBe(false)
+    expect(instance.output).toBeUndefined()
+    expect(instance.hasOutput).toBe(false)
     expect(instance.errorTargets).toBeNull()
     expect(instance.resolvedWatchFields).toBeNull()
     expect(instance.didRunOnMount).toBe(false)
@@ -282,11 +282,11 @@ describe('InternalValidatorInstance', () => {
     instance.setAbortController(nextController)
     instance.clearAbortController(nextController)
     const nextDebouncer = instance.getOrCreateDebouncer(nextDebouncedFn, 100)
-    instance.setSchemaOutput({
-      schemaResult: 'ignored',
-      hasSchemaResult: true,
+    instance.setOutput({
+      output: 'ignored',
+      hasOutput: true,
     })
-    instance.clearSchemaOutput()
+    instance.clearOutput()
     instance.addErrorTarget('ignored')
     instance.deleteErrorTarget('target')
     instance.setResolvedWatchField('ignored', { name: 'ignored' })
@@ -299,7 +299,7 @@ describe('InternalValidatorInstance', () => {
     expect(instance.revision).toBe(0)
     expect(instance.abortController).toBeNull()
     expect(instance.debouncer).toBeNull()
-    expect(instance.hasSchemaOutput).toBe(false)
+    expect(instance.hasOutput).toBe(false)
     expect(instance.errorTargets).toBeNull()
     expect(instance.resolvedWatchFields).toBeNull()
     expect(instance.didRunOnMount).toBe(false)

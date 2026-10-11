@@ -173,16 +173,16 @@ describe('field - lifecycle', () => {
       const instance = field._validatorInstances?.[0]
       const abortController = new AbortController()
       instance?.setAbortController(abortController)
-      instance?.setSchemaOutput({
-        schemaResult: 'output',
-        hasSchemaResult: true,
+      instance?.setOutput({
+        output: 'output',
+        hasOutput: true,
       })
 
       field.reset()
 
       expect(field._validatorInstances?.[0]).toBe(instance)
       expect(abortController.signal.aborted).toBe(true)
-      expect(instance?.hasSchemaOutput).toBe(false)
+      expect(instance?.hasOutput).toBe(false)
       expect(instance?.disposed).toBe(false)
 
       field._kill()
@@ -536,7 +536,7 @@ describe('field - lifecycle', () => {
         {
           validatorInstance,
           result: { message: 'Too late' },
-          schemaResult: null,
+          output: null,
         },
         'submit',
       )

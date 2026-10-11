@@ -93,7 +93,7 @@ const options = formOptions.looseSchema({
 })
 ```
 
-For schema errors, check mode, default value shape, validator presence, and whether submit reads `schemaOutputs`.
+For schema errors, check mode, default value shape, validator presence, and whether submit reads `validatorOutputs`.
 
 ## Common Mistakes
 

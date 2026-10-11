@@ -36,7 +36,7 @@ describe('server validation types', () => {
     }
 
     expectTypeOf(result.values).toEqualTypeOf<{ name: string }>()
-    expectTypeOf(result.schemaOutputs).toEqualTypeOf<
+    expectTypeOf(result.validatorOutputs).toEqualTypeOf<
       readonly [{ nameLength: number }]
     >()
 

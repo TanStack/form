@@ -198,10 +198,7 @@ describe('server validation', () => {
   })
 
   it('returns values and schema outputs when server validation succeeds', async () => {
-    const setSchemaOutput = vi.spyOn(
-      InternalValidatorInstance.prototype,
-      'setSchemaOutput',
-    )
+    const setOutput = vi.spyOn(InternalValidatorInstance.prototype, 'setOutput')
     const options = formOptions({
       defaultValues: { name: '' },
       validators: [
@@ -222,10 +219,10 @@ describe('server validation', () => {
       )
 
       expect(result.values).toEqual({ name: 'Tony' })
-      expect(result.schemaOutputs).toEqual([{ nameLength: 4 }])
-      expect(setSchemaOutput).not.toHaveBeenCalled()
+      expect(result.validatorOutputs).toEqual([{ nameLength: 4 }])
+      expect(setOutput).not.toHaveBeenCalled()
     } finally {
-      setSchemaOutput.mockRestore()
+      setOutput.mockRestore()
     }
   })
 
@@ -254,7 +251,7 @@ describe('server validation', () => {
       await validateServerValues(options, { name: 'Tony' }),
     )
 
-    expect(result.schemaOutputs).toEqual([
+    expect(result.validatorOutputs).toEqual([
       undefined,
       undefined,
       { nameLength: 4 },
@@ -541,7 +538,7 @@ describe('server validation', () => {
           {
             validatorIndex: 0,
             result: 'Server name error',
-            schemaResult: null,
+            output: null,
           },
         ],
         submissionAttempts: 1,
@@ -569,8 +566,8 @@ describe('server validation', () => {
           {
             validatorIndex: 0,
             result: null,
-            schemaResult: undefined,
-            hasSchemaResult: true,
+            output: undefined,
+            hasOutput: true,
           },
         ],
         submissionAttempts: 1,
@@ -579,8 +576,8 @@ describe('server validation', () => {
 
     const form = new InternalFormApi(options)
 
-    expect(form._validatorInstances?.[0]?.hasSchemaOutput).toBe(false)
-    expect(form._validatorInstances?.[0]?.schemaOutput).toBeUndefined()
+    expect(form._validatorInstances?.[0]?.hasOutput).toBe(false)
+    expect(form._validatorInstances?.[0]?.output).toBeUndefined()
   })
 
   it('notifies Devtools when server state directly resets field meta', () => {

@@ -406,9 +406,9 @@ describe('FormGroupApi', () => {
     const instance = group._validatorInstances?.[0]
     const abortController = new AbortController()
     instance?.setAbortController(abortController)
-    instance?.setSchemaOutput({
-      schemaResult: 'output',
-      hasSchemaResult: true,
+    instance?.setOutput({
+      output: 'output',
+      hasOutput: true,
     })
 
     group._cleanup()
@@ -416,7 +416,7 @@ describe('FormGroupApi', () => {
 
     expect(group._validatorInstances?.[0]).toBe(instance)
     expect(abortController.signal.aborted).toBe(true)
-    expect(instance?.hasSchemaOutput).toBe(false)
+    expect(instance?.hasOutput).toBe(false)
     expect(instance?.disposed).toBe(false)
   })
 
@@ -882,7 +882,7 @@ describe('FormGroupApi', () => {
 
     expect(onSubmit).toHaveBeenCalledWith(
       expect.objectContaining({
-        schemaOutputs: [{ nameLength: 4 }],
+        validatorOutputs: [{ nameLength: 4 }],
         value: { name: 'Tony' },
       }),
     )
@@ -909,16 +909,16 @@ describe('FormGroupApi', () => {
 
     await group.handleSubmit()
     expect(onSubmit).toHaveBeenLastCalledWith(
-      expect.objectContaining({ schemaOutputs: [{ name: 'Tony' }] }),
+      expect.objectContaining({ validatorOutputs: [{ name: 'Tony' }] }),
     )
 
     shouldRunOnSubmit = false
     await group.handleSubmit()
 
     expect(onSubmit).toHaveBeenLastCalledWith(
-      expect.objectContaining({ schemaOutputs: [undefined] }),
+      expect.objectContaining({ validatorOutputs: [undefined] }),
     )
-    expect(group._validatorInstances?.[0]?.hasSchemaOutput).toBe(false)
+    expect(group._validatorInstances?.[0]?.hasOutput).toBe(false)
   })
 
   it('keeps submission lifecycle independent between sibling groups', async () => {

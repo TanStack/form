@@ -170,12 +170,12 @@ function FormGroupSubmitTypes() {
           triggers: [],
         },
       ]}
-      onSubmit={({ schemaOutputs, groupApi }) => {
-        expectTypeOf(schemaOutputs['length']).toEqualTypeOf<2>()
-        expectTypeOf(schemaOutputs[0]).toEqualTypeOf<{
+      onSubmit={({ validatorOutputs, groupApi }) => {
+        expectTypeOf(validatorOutputs['length']).toEqualTypeOf<2>()
+        expectTypeOf(validatorOutputs[0]).toEqualTypeOf<{
           nameLength: number
         }>()
-        expectTypeOf(schemaOutputs[1]).toEqualTypeOf<undefined>()
+        expectTypeOf(validatorOutputs[1]).toEqualTypeOf<undefined>()
         expectTypeOf<FormGroupErrorTypesOf<typeof groupApi>>().toEqualTypeOf<
           FormErrorTypes<StandardSchemaV1Issue, StandardSchemaV1Issue>
         >()
