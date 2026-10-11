@@ -1,5 +1,16 @@
 # @tanstack/react-form-nextjs
 
+## 2.0.0-alpha.3
+
+### Major Changes
+
+- Release the first alpha of TanStack Form v2.
+
+### Patch Changes
+
+- Updated dependencies [[`584fcd9`](https://github.com/TanStack/form/commit/584fcd960a02590fe17a56fdd0648c50a5d584d6), [`395d61c`](https://github.com/TanStack/form/commit/395d61ccec8ed6d7ee75b0e00e6196909e866cb7), [`f8bbc25`](https://github.com/TanStack/form/commit/f8bbc25affcf5560b1da0c9c357fd62ef2108dd9)]:
+  - @tanstack/form-core@2.0.0-alpha.3
+
 ## 2.0.0-alpha.2
 
 ### Patch Changes
