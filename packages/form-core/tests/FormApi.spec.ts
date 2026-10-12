@@ -1991,6 +1991,33 @@ describe('form api', () => {
     expect(onSubmitInvalid).toHaveBeenCalledTimes(1) // not called again
   })
 
+  it('should not invoke onSubmit again while a submission is in progress', async () => {
+    vi.useRealTimers()
+    // Regression: once submissionAttempts > 1 the re-submission guard skipped
+    // the canSubmit early return, so each submit call during a pending
+    // submission invoked onSubmit again, causing concurrent submissions.
+    const onSubmit = vi.fn(async () => {
+      await sleep(500)
+    })
+    const onSubmitInvalid = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: { firstName: 'test' },
+      onSubmit,
+      onSubmitInvalid,
+    })
+    form.mount()
+
+    const first = form.handleSubmit()
+    // Further submit attempts while the first submission is still pending
+    const second = form.handleSubmit()
+    const third = form.handleSubmit()
+    await Promise.all([first, second, third])
+
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+    expect(onSubmitInvalid).toHaveBeenCalledTimes(2)
+  })
+
   it('should run all types of async validation on fields during submit', async () => {
     vi.useFakeTimers()
 

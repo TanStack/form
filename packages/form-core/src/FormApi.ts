@@ -2448,8 +2448,12 @@ export class FormApi<
       // validateAllFields can re-run and clear stale field errors (e.g. from a
       // previous onBlur validation that is no longer relevant). The
       // isFieldsValid check below will call onSubmitInvalid if the form is
-      // still invalid after re-validation.
-      if (this.baseStore.state.submissionAttempts <= 1) {
+      // still invalid after re-validation. A submission that is already in
+      // progress always returns early so onSubmit cannot run concurrently.
+      if (
+        this.baseStore.state.submissionAttempts <= 1 ||
+        this.state.isSubmitting
+      ) {
         this.options.onSubmitInvalid?.({
           value: this.state.values,
           formApi: this,
