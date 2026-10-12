@@ -4332,6 +4332,39 @@ it.each([
   },
 )
 
+it('should reset a field to a field-level default of null on resetField if defaultValues is not provided', () => {
+  const form = new FormApi({
+    defaultState: { values: { name: 'initial' } as { name: unknown } },
+  })
+  form.mount()
+
+  const field = new FieldApi({ form, name: 'name', defaultValue: null })
+  field.mount()
+
+  field.setValue('hawk')
+  form.resetField('name')
+
+  expect(form.state.values.name).toBeNull()
+  expect(field.state.value).toBeNull()
+  expect(field.getMeta().isTouched).toBe(false)
+})
+
+it('should prefer a field-level default of null over the form-level default on resetField', () => {
+  const form = new FormApi({
+    defaultValues: { name: 'tony' } as { name: unknown },
+  })
+  form.mount()
+
+  const field = new FieldApi({ form, name: 'name', defaultValue: null })
+  field.mount()
+
+  field.setValue('hawk')
+  form.resetField('name')
+
+  expect(form.state.values.name).toBeNull()
+  expect(field.state.value).toBeNull()
+})
+
 it('should accept formId and return it', () => {
   const form = new FormApi({
     defaultValues: { age: 0 },
