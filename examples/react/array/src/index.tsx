@@ -3,7 +3,7 @@ import { useForm } from '@tanstack/react-form'
 import { formDevtoolsPlugin } from '@tanstack/react-form-devtools'
 import ReactDOM from 'react-dom/client'
 import './index.css'
-import { useMemo, useRef, useState } from 'react'
+import { StrictMode, useMemo, useRef, useState } from 'react'
 
 function ArrayForm({ items }: { items: Array<string> }) {
   const form = useForm({
@@ -120,4 +120,8 @@ function App() {
   )
 }
 
-ReactDOM.createRoot(document.getElementById('root')!).render(<App />)
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)

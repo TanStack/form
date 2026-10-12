@@ -13,7 +13,7 @@ createRoot(rootElement).render(
     <App />
 
     <TanStackDevtools
-      config={{ hideUntilHover: true }}
+      config={{ hideUntilHover: false }}
       plugins={[formDevtoolsPlugin()]}
     />
   </React.StrictMode>,
