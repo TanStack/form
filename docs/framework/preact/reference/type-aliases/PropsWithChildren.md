@@ -3,8 +3,6 @@ id: PropsWithChildren
 title: PropsWithChildren
 ---
 
-# Type Alias: PropsWithChildren\<P\>
-
 ```ts
 type PropsWithChildren<P> = P & object;
 ```

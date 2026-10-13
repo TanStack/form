@@ -3,8 +3,6 @@ id: WithFieldGroupProps
 title: WithFieldGroupProps
 ---
 
-# Interface: WithFieldGroupProps\<TFieldGroupData, TFieldComponents, TFormComponents, TSubmitMeta, TRenderProps\>
-
 Defined in: [packages/solid-form/src/createFormHook.tsx:263](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createFormHook.tsx#L263)
 
 ## Extends

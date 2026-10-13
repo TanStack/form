@@ -3,8 +3,6 @@ id: FieldOptions
 title: FieldOptions
 ---
 
-# Interface: FieldOptions\<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync\>
-
 Defined in: [packages/form-core/src/FieldApi.ts:331](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L331)
 
 An object type representing the options for a field in a form.

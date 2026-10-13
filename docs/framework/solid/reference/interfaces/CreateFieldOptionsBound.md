@@ -3,8 +3,6 @@ id: CreateFieldOptionsBound
 title: CreateFieldOptionsBound
 ---
 
-# Interface: CreateFieldOptionsBound\<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync\>
-
 Defined in: [packages/solid-form/src/types.ts:80](https://github.com/TanStack/form/blob/main/packages/solid-form/src/types.ts#L80)
 
 ## Extends

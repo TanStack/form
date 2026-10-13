@@ -3,8 +3,6 @@ id: Field
 title: Field
 ---
 
-# Variable: Field()
-
 ```ts
 const Field: <TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TPatentSubmitMeta>(__namedParameters) => ReactNode | Promise<ReactNode>;
 ```

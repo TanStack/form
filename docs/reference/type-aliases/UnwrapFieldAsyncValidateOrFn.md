@@ -3,8 +3,6 @@ id: UnwrapFieldAsyncValidateOrFn
 title: UnwrapFieldAsyncValidateOrFn
 ---
 
-# Type Alias: UnwrapFieldAsyncValidateOrFn\<TName, TValidateOrFn, TFormValidateOrFn\>
-
 ```ts
 type UnwrapFieldAsyncValidateOrFn<TName, TValidateOrFn, TFormValidateOrFn> = 
   | [TFormValidateOrFn] extends [StandardSchemaV1<any, infer TStandardOut>] ? TName extends keyof TStandardOut ? StandardSchemaV1Issue[] : undefined : undefined

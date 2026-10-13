@@ -3,8 +3,6 @@ id: ValidationSource
 title: ValidationSource
 ---
 
-# Type Alias: ValidationSource
-
 ```ts
 type ValidationSource = "form" | "field";
 ```

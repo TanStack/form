@@ -3,8 +3,6 @@ id: "@tanstack/solid-form"
 title: "@tanstack/solid-form"
 ---
 
-# @tanstack/solid-form
-
 ## Interfaces
 
 - [CreateFieldOptions](interfaces/CreateFieldOptions.md)

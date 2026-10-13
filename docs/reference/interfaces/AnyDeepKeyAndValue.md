@@ -3,8 +3,6 @@ id: AnyDeepKeyAndValue
 title: AnyDeepKeyAndValue
 ---
 
-# Interface: AnyDeepKeyAndValue\<K, V\>
-
 Defined in: [packages/form-core/src/util-types.ts:39](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L39)
 
 ## Extended by

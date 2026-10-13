@@ -3,8 +3,6 @@ id: evaluate
 title: evaluate
 ---
 
-# Function: evaluate()
-
 ```ts
 function evaluate<T>(objA, objB): boolean;
 ```

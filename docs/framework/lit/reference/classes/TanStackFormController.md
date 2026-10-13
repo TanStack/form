@@ -3,8 +3,6 @@ id: TanStackFormController
 title: TanStackFormController
 ---
 
-# Class: TanStackFormController\<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta\>
-
 Defined in: [tanstack-form-controller.ts:226](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L226)
 
 ## Type Parameters

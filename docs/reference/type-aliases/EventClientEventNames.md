@@ -3,8 +3,6 @@ id: EventClientEventNames
 title: EventClientEventNames
 ---
 
-# Type Alias: EventClientEventNames
-
 ```ts
 type EventClientEventNames = ExtractEventNames<EventClientEventMap>;
 ```

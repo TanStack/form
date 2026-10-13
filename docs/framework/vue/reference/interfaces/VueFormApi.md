@@ -3,8 +3,6 @@ id: VueFormApi
 title: VueFormApi
 ---
 
-# Interface: VueFormApi\<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TSubmitMeta\>
-
 Defined in: [packages/vue-form/src/useForm.tsx:113](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L113)
 
 ## Type Parameters

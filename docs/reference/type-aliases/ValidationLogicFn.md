@@ -3,8 +3,6 @@ id: ValidationLogicFn
 title: ValidationLogicFn
 ---
 
-# Type Alias: ValidationLogicFn()
-
 ```ts
 type ValidationLogicFn = (props) => void;
 ```

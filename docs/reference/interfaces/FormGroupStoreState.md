@@ -3,8 +3,6 @@ id: FormGroupStoreState
 title: FormGroupStoreState
 ---
 
-# Interface: FormGroupStoreState\<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync\>
-
 Defined in: [packages/form-core/src/FormGroupApi.ts:859](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L859)
 
 ## Type Parameters

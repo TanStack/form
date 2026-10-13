@@ -3,8 +3,6 @@ id: FormGroupApiOptions
 title: FormGroupApiOptions
 ---
 
-# Interface: FormGroupApiOptions\<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TSubmitMeta, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta\>
-
 Defined in: [packages/form-core/src/FormGroupApi.ts:562](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi.ts#L562)
 
 ## Extends

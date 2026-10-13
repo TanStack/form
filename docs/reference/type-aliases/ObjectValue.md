@@ -3,8 +3,6 @@ id: ObjectValue
 title: ObjectValue
 ---
 
-# Type Alias: ObjectValue\<TParent, T, TKey\>
-
 ```ts
 type ObjectValue<TParent, T, TKey> = T[TKey] | Nullable<TParent["value"]>;
 ```

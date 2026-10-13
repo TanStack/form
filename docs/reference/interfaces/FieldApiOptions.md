@@ -3,8 +3,6 @@ id: FieldApiOptions
 title: FieldApiOptions
 ---
 
-# Interface: FieldApiOptions\<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta\>
-
 Defined in: [packages/form-core/src/FieldApi.ts:383](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L383)
 
 ## Extends

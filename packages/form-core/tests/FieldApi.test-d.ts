@@ -451,14 +451,27 @@ it('should allow setting manual errors with standard schema validators on the fi
     },
   })
 
+  field.setErrorMap({
+    onChange: [{ message: 'Manual error' }],
+  })
+
+  field.setErrorMap({
+    onChange: [{ message: 'Manual error', path: ['firstName'] }],
+  })
+
+  field.setErrorMap({
+    // @ts-expect-error standard schema issues require a message
+    onChange: [{ path: ['firstName'] }],
+  })
+
   expectTypeOf(field.setErrorMap).parameter(0).toEqualTypeOf<{
-    onMount: undefined
-    onChange: { message: string }[] | undefined
-    onBlur: undefined
-    onSubmit: undefined
-    onServer: unknown
-    onDynamic: undefined
-  }>
+    onMount?: undefined
+    onChange?: StandardSchemaV1Issue[] | undefined
+    onBlur?: undefined
+    onSubmit?: undefined
+    onServer?: unknown
+    onDynamic?: undefined
+  }>()
 })
 
 it('should not allow promises to be returned from synchronous validators', () => {

@@ -3,8 +3,6 @@ id: BroadcastFormState
 title: BroadcastFormState
 ---
 
-# Type Alias: BroadcastFormState
-
 ```ts
 type BroadcastFormState = object;
 ```

@@ -3,8 +3,6 @@ id: TanStackWithFormInjectable
 title: TanStackWithFormInjectable
 ---
 
-# Class: TanStackWithFormInjectable
-
 Defined in: [angular-form/src/with-form-injectable.ts:10](https://github.com/TanStack/form/blob/main/packages/angular-form/src/with-form-injectable.ts#L10)
 
 ## Constructors

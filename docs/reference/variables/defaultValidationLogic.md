@@ -3,8 +3,6 @@ id: defaultValidationLogic
 title: defaultValidationLogic
 ---
 
-# Variable: defaultValidationLogic
-
 ```ts
 const defaultValidationLogic: ValidationLogicFn;
 ```

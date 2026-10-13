@@ -3,8 +3,6 @@ id: UnknownAccessor
 title: UnknownAccessor
 ---
 
-# Type Alias: UnknownAccessor\<TParent\>
-
 ```ts
 type UnknownAccessor<TParent> = TParent["key"] extends never ? string : `${TParent["key"]}.${string}`;
 ```

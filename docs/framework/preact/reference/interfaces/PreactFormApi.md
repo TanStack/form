@@ -3,8 +3,6 @@ id: PreactFormApi
 title: PreactFormApi
 ---
 
-# Interface: PreactFormApi\<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta\>
-
 Defined in: [packages/preact-form/src/useForm.tsx:24](https://github.com/TanStack/form/blob/main/packages/preact-form/src/useForm.tsx#L24)
 
 Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned from `useForm`

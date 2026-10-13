@@ -3,8 +3,6 @@ id: TupleAccessor
 title: TupleAccessor
 ---
 
-# Type Alias: TupleAccessor\<TParent, TKey\>
-
 ```ts
 type TupleAccessor<TParent, TKey> = `${TParent["key"] extends never ? "" : TParent["key"]}[${TKey}]`;
 ```

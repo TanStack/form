@@ -3,8 +3,6 @@ id: FormValidationError
 title: FormValidationError
 ---
 
-# Type Alias: FormValidationError\<TFormData\>
-
 ```ts
 type FormValidationError<TFormData> = 
   | ValidationError

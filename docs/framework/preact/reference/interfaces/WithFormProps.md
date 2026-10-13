@@ -3,8 +3,6 @@ id: WithFormProps
 title: WithFormProps
 ---
 
-# Interface: WithFormProps\<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta, TFieldComponents, TFormComponents, TRenderProps\>
-
 Defined in: [packages/preact-form/src/createFormHook.tsx:201](https://github.com/TanStack/form/blob/main/packages/preact-form/src/createFormHook.tsx#L201)
 
 ## Extends
