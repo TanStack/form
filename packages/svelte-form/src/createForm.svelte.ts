@@ -1,6 +1,12 @@
 import { FormApi } from '@tanstack/form-core'
 import { useSelector } from '@tanstack/svelte-store'
 import { onMount } from 'svelte'
+
+let _formCounter = 0
+
+function nextFormId(): string {
+  return `svelte-form-${++_formCounter}`
+}
 import Field from './Field.svelte'
 import FormGroup from './FormGroup.svelte'
 import Subscribe from './Subscribe.svelte'
@@ -310,7 +316,7 @@ export function createForm<
     TFormOnDynamicAsync,
     TFormOnServer,
     TSubmitMeta
-  >(options)
+  >({ ...options, formId: options?.formId ?? nextFormId() } as typeof options)
   const extendedApi: typeof api &
     SvelteFormApi<
       TParentData,
