@@ -19,12 +19,16 @@ type FormInputContext = {
   event: ListenerEvent
   triggerFieldApi?: AnyInternalFieldApi
   formApi: InternalFormApi<any, any, any>
+  /** The form values before the change that caused the event. */
+  prevValue?: unknown
 }
 
 type FieldInputContext = {
   event: ListenerEvent
   fieldApi: AnyInternalFieldApi
   formApi: InternalFormApi<any, any, any>
+  /** The listening field's value before the change that caused the event. */
+  prevValue?: unknown
 }
 
 type InputContext = FormInputContext | FieldInputContext
@@ -192,6 +196,7 @@ export function runFormListenerPipeline({
       formApi: ctx.formApi,
       triggerFieldApi: ctx.triggerFieldApi,
       value: ctx.formApi.state.values,
+      prevValue: ctx.prevValue,
     }),
   })
 }
@@ -222,6 +227,7 @@ export function runFieldListenerPipeline({
       value: ctx.fieldApi.value,
       fieldApi: context.fieldApi,
       formApi: ctx.formApi,
+      prevValue: ctx.prevValue,
     }),
   })
 }

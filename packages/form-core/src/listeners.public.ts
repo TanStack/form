@@ -217,6 +217,15 @@ export interface FormListenerContext<
   formApi: FormApi<TFormData, TFormErrorTypes>
   /** The form values captured when the event occurred. */
   value: TFormData
+  /**
+   * The form values immediately before the change that invoked the listener.
+   *
+   * Only provided for `'change'` events, and `undefined` for every other
+   * trigger. When the listener is debounced, this is the value from before
+   * the change that ultimately invokes it, not from before the first change
+   * of the burst.
+   */
+  prevValue?: TFormData
 }
 
 /**
@@ -345,6 +354,16 @@ export interface FieldListenerContext<
 > {
   /** The listening field's value captured when the event occurred. */
   value: TFieldValue
+  /**
+   * The listening field's value immediately before the change that invoked
+   * the listener.
+   *
+   * Only provided for `'change'` events, and `undefined` for every other
+   * trigger. When the listener is debounced, this is the value from before
+   * the change that ultimately invokes it, not from before the first change
+   * of the burst.
+   */
+  prevValue?: TFieldValue
   /**
    * The field that owns the listener.
    *
