@@ -585,6 +585,61 @@ describe('form group api', () => {
     )
   })
 
+  it('Should distribute group field errors to an unmounted field previously written with setFieldValue', () => {
+    const form = new FormApi({
+      defaultValues: {
+        launch: {
+          type: 'manual',
+          price: undefined as number | undefined,
+        },
+      },
+    })
+    form.mount()
+
+    const group = new FormGroupApi({
+      form,
+      name: 'launch',
+      validators: {
+        onChange: ({ value }) =>
+          value.type === 'exclusive' && value.price === undefined
+            ? { fields: { price: 'Price is required' } }
+            : undefined,
+      },
+    })
+    group.mount()
+
+    const typeField = new FieldApi({
+      form,
+      name: 'launch.type',
+    })
+    typeField.mount()
+
+    form.setFieldValue('launch.price', undefined)
+
+    expect(() => typeField.handleChange('exclusive')).not.toThrow()
+
+    expect(form.getFieldMeta('launch.price')?.errorMap.onChange).toBe(
+      'Price is required',
+    )
+    expect(form.getFieldMeta('launch.price')?.errorSourceMap.onChange).toBe(
+      'form',
+    )
+    expect(group.state.meta.isFieldsValid).toBe(false)
+
+    const priceField = new FieldApi({
+      form,
+      name: 'launch.price',
+    })
+    priceField.mount()
+
+    expect(priceField.state.meta.errors).toEqual(['Price is required'])
+
+    priceField.handleChange(10)
+
+    expect(priceField.state.meta.errorMap.onChange).toBeUndefined()
+    expect(group.state.meta.isFieldsValid).toBe(true)
+  })
+
   it('Should propagate manual function field errors from group validators to child fields', async () => {
     const onSubmit = vi.fn()
 
