@@ -2030,11 +2030,11 @@ describe('FormGroupApi', () => {
       validators: [
         {
           triggers: [],
-          run: ({ value, parseIssues }) => {
+          run: ({ value, createErrorMap }) => {
             const result = schema.safeParse(value)
 
             if (!result.success) {
-              return parseIssues(result.error.issues)
+              return createErrorMap(result.error.issues)
             }
 
             return null

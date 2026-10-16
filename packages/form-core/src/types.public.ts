@@ -31,6 +31,7 @@ export interface FieldUpdateOptions {
 }
 
 export type OneOrMany<TValue> = TValue | Array<TValue>
+export type ReadonlyOneOrMany<TValue> = TValue | ReadonlyArray<TValue>
 
 /**
  * A field API that preserves its value type while erasing its name, error, and

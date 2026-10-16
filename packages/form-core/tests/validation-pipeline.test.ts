@@ -122,10 +122,10 @@ describe('runFormValidatorPipeline', () => {
     const issues = [
       { message: 'Invalid name', path: ['users', 0, 'name'] as const },
     ]
-    const run = vi.fn(({ triggerFieldApi, value, parseIssues }) => {
+    const run = vi.fn(({ triggerFieldApi, value, createErrorMap }) => {
       expect(triggerFieldApi).toBe(field)
       expect(value).toBe(formApi.state.values)
-      expect(parseIssues(issues)).toEqual({
+      expect(createErrorMap(issues)).toEqual({
         form: issues,
         fields: { 'users[0].name': issues },
       })
@@ -154,7 +154,7 @@ describe('runFormValidatorPipeline', () => {
       expect(fieldContext.fieldApi).toBe(field)
       expect(fieldContext).not.toHaveProperty('triggerFieldApi')
       expect(fieldContext.value).toBe(formApi.state.values)
-      expect(fieldContext.parseIssues(issues)).toEqual({
+      expect(fieldContext.createErrorMap(issues)).toEqual({
         form: issues,
         fields: { 'users[0].name': issues },
       })

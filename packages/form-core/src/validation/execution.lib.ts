@@ -1,8 +1,4 @@
-import {
-  isStandardSchema,
-  parseStandardSchema,
-  parseStandardSchemaIssues,
-} from '../standardSchema.lib'
+import { isStandardSchema, parseStandardSchema } from '../standardSchema.lib'
 import { VALIDATION_OUTPUT, isValidationOutput } from '../validationOutput.lib'
 import type { AnyInternalValidatorInstance } from '../ValidatorInstance.lib'
 import type { InternalFormApi } from '../FormApi/FormApi.lib'
@@ -38,11 +34,11 @@ type ServerPipelineValidateContext = {
 }
 type FieldValidateContext = Omit<
   FieldValidatorContext<any, any, any>,
-  'value' | 'parseIssues'
+  'value'
 > & { scope: 'field' }
 type FormGroupValidateContext = Omit<
   FormGroupValidatorContext<any>,
-  'value' | 'parseIssues' | 'createErrorMap' | 'createOutput'
+  'value' | 'createErrorMap' | 'createOutput'
 > & { scope: 'group' }
 export type FormInputContext = Omit<FormValidateContext, 'signal'>
 type ServerFormInputContext = Omit<ServerPipelineValidateContext, 'signal'>
@@ -146,13 +142,6 @@ function getPredicateContext(
     fieldApi: context.triggerFieldApi,
     value: context.formApi.state.values,
   }
-}
-
-/** Parses Standard Schema issues as errors owned directly by a field. */
-export function parseFieldIssues(
-  issues: Parameters<FieldValidatorContext<any, any, any>['parseIssues']>[0],
-) {
-  return parseStandardSchemaIssues(issues, undefined, 'field')
 }
 
 export const ABORTED_CALL = Symbol('ABORTED_CALL')

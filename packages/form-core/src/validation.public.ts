@@ -6,7 +6,7 @@ import type {
   StandardSchemaV1,
   StandardSchemaV1Issue,
 } from './standardSchema.public'
-import type { OneOrMany } from './types.public'
+import type { OneOrMany, ReadonlyOneOrMany } from './types.public'
 import type { VALIDATION_OUTPUT } from './validationOutput.lib'
 
 /**
@@ -585,7 +585,7 @@ export type ValidationErrorValue = ValidationIssue | string
 /** One or more issue objects after string errors have been normalized. */
 export type ValidationError = OneOrMany<ValidationIssue>
 /** One or more errors accepted from a validator, including string messages. */
-export type ValidationErrorInput = OneOrMany<ValidationErrorValue>
+export type ValidationErrorInput = ReadonlyOneOrMany<ValidationErrorValue>
 
 /**
  * Errors owned by a form or group and errors routed to its fields.
@@ -600,34 +600,23 @@ export interface ValidationErrorMap<in out TFormData> {
 }
 
 /**
- * Creates a mutable map of form errors and errors for individual field paths.
+ * Creates an error map with field paths inferred from the callback's value shape.
  *
- * Pass the completed map back from a form or group validator to report the errors.
- *
- * @param initial - An existing map to reuse. A missing `fields` object is added to it.
- * @returns The initial map, if supplied, or a new map with an empty `fields` object.
- * @typeParam TFormData - The form or group value shape whose field paths are
- * accepted by the map. Specify it when calling this helper directly to restrict
- * `fields` to that shape's paths. Without a known value shape, field paths are
- * unrestricted. The validator context's `createErrorMap` already uses the form
- * or group shape and needs no type argument.
- */
-export function createErrorMap<TFormData>(
-  initial?: Partial<ValidationErrorMap<TFormData>>,
-): ValidationErrorMap<TFormData> {
-  if (!initial) return { fields: {} }
-
-  initial.fields ??= {}
-  return initial as ValidationErrorMap<TFormData>
-}
-
-/**
- * Creates a mutable error map with field paths inferred from the validator's value shape.
+ * Return the map from a form, group, or server validator to report its errors.
+ * Pass Standard Schema issues to retain all issues in `form` and also route
+ * issues with paths to `fields`. Narrow possibly undefined issue lists first.
  *
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
  */
-export type CreateErrorMapFn<in out TFormData> =
-  typeof createErrorMap<TFormData>
+export interface CreateErrorMapFn<in out TFormData> {
+  (
+    initial?: Partial<ValidationErrorMap<TFormData>>,
+  ): ValidationErrorMap<TFormData>
+  /** Converts issues into a map containing only Standard Schema issue arrays. */
+  (
+    issues: ReadonlyArray<StandardSchemaV1Issue>,
+  ): ParsedStandardSchemaIssues<TFormData>
+}
 
 /**
  * Standard Schema issues reported at form or group scope and routed to field paths.
@@ -640,25 +629,6 @@ export interface ParsedStandardSchemaIssues<in out TFormData> {
   /** Issues with paths, grouped by field path relative to the validator's value. */
   fields: Partial<Record<DeepKeys<TFormData>, Array<StandardSchemaV1Issue>>>
 }
-
-/**
- * Converts Standard Schema issues into errors owned by the field being validated.
- *
- * @returns A copy of the issue array. Issue paths do not route errors to other fields.
- */
-export type ParseFieldIssuesFn = (
-  issues: ReadonlyArray<StandardSchemaV1Issue>,
-) => Array<StandardSchemaV1Issue>
-
-/**
- * Converts Standard Schema issues into a form or group error map to return from a validator.
- *
- * @returns All issues in `form`, with issues that have paths also grouped in `fields`.
- * @typeParam TFormData - Library-managed. Do not specify explicitly.
- */
-export type ParseFormIssuesFn<TFormData> = (
-  issues: ReadonlyArray<StandardSchemaV1Issue>,
-) => ParsedStandardSchemaIssues<TFormData>
 
 /**
  * A successful validation result that carries data for `validatorOutputs`.
@@ -719,9 +689,7 @@ export interface FormValidatorContext<in out TFormData> {
   triggerFieldApi?: AnyFieldApi
   /** The complete form values being validated. */
   value: TFormData
-  /** Converts Standard Schema issues into form and field errors to return from this validator. */
-  parseIssues: ParseFormIssuesFn<TFormData>
-  /** Creates an error map with field paths inferred from the form values. */
+  /** Builds an error map or routes Standard Schema issues using the form values. */
   createErrorMap: CreateErrorMapFn<TFormData>
   /** Creates a successful result to return data in this validator's `validatorOutputs` entry. */
   createOutput: CreateOutputFn
@@ -743,9 +711,7 @@ export interface ServerFormValidatorContext<in out TFormData> {
   triggerFieldApi?: AnyFieldApi
   /** The complete form values passed to server validation. */
   value: TFormData
-  /** Converts Standard Schema issues into form and field errors to return from this validator. */
-  parseIssues: ParseFormIssuesFn<TFormData>
-  /** Creates an error map with field paths inferred from the form values. */
+  /** Builds an error map or routes Standard Schema issues using the server values. */
   createErrorMap: CreateErrorMapFn<TFormData>
   /** Creates a successful result to return data in this validator's server `validatorOutputs` entry. */
   createOutput: CreateOutputFn
@@ -877,9 +843,7 @@ export interface FormGroupValidatorContext<in out TGroupValue> {
   triggerFieldApi?: AnyFieldApi
   /** The group's current value, without the surrounding form values. */
   value: TGroupValue
-  /** Converts Standard Schema issues into group errors and errors at group-relative field paths. */
-  parseIssues: ParseFormIssuesFn<TGroupValue>
-  /** Creates an error map whose field paths are relative to this group. */
+  /** Builds an error map or routes Standard Schema issues at group-relative field paths. */
   createErrorMap: CreateErrorMapFn<TGroupValue>
   /** Creates a successful result to return data in this validator's `validatorOutputs` entry. */
   createOutput: CreateOutputFn
@@ -954,8 +918,6 @@ export interface FieldValidatorContext<
   fieldApi: FieldApi<TFieldName, TFieldValue, any, TFormData, any>
   /** The current value of the field being validated. */
   value: TFieldValue
-  /** Converts Standard Schema issues into errors for this field, without routing their paths. */
-  parseIssues: ParseFieldIssuesFn
 }
 
 /** A field validator's success result or errors. Field validators do not provide output data. */
@@ -963,6 +925,9 @@ export type FieldValidateResult = ValidationResult
 
 /**
  * Validates a field's value and reports errors owned by that field.
+ *
+ * Standard Schema issue arrays can be returned directly, including readonly
+ * arrays. Issue paths do not route errors to other fields.
  *
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
  * @typeParam TFieldName - Library-managed. Do not specify explicitly.
@@ -1118,7 +1083,7 @@ type ValidationErrorValueFromType<TError> = unknown extends TError
 
 type ValidationErrorInputFromType<TError> = [TError] extends [never]
   ? never
-  : OneOrMany<ValidationErrorValueFromType<TError>>
+  : ReadonlyOneOrMany<ValidationErrorValueFromType<TError>>
 
 /**
  * Form validation results constrained to inferred issue types, as stored in server form state.

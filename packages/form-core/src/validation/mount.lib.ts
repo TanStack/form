@@ -1,16 +1,11 @@
 import { createOutput } from '../validationOutput.lib'
-import { createErrorMap } from '../validation.public'
-import {
-  isStandardSchema,
-  parseStandardSchema,
-  parseStandardSchemaIssues,
-} from '../standardSchema.lib'
+import { createErrorMapFactory } from '../createErrorMap.lib'
+import { isStandardSchema, parseStandardSchema } from '../standardSchema.lib'
 import { isPromiseLike } from '../utils.lib'
 import { isErrorResult } from './errors.lib'
 import {
   createValidatorAbortContext,
   normalizeValidatorResult,
-  parseFieldIssues,
 } from './execution.lib'
 import type { AnyInternalValidatorInstance } from '../ValidatorInstance.lib'
 import type { InternalFormApi } from '../FormApi/FormApi.lib'
@@ -287,10 +282,8 @@ export function runFormMountValidatorPipeline({
       signal,
       formApi,
       value: formApi.state.values,
-      createErrorMap,
+      createErrorMap: createErrorMapFactory(formApi.state.values),
       createOutput,
-      parseIssues: (issues) =>
-        parseStandardSchemaIssues(issues, formApi.state.values, 'form'),
     }),
     scope: 'form',
     onResult,
@@ -317,7 +310,6 @@ export function runFieldMountValidatorPipeline({
       formApi: fieldApi.form as never,
       fieldApi: fieldApi as never,
       value: fieldApi.value,
-      parseIssues: parseFieldIssues,
     }),
     scope: 'field',
     onResult,
@@ -347,10 +339,8 @@ export function runGroupMountValidatorPipeline({
       groupApi: groupApi as never,
       triggerFieldApi: undefined,
       value: groupApi.value,
-      createErrorMap,
+      createErrorMap: createErrorMapFactory(groupApi.value),
       createOutput,
-      parseIssues: (issues) =>
-        parseStandardSchemaIssues(issues, groupApi.value, 'form'),
     }),
     scope: 'form',
     onResult,
