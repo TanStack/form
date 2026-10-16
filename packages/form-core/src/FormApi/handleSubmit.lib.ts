@@ -4,17 +4,19 @@ import {
   isValidationErrorMap,
   parseValidationResult,
 } from '../validation'
-import { parseStandardSchemaIssues } from '../standardSchema.lib'
+import { createErrorMapFactory } from '../createErrorMap.lib'
+import type { StandardSchemaV1Issue } from '../standardSchema.public'
 import type { InternalFormApi } from './FormApi.lib'
 import type {
   FormValidateResult,
   FormValidationError,
   ValidationErrorInput,
+  ValidationErrorMap,
 } from '../validation.public'
 import type {
+  CreateSubmitErrorMapFn,
   CreateValidationErrorFn,
   OnSubmitError,
-  ParseSubmitIssuesFn,
 } from './FormApi.public'
 
 export const SUBMIT_ERROR = Symbol('SUBMIT_ERROR')
@@ -39,12 +41,17 @@ function createSubmitError<TError extends FormValidationError<any>>(
   return { [SUBMIT_ERROR]: error }
 }
 
-function createParseIssues<TFormData>(
+function createSubmitErrorMapFactory<TFormData>(
   value: TFormData,
-): ParseSubmitIssuesFn<TFormData> {
-  return (issues) => {
-    return createSubmitError(parseStandardSchemaIssues(issues, value, 'form'))
-  }
+): CreateSubmitErrorMapFn<TFormData> {
+  const createErrorMap = createErrorMapFactory(value)
+
+  return ((initial) => {
+    const map = createErrorMap(initial as never)
+    // Read the map itself so edits made after creation are included.
+    Object.defineProperty(map, SUBMIT_ERROR, { value: map })
+    return map
+  }) as CreateSubmitErrorMapFn<TFormData>
 }
 
 export async function runSubmissionProcess<TFormData>(
@@ -168,7 +175,7 @@ export async function runSubmissionProcess<TFormData>(
       validatorOutputs,
       value,
       createValidationError,
-      parseIssues: createParseIssues(value),
+      createErrorMap: createSubmitErrorMapFactory(value),
     })
 
     if (hasResettedFormDuringSubmit()) {

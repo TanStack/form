@@ -95,7 +95,7 @@ describe('form - validation', () => {
               const result = schema.safeParse(context.value)
 
               if (!result.success) {
-                return context.parseIssues(result.error.issues)
+                return result.error.issues
               }
 
               return null
@@ -122,11 +122,11 @@ describe('form - validation', () => {
         defaultValues: { user: { name: '' } },
         validators: [
           {
-            run: ({ value, parseIssues }) => {
+            run: ({ value, createErrorMap }) => {
               const result = schema.safeParse(value)
 
               if (!result.success) {
-                return parseIssues(result.error.issues)
+                return createErrorMap(result.error.issues)
               }
 
               return null

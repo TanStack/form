@@ -6,10 +6,10 @@ import {
   createValidator,
   createValidators,
   formOptions,
-  createErrorMap as importCreateErrorMap,
 } from '../src'
 import type {
   AnyFieldApi,
+  CreateSubmitErrorMapFn,
   ErrorVisibilityFieldState,
   FieldApiOptions,
   FieldErrors,
@@ -23,7 +23,6 @@ import type {
   FormSubmitInvalidContext,
   FormValidators,
   OnSubmitError,
-  ParseSubmitIssuesFn,
   ReusableErrorVisibilityState,
   StandardSchemaV1Issue,
   ToFieldError,
@@ -31,7 +30,6 @@ import type {
   ToFormGroupErrorTypes,
   ToFormGroupOutputs,
   ToFormOutputs,
-  ValidationErrorMap,
   ValidationIssue,
 } from '../src'
 
@@ -501,35 +499,6 @@ describe('ErrorVisibility', () => {
 })
 
 describe('createErrorMap', () => {
-  it('creates a typed error map shape', () => {
-    type ErrorMapFormData = {
-      name: string
-      user: {
-        age: number
-      }
-    }
-
-    const errors = importCreateErrorMap<ErrorMapFormData>()
-    const initial: ValidationErrorMap<ErrorMapFormData> = {
-      form: 'Initial form error',
-      fields: { name: 'Initial name error' },
-    }
-
-    expectTypeOf(errors).toEqualTypeOf<ValidationErrorMap<ErrorMapFormData>>()
-    expectTypeOf(importCreateErrorMap<ErrorMapFormData>(initial)).toEqualTypeOf<
-      ValidationErrorMap<ErrorMapFormData>
-    >()
-    expectTypeOf(
-      importCreateErrorMap<ErrorMapFormData>({ form: 'Partial form error' }),
-    ).toEqualTypeOf<ValidationErrorMap<ErrorMapFormData>>()
-
-    errors.form = 'Form error'
-    errors.fields.name = 'Name is required'
-    errors.fields['user.age'] = { message: 'Age is required' }
-    // @ts-expect-error Error map fields must use valid form keys.
-    errors.fields.missing = 'Missing'
-  })
-
   it('infers the error map shape from form validator context', () => {
     const validators = defineFormValidators([
       {
@@ -980,7 +949,7 @@ describe('FormErrors', () => {
   it('should infer form errors from parsed Standard Schema issues', () => {
     const validators = defineFormValidators([
       {
-        run: ({ parseIssues }) => parseIssues([{ message: '' }]),
+        run: ({ createErrorMap }) => createErrorMap([{ message: '' }]),
         triggers: [],
       },
     ])
@@ -1100,7 +1069,7 @@ describe('FormErrors', () => {
   })
 
   it('should infer submit errors from parsed Standard Schema issues', () => {
-    type SubmitReturn = ReturnType<ParseSubmitIssuesFn<TestFormData>>
+    type SubmitReturn = ReturnType<CreateSubmitErrorMapFn<TestFormData>>
 
     expectTypeOf<TestFormErrors<[], SubmitReturn>>().toEqualTypeOf<
       Array<StandardSchemaV1Issue>
@@ -1108,8 +1077,8 @@ describe('FormErrors', () => {
 
     new InternalFormApi({
       defaultValues: { name: '' },
-      onSubmit: ({ parseIssues }) => {
-        return parseIssues([{ message: '' }])
+      onSubmit: ({ createErrorMap }) => {
+        return createErrorMap([{ message: '' }])
       },
     })
   })
@@ -1316,15 +1285,15 @@ describe('FieldErrors', () => {
   it('should infer field errors from parsed Standard Schema issues', () => {
     const fieldValidators = defineFieldValidators([
       {
-        run: ({ parseIssues }) => parseIssues([{ message: '' }]),
+        run: (): ReadonlyArray<StandardSchemaV1Issue> => [{ message: '' }],
         triggers: [],
       },
     ])
 
     const formValidators = defineFormValidators([
       {
-        run: ({ parseIssues }) =>
-          parseIssues([{ message: '', path: ['name'] }]),
+        run: ({ createErrorMap }) =>
+          createErrorMap([{ message: '', path: ['name'] }]),
         triggers: [],
       },
     ])
@@ -1353,8 +1322,8 @@ describe('FieldErrors', () => {
   it('should infer field errors from group parsed Standard Schema issues', () => {
     const groupValidators = defineGroupValidators([
       {
-        run: ({ parseIssues }) =>
-          parseIssues([{ message: '', path: ['name'] }]),
+        run: ({ createErrorMap }) =>
+          createErrorMap([{ message: '', path: ['name'] }]),
         triggers: [],
       },
     ])

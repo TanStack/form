@@ -2,10 +2,9 @@ import { batch } from '@tanstack/store'
 import { createOutput } from './validationOutput.lib'
 import { defaultInternalBaseFieldMeta } from './FieldApi/fieldState.lib'
 import { visitAllFormFields } from './FieldApi/fieldTraversal.lib'
-import { parseStandardSchemaIssues } from './standardSchema.lib'
 import { evaluate } from './utils.lib'
 import { runValidatorPipeline } from './validation'
-import { createErrorMap } from './validation.public'
+import { createErrorMapFactory } from './createErrorMap.lib'
 import { devtools } from './devtoolsBridge.lib'
 import { reconcileValidatorInstances } from './ValidatorInstance.lib'
 import type { FormOptions } from './FormApi/FormApi.public'
@@ -155,10 +154,8 @@ export async function validateServerValues<
         signal: ctx.signal,
         formApi: undefined,
         value: values,
-        createErrorMap,
+        createErrorMap: createErrorMapFactory(values),
         createOutput,
-        parseIssues: (issues) =>
-          parseStandardSchemaIssues(issues, values, 'form'),
       }),
       scope: 'form',
     })

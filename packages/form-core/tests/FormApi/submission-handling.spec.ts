@@ -198,11 +198,11 @@ describe('form - submission handling', () => {
       })
       const form = new InternalFormApi({
         defaultValues: { name: '' },
-        onSubmit: ({ value, parseIssues }) => {
+        onSubmit: ({ value, createErrorMap }) => {
           const result = schema.safeParse(value)
 
           if (!result.success) {
-            return parseIssues(result.error.issues)
+            return createErrorMap(result.error.issues)
           }
 
           return null

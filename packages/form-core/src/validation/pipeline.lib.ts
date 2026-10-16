@@ -1,6 +1,5 @@
 import { createOutput } from '../validationOutput.lib'
-import { createErrorMap } from '../validation.public'
-import { parseStandardSchemaIssues } from '../standardSchema.lib'
+import { createErrorMapFactory } from '../createErrorMap.lib'
 import { isNotNil } from '../utils.lib'
 import { isErrorResult } from './errors.lib'
 import {
@@ -9,7 +8,6 @@ import {
   executeValidator,
   isFieldValidateContext,
   isServerValidateContext,
-  parseFieldIssues,
   runMaybeDebouncedValidator,
   shouldRunValidator,
 } from './execution.lib'
@@ -258,12 +256,8 @@ export function runFormValidatorPipeline({
         formApi: ctx.formApi,
         signal: ctx.signal,
         value: ctx.formApi.state.values,
-        createErrorMap,
+        createErrorMap: createErrorMapFactory(ctx.formApi.state.values),
         createOutput,
-        parseIssues: (
-          issues: Parameters<typeof parseStandardSchemaIssues>[0],
-        ) =>
-          parseStandardSchemaIssues(issues, ctx.formApi.state.values, 'form'),
       }
 
       if (!isFieldValidateContext(ctx)) {
@@ -337,7 +331,6 @@ export function runFieldValidatorPipeline({
         signal: ctx.signal,
         fieldApi: context.fieldApi,
         value: context.fieldApi.value,
-        parseIssues: parseFieldIssues,
       }
     },
     scope: 'field',

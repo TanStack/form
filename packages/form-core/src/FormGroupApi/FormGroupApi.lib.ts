@@ -18,8 +18,7 @@ import {
   deriveFromBaseFieldMeta,
   hasFieldMetaErrors,
 } from '../FieldApi/fieldState.lib'
-import { parseStandardSchemaIssues } from '../standardSchema.lib'
-import { createErrorMap } from '../validation.public'
+import { createErrorMapFactory } from '../createErrorMap.lib'
 import { reconcileValidatorInstances } from '../ValidatorInstance.lib'
 import { resolveDefaultOptions } from '../defaultOptions.lib'
 import type { FormApi } from '../FormApi/FormApi.public'
@@ -685,10 +684,8 @@ export class InternalFormGroupApi<
           triggerFieldApi: opts?.triggerFieldApi,
           signal: ctx.signal,
           value: this.value,
-          createErrorMap,
+          createErrorMap: createErrorMapFactory(this.value),
           createOutput,
-          parseIssues: (issues) =>
-            parseStandardSchemaIssues(issues, this.value, 'form'),
         }),
         onResult: (result) => {
           this._processValidationResult(result, signal)

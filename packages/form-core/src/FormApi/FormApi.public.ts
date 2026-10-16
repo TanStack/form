@@ -9,6 +9,7 @@ import type {
   ParsedStandardSchemaIssues,
   ToFormErrorTypes,
   ToFormOutputs,
+  ValidationErrorMap,
 } from '../validation.public'
 import type { StandardSchemaV1Issue } from '../standardSchema.public'
 import type { FormListeners } from '../listeners.public'
@@ -18,9 +19,9 @@ import type { ServerFormState } from '../ssr.public'
 import type { SUBMIT_ERROR } from './handleSubmit.lib'
 
 /**
- * A validation error wrapped for processing as an `onSubmit` failure.
+ * A validation error recognized as an `onSubmit` failure.
  *
- * Create this value with the `createValidationError` or `parseIssues` helper
+ * Create this value with the `createValidationError` or `createErrorMap` helper
  * provided to `onSubmit`, then return it from the callback so its form- and
  * field-level errors are added to validation state.
  *
@@ -63,17 +64,29 @@ export type CreateValidationErrorFn<in out TFormData> = <
 ) => OnSubmitError<TError>
 
 /**
- * Converts Standard Schema issues into an `onSubmit` validation error.
+ * Creates an error map that can be returned directly from `onSubmit`.
  *
- * Issue paths are mapped to fields in the submitted value. Return the result
- * from `onSubmit` to add the parsed errors to validation state.
+ * Build a mutable map or pass Standard Schema issues to route them using the
+ * submitted values. Narrow possibly undefined issue lists before calling this
+ * helper. Empty maps indicate success.
  *
- * @param issues - The Standard Schema issues to convert.
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
  */
-export type ParseSubmitIssuesFn<in out TFormData> = (
-  issues: ReadonlyArray<StandardSchemaV1Issue>,
-) => OnSubmitError<ParsedStandardSchemaIssues<TFormData>>
+export interface CreateSubmitErrorMapFn<in out TFormData> {
+  /** Creates a mutable submission error map with an empty `fields` object. */
+  (): ValidationErrorMap<TFormData> &
+    OnSubmitError<ValidationErrorMap<TFormData>>
+  /** Reuses the supplied map, adding an empty `fields` object if it is missing. */
+  (
+    initial: Partial<ValidationErrorMap<TFormData>>,
+  ): ValidationErrorMap<TFormData> &
+    OnSubmitError<ValidationErrorMap<TFormData>>
+  /** Routes issues while preserving Standard Schema issue arrays in the result. */
+  (
+    issues: ReadonlyArray<StandardSchemaV1Issue>,
+  ): ParsedStandardSchemaIssues<TFormData> &
+    OnSubmitError<ParsedStandardSchemaIssues<TFormData>>
+}
 
 /**
  * Context passed to `onSubmit` after submission validation succeeds.
@@ -147,7 +160,7 @@ export interface FormSubmitContext<
    */
   createValidationError: CreateValidationErrorFn<TFormData>
   /**
-   * Parses Standard Schema issues into an error returnable from `onSubmit`.
+   * Builds an error map or routes Standard Schema issues for `onSubmit`.
    *
    * Issue paths are mapped to fields in the submitted value. Return the parsed
    * error from `onSubmit` to add those errors to validation state.
@@ -156,24 +169,24 @@ export interface FormSubmitContext<
    * ```ts
    * {
    *   // ...
-   *   onSubmit: async ({ value, parseIssues }) => {
+   *   onSubmit: async ({ value, createErrorMap }) => {
    *     const result = zodSchema.safeParse(value)
    *
    *     if (!result.success) {
-   *       return parseIssues(result.error.issues)
+   *       return createErrorMap(result.error.issues)
    *     }
    *   },
    * }
    * ```
    */
-  parseIssues: ParseSubmitIssuesFn<TFormData>
+  createErrorMap: CreateSubmitErrorMapFn<TFormData>
 }
 
 /**
  * Handles a form submission after submission validation succeeds.
  *
  * A returned promise is awaited before submission finishes. Return an error
- * created by the submission context's `createValidationError` or `parseIssues`
+ * created by the submission context's `createValidationError` or `createErrorMap`
  * helper to mark the submission as invalid.
  *
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
@@ -365,7 +378,7 @@ export interface FormOptions<
   /**
    * Called after submission validation succeeds.
    *
-   * Return an error created with `createValidationError` or `parseIssues` to
+   * Return an error created with `createValidationError` or `createErrorMap` to
    * mark the submission as invalid. A returned promise is awaited before
    * submission finishes. If the callback throws, `onSubmitInvalid` is called.
    *
@@ -584,15 +597,16 @@ export interface FormResetOptions {
  * Registered fields are marked touched, field validators run before form
  * validators, and `onSubmit` is awaited only when validation succeeds.
  * Validation error results and errors returned by `onSubmit` through
- * `createValidationError` are stored as error state. `onSubmitInvalid` is
- * awaited after a failed attempt.
+ * `createValidationError` or `createErrorMap` are stored as error state.
+ * `onSubmitInvalid` is awaited after a failed attempt.
  *
  * Calls made while an attempt is in progress return the same promise instead
  * of starting another attempt.
  *
  * @returns A promise resolving to the error results produced by field and
  * form validation, plus any validation error returned by `onSubmit` through
- * `createValidationError`. The array is empty if none are produced.
+ * `createValidationError` or `createErrorMap`. The array is empty if none are
+ * produced.
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
  */
 export type HandleSubmitFn<in out TFormData> = () => Promise<
@@ -678,15 +692,16 @@ export interface FormApi<
    * Registered fields are marked touched, field validators run before form
    * validators, and `onSubmit` is awaited only when validation succeeds.
    * Validation error results and errors returned by `onSubmit` through
-   * `createValidationError` are stored as error state. `onSubmitInvalid` is
-   * awaited after a failed attempt.
+   * `createValidationError` or `createErrorMap` are stored as error state.
+   * `onSubmitInvalid` is awaited after a failed attempt.
    *
    * Calls made while an attempt is in progress return the same promise instead
    * of starting another attempt.
    *
    * The returned promise resolves to the error results produced by field and
    * form validation, plus any validation error returned by `onSubmit` through
-   * `createValidationError`. The array is empty if none are produced.
+   * `createValidationError` or `createErrorMap`. The array is empty if none are
+   * produced.
    */
   handleSubmit: HandleSubmitFn<TFormData>
   /**
