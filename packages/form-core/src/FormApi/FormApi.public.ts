@@ -16,7 +16,7 @@ import type { FormListeners } from '../listeners.public'
 import type { FormApiArrayMethods } from './FormApiArrayMethods.types.public'
 import type { FormApiFieldMethods } from './FormApiFieldMethods.types.public'
 import type { ServerFormState } from '../ssr.public'
-import type { SUBMIT_ERROR } from './handleSubmit.lib'
+import type { submitErrorSymbol } from './handleSubmit.lib'
 
 /**
  * A validation error recognized as an `onSubmit` failure.
@@ -44,7 +44,7 @@ import type { SUBMIT_ERROR } from './handleSubmit.lib'
 export type OnSubmitError<
   TFormValidationError extends FormValidationError<any>,
 > = {
-  readonly [SUBMIT_ERROR]: TFormValidationError
+  readonly [submitErrorSymbol]: TFormValidationError
 }
 
 /**

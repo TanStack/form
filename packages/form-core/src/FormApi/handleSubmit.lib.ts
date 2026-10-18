@@ -19,12 +19,14 @@ import type {
   OnSubmitError,
 } from './FormApi.public'
 
-export const SUBMIT_ERROR = Symbol('SUBMIT_ERROR')
+export const submitErrorSymbol = Symbol('Submit error')
 
 function isSubmitError<TFormData>(
   value: unknown,
 ): value is OnSubmitError<FormValidationError<TFormData>> {
-  return typeof value === 'object' && value !== null && SUBMIT_ERROR in value
+  return (
+    typeof value === 'object' && value !== null && submitErrorSymbol in value
+  )
 }
 
 const createValidationError: CreateValidationErrorFn<any> = <
@@ -38,7 +40,7 @@ const createValidationError: CreateValidationErrorFn<any> = <
 function createSubmitError<TError extends FormValidationError<any>>(
   error: TError,
 ): OnSubmitError<TError> {
-  return { [SUBMIT_ERROR]: error }
+  return { [submitErrorSymbol]: error }
 }
 
 function createSubmitErrorMapFactory<TFormData>(
@@ -49,7 +51,7 @@ function createSubmitErrorMapFactory<TFormData>(
   return ((initial) => {
     const map = createErrorMap(initial as never)
     // Read the map itself so edits made after creation are included.
-    Object.defineProperty(map, SUBMIT_ERROR, { value: map })
+    Object.defineProperty(map, submitErrorSymbol, { value: map })
     return map
   }) as CreateSubmitErrorMapFn<TFormData>
 }
@@ -184,7 +186,7 @@ export async function runSubmissionProcess<TFormData>(
 
     // Store onSubmit errors separately from installed validator instances.
     if (isSubmitError<TFormData>(maybeError)) {
-      const error = maybeError[SUBMIT_ERROR]
+      const error = maybeError[submitErrorSymbol]
       form._processSubmitValidationResult(error, 'submit')
       submissionData.submitError = error
     } else {
