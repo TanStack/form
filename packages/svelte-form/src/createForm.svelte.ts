@@ -1,11 +1,18 @@
 import { FormApi } from '@tanstack/form-core'
 import { useSelector } from '@tanstack/svelte-store'
-import { onMount } from 'svelte'
+import { getContext, hasContext, onMount, setContext } from 'svelte'
 
-let _formCounter = 0
+const FORM_ID_CTX = Symbol()
 
 function nextFormId(): string {
-  return `svelte-form-${++_formCounter}`
+  try {
+    if (!hasContext(FORM_ID_CTX)) setContext(FORM_ID_CTX, { n: 0 })
+    const ctx = getContext<{ n: number }>(FORM_ID_CTX)
+    return `svelte-form-${++ctx.n}`
+  } catch {
+    // Outside component context (unit tests, etc.)
+    return `svelte-form-${Math.random().toString(36).slice(2, 9)}`
+  }
 }
 import Field from './Field.svelte'
 import FormGroup from './FormGroup.svelte'
