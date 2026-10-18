@@ -4,7 +4,10 @@ import type {
   StandardSchemaV1Issue,
 } from '../standardSchema.public'
 import type { OneOrMany, ReadonlyOneOrMany } from '../types.public'
+// TODO finalize migration
+import type { FormErrorTypes } from '../validation.public'
 import type { VALIDATION_OUTPUT } from '../validationOutput.lib'
+import type { PARSED_ISSUES } from './parseIssues.lib'
 
 export interface ValidationIssue {
   message: string
@@ -34,15 +37,23 @@ export interface ValidationErrorMap<
   fields: ValidationFieldMap<TFormData, TFieldError>
 }
 
+export type FormValidationFailure<TFormData> =
+  ValidationFailure | ValidationErrorMap<TFormData, ValidationFailure>
+
+export type FormValidationResult<TFormData> =
+  FormValidationFailure<TFormData> | ValidationSuccess
+
 export interface CreatedErrorMap<TFormData, TItem> {
   form: Array<TItem>
   fields: ValidationFieldMap<TFormData, OneOrMany<TItem>>
 }
 
-export type ParsedStandardSchemaIssues<TFormData> = CreatedErrorMap<
+export interface ParsedStandardSchemaIssues<TFormData> extends CreatedErrorMap<
   TFormData,
   StandardSchemaV1Issue
->
+> {
+  readonly [PARSED_ISSUES]: true
+}
 
 type ErrorMapItem<TError> = unknown extends TError
   ? ValidationFailureItem
@@ -56,25 +67,30 @@ type InferredErrorMapItem<TError> = [ErrorMapItem<TError>] extends [never]
   ? ValidationFailureItem
   : ErrorMapItem<TError>
 
-export interface CreateErrorMapFn<TFormData> {
-  <
-    TFormError extends ValidationFailure = never,
-    TFieldErrors extends ValidationFieldMap<TFormData, ValidationFailure> = {},
-  >(initial?: {
-    form?: TFormError
-    fields?: {
-      [TName in keyof TFieldErrors]: TName extends DeepKeys<TFormData>
-        ? TFieldErrors[TName]
-        : never
-    }
-  }): CreatedErrorMap<
-    TFormData,
-    InferredErrorMapItem<TFormError | TFieldErrors[keyof TFieldErrors]>
-  >
-  (
-    issues: ReadonlyArray<StandardSchemaV1Issue>,
-  ): ParsedStandardSchemaIssues<TFormData>
+type ValidateFieldsMap<
+  TFormData,
+  TFieldErrors extends ValidationFieldMap<TFormData, ValidationFailure>,
+> = {
+  // TODO why do we need this double layering?
+  [TName in keyof TFieldErrors]: TName extends DeepKeys<TFormData>
+    ? TFieldErrors[TName]
+    : never
 }
+
+export type CreateErrorMapFn<TFormData> = <
+  TFormError extends ValidationFailure = never,
+  TFieldErrors extends ValidationFieldMap<TFormData, ValidationFailure> = {},
+>(initial?: {
+  form?: TFormError
+  fields?: ValidateFieldsMap<TFormData, TFieldErrors>
+}) => CreatedErrorMap<
+  TFormData,
+  InferredErrorMapItem<TFormError | TFieldErrors[keyof TFieldErrors]>
+>
+
+export type ParseIssuesFn<TFormData> = (
+  issues: ReadonlyArray<StandardSchemaV1Issue>,
+) => ParsedStandardSchemaIssues<TFormData>
 
 export type CreateOutputFn = <TOutput>(
   value: TOutput,
@@ -154,21 +170,21 @@ type GetValidatorError<
     ? GetRunnerError<TRun, TTarget>
     : never
 
-type BroadValidators = Array<{
-  run: StandardSchemaV1<any, any> | ((...args: any) => unknown)
-}>
-
 type GetValidatorsError<TValidators, TTarget extends ErrorTarget> =
   // Unlike unknown (omitted validators), an explicit any keeps basic errors.
   0 extends 1 & TValidators
     ? ValidationIssue
     : TValidators extends ReadonlyArray<unknown>
-      ? BroadValidators extends TValidators
-        ? ValidationIssue
-        : GetValidatorError<TValidators[number], TTarget>
+      ? GetValidatorError<TValidators[number], TTarget>
       : never
 
 export type GetFormErrorTypes<TValidators> = ScopedErrorTypes<
   GetValidatorsError<TValidators, 'self'>,
   GetValidatorsError<TValidators, 'subfield'>
 >
+
+// TODO get rid of this to complete migration
+export type ToFormErrorTypes<TScope extends ScopedErrorTypes> =
+  TScope extends ScopedErrorTypes<infer TSelf, infer TChildren>
+    ? FormErrorTypes<TSelf, TChildren>
+    : never
