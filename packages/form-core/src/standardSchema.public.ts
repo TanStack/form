@@ -101,3 +101,6 @@ interface StandardSchemaV1Types<out TInput = unknown, out TOutput = TInput> {
    */
   readonly output: TOutput
 }
+
+export type StandardSchemaInput<TSchema extends StandardSchemaV1<any, any>> =
+  TSchema extends StandardSchemaV1<infer TInput, any> ? TInput : never

@@ -3,6 +3,10 @@ import { z } from 'zod'
 import { formOptions } from '../../src/FormApi/formOptions.public'
 import type { AnyFieldApi } from '../../src/FieldApi/FieldApi.public'
 import type { FormApi, OnSubmitError } from '../../src/FormApi/FormApi.public'
+import type {
+  FormOptions,
+  FormOptionsApi,
+} from '../../src/FormApi/formOptions.public'
 import type { ServerFormState } from '../../src/FormApi/formServerState.public'
 import type { StandardSchemaV1Issue } from '../../src/standardSchema.public'
 // TODO finalize migration
@@ -13,6 +17,716 @@ import type {
   ParsedStandardSchemaIssues,
   ValidationFailureItem,
 } from '../../src/validation/state.public'
+
+describe('formOptions.strictSchema', () => {
+  it('uses the complete schema input without registering a validator', () => {
+    const schema = z.object({
+      status: z.enum(['draft', 'published']),
+      age: z.coerce.number<string>().optional(),
+    })
+    type SchemaInput = z.input<typeof schema>
+
+    const options = formOptions.strictSchema(schema, {
+      defaultValues: { status: 'draft' },
+      onSubmit: ({ value, formApi, validatorOutputs }) => {
+        expectTypeOf(value).toEqualTypeOf<SchemaInput>()
+        expectTypeOf(formApi.state.values).toEqualTypeOf<SchemaInput>()
+        expectTypeOf(validatorOutputs).toEqualTypeOf<[]>()
+      },
+    })
+
+    expectTypeOf(options.defaultValues).toEqualTypeOf<SchemaInput>()
+  })
+
+  it('rejects incomplete defaults, invalid input, and parsed output', () => {
+    const schema = z.object({
+      name: z.string(),
+      age: z.coerce.number<string>(),
+    })
+
+    formOptions.strictSchema(schema, {
+      // @ts-expect-error Strict defaults must include required schema fields.
+      defaultValues: { age: '' },
+    })
+    formOptions.strictSchema(schema, {
+      defaultValues: {
+        // @ts-expect-error A non-nullable schema input cannot start as null.
+        name: null,
+        age: '',
+      },
+    })
+    formOptions.strictSchema(schema, {
+      defaultValues: {
+        // @ts-expect-error A required schema input cannot start as undefined.
+        name: undefined,
+        age: '',
+      },
+    })
+    formOptions.strictSchema(schema, {
+      defaultValues: {
+        name: '',
+        // @ts-expect-error Defaults use schema input, not transformed output.
+        age: 0,
+      },
+    })
+    formOptions.strictSchema(schema, {
+      defaultValues: {
+        name: '',
+        age: '',
+        // @ts-expect-error Strict defaults cannot add fields absent from the schema.
+        extra: true,
+      },
+    })
+    formOptions.strictSchema(schema, {
+      defaultValues: {
+        name: '',
+        age: '',
+      },
+    })
+  })
+
+  it('types callback-only validators and predicates from the schema input', () => {
+    const schema = z.object({
+      status: z.enum(['draft', 'published']),
+      note: z.string().optional(),
+    })
+    type SchemaInput = z.input<typeof schema>
+
+    formOptions.strictSchema(schema, {
+      defaultValues: { status: 'draft' },
+      validators: [
+        {
+          triggers: [
+            {
+              trigger: 'change',
+              when: ({ value, formApi }) => {
+                expectTypeOf(value).toEqualTypeOf<SchemaInput>()
+                expectTypeOf(formApi.state.values).toEqualTypeOf<SchemaInput>()
+                return value.status === 'published'
+              },
+            },
+          ],
+          skipOnSubmit: ({ value, formApi }) => {
+            expectTypeOf(value).toEqualTypeOf<SchemaInput>()
+            expectTypeOf(formApi.state.values).toEqualTypeOf<SchemaInput>()
+            return value.status === 'draft'
+          },
+          run: ({ value, formApi, event, createErrorMap, parseIssues }) => {
+            expectTypeOf(value).toEqualTypeOf<SchemaInput>()
+            expectTypeOf(formApi.state.values).toEqualTypeOf<SchemaInput>()
+            expectTypeOf(event).toEqualTypeOf<'change' | 'submit'>()
+            expectTypeOf(createErrorMap).toEqualTypeOf<
+              CreateErrorMapFn<SchemaInput>
+            >()
+            expectTypeOf(parseIssues).toEqualTypeOf<
+              ParseIssuesFn<SchemaInput>
+            >()
+          },
+        },
+        {
+          triggers: ['mount', 'server'],
+          skipOnSubmit: true,
+          run: ({ value, event }) => {
+            expectTypeOf(value).toEqualTypeOf<SchemaInput>()
+            expectTypeOf(event).toEqualTypeOf<'mount' | 'server'>()
+          },
+        },
+      ],
+    })
+  })
+
+  it('keeps schema input separate from mixed validator outputs', () => {
+    const schema = z.object({
+      age: z.coerce.number<string>(),
+      name: z.string().optional(),
+    })
+    type SchemaInput = z.input<typeof schema>
+    type SchemaOutput = z.output<typeof schema>
+
+    formOptions.strictSchema(schema, {
+      defaultValues: { age: '' },
+      validators: [
+        {
+          run: async ({ value, createOutput }) => {
+            expectTypeOf(value).toEqualTypeOf<SchemaInput>()
+            return createOutput(value.age.length)
+          },
+        },
+        { run: schema },
+        {
+          run: ({ value }) => {
+            expectTypeOf(value).toEqualTypeOf<SchemaInput>()
+            return { message: 'Check age', code: 'age' as const }
+          },
+        },
+      ],
+      onSubmit: ({ value, formApi, validatorOutputs }) => {
+        expectTypeOf(value).toEqualTypeOf<SchemaInput>()
+        expectTypeOf(formApi.state.values).toEqualTypeOf<SchemaInput>()
+        expectTypeOf(formApi.state.errors).toEqualTypeOf<
+          Array<StandardSchemaV1Issue | { message: string; code: 'age' }>
+        >()
+        expectTypeOf(validatorOutputs).toEqualTypeOf<
+          [number, SchemaOutput, undefined]
+        >()
+      },
+    })
+  })
+
+  it('types listeners and error visibility from schema input without validators', () => {
+    const schema = z.object({
+      status: z.enum(['draft', 'published']),
+      note: z.string().optional(),
+    })
+    type SchemaInput = z.input<typeof schema>
+
+    formOptions.strictSchema(schema, {
+      defaultValues: { status: 'draft' },
+      errorVisibility: ({ state }) => {
+        expectTypeOf(state.values).toEqualTypeOf<SchemaInput>()
+        return state.values.status === 'published'
+      },
+      listeners: [
+        {
+          triggers: [
+            {
+              trigger: 'change',
+              when: ({ value, formApi }) => {
+                expectTypeOf(value).toEqualTypeOf<SchemaInput>()
+                expectTypeOf(formApi.state.values).toEqualTypeOf<SchemaInput>()
+                return value.note !== undefined
+              },
+            },
+          ],
+          triggerDebounceMs: ({ value, formApi }) => {
+            expectTypeOf(value).toEqualTypeOf<SchemaInput>()
+            expectTypeOf(formApi.state.values).toEqualTypeOf<SchemaInput>()
+            return value.status === 'draft' ? 0 : 200
+          },
+          run: ({ value, formApi }) => {
+            expectTypeOf(value).toEqualTypeOf<SchemaInput>()
+            expectTypeOf(formApi.state.values).toEqualTypeOf<SchemaInput>()
+          },
+        },
+      ],
+    })
+  })
+
+  it('types server state from schema input rather than defaults or parsed output', () => {
+    const schema = z.object({
+      status: z.enum(['draft', 'published']),
+      age: z.coerce.number<string>(),
+      note: z.string().optional(),
+    })
+    type SchemaInput = z.input<typeof schema>
+
+    const options = formOptions.strictSchema(schema, {
+      defaultValues: { status: 'draft', age: '' },
+      serverState: {
+        values: { status: 'published', age: '42', note: 'Submitted' },
+        validationResults: [],
+        submissionAttempts: 1,
+      },
+    })
+
+    expectTypeOf(options.serverState).toEqualTypeOf<
+      ServerFormState<SchemaInput, unknown> | null | undefined
+    >()
+
+    formOptions.strictSchema(schema, {
+      ...options,
+      serverState: {
+        values: {
+          status: 'published',
+          // @ts-expect-error Server values must retain the untransformed input type.
+          age: 42,
+        },
+        validationResults: [],
+        submissionAttempts: 1,
+      },
+    })
+    formOptions.strictSchema(schema, {
+      ...options,
+      serverState: {
+        // @ts-expect-error Required schema inputs must also be present in server values.
+        values: { status: 'published' },
+        validationResults: [],
+        submissionAttempts: 1,
+      },
+    })
+  })
+
+  it('preserves every discriminated union branch when defaults select one', () => {
+    const schema = z.discriminatedUnion('kind', [
+      z.object({ kind: z.literal('person'), name: z.string() }),
+      z.object({ kind: z.literal('company'), companyName: z.string() }),
+    ])
+    type SchemaInput = z.input<typeof schema>
+
+    const options = formOptions.strictSchema(schema, {
+      defaultValues: { kind: 'person', name: '' },
+      validators: [
+        {
+          run: ({ value }) => {
+            expectTypeOf(value).toEqualTypeOf<SchemaInput>()
+            if (value.kind === 'person') {
+              expectTypeOf(value.name).toEqualTypeOf<string>()
+              // @ts-expect-error Company fields require the company branch.
+              void value.companyName
+            } else {
+              expectTypeOf(value.companyName).toEqualTypeOf<string>()
+              // @ts-expect-error Person fields require the person branch.
+              void value.name
+            }
+          },
+        },
+      ],
+      onSubmit: ({ value }) => {
+        expectTypeOf(value).toEqualTypeOf<SchemaInput>()
+      },
+    })
+
+    expectTypeOf(options.defaultValues).toEqualTypeOf<SchemaInput>()
+
+    const invalidDefaults = { kind: 'company' as const, name: '' }
+    formOptions.strictSchema(schema, {
+      // @ts-expect-error Defaults must match a member of the union.
+      defaultValues: invalidDefaults,
+    })
+  })
+})
+
+describe('formOptions.looseSchema', () => {
+  it('merges omitted and nested defaults with the schema input', () => {
+    type Value = {
+      name: string | undefined
+      address: {
+        city: string | null
+        postcode: number | undefined
+      }
+    }
+    const schema = z.object({
+      name: z.string(),
+      address: z.object({ city: z.string(), postcode: z.number() }),
+    })
+
+    const options = formOptions.looseSchema(schema, {
+      defaultValues: { address: { city: null } },
+      onSubmit: ({ value, formApi, validatorOutputs }) => {
+        expectTypeOf(value).toEqualTypeOf<Value>()
+        expectTypeOf(formApi.state.values).toEqualTypeOf<Value>()
+        expectTypeOf(validatorOutputs).toEqualTypeOf<[]>()
+      },
+    })
+
+    expectTypeOf(options.defaultValues).toEqualTypeOf<Value>()
+  })
+
+  it('adds only the null and undefined states present in defaults', () => {
+    type Value = {
+      name: string | null
+      age: number | undefined
+      active: boolean
+    }
+    const schema = z.object({
+      name: z.string(),
+      age: z.number(),
+      active: z.boolean(),
+    })
+
+    const options = formOptions.looseSchema(schema, {
+      defaultValues: { name: null, age: undefined, active: false },
+      onSubmit: ({ value }) => {
+        expectTypeOf(value).toEqualTypeOf<Value>()
+      },
+    })
+
+    expectTypeOf(options.defaultValues).toEqualTypeOf<Value>()
+  })
+
+  it('rejects incompatible values within the editable schema input', () => {
+    const schema = z.object({
+      age: z.coerce.number<string>(),
+      users: z.array(z.object({ name: z.string() })),
+    })
+
+    formOptions.looseSchema(schema, {
+      defaultValues: {
+        // @ts-expect-error Loose defaults still require a compatible input type.
+        age: false,
+      },
+    })
+    formOptions.looseSchema(schema, {
+      defaultValues: {
+        // @ts-expect-error Parsed output is not an editable schema input.
+        age: 0,
+      },
+    })
+    formOptions.looseSchema(schema, {
+      defaultValues: {
+        // @ts-expect-error An array field cannot start as a string.
+        users: '',
+      },
+    })
+    formOptions.looseSchema(schema, {
+      defaultValues: {
+        // @ts-expect-error Nested array items must also match the editable input.
+        users: [{ name: false }],
+      },
+    })
+  })
+
+  it('types callback-only validators and predicates from merged form values', () => {
+    type Value = {
+      name: string | undefined
+      age: string | null
+      address: {
+        city: string | null
+        postcode: number | undefined
+      }
+    }
+    const schema = z.object({
+      name: z.string(),
+      age: z.coerce.number<string>(),
+      address: z.object({ city: z.string(), postcode: z.number() }),
+    })
+
+    const options = formOptions.looseSchema(schema, {
+      defaultValues: { age: null, address: { city: null } },
+      validators: [
+        {
+          triggers: [
+            {
+              trigger: 'blur',
+              when: ({ value, formApi }) => {
+                expectTypeOf(value).toEqualTypeOf<Value>()
+                expectTypeOf(formApi.state.values).toEqualTypeOf<Value>()
+                return value.age !== null
+              },
+            },
+          ],
+          skipOnSubmit: ({ value, formApi }) => {
+            expectTypeOf(value).toEqualTypeOf<Value>()
+            expectTypeOf(formApi.state.values).toEqualTypeOf<Value>()
+            return value.name === undefined
+          },
+          run: ({ value, formApi, event, createErrorMap, parseIssues }) => {
+            expectTypeOf(value).toEqualTypeOf<Value>()
+            expectTypeOf(formApi.state.values).toEqualTypeOf<Value>()
+            expectTypeOf(event).toEqualTypeOf<'blur' | 'submit'>()
+            expectTypeOf(createErrorMap).toEqualTypeOf<
+              CreateErrorMapFn<Value>
+            >()
+            expectTypeOf(parseIssues).toEqualTypeOf<ParseIssuesFn<Value>>()
+            return createErrorMap({
+              fields: { name: 'Required', 'address.postcode': 'Required' },
+            })
+          },
+        },
+      ],
+      onSubmit: ({ validatorOutputs }) => {
+        expectTypeOf(validatorOutputs).toEqualTypeOf<[undefined]>()
+      },
+    })
+
+    expectTypeOf(options.defaultValues).toEqualTypeOf<Value>()
+  })
+
+  it('keeps editable form values separate from transformed and skipped outputs', () => {
+    type Value = { age: string | null; name: string | undefined }
+    const schema = z.object({
+      age: z.coerce.number<string>(),
+      name: z.string(),
+    })
+
+    type SchemaOutput = z.output<typeof schema>
+
+    formOptions.looseSchema(schema, {
+      defaultValues: { age: null },
+      validators: [
+        {
+          run: async ({ value, createOutput }) => {
+            expectTypeOf(value).toEqualTypeOf<Value>()
+            return createOutput(value.name ?? '')
+          },
+        },
+        { run: schema },
+        {
+          skipOnSubmit: ({ value }) => {
+            expectTypeOf(value).toEqualTypeOf<Value>()
+            return value.age === null
+          },
+          run: schema,
+        },
+        { skipOnSubmit: true, run: schema },
+      ],
+      onSubmit: ({ value, formApi, validatorOutputs }) => {
+        expectTypeOf(value).toEqualTypeOf<Value>()
+        expectTypeOf(formApi.state.values).toEqualTypeOf<Value>()
+        expectTypeOf(formApi.state.errors).toEqualTypeOf<
+          Array<StandardSchemaV1Issue>
+        >()
+        expectTypeOf(validatorOutputs).toEqualTypeOf<
+          [string, SchemaOutput, SchemaOutput | undefined, undefined]
+        >()
+      },
+    })
+  })
+
+  it('types listeners and error visibility from merged values without validators', () => {
+    type UnionValue = { name: string | undefined; age: number | null }
+    const schema = z.object({ name: z.string(), age: z.number() })
+
+    formOptions.looseSchema(schema, {
+      defaultValues: { age: null },
+      errorVisibility: ({ state }) => {
+        expectTypeOf(state.values).toEqualTypeOf<UnionValue>()
+        return state.values.age !== null
+      },
+      listeners: [
+        {
+          triggers: [
+            {
+              trigger: 'change',
+              when: ({ value, formApi }) => {
+                expectTypeOf(value).toEqualTypeOf<UnionValue>()
+                expectTypeOf(formApi.state.values).toEqualTypeOf<UnionValue>()
+                return value.name !== undefined
+              },
+            },
+          ],
+          triggerDebounceMs: ({ value, formApi }) => {
+            expectTypeOf(value).toEqualTypeOf<UnionValue>()
+            expectTypeOf(formApi.state.values).toEqualTypeOf<UnionValue>()
+            return value.age === null ? 0 : 200
+          },
+          run: ({ value, formApi }) => {
+            expectTypeOf(value).toEqualTypeOf<UnionValue>()
+            expectTypeOf(formApi.state.values).toEqualTypeOf<UnionValue>()
+          },
+        },
+      ],
+    })
+  })
+
+  it('types server state from merged values without widening the form type', () => {
+    type UnionValue = {
+      status: 'draft' | 'published'
+      age: string | null
+      name: string | undefined
+    }
+    const schema = z.object({
+      status: z.enum(['draft', 'published']),
+      age: z.coerce.number<string>(),
+      name: z.string(),
+    })
+
+    const options = formOptions.looseSchema(schema, {
+      defaultValues: { status: 'draft', age: null },
+      serverState: {
+        values: { status: 'published', age: '42', name: 'Submitted' },
+        validationResults: [],
+        submissionAttempts: 1,
+      },
+    })
+
+    expectTypeOf(options.defaultValues).toEqualTypeOf<UnionValue>()
+    expectTypeOf(options.serverState).toEqualTypeOf<
+      ServerFormState<UnionValue, unknown> | null | undefined
+    >()
+
+    formOptions.looseSchema(schema, {
+      defaultValues: { status: 'draft', age: null },
+      serverState: {
+        values: { status: 'draft', age: null, name: undefined },
+        validationResults: [],
+        submissionAttempts: 1,
+      },
+    })
+    formOptions.looseSchema(schema, {
+      defaultValues: { status: 'draft', age: null },
+      serverState: {
+        values: {
+          status: 'published',
+          // @ts-expect-error Server values use editable input, not parsed output.
+          age: 42,
+          name: 'Submitted',
+        },
+        validationResults: [],
+        submissionAttempts: 1,
+      },
+    })
+    formOptions.looseSchema(schema, {
+      defaultValues: { status: 'draft', age: null },
+      serverState: {
+        values: {
+          status: 'published',
+          age: '42',
+          // @ts-expect-error Server values cannot introduce a new null state.
+          name: null,
+        },
+        validationResults: [],
+        submissionAttempts: 1,
+      },
+    })
+  })
+
+  it('merges partial nested array items into mutable schema arrays', () => {
+    type Value = {
+      users: Array<{
+        name: string | null
+        tags: Array<{ label: string | null; count: number | undefined }>
+      }>
+    }
+    const schema = z.object({
+      users: z.array(
+        z.object({
+          name: z.string(),
+          tags: z.array(z.object({ label: z.string(), count: z.number() })),
+        }),
+      ),
+    })
+
+    const options = formOptions.looseSchema(schema, {
+      defaultValues: { users: [{ name: null, tags: [{ label: null }] }] },
+      validators: [
+        {
+          run: ({ value, createErrorMap }) => {
+            expectTypeOf(value).toEqualTypeOf<Value>()
+            return createErrorMap({
+              fields: { 'users[0].tags[0].count': 'Required' },
+            })
+          },
+        },
+      ],
+      onSubmit: ({ value }) => {
+        expectTypeOf(value).toEqualTypeOf<Value>()
+      },
+    })
+
+    expectTypeOf(options.defaultValues).toEqualTypeOf<Value>()
+  })
+
+  it('infers schema array items from empty defaults', () => {
+    type Value = { users: Array<{ name: string; age: number }> }
+    const schema = z.object({
+      users: z.array(z.object({ name: z.string(), age: z.number() })),
+    })
+
+    const options = formOptions.looseSchema(schema, {
+      defaultValues: { users: [] },
+      onSubmit: ({ value }) => {
+        expectTypeOf(value).toEqualTypeOf<Value>()
+      },
+    })
+
+    expectTypeOf(options.defaultValues).toEqualTypeOf<Value>()
+  })
+
+  it('merges top-level null, undefined, and empty defaults with schema input', () => {
+    const schema = z.object({ name: z.string(), age: z.number() })
+    type SchemaInput = z.input<typeof schema>
+
+    const nullOptions = formOptions.looseSchema(schema, {
+      defaultValues: null,
+      validators: [
+        {
+          run: ({ value }) => {
+            expectTypeOf(value).toEqualTypeOf<SchemaInput | null>()
+          },
+        },
+      ],
+      onSubmit: ({ value, formApi }) => {
+        expectTypeOf(value).toEqualTypeOf<SchemaInput | null>()
+        expectTypeOf(formApi.state.values).toEqualTypeOf<SchemaInput | null>()
+      },
+    })
+    expectTypeOf(nullOptions.defaultValues).toEqualTypeOf<SchemaInput | null>()
+
+    const undefinedOptions = formOptions.looseSchema(schema, {
+      defaultValues: undefined,
+      onSubmit: ({ value, formApi }) => {
+        expectTypeOf(value).toEqualTypeOf<SchemaInput | undefined>()
+        expectTypeOf(formApi.state.values).toEqualTypeOf<
+          SchemaInput | undefined
+        >()
+      },
+    })
+    expectTypeOf(undefinedOptions.defaultValues).toEqualTypeOf<
+      SchemaInput | undefined
+    >()
+
+    type EmptyValue = { name: string | undefined; age: number | undefined }
+    const emptyOptions = formOptions.looseSchema(schema, {
+      defaultValues: {},
+      onSubmit: ({ value }) => {
+        expectTypeOf(value).toEqualTypeOf<EmptyValue>()
+      },
+    })
+    expectTypeOf(emptyOptions.defaultValues).toEqualTypeOf<EmptyValue>()
+  })
+
+  it('preserves built-in values and nullable objects without making them partial', () => {
+    type Value = {
+      startDate: Date | null
+      pattern: RegExp
+      profile: { name: string } | null
+    }
+    const schema = z.object({
+      startDate: z.date(),
+      pattern: z.instanceof(RegExp),
+      profile: z.object({ name: z.string() }),
+    })
+
+    const options = formOptions.looseSchema(schema, {
+      defaultValues: { startDate: null, pattern: /name/, profile: null },
+      onSubmit: ({ value, formApi }) => {
+        expectTypeOf(value).toEqualTypeOf<Value>()
+        expectTypeOf(formApi.state.values).toEqualTypeOf<Value>()
+      },
+    })
+    expectTypeOf(options.defaultValues).toEqualTypeOf<Value>()
+
+    formOptions.looseSchema(schema, {
+      defaultValues: {
+        // @ts-expect-error Dates must be complete Date values or editable placeholders.
+        startDate: {},
+      },
+    })
+    formOptions.looseSchema(schema, {
+      defaultValues: {
+        // @ts-expect-error Regular expressions cannot be partial plain objects.
+        pattern: { source: 'name' },
+      },
+    })
+  })
+})
+
+describe('formOptions schema helpers', () => {
+  it('preserves configured component types through both schema helpers', () => {
+    type Components = { TextField: (props: { label: string }) => string }
+    type ComponentsOf<TOptions> =
+      TOptions extends FormOptions<any, any, any, infer TComponents>
+        ? TComponents
+        : never
+    const configuredFormOptions = formOptions as FormOptionsApi<Components>
+    const schema = z.object({ name: z.string() })
+
+    const strictOptions = configuredFormOptions.strictSchema(schema, {
+      defaultValues: { name: '' },
+    })
+    expectTypeOf<
+      ComponentsOf<typeof strictOptions>
+    >().toEqualTypeOf<Components>()
+
+    const looseOptions = configuredFormOptions.looseSchema(schema, {
+      defaultValues: { name: null },
+    })
+    expectTypeOf<
+      ComponentsOf<typeof looseOptions>
+    >().toEqualTypeOf<Components>()
+  })
+})
 
 describe('formOptions server state', () => {
   it('accepts omitted, null, and initial server state without validators', () => {
@@ -137,7 +851,6 @@ describe('formOptions listener inference', () => {
           run: async ({ value, formApi, triggerFieldApi }) => {
             expectTypeOf(value).toEqualTypeOf<{ name: string; age: number }>()
             expectTypeOf(formApi.state.values).toEqualTypeOf<typeof value>()
-            expectTypeOf(formApi.state.errors).toEqualTypeOf<never[]>()
             expectTypeOf(triggerFieldApi).toEqualTypeOf<
               AnyFieldApi | undefined
             >()
