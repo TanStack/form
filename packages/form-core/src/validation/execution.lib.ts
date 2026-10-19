@@ -226,7 +226,8 @@ export function shouldRunValidator(
   const { skipOnSubmit = false } = validator
 
   if (context.event === 'submit') {
-    return getEnabledState(skipOnSubmit, context)
+    // skipOnSubmit is inversed
+    return !getEnabledState(skipOnSubmit, context)
   }
 
   if (!validator.triggers) return false
