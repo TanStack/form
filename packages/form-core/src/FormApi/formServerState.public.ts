@@ -1,42 +1,55 @@
 import type { ServerSideEvents } from '../events.public'
-// TODO finalize migration
-import type { FormValidateResultFromErrorTypes } from '../validation.public'
-import type {
-  GetFormErrorTypes,
-  ScopedErrorTypes,
-  ToFormErrorTypes,
-} from '../validation/state.public'
+import type { FormValidationResult } from '../validation/state.public'
+import type { GetValidatorOutputs } from './formSubmit.public'
 
-type ServerValidator<TValidator> = unknown extends TValidator
-  ? TValidator
-  : TValidator extends { triggers?: ReadonlyArray<infer TTrigger> }
-    ? Extract<
-        TTrigger,
-        ServerSideEvents | { trigger: ServerSideEvents }
-      > extends never
-      ? never
-      : TValidator
-    : never
-
-type ServerValidators<TValidators> =
-  TValidators extends ReadonlyArray<unknown>
-    ? Array<ServerValidator<TValidators[number]>>
-    : TValidators
-
-type ServerFormErrorTypes<TValidators> = unknown extends TValidators
-  ? ScopedErrorTypes
-  : GetFormErrorTypes<ServerValidators<TValidators>, never>
-
-export interface ServerFormState<TFormData, TValidators> {
+export interface ServerFormState<TFormData> {
   values: TFormData | undefined
   validationResults: Array<{
     validatorIndex: number
-    result: FormValidateResultFromErrorTypes<
-      TFormData,
-      ToFormErrorTypes<ServerFormErrorTypes<TValidators>>
-    >
+    result: FormValidationResult<TFormData>
     output: unknown | null
     hasOutput?: boolean
   }>
   submissionAttempts: number
 }
+
+type SkipServerTrigger<TTrigger> = TTrigger extends ServerSideEvents
+  ? false
+  : TTrigger extends { trigger: ServerSideEvents; when: infer TWhen }
+    ? TWhen extends true
+      ? false
+      : true
+    : never
+
+type ServerOutputValidators<TValidators extends ReadonlyArray<unknown>> = {
+  [K in keyof TValidators]: TValidators[K] extends {
+    triggers?: ReadonlyArray<infer TTrigger>
+  }
+    ? [SkipServerTrigger<TTrigger>] extends [never]
+      ? undefined
+      : Omit<TValidators[K], 'skipOnSubmit'> & {
+          skipOnSubmit: SkipServerTrigger<TTrigger>
+        }
+    : undefined
+}
+
+type ServerValidatorOutputs<TValidators> = unknown extends TValidators
+  ? Array<unknown>
+  : TValidators extends ReadonlyArray<unknown>
+    ? GetValidatorOutputs<ServerOutputValidators<TValidators>>
+    : []
+
+export interface ServerValidateSuccess<TFormData, TValidators> {
+  success: true
+  values: TFormData
+  validatorOutputs: ServerValidatorOutputs<TValidators>
+}
+
+export interface ServerValidateFailure<TFormData> {
+  success: false
+  serverState: ServerFormState<TFormData>
+}
+
+export type ServerValidateResult<TFormData, TValidators> =
+  | ServerValidateSuccess<TFormData, TValidators>
+  | ServerValidateFailure<TFormData>

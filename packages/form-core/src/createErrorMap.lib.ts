@@ -1,6 +1,9 @@
 import { parseStandardSchemaIssues } from './standardSchema.lib'
 import { isReadonlyArray } from './utils.lib'
-import type { CreateErrorMapFn } from './validation.public'
+import type {
+  CreateErrorMapFn,
+  ValidationErrorMap,
+} from './validation/state.public'
 
 type TupleNarrower = (arg: any) => arg is ReadonlyArray<any>
 
@@ -14,7 +17,7 @@ export function createErrorMapFactory<TFormData>(
     if (isReadonlyArray(initial)) {
       return parseStandardSchemaIssues(initial, value, 'form')
     }
-    const map = initial ?? {}
+    const map = initial ?? ({} as ValidationErrorMap<any, any>)
     map.fields ??= {}
     return map
   }) as CreateErrorMapFn<TFormData>

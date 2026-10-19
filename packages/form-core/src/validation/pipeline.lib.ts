@@ -14,10 +14,6 @@ import {
 import type { AnyInternalValidatorInstance } from '../ValidatorInstance.lib'
 import type { AnyInternalFieldApi } from '../FieldApi/FieldApi.lib'
 import type {
-  FieldValidateResult,
-  FormValidateResult,
-} from '../validation.public'
-import type {
   AbortedCall,
   AnyValidatorContext,
   FieldInputContext,
@@ -28,6 +24,8 @@ import type {
   ValidateResult,
   ValidatorExecutionResult,
 } from './execution.lib'
+import type { FormValidationResult } from './state.public'
+import type { FieldValidateResult } from '../validation.public'
 
 export interface PipelineResult<in out T> {
   validatorInstance: AnyInternalValidatorInstance
@@ -225,11 +223,11 @@ interface FormValidatorPipelineArgs {
    * Whether previous pipelines have reported an error or not.
    */
   hasFailedBefore: boolean
-  onResult?: (result: PipelineResult<FormValidateResult<any>>) => void
+  onResult?: (result: PipelineResult<FormValidationResult<any>>) => void
 }
 
 export interface FormValidatorPipelineResult {
-  results: Array<PipelineResult<FormValidateResult<any>>>
+  results: Array<PipelineResult<FormValidationResult<any>>>
   hasErrors: boolean
   thrownError: unknown | null
 }
@@ -241,7 +239,7 @@ export function runFormValidatorPipeline({
   onResult,
   hasFailedBefore,
 }: FormValidatorPipelineArgs): Promise<FormValidatorPipelineResult> {
-  return runValidatorPipeline<FormValidateResult<any>>({
+  return runValidatorPipeline<FormValidationResult<any>>({
     pipeline,
     context,
     onResult,

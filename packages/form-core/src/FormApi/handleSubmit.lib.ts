@@ -5,60 +5,56 @@ import {
   parseValidationResult,
 } from '../validation'
 import { createErrorMapFactory } from '../createErrorMap.lib'
-import type { StandardSchemaV1Issue } from '../standardSchema.public'
+import { parseIssuesFactory } from '../validation/parseIssues.lib'
 import type { InternalFormApi } from './FormApi.lib'
+import type { ValidationErrorInput } from '../validation.public'
 import type {
-  FormValidateResult,
-  FormValidationError,
-  ValidationErrorInput,
-  ValidationErrorMap,
-} from '../validation.public'
+  FormValidationFailure,
+  FormValidationResult,
+} from '../validation/state.public'
 import type {
-  CreateSubmitErrorMapFn,
   CreateValidationErrorFn,
+  FormSubmitContext,
   OnSubmitError,
-} from './FormApi.public'
+} from './formSubmit.public'
 
 export const submitErrorSymbol = Symbol('Submit error')
 
 function isSubmitError<TFormData>(
   value: unknown,
-): value is OnSubmitError<FormValidationError<TFormData>> {
+): value is OnSubmitError<FormValidationFailure<TFormData>> {
   return (
     typeof value === 'object' && value !== null && submitErrorSymbol in value
   )
 }
 
-const createValidationError: CreateValidationErrorFn<any> = <
-  TError extends FormValidationError<any>,
+const createValidationError: CreateValidationErrorFn = <
+  TError extends FormValidationFailure<any>,
 >(
   error: TError,
 ): OnSubmitError<TError> => {
   return createSubmitError(error)
 }
 
-function createSubmitError<TError extends FormValidationError<any>>(
+function createSubmitError<TError extends FormValidationFailure<any>>(
   error: TError,
 ): OnSubmitError<TError> {
   return { [submitErrorSymbol]: error }
 }
 
-function createSubmitErrorMapFactory<TFormData>(
-  value: TFormData,
-): CreateSubmitErrorMapFn<TFormData> {
-  const createErrorMap = createErrorMapFactory(value)
-
-  return ((initial) => {
-    const map = createErrorMap(initial as never)
-    // Read the map itself so edits made after creation are included.
-    Object.defineProperty(map, submitErrorSymbol, { value: map })
-    return map
-  }) as CreateSubmitErrorMapFn<TFormData>
+function withSubmitError<TFunction extends (...args: any) => unknown>(
+  callback: TFunction,
+): any {
+  return (...args: any[]) => {
+    const obj = callback(...args)
+    Object.defineProperty(obj, submitErrorSymbol, { value: obj })
+    return obj
+  }
 }
 
 export async function runSubmissionProcess<TFormData>(
-  form: InternalFormApi<TFormData, any, any>,
-): Promise<Array<FormValidationError<TFormData>>> {
+  form: InternalFormApi<TFormData>,
+): Promise<Array<FormValidationFailure<TFormData>>> {
   const submitResetVersion = form._atoms.resetVersion.get()
   const hasResettedFormDuringSubmit = () =>
     form._atoms.resetVersion.get() !== submitResetVersion
@@ -71,7 +67,7 @@ export async function runSubmissionProcess<TFormData>(
   const submissionData = {
     hasFailed: false,
     submitError:
-      null satisfies FormValidateResult<TFormData> as FormValidateResult<TFormData>,
+      null satisfies FormValidationResult<TFormData> as FormValidationResult<TFormData>,
   }
 
   const fields = form._fieldRootNode._touchAllFieldsAndCollectSubmitValidators()
@@ -140,7 +136,7 @@ export async function runSubmissionProcess<TFormData>(
 
   const finishInvalidSubmission = async (
     value: TFormData,
-  ): Promise<Array<FormValidationError<TFormData>>> => {
+  ): Promise<Array<FormValidationFailure<TFormData>>> => {
     try {
       await form._options.onSubmitInvalid?.({
         value,
@@ -155,7 +151,7 @@ export async function runSubmissionProcess<TFormData>(
     }
 
     // TODO ew. Resolve this differently, this is really bad.
-    return errorResults.flatMap<FormValidationError<TFormData>>((error) => {
+    return errorResults.flatMap<FormValidationFailure<TFormData>>((error) => {
       const { self, subfields } = parseValidationResult(error)
       if (isValidationErrorMap(error)) {
         return [{ ...error, form: self ?? undefined, fields: subfields ?? {} }]
@@ -177,8 +173,9 @@ export async function runSubmissionProcess<TFormData>(
       validatorOutputs,
       value,
       createValidationError,
-      createErrorMap: createSubmitErrorMapFactory(value),
-    })
+      createErrorMap: withSubmitError(createErrorMapFactory(value)),
+      parseIssues: withSubmitError(parseIssuesFactory(value)),
+    } satisfies FormSubmitContext<TFormData, any> as any)
 
     if (hasResettedFormDuringSubmit()) {
       return []

@@ -3,13 +3,18 @@ import { InternalValidationSourceInstance } from './ValidationSourceInstance.lib
 import type { StandardSchemaV1 } from './standardSchema.public'
 import type {
   BaseValidator,
+  FieldValidator,
+  FormGroupValidator,
   ValidatorFn,
   ValidatorScope,
 } from './validation.public'
+import type { FormValidator } from './validation/formValidators.public'
 
-export type InternalValidatorDefinition = BaseValidator<
-  StandardSchemaV1 | ValidatorFn<any, any>
->
+type GetDefinition<TScope extends ValidatorScope> = {
+  form: FormValidator<any, any>
+  group: FormGroupValidator<any>
+  field: FieldValidator<any, any, any>
+}[TScope]
 
 export type ValidatorInstanceDebouncedFn = (...args: Array<any>) => any
 
@@ -19,25 +24,25 @@ export type AnyInternalValidatorInstance<
 > = InternalValidatorInstance<any, any, any, any, any, TDebouncedFn>
 
 export interface InternalValidatorInstanceOptions<
-  out TDefinition extends InternalValidatorDefinition,
   out TOwner,
+  out TScope extends ValidatorScope,
 > {
-  definition: TDefinition
   owner: TOwner
-  scope: ValidatorScope
+  scope: TScope
+  definition: any
   index?: number
 }
 
 /** Stable runtime instances correlated with validator definitions by slot. */
 export type InternalValidatorInstances<
-  TDefinition extends InternalValidatorDefinition,
+  TScope extends ValidatorScope,
   TOwner,
   TErrorTarget = unknown,
   TWatchedField = unknown,
   TOutput = unknown,
 > = Array<
   InternalValidatorInstance<
-    TDefinition,
+    TScope,
     TOwner,
     TErrorTarget,
     TWatchedField,
@@ -46,24 +51,24 @@ export type InternalValidatorInstances<
 > | null
 
 export interface ReconcileValidatorInstancesOptions<
-  TDefinition extends InternalValidatorDefinition,
+  TScope extends ValidatorScope,
   TOwner,
   TErrorTarget = unknown,
   TWatchedField = unknown,
   TOutput = unknown,
 > {
   /** The latest validator definitions installed on the owner. */
-  definitions: ReadonlyArray<TDefinition> | null | undefined
+  definitions: ReadonlyArray<GetDefinition<TScope>> | null | undefined
   /**
    * The definitions installed before an update.
    *
    * Omit during initialization. Pass `null` when updating an owner that
    * previously had no validators.
    */
-  previousDefinitions?: ReadonlyArray<TDefinition> | null
+  previousDefinitions?: ReadonlyArray<GetDefinition<TScope>> | null
   /** The owner's currently installed instances, if it has any. */
   instances: InternalValidatorInstances<
-    TDefinition,
+    TScope,
     TOwner,
     TErrorTarget,
     TWatchedField,
@@ -72,11 +77,11 @@ export interface ReconcileValidatorInstancesOptions<
   /** The validation boundary that owns every reconciled instance. */
   owner: TOwner
   /** The form, group, or field scope shared by the reconciled instances. */
-  scope: ValidatorScope
+  scope: TScope
   /** Cleans owner-specific state before an instance is permanently disposed. */
   onBeforeDispose?: (
     instance: InternalValidatorInstance<
-      TDefinition,
+      TScope,
       TOwner,
       TErrorTarget,
       TWatchedField,
@@ -89,7 +94,7 @@ export interface ReconcileValidatorInstancesOptions<
  * Runtime state owned by one installed validator occurrence.
  */
 export class InternalValidatorInstance<
-  TDefinition extends InternalValidatorDefinition,
+  TScope extends ValidatorScope,
   TOwner,
   TErrorTarget = unknown,
   TWatchedField = unknown,
@@ -98,7 +103,7 @@ export class InternalValidatorInstance<
     ValidatorInstanceDebouncedFn,
 > extends InternalValidationSourceInstance<TOwner, TErrorTarget> {
   /** The current validator definition associated with this stable instance. */
-  definition: TDefinition
+  definition: GetDefinition<TScope>
   /** The controller for the active execution, or `null` when none is active. */
   abortController: AbortController | null = null
   /** The lazily created debouncer for this validator's pending execution. */
@@ -133,7 +138,7 @@ export class InternalValidatorInstance<
     owner,
     scope,
     index,
-  }: InternalValidatorInstanceOptions<TDefinition, TOwner>) {
+  }: InternalValidatorInstanceOptions<TOwner, TScope>) {
     super({ owner, scope, index })
     this.definition = definition
   }
@@ -144,7 +149,7 @@ export class InternalValidatorInstance<
    * Every update advances `revision`, including assignment of the same object.
    * The operation is ignored after disposal.
    */
-  updateDefinition(definition: TDefinition): void {
+  updateDefinition(definition: GetDefinition<TScope>): void {
     if (this.disposed) return
 
     this.definition = definition
@@ -325,7 +330,7 @@ export class InternalValidatorInstance<
  * Updates with a different definition count emit the shared invariant warning.
  */
 export function reconcileValidatorInstances<
-  TDefinition extends InternalValidatorDefinition,
+  TScope extends ValidatorScope,
   TOwner,
   TErrorTarget = unknown,
   TWatchedField = unknown,
@@ -338,13 +343,13 @@ export function reconcileValidatorInstances<
   scope,
   onBeforeDispose,
 }: ReconcileValidatorInstancesOptions<
-  TDefinition,
+  TScope,
   TOwner,
   TErrorTarget,
   TWatchedField,
   TOutput
 >): InternalValidatorInstances<
-  TDefinition,
+  TScope,
   TOwner,
   TErrorTarget,
   TWatchedField,
@@ -375,7 +380,7 @@ export function reconcileValidatorInstances<
       instance.updateDefinition(definition)
     } else {
       nextInstances[index] = new InternalValidatorInstance<
-        TDefinition,
+        TScope,
         TOwner,
         TErrorTarget,
         TWatchedField,

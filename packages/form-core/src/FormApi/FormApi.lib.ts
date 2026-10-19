@@ -48,12 +48,7 @@ import {
   getFormStateSnapshot,
   reconcileFormErrorFields,
 } from './formState.lib'
-import type {
-  FormApi,
-  FormOptions,
-  FormResetOptions,
-  FormState,
-} from './FormApi.public'
+import type { FormApi, FormResetOptions, FormState } from './FormApi.public'
 import type { FormErrorMeta } from './formState.lib'
 import type { DeepKeys } from '../deep-keys.public'
 import type { FormValidatorPipelineResult, PipelineResult } from '../validation'
@@ -74,24 +69,30 @@ import type {
 } from '../types.lib'
 import type { Atom, ReadonlyAtom } from '@tanstack/store'
 import type { Updater } from '../types.public'
-import type {
-  FormValidateResult,
-  FormValidationError,
-  FormValidator,
-  FormValidators,
-  ToFormErrorTypes,
-  ValidationIssue,
-  ValidationTrigger,
-} from '../validation.public'
-import type { AnyFormListener, FormListenerTriggers } from '../listeners.public'
 import type { InternalListenerInstances } from '../ListenerInstance.lib'
-import type { ServerFormState } from '../ssr.public'
 import type {
   InternalValidatorInstance,
   InternalValidatorInstances,
 } from '../ValidatorInstance.lib'
 import type { AnyInternalValidationSourceInstance } from '../ValidationSourceInstance.lib'
 import type { DefaultOptions } from '../defaultOptions.public'
+import type {
+  FormValidationFailure,
+  FormValidationResult,
+  ScopedErrorTypes,
+  ToScopedErrorTypes,
+  ValidationIssue,
+} from '../validation/state.public'
+import type { FormOptions } from './formOptions.public'
+import type { ServerFormState } from './formServerState.public'
+import type {
+  ClientSideEvents,
+  DynamicValidatorTriggers,
+} from '../events.public'
+import type {
+  AnyFormListener,
+  FormListenerTriggers,
+} from './formListeners.public'
 
 export interface FormMetaAtoms {
   isDirty: Atom<boolean>
@@ -144,18 +145,15 @@ function createInitialFormMetaAtoms(): FormMetaAtoms {
   }
 }
 
-export type AnyInternalFormApi = InternalFormApi<any, any, any>
+export type AnyInternalFormApi = InternalFormApi<any>
 export type InternalFormValidatorInstance = InternalValidatorInstance<
-  FormValidator<any>,
+  'form',
   AnyInternalFormApi,
   AnyInternalFieldApi
 >
 
-type InternalFormOptions<
-  TFormData,
-  TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
-> = FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown> & {
+type FormOptionsOfType<TFormData> = FormOptions<TFormData, any, any, any, any>
+type InternalFormOptions<TFormData> = FormOptionsOfType<TFormData> & {
   formId: string
 }
 
@@ -200,13 +198,9 @@ function notifyDevtoolsDefaultValuesUpdate(form: AnyInternalFormApi): void {
   visitAllFormFields(form._fieldRootNode, (current) => updateField(current))
 }
 
-export class InternalFormApi<
+export class InternalFormApi<TFormData> implements FormApi<
   TFormData,
-  const TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
-> implements FormApi<
-  TFormData,
-  ToFormErrorTypes<TFormValidators, TSubmitReturn>
+  ScopedErrorTypes<any, any>
 > {
   /**
    * Devtools use this to show what version of the library is being used.
@@ -217,17 +211,15 @@ export class InternalFormApi<
   get _FieldApi(): typeof InternalFieldApi {
     return InternalFieldApi
   }
-  atom: ReadonlyAtom<
-    FormState<TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>>
-  >
+  atom: ReadonlyAtom<FormState<TFormData, ScopedErrorTypes<any, any>>>
   _atoms: FormAtoms<TFormData>
   _fieldRootNode: InternalRootFieldApi
   _defaultValueCache: DefaultValueCacheEntry | null = null
   readonly _defaultOptions: DefaultOptions | undefined
-  _options: InternalFormOptions<TFormData, TFormValidators, any>
+  _options: InternalFormOptions<TFormData>
   /** Stable runtime instances correlated with `_options.validators` by slot. */
   _validatorInstances: InternalValidatorInstances<
-    TFormValidators[number],
+    'form',
     AnyInternalFormApi,
     AnyInternalFieldApi
   >
@@ -242,12 +234,9 @@ export class InternalFormApi<
     AnyFormListener,
     AnyInternalFormApi
   >
-  _lastServerState: ServerFormState<TFormData, TFormValidators> | null = null
+  _lastServerState: ServerFormState<TFormData> | null = null
 
-  get state(): FormState<
-    TFormData,
-    ToFormErrorTypes<TFormValidators, TSubmitReturn>
-  > {
+  get state(): FormState<TFormData, any> {
     return this.atom.get()
   }
 
@@ -304,7 +293,7 @@ export class InternalFormApi<
   }
 
   constructor(
-    options: FormOptions<TFormData, TFormValidators, any, unknown>,
+    options: FormOptionsOfType<TFormData>,
     defaultOptions?: DefaultOptions,
   ) {
     this._defaultOptions = defaultOptions
@@ -336,7 +325,7 @@ export class InternalFormApi<
       owner: this,
     })
     this._validatorInstances = reconcileValidatorInstances<
-      TFormValidators[number],
+      'form',
       AnyInternalFormApi,
       AnyInternalFieldApi
     >({
@@ -420,7 +409,7 @@ export class InternalFormApi<
     this._notifyFormListener('reset', null)
   }
 
-  _update(options: FormOptions<TFormData, TFormValidators, any, unknown>) {
+  _update(options: FormOptions<TFormData, any, any, any, any>) {
     const resolvedOptions = resolveDefaultOptions(
       options,
       this._defaultOptions?.form,
@@ -449,7 +438,7 @@ export class InternalFormApi<
     })
 
     this._validatorInstances = reconcileValidatorInstances<
-      TFormValidators[number],
+      any,
       AnyInternalFormApi,
       AnyInternalFieldApi
     >({
@@ -712,14 +701,14 @@ export class InternalFormApi<
   _clearEventErrors(
     field: AnyInternalFieldApi | null,
     sourceEvent: string,
-    event: Exclude<ValidationTrigger, 'submit'>,
+    event: Exclude<ClientSideEvents, 'submit'>,
   ) {
     const validatorInstancesToClear: Array<InternalFormValidatorInstance> = []
 
     for (const validatorInstance of this._validatorInstances ?? []) {
       const validator = validatorInstance.definition
 
-      const runsOnEvent = validator.triggers.some((trigger) =>
+      const runsOnEvent = validator.triggers?.some((trigger) =>
         isValidationTriggerEnabled(trigger, {
           scope: 'form',
           event,
@@ -934,7 +923,7 @@ export class InternalFormApi<
   }
 
   _processValidationResult(
-    result: PipelineResult<FormValidateResult<TFormData>>,
+    result: PipelineResult<FormValidationResult<TFormData>>,
     sourceEvent: string,
   ) {
     const validatorInstance =
@@ -984,7 +973,7 @@ export class InternalFormApi<
   }
 
   _processSubmitValidationResult(
-    result: FormValidateResult<TFormData>,
+    result: FormValidationResult<TFormData>,
     sourceEvent: string,
   ): void {
     const parsedResult = parseValidationResult(result)
@@ -1042,7 +1031,8 @@ export class InternalFormApi<
     this._setValidationCount((count) => count + 1)
 
     const { didRun, asyncPromise } = runFormMountValidatorPipeline({
-      pipeline,
+      // TODO investigate this error. Leftover?
+      pipeline: pipeline as any,
       formApi: this,
       onResult: (result) => this._processValidationResult(result, 'mount'),
     })
@@ -1063,7 +1053,7 @@ export class InternalFormApi<
   }
 
   async _runFormValidation(
-    signal: ValidationTrigger,
+    signal: ClientSideEvents,
     opts?: FieldApiOverrideOptions & {
       onResult?: boolean
       hasFailedBefore?: boolean
@@ -1095,7 +1085,7 @@ export class InternalFormApi<
           triggerFieldApi: opts?.fieldApiOverride ?? undefined,
         },
         hasFailedBefore: opts?.hasFailedBefore ?? false,
-        pipeline,
+        pipeline: pipeline as never,
         onResult:
           opts?.onResult !== false
             ? (result) => this._processValidationResult(result, signal)
@@ -1111,7 +1101,7 @@ export class InternalFormApi<
   }
 
   validate = async (
-    signal: ValidationTrigger,
+    signal: ClientSideEvents,
     opts?: FieldApiOverrideOptions & {
       onResult?: boolean
       hasFailedBefore?: boolean
@@ -1125,7 +1115,7 @@ export class InternalFormApi<
 
   _handleSubmitPromise: Promise<any> | null = null
 
-  handleSubmit = (): Promise<Array<FormValidationError<TFormData>>> => {
+  handleSubmit = (): Promise<Array<FormValidationFailure<TFormData>>> => {
     if (this._handleSubmitPromise) return this._handleSubmitPromise
 
     this._notifyFormListener('submit', null)

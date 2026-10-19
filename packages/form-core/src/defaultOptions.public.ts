@@ -1,12 +1,8 @@
 import type { FieldApiOptions } from './FieldApi/FieldApi.public'
-import type { FormOptions } from './FormApi/FormApi.public'
+import type { AnyFormOptions } from './FormApi/formOptions.public'
 import type { FormGroupOptions } from './FormGroupApi/FormGroupApi.public'
-import type {
-  FieldValidators,
-  FormErrorTypes,
-  FormGroupValidators,
-  FormValidators,
-} from './validation.public'
+import type { FieldValidators, FormGroupValidators } from './validation.public'
+import type { ScopedErrorTypes } from './validation/state.public'
 
 /**
  * Determines how a supplied usage-site listener array combines with default
@@ -56,7 +52,7 @@ interface DefaultListenersMergeOptions {
  * ```
  */
 export type DefaultFormOptions = Pick<
-  FormOptions<unknown, FormValidators<unknown>, unknown, unknown>,
+  AnyFormOptions,
   'errorVisibility' | 'listeners' | 'onSubmitInvalid'
 > &
   DefaultListenersMergeOptions
@@ -87,7 +83,7 @@ export type DefaultFieldOptions = Pick<
     FieldValidators<unknown, string, unknown>,
     never,
     unknown,
-    FormErrorTypes
+    ScopedErrorTypes
   >,
   'errorVisibility' | 'errorBoundary' | 'listeners'
 > &
@@ -117,7 +113,7 @@ export type DefaultFormGroupOptions = Pick<
     string,
     unknown,
     FormGroupValidators<unknown>,
-    FormErrorTypes
+    ScopedErrorTypes
   >,
   'onSubmitInvalid'
 >

@@ -203,7 +203,7 @@ export function callUpdater<T>(updater: Updater<T>, object: T): T {
 }
 
 export function normalizeToArray<T>(
-  input: null | undefined | ReadonlyOneOrMany<T>,
+  input: null | undefined | void | ReadonlyOneOrMany<T>,
 ): ReadonlyArray<T> {
   if (Array.isArray(input)) return input
   if (input === null || input === undefined) return []

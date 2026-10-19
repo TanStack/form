@@ -1,7 +1,10 @@
 import { isStandardSchema, parseStandardSchema } from '../standardSchema.lib'
 import { VALIDATION_OUTPUT, isValidationOutput } from '../validationOutput.lib'
 import type { AnyInternalValidatorInstance } from '../ValidatorInstance.lib'
-import type { InternalFormApi } from '../FormApi/FormApi.lib'
+import type {
+  AnyInternalFormApi,
+  InternalFormApi,
+} from '../FormApi/FormApi.lib'
 import type { AnyInternalFieldApi } from '../FieldApi/FieldApi.lib'
 import type {
   FieldValidateResult,
@@ -10,20 +13,20 @@ import type {
   FormGroupValidateResult,
   FormGroupValidator,
   FormGroupValidatorContext,
-  FormValidateResult,
-  FormValidator,
   FormValidatorContext,
   ServerFormValidatorContext,
   ValidationPredicateContext,
   ValidationTriggerOption,
   Validator,
 } from '../validation.public'
+import type { FormValidationResult } from './state.public'
+import type { FormValidator } from './formValidators.public'
 
 type FormValidateContext = {
   scope: 'form'
   event: Exclude<FormValidatorContext<any>['event'], 'server'>
   signal: AbortSignal
-  formApi: InternalFormApi<any, any, any>
+  formApi: AnyInternalFormApi
   triggerFieldApi?: AnyInternalFieldApi
 }
 type ServerPipelineValidateContext = {
@@ -56,9 +59,9 @@ export type ValidateContext =
   | FieldValidateContext
   | FormGroupValidateContext
 export type ValidateResult =
-  FormValidateResult<any> | FormGroupValidateResult<any> | FieldValidateResult
+  FormValidationResult<any> | FormGroupValidateResult<any> | FieldValidateResult
 type AnyPipelineValidator =
-  | FormValidator<any>
+  | FormValidator<any, any>
   | FormGroupValidator<any>
   | FieldValidator<any, any, any>
   | Validator<any, any, any, any>
@@ -105,6 +108,7 @@ function isServerTrigger(
 
 /** Checks whether a validator participates in server validation. */
 function hasServerTrigger(validator: AnyPipelineValidator): boolean {
+  if (!validator.triggers) return false
   return validator.triggers.some(isServerTrigger)
 }
 
@@ -219,12 +223,13 @@ export function shouldRunValidator(
     return hasServerTrigger(validator)
   }
 
-  const { runOnSubmit = true } = validator
+  const { skipOnSubmit = false } = validator
 
   if (context.event === 'submit') {
-    return getEnabledState(runOnSubmit, context)
+    return getEnabledState(skipOnSubmit, context)
   }
 
+  if (!validator.triggers) return false
   return validator.triggers.some((signal) =>
     isValidationTriggerEnabled(signal, context),
   )

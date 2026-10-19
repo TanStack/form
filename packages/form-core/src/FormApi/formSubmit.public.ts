@@ -3,56 +3,16 @@ import type { PARSED_ISSUES } from '../validation/parseIssues.lib'
 import type {
   CreateErrorMapFn,
   CreatedErrorMap,
-  FormValidationFailure,
   ParseIssuesFn,
   ScopedErrorTypes,
-  ToFormErrorTypes,
+  ValidationFailure,
   ValidationFailureItem,
+  ValidationOutput,
 } from '../validation/state.public'
-import type { VALIDATION_OUTPUT } from '../validationOutput.lib'
-import type {
-  CreateValidationErrorFn,
-  FormApi,
-  OnSubmitError,
-} from './FormApi.public'
+import type { FormApi } from './FormApi.public'
 import type { ParseValidatorCondition } from '../validation/formValidators.public'
 import type { Awaitable } from '../types.public'
-
-/**
- * The result of `createOutput`. Return it from a validator to store its data
- * during submission.
- *
- * @typeParam TOutput - Library-managed. Do not specify explicitly.
- *
- * @example
- * ```ts
- * formOptions({
- *   defaultValues: { name: '' },
- *   validators: [
- *     {
- *       run: ({ createOutput, value }) => {
- *         return createOutput({ displayName: value.name.trim() })
- *       },
- *     },
- *     {
- *       // Schemas pass their output data by default.
- *       run: mySchema,
- *     },
- *   ],
- *   onSubmit: ({ validatorOutputs }) => {
- *     // Outputs follow the same order as the validators array.
- *     const [customData, schemaOutput] = validatorOutputs
- *     console.log(customData.displayName)
- *   },
- * })
- * ```
- */
-export interface ValidationOutput<out TOutput> {
-  /**
-   * The data supplied to `createOutput`.
-   */
-  readonly [VALIDATION_OUTPUT]: TOutput
-}
+import type { submitErrorSymbol } from './handleSubmit.lib'
 
 type UnwrapValidatorFunction<TOutput> = TOutput extends {
   readonly [PARSED_ISSUES]: true
@@ -97,6 +57,14 @@ export type GetValidatorOutputs<TValidators extends ReadonlyArray<unknown>> = {
   [K in keyof TValidators]: GetValidatorOutput<TValidators[K]>
 }
 
+export type OnSubmitError<T> = {
+  readonly [submitErrorSymbol]: T
+}
+
+export type CreateValidationErrorFn = <TError extends ValidationFailure>(
+  error: TError,
+) => OnSubmitError<TError>
+
 type SubmitErrorMap<TFormData> = CreatedErrorMap<
   TFormData,
   ValidationFailureItem
@@ -137,7 +105,7 @@ export interface FormSubmitContext<
   /** The form values for this submission, without schema transformations applied. */
   value: TFormData
   /** The form instance handling this submission. */
-  formApi: FormApi<TFormData, ToFormErrorTypes<ScopedErrorTypes<never, never>>>
+  formApi: FormApi<TFormData, ScopedErrorTypes<never, never>>
   /**
    * The validator outputs from this submission.
    *
@@ -180,7 +148,7 @@ export interface FormSubmitContext<
    * from a submission handler. Creating the error alone does not update form or
    * field validation state.
    */
-  createValidationError: CreateValidationErrorFn<TFormData>
+  createValidationError: CreateValidationErrorFn
   /**
    * Builds a mutable submission error map from optional initial errors. Return
    * the map to apply its form and field errors. An empty map indicates success.
@@ -224,7 +192,7 @@ export interface FormSubmitInvalidContext<
   /** The form values for the failed submission, without schema transformations applied. */
   value: TFormData
   /** The form instance handling the failed submission. */
-  formApi: FormApi<TFormData, ToFormErrorTypes<TFormError>>
+  formApi: FormApi<TFormData, TFormError>
 }
 
 /**

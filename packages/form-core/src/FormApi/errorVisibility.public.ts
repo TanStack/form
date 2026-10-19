@@ -30,10 +30,10 @@ export interface ErrorVisibilityFieldState {
 }
 
 export interface ErrorVisibilityContext<in out TFormData> {
-  state: FormState<TFormData, ToFormErrorTypes<ScopedErrorTypes>>
+  state: FormState<TFormData, ScopedErrorTypes>
   fieldState: ErrorVisibilityFieldState
 }
 
-export type ErrorVisibility<in out TFormData> = (
+export type ErrorVisibilityFn<in out TFormData> = (
   context: ErrorVisibilityContext<TFormData>,
 ) => boolean

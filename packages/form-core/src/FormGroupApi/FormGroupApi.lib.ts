@@ -41,19 +41,21 @@ import type {
 } from './FormGroupApi.public'
 import type {
   ConfigurableValidationTrigger,
-  FormErrorTypes,
-  FormErrors,
   FormGroupValidateResult,
-  FormGroupValidator,
   FormGroupValidators,
   ToFormGroupErrorTypes,
-  ValidationIssue,
 } from '../validation.public'
 import type { ReadonlyAtom } from '@tanstack/store'
 import type {
   InternalValidatorInstance,
   InternalValidatorInstances,
 } from '../ValidatorInstance.lib'
+import type {
+  ScopedErrorTypes,
+  ToFormErrorTypes,
+  ToScopedErrorTypes,
+  ValidationIssue,
+} from '../validation/state.public'
 
 interface FormGroupValidationOutcome<TGroupValue> {
   errors: Array<FormGroupValidateResult<TGroupValue>>
@@ -68,7 +70,7 @@ export type AnyInternalFormGroupApi = InternalFormGroupApi<
   any
 >
 export type InternalGroupValidatorInstance = InternalValidatorInstance<
-  FormGroupValidator<any>,
+  'group',
   AnyInternalFormGroupApi,
   AnyInternalFieldApi
 >
@@ -78,16 +80,15 @@ export class InternalFormGroupApi<
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
   const TGroupValidators extends FormGroupValidators<TGroupValue>,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
 > implements FormGroupApi<
   TFormData,
   TGroupName,
   TGroupValue,
   ToFormGroupErrorTypes<TGroupValidators>,
-  TFormErrorTypes
+  TFormError
 > {
-  readonly form: FormApi<TFormData, TFormErrorTypes> &
-    InternalFormApi<any, any, any>
+  readonly form: FormApi<TFormData, TFormError> & InternalFormApi<any>
   /** The trie node occupied by this form group. */
   _groupField: AnyInternalFieldApi
   _options: FormGroupOptions<
@@ -95,11 +96,11 @@ export class InternalFormGroupApi<
     TGroupName,
     TGroupValue,
     TGroupValidators,
-    TFormErrorTypes
+    TFormError
   >
   /** Stable runtime instances correlated with `_options.validators` by slot. */
   _validatorInstances: InternalValidatorInstances<
-    TGroupValidators[number],
+    'group',
     AnyInternalFormGroupApi,
     AnyInternalFieldApi
   >
@@ -132,7 +133,7 @@ export class InternalFormGroupApi<
       TGroupName,
       TGroupValue,
       TGroupValidators,
-      TFormErrorTypes
+      TFormError
     >,
   ) {
     this.form = options.form as never
@@ -148,7 +149,7 @@ export class InternalFormGroupApi<
     )
     this._groupField._setFormGroup(this)
     this._validatorInstances = reconcileValidatorInstances<
-      TGroupValidators[number],
+      'group',
       AnyInternalFormGroupApi,
       AnyInternalFieldApi
     >({
@@ -181,7 +182,9 @@ export class InternalFormGroupApi<
           groupMetaMarkers,
         )
         const groupErrorMeta = groupBaseMeta._validationSourceErrors
-        let groupErrors: FormErrors<ToFormGroupErrorTypes<TGroupValidators>>
+        let groupErrors: Array<
+          ToFormGroupErrorTypes<TGroupValidators>['selfError']
+        >
 
         if (
           prev &&
@@ -265,7 +268,7 @@ export class InternalFormGroupApi<
       TGroupName,
       TGroupValue,
       TGroupValidators,
-      TFormErrorTypes
+      TFormError
     >,
   ) => {
     const previousValidators = this._options.validators
@@ -274,7 +277,7 @@ export class InternalFormGroupApi<
       this.form._defaultOptions?.formGroup,
     )
     this._validatorInstances = reconcileValidatorInstances<
-      TGroupValidators[number],
+      'group',
       AnyInternalFormGroupApi,
       AnyInternalFieldApi
     >({

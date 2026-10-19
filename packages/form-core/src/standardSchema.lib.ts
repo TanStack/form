@@ -1,5 +1,6 @@
 import { isNil } from './utils.lib'
 import { createOutput } from './validationOutput.lib'
+import { PARSED_ISSUES } from './validation/parseIssues.lib'
 import type {
   StandardSchemaV1,
   StandardSchemaV1Issue,
@@ -7,10 +8,12 @@ import type {
 import type {
   FieldValidatorFn,
   FormGroupValidatorFn,
-  FormValidatorFn,
+} from './validation.public'
+import type { FormValidatorFn } from './validation/formValidators.public'
+import type {
   ParsedStandardSchemaIssues,
   ValidationOutput,
-} from './validation.public'
+} from './validation/state.public'
 
 export function prefixSchemaToErrors(
   issues: ReadonlyArray<StandardSchemaV1Issue>,
@@ -65,7 +68,7 @@ function getPathFromIssue(
 
 export function isStandardSchema(
   object:
-    | FormValidatorFn<any>
+    | FormValidatorFn<any, any>
     | FormGroupValidatorFn<any>
     | FieldValidatorFn<any, any, any>
     | StandardSchemaV1,
@@ -117,6 +120,7 @@ export function parseStandardSchemaIssues<TValue>(
   }
 
   return {
+    [PARSED_ISSUES]: true,
     form: issues.slice(),
     fields: prefixSchemaToErrors(
       issues,

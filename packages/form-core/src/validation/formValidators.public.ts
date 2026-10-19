@@ -238,6 +238,7 @@ export interface ValidatorPredicateContext<TFormData, TValue> {
   value: TValue
 }
 
+// TODO this should be merged into all validators. This doesn't change for field, group and form.
 /**
  * Synchronously decides whether a trigger is enabled or submission validation
  * is skipped.

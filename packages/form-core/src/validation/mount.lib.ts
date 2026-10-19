@@ -8,13 +8,15 @@ import {
   normalizeValidatorResult,
 } from './execution.lib'
 import type { AnyInternalValidatorInstance } from '../ValidatorInstance.lib'
-import type { InternalFormApi } from '../FormApi/FormApi.lib'
+import type {
+  AnyInternalFormApi,
+  InternalFormApi,
+} from '../FormApi/FormApi.lib'
 import type { AnyInternalFieldApi } from '../FieldApi/FieldApi.lib'
 import type { AnyInternalFormGroupApi } from '../FormGroupApi/FormGroupApi.lib'
 import type {
   FieldValidateResult,
   FormGroupValidateResult,
-  FormValidateResult,
 } from '../validation.public'
 import type {
   AnyValidatorContext,
@@ -22,11 +24,12 @@ import type {
   ValidatorExecutionResult,
 } from './execution.lib'
 import type { PipelineResult } from './pipeline.lib'
+import type { FormValidationResult } from './state.public'
 
 interface FormMountValidatorPipelineArgs {
   pipeline: ReadonlyArray<AnyInternalValidatorInstance>
-  formApi: InternalFormApi<any, any, any>
-  onResult?: (result: PipelineResult<FormValidateResult<any>>) => void
+  formApi: AnyInternalFormApi
+  onResult?: (result: PipelineResult<FormValidationResult<any>>) => void
 }
 
 export interface FormMountValidatorPipelineResult {
@@ -275,7 +278,7 @@ export function runFormMountValidatorPipeline({
   formApi,
   onResult,
 }: FormMountValidatorPipelineArgs): FormMountValidatorPipelineResult {
-  return runMountValidatorPipeline<FormValidateResult<any>>({
+  return runMountValidatorPipeline<FormValidationResult<any>>({
     pipeline,
     getContext: (signal) => ({
       event: 'mount' as never,

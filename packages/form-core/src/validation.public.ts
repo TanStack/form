@@ -1,5 +1,5 @@
 import type { DeepKeys } from './deep-keys.public'
-import type { FormApi, OnSubmitError } from './FormApi/FormApi.public'
+import type { FormApi } from './FormApi/FormApi.public'
 import type { AnyFieldApi, FieldApi } from './FieldApi/FieldApi.public'
 import type { FormGroupApi } from './FormGroupApi/FormGroupApi.public'
 import type {
@@ -7,7 +7,19 @@ import type {
   StandardSchemaV1Issue,
 } from './standardSchema.public'
 import type { OneOrMany, ReadonlyOneOrMany } from './types.public'
-import type { VALIDATION_OUTPUT } from './validationOutput.lib'
+import type {
+  CreateErrorMapFn,
+  CreateOutputFn,
+  ScopedErrorTypes,
+  ValidationErrorMap,
+  ValidationIssue,
+  ValidationOutput,
+} from './validation/state.public'
+import type { OnSubmitError } from './FormApi/formSubmit.public'
+import type {
+  ErrorVisibilityContext,
+  ErrorVisibilityFieldState,
+} from './FormApi/errorVisibility.public'
 
 /**
  * A validation function or Standard Schema with an optional rule to stop after earlier failures.
@@ -49,11 +61,11 @@ export interface Validator<
    * Whether this validator runs during a submission attempt, independently of `triggers`.
    *
    * Pass a boolean to enable or disable it, or pass a function that returns
-   * `true` to enable it for the current attempt.
+   * `true` to skip it for the current attempt.
    *
-   * @default true
+   * @default false
    */
-  runOnSubmit?:
+  skipOnSubmit?:
     boolean | ValidationPredicateFn<TFormData, TContextValue, TScope>
   /**
    * Whether this validator runs when the form is constructed or when its field
@@ -77,7 +89,7 @@ export interface Validator<
    * Change and blur events that can run this validator, optionally with conditions.
    *
    * An empty array disables change and blur validation. Configure submission
-   * separately with `runOnSubmit` and initial validation with `runOnMount`.
+   * separately with `skipOnSubmit` and initial validation with `runOnMount`.
    */
   triggers: Array<
     ValidationTriggerOption<TFormData, TContextValue, TTrigger, TScope>
@@ -122,13 +134,9 @@ type ValidatorWithRun<
 type InferFormDataFromValidator<TValidator extends ValidatorRun> =
   TValidator extends StandardSchemaV1<infer TFormData, any>
     ? TFormData
-    : TValidator extends FormValidatorFn<infer TFormData>
-      ? TFormData
-      : TValidator extends ServerFormValidatorFn<infer TFormData>
-        ? TFormData
-        : TValidator extends FormGroupValidatorFn<infer TGroupValue>
-          ? TGroupValue
-          : any
+    : TValidator extends FormGroupValidatorFn<infer TGroupValue>
+      ? TGroupValue
+      : any
 
 /**
  * A validator created by combining reusable options with a validation function
@@ -255,92 +263,12 @@ export type ValidationTrigger = 'change' | 'blur' | 'submit'
 export type ServerValidationTrigger = 'server'
 /** Events reported to client-side validation callbacks. */
 export type ClientValidationTrigger = ValidationTrigger
-/** Events configured through `triggers`. Submission is controlled by `runOnSubmit`. */
+/** Events configured through `triggers`. Submission is controlled by `skipOnSubmit`. */
 export type ConfigurableValidationTrigger = Exclude<ValidationTrigger, 'submit'>
 /** Change and blur events accepted by shared validator configurations. */
 export type ValidatorTrigger = ConfigurableValidationTrigger
 /** The form, form group, or field whose value a validator checks. */
 export type ValidatorScope = 'form' | 'group' | 'field'
-
-/** Descendant field state available when deciding whether to show errors. */
-export interface ErrorVisibilitySubfieldsMeta {
-  /** `true` when no descendant field is marked as dirty. */
-  isEveryPristine: boolean
-  /** `true` when at least one descendant field is marked as dirty. */
-  isSomeDirty: boolean
-  /** `true` when at least one descendant field is marked as touched. */
-  isSomeTouched: boolean
-  /** `true` while at least one descendant field is validating. */
-  isSomeValidating: boolean
-}
-
-/** Field state flags available to an error visibility policy. */
-export interface ErrorVisibilityFieldMeta {
-  /** `true` when this field or a descendant is marked as touched. */
-  isTouched: boolean
-  /** `true` when this field itself is marked as touched. */
-  isSelfTouched: boolean
-  /** `true` when this field or a descendant is marked as dirty. */
-  isDirty: boolean
-  /** `true` when this field itself is marked as dirty. */
-  isSelfDirty: boolean
-  /** `true` when neither this field nor its descendants are marked as dirty. */
-  isPristine: boolean
-  /** `true` when the current value equals the field's default value. */
-  isDefaultValue: boolean
-  /** `true` when this field is marked as blurred. */
-  isBlurred: boolean
-  /** `true` while this field or a descendant is validating. */
-  isValidating: boolean
-  /** `true` while this field itself is validating. */
-  isSelfValidating: boolean
-  /** State flags for this field's descendants. */
-  subfields: ErrorVisibilitySubfieldsMeta
-}
-
-/** The field value and state flags available to an error visibility policy. */
-export interface ErrorVisibilityFieldState {
-  /** The current value of the field whose errors the policy controls. */
-  value: any
-  /** State flags before the visibility policy is applied. */
-  meta: ErrorVisibilityFieldMeta
-}
-
-/**
- * Form and field state used to decide whether to show a field's errors.
- *
- * @typeParam TFormData - Library-managed. Do not specify explicitly.
- * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
- */
-export interface ErrorVisibilityContext<
-  in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
-> {
-  /**
-   * Current form state. For a field in a form group, flags and submission
-   * counters describe that group. `values` and `errors` describe the whole form.
-   */
-  state: FormApi<TFormData, TFormErrorTypes>['state']
-  /** The field whose errors the policy controls. */
-  fieldState: ErrorVisibilityFieldState
-}
-
-/**
- * Returns `true` to show a field's validation errors in `field.errors`.
- *
- * Hidden errors remain available in `field.meta.original.errors`.
- *
- * For fields inside a form group, `state` properties such as `isTouched` and
- * `submissionAttempts` describe the containing group. `values` and `errors`
- * still describe the whole form.
- *
- * @typeParam TFormData - Library-managed. Do not specify explicitly.
- * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
- */
-export type ErrorVisibility<
-  in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
-> = (context: ErrorVisibilityContext<TFormData, TFormErrorTypes>) => boolean
 
 /**
  * Form or group state available to a reusable error visibility policy.
@@ -369,11 +297,8 @@ export interface ReusableErrorVisibilityContext {
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
  * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
  */
-export type ReusableErrorVisibility = <
-  TFormData,
-  TFormErrorTypes extends FormErrorTypes,
->(
-  context: ErrorVisibilityContext<TFormData, TFormErrorTypes>,
+export type ReusableErrorVisibility = <TFormData>(
+  context: ErrorVisibilityContext<TFormData>,
 ) => boolean
 
 /**
@@ -573,105 +498,12 @@ export type FormValidationTriggerOption<
   | ClientValidationTriggerOption<TFormData, TValue, TScope>
   | ServerValidationTrigger
 
-/**
- * A validation error with a display message.
- */
-export interface ValidationIssue {
-  /** The text to display for this error. */
-  message: string
-}
 /** An error supplied as an issue object or a string that becomes its `message`. */
 export type ValidationErrorValue = ValidationIssue | string
 /** One or more issue objects after string errors have been normalized. */
 export type ValidationError = OneOrMany<ValidationIssue>
 /** One or more errors accepted from a validator, including string messages. */
 export type ValidationErrorInput = ReadonlyOneOrMany<ValidationErrorValue>
-
-/**
- * Errors owned by a form or group and errors routed to its fields.
- *
- * @typeParam TFormData - Library-managed. Do not specify explicitly.
- */
-export interface ValidationErrorMap<in out TFormData> {
-  /** Errors for the form or group that owns the validator. */
-  form?: ValidationErrorInput
-  /** Errors keyed by field path. Paths are relative to the group for group validators. */
-  fields: Partial<Record<DeepKeys<TFormData>, ValidationErrorInput>>
-}
-
-/**
- * Creates an error map with field paths inferred from the callback's value shape.
- *
- * Return the map from a form, group, or server validator to report its errors.
- * Pass Standard Schema issues to retain all issues in `form` and also route
- * issues with paths to `fields`. Narrow possibly undefined issue lists first.
- *
- * @typeParam TFormData - Library-managed. Do not specify explicitly.
- */
-export interface CreateErrorMapFn<in out TFormData> {
-  (
-    initial?: Partial<ValidationErrorMap<TFormData>>,
-  ): ValidationErrorMap<TFormData>
-  /** Converts issues into a map containing only Standard Schema issue arrays. */
-  (
-    issues: ReadonlyArray<StandardSchemaV1Issue>,
-  ): ParsedStandardSchemaIssues<TFormData>
-}
-
-/**
- * Standard Schema issues reported at form or group scope and routed to field paths.
- *
- * @typeParam TFormData - Library-managed. Do not specify explicitly.
- */
-export interface ParsedStandardSchemaIssues<in out TFormData> {
-  /** All supplied issues, including those with field paths. */
-  form: Array<StandardSchemaV1Issue>
-  /** Issues with paths, grouped by field path relative to the validator's value. */
-  fields: Partial<Record<DeepKeys<TFormData>, Array<StandardSchemaV1Issue>>>
-}
-
-/**
- * A successful validation result that carries data for `validatorOutputs`.
- *
- * Return the result of the validator context's `createOutput` helper to provide
- * data during submission or server validation.
- *
- * @typeParam TOutput - Library-managed. Do not specify explicitly.
- */
-export interface ValidationOutput<out TOutput> {
-  readonly [VALIDATION_OUTPUT]: TOutput
-}
-
-/**
- * Creates a successful validation result with data for `validatorOutputs`.
- *
- * Return this result from a form or group validator. The payload appears at that
- * validator's index during submission or server validation and is forwarded
- * without mutation. Outputs from change, blur, and mount validation are **not**
- * retained for later submission.
- *
- * @param value - The payload to expose at this validator's index.
- * @returns A successful validator result containing the original payload.
- * @typeParam TOutput - Library-managed. Do not specify explicitly.
- *
- * @example
- * ```ts
- * formOptions({
- *   defaultValues: { name: '' },
- *   validators: [{
- *     triggers: [],
- *     run: ({ value, createOutput }) => createOutput(value.name.trim()),
- *   }],
- *   onSubmit: ({ validatorOutputs }) => {
- *     const trimmedName = validatorOutputs[0]
- *     // ...
- *   },
- * })
- * ```
- */
-export type CreateOutputFn = <TOutput>(
-  value: TOutput,
-) => ValidationOutput<TOutput>
 
 /**
  * Values and helpers passed to a form validation function.
@@ -730,21 +562,6 @@ export type SuccessfulValidationResult =
 export type ValidationResult = ValidValidationResult | ValidationErrorInput
 
 /**
- * Errors for a form, optionally including errors routed to individual fields.
- *
- * @typeParam TFormData - Library-managed. Do not specify explicitly.
- */
-export type FormValidationError<TFormData> =
-  ValidationErrorInput | ValidationErrorMap<TFormData>
-/**
- * A form validator's success result, output data, or validation errors.
- *
- * @typeParam TFormData - Library-managed. Do not specify explicitly.
- */
-export type FormValidateResult<TFormData> =
-  SuccessfulValidationResult | FormValidationError<TFormData>
-
-/**
  * A validation callback that can return a result immediately or asynchronously.
  *
  * @typeParam TParameter - Library-managed. Do not specify explicitly.
@@ -753,77 +570,6 @@ export type FormValidateResult<TFormData> =
 export type ValidatorFn<in TParameter, out TReturn> = (
   ...args: Array<TParameter>
 ) => TReturn | Promise<TReturn>
-
-/**
- * Validates complete form values and can return form errors, field errors, or output data.
- *
- * @typeParam TFormData - Library-managed. Do not specify explicitly.
- */
-export type FormValidatorFn<TFormData> = ValidatorFn<
-  FormValidatorContext<TFormData>,
-  FormValidateResult<TFormData>
->
-
-/**
- * Validates submitted form values on the server without a client form instance.
- *
- * @typeParam TFormData - Library-managed. Do not specify explicitly.
- */
-export type ServerFormValidatorFn<TFormData> = ValidatorFn<
-  ServerFormValidatorContext<TFormData>,
-  FormValidateResult<TFormData>
->
-
-/**
- * Configures validation of complete form values on the client or server.
- *
- * @typeParam TFormData - Library-managed. Do not specify explicitly.
- */
-export interface FormValidator<in out TFormData> extends BaseValidator<
-  FormValidatorFn<TFormData> | StandardSchemaV1<TFormData, any>
-> {
-  /**
-   * Whether this validator runs during a client submission attempt, independently of `triggers`.
-   *
-   * Pass a boolean to enable or disable it, or pass a function that returns
-   * `true` to enable it for the current attempt.
-   *
-   * @default true
-   */
-  runOnSubmit?: boolean | ValidationPredicateFn<TFormData, TFormData, 'form'>
-  /**
-   * Whether this validator runs when the form is constructed.
-   *
-   * @default false
-   */
-  runOnMount?: boolean
-  /**
-   * The delay in milliseconds before validation runs for change or blur events.
-   *
-   * Pass a number for a fixed delay, or pass a function that returns the delay
-   * for the current event. Repeated events restart the delay.
-   * Submission and server validation run immediately.
-   *
-   * @default 0
-   */
-  triggerDebounceMs?:
-    number | ValidationDebounceFn<TFormData, TFormData, 'form'>
-  /**
-   * Change and blur events that can run this validator, optionally with conditions.
-   * Add `'server'` to include it in `serverValidate`.
-   *
-   * An empty array disables change, blur, and server validation. Configure client
-   * submission separately with `runOnSubmit` and initial validation with `runOnMount`.
-   */
-  triggers: Array<FormValidationTriggerOption<TFormData, TFormData, 'form'>>
-}
-
-/**
- * Form validators in configuration order, which also determines their `validatorOutputs` indexes.
- *
- * @typeParam TFormData - Library-managed. Do not specify explicitly.
- */
-export type FormValidators<TFormData> = ReadonlyArray<FormValidator<TFormData>>
 
 /**
  * Values and helpers passed to a form group validation function.
@@ -855,7 +601,7 @@ export interface FormGroupValidatorContext<in out TGroupValue> {
  * @typeParam TGroupValue - Library-managed. Do not specify explicitly.
  */
 export type FormGroupValidationError<TGroupValue> =
-  ValidationErrorInput | ValidationErrorMap<TGroupValue>
+  ValidationErrorInput | ValidationErrorMap<TGroupValue, ValidationErrorInput>
 /**
  * A form group validator's success result, output data, or validation errors.
  *
@@ -997,7 +743,7 @@ type ExtractErrorMap<
   TTarget extends ValidationErrorTarget,
 > = TResult extends ValidationIssue
   ? NormalizeValidationResult<TResult>
-  : TResult extends ValidationErrorMap<any>
+  : TResult extends ValidationErrorMap<any, any>
     ? TTarget extends 'form'
       ? TResult extends { form?: infer TError }
         ? NormalizeValidationResult<TError>
@@ -1076,37 +822,6 @@ export type FieldErrors<TFieldError> = Array<
   unknown extends TFieldError ? ValidationIssue : TFieldError
 >
 
-type ValidationErrorValueFromType<TError> = unknown extends TError
-  ? ValidationErrorValue
-  : | Extract<TError, ValidationIssue>
-    | (ValidationIssue extends TError ? string : never)
-
-type ValidationErrorInputFromType<TError> = [TError] extends [never]
-  ? never
-  : ReadonlyOneOrMany<ValidationErrorValueFromType<TError>>
-
-/**
- * Form validation results constrained to inferred issue types, as stored in server form state.
- *
- * @typeParam TFormData - Library-managed. Do not specify explicitly.
- * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
- */
-export type FormValidateResultFromErrorTypes<
-  TFormData,
-  TFormErrorTypes extends FormErrorTypes,
-> =
-  | ValidValidationResult
-  | ValidationErrorInputFromType<TFormErrorTypes['formError']>
-  | {
-      form?: ValidationErrorInputFromType<TFormErrorTypes['formError']>
-      fields: Partial<
-        Record<
-          DeepKeys<TFormData>,
-          ValidationErrorInputFromType<TFormErrorTypes['fieldError']>
-        >
-      >
-    }
-
 // Scalars and branded returns share the runtime success classification. Error
 // collections additionally allow success when they contain no stored errors.
 type SuccessWithoutOutput<TResult> =
@@ -1120,7 +835,7 @@ type SuccessWithoutOutput<TResult> =
         : never
       : TResult extends ValidationIssue
         ? never
-        : TResult extends ValidationErrorMap<any>
+        : TResult extends ValidationErrorMap<any, any>
           ? TResult extends { form: infer TForm }
             ? [SuccessWithoutOutput<TForm>] extends [never]
               ? never
@@ -1157,27 +872,16 @@ type TryGetOutput<TValidator> = TValidator extends {
 
 type TryGetSubmitOutput<TValidator> =
   TryGetOutput<TValidator> extends infer TOutput
-    ? TValidator extends { readonly runOnSubmit: infer TRunOnSubmit }
-      ? [TRunOnSubmit] extends [false]
-        ? undefined // User explicitly set runOnSubmit: false -> guaranteed undefined
-        : TRunOnSubmit extends (...args: Array<any>) => boolean
+    ? TValidator extends { readonly skipOnSubmit: infer TSkipOnSubmit }
+      ? [TSkipOnSubmit] extends [true]
+        ? undefined // User explicitly set skipOnSubmit: true -> guaranteed undefined
+        : TSkipOnSubmit extends (...args: Array<any>) => boolean
           ? TOutput | undefined // Callback could dynamically be true or false -> union
-          : false extends TRunOnSubmit
+          : true extends TSkipOnSubmit
             ? TOutput | undefined // the explicit variable is boolean, so also dynamic -> union
             : TOutput
       : TOutput // default, which is guaranteed present
     : never
-
-type ValidatorTriggers<TValidator> = TValidator extends {
-  readonly triggers: infer TTriggers
-}
-  ? TTriggers extends ReadonlyArray<unknown>
-    ? TTriggers[number]
-    : never
-  : never
-
-type HasServerTrigger<TValidator> =
-  ServerValidationTrigger extends ValidatorTriggers<TValidator> ? true : false
 
 type TryGetFormError<TValidator> = TValidator extends {
   readonly run: StandardSchemaV1<any, any>
@@ -1213,18 +917,6 @@ type ToOutputs<
     : MappedOutputs<TValidators>
 
 /**
- * Infers submission output slots from form validators in configuration order.
- *
- * Slots contain Standard Schema outputs or payloads returned through `createOutput`.
- * Validators disabled for submission have `undefined` slots. Conditional
- * submission or success without output can also make a slot `undefined`.
- *
- * @typeParam TFormValidators - Library-managed. Do not specify explicitly.
- */
-export type ToFormOutputs<TFormValidators extends FormValidators<any>> =
-  ToOutputs<TFormValidators, FormValidators<any>>
-
-/**
  * Infers submission output slots from group validators in configuration order.
  *
  * Slots contain Standard Schema outputs or payloads returned through `createOutput`.
@@ -1255,30 +947,30 @@ type ExtractValidatorFieldError<
     ? never
     : TryGetFieldError<TValidators[number]>
 
+type GetSelfErrors<
+  TValidators extends ReadonlyArray<unknown>,
+  TBroadValidators extends ReadonlyArray<unknown>,
+  TSubmitReturn,
+> =
+  | ExtractValidatorFormError<TValidators, TBroadValidators>
+  | ExtractSubmitFormError<TSubmitReturn>
+
+type GetSubfieldErrors<
+  TValidators extends ReadonlyArray<unknown>,
+  TBroadValidators extends ReadonlyArray<unknown>,
+  TSubmitReturn,
+> =
+  | ExtractValidatorFieldError<TValidators, TBroadValidators>
+  | ExtractSubmitFieldError<TSubmitReturn>
+
 type ToValidatorErrorTypes<
   TValidators extends ReadonlyArray<unknown>,
   TBroadValidators extends ReadonlyArray<unknown>,
   TSubmitReturn,
-> = FormErrorTypes<
-  | ExtractValidatorFormError<TValidators, TBroadValidators>
-  | ExtractSubmitFormError<TSubmitReturn>,
-  | ExtractValidatorFieldError<TValidators, TBroadValidators>
-  | ExtractSubmitFieldError<TSubmitReturn>
+> = ScopedErrorTypes<
+  GetSelfErrors<TValidators, TBroadValidators, TSubmitReturn>,
+  GetSubfieldErrors<TValidators, TBroadValidators, TSubmitReturn>
 >
-
-/**
- * Infers form and routed field issue types from validators and submission validation errors.
- *
- * String errors become `ValidationIssue` objects. Successful output payloads
- * are excluded from error types.
- *
- * @typeParam TFormValidators - Library-managed. Do not specify explicitly.
- * @typeParam TSubmitReturn - Library-managed. Do not specify explicitly.
- */
-export type ToFormErrorTypes<
-  TFormValidators extends FormValidators<any>,
-  TSubmitReturn,
-> = ToValidatorErrorTypes<TFormValidators, FormValidators<any>, TSubmitReturn>
 
 /**
  * Infers group and routed field issue types from group validators.
@@ -1311,49 +1003,3 @@ export type ToFieldError<
   | (unknown extends TGroupFieldError ? never : TGroupFieldError)
   | ExtractFormFieldError<TFormErrorTypes>
 >
-
-type MappedServerFormValidators<
-  in out TFormValidators extends FormValidators<any>,
-> = {
-  [K in keyof TFormValidators]: HasServerTrigger<
-    TFormValidators[K]
-  > extends true
-    ? TFormValidators[K]
-    : never
-}
-
-/**
- * Infers form and field issue types from validators with a `'server'` trigger.
- *
- * @typeParam TFormValidators - Library-managed. Do not specify explicitly.
- */
-export type ToServerFormErrorTypes<
-  TFormValidators extends FormValidators<any>,
-> = unknown extends TFormValidators
-  ? FormErrorTypes
-  : FormValidators<any> extends TFormValidators
-    ? FormErrorTypes
-    : ToFormErrorTypes<MappedServerFormValidators<TFormValidators>, never>
-
-type MappedServerOutputs<in out TFormValidators extends FormValidators<any>> = {
-  [K in keyof TFormValidators]: HasServerTrigger<
-    TFormValidators[K]
-  > extends true
-    ? TryGetOutput<TFormValidators[K]>
-    : undefined
-}
-
-/**
- * Infers server validation output slots in form validator configuration order.
- *
- * Validators without a `'server'` trigger have `undefined` slots. Server
- * selection is independent of `runOnSubmit`.
- *
- * @typeParam TFormValidators - Library-managed. Do not specify explicitly.
- */
-export type ToServerFormOutputs<TFormValidators extends FormValidators<any>> =
-  unknown extends TFormValidators
-    ? Array<unknown>
-    : FormValidators<any> extends TFormValidators
-      ? Array<unknown>
-      : MappedServerOutputs<TFormValidators>

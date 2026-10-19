@@ -1,5 +1,5 @@
 import type { GetFormErrorTypes } from '../validation/state.public'
-import type { ErrorVisibility } from './errorVisibility.public'
+import type { ErrorVisibilityFn } from './errorVisibility.public'
 import type { FormListeners } from './formListeners.public'
 import type { ServerFormState } from './formServerState.public'
 import type {
@@ -97,7 +97,7 @@ export interface FormOptions<
    * })
    * ```
    */
-  errorVisibility?: ErrorVisibility<NoInfer<TFormData>>
+  errorVisibility?: ErrorVisibilityFn<NoInfer<TFormData>>
   /**
    * An ordered array of validators for the complete form values.
    *
@@ -160,7 +160,7 @@ export interface FormOptions<
    * Used by server-side rendering (SSR) integrations to restore form state
    * from the server on the client.
    */
-  serverState?: NoInfer<ServerFormState<TFormData, TValidators>> | null
+  serverState?: NoInfer<ServerFormState<TFormData>> | null
   /**
    * Handles submission after field and form submission validation succeeds.
    * A returned promise is awaited before submission finishes.
@@ -400,3 +400,11 @@ export const formOptions = ((opts) => opts) as FormOptionsApi<unknown>
 
 formOptions.strictSchema = (_schema, opts) => opts
 formOptions.looseSchema = (_schema, opts) => opts as never
+
+/**
+ * Form options whose data, validator, and submission return types are erased.
+ *
+ * Use this alias only when reusable code does not need type-safe access to
+ * values, validators, or submission results.
+ */
+export type AnyFormOptions = FormOptions<any, any, any, any, any>

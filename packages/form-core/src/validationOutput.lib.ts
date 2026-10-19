@@ -1,7 +1,7 @@
 import type {
-  SuccessfulValidationResult,
   ValidationOutput,
-} from './validation.public'
+  ValidationSuccess,
+} from './validation/state.public'
 
 export const VALIDATION_OUTPUT = Symbol('VALIDATION_OUTPUT')
 
@@ -21,7 +21,7 @@ export function isValidationOutput(
 
 export function isSuccessfulValidationResult(
   value: unknown,
-): value is SuccessfulValidationResult {
+): value is ValidationSuccess {
   return (
     value === null ||
     value === undefined ||

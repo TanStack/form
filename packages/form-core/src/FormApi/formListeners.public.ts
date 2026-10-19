@@ -1,8 +1,6 @@
 import type { AnyFieldApi } from '../FieldApi/FieldApi.public'
 import type { Listener } from '../listeners.public'
 import type { ClientSideEvents, PreprocessEvents } from '../events.public'
-// TODO finalize migration
-import type { FormErrorTypes } from '../validation.public'
 import type {
   ScopedErrorTypes,
   ToFormErrorTypes,
@@ -13,28 +11,27 @@ export type FormListenerTriggers = ClientSideEvents | PreprocessEvents | 'reset'
 
 export interface FormListenerContext<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
 > {
-  formApi: FormApi<TFormData, TFormErrorTypes>
+  formApi: FormApi<TFormData, TFormError>
   value: TFormData
   triggerFieldApi?: AnyFieldApi
 }
 
-export type FormListenerFn<
-  TFormData,
-  TFormErrorTypes extends FormErrorTypes,
-> = (context: FormListenerContext<TFormData, TFormErrorTypes>) => void
+export type FormListenerFn<TFormData, TFormError extends ScopedErrorTypes> = (
+  context: FormListenerContext<TFormData, TFormError>,
+) => void
 
 export type AnyFormListener = FormListener<any, any>
 
 export interface FormListener<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
 > extends Listener<FormListenerTriggers, TFormData, TFormData> {
-  run: FormListenerFn<TFormData, TFormErrorTypes>
+  run: FormListenerFn<TFormData, TFormError>
 }
 
 export type FormListeners<
   TFormData,
   TFormError extends ScopedErrorTypes,
-> = Array<FormListener<TFormData, ToFormErrorTypes<TFormError>>>
+> = Array<FormListener<TFormData, TFormError>>

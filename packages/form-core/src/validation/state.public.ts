@@ -1,5 +1,5 @@
 import type { DeepKeys } from '../deep-keys.public'
-import type { OnSubmitError } from '../FormApi/FormApi.public'
+import type { OnSubmitError } from '../FormApi/formSubmit.public'
 import type {
   StandardSchemaV1,
   StandardSchemaV1Issue,
@@ -14,6 +14,35 @@ export interface ValidationIssue {
   message: string
 }
 
+/**
+ * The result of `createOutput`. Return it from a validator to store its data
+ * during submission.
+ *
+ * @typeParam TOutput - Library-managed. Do not specify explicitly.
+ *
+ * @example
+ * ```ts
+ * formOptions({
+ *   defaultValues: { name: '' },
+ *   validators: [
+ *     {
+ *       run: ({ createOutput, value }) => {
+ *         return createOutput({ displayName: value.name.trim() })
+ *       },
+ *     },
+ *     {
+ *       // Schemas pass their output data by default.
+ *       run: mySchema,
+ *     },
+ *   ],
+ *   onSubmit: ({ validatorOutputs }) => {
+ *     // Outputs follow the same order as the validators array.
+ *     const [customData, schemaOutput] = validatorOutputs
+ *     console.log(customData.displayName)
+ *   },
+ * })
+ * ```
+ */
 export interface ValidationOutput<out TOutput> {
   readonly [VALIDATION_OUTPUT]: TOutput
 }
@@ -203,4 +232,10 @@ export type GetFormErrorTypes<TValidators, TSubmitReturn> = ScopedErrorTypes<
 export type ToFormErrorTypes<TScope extends ScopedErrorTypes> =
   TScope extends ScopedErrorTypes<infer TSelf, infer TChildren>
     ? FormErrorTypes<TSelf, TChildren>
+    : never
+
+// TODO get rid of this to complete migration
+export type ToScopedErrorTypes<TError extends FormErrorTypes> =
+  TError extends FormErrorTypes<infer TSelf, infer TChildren>
+    ? ScopedErrorTypes<TSelf, TChildren>
     : never
