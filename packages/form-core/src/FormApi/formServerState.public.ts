@@ -25,7 +25,7 @@ type ServerValidators<TValidators> =
 
 type ServerFormErrorTypes<TValidators> = unknown extends TValidators
   ? ScopedErrorTypes
-  : GetFormErrorTypes<ServerValidators<TValidators>>
+  : GetFormErrorTypes<ServerValidators<TValidators>, never>
 
 export interface ServerFormState<TFormData, TValidators> {
   values: TFormData | undefined

@@ -1,4 +1,5 @@
 import type { DeepKeys } from '../deep-keys.public'
+import type { OnSubmitError } from '../FormApi/FormApi.public'
 import type {
   StandardSchemaV1,
   StandardSchemaV1Issue,
@@ -178,9 +179,24 @@ type GetValidatorsError<TValidators, TTarget extends ErrorTarget> =
       ? GetValidatorError<TValidators[number], TTarget>
       : never
 
-export type GetFormErrorTypes<TValidators> = ScopedErrorTypes<
-  GetValidatorsError<TValidators, 'self'>,
-  GetValidatorsError<TValidators, 'subfield'>
+type GetSubmitError<TSubmitReturn, TTarget extends ErrorTarget> =
+  Awaited<TSubmitReturn> extends infer TResult
+    ? TResult extends OnSubmitError<infer TError>
+      ? GetResultError<TError, TTarget>
+      : never
+    : never
+
+type GetSelfErrors<TValidators, TSubmitReturn> =
+  | GetValidatorsError<TValidators, 'self'>
+  | GetSubmitError<TSubmitReturn, 'self'>
+
+type GetSubfieldErrors<TValidators, TSubmitReturn> =
+  | GetValidatorsError<TValidators, 'subfield'>
+  | GetSubmitError<TSubmitReturn, 'subfield'>
+
+export type GetFormErrorTypes<TValidators, TSubmitReturn> = ScopedErrorTypes<
+  GetSelfErrors<TValidators, TSubmitReturn>,
+  GetSubfieldErrors<TValidators, TSubmitReturn>
 >
 
 // TODO get rid of this to complete migration

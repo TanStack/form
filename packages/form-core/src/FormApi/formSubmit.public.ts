@@ -48,7 +48,9 @@ import type { Awaitable } from '../types.public'
  * ```
  */
 export interface ValidationOutput<out TOutput> {
-  /** The data supplied to `createOutput`. */
+  /**
+   * The data supplied to `createOutput`.
+   */
   readonly [VALIDATION_OUTPUT]: TOutput
 }
 
@@ -131,12 +133,11 @@ export type ParseSubmitIssuesFn<TFormData> = (
 export interface FormSubmitContext<
   TFormData,
   TValidatorOutputs extends readonly unknown[],
-  TFormError extends ScopedErrorTypes,
 > {
   /** The form values for this submission, without schema transformations applied. */
   value: TFormData
   /** The form instance handling this submission. */
-  formApi: FormApi<TFormData, ToFormErrorTypes<TFormError>>
+  formApi: FormApi<TFormData, ToFormErrorTypes<ScopedErrorTypes<never, never>>>
   /**
    * The validator outputs from this submission.
    *
@@ -206,7 +207,41 @@ export interface FormSubmitContext<
 export type FormOptionsOnSubmitFn<
   TFormData,
   TValidatorOutputs extends readonly unknown[],
+  TSubmitReturn,
+> = (context: FormSubmitContext<TFormData, TValidatorOutputs>) => TSubmitReturn
+
+/**
+ * The form values and form instance passed to `onSubmitInvalid` after a failed
+ * submission.
+ *
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ * @typeParam TFormError - Library-managed. Do not specify explicitly.
+ */
+export interface FormSubmitInvalidContext<
+  in out TFormData,
+  TFormError extends ScopedErrorTypes,
+> {
+  /** The form values for the failed submission, without schema transformations applied. */
+  value: TFormData
+  /** The form instance handling the failed submission. */
+  formApi: FormApi<TFormData, ToFormErrorTypes<TFormError>>
+}
+
+/**
+ * Handles a failed form submission.
+ *
+ * Runs for submission validation failures, errors returned from `onSubmit`, and
+ * exceptions thrown during validation or `onSubmit`.
+ *
+ * A returned promise is awaited before submission finishes. If this callback
+ * throws or rejects, `handleSubmit()` rejects.
+ *
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ * @typeParam TFormError - Library-managed. Do not specify explicitly.
+ */
+export type FormOptionsOnSubmitInvalidFn<
+  in out TFormData,
   TFormError extends ScopedErrorTypes,
 > = (
-  context: FormSubmitContext<TFormData, TValidatorOutputs, TFormError>,
-) => Awaitable<void | OnSubmitError<FormValidationFailure<TFormData>>>
+  context: FormSubmitInvalidContext<TFormData, TFormError>,
+) => Awaitable<void>

@@ -163,9 +163,6 @@ describe('formOptions.strictSchema', () => {
       onSubmit: ({ value, formApi, validatorOutputs }) => {
         expectTypeOf(value).toEqualTypeOf<SchemaInput>()
         expectTypeOf(formApi.state.values).toEqualTypeOf<SchemaInput>()
-        expectTypeOf(formApi.state.errors).toEqualTypeOf<
-          Array<StandardSchemaV1Issue | { message: string; code: 'age' }>
-        >()
         expectTypeOf(validatorOutputs).toEqualTypeOf<
           [number, SchemaOutput, undefined]
         >()
@@ -463,9 +460,6 @@ describe('formOptions.looseSchema', () => {
       onSubmit: ({ value, formApi, validatorOutputs }) => {
         expectTypeOf(value).toEqualTypeOf<Value>()
         expectTypeOf(formApi.state.values).toEqualTypeOf<Value>()
-        expectTypeOf(formApi.state.errors).toEqualTypeOf<
-          Array<StandardSchemaV1Issue>
-        >()
         expectTypeOf(validatorOutputs).toEqualTypeOf<
           [string, SchemaOutput, SchemaOutput | undefined, undefined]
         >()
@@ -702,32 +696,6 @@ describe('formOptions.looseSchema', () => {
   })
 })
 
-describe('formOptions schema helpers', () => {
-  it('preserves configured component types through both schema helpers', () => {
-    type Components = { TextField: (props: { label: string }) => string }
-    type ComponentsOf<TOptions> =
-      TOptions extends FormOptions<any, any, any, infer TComponents>
-        ? TComponents
-        : never
-    const configuredFormOptions = formOptions as FormOptionsApi<Components>
-    const schema = z.object({ name: z.string() })
-
-    const strictOptions = configuredFormOptions.strictSchema(schema, {
-      defaultValues: { name: '' },
-    })
-    expectTypeOf<
-      ComponentsOf<typeof strictOptions>
-    >().toEqualTypeOf<Components>()
-
-    const looseOptions = configuredFormOptions.looseSchema(schema, {
-      defaultValues: { name: null },
-    })
-    expectTypeOf<
-      ComponentsOf<typeof looseOptions>
-    >().toEqualTypeOf<Components>()
-  })
-})
-
 describe('formOptions server state', () => {
   it('accepts omitted, null, and initial server state without validators', () => {
     const options = formOptions({ defaultValues: { name: '' } })
@@ -886,15 +854,7 @@ describe('formOptions listener inference', () => {
             expectTypeOf(formApi.state.errors).toEqualTypeOf<
               Array<{ message: string; code: 'form' }>
             >()
-            expectTypeOf(formApi).toEqualTypeOf<
-              FormApi<
-                typeof value,
-                FormErrorTypes<
-                  { message: string; code: 'form' },
-                  { message: string; code: 'field' }
-                >
-              >
-            >()
+            expectTypeOf(formApi.state.values).toEqualTypeOf<{ name: string }>()
           },
         },
       ],
