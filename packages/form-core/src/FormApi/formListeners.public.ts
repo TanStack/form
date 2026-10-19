@@ -1,9 +1,6 @@
 import type { AnyFieldApi } from '../FieldApi/FieldApi.public'
 import type { Listener } from '../listeners.public'
-import type {
-  ClientSideEvents,
-  PreprocessEvents,
-} from '../new-validation.public'
+import type { ClientSideEvents, PreprocessEvents } from '../events.public'
 // TODO finalize migration
 import type { FormErrorTypes } from '../validation.public'
 import type {

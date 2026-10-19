@@ -1,4 +1,4 @@
-import type { ServerSideEvents } from '../new-validation.public'
+import type { ServerSideEvents } from '../events.public'
 // TODO finalize migration
 import type { FormValidateResultFromErrorTypes } from '../validation.public'
 import type {

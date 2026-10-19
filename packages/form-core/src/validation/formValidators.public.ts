@@ -7,7 +7,7 @@ import type {
   StaticValidatorTriggers,
   ValidatorEvents,
   ValidatorTriggers,
-} from '../new-validation.public'
+} from '../events.public'
 import type { StandardSchemaV1 } from '../standardSchema.public'
 import type {
   CreateErrorMapFn,
@@ -303,6 +303,17 @@ interface FormValidatorRunner<TFormData, TFormEvents extends ValidatorEvents> {
    * @default 'field'
    */
   fieldErrorTarget?: 'field' | 'field-and-self' | 'self'
+  /**
+   * If `true`, skips this validator and all later validators when earlier
+   * validation in the current run has failed.
+   *
+   * Waits for earlier asynchronous validators to finish before checking for
+   * failures. If `false`, earlier failures do not prevent this validator from
+   * running.
+   *
+   * @default false
+   */
+  bailIfInvalid?: boolean
 }
 
 /**
