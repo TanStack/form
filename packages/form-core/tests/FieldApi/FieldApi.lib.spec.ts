@@ -1,6 +1,648 @@
 import { describe, expect, it, vi } from 'vitest'
 import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
 
+describe('getOrCreateFieldApi', () => {
+  it('applies validators to a field whose value was set before registration', async () => {
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+
+    form.setFieldValue('name', 'before render')
+    expect(form.getFieldMeta('name')).toMatchObject({
+      isTouched: true,
+      isDirty: true,
+    })
+    expect(form.state.isValid).toBe(true)
+
+    const field = form._getOrCreateFieldApi({
+      name: 'name',
+      validators: [{ run: () => 'Name is invalid', triggers: [] }],
+    })
+    field._register()
+
+    expect(form.state.isValid).toBe(true)
+    expect(field.value).toBe('before render')
+    expect(field.meta).toMatchObject({
+      isTouched: true,
+      isDirty: true,
+    })
+
+    await form.handleSubmit()
+
+    expect(field.errors).toEqual([{ message: 'Name is invalid' }])
+    expect(form.state.isValid).toBe(false)
+  })
+})
+
+describe('InternalFieldApi - _update', () => {
+  it('retains default listeners before incoming listeners during construction and updates', () => {
+    const defaultListener = vi.fn()
+    const incomingListener = vi.fn()
+    const updatedListener = vi.fn()
+    const form = new InternalFormApi(
+      { defaultValues: { name: '' } },
+      {
+        field: {
+          listenersMerge: 'append',
+          listeners: [{ triggers: ['change'], run: defaultListener }],
+        },
+      },
+    )
+    const field = form._getOrCreateFieldApi({
+      name: 'name',
+      listeners: [{ triggers: ['change'], run: incomingListener }],
+    })
+
+    field.handleChange('initial')
+
+    expect(defaultListener).toHaveBeenCalledOnce()
+    expect(incomingListener).toHaveBeenCalledOnce()
+    expect(defaultListener).toHaveBeenCalledBefore(incomingListener)
+    expect(incomingListener).toHaveBeenCalledWith(
+      expect.objectContaining({ value: 'initial' }),
+    )
+
+    defaultListener.mockClear()
+    incomingListener.mockClear()
+    field._update({
+      listeners: [{ triggers: ['change'], run: updatedListener }],
+    })
+    field.handleChange('updated')
+
+    expect(defaultListener).toHaveBeenCalledOnce()
+    expect(updatedListener).toHaveBeenCalledOnce()
+    expect(defaultListener).toHaveBeenCalledBefore(updatedListener)
+    expect(updatedListener).toHaveBeenCalledWith(
+      expect.objectContaining({ value: 'updated' }),
+    )
+    expect(incomingListener).not.toHaveBeenCalled()
+  })
+
+  it('applies the default error boundary only after configuration and respects an explicit override', async () => {
+    // This kinda masks a problem where an immediate mount validation on the form can 100% NOT respect
+    // a field component with `errorBoundary`. Too bad, I assume this won't happen much.
+    const form = new InternalFormApi(
+      {
+        defaultValues: { user: { name: '' } },
+        validators: [
+          {
+            triggers: ['change'],
+            run: ({ createErrorMap }) =>
+              createErrorMap({ fields: { 'user.name': 'Name is required' } }),
+          },
+        ],
+      },
+      { field: { errorBoundary: true } },
+    )
+    const parent = form._getOrCreateFieldApi({ name: 'user' }, 'internal')
+    const child = form._getOrCreateFieldApi({ name: 'user.name' }, 'internal')
+    parent._register()
+    child._register()
+
+    await form.validate('change')
+    expect(child.errors).toEqual([{ message: 'Name is required' }])
+    expect(parent.errors).toEqual([])
+
+    form._getOrCreateFieldApi({ name: 'user' })
+
+    await form.validate('change')
+    expect(parent.errors).toEqual([{ message: 'Name is required' }])
+    expect(child.errors).toEqual([])
+
+    parent._update({ errorBoundary: false })
+
+    await form.validate('change')
+    expect(child.errors).toEqual([{ message: 'Name is required' }])
+    expect(parent.errors).toEqual([])
+  })
+
+  it('uses updated validators, retains omitted validators, and removes validators with an empty array', async ({
+    onTestFinished,
+  }) => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    onTestFinished(() => warn.mockRestore())
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+    const field = form._getOrCreateFieldApi({
+      name: 'name',
+      validators: [{ run: () => 'Initial error', triggers: [] }],
+    })
+    field._register()
+
+    await form.handleSubmit()
+    expect(field.errors).toEqual([{ message: 'Initial error' }])
+
+    field._update({
+      validators: [{ run: () => 'Updated error', triggers: [] }],
+    })
+
+    await form.handleSubmit()
+    expect(field.errors).toEqual([{ message: 'Updated error' }])
+
+    field._update({})
+
+    await form.handleSubmit()
+    expect(field.errors).toEqual([{ message: 'Updated error' }])
+
+    field._update({ validators: [] })
+
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining(
+        'length of the validator array should not change',
+      ),
+    )
+    await expect(form.handleSubmit()).resolves.toEqual([])
+    expect(field.errors).toEqual([])
+    expect(form.state.canSubmit).toBe(true)
+  })
+
+  it('uses updated listener callbacks and triggers, retains omitted listeners, and removes listeners with an empty array', ({
+    onTestFinished,
+  }) => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    onTestFinished(() => warn.mockRestore())
+    const initialListener = vi.fn()
+    const updatedListener = vi.fn()
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+    const field = form._getOrCreateFieldApi({
+      name: 'name',
+      listeners: [{ triggers: ['change'], run: initialListener }],
+    })
+
+    field.handleChange('initial')
+    expect(initialListener).toHaveBeenCalledWith(
+      expect.objectContaining({ value: 'initial' }),
+    )
+    initialListener.mockClear()
+
+    field._update({
+      listeners: [{ triggers: ['blur'], run: updatedListener }],
+    })
+    field.handleChange('updated')
+
+    expect(initialListener).not.toHaveBeenCalled()
+    expect(updatedListener).not.toHaveBeenCalled()
+
+    field.handleBlur()
+    expect(updatedListener).toHaveBeenCalledWith(
+      expect.objectContaining({ value: 'updated' }),
+    )
+    updatedListener.mockClear()
+
+    field._update({})
+    field.handleBlur()
+    expect(updatedListener).toHaveBeenCalledOnce()
+    updatedListener.mockClear()
+
+    field._update({ listeners: [] })
+    field.handleBlur()
+
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining('length of the listener array should not change'),
+    )
+    expect(updatedListener).not.toHaveBeenCalled()
+  })
+})
+
+describe('InternalFieldApi - atom', () => {
+  it('exposes the default value with untouched, valid state', () => {
+    const form = new InternalFormApi({ defaultValues: { name: 'Alice' } })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+
+    const state = field.atom.get()
+
+    expect(state).toMatchObject({
+      value: 'Alice',
+      meta: {
+        errors: [],
+        isTouched: false,
+        isDirty: false,
+        isValid: true,
+        isValidating: false,
+      },
+    })
+  })
+})
+
+describe('InternalFieldApi - reset', () => {
+  it('aborts active validation, ignores its late result, and allows validation to run again', async ({
+    onTestFinished,
+  }) => {
+    const request = Promise.withResolvers<string>()
+    onTestFinished(() => request.resolve('Late error'))
+    const onAbort = vi.fn()
+    const validator = vi.fn(() => request.promise)
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+    const field = form._getOrCreateFieldApi({
+      name: 'name',
+      validators: [
+        {
+          triggers: [],
+          run: ({ signal }: { signal: AbortSignal }) => {
+            signal.addEventListener('abort', onAbort, { once: true })
+            return validator()
+          },
+        },
+      ],
+    })
+    field._register()
+
+    const submission = form.handleSubmit()
+    await expect.poll(() => validator).toHaveBeenCalledOnce()
+    expect(field.meta.isValidating).toBe(true)
+
+    field.reset()
+
+    expect(onAbort).toHaveBeenCalledOnce()
+    await expect(submission).resolves.toEqual([])
+    request.resolve('Late error')
+    await request.promise
+
+    expect(field.errors).toEqual([])
+    expect(field.meta.isValidating).toBe(false)
+
+    validator.mockResolvedValue('Current error')
+    await form.handleSubmit()
+
+    expect(field.errors).toEqual([{ message: 'Current error' }])
+  })
+
+  it('cancels a pending listener callback and allows subsequent changes to notify it', async () => {
+    vi.useFakeTimers()
+    const listener = vi.fn()
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+    const field = form._getOrCreateFieldApi({
+      name: 'name',
+      listeners: [
+        { run: listener, triggers: ['change'], triggerDebounceMs: 100 },
+      ],
+    })
+
+    field.handleChange('initial')
+    await vi.advanceTimersByTimeAsync(100)
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({ value: 'initial' }),
+    )
+    listener.mockClear()
+
+    field.handleChange('pending')
+    field.reset()
+    await vi.advanceTimersByTimeAsync(100)
+
+    expect(listener).not.toHaveBeenCalled()
+    expect(field.value).toBe('')
+
+    field.handleChange('after reset')
+    await vi.advanceTimersByTimeAsync(100)
+
+    expect(listener).toHaveBeenCalledOnce()
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({ value: 'after reset' }),
+    )
+  })
+})
+
+describe('InternalFieldApi - _kill', () => {
+  it('does not run an unmounted field validator when a watched field is deleted and recreated', async () => {
+    vi.useFakeTimers()
+    const validator = vi.fn(() => null)
+    const form = new InternalFormApi({
+      defaultValues: { source: '', target: 'target' },
+    })
+    const source = form._getOrCreateFieldApi({ name: 'source' })
+    const target = form._getOrCreateFieldApi({
+      name: 'target',
+      validators: [
+        { triggers: ['change'], watchFields: ['source'], run: validator },
+      ],
+    })
+    source._register()
+    const unregisterTarget = target._register()
+
+    source.handleChange('first')
+    await vi.runOnlyPendingTimersAsync()
+    expect(validator).toHaveBeenCalledWith(
+      expect.objectContaining({ value: 'target', event: 'change' }),
+    )
+    validator.mockClear()
+
+    unregisterTarget()
+    await vi.runOnlyPendingTimersAsync()
+    form.deleteField('source')
+
+    form.setFieldValue('source', 'replacement')
+    await vi.runOnlyPendingTimersAsync()
+
+    expect(validator).not.toHaveBeenCalled()
+    expect(form.getFieldValue('target')).toBe('target')
+    expect(form.state.isValid).toBe(true)
+  })
+
+  it('keeps a registered watcher usable after deleting its source and detaches the old dependency', () => {
+    const listener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { source: '', target: 'target' },
+    })
+    const source = form._getOrCreateFieldApi({ name: 'source' })
+    const target = form._getOrCreateFieldApi({
+      name: 'target',
+      listeners: [
+        { triggers: ['change'], watchFields: ['source'], run: listener },
+      ],
+    })
+    source._register()
+    target._register()
+
+    source.handleChange('first')
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({ value: 'target' }),
+    )
+    listener.mockClear()
+
+    form.deleteField('source')
+    form.setFieldValue('source', 'replacement')
+
+    expect(listener).not.toHaveBeenCalled()
+
+    target.handleChange('direct edit')
+
+    expect(listener).toHaveBeenCalledOnce()
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({ value: 'direct edit' }),
+    )
+    expect(form.getFieldValue('target')).toBe('direct edit')
+  })
+
+  it('ignores array edits made through a deleted field', () => {
+    const form = new InternalFormApi({
+      defaultValues: { items: ['a', 'b'] },
+    })
+    const field = form._getOrCreateFieldApi({ name: 'items' })
+    field._register()
+    field.pushValue('active')
+
+    const beforeDelete = form.getFieldValue('items')
+    expect(beforeDelete).toEqual(['a', 'b', 'active'])
+
+    form.deleteField('items')
+
+    field.swapValues(0, 1)
+    expect(form.getFieldValue('items')).toEqual(beforeDelete)
+    field.moveValue(0, 1)
+    expect(form.getFieldValue('items')).toEqual(beforeDelete)
+    field.clearValues()
+    expect(form.getFieldValue('items')).toEqual(beforeDelete)
+    field.pushValue('ignored')
+    expect(form.getFieldValue('items')).toEqual(beforeDelete)
+    field.insertValue(1, 'ignored')
+    expect(form.getFieldValue('items')).toEqual(beforeDelete)
+    field.removeValue(0)
+    expect(form.getFieldValue('items')).toEqual(beforeDelete)
+    field.filterValues(() => false)
+    expect(form.getFieldValue('items')).toEqual(beforeDelete)
+  })
+
+  it('ignores blur events made through a deleted field', () => {
+    const onBlur = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      listeners: [{ triggers: ['blur'], run: onBlur }],
+    })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+    field._register()
+    field.handleBlur()
+    expect(onBlur).toHaveBeenCalledWith(
+      expect.objectContaining({ triggerFieldApi: field }),
+    )
+    onBlur.mockClear()
+
+    form.deleteField('name')
+    field.handleBlur()
+
+    expect(onBlur).not.toHaveBeenCalled()
+    expect(form.getFieldMeta('name')).toBeUndefined()
+  })
+
+  it('aborts active validation when deleted and ignores late results and subsequent interactions', async ({
+    onTestFinished,
+  }) => {
+    const request = Promise.withResolvers<string>()
+    onTestFinished(() => request.resolve('Late error'))
+    const onAbort = vi.fn()
+    const validator = vi.fn(() => request.promise)
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+    const field = form._getOrCreateFieldApi({
+      name: 'name',
+      validators: [
+        {
+          triggers: ['change'],
+          run: ({ signal }: { signal: AbortSignal }) => {
+            signal.addEventListener('abort', onAbort, { once: true })
+            return validator()
+          },
+        },
+      ],
+    })
+    field._register()
+
+    const submission = form.handleSubmit()
+    await expect.poll(() => validator).toHaveBeenCalledOnce()
+    expect(field.meta.isValidating).toBe(true)
+
+    form.deleteField('name')
+
+    expect(onAbort).toHaveBeenCalledOnce()
+    await expect(submission).resolves.toEqual([])
+    request.resolve('Late error')
+    await request.promise
+    validator.mockClear()
+
+    field.handleChange('ignored')
+    await expect(form.handleSubmit()).resolves.toEqual([])
+
+    expect(validator).not.toHaveBeenCalled()
+    expect(form.getFieldValue('name')).toBe('')
+    expect(form.state.isValid).toBe(true)
+    expect(form.state.isValidating).toBe(false)
+    expect(field.errors).toEqual([])
+  })
+
+  it('cancels pending listener callbacks when deleted and ignores subsequent changes', async () => {
+    vi.useFakeTimers()
+    const listener = vi.fn()
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+    const field = form._getOrCreateFieldApi({
+      name: 'name',
+      listeners: [
+        { run: listener, triggers: ['change'], triggerDebounceMs: 100 },
+      ],
+    })
+
+    field.handleChange('initial')
+    await vi.advanceTimersByTimeAsync(100)
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({ value: 'initial' }),
+    )
+    listener.mockClear()
+
+    field.handleChange('pending')
+    form.deleteField('name')
+    await vi.advanceTimersByTimeAsync(100)
+
+    expect(listener).not.toHaveBeenCalled()
+
+    field.handleChange('ignored')
+    await vi.advanceTimersByTimeAsync(100)
+
+    expect(listener).not.toHaveBeenCalled()
+    expect(form.getFieldValue('name')).toBe('pending')
+  })
+})
+
+describe('InternalFieldApi - _register', () => {
+  it('ignores registration and cleanup callbacks for a deleted field', () => {
+    const listener = vi.fn()
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+    const field = form._getOrCreateFieldApi({
+      name: 'name',
+      listeners: [{ triggers: ['mount', 'unmount'], run: listener }],
+    })
+    const unregister = field._register()
+    expect(listener).toHaveBeenCalledOnce()
+    listener.mockClear()
+
+    form.deleteField('name')
+    const unregisterAfterDeletion = field._register()
+    unregisterAfterDeletion()
+    unregister()
+
+    expect(listener).not.toHaveBeenCalled()
+    expect(form.getFieldMeta('name')).toBeUndefined()
+  })
+})
+
+describe('InternalFieldApi - _unregister', () => {
+  it('continues validating a field while another consumer remains registered', async () => {
+    vi.useFakeTimers()
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+    const field = form._getOrCreateFieldApi({
+      name: 'name',
+      validators: [{ triggers: [], run: () => 'Name is required' }],
+    })
+    const unregisterFirst = field._register()
+    const unregisterSecond = field._register()
+
+    unregisterFirst()
+    await vi.runOnlyPendingTimersAsync()
+
+    await form.handleSubmit()
+
+    expect(field.errors).toEqual([{ message: 'Name is required' }])
+    expect(form.state.canSubmit).toBe(false)
+
+    unregisterSecond()
+    await vi.runOnlyPendingTimersAsync()
+  })
+
+  it('preserves nested default values and field interactions after unmounting and remounting', async () => {
+    vi.useFakeTimers()
+    const form = new InternalFormApi({
+      defaultValues: { user: { name: 'Alice' } },
+    })
+    const parent = form._getOrCreateFieldApi({ name: 'user' })
+    const child = form._getOrCreateFieldApi({ name: 'user.name' })
+    const unregisterParent = parent._register()
+    const unregisterChild = child._register()
+    expect(parent.value).toEqual({ name: 'Alice' })
+    expect(child.value).toBe('Alice')
+
+    unregisterChild()
+    unregisterParent()
+    await vi.runOnlyPendingTimersAsync()
+
+    const remountedParent = form._getOrCreateFieldApi({ name: 'user' })
+    const remountedChild = form._getOrCreateFieldApi({ name: 'user.name' })
+    remountedParent._register()
+    remountedChild._register()
+
+    expect(remountedChild.value).toBe('Alice')
+    expect(remountedChild.meta).toMatchObject({
+      isTouched: false,
+      isDirty: false,
+      errors: [],
+    })
+
+    remountedChild.handleChange('Bob')
+
+    expect(form.state.values).toEqual({ user: { name: 'Bob' } })
+    expect(remountedParent.value).toEqual({ name: 'Bob' })
+    expect(remountedParent.meta.isTouched).toBe(true)
+  })
+
+  it('preserves edited values and interaction state after unmounting and remounting', async () => {
+    vi.useFakeTimers()
+    const form = new InternalFormApi({ defaultValues: { name: 'Alice' } })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+    const unregister = field._register()
+    field.handleChange('Bob')
+    field.handleBlur()
+    expect(field.meta).toMatchObject({
+      isTouched: true,
+      isDirty: true,
+      isBlurred: true,
+    })
+
+    unregister()
+    await vi.runOnlyPendingTimersAsync()
+
+    const remounted = form._getOrCreateFieldApi({ name: 'name' })
+    remounted._register()
+
+    expect(remounted.value).toBe('Bob')
+    expect(remounted.meta).toMatchObject({
+      isTouched: true,
+      isDirty: true,
+      isBlurred: true,
+    })
+    expect(form.state.isTouched).toBe(true)
+  })
+
+  it('keeps linked validation working after both field components unregister', async ({
+    annotate,
+  }) => {
+    await annotate(
+      'https://github.com/TanStack/form/issues/2296',
+      'GitHub RFC link. Its decision affects the outcome of this test.',
+    )
+    vi.useFakeTimers()
+    const validator = vi.fn(() => 'Target is invalid')
+    const form = new InternalFormApi({
+      defaultValues: { source: '', target: 'target' },
+    })
+    const source = form._getOrCreateFieldApi({ name: 'source' })
+    const target = form._getOrCreateFieldApi({
+      name: 'target',
+      validators: [
+        { triggers: ['change'], watchFields: ['source'], run: validator },
+      ],
+    })
+    const unregisterSource = source._register()
+    const unregisterTarget = target._register()
+
+    unregisterSource()
+    unregisterTarget()
+    await vi.runOnlyPendingTimersAsync()
+
+    form.setFieldValue('source', 'changed')
+    await vi.runOnlyPendingTimersAsync()
+
+    expect(validator).toHaveBeenCalledWith(
+      expect.objectContaining({ value: 'target', event: 'change' }),
+    )
+    expect(form.getFieldMeta('target')?.errors).toEqual([
+      { message: 'Target is invalid' },
+    ])
+    expect(form.state.isValid).toBe(false)
+  })
+})
+
 describe('InternalFieldApi - _clearEventErrors', () => {
   it('clears submit-only validator errors only for the field that changes', async () => {
     const form = new InternalFormApi({

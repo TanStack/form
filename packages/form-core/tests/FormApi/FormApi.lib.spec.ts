@@ -269,6 +269,39 @@ describe('InternalFormApi - _getOrCreateFieldApi', () => {
 })
 
 describe('InternalFormApi - reset', () => {
+  it('notifies parent and child reset listeners with their values before removing the fields', () => {
+    const parentListener = vi.fn()
+    const childListener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { user: { name: 'Alice' } },
+    })
+    const parent = form._getOrCreateFieldApi({
+      name: 'user',
+      listeners: [{ triggers: ['reset'], run: parentListener }],
+    })
+    const child = form._getOrCreateFieldApi({
+      name: 'user.name',
+      listeners: [{ triggers: ['reset'], run: childListener }],
+    })
+    parent._register()
+    child._register()
+    child.handleChange('Bob')
+
+    form.reset()
+
+    expect(parentListener).toHaveBeenCalledOnce()
+    expect(parentListener).toHaveBeenCalledWith(
+      expect.objectContaining({ value: { name: 'Bob' } }),
+    )
+    expect(childListener).toHaveBeenCalledOnce()
+    expect(childListener).toHaveBeenCalledWith(
+      expect.objectContaining({ value: 'Bob' }),
+    )
+    expect(form.state.values).toEqual({ user: { name: 'Alice' } })
+    expect(form.getFieldMeta('user')).toBeUndefined()
+    expect(form.getFieldMeta('user.name')).toBeUndefined()
+  })
+
   it('aborts active validation on reset and allows validation to run again', async ({
     onTestFinished,
   }) => {
@@ -494,6 +527,68 @@ describe('InternalFormApi - resetField', () => {
 })
 
 describe('InternalFormApi - deleteField', () => {
+  it('clears routed errors from a deleted subtree while preserving errors on other fields', async () => {
+    const form = new InternalFormApi({
+      defaultValues: { user: { name: '' }, email: '' },
+      validators: [
+        {
+          triggers: [],
+          run: ({ createErrorMap }) =>
+            createErrorMap({
+              fields: {
+                'user.name': 'Name is required',
+                email: 'Email is required',
+              },
+            }),
+        },
+      ],
+    })
+    const parent = form._getOrCreateFieldApi({ name: 'user' })
+    const name = form._getOrCreateFieldApi({ name: 'user.name' })
+    const email = form._getOrCreateFieldApi({ name: 'email' })
+    parent._register()
+    name._register()
+    email._register()
+
+    await form.handleSubmit()
+    expect(name.errors).toEqual([{ message: 'Name is required' }])
+    expect(email.errors).toEqual([{ message: 'Email is required' }])
+    expect(form.state.canSubmit).toBe(false)
+
+    form.deleteField('user')
+
+    expect(form.getFieldMeta('user.name')).toBeUndefined()
+    expect(email.errors).toEqual([{ message: 'Email is required' }])
+    expect(form.state.isValid).toBe(false)
+    expect(form.state.canSubmit).toBe(false)
+
+    form.deleteField('email')
+
+    expect(form.state.isValid).toBe(true)
+    expect(form.state.canSubmit).toBe(true)
+  })
+
+  it('clears errors returned by onSubmit when their field is deleted', async () => {
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      onSubmit: ({ createErrorMap }) =>
+        createErrorMap({ fields: { name: 'Name is required' } }),
+    })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+    field._register()
+
+    await form.handleSubmit()
+    expect(field.errors).toEqual([{ message: 'Name is required' }])
+    expect(form.state.isValid).toBe(false)
+    expect(form.state.canSubmit).toBe(false)
+
+    form.deleteField('name')
+
+    expect(form.getFieldMeta('name')).toBeUndefined()
+    expect(form.state.isValid).toBe(true)
+    expect(form.state.canSubmit).toBe(true)
+  })
+
   it('removes field metadata and prevents further updates through the deleted field', () => {
     const listener = vi.fn()
     const form = new InternalFormApi({ defaultValues: { name: '' } })
