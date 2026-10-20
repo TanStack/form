@@ -1,5 +1,3 @@
-/// <reference lib="es2024.promise" />
-
 import { describe, expect, it, vi } from 'vitest'
 import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
 import { formOptions } from '../../src/FormApi/formOptions.public'

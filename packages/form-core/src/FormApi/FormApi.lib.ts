@@ -84,14 +84,21 @@ import type {
   ValidationIssue,
 } from '../validation/state.public'
 import type { FormOptions } from './formOptions.public'
+import type {
+  FormOptionsOnSubmitFn,
+  FormOptionsOnSubmitInvalidFn,
+} from './formSubmit.public'
+import type { FormValidator } from '../validation/formValidators.public'
 import type { ServerFormState } from './formServerState.public'
 import type {
   ClientSideEvents,
   DynamicValidatorTriggers,
+  ValidatorTriggers,
 } from '../events.public'
 import type {
   AnyFormListener,
   FormListenerTriggers,
+  FormListeners,
 } from './formListeners.public'
 
 export interface FormMetaAtoms {
@@ -152,7 +159,19 @@ export type InternalFormValidatorInstance = InternalValidatorInstance<
   AnyInternalFieldApi
 >
 
-type FormOptionsOfType<TFormData> = FormOptions<TFormData, any, any, any, any>
+// Funky form options are cool and all, but just using `any` killed our type inference internally.
+// This is hacky, but it should do.
+type FormOptionsOfType<TFormData> = Omit<
+  FormOptions<TFormData, any, any, any, any>,
+  'validators' | 'listeners' | 'onSubmit' | 'onSubmitInvalid'
+> & {
+  validators?: ReadonlyArray<
+    FormValidator<NoInfer<TFormData>, ValidatorTriggers | boolean>
+  >
+  listeners?: FormListeners<NoInfer<TFormData>, any>
+  onSubmit?: FormOptionsOnSubmitFn<NoInfer<TFormData>, any, any>
+  onSubmitInvalid?: FormOptionsOnSubmitInvalidFn<NoInfer<TFormData>, any>
+}
 type InternalFormOptions<TFormData> = FormOptionsOfType<TFormData> & {
   formId: string
 }
@@ -409,7 +428,7 @@ export class InternalFormApi<TFormData> implements FormApi<
     this._notifyFormListener('reset', null)
   }
 
-  _update(options: FormOptions<TFormData, any, any, any, any>) {
+  _update(options: FormOptionsOfType<TFormData>) {
     const resolvedOptions = resolveDefaultOptions(
       options,
       this._defaultOptions?.form,
