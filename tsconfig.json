@@ -10,7 +10,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
-    "lib": ["DOM", "DOM.Iterable", "ES2022", "ES2024.Promise"],
+    "lib": ["DOM", "DOM.Iterable", "ES2022", "ESNext.Promise"],
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "noEmit": true,
