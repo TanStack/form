@@ -806,10 +806,10 @@ type ExtractFormError<TFormErrorTypes extends FormErrorTypes> =
     ? ValidationIssue
     : TFormErrorTypes['formError']
 
-type ExtractFormFieldError<TFormErrorTypes extends FormErrorTypes> =
-  unknown extends TFormErrorTypes['fieldError']
+type ExtractFormFieldError<TFormError extends ScopedErrorTypes> =
+  unknown extends TFormError['subfieldError']
     ? never
-    : TFormErrorTypes['fieldError']
+    : TFormError['subfieldError']
 
 /**
  * The form or group's error array, with string messages normalized to issue objects.
@@ -999,14 +999,14 @@ type FallbackToValidationIssue<TFieldError> = [TFieldError] extends [never]
  *
  * @typeParam TFieldValidators - Library-managed. Do not specify explicitly.
  * @typeParam TGroupFieldError - Library-managed. Do not specify explicitly.
- * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
+ * @typeParam TFormError - Library-managed. Do not specify explicitly.
  */
 export type ToFieldError<
   TFieldValidators extends FieldValidators<any, any, any>,
   TGroupFieldError,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
 > = FallbackToValidationIssue<
   | ExtractValidatorFieldError<TFieldValidators, FieldValidators<any, any, any>>
   | (unknown extends TGroupFieldError ? never : TGroupFieldError)
-  | ExtractFormFieldError<TFormErrorTypes>
+  | ExtractFormFieldError<TFormError>
 >

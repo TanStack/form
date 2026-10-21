@@ -6,7 +6,11 @@ import {
   createFieldWithContext,
   createFormGroupWithContext,
 } from './Components.lib'
-import type { DefaultOptions, FormOptions } from '@tanstack/form-core'
+import type {
+  AnyFormOptions,
+  DefaultOptions,
+  FormOptions,
+} from '@tanstack/form-core'
 import type { FunctionComponent } from 'react'
 import type { AppFormComponent } from './ReactAppFormApi.public'
 import type { ReactComponentTree } from './componentMap.public'
@@ -18,7 +22,7 @@ interface InternalReactAppFormApiInstance extends InternalReactFormApi {
 type InternalReactAppFormApiConstructor<
   TFormComponents extends ReactComponentTree,
 > = new (
-  options: FormOptions<any, any, any, unknown>,
+  options: AnyFormOptions,
   defaultOptions?: DefaultOptions,
 ) => InternalReactAppFormApiInstance & TFormComponents
 
@@ -41,10 +45,7 @@ export function createInternalReactAppFormApiClass<
       return InternalReactAppFieldApi
     }
 
-    constructor(
-      options: FormOptions<any, any, any, unknown>,
-      defaultOptions?: DefaultOptions,
-    ) {
+    constructor(options: AnyFormOptions, defaultOptions?: DefaultOptions) {
       super(options, defaultOptions)
 
       const field = createFieldWithContext(this, 'field')

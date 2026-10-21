@@ -245,11 +245,7 @@ export interface FieldApiOptions<
     TFieldData,
     TFieldName,
     TFieldValue,
-    ToFieldError<
-      NoInfer<TFieldValidators>,
-      TGroupFieldError,
-      ToFormErrorTypes<TFormError>
-    >,
+    NoInfer<ToFieldError<TFieldValidators, TGroupFieldError, TFormError>>,
     TFormData,
     TFormError
   >

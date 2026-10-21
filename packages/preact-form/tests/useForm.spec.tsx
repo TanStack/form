@@ -232,7 +232,7 @@ describe('useForm', () => {
     await expect.element(fieldA).toHaveValue('touched-a')
   })
 
-  it('does not render with pre-validation state for synchronous runOnMount validation', () => {
+  it('does not render with pre-validation state for synchronous mount validation', () => {
     const renderStates: Array<{
       errors: Array<string>
       isValid: boolean
@@ -244,8 +244,7 @@ describe('useForm', () => {
         defaultValues: { name: '' },
         validators: [
           {
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
             run: () => 'Name is required',
           },
         ],
@@ -327,7 +326,7 @@ describe('useForm', () => {
       .toHaveTextContent('true')
   })
 
-  it('does not crash when asynchronous runOnMount validation resolves after unmount', async () => {
+  it('does not crash when asynchronous mount validation resolves after unmount', async () => {
     let resolveValidation!: (value: string) => void
     const validator = vi.fn(
       () =>
@@ -341,8 +340,7 @@ describe('useForm', () => {
         defaultValues: { name: '' },
         validators: [
           {
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
             run: validator,
           },
         ],

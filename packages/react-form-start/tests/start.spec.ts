@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { parse } from 'devalue'
-import { formOptions, initialServerFormState } from '@tanstack/form-core'
+import { formOptions } from '@tanstack/form-core'
+import { initialServerFormState } from '@tanstack/form-core/internals'
 import { getFormData, start } from '../src'
 
 const startMocks = vi.hoisted(() => ({

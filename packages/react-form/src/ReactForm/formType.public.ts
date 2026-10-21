@@ -1,7 +1,7 @@
 import type {
   AnyFormOptions,
   FormOptions,
-  FormValidators,
+  GetFormErrorTypes,
   ToFormErrorTypes,
 } from '@tanstack/form-core'
 import type {
@@ -16,12 +16,10 @@ import type { ReactFormApi } from './formApiTypes.public'
 // early can break passing forms as props to child components.
 // This must remain `any` so that `form={form}` remains working. There are type tests for it, so feel
 // free to tinker.
-type ReactFormTypeErrorTypes<
-  TFormValidators extends FormValidators<any>,
-  TSubmitReturn,
-> = unknown extends TSubmitReturn
-  ? any
-  : ToFormErrorTypes<TFormValidators, TSubmitReturn>
+type ReactFormTypeErrorTypes<TValidators, TSubmitReturn> =
+  unknown extends TSubmitReturn
+    ? any
+    : GetFormErrorTypes<TValidators, TSubmitReturn>
 
 /**
  * Derives the React form API type represented by a reusable options object.
@@ -55,6 +53,7 @@ type ReactFormTypeErrorTypes<
 export type ReactFormType<TOptions extends AnyFormOptions> =
   TOptions extends FormOptions<
     infer TFormData,
+    any,
     infer TFormValidators,
     infer TSubmitReturn,
     infer TComponents

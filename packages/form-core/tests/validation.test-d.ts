@@ -82,7 +82,7 @@ type TestFieldErrors<
   ToFieldError<
     TFieldValidators,
     ToFormGroupErrorTypes<TGroupValidators>['subfieldError'],
-    ToFormErrorTypes<GetFormErrorTypes<TFormValidators, TSubmitReturn>>
+    GetFormErrorTypes<TFormValidators, TSubmitReturn>
   >
 >
 
@@ -1620,7 +1620,7 @@ describe('validator type transforms', () => {
       },
     ])
 
-    type Error = ToFieldError<typeof vs, never, FormErrorTypes<never, never>>
+    type Error = ToFieldError<typeof vs, never, ScopedErrorTypes<never, never>>
 
     expectTypeOf<Error>().toEqualTypeOf<{
       message: string
@@ -1630,7 +1630,7 @@ describe('validator type transforms', () => {
 
   it('should fall back only after resolving all field error sources', () => {
     expectTypeOf<
-      ToFieldError<[], never, FormErrorTypes<never, never>>
+      ToFieldError<[], never, ScopedErrorTypes<never, never>>
     >().toEqualTypeOf<ValidationIssue>()
 
     type FormFieldError = {
@@ -1639,7 +1639,7 @@ describe('validator type transforms', () => {
     }
 
     expectTypeOf<
-      ToFieldError<any, any, FormErrorTypes<never, FormFieldError>>
+      ToFieldError<any, any, ScopedErrorTypes<never, FormFieldError>>
     >().toEqualTypeOf<FormFieldError>()
   })
 

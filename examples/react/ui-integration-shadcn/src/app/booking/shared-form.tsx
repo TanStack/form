@@ -1,7 +1,7 @@
 import { createValidator } from '@tanstack/react-form'
 import { bookingFormSchema } from './schema'
-import type { ReactNode } from 'react'
 import type { ReactFormType } from '@tanstack/react-form'
+import type { ReactNode } from 'react'
 import { appFormOptions } from '@/components/form/app-form'
 import { FieldGroup } from '@/components/ui/field'
 
@@ -28,6 +28,7 @@ export function StepForm(props: StepFormProps) {
   )
 }
 
+// TODO bring back this config for forms?
 export const rewardEarlyPunishLate = createValidator({
   triggers: [
     'blur',
@@ -43,7 +44,19 @@ export const bookingFormOptions = appFormOptions.strictSchema(
   {
     errorVisibility: ({ state, fieldState }) =>
       fieldState.meta.isBlurred || state.submissionAttempts > 0,
-    validators: [rewardEarlyPunishLate(bookingFormSchema)],
+    validators: [
+      {
+        triggers: [
+          'blur',
+          {
+            trigger: 'change',
+            when: ({ fieldApi }) =>
+              fieldApi !== undefined && fieldApi.meta.isInvalid,
+          },
+        ],
+        run: bookingFormSchema,
+      },
+    ],
     defaultValues: {
       guestDetails: {
         name: '',
