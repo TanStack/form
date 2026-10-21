@@ -781,6 +781,93 @@ describe('InternalFieldApi - filterValues', () => {
   })
 })
 
+describe('InternalFieldApi - handleChange', () => {
+  it('sets the value through setFieldValue and marks the field and form touched and dirty', ({
+    onTestFinished,
+  }) => {
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+    const setFieldValue = vi.spyOn(form, 'setFieldValue')
+    onTestFinished(() => setFieldValue.mockRestore())
+
+    field.handleChange('Alice')
+
+    expect(setFieldValue).toHaveBeenCalledOnce()
+    expect(field.value).toBe('Alice')
+    expect(field.meta).toMatchObject({
+      isTouched: true,
+      isDirty: true,
+    })
+    expect(form.state).toMatchObject({
+      values: { name: 'Alice' },
+      isTouched: true,
+      isDirty: true,
+    })
+  })
+
+  it('updates the value through setFieldValue with an updater function', ({
+    onTestFinished,
+  }) => {
+    const form = new InternalFormApi({ defaultValues: { count: 1 } })
+    const field = form._getOrCreateFieldApi({ name: 'count' })
+    const setFieldValue = vi.spyOn(form, 'setFieldValue')
+    onTestFinished(() => setFieldValue.mockRestore())
+
+    field.handleChange((count: number) => count + 1)
+
+    expect(setFieldValue).toHaveBeenCalledOnce()
+    expect(field.value).toBe(2)
+  })
+
+  it('updates the value and touched state while keeping the field and form pristine when markAsDirty is false', ({
+    onTestFinished,
+  }) => {
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+    const setFieldValue = vi.spyOn(form, 'setFieldValue')
+    onTestFinished(() => setFieldValue.mockRestore())
+
+    field.handleChange('Alice', { markAsDirty: false })
+
+    expect(setFieldValue).toHaveBeenCalledOnce()
+    expect(field.value).toBe('Alice')
+    expect(field.meta).toMatchObject({
+      isTouched: true,
+      isDirty: false,
+      isPristine: true,
+    })
+    expect(form.state).toMatchObject({
+      values: { name: 'Alice' },
+      isTouched: true,
+      isDirty: false,
+      isPristine: true,
+    })
+  })
+
+  it('updates the value and dirty state while keeping the field and form untouched when markAsTouched is false', ({
+    onTestFinished,
+  }) => {
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+    const setFieldValue = vi.spyOn(form, 'setFieldValue')
+    onTestFinished(() => setFieldValue.mockRestore())
+
+    field.handleChange('Alice', { markAsTouched: false })
+
+    expect(setFieldValue).toHaveBeenCalledOnce()
+    expect(field.value).toBe('Alice')
+    expect(field.meta).toMatchObject({
+      isTouched: false,
+      isDirty: true,
+    })
+    expect(form.state).toMatchObject({
+      values: { name: 'Alice' },
+      isTouched: false,
+      isDirty: true,
+    })
+  })
+})
+
 describe('InternalFieldApi - _clearEventErrors', () => {
   it('clears submit-only validator errors only for the field that changes', async () => {
     const form = new InternalFormApi({
