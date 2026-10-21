@@ -171,6 +171,78 @@ describe('formOptions.strictSchema', () => {
     })
   })
 
+  it('preserves schema outputs and callback events when reusing mixed validators', () => {
+    const schema = z.object({
+      guest: z.object({ name: z.string(), age: z.coerce.number<string>() }),
+    })
+    type Input = z.input<typeof schema>
+    type Output = z.output<typeof schema>
+
+    const options = formOptions.strictSchema(schema, {
+      defaultValues: { guest: { name: '', age: '' } },
+      validators: [
+        {
+          triggers: [
+            'blur',
+            {
+              trigger: 'change',
+              when: ({ value, fieldApi }) => {
+                expectTypeOf(value).toEqualTypeOf<Input>()
+                return fieldApi !== undefined && fieldApi.meta.isInvalid
+              },
+            },
+          ],
+          run: schema,
+        },
+        {
+          triggers: ['server'],
+          skipOnSubmit: true,
+          run: ({ value, event, createOutput }) => {
+            expectTypeOf(value).toEqualTypeOf<Input>()
+            expectTypeOf(event).toEqualTypeOf<'server'>()
+            return createOutput(value.guest.name.length)
+          },
+        },
+      ],
+      onSubmit: ({ validatorOutputs }) => {
+        expectTypeOf(validatorOutputs).toEqualTypeOf<[Output, undefined]>()
+      },
+    })
+
+    formOptions({
+      ...options,
+      onSubmit: ({ value, validatorOutputs }) => {
+        expectTypeOf(value).toEqualTypeOf<Input>()
+        expectTypeOf(validatorOutputs[0]).toEqualTypeOf<Output>()
+      },
+    })
+  })
+
+  it('checks schema inputs and trigger settings for schema runners', () => {
+    const schema = z.object({ name: z.string() })
+
+    formOptions.strictSchema(schema, {
+      defaultValues: { name: '' },
+      validators: [
+        {
+          // @ts-expect-error The validator schema input must match the form.
+          run: z.object({ name: z.number() }),
+        },
+      ],
+    })
+
+    formOptions.strictSchema(schema, {
+      defaultValues: { name: '' },
+      validators: [
+        {
+          // @ts-expect-error Submit is controlled by skipOnSubmit.
+          triggers: ['submit'],
+          run: schema,
+        },
+      ],
+    })
+  })
+
   it('types listeners and error visibility from schema input without validators', () => {
     const schema = z.object({
       status: z.enum(['draft', 'published']),

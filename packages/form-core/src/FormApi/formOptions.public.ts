@@ -129,7 +129,11 @@ export interface FormOptions<
    * ```
    */
   validators?: TValidators &
-    FormOptionsValidators<NoInfer<TFormData>, TValidatorConfig>
+    FormOptionsValidators<
+      NoInfer<TFormData>,
+      TValidatorConfig,
+      NoInfer<TValidators>
+    >
   /**
    * Callbacks for change, blur, submit, mount, and reset events.
    *

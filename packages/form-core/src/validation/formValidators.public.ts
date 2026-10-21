@@ -430,6 +430,54 @@ type GetValidatorEvents<TValidatorConfig> =
 type SkipOnSubmitConfig<TFormData, TValidatorConfig> =
   (TValidatorConfig & boolean) | ValidatorPredicateFn<TFormData, TFormData>
 
+interface FormValidatorConfig<
+  TFormData,
+  TValidatorConfig,
+> extends BaseFormValidator<TFormData, TValidatorConfig> {
+  /**
+   * Whether to skip this validator during a client submission attempt,
+   * independently of its configured triggers.
+   *
+   * Pass `true` to skip it, or a synchronous callback that returns `true` to
+   * skip it for the current attempt. `false` or an omitted option allows
+   * submission validation. Configured triggers still use their own conditions.
+   *
+   * A skipped validator's entry in submission `validatorOutputs` is `undefined`.
+   *
+   * @example
+   * ```ts
+   * const isDraft = false
+   *
+   * formOptions({
+   *   defaultValues: { email: '' },
+   *   validators: [
+   *     {
+   *       skipOnSubmit: isDraft,
+   *       run: ({ value }) => {
+   *          if (!value.email.includes('@)) {
+   *            return 'Enter a valid email'
+   *          }
+   *       }
+   *     },
+   *   ],
+   * })
+   * ```
+   */
+  skipOnSubmit?: SkipOnSubmitConfig<TFormData, TValidatorConfig>
+}
+
+// Intersecting a schema with StandardSchemaV1 can rebind its polymorphic
+// `this` and recursively compare its methods. Keep compatible schemas intact.
+type FormOptionsValidatorRunner<
+  TFormData,
+  TEvents extends ValidatorEvents,
+  TValidator,
+> = TValidator extends {
+  run: infer TRun extends StandardSchemaV1<TFormData, any>
+}
+  ? { run: TRun }
+  : FormValidatorRunner<TFormData, TEvents>
+
 /**
  * Validates the complete form values with a function or Standard Schema.
  *
@@ -467,42 +515,11 @@ type SkipOnSubmitConfig<TFormData, TValidatorConfig> =
  */
 export interface FormValidator<TFormData, TValidatorConfig>
   extends
-    BaseFormValidator<TFormData, TValidatorConfig>,
+    FormValidatorConfig<TFormData, TValidatorConfig>,
     FormValidatorRunner<
       TFormData,
       NoInfer<GetValidatorEvents<TValidatorConfig>>
-    > {
-  /**
-   * Whether to skip this validator during a client submission attempt,
-   * independently of its configured triggers.
-   *
-   * Pass `true` to skip it, or a synchronous callback that returns `true` to
-   * skip it for the current attempt. `false` or an omitted option allows
-   * submission validation. Configured triggers still use their own conditions.
-   *
-   * A skipped validator's entry in submission `validatorOutputs` is `undefined`.
-   *
-   * @example
-   * ```ts
-   * const isDraft = false
-   *
-   * formOptions({
-   *   defaultValues: { email: '' },
-   *   validators: [
-   *     {
-   *       skipOnSubmit: isDraft,
-   *       run: ({ value }) => {
-   *          if (!value.email.includes('@)) {
-   *            return 'Enter a valid email'
-   *          }
-   *       }
-   *     },
-   *   ],
-   * })
-   * ```
-   */
-  skipOnSubmit?: SkipOnSubmitConfig<TFormData, TValidatorConfig>
-}
+    > {}
 
 /**
  * Matches each form validator to its own trigger and submission settings so
@@ -516,8 +533,23 @@ export interface FormValidator<TFormData, TValidatorConfig>
 export type FormOptionsValidators<
   TFormData,
   TValidatorConfig extends unknown[],
+  TValidators = unknown,
 > = {
   // Infer trigger names and the skip condition together before contextualizing run.
   // Extract keeps skip conditions and unknown (omitted options) out of events.
-  [K in keyof TValidatorConfig]: FormValidator<TFormData, TValidatorConfig[K]>
+  [K in keyof TValidatorConfig]: FormValidatorConfig<
+    TFormData,
+    TValidatorConfig[K]
+  > &
+    // Generic arrays need the broad runner for assignment in generic helpers.
+    (number extends TValidatorConfig['length']
+      ? FormValidatorRunner<
+          TFormData,
+          NoInfer<GetValidatorEvents<TValidatorConfig[K]>>
+        >
+      : FormOptionsValidatorRunner<
+          TFormData,
+          NoInfer<GetValidatorEvents<TValidatorConfig[K]>>,
+          K extends keyof TValidators ? TValidators[K] : unknown
+        >)
 }
