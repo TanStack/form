@@ -1,157 +1,93 @@
 import { describe, expectTypeOf, it } from 'vitest'
 import { z } from 'zod'
 import { validateServerValues } from '../src/internals'
-import { formOptions, serverValidateHelper } from '../src'
+import { formOptions } from '../src'
 import type {
   FieldValidators,
   FormApi,
   FormGroupValidators,
-  FormOptions,
-  FormValidators,
+  FormValidationResult,
   ParsedStandardSchemaIssues,
   ServerFormState,
-  ServerValidateFrameworkPlugin,
 } from '../src'
 
+type Values = { name: string }
+
 describe('server validation types', () => {
-  it('accepts server validators and preserves schema output inference', async () => {
+  it('preserves server schema values and output inference', async () => {
     const options = formOptions({
       defaultValues: { name: '' },
       validators: [
         {
           run: z
-            .object({
-              name: z.string(),
-            })
+            .object({ name: z.string() })
             .transform(({ name }) => ({ nameLength: name.length })),
           triggers: ['server'],
         },
       ],
     })
-
     const result = await validateServerValues(options, { name: 'Tony' })
+    if (!result.success) throw new Error('Expected success')
 
-    if (!result.success) {
-      throw new Error('Expected server validation to succeed')
-    }
-
-    expectTypeOf(result.values).toEqualTypeOf<{ name: string }>()
+    expectTypeOf(result.values).toEqualTypeOf<Values>()
     expectTypeOf(result.validatorOutputs).toEqualTypeOf<
-      readonly [{ nameLength: number }]
+      [{ nameLength: number }]
     >()
-
-    type Values = { name: string }
-    type Validators = NonNullable<typeof options.validators>
-
-    type ValidationResult = ServerFormState<
-      Values,
-      Validators
-    >['validationResults'][number]['result']
-
-    expectTypeOf<null | ParsedStandardSchemaIssues<Values>>().toExtend<ValidationResult>()
+    expectTypeOf<null | ParsedStandardSchemaIssues<Values>>().toExtend<
+      ServerFormState<Values>['validationResults'][number]['result']
+    >()
   })
 
-  it('preserves validator generics on failed server validation results', async () => {
+  it('preserves the form value shape in failed server results', async () => {
     const options = formOptions({
       defaultValues: { name: '' },
       validators: [
         {
-          run: () => ({
-            fields: {
-              name: 'Name is required',
-            },
-          }),
+          run: ({ createErrorMap }) =>
+            createErrorMap({ fields: { name: 'Name is required' } }),
           triggers: ['server'],
         },
       ],
     })
-
     const result = await validateServerValues(options, { name: '' })
+    if (result.success) throw new Error('Expected failure')
 
-    if (result.success) {
-      throw new Error('Expected server validation to fail')
-    }
-
-    type Values = { name: string }
-    type Validators = NonNullable<typeof options.validators>
-
-    expectTypeOf(result.serverState).toEqualTypeOf<
-      ServerFormState<Values, Validators>
-    >()
-    type Result =
+    expectTypeOf(result.serverState).toEqualTypeOf<ServerFormState<Values>>()
+    expectTypeOf<
       (typeof result.serverState.validationResults)[number]['result']
-
-    expectTypeOf<{
-      fields: {
-        name: 'Name is required'
-      }
-    }>().toExtend<Result>()
+    >().toEqualTypeOf<FormValidationResult<Values>>()
   })
 
-  it('bases server state compatibility on server result types', () => {
-    type Values = { name: string }
-    interface BaseIssue {
-      message: string
+  it('accepts server errors independently of client validator error shapes', () => {
+    const issue = { message: 'Invalid name', code: 400 }
+    const serverState: ServerFormState<Values> = {
+      values: { name: 'Tony' },
+      validationResults: [{ validatorIndex: 0, result: issue, output: null }],
+      submissionAttempts: 1,
     }
-    interface DetailedIssue extends BaseIssue {
-      code: number
-    }
-    interface IncompatibleIssue extends BaseIssue {
-      reason: string
-    }
-
-    const detailedOptions = formOptions({
-      defaultValues: { name: '' },
-      validators: [
-        {
-          run: (): DetailedIssue => ({ message: 'Invalid name', code: 400 }),
-          triggers: ['server'],
-        },
-      ],
-    })
-    const baseOptions = formOptions({
-      defaultValues: { name: '' },
-      validators: [
-        {
-          run: (): BaseIssue => ({ message: 'Invalid name' }),
-          triggers: ['server'],
-        },
-      ],
-    })
-    const incompatibleOptions = formOptions({
-      defaultValues: { name: '' },
-      validators: [
-        {
-          run: (): IncompatibleIssue => ({
-            message: 'Invalid name',
-            reason: 'missing',
-          }),
-          triggers: ['server'],
-        },
-      ],
-    })
-
-    type DetailedState = ServerFormState<
-      Values,
-      NonNullable<typeof detailedOptions.validators>
-    >
-    const detailedState = null as never as DetailedState
 
     formOptions({
-      ...baseOptions,
-      serverState: detailedState,
+      defaultValues: { name: '' },
+      serverState,
+      validators: [
+        {
+          run: () => ({ message: 'Different issue', reason: 'missing' }),
+          triggers: ['server'],
+        },
+      ],
     })
 
     formOptions({
-      ...incompatibleOptions,
-      // @ts-expect-error The serialized server error is incompatible.
-      serverState: detailedState,
+      defaultValues: { name: '' },
+      serverState: {
+        ...serverState,
+        // @ts-expect-error Server values must match the form's value shape.
+        values: { name: 123 },
+      },
     })
   })
 
-  it('ignores schema outputs and client-only errors for state compatibility', () => {
-    type Values = { name: string }
-
+  it('excludes schema outputs and client-only errors from server state types', () => {
     const lengthOptions = formOptions({
       defaultValues: { name: '' },
       validators: [
@@ -183,122 +119,81 @@ describe('server validation types', () => {
       ],
     })
 
-    type LengthState = ServerFormState<
-      Values,
-      NonNullable<typeof lengthOptions.validators>
-    >
-    type UppercaseState = ServerFormState<
-      Values,
-      NonNullable<typeof uppercaseOptions.validators>
-    >
-
-    expectTypeOf<LengthState>().toEqualTypeOf<UppercaseState>()
+    expectTypeOf(lengthOptions.serverState).toEqualTypeOf<
+      typeof uppercaseOptions.serverState
+    >()
   })
 
-  it('makes formApi optional for validators with server triggers', () => {
+  it('exposes the client form only after narrowing the validation event', () => {
     formOptions({
       defaultValues: { name: '' },
       validators: [
         {
-          run: (ctx) => {
-            expectTypeOf(ctx.event).toEqualTypeOf<
-              'change' | 'blur' | 'submit' | 'server'
-            >()
-            expectTypeOf(ctx.value).toEqualTypeOf<{ name: string }>()
-            expectTypeOf(ctx.formApi).toEqualTypeOf<
-              FormApi<{ name: string }, any> | undefined
-            >()
-            // @ts-expect-error formApi can be undefined for server-triggered validators.
-            void ctx.formApi.state.values
-            return undefined
-          },
-          triggers: ['server'],
-        },
-        {
-          run: ({ formApi }) => {
-            expectTypeOf(formApi).toEqualTypeOf<
-              FormApi<{ name: string }, any> | undefined
-            >()
-            return undefined
-          },
           triggers: ['server', 'change'],
-        },
-        {
-          run: ({ formApi }) => {
-            expectTypeOf(formApi).toEqualTypeOf<
-              FormApi<{ name: string }, any> | undefined
+          run: (context) => {
+            expectTypeOf(context.event).toEqualTypeOf<
+              'server' | 'change' | 'submit'
             >()
-            return undefined
+            expectTypeOf(context.value).toEqualTypeOf<Values>()
+            if (context.event === 'server') {
+              // @ts-expect-error Server validators do not receive a client form.
+              void context.formApi
+            } else {
+              expectTypeOf(context.formApi).toEqualTypeOf<
+                FormApi<Values, any>
+              >()
+              expectTypeOf(context.signal).toEqualTypeOf<AbortSignal>()
+            }
           },
-          triggers: [],
         },
         {
+          triggers: [],
+          skipOnSubmit: ({ formApi }) => {
+            expectTypeOf(formApi.state.values).toEqualTypeOf<Values>()
+            return false
+          },
+          triggerDebounceMs: 100,
           run: ({ formApi }) => {
-            expectTypeOf(formApi).toEqualTypeOf<
-              FormApi<{ name: string }, any> | undefined
-            >()
-            return undefined
+            expectTypeOf(formApi).toEqualTypeOf<FormApi<Values, any>>()
           },
-          runOnSubmit: ({ formApi }) => {
-            expectTypeOf(formApi.state.values).toEqualTypeOf<{
-              name: string
-            }>()
-            return true
-          },
-          triggerDebounceMs: ({ formApi }) => {
-            expectTypeOf(formApi.state.values).toEqualTypeOf<{
-              name: string
-            }>()
-            return 0
-          },
-          triggers: [],
-        },
-        {
-          run: () => {
-            return undefined
-          },
-          triggers: [],
         },
       ],
     })
   })
 
-  it('rejects server trigger configs and non-form server validators', () => {
+  it('accepts boolean conditions on server triggers and rejects callbacks', () => {
     formOptions({
       defaultValues: { name: '' },
       validators: [
+        { run: () => undefined, triggers: [{ trigger: 'server', when: true }] },
         {
           run: () => undefined,
-          triggers: [
-            {
-              // @ts-expect-error Server triggers cannot be configured.
-              trigger: 'server',
-            },
-          ],
+          triggers: [{ trigger: 'server', when: false }],
         },
         {
           run: () => undefined,
-          triggers: [],
-          // @ts-expect-error Server validation is configured with triggers.
-          runOnServer: true,
+          // @ts-expect-error Server trigger conditions must be booleans.
+          triggers: [{ trigger: 'server', when: () => true }],
         },
       ],
     })
+  })
 
-    const fieldValidators: FieldValidators<{ name: string }, 'name', string> = [
+  it('rejects server triggers on field and group validators', () => {
+    const fieldValidators: FieldValidators<Values, 'name', string> = [
       {
         run: () => undefined,
         triggers: [
-          // @ts-expect-error Field validators cannot use server triggers.
+          // @ts-expect-error Server triggers belong to form validators.
           'server',
         ],
       },
     ]
-    const groupValidators: FormGroupValidators<{ name: string }> = [
+    const groupValidators: FormGroupValidators<Values> = [
       {
         run: () => undefined,
         triggers: [
-          // @ts-expect-error Form group validators cannot use server triggers.
+          // @ts-expect-error Server triggers belong to form validators.
           'server',
         ],
       },
@@ -306,95 +201,5 @@ describe('server validation types', () => {
 
     void fieldValidators
     void groupValidators
-  })
-
-  it('preserves plugin-customized validator return signatures', () => {
-    const plugin = {
-      id: 'react-form-test',
-      createServerValidate: <
-        TFormData,
-        const TFormValidators extends FormValidators<TFormData>,
-        TSubmitReturn,
-      >(
-        _options: FormOptions<
-          TFormData,
-          TFormValidators,
-          TSubmitReturn,
-          unknown
-        >,
-      ) => {
-        return (values: TFormData) => Promise.resolve(values)
-      },
-    } satisfies ServerValidateFrameworkPlugin
-
-    const { createServerValidate } = serverValidateHelper({ framework: plugin })
-    const validate = createServerValidate(
-      formOptions({
-        defaultValues: { name: '' },
-        validators: [
-          {
-            run: () => undefined,
-            triggers: ['server'],
-          },
-        ],
-      }),
-    )
-
-    expectTypeOf(validate).parameter(0).toEqualTypeOf<{ name: string }>()
-  })
-
-  it('preserves plugin-customized validator options and form-bound helpers', () => {
-    const plugin = {
-      id: 'react-form-test',
-      createServerValidate: <
-        TFormData,
-        const TFormValidators extends FormValidators<TFormData>,
-        TSubmitReturn,
-      >(
-        _options: FormOptions<
-          TFormData,
-          TFormValidators,
-          TSubmitReturn,
-          unknown
-        >,
-        _pluginOptions?: { field: keyof TFormData },
-      ) => {
-        return Object.assign((values: TFormData) => Promise.resolve(values), {
-          getState: () =>
-            Promise.resolve(
-              null as never as ServerFormState<TFormData, TFormValidators>,
-            ),
-        })
-      },
-    } satisfies ServerValidateFrameworkPlugin
-
-    const options = formOptions({
-      defaultValues: { name: '', age: 0 },
-      validators: [
-        {
-          run: () => undefined,
-          triggers: ['server'],
-        },
-      ],
-    })
-
-    const { createServerValidate } = serverValidateHelper({ framework: plugin })
-    const validate = createServerValidate(options, { field: 'age' })
-
-    // @ts-expect-error Plugin options are typed against the form values.
-    createServerValidate(options, { field: 'missing' })
-
-    expectTypeOf(validate).parameter(0).toEqualTypeOf<{
-      name: string
-      age: number
-    }>()
-    expectTypeOf(validate.getState()).toEqualTypeOf<
-      Promise<
-        ServerFormState<
-          { name: string; age: number },
-          NonNullable<typeof options.validators>
-        >
-      >
-    >()
   })
 })

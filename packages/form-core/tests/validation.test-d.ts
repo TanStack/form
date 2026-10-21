@@ -9,7 +9,6 @@ import {
 } from '../src'
 import type {
   AnyFieldApi,
-  CreateSubmitErrorMapFn,
   ErrorVisibilityFieldState,
   FieldApiOptions,
   FieldErrors,
@@ -19,17 +18,20 @@ import type {
   FormErrors,
   FormGroupValidators,
   FormOptions,
+  FormOptionsValidators,
   FormState,
   FormSubmitInvalidContext,
-  FormValidators,
+  GetFormErrorTypes,
+  GetValidatorOutputs,
   OnSubmitError,
+  ParseSubmitIssuesFn,
   ReusableErrorVisibilityState,
+  ScopedErrorTypes,
   StandardSchemaV1Issue,
   ToFieldError,
   ToFormErrorTypes,
   ToFormGroupErrorTypes,
   ToFormGroupOutputs,
-  ToFormOutputs,
   ValidationIssue,
 } from '../src'
 
@@ -41,9 +43,12 @@ type TestFormData = {
 // Hopefully this identity function approach isn't too much of a headache in the future.
 
 function defineFormValidators<
-  const TValidators extends FormValidators<TestFormData>,
->(validators: TValidators): TValidators {
-  return validators
+  const TConfig extends unknown[],
+  const TValidators extends ReadonlyArray<unknown>,
+>(
+  validators: TValidators & FormOptionsValidators<TestFormData, TConfig>,
+): TValidators {
+  return formOptions({ defaultValues: { name: '' }, validators }).validators!
 }
 
 function defineFieldValidators<
@@ -62,20 +67,22 @@ const emptyFormValidators = defineFormValidators([])
 const emptyFieldValidators = defineFieldValidators([])
 
 type TestFormErrors<
-  TFormValidators extends FormValidators<any>,
+  TFormValidators extends ReadonlyArray<unknown>,
   TSubmitReturn,
-> = FormErrors<ToFormErrorTypes<TFormValidators, TSubmitReturn>>
+> = FormErrors<
+  ToFormErrorTypes<GetFormErrorTypes<TFormValidators, TSubmitReturn>>
+>
 
 type TestFieldErrors<
   TFieldValidators extends FieldValidators<any, any, any>,
   TGroupValidators extends FormGroupValidators<any>,
-  TFormValidators extends FormValidators<any>,
+  TFormValidators extends ReadonlyArray<unknown>,
   TSubmitReturn,
 > = FieldErrors<
   ToFieldError<
     TFieldValidators,
-    ToFormGroupErrorTypes<TGroupValidators>['fieldError'],
-    ToFormErrorTypes<TFormValidators, TSubmitReturn>
+    ToFormGroupErrorTypes<TGroupValidators>['subfieldError'],
+    ToFormErrorTypes<GetFormErrorTypes<TFormValidators, TSubmitReturn>>
   >
 >
 
@@ -117,9 +124,7 @@ describe('formOptions', () => {
       validators: [{ run: schema, triggers: ['change'] }],
       onSubmit: ({ value, validatorOutputs }) => {
         expectTypeOf(value).toEqualTypeOf<{ age: string }>()
-        expectTypeOf(validatorOutputs).toEqualTypeOf<
-          readonly [{ age: number }]
-        >()
+        expectTypeOf(validatorOutputs).toEqualTypeOf<[{ age: number }]>()
       },
     })
 
@@ -161,7 +166,7 @@ describe('formOptions', () => {
       onSubmit: ({ value, validatorOutputs }) => {
         expectTypeOf(value).toEqualTypeOf<StrictValue>()
         expectTypeOf(validatorOutputs).toEqualTypeOf<
-          readonly [undefined, { name: string; age: number }, undefined]
+          [undefined, { name: string; age: number }, undefined]
         >()
       },
     })
@@ -184,7 +189,7 @@ describe('formOptions', () => {
         },
       ],
       onSubmit: ({ validatorOutputs }) => {
-        expectTypeOf(validatorOutputs).toEqualTypeOf<readonly [undefined]>()
+        expectTypeOf(validatorOutputs).toEqualTypeOf<[undefined]>()
       },
     })
 
@@ -375,6 +380,7 @@ describe('ErrorVisibility', () => {
   it('types callback scoped and pre-visibility field state', () => {
     const options: FormOptions<
       TestFormData,
+      [],
       typeof emptyFormValidators,
       never,
       unknown
@@ -382,10 +388,7 @@ describe('ErrorVisibility', () => {
       defaultValues: { name: '' },
       errorVisibility: ({ state, fieldState }) => {
         expectTypeOf(state).toEqualTypeOf<
-          FormState<
-            TestFormData,
-            ToFormErrorTypes<typeof emptyFormValidators, unknown>
-          >
+          FormState<TestFormData, ScopedErrorTypes>
         >()
         expectTypeOf(fieldState).toEqualTypeOf<ErrorVisibilityFieldState>()
         expectTypeOf(fieldState.value).toEqualTypeOf<any>()
@@ -405,7 +408,7 @@ describe('ErrorVisibility', () => {
       typeof emptyFieldValidators,
       [],
       TestFormData,
-      ToFormErrorTypes<typeof emptyFormValidators, unknown>
+      GetFormErrorTypes<typeof emptyFormValidators, unknown>
     > = {
       name: 'name',
       errorVisibility: ({ fieldState }) => fieldState.value === '',
@@ -471,6 +474,7 @@ describe('ErrorVisibility', () => {
   it('rejects removed string presets', () => {
     const formOpts: FormOptions<
       TestFormData,
+      [],
       typeof emptyFormValidators,
       never,
       unknown
@@ -486,7 +490,7 @@ describe('ErrorVisibility', () => {
       typeof emptyFieldValidators,
       [],
       TestFormData,
-      ToFormErrorTypes<typeof emptyFormValidators, unknown>
+      GetFormErrorTypes<typeof emptyFormValidators, unknown>
     > = {
       name: 'name',
       // @ts-expect-error String visibility presets were replaced by callbacks.
@@ -570,8 +574,7 @@ describe('ValidationTriggerOption', () => {
           {
             trigger: 'change',
             when: (context) => {
-              expectTypeOf(context.scope).toEqualTypeOf<'form'>()
-              expectTypeOf(context.groupApi).toEqualTypeOf<undefined>()
+              expectTypeOf(context.value).toEqualTypeOf<TestFormData>()
               expectTypeOf(context.fieldApi).toEqualTypeOf<
                 AnyFieldApi | undefined
               >()
@@ -638,47 +641,45 @@ describe('ValidationTriggerOption', () => {
     })
   })
 
-  it('allows string server triggers on form validators only', () => {
-    defineFormValidators([
-      {
-        run: ({ formApi }) => {
-          expectTypeOf(formApi).toEqualTypeOf<
-            FormApi<TestFormData, any> | undefined
-          >()
-          // @ts-expect-error formApi can be undefined for server-triggered validators.
-          void formApi.state.values
-          return undefined
-        },
-        triggers: ['server'],
-      },
-      {
-        run: ({ formApi }) => {
-          expectTypeOf(formApi).toEqualTypeOf<
-            FormApi<TestFormData, any> | undefined
-          >()
-          return undefined
-        },
-        triggers: ['server', 'change'],
-      },
-      {
-        run: ({ formApi }) => {
-          expectTypeOf(formApi).toEqualTypeOf<
-            FormApi<TestFormData, any> | undefined
-          >()
-          return undefined
-        },
-        triggers: ['change'],
-      },
-      {
-        run: () => undefined,
-        triggers: [
-          {
-            // @ts-expect-error Server triggers cannot be configured.
-            trigger: 'server',
+  it('allows static server triggers on form validators only', () => {
+    formOptions({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          run: (context) => {
+            if (context.event === 'server') {
+              // @ts-expect-error Server validation does not expose a client form instance.
+              void context.formApi
+            } else {
+              expectTypeOf(context.formApi).toEqualTypeOf<
+                FormApi<TestFormData, any>
+              >()
+            }
+            return undefined
           },
-        ],
-      },
-    ])
+          triggers: ['server'],
+        },
+        {
+          run: (context) => {
+            if (context.event !== 'server') {
+              expectTypeOf(context.formApi).toEqualTypeOf<
+                FormApi<TestFormData, any>
+              >()
+            }
+            return undefined
+          },
+          triggers: ['server', 'change'],
+        },
+        {
+          run: ({ formApi }) => {
+            expectTypeOf(formApi).toEqualTypeOf<FormApi<TestFormData, any>>()
+            return undefined
+          },
+          triggers: ['change'],
+        },
+        { run: () => undefined, triggers: [{ trigger: 'server', when: true }] },
+      ],
+    })
 
     defineFieldValidators([
       {
@@ -736,7 +737,7 @@ describe('ValidationTriggerOption', () => {
 describe('FormErrors', () => {
   it('exposes only value and formApi in the invalid submit context', () => {
     expectTypeOf<
-      keyof FormSubmitInvalidContext<TestFormData, FormErrorTypes>
+      keyof FormSubmitInvalidContext<TestFormData, ScopedErrorTypes>
     >().toEqualTypeOf<'value' | 'formApi'>()
 
     const form = new InternalFormApi({
@@ -755,11 +756,9 @@ describe('FormErrors', () => {
     void form
   })
 
-  it('should fall back omitted submit errors to ValidationIssue submit meta', () => {
-    expectTypeOf<ToFormErrorTypes<[], unknown>>().not.toBeAny()
-    expectTypeOf<TestFormErrors<[], unknown>>().toEqualTypeOf<
-      Array<ValidationIssue>
-    >()
+  it('does not infer submit errors from an unknown return', () => {
+    expectTypeOf<GetFormErrorTypes<[], unknown>>().not.toBeAny()
+    expectTypeOf<TestFormErrors<[], unknown>>().toEqualTypeOf<Array<never>>()
   })
 
   it('should allow inference for a form', () => {
@@ -767,19 +766,18 @@ describe('FormErrors', () => {
       triggers: [
         {
           trigger: 'change',
-          when: ({ formApi }) => formApi.state.submissionAttempts > 0,
+          when: ({ formApi }: { formApi: FormApi<any, any> }) =>
+            formApi.state.submissionAttempts > 0,
         },
       ],
-      runOnSubmit: true,
+      skipOnSubmit: false,
     })
 
-    const form = new InternalFormApi({
+    const form = formOptions({
       defaultValues: { name: '' },
       validators: [withRequiredValue(z.object({ name: z.string() }))],
       onSubmit: ({ validatorOutputs }) => {
-        expectTypeOf(validatorOutputs).toEqualTypeOf<
-          readonly [{ name: string }]
-        >()
+        expectTypeOf(validatorOutputs).toEqualTypeOf<[{ name: string }]>()
       },
     })
 
@@ -792,19 +790,21 @@ describe('FormErrors', () => {
         triggers: [
           {
             trigger: 'change',
-            when: ({ formApi }) => formApi.state.submissionAttempts > 0,
+            when: ({ formApi }: { formApi: FormApi<any, any> }) =>
+              formApi.state.submissionAttempts > 0,
           },
         ],
-        runOnSubmit: true,
+        skipOnSubmit: false,
       },
       {
         triggers: [
           {
             trigger: 'change',
-            when: ({ formApi }) => formApi.state.submissionAttempts > 0,
+            when: ({ formApi }: { formApi: FormApi<any, any> }) =>
+              formApi.state.submissionAttempts > 0,
           },
         ],
-        runOnSubmit: true,
+        skipOnSubmit: false,
         bailIfInvalid: true,
       },
     ])
@@ -836,12 +836,12 @@ describe('FormErrors', () => {
     expectTypeOf(validators.length).toEqualTypeOf<2>()
     expectTypeOf(validators[1].bailIfInvalid).toEqualTypeOf<true>()
 
-    const form = new InternalFormApi({
+    const form = formOptions({
       defaultValues: { name: '' },
-      validators,
+      validators: [...validators],
       onSubmit: ({ validatorOutputs }) => {
         expectTypeOf(validatorOutputs).toEqualTypeOf<
-          readonly [{ name: string }, undefined]
+          [{ name: string }, undefined]
         >()
       },
     })
@@ -949,7 +949,7 @@ describe('FormErrors', () => {
   it('should infer form errors from parsed Standard Schema issues', () => {
     const validators = defineFormValidators([
       {
-        run: ({ createErrorMap }) => createErrorMap([{ message: '' }]),
+        run: ({ parseIssues }) => parseIssues([{ message: '' }]),
         triggers: [],
       },
     ])
@@ -1069,7 +1069,7 @@ describe('FormErrors', () => {
   })
 
   it('should infer submit errors from parsed Standard Schema issues', () => {
-    type SubmitReturn = ReturnType<CreateSubmitErrorMapFn<TestFormData>>
+    type SubmitReturn = ReturnType<ParseSubmitIssuesFn<TestFormData>>
 
     expectTypeOf<TestFormErrors<[], SubmitReturn>>().toEqualTypeOf<
       Array<StandardSchemaV1Issue>
@@ -1077,8 +1077,8 @@ describe('FormErrors', () => {
 
     new InternalFormApi({
       defaultValues: { name: '' },
-      onSubmit: ({ createErrorMap }) => {
-        return createErrorMap([{ message: '' }])
+      onSubmit: ({ parseIssues }) => {
+        return parseIssues([{ message: '' }])
       },
     })
   })
@@ -1108,7 +1108,9 @@ describe('FormErrors', () => {
   })
 
   it('should ignore broad validators and preserve the submit fallback', () => {
-    expectTypeOf<TestFormErrors<any, never>>().toEqualTypeOf<Array<never>>()
+    expectTypeOf<TestFormErrors<any, never>>().toEqualTypeOf<
+      Array<ValidationIssue>
+    >()
 
     expectTypeOf<TestFormErrors<any, any>>().toEqualTypeOf<
       Array<ValidationIssue>
@@ -1292,8 +1294,8 @@ describe('FieldErrors', () => {
 
     const formValidators = defineFormValidators([
       {
-        run: ({ createErrorMap }) =>
-          createErrorMap([{ message: '', path: ['name'] }]),
+        run: ({ parseIssues }) =>
+          parseIssues([{ message: '', path: ['name'] }]),
         triggers: [],
       },
     ])
@@ -1322,8 +1324,8 @@ describe('FieldErrors', () => {
   it('should infer field errors from group parsed Standard Schema issues', () => {
     const groupValidators = defineGroupValidators([
       {
-        run: ({ createErrorMap }) =>
-          createErrorMap([{ message: '', path: ['name'] }]),
+        run: ({ parseIssues }) =>
+          parseIssues([{ message: '', path: ['name'] }]),
         triggers: [],
       },
     ])
@@ -1487,16 +1489,16 @@ describe('validator type transforms', () => {
       },
     ])
 
-    type Outputs = ToFormOutputs<typeof vs>
-    type Errors = ToFormErrorTypes<typeof vs, never>
+    type Outputs = GetValidatorOutputs<typeof vs>
+    type Errors = GetFormErrorTypes<typeof vs, never>
 
-    expectTypeOf<Outputs>().toEqualTypeOf<readonly [{ name: string }]>()
+    expectTypeOf<Outputs>().toEqualTypeOf<[{ name: string }]>()
     expectTypeOf<Errors>().toEqualTypeOf<
-      FormErrorTypes<StandardSchemaV1Issue, StandardSchemaV1Issue>
+      ScopedErrorTypes<StandardSchemaV1Issue, StandardSchemaV1Issue>
     >()
   })
 
-  it('it should transform based on runOnSubmit', () => {
+  it('it should transform based on skipOnSubmit', () => {
     const vs = defineFormValidators([
       {
         run: z.object({ name: z.string() }),
@@ -1505,12 +1507,12 @@ describe('validator type transforms', () => {
       {
         run: z.object({ name: z.string() }),
         triggers: [],
-        runOnSubmit: false,
+        skipOnSubmit: true,
       },
       {
         run: z.object({ name: z.string() }),
         triggers: [],
-        runOnSubmit: true,
+        skipOnSubmit: false,
       },
       {
         run: z.object({ name: z.string() }),
@@ -1519,7 +1521,7 @@ describe('validator type transforms', () => {
       {
         run: z.object({ name: z.string() }),
         triggers: ['server'],
-        runOnSubmit: true,
+        skipOnSubmit: false,
       },
       {
         run: z.object({ name: z.string() }),
@@ -1527,15 +1529,15 @@ describe('validator type transforms', () => {
       },
     ])
 
-    type Outputs = ToFormOutputs<typeof vs>
+    type Outputs = GetValidatorOutputs<typeof vs>
 
     expectTypeOf<Outputs>().toEqualTypeOf<
-      readonly [
-        // Assume runOnSubmit is true if omitted.
+      [
+        // Assume skipOnSubmit is false if omitted.
         { name: string },
-        // It was explicitly set false.
+        // It was explicitly set true.
         undefined,
-        // Explicit true, server-only, and mixed triggers all run on client submit.
+        // Explicit false, server-only, and mixed triggers all run on client submit.
         { name: string },
         { name: string },
         { name: string },
@@ -1544,8 +1546,8 @@ describe('validator type transforms', () => {
     >()
   })
 
-  it('makes schema outputs optional when runOnSubmit is dynamic', () => {
-    const dynamicRunOnSubmit = true as boolean
+  it('makes schema outputs optional when skipOnSubmit is dynamic', () => {
+    const dynamicSkipOnSubmit = false as boolean
     const vs = defineFormValidators([
       {
         run: z.object({ name: z.string() }),
@@ -1554,48 +1556,48 @@ describe('validator type transforms', () => {
       {
         run: z.object({ name: z.string() }),
         triggers: [],
-        runOnSubmit: true,
+        skipOnSubmit: false,
       },
       {
         run: z.object({ name: z.string() }),
         triggers: [],
-        runOnSubmit: false,
+        skipOnSubmit: true,
       },
       {
         run: z.object({ name: z.string() }),
         triggers: [],
-        runOnSubmit: dynamicRunOnSubmit,
+        skipOnSubmit: dynamicSkipOnSubmit,
       },
       {
         run: z.object({ name: z.string() }),
         triggers: [],
-        runOnSubmit: () => true,
+        skipOnSubmit: () => false,
       },
       {
         run: z.object({ name: z.string() }),
         triggers: [],
-        runOnSubmit: () => false,
+        skipOnSubmit: () => true,
       },
       {
         run: z.object({ name: z.string() }),
         triggers: [],
-        runOnSubmit: () => dynamicRunOnSubmit,
+        skipOnSubmit: () => dynamicSkipOnSubmit,
       },
       {
         run: z.object({ name: z.string() }),
         triggers: [],
-        runOnSubmit: undefined,
+        skipOnSubmit: undefined,
       },
     ])
 
     type Output = { name: string }
-    type Outputs = ToFormOutputs<typeof vs>
-    type Expected = readonly [
-      // An omitted runOnSubmit defaults to true, so the output is guaranteed.
+    type Outputs = GetValidatorOutputs<typeof vs>
+    type Expected = [
+      // An omitted skipOnSubmit defaults to false, so the output is guaranteed.
       Output,
-      // A literal true always runs the validator during submit.
+      // A literal false always runs the validator during submit.
       Output,
-      // A literal false always skips the validator during submit.
+      // A literal true always skips the validator during submit.
       undefined,
       // A broad boolean may skip the validator at runtime.
       Output | undefined,
@@ -1603,7 +1605,7 @@ describe('validator type transforms', () => {
       Output | undefined,
       Output | undefined,
       Output | undefined,
-      // An explicit undefined receives the same true default as an omitted property.
+      // An explicit undefined receives the same false default as an omitted property.
       Output,
     ]
 
@@ -1659,7 +1661,7 @@ describe('validator type transforms', () => {
       },
       {
         run: schema,
-        runOnSubmit: false,
+        skipOnSubmit: true,
         triggers: [],
       },
     ])
@@ -1668,7 +1670,7 @@ describe('validator type transforms', () => {
     type Outputs = ToFormGroupOutputs<typeof vs>
 
     expectTypeOf<ErrorTypes>().toEqualTypeOf<
-      FormErrorTypes<
+      ScopedErrorTypes<
         StandardSchemaV1Issue | { message: string; fromGroup: true },
         StandardSchemaV1Issue | { message: string; fromGroupField: true }
       >
@@ -1680,15 +1682,15 @@ describe('validator type transforms', () => {
   })
 
   it('should normalize broad and empty validator transforms', () => {
-    expectTypeOf<ToFormErrorTypes<any, never>>().toEqualTypeOf<
-      FormErrorTypes<never, never>
+    expectTypeOf<GetFormErrorTypes<any, never>>().toEqualTypeOf<
+      ScopedErrorTypes<ValidationIssue, ValidationIssue>
     >()
     expectTypeOf<ToFormGroupErrorTypes<any>>().toEqualTypeOf<
-      FormErrorTypes<never, never>
+      ScopedErrorTypes<never, never>
     >()
     expectTypeOf<ToFormGroupOutputs<any>>().toEqualTypeOf<Array<unknown>>()
     expectTypeOf<ToFormGroupErrorTypes<[]>>().toEqualTypeOf<
-      FormErrorTypes<never, never>
+      ScopedErrorTypes<never, never>
     >()
     expectTypeOf<ToFormGroupOutputs<[]>>().toEqualTypeOf<[]>()
   })

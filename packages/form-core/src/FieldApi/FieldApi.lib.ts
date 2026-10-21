@@ -1146,7 +1146,7 @@ export class InternalFieldApi<
 
   /**
    * @private
-   * Runs validators marked with runOnMount on the first component mount.
+   * Runs validators with an enabled mount trigger on the first component mount.
    */
   _runMountValidation(validators = this._validatorInstances): void {
     if (!validators || validators.length === 0) return

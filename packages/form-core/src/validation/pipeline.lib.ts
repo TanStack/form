@@ -1,6 +1,7 @@
 import { createOutput } from '../validationOutput.lib'
-import { createErrorMapFactory } from '../createErrorMap.lib'
 import { isNotNil } from '../utils.lib'
+import { createErrorMap } from './createErrorMap.lib'
+import { parseIssuesFactory } from './parseIssues.lib'
 import { isErrorResult } from './errors.lib'
 import {
   ABORTED_CALL,
@@ -254,7 +255,8 @@ export function runFormValidatorPipeline({
         formApi: ctx.formApi,
         signal: ctx.signal,
         value: ctx.formApi.state.values,
-        createErrorMap: createErrorMapFactory(ctx.formApi.state.values),
+        createErrorMap,
+        parseIssues: parseIssuesFactory(ctx.formApi.state.values),
         createOutput,
       }
 

@@ -18,7 +18,8 @@ import {
   deriveFromBaseFieldMeta,
   hasFieldMetaErrors,
 } from '../FieldApi/fieldState.lib'
-import { createErrorMapFactory } from '../createErrorMap.lib'
+import { createErrorMap } from '../validation/createErrorMap.lib'
+import { parseIssuesFactory } from '../validation/parseIssues.lib'
 import { reconcileValidatorInstances } from '../ValidatorInstance.lib'
 import { resolveDefaultOptions } from '../defaultOptions.lib'
 import type { FormApi } from '../FormApi/FormApi.public'
@@ -40,7 +41,7 @@ import type {
   FormGroupState,
 } from './FormGroupApi.public'
 import type {
-  ConfigurableValidationTrigger,
+  ClientValidationTrigger,
   FormGroupValidateResult,
   FormGroupValidators,
   ToFormGroupErrorTypes,
@@ -484,7 +485,7 @@ export class InternalFormGroupApi<
   }
 
   async _runFieldValidations(
-    signal: ConfigurableValidationTrigger | 'submit',
+    signal: ClientValidationTrigger,
   ): Promise<FormGroupValidationOutcome<TGroupValue>> {
     const fieldValidationPromises: Array<
       ReturnType<AnyInternalFieldApi['_runFieldValidation']>
@@ -546,7 +547,7 @@ export class InternalFormGroupApi<
   _clearEventErrors(
     field: AnyInternalFieldApi,
     sourceEvent: string,
-    event: ConfigurableValidationTrigger,
+    event: Exclude<ClientValidationTrigger, 'submit'>,
   ) {
     const groupField = this._groupField
     const validatorInstancesToClear: Array<InternalGroupValidatorInstance> = []
@@ -647,7 +648,7 @@ export class InternalFormGroupApi<
   }
 
   _validate = async (
-    signal: ConfigurableValidationTrigger | 'submit',
+    signal: ClientValidationTrigger,
     opts?: { triggerFieldApi?: AnyInternalFieldApi },
   ): Promise<FormGroupValidationOutcome<TGroupValue>> => {
     if (signal !== 'submit' && opts?.triggerFieldApi) {
@@ -687,7 +688,8 @@ export class InternalFormGroupApi<
           triggerFieldApi: opts?.triggerFieldApi,
           signal: ctx.signal,
           value: this.value,
-          createErrorMap: createErrorMapFactory(this.value),
+          createErrorMap,
+          parseIssues: parseIssuesFactory(this.value),
           createOutput,
         }),
         onResult: (result) => {
@@ -718,7 +720,7 @@ export class InternalFormGroupApi<
   }
 
   validate = async (
-    signal: ConfigurableValidationTrigger | 'submit',
+    signal: ClientValidationTrigger,
     opts?: { triggerFieldApi?: AnyInternalFieldApi },
   ): Promise<Array<FormGroupValidateResult<TGroupValue>>> => {
     return (await this._validate(signal, opts)).errors

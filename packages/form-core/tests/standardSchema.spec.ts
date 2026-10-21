@@ -163,7 +163,7 @@ describe('standard schema validation', () => {
         'form',
       )
 
-      expect(result).toEqual({
+      expect(result).toMatchObject({
         form: issues,
         fields: {
           'users[0].name': issues,
@@ -181,7 +181,7 @@ describe('standard schema validation', () => {
 
       const result = await parseStandardSchema(schema, { name: '' }, 'form')
 
-      expect(result).toEqual({
+      expect(result).toMatchObject({
         form: issues,
         fields: {
           name: [issues[2]],

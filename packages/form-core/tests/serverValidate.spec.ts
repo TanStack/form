@@ -3,21 +3,17 @@ import { z } from 'zod'
 import { InternalFormApi } from '../src/FormApi/FormApi.lib'
 import { InternalValidatorInstance } from '../src/ValidatorInstance.lib'
 import { installDevtoolsBridge } from '../src/devtoolsBridge.lib'
-import { validateServerValues } from '../src/internals'
-import { formOptions, initialServerFormState } from '../src'
+import { initialServerFormState, validateServerValues } from '../src/internals'
+import { formOptions } from '../src'
 import type {
-  FormValidators,
   ServerValidateFailure,
   ServerValidateResult,
   ServerValidateSuccess,
 } from '../src'
 
-function expectServerValidateSuccess<
-  TFormData,
-  TFormValidators extends FormValidators<TFormData>,
->(
-  result: ServerValidateResult<TFormData, TFormValidators>,
-): ServerValidateSuccess<TFormData, TFormValidators> {
+function expectServerValidateSuccess<TFormData, TValidators>(
+  result: ServerValidateResult<TFormData, TValidators>,
+): ServerValidateSuccess<TFormData, TValidators> {
   expect(result.success).toBe(true)
 
   if (!result.success) {
@@ -27,12 +23,9 @@ function expectServerValidateSuccess<
   return result
 }
 
-function expectServerValidateFailure<
-  TFormData,
-  TFormValidators extends FormValidators<TFormData>,
->(
-  result: ServerValidateResult<TFormData, TFormValidators>,
-): ServerValidateFailure<TFormData, TFormValidators> {
+function expectServerValidateFailure<TFormData, TValidators>(
+  result: ServerValidateResult<TFormData, TValidators>,
+): ServerValidateFailure<TFormData> {
   expect(result.success).toBe(false)
 
   if (result.success) {
@@ -149,7 +142,7 @@ describe('server validation', () => {
     expect(serverValidator).toHaveBeenCalledOnce()
   })
 
-  it('skips server-only validators during client submit when runOnSubmit is false', async () => {
+  it('skips server-only validators during client submit when skipOnSubmit is true', async () => {
     const validator = vi.fn(() => 'Submit error')
     const form = new InternalFormApi(
       formOptions({
@@ -158,7 +151,7 @@ describe('server validation', () => {
           {
             run: validator,
             triggers: ['server'],
-            runOnSubmit: false,
+            skipOnSubmit: true,
           },
         ],
       }),

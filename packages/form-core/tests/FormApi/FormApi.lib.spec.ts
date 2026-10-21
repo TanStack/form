@@ -102,7 +102,6 @@ describe('InternalFormApi - _update', () => {
       defaultValues: { name: '' },
       validators: [
         { run: () => null, triggers: [] },
-        // @ts-expect-error We're testing this on purpose
         { run: () => null, triggers: [] },
       ],
     })
@@ -549,32 +548,74 @@ describe('InternalFormApi - setFieldValue', () => {
     })
   })
 
-  // TODO: Form validation is skipped when disabled metadata updates prevent field creation.
-  it.fails(
-    'validates form changes before field creation when all metadata flags are false',
-    async () => {
-      const form = new InternalFormApi({
-        defaultValues: { name: 'Alice' },
-        validators: [
-          {
-            triggers: ['change'],
-            run: ({ value }) =>
-              value.name.length < 3 ? 'Name is too short' : undefined,
-          },
-        ],
-      })
+  it('validates form changes before field creation when all metadata flags are false', async () => {
+    const form = new InternalFormApi({
+      defaultValues: { name: 'Alice' },
+      validators: [
+        {
+          triggers: ['change'],
+          run: ({ value }) =>
+            value.name.length < 3 ? 'Name is too short' : undefined,
+        },
+      ],
+    })
 
-      form.setFieldValue('name', 'Al', {
-        markAsTouched: false,
-        markAsDirty: false,
-        markAsBlurred: false,
-      })
+    form.setFieldValue('name', 'Al', {
+      markAsTouched: false,
+      markAsDirty: false,
+      markAsBlurred: false,
+    })
 
-      await expect
-        .poll(() => form.state.errors)
-        .toEqual([{ message: 'Name is too short' }])
-    },
-  )
+    await expect
+      .poll(() => form.state.errors)
+      .toEqual([{ message: 'Name is too short' }])
+    expect(form.state).toMatchObject({
+      values: { name: 'Al' },
+      isTouched: false,
+      isDirty: false,
+      isPristine: true,
+      isValid: false,
+    })
+
+    form.setFieldValue('name', 'Alice', {
+      markAsTouched: false,
+      markAsDirty: false,
+      markAsBlurred: false,
+    })
+
+    await expect.poll(() => form.state.errors).toEqual([])
+    expect(form.state).toMatchObject({
+      values: { name: 'Alice' },
+      isTouched: false,
+      isDirty: false,
+      isPristine: true,
+      isValid: true,
+    })
+  })
+
+  it('skips form validation before field creation when causeValidation is false', () => {
+    const validator = vi.fn(() => 'Name is too short')
+    const form = new InternalFormApi({
+      defaultValues: { name: 'Alice' },
+      validators: [{ triggers: ['change'], run: validator }],
+    })
+
+    form.setFieldValue('name', 'Al', {
+      markAsTouched: false,
+      markAsDirty: false,
+      markAsBlurred: false,
+      causeValidation: false,
+    })
+
+    expect(validator).not.toHaveBeenCalled()
+    expect(form.state).toMatchObject({
+      values: { name: 'Al' },
+      errors: [],
+      isTouched: false,
+      isDirty: false,
+      isPristine: true,
+    })
+  })
 
   it('applies updater functions to the current field value', () => {
     const form = new InternalFormApi({ defaultValues: { count: 1 } })

@@ -8,7 +8,7 @@ describe('runSubmissionProcess', () => {
       defaultValues: { name: '' },
       onSubmit: ({ createErrorMap }) => {
         const errors = createErrorMap({ form: 'Initial submit error' })
-        errors.form = 'Submission failed'
+        errors.form = ['Submission failed']
         errors.fields.name = 'Name is required'
         return errors
       },

@@ -10,6 +10,7 @@ import type { OneOrMany, ReadonlyOneOrMany } from './types.public'
 import type {
   CreateErrorMapFn,
   CreateOutputFn,
+  ParseIssuesFn,
   ScopedErrorTypes,
   ValidationErrorMap,
   ValidationIssue,
@@ -68,13 +69,6 @@ export interface Validator<
   skipOnSubmit?:
     boolean | ValidationPredicateFn<TFormData, TContextValue, TScope>
   /**
-   * Whether this validator runs when the form is constructed or when its field
-   * or form group first mounts.
-   *
-   * @default false
-   */
-  runOnMount?: boolean
-  /**
    * The delay in milliseconds before validation runs for change or blur events.
    *
    * Pass a number for a fixed delay, or pass a function that returns the delay
@@ -86,10 +80,10 @@ export interface Validator<
   triggerDebounceMs?:
     number | ValidationDebounceFn<TFormData, TContextValue, TScope>
   /**
-   * Change and blur events that can run this validator, optionally with conditions.
+   * Mount, change, and blur events that can run this validator, optionally with conditions.
    *
-   * An empty array disables change and blur validation. Configure submission
-   * separately with `skipOnSubmit` and initial validation with `runOnMount`.
+   * An empty array disables mount, change, and blur validation. Configure
+   * submission separately with `skipOnSubmit`.
    */
   triggers: Array<
     ValidationTriggerOption<TFormData, TContextValue, TTrigger, TScope>
@@ -264,8 +258,9 @@ export type ServerValidationTrigger = 'server'
 /** Events reported to client-side validation callbacks. */
 export type ClientValidationTrigger = ValidationTrigger
 /** Events configured through `triggers`. Submission is controlled by `skipOnSubmit`. */
-export type ConfigurableValidationTrigger = Exclude<ValidationTrigger, 'submit'>
-/** Change and blur events accepted by shared validator configurations. */
+export type ConfigurableValidationTrigger =
+  Exclude<ValidationTrigger, 'submit'> | 'mount'
+/** Mount, change, and blur events accepted by shared validator configurations. */
 export type ValidatorTrigger = ConfigurableValidationTrigger
 /** The form, form group, or field whose value a validator checks. */
 export type ValidatorScope = 'form' | 'group' | 'field'
@@ -444,7 +439,11 @@ export interface ValidationTriggerConfig<
    *
    * @default true
    */
-  when?: boolean | ValidationPredicateFn<TFormData, TValue, TScope>
+  when?:
+    | boolean
+    | (TTrigger extends 'mount'
+        ? never
+        : ValidationPredicateFn<TFormData, TValue, TScope>)
 }
 
 /**
@@ -460,7 +459,9 @@ export type ValidationTriggerOption<
   TValue,
   TTrigger extends ValidatorTrigger = ValidatorTrigger,
   TScope extends ValidatorScope = ValidatorScope,
-> = TTrigger | ValidationTriggerConfig<TFormData, TValue, TTrigger, TScope>
+> = TTrigger extends ValidatorTrigger
+  ? TTrigger | ValidationTriggerConfig<TFormData, TValue, TTrigger, TScope>
+  : never
 
 /**
  * A change or blur trigger, optionally enabled by a condition.
@@ -512,7 +513,7 @@ export type ValidationErrorInput = ReadonlyOneOrMany<ValidationErrorValue>
  */
 export interface FormValidatorContext<in out TFormData> {
   /** The event that caused this validation run. */
-  event: ValidationTrigger | ServerValidationTrigger
+  event: ValidationTrigger | ServerValidationTrigger | 'mount'
   /** Aborted when this run is cancelled. Pass it to asynchronous work such as `fetch`. */
   signal: AbortSignal
   /** The owning form on the client. `undefined` during server validation. */
@@ -521,8 +522,10 @@ export interface FormValidatorContext<in out TFormData> {
   triggerFieldApi?: AnyFieldApi
   /** The complete form values being validated. */
   value: TFormData
-  /** Builds an error map or routes Standard Schema issues using the form values. */
+  /** Builds a mutable error map from optional form and field errors. */
   createErrorMap: CreateErrorMapFn<TFormData>
+  /** Converts Standard Schema issues into a mutable error map using the form values. */
+  parseIssues: ParseIssuesFn<TFormData>
   /** Creates a successful result to return data in this validator's `validatorOutputs` entry. */
   createOutput: CreateOutputFn
 }
@@ -543,8 +546,10 @@ export interface ServerFormValidatorContext<in out TFormData> {
   triggerFieldApi?: AnyFieldApi
   /** The complete form values passed to server validation. */
   value: TFormData
-  /** Builds an error map or routes Standard Schema issues using the server values. */
+  /** Builds a mutable error map from optional form and field errors. */
   createErrorMap: CreateErrorMapFn<TFormData>
+  /** Converts Standard Schema issues into a mutable error map using the server values. */
+  parseIssues: ParseIssuesFn<TFormData>
   /** Creates a successful result to return data in this validator's server `validatorOutputs` entry. */
   createOutput: CreateOutputFn
 }
@@ -578,7 +583,7 @@ export type ValidatorFn<in TParameter, out TReturn> = (
  */
 export interface FormGroupValidatorContext<in out TGroupValue> {
   /** The event that caused this validation run. */
-  event: ClientValidationTrigger
+  event: ClientValidationTrigger | 'mount'
   /** Aborted when this run is cancelled. Pass it to asynchronous work such as `fetch`. */
   signal: AbortSignal
   /** The owning form, including values outside this group. */
@@ -589,8 +594,10 @@ export interface FormGroupValidatorContext<in out TGroupValue> {
   triggerFieldApi?: AnyFieldApi
   /** The group's current value, without the surrounding form values. */
   value: TGroupValue
-  /** Builds an error map or routes Standard Schema issues at group-relative field paths. */
+  /** Builds a mutable error map from optional group errors and errors at group-relative field paths. */
   createErrorMap: CreateErrorMapFn<TGroupValue>
+  /** Converts Standard Schema issues into a mutable error map using the group's values and field paths. */
+  parseIssues: ParseIssuesFn<TGroupValue>
   /** Creates a successful result to return data in this validator's `validatorOutputs` entry. */
   createOutput: CreateOutputFn
 }
@@ -655,7 +662,7 @@ export interface FieldValidatorContext<
   in out TFormData,
 > {
   /** The event that caused this validation run. */
-  event: ClientValidationTrigger
+  event: ClientValidationTrigger | 'mount'
   /** Aborted when this run is cancelled. Pass it to asynchronous work such as `fetch`. */
   signal: AbortSignal
   /** The owning form. Read other field values here for cross-field validation. */

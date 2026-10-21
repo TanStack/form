@@ -16,8 +16,7 @@ describe('FormGroupApi', () => {
       validators: [
         {
           run: validator,
-          runOnMount: true,
-          triggers: [],
+          triggers: ['mount'],
         },
       ],
     })
@@ -81,8 +80,7 @@ describe('FormGroupApi', () => {
       validators: [
         {
           run: () => result,
-          runOnMount: true,
-          triggers: [],
+          triggers: ['mount'],
         },
       ],
     })
@@ -889,7 +887,7 @@ describe('FormGroupApi', () => {
   })
 
   it('clears prior group schema output when a dynamic submit predicate skips the validator', async () => {
-    let shouldRunOnSubmit = true
+    let shouldSkipOnSubmit = false
     const onSubmit = vi.fn()
     const form = new InternalFormApi({
       defaultValues: { guestDetails: { name: 'Tony' } },
@@ -900,7 +898,7 @@ describe('FormGroupApi', () => {
       validators: [
         {
           run: z.object({ name: z.string() }),
-          runOnSubmit: () => shouldRunOnSubmit,
+          skipOnSubmit: () => shouldSkipOnSubmit,
           triggers: [],
         },
       ],
@@ -912,7 +910,7 @@ describe('FormGroupApi', () => {
       expect.objectContaining({ validatorOutputs: [{ name: 'Tony' }] }),
     )
 
-    shouldRunOnSubmit = false
+    shouldSkipOnSubmit = true
     await group.handleSubmit()
 
     expect(onSubmit).toHaveBeenLastCalledWith(
@@ -2030,11 +2028,11 @@ describe('FormGroupApi', () => {
       validators: [
         {
           triggers: [],
-          run: ({ value, createErrorMap }) => {
+          run: ({ value, parseIssues }) => {
             const result = schema.safeParse(value)
 
             if (!result.success) {
-              return createErrorMap(result.error.issues)
+              return parseIssues(result.error.issues)
             }
 
             return null

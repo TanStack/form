@@ -1,5 +1,5 @@
 import { createServerFn } from '@tanstack/react-start'
-import { initialServerFormState } from '@tanstack/form-core'
+import { initialServerFormState } from '@tanstack/form-core/internals'
 import {
   deleteInternalTanStackCookie,
   getInternalTanStackCookie,

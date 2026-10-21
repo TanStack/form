@@ -6,11 +6,12 @@ import type {
   FieldValidatorContext,
   FieldValidators,
   FormGroupValidators,
-  FormValidators,
-  ToFormErrorTypes,
+  FormValidator,
+  GetFormErrorTypes,
+  FormOptionsValidators,
   ToFormGroupErrorTypes,
   ToFormGroupOutputs,
-  ToFormOutputs,
+  GetValidatorOutputs,
   ValidationErrorMap,
   ValidationIssue,
   ValidationOutput,
@@ -18,10 +19,11 @@ import type {
 
 type Data = { name: string }
 
-function defineValidators<const T extends FormValidators<Data>>(
-  validators: T,
-): T {
-  return validators
+function defineValidators<
+  const TConfig extends unknown[],
+  const TValidators extends ReadonlyArray<unknown>,
+>(validators: TValidators & FormOptionsValidators<Data, TConfig>): TValidators {
+  return formOptions({ defaultValues: { name: '' }, validators }).validators!
 }
 
 function defineGroupValidators<const T extends FormGroupValidators<Data>>(
@@ -63,7 +65,7 @@ describe('validator output types', () => {
       ],
       onSubmit: ({ validatorOutputs }) => {
         expectTypeOf(validatorOutputs).toEqualTypeOf<
-          readonly [{ name: string }, number, undefined, { name: string }]
+          [{ name: string }, number, undefined, { name: string } | undefined]
         >()
       },
     })
@@ -84,25 +86,26 @@ describe('validator output types', () => {
       },
     ])
 
-    expectTypeOf<ToFormErrorTypes<typeof validators, never>>().toEqualTypeOf<{
-      readonly formError: never
-      readonly fieldError: { message: string; code: number }
+    expectTypeOf<GetFormErrorTypes<typeof validators, never>>().toEqualTypeOf<{
+      readonly selfError: never
+      readonly subfieldError: { message: string; code: number }
     }>()
-    expectTypeOf<ToFormOutputs<typeof validators>>().toEqualTypeOf<
-      readonly [
-        {
-          message: string
-          fields: { name: { message: string; payloadOnly: boolean } }
-        },
+    expectTypeOf<GetValidatorOutputs<typeof validators>>().toEqualTypeOf<
+      [
+        | {
+            message: string
+            fields: { name: { message: string; payloadOnly: boolean } }
+          }
+        | undefined,
       ]
     >()
 
     const outputOnly = defineValidators([
       { run: ({ createOutput }) => createOutput('data'), triggers: [] },
     ])
-    expectTypeOf<ToFormErrorTypes<typeof outputOnly, never>>().toEqualTypeOf<{
-      readonly formError: never
-      readonly fieldError: never
+    expectTypeOf<GetFormErrorTypes<typeof outputOnly, never>>().toEqualTypeOf<{
+      readonly selfError: never
+      readonly subfieldError: never
     }>()
   })
 
@@ -125,13 +128,8 @@ describe('validator output types', () => {
       { run: ({ createOutput }) => createOutput(undefined), triggers: [] },
     ])
 
-    expectTypeOf<ToFormOutputs<typeof validators>>().toEqualTypeOf<
-      readonly [
-        number | undefined,
-        number | undefined,
-        number | undefined,
-        undefined,
-      ]
+    expectTypeOf<GetValidatorOutputs<typeof validators>>().toEqualTypeOf<
+      [number | undefined, number | undefined, number | undefined, undefined]
     >()
   })
 
@@ -145,8 +143,9 @@ describe('validator output types', () => {
       {
         run: ({
           createOutput,
-        }): ValidationOutput<number> | ValidationErrorMap<Data> =>
-          createOutput(1),
+        }):
+          | ValidationOutput<number>
+          | ValidationErrorMap<Data, ValidationIssue> => createOutput(1),
         triggers: [],
       },
       {
@@ -192,54 +191,58 @@ describe('validator output types', () => {
       },
     ])
 
-    expectTypeOf<ToFormOutputs<typeof validators>>().toEqualTypeOf<
-      readonly [
+    expectTypeOf<GetValidatorOutputs<typeof validators>>().toEqualTypeOf<
+      [
         number | undefined,
         number | undefined,
-        number,
-        number,
         number | undefined,
-        number,
         number | undefined,
-        number,
+        number | undefined,
+        number | undefined,
+        number | undefined,
+        number | undefined,
       ]
     >()
-    type Errors = ToFormErrorTypes<typeof validators, never>
-    expectTypeOf<ValidationIssue>().toExtend<Errors['formError']>()
-    expectTypeOf<ValidationIssue>().toExtend<Errors['fieldError']>()
-    expectTypeOf<Errors['fieldError']>().toExtend<ValidationIssue>()
+    type Errors = GetFormErrorTypes<typeof validators, never>
+    expectTypeOf<ValidationIssue>().toExtend<Errors['selfError']>()
+    expectTypeOf<ValidationIssue>().toExtend<Errors['subfieldError']>()
+    expectTypeOf<Errors['subfieldError']>().toExtend<ValidationIssue>()
   })
 
-  it('preserves submit eligibility and conservative broad validator outputs', () => {
+  it('preserves submit eligibility and broad validator output positions', () => {
     const validators = defineValidators([
       {
         run: ({ createOutput }) => createOutput(1),
         triggers: [],
-        runOnSubmit: false,
+        skipOnSubmit: true,
       },
       {
         run: ({ createOutput }) => createOutput(1),
         triggers: [],
-        runOnSubmit: true as boolean,
+        skipOnSubmit: false as boolean,
       },
       {
         run: ({ createOutput }) => createOutput(1),
         triggers: [],
-        runOnSubmit: () => true,
+        skipOnSubmit: () => false,
       },
       {
         run: ({ createOutput }) => createOutput(1),
         triggers: [],
-        runOnSubmit: true,
+        skipOnSubmit: false,
       },
     ])
 
-    expectTypeOf<ToFormOutputs<typeof validators>>().toEqualTypeOf<
-      readonly [undefined, number | undefined, number | undefined, number]
+    expectTypeOf<GetValidatorOutputs<typeof validators>>().toEqualTypeOf<
+      [undefined, number | undefined, number | undefined, number]
     >()
-    expectTypeOf<ToFormOutputs<FormValidators<Data>>>().toEqualTypeOf<
-      unknown[]
-    >()
+    expectTypeOf<
+      GetValidatorOutputs<
+        ReadonlyArray<
+          FormValidator<Data, boolean | 'change' | 'blur' | 'server' | 'mount'>
+        >
+      >
+    >().toEqualTypeOf<ReadonlyArray<any>>()
   })
 
   it('infers group outputs and excludes them from group errors', () => {
@@ -257,8 +260,8 @@ describe('validator output types', () => {
       readonly [number]
     >()
     expectTypeOf<ToFormGroupErrorTypes<typeof validators>>().toEqualTypeOf<{
-      readonly formError: ValidationIssue
-      readonly fieldError: ValidationIssue
+      readonly selfError: ValidationIssue
+      readonly subfieldError: ValidationIssue
     }>()
   })
 
@@ -274,16 +277,14 @@ describe('validator output types', () => {
           run: async ({ value, createOutput }) =>
             createOutput(value.name.length),
           triggers: ['server'],
-          runOnSubmit: false,
+          skipOnSubmit: true,
         },
       ],
     })
     const result = await validateServerValues(options, { name: 'Tony' })
     if (!result.success) throw new Error('Expected success')
 
-    expectTypeOf(result.validatorOutputs).toEqualTypeOf<
-      readonly [undefined, number]
-    >()
+    expectTypeOf(result.validatorOutputs).toEqualTypeOf<[undefined, number]>()
   })
 
   it('does not expose or accept branded outputs in field validators', () => {
@@ -294,7 +295,7 @@ describe('validator output types', () => {
       run: () => ValidationOutput<string>
       triggers: []
     }
-    expectTypeOf<readonly [OutputValidator]>().not.toExtend<
+    expectTypeOf<[OutputValidator]>().not.toExtend<
       FieldValidators<Data, 'name', string>
     >()
   })

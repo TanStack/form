@@ -41,7 +41,7 @@ type FieldValidateContext = Omit<
 > & { scope: 'field' }
 type FormGroupValidateContext = Omit<
   FormGroupValidatorContext<any>,
-  'value' | 'createErrorMap' | 'createOutput'
+  'value' | 'createErrorMap' | 'parseIssues' | 'createOutput'
 > & { scope: 'group' }
 export type FormInputContext = Omit<FormValidateContext, 'signal'>
 type ServerFormInputContext = Omit<ServerPipelineValidateContext, 'signal'>
@@ -97,19 +97,6 @@ export function isFieldValidateContext(
   ctx: ValidateContext,
 ): ctx is FieldValidateContext {
   return ctx.scope === 'field'
-}
-
-/** Checks whether a configured trigger is the server-only trigger. */
-function isServerTrigger(
-  trigger: ValidationTriggerOption<any, any, any> | 'server',
-): boolean {
-  return trigger === 'server'
-}
-
-/** Checks whether a validator participates in server validation. */
-function hasServerTrigger(validator: AnyPipelineValidator): boolean {
-  if (!validator.triggers) return false
-  return validator.triggers.some(isServerTrigger)
 }
 
 /**
@@ -220,7 +207,11 @@ export function shouldRunValidator(
   context: InputContext,
 ): boolean {
   if (isServerContext(context)) {
-    return hasServerTrigger(validator)
+    return (
+      validator.triggers?.some((trigger) =>
+        isValidationTriggerEnabled(trigger, context),
+      ) ?? false
+    )
   }
 
   const { skipOnSubmit = false } = validator

@@ -1,11 +1,13 @@
 import { createOutput } from '../validationOutput.lib'
-import { createErrorMapFactory } from '../createErrorMap.lib'
 import { isStandardSchema, parseStandardSchema } from '../standardSchema.lib'
 import { isPromiseLike } from '../utils.lib'
+import { createErrorMap } from './createErrorMap.lib'
+import { parseIssuesFactory } from './parseIssues.lib'
 import { isErrorResult } from './errors.lib'
 import {
   createValidatorAbortContext,
   normalizeValidatorResult,
+  shouldRunValidator,
 } from './execution.lib'
 import type { AnyInternalValidatorInstance } from '../ValidatorInstance.lib'
 import type {
@@ -20,6 +22,7 @@ import type {
 } from '../validation.public'
 import type {
   AnyValidatorContext,
+  InputContext,
   ValidateResult,
   ValidatorExecutionResult,
 } from './execution.lib'
@@ -39,6 +42,7 @@ export interface FormMountValidatorPipelineResult {
 
 interface MountValidatorPipelineArgs<in out TResult extends ValidateResult> {
   pipeline: ReadonlyArray<AnyInternalValidatorInstance>
+  context: InputContext
   getContext: (signal: AbortSignal) => AnyValidatorContext
   scope: 'field' | 'form'
   onResult?: (result: PipelineResult<TResult>) => void
@@ -143,8 +147,7 @@ function executeMountValidator<TResult extends ValidateResult>(
 /**
  * Continues mount validation sequentially after the first asynchronous result.
  *
- * Later validators still honor `runOnMount` and `bailIfInvalid` in configured
- * order.
+ * Eligible validators still honor `bailIfInvalid` in configured order.
  */
 async function continueMountValidationFromAsyncResult<
   TResult extends ValidateResult,
@@ -173,7 +176,6 @@ async function continueMountValidationFromAsyncResult<
   for (let i = startIndex + 1; i < pipeline.length; i++) {
     const validatorInstance = pipeline[i]!
     const validator = validatorInstance.definition
-    if (validator.runOnMount !== true) continue
 
     if (validator.bailIfInvalid && hasFailed) break
 
@@ -204,21 +206,16 @@ async function continueMountValidationFromAsyncResult<
  */
 function runMountValidatorPipeline<TResult extends ValidateResult>({
   pipeline,
+  context,
   getContext,
   scope,
   onResult,
 }: MountValidatorPipelineArgs<TResult>): FormMountValidatorPipelineResult {
-  if (pipeline.length === 0)
-    return {
-      didRun: false,
-      asyncPromise: null,
-    }
-
-  if (
-    !pipeline.some(
-      (validatorInstance) => validatorInstance.definition.runOnMount === true,
-    )
+  const mountPipeline = pipeline.filter((validatorInstance) =>
+    shouldRunValidator(validatorInstance.definition, context),
   )
+
+  if (mountPipeline.length === 0)
     return {
       didRun: false,
       asyncPromise: null,
@@ -226,10 +223,9 @@ function runMountValidatorPipeline<TResult extends ValidateResult>({
 
   let hasFailed = false
 
-  for (let i = 0; i < pipeline.length; i++) {
-    const validatorInstance = pipeline[i]!
+  for (let i = 0; i < mountPipeline.length; i++) {
+    const validatorInstance = mountPipeline[i]!
     const validator = validatorInstance.definition
-    if (validator.runOnMount !== true) continue
 
     if (validator.bailIfInvalid && hasFailed) {
       return {
@@ -248,7 +244,7 @@ function runMountValidatorPipeline<TResult extends ValidateResult>({
       return {
         didRun: true,
         asyncPromise: continueMountValidationFromAsyncResult(
-          pipeline,
+          mountPipeline,
           getContext,
           scope,
           i,
@@ -280,12 +276,14 @@ export function runFormMountValidatorPipeline({
 }: FormMountValidatorPipelineArgs): FormMountValidatorPipelineResult {
   return runMountValidatorPipeline<FormValidationResult<any>>({
     pipeline,
+    context: { scope: 'form', event: 'mount', formApi },
     getContext: (signal) => ({
-      event: 'mount' as never,
+      event: 'mount',
       signal,
       formApi,
       value: formApi.state.values,
-      createErrorMap: createErrorMapFactory(formApi.state.values),
+      createErrorMap,
+      parseIssues: parseIssuesFactory(formApi.state.values),
       createOutput,
     }),
     scope: 'form',
@@ -307,8 +305,14 @@ export function runFieldMountValidatorPipeline({
 }: FieldMountValidatorPipelineArgs): FormMountValidatorPipelineResult {
   return runMountValidatorPipeline<FieldValidateResult>({
     pipeline,
+    context: {
+      scope: 'field',
+      event: 'mount',
+      formApi: fieldApi.form,
+      fieldApi,
+    },
     getContext: (signal) => ({
-      event: 'mount' as never,
+      event: 'mount',
       signal,
       formApi: fieldApi.form as never,
       fieldApi: fieldApi as never,
@@ -335,14 +339,21 @@ export function runGroupMountValidatorPipeline({
 }: GroupMountValidatorPipelineArgs): FormMountValidatorPipelineResult {
   return runMountValidatorPipeline<FormGroupValidateResult<any>>({
     pipeline,
+    context: {
+      scope: 'group',
+      event: 'mount',
+      formApi: groupApi.form,
+      groupApi,
+    },
     getContext: (signal) => ({
-      event: 'mount' as never,
+      event: 'mount',
       signal,
       formApi: groupApi.form as never,
       groupApi: groupApi as never,
       triggerFieldApi: undefined,
       value: groupApi.value,
-      createErrorMap: createErrorMapFactory(groupApi.value),
+      createErrorMap,
+      parseIssues: parseIssuesFactory(groupApi.value),
       createOutput,
     }),
     scope: 'form',

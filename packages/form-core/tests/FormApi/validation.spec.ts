@@ -122,11 +122,11 @@ describe('form - validation', () => {
         defaultValues: { user: { name: '' } },
         validators: [
           {
-            run: ({ value, createErrorMap }) => {
+            run: ({ value, parseIssues }) => {
               const result = schema.safeParse(value)
 
               if (!result.success) {
-                return createErrorMap(result.error.issues)
+                return parseIssues(result.error.issues)
               }
 
               return null
@@ -561,7 +561,7 @@ describe('form - validation', () => {
     })
   })
 
-  describe('runOnMount', () => {
+  describe('mount triggers', () => {
     it('does not run validators during construction by default', () => {
       const validatorFn = vi.fn().mockImplementation(() => 'Mount error')
 
@@ -574,28 +574,48 @@ describe('form - validation', () => {
       expect(form.state.errors).toEqual([])
     })
 
-    it('does not run validators during construction when runOnMount is false', () => {
+    it('does not run validators during construction when the mount trigger is disabled', () => {
       const validatorFn = vi.fn().mockImplementation(() => 'Mount error')
 
       const form = new InternalFormApi({
         defaultValues: { name: '' },
-        validators: [{ run: validatorFn, runOnMount: false, triggers: [] }],
+        validators: [
+          { run: validatorFn, triggers: [{ trigger: 'mount', when: false }] },
+        ],
       })
 
       expect(validatorFn).not.toHaveBeenCalled()
       expect(form.state.errors).toEqual([])
     })
 
-    it('runs validators during construction when runOnMount is true', () => {
+    it('runs validators during construction with a mount trigger', () => {
       const validatorFn = vi.fn().mockImplementation(() => 'Mount error')
 
       const form = new InternalFormApi({
         defaultValues: { name: '' },
-        validators: [{ run: validatorFn, runOnMount: true, triggers: [] }],
+        validators: [{ run: validatorFn, triggers: ['mount'] }],
       })
 
       expect(validatorFn).toHaveBeenCalledOnce()
       expect(form.state.errors).toEqual([{ message: 'Mount error' }])
+    })
+
+    it('runs validators with an enabled conditional mount trigger once', () => {
+      const validator = vi.fn(() => 'Mount error')
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            run: validator,
+            skipOnSubmit: true,
+            triggers: ['blur', { trigger: 'mount', when: true }, 'mount'],
+          },
+        ],
+      })
+
+      expect(validator).toHaveBeenCalledOnce()
+      expect(form.state.errors).toEqual([{ message: 'Mount error' }])
+      expect(form.state.isValidating).toBe(false)
     })
 
     it('sets validity state from synchronous mount validation immediately', () => {
@@ -604,8 +624,7 @@ describe('form - validation', () => {
         validators: [
           {
             run: () => ({ message: 'Mount error' }),
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
           },
         ],
       })
@@ -625,8 +644,7 @@ describe('form - validation', () => {
                 name: 'Name is required',
               },
             }),
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
           },
         ],
       })
@@ -644,8 +662,7 @@ describe('form - validation', () => {
             run: z.object({
               name: z.string().min(1, 'Name is required'),
             }),
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
           },
         ],
       })
@@ -663,8 +680,7 @@ describe('form - validation', () => {
         defaultValues: { name: '' },
         validators: [
           {
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
             run: async () => {
               await new Promise((resolve) => setTimeout(resolve, 100))
               return 'Async mount error'
@@ -694,18 +710,15 @@ describe('form - validation', () => {
         defaultValues: { name: '' },
         validators: [
           {
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
             run: () => asyncResult,
           },
           {
-            runOnMount: false,
-            triggers: [],
+            triggers: [{ trigger: 'mount', when: false }],
             run: skippedValidator,
           },
           {
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
             run: secondValidator,
           },
         ],
@@ -734,14 +747,12 @@ describe('form - validation', () => {
         defaultValues: { name: '' },
         validators: [
           {
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
             run: () => asyncResult,
           },
           {
             bailIfInvalid: true,
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
             run: bailedValidator,
           },
         ],
@@ -762,8 +773,7 @@ describe('form - validation', () => {
         defaultValues: { name: '' },
         validators: [
           {
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
             run: validator,
           },
         ],
@@ -783,8 +793,7 @@ describe('form - validation', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              runOnMount: true,
-              triggers: [],
+              triggers: ['mount'],
               run: () => {
                 throw error
               },
@@ -808,8 +817,7 @@ describe('form - validation', () => {
           defaultValues: { name: '' },
           validators: [
             {
-              runOnMount: true,
-              triggers: [],
+              triggers: ['mount'],
               run: () => Promise.reject(error),
             },
           ],
@@ -842,8 +850,7 @@ describe('form - validation', () => {
           validators: [
             {
               run: schema,
-              runOnMount: true,
-              triggers: [],
+              triggers: ['mount'],
             },
           ],
         })
@@ -867,13 +874,11 @@ describe('form - validation', () => {
         validators: [
           {
             run: skippedValidator,
-            runOnMount: false,
-            triggers: [],
+            triggers: [{ trigger: 'mount', when: false }],
           },
           {
             run: mountValidator,
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
           },
         ],
       })
@@ -885,7 +890,6 @@ describe('form - validation', () => {
 
     it('ignores triggerDebounceMs for mount validation', () => {
       vi.useFakeTimers()
-      const triggerDebounceMs = vi.fn().mockReturnValue(100)
       const validatorFn = vi.fn().mockImplementation(() => 'Mount error')
 
       const form = new InternalFormApi({
@@ -893,15 +897,13 @@ describe('form - validation', () => {
         validators: [
           {
             run: validatorFn,
-            runOnMount: true,
-            triggerDebounceMs,
-            triggers: ['change'],
+            triggerDebounceMs: 100,
+            triggers: ['mount', 'change'],
           },
         ],
       })
 
       expect(validatorFn).toHaveBeenCalledOnce()
-      expect(triggerDebounceMs).not.toHaveBeenCalled()
       expect(form.state.errors).toEqual([{ message: 'Mount error' }])
       vi.useRealTimers()
     })
@@ -910,7 +912,7 @@ describe('form - validation', () => {
       const validatorFn = vi.fn().mockImplementation(() => 'Mount error')
       const form = new InternalFormApi({
         defaultValues: { name: '' },
-        validators: [{ run: validatorFn, runOnMount: true, triggers: [] }],
+        validators: [{ run: validatorFn, triggers: ['mount'] }],
       })
 
       form.mount()
@@ -927,14 +929,12 @@ describe('form - validation', () => {
         validators: [
           {
             run: () => 'Mount error',
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
           },
           {
             bailIfInvalid: true,
             run: secondValidatorFn,
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
           },
         ],
       })
@@ -954,8 +954,7 @@ describe('form - validation', () => {
                 name: 'Mount field error',
               },
             }),
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
           },
         ],
       })

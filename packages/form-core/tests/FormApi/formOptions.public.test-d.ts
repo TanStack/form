@@ -2,7 +2,8 @@ import { describe, expectTypeOf, it } from 'vitest'
 import { z } from 'zod'
 import { formOptions } from '../../src/FormApi/formOptions.public'
 import type { AnyFieldApi } from '../../src/FieldApi/FieldApi.public'
-import type { FormApi, OnSubmitError } from '../../src/FormApi/FormApi.public'
+import type { FormApi } from '../../src/FormApi/FormApi.public'
+import type { OnSubmitError } from '../../src/FormApi/formSubmit.public'
 import type {
   FormOptions,
   FormOptionsApi,
@@ -227,7 +228,7 @@ describe('formOptions.strictSchema', () => {
     })
 
     expectTypeOf(options.serverState).toEqualTypeOf<
-      ServerFormState<SchemaInput, unknown> | null | undefined
+      ServerFormState<SchemaInput> | null | undefined
     >()
 
     formOptions.strictSchema(schema, {
@@ -526,7 +527,7 @@ describe('formOptions.looseSchema', () => {
 
     expectTypeOf(options.defaultValues).toEqualTypeOf<UnionValue>()
     expectTypeOf(options.serverState).toEqualTypeOf<
-      ServerFormState<UnionValue, unknown> | null | undefined
+      ServerFormState<UnionValue> | null | undefined
     >()
 
     formOptions.looseSchema(schema, {
@@ -700,7 +701,7 @@ describe('formOptions server state', () => {
   it('accepts omitted, null, and initial server state without validators', () => {
     const options = formOptions({ defaultValues: { name: '' } })
     expectTypeOf(options.serverState).toEqualTypeOf<
-      ServerFormState<{ name: string }, unknown> | null | undefined
+      ServerFormState<{ name: string }> | null | undefined
     >()
 
     formOptions({ defaultValues: { name: '' }, serverState: null })

@@ -67,7 +67,7 @@ describe('validator outputs', () => {
             triggers: [],
           },
           { run: () => undefined, triggers: [] },
-          { run: skipped, triggers: [], runOnSubmit: false },
+          { run: skipped, triggers: [], skipOnSubmit: true },
         ],
         onSubmit,
       }),
@@ -119,36 +119,34 @@ describe('validator outputs', () => {
   })
 
   it('clears earlier outputs when a later submission skips or succeeds without output', async () => {
-    let shouldRun = true
+    let shouldSkipOnSubmit = false
     let produceOutput = true
     const onSubmit = vi.fn()
-    const form = new InternalFormApi(
-      formOptions({
-        defaultValues: { name: 'Tony' },
-        validators: [
-          {
-            run: ({ value, createOutput }) =>
-              produceOutput ? createOutput(value.name) : [],
-            runOnSubmit: () => shouldRun,
-            triggers: [],
-          },
-        ],
-        onSubmit,
-      }),
-    )
+    const form = new InternalFormApi({
+      defaultValues: { name: 'Tony' },
+      validators: [
+        {
+          run: ({ value, createOutput }) =>
+            produceOutput ? createOutput(value.name) : [],
+          skipOnSubmit: () => shouldSkipOnSubmit,
+          triggers: [],
+        },
+      ],
+      onSubmit,
+    })
 
     await form.handleSubmit()
     expect(onSubmit).toHaveBeenLastCalledWith(
       expect.objectContaining({ validatorOutputs: ['Tony'] }),
     )
 
-    shouldRun = false
+    shouldSkipOnSubmit = true
     await form.handleSubmit()
     expect(onSubmit).toHaveBeenLastCalledWith(
       expect.objectContaining({ validatorOutputs: [undefined] }),
     )
 
-    shouldRun = true
+    shouldSkipOnSubmit = false
     await form.handleSubmit()
     expect(onSubmit).toHaveBeenLastCalledWith(
       expect.objectContaining({ validatorOutputs: ['Tony'] }),
@@ -171,7 +169,7 @@ describe('validator outputs', () => {
           {
             run: ({ createOutput }) => createOutput('event output'),
             triggers: ['change', 'blur'],
-            runOnSubmit: false,
+            skipOnSubmit: true,
           },
           {
             run: nextValidator,
@@ -202,29 +200,25 @@ describe('validator outputs', () => {
     for (const asyncOutput of [false, true]) {
       const nextValidator = vi.fn(() => undefined)
       const onSubmit = vi.fn()
-      const form = new InternalFormApi(
-        formOptions({
-          defaultValues: { name: 'Tony' },
-          validators: [
-            {
-              run: ({ createOutput }) =>
-                asyncOutput
-                  ? Promise.resolve(createOutput('mount output'))
-                  : createOutput('mount output'),
-              runOnMount: true,
-              runOnSubmit: false,
-              triggers: [],
-            },
-            {
-              run: nextValidator,
-              runOnMount: true,
-              triggers: [],
-              bailIfInvalid: true,
-            },
-          ],
-          onSubmit,
-        }),
-      )
+      const form = new InternalFormApi({
+        defaultValues: { name: 'Tony' },
+        validators: [
+          {
+            run: ({ createOutput }) =>
+              asyncOutput
+                ? Promise.resolve(createOutput('mount output'))
+                : createOutput('mount output'),
+            skipOnSubmit: true,
+            triggers: ['mount'],
+          },
+          {
+            run: nextValidator,
+            triggers: ['mount'],
+            bailIfInvalid: true,
+          },
+        ],
+        onSubmit,
+      })
 
       const cleanup = form.mount()
       onTestFinished(cleanup)
@@ -244,7 +238,7 @@ describe('validator outputs', () => {
   })
 
   it('provides group outputs from fresh validation and clears skipped slots', async () => {
-    let shouldRun = true
+    let shouldSkipOnSubmit = false
     const onSubmit = vi.fn()
     const form = new InternalFormApi({
       defaultValues: { guest: { name: ' Tony ' } },
@@ -256,9 +250,8 @@ describe('validator outputs', () => {
         {
           run: async ({ value, createOutput }) =>
             createOutput({ name: value.name.trim() }),
-          runOnMount: true,
-          runOnSubmit: () => shouldRun,
-          triggers: ['change'],
+          skipOnSubmit: () => shouldSkipOnSubmit,
+          triggers: ['mount', 'change'],
         },
       ],
       onSubmit,
@@ -276,7 +269,7 @@ describe('validator outputs', () => {
       expect.objectContaining({ validatorOutputs: [{ name: 'Tony' }] }),
     )
 
-    shouldRun = false
+    shouldSkipOnSubmit = true
     await group.handleSubmit()
     expect(onSubmit).toHaveBeenLastCalledWith(
       expect.objectContaining({ validatorOutputs: [undefined] }),
@@ -296,7 +289,7 @@ describe('validator outputs', () => {
           run: async ({ value, createOutput }) =>
             createOutput(value.name.length),
           triggers: ['server'],
-          runOnSubmit: false,
+          skipOnSubmit: true,
         },
       ],
     })

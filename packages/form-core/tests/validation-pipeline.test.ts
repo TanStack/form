@@ -6,17 +6,19 @@ import {
 } from '../src/validation'
 import { InternalFormApi } from '../src/FormApi/FormApi.lib'
 import { reconcileValidatorInstances } from '../src/ValidatorInstance.lib'
+import { formOptions } from '../src'
 import type { PipelineResult } from '../src/validation'
 import type {
+  ClientSideEvents,
   ClientValidationTrigger,
   DeepKeys,
   DeepValue,
   FieldValidateResult,
   FieldValidator,
-  FormValidateResult,
+  FormValidationResult,
   FormValidator,
   FormValidatorContext,
-  ToFormOutputs,
+  GetValidatorOutputs,
   ValidationDebounceFn,
   ValidationPredicateFn,
 } from '../src'
@@ -31,8 +33,8 @@ describe('runFormValidatorPipeline', () => {
   }
 
   function getPipeline<T>(
-    form: InternalFormApi<T, any, any>,
-    pipeline: Array<FormValidator<T>>,
+    form: InternalFormApi<T>,
+    pipeline: Array<FormValidator<T, ClientSideEvents | boolean>>,
   ) {
     const validatorInstances = reconcileValidatorInstances({
       definitions: pipeline,
@@ -45,7 +47,7 @@ describe('runFormValidatorPipeline', () => {
       runWithContext: (args: {
         event: Event
         field?: AnyInternalFieldApi
-        onResult?: (result: PipelineResult<FormValidateResult<any>>) => void
+        onResult?: (result: PipelineResult<FormValidationResult<any>>) => void
         hasFailedBefore?: boolean
       }) => {
         return runFormValidatorPipeline({
@@ -68,7 +70,7 @@ describe('runFormValidatorPipeline', () => {
     TFieldName extends DeepKeys<TFormData>,
     TFieldValue extends DeepValue<TFormData, TFieldName>,
   >(
-    form: InternalFormApi<TFormData, any, any>,
+    form: InternalFormApi<TFormData>,
     field: AnyInternalFieldApi,
     pipeline: Array<FieldValidator<TFormData, TFieldName, TFieldValue>>,
   ) {
@@ -122,10 +124,10 @@ describe('runFormValidatorPipeline', () => {
     const issues = [
       { message: 'Invalid name', path: ['users', 0, 'name'] as const },
     ]
-    const run = vi.fn(({ triggerFieldApi, value, createErrorMap }) => {
+    const run = vi.fn(({ triggerFieldApi, value, parseIssues }) => {
       expect(triggerFieldApi).toBe(field)
       expect(value).toBe(formApi.state.values)
-      expect(createErrorMap(issues)).toEqual({
+      expect(parseIssues(issues)).toMatchObject({
         form: issues,
         fields: { 'users[0].name': issues },
       })
@@ -154,7 +156,7 @@ describe('runFormValidatorPipeline', () => {
       expect(fieldContext.fieldApi).toBe(field)
       expect(fieldContext).not.toHaveProperty('triggerFieldApi')
       expect(fieldContext.value).toBe(formApi.state.values)
-      expect(fieldContext.createErrorMap(issues)).toEqual({
+      expect(fieldContext.parseIssues(issues)).toMatchObject({
         form: issues,
         fields: { 'users[0].name': issues },
       })
@@ -191,10 +193,8 @@ describe('runFormValidatorPipeline', () => {
 
     const results = await runWithContext({ event: 'submit' })
 
-    expect(results).toEqual([
-      expect.objectContaining({
-        result: { fields: { name: 'Name is required' } },
-      }),
+    expect(results).toMatchObject([
+      { result: { fields: { name: 'Name is required' } } },
     ])
   })
 
@@ -294,59 +294,59 @@ describe('runFormValidatorPipeline', () => {
     expect(blurOrChange).toHaveBeenCalledTimes(2)
   })
 
-  it('should only run validators on submit if enabled', async () => {
+  it('only runs validators on submit when skipOnSubmit allows it', async () => {
     const formApi = getForm({ name: '' })
 
-    const trueByDefault = vi.fn()
-    const trueCallback = vi.fn()
-    const trueBoolean = vi.fn()
+    const runsByDefault = vi.fn()
+    const runsWithFalseCallback = vi.fn()
+    const runsWithFalse = vi.fn()
 
-    const falseBoolean = vi.fn()
-    const falseCallback = vi.fn()
+    const skipsWithTrue = vi.fn()
+    const skipsWithTrueCallback = vi.fn()
 
     const { runWithContext } = getPipeline(formApi, [
       {
-        run: trueByDefault,
+        run: runsByDefault,
         triggers: [],
       },
       {
-        run: trueCallback,
-        runOnSubmit: () => true,
+        run: runsWithFalseCallback,
+        skipOnSubmit: () => false,
         triggers: [],
       },
       {
-        run: trueBoolean,
-        runOnSubmit: true,
+        run: runsWithFalse,
+        skipOnSubmit: false,
         triggers: [],
       },
       {
-        run: falseBoolean,
-        runOnSubmit: false,
+        run: skipsWithTrue,
+        skipOnSubmit: true,
         triggers: [],
       },
       {
-        run: falseCallback,
-        runOnSubmit: () => false,
+        run: skipsWithTrueCallback,
+        skipOnSubmit: () => true,
         triggers: [],
       },
     ])
 
     await runWithContext({ event: 'change' })
     await runWithContext({ event: 'blur' })
-    expect(trueByDefault).not.toHaveBeenCalled()
-    expect(trueCallback).not.toHaveBeenCalled()
-    expect(trueBoolean).not.toHaveBeenCalled()
+    expect(runsByDefault).not.toHaveBeenCalled()
+    expect(runsWithFalseCallback).not.toHaveBeenCalled()
+    expect(runsWithFalse).not.toHaveBeenCalled()
 
-    expect(falseBoolean).not.toHaveBeenCalled()
-    expect(falseCallback).not.toHaveBeenCalled()
+    expect(skipsWithTrue).not.toHaveBeenCalled()
+    expect(skipsWithTrueCallback).not.toHaveBeenCalled()
 
     await runWithContext({ event: 'submit' })
-    expect(trueByDefault).toHaveBeenCalledOnce()
-    expect(trueCallback).toHaveBeenCalledOnce()
-    expect(trueBoolean).toHaveBeenCalledOnce()
+    expect(runsByDefault).toHaveBeenCalledOnce()
+    expect(runsWithFalseCallback).toHaveBeenCalledOnce()
+    expect(runsWithFalse).toHaveBeenCalledOnce()
 
-    expect(falseBoolean).not.toHaveBeenCalled()
-    expect(falseCallback).not.toHaveBeenCalled()
+    expect(skipsWithTrue).not.toHaveBeenCalled()
+    expect(skipsWithTrueCallback).not.toHaveBeenCalled()
   })
 
   it('should debounce non-submit validation', async () => {
@@ -405,15 +405,15 @@ describe('runFormValidatorPipeline', () => {
     const field = form._getOrCreateFieldApi({ name: 'name' })
     const run = vi.fn(() => ({ message: 'foo' }))
     const triggerDebounceMs = vi.fn(({ scope, formApi, fieldApi, value }) => {
-      expect(scope).toBe('form')
+      expect(scope).toBe('field')
       expect(formApi.state.values).toEqual({ name: 'test' })
       expect(fieldApi).toBe(field)
-      expect(value).toEqual({ name: 'test' })
+      expect(value).toBe('test')
 
       return 100
     })
 
-    const { runWithContext } = getPipeline(form, [
+    const { runWithContext } = getFieldPipeline(form, field, [
       {
         run,
         triggers: ['change'],
@@ -421,7 +421,7 @@ describe('runFormValidatorPipeline', () => {
       },
     ])
 
-    const promise = runWithContext({ event: 'change', field })
+    const promise = runWithContext({ event: 'change' })
 
     expect(triggerDebounceMs).toHaveBeenCalledOnce()
     expect(run).not.toHaveBeenCalled()
@@ -790,7 +790,7 @@ describe('runFormValidatorPipeline', () => {
         })
         .transform(({ name }) => ({ upperName: name.toUpperCase() }))
 
-      type Output = ToFormOutputs<
+      type Output = GetValidatorOutputs<
         [
           { run: typeof lengthSchema; triggers: [] },
           { run: typeof uppercaseSchema; triggers: [] },
@@ -816,13 +816,13 @@ describe('runFormValidatorPipeline', () => {
         })
         .transform(({ name }) => ({ nameLength: name.length }))
 
-      new InternalFormApi({
+      formOptions({
         defaultValues: { name: '' },
         validators: [{ run: schema, triggers: [] }],
         onSubmit: ({ value, validatorOutputs }) => {
           expectTypeOf(value).toEqualTypeOf<{ name: string }>()
           expectTypeOf(validatorOutputs).toEqualTypeOf<
-            readonly [{ nameLength: number }]
+            [{ nameLength: number }]
           >()
         },
       })
@@ -833,7 +833,7 @@ describe('runFormValidatorPipeline', () => {
         })
         .transform(({ name }) => ({ date: new Date(name.length) }))
 
-      new InternalFormApi({
+      formOptions({
         defaultValues: { name: '' },
         validators: [
           { run: schema, triggers: [] },
@@ -843,7 +843,7 @@ describe('runFormValidatorPipeline', () => {
         onSubmit: ({ value, validatorOutputs }) => {
           expectTypeOf(value).toEqualTypeOf<{ name: string }>()
           expectTypeOf(validatorOutputs).toEqualTypeOf<
-            readonly [{ nameLength: number }, undefined, { date: Date }]
+            [{ nameLength: number }, undefined, { date: Date }]
           >()
         },
       })
@@ -1056,7 +1056,7 @@ describe('runFormValidatorPipeline', () => {
 
     it('aborts pending schema output before a dynamic predicate skips the validator', async () => {
       const formApi = getForm({ name: 'stale' })
-      let shouldRunOnSubmit = true
+      let shouldSkipOnSubmit = false
       let resolveSchema!: (result: { value: { name: string } }) => void
       const output = new Promise<{ value: { name: string } }>((resolve) => {
         resolveSchema = resolve
@@ -1071,13 +1071,13 @@ describe('runFormValidatorPipeline', () => {
       const { runWithContext, pipeline } = getPipeline(formApi, [
         {
           run: schema,
-          runOnSubmit: () => shouldRunOnSubmit,
+          skipOnSubmit: () => shouldSkipOnSubmit,
           triggers: [],
         },
       ])
 
       const staleValidation = runWithContext({ event: 'submit' })
-      shouldRunOnSubmit = false
+      shouldSkipOnSubmit = true
       await runWithContext({ event: 'submit' })
       await staleValidation
 
@@ -1282,7 +1282,7 @@ describe('runFormValidatorPipeline', () => {
       ])
     })
 
-    it('should not run zod schema validators with runOnSubmit disabled', async () => {
+    it('does not run zod schema validators with skipOnSubmit: true', async () => {
       const formApi = getForm({ name: '' })
 
       const schema = z.object({
@@ -1293,7 +1293,7 @@ describe('runFormValidatorPipeline', () => {
         {
           run: schema,
           triggers: [],
-          runOnSubmit: false,
+          skipOnSubmit: true,
         },
       ])
 

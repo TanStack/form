@@ -4,7 +4,8 @@ import { defaultInternalBaseFieldMeta } from './FieldApi/fieldState.lib'
 import { visitAllFormFields } from './FieldApi/fieldTraversal.lib'
 import { evaluate } from './utils.lib'
 import { runValidatorPipeline } from './validation'
-import { createErrorMapFactory } from './createErrorMap.lib'
+import { createErrorMap } from './validation/createErrorMap.lib'
+import { parseIssuesFactory } from './validation/parseIssues.lib'
 import { devtools } from './devtoolsBridge.lib'
 import { reconcileValidatorInstances } from './ValidatorInstance.lib'
 import type { FormErrorMeta } from './FormApi/formState.lib'
@@ -16,6 +17,12 @@ import type {
   ServerValidateResult,
 } from './FormApi/formServerState.public'
 import type { FormOptions } from './FormApi/formOptions.public'
+
+export const initialServerFormState: ServerFormState<any> = {
+  values: undefined,
+  validationResults: [],
+  submissionAttempts: 0,
+}
 
 function createInitialFormErrorMeta(): FormErrorMeta {
   return {
@@ -152,7 +159,8 @@ export async function validateServerValues<
         signal: ctx.signal,
         formApi: undefined,
         value: values,
-        createErrorMap: createErrorMapFactory(values),
+        createErrorMap,
+        parseIssues: parseIssuesFactory(values),
         createOutput,
       }),
       scope: 'form',

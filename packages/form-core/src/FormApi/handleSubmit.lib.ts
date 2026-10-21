@@ -4,7 +4,7 @@ import {
   isValidationErrorMap,
   parseValidationResult,
 } from '../validation'
-import { createErrorMapFactory } from '../createErrorMap.lib'
+import { createErrorMap } from '../validation/createErrorMap.lib'
 import { parseIssuesFactory } from '../validation/parseIssues.lib'
 import type { InternalFormApi } from './FormApi.lib'
 import type { ValidationErrorInput } from '../validation.public'
@@ -174,7 +174,7 @@ export async function runSubmissionProcess<TFormData>(
       validatorOutputs,
       value,
       createValidationError,
-      createErrorMap: withSubmitError(createErrorMapFactory(value)),
+      createErrorMap: withSubmitError(createErrorMap),
       parseIssues: withSubmitError(parseIssuesFactory(value)),
     } satisfies FormSubmitContext<TFormData, any> as any)
 

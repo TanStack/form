@@ -697,7 +697,11 @@ export class InternalFormApi<TFormData> implements FormApi<
       this._atoms.meta.isDirty.set(true)
     }
 
-    field?._notifyEvent(options, 'change')
+    if (field) {
+      field._notifyEvent(options, 'change')
+    } else if (options.causeValidation) {
+      void this.validate('change')
+    }
     this._notifyFormListener('change', field)
   }
 
