@@ -92,7 +92,7 @@ type of its field API prop.
 
 The returned component omits `fieldPropKey` from its public props and reads
 that field API from the nearest App Form field context. It must be rendered
-beneath an App Form `Field` or field-group `Field` component.
+beneath an App Form or field-group `Field` or `ArrayField` component.
 
 #### Type Parameters
 
