@@ -13,6 +13,55 @@ import type {
   ValidationFailureItem,
 } from '../../src/validation/state.public'
 
+describe('formOptions reuse', () => {
+  it('keeps omitted validators empty when adding a submit handler', () => {
+    const sharedOptions = formOptions({ defaultValues: { name: '' } })
+
+    formOptions({
+      ...sharedOptions,
+      onSubmit: ({ value, validatorOutputs, formApi }) => {
+        expectTypeOf(value).toEqualTypeOf<{ name: string }>()
+        expectTypeOf(validatorOutputs).toEqualTypeOf<[]>()
+        expectTypeOf(formApi.state.errors).toEqualTypeOf<never[]>()
+      },
+    })
+  })
+
+  it('reuses strict schema options without registering validators', () => {
+    const schema = z.object({ status: z.enum(['draft', 'published']) })
+    const sharedOptions = formOptions.strictSchema(schema, {
+      defaultValues: { status: 'draft' },
+    })
+
+    formOptions({
+      ...sharedOptions,
+      onSubmit: ({ value, validatorOutputs, formApi }) => {
+        expectTypeOf(value).toEqualTypeOf<z.input<typeof schema>>()
+        expectTypeOf(validatorOutputs).toEqualTypeOf<[]>()
+        expectTypeOf(formApi.state.errors).toEqualTypeOf<never[]>()
+      },
+    })
+  })
+
+  it('reuses loose schema options without registering validators', () => {
+    const sharedOptions = formOptions.looseSchema(
+      z.object({ name: z.string() }),
+      {
+        defaultValues: { name: null },
+      },
+    )
+
+    formOptions({
+      ...sharedOptions,
+      onSubmit: ({ value, validatorOutputs, formApi }) => {
+        expectTypeOf(value).toEqualTypeOf<{ name: string | null }>()
+        expectTypeOf(validatorOutputs).toEqualTypeOf<[]>()
+        expectTypeOf(formApi.state.errors).toEqualTypeOf<never[]>()
+      },
+    })
+  })
+})
+
 describe('formOptions.strictSchema', () => {
   it('accepts reusable scope-aware predicates with schema runners', () => {
     const rewardEarlyPunishLate = createValidator({

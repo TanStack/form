@@ -21,6 +21,11 @@ type TryGetValidatorOutputs<TValidators> =
     ? GetValidatorOutputs<TValidators>
     : []
 
+// Spreading `formOptions` results in things like `useForm` breaks when no validator was
+// provided. We have to default to [] to make it work properly.
+type InferredValidatorConfig<TValidatorConfig extends unknown[], TValidators> =
+  TValidators extends ReadonlyArray<unknown> ? TValidatorConfig : []
+
 /**
  * Configures a form's initial values, validation, listeners, and submission.
  *
@@ -245,7 +250,7 @@ export type FormOptionsStrictSchemaFn<out TPayload> = <
   >,
 ) => FormOptions<
   NoInfer<StandardSchemaInput<TSchema>>,
-  TValidatorConfig,
+  InferredValidatorConfig<TValidatorConfig, TValidators>,
   TValidators,
   TSubmitReturn,
   TPayload
@@ -299,7 +304,7 @@ export type FormOptionsLooseSchemaFn<out TPayload> = <
   >,
 ) => FormOptions<
   InferUnion<TFormData, StandardSchemaInput<TSchema>>,
-  TValidatorConfig,
+  InferredValidatorConfig<TValidatorConfig, TValidators>,
   TValidators,
   TSubmitReturn,
   TPayload
@@ -335,7 +340,7 @@ export interface FormOptionsApi<out TPayload> {
     >,
   ): FormOptions<
     TFormData,
-    TValidatorConfig,
+    InferredValidatorConfig<TValidatorConfig, TValidators>,
     TValidators,
     TSubmitReturn,
     TPayload
@@ -402,7 +407,7 @@ export interface FormOptionsApi<out TPayload> {
  */
 export const formOptions = ((opts) => opts) as FormOptionsApi<unknown>
 
-formOptions.strictSchema = (_schema, opts) => opts
+formOptions.strictSchema = (_schema, opts) => opts as never
 formOptions.looseSchema = (_schema, opts) => opts as never
 
 /**
