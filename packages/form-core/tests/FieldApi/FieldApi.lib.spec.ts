@@ -395,6 +395,8 @@ describe('InternalFieldApi - _kill', () => {
     expect(form.getFieldValue('items')).toEqual(beforeDelete)
     field.removeValue(0)
     expect(form.getFieldValue('items')).toEqual(beforeDelete)
+    field.replaceValue(0, 'ignored')
+    expect(form.getFieldValue('items')).toEqual(beforeDelete)
     field.filterValues(() => false)
     expect(form.getFieldValue('items')).toEqual(beforeDelete)
   })
@@ -640,6 +642,142 @@ describe('InternalFieldApi - _unregister', () => {
       { message: 'Target is invalid' },
     ])
     expect(form.state.isValid).toBe(false)
+  })
+})
+
+describe('InternalFieldApi - pushValue', () => {
+  it('appends an item through pushFieldValue', ({ onTestFinished }) => {
+    const form = new InternalFormApi({
+      defaultValues: { items: ['a'] },
+    })
+    const field = form._getOrCreateFieldApi({ name: 'items' })
+    const pushFieldValue = vi.spyOn(form, 'pushFieldValue')
+    onTestFinished(() => pushFieldValue.mockRestore())
+
+    field.pushValue('b')
+
+    expect(pushFieldValue).toHaveBeenCalledOnce()
+    expect(field.value).toEqual(['a', 'b'])
+  })
+})
+
+describe('InternalFieldApi - insertValue', () => {
+  it('inserts an item through insertFieldValue', ({ onTestFinished }) => {
+    const form = new InternalFormApi({
+      defaultValues: { items: ['a', 'b'] },
+    })
+    const field = form._getOrCreateFieldApi({ name: 'items' })
+    const insertFieldValue = vi.spyOn(form, 'insertFieldValue')
+    onTestFinished(() => insertFieldValue.mockRestore())
+
+    field.insertValue(1, 'x')
+
+    expect(insertFieldValue).toHaveBeenCalledOnce()
+    expect(field.value).toEqual(['a', 'x', 'b'])
+  })
+})
+
+describe('InternalFieldApi - clearValues', () => {
+  it('empties the array through clearFieldValues', ({ onTestFinished }) => {
+    const form = new InternalFormApi({
+      defaultValues: { items: ['a', 'b', 'c'] },
+    })
+    const field = form._getOrCreateFieldApi({ name: 'items' })
+    const clearFieldValues = vi.spyOn(form, 'clearFieldValues')
+    onTestFinished(() => clearFieldValues.mockRestore())
+
+    field.clearValues()
+
+    expect(clearFieldValues).toHaveBeenCalledOnce()
+    expect(field.value).toEqual([])
+  })
+})
+
+describe('InternalFieldApi - swapValues', () => {
+  it('swaps two items through swapFieldValues', ({ onTestFinished }) => {
+    const form = new InternalFormApi({
+      defaultValues: { items: ['a', 'b', 'c'] },
+    })
+    const field = form._getOrCreateFieldApi({ name: 'items' })
+    const swapFieldValues = vi.spyOn(form, 'swapFieldValues')
+    onTestFinished(() => swapFieldValues.mockRestore())
+
+    field.swapValues(0, 2)
+
+    expect(swapFieldValues).toHaveBeenCalledOnce()
+    expect(field.value).toEqual(['c', 'b', 'a'])
+  })
+})
+
+describe('InternalFieldApi - moveValue', () => {
+  it('moves an item through moveFieldValue', ({ onTestFinished }) => {
+    const form = new InternalFormApi({
+      defaultValues: { items: ['a', 'b', 'c', 'd'] },
+    })
+    const field = form._getOrCreateFieldApi({ name: 'items' })
+    const moveFieldValue = vi.spyOn(form, 'moveFieldValue')
+    onTestFinished(() => moveFieldValue.mockRestore())
+
+    field.moveValue(0, 2)
+
+    expect(moveFieldValue).toHaveBeenCalledOnce()
+    expect(field.value).toEqual(['b', 'c', 'a', 'd'])
+  })
+})
+
+describe('InternalFieldApi - removeValue', () => {
+  it('removes an item through removeFieldValue', ({ onTestFinished }) => {
+    const form = new InternalFormApi({
+      defaultValues: { items: ['a', 'b', 'c'] },
+    })
+    const field = form._getOrCreateFieldApi({ name: 'items' })
+    const removeFieldValue = vi.spyOn(form, 'removeFieldValue')
+    onTestFinished(() => removeFieldValue.mockRestore())
+
+    field.removeValue(1)
+
+    expect(removeFieldValue).toHaveBeenCalledOnce()
+    expect(field.value).toEqual(['a', 'c'])
+  })
+})
+
+describe('InternalFieldApi - replaceValue', () => {
+  it('replaces an item through replaceFieldValue', ({ onTestFinished }) => {
+    const form = new InternalFormApi({
+      defaultValues: { items: ['a', 'b', 'c'] },
+    })
+    const field = form._getOrCreateFieldApi({ name: 'items' })
+    const replaceFieldValue = vi.spyOn(form, 'replaceFieldValue')
+    onTestFinished(() => replaceFieldValue.mockRestore())
+
+    field.replaceValue(1, 'x')
+
+    expect(replaceFieldValue).toHaveBeenCalledOnce()
+    expect(field.value).toEqual(['a', 'x', 'c'])
+  })
+})
+
+describe('InternalFieldApi - filterValues', () => {
+  it('filters items with the supplied predicate context through filterFieldValues', ({
+    onTestFinished,
+  }) => {
+    const form = new InternalFormApi({
+      defaultValues: { items: ['a', 'b', 'c'] },
+    })
+    const field = form._getOrCreateFieldApi({ name: 'items' })
+    const filterFieldValues = vi.spyOn(form, 'filterFieldValues')
+    onTestFinished(() => filterFieldValues.mockRestore())
+    const thisArg = { excluded: 'b' }
+
+    field.filterValues(
+      function (this: { excluded: string }, value) {
+        return value !== this.excluded
+      },
+      { thisArg },
+    )
+
+    expect(filterFieldValues).toHaveBeenCalledOnce()
+    expect(field.value).toEqual(['a', 'c'])
   })
 })
 
