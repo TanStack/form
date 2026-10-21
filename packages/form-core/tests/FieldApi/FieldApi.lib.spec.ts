@@ -472,6 +472,7 @@ describe('InternalFieldApi - _getIsDefaultValue', () => {
     expect(form.defaultValues).toEqual({
       user: { firstName: 'Tony', lastName: 'Hawk' },
     })
+    expect(form.state.isDirty).toBe(false)
     expect(form.state.isDefaultValue).toBe(false)
     expect(user.meta.isDefaultValue).toBe(false)
     expect(firstName.meta.isDefaultValue).toBe(false)

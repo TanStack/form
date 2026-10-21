@@ -269,6 +269,50 @@ describe('InternalFormApi - _getOrCreateFieldApi', () => {
   })
 })
 
+describe('InternalFormApi - _getIsDefaultValue', () => {
+  it('reports restored values as default while the form remains dirty', () => {
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+
+    expect(form.state.isDefaultValue).toBe(true)
+
+    form.setFieldValue('name', 'Alice')
+
+    expect(form.state).toMatchObject({
+      values: { name: 'Alice' },
+      isDefaultValue: false,
+    })
+
+    form.setFieldValue('name', '')
+
+    expect(form.state).toMatchObject({
+      values: { name: '' },
+      isDefaultValue: true,
+      isDirty: true,
+      isPristine: false,
+    })
+  })
+
+  it('reports deeply equal objects and arrays as default values', () => {
+    const form = new InternalFormApi({
+      defaultValues: { profile: { name: 'Tony', tags: ['skater'] } },
+    })
+
+    expect(form.state.isDefaultValue).toBe(true)
+
+    form.setFieldValue('profile', { name: 'Tony', tags: ['skater'] })
+
+    expect(form.state.isDefaultValue).toBe(true)
+
+    form.setFieldValue('profile.tags', ['skater', 'legend'])
+
+    expect(form.state.isDefaultValue).toBe(false)
+
+    form.setFieldValue('profile.tags', ['skater'])
+
+    expect(form.state.isDefaultValue).toBe(true)
+  })
+})
+
 describe('InternalFormApi - getFieldValue', () => {
   it('reads values through top-level, nested object, and array paths', () => {
     const form = new InternalFormApi({
@@ -736,6 +780,7 @@ describe('InternalFormApi - reset', () => {
 
     expect(form.state).toMatchObject({
       values: { name: 'dirty' },
+      isDefaultValue: false,
       isDirty: true,
       isTouched: true,
       errors: [{ message: 'Validation error' }],
@@ -746,6 +791,7 @@ describe('InternalFormApi - reset', () => {
 
     expect(form.state).toMatchObject({
       values: { name: '' },
+      isDefaultValue: true,
       isDirty: false,
       isTouched: false,
       errors: [],
@@ -828,6 +874,7 @@ describe('InternalFormApi - resetField', () => {
     expect(field.value).toBe('bye')
     expect(field.meta.isTouched).toBe(true)
     expect(field.errors).toEqual([{ message: 'Reset me' }])
+    expect(form.state.isDefaultValue).toBe(false)
     expect(form.state.isValid).toBe(false)
 
     form.resetField('name')
@@ -836,6 +883,7 @@ describe('InternalFormApi - resetField', () => {
     expect(field.meta.isTouched).toBe(false)
     expect(field.errors).toEqual([])
     expect(form.state.isTouched).toBe(false)
+    expect(form.state.isDefaultValue).toBe(true)
     expect(form.state.isValid).toBe(true)
   })
 
