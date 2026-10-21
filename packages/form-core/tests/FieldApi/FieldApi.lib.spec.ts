@@ -221,6 +221,397 @@ describe('InternalFieldApi - atom', () => {
   })
 })
 
+describe('InternalFieldApi - _getIsDefaultValue', () => {
+  it('returns to the default value while remaining dirty after an edit is undone', () => {
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+
+    expect(field.meta.isDefaultValue).toBe(true)
+
+    field.handleChange('Alice')
+
+    expect(field.value).toBe('Alice')
+    expect(field.meta.isDefaultValue).toBe(false)
+
+    field.handleChange('')
+
+    expect(field.value).toBe('')
+    expect(field.meta).toMatchObject({
+      isDefaultValue: true,
+      isDirty: true,
+      isPristine: false,
+    })
+  })
+
+  it('reports default-value state across nested fields', () => {
+    const form = new InternalFormApi({
+      defaultValues: { user: { firstName: 'Tony', lastName: 'Hawk' } },
+    })
+    const user = form._getOrCreateFieldApi({ name: 'user' })
+
+    expect(user.meta.isDefaultValue).toBe(true)
+
+    const firstName = form._getOrCreateFieldApi({ name: 'user.firstName' })
+    const lastName = form._getOrCreateFieldApi({ name: 'user.lastName' })
+
+    expect(firstName.meta.isDefaultValue).toBe(true)
+    expect(lastName.meta.isDefaultValue).toBe(true)
+
+    firstName.handleChange('Anthony')
+
+    expect(user.value).toEqual({ firstName: 'Anthony', lastName: 'Hawk' })
+    expect(user.meta.isDefaultValue).toBe(false)
+    expect(firstName.meta.isDefaultValue).toBe(false)
+    expect(lastName.meta.isDefaultValue).toBe(true)
+
+    firstName.handleChange('Tony')
+
+    expect(user.value).toEqual({ firstName: 'Tony', lastName: 'Hawk' })
+    expect(user.meta.isDefaultValue).toBe(true)
+    expect(firstName.meta.isDefaultValue).toBe(true)
+    expect(lastName.meta.isDefaultValue).toBe(true)
+  })
+
+  it('keeps partially restored objects non-default', () => {
+    const form = new InternalFormApi({
+      defaultValues: { user: { firstName: 'Tony', lastName: 'Hawk' } },
+    })
+    const user = form._getOrCreateFieldApi({ name: 'user' })
+    const firstName = form._getOrCreateFieldApi({ name: 'user.firstName' })
+    const lastName = form._getOrCreateFieldApi({ name: 'user.lastName' })
+
+    expect(form.state.isDefaultValue).toBe(true)
+    expect(user.meta.isDefaultValue).toBe(true)
+    expect(firstName.meta.isDefaultValue).toBe(true)
+    expect(lastName.meta.isDefaultValue).toBe(true)
+
+    firstName.handleChange('Max')
+    lastName.handleChange('Mustermann')
+
+    expect(form.state.isDefaultValue).toBe(false)
+    expect(user.meta.isDefaultValue).toBe(false)
+    expect(firstName.meta.isDefaultValue).toBe(false)
+    expect(lastName.meta.isDefaultValue).toBe(false)
+
+    firstName.handleChange('Tony')
+
+    expect(user.value).toEqual({ firstName: 'Tony', lastName: 'Mustermann' })
+    expect(form.state.isDefaultValue).toBe(false)
+    expect(user.meta.isDefaultValue).toBe(false)
+    expect(firstName.meta.isDefaultValue).toBe(true)
+    expect(lastName.meta.isDefaultValue).toBe(false)
+
+    lastName.handleChange('Hawk')
+
+    expect(user.value).toEqual({ firstName: 'Tony', lastName: 'Hawk' })
+    expect(form.state.isDefaultValue).toBe(true)
+    expect(user.meta.isDefaultValue).toBe(true)
+    expect(firstName.meta.isDefaultValue).toBe(true)
+    expect(lastName.meta.isDefaultValue).toBe(true)
+  })
+
+  it('reports nested defaults after object replacement', () => {
+    const form = new InternalFormApi({
+      defaultValues: { user: { firstName: 'Tony', lastName: 'Hawk' } },
+    })
+    const user = form._getOrCreateFieldApi({ name: 'user' })
+    const firstName = form._getOrCreateFieldApi({ name: 'user.firstName' })
+    const lastName = form._getOrCreateFieldApi({ name: 'user.lastName' })
+
+    expect(form.state.isDefaultValue).toBe(true)
+    expect(user.meta.isDefaultValue).toBe(true)
+    expect(firstName.meta.isDefaultValue).toBe(true)
+    expect(lastName.meta.isDefaultValue).toBe(true)
+
+    user.handleChange({ firstName: 'Max', lastName: 'Hawk' })
+
+    expect(firstName.value).toBe('Max')
+    expect(lastName.value).toBe('Hawk')
+    expect(form.state.isDefaultValue).toBe(false)
+    expect(user.meta.isDefaultValue).toBe(false)
+    expect(firstName.meta.isDefaultValue).toBe(false)
+    expect(lastName.meta.isDefaultValue).toBe(true)
+
+    user.handleChange({ firstName: 'Tony', lastName: 'Hawk' })
+
+    expect(user.value).toEqual({ firstName: 'Tony', lastName: 'Hawk' })
+    expect(form.state.isDefaultValue).toBe(true)
+    expect(user.meta.isDefaultValue).toBe(true)
+    expect(firstName.meta.isDefaultValue).toBe(true)
+    expect(lastName.meta.isDefaultValue).toBe(true)
+  })
+
+  it('reports nested state against updated defaults', () => {
+    const form = new InternalFormApi({
+      defaultValues: { user: { firstName: 'Tony', lastName: 'Hawk' } },
+    })
+    const user = form._getOrCreateFieldApi({ name: 'user' })
+    const firstName = form._getOrCreateFieldApi({ name: 'user.firstName' })
+    const lastName = form._getOrCreateFieldApi({ name: 'user.lastName' })
+
+    firstName.handleChange('Max')
+
+    expect(form.state.isDefaultValue).toBe(false)
+    expect(user.meta.isDefaultValue).toBe(false)
+    expect(firstName.meta.isDefaultValue).toBe(false)
+    expect(lastName.meta.isDefaultValue).toBe(true)
+
+    form._update({
+      defaultValues: { user: { firstName: 'Max', lastName: 'Hawk' } },
+    })
+
+    expect(form.state.values).toEqual({
+      user: { firstName: 'Max', lastName: 'Hawk' },
+    })
+    expect(form.state.isDefaultValue).toBe(true)
+    expect(user.meta.isDefaultValue).toBe(true)
+    expect(firstName.meta.isDefaultValue).toBe(true)
+    expect(lastName.meta.isDefaultValue).toBe(true)
+
+    form._update({
+      defaultValues: { user: { firstName: 'Antonio', lastName: 'Hawk' } },
+    })
+
+    expect(form.state.values).toEqual({
+      user: { firstName: 'Max', lastName: 'Hawk' },
+    })
+    expect(form.state.isDefaultValue).toBe(false)
+    expect(user.meta.isDefaultValue).toBe(false)
+    expect(firstName.meta.isDefaultValue).toBe(false)
+    expect(lastName.meta.isDefaultValue).toBe(true)
+  })
+
+  it('reports new defaults after a form reset', () => {
+    const form = new InternalFormApi({
+      defaultValues: { user: { firstName: 'Tony', lastName: 'Hawk' } },
+    })
+    const previousUser = form._getOrCreateFieldApi({ name: 'user' })
+    const previousFirstName = form._getOrCreateFieldApi({
+      name: 'user.firstName',
+    })
+    const previousLastName = form._getOrCreateFieldApi({
+      name: 'user.lastName',
+    })
+
+    previousFirstName.handleChange('Max')
+
+    expect(form.state.isDefaultValue).toBe(false)
+    expect(previousUser.meta.isDefaultValue).toBe(false)
+    expect(previousFirstName.meta.isDefaultValue).toBe(false)
+    expect(previousLastName.meta.isDefaultValue).toBe(true)
+
+    form.reset({ user: { firstName: 'Rodney', lastName: 'Mullen' } })
+
+    const user = form._getOrCreateFieldApi({ name: 'user' })
+    const firstName = form._getOrCreateFieldApi({ name: 'user.firstName' })
+    const lastName = form._getOrCreateFieldApi({ name: 'user.lastName' })
+
+    previousFirstName.handleChange('stale edit')
+
+    expect(form.state.values).toEqual({
+      user: { firstName: 'Rodney', lastName: 'Mullen' },
+    })
+    expect(form.defaultValues).toEqual({
+      user: { firstName: 'Rodney', lastName: 'Mullen' },
+    })
+    expect(form.state.isDefaultValue).toBe(true)
+    expect(user.meta.isDefaultValue).toBe(true)
+    expect(firstName.meta.isDefaultValue).toBe(true)
+    expect(lastName.meta.isDefaultValue).toBe(true)
+
+    firstName.handleChange('Tony')
+
+    expect(user.value).toEqual({ firstName: 'Tony', lastName: 'Mullen' })
+    expect(form.state.isDefaultValue).toBe(false)
+    expect(user.meta.isDefaultValue).toBe(false)
+    expect(firstName.meta.isDefaultValue).toBe(false)
+    expect(lastName.meta.isDefaultValue).toBe(true)
+
+    firstName.handleChange('Rodney')
+
+    expect(user.value).toEqual({ firstName: 'Rodney', lastName: 'Mullen' })
+    expect(form.state.isDefaultValue).toBe(true)
+    expect(user.meta.isDefaultValue).toBe(true)
+    expect(firstName.meta.isDefaultValue).toBe(true)
+    expect(lastName.meta.isDefaultValue).toBe(true)
+  })
+
+  it('reports preserved defaults after a form reset', () => {
+    const form = new InternalFormApi({
+      defaultValues: { user: { firstName: 'Tony', lastName: 'Hawk' } },
+    })
+    const previousUser = form._getOrCreateFieldApi({ name: 'user' })
+    const previousFirstName = form._getOrCreateFieldApi({
+      name: 'user.firstName',
+    })
+    const previousLastName = form._getOrCreateFieldApi({
+      name: 'user.lastName',
+    })
+
+    previousFirstName.handleChange('edited')
+
+    expect(form.state.isDefaultValue).toBe(false)
+    expect(previousUser.meta.isDefaultValue).toBe(false)
+    expect(previousFirstName.meta.isDefaultValue).toBe(false)
+    expect(previousLastName.meta.isDefaultValue).toBe(true)
+
+    form.reset(
+      { user: { firstName: 'Max', lastName: 'Hawk' } },
+      { updateDefaultValues: false },
+    )
+
+    const user = form._getOrCreateFieldApi({ name: 'user' })
+    const firstName = form._getOrCreateFieldApi({ name: 'user.firstName' })
+    const lastName = form._getOrCreateFieldApi({ name: 'user.lastName' })
+
+    previousFirstName.handleChange('stale edit')
+
+    expect(form.state.values).toEqual({
+      user: { firstName: 'Max', lastName: 'Hawk' },
+    })
+    expect(form.defaultValues).toEqual({
+      user: { firstName: 'Tony', lastName: 'Hawk' },
+    })
+    expect(form.state.isDefaultValue).toBe(false)
+    expect(user.meta.isDefaultValue).toBe(false)
+    expect(firstName.meta.isDefaultValue).toBe(false)
+    expect(lastName.meta.isDefaultValue).toBe(true)
+
+    firstName.handleChange('Tony')
+
+    expect(user.value).toEqual({ firstName: 'Tony', lastName: 'Hawk' })
+    expect(form.state.isDefaultValue).toBe(true)
+    expect(user.meta.isDefaultValue).toBe(true)
+    expect(firstName.meta.isDefaultValue).toBe(true)
+    expect(lastName.meta.isDefaultValue).toBe(true)
+  })
+
+  it('reports moved fields as non-default and returns them to default when moved back', () => {
+    const form = new InternalFormApi({
+      defaultValues: { items: [{ name: 'a' }, { name: 'b' }] },
+    })
+    const items = form._getOrCreateFieldApi({ name: 'items' })
+    const item0 = form._getOrCreateFieldApi({ name: 'items[0]' })
+    const name0 = form._getOrCreateFieldApi({ name: 'items[0].name' })
+
+    expect(items.meta.isDefaultValue).toBe(true)
+    expect(item0.meta.isDefaultValue).toBe(true)
+    expect(name0.meta.isDefaultValue).toBe(true)
+
+    // Before:    0      1
+    // After:     1      0
+    // Fields:    -      item0
+    items.swapValues(0, 1)
+
+    expect(items.value).toEqual([{ name: 'b' }, { name: 'a' }])
+    expect(item0.name).toBe('items[1]')
+    expect(item0.value).toEqual({ name: 'a' })
+    expect(name0.name).toBe('items[1].name')
+    expect(name0.value).toBe('a')
+    expect(items.meta.isDefaultValue).toBe(false)
+    expect(item0.meta.isDefaultValue).toBe(false)
+    expect(name0.meta.isDefaultValue).toBe(false)
+
+    items.swapValues(0, 1)
+
+    expect(items.value).toEqual([{ name: 'a' }, { name: 'b' }])
+    expect(item0.name).toBe('items[0]')
+    expect(name0.name).toBe('items[0].name')
+    expect(items.meta.isDefaultValue).toBe(true)
+    expect(item0.meta.isDefaultValue).toBe(true)
+    expect(name0.meta.isDefaultValue).toBe(true)
+
+    name0.handleChange('updated')
+
+    expect(items.value).toEqual([{ name: 'updated' }, { name: 'b' }])
+    expect(item0.value).toEqual({ name: 'updated' })
+    expect(items.meta.isDefaultValue).toBe(false)
+    expect(item0.meta.isDefaultValue).toBe(false)
+    expect(name0.meta.isDefaultValue).toBe(false)
+  })
+
+  it('returns an array to default after reversing an item move', () => {
+    const form = new InternalFormApi({
+      defaultValues: { items: ['a', 'b', 'c'] },
+    })
+    const items = form._getOrCreateFieldApi({ name: 'items' })
+
+    expect(items.meta.isDefaultValue).toBe(true)
+
+    items.moveValue(0, 2)
+
+    expect(items.value).toEqual(['b', 'c', 'a'])
+    expect(items.meta.isDefaultValue).toBe(false)
+
+    items.moveValue(2, 0)
+
+    expect(items.value).toEqual(['a', 'b', 'c'])
+    expect(items.meta.isDefaultValue).toBe(true)
+  })
+
+  it('returns an array to default after removing an inserted item', () => {
+    const form = new InternalFormApi({
+      defaultValues: { items: ['a', 'b', 'c'] },
+    })
+    const items = form._getOrCreateFieldApi({ name: 'items' })
+
+    expect(items.meta.isDefaultValue).toBe(true)
+
+    items.insertValue(1, 'x')
+
+    expect(items.value).toEqual(['a', 'x', 'b', 'c'])
+    expect(items.meta.isDefaultValue).toBe(false)
+
+    items.removeValue(1)
+
+    expect(items.value).toEqual(['a', 'b', 'c'])
+    expect(items.meta.isDefaultValue).toBe(true)
+  })
+
+  it('returns an array to default after removing an appended item', () => {
+    const form = new InternalFormApi({
+      defaultValues: { items: ['a', 'b', 'c'] },
+    })
+    const items = form._getOrCreateFieldApi({ name: 'items' })
+
+    expect(items.meta.isDefaultValue).toBe(true)
+
+    items.pushValue('d')
+
+    expect(items.value).toEqual(['a', 'b', 'c', 'd'])
+    expect(items.meta.isDefaultValue).toBe(false)
+
+    items.removeValue(3)
+
+    expect(items.value).toEqual(['a', 'b', 'c'])
+    expect(items.meta.isDefaultValue).toBe(true)
+  })
+
+  it('returns a cleared array to default after reset and reports later changes as non-default', () => {
+    const form = new InternalFormApi({
+      defaultValues: { items: ['a', 'b', 'c'] },
+    })
+    const items = form._getOrCreateFieldApi({ name: 'items' })
+
+    expect(items.meta.isDefaultValue).toBe(true)
+
+    items.clearValues()
+
+    expect(items.value).toEqual([])
+    expect(items.meta.isDefaultValue).toBe(false)
+
+    items.reset()
+
+    expect(items.value).toEqual(['a', 'b', 'c'])
+    expect(items.meta.isDefaultValue).toBe(true)
+
+    items.pushValue('d')
+
+    expect(items.value).toEqual(['a', 'b', 'c', 'd'])
+    expect(items.meta.isDefaultValue).toBe(false)
+  })
+})
+
 describe('InternalFieldApi - reset', () => {
   it('aborts active validation, ignores its late result, and allows validation to run again', async ({
     onTestFinished,
