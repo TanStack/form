@@ -32,6 +32,61 @@ describe('getOrCreateFieldApi', () => {
   })
 })
 
+describe('InternalFieldApi - name', () => {
+  it('reports names for nested object fields', () => {
+    const form = new InternalFormApi({
+      defaultValues: { user: { profile: { name: 'Alice' } } },
+    })
+    const user = form._getOrCreateFieldApi({ name: 'user' })
+    const profile = form._getOrCreateFieldApi({ name: 'user.profile' })
+    const name = form._getOrCreateFieldApi({ name: 'user.profile.name' })
+
+    expect(user.name).toBe('user')
+    expect(profile.name).toBe('user.profile')
+    expect(name.name).toBe('user.profile.name')
+  })
+
+  it('reports names for array items and nested properties', () => {
+    const form = new InternalFormApi({
+      defaultValues: {
+        items: [{ name: 'Alice' }],
+        user: { items: [{ name: 'Bob' }] },
+      },
+    })
+    const item = form._getOrCreateFieldApi({ name: 'items[0]' })
+    const name = form._getOrCreateFieldApi({ name: 'items[0].name' })
+    const nestedName = form._getOrCreateFieldApi({ name: 'user.items[0].name' })
+
+    expect(item.name).toBe('items[0]')
+    expect(name.name).toBe('items[0].name')
+    expect(nestedName.name).toBe('user.items[0].name')
+  })
+
+  it('reports names with consecutive array indices', () => {
+    const form = new InternalFormApi({
+      defaultValues: { items: [[['Alice'], ['Bob', 'Carol', 'Dan']]] },
+    })
+    const nestedArray = form._getOrCreateFieldApi({ name: 'items[0][1]' })
+    const item = form._getOrCreateFieldApi({ name: 'items[0][1][2]' })
+
+    expect(nestedArray.name).toBe('items[0][1]')
+    expect(item.name).toBe('items[0][1][2]')
+    expect(item.value).toBe('Dan')
+  })
+
+  it('reports names inside a top-level array', () => {
+    const form = new InternalFormApi({
+      defaultValues: [{ name: 'Alice' }],
+    })
+    const item = form._getOrCreateFieldApi({ name: '[0]' })
+    const name = form._getOrCreateFieldApi({ name: '[0].name' })
+
+    expect(item.name).toBe('[0]')
+    expect(name.name).toBe('[0].name')
+    expect(name.value).toBe('Alice')
+  })
+})
+
 describe('InternalFieldApi - _update', () => {
   it('retains default listeners before incoming listeners during construction and updates', () => {
     const defaultListener = vi.fn()
