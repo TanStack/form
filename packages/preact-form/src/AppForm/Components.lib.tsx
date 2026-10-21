@@ -3,7 +3,10 @@ import Preact from 'preact/compat'
 import { InternalFormGroupApi } from '@tanstack/form-core/internals'
 import { attachPreactFormComponents } from '../PreactForm/Components.lib'
 import { useField } from '../PreactForm/useField.lib'
-import { useValueFieldSubscription } from '../PreactForm/fieldSubscriptions.lib'
+import {
+  useArrayFieldSubscription,
+  useValueFieldSubscription,
+} from '../PreactForm/fieldSubscriptions.lib'
 import { Subscribe } from '../Subscribe.public'
 import { FieldContext, FormContext } from './contexts.lib'
 import type { AnyInternalFormApi } from '@tanstack/form-core/internals'
@@ -36,6 +39,13 @@ export function attachPreactAppFormComponents(
     form,
     fieldComponents,
   ) as AnyPreactAppFormApi['Field']
+  const arrayField = createFieldWithContext(
+    form,
+    fieldComponents,
+    useArrayFieldSubscription,
+  )
+  arrayField.displayName = 'TanStackForm.ArrayField'
+  resultForm.ArrayField = arrayField as AnyPreactAppFormApi['ArrayField']
   resultForm.FormGroup = createFormGroupWithContext(
     resultForm as any,
   ) as AnyPreactAppFormApi['FormGroup']
@@ -63,10 +73,11 @@ type AnyFieldComponent = FunctionComponent<
 function createFieldWithContext(
   form: AnyInternalFormApi,
   fieldComponents: Record<string, FunctionComponent<any>>,
+  useFieldSubscription = useValueFieldSubscription,
 ) {
   const TanStackFormField: AnyFieldComponent = (props) => {
     const fieldApi = useField({ ...props, form }, fieldComponents)
-    const field = useValueFieldSubscription(fieldApi)
+    const field = useFieldSubscription(fieldApi)
 
     return (
       // eslint-disable-next-line @eslint-react/no-context-provider
