@@ -1,17 +1,11 @@
 import { describe, expectTypeOf, it } from 'vitest'
 import { z } from 'zod'
 import { formOptions } from '../../src/FormApi/formOptions.public'
+import { createValidator, createValidators } from '../../src/validation.public'
 import type { AnyFieldApi } from '../../src/FieldApi/FieldApi.public'
-import type { FormApi } from '../../src/FormApi/FormApi.public'
 import type { OnSubmitError } from '../../src/FormApi/formSubmit.public'
-import type {
-  FormOptions,
-  FormOptionsApi,
-} from '../../src/FormApi/formOptions.public'
 import type { ServerFormState } from '../../src/FormApi/formServerState.public'
 import type { StandardSchemaV1Issue } from '../../src/standardSchema.public'
-// TODO finalize migration
-import type { FormErrorTypes } from '../../src/validation.public'
 import type {
   CreateErrorMapFn,
   ParseIssuesFn,
@@ -20,6 +14,89 @@ import type {
 } from '../../src/validation/state.public'
 
 describe('formOptions.strictSchema', () => {
+  it('accepts reusable scope-aware predicates with schema runners', () => {
+    const rewardEarlyPunishLate = createValidator({
+      triggers: [
+        'blur',
+        {
+          trigger: 'change',
+          when: ({ fieldApi }) =>
+            fieldApi !== undefined && fieldApi.meta.isInvalid,
+        },
+      ],
+      skipOnSubmit: ({ scope, formApi }) =>
+        scope === 'form' && formApi.state.submissionAttempts === 0,
+    })
+    const schema = z.object({
+      name: z.string().transform((name) => name.length),
+    })
+
+    formOptions.strictSchema(schema, {
+      defaultValues: { name: '' },
+      validators: [rewardEarlyPunishLate(schema)],
+      onSubmit: ({ value, validatorOutputs }) => {
+        expectTypeOf(value).toEqualTypeOf<{ name: string }>()
+        expectTypeOf(validatorOutputs).toEqualTypeOf<
+          [{ name: number } | undefined]
+        >()
+      },
+    })
+  })
+
+  it('accepts reusable validator arrays with scope-aware predicates', () => {
+    const withChecks = createValidators([
+      {
+        triggers: [
+          {
+            trigger: 'change',
+            when: ({ scope, fieldApi }) =>
+              scope === 'form' && fieldApi !== undefined,
+          },
+        ],
+      },
+      {
+        triggers: ['blur'],
+        skipOnSubmit: ({ scope }) => scope !== 'form',
+      },
+    ])
+    const schema = z.object({ name: z.string() })
+
+    formOptions.strictSchema(schema, {
+      defaultValues: { name: '' },
+      validators: [...withChecks(schema, schema)],
+      onSubmit: ({ validatorOutputs }) => {
+        expectTypeOf(validatorOutputs).toEqualTypeOf<
+          [{ name: string }, { name: string } | undefined]
+        >()
+      },
+    })
+  })
+
+  it('exposes the form scope to inline predicates', () => {
+    formOptions.strictSchema(z.object({ name: z.string() }), {
+      defaultValues: { name: '' },
+      validators: [
+        {
+          triggers: [
+            {
+              trigger: 'change',
+              when: ({ scope, value }) => {
+                expectTypeOf(scope).toEqualTypeOf<'form'>()
+                expectTypeOf(value).toEqualTypeOf<{ name: string }>()
+                return value.name !== ''
+              },
+            },
+          ],
+          skipOnSubmit: ({ scope }) => {
+            expectTypeOf(scope).toEqualTypeOf<'form'>()
+            return false
+          },
+          run: () => undefined,
+        },
+      ],
+    })
+  })
+
   it('uses the complete schema input without registering a validator', () => {
     const schema = z.object({
       status: z.enum(['draft', 'published']),

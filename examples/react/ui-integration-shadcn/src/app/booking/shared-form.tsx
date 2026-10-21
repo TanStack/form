@@ -28,7 +28,6 @@ export function StepForm(props: StepFormProps) {
   )
 }
 
-// TODO bring back this config for forms?
 export const rewardEarlyPunishLate = createValidator({
   triggers: [
     'blur',
@@ -44,19 +43,7 @@ export const bookingFormOptions = appFormOptions.strictSchema(
   {
     errorVisibility: ({ state, fieldState }) =>
       fieldState.meta.isBlurred || state.submissionAttempts > 0,
-    validators: [
-      {
-        triggers: [
-          'blur',
-          {
-            trigger: 'change',
-            when: ({ fieldApi }) =>
-              fieldApi !== undefined && fieldApi.meta.isInvalid,
-          },
-        ],
-        run: bookingFormSchema,
-      },
-    ],
+    validators: [rewardEarlyPunishLate(bookingFormSchema)],
     defaultValues: {
       guestDetails: {
         name: '',

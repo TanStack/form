@@ -225,6 +225,11 @@ export type FormValidatorFn<TFormData, TEvents extends ValidatorEvents> = (
  * @typeParam TValue - Library-managed. Do not specify explicitly.
  */
 export interface ValidatorPredicateContext<TFormData, TValue> {
+  /**
+   * Identifies a form validator in predicates shared with field or form group
+   * validators. Remains `'form'` when a field change or blur triggers validation.
+   */
+  scope: 'form'
   /** The owning form calling this function. */
   formApi: FormApi<TFormData, any>
   /**
@@ -466,18 +471,6 @@ interface FormValidatorConfig<
   skipOnSubmit?: SkipOnSubmitConfig<TFormData, TValidatorConfig>
 }
 
-// Intersecting a schema with StandardSchemaV1 can rebind its polymorphic
-// `this` and recursively compare its methods. Keep compatible schemas intact.
-type FormOptionsValidatorRunner<
-  TFormData,
-  TEvents extends ValidatorEvents,
-  TValidator,
-> = TValidator extends {
-  run: infer TRun extends StandardSchemaV1<TFormData, any>
-}
-  ? { run: TRun }
-  : FormValidatorRunner<TFormData, TEvents>
-
 /**
  * Validates the complete form values with a function or Standard Schema.
  *
@@ -521,14 +514,54 @@ export interface FormValidator<TFormData, TValidatorConfig>
       NoInfer<GetValidatorEvents<TValidatorConfig>>
     > {}
 
+// I know, looks pointless. The main problem we're tackling here is
+// that `run` can be a standard schema, which could be anything from
+// zod to valibot and all that stuff. Those types are HUGE.
+// We have to avoid TypeScript trying to make an intersection of
+// typeof schema & StandardSchema. This workaround instead does
+// typeof schema & typeof schema.
+
+// Want to change these? Verify before/after in examples/react/ui-integration-shadcn.
+// It has a large schema to test.
+type FormOptionsValidatorRunner<
+  TFormData,
+  TEvents extends ValidatorEvents,
+  TValidator,
+> = TValidator extends {
+  run: infer TRun extends StandardSchemaV1<TFormData, any>
+}
+  ? { run: TRun }
+  : FormValidatorRunner<TFormData, TEvents>
+
+type GetValidatorRunner<
+  TFormData,
+  TValidatorConfig extends unknown[],
+  TValidators,
+  K extends keyof TValidatorConfig,
+> = number extends TValidatorConfig['length']
+  ? FormValidatorRunner<
+      TFormData,
+      NoInfer<GetValidatorEvents<TValidatorConfig[K]>>
+    >
+  : FormOptionsValidatorRunner<
+      TFormData,
+      NoInfer<GetValidatorEvents<TValidatorConfig[K]>>,
+      K extends keyof TValidators ? TValidators[K] : unknown
+    >
+
+type FormOptionsValidator<
+  TFormData,
+  TValidatorConfig extends unknown[],
+  TValidators,
+  K extends keyof TValidatorConfig,
+> = FormValidatorConfig<TFormData, TValidatorConfig[K]> &
+  GetValidatorRunner<TFormData, TValidatorConfig, TValidators, K>
+
 /**
  * Matches each form validator to its own trigger and submission settings so
  * callback values and events are inferred for that validator.
  *
  * Validator array positions are preserved.
- *
- * @typeParam TFormData - Library-managed. Do not specify explicitly.
- * @typeParam TValidatorConfig - Library-managed. Do not specify explicitly.
  */
 export type FormOptionsValidators<
   TFormData,
@@ -537,19 +570,10 @@ export type FormOptionsValidators<
 > = {
   // Infer trigger names and the skip condition together before contextualizing run.
   // Extract keeps skip conditions and unknown (omitted options) out of events.
-  [K in keyof TValidatorConfig]: FormValidatorConfig<
+  [K in keyof TValidatorConfig]: FormOptionsValidator<
     TFormData,
-    TValidatorConfig[K]
-  > &
-    // Generic arrays need the broad runner for assignment in generic helpers.
-    (number extends TValidatorConfig['length']
-      ? FormValidatorRunner<
-          TFormData,
-          NoInfer<GetValidatorEvents<TValidatorConfig[K]>>
-        >
-      : FormOptionsValidatorRunner<
-          TFormData,
-          NoInfer<GetValidatorEvents<TValidatorConfig[K]>>,
-          K extends keyof TValidators ? TValidators[K] : unknown
-        >)
+    TValidatorConfig,
+    TValidators,
+    K
+  >
 }
