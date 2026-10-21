@@ -379,7 +379,7 @@ type TriggerConfig<TFormData, TTrigger> =
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
  * @typeParam TFormTriggers - Library-managed. Do not specify explicitly.
  */
-interface BaseFormValidator<TFormData, TFormTriggers> {
+interface BaseFormValidator<TFormData, TFormTriggers, TAvailableTriggers> {
   /**
    * Events that run this validator in addition to submission, optionally with
    * a `when` condition.
@@ -407,7 +407,12 @@ interface BaseFormValidator<TFormData, TFormTriggers> {
    * ]
    * ```
    */
-  triggers?: TriggerConfig<TFormData, TFormTriggers>[]
+  triggers?:
+    | TriggerConfig<TFormData, TFormTriggers>[]
+    // Autocomplete would wrongly assume that TFormTriggers is the only thing
+    // you can write into the array. We keep a separate type there so that
+    // autocomplete actually suggests the whole possible list.
+    | TriggerConfig<TFormData, TAvailableTriggers>[]
   /**
    * How long change and blur validation waits after the latest matching event
    * before it runs.
@@ -438,7 +443,8 @@ type SkipOnSubmitConfig<TFormData, TValidatorConfig> =
 interface FormValidatorConfig<
   TFormData,
   TValidatorConfig,
-> extends BaseFormValidator<TFormData, TValidatorConfig> {
+  TAvailableTriggers,
+> extends BaseFormValidator<TFormData, TValidatorConfig, TAvailableTriggers> {
   /**
    * Whether to skip this validator during a client submission attempt,
    * independently of its configured triggers.
@@ -508,7 +514,7 @@ interface FormValidatorConfig<
  */
 export interface FormValidator<TFormData, TValidatorConfig>
   extends
-    FormValidatorConfig<TFormData, TValidatorConfig>,
+    FormValidatorConfig<TFormData, TValidatorConfig, TValidatorConfig>,
     FormValidatorRunner<
       TFormData,
       NoInfer<GetValidatorEvents<TValidatorConfig>>
@@ -554,7 +560,7 @@ type FormOptionsValidator<
   TValidatorConfig extends unknown[],
   TValidators,
   K extends keyof TValidatorConfig,
-> = FormValidatorConfig<TFormData, TValidatorConfig[K]> &
+> = FormValidatorConfig<TFormData, TValidatorConfig[K], ValidatorTriggers> &
   GetValidatorRunner<TFormData, TValidatorConfig, TValidators, K>
 
 /**
