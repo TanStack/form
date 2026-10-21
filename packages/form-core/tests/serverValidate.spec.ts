@@ -481,6 +481,34 @@ describe('server validation', () => {
     expect(blurEmailField.errors).toEqual([{ message: 'Server email error' }])
   })
 
+  it('clears server errors of existing child fields when a parent value is set', async () => {
+    const options = formOptions({
+      defaultValues: { user: { name: '' } },
+      validators: [
+        {
+          run: () => ({ fields: { 'user.name': 'Server name error' } }),
+          triggers: ['server'],
+        },
+      ],
+    })
+
+    const { serverState } = expectServerValidateFailure(
+      await validateServerValues(options, { user: { name: '' } }),
+    )
+
+    const form = new InternalFormApi({
+      ...options,
+      serverState,
+    } as never)
+    const field = form._getOrCreateFieldApi({ name: 'user.name' })
+
+    expect(field.errors).toEqual([{ message: 'Server name error' }])
+
+    form.setFieldValue('user', { name: 'Alice' })
+
+    expect(field.errors).toEqual([])
+  })
+
   it('clears stale server errors when a new server state arrives', async () => {
     const options = formOptions({
       defaultValues: { name: '' },

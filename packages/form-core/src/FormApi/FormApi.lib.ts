@@ -507,6 +507,7 @@ export class InternalFormApi<
     updateOptions.fieldApiOverride = field
 
     batch(() => {
+      const previousValues = this._atoms.values.get()
       const previousValue = this.getFieldValue(fieldName)
       const nextValue = callUpdater(updater, previousValue)
       const replacedSameLengthArray =
@@ -525,6 +526,14 @@ export class InternalFormApi<
       }
 
       this._notifyFieldChange(field, updateOptions)
+
+      if (
+        field &&
+        updateOptions.causeValidation &&
+        !updateOptions._skipDescendantValidation
+      ) {
+        this._notifyDescendantsChange(field, previousValues)
+      }
     })
 
     notifyDevtoolsFieldValueUpdate(field)
@@ -691,6 +700,25 @@ export class InternalFormApi<
 
     field?._notifyEvent(options, 'change')
     this._notifyFormListener('change', field)
+  }
+
+  _notifyDescendantsChange(
+    field: AnyInternalFieldApi,
+    previousValues: TFormData,
+  ) {
+    const seenValidatorFields = new WeakSet<AnyInternalFieldApi>()
+
+    for (const descendant of collectFieldSubtree(field)) {
+      if (descendant === field) continue
+      if (getBy(previousValues, descendant.name) === descendant.value) continue
+
+      this._clearEventErrors(descendant, 'submit', 'change')
+      this._clearEventErrors(descendant, 'server', 'change')
+      this._clearEventErrors(descendant, 'mount', 'change')
+      descendant._clearEventErrors('change', 'submit')
+      descendant._runFieldValidation('change')
+      descendant._notifyValidator('change', seenValidatorFields)
+    }
   }
 
   _notifyFormListener(

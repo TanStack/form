@@ -1116,6 +1116,91 @@ describe('form - validation', () => {
       expect(validatorFn).toHaveBeenCalledTimes(2)
       expect(form.state.errors).toEqual([{ message: 'Current error' }])
     })
+
+    it('revalidates existing child fields when a parent value is set', async () => {
+      const form = new InternalFormApi({ defaultValues: { a: { b: 1 } } })
+      const field = form._getOrCreateFieldApi({
+        name: 'a.b',
+        validators: [
+          {
+            run: ({ value }: { value: number }) =>
+              value > 0 ? undefined : 'must be > 0',
+            triggers: ['change'],
+          },
+        ],
+      })
+      field._register()
+
+      field.handleChange(0)
+      await vi.waitFor(() =>
+        expect(field.errors).toEqual([{ message: 'must be > 0' }]),
+      )
+
+      form.setFieldValue('a', { b: 1 })
+
+      expect(field.value).toBe(1)
+      await vi.waitFor(() => expect(field.errors).toEqual([]))
+      expect(form.state.isValid).toBe(true)
+    })
+
+    it('clears submit and mount errors of existing child fields when a parent value is set', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { a: { b: 0 } },
+        validators: [
+          {
+            run: () => ({ fields: { 'a.b': 'Mount error' } }),
+            runOnMount: true,
+            runOnSubmit: false,
+            triggers: [],
+          },
+          {
+            run: () => ({ fields: { 'a.b': 'Form submit error' } }),
+            triggers: [],
+          },
+        ],
+      })
+      const field = form._getOrCreateFieldApi({
+        name: 'a.b',
+        validators: [{ run: () => 'Field submit error', triggers: [] }],
+      })
+      field._register()
+
+      await form.handleSubmit()
+      expect(field.errors).toEqual([
+        { message: 'Field submit error' },
+        { message: 'Mount error' },
+        { message: 'Form submit error' },
+      ])
+
+      form.setFieldValue('a', { b: 1 })
+
+      expect(field.errors).toEqual([])
+    })
+
+    it('does not revalidate child fields that array helpers move', () => {
+      const validator = vi.fn(() => undefined)
+      const form = new InternalFormApi({
+        defaultValues: { items: ['a', 'b', 'c'] },
+      })
+      form._getOrCreateFieldApi({ name: 'items' })._register()
+      for (const name of ['items[0]', 'items[1]', 'items[2]']) {
+        form
+          ._getOrCreateFieldApi({
+            name,
+            validators: [{ run: validator, triggers: ['change'] }],
+          })
+          ._register()
+      }
+
+      form.swapFieldValues('items', 0, 1)
+      form.moveFieldValue('items', 0, 2)
+      form.insertFieldValue('items', 0, 'x')
+      form.removeFieldValue('items', 0)
+      form.filterFieldValues('items', (value) => value !== 'c')
+      form.clearFieldValues('items')
+
+      expect(validator).not.toHaveBeenCalled()
+    })
   })
 
   describe('field error boundaries', () => {

@@ -19,6 +19,14 @@ export interface InternalFieldUpdateOptions
    * @default boolean - derived from whether field meta needs to be stored
    */
   _skipFieldCreation?: boolean
+  /**
+   * @private
+   * Whether to skip revalidating existing descendants whose value changed.
+   * Set by array methods that move child fields after setting the value.
+   *
+   * @default false
+   */
+  _skipDescendantValidation?: boolean
 }
 
 export interface PropagateOptions {
