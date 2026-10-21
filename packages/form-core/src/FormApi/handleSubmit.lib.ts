@@ -13,6 +13,7 @@ import type {
   FormValidationResult,
 } from '../validation/state.public'
 import type {
+  CreateSubmitErrorMapFn,
   CreateValidationErrorFn,
   FormSubmitContext,
   OnSubmitError,

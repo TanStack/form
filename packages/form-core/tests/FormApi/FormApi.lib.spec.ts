@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
-import { formOptions } from '../../src/FormApi/formOptions.public'
+import { formOptions } from '../../src'
 
 describe('InternalFormApi - constructor', () => {
   it('initializes default values with untouched, submittable state', () => {
@@ -102,6 +102,7 @@ describe('InternalFormApi - _update', () => {
       defaultValues: { name: '' },
       validators: [
         { run: () => null, triggers: [] },
+        // @ts-expect-error We're testing this on purpose
         { run: () => null, triggers: [] },
       ],
     })
@@ -265,6 +266,348 @@ describe('InternalFormApi - _getOrCreateFieldApi', () => {
     expect(listener).toHaveBeenCalledWith(
       expect.objectContaining({ fieldApi: field, value: 'field edit' }),
     )
+  })
+})
+
+describe('InternalFormApi - getFieldValue', () => {
+  it('reads values through top-level, nested object, and array paths', () => {
+    const form = new InternalFormApi({
+      defaultValues: {
+        name: 'Alice',
+        address: { city: 'London' },
+        items: ['a', 'b', 'c'],
+      },
+    })
+
+    const name = form.getFieldValue('name')
+    const city = form.getFieldValue('address.city')
+    const item = form.getFieldValue('items[1]')
+
+    expect(name).toBe('Alice')
+    expect(city).toBe('London')
+    expect(item).toBe('b')
+  })
+
+  it('returns undefined for missing paths and paths through null', () => {
+    const form = new InternalFormApi({ defaultValues: { user: null } })
+
+    const missing = form.getFieldValue('missing')
+    const name = form.getFieldValue('user.name')
+
+    expect(missing).toBeUndefined()
+    expect(name).toBeUndefined()
+  })
+})
+
+describe('InternalFormApi - setFieldValue', () => {
+  it('updates a nested value without changing unrelated values or defaults', () => {
+    const form = new InternalFormApi({
+      defaultValues: {
+        name: 'Alice',
+        address: { city: 'London', country: 'UK' },
+      },
+    })
+
+    form.setFieldValue('address.city', 'Manchester')
+
+    const city = form.getFieldValue('address.city')
+    expect(city).toBe('Manchester')
+    expect(form.state.values).toEqual({
+      name: 'Alice',
+      address: { city: 'Manchester', country: 'UK' },
+    })
+    expect(form.defaultValues).toEqual({
+      name: 'Alice',
+      address: { city: 'London', country: 'UK' },
+    })
+  })
+
+  it('updates a nested array value without changing other items or defaults', () => {
+    const form = new InternalFormApi({
+      defaultValues: { items: [{ label: 'a' }, { label: 'b' }] },
+    })
+    const field = form._getOrCreateFieldApi({ name: 'items' })
+
+    form.setFieldValue('items[0].label', 'updated')
+
+    const label = form.getFieldValue('items[0].label')
+    expect(label).toBe('updated')
+    expect(field.value).toEqual([{ label: 'updated' }, { label: 'b' }])
+    expect(form.defaultValues).toEqual({
+      items: [{ label: 'a' }, { label: 'b' }],
+    })
+  })
+
+  it('marks the field and form touched and dirty when a value changes', () => {
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+
+    form.setFieldValue('name', 'Alice')
+
+    expect(field.value).toBe('Alice')
+    expect(field.meta).toMatchObject({
+      isTouched: true,
+      isDirty: true,
+      isPristine: false,
+    })
+    expect(form.state).toMatchObject({
+      values: { name: 'Alice' },
+      isTouched: true,
+      isDirty: true,
+      isPristine: false,
+    })
+  })
+
+  it('keeps the field and form untouched when markAsTouched is false', () => {
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+
+    form.setFieldValue('name', 'Alice', { markAsTouched: false })
+
+    expect(field.value).toBe('Alice')
+    expect(field.meta).toMatchObject({
+      isTouched: false,
+      isDirty: true,
+      isPristine: false,
+    })
+    expect(form.state).toMatchObject({
+      values: { name: 'Alice' },
+      isTouched: false,
+      isDirty: true,
+      isPristine: false,
+    })
+  })
+
+  it('keeps the field and form pristine when markAsDirty is false', () => {
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+
+    form.setFieldValue('name', 'Alice', { markAsDirty: false })
+
+    expect(field.value).toBe('Alice')
+    expect(field.meta).toMatchObject({
+      isTouched: true,
+      isDirty: false,
+      isPristine: true,
+    })
+    expect(form.state).toMatchObject({
+      values: { name: 'Alice' },
+      isTouched: true,
+      isDirty: false,
+      isPristine: true,
+    })
+  })
+
+  it('reveals field errors when markAsBlurred is true on a value update', async () => {
+    const form = new InternalFormApi({
+      defaultValues: { name: 'Alice' },
+      errorVisibility: ({ fieldState }) => fieldState.meta.isBlurred,
+    })
+    const field = form._getOrCreateFieldApi({
+      name: 'name',
+      validators: [
+        {
+          triggers: ['change'],
+          run: ({ value }: { value: string }) =>
+            value.length < 3
+              ? 'Name must have at least 3 characters'
+              : undefined,
+        },
+      ],
+    })
+    field._register()
+
+    form.setFieldValue('name', 'A')
+
+    await expect
+      .poll(() => field.meta.original.errors)
+      .toEqual([{ message: 'Name must have at least 3 characters' }])
+    expect(field.meta.isBlurred).toBe(false)
+    expect(field.errors).toEqual([])
+
+    form.setFieldValue('name', 'Al', { markAsBlurred: true })
+
+    expect(field.value).toBe('Al')
+    expect(field.meta.isBlurred).toBe(true)
+    await expect
+      .poll(() => field.errors)
+      .toEqual([{ message: 'Name must have at least 3 characters' }])
+  })
+
+  it('preserves existing touched, dirty, and blurred state when metadata flags are false', () => {
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+    field.handleChange('Alice')
+    field.handleBlur()
+
+    expect(field.meta).toMatchObject({
+      isTouched: true,
+      isDirty: true,
+      isPristine: false,
+      isBlurred: true,
+    })
+    expect(form.state).toMatchObject({
+      isTouched: true,
+      isDirty: true,
+      isPristine: false,
+    })
+
+    form.setFieldValue('name', 'Bob', {
+      markAsTouched: false,
+      markAsDirty: false,
+      markAsBlurred: false,
+    })
+
+    expect(field.value).toBe('Bob')
+    expect(field.meta).toMatchObject({
+      isTouched: true,
+      isDirty: true,
+      isPristine: false,
+      isBlurred: true,
+    })
+    expect(form.state).toMatchObject({
+      values: { name: 'Bob' },
+      isTouched: true,
+      isDirty: true,
+      isPristine: false,
+    })
+  })
+
+  it('continues field and form validation when all metadata flags are false', async () => {
+    const form = new InternalFormApi({
+      defaultValues: { name: 'Alice' },
+      validators: [
+        {
+          triggers: ['change'],
+          run: ({ value }) =>
+            value.name.length < 3 ? 'Form name is too short' : undefined,
+        },
+      ],
+    })
+    const field = form._getOrCreateFieldApi({
+      name: 'name',
+      validators: [
+        {
+          triggers: ['change'],
+          run: ({ value }: { value: string }) =>
+            value.length < 3 ? 'Field name is too short' : undefined,
+        },
+      ],
+    })
+    field._register()
+
+    form.setFieldValue('name', 'Al', {
+      markAsTouched: false,
+      markAsDirty: false,
+      markAsBlurred: false,
+    })
+
+    await expect
+      .poll(() => field.errors)
+      .toEqual([{ message: 'Field name is too short' }])
+    await expect
+      .poll(() => form.state.errors)
+      .toEqual([{ message: 'Form name is too short' }])
+    expect(field.value).toBe('Al')
+    expect(field.meta).toMatchObject({
+      isTouched: false,
+      isDirty: false,
+      isPristine: true,
+      isBlurred: false,
+      isValid: false,
+    })
+    expect(form.state).toMatchObject({
+      values: { name: 'Al' },
+      isTouched: false,
+      isDirty: false,
+      isPristine: true,
+      isValid: false,
+    })
+
+    form.setFieldValue('name', 'Alice', {
+      markAsTouched: false,
+      markAsDirty: false,
+      markAsBlurred: false,
+    })
+
+    await expect.poll(() => field.errors).toEqual([])
+    await expect.poll(() => form.state.errors).toEqual([])
+    expect(field.value).toBe('Alice')
+    expect(field.meta).toMatchObject({
+      isTouched: false,
+      isDirty: false,
+      isPristine: true,
+      isBlurred: false,
+      isValid: true,
+    })
+    expect(form.state).toMatchObject({
+      values: { name: 'Alice' },
+      isTouched: false,
+      isDirty: false,
+      isPristine: true,
+      isValid: true,
+    })
+  })
+
+  // TODO: Form validation is skipped when disabled metadata updates prevent field creation.
+  it.fails(
+    'validates form changes before field creation when all metadata flags are false',
+    async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: 'Alice' },
+        validators: [
+          {
+            triggers: ['change'],
+            run: ({ value }) =>
+              value.name.length < 3 ? 'Name is too short' : undefined,
+          },
+        ],
+      })
+
+      form.setFieldValue('name', 'Al', {
+        markAsTouched: false,
+        markAsDirty: false,
+        markAsBlurred: false,
+      })
+
+      await expect
+        .poll(() => form.state.errors)
+        .toEqual([{ message: 'Name is too short' }])
+    },
+  )
+
+  it('applies updater functions to the current field value', () => {
+    const form = new InternalFormApi({ defaultValues: { count: 1 } })
+
+    form.setFieldValue('count', (count: number) => count + 1)
+
+    const firstUpdate = form.getFieldValue('count')
+    expect(firstUpdate).toBe(2)
+
+    form.setFieldValue('count', (count: number) => count + 1)
+
+    const secondUpdate = form.getFieldValue('count')
+    expect(secondUpdate).toBe(3)
+  })
+
+  it('replaces array values directly and through an updater', () => {
+    const form = new InternalFormApi({ defaultValues: { items: ['a'] } })
+    const field = form._getOrCreateFieldApi({ name: 'items' })
+
+    form.setFieldValue('items', ['b'])
+
+    const replacement = form.getFieldValue('items')
+    expect(replacement).toEqual(['b'])
+    expect(field.value).toEqual(['b'])
+
+    form.setFieldValue('items', (items: Array<string>) =>
+      items.map((item) => item.toUpperCase()),
+    )
+
+    const updated = form.getFieldValue('items')
+    expect(updated).toEqual(['B'])
+    expect(field.value).toEqual(['B'])
+    expect(form.defaultValues).toEqual({ items: ['a'] })
   })
 })
 
