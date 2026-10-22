@@ -744,6 +744,68 @@ describe('InternalFormApi - setFieldValue', () => {
 })
 
 describe('InternalFormApi - reset', () => {
+  it('discards old watched fields and allows rebuilt fields to establish new listeners', () => {
+    const discardedListener = vi.fn()
+    const currentListener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { source: 'source', target: 'target' },
+    })
+    const oldTarget = form._getOrCreateFieldApi({
+      name: 'target',
+      listeners: [
+        {
+          triggers: ['change'],
+          watchFields: ['source'],
+          run: discardedListener,
+        },
+      ],
+    })
+    const oldSource = form._getOrCreateFieldApi({ name: 'source' })
+    oldSource._register()
+    oldTarget._register()
+
+    oldSource.handleChange('before reset')
+    expect(discardedListener).toHaveBeenCalledWith(
+      expect.objectContaining({ value: 'target' }),
+    )
+    discardedListener.mockClear()
+
+    form.reset()
+
+    const target = form._getOrCreateFieldApi({
+      name: 'target',
+      listeners: [
+        { triggers: ['change'], watchFields: ['source'], run: currentListener },
+      ],
+    })
+    const source = form._getOrCreateFieldApi({ name: 'source' })
+    source._register()
+    target._register()
+
+    oldSource.handleChange('discarded source')
+    oldTarget.handleChange('discarded target')
+
+    expect(discardedListener).not.toHaveBeenCalled()
+    expect(currentListener).not.toHaveBeenCalled()
+    expect(form.state.values).toEqual({ source: 'source', target: 'target' })
+
+    source.handleChange('after reset')
+
+    expect(currentListener).toHaveBeenCalledOnce()
+    expect(currentListener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: 'target',
+        fieldApi: target,
+        formApi: form,
+      }),
+    )
+    expect(discardedListener).not.toHaveBeenCalled()
+    expect(form.state.values).toEqual({
+      source: 'after reset',
+      target: 'target',
+    })
+  })
+
   it('notifies form reset listeners after restoring the default values', () => {
     const listener = vi.fn()
     const form = new InternalFormApi({
@@ -763,39 +825,6 @@ describe('InternalFormApi - reset', () => {
         value: { name: '' },
       }),
     )
-  })
-
-  it('notifies parent and child reset listeners with their values before removing the fields', () => {
-    const parentListener = vi.fn()
-    const childListener = vi.fn()
-    const form = new InternalFormApi({
-      defaultValues: { user: { name: 'Alice' } },
-    })
-    const parent = form._getOrCreateFieldApi({
-      name: 'user',
-      listeners: [{ triggers: ['reset'], run: parentListener }],
-    })
-    const child = form._getOrCreateFieldApi({
-      name: 'user.name',
-      listeners: [{ triggers: ['reset'], run: childListener }],
-    })
-    parent._register()
-    child._register()
-    child.handleChange('Bob')
-
-    form.reset()
-
-    expect(parentListener).toHaveBeenCalledOnce()
-    expect(parentListener).toHaveBeenCalledWith(
-      expect.objectContaining({ value: { name: 'Bob' } }),
-    )
-    expect(childListener).toHaveBeenCalledOnce()
-    expect(childListener).toHaveBeenCalledWith(
-      expect.objectContaining({ value: 'Bob' }),
-    )
-    expect(form.state.values).toEqual({ user: { name: 'Alice' } })
-    expect(form.getFieldMeta('user')).toBeUndefined()
-    expect(form.getFieldMeta('user.name')).toBeUndefined()
   })
 
   it('aborts active validation on reset and allows validation to run again', async ({

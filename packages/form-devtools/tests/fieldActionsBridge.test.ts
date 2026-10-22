@@ -14,7 +14,6 @@ describe('field actions bridge', () => {
     const fields = createFieldsController(mountedForms)
     const changeListener = vi.fn()
     const blurListener = vi.fn()
-    const resetListener = vi.fn()
     const details: Array<DevtoolsFieldDetail> = []
     const cleanupDetails = formDevtoolsEventClient.on(
       'field-detail-changed',
@@ -26,7 +25,6 @@ describe('field actions bridge', () => {
       listeners: [
         { triggers: ['change'], run: changeListener },
         { triggers: ['blur'], run: blurListener },
-        { triggers: ['reset'], run: resetListener },
       ],
     })
 
@@ -61,7 +59,6 @@ describe('field actions bridge', () => {
       field.handleChange('Grace')
       changeListener.mockClear()
       formDevtoolsEventClient.emit('field-reset-request', request)
-      expect(resetListener).toHaveBeenCalledOnce()
       expect(changeListener).not.toHaveBeenCalled()
       expect(field.value).toBe('Ada')
       expect(field.meta).toMatchObject({

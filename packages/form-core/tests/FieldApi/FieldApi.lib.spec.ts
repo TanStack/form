@@ -88,6 +88,346 @@ describe('InternalFieldApi - name', () => {
 })
 
 describe('InternalFieldApi - _update', () => {
+  it('switches watched fields when the configured name changes', () => {
+    const listener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { source: 'source', other: 'other', target: 'target' },
+    })
+    const target = form._getOrCreateFieldApi({
+      name: 'target',
+      listeners: [
+        { triggers: ['change'], watchFields: ['source'], run: listener },
+      ],
+    })
+    const source = form._getOrCreateFieldApi({ name: 'source' })
+    const other = form._getOrCreateFieldApi({ name: 'other' })
+    source._register()
+    other._register()
+    target._register()
+
+    source.handleChange('before update')
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({ value: 'target' }),
+    )
+    listener.mockClear()
+
+    target._update({
+      listeners: [
+        { triggers: ['change'], watchFields: ['other'], run: listener },
+      ],
+    })
+    source.handleChange('after update')
+    expect(listener).not.toHaveBeenCalled()
+
+    other.handleChange('new source')
+
+    expect(listener).toHaveBeenCalledOnce()
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: 'target',
+        fieldApi: target,
+        formApi: form,
+      }),
+    )
+  })
+
+  it('keeps a listener watching its source when another listener drops that watch', () => {
+    const retainedListener = vi.fn()
+    const detachedListener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { source: 'source', target: 'target' },
+    })
+    const target = form._getOrCreateFieldApi({
+      name: 'target',
+      listeners: [
+        {
+          triggers: ['change'],
+          watchFields: ['source'],
+          run: retainedListener,
+        },
+        {
+          triggers: ['change'],
+          watchFields: ['source'],
+          run: detachedListener,
+        },
+      ],
+    })
+    const source = form._getOrCreateFieldApi({ name: 'source' })
+    source._register()
+    target._register()
+
+    source.handleChange('before detaching')
+    expect(retainedListener).toHaveBeenCalledOnce()
+    expect(detachedListener).toHaveBeenCalledOnce()
+    retainedListener.mockClear()
+    detachedListener.mockClear()
+
+    target._update({
+      listeners: [
+        {
+          triggers: ['change'],
+          watchFields: ['source'],
+          run: retainedListener,
+        },
+        { triggers: ['change'], watchFields: [], run: detachedListener },
+      ],
+    })
+    source.handleChange('after detaching')
+
+    expect(retainedListener).toHaveBeenCalledOnce()
+    expect(retainedListener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: 'target',
+        fieldApi: target,
+        formApi: form,
+      }),
+    )
+    expect(detachedListener).not.toHaveBeenCalled()
+
+    target.handleChange('direct edit')
+
+    expect(detachedListener).toHaveBeenCalledOnce()
+    expect(detachedListener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: 'direct edit',
+        fieldApi: target,
+        formApi: form,
+      }),
+    )
+  })
+
+  it('keeps other fields watching a source when one field stops watching', () => {
+    const detachedListener = vi.fn()
+    const retainedListener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { source: 'source', first: 'first', second: 'second' },
+    })
+    const first = form._getOrCreateFieldApi({
+      name: 'first',
+      listeners: [
+        {
+          triggers: ['change'],
+          watchFields: ['source'],
+          run: detachedListener,
+        },
+      ],
+    })
+    const second = form._getOrCreateFieldApi({
+      name: 'second',
+      listeners: [
+        {
+          triggers: ['change'],
+          watchFields: ['source'],
+          run: retainedListener,
+        },
+      ],
+    })
+    const source = form._getOrCreateFieldApi({ name: 'source' })
+    source._register()
+    first._register()
+    second._register()
+
+    source.handleChange('before detaching')
+    expect(detachedListener).toHaveBeenCalledOnce()
+    expect(retainedListener).toHaveBeenCalledOnce()
+    detachedListener.mockClear()
+    retainedListener.mockClear()
+
+    first._update({
+      listeners: [
+        { triggers: ['change'], watchFields: [], run: detachedListener },
+      ],
+    })
+    source.handleChange('after detaching')
+
+    expect(detachedListener).not.toHaveBeenCalled()
+    expect(retainedListener).toHaveBeenCalledOnce()
+    expect(retainedListener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: 'second',
+        fieldApi: second,
+        formApi: form,
+      }),
+    )
+
+    first.handleChange('direct edit')
+
+    expect(detachedListener).toHaveBeenCalledOnce()
+    expect(detachedListener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: 'direct edit',
+        fieldApi: first,
+        formApi: form,
+      }),
+    )
+  })
+
+  it('preserves a watch when both the source and the watching field move', () => {
+    const listener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { users: [{ name: 'First' }, { name: 'Second' }] },
+    })
+    const name0 = form._getOrCreateFieldApi({ name: 'users[0].name' })
+    const name1 = form._getOrCreateFieldApi({
+      name: 'users[1].name',
+      listeners: [
+        { triggers: ['change'], watchFields: ['users[0].name'], run: listener },
+      ],
+    })
+
+    name0.handleChange('before move')
+    expect(listener).toHaveBeenCalledOnce()
+    listener.mockClear()
+
+    // Before:    0      1
+    // After:     1      0
+    // Fields:    name1  name0
+    form.swapFieldValues('users', 0, 1)
+    name0.handleChange('before confirmation')
+
+    expect(listener).toHaveBeenCalledOnce()
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: 'Second',
+        fieldApi: name1,
+        formApi: form,
+      }),
+    )
+    listener.mockClear()
+
+    name1._update({
+      listeners: [
+        { triggers: ['change'], watchFields: ['users[1].name'], run: listener },
+      ],
+    })
+    name0.handleChange('after confirmation')
+
+    expect(listener).toHaveBeenCalledOnce()
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: 'Second',
+        fieldApi: name1,
+        formApi: form,
+      }),
+    )
+    expect(form.state.values.users).toEqual([
+      { name: 'Second' },
+      { name: 'after confirmation' },
+    ])
+  })
+
+  it('retargets a watch when an update rejects following the moved field', () => {
+    const listener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { users: ['first', 'second'], target: 'target' },
+    })
+    const target = form._getOrCreateFieldApi({
+      name: 'target',
+      listeners: [
+        { triggers: ['change'], watchFields: ['users[0]'], run: listener },
+      ],
+    })
+    const user0 = form._getOrCreateFieldApi({ name: 'users[0]' })
+    const user1 = form._getOrCreateFieldApi({ name: 'users[1]' })
+    user0._register()
+    user1._register()
+    target._register()
+
+    // Before:    0      1
+    // After:     1      0
+    // Fields:    user1  user0
+    form.swapFieldValues('users', 0, 1)
+
+    user1.handleChange('first index before update')
+    expect(listener).not.toHaveBeenCalled()
+
+    user0.handleChange('second index before update')
+    expect(listener).toHaveBeenCalledOnce()
+    listener.mockClear()
+
+    // Keeping users[0] rejects following user0 to users[1].
+    target._update({
+      listeners: [
+        { triggers: ['change'], watchFields: ['users[0]'], run: listener },
+      ],
+    })
+    user0.handleChange('second index after update')
+    expect(listener).not.toHaveBeenCalled()
+
+    user1.handleChange('first index after update')
+
+    expect(listener).toHaveBeenCalledOnce()
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: 'target',
+        fieldApi: target,
+        formApi: form,
+      }),
+    )
+    expect(form.state.values.users).toEqual([
+      'first index after update',
+      'second index after update',
+    ])
+  })
+
+  it('keeps following a moved field when an update confirms its new name', () => {
+    const listener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { users: ['first', 'second'], target: 'target' },
+    })
+    const target = form._getOrCreateFieldApi({
+      name: 'target',
+      listeners: [
+        { triggers: ['change'], watchFields: ['users[0]'], run: listener },
+      ],
+    })
+    const user0 = form._getOrCreateFieldApi({ name: 'users[0]' })
+    const user1 = form._getOrCreateFieldApi({ name: 'users[1]' })
+
+    user0.handleChange('first changed')
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({ value: 'target' }),
+    )
+    listener.mockClear()
+
+    // Before:    0      1
+    // After:     1      0
+    // Fields:    user1  user0
+    form.swapFieldValues('users', 0, 1)
+
+    // Follow the moved field before the next update confirms the watched name.
+    user1.handleChange('first index before update')
+    expect(listener).not.toHaveBeenCalled()
+
+    user0.handleChange('second index before update')
+    expect(listener).toHaveBeenCalledOnce()
+    listener.mockClear()
+
+    target._update({
+      listeners: [
+        { triggers: ['change'], watchFields: ['users[1]'], run: listener },
+      ],
+    })
+
+    user1.handleChange('first index changed')
+    expect(listener).not.toHaveBeenCalled()
+
+    user0.handleChange('second index changed')
+
+    expect(listener).toHaveBeenCalledOnce()
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: 'target',
+        fieldApi: target,
+        formApi: form,
+      }),
+    )
+    expect(form.state.values).toEqual({
+      users: ['first index changed', 'second index changed'],
+      target: 'target',
+    })
+  })
+
   it('retains default listeners before incoming listeners during construction and updates', () => {
     const defaultListener = vi.fn()
     const incomingListener = vi.fn()
@@ -208,11 +548,7 @@ describe('InternalFieldApi - _update', () => {
     expect(form.state.canSubmit).toBe(true)
   })
 
-  it('uses updated listener callbacks and triggers, retains omitted listeners, and removes listeners with an empty array', ({
-    onTestFinished,
-  }) => {
-    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-    onTestFinished(() => warn.mockRestore())
+  it('uses updated listener callbacks and triggers, retains omitted listeners, and disables listeners with empty triggers', () => {
     const initialListener = vi.fn()
     const updatedListener = vi.fn()
     const form = new InternalFormApi({ defaultValues: { name: '' } })
@@ -246,12 +582,12 @@ describe('InternalFieldApi - _update', () => {
     expect(updatedListener).toHaveBeenCalledOnce()
     updatedListener.mockClear()
 
-    field._update({ listeners: [] })
+    field._update({
+      listeners: [{ triggers: [], run: updatedListener }],
+    })
+    field.handleChange('disabled')
     field.handleBlur()
 
-    expect(warn).toHaveBeenCalledWith(
-      expect.stringContaining('length of the listener array should not change'),
-    )
     expect(updatedListener).not.toHaveBeenCalled()
   })
 })
@@ -968,6 +1304,27 @@ describe('InternalFieldApi - _register', () => {
 })
 
 describe('InternalFieldApi - _unregister', () => {
+  it('notifies unmount listeners with the last field value', async () => {
+    vi.useFakeTimers()
+    const listener = vi.fn()
+    const form = new InternalFormApi({ defaultValues: { name: 'Alice' } })
+    const field = form._getOrCreateFieldApi({
+      name: 'name',
+      listeners: [{ triggers: ['unmount'], run: listener }],
+    })
+    const unregister = field._register()
+    field.handleChange('Bob')
+    expect(listener).not.toHaveBeenCalled()
+
+    unregister()
+
+    expect(listener).toHaveBeenCalledOnce()
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({ value: 'Bob', fieldApi: field, formApi: form }),
+    )
+    await vi.runOnlyPendingTimersAsync()
+  })
+
   it('continues validating a field while another consumer remains registered', async () => {
     vi.useFakeTimers()
     const form = new InternalFormApi({ defaultValues: { name: '' } })
@@ -1312,6 +1669,309 @@ describe('InternalFieldApi - handleChange', () => {
       isTouched: false,
       isDirty: true,
     })
+  })
+})
+
+describe('InternalFieldApi - _notifyListener', () => {
+  it('notifies a listener when either of its watched fields changes', () => {
+    const listener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { source: 'source', other: 'other', target: 'target' },
+    })
+    const target = form._getOrCreateFieldApi({
+      name: 'target',
+      listeners: [
+        {
+          triggers: ['change'],
+          watchFields: ['source', 'other'],
+          run: listener,
+        },
+      ],
+    })
+    const source = form._getOrCreateFieldApi({ name: 'source' })
+    const other = form._getOrCreateFieldApi({ name: 'other' })
+
+    source.handleChange('source changed')
+
+    expect(listener).toHaveBeenCalledOnce()
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: 'target',
+        fieldApi: target,
+        formApi: form,
+      }),
+    )
+    listener.mockClear()
+
+    other.handleChange('other changed')
+
+    expect(listener).toHaveBeenCalledOnce()
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: 'target',
+        fieldApi: target,
+        formApi: form,
+      }),
+    )
+  })
+
+  it('warns about a field watching itself and runs its listener only once', ({
+    onTestFinished,
+  }) => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    onTestFinished(() => warn.mockRestore())
+    const listener = vi.fn()
+    const form = new InternalFormApi({ defaultValues: { name: '' } })
+    const field = form._getOrCreateFieldApi({
+      name: 'name',
+      listeners: [
+        { triggers: ['change'], watchFields: ['name'], run: listener },
+      ],
+    })
+
+    field.handleChange('Alice')
+
+    expect(listener).toHaveBeenCalledOnce()
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: 'Alice',
+        fieldApi: field,
+        formApi: form,
+      }),
+    )
+    expect(warn.mock.calls).toContainEqual(
+      expect.arrayContaining([
+        expect.stringContaining('cyclical listener cycle detected'),
+      ]),
+    )
+    expect(field.value).toBe('Alice')
+  })
+
+  it('runs every listener watching a source without running direct-only listeners', () => {
+    const firstListener = vi.fn()
+    const directListener = vi.fn()
+    const secondListener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { source: 'source', target: 'target' },
+    })
+    const target = form._getOrCreateFieldApi({
+      name: 'target',
+      listeners: [
+        { triggers: ['change'], watchFields: ['source'], run: firstListener },
+        { triggers: ['change'], run: directListener },
+        { triggers: ['change'], watchFields: ['source'], run: secondListener },
+      ],
+    })
+    const source = form._getOrCreateFieldApi({ name: 'source' })
+
+    source.handleChange('changed source')
+
+    expect(firstListener).toHaveBeenCalledOnce()
+    expect(firstListener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: 'target',
+        fieldApi: target,
+        formApi: form,
+      }),
+    )
+    expect(secondListener).toHaveBeenCalledOnce()
+    expect(secondListener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: 'target',
+        fieldApi: target,
+        formApi: form,
+      }),
+    )
+    expect(directListener).not.toHaveBeenCalled()
+
+    target.handleChange('direct edit')
+
+    expect(directListener).toHaveBeenCalledOnce()
+    expect(directListener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: 'direct edit',
+        fieldApi: target,
+        formApi: form,
+      }),
+    )
+  })
+
+  it('debounces watched listeners independently', async () => {
+    vi.useFakeTimers()
+    const firstListener = vi.fn()
+    const secondListener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { firstSource: '', secondSource: '', target: 'target' },
+    })
+    const target = form._getOrCreateFieldApi({
+      name: 'target',
+      listeners: [
+        {
+          triggers: ['change'],
+          watchFields: ['firstSource'],
+          triggerDebounceMs: 100,
+          run: firstListener,
+        },
+        {
+          triggers: ['change'],
+          watchFields: ['secondSource'],
+          triggerDebounceMs: 100,
+          run: secondListener,
+        },
+      ],
+    })
+    const firstSource = form._getOrCreateFieldApi({ name: 'firstSource' })
+    const secondSource = form._getOrCreateFieldApi({ name: 'secondSource' })
+
+    secondSource.handleChange('second')
+    await vi.advanceTimersByTimeAsync(50)
+    firstSource.handleChange('first')
+    await vi.advanceTimersByTimeAsync(49)
+
+    expect(firstListener).not.toHaveBeenCalled()
+    expect(secondListener).not.toHaveBeenCalled()
+
+    await vi.advanceTimersByTimeAsync(1)
+
+    expect(firstListener).not.toHaveBeenCalled()
+    expect(secondListener).toHaveBeenCalledOnce()
+    expect(secondListener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: 'target',
+        fieldApi: target,
+        formApi: form,
+      }),
+    )
+
+    await vi.advanceTimersByTimeAsync(50)
+
+    expect(firstListener).toHaveBeenCalledOnce()
+    expect(firstListener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: 'target',
+        fieldApi: target,
+        formApi: form,
+      }),
+    )
+    expect(secondListener).toHaveBeenCalledOnce()
+  })
+
+  it('notifies only matching change and blur listeners watching the affected field', () => {
+    const changeListener = vi.fn()
+    const blurListener = vi.fn()
+    const unrelatedListener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { source: 'source', other: 'other', target: 'target' },
+    })
+    const target = form._getOrCreateFieldApi({
+      name: 'target',
+      listeners: [
+        { triggers: ['change'], watchFields: ['source'], run: changeListener },
+        { triggers: ['blur'], watchFields: ['source'], run: blurListener },
+        {
+          triggers: ['change', 'blur'],
+          watchFields: ['other'],
+          run: unrelatedListener,
+        },
+      ],
+    })
+    const source = form._getOrCreateFieldApi({ name: 'source' })
+    target._register()
+    source._register()
+
+    source.handleChange('updated source')
+
+    expect(changeListener).toHaveBeenCalledOnce()
+    expect(changeListener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: 'target',
+        fieldApi: target,
+        formApi: form,
+      }),
+    )
+    expect(blurListener).not.toHaveBeenCalled()
+    expect(unrelatedListener).not.toHaveBeenCalled()
+
+    source.handleBlur()
+
+    expect(changeListener).toHaveBeenCalledOnce()
+    expect(blurListener).toHaveBeenCalledOnce()
+    expect(blurListener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: 'target',
+        fieldApi: target,
+        formApi: form,
+      }),
+    )
+    expect(unrelatedListener).not.toHaveBeenCalled()
+  })
+
+  it('notifies only listeners watching a field being registered', () => {
+    const listener = vi.fn()
+    const unrelatedListener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { source: 'source', other: 'other', target: 'target' },
+    })
+    const target = form._getOrCreateFieldApi({
+      name: 'target',
+      listeners: [
+        { triggers: ['mount'], watchFields: ['source'], run: listener },
+        { triggers: ['mount'], watchFields: ['other'], run: unrelatedListener },
+      ],
+    })
+    const source = form._getOrCreateFieldApi({ name: 'source' })
+    target._register()
+    listener.mockClear()
+    unrelatedListener.mockClear()
+
+    source._register()
+
+    expect(listener).toHaveBeenCalledOnce()
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: 'target',
+        fieldApi: target,
+        formApi: form,
+      }),
+    )
+    expect(unrelatedListener).not.toHaveBeenCalled()
+  })
+
+  it('notifies only listeners watching a field being unregistered', async () => {
+    vi.useFakeTimers()
+    const listener = vi.fn()
+    const unrelatedListener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { source: 'source', other: 'other', target: 'target' },
+    })
+    const target = form._getOrCreateFieldApi({
+      name: 'target',
+      listeners: [
+        { triggers: ['unmount'], watchFields: ['source'], run: listener },
+        {
+          triggers: ['unmount'],
+          watchFields: ['other'],
+          run: unrelatedListener,
+        },
+      ],
+    })
+    const source = form._getOrCreateFieldApi({ name: 'source' })
+    target._register()
+    const unregisterSource = source._register()
+    expect(listener).not.toHaveBeenCalled()
+
+    unregisterSource()
+
+    expect(listener).toHaveBeenCalledOnce()
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: 'target',
+        fieldApi: target,
+        formApi: form,
+      }),
+    )
+    expect(unrelatedListener).not.toHaveBeenCalled()
+    await vi.runOnlyPendingTimersAsync()
   })
 })
 
