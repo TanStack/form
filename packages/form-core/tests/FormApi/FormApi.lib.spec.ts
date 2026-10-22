@@ -25,6 +25,28 @@ describe('InternalFormApi - constructor', () => {
   })
 })
 
+describe('InternalFormApi - mount', () => {
+  it('notifies mount listeners with the form values', ({ onTestFinished }) => {
+    const listener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      listeners: [{ triggers: ['mount'], run: listener }],
+    })
+
+    const unmount = form.mount()
+    onTestFinished(unmount)
+
+    expect(listener).toHaveBeenCalledOnce()
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        formApi: form,
+        triggerFieldApi: undefined,
+        value: { name: '' },
+      }),
+    )
+  })
+})
+
 describe('InternalFormApi - _update', () => {
   it('changes a supplied formId', () => {
     const form = new InternalFormApi({
@@ -157,6 +179,53 @@ describe('InternalFormApi - _update', () => {
 
     expect(updatedListener).toHaveBeenCalledOnce()
     expect(initialListener).not.toHaveBeenCalled()
+  })
+
+  it('uses the updated listener when a pending debounce completes', async () => {
+    vi.useFakeTimers()
+    const initialListener = vi.fn()
+    const updatedListener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      listeners: [
+        {
+          triggers: ['change'],
+          triggerDebounceMs: 300,
+          run: initialListener,
+        },
+      ],
+    })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+
+    field.handleChange('Alice')
+    await vi.advanceTimersByTimeAsync(100)
+
+    form._update({
+      defaultValues: { name: '' },
+      listeners: [
+        {
+          triggers: ['change'],
+          triggerDebounceMs: 300,
+          run: updatedListener,
+        },
+      ],
+    })
+
+    await vi.advanceTimersByTimeAsync(199)
+    expect(initialListener).not.toHaveBeenCalled()
+    expect(updatedListener).not.toHaveBeenCalled()
+
+    await vi.advanceTimersByTimeAsync(1)
+
+    expect(initialListener).not.toHaveBeenCalled()
+    expect(updatedListener).toHaveBeenCalledOnce()
+    expect(updatedListener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        formApi: form,
+        triggerFieldApi: field,
+        value: { name: 'Alice' },
+      }),
+    )
   })
 
   it('uses the updated onSubmit callback and replaces its previous errors', async () => {
@@ -344,6 +413,25 @@ describe('InternalFormApi - getFieldValue', () => {
 })
 
 describe('InternalFormApi - setFieldValue', () => {
+  it('notifies change listeners with the updated values and triggering field', () => {
+    const listener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      listeners: [{ triggers: ['change'], run: listener }],
+    })
+
+    form.setFieldValue('name', 'Alice')
+
+    expect(listener).toHaveBeenCalledOnce()
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        formApi: form,
+        triggerFieldApi: expect.objectContaining({ name: 'name' }),
+        value: { name: 'Alice' },
+      }),
+    )
+  })
+
   it('updates a nested value without changing unrelated values or defaults', () => {
     const form = new InternalFormApi({
       defaultValues: {
@@ -656,6 +744,27 @@ describe('InternalFormApi - setFieldValue', () => {
 })
 
 describe('InternalFormApi - reset', () => {
+  it('notifies form reset listeners after restoring the default values', () => {
+    const listener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      listeners: [{ triggers: ['reset'], run: listener }],
+    })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+    field.handleChange('Alice')
+
+    form.reset()
+
+    expect(listener).toHaveBeenCalledOnce()
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        formApi: form,
+        triggerFieldApi: undefined,
+        value: { name: '' },
+      }),
+    )
+  })
+
   it('notifies parent and child reset listeners with their values before removing the fields', () => {
     const parentListener = vi.fn()
     const childListener = vi.fn()
@@ -1051,6 +1160,68 @@ describe('InternalFormApi - deleteField', () => {
     expect(form.getFieldMeta('person.name')).toBeUndefined()
     expect(form.state.values).toEqual({ person: { name: 'Bob' } })
     expect(form.state.isTouched).toBe(false)
+  })
+})
+
+describe('InternalFormApi - _notifyFormListener', () => {
+  it('notifies the matching form listeners as a field changes and blurs', () => {
+    const changeListener = vi.fn()
+    const blurListener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      listeners: [
+        { triggers: ['change'], run: changeListener },
+        { triggers: ['blur'], run: blurListener },
+      ],
+    })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+
+    field.handleChange('Alice')
+
+    expect(changeListener).toHaveBeenCalledOnce()
+    expect(changeListener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        formApi: form,
+        triggerFieldApi: field,
+        value: { name: 'Alice' },
+      }),
+    )
+    expect(blurListener).not.toHaveBeenCalled()
+    changeListener.mockClear()
+
+    field.handleBlur()
+
+    expect(blurListener).toHaveBeenCalledOnce()
+    expect(blurListener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        formApi: form,
+        triggerFieldApi: field,
+        value: { name: 'Alice' },
+      }),
+    )
+    expect(changeListener).not.toHaveBeenCalled()
+  })
+})
+
+describe('InternalFormApi - handleSubmit', () => {
+  it('notifies submit listeners when submission starts without a triggering field', async () => {
+    const listener = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      listeners: [{ triggers: ['submit'], run: listener }],
+    })
+
+    const submission = form.handleSubmit()
+
+    expect(listener).toHaveBeenCalledOnce()
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        formApi: form,
+        triggerFieldApi: undefined,
+        value: { name: '' },
+      }),
+    )
+    await expect(submission).resolves.toEqual([])
   })
 })
 
