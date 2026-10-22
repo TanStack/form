@@ -1,0 +1,13 @@
+{
+  "extends": "../../../tsconfig.json",
+  "tsrx": {
+    "compiler": "octane/compiler/volar"
+  },
+  "compilerOptions": {
+    "jsx": "preserve",
+    "jsxImportSource": "octane",
+    "allowImportingTsExtensions": true,
+    "plugins": [{ "name": "@tsrx/typescript-plugin" }]
+  },
+  "include": ["src", "vite.config.ts"]
+}

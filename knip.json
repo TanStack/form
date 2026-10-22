@@ -9,6 +9,7 @@
       "ignoreDependencies": ["@tanstack/react-store", "use-sync-external-store"]
     }
   },
+  "ignoreDependencies": ["ts-node", "@playwright/test"],
   "ignoreIssues": {
     "packages/form-devtools/src/components/ui/**": [
       "exports",
