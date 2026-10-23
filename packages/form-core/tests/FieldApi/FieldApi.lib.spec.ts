@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
+import { promiseWithResolvers } from '../test-utils'
 
 describe('getOrCreateFieldApi', () => {
   it('applies validators to a field whose value was set before registration', async () => {
@@ -1008,7 +1009,7 @@ describe('InternalFieldApi - reset', () => {
   it('aborts active validation, ignores its late result, and allows validation to run again', async ({
     onTestFinished,
   }) => {
-    const request = Promise.withResolvers<string>()
+    const request = promiseWithResolvers<string>()
     onTestFinished(() => request.resolve('Late error'))
     const onAbort = vi.fn()
     const validator = vi.fn(() => request.promise)
@@ -1208,7 +1209,7 @@ describe('InternalFieldApi - _kill', () => {
   it('aborts active validation when deleted and ignores late results and subsequent interactions', async ({
     onTestFinished,
   }) => {
-    const request = Promise.withResolvers<string>()
+    const request = promiseWithResolvers<string>()
     onTestFinished(() => request.resolve('Late error'))
     const onAbort = vi.fn()
     const validator = vi.fn(() => request.promise)

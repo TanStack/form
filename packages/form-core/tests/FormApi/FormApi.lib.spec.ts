@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
 import { formOptions } from '../../src'
+import { promiseWithResolvers } from '../test-utils'
 
 describe('InternalFormApi - constructor', () => {
   it('initializes default values with untouched, submittable state', () => {
@@ -830,7 +831,7 @@ describe('InternalFormApi - reset', () => {
   it('aborts active validation on reset and allows validation to run again', async ({
     onTestFinished,
   }) => {
-    const request = Promise.withResolvers<string>()
+    const request = promiseWithResolvers<string>()
     onTestFinished(() => request.resolve('Late error'))
     const onAbort = vi.fn()
     const validator = vi.fn(() => request.promise)
@@ -871,8 +872,7 @@ describe('InternalFormApi - reset', () => {
   it('ignores the result of a submission that finishes after reset', async ({
     onTestFinished,
   }) => {
-    const { promise: request, resolve: finishRequest } =
-      Promise.withResolvers<void>()
+    const { promise: request, resolve: finishRequest } = promiseWithResolvers()
     onTestFinished(() => finishRequest())
     const options = formOptions({
       defaultValues: { name: '' },

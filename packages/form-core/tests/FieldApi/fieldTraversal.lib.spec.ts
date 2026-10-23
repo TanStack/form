@@ -61,7 +61,7 @@ describe('visitFieldSubtree', () => {
     const firstIndex = names.indexOf('section.first')
     const deepIndex = names.indexOf('section.first.deep')
 
-    expect(names.toSorted()).toEqual([
+    expect([...names].sort()).toEqual([
       'section',
       'section.first',
       'section.first.deep',
@@ -102,7 +102,7 @@ describe('visitAllFormFields', () => {
     const deepIndex = names.indexOf('section.first.deep')
     const secondIndex = names.indexOf('section.second')
 
-    expect(names.toSorted()).toEqual([
+    expect([...names].sort()).toEqual([
       'other',
       'section',
       'section.first',
@@ -124,7 +124,7 @@ describe('collectFieldSubtree', () => {
     const firstIndex = names.indexOf('section.first')
     const deepIndex = names.indexOf('section.first.deep')
 
-    expect(names.toSorted()).toEqual([
+    expect([...names].sort()).toEqual([
       'section',
       'section.first',
       'section.first.deep',
