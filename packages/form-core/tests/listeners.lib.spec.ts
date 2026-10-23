@@ -190,8 +190,10 @@ describe('runFieldListenerPipeline', () => {
         {
           triggers: ['change'],
           triggerDebounceMs: ({ formApi, triggerFieldApi, value }) => {
+            // These make the unit test fail if true. Checks that
+            // the params agree with each other
             if (triggerFieldApi?.name !== 'name') return 0
-            if (formApi.state.values.name === value) return 0
+            if (formApi.state.values.name !== value) return 0
             return value.length * 20
           },
           run: listener,
