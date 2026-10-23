@@ -1,5 +1,19 @@
 # @tanstack/preact-form
 
+## 2.0.0-alpha.4
+
+### Patch Changes
+
+- [#2442](https://github.com/TanStack/form/pull/2442) [`7c7d786`](https://github.com/TanStack/form/commit/7c7d78678cdd7061b614b88dd2d5af245799a7cd) - BREAKING: `runOnSubmit` has been renamed in favor of `skipOnSubmit`. That way, it's easier to explain what happens when you omit the property.
+
+  Migration:
+
+  - rename `runOnSubmit` to `skipOnSubmit`
+  - invert the condition you returned.
+
+- Updated dependencies [[`7c7d786`](https://github.com/TanStack/form/commit/7c7d78678cdd7061b614b88dd2d5af245799a7cd)]:
+  - @tanstack/form-core@2.0.0-alpha.4
+
 ## 2.0.0-alpha.3
 
 ### Major Changes
