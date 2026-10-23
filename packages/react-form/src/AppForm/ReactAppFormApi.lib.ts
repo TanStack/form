@@ -1,4 +1,4 @@
-import { createArrayFieldComponent } from '../ReactForm/Components.lib'
+import { useArrayFieldSubscription } from '../ReactForm/fieldSubscriptions.lib'
 import { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
 import { createInternalReactAppFieldApiClass } from './ReactAppFieldApi.lib'
 import {
@@ -7,7 +7,6 @@ import {
   createFormGroupWithContext,
 } from './Components.lib'
 import type { DefaultOptions, FormOptions } from '@tanstack/form-core'
-import type { FunctionComponent } from 'react'
 import type { AppFormComponent } from './ReactAppFormApi.public'
 import type { ReactComponentTree } from './componentMap.public'
 
@@ -48,14 +47,23 @@ export function createInternalReactAppFormApiClass<
       super(options, defaultOptions)
 
       const field = createFieldWithContext(this, 'field')
-      const groupField = createFieldWithContext(this, 'field')
-      const groupArrayField = createArrayFieldComponent(
+      const arrayField = createFieldWithContext(
         this,
         'field',
-      ) as FunctionComponent<any>
+        useArrayFieldSubscription,
+      )
+      const groupField = createFieldWithContext(this, 'field')
+      const groupArrayField = createFieldWithContext(
+        this,
+        'field',
+        useArrayFieldSubscription,
+      )
+      arrayField.displayName = 'TanStackForm.ArrayField'
+      groupArrayField.displayName = 'TanStackForm.ArrayField'
 
       this.AppForm = createAppForm(this)
       this.Field = field as InternalReactAppFormApi['Field']
+      this.ArrayField = arrayField as InternalReactAppFormApi['ArrayField']
       this.FormGroup = createFormGroupWithContext(
         this,
         groupField,
