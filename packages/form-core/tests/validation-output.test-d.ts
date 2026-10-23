@@ -215,22 +215,22 @@ describe('validator output types', () => {
       {
         run: ({ createOutput }) => createOutput(1),
         triggers: [],
-        runOnSubmit: false,
+        skipOnSubmit: true,
       },
       {
         run: ({ createOutput }) => createOutput(1),
         triggers: [],
-        runOnSubmit: true as boolean,
+        skipOnSubmit: false as boolean,
       },
       {
         run: ({ createOutput }) => createOutput(1),
         triggers: [],
-        runOnSubmit: () => true,
+        skipOnSubmit: () => false,
       },
       {
         run: ({ createOutput }) => createOutput(1),
         triggers: [],
-        runOnSubmit: true,
+        skipOnSubmit: false,
       },
     ])
 
@@ -274,7 +274,7 @@ describe('validator output types', () => {
           run: async ({ value, createOutput }) =>
             createOutput(value.name.length),
           triggers: ['server'],
-          runOnSubmit: false,
+          skipOnSubmit: true,
         },
       ],
     })

@@ -239,11 +239,11 @@ describe('server validation types', () => {
             >()
             return undefined
           },
-          runOnSubmit: ({ formApi }) => {
+          skipOnSubmit: ({ formApi }) => {
             expectTypeOf(formApi.state.values).toEqualTypeOf<{
               name: string
             }>()
-            return true
+            return false
           },
           triggerDebounceMs: ({ formApi }) => {
             expectTypeOf(formApi.state.values).toEqualTypeOf<{

@@ -149,7 +149,7 @@ describe('server validation', () => {
     expect(serverValidator).toHaveBeenCalledOnce()
   })
 
-  it('skips server-only validators during client submit when runOnSubmit is false', async () => {
+  it('skips server-only validators during client submit when skipOnSubmit is true', async () => {
     const validator = vi.fn(() => 'Submit error')
     const form = new InternalFormApi(
       formOptions({
@@ -158,7 +158,7 @@ describe('server validation', () => {
           {
             run: validator,
             triggers: ['server'],
-            runOnSubmit: false,
+            skipOnSubmit: true,
           },
         ],
       }),

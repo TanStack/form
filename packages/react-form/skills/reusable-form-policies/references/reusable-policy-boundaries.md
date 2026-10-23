@@ -8,4 +8,4 @@ Use field groups when a section must work across different forms or paths. Do no
 
 Use `createErrorVisibility` when the visibility policy can be form-agnostic. The reusable callback sees `state.values` as `unknown`. Inline `errorVisibility` is better when the callback needs typed values from one specific form.
 
-Use `createValidator` or `createValidators` when timing is the policy: `triggers`, `triggerDebounceMs`, `bailIfInvalid`, `runOnSubmit`, or a named workflow such as reward early and punish late.
+Use `createValidator` or `createValidators` when timing is the policy: `triggers`, `triggerDebounceMs`, `bailIfInvalid`, `skipOnSubmit`, or a named workflow such as reward early and punish late.

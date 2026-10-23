@@ -48,12 +48,12 @@ export interface Validator<
   /**
    * Whether this validator runs during a submission attempt, independently of `triggers`.
    *
-   * Pass a boolean to enable or disable it, or pass a function that returns
-   * `true` to enable it for the current attempt.
+   * Pass a boolean directly, or pass a function that returns
+   * `true` to skip it for the current attempt.
    *
-   * @default true
+   * @default false
    */
-  runOnSubmit?:
+  skipOnSubmit?:
     boolean | ValidationPredicateFn<TFormData, TContextValue, TScope>
   /**
    * Whether this validator runs when the form is constructed or when its field
@@ -77,7 +77,7 @@ export interface Validator<
    * Change and blur events that can run this validator, optionally with conditions.
    *
    * An empty array disables change and blur validation. Configure submission
-   * separately with `runOnSubmit` and initial validation with `runOnMount`.
+   * separately with `skipOnSubmit` and initial validation with `runOnMount`.
    */
   triggers: Array<
     ValidationTriggerOption<TFormData, TContextValue, TTrigger, TScope>
@@ -255,7 +255,7 @@ export type ValidationTrigger = 'change' | 'blur' | 'submit'
 export type ServerValidationTrigger = 'server'
 /** Events reported to client-side validation callbacks. */
 export type ClientValidationTrigger = ValidationTrigger
-/** Events configured through `triggers`. Submission is controlled by `runOnSubmit`. */
+/** Events configured through `triggers`. Submission is controlled by `skipOnSubmit`. */
 export type ConfigurableValidationTrigger = Exclude<ValidationTrigger, 'submit'>
 /** Change and blur events accepted by shared validator configurations. */
 export type ValidatorTrigger = ConfigurableValidationTrigger
@@ -559,7 +559,7 @@ export type ClientValidationTriggerOption<
  * A client event with an optional condition, or the `'server'` event for a form validator.
  *
  * Server validation selects validators with a `'server'` trigger independently
- * of `runOnSubmit`.
+ * of `skipOnSubmit`.
  *
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
  * @typeParam TValue - Library-managed. Do not specify explicitly.
@@ -819,12 +819,12 @@ export interface FormValidator<in out TFormData> extends BaseValidator<
   /**
    * Whether this validator runs during a client submission attempt, independently of `triggers`.
    *
-   * Pass a boolean to enable or disable it, or pass a function that returns
-   * `true` to enable it for the current attempt.
+   * Pass a boolean or a function that returns
+   * `true` to skip it for the current attempt.
    *
-   * @default true
+   * @default false
    */
-  runOnSubmit?: boolean | ValidationPredicateFn<TFormData, TFormData, 'form'>
+  skipOnSubmit?: boolean | ValidationPredicateFn<TFormData, TFormData, 'form'>
   /**
    * Whether this validator runs when the form is constructed.
    *
@@ -847,7 +847,7 @@ export interface FormValidator<in out TFormData> extends BaseValidator<
    * Add `'server'` to include it in `serverValidate`.
    *
    * An empty array disables change, blur, and server validation. Configure client
-   * submission separately with `runOnSubmit` and initial validation with `runOnMount`.
+   * submission separately with `skipOnSubmit` and initial validation with `runOnMount`.
    */
   triggers: Array<FormValidationTriggerOption<TFormData, TFormData, 'form'>>
 }
@@ -1192,12 +1192,12 @@ type TryGetOutput<TValidator> = TValidator extends {
 
 type TryGetSubmitOutput<TValidator> =
   TryGetOutput<TValidator> extends infer TOutput
-    ? TValidator extends { readonly runOnSubmit: infer TRunOnSubmit }
-      ? [TRunOnSubmit] extends [false]
-        ? undefined // User explicitly set runOnSubmit: false -> guaranteed undefined
-        : TRunOnSubmit extends (...args: Array<any>) => boolean
+    ? TValidator extends { readonly skipOnSubmit: infer TSkipOnSubmit }
+      ? [TSkipOnSubmit] extends [true]
+        ? undefined // User explicitly set skipOnSubmit: false -> guaranteed undefined
+        : TSkipOnSubmit extends (...args: Array<any>) => boolean
           ? TOutput | undefined // Callback could dynamically be true or false -> union
-          : false extends TRunOnSubmit
+          : true extends TSkipOnSubmit
             ? TOutput | undefined // the explicit variable is boolean, so also dynamic -> union
             : TOutput
       : TOutput // default, which is guaranteed present
@@ -1382,7 +1382,7 @@ type MappedServerOutputs<in out TFormValidators extends FormValidators<any>> = {
  * Infers server validation output slots in form validator configuration order.
  *
  * Validators without a `'server'` trigger have `undefined` slots. Server
- * selection is independent of `runOnSubmit`.
+ * selection is independent of `skipOnSubmit`.
  *
  * @typeParam TFormValidators - Library-managed. Do not specify explicitly.
  */

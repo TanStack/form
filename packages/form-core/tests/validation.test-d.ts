@@ -801,7 +801,7 @@ describe('FormErrors', () => {
           when: ({ formApi }) => formApi.state.submissionAttempts > 0,
         },
       ],
-      runOnSubmit: true,
+      skipOnSubmit: false,
     })
 
     const form = new InternalFormApi({
@@ -826,7 +826,7 @@ describe('FormErrors', () => {
             when: ({ formApi }) => formApi.state.submissionAttempts > 0,
           },
         ],
-        runOnSubmit: true,
+        skipOnSubmit: false,
       },
       {
         triggers: [
@@ -835,7 +835,7 @@ describe('FormErrors', () => {
             when: ({ formApi }) => formApi.state.submissionAttempts > 0,
           },
         ],
-        runOnSubmit: true,
+        skipOnSubmit: false,
         bailIfInvalid: true,
       },
     ])
@@ -1527,7 +1527,7 @@ describe('validator type transforms', () => {
     >()
   })
 
-  it('it should transform based on runOnSubmit', () => {
+  it('it should transform based on skipOnSubmit', () => {
     const vs = defineFormValidators([
       {
         run: z.object({ name: z.string() }),
@@ -1536,12 +1536,12 @@ describe('validator type transforms', () => {
       {
         run: z.object({ name: z.string() }),
         triggers: [],
-        runOnSubmit: false,
+        skipOnSubmit: true,
       },
       {
         run: z.object({ name: z.string() }),
         triggers: [],
-        runOnSubmit: true,
+        skipOnSubmit: false,
       },
       {
         run: z.object({ name: z.string() }),
@@ -1550,7 +1550,7 @@ describe('validator type transforms', () => {
       {
         run: z.object({ name: z.string() }),
         triggers: ['server'],
-        runOnSubmit: true,
+        skipOnSubmit: false,
       },
       {
         run: z.object({ name: z.string() }),
@@ -1562,7 +1562,7 @@ describe('validator type transforms', () => {
 
     expectTypeOf<Outputs>().toEqualTypeOf<
       readonly [
-        // Assume runOnSubmit is true if omitted.
+        // Assume skipOnSubmit is true if omitted.
         { name: string },
         // It was explicitly set false.
         undefined,
@@ -1575,8 +1575,8 @@ describe('validator type transforms', () => {
     >()
   })
 
-  it('makes schema outputs optional when runOnSubmit is dynamic', () => {
-    const dynamicRunOnSubmit = true as boolean
+  it('makes schema outputs optional when skipOnSubmit is dynamic', () => {
+    const dynamicSkipOnSubmit = false as boolean
     const vs = defineFormValidators([
       {
         run: z.object({ name: z.string() }),
@@ -1585,44 +1585,44 @@ describe('validator type transforms', () => {
       {
         run: z.object({ name: z.string() }),
         triggers: [],
-        runOnSubmit: true,
+        skipOnSubmit: false,
       },
       {
         run: z.object({ name: z.string() }),
         triggers: [],
-        runOnSubmit: false,
+        skipOnSubmit: true,
       },
       {
         run: z.object({ name: z.string() }),
         triggers: [],
-        runOnSubmit: dynamicRunOnSubmit,
+        skipOnSubmit: dynamicSkipOnSubmit,
       },
       {
         run: z.object({ name: z.string() }),
         triggers: [],
-        runOnSubmit: () => true,
+        skipOnSubmit: () => true,
       },
       {
         run: z.object({ name: z.string() }),
         triggers: [],
-        runOnSubmit: () => false,
+        skipOnSubmit: () => false,
       },
       {
         run: z.object({ name: z.string() }),
         triggers: [],
-        runOnSubmit: () => dynamicRunOnSubmit,
+        skipOnSubmit: () => dynamicSkipOnSubmit,
       },
       {
         run: z.object({ name: z.string() }),
         triggers: [],
-        runOnSubmit: undefined,
+        skipOnSubmit: undefined,
       },
     ])
 
     type Output = { name: string }
     type Outputs = ToFormOutputs<typeof vs>
     type Expected = readonly [
-      // An omitted runOnSubmit defaults to true, so the output is guaranteed.
+      // An omitted skipOnSubmit defaults to false, so the output is guaranteed.
       Output,
       // A literal true always runs the validator during submit.
       Output,
@@ -1690,7 +1690,7 @@ describe('validator type transforms', () => {
       },
       {
         run: schema,
-        runOnSubmit: false,
+        skipOnSubmit: true,
         triggers: [],
       },
     ])

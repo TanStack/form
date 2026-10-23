@@ -3,7 +3,7 @@ name: schema-driven-forms
 description: >
   Use when wiring Standard Schema-compatible schemas into TanStack React Form v2
   validators, validatorOutputs, parseIssues, createValidationError, field errors,
-  nested issue paths, runOnSubmit behavior, and typed submit output. Load after
+  nested issue paths, skipOnSubmit behavior, and typed submit output. Load after
   choosing form option mode for schema-driven React forms.
 metadata:
   type: framework
@@ -120,11 +120,11 @@ Use `parseIssues` when an endpoint or local schema check returns Standard Schema
 const validateWhileEditing = {
   run: profileSchema,
   triggers: ['change'],
-  runOnSubmit: false,
+  skipOnSubmit: true,
 }
 ```
 
-`runOnSubmit: false` means that validator does not contribute a parsed submit output.
+`skipOnSubmit: true` means that validator does not contribute a parsed submit output.
 
 ## Common Mistakes
 

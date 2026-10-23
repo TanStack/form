@@ -46,7 +46,7 @@ describe('field debug cases', () => {
         {
           ...emptyTriggerValidator,
           runOnMount: true,
-          runOnSubmit: false,
+          skipOnSubmit: true,
         },
       ] as never,
     })
@@ -79,7 +79,7 @@ describe('field debug cases', () => {
         {
           ...emptyTriggerValidator,
           runOnMount: true,
-          runOnSubmit: false,
+          skipOnSubmit: true,
         },
       ] as never,
     })

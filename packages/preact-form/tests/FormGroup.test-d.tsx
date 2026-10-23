@@ -166,7 +166,7 @@ function FormGroupSubmitTypes() {
         { run: guestDetailsSchema, triggers: [] },
         {
           run: guestDetailsSchema,
-          runOnSubmit: false,
+          skipOnSubmit: true,
           triggers: [],
         },
       ]}
