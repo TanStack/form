@@ -480,14 +480,14 @@ describe('form - submission handling', () => {
     })
 
     it('clears prior schema output when a dynamic submit predicate skips the validator', async () => {
-      let shouldRunOnSubmit = true
+      let shouldSkipSubmit = false
       const onSubmit = vi.fn()
       const form = new InternalFormApi({
         defaultValues: { name: 'test' },
         validators: [
           {
             run: z.object({ name: z.string() }),
-            runOnSubmit: () => shouldRunOnSubmit,
+            skipOnSubmit: () => shouldSkipSubmit,
             triggers: [],
           },
         ],
@@ -499,7 +499,7 @@ describe('form - submission handling', () => {
         expect.objectContaining({ validatorOutputs: [{ name: 'test' }] }),
       )
 
-      shouldRunOnSubmit = false
+      shouldSkipSubmit = true
       await form.handleSubmit()
 
       expect(onSubmit).toHaveBeenLastCalledWith(
@@ -592,7 +592,7 @@ describe('form - submission handling', () => {
       expect(thirdValidatorFn).not.toHaveBeenCalled()
     })
 
-    it('skips validators with runOnSubmit: false', async () => {
+    it('skips validators with skipOnSubmit: true', async () => {
       const validatorFn = vi
         .fn()
         .mockImplementation(() => ({ message: 'Should not run' }))
@@ -600,7 +600,7 @@ describe('form - submission handling', () => {
         defaultValues: { name: '' },
         validators: [
           {
-            runOnSubmit: false,
+            skipOnSubmit: true,
             run: validatorFn,
             triggers: ['change'],
           },
@@ -611,7 +611,7 @@ describe('form - submission handling', () => {
       expect(validatorFn).not.toHaveBeenCalled()
     })
 
-    it('runs validators with runOnSubmit: true on submit', async () => {
+    it('runs validators with skipOnSubmit: false on submit', async () => {
       const validatorFn = vi
         .fn()
         .mockImplementation(() => ({ message: 'Submit error' }))
@@ -619,7 +619,7 @@ describe('form - submission handling', () => {
         defaultValues: { name: '' },
         validators: [
           {
-            runOnSubmit: true,
+            skipOnSubmit: false,
             run: validatorFn,
             triggers: [],
           },
@@ -630,7 +630,7 @@ describe('form - submission handling', () => {
       expect(validatorFn).toHaveBeenCalled()
     })
 
-    it('runs validators with runOnSubmit: false on their triggers', async () => {
+    it('runs validators with skipOnSubmit: true on their triggers', async () => {
       const validatorFn = vi
         .fn()
         .mockImplementation(() => ({ message: 'Change error' }))
@@ -638,19 +638,19 @@ describe('form - submission handling', () => {
         defaultValues: { name: '' },
         validators: [
           {
-            runOnSubmit: false,
+            skipOnSubmit: true,
             run: validatorFn,
             triggers: ['change'],
           },
         ],
       })
       await form.validate('change')
-      // runOnSubmit: false only affects submit, not the configured triggers
+      // skipOnSubmit: true only affects submit, not the configured triggers
       expect(form.state.errors).toEqual([{ message: 'Change error' }])
       expect(validatorFn).toHaveBeenCalled()
     })
 
-    it('skips validators with runOnSubmit: false and no triggers on submit', async () => {
+    it('skips validators with skipOnSubmit: true and no triggers on submit', async () => {
       const validatorFn = vi
         .fn()
         .mockImplementation(() => ({ message: 'Should not run' }))
@@ -658,7 +658,7 @@ describe('form - submission handling', () => {
         defaultValues: { name: '' },
         validators: [
           {
-            runOnSubmit: false,
+            skipOnSubmit: true,
             run: validatorFn,
             triggers: [],
           },
@@ -669,7 +669,7 @@ describe('form - submission handling', () => {
       expect(validatorFn).not.toHaveBeenCalled()
     })
 
-    it('supports runOnSubmit as a function', async () => {
+    it('supports skipOnSubmit as a function', async () => {
       const validatorFn = vi
         .fn()
         .mockImplementation(() => ({ message: 'Conditional submit error' }))
@@ -677,7 +677,7 @@ describe('form - submission handling', () => {
         defaultValues: { name: '' },
         validators: [
           {
-            runOnSubmit: ({ formApi }) => formApi.state.values.name === '',
+            skipOnSubmit: ({ formApi }) => formApi.state.values.name !== '',
             run: validatorFn,
             triggers: [],
           },

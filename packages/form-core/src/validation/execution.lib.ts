@@ -230,10 +230,10 @@ export function shouldRunValidator(
     return hasServerTrigger(validator)
   }
 
-  const { runOnSubmit = true } = validator
+  const { skipOnSubmit = false } = validator
 
   if (context.event === 'submit') {
-    return getEnabledState(runOnSubmit, context)
+    return !getEnabledState(skipOnSubmit, context)
   }
 
   return validator.triggers.some((signal) =>

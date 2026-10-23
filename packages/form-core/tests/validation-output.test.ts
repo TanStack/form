@@ -67,7 +67,7 @@ describe('validator outputs', () => {
             triggers: [],
           },
           { run: () => undefined, triggers: [] },
-          { run: skipped, triggers: [], runOnSubmit: false },
+          { run: skipped, triggers: [], skipOnSubmit: true },
         ],
         onSubmit,
       }),
@@ -119,7 +119,7 @@ describe('validator outputs', () => {
   })
 
   it('clears earlier outputs when a later submission skips or succeeds without output', async () => {
-    let shouldRun = true
+    let shouldSkip = false
     let produceOutput = true
     const onSubmit = vi.fn()
     const form = new InternalFormApi(
@@ -129,7 +129,7 @@ describe('validator outputs', () => {
           {
             run: ({ value, createOutput }) =>
               produceOutput ? createOutput(value.name) : [],
-            runOnSubmit: () => shouldRun,
+            skipOnSubmit: () => shouldSkip,
             triggers: [],
           },
         ],
@@ -142,13 +142,13 @@ describe('validator outputs', () => {
       expect.objectContaining({ validatorOutputs: ['Tony'] }),
     )
 
-    shouldRun = false
+    shouldSkip = true
     await form.handleSubmit()
     expect(onSubmit).toHaveBeenLastCalledWith(
       expect.objectContaining({ validatorOutputs: [undefined] }),
     )
 
-    shouldRun = true
+    shouldSkip = false
     await form.handleSubmit()
     expect(onSubmit).toHaveBeenLastCalledWith(
       expect.objectContaining({ validatorOutputs: ['Tony'] }),
@@ -171,7 +171,7 @@ describe('validator outputs', () => {
           {
             run: ({ createOutput }) => createOutput('event output'),
             triggers: ['change', 'blur'],
-            runOnSubmit: false,
+            skipOnSubmit: true,
           },
           {
             run: nextValidator,
@@ -212,7 +212,7 @@ describe('validator outputs', () => {
                   ? Promise.resolve(createOutput('mount output'))
                   : createOutput('mount output'),
               runOnMount: true,
-              runOnSubmit: false,
+              skipOnSubmit: true,
               triggers: [],
             },
             {
@@ -257,7 +257,7 @@ describe('validator outputs', () => {
           run: async ({ value, createOutput }) =>
             createOutput({ name: value.name.trim() }),
           runOnMount: true,
-          runOnSubmit: () => shouldRun,
+          skipOnSubmit: () => !shouldRun,
           triggers: ['change'],
         },
       ],
@@ -296,7 +296,7 @@ describe('validator outputs', () => {
           run: async ({ value, createOutput }) =>
             createOutput(value.name.length),
           triggers: ['server'],
-          runOnSubmit: false,
+          skipOnSubmit: true,
         },
       ],
     })

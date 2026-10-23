@@ -21,7 +21,7 @@ export const formOpts = formOptions({
     {
       triggers: ['server'],
       // This validator will only run on the server
-      runOnSubmit: false,
+      skipOnSubmit: true,
       run: ({ value, createErrorMap }) => {
         const errors = createErrorMap()
 

@@ -20,7 +20,7 @@ export const formOpts = formOptions({
     },
     {
       triggers: ['server'],
-      runOnSubmit: false,
+      skipOnSubmit: true,
       run: ({ value, createErrorMap }) => {
         const errors = createErrorMap()
 

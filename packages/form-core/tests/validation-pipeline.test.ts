@@ -311,22 +311,22 @@ describe('runFormValidatorPipeline', () => {
       },
       {
         run: trueCallback,
-        runOnSubmit: () => true,
+        skipOnSubmit: () => false,
         triggers: [],
       },
       {
         run: trueBoolean,
-        runOnSubmit: true,
+        skipOnSubmit: false,
         triggers: [],
       },
       {
         run: falseBoolean,
-        runOnSubmit: false,
+        skipOnSubmit: true,
         triggers: [],
       },
       {
         run: falseCallback,
-        runOnSubmit: () => false,
+        skipOnSubmit: () => true,
         triggers: [],
       },
     ])
@@ -1056,7 +1056,7 @@ describe('runFormValidatorPipeline', () => {
 
     it('aborts pending schema output before a dynamic predicate skips the validator', async () => {
       const formApi = getForm({ name: 'stale' })
-      let shouldRunOnSubmit = true
+      let shouldSkipOnSubmit = false
       let resolveSchema!: (result: { value: { name: string } }) => void
       const output = new Promise<{ value: { name: string } }>((resolve) => {
         resolveSchema = resolve
@@ -1071,13 +1071,13 @@ describe('runFormValidatorPipeline', () => {
       const { runWithContext, pipeline } = getPipeline(formApi, [
         {
           run: schema,
-          runOnSubmit: () => shouldRunOnSubmit,
+          skipOnSubmit: () => shouldSkipOnSubmit,
           triggers: [],
         },
       ])
 
       const staleValidation = runWithContext({ event: 'submit' })
-      shouldRunOnSubmit = false
+      shouldSkipOnSubmit = true
       await runWithContext({ event: 'submit' })
       await staleValidation
 
@@ -1282,7 +1282,7 @@ describe('runFormValidatorPipeline', () => {
       ])
     })
 
-    it('should not run zod schema validators with runOnSubmit disabled', async () => {
+    it('should not run zod schema validators with skipOnSubmit enabled', async () => {
       const formApi = getForm({ name: '' })
 
       const schema = z.object({
@@ -1293,7 +1293,7 @@ describe('runFormValidatorPipeline', () => {
         {
           run: schema,
           triggers: [],
-          runOnSubmit: false,
+          skipOnSubmit: true,
         },
       ])
 

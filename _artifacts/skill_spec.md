@@ -128,7 +128,7 @@ Core guidance:
 - AppForm reduces repeated field JSX boilerplate; split sections reduce nesting in a known form; field groups cover shared sections across different forms or field paths.
 - Prefer form-level `errorVisibility` callbacks over scattered local patterns like `const showErrors = field.meta.isTouched && field.meta.isInvalid`.
 - Use helper functions mainly when a callback or validator config deserves a semantic name that preserves intent.
-- Extract validator configs with `createValidator` or `createValidators` when trigger timing, debounce, `bailIfInvalid`, or `runOnSubmit` policy is complex enough to name.
+- Extract validator configs with `createValidator` or `createValidators` when trigger timing, debounce, `bailIfInvalid`, or `skipOnSubmit` policy is complex enough to name.
 - Use comments or JSDoc on named helpers to explain behavior intent, such as why errors wait for blur or submit, or why a validator uses a `rewardEarlyPunishLate` policy.
 - Keep reusable policies value-agnostic unless they are intentionally tied to a specific form shape; inline callbacks are better when typed values are required.
 
