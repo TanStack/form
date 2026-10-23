@@ -19,10 +19,18 @@ describe('InternalFormApi - swapFieldValues', () => {
     expect(form.state.values).toEqual({
       items: [{ name: 'Carol' }, { name: 'Bob' }, { name: 'Alice' }],
     })
+    expect(item0.name).toBe('items[2]')
+    expect(item2.name).toBe('items[0]')
     expect(name0.name).toBe('items[2].name')
     expect(name0.value).toBe('Alice')
     expect(name2.name).toBe('items[0].name')
     expect(name2.value).toBe('Carol')
+
+    const firstItem = form._getOrCreateFieldApi({ name: 'items[0]' })
+    const lastItem = form._getOrCreateFieldApi({ name: 'items[2]' })
+
+    expect(firstItem.name).toBe('items[0]')
+    expect(lastItem.name).toBe('items[2]')
 
     expect(arrayField.meta).toMatchObject({
       isTouched: true,
@@ -41,6 +49,8 @@ describe('InternalFormApi - swapFieldValues', () => {
     expect(form.state.values).toEqual({
       items: [{ name: 'Caroline' }, { name: 'Bob' }, { name: 'Alicia' }],
     })
+    expect(firstItem.value).toEqual({ name: 'Caroline' })
+    expect(lastItem.value).toEqual({ name: 'Alicia' })
   })
 
   it('leaves values and interaction state unchanged when both indices are equal', () => {
