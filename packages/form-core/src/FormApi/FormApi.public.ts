@@ -9,6 +9,7 @@ import type {
   ParsedStandardSchemaIssues,
   ToFormErrorTypes,
   ToFormOutputs,
+  ValidationErrorMap,
 } from '../validation.public'
 import type { StandardSchemaV1Issue } from '../standardSchema.public'
 import type { FormListeners } from '../listeners.public'
@@ -61,6 +62,11 @@ export type CreateValidationErrorFn<in out TFormData> = <
 >(
   error: TError,
 ) => OnSubmitError<TError>
+
+export type CreateSubmitErrorMapFn<in out TFormData> = (
+  initial?: Partial<ValidationErrorMap<TFormData>>,
+) => ValidationErrorMap<TFormData> &
+  OnSubmitError<ValidationErrorMap<TFormData>>
 
 /**
  * Converts Standard Schema issues into an `onSubmit` validation error.
@@ -146,6 +152,7 @@ export interface FormSubmitContext<
    * ```
    */
   createValidationError: CreateValidationErrorFn<TFormData>
+  createErrorMap: CreateSubmitErrorMapFn<TFormData>
   /**
    * Parses Standard Schema issues into an error returnable from `onSubmit`.
    *

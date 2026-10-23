@@ -5,13 +5,16 @@ import {
   parseValidationResult,
 } from '../validation'
 import { parseStandardSchemaIssues } from '../standardSchema.lib'
+import { createErrorMap } from '../validation.public'
 import type { InternalFormApi } from './FormApi.lib'
 import type {
   FormValidateResult,
   FormValidationError,
   ValidationErrorInput,
+  ValidationErrorMap,
 } from '../validation.public'
 import type {
+  CreateSubmitErrorMapFn,
   CreateValidationErrorFn,
   OnSubmitError,
   ParseSubmitIssuesFn,
@@ -37,6 +40,14 @@ function createSubmitError<TError extends FormValidationError<any>>(
   error: TError,
 ): OnSubmitError<TError> {
   return { [SUBMIT_ERROR]: error }
+}
+
+function createSubmitErrorMap<TFormData>(
+  initial?: Partial<ValidationErrorMap<TFormData>>,
+): ReturnType<CreateSubmitErrorMapFn<TFormData>> {
+  const map = createErrorMap(initial)
+  Object.defineProperty(map, SUBMIT_ERROR, { value: map })
+  return map as ReturnType<CreateSubmitErrorMapFn<TFormData>>
 }
 
 function createParseIssues<TFormData>(
@@ -168,6 +179,7 @@ export async function runSubmissionProcess<TFormData>(
       validatorOutputs,
       value,
       createValidationError,
+      createErrorMap: createSubmitErrorMap,
       parseIssues: createParseIssues(value),
     })
 

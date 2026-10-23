@@ -450,7 +450,7 @@ export function killField(
   reattachFormGroups()
 }
 
-export function canPruneField(field: AnyInternalFieldApi): boolean {
+function canPruneField(field: AnyInternalFieldApi): boolean {
   if (field._isKilled) return false
 
   if (field._refCount > 0) return false
