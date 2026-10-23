@@ -65,6 +65,7 @@ export function resolveFieldUpdateOptions(
   return {
     ...baseOpts,
     _skipFieldCreation: options?._skipFieldCreation ?? noFieldCreationNeeded,
+    _skipDescendantValidation: options?._skipDescendantValidation === true,
     fieldApiOverride: options?.fieldApiOverride ?? null,
     doPropagate: options?.doPropagate ?? true,
   }
