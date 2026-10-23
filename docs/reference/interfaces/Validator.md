@@ -111,10 +111,10 @@ false
 
 ***
 
-### runOnSubmit?
+### skipOnSubmit?
 
 ```ts
-optional runOnSubmit?: 
+optional skipOnSubmit?: 
   | boolean
 | ValidationPredicateFn<TFormData, TContextValue, TScope>;
 ```
@@ -123,13 +123,13 @@ Defined in: [validation.public.ts:56](https://github.com/TanStack/form/blob/main
 
 Whether this validator runs during a submission attempt, independently of `triggers`.
 
-Pass a boolean to enable or disable it, or pass a function that returns
-`true` to enable it for the current attempt.
+Pass a boolean directly, or pass a function that returns
+`true` to skip it for the current attempt.
 
 #### Default
 
 ```ts
-true
+false
 ```
 
 ***
@@ -169,4 +169,4 @@ Defined in: [validation.public.ts:82](https://github.com/TanStack/form/blob/main
 Change and blur events that can run this validator, optionally with conditions.
 
 An empty array disables change and blur validation. Configure submission
-separately with `runOnSubmit` and initial validation with `runOnMount`.
+separately with `skipOnSubmit` and initial validation with `runOnMount`.

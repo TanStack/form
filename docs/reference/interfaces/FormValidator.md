@@ -83,10 +83,10 @@ false
 
 ***
 
-### runOnSubmit?
+### skipOnSubmit?
 
 ```ts
-optional runOnSubmit?: 
+optional skipOnSubmit?: 
   | boolean
 | ValidationPredicateFn<TFormData, TFormData, "form">;
 ```
@@ -95,13 +95,13 @@ Defined in: [validation.public.ts:827](https://github.com/TanStack/form/blob/mai
 
 Whether this validator runs during a client submission attempt, independently of `triggers`.
 
-Pass a boolean to enable or disable it, or pass a function that returns
-`true` to enable it for the current attempt.
+Pass a boolean or a function that returns
+`true` to skip it for the current attempt.
 
 #### Default
 
 ```ts
-true
+false
 ```
 
 ***
@@ -142,4 +142,4 @@ Change and blur events that can run this validator, optionally with conditions.
 Add `'server'` to include it in `serverValidate`.
 
 An empty array disables change, blur, and server validation. Configure client
-submission separately with `runOnSubmit` and initial validation with `runOnMount`.
+submission separately with `skipOnSubmit` and initial validation with `runOnMount`.
