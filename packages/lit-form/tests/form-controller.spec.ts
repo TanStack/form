@@ -21,7 +21,7 @@ const personFormOptions = formOptions({
 })
 
 class TestFormElement extends LitElement {
-  submit = vi.fn()
+  submit = vi.fn<(value: typeof personFormOptions.defaultValues) => void>()
   formMount = vi.fn()
   fieldMount = vi.fn()
   fieldUnmount = vi.fn()

@@ -1,9 +1,14 @@
-import type { AnyFormOptions, FormOptions } from '@tanstack/form-core'
+import type {
+  AnyFormOptions,
+  FormOptions,
+  GetFormErrorTypes,
+} from '@tanstack/form-core'
 import type { TanStackFormController } from './tanstack-form-controller.js'
 
-type LitFormTypeSubmitReturn<TSubmitReturn> = unknown extends TSubmitReturn
-  ? any
-  : TSubmitReturn
+type LitFormTypeErrorTypes<TValidators, TSubmitReturn> =
+  unknown extends TSubmitReturn
+    ? any
+    : GetFormErrorTypes<TValidators, TSubmitReturn>
 
 /**
  * A Lit form controller whose form data, validator, and submit types are
@@ -28,7 +33,7 @@ type LitFormTypeSubmitReturn<TSubmitReturn> = unknown extends TSubmitReturn
  * }
  * ```
  */
-export type AnyLitFormApi = TanStackFormController<any, any, any>
+export type AnyLitFormApi = TanStackFormController<any, any, any, any, any>
 
 /**
  * Derives the Lit form controller type represented by a reusable options
@@ -58,14 +63,17 @@ export type AnyLitFormApi = TanStackFormController<any, any, any>
 export type LitFormType<TOptions extends AnyFormOptions> =
   TOptions extends FormOptions<
     infer TFormData,
-    infer TFormValidators,
+    infer TValidatorConfig,
+    infer TValidators,
     infer TSubmitReturn,
-    unknown
+    any
   >
     ? TanStackFormController<
         TFormData,
-        TFormValidators,
-        LitFormTypeSubmitReturn<TSubmitReturn>
+        TValidatorConfig,
+        TValidators,
+        TSubmitReturn,
+        LitFormTypeErrorTypes<TValidators, TSubmitReturn>
       >
     : never
 
