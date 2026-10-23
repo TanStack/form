@@ -3,7 +3,7 @@ id: FormOptions
 title: FormOptions
 ---
 
-Defined in: [FormApi/FormApi.public.ts:255](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L255)
+Defined in: [FormApi/FormApi.public.ts:262](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L262)
 
 Configures initial values, validation, listeners, and submission.
 
@@ -56,7 +56,7 @@ Library-managed. Do not specify explicitly.
 readonly optional [formOptionsComponentsSymbol]?: TComponents;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:261](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L261)
+Defined in: [FormApi/FormApi.public.ts:268](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L268)
 
 ***
 
@@ -66,7 +66,7 @@ Defined in: [FormApi/FormApi.public.ts:261](https://github.com/TanStack/form/blo
 defaultValues: TFormData;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:283](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L283)
+Defined in: [FormApi/FormApi.public.ts:290](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L290)
 
 Initial values and the source of the inferred data shape.
 
@@ -88,7 +88,7 @@ while values under touched top-level fields are preserved.
 optional errorVisibility?: ErrorVisibility<TFormData, ToFormErrorTypes<TFormValidators, unknown>>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:298](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L298)
+Defined in: [FormApi/FormApi.public.ts:305](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L305)
 
 Controls when fields expose validation errors through public state.
 
@@ -112,7 +112,7 @@ errorVisibility: ({ state, fieldState }) =>
 optional formId?: string;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:269](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L269)
+Defined in: [FormApi/FormApi.public.ts:276](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L276)
 
 A stable identifier for this form.
 
@@ -128,7 +128,7 @@ identifier from `formApi.formId`.
 optional listeners?: FormListeners<TFormData, ToFormErrorTypes<TFormValidators, unknown>>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:345](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L345)
+Defined in: [FormApi/FormApi.public.ts:352](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L352)
 
 Listener configurations for change, blur, submit, mount, and reset events.
 
@@ -157,7 +157,7 @@ listeners: [
 optional onSubmit?: FormSubmitFn<TFormData, TFormValidators, TSubmitReturn>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:382](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L382)
+Defined in: [FormApi/FormApi.public.ts:389](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L389)
 
 Called after submission validation succeeds.
 
@@ -184,7 +184,7 @@ submission finishes. If the callback throws, `onSubmitInvalid` is called.
 optional onSubmitInvalid?: (context) => void | Promise<void>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:402](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L402)
+Defined in: [FormApi/FormApi.public.ts:409](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L409)
 
 Called after an invalid submission is detected.
 
@@ -225,7 +225,7 @@ optional serverState?:
   | null;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:361](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L361)
+Defined in: [FormApi/FormApi.public.ts:368](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L368)
 
 Server-validation state supplied by a server or SSR adapter during
 hydration.
@@ -247,7 +247,7 @@ serverState: failedResult.serverState,
 optional validators?: TFormValidators;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:325](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L325)
+Defined in: [FormApi/FormApi.public.ts:332](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L332)
 
 An ordered pipeline of form-level validators.
 

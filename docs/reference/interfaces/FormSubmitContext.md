@@ -3,7 +3,7 @@ id: FormSubmitContext
 title: FormSubmitContext
 ---
 
-Defined in: [FormApi/FormApi.public.ts:99](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L99)
+Defined in: [FormApi/FormApi.public.ts:105](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L105)
 
 Context passed to `onSubmit` after submission validation succeeds.
 
@@ -44,13 +44,23 @@ Library-managed. Do not specify explicitly.
 
 ## Properties
 
+### createErrorMap
+
+```ts
+createErrorMap: CreateSubmitErrorMapFn<TFormData>;
+```
+
+Defined in: [FormApi/FormApi.public.ts:155](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L155)
+
+***
+
 ### createValidationError
 
 ```ts
 createValidationError: CreateValidationErrorFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:148](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L148)
+Defined in: [FormApi/FormApi.public.ts:154](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L154)
 
 Creates a validation error that can be returned from `onSubmit`.
 
@@ -83,7 +93,7 @@ errors to validation state.
 formApi: FormApi<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:107](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L107)
+Defined in: [FormApi/FormApi.public.ts:113](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L113)
 
 The form API handling this submission.
 
@@ -95,7 +105,7 @@ The form API handling this submission.
 parseIssues: ParseSubmitIssuesFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:169](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L169)
+Defined in: [FormApi/FormApi.public.ts:176](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L176)
 
 Parses Standard Schema issues into an error returnable from `onSubmit`.
 
@@ -125,7 +135,7 @@ error from `onSubmit` to add those errors to validation state.
 validatorOutputs: TOutputs;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:124](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L124)
+Defined in: [FormApi/FormApi.public.ts:130](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L130)
 
 Schema outputs and `createOutput` payloads from this submission, ordered by
 validator index. Skipped validators and successful returns without an output
@@ -151,6 +161,6 @@ contribute `undefined`.
 value: TFormData;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:105](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L105)
+Defined in: [FormApi/FormApi.public.ts:111](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L111)
 
 The form values for this submission.

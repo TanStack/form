@@ -7,7 +7,7 @@ title: OnSubmitError
 type OnSubmitError<TFormValidationError> = object;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:43](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L43)
+Defined in: [FormApi/FormApi.public.ts:44](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L44)
 
 A validation error wrapped for processing as an `onSubmit` failure.
 
@@ -46,4 +46,4 @@ Library-managed. Do not specify explicitly.
 readonly [SUBMIT_ERROR]: TFormValidationError;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:46](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L46)
+Defined in: [FormApi/FormApi.public.ts:47](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L47)
