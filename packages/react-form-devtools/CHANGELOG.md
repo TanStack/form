@@ -1,5 +1,16 @@
 # @tanstack/react-form-devtools
 
+## 1.0.0-alpha.3
+
+### Major Changes
+
+- Release the first alpha of TanStack Form v2.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-devtools@1.0.0-alpha.3
+
 ## 1.0.0-alpha.2
 
 ### Patch Changes
