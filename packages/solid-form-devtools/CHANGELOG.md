@@ -1,5 +1,11 @@
 # @tanstack/solid-form-devtools
 
+## 1.0.0-alpha.3
+
+### Major Changes
+
+- Release the first alpha of TanStack Form v2.
+
 ## 1.0.0-alpha.2
 
 ### Patch Changes
