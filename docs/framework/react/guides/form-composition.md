@@ -66,11 +66,17 @@ export function TextField({ label }: { label: string }) {
       <input
         value={field.state.value}
         onChange={(e) => field.handleChange(e.target.value)}
+        onBlur={field.handleBlur}
       />
+      {!field.state.meta.isValid && (
+        <em role="alert">{field.state.meta.errors.join(', ')}</em>
+      )}
     </label>
   )
 }
 ```
+
+The component re-renders whenever the field's value or meta changes, so `field.state` is always up to date here. See [Reactivity](./reactivity.md#field-state) for details.
 
 You're then able to register this component with your form hook.
 
