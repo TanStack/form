@@ -359,19 +359,21 @@ describe('Form fields', () => {
               {(field) => {
                 renders.checked++
                 return (
-                  <label htmlFor={field.name}>
-                    {field.name}
-                    <input
-                      id={field.name}
-                      value={field.value}
-                      onChange={(event) =>
-                        field.handleChange(event.target.value)
-                      }
-                    />
+                  <>
+                    <label htmlFor={field.name}>
+                      {field.name}
+                      <input
+                        id={field.name}
+                        value={field.value}
+                        onChange={(event) =>
+                          field.handleChange(event.target.value)
+                        }
+                      />
+                    </label>
                     <span data-testid="errors">
                       {field.meta.errors.map((error) => error.message).join()}
                     </span>
-                  </label>
+                  </>
                 )
               }}
             </form.Field>
@@ -388,12 +390,16 @@ describe('Form fields', () => {
       await tick()
       const start = { ...renders }
 
-      await userEvent.type(screen.getByLabelText('plain'), 'abc')
-      await userEvent.type(screen.getByLabelText('checked'), 'abc')
+      await userEvent.type(screen.getByLabelText('plain'), 'a')
+      await userEvent.type(screen.getByLabelText('checked'), 'a')
+      expect(screen.getByTestId('errors')).toHaveTextContent('Too short')
+
+      await userEvent.type(screen.getByLabelText('plain'), 'bc')
+      await userEvent.type(screen.getByLabelText('checked'), 'bc')
       await tick()
 
       expect(renders.checked - start.checked).toBe(renders.plain - start.plain)
-      expect(screen.getByTestId('errors')).toHaveTextContent('')
+      expect(screen.getByTestId('errors').element().textContent).toBe('')
     })
 
     it('renders a field with a Standard Schema validator as often as one without', async () => {

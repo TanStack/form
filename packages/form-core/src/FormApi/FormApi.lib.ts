@@ -1063,6 +1063,12 @@ export class InternalFormApi<
     this._setValidationCount((count) => Math.max(0, count - 1))
   }
 
+  /**
+   * @private
+   * Runs the form's validation pipeline. When every validator that runs is
+   * synchronous, results apply and the validation count settles before this
+   * returns.
+   */
   _runFormValidation(
     signal: ValidationTrigger,
     opts?: FieldApiOverrideOptions & {

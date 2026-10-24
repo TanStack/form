@@ -429,7 +429,7 @@ function runValidatorNow<TResult extends ValidateResult>({
 
   if (!isPromiseLike(outcome)) {
     cleanup()
-    return outcome
+    return signal.aborted ? ABORTED_CALL : outcome
   }
 
   return executeWithAbort(validationContext, () => outcome).then(

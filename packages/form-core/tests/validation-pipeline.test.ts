@@ -697,6 +697,33 @@ describe('runFormValidatorPipeline', () => {
     )
   })
 
+  it('should drop a synchronous result when the same validator re-enters while it runs', async () => {
+    const formApi = getForm({ name: '' })
+    const onResult = vi.fn()
+    let reentered = false
+    let nested: Promise<unknown> | undefined
+
+    const { runWithContext } = getPipeline(formApi, [
+      {
+        run: () => {
+          if (reentered) return { message: 'inner' }
+          reentered = true
+          nested = runWithContext({ event: 'change', onResult })
+          return { message: 'outer' }
+        },
+        triggers: ['change'],
+      },
+    ])
+
+    await runWithContext({ event: 'change', onResult })
+    await nested
+
+    expect(onResult).toHaveBeenCalledOnce()
+    expect(onResult).toHaveBeenCalledWith(
+      expect.objectContaining({ result: { message: 'inner' } }),
+    )
+  })
+
   it('should not call onResult for aborted debounced calls', async () => {
     vi.useFakeTimers()
 
