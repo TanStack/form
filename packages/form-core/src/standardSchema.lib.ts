@@ -1,4 +1,4 @@
-import { isNil } from './utils.lib'
+import { isNil, isPromiseLike } from './utils.lib'
 import { createOutput } from './validationOutput.lib'
 import type {
   StandardSchemaV1,
@@ -74,15 +74,40 @@ export function isStandardSchema(
   return '~standard' in object
 }
 
+type ParsedStandardSchemaResult<TOutput> =
+  | ValidationOutput<TOutput>
+  | ParsedStandardSchemaIssues<any>
+  | Array<StandardSchemaV1Issue>
+
+/**
+ * Validates a value with a Standard Schema, synchronously when the schema
+ * returns its result synchronously and asynchronously otherwise.
+ */
+export function parseStandardSchemaMaybeSync<TOutput>(
+  schema: StandardSchemaV1<any, TOutput>,
+  value: any,
+  scope: 'form' | 'field',
+):
+  | ParsedStandardSchemaResult<TOutput>
+  | Promise<ParsedStandardSchemaResult<TOutput>> {
+  const result = schema['~standard'].validate(value)
+  const parse = (
+    settled: Awaited<typeof result>,
+  ): ParsedStandardSchemaResult<TOutput> =>
+    settled.issues
+      ? parseStandardSchemaIssues(settled.issues, value, scope)
+      : createOutput(settled.value)
+
+  return isPromiseLike(result)
+    ? Promise.resolve(result).then(parse)
+    : parse(result)
+}
+
 export function parseStandardSchema<TOutput>(
   schema: StandardSchemaV1<any, TOutput>,
   value: any,
   scope: 'form' | 'field',
-): Promise<
-  | ValidationOutput<TOutput>
-  | ParsedStandardSchemaIssues<any>
-  | Array<StandardSchemaV1Issue>
-> {
+): Promise<ParsedStandardSchemaResult<TOutput>> {
   return Promise.resolve(schema['~standard'].validate(value)).then((result) => {
     if (!result.issues) {
       return createOutput(result.value)
