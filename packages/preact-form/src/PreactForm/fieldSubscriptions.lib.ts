@@ -1,4 +1,4 @@
-import { useSelector } from '@tanstack/preact-store'
+import { shallow, useSelector } from '@tanstack/preact-store'
 import { useMemo } from 'preact/compat'
 import type { AnyInternalFieldApi } from '@tanstack/form-core/internals'
 
@@ -23,10 +23,14 @@ export function useArrayFieldSubscription(
     fieldApi.atom,
     (state) => state.meta._arrayVersion,
   )
+  const errors = useSelector(fieldApi.atom, (state) => state.meta.errors, {
+    compare: shallow,
+  })
 
   return useMemo(() => {
     void length
     void arrayVersion
+    void errors
     return Object.create(fieldApi)
-  }, [fieldApi, arrayVersion, length])
+  }, [fieldApi, arrayVersion, length, errors])
 }

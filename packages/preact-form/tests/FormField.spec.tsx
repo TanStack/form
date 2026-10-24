@@ -345,6 +345,85 @@ describe('Form fields', () => {
     expect(renderCounts.last).toBe(initialCounts.last)
   })
 
+  it('rerenders an ArrayField when its own errors change', async () => {
+    let renders = 0
+
+    function Component() {
+      const form = useForm({
+        defaultValues: { items: [{ label: 'A' }] },
+        errorVisibility: ({ state }) => state.submissionAttempts > 0,
+      })
+
+      return (
+        <>
+          <button onClick={() => form.handleSubmit()}>Submit</button>
+          <form.ArrayField
+            name="items"
+            validators={[
+              {
+                triggers: [],
+                run: ({ value }) =>
+                  value.length < 2 ? 'Add another item' : undefined,
+              },
+            ]}
+          >
+            {(field) => {
+              renders++
+              return (
+                <output data-testid="array">
+                  {field.errors.map((error) => error.message).join(',')}
+                </output>
+              )
+            }}
+          </form.ArrayField>
+          <form.Field
+            name="items[0].label"
+            validators={[
+              {
+                triggers: ['change'],
+                run: async ({ value }) =>
+                  value === 'AB' ? 'Too long' : undefined,
+              },
+            ]}
+          >
+            {(field) => (
+              <>
+                <input
+                  aria-label="label"
+                  value={field.value}
+                  onChange={(event) =>
+                    field.handleChange(event.currentTarget.value)
+                  }
+                />
+                <span data-testid="label-error">
+                  {field.meta.original.errors
+                    .map((error) => error.message)
+                    .join(',')}
+                </span>
+              </>
+            )}
+          </form.Field>
+        </>
+      )
+    }
+
+    const { getByLabelText, getByRole, getByTestId } = render(<Component />)
+    const initialRenders = renders
+
+    await userEvent.type(getByLabelText('label'), 'B')
+
+    await expect
+      .element(getByTestId('label-error'))
+      .toHaveTextContent('Too long')
+    expect(renders).toBe(initialRenders)
+
+    await getByRole('button', { name: 'Submit' }).click()
+
+    await expect
+      .element(getByTestId('array'))
+      .toHaveTextContent('Add another item')
+  })
+
   it('should recreate mounted fields after form reset', async () => {
     function Component() {
       const form = useForm({ defaultValues: { name: 'tony-hawk' } })
