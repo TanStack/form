@@ -724,6 +724,34 @@ describe('runFormValidatorPipeline', () => {
     )
   })
 
+  it('should reject instead of throwing when onResult throws for a synchronous result', async () => {
+    const formApi = getForm({ name: 'test' })
+    const field = formApi._getOrCreateFieldApi({ name: 'name' })
+    const failure = new Error('onResult failed')
+    const onResult = () => {
+      throw failure
+    }
+    const run = () => ({ message: 'foo' })
+
+    const form = getPipeline(formApi, [{ run, triggers: ['change'] }])
+    const fieldPipeline = getFieldPipeline(formApi, field, [
+      { run, triggers: ['change'] },
+    ])
+
+    let formValidation: Promise<unknown> | undefined
+    let fieldValidation: Promise<unknown> | undefined
+    expect(() => {
+      formValidation = form.runWithContext({ event: 'change', onResult })
+      fieldValidation = fieldPipeline.runWithContext({
+        event: 'change',
+        onResult,
+      })
+    }).not.toThrow()
+
+    await expect(formValidation).rejects.toBe(failure)
+    await expect(fieldValidation).rejects.toBe(failure)
+  })
+
   it('should not call onResult for aborted debounced calls', async () => {
     vi.useFakeTimers()
 

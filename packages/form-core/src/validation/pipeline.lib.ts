@@ -266,11 +266,23 @@ export function runValidatorPipelineMaybeSync<TResult extends ValidateResult>({
   return runFrom(0)
 }
 
-/** Runs the shared pipeline and always resolves through a promise. */
+/**
+ * Settles a maybe-sync run through a promise, so a synchronous throw becomes a
+ * rejection as it would from an async function.
+ */
+function settleAsPromise<T>(run: () => T | Promise<T>): Promise<T> {
+  try {
+    return Promise.resolve(run())
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
+/** Runs the shared pipeline and always settles through a promise. */
 export function runValidatorPipeline<TResult extends ValidateResult>(
   args: ValidatorPipelineArgs<TResult>,
 ): Promise<ValidatorPipelineResult<TResult>> {
-  return Promise.resolve(runValidatorPipelineMaybeSync(args))
+  return settleAsPromise(() => runValidatorPipelineMaybeSync(args))
 }
 
 interface FormValidatorPipelineArgs {
@@ -359,11 +371,11 @@ export interface FieldValidatorPipelineResult {
   thrownError: unknown | null
 }
 
-/** Runs the form pipeline and always resolves through a promise. */
+/** Runs the form pipeline and always settles through a promise. */
 export function runFormValidatorPipeline(
   args: FormValidatorPipelineArgs,
 ): Promise<FormValidatorPipelineResult> {
-  return Promise.resolve(runFormValidatorPipelineMaybeSync(args))
+  return settleAsPromise(() => runFormValidatorPipelineMaybeSync(args))
 }
 
 /**
@@ -413,9 +425,9 @@ export function runFieldValidatorPipelineMaybeSync({
   })
 }
 
-/** Runs the field pipeline and always resolves through a promise. */
+/** Runs the field pipeline and always settles through a promise. */
 export function runFieldValidatorPipeline(
   args: FieldValidatorPipelineArgs,
 ): Promise<FieldValidatorPipelineResult> {
-  return Promise.resolve(runFieldValidatorPipelineMaybeSync(args))
+  return settleAsPromise(() => runFieldValidatorPipelineMaybeSync(args))
 }
