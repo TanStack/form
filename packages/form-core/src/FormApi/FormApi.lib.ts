@@ -11,6 +11,7 @@ import {
   evaluate,
   getBy,
   getTargetField,
+  isPromiseLike,
   nameToFieldNodeSegments,
   resolveFieldUpdateOptions,
   setBy,
@@ -30,7 +31,7 @@ import {
   parseValidationResult,
   reconcileRoutedFieldErrors,
   runFormMountValidatorPipeline,
-  runFormValidatorPipeline,
+  runFormValidatorPipelineMaybeSync,
   setValidationSourceError,
 } from '../validation'
 import { runFormListenerPipeline } from '../listeners.lib'
@@ -1062,7 +1063,7 @@ export class InternalFormApi<
     this._setValidationCount((count) => Math.max(0, count - 1))
   }
 
-  async _runFormValidation(
+  _runFormValidation(
     signal: ValidationTrigger,
     opts?: FieldApiOverrideOptions & {
       onResult?: boolean
@@ -1070,22 +1071,21 @@ export class InternalFormApi<
     },
   ): Promise<FormValidatorPipelineResult> {
     const pipeline = this._validatorInstances
-    if (!pipeline)
-      return {
+    if (!pipeline || pipeline.length === 0)
+      return Promise.resolve({
         results: [],
         hasErrors: false,
         thrownError: null,
-      }
-    if (pipeline.length === 0)
-      return {
-        results: [],
-        hasErrors: false,
-        thrownError: null,
-      }
+      })
 
     this._setValidationCount((count) => count + 1)
+    const finishValidation = () => {
+      this._setValidationCount((count) => Math.max(0, count - 1))
+    }
+
+    let outcome: ReturnType<typeof runFormValidatorPipelineMaybeSync>
     try {
-      return await runFormValidatorPipeline({
+      outcome = runFormValidatorPipelineMaybeSync({
         context: {
           scope: 'form',
           event: signal,
@@ -1101,9 +1101,17 @@ export class InternalFormApi<
             ? (result) => this._processValidationResult(result, signal)
             : undefined,
       })
-    } finally {
-      this._setValidationCount((count) => Math.max(0, count - 1))
+    } catch (error) {
+      finishValidation()
+      return Promise.reject(error)
     }
+
+    if (isPromiseLike(outcome)) {
+      return Promise.resolve(outcome).finally(finishValidation)
+    }
+
+    finishValidation()
+    return Promise.resolve(outcome)
   }
 
   _setValidationCount(updater: Updater<number>): void {

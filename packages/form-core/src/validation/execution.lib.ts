@@ -1,8 +1,9 @@
 import {
   isStandardSchema,
-  parseStandardSchema,
   parseStandardSchemaIssues,
+  parseStandardSchemaMaybeSync,
 } from '../standardSchema.lib'
+import { isPromiseLike } from '../utils.lib'
 import { VALIDATION_OUTPUT, isValidationOutput } from '../validationOutput.lib'
 import type { AnyInternalValidatorInstance } from '../ValidatorInstance.lib'
 import type { InternalFormApi } from '../FormApi/FormApi.lib'
@@ -244,18 +245,26 @@ export function shouldRunValidator(
 /**
  * Executes a validator and normalizes its result for pipeline processing.
  *
+ * Synchronous validators and schemas return their result synchronously, so it
+ * can be applied in the same update as the change that triggered it.
  * Schema and branded function outputs retain their payload and presence marker.
  */
-export async function executeValidator<TResult extends ValidateResult>(
+export function executeValidator<TResult extends ValidateResult>(
   validator: AnyPipelineValidator,
   context: AnyValidatorContext,
   scope: 'field' | 'form',
-): Promise<ValidatorExecutionResult<TResult>> {
+):
+  | ValidatorExecutionResult<TResult>
+  | Promise<ValidatorExecutionResult<TResult>> {
   const result = isStandardSchema(validator.run)
-    ? await parseStandardSchema(validator.run, context.value, scope)
-    : await validator.run(context)
+    ? parseStandardSchemaMaybeSync(validator.run, context.value, scope)
+    : validator.run(context)
 
-  return normalizeValidatorResult(result as TResult)
+  return isPromiseLike(result)
+    ? Promise.resolve(result).then((settled) =>
+        normalizeValidatorResult(settled as TResult),
+      )
+    : normalizeValidatorResult(result as TResult)
 }
 
 /** Separates explicitly branded outputs from ordinary validation returns. */
@@ -280,8 +289,13 @@ interface RunMaybeDebouncedValidatorArgs<
   context: InputContext
   onExecute: (
     inputContext: ValidateContext,
-  ) => Promise<ValidatorExecutionResult<TResult>>
+  ) =>
+    | ValidatorExecutionResult<TResult>
+    | Promise<ValidatorExecutionResult<TResult>>
 }
+
+export type ValidatorRunResult<TResult extends ValidateResult> =
+  ValidatorExecutionResult<TResult> | AbortedCall | ThrownError
 
 /**
  * Creates a promise that resolves with the internal sentinel when aborted.
@@ -324,9 +338,7 @@ function createAbortPromise(signal: AbortSignal): {
  */
 async function executeWithAbort<TResult extends ValidateResult>(
   context: ValidateContext,
-  onExecute: (
-    inputContext: ValidateContext,
-  ) => Promise<ValidatorExecutionResult<TResult>>,
+  onExecute: RunMaybeDebouncedValidatorArgs<TResult>['onExecute'],
 ): Promise<ValidatorExecutionResult<TResult> | AbortedCall> {
   if (context.signal.aborted) {
     return ABORTED_CALL
@@ -389,8 +401,54 @@ export function createValidatorAbortContext(
 }
 
 /**
+ * Runs one undebounced validator, returning its result synchronously when the
+ * validator returns synchronously.
+ *
+ * Starting the run aborts any earlier execution of the same instance, so a
+ * slower previous result cannot overwrite this one.
+ */
+function runValidatorNow<TResult extends ValidateResult>({
+  validatorInstance,
+  context,
+  onExecute,
+}: RunMaybeDebouncedValidatorArgs<TResult>):
+  ValidatorRunResult<TResult> | Promise<ValidatorRunResult<TResult>> {
+  validatorInstance.debouncer?.cancel()
+
+  const { signal, cleanup } = createValidatorAbortContext(validatorInstance)
+  const validationContext: ValidateContext = { ...context, signal }
+
+  let outcome: ReturnType<typeof onExecute>
+  try {
+    outcome = onExecute(validationContext)
+  } catch (error) {
+    cleanup()
+    console.error('Validator threw an error:', error)
+    return { [THROWN_ERROR]: true, error }
+  }
+
+  if (!isPromiseLike(outcome)) {
+    cleanup()
+    return outcome
+  }
+
+  return executeWithAbort(validationContext, () => outcome).then(
+    (value) => {
+      cleanup()
+      return value
+    },
+    (error: unknown): ThrownError => {
+      cleanup()
+      console.error('Validator threw an error:', error)
+      return { [THROWN_ERROR]: true, error }
+    },
+  )
+}
+
+/**
  * Runs one validator immediately or through its instance-owned debouncer.
  *
+ * An undebounced validator that returns synchronously settles synchronously.
  * Abort and thrown-error sentinels keep stale or exceptional executions out of
  * normal result processing. Every settlement releases its abort resources.
  */
@@ -398,11 +456,14 @@ export function runMaybeDebouncedValidator<TResult extends ValidateResult>({
   validatorInstance,
   context,
   onExecute,
-}: RunMaybeDebouncedValidatorArgs<TResult>): Promise<
-  ValidatorExecutionResult<TResult> | AbortedCall | ThrownError
-> {
+}: RunMaybeDebouncedValidatorArgs<TResult>):
+  ValidatorRunResult<TResult> | Promise<ValidatorRunResult<TResult>> {
   const validator = validatorInstance.definition
   const debounceMs = getValidatorDebounceMs(validator, context)
+
+  if (debounceMs <= 0) {
+    return runValidatorNow({ validatorInstance, context, onExecute })
+  }
 
   const { signal, cleanup } = createValidatorAbortContext(validatorInstance)
 
@@ -427,13 +488,6 @@ export function runMaybeDebouncedValidator<TResult extends ValidateResult>({
       resolve(value)
     }
 
-    const fail = (error: unknown) => {
-      if (settled) return
-
-      console.error('Validator threw an error:', error)
-      settle({ [THROWN_ERROR]: true, error })
-    }
-
     const onAbort = () => {
       validatorInstance.debouncer?.cancel()
       settle(ABORTED_CALL)
@@ -444,16 +498,6 @@ export function runMaybeDebouncedValidator<TResult extends ValidateResult>({
     }
 
     signal.addEventListener('abort', onAbort, { once: true })
-
-    const run = (ctx: ValidateContext) => {
-      executeWithAbort(ctx, onExecute).then(settle, fail)
-    }
-
-    if (debounceMs <= 0) {
-      validatorInstance.debouncer?.cancel()
-      run(validationContext)
-      return
-    }
 
     const debouncer = validatorInstance.getOrCreateDebouncer((call) => {
       executeWithAbort(call.context, onExecute).then(call.resolve, (error) => {
