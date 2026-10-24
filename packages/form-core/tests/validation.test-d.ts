@@ -14,8 +14,6 @@ import type {
   FieldErrors,
   FieldValidators,
   FormApi,
-  FormErrorTypes,
-  FormErrors,
   FormGroupValidators,
   FormOptions,
   FormOptionsValidators,
@@ -29,7 +27,6 @@ import type {
   ScopedErrorTypes,
   StandardSchemaV1Issue,
   ToFieldError,
-  ToFormErrorTypes,
   ToFormGroupErrorTypes,
   ToFormGroupOutputs,
   ValidationIssue,
@@ -69,9 +66,7 @@ const emptyFieldValidators = defineFieldValidators([])
 type TestFormErrors<
   TFormValidators extends ReadonlyArray<unknown>,
   TSubmitReturn,
-> = FormErrors<
-  ToFormErrorTypes<GetFormErrorTypes<TFormValidators, TSubmitReturn>>
->
+> = Array<GetFormErrorTypes<TFormValidators, TSubmitReturn>['selfError']>
 
 type TestFieldErrors<
   TFieldValidators extends FieldValidators<any, any, any>,
@@ -758,7 +753,9 @@ describe('FormErrors', () => {
 
   it('does not infer submit errors from an unknown return', () => {
     expectTypeOf<GetFormErrorTypes<[], unknown>>().not.toBeAny()
-    expectTypeOf<TestFormErrors<[], unknown>>().toEqualTypeOf<Array<never>>()
+    expectTypeOf<TestFormErrors<[], unknown>>().toEqualTypeOf<
+      Array<ValidationIssue>
+    >()
   })
 
   it('should allow inference for a form', () => {
@@ -1112,9 +1109,9 @@ describe('FormErrors', () => {
       Array<ValidationIssue>
     >()
 
-    expectTypeOf<TestFormErrors<any, any>>().toEqualTypeOf<
-      Array<ValidationIssue>
-    >()
+    expectTypeOf<TestFormErrors<any, any>>().toEqualTypeOf<Array<any>>()
+    expectTypeOf<GetFormErrorTypes<[], any>['selfError']>().toBeAny()
+    expectTypeOf<GetFormErrorTypes<[], any>['subfieldError']>().toBeAny()
   })
 })
 

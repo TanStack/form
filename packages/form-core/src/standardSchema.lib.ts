@@ -1,6 +1,7 @@
 import { isNil } from './utils.lib'
 import { createOutput } from './validationOutput.lib'
-import { PARSED_ISSUES } from './validation/parseIssues.lib'
+import { PARSED_ISSUES, parseIssuesFactory } from './validation/parseIssues.lib'
+import { validationSourceScopes } from './ValidationSourceInstance.lib'
 import type {
   StandardSchemaV1,
   StandardSchemaV1Issue,
@@ -12,23 +13,34 @@ import type {
 import type { FormValidatorFn } from './validation/formValidators.public'
 import type {
   ParsedStandardSchemaIssues,
+  ValidationFieldMap,
   ValidationOutput,
 } from './validation/state.public'
+import type { AnyInternalValidatorInstance } from './ValidatorInstance.lib'
 
-export function prefixSchemaToErrors(
+export function parseIssuesToErrorMap<TFormData>(
   issues: ReadonlyArray<StandardSchemaV1Issue>,
   formValue: unknown,
 ) {
   const schema = new Map<string, Array<StandardSchemaV1Issue>>()
+  const formLevel = [] as Array<StandardSchemaV1Issue>
 
   for (const issue of issues) {
     const path = getPathFromIssue(issue, formValue)
-    if (path === '') continue
-
-    schema.set(path, (schema.get(path) ?? []).concat(issue))
+    if (path === '') {
+      formLevel.push(issue)
+    } else {
+      schema.set(path, (schema.get(path) ?? []).concat(issue))
+    }
   }
 
-  return Object.fromEntries(schema)
+  return {
+    form: formLevel,
+    fields: Object.fromEntries(schema) as ValidationFieldMap<
+      TFormData,
+      Array<StandardSchemaV1Issue>
+    >,
+  }
 }
 
 function getPathFromIssue(
@@ -80,51 +92,22 @@ export function isStandardSchema(
 export function parseStandardSchema<TOutput>(
   schema: StandardSchemaV1<any, TOutput>,
   value: any,
-  scope: 'form' | 'field',
+  instance: AnyInternalValidatorInstance,
 ): Promise<
   | ValidationOutput<TOutput>
   | ParsedStandardSchemaIssues<any>
-  | Array<StandardSchemaV1Issue>
+  | ReadonlyArray<StandardSchemaV1Issue>
 > {
+  const parseIssues = parseIssuesFactory(value, instance.fieldErrorTarget)
+
   return Promise.resolve(schema['~standard'].validate(value)).then((result) => {
     if (!result.issues) {
       return createOutput(result.value)
     }
 
-    return parseStandardSchemaIssues(result.issues, value, scope)
+    if (instance.scope === validationSourceScopes.field) {
+      return result.issues
+    }
+    return parseIssues(result.issues)
   })
-}
-
-export function parseStandardSchemaIssues<TValue>(
-  issues: ReadonlyArray<StandardSchemaV1Issue>,
-  value: TValue,
-  scope: 'form',
-): ParsedStandardSchemaIssues<TValue>
-export function parseStandardSchemaIssues(
-  issues: ReadonlyArray<StandardSchemaV1Issue>,
-  value: unknown,
-  scope: 'field',
-): Array<StandardSchemaV1Issue>
-export function parseStandardSchemaIssues<TValue>(
-  issues: ReadonlyArray<StandardSchemaV1Issue>,
-  value: TValue,
-  scope: 'form' | 'field',
-): ParsedStandardSchemaIssues<TValue> | Array<StandardSchemaV1Issue>
-export function parseStandardSchemaIssues<TValue>(
-  issues: ReadonlyArray<StandardSchemaV1Issue>,
-  value: TValue,
-  scope: 'form' | 'field',
-): ParsedStandardSchemaIssues<TValue> | Array<StandardSchemaV1Issue> {
-  if (scope === 'field') {
-    return issues.slice()
-  }
-
-  return {
-    [PARSED_ISSUES]: true,
-    form: issues.slice(),
-    fields: prefixSchemaToErrors(
-      issues,
-      value,
-    ) as ParsedStandardSchemaIssues<TValue>['fields'],
-  }
 }

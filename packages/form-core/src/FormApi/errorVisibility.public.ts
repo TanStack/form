@@ -1,7 +1,4 @@
-import type {
-  ScopedErrorTypes,
-  ToFormErrorTypes,
-} from '../validation/state.public'
+import type { ScopedErrorTypes } from '../validation/state.public'
 import type { FormState } from './FormApi.public'
 
 export interface ErrorVisibilitySubfieldsMeta {

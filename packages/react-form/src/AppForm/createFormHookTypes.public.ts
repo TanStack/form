@@ -12,7 +12,6 @@ import type {
   FormOptions,
   FormOptionsApi,
   GetFormErrorTypes,
-  ToFormErrorTypes,
 } from '@tanstack/form-core'
 
 /**

@@ -2043,9 +2043,7 @@ describe('FormGroupApi', () => {
 
     await group.validate('submit')
 
-    expect(group.state.errors).toEqual([
-      expect.objectContaining({ message: 'Name is required' }),
-    ])
+    expect(group.state.errors).toEqual([])
     expect(nameField.errors).toEqual([
       expect.objectContaining({ message: 'Name is required' }),
     ])

@@ -6,25 +6,46 @@ import type {
   ValidationFailureItem,
 } from './state.public'
 
-// TODO migrate to a proper file sometime.
+function toArray(item: ValidationFailure | undefined): ValidationFailureItem[] {
+  if (isReadonlyArray(item)) return item.slice()
+  if (!item) return []
+  return [item]
+}
 
-export const createErrorMap = ((
-  initial: Partial<ValidationErrorMap<unknown, ValidationFailure>> = {},
-) => {
-  let form: ValidationFailureItem[] = []
-  if (isReadonlyArray(initial.form)) {
-    form = initial.form.slice()
-  } else if (initial.form) {
-    form = [initial.form]
+function mergeError(
+  before: ValidationFailureItem[] | undefined,
+  newError: ValidationFailure,
+): ValidationFailureItem[] {
+  if (!before) {
+    return toArray(newError)
+  } else if (!newError) {
+    return before
+  } else {
+    before.push(...toArray(newError))
+    return before
   }
+}
+
+export const createErrorMap = (<TFormData>(
+  initial: Partial<
+    ValidationErrorMap<TFormData, ValidationFailure, ValidationFailure>
+  > = {},
+) => {
+  const form = toArray(initial.form)
+  const fields = Object.fromEntries(
+    Object.entries<ValidationFailure>((initial.fields ?? {}) as never).map(
+      ([name, error]) => [name, toArray(error)],
+    ),
+  )
 
   return {
     form,
-    fields: Object.fromEntries(
-      Object.entries(initial.fields ?? {}).map(([name, error]) => [
-        name,
-        isReadonlyArray(error) ? error.slice() : error,
-      ]),
-    ),
+    fields,
+    addFormError: (error) => {
+      mergeError(form, error)
+    },
+    addFieldError: (fieldName, error) => {
+      fields[fieldName] = mergeError(fields[fieldName], error)
+    },
   }
-}) as CreateErrorMapFn<unknown>
+}) satisfies CreateErrorMapFn<unknown> as CreateErrorMapFn<unknown>

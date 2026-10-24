@@ -2,7 +2,6 @@ import type {
   AnyFormOptions,
   FormOptions,
   GetFormErrorTypes,
-  ToFormErrorTypes,
 } from '@tanstack/form-core'
 import type {
   AnyReactFormComponentMap,

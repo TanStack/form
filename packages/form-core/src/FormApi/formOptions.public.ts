@@ -163,7 +163,10 @@ export interface FormOptions<
    */
   listeners?: FormListeners<
     NoInfer<TFormData>,
-    NoInfer<GetFormErrorTypes<TValidators, TSubmitReturn>>
+    // TSubmitReturn would make it depend on property order (putting `onSubmit` before or after)
+    // Overall, it's not really necessary for the listeners section, since we can guarantee that
+    // a submit error that might exist must have the `ValidationIssue` signature.
+    NoInfer<GetFormErrorTypes<TValidators, unknown>>
   >
   /**
    * Used by server-side rendering (SSR) integrations to restore form state

@@ -1,9 +1,4 @@
-import type {
-  AnyFormApi,
-  FormApi,
-  FormErrorTypes,
-  ScopedErrorTypes,
-} from '@tanstack/form-core'
+import type { AnyFormApi, FormApi, ScopedErrorTypes } from '@tanstack/form-core'
 import type { ReactTanStackFormComponents } from './Components.public'
 import type {
   AnyReactFormComponentMap,

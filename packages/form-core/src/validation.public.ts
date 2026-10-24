@@ -608,7 +608,8 @@ export interface FormGroupValidatorContext<in out TGroupValue> {
  * @typeParam TGroupValue - Library-managed. Do not specify explicitly.
  */
 export type FormGroupValidationError<TGroupValue> =
-  ValidationErrorInput | ValidationErrorMap<TGroupValue, ValidationErrorInput>
+  | ValidationErrorInput
+  | ValidationErrorMap<TGroupValue, ValidationErrorInput, ValidationErrorInput>
 /**
  * A form group validator's success result, output data, or validation errors.
  *
@@ -750,7 +751,7 @@ type ExtractErrorMap<
   TTarget extends ValidationErrorTarget,
 > = TResult extends ValidationIssue
   ? NormalizeValidationResult<TResult>
-  : TResult extends ValidationErrorMap<any, any>
+  : TResult extends ValidationErrorMap<any, any, any>
     ? TTarget extends 'form'
       ? TResult extends { form?: infer TError }
         ? NormalizeValidationResult<TError>
@@ -759,22 +760,6 @@ type ExtractErrorMap<
         ? NormalizeValidationResult<TFields[keyof TFields]>
         : never
     : NormalizeValidationResult<TResult>
-
-/**
- * Inferred issue types for errors owned by a form or group and errors routed to its fields.
- *
- * @typeParam TFormError - Library-managed. Do not specify explicitly.
- * @typeParam TFieldError - Library-managed. Do not specify explicitly.
- */
-export interface FormErrorTypes<
-  out TFormError = ValidationIssue,
-  out TFieldError = ValidationIssue,
-> {
-  /** The issue type stored in the form or group's `state.errors`. */
-  readonly formError: TFormError
-  /** The issue type routed from form or group validation to individual fields. */
-  readonly fieldError: TFieldError
-}
 
 type ExtractSubmitValidationError<TSubmitReturn> =
   Awaited<TSubmitReturn> extends infer TResolved
@@ -801,24 +786,10 @@ type ExtractSubmitFieldError<TSubmitReturn> = unknown extends TSubmitReturn
   ? ValidationIssue
   : ParseSubmitFieldError<TSubmitReturn>
 
-type ExtractFormError<TFormErrorTypes extends FormErrorTypes> =
-  unknown extends TFormErrorTypes['formError']
-    ? ValidationIssue
-    : TFormErrorTypes['formError']
-
 type ExtractFormFieldError<TFormError extends ScopedErrorTypes> =
   unknown extends TFormError['subfieldError']
     ? never
     : TFormError['subfieldError']
-
-/**
- * The form or group's error array, with string messages normalized to issue objects.
- *
- * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
- */
-export type FormErrors<TFormErrorTypes extends FormErrorTypes> = Array<
-  ExtractFormError<TFormErrorTypes>
->
 
 /**
  * A field's error array, with string messages normalized to issue objects.
@@ -842,7 +813,7 @@ type SuccessWithoutOutput<TResult> =
         : never
       : TResult extends ValidationIssue
         ? never
-        : TResult extends ValidationErrorMap<any, any>
+        : TResult extends ValidationErrorMap<any, any, any>
           ? TResult extends { form: infer TForm }
             ? [SuccessWithoutOutput<TForm>] extends [never]
               ? never

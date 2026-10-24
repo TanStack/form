@@ -1,10 +1,7 @@
 import type { AnyFieldApi } from '../FieldApi/FieldApi.public'
 import type { Listener } from '../listeners.public'
 import type { ClientSideEvents, PreprocessEvents } from '../events.public'
-import type {
-  ScopedErrorTypes,
-  ToFormErrorTypes,
-} from '../validation/state.public'
+import type { ScopedErrorTypes } from '../validation/state.public'
 import type { FormApi } from './FormApi.public'
 
 export type FormListenerTriggers = ClientSideEvents | PreprocessEvents | 'reset'

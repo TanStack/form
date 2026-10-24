@@ -80,7 +80,6 @@ import type {
   FormValidationFailure,
   FormValidationResult,
   ScopedErrorTypes,
-  ToScopedErrorTypes,
   ValidationIssue,
 } from '../validation/state.public'
 import type { FormOptions } from './formOptions.public'

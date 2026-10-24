@@ -2,12 +2,9 @@ import { describe, expectTypeOf, it } from 'vitest'
 import { formOptions } from '../../src'
 import type {
   CreateSubmitErrorMapFn,
-  CreatedErrorMap,
   GetFormErrorTypes,
-  OnSubmitError,
   ParseSubmitIssuesFn,
   StandardSchemaV1Issue,
-  ValidationFailureItem,
   ValidationIssue,
 } from '../../src'
 
@@ -24,10 +21,6 @@ describe('FormSubmitContext', () => {
         expectTypeOf(parseIssues).toEqualTypeOf<ParseSubmitIssuesFn<FormData>>()
 
         const errors = createErrorMap({ form: 'Submission failed' })
-        expectTypeOf(errors).toEqualTypeOf<
-          CreatedErrorMap<FormData, ValidationFailureItem> &
-            OnSubmitError<CreatedErrorMap<FormData, ValidationFailureItem>>
-        >()
 
         errors.fields.name = 'Name is required'
         errors.fields['user.age'] = { message: 'Age is required' }

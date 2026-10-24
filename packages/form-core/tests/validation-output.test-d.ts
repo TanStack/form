@@ -1,17 +1,18 @@
 import { describe, expectTypeOf, it } from 'vitest'
 import { z } from 'zod'
 import { formOptions } from '../src'
+import { InternalValidatorInstance } from '../src/ValidatorInstance.lib'
 import { parseStandardSchema, validateServerValues } from '../src/internals'
 import type {
   FieldValidatorContext,
   FieldValidators,
   FormGroupValidators,
+  FormOptionsValidators,
   FormValidator,
   GetFormErrorTypes,
-  FormOptionsValidators,
+  GetValidatorOutputs,
   ToFormGroupErrorTypes,
   ToFormGroupOutputs,
-  GetValidatorOutputs,
   ValidationErrorMap,
   ValidationIssue,
   ValidationOutput,
@@ -37,7 +38,11 @@ describe('validator output types', () => {
     const result = parseStandardSchema(
       z.object({ name: z.string() }),
       { name: 'Tony' },
-      'form',
+      new InternalValidatorInstance({
+        definition: { run: z.object({ name: z.string() }) },
+        owner: undefined,
+        scope: 'form',
+      }),
     )
 
     expectTypeOf<
@@ -145,7 +150,8 @@ describe('validator output types', () => {
           createOutput,
         }):
           | ValidationOutput<number>
-          | ValidationErrorMap<Data, ValidationIssue> => createOutput(1),
+          | ValidationErrorMap<Data, ValidationIssue, ValidationIssue> =>
+          createOutput(1),
         triggers: [],
       },
       {

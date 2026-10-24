@@ -8,10 +8,7 @@ import type {
 } from '../validation.public'
 import type { FieldListeners } from '../listeners.public'
 import type { ReadonlyAtom } from '@tanstack/store'
-import type {
-  ScopedErrorTypes,
-  ToFormErrorTypes,
-} from '../validation/state.public'
+import type { ScopedErrorTypes } from '../validation/state.public'
 import type { ErrorVisibilityFn } from '../FormApi/errorVisibility.public'
 
 export interface BaseFieldMeta {

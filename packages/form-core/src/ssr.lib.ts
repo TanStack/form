@@ -154,16 +154,15 @@ export async function validateServerValues<
         formApi: undefined,
       },
       hasFailedBefore: false,
-      getContext: (ctx) => ({
-        event: 'server',
+      getContext: (ctx, instance) => ({
+        event: 'server' as const,
         signal: ctx.signal,
         formApi: undefined,
         value: values,
         createErrorMap,
-        parseIssues: parseIssuesFactory(values),
+        parseIssues: parseIssuesFactory(values, instance.fieldErrorTarget),
         createOutput,
       }),
-      scope: 'form',
     })
 
     if (pipelineResult.thrownError !== null) {

@@ -1,12 +1,14 @@
 import type { StandardSchemaV1 } from '../standardSchema.public'
 import type { PARSED_ISSUES } from '../validation/parseIssues.lib'
 import type {
-  CreateErrorMapFn,
-  CreatedErrorMap,
+  FormValidationFailure,
+  InferredErrorMapItem,
   ParseIssuesFn,
   ScopedErrorTypes,
+  ValidationErrorMap,
   ValidationFailure,
   ValidationFailureItem,
+  ValidationFieldMap,
   ValidationOutput,
 } from '../validation/state.public'
 import type { FormApi } from './FormApi.public'
@@ -61,15 +63,22 @@ export type OnSubmitError<T> = {
   readonly [submitErrorSymbol]: T
 }
 
-export type CreateValidationErrorFn = <TError extends ValidationFailure>(
+export type CreateValidationErrorFn<TFormData> = <
+  TError extends FormValidationFailure<TFormData>,
+>(
   error: TError,
 ) => OnSubmitError<TError>
 
-type SubmitErrorMap<TFormData> = CreatedErrorMap<
-  TFormData,
-  ValidationFailureItem
->
 type ParsedSubmitIssues<TFormData> = ReturnType<ParseIssuesFn<TFormData>>
+
+export type CreatedSubmitErrorMap<
+  TFormData,
+  TFormError extends ValidationFailure,
+  TFieldError extends ValidationFailure,
+> = Required<ValidationErrorMap<TFormData, TFormError, TFieldError>> &
+  OnSubmitError<
+    Required<ValidationErrorMap<TFormData, TFormError, TFieldError>>
+  >
 
 /**
  * Builds a mutable error map to return from `onSubmit` and report validation errors.
@@ -77,8 +86,14 @@ type ParsedSubmitIssues<TFormData> = ReturnType<ParseIssuesFn<TFormData>>
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
  */
 export type CreateSubmitErrorMapFn<TFormData> = (
-  initial?: Parameters<CreateErrorMapFn<TFormData>>[0],
-) => SubmitErrorMap<TFormData> & OnSubmitError<SubmitErrorMap<TFormData>>
+  initial?: Partial<
+    ValidationErrorMap<TFormData, ValidationFailure, ValidationFailure>
+  >,
+) => CreatedSubmitErrorMap<
+  TFormData,
+  Array<ValidationFailureItem>,
+  ValidationFailure
+>
 
 /**
  * Converts Standard Schema issues into a mutable error map to return from `onSubmit`.
@@ -148,7 +163,7 @@ export interface FormSubmitContext<
    * from a submission handler. Creating the error alone does not update form or
    * field validation state.
    */
-  createValidationError: CreateValidationErrorFn
+  createValidationError: CreateValidationErrorFn<TFormData>
   /**
    * Builds a mutable submission error map from optional initial errors. Return
    * the map to apply its form and field errors. An empty map indicates success.

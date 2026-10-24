@@ -44,8 +44,10 @@ interface ValidatorPipelineArgs<in out TResult extends ValidateResult> {
   context: InputContext
   pipeline: ReadonlyArray<AnyInternalValidatorInstance>
   hasFailedBefore: boolean
-  getContext: (inputContext: ValidateContext) => AnyValidatorContext
-  scope: 'field' | 'form'
+  getContext: (
+    inputContext: ValidateContext,
+    instance: AnyInternalValidatorInstance,
+  ) => AnyValidatorContext
   validatorInstancesToRun?: ReadonlySet<AnyInternalValidatorInstance> | null
   onResult?: (result: PipelineResult<TResult>) => void
 }
@@ -128,7 +130,6 @@ export async function runValidatorPipeline<TResult extends ValidateResult>({
   hasFailedBefore = false,
   getContext,
   onResult,
-  scope,
   validatorInstancesToRun = null,
 }: ValidatorPipelineArgs<TResult>): Promise<{
   results: Array<PipelineResult<TResult>>
@@ -190,7 +191,10 @@ export async function runValidatorPipeline<TResult extends ValidateResult>({
       validatorInstance,
       context,
       onExecute: (ctx) => {
-        return executeValidator<TResult>(validator, getContext(ctx), scope)
+        return executeValidator<TResult>(
+          validatorInstance,
+          getContext(ctx, validatorInstance),
+        )
       },
     }).then<
       PendingPipelineResult<
@@ -245,7 +249,7 @@ export function runFormValidatorPipeline({
     context,
     onResult,
     hasFailedBefore,
-    getContext: (ctx) => {
+    getContext: (ctx, instance) => {
       if (isServerValidateContext(ctx)) {
         throw new Error('Server validation cannot run through client pipeline')
       }
@@ -256,7 +260,10 @@ export function runFormValidatorPipeline({
         signal: ctx.signal,
         value: ctx.formApi.state.values,
         createErrorMap,
-        parseIssues: parseIssuesFactory(ctx.formApi.state.values),
+        parseIssues: parseIssuesFactory(
+          ctx.formApi.state.values,
+          instance.fieldErrorTarget,
+        ),
         createOutput,
       }
 
@@ -272,7 +279,6 @@ export function runFormValidatorPipeline({
         fieldApi: ctx.fieldApi,
       }
     },
-    scope: 'form',
   })
 }
 
@@ -333,7 +339,6 @@ export function runFieldValidatorPipeline({
         value: context.fieldApi.value,
       }
     },
-    scope: 'field',
     validatorInstancesToRun,
   })
 }

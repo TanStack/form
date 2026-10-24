@@ -5,7 +5,6 @@ import type {
   FieldApi,
   FieldApiOptions,
   FieldValidators,
-  FormErrorTypes,
   FormGroupApi,
   FormGroupOptions,
   FormGroupState,

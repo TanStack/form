@@ -43,8 +43,10 @@ export interface FormMountValidatorPipelineResult {
 interface MountValidatorPipelineArgs<in out TResult extends ValidateResult> {
   pipeline: ReadonlyArray<AnyInternalValidatorInstance>
   context: InputContext
-  getContext: (signal: AbortSignal) => AnyValidatorContext
-  scope: 'field' | 'form'
+  getContext: (
+    signal: AbortSignal,
+    instance: AnyInternalValidatorInstance,
+  ) => AnyValidatorContext
   onResult?: (result: PipelineResult<TResult>) => void
 }
 
@@ -88,7 +90,6 @@ function processMountValidationExecutionResult<TResult extends ValidateResult>(
  */
 function executeMountValidator<TResult extends ValidateResult>(
   getContext: MountValidatorPipelineArgs<TResult>['getContext'],
-  scope: 'field' | 'form',
   validatorInstance: AnyInternalValidatorInstance,
 ):
   | ValidatorExecutionResult<TResult>
@@ -98,11 +99,15 @@ function executeMountValidator<TResult extends ValidateResult>(
     cancelDebouncer: true,
   })
 
-  const context = getContext(signal)
+  const context = getContext(signal, validatorInstance)
 
   try {
     if (isStandardSchema(validator.run)) {
-      return parseStandardSchema(validator.run, context.value, scope)
+      return parseStandardSchema(
+        validator.run,
+        context.value,
+        validatorInstance,
+      )
         .then((result) => {
           if (signal.aborted) {
             return createEmptyMountValidationResult<TResult>()
@@ -154,7 +159,6 @@ async function continueMountValidationFromAsyncResult<
 >(
   pipeline: ReadonlyArray<AnyInternalValidatorInstance>,
   getContext: MountValidatorPipelineArgs<TResult>['getContext'],
-  scope: 'field' | 'form',
   startIndex: number,
   firstResult: PromiseLike<ValidatorExecutionResult<TResult>>,
   hasFailedBefore: boolean,
@@ -179,11 +183,7 @@ async function continueMountValidationFromAsyncResult<
 
     if (validator.bailIfInvalid && hasFailed) break
 
-    const result = executeMountValidator<TResult>(
-      getContext,
-      scope,
-      validatorInstance,
-    )
+    const result = executeMountValidator<TResult>(getContext, validatorInstance)
     const executionResult = isPromiseLike(result) ? await result : result
 
     if (
@@ -208,7 +208,6 @@ function runMountValidatorPipeline<TResult extends ValidateResult>({
   pipeline,
   context,
   getContext,
-  scope,
   onResult,
 }: MountValidatorPipelineArgs<TResult>): FormMountValidatorPipelineResult {
   const mountPipeline = pipeline.filter((validatorInstance) =>
@@ -234,11 +233,7 @@ function runMountValidatorPipeline<TResult extends ValidateResult>({
       }
     }
 
-    const result = executeMountValidator<TResult>(
-      getContext,
-      scope,
-      validatorInstance,
-    )
+    const result = executeMountValidator<TResult>(getContext, validatorInstance)
 
     if (isPromiseLike(result)) {
       return {
@@ -246,7 +241,6 @@ function runMountValidatorPipeline<TResult extends ValidateResult>({
         asyncPromise: continueMountValidationFromAsyncResult(
           mountPipeline,
           getContext,
-          scope,
           i,
           result,
           hasFailed,
@@ -277,16 +271,18 @@ export function runFormMountValidatorPipeline({
   return runMountValidatorPipeline<FormValidationResult<any>>({
     pipeline,
     context: { scope: 'form', event: 'mount', formApi },
-    getContext: (signal) => ({
+    getContext: (signal, instance) => ({
       event: 'mount',
       signal,
       formApi,
       value: formApi.state.values,
       createErrorMap,
-      parseIssues: parseIssuesFactory(formApi.state.values),
+      parseIssues: parseIssuesFactory(
+        formApi.state.values,
+        instance.fieldErrorTarget,
+      ),
       createOutput,
     }),
-    scope: 'form',
     onResult,
   })
 }
@@ -318,7 +314,6 @@ export function runFieldMountValidatorPipeline({
       fieldApi: fieldApi as never,
       value: fieldApi.value,
     }),
-    scope: 'field',
     onResult,
   })
 }
@@ -345,18 +340,20 @@ export function runGroupMountValidatorPipeline({
       formApi: groupApi.form,
       groupApi,
     },
-    getContext: (signal) => ({
-      event: 'mount',
+    getContext: (signal, instance) => ({
+      event: 'mount' as const,
       signal,
       formApi: groupApi.form as never,
       groupApi: groupApi as never,
       triggerFieldApi: undefined,
       value: groupApi.value,
       createErrorMap,
-      parseIssues: parseIssuesFactory(groupApi.value),
+      parseIssues: parseIssuesFactory(
+        groupApi.value,
+        instance.fieldErrorTarget,
+      ),
       createOutput,
     }),
-    scope: 'form',
     onResult,
   })
 }

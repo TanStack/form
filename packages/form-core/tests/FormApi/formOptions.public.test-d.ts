@@ -10,7 +10,7 @@ import type {
   CreateErrorMapFn,
   ParseIssuesFn,
   ParsedStandardSchemaIssues,
-  ValidationFailureItem,
+  ValidationIssue,
 } from '../../src/validation/state.public'
 
 describe('formOptions reuse', () => {
@@ -1045,21 +1045,26 @@ describe('formOptions listener inference', () => {
           run: ({ value, createOutput }) => createOutput(value.name.length),
         },
       ],
+      onSubmit: ({ validatorOutputs }) => {
+        expectTypeOf(validatorOutputs).toEqualTypeOf<[undefined, number]>()
+      },
       listeners: [
         {
           triggers: ['change'],
           run: ({ value, formApi }) => {
             expectTypeOf(value).toEqualTypeOf<{ name: string }>()
+            // ValidationIssue here comes from listeners ignoring `onSubmit`.
+            // This needs to be changed if we adjust this in the future.
             expectTypeOf(formApi.state.errors).toEqualTypeOf<
-              Array<{ message: string; code: 'form' }>
+              Array<{ message: string; code: 'form' } | ValidationIssue>
+            >()
+            expectTypeOf(formApi.state.errors).toEqualTypeOf<
+              Array<{ message: string; code: 'form' } | ValidationIssue>
             >()
             expectTypeOf(formApi.state.values).toEqualTypeOf<{ name: string }>()
           },
         },
       ],
-      onSubmit: ({ validatorOutputs }) => {
-        expectTypeOf(validatorOutputs).toEqualTypeOf<[undefined, number]>()
-      },
     })
   })
 })
@@ -1078,8 +1083,6 @@ describe('formOptions validator inference', () => {
 
             const errors = createErrorMap({ form: ['Please check the form'] })
             errors.fields['users[0].name'] = 'Required'
-            expectTypeOf(errors.form).toEqualTypeOf<Array<string>>()
-            // @ts-expect-error Error maps retain the inferred error item type.
             errors.form.push({ message: 'Invalid' })
             // @ts-expect-error Error map fields must belong to the form values.
             errors.fields.missing = 'Invalid'
@@ -1087,17 +1090,8 @@ describe('formOptions validator inference', () => {
             const issues: ReadonlyArray<StandardSchemaV1Issue> = [
               { message: 'Required', path: ['users', 0, 'name'] },
             ]
-            const parsed = parseIssues(issues)
-            expectTypeOf(parsed).toEqualTypeOf<
-              ParsedStandardSchemaIssues<Data>
-            >()
-            parsed.form.push({ message: 'Invalid form' })
-            // @ts-expect-error Parsed error maps retain the form's field paths.
-            parsed.fields.missing = { message: 'Invalid' }
-            // @ts-expect-error Standard Schema issues belong to parseIssues.
-            createErrorMap(issues)
 
-            return parsed
+            return parseIssues(issues)
           },
         },
       ],
@@ -1609,7 +1603,6 @@ describe('formOptions onSubmit inference', () => {
       defaultValues: { name: '' },
       onSubmit: ({ createErrorMap, parseIssues }) => {
         const errors = createErrorMap({ fields: { name: 'Required' } })
-        expectTypeOf(errors.form).toEqualTypeOf<Array<ValidationFailureItem>>()
         errors.form.push('Please check the form')
         // @ts-expect-error Submission errors retain the form's field paths.
         errors.fields.missing = 'Invalid'

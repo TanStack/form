@@ -40,7 +40,7 @@ export interface ParsedValidationResult {
  */
 export function isValidationErrorMap(
   value: unknown,
-): value is ValidationErrorMap<any, any> {
+): value is ValidationErrorMap<any, any, any> {
   if (typeof value !== 'object') return false
   if (value === null) return false
   if (Array.isArray(value)) return false

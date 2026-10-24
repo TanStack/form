@@ -53,8 +53,6 @@ import type {
 } from '../ValidatorInstance.lib'
 import type {
   ScopedErrorTypes,
-  ToFormErrorTypes,
-  ToScopedErrorTypes,
   ValidationIssue,
 } from '../validation/state.public'
 
@@ -680,8 +678,7 @@ export class InternalFormGroupApi<
           triggerFieldApi: opts?.triggerFieldApi,
         },
         hasFailedBefore: false,
-        scope: 'form',
-        getContext: (ctx) => ({
+        getContext: (ctx, instance) => ({
           event: signal,
           formApi: this.form,
           groupApi: this,
@@ -689,7 +686,10 @@ export class InternalFormGroupApi<
           signal: ctx.signal,
           value: this.value,
           createErrorMap,
-          parseIssues: parseIssuesFactory(this.value),
+          parseIssues: parseIssuesFactory(
+            this.value,
+            instance.fieldErrorTarget,
+          ),
           createOutput,
         }),
         onResult: (result) => {

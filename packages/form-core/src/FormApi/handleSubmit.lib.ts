@@ -29,7 +29,7 @@ function isSubmitError<TFormData>(
   )
 }
 
-const createValidationError: CreateValidationErrorFn = <
+const createValidationError: CreateValidationErrorFn<any> = <
   TError extends FormValidationFailure<any>,
 >(
   error: TError,
@@ -155,7 +155,7 @@ export async function runSubmissionProcess<TFormData>(
     return errorResults.flatMap<FormValidationFailure<TFormData>>((error) => {
       const { self, subfields } = parseValidationResult(error)
       if (isValidationErrorMap(error)) {
-        return [{ ...error, form: self ?? undefined, fields: subfields ?? {} }]
+        return [{ ...error, form: self ?? [], fields: subfields ?? {} }]
       }
       return self ?? []
     })
@@ -175,7 +175,7 @@ export async function runSubmissionProcess<TFormData>(
       value,
       createValidationError,
       createErrorMap: withSubmitError(createErrorMap),
-      parseIssues: withSubmitError(parseIssuesFactory(value)),
+      parseIssues: withSubmitError(parseIssuesFactory(value, 'field')),
     } satisfies FormSubmitContext<TFormData, any> as any)
 
     if (hasResettedFormDuringSubmit()) {

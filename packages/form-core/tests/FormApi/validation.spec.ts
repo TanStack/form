@@ -139,9 +139,7 @@ describe('form - validation', () => {
 
       await form.validate('submit')
 
-      expect(form.state.errors).toEqual([
-        expect.objectContaining({ message: 'Name is required' }),
-      ])
+      expect(form.state.errors).toEqual([])
       expect(field.errors).toEqual([
         expect.objectContaining({ message: 'Name is required' }),
       ])
@@ -667,8 +665,12 @@ describe('form - validation', () => {
         ],
       })
 
+      const field = form._getOrCreateFieldApi({
+        name: 'name',
+      })
+
       await vi.waitFor(() => {
-        expect(form.state.errors).toEqual([
+        expect(field.errors).toEqual([
           expect.objectContaining({ message: 'Name is required' }),
         ])
       })
@@ -1144,7 +1146,7 @@ describe('form - validation', () => {
         expect.objectContaining({ message: 'Start date is required' }),
         expect.objectContaining({ message: 'End date is required' }),
       ])
-      expect(form.state.errors).toHaveLength(2)
+      expect(form.state.errors).toHaveLength(0)
       expect(form._tryGetFieldApi('range.from')).toBeNull()
       expect(form._tryGetFieldApi('range.to')).toBeNull()
     })

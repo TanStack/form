@@ -214,12 +214,13 @@ describe('form - submission handling', () => {
 
       expect(result).toEqual([
         expect.objectContaining({
-          form: [expect.objectContaining({ message: 'Name is required' })],
+          form: [],
+          fields: {
+            name: [expect.objectContaining({ message: 'Name is required' })],
+          },
         }),
       ])
-      expect(form.state.errors).toEqual([
-        expect.objectContaining({ message: 'Name is required' }),
-      ])
+      expect(form.state.errors).toEqual([])
       expect(field.errors).toEqual([
         expect.objectContaining({ message: 'Name is required' }),
       ])

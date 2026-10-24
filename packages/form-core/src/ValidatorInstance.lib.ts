@@ -1,14 +1,12 @@
 import { LiteDebouncer } from '@tanstack/pacer-lite'
 import { InternalValidationSourceInstance } from './ValidationSourceInstance.lib'
-import type { StandardSchemaV1 } from './standardSchema.public'
 import type {
-  BaseValidator,
   FieldValidator,
   FormGroupValidator,
-  ValidatorFn,
   ValidatorScope,
 } from './validation.public'
 import type { FormValidator } from './validation/formValidators.public'
+import type { FieldErrorTarget } from './validation/state.public'
 
 type GetDefinition<TScope extends ValidatorScope> = {
   form: FormValidator<any, any>
@@ -29,7 +27,7 @@ export interface InternalValidatorInstanceOptions<
 > {
   owner: TOwner
   scope: TScope
-  definition: any
+  definition: GetDefinition<TScope>
   index?: number
 }
 
@@ -132,6 +130,7 @@ export class InternalValidatorInstance<
    * Assigning the same definition again still advances the revision.
    */
   revision = 0
+  fieldErrorTarget: FieldErrorTarget
   /** Creates the runtime state for one installed validator occurrence. */
   constructor({
     definition,
@@ -141,6 +140,10 @@ export class InternalValidatorInstance<
   }: InternalValidatorInstanceOptions<TOwner, TScope>) {
     super({ owner, scope, index })
     this.definition = definition
+    this.fieldErrorTarget = 'field'
+    if ('fieldErrorTarget' in definition && definition.fieldErrorTarget) {
+      this.fieldErrorTarget = definition.fieldErrorTarget
+    }
   }
 
   /**
@@ -153,6 +156,10 @@ export class InternalValidatorInstance<
     if (this.disposed) return
 
     this.definition = definition
+    this.fieldErrorTarget = 'field'
+    if ('fieldErrorTarget' in definition && definition.fieldErrorTarget) {
+      this.fieldErrorTarget = definition.fieldErrorTarget
+    }
     this.revision++
   }
 

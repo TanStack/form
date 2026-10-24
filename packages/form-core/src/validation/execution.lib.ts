@@ -233,12 +233,12 @@ export function shouldRunValidator(
  * Schema and branded function outputs retain their payload and presence marker.
  */
 export async function executeValidator<TResult extends ValidateResult>(
-  validator: AnyPipelineValidator,
+  validatorInstance: AnyInternalValidatorInstance,
   context: AnyValidatorContext,
-  scope: 'field' | 'form',
 ): Promise<ValidatorExecutionResult<TResult>> {
+  const validator = validatorInstance.definition
   const result = isStandardSchema(validator.run)
-    ? await parseStandardSchema(validator.run, context.value, scope)
+    ? await parseStandardSchema(validator.run, context.value, validatorInstance)
     : await validator.run(context)
 
   return normalizeValidatorResult(result as TResult)
