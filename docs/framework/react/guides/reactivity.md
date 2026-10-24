@@ -61,6 +61,7 @@ Inside a field, you don't need `useSelector` or `form.Subscribe` to read the fie
 
 The same applies to field components that read the field with `useFieldContext`, as shown in [Form Composition](./form-composition.md#pre-bound-field-components). Even though they live outside the render function, they re-render together with the field, so they can read `field.state.value` and `field.state.meta` directly.
 
+> [!NOTE]
 > Array fields (`mode="array"`) are an exception: to avoid re-rendering the whole list on every keystroke, they don't re-render when a value inside one of their items changes. Render those values with their own `form.Field` instead.
 
 `useSelector` also accepts a field's store, if you prefer to subscribe to a specific piece of field state:
