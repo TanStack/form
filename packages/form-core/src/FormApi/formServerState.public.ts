@@ -2,6 +2,12 @@ import type { ServerSideEvents } from '../events.public'
 import type { FormValidationResult } from '../validation/state.public'
 import type { GetValidatorOutputs } from './formSubmit.public'
 
+export const initialServerFormState: ServerFormState<any> = {
+  values: undefined,
+  validationResults: [],
+  submissionAttempts: 0,
+}
+
 export interface ServerFormState<TFormData> {
   values: TFormData | undefined
   validationResults: Array<{

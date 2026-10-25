@@ -1,18 +1,13 @@
 'use server'
 
-import {
-  initialServerFormState,
-  serverValidateHelper,
-} from '@tanstack/react-form'
+import { initialServerFormState } from '@tanstack/react-form'
 import { next } from '@tanstack/react-form-nextjs'
 import { formOpts } from './shared-code'
 
-const { createServerValidate } = serverValidateHelper({
-  framework: next({
-    info: {
-      numbers: ['age'],
-    },
-  }),
+const { createServerValidate } = next({
+  info: {
+    numbers: ['age'],
+  },
 })
 
 const serverValidate = createServerValidate(formOpts)

@@ -18,12 +18,6 @@ import type {
 } from './FormApi/formServerState.public'
 import type { FormOptions } from './FormApi/formOptions.public'
 
-export const initialServerFormState: ServerFormState<any> = {
-  values: undefined,
-  validationResults: [],
-  submissionAttempts: 0,
-}
-
 function createInitialFormErrorMeta(): FormErrorMeta {
   return {
     validationSourceErrors: null,

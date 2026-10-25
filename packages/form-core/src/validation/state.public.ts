@@ -4,7 +4,7 @@ import type {
   StandardSchemaV1,
   StandardSchemaV1Issue,
 } from '../standardSchema.public'
-import type { OneOrMany, ReadonlyOneOrMany } from '../types.public'
+import type { ReadonlyOneOrMany } from '../types.public'
 import type { VALIDATION_OUTPUT } from '../validationOutput.lib'
 import type { PARSED_ISSUES } from './parseIssues.lib'
 
