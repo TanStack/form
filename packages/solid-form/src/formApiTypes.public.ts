@@ -1,4 +1,4 @@
-import type { AnyFormApi, FormApi, FormErrorTypes } from '@tanstack/form-core'
+import type { AnyFormApi, FormApi, ScopedErrorTypes } from '@tanstack/form-core'
 import type { Component } from 'solid-js'
 import type { SolidTanStackFormComponents } from './Components.public'
 import type {
@@ -8,22 +8,18 @@ import type {
 
 type ExtendedFormApi<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>>,
-> = FormApi<TFormData, TFormErrorTypes> &
-  SolidTanStackFormComponents<TFormData, TFormErrorTypes, TFieldComponents>
+> = FormApi<TFormData, TFormError> &
+  SolidTanStackFormComponents<TFormData, TFormError, TFieldComponents>
 
 export type SolidFormApi<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TComponents extends AnySolidFormComponentMap = DefaultSolidFormComponentMap,
 > = unknown extends TComponents['formComponents']
-  ? ExtendedFormApi<TFormData, TFormErrorTypes, TComponents['fieldComponents']>
-  : ExtendedFormApi<
-      TFormData,
-      TFormErrorTypes,
-      TComponents['fieldComponents']
-    > &
+  ? ExtendedFormApi<TFormData, TFormError, TComponents['fieldComponents']>
+  : ExtendedFormApi<TFormData, TFormError, TComponents['fieldComponents']> &
       TComponents['formComponents']
 
 /**

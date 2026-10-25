@@ -9,7 +9,7 @@ import type {
   UseAppFormHook,
 } from './createFormHookTypes.public'
 import type { Accessor, Component } from 'solid-js'
-import type { FormOptions } from '@tanstack/form-core'
+import type { AnyFormOptions } from '@tanstack/form-core'
 
 export function createFormHook<
   const TFormComponents extends Record<string, Component<any>>,
@@ -22,9 +22,7 @@ export function createFormHook<
 }> {
   const initializeAppForm = createAppFormInitializer(createOptions)
 
-  function useExtendedForm(
-    options: Accessor<FormOptions<any, any, any, unknown>>,
-  ) {
+  function useExtendedForm(options: Accessor<AnyFormOptions>) {
     return createInternalForm(options, initializeAppForm)
   }
   const useAppForm = useExtendedForm as never as UseAppFormHook<{
