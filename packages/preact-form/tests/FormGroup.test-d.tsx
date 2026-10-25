@@ -1,12 +1,11 @@
-import Preact from 'preact/compat'
 import { expectTypeOf } from 'vitest'
 import { z } from 'zod'
 import { useForm } from '../src'
 import type {
   DeepKeys,
   FieldApi,
-  FormErrorTypes,
   FormGroupApi,
+  ScopedErrorTypes,
   StandardSchemaV1Issue,
   ValidationIssue,
 } from '../src'
@@ -77,7 +76,7 @@ function FormGroupTypes() {
         expectTypeOf(group.state.isPristine).toEqualTypeOf<boolean>()
         expectTypeOf(group.form.state.values.budget).toEqualTypeOf<number>()
         expectTypeOf<FormGroupErrorTypesOf<typeof group>>().toEqualTypeOf<
-          FormErrorTypes<never, { message: string; fromGroup: true }>
+          ScopedErrorTypes<never, { message: string; fromGroup: true }>
         >()
         // @ts-expect-error group state values are scoped to guestDetails
         group.state.values.budget
@@ -166,7 +165,7 @@ function FormGroupSubmitTypes() {
         { run: guestDetailsSchema, triggers: [] },
         {
           run: guestDetailsSchema,
-          runOnSubmit: false,
+          skipOnSubmit: true,
           triggers: [],
         },
       ]}
@@ -177,7 +176,7 @@ function FormGroupSubmitTypes() {
         }>()
         expectTypeOf(validatorOutputs[1]).toEqualTypeOf<undefined>()
         expectTypeOf<FormGroupErrorTypesOf<typeof groupApi>>().toEqualTypeOf<
-          FormErrorTypes<StandardSchemaV1Issue, StandardSchemaV1Issue>
+          ScopedErrorTypes<StandardSchemaV1Issue, StandardSchemaV1Issue>
         >()
       }}
       onSubmitInvalid={(context) => {
@@ -188,7 +187,7 @@ function FormGroupSubmitTypes() {
         expectTypeOf<
           FormGroupErrorTypesOf<typeof context.groupApi>
         >().toEqualTypeOf<
-          FormErrorTypes<StandardSchemaV1Issue, StandardSchemaV1Issue>
+          ScopedErrorTypes<StandardSchemaV1Issue, StandardSchemaV1Issue>
         >()
       }}
     >
@@ -355,7 +354,7 @@ function FormGroupWithoutValidatorsTypes() {
     <form.FormGroup name="guestDetails">
       {(group) => {
         expectTypeOf<FormGroupErrorTypesOf<typeof group>>().toEqualTypeOf<
-          FormErrorTypes<never, never>
+          ScopedErrorTypes<never, never>
         >()
         expectTypeOf(group.state.errors).toEqualTypeOf<Array<never>>()
         return null

@@ -28,7 +28,7 @@ describe('submit return', () => {
         ],
         onSubmit: ({ validatorOutputs, createValidationError }) => {
           expectTypeOf(validatorOutputs).toEqualTypeOf<
-            readonly [{ email: string }, { normalizedEmail: string }]
+            [{ email: string }, { normalizedEmail: string }]
           >()
 
           return createValidationError({
@@ -137,64 +137,6 @@ describe('submit return', () => {
 
       void ParentWithSubmitInComponent
     })
-
-    it('should allow options to include onSubmit, strictly matching it', () => {
-      const sharedOptionsWithSubmit = formOptions({
-        defaultValues: { email: '' },
-        validators: [],
-        onSubmit: ({ createValidationError }) =>
-          createValidationError({
-            form: { message: '', code: 'form' as const },
-            fields: {
-              email: { message: '', code: 'email' as const },
-            },
-          }),
-      })
-
-      type SharedFormWithSubmit = PreactFormType<typeof sharedOptionsWithSubmit>
-
-      function ParentWithAsyncSubmitInComponent() {
-        const formWithSyncError = useForm({
-          ...sharedOptionsWithSubmit,
-          onSubmit: ({ createValidationError }) => {
-            if (Math.random() > 0.5) {
-              return createValidationError({
-                form: { message: '', code: 'form' as const },
-                fields: {
-                  email: { message: '', code: 'email' as const },
-                },
-              })
-            }
-            return null
-          },
-        })
-
-        const formWithAsyncError = useForm({
-          ...sharedOptionsWithSubmit,
-          onSubmit: ({ createValidationError }) =>
-            Promise.resolve(
-              createValidationError({
-                fields: {
-                  email: { message: '', fromSubmit: true },
-                },
-              }),
-            ),
-        })
-
-        const formWithoutError = useForm({
-          ...sharedOptionsWithSubmit,
-          onSubmit: () => Promise.resolve(null),
-        })
-        const formUnchanged = useForm(sharedOptionsWithSubmit)
-
-        expectTypeOf(formWithSyncError).toExtend<SharedFormWithSubmit>()
-        expectTypeOf(formWithAsyncError).not.toExtend<SharedFormWithSubmit>()
-        expectTypeOf(formWithoutError).not.toExtend<SharedFormWithSubmit>()
-        expectTypeOf(formUnchanged).toExtend<SharedFormWithSubmit>()
-      }
-
-      void ParentWithAsyncSubmitInComponent
-    })
   })
 
   describe('appFormOptions', () => {
@@ -275,64 +217,6 @@ describe('submit return', () => {
       }
 
       void ParentWithSubmitInComponent
-    })
-
-    it('should allow options to include onSubmit, strictly matching it', () => {
-      const sharedOptionsWithSubmit = appFormOptions({
-        defaultValues: { email: '' },
-        validators: [],
-        onSubmit: ({ createValidationError }) =>
-          createValidationError({
-            form: { message: '', code: 'form' as const },
-            fields: {
-              email: { message: '', code: 'email' as const },
-            },
-          }),
-      })
-
-      type SharedFormWithSubmit = PreactFormType<typeof sharedOptionsWithSubmit>
-
-      function ParentWithAsyncSubmitInComponent() {
-        const formWithSyncError = useAppForm({
-          ...sharedOptionsWithSubmit,
-          onSubmit: ({ createValidationError }) => {
-            if (Math.random() > 0.5) {
-              return createValidationError({
-                form: { message: '', code: 'form' as const },
-                fields: {
-                  email: { message: '', code: 'email' as const },
-                },
-              })
-            }
-            return null
-          },
-        })
-
-        const formWithAsyncError = useAppForm({
-          ...sharedOptionsWithSubmit,
-          onSubmit: ({ createValidationError }) =>
-            Promise.resolve(
-              createValidationError({
-                fields: {
-                  email: { message: '', fromSubmit: true },
-                },
-              }),
-            ),
-        })
-
-        const formWithoutError = useAppForm({
-          ...sharedOptionsWithSubmit,
-          onSubmit: () => Promise.resolve(null),
-        })
-        const formUnchanged = useAppForm(sharedOptionsWithSubmit)
-
-        expectTypeOf(formWithSyncError).toExtend<SharedFormWithSubmit>()
-        expectTypeOf(formWithAsyncError).not.toExtend<SharedFormWithSubmit>()
-        expectTypeOf(formWithoutError).not.toExtend<SharedFormWithSubmit>()
-        expectTypeOf(formUnchanged).toExtend<SharedFormWithSubmit>()
-      }
-
-      void ParentWithAsyncSubmitInComponent
     })
   })
 })

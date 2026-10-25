@@ -4,6 +4,7 @@ import type { ScopedErrorTypes } from '../validation/state.public'
 import type { ClientSideEvents } from '../events.public'
 import type {
   FormGroupValidateResult,
+  FormGroupValidator,
   FormGroupValidators,
   ToFormGroupErrorTypes,
   ToFormGroupOutputs,
@@ -140,7 +141,12 @@ export interface FormGroupOptions<
 > {
   form: FormApi<TFormData, TFormError>
   name: TGroupName
-  validators?: TGroupValidators
+  validators?: TGroupValidators & {
+    [K in keyof TGroupValidators]: Record<
+      Exclude<keyof TGroupValidators[K], keyof FormGroupValidator<TGroupValue>>,
+      never
+    >
+  }
   /**
    * Called after group submission validation succeeds. The callback is awaited
    * before submission finishes.

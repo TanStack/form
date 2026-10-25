@@ -1,8 +1,7 @@
 import type {
   AnyFormOptions,
   FormOptions,
-  FormValidators,
-  ToFormErrorTypes,
+  GetFormErrorTypes,
 } from '@tanstack/form-core'
 import type {
   AnyPreactFormComponentMap,
@@ -16,12 +15,10 @@ import type { PreactFormApi } from './formApiTypes.public'
 // early can break passing forms as props to child components.
 // This must remain `any` so that `form={form}` remains working. There are type tests for it, so feel
 // free to tinker.
-type PreactFormTypeErrorTypes<
-  TFormValidators extends FormValidators<any>,
-  TSubmitReturn,
-> = unknown extends TSubmitReturn
-  ? any
-  : ToFormErrorTypes<TFormValidators, TSubmitReturn>
+type PreactFormTypeErrorTypes<TValidators, TSubmitReturn> =
+  unknown extends TSubmitReturn
+    ? any
+    : GetFormErrorTypes<TValidators, TSubmitReturn>
 
 /**
  * Derives the Preact form API type represented by a reusable options object.
@@ -55,6 +52,7 @@ type PreactFormTypeErrorTypes<
 export type PreactFormType<TOptions extends AnyFormOptions> =
   TOptions extends FormOptions<
     infer TFormData,
+    any,
     infer TFormValidators,
     infer TSubmitReturn,
     infer TComponents
