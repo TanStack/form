@@ -218,7 +218,7 @@ export class TanStackFormController<
   #unmount?: () => void
 
   get api(): FormApi<TFormData, TFormError> {
-    return this.#form
+    return this.#form as never
   }
 
   /**

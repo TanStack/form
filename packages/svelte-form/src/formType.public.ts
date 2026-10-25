@@ -1,8 +1,7 @@
 import type {
   AnyFormOptions,
   FormOptions,
-  FormValidators,
-  ToFormErrorTypes,
+  GetFormErrorTypes,
 } from '@tanstack/form-core'
 import type {
   AnySvelteFormComponentMap,
@@ -10,16 +9,15 @@ import type {
 } from './AppForm/componentMap.public'
 import type { SvelteFormApi } from './formApiTypes.public'
 
-type SvelteFormTypeErrorTypes<
-  TValidators extends FormValidators<any>,
-  TSubmitReturn,
-> = unknown extends TSubmitReturn
-  ? any
-  : ToFormErrorTypes<TValidators, TSubmitReturn>
+type SvelteFormTypeErrorTypes<TValidators, TSubmitReturn> =
+  unknown extends TSubmitReturn
+    ? any
+    : GetFormErrorTypes<TValidators, TSubmitReturn>
 
 export type SvelteFormType<TOptions extends AnyFormOptions> =
   TOptions extends FormOptions<
     infer TData,
+    any,
     infer TValidators,
     infer TSubmitReturn,
     infer TComponents

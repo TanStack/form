@@ -11,8 +11,7 @@ import type {
   DefaultFormOptions,
   FormOptions,
   FormOptionsApi,
-  FormValidators,
-  ToFormErrorTypes,
+  GetFormErrorTypes,
 } from '@tanstack/form-core'
 
 /**
@@ -97,18 +96,20 @@ export interface CreateFormHookOptions<
 
 export type UseAppFormHook<TComponents extends AnySvelteFormComponentMap> = <
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
+  const TValidatorConfig extends unknown[],
+  TValidators,
   TSubmitReturn,
 >(
   options: () => FormOptions<
     TFormData,
-    TFormValidators,
+    TValidatorConfig,
+    TValidators,
     TSubmitReturn,
     unknown
   >,
 ) => SvelteAppFormApi<
   TFormData,
-  ToFormErrorTypes<TFormValidators, TSubmitReturn>,
+  GetFormErrorTypes<TValidators, TSubmitReturn>,
   TComponents
 >
 
