@@ -1082,10 +1082,10 @@ describe('formOptions validator inference', () => {
             expectTypeOf(parseIssues).toEqualTypeOf<ParseIssuesFn<Data>>()
 
             const errors = createErrorMap({ form: ['Please check the form'] })
-            errors.fields['users[0].name'] = 'Required'
-            errors.form.push({ message: 'Invalid' })
+            errors.addFieldError('users[0].name', 'Required')
+            errors.addFormError({ message: 'Invalid' })
             // @ts-expect-error Error map fields must belong to the form values.
-            errors.fields.missing = 'Invalid'
+            errors.addFieldError('missing', 'Invalid')
 
             const issues: ReadonlyArray<StandardSchemaV1Issue> = [
               { message: 'Required', path: ['users', 0, 'name'] },

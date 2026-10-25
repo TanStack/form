@@ -63,26 +63,18 @@ export type AnyLitFormApi = TanStackFormController<any, any, any, any, any>
 export type LitFormType<TOptions extends AnyFormOptions> =
   TOptions extends FormOptions<
     infer TFormData,
-    infer TValidatorConfig,
+    any,
     infer TValidators,
     infer TSubmitReturn,
     any
   >
-    ? TanStackFormController<
+    ? // Keep option-only generics erased so component-level submit handlers remain
+      // assignable through update(), while preserving the derived public errors.
+      TanStackFormController<
         TFormData,
-        TValidatorConfig,
-        TValidators,
-        TSubmitReturn,
+        any,
+        any,
+        any,
         LitFormTypeErrorTypes<TValidators, TSubmitReturn>
       >
     : never
-
-/**
- * Type-only helper for declaring a child element's form property from shared
- * `formOptions`. It intentionally has no runtime value.
- */
-export function getFormType<TOptions extends AnyFormOptions>(
-  _formOptions: TOptions,
-): LitFormType<TOptions> {
-  return undefined as never
-}

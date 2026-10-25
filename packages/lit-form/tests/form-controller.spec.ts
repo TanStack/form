@@ -6,7 +6,6 @@ import {
   TanStackFormController,
   defineFieldGroup,
   formOptions,
-  getFormType,
 } from '../src/index.js'
 import { defineOnce, mount } from './utils.js'
 import type { LitFormType } from '../src/index.js'
@@ -457,8 +456,6 @@ describe('TanStackFormController', () => {
 
   it('derives reusable controller types from formOptions', () => {
     type ReusableForm = LitFormType<typeof personFormOptions>
-    const reusableForm = getFormType(personFormOptions)
-    expectTypeOf(reusableForm).toEqualTypeOf<ReusableForm>()
 
     class Parent extends LitElement {
       form = new TanStackFormController(this, {

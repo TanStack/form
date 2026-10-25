@@ -184,7 +184,7 @@ describe('runFormValidatorPipeline', () => {
       {
         run: ({ createErrorMap }) => {
           const errors = createErrorMap()
-          errors.fields.name = 'Name is required'
+          errors.addFieldError('name', 'Name is required')
           return errors
         },
         triggers: [],
@@ -194,7 +194,7 @@ describe('runFormValidatorPipeline', () => {
     const results = await runWithContext({ event: 'submit' })
 
     expect(results).toMatchObject([
-      { result: { fields: { name: 'Name is required' } } },
+      { result: { fields: { name: ['Name is required'] } } },
     ])
   })
 
@@ -227,7 +227,7 @@ describe('runFormValidatorPipeline', () => {
         {
           run: ({ createErrorMap }) => {
             const errors = createErrorMap()
-            errors.fields.name = 'Name is required'
+            errors.addFieldError('name', 'Name is required')
             return errors
           },
           triggers: [],

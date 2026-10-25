@@ -73,7 +73,9 @@ describe('submit return', () => {
             triggers: ['submit'],
             run: ({ value, formApi }) => {
               expectTypeOf(value).toEqualTypeOf<{ email: string }>()
-              expectTypeOf(formApi.state.errors).toEqualTypeOf<Array<any>>()
+              expectTypeOf(formApi.state.errors).toEqualTypeOf<
+                Array<ValidationIssue>
+              >()
               // @ts-expect-error The submit fallback does not erase value types.
               formApi.setFieldValue('email', 42)
             },
@@ -81,7 +83,9 @@ describe('submit return', () => {
         ],
         onSubmitInvalid: ({ formApi }) => {
           expectTypeOf(formApi.state.values).toEqualTypeOf<{ email: string }>()
-          expectTypeOf(formApi.state.errors).toEqualTypeOf<Array<any>>()
+          expectTypeOf(formApi.state.errors).toEqualTypeOf<
+            Array<ValidationIssue>
+          >()
           // @ts-expect-error The submit fallback does not erase field paths.
           formApi.setFieldValue('missing', '')
         },

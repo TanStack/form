@@ -504,7 +504,7 @@ describe('createErrorMap', () => {
         run: ({ createErrorMap }) => {
           const errors = createErrorMap({ form: 'Form error' })
 
-          errors.fields.name = 'Name is required'
+          errors.addFieldError('name', 'Name is required')
           // @ts-expect-error Error map fields must use valid form keys.
           errors.fields.missing = 'Missing'
 
@@ -525,7 +525,7 @@ describe('createErrorMap', () => {
         run: ({ createErrorMap }) => {
           const errors = createErrorMap({ form: 'Group error' })
 
-          errors.fields.name = 'Name is required'
+          errors.addFieldError('name', 'Name is required')
           // @ts-expect-error Error map fields must use valid group keys.
           errors.fields.missing = 'Missing'
 
@@ -546,7 +546,7 @@ describe('createErrorMap', () => {
         run: ({ createErrorMap }) => {
           const errors = createErrorMap()
 
-          errors.fields.name = 'Name is required'
+          errors.addFieldError('name', 'Name is required')
 
           return errors
         },

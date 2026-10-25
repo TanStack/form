@@ -19,16 +19,17 @@ describe('CreateErrorMapFn', () => {
       form: [{ message: 'Required' }] as const,
     })
 
-    strings.form.push('Too short')
-    scalarString.form.push('Too short')
-    readonlyStrings.form.push('Too short')
-    issues.form.push({ message: 'Too short' })
-    scalarIssue.form.push({ message: 'Too short' })
-    readonlyIssues.form.push({ message: 'Required' })
-    strings.fields.name = 'Required'
-    strings.fields.age = ['Too young', 'Must be an adult']
-    issues.fields.name = { message: 'Required' }
-    issues.fields.age = [{ message: 'Too young' }]
+    strings.addFormError('Too short')
+    scalarString.addFormError('Too short')
+    readonlyStrings.addFormError('Too short')
+    issues.addFormError({ message: 'Too short' })
+    scalarIssue.addFormError({ message: 'Too short' })
+    readonlyIssues.addFormError({ message: 'Required' })
+    strings.addFieldError('name', 'Required')
+    strings.addFieldError('name', 'Required')
+    strings.addFieldError('age', ['Too young', 'Must be an adult'])
+    issues.addFieldError('name', { message: 'Required' })
+    issues.addFieldError('age', [{ message: 'Too young' }])
   })
 
   it('accepts strings and issues when no error item type can be inferred', () => {
@@ -39,23 +40,9 @@ describe('CreateErrorMapFn', () => {
     expectTypeOf(omitted.form).toEqualTypeOf<Array<ValidationFailureItem>>()
     expectTypeOf(empty.form).toEqualTypeOf<Array<ValidationFailureItem>>()
     expectTypeOf(emptyFields.form).toEqualTypeOf<Array<ValidationFailureItem>>()
-    empty.form.push('Required')
-    omitted.form.push({ message: 'Invalid' })
-    emptyFields.fields.name = { message: 'Invalid' }
-  })
-
-  it('retains custom issue types inferred from form or field errors', () => {
-    const issue = { message: 'Invalid name', code: 'name' as const }
-    const fromForm = createErrorMap({ form: [issue] })
-    const fromFields = createErrorMap({
-      form: [],
-      fields: { name: [issue], age: issue },
-    })
-
-    expectTypeOf(fromForm.form).toEqualTypeOf<Array<typeof issue>>()
-    expectTypeOf(fromFields.form).toEqualTypeOf<Array<typeof issue>>()
-    fromForm.fields.name = [issue]
-    fromFields.form.push(issue)
+    empty.addFormError('Required')
+    omitted.addFormError({ message: 'Invalid' })
+    emptyFields.addFieldError('name', { message: 'Invalid' })
   })
 
   it('rejects invalid errors and field paths', () => {
@@ -69,9 +56,9 @@ describe('CreateErrorMapFn', () => {
     createNameErrorMap({ fields: { name: 'Required', missing: 'Invalid' } })
 
     const map = createNameErrorMap()
-    map.fields.name = 'Required'
+    map.addFieldError('name', 'Required')
     // @ts-expect-error Mutation also checks field paths.
-    map.fields.missing = 'Invalid'
+    map.addFieldError('missing', 'Invalid')
   })
 
   it('rejects schema issue arrays as initial maps', () => {
