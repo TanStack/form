@@ -1,14 +1,17 @@
-import type { AnyFormOptions, FormOptions } from '@tanstack/form-core'
 import type {
-  AnyInternalFormApi,
-  InternalFormApi,
-} from '@tanstack/form-core/internals'
+  AnyFormApi,
+  AnyFormOptions,
+  FormApi,
+  FormOptions,
+  GetFormErrorTypes,
+} from '@tanstack/form-core'
 
 // Reusable formOptions often omit onSubmit so a component can provide it later.
 // Keep that unresolved submit return flexible when the form is passed to a child.
-type AngularFormTypeSubmitReturn<TSubmitReturn> = unknown extends TSubmitReturn
-  ? any
-  : TSubmitReturn
+type AngularFormTypeErrorTypes<TValidators, TSubmitReturn> =
+  unknown extends TSubmitReturn
+    ? any
+    : GetFormErrorTypes<TValidators, TSubmitReturn>
 
 /**
  * An Angular form API whose form data, validator, and submit types are erased.
@@ -30,7 +33,7 @@ type AngularFormTypeSubmitReturn<TSubmitReturn> = unknown extends TSubmitReturn
  * }
  * ```
  */
-export type AnyAngularFormApi = AnyInternalFormApi
+export type AnyAngularFormApi = AnyFormApi
 
 /**
  * Derives the Angular form API type represented by a reusable options object.
@@ -57,13 +60,10 @@ export type AnyAngularFormApi = AnyInternalFormApi
 export type AngularFormType<TOptions extends AnyFormOptions> =
   TOptions extends FormOptions<
     infer TFormData,
-    infer TFormValidators,
+    any,
+    infer TValidators,
     infer TSubmitReturn,
-    unknown
+    any
   >
-    ? InternalFormApi<
-        TFormData,
-        TFormValidators,
-        AngularFormTypeSubmitReturn<TSubmitReturn>
-      >
+    ? FormApi<TFormData, AngularFormTypeErrorTypes<TValidators, TSubmitReturn>>
     : never

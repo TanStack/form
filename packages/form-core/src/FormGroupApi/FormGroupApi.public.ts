@@ -8,6 +8,7 @@ import type {
   ToFormGroupErrorTypes,
   ToFormGroupOutputs,
 } from '../validation.public'
+import type { Awaitable } from '../types.public'
 
 /**
  * Context passed to a form group's `onSubmit` after group validation succeeds.
@@ -114,6 +115,22 @@ export type FormGroupSubmitFn<
   >,
 ) => void | Promise<void>
 
+export type FormGroupOnSubmitInvalidFn<
+  TFormData,
+  TGroupName,
+  TGroupValue,
+  TGroupError extends ScopedErrorTypes,
+  TFormError extends ScopedErrorTypes,
+> = (
+  context: FormGroupSubmitInvalidContext<
+    TFormData,
+    TGroupName,
+    TGroupValue,
+    TGroupError,
+    TFormError
+  >,
+) => Awaitable<void>
+
 export interface FormGroupOptions<
   in out TFormData,
   in out TGroupName,
@@ -161,15 +178,13 @@ export interface FormGroupOptions<
    * }
    * ```
    */
-  onSubmitInvalid?: (
-    context: FormGroupSubmitInvalidContext<
-      TFormData,
-      TGroupName,
-      TGroupValue,
-      NoInfer<ToFormGroupErrorTypes<TGroupValidators>>,
-      TFormError
-    >,
-  ) => void | Promise<void>
+  onSubmitInvalid?: FormGroupOnSubmitInvalidFn<
+    TFormData,
+    TGroupName,
+    TGroupValue,
+    NoInfer<ToFormGroupErrorTypes<TGroupValidators>>,
+    TFormError
+  >
 }
 
 export interface FormGroupState<

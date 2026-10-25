@@ -1,7 +1,11 @@
 import { ChangeDetectorRef, DestroyRef, effect, inject } from '@angular/core'
 import { injectSelector } from '@tanstack/angular-store'
 import { InternalFormApi } from '@tanstack/form-core/internals'
-import type { FormOptions, FormValidators } from '@tanstack/form-core'
+import type {
+  FormApi,
+  FormOptions,
+  GetFormErrorTypes,
+} from '@tanstack/form-core'
 
 /**
  * Creates and mounts a form in the current Angular injection context.
@@ -37,12 +41,19 @@ import type { FormOptions, FormValidators } from '@tanstack/form-core'
  */
 export function injectForm<
   TFormData,
-  const TFormValidators extends FormValidators<TFormData>,
+  const TValidatorConfig extends unknown[],
+  TValidators,
   TSubmitReturn,
->(options: FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>) {
-  const form = new InternalFormApi<TFormData, TFormValidators, TSubmitReturn>(
-    options,
-  )
+>(
+  options: FormOptions<
+    TFormData,
+    TValidatorConfig,
+    TValidators,
+    TSubmitReturn,
+    unknown
+  >,
+): FormApi<TFormData, GetFormErrorTypes<TValidators, TSubmitReturn>> {
+  const form = new InternalFormApi<TFormData>(options)
   const destroyRef = inject(DestroyRef)
   const changeDetector = inject(ChangeDetectorRef, { optional: true })
   const state = injectSelector(form.atom)
@@ -58,5 +69,5 @@ export function injectForm<
     changeDetector?.markForCheck()
   })
 
-  return form
+  return form as never
 }

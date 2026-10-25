@@ -242,7 +242,7 @@ export interface FormApi<
    * Subscribe to this atom to observe state changes. For an imperative read,
    * use `state`.
    */
-  atom: ReadonlyAtom<FormState<TFormData, ScopedErrorTypes>>
+  atom: ReadonlyAtom<FormState<TFormData, TFormError>>
   /** Current values, validation status, and submission metadata. */
   readonly state: FormState<TFormData, TFormError>
   /** The current baseline values used by `reset()` and `isDefaultValue`. */
