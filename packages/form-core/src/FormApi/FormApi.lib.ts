@@ -1195,7 +1195,7 @@ export class InternalFormApi<TFormData> implements FormApi<
  *  -> {
  *     run: () => {},
  *     triggers: ['change', 'blur', 'submit', 'mount', 'unmount'], // not the same as submit
- *     // runOnSubmit doesn't exist
+ *     // skipOnSubmit doesn't exist
  *     listenToFields: ['otherField']
  *   }
  *

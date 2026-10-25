@@ -7,7 +7,7 @@ title: HandleSubmitFn
 type HandleSubmitFn<TFormData> = () => Promise<FormValidationError<TFormData>[]>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:598](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L598)
+Defined in: [FormApi/FormApi.public.ts:605](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L605)
 
 Runs submission validation and submits current values when validation
 succeeds.

@@ -3,7 +3,7 @@ id: FormSubmitInvalidContext
 title: FormSubmitInvalidContext
 ---
 
-Defined in: [FormApi/FormApi.public.ts:213](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L213)
+Defined in: [FormApi/FormApi.public.ts:220](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L220)
 
 Context passed to `onSubmitInvalid` when a submission fails.
 
@@ -42,7 +42,7 @@ Library-managed. Do not specify explicitly.
 formApi: FormApi<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:220](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L220)
+Defined in: [FormApi/FormApi.public.ts:227](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L227)
 
 The form API handling the failed submission.
 
@@ -54,6 +54,6 @@ The form API handling the failed submission.
 value: TFormData;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:218](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L218)
+Defined in: [FormApi/FormApi.public.ts:225](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L225)
 
 The form values for the failed submission.

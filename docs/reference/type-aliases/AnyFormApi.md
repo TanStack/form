@@ -7,7 +7,7 @@ title: AnyFormApi
 type AnyFormApi = FormApi<any, any>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:536](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L536)
+Defined in: [FormApi/FormApi.public.ts:543](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L543)
 
 A core form API whose value and error types are erased.
 

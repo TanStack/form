@@ -42,6 +42,74 @@ describe('createFormHook', () => {
     expect(getByText('Shared field component')).toBeInTheDocument()
   })
 
+  it('provides field context to field components inside an ArrayField', async () => {
+    let renders = 0
+
+    function ItemCount({ field }: { field: FieldWithValue<Array<string>> }) {
+      return <span>Items: {field.value.length}</span>
+    }
+
+    const { fieldComponent } = getFormHookHelpers()
+    const { useAppForm } = createFormHook({
+      fieldComponents: { ItemCount: fieldComponent.strict(ItemCount, 'field') },
+      formComponents: {},
+    })
+
+    function Component() {
+      const form = useAppForm({
+        defaultValues: { tags: ['a', 'b'], group: { tags: ['c'] } },
+      })
+
+      return (
+        <>
+          <form.ArrayField name="tags">
+            {(field) => {
+              renders++
+              return (
+                <>
+                  <field.ItemCount />
+                  <button type="button" onClick={() => field.pushValue('c')}>
+                    Add
+                  </button>
+                </>
+              )
+            }}
+          </form.ArrayField>
+          <form.FormGroup name="group">
+            {(group) => (
+              <group.ArrayField name="tags">
+                {(field) => {
+                  renders++
+                  return <field.ItemCount />
+                }}
+              </group.ArrayField>
+            )}
+          </form.FormGroup>
+          <button
+            type="button"
+            onClick={() => {
+              form.setFieldValue('tags[0]', 'z')
+              form.setFieldValue('group.tags[0]', 'z')
+            }}
+          >
+            Update first
+          </button>
+        </>
+      )
+    }
+
+    const { getByText } = await render(<Component />)
+
+    expect(getByText('Items: 2')).toBeInTheDocument()
+    expect(getByText('Items: 1')).toBeInTheDocument()
+    await getByText('Add').click()
+    expect(getByText('Items: 3')).toBeInTheDocument()
+
+    const pushRenders = renders
+    await getByText('Update first').click()
+    expect(renders).toBe(pushRenders)
+  })
+
   it('supports nested field and form component trees', async () => {
     function FieldValue({ field }: { field: FieldWithValue<string> }) {
       return <span>Field value: {field.value}</span>

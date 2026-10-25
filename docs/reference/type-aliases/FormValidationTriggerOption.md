@@ -14,7 +14,7 @@ Defined in: [validation.public.ts:568](https://github.com/TanStack/form/blob/mai
 A client event with an optional condition, or the `'server'` event for a form validator.
 
 Server validation selects validators with a `'server'` trigger independently
-of `runOnSubmit`.
+of `skipOnSubmit`.
 
 ## Type Parameters
 

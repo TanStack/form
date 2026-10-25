@@ -1,5 +1,58 @@
 # @tanstack/form-core
 
+## 2.0.0-alpha.3
+
+### Major Changes
+
+- Release the first alpha of TanStack Form v2.
+
+### Minor Changes
+
+- [#2419](https://github.com/TanStack/form/pull/2419) [`584fcd9`](https://github.com/TanStack/form/commit/584fcd960a02590fe17a56fdd0648c50a5d584d6) - Restore `field.replaceValue()` and add `form.replaceFieldValue()` for replacing an array element in place
+
+- Feature: Specify default options for `createFormHook`
+
+- [#2426](https://github.com/TanStack/form/pull/2426) [`395d61c`](https://github.com/TanStack/form/commit/395d61ccec8ed6d7ee75b0e00e6196909e866cb7) - BREAKING: `schemaOutputs` no longer exists. It is superceded by `validatorOutputs`. This is only a name change, the schema's result is the same as before
+
+  `validatorOutputs` now allows a callback validator to specify data that the submit function should know. Schemas do this
+  automatically, but now you can do it manually as well:
+  `run: ({ createOutput }) => createOutput('This is not a validation error and onSubmit can use this')`
+
+  The current map is:
+
+  | Validator                  | `onSubmit: ({ validatorOutputs }) => ...` |
+  | -------------------------- | ----------------------------------------- |
+  | Schema                     | Schema's output data                      |
+  | `createOutput(X)`          | `X`                                       |
+  | Default callback validator | `undefined`                               |
+  | Validation error           | N/A, `onSubmit` doesn't run               |
+
+- [#2365](https://github.com/TanStack/form/pull/2365) [`f8bbc25`](https://github.com/TanStack/form/commit/f8bbc25affcf5560b1da0c9c357fd62ef2108dd9) - Feat: Field groups may now omit identity bindings like `fields={{ a: 'a' }}`
+
+### Patch Changes
+
+- [#2436](https://github.com/TanStack/form/pull/2436) [`a679245`](https://github.com/TanStack/form/commit/a679245889285779747444c2e64de5473aacc4db) - `onSubmit` now has access to `createErrorMap`
+
+- Refactor: Adapter `formOptions`/`appFormOptions` no longer shim the core types and runtime.
+
+  BREAKING: `formOptions.looseSchema` and `formOptions.strictSchema` now require a schema as
+  first parameter. This locks down inference to get the best type safety out of it vs. the options object alone.
+
+  Fix: `formOptions.looseSchema` now allows `defaultValues` to omit properties instead of
+  requiring them to be explicitly undefined.
+
+- Docs: Add JSDoc to code and API sections to website
+
+- Fix: Schema output type now properly guards against dynamically enabled validators
+
+- Fix: Subscription selectors now infer tuple return values without requiring `as const`.
+
+- Refactor: Use stable validator identity instead of index
+
+- Refactor: Use stable listener identity instead of index
+
+- Refactor: Store Form Groups on trie nodes instead of the form instance
+
 ## 2.0.0-alpha.2
 
 ### Minor Changes

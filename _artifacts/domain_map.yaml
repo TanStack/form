@@ -433,7 +433,7 @@ skill_candidates:
       - 'ReactFormType splitting reduces nesting in one known form; AppForm reduces repeated field JSX; field groups cover sections reused across different forms or paths.'
       - 'Prefer form-level errorVisibility callbacks over repeated local showErrors checks.'
       - 'Use helper functions when a callback or validator config deserves a semantic name that preserves intent.'
-      - 'Use comments or JSDoc on named helpers to explain workflow behavior, trigger timing, debounce, bailIfInvalid, runOnSubmit, or rewardEarlyPunishLate policy.'
+      - 'Use comments or JSDoc on named helpers to explain workflow behavior, trigger timing, debounce, bailIfInvalid, skipOnSubmit, or rewardEarlyPunishLate policy.'
       - 'Keep reusable visibility policies value-agnostic unless they are intentionally tied to one form shape; use inline callbacks when typed values are required.'
     failure_modes:
       - name: split_form_type_written_by_hand
@@ -455,7 +455,7 @@ skill_candidates:
           - packages/form-core/tests/validation.test-d.ts
           - examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx
       - name: duplicated_validator_config_without_intent
-        symptom: 'Trigger, debounce, runOnSubmit, or bailIfInvalid config is copied without explaining the intended workflow.'
+        symptom: 'Trigger, debounce, skipOnSubmit, or bailIfInvalid config is copied without explaining the intended workflow.'
         correction: 'Extract a named createValidator/createValidators helper and document the behavior intent.'
         evidence:
           - packages/form-core/tests/validation.test.ts
@@ -589,7 +589,7 @@ skill_candidates:
           - packages/form-core/src/standardSchema.lib.ts
           - packages/form-core/tests/validation.test.ts
       - name: duplicated_validator_policy
-        symptom: 'The same triggers, debounce, runOnSubmit, or bailIfInvalid choices are copied across validators with no explanation.'
+        symptom: 'The same triggers, debounce, skipOnSubmit, or bailIfInvalid choices are copied across validators with no explanation.'
         correction: 'Extract a named createValidator/createValidators helper when the policy has semantic meaning, and document why that behavior exists.'
         evidence:
           - packages/form-core/tests/validation.test.ts
@@ -705,7 +705,7 @@ skill_candidates:
       - 'Reusable policies can use createErrorVisibility but only receive unknown form values.'
       - 'Helper functions mainly serve to give a semantic name to a callback or validator config.'
       - 'Named reusable policies are good places for JSDoc or comments that explain why errors appear at that moment.'
-      - 'Reusable validator configs are useful when they explain trigger timing, bailIfInvalid, debounce, runOnSubmit, or rewardEarlyPunishLate behavior.'
+      - 'Reusable validator configs are useful when they explain trigger timing, bailIfInvalid, debounce, skipOnSubmit, or rewardEarlyPunishLate behavior.'
       - 'Inline callbacks can use typed form values from the consuming form.'
       - 'Visibility callbacks see pre-filter meta, not visible errors or validity.'
       - 'Group submission attempts are scoped to the nearest group.'

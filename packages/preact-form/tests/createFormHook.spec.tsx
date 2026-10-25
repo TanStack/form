@@ -1,6 +1,7 @@
 import { render } from 'vitest-browser-preact'
 import { describe, expect, it, vi } from 'vitest'
-import { createFormHook } from '../src'
+import { createFormHook, getFormHookHelpers } from '../src'
+import type { FieldWithValue } from '../src'
 
 describe('createFormHook defaults', () => {
   it('applies form, field, and form group defaults through public components', async () => {
@@ -149,5 +150,73 @@ describe('createFormHook defaults', () => {
 
     await view.getByRole('button', { name: 'Submit group' }).click()
     await vi.waitFor(() => expect(onSubmitInvalid).toHaveBeenCalledOnce())
+  })
+
+  it('provides field context to field components inside an ArrayField', async () => {
+    let renders = 0
+
+    function ItemCount({ field }: { field: FieldWithValue<Array<string>> }) {
+      return <span>Items: {field.value.length}</span>
+    }
+
+    const { fieldComponent } = getFormHookHelpers()
+    const { useAppForm } = createFormHook({
+      fieldComponents: { ItemCount: fieldComponent.strict(ItemCount, 'field') },
+      formComponents: {},
+    })
+
+    function Component() {
+      const form = useAppForm({
+        defaultValues: { tags: ['a', 'b'], group: { tags: ['c'] } },
+      })
+
+      return (
+        <>
+          <form.ArrayField name="tags">
+            {(field) => {
+              renders++
+              return (
+                <>
+                  <field.ItemCount />
+                  <button type="button" onClick={() => field.pushValue('c')}>
+                    Add
+                  </button>
+                </>
+              )
+            }}
+          </form.ArrayField>
+          <form.FormGroup name="group">
+            {(group) => (
+              <group.ArrayField name="tags">
+                {(field) => {
+                  renders++
+                  return <field.ItemCount />
+                }}
+              </group.ArrayField>
+            )}
+          </form.FormGroup>
+          <button
+            type="button"
+            onClick={() => {
+              form.setFieldValue('tags[0]', 'z')
+              form.setFieldValue('group.tags[0]', 'z')
+            }}
+          >
+            Update first
+          </button>
+        </>
+      )
+    }
+
+    const view = render(<Component />)
+
+    expect(view.getByText('Items: 2')).toBeInTheDocument()
+    expect(view.getByText('Items: 1')).toBeInTheDocument()
+    await view.getByText('Add').click()
+    expect(view.getByText('Items: 3')).toBeInTheDocument()
+
+    const pushRenders = renders
+    await view.getByText('Update first').click()
+    expect(renders).toBe(pushRenders)
   })
 })

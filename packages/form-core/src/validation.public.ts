@@ -485,7 +485,7 @@ export type ClientValidationTriggerOption<
  * A client event with an optional condition, or the `'server'` event for a form validator.
  *
  * Server validation selects validators with a `'server'` trigger independently
- * of `runOnSubmit`.
+ * of `skipOnSubmit`.
  *
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
  * @typeParam TValue - Library-managed. Do not specify explicitly.

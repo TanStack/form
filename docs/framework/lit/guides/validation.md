@@ -55,7 +55,7 @@ Additional controls include:
 
 - `runOnMount`: run once when the form is constructed or when a field or form
   group first mounts.
-- `runOnSubmit`: disable or conditionally enable submit-time execution.
+- `skipOnSubmit`: conditionally skip submit-time execution.
 - `triggerDebounceMs`: debounce change and blur execution.
 - `bailIfInvalid`: skip this and subsequent validators when an earlier one
   failed.

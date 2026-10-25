@@ -124,7 +124,7 @@ export const validateAfterBlurThenWhileInvalid = createValidator({
 })
 ```
 
-Use helper configs when trigger timing, debounce, `bailIfInvalid`, or `runOnSubmit` is a reusable policy.
+Use helper configs when trigger timing, debounce, `bailIfInvalid`, or `skipOnSubmit` is a reusable policy.
 
 ## Common Mistakes
 

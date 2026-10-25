@@ -86,6 +86,7 @@ title: "@tanstack/form-core"
 - [CreatedValidator](type-aliases/CreatedValidator.md)
 - [CreateErrorMapFn](type-aliases/CreateErrorMapFn.md)
 - [CreateOutputFn](type-aliases/CreateOutputFn.md)
+- [CreateSubmitErrorMapFn](type-aliases/CreateSubmitErrorMapFn.md)
 - [CreateValidationErrorFn](type-aliases/CreateValidationErrorFn.md)
 - [DeepKeys](type-aliases/DeepKeys.md)
 - [DeepKeysWhereValueIncludes](type-aliases/DeepKeysWhereValueIncludes.md)

@@ -12,7 +12,7 @@ Defined in: [validation.public.ts:1389](https://github.com/TanStack/form/blob/ma
 Infers server validation output slots in form validator configuration order.
 
 Validators without a `'server'` trigger have `undefined` slots. Server
-selection is independent of `runOnSubmit`.
+selection is independent of `skipOnSubmit`.
 
 ## Type Parameters
 

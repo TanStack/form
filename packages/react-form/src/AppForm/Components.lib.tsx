@@ -34,10 +34,11 @@ type AnyFieldComponent = FunctionComponent<
 export function createFieldWithContext(
   form: InternalReactFormApi,
   scope: FieldOptionsScope,
+  useFieldSubscription = useValueFieldSubscription,
 ) {
   const TanStackFormField: AnyFieldComponent = (props) => {
     const fieldApi = useField({ ...props, form }, scope)
-    const field = useValueFieldSubscription(fieldApi)
+    const field = useFieldSubscription(fieldApi)
 
     return (
       // eslint-disable-next-line @eslint-react/no-context-provider

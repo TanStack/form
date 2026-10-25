@@ -278,20 +278,20 @@ bailing:
 
 Useful translations:
 
-| v1                                    | v2                                                                               |
-| ------------------------------------- | -------------------------------------------------------------------------------- |
-| `validators.onMount`                  | validator with `runOnMount: true`                                                |
-| `validators.onChange`                 | validator with `triggers: ['change']`                                            |
-| `validators.onBlur`                   | validator with `triggers: ['blur']`                                              |
-| `validators.onSubmit`                 | validator with `triggers: []`, or rely on submit running validators by default   |
-| `onChangeAsync`                       | async `run` with `triggers: ['change']`                                          |
-| `onChangeAsyncDebounceMs`             | `triggerDebounceMs`                                                              |
-| `onChangeListenTo` / `onBlurListenTo` | `watchFields`                                                                    |
-| `validationLogic: revalidateLogic()`  | migrate to explicit `triggers`, `when`, `runOnSubmit`, and `bailIfInvalid` rules |
+| v1                                    | v2                                                                                |
+| ------------------------------------- | --------------------------------------------------------------------------------- |
+| `validators.onMount`                  | validator with `runOnMount: true`                                                 |
+| `validators.onChange`                 | validator with `triggers: ['change']`                                             |
+| `validators.onBlur`                   | validator with `triggers: ['blur']`                                               |
+| `validators.onSubmit`                 | validator with `triggers: []`, or rely on submit running validators by default    |
+| `onChangeAsync`                       | async `run` with `triggers: ['change']`                                           |
+| `onChangeAsyncDebounceMs`             | `triggerDebounceMs`                                                               |
+| `onChangeListenTo` / `onBlurListenTo` | `watchFields`                                                                     |
+| `validationLogic: revalidateLogic()`  | migrate to explicit `triggers`, `when`, `skipOnSubmit`, and `bailIfInvalid` rules |
 
 Submission is separate from the `triggers` list: every validator runs during
 submission by default. An empty `triggers: []` therefore means "no change or
-blur validation, but still validate on submit." Set `runOnSubmit: false` when a
+blur validation, but still validate on submit." Set `skipOnSubmit: true` when a
 validator must not run during client submission; do not add `'submit'` to
 `triggers`.
 
@@ -317,7 +317,7 @@ validators={[
 ```
 
 Predicate callbacks are scope-aware. A `when` callback, a function-valued
-`runOnSubmit`, or a function-valued `triggerDebounceMs` receives `scope` and
+`skipOnSubmit`, or a function-valued `triggerDebounceMs` receives `scope` and
 `formApi`; field predicates receive the field being validated as `fieldApi`,
 while group predicates also receive `groupApi`. For form and group predicates,
 an optional `fieldApi` is the field that triggered validation.
@@ -375,7 +375,7 @@ useForm({
 The form's `value` remains its editable input state. When a Standard Schema
 validator runs successfully during submission, its parsed output is available
 in `onSubmit` at the corresponding `schemaOutputs` index. Non-schema entries
-are `undefined`. Validators with literal `runOnSubmit: false` are skipped during
+are `undefined`. Validators with literal `skipOnSubmit: true` are skipped during
 submission, and their slots are typed as `undefined`. Use the parsed entry when
 an endpoint expects the schema's output type.
 
@@ -1000,7 +1000,7 @@ Key changes:
 - Share common form configuration with `formOptions(...)`.
 - Return the `createErrorMap()` map directly from framework/server validators
   when routing form and field errors.
-- Combine `triggers: ['server']` with `runOnSubmit: false` for a form validator
+- Combine `triggers: ['server']` with `skipOnSubmit: true` for a form validator
   that must run only on the server. Server-triggered validators otherwise still
   run during client submission because submission is enabled by default.
 - Next.js and Remix adapters, and the Start adapter when no callback override is
@@ -1029,7 +1029,7 @@ In `formOpts`, a server-only validator returns its routed error map directly:
 ```tsx
 {
   triggers: ['server'],
-  runOnSubmit: false,
+  skipOnSubmit: true,
   run: ({ value, createErrorMap }) => {
     const errors = createErrorMap()
 

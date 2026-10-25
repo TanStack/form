@@ -3,7 +3,7 @@ id: FormResetOptions
 title: FormResetOptions
 ---
 
-Defined in: [FormApi/FormApi.public.ts:547](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L547)
+Defined in: [FormApi/FormApi.public.ts:554](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L554)
 
 Options controlling whether `reset(values)` replaces the default-value
 baseline.
@@ -22,7 +22,7 @@ formApi.reset(savedValues, { updateDefaultValues: false })
 optional updateDefaultValues?: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:577](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L577)
+Defined in: [FormApi/FormApi.public.ts:584](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L584)
 
 Whether `reset(values)` should also update the form's `defaultValues`
 baseline.

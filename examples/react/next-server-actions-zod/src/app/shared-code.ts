@@ -20,7 +20,7 @@ export const formOpts = formOptions.strictSchema(clientSchema, {
     },
     {
       triggers: ['server'],
-      runOnSubmit: false,
+      skipOnSubmit: true,
       run: serverSchema,
     },
   ],
