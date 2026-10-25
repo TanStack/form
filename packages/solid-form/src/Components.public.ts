@@ -225,7 +225,7 @@ export interface SolidFormGroupFieldComponent<
       TFieldName,
       DeepValue<TGroupValue, TFieldName>,
       TFieldValidators,
-      TGroupError['selfError'],
+      TGroupError['subfieldError'],
       TFormData,
       TFormError,
       TFieldComponents
@@ -253,7 +253,7 @@ export interface SolidFormGroupArrayFieldComponent<
       TFieldName,
       DeepValue<TGroupValue, TFieldName>,
       TFieldValidators,
-      TGroupError['selfError'],
+      TGroupError['subfieldError'],
       TFormData,
       TFormError,
       TFieldComponents

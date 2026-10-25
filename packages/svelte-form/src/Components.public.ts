@@ -216,7 +216,7 @@ export type SvelteFormGroupFieldComponent<
       TFieldName,
       DeepValue<TGroupValue, TFieldName>,
       TFieldValidators,
-      TGroupError['selfError'],
+      TGroupError['subfieldError'],
       TFormData,
       TFormError,
       TFieldComponents
@@ -246,7 +246,7 @@ export type SvelteFormGroupArrayFieldComponent<
       TFieldName,
       DeepValue<TGroupValue, TFieldName>,
       TFieldValidators,
-      TGroupError['selfError'],
+      TGroupError['subfieldError'],
       TFormData,
       TFormError,
       TFieldComponents

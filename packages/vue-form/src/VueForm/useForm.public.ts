@@ -1,8 +1,8 @@
 import { initializeForm, useInternalForm } from './VueFormApi.lib'
 import type {
+  AnyFormOptions,
   FormOptions,
-  FormValidators,
-  ToFormErrorTypes,
+  GetFormErrorTypes,
 } from '@tanstack/form-core'
 import type {
   AnyVueFormComponentMap,
@@ -12,17 +12,24 @@ import type { VueFormApi } from './formApiTypes.public'
 
 export type UseFormHook<in out TComponents extends AnyVueFormComponentMap> = <
   TFormData,
-  const TFormValidators extends FormValidators<TFormData>,
+  const TValidatorConfig extends unknown[],
+  TValidators,
   TSubmitReturn,
 >(
-  options: FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>,
+  options: FormOptions<
+    TFormData,
+    TValidatorConfig,
+    TValidators,
+    TSubmitReturn,
+    unknown
+  >,
 ) => VueFormApi<
   TFormData,
-  ToFormErrorTypes<TFormValidators, TSubmitReturn>,
+  GetFormErrorTypes<TValidators, TSubmitReturn>,
   TComponents
 >
 
-function useFormHook(options: FormOptions<any, any, any, unknown>) {
+function useFormHook(options: AnyFormOptions) {
   return useInternalForm(options, initializeForm)
 }
 
