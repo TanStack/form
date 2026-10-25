@@ -5,7 +5,6 @@ import { setInternalTanStackCookie } from './utils'
 import type {
   DeepKeysWhereValueIncludes,
   FormOptions,
-  FormValidators,
   ServerFormState,
   ServerValidateFailure,
   ServerValidateResult,
@@ -26,7 +25,7 @@ export interface StartServerValidateContext<TFormData = any> {
 
 export type StartServerValidateResult<
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
+  TFormValidators,
   TOnInvalidReturn = never,
   TOnValidReturn = never,
 > =
@@ -40,8 +39,8 @@ export interface StartServerValidateOptions<
 > {
   info?: FormDataInfo
   onInvalid?: (args: {
-    result: ServerValidateFailure<any, any>
-    serverState: ServerFormState<any, any>
+    result: ServerValidateFailure<any>
+    serverState: ServerFormState<any>
   }) => TOnInvalidReturn | Promise<TOnInvalidReturn>
   onValid?: (args: {
     result: ServerValidateSuccess<any, any>
@@ -55,7 +54,7 @@ export interface StartCreateServerValidateOptions<TFormData> {
 
 export type StartServerValidateAction<
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
+  TFormValidators,
   TOnInvalidReturn = never,
   TOnValidReturn = never,
 > = {
@@ -69,7 +68,7 @@ export type StartServerValidateAction<
       TOnValidReturn
     >
   >
-  getFormData: () => Promise<ServerFormState<TFormData, TFormValidators>>
+  getFormData: () => Promise<ServerFormState<TFormData>>
 }
 
 export type StartCreateServerValidate<
@@ -77,10 +76,17 @@ export type StartCreateServerValidate<
   TOnValidReturn = never,
 > = <
   TFormData,
-  const TFormValidators extends FormValidators<TFormData>,
+  const TValidatorConfig extends unknown[],
+  TFormValidators,
   TSubmitReturn,
 >(
-  formOptions: FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>,
+  formOptions: FormOptions<
+    TFormData,
+    TValidatorConfig,
+    TFormValidators,
+    TSubmitReturn,
+    unknown
+  >,
   options?: StartCreateServerValidateOptions<TFormData>,
 ) => StartServerValidateAction<
   TFormData,
@@ -158,11 +164,13 @@ export function start<TOnInvalidReturn = never, TOnValidReturn = never>(
 ) {
   const createServerValidate = <
     TFormData,
-    const TFormValidators extends FormValidators<TFormData>,
+    const TValidatorConfig extends unknown[],
+    TFormValidators,
     TSubmitReturn,
   >(
     formOptions: FormOptions<
       TFormData,
+      TValidatorConfig,
       TFormValidators,
       TSubmitReturn,
       unknown
@@ -217,7 +225,7 @@ export function start<TOnInvalidReturn = never, TOnValidReturn = never>(
 
     return Object.assign(validate, {
       getFormData: getFormData as unknown as () => Promise<
-        ServerFormState<TFormData, TFormValidators>
+        ServerFormState<TFormData>
       >,
     })
   }

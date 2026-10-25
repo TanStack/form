@@ -1,17 +1,13 @@
 import { decode } from 'decode-formdata'
 import { validateServerValues } from '@tanstack/form-core/internals'
 import type {
+  AnyFormOptions,
   FormOptions,
-  FormValidators,
-  ServerValidateFrameworkPlugin,
   ServerValidateResult,
 } from '@tanstack/form-core'
 import type { FormDataInfo } from 'decode-formdata'
 
-export type NextServerValidate<
-  TFormData,
-  TFormValidators extends FormValidators<TFormData>,
-> = (
+export type NextServerValidate<TFormData, TFormValidators> = (
   formData: FormData,
 ) => Promise<ServerValidateResult<TFormData, TFormValidators>>
 
@@ -21,11 +17,18 @@ export interface NextServerValidateOptions {
 
 type NextCreateServerValidate = <
   TFormData,
-  const TFormValidators extends FormValidators<TFormData>,
+  const TValidatorConfig extends unknown[],
+  TValidators,
   TSubmitReturn,
 >(
-  options: FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>,
-) => NextServerValidate<TFormData, TFormValidators>
+  options: FormOptions<
+    TFormData,
+    TValidatorConfig,
+    TValidators,
+    TSubmitReturn,
+    unknown
+  >,
+) => NextServerValidate<TFormData, TValidators>
 
 function decodeFormData<TFormData>(
   formData: FormData,
@@ -34,28 +37,15 @@ function decodeFormData<TFormData>(
   return (info ? decode(formData, info) : decode(formData)) as TFormData
 }
 
-export function next(
-  options: NextServerValidateOptions = {},
-): ServerValidateFrameworkPlugin<NextCreateServerValidate> {
+export function next(options: NextServerValidateOptions = {}) {
   return {
-    id: 'react-form-nextjs',
-    createServerValidate: <
-      TFormData,
-      const TFormValidators extends FormValidators<TFormData>,
-      TSubmitReturn,
-    >(
-      formOptions: FormOptions<
-        TFormData,
-        TFormValidators,
-        TSubmitReturn,
-        unknown
-      >,
-    ) => {
-      return async (formData) => {
-        const values = decodeFormData<TFormData>(formData, options.info)
+    id: 'react-form-nextjs' as const,
+    createServerValidate: ((formOptions: AnyFormOptions) => {
+      return async (formData: FormData) => {
+        const values = decodeFormData(formData, options.info)
 
         return validateServerValues(formOptions, values)
       }
-    },
+    }) satisfies NextCreateServerValidate,
   }
 }

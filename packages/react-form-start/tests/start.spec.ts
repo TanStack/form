@@ -48,7 +48,7 @@ const formOpts = formOptions({
         const errors = createErrorMap()
 
         if (!value.name.trim()) {
-          errors.fields.name = 'Name is required'
+          errors.fields.name = ['Name is required']
         }
 
         return errors
@@ -81,7 +81,7 @@ describe('start server validation persistence', () => {
           validatorIndex: 0,
           result: {
             fields: {
-              name: 'Name is required',
+              name: ['Name is required'],
             },
           },
         },
