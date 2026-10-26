@@ -307,6 +307,7 @@ interface FormValidatorRunner<TFormData, TFormEvents extends ValidatorEvents> {
    *
    * @default 'field'
    */
+  // TODO: This should probably apply to all validation errors, not only schema issues.
   fieldErrorTarget?: 'field' | 'field-and-self' | 'self'
   /**
    * If `true`, skips this validator and all later validators when earlier

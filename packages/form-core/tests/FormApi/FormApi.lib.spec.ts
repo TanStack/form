@@ -1,7 +1,179 @@
 import { describe, expect, it, vi } from 'vitest'
+import { z } from 'zod'
 import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
 import { formOptions } from '../../src'
 import { promiseWithResolvers } from '../test-utils'
+
+describe('InternalFormApi - fieldErrorTarget', () => {
+  const nameIssue = expect.objectContaining({
+    message: 'Name is required',
+    path: ['name'],
+  })
+
+  describe.each([
+    {
+      fieldErrorTarget: undefined,
+      formErrors: [],
+      fieldErrors: [nameIssue],
+    },
+    {
+      fieldErrorTarget: 'field',
+      formErrors: [],
+      fieldErrors: [nameIssue],
+    },
+    {
+      fieldErrorTarget: 'field-and-self',
+      formErrors: [nameIssue],
+      fieldErrors: [nameIssue],
+    },
+    {
+      fieldErrorTarget: 'self',
+      formErrors: [nameIssue],
+      fieldErrors: [],
+    },
+  ] as const)('target $fieldErrorTarget', (ctx) => {
+    const { fieldErrorTarget, formErrors, fieldErrors } = ctx
+
+    it('routes Standard Schema issues when a field changes', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: 'Alice' },
+        validators: [
+          {
+            run: z.object({ name: z.string().min(1, 'Name is required') }),
+            triggers: ['change'],
+            fieldErrorTarget,
+          },
+        ],
+      })
+      const field = form._getOrCreateFieldApi({ name: 'name' })
+      field._register()
+
+      field.handleChange('')
+
+      await expect
+        .poll(() => ({
+          formErrors: form.state.errors,
+          fieldErrors: field.errors,
+        }))
+        .toEqual({ formErrors, fieldErrors })
+      expect(form.state.isValid).toBe(false)
+    })
+
+    it('routes Standard Schema issues when the form is submitted', async () => {
+      const form = new InternalFormApi({
+        defaultValues: { name: '' },
+        validators: [
+          {
+            run: z.object({ name: z.string().min(1, 'Name is required') }),
+            fieldErrorTarget,
+          },
+        ],
+      })
+      const field = form._getOrCreateFieldApi({ name: 'name' })
+      field._register()
+
+      await form.handleSubmit()
+
+      expect(form.state.errors).toEqual(formErrors)
+      expect(field.errors).toEqual(fieldErrors)
+      expect(form.state.isValid).toBe(false)
+    })
+  })
+
+  it('routes Standard Schema mount issues to both the field and the form', async ({
+    onTestFinished,
+  }) => {
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          run: z.object({ name: z.string().min(1, 'Name is required') }),
+          triggers: ['mount'],
+          fieldErrorTarget: 'field-and-self',
+        },
+      ],
+    })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+    field._register()
+
+    const unmount = form.mount()
+    onTestFinished(unmount)
+
+    await expect.poll(() => form.state.errors).toEqual([nameIssue])
+    expect(field.errors).toEqual([nameIssue])
+  })
+
+  it('routes manually parsed schema mount issues only to the form with target self', ({
+    onTestFinished,
+  }) => {
+    const schema = z.object({ name: z.string().min(1, 'Name is required') })
+
+    const form = new InternalFormApi({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          run: ({ value, parseIssues }) => {
+            const result = schema.safeParse(value)
+            if (result.success) return
+            return parseIssues(result.error.issues)
+          },
+          triggers: ['mount'],
+          fieldErrorTarget: 'self',
+        },
+      ],
+    })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+    field._register()
+
+    const unmount = form.mount()
+    onTestFinished(unmount)
+
+    expect(form.state.errors).toEqual([nameIssue])
+    expect(field.errors).toEqual([])
+  })
+
+  it('reroutes errors after updates and restores field routing when the option is removed', async () => {
+    const schema = z.object({ name: z.string().min(1, 'Name is required') })
+
+    const options = formOptions({
+      defaultValues: { name: '' },
+      validators: [{ run: schema, triggers: ['change'] }],
+    })
+
+    const form = new InternalFormApi({
+      ...options,
+      validators: [
+        {
+          run: schema,
+          triggers: ['change'],
+          fieldErrorTarget: 'field-and-self',
+        },
+      ],
+    })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+    field._register()
+
+    await form.handleSubmit()
+    expect(form.state.errors).toEqual([nameIssue])
+    expect(field.errors).toEqual([nameIssue])
+
+    form._update({
+      ...options,
+      validators: [
+        { run: schema, triggers: ['change'], fieldErrorTarget: 'self' },
+      ],
+    })
+    await form.handleSubmit()
+    expect(form.state.errors).toEqual([nameIssue])
+    expect(field.errors).toEqual([])
+
+    form._update(options)
+    await form.handleSubmit()
+
+    expect(form.state.errors).toEqual([])
+    expect(field.errors).toEqual([nameIssue])
+  })
+})
 
 describe('InternalFormApi - constructor', () => {
   it('initializes default values with untouched, submittable state', () => {
