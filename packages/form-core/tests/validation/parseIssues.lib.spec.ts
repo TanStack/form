@@ -67,6 +67,10 @@ describe('parseIssuesFactory - fieldErrorTarget', () => {
       form: [nameIssue, formIssue, emailIssue],
       fields: {},
     })
+    // Apparently, toMatchObject() with {} is valid.
+    // Probably a good reason for that, but we need this
+    // to strictly match.
+    expect(result.fields).toEqual({})
   })
 
   it.each(['field', 'field-and-self', 'self'] as const)(
@@ -80,6 +84,10 @@ describe('parseIssuesFactory - fieldErrorTarget', () => {
         form: [],
         fields: {},
       })
+      // Apparently, toMatchObject() with {} is valid.
+      // Probably a good reason for that, but we need this
+      // to strictly match.
+      expect(result.fields).toEqual({})
     },
   )
 })
