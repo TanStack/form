@@ -520,3 +520,120 @@ describe('FieldsMap', () => {
     expectTypeOf<TopLevelObject>().toBeNever()
   })
 })
+
+describe('self-referencing types', () => {
+  // https://github.com/TanStack/form/issues/1474
+  type JsonData =
+    | string
+    | number
+    | boolean
+    | null
+    | JsonData[]
+    | { [key: string]: JsonData }
+
+  type JsonForm = { name: string; data: JsonData }
+
+  // https://github.com/TanStack/form/issues/1484
+  type FieldValues = {
+    [key: string]:
+      | string
+      | string[]
+      | number
+      | boolean
+      | null
+      | FieldValues
+      | FieldValues[]
+  }
+
+  it('should stop expanding a recursive union at the point where it repeats', () => {
+    type Keys = DeepKeys<JsonForm>
+
+    expectTypeOf<'name'>().toExtend<Keys>()
+    expectTypeOf<'data'>().toExtend<Keys>()
+    expectTypeOf<'data[0]'>().toExtend<Keys>()
+    expectTypeOf<'data.foo'>().toExtend<Keys>()
+    expectTypeOf<'data.foo[0].bar'>().toExtend<Keys>()
+    expectTypeOf<'data[0].foo.bar[1]'>().toExtend<Keys>()
+    expectTypeOf<'unknown'>().not.toExtend<Keys>()
+    expectTypeOf<'name.foo'>().not.toExtend<Keys>()
+  })
+
+  it('should accept consecutive array indexes below the point where a recursive array repeats', () => {
+    type Keys = DeepKeys<JsonForm>
+
+    expectTypeOf<'data[0][0]'>().toExtend<Keys>()
+    expectTypeOf<'data[0][0][1]'>().toExtend<Keys>()
+    expectTypeOf<'data[0][0].foo'>().toExtend<Keys>()
+    expectTypeOf<'data[0][0].foo[1][2].bar'>().toExtend<Keys>()
+    expectTypeOf<'data.foo[0][0]'>().toExtend<Keys>()
+    expectTypeOf<'data[0].foo[0][1]'>().toExtend<Keys>()
+    expectTypeOf<'data[0]foo'>().not.toExtend<Keys>()
+    expectTypeOf<'data[foo]'>().not.toExtend<Keys>()
+    expectTypeOf<'name[0]'>().not.toExtend<Keys>()
+  })
+
+  it('should resolve the value of a path with consecutive array indexes', () => {
+    expectTypeOf<DeepValue<JsonForm, 'data[0][0]'>>().not.toBeNever()
+    expectTypeOf<DeepValue<JsonForm, 'data[0][0].foo'>>().not.toBeNever()
+  })
+
+  it('should stop expanding a recursive index signature at the point where it repeats', () => {
+    expectTypeOf<DeepKeys<FieldValues>>().toEqualTypeOf<string>()
+  })
+
+  it('should resolve the value of a path through a recursive type', () => {
+    expectTypeOf<DeepValue<JsonForm, 'name'>>().toEqualTypeOf<string>()
+    expectTypeOf<DeepValue<JsonForm, 'data'>>().toEqualTypeOf<JsonData>()
+    expectTypeOf<DeepValue<JsonForm, 'data.foo'>>().toEqualTypeOf<JsonData>()
+    expectTypeOf<
+      DeepValue<JsonForm, 'data.foo[0].bar'>
+    >().toEqualTypeOf<JsonData>()
+    expectTypeOf<DeepValue<FieldValues, 'foo'>>().not.toBeNever()
+  })
+
+  it('should not treat a repeated non-recursive type as recursive', () => {
+    type Address = { street: string; geo: { lat: number; lng: number } }
+    type Shared = {
+      home: Address
+      work: Address
+      history: Address[]
+      pair: [Address, Address]
+    }
+
+    expectTypeOf<DeepKeys<Shared>>().toEqualTypeOf<
+      | 'home'
+      | 'home.street'
+      | 'home.geo'
+      | 'home.geo.lat'
+      | 'home.geo.lng'
+      | 'work'
+      | 'work.street'
+      | 'work.geo'
+      | 'work.geo.lat'
+      | 'work.geo.lng'
+      | 'history'
+      | `history[${number}]`
+      | `history[${number}].street`
+      | `history[${number}].geo`
+      | `history[${number}].geo.lat`
+      | `history[${number}].geo.lng`
+      | 'pair'
+      | 'pair[0]'
+      | 'pair[0].street'
+      | 'pair[0].geo'
+      | 'pair[0].geo.lat'
+      | 'pair[0].geo.lng'
+      | 'pair[1]'
+      | 'pair[1].street'
+      | 'pair[1].geo'
+      | 'pair[1].geo.lat'
+      | 'pair[1].geo.lng'
+    >()
+  })
+
+  it('should keep optional-only objects nested in a similar object', () => {
+    type Weak = { a?: string; b?: { a?: string } }
+
+    expectTypeOf<DeepKeys<Weak>>().toEqualTypeOf<'a' | 'b' | 'b.a'>()
+  })
+})
