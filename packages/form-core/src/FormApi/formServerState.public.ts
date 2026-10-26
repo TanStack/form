@@ -49,6 +49,7 @@ export interface ServerValidateSuccess<TFormData, TValidators> {
   success: true
   values: TFormData
   validatorOutputs: ServerValidatorOutputs<TValidators>
+  serverState: ServerFormState<TFormData>
 }
 
 export interface ServerValidateFailure<TFormData> {

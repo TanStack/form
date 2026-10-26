@@ -1,238 +1,50 @@
-import { decode } from 'decode-formdata'
-import { validateServerValues } from '@tanstack/form-core/internals'
-import { getFormData } from './getFormData'
-import { setInternalTanStackCookie } from './utils'
-import type {
-  DeepKeysWhereValueIncludes,
-  FormOptions,
-  ServerFormState,
-  ServerValidateFailure,
-  ServerValidateResult,
-  ServerValidateSuccess,
-} from '@tanstack/form-core'
-import type { FormDataInfo } from 'decode-formdata'
+import { createServerFn } from '@tanstack/react-start'
+import {
+  deleteCookie,
+  getCookie,
+  setCookie,
+} from '@tanstack/react-start/server'
+import { parse, stringify } from 'devalue'
+import type { TanStackFormServerPlugin } from '@tanstack/form-core'
 
-export { getFormData }
+const INTERNALS_COOKIE_NAME = '_tanstack_form_internals'
 
-export type TypedFormDataInfo<TFormData> = Omit<FormDataInfo, 'numbers'> & {
-  numbers?: Array<DeepKeysWhereValueIncludes<TFormData, number>>
+function getCookieName(formId: string): string {
+  return `${INTERNALS_COOKIE_NAME}_${encodeURIComponent(formId)}`
 }
 
-export interface StartServerValidateContext<TFormData = any> {
-  formData: FormData
-  info?: TypedFormDataInfo<TFormData>
-}
+const readServerState = createServerFn({
+  strict: { output: false },
+})
+  .validator((formId: string) => {
+    if (typeof formId !== 'string') {
+      throw new TypeError('Expected a form ID')
+    }
 
-export type StartServerValidateResult<
-  TFormData,
-  TFormValidators,
-  TOnInvalidReturn = never,
-  TOnValidReturn = never,
-> =
-  | ServerValidateResult<TFormData, TFormValidators>
-  | TOnInvalidReturn
-  | TOnValidReturn
+    return formId
+  })
+  .handler(async ({ data: formId }) => {
+    const cookieName = getCookieName(formId)
+    const cookie = getCookie(cookieName)
+    deleteCookie(cookieName)
 
-export interface StartServerValidateOptions<
-  TOnInvalidReturn = never,
-  TOnValidReturn = never,
+    if (cookie) {
+      return parse(cookie)
+    }
+    return undefined
+  })
+
+export function start(): TanStackFormServerPlugin<
+  { formData: FormData },
+  FormData
 > {
-  info?: FormDataInfo
-  onInvalid?: (args: {
-    result: ServerValidateFailure<any>
-    serverState: ServerFormState<any>
-  }) => TOnInvalidReturn | Promise<TOnInvalidReturn>
-  onValid?: (args: {
-    result: ServerValidateSuccess<any, any>
-  }) => TOnValidReturn | Promise<TOnValidReturn>
-}
-
-export interface StartCreateServerValidateOptions<TFormData> {
-  info?: TypedFormDataInfo<TFormData>
-  inferFormDataInfo?: boolean
-}
-
-export type StartServerValidateAction<
-  TFormData,
-  TFormValidators,
-  TOnInvalidReturn = never,
-  TOnValidReturn = never,
-> = {
-  (
-    context: StartServerValidateContext<TFormData>,
-  ): Promise<
-    StartServerValidateResult<
-      TFormData,
-      TFormValidators,
-      TOnInvalidReturn,
-      TOnValidReturn
-    >
-  >
-  getFormData: () => Promise<ServerFormState<TFormData>>
-}
-
-export type StartCreateServerValidate<
-  TOnInvalidReturn = never,
-  TOnValidReturn = never,
-> = <
-  TFormData,
-  const TValidatorConfig extends unknown[],
-  TFormValidators,
-  TSubmitReturn,
->(
-  formOptions: FormOptions<
-    TFormData,
-    TValidatorConfig,
-    TFormValidators,
-    TSubmitReturn,
-    unknown
-  >,
-  options?: StartCreateServerValidateOptions<TFormData>,
-) => StartServerValidateAction<
-  TFormData,
-  TFormValidators,
-  TOnInvalidReturn,
-  TOnValidReturn
->
-
-function decodeFormData<TFormData>(
-  formData: FormData,
-  info: FormDataInfo | undefined,
-): TFormData {
-  return (info ? decode(formData, info) : decode(formData)) as TFormData
-}
-
-function isPlainObject(value: unknown): value is Record<string, unknown> {
-  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
-    return false
-  }
-
-  const prototype = Object.getPrototypeOf(value)
-  return prototype === Object.prototype || prototype === null
-}
-
-function inferFormDataInfo(defaultValues: unknown): FormDataInfo | undefined {
-  const numbers: Array<string> = []
-
-  const visit = (value: unknown, path: string) => {
-    if (typeof value === 'number') {
-      if (path) numbers.push(path)
-      return
-    }
-
-    if (!isPlainObject(value)) return
-
-    for (const [key, child] of Object.entries(value)) {
-      visit(child, path ? `${path}.${key}` : key)
-    }
-  }
-
-  visit(defaultValues, '')
-
-  return numbers.length ? { numbers } : undefined
-}
-
-function mergeFormDataInfo(
-  ...infos: Array<FormDataInfo | undefined>
-): FormDataInfo | undefined {
-  let result: Record<string, unknown> | undefined
-
-  for (const info of infos) {
-    if (!info) continue
-
-    for (const [key, value] of Object.entries(info)) {
-      if (value === undefined) continue
-
-      result ??= {}
-
-      const previous = result[key]
-      if (Array.isArray(previous) && Array.isArray(value)) {
-        result[key] = Array.from(new Set([...previous, ...value]))
-      } else if (Array.isArray(value)) {
-        result[key] = Array.from(new Set(value))
-      } else {
-        result[key] = value
-      }
-    }
-  }
-
-  return result
-}
-
-export function start<TOnInvalidReturn = never, TOnValidReturn = never>(
-  options: StartServerValidateOptions<TOnInvalidReturn, TOnValidReturn> = {},
-) {
-  const createServerValidate = <
-    TFormData,
-    const TValidatorConfig extends unknown[],
-    TFormValidators,
-    TSubmitReturn,
-  >(
-    formOptions: FormOptions<
-      TFormData,
-      TValidatorConfig,
-      TFormValidators,
-      TSubmitReturn,
-      unknown
-    >,
-    formValidateOptions?: StartCreateServerValidateOptions<TFormData>,
-  ): StartServerValidateAction<
-    TFormData,
-    TFormValidators,
-    TOnInvalidReturn,
-    TOnValidReturn
-  > => {
-    const inferredInfo =
-      formValidateOptions?.inferFormDataInfo === false
-        ? undefined
-        : inferFormDataInfo(formOptions.defaultValues)
-
-    const validate = async (
-      context: StartServerValidateContext<TFormData>,
-    ): Promise<
-      StartServerValidateResult<
-        TFormData,
-        TFormValidators,
-        TOnInvalidReturn,
-        TOnValidReturn
-      >
-    > => {
-      const values = decodeFormData<TFormData>(
-        context.formData,
-        mergeFormDataInfo(
-          inferredInfo,
-          options.info,
-          formValidateOptions?.info,
-          context.info,
-        ),
-      )
-
-      const result = await validateServerValues(formOptions, values)
-
-      if (result.success) {
-        return options.onValid ? options.onValid({ result }) : result
-      }
-
-      setInternalTanStackCookie(result.serverState)
-
-      return options.onInvalid
-        ? options.onInvalid({
-            result,
-            serverState: result.serverState,
-          })
-        : result
-    }
-
-    return Object.assign(validate, {
-      getFormData: getFormData as unknown as () => Promise<
-        ServerFormState<TFormData>
-      >,
-    })
-  }
-
   return {
-    id: 'react-form-start' as const,
-    createServerValidate,
-    getFormData,
+    getFormData: ({ formData }) => formData,
+    persistServerState: {
+      setState: (formId, serverState) => {
+        setCookie(getCookieName(formId), stringify(serverState))
+      },
+      readState: (formId) => readServerState({ data: formId }),
+    },
   }
 }

@@ -3,7 +3,7 @@ import { createOutput } from './validationOutput.lib'
 import { defaultInternalBaseFieldMeta } from './FieldApi/fieldState.lib'
 import { visitAllFormFields } from './FieldApi/fieldTraversal.lib'
 import { evaluate } from './utils.lib'
-import { runValidatorPipeline } from './validation'
+import { isValidationErrorMap, runValidatorPipeline } from './validation'
 import { createErrorMap } from './validation/createErrorMap.lib'
 import { parseIssuesFactory } from './validation/parseIssues.lib'
 import { devtools } from './devtoolsBridge.lib'
@@ -105,6 +105,7 @@ export function applyServerState<TFormData>(
   resetToServerState(form, serverState, defaultValues)
 }
 
+// TODO this is getting disgusting. Clean this up.
 export async function validateServerValues<
   TFormData,
   const TValidatorConfig extends unknown[],
@@ -127,6 +128,11 @@ export async function validateServerValues<
       success: true,
       values,
       validatorOutputs: [] as never,
+      serverState: {
+        values,
+        validationResults: [],
+        submissionAttempts: 1,
+      },
     }
   }
 
@@ -174,7 +180,9 @@ export async function validateServerValues<
     const validationResults = pipelineResult.results.map((result) => ({
       validatorIndex:
         validatorInstances?.indexOf(result.validatorInstance) ?? -1,
-      result: result.result,
+      result: isValidationErrorMap(result.result)
+        ? { form: result.result.form, fields: result.result.fields }
+        : result.result,
       output: result.output,
       hasOutput: result.hasOutput,
     }))
@@ -194,6 +202,11 @@ export async function validateServerValues<
       success: true,
       values,
       validatorOutputs: validatorOutputs as never,
+      serverState: {
+        values,
+        validationResults: [],
+        submissionAttempts: 1,
+      },
     }
   } finally {
     validatorInstances?.forEach((instance) => instance.dispose())

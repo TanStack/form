@@ -190,6 +190,34 @@ describe('server validation', () => {
     ])
   })
 
+  it.each([
+    { scenario: 'omitted', validators: undefined },
+    { scenario: 'empty', validators: [] },
+  ])(
+    'returns server state when validators are $scenario',
+    async ({ validators }) => {
+      const options = formOptions({
+        defaultValues: { name: '' },
+        validators,
+      })
+
+      const result = expectServerValidateSuccess(
+        await validateServerValues(options, { name: 'Tony' }),
+      )
+
+      expect(result).toEqual({
+        success: true,
+        values: { name: 'Tony' },
+        validatorOutputs: [],
+        serverState: {
+          values: { name: 'Tony' },
+          validationResults: [],
+          submissionAttempts: 1,
+        },
+      })
+    },
+  )
+
   it('returns values and schema outputs when server validation succeeds', async () => {
     const setOutput = vi.spyOn(InternalValidatorInstance.prototype, 'setOutput')
     const options = formOptions({
@@ -213,6 +241,11 @@ describe('server validation', () => {
 
       expect(result.values).toEqual({ name: 'Tony' })
       expect(result.validatorOutputs).toEqual([{ nameLength: 4 }])
+      expect(result.serverState).toEqual({
+        values: { name: 'Tony' },
+        validationResults: [],
+        submissionAttempts: 1,
+      })
       expect(setOutput).not.toHaveBeenCalled()
     } finally {
       setOutput.mockRestore()
@@ -285,6 +318,74 @@ describe('server validation', () => {
         },
       },
     })
+  })
+
+  it('returns cloneable server state for error map helpers without mutating them', async () => {
+    const options = formOptions({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          triggers: ['server'],
+          run: ({ createErrorMap }) =>
+            Object.freeze(
+              createErrorMap({
+                form: 'Server form error',
+                fields: { name: 'Name is required' },
+              }),
+            ),
+        },
+      ],
+    })
+
+    const { serverState } = expectServerValidateFailure(
+      await validateServerValues(options, { name: '' }),
+    )
+    const restoredState = structuredClone(serverState)
+    const form = new InternalFormApi({ ...options, serverState: restoredState })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+
+    expect(restoredState).toEqual({
+      values: { name: '' },
+      validationResults: [
+        {
+          validatorIndex: 0,
+          result: {
+            form: ['Server form error'],
+            fields: { name: ['Name is required'] },
+          },
+          output: null,
+          hasOutput: false,
+        },
+      ],
+      submissionAttempts: 1,
+    })
+    expect(form.state.errors).toEqual([{ message: 'Server form error' }])
+    expect(field.errors).toEqual([{ message: 'Name is required' }])
+  })
+
+  it('preserves validation issue metadata named fields in server state', async () => {
+    const issue = {
+      message: 'Server form error',
+      fields: { reason: 'Rejected by the server' },
+    }
+    const options = formOptions({
+      defaultValues: { name: '' },
+      validators: [
+        {
+          triggers: ['server'],
+          run: () => issue,
+        },
+      ],
+    })
+
+    const { serverState } = expectServerValidateFailure(
+      await validateServerValues(options, { name: '' }),
+    )
+    const restoredState = structuredClone(serverState)
+    const form = new InternalFormApi({ ...options, serverState: restoredState })
+
+    expect(restoredState.validationResults[0]?.result).toEqual(issue)
+    expect(form.state.errors).toEqual([issue])
   })
 
   it('hydrates posted values and server errors into form state', async () => {
@@ -474,16 +575,15 @@ describe('server validation', () => {
     expect(blurEmailField.errors).toEqual([{ message: 'Server email error' }])
   })
 
-  it('clears stale server errors when a new server state arrives', async () => {
+  it('clears stale server errors when successful server state arrives', async () => {
     const options = formOptions({
       defaultValues: { name: '' },
       validators: [
         {
-          run: () => ({
-            fields: {
-              name: 'Server name error',
-            },
-          }),
+          run: ({ value, createErrorMap }) =>
+            value.name
+              ? null
+              : createErrorMap({ fields: { name: 'Server name error' } }),
           triggers: ['server'],
         },
       ],
@@ -491,6 +591,9 @@ describe('server validation', () => {
 
     const { serverState } = expectServerValidateFailure(
       await validateServerValues(options, { name: '' }),
+    )
+    const success = expectServerValidateSuccess(
+      await validateServerValues(options, { name: 'Tony' }),
     )
 
     const form = new InternalFormApi({
@@ -503,13 +606,11 @@ describe('server validation', () => {
 
     form._update({
       ...options,
-      serverState: {
-        ...initialServerFormState,
-        values: { name: 'Tony' },
-      },
+      serverState: structuredClone(success.serverState),
     } as never)
 
     expect(form.state.values).toEqual({ name: 'Tony' })
+    expect(form.state.submissionAttempts).toBe(1)
     expect(field.errors).toEqual([])
     expect(form.state.errors).toEqual([])
     expect(form.state.canSubmit).toBe(true)

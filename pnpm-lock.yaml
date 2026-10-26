@@ -2449,9 +2449,6 @@ importers:
       '@tanstack/form-core':
         specifier: workspace:*
         version: link:../form-core
-      decode-formdata:
-        specifier: ^0.9.0
-        version: 0.9.0
       devalue:
         specifier: ^5.3.2
         version: 5.9.0
