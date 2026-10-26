@@ -69,9 +69,12 @@ interface BaseFormValidatorContext<TFormData> {
    */
   createErrorMap: CreateErrorMapFn<TFormData>
   /**
-   * Converts Standard Schema issues into a mutable error map. All issues appear
-   * in `form`, and issues with paths are also grouped in `fields` using the
-   * values being validated. Return the map to report its errors.
+   * Converts Standard Schema issues into a mutable error map to return from
+   * this validator.
+   *
+   * By default, issues with field paths are grouped in `fields`, and issues
+   * without a field path go in `form`. The validator's `fieldErrorTarget`
+   * option can report field issues in both places or only in `form`.
    *
    * @example
    * ```ts
@@ -273,10 +276,6 @@ export type ParseValidatorCondition<TCondition> = TCondition extends (
   ? boolean
   : TCondition
 
-// TODO: When wiring up validation, apply fieldErrorTarget to schema issues;
-// default to 'field' and always keep root issues in the form, including paths
-// normalized to empty. Warn once during configuration in development if a
-// callback supplies the option; ignore it for callbacks in every build.
 /**
  * Provides the function or Standard Schema used to validate complete form values.
  *
@@ -295,8 +294,8 @@ interface FormValidatorRunner<TFormData, TFormEvents extends ValidatorEvents> {
     StandardSchemaV1<TFormData, any> | FormValidatorFn<TFormData, TFormEvents>
 
   /**
-   * Selects where this schema's issues with field paths are reported.
-   * This setting does nothing for callback validators.
+   * Selects where issues with field paths from a Standard Schema or
+   * `parseIssues` are reported.
    *
    * - `'field'`: Report issues on their corresponding fields.
    * - `'field-and-self'`: Report issues on their fields and the form.
@@ -465,7 +464,7 @@ interface FormValidatorConfig<
    *     {
    *       skipOnSubmit: isDraft,
    *       run: ({ value }) => {
-   *          if (!value.email.includes('@)) {
+   *          if (!value.email.includes('@')) {
    *            return 'Enter a valid email'
    *          }
    *       }
