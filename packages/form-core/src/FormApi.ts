@@ -1847,6 +1847,15 @@ export class FormApi<
         fieldMetaBase,
       })
     })
+
+    const helper = metaHelper(this)
+    for (const fieldKey of Object.keys(
+      this.fieldInfo,
+    ) as DeepKeys<TFormData>[]) {
+      if (Array.isArray(this.getFieldValue(fieldKey))) {
+        helper.bumpArrayVersion(fieldKey)
+      }
+    }
   }
 
   /**
@@ -2954,6 +2963,10 @@ export class FormApi<
             : prev.values,
       }
     })
+
+    if (Array.isArray(this.getFieldValue(field))) {
+      metaHelper(this).bumpArrayVersion(field)
+    }
   }
 
   /**
