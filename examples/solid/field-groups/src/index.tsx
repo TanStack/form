@@ -3,6 +3,7 @@ import { render } from 'solid-js/web'
 import { createForm } from '@tanstack/solid-form'
 import { DateRangeField } from './fieldGroups/dateRange'
 import { LowerBoundField, UpperBoundField } from './fieldGroups/fieldBounds'
+import { NumberRangeField } from './fieldGroups/numberRange'
 import './index.css'
 
 function PricingFilterForm() {
@@ -59,6 +60,30 @@ function AgeRangeForm() {
   )
 }
 
+function NestedFieldGroupsForm() {
+  const form = createForm(() => ({
+    defaultValues: {
+      filters: { minBudget: '10', maxBudget: '100' },
+    },
+  }))
+
+  return (
+    <>
+      <NumberRangeField
+        label="Budget"
+        form={form}
+        fields={{
+          minimum: 'filters.minBudget',
+          maximum: 'filters.maxBudget',
+        }}
+      />
+      <form.Subscribe selector={(state) => state.values.filters}>
+        {(filters) => <pre>{JSON.stringify(filters(), null, 2)}</pre>}
+      </form.Subscribe>
+    </>
+  )
+}
+
 function SwappableDateRangesForm() {
   const form = createForm(() => ({
     defaultValues: {
@@ -108,6 +133,10 @@ function App() {
       <section>
         <h2>Age Range Form</h2>
         <AgeRangeForm />
+      </section>
+      <section>
+        <h2>Nested Field Groups</h2>
+        <NestedFieldGroupsForm />
       </section>
       <section>
         <h2>Swappable Date Ranges Form</h2>
