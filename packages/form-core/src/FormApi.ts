@@ -2443,7 +2443,10 @@ export class FormApi<
     const submitMetaArg =
       submitMeta ?? (this.options.onSubmitMeta as TSubmitMeta)
 
-    if (!this.state.canSubmit && !this._devtoolsSubmissionOverride) {
+    if (
+      this.state.isSubmitting ||
+      (!this.state.canSubmit && !this._devtoolsSubmissionOverride)
+    ) {
       // On re-submission (submissionAttempts > 1), skip the early return so
       // validateAllFields can re-run and clear stale field errors (e.g. from a
       // previous onBlur validation that is no longer relevant). The

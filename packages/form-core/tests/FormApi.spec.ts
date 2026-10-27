@@ -2018,6 +2018,27 @@ describe('form api', () => {
     expect(onSubmitInvalid).toHaveBeenCalledTimes(2)
   })
 
+  it('should not invoke onSubmit again while a submission is in progress when canSubmitWhenInvalid is true', async () => {
+    vi.useRealTimers()
+    const onSubmit = vi.fn(async () => {
+      await sleep(500)
+    })
+
+    const form = new FormApi({
+      defaultValues: { firstName: 'test' },
+      canSubmitWhenInvalid: true,
+      onSubmit,
+    })
+    form.mount()
+
+    const first = form.handleSubmit()
+    const second = form.handleSubmit()
+    await Promise.all([first, second])
+
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+    expect(form.state.isSubmitSuccessful).toBe(true)
+  })
+
   it('should run all types of async validation on fields during submit', async () => {
     vi.useFakeTimers()
 
