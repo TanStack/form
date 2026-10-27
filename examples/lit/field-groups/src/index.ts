@@ -3,6 +3,7 @@ import { customElement } from 'lit/decorators.js'
 import { TanStackFormController } from '@tanstack/lit-form'
 import { DateRangeField } from './date-range'
 import { LowerBoundField, UpperBoundField } from './field-bounds'
+import { NumberRangeField } from './number-range'
 import './styles.css'
 
 @customElement('tanstack-field-groups')
@@ -13,6 +14,12 @@ export class TanStackFieldGroups extends LitElement {
 
   private ageForm = new TanStackFormController(this, {
     defaultValues: { minAge: '', maxAge: '' },
+  })
+
+  private budgetForm = new TanStackFormController(this, {
+    defaultValues: {
+      filters: { minBudget: '10', maxBudget: '100' },
+    },
   })
 
   private dateForm = new TanStackFormController(this, {
@@ -56,6 +63,21 @@ export class TanStackFieldGroups extends LitElement {
           fields: { value: 'maxAge', lowerBound: 'minAge' },
           label: 'Highest Age',
         })}
+      </section>
+      <section>
+        <h2>Nested Field Groups</h2>
+        ${NumberRangeField({
+          form: this.budgetForm,
+          fields: {
+            minimum: 'filters.minBudget',
+            maximum: 'filters.maxBudget',
+          },
+          label: 'Budget',
+        })}
+        ${this.budgetForm.subscribe(
+          (state) => state.values.filters,
+          (filters) => html`<pre>${JSON.stringify(filters, null, 2)}</pre>`,
+        )}
       </section>
       <section>
         <h2>Swappable Date Ranges</h2>
