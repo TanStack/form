@@ -105,9 +105,14 @@ export type FieldGroupWithFieldsFn<
 >(
   Component: (props: TProps) => ReactNode,
   fieldsPropName: TFieldsPropName,
-) => <TFormData>(
+) => <
+  TFormData,
+  TParentFieldComponents extends FieldGroupFieldComponentsOf<TFieldGroup>,
+>(
   props: Omit<TProps, TFieldsPropName | 'form'> & {
-    form: FieldGroupForm<FieldGroupFieldComponentsOf<TFieldGroup>, TFormData>
+    form:
+      | FieldGroupForm<TParentFieldComponents, TFormData>
+      | FieldGroupApi<TFormData, TParentFieldComponents>
   } & FieldGroupFieldBindingsProps<
       FieldGroupFieldsOf<TFieldGroup>,
       TFormData,
