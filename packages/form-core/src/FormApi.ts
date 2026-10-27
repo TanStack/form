@@ -2428,16 +2428,30 @@ export class FormApi<
     }))
 
     batch(() => {
-      void (Object.values(this.fieldInfo) as FieldInfo<any>[]).forEach(
-        (field) => {
-          if (!field.instance) return
-          // If any fields are not touched
+      void (
+        Object.entries(this.fieldInfo) as [
+          DeepKeys<TFormData>,
+          FieldInfo<any>,
+        ][]
+      ).forEach(([fieldName, field]) => {
+        if (field.instance) {
+          // Rendered field: update through the live instance
           if (!field.instance.store.state.meta.isTouched) {
-            // Mark them as touched
             field.instance.setMeta((prev) => ({ ...prev, isTouched: true }))
           }
-        },
-      )
+        } else {
+          // Unrendered field (e.g. virtualized): update the store directly so
+          // that any validation triggered by the submission attempt can still
+          // surface errors on these fields when they are next rendered.
+          const meta = this.getFieldMeta(fieldName) ?? defaultFieldMeta
+          if (!meta.isTouched) {
+            this.setFieldMeta(fieldName, (prev = defaultFieldMeta) => ({
+              ...prev,
+              isTouched: true,
+            }))
+          }
+        }
+      })
     })
 
     const submitMetaArg =
