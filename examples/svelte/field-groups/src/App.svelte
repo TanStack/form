@@ -1,6 +1,7 @@
 <script lang="ts">
   import { createForm } from '@tanstack/svelte-form'
   import { DateRangeField } from './fieldGroups/dateRange.js'
+  import { NumberRangeField } from './fieldGroups/numberRange.js'
   import {
     LowerBoundField,
     UpperBoundField,
@@ -12,6 +13,9 @@
   }))
   const ageForm = createForm(() => ({
     defaultValues: { minAge: '', maxAge: '' },
+  }))
+  const budgetForm = createForm(() => ({
+    defaultValues: { filters: { minBudget: '10', maxBudget: '100' } },
   }))
   const dateForm = createForm(() => ({
     defaultValues: {
@@ -50,6 +54,19 @@
       form={ageForm}
       fields={{ value: 'maxAge', lowerBound: 'minAge' }}
     />
+  </section>
+  <section>
+    <h2>Nested Field Groups</h2>
+    <NumberRangeField
+      label="Budget"
+      form={budgetForm}
+      fields={{ minimum: 'filters.minBudget', maximum: 'filters.maxBudget' }}
+    />
+    <budgetForm.Subscribe selector={(state) => state.values.filters}>
+      {#snippet children(filters)}
+        <pre>{JSON.stringify(filters, null, 2)}</pre>
+      {/snippet}
+    </budgetForm.Subscribe>
   </section>
   <section>
     <h2>Swappable Date Ranges Form</h2>
