@@ -1,9 +1,12 @@
 import { createServerFn } from '@tanstack/react-start'
 import { redirect } from '@tanstack/react-router'
+import { decode } from 'decode-formdata'
 import { formOpts } from './form-isomorphic'
 import { createServerValidate } from './form-validator'
 
-const serverValidate = createServerValidate(formOpts)
+const serverValidate = createServerValidate(formOpts, {
+  decode: (formData) => decode(formData, { numbers: ['age'] }),
+})
 
 export const handleForm = createServerFn({ method: 'POST' })
   .validator((data) => {
@@ -38,5 +41,5 @@ export const getFormDataFromServer = createServerFn({
     output: false,
   },
 }).handler(async () => {
-  return serverValidate.getFormData()
+  return serverValidate.getServerState()
 })

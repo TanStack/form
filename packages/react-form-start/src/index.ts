@@ -5,7 +5,7 @@ import {
   setCookie,
 } from '@tanstack/react-start/server'
 import { parse, stringify } from 'devalue'
-import type { TanStackFormServerPlugin } from '@tanstack/form-core'
+import type { PersistedTanStackFormServerPlugin } from '@tanstack/form-core'
 
 const INTERNALS_COOKIE_NAME = '_tanstack_form_internals'
 
@@ -34,7 +34,7 @@ const readServerState = createServerFn({
     return undefined
   })
 
-export function start(): TanStackFormServerPlugin<
+export function start(): PersistedTanStackFormServerPlugin<
   { formData: FormData },
   FormData
 > {

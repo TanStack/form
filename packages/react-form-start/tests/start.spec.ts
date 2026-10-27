@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { formOptions } from '@tanstack/form-core'
-import { validateServerValues } from '@tanstack/form-core/internals'
+import { createServerValidateHelper, formOptions } from '@tanstack/form-core'
 import { start } from '../src'
 
 const startMocks = vi.hoisted(() => ({
@@ -76,18 +75,26 @@ describe('Start plugin persistence', () => {
     )
   })
 
-  it('round-trips error maps from core through form-specific cookies', async () => {
-    const persistence = start().persistServerState!
-    const result = await validateServerValues(formOpts, { name: '' })
+  it('restores failed validation state through the validator and consumes its cookie', async () => {
+    const createServerValidate = createServerValidateHelper({
+      framework: start(),
+    })
+    const serverValidate = createServerValidate(
+      { ...formOpts, formId: 'profile' },
+      { decode: (formData) => ({ name: String(formData.get('name') ?? '') }) },
+    )
+    const submission = new FormData()
+    submission.set('name', '')
+
+    const result = await serverValidate({ formData: submission })
 
     expect(result.success).toBe(false)
     if (result.success) throw new Error('Expected server validation to fail')
 
-    await persistence.setState('profile', result.serverState)
+    const { getServerState } = serverValidate
 
-    await expect(persistence.readState('profile')).resolves.toEqual(
-      result.serverState,
-    )
+    await expect(getServerState()).resolves.toEqual(result.serverState)
+    await expect(getServerState()).resolves.toBeUndefined()
   })
 
   it('preserves another form state when the requested form has no cookie', async () => {

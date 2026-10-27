@@ -35,15 +35,21 @@ export interface TanStackFormServerPlugin<TInputData, TSubmissionData> {
    * * Next.JS: `formData => formData`, which is FormData.
    */
   getFormData: (input: TInputData) => Awaitable<TSubmissionData>
+}
+
+export interface PersistedTanStackFormServerPlugin<
+  TInputData,
+  TSubmissionData,
+> extends TanStackFormServerPlugin<TInputData, TSubmissionData> {
   /**
    * Stores failed validation state for later restoration on the client.
    * Providing this requires an explicit `formId` when creating each validator.
    *
    * Omit this when returning `result.serverState` directly to the client.
-   * The helper writes failed state through `setState`; adapter or application
-   * code is responsible for calling `readState` to retrieve it.
+   * The helper writes failed state through `setState` and exposes `readState`
+   * through each validator's `getServerState` method.
    */
-  persistServerState?: {
+  persistServerState: {
     /**
      * Saves a failed validation result under the form options' `formId`.
      * The validator awaits this write before returning the failure result.
@@ -60,7 +66,7 @@ export interface TanStackFormServerPlugin<TInputData, TSubmissionData> {
      * Retrieves saved state for a form, or `undefined` when none is available.
      * Supply the result to the client form's `serverState` option.
      *
-     * The validation helper does not call this function. The adapter controls
+     * Called by the validator's `getServerState` method. The adapter controls
      * whether reading also removes the stored state.
      *
      * @param formId - The same identifier used to persist the form's failed state.
@@ -86,6 +92,37 @@ export interface ServerValidateApiConfig<TSubmission, TFormData> {
    * returning a failed validation result or persisting state.
    */
   decode: (submission: TSubmission) => Awaitable<TFormData>
+}
+
+/**
+ * Validates submissions and retrieves saved server state for the same form.
+ *
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ * @typeParam TValidators - Library-managed. Do not specify explicitly.
+ * @typeParam TInput - Library-managed. Do not specify explicitly.
+ */
+export interface ServerValidator<TFormData, TValidators, TInput> {
+  (
+    input: TInput,
+  ): Promise<
+    | ServerValidateSuccess<TFormData, TValidators>
+    | ServerValidateFailure<TFormData>
+  >
+}
+
+export interface PersistedServerValidator<
+  TFormData,
+  TValidators,
+  TInput,
+> extends ServerValidator<TFormData, TValidators, TInput> {
+  /**
+   * Reads saved validation state using this form's `formId`.
+   * Resolves to `undefined` when persistence is not configured or no state is
+   * available. The adapter controls whether reading also removes the state.
+   *
+   * Pass the result to the client form's `serverState` option.
+   */
+  getServerState: () => Promise<ServerFormState<TFormData> | undefined>
 }
 
 /**
@@ -117,8 +154,9 @@ export type ServerValidateApi<TInput, TSubmission> =
    * provides `persistServerState`.
    * @param config - A decoder for this form's values; its output must match the
    * value shape inferred from `options`.
-   * @returns An async validator that accepts the adapter's input. Check `success`
-   * before accessing `values` or `validatorOutputs`.
+   * @returns An async validator that accepts the adapter's input, with a
+   * `getServerState` method for retrieving persisted state for this form.
+   * Check `success` before accessing `values` or `validatorOutputs`.
    * @throws If persistence is enabled and `options.formId` is `undefined`.
    * @typeParam TFormData - Library-managed. Do not specify explicitly.
    * @typeParam TValidatorConfig - Library-managed. Do not specify explicitly.
@@ -139,12 +177,61 @@ export type ServerValidateApi<TInput, TSubmission> =
       unknown
     >,
     config: ServerValidateApiConfig<TSubmission, NoInfer<TFormData>>,
-  ) => (
-    input: TInput,
-  ) => Promise<
-    | ServerValidateSuccess<TFormData, TValidators>
-    | ServerValidateFailure<TFormData>
-  >
+  ) => ServerValidator<TFormData, TValidators, TInput>
+
+/**
+ * A server validation factory bound to an adapter's input and submission formats.
+ *
+ * Pass form options and a decoder to obtain an async validator. Use
+ * `createServerValidateHelper` to create this factory from a framework adapter.
+ *
+ * @typeParam TInput - Library-managed. Do not specify explicitly.
+ * @typeParam TSubmission - Library-managed. Do not specify explicitly.
+ */
+export type PersistedServerValidateApi<TInput, TSubmission> =
+  /**
+   * Creates a server validation function from shared form options and a
+   * form-specific submission decoder.
+   *
+   * Each call to the generated function awaits input extraction, decoding, and
+   * form validators configured with a `'server'` trigger. It does not call the
+   * form's submission callbacks.
+   *
+   * Both success and failure results contain `serverState` for the client form.
+   * Success also exposes the decoded `values` and `validatorOutputs` in validator
+   * array order. Schema transformations appear in `validatorOutputs`, without
+   * replacing `values`. Failure state is persisted, when configured, before the
+   * promise resolves. Errors thrown during extraction, decoding, validation, or
+   * persistence reject the promise instead of producing `success: false`.
+   *
+   * @param options - Shared form configuration. Requires `formId` when the adapter
+   * provides `persistServerState`.
+   * @param config - A decoder for this form's values; its output must match the
+   * value shape inferred from `options`.
+   * @returns An async validator that accepts the adapter's input, with a
+   * `getServerState` method for retrieving persisted state for this form.
+   * Check `success` before accessing `values` or `validatorOutputs`.
+   * @throws If persistence is enabled and `options.formId` is `undefined`.
+   * @typeParam TFormData - Library-managed. Do not specify explicitly.
+   * @typeParam TValidatorConfig - Library-managed. Do not specify explicitly.
+   * @typeParam TValidators - Library-managed. Do not specify explicitly.
+   * @typeParam TSubmitReturn - Library-managed. Do not specify explicitly.
+   */
+  <
+    TFormData,
+    const TValidatorConfig extends unknown[],
+    TValidators,
+    TSubmitReturn,
+  >(
+    options: FormOptions<
+      TFormData,
+      TValidatorConfig,
+      TValidators,
+      TSubmitReturn,
+      unknown
+    >,
+    config: ServerValidateApiConfig<TSubmission, NoInfer<TFormData>>,
+  ) => PersistedServerValidator<TFormData, TValidators, TInput>
 
 /**
  * Selects the server framework adapter used to create validation functions.
@@ -156,6 +243,14 @@ export interface ServerValidateHelperArgs<TInput, TSubmission> {
   /** Extracts submissions from framework input and optionally stores failed state. */
   framework: TanStackFormServerPlugin<TInput, TSubmission>
 }
+export interface PersistedServerValidateHelperArgs<TInput, TSubmission> {
+  framework: PersistedTanStackFormServerPlugin<TInput, TSubmission>
+}
+
+type PersistApi = PersistedTanStackFormServerPlugin<
+  any,
+  any
+>['persistServerState']
 
 /**
  * Creates a factory for server validation functions using a framework adapter.
@@ -171,9 +266,25 @@ export interface ServerValidateHelperArgs<TInput, TSubmission> {
  * @typeParam TSubmission - Library-managed. Do not specify explicitly.
  */
 export function createServerValidateHelper<TInput, TSubmission>(
-  options: ServerValidateHelperArgs<TInput, TSubmission>,
-): ServerValidateApi<TInput, TSubmission> {
-  const { getFormData, persistServerState } = options.framework
+  options: PersistedServerValidateHelperArgs<TInput, TSubmission>,
+): PersistedServerValidateApi<TInput, TSubmission>
+export function createServerValidateHelper<TInput, TSubmission>(
+  ptions: ServerValidateHelperArgs<TInput, TSubmission>,
+): ServerValidateApi<TInput, TSubmission>
+export function createServerValidateHelper<TInput, TSubmission>(
+  options:
+    | ServerValidateHelperArgs<TInput, TSubmission>
+    | PersistedServerValidateHelperArgs<TInput, TSubmission>,
+):
+  | ServerValidateApi<TInput, TSubmission>
+  | PersistedServerValidateApi<TInput, TSubmission> {
+  const { getFormData } = options.framework
+
+  let persistServerState: PersistApi | undefined = undefined
+
+  if ('persistServerState' in options.framework) {
+    persistServerState = options.framework.persistServerState
+  }
 
   return (formOptions, { decode }) => {
     const formId = formOptions.formId
@@ -184,7 +295,7 @@ export function createServerValidateHelper<TInput, TSubmission>(
       )
     }
 
-    return async (input) => {
+    const serverValidate = async (input: TInput) => {
       const submission = await getFormData(input)
       const values = await decode(submission)
       const result = await validateServerValues(formOptions, values)
@@ -206,5 +317,16 @@ export function createServerValidateHelper<TInput, TSubmission>(
         },
       }
     }
+
+    return Object.assign(serverValidate, {
+      getServerState: async () => {
+        if (!persistServerState || formId === undefined) {
+          return undefined
+        }
+
+        // The form ID associates the stored state with this form's value shape.
+        return (await persistServerState.readState(formId)) as any
+      },
+    })
   }
 }

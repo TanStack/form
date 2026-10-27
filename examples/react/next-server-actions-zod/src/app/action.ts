@@ -1,16 +1,17 @@
 'use server'
 
-import { initialServerFormState } from '@tanstack/react-form'
+import { createServerValidateHelper } from '@tanstack/react-form'
 import { next } from '@tanstack/react-form-nextjs'
+import { decode } from 'decode-formdata'
 import { formOpts } from './shared-code'
 
-const { createServerValidate } = next({
-  info: {
-    numbers: ['age'],
-  },
+const createServerValidate = createServerValidateHelper({
+  framework: next(),
 })
 
-const serverValidate = createServerValidate(formOpts)
+const serverValidate = createServerValidate(formOpts, {
+  decode: (formData) => decode(formData, { numbers: ['age'] }),
+})
 
 export default async function someAction(_prev: unknown, formData: FormData) {
   const result = await serverValidate(formData)
@@ -27,5 +28,7 @@ export default async function someAction(_prev: unknown, formData: FormData) {
   // `
 
   // Your form has successfully validated!
-  return initialServerFormState
+  // Return `undefined` to reset the form, or
+  // return the server state to preserve it.
+  return result.serverState
 }

@@ -11,6 +11,7 @@
   "dependencies": {
     "@tanstack/react-form": "^2.0.0-alpha.3",
     "@tanstack/react-form-nextjs": "^2.0.0-alpha.3",
+    "decode-formdata": "^0.9.0",
     "next": "16.3.0",
     "react": "19.2.8",
     "react-dom": "19.2.8"

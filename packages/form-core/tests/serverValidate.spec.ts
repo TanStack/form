@@ -4,8 +4,9 @@ import { InternalFormApi } from '../src/FormApi/FormApi.lib'
 import { InternalValidatorInstance } from '../src/ValidatorInstance.lib'
 import { installDevtoolsBridge } from '../src/devtoolsBridge.lib'
 import { validateServerValues } from '../src/internals'
-import { formOptions, initialServerFormState } from '../src'
+import { formOptions } from '../src'
 import type {
+  ServerFormState,
   ServerValidateFailure,
   ServerValidateResult,
   ServerValidateSuccess,
@@ -510,8 +511,10 @@ describe('server validation', () => {
     form._update({
       ...options,
       serverState: {
-        ...initialServerFormState,
-      },
+        values: { name: '' },
+        validationResults: [],
+        submissionAttempts: 0,
+      } satisfies ServerFormState<any>,
     } as never)
 
     expect(form.state.values).toEqual({ name: '' })
@@ -686,9 +689,10 @@ describe('server validation', () => {
       form._update({
         ...options,
         serverState: {
-          ...initialServerFormState,
           values: { name: 'server value' },
-        },
+          validationResults: [],
+          submissionAttempts: 0,
+        } satisfies ServerFormState<any>,
       } as never)
 
       expect(field.meta.isDirty).toBe(false)

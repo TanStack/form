@@ -1254,6 +1254,9 @@ importers:
       '@tanstack/react-form-nextjs':
         specifier: ^2.0.0-alpha.3
         version: link:../../../packages/react-form-nextjs
+      decode-formdata:
+        specifier: ^0.9.0
+        version: 0.9.0
       next:
         specifier: 16.3.0
         version: 16.3.0(@babel/core@8.0.1)(@types/node@25.9.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.102.0)
@@ -1285,6 +1288,9 @@ importers:
       '@tanstack/react-form-nextjs':
         specifier: ^2.0.0-alpha.3
         version: link:../../../packages/react-form-nextjs
+      decode-formdata:
+        specifier: ^0.9.0
+        version: 0.9.0
       next:
         specifier: 16.3.0
         version: 16.3.0(@babel/core@8.0.1)(@types/node@25.9.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.102.0)
@@ -1319,6 +1325,9 @@ importers:
       '@tanstack/react-form-nextjs':
         specifier: ^2.0.0-alpha.3
         version: link:../../../packages/react-form-nextjs
+      decode-formdata:
+        specifier: ^0.9.0
+        version: 0.9.0
       next:
         specifier: 16.3.0
         version: 16.3.0(@babel/core@8.0.1)(@types/node@25.9.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.102.0)
@@ -1470,6 +1479,9 @@ importers:
       '@tanstack/react-start':
         specifier: ^1.168.40
         version: 1.168.40(crossws@0.4.10(srvx@0.11.22))(esbuild@0.28.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(rolldown@1.2.3)(rollup@4.62.4)(supports-color@8.1.1)(vite-plugin-solid@2.11.14(@testing-library/jest-dom@7.0.1(@testing-library/dom@10.4.1)(vitest@5.0.1))(solid-js@1.9.14)(supports-color@8.1.1)(vite@8.3.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1(supports-color@8.1.1))(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)))(vite@8.3.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1(supports-color@8.1.1))(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+      decode-formdata:
+        specifier: ^0.9.0
+        version: 0.9.0
       react:
         specifier: 19.2.8
         version: 19.2.8

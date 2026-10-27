@@ -296,7 +296,7 @@ describe('validator outputs', () => {
 
     const result = await validateServerValues(options, { name: ' Tony ' })
 
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       success: true,
       values: { name: ' Tony ' },
       validatorOutputs: [undefined, { name: 'Tony' }, 6],
