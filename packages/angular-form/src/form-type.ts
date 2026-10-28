@@ -3,15 +3,8 @@ import type {
   AnyFormOptions,
   FormApi,
   FormOptions,
-  GetFormErrorTypes,
+  GetSharedFormErrorTypes,
 } from '@tanstack/form-core'
-
-// Reusable formOptions often omit onSubmit so a component can provide it later.
-// Keep that unresolved submit return flexible when the form is passed to a child.
-type AngularFormTypeErrorTypes<TValidators, TSubmitReturn> =
-  unknown extends TSubmitReturn
-    ? any
-    : GetFormErrorTypes<TValidators, TSubmitReturn>
 
 /**
  * An Angular form API whose form data, validator, and submit types are erased.
@@ -65,5 +58,5 @@ export type AngularFormType<TOptions extends AnyFormOptions> =
     infer TSubmitReturn,
     any
   >
-    ? FormApi<TFormData, AngularFormTypeErrorTypes<TValidators, TSubmitReturn>>
+    ? FormApi<TFormData, GetSharedFormErrorTypes<TValidators, TSubmitReturn>>
     : never

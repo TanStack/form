@@ -21,10 +21,22 @@ type TryGetValidatorOutputs<TValidators> =
     ? GetValidatorOutputs<TValidators>
     : []
 
-// Spreading `formOptions` results in things like `useForm` breaks when no validator was
-// provided. We have to default to [] to make it work properly.
-type InferredValidatorConfig<TValidatorConfig extends unknown[], TValidators> =
-  TValidators extends ReadonlyArray<unknown> ? TValidatorConfig : []
+// Validators need context when the options are first made. However, the same context
+// can break when spreading or reusing form options.
+// This type removes the constraint so that it keeps playing nice when spread.
+interface InferredFormOptions<
+  TFormData,
+  TValidators,
+  TSubmitReturn,
+  out TPayload,
+> extends Omit<
+  FormOptions<TFormData, [], TValidators, TSubmitReturn, TPayload>,
+  'validators'
+> {
+  validators?: NoInfer<
+    TValidators & (TValidators extends ReadonlyArray<unknown> ? unknown : [])
+  >
+}
 
 /**
  * Configures a form's initial values, validation, listeners, and submission.
@@ -251,9 +263,8 @@ export type FormOptionsStrictSchemaFn<out TPayload> = <
     TSubmitReturn,
     unknown
   >,
-) => FormOptions<
+) => InferredFormOptions<
   NoInfer<StandardSchemaInput<TSchema>>,
-  InferredValidatorConfig<TValidatorConfig, TValidators>,
   TValidators,
   TSubmitReturn,
   TPayload
@@ -305,9 +316,8 @@ export type FormOptionsLooseSchemaFn<out TPayload> = <
     TValidators,
     TSubmitReturn
   >,
-) => FormOptions<
+) => InferredFormOptions<
   InferUnion<TFormData, StandardSchemaInput<TSchema>>,
-  InferredValidatorConfig<TValidatorConfig, TValidators>,
   TValidators,
   TSubmitReturn,
   TPayload
@@ -341,13 +351,7 @@ export interface FormOptionsApi<out TPayload> {
       TSubmitReturn,
       unknown
     >,
-  ): FormOptions<
-    TFormData,
-    InferredValidatorConfig<TValidatorConfig, TValidators>,
-    TValidators,
-    TSubmitReturn,
-    TPayload
-  >
+  ): InferredFormOptions<TFormData, TValidators, TSubmitReturn, TPayload>
 
   /**
    * Defines form options whose values follow a Standard Schema's input type.
@@ -419,4 +423,9 @@ formOptions.looseSchema = (_schema, opts) => opts as never
  * Use this alias only when reusable code does not need type-safe access to
  * values, validators, or submission results.
  */
-export type AnyFormOptions = FormOptions<any, any, any, any, any>
+export type AnyFormOptions = Omit<
+  FormOptions<any, any, any, any, any>,
+  'onSubmit'
+> & {
+  onSubmit?: FormOptionsOnSubmitFn<any, any, any>
+}

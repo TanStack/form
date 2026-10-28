@@ -544,16 +544,21 @@ type GetValidatorRunner<
   TValidatorConfig extends unknown[],
   TValidators,
   K extends keyof TValidatorConfig,
-> = number extends TValidatorConfig['length']
-  ? FormValidatorRunner<
-      TFormData,
-      NoInfer<GetValidatorEvents<TValidatorConfig[K]>>
-    >
-  : FormOptionsValidatorRunner<
-      TFormData,
-      NoInfer<GetValidatorEvents<TValidatorConfig[K]>>,
-      K extends keyof TValidators ? TValidators[K] : unknown
-    >
+  // Types like `ReactFormType` don't care about validator configs. However, if left at
+  // `any`, it can mess with the inference. We simplify to "run must be present, can be whatever".
+  // TValidators will narrow the rest.
+> = 0 extends 1 & TValidatorConfig
+  ? { run: unknown }
+  : number extends TValidatorConfig['length']
+    ? FormValidatorRunner<
+        TFormData,
+        NoInfer<GetValidatorEvents<TValidatorConfig[K]>>
+      >
+    : FormOptionsValidatorRunner<
+        TFormData,
+        NoInfer<GetValidatorEvents<TValidatorConfig[K]>>,
+        K extends keyof TValidators ? TValidators[K] : unknown
+      >
 
 type FormOptionsValidator<
   TFormData,
