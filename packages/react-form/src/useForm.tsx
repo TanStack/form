@@ -201,7 +201,7 @@ export function useForm<
   >,
 ) {
   const fallbackFormId = useFormId()
-  const [prevFormId, setPrevFormId] = useState<string>(opts?.formId as never)
+  const [prevFormId, setPrevFormId] = useState(opts?.formId)
 
   const [formApi, setFormApi] = useState(() => {
     return new FormApi<
@@ -223,7 +223,7 @@ export function useForm<
   if (prevFormId !== opts?.formId) {
     const formId = opts?.formId ?? fallbackFormId
     setFormApi(new FormApi({ ...opts, formId }))
-    setPrevFormId(formId)
+    setPrevFormId(opts?.formId)
   }
 
   const extendedFormApi = useMemo(() => {
