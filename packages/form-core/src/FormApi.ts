@@ -2668,6 +2668,11 @@ export class FormApi<
             ...prev?.errorMap,
             onMount: undefined,
           },
+          errorSourceMap: {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            ...prev?.errorSourceMap,
+            onMount: undefined,
+          },
         }))
       }
 
