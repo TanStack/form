@@ -51,7 +51,7 @@
     "build": "vite build"
   },
   "peerDependencies": {
-    "solid-js": ">=1.9.7"
+    "solid-js": "^1.9.7"
   },
   "dependencies": {
     "@tanstack/devtools-utils": "^0.4.0",
