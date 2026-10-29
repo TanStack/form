@@ -1,5 +1,12 @@
 # @tanstack/react-form-devtools
 
+## 1.0.0-alpha.4
+
+### Patch Changes
+
+- Updated dependencies [[`7c7d786`](https://github.com/TanStack/form/commit/7c7d78678cdd7061b614b88dd2d5af245799a7cd)]:
+  - @tanstack/form-devtools@1.0.0-alpha.4
+
 ## 1.0.0-alpha.3
 
 ### Major Changes
