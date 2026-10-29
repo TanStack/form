@@ -5,6 +5,7 @@ import { formOpts } from './form-isomorphic'
 import { createServerValidate } from './form-validator'
 
 const serverValidate = createServerValidate(formOpts, {
+  transportId: 'example-form',
   decode: (formData) => decode(formData, { numbers: ['age'] }),
 })
 

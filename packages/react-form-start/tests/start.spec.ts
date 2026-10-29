@@ -51,7 +51,7 @@ describe('Start plugin persistence', () => {
   })
 
   it('isolates persisted server state by form ID', async () => {
-    const persistence = start().persistServerState!
+    const persistence = start().transportMiddleware!
     const profileState = {
       values: { name: 'Ada' },
       validationResults: [],
@@ -81,7 +81,10 @@ describe('Start plugin persistence', () => {
     })
     const serverValidate = createServerValidate(
       { ...formOpts, formId: 'profile' },
-      { decode: (formData) => ({ name: String(formData.get('name') ?? '') }) },
+      {
+        transportId: 'A',
+        decode: (formData) => ({ name: String(formData.get('name') ?? '') }),
+      },
     )
     const submission = new FormData()
     submission.set('name', '')
@@ -98,7 +101,7 @@ describe('Start plugin persistence', () => {
   })
 
   it('preserves another form state when the requested form has no cookie', async () => {
-    const persistence = start().persistServerState!
+    const persistence = start().transportMiddleware!
     const state = {
       values: { name: 'Ada' },
       validationResults: [],
@@ -112,7 +115,7 @@ describe('Start plugin persistence', () => {
   })
 
   it('keeps form IDs distinct when cookie names need encoding', async () => {
-    const persistence = start().persistServerState!
+    const persistence = start().transportMiddleware!
     const profileState = {
       values: { name: 'Ada' },
       validationResults: [],

@@ -1,7 +1,6 @@
 import { formOptions } from '@tanstack/react-form'
 
 export const formOpts = formOptions({
-  formId: 'profile',
   defaultValues: {
     firstName: '',
     age: 0,

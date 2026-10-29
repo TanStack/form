@@ -1,15 +1,12 @@
 'use client'
 
 import { useActionState } from 'react'
-import { initialServerFormState, useForm } from '@tanstack/react-form'
+import { useForm } from '@tanstack/react-form'
 import someAction from './action'
 import { formOpts } from './shared-code'
 
 export const ClientComp = () => {
-  const [serverState, action, isPending] = useActionState(
-    someAction,
-    initialServerFormState,
-  )
+  const [serverState, action, isPending] = useActionState(someAction, undefined)
 
   const form = useForm({
     ...formOpts,

@@ -1,3 +1,4 @@
+import { createTanStackFormServerPlugin } from '@tanstack/form-core'
 import { createServerFn } from '@tanstack/react-start'
 import {
   deleteCookie,
@@ -5,23 +6,22 @@ import {
   setCookie,
 } from '@tanstack/react-start/server'
 import { parse, stringify } from 'devalue'
-import type { PersistedTanStackFormServerPlugin } from '@tanstack/form-core'
 
 const INTERNALS_COOKIE_NAME = '_tanstack_form_internals'
 
-function getCookieName(formId: string): string {
-  return `${INTERNALS_COOKIE_NAME}_${encodeURIComponent(formId)}`
+function getCookieName(transportId: string): string {
+  return `${INTERNALS_COOKIE_NAME}_${encodeURIComponent(transportId)}`
 }
 
 const readServerState = createServerFn({
   strict: { output: false },
 })
-  .validator((formId: string) => {
-    if (typeof formId !== 'string') {
+  .validator((transportId: string) => {
+    if (typeof transportId !== 'string') {
       throw new TypeError('Expected a form ID')
     }
 
-    return formId
+    return transportId
   })
   .handler(async ({ data: formId }) => {
     const cookieName = getCookieName(formId)
@@ -34,17 +34,14 @@ const readServerState = createServerFn({
     return undefined
   })
 
-export function start(): PersistedTanStackFormServerPlugin<
-  { formData: FormData },
-  FormData
-> {
-  return {
-    getFormData: ({ formData }) => formData,
-    persistServerState: {
-      setState: (formId, serverState) => {
-        setCookie(getCookieName(formId), stringify(serverState))
+export function start() {
+  return createTanStackFormServerPlugin({
+    submittedDataType: new FormData(),
+    transportMiddleware: {
+      setState: (transportId, serverState) => {
+        setCookie(getCookieName(transportId), stringify(serverState))
       },
-      readState: (formId) => readServerState({ data: formId }),
+      readState: (transportId) => readServerState({ data: transportId }),
     },
-  }
+  })
 }

@@ -15,7 +15,13 @@
       "@tanstack/devtools-vite",
       "@tanstack/devtools",
       "@tanstack/devtools-event-client",
-      "@tanstack/devtools-utils"
+      "@tanstack/devtools-utils",
+      "@tanstack/react-start",
+      "@tanstack/router-core",
+      "@tanstack/router-plugin",
+      "@tanstack/start-client-core",
+      "@tanstack/start-server-core",
+      "@tanstack/virtual-file-routes"
     ]
   },
   "scripts": {

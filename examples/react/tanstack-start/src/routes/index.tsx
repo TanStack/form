@@ -13,6 +13,8 @@ export const Route = createFileRoute('/')({
     return search.status === 'success' ? { status: 'success' } : {}
   },
   component: Home,
+  // We want to update the form state if the submission status is changing
+  loaderDeps: ({ search: { status } }) => ({ status }),
   loader: async () => ({
     state: await getFormDataFromServer(),
   }),
@@ -58,7 +60,6 @@ function Home() {
           {(field) => {
             const hasErrors = field.errors.length > 0
             const errorId = `${field.name}-errors`
-
             return (
               <div className="field">
                 <label htmlFor={field.name}>First name</label>
@@ -89,6 +90,7 @@ function Home() {
           {(field) => {
             const hasErrors = field.errors.length > 0
             const errorId = `${field.name}-errors`
+            console.log(hasErrors)
 
             return (
               <div className="field">

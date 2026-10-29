@@ -1,7 +1,7 @@
-import type { TanStackFormServerPlugin } from '@tanstack/form-core'
+import { createTanStackFormServerPlugin } from '@tanstack/form-core'
 
-export function next(): TanStackFormServerPlugin<FormData, FormData> {
-  return {
-    getFormData: (formData) => formData,
-  }
+export function next() {
+  return createTanStackFormServerPlugin({
+    submittedDataType: new FormData(),
+  })
 }

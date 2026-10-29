@@ -14,7 +14,7 @@ const serverValidate = createServerValidate(formOpts, {
 })
 
 export default async function someAction(_prev: unknown, formData: FormData) {
-  const result = await serverValidate(formData)
+  const result = await serverValidate({ formData })
 
   if (!result.success) {
     return result.serverState
