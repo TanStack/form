@@ -88,6 +88,7 @@ import type {
   FormOptionsOnSubmitInvalidFn,
 } from './formSubmit.public'
 import type { FormValidator } from '../validation/formValidators.public'
+import type { StandardSchemaV1 } from '../standardSchema.public'
 import type { ServerFormState } from './formServerState.public'
 import type {
   ClientSideEvents,
@@ -158,15 +159,20 @@ export type InternalFormValidatorInstance = InternalValidatorInstance<
   AnyInternalFieldApi
 >
 
+type InternalFormValidator<TFormData> = Omit<
+  FormValidator<TFormData, ValidatorTriggers | boolean>,
+  'run'
+> & {
+  run: StandardSchemaV1<any, any> | ((context: any) => any)
+}
+
 // Funky form options are cool and all, but just using `any` killed our type inference internally.
 // This is hacky, but it should do.
 type FormOptionsOfType<TFormData> = Omit<
   FormOptions<TFormData, any, any, any, any>,
   'validators' | 'listeners' | 'onSubmit' | 'onSubmitInvalid'
 > & {
-  validators?: ReadonlyArray<
-    FormValidator<NoInfer<TFormData>, ValidatorTriggers | boolean>
-  >
+  validators?: ReadonlyArray<InternalFormValidator<NoInfer<TFormData>>>
   listeners?: FormListeners<NoInfer<TFormData>, any>
   onSubmit?: FormOptionsOnSubmitFn<NoInfer<TFormData>, any, any>
   onSubmitInvalid?: FormOptionsOnSubmitInvalidFn<NoInfer<TFormData>, any>

@@ -228,3 +228,10 @@ export type GetFormErrorTypes<TValidators, TSubmitReturn> = ScopedErrorTypes<
   GetSelfErrors<TValidators, TSubmitReturn>,
   GetSubfieldErrors<TValidators, TSubmitReturn>
 >
+
+// Shared form types must accept submission handlers supplied later. Leave their
+// error types open when onSubmit is omitted; concrete forms use GetFormErrorTypes.
+export type GetSharedFormErrorTypes<TValidators, TSubmitReturn> =
+  unknown extends TSubmitReturn
+    ? any
+    : GetFormErrorTypes<TValidators, TSubmitReturn>

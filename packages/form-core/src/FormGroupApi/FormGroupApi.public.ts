@@ -141,11 +141,18 @@ export interface FormGroupOptions<
 > {
   form: FormApi<TFormData, TFormError>
   name: TGroupName
-  validators?: TGroupValidators & {
-    [K in keyof TGroupValidators]: Record<
-      Exclude<keyof TGroupValidators[K], keyof FormGroupValidator<TGroupValue>>,
-      never
-    >
+  validators?: {
+    // The intersection really helps type instantiations, while
+    // the exclude part helps with additional properties not being swallowed silently.
+    // It's weird, but it works.
+    [K in keyof TGroupValidators]: TGroupValidators[K] &
+      Record<
+        Exclude<
+          keyof TGroupValidators[K],
+          keyof FormGroupValidator<TGroupValue>
+        >,
+        never
+      >
   }
   /**
    * Called after group submission validation succeeds. The callback is awaited

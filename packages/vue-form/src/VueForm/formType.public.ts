@@ -1,18 +1,13 @@
 import type {
   AnyFormOptions,
   FormOptions,
-  GetFormErrorTypes,
+  GetSharedFormErrorTypes,
 } from '@tanstack/form-core'
 import type {
   AnyVueFormComponentMap,
   DefaultVueFormComponentMap,
 } from '../AppForm/componentMap.public'
 import type { VueFormApi } from './formApiTypes.public'
-
-type VueFormTypeErrorTypes<TValidators, TSubmitReturn> =
-  unknown extends TSubmitReturn
-    ? any
-    : GetFormErrorTypes<TValidators, TSubmitReturn>
 
 /**
  * Derives the Vue form API type represented by a reusable options object.
@@ -47,7 +42,7 @@ export type VueFormType<TOptions extends AnyFormOptions> =
   >
     ? VueFormApi<
         TFormData,
-        VueFormTypeErrorTypes<TFormValidators, TSubmitReturn>,
+        GetSharedFormErrorTypes<TFormValidators, TSubmitReturn>,
         TComponents extends AnyVueFormComponentMap
           ? TComponents
           : DefaultVueFormComponentMap

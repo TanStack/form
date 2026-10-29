@@ -4,8 +4,14 @@ import type { FormApiFieldMethods } from './FormApiFieldMethods.types.public'
 import type {
   FormValidationFailure,
   ScopedErrorTypes,
+  ValidationIssue,
 } from '../validation/state.public'
 import type { DynamicValidatorTriggers } from '../events.public'
+
+type FormError<TFormError extends ScopedErrorTypes> =
+  TFormError extends ScopedErrorTypes<infer TError extends ValidationIssue, any>
+    ? TError
+    : never
 
 /**
  * A snapshot of current values, validation status, and submission metadata.
@@ -18,8 +24,7 @@ import type { DynamicValidatorTriggers } from '../events.public'
  */
 export interface FormState<
   in out TFormData,
-  // TODO in out
-  TFormError extends ScopedErrorTypes,
+  out TFormError extends ScopedErrorTypes,
 > {
   /**
    * Current values after field edits, resets, or default-value updates.
@@ -69,7 +74,7 @@ export interface FormState<
    * Errors routed to fields are exposed through the corresponding field APIs
    * and are not included here.
    */
-  errors: Array<TFormError['selfError']>
+  errors: Array<FormError<TFormError>>
   /**
    * Whether validation state contains no form- or field-level errors.
    *
