@@ -18,7 +18,9 @@ export { isValidationTriggerEnabled } from './execution.lib'
 export type { InputContext, ValidateContext } from './execution.lib'
 export {
   runFieldValidatorPipeline,
+  runFieldValidatorPipelineMaybeSync,
   runFormValidatorPipeline,
+  runFormValidatorPipelineMaybeSync,
   runValidatorPipeline,
 } from './pipeline.lib'
 export type {

@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { render } from 'vitest-browser-react'
 import { userEvent } from 'vitest/browser'
 import React, { useEffect, useState } from 'react'
+import { z } from 'zod'
 import { useForm } from '../src'
 import type { AnyInternalFormApi } from '@tanstack/form-core/internals'
 
@@ -302,6 +303,129 @@ describe('Form fields', () => {
     expect(renderCounts.first).toBe(initialCounts.first)
     expect(renderCounts.last).toBe(initialCounts.last)
     expect(renderCounts.middle).toBeGreaterThan(initialCounts.middle)
+  })
+
+  describe('applies synchronous change validation in the same render as the change', () => {
+    const tick = () => new Promise((resolve) => setTimeout(resolve, 0))
+
+    const tooShort = z.string().min(2, 'Too short')
+
+    function renderWithControl(validation: 'function' | 'schema' | 'async') {
+      const renders = { plain: 0, checked: 0 }
+
+      function Component() {
+        const form = useForm({ defaultValues: { plain: '', checked: '' } })
+        return (
+          <>
+            <form.Field name="plain">
+              {(field) => {
+                renders.plain++
+                return (
+                  <label htmlFor={field.name}>
+                    {field.name}
+                    <input
+                      id={field.name}
+                      value={field.value}
+                      onChange={(event) =>
+                        field.handleChange(event.target.value)
+                      }
+                    />
+                  </label>
+                )
+              }}
+            </form.Field>
+            <form.Field
+              name="checked"
+              validators={
+                validation === 'function'
+                  ? [
+                      {
+                        triggers: ['change'],
+                        run: ({ value }) =>
+                          value.length > 1 ? undefined : 'Too short',
+                      },
+                    ]
+                  : validation === 'schema'
+                    ? [{ triggers: ['change'], run: tooShort }]
+                    : [
+                        {
+                          triggers: ['change'],
+                          run: async ({ value }) =>
+                            value === 'taken' ? 'Taken' : undefined,
+                        },
+                      ]
+              }
+            >
+              {(field) => {
+                renders.checked++
+                return (
+                  <>
+                    <label htmlFor={field.name}>
+                      {field.name}
+                      <input
+                        id={field.name}
+                        value={field.value}
+                        onChange={(event) =>
+                          field.handleChange(event.target.value)
+                        }
+                      />
+                    </label>
+                    <span data-testid="errors">
+                      {field.meta.errors.map((error) => error.message).join()}
+                    </span>
+                  </>
+                )
+              }}
+            </form.Field>
+          </>
+        )
+      }
+
+      return { renders, Component }
+    }
+
+    it('renders a field with a function validator as often as one without', async () => {
+      const { renders, Component } = renderWithControl('function')
+      const screen = await render(<Component />)
+      await tick()
+      const start = { ...renders }
+
+      await userEvent.type(screen.getByLabelText('plain'), 'a')
+      await userEvent.type(screen.getByLabelText('checked'), 'a')
+      expect(screen.getByTestId('errors')).toHaveTextContent('Too short')
+
+      await userEvent.type(screen.getByLabelText('plain'), 'bc')
+      await userEvent.type(screen.getByLabelText('checked'), 'bc')
+      await tick()
+
+      expect(renders.checked - start.checked).toBe(renders.plain - start.plain)
+      expect(screen.getByTestId('errors').element().textContent).toBe('')
+    })
+
+    it('renders a field with a Standard Schema validator as often as one without', async () => {
+      const { renders, Component } = renderWithControl('schema')
+      const screen = await render(<Component />)
+      await tick()
+      const start = { ...renders }
+
+      await userEvent.type(screen.getByLabelText('plain'), 'a')
+      await userEvent.type(screen.getByLabelText('checked'), 'a')
+      await tick()
+
+      expect(renders.checked - start.checked).toBe(renders.plain - start.plain)
+      expect(screen.getByTestId('errors')).toHaveTextContent('Too short')
+    })
+
+    it('still applies asynchronous validation results once they settle', async () => {
+      const { Component } = renderWithControl('async')
+      const screen = await render(<Component />)
+
+      await userEvent.type(screen.getByLabelText('checked'), 'taken')
+
+      await expect
+        .poll(() => screen.getByTestId('errors').element().textContent)
+        .toBe('Taken')
+    })
   })
 
   it('rerenders a field when its meta changes without changing its value', async () => {
