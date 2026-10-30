@@ -2059,7 +2059,7 @@ importers:
         specifier: workspace:*
         version: link:../form-devtools
       solid-js:
-        specifier: '>=1.9.7'
+        specifier: ^1.9.7
         version: 1.9.13
     devDependencies:
       vite-plugin-solid:
