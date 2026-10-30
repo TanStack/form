@@ -55,22 +55,28 @@ Once this scaffolding is in place, you can start adding custom field and form co
 > Note: the `useFieldContext` must be the same one exported from your custom form context
 
 ```tsx
+import { useSelector } from '@tanstack/react-form'
 import { useFieldContext } from './form-context.tsx'
 
 export function TextField({ label }: { label: string }) {
   // The `Field` infers that it should have a `value` type of `string`
   const field = useFieldContext<string>()
+  const errors = useSelector(field.store, (state) => state.meta.errors)
   return (
     <label>
       <span>{label}</span>
       <input
         value={field.state.value}
         onChange={(e) => field.handleChange(e.target.value)}
+        onBlur={field.handleBlur}
       />
+      {errors.length > 0 && <em role="alert">{errors.join(', ')}</em>}
     </label>
   )
 }
 ```
+
+To keep a field component in sync with meta such as `errors`, read it with `useSelector`. See [Reactivity](./reactivity.md#field-state) for details.
 
 You're then able to register this component with your form hook.
 
