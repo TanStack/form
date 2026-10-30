@@ -1019,5 +1019,43 @@ describe('createFormHook', () => {
       })
       expectTypeOf(doublyExtendedForm.AppField).toBeFunction()
     })
+
+    it('should allow passing an extended form to a field group from the base hook', () => {
+      const BaseGroup = baseHook.withFieldGroup({
+        defaultValues: { name: '' },
+        render: ({ group }) => {
+          return (
+            <group.AppField name="name">
+              {(field) => <field.Test />}
+            </group.AppField>
+          )
+        },
+      })
+
+      const { useAppForm: useExtendedAppForm } = baseHook.extendForm({
+        fieldComponents: { ExtendedField },
+        formComponents: { ExtendedFormComp },
+      })
+      const extendedForm = useExtendedAppForm({ defaultValues: { name: '' } })
+      const baseForm = baseHook.useAppForm({ defaultValues: { name: '' } })
+
+      // The extended form only adds components, so the base group accepts it
+      const WithExtendedForm = (
+        <BaseGroup form={extendedForm} fields={{ name: 'name' }} />
+      )
+      const WithBaseForm = (
+        <BaseGroup form={baseForm} fields={{ name: 'name' }} />
+      )
+
+      // The other way round still errors: the base form lacks ExtendedField
+      const ExtendedGroup = withExtendedFieldGroup({
+        defaultValues: { name: '' },
+        render: () => <></>,
+      })
+      const MissingComponents = (
+        // @ts-expect-error because the base form has no ExtendedField component
+        <ExtendedGroup form={baseForm} fields={{ name: 'name' }} />
+      )
+    })
   })
 })
