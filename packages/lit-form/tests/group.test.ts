@@ -1,6 +1,6 @@
 /// <reference lib="dom" />
 import { describe, expect, it, vi } from 'vitest'
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom/vitest'
 import { userEvent } from '@testing-library/user-event'
 import { LitElement, html } from 'lit'
 import { TanStackFormController } from '../src/index.js'
