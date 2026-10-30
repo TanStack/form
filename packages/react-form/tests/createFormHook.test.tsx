@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { render, waitFor } from '@testing-library/react'
+import { render } from 'vitest-browser-react'
 import { formOptions } from '@tanstack/form-core'
-import userEvent from '@testing-library/user-event'
+import { userEvent } from 'vitest/browser'
 import { createFormHook, createFormHookContexts, useStore } from '../src'
 
 const user = userEvent.setup()
@@ -44,7 +44,7 @@ const { useAppForm, withForm, withFieldGroup, useTypedAppFormContext } =
   })
 
 describe('createFormHook', () => {
-  it('should allow to set default value', () => {
+  it('should allow to set default value', async () => {
     type Person = {
       firstName: string
       lastName: string
@@ -68,12 +68,12 @@ describe('createFormHook', () => {
       )
     }
 
-    const { getByLabelText } = render(<Comp />)
-    const input = getByLabelText('Testing')
-    expect(input).toHaveValue('FirstName')
+    const { getByLabelText } = await render(<Comp />)
+    const input = getByLabelText('Testing', { exact: true })
+    await expect.element(input).toHaveValue('FirstName')
   })
 
-  it('should handle withForm types properly', () => {
+  it('should handle withForm types properly', async () => {
     const formOpts = formOptions({
       defaultValues: {
         firstName: 'John',
@@ -111,13 +111,15 @@ describe('createFormHook', () => {
       return <ChildForm form={form} title={'Testing'} />
     }
 
-    const { getByLabelText, getByText } = render(<Parent />)
-    const input = getByLabelText('First Name')
-    expect(input).toHaveValue('John')
-    expect(getByText('Testing')).toBeInTheDocument()
+    const { getByLabelText, getByText } = await render(<Parent />)
+    const input = getByLabelText('First Name', { exact: true })
+    await expect.element(input).toHaveValue('John')
+    await expect
+      .element(getByText('Testing', { exact: true }))
+      .toBeInTheDocument()
   })
 
-  it('should handle withFieldGroup types properly', () => {
+  it('should handle withFieldGroup types properly', async () => {
     const formOpts = formOptions({
       defaultValues: {
         person: {
@@ -157,13 +159,15 @@ describe('createFormHook', () => {
       return <ChildForm form={form} fields="person" title={'Testing'} />
     }
 
-    const { getByLabelText, getByText } = render(<Parent />)
-    const input = getByLabelText('First Name')
-    expect(input).toHaveValue('John')
-    expect(getByText('Testing')).toBeInTheDocument()
+    const { getByLabelText, getByText } = await render(<Parent />)
+    const input = getByLabelText('First Name', { exact: true })
+    await expect.element(input).toHaveValue('John')
+    await expect
+      .element(getByText('Testing', { exact: true }))
+      .toBeInTheDocument()
   })
 
-  it('should use the correct field name in Field with withFieldGroup', () => {
+  it('should use the correct field name in Field with withFieldGroup', async () => {
     const formOpts = formOptions({
       defaultValues: {
         person: {
@@ -234,17 +238,19 @@ describe('createFormHook', () => {
       )
     }
 
-    const { getByLabelText, getByText } = render(<Parent />)
-    const inputField1 = getByLabelText('person.firstName')
-    const inputArray = getByLabelText('people[0].firstName')
-    const inputField2 = getByLabelText('people[1].firstName')
-    expect(inputField1).toHaveValue('John')
-    expect(inputArray).toHaveValue('Jane')
-    expect(inputField2).toHaveValue('Robert')
-    expect(getByText('Testing')).toBeInTheDocument()
+    const { getByLabelText, getByText } = await render(<Parent />)
+    const inputField1 = getByLabelText('person.firstName', { exact: true })
+    const inputArray = getByLabelText('people[0].firstName', { exact: true })
+    const inputField2 = getByLabelText('people[1].firstName', { exact: true })
+    await expect.element(inputField1).toHaveValue('John')
+    await expect.element(inputArray).toHaveValue('Jane')
+    await expect.element(inputField2).toHaveValue('Robert')
+    await expect
+      .element(getByText('Testing', { exact: true }))
+      .toBeInTheDocument()
   })
 
-  it('should forward Field and Subscribe to the form', () => {
+  it('should forward Field and Subscribe to the form', async () => {
     const formOpts = formOptions({
       defaultValues: {
         person: {
@@ -286,10 +292,10 @@ describe('createFormHook', () => {
       return <ChildFormAsField form={form} fields="person" />
     }
 
-    const { getByLabelText, getByText } = render(<Parent />)
-    const input = getByLabelText('person.firstName')
-    expect(input).toHaveValue('John')
-    expect(getByText('Doe')).toBeInTheDocument()
+    const { getByLabelText, getByText } = await render(<Parent />)
+    const input = getByLabelText('person.firstName', { exact: true })
+    await expect.element(input).toHaveValue('John')
+    await expect.element(getByText('Doe', { exact: true })).toBeInTheDocument()
   })
 
   it('should not lose focus on update with withFieldGroup', async () => {
@@ -339,19 +345,19 @@ describe('createFormHook', () => {
       return <ChildForm form={form} fields="person" />
     }
 
-    const { getByLabelText } = render(<Parent />)
+    const { getByLabelText } = await render(<Parent />)
 
-    const input = getByLabelText('person.firstName')
-    input.focus()
-    expect(input).toHaveFocus()
+    const input = getByLabelText('person.firstName', { exact: true })
+    ;(input.element() as HTMLInputElement).focus()
+    await expect.element(input).toHaveFocus()
 
     await user.clear(input)
     await user.type(input, 'Something')
 
-    expect(input).toHaveFocus()
+    await expect.element(input).toHaveFocus()
   })
 
-  it('should allow nesting withFieldGroup in other withFieldGroups', () => {
+  it('should allow nesting withFieldGroup in other withFieldGroups', async () => {
     type Nested = {
       firstName: string
     }
@@ -404,12 +410,14 @@ describe('createFormHook', () => {
       return <LensWrapper form={form} fields="form" />
     }
 
-    const { getByText } = render(<Parent />)
+    const { getByText } = await render(<Parent />)
 
-    expect(getByText('form.field.firstName')).toBeInTheDocument()
+    await expect
+      .element(getByText('form.field.firstName', { exact: true }))
+      .toBeInTheDocument()
   })
 
-  it('should allow mapping withFieldGroup to different values', () => {
+  it('should allow mapping withFieldGroup to different values', async () => {
     const formOpts = formOptions({
       defaultValues: {
         unrelated: 'John',
@@ -447,12 +455,12 @@ describe('createFormHook', () => {
       )
     }
 
-    const { getByLabelText } = render(<Parent />)
-    const inputField1 = getByLabelText('unrelated')
-    expect(inputField1).toHaveValue('John')
+    const { getByLabelText } = await render(<Parent />)
+    const inputField1 = getByLabelText('unrelated', { exact: true })
+    await expect.element(inputField1).toHaveValue('John')
   })
 
-  it('should remap FieldGroupApi.Field validators to the correct names', () => {
+  it('should remap FieldGroupApi.Field validators to the correct names', async () => {
     const FieldGroupString = withFieldGroup({
       defaultValues: { password: '', confirmPassword: '' },
       render: function Render({ group }) {
@@ -533,7 +541,7 @@ describe('createFormHook', () => {
       )
     }
 
-    render(<Parent />)
+    await render(<Parent />)
   })
 
   it('should accept formId and return it', async () => {
@@ -574,15 +582,15 @@ describe('createFormHook', () => {
       )
     }
 
-    const { getByTestId } = render(<Comp />)
+    const { getByTestId } = await render(<Comp />)
     const target = getByTestId('formId-target')
     const result = getByTestId('formId-result')
 
     await user.click(target)
-    expect(result).toHaveTextContent('1')
+    await expect.element(result).toHaveTextContent('1')
   })
 
-  it('should allow using typed app form', () => {
+  it('should allow using typed app form', async () => {
     type Person = {
       firstName: string
       lastName: string
@@ -620,12 +628,12 @@ describe('createFormHook', () => {
       )
     }
 
-    const { getByLabelText } = render(<Parent />)
-    const input = getByLabelText('Testing')
-    expect(input).toHaveValue('FirstName')
+    const { getByLabelText } = await render(<Parent />)
+    const input = getByLabelText('Testing', { exact: true })
+    await expect.element(input).toHaveValue('FirstName')
   })
 
-  it('should throw if `useTypedAppFormContext` is used without AppForm', () => {
+  it('should throw if `useTypedAppFormContext` is used without AppForm', async () => {
     type Person = {
       firstName: string
       lastName: string
@@ -659,10 +667,10 @@ describe('createFormHook', () => {
       return <Child />
     }
 
-    expect(() => render(<Parent />)).toThrow()
+    await expect(render(<Parent />)).rejects.toThrow()
   })
 
-  it('should allow using typed app form with form components', () => {
+  it('should allow using typed app form with form components', async () => {
     type Person = {
       firstName: string
       lastName: string
@@ -695,13 +703,13 @@ describe('createFormHook', () => {
       )
     }
 
-    const { getByText } = render(<Parent />)
-    const button = getByText('Testing')
-    expect(button).toBeInTheDocument()
+    const { getByText } = await render(<Parent />)
+    const button = getByText('Testing', { exact: true })
+    await expect.element(button).toBeInTheDocument()
   })
 
   describe('extendForm', () => {
-    it('should include both parent and extended field components', () => {
+    it('should include both parent and extended field components', async () => {
       function ExtendedTextField({ label }: { label: string }) {
         const field = useFieldContext<string>()
         return (
@@ -746,12 +754,14 @@ describe('createFormHook', () => {
         )
       }
 
-      const { getByLabelText, getByTestId } = render(<Comp />)
-      expect(getByLabelText('First Name')).toHaveValue('John')
-      expect(getByTestId('extended-input')).toHaveValue('Doe')
+      const { getByLabelText, getByTestId } = await render(<Comp />)
+      await expect
+        .element(getByLabelText('First Name', { exact: true }))
+        .toHaveValue('John')
+      await expect.element(getByTestId('extended-input')).toHaveValue('Doe')
     })
 
-    it('should include both parent and extended form components', () => {
+    it('should include both parent and extended form components', async () => {
       function ExtendedSubmit({ label }: { label: string }) {
         const form = useFormContext()
         return (
@@ -791,14 +801,16 @@ describe('createFormHook', () => {
         )
       }
 
-      const { getByText, getByTestId } = render(<Comp />)
-      expect(getByText('Submit')).toBeInTheDocument()
-      expect(getByTestId('extended-submit')).toHaveTextContent(
-        'Extended Submit',
-      )
+      const { getByText, getByTestId } = await render(<Comp />)
+      await expect
+        .element(getByText('Submit', { exact: true }))
+        .toBeInTheDocument()
+      await expect
+        .element(getByTestId('extended-submit'))
+        .toHaveTextContent('Extended Submit')
     })
 
-    it('should support chaining multiple extendForm calls', () => {
+    it('should support chaining multiple extendForm calls', async () => {
       function FieldA({ label }: { label: string }) {
         const field = useFieldContext<string>()
         return (
@@ -859,13 +871,19 @@ describe('createFormHook', () => {
         )
       }
 
-      const { getByLabelText } = render(<Comp />)
-      expect(getByLabelText('A')).toHaveValue('valueA')
-      expect(getByLabelText('B')).toHaveValue('valueB')
-      expect(getByLabelText('C')).toHaveValue('valueC')
+      const { getByLabelText } = await render(<Comp />)
+      await expect
+        .element(getByLabelText('A', { exact: true }))
+        .toHaveValue('valueA')
+      await expect
+        .element(getByLabelText('B', { exact: true }))
+        .toHaveValue('valueB')
+      await expect
+        .element(getByLabelText('C', { exact: true }))
+        .toHaveValue('valueC')
     })
 
-    it('should work with withForm after extendForm', () => {
+    it('should work with withForm after extendForm', async () => {
       function ExtendedTextField({ label }: { label: string }) {
         const field = useFieldContext<string>()
         return (
@@ -916,12 +934,16 @@ describe('createFormHook', () => {
         return <ChildForm form={form} />
       }
 
-      const { getByLabelText } = render(<Parent />)
-      expect(getByLabelText('First Name')).toHaveValue('Jane')
-      expect(getByLabelText('Last Name')).toHaveValue('Smith')
+      const { getByLabelText } = await render(<Parent />)
+      await expect
+        .element(getByLabelText('First Name', { exact: true }))
+        .toHaveValue('Jane')
+      await expect
+        .element(getByLabelText('Last Name', { exact: true }))
+        .toHaveValue('Smith')
     })
 
-    it('should return a new extendForm from the extended hook', () => {
+    it('should return a new extendForm from the extended hook', async () => {
       function ExtendedTextField({ label }: { label: string }) {
         const field = useFieldContext<string>()
         return (
@@ -999,14 +1021,14 @@ describe('createFormHook', () => {
       return <ChildFormAsField form={form} fields="person" />
     }
 
-    const { getByTestId } = render(<Parent />)
+    const { getByTestId } = await render(<Parent />)
     const input = getByTestId('lastName')
     const stateLastName = getByTestId('state-lastName')
 
-    expect(stateLastName).toHaveTextContent('LastName')
+    await expect.element(stateLastName).toHaveTextContent('LastName')
 
     await user.clear(input)
     await user.type(input, 'Updated')
-    await waitFor(() => expect(stateLastName).toHaveTextContent('Updated'))
+    await expect.element(stateLastName).toHaveTextContent('Updated')
   })
 })
