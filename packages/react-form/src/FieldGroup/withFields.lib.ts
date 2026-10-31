@@ -7,11 +7,12 @@ import {
 import type { InternalFieldGroupBindings } from '@tanstack/form-core/internals'
 import type { FunctionComponent } from 'react'
 import type { AnyFieldGroupApi } from './FieldGroupApi.public'
+import type { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
 
 function attachReactFieldGroupComponents(
   group: InternalFieldGroupApi,
-  form: any,
 ): AnyFieldGroupApi {
+  const form = group.form as InternalReactFormApi
   const Field: FunctionComponent<any> = (props) => {
     const FormField = form.Field
     return React.createElement(
@@ -92,7 +93,6 @@ function withFieldsRuntime(
             fieldNames,
             getBindings: () => bindingsRef.current,
           }),
-          form,
         ),
       [form],
     )

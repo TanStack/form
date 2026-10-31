@@ -20,6 +20,7 @@ import type {
   WithoutFunction,
 } from '../Components.public'
 import type { ReadonlyAtom } from '@tanstack/svelte-store'
+import type { SvelteFieldComponentsType } from '../fieldComponentsType.lib'
 
 export type FieldGroupFieldComponent<
   TFieldData,
@@ -86,7 +87,10 @@ export interface FieldGroupApi<
     never
   >,
 >
-  extends FormApiFieldMethods<TFieldData>, FormApiArrayMethods<TFieldData> {
+  extends
+    FormApiFieldMethods<TFieldData>,
+    FormApiArrayMethods<TFieldData>,
+    SvelteFieldComponentsType<TFieldComponents> {
   atom: ReadonlyAtom<TFieldData>
   Field: FieldGroupFieldComponent<TFieldData, TFieldComponents>
   ArrayField: FieldGroupArrayFieldComponent<TFieldData, TFieldComponents>

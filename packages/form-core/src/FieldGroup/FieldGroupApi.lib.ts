@@ -5,11 +5,12 @@ import type { AnyFieldApiOptions } from '../FieldApi/FieldApi.lib'
 import type { AnyInternalFormApi } from '../FormApi/FormApi.lib'
 import type { InternalFieldUpdateOptions } from '../types.lib'
 import type { ReadonlyAtom } from '@tanstack/store'
+import type { FieldGroupApi } from './FieldGroupApi.public'
 
 export type InternalFieldGroupBindings = Record<string, string>
 
 export interface InternalFieldGroupOptions {
-  form: AnyInternalFormApi
+  form: AnyInternalFormApi | InternalFieldGroupApi
   fieldNames: ReadonlyArray<string>
   getBindings: () => InternalFieldGroupBindings | undefined
 }
@@ -28,15 +29,21 @@ function getRootSegmentEnd(name: string): number {
   return Math.min(dotIndex, arrayIndex)
 }
 
-export class InternalFieldGroupApi {
+export class InternalFieldGroupApi implements FieldGroupApi<any> {
   readonly atom: ReadonlyAtom<Record<string, unknown>>
   readonly form: AnyInternalFormApi
   readonly fieldNames: ReadonlyArray<string>
+  private readonly parent?: InternalFieldGroupApi
   private readonly getBindings: () => InternalFieldGroupBindings | undefined
   private readonly resolvedNameCache = new Map<string, ResolvedNameCacheEntry>()
 
   constructor(options: InternalFieldGroupOptions) {
-    this.form = options.form
+    if (options.form instanceof InternalFieldGroupApi) {
+      this.parent = options.form
+      this.form = options.form.form
+    } else {
+      this.form = options.form
+    }
     this.fieldNames = options.fieldNames
     this.getBindings = options.getBindings
     this.atom = createAtom(
@@ -58,6 +65,13 @@ export class InternalFieldGroupApi {
   }
 
   _resolveFieldName(fieldName: string): string {
+    const parentFieldName = this.resolveLocalFieldName(fieldName)
+    return this.parent
+      ? this.parent._resolveFieldName(parentFieldName)
+      : parentFieldName
+  }
+
+  private resolveLocalFieldName(fieldName: string): string {
     const bindings = this.getBindings()
     if (bindings === undefined) return fieldName
 
@@ -83,11 +97,15 @@ export class InternalFieldGroupApi {
     options: TOptions,
     mergeOptions: (props: TOptions, overrides: Partial<TOptions>) => TOptions,
   ): AnyFieldApiOptions {
-    return transformFieldOptionsFieldNames(
+    const parentOptions = transformFieldOptionsFieldNames(
       options,
-      (fieldName) => this._resolveFieldName(fieldName),
+      (fieldName) => this.resolveLocalFieldName(fieldName),
       mergeOptions,
     )
+
+    return this.parent
+      ? this.parent._getFormFieldOptions(parentOptions, mergeOptions)
+      : parentOptions
   }
 
   getFieldValue = (fieldName: string) =>

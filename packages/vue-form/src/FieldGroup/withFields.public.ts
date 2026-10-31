@@ -71,9 +71,14 @@ export type FieldGroupWithFieldsFn<
   component: Component & (new (props: TProps & PublicProps) => any),
   fieldsPropName: TFieldsPropName &
     FieldGroupFieldsPropName<TProps, TFieldGroup>,
-) => new <TFormData>(
+) => new <
+  TFormData,
+  TParentFieldComponents extends FieldGroupFieldComponentsOf<TFieldGroup>,
+>(
   props: Omit<TProps, TFieldsPropName | 'form'> & {
-    form: FieldGroupForm<FieldGroupFieldComponentsOf<TFieldGroup>, TFormData>
+    form:
+      | FieldGroupForm<TParentFieldComponents, TFormData>
+      | FieldGroupApi<TFormData, TParentFieldComponents>
   } & FieldGroupFieldBindingsProps<
       FieldGroupFieldsOf<TFieldGroup>,
       TFormData,
@@ -82,7 +87,9 @@ export type FieldGroupWithFieldsFn<
     PublicProps,
 ) => VueComponentInstance<
   Omit<TProps, TFieldsPropName | 'form'> & {
-    form: FieldGroupForm<FieldGroupFieldComponentsOf<TFieldGroup>, TFormData>
+    form:
+      | FieldGroupForm<TParentFieldComponents, TFormData>
+      | FieldGroupApi<TFormData, TParentFieldComponents>
   } & FieldGroupFieldBindingsInstanceProp<
       TFieldGroup,
       TFormData,
