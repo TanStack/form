@@ -5,12 +5,12 @@ import type {
   FieldApi,
   FieldApiOptions,
   FieldValidators,
-  FormErrorTypes,
   FormGroupApi,
   FormGroupOptions,
   FormGroupState,
   FormGroupValidators,
   FormState,
+  ScopedErrorTypes,
   ToFieldError,
   ToFormGroupErrorTypes,
 } from '@tanstack/form-core'
@@ -64,10 +64,10 @@ export type SolidFieldApi<
   TFieldValue,
   TFieldError,
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>>,
 > = Accessor<
-  FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes>
+  FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormError>
 > &
   FieldComponentsMatchingType<TFieldComponents, TFieldValue>
 
@@ -79,15 +79,15 @@ interface SolidSubscribeProps<TSourceData, TSelected> {
 
 export type SolidFormSubscribeProps<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TSelected,
-> = SolidSubscribeProps<FormState<TFormData, TFormErrorTypes>, TSelected>
+> = SolidSubscribeProps<FormState<TFormData, TFormError>, TSelected>
 
 export type SolidFormSubscribeComponent<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
 > = <const TSelected>(
-  props: SolidFormSubscribeProps<TFormData, TFormErrorTypes, TSelected>,
+  props: SolidFormSubscribeProps<TFormData, TFormError, TSelected>,
 ) => JSX.Element
 
 export interface SolidFormFieldProps<
@@ -97,7 +97,7 @@ export interface SolidFormFieldProps<
   TFieldValidators extends FieldValidators<TFieldData, TFieldName, TFieldValue>,
   TGroupFieldError,
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>>,
 > extends FieldApiOptions<
   TFieldData,
@@ -106,19 +106,15 @@ export interface SolidFormFieldProps<
   TFieldValidators,
   TGroupFieldError,
   TFormData,
-  TFormErrorTypes
+  TFormError
 > {
   children: (
     fieldApi: SolidFieldApi<
       TFieldName,
       TFieldValue,
-      ToFieldError<
-        NoInfer<TFieldValidators>,
-        TGroupFieldError,
-        TFormErrorTypes
-      >,
+      ToFieldError<NoInfer<TFieldValidators>, TGroupFieldError, TFormError>,
       TFormData,
-      TFormErrorTypes,
+      TFormError,
       TFieldComponents
     >,
   ) => JSX.Element
@@ -129,7 +125,7 @@ export interface SolidFormArrayFieldProps<
   TFieldName,
   TFieldValue,
   TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
 > extends SolidFormFieldProps<
   TFormData,
   TFieldName,
@@ -137,13 +133,13 @@ export interface SolidFormArrayFieldProps<
   TFieldValidators,
   never,
   TFormData,
-  TFormErrorTypes,
+  TFormError,
   Record<never, never>
 > {}
 
 export interface SolidFormFieldComponent<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>>,
 > {
   <
@@ -161,7 +157,7 @@ export interface SolidFormFieldComponent<
       TFieldValidators,
       never,
       TFormData,
-      TFormErrorTypes,
+      TFormError,
       TFieldComponents
     >,
   ): JSX.Element
@@ -169,7 +165,7 @@ export interface SolidFormFieldComponent<
 
 export interface SolidFormArrayFieldComponent<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>>,
 > {
   <
@@ -187,7 +183,7 @@ export interface SolidFormArrayFieldComponent<
       TFieldValidators,
       never,
       TFormData,
-      TFormErrorTypes,
+      TFormError,
       TFieldComponents
     >,
   ): JSX.Element
@@ -195,7 +191,7 @@ export interface SolidFormArrayFieldComponent<
 
 export type SolidFormGroupSubscribeProps<
   TGroupValue,
-  TGroupErrorTypes extends FormErrorTypes,
+  TGroupErrorTypes extends ScopedErrorTypes,
   TSelected,
 > = SolidSubscribeProps<
   FormGroupState<TGroupValue, TGroupErrorTypes>,
@@ -204,7 +200,7 @@ export type SolidFormGroupSubscribeProps<
 
 export type SolidFormGroupSubscribeComponent<
   TGroupValue,
-  TGroupErrorTypes extends FormErrorTypes,
+  TGroupErrorTypes extends ScopedErrorTypes,
 > = <const TSelected>(
   props: SolidFormGroupSubscribeProps<TGroupValue, TGroupErrorTypes, TSelected>,
 ) => JSX.Element
@@ -212,8 +208,8 @@ export type SolidFormGroupSubscribeComponent<
 export interface SolidFormGroupFieldComponent<
   TFormData,
   TGroupValue,
-  TGroupErrorTypes extends FormErrorTypes,
-  TFormErrorTypes extends FormErrorTypes,
+  TGroupError extends ScopedErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>>,
 > {
   <
@@ -229,9 +225,9 @@ export interface SolidFormGroupFieldComponent<
       TFieldName,
       DeepValue<TGroupValue, TFieldName>,
       TFieldValidators,
-      TGroupErrorTypes['fieldError'],
+      TGroupError['subfieldError'],
       TFormData,
-      TFormErrorTypes,
+      TFormError,
       TFieldComponents
     >,
   ): JSX.Element
@@ -240,8 +236,8 @@ export interface SolidFormGroupFieldComponent<
 export interface SolidFormGroupArrayFieldComponent<
   TFormData,
   TGroupValue,
-  TGroupErrorTypes extends FormErrorTypes,
-  TFormErrorTypes extends FormErrorTypes,
+  TGroupError extends ScopedErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>>,
 > {
   <
@@ -257,9 +253,9 @@ export interface SolidFormGroupArrayFieldComponent<
       TFieldName,
       DeepValue<TGroupValue, TFieldName>,
       TFieldValidators,
-      TGroupErrorTypes['fieldError'],
+      TGroupError['subfieldError'],
       TFormData,
-      TFormErrorTypes,
+      TFormError,
       TFieldComponents
     >,
   ): JSX.Element
@@ -269,39 +265,39 @@ export interface SolidFormGroupApi<
   TFormData,
   TGroupName,
   TGroupValue,
-  TGroupErrorTypes extends FormErrorTypes,
-  TFormErrorTypes extends FormErrorTypes,
+  TGroupError extends ScopedErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>>,
 > extends FormGroupApi<
   TFormData,
   TGroupName,
   TGroupValue,
-  TGroupErrorTypes,
-  TFormErrorTypes
+  TGroupError,
+  TFormError
 > {
   Field: SolidFormGroupFieldComponent<
     TFormData,
     TGroupValue,
-    TGroupErrorTypes,
-    TFormErrorTypes,
+    TGroupError,
+    TFormError,
     TFieldComponents
   >
   ArrayField: SolidFormGroupArrayFieldComponent<
     TFormData,
     TGroupValue,
-    TGroupErrorTypes,
-    TFormErrorTypes,
+    TGroupError,
+    TFormError,
     TFieldComponents
   >
-  Subscribe: SolidFormGroupSubscribeComponent<TGroupValue, TGroupErrorTypes>
+  Subscribe: SolidFormGroupSubscribeComponent<TGroupValue, TGroupError>
 }
 
 export type SolidFormGroupAccessor<
   TFormData,
   TGroupName,
   TGroupValue,
-  TGroupErrorTypes extends FormErrorTypes,
-  TFormErrorTypes extends FormErrorTypes,
+  TGroupErrorTypes extends ScopedErrorTypes,
+  TFormErrorTypes extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>>,
 > = Accessor<
   SolidFormGroupApi<
@@ -330,7 +326,7 @@ export interface SolidFormGroupProps<
   TGroupName,
   TGroupValue,
   TGroupValidators extends FormGroupValidators<TGroupValue>,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>>,
 > extends Omit<
   FormGroupOptions<
@@ -338,7 +334,7 @@ export interface SolidFormGroupProps<
     TGroupName,
     TGroupValue,
     TGroupValidators,
-    TFormErrorTypes
+    TFormError
   >,
   'form'
 > {
@@ -348,7 +344,7 @@ export interface SolidFormGroupProps<
       TGroupName,
       TGroupValue,
       ToFormGroupErrorTypes<NoInfer<TGroupValidators>>,
-      TFormErrorTypes,
+      TFormError,
       TFieldComponents
     >,
   ) => JSX.Element
@@ -356,7 +352,7 @@ export interface SolidFormGroupProps<
 
 export interface SolidFormGroupComponent<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormErrorTypes extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>>,
 > {
   <
@@ -377,7 +373,7 @@ export interface SolidFormGroupComponent<
 
 export interface SolidTanStackFormComponents<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormErrorTypes extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>> = Record<
     never,
     never

@@ -4,7 +4,7 @@ import { InternalFormGroupApi } from '../../src/FormGroupApi/FormGroupApi.lib'
 import { defaultFieldMeta } from '../../src/FieldApi/fieldState.lib'
 import { reconcileValidatorInstances } from '../../src/ValidatorInstance.lib'
 import type { AnyInternalFieldApi } from '../../src/FieldApi/FieldApi.lib'
-import type { ValidationIssue } from '../../src/validation.public'
+import type { ValidationIssue } from '../../src'
 import type { ValidationSourceErrorMap } from '../../src/validation'
 
 function setFieldValidatorErrors(

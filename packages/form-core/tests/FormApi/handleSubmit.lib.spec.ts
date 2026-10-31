@@ -8,7 +8,7 @@ describe('runSubmissionProcess', () => {
       defaultValues: { name: '' },
       onSubmit: ({ createErrorMap }) => {
         const errors = createErrorMap({ form: 'Initial submit error' })
-        errors.form = 'Submission failed'
+        errors.form = ['Submission failed']
         errors.fields.name = 'Name is required'
         return errors
       },
@@ -20,10 +20,10 @@ describe('runSubmissionProcess', () => {
     const result = await form.handleSubmit()
 
     expect(result).toEqual([
-      {
+      expect.objectContaining({
         form: [{ message: 'Submission failed' }],
         fields: { name: [{ message: 'Name is required' }] },
-      },
+      }),
     ])
     expect(form.state.errors).toEqual([{ message: 'Submission failed' }])
     expect(field.errors).toEqual([{ message: 'Name is required' }])

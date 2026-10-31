@@ -11,8 +11,7 @@ import type {
   DefaultFormOptions,
   FormOptions,
   FormOptionsApi,
-  FormValidators,
-  ToFormErrorTypes,
+  GetFormErrorTypes,
 } from '@tanstack/form-core'
 
 /**
@@ -109,13 +108,20 @@ export type UseAppFormHook<
   in out TComponents extends AnyReactFormComponentMap,
 > = <
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
+  const TValidatorConfig extends unknown[],
+  TValidators,
   TSubmitReturn,
 >(
-  options: FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>,
+  options: FormOptions<
+    TFormData,
+    TValidatorConfig,
+    TValidators,
+    TSubmitReturn,
+    unknown
+  >,
 ) => ReactAppFormApi<
   TFormData,
-  ToFormErrorTypes<TFormValidators, TSubmitReturn>,
+  GetFormErrorTypes<TValidators, TSubmitReturn>,
   TComponents
 >
 

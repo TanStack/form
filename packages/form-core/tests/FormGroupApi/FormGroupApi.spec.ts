@@ -16,8 +16,7 @@ describe('FormGroupApi', () => {
       validators: [
         {
           run: validator,
-          runOnMount: true,
-          triggers: [],
+          triggers: ['mount'],
         },
       ],
     })
@@ -81,8 +80,7 @@ describe('FormGroupApi', () => {
       validators: [
         {
           run: () => result,
-          runOnMount: true,
-          triggers: [],
+          triggers: ['mount'],
         },
       ],
     })
@@ -889,7 +887,7 @@ describe('FormGroupApi', () => {
   })
 
   it('clears prior group schema output when a dynamic submit predicate skips the validator', async () => {
-    let shouldSkipSubmit = false
+    let shouldSkipOnSubmit = false
     const onSubmit = vi.fn()
     const form = new InternalFormApi({
       defaultValues: { guestDetails: { name: 'Tony' } },
@@ -900,7 +898,7 @@ describe('FormGroupApi', () => {
       validators: [
         {
           run: z.object({ name: z.string() }),
-          skipOnSubmit: () => shouldSkipSubmit,
+          skipOnSubmit: () => shouldSkipOnSubmit,
           triggers: [],
         },
       ],
@@ -912,7 +910,7 @@ describe('FormGroupApi', () => {
       expect.objectContaining({ validatorOutputs: [{ name: 'Tony' }] }),
     )
 
-    shouldSkipSubmit = true
+    shouldSkipOnSubmit = true
     await group.handleSubmit()
 
     expect(onSubmit).toHaveBeenLastCalledWith(
@@ -2045,9 +2043,7 @@ describe('FormGroupApi', () => {
 
     await group.validate('submit')
 
-    expect(group.state.errors).toEqual([
-      expect.objectContaining({ message: 'Name is required' }),
-    ])
+    expect(group.state.errors).toEqual([])
     expect(nameField.errors).toEqual([
       expect.objectContaining({ message: 'Name is required' }),
     ])

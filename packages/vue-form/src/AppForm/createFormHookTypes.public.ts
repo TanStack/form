@@ -11,8 +11,7 @@ import type {
   DefaultFormOptions,
   FormOptions,
   FormOptionsApi,
-  FormValidators,
-  ToFormErrorTypes,
+  GetFormErrorTypes,
 } from '@tanstack/form-core'
 
 /**
@@ -97,13 +96,20 @@ export interface CreateFormHookOptions<
 
 export type UseAppFormHook<TComponents extends AnyVueFormComponentMap> = <
   TFormData,
-  const TFormValidators extends FormValidators<TFormData>,
+  const TValidatorConfig extends unknown[],
+  TValidators,
   TSubmitReturn,
 >(
-  options: FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>,
+  options: FormOptions<
+    TFormData,
+    TValidatorConfig,
+    TValidators,
+    TSubmitReturn,
+    unknown
+  >,
 ) => VueAppFormApi<
   TFormData,
-  ToFormErrorTypes<TFormValidators, TSubmitReturn>,
+  GetFormErrorTypes<TValidators, TSubmitReturn>,
   TComponents
 >
 

@@ -1,418 +1,17 @@
 import type { ReadonlyAtom } from '@tanstack/store'
-import type {
-  ConfigurableValidationTrigger,
-  ErrorVisibility,
-  FormErrorTypes,
-  FormErrors,
-  FormValidationError,
-  FormValidators,
-  ParsedStandardSchemaIssues,
-  ToFormErrorTypes,
-  ToFormOutputs,
-  ValidationErrorMap,
-} from '../validation.public'
-import type { StandardSchemaV1Issue } from '../standardSchema.public'
-import type { FormListeners } from '../listeners.public'
 import type { FormApiArrayMethods } from './FormApiArrayMethods.types.public'
 import type { FormApiFieldMethods } from './FormApiFieldMethods.types.public'
-import type { ServerFormState } from '../ssr.public'
-import type { SUBMIT_ERROR } from './handleSubmit.lib'
+import type {
+  FormValidationFailure,
+  ScopedErrorTypes,
+  ValidationIssue,
+} from '../validation/state.public'
+import type { DynamicValidatorTriggers } from '../events.public'
 
-/**
- * A validation error wrapped for processing as an `onSubmit` failure.
- *
- * Create this value with the `createValidationError` or `parseIssues` helper
- * provided to `onSubmit`, then return it from the callback so its form- and
- * field-level errors are added to validation state.
- *
- * @example
- * ```ts
- * formOptions({
- *   defaultValues: { name: '' },
- *   onSubmit: async ({ value, createValidationError }) => {
- *     const result = await saveUser(value)
- *
- *     if (!result.ok) {
- *       return createValidationError(result.error)
- *     }
- *   },
- * })
- * ```
- *
- * @typeParam TFormValidationError - Library-managed. Do not specify explicitly.
- */
-export type OnSubmitError<
-  TFormValidationError extends FormValidationError<any>,
-> = {
-  readonly [SUBMIT_ERROR]: TFormValidationError
-}
-
-/**
- * Wraps a validation error for processing as an `onSubmit` failure without mutating it.
- *
- * Return the result from `onSubmit` to add its form- and field-level errors to
- * validation state.
- *
- * @param error - The form- or field-level validation error to wrap.
- * @typeParam TFormData - Library-managed. Do not specify explicitly.
- * @typeParam TError - Library-managed. Do not specify explicitly.
- */
-export type CreateValidationErrorFn<in out TFormData> = <
-  TError extends FormValidationError<TFormData>,
->(
-  error: TError,
-) => OnSubmitError<TError>
-
-export type CreateSubmitErrorMapFn<in out TFormData> = (
-  initial?: Partial<ValidationErrorMap<TFormData>>,
-) => ValidationErrorMap<TFormData> &
-  OnSubmitError<ValidationErrorMap<TFormData>>
-
-/**
- * Converts Standard Schema issues into an `onSubmit` validation error.
- *
- * Issue paths are mapped to fields in the submitted value. Return the result
- * from `onSubmit` to add the parsed errors to validation state.
- *
- * @param issues - The Standard Schema issues to convert.
- * @typeParam TFormData - Library-managed. Do not specify explicitly.
- */
-export type ParseSubmitIssuesFn<in out TFormData> = (
-  issues: ReadonlyArray<StandardSchemaV1Issue>,
-) => OnSubmitError<ParsedStandardSchemaIssues<TFormData>>
-
-/**
- * Context passed to `onSubmit` after submission validation succeeds.
- *
- * @example
- * ```ts
- * {
- *   // ...
- *   onSubmit: async ({ value, createValidationError }) => {
- *     const result = await saveUser(value)
- *
- *     if (!result.ok) {
- *       return createValidationError(result.error)
- *     }
- *   },
- * }
- * ```
- *
- * @typeParam TFormData - Library-managed. Do not specify explicitly.
- * @typeParam TOutputs - Library-managed. Do not specify explicitly.
- * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
- */
-export interface FormSubmitContext<
-  in out TFormData,
-  out TOutputs,
-  in out TFormErrorTypes extends FormErrorTypes,
-> {
-  /** The form values for this submission. */
-  value: TFormData
-  /** The form API handling this submission. */
-  formApi: FormApi<TFormData, TFormErrorTypes>
-  /**
-   * Schema outputs and `createOutput` payloads from this submission, ordered by
-   * validator index. Skipped validators and successful returns without an output
-   * contribute `undefined`.
-   *
-   * @example
-   * ```ts
-   * {
-   *   // ...
-   *   onSubmit: async ({ validatorOutputs }) => {
-   *     const validatedUser = validatorOutputs[0]
-   *     await saveUser(validatedUser)
-   *   },
-   * }
-   * ```
-   */
-  validatorOutputs: TOutputs
-  /**
-   * Creates a validation error that can be returned from `onSubmit`.
-   *
-   * Return the created error from `onSubmit` to add its form- and field-level
-   * errors to validation state.
-   *
-   * @example
-   * ```ts
-   * {
-   *   // ...
-   *   onSubmit: async ({ value, createValidationError }) => {
-   *     const result = await saveUser(value)
-   *
-   *     if (result.status === 409) {
-   *       return createValidationError({
-   *         form: 'A user with this email already exists',
-   *         fields: {},
-   *       })
-   *     }
-   *   },
-   * }
-   * ```
-   */
-  createValidationError: CreateValidationErrorFn<TFormData>
-  createErrorMap: CreateSubmitErrorMapFn<TFormData>
-  /**
-   * Parses Standard Schema issues into an error returnable from `onSubmit`.
-   *
-   * Issue paths are mapped to fields in the submitted value. Return the parsed
-   * error from `onSubmit` to add those errors to validation state.
-   *
-   * @example
-   * ```ts
-   * {
-   *   // ...
-   *   onSubmit: async ({ value, parseIssues }) => {
-   *     const result = zodSchema.safeParse(value)
-   *
-   *     if (!result.success) {
-   *       return parseIssues(result.error.issues)
-   *     }
-   *   },
-   * }
-   * ```
-   */
-  parseIssues: ParseSubmitIssuesFn<TFormData>
-}
-
-/**
- * Handles a form submission after submission validation succeeds.
- *
- * A returned promise is awaited before submission finishes. Return an error
- * created by the submission context's `createValidationError` or `parseIssues`
- * helper to mark the submission as invalid.
- *
- * @typeParam TFormData - Library-managed. Do not specify explicitly.
- * @typeParam TFormValidators - Library-managed. Do not specify explicitly.
- * @typeParam TSubmitReturn - Library-managed. Do not specify explicitly.
- */
-export type FormSubmitFn<
-  in out TFormData,
-  in out TFormValidators extends FormValidators<TFormData>,
-  in out TSubmitReturn,
-> = (
-  context: FormSubmitContext<
-    TFormData,
-    ToFormOutputs<TFormValidators>,
-    ToFormErrorTypes<TFormValidators, unknown>
-  >,
-) => TSubmitReturn
-
-/**
- * Context passed to `onSubmitInvalid` when a submission fails.
- *
- * @example
- * ```ts
- * {
- *   // ...
- *   onSubmitInvalid: () => {
- *     document
- *       .querySelector<HTMLElement>('[aria-invalid="true"]')
- *       ?.focus()
- *   },
- * }
- * ```
- *
- * @typeParam TFormData - Library-managed. Do not specify explicitly.
- * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
- */
-export interface FormSubmitInvalidContext<
-  in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
-> {
-  /** The form values for the failed submission. */
-  value: TFormData
-  /** The form API handling the failed submission. */
-  formApi: FormApi<TFormData, TFormErrorTypes>
-}
-
-/**
- * Form options whose data, validator, and submission return types are erased.
- *
- * Use this alias only when reusable code does not need type-safe access to
- * values, validators, or submission results.
- */
-export type AnyFormOptions = FormOptions<any, any, any, any>
-
-declare const formOptionsComponentsSymbol: unique symbol
-
-/**
- * Configures initial values, validation, listeners, and submission.
- *
- * Pass these options to a framework adapter's form creation API. Use
- * `formOptions` when declaring them separately so data and validator types
- * remain inferred.
- *
- * @example
- * ```ts
- * const profileFormOptions = formOptions({
- *   defaultValues: { name: '' },
- *   onSubmit: async ({ value }) => {
- *     await saveProfile(value)
- *   },
- * })
- * ```
- *
- * @typeParam TFormData - Library-managed. Do not specify explicitly.
- * @typeParam TFormValidators - Library-managed. Do not specify explicitly.
- * @typeParam TSubmitReturn - Library-managed. Do not specify explicitly.
- * @typeParam TComponents - Library-managed. Do not specify explicitly.
- */
-export interface FormOptions<
-  in out TFormData,
-  in out TFormValidators extends FormValidators<TFormData>,
-  in out TSubmitReturn,
-  out TComponents,
-> {
-  readonly [formOptionsComponentsSymbol]?: TComponents
-  /**
-   * A stable identifier for this form.
-   *
-   * When omitted, an identifier is generated and preserved across option
-   * updates until a new `formId` is supplied. Read the supplied or generated
-   * identifier from `formApi.formId`.
-   */
-  formId?: string
-  /**
-   * Initial values and the source of the inferred data shape.
-   *
-   * They also define the reset baseline and what `isDefaultValue` compares
-   * against.
-   *
-   * **Async initial values:** The passed value may change over time. While data
-   * is loading, pass fallback values containing the complete data shape, then
-   * pass the resolved values when they become available.
-   *
-   * When this option changes, untouched top-level values adopt the new defaults
-   * while values under touched top-level fields are preserved.
-   */
-  defaultValues: TFormData
-  /**
-   * Controls when fields expose validation errors through public state.
-   *
-   * This is the default policy for every field. A field can override it with a field-level
-   * `errorVisibility` option.
-   *
-   * When omitted, errors are always exposed.
-   *
-   * @example
-   * ```ts
-   * errorVisibility: ({ state, fieldState }) =>
-   *   fieldState.meta.isBlurred || state.submissionAttempts > 0,
-   * ```
-   */
-  errorVisibility?: ErrorVisibility<
-    TFormData,
-    ToFormErrorTypes<TFormValidators, unknown>
-  >
-  /**
-   * An ordered pipeline of form-level validators.
-   *
-   * Validators run for their configured triggers and, by default, during
-   * submission. Keep the array length stable after initialization so
-   * validator-indexed errors and schema outputs remain aligned.
-   *
-   * @example
-   * ```ts
-   * validators: [
-   *   {
-   *     triggers: ['change'],
-   *     run: ({ value, createErrorMap }) => {
-   *       if (value.name) {
-   *         return null
-   *       }
-   *
-   *       return createErrorMap({ fields: { name: 'Name is required' } })
-   *     },
-   *   },
-   * ],
-   * ```
-   */
-  validators?: TFormValidators
-  /**
-   * Listener configurations for change, blur, submit, mount, and reset events.
-   *
-   * Matching listeners are evaluated in array order. Their return values are
-   * ignored, and returned promises are not awaited.
-   *
-   * @example
-   * ```ts
-   * listeners: [
-   *   {
-   *     triggers: ['change'],
-   *     triggerDebounceMs: 200,
-   *     run: ({ value }) => {
-   *       saveDraft(value)
-   *     },
-   *   },
-   * ],
-   * ```
-   */
-  listeners?: FormListeners<
-    TFormData,
-    ToFormErrorTypes<TFormValidators, unknown>
-  >
-  /**
-   * Server-validation state supplied by a server or SSR adapter during
-   * hydration.
-   *
-   * Pass a failed result's `serverState` through unchanged. Constructing or
-   * mutating this state directly is discouraged.
-   *
-   * @example
-   * ```ts
-   * serverState: failedResult.serverState,
-   * ```
-   */
-  serverState?: ServerFormState<
-    NoInfer<TFormData>,
-    NoInfer<TFormValidators>
-  > | null
-  /**
-   * Called after submission validation succeeds.
-   *
-   * Return an error created with `createValidationError` or `parseIssues` to
-   * mark the submission as invalid. A returned promise is awaited before
-   * submission finishes. If the callback throws, `onSubmitInvalid` is called.
-   *
-   * @example
-   * ```ts
-   * {
-   *   // ...
-   *   onSubmit: async ({ value }) => {
-   *     await saveUser(value)
-   *   },
-   * }
-   * ```
-   */
-  onSubmit?: FormSubmitFn<TFormData, TFormValidators, TSubmitReturn>
-  /**
-   * Called after an invalid submission is detected.
-   *
-   * This includes validation failures, errors returned from `onSubmit`, and
-   * exceptions thrown during validation or submission. A returned promise is
-   * awaited before submission finishes.
-   *
-   * @example
-   * ```ts
-   * {
-   *   // ...
-   *   onSubmitInvalid: () => {
-   *     document
-   *       .querySelector<HTMLElement>('[aria-invalid="true"]')
-   *       ?.focus()
-   *   },
-   * }
-   * ```
-   */
-  onSubmitInvalid?: (
-    context: FormSubmitInvalidContext<
-      TFormData,
-      ToFormErrorTypes<TFormValidators, unknown>
-    >,
-  ) => void | Promise<void>
-}
+type FormError<TFormError extends ScopedErrorTypes> =
+  TFormError extends ScopedErrorTypes<infer TError extends ValidationIssue, any>
+    ? TError
+    : never
 
 /**
  * A snapshot of current values, validation status, and submission metadata.
@@ -425,7 +24,7 @@ export interface FormOptions<
  */
 export interface FormState<
   in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
+  out TFormError extends ScopedErrorTypes,
 > {
   /**
    * Current values after field edits, resets, or default-value updates.
@@ -475,7 +74,7 @@ export interface FormState<
    * Errors routed to fields are exposed through the corresponding field APIs
    * and are not included here.
    */
-  errors: FormErrors<TFormErrorTypes>
+  errors: Array<FormError<TFormError>>
   /**
    * Whether validation state contains no form- or field-level errors.
    *
@@ -591,19 +190,20 @@ export interface FormResetOptions {
  * Registered fields are marked touched, field validators run before form
  * validators, and `onSubmit` is awaited only when validation succeeds.
  * Validation error results and errors returned by `onSubmit` through
- * `createValidationError` are stored as error state. `onSubmitInvalid` is
- * awaited after a failed attempt.
+ * `createValidationError` or `createErrorMap` are stored as error state.
+ * `onSubmitInvalid` is awaited after a failed attempt.
  *
  * Calls made while an attempt is in progress return the same promise instead
  * of starting another attempt.
  *
  * @returns A promise resolving to the error results produced by field and
  * form validation, plus any validation error returned by `onSubmit` through
- * `createValidationError`. The array is empty if none are produced.
+ * `createValidationError` or `createErrorMap`. The array is empty if none are
+ * produced.
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
  */
 export type HandleSubmitFn<in out TFormData> = () => Promise<
-  Array<FormValidationError<TFormData>>
+  Array<FormValidationFailure<TFormData>>
 >
 
 /**
@@ -637,7 +237,8 @@ export type ResetFn<in out TFormData> = (
  */
 export interface FormApi<
   in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
+  // TODO in out?
+  TFormError extends ScopedErrorTypes,
 >
   extends FormApiFieldMethods<TFormData>, FormApiArrayMethods<TFormData> {
   /**
@@ -646,9 +247,9 @@ export interface FormApi<
    * Subscribe to this atom to observe state changes. For an imperative read,
    * use `state`.
    */
-  atom: ReadonlyAtom<FormState<TFormData, TFormErrorTypes>>
+  atom: ReadonlyAtom<FormState<TFormData, TFormError>>
   /** Current values, validation status, and submission metadata. */
-  readonly state: FormState<TFormData, TFormErrorTypes>
+  readonly state: FormState<TFormData, TFormError>
   /** The current baseline values used by `reset()` and `isDefaultValue`. */
   readonly defaultValues: TFormData
   /**
@@ -675,8 +276,8 @@ export interface FormApi<
    * ran. Unlike `state.errors`, these results are not flattened.
    */
   validate: (
-    signal: ConfigurableValidationTrigger,
-  ) => Promise<Array<FormValidationError<TFormData>>>
+    signal: DynamicValidatorTriggers,
+  ) => Promise<Array<FormValidationFailure<TFormData>>>
 
   /**
    * Runs submission validation and submits current values when validation
@@ -685,15 +286,16 @@ export interface FormApi<
    * Registered fields are marked touched, field validators run before form
    * validators, and `onSubmit` is awaited only when validation succeeds.
    * Validation error results and errors returned by `onSubmit` through
-   * `createValidationError` are stored as error state. `onSubmitInvalid` is
-   * awaited after a failed attempt.
+   * `createValidationError` or `createErrorMap` are stored as error state.
+   * `onSubmitInvalid` is awaited after a failed attempt.
    *
    * Calls made while an attempt is in progress return the same promise instead
    * of starting another attempt.
    *
    * The returned promise resolves to the error results produced by field and
    * form validation, plus any validation error returned by `onSubmit` through
-   * `createValidationError`. The array is empty if none are produced.
+   * `createValidationError` or `createErrorMap`. The array is empty if none are
+   * produced.
    */
   handleSubmit: HandleSubmitFn<TFormData>
   /**

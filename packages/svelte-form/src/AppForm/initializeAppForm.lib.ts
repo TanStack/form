@@ -1,6 +1,7 @@
 import { InternalFormApi } from '@tanstack/form-core/internals'
 import { attachSvelteAppFormComponents } from './Components.lib'
 import type {
+  AnyFormOptions,
   DefaultFieldOptions,
   DefaultFormGroupOptions,
   DefaultFormOptions,
@@ -20,7 +21,7 @@ interface AnyCreateFormHookOptions {
 
 export function createAppFormInitializer(
   createOptions: AnyCreateFormHookOptions,
-): (options: FormOptions<any, any, any, unknown>) => InternalSvelteFormApi {
+): (options: AnyFormOptions) => InternalSvelteFormApi {
   const hasDefaultOptions =
     createOptions.defaultFormOptions ||
     createOptions.defaultFieldOptions ||

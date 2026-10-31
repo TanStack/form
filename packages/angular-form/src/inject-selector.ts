@@ -1,18 +1,18 @@
 import { injectSelector as injectAngularSelector } from '@tanstack/angular-store'
 import type { Signal } from '@angular/core'
-import type { FormApi, FormErrorTypes, FormState } from '@tanstack/form-core'
+import type { FormApi, FormState, ScopedErrorTypes } from '@tanstack/form-core'
 import type { InjectSelectorOptions } from '@tanstack/angular-store'
 
 /** Selects form state as an Angular signal. */
 export function injectSelector<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
-  TSelected = NoInfer<FormState<TFormData, TFormErrorTypes>>,
+  TFormError extends ScopedErrorTypes,
+  const TSelected = NoInfer<FormState<TFormData, TFormError>>,
 >(
-  form: FormApi<TFormData, TFormErrorTypes>,
-  selector: (
-    state: NoInfer<FormState<TFormData, TFormErrorTypes>>,
-  ) => TSelected = (state) => state as unknown as TSelected,
+  form: FormApi<TFormData, TFormError>,
+  selector: (state: NoInfer<FormState<TFormData, TFormError>>) => TSelected = (
+    state,
+  ) => state as never,
   options?: InjectSelectorOptions<TSelected>,
 ): Signal<TSelected> {
   return injectAngularSelector(form.atom, selector, options)

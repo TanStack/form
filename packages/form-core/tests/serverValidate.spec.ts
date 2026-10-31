@@ -6,18 +6,14 @@ import { installDevtoolsBridge } from '../src/devtoolsBridge.lib'
 import { validateServerValues } from '../src/internals'
 import { formOptions, initialServerFormState } from '../src'
 import type {
-  FormValidators,
   ServerValidateFailure,
   ServerValidateResult,
   ServerValidateSuccess,
 } from '../src'
 
-function expectServerValidateSuccess<
-  TFormData,
-  TFormValidators extends FormValidators<TFormData>,
->(
-  result: ServerValidateResult<TFormData, TFormValidators>,
-): ServerValidateSuccess<TFormData, TFormValidators> {
+function expectServerValidateSuccess<TFormData, TValidators>(
+  result: ServerValidateResult<TFormData, TValidators>,
+): ServerValidateSuccess<TFormData, TValidators> {
   expect(result.success).toBe(true)
 
   if (!result.success) {
@@ -27,12 +23,9 @@ function expectServerValidateSuccess<
   return result
 }
 
-function expectServerValidateFailure<
-  TFormData,
-  TFormValidators extends FormValidators<TFormData>,
->(
-  result: ServerValidateResult<TFormData, TFormValidators>,
-): ServerValidateFailure<TFormData, TFormValidators> {
+function expectServerValidateFailure<TFormData, TValidators>(
+  result: ServerValidateResult<TFormData, TValidators>,
+): ServerValidateFailure<TFormData> {
   expect(result.success).toBe(false)
 
   if (result.success) {

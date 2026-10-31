@@ -214,12 +214,13 @@ describe('form - submission handling', () => {
 
       expect(result).toEqual([
         expect.objectContaining({
-          form: [expect.objectContaining({ message: 'Name is required' })],
+          form: [],
+          fields: {
+            name: [expect.objectContaining({ message: 'Name is required' })],
+          },
         }),
       ])
-      expect(form.state.errors).toEqual([
-        expect.objectContaining({ message: 'Name is required' }),
-      ])
+      expect(form.state.errors).toEqual([])
       expect(field.errors).toEqual([
         expect.objectContaining({ message: 'Name is required' }),
       ])
@@ -480,14 +481,14 @@ describe('form - submission handling', () => {
     })
 
     it('clears prior schema output when a dynamic submit predicate skips the validator', async () => {
-      let shouldSkipSubmit = false
+      let shouldSkipOnSubmit = false
       const onSubmit = vi.fn()
       const form = new InternalFormApi({
         defaultValues: { name: 'test' },
         validators: [
           {
             run: z.object({ name: z.string() }),
-            skipOnSubmit: () => shouldSkipSubmit,
+            skipOnSubmit: () => shouldSkipOnSubmit,
             triggers: [],
           },
         ],
@@ -499,7 +500,7 @@ describe('form - submission handling', () => {
         expect.objectContaining({ validatorOutputs: [{ name: 'test' }] }),
       )
 
-      shouldSkipSubmit = true
+      shouldSkipOnSubmit = true
       await form.handleSubmit()
 
       expect(onSubmit).toHaveBeenLastCalledWith(
@@ -645,7 +646,7 @@ describe('form - submission handling', () => {
         ],
       })
       await form.validate('change')
-      // skipOnSubmit: true only affects submit, not the configured triggers
+      // skipOnSubmit only affects submit, not the configured triggers
       expect(form.state.errors).toEqual([{ message: 'Change error' }])
       expect(validatorFn).toHaveBeenCalled()
     })
@@ -669,7 +670,7 @@ describe('form - submission handling', () => {
       expect(validatorFn).not.toHaveBeenCalled()
     })
 
-    it('supports skipOnSubmit as a function', async () => {
+    it('evaluates skipOnSubmit against the current form values', async () => {
       const validatorFn = vi
         .fn()
         .mockImplementation(() => ({ message: 'Conditional submit error' }))
@@ -687,7 +688,13 @@ describe('form - submission handling', () => {
       expect(form.state.errors).toEqual([
         { message: 'Conditional submit error' },
       ])
-      expect(validatorFn).toHaveBeenCalled()
+      expect(validatorFn).toHaveBeenCalledOnce()
+
+      form.setFieldValue('name', 'Tony')
+      await form.handleSubmit()
+
+      expect(form.state.errors).toEqual([])
+      expect(validatorFn).toHaveBeenCalledOnce()
     })
 
     it('returns the same promise when handleSubmit is called multiple times during submission', async () => {
@@ -733,15 +740,15 @@ describe('form - submission handling', () => {
 
       const form = new InternalFormApi({
         defaultValues: { fieldA: '', fieldB: '' },
-        onSubmit: ({ createValidationError }) => {
+        onSubmit: ({ createErrorMap }) => {
           if (doErrorA) {
-            return createValidationError({
+            return createErrorMap({
               fields: {
                 fieldA: { message: 'Field A error' },
               },
             })
           }
-          return createValidationError({
+          return createErrorMap({
             fields: {
               fieldB: { message: 'Field B error' },
             },
@@ -772,8 +779,8 @@ describe('form - submission handling', () => {
     it('routes submit field errors through boundaries', async () => {
       const form = new InternalFormApi({
         defaultValues: { range: { to: '' } },
-        onSubmit: ({ createValidationError }) =>
-          createValidationError({
+        onSubmit: ({ createErrorMap }) =>
+          createErrorMap({
             fields: {
               'range.to': { message: 'Submit end date error' },
             },
@@ -795,9 +802,9 @@ describe('form - submission handling', () => {
 
       const form = new InternalFormApi({
         defaultValues: { fieldA: '' },
-        onSubmit: ({ createValidationError }) => {
+        onSubmit: ({ createErrorMap }) => {
           if (doError) {
-            return createValidationError({
+            return createErrorMap({
               fields: {
                 fieldA: { message: 'Field A error' },
               },

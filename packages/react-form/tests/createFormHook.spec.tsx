@@ -21,8 +21,7 @@ describe('createFormHook', () => {
         defaultValues: { name: '' },
         validators: [
           {
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
             run: () => ({ fields: { name: 'Name is required' } }),
           },
         ],

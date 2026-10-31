@@ -2,23 +2,19 @@ import { InternalFormApi } from '@tanstack/form-core/internals'
 import { onMounted, onUnmounted, useId, watchEffect } from 'vue'
 import { attachVueFormComponents } from './Components.lib'
 import type { AnyInternalFormApi } from '@tanstack/form-core/internals'
-import type { FormOptions } from '@tanstack/form-core'
+import type { AnyFormOptions } from '@tanstack/form-core'
 import type { VueTanStackFormComponents } from './Components.public'
 
 export interface InternalVueFormApi
   extends AnyInternalFormApi, VueTanStackFormComponents<any, any, any> {}
 
-export function initializeForm(
-  options: FormOptions<any, any, any, unknown>,
-): InternalVueFormApi {
+export function initializeForm(options: AnyFormOptions): InternalVueFormApi {
   return attachVueFormComponents(new InternalFormApi(options), null)
 }
 
 export function useInternalForm(
-  options: FormOptions<any, any, any, unknown>,
-  initializeFn: (
-    options: FormOptions<any, any, any, unknown>,
-  ) => InternalVueFormApi,
+  options: AnyFormOptions,
+  initializeFn: (options: AnyFormOptions) => InternalVueFormApi,
 ) {
   const vueFormId = useId()
   const resolveOptions = () =>

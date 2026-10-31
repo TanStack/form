@@ -1,4 +1,4 @@
-import type { AnyFormApi, FormApi, FormErrorTypes } from '@tanstack/form-core'
+import type { AnyFormApi, FormApi, ScopedErrorTypes } from '@tanstack/form-core'
 import type { ReactTanStackFormComponents } from './Components.public'
 import type {
   AnyReactFormComponentMap,
@@ -7,22 +7,18 @@ import type {
 
 type ExtendedFormApi<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TFieldComponents extends ReactComponentTree,
-> = FormApi<TFormData, TFormErrorTypes> &
-  ReactTanStackFormComponents<TFormData, TFormErrorTypes, TFieldComponents>
+> = FormApi<TFormData, TFormError> &
+  ReactTanStackFormComponents<TFormData, TFormError, TFieldComponents>
 
 export type ReactFormApi<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TComponents extends AnyReactFormComponentMap,
 > = unknown extends TComponents['formComponents']
-  ? ExtendedFormApi<TFormData, TFormErrorTypes, TComponents['fieldComponents']>
-  : ExtendedFormApi<
-      TFormData,
-      TFormErrorTypes,
-      TComponents['fieldComponents']
-    > &
+  ? ExtendedFormApi<TFormData, TFormError, TComponents['fieldComponents']>
+  : ExtendedFormApi<TFormData, TFormError, TComponents['fieldComponents']> &
       TComponents['formComponents']
 
 /**

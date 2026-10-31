@@ -6,18 +6,22 @@ import type { AnyInternalFieldApi } from '../FieldApi/FieldApi.lib'
 import type {
   FieldValidateResult,
   FormGroupValidateResult,
-  FormValidateResult,
   SuccessfulValidationResult,
   ValidationErrorInput,
-  ValidationErrorMap,
-  ValidationIssue,
 } from '../validation.public'
+import type {
+  FormValidationResult,
+  ValidationErrorMap,
+  ValidationFailure,
+  ValidationIssue,
+  ValidationSuccess,
+} from './state.public'
 
 type ValidateResult =
-  FormValidateResult<any> | FormGroupValidateResult<any> | FieldValidateResult
+  FormValidationResult<any> | FormGroupValidateResult<any> | FieldValidateResult
 
 export function normalizeValidationError(
-  value: ValidationErrorInput | null | undefined,
+  value: ValidationErrorInput | ValidationFailure | null | undefined | void,
 ): Array<ValidationIssue> {
   return normalizeToArray(value).map((error) =>
     typeof error === 'string' ? { message: error } : error,
@@ -36,7 +40,7 @@ export interface ParsedValidationResult {
  */
 export function isValidationErrorMap(
   value: unknown,
-): value is ValidationErrorMap<any> {
+): value is ValidationErrorMap<any, any, any> {
   if (typeof value !== 'object') return false
   if (value === null) return false
   if (Array.isArray(value)) return false
@@ -95,7 +99,8 @@ export function parseValidationResult(
  */
 export function isErrorResult<T extends ValidateResult>(
   value: T,
-): value is Exclude<T, SuccessfulValidationResult> {
+  // TODO merge these two after migration
+): value is Exclude<T, SuccessfulValidationResult | ValidationSuccess> {
   const { self, subfields } = parseValidationResult(value)
 
   return (

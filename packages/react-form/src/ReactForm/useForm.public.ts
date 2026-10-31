@@ -1,8 +1,8 @@
 import { initializeForm, useInternalForm } from './ReactFormApi.lib'
 import type {
+  AnyFormOptions,
   FormOptions,
-  FormValidators,
-  ToFormErrorTypes,
+  GetFormErrorTypes,
 } from '@tanstack/form-core'
 import type {
   AnyReactFormComponentMap,
@@ -12,17 +12,24 @@ import type { ReactFormApi } from './formApiTypes.public'
 
 export type UseFormHook<in out TComponents extends AnyReactFormComponentMap> = <
   TFormData,
-  const TFormValidators extends FormValidators<TFormData>,
+  const TValidatorConfig extends unknown[],
+  TValidators,
   TSubmitReturn,
 >(
-  options: FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>,
+  options: FormOptions<
+    TFormData,
+    TValidatorConfig,
+    TValidators,
+    TSubmitReturn,
+    unknown
+  >,
 ) => ReactFormApi<
   TFormData,
-  ToFormErrorTypes<TFormValidators, TSubmitReturn>,
+  GetFormErrorTypes<TValidators, TSubmitReturn>,
   TComponents
 >
 
-function useFormHook(options: FormOptions<any, any, any, unknown>) {
+function useFormHook(options: AnyFormOptions) {
   const form = useInternalForm(options, initializeForm)
   return form
 }

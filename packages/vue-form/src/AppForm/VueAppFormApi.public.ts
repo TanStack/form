@@ -1,4 +1,4 @@
-import type { FormErrorTypes } from '@tanstack/form-core'
+import type { ScopedErrorTypes } from '@tanstack/form-core'
 import type { PublicProps } from 'vue'
 import type { VueComponentInstance } from '../vueTypes.lib'
 import type { VueFormApi } from '../VueForm/formApiTypes.public'
@@ -10,8 +10,8 @@ export type AppFormComponent = new (
 
 export type VueAppFormApi<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TComponents extends AnyVueFormComponentMap,
-> = VueFormApi<TFormData, TFormErrorTypes, TComponents> & {
+> = VueFormApi<TFormData, TFormError, TComponents> & {
   AppForm: AppFormComponent
 }

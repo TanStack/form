@@ -1,11 +1,10 @@
-import {
-  isStandardSchema,
-  parseStandardSchema,
-  parseStandardSchemaIssues,
-} from '../standardSchema.lib'
+import { isStandardSchema, parseStandardSchema } from '../standardSchema.lib'
 import { VALIDATION_OUTPUT, isValidationOutput } from '../validationOutput.lib'
 import type { AnyInternalValidatorInstance } from '../ValidatorInstance.lib'
-import type { InternalFormApi } from '../FormApi/FormApi.lib'
+import type {
+  AnyInternalFormApi,
+  InternalFormApi,
+} from '../FormApi/FormApi.lib'
 import type { AnyInternalFieldApi } from '../FieldApi/FieldApi.lib'
 import type {
   FieldValidateResult,
@@ -14,20 +13,20 @@ import type {
   FormGroupValidateResult,
   FormGroupValidator,
   FormGroupValidatorContext,
-  FormValidateResult,
-  FormValidator,
   FormValidatorContext,
   ServerFormValidatorContext,
   ValidationPredicateContext,
   ValidationTriggerOption,
   Validator,
 } from '../validation.public'
+import type { FormValidationResult } from './state.public'
+import type { FormValidator } from './formValidators.public'
 
 type FormValidateContext = {
   scope: 'form'
   event: Exclude<FormValidatorContext<any>['event'], 'server'>
   signal: AbortSignal
-  formApi: InternalFormApi<any, any, any>
+  formApi: AnyInternalFormApi
   triggerFieldApi?: AnyInternalFieldApi
 }
 type ServerPipelineValidateContext = {
@@ -38,11 +37,11 @@ type ServerPipelineValidateContext = {
 }
 type FieldValidateContext = Omit<
   FieldValidatorContext<any, any, any>,
-  'value' | 'parseIssues'
+  'value'
 > & { scope: 'field' }
 type FormGroupValidateContext = Omit<
   FormGroupValidatorContext<any>,
-  'value' | 'parseIssues' | 'createErrorMap' | 'createOutput'
+  'value' | 'createErrorMap' | 'parseIssues' | 'createOutput'
 > & { scope: 'group' }
 export type FormInputContext = Omit<FormValidateContext, 'signal'>
 type ServerFormInputContext = Omit<ServerPipelineValidateContext, 'signal'>
@@ -60,9 +59,9 @@ export type ValidateContext =
   | FieldValidateContext
   | FormGroupValidateContext
 export type ValidateResult =
-  FormValidateResult<any> | FormGroupValidateResult<any> | FieldValidateResult
+  FormValidationResult<any> | FormGroupValidateResult<any> | FieldValidateResult
 type AnyPipelineValidator =
-  | FormValidator<any>
+  | FormValidator<any, any>
   | FormGroupValidator<any>
   | FieldValidator<any, any, any>
   | Validator<any, any, any, any>
@@ -100,18 +99,6 @@ export function isFieldValidateContext(
   return ctx.scope === 'field'
 }
 
-/** Checks whether a configured trigger is the server-only trigger. */
-function isServerTrigger(
-  trigger: ValidationTriggerOption<any, any, any> | 'server',
-): boolean {
-  return trigger === 'server'
-}
-
-/** Checks whether a validator participates in server validation. */
-function hasServerTrigger(validator: AnyPipelineValidator): boolean {
-  return validator.triggers.some(isServerTrigger)
-}
-
 /**
  * Creates the scope-specific context passed to predicate and debounce callbacks.
  *
@@ -146,13 +133,6 @@ function getPredicateContext(
     fieldApi: context.triggerFieldApi,
     value: context.formApi.state.values,
   }
-}
-
-/** Parses Standard Schema issues as errors owned directly by a field. */
-export function parseFieldIssues(
-  issues: Parameters<FieldValidatorContext<any, any, any>['parseIssues']>[0],
-) {
-  return parseStandardSchemaIssues(issues, undefined, 'field')
 }
 
 export const ABORTED_CALL = Symbol('ABORTED_CALL')
@@ -227,7 +207,11 @@ export function shouldRunValidator(
   context: InputContext,
 ): boolean {
   if (isServerContext(context)) {
-    return hasServerTrigger(validator)
+    return (
+      validator.triggers?.some((trigger) =>
+        isValidationTriggerEnabled(trigger, context),
+      ) ?? false
+    )
   }
 
   const { skipOnSubmit = false } = validator
@@ -236,6 +220,7 @@ export function shouldRunValidator(
     return !getEnabledState(skipOnSubmit, context)
   }
 
+  if (!validator.triggers) return false
   return validator.triggers.some((signal) =>
     isValidationTriggerEnabled(signal, context),
   )
@@ -247,12 +232,12 @@ export function shouldRunValidator(
  * Schema and branded function outputs retain their payload and presence marker.
  */
 export async function executeValidator<TResult extends ValidateResult>(
-  validator: AnyPipelineValidator,
+  validatorInstance: AnyInternalValidatorInstance,
   context: AnyValidatorContext,
-  scope: 'field' | 'form',
 ): Promise<ValidatorExecutionResult<TResult>> {
+  const validator = validatorInstance.definition
   const result = isStandardSchema(validator.run)
-    ? await parseStandardSchema(validator.run, context.value, scope)
+    ? await parseStandardSchema(validator.run, context.value, validatorInstance)
     : await validator.run(context)
 
   return normalizeValidatorResult(result as TResult)

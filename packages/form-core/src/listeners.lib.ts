@@ -1,12 +1,14 @@
 import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
-import type { InternalFormApi } from './FormApi/FormApi.lib'
+import type { AnyInternalFormApi } from './FormApi/FormApi.lib'
+import type {
+  AnyFormListener,
+  FormListenerContext,
+} from './FormApi/formListeners.public'
 import type { AnyInternalListenerInstance } from './ListenerInstance.lib'
 import type {
   AnyFieldListener,
-  AnyFormListener,
   FieldListenerContext,
   FieldListenerTriggers,
-  FormListenerContext,
   Listener,
   ListenerDebounceFn,
   ListenerPredicateFn,
@@ -18,13 +20,13 @@ type ListenerEvent = FieldListenerTriggers
 type FormInputContext = {
   event: ListenerEvent
   triggerFieldApi?: AnyInternalFieldApi
-  formApi: InternalFormApi<any, any, any>
+  formApi: AnyInternalFormApi
 }
 
 type FieldInputContext = {
   event: ListenerEvent
   fieldApi: AnyInternalFieldApi
-  formApi: InternalFormApi<any, any, any>
+  formApi: AnyInternalFormApi
 }
 
 type InputContext = FormInputContext | FieldInputContext

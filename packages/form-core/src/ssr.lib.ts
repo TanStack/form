@@ -2,30 +2,21 @@ import { batch } from '@tanstack/store'
 import { createOutput } from './validationOutput.lib'
 import { defaultInternalBaseFieldMeta } from './FieldApi/fieldState.lib'
 import { visitAllFormFields } from './FieldApi/fieldTraversal.lib'
-import { parseStandardSchemaIssues } from './standardSchema.lib'
 import { evaluate } from './utils.lib'
 import { runValidatorPipeline } from './validation'
-import { createErrorMap } from './validation.public'
+import { createErrorMap } from './validation/createErrorMap.lib'
+import { parseIssuesFactory } from './validation/parseIssues.lib'
 import { devtools } from './devtoolsBridge.lib'
 import { reconcileValidatorInstances } from './ValidatorInstance.lib'
-import type { FormOptions } from './FormApi/FormApi.public'
 import type { FormErrorMeta } from './FormApi/formState.lib'
-import type { InternalFormApi } from './FormApi/FormApi.lib'
+import type { AnyInternalFormApi, InternalFormApi } from './FormApi/FormApi.lib'
 import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
+import type { FormValidationResult } from './validation/state.public'
 import type {
-  FormValidateResultFromErrorTypes,
-  FormValidators,
-  ToServerFormErrorTypes,
-} from './validation.public'
-import type { ServerFormState, ServerValidateResult } from './ssr.public'
-
-type ServerFormValidateResult<
-  TFormData,
-  TFormValidators extends FormValidators<TFormData>,
-> = FormValidateResultFromErrorTypes<
-  TFormData,
-  ToServerFormErrorTypes<TFormValidators>
->
+  ServerFormState,
+  ServerValidateResult,
+} from './FormApi/formServerState.public'
+import type { FormOptions } from './FormApi/formOptions.public'
 
 function createInitialFormErrorMeta(): FormErrorMeta {
   return {
@@ -33,7 +24,7 @@ function createInitialFormErrorMeta(): FormErrorMeta {
   }
 }
 
-function resetFieldMetaForServerState(form: InternalFormApi<any, any, any>) {
+function resetFieldMetaForServerState(form: AnyInternalFormApi) {
   visitAllFormFields(form._fieldRootNode, (field) => {
     field._defaultValueCache = null
 
@@ -49,8 +40,8 @@ function resetFieldMetaForServerState(form: InternalFormApi<any, any, any>) {
 }
 
 function resetToServerState<TFormData>(
-  form: InternalFormApi<TFormData, any, any>,
-  serverState: ServerFormState<TFormData, any>,
+  form: InternalFormApi<TFormData>,
+  serverState: ServerFormState<TFormData>,
   defaultValues: TFormData,
 ): void {
   const values = serverState.values ?? defaultValues
@@ -98,8 +89,8 @@ function resetToServerState<TFormData>(
 }
 
 export function applyServerState<TFormData>(
-  form: InternalFormApi<TFormData, any, any>,
-  serverState: ServerFormState<TFormData, any> | null,
+  form: InternalFormApi<TFormData>,
+  serverState: ServerFormState<TFormData> | null,
   defaultValues: TFormData,
 ): void {
   if (serverState === form._lastServerState) return
@@ -116,12 +107,19 @@ export function applyServerState<TFormData>(
 
 export async function validateServerValues<
   TFormData,
-  const TFormValidators extends FormValidators<TFormData>,
+  const TValidatorConfig extends unknown[],
+  TValidators,
   TSubmitReturn,
 >(
-  options: FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>,
+  options: FormOptions<
+    TFormData,
+    TValidatorConfig,
+    TValidators,
+    TSubmitReturn,
+    unknown
+  >,
   values: TFormData,
-): Promise<ServerValidateResult<TFormData, TFormValidators>> {
+): Promise<ServerValidateResult<TFormData, TValidators>> {
   const pipeline = options.validators
 
   if (!pipeline || pipeline.length === 0) {
@@ -141,7 +139,7 @@ export async function validateServerValues<
 
   try {
     const pipelineResult = await runValidatorPipeline<
-      ServerFormValidateResult<TFormData, TFormValidators>
+      FormValidationResult<TFormData>
     >({
       pipeline: validatorInstances ?? [],
       context: {
@@ -150,17 +148,15 @@ export async function validateServerValues<
         formApi: undefined,
       },
       hasFailedBefore: false,
-      getContext: (ctx) => ({
-        event: 'server',
+      getContext: (ctx, instance) => ({
+        event: 'server' as const,
         signal: ctx.signal,
         formApi: undefined,
         value: values,
         createErrorMap,
+        parseIssues: parseIssuesFactory(values, instance.fieldErrorTarget),
         createOutput,
-        parseIssues: (issues) =>
-          parseStandardSchemaIssues(issues, values, 'form'),
       }),
-      scope: 'form',
     })
 
     if (pipelineResult.thrownError !== null) {

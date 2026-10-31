@@ -5,12 +5,12 @@ import type {
   FieldApi,
   FieldApiOptions,
   FieldValidators,
-  FormErrorTypes,
   FormGroupApi,
   FormGroupOptions,
   FormGroupState,
   FormGroupValidators,
   FormState,
+  ScopedErrorTypes,
   ToFieldError,
   ToFormGroupErrorTypes,
 } from '@tanstack/form-core'
@@ -69,9 +69,9 @@ export type SvelteFieldApi<
   TFieldValue,
   TFieldError,
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>>,
-> = FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes> &
+> = FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormError> &
   FieldComponentsMatchingType<TFieldComponents, TFieldValue>
 
 interface SvelteSubscribeProps<TSourceData, TSelected> {
@@ -82,16 +82,16 @@ interface SvelteSubscribeProps<TSourceData, TSelected> {
 
 export type SvelteFormSubscribeProps<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TSelected,
-> = SvelteSubscribeProps<FormState<TFormData, TFormErrorTypes>, TSelected>
+> = SvelteSubscribeProps<FormState<TFormData, TFormError>, TSelected>
 
 export type SvelteFormSubscribeComponent<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
 > = (new <const TSelected>(
   options: ComponentConstructorOptions<
-    SvelteFormSubscribeProps<TFormData, TFormErrorTypes, TSelected>
+    SvelteFormSubscribeProps<TFormData, TFormError, TSelected>
   >,
 ) => SvelteComponent) &
   Component<any> &
@@ -104,7 +104,7 @@ export interface SvelteFormFieldProps<
   TFieldValidators extends FieldValidators<TFieldData, TFieldName, TFieldValue>,
   TGroupFieldError,
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>>,
 > extends FieldApiOptions<
   TFieldData,
@@ -113,20 +113,16 @@ export interface SvelteFormFieldProps<
   TFieldValidators,
   TGroupFieldError,
   TFormData,
-  TFormErrorTypes
+  TFormError
 > {
   children: Snippet<
     [
       SvelteFieldApi<
         TFieldName,
         TFieldValue,
-        ToFieldError<
-          NoInfer<TFieldValidators>,
-          TGroupFieldError,
-          TFormErrorTypes
-        >,
+        ToFieldError<NoInfer<TFieldValidators>, TGroupFieldError, TFormError>,
         TFormData,
-        TFormErrorTypes,
+        TFormError,
         TFieldComponents
       >,
     ]
@@ -135,7 +131,7 @@ export interface SvelteFormFieldProps<
 
 export type SvelteFormFieldComponent<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>>,
 > = (new <
   TFieldName extends DeepKeys<TFormData>,
@@ -153,7 +149,7 @@ export type SvelteFormFieldComponent<
       TFieldValidators,
       never,
       TFormData,
-      TFormErrorTypes,
+      TFormError,
       TFieldComponents
     >
   >,
@@ -163,7 +159,7 @@ export type SvelteFormFieldComponent<
 
 export type SvelteFormArrayFieldComponent<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>>,
 > = (new <
   TFieldName extends DeepKeysWhereValueIncludes<TFormData, Array<any>>,
@@ -181,7 +177,7 @@ export type SvelteFormArrayFieldComponent<
       TFieldValidators,
       never,
       TFormData,
-      TFormErrorTypes,
+      TFormError,
       TFieldComponents
     >
   >,
@@ -191,13 +187,10 @@ export type SvelteFormArrayFieldComponent<
 
 export type SvelteFormGroupSubscribeComponent<
   TGroupValue,
-  TGroupErrorTypes extends FormErrorTypes,
+  TGroupError extends ScopedErrorTypes,
 > = (new <const TSelected>(
   options: ComponentConstructorOptions<
-    SvelteSubscribeProps<
-      FormGroupState<TGroupValue, TGroupErrorTypes>,
-      TSelected
-    >
+    SvelteSubscribeProps<FormGroupState<TGroupValue, TGroupError>, TSelected>
   >,
 ) => SvelteComponent) &
   Component<any> &
@@ -206,8 +199,8 @@ export type SvelteFormGroupSubscribeComponent<
 export type SvelteFormGroupFieldComponent<
   TFormData,
   TGroupValue,
-  TGroupErrorTypes extends FormErrorTypes,
-  TFormErrorTypes extends FormErrorTypes,
+  TGroupError extends ScopedErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>>,
 > = (new <
   TFieldName extends DeepKeys<TGroupValue>,
@@ -223,9 +216,9 @@ export type SvelteFormGroupFieldComponent<
       TFieldName,
       DeepValue<TGroupValue, TFieldName>,
       TFieldValidators,
-      TGroupErrorTypes['fieldError'],
+      TGroupError['subfieldError'],
       TFormData,
-      TFormErrorTypes,
+      TFormError,
       TFieldComponents
     >
   >,
@@ -236,8 +229,8 @@ export type SvelteFormGroupFieldComponent<
 export type SvelteFormGroupArrayFieldComponent<
   TFormData,
   TGroupValue,
-  TGroupErrorTypes extends FormErrorTypes,
-  TFormErrorTypes extends FormErrorTypes,
+  TGroupError extends ScopedErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>>,
 > = (new <
   TFieldName extends DeepKeysWhereValueIncludes<TGroupValue, Array<any>>,
@@ -253,9 +246,9 @@ export type SvelteFormGroupArrayFieldComponent<
       TFieldName,
       DeepValue<TGroupValue, TFieldName>,
       TFieldValidators,
-      TGroupErrorTypes['fieldError'],
+      TGroupError['subfieldError'],
       TFormData,
-      TFormErrorTypes,
+      TFormError,
       TFieldComponents
     >
   >,
@@ -267,31 +260,31 @@ export interface SvelteFormGroupApi<
   TFormData,
   TGroupName,
   TGroupValue,
-  TGroupErrorTypes extends FormErrorTypes,
-  TFormErrorTypes extends FormErrorTypes,
+  TGroupError extends ScopedErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>>,
 > extends FormGroupApi<
   TFormData,
   TGroupName,
   TGroupValue,
-  TGroupErrorTypes,
-  TFormErrorTypes
+  TGroupError,
+  TFormError
 > {
   Field: SvelteFormGroupFieldComponent<
     TFormData,
     TGroupValue,
-    TGroupErrorTypes,
-    TFormErrorTypes,
+    TGroupError,
+    TFormError,
     TFieldComponents
   >
   ArrayField: SvelteFormGroupArrayFieldComponent<
     TFormData,
     TGroupValue,
-    TGroupErrorTypes,
-    TFormErrorTypes,
+    TGroupError,
+    TFormError,
     TFieldComponents
   >
-  Subscribe: SvelteFormGroupSubscribeComponent<TGroupValue, TGroupErrorTypes>
+  Subscribe: SvelteFormGroupSubscribeComponent<TGroupValue, TGroupError>
 }
 
 export interface SvelteFormGroupProps<
@@ -299,7 +292,7 @@ export interface SvelteFormGroupProps<
   TGroupName,
   TGroupValue,
   TGroupValidators extends FormGroupValidators<TGroupValue>,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>>,
 > extends Omit<
   FormGroupOptions<
@@ -307,7 +300,7 @@ export interface SvelteFormGroupProps<
     TGroupName,
     TGroupValue,
     TGroupValidators,
-    TFormErrorTypes
+    TFormError
   >,
   'form'
 > {
@@ -318,7 +311,7 @@ export interface SvelteFormGroupProps<
         TGroupName,
         TGroupValue,
         ToFormGroupErrorTypes<NoInfer<TGroupValidators>>,
-        TFormErrorTypes,
+        TFormError,
         TFieldComponents
       >,
     ]
@@ -327,7 +320,7 @@ export interface SvelteFormGroupProps<
 
 export type SvelteFormGroupComponent<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>>,
 > = (new <
   TGroupName extends DeepKeys<TFormData>,
@@ -340,7 +333,7 @@ export type SvelteFormGroupComponent<
       TGroupName,
       TGroupValue,
       TGroupValidators,
-      TFormErrorTypes,
+      TFormError,
       TFieldComponents
     >
   >,
@@ -350,22 +343,18 @@ export type SvelteFormGroupComponent<
 
 export interface SvelteTanStackFormComponents<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>> = Record<
     never,
     never
   >,
 > {
-  Field: SvelteFormFieldComponent<TFormData, TFormErrorTypes, TFieldComponents>
+  Field: SvelteFormFieldComponent<TFormData, TFormError, TFieldComponents>
   ArrayField: SvelteFormArrayFieldComponent<
     TFormData,
-    TFormErrorTypes,
+    TFormError,
     TFieldComponents
   >
-  Subscribe: SvelteFormSubscribeComponent<TFormData, TFormErrorTypes>
-  FormGroup: SvelteFormGroupComponent<
-    TFormData,
-    TFormErrorTypes,
-    TFieldComponents
-  >
+  Subscribe: SvelteFormSubscribeComponent<TFormData, TFormError>
+  FormGroup: SvelteFormGroupComponent<TFormData, TFormError, TFieldComponents>
 }
