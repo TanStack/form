@@ -1,7 +1,7 @@
 /* eslint-disable react-compiler/react-compiler */
 import { describe, expect, it, vi } from 'vitest'
-import { render, waitFor, within } from '@testing-library/react'
-import { userEvent } from '@testing-library/user-event'
+import { render } from 'vitest-browser-react'
+import { userEvent } from 'vitest/browser'
 import { StrictMode, useState } from 'react'
 import { useStore } from '@tanstack/react-store'
 import { useForm } from '../src/index'
@@ -11,7 +11,7 @@ import type { AnyFieldApi } from '../src/index'
 const user = userEvent.setup()
 
 describe('useField', () => {
-  it('should allow to set default value', () => {
+  it('should allow to set default value', async () => {
     type Person = {
       firstName: string
       lastName: string
@@ -44,12 +44,12 @@ describe('useField', () => {
       )
     }
 
-    const { getByTestId } = render(<Comp />)
+    const { getByTestId } = await render(<Comp />)
     const input = getByTestId('fieldinput')
-    expect(input).toHaveValue('FirstName')
+    await expect.element(input).toHaveValue('FirstName')
   })
 
-  it('should use field default value first', () => {
+  it('should use field default value first', async () => {
     type Person = {
       firstName: string
       lastName: string
@@ -83,9 +83,9 @@ describe('useField', () => {
       )
     }
 
-    const { getByTestId } = render(<Comp />)
+    const { getByTestId } = await render(<Comp />)
     const input = getByTestId('fieldinput')
-    expect(input).toHaveValue('otherName')
+    await expect.element(input).toHaveValue('otherName')
   })
 
   it('should not validate on change if isTouched is false', async () => {
@@ -131,10 +131,12 @@ describe('useField', () => {
       )
     }
 
-    const { getByTestId, queryByText } = render(<Comp />)
+    const { getByTestId, getByText } = await render(<Comp />)
     const input = getByTestId('fieldinput')
     await user.type(input, 'other')
-    expect(queryByText(error)).not.toBeInTheDocument()
+    await expect
+      .element(getByText(error, { exact: true }))
+      .not.toBeInTheDocument()
   })
 
   it('should validate on change if isTouched is true', async () => {
@@ -177,11 +179,13 @@ describe('useField', () => {
       )
     }
 
-    const { getByTestId, getByText, queryByText } = render(<Comp />)
+    const { getByTestId, getByText } = await render(<Comp />)
     const input = getByTestId('fieldinput')
-    expect(queryByText(error)).not.toBeInTheDocument()
+    await expect
+      .element(getByText(error, { exact: true }))
+      .not.toBeInTheDocument()
     await user.type(input, 'other')
-    expect(getByText(error)).toBeInTheDocument()
+    await expect.element(getByText(error, { exact: true })).toBeInTheDocument()
   })
 
   it('should validate on change and on blur', async () => {
@@ -229,14 +233,22 @@ describe('useField', () => {
       )
     }
 
-    const { getByTestId, getByText, queryByText } = render(<Comp />)
+    const { getByTestId, getByText } = await render(<Comp />)
     const input = getByTestId('fieldinput')
-    expect(queryByText(onChangeError)).not.toBeInTheDocument()
-    expect(queryByText(onBlurError)).not.toBeInTheDocument()
+    await expect
+      .element(getByText(onChangeError, { exact: true }))
+      .not.toBeInTheDocument()
+    await expect
+      .element(getByText(onBlurError, { exact: true }))
+      .not.toBeInTheDocument()
     await user.type(input, 'other')
-    expect(getByText(onChangeError)).toBeInTheDocument()
+    await expect
+      .element(getByText(onChangeError, { exact: true }))
+      .toBeInTheDocument()
     await user.click(document.body)
-    expect(queryByText(onBlurError)).toBeInTheDocument()
+    await expect
+      .element(getByText(onBlurError, { exact: true }))
+      .toBeInTheDocument()
   })
 
   it('should properly update conditionally rendered fields', async () => {
@@ -311,21 +323,19 @@ describe('useField', () => {
       )
     }
 
-    const { getByTestId } = render(<Comp />)
+    const { getByTestId } = await render(<Comp />)
 
     const showFirstFieldInput = getByTestId('show-first-field')
 
     await user.type(getByTestId('first-field'), 'hello')
-    expect((getByTestId('first-field') as HTMLInputElement).value).toBe('hello')
+    await expect.element(getByTestId('first-field')).toHaveValue('hello')
 
     await user.click(showFirstFieldInput)
     await user.type(getByTestId('second-field'), 'world')
-    expect((getByTestId('second-field') as HTMLInputElement).value).toBe(
-      'world',
-    )
+    await expect.element(getByTestId('second-field')).toHaveValue('world')
 
     await user.click(showFirstFieldInput)
-    expect((getByTestId('first-field') as HTMLInputElement).value).toBe('hello')
+    await expect.element(getByTestId('first-field')).toHaveValue('hello')
   })
 
   it('should not keep hidden field submit errors after unmount', async () => {
@@ -395,7 +405,7 @@ describe('useField', () => {
       )
     }
 
-    const { getByTestId, queryByTestId } = render(
+    const { getByTestId } = await render(
       <StrictMode>
         <Comp />
       </StrictMode>,
@@ -407,26 +417,23 @@ describe('useField', () => {
     await user.type(getByTestId('last-name'), 'abc')
     await user.click(submitButton)
 
-    await waitFor(() => expect(submitButton).toBeDisabled())
+    await expect.element(submitButton).toBeDisabled()
     expect(onSubmit).toHaveBeenCalledTimes(0)
 
     await user.clear(getByTestId('first-name'))
     await user.type(getByTestId('first-name'), 'b')
 
-    await waitFor(() =>
-      expect(queryByTestId('last-name')).not.toBeInTheDocument(),
-    )
-    await waitFor(() => expect(submitButton).toBeEnabled())
+    await expect.element(getByTestId('last-name')).not.toBeInTheDocument()
+    await expect.element(submitButton).toBeEnabled()
 
     await user.click(submitButton)
-    await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1))
+    await vi.waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1))
 
     await user.clear(getByTestId('first-name'))
     await user.type(getByTestId('first-name'), 'a')
 
-    const remountedLastName = await waitFor(() => getByTestId('last-name'))
-    expect((remountedLastName as HTMLInputElement).value).toBe('abc')
-    expect(submitButton).toBeEnabled()
+    await expect.element(getByTestId('last-name')).toHaveValue('abc')
+    await expect.element(submitButton).toBeEnabled()
   })
 
   it('should call onUnmount listener when a field is conditionally removed', async () => {
@@ -476,20 +483,20 @@ describe('useField', () => {
       )
     }
 
-    const { getByTestId, queryByTestId } = render(
+    const { getByTestId } = await render(
       <StrictMode>
         <Comp />
       </StrictMode>,
     )
 
-    await waitFor(() => expect(getByTestId('name')).toBeInTheDocument())
+    await expect.element(getByTestId('name')).toBeInTheDocument()
 
     const callsBefore = fieldUnmount.mock.calls.length
     const formCallsBefore = formFieldUnmount.mock.calls.length
 
     await user.click(getByTestId('toggle'))
 
-    await waitFor(() => expect(queryByTestId('name')).not.toBeInTheDocument())
+    await expect.element(getByTestId('name')).not.toBeInTheDocument()
     expect(fieldUnmount).toHaveBeenCalledTimes(callsBefore + 1)
     expect(formFieldUnmount).toHaveBeenCalledTimes(formCallsBefore + 1)
   })
@@ -537,12 +544,13 @@ describe('useField', () => {
       )
     }
 
-    const { getByTestId, getByText, queryByText } = render(<Comp />)
+    const { getByTestId, getByText } = await render(<Comp />)
     const input = getByTestId('fieldinput')
-    expect(queryByText(error)).not.toBeInTheDocument()
+    await expect
+      .element(getByText(error, { exact: true }))
+      .not.toBeInTheDocument()
     await user.type(input, 'other')
-    await waitFor(() => getByText(error))
-    expect(getByText(error)).toBeInTheDocument()
+    await expect.element(getByText(error, { exact: true })).toBeInTheDocument()
   })
 
   it('should validate async on change and async on blur', async () => {
@@ -594,17 +602,23 @@ describe('useField', () => {
       )
     }
 
-    const { getByTestId, getByText, queryByText } = render(<Comp />)
+    const { getByTestId, getByText } = await render(<Comp />)
     const input = getByTestId('fieldinput')
 
-    expect(queryByText(onChangeError)).not.toBeInTheDocument()
-    expect(queryByText(onBlurError)).not.toBeInTheDocument()
+    await expect
+      .element(getByText(onChangeError, { exact: true }))
+      .not.toBeInTheDocument()
+    await expect
+      .element(getByText(onBlurError, { exact: true }))
+      .not.toBeInTheDocument()
     await user.type(input, 'other')
-    await waitFor(() => getByText(onChangeError))
-    expect(getByText(onChangeError)).toBeInTheDocument()
+    await expect
+      .element(getByText(onChangeError, { exact: true }))
+      .toBeInTheDocument()
     await user.click(document.body)
-    await waitFor(() => getByText(onBlurError))
-    expect(getByText(onBlurError)).toBeInTheDocument()
+    await expect
+      .element(getByText(onBlurError, { exact: true }))
+      .toBeInTheDocument()
   })
 
   it('should validate async on change with debounce', async () => {
@@ -653,13 +667,12 @@ describe('useField', () => {
       )
     }
 
-    const { getByTestId, getByText } = render(<Comp />)
+    const { getByTestId, getByText } = await render(<Comp />)
     const input = getByTestId('fieldinput')
     await user.type(input, 'other')
     // mockFn will have been called 5 times without onChangeAsyncDebounceMs
     expect(mockFn).toHaveBeenCalledTimes(0)
-    await waitFor(() => getByText(error))
-    expect(getByText(error)).toBeInTheDocument()
+    await expect.element(getByText(error, { exact: true })).toBeInTheDocument()
   })
 
   it('should handle strict mode properly with conditional fields', async () => {
@@ -754,17 +767,21 @@ describe('useField', () => {
       )
     }
 
-    const { getByText, findByText, queryByText } = render(
+    const { getByText } = await render(
       <StrictMode>
         <Comp />
       </StrictMode>,
     )
 
-    await user.click(getByText('Submit'))
-    expect(await findByText('A first name is required')).toBeInTheDocument()
-    await user.click(getByText('Hide field'))
-    await user.click(getByText('Submit'))
-    expect(queryByText('A first name is required')).not.toBeInTheDocument()
+    await user.click(getByText('Submit', { exact: true }))
+    await expect
+      .element(getByText('A first name is required', { exact: true }))
+      .toBeInTheDocument()
+    await user.click(getByText('Hide field', { exact: true }))
+    await user.click(getByText('Submit', { exact: true }))
+    await expect
+      .element(getByText('A first name is required', { exact: true }))
+      .not.toBeInTheDocument()
   })
 
   it('should handle arrays with primitive values', async () => {
@@ -837,29 +854,39 @@ describe('useField', () => {
       )
     }
 
-    const { getByText, findByLabelText, queryByText, findByText } = render(
-      <Comp />,
-    )
+    const { getByText, getByLabelText } = await render(<Comp />)
 
-    expect(queryByText('Name for person 0')).not.toBeInTheDocument()
-    expect(queryByText('Name for person 1')).not.toBeInTheDocument()
-    await user.click(getByText('Add person'))
-    const input = await findByLabelText('Name for person 0')
-    expect(input).toBeInTheDocument()
+    await expect
+      .element(getByText('Name for person 0', { exact: true }))
+      .not.toBeInTheDocument()
+    await expect
+      .element(getByText('Name for person 1', { exact: true }))
+      .not.toBeInTheDocument()
+    await user.click(getByText('Add person', { exact: true }))
+    const input = getByLabelText('Name for person 0', { exact: true })
+    await expect.element(input).toBeInTheDocument()
     await user.type(input, 'John')
 
-    await user.click(getByText('Add person'))
-    const input2 = await findByLabelText('Name for person 1')
-    expect(input).toBeInTheDocument()
+    await user.click(getByText('Add person', { exact: true }))
+    const input2 = getByLabelText('Name for person 1', { exact: true })
+    await expect.element(input).toBeInTheDocument()
     await user.type(input2, 'Jack')
 
-    expect(queryByText('Name for person 0')).toBeInTheDocument()
-    expect(queryByText('Name for person 1')).toBeInTheDocument()
-    await user.click(getByText('Remove person 1'))
-    expect(queryByText('Name for person 0')).toBeInTheDocument()
-    expect(queryByText('Name for person 1')).not.toBeInTheDocument()
+    await expect
+      .element(getByText('Name for person 0', { exact: true }))
+      .toBeInTheDocument()
+    await expect
+      .element(getByText('Name for person 1', { exact: true }))
+      .toBeInTheDocument()
+    await user.click(getByText('Remove person 1', { exact: true }))
+    await expect
+      .element(getByText('Name for person 0', { exact: true }))
+      .toBeInTheDocument()
+    await expect
+      .element(getByText('Name for person 1', { exact: true }))
+      .not.toBeInTheDocument()
 
-    await user.click(await findByText('Submit'))
+    await user.click(getByText('Submit', { exact: true }))
     expect(fn).toHaveBeenCalledWith({ people: ['John'] })
   })
 
@@ -936,29 +963,39 @@ describe('useField', () => {
       )
     }
 
-    const { getByText, findByLabelText, queryByText, findByText } = render(
-      <Comp />,
-    )
+    const { getByText, getByLabelText } = await render(<Comp />)
 
-    expect(queryByText('Name for person 0')).not.toBeInTheDocument()
-    expect(queryByText('Name for person 1')).not.toBeInTheDocument()
-    await user.click(getByText('Add person'))
-    const input = await findByLabelText('Name for person 0')
-    expect(input).toBeInTheDocument()
+    await expect
+      .element(getByText('Name for person 0', { exact: true }))
+      .not.toBeInTheDocument()
+    await expect
+      .element(getByText('Name for person 1', { exact: true }))
+      .not.toBeInTheDocument()
+    await user.click(getByText('Add person', { exact: true }))
+    const input = getByLabelText('Name for person 0', { exact: true })
+    await expect.element(input).toBeInTheDocument()
     await user.type(input, 'John')
 
-    await user.click(getByText('Add person'))
-    const input2 = await findByLabelText('Name for person 1')
-    expect(input).toBeInTheDocument()
+    await user.click(getByText('Add person', { exact: true }))
+    const input2 = getByLabelText('Name for person 1', { exact: true })
+    await expect.element(input).toBeInTheDocument()
     await user.type(input2, 'Jack')
 
-    expect(queryByText('Name for person 0')).toBeInTheDocument()
-    expect(queryByText('Name for person 1')).toBeInTheDocument()
-    await user.click(getByText('Remove person 1'))
-    expect(queryByText('Name for person 0')).toBeInTheDocument()
-    expect(queryByText('Name for person 1')).not.toBeInTheDocument()
+    await expect
+      .element(getByText('Name for person 0', { exact: true }))
+      .toBeInTheDocument()
+    await expect
+      .element(getByText('Name for person 1', { exact: true }))
+      .toBeInTheDocument()
+    await user.click(getByText('Remove person 1', { exact: true }))
+    await expect
+      .element(getByText('Name for person 0', { exact: true }))
+      .toBeInTheDocument()
+    await expect
+      .element(getByText('Name for person 1', { exact: true }))
+      .not.toBeInTheDocument()
 
-    await user.click(await findByText('Submit'))
+    await user.click(getByText('Submit', { exact: true }))
     expect(fn).toHaveBeenCalledWith({ people: [{ name: 'John', age: 0 }] })
   })
 
@@ -1024,21 +1061,27 @@ describe('useField', () => {
       )
     }
 
-    const { getByText, findByLabelText } = render(<Comp />)
+    const { getByText, getByLabelText } = await render(<Comp />)
 
-    await user.click(getByText('Add section'))
-    await user.click(getByText('Add section'))
+    await user.click(getByText('Add section', { exact: true }))
+    await user.click(getByText('Add section', { exact: true }))
 
-    await findByLabelText('Title for section id-1')
-    await findByLabelText('Title for section id-2')
+    await expect
+      .element(getByLabelText('Title for section id-1', { exact: true }))
+      .toBeInTheDocument()
+    await expect
+      .element(getByLabelText('Title for section id-2', { exact: true }))
+      .toBeInTheDocument()
 
     observedValues.length = 0
-    await user.click(getByText('Remove first section'))
+    await user.click(getByText('Remove first section', { exact: true }))
 
     // The surviving item (previously `sections[1]`) shifts to `sections[0]`.
     // Its value must remain "Section 2" and never render as `undefined`.
-    const survivingInput = await findByLabelText('Title for section id-2')
-    expect((survivingInput as HTMLInputElement).value).toBe('Section 2')
+    const survivingInput = getByLabelText('Title for section id-2', {
+      exact: true,
+    })
+    await expect.element(survivingInput).toHaveValue('Section 2')
     expect(observedValues).not.toContain(undefined)
   })
 
@@ -1103,15 +1146,21 @@ describe('useField', () => {
       )
     }
 
-    const { findByLabelText, queryByText, findByText } = render(<Comp />)
+    const { getByLabelText, getByText } = await render(<Comp />)
 
-    const passwordInput = await findByLabelText('Password')
-    const confirmPasswordInput = await findByLabelText('Confirm Password')
+    const passwordInput = getByLabelText('Password', { exact: true })
+    const confirmPasswordInput = getByLabelText('Confirm Password', {
+      exact: true,
+    })
     await user.type(passwordInput, 'password')
     await user.type(confirmPasswordInput, 'password')
-    expect(queryByText('Passwords do not match')).not.toBeInTheDocument()
+    await expect
+      .element(getByText('Passwords do not match', { exact: true }))
+      .not.toBeInTheDocument()
     await user.type(confirmPasswordInput, '1')
-    expect(await findByText('Passwords do not match')).toBeInTheDocument()
+    await expect
+      .element(getByText('Passwords do not match', { exact: true }))
+      .toBeInTheDocument()
   })
 
   it('should handle deeply nested values in StrictMode', async () => {
@@ -1130,14 +1179,16 @@ describe('useField', () => {
       )
     }
 
-    const { queryByText, findByText } = render(
+    const { getByText } = await render(
       <StrictMode>
         <Comp />
       </StrictMode>,
     )
 
-    expect(queryByText('Test')).not.toBeInTheDocument()
-    expect(await findByText('User')).toBeInTheDocument()
+    await expect
+      .element(getByText('Test', { exact: true }))
+      .not.toBeInTheDocument()
+    await expect.element(getByText('User', { exact: true })).toBeInTheDocument()
   })
 
   it('should validate async on submit without debounce', async () => {
@@ -1188,12 +1239,11 @@ describe('useField', () => {
       )
     }
 
-    const { getByRole, getByText } = render(<Comp />)
+    const { getByRole, getByText } = await render(<Comp />)
     await user.click(getByRole('button', { name: 'Submit' }))
 
     expect(mockFn).toHaveBeenCalledTimes(1)
-    await waitFor(() => getByText(error))
-    expect(getByText(error)).toBeInTheDocument()
+    await expect.element(getByText(error, { exact: true })).toBeInTheDocument()
   })
 
   it('should validate allow pushvalue to implicitly set a default value', async () => {
@@ -1246,14 +1296,14 @@ describe('useField', () => {
       )
     }
 
-    const { getByText, queryByText } = render(
+    const { getByText } = await render(
       <StrictMode>
         <Comp />
       </StrictMode>,
     )
-    expect(getByText('[]')).toBeInTheDocument()
-    await user.click(getByText('Add person'))
-    expect(getByText(`[""]`)).toBeInTheDocument()
+    await expect.element(getByText('[]', { exact: true })).toBeInTheDocument()
+    await user.click(getByText('Add person', { exact: true }))
+    await expect.element(getByText(`[""]`, { exact: true })).toBeInTheDocument()
   })
 
   it('should validate allow pushvalue to implicitly set a pushed default value', async () => {
@@ -1306,14 +1356,16 @@ describe('useField', () => {
       )
     }
 
-    const { getByText, queryByText } = render(
+    const { getByText } = await render(
       <StrictMode>
         <Comp />
       </StrictMode>,
     )
-    expect(getByText('[]')).toBeInTheDocument()
-    await user.click(getByText('Add person'))
-    expect(getByText(`["Test"]`)).toBeInTheDocument()
+    await expect.element(getByText('[]', { exact: true })).toBeInTheDocument()
+    await user.click(getByText('Add person', { exact: true }))
+    await expect
+      .element(getByText(`["Test"]`, { exact: true }))
+      .toBeInTheDocument()
   })
 
   it('should handle removing element from array', async () => {
@@ -1384,7 +1436,7 @@ describe('useField', () => {
       )
     }
 
-    const { getByText, queryByText, getByTestId } = render(
+    const { getByText, getByTestId } = await render(
       <StrictMode>
         <Comp />
       </StrictMode>,
@@ -1395,20 +1447,28 @@ describe('useField', () => {
       fakePeople.molly,
       fakePeople.george,
     ]
-    exisingPeople.forEach((person) =>
-      expect(getByText(person.name)).toBeInTheDocument(),
-    )
+    for (const person of exisingPeople) {
+      await expect
+        .element(getByText(person.name, { exact: true }))
+        .toBeInTheDocument()
+    }
     const container = getByTestId('container')
-    expect(within(container).getAllByRole('textbox')).toHaveLength(3)
+    expect(container.getByRole('textbox').elements()).toHaveLength(3)
 
-    await user.click(getByText('Remove person'))
+    await user.click(getByText('Remove person', { exact: true }))
 
-    expect(within(container).getAllByRole('textbox')).toHaveLength(2)
+    await expect
+      .poll(() => container.getByRole('textbox').elements())
+      .toHaveLength(2)
     exisingPeople = [fakePeople.jack, fakePeople.george]
-    exisingPeople.forEach((person) =>
-      expect(getByText(person.name)).toBeInTheDocument(),
-    )
-    expect(queryByText(fakePeople.molly.name)).not.toBeInTheDocument()
+    for (const person of exisingPeople) {
+      await expect
+        .element(getByText(person.name, { exact: true }))
+        .toBeInTheDocument()
+    }
+    await expect
+      .element(getByText(fakePeople.molly.name, { exact: true }))
+      .not.toBeInTheDocument()
   })
 
   it('should not rerender unrelated fields', async () => {
@@ -1455,7 +1515,7 @@ describe('useField', () => {
       )
     }
 
-    const { getByTestId } = render(
+    const { getByTestId } = await render(
       <StrictMode>
         <Comp />
       </StrictMode>,
@@ -1522,7 +1582,7 @@ describe('useField', () => {
       )
     }
 
-    const { getByTestId } = render(
+    const { getByTestId } = await render(
       <StrictMode>
         <Comp />
       </StrictMode>,
@@ -1540,7 +1600,7 @@ describe('useField', () => {
     expect(renderCount.arrayField).toBe(arrayFieldInitialRender)
 
     // Verify typing still works
-    expect(getByTestId('person-0')).toHaveValue('Johnny')
+    await expect.element(getByTestId('person-0')).toHaveValue('Johnny')
 
     // Now add a new item - this SHOULD trigger array field re-render
     const arrayFieldBeforeAdd = renderCount.arrayField
@@ -1589,21 +1649,21 @@ describe('useField', () => {
       )
     }
 
-    const { getByTestId } = render(
+    const { getByTestId } = await render(
       <StrictMode>
         <Comp />
       </StrictMode>,
     )
 
-    expect(getByTestId('item-0')).toHaveTextContent('John')
-    expect(getByTestId('item-1')).toHaveTextContent('Jane')
+    await expect.element(getByTestId('item-0')).toHaveTextContent('John')
+    await expect.element(getByTestId('item-1')).toHaveTextContent('Jane')
 
     const before = renderCount.arrayField
     await user.click(getByTestId('swap'))
 
     expect(renderCount.arrayField).toBeGreaterThan(before)
-    expect(getByTestId('item-0')).toHaveTextContent('Jane')
-    expect(getByTestId('item-1')).toHaveTextContent('John')
+    await expect.element(getByTestId('item-0')).toHaveTextContent('Jane')
+    await expect.element(getByTestId('item-1')).toHaveTextContent('John')
   })
 
   it('should rerender array field when async defaultValues resolve', async () => {
@@ -1636,12 +1696,14 @@ describe('useField', () => {
       )
     }
 
-    const { getByTestId, rerender } = render(<Comp />)
-    expect(getByTestId('list').children).toHaveLength(0)
+    const { getByTestId, rerender } = await render(<Comp />)
+    expect(getByTestId('list').element().children).toHaveLength(0)
 
-    rerender(<Comp defaultValues={{ people: [{ name: 'Alice' }] }} />)
-    await waitFor(() => expect(getByTestId('list').children).toHaveLength(1))
-    expect(getByTestId('item-0')).toHaveTextContent('Alice')
+    await rerender(<Comp defaultValues={{ people: [{ name: 'Alice' }] }} />)
+    await expect
+      .poll(() => getByTestId('list').element().children)
+      .toHaveLength(1)
+    await expect.element(getByTestId('item-0')).toHaveTextContent('Alice')
   })
 
   it('should handle defaultValue without setstate-in-render error', async () => {
@@ -1684,7 +1746,7 @@ describe('useField', () => {
       )
     }
 
-    const { getByTestId } = render(<Comp />)
+    const { getByTestId } = await render(<Comp />)
     await user.type(getByTestId('fieldOne'), 'John')
 
     // Should not log an error
@@ -1709,9 +1771,11 @@ describe('useField', () => {
       )
     }
 
-    const { queryByText } = render(<Comp />)
+    const { getByText } = await render(<Comp />)
 
-    expect(queryByText('a')).toBeInTheDocument()
-    expect(queryByText('never')).not.toBeInTheDocument()
+    await expect.element(getByText('a', { exact: true })).toBeInTheDocument()
+    await expect
+      .element(getByText('never', { exact: true }))
+      .not.toBeInTheDocument()
   })
 })

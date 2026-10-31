@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
-import { fireEvent, render } from '@testing-library/react'
+import { userEvent } from 'vitest/browser'
+import { render } from 'vitest-browser-react'
 import { useSelector } from '@tanstack/react-store'
 import { StrictMode } from 'react'
 import { useForm } from '../src/useForm'
@@ -109,22 +110,22 @@ describe('React adapter - onChangeListenTo race', () => {
       )
     }
 
-    const { getByTestId } = render(
+    const { getByTestId } = await render(
       <StrictMode>
         <Comp />
       </StrictMode>,
     )
 
-    const street = getByTestId('street') as HTMLInputElement
-    const houseNo = getByTestId('houseNo') as HTMLInputElement
-    const zipCode = getByTestId('zipCode') as HTMLInputElement
-    const city = getByTestId('city') as HTMLInputElement
+    const street = getByTestId('street')
+    const houseNo = getByTestId('houseNo')
+    const zipCode = getByTestId('zipCode')
+    const city = getByTestId('city')
 
     // Simulate rapid updates (autofill)
-    fireEvent.change(street, { target: { value: 'Foo Street' } })
-    fireEvent.change(houseNo, { target: { value: '2' } })
-    fireEvent.change(zipCode, { target: { value: '12345' } })
-    fireEvent.change(city, { target: { value: 'Barrington' } })
+    await userEvent.fill(street, 'Foo Street')
+    await userEvent.fill(houseNo, '2')
+    await userEvent.fill(zipCode, '12345')
+    await userEvent.fill(city, 'Barrington')
 
     // Run debounce + async validation
     await vi.runAllTimersAsync()
@@ -132,11 +133,15 @@ describe('React adapter - onChangeListenTo race', () => {
     expect(validationFn).toHaveBeenCalledTimes(1)
 
     // Verify validation flags are not stuck
-    const isFieldsValidating = getByTestId('isFieldsValidating').textContent
-    const streetValidating = getByTestId('street-validating').textContent
-    const houseValidating = getByTestId('houseNo-validating').textContent
-    const zipValidating = getByTestId('zipCode-validating').textContent
-    const cityValidating = getByTestId('city-validating').textContent
+    const isFieldsValidating =
+      getByTestId('isFieldsValidating').element().textContent
+    const streetValidating =
+      getByTestId('street-validating').element().textContent
+    const houseValidating =
+      getByTestId('houseNo-validating').element().textContent
+    const zipValidating =
+      getByTestId('zipCode-validating').element().textContent
+    const cityValidating = getByTestId('city-validating').element().textContent
 
     expect(isFieldsValidating).toBe('false')
     expect(streetValidating).toBe('false')

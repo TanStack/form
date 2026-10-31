@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
-import { render, waitFor } from '@testing-library/react'
-import { userEvent } from '@testing-library/user-event'
+import { render } from 'vitest-browser-react'
+import { userEvent } from 'vitest/browser'
 import { useStore } from '@tanstack/react-store'
 import { useCallback, useEffect, useReducer, useState } from 'react'
 import { mergeForm, useForm } from '../src/index'
@@ -40,11 +40,13 @@ describe('useForm', () => {
       )
     }
 
-    const { getByTestId, queryByText } = render(<Comp />)
+    const { getByTestId, getByText } = await render(<Comp />)
     const input = getByTestId('fieldinput')
-    expect(queryByText('FirstName')).not.toBeInTheDocument()
+    await expect
+      .element(getByText('FirstName', { exact: true }))
+      .not.toBeInTheDocument()
     await user.type(input, 'FirstName')
-    expect(input).toHaveValue('FirstName')
+    await expect.element(input).toHaveValue('FirstName')
   })
 
   it('should allow default values to be set', async () => {
@@ -73,9 +75,13 @@ describe('useForm', () => {
       )
     }
 
-    const { findByText, queryByText } = render(<Comp />)
-    expect(await findByText('FirstName')).toBeInTheDocument()
-    expect(queryByText('LastName')).not.toBeInTheDocument()
+    const { getByText } = await render(<Comp />)
+    await expect
+      .element(getByText('FirstName', { exact: true }))
+      .toBeInTheDocument()
+    await expect
+      .element(getByText('LastName', { exact: true }))
+      .not.toBeInTheDocument()
   })
 
   it('should handle submitting properly', async () => {
@@ -114,14 +120,14 @@ describe('useForm', () => {
       )
     }
 
-    const { findByPlaceholderText, getByText } = render(<Comp />)
-    const input = await findByPlaceholderText('First name')
+    const { getByPlaceholder, getByText } = await render(<Comp />)
+    const input = getByPlaceholder('First name')
     await user.clear(input)
     await user.type(input, 'OtherName')
-    await user.click(getByText('Submit'))
-    await waitFor(() =>
-      expect(getByText('Submitted data: OtherName')).toBeInTheDocument(),
-    )
+    await user.click(getByText('Submit', { exact: true }))
+    await expect
+      .element(getByText('Submitted data: OtherName', { exact: true }))
+      .toBeInTheDocument()
   })
 
   it('should run on form mount', async () => {
@@ -154,9 +160,11 @@ describe('useForm', () => {
       )
     }
 
-    const { getByText } = render(<Comp />)
-    await user.click(getByText('Mount form'))
-    await waitFor(() => expect(getByText('Form mounted')).toBeInTheDocument())
+    const { getByText } = await render(<Comp />)
+    await user.click(getByText('Mount form', { exact: true }))
+    await expect
+      .element(getByText('Form mounted', { exact: true }))
+      .toBeInTheDocument()
   })
 
   it('should validate async on change for the form', async () => {
@@ -198,12 +206,13 @@ describe('useForm', () => {
       )
     }
 
-    const { getByTestId, getByText, queryByText } = render(<Comp />)
+    const { getByTestId, getByText } = await render(<Comp />)
     const input = getByTestId('fieldinput')
-    expect(queryByText(error)).not.toBeInTheDocument()
+    await expect
+      .element(getByText(error, { exact: true }))
+      .not.toBeInTheDocument()
     await user.type(input, 'other')
-    await waitFor(() => getByText(error))
-    expect(getByText(error)).toBeInTheDocument()
+    await expect.element(getByText(error, { exact: true })).toBeInTheDocument()
   })
 
   it('should not validate on change if isTouched is false', async () => {
@@ -251,10 +260,12 @@ describe('useForm', () => {
       )
     }
 
-    const { getByTestId, queryByText } = render(<Comp />)
+    const { getByTestId, getByText } = await render(<Comp />)
     const input = getByTestId('fieldinput')
     await user.type(input, 'other')
-    expect(queryByText(error)).not.toBeInTheDocument()
+    await expect
+      .element(getByText(error, { exact: true }))
+      .not.toBeInTheDocument()
   })
 
   it('should validate on change if isTouched is true', async () => {
@@ -298,11 +309,13 @@ describe('useForm', () => {
       )
     }
 
-    const { getByTestId, getByText, queryByText } = render(<Comp />)
+    const { getByTestId, getByText } = await render(<Comp />)
     const input = getByTestId('fieldinput')
-    expect(queryByText(error)).not.toBeInTheDocument()
+    await expect
+      .element(getByText(error, { exact: true }))
+      .not.toBeInTheDocument()
     await user.type(input, 'other')
-    expect(getByText(error)).toBeInTheDocument()
+    await expect.element(getByText(error, { exact: true })).toBeInTheDocument()
   })
 
   it('should validate on change and on blur', async () => {
@@ -349,14 +362,22 @@ describe('useForm', () => {
         </>
       )
     }
-    const { getByTestId, getByText, queryByText } = render(<Comp />)
+    const { getByTestId, getByText } = await render(<Comp />)
     const input = getByTestId('fieldinput')
-    expect(queryByText(onChangeError)).not.toBeInTheDocument()
-    expect(queryByText(onBlurError)).not.toBeInTheDocument()
+    await expect
+      .element(getByText(onChangeError, { exact: true }))
+      .not.toBeInTheDocument()
+    await expect
+      .element(getByText(onBlurError, { exact: true }))
+      .not.toBeInTheDocument()
     await user.type(input, 'other')
-    expect(getByText(onChangeError)).toBeInTheDocument()
+    await expect
+      .element(getByText(onChangeError, { exact: true }))
+      .toBeInTheDocument()
     await user.click(document.body)
-    expect(queryByText(onBlurError)).toBeInTheDocument()
+    await expect
+      .element(getByText(onBlurError, { exact: true }))
+      .toBeInTheDocument()
   })
 
   it("should set field errors from the field's validators", async () => {
@@ -410,24 +431,24 @@ describe('useForm', () => {
         </>
       )
     }
-    const { getByTestId } = render(<Comp />)
+    const { getByTestId } = await render(<Comp />)
 
-    expect(getByTestId('form-onchange')).toHaveTextContent('')
+    await expect.element(getByTestId('form-onchange')).toHaveTextContent('')
 
     const input = getByTestId('fieldinput')
 
     await user.type(input, 'other')
-    expect(getByTestId('form-onchange')).toHaveTextContent(
-      'Something went wrong',
-    )
-    expect(getByTestId('field-onchange')).toHaveTextContent(
-      'Please enter a different value (onChangeError)',
-    )
+    await expect
+      .element(getByTestId('form-onchange'))
+      .toHaveTextContent('Something went wrong')
+    await expect
+      .element(getByTestId('field-onchange'))
+      .toHaveTextContent('Please enter a different value (onChangeError)')
 
     await user.click(document.body)
-    expect(getByTestId('form-onblur')).toHaveTextContent(
-      'Please enter a different value (onBlurError)',
-    )
+    await expect
+      .element(getByTestId('form-onblur'))
+      .toHaveTextContent('Please enter a different value (onBlurError)')
   })
 
   it('should validate async on change', async () => {
@@ -473,12 +494,13 @@ describe('useForm', () => {
       )
     }
 
-    const { getByTestId, getByText, queryByText } = render(<Comp />)
+    const { getByTestId, getByText } = await render(<Comp />)
     const input = getByTestId('fieldinput')
-    expect(queryByText(error)).not.toBeInTheDocument()
+    await expect
+      .element(getByText(error, { exact: true }))
+      .not.toBeInTheDocument()
     await user.type(input, 'other')
-    await waitFor(() => getByText(error))
-    expect(getByText(error)).toBeInTheDocument()
+    await expect.element(getByText(error, { exact: true })).toBeInTheDocument()
   })
 
   it("should set field errors from the form's onChangeAsync validator", async () => {
@@ -531,23 +553,23 @@ describe('useForm', () => {
       )
     }
 
-    const { getByTestId } = render(<Comp />)
+    const { getByTestId } = await render(<Comp />)
     const input = getByTestId('fieldinput')
     const firstNameErrorElement = getByTestId('field-error')
     const formErrorElement = getByTestId('form-error')
 
-    expect(firstNameErrorElement).toBeEmptyDOMElement()
-    expect(formErrorElement).toBeEmptyDOMElement()
+    await expect.element(firstNameErrorElement).toBeEmptyDOMElement()
+    await expect.element(formErrorElement).toBeEmptyDOMElement()
 
     await user.type(input, 'other')
 
-    await waitFor(() => {
-      expect(firstNameErrorElement).not.toBeEmptyDOMElement()
-    })
-    expect(firstNameErrorElement).toHaveTextContent(
-      'First name cannot be "other"',
-    )
-    expect(formErrorElement).toHaveTextContent('Invalid form values')
+    await expect.element(firstNameErrorElement).not.toBeEmptyDOMElement()
+    await expect
+      .element(firstNameErrorElement)
+      .toHaveTextContent('First name cannot be "other"')
+    await expect
+      .element(formErrorElement)
+      .toHaveTextContent('Invalid form values')
   })
 
   it('should validate async on change and async on blur', async () => {
@@ -600,17 +622,23 @@ describe('useForm', () => {
       )
     }
 
-    const { getByTestId, getByText, queryByText } = render(<Comp />)
+    const { getByTestId, getByText } = await render(<Comp />)
     const input = getByTestId('fieldinput')
 
-    expect(queryByText(onChangeError)).not.toBeInTheDocument()
-    expect(queryByText(onBlurError)).not.toBeInTheDocument()
+    await expect
+      .element(getByText(onChangeError, { exact: true }))
+      .not.toBeInTheDocument()
+    await expect
+      .element(getByText(onBlurError, { exact: true }))
+      .not.toBeInTheDocument()
     await user.type(input, 'other')
-    await waitFor(() => getByText(onChangeError))
-    expect(getByText(onChangeError)).toBeInTheDocument()
+    await expect
+      .element(getByText(onChangeError, { exact: true }))
+      .toBeInTheDocument()
     await user.click(document.body)
-    await waitFor(() => getByText(onBlurError))
-    expect(getByText(onBlurError)).toBeInTheDocument()
+    await expect
+      .element(getByText(onBlurError, { exact: true }))
+      .toBeInTheDocument()
   })
 
   it('should validate async on change with debounce', async () => {
@@ -660,13 +688,12 @@ describe('useForm', () => {
       )
     }
 
-    const { getByTestId, getByText } = render(<Comp />)
+    const { getByTestId, getByText } = await render(<Comp />)
     const input = getByTestId('fieldinput')
     await user.type(input, 'other')
     // mockFn will have been called 5 times without onChangeAsyncDebounceMs
     expect(mockFn).toHaveBeenCalledTimes(0)
-    await waitFor(() => getByText(error))
-    expect(getByText(error)).toBeInTheDocument()
+    await expect.element(getByText(error, { exact: true })).toBeInTheDocument()
   })
 
   it("should set errors on the fields from the form's onChange validator", async () => {
@@ -716,26 +743,28 @@ describe('useForm', () => {
       )
     }
 
-    const { getByTestId, queryByText } = render(<Comp />)
+    const { getByTestId, getByText } = await render(<Comp />)
     const input = getByTestId('fieldinput')
     const fieldError = getByTestId('field-error')
     const formError = getByTestId('form-error')
 
-    expect(
-      queryByText('Please enter a different value'),
-    ).not.toBeInTheDocument()
-    expect(queryByText('Something went wrong')).not.toBeInTheDocument()
+    await expect
+      .element(getByText('Please enter a different value', { exact: true }))
+      .not.toBeInTheDocument()
+    await expect
+      .element(getByText('Something went wrong', { exact: true }))
+      .not.toBeInTheDocument()
 
     await user.type(input, 'Tom')
-    await waitFor(() =>
-      expect(fieldError.textContent).toBe('Please enter a different value'),
-    )
-    await waitFor(() =>
-      expect(formError.textContent).toBe('Something went wrong'),
-    )
+    await expect
+      .poll(() => fieldError.element().textContent)
+      .toBe('Please enter a different value')
+    await expect
+      .poll(() => formError.element().textContent)
+      .toBe('Something went wrong')
   })
 
-  it('should not cause infinite re-renders when listening to state.errors', () => {
+  it('should not cause infinite re-renders when listening to state.errors', async () => {
     const fn = vi.fn()
 
     function Comp() {
@@ -761,12 +790,12 @@ describe('useForm', () => {
       return null
     }
 
-    render(<Comp />)
+    await render(<Comp />)
 
     expect(fn).toHaveBeenCalledTimes(1)
   })
 
-  it('should not cause infinite re-renders when listening to state', () => {
+  it('should not cause infinite re-renders when listening to state', async () => {
     const fn = vi.fn()
 
     function Comp() {
@@ -790,7 +819,7 @@ describe('useForm', () => {
       return null
     }
 
-    render(<Comp />)
+    await render(<Comp />)
 
     expect(fn).toHaveBeenCalledTimes(1)
   })
@@ -839,20 +868,20 @@ describe('useForm', () => {
       )
     }
 
-    const { getByTestId } = render(<Comp />)
+    const { getByTestId } = await render(<Comp />)
     const input = getByTestId('fieldinput')
     const submit = getByTestId('submit')
     const reset = getByTestId('reset')
 
     await user.type(input, 'test')
-    await waitFor(() => expect(input).toHaveValue('test'))
+    await expect.element(input).toHaveValue('test')
 
     await user.click(reset)
-    await waitFor(() => expect(input).toHaveValue(''))
+    await expect.element(input).toHaveValue('')
 
     await user.type(input, 'another-test')
     await user.click(submit)
-    await waitFor(() => expect(input).toHaveValue('another-test'))
+    await expect.element(input).toHaveValue('another-test')
   })
 
   it('should accept formId and return it', async () => {
@@ -885,12 +914,12 @@ describe('useForm', () => {
       )
     }
 
-    const { getByTestId } = render(<Comp />)
+    const { getByTestId } = await render(<Comp />)
     const target = getByTestId('formId-target')
     const result = getByTestId('formId-result')
 
     await user.click(target)
-    expect(result).toHaveTextContent('1')
+    await expect.element(result).toHaveTextContent('1')
   })
 
   it('should allow custom component keys for arrays', async () => {
@@ -932,7 +961,7 @@ describe('useForm', () => {
       )
     }
 
-    const { getByTestId } = render(<Comp />)
+    const { getByTestId } = await render(<Comp />)
 
     const target = getByTestId('removeField')
     await user.click(target)
@@ -996,7 +1025,7 @@ describe('useForm', () => {
       )
     }
 
-    const { getByTestId } = render(<Comp />)
+    const { getByTestId } = await render(<Comp />)
     const removeButton = getByTestId('remove')
     const input = getByTestId('input')
 
@@ -1034,8 +1063,10 @@ describe('useForm', () => {
       )
     }
 
-    const { getByText } = render(<Comp />)
-    getByText('What 1')
+    const { getByText } = await render(<Comp />)
+    await expect
+      .element(getByText('What 1', { exact: true }))
+      .toBeInTheDocument()
   })
 
   it('should handle stable transforms to update the base form on subsequent renders', async () => {
@@ -1070,10 +1101,14 @@ describe('useForm', () => {
       )
     }
 
-    const { findByText, getByText } = render(<Comp />)
-    await findByText('First')
-    await user.click(getByText('Rerender'))
-    await findByText('Another')
+    const { getByText } = await render(<Comp />)
+    await expect
+      .element(getByText('First', { exact: true }))
+      .toBeInTheDocument()
+    await user.click(getByText('Rerender', { exact: true }))
+    await expect
+      .element(getByText('Another', { exact: true }))
+      .toBeInTheDocument()
   })
 
   it('should render Subscribe without selector (default identity)', async () => {
@@ -1106,14 +1141,14 @@ describe('useForm', () => {
       )
     }
 
-    const { getByTestId } = render(<Comp />)
+    const { getByTestId } = await render(<Comp />)
     const input = getByTestId('input')
     const stateValue = getByTestId('state-value')
 
-    expect(stateValue).toHaveTextContent('test')
+    await expect.element(stateValue).toHaveTextContent('test')
 
     await user.clear(input)
     await user.type(input, 'updated')
-    await waitFor(() => expect(stateValue).toHaveTextContent('updated'))
+    await expect.element(stateValue).toHaveTextContent('updated')
   })
 })
