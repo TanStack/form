@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useSelector } from '@tanstack/react-store'
 import { FormGroupApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
@@ -203,78 +203,27 @@ export function useFormGroup<
     setPrevOptions({ form: opts.form, name: opts.name })
   }
 
-  const reactiveStateValue = useSelector(
-    formGroupApi.store,
-    (state) => state.value,
+  const trackedKeysRef = useRef(
+    new Set<keyof typeof formGroupApi.state.meta | 'value'>(),
   )
 
-  const reactiveMetaIsTouched = useSelector(
+  const trackedState = useSelector(
     formGroupApi.store,
-    (state) => state.meta.isTouched,
-  )
-  const reactiveMetaIsBlurred = useSelector(
-    formGroupApi.store,
-    (state) => state.meta.isBlurred,
-  )
-  const reactiveMetaIsDirty = useSelector(
-    formGroupApi.store,
-    (state) => state.meta.isDirty,
-  )
-  const reactiveMetaErrorMap = useSelector(
-    formGroupApi.store,
-    (state) => state.meta.errorMap,
-  )
-  const reactiveMetaErrorSourceMap = useSelector(
-    formGroupApi.store,
-    (state) => state.meta.errorSourceMap,
-  )
-  const reactiveMetaIsValidating = useSelector(
-    formGroupApi.store,
-    (state) => state.meta.isValidating,
+    (state) =>
+      [...trackedKeysRef.current].map((key) =>
+        key === 'value' ? state.value : state.meta[key],
+      ),
+    {
+      compare: (prev, next) =>
+        prev.length === next.length &&
+        prev.every((value, i) => value === next[i]),
+    },
   )
 
-  // Submission lifecycle and aggregated validity now live on `state.meta`
-  // (mirroring `FieldApi.state.meta`). Subscribe to the fields callers
-  // typically read so React Compiler picks them up as dependencies.
-  const reactiveMetaIsSubmitting = useSelector(
-    formGroupApi.store,
-    (state) => state.meta.isSubmitting,
-  )
-  const reactiveMetaIsSubmitted = useSelector(
-    formGroupApi.store,
-    (state) => state.meta.isSubmitted,
-  )
-  const reactiveMetaSubmissionAttempts = useSelector(
-    formGroupApi.store,
-    (state) => state.meta.submissionAttempts,
-  )
-  const reactiveMetaIsSubmitSuccessful = useSelector(
-    formGroupApi.store,
-    (state) => state.meta.isSubmitSuccessful,
-  )
-  const reactiveMetaCanSubmit = useSelector(
-    formGroupApi.store,
-    (state) => state.meta.canSubmit,
-  )
-  const reactiveMetaIsValid = useSelector(
-    formGroupApi.store,
-    (state) => state.meta.isValid,
-  )
-  const reactiveMetaIsFieldsValid = useSelector(
-    formGroupApi.store,
-    (state) => state.meta.isFieldsValid,
-  )
-  const reactiveMetaIsFieldsValidating = useSelector(
-    formGroupApi.store,
-    (state) => state.meta.isFieldsValidating,
-  )
-  const reactiveMetaIsGroupValid = useSelector(
-    formGroupApi.store,
-    (state) => state.meta.isGroupValid,
-  )
-
-  // This makes me sad, but if I understand correctly, this is what we have to do for reactivity to work properly with React compiler.
   const extendedFieldApi = useMemo(() => {
+    // Consumers memoized on `group` (e.g. by React Compiler)
+    // need a new identity whenever a tracked slice changes
+    void trackedState
     const reactiveFieldApi = {
       ...formGroupApi,
       handleSubmit: ((...props: never[]) => {
@@ -283,78 +232,30 @@ export function useFormGroup<
       get state() {
         return {
           ...formGroupApi.state,
-          value: reactiveStateValue,
+          get value() {
+            trackedKeysRef.current.add('value')
+            return formGroupApi.state.value
+          },
           get meta() {
-            return {
-              ...formGroupApi.state.meta,
-              isTouched: reactiveMetaIsTouched,
-              isBlurred: reactiveMetaIsBlurred,
-              isDirty: reactiveMetaIsDirty,
-              errorMap: reactiveMetaErrorMap,
-              errorSourceMap: reactiveMetaErrorSourceMap,
-              isValidating: reactiveMetaIsValidating,
-              isSubmitting: reactiveMetaIsSubmitting,
-              isSubmitted: reactiveMetaIsSubmitted,
-              submissionAttempts: reactiveMetaSubmissionAttempts,
-              isSubmitSuccessful: reactiveMetaIsSubmitSuccessful,
-              canSubmit: reactiveMetaCanSubmit,
-              isValid: reactiveMetaIsValid,
-              isFieldsValid: reactiveMetaIsFieldsValid,
-              isFieldsValidating: reactiveMetaIsFieldsValidating,
-              isGroupValid: reactiveMetaIsGroupValid,
-            } satisfies typeof formGroupApi.state.meta
+            const trackedMeta = { ...formGroupApi.state.meta }
+            for (const key of Object.keys(
+              trackedMeta,
+            ) as (keyof typeof trackedMeta)[]) {
+              Object.defineProperty(trackedMeta, key, {
+                enumerable: true,
+                get() {
+                  trackedKeysRef.current.add(key)
+                  return formGroupApi.state.meta[key]
+                },
+              })
+            }
+            return trackedMeta
           },
         } satisfies typeof formGroupApi.state
       },
     }
-
-    const extendedApi: FormGroupApi<
-      TParentData,
-      TName,
-      TData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TOnDynamic,
-      TOnDynamicAsync,
-      TSubmitMeta,
-      TFormOnMount,
-      TFormOnChange,
-      TFormOnChangeAsync,
-      TFormOnBlur,
-      TFormOnBlurAsync,
-      TFormOnSubmit,
-      TFormOnSubmitAsync,
-      TFormOnDynamic,
-      TFormOnDynamicAsync,
-      TFormOnServer,
-      TParentSubmitMeta
-    > = reactiveFieldApi as never
-
-    return extendedApi
-  }, [
-    formGroupApi,
-    reactiveStateValue,
-    reactiveMetaIsTouched,
-    reactiveMetaIsBlurred,
-    reactiveMetaIsDirty,
-    reactiveMetaErrorMap,
-    reactiveMetaErrorSourceMap,
-    reactiveMetaIsValidating,
-    reactiveMetaIsSubmitting,
-    reactiveMetaIsSubmitted,
-    reactiveMetaSubmissionAttempts,
-    reactiveMetaIsSubmitSuccessful,
-    reactiveMetaCanSubmit,
-    reactiveMetaIsValid,
-    reactiveMetaIsFieldsValid,
-    reactiveMetaIsFieldsValidating,
-    reactiveMetaIsGroupValid,
-  ])
+    return reactiveFieldApi as never as typeof formGroupApi
+  }, [formGroupApi, trackedState])
 
   useIsomorphicLayoutEffect(formGroupApi.mount, [formGroupApi])
 

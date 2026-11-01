@@ -175,3 +175,5 @@ Just like you're able to access `group.state.meta.errors`, you're also able to a
 - `group.state.meta.isGroupValid`: `true` when the group-level validators have no errors
 - `group.state.meta.isValid`: `true` when both the field-level and group-level validators have no errors
 - `group.state.meta.isSubmitting`: `true` when the group is in the process of being submitted
+
+A group only rerenders when a part of `group.state` that it has read changes. A group that renders only `form.Field`s therefore does not rerender while those fields are edited; each field rerenders on its own.
