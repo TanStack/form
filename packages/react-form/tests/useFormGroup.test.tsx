@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
-import { render, waitFor } from '@testing-library/react'
-import { userEvent } from '@testing-library/user-event'
+import { render } from 'vitest-browser-react'
+import { userEvent } from 'vitest/browser'
 import { useForm } from '../src/index'
 
 const user = userEvent.setup()
@@ -48,10 +48,10 @@ describe('form.FormGroup', () => {
       )
     }
 
-    const { getByTestId } = render(<Comp />)
+    const { getByTestId } = await render(<Comp />)
     await user.click(getByTestId('submit-group'))
 
-    await waitFor(() => expect(onGroupSubmit).toHaveBeenCalledTimes(1))
+    await vi.waitFor(() => expect(onGroupSubmit).toHaveBeenCalledTimes(1))
     expect(onSubmit).not.toHaveBeenCalled()
   })
 
@@ -87,15 +87,17 @@ describe('form.FormGroup', () => {
       )
     }
 
-    const { getByTestId } = render(<Comp />)
-    expect(getByTestId('group-value').textContent).toBe('{"name":"initial"}')
+    const { getByTestId } = await render(<Comp />)
+    expect(getByTestId('group-value').element().textContent).toBe(
+      '{"name":"initial"}',
+    )
 
     await user.clear(getByTestId('step1-name'))
     await user.type(getByTestId('step1-name'), 'updated')
 
-    await waitFor(() =>
-      expect(getByTestId('group-value').textContent).toBe('{"name":"updated"}'),
-    )
+    await expect
+      .poll(() => getByTestId('group-value').element().textContent)
+      .toBe('{"name":"updated"}')
   })
 
   it('should call onGroupSubmitInvalid when group-level validation fails', async () => {
@@ -152,15 +154,17 @@ describe('form.FormGroup', () => {
       )
     }
 
-    const { getByTestId } = render(<Comp />)
+    const { getByTestId } = await render(<Comp />)
     await user.click(getByTestId('submit-group'))
 
-    await waitFor(() => expect(onGroupSubmitInvalid).toHaveBeenCalledTimes(1))
+    await vi.waitFor(() =>
+      expect(onGroupSubmitInvalid).toHaveBeenCalledTimes(1),
+    )
     expect(onGroupSubmit).not.toHaveBeenCalled()
     expect(onSubmit).not.toHaveBeenCalled()
-    await waitFor(() =>
-      expect(getByTestId('group-error').textContent).toBe('Name is required'),
-    )
+    await expect
+      .poll(() => getByTestId('group-error').element().textContent)
+      .toBe('Name is required')
   })
 
   it('should ignore form-level field errors outside the group when submitting the group', async () => {
@@ -215,10 +219,10 @@ describe('form.FormGroup', () => {
       )
     }
 
-    const { getByTestId } = render(<Comp />)
+    const { getByTestId } = await render(<Comp />)
     await user.click(getByTestId('submit-group'))
 
-    await waitFor(() => expect(onGroupSubmit).toHaveBeenCalledTimes(1))
+    await vi.waitFor(() => expect(onGroupSubmit).toHaveBeenCalledTimes(1))
     expect(onGroupSubmitInvalid).not.toHaveBeenCalled()
   })
 
@@ -252,10 +256,10 @@ describe('form.FormGroup', () => {
       )
     }
 
-    const { getByTestId } = render(<Comp />)
+    const { getByTestId } = await render(<Comp />)
     await user.click(getByTestId('submit-group'))
 
-    await waitFor(() => expect(onGroupSubmit).toHaveBeenCalledTimes(1))
+    await vi.waitFor(() => expect(onGroupSubmit).toHaveBeenCalledTimes(1))
     expect(onGroupSubmit).toHaveBeenCalledWith(
       expect.objectContaining({
         value: { name: 'test' },
@@ -304,20 +308,20 @@ describe('form.FormGroup', () => {
       )
     }
 
-    const { getByTestId } = render(<Comp />)
-    const button = getByTestId('submit-group') as HTMLButtonElement
-    expect(button.textContent).toBe('Continue')
-    expect(button.disabled).toBe(false)
+    const { getByTestId } = await render(<Comp />)
+    const button = getByTestId('submit-group')
+    await expect.element(button).toHaveTextContent('Continue')
+    await expect.element(button).toBeEnabled()
 
     await user.click(button)
 
-    await waitFor(() => expect(button.textContent).toBe('Saving...'))
-    expect(button.disabled).toBe(true)
+    await expect.element(button).toHaveTextContent('Saving...')
+    await expect.element(button).toBeDisabled()
 
     resolveSubmit()
 
-    await waitFor(() => expect(button.textContent).toBe('Continue'))
-    expect(button.disabled).toBe(false)
+    await expect.element(button).toHaveTextContent('Continue')
+    await expect.element(button).toBeEnabled()
     expect(onGroupSubmit).toHaveBeenCalledTimes(1)
   })
 })

@@ -3,6 +3,7 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "moduleResolution": "Bundler",
+    "types": ["vitest/browser"],
     "paths": {
       "@tanstack/form-core": ["../form-core/src"]
     }
