@@ -58,6 +58,8 @@ This page is a starting checklist for migrating React apps from v1 to v2.
   a CommonJS build and require Node.js 18 or newer.
 - Upgrade React to version 18 or newer. The v2 React adapter no longer supports
   React 17.
+- Upgrade Solid to version 2 when using the Solid adapter. The v2 Solid
+  adapter no longer supports Solid 1.
 - Update CommonJS integrations to consume ESM. The v2 packages do not publish
   a CommonJS build and require Node.js 18 or newer.
 
@@ -77,6 +79,21 @@ We hope Vue 3.6 will be stable by the time TanStack Form v2 becomes stable.
 Form Composition relies on Vue 3.6 behavior to work correctly. Requiring it
 from the start lets the Vue adapter support Form Composition without adding a
 breaking minimum-version change later in the v2 release line.
+
+## Solid version
+
+The v2 Solid adapter requires Solid 2 (`solid-js` and `@solidjs/web` 2.0).
+Solid 1 is no longer supported, so upgrade Solid before migrating. The
+[Solid 2 docs](https://v2.solidjs.com) cover upgrading Solid itself. At the
+time of writing, Solid 2 is available as a release candidate.
+
+In Solid 2 code that uses the adapter:
+
+- Import `render` and the JSX types from `@solidjs/web` instead of
+  `solid-js/web`.
+- `useSelector` (and the deprecated `useStore` alias) is exported from
+  `@tanstack/solid-form` itself, so the adapter no longer depends on
+  `@tanstack/solid-store`.
 
 ## Package format
 

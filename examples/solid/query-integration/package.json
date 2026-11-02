@@ -9,13 +9,14 @@
     "test:types": "tsc"
   },
   "dependencies": {
+    "@solidjs/web": "^2.0.0-rc.20",
     "@tanstack/solid-form": "^2.0.0-alpha.3",
-    "@tanstack/solid-query": "^5.89.0",
-    "solid-js": "^1.9.13"
+    "@tanstack/solid-query": "^6.0.0-rc.5",
+    "solid-js": "^2.0.0-rc.20"
   },
   "devDependencies": {
+    "@solidjs/vite-plugin": "^3.0.0-next.54",
     "typescript": "^6.0.2",
-    "vite": "^8.2.1",
-    "vite-plugin-solid": "^2.11.14"
+    "vite": "^8.2.1"
   }
 }

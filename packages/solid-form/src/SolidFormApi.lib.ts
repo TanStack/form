@@ -2,18 +2,19 @@ import {
   InternalFormApi,
   InternalFormGroupApi,
 } from '@tanstack/form-core/internals'
-import { shallow, useSelector } from '@tanstack/solid-store'
+import { shallow } from '@tanstack/store'
 import {
   createComponent,
   createMemo,
   createRenderEffect,
   createUniqueId,
-  mergeProps,
+  merge,
   onCleanup,
   untrack,
 } from 'solid-js'
 import { Subscribe } from './Subscribe.public'
 import { createArrayField, createField } from './createField.lib'
+import { useSelector } from './useSelector.public'
 import type {
   AnyInternalFormApi,
   InternalFormGroupApi as InternalFormGroupApiType,
@@ -39,7 +40,7 @@ export function attachSolidFormComponents(
   solidFormApi.Field = function TanStackFormField(
     props: SolidFormFieldProps<any, any, any, any, any, any, any, any>,
   ) {
-    const fieldOptions = mergeProps(props, { form })
+    const fieldOptions = merge(props, { form })
     const fieldApi = createField(() => fieldOptions as never)
     if (fieldComponents !== null) Object.assign(fieldApi, fieldComponents)
 
@@ -49,7 +50,7 @@ export function attachSolidFormComponents(
   solidFormApi.ArrayField = function TanStackFormArrayField(
     props: SolidFormFieldProps<any, any, any, any, any, any, any, any>,
   ) {
-    const fieldOptions = mergeProps(props, { form })
+    const fieldOptions = merge(props, { form })
     const fieldApi = createArrayField(() => fieldOptions as never)
     if (fieldComponents !== null) Object.assign(fieldApi, fieldComponents)
 
@@ -61,19 +62,23 @@ export function attachSolidFormComponents(
   ) {
     return createComponent(
       Subscribe as Component<any>,
-      mergeProps(props, { source: solidFormApi.atom }),
+      merge(props, { source: solidFormApi.atom }),
     )
   }
 
   solidFormApi.FormGroup = function TanStackFormGroup(
     props: SolidFormGroupProps<any, any, any, any, any, any>,
   ) {
+    // Spreading reads every prop, so the effect below tracks them all.
+    const groupOptions = () => ({ ...props, form }) as never
     const group = attachSolidFormGroupComponents(
-      new InternalFormGroupApi({ ...props, form } as never),
+      new InternalFormGroupApi(untrack(groupOptions)),
       solidFormApi,
     )
 
-    createRenderEffect(() => group.update({ ...props, form } as never))
+    createRenderEffect(groupOptions, (next) => {
+      group.update(next)
+    })
     group.mount()
     onCleanup(() => group._cleanup())
 
@@ -85,7 +90,6 @@ export function attachSolidFormComponents(
         state()
         return group
       },
-      undefined,
       { equals: false },
     )
 
@@ -122,21 +126,21 @@ function attachSolidFormGroupComponents(
   resultGroup.Field = function Field(props) {
     return createComponent(
       form.Field as Component<any>,
-      group._getFormFieldOptions(props, mergeProps) as any,
+      group._getFormFieldOptions(props, merge) as any,
     )
   }
 
   resultGroup.ArrayField = function ArrayField(props) {
     return createComponent(
       form.ArrayField as Component<any>,
-      group._getFormFieldOptions(props, mergeProps) as any,
+      group._getFormFieldOptions(props, merge) as any,
     )
   }
 
   resultGroup.Subscribe = function GroupSubscribe(props) {
     return createComponent(
       Subscribe as Component<any>,
-      mergeProps(props, { source: group.atom }),
+      merge(props, { source: group.atom }),
     )
   }
 
@@ -164,8 +168,8 @@ export function createInternalForm(
   }
   const form = untrack(() => initializeFn(resolveOptions()))
 
-  createRenderEffect(() => {
-    form._update(resolveOptions() as never)
+  createRenderEffect(resolveOptions, (next) => {
+    form._update(next as never)
   })
 
   const unmount = form.mount()
