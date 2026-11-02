@@ -700,6 +700,10 @@ export function deepCopy<T>(obj: T): T {
     return new Date(obj.getTime()) as any
   }
 
+  if (typeof Blob !== 'undefined' && obj instanceof Blob) {
+    return obj
+  }
+
   if (Array.isArray(obj)) {
     const arrCopy = [] as any[]
     for (let i = 0; i < obj.length; i++) {
