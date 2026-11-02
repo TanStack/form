@@ -27,16 +27,16 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: true # changesets/action pushes version/release changes
-      - name: Setup Tools
-        uses: TanStack/config/.github/setup@2903e4f30d417cfcb5a5ba5a9dc24a4dd4a75f2c # main
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@cab1ab9eaff52d4857875f4f2c016e36af8f2c76 # v1.22.0
       - name: Run Tests
-        run: pnpm run test:ci
+        run: vp run test:ci
       - name: Run Changesets (version or publish)
         id: changesets
         uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
         with:
-          version-script: pnpm run changeset:version
-          publish-script: pnpm run changeset:publish
+          version-script: vp run changeset:version
+          publish-script: vp run changeset:publish
           commit-message: 'ci: Version Packages'
           pr-title: 'ci: Version Packages'
       - name: Comment on PRs about release
