@@ -700,7 +700,11 @@ export function deepCopy<T>(obj: T): T {
     return new Date(obj.getTime()) as any
   }
 
-  if (typeof Blob !== 'undefined' && obj instanceof Blob) {
+  // File extends Blob. Neither can be cloned property by property, so keep the
+  // original reference (they are immutable). Use the type tag instead of
+  // `instanceof` so values created in another realm (e.g. an iframe) match too.
+  const tag = Object.prototype.toString.call(obj)
+  if (tag === '[object Blob]' || tag === '[object File]') {
     return obj
   }
 

@@ -57,6 +57,21 @@ describe('transform preserves binary values', () => {
     expect(form.state.values.blob).toBe(blob)
   })
 
+  it('should preserve File values that fail instanceof (e.g. other realms)', () => {
+    // A File created in another realm (such as an iframe) is not an instance of
+    // this realm's Blob, but still reports the same type tag.
+    const foreignFile = Object.create(null, {
+      [Symbol.toStringTag]: { value: 'File' },
+    })
+    expect(foreignFile instanceof Blob).toBe(false)
+
+    const form = new FormApi({ defaultValues: { file: foreignFile } })
+
+    mergeAndUpdate(form, (value) => value)
+
+    expect(form.state.values.file).toBe(foreignFile)
+  })
+
   it('should preserve File values nested in objects and arrays', () => {
     const first = makeFile('first.txt')
     const second = makeFile('second.txt')
