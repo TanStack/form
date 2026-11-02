@@ -1,3 +1,4 @@
+import { inject, APP_ID } from '@angular/core'
 import { FormApi } from '@tanstack/form-core'
 import { injectStore } from '@tanstack/angular-store'
 import type {
@@ -5,6 +6,14 @@ import type {
   FormOptions,
   FormValidateOrFn,
 } from '@tanstack/form-core'
+
+const _formCounters = new Map<string, number>()
+
+function nextFormId(appId: string): string {
+  const n = (_formCounters.get(appId) ?? 0) + 1
+  _formCounters.set(appId, n)
+  return `${appId}-form-${n}`
+}
 
 export function injectForm<
   TFormData,
@@ -35,6 +44,7 @@ export function injectForm<
     TSubmitMeta
   >,
 ) {
+  const appId = inject(APP_ID)
   const api = new FormApi<
     TFormData,
     TOnMount,
@@ -48,7 +58,7 @@ export function injectForm<
     TOnDynamicAsync,
     TOnServer,
     TSubmitMeta
-  >(opts)
+  >({ ...opts, formId: opts?.formId ?? nextFormId(appId) } as typeof opts)
 
   injectStore(api.store, (state) => state.isSubmitting)
 
