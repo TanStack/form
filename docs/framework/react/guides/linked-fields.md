@@ -73,3 +73,34 @@ function App() {
 ```
 
 This is similar to the `onBlurListenTo` prop, which re-runs the validation when the linked field is blurred.
+
+## Linking a dynamic validator
+
+If you validate through [`onDynamic`](./dynamic-validation.md), use `onDynamicListenTo` instead. It names the fields whose
+changes should re-run this field's `onDynamic` and `onDynamicAsync` validators, so you do not have to duplicate the
+rule into an `onChange` validator just to get it linked.
+
+```tsx
+<form.Field
+  name="confirm_password"
+  validators={{
+    onDynamicListenTo: ['password'],
+    onDynamic: ({ value, fieldApi }) => {
+      if (value !== fieldApi.form.getFieldValue('password')) {
+        return 'Passwords do not match'
+      }
+      return undefined
+    },
+  }}
+>
+  {/* ... */}
+</form.Field>
+```
+
+Errors raised this way are stored under the `onDynamic` key of the field's error map, the same key the field's own
+`onDynamic` validator writes to, so a single rule reports through one channel no matter which field triggered it.
+
+> [!NOTE]
+> A linked `onDynamic` validator runs whenever the listened-to field changes or blurs. Unlike the field's own
+> `onDynamic` validator, it does not currently consult the form's `validationLogic` first, so `revalidateLogic()` will
+> not hold it back before the first submission.
