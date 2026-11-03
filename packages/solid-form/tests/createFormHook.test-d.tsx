@@ -10,7 +10,7 @@ function Test() {
   return null
 }
 
-const { useAppForm, withForm } = createFormHook({
+const { useAppForm, withForm, withFieldGroup } = createFormHook({
   fieldComponents: {
     Test,
   },
@@ -247,6 +247,52 @@ describe('createFormHook', () => {
     const IncorrectFormOptsComponent = (
       // @ts-expect-error Incorrect form opts
       <WithFormComponent form={incorrectAppForm} prop1="test" prop2={10} />
+    )
+  })
+
+  it('should require exact field value types for withFieldGroup fields', () => {
+    type PasswordFields = {
+      password: string | null
+    }
+
+    const FieldGroupPasswordFields = withFieldGroup({
+      defaultValues: { password: '' } as PasswordFields,
+      render: function Render() {
+        return <></>
+      },
+    })
+
+    const form = useAppForm(() => ({
+      defaultValues: {
+        reusable: { password: '' },
+        exact: { password: null as string | null },
+      },
+    }))
+
+    const ExactComponent = (
+      <FieldGroupPasswordFields form={form} fields="exact" />
+    )
+    const ExactMappedComponent = (
+      <FieldGroupPasswordFields
+        form={form}
+        fields={{ password: 'exact.password' }}
+      />
+    )
+    const TooWideComponent = (
+      <FieldGroupPasswordFields
+        form={form}
+        // @ts-expect-error because the field group could write null into a string-only parent field
+        fields="reusable"
+      />
+    )
+    const TooWideMappedComponent = (
+      <FieldGroupPasswordFields
+        form={form}
+        fields={{
+          // @ts-expect-error because the field group could write null into a string-only parent field
+          password: 'reusable.password',
+        }}
+      />
     )
   })
 })

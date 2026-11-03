@@ -821,6 +821,52 @@ describe('createFormHook', () => {
     const Component5 = <FieldGroup form={form} fields="nope2" />
   })
 
+  it('should require exact field value types for withFieldGroup fields', () => {
+    type PasswordFields = {
+      password: string | null
+    }
+
+    const FieldGroupPasswordFields = withFieldGroup({
+      defaultValues: { password: '' } as PasswordFields,
+      render: function Render() {
+        return <></>
+      },
+    })
+
+    const form = useAppForm({
+      defaultValues: {
+        reusable: { password: '' },
+        exact: { password: null as string | null },
+      },
+    })
+
+    const ExactComponent = (
+      <FieldGroupPasswordFields form={form} fields="exact" />
+    )
+    const ExactMappedComponent = (
+      <FieldGroupPasswordFields
+        form={form}
+        fields={{ password: 'exact.password' }}
+      />
+    )
+    const TooWideComponent = (
+      <FieldGroupPasswordFields
+        form={form}
+        // @ts-expect-error because the field group could write null into a string-only parent field
+        fields="reusable"
+      />
+    )
+    const TooWideMappedComponent = (
+      <FieldGroupPasswordFields
+        form={form}
+        fields={{
+          // @ts-expect-error because the field group could write null into a string-only parent field
+          password: 'reusable.password',
+        }}
+      />
+    )
+  })
+
   it('should allow interfaces without index signatures to be assigned to `props` in withForm and withFormGroup', () => {
     interface TestNoSignature {
       title: string
