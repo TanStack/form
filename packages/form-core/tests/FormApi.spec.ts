@@ -279,6 +279,63 @@ describe('form api', () => {
     expect(form.state.isPristine).toBe(false)
   })
 
+  it('should create complete field meta when setting the value of an unmounted field', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+    form.mount()
+
+    form.setFieldValue('name', 'other')
+
+    expect(form.getFieldMeta('name')).toMatchObject({
+      isTouched: true,
+      isDirty: true,
+      isBlurred: false,
+      isValidating: false,
+      errorMap: { onMount: undefined },
+      errorSourceMap: {},
+      errors: [],
+    })
+  })
+
+  it('should preserve existing field meta when setting a field value', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onMount: () => 'mount error',
+      },
+    })
+    field.mount()
+
+    form.setFieldMeta('name', (prev) => ({
+      ...prev,
+      isBlurred: true,
+      errorMap: { ...prev.errorMap, onBlur: 'blur error' },
+      errorSourceMap: { ...prev.errorSourceMap, onBlur: 'field' },
+    }))
+
+    form.setFieldValue('name', 'other')
+
+    const meta = form.getFieldMeta('name')
+    expect(meta?.isBlurred).toBe(true)
+    expect(meta?.errorMap.onMount).toBeUndefined()
+    expect(meta?.errorMap.onBlur).toBe('blur error')
+    expect(meta?.errorSourceMap).toMatchObject({
+      onMount: 'field',
+      onBlur: 'field',
+    })
+  })
+
   it('should be clean again after being reset from a dirty state', () => {
     const form = new FormApi({
       defaultValues: {
