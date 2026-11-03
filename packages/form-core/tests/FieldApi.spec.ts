@@ -2254,6 +2254,233 @@ describe('field api', () => {
     expect(fn).toHaveBeenCalledTimes(1)
   })
 
+  it.each([
+    { linked: false, reset: false },
+    { linked: false, reset: true },
+    { linked: true, reset: false },
+    { linked: true, reset: true },
+  ])(
+    'should preserve pending validation when an older run settles (linked: $linked, reset: $reset)',
+    async ({ linked, reset }) => {
+      vi.useFakeTimers()
+      try {
+        const form = new FormApi({
+          defaultValues: { source: '', email: '' },
+        })
+        form.mount()
+
+        let resolveChange!: (error: string | undefined) => void
+        const changeResult = new Promise<string | undefined>((resolve) => {
+          resolveChange = resolve
+        })
+        let resolveBlur!: (error: string | undefined) => void
+        const blurResult = new Promise<string | undefined>((resolve) => {
+          resolveBlur = resolve
+        })
+        const onChangeAsync = vi.fn(async () => await changeResult)
+        const onBlurAsync = vi.fn(async () => await blurResult)
+        const source = new FieldApi({ form, name: 'source' })
+        const field = new FieldApi({
+          form,
+          name: 'email',
+          validators: {
+            onChangeListenTo: linked ? ['source'] : undefined,
+            onChangeAsync,
+            onBlurAsync,
+          },
+        })
+        source.mount()
+        field.mount()
+
+        if (linked) source.setValue('old-input')
+        else field.setValue('old-input')
+        await vi.runAllTimersAsync()
+        expect(onChangeAsync).toHaveBeenCalledTimes(1)
+        expect(field.state.meta.isValidating).toBe(true)
+
+        if (reset) {
+          form.reset()
+          expect(field.state.meta.isValidating).toBe(false)
+          expect(field.state.meta._pendingValidationsCount).toBe(0)
+        }
+
+        field.handleBlur()
+        await vi.runAllTimersAsync()
+        expect(onBlurAsync).toHaveBeenCalledTimes(1)
+        expect(field.state.meta.isValidating).toBe(true)
+        expect(field.state.meta._pendingValidationsCount).toBe(reset ? 1 : 2)
+
+        resolveChange(undefined)
+        await vi.runAllTimersAsync()
+        expect(field.state.meta.isValidating).toBe(true)
+        expect(field.state.meta._pendingValidationsCount).toBe(1)
+        expect(form.state.isFieldsValidating).toBe(true)
+
+        resolveBlur('New validation error')
+        await vi.runAllTimersAsync()
+        expect(field.state.meta.errorMap.onBlur).toBe('New validation error')
+        expect(field.state.meta.isValidating).toBe(false)
+        expect(field.state.meta._pendingValidationsCount).toBe(0)
+        expect(form.state.isFieldsValidating).toBe(false)
+      } finally {
+        vi.useRealTimers()
+      }
+    },
+  )
+
+  it.each([
+    { linked: false, reset: false },
+    { linked: false, reset: true },
+    { linked: true, reset: false },
+    { linked: true, reset: true },
+  ])(
+    'should preserve pending validation when replacing a debounce (linked: $linked, reset: $reset)',
+    async ({ linked, reset }) => {
+      vi.useFakeTimers()
+      try {
+        const form = new FormApi({
+          defaultValues: { source: '', email: '' },
+        })
+        form.mount()
+        let resolveValidation!: (error: string | undefined) => void
+        const result = new Promise<string | undefined>((resolve) => {
+          resolveValidation = resolve
+        })
+        const onChangeAsync = vi.fn(async () => await result)
+        const source = new FieldApi({ form, name: 'source' })
+        const field = new FieldApi({
+          form,
+          name: 'email',
+          validators: {
+            onChangeListenTo: linked ? ['source'] : undefined,
+            onChangeAsyncDebounceMs: 1000,
+            onChangeAsync,
+          },
+        })
+        source.mount()
+        field.mount()
+
+        if (linked) source.setValue('first')
+        else field.setValue('first')
+        await vi.advanceTimersByTimeAsync(0)
+        expect(onChangeAsync).not.toHaveBeenCalled()
+        expect(field.state.meta._pendingValidationsCount).toBe(1)
+
+        if (reset) form.reset()
+        if (linked) source.setValue('second')
+        else field.setValue('second')
+        await vi.advanceTimersByTimeAsync(0)
+        expect(onChangeAsync).not.toHaveBeenCalled()
+        expect(field.state.meta.isValidating).toBe(true)
+        expect(field.state.meta._pendingValidationsCount).toBe(1)
+
+        await vi.advanceTimersByTimeAsync(1000)
+        expect(onChangeAsync).toHaveBeenCalledTimes(1)
+        expect(field.state.meta.isValidating).toBe(true)
+        expect(field.state.meta._pendingValidationsCount).toBe(1)
+
+        resolveValidation('New validation error')
+        await vi.runAllTimersAsync()
+        expect(field.state.meta.errorMap.onChange).toBe('New validation error')
+        expect(field.state.meta.isValidating).toBe(false)
+        expect(field.state.meta._pendingValidationsCount).toBe(0)
+      } finally {
+        vi.useRealTimers()
+      }
+    },
+  )
+
+  it.each([
+    { linked: false, mode: 'no reset' },
+    { linked: true, mode: 'no reset' },
+    { linked: false, mode: 'reset only' },
+    { linked: true, mode: 'reset only' },
+    { linked: false, mode: 'reset and new validation' },
+    { linked: true, mode: 'reset and new validation' },
+  ])(
+    'should discard stale work awaiting form validation (linked: $linked, mode: $mode)',
+    async ({ linked, mode }) => {
+      vi.useFakeTimers()
+      try {
+        let resolveForm!: (result: undefined) => void
+        const formResult = new Promise<undefined>((resolve) => {
+          resolveForm = resolve
+        })
+        let formCalls = 0
+        const form = new FormApi({
+          defaultValues: { source: '', email: '' },
+          validators: {
+            onChangeAsync: async () => {
+              formCalls++
+              return formCalls === 1 ? await formResult : undefined
+            },
+          },
+        })
+        form.mount()
+
+        let resolveField!: (error: string | undefined) => void
+        const fieldResult = new Promise<string | undefined>((resolve) => {
+          resolveField = resolve
+        })
+        const onChangeAsync = vi.fn(async () => await fieldResult)
+        const source = new FieldApi({ form, name: 'source' })
+        const field = new FieldApi({
+          form,
+          name: 'email',
+          validators: {
+            onChangeListenTo: linked ? ['source'] : undefined,
+            onChangeAsync,
+          },
+        })
+        source.mount()
+        field.mount()
+
+        if (linked) source.setValue('old-input')
+        else field.setValue('old-input')
+        await vi.runAllTimersAsync()
+        expect(formCalls).toBe(1)
+        expect(onChangeAsync).not.toHaveBeenCalled()
+
+        if (mode !== 'no reset') form.reset()
+        if (mode === 'reset and new validation') {
+          if (linked) source.setValue('new-input')
+          else field.setValue('new-input')
+          await vi.runAllTimersAsync()
+          expect(formCalls).toBe(2)
+          expect(onChangeAsync).toHaveBeenCalledTimes(1)
+          expect(field.state.meta.isValidating).toBe(true)
+        }
+        const newController =
+          field.getInfo().validationMetaMap.onChange?.lastAbortController
+
+        resolveForm(undefined)
+        await vi.runAllTimersAsync()
+        expect(onChangeAsync).toHaveBeenCalledTimes(
+          mode === 'reset only' ? 0 : 1,
+        )
+        expect(field.state.meta._pendingValidationsCount).toBe(
+          mode === 'reset only' ? 0 : 1,
+        )
+        if (mode === 'reset and new validation') {
+          expect(newController?.signal.aborted).toBe(false)
+          expect(
+            field.getInfo().validationMetaMap.onChange?.lastAbortController,
+          ).toBe(newController)
+        }
+
+        resolveField('Field error')
+        await vi.runAllTimersAsync()
+        expect(field.state.meta.isValidating).toBe(false)
+        expect(field.state.meta._pendingValidationsCount).toBe(0)
+        expect(field.state.meta.errorMap.onChange).toBe(
+          mode === 'reset only' ? undefined : 'Field error',
+        )
+      } finally {
+        vi.useRealTimers()
+      }
+    },
+  )
+
   it('should run onChange on a linked field', () => {
     const form = new FormApi({
       defaultValues: {
