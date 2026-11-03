@@ -2940,7 +2940,10 @@ export class FormApi<
       const fieldDefault =
         this.getFieldInfo(field).instance?.options.defaultValue
       const formDefault = getBy(this.options.defaultValues, field)
-      const targetValue = fieldDefault ?? formDefault
+      const targetValue =
+        fieldDefault !== undefined ? fieldDefault : formDefault
+      const hasDefault =
+        fieldDefault !== undefined || this.options.defaultValues !== undefined
 
       return {
         ...prev,
@@ -2948,10 +2951,9 @@ export class FormApi<
           ...prev.fieldMetaBase,
           [field]: defaultFieldMeta,
         },
-        values:
-          targetValue !== undefined
-            ? setBy(prev.values, field, targetValue)
-            : prev.values,
+        values: hasDefault
+          ? setBy(prev.values, field, targetValue)
+          : prev.values,
       }
     })
   }
