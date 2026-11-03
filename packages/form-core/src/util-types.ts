@@ -59,10 +59,12 @@ export type DeepKeyAndValueArray<
   TParent extends AnyDeepKeyAndValue,
   T extends ReadonlyArray<any>,
   TAcc,
+  TVisited = never,
 > = DeepKeysAndValuesImpl<
   NonNullable<T[number]>,
   ArrayDeepKeyAndValue<TParent, T>,
-  TAcc | ArrayDeepKeyAndValue<TParent, T>
+  TAcc | ArrayDeepKeyAndValue<TParent, T>,
+  TVisited | T
 >
 
 export type TupleAccessor<
@@ -86,11 +88,13 @@ export type DeepKeyAndValueTuple<
   T extends ReadonlyArray<any>,
   TAcc,
   TAllKeys extends AllTupleKeys<T> = AllTupleKeys<T>,
+  TVisited = never,
 > = TAllKeys extends any
   ? DeepKeysAndValuesImpl<
       NonNullable<T[TAllKeys]>,
       TupleDeepKeyAndValue<TParent, T, TAllKeys>,
-      TAcc | TupleDeepKeyAndValue<TParent, T, TAllKeys>
+      TAcc | TupleDeepKeyAndValue<TParent, T, TAllKeys>,
+      TVisited | T
     >
   : never
 
@@ -125,11 +129,13 @@ export type DeepKeyAndValueObject<
   T,
   TAcc,
   TAllKeys extends AllObjectKeys<T> = AllObjectKeys<T>,
+  TVisited = never,
 > = TAllKeys extends any
   ? DeepKeysAndValuesImpl<
       NonNullable<T[TAllKeys]>,
       ObjectDeepKeyAndValue<TParent, T, TAllKeys>,
-      TAcc | ObjectDeepKeyAndValue<TParent, T, TAllKeys>
+      TAcc | ObjectDeepKeyAndValue<TParent, T, TAllKeys>,
+      TVisited | T
     >
   : never
 
@@ -143,15 +149,60 @@ export interface UnknownDeepKeyAndValue<
   value: unknown
 }
 
+/**
+ * The accessor of a path below a point where a self-referencing type was cut
+ * off. Unlike `UnknownAccessor` it also accepts a bracket suffix, because the
+ * cut type can be an array that is directly nested in another array
+ * (e.g. `data[0][0]` for `type Json = Json[] | { [key: string]: Json }`).
+ */
+export type RecursiveAccessor<TParent extends AnyDeepKeyAndValue> =
+  TParent['key'] extends never
+    ? string
+    :
+        | `${TParent['key']}.${string}`
+        | `${TParent['key']}[${number}]`
+        | `${TParent['key']}[${number}].${string}`
+        | `${TParent['key']}[${number}][${string}`
+
+export interface RecursiveDeepKeyAndValue<
+  TParent extends AnyDeepKeyAndValue,
+> extends AnyDeepKeyAndValue {
+  key: RecursiveAccessor<TParent>
+  value: unknown
+}
+
 export type DeepKeysAndValues<T> =
   DeepKeysAndValuesImpl<T> extends AnyDeepKeyAndValue
     ? DeepKeysAndValuesImpl<T>
     : never
 
+type IsIdentical<A, B> =
+  (<G>() => G extends A ? 1 : 2) extends <G>() => G extends B ? 1 : 2
+    ? true
+    : false
+
+/**
+ * @private
+ * Whether `T` is identical to one of the container types (arrays, tuples and
+ * objects) that are already being expanded further up the current path.
+ */
+type IsVisited<T, TVisited> = [TVisited] extends [never]
+  ? false
+  : true extends (TVisited extends any ? IsIdentical<T, TVisited> : never)
+    ? true
+    : false
+
+/**
+ * `TVisited` holds the container types on the path from the root to `T`. A
+ * type that contains itself (e.g. `type Json = Json[] | { [k: string]: Json }`)
+ * would otherwise be expanded forever, so when a container is reached again the
+ * recursion stops and the path continues as an unknown accessor.
+ */
 export type DeepKeysAndValuesImpl<
   T,
   TParent extends AnyDeepKeyAndValue = never,
   TAcc = never,
+  TVisited = never,
 > = unknown extends T
   ? TAcc | UnknownDeepKeyAndValue<TParent>
   : unknown extends T // this stops runaway recursion when T is any
@@ -159,13 +210,23 @@ export type DeepKeysAndValuesImpl<
     : T extends string | number | boolean | bigint | Date
       ? TAcc
       : T extends ReadonlyArray<any>
-        ? number extends T['length']
-          ? DeepKeyAndValueArray<TParent, T, TAcc>
-          : DeepKeyAndValueTuple<TParent, T, TAcc>
+        ? true extends IsVisited<T, TVisited>
+          ? TAcc | RecursiveDeepKeyAndValue<TParent>
+          : number extends T['length']
+            ? DeepKeyAndValueArray<TParent, T, TAcc, TVisited>
+            : DeepKeyAndValueTuple<TParent, T, TAcc, AllTupleKeys<T>, TVisited>
         : keyof T extends never
           ? TAcc | UnknownDeepKeyAndValue<TParent>
           : T extends object
-            ? DeepKeyAndValueObject<TParent, T, TAcc>
+            ? true extends IsVisited<T, TVisited>
+              ? TAcc | RecursiveDeepKeyAndValue<TParent>
+              : DeepKeyAndValueObject<
+                  TParent,
+                  T,
+                  TAcc,
+                  AllObjectKeys<T>,
+                  TVisited
+                >
             : TAcc
 
 export type DeepRecord<T> = {
