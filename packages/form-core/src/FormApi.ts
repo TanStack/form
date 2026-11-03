@@ -1808,6 +1808,20 @@ export class FormApi<
    * @param opts - Optional options to control the reset behavior.
    */
   reset = (values?: TFormData, opts?: { keepDefaultValues?: boolean }) => {
+    // Cancel any field validations still in flight so a result that resolves
+    // after this reset can't reapply a stale error for the pre-reset value.
+    ;(Object.values(this.fieldInfo) as FieldInfo<any>[]).forEach(
+      (fieldInfo) => {
+        ;(
+          Object.values(fieldInfo.validationMetaMap) as Array<
+            ValidationMeta | undefined
+          >
+        ).forEach((validationMeta) => {
+          validationMeta?.lastAbortController.abort()
+        })
+      },
+    )
+
     const { fieldMeta: currentFieldMeta } = this.state
     const fieldMetaBase = this.resetFieldMeta(currentFieldMeta)
 
