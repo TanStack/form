@@ -1136,7 +1136,7 @@ describe('useField', () => {
                     />
                   </label>
                   {field.state.meta.errors.map((err) => {
-                    return <div key={err?.toString()}>{err}</div>
+                    return <div key={err.toString()}>{err}</div>
                   })}
                 </div>
               )
