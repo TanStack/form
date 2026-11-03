@@ -97,7 +97,7 @@ export function metaHelper<
       new Map<DeepKeys<TFormData>, AnyFieldLikeMeta | undefined>(),
     )
 
-    shiftMeta(affectedFields, fromIndex < toIndex ? 'up' : 'down')
+    shiftMeta(field, affectedFields, fromIndex < toIndex ? 'up' : 'down')
 
     // Reapply the stored field meta at the destination index
     Object.keys(formApi.fieldInfo)
@@ -122,7 +122,7 @@ export function metaHelper<
     bumpArrayVersion(field)
     const affectedFields = getAffectedFields(field, index, 'remove')
 
-    shiftMeta(affectedFields, 'up')
+    shiftMeta(field, affectedFields, 'up')
   }
 
   /**
@@ -165,7 +165,7 @@ export function metaHelper<
     bumpArrayVersion(field)
     const affectedFields = getAffectedFields(field, insertIndex, 'insert')
 
-    shiftMeta(affectedFields, 'down')
+    shiftMeta(field, affectedFields, 'down')
 
     affectedFields.forEach((fieldKey) => {
       if (fieldKey.toString().startsWith(getFieldPath(field, insertIndex))) {
@@ -221,22 +221,34 @@ export function metaHelper<
   }
 
   function updateIndex(
+    field: DeepKeys<TFormData>,
     fieldKey: string,
     direction: 'up' | 'down',
   ): DeepKeys<TFormData> {
-    return fieldKey.replace(/\[(\d+)\]/, (_, num) => {
-      const currIndex = parseInt(num, 10)
-      const newIndex =
-        direction === 'up' ? currIndex + 1 : Math.max(0, currIndex - 1)
-      return `[${newIndex}]`
-    }) as DeepKeys<TFormData>
+    // Only the index belonging to `field` may move; a nested array field such
+    // as `teams[0].members` carries indices of its own that must stay put.
+    const prefix = `${field}[`
+    const closing = fieldKey.indexOf(']', prefix.length)
+    if (!fieldKey.startsWith(prefix) || closing === -1) {
+      return fieldKey as DeepKeys<TFormData>
+    }
+
+    const currIndex = parseInt(fieldKey.slice(prefix.length, closing), 10)
+    const newIndex =
+      direction === 'up' ? currIndex + 1 : Math.max(0, currIndex - 1)
+
+    return `${prefix}${newIndex}${fieldKey.slice(closing)}` as DeepKeys<TFormData>
   }
 
-  function shiftMeta(fields: DeepKeys<TFormData>[], direction: 'up' | 'down') {
+  function shiftMeta(
+    field: DeepKeys<TFormData>,
+    fields: DeepKeys<TFormData>[],
+    direction: 'up' | 'down',
+  ) {
     const sortedFields = direction === 'up' ? fields : [...fields].reverse()
 
     sortedFields.forEach((fieldKey) => {
-      const nextFieldKey = updateIndex(fieldKey.toString(), direction)
+      const nextFieldKey = updateIndex(field, fieldKey.toString(), direction)
       const nextFieldMeta = formApi.getFieldMeta(nextFieldKey)
       if (nextFieldMeta) {
         formApi.setFieldMeta(fieldKey, nextFieldMeta)
