@@ -58,7 +58,7 @@ function DateField(props: {
 }) {
   return (
     <label
-      classList={{ validating: props.field().meta.isValidating }}
+      class={{ validating: props.field().meta.isValidating }}
       style={{ display: 'block' }}
     >
       <span>{props.label}</span>
@@ -70,7 +70,7 @@ function DateField(props: {
         onInput={(event) =>
           props.field().handleChange(event.currentTarget.value)
         }
-        aria-invalid={props.field().meta.isInvalid}
+        aria-invalid={props.field().meta.isInvalid ? 'true' : 'false'}
       />
       <br />
       <FieldError field={props.field} />

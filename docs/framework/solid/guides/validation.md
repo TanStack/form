@@ -38,7 +38,7 @@ change and blur triggers.
         onInput={(event) =>
           field().handleChange(event.currentTarget.valueAsNumber)
         }
-        aria-invalid={field().meta.isInvalid}
+        aria-invalid={field().meta.isInvalid ? 'true' : 'false'}
       />
       <For each={field().errors}>
         {(error) => <span role="alert">{error.message}</span>}
@@ -209,7 +209,7 @@ Use `watchFields` when one field's validity depends on another:
       value={field().value}
       onBlur={field().handleBlur}
       onInput={(event) => field().handleChange(event.currentTarget.value)}
-      aria-invalid={field().meta.isInvalid}
+      aria-invalid={field().meta.isInvalid ? 'true' : 'false'}
     />
   )}
 </form.Field>

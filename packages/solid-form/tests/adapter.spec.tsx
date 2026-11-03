@@ -1,5 +1,5 @@
-import { createRenderEffect, createSignal } from 'solid-js'
-import { render } from 'solid-js/web'
+import { createRenderEffect, createSignal, flush } from 'solid-js'
+import { render } from '@solidjs/web'
 import { describe, expect, it, vi } from 'vitest'
 import {
   createForm,
@@ -8,10 +8,10 @@ import {
   getFormHookHelpers,
   useSelector,
 } from '../src'
-import type { Accessor, JSX } from 'solid-js'
+import type { Accessor, Element } from 'solid-js'
 import type { FieldWithValue } from '../src'
 
-function mount(Component: () => JSX.Element) {
+function mount(Component: () => Element) {
   const container = document.createElement('div')
   document.body.append(container)
   const disposeRoot = render(Component, container)
@@ -60,6 +60,7 @@ describe('Solid adapter parity', () => {
     )
 
     change('Rodney')
+    flush()
 
     expect(
       container.querySelector('[data-testid="group-value"]')?.textContent,
@@ -106,6 +107,7 @@ describe('Solid adapter parity', () => {
 
     const { dispose } = mount(() => <Component />)
     change('A')
+    flush()
     expect(listener).toHaveBeenCalledOnce()
     dispose()
   })
@@ -145,6 +147,7 @@ describe('Solid adapter parity', () => {
     ).toBe('guest.firstName:Tony')
 
     showLastName()
+    flush()
 
     expect(
       container.querySelector('[data-testid="group-field"]')?.textContent,
@@ -189,10 +192,13 @@ describe('Solid adapter parity', () => {
 
     const { dispose } = mount(() => <Component />)
     change('First')
+    flush()
     expect(firstListener).toHaveBeenCalledOnce()
 
     useSecondListener()
+    flush()
     change('Second')
+    flush()
 
     expect(firstListener).toHaveBeenCalledOnce()
     expect(secondListener).toHaveBeenCalledOnce()
@@ -295,7 +301,43 @@ describe('Solid adapter parity', () => {
     const { container, dispose } = mount(() => <Component />)
     expect(container.querySelector('[data-testid="visible"]')).toBeNull()
     setVisible(true)
+    flush()
     expect(container.querySelector('[data-testid="visible"]')).not.toBeNull()
+    dispose()
+  })
+
+  it('keeps Subscribe children reactive after the when predicate re-runs', () => {
+    let setCount!: (value: number) => void
+
+    function Component() {
+      const form = createForm(() => ({
+        defaultValues: { count: 1 },
+      }))
+      setCount = (value) => form.setFieldValue('count', value)
+
+      return (
+        <form.Subscribe
+          selector={(state) => state.values.count}
+          when={(count) => count > 0}
+        >
+          {(count) => <span data-testid="count">{count()}</span>}
+        </form.Subscribe>
+      )
+    }
+
+    const { container, dispose } = mount(() => <Component />)
+    const text = () =>
+      container.querySelector('[data-testid="count"]')?.textContent
+    expect(text()).toBe('1')
+    setCount(2)
+    flush()
+    expect(text()).toBe('2')
+    setCount(0)
+    flush()
+    expect(text()).toBeUndefined()
+    setCount(3)
+    flush()
+    expect(text()).toBe('3')
     dispose()
   })
 
@@ -329,6 +371,7 @@ describe('Solid adapter parity', () => {
     const initialMounts = onMount.mock.calls.length
     const initialUnmounts = onUnmount.mock.calls.length
     update()
+    flush()
     expect(onMount).toHaveBeenCalledTimes(initialMounts)
     expect(onUnmount).toHaveBeenCalledTimes(initialUnmounts)
     dispose()
@@ -350,8 +393,7 @@ describe('Solid adapter parity', () => {
         <>
           <form.ArrayField name="people">
             {(field) => {
-              createRenderEffect(() => {
-                field()
+              createRenderEffect(field, () => {
                 arrayAccessorRuns++
               })
               return <span>{field().value.length}</span>
@@ -370,8 +412,10 @@ describe('Solid adapter parity', () => {
     const { dispose } = mount(() => <Component />)
     const initialRuns = arrayAccessorRuns
     changeChild('Updated')
+    flush()
     expect(arrayAccessorRuns).toBe(initialRuns)
     pushItem()
+    flush()
     expect(arrayAccessorRuns).toBe(initialRuns + 1)
     dispose()
   })
@@ -391,6 +435,7 @@ describe('Solid adapter parity', () => {
 
     const { container, dispose } = mount(() => <Component />)
     reset()
+    flush()
     expect(
       container.querySelector('[data-testid="reset-value"]')?.textContent,
     ).toBe('Rodney')
@@ -441,6 +486,7 @@ describe('Solid reusable field groups', () => {
     ).toBe('name:Initial')
 
     container.querySelector('button')?.click()
+    flush()
 
     expect(
       container.querySelector('[data-testid="logical-value"]')?.textContent,
@@ -462,6 +508,7 @@ describe('Solid reusable field groups', () => {
     ).toBe('profile.name:Initial')
 
     container.querySelector('button')?.click()
+    flush()
 
     expect(
       container.querySelector('[data-testid="logical-value"]')?.textContent,
@@ -483,6 +530,7 @@ describe('Solid reusable field groups', () => {
 
     const { container, dispose } = mount(() => <Component />)
     showSecond()
+    flush()
     expect(
       container.querySelector('[data-testid="logical-field"]')?.textContent,
     ).toBe('second:Two')

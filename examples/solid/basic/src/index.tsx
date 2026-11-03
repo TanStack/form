@@ -1,5 +1,5 @@
 import { For } from 'solid-js'
-import { render } from 'solid-js/web'
+import { render } from '@solidjs/web'
 import { createForm } from '@tanstack/solid-form'
 import type { Accessor } from 'solid-js'
 import type { AnyFieldApi } from '@tanstack/solid-form'
@@ -75,7 +75,7 @@ function App() {
           ]}
         >
           {(field) => (
-            <label classList={{ validating: field().meta.isValidating }}>
+            <label class={{ validating: field().meta.isValidating }}>
               <span>First Name</span>
               <input
                 name={field().name}
@@ -84,7 +84,7 @@ function App() {
                 onInput={(event) =>
                   field().handleChange(event.currentTarget.value)
                 }
-                aria-invalid={field().meta.isInvalid}
+                aria-invalid={field().meta.isInvalid ? 'true' : 'false'}
               />
               <FieldError field={field} />
             </label>
@@ -92,7 +92,7 @@ function App() {
         </form.Field>
         <form.Field name="lastName">
           {(field) => (
-            <label classList={{ validating: field().meta.isValidating }}>
+            <label class={{ validating: field().meta.isValidating }}>
               <span>Last Name</span>
               <input
                 name={field().name}
@@ -101,7 +101,7 @@ function App() {
                 onInput={(event) =>
                   field().handleChange(event.currentTarget.value)
                 }
-                aria-invalid={field().meta.isInvalid}
+                aria-invalid={field().meta.isInvalid ? 'true' : 'false'}
               />
               <FieldError field={field} />
             </label>

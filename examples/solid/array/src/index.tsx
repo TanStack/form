@@ -1,5 +1,5 @@
-import { For, Index, createMemo, createSignal } from 'solid-js'
-import { render } from 'solid-js/web'
+import { For, createMemo, createSignal } from 'solid-js'
+import { render } from '@solidjs/web'
 import { createForm } from '@tanstack/solid-form'
 import './index.css'
 
@@ -36,7 +36,7 @@ function ArrayForm(props: { items: Array<string> }) {
         <form.ArrayField name="items">
           {(array) => (
             <ul>
-              <Index each={array().value}>
+              <For each={array().value} keyed={false}>
                 {(_, index) => (
                   <form.Field name={`items[${index}]`}>
                     {(field) => (
@@ -56,7 +56,7 @@ function ArrayForm(props: { items: Array<string> }) {
                     )}
                   </form.Field>
                 )}
-              </Index>
+              </For>
             </ul>
           )}
         </form.ArrayField>
