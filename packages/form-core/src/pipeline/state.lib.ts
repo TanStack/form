@@ -1,4 +1,5 @@
 import type { BaseInstance } from './baseInstance.lib'
+import type { Awaitable } from '../types.public'
 
 export type PipelineInstance<TInput = any, TResult = any> = BaseInstance<
   TInput,
@@ -45,6 +46,8 @@ export interface PipelineOptions<TInstance extends PipelineInstance> {
   input: PipelineInput<TInstance>
   /** Ordered entries to process, including their debounce and bail settings. */
   entries: ReadonlyArray<PipelineEntry<TInstance>>
+  /** Earlier validation's invalidity; awaited only at bail boundaries. */
+  upstreamInvalid?: Awaitable<boolean>
   /**
    * Classifies results for subsequent `bailIfInvalid` checks.
    *
@@ -54,6 +57,8 @@ export interface PipelineOptions<TInstance extends PipelineInstance> {
   isInvalid?: (result: PipelineOutput<TInstance>) => boolean
   /** Receives result batches after the initial entry loop yields. */
   onResults?: (results: Array<PipelineResult<TInstance>>) => void
+  /** Called synchronously when a bail decision skips an entry. */
+  onSkip?: (instance: TInstance) => void
 }
 
 export interface PipelineRun<TInstance extends PipelineInstance> {
@@ -81,7 +86,9 @@ export interface PipelineState<
   active: boolean
   /** True while the entry loop runs; defers progress checks until it finishes. */
   processingEntries: boolean
-  /** True after an accepted invalid result; stays true for later bail checks. */
+  /** True until an upstream promise settles; separate from local tasks. */
+  hasPendingUpstream: boolean
+  /** True after upstream or an accepted result is invalid; stays true. */
   hasInvalidResult: boolean
   /** Wrapper promise exposed by the run handle; `null` until work is deferred. */
   pending: Promise<void> | null
@@ -120,7 +127,8 @@ export function createPipelineState<TInstance extends PipelineInstance>(
     nextEntryIndex: 0,
     active: true,
     processingEntries: false,
-    hasInvalidResult: false,
+    hasPendingUpstream: false,
+    hasInvalidResult: options.upstreamInvalid === true,
     pending: null,
     resolvePending: undefined,
     rejectPending: undefined,

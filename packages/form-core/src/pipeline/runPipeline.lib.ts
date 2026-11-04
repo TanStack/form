@@ -72,6 +72,8 @@ function progressPipeline<TInstance extends PipelineInstance>(
     return
   }
 
+  if (state.hasPendingUpstream) return
+
   try {
     walkPipeline(state, [], true)
   } catch (error) {
@@ -209,9 +211,13 @@ function walkPipeline<TInstance extends PipelineInstance>(
       const entry = state.entries[state.nextEntryIndex]!
 
       if (entry.bailIfInvalid) {
-        if (state.pendingTasks.size > 0) break
+        if (state.hasPendingUpstream || state.pendingTasks.size > 0) {
+          ensurePending(state)
+          break
+        }
         if (state.hasInvalidResult) {
           state.nextEntryIndex++
+          state.onSkip?.(entry.instance)
           continue
         }
       }
@@ -244,6 +250,18 @@ export function runPipeline<TInstance extends PipelineInstance>(
   const state = createPipelineState<TInstance>(options)
 
   try {
+    if (isPromiseLike(state.upstreamInvalid)) {
+      state.hasPendingUpstream = true
+      void Promise.resolve(state.upstreamInvalid).then(
+        (invalid) => {
+          if (!state.active) return
+          state.hasPendingUpstream = false
+          state.hasInvalidResult ||= invalid
+          progressPipeline(state)
+        },
+        (error: unknown) => failPipeline(state, error),
+      )
+    }
     walkPipeline(state, state.syncResults, false)
   } catch (error) {
     // The caller has not received the handle: resolve any internal pending promise
