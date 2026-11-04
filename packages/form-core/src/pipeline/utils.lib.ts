@@ -1,6 +1,27 @@
 import { isPromiseLike } from '../utils.lib'
 import type { Awaitable } from '../types.public'
 import type { ValidatorEvents, ValidatorTriggers } from '../events.public'
+import type { PipelineResult } from './state.lib'
+import type { ValidatorExecutor } from './validatorExecutor.lib'
+
+// Both submit and validators have these, but it'd be silly to invent a
+// class they inherit from instead of just asserting this.
+interface ValidationSourceOrder {
+  readonly scope: number
+  readonly index: number
+}
+
+/** Returns a copy ordered by numeric scope priority, then original index. */
+export function sortValidationSources<TSource extends ValidationSourceOrder>(
+  sources: Iterable<TSource>,
+): Array<TSource> {
+  return Array.from(sources).sort((left, right) => {
+    if (left.scope === right.scope) {
+      return left.index - right.index
+    }
+    return left.scope - right.scope
+  })
+}
 
 type ValidatorCondition = boolean | ((context: any) => boolean)
 
@@ -90,4 +111,23 @@ export function sleep(
     const timer = setTimeout(finish, milliseconds)
     signal?.addEventListener('abort', finish, { once: true })
   })
+}
+
+/** Collects one run's accepted results in original validator-list order. */
+export class ValidationResultCollector<
+  TInstance extends ValidatorExecutor = ValidatorExecutor,
+> {
+  private readonly accepted = new Map<TInstance, PipelineResult<TInstance>>()
+
+  collect = (results: ReadonlyArray<PipelineResult<TInstance>>): void => {
+    for (const result of results) {
+      this.accepted.set(result.instance, result)
+    }
+  }
+
+  getResults = (): Array<PipelineResult<TInstance>> => {
+    return Array.from(this.accepted.values()).sort(
+      (left, right) => left.instance.index - right.instance.index,
+    )
+  }
 }
