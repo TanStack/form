@@ -1,5 +1,10 @@
 import { isStandardSchema, parseStandardSchema } from '../standardSchema.lib'
 import { VALIDATION_OUTPUT, isValidationOutput } from '../validationOutput.lib'
+import {
+  isValidationTriggerEnabled as isTriggerEnabled,
+  shouldRunValidator as isValidatorEnabled,
+} from '../pipeline/utils.lib'
+import type { SelectableValidator } from '../pipeline/utils.lib'
 import type { AnyInternalValidatorInstance } from '../ValidatorInstance.lib'
 import type {
   AnyInternalFormApi,
@@ -157,14 +162,13 @@ interface PendingDebouncedCall<in out TResult extends ValidateResult> {
 type PipelineValidatorInstance<TResult extends ValidateResult> =
   AnyInternalValidatorInstance<(call: PendingDebouncedCall<TResult>) => void>
 
-function getEnabledState(
-  booleanOrFn: boolean | ((context: any) => boolean),
-  context: InputContext,
-): boolean {
-  if (typeof booleanOrFn === 'boolean') return booleanOrFn
-  if (isServerContext(context)) return false
-
-  return booleanOrFn(getPredicateContext(context))
+function getSelectionContext(context: InputContext) {
+  return {
+    event: context.event,
+    createPredicateContext: isServerContext(context)
+      ? undefined
+      : () => getPredicateContext(context),
+  }
 }
 
 /** Resolves a static delay or evaluates its callback outside server context. */
@@ -188,17 +192,7 @@ export function isValidationTriggerEnabled(
   trigger: ValidationTriggerOption<any, any, any> | 'server',
   context: InputContext,
 ): boolean {
-  if (typeof trigger === 'string') {
-    return trigger === context.event
-  }
-
-  if (trigger.trigger !== context.event) {
-    return false
-  }
-
-  const { when: enabled = true } = trigger
-
-  return getEnabledState(enabled, context)
+  return isTriggerEnabled(trigger, getSelectionContext(context))
 }
 
 /** Selects a validator using server, submit, or configured event semantics. */
@@ -206,23 +200,9 @@ export function shouldRunValidator(
   validator: AnyPipelineValidator,
   context: InputContext,
 ): boolean {
-  if (isServerContext(context)) {
-    return (
-      validator.triggers?.some((trigger) =>
-        isValidationTriggerEnabled(trigger, context),
-      ) ?? false
-    )
-  }
-
-  const { skipOnSubmit = false } = validator
-
-  if (context.event === 'submit') {
-    return !getEnabledState(skipOnSubmit, context)
-  }
-
-  if (!validator.triggers) return false
-  return validator.triggers.some((signal) =>
-    isValidationTriggerEnabled(signal, context),
+  return isValidatorEnabled(
+    validator as SelectableValidator,
+    getSelectionContext(context),
   )
 }
 

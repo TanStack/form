@@ -56,13 +56,13 @@ export interface PipelineOptions<TInstance extends PipelineInstance> {
    */
   isInvalid?: (result: PipelineOutput<TInstance>) => boolean
   /** Receives result batches after the initial entry loop yields. */
-  onResults?: (results: Array<PipelineResult<TInstance>>) => void
+  onDeferredResults?: (results: Array<PipelineResult<TInstance>>) => void
   /** Called synchronously when a bail decision skips an entry. */
   onSkip?: (instance: TInstance) => void
 }
 
 export interface PipelineRun<TInstance extends PipelineInstance> {
-  /** Results collected before runPipeline returns; later results use onResults. */
+  /** Results collected before runPipeline returns; later results use onDeferredResults. */
   syncResults: Array<PipelineResult<TInstance>>
   /**
    * Deferred run lifetime, or `null` for synchronous runs. Cancellation resolves

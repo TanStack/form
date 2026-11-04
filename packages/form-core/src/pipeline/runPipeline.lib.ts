@@ -136,7 +136,7 @@ function acceptResult<TInstance extends PipelineInstance>(
   if (syncBatch) {
     syncBatch.push(pipelineResult)
   } else {
-    state.onResults?.([pipelineResult])
+    state.onDeferredResults?.([pipelineResult])
   }
   progressPipeline(state)
 }
@@ -229,7 +229,8 @@ function walkPipeline<TInstance extends PipelineInstance>(
     state.processingEntries = false
   }
 
-  if (state.active && publish && batch.length > 0) state.onResults?.(batch)
+  if (state.active && publish && batch.length > 0)
+    state.onDeferredResults?.(batch)
   progressPipeline(state)
 }
 
@@ -238,7 +239,7 @@ function walkPipeline<TInstance extends PipelineInstance>(
  *
  * @returns A run handle containing the initial `syncResults` batch, a `pending`
  * promise for deferred work (`null` for an entirely synchronous run), and a
- * `cancel` function. Later batches go to `onResults` before `pending` resolves.
+ * `cancel` function. Later batches go to `onDeferredResults` before `pending` resolves.
  * Cancellation resolves `pending` without delivering cancelled results. A
  * deferred failure rejects it after cancelling the remaining tasks.
  *
