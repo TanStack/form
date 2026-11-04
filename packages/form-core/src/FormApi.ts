@@ -2428,6 +2428,8 @@ export class FormApi<
     }))
 
     batch(() => {
+      const untouchedUnrendered: Array<DeepKeys<TFormData>> = []
+
       void (
         Object.entries(this.fieldInfo) as [
           DeepKeys<TFormData>,
@@ -2440,18 +2442,31 @@ export class FormApi<
             field.instance.setMeta((prev) => ({ ...prev, isTouched: true }))
           }
         } else {
-          // Unrendered field (e.g. virtualized): update the store directly so
-          // that any validation triggered by the submission attempt can still
-          // surface errors on these fields when they are next rendered.
+          // Unrendered field (e.g. virtualized): collect for a single batch
+          // store write to avoid O(n²) fieldMetaBase copies for large lists.
           const meta = this.getFieldMeta(fieldName) ?? defaultFieldMeta
           if (!meta.isTouched) {
-            this.setFieldMeta(fieldName, (prev = defaultFieldMeta) => ({
-              ...prev,
-              isTouched: true,
-            }))
+            untouchedUnrendered.push(fieldName)
           }
         }
       })
+
+      if (untouchedUnrendered.length > 0) {
+        this.baseStore.setState((prev) => {
+          const fieldMetaBase = { ...prev.fieldMetaBase }
+          for (const fieldName of untouchedUnrendered) {
+            const existing =
+              (fieldMetaBase[fieldName as never] as
+                | AnyFieldLikeMetaBase
+                | undefined) ?? defaultFieldMeta
+            fieldMetaBase[fieldName as never] = {
+              ...existing,
+              isTouched: true,
+            } as never
+          }
+          return { ...prev, fieldMetaBase }
+        })
+      }
     })
 
     const submitMetaArg =
