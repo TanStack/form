@@ -10,7 +10,7 @@ import type {
   FormValidationResult,
 } from '../validation/state.public'
 
-interface ValidatorDefinition {
+export interface ValidatorDefinition {
   run:
     StandardSchemaV1 | ((context: any) => Awaitable<FormValidationResult<any>>)
   fieldErrorTarget?: FieldErrorTarget
