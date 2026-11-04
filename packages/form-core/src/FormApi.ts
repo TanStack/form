@@ -2428,16 +2428,45 @@ export class FormApi<
     }))
 
     batch(() => {
-      void (Object.values(this.fieldInfo) as FieldInfo<any>[]).forEach(
-        (field) => {
-          if (!field.instance) return
-          // If any fields are not touched
+      const untouchedUnrendered: Array<DeepKeys<TFormData>> = []
+
+      void (
+        Object.entries(this.fieldInfo) as [
+          DeepKeys<TFormData>,
+          FieldInfo<any>,
+        ][]
+      ).forEach(([fieldName, field]) => {
+        if (field.instance) {
+          // Rendered field: update through the live instance
           if (!field.instance.store.state.meta.isTouched) {
-            // Mark them as touched
             field.instance.setMeta((prev) => ({ ...prev, isTouched: true }))
           }
-        },
-      )
+        } else {
+          // Unrendered field (e.g. virtualized): collect for a single batch
+          // store write to avoid O(n²) fieldMetaBase copies for large lists.
+          const meta = this.getFieldMeta(fieldName) ?? defaultFieldMeta
+          if (!meta.isTouched) {
+            untouchedUnrendered.push(fieldName)
+          }
+        }
+      })
+
+      if (untouchedUnrendered.length > 0) {
+        this.baseStore.setState((prev) => {
+          const fieldMetaBase = { ...prev.fieldMetaBase }
+          for (const fieldName of untouchedUnrendered) {
+            const existing =
+              (fieldMetaBase[fieldName as never] as
+                | AnyFieldLikeMetaBase
+                | undefined) ?? defaultFieldMeta
+            fieldMetaBase[fieldName as never] = {
+              ...existing,
+              isTouched: true,
+            } as never
+          }
+          return { ...prev, fieldMetaBase }
+        })
+      }
     })
 
     const submitMetaArg =
