@@ -1,0 +1,54 @@
+import { VALIDATION_OUTPUT, isValidationOutput } from '../validationOutput.lib'
+import { isStandardSchema, parseStandardSchema } from './standardSchema.lib'
+import { mapResult } from './utils.lib'
+import type { StandardSchemaV1 } from '../standardSchema.public'
+import type { Awaitable } from '../types.public'
+import type { ValidatorScope } from '../validation.public'
+import type {
+  FieldErrorTarget,
+  FormValidationResult,
+} from '../validation/state.public'
+
+export interface ValidatorDefinition {
+  run:
+    StandardSchemaV1 | ((context: any) => Awaitable<FormValidationResult<any>>)
+  fieldErrorTarget?: FieldErrorTarget
+}
+
+export interface ValidatorExecutionResult {
+  result: FormValidationResult<any>
+  output: unknown
+  hasOutput: boolean
+}
+
+export function executeDefinition(
+  definition: ValidatorDefinition,
+  context: { value: any },
+  { scope }: { scope: ValidatorScope },
+): Awaitable<ValidatorExecutionResult> {
+  let result
+  if (isStandardSchema(definition.run)) {
+    result = parseStandardSchema(definition.run, context.value, {
+      scope,
+      fieldErrorTarget: definition.fieldErrorTarget,
+    })
+  } else {
+    result = definition.run(context)
+  }
+
+  return mapResult(result, normalizeValidatorResult)
+}
+
+export function normalizeValidatorResult(
+  result: FormValidationResult<any>,
+): ValidatorExecutionResult {
+  if (isValidationOutput(result)) {
+    return {
+      result: null,
+      output: result[VALIDATION_OUTPUT],
+      hasOutput: true,
+    }
+  }
+
+  return { result, output: null, hasOutput: false }
+}
