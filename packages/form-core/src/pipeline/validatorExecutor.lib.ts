@@ -1,15 +1,16 @@
 import { VALIDATION_OUTPUT, isValidationOutput } from '../validationOutput.lib'
+import { BaseInstance } from './baseInstance.lib'
 import { isStandardSchema, parseStandardSchema } from './standardSchema.lib'
 import { mapResult } from './utils.lib'
-import type { StandardSchemaV1 } from '../standardSchema.public'
 import type { Awaitable } from '../types.public'
 import type { ValidatorScope } from '../validation.public'
+import type { StandardSchemaV1 } from '../standardSchema.public'
 import type {
   FieldErrorTarget,
   FormValidationResult,
 } from '../validation/state.public'
 
-export interface ValidatorDefinition {
+interface ValidatorDefinition {
   run:
     StandardSchemaV1 | ((context: any) => Awaitable<FormValidationResult<any>>)
   fieldErrorTarget?: FieldErrorTarget
@@ -21,7 +22,7 @@ export interface ValidatorExecutionResult {
   hasOutput: boolean
 }
 
-export function executeDefinition(
+function executeDefinition(
   definition: ValidatorDefinition,
   context: { value: any },
   { scope }: { scope: ValidatorScope },
@@ -39,7 +40,7 @@ export function executeDefinition(
   return mapResult(result, normalizeValidatorResult)
 }
 
-export function normalizeValidatorResult(
+function normalizeValidatorResult(
   result: FormValidationResult<any>,
 ): ValidatorExecutionResult {
   if (isValidationOutput(result)) {
@@ -51,4 +52,45 @@ export function normalizeValidatorResult(
   }
 
   return { result, output: null, hasOutput: false }
+}
+
+interface ValidatorRunInput {
+  createContext: (
+    definition: ValidatorDefinition,
+    signal: AbortSignal,
+  ) => { value: any }
+}
+
+export class ValidatorExecutor<
+  TDefinition extends ValidatorDefinition = ValidatorDefinition,
+> extends BaseInstance<ValidatorRunInput, ValidatorExecutionResult> {
+  definition: TDefinition
+  readonly validatorScope: ValidatorScope
+  readonly index: number
+
+  constructor({
+    definition,
+    validatorScope,
+    index,
+  }: {
+    definition: TDefinition
+    validatorScope: ValidatorScope
+    index: number
+  }) {
+    super()
+    this.definition = definition
+    this.validatorScope = validatorScope
+    this.index = index
+  }
+
+  execute(
+    input: ValidatorRunInput,
+    signal: AbortSignal,
+  ): Awaitable<ValidatorExecutionResult> {
+    const definition = this.definition
+    const context = input.createContext(definition, signal)
+    return executeDefinition(definition, context, {
+      scope: this.validatorScope,
+    })
+  }
 }
