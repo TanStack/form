@@ -9,6 +9,7 @@ import type {
   FieldErrorTarget,
   FormValidationResult,
 } from '../validation/state.public'
+import type { PipelineInstance, PipelineRun } from './state.lib'
 
 export interface ValidatorDefinition {
   run:
@@ -92,5 +93,39 @@ export class ValidatorExecutor<
     return executeDefinition(definition, context, {
       scope: this.validatorScope,
     })
+  }
+}
+
+type ValidationRun = Pick<PipelineRun<PipelineInstance>, 'pending' | 'cancel'>
+
+/**
+ * Track validation runs until they seettle or are cancelled.
+ *
+ * Standalone server validation awaits a single run and does not need this tracker.
+ */
+export class ValidationRunTracker {
+  private readonly runs = new Set<ValidationRun>()
+
+  get hasPending(): boolean {
+    return this.runs.size > 0
+  }
+
+  track = (run: ValidationRun): void => {
+    if (!run.pending || this.runs.has(run)) return
+
+    this.runs.add(run)
+    const release = () => {
+      this.runs.delete(run)
+    }
+    void run.pending.then(release, release)
+  }
+
+  cancelAll = (): void => {
+    const runs = Array.from(this.runs)
+    this.runs.clear()
+
+    for (const run of runs) {
+      run.cancel()
+    }
   }
 }
