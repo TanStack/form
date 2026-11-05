@@ -401,6 +401,9 @@ describe('field group api', () => {
     const field1 = new FieldApi({
       form,
       name: 'people.names[1].name',
+      validators: {
+        onChange: () => 'validated',
+      },
     })
     const field2 = new FieldApi({
       form,
@@ -423,9 +426,13 @@ describe('field group api', () => {
 
     await vi.runAllTimersAsync()
 
+    // The call was forwarded to the form and validation reached the shifted
+    // field (field1's validator ran), but validating a shifted field must not
+    // mark it — or its untouched siblings — as touched (issue #2131).
+    expect(field1.getMeta().errors).toStrictEqual(['validated'])
     expect(field0.getMeta().isTouched).toBe(false)
-    expect(field1.getMeta().isTouched).toBe(true)
-    expect(field2.getMeta().isTouched).toBe(true)
+    expect(field1.getMeta().isTouched).toBe(false)
+    expect(field2.getMeta().isTouched).toBe(false)
   })
 
   it('should forward handleSubmit to the form', async () => {
@@ -562,9 +569,10 @@ describe('field group api', () => {
 
     await vi.runAllTimersAsync()
 
+    // Shifted fields must not be marked as touched (issue #2131)
     expect(field0.getMeta().isTouched).toBe(false)
-    expect(field1.getMeta().isTouched).toBe(true)
-    expect(field2.getMeta().isTouched).toBe(true)
+    expect(field1.getMeta().isTouched).toBe(false)
+    expect(field2.getMeta().isTouched).toBe(false)
 
     fieldGroup.pushFieldValue('names', { name: 'Push' })
 
