@@ -1,17 +1,13 @@
 import { batch } from '@tanstack/store'
-import { createOutput } from './validationOutput.lib'
 import { defaultInternalBaseFieldMeta } from './FieldApi/fieldState.lib'
 import { visitAllFormFields } from './FieldApi/fieldTraversal.lib'
 import { evaluate } from './utils.lib'
-import { runValidatorPipeline } from './validation'
-import { createErrorMap } from './validation/createErrorMap.lib'
-import { parseIssuesFactory } from './validation/parseIssues.lib'
+import { runServerValidators } from './pipeline/serverValidation.lib'
+import { ValidationResultCollector } from './pipeline/utils.lib'
 import { devtools } from './devtoolsBridge.lib'
-import { reconcileValidatorInstances } from './ValidatorInstance.lib'
 import type { FormErrorMeta } from './FormApi/formState.lib'
 import type { AnyInternalFormApi, InternalFormApi } from './FormApi/FormApi.lib'
 import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
-import type { FormValidationResult } from './validation/state.public'
 import type {
   ServerFormState,
   ServerValidateResult,
@@ -120,82 +116,36 @@ export async function validateServerValues<
   >,
   values: TFormData,
 ): Promise<ServerValidateResult<TFormData, TValidators>> {
-  const pipeline = options.validators
+  const validators = options.validators
+  const validatorCount = validators?.length ?? 0
+  const collector = new ValidationResultCollector()
+  const run = runServerValidators({
+    validators,
+    value: values,
+    onDeferredResults: collector.collect,
+  })
+  collector.collect(run.syncResults)
+  await run.pending
 
-  if (!pipeline || pipeline.length === 0) {
+  if (collector.hasErrors()) {
     return {
-      success: true,
-      values,
-      validatorOutputs: [] as never,
+      success: false,
+      serverState: {
+        values,
+        validationResults: collector
+          .getResults()
+          .map(({ instance, value }) => ({
+            validatorIndex: instance.index,
+            ...value,
+          })),
+        submissionAttempts: 1,
+      },
     }
   }
 
-  const validatorInstances = reconcileValidatorInstances({
-    definitions: pipeline,
-    instances: null,
-    owner: options,
-    scope: 'form',
-  })
-
-  try {
-    const pipelineResult = await runValidatorPipeline<
-      FormValidationResult<TFormData>
-    >({
-      pipeline: validatorInstances ?? [],
-      context: {
-        scope: 'server',
-        event: 'server',
-        formApi: undefined,
-      },
-      hasFailedBefore: false,
-      getContext: (ctx, instance) => ({
-        event: 'server' as const,
-        signal: ctx.signal,
-        formApi: undefined,
-        value: values,
-        createErrorMap,
-        parseIssues: parseIssuesFactory(values, instance.fieldErrorTarget),
-        createOutput,
-      }),
-    })
-
-    if (pipelineResult.thrownError !== null) {
-      throw pipelineResult.thrownError
-    }
-
-    const validatorOutputs =
-      validatorInstances?.map((instance) => {
-        const result = pipelineResult.results.find(
-          (r) => r.validatorInstance === instance,
-        )
-        return result?.hasOutput ? result.output : undefined
-      }) ?? []
-
-    const validationResults = pipelineResult.results.map((result) => ({
-      validatorIndex:
-        validatorInstances?.indexOf(result.validatorInstance) ?? -1,
-      result: result.result,
-      output: result.output,
-      hasOutput: result.hasOutput,
-    }))
-
-    if (pipelineResult.hasErrors) {
-      return {
-        success: false,
-        serverState: {
-          values,
-          validationResults,
-          submissionAttempts: 1,
-        },
-      }
-    }
-
-    return {
-      success: true,
-      values,
-      validatorOutputs: validatorOutputs as never,
-    }
-  } finally {
-    validatorInstances?.forEach((instance) => instance.dispose())
+  return {
+    success: true,
+    values,
+    validatorOutputs: collector.getOutputs(validatorCount) as any,
   }
 }

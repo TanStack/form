@@ -1,4 +1,5 @@
 import { isPromiseLike } from '../utils.lib'
+import { isErrorResult } from '../validation/errors.lib'
 import type { Awaitable } from '../types.public'
 import type { ValidatorEvents, ValidatorTriggers } from '../events.public'
 import type { PipelineResult } from './state.lib'
@@ -129,5 +130,31 @@ export class ValidationResultCollector<
     return Array.from(this.accepted.values()).sort(
       (left, right) => left.instance.index - right.instance.index,
     )
+  }
+
+  /** Checks whether this run's currently accepted results contain validation errors. */
+  hasErrors = (): boolean => {
+    for (const { value } of this.accepted.values()) {
+      if (isErrorResult(value.result)) return true
+    }
+
+    return false
+  }
+
+  /**
+   * Returns outputs at their original indexes, leaving missing outputs `undefined`.
+   *
+   * @param validatorCount - Full validator-list length, including skipped validators.
+   */
+  getOutputs = (validatorCount: number): Array<any> => {
+    const outputs = new Array<any>(validatorCount).fill(undefined)
+
+    for (const { instance, value } of this.accepted.values()) {
+      if (value.hasOutput) {
+        outputs[instance.index] = value.output
+      }
+    }
+
+    return outputs
   }
 }

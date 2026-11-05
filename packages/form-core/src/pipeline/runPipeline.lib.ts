@@ -116,13 +116,13 @@ function cancelTask<TInstance extends PipelineInstance>(
 
 function acceptResult<TInstance extends PipelineInstance>(
   task: TaskState<TInstance>,
-  result: PipelineOutput<TInstance>,
+  value: PipelineOutput<TInstance>,
   syncBatch?: Array<PipelineResult<TInstance>>,
 ): void {
   if (!isTaskPending(task)) return
 
   const state = task.pipeline
-  const invalid = state.isInvalid?.(result) ?? false
+  const invalid = state.isInvalid?.(value) ?? false
   if (!isTaskPending(task)) return
 
   state.hasInvalidResult ||= invalid
@@ -130,7 +130,7 @@ function acceptResult<TInstance extends PipelineInstance>(
 
   const pipelineResult: PipelineResult<TInstance> = {
     instance: task.instance,
-    result,
+    value,
   }
 
   if (syncBatch) {

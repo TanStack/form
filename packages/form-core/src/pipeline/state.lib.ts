@@ -38,7 +38,7 @@ export interface PipelineResult<TInstance extends PipelineInstance> {
   /** Instance that produced this result, retaining its concrete type. */
   instance: TInstance
   /** Normalized value returned by the instance's execute method. */
-  result: PipelineOutput<TInstance>
+  value: PipelineOutput<TInstance>
 }
 
 export interface PipelineOptions<TInstance extends PipelineInstance> {
