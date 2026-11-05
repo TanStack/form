@@ -2659,13 +2659,12 @@ export class FormApi<
 
     batch(() => {
       if (!dontUpdateMeta) {
-        this.setFieldMeta(field, (prev) => ({
+        this.setFieldMeta(field, (prev = defaultFieldMeta) => ({
           ...prev,
           isTouched: true,
           isDirty: true,
           errorMap: {
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            ...prev?.errorMap,
+            ...prev.errorMap,
             onMount: undefined,
           },
         }))
