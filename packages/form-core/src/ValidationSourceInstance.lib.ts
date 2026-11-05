@@ -1,4 +1,9 @@
+import {
+  addValidationErrorTarget,
+  deleteValidationErrorTarget,
+} from './pipeline/ValidationInstance.lib'
 import type { ValidatorScope } from './validation.public'
+import type { ValidationInstance } from './pipeline/ValidationInstance.lib'
 
 /** Internal validation sources ordered by their contribution to derived errors. */
 export const validationSourceScopes = {
@@ -19,11 +24,13 @@ export interface InternalValidationSourceInstanceOptions<out TOwner> {
   index?: number
 }
 
-export type AnyInternalValidationSourceInstance =
-  InternalValidationSourceInstance<any, any>
+export type AnyInternalValidationSourceInstance = ValidationInstance<any, any>
 
 /** Stable identity and ordering metadata for one internal validation source. */
-export class InternalValidationSourceInstance<TOwner, TErrorTarget = unknown> {
+export class InternalValidationSourceInstance<
+  TOwner,
+  TErrorTarget = unknown,
+> implements ValidationInstance<TOwner, TErrorTarget> {
   /** The validation boundary that owns this source. */
   readonly owner: TOwner
   /** Numeric priority used to order errors across validation scopes. */
@@ -48,22 +55,12 @@ export class InternalValidationSourceInstance<TOwner, TErrorTarget = unknown> {
 
   /** Records a target receiving errors from this source. */
   addErrorTarget(errorTarget: TErrorTarget): void {
-    if (this.disposed) return
-
-    if (!this.errorTargets) {
-      this.errorTargets = new Set()
-    }
-    this.errorTargets.add(errorTarget)
+    addValidationErrorTarget(this, errorTarget)
   }
 
   /** Stops tracking a target that no longer receives errors from this source. */
   deleteErrorTarget(errorTarget: TErrorTarget): void {
-    if (this.disposed) return
-
-    this.errorTargets?.delete(errorTarget)
-    if (this.errorTargets?.size === 0) {
-      this.errorTargets = null
-    }
+    deleteValidationErrorTarget(this, errorTarget)
   }
 
   /** Clears transient state while preserving this source's stable identity. */

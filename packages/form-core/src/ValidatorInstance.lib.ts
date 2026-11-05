@@ -1,5 +1,10 @@
 import { LiteDebouncer } from '@tanstack/pacer-lite'
-import { InternalValidationSourceInstance } from './ValidationSourceInstance.lib'
+import { validationSourceScopes } from './ValidationSourceInstance.lib'
+import {
+  addValidationErrorTarget,
+  deleteValidationErrorTarget,
+} from './pipeline/ValidationInstance.lib'
+import { ValidatorExecutor } from './pipeline/validatorExecutor.lib'
 import type {
   FieldValidator,
   FormGroupValidator,
@@ -7,6 +12,10 @@ import type {
 } from './validation.public'
 import type { FormValidator } from './validation/formValidators.public'
 import type { FieldErrorTarget } from './validation/state.public'
+import type {
+  ValidationInstance,
+  ValidationInstanceScopePriority,
+} from './pipeline/ValidationInstance.lib'
 
 type GetDefinition<TScope extends ValidatorScope> = {
   form: FormValidator<any, any>
@@ -99,9 +108,18 @@ export class InternalValidatorInstance<
   TOutput = unknown,
   TDebouncedFn extends ValidatorInstanceDebouncedFn =
     ValidatorInstanceDebouncedFn,
-> extends InternalValidationSourceInstance<TOwner, TErrorTarget> {
-  /** The current validator definition associated with this stable instance. */
-  definition: GetDefinition<TScope>
+>
+  extends ValidatorExecutor<GetDefinition<TScope>>
+  implements ValidationInstance<TOwner, TErrorTarget>
+{
+  /** The validation boundary that owns this source. */
+  readonly owner: TOwner
+  /** Numeric priority used to order errors across validation scopes. */
+  readonly scope: ValidationInstanceScopePriority
+  /** Targets currently receiving errors routed from this source. */
+  errorTargets: Set<TErrorTarget> | null = null
+  /** Whether this source has been permanently disposed. */
+  disposed = false
   /** The controller for the active execution, or `null` when none is active. */
   abortController: AbortController | null = null
   /** The lazily created debouncer for this validator's pending execution. */
@@ -136,14 +154,25 @@ export class InternalValidatorInstance<
     definition,
     owner,
     scope,
-    index,
+    index = 0,
   }: InternalValidatorInstanceOptions<TOwner, TScope>) {
-    super({ owner, scope, index })
-    this.definition = definition
+    super({ definition, validatorScope: scope, index })
+    this.owner = owner
+    this.scope = validationSourceScopes[scope]
     this.fieldErrorTarget = 'field'
     if ('fieldErrorTarget' in definition && definition.fieldErrorTarget) {
       this.fieldErrorTarget = definition.fieldErrorTarget
     }
+  }
+
+  /** Records a target receiving errors from this source. */
+  addErrorTarget(errorTarget: TErrorTarget): void {
+    addValidationErrorTarget(this, errorTarget)
+  }
+
+  /** Stops tracking a target that no longer receives errors from this source. */
+  deleteErrorTarget(errorTarget: TErrorTarget): void {
+    deleteValidationErrorTarget(this, errorTarget)
   }
 
   /**
@@ -279,10 +308,9 @@ export class InternalValidatorInstance<
   }
 
   /**
-   * Aborts the active execution and cancels any pending debounced execution.
+   * Cancels the runner task, aborts active execution, and cancels debounced work.
    *
-   * Both execution resources are released. The operation is ignored after
-   * disposal.
+   * Execution resources are released. The operation is ignored after disposal.
    */
   cancelExecution(): void {
     if (this.disposed) return
@@ -297,17 +325,30 @@ export class InternalValidatorInstance<
    * preserved. The operation is ignored after disposal.
    */
   resetRuntime(): void {
-    super.resetRuntime()
+    if (this.disposed) return
+
+    this._resetRuntime()
+    this.errorTargets = null
+  }
+
+  /** Permanently disposes this source and releases its transient state. */
+  dispose(onBeforeDispose?: (instance: this) => void): void {
+    if (this.disposed) return
+
+    onBeforeDispose?.(this)
+    this._disposeRuntime()
+    this.errorTargets = null
+    this.disposed = true
   }
 
   /** Releases validator-specific runtime state during reset or disposal. */
-  protected override _resetRuntime(): void {
+  protected _resetRuntime(): void {
     this._cancelExecution()
     this._clearOutput()
   }
 
   /** Releases validator-only collections and mount state during disposal. */
-  protected override _disposeRuntime(): void {
+  protected _disposeRuntime(): void {
     this._resetRuntime()
     this.resolvedWatchFields = null
     this.didRunOnMount = false
@@ -315,6 +356,7 @@ export class InternalValidatorInstance<
 
   /** Cancels and releases execution resources without checking disposal state. */
   private _cancelExecution(): void {
+    this.cancelCurrentExecution?.()
     this.abortController?.abort()
     this.abortController = null
     this.debouncer?.cancel()
