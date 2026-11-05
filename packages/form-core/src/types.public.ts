@@ -50,7 +50,7 @@ export type OneOrMany<TValue> = TValue | Array<TValue>
  * @typeParam TFieldValue - The value type preserved across field reads and update methods.
  */
 export type FieldWithValue<TFieldValue> = FieldApi<
-  any,
+  string,
   TFieldValue,
   any,
   any,
