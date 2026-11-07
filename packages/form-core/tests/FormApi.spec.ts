@@ -1991,6 +1991,37 @@ describe('form api', () => {
     expect(onSubmitInvalid).toHaveBeenCalledTimes(1) // not called again
   })
 
+  it('should not call onSubmit again while a submission is already pending', async () => {
+    vi.useRealTimers()
+    // Regression: handleSubmit skipped !canSubmit on re-submissions (submissionAttempts > 1)
+    // to clear stale onBlur errors, but canSubmit is also false while isSubmitting is true.
+    // A second handleSubmit while onSubmit was in flight would invoke onSubmit again.
+    // See: https://github.com/TanStack/form/issues/2467
+    const pending: Array<() => void> = []
+    const onSubmit = vi.fn(
+      () =>
+        new Promise<void>((resolve) => {
+          pending.push(resolve)
+        }),
+    )
+
+    const form = new FormApi({
+      defaultValues: { name: 'Ada' },
+      onSubmit,
+    })
+    form.mount()
+
+    const first = form.handleSubmit()
+    await vi.waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1))
+    expect(form.state.isSubmitting).toBe(true)
+
+    const second = form.handleSubmit()
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+    pending.forEach((resolve) => resolve())
+    await Promise.all([first, second])
+  })
+
   it('should run all types of async validation on fields during submit', async () => {
     vi.useFakeTimers()
 
