@@ -2511,17 +2511,17 @@ export class FormApi<
       return
     }
 
-    batch(() => {
-      void (Object.values(this.fieldInfo) as FieldInfo<TFormData>[]).forEach(
-        (field) => {
-          field.instance?.triggerOnSubmitListener()
-        },
-      )
-    })
-
-    this.options.listeners?.onSubmit?.({ formApi: this, meta: submitMetaArg })
-
     try {
+      batch(() => {
+        void (Object.values(this.fieldInfo) as FieldInfo<TFormData>[]).forEach(
+          (field) => {
+            field.instance?.triggerOnSubmitListener()
+          },
+        )
+      })
+
+      this.options.listeners?.onSubmit?.({ formApi: this, meta: submitMetaArg })
+
       // Run the submit code
       await this.options.onSubmit?.({
         value: this.state.values,
