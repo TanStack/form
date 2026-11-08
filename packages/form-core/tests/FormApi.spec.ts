@@ -2063,6 +2063,56 @@ describe('form api', () => {
     ).toBeUndefined()
   })
 
+  it('should not clear form onSubmit errors on blur when the value did not change', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+      validators: {
+        onSubmit: ({ value }) =>
+          value.firstName.length > 0 ? undefined : 'first name is required',
+      },
+    })
+    form.mount()
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+    field.mount()
+
+    await form.handleSubmit()
+    expect(form.state.errorMap.onSubmit).toEqual('first name is required')
+
+    field.handleBlur()
+    expect(form.state.errorMap.onSubmit).toEqual('first name is required')
+
+    field.handleChange('valid')
+    expect(form.state.errorMap.onSubmit).toBeUndefined()
+  })
+
+  it('should not clear form onServer errors on blur when the value did not change', () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+    })
+    form.mount()
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+    field.mount()
+
+    form.setErrorMap({ onServer: 'server error' as never })
+    expect(form.state.errorMap.onServer).toEqual('server error')
+
+    field.handleBlur()
+    expect(form.state.errorMap.onServer).toEqual('server error')
+
+    field.handleChange('valid')
+    expect(form.state.errorMap.onServer).toBeUndefined()
+  })
+
   it('should validate all fields consistently - field level onChange validators', async () => {
     const form = new FormApi({
       defaultValues: {
