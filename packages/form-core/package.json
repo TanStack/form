@@ -16,7 +16,7 @@
   },
   "scripts": {
     "clean": "premove ./dist ./coverage",
-    "test:eslint": "eslint ./src ./tests",
+    "test:eslint": "eslint ./src ./tests ./test-build",
     "test:types": "pnpm run \"/^test:types:ts[0-9]{2}$/\"",
     "test:types:ts54": "node ../../node_modules/typescript54/lib/tsc.js",
     "test:types:ts55": "node ../../node_modules/typescript55/lib/tsc.js",
@@ -26,7 +26,7 @@
     "test:types:ts59": "tsc",
     "test:lib": "vitest",
     "test:lib:dev": "pnpm run test:lib --watch",
-    "test:build": "publint --strict",
+    "test:build": "publint --strict && vitest --dir ./test-build --coverage.enabled=false --typecheck.enabled=false",
     "build": "vite build"
   },
   "type": "module",
