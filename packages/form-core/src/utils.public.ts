@@ -38,12 +38,15 @@ type InferUnionObject<
 > = InferUnionProps<
   TBase,
   TIncoming,
-  { [K in keyof TBase]: unknown } & { [K in keyof TIncoming]: unknown }
+  {
+    [K in keyof TBase as K extends keyof TIncoming ? never : K]: unknown
+  } & { [K in keyof TIncoming]: unknown }
 >
 
 // Mapping over `keyof TKeys` (a type parameter) is homomorphic, so each key
-// keeps the `?` modifier it has in `TKeys`. A key is optional there only when
-// every side that declares it marks it optional. Mapping over
+// keeps the `?` modifier it has in `TKeys`. Keys that `TIncoming` declares take
+// its modifier, so a schema input that omits a property stays assignable.
+// Keys only in `TBase` keep theirs. Mapping over
 // `keyof TBase | keyof TIncoming` directly would drop every modifier.
 type InferUnionProps<TBase, TIncoming, TKeys> = {
   [K in keyof TKeys]: K extends keyof TBase
