@@ -9,6 +9,7 @@ import type { ShallowRef } from 'vue'
  */
 export function createFieldView(
   fieldApi: ShallowRef<AnyInternalFieldApi>,
+  name: Readonly<ShallowRef<string>>,
   selection: ShallowRef<unknown>,
   meta: ShallowRef<AnyFieldMeta>,
 ): AnyFieldApi {
@@ -17,6 +18,7 @@ export function createFieldView(
       return fieldApi.value.form
     },
     get name() {
+      void name.value
       return fieldApi.value.name
     },
     get atom() {
