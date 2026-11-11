@@ -6,11 +6,12 @@ import {
 import { withComponentProps } from '../utils.lib.js'
 import type { Component } from 'svelte'
 import type { AnyFieldGroupApi } from './FieldGroupApi.public'
+import type { InternalSvelteFormApi } from '../createForm.svelte.js'
 
 function attachSvelteFieldGroupComponents(
   group: InternalFieldGroupApi,
-  form: any,
 ): AnyFieldGroupApi {
+  const form = group.form as InternalSvelteFormApi
   const resolveProps = (props: any) =>
     new Proxy(props, {
       get(target, property, receiver) {
@@ -68,7 +69,6 @@ function withFieldsRuntime(
         fieldNames,
         getBindings: () => props[fieldsPropName],
       }),
-      form,
     )
     return Component(
       internals,

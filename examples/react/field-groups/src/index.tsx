@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import { DateRangeField } from './fieldGroups/dateRange'
 import { LowerBoundField, UpperBoundField } from './fieldGroups/fieldBounds'
+import { NumberRangeField } from './fieldGroups/numberRange'
 
 // The bounds field groups package validation and blur normalization once, then
 // each form binds the group's virtual names to its own real field paths.
@@ -69,6 +70,30 @@ function AgeRangeForm() {
   )
 }
 
+function NestedFieldGroupsForm() {
+  const form = useForm({
+    defaultValues: {
+      filters: { minBudget: '10', maxBudget: '100' },
+    },
+  })
+
+  return (
+    <>
+      <NumberRangeField
+        label="Budget"
+        form={form}
+        fields={{
+          minimum: 'filters.minBudget',
+          maximum: 'filters.maxBudget',
+        }}
+      />
+      <form.Subscribe selector={(state) => state.values.filters}>
+        {(filters) => <pre>{JSON.stringify(filters, null, 2)}</pre>}
+      </form.Subscribe>
+    </>
+  )
+}
+
 // DateRangeField has access to both dates, but it still knows nothing about the
 // array it is rendered from. The parent form supplies those concrete paths here.
 function SwappableDateRangesForm() {
@@ -128,6 +153,10 @@ function App() {
       <div>
         <h2>Age Range Form</h2>
         <AgeRangeForm />
+      </div>
+      <div>
+        <h2>Nested Field Groups</h2>
+        <NestedFieldGroupsForm />
       </div>
       <div>
         <h2>Swappable Date Ranges Form</h2>

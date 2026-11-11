@@ -6,11 +6,12 @@ import {
 import { createComponent, mergeProps, splitProps } from 'solid-js'
 import type { Component } from 'solid-js'
 import type { AnyFieldGroupApi } from './FieldGroupApi.public'
+import type { InternalSolidFormApi } from '../SolidFormApi.lib'
 
 function attachSolidFieldGroupComponents(
   group: InternalFieldGroupApi,
-  form: any,
 ): AnyFieldGroupApi {
+  const form = group.form as InternalSolidFormApi
   const Field: Component<any> = (props) =>
     createComponent(
       form.Field as Component<any>,
@@ -65,7 +66,6 @@ function withFieldsRuntime(
         fieldNames,
         getBindings: () => localProps[fieldsPropName],
       }),
-      form,
     )
 
     return createComponent(

@@ -1,0 +1,22 @@
+{
+  "name": "@tanstack/form-example-vue-field-groups",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port=3005",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test:types": "vue-tsc --noEmit"
+  },
+  "dependencies": {
+    "@tanstack/vue-form": "^2.0.0-alpha.3",
+    "vue": "^3.6.0-rc.9",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.9",
+    "typescript": "^6.0.2",
+    "vite": "^8.2.1",
+    "vue-tsc": "^3.3.11"
+  }
+}
