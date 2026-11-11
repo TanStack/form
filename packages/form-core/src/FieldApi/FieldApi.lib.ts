@@ -965,7 +965,7 @@ export class InternalFieldApi<
   _notifyEvent(
     options: Omit<
       ResolvedInternalFieldUpdateOptions,
-      'fieldApiOverride' | '_skipFieldCreation'
+      'fieldApiOverride' | '_skipFieldCreation' | '_skipDescendantValidation'
     >,
     event: 'change' | 'blur' | 'submit',
   ): void {

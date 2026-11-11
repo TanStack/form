@@ -1,8 +1,6 @@
 import { batch } from '@tanstack/store'
 import { getTargetField, resolveFieldUpdateOptions } from '../utils.lib'
 import { tryGetFieldApi } from '../FieldApi/FieldApi.lib'
-import { collectFieldSubtree } from '../FieldApi/fieldTraversal.lib'
-import type { AnyInternalFieldApi } from '../FieldApi/FieldApi.lib'
 import type { AnyInternalFormApi } from './FormApi.lib'
 import type { InternalFieldUpdateOptions } from '../types.lib'
 
@@ -86,6 +84,7 @@ function insertFieldValue({
   const updateOptions = resolveFieldUpdateOptions(options, 'change')
   const arrayField = getTargetField(form, arrayFieldName, updateOptions)
   updateOptions.fieldApiOverride = arrayField
+  updateOptions._skipDescendantValidation = true
 
   batch(() => {
     form.setFieldValue(
@@ -146,20 +145,6 @@ function replaceFieldValue({
     },
     updateOptions,
   )
-
-  if (!arrayField || !updateOptions.causeValidation) return
-
-  // The change cascade above only validates the array field and its ancestors.
-  // Revalidate the replaced element's existing subtree so errors computed
-  // for the old value don't linger.
-  const replacedField = tryGetFieldApi(arrayField, [index])
-  if (!replacedField) return
-
-  const seenValidatorFields = new WeakSet<AnyInternalFieldApi>()
-  for (const field of collectFieldSubtree(replacedField)) {
-    field._runFieldValidation('change')
-    field._notifyValidator('change', seenValidatorFields)
-  }
 }
 
 function removeFieldValue({
@@ -185,6 +170,7 @@ function removeFieldValue({
   const updateOptions = resolveFieldUpdateOptions(options, 'change')
   const arrayField = getTargetField(form, arrayFieldName, updateOptions)
   updateOptions.fieldApiOverride = arrayField
+  updateOptions._skipDescendantValidation = true
 
   batch(() => {
     form.setFieldValue(
@@ -240,6 +226,7 @@ function swapFieldValues({
   const updateOptions = resolveFieldUpdateOptions(options, 'change')
   const arrayField = getTargetField(form, arrayFieldName, updateOptions)
   updateOptions.fieldApiOverride = arrayField
+  updateOptions._skipDescendantValidation = true
 
   batch(() => {
     form.setFieldValue(
@@ -299,6 +286,7 @@ function moveFieldValue({
   const updateOptions = resolveFieldUpdateOptions(options, 'change')
   const arrayField = getTargetField(form, arrayFieldName, updateOptions)
   updateOptions.fieldApiOverride = arrayField
+  updateOptions._skipDescendantValidation = true
 
   batch(() => {
     form.setFieldValue(
@@ -349,6 +337,7 @@ function clearFieldValues({
   const updateOptions = resolveFieldUpdateOptions(options, 'change')
   const arrayField = getTargetField(form, arrayFieldName, updateOptions)
   updateOptions.fieldApiOverride = arrayField
+  updateOptions._skipDescendantValidation = true
 
   batch(() => {
     form.setFieldValue(arrayFieldName, [], updateOptions)
@@ -381,6 +370,7 @@ function filterFieldValues({
   const updateOptions = resolveFieldUpdateOptions(options, 'change')
   const arrayNode = getTargetField(form, arrayFieldName, updateOptions)
   updateOptions.fieldApiOverride = arrayNode
+  updateOptions._skipDescendantValidation = true
 
   const oldArray: Array<any> = form.getFieldValue(arrayFieldName)
 

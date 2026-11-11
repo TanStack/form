@@ -21,6 +21,7 @@ describe('utils', () => {
       markAsDirty: true,
       markAsTouched: true,
       _skipFieldCreation: false,
+      _skipDescendantValidation: false,
       fieldApiOverride: null,
       doPropagate: true,
     })
@@ -56,6 +57,7 @@ describe('utils', () => {
           markAsDirty: false,
           markAsTouched: false,
           _skipFieldCreation: false,
+          _skipDescendantValidation: true,
           fieldApiOverride,
           doPropagate: false,
         },
@@ -67,6 +69,7 @@ describe('utils', () => {
       markAsDirty: false,
       markAsTouched: false,
       _skipFieldCreation: false,
+      _skipDescendantValidation: true,
       fieldApiOverride,
       doPropagate: false,
     })
