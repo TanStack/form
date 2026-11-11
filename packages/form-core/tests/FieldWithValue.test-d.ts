@@ -1,4 +1,3 @@
-
 import { describe, expectTypeOf, it } from 'vitest'
 import type { FieldWithValue } from '../src'
 
