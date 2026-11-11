@@ -35,8 +35,21 @@ export type InferUnion<TBase, TIncoming> = TBase extends BuiltInType
 type InferUnionObject<
   in out TBase extends object,
   in out TIncoming extends object,
-> = {
-  [K in keyof TBase | keyof TIncoming]: K extends keyof TBase
+> = InferUnionProps<
+  TBase,
+  TIncoming,
+  {
+    [K in keyof TBase as K extends keyof TIncoming ? never : K]: unknown
+  } & { [K in keyof TIncoming]: unknown }
+>
+
+// Mapping over `keyof TKeys` (a type parameter) is homomorphic, so each key
+// keeps the `?` modifier it has in `TKeys`. Keys that `TIncoming` declares take
+// its modifier, so a schema input that omits a property stays assignable.
+// Keys only in `TBase` keep theirs. Mapping over
+// `keyof TBase | keyof TIncoming` directly would drop every modifier.
+type InferUnionProps<TBase, TIncoming, TKeys> = {
+  [K in keyof TKeys]: K extends keyof TBase
     ? K extends keyof TIncoming
       ? InferUnion<TBase[K], TIncoming[K]>
       : TBase[K]

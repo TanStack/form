@@ -263,6 +263,54 @@ describe('formOptions', () => {
     }>()
   })
 
+  it('keeps optional schema properties optional with a loose schema', () => {
+    const schema = z.object({
+      required: z.string(),
+      optional: z.string().optional(),
+      nested: z.object({
+        optional: z.number().optional(),
+      }),
+    })
+    const options = formOptions.looseSchema(schema, {
+      defaultValues: {},
+      validators: [
+        {
+          run: schema,
+          triggers: ['change'],
+        },
+      ],
+    })
+
+    expectTypeOf(options.defaultValues).toEqualTypeOf<{
+      required: string | undefined
+      optional?: string | undefined
+      nested:
+        | {
+            optional?: number | undefined
+          }
+        | undefined
+    }>()
+  })
+
+  it('keeps optional schema properties optional when defaults provide them', () => {
+    const schema = z.object({
+      optional: z.string().optional(),
+    })
+    const options = formOptions.looseSchema(schema, {
+      defaultValues: { optional: 'value' },
+      validators: [
+        {
+          run: schema,
+          triggers: ['change'],
+        },
+      ],
+    })
+
+    expectTypeOf(options.defaultValues).toEqualTypeOf<{
+      optional?: string | undefined
+    }>()
+  })
+
   it('types callback values when mixed with a loose schema', () => {
     type LooseValue = {
       name: string
