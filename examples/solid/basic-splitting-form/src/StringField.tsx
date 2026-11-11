@@ -9,7 +9,7 @@ interface StringFieldProps {
 
 export function StringField(props: StringFieldProps) {
   return (
-    <label classList={{ validating: props.field().meta.isValidating }}>
+    <label class={{ validating: props.field().meta.isValidating }}>
       <span>{props.label}</span>
       <input
         name={props.field().name}
@@ -18,7 +18,7 @@ export function StringField(props: StringFieldProps) {
         onInput={(event) =>
           props.field().handleChange(event.currentTarget.value)
         }
-        aria-invalid={props.field().meta.isInvalid}
+        aria-invalid={props.field().meta.isInvalid ? 'true' : 'false'}
       />
       <FieldError field={props.field} />
     </label>

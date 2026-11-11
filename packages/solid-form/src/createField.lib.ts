@@ -1,4 +1,4 @@
-import { shallow } from '@tanstack/solid-store'
+import { shallow } from '@tanstack/store'
 import {
   createMemo,
   createRenderEffect,
@@ -32,19 +32,20 @@ function createFieldSelector<TSelected>(
   compare: (previous: TSelected, next: TSelected) => boolean,
 ): Accessor<TSelected> {
   const [selected, setSelected] = createSignal<TSelected>(
-    selector(fieldApi()),
-    { equals: compare },
+    untrack(() => selector(fieldApi())) as never,
+    // Field atoms notify from wherever their state changes, which can be
+    // inside an owned scope such as an effect.
+    { equals: compare, ownedWrite: true },
   )
 
-  createRenderEffect(() => {
-    const field = fieldApi()
+  createRenderEffect(fieldApi, (field) => {
     setSelected(() => selector(field))
 
     const subscription = field.atom.subscribe(() => {
       setSelected(() => selector(field))
     })
 
-    onCleanup(() => subscription.unsubscribe())
+    return () => subscription.unsubscribe()
   })
 
   return selected
@@ -56,6 +57,7 @@ function createInternalField(
   const initialForm = untrack(options).form
   const [resetVersion, setResetVersion] = createSignal(
     initialForm._atoms.resetVersion.get(),
+    { ownedWrite: true },
   )
   const resetSubscription = initialForm._atoms.resetVersion.subscribe(
     (version) => setResetVersion(version),
@@ -77,14 +79,15 @@ function createInternalField(
     )
   })
 
-  createRenderEffect(() => {
-    fieldApi()._update(options(), 'field')
-  })
+  createRenderEffect(
+    // Spreading reads every option, so a change to any of them is tracked.
+    () => [fieldApi(), { ...options() }] as const,
+    ([field, next]) => {
+      field._update(next, 'field')
+    },
+  )
 
-  createRenderEffect(() => {
-    const cleanup = fieldApi()._register()
-    onCleanup(cleanup)
-  })
+  createRenderEffect(fieldApi, (field) => field._register())
 
   return fieldApi
 }
@@ -107,7 +110,6 @@ export function createField(
       state()
       return fieldApi()
     },
-    undefined,
     { equals: false },
   )
 }
@@ -130,7 +132,6 @@ export function createArrayField(
       arrayState()
       return fieldApi()
     },
-    undefined,
     { equals: false },
   )
 }

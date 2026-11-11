@@ -1,5 +1,5 @@
 import { brandComponentFactory, wrapField } from './fieldComponentHelpers.lib'
-import type { Accessor, Component, JSX } from 'solid-js'
+import type { Accessor, Component, Element } from 'solid-js'
 import type { FieldWithValue } from '@tanstack/form-core'
 
 type ExactFieldBrand<out TValue> = {
@@ -33,14 +33,14 @@ type StrictInjectedFieldComponent<
   TComponent extends AnyFieldComponent,
   TProps = PropsOf<TComponent>,
   TFieldPropKey extends FieldValuePropKeys<TProps> = FieldValuePropKeys<TProps>,
-> = ((props: PublicPropsReplacingField<TProps, TFieldPropKey>) => JSX.Element) &
+> = ((props: PublicPropsReplacingField<TProps, TFieldPropKey>) => Element) &
   ExactFieldBrand<FieldValueFromComponentProp<TProps, TFieldPropKey>>
 
 type LooseInjectedFieldComponent<
   TComponent extends AnyFieldComponent,
   TProps = PropsOf<TComponent>,
   TFieldPropKey extends FieldValuePropKeys<TProps> = FieldValuePropKeys<TProps>,
-> = ((props: PublicPropsReplacingField<TProps, TFieldPropKey>) => JSX.Element) &
+> = ((props: PublicPropsReplacingField<TProps, TFieldPropKey>) => Element) &
   AcceptsFieldBrand<FieldValueFromComponentProp<TProps, TFieldPropKey>>
 
 type StrictBrandedFieldComponent<TComponent, TValue> = TComponent &

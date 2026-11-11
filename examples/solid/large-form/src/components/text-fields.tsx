@@ -16,7 +16,7 @@ export default function TextField(props: {
             props.field().handleChange(event.currentTarget.value)
           }
           onBlur={props.field().handleBlur}
-          aria-invalid={props.field().meta.isInvalid}
+          aria-invalid={props.field().meta.isInvalid ? 'true' : 'false'}
         />
       </label>
       <For each={props.field().errors}>

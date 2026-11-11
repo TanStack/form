@@ -1,5 +1,5 @@
 import { For } from 'solid-js'
-import { render } from 'solid-js/web'
+import { render } from '@solidjs/web'
 import { createForm } from '@tanstack/solid-form'
 import { DateRangeField } from './fieldGroups/dateRange'
 import { LowerBoundField, UpperBoundField } from './fieldGroups/fieldBounds'

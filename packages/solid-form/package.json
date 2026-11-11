@@ -42,14 +42,15 @@
   ],
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
-    "@tanstack/solid-store": "^0.11.1",
-    "vite-plugin-solid": "^2.11.14"
+    "@tanstack/store": "^0.11.1"
   },
   "devDependencies": {
+    "@solidjs/vite-plugin": "^3.0.0-next.54",
+    "@solidjs/web": "^2.0.0-rc.20",
     "@types/node": "^25.0.7",
-    "solid-js": "^1.9.13"
+    "solid-js": "^2.0.0-rc.20"
   },
   "peerDependencies": {
-    "solid-js": ">=1.9.5"
+    "solid-js": ">=2.0.0-rc.20 <3.0.0"
   }
 }
