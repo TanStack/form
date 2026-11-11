@@ -5,8 +5,8 @@ import type {
   FieldValidators,
   FormApiArrayMethods,
   FormApiFieldMethods,
-  FormErrorTypes,
   FormState,
+  ScopedErrorTypes,
   ValidationIssue,
 } from '@tanstack/form-core'
 import type { Component, JSX } from 'solid-js'
@@ -32,7 +32,7 @@ export interface FieldGroupFieldComponent<
       >,
       ValidationIssue,
       unknown,
-      FormErrorTypes,
+      ScopedErrorTypes,
       TFieldComponents
     >,
   ): JSX.Element
@@ -54,7 +54,7 @@ export interface FieldGroupArrayFieldComponent<
       >,
       ValidationIssue,
       unknown,
-      FormErrorTypes,
+      ScopedErrorTypes,
       TFieldComponents
     >,
   ): JSX.Element
@@ -62,7 +62,7 @@ export interface FieldGroupArrayFieldComponent<
 
 export type FieldGroupSubscribeProps<TSelected> = SolidFormSubscribeProps<
   unknown,
-  FormErrorTypes,
+  ScopedErrorTypes,
   TSelected
 >
 
@@ -88,4 +88,4 @@ export type AnyFieldGroupApi = FieldGroupApi<
   any,
   Record<string, Component<any>>
 >
-export type FieldGroupFormState = FormState<unknown, FormErrorTypes>
+export type FieldGroupFormState = FormState<unknown, ScopedErrorTypes>

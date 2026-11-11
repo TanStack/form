@@ -17,7 +17,7 @@ interface InternalFieldProps extends ReactFormFieldProps<
   any,
   any
 > {
-  form: InternalFormApi<any, any, any>
+  form: InternalFormApi<any>
 }
 
 export function useField(

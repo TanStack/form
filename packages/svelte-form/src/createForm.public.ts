@@ -1,30 +1,32 @@
 import { createInternalForm, initializeForm } from './createForm.svelte'
 import type {
+  AnyFormOptions,
   FormOptions,
-  FormValidators,
-  ToFormErrorTypes,
+  GetFormErrorTypes,
 } from '@tanstack/form-core'
 import type { SvelteFormApi } from './formApiTypes.public'
 import type { DefaultSvelteFormComponentMap } from './AppForm/componentMap.public'
 
 export type CreateForm = <
   TFormData,
-  const TFormValidators extends FormValidators<TFormData>,
+  const TValidatorConfig extends unknown[],
+  TValidators,
   TSubmitReturn,
 >(
   options: () => FormOptions<
     TFormData,
-    TFormValidators,
+    TValidatorConfig,
+    TValidators,
     TSubmitReturn,
     unknown
   >,
 ) => SvelteFormApi<
   TFormData,
-  ToFormErrorTypes<TFormValidators, TSubmitReturn>,
+  GetFormErrorTypes<TValidators, TSubmitReturn>,
   DefaultSvelteFormComponentMap
 >
 
-function createFormImpl(options: () => FormOptions<any, any, any, unknown>) {
+function createFormImpl(options: () => AnyFormOptions) {
   return createInternalForm(options, initializeForm)
 }
 

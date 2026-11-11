@@ -22,15 +22,23 @@ export const peopleFormOptions = formOptions({
       triggers: ['change'],
       run: ({ value, createErrorMap }) => {
         const errors = createErrorMap()
-        if (!value.fullName) errors.fields.fullName = 'Full name is required'
-        if (!value.phone) errors.fields.phone = 'Phone is required'
+        if (!value.fullName) {
+          errors.addFieldError('fullName', 'Full name is required')
+        }
+        if (!value.phone) {
+          errors.addFieldError('phone', 'Phone is required')
+        }
         if (!value.emergencyContact.fullName) {
-          errors.fields['emergencyContact.fullName'] =
-            'Emergency contact full name is required'
+          errors.addFieldError(
+            'emergencyContact.fullName',
+            'Emergency contact full name is required',
+          )
         }
         if (!value.emergencyContact.phone) {
-          errors.fields['emergencyContact.phone'] =
-            'Emergency contact phone is required'
+          errors.addFieldError(
+            'emergencyContact.phone',
+            'Emergency contact phone is required',
+          )
         }
         return errors
       },

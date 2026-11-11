@@ -18,7 +18,7 @@ import type {
   AnyInternalFormApi,
   InternalFormGroupApi as InternalFormGroupApiType,
 } from '@tanstack/form-core/internals'
-import type { FormOptions } from '@tanstack/form-core'
+import type { AnyFormOptions } from '@tanstack/form-core'
 import type { Component } from 'solid-js'
 import type {
   SolidFormFieldProps,
@@ -143,17 +143,13 @@ function attachSolidFormGroupComponents(
   return resultGroup
 }
 
-export function initializeForm(
-  options: FormOptions<any, any, any, unknown>,
-): InternalSolidFormApi {
+export function initializeForm(options: AnyFormOptions): InternalSolidFormApi {
   return attachSolidFormComponents(new InternalFormApi(options), null)
 }
 
 export function createInternalForm(
-  options: () => FormOptions<any, any, any, unknown>,
-  initializeFn: (
-    options: FormOptions<any, any, any, unknown>,
-  ) => InternalSolidFormApi,
+  options: () => AnyFormOptions,
+  initializeFn: (options: AnyFormOptions) => InternalSolidFormApi,
 ) {
   const solidFormId = createUniqueId()
   const resolveOptions = () => {

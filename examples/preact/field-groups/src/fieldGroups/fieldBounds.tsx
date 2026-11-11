@@ -78,11 +78,11 @@ function UpperBoundFieldComponent(props: UpperBoundFieldProps) {
           // `watchFields` also uses virtual names. The wrapper rewrites
           // `lowerBound` to the caller's concrete path, such as `minPrice`.
           watchFields: ['lowerBound'],
-          run: ({ value, parseIssues }) => {
+          run: ({ value }) => {
             const upperBoundResult = boundsSchema.safeParse(value)
 
             if (!upperBoundResult.success) {
-              return parseIssues(upperBoundResult.error.issues)
+              return upperBoundResult.error.issues
             }
 
             const lowerBoundResult = boundsSchema.safeParse(

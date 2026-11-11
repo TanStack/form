@@ -79,9 +79,8 @@ export function getValidatorsWithoutTriggersDetails(
         the validator's <Code>triggers</Code> array.
       </>,
       <>
-        If the validator is intentionally submit-only or mount-only, no trigger
-        is needed. Submit validation runs by default, while mount validation
-        requires <Code>runOnMount: true</Code>.
+        If the validator is intentionally submit-only, no trigger is needed.
+        Submit validation runs by default.
       </>,
     ],
   }

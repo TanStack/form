@@ -1,27 +1,14 @@
 import type {
   AnyFormOptions,
   FormOptions,
-  FormValidators,
-  ToFormErrorTypes,
+  GetFormErrorTypes,
+  GetSharedFormErrorTypes,
 } from '@tanstack/form-core'
 import type {
   AnyPreactFormComponentMap,
   DefaultPreactFormComponentMap,
 } from '../AppForm/componentMap.public'
 import type { PreactFormApi } from './formApiTypes.public'
-
-// When defining formOptions, `onSubmit` is most likely not going to be present in it. Users
-// prefer to define them in components.
-// That's an issue for us because the inferred form error types are covariant, so resolving them
-// early can break passing forms as props to child components.
-// This must remain `any` so that `form={form}` remains working. There are type tests for it, so feel
-// free to tinker.
-type PreactFormTypeErrorTypes<
-  TFormValidators extends FormValidators<any>,
-  TSubmitReturn,
-> = unknown extends TSubmitReturn
-  ? any
-  : ToFormErrorTypes<TFormValidators, TSubmitReturn>
 
 /**
  * Derives the Preact form API type represented by a reusable options object.
@@ -55,13 +42,14 @@ type PreactFormTypeErrorTypes<
 export type PreactFormType<TOptions extends AnyFormOptions> =
   TOptions extends FormOptions<
     infer TFormData,
+    any,
     infer TFormValidators,
     infer TSubmitReturn,
     infer TComponents
   >
     ? PreactFormApi<
         TFormData,
-        PreactFormTypeErrorTypes<TFormValidators, TSubmitReturn>,
+        GetSharedFormErrorTypes<TFormValidators, TSubmitReturn>,
         TComponents extends AnyPreactFormComponentMap
           ? TComponents
           : DefaultPreactFormComponentMap

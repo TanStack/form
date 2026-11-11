@@ -1,10 +1,15 @@
 import { describe, expectTypeOf, it } from 'vitest'
-import { defineFieldGroup, formOptions } from '../src/index.js'
+import {
+  TanStackFormController,
+  defineFieldGroup,
+  formOptions,
+} from '../src/index.js'
 import type {
   AnyLitFormApi,
   LitFormType,
   ValidationIssue,
 } from '../src/index.js'
+import type { ReactiveControllerHost } from 'lit'
 
 const options = formOptions({
   defaultValues: {
@@ -89,3 +94,42 @@ describe('Lit controller types', () => {
     expectTypeOf(assertReusableFieldTypes).toBeFunction()
   })
 })
+
+function assertSharedSubmitTypes(host: ReactiveControllerHost) {
+  const sharedOptions = formOptions({
+    defaultValues: { email: '' },
+    validators: [],
+  })
+  type SharedForm = LitFormType<typeof sharedOptions>
+  const acceptSharedForm = (form: SharedForm) => form
+
+  const syncForm = new TanStackFormController(host, {
+    ...sharedOptions,
+    onSubmit: ({ createValidationError }) =>
+      createValidationError({
+        fields: { email: { message: 'Invalid email', fromSubmit: true } },
+      }),
+  })
+  const asyncForm = new TanStackFormController(host, {
+    ...sharedOptions,
+    onSubmit: async ({ createValidationError }) =>
+      createValidationError({
+        fields: { email: { message: 'Invalid email', fromSubmit: true } },
+      }),
+  })
+  const successForm = new TanStackFormController(host, {
+    ...sharedOptions,
+    onSubmit: () => Promise.resolve(null),
+  })
+  acceptSharedForm(syncForm)
+  acceptSharedForm(asyncForm)
+  acceptSharedForm(successForm)
+  acceptSharedForm(new TanStackFormController(host, sharedOptions))
+
+  syncForm.field({ name: 'email' }, (field) => {
+    expectTypeOf(field.errors[0]!.fromSubmit).toEqualTypeOf<boolean>()
+    return null
+  })
+}
+
+expectTypeOf(assertSharedSubmitTypes).toBeFunction()

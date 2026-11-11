@@ -1,5 +1,6 @@
 import { LiteDebouncer } from '@tanstack/pacer-lite'
-import type { AnyFieldListener, AnyFormListener } from './listeners.public'
+import type { AnyFieldListener } from './listeners.public'
+import type { AnyFormListener } from './FormApi/formListeners.public'
 
 export type InternalListenerDefinition = AnyFormListener | AnyFieldListener
 

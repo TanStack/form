@@ -18,8 +18,8 @@ import {
   deriveFromBaseFieldMeta,
   hasFieldMetaErrors,
 } from '../FieldApi/fieldState.lib'
-import { parseStandardSchemaIssues } from '../standardSchema.lib'
-import { createErrorMap } from '../validation.public'
+import { createErrorMap } from '../validation/createErrorMap.lib'
+import { parseIssuesFactory } from '../validation/parseIssues.lib'
 import { reconcileValidatorInstances } from '../ValidatorInstance.lib'
 import { resolveDefaultOptions } from '../defaultOptions.lib'
 import type { FormApi } from '../FormApi/FormApi.public'
@@ -41,20 +41,20 @@ import type {
   FormGroupState,
 } from './FormGroupApi.public'
 import type {
-  ConfigurableValidationTrigger,
-  FormErrorTypes,
-  FormErrors,
+  ClientValidationTrigger,
   FormGroupValidateResult,
-  FormGroupValidator,
   FormGroupValidators,
   ToFormGroupErrorTypes,
-  ValidationIssue,
 } from '../validation.public'
 import type { ReadonlyAtom } from '@tanstack/store'
 import type {
   InternalValidatorInstance,
   InternalValidatorInstances,
 } from '../ValidatorInstance.lib'
+import type {
+  ScopedErrorTypes,
+  ValidationIssue,
+} from '../validation/state.public'
 
 interface FormGroupValidationOutcome<TGroupValue> {
   errors: Array<FormGroupValidateResult<TGroupValue>>
@@ -69,7 +69,7 @@ export type AnyInternalFormGroupApi = InternalFormGroupApi<
   any
 >
 export type InternalGroupValidatorInstance = InternalValidatorInstance<
-  FormGroupValidator<any>,
+  'group',
   AnyInternalFormGroupApi,
   AnyInternalFieldApi
 >
@@ -79,16 +79,15 @@ export class InternalFormGroupApi<
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
   const TGroupValidators extends FormGroupValidators<TGroupValue>,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
 > implements FormGroupApi<
   TFormData,
   TGroupName,
   TGroupValue,
   ToFormGroupErrorTypes<TGroupValidators>,
-  TFormErrorTypes
+  TFormError
 > {
-  readonly form: FormApi<TFormData, TFormErrorTypes> &
-    InternalFormApi<any, any, any>
+  readonly form: FormApi<TFormData, TFormError> & InternalFormApi<any>
   /** The trie node occupied by this form group. */
   _groupField: AnyInternalFieldApi
   _options: FormGroupOptions<
@@ -96,11 +95,11 @@ export class InternalFormGroupApi<
     TGroupName,
     TGroupValue,
     TGroupValidators,
-    TFormErrorTypes
+    TFormError
   >
   /** Stable runtime instances correlated with `_options.validators` by slot. */
   _validatorInstances: InternalValidatorInstances<
-    TGroupValidators[number],
+    'group',
     AnyInternalFormGroupApi,
     AnyInternalFieldApi
   >
@@ -133,7 +132,7 @@ export class InternalFormGroupApi<
       TGroupName,
       TGroupValue,
       TGroupValidators,
-      TFormErrorTypes
+      TFormError
     >,
   ) {
     this.form = options.form as never
@@ -149,7 +148,7 @@ export class InternalFormGroupApi<
     )
     this._groupField._setFormGroup(this)
     this._validatorInstances = reconcileValidatorInstances<
-      TGroupValidators[number],
+      'group',
       AnyInternalFormGroupApi,
       AnyInternalFieldApi
     >({
@@ -182,7 +181,9 @@ export class InternalFormGroupApi<
           groupMetaMarkers,
         )
         const groupErrorMeta = groupBaseMeta._validationSourceErrors
-        let groupErrors: FormErrors<ToFormGroupErrorTypes<TGroupValidators>>
+        let groupErrors: Array<
+          ToFormGroupErrorTypes<TGroupValidators>['selfError']
+        >
 
         if (
           prev &&
@@ -266,7 +267,7 @@ export class InternalFormGroupApi<
       TGroupName,
       TGroupValue,
       TGroupValidators,
-      TFormErrorTypes
+      TFormError
     >,
   ) => {
     const previousValidators = this._options.validators
@@ -275,7 +276,7 @@ export class InternalFormGroupApi<
       this.form._defaultOptions?.formGroup,
     )
     this._validatorInstances = reconcileValidatorInstances<
-      TGroupValidators[number],
+      'group',
       AnyInternalFormGroupApi,
       AnyInternalFieldApi
     >({
@@ -482,7 +483,7 @@ export class InternalFormGroupApi<
   }
 
   async _runFieldValidations(
-    signal: ConfigurableValidationTrigger | 'submit',
+    signal: ClientValidationTrigger,
   ): Promise<FormGroupValidationOutcome<TGroupValue>> {
     const fieldValidationPromises: Array<
       ReturnType<AnyInternalFieldApi['_runFieldValidation']>
@@ -544,7 +545,7 @@ export class InternalFormGroupApi<
   _clearEventErrors(
     field: AnyInternalFieldApi,
     sourceEvent: string,
-    event: ConfigurableValidationTrigger,
+    event: Exclude<ClientValidationTrigger, 'submit'>,
   ) {
     const groupField = this._groupField
     const validatorInstancesToClear: Array<InternalGroupValidatorInstance> = []
@@ -645,7 +646,7 @@ export class InternalFormGroupApi<
   }
 
   _validate = async (
-    signal: ConfigurableValidationTrigger | 'submit',
+    signal: ClientValidationTrigger,
     opts?: { triggerFieldApi?: AnyInternalFieldApi },
   ): Promise<FormGroupValidationOutcome<TGroupValue>> => {
     if (signal !== 'submit' && opts?.triggerFieldApi) {
@@ -677,8 +678,7 @@ export class InternalFormGroupApi<
           triggerFieldApi: opts?.triggerFieldApi,
         },
         hasFailedBefore: false,
-        scope: 'form',
-        getContext: (ctx) => ({
+        getContext: (ctx, instance) => ({
           event: signal,
           formApi: this.form,
           groupApi: this,
@@ -686,9 +686,11 @@ export class InternalFormGroupApi<
           signal: ctx.signal,
           value: this.value,
           createErrorMap,
+          parseIssues: parseIssuesFactory(
+            this.value,
+            instance.fieldErrorTarget,
+          ),
           createOutput,
-          parseIssues: (issues) =>
-            parseStandardSchemaIssues(issues, this.value, 'form'),
         }),
         onResult: (result) => {
           this._processValidationResult(result, signal)
@@ -718,7 +720,7 @@ export class InternalFormGroupApi<
   }
 
   validate = async (
-    signal: ConfigurableValidationTrigger | 'submit',
+    signal: ClientValidationTrigger,
     opts?: { triggerFieldApi?: AnyInternalFieldApi },
   ): Promise<Array<FormGroupValidateResult<TGroupValue>>> => {
     return (await this._validate(signal, opts)).errors

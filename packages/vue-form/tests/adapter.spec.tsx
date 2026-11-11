@@ -124,8 +124,7 @@ describe('Vue adapter parity', () => {
         defaultValues: { name: '' },
         validators: [
           {
-            runOnMount: true,
-            triggers: [],
+            triggers: ['mount'],
             run: () => 'Name is required',
           },
         ],

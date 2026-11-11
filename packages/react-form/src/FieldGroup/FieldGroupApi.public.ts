@@ -5,8 +5,8 @@ import type {
   FieldValidators,
   FormApiArrayMethods,
   FormApiFieldMethods,
-  FormErrorTypes,
   FormState,
+  ScopedErrorTypes,
   ValidationIssue,
 } from '@tanstack/form-core'
 import type { FunctionComponent, ReactNode } from 'react'
@@ -76,7 +76,7 @@ export interface FieldGroupFieldComponent<
       >,
       ValidationIssue,
       unknown,
-      FormErrorTypes,
+      ScopedErrorTypes,
       TFieldComponents
     >,
   ): ReactNode
@@ -138,7 +138,7 @@ export interface FieldGroupArrayFieldComponent<
       >,
       ValidationIssue,
       unknown,
-      FormErrorTypes,
+      ScopedErrorTypes,
       TFieldComponents
     >,
   ): ReactNode
@@ -146,7 +146,7 @@ export interface FieldGroupArrayFieldComponent<
 
 export type FieldGroupSubscribeProps<TSelected> = ReactFormSubscribeProps<
   unknown,
-  FormErrorTypes,
+  ScopedErrorTypes,
   TSelected
 >
 
@@ -188,4 +188,4 @@ export type AnyFieldGroupApi = FieldGroupApi<
   Record<string, FunctionComponent<any>>
 >
 
-export type FieldGroupFormState = FormState<unknown, FormErrorTypes>
+export type FieldGroupFormState = FormState<unknown, ScopedErrorTypes>

@@ -1,17 +1,17 @@
 import { describe, expectTypeOf, it } from 'vitest'
-import { formOptions, serverValidateHelper } from '@tanstack/form-core'
+import { formOptions } from '@tanstack/form-core'
 import { start } from '../src'
-import type { ServerFormState, ServerValidateResult } from '@tanstack/form-core'
+import type { ServerFormState } from '@tanstack/form-core'
 
 describe('start server validation types', () => {
-  it('preserves discriminated result generics through the helper', async () => {
+  it('preserves discriminated result generics through the factory', async () => {
     const options = formOptions({
       defaultValues: { name: '' },
       validators: [
         {
           run: () => ({
             fields: {
-              name: 'Name is required',
+              name: ['Name is required'],
             },
           }),
           triggers: ['server'],
@@ -19,9 +19,7 @@ describe('start server validation types', () => {
       ],
     })
 
-    const { createServerValidate } = serverValidateHelper({
-      framework: start(),
-    })
+    const { createServerValidate } = start()
     const validate = createServerValidate(options)
     const result = await validate({ formData: {} as FormData })
 
@@ -29,11 +27,8 @@ describe('start server validation types', () => {
       expectTypeOf(result.values).toEqualTypeOf<{ name: string }>()
     } else {
       type Values = { name: string }
-      type Validators = NonNullable<typeof options.validators>
 
-      expectTypeOf(result.serverState).toEqualTypeOf<
-        ServerFormState<Values, Validators>
-      >()
+      expectTypeOf(result.serverState).toEqualTypeOf<ServerFormState<Values>>()
     }
   })
 
@@ -48,26 +43,26 @@ describe('start server validation types', () => {
       ],
     })
 
-    const { createServerValidate, getFormData } = serverValidateHelper({
-      framework: start({
-        onInvalid: () => ({ status: 'invalid' as const }),
-        onValid: () => ({ status: 'valid' as const }),
-      }),
+    const { createServerValidate, getFormData } = start({
+      onInvalid: () => ({ status: 'invalid' as const }),
+      onValid: () => ({ status: 'valid' as const }),
     })
 
     const serverState = await getFormData()
-    expectTypeOf(serverState).toEqualTypeOf<ServerFormState<any, any>>()
+    expectTypeOf(serverState).toEqualTypeOf<ServerFormState<any>>()
 
     const validate = createServerValidate(options)
     const result = await validate({ formData: {} as FormData })
 
     if ('success' in result) {
-      expectTypeOf(result).toEqualTypeOf<
-        ServerValidateResult<
-          { name: string },
-          NonNullable<typeof options.validators>
-        >
-      >()
+      if (result.success) {
+        expectTypeOf(result.values).toEqualTypeOf<{ name: string }>()
+        expectTypeOf(result.validatorOutputs).toEqualTypeOf<[undefined]>()
+      } else {
+        expectTypeOf(result.serverState).toEqualTypeOf<
+          ServerFormState<{ name: string }>
+        >()
+      }
     } else {
       expectTypeOf(result).toEqualTypeOf<
         { status: 'invalid' } | { status: 'valid' }
@@ -86,9 +81,7 @@ describe('start server validation types', () => {
       ],
     })
 
-    const { createServerValidate } = serverValidateHelper({
-      framework: start(),
-    })
+    const { createServerValidate } = start()
     const validate = createServerValidate(options, {
       info: {
         numbers: ['age'],
@@ -112,12 +105,7 @@ describe('start server validation types', () => {
     })
 
     expectTypeOf(validate.getFormData()).toEqualTypeOf<
-      Promise<
-        ServerFormState<
-          { firstName: string; age: number },
-          NonNullable<typeof options.validators>
-        >
-      >
+      Promise<ServerFormState<{ firstName: string; age: number }>>
     >()
   })
 })

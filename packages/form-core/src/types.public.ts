@@ -31,6 +31,12 @@ export interface FieldUpdateOptions {
 }
 
 export type OneOrMany<TValue> = TValue | Array<TValue>
+export type ReadonlyOneOrMany<TValue> = TValue | ReadonlyArray<TValue>
+
+/**
+ * A value that may or may not be a promise. Compatible with `await`.
+ */
+export type Awaitable<TReturn> = TReturn | Promise<TReturn>
 
 /**
  * A field API that preserves its value type while erasing its name, error, and

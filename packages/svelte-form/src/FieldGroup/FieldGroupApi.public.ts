@@ -5,8 +5,8 @@ import type {
   FieldValidators,
   FormApiArrayMethods,
   FormApiFieldMethods,
-  FormErrorTypes,
   FormState,
+  ScopedErrorTypes,
   ValidationIssue,
 } from '@tanstack/form-core'
 import type {
@@ -37,7 +37,7 @@ export type FieldGroupFieldComponent<
       >,
       ValidationIssue,
       unknown,
-      FormErrorTypes,
+      ScopedErrorTypes,
       TFieldComponents
     >
   >,
@@ -63,7 +63,7 @@ export type FieldGroupArrayFieldComponent<
       >,
       ValidationIssue,
       unknown,
-      FormErrorTypes,
+      ScopedErrorTypes,
       TFieldComponents
     >
   >,
@@ -73,7 +73,7 @@ export type FieldGroupArrayFieldComponent<
 
 export type FieldGroupSubscribeComponent = (new <const TSelected>(
   options: ComponentConstructorOptions<
-    SvelteFormSubscribeProps<unknown, FormErrorTypes, TSelected>
+    SvelteFormSubscribeProps<unknown, ScopedErrorTypes, TSelected>
   >,
 ) => SvelteComponent) &
   Component<any> &
@@ -97,4 +97,4 @@ export type AnyFieldGroupApi = FieldGroupApi<
   any,
   Record<string, Component<any>>
 >
-export type FieldGroupFormState = FormState<unknown, FormErrorTypes>
+export type FieldGroupFormState = FormState<unknown, ScopedErrorTypes>

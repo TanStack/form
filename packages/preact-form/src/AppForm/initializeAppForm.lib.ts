@@ -1,6 +1,7 @@
 import { InternalFormApi } from '@tanstack/form-core/internals'
 import { attachPreactAppFormComponents } from './Components.lib'
 import type {
+  AnyFormOptions,
   DefaultFieldOptions,
   DefaultFormGroupOptions,
   DefaultFormOptions,
@@ -20,7 +21,7 @@ interface AnyCreateFormHookOptions {
 
 export function createAppFormInitializer(
   createOptions: AnyCreateFormHookOptions,
-): (options: FormOptions<any, any, any, unknown>) => InternalPreactFormApi {
+): (options: AnyFormOptions) => InternalPreactFormApi {
   const hasDefaultOptions =
     createOptions.defaultFormOptions ||
     createOptions.defaultFieldOptions ||

@@ -65,7 +65,6 @@ import type {
 } from '../ListenerInstance.lib'
 import type { FieldApi, FieldApiOptions } from './FieldApi.public'
 import type {
-  ErrorVisibility,
   FieldErrors,
   FieldValidateResult,
   FieldValidator,
@@ -79,6 +78,8 @@ import type {
   InternalFieldMeta,
   InternalFieldState,
 } from './fieldState.lib'
+import type { ClientSideEvents } from '../events.public'
+import type { ErrorVisibilityFn } from '../FormApi/errorVisibility.public'
 
 export type AnyFieldApiOptions = FieldApiOptions<
   any,
@@ -307,7 +308,7 @@ export type InternalFieldListenerInstance = InternalListenerInstance<
   AnyInternalFieldApi
 >
 export type InternalFieldValidatorInstance = InternalValidatorInstance<
-  AnyFieldValidator,
+  'field',
   AnyInternalFieldApi,
   AnyInternalFieldApi,
   AnyInternalFieldApi
@@ -325,7 +326,7 @@ export class InternalFieldApi<
   _atoms: FieldAtoms
   /** Stable runtime instances for this field's validator definitions. */
   _validatorInstances: InternalValidatorInstances<
-    AnyFieldValidator,
+    'field',
     AnyInternalFieldApi,
     AnyInternalFieldApi,
     AnyInternalFieldApi
@@ -336,7 +337,7 @@ export class InternalFieldApi<
     AnyInternalFieldApi,
     AnyInternalFieldApi
   >
-  _errorVisibility: ErrorVisibility<any, any> | undefined
+  _errorVisibility: ErrorVisibilityFn<any> | undefined
   _errorBoundary: boolean
   /** The form group occupying this trie node. */
   _formGroup: AnyInternalFormGroupApi | null = null
@@ -524,7 +525,7 @@ export class InternalFieldApi<
       owner: this,
     })
     this._validatorInstances = reconcileValidatorInstances<
-      AnyFieldValidator,
+      'field',
       AnyInternalFieldApi,
       AnyInternalFieldApi,
       AnyInternalFieldApi
@@ -626,7 +627,7 @@ export class InternalFieldApi<
           ? (resolvedOptions.validators as Array<AnyFieldValidator>)
           : null
       this._validatorInstances = reconcileValidatorInstances<
-        AnyFieldValidator,
+        'field',
         AnyInternalFieldApi,
         AnyInternalFieldApi,
         AnyInternalFieldApi
@@ -758,7 +759,7 @@ export class InternalFieldApi<
    * Triggers validation for this field and all parent fields,
    * eventually calling form validation.
    */
-  _triggerValidationCascade(event: 'change' | 'blur' | 'submit'): void {
+  _triggerValidationCascade(event: ClientSideEvents): void {
     if (this._isKilled) return
 
     const seenValidatorFields = new WeakSet<AnyInternalFieldApi>()
@@ -1145,7 +1146,7 @@ export class InternalFieldApi<
 
   /**
    * @private
-   * Runs validators marked with runOnMount on the first component mount.
+   * Runs validators with an enabled mount trigger on the first component mount.
    */
   _runMountValidation(validators = this._validatorInstances): void {
     if (!validators || validators.length === 0) return

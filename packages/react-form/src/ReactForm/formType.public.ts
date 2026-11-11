@@ -1,27 +1,13 @@
 import type {
   AnyFormOptions,
   FormOptions,
-  FormValidators,
-  ToFormErrorTypes,
+  GetSharedFormErrorTypes,
 } from '@tanstack/form-core'
 import type {
   AnyReactFormComponentMap,
   DefaultReactFormComponentMap,
 } from '../AppForm/componentMap.public'
 import type { ReactFormApi } from './formApiTypes.public'
-
-// When defining formOptions, `onSubmit` is most likely not going to be present in it. Users
-// prefer to define them in components.
-// That's an issue for us because the inferred form error types are covariant, so resolving them
-// early can break passing forms as props to child components.
-// This must remain `any` so that `form={form}` remains working. There are type tests for it, so feel
-// free to tinker.
-type ReactFormTypeErrorTypes<
-  TFormValidators extends FormValidators<any>,
-  TSubmitReturn,
-> = unknown extends TSubmitReturn
-  ? any
-  : ToFormErrorTypes<TFormValidators, TSubmitReturn>
 
 /**
  * Derives the React form API type represented by a reusable options object.
@@ -55,13 +41,14 @@ type ReactFormTypeErrorTypes<
 export type ReactFormType<TOptions extends AnyFormOptions> =
   TOptions extends FormOptions<
     infer TFormData,
+    any,
     infer TFormValidators,
     infer TSubmitReturn,
     infer TComponents
   >
     ? ReactFormApi<
         TFormData,
-        ReactFormTypeErrorTypes<TFormValidators, TSubmitReturn>,
+        GetSharedFormErrorTypes<TFormValidators, TSubmitReturn>,
         TComponents extends AnyReactFormComponentMap
           ? TComponents
           : DefaultReactFormComponentMap

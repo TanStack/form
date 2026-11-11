@@ -14,7 +14,7 @@ import type {
   FieldGroupHelper,
   FormApiArrayMethods,
   FormApiFieldMethods,
-  FormErrorTypes,
+  ScopedErrorTypes,
   ValidationIssue,
 } from '@tanstack/form-core'
 import type { ReadonlyAtom } from '@tanstack/lit-store'
@@ -32,7 +32,7 @@ export type LitFieldGroupApi<TFieldData> = LitFieldMethods<
   TFieldData,
   ValidationIssue,
   unknown,
-  FormErrorTypes
+  ScopedErrorTypes
 > &
   LitSubscribeMethod<TFieldData> &
   FormApiFieldMethods<TFieldData> &
@@ -57,7 +57,13 @@ export type FieldGroupFieldBindingsOf<TFieldGroup, TFormData> =
     ? FieldGroupFieldBindings<FieldGroupFieldsOf<TFieldGroup>, TFormData>
     : never
 
-type AnyLitForm<TFormData = any> = TanStackFormController<TFormData, any, any>
+type AnyLitForm<TFormData = any> = TanStackFormController<
+  TFormData,
+  any,
+  any,
+  any,
+  any
+>
 
 export type FieldGroupWithFieldsFn<
   TFieldGroup extends {

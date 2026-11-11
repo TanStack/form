@@ -5,8 +5,8 @@ import type {
   FieldValidators,
   FormApiArrayMethods,
   FormApiFieldMethods,
-  FormErrorTypes,
   FormState,
+  ScopedErrorTypes,
   ToFieldError,
   ValidationIssue,
 } from '@tanstack/form-core'
@@ -30,7 +30,7 @@ export type FieldGroupFieldComponent<
     FieldValidators<TFieldData, TFieldName, DeepValue<TFieldData, TFieldName>>,
     ValidationIssue,
     unknown,
-    FormErrorTypes,
+    ScopedErrorTypes,
     TFieldComponents
   > &
     PublicProps,
@@ -42,7 +42,7 @@ export type FieldGroupFieldComponent<
     FieldValidators<TFieldData, TFieldName, DeepValue<TFieldData, TFieldName>>,
     ValidationIssue,
     unknown,
-    FormErrorTypes,
+    ScopedErrorTypes,
     TFieldComponents
   >,
   {
@@ -57,10 +57,10 @@ export type FieldGroupFieldComponent<
             DeepValue<TFieldData, TFieldName>
           >,
           ValidationIssue,
-          FormErrorTypes
+          ScopedErrorTypes
         >,
         unknown,
-        FormErrorTypes,
+        ScopedErrorTypes,
         TFieldComponents
       >
     }
@@ -80,7 +80,7 @@ export type FieldGroupArrayFieldComponent<
     FieldValidators<TFieldData, TFieldName, DeepValue<TFieldData, TFieldName>>,
     ValidationIssue,
     unknown,
-    FormErrorTypes,
+    ScopedErrorTypes,
     TFieldComponents
   > &
     PublicProps,
@@ -92,7 +92,7 @@ export type FieldGroupArrayFieldComponent<
     FieldValidators<TFieldData, TFieldName, DeepValue<TFieldData, TFieldName>>,
     ValidationIssue,
     unknown,
-    FormErrorTypes,
+    ScopedErrorTypes,
     TFieldComponents
   >,
   {
@@ -107,10 +107,10 @@ export type FieldGroupArrayFieldComponent<
             DeepValue<TFieldData, TFieldName>
           >,
           ValidationIssue,
-          FormErrorTypes
+          ScopedErrorTypes
         >,
         unknown,
-        FormErrorTypes,
+        ScopedErrorTypes,
         TFieldComponents
       >
     }
@@ -119,7 +119,7 @@ export type FieldGroupArrayFieldComponent<
 
 export type FieldGroupSubscribeProps<TSelected> = VueFormSubscribeProps<
   unknown,
-  FormErrorTypes,
+  ScopedErrorTypes,
   TSelected
 >
 
@@ -145,4 +145,4 @@ export interface FieldGroupApi<
 }
 
 export type AnyFieldGroupApi = FieldGroupApi<any, Record<string, Component>>
-export type FieldGroupFormState = FormState<unknown, FormErrorTypes>
+export type FieldGroupFormState = FormState<unknown, ScopedErrorTypes>

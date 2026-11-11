@@ -130,7 +130,6 @@ describe('field debug info popover', () => {
     expect(content()).toContain('change')
     expect(content()).toContain('blur')
     expect(content()).toContain('Submit validation runs by default')
-    expect(content()).toContain('runOnMount: true')
   })
 
   it('requests field guidance, renders aggregated paths, and retains dismissals', async () => {

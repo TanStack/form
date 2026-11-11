@@ -50,9 +50,9 @@ export class BoundFieldComponent {
       watchFields: this.fields().lowerBound
         ? [this.fields().lowerBound!]
         : undefined,
-      run: ({ value, parseIssues }: any) => {
+      run: ({ value }: any) => {
         const valueResult = boundsSchema.safeParse(value)
-        if (!valueResult.success) return parseIssues(valueResult.error.issues)
+        if (!valueResult.success) return valueResult.error.issues
         const lowerName = this.fields().lowerBound
         if (!lowerName) return
         const lowerResult = boundsSchema.safeParse(
@@ -61,6 +61,7 @@ export class BoundFieldComponent {
         if (lowerResult.success && valueResult.data < lowerResult.data) {
           return 'Upper bound must be greater than lower bound'
         }
+        return undefined
       },
     },
   ])

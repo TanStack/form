@@ -22,7 +22,9 @@ export function createFormHook<
 }> {
   const initializeAppForm = createAppFormInitializer(createOptions)
 
-  function useExtendedForm(hookOptions: FormOptions<any, any, any, unknown>) {
+  function useExtendedForm(
+    hookOptions: FormOptions<any, any, any, any, unknown>,
+  ) {
     const form = useInternalForm(hookOptions, initializeAppForm)
     return form
   }

@@ -8,15 +8,16 @@ import {
 } from '@angular/core'
 import { InternalFormGroupApi } from '@tanstack/form-core/internals'
 import type {
+  AnyFormApi,
   DeepKeys,
   DeepValue,
-  ErrorVisibility,
+  ErrorVisibilityFn,
   FieldApi,
   FieldListeners,
   FieldValidators,
-  FormValidators,
+  FormApi,
+  ScopedErrorTypes,
   ToFieldError,
-  ToFormErrorTypes,
   ToFormGroupErrorTypes,
 } from '@tanstack/form-core'
 import type {
@@ -24,23 +25,22 @@ import type {
   AnyInternalFieldApi,
   AnyInternalFormApi,
   InternalBaseFieldMeta,
-  InternalFormApi,
 } from '@tanstack/form-core/internals'
 
 export type AngularFieldSource =
-  AnyInternalFormApi | InternalFormGroupApi<any, any, any, any, any>
+  AnyFormApi | InternalFormGroupApi<any, any, any, any, any>
 
 export type AngularFieldData<TSource extends AngularFieldSource> =
   TSource extends InternalFormGroupApi<any, any, infer TGroupValue, any, any>
     ? TGroupValue
-    : TSource extends InternalFormApi<infer TFormData, any, any>
+    : TSource extends FormApi<infer TFormData, any>
       ? TFormData
       : never
 
 type AngularParentFormData<TSource extends AngularFieldSource> =
   TSource extends InternalFormGroupApi<infer TFormData, any, any, any, any>
     ? TFormData
-    : TSource extends InternalFormApi<infer TFormData, any, any>
+    : TSource extends FormApi<infer TFormData, any>
       ? TFormData
       : never
 
@@ -53,12 +53,8 @@ type AngularSourceFormErrorTypes<TSource extends AngularFieldSource> =
     infer TFormErrorTypes
   >
     ? TFormErrorTypes
-    : TSource extends InternalFormApi<
-          any,
-          infer TFormValidators,
-          infer TSubmitReturn
-        >
-      ? ToFormErrorTypes<TFormValidators, TSubmitReturn>
+    : TSource extends FormApi<any, infer TFormError>
+      ? TFormError
       : never
 
 type AngularSourceGroupFieldError<TSource extends AngularFieldSource> =
@@ -69,7 +65,7 @@ type AngularSourceGroupFieldError<TSource extends AngularFieldSource> =
     infer TGroupValidators,
     any
   >
-    ? ToFormGroupErrorTypes<TGroupValidators>['fieldError']
+    ? ToFormGroupErrorTypes<TGroupValidators>['selfError']
     : never
 
 type AngularSourceFieldApi<
@@ -98,18 +94,13 @@ export type AngularFieldApi<
   TFieldName extends DeepKeys<TFormData>,
   TFieldValue extends DeepValue<TFormData, TFieldName>,
   TFieldValidators extends FieldValidators<TFormData, TFieldName, TFieldValue>,
-  TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
+  TFormError extends ScopedErrorTypes,
 > = FieldApi<
   TFieldName,
   TFieldValue,
-  ToFieldError<
-    TFieldValidators,
-    never,
-    ToFormErrorTypes<TFormValidators, TSubmitReturn>
-  >,
+  ToFieldError<TFieldValidators, never, TFormError>,
   TFormData,
-  ToFormErrorTypes<TFormValidators, TSubmitReturn>
+  TFormError
 >
 
 @Directive()
@@ -142,13 +133,7 @@ abstract class TanStackFieldBase<
         >
       >
     >()
-  errorVisibility =
-    input<
-      ErrorVisibility<
-        AngularParentFormData<TSource>,
-        AngularSourceFormErrorTypes<TSource>
-      >
-    >()
+  errorVisibility = input<ErrorVisibilityFn<AngularParentFormData<TSource>>>()
   errorBoundary = input<boolean>()
 
   protected abstract readonly isArrayField: boolean
@@ -177,7 +162,9 @@ abstract class TanStackFieldBase<
 
   private getForm(): AnyInternalFormApi {
     const source = this.getSource()
-    return source instanceof InternalFormGroupApi ? source.form : source
+    return (
+      source instanceof InternalFormGroupApi ? source.form : source
+    ) as AnyInternalFormApi
   }
 
   private getFieldApi() {

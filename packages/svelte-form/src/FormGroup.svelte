@@ -3,10 +3,10 @@
   import { useSelector } from '@tanstack/svelte-store'
   import { withComponentProps } from './utils.lib.js'
   import type {
-    FormErrorTypes,
     FormGroupApi,
     FormGroupOptions,
     FormGroupValidators,
+    ScopedErrorTypes,
     ToFormGroupErrorTypes,
   } from '@tanstack/form-core'
   import type { AnyInternalFormApi } from '@tanstack/form-core/internals'
@@ -16,21 +16,21 @@
     TGroupName,
     TGroupValue,
     const TGroupValidators extends FormGroupValidators<TGroupValue>,
-    TFormErrorTypes extends FormErrorTypes,
+    TFormError extends ScopedErrorTypes,
   >(
     options: () => FormGroupOptions<
       TFormData,
       TGroupName,
       TGroupValue,
       TGroupValidators,
-      TFormErrorTypes
+      TFormError
     >,
   ): FormGroupApi<
     TFormData,
     TGroupName,
     TGroupValue,
     ToFormGroupErrorTypes<TGroupValidators>,
-    TFormErrorTypes
+    TFormError
   > {
     const group = new InternalFormGroupApi(options() as never)
 

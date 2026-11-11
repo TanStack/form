@@ -1,8 +1,8 @@
 import type {
   AnyFormApi,
   FormApi,
-  FormErrorTypes,
   FormState,
+  ScopedErrorTypes,
 } from '@tanstack/form-core'
 import type { Component } from 'svelte'
 import type { SvelteTanStackFormComponents } from './Components.public'
@@ -13,32 +13,28 @@ import type {
 
 export interface SvelteFormSelectors<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
 > {
-  useSelector: <TSelected = FormState<TFormData, TFormErrorTypes>>(
-    selector?: (state: FormState<TFormData, TFormErrorTypes>) => TSelected,
+  useSelector: <TSelected = FormState<TFormData, TFormError>>(
+    selector?: (state: FormState<TFormData, TFormError>) => TSelected,
   ) => { readonly current: TSelected }
 }
 
 type ExtendedFormApi<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>>,
-> = FormApi<TFormData, TFormErrorTypes> &
-  SvelteTanStackFormComponents<TFormData, TFormErrorTypes, TFieldComponents> &
-  SvelteFormSelectors<TFormData, TFormErrorTypes>
+> = FormApi<TFormData, TFormError> &
+  SvelteTanStackFormComponents<TFormData, TFormError, TFieldComponents> &
+  SvelteFormSelectors<TFormData, TFormError>
 
 export type SvelteFormApi<
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
   TComponents extends AnySvelteFormComponentMap = DefaultSvelteFormComponentMap,
 > = unknown extends TComponents['formComponents']
-  ? ExtendedFormApi<TFormData, TFormErrorTypes, TComponents['fieldComponents']>
-  : ExtendedFormApi<
-      TFormData,
-      TFormErrorTypes,
-      TComponents['fieldComponents']
-    > &
+  ? ExtendedFormApi<TFormData, TFormError, TComponents['fieldComponents']>
+  : ExtendedFormApi<TFormData, TFormError, TComponents['fieldComponents']> &
       TComponents['formComponents']
 
 /**
