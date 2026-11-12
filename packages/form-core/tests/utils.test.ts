@@ -99,7 +99,11 @@ describe('utils', () => {
       items: [undefined, undefined, { name: 'Ada' }],
     })
 
-    expect(setBy(['first'], '[2]', 'third')).toEqual(['first', 'third'])
+    expect(setBy(['first'], '[2]', 'third')).toStrictEqual([
+      'first',
+      undefined,
+      'third',
+    ])
     expect(setBy([], '[2]', 'third')).toEqual([undefined, undefined, 'third'])
     expect(setBy(undefined, [undefined], 'third')).toEqual([undefined, 'third'])
   })

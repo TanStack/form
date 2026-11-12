@@ -181,7 +181,8 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
     if (Array.isArray(parent) && typeof key === 'number') {
       const prefix = parent.slice(0, key)
       return [
-        ...(prefix.length ? prefix : new Array(key)),
+        ...prefix,
+        ...new Array(key - prefix.length),
         doSet(parent[key]),
         ...parent.slice(key + 1),
       ]

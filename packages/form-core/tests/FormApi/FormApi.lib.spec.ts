@@ -742,6 +742,33 @@ describe('InternalFormApi - setFieldValue', () => {
     expect(field.value).toEqual(['B'])
     expect(form.defaultValues).toEqual({ items: ['a'] })
   })
+  it('sets a value at an index past the end of a non-empty array', () => {
+    const form = new InternalFormApi({
+      defaultValues: { phones: ['555-0000'] },
+    })
+    const fields = [0, 1, 2, 3].map((i) =>
+      form._getOrCreateFieldApi({ name: `phones[${i}]` as const }),
+    )
+
+    fields[3]!.handleChange('555-0003')
+
+    expect(form.getFieldValue('phones[3]')).toBe('555-0003')
+    expect(form.state.values.phones).toStrictEqual([
+      '555-0000',
+      undefined,
+      undefined,
+      '555-0003',
+    ])
+
+    fields[1]!.handleChange('555-0001')
+
+    expect(fields.map((field) => field.value)).toStrictEqual([
+      '555-0000',
+      '555-0001',
+      undefined,
+      '555-0003',
+    ])
+  })
 })
 
 describe('InternalFormApi - reset', () => {
@@ -1052,6 +1079,21 @@ describe('InternalFormApi - resetField', () => {
 
     expect(form.state.values).toEqual({ person: { name: 'Carol' } })
     expect(form.state.isTouched).toBe(true)
+  })
+  it('restores the default at its own index when the array is shorter than the defaults', () => {
+    const form = new InternalFormApi({
+      defaultValues: { phones: ['a', 'b', 'c', 'd'] },
+    })
+
+    form.setFieldValue('phones', ['a'])
+    form.resetField('phones[3]')
+
+    expect(form.state.values.phones).toStrictEqual([
+      'a',
+      undefined,
+      undefined,
+      'd',
+    ])
   })
 })
 
