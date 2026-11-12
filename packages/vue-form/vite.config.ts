@@ -14,9 +14,12 @@ const config = defineConfig({
     coverage: { enabled: true, provider: 'istanbul', include: ['src/**/*'] },
     typecheck: { enabled: true },
   },
-  esbuild: {
-    jsxFactory: 'h',
-    jsxFragment: 'Fragment',
+  oxc: {
+    jsx: {
+      runtime: 'classic',
+      pragma: 'h',
+      pragmaFrag: 'Fragment',
+    },
   },
 })
 
@@ -25,5 +28,6 @@ export default mergeConfig(
   tanstackViteConfig({
     entry: './src/index.ts',
     srcDir: './src',
+    tsconfigPath: './tsconfig.dts.json',
   }),
 )
