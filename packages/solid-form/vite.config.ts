@@ -21,5 +21,6 @@ export default mergeConfig(
   tanstackViteConfig({
     entry: ['./src/index.tsx'],
     srcDir: './src',
+    tsconfigPath: './tsconfig.dts.json',
   }),
 )
