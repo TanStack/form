@@ -1,7 +1,7 @@
 import { createOutput } from '../validationOutput.lib'
 import { createErrorMap } from '../validation.public'
 import { parseStandardSchemaIssues } from '../standardSchema.lib'
-import { isNotNil } from '../utils.lib'
+import { isNotNil, isPromiseLike } from '../utils.lib'
 import { isErrorResult } from './errors.lib'
 import {
   ABORTED_CALL,
@@ -29,6 +29,7 @@ import type {
   ValidateContext,
   ValidateResult,
   ValidatorExecutionResult,
+  ValidatorRunResult,
 } from './execution.lib'
 
 export interface PipelineResult<in out T> {
@@ -61,71 +62,93 @@ type PendingPromises<TResult> = Array<
   >
 >
 
+interface AcceptedResults<in out TResult extends ValidateResult> {
+  results: Map<AnyInternalValidatorInstance, PipelineResult<TResult>>
+  shouldCommitOutput: boolean
+  onResult?: (result: PipelineResult<TResult>) => void
+}
+
 /**
- * Accepts a batch of pending results into the pipeline's instance-keyed map.
+ * Accepts one settled result into the pipeline's instance-keyed map.
  *
- * Aborted and thrown results are excluded. Submit output is committed
- * before `onResult` observes the accepted result.
+ * Aborted results are dropped and thrown results are reported. Submit output
+ * is committed before `onResult` observes the accepted result.
+ */
+function acceptResult<TResult extends ValidateResult>(
+  validatorInstance: AnyInternalValidatorInstance,
+  executionResult: ValidatorRunResult<TResult>,
+  { results, shouldCommitOutput, onResult }: AcceptedResults<TResult>,
+): { hasErrors: boolean; thrownError: unknown | null } {
+  if (executionResult === ABORTED_CALL) {
+    return { hasErrors: false, thrownError: null }
+  }
+
+  if (
+    isNotNil(executionResult) &&
+    typeof executionResult === 'object' &&
+    THROWN_ERROR in executionResult
+  ) {
+    return { hasErrors: false, thrownError: executionResult.error }
+  }
+
+  const publicResult: PipelineResult<TResult> = {
+    validatorInstance,
+    result: executionResult.result,
+    output: executionResult.output,
+    hasOutput: executionResult.hasOutput,
+  }
+
+  if (shouldCommitOutput) {
+    validatorInstance.setOutput(executionResult)
+  }
+  results.set(validatorInstance, publicResult)
+  onResult?.(publicResult)
+
+  return { hasErrors: isErrorResult(executionResult.result), thrownError: null }
+}
+
+/**
+ * Accepts a batch of pending results as each one settles.
  */
 async function flushPendingResults<TResult extends ValidateResult>(
   pending: PendingPromises<TResult>,
-  results: Map<AnyInternalValidatorInstance, PipelineResult<TResult>>,
-  shouldCommitOutput: boolean,
-  onResult?: (result: PipelineResult<TResult>) => void,
+  accepted: AcceptedResults<TResult>,
 ): Promise<{ hasErrors: boolean; thrownError: unknown | null }> {
   let hasErrors = false
   let thrownError: unknown | null = null
 
   await Promise.all(
     pending.map(async (promise) => {
-      const result = await promise
-
-      const executionResult = result.result
-
-      if (executionResult === ABORTED_CALL) {
-        return
+      const { validatorInstance, result } = await promise
+      const outcome = acceptResult(validatorInstance, result, accepted)
+      hasErrors ||= outcome.hasErrors
+      if (outcome.thrownError !== null) {
+        thrownError = outcome.thrownError
       }
-
-      // Check if this is a thrown error from a validator
-      if (
-        isNotNil(executionResult) &&
-        typeof executionResult === 'object' &&
-        THROWN_ERROR in executionResult
-      ) {
-        thrownError = executionResult.error
-        return
-      }
-
-      if (isErrorResult(executionResult.result)) {
-        hasErrors = true
-      }
-
-      const publicResult: PipelineResult<TResult> = {
-        validatorInstance: result.validatorInstance,
-        result: executionResult.result,
-        output: executionResult.output,
-        hasOutput: executionResult.hasOutput,
-      }
-
-      if (shouldCommitOutput) {
-        result.validatorInstance.setOutput(executionResult)
-      }
-      results.set(result.validatorInstance, publicResult)
-      onResult?.(publicResult)
     }),
   )
 
   return { hasErrors, thrownError }
 }
 
+export interface ValidatorPipelineResult<in out TResult> {
+  results: Array<PipelineResult<TResult>>
+  hasErrors: boolean
+  thrownError: unknown | null
+}
+
 /**
  * Runs eligible validator instances while preserving configured result order.
  *
- * Pending validators are flushed before `bailIfInvalid` decisions. Form and
- * group submit pipelines first cancel prior executions and clear prior schema
- * outputs so skipped validators cannot expose stale submit data.
+ * Validators that return synchronously are applied immediately, so a pipeline
+ * made only of synchronous, undebounced validators settles synchronously and
+ * its results land in the same update as the event that triggered it. The
+ * pipeline becomes asynchronous only once a validator returns a promise or is
+ * debounced. Pending validators are flushed before `bailIfInvalid` decisions.
+ * Form and group submit pipelines first cancel prior executions and clear
+ * prior schema outputs so skipped validators cannot expose stale submit data.
  */
-export async function runValidatorPipeline<TResult extends ValidateResult>({
+export function runValidatorPipelineMaybeSync<TResult extends ValidateResult>({
   pipeline,
   context,
   hasFailedBefore = false,
@@ -133,11 +156,8 @@ export async function runValidatorPipeline<TResult extends ValidateResult>({
   onResult,
   scope,
   validatorInstancesToRun = null,
-}: ValidatorPipelineArgs<TResult>): Promise<{
-  results: Array<PipelineResult<TResult>>
-  hasErrors: boolean
-  thrownError: unknown | null
-}> {
+}: ValidatorPipelineArgs<TResult>):
+  ValidatorPipelineResult<TResult> | Promise<ValidatorPipelineResult<TResult>> {
   let pending: PendingPromises<TResult> = []
   const results = new Map<
     AnyInternalValidatorInstance,
@@ -145,6 +165,11 @@ export async function runValidatorPipeline<TResult extends ValidateResult>({
   >()
   const shouldCommitOutput =
     context.event === 'submit' && context.scope !== 'field'
+  const accepted: AcceptedResults<TResult> = {
+    results,
+    shouldCommitOutput,
+    onResult,
+  }
 
   if (shouldCommitOutput) {
     pipeline.forEach((validatorInstance) => {
@@ -156,67 +181,108 @@ export async function runValidatorPipeline<TResult extends ValidateResult>({
   let hasErrors = hasFailedBefore
   let thrownError: unknown | null = null
 
+  const record = (outcome: {
+    hasErrors: boolean
+    thrownError: unknown | null
+  }) => {
+    hasErrors ||= outcome.hasErrors
+    if (outcome.thrownError !== null) {
+      thrownError = outcome.thrownError
+    }
+  }
+
   const flush = async (): Promise<void> => {
-    const { hasErrors: didError, thrownError: flushedThrownError } =
-      await flushPendingResults(pending, results, shouldCommitOutput, onResult)
-
+    const flushing = pending
     pending = []
-    hasErrors ||= didError
-    if (flushedThrownError !== null) {
-      thrownError = flushedThrownError
-    }
+    record(await flushPendingResults(flushing, accepted))
   }
 
-  for (const validatorInstance of pipeline) {
-    const validator = validatorInstance.definition
-
-    if (
-      validatorInstancesToRun &&
-      !validatorInstancesToRun.has(validatorInstance)
-    ) {
-      continue
-    }
-
-    if (!shouldRunValidator(validator, context)) {
-      continue
-    }
-
-    if (validator.bailIfInvalid) {
-      await flush()
-
-      if (hasErrors || thrownError !== null) {
-        break
-      }
-    }
-
-    const promise = runMaybeDebouncedValidator<TResult>({
-      validatorInstance,
-      context,
-      onExecute: (ctx) => {
-        return executeValidator<TResult>(validator, getContext(ctx), scope)
-      },
-    }).then<
-      PendingPipelineResult<
-        ValidatorExecutionResult<TResult> | AbortedCall | ThrownError
-      >
-    >((result) => ({
-      validatorInstance,
-      result,
-    }))
-
-    pending.push(promise)
-  }
-
-  await flush()
-
-  return {
+  const finish = (): ValidatorPipelineResult<TResult> => ({
     results: pipeline.flatMap((validatorInstance) => {
       const result = results.get(validatorInstance)
       return result ? [result] : []
     }),
     hasErrors,
     thrownError,
+  })
+
+  const runFrom = (
+    start: number,
+  ):
+    | ValidatorPipelineResult<TResult>
+    | Promise<ValidatorPipelineResult<TResult>> => {
+    for (let index = start; index < pipeline.length; index++) {
+      const validatorInstance = pipeline[index]!
+      const validator = validatorInstance.definition
+
+      if (
+        validatorInstancesToRun &&
+        !validatorInstancesToRun.has(validatorInstance)
+      ) {
+        continue
+      }
+
+      if (!shouldRunValidator(validator, context)) {
+        continue
+      }
+
+      if (validator.bailIfInvalid) {
+        if (pending.length > 0) {
+          return flush().then(() => runFrom(index))
+        }
+
+        if (hasErrors || thrownError !== null) {
+          break
+        }
+      }
+
+      const outcome = runMaybeDebouncedValidator<TResult>({
+        validatorInstance,
+        context,
+        onExecute: (ctx) => {
+          return executeValidator<TResult>(validator, getContext(ctx), scope)
+        },
+      })
+
+      if (isPromiseLike(outcome)) {
+        pending.push(
+          Promise.resolve(outcome).then((result) => ({
+            validatorInstance,
+            result,
+          })),
+        )
+      } else {
+        record(acceptResult(validatorInstance, outcome, accepted))
+      }
+    }
+
+    if (pending.length > 0) {
+      return flush().then(finish)
+    }
+
+    return finish()
   }
+
+  return runFrom(0)
+}
+
+/**
+ * Settles a maybe-sync run through a promise, so a synchronous throw becomes a
+ * rejection as it would from an async function.
+ */
+function settleAsPromise<T>(run: () => T | Promise<T>): Promise<T> {
+  try {
+    return Promise.resolve(run())
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
+/** Runs the shared pipeline and always settles through a promise. */
+export function runValidatorPipeline<TResult extends ValidateResult>(
+  args: ValidatorPipelineArgs<TResult>,
+): Promise<ValidatorPipelineResult<TResult>> {
+  return settleAsPromise(() => runValidatorPipelineMaybeSync(args))
 }
 
 interface FormValidatorPipelineArgs {
@@ -236,14 +302,19 @@ export interface FormValidatorPipelineResult {
   thrownError: unknown | null
 }
 
-/** Runs the shared pipeline with form-scoped values and issue parsing. */
-export function runFormValidatorPipeline({
+/**
+ * Runs the shared pipeline with form-scoped values and issue parsing.
+ *
+ * Settles synchronously when every validator that runs is synchronous.
+ */
+export function runFormValidatorPipelineMaybeSync({
   pipeline,
   context,
   onResult,
   hasFailedBefore,
-}: FormValidatorPipelineArgs): Promise<FormValidatorPipelineResult> {
-  return runValidatorPipeline<FormValidateResult<any>>({
+}: FormValidatorPipelineArgs):
+  FormValidatorPipelineResult | Promise<FormValidatorPipelineResult> {
+  return runValidatorPipelineMaybeSync<FormValidateResult<any>>({
     pipeline,
     context,
     onResult,
@@ -300,27 +371,36 @@ export interface FieldValidatorPipelineResult {
   thrownError: unknown | null
 }
 
+/** Runs the form pipeline and always settles through a promise. */
+export function runFormValidatorPipeline(
+  args: FormValidatorPipelineArgs,
+): Promise<FormValidatorPipelineResult> {
+  return settleAsPromise(() => runFormValidatorPipelineMaybeSync(args))
+}
+
 /**
  * Runs the shared pipeline with field-scoped values and issue parsing.
  *
+ * Settles synchronously when every validator that runs is synchronous.
  * Killed fields resolve to an empty result without executing validators.
  */
-export function runFieldValidatorPipeline({
+export function runFieldValidatorPipelineMaybeSync({
   pipeline,
   context,
   onResult,
   validatorInstancesToRun = null,
-}: FieldValidatorPipelineArgs): Promise<FieldValidatorPipelineResult> {
+}: FieldValidatorPipelineArgs):
+  FieldValidatorPipelineResult | Promise<FieldValidatorPipelineResult> {
   const fieldApi = context.fieldApi as AnyInternalFieldApi
 
   if (fieldApi._isKilled)
-    return Promise.resolve({
+    return {
       results: [],
       hasErrors: false,
       thrownError: null,
-    })
+    }
 
-  return runValidatorPipeline<FieldValidateResult>({
+  return runValidatorPipelineMaybeSync<FieldValidateResult>({
     pipeline,
     context,
     onResult,
@@ -343,4 +423,11 @@ export function runFieldValidatorPipeline({
     scope: 'field',
     validatorInstancesToRun,
   })
+}
+
+/** Runs the field pipeline and always settles through a promise. */
+export function runFieldValidatorPipeline(
+  args: FieldValidatorPipelineArgs,
+): Promise<FieldValidatorPipelineResult> {
+  return settleAsPromise(() => runFieldValidatorPipelineMaybeSync(args))
 }

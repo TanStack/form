@@ -1,11 +1,11 @@
 import { batch, createAtom } from '@tanstack/store'
-import { callUpdater, evaluate, getBy } from '../utils.lib'
+import { callUpdater, evaluate, getBy, isPromiseLike } from '../utils.lib'
 import {
   clearValidationSourceErrorsFromEvent,
   isValidationTriggerEnabled,
   parseValidationResult,
   runFieldMountValidatorPipeline,
-  runFieldValidatorPipeline,
+  runFieldValidatorPipelineMaybeSync,
   setValidationSourceError,
 } from '../validation'
 import { runFieldListenerPipeline } from '../listeners.lib'
@@ -784,7 +784,7 @@ export class InternalFieldApi<
    * @private
    * Runs this field's validation pipeline.
    */
-  async _runFieldValidation(
+  _runFieldValidation(
     event: 'change' | 'blur' | 'submit',
     options?: {
       onResult?: boolean
@@ -793,20 +793,20 @@ export class InternalFieldApi<
     },
   ): Promise<FieldValidatorPipelineResult> {
     if (this._isKilled)
-      return {
+      return Promise.resolve({
         results: [],
         hasErrors: false,
         thrownError: null,
-      }
+      })
 
     const validators = this._validatorInstances
 
     if (!validators)
-      return {
+      return Promise.resolve({
         results: [],
         hasErrors: false,
         thrownError: null,
-      }
+      })
 
     let finishValidation = options?._startValidation?.()
     if (!finishValidation) {
@@ -816,8 +816,9 @@ export class InternalFieldApi<
       }
     }
 
+    let outcome: ReturnType<typeof runFieldValidatorPipelineMaybeSync>
     try {
-      return await runFieldValidatorPipeline({
+      outcome = runFieldValidatorPipelineMaybeSync({
         pipeline: validators,
         context: {
           scope: 'field',
@@ -831,9 +832,17 @@ export class InternalFieldApi<
             : undefined,
         validatorInstancesToRun: options?.onlyRunValidatorInstances ?? null,
       })
-    } finally {
+    } catch (error) {
       finishValidation()
+      return Promise.reject(error)
     }
+
+    if (isPromiseLike(outcome)) {
+      return Promise.resolve(outcome).finally(finishValidation)
+    }
+
+    finishValidation()
+    return Promise.resolve(outcome)
   }
 
   _setValidationCount(updater: Updater<number>): void {
