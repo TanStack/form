@@ -13,4 +13,12 @@ media:
       description: 'A tutorial from Atharva Deosthale using TanStack Form in a Next.js project. Made for those just getting started with TanStack Form, covering client-side and server-side form validation.',
     },
   ]
+utilities:
+  [
+    {
+      title: 'formdef',
+      url: 'https://formdef.mauricereim.de',
+      description: 'Typed form configs rendered as React components on TanStack Form, with the compiler checking each widget against its value, and ready widgets for shadcn/ui.',
+    },
+  ]
 ---
