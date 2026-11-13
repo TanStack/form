@@ -2113,6 +2113,31 @@ describe('form api', () => {
     expect(form.state.errorMap.onServer).toBeUndefined()
   })
 
+  it('should not clear form onServer errors on blur when form validators are set', () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+      validators: {
+        onChange: () => undefined,
+      },
+    })
+    form.mount()
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+    field.mount()
+
+    form.setErrorMap({ onServer: 'server error' as never })
+
+    field.handleBlur()
+    expect(form.state.errorMap.onServer).toEqual('server error')
+
+    field.handleChange('valid')
+    expect(form.state.errorMap.onServer).toBeUndefined()
+  })
+
   it('should validate all fields consistently - field level onChange validators', async () => {
     const form = new FormApi({
       defaultValues: {
