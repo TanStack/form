@@ -2138,6 +2138,41 @@ describe('form api', () => {
     expect(form.state.errorMap.onServer).toBeUndefined()
   })
 
+  it.each(['onServer', 'onSubmit'] as const)(
+    'should clear form %s errors on a new submission without validators',
+    async (errorKey) => {
+      let attempts = 0
+      const form = new FormApi({
+        defaultValues: {
+          firstName: '',
+        },
+        onSubmit: ({ formApi }) => {
+          attempts++
+          if (attempts === 1) {
+            formApi.setErrorMap({ [errorKey]: 'temporary failure' as never })
+          }
+        },
+      })
+      form.mount()
+      const field = new FieldApi({
+        form,
+        name: 'firstName',
+      })
+      field.mount()
+
+      await form.handleSubmit()
+      expect(attempts).toBe(1)
+      expect(form.state.errorMap[errorKey]).toEqual('temporary failure')
+
+      field.handleBlur()
+      expect(form.state.errorMap[errorKey]).toEqual('temporary failure')
+
+      await form.handleSubmit()
+      expect(attempts).toBe(2)
+      expect(form.state.errorMap[errorKey]).toBeUndefined()
+    },
+  )
+
   it('should validate all fields consistently - field level onChange validators', async () => {
     const form = new FormApi({
       defaultValues: {
