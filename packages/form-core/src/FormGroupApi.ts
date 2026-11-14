@@ -1908,7 +1908,7 @@ export class FormGroupApi<
     if (
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       this.state.meta.errorMap?.[submitErrKey] &&
-      cause !== 'submit' &&
+      cause === 'change' &&
       !hasErrored
     ) {
       this.setMeta((prev) => ({
