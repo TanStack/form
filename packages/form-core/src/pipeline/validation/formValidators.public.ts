@@ -1,4 +1,9 @@
-import type { AnyFieldApi } from '../FieldApi/FieldApi.public'
+import type {
+  CreateErrorMapFn,
+  CreateOutputFn,
+  FormValidationResult,
+  ParseIssuesFn,
+} from '../../validation/results/results.public'
 import type {
   ClientSideEvents,
   DynamicValidatorTriggers,
@@ -8,15 +13,10 @@ import type {
   ValidatorEvents,
   ValidatorTriggers,
 } from '../events.public'
-import type { StandardSchemaV1 } from '../standardSchema.public'
-import type {
-  CreateErrorMapFn,
-  CreateOutputFn,
-  FormValidationResult,
-  ParseIssuesFn,
-} from './state.public'
-import type { FormApi } from '../FormApi/FormApi.public'
-import type { Awaitable } from '../types.public'
+import type { FormApi } from '../../FormApi/FormApi.public'
+import type { AnyFieldApi } from '../../FieldApi/FieldApi.public'
+import type { Awaitable } from '../../types.public'
+import type { StandardSchemaV1 } from '../../validation/results/standardSchema.public'
 
 // ===================================
 // `run: () => {}` Context data

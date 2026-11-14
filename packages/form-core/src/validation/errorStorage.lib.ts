@@ -1,17 +1,49 @@
 import { batch, createAtom } from '@tanstack/store'
 import { evaluate } from '../utils.lib'
-import { sortValidationSources } from '../pipeline/utils.lib'
+import type { ValidatorEvents } from '../pipeline/events.public'
+import type { ValidatorInstance } from '../pipeline/validation/ValidatorInstance.lib'
+import type { ValidationIssue } from './results/results.public'
 import type { Atom, ReadonlyAtom } from '@tanstack/store'
-import type { ValidatorEvents } from '../events.public'
-import type { InternalValidationSourceScopePriority } from '../ValidationSourceInstance.lib'
-import type { ValidationIssue } from './state.public'
+
+/** Validation sources ordered by their contribution to derived errors. */
+export const validationSourceScopes = {
+  field: 0,
+  group: 1,
+  form: 2,
+  onSubmit: 3,
+} as const
+
+export type ValidationErrorSourceScope = keyof typeof validationSourceScopes
+
+export type ValidationErrorSourceScopePriority =
+  (typeof validationSourceScopes)[ValidationErrorSourceScope]
 
 /** Storage and ordering state shared by executing and non-executing sources. */
-export interface ValidationErrorSource {
-  readonly scope: InternalValidationSourceScopePriority
+export interface ValidationErrorSourceState {
+  readonly scope: ValidationErrorSourceScopePriority
   readonly index: number
   lastAppliedEvent: ValidatorEvents | null
   errorTargets: Set<ValidationErrorTarget> | null
+}
+
+/** Error sources narrowed by their numeric scope. */
+export type ValidationErrorSource =
+  | ValidatorInstance<'field'>
+  | ValidatorInstance<'group'>
+  | ValidatorInstance<'form'>
+  | OnSubmitErrorSource
+
+/** Stable source for errors returned directly by the form's `onSubmit`. */
+export class OnSubmitErrorSource implements ValidationErrorSourceState {
+  readonly scope = validationSourceScopes.onSubmit
+  readonly index = 0
+  errorTargets: Set<ValidationErrorTarget> | null = null
+  lastAppliedEvent: ValidatorEvents | null = null
+
+  /** Clears stored errors while preserving this source's identity. */
+  resetRuntime(): void {
+    removeSourceErrors(this)
+  }
 }
 
 /** A stable field or form-root identity, independent of its current path. */
@@ -20,6 +52,28 @@ export interface ValidationErrorTarget {
 }
 
 type SourceErrorMap = Map<ValidationErrorSource, ReadonlyArray<ValidationIssue>>
+
+export type ValidationErrorStoreState = ReadonlyMap<
+  ValidationErrorSource,
+  ReadonlyArray<ValidationIssue>
+> | null
+
+interface ValidationErrorStoreOptions {
+  target: ValidationErrorTarget
+  onChange?: (hadErrors: boolean, hasErrors: boolean) => void
+}
+
+/** Returns a copy ordered by numeric scope priority, then original index. */
+export function sortValidationSources<
+  TSource extends Pick<ValidationErrorSource, 'scope' | 'index'>,
+>(sources: Iterable<TSource>): Array<TSource> {
+  return Array.from(sources).sort((left, right) => {
+    if (left.scope === right.scope) {
+      return left.index - right.index
+    }
+    return left.scope - right.scope
+  })
+}
 
 /**
  * Takes a target off the source's list once the source has no errors there.
@@ -42,32 +96,51 @@ function unlinkErrorTarget(
  */
 function clearSourceErrorsAtTarget(
   target: ValidationErrorTarget,
-  source: ValidationErrorSource,
+  source: ValidationErrorSourceState,
 ): boolean {
-  return setSourceErrors(target, source, null)
+  const errorMap = target._errorStore.atom.get()
+  if (!errorMap) return false
+
+  const next = new Map(errorMap)
+  // Removal only needs source identity; stored keys retain their scope types.
+  const sources: Map<
+    ValidationErrorSourceState,
+    ReadonlyArray<ValidationIssue>
+  > = next
+  if (!sources.delete(source)) return false
+
+  target._errorStore._setErrorMap(next.size > 0 ? next : null)
+  return true
 }
 
 /** Owns the local error state independently of field metadata. */
 export class ValidationErrorStore {
   readonly _target: ValidationErrorTarget
   _cachedErrors: Array<ValidationIssue> | null = null
+  private readonly onChange: ValidationErrorStoreOptions['onChange']
 
-  readonly atom: ReadonlyAtom<ReadonlyMap<
-    ValidationErrorSource,
-    ReadonlyArray<ValidationIssue>
-  > | null>
+  readonly atom: ReadonlyAtom<ValidationErrorStoreState>
 
-  constructor(target: ValidationErrorTarget) {
+  constructor({ target, onChange }: ValidationErrorStoreOptions) {
     this._target = target
+    this.onChange = onChange
     this.atom = createAtom<SourceErrorMap | null>(null)
   }
 
   /** Publishes a map prepared by the source operations in this module. */
   _setErrorMap(sourceErrors: SourceErrorMap | null): void {
+    const hadErrors = this.hasErrors
     this._cachedErrors = null
     // We know the atom is mutable, but users shouldn't do that externally.
     const writableAtom = this.atom as Atom<SourceErrorMap | null>
-    writableAtom.set(sourceErrors)
+    batch(() => {
+      writableAtom.set(sourceErrors)
+      this._notifyChange(hadErrors)
+    })
+  }
+
+  _notifyChange(hadErrors = this.hasErrors): void {
+    this.onChange?.(hadErrors, this.hasErrors)
   }
 
   get errors(): Array<ValidationIssue> {
@@ -75,11 +148,13 @@ export class ValidationErrorStore {
     const sourceErrors = this.atom.get()
 
     if (this._cachedErrors === null) {
-      this._cachedErrors = sourceErrors
-        ? sortValidationSources(sourceErrors.keys()).flatMap((source) =>
-            sourceErrors.get(source)!,
-          )
-        : []
+      if (sourceErrors) {
+        this._cachedErrors = sortValidationSources(sourceErrors.keys()).flatMap(
+          (source) => sourceErrors.get(source)!,
+        )
+      } else {
+        this._cachedErrors = []
+      }
     }
     return this._cachedErrors
   }
@@ -94,10 +169,9 @@ export class ValidationErrorStore {
    */
   clearStaleErrors(
     canClearSource: (source: ValidationErrorSource) => boolean,
-  ): Set<ValidationErrorTarget> {
+  ): void {
     const errorMap = this.atom.get()
-    const affectedTargets = new Set<ValidationErrorTarget>()
-    if (!errorMap) return affectedTargets
+    if (!errorMap) return
 
     let next: SourceErrorMap | null = null
     for (const source of errorMap.keys()) {
@@ -112,7 +186,7 @@ export class ValidationErrorStore {
       next ??= new Map(errorMap)
       next.delete(source)
     }
-    if (!next) return affectedTargets
+    if (!next) return
 
     batch(() => {
       for (const source of errorMap.keys()) {
@@ -121,25 +195,20 @@ export class ValidationErrorStore {
         }
       }
       this._setErrorMap(next.size > 0 ? next : null)
-      affectedTargets.add(this._target)
     })
-    return affectedTargets
   }
 
   /** Clears this target without changing contributions at other targets. */
-  clearTargetErrors(): Set<ValidationErrorTarget> {
+  clearTargetErrors(): void {
     const errorMap = this.atom.get()
-    const affectedTargets = new Set<ValidationErrorTarget>()
-    if (!errorMap) return affectedTargets
+    if (!errorMap) return
 
     batch(() => {
       for (const source of errorMap.keys()) {
         unlinkErrorTarget(source, this._target)
       }
       this._setErrorMap(null)
-      affectedTargets.add(this._target)
     })
-    return affectedTargets
   }
 }
 
@@ -192,7 +261,9 @@ export function replaceSourceErrors(
   }
 
   const affectedTargets = new Set<ValidationErrorTarget>()
+  const eventChanged = source.lastAppliedEvent !== event
   batch(() => {
+    source.lastAppliedEvent = event
     for (const target of source.errorTargets ?? []) {
       if (!nextContributions.has(target)) {
         const wasChanged = clearSourceErrorsAtTarget(target, source)
@@ -205,10 +276,11 @@ export function replaceSourceErrors(
       const wasChanged = setSourceErrors(target, source, errors)
       if (wasChanged) {
         affectedTargets.add(target)
+      } else if (eventChanged) {
+        target._errorStore._notifyChange()
       }
     }
 
-    source.lastAppliedEvent = event
     if (nextContributions.size > 0) {
       source.errorTargets = new Set(nextContributions.keys())
     } else {
@@ -220,7 +292,7 @@ export function replaceSourceErrors(
 
 /** Clears every contribution of a removed source. */
 export function removeSourceErrors(
-  source: ValidationErrorSource,
+  source: ValidationErrorSourceState,
 ): Set<ValidationErrorTarget> {
   const affectedTargets = new Set<ValidationErrorTarget>()
   batch(() => {

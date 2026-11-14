@@ -1,15 +1,17 @@
-import type { ReadonlyAtom } from '@tanstack/store'
-import type { FormApi } from '../FormApi/FormApi.public'
-import type { ScopedErrorTypes } from '../validation/state.public'
-import type { ClientSideEvents } from '../events.public'
 import type {
-  FormGroupValidateResult,
+  ScopedErrorTypes,
+  ToFormGroupErrorTypes,
+} from '../validation/state.public'
+import type { FormApi } from '../FormApi/FormApi.public'
+import type {
   FormGroupValidator,
   FormGroupValidators,
-  ToFormGroupErrorTypes,
   ToFormGroupOutputs,
-} from '../validation.public'
+} from '../pipeline/validation/validation.public'
 import type { Awaitable } from '../types.public'
+import type { ReadonlyAtom } from '@tanstack/store'
+import type { ClientSideEvents } from '../pipeline/events.public'
+import type { FormattedValidationError } from '../validation/results/results.public'
 
 /**
  * Context passed to a form group's `onSubmit` after group validation succeeds.
@@ -141,6 +143,7 @@ export interface FormGroupOptions<
 > {
   form: FormApi<TFormData, TFormError>
   name: TGroupName
+  // TODO: Add support for form group listeners.
   validators?: {
     // The intersection really helps type instantiations, while
     // the exclude part helps with additional properties not being swallowed silently.
@@ -232,9 +235,11 @@ export interface FormGroupApi<
   atom: ReadonlyAtom<FormGroupState<TGroupValue, TGroupError>>
   readonly state: FormGroupState<TGroupValue, TGroupError>
   readonly value: TGroupValue
+  /** Returns a flat array of issues and error maps with group-relative field paths. */
   validate: (
     signal: ClientSideEvents,
-  ) => Promise<Array<FormGroupValidateResult<TGroupValue>>>
-  handleSubmit: () => Promise<Array<FormGroupValidateResult<TGroupValue>>>
+  ) => Promise<Array<FormattedValidationError<TGroupValue>>>
+  /** Submits the group and returns a flat array of issues and error maps. */
+  handleSubmit: () => Promise<Array<FormattedValidationError<TGroupValue>>>
   reset: () => void
 }

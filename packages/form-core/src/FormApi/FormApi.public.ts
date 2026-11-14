@@ -1,12 +1,12 @@
-import type { ReadonlyAtom } from '@tanstack/store'
-import type { FormApiArrayMethods } from './FormApiArrayMethods.types.public'
-import type { FormApiFieldMethods } from './FormApiFieldMethods.types.public'
+import type { ScopedErrorTypes } from '../validation/state.public'
 import type {
-  FormValidationFailure,
-  ScopedErrorTypes,
+  FormattedValidationError,
   ValidationIssue,
-} from '../validation/state.public'
-import type { DynamicValidatorTriggers } from '../events.public'
+} from '../validation/results/results.public'
+import type { FormApiFieldMethods } from './FormApiFieldMethods.types.public'
+import type { FormApiArrayMethods } from './FormApiArrayMethods.types.public'
+import type { ReadonlyAtom } from '@tanstack/store'
+import type { DynamicValidatorTriggers } from '../pipeline/events.public'
 
 type FormError<TFormError extends ScopedErrorTypes> =
   TFormError extends ScopedErrorTypes<infer TError extends ValidationIssue, any>
@@ -193,17 +193,14 @@ export interface FormResetOptions {
  * `createValidationError` or `createErrorMap` are stored as error state.
  * `onSubmitInvalid` is awaited after a failed attempt.
  *
- * Calls made while an attempt is in progress return the same promise instead
- * of starting another attempt.
- *
- * @returns A promise resolving to the error results produced by field and
- * form validation, plus any validation error returned by `onSubmit` through
- * `createValidationError` or `createErrorMap`. The array is empty if none are
- * produced.
+ * @returns A promise resolving to a flat array of issues and error maps from
+ * field and form validation, plus errors returned by `onSubmit` through its
+ * validation helpers. Strings become issue objects. The array is empty if no
+ * errors are produced.
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
  */
 export type HandleSubmitFn<in out TFormData> = () => Promise<
-  Array<FormValidationFailure<TFormData>>
+  Array<FormattedValidationError<TFormData>>
 >
 
 /**
@@ -272,12 +269,13 @@ export interface FormApi<
    * Field-level validators are not run by this method.
    *
    * @param signal - The trigger used to select validators.
-   * @returns A promise resolving to each error result from the validators that
-   * ran. Unlike `state.errors`, these results are not flattened.
+   * @returns A promise resolving to a flat array of issues and error maps from
+   * the validators that ran. Strings become issue objects; error maps retain
+   * their field paths.
    */
   validate: (
     signal: DynamicValidatorTriggers,
-  ) => Promise<Array<FormValidationFailure<TFormData>>>
+  ) => Promise<Array<FormattedValidationError<TFormData>>>
 
   /**
    * Runs submission validation and submits current values when validation
@@ -289,13 +287,10 @@ export interface FormApi<
    * `createValidationError` or `createErrorMap` are stored as error state.
    * `onSubmitInvalid` is awaited after a failed attempt.
    *
-   * Calls made while an attempt is in progress return the same promise instead
-   * of starting another attempt.
-   *
-   * The returned promise resolves to the error results produced by field and
-   * form validation, plus any validation error returned by `onSubmit` through
-   * `createValidationError` or `createErrorMap`. The array is empty if none are
-   * produced.
+   * The returned promise resolves to a flat array of issues and error maps
+   * from field and form validation, plus errors returned by `onSubmit` through
+   * its validation helpers. Strings become issue objects. The array is empty
+   * if no errors are produced.
    */
   handleSubmit: HandleSubmitFn<TFormData>
   /**

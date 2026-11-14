@@ -1,5 +1,12 @@
-import type { AnyInternalFieldApi } from './FieldApi.lib'
+import { devtools } from '../devtoolsBridge.lib'
+import type {
+  AnyFieldApiOptions,
+  AnyInternalFieldApi,
+  FieldOptionsScope,
+} from './FieldApi.lib'
 import type { InternalRootFieldApi } from './RootFieldApi.lib'
+import type { AnyInternalFormApi } from '../FormApi/FormApi.lib'
+import type { NameSegments } from '../utils.lib'
 
 const stop = Symbol('stop field traversal')
 type FieldTraversalStop = typeof stop
@@ -8,6 +15,86 @@ type FieldVisitor = (
   field: AnyInternalFieldApi,
   stop: FieldTraversalStop,
 ) => void | FieldTraversalStop
+
+/**
+ * @private
+ * Get a field api at the specified location. If it doesn't exist,
+ * it will create the necessary nodes to get it.
+ *
+ * @important This mutates the segments array.
+ */
+export function getOrCreateFieldApi(
+  node: AnyInternalFieldApi | InternalRootFieldApi,
+  segments: NameSegments,
+  form: AnyInternalFormApi,
+  options?: Omit<AnyFieldApiOptions, 'name'>,
+  scope: FieldOptionsScope = 'field',
+): AnyInternalFieldApi {
+  const segment = segments.shift()
+  if (segment === undefined) {
+    // If trieNode is the root, we need to return a field node, not the root
+    if (node._isRoot) {
+      throw new Error('Root node cannot be a field API')
+    }
+    // Internal trie nodes defer their options until they are first requested as
+    // a configured field. Adapter updates handle subsequent option changes.
+    if (scope !== 'internal' && !node._fieldOptionsInitialized) {
+      node._update(options ?? {}, scope)
+    }
+    return node
+  }
+
+  let childNode = node._getChild(segment)
+  if (childNode) {
+    return getOrCreateFieldApi(childNode, segments, form, options, scope)
+  }
+
+  childNode = new form._FieldApi(
+    {
+      segment,
+      parent: node,
+      form: form,
+    },
+    'internal',
+  )
+
+  node._setChild(childNode)
+  if (segments.length === 0) {
+    const field = getOrCreateFieldApi(childNode, segments, form, options, scope)
+    devtools().fieldAdded?.(childNode)
+    return field
+  }
+
+  devtools().fieldAdded?.(childNode)
+
+  return getOrCreateFieldApi(childNode, segments, form, options, scope)
+}
+
+/**
+ * @private
+ *
+ * @important This mutates the segments array.
+ */
+export function tryGetFieldApi(
+  trieNode: AnyInternalFieldApi | InternalRootFieldApi,
+  segments: NameSegments,
+): AnyInternalFieldApi | null {
+  const segment = segments.shift()
+  if (segment === undefined) {
+    // If trieNode is the root, we cannot return it as a field API
+    if (!trieNode._isRoot) {
+      return trieNode
+    }
+    return null
+  }
+
+  const childNode = trieNode._getChild(segment)
+  if (childNode) {
+    return tryGetFieldApi(childNode, segments)
+  } else {
+    return null
+  }
+}
 
 /**
  * Visits a field node followed by each of its ancestors, stopping before the
@@ -57,17 +144,22 @@ function visitFields(
 
 /**
  * Visits a field node and its descendants in insertion-order preorder. The
- * starting field is included. Return the visitor's `stop` argument to stop the
- * entire traversal, not only the current branch.
+ * starting field is included unless it is the synthetic root. Return the
+ * visitor's `stop` argument to stop the entire traversal, not only the current
+ * branch.
  *
  * A node's children are read after its visitor runs, so structural mutations
  * made by the visitor affect which descendants are visited.
  */
 export function visitFieldSubtree(
-  field: AnyInternalFieldApi,
+  field: AnyInternalFieldApi | InternalRootFieldApi,
   visitor: FieldVisitor,
 ): void {
-  visitFields([field], visitor)
+  if (field._isRoot) {
+    visitFields(field._children, visitor)
+  } else {
+    visitFields([field], visitor)
+  }
 }
 
 /**
@@ -82,7 +174,7 @@ export function visitAllFormFields(
   root: InternalRootFieldApi,
   visitor: FieldVisitor,
 ): void {
-  visitFields(root._children, visitor)
+  visitFieldSubtree(root, visitor)
 }
 
 /**

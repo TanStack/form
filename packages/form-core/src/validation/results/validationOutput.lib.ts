@@ -1,7 +1,4 @@
-import type {
-  ValidationOutput,
-  ValidationSuccess,
-} from './validation/state.public'
+import type { ValidationOutput, ValidationSuccess } from './results.public'
 
 export const VALIDATION_OUTPUT = Symbol('VALIDATION_OUTPUT')
 

@@ -1,10 +1,10 @@
-import { isReadonlyArray } from '../utils.lib'
+import { isReadonlyArray } from '../../utils.lib'
 import type {
   CreateErrorMapFn,
   ValidationErrorMap,
   ValidationFailure,
   ValidationFailureItem,
-} from './state.public'
+} from './results.public'
 
 function toArray(item: ValidationFailure | undefined): ValidationFailureItem[] {
   if (isReadonlyArray(item)) return item.slice()

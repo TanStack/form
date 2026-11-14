@@ -1,11 +1,11 @@
 import { createAtom, shallow } from '@tanstack/store'
-import { transformFieldOptionsFieldNames } from '../FieldApi/FieldApi.lib'
 import { getBy } from '../utils.lib'
-import type { AnyFieldApiOptions } from '../FieldApi/FieldApi.lib'
+import { transformFieldOptionsFieldNames } from '../FieldApi/fieldOptions.lib'
 import type { AnyInternalFormApi } from '../FormApi/FormApi.lib'
-import type { InternalFieldUpdateOptions } from '../types.lib'
-import type { ReadonlyAtom } from '@tanstack/store'
 import type { FieldGroupApi } from './FieldGroupApi.public'
+import type { ReadonlyAtom } from '@tanstack/store'
+import type { AnyFieldApiOptions } from '../FieldApi/FieldApi.lib'
+import type { InternalFieldUpdateOptions } from '../types.lib'
 
 export type InternalFieldGroupBindings = Record<string, string>
 

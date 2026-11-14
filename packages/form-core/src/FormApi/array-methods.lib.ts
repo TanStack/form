@@ -1,9 +1,12 @@
 import { batch } from '@tanstack/store'
+import {
+  collectFieldSubtree,
+  tryGetFieldApi,
+  visitFieldSubtree,
+} from '../FieldApi/fieldTraversal.lib'
 import { getTargetField, resolveFieldUpdateOptions } from '../utils.lib'
-import { tryGetFieldApi } from '../FieldApi/FieldApi.lib'
-import { collectFieldSubtree } from '../FieldApi/fieldTraversal.lib'
-import type { AnyInternalFieldApi } from '../FieldApi/FieldApi.lib'
 import type { AnyInternalFormApi } from './FormApi.lib'
+import type { AnyInternalFieldApi } from '../FieldApi/FieldApi.lib'
 import type { InternalFieldUpdateOptions } from '../types.lib'
 
 function isInvalidArrayMethod(
@@ -35,6 +38,23 @@ function isInvalidArrayMethod(
     }
   }
   return false
+}
+
+function moveArrayField(
+  field: AnyInternalFieldApi | null | undefined,
+  index: number,
+): void {
+  // Preserve surviving listener identities and current notification routes here.
+  if (!field || field._segment === index) return
+
+  visitFieldSubtree(field, (f) => f._cancelValidation())
+  field._moveTo(index)
+}
+
+function shiftArrayField(field: AnyInternalFieldApi, offset: number): void {
+  if (typeof field._segment === 'string') return
+
+  moveArrayField(field, field._segment + offset)
 }
 
 function pushFieldValue({
@@ -87,26 +107,25 @@ function insertFieldValue({
   const arrayField = getTargetField(form, arrayFieldName, updateOptions)
   updateOptions.fieldApiOverride = arrayField
 
-  batch(() => {
-    form.setFieldValue(
-      arrayFieldName,
-      (prev: Array<any>) => {
-        const array = prev.slice()
-        array.splice(index, 0, value)
-        return array
-      },
-      updateOptions,
-    )
+  form._setFieldValue({
+    fieldName: arrayFieldName,
+    updater: (prev: Array<any>) => {
+      const array = prev.slice()
+      array.splice(index, 0, value)
+      return array
+    },
+    options: updateOptions,
+    updateFieldStructure: () => {
+      if (!arrayField) return
 
-    if (!arrayField) return
-
-    // Shift existing children to the right of the insertion index
-    for (const child of arrayField._children) {
-      if (typeof child._segment === 'string') continue
-      if (child._segment >= index) {
-        child._moveTo(child._segment + 1)
+      // Shift existing children to the right of the insertion index
+      for (const child of arrayField._children) {
+        if (typeof child._segment === 'string') continue
+        if (child._segment >= index) {
+          shiftArrayField(child, 1)
+        }
       }
-    }
+    },
   })
 }
 
@@ -157,8 +176,11 @@ function replaceFieldValue({
 
   const seenValidatorFields = new WeakSet<AnyInternalFieldApi>()
   for (const field of collectFieldSubtree(replacedField)) {
-    field._runFieldValidation('change')
-    field._notifyValidator('change', seenValidatorFields)
+    field._runFieldValidation('change', { catchErrors: true })
+    field._notifyValidator({
+      trigger: 'change',
+      seenFields: seenValidatorFields,
+    })
   }
 }
 
@@ -186,28 +208,27 @@ function removeFieldValue({
   const arrayField = getTargetField(form, arrayFieldName, updateOptions)
   updateOptions.fieldApiOverride = arrayField
 
-  batch(() => {
-    form.setFieldValue(
-      arrayFieldName,
-      (prev: Array<any>) => {
-        const array = prev.slice()
-        array.splice(index, 1)
-        return array
-      },
-      updateOptions,
-    )
+  form._setFieldValue({
+    fieldName: arrayFieldName,
+    updater: (prev: Array<any>) => {
+      const array = prev.slice()
+      array.splice(index, 1)
+      return array
+    },
+    options: updateOptions,
+    updateFieldStructure: () => {
+      if (!arrayField) return
 
-    if (!arrayField) return
+      const childToRemove = tryGetFieldApi(arrayField, [index])
+      childToRemove?._kill()
 
-    const childToRemove = tryGetFieldApi(arrayField, [index])
-    childToRemove?._kill()
-
-    for (const child of arrayField._children) {
-      if (typeof child._segment === 'string') continue
-      if (child._segment > index) {
-        child._moveTo(child._segment - 1)
+      for (const child of arrayField._children) {
+        if (typeof child._segment === 'string') continue
+        if (child._segment > index) {
+          shiftArrayField(child, -1)
+        }
       }
-    }
+    },
   })
 }
 
@@ -241,32 +262,26 @@ function swapFieldValues({
   const arrayField = getTargetField(form, arrayFieldName, updateOptions)
   updateOptions.fieldApiOverride = arrayField
 
-  batch(() => {
-    form.setFieldValue(
-      arrayFieldName,
-      (prev: Array<any>) => {
-        const a = prev[indexA]
-        const b = prev[indexB]
-        const array = prev.slice()
-        array[indexA] = b
-        array[indexB] = a
-        return array
-      },
-      updateOptions,
-    )
+  form._setFieldValue({
+    fieldName: arrayFieldName,
+    updater: (prev: Array<any>) => {
+      const a = prev[indexA]
+      const b = prev[indexB]
+      const array = prev.slice()
+      array[indexA] = b
+      array[indexB] = a
+      return array
+    },
+    options: updateOptions,
+    updateFieldStructure: () => {
+      if (!arrayField) return
 
-    if (!arrayField) return
+      const fieldA = tryGetFieldApi(arrayField, [indexA])
+      const fieldB = tryGetFieldApi(arrayField, [indexB])
 
-    const fieldA = tryGetFieldApi(arrayField, [indexA])
-
-    const fieldB = tryGetFieldApi(arrayField, [indexB])
-
-    // Fields aren't necessarily mounted, so we should assume
-    // that the indeces will represent actual values in the array.
-    // If not, then the user will most likely not iterate over them
-    // during rendering, so we don't need to worry about them.
-    fieldA?._moveTo(indexB)
-    fieldB?._moveTo(indexA)
+      moveArrayField(fieldA, indexB)
+      moveArrayField(fieldB, indexA)
+    },
   })
 }
 
@@ -300,36 +315,35 @@ function moveFieldValue({
   const arrayField = getTargetField(form, arrayFieldName, updateOptions)
   updateOptions.fieldApiOverride = arrayField
 
-  batch(() => {
-    form.setFieldValue(
-      arrayFieldName,
-      (prev: Array<any>) => {
-        const array = prev.slice()
-        const [value] = array.splice(fromIndex, 1)
-        array.splice(toIndex, 0, value)
-        return array
-      },
-      updateOptions,
-    )
+  form._setFieldValue({
+    fieldName: arrayFieldName,
+    updater: (prev: Array<any>) => {
+      const array = prev.slice()
+      const [value] = array.splice(fromIndex, 1)
+      array.splice(toIndex, 0, value)
+      return array
+    },
+    options: updateOptions,
+    updateFieldStructure: () => {
+      if (!arrayField) return
 
-    if (!arrayField) return
+      const movingChild = tryGetFieldApi(arrayField, [fromIndex])
 
-    const movingChild = tryGetFieldApi(arrayField, [fromIndex])
+      for (const child of arrayField._children) {
+        if (typeof child._segment === 'string') continue
+        if (child === movingChild) continue
 
-    for (const child of arrayField._children) {
-      if (typeof child._segment === 'string') continue
-      if (child === movingChild) continue
-
-      if (fromIndex < toIndex) {
-        if (child._segment > fromIndex && child._segment <= toIndex) {
-          child._moveTo(child._segment - 1)
+        if (fromIndex < toIndex) {
+          if (child._segment > fromIndex && child._segment <= toIndex) {
+            shiftArrayField(child, -1)
+          }
+        } else if (child._segment >= toIndex && child._segment < fromIndex) {
+          shiftArrayField(child, 1)
         }
-      } else if (child._segment >= toIndex && child._segment < fromIndex) {
-        child._moveTo(child._segment + 1)
       }
-    }
 
-    movingChild?._moveTo(toIndex)
+      moveArrayField(movingChild, toIndex)
+    },
   })
 }
 
@@ -350,16 +364,19 @@ function clearFieldValues({
   const arrayField = getTargetField(form, arrayFieldName, updateOptions)
   updateOptions.fieldApiOverride = arrayField
 
-  batch(() => {
-    form.setFieldValue(arrayFieldName, [], updateOptions)
+  form._setFieldValue({
+    fieldName: arrayFieldName,
+    updater: [],
+    options: updateOptions,
+    updateFieldStructure: () => {
+      if (!arrayField) return
 
-    if (!arrayField) return
-
-    // Kill all child fields since the array is now empty
-    // _kill() will remove each child from the parent's children
-    for (const child of arrayField._children) {
-      child._kill()
-    }
+      // Kill all child fields since the array is now empty
+      // _kill() will remove each child from the parent's children
+      for (const child of arrayField._children) {
+        child._kill()
+      }
+    },
   })
 }
 
@@ -392,7 +409,7 @@ function filterFieldValues({
 
     const childAtIndex = arrayNode._getChild(index)
     if (keep) {
-      childAtIndex?._moveTo(length)
+      moveArrayField(childAtIndex, length)
       length++
     } else {
       childAtIndex?._kill()
@@ -403,19 +420,23 @@ function filterFieldValues({
   if (oldArray.length === filtered.length) {
     // Setting filtered array would be a no-op, but either way the user
     // tried to set a value
-    form._notifyFieldChange(arrayNode, updateOptions)
+    form._notifyFieldChange(arrayNode, updateOptions, arrayFieldName)
   } else {
     form.setFieldValue(arrayFieldName, filtered, updateOptions)
   }
 }
 
+function withBatch<T>(mutate: (args: T) => void): (args: T) => void {
+  return (args) => batch(() => mutate(args))
+}
+
 export const ArrayMethods = {
-  pushValue: pushFieldValue,
-  insertValue: insertFieldValue,
-  removeValue: removeFieldValue,
-  swapValues: swapFieldValues,
-  moveValue: moveFieldValue,
-  replaceValue: replaceFieldValue,
-  clearValues: clearFieldValues,
-  filterValues: filterFieldValues,
+  pushValue: withBatch(pushFieldValue),
+  insertValue: withBatch(insertFieldValue),
+  removeValue: withBatch(removeFieldValue),
+  swapValues: withBatch(swapFieldValues),
+  moveValue: withBatch(moveFieldValue),
+  replaceValue: withBatch(replaceFieldValue),
+  clearValues: withBatch(clearFieldValues),
+  filterValues: withBatch(filterFieldValues),
 }

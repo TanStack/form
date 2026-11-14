@@ -1,8 +1,8 @@
-import type { DeepKeys } from './deep-keys.public'
-import type { FormApi } from './FormApi/FormApi.public'
-import type { AnyFieldApi, FieldApi } from './FieldApi/FieldApi.public'
-import type { ScopedErrorTypes } from './validation/state.public'
-import type { FormListenerTriggers } from './FormApi/formListeners.public'
+import type { FormListenerTriggers } from './formListeners.public'
+import type { FormApi } from '../../FormApi/FormApi.public'
+import type { AnyFieldApi, FieldApi } from '../../FieldApi/FieldApi.public'
+import type { ScopedErrorTypes } from '../../validation/state.public'
+import type { DeepKeys } from '../../deep-keys.public'
 
 /**
  * Events that can invoke a listener configured on a field.
@@ -120,8 +120,8 @@ export type ListenerTriggerOption<
  *
  * The function is called after a trigger matches and its condition is enabled.
  * The returned number is interpreted as milliseconds; values less than or
- * equal to `0` run immediately. The function is not called for `'submit'`
- * events because they always run immediately.
+ * equal to `0` run immediately. Only `'change'` and `'blur'` events call this
+ * function; lifecycle and submission events run immediately.
  *
  * @example
  * ```ts
@@ -151,10 +151,10 @@ export interface Listener<
   /**
    * The debounce delay in milliseconds before the listener runs.
    *
-   * A function recalculates the delay for each matching event. Repeated events
-   * restart the delay, and the listener receives the latest event context.
-   * Values less than or equal to `0` run immediately. `'submit'` events always
-   * run immediately.
+   * A function recalculates the delay for each matching change or blur event.
+   * Repeated matching events restart the delay. The callback receives current
+   * values when execution begins. Values less than or equal to `0` run
+   * immediately. Lifecycle and submission events always run immediately.
    *
    * @default 0
    */
@@ -195,7 +195,7 @@ export interface FieldListenerContext<
   in out TFormData,
   in out TFormError extends ScopedErrorTypes,
 > {
-  /** The listening field's value captured when the event occurred. */
+  /** The listening field's value when the callback begins executing. */
   value: TFieldValue
   /**
    * The field that owns the listener.
@@ -212,13 +212,21 @@ export interface FieldListenerContext<
   >
   /** The form that owns the field. */
   formApi: FormApi<TFormData, TFormError>
+  /**
+   * Aborted when this invocation is canceled or replaced by a newer one.
+   *
+   * Use this signal for cooperative early exit. Return asynchronous work's
+   * promise to keep it attached to this invocation's lifetime.
+   */
+  signal: AbortSignal
 }
 
 /**
  * A callback invoked when a field listener runs.
  *
- * The return value is ignored. A returned promise is not awaited, and a
- * rejected promise is reported to the console.
+ * The return value is ignored. A returned promise is observed without delaying
+ * validation or submission. Failures are reported to the console while the
+ * invocation is active; failures after cancellation are suppressed.
  *
  * @example
  * ```ts
@@ -297,8 +305,9 @@ export interface FieldListener<
   /**
    * Called when an enabled field trigger occurs.
    *
-   * The return value is ignored. A returned promise is not awaited, and a
-   * rejected promise is reported to the console.
+   * The return value is ignored. A returned promise is observed without delaying
+   * validation or submission. Failures are reported to the console while the
+   * invocation is active; failures after cancellation are suppressed.
    *
    * @example
    * ```ts

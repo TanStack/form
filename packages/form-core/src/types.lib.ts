@@ -11,7 +11,10 @@ export interface FieldApiOverrideOptions {
 }
 
 export interface InternalFieldUpdateOptions
-  extends FieldUpdateOptions, FieldApiOverrideOptions, PropagateOptions {
+  extends
+    FieldUpdateOptions,
+    FieldApiOverrideOptions,
+    NotifyParentFieldsOptions {
   /**
    * @private
    * Whether to use `tryGetFieldApi` or `getOrCreateFieldApi`.
@@ -21,13 +24,13 @@ export interface InternalFieldUpdateOptions
   _skipFieldCreation?: boolean
 }
 
-export interface PropagateOptions {
+export interface NotifyParentFieldsOptions {
   /**
    * @private
-   * Whether to propagate the action to parent field nodes.
-   * @default boolean - So far, always true. Maybe a future case needs it to be false.
+   * Whether to walk up to parent fields to notify their listeners and apply blurred flags.
+   * @default true
    */
-  doPropagate?: boolean
+  notifyParentFields?: boolean
 }
 
 export type ResolvedInternalFieldUpdateOptions =

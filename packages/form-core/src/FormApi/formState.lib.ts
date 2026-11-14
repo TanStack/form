@@ -1,38 +1,5 @@
-import { batch } from '@tanstack/store'
-import {
-  clearValidationSourceErrorsFromEvent,
-  getValidationSourceErrors,
-} from '../validation'
 import type { FormState } from './FormApi.public'
 import type { AnyInternalFormApi, InternalFormApi } from './FormApi.lib'
-import type { AnyInternalFieldApi } from '../FieldApi/FieldApi.lib'
-import type { Atom } from '@tanstack/store'
-import type { AnyInternalValidationSourceInstance } from '../ValidationSourceInstance.lib'
-import type { ValidationSourceErrorMap } from '../validation'
-import type { ValidationIssue } from '../validation/state.public'
-
-export interface FormErrorMeta {
-  validationSourceErrors: ValidationSourceErrorMap | null
-}
-
-type FormValidatorFieldErrorScope =
-  | { type: 'all' }
-  | { type: 'field'; field: AnyInternalFieldApi }
-  | { type: 'none' }
-
-interface ClearFormValidationSourceErrorsFromEventArgs {
-  formErrors: Atom<FormErrorMeta>
-  errorFields: Atom<Set<AnyInternalFieldApi>>
-  validationSources: ReadonlyArray<AnyInternalValidationSourceInstance>
-  sourceEvent: string
-  fieldScope: FormValidatorFieldErrorScope
-  clearFieldEventErrors: (
-    field: AnyInternalFieldApi,
-    validationSources: ReadonlyArray<AnyInternalValidationSourceInstance>,
-    sourceEvent: string,
-  ) => void
-  reconcileErrorFields?: boolean
-}
 
 type OverridableFormState = Omit<FormState<any, any>, 'values' | 'errors'>
 
@@ -40,7 +7,6 @@ export type FormStateOverrides = {
   [TKey in keyof OverridableFormState]?: () => OverridableFormState[TKey]
 }
 
-const formErrorsCache = new WeakMap<FormErrorMeta, Array<ValidationIssue>>()
 const formStateDefaultValuesVersionKey = Symbol(
   'tanstack-form-default-values-version',
 )
@@ -76,137 +42,6 @@ const eagerFormStateKeys = [
   'submissionAttempts',
 ] as const
 
-function getFormErrors<TFormData>(
-  form: InternalFormApi<TFormData>,
-): Array<ValidationIssue> {
-  const baseFormErrors = form._atoms.meta.formErrors.get()
-  let formErrors = formErrorsCache.get(baseFormErrors)
-  if (!formErrors) {
-    formErrors = getValidationSourceErrors(
-      baseFormErrors.validationSourceErrors,
-    )
-    formErrorsCache.set(baseFormErrors, formErrors)
-  }
-  return formErrors
-}
-
-function hasFormValidationSourceFieldEventError(
-  field: AnyInternalFieldApi,
-  validationSource: AnyInternalValidationSourceInstance,
-  sourceEvent: string,
-): boolean {
-  return (
-    field._getBaseMeta()._validationSourceErrors?.get(validationSource)
-      ?.sourceEvent === sourceEvent
-  )
-}
-
-function hasFieldErrors(field: AnyInternalFieldApi): boolean {
-  const meta = field._getBaseMeta()
-
-  if (meta._validationSourceErrors) return true
-  if (meta.childContributionCounts.error > 0) return true
-
-  return false
-}
-
-export function reconcileFormErrorFields(
-  errorFields: Set<AnyInternalFieldApi>,
-  fields: Iterable<AnyInternalFieldApi>,
-): Set<AnyInternalFieldApi> {
-  const nextErrorFields = new Set(errorFields)
-
-  for (const field of fields) {
-    if (hasFieldErrors(field)) {
-      nextErrorFields.add(field)
-    } else {
-      nextErrorFields.delete(field)
-    }
-  }
-
-  return nextErrorFields
-}
-
-export function clearFormValidationSourceErrorsFromEvent({
-  formErrors,
-  errorFields,
-  validationSources,
-  sourceEvent,
-  fieldScope,
-  clearFieldEventErrors,
-  reconcileErrorFields = false,
-}: ClearFormValidationSourceErrorsFromEventArgs): void {
-  const affectedFields = new Set<AnyInternalFieldApi>()
-
-  batch(() => {
-    formErrors.set((prev) => {
-      const clearedErrors = clearValidationSourceErrorsFromEvent(
-        prev.validationSourceErrors,
-        validationSources,
-        sourceEvent,
-      )
-      if (!clearedErrors) return prev
-
-      return {
-        ...prev,
-        validationSourceErrors: clearedErrors.errorMap,
-      }
-    })
-
-    const instancesByField = new Map<
-      AnyInternalFieldApi,
-      Array<AnyInternalValidationSourceInstance>
-    >()
-
-    if (fieldScope.type === 'all') {
-      for (const validationSource of validationSources) {
-        for (const field of validationSource.errorTargets ?? []) {
-          if (
-            !hasFormValidationSourceFieldEventError(
-              field,
-              validationSource,
-              sourceEvent,
-            )
-          ) {
-            continue
-          }
-
-          const fieldInstances = instancesByField.get(field) ?? []
-          fieldInstances.push(validationSource)
-          instancesByField.set(field, fieldInstances)
-          affectedFields.add(field)
-        }
-      }
-    } else if (fieldScope.type === 'field') {
-      const { field } = fieldScope
-      const fieldInstances = validationSources.filter(
-        (validationSource) =>
-          validationSource.errorTargets?.has(field) &&
-          hasFormValidationSourceFieldEventError(
-            field,
-            validationSource,
-            sourceEvent,
-          ),
-      )
-      if (fieldInstances.length > 0) {
-        instancesByField.set(field, fieldInstances)
-        affectedFields.add(field)
-      }
-    }
-
-    for (const [field, instances] of instancesByField) {
-      clearFieldEventErrors(field, instances, sourceEvent)
-      instances.forEach((validationSource) =>
-        validationSource.deleteErrorTarget(field),
-      )
-    }
-
-    if (reconcileErrorFields && affectedFields.size > 0) {
-      errorFields.set((prev) => reconcileFormErrorFields(prev, affectedFields))
-    }
-  })
-}
-
 function getFormStateValue<
   TFormData,
   TKey extends keyof FormState<TFormData, any>,
@@ -230,19 +65,19 @@ function getFormStateValue<
       return (overrides.isDefaultValue?.() ??
         form._getIsDefaultValue()) as never
     case 'errors':
-      return getFormErrors(form) as never
+      return form._fieldRootNode._errorStore.errors as never
     case 'isValid':
       return (overrides.isValid?.() ??
-        (getFormErrors(form).length === 0 &&
+        (form._fieldRootNode._errorStore.errors.length === 0 &&
           form._atoms.meta.errorFields.get().size === 0)) as never
     case 'isInvalid':
       return (overrides.isInvalid?.() ??
-        (getFormErrors(form).length > 0 ||
+        (form._fieldRootNode._errorStore.errors.length > 0 ||
           form._atoms.meta.errorFields.get().size > 0)) as never
     case 'canSubmit':
       return (overrides.canSubmit?.() ??
         (!form._atoms.meta.isSubmitting.get() &&
-          getFormErrors(form).length === 0 &&
+          form._fieldRootNode._errorStore.errors.length === 0 &&
           form._atoms.meta.errorFields.get().size === 0)) as never
     case 'isSubmitting':
       return (overrides.isSubmitting?.() ??

@@ -2269,9 +2269,6 @@ importers:
 
   packages/form-core:
     dependencies:
-      '@tanstack/pacer-lite':
-        specifier: ^0.2.2
-        version: 0.2.2
       '@tanstack/store':
         specifier: ^0.11.1
         version: 0.11.1

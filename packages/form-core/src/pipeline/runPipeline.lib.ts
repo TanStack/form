@@ -1,9 +1,9 @@
 import { isPromiseLike } from '../utils.lib'
 import { createPipelineState, createTaskState } from './state.lib'
 import { sleep } from './utils.lib'
+import type { PipelineInstance } from './pipelineInstance.lib'
 import type {
   PipelineEntry,
-  PipelineInstance,
   PipelineOptions,
   PipelineOutput,
   PipelineResult,
@@ -11,6 +11,7 @@ import type {
   PipelineState,
   TaskState,
 } from './state.lib'
+import type { Awaitable } from '../types.public'
 
 function ensurePending<TInstance extends PipelineInstance>(
   state: PipelineState<TInstance>,
@@ -32,18 +33,21 @@ function ensurePending<TInstance extends PipelineInstance>(
  */
 function stopPipeline<TInstance extends PipelineInstance>(
   state: PipelineState<TInstance>,
+  cancelled = false,
 ): boolean {
   if (!state.active) return false
 
   state.active = false
-  state.pendingTasks.forEach((cancel) => cancel())
+  if (cancelled) state.onCancel?.()
+  state.pendingTasks.forEach((task) => task.cancel())
   return true
 }
 
 function cancelPipeline<TInstance extends PipelineInstance>(
   state: PipelineState<TInstance>,
+  notify = true,
 ): void {
-  const wasRunning = stopPipeline(state)
+  const wasRunning = stopPipeline(state, notify)
   if (wasRunning) {
     state.resolvePending?.()
   }
@@ -59,6 +63,41 @@ function failPipeline<TInstance extends PipelineInstance>(
   }
 }
 
+function cancelPipelineInstances<TInstance extends PipelineInstance>(
+  state: PipelineState<TInstance>,
+  instances: ReadonlySet<PipelineInstance>,
+): void {
+  if (!state.active) return
+
+  const tasks = Array.from(state.pendingTasks).filter((task) =>
+    instances.has(task.instance),
+  )
+  let hasQueued = false
+  for (
+    let index = state.nextEntryIndex;
+    index < state.entries.length;
+    index++
+  ) {
+    const instance = state.entries[index]!.instance
+    if (instances.has(instance) && !state.cancelledInstances?.has(instance)) {
+      state.cancelledInstances ??= new Set()
+      state.cancelledInstances.add(instance)
+      hasQueued = true
+    }
+  }
+  if (!hasQueued && tasks.length === 0) return
+
+  // Mark all queued entries before task cancellation can resume traversal.
+  state.onCancel?.()
+  for (const task of tasks) cancelTask(task, false)
+  if (state.processingEntries) return
+  try {
+    walkPipeline(state, [], true)
+  } catch (error) {
+    failPipeline(state, error)
+  }
+}
+
 function progressPipeline<TInstance extends PipelineInstance>(
   state: PipelineState<TInstance>,
 ): void {
@@ -68,7 +107,13 @@ function progressPipeline<TInstance extends PipelineInstance>(
 
   if (state.nextEntryIndex === state.entries.length) {
     state.active = false
-    state.resolvePending?.()
+    if (state.errors.length > 0) {
+      state.rejectPending?.(
+        new AggregateError(state.errors, 'Pipeline execution failed'),
+      )
+    } else {
+      state.resolvePending?.()
+    }
     return
   }
 
@@ -99,7 +144,7 @@ function releaseTask<TInstance extends PipelineInstance>(
   if (task.settled) return false
   task.settled = true
 
-  task.pipeline.pendingTasks.delete(task.cancel)
+  task.pipeline.pendingTasks.delete(task)
   if (task.instance.cancelCurrentExecution === task.cancel) {
     task.instance.cancelCurrentExecution = null
   }
@@ -108,10 +153,33 @@ function releaseTask<TInstance extends PipelineInstance>(
 
 function cancelTask<TInstance extends PipelineInstance>(
   task: TaskState<TInstance>,
+  notify = true,
 ): void {
   if (!releaseTask(task)) return
+  if (notify && task.pipeline.active) task.pipeline.onCancel?.()
   task.controller.abort()
   progressPipeline(task.pipeline)
+}
+
+function collectFailure<TInstance extends PipelineInstance>(
+  state: PipelineState<TInstance>,
+  error: unknown,
+): void {
+  ensurePending(state)
+  state.errors.push(error)
+  state.hasInvalidResult = true
+}
+
+function failTask<TInstance extends PipelineInstance>(
+  task: TaskState<TInstance>,
+  error: unknown,
+): void {
+  if (!isTaskPending(task)) return
+
+  const state = task.pipeline
+  collectFailure(state, error)
+  releaseTask(task)
+  progressPipeline(state)
 }
 
 function acceptResult<TInstance extends PipelineInstance>(
@@ -122,7 +190,13 @@ function acceptResult<TInstance extends PipelineInstance>(
   if (!isTaskPending(task)) return
 
   const state = task.pipeline
-  const invalid = state.isInvalid?.(value) ?? false
+  let invalid: boolean
+  try {
+    invalid = state.isInvalid?.(value) ?? false
+  } catch (error) {
+    failTask(task, error)
+    return
+  }
   if (!isTaskPending(task)) return
 
   state.hasInvalidResult ||= invalid
@@ -149,9 +223,17 @@ function executeTask<TInstance extends PipelineInstance>(
 
   const state = task.pipeline
   const instance = task.instance
-  const result = instance.execute(state.input, task.controller.signal)
-  if (!isPromiseLike(result)) {
-    acceptResult(task, result, syncBatch)
+  let result: Awaitable<PipelineOutput<TInstance>>
+  let promised: boolean
+  try {
+    result = instance.execute(state.input, task.controller.signal)
+    promised = isPromiseLike(result)
+  } catch (error) {
+    failTask(task, error)
+    return
+  }
+  if (!promised) {
+    acceptResult(task, result as PipelineOutput<TInstance>, syncBatch)
     return
   }
 
@@ -167,8 +249,10 @@ function executeTask<TInstance extends PipelineInstance>(
       }
     },
     (error: unknown) => {
-      if (isTaskPending(task)) {
-        failPipeline(state, error)
+      try {
+        failTask(task, error)
+      } catch (progressError) {
+        failPipeline(state, progressError)
       }
     },
   )
@@ -182,11 +266,12 @@ function startTask<TInstance extends PipelineInstance>(
   const task = createTaskState(state, entry, cancelTask)
   const { instance, cancel } = task
 
-  const previousCancel = instance.cancelCurrentExecution
-  instance.cancelCurrentExecution = cancel
+  const previousCancel =
+    state.supersede === false ? null : instance.cancelCurrentExecution
+  if (state.supersede !== false) instance.cancelCurrentExecution = cancel
 
+  state.pendingTasks.add(task)
   previousCancel?.()
-  state.pendingTasks.add(cancel)
 
   if (!isTaskPending(task)) return
 
@@ -210,12 +295,17 @@ function walkPipeline<TInstance extends PipelineInstance>(
     while (state.active && state.nextEntryIndex < state.entries.length) {
       const entry = state.entries[state.nextEntryIndex]!
 
+      if (state.cancelledInstances?.has(entry.instance)) {
+        state.nextEntryIndex++
+        continue
+      }
+
       if (entry.bailIfInvalid) {
         if (state.hasPendingUpstream || state.pendingTasks.size > 0) {
           ensurePending(state)
           break
         }
-        if (state.hasInvalidResult) {
+        if (state.hasInvalidResult && !entry.preparationFailure) {
           state.nextEntryIndex++
           state.onSkip?.(entry.instance)
           continue
@@ -223,7 +313,13 @@ function walkPipeline<TInstance extends PipelineInstance>(
       }
 
       state.nextEntryIndex++
-      startTask(state, entry, batch)
+      if (entry.preparationFailure) {
+        // Preparation has already thrown, even if bail would skip the callback.
+        // Do not start a task or supersede older work for this occurrence.
+        collectFailure(state, entry.preparationFailure.error)
+      } else {
+        startTask(state, entry, batch)
+      }
     }
   } finally {
     state.processingEntries = false
@@ -238,19 +334,23 @@ function walkPipeline<TInstance extends PipelineInstance>(
  * Starts the supplied entries while preserving synchronous result delivery.
  *
  * @returns A run handle containing the initial `syncResults` batch, a `pending`
- * promise for deferred work (`null` for an entirely synchronous run), and a
- * `cancel` function. Later batches go to `onDeferredResults` before `pending` resolves.
- * Cancellation resolves `pending` without delivering cancelled results. A
- * deferred failure rejects it after cancelling the remaining tasks.
+ * completion promise for deferred work or occurrence failures, and cancellation
+ * handles. Later batches go to `onDeferredResults` before completion settles.
+ * Occurrence failures reject completion with an aggregate after eligible peers
+ * finish. Cancellation resolves completion without delivering cancelled results.
  *
- * @throws Synchronous execution errors after cancelling work already started.
+ * @throws Synchronous orchestration errors after cancelling work already started.
  */
 export function runPipeline<TInstance extends PipelineInstance>(
   options: PipelineOptions<TInstance>,
 ): PipelineRun<TInstance> {
   const state = createPipelineState<TInstance>(options)
-
+  const cancel = () => cancelPipeline(state)
+  const cancelInstances = (instances: ReadonlySet<PipelineInstance>) =>
+    cancelPipelineInstances(state, instances)
   try {
+    state.processingEntries = true
+    options.onStart?.(cancel, cancelInstances)
     if (isPromiseLike(state.upstreamInvalid)) {
       state.hasPendingUpstream = true
       void Promise.resolve(state.upstreamInvalid).then(
@@ -263,17 +363,21 @@ export function runPipeline<TInstance extends PipelineInstance>(
         (error: unknown) => failPipeline(state, error),
       )
     }
+    state.processingEntries = false
     walkPipeline(state, state.syncResults, false)
   } catch (error) {
     // The caller has not received the handle: resolve any internal pending promise
     // during cleanup, then propagate the exception synchronously.
-    cancelPipeline(state)
+    state.processingEntries = false
+    cancelPipeline(state, false)
     throw error
   }
 
   return {
     syncResults: state.syncResults,
     pending: state.pending,
-    cancel: () => cancelPipeline(state),
+    hasPendingWork: state.active && state.pending !== null,
+    cancel,
+    cancelInstances,
   }
 }

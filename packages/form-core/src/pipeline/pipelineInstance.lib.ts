@@ -1,6 +1,6 @@
 import type { Awaitable } from '../types.public'
 
-export abstract class BaseInstance<TInput, TResult> {
+export abstract class PipelineInstance<TInput = any, TResult = any> {
   /**
    * Cancel this instance's current task, if present.
    */

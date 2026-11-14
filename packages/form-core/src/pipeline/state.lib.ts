@@ -1,10 +1,5 @@
-import type { BaseInstance } from './baseInstance.lib'
+import type { PipelineInstance } from './pipelineInstance.lib'
 import type { Awaitable } from '../types.public'
-
-export type PipelineInstance<TInput = any, TResult = any> = BaseInstance<
-  TInput,
-  TResult
->
 
 type InputOf<TInstance extends PipelineInstance> =
   TInstance extends PipelineInstance<infer TInput, any> ? TInput : never
@@ -32,6 +27,8 @@ export interface PipelineEntry<TInstance extends PipelineInstance> {
   debounceMs?: number
   /** Wait for earlier tasks, then skip this entry if the run is invalid. */
   bailIfInvalid?: boolean
+  /** Preparation errored. settle at this position without starting a task. */
+  preparationFailure?: { error: unknown }
 }
 
 export interface PipelineResult<TInstance extends PipelineInstance> {
@@ -42,6 +39,22 @@ export interface PipelineResult<TInstance extends PipelineInstance> {
 }
 
 export interface PipelineOptions<TInstance extends PipelineInstance> {
+  /** Whether tasks replace the instance's current execution.
+   * @default true
+   */
+  supersede?: boolean
+  /**
+   * - It was cancelled
+   * - A new task superceded it
+   *
+   * this does NOT include failure cleanup.
+   */
+  onCancel?: () => void
+  /** Provides run and instance cancellation before dependencies or entries execute. */
+  onStart?: (
+    cancel: () => void,
+    cancelInstances: (instances: ReadonlySet<PipelineInstance>) => void,
+  ) => void
   /** Input passed to every instance when its task executes. */
   input: PipelineInput<TInstance>
   /** Ordered entries to process, including their debounce and bail settings. */
@@ -65,12 +78,15 @@ export interface PipelineRun<TInstance extends PipelineInstance> {
   /** Results collected before runPipeline returns; later results use onDeferredResults. */
   syncResults: Array<PipelineResult<TInstance>>
   /**
-   * Deferred run lifetime, or `null` for synchronous runs. Cancellation resolves
-   * it; failure rejects it.
+   * Pending work for deferred stuff or failures if present. Otherwise `null`.
    */
   pending: Promise<void> | null
+  /** Whether work is unfinished when the starter returns, independent of failure. */
+  hasPendingWork: boolean
   /** Cancels this run and suppresses results from its unfinished tasks. */
   cancel: () => void
+  /** Cancels only these instances' queued and unfinished tasks in this run. */
+  cancelInstances: (instances: ReadonlySet<PipelineInstance>) => void
 }
 
 export interface PipelineState<
@@ -78,8 +94,9 @@ export interface PipelineState<
 > extends PipelineOptions<TInstance> {
   /** Initial synchronous batch; resumed loops publish separate batches. */
   syncResults: Array<PipelineResult<TInstance>>
-  /** Handles that cancel this run's unfinished or debounced tasks. */
-  pendingTasks: Set<() => void>
+  /** This run's unfinished or debounced tasks. */
+  pendingTasks: Set<TaskState<TInstance>>
+  cancelledInstances: Set<PipelineInstance> | null
   /** Index of the next entry, held in place while a bail check waits. */
   nextEntryIndex: number
   /** Whether this run may still start tasks or accept results. */
@@ -88,9 +105,11 @@ export interface PipelineState<
   processingEntries: boolean
   /** True until an upstream promise settles; separate from local tasks. */
   hasPendingUpstream: boolean
-  /** True after upstream or an accepted result is invalid; stays true. */
+  /** True after upstream invalidity, an invalid result, or occurrence failure. */
   hasInvalidResult: boolean
-  /** Wrapper promise exposed by the run handle; `null` until work is deferred. */
+  /** Original exceptions from active occurrences, without successful results. */
+  errors: Array<unknown>
+  /** Completion promise, created when work is deferred or an occurrence fails. */
   pending: Promise<void> | null
   /** Resolves the wrapper promise; `undefined` until that promise is created. */
   resolvePending: (() => void) | undefined
@@ -123,12 +142,14 @@ export function createPipelineState<TInstance extends PipelineInstance>(
   return {
     ...options,
     syncResults: [],
-    pendingTasks: new Set<() => void>(),
+    pendingTasks: new Set<TaskState<TInstance>>(),
+    cancelledInstances: null,
     nextEntryIndex: 0,
     active: true,
     processingEntries: false,
     hasPendingUpstream: false,
     hasInvalidResult: options.upstreamInvalid === true,
+    errors: [],
     pending: null,
     resolvePending: undefined,
     rejectPending: undefined,

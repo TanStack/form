@@ -1,16 +1,15 @@
-import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
-
 // type
+import type {
+  InternalFieldUpdateOptions,
+  ResolvedInternalFieldUpdateOptions,
+} from './types.lib'
 import type {
   FieldUpdateOptions,
   ReadonlyOneOrMany,
   Updater,
 } from './types.public'
-import type {
-  InternalFieldUpdateOptions,
-  ResolvedInternalFieldUpdateOptions,
-} from './types.lib'
 import type { AnyInternalFormApi } from './FormApi/FormApi.lib'
+import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
 
 export type NameSegment = string | number
 export type NameSegments = Array<NameSegment>
@@ -52,6 +51,16 @@ export function nameToFieldNodeSegments(
   return result
 }
 
+export function canonicalFieldName(name: string | NameSegments): string {
+  return nameToFieldNodeSegments(name)
+    .map((segment, index) =>
+      typeof segment === 'number'
+        ? `[${segment}]`
+        : `${index === 0 ? '' : '.'}${segment}`,
+    )
+    .join('')
+}
+
 export function resolveFieldUpdateOptions(
   options: InternalFieldUpdateOptions | undefined,
   event: 'change' | 'blur' | 'submit' | 'noEvent',
@@ -70,7 +79,7 @@ export function resolveFieldUpdateOptions(
     ...baseOpts,
     _skipFieldCreation: options?._skipFieldCreation ?? noFieldCreationNeeded,
     fieldApiOverride: options?.fieldApiOverride ?? null,
-    doPropagate: options?.doPropagate ?? true,
+    notifyParentFields: options?.notifyParentFields ?? true,
   }
 }
 
@@ -202,6 +211,11 @@ export function callUpdater<T>(updater: Updater<T>, object: T): T {
     : updater
 }
 
+export function clearArray(arr: Array<any>): void {
+  // Don't you dare use arr.length = 0. I'll find you. ~Luca
+  arr.splice(0, arr.length)
+}
+
 export function normalizeToArray<T>(
   input: null | undefined | void | ReadonlyOneOrMany<T>,
 ): ReadonlyArray<T> {
@@ -320,8 +334,8 @@ export function isPromiseLike<T>(
   value: T | PromiseLike<T>,
 ): value is PromiseLike<T> {
   return (
-    typeof value === 'object' &&
     value !== null &&
+    (typeof value === 'object' || typeof value === 'function') &&
     'then' in value &&
     typeof value.then === 'function'
   )

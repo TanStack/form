@@ -1,17 +1,17 @@
-import { createOutput } from '../validationOutput.lib'
-import { createErrorMap } from '../validation/createErrorMap.lib'
-import { parseIssuesFactory } from '../validation/parseIssues.lib'
+import { createErrorMap } from '../../validation/results/createErrorMap.lib'
+import { parseIssuesFactory } from '../../validation/results/parseIssues.lib'
+import { createOutput } from '../../validation/results/validationOutput.lib'
 import type { ClientSideEvents } from '../events.public'
-import type {
-  FieldValidatorContext,
-  FormGroupValidatorContext,
-} from '../validation.public'
+import type { FieldErrorTarget } from '../../validation/results/results.public'
 import type {
   FormValidatorClientContext,
   FormValidatorPreprocessContext,
   FormValidatorServerContext,
-} from '../validation/formValidators.public'
-import type { FieldErrorTarget } from '../validation/state.public'
+} from './formValidators.public'
+import type {
+  FieldValidatorContext,
+  FormGroupValidatorContext,
+} from './validation.public'
 
 interface ValidatorContextDefinition {
   run: unknown

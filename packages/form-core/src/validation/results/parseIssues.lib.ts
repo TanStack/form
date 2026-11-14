@@ -1,22 +1,10 @@
-import { isNil } from './utils.lib'
-import { createOutput } from './validationOutput.lib'
-import { PARSED_ISSUES, parseIssuesFactory } from './validation/parseIssues.lib'
-import { validationSourceScopes } from './ValidationSourceInstance.lib'
+import { isNil } from '../../utils.lib'
+import type { StandardSchemaV1Issue } from './standardSchema.public'
 import type {
-  StandardSchemaV1,
-  StandardSchemaV1Issue,
-} from './standardSchema.public'
-import type {
-  FieldValidatorFn,
-  FormGroupValidatorFn,
-} from './validation.public'
-import type { FormValidatorFn } from './validation/formValidators.public'
-import type {
-  ParsedStandardSchemaIssues,
+  FieldErrorTarget,
+  ParseIssuesFn,
   ValidationFieldMap,
-  ValidationOutput,
-} from './validation/state.public'
-import type { AnyInternalValidatorInstance } from './ValidatorInstance.lib'
+} from './results.public'
 
 export function parseIssuesToErrorMap<TFormData>(
   issues: ReadonlyArray<StandardSchemaV1Issue>,
@@ -78,36 +66,24 @@ function getPathFromIssue(
   return path
 }
 
-export function isStandardSchema(
-  object:
-    | FormValidatorFn<any, any>
-    | FormGroupValidatorFn<any>
-    | FieldValidatorFn<any, any, any>
-    | StandardSchemaV1,
-): object is StandardSchemaV1<any, any> {
-  // Arktype typeof is function, not object. This is the only constraint that's safe so far.
-  return '~standard' in object
-}
+export const PARSED_ISSUES = Symbol('PARSED_ISSUES')
 
-export function parseStandardSchema<TOutput>(
-  schema: StandardSchemaV1<any, TOutput>,
-  value: any,
-  instance: AnyInternalValidatorInstance,
-): Promise<
-  | ValidationOutput<TOutput>
-  | ParsedStandardSchemaIssues<any>
-  | ReadonlyArray<StandardSchemaV1Issue>
-> {
-  const parseIssues = parseIssuesFactory(value, instance.fieldErrorTarget)
+export function parseIssuesFactory<TFormData>(
+  value: TFormData,
+  routeFieldErrorsTo: FieldErrorTarget,
+): ParseIssuesFn<TFormData> {
+  return (issues) => {
+    const map = parseIssuesToErrorMap<TFormData>(issues, value)
 
-  return Promise.resolve(schema['~standard'].validate(value)).then((result) => {
-    if (!result.issues) {
-      return createOutput(result.value)
+    // `map.form` is only issues that have no destination.
+    const form = routeFieldErrorsTo === 'field' ? map.form : issues.slice()
+
+    const fields = routeFieldErrorsTo === 'self' ? {} : map.fields
+
+    return {
+      [PARSED_ISSUES]: true,
+      form,
+      fields,
     }
-
-    if (instance.scope === validationSourceScopes.field) {
-      return result.issues
-    }
-    return parseIssues(result.issues)
-  })
+  }
 }

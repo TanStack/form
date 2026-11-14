@@ -1,17 +1,17 @@
-import { createOutput } from '../validationOutput.lib'
-import { parseIssuesFactory } from '../validation/parseIssues.lib'
-import { mapResult } from './utils.lib'
+import { mapResult } from '../utils.lib'
+import { createOutput } from '../../validation/results/validationOutput.lib'
+import { parseIssuesFactory } from '../../validation/results/parseIssues.lib'
 import type {
   StandardSchemaV1,
   StandardSchemaV1Issue,
-} from '../standardSchema.public'
-import type { Awaitable } from '../types.public'
-import type { ValidatorScope } from '../validation.public'
+} from '../../validation/results/standardSchema.public'
+import type { ValidatorScope } from './validation.public'
 import type {
   FieldErrorTarget,
   ParsedStandardSchemaIssues,
   ValidationOutput,
-} from '../validation/state.public'
+} from '../../validation/results/results.public'
+import type { Awaitable } from '../../types.public'
 
 export function isStandardSchema(
   value: unknown,
@@ -23,15 +23,15 @@ export function isStandardSchema(
   )
 }
 
-export function parseStandardSchema(
-  schema: StandardSchemaV1,
+export function parseStandardSchema<TOutput>(
+  schema: StandardSchemaV1<any, TOutput>,
   value: unknown,
   {
     scope,
     fieldErrorTarget = 'field',
   }: { scope: ValidatorScope; fieldErrorTarget?: FieldErrorTarget },
 ): Awaitable<
-  | ValidationOutput<unknown>
+  | ValidationOutput<TOutput>
   | ParsedStandardSchemaIssues<any>
   | ReadonlyArray<StandardSchemaV1Issue>
 > {
