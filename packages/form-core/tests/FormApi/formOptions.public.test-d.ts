@@ -1,17 +1,20 @@
 import { describe, expectTypeOf, it } from 'vitest'
 import { z } from 'zod'
 import { formOptions } from '../../src/FormApi/formOptions.public'
-import { createValidator, createValidators } from '../../src/validation.public'
+import {
+  createValidator,
+  createValidators,
+} from '../../src/pipeline/validation/validation.public'
 import type { AnyFieldApi } from '../../src/FieldApi/FieldApi.public'
 import type { OnSubmitError } from '../../src/FormApi/formSubmit.public'
 import type { ServerFormState } from '../../src/FormApi/formServerState.public'
-import type { StandardSchemaV1Issue } from '../../src/standardSchema.public'
+import type { StandardSchemaV1Issue } from '../../src/validation/results/standardSchema.public'
 import type {
   CreateErrorMapFn,
   ParseIssuesFn,
   ParsedStandardSchemaIssues,
   ValidationIssue,
-} from '../../src/validation/state.public'
+} from '../../src/validation/results/results.public'
 
 describe('formOptions reuse', () => {
   it('keeps omitted validators empty when adding a submit handler', () => {
@@ -919,7 +922,7 @@ describe('formOptions server state', () => {
       validationResults: [
         {
           validatorIndex: 0,
-          result: { message: 'Invalid', code: 'server' as const },
+          result: [{ message: 'Invalid', code: 'server' as const }],
           output: null,
         },
       ],
@@ -957,7 +960,7 @@ describe('formOptions server state', () => {
         validationResults: [
           {
             validatorIndex: 2,
-            // @ts-expect-error Client-only issues cannot occur in server state.
+            // @ts-expect-error Server errors must be formatted as issue arrays or error maps.
             result: { message: 'Invalid', code: 'client' },
             output: null,
           },

@@ -1,10 +1,10 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, onTestFinished, vi } from 'vitest'
 import { z } from 'zod'
 import { InternalFormApi } from '../src/FormApi/FormApi.lib'
-import { InternalValidatorInstance } from '../src/ValidatorInstance.lib'
 import { installDevtoolsBridge } from '../src/devtoolsBridge.lib'
 import { validateServerValues } from '../src/internals'
 import { formOptions, initialServerFormState } from '../src'
+import { promiseWithResolvers } from './test-utils'
 import type {
   ServerValidateFailure,
   ServerValidateResult,
@@ -61,9 +61,8 @@ describe('server validation', () => {
     expect(serverValidator).toHaveBeenCalledOnce()
   })
 
-  it('disposes every validator once when the server pipeline rejects', async () => {
+  it('propagates server-trigger selection failures', async () => {
     const error = new Error('Pipeline failed')
-    const disposeSpy = vi.spyOn(InternalValidatorInstance.prototype, 'dispose')
     const options = formOptions({
       defaultValues: { name: '' },
       validators: [
@@ -80,24 +79,22 @@ describe('server validation', () => {
       ],
     })
 
-    try {
-      await expect(validateServerValues(options, { name: '' })).rejects.toBe(
-        error,
-      )
-      expect(disposeSpy).toHaveBeenCalledTimes(2)
-      expect(new Set(disposeSpy.mock.instances).size).toBe(2)
-    } finally {
-      disposeSpy.mockRestore()
-    }
+    await expect(validateServerValues(options, { name: '' })).rejects.toBe(
+      error,
+    )
   })
 
-  it('rethrows validator errors after disposing their instance once', async () => {
+  it('waits for earlier pending validation before aggregating a thrown failure', async () => {
     const error = new Error('Validator failed')
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-    const disposeSpy = vi.spyOn(InternalValidatorInstance.prototype, 'dispose')
+    const pending = promiseWithResolvers<null>()
+    onTestFinished(() => pending.resolve(null))
     const options = formOptions({
       defaultValues: { name: '' },
       validators: [
+        {
+          run: () => pending.promise,
+          triggers: ['server'],
+        },
         {
           run: () => {
             throw error
@@ -107,15 +104,34 @@ describe('server validation', () => {
       ],
     })
 
-    try {
-      await expect(validateServerValues(options, { name: '' })).rejects.toBe(
-        error,
-      )
-      expect(disposeSpy).toHaveBeenCalledOnce()
-    } finally {
-      disposeSpy.mockRestore()
-      consoleSpy.mockRestore()
-    }
+    const validation = validateServerValues(options, { name: '' })
+    const rejection = expect(validation).rejects.toMatchObject({
+      errors: [error],
+    })
+    pending.resolve(null)
+    await rejection
+  })
+
+  it('propagates deferred validator failures before running a waiting bail validator', async () => {
+    const error = new Error('Deferred validation failed')
+    const pending = promiseWithResolvers<null>()
+    const afterFailure = vi.fn(() => null)
+    const options = formOptions({
+      defaultValues: { name: '' },
+      validators: [
+        { run: () => pending.promise, triggers: ['server'] },
+        { run: afterFailure, triggers: ['server'], bailIfInvalid: true },
+      ],
+    })
+    const validation = validateServerValues(options, { name: '' })
+    const rejection = expect(validation).rejects.toMatchObject({
+      errors: [error],
+    })
+
+    pending.reject(error)
+    await rejection
+
+    expect(afterFailure).not.toHaveBeenCalled()
   })
 
   it('runs server-only validators during client submit by default', async () => {
@@ -138,7 +154,9 @@ describe('server validation', () => {
     await expect(form.validate('change')).resolves.toEqual([])
     await expect(form.validate('blur')).resolves.toEqual([])
     expect(serverValidator).not.toHaveBeenCalled()
-    await expect(form.validate('submit')).resolves.toEqual(['Server error'])
+    await expect(form.validate('submit')).resolves.toEqual([
+      { message: 'Server error' },
+    ])
     expect(serverValidator).toHaveBeenCalledOnce()
   })
 
@@ -182,7 +200,9 @@ describe('server validation', () => {
     )
 
     const form = new InternalFormApi(options)
-    await expect(form.validate('change')).resolves.toEqual(['change error'])
+    await expect(form.validate('change')).resolves.toEqual([
+      { message: 'change error' },
+    ])
 
     expect(calls).toEqual([
       { event: 'server', hasFormApi: false },
@@ -190,8 +210,18 @@ describe('server validation', () => {
     ])
   })
 
+  it('returns the supplied values and no outputs when no validators are configured', async () => {
+    const options = formOptions({ defaultValues: { name: '' } })
+    const values = { name: 'Tony' }
+
+    const validation = await validateServerValues(options, values)
+    const result = expectServerValidateSuccess(validation)
+
+    expect(result.values).toBe(values)
+    expect(result.validatorOutputs).toEqual([])
+  })
+
   it('returns values and schema outputs when server validation succeeds', async () => {
-    const setOutput = vi.spyOn(InternalValidatorInstance.prototype, 'setOutput')
     const options = formOptions({
       defaultValues: { name: '' },
       validators: [
@@ -206,17 +236,11 @@ describe('server validation', () => {
       ],
     })
 
-    try {
-      const result = expectServerValidateSuccess(
-        await validateServerValues(options, { name: 'Tony' }),
-      )
+    const validation = await validateServerValues(options, { name: 'Tony' })
+    const result = expectServerValidateSuccess(validation)
 
-      expect(result.values).toEqual({ name: 'Tony' })
-      expect(result.validatorOutputs).toEqual([{ nameLength: 4 }])
-      expect(setOutput).not.toHaveBeenCalled()
-    } finally {
-      setOutput.mockRestore()
-    }
+    expect(result.values).toEqual({ name: 'Tony' })
+    expect(result.validatorOutputs).toEqual([{ nameLength: 4 }])
   })
 
   it('aligns server schema outputs with all validator slots', async () => {
@@ -251,6 +275,144 @@ describe('server validation', () => {
     ])
   })
 
+  it('aligns outputs with the complete validator list when asynchronous validators finish out of order', async () => {
+    const first = promiseWithResolvers<string>()
+    const last = promiseWithResolvers<string>()
+    const options = formOptions({
+      defaultValues: { name: '' },
+      validators: [
+        { run: () => null, triggers: ['change'] },
+        {
+          run: async ({ createOutput }) => createOutput(await first.promise),
+          triggers: ['server'],
+        },
+        { run: () => null, triggers: ['server'] },
+        {
+          run: async ({ createOutput }) => createOutput(await last.promise),
+          triggers: ['server'],
+        },
+        { run: () => null, triggers: ['blur'] },
+      ],
+    })
+    const validation = validateServerValues(options, { name: 'Tony' })
+
+    last.resolve('Last validator output')
+    await last.promise
+    first.resolve('First validator output')
+    const result = expectServerValidateSuccess(await validation)
+
+    expect(result.validatorOutputs).toEqual([
+      undefined,
+      'First validator output',
+      undefined,
+      'Last validator output',
+      undefined,
+    ])
+  })
+
+  it('orders synchronous and deferred server results by their original indexes', async () => {
+    const first = promiseWithResolvers<string>()
+    const last = promiseWithResolvers<string>()
+    const options = formOptions({
+      defaultValues: { name: '' },
+      validators: [
+        { run: () => null, triggers: ['change'] },
+        { run: () => first.promise, triggers: ['server'] },
+        {
+          run: ({ createOutput }) => createOutput(undefined),
+          triggers: ['server'],
+        },
+        { run: () => last.promise, triggers: ['server'] },
+      ],
+    })
+    const validation = validateServerValues(options, { name: '' })
+
+    last.resolve('Last validator error')
+    await last.promise
+    first.resolve('First validator error')
+    const { serverState } = expectServerValidateFailure(await validation)
+
+    expect(serverState.validationResults).toEqual([
+      {
+        validatorIndex: 1,
+        result: [{ message: 'First validator error' }],
+        output: null,
+        hasOutput: false,
+      },
+      { validatorIndex: 2, result: null, output: undefined, hasOutput: true },
+      {
+        validatorIndex: 3,
+        result: [{ message: 'Last validator error' }],
+        output: null,
+        hasOutput: false,
+      },
+    ])
+  })
+
+  it('omits a bail-skipped result, collects later results, and hydrates field errors at the original index', async () => {
+    const pending = promiseWithResolvers<{ fields: { name: string } }>()
+    const skipped = vi.fn(() => null)
+    const options = formOptions({
+      defaultValues: { name: '' },
+      validators: [
+        { run: () => null, triggers: ['change'] },
+        { run: () => pending.promise, triggers: ['server'] },
+        { run: skipped, triggers: ['server'], bailIfInvalid: true },
+        {
+          run: ({ createOutput }) => createOutput('After bail'),
+          triggers: ['server'],
+        },
+      ],
+    })
+    const validation = validateServerValues(options, { name: '' })
+
+    pending.resolve({ fields: { name: 'Required' } })
+    const { serverState } = expectServerValidateFailure(await validation)
+
+    expect(skipped).not.toHaveBeenCalled()
+    expect(serverState.validationResults).toEqual([
+      {
+        validatorIndex: 1,
+        result: { form: [], fields: { name: [{ message: 'Required' }] } },
+        output: null,
+        hasOutput: false,
+      },
+      {
+        validatorIndex: 3,
+        result: null,
+        output: 'After bail',
+        hasOutput: true,
+      },
+    ])
+
+    const form = new InternalFormApi({ ...options, serverState })
+    const field = form._getOrCreateFieldApi({ name: 'name' })
+
+    expect(field.errors).toEqual([{ message: 'Required' }])
+    expect(form.state.canSubmit).toBe(false)
+  })
+
+  it('collects a synchronous output after a successful asynchronous bail wait', async () => {
+    const pending = promiseWithResolvers<null>()
+    const options = formOptions({
+      defaultValues: { name: '' },
+      validators: [
+        { run: () => pending.promise, triggers: ['server'] },
+        {
+          run: ({ createOutput }) => createOutput('Validated'),
+          triggers: ['server'],
+          bailIfInvalid: true,
+        },
+      ],
+    })
+    const validation = validateServerValues(options, { name: 'Tony' })
+
+    pending.resolve(null)
+    const result = expectServerValidateSuccess(await validation)
+
+    expect(result.validatorOutputs).toEqual([undefined, 'Validated'])
+  })
+
   it('returns a serializable server state when validation fails', async () => {
     const options = formOptions({
       defaultValues: { name: '' },
@@ -279,9 +441,9 @@ describe('server validation', () => {
     expect(result.serverState.validationResults[0]).toMatchObject({
       validatorIndex: 0,
       result: {
-        form: 'Form error',
+        form: [{ message: 'Form error' }],
         fields: {
-          name: 'Name is required',
+          name: [{ message: 'Name is required' }],
         },
       },
     })
@@ -363,14 +525,16 @@ describe('server validation', () => {
     } as never)
 
     expect(form.state.values).toEqual({ name: 'Server value' })
+    expect(form.defaultValues).toBe(options.defaultValues)
     expect(form.state.errors).toEqual([{ message: 'Server form error' }])
     expect(form.state.isDirty).toBe(false)
     expect(form.state.isTouched).toBe(false)
+    expect(form.state.isDefaultValue).toBe(false)
     expect(form.state.submissionAttempts).toBe(1)
     expect(field.errors).toEqual([{ message: 'Server name error' }])
     expect(field.meta.isDirty).toBe(false)
     expect(field.meta.isTouched).toBe(false)
-    expect(field.meta.isDefaultValue).toBe(true)
+    expect(field.meta.isDefaultValue).toBe(false)
   })
 
   it('treats empty server state as an authoritative reset', async () => {
@@ -422,7 +586,7 @@ describe('server validation', () => {
     expect(field.meta.isDefaultValue).toBe(true)
   })
 
-  it('clears server errors on field events like submit errors', async () => {
+  it('clears server errors on change and preserves them on blur', async () => {
     const options = formOptions({
       defaultValues: { name: '', email: '' },
       validators: [
@@ -469,8 +633,8 @@ describe('server validation', () => {
 
     blurNameField.handleBlur()
 
-    expect(blurForm.state.errors).toEqual([])
-    expect(blurNameField.errors).toEqual([])
+    expect(blurForm.state.errors).toEqual([{ message: 'Server form error' }])
+    expect(blurNameField.errors).toEqual([{ message: 'Server name error' }])
     expect(blurEmailField.errors).toEqual([{ message: 'Server email error' }])
   })
 
@@ -530,7 +694,7 @@ describe('server validation', () => {
         validationResults: [
           {
             validatorIndex: 0,
-            result: 'Server name error',
+            result: [{ message: 'Server name error' }],
             output: null,
           },
         ],
@@ -542,35 +706,6 @@ describe('server validation', () => {
 
     expect(serverValidator).not.toHaveBeenCalled()
     expect(form.state.errors).toEqual([{ message: 'Server name error' }])
-  })
-
-  it('does not restore serialized schema output during hydration', () => {
-    const options = formOptions({
-      defaultValues: { name: '' },
-      validators: [
-        {
-          run: z.object({ name: z.string() }).transform(() => undefined),
-          triggers: ['server'],
-        },
-      ],
-      serverState: {
-        values: { name: 'Tony' },
-        validationResults: [
-          {
-            validatorIndex: 0,
-            result: null,
-            output: undefined,
-            hasOutput: true,
-          },
-        ],
-        submissionAttempts: 1,
-      },
-    })
-
-    const form = new InternalFormApi(options)
-
-    expect(form._validatorInstances?.[0]?.hasOutput).toBe(false)
-    expect(form._validatorInstances?.[0]?.output).toBeUndefined()
   })
 
   it('notifies Devtools when server state directly resets field meta', () => {

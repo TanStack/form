@@ -22,7 +22,7 @@ describe('utils', () => {
       markAsTouched: true,
       _skipFieldCreation: false,
       fieldApiOverride: null,
-      doPropagate: true,
+      notifyParentFields: true,
     })
 
     expect(resolveFieldUpdateOptions(undefined, 'blur')).toMatchObject({
@@ -57,7 +57,7 @@ describe('utils', () => {
           markAsTouched: false,
           _skipFieldCreation: false,
           fieldApiOverride,
-          doPropagate: false,
+          notifyParentFields: false,
         },
         'change',
       ),
@@ -68,7 +68,7 @@ describe('utils', () => {
       markAsTouched: false,
       _skipFieldCreation: false,
       fieldApiOverride,
-      doPropagate: false,
+      notifyParentFields: false,
     })
   })
 

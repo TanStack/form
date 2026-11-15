@@ -2,7 +2,9 @@ import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
 import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
 import { InternalFormGroupApi } from '../../src/FormGroupApi/FormGroupApi.lib'
-import { validationSourceScopes } from '../../src/ValidationSourceInstance.lib'
+import { clearArray } from '../../src/utils.lib'
+import { validationSourceScopes } from '../../src/validation/errorStorage.lib'
+import { promiseWithResolvers } from '../test-utils'
 
 describe('FormGroupApi', () => {
   it('runs synchronous mount validators and stores group errors', () => {
@@ -179,7 +181,7 @@ describe('FormGroupApi', () => {
     expect(form.state.isValidating).toBe(false)
   })
 
-  it('only removes group-owned validation counts when canceled', async () => {
+  it('preserves a newer independent descendant field run when the group cancels', async () => {
     const resolvers: Array<(value: null) => void> = []
     const fieldValidator = vi.fn(
       () =>
@@ -190,8 +192,8 @@ describe('FormGroupApi', () => {
     const form = new InternalFormApi({
       defaultValues: { guestDetails: { name: '' } },
     })
-    const groupField = form._getOrCreateFieldApi({
-      name: 'guestDetails',
+    const nameField = form._getOrCreateFieldApi({
+      name: 'guestDetails.name',
       validators: [{ triggers: [], run: fieldValidator }],
     })
     const group = new InternalFormGroupApi({
@@ -202,30 +204,27 @@ describe('FormGroupApi', () => {
 
     const groupValidation = group.validate('submit')
     await vi.waitFor(() => expect(fieldValidator).toHaveBeenCalledOnce())
-    const independentValidation = groupField._runFieldValidation('submit')
+    const independentValidation = nameField._runFieldValidation('submit', {
+      catchErrors: false,
+    })?.pending
     await vi.waitFor(() => expect(fieldValidator).toHaveBeenCalledTimes(2))
-
-    expect(groupField._getBaseMeta()._validationCount).toBe(3)
 
     group.reset()
 
-    expect(groupField._getBaseMeta()._validationCount).toBe(1)
-    expect(groupField.meta.isSelfValidating).toBe(true)
-    expect(groupField.meta.isValidating).toBe(true)
+    expect(nameField.meta.isSelfValidating).toBe(true)
+    expect(nameField.meta.isValidating).toBe(true)
     expect(form.state.isValidating).toBe(true)
 
     resolvers[0]!(null)
     await groupValidation
 
-    expect(groupField._getBaseMeta()._validationCount).toBe(1)
-    expect(groupField.meta.isSelfValidating).toBe(true)
-    expect(groupField.meta.isValidating).toBe(true)
+    expect(nameField.meta.isSelfValidating).toBe(true)
+    expect(nameField.meta.isValidating).toBe(true)
 
     resolvers[1]!(null)
     await independentValidation
 
-    expect(groupField._getBaseMeta()._validationCount).toBe(0)
-    expect(groupField.meta.isValidating).toBe(false)
+    expect(nameField.meta.isValidating).toBe(false)
     expect(form.state.isValidating).toBe(false)
   })
 
@@ -365,7 +364,6 @@ describe('FormGroupApi', () => {
     expect(instance?.definition).toBe(nextDefinition)
     expect(instance?.owner).toBe(group)
     expect(instance?.scope).toBe(validationSourceScopes.group)
-    expect(instance?.revision).toBe(1)
   })
 
   it('warns when the group validator array length changes after initialization', () => {
@@ -392,30 +390,35 @@ describe('FormGroupApi', () => {
     warn.mockRestore()
   })
 
-  it('resets validator runtime during cleanup and preserves remount identity', () => {
+  it('cancels validation during cleanup and preserves remount identity', async () => {
+    const pending = promiseWithResolvers<null>()
+    let signal: AbortSignal | undefined
     const form = new InternalFormApi({
       defaultValues: { guestDetails: { name: 'Tony' } },
     })
     const group = new InternalFormGroupApi({
       form,
       name: 'guestDetails',
-      validators: [{ run: () => null, triggers: [] }],
+      validators: [
+        {
+          triggers: [],
+          run: (context) => {
+            signal = context.signal
+            return pending.promise
+          },
+        },
+      ],
     })
     const instance = group._validatorInstances?.[0]
-    const abortController = new AbortController()
-    instance?.setAbortController(abortController)
-    instance?.setOutput({
-      output: 'output',
-      hasOutput: true,
-    })
-
+    const validation = group.validate('submit')
     group._cleanup()
     group.mount()
-
+    await validation
+    expect(signal?.aborted).toBe(true)
     expect(group._validatorInstances?.[0]).toBe(instance)
-    expect(abortController.signal.aborted).toBe(true)
-    expect(instance?.hasOutput).toBe(false)
+    expect(group.state.isValidating).toBe(false)
     expect(instance?.disposed).toBe(false)
+    pending.resolve(null)
   })
 
   it('stores the group on its trie node and follows that node when it moves', () => {
@@ -744,11 +747,13 @@ describe('FormGroupApi', () => {
     expect(group.state.isSubmitSuccessful).toBe(false)
 
     finishInvalidSubmit()
-    await expect(submitPromise).resolves.toEqual(['Group is invalid'])
+    await expect(submitPromise).resolves.toEqual([
+      { message: 'Group is invalid' },
+    ])
     expect(group.state.isSubmitting).toBe(false)
   })
 
-  it('calls onSubmitInvalid when a group validator throws', async () => {
+  it('rejects a group validator exception without treating it as invalid', async () => {
     const error = new Error('Group validator failed')
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
     const onSubmit = vi.fn()
@@ -772,25 +777,21 @@ describe('FormGroupApi', () => {
     })
 
     try {
-      await expect(group.handleSubmit()).resolves.toEqual([])
+      await expect(group.handleSubmit()).rejects.toMatchObject({
+        errors: [error],
+      })
 
       expect(onSubmit).not.toHaveBeenCalled()
-      expect(onSubmitInvalid).toHaveBeenCalledWith({
-        value: { name: '' },
-        formApi: form,
-        groupApi: group,
-      })
+      expect(onSubmitInvalid).not.toHaveBeenCalled()
       expect(group.state.isSubmitSuccessful).toBe(false)
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Validator threw an error:',
-        error,
-      )
+      expect(consoleSpy).not.toHaveBeenCalled()
+      expect(group.state.isSubmitting).toBe(false)
     } finally {
       consoleSpy.mockRestore()
     }
   })
 
-  it('calls onSubmitInvalid when a grouped field validator throws', async () => {
+  it('rejects a grouped field exception and clears submission state', async () => {
     const error = new Error('Field validator failed')
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
     const onSubmit = vi.fn()
@@ -817,18 +818,111 @@ describe('FormGroupApi', () => {
     })
 
     try {
-      await expect(group.handleSubmit()).resolves.toEqual([])
+      await expect(group.handleSubmit()).rejects.toMatchObject({
+        errors: [error],
+      })
 
       expect(onSubmit).not.toHaveBeenCalled()
-      expect(onSubmitInvalid).toHaveBeenCalledOnce()
+      expect(onSubmitInvalid).not.toHaveBeenCalled()
       expect(group.state.isSubmitSuccessful).toBe(false)
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Validator threw an error:',
-        error,
-      )
+      expect(group.state.isSubmitting).toBe(false)
+      expect(form.state.isValidating).toBe(false)
+      expect(consoleSpy).not.toHaveBeenCalled()
     } finally {
       consoleSpy.mockRestore()
     }
+  })
+
+  it('observes a deferred field exception while legacy group validation settles', async () => {
+    const error = new Error('Deferred field failure')
+    const failed = promiseWithResolvers<never>()
+    const groupWork = promiseWithResolvers<null>()
+    const onSubmit = vi.fn()
+    const onSubmitInvalid = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { details: { name: '' } },
+    })
+    form._getOrCreateFieldApi({
+      name: 'details.name',
+      validators: [{ triggers: [], run: () => failed.promise }],
+    })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'details',
+      validators: [{ triggers: [], run: () => groupWork.promise }],
+      onSubmit,
+      onSubmitInvalid,
+    })
+    const submit = group.handleSubmit()
+    const rejection = expect(submit).rejects.toMatchObject({ errors: [error] })
+    failed.reject(error)
+    await expect
+      .poll(() => form.getFieldMeta('details.name')?.isValidating)
+      .toBe(false)
+    expect(group.state.isSubmitting).toBe(true)
+    expect(group.state.isValidating).toBe(true)
+    groupWork.resolve(null)
+    await rejection
+    expect(group.state.isSubmitting).toBe(false)
+    expect(group.state.isSubmitSuccessful).toBe(false)
+    expect(group.state.isValidating).toBe(false)
+    expect(form.state.isValidating).toBe(false)
+    expect(onSubmit).not.toHaveBeenCalled()
+    expect(onSubmitInvalid).not.toHaveBeenCalled()
+  })
+
+  it('cancels a registered field run before its waiting validator starts', async () => {
+    const pending = promiseWithResolvers<null>()
+    const queued = vi.fn()
+    const form = new InternalFormApi({
+      defaultValues: { details: { name: '' } },
+    })
+    form._getOrCreateFieldApi({
+      name: 'details.name',
+      validators: [
+        { triggers: [], run: () => pending.promise },
+        { triggers: [], bailIfInvalid: true, run: queued },
+      ],
+    })
+    const group = new InternalFormGroupApi({ form, name: 'details' })
+    const validation = group.validate('submit')
+    expect(group.state.isValidating).toBe(true)
+    group.reset()
+    await validation
+    expect(group.state.isValidating).toBe(false)
+    expect(form.state.isValidating).toBe(false)
+    pending.resolve(null)
+    await pending.promise
+    expect(queued).not.toHaveBeenCalled()
+  })
+
+  it('propagates field selection failures through explicit group validation', async () => {
+    const error = new Error('Selection failure')
+    const form = new InternalFormApi({
+      defaultValues: { details: { name: '' } },
+    })
+    form._getOrCreateFieldApi({
+      name: 'details.name',
+      validators: [
+        {
+          triggers: [
+            {
+              trigger: 'change',
+              when: () => {
+                throw error
+              },
+            },
+          ],
+          run: () => null,
+        },
+      ],
+    })
+    const group = new InternalFormGroupApi({ form, name: 'details' })
+    await expect(group.validate('change')).rejects.toMatchObject({
+      errors: [error],
+    })
+    expect(group.state.isValidating).toBe(false)
+    expect(form.state.isValidating).toBe(false)
   })
 
   it('calls onSubmitInvalid and preserves a rejected group onSubmit', async () => {
@@ -916,7 +1010,6 @@ describe('FormGroupApi', () => {
     expect(onSubmit).toHaveBeenLastCalledWith(
       expect.objectContaining({ validatorOutputs: [undefined] }),
     )
-    expect(group._validatorInstances?.[0]?.hasOutput).toBe(false)
   })
 
   it('keeps submission lifecycle independent between sibling groups', async () => {
@@ -1101,8 +1194,9 @@ describe('FormGroupApi', () => {
     new InternalFormGroupApi({ form, name: 'billingDetails' })
 
     guestField.handleChange('Tony')
-    await billingField._runFieldValidation('submit')
-    states.length = 0
+    await billingField._runFieldValidation('submit', { catchErrors: false })
+      ?.pending
+    clearArray(states)
 
     void guestField.meta
 
@@ -1168,14 +1262,6 @@ describe('FormGroupApi', () => {
     await group.validate('submit')
 
     expect(nameField.errors).toEqual([{ message: 'Name is required' }])
-    const validatorInstance = group._validatorInstances![0]!
-    expect(
-      nameField._getBaseMeta()._validationSourceErrors?.get(validatorInstance),
-    ).toEqual({
-      errors: [{ message: 'Name is required' }],
-      sourceEvent: 'submit',
-    })
-    expect(nameField._getBaseMeta()._validationSourceErrors?.size).toBe(1)
     expect(nameField.meta.isInvalid).toBe(true)
   })
 
@@ -1231,22 +1317,6 @@ describe('FormGroupApi', () => {
       { message: 'Group name error' },
       { message: 'Root name error' },
     ])
-    expect(
-      nameField
-        ._getBaseMeta()
-        ._validationSourceErrors?.get(group._validatorInstances![0]!),
-    ).toEqual({
-      errors: [{ message: 'Group name error' }],
-      sourceEvent: 'submit',
-    })
-    expect(
-      nameField
-        ._getBaseMeta()
-        ._validationSourceErrors?.get(form._validatorInstances![0]!),
-    ).toEqual({
-      errors: [{ message: 'Root name error' }],
-      sourceEvent: 'submit',
-    })
   })
 
   it('keeps sibling group validator errors independently owned', async () => {
@@ -1574,7 +1644,9 @@ describe('FormGroupApi', () => {
       name: 'guestDetails',
     })
 
-    const validating = nameField._runFieldValidation('submit')
+    const validating = nameField._runFieldValidation('submit', {
+      catchErrors: false,
+    })?.pending
 
     await vi.waitFor(() => expect(group.state.isValidating).toBe(true))
     expect(group._groupField.meta.isSelfValidating).toBe(false)
@@ -1860,7 +1932,7 @@ describe('FormGroupApi', () => {
     expect(group.state.errors).toEqual([])
   })
 
-  it('only clears the blurred field when a group validator skips blur', async () => {
+  it('preserves group errors when a validator does not run on blur', async () => {
     const form = new InternalFormApi({
       defaultValues: { guestDetails: { name: '', email: '' } },
     })
@@ -1888,7 +1960,7 @@ describe('FormGroupApi', () => {
     emailField.handleBlur()
 
     expect(nameField.errors).toEqual([{ message: 'Name is required' }])
-    expect(emailField.errors).toEqual([])
+    expect(emailField.errors).toEqual([{ message: 'Email is required' }])
   })
 
   it('replaces submit errors when the group validator runs on change', async () => {
@@ -2090,5 +2162,41 @@ describe('FormGroupApi', () => {
     expect(billingField.value).toBe('Alice')
     expect(billingField.meta.isDirty).toBe(true)
     expect(form.state.isDirty).toBe(true)
+  })
+})
+
+describe('group error storage', () => {
+  it('clears an actual skipped group contribution only along the change path', async () => {
+    const pending = promiseWithResolvers<string>()
+    const skipped = vi.fn(() => ({
+      form: 'Stored group',
+      fields: { name: 'Stored name', email: 'Stored email' },
+    }))
+    const form = new InternalFormApi({
+      defaultValues: { details: { name: '', email: '' } },
+    })
+    const name = form._getOrCreateFieldApi({ name: 'details.name' })
+    const email = form._getOrCreateFieldApi({ name: 'details.email' })
+    const group = new InternalFormGroupApi({
+      form,
+      name: 'details',
+      validators: [
+        {
+          triggers: ['change'],
+          run: ({ event }) => (event === 'submit' ? null : pending.promise),
+        },
+        { triggers: ['change'], bailIfInvalid: true, run: skipped },
+      ],
+    })
+    await group.handleSubmit()
+    name.handleChange('new')
+    expect(group.state.errors).toEqual([{ message: 'Stored group' }])
+    expect(name.errors).toEqual([{ message: 'Stored name' }])
+    pending.resolve('Current group')
+    await expect.poll(() => group.state.isValidating).toBe(false)
+    expect(skipped).toHaveBeenCalledOnce()
+    expect(group.state.errors).toEqual([{ message: 'Current group' }])
+    expect(name.errors).toEqual([])
+    expect(email.errors).toEqual([{ message: 'Stored email' }])
   })
 })

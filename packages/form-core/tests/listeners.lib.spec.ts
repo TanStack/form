@@ -119,7 +119,13 @@ describe('runFormListenerPipeline', () => {
 
     await expect
       .poll(() => consoleError.mock.calls)
-      .toContainEqual(expect.arrayContaining([error]))
+      .toEqual([
+        [
+          'Listener threw an error:',
+          expect.objectContaining({ errors: [error] }),
+        ],
+      ])
+    expect(consoleError.mock.calls[0]![1]).toBeInstanceOf(AggregateError)
   })
 })
 

@@ -1,4 +1,4 @@
-import { InternalFormApi } from '@tanstack/form-core/internals'
+import { InternalFormApi, clearArray } from '@tanstack/form-core/internals'
 import { describe, expect, it, vi } from 'vitest'
 import { createMountedFormsController } from '../src/bridge/forms/mountedForms'
 import { formDevtoolsEventClient } from '../src/eventClient.lib'
@@ -58,7 +58,7 @@ describe('mounted forms bridge', () => {
       })
       mountedForms.updateForm(form)
 
-      snapshots.length = 0
+      clearArray(snapshots)
       formDevtoolsEventClient.emit('request-mounted-forms', {})
 
       expect(snapshots).toEqual([['renamed-profile']])

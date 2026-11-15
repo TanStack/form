@@ -39,7 +39,10 @@ import type {
 import type { InternalRootFieldApi } from './RootFieldApi.lib'
 import type { NameSegment } from '../utils.lib'
 import type { AnyInternalFormApi } from '../FormApi/FormApi.lib'
-import type { FieldListenerTriggers } from '../pipeline/listeners/listeners.public'
+import type {
+  FieldListenerTriggers,
+  FieldListeners,
+} from '../pipeline/listeners/listeners.public'
 import type {
   NotifyFieldListenerOptions,
   NotifyFieldValidatorOptions,
@@ -79,15 +82,14 @@ import type { PipelineResult } from '../pipeline/state.lib'
 import type { ResolvedInternalFieldUpdateOptions } from '../types.lib'
 import type { FieldErrors } from '../validation/state.public'
 
-export type AnyFieldApiOptions = FieldApiOptions<
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any
->
+export type AnyFieldApiOptions = Omit<
+  FieldApiOptions<any, any, any, FieldValidators<any, any, any>, any, any, any>,
+  'listeners'
+> & {
+  // error types would become something like `ValidationIssue[]` for adapter compat.
+  // breaks our intended internal usage, though.
+  listeners?: FieldListeners<any, any, any, any, any, any>
+}
 export type AnyFieldValidator = FieldValidator<any, any, any>
 
 export interface DefaultValueCacheEntry {

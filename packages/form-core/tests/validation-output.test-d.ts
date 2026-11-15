@@ -1,8 +1,8 @@
 import { describe, expectTypeOf, it } from 'vitest'
 import { z } from 'zod'
 import { formOptions } from '../src'
-import { InternalValidatorInstance } from '../src/ValidatorInstance.lib'
-import { parseStandardSchema, validateServerValues } from '../src/internals'
+import { validateServerValues } from '../src/internals'
+import { parseStandardSchema } from '../src/pipeline/validation/standardSchema.lib'
 import type {
   FieldValidatorContext,
   FieldValidators,
@@ -38,11 +38,7 @@ describe('validator output types', () => {
     const result = parseStandardSchema(
       z.object({ name: z.string() }),
       { name: 'Tony' },
-      new InternalValidatorInstance({
-        definition: { run: z.object({ name: z.string() }) },
-        owner: undefined,
-        scope: 'form',
-      }),
+      { scope: 'form' },
     )
 
     expectTypeOf<

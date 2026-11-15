@@ -1,6 +1,7 @@
 import {
   InternalFormApi,
   InternalFormGroupApi,
+  clearArray,
   installDevtoolsBridge,
 } from '@tanstack/form-core/internals'
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -597,7 +598,7 @@ describe('field list bridge', () => {
         ],
       })
 
-      patches.length = 0
+      clearArray(patches)
       unregisterStable()
       fields.unmountField(stableField, 'stable')
       const unregisterRemounted = stableField._register()
@@ -686,7 +687,7 @@ describe('field list bridge', () => {
         ]),
       )
 
-      patches.length = 0
+      clearArray(patches)
       child.handleChange('', { causeValidation: false })
       expect(parent.meta.isDefaultValue).toBe(true)
       expect(child.meta.isDefaultValue).toBe(true)
@@ -706,7 +707,7 @@ describe('field list bridge', () => {
         ]),
       )
 
-      patches.length = 0
+      clearArray(patches)
       form._update({
         defaultValues: { user: { name: 'new default' } },
       })
@@ -726,7 +727,7 @@ describe('field list bridge', () => {
         ]),
       )
 
-      patches.length = 0
+      clearArray(patches)
       parent._kill()
       await flushPatches()
 

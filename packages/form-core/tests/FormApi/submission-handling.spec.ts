@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
 import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
+import { promiseWithResolvers } from '../test-utils'
 
 describe('form - submission handling', () => {
   describe('handleSubmit', () => {
@@ -348,7 +349,7 @@ describe('form - submission handling', () => {
       expect(form.state.submissionAttempts).toBe(0)
     })
 
-    it('skips onSubmit when a field validator throws during submit', async () => {
+    it('rejects a field exception and clears submission state', async () => {
       const error = new Error('Field validator failed')
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
       const onSubmit = vi.fn()
@@ -371,26 +372,59 @@ describe('form - submission handling', () => {
       })
 
       try {
-        const result = await form.handleSubmit()
-
-        expect(result).toEqual([])
-        expect(onSubmit).not.toHaveBeenCalled()
-        expect(onSubmitInvalid).toHaveBeenCalledWith({
-          value: { name: '' },
-          formApi: form,
+        await expect(form.handleSubmit()).rejects.toMatchObject({
+          errors: [error],
         })
+        expect(onSubmit).not.toHaveBeenCalled()
+        expect(onSubmitInvalid).not.toHaveBeenCalled()
         expect(form.state.isSubmitting).toBe(false)
         expect(form.state.isSubmitSuccessful).toBe(false)
-        expect(consoleSpy).toHaveBeenCalledWith(
-          'Validator threw an error:',
-          error,
-        )
+        expect(form.state.isValidating).toBe(false)
+        expect(consoleSpy).not.toHaveBeenCalled()
       } finally {
         consoleSpy.mockRestore()
       }
     })
 
-    it('ignores rejected onSubmit errors after reset', async () => {
+    it('observes deferred field failures while sibling validation settles', async () => {
+      const error = new Error('Deferred field failure')
+      const failed = promiseWithResolvers<never>()
+      const sibling = promiseWithResolvers<null>()
+      const onSubmit = vi.fn()
+      const onSubmitInvalid = vi.fn()
+      const form = new InternalFormApi({
+        defaultValues: { first: '', second: '' },
+        onSubmit,
+        onSubmitInvalid,
+      })
+      form._getOrCreateFieldApi({
+        name: 'first',
+        validators: [{ triggers: [], run: () => failed.promise }],
+      })
+      form._getOrCreateFieldApi({
+        name: 'second',
+        validators: [{ triggers: [], run: () => sibling.promise }],
+      })
+      const submit = form.handleSubmit()
+      const rejection = expect(submit).rejects.toMatchObject({
+        errors: [error],
+      })
+      failed.reject(error)
+      await expect
+        .poll(() => form.getFieldMeta('first')?.isValidating)
+        .toBe(false)
+      expect(form.state.isSubmitting).toBe(true)
+      expect(form.state.isValidating).toBe(true)
+      sibling.resolve(null)
+      await rejection
+      expect(form.state.isSubmitting).toBe(false)
+      expect(form.state.isSubmitSuccessful).toBe(false)
+      expect(form.state.isValidating).toBe(false)
+      expect(onSubmit).not.toHaveBeenCalled()
+      expect(onSubmitInvalid).not.toHaveBeenCalled()
+    })
+
+    it('observes rejected onSubmit errors after reset without changing reset state', async () => {
       let rejectSubmit!: (error: Error) => void
       const error = new Error('Late submit failure')
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
@@ -413,7 +447,7 @@ describe('form - submission handling', () => {
         const result = await submitPromise
 
         expect(result).toEqual([])
-        expect(consoleSpy).not.toHaveBeenCalled()
+        expect(consoleSpy).toHaveBeenCalledWith(error)
         expect(form.state.values).toEqual({ name: 'reset value' })
         expect(form.state.isSubmitting).toBe(false)
         expect(form.state.submissionAttempts).toBe(0)
@@ -506,7 +540,6 @@ describe('form - submission handling', () => {
       expect(onSubmit).toHaveBeenLastCalledWith(
         expect.objectContaining({ validatorOutputs: [undefined] }),
       )
-      expect(form._validatorInstances?.[0]?.hasOutput).toBe(false)
     })
 
     it('skips bailIfInvalid form validators when field validators fail first', async () => {
@@ -562,13 +595,13 @@ describe('form - submission handling', () => {
       expect(thirdValidatorFn).not.toHaveBeenCalled()
     })
 
-    it('skips all remaining validators after bailIfInvalid on submit when errors exist', async () => {
+    it('continues unflagged submit validators after an actual bail skip', async () => {
       const secondValidatorFn = vi
         .fn()
         .mockImplementation(() => ({ message: 'Should not run' }))
       const thirdValidatorFn = vi
         .fn()
-        .mockImplementation(() => ({ message: 'Should also not run' }))
+        .mockImplementation(() => ({ message: 'Unflagged error' }))
       const form = new InternalFormApi({
         defaultValues: { name: '' },
         validators: [
@@ -588,9 +621,12 @@ describe('form - submission handling', () => {
         ],
       })
       await form.handleSubmit()
-      expect(form.state.errors).toEqual([{ message: 'First error' }])
+      expect(form.state.errors).toEqual([
+        { message: 'First error' },
+        { message: 'Unflagged error' },
+      ])
       expect(secondValidatorFn).not.toHaveBeenCalled()
-      expect(thirdValidatorFn).not.toHaveBeenCalled()
+      expect(thirdValidatorFn).toHaveBeenCalledOnce()
     })
 
     it('skips validators with skipOnSubmit: true', async () => {
@@ -697,7 +733,7 @@ describe('form - submission handling', () => {
       expect(validatorFn).toHaveBeenCalledOnce()
     })
 
-    it('returns the same promise when handleSubmit is called multiple times during submission', async () => {
+    it('starts a distinct attempt for every handleSubmit call', async () => {
       let resolveValidator!: () => void
       const validatorPromise = new Promise<void>((resolve) => {
         resolveValidator = resolve
@@ -725,7 +761,7 @@ describe('form - submission handling', () => {
       // Second handleSubmit call while first is still pending
       const secondSubmitPromise = form.handleSubmit()
 
-      expect(firstSubmitPromise).toBe(secondSubmitPromise)
+      expect(firstSubmitPromise).not.toBe(secondSubmitPromise)
 
       resolveValidator()
 
