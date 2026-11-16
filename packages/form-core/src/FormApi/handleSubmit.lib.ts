@@ -99,7 +99,7 @@ async function validateFormSubmission<TFormData>(
 
   batch(() => {
     let fieldIndex = 0
-    for (const field of submission.fields.keys()) {
+    for (const [field, snapshot] of submission.fields) {
       const pipelineResult = fieldValidatorResults[fieldIndex]
       fieldIndex++
       if (!pipelineResult) continue
@@ -112,7 +112,9 @@ async function validateFormSubmission<TFormData>(
             ...getValidationErrors<TFormData>(result.value.result),
           )
         }
-        field._processValidationResult(result, 'submit')
+        if (Object.is(field.value, snapshot.value)) {
+          field._processValidationResult(result, 'submit')
+        }
       }
     }
   })
