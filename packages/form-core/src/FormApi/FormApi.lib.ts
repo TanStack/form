@@ -469,10 +469,24 @@ export class InternalFormApi<TFormData> implements FormApi<
       for (const segment of nameToFieldNodeSegments(fieldName)) {
         const child: AnyInternalFieldApi | undefined =
           current._getChild(segment)
-        if (!child) break
+        if (!child) return
         child._cancelValidation()
         current = child
       }
+      // We could technically end up in a situation where
+      // * subfields have an async field validator
+      // * the parent receives a `setFieldValue`
+      // It currently doesn't cancel subfield pending validation
+
+      // It'd potentially set errors for outdated field values.
+
+      // Cancelling every subfield means a full walk. Could be in the thousands of child entries for simple
+      // array operations. I don't think that's worth it under the current architecture.
+      // Wait for a real world example. Parent invalidation might be worth a look.
+
+      // for (const child of current._children) {
+      //   visitFieldSubtree(child, (field) => field._cancelValidation())
+      // }
     })
   }
 
