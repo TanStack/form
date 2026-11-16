@@ -303,13 +303,15 @@ export interface PreactFormGroupProps<
   in out TGroupValidators extends FormGroupValidators<TGroupValue>,
   in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends Record<string, FunctionComponent<any>>,
+  in out TSubmitReturn = void,
 > extends Omit<
   FormGroupOptions<
     TFormData,
     TGroupName,
     TGroupValue,
     TGroupValidators,
-    TFormError
+    TFormError,
+    TSubmitReturn
   >,
   'form'
 > {
@@ -318,7 +320,7 @@ export interface PreactFormGroupProps<
       TFormData,
       TGroupName,
       TGroupValue,
-      ToFormGroupErrorTypes<NoInfer<TGroupValidators>>,
+      ToFormGroupErrorTypes<NoInfer<TGroupValidators>, NoInfer<TSubmitReturn>>,
       TFormError,
       TFieldComponents
     >,
@@ -334,6 +336,7 @@ export interface PreactFormGroupComponent<
     TGroupName extends DeepKeys<TFormData>,
     TGroupValue extends DeepValue<TFormData, TGroupName>,
     const TGroupValidators extends FormGroupValidators<TGroupValue>,
+    TSubmitReturn = void,
   >(
     props: PreactFormGroupProps<
       TFormData,
@@ -341,7 +344,8 @@ export interface PreactFormGroupComponent<
       TGroupValue,
       TGroupValidators,
       TFormError,
-      TFieldComponents
+      TFieldComponents,
+      TSubmitReturn
     >,
   ): CrossVersionPreactNode
 }

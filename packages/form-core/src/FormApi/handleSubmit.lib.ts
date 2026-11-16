@@ -6,41 +6,20 @@ import {
 import { createErrorMap } from '../validation/results/createErrorMap.lib'
 import { parseIssuesFactory } from '../validation/results/parseIssues.lib'
 import { SubmissionAttempt } from '../submissionAttempt.lib'
+import {
+  createValidationError,
+  isSubmitError,
+  submitErrorSymbol,
+  withSubmitError,
+} from '../submissionError.lib'
 import type { SubmissionOutcome } from '../submissionAttempt.lib'
-import type { FormSubmitContext, OnSubmitError } from './formSubmit.public'
+import type { FormSubmitContext } from './formSubmit.public'
 import type {
-  FormValidationFailure,
   FormValidationResult,
   FormattedValidationError,
 } from '../validation/results/results.public'
 import type { InternalFormApi } from './FormApi.lib'
 import type { AnyInternalFieldApi } from '../FieldApi/FieldApi.lib'
-
-export const submitErrorSymbol = Symbol('Submit error')
-
-function isSubmitError<TFormData>(
-  value: unknown,
-): value is OnSubmitError<FormValidationFailure<TFormData>> {
-  return (
-    typeof value === 'object' && value !== null && submitErrorSymbol in value
-  )
-}
-
-function createValidationError<TError extends FormValidationFailure<any>>(
-  error: TError,
-): OnSubmitError<TError> {
-  return { [submitErrorSymbol]: error }
-}
-
-function withSubmitError<TFunction extends (...args: any) => unknown>(
-  callback: TFunction,
-): any {
-  return (...args: any[]) => {
-    const obj = callback(...args)
-    Object.defineProperty(obj, submitErrorSymbol, { value: obj })
-    return obj
-  }
-}
 
 interface FormSubmissionValidation<TFormData> {
   hasFailed: boolean

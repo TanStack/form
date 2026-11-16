@@ -93,7 +93,7 @@ function createFieldWithContext(
 }
 
 type AnyFormGroupComponent = FunctionComponent<
-  PreactFormGroupProps<any, any, any, any, any, any>
+  PreactFormGroupProps<any, any, any, any, any, any, any>
 >
 
 function createFormGroupWithContext(
@@ -101,7 +101,7 @@ function createFormGroupWithContext(
 ): AnyFormGroupComponent {
   const TanStackFormGroup: AnyFormGroupComponent = (props) => {
     const groupRef =
-      Preact.useRef<InternalFormGroupApi<any, any, any, any, any>>(null)
+      Preact.useRef<InternalFormGroupApi<any, any, any, any, any, any>>(null)
 
     if (!groupRef.current) {
       groupRef.current = attachAppFormGroupComponents(
@@ -127,10 +127,17 @@ function createFormGroupWithContext(
 }
 
 function attachAppFormGroupComponents(
-  group: InternalFormGroupApi<any, any, any, any, any>,
+  group: InternalFormGroupApi<any, any, any, any, any, any>,
   form: InternalPreactFormApi,
 ) {
-  type GroupWithComponents = InternalFormGroupApi<any, any, any, any, any> & {
+  type GroupWithComponents = InternalFormGroupApi<
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+  > & {
     Field: FunctionComponent<any>
     ArrayField: FunctionComponent<any>
     Subscribe: FunctionComponent<any>

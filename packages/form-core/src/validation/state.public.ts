@@ -262,7 +262,12 @@ type ToValidatorErrorTypes<
  */
 export type ToFormGroupErrorTypes<
   TGroupValidators extends FormGroupValidators<any>,
-> = ToValidatorErrorTypes<TGroupValidators, FormGroupValidators<any>, never>
+  TSubmitReturn,
+> = ToValidatorErrorTypes<
+  TGroupValidators,
+  FormGroupValidators<any>,
+  TSubmitReturn
+>
 
 type FallbackToValidationIssue<TFieldError> = [TFieldError] extends [never]
   ? ValidationIssue

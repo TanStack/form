@@ -74,7 +74,7 @@ export function createSubscribeComponent(
 }
 
 type AnyFormGroupComponent = FunctionComponent<
-  ReactFormGroupProps<any, any, any, any, any, any>
+  ReactFormGroupProps<any, any, any, any, any, any, any>
 >
 
 export function createFormGroupComponent(
@@ -82,7 +82,7 @@ export function createFormGroupComponent(
 ): AnyFormGroupComponent {
   const TanStackFormGroup: AnyFormGroupComponent = (props) => {
     const groupRef =
-      React.useRef<InternalFormGroupApi<any, any, any, any, any>>(null)
+      React.useRef<InternalFormGroupApi<any, any, any, any, any, any>>(null)
 
     if (!groupRef.current) {
       groupRef.current = attachReactFormGroupComponents(
@@ -108,10 +108,17 @@ export function createFormGroupComponent(
 }
 
 function attachReactFormGroupComponents(
-  group: InternalFormGroupApi<any, any, any, any, any>,
+  group: InternalFormGroupApi<any, any, any, any, any, any>,
   form: InternalReactFormApi,
 ) {
-  type FormGroupComponents = InternalFormGroupApi<any, any, any, any, any> & {
+  type FormGroupComponents = InternalFormGroupApi<
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+  > & {
     Field: FunctionComponent<any>
     ArrayField: FunctionComponent<any>
     Subscribe: FunctionComponent<any>

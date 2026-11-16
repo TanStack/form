@@ -6,6 +6,7 @@ import { resolveDefaultOptions } from '../defaultOptions.lib'
 import { startGroupValidation } from '../pipeline/validation/ownerValidation.lib'
 import { transformFieldOptionsFieldNames } from '../FieldApi/fieldOptions.lib'
 import {
+  OnSubmitErrorSource,
   removeSourceErrors,
   replaceSourceErrors,
 } from '../validation/errorStorage.lib'
@@ -23,7 +24,11 @@ import {
 } from './formGroupState.lib'
 import { handleFormGroupSubmit } from './handleSubmit.lib'
 import type { FormGroupValidationOutcome } from './handleSubmit.lib'
-import type { FormattedValidationError } from '../validation/results/results.public'
+import type {
+  FormValidationResult,
+  FormattedValidationError,
+} from '../validation/results/results.public'
+import type { ValidationErrorSource } from '../validation/errorStorage.lib'
 import type { ClientValidationRun } from '../pipeline/validation/clientValidation.lib'
 import type { GroupValidationOptions } from '../pipeline/validation/ownerValidation.lib'
 import type {
@@ -59,6 +64,7 @@ export type AnyInternalFormGroupApi = InternalFormGroupApi<
   any,
   any,
   any,
+  any,
   any
 >
 export type InternalGroupValidatorInstance = ValidatorInstance<'group'>
@@ -69,11 +75,12 @@ export class InternalFormGroupApi<
   TGroupValue extends DeepValue<TFormData, TGroupName>,
   const TGroupValidators extends FormGroupValidators<TGroupValue>,
   TFormError extends ScopedErrorTypes,
+  TSubmitReturn,
 > implements FormGroupApi<
   TFormData,
   TGroupName,
   TGroupValue,
-  ToFormGroupErrorTypes<TGroupValidators>,
+  ToFormGroupErrorTypes<TGroupValidators, TSubmitReturn>,
   TFormError
 > {
   readonly form: FormApi<TFormData, TFormError> & InternalFormApi<any>
@@ -84,13 +91,18 @@ export class InternalFormGroupApi<
     TGroupName,
     TGroupValue,
     TGroupValidators,
-    TFormError
+    TFormError,
+    TSubmitReturn
   >
   /** Stable runtime instances correlated with `_options.validators` by slot. */
   _validatorInstances: ValidatorInstances<'group'> = null
   atom: ReadonlyAtom<
-    FormGroupState<TGroupValue, ToFormGroupErrorTypes<TGroupValidators>>
+    FormGroupState<
+      TGroupValue,
+      ToFormGroupErrorTypes<TGroupValidators, TSubmitReturn>
+    >
   >
+  readonly _onSubmitSource = new OnSubmitErrorSource()
   _isSubmitting = createAtom(false)
   _isSubmitSuccessful = createAtom(false)
   _submissionAttempts = createAtom(0)
@@ -105,6 +117,7 @@ export class InternalFormGroupApi<
     for (const submission of submissions) submission.invalidate()
     this._isSubmitting.set(false)
     this._isSubmitSuccessful.set(false)
+    this.form._pruneErrorTargets(removeSourceErrors(this._onSubmitSource))
   }
   /** Invalidates group state when reset or remount replaces its trie node. */
   _groupFieldVersion = createAtom(0)
@@ -127,7 +140,8 @@ export class InternalFormGroupApi<
       TGroupName,
       TGroupValue,
       TGroupValidators,
-      TFormError
+      TFormError,
+      TSubmitReturn
     >,
   ) {
     this.form = options.form as never
@@ -171,7 +185,8 @@ export class InternalFormGroupApi<
       TGroupName,
       TGroupValue,
       TGroupValidators,
-      TFormError
+      TFormError,
+      TSubmitReturn
     >,
   ) => {
     batch(() => {
@@ -191,7 +206,8 @@ export class InternalFormGroupApi<
         TGroupName,
         TGroupValue,
         TGroupValidators,
-        TFormError
+        TFormError,
+        TSubmitReturn
       >,
       'validators'
     >,
@@ -248,13 +264,25 @@ export class InternalFormGroupApi<
     result: PipelineResult<InternalGroupValidatorInstance>,
     sourceEvent: ValidatorEvents,
   ): void {
-    const parsed = parseValidationResult(result.value.result)
+    this._applyValidationResult(
+      result.instance,
+      result.value.result,
+      sourceEvent,
+    )
+  }
+
+  _applyValidationResult(
+    source: ValidationErrorSource,
+    result: FormValidationResult<TGroupValue>,
+    sourceEvent: ValidatorEvents,
+  ): void {
+    const parsed = parseValidationResult(result)
     const resolved = this.form._resolveRoutedFieldErrors(
       Object.entries(parsed.subfields ?? {}),
       this._groupField,
     )
     this.form._pruneErrorTargets(
-      replaceSourceErrors(result.instance, sourceEvent, [
+      replaceSourceErrors(source, sourceEvent, [
         [this._groupField, parsed.self ?? []],
         ...resolved,
       ]),

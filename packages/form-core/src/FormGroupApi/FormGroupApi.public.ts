@@ -3,6 +3,7 @@ import type {
   ToFormGroupErrorTypes,
 } from '../validation/state.public'
 import type { FormApi } from '../FormApi/FormApi.public'
+import type { FormSubmitContext } from '../FormApi/formSubmit.public'
 import type {
   FormGroupValidator,
   FormGroupValidators,
@@ -33,6 +34,9 @@ export interface FormGroupSubmitContext<
   out TOutputs,
   in out TGroupError extends ScopedErrorTypes,
   in out TFormError extends ScopedErrorTypes,
+> extends Pick<
+  FormSubmitContext<TGroupValue, readonly unknown[]>,
+  'createValidationError' | 'createErrorMap' | 'parseIssues'
 > {
   /** The group values for this submission. */
   value: TGroupValue
@@ -107,16 +111,17 @@ export type FormGroupSubmitFn<
   in out TGroupValue,
   in out TGroupValidators extends FormGroupValidators<TGroupValue>,
   in out TFormError extends ScopedErrorTypes,
+  out TSubmitReturn,
 > = (
   context: FormGroupSubmitContext<
     TFormData,
     TGroupName,
     TGroupValue,
     ToFormGroupOutputs<NoInfer<TGroupValidators>>,
-    ToFormGroupErrorTypes<NoInfer<TGroupValidators>>,
+    ToFormGroupErrorTypes<NoInfer<TGroupValidators>, never>,
     TFormError
   >,
-) => void | Promise<void>
+) => TSubmitReturn
 
 export type FormGroupOnSubmitInvalidFn<
   TFormData,
@@ -140,6 +145,7 @@ export interface FormGroupOptions<
   in out TGroupValue,
   in out TGroupValidators extends FormGroupValidators<TGroupValue>,
   in out TFormError extends ScopedErrorTypes,
+  in out TSubmitReturn = void,
 > {
   form: FormApi<TFormData, TFormError>
   name: TGroupName
@@ -176,7 +182,8 @@ export interface FormGroupOptions<
     TGroupName,
     TGroupValue,
     TGroupValidators,
-    TFormError
+    TFormError,
+    TSubmitReturn
   >
   /**
    * Called when group validation fails or validation or submission throws. The
@@ -198,7 +205,7 @@ export interface FormGroupOptions<
     TFormData,
     TGroupName,
     TGroupValue,
-    NoInfer<ToFormGroupErrorTypes<TGroupValidators>>,
+    NoInfer<ToFormGroupErrorTypes<TGroupValidators, TSubmitReturn>>,
     TFormError
   >
 }

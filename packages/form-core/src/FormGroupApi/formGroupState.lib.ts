@@ -29,13 +29,15 @@ export function createFormGroupStateAtom<
   TGroupValue extends DeepValue<TFormData, TGroupName>,
   TGroupValidators extends FormGroupValidators<TGroupValue>,
   TFormError extends ScopedErrorTypes,
+  TSubmitReturn,
 >(
   group: InternalFormGroupApi<
     TFormData,
     TGroupName,
     TGroupValue,
     TGroupValidators,
-    TFormError
+    TFormError,
+    TSubmitReturn
   >,
 ) {
   const groupMetaMarkers: DerivedMetaMarkers = {
@@ -46,7 +48,10 @@ export function createFormGroupStateAtom<
   let cachedErrorMap: ValidationErrorStoreState | undefined
   let cachedGroupErrors: Array<ValidationIssue> = []
   return createAtom<
-    FormGroupState<TGroupValue, ToFormGroupErrorTypes<TGroupValidators>>
+    FormGroupState<
+      TGroupValue,
+      ToFormGroupErrorTypes<TGroupValidators, TSubmitReturn>
+    >
   >(
     (prev) => {
       void group._groupFieldVersion.get()
@@ -69,9 +74,10 @@ export function createFormGroupStateAtom<
           group._validatorInstances?.flatMap(
             (source) => errorMap?.get(source) ?? [],
           ) ?? []
+        cachedGroupErrors.push(...(errorMap?.get(group._onSubmitSource) ?? []))
       }
       const groupErrors = cachedGroupErrors as Array<
-        ToFormGroupErrorTypes<TGroupValidators>['selfError']
+        ToFormGroupErrorTypes<TGroupValidators, TSubmitReturn>['selfError']
       >
       const isInvalid = hasFieldMetaErrors(
         groupBaseMeta,

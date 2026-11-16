@@ -9,7 +9,7 @@ import type {
 } from '../validation/results/results.public'
 import type { StandardSchemaV1 } from '../validation/results/standardSchema.public'
 import type { ParseValidatorCondition } from '../pipeline/validation/formValidators.public'
-import type { submitErrorSymbol } from './handleSubmit.lib'
+import type { submitErrorSymbol } from '../submissionError.lib'
 import type { FormApi } from './FormApi.public'
 import type { ScopedErrorTypes } from '../validation/state.public'
 import type { Awaitable } from '../types.public'

@@ -33,7 +33,7 @@ export type ValidationErrorSource =
   | ValidatorInstance<'form'>
   | OnSubmitErrorSource
 
-/** Stable source for errors returned directly by the form's `onSubmit`. */
+/** Stable source for errors returned directly by a form or group's `onSubmit`. */
 export class OnSubmitErrorSource implements ValidationErrorSourceState {
   readonly scope = validationSourceScopes.onSubmit
   readonly index = 0

@@ -328,13 +328,15 @@ export interface SolidFormGroupProps<
   TGroupValidators extends FormGroupValidators<TGroupValue>,
   TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>>,
+  TSubmitReturn = void,
 > extends Omit<
   FormGroupOptions<
     TFormData,
     TGroupName,
     TGroupValue,
     TGroupValidators,
-    TFormError
+    TFormError,
+    TSubmitReturn
   >,
   'form'
 > {
@@ -343,7 +345,7 @@ export interface SolidFormGroupProps<
       TFormData,
       TGroupName,
       TGroupValue,
-      ToFormGroupErrorTypes<NoInfer<TGroupValidators>>,
+      ToFormGroupErrorTypes<NoInfer<TGroupValidators>, NoInfer<TSubmitReturn>>,
       TFormError,
       TFieldComponents
     >,
@@ -359,6 +361,7 @@ export interface SolidFormGroupComponent<
     TGroupName extends DeepKeys<TFormData>,
     TGroupValue extends DeepValue<TFormData, TGroupName>,
     const TGroupValidators extends FormGroupValidators<TGroupValue>,
+    TSubmitReturn = void,
   >(
     props: SolidFormGroupProps<
       TFormData,
@@ -366,7 +369,8 @@ export interface SolidFormGroupComponent<
       TGroupValue,
       TGroupValidators,
       TFormErrorTypes,
-      TFieldComponents
+      TFieldComponents,
+      TSubmitReturn
     >,
   ): JSX.Element
 }

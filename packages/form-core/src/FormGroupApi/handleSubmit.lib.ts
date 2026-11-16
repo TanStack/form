@@ -1,5 +1,18 @@
 import { SubmissionAttempt } from '../submissionAttempt.lib'
 import { getBy } from '../utils.lib'
+import { createErrorMap } from '../validation/results/createErrorMap.lib'
+import { parseIssuesFactory } from '../validation/results/parseIssues.lib'
+import {
+  getValidationErrors,
+  isErrorResult,
+} from '../validation/results/errors.lib'
+import {
+  createValidationError,
+  isSubmitError,
+  submitErrorSymbol,
+  withSubmitError,
+} from '../submissionError.lib'
+import type { FormGroupSubmitContext } from './FormGroupApi.public'
 import type {
   AnyInternalFormGroupApi,
   InternalFormGroupApi,
@@ -9,7 +22,10 @@ import type { DeepKeys, DeepValue } from '../deep-keys.public'
 import type { ClientValidationRun } from '../pipeline/validation/clientValidation.lib'
 import type { FormGroupValidators } from '../pipeline/validation/validation.public'
 import type { SubmissionOutcome } from '../submissionAttempt.lib'
-import type { FormattedValidationError } from '../validation/results/results.public'
+import type {
+  FormValidationResult,
+  FormattedValidationError,
+} from '../validation/results/results.public'
 import type { ScopedErrorTypes } from '../validation/state.public'
 
 export interface FormGroupValidationOutcome<TGroupValue> {
@@ -37,20 +53,37 @@ async function runFormGroupSubmissionCallbacks<TGroupValue>(
   const submitContext = {
     value,
     formApi: group.form,
-    groupApi: group,
+    groupApi: group as never,
     validatorOutputs:
       validationOutcome.run?.collector.getOutputs(
         validationOutcome.run.validatorCount,
       ) ?? [],
-  } as never
+    createValidationError,
+    createErrorMap: withSubmitError(createErrorMap),
+    parseIssues: withSubmitError(parseIssuesFactory(value, 'field')),
+  } satisfies FormGroupSubmitContext<any, any, any, any, any, any>
 
+  let submitError: FormValidationResult<TGroupValue> = null
   try {
-    await group._options.onSubmit?.(submitContext)
+    const maybeError = await group._options.onSubmit?.(submitContext)
+    if (!submission.isActive()) return { errors: [], successful: false }
+
+    submitError = isSubmitError<TGroupValue>(maybeError)
+      ? maybeError[submitErrorSymbol]
+      : null
+    if (submission.canApplyValidationResults()) {
+      group._applyValidationResult(group._onSubmitSource, submitError, 'submit')
+    }
   } catch (error) {
     if (!submission.isActive()) return { errors: [], successful: false }
     await group._options.onSubmitInvalid?.(invalidContext)
     if (!submission.isActive()) return { errors: [], successful: false }
     throw error
+  }
+
+  if (isErrorResult(submitError)) {
+    await group._options.onSubmitInvalid?.(invalidContext)
+    return { errors: getValidationErrors(submitError), successful: false }
   }
 
   return { errors: [], successful: true }
@@ -62,13 +95,15 @@ export function handleFormGroupSubmit<
   TGroupValue extends DeepValue<TFormData, TGroupName>,
   TGroupValidators extends FormGroupValidators<TGroupValue>,
   TFormError extends ScopedErrorTypes,
+  TSubmitReturn,
 >(
   group: InternalFormGroupApi<
     TFormData,
     TGroupName,
     TGroupValue,
     TGroupValidators,
-    TFormError
+    TFormError,
+    TSubmitReturn
   >,
   submissions: Set<SubmissionAttempt<FormattedValidationError<TGroupValue>>>,
 ): Promise<Array<FormattedValidationError<TGroupValue>>> {
