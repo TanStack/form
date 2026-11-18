@@ -3,11 +3,7 @@ import type {
   InternalFieldUpdateOptions,
   ResolvedInternalFieldUpdateOptions,
 } from './types.lib'
-import type {
-  FieldUpdateOptions,
-  ReadonlyOneOrMany,
-  Updater,
-} from './types.public'
+import type { ReadonlyOneOrMany, Updater } from './types.public'
 import type { AnyInternalFormApi } from './FormApi/FormApi.lib'
 import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
 
@@ -65,19 +61,12 @@ export function resolveFieldUpdateOptions(
   options: InternalFieldUpdateOptions | undefined,
   event: 'change' | 'blur' | 'submit' | 'noEvent',
 ): ResolvedInternalFieldUpdateOptions {
-  const baseOpts: Required<FieldUpdateOptions> = {
+  return {
     causeValidation: options?.causeValidation ?? true,
     markAsBlurred: options?.markAsBlurred ?? event === 'blur',
     markAsDirty: options?.markAsDirty ?? event === 'change',
     markAsTouched:
       options?.markAsTouched ?? (event === 'change' || event === 'submit'),
-  }
-  const noFieldCreationNeeded =
-    !baseOpts.markAsTouched && !baseOpts.markAsDirty && !baseOpts.markAsBlurred
-
-  return {
-    ...baseOpts,
-    _skipFieldCreation: options?._skipFieldCreation ?? noFieldCreationNeeded,
     fieldApiOverride: options?.fieldApiOverride ?? null,
     notifyParentFields: options?.notifyParentFields ?? true,
   }
@@ -87,17 +76,11 @@ export function getTargetField(
   formApi: AnyInternalFormApi,
   fieldName: string,
   options: ResolvedInternalFieldUpdateOptions,
-) {
-  let field: AnyInternalFieldApi | null
-
-  if (options.fieldApiOverride) {
-    field = options.fieldApiOverride
-  } else if (options._skipFieldCreation) {
-    field = formApi._tryGetFieldApi(fieldName)
-  } else {
-    field = formApi._getOrCreateFieldApi({ name: fieldName }, 'internal')
-  }
-  return field
+): AnyInternalFieldApi {
+  return (
+    options.fieldApiOverride ??
+    formApi._getOrCreateFieldApi({ name: fieldName }, 'internal')
+  )
 }
 
 /*

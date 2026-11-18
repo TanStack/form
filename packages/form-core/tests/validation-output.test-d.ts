@@ -261,7 +261,9 @@ describe('validator output types', () => {
     expectTypeOf<ToFormGroupOutputs<typeof validators>>().toEqualTypeOf<
       readonly [number]
     >()
-    expectTypeOf<ToFormGroupErrorTypes<typeof validators>>().toEqualTypeOf<{
+    expectTypeOf<
+      ToFormGroupErrorTypes<typeof validators, never>
+    >().toEqualTypeOf<{
       readonly selfError: ValidationIssue
       readonly subfieldError: ValidationIssue
     }>()

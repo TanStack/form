@@ -142,10 +142,10 @@ export function killField(
 
     for (const node of nodesToKill) {
       node._resetValidation()
-      const nodeMeta = node._atoms.meta?.get()
+      const nodeMeta = node._getBaseMeta()
       removeFieldWatches(node, dependencyChanges)
 
-      if (!node._parent._isRoot && nodeMeta) {
+      if (!node._parent._isRoot) {
         node._parent._updateChildMetaCounts(
           getSubfieldsMetaFlags(nodeMeta, node._errorStore.hasErrors),
           {
@@ -155,7 +155,7 @@ export function killField(
             validating: false,
           },
         )
-      } else if (nodeMeta) {
+      } else {
         const flags = getSubfieldsMetaFlags(
           nodeMeta,
           node._errorStore.hasErrors,

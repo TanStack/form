@@ -1,8 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { InternalFormApi } from '../../src/FormApi/FormApi.lib'
-import { sleep } from '../../src/pipeline/utils.lib'
 
-describe('runSubmissionProcess', () => {
+describe('form submission errors', () => {
   it('applies form and field errors added to a submission error map', async () => {
     const onSubmitInvalid = vi.fn()
     const form = new InternalFormApi({
@@ -29,10 +28,14 @@ describe('runSubmissionProcess', () => {
     expect(form.state.errors).toEqual([{ message: 'Submission failed' }])
     expect(field.errors).toEqual([{ message: 'Name is required' }])
     expect(form.state.isSubmitSuccessful).toBe(false)
-    expect(onSubmitInvalid).toHaveBeenCalledWith({
-      value: { name: '' },
-      formApi: form,
-    })
+    expect(onSubmitInvalid).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: { name: '' },
+        formApi: form,
+        reason: 'validation',
+        source: 'onSubmit',
+      }),
+    )
   })
 
   it('clears previous submission errors and succeeds when the returned map is empty', async () => {

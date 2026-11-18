@@ -55,7 +55,8 @@ function getFormStateValue<
       return form._atoms.values.get() as never
     case 'isTouched':
       return (overrides.isTouched?.() ??
-        form._atoms.meta.touchedFieldCount.get() > 0) as never
+        (form._atoms.meta.submissionAttempts.get() > 0 ||
+          form._atoms.meta.touchedFieldCount.get() > 0)) as never
     case 'isDirty':
       return (overrides.isDirty?.() ?? form._atoms.meta.isDirty.get()) as never
     case 'isPristine':

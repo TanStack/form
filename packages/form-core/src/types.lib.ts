@@ -14,15 +14,7 @@ export interface InternalFieldUpdateOptions
   extends
     FieldUpdateOptions,
     FieldApiOverrideOptions,
-    NotifyParentFieldsOptions {
-  /**
-   * @private
-   * Whether to use `tryGetFieldApi` or `getOrCreateFieldApi`.
-   *
-   * @default boolean - derived from whether field meta needs to be stored
-   */
-  _skipFieldCreation?: boolean
-}
+    NotifyParentFieldsOptions {}
 
 export interface NotifyParentFieldsOptions {
   /**
@@ -32,6 +24,9 @@ export interface NotifyParentFieldsOptions {
    */
   notifyParentFields?: boolean
 }
+
+export interface FieldEventOptions
+  extends Required<FieldUpdateOptions>, Required<NotifyParentFieldsOptions> {}
 
 export type ResolvedInternalFieldUpdateOptions =
   Required<InternalFieldUpdateOptions>

@@ -1,12 +1,12 @@
 import { batch } from '@tanstack/store'
 import { runFieldListenerPipeline } from '../pipeline/listeners/listeners.lib'
-import { canonicalFieldName, nameToFieldNodeSegments } from '../utils.lib'
 import { visitFieldAndAncestors } from './fieldTraversal.lib'
 import type { AnyInternalFieldApi } from './FieldApi.lib'
 import type { AnyInternalFormApi } from '../FormApi/FormApi.lib'
+import type { AnyInternalFormGroupApi } from '../FormGroupApi/FormGroupApi.lib'
 import type { ClientSideEvents } from '../pipeline/events.public'
 import type { FieldListenerTriggers } from '../pipeline/listeners/listeners.public'
-import type { ResolvedInternalFieldUpdateOptions } from '../types.lib'
+import type { FieldEventOptions } from '../types.lib'
 
 export interface NotifyFieldListenerOptions {
   trigger: FieldListenerTriggers
@@ -30,6 +30,7 @@ export interface NotifyFieldValidatorOptions {
 export function triggerValidationFromField(
   field: AnyInternalFieldApi,
   event: ClientSideEvents,
+  group: AnyInternalFormGroupApi | null,
 ): void {
   if (field._isKilled) return
 
@@ -46,10 +47,11 @@ export function triggerValidationFromField(
       trigger: event,
       seenFields: seenValidatorFields,
     })
+
+    if (current === group?._groupField) return stop
     return
   })
 
-  const group = field._getFormGroup()
   if (group) {
     void group
       .validate(event, { triggerFieldApi: field })
@@ -71,13 +73,12 @@ export function triggerValidationFromField(
  */
 export function handleFieldEvent(
   field: AnyInternalFieldApi,
-  options: Omit<
-    ResolvedInternalFieldUpdateOptions,
-    'fieldApiOverride' | '_skipFieldCreation'
-  >,
+  options: FieldEventOptions,
   event: 'change' | 'blur' | 'submit',
 ): void {
   if (field._isKilled) return
+
+  const group = field._getFormGroup()
 
   const {
     markAsDirty,
@@ -114,14 +115,24 @@ export function handleFieldEvent(
       })
 
       if (!notifyParentFields) return stop
+      // The group's backing field needs the update too,
+      // so keep this check at the end and not the start
+      if (currNode === group?._groupField) return stop
       return undefined
     })
   })
 
-  if (event === 'change') field.form._clearStaleErrors(field, causeValidation)
+  if (event === 'change') {
+    field.form._clearStaleErrors(field, causeValidation)
+  }
 
   if (causeValidation) {
-    field._triggerValidationFromField(event)
+    field._triggerValidationFromField(event, group)
+  }
+
+  // TODO group listeners
+  if (event !== 'submit' && !group) {
+    field.form._notifyFormListener(event, field)
   }
 }
 
@@ -167,12 +178,11 @@ export function notifyFieldListener(
 }
 
 /**
- * Forwards an event to live fields with listeners watching `sourceFieldName`,
- * including when the source has no field node.
+ * Forwards an event to live fields with listeners watching `sourceFieldName`.
  *
  * @param sourceFieldName - Full form path of the field that reported the event.
  */
-export function notifyWatchingFieldListeners(
+function notifyWatchingFieldListeners(
   form: AnyInternalFormApi,
   sourceFieldName: string,
   trigger: FieldListenerTriggers,
@@ -219,13 +229,12 @@ export function notifyFieldValidator(
 }
 
 /**
- * Forwards an event to live fields with validators watching `sourceFieldName`,
- * including when the source has no field node.
+ * Forwards an event to live fields with validators watching `sourceFieldName`.
  *
  * @param sourceFieldName - Full form path of the field that reported the event.
  * @param seenFields - Shared set of fields already notified for this event.
  */
-export function notifyWatchingFieldValidators(
+function notifyWatchingFieldValidators(
   form: AnyInternalFormApi,
   sourceFieldName: string,
   trigger: ClientSideEvents,
@@ -241,50 +250,4 @@ export function notifyWatchingFieldValidators(
       })
     }
   }
-}
-
-/**
- * If field creation is fine, @see {handleFieldEvent}
- */
-export function handleFieldChangeWithoutCreatingField(
-  form: AnyInternalFormApi,
-  fieldName: string,
-  options: ResolvedInternalFieldUpdateOptions,
-): void {
-  const segments = nameToFieldNodeSegments(fieldName)
-  const paths: Array<string> = []
-  while (segments.length) {
-    paths.push(canonicalFieldName(segments))
-    segments.pop()
-  }
-  const seenListeners = new WeakSet<AnyInternalFieldApi>()
-  for (const name of paths) {
-    const field = form._tryGetFieldApi(name)
-    if (field) {
-      field._notifyListener({ trigger: 'change', seenFields: seenListeners })
-    } else notifyWatchingFieldListeners(form, name, 'change', seenListeners)
-    if (!options.notifyParentFields) break
-  }
-
-  const ancestor =
-    paths
-      .map((name) => form._tryGetFieldApi(name))
-      .find((field) => field !== null) ?? null
-  form._clearStaleErrors(ancestor, options.causeValidation)
-  if (!options.causeValidation) return
-
-  const seenValidators = new WeakSet<AnyInternalFieldApi>()
-  for (const name of paths) {
-    const field = form._tryGetFieldApi(name)
-    if (field) {
-      field._runFieldValidation('change', {
-        catchErrors: true,
-        _invalidateOnChange: true,
-      })
-      field._notifyValidator({ trigger: 'change', seenFields: seenValidators })
-    } else notifyWatchingFieldValidators(form, name, 'change', seenValidators)
-  }
-  const group = ancestor?._getFormGroup()
-  const validation = group ? group.validate('change') : form.validate('change')
-  void validation.catch((error) => console.error(error))
 }

@@ -1,6 +1,7 @@
 import { createAtom } from '@tanstack/store'
 import { InternalRootFieldApi } from '../FieldApi/RootFieldApi.lib'
 import { startFormMountValidation } from '../pipeline/validation/ownerValidation.lib'
+import { createFormSubmissionHandler } from '../submissionHandler.lib'
 import { OnSubmitErrorSource } from '../validation/errorStorage.lib'
 import {
   compareFormStateSnapshots,
@@ -10,17 +11,19 @@ import type { AnyInternalFieldApi } from '../FieldApi/FieldApi.lib'
 import type { FormAtoms, FormMetaAtoms, InternalFormApi } from './FormApi.lib'
 import type { InitialFormMeta } from './initialFormState.lib'
 import type { ValidationRunTracker } from '../pipeline/runTracker.lib'
+import type { SubmissionStateAtoms } from '../submissionHandler.lib'
 
-function createInitialFormMetaAtoms(meta: InitialFormMeta): FormMetaAtoms {
+function createInitialFormMetaAtoms(
+  meta: InitialFormMeta,
+  submission: SubmissionStateAtoms,
+): FormMetaAtoms {
   return {
     isDirty: createAtom(meta.isDirty),
     touchedFieldCount: createAtom(meta.touchedFieldCount),
     errorFields: createAtom(new Set<AnyInternalFieldApi>()),
     fieldValidationCount: createAtom(meta.fieldValidationCount),
     validationCount: createAtom(meta.validationCount),
-    isSubmitting: createAtom(meta.isSubmitting),
-    isSubmitSuccessful: createAtom(meta.isSubmitSuccessful),
-    submissionAttempts: createAtom(meta.submissionAttempts),
+    ...submission,
   }
 }
 
@@ -37,9 +40,16 @@ export function initializeForm<TFormData>(
 
   try {
     const initialState = mountValidation.initialState
+    const submissionHandler = createFormSubmissionHandler(
+      form,
+      initialState.meta.submissionAttempts,
+    )
     const atoms: FormAtoms<TFormData> = {
       values: createAtom(initialState.values),
-      meta: createInitialFormMetaAtoms(initialState.meta),
+      meta: createInitialFormMetaAtoms(
+        initialState.meta,
+        submissionHandler.atoms,
+      ),
       resetVersion: createAtom(initialState.resetVersion),
       defaultValuesVersion: createAtom(initialState.defaultValuesVersion),
     }
@@ -55,6 +65,7 @@ export function initializeForm<TFormData>(
       atom,
       fieldRootNode,
       onSubmitSource,
+      submissionHandler,
       complete: () => mountValidation.complete(form),
     }
   } catch (error) {

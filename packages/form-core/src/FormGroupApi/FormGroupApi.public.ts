@@ -3,7 +3,10 @@ import type {
   ToFormGroupErrorTypes,
 } from '../validation/state.public'
 import type { FormApi } from '../FormApi/FormApi.public'
-import type { FormSubmitContext } from '../FormApi/formSubmit.public'
+import type {
+  FormSubmitContext,
+  SubmitInvalidContext,
+} from '../FormApi/formSubmit.public'
 import type {
   FormGroupValidator,
   FormGroupValidators,
@@ -11,7 +14,7 @@ import type {
 } from '../pipeline/validation/validation.public'
 import type { Awaitable } from '../types.public'
 import type { ReadonlyAtom } from '@tanstack/store'
-import type { ClientSideEvents } from '../pipeline/events.public'
+import type { DynamicValidatorTriggers } from '../pipeline/events.public'
 import type { FormattedValidationError } from '../validation/results/results.public'
 
 /**
@@ -90,7 +93,7 @@ export interface FormGroupSubmitInvalidContext<
   in out TGroupValue,
   in out TGroupError extends ScopedErrorTypes,
   in out TFormError extends ScopedErrorTypes,
-> {
+> extends SubmitInvalidContext {
   /** The group values for the failed submission. */
   value: TGroupValue
   /** The parent form API handling the failed submission. */
@@ -123,6 +126,37 @@ export type FormGroupSubmitFn<
   >,
 ) => TSubmitReturn
 
+/**
+ * Handles validation failures and exceptions during a form group submission.
+ *
+ * Runs for errors reported by field or form group validators, validation errors
+ * returned from `onSubmit` using its error helpers, and exceptions thrown or
+ * rejected during either stage. A returned promise is awaited before
+ * `handleSubmit()` settles.
+ *
+ * @remarks
+ * **Important:** Setting this callback does not suppress exceptions.
+ * Call `preventThrow()` to prevent the submission's exception from rejecting
+ * `handleSubmit()`. Exceptions caused in this callback are not caught.
+ *
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ * @typeParam TGroupName - Library-managed. Do not specify explicitly.
+ * @typeParam TGroupValue - Library-managed. Do not specify explicitly.
+ * @typeParam TGroupError - Library-managed. Do not specify explicitly.
+ * @typeParam TFormError - Library-managed. Do not specify explicitly.
+ *
+ * @example
+ * ```ts
+ * {
+ *   // ...
+ *   onSubmitInvalid: ({ preventThrow }) => {
+ *     preventThrow()
+ *     // Focus the first element marked as invalid.
+ *     document.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus()
+ *   },
+ * }
+ * ```
+ */
 export type FormGroupOnSubmitInvalidFn<
   TFormData,
   TGroupName,
@@ -149,7 +183,10 @@ export interface FormGroupOptions<
 > {
   form: FormApi<TFormData, TFormError>
   name: TGroupName
-  // TODO: Add support for form group listeners.
+
+  // FormOptions-style inference from each validator's triggers could be added
+  // here. If so, we should think about the firing timing of them. Could go with a form approach.
+
   validators?: {
     // The intersection really helps type instantiations, while
     // the exclude part helps with additional properties not being swallowed silently.
@@ -244,9 +281,14 @@ export interface FormGroupApi<
   readonly value: TGroupValue
   /** Returns a flat array of issues and error maps with group-relative field paths. */
   validate: (
-    signal: ClientSideEvents,
+    signal: DynamicValidatorTriggers,
   ) => Promise<Array<FormattedValidationError<TGroupValue>>>
-  /** Submits the group and returns a flat array of issues and error maps. */
+  /**
+   * Submits the group and returns a flat array of issues and error maps.
+   *
+   * Exceptions reject after submission state is cleaned up, unless
+   * `onSubmitInvalid` calls `preventThrow()`.
+   */
   handleSubmit: () => Promise<Array<FormattedValidationError<TGroupValue>>>
   reset: () => void
 }

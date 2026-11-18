@@ -192,8 +192,53 @@ export type FormOptionsOnSubmitFn<
 > = (context: FormSubmitContext<TFormData, TValidatorOutputs>) => TSubmitReturn
 
 /**
- * The form values and form instance passed to `onSubmitInvalid` after a failed
- * submission.
+ * Identifies why a form or form-group submission failed and lets
+ * `onSubmitInvalid` suppress its exception.
+ */
+export interface SubmitInvalidContext {
+  /**
+   * How submission failed:
+   * - `validation` for reported validation errors
+   * - `exception` for a thrown value or rejected promise
+   */
+  reason: 'validation' | 'exception'
+  /**
+   * Where submission failed:
+   * - `validators` failed during field and form or form-group validation
+   * - `onSubmit` failed during the `onSubmit` handler
+   */
+  source: 'validators' | 'onSubmit'
+  /**
+   * The exception from validation or `onSubmit`. Always `undefined` when
+   * `reason` is `validation`.
+   *
+   * An exception can also be `undefined`; check `reason` to distinguish the cases.
+   */
+  error: unknown
+  /**
+   * Prevents this submission's exception from rejecting `handleSubmit()`.
+   *
+   * Call during `onSubmitInvalid`, before it returns or its returned promise
+   * settles. Has no effect when `reason` is `validation`.
+   *
+   * The submission remains unsuccessful. `handleSubmit()` resolves with any
+   * collected validation errors, or an empty array.
+   *
+   * @remarks
+   * **Important:** This does not suppress exceptions thrown or rejected by
+   * `onSubmitInvalid` itself.
+   */
+  preventThrow: () => void
+}
+
+/**
+ * Gives `onSubmitInvalid` the submitted values, form instance, and details of a
+ * validation failure or exception.
+ *
+ * @remarks
+ * **Important:** Handling an exception in `onSubmitInvalid` does not prevent
+ * `handleSubmit()` from rejecting. Call `preventThrow()` during the callback
+ * to suppress the submission's exception.
  *
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
  * @typeParam TFormError - Library-managed. Do not specify explicitly.
@@ -201,24 +246,62 @@ export type FormOptionsOnSubmitFn<
 export interface FormSubmitInvalidContext<
   in out TFormData,
   TFormError extends ScopedErrorTypes,
-> {
-  /** The form values for the failed submission, without schema transformations applied. */
+> extends SubmitInvalidContext {
+  /**
+   * The form values captured when this submission started, without schema
+   * transformations applied.
+   *
+   * Field edits made while submission is pending do not replace these values.
+   */
   value: TFormData
-  /** The form instance handling the failed submission. */
+  /**
+   * The form whose submission failed. Use `formApi.state` to inspect current
+   * values and validation state, including edits made since submission started.
+   */
   formApi: FormApi<TFormData, TFormError>
 }
 
 /**
- * Handles a failed form submission.
+ * Handles validation failures and exceptions during a form submission.
  *
- * Runs for submission validation failures, errors returned from `onSubmit`, and
- * exceptions thrown during validation or `onSubmit`.
+ * Runs for errors reported by field or form validators, validation errors
+ * returned from `onSubmit` using its error helpers, and exceptions thrown or
+ * rejected during either stage. A returned promise is awaited before
+ * `handleSubmit()` settles.
  *
- * A returned promise is awaited before submission finishes. If this callback
- * throws or rejects, `handleSubmit()` rejects.
+ * @remarks
+ * **Important:** Setting this callback does not suppress exceptions.
+ * Call `preventThrow()` to prevent the submission's exception from rejecting
+ * `handleSubmit()`. Exceptions caused in this callback are not caught.
  *
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
  * @typeParam TFormError - Library-managed. Do not specify explicitly.
+ *
+ * @example
+ * ```ts
+ * formOptions({
+ *   defaultValues: { name: '' },
+ *   onSubmit: async ({ value }) => {
+ *     await saveProfile(value)
+ *   },
+ *   onSubmitInvalid: async ({ reason, error, preventThrow }) => {
+ *     if (reason === 'exception') {
+ *       // Show an error toast
+ *       await reportSubmissionError(error)
+ *       preventThrow()
+ *     }
+ *   },
+ * })
+ *
+ *  formOptions({
+ *   defaultValues: { name: '' },
+ *   onSubmitInvalid: ({ preventThrow }) => {
+ *     preventThrow()
+ *     // Focus the first element marked as invalid.
+ *     document.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus()
+ *   },
+ * })
+ * ```
  */
 export type FormOptionsOnSubmitInvalidFn<
   in out TFormData,

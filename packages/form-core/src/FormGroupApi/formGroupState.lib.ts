@@ -1,6 +1,7 @@
 import { createAtom, shallow } from '@tanstack/store'
 import {
   deriveFromBaseFieldMeta,
+  getFieldTouchState,
   hasFieldMetaErrors,
 } from '../FieldApi/fieldState.lib'
 import { getBy } from '../utils.lib'
@@ -112,7 +113,7 @@ export function getFormGroupStateOverrides(
   return {
     isTouched: () => {
       const meta = group._groupField._getBaseMeta()
-      return meta.isTouched || meta.childMetaCounts.touched > 0
+      return getFieldTouchState(meta, group._groupField).isTouched
     },
     isDirty: () => {
       const meta = group._groupField._getBaseMeta()

@@ -1,5 +1,4 @@
 import { batch } from '@tanstack/store'
-import { handleFieldChangeWithoutCreatingField } from '../FieldApi/fieldEvents.lib'
 import {
   callUpdater,
   evaluate,
@@ -34,7 +33,7 @@ import {
   replaceSourceErrors,
   validationSourceScopes,
 } from '../validation/errorStorage.lib'
-import { defaultInternalBaseFieldMeta } from '../FieldApi/fieldState.lib'
+import { resetFieldMeta } from '../FieldApi/fieldState.lib'
 import { runFormListenerPipeline } from '../pipeline/listeners/listeners.lib'
 import {
   getValidationErrors,
@@ -43,7 +42,6 @@ import {
 import { updateFormOptions } from './formOptions.lib'
 import { initializeForm } from './initializeForm.lib'
 import { ArrayMethods } from './array-methods.lib'
-import { handleFormSubmit } from './handleSubmit.lib'
 import type { Atom, ReadonlyAtom } from '@tanstack/store'
 import type { InternalRootFieldApi } from '../FieldApi/RootFieldApi.lib'
 import type { FieldWatchRegistry } from '../FieldApi/linked-fields.lib'
@@ -67,7 +65,6 @@ import type { ListenerInstances } from '../pipeline/listeners/ListenerInstance.l
 import type { ServerFormState } from './formServerState.public'
 import type {
   FormValidationResult,
-  FormattedValidationError,
   ValidationIssue,
 } from '../validation/results/results.public'
 import type { ClientValidationRun } from '../pipeline/validation/clientValidation.lib'
@@ -85,7 +82,7 @@ import type {
   ValidationErrorSource,
   ValidationErrorTarget,
 } from '../validation/errorStorage.lib'
-import type { SubmissionAttempt } from '../submissionAttempt.lib'
+import type { FormSubmissionHandler } from '../submissionHandler.lib'
 
 export interface FormMetaAtoms {
   isDirty: Atom<boolean>
@@ -105,9 +102,9 @@ export interface FormMetaAtoms {
    */
   fieldValidationCount: Atom<number>
   validationCount: Atom<number>
-  isSubmitting: Atom<boolean>
-  isSubmitSuccessful: Atom<boolean>
-  submissionAttempts: Atom<number>
+  isSubmitting: ReadonlyAtom<boolean>
+  isSubmitSuccessful: ReadonlyAtom<boolean>
+  submissionAttempts: ReadonlyAtom<number>
 }
 
 export interface FormAtoms<in out TFormData> {
@@ -158,20 +155,18 @@ export class InternalFormApi<TFormData> implements FormApi<
   /** Stable runtime instances correlated with `_options.listeners` by slot. */
   _listenerInstances: ListenerInstances<'form'> = null
   _lastServerState: ServerFormState<TFormData> | null = null
-  private readonly _validationRuns = new ValidationRunTracker()
-  _submissions = new Set<
-    SubmissionAttempt<FormattedValidationError<TFormData>>
-  >()
+  _validationRuns = new ValidationRunTracker()
+  _submissionHandler: FormSubmissionHandler<TFormData>
 
   _resetSubmissions(): void {
-    const submissions = Array.from(this._submissions)
-    this._submissions.clear()
-    for (const submission of submissions) submission.invalidate()
-    this._atoms.meta.isSubmitting.set(false)
-    this._atoms.meta.isSubmitSuccessful.set(false)
+    this._submissionHandler.invalidate()
     visitAllFormFields(this._fieldRootNode, (field) =>
       field._formGroup?._resetSubmissions(),
     )
+  }
+
+  _setSubmissionAttempts(attempts: number): void {
+    this._submissionHandler.setSubmissionAttempts(attempts)
   }
 
   get state(): FormState<TFormData, any> {
@@ -248,6 +243,7 @@ export class InternalFormApi<TFormData> implements FormApi<
     const initial = initializeForm(this, this._validationRuns)
 
     this._atoms = initial.atoms
+    this._submissionHandler = initial.submissionHandler
     this._fieldRootNode = initial.fieldRootNode
     this._onSubmitSource = initial.onSubmitSource
     this.atom = initial.atom
@@ -287,6 +283,10 @@ export class InternalFormApi<TFormData> implements FormApi<
 
     batch(() => {
       this._resetSubmissions()
+      this._submissionHandler.setSubmissionAttempts(0)
+      visitAllFormFields(this._fieldRootNode, (field) =>
+        field._formGroup?._setSubmissionAttempts(0),
+      )
       this._cancelValidation()
       this._listenerInstances?.forEach((instance) => instance.resetRuntime())
       this._validatorInstances?.forEach((instance) => instance.resetRuntime())
@@ -305,9 +305,6 @@ export class InternalFormApi<TFormData> implements FormApi<
       this._atoms.meta.errorFields.set(new Set<AnyInternalFieldApi>())
       this._atoms.meta.fieldValidationCount.set(0)
       this._atoms.meta.validationCount.set(0)
-      this._atoms.meta.isSubmitting.set(false)
-      this._atoms.meta.isSubmitSuccessful.set(false)
-      this._atoms.meta.submissionAttempts.set(0)
       this._atoms.values.set(values ?? this._options.defaultValues)
     })
 
@@ -394,7 +391,7 @@ export class InternalFormApi<TFormData> implements FormApi<
         this._cancelFieldValidation(fieldName)
       }
 
-      if (field && replacedSameLengthArray) {
+      if (replacedSameLengthArray) {
         field._setMeta((prev) => ({
           ...prev,
           _arrayVersion: prev._arrayVersion + 1,
@@ -403,7 +400,7 @@ export class InternalFormApi<TFormData> implements FormApi<
 
       // Array mutations must finish removing and moving fields before user code runs.
       updateFieldStructure?.()
-      this._notifyFieldChange(field, updateOptions, fieldName)
+      this._notifyFieldChange(field, updateOptions)
     })
 
     notifyDevtoolsFieldValueUpdate(field)
@@ -433,7 +430,12 @@ export class InternalFormApi<TFormData> implements FormApi<
         current._validatorInstances?.forEach((instance) =>
           instance.resetRuntime(),
         )
-        current._setMeta(() => defaultInternalBaseFieldMeta)
+        const groupSubmissionAttempts =
+          current._formGroup?._submissionAttempts.get() ?? 0
+
+        current._setMeta((meta) =>
+          resetFieldMeta(meta, groupSubmissionAttempts > 0),
+        )
       }
     })
 
@@ -604,21 +606,15 @@ export class InternalFormApi<TFormData> implements FormApi<
   }
 
   _notifyFieldChange(
-    field: AnyInternalFieldApi | null,
+    field: AnyInternalFieldApi,
     options: ResolvedInternalFieldUpdateOptions,
-    fieldName: string,
   ) {
     const { markAsDirty } = options
     if (markAsDirty && !this._atoms.meta.isDirty.get()) {
       this._atoms.meta.isDirty.set(true)
     }
 
-    if (field) {
-      field._handleEvent(options, 'change')
-    } else {
-      handleFieldChangeWithoutCreatingField(this, fieldName, options)
-    }
-    this._notifyFormListener('change', field)
+    field._handleEvent(options, 'change')
   }
 
   _notifyFormListener(
@@ -796,5 +792,5 @@ export class InternalFormApi<TFormData> implements FormApi<
     )
   }
 
-  handleSubmit = () => handleFormSubmit(this)
+  handleSubmit = () => this._submissionHandler.handleSubmit()
 }

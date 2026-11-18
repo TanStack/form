@@ -109,16 +109,20 @@ export function updateFormOptions<TFormData>(
         const previousValues = form._atoms.values.get()
         form._atoms.defaultValuesVersion.set((version) => version + 1)
 
-        if (form._atoms.meta.touchedFieldCount.get() === 0) {
-          form._atoms.values.set(resolvedOptions.defaultValues)
-        } else {
-          form._atoms.values.set((prev) =>
-            applyDefaultValuesForUntouchedFields(
-              prev,
-              resolvedOptions.defaultValues,
-              form,
-            ),
-          )
+        // Submissions touch every field, so touch check is irrelevant
+        if (form._atoms.meta.submissionAttempts.get() === 0) {
+          if (form._atoms.meta.touchedFieldCount.get() === 0) {
+            // No fields were touched
+            form._atoms.values.set(resolvedOptions.defaultValues)
+          } else {
+            form._atoms.values.set((prev) =>
+              applyDefaultValuesForUntouchedFields(
+                prev,
+                resolvedOptions.defaultValues,
+                form,
+              ),
+            )
+          }
         }
         form._cancelChangedValidation(previousValues)
       })

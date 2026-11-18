@@ -286,6 +286,8 @@ export interface FormApi<
    * Validation error results and errors returned by `onSubmit` through
    * `createValidationError` or `createErrorMap` are stored as error state.
    * `onSubmitInvalid` is awaited after a failed attempt.
+   * Exceptions reject after submission state is cleaned up, unless
+   * `onSubmitInvalid` calls `preventThrow()`.
    *
    * The returned promise resolves to a flat array of issues and error maps
    * from field and form validation, plus errors returned by `onSubmit` through

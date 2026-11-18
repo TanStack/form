@@ -854,7 +854,7 @@ describe('InternalFormApi - setFieldValue', () => {
     })
   })
 
-  it('validates form changes before field creation when all metadata flags are false', async () => {
+  it('validates unrendered values when all metadata flags are false', async () => {
     const form = new InternalFormApi({
       defaultValues: { name: 'Alice' },
       validators: [
@@ -899,7 +899,7 @@ describe('InternalFormApi - setFieldValue', () => {
     })
   })
 
-  it('skips form validation before field creation when causeValidation is false', () => {
+  it('skips validation of unrendered values when causeValidation is false', () => {
     const validator = vi.fn(() => 'Name is too short')
     const form = new InternalFormApi({
       defaultValues: { name: 'Alice' },
@@ -1286,7 +1286,7 @@ describe('InternalFormApi - reset', () => {
 })
 
 describe('InternalFormApi - resetField', () => {
-  it('restores the field default and clears touched state and validation errors', async () => {
+  it('restores the field default and clears self touch and errors while preserving submission touch', async () => {
     const form = new InternalFormApi({ defaultValues: { name: 'hi' } })
     const field = form._getOrCreateFieldApi({
       name: 'name',
@@ -1306,9 +1306,10 @@ describe('InternalFormApi - resetField', () => {
     form.resetField('name')
 
     expect(field.value).toBe('hi')
-    expect(field.meta.isTouched).toBe(false)
+    expect(field.meta.isTouched).toBe(true)
+    expect(field.meta.isSelfTouched).toBe(false)
     expect(field.errors).toEqual([])
-    expect(form.state.isTouched).toBe(false)
+    expect(form.state.isTouched).toBe(true)
     expect(form.state.isDefaultValue).toBe(true)
     expect(form.state.isValid).toBe(true)
   })

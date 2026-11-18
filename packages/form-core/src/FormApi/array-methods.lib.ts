@@ -116,8 +116,6 @@ function insertFieldValue({
     },
     options: updateOptions,
     updateFieldStructure: () => {
-      if (!arrayField) return
-
       // Shift existing children to the right of the insertion index
       for (const child of arrayField._children) {
         if (typeof child._segment === 'string') continue
@@ -166,7 +164,7 @@ function replaceFieldValue({
     updateOptions,
   )
 
-  if (!arrayField || !updateOptions.causeValidation) return
+  if (!updateOptions.causeValidation) return
 
   // The change cascade above only validates the array field and its ancestors.
   // Revalidate the replaced element's existing subtree so errors computed
@@ -217,8 +215,6 @@ function removeFieldValue({
     },
     options: updateOptions,
     updateFieldStructure: () => {
-      if (!arrayField) return
-
       const childToRemove = tryGetFieldApi(arrayField, [index])
       childToRemove?._kill()
 
@@ -274,8 +270,6 @@ function swapFieldValues({
     },
     options: updateOptions,
     updateFieldStructure: () => {
-      if (!arrayField) return
-
       const fieldA = tryGetFieldApi(arrayField, [indexA])
       const fieldB = tryGetFieldApi(arrayField, [indexB])
 
@@ -325,8 +319,6 @@ function moveFieldValue({
     },
     options: updateOptions,
     updateFieldStructure: () => {
-      if (!arrayField) return
-
       const movingChild = tryGetFieldApi(arrayField, [fromIndex])
 
       for (const child of arrayField._children) {
@@ -369,8 +361,6 @@ function clearFieldValues({
     updater: [],
     options: updateOptions,
     updateFieldStructure: () => {
-      if (!arrayField) return
-
       // Kill all child fields since the array is now empty
       // _kill() will remove each child from the parent's children
       for (const child of arrayField._children) {
@@ -405,8 +395,6 @@ function filterFieldValues({
   const thisArg = options?.thisArg
   const filtered = oldArray.filter((value, index, array) => {
     const keep = predicate.call(thisArg, value, index, array)
-    if (!arrayNode) return keep
-
     const childAtIndex = arrayNode._getChild(index)
     if (keep) {
       moveArrayField(childAtIndex, length)
@@ -420,7 +408,7 @@ function filterFieldValues({
   if (oldArray.length === filtered.length) {
     // Setting filtered array would be a no-op, but either way the user
     // tried to set a value
-    form._notifyFieldChange(arrayNode, updateOptions, arrayFieldName)
+    form._notifyFieldChange(arrayNode, updateOptions)
   } else {
     form.setFieldValue(arrayFieldName, filtered, updateOptions)
   }

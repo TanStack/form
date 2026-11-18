@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { InternalFormGroupApi } from '@tanstack/form-core/internals'
 import { Subscribe } from '../Subscribe.public'
+import { useIsomorphicLayoutEffect } from '../utils.lib'
 import {
   useArrayFieldSubscription,
   useValueFieldSubscription,
@@ -82,7 +83,7 @@ export function createFormGroupComponent(
 ): AnyFormGroupComponent {
   const TanStackFormGroup: AnyFormGroupComponent = (props) => {
     const groupRef =
-      React.useRef<InternalFormGroupApi<any, any, any, any, any, any>>(null)
+      useRef<InternalFormGroupApi<any, any, any, any, any, any>>(null)
 
     if (!groupRef.current) {
       groupRef.current = attachReactFormGroupComponents(
@@ -91,9 +92,16 @@ export function createFormGroupComponent(
       )
     }
 
+    useIsomorphicLayoutEffect(() => {
+      // Reconnect before child fields run their stuff. Otherwise,
+      // Strict Mode breaks for them.
+      const group = groupRef.current!
+      group._attachToFieldTrie(group.name)
+    }, [])
+
     useEffect(() => groupRef.current?.update({ ...props, form }))
 
-    React.useEffect(() => {
+    useEffect(() => {
       const group = groupRef.current!
       group.mount()
       return () => group._cleanup()

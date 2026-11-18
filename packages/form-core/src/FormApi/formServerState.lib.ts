@@ -1,13 +1,22 @@
 import { batch } from '@tanstack/store'
 import { visitAllFormFields } from '../FieldApi/fieldTraversal.lib'
-import { defaultInternalBaseFieldMeta } from '../FieldApi/fieldState.lib'
-import { devtools } from '../devtoolsBridge.lib'
+import {
+  defaultInternalBaseFieldMeta,
+  resetFieldMeta,
+} from '../FieldApi/fieldState.lib'
 import type { AnyInternalFormApi, InternalFormApi } from './FormApi.lib'
 import type { ServerFormState } from './formServerState.public'
 import type { AnyInternalFieldApi } from '../FieldApi/FieldApi.lib'
 
+// TODO not pretty, but we're reworking how SSR hydration works anyways.
 function resetFieldMetaForServerState(form: AnyInternalFormApi) {
+  const fields: Array<AnyInternalFieldApi> = []
   visitAllFormFields(form._fieldRootNode, (field) => {
+    fields.push(field)
+  })
+
+  for (let index = fields.length - 1; index >= 0; index--) {
+    const field = fields[index]!
     field._resetValidation()
     field._defaultValueCache = null
 
@@ -16,10 +25,12 @@ function resetFieldMetaForServerState(form: AnyInternalFormApi) {
 
     const metaAtom = field._atoms.meta
     if (metaAtom && metaAtom.get() !== defaultInternalBaseFieldMeta) {
-      metaAtom.set(defaultInternalBaseFieldMeta)
-      devtools().updateField?.(field)
+      const groupSubmitAttempts =
+        field._formGroup?._submissionAttempts.get() ?? 0
+
+      field._setMeta((meta) => resetFieldMeta(meta, groupSubmitAttempts > 0))
     }
-  })
+  }
 }
 
 // TODO We should lock down how server state can affect the form and when. Server state could be both
@@ -43,14 +54,13 @@ function resetToServerState<TFormData>(
     resetFieldMetaForServerState(form)
     form._atoms.values.set(values)
     form._atoms.meta.isDirty.set(false)
-    form._atoms.meta.touchedFieldCount.set(0)
     form._fieldRootNode._clearErrors()
     form._atoms.meta.errorFields.set(new Set<AnyInternalFieldApi>())
     form._atoms.meta.fieldValidationCount.set(0)
     form._atoms.meta.validationCount.set(0)
-    form._atoms.meta.isSubmitting.set(false)
-    form._atoms.meta.isSubmitSuccessful.set(false)
-    form._atoms.meta.submissionAttempts.set(serverState.submissionAttempts)
+    form._submissionHandler.setSubmissionAttempts(
+      serverState.submissionAttempts,
+    )
 
     for (const result of serverState.validationResults) {
       form._applyValidationResult(

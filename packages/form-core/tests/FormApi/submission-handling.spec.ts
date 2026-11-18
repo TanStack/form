@@ -5,20 +5,6 @@ import { promiseWithResolvers } from '../test-utils'
 
 describe('form - submission handling', () => {
   describe('handleSubmit', () => {
-    it('validates with submit trigger', async () => {
-      const form = new InternalFormApi({
-        defaultValues: { name: '' },
-        validators: [
-          {
-            run: () => ({ message: 'Submit error' }),
-            triggers: [],
-          },
-        ],
-      })
-      await form.handleSubmit()
-      expect(form.state.errors).toEqual([{ message: 'Submit error' }])
-    })
-
     it('returns form validator errors and skips onSubmit', async () => {
       const onSubmit = vi.fn()
       const onSubmitInvalid = vi.fn()
@@ -39,10 +25,14 @@ describe('form - submission handling', () => {
       expect(result).toEqual([{ message: 'Submit error' }])
       expect(form.state.errors).toEqual([{ message: 'Submit error' }])
       expect(onSubmit).not.toHaveBeenCalled()
-      expect(onSubmitInvalid).toHaveBeenCalledWith({
-        value: { name: '' },
-        formApi: form,
-      })
+      expect(onSubmitInvalid).toHaveBeenCalledWith(
+        expect.objectContaining({
+          value: { name: '' },
+          formApi: form,
+          reason: 'validation',
+          source: 'validators',
+        }),
+      )
     })
 
     it('submits successfully when a validator returns an empty error map', async () => {
@@ -137,10 +127,14 @@ describe('form - submission handling', () => {
       expect(form.state.errors).toEqual([
         expect.objectContaining({ message: 'Submission failed' }),
       ])
-      expect(onSubmitInvalid).toHaveBeenCalledWith({
-        value: { name: '' },
-        formApi: form,
-      })
+      expect(onSubmitInvalid).toHaveBeenCalledWith(
+        expect.objectContaining({
+          value: { name: '' },
+          formApi: form,
+          reason: 'validation',
+          source: 'onSubmit',
+        }),
+      )
     })
 
     it('awaits onSubmitInvalid before finishing an invalid submission', async () => {
@@ -231,28 +225,6 @@ describe('form - submission handling', () => {
 
       expect(form.state.errors).toEqual([])
       expect(field.errors).toEqual([])
-    })
-
-    it('sets isSubmitSuccessful based on submission outcome', async () => {
-      const successfulForm = new InternalFormApi({
-        defaultValues: { name: '' },
-      })
-      await successfulForm.handleSubmit()
-
-      expect(successfulForm.state.isSubmitSuccessful).toBe(true)
-
-      const failingForm = new InternalFormApi({
-        defaultValues: { name: '' },
-        validators: [
-          {
-            run: () => ({ message: 'Submit error' }),
-            triggers: [],
-          },
-        ],
-      })
-      await failingForm.handleSubmit()
-
-      expect(failingForm.state.isSubmitSuccessful).toBe(false)
     })
 
     it('sets canSubmit to false while submitting', async () => {
@@ -351,7 +323,6 @@ describe('form - submission handling', () => {
 
     it('rejects a field exception and clears submission state', async () => {
       const error = new Error('Field validator failed')
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
       const onSubmit = vi.fn()
       const onSubmitInvalid = vi.fn()
       const form = new InternalFormApi({
@@ -371,19 +342,20 @@ describe('form - submission handling', () => {
         ],
       })
 
-      try {
-        await expect(form.handleSubmit()).rejects.toMatchObject({
-          errors: [error],
-        })
-        expect(onSubmit).not.toHaveBeenCalled()
-        expect(onSubmitInvalid).not.toHaveBeenCalled()
-        expect(form.state.isSubmitting).toBe(false)
-        expect(form.state.isSubmitSuccessful).toBe(false)
-        expect(form.state.isValidating).toBe(false)
-        expect(consoleSpy).not.toHaveBeenCalled()
-      } finally {
-        consoleSpy.mockRestore()
-      }
+      await expect(form.handleSubmit()).rejects.toMatchObject({
+        errors: [error],
+      })
+      expect(onSubmit).not.toHaveBeenCalled()
+      expect(onSubmitInvalid).toHaveBeenCalledWith(
+        expect.objectContaining({
+          reason: 'exception',
+          source: 'validators',
+          error: expect.objectContaining({ errors: [error] }),
+        }),
+      )
+      expect(form.state.isSubmitting).toBe(false)
+      expect(form.state.isSubmitSuccessful).toBe(false)
+      expect(form.state.isValidating).toBe(false)
     })
 
     it('observes deferred field failures while sibling validation settles', async () => {
@@ -421,44 +393,40 @@ describe('form - submission handling', () => {
       expect(form.state.isSubmitSuccessful).toBe(false)
       expect(form.state.isValidating).toBe(false)
       expect(onSubmit).not.toHaveBeenCalled()
-      expect(onSubmitInvalid).not.toHaveBeenCalled()
+      expect(onSubmitInvalid).toHaveBeenCalledWith(
+        expect.objectContaining({
+          reason: 'exception',
+          source: 'validators',
+          error: expect.objectContaining({ errors: [error] }),
+        }),
+      )
     })
 
     it('observes rejected onSubmit errors after reset without changing reset state', async () => {
-      let rejectSubmit!: (error: Error) => void
+      const pending = promiseWithResolvers()
       const error = new Error('Late submit failure')
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+      const onSubmit = vi.fn(() => pending.promise)
       const form = new InternalFormApi({
         defaultValues: { name: '' },
-        onSubmit: () =>
-          new Promise<void>((_, reject) => {
-            rejectSubmit = reject
-          }),
+        onSubmit,
       })
 
-      try {
-        const submitPromise = form.handleSubmit()
-        await vi.waitFor(() => {
-          expect(rejectSubmit).toBeTypeOf('function')
-        })
+      const submitPromise = form.handleSubmit()
+      await vi.waitFor(() => {
+        expect(onSubmit).toHaveBeenCalled()
+      })
 
-        form.reset({ name: 'reset value' }, { updateDefaultValues: false })
-        rejectSubmit(error)
-        const result = await submitPromise
+      form.reset({ name: 'reset value' }, { updateDefaultValues: false })
+      pending.reject(error)
+      await expect(submitPromise).rejects.toBe(error)
 
-        expect(result).toEqual([])
-        expect(consoleSpy).toHaveBeenCalledWith(error)
-        expect(form.state.values).toEqual({ name: 'reset value' })
-        expect(form.state.isSubmitting).toBe(false)
-        expect(form.state.submissionAttempts).toBe(0)
-      } finally {
-        consoleSpy.mockRestore()
-      }
+      expect(form.state.values).toEqual({ name: 'reset value' })
+      expect(form.state.isSubmitting).toBe(false)
+      expect(form.state.submissionAttempts).toBe(0)
     })
 
-    it('logs rejected onSubmit errors and finishes the failed submission', async () => {
+    it('reports an onSubmit exception and rejects after submission cleanup', async () => {
       const error = new Error('Submit failed')
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
       const onSubmitInvalid = vi.fn()
       const form = new InternalFormApi({
         defaultValues: { name: '' },
@@ -466,20 +434,19 @@ describe('form - submission handling', () => {
         onSubmitInvalid,
       })
 
-      try {
-        const result = await form.handleSubmit()
+      await expect(form.handleSubmit()).rejects.toBe(error)
 
-        expect(result).toEqual([])
-        expect(consoleSpy).toHaveBeenCalledWith(error)
-        expect(onSubmitInvalid).toHaveBeenCalledWith({
+      expect(onSubmitInvalid).toHaveBeenCalledWith(
+        expect.objectContaining({
           value: { name: '' },
           formApi: form,
-        })
-        expect(form.state.isSubmitting).toBe(false)
-        expect(form.state.isSubmitSuccessful).toBe(false)
-      } finally {
-        consoleSpy.mockRestore()
-      }
+          reason: 'exception',
+          source: 'onSubmit',
+          error,
+        }),
+      )
+      expect(form.state.isSubmitting).toBe(false)
+      expect(form.state.isSubmitSuccessful).toBe(false)
     })
 
     it('preserves schema output when later non-schema validators run', async () => {

@@ -79,7 +79,7 @@ import type {
 import type { ClientValidationRun } from '../pipeline/validation/clientValidation.lib'
 import type { FieldValidationOptions } from '../pipeline/validation/ownerValidation.lib'
 import type { PipelineResult } from '../pipeline/state.lib'
-import type { ResolvedInternalFieldUpdateOptions } from '../types.lib'
+import type { FieldEventOptions } from '../types.lib'
 import type { FieldErrors } from '../validation/state.public'
 
 export type AnyFieldApiOptions = Omit<
@@ -410,7 +410,7 @@ export class InternalFieldApi<
     devtools().updateField?.(this)
   }
 
-  private _updateParentMeta(
+  _updateParentMeta(
     previous: SubfieldsMetaFlags,
     next: SubfieldsMetaFlags,
   ): void {
@@ -436,11 +436,14 @@ export class InternalFieldApi<
 
   /**
    * @private
-   * Triggers validation for this field and all parent fields,
-   * eventually calling form validation.
+   * Validates this field and its ancestors within its group, then validates
+   * the containing group or form.
    */
-  _triggerValidationFromField(event: ClientSideEvents): void {
-    triggerValidationFromField(this, event)
+  _triggerValidationFromField(
+    event: ClientSideEvents,
+    group: AnyInternalFormGroupApi | null,
+  ): void {
+    triggerValidationFromField(this, event, group)
   }
 
   /**
@@ -525,10 +528,7 @@ export class InternalFieldApi<
   }
 
   _handleEvent(
-    options: Omit<
-      ResolvedInternalFieldUpdateOptions,
-      'fieldApiOverride' | '_skipFieldCreation'
-    >,
+    options: FieldEventOptions,
     event: 'change' | 'blur' | 'submit',
   ): void {
     handleFieldEvent(this, options, event)
@@ -808,7 +808,5 @@ export class InternalFieldApi<
       },
       'blur',
     )
-
-    this.form._notifyFormListener('blur', this)
   }
 }

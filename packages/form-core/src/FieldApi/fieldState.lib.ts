@@ -77,6 +77,24 @@ export const defaultInternalBaseFieldMeta: InternalBaseFieldMeta = {
   _arrayVersion: 0,
 }
 
+/** Resets interaction meta after subfields reset, retaining submitted group contributions. */
+export function resetFieldMeta(
+  meta: InternalBaseFieldMeta,
+  isSubmittedGroup = false,
+): InternalBaseFieldMeta {
+  if (!isSubmittedGroup && meta.childMetaCounts.touched === 0)
+    return defaultInternalBaseFieldMeta
+
+  return {
+    ...defaultInternalBaseFieldMeta,
+    isTouched: isSubmittedGroup,
+    childMetaCounts: {
+      ...defaultInternalBaseFieldMeta.childMetaCounts,
+      touched: meta.childMetaCounts.touched,
+    },
+  }
+}
+
 export const defaultFieldMeta: InternalFieldMeta = deriveFromBaseFieldMeta(
   defaultInternalBaseFieldMeta,
   undefined,
@@ -105,15 +123,18 @@ export function deriveFromBaseFieldMeta(
   value?: any,
   markers?: DerivedMetaMarkers,
 ): InternalFieldMeta {
+  const { isTouched, isSomeTouched } = getFieldTouchState(baseMeta, field)
   const isDefaultValue = field ? field._getIsDefaultValue(value) : true
   const errorVisibility = getErrorVisibility(field)
-  const canDisplayErrors = shouldDisplayErrors(
+  const canDisplayErrors = shouldDisplayErrors({
     errorVisibility,
     field,
     baseMeta,
     value,
     isDefaultValue,
-  )
+    isTouched,
+    isSomeTouched,
+  })
   const originalErrors = field?._errorStore.errors ?? emptyErrors
   const errors = canDisplayErrors ? originalErrors : []
   const isSelfTouched = baseMeta.isTouched
@@ -125,10 +146,9 @@ export function deriveFromBaseFieldMeta(
     isAnyInvalid: baseMeta.childMetaCounts.error > 0,
     isEveryPristine: baseMeta.childMetaCounts.dirty === 0,
     isSomeDirty: baseMeta.childMetaCounts.dirty > 0,
-    isSomeTouched: baseMeta.childMetaCounts.touched > 0,
+    isSomeTouched,
     isSomeValidating: baseMeta.childMetaCounts.validating > 0,
   }
-  const isTouched = isSelfTouched || subfields.isSomeTouched
   const isDirty = isSelfDirty || subfields.isSomeDirty
   const isSelfValidating = baseMeta.isValidating
   const isValidating = isSelfValidating || subfields.isSomeValidating
@@ -143,6 +163,7 @@ export function deriveFromBaseFieldMeta(
       baseMeta,
       canDisplayErrors,
       isDefaultValue,
+      isTouched,
       markers,
       originalErrors,
       previousMeta,
@@ -185,6 +206,7 @@ function canReusePreviousMeta({
   baseMeta,
   canDisplayErrors,
   isDefaultValue,
+  isTouched,
   markers,
   originalErrors,
   previousMeta,
@@ -192,6 +214,7 @@ function canReusePreviousMeta({
   baseMeta: InternalBaseFieldMeta
   canDisplayErrors: boolean
   isDefaultValue: boolean
+  isTouched: boolean
   markers: DerivedMetaMarkers
   originalErrors: Array<ValidationIssue>
   previousMeta: InternalFieldMeta
@@ -199,6 +222,7 @@ function canReusePreviousMeta({
   if (markers.source !== baseMeta) return false
   if (markers.canDisplayErrors !== canDisplayErrors) return false
   if (previousMeta.isDefaultValue !== isDefaultValue) return false
+  if (previousMeta.isTouched !== isTouched) return false
   if (previousMeta.original.errors !== originalErrors) return false
 
   return true
@@ -210,13 +234,23 @@ function getErrorVisibility(
   return field?._errorVisibility ?? field?.form._options.errorVisibility
 }
 
-function shouldDisplayErrors(
-  errorVisibility: ErrorVisibilityFn<any> | undefined,
-  field: AnyInternalFieldApi | undefined,
-  baseMeta: InternalBaseFieldMeta,
-  value?: any,
-  isDefaultValue = true,
-): boolean {
+function shouldDisplayErrors({
+  errorVisibility,
+  field,
+  baseMeta,
+  value,
+  isDefaultValue,
+  isTouched,
+  isSomeTouched,
+}: {
+  errorVisibility: ErrorVisibilityFn<any> | undefined
+  field: AnyInternalFieldApi | undefined
+  baseMeta: InternalBaseFieldMeta
+  value: any
+  isDefaultValue: boolean
+  isTouched: boolean
+  isSomeTouched: boolean
+}): boolean {
   if (!field || !errorVisibility) return true
   const group = field._getFormGroup()
   const stateOverrides = group?._getScopedFormStateOverrides()
@@ -227,6 +261,8 @@ function shouldDisplayErrors(
       value,
       baseMeta,
       isDefaultValue,
+      isTouched,
+      isSomeTouched,
     ),
   })
 }
@@ -235,14 +271,14 @@ function createErrorVisibilityFieldState(
   value: any,
   meta: InternalBaseFieldMeta,
   isDefaultValue: boolean,
+  isTouched: boolean,
+  isSomeTouched: boolean,
 ): ErrorVisibilityFieldState {
-  const isSomeTouched = meta.childMetaCounts.touched > 0
   const isSomeDirty = meta.childMetaCounts.dirty > 0
   const isSomeValidating = meta.childMetaCounts.validating > 0
   const isSelfTouched = meta.isTouched
   const isSelfDirty = meta.isDirty
   const isSelfValidating = meta.isValidating
-  const isTouched = isSelfTouched || isSomeTouched
   const isDirty = isSelfDirty || isSomeDirty
 
   return {
@@ -264,6 +300,27 @@ function createErrorVisibilityFieldState(
         isSomeValidating,
       },
     },
+  }
+}
+
+export function getFieldTouchState(
+  meta: InternalBaseFieldMeta,
+  field?: AnyInternalFieldApi,
+): { isTouched: boolean; isSomeTouched: boolean } {
+  let isSubmitted = false
+
+  if (field) {
+    const formAttempts = field.form._atoms.meta.submissionAttempts.get()
+    const groupAttempts = field._getFormGroup()?._submissionAttempts.get() ?? 0
+
+    isSubmitted = formAttempts > 0 || groupAttempts > 0
+  }
+
+  const isSomeTouched = meta.childMetaCounts.touched > 0
+
+  return {
+    isTouched: meta.isTouched || isSomeTouched || isSubmitted,
+    isSomeTouched,
   }
 }
 

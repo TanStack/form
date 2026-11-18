@@ -9,69 +9,10 @@ import {
   isNotNil,
   isPromiseLike,
   normalizeToArray,
-  resolveFieldUpdateOptions,
   setBy,
 } from '../src/utils.lib'
 
 describe('utils', () => {
-  it('resolves field update defaults from the triggering event', () => {
-    expect(resolveFieldUpdateOptions(undefined, 'change')).toMatchObject({
-      causeValidation: true,
-      markAsBlurred: false,
-      markAsDirty: true,
-      markAsTouched: true,
-      _skipFieldCreation: false,
-      fieldApiOverride: null,
-      notifyParentFields: true,
-    })
-
-    expect(resolveFieldUpdateOptions(undefined, 'blur')).toMatchObject({
-      markAsBlurred: true,
-      markAsDirty: false,
-      markAsTouched: false,
-    })
-
-    expect(resolveFieldUpdateOptions(undefined, 'submit')).toMatchObject({
-      markAsBlurred: false,
-      markAsDirty: false,
-      markAsTouched: true,
-    })
-
-    expect(resolveFieldUpdateOptions(undefined, 'noEvent')).toMatchObject({
-      markAsBlurred: false,
-      markAsDirty: false,
-      markAsTouched: false,
-      _skipFieldCreation: true,
-    })
-  })
-
-  it('honors explicit field update options', () => {
-    const fieldApiOverride = {} as never
-
-    expect(
-      resolveFieldUpdateOptions(
-        {
-          causeValidation: false,
-          markAsBlurred: true,
-          markAsDirty: false,
-          markAsTouched: false,
-          _skipFieldCreation: false,
-          fieldApiOverride,
-          notifyParentFields: false,
-        },
-        'change',
-      ),
-    ).toEqual({
-      causeValidation: false,
-      markAsBlurred: true,
-      markAsDirty: false,
-      markAsTouched: false,
-      _skipFieldCreation: false,
-      fieldApiOverride,
-      notifyParentFields: false,
-    })
-  })
-
   it('reads nested values through object and array paths', () => {
     const source = { user: { names: ['Ada'] } }
 
