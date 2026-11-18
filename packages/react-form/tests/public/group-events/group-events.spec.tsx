@@ -6,28 +6,34 @@ import { CrossGroupWatches } from './CrossGroupWatches'
 import { GroupArrayEvents } from './GroupArrayEvents'
 import { FullPathGroupField } from './FullPathGroupField'
 
-it.each(['change', 'blur'] as const)(
-  'uses group validation for a full-path form field on %s',
-  async (trigger) => {
-    const screen = await render(<FullPathGroupField />)
+it('uses group validation for a full-path form field on change', async () => {
+  const screen = await render(<FullPathGroupField />)
 
-    if (trigger === 'change') {
-      await screen
-        .getByRole('textbox', { name: 'Name', exact: true })
-        .fill('edited')
-    } else {
-      await screen.getByRole('textbox', { name: 'Name', exact: true }).click()
-      await screen.getByRole('button', { name: 'Blur input' }).click()
-    }
+  await screen
+    .getByRole('textbox', { name: 'Name', exact: true })
+    .fill('edited')
 
-    await expect
-      .element(screen.getByRole('status', { name: 'Group errors' }))
-      .toHaveTextContent('Group validation')
-    await expect
-      .element(screen.getByRole('status', { name: 'Form errors' }))
-      .toHaveTextContent('None')
-  },
-)
+  await expect
+    .element(screen.getByRole('status', { name: 'Group errors' }))
+    .toHaveTextContent('Group validation')
+  await expect
+    .element(screen.getByRole('status', { name: 'Form errors' }))
+    .toHaveTextContent('None')
+})
+
+it('uses group validation for a full-path form field on blur', async () => {
+  const screen = await render(<FullPathGroupField />)
+
+  await screen.getByRole('textbox', { name: 'Name', exact: true }).click()
+  await screen.getByRole('button', { name: 'Blur input' }).click()
+
+  await expect
+    .element(screen.getByRole('status', { name: 'Group errors' }))
+    .toHaveTextContent('Group validation')
+  await expect
+    .element(screen.getByRole('status', { name: 'Form errors' }))
+    .toHaveTextContent('None')
+})
 
 it('uses group submission state for a full-path form field touch and error visibility', async () => {
   const screen = await render(<FullPathGroupField />)
@@ -50,71 +56,97 @@ it('uses group submission state for a full-path form field touch and error visib
     .toHaveTextContent('0')
 })
 
-it.each(['change', 'blur'] as const)(
-  'keeps automatic %s listeners and validation within the group',
-  async (trigger) => {
-    const onListener = vi.fn()
-    const onValidate = vi.fn(() => null)
-    const screen = await render(
-      <GroupEventBoundary onListener={onListener} onValidate={onValidate} />,
-    )
+it('keeps automatic change listeners and validation within the group', async () => {
+  const onListener = vi.fn()
+  const onValidate = vi.fn(() => null)
+  const screen = await render(
+    <GroupEventBoundary onListener={onListener} onValidate={onValidate} />,
+  )
 
-    if (trigger === 'change') {
-      await screen
-        .getByRole('textbox', { name: 'Name', exact: true })
-        .fill('edited')
-    } else {
-      await screen.getByRole('textbox', { name: 'Name', exact: true }).click()
-      await screen.getByRole('button', { name: 'Blur input' }).click()
-    }
+  await screen
+    .getByRole('textbox', { name: 'Name', exact: true })
+    .fill('edited')
 
-    expect(onListener.mock.calls.toSorted()).toEqual([
-      ['name'],
-      ['nested'],
-      ['watching group'],
-    ])
-    expect(onValidate.mock.calls.toSorted()).toEqual([
-      ['group'],
-      ['name'],
-      ['nested'],
-    ])
-    await expect
-      .element(screen.getByRole('status', { name: 'Section blurred' }))
-      .toHaveTextContent('false')
-    await expect
-      .element(screen.getByRole('status', { name: 'Form touched' }))
-      .toHaveTextContent('true')
-  },
-)
+  expect(onListener).toHaveBeenCalledTimes(3)
+  expect(onListener).toHaveBeenCalledWith('name')
+  expect(onListener).toHaveBeenCalledWith('nested')
+  expect(onListener).toHaveBeenCalledWith('watching group')
+  expect(onValidate).toHaveBeenCalledTimes(3)
+  expect(onValidate).toHaveBeenCalledWith('group')
+  expect(onValidate).toHaveBeenCalledWith('name')
+  expect(onValidate).toHaveBeenCalledWith('nested')
+  await expect
+    .element(screen.getByRole('status', { name: 'Section blurred' }))
+    .toHaveTextContent('false')
+  await expect
+    .element(screen.getByRole('status', { name: 'Form touched' }))
+    .toHaveTextContent('true')
+})
 
-it.each(['change', 'blur'] as const)(
-  'preserves ancestor and form notifications for an outside %s',
-  async (trigger) => {
-    const onListener = vi.fn()
-    const onValidate = vi.fn(() => null)
-    const screen = await render(
-      <GroupEventBoundary onListener={onListener} onValidate={onValidate} />,
-    )
+it('keeps automatic blur listeners and validation within the group', async () => {
+  const onListener = vi.fn()
+  const onValidate = vi.fn(() => null)
+  const screen = await render(
+    <GroupEventBoundary onListener={onListener} onValidate={onValidate} />,
+  )
 
-    if (trigger === 'change') {
-      await screen.getByRole('textbox', { name: 'Outside' }).fill('edited')
-    } else {
-      await screen.getByRole('textbox', { name: 'Outside' }).click()
-      await screen.getByRole('button', { name: 'Blur input' }).click()
-    }
+  await screen.getByRole('textbox', { name: 'Name', exact: true }).click()
+  await screen.getByRole('button', { name: 'Blur input' }).click()
 
-    expect(onListener.mock.calls.toSorted()).toEqual([
-      ['form'],
-      ['outside'],
-      ['section'],
-    ])
-    expect(onValidate.mock.calls.toSorted()).toEqual([
-      ['form'],
-      ['outside'],
-      ['section'],
-    ])
-  },
-)
+  expect(onListener).toHaveBeenCalledTimes(3)
+  expect(onListener).toHaveBeenCalledWith('name')
+  expect(onListener).toHaveBeenCalledWith('nested')
+  expect(onListener).toHaveBeenCalledWith('watching group')
+  expect(onValidate).toHaveBeenCalledTimes(3)
+  expect(onValidate).toHaveBeenCalledWith('group')
+  expect(onValidate).toHaveBeenCalledWith('name')
+  expect(onValidate).toHaveBeenCalledWith('nested')
+  await expect
+    .element(screen.getByRole('status', { name: 'Section blurred' }))
+    .toHaveTextContent('false')
+  await expect
+    .element(screen.getByRole('status', { name: 'Form touched' }))
+    .toHaveTextContent('true')
+})
+
+it('preserves ancestor and form notifications for an outside change', async () => {
+  const onListener = vi.fn()
+  const onValidate = vi.fn(() => null)
+  const screen = await render(
+    <GroupEventBoundary onListener={onListener} onValidate={onValidate} />,
+  )
+
+  await screen.getByRole('textbox', { name: 'Outside' }).fill('edited')
+
+  expect(onListener).toHaveBeenCalledTimes(3)
+  expect(onListener).toHaveBeenCalledWith('form')
+  expect(onListener).toHaveBeenCalledWith('outside')
+  expect(onListener).toHaveBeenCalledWith('section')
+  expect(onValidate).toHaveBeenCalledTimes(3)
+  expect(onValidate).toHaveBeenCalledWith('form')
+  expect(onValidate).toHaveBeenCalledWith('outside')
+  expect(onValidate).toHaveBeenCalledWith('section')
+})
+
+it('preserves ancestor and form notifications for an outside blur', async () => {
+  const onListener = vi.fn()
+  const onValidate = vi.fn(() => null)
+  const screen = await render(
+    <GroupEventBoundary onListener={onListener} onValidate={onValidate} />,
+  )
+
+  await screen.getByRole('textbox', { name: 'Outside' }).click()
+  await screen.getByRole('button', { name: 'Blur input' }).click()
+
+  expect(onListener).toHaveBeenCalledTimes(3)
+  expect(onListener).toHaveBeenCalledWith('form')
+  expect(onListener).toHaveBeenCalledWith('outside')
+  expect(onListener).toHaveBeenCalledWith('section')
+  expect(onValidate).toHaveBeenCalledTimes(3)
+  expect(onValidate).toHaveBeenCalledWith('form')
+  expect(onValidate).toHaveBeenCalledWith('outside')
+  expect(onValidate).toHaveBeenCalledWith('section')
+})
 
 it('resolves group ownership for a change without a rendered field', async () => {
   const onListener = vi.fn()
@@ -128,11 +160,10 @@ it('resolves group ownership for a change without a rendered field', async () =>
   await expect
     .element(screen.getByRole('status', { name: 'Unrendered value' }))
     .toHaveTextContent('edited')
-  expect(onListener.mock.calls.toSorted()).toEqual([
-    ['watching'],
-    ['watching group'],
-  ])
-  expect(onValidate.mock.calls).toEqual([['group']])
+  expect(onListener).toHaveBeenCalledTimes(2)
+  expect(onListener).toHaveBeenCalledWith('watching')
+  expect(onListener).toHaveBeenCalledWith('watching group')
+  expect(onValidate).toHaveBeenCalledExactlyOnceWith('group')
   await expect
     .element(screen.getByRole('status', { name: 'Form touched' }))
     .toHaveTextContent('false')
@@ -150,10 +181,9 @@ it('isolates grouped change listeners when validation is disabled', async () => 
 
   await screen.getByRole('button', { name: 'Write without validation' }).click()
 
-  expect(onListener.mock.calls.toSorted()).toEqual([
-    ['watching'],
-    ['watching group'],
-  ])
+  expect(onListener).toHaveBeenCalledTimes(2)
+  expect(onListener).toHaveBeenCalledWith('watching')
+  expect(onListener).toHaveBeenCalledWith('watching group')
   expect(onValidate).not.toHaveBeenCalled()
   await expect
     .element(screen.getByRole('status', { name: 'Form touched' }))
@@ -174,20 +204,21 @@ it('delivers explicit watches across groups without invoking their owners', asyn
     .getByRole('textbox', { name: 'Name', exact: true })
     .fill('edited')
 
-  expect(onListener.mock.calls.toSorted()).toEqual([
-    ['last'],
-    ['second watching'],
-  ])
-  expect(onValidate.mock.calls.toSorted()).toEqual([
-    ['first'],
-    ['last'],
-    ['second watching'],
-  ])
+  expect(onListener).toHaveBeenCalledTimes(2)
+  expect(onListener).toHaveBeenCalledWith('last')
+  expect(onListener).toHaveBeenCalledWith('second watching')
+  expect(onValidate).toHaveBeenCalledTimes(3)
+  expect(onValidate).toHaveBeenCalledWith('first')
+  expect(onValidate).toHaveBeenCalledWith('last')
+  expect(onValidate).toHaveBeenCalledWith('second watching')
 })
 
-it.each(['Add tag', 'Filter tags'])(
-  'keeps the %s array operation within an array-index group',
-  async (button) => {
+it.each([
+  { button: 'Add tag', expectedTags: 'initial, added' },
+  { button: 'Filter tags', expectedTags: 'initial' },
+])(
+  'keeps the $button array operation within an array-index group',
+  async ({ button, expectedTags }) => {
     const onListener = vi.fn()
     const onValidate = vi.fn(() => null)
     const screen = await render(
@@ -196,11 +227,13 @@ it.each(['Add tag', 'Filter tags'])(
 
     await screen.getByRole('button', { name: button, exact: true }).click()
 
-    expect(onListener.mock.calls).toEqual([['tags']])
-    expect(onValidate.mock.calls.toSorted()).toEqual([['group'], ['tags']])
+    expect(onListener).toHaveBeenCalledExactlyOnceWith('tags')
+    expect(onValidate).toHaveBeenCalledTimes(2)
+    expect(onValidate).toHaveBeenCalledWith('group')
+    expect(onValidate).toHaveBeenCalledWith('tags')
     await expect
       .element(screen.getByRole('status', { name: 'Tags' }))
-      .toHaveTextContent(button === 'Add tag' ? 'initial, added' : 'initial')
+      .toHaveTextContent(expectedTags)
   },
 )
 
@@ -216,7 +249,7 @@ it('keeps a field event within its array-index group', async () => {
     .fill('edited')
 
   expect(onListener).not.toHaveBeenCalled()
-  expect(onValidate.mock.calls).toEqual([['group']])
+  expect(onValidate).toHaveBeenCalledExactlyOnceWith('group')
 })
 
 it('keeps an operation above the groups owned by the form', async () => {
@@ -230,6 +263,10 @@ it('keeps an operation above the groups owned by the form', async () => {
     .getByRole('button', { name: 'Filter users', exact: true })
     .click()
 
-  expect(onListener.mock.calls.toSorted()).toEqual([['form'], ['users']])
-  expect(onValidate.mock.calls.toSorted()).toEqual([['form'], ['users']])
+  expect(onListener).toHaveBeenCalledTimes(2)
+  expect(onListener).toHaveBeenCalledWith('form')
+  expect(onListener).toHaveBeenCalledWith('users')
+  expect(onValidate).toHaveBeenCalledTimes(2)
+  expect(onValidate).toHaveBeenCalledWith('form')
+  expect(onValidate).toHaveBeenCalledWith('users')
 })

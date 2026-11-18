@@ -42,35 +42,48 @@ it.each(['change', 'blur'] as const)(
   },
 )
 
-it.each(['change', 'blur'] as const)(
-  'validates the active grouped field without validating its sibling on %s',
-  async (trigger) => {
-    const validateField = vi.fn((name: string) => `${name} error`)
-    const screen = await render(
-      <StandaloneValidation validateField={validateField} />,
-    )
+it('validates the active grouped field without validating its sibling on change', async () => {
+  const validateField = vi.fn((name: string) => `${name} error`)
+  const screen = await render(
+    <StandaloneValidation validateField={validateField} />,
+  )
 
-    if (trigger === 'change') {
-      await screen
-        .getByRole('textbox', { name: 'First', exact: true })
-        .fill('Edited')
-    } else {
-      await screen.getByRole('textbox', { name: 'First', exact: true }).click()
-      await screen.getByRole('textbox', { name: 'Second', exact: true }).click()
-    }
+  await screen
+    .getByRole('textbox', { name: 'First', exact: true })
+    .fill('Edited')
 
-    await expect
-      .element(screen.getByRole('status', { name: 'First errors' }))
-      .toHaveTextContent('First error')
-    await expect
-      .element(screen.getByRole('status', { name: 'Group errors' }))
-      .toHaveTextContent('Group error')
-    await expect
-      .element(screen.getByRole('status', { name: 'Second errors' }))
-      .toHaveTextContent('None')
-    expect(validateField).not.toHaveBeenCalledWith('Second')
-  },
-)
+  await expect
+    .element(screen.getByRole('status', { name: 'First errors' }))
+    .toHaveTextContent('First error')
+  await expect
+    .element(screen.getByRole('status', { name: 'Group errors' }))
+    .toHaveTextContent('Group error')
+  await expect
+    .element(screen.getByRole('status', { name: 'Second errors' }))
+    .toHaveTextContent('None')
+  expect(validateField).not.toHaveBeenCalledWith('Second')
+})
+
+it('validates the active grouped field without validating its sibling on blur', async () => {
+  const validateField = vi.fn((name: string) => `${name} error`)
+  const screen = await render(
+    <StandaloneValidation validateField={validateField} />,
+  )
+
+  await screen.getByRole('textbox', { name: 'First', exact: true }).click()
+  await screen.getByRole('textbox', { name: 'Second', exact: true }).click()
+
+  await expect
+    .element(screen.getByRole('status', { name: 'First errors' }))
+    .toHaveTextContent('First error')
+  await expect
+    .element(screen.getByRole('status', { name: 'Group errors' }))
+    .toHaveTextContent('Group error')
+  await expect
+    .element(screen.getByRole('status', { name: 'Second errors' }))
+    .toHaveTextContent('None')
+  expect(validateField).not.toHaveBeenCalledWith('Second')
+})
 
 it('preserves an independent field validation during standalone group validation', async () => {
   const pending = promiseWithResolvers<string | null>()
@@ -117,12 +130,16 @@ it('rejects an asynchronous standalone group validator exception and clears vali
     .toHaveTextContent('false')
 })
 
-it('cancels standalone group validation before a waiting validator starts', async () => {
+it('cancels a waiting group validator and allows a fresh validation', async () => {
   const pending = promiseWithResolvers<string | null>()
+  const validateGroup = vi
+    .fn<() => Promise<string | null>>()
+    .mockReturnValueOnce(pending.promise)
+    .mockResolvedValue(null)
   const validateNext = vi.fn(() => null)
   const screen = await render(
     <StandaloneValidation
-      validateGroup={() => pending.promise}
+      validateGroup={validateGroup}
       validateNext={validateNext}
     />,
   )
@@ -139,7 +156,18 @@ it('cancels standalone group validation before a waiting validator starts', asyn
     .element(screen.getByRole('status', { name: 'Group validating' }))
     .toHaveTextContent('false')
   pending.resolve(null)
-  expect(validateNext).not.toHaveBeenCalled()
+  await pending.promise
+
+  await screen.getByRole('button', { name: 'Validate group change' }).click()
+  await vi.waitFor(() => expect(validateNext).toHaveBeenCalledOnce())
+  await expect
+    .element(screen.getByRole('status', { name: 'Group result' }))
+    .toHaveTextContent('[]')
+  await expect
+    .element(screen.getByRole('status', { name: 'Group validating' }))
+    .toHaveTextContent('false')
+  expect(validateGroup).toHaveBeenCalledTimes(2)
+  expect(validateNext).toHaveBeenCalledOnce()
 })
 
 it('rejects standalone group validator selection failures', async () => {

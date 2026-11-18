@@ -52,7 +52,7 @@ it('settles a detached group callback without publishing into a remounted group'
   )
 
   await screen.getByRole('button', { name: 'Submit group' }).click()
-  await expect.poll(() => submit.mock.calls.length).toBe(1)
+  await vi.waitFor(() => expect(submit).toHaveBeenCalledOnce())
   await screen.getByRole('button', { name: 'Hide group' }).click()
   await screen.getByRole('button', { name: 'Show group' }).click()
   pending.resolve('Late submit error')
@@ -92,7 +92,7 @@ it('cancels form submission validation when the form unmounts', async () => {
     .element(screen.getByRole('status', { name: 'Name validating' }))
     .toHaveTextContent('true')
   await screen.unmount()
-  await expect.poll(() => onResult.mock.calls).toEqual([[[]]])
+  await vi.waitFor(() => expect(onResult).toHaveBeenCalledExactlyOnceWith([]))
   pending.resolve('Late field error')
   await pending.promise
 
@@ -115,13 +115,15 @@ it('settles a detached form callback after the form unmounts', async () => {
   )
 
   await screen.getByRole('button', { name: 'Submit form' }).click()
-  await expect.poll(() => submit.mock.calls.length).toBe(1)
+  await vi.waitFor(() => expect(submit).toHaveBeenCalledOnce())
   await screen.unmount()
   expect(onResult).not.toHaveBeenCalled()
   pending.resolve('Late submit error')
 
-  await expect
-    .poll(() => onResult.mock.calls)
-    .toEqual([[[{ form: [{ message: 'Late submit error' }], fields: {} }]]])
+  await vi.waitFor(() =>
+    expect(onResult).toHaveBeenCalledExactlyOnceWith([
+      { form: [{ message: 'Late submit error' }], fields: {} },
+    ]),
+  )
   expect(onInvalid).toHaveBeenCalledOnce()
 })

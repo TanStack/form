@@ -154,10 +154,9 @@ it('notifies watchers of fields without listeners or validators and leaves outsi
   await expect
     .element(screen.getByRole('status', { name: 'Submission result' }))
     .toHaveTextContent('[]')
-  expect(onNotification.mock.calls.toSorted()).toEqual([
-    ['inside'],
-    ['watching'],
-  ])
+  expect(onNotification).toHaveBeenCalledTimes(2)
+  expect(onNotification).toHaveBeenCalledWith('inside')
+  expect(onNotification).toHaveBeenCalledWith('watching')
   await expect
     .element(screen.getByRole('status', { name: 'Watched touched' }))
     .toHaveTextContent('true')
@@ -474,6 +473,8 @@ it('enforces the complete form schema before and after a wizard step unmounts', 
       },
     },
   ]
-  expect(onResult.mock.calls).toEqual([[expectedErrors], [expectedErrors]])
+  expect(onResult).toHaveBeenCalledTimes(2)
+  expect(onResult).toHaveBeenNthCalledWith(1, expectedErrors)
+  expect(onResult).toHaveBeenNthCalledWith(2, expectedErrors)
   expect(onSubmit).not.toHaveBeenCalled()
 })

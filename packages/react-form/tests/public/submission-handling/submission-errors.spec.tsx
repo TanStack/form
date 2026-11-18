@@ -50,7 +50,7 @@ describe.each([
     )
 
     await screen.getByRole('button', { name: 'Submit', exact: true }).click()
-    await expect.poll(() => onInvalid.mock.calls.length).toBe(1)
+    await vi.waitFor(() => expect(onInvalid).toHaveBeenCalledOnce())
     expect(onInvalid).toHaveBeenCalledWith(
       expect.objectContaining({
         reason: 'exception',
@@ -84,7 +84,7 @@ describe.each([
     )
 
     await screen.getByRole('button', { name: 'Submit', exact: true }).click()
-    await expect.poll(() => onInvalid.mock.calls.length).toBe(1)
+    await vi.waitFor(() => expect(onInvalid).toHaveBeenCalledOnce())
     await expect
       .element(screen.getByRole('status', { name: 'Submission result' }))
       .toHaveTextContent('Pending')
@@ -235,7 +235,7 @@ describe.each([
     )
 
     await screen.getByRole('button', { name: 'Submit', exact: true }).click()
-    await expect.poll(() => onInvalid.mock.calls.length).toBe(1)
+    await vi.waitFor(() => expect(onInvalid).toHaveBeenCalledOnce())
     await screen.getByRole('button', { name: 'Reset' }).click()
     await expect
       .element(screen.getByRole('status', { name: 'Submitting', exact: true }))
