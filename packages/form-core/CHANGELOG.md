@@ -1,5 +1,9 @@
 # @tanstack/form-core
 
+## 1.33.6
+
+No changes in this release.
+
 ## 1.33.5
 
 ### Patch Changes
