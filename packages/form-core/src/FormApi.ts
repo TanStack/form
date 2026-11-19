@@ -2104,6 +2104,10 @@ export class FormApi<
         return
       }
 
+      // A value change or a new submission clears stale onSubmit/onServer
+      // errors. A blur without a change keeps them.
+      const clearsSubmitErrors = cause === 'change' || cause === 'submit'
+
       /**
        *  when we have an error for onSubmit in the state, we want
        *  to clear the error as soon as the user enters a valid value in the field
@@ -2112,7 +2116,7 @@ export class FormApi<
       if (
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         this.state.errorMap?.[submitErrKey] &&
-        cause !== 'submit' &&
+        clearsSubmitErrors &&
         !hasErrored
       ) {
         this.baseStore.setState((prev) => ({
@@ -2132,7 +2136,7 @@ export class FormApi<
       if (
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         this.state.errorMap?.[serverErrKey] &&
-        cause !== 'server' &&
+        clearsSubmitErrors &&
         !hasErrored
       ) {
         this.baseStore.setState((prev) => ({
