@@ -133,6 +133,5 @@ export const initialFormState: ServerFormState<any, undefined> = {
   errorMap: {
     onServer: undefined,
   },
-  values: undefined,
   errors: [],
-}
+} as unknown as ServerFormState<any, undefined>
