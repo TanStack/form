@@ -2467,7 +2467,19 @@ export class FormApi<
       this.baseStore.setState((prev) => ({ ...prev, isSubmitting: false }))
     }
 
-    await this.validateAllFields('submit')
+    // Validation and submit listeners run before the onSubmit try/catch below.
+    // A throw there must also release the in-flight flag, or the guard at the
+    // top silently drops every later submission.
+    const releaseOnThrow = async (run: () => unknown): Promise<void> => {
+      try {
+        await run()
+      } catch (err) {
+        done()
+        throw err
+      }
+    }
+
+    await releaseOnThrow(() => this.validateAllFields('submit'))
 
     if (!this.state.isFieldsValid) {
       done()
@@ -2490,7 +2502,7 @@ export class FormApi<
       return
     }
 
-    await this.validate('submit')
+    await releaseOnThrow(() => this.validate('submit'))
 
     // Fields are invalid, do not submit
     if (!this.state.isValid) {
@@ -2513,15 +2525,22 @@ export class FormApi<
       return
     }
 
-    batch(() => {
-      void (Object.values(this.fieldInfo) as FieldInfo<TFormData>[]).forEach(
-        (field) => {
-          field.instance?.triggerOnSubmitListener()
-        },
-      )
-    })
+    await releaseOnThrow(() =>
+      batch(() => {
+        void (Object.values(this.fieldInfo) as FieldInfo<TFormData>[]).forEach(
+          (field) => {
+            field.instance?.triggerOnSubmitListener()
+          },
+        )
+      }),
+    )
 
-    this.options.listeners?.onSubmit?.({ formApi: this, meta: submitMetaArg })
+    await releaseOnThrow(() =>
+      this.options.listeners?.onSubmit?.({
+        formApi: this,
+        meta: submitMetaArg,
+      }),
+    )
 
     try {
       // Run the submit code

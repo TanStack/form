@@ -2022,6 +2022,64 @@ describe('form api', () => {
     await Promise.all([first, second])
   })
 
+  it('should release isSubmitting when a submit validator throws before the try block', async () => {
+    vi.useRealTimers()
+    // Regression for PR #2470 review: isSubmitting is set before validation,
+    // but the try/catch only wraps onSubmit. A sync validator that throws
+    // leaves the flag stuck true, so the in-flight guard silently drops every
+    // later handleSubmit(). done() must run on all throw paths after the flag.
+    // See: https://github.com/TanStack/form/pull/2470
+    let throwOnce = true
+    const onSubmit = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: { name: 'Ada' },
+      onSubmit,
+      validators: {
+        onSubmit: () => {
+          if (throwOnce) {
+            throwOnce = false
+            throw new Error('async function passed to sync validator')
+          }
+          return undefined
+        },
+      },
+    })
+    form.mount()
+
+    await expect(form.handleSubmit()).rejects.toThrow(
+      'async function passed to sync validator',
+    )
+    expect(form.state.isSubmitting).toBe(false)
+
+    await form.handleSubmit()
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+  })
+
+  it('should release isSubmitting when an onSubmit listener throws', async () => {
+    vi.useRealTimers()
+    let shouldThrow = true
+    const onSubmit = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: { name: 'Ada' },
+      onSubmit,
+      listeners: {
+        onSubmit: () => {
+          if (shouldThrow) throw new Error('listener blew up')
+        },
+      },
+    })
+    form.mount()
+
+    await expect(form.handleSubmit()).rejects.toThrow('listener blew up')
+    expect(form.state.isSubmitting).toBe(false)
+
+    shouldThrow = false
+    await form.handleSubmit()
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+  })
+
   it('should run all types of async validation on fields during submit', async () => {
     vi.useFakeTimers()
 
