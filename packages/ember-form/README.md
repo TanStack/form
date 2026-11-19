@@ -119,6 +119,8 @@ CI runs the browser tests two times: on the installed ember-source, and on 7.1, 
 
 In CI, the browser tests run in their own job on the GitHub runner, because the Nx agents that run the other targets have no browser.
 
+[TODO.md](./TODO.md) lists the open work for this adapter.
+
 ## License
 
 MIT. See the [root LICENSE](../../LICENSE).
