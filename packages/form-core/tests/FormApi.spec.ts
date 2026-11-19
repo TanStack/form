@@ -2120,6 +2120,62 @@ describe('form api', () => {
     expect(onSubmit).toHaveBeenCalledTimes(1)
   })
 
+  it('should release the in-flight guard when a baseStore subscriber throws', async () => {
+    vi.useRealTimers()
+    // Regression for PR #2470 bot review: setState notifies subscribers via
+    // flush() without isolating throws. If a subscriber throws while the
+    // isSubmitting:true state is committed (before any done() path), the
+    // in-flight guard stays latched and every later handleSubmit() is dropped.
+    const onSubmit = vi.fn()
+    const form = new FormApi({ defaultValues: { name: 'Ada' }, onSubmit })
+    form.mount()
+
+    const subscription = form.baseStore.subscribe((state) => {
+      if (state.isSubmitting) throw new Error('subscriber blew up')
+    })
+
+    await expect(form.handleSubmit()).rejects.toThrow('subscriber blew up')
+
+    subscription.unsubscribe()
+
+    expect(form.state.isSubmitting).toBe(false)
+    await form.handleSubmit()
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+  })
+
+  it('should keep the in-flight guard clean when the onSubmit catch setState throws', async () => {
+    vi.useRealTimers()
+    // Regression for PR #2470 bot review: if onSubmit throws and a store
+    // subscriber throws while the catch block commits isSubmitSuccessful:false,
+    // done() must still run and the original onSubmit error must propagate.
+    let shouldThrow = true
+    let throwOnce = false
+    const onSubmit = vi.fn(() => {
+      if (shouldThrow) {
+        shouldThrow = false
+        throwOnce = true
+        throw new Error('onSubmit blew up')
+      }
+    })
+    const form = new FormApi({ defaultValues: { name: 'Ada' }, onSubmit })
+    form.mount()
+
+    const subscription = form.baseStore.subscribe(() => {
+      if (throwOnce) {
+        throwOnce = false
+        throw new Error('catch setState subscriber blew up')
+      }
+    })
+
+    await expect(form.handleSubmit()).rejects.toThrow('onSubmit blew up')
+
+    subscription.unsubscribe()
+
+    expect(form.state.isSubmitting).toBe(false)
+    await form.handleSubmit()
+    expect(onSubmit).toHaveBeenCalledTimes(2)
+  })
+
   it('should run all types of async validation on fields during submit', async () => {
     vi.useFakeTimers()
 

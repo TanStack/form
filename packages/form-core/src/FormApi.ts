@@ -2465,12 +2465,17 @@ export class FormApi<
       }
     }
 
-    this._submitInFlight = true
-    this.baseStore.setState((d) => ({ ...d, isSubmitting: true }))
-
     const done = () => {
       this._submitInFlight = false
       this.baseStore.setState((prev) => ({ ...prev, isSubmitting: false }))
+    }
+
+    this._submitInFlight = true
+    try {
+      this.baseStore.setState((d) => ({ ...d, isSubmitting: true }))
+    } catch (err) {
+      done()
+      throw err
     }
 
     // Validation and submit listeners run before the onSubmit try/catch below.
@@ -2572,10 +2577,14 @@ export class FormApi<
         done()
       })
     } catch (err) {
-      this.baseStore.setState((prev) => ({
-        ...prev,
-        isSubmitSuccessful: false, // Ensure isSubmitSuccessful is false if an error occurs
-      }))
+      try {
+        this.baseStore.setState((prev) => ({
+          ...prev,
+          isSubmitSuccessful: false, // Ensure isSubmitSuccessful is false if an error occurs
+        }))
+      } catch {
+        // A throwing store subscriber must not strand the in-flight guard.
+      }
 
       formEventClient.emit('form-submission', {
         id: this._formId,
