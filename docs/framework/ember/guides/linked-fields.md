@@ -3,7 +3,7 @@ id: linked-fields
 title: Link Two Form Fields Together
 ---
 
-You may find yourself needing to link two fields together; when one is validated as another field's value has changed. One such usage is when you have both a `password` and `confirm_password` field, where you want `confirm_password` to error out when `password`'s value does not match — regardless of which field triggered the value change.
+You may find yourself needing to link two fields together; when one is validated as another field's value has changed. One such usage is when you have both a `password` and `confirm_password` field, where you want `confirm_password` to error out when `password`'s value does not match, regardless of which field triggered the value change.
 
 Imagine the following userflow:
 
@@ -20,9 +20,7 @@ import { createForm } from '@tanstack/ember-form';
 const handleChange = (field, event) => field.handleChange(event.target.value);
 const onChangeListenTo = ['password'];
 
-// `fieldApi.form` is the underlying FormApi — the same value that's yielded
-// as the block param (named `tanstackForm` by default, or `f` in examples
-// that include a `<form>` element) when the form component is invoked.
+// `fieldApi.form` is the FormApi of the form that the field belongs to.
 const validateConfirm = ({ value, fieldApi }) => {
   if (value !== fieldApi.form.getFieldValue('password')) {
     return 'Passwords do not match';

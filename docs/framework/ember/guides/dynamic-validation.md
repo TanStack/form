@@ -195,7 +195,7 @@ const AgeForm = createForm({
 </template>
 ```
 
-> If a validator needs to depend on per-instance state (e.g. props passed to the surrounding component), construct it inside a wrapper Glimmer component that takes the form as `@form` and stores the validator as a class field. The wrapper can then render `<@form.Field @validators={{hash onDynamic=this.validateAge}}>`. The reactive-args path keeps working — anything that wraps a `Field` to provide `@validators` from `this.args` will re-sync.
+> If a validator needs to depend on per-instance state (e.g. props passed to the surrounding component), construct it inside a wrapper Glimmer component that takes the form as `@form` and stores the validator as a class field. The wrapper can then render `<@form.Field @validators={{hash onDynamic=this.validateAge}}>`. The reactive args keep working: anything that wraps a `Field` to provide `@validators` from `this.args` will re-sync.
 
 ### Async Validation
 

@@ -23,13 +23,15 @@ const PeopleForm = createForm({
 <template>
   <PeopleForm as |tanstackForm|>
     <tanstackForm.Field @name="people" @mode="array" as |field|>
-      {{#each field.state.value as |person|}}
+      {{#each field.state.value key="@index" as |person|}}
         {{!-- ... --}}
       {{/each}}
     </tanstackForm.Field>
   </PeopleForm>
 </template>
 ```
+
+Always pass `key="@index"`. Without it, `{{#each}}` identifies a row by its value. form-core replaces the value of a row on each change, so the row renders from the start and its input loses the focus.
 
 This will regenerate the list every time you run `pushValue` on `field`:
 
@@ -76,22 +78,22 @@ const handleSubmit = ({ value }) => alert(JSON.stringify(value));
 
 const PeopleForm = createForm({
   defaultValues: {
-    people: [] as Array<{ age: number; name: string }>,
+    people: [],
   },
 });
 
 <template>
   <PeopleForm @onSubmit={{handleSubmit}} as |f|>
     <form id="form" {{on "submit" (onSubmitFor f)}}>
-      <f.Field @name="people" as |field|>
+      <f.Field @name="people" @mode="array" as |field|>
         <div>
-          {{#each field.state.value as |person i|}}
+          {{#each field.state.value key="@index" as |_person i|}}
             <f.Field @name={{nameAt i}} as |subField|>
               <div>
                 <label>
                   <div>Name for person {{i}}</div>
                   <input
-                    value={{person.name}}
+                    value={{subField.state.value}}
                     {{on "input" (fn handleInput subField)}}
                   />
                 </label>

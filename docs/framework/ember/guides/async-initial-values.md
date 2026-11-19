@@ -20,7 +20,7 @@ The general shape of the solution is:
 1. Load the data outside of the form (in a route, a resource, or a parent component).
 2. Render the form only once the data is available, passing the resolved values into the invocation as `@defaultValues`.
 
-Because `createForm` is called at module scope, the component it returns is constructed every time it's invoked in a template. The simplest pattern is to render the form invocation inside an `{{#if}}` that gates on the loading state and pass the resolved data as `@defaultValues`. The arg-level `@defaultValues` is merged with anything baked into `createForm`, so per-instance overrides are straightforward.
+Because `createForm` is called at module scope, the component it returns is constructed every time it's invoked in a template. The simplest pattern is to render the form invocation inside an `{{#if}}` that gates on the loading state and pass the resolved data as `@defaultValues`. An arg on the invocation replaces the same key in the options of `createForm`, so `@defaultValues` replaces the fallback values.
 
 ```gjs
 // person-form.gts
@@ -39,8 +39,8 @@ const handleSubmit = async ({ value }) => {
   console.log(value);
 };
 
-export const PersonForm = createForm({
-  // Sensible fallbacks; the caller can override via @defaultValues
+const PersonForm = createForm({
+  // Fallback values. `@defaultValues` replaces them.
   defaultValues: {
     firstName: '',
     lastName: '',
@@ -80,7 +80,7 @@ export const PersonForm = createForm({
 // page.gts
 import Component from '@glimmer/component';
 import { getPromiseState } from 'reactiveweb/get-promise-state';
-import { PersonForm } from './person-form.gts';
+import PersonForm from './person-form.gts';
 
 async function loadPerson() {
   await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -101,7 +101,7 @@ export default class PersonPage extends Component {
     {{else if this.person.error}}
       <p>The person did not load.</p>
     {{else}}
-      <PersonForm @defaultValues={{this.person.resolved}} />
+      <PersonForm @initial={{this.person.resolved}} />
     {{/if}}
   </template>
 }
@@ -113,10 +113,10 @@ The page shows the loading text until the promise resolves. `<PersonForm>` rende
 
 ## Updating defaults after the form is mounted
 
-To render the form immediately, pass the loaded values as `@defaultValues` when they arrive. The form applies changed args by itself.
+To render the form immediately, pass the loaded values when they arrive. The form applies changed args by itself.
 
 ```gjs
-<PersonForm @defaultValues={{this.person.resolved}} />
+<PersonForm @initial={{this.person.resolved}} />
 ```
 
 New default values do not replace the input of a user. A field that the user touched keeps its value.

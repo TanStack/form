@@ -3,7 +3,7 @@ id: form-composition
 title: Form Composition
 ---
 
-A common criticism of TanStack Form is its verbosity out-of-the-box. While this _can_ be useful for educational purposes — helping enforce understanding of our APIs — it's not ideal in production use cases.
+A common criticism of TanStack Form is its verbosity out-of-the-box. While this _can_ be useful for educational purposes (helping enforce understanding of our APIs), it's not ideal in production use cases.
 
 As a result, while `<Field>` enables the most powerful and flexible usage of TanStack Form, we provide patterns that wrap it and make your application code less verbose.
 
@@ -232,7 +232,7 @@ const App = createForm(peopleFormOpts);
 
 ## Reusing groups of fields in multiple forms
 
-Sometimes, a pair of fields are so closely related that it makes sense to group and reuse them — like the password example from the [linked fields guide](./linked-fields.md). Instead of repeating this logic across multiple forms, you can extract a reusable component that takes the form as an arg.
+Sometimes, a pair of fields are so closely related that it makes sense to group and reuse them, like the password example from the [linked fields guide](./linked-fields.md). Instead of repeating this logic across multiple forms, you can extract a reusable component that takes the form as an arg.
 
 ```gjs
 // password-fields.gts
@@ -421,6 +421,6 @@ const PeoplePage = createForm(peopleFormOpts);
 
 ## API Usage Guidance
 
-Here's a chart from the React/Svelte ecosystem to help you decide what APIs you should be using. The shape of the recommendation is the same in Ember — the App-form layer (`AppField`, `AppForm`, `useFieldContext`) is currently provided by hand in Ember (as wrapper components like `TextField` and `SubscribeButton` above) rather than by `createFormCreator`.
+Here's a chart from the React/Svelte ecosystem to help you decide what APIs you should be using. The shape of the recommendation is the same in Ember. The App-form layer (`AppField`, `AppForm`, `useFieldContext`) is currently provided by hand in Ember (as wrapper components like `TextField` and `SubscribeButton` above) rather than by `createFormCreator`.
 
 ![](https://raw.githubusercontent.com/TanStack/form/main/docs/assets/svelte_form_composability.svg)

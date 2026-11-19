@@ -85,8 +85,9 @@ export default class Signup extends Component {
 
 The component yields the `FormApi` with these additions:
 
+- `state` is the form state. Each key is autotracked, so a template that reads `f.state.canSubmit` renders again only when `canSubmit` changes.
 - `Field` renders one field. It takes `@name` and the field options, for example `@validators` and `@defaultValue`.
-- `Subscribe` yields form state. It takes an optional `@selector`.
+- `Subscribe` yields a selection of the form state. It takes an optional `@selector`.
 - `useSelector(selector?)` reads form state in JavaScript. It returns an object with an autotracked `current` property.
 
 `Field` and `Subscribe` are also exports. The exports take the form as `@form`.
@@ -95,7 +96,7 @@ The component yields the `FormApi` with these additions:
 
 Everything else is re-exported from `@tanstack/form-core` (validators, types, helpers).
 
-For the full guide — quick start, basic concepts, validation, dynamic validation, async initial values, arrays, linked fields, and form composition — see the [Ember docs in the TanStack/form repo](https://github.com/TanStack/form/tree/main/docs/framework/ember).
+For the full guide, see the [Ember docs in the TanStack/form repo](https://github.com/TanStack/form/tree/main/docs/framework/ember).
 
 ## Development
 
@@ -120,4 +121,4 @@ In CI, the browser tests run in their own job on the GitHub runner, because the 
 
 ## License
 
-MIT — see the [root LICENSE](../../LICENSE).
+MIT. See the [root LICENSE](../../LICENSE).

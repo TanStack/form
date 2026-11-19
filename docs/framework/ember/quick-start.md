@@ -98,8 +98,8 @@ export default class EditProfile extends Component {
 
 ## Notes
 
-- `createForm({ ... })` is called at module scope. It returns a Glimmer component that you invoke in your template; the form's lifecycle (mount/unmount and store subscriptions) is tied to that invocation. The same `createForm` result can be invoked multiple times — each invocation is its own form instance.
-- Anything shared across every instance (such as `defaultValues` or validators that don't depend on per-instance state) goes into the `createForm` call. Anything per-instance — most notably `onSubmit`, which usually closes over component state — is passed as an arg on the invocation: `<SimpleFormExample @onSubmit={{handleSubmit}}>`.
+- `createForm({ ... })` is called at module scope. It returns a Glimmer component that you invoke in your template; the form's lifecycle (mount/unmount and store subscriptions) is tied to that invocation. The same `createForm` result can be invoked multiple times, and each invocation is its own form instance.
+- Anything shared across every instance (such as `defaultValues` or validators that don't depend on per-instance state) goes into the `createForm` call. Anything per-instance (most notably `onSubmit`, which usually closes over component state) is passed as an arg on the invocation: `<SimpleFormExample @onSubmit={{handleSubmit}}>`.
 - The component yields the form, named `f` in the examples above. Use it to render fields (`<f.Field>`) and to read form state (`<f.Subscribe>`). [Why not `form`?](./guides/basic-concepts.md#why-not-form) explains the names.
 - `onSubmitFor` is a small module-level helper that produces a `submit` handler for a given form. It's a convenient way to keep `event.preventDefault()` plumbing out of every template without re-introducing class methods.
 - Common template built-ins like `on`, `fn`, `hash`, and `if` are compiled into scope by ember-source's template build transforms (ember-source 7+), so you don't need to import them.

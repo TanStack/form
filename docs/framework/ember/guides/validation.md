@@ -404,7 +404,7 @@ You can subscribe to it via `<Subscribe>` and use the value in order to, for exa
 ```gjs
 import { createForm } from '@tanstack/ember-form';
 
-// Pre-compute negation in the selector — strict-mode templates can't write
+// Pre-compute negation in the selector, because strict-mode templates can't write
 // {{!state.canSubmit}} inline.
 const submitButtonState = (state) => ({
   cantSubmit: !state.canSubmit,

@@ -29,9 +29,9 @@ const formOpts = formOptions({
 
 ## Form Component
 
-`createForm` returns a Glimmer component. Call it once at module scope with the options that are shared across every invocation (default values, form-level validators, etc.), then invoke the returned component in a template — once or many times. Each invocation creates its own form instance, with a lifetime tied to that invocation.
+`createForm` returns a Glimmer component. Call it once at module scope with the options that are shared across every invocation (default values, form-level validators, etc.), then invoke the returned component in a template, once or many times. Each invocation creates its own form instance, with a lifetime tied to that invocation.
 
-Anything that varies per instance — most notably `onSubmit`, which usually closes over component state — is passed as a template arg on the invocation rather than baked into `createForm`.
+Anything that varies per instance (most notably `onSubmit`, which usually closes over component state) is passed as a template arg on the invocation rather than baked into `createForm`.
 
 ```gjs
 import { createForm, formOptions } from '@tanstack/ember-form';
@@ -200,7 +200,7 @@ Example:
 </tanstackForm.Field>
 ```
 
-Reading `field.state.value` inside a template entangles with Glimmer's autotracking system, so the input re-renders whenever the underlying store changes — no manual subscription required.
+`field.state` is autotracked. A template that reads `field.state.value` renders again when the value changes, with no manual subscription.
 
 ## Validation
 
@@ -310,9 +310,19 @@ const FirstNameForm = createForm({
 
 ## Reactivity
 
-`@tanstack/ember-form` offers various ways to subscribe to form and field state changes, most notably the `form.useSelector` method and the `<Subscribe>` component. These let you optimize your form's rendering by only updating components when necessary.
+The state of the form and the state of each field are autotracked. No subscription and no selector are necessary for a template to stay current.
 
-In a template, use the `<Subscribe>` component that the form yields. It takes a selector and yields the selected state to its block.
+Each top-level key of the state has its own tracking. A template that reads `tanstackForm.state.canSubmit` renders again when `canSubmit` changes, and a change to `values` leaves it alone.
+
+```gjs
+<template>
+  <NameForm as |tanstackForm|>
+    <p>Submit attempts: {{tanstackForm.state.submissionAttempts}}</p>
+  </NameForm>
+</template>
+```
+
+To derive a value from the state, use the `<Subscribe>` component that the form yields. It takes a selector and yields the selected state to its block.
 
 Example:
 
@@ -369,6 +379,8 @@ const descriptionAt = (i) => `hobbies[${i}].description`;
 const addHobby = (hobbiesField) =>
   hobbiesField.pushValue({ name: '', description: '', yearsOfExperience: 0 });
 
+const removeHobby = (hobbiesField, i) => hobbiesField.removeValue(i);
+
 const HobbiesForm = createForm({
   defaultValues: { hobbies: [] },
 });
@@ -379,7 +391,7 @@ const HobbiesForm = createForm({
       <div>
         Hobbies
         <div>
-          {{#each hobbiesField.state.value as |_ i|}}
+          {{#each hobbiesField.state.value key="@index" as |_ i|}}
             <div>
               <tanstackForm.Field @name={{nameAt i}} as |field|>
                 <div>
@@ -391,7 +403,7 @@ const HobbiesForm = createForm({
                     {{on "blur" field.handleBlur}}
                     {{on "change" (fn handleInput field)}}
                   />
-                  <button type="button" {{on "click" (fn hobbiesField.removeValue i)}}>
+                  <button type="button" {{on "click" (fn removeHobby hobbiesField i)}}>
                     X
                   </button>
                 </div>
@@ -421,5 +433,7 @@ const HobbiesForm = createForm({
   </HobbiesForm>
 </template>
 ```
+
+`key="@index"` keeps each row in the DOM while the user types. Without it, `{{#each}}` identifies a row by its value. form-core replaces the value on each change, so the row renders from the start and the input loses the focus.
 
 These are the basic concepts and terminology used in the `@tanstack/ember-form` library. Understanding these concepts will help you work more effectively with the library and create complex forms with ease.
