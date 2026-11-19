@@ -115,8 +115,17 @@ export interface FormSubmitContext<
   TFormData,
   TValidatorOutputs extends readonly unknown[],
 > {
-  /** The form values for this submission, without schema transformations applied. */
+  /** The values captured when this submission started, without schema transformations. */
   value: TFormData
+  /**
+   * Aborted when a newer submission, reset, unmount, or server-state replacement
+   * invalidates this attempt. Later field edits do not abort it.
+   *
+   * Shared with this attempt's `onSubmitInvalid` context. Aborting stops results
+   * from updating form state; callbacks already started are still awaited and
+   * their exceptions retain normal handling. It does not undo external work.
+   */
+  signal: AbortSignal
   /** The form instance handling this submission. */
   formApi: FormApi<TFormData, ScopedErrorTypes<never, never>>
   /**
@@ -197,6 +206,14 @@ export type FormOptionsOnSubmitFn<
  */
 export interface SubmitInvalidContext {
   /**
+   * The same signal passed to this attempt's `onSubmit`, if it ran.
+   *
+   * Aborted when the attempt is superseded or invalidated by reset, unmount, or
+   * server-state replacement. A running callback is still awaited. An aborted
+   * signal does not change `reason` or automatically suppress exceptions.
+   */
+  signal: AbortSignal
+  /**
    * How submission failed:
    * - `validation` for reported validation errors
    * - `exception` for a thrown value or rejected promise
@@ -268,6 +285,9 @@ export interface FormSubmitInvalidContext<
  * returned from `onSubmit` using its error helpers, and exceptions thrown or
  * rejected during either stage. A returned promise is awaited before
  * `handleSubmit()` settles.
+ *
+ * If `onSubmit` fails after cancellation, this callback still runs with the
+ * attempt's captured values and aborted signal.
  *
  * @remarks
  * **Important:** Setting this callback does not suppress exceptions.

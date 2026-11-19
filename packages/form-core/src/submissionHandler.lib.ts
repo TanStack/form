@@ -128,9 +128,9 @@ interface SubmissionOutcome<TError> {
 }
 
 class SubmissionHandler<TValue, TInstance extends AnyValidatorInstance> {
-  private readonly submissions = new Set<
-    SubmissionAttempt<FormattedValidationError<TValue>>
-  >()
+  private currentSubmission: SubmissionAttempt<
+    FormattedValidationError<TValue>
+  > | null = null
   private readonly adapter: SubmissionHandlerAdapter<TValue, TInstance>
   private readonly isSubmitting: Atom<boolean>
   private readonly isSubmitSuccessful: Atom<boolean>
@@ -158,9 +158,10 @@ class SubmissionHandler<TValue, TInstance extends AnyValidatorInstance> {
     }
 
     this.finishSubmission = (submission, successful) => {
-      if (!this.submissions.delete(submission)) return
+      if (this.currentSubmission !== submission) return
+      this.currentSubmission = null
       batch(() => {
-        this.isSubmitting.set(this.submissions.size > 0)
+        this.isSubmitting.set(false)
         this.isSubmitSuccessful.set(successful)
       })
     }
@@ -178,8 +179,10 @@ class SubmissionHandler<TValue, TInstance extends AnyValidatorInstance> {
   private async runSubmission(
     submission: SubmissionAttempt<FormattedValidationError<TValue>>,
   ): Promise<void> {
-    this.submissions.add(submission)
     batch(() => {
+      const previous = this.currentSubmission
+      this.currentSubmission = submission
+      previous?.invalidate()
       this.submissionAttempts.set((attempts) => attempts + 1)
       this.isSubmitting.set(true)
       this.adapter.onStart?.()
@@ -204,7 +207,7 @@ class SubmissionHandler<TValue, TInstance extends AnyValidatorInstance> {
     this.adapter.notifySubmit?.()
     if (!submission.isActive()) return validation
 
-    for (const field of submission.notificationFields) {
+    for (const field of submission.fieldsToNotify) {
       if (!submission.isActive()) return validation
       if (field._isKilled) continue
 
@@ -214,7 +217,7 @@ class SubmissionHandler<TValue, TInstance extends AnyValidatorInstance> {
     try {
       const fieldRuns: FieldRuns = []
       const fieldOutcomes = await Promise.allSettled(
-        Array.from(submission.fields.keys(), async (field, index) => {
+        Array.from(submission.fieldsToValidate.keys(), async (field, index) => {
           if (!submission.isActive()) return
 
           const run = field._runFieldValidation('submit', {
@@ -232,8 +235,8 @@ class SubmissionHandler<TValue, TInstance extends AnyValidatorInstance> {
 
       batch(() => {
         let fieldIndex = 0
-        for (const [field, snapshot] of submission.fields) {
-          // Remember, fieldRuns.length === submission.fields.size
+        for (const [field, snapshot] of submission.fieldsToValidate) {
+          // Remember, fieldRuns.length === submission.fieldsToValidate.size
           const run = fieldRuns[fieldIndex]
           fieldIndex++
 
@@ -289,15 +292,15 @@ class SubmissionHandler<TValue, TInstance extends AnyValidatorInstance> {
     submission: SubmissionAttempt<FormattedValidationError<TValue>>,
     validation: SubmissionValidation<TValue>,
   ): Promise<SubmissionOutcome<FormattedValidationError<TValue>>> {
-    const earlyExit = { errors: [], successful: false }
     const finishInvalidSubmission = async (
-      failure: Omit<SubmitInvalidContext, 'preventThrow'>,
+      failure: Omit<SubmitInvalidContext, 'preventThrow' | 'signal'>,
     ) => {
       const state = { shouldThrow: failure.reason === 'exception' }
 
       await this.adapter.onSubmitInvalid({
         ...failure,
         value: submission.value,
+        signal: submission.signal,
         preventThrow: () => {
           state.shouldThrow = false
         },
@@ -327,6 +330,7 @@ class SubmissionHandler<TValue, TInstance extends AnyValidatorInstance> {
     try {
       const maybeError = await this.adapter.onSubmit({
         value: submission.value,
+        signal: submission.signal,
         validatorOutputs: validation.validatorOutputs,
         createValidationError,
         createErrorMap: withSubmitError(createErrorMap),
@@ -365,12 +369,12 @@ class SubmissionHandler<TValue, TInstance extends AnyValidatorInstance> {
     return { errors: validation.errors, successful: true }
   }
 
-  /** Detaches pending attempts and clears flags, preserving the attempt count. */
+  /** Detaches the current attempt and clears flags, preserving the attempt count. */
   invalidate(): void {
     batch(() => {
-      const submissions = Array.from(this.submissions)
-      this.submissions.clear()
-      for (const submission of submissions) submission.invalidate()
+      const submission = this.currentSubmission
+      this.currentSubmission = null
+      submission?.invalidate()
       this.isSubmitting.set(false)
       this.isSubmitSuccessful.set(false)
     })

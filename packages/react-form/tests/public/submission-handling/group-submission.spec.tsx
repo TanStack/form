@@ -404,7 +404,7 @@ it('keeps group submission state reset after a pending callback completes follow
     .toHaveTextContent('None')
 })
 
-it('keeps overlapping group attempts active until their own callbacks finish', async () => {
+it('keeps the latest group attempt pending when an older callback finishes', async () => {
   const first = promiseWithResolvers<string | null>()
   const second = promiseWithResolvers<string | null>()
   const submit = vi
@@ -429,7 +429,7 @@ it('keeps overlapping group attempts active until their own callbacks finish', a
   await expect
     .element(screen.getByRole('status', { name: 'Group submission state' }))
     .toHaveTextContent(
-      '{"isSubmitting":true,"isSubmitSuccessful":true,"submissionAttempts":2}',
+      '{"isSubmitting":true,"isSubmitSuccessful":false,"submissionAttempts":2}',
     )
   second.resolve('Second error')
   await expect

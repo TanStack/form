@@ -81,7 +81,7 @@ export function startFieldValidation(
   options: FieldValidationOptions,
 ): ClientValidationRun<InternalFieldValidatorInstance> | undefined {
   const applyResults = options.onResult !== false
-  const snapshot = options.submission?.fields.get(field)
+  const snapshot = options.submission?.fieldsToValidate.get(field)
 
   let validators: InternalFieldValidatorInstance[] | null = null
   if (snapshot) {
