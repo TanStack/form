@@ -1,5 +1,13 @@
 # @tanstack/form-devtools
 
+## 0.2.35
+
+### Patch Changes
+
+- [#2456](https://github.com/TanStack/form/pull/2456) [`9fdca44`](https://github.com/TanStack/form/commit/9fdca4472488c1ee6a8a0d80143e2ccea49fae90) - Cap the `solid-js` peer range at `^1`. The previous open-ended `>=` range would accept Solid 2.0.0 once it is released, but these packages are built against Solid 1 and do not work with Solid 2.
+- Updated dependencies []:
+  - @tanstack/form-core@1.33.6
+
 ## 0.2.34
 
 ### Patch Changes
