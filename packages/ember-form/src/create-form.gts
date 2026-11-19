@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { cached } from '@glimmer/tracking';
 import { FormApi } from '@tanstack/form-core';
 import { registerDestructor } from '@ember/destroyable';
-import { trackStore } from './-private/track-store.ts';
+import { withTrackedState } from './-private/tracked-api.ts';
 import Field from './components/field.gts';
 import Subscribe from './components/subscribe.gts';
 
@@ -19,6 +19,9 @@ import type {
  *
  * Call this in module scope.
  * Each arg on the component overrides the same key in `baseOptions`.
+ *
+ * The component yields the form.
+ * `state` on the yielded form is autotracked per key.
  *
  * @example
  * ```gjs
@@ -126,20 +129,23 @@ export function createForm<
       return { ...baseOptions, ...this.args };
     }
 
-    #api = this.#create();
+    #api = new FormApi(this.#options);
 
-    #create() {
-      const api = new FormApi(this.#options);
-      const state = trackStore(api.store, this);
+    #form = this.#extend();
 
-      const extensions: Extensions = {
+    #extend() {
+      const api = this.#api;
+
+      registerDestructor(this, api.mount());
+
+      const form: typeof api & Extensions = withTrackedState(api, this, {
         Field: class extends Field<
           // The `FieldComponent` type gives each invocation its generics.
           any, any, any, any, any, any, any, any, any, any, any, any,
           any, any, any, any, any, any, any, any, any, any, any
         > {
           get form() {
-            return api;
+            return form;
           }
         } as never,
 
@@ -147,20 +153,18 @@ export function createForm<
           any, any, any, any, any, any, any, any, any, any, any, any
         > {
           get form() {
-            return api;
+            return form;
           }
         } as never,
 
         useSelector: ((selector?: (state: typeof api.state) => unknown) => ({
           get current() {
-            return selector ? selector(state) : state;
+            return selector ? selector(form.state) : form.state;
           },
         })) as Extensions['useSelector'],
-      };
+      } satisfies Extensions);
 
-      registerDestructor(this, api.mount());
-
-      return Object.assign(api, extensions);
+      return form;
     }
 
     /**
@@ -171,7 +175,7 @@ export function createForm<
     get form() {
       this.#api.update(this.#options);
 
-      return this.#api;
+      return this.#form;
     }
 
     <template>{{yield this.form}}</template>

@@ -1,5 +1,6 @@
 import Component from '@glimmer/component';
 import { trackStore } from '../-private/track-store.ts';
+import { hasTrackedState } from '../-private/tracked-api.ts';
 
 import type { SubscribeSignature } from '../types.ts';
 import type {
@@ -68,7 +69,13 @@ export default class Subscribe<
     return this.args.form;
   }
 
-  #state = trackStore(this.form.store, this);
+  /**
+   * A form from `createForm` has an autotracked `state` already.
+   * A plain `FormApi` needs a subscription of its own.
+   */
+  #state = hasTrackedState(this.form)
+    ? this.form.state
+    : trackStore(this.form.store, this);
 
   get selected(): TSelected {
     const state = this.#state;

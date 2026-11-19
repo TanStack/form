@@ -1,11 +1,16 @@
 import Component from '@glimmer/component';
 import { cached } from '@glimmer/tracking';
 import { FieldApi } from '@tanstack/form-core';
-import { registerDestructor } from '@ember/destroyable';
-import { trackStore } from '../-private/track-store.ts';
+import {
+  associateDestroyableChild,
+  destroy,
+  registerDestructor,
+} from '@ember/destroyable';
+import { sourceOf, withTrackedState } from '../-private/tracked-api.ts';
 
 import type { FieldSignature } from '../types.ts';
 import type {
+  AnyFieldApi,
   DeepKeys,
   DeepValue,
   FieldAsyncValidateOrFn,
@@ -95,38 +100,53 @@ export default class Field<
     return this.args.form;
   }
 
-  get #options() {
-    return { ...this.args, form: this.form };
-  }
+  #mounted?: { api: AnyFieldApi; field: AnyFieldApi; scope: object };
 
-  #api = this.#create();
+  /**
+   * Replaces the mounted `FieldApi`.
+   * The old one unmounts when its scope is destroyed.
+   */
+  #mount(options: AnyFieldApi['options']) {
+    if (this.#mounted) destroy(this.#mounted.scope);
 
-  #create() {
-    const api = new FieldApi(this.#options);
-    const state = trackStore(api.store, this);
+    const api: AnyFieldApi = new FieldApi(options);
+    const scope = {};
 
-    /**
-     * form-core defines `state` as a prototype getter,
-     * and autotracking cannot observe it.
-     *
-     * svelte-form shadows the getter on the instance in the same way.
-     */
-    Object.defineProperty(api, 'state', { get: () => state });
+    associateDestroyableChild(this, scope);
+    registerDestructor(scope, api.mount());
 
-    registerDestructor(this, api.mount());
+    this.#mounted = { api, field: withTrackedState(api, scope), scope };
 
-    return api;
+    return this.#mounted.field;
   }
 
   /**
    * form-core documents `update` as free of side effects,
    * so the field can apply the current args when it is read.
+   *
+   * A `FieldApi` belongs to one name in one form.
+   * If one of the two changes, the field mounts a new `FieldApi`.
    */
   @cached
   get field() {
-    this.#api.update(this.#options);
+    const options = {
+      ...this.args,
+      form: sourceOf(this.form),
+    } as AnyFieldApi['options'];
 
-    return this.#api;
+    const mounted = this.#mounted;
+
+    if (
+      !mounted ||
+      mounted.api.form !== options.form ||
+      mounted.api.name !== options.name
+    ) {
+      return this.#mount(options);
+    }
+
+    mounted.api.update(options);
+
+    return mounted.field;
   }
 
   <template>{{yield this.field}}</template>

@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { click, fillIn, render } from '@ember/test-helpers';
+import { clearRender, click, fillIn, render } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { createForm, Field } from '@tanstack/ember-form';
@@ -73,5 +73,73 @@ module('Integration | Field reactive args', function (hooks) {
 
     await fillIn('#firstName', 'Joeyz');
     assert.dom('em.error').doesNotExist('clears once min 5 satisfied');
+  });
+
+  test('a changed @name moves the field to the new name', async function (assert) {
+    class State {
+      @tracked name: keyof Sample = 'firstName';
+    }
+
+    const local = new State();
+    const values: Sample = { firstName: '', lastName: '' };
+
+    const NamesForm = createForm({
+      defaultValues: { firstName: 'Ada', lastName: 'Lovelace' } as Sample,
+      onSubmit: ({ value }) => Object.assign(values, value),
+    });
+
+    const listeners = {
+      onMount: ({ fieldApi }: { fieldApi: { name: string } }) =>
+        assert.step(`mount ${fieldApi.name}`),
+      onUnmount: ({ fieldApi }: { fieldApi: { name: string } }) =>
+        assert.step(`unmount ${fieldApi.name}`),
+    };
+
+    const swap = () => {
+      local.name = 'lastName';
+    };
+
+    const submit = (form: { handleSubmit: () => unknown }) => () =>
+      form.handleSubmit();
+
+    await render(
+      <template>
+        <NamesForm as |tanstackForm|>
+          <tanstackForm.Field
+            @name={{local.name}}
+            @listeners={{listeners}}
+            as |field|
+          >
+            <input
+              id="name"
+              value={{field.state.value}}
+              {{on "input" (fn handleInput field)}}
+            />
+          </tanstackForm.Field>
+
+          <button id="swap" type="button" {{on "click" swap}}>swap</button>
+          <button id="go" type="button" {{on "click" (submit tanstackForm)}}>
+            go
+          </button>
+        </NamesForm>
+      </template>,
+    );
+
+    assert.dom('#name').hasValue('Ada');
+    assert.verifySteps(['mount firstName']);
+
+    await click('#swap');
+
+    assert.dom('#name').hasValue('Lovelace');
+    assert.verifySteps(['mount lastName', 'unmount firstName']);
+
+    await fillIn('#name', 'Byron');
+    await click('#go');
+
+    assert.deepEqual(values, { firstName: 'Ada', lastName: 'Byron' });
+
+    await clearRender();
+
+    assert.verifySteps(['unmount lastName']);
   });
 });

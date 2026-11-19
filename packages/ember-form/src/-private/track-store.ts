@@ -1,12 +1,12 @@
 import { trackedObject } from '@ember/reactive/collections'
 import { isDestroying, registerDestructor } from '@ember/destroyable'
 
-interface ReadableStore<TState extends object> {
+export interface ReadableStore<TState extends object> {
   state: TState
   subscribe: (listener: () => void) => { unsubscribe: () => void }
 }
 
-type Keyed = Record<string | symbol, unknown>
+type Keyed = Record<PropertyKey, unknown>
 
 /**
  * Returns a view of `store.state` that autotracking can observe per key.
@@ -14,8 +14,9 @@ type Keyed = Record<string | symbol, unknown>
  * A read returns the live value, never a copy,
  * so the value cannot lag behind the store.
  *
- * `trackedObject` compares with `Object.is`,
- * so a key that keeps its value does not invalidate its readers.
+ * A key invalidates its readers only when a reader holds an old value.
+ * A reader that ran after the write has the new value already,
+ * so a write before the first read causes no second render.
  *
  * The subscription ends when `parent` is destroyed.
  */
@@ -23,7 +24,21 @@ export function trackStore<TState extends object>(
   store: ReadableStore<TState>,
   parent: object,
 ): TState {
-  const tags = trackedObject({ ...store.state }) as Keyed
+  /**
+   * Holds one tag per key, and no values.
+   * An assignment must always invalidate, so no two values are equal.
+   */
+  const tags = trackedObject<Keyed>({}, { equals: () => false })
+
+  /**
+   * The value that the readers of each key received.
+   */
+  const seen = new Map<PropertyKey, unknown>()
+
+  /**
+   * The keys that gave different values to different readers.
+   */
+  const mixed = new Set<PropertyKey>()
 
   let isScheduled = false
 
@@ -34,9 +49,14 @@ export function trackStore<TState extends object>(
 
     const state = store.state as Keyed
 
-    for (const key of Reflect.ownKeys(state)) {
-      tags[key] = state[key]
+    for (const [key, value] of seen) {
+      if (mixed.has(key) || !Object.is(value, state[key])) {
+        seen.delete(key)
+        tags[key] = undefined
+      }
     }
+
+    mixed.clear()
   }
 
   /**
@@ -63,9 +83,17 @@ export function trackStore<TState extends object>(
     Object.defineProperty(view, key, {
       enumerable: true,
       get() {
+        const value = (store.state as Keyed)[key]
+
         void tags[key]
 
-        return (store.state as Keyed)[key]
+        if (!seen.has(key)) {
+          seen.set(key, value)
+        } else if (!Object.is(seen.get(key), value)) {
+          mixed.add(key)
+        }
+
+        return value
       },
     })
   }

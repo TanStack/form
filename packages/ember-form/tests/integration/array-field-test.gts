@@ -1,4 +1,4 @@
-import { click, fillIn, render } from '@ember/test-helpers';
+import { click, fillIn, find, render } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { createForm } from '@tanstack/ember-form';
@@ -110,7 +110,7 @@ module('Integration | Field @mode="array"', function (hooks) {
       <template>
         <PeopleForm as |tanstackForm|>
           <tanstackForm.Field @name="people" @mode="array" as |field|>
-            {{#each field.state.value as |_person index|}}
+            {{#each field.state.value key="@index" as |_person index|}}
               <tanstackForm.Field @name={{nameAt index}} as |nameField|>
                 <input
                   class="name"
@@ -133,8 +133,15 @@ module('Integration | Field @mode="array"', function (hooks) {
     assert.dom('.name').exists({ count: 2 });
     assert.dom('.name:nth-of-type(2)').hasValue('Grace');
 
+    const row = find('.name:nth-of-type(2)');
+
     await fillIn('.name:nth-of-type(2)', 'Hedy');
 
     assert.dom('#values').hasText('Ada,Hedy,');
+    assert.strictEqual(
+      find('.name:nth-of-type(2)'),
+      row,
+      'the input stays in the DOM, so it keeps the focus',
+    );
   });
 });
