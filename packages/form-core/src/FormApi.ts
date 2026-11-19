@@ -1067,6 +1067,9 @@ export class FormApi<
    */
   private _devtoolsSubmissionOverride: boolean
 
+  /** In-flight submission guard that `reset()` cannot clear. */
+  private _submitInFlight: boolean
+
   /**
    * Constructs a new `FormApi` instance with the given form options.
    */
@@ -1095,6 +1098,7 @@ export class FormApi<
     this._formId = opts?.formId ?? uuid()
 
     this._devtoolsSubmissionOverride = false
+    this._submitInFlight = false
 
     let baseStoreVal: BaseFormState<
       TFormData,
@@ -2418,7 +2422,7 @@ export class FormApi<
    * Handles the form submission, performs validation, and calls the appropriate onSubmit or onSubmitInvalid callbacks.
    */
   _handleSubmit = async (submitMeta?: TSubmitMeta): Promise<void> => {
-    if (this.baseStore.state.isSubmitting) return
+    if (this._submitInFlight) return
 
     this.baseStore.setState((old) => ({
       ...old,
@@ -2461,9 +2465,11 @@ export class FormApi<
       }
     }
 
+    this._submitInFlight = true
     this.baseStore.setState((d) => ({ ...d, isSubmitting: true }))
 
     const done = () => {
+      this._submitInFlight = false
       this.baseStore.setState((prev) => ({ ...prev, isSubmitting: false }))
     }
 

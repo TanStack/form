@@ -2022,6 +2022,46 @@ describe('form api', () => {
     await Promise.all([first, second])
   })
 
+  it('keeps the in-flight guard after reset() clears isSubmitting', async () => {
+    vi.useRealTimers()
+    // Regression for PR #2470 bot review: reset() writes isSubmitting:false
+    // through getDefaultFormState. A reset during a pending onSubmit must not
+    // reopen the guard and allow a concurrent submission.
+    const pending: Array<() => void> = []
+    let calls = 0
+    const onSubmit = vi.fn(
+      () =>
+        new Promise<void>((resolve) => {
+          calls += 1
+          if (calls > 1) {
+            resolve()
+            return
+          }
+          pending.push(resolve)
+        }),
+    )
+
+    const form = new FormApi({ defaultValues: { name: 'Ada' }, onSubmit })
+    form.mount()
+
+    const first = form.handleSubmit()
+    await vi.waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1))
+
+    form.reset()
+    expect(form.state.isSubmitting).toBe(false)
+
+    const second = form.handleSubmit()
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+
+    pending.forEach((resolve) => resolve())
+    await Promise.all([first, second])
+    expect(form.state.isSubmitting).toBe(false)
+
+    await form.handleSubmit()
+    expect(onSubmit).toHaveBeenCalledTimes(2)
+  })
+
   it('should release isSubmitting when a submit validator throws before the try block', async () => {
     vi.useRealTimers()
     // Regression for PR #2470 review: isSubmitting is set before validation,
