@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { click, fillIn, render } from '@ember/test-helpers';
+import { click, fillIn, render, settled } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { createForm } from '@tanstack/ember-form';
@@ -102,5 +102,37 @@ module('Integration | form reactive args', function (hooks) {
     await click('#load');
 
     assert.dom('#firstName').hasValue('Hedy');
+  });
+
+  test('a changed @onSubmit applies after reset with new values', async function (assert) {
+    class State {
+      @tracked onSubmit = () => assert.step('first');
+    }
+
+    const local = new State();
+
+    const reset = (form: { reset: (values: Sample) => void }) => () =>
+      form.reset({ firstName: 'Grace', lastName: 'Hopper' });
+
+    await render(
+      <template>
+        <SampleForm @onSubmit={{local.onSubmit}} as |tanstackForm|>
+          <button id="reset" type="button" {{on "click" (reset tanstackForm)}}>
+            reset
+          </button>
+          <button id="go" type="button" {{on "click" (submit tanstackForm)}}>
+            go
+          </button>
+        </SampleForm>
+      </template>,
+    );
+
+    await click('#reset');
+
+    local.onSubmit = () => assert.step('second');
+    await settled();
+    await click('#go');
+
+    assert.verifySteps(['second']);
   });
 });

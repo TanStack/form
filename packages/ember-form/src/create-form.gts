@@ -168,8 +168,53 @@ export function createForm<
     }
 
     /**
-     * form-core documents `update` as free of side effects,
-     * so the form can apply the current args when it is read.
+     * Gives the current args to form-core each time one of them changes.
+     *
+     * A getter that calls `update` is not correct Ember code.
+     * It is here because form-core gives no other way, for three reasons.
+     *
+     * 1. form-core copies the default values into its store.
+     *    The values of an untouched form are derived data,
+     *    but form-core does not derive them,
+     *    so a changed `@defaultValues` needs a write to the store:
+     *
+     * ```ts
+     * // @tanstack/form-core, src/FormApi.ts
+     * update = (options) => {
+     *   const oldOptions = this.options
+     *   this.options = options
+     *
+     *   const shouldUpdateValues =
+     *     options.defaultValues &&
+     *     !evaluate(options.defaultValues, oldOptions.defaultValues) &&
+     *     !this.state.isTouched
+     *   // ...
+     *   this.baseStore.setState(() => getDefaultFormState({ ... }))
+     * ```
+     *
+     * 2. `update` finds a change only if it gets a new object.
+     *    The comparison above reads the old and the new default values
+     *    from two option objects. An object with live getters,
+     *    as `Field` uses, always gives the same value for the two.
+     *
+     * 3. `reset` replaces the options with a copy.
+     *    A copy of live getters is a set of fixed values,
+     *    so the form no longer sees a changed arg after this line:
+     *
+     * ```ts
+     * // @tanstack/form-core, src/FormApi.ts
+     * reset = (values, opts) => {
+     *   if (values && !opts?.keepDefaultValues) {
+     *     this.options = { ...this.options, defaultValues: values }
+     *   }
+     * ```
+     *
+     * Without a changed default value, `update` only assigns `this.options`,
+     * and nothing in a template can observe that assignment.
+     *
+     * The other adapters call `update` in an effect, after each render,
+     * so a changed default value causes a second render.
+     * This adapter calls it before the template reads the form.
      */
     @cached
     get form() {

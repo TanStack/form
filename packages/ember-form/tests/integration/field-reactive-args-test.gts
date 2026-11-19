@@ -1,6 +1,12 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { clearRender, click, fillIn, render } from '@ember/test-helpers';
+import {
+  clearRender,
+  click,
+  fillIn,
+  render,
+  settled,
+} from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { createForm, Field } from '@tanstack/ember-form';
@@ -18,7 +24,7 @@ const SampleForm = createForm({
 module('Integration | Field reactive args', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('changing @validators re-applies via api.update()', async function (assert) {
+  test('a changed @validators applies to the next change', async function (assert) {
     class State {
       @tracked validator: ({ value }: { value: string }) => string | undefined =
         minThree;
@@ -141,5 +147,101 @@ module('Integration | Field reactive args', function (hooks) {
     await clearRender();
 
     assert.verifySteps(['unmount lastName']);
+  });
+
+  test('a changed @listeners applies to the next change', async function (assert) {
+    class State {
+      @tracked listeners = { onChange: () => assert.step('first') };
+    }
+
+    const local = new State();
+
+    await render(
+      <template>
+        <SampleForm as |tanstackForm|>
+          <tanstackForm.Field
+            @name="firstName"
+            @listeners={{local.listeners}}
+            as |field|
+          >
+            <input
+              id="firstName"
+              value={{field.state.value}}
+              {{on "input" (fn handleInput field)}}
+            />
+          </tanstackForm.Field>
+        </SampleForm>
+      </template>,
+    );
+
+    await fillIn('#firstName', 'a');
+
+    assert.verifySteps(['first']);
+
+    local.listeners = { onChange: () => assert.step('second') };
+    await settled();
+    await fillIn('#firstName', 'b');
+
+    assert.verifySteps(['second']);
+  });
+
+  module('@defaultValue', function () {
+    class State {
+      @tracked defaultValue = 'Ada';
+    }
+
+    test('a change updates an untouched field', async function (assert) {
+      const local = new State();
+
+      await render(
+        <template>
+          <SampleForm as |tanstackForm|>
+            <tanstackForm.Field
+              @name="firstName"
+              @defaultValue={{local.defaultValue}}
+              as |field|
+            >
+              <input id="firstName" value={{field.state.value}} />
+            </tanstackForm.Field>
+          </SampleForm>
+        </template>,
+      );
+
+      assert.dom('#firstName').hasValue('Ada');
+
+      local.defaultValue = 'Grace';
+      await settled();
+
+      assert.dom('#firstName').hasValue('Grace');
+    });
+
+    test('a change keeps the input of the user', async function (assert) {
+      const local = new State();
+
+      await render(
+        <template>
+          <SampleForm as |tanstackForm|>
+            <tanstackForm.Field
+              @name="firstName"
+              @defaultValue={{local.defaultValue}}
+              as |field|
+            >
+              <input
+                id="firstName"
+                value={{field.state.value}}
+                {{on "input" (fn handleInput field)}}
+              />
+            </tanstackForm.Field>
+          </SampleForm>
+        </template>,
+      );
+
+      await fillIn('#firstName', 'Hedy');
+
+      local.defaultValue = 'Grace';
+      await settled();
+
+      assert.dom('#firstName').hasValue('Hedy');
+    });
   });
 });

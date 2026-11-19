@@ -59,36 +59,72 @@ Links:
 - [form-core `FieldApi.ts`, the `createStore` call](https://github.com/TanStack/form/blob/39ded17a7d37511df835e871bc6c8f566be9ac8b/packages/form-core/src/FieldApi.ts#L749)
 - [form-core `FormApi.ts`, the base store](https://github.com/TanStack/form/blob/39ded17a7d37511df835e871bc6c8f566be9ac8b/packages/form-core/src/FormApi.ts#L1161)
 
-## 2. Pull the options, do not push them
+## 2. Remove the `update` calls from the getters
 
-This item also needs form-core support.
+`Field` does not push its options. form-core gets one object with live getters, and reads the current args when it needs them:
 
-The table adapter takes the options as a function. A `@cached` value wraps the function, and table-core reads the current options when it needs them:
+```ts
+// src/components/field.gts
+new FieldApi(liveOptions(args, { form, name }))
+```
+
+Two `update` calls remain. Each one is a write inside a getter, and each one needs a change in form-core before it can go.
+
+`Field` calls `update` for a changed `@defaultValue`. form-core copies the default value into the store, so a changed option needs a write:
+
+```ts
+// @tanstack/form-core, src/FieldApi.ts
+if (!this.state.meta.isTouched && this.options.defaultValue !== undefined) {
+  const formField = this.form.getFieldValue(this.name)
+  if (!evaluate(formField, opts.defaultValue)) {
+    this.form.setFieldValue(this.name, opts.defaultValue as never, {
+```
+
+The form calls `update` for each changed arg. Live options do not work there, for two reasons.
+
+`update` compares the default values of two option objects. One live object always gives the same value for the two:
+
+```ts
+// @tanstack/form-core, src/FormApi.ts
+const oldOptions = this.options
+this.options = options
+
+const shouldUpdateValues =
+  options.defaultValues &&
+  !evaluate(options.defaultValues, oldOptions.defaultValues) &&
+  !this.state.isTouched
+```
+
+`reset` replaces the options with a copy. A copy of live getters is a set of fixed values:
+
+```ts
+// @tanstack/form-core, src/FormApi.ts
+if (values && !opts?.keepDefaultValues) {
+  this.options = {
+    ...this.options,
+    defaultValues: values,
+  }
+}
+```
+
+Changes to ask form-core for:
+
+1. Derive the value of an untouched field from the default value. Do not copy it into the store.
+2. Change `defaultValues` in `reset` with an assignment to that one key, with no copy of the options.
+
+The table adapter is the model for the form. It takes the options as a function, and table-core reads them when it needs them:
 
 ```ts
 // @tanstack/ember-table
 table = useTable(this, () => ({ columns, data: this.data }))
 ```
 
-This adapter pushes the options. A `@cached` getter calls `update` each time an arg changes:
-
-```gts
-// src/create-form.gts
-@cached
-get form() {
-  this.#api.update(this.#options);
-
-  return this.#form;
-}
-```
-
-The call is a write inside a getter. form-core documents `update` as free of side effects, but `update` can set a default value, and that is a store write during a render.
-
-If form-core reads its options from a store that an adapter can supply, both `update` calls go away (`src/create-form.gts` and `src/components/field.gts`).
-
-Link:
+Links:
 
 - [ember-table `use-table.ts`](https://github.com/TanStack/table/blob/9e523bc7352bcb5f7beeb4960ded4e8b149826ef/packages/ember-table/src/use-table.ts)
+- [form-core `FieldApi.ts`, `update`](https://github.com/TanStack/form/blob/39ded17a7d37511df835e871bc6c8f566be9ac8b/packages/form-core/src/FieldApi.ts#L990)
+- [form-core `FormApi.ts`, `update`](https://github.com/TanStack/form/blob/39ded17a7d37511df835e871bc6c8f566be9ac8b/packages/form-core/src/FormApi.ts#L1732)
+- [form-core `FormApi.ts`, `reset`](https://github.com/TanStack/form/blob/39ded17a7d37511df835e871bc6c8f566be9ac8b/packages/form-core/src/FormApi.ts#L1810)
 
 ## 3. Keep these three rules when the code changes
 
