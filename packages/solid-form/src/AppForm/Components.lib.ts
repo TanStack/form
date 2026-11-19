@@ -14,15 +14,17 @@ export function attachSolidAppFormComponents(
   form: AnyInternalFormApi,
   formComponents: Record<string, Component<any>>,
   fieldComponents: Record<string, Component<any>>,
+  target: object = form,
 ): AnySolidAppFormApi {
   const resultForm = attachSolidFormComponents(
     form,
     fieldComponents,
+    target,
   ) as never as AnySolidAppFormApi
 
   resultForm.AppForm = function AppForm(props) {
     return createComponent(FormContext, {
-      value: resultForm as never,
+      value: form as never,
       get children() {
         return props.children
       },

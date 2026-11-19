@@ -1,4 +1,4 @@
-import { defineFieldGroup, useSelector } from '@tanstack/solid-form'
+import { defineFieldGroup } from '@tanstack/solid-form'
 import { FieldError } from '../FieldError'
 import type { Accessor } from 'solid-js'
 import type { FieldWithValue } from '@tanstack/solid-form'
@@ -14,7 +14,8 @@ interface DateRangeFieldProps {
 }
 
 function DateRangeFieldComponent(props: DateRangeFieldProps) {
-  const start = useSelector(props.fields.atom, (values) => values.start)
+  // Validators run outside rendering, so they read the start date directly.
+  const start = () => props.fields.getFieldValue('start')
 
   return (
     <fieldset>
@@ -66,7 +67,7 @@ function DateField(props: {
         name={props.field().name}
         type="date"
         value={props.field().value}
-        onBlur={props.field().handleBlur}
+        onBlur={() => props.field().handleBlur()}
         onInput={(event) =>
           props.field().handleChange(event.currentTarget.value)
         }

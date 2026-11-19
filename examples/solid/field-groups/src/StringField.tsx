@@ -17,7 +17,7 @@ export function StringField(props: StringFieldProps) {
       <input
         name={props.field().name}
         value={props.field().value}
-        onBlur={props.field().handleBlur}
+        onBlur={() => props.field().handleBlur()}
         onInput={(event) =>
           props.field().handleChange(event.currentTarget.value)
         }

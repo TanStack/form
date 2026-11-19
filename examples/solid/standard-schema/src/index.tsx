@@ -110,7 +110,7 @@ function App() {
                   id={field().name}
                   name={field().name}
                   value={field().value}
-                  onBlur={field().handleBlur}
+                  onBlur={() => field().handleBlur()}
                   onInput={(event) =>
                     field().handleChange(event.currentTarget.value)
                   }
@@ -130,7 +130,7 @@ function App() {
                   id={field().name}
                   name={field().name}
                   value={field().value}
-                  onBlur={field().handleBlur}
+                  onBlur={() => field().handleBlur()}
                   onInput={(event) =>
                     field().handleChange(event.currentTarget.value)
                   }

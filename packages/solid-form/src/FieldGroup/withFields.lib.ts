@@ -71,12 +71,27 @@ function withFieldsRuntime(
       )
     })
 
+    // The `fields` prop stays the same object. Its components render the
+    // current field group api's components, so `<props.fields.Field>` in a
+    // component body reads nothing reactive; anything else reads the
+    // current api.
+    const render =
+      (key: 'Field' | 'ArrayField' | 'Subscribe') => (childProps: any) => () =>
+        createComponent((fieldGroupApi() as any)[key], childProps)
+    const components: Record<PropertyKey, unknown> = {
+      Field: render('Field'),
+      ArrayField: render('ArrayField'),
+      Subscribe: render('Subscribe'),
+    }
+    const fieldsApi = new Proxy(components, {
+      get: (target, key) =>
+        key in target ? target[key] : Reflect.get(fieldGroupApi(), key),
+    })
+
     return createComponent(
       Component,
       merge(omit(props, 'form', fieldsPropName), {
-        get [fieldsPropName]() {
-          return fieldGroupApi()
-        },
+        [fieldsPropName]: fieldsApi,
       }),
     )
   }

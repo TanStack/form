@@ -7,7 +7,7 @@ import type {
   DefaultOptions,
   FormOptions,
 } from '@tanstack/form-core'
-import type { InternalSolidFormApi } from '../SolidFormApi.lib'
+import type { AnyInternalFormApi } from '@tanstack/form-core/internals'
 import type { Component } from 'solid-js'
 
 interface AnyCreateFormHookOptions {
@@ -20,7 +20,10 @@ interface AnyCreateFormHookOptions {
 
 export function createAppFormInitializer(
   createOptions: AnyCreateFormHookOptions,
-): (options: FormOptions<any, any, any, unknown>) => InternalSolidFormApi {
+): {
+  create: (options: FormOptions<any, any, any, unknown>) => AnyInternalFormApi
+  attach: (form: AnyInternalFormApi, target: object) => void
+} {
   const hasDefaultOptions =
     createOptions.defaultFormOptions ||
     createOptions.defaultFieldOptions ||
@@ -34,12 +37,15 @@ export function createAppFormInitializer(
       }
     : undefined
 
-  return (options) => {
-    const form = new InternalFormApi(options, defaultOptions)
-    return attachSolidAppFormComponents(
-      form,
-      createOptions.formComponents,
-      createOptions.fieldComponents,
-    ) as never
+  return {
+    create: (options) => new InternalFormApi(options, defaultOptions),
+    attach: (form, target) => {
+      attachSolidAppFormComponents(
+        form,
+        createOptions.formComponents,
+        createOptions.fieldComponents,
+        target,
+      )
+    },
   }
 }
