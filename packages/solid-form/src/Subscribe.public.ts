@@ -18,11 +18,11 @@ export interface SubscribeProps<TSourceData, TSelected> {
 export function Subscribe<TSourceData, const TSelected>(
   props: SubscribeProps<TSourceData, TSelected>,
 ): Element {
-  const selected = useSelector(
-    untrack(() => props.source),
-    untrack(() => props.selector),
-    { compare: shallow },
+  // Re-subscribes when `source` or `selector` changes.
+  const selection = createMemo(() =>
+    useSelector(props.source, props.selector, { compare: shallow }),
   )
+  const selected = () => selection()()
   // The children are built once, under the component rather than the memo,
   // so a later re-run of the memo doesn't dispose them.
   const owner = getOwner()
@@ -35,7 +35,10 @@ export function Subscribe<TSourceData, const TSelected>(
       const children = props.children
       child =
         typeof children === 'function'
-          ? runWithOwner(owner, () => untrack(() => children(selected)))
+          ? // Rendered like a component body: reads in it warn, as in <Show>.
+            runWithOwner(owner, () =>
+              untrack(() => children(selected), '<Subscribe>'),
+            )
           : children
       initialized = true
     }

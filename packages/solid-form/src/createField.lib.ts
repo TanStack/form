@@ -4,7 +4,6 @@ import {
   createRenderEffect,
   createSignal,
   onCleanup,
-  untrack,
 } from 'solid-js'
 import type { AnyFieldApi, FieldApiOptions } from '@tanstack/form-core'
 import type {
@@ -31,16 +30,16 @@ function createFieldSelector<TSelected>(
   selector: (field: AnyInternalFieldApi) => TSelected,
   compare: (previous: TSelected, next: TSelected) => boolean,
 ): Accessor<TSelected> {
+  // Derived from the current field (re-selected when it changes); the
+  // subscription below writes atom changes.
   const [selected, setSelected] = createSignal<TSelected>(
-    untrack(() => selector(fieldApi())) as never,
+    () => selector(fieldApi()),
     // Field atoms notify from wherever their state changes, which can be
     // inside an owned scope such as an effect.
     { equals: compare, ownedWrite: true },
   )
 
   createRenderEffect(fieldApi, (field) => {
-    setSelected(() => selector(field))
-
     const subscription = field.atom.subscribe(() => {
       setSelected(() => selector(field))
     })
@@ -54,29 +53,23 @@ function createFieldSelector<TSelected>(
 function createInternalField(
   options: Accessor<InternalFieldProps>,
 ): Accessor<AnyInternalFieldApi> {
-  const initialForm = untrack(options).form
+  const form = createMemo(() => options().form)
   const [resetVersion, setResetVersion] = createSignal(
-    initialForm._atoms.resetVersion.get(),
+    () => form()._atoms.resetVersion.get(),
     { ownedWrite: true },
   )
-  const resetSubscription = initialForm._atoms.resetVersion.subscribe(
-    (version) => setResetVersion(version),
-  )
-  onCleanup(() => resetSubscription.unsubscribe())
-
-  const fieldApi = createMemo(() => {
-    const reactiveOptions = options()
-    const form = reactiveOptions.form
-    const name = reactiveOptions.name
-    void resetVersion()
-
-    return form._getOrCreateFieldApi(
-      {
-        ...untrack(options),
-        name,
-      },
-      'field',
+  createRenderEffect(form, (current) => {
+    const subscription = current._atoms.resetVersion.subscribe((version) =>
+      setResetVersion(version),
     )
+    return () => subscription.unsubscribe()
+  })
+
+  // Options only seed a new field api; an existing one is returned as is (same
+  // identity) and picks up option changes through `_update` below.
+  const fieldApi = createMemo(() => {
+    void resetVersion()
+    return form()._getOrCreateFieldApi({ ...options() }, 'field')
   })
 
   createRenderEffect(

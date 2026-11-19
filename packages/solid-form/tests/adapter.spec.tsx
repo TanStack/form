@@ -341,6 +341,31 @@ describe('Solid adapter parity', () => {
     dispose()
   })
 
+  it('follows a Subscribe selector that changes', () => {
+    const [field, setField] = createSignal<'first' | 'last'>('first')
+
+    function Component() {
+      const form = createForm(() => ({
+        defaultValues: { first: 'Ada', last: 'Lovelace' },
+      }))
+
+      return (
+        <form.Subscribe selector={(state) => state.values[field()]}>
+          {(value) => <span data-testid="value">{value()}</span>}
+        </form.Subscribe>
+      )
+    }
+
+    const { container, dispose } = mount(() => <Component />)
+    const text = () =>
+      container.querySelector('[data-testid="value"]')?.textContent
+    expect(text()).toBe('Ada')
+    setField('last')
+    flush()
+    expect(text()).toBe('Lovelace')
+    dispose()
+  })
+
   it('updates options without replacing or re-registering a field', () => {
     const onMount = vi.fn()
     const onUnmount = vi.fn()

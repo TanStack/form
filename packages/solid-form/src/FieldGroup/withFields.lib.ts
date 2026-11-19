@@ -3,7 +3,7 @@ import {
   defineFieldGroupFieldsRuntime,
   fieldGroupHelperRuntime,
 } from '@tanstack/form-core/internals'
-import { createComponent, merge, omit, untrack } from 'solid-js'
+import { createComponent, createMemo, merge, omit } from 'solid-js'
 import type { Component } from 'solid-js'
 import type { AnyFieldGroupApi } from './FieldGroupApi.public'
 
@@ -53,24 +53,30 @@ function withFieldsRuntime(
   const fieldNames = Object.keys(fields)
 
   return function FieldGroupComponent(props: any) {
-    const form = untrack(() => props.form)
-    if (!form) {
-      throw new Error('TanStack Form: Field groups must receive a `form` prop.')
-    }
-
-    const fieldGroupApi = attachSolidFieldGroupComponents(
-      new InternalFieldGroupApi({
+    // A new field group api when the `form` prop changes.
+    const fieldGroupApi = createMemo(() => {
+      const form = props.form
+      if (!form) {
+        throw new Error(
+          'TanStack Form: Field groups must receive a `form` prop.',
+        )
+      }
+      return attachSolidFieldGroupComponents(
+        new InternalFieldGroupApi({
+          form,
+          fieldNames,
+          getBindings: () => props[fieldsPropName],
+        }),
         form,
-        fieldNames,
-        getBindings: () => props[fieldsPropName],
-      }),
-      form,
-    )
+      )
+    })
 
     return createComponent(
       Component,
       merge(omit(props, 'form', fieldsPropName), {
-        [fieldsPropName]: fieldGroupApi,
+        get [fieldsPropName]() {
+          return fieldGroupApi()
+        },
       }),
     )
   }
