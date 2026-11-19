@@ -25,11 +25,10 @@ export function useSelector<TSource, TSelected = NoInfer<TSource>>(
   selector: (snapshot: TSource) => TSelected = (s) => s as unknown as TSelected,
   options?: UseSelectorOptions<TSelected>,
 ): Accessor<TSelected> {
-  const initial = selector(source.get())
-  // Solid 2 reads a function passed to `createSignal` as a compute function,
-  // so a selected function value is wrapped to stay a plain value.
+  // Derived: the selection is recomputed from the store's current state when
+  // a signal the selector reads changes, and written when the store notifies.
   const [selected, setSelected] = createSignal<TSelected>(
-    (typeof initial === 'function' ? () => initial : initial) as never,
+    () => selector(source.get()),
     {
       equals: options?.compare ?? ((a, b) => a === b),
       // Stores notify synchronously from wherever `setState` runs, which can
