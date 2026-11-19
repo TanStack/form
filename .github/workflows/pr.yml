@@ -64,7 +64,16 @@ jobs:
           main-branch-name: main
       - name: Install ember-source ${{ matrix.ember-source }}
         if: ${{ matrix.ember-source != '' }}
-        run: pnpm --filter @tanstack/ember-form add --save-dev "ember-source@$EMBER_SOURCE"
+        # `pnpm add` keeps the version in the lockfile if it satisfies the new range.
+        run: |
+          pnpm --filter @tanstack/ember-form exec node --eval '
+            const fs = require("node:fs")
+            const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"))
+            pkg.devDependencies["ember-source"] = process.env.EMBER_SOURCE
+            fs.writeFileSync("package.json", JSON.stringify(pkg, null, 2) + "\n")
+          '
+          pnpm install --no-frozen-lockfile
+          pnpm --filter @tanstack/ember-form exec node --print 'require("ember-source/package.json").version'
         env:
           EMBER_SOURCE: ${{ matrix.ember-source }}
       # Nx agents have no browser. This runner has Chrome.
