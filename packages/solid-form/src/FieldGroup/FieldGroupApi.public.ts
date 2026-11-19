@@ -9,12 +9,12 @@ import type {
   FormState,
   ValidationIssue,
 } from '@tanstack/form-core'
-import type { Component, JSX } from 'solid-js'
+import type { Component, Element } from 'solid-js'
 import type {
   SolidFormFieldProps,
   SolidFormSubscribeProps,
 } from '../Components.public'
-import type { ReadonlyAtom } from '@tanstack/solid-store'
+import type { ReadonlyAtom } from '@tanstack/store'
 
 export interface FieldGroupFieldComponent<
   TFieldData,
@@ -35,7 +35,7 @@ export interface FieldGroupFieldComponent<
       FormErrorTypes,
       TFieldComponents
     >,
-  ): JSX.Element
+  ): Element
 }
 
 export interface FieldGroupArrayFieldComponent<
@@ -57,7 +57,7 @@ export interface FieldGroupArrayFieldComponent<
       FormErrorTypes,
       TFieldComponents
     >,
-  ): JSX.Element
+  ): Element
 }
 
 export type FieldGroupSubscribeProps<TSelected> = SolidFormSubscribeProps<
@@ -68,7 +68,7 @@ export type FieldGroupSubscribeProps<TSelected> = SolidFormSubscribeProps<
 
 export type FieldGroupSubscribeComponent = <const TSelected>(
   props: FieldGroupSubscribeProps<TSelected>,
-) => JSX.Element
+) => Element
 
 export interface FieldGroupApi<
   TFieldData,

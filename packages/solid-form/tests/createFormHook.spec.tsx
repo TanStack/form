@@ -1,9 +1,10 @@
-import { render } from 'solid-js/web'
+import { flush } from 'solid-js'
+import { render } from '@solidjs/web'
 import { describe, expect, it, vi } from 'vitest'
 import { createFormHook } from '../src'
-import type { JSX } from 'solid-js'
+import type { Element } from 'solid-js'
 
-function mount(Component: () => JSX.Element) {
+function mount(Component: () => Element) {
   const container = document.createElement('div')
   document.body.append(container)
   const disposeRoot = render(Component, container)
@@ -131,9 +132,13 @@ describe('createFormHook defaults', () => {
     const view = mount(() => <Component />)
 
     changeDirect()
+    flush()
     changeDirectArray()
+    flush()
     changeGrouped()
+    flush()
     changeGroupedArray()
+    flush()
 
     expect(formCalls).toEqual([
       'default',

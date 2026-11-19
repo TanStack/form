@@ -1,4 +1,4 @@
-import { createComponent, mergeProps } from 'solid-js'
+import { createComponent, merge } from 'solid-js'
 import { attachSolidFormComponents } from '../SolidFormApi.lib'
 import { createArrayField, createField } from '../createField.lib'
 import { FieldContext, FormContext } from './contexts.lib'
@@ -14,15 +14,17 @@ export function attachSolidAppFormComponents(
   form: AnyInternalFormApi,
   formComponents: Record<string, Component<any>>,
   fieldComponents: Record<string, Component<any>>,
+  target: object = form,
 ): AnySolidAppFormApi {
   const resultForm = attachSolidFormComponents(
     form,
     fieldComponents,
+    target,
   ) as never as AnySolidAppFormApi
 
   resultForm.AppForm = function AppForm(props) {
-    return createComponent(FormContext.Provider, {
-      value: resultForm as never,
+    return createComponent(FormContext, {
+      value: form as never,
       get children() {
         return props.children
       },
@@ -32,11 +34,11 @@ export function attachSolidAppFormComponents(
   resultForm.Field = function TanStackFormField(
     props: SolidFormFieldProps<any, any, any, any, any, any, any, any>,
   ) {
-    const fieldOptions = mergeProps(props, { form })
+    const fieldOptions = merge(props, { form })
     const fieldApi = createField(() => fieldOptions as never)
     Object.assign(fieldApi, fieldComponents)
 
-    return createComponent(FieldContext.Provider, {
+    return createComponent(FieldContext, {
       value: fieldApi as never,
       get children() {
         return props.children(fieldApi as never)
@@ -47,11 +49,11 @@ export function attachSolidAppFormComponents(
   resultForm.ArrayField = function TanStackFormArrayField(
     props: SolidFormFieldProps<any, any, any, any, any, any, any, any>,
   ) {
-    const fieldOptions = mergeProps(props, { form })
+    const fieldOptions = merge(props, { form })
     const fieldApi = createArrayField(() => fieldOptions as never)
     Object.assign(fieldApi, fieldComponents)
 
-    return createComponent(FieldContext.Provider, {
+    return createComponent(FieldContext, {
       value: fieldApi as never,
       get children() {
         return props.children(fieldApi as never)

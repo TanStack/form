@@ -1,5 +1,5 @@
 import { defineConfig } from 'vitest/config'
-import solid from 'vite-plugin-solid'
+import solid from '@solidjs/vite-plugin'
 import { playwright } from '@vitest/browser-playwright'
 import packageJson from './package.json' with { type: 'json' }
 
@@ -10,7 +10,7 @@ export default defineConfig({
     dir: './tests',
     watch: false,
     globals: true,
-    // Override vite-plugin-solid's jsdom default; tests run in the browser.
+    // Override the Solid plugin's jsdom default; tests run in the browser.
     environment: 'node',
     browser: {
       enabled: true,

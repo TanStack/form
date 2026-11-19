@@ -1,16 +1,15 @@
-import { createSignal } from 'solid-js'
-import { render } from 'solid-js/web'
+import { createSignal, flush } from 'solid-js'
+import { render } from '@solidjs/web'
 import { describe, expect, expectTypeOf, it } from 'vitest'
 import { createForm } from '../src'
 import type { ValidationIssue } from '../src'
 
 describe('Solid FormApi', () => {
   it('should create a form from a Solid options accessor', () => {
-    function Component() {
-      const [name, setName] = createSignal('tony-hawk')
-      const form = createForm(() => ({ defaultValues: { name: name() } }))
+    const [name, setName] = createSignal('tony-hawk')
 
-      setName('rodney-mullen')
+    function Component() {
+      const form = createForm(() => ({ defaultValues: { name: name() } }))
 
       return (
         <form.Subscribe selector={(state) => state.values.name}>
@@ -21,6 +20,13 @@ describe('Solid FormApi', () => {
 
     const container = document.createElement('div')
     const dispose = render(() => <Component />, container)
+
+    expect(container.querySelector('[data-testid="name"]')?.textContent).toBe(
+      'tony-hawk',
+    )
+
+    setName('rodney-mullen')
+    flush()
 
     expect(container.querySelector('[data-testid="name"]')?.textContent).toBe(
       'rodney-mullen',
@@ -62,6 +68,7 @@ describe('Solid FormApi', () => {
     )
 
     change('new-value')
+    flush()
 
     expect(input.value).toBe('new-value')
     expect(container.querySelector('[data-testid="value"]')?.textContent).toBe(

@@ -8,7 +8,7 @@ import type {
   FieldGroupHelper,
   FormApi,
 } from '@tanstack/form-core'
-import type { Component, JSX } from 'solid-js'
+import type { Component, Element } from 'solid-js'
 import type { SolidTanStackFormComponents } from '../Components.public'
 import type { FieldGroupApi } from './FieldGroupApi.public'
 
@@ -52,7 +52,7 @@ export type FieldGroupWithFieldsFn<
   TProps extends object,
   TFieldsPropName extends FieldGroupFieldsPropName<TProps, TFieldGroup>,
 >(
-  Component: (props: TProps) => JSX.Element,
+  Component: (props: TProps) => Element,
   fieldsPropName: TFieldsPropName,
 ) => <TFormData>(
   props: Omit<TProps, TFieldsPropName | 'form'> & {
@@ -62,7 +62,7 @@ export type FieldGroupWithFieldsFn<
       TFormData,
       TFieldsPropName
     >,
-) => JSX.Element
+) => Element
 
 export interface FieldGroupDefinition<
   TFields extends FieldGroupFields,

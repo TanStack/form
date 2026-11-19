@@ -336,7 +336,7 @@ In the example below, you can see TanStack Form in action with the Solid framewo
 <!-- ::start:tabs variant="files" -->
 
 ```tsx title="App.tsx"
-import { render } from 'solid-js/web'
+import { render } from '@solidjs/web'
 import { createForm } from '@tanstack/solid-form'
 import { FieldInfo } from './FieldInfo.tsx'
 
@@ -398,7 +398,7 @@ function App() {
                   onInput={(event) =>
                     field().handleChange(event.currentTarget.value)
                   }
-                  aria-invalid={field().meta.isInvalid}
+                  aria-invalid={field().meta.isInvalid ? 'true' : 'false'}
                 />
                 <FieldInfo field={field} />
               </>
@@ -418,7 +418,7 @@ function App() {
                   onInput={(event) =>
                     field().handleChange(event.currentTarget.value)
                   }
-                  aria-invalid={field().meta.isInvalid}
+                  aria-invalid={field().meta.isInvalid ? 'true' : 'false'}
                 />
                 <FieldInfo field={field} />
               </>

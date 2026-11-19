@@ -1,4 +1,4 @@
-import { render } from 'solid-js/web'
+import { render } from '@solidjs/web'
 import { createForm } from '@tanstack/solid-form'
 import { FormSection } from './FormSection'
 import { FormSubmitButton } from './FormSubmitButton'

@@ -1,5 +1,5 @@
 import { For, Show } from 'solid-js'
-import { render } from 'solid-js/web'
+import { render } from '@solidjs/web'
 import { createForm } from '@tanstack/solid-form'
 import { type } from 'arktype'
 import { Schema as S } from 'effect'
@@ -110,11 +110,11 @@ function App() {
                   id={field().name}
                   name={field().name}
                   value={field().value}
-                  onBlur={field().handleBlur}
+                  onBlur={() => field().handleBlur()}
                   onInput={(event) =>
                     field().handleChange(event.currentTarget.value)
                   }
-                  aria-invalid={field().meta.isInvalid}
+                  aria-invalid={field().meta.isInvalid ? 'true' : 'false'}
                 />
                 <FieldInfo field={field} />
               </>
@@ -130,11 +130,11 @@ function App() {
                   id={field().name}
                   name={field().name}
                   value={field().value}
-                  onBlur={field().handleBlur}
+                  onBlur={() => field().handleBlur()}
                   onInput={(event) =>
                     field().handleChange(event.currentTarget.value)
                   }
-                  aria-invalid={field().meta.isInvalid}
+                  aria-invalid={field().meta.isInvalid ? 'true' : 'false'}
                 />
                 <FieldInfo field={field} />
               </>

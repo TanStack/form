@@ -1,5 +1,7 @@
 export * from '@tanstack/form-core'
-export * from '@tanstack/solid-store'
+export * from '@tanstack/store'
+export { useSelector, useSelector as useStore } from './useSelector.public'
+export type { UseSelectorOptions } from './useSelector.public'
 
 export * from './createForm.public'
 export * from './formApiTypes.public'

@@ -81,6 +81,9 @@
   "sherif": {
     "ignorePackage": [
       "@tanstack/form-example-react-expo"
+    ],
+    "ignoreDependency": [
+      "solid-js"
     ]
   }
 }

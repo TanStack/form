@@ -14,7 +14,7 @@ import type {
   ToFieldError,
   ToFormGroupErrorTypes,
 } from '@tanstack/form-core'
-import type { Accessor, Component, JSX } from 'solid-js'
+import type { Accessor, Component, Element } from 'solid-js'
 
 type ExactFieldBrand<out TValue> = {
   readonly __tanstackFieldExactType: TValue
@@ -74,7 +74,7 @@ export type SolidFieldApi<
 interface SolidSubscribeProps<TSourceData, TSelected> {
   selector: (state: TSourceData) => TSelected
   when?: (selected: NoInfer<TSelected>) => boolean
-  children: ((state: Accessor<NoInfer<TSelected>>) => JSX.Element) | JSX.Element
+  children: ((state: Accessor<NoInfer<TSelected>>) => Element) | Element
 }
 
 export type SolidFormSubscribeProps<
@@ -88,7 +88,7 @@ export type SolidFormSubscribeComponent<
   TFormErrorTypes extends FormErrorTypes,
 > = <const TSelected>(
   props: SolidFormSubscribeProps<TFormData, TFormErrorTypes, TSelected>,
-) => JSX.Element
+) => Element
 
 export interface SolidFormFieldProps<
   TFieldData,
@@ -121,7 +121,7 @@ export interface SolidFormFieldProps<
       TFormErrorTypes,
       TFieldComponents
     >,
-  ) => JSX.Element
+  ) => Element
 }
 
 export interface SolidFormArrayFieldProps<
@@ -164,7 +164,7 @@ export interface SolidFormFieldComponent<
       TFormErrorTypes,
       TFieldComponents
     >,
-  ): JSX.Element
+  ): Element
 }
 
 export interface SolidFormArrayFieldComponent<
@@ -190,7 +190,7 @@ export interface SolidFormArrayFieldComponent<
       TFormErrorTypes,
       TFieldComponents
     >,
-  ): JSX.Element
+  ): Element
 }
 
 export type SolidFormGroupSubscribeProps<
@@ -207,7 +207,7 @@ export type SolidFormGroupSubscribeComponent<
   TGroupErrorTypes extends FormErrorTypes,
 > = <const TSelected>(
   props: SolidFormGroupSubscribeProps<TGroupValue, TGroupErrorTypes, TSelected>,
-) => JSX.Element
+) => Element
 
 export interface SolidFormGroupFieldComponent<
   TFormData,
@@ -234,7 +234,7 @@ export interface SolidFormGroupFieldComponent<
       TFormErrorTypes,
       TFieldComponents
     >,
-  ): JSX.Element
+  ): Element
 }
 
 export interface SolidFormGroupArrayFieldComponent<
@@ -262,7 +262,7 @@ export interface SolidFormGroupArrayFieldComponent<
       TFormErrorTypes,
       TFieldComponents
     >,
-  ): JSX.Element
+  ): Element
 }
 
 export interface SolidFormGroupApi<
@@ -351,7 +351,7 @@ export interface SolidFormGroupProps<
       TFormErrorTypes,
       TFieldComponents
     >,
-  ) => JSX.Element
+  ) => Element
 }
 
 export interface SolidFormGroupComponent<
@@ -372,7 +372,7 @@ export interface SolidFormGroupComponent<
       TFormErrorTypes,
       TFieldComponents
     >,
-  ): JSX.Element
+  ): Element
 }
 
 export interface SolidTanStackFormComponents<

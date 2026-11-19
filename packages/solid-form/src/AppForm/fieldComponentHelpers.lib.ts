@@ -1,4 +1,4 @@
-import { createComponent } from 'solid-js'
+import { createComponent, merge } from 'solid-js'
 import { useFieldContext } from './contexts.lib'
 import type { Component } from 'solid-js'
 
@@ -9,10 +9,10 @@ export function wrapField(
   fieldPropKey: string,
 ): AnyFieldComponent {
   return function TanStackFormFieldWrapper(props) {
-    return createComponent(Component, {
-      ...props,
-      [fieldPropKey]: useFieldContext(),
-    })
+    return createComponent(
+      Component,
+      merge(props, { [fieldPropKey]: useFieldContext() }),
+    )
   }
 }
 
