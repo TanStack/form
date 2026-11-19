@@ -2535,12 +2535,12 @@ export class FormApi<
       }),
     )
 
-    await releaseOnThrow(() =>
+    await releaseOnThrow(() => {
       this.options.listeners?.onSubmit?.({
         formApi: this,
         meta: submitMetaArg,
-      }),
-    )
+      })
+    })
 
     try {
       // Run the submit code
