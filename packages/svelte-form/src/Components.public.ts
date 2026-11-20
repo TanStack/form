@@ -20,6 +20,7 @@ import type {
   Snippet,
   SvelteComponent,
 } from 'svelte'
+import type { SvelteFieldComponentsType } from './fieldComponentsType.lib'
 
 export type WithoutFunction<T> = {
   [K in keyof T as T[K] extends Function ? never : K]: T[K]
@@ -348,7 +349,7 @@ export interface SvelteTanStackFormComponents<
     never,
     never
   >,
-> {
+> extends SvelteFieldComponentsType<TFieldComponents> {
   Field: SvelteFormFieldComponent<TFormData, TFormError, TFieldComponents>
   ArrayField: SvelteFormArrayFieldComponent<
     TFormData,

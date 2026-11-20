@@ -1,5 +1,6 @@
 <script module lang="ts">
   import { shallow, useSelector } from '@tanstack/svelte-store'
+  import { untrack } from 'svelte'
   import type {
     FieldApi,
     FieldApiOptions,
@@ -37,7 +38,7 @@
         const next = selector(field)
         if (!shallow(selected, next)) selected = next
       }
-      update()
+      untrack(update)
       const subscription = field.atom.subscribe(update)
       return () => subscription.unsubscribe()
     })
@@ -133,7 +134,7 @@
 </script>
 
 <script lang="ts">
-  import { setContext, untrack, type Snippet } from 'svelte'
+  import { setContext, type Snippet } from 'svelte'
   import { fieldContextKey } from './context-keys.js'
 
   interface Props extends InternalFieldOptions {
