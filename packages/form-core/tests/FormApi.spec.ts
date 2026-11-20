@@ -1732,6 +1732,57 @@ describe('form api', () => {
     expect(form.state.errors).toStrictEqual([])
   })
 
+  it('should clear isSubmitting when a form submit listener throws', async () => {
+    const error = new Error('Submit listener failed')
+    const listener = vi.fn().mockImplementationOnce(() => {
+      throw error
+    })
+    const onSubmit = vi.fn()
+    const form = new FormApi({
+      defaultValues: { name: 'Ada' },
+      listeners: { onSubmit: listener },
+      onSubmit,
+    })
+    form.mount()
+
+    await expect(form.handleSubmit()).rejects.toThrow(error)
+    expect(form.state.isSubmitting).toBe(false)
+    expect(form.state.isSubmitSuccessful).toBe(false)
+    expect(onSubmit).not.toHaveBeenCalled()
+
+    await form.handleSubmit()
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+    expect(form.state.isSubmitSuccessful).toBe(true)
+  })
+
+  it('should clear isSubmitting when a field submit listener throws', async () => {
+    const error = new Error('Field submit listener failed')
+    const listener = vi.fn().mockImplementationOnce(() => {
+      throw error
+    })
+    const onSubmit = vi.fn()
+    const form = new FormApi({
+      defaultValues: { name: 'Ada' },
+      onSubmit,
+    })
+    form.mount()
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: { onSubmit: listener },
+    })
+    field.mount()
+
+    await expect(form.handleSubmit()).rejects.toThrow(error)
+    expect(form.state.isSubmitting).toBe(false)
+    expect(form.state.isSubmitSuccessful).toBe(false)
+    expect(onSubmit).not.toHaveBeenCalled()
+
+    await form.handleSubmit()
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+    expect(form.state.isSubmitSuccessful).toBe(true)
+  })
+
   it('should validate fields during submit', async () => {
     const form = new FormApi({
       defaultValues: {
