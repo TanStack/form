@@ -11,7 +11,7 @@ it('keeps hook defaults generic and infers values from each form', () => {
         {
           triggers: [],
           run: ({ value }) => {
-            expectTypeOf(value).toBeUnknown()
+            expectTypeOf(value).toBeAny()
           },
         },
       ],

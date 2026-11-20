@@ -1,14 +1,15 @@
 import type { ReadonlyAtom } from '@tanstack/store'
 import type { FormApi } from '../FormApi/FormApi.public'
+import type { ScopedErrorTypes } from '../validation/state.public'
+import type { ClientSideEvents } from '../events.public'
 import type {
-  ConfigurableValidationTrigger,
-  FormErrorTypes,
-  FormErrors,
   FormGroupValidateResult,
+  FormGroupValidator,
   FormGroupValidators,
   ToFormGroupErrorTypes,
   ToFormGroupOutputs,
 } from '../validation.public'
+import type { Awaitable } from '../types.public'
 
 /**
  * Context passed to a form group's `onSubmit` after group validation succeeds.
@@ -28,20 +29,20 @@ export interface FormGroupSubmitContext<
   in out TGroupName,
   in out TGroupValue,
   out TOutputs,
-  in out TGroupErrorTypes extends FormErrorTypes,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TGroupError extends ScopedErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
 > {
   /** The group values for this submission. */
   value: TGroupValue
   /** The parent form API handling this submission. */
-  formApi: FormApi<TFormData, TFormErrorTypes>
+  formApi: FormApi<TFormData, TFormError>
   /** The group API handling this submission. */
   groupApi: FormGroupApi<
     TFormData,
     TGroupName,
     TGroupValue,
-    TGroupErrorTypes,
-    TFormErrorTypes
+    TGroupError,
+    TFormError
   >
   /**
    * Schema outputs and `createOutput` payloads from this group submission,
@@ -81,20 +82,20 @@ export interface FormGroupSubmitInvalidContext<
   in out TFormData,
   in out TGroupName,
   in out TGroupValue,
-  in out TGroupErrorTypes extends FormErrorTypes,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TGroupError extends ScopedErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
 > {
   /** The group values for the failed submission. */
   value: TGroupValue
   /** The parent form API handling the failed submission. */
-  formApi: FormApi<TFormData, TFormErrorTypes>
+  formApi: FormApi<TFormData, TFormError>
   /** The group API handling the failed submission. */
   groupApi: FormGroupApi<
     TFormData,
     TGroupName,
     TGroupValue,
-    TGroupErrorTypes,
-    TFormErrorTypes
+    TGroupError,
+    TFormError
   >
 }
 
@@ -103,7 +104,7 @@ export type FormGroupSubmitFn<
   in out TGroupName,
   in out TGroupValue,
   in out TGroupValidators extends FormGroupValidators<TGroupValue>,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
 > = (
   context: FormGroupSubmitContext<
     TFormData,
@@ -111,20 +112,48 @@ export type FormGroupSubmitFn<
     TGroupValue,
     ToFormGroupOutputs<NoInfer<TGroupValidators>>,
     ToFormGroupErrorTypes<NoInfer<TGroupValidators>>,
-    TFormErrorTypes
+    TFormError
   >,
 ) => void | Promise<void>
+
+export type FormGroupOnSubmitInvalidFn<
+  TFormData,
+  TGroupName,
+  TGroupValue,
+  TGroupError extends ScopedErrorTypes,
+  TFormError extends ScopedErrorTypes,
+> = (
+  context: FormGroupSubmitInvalidContext<
+    TFormData,
+    TGroupName,
+    TGroupValue,
+    TGroupError,
+    TFormError
+  >,
+) => Awaitable<void>
 
 export interface FormGroupOptions<
   in out TFormData,
   in out TGroupName,
   in out TGroupValue,
   in out TGroupValidators extends FormGroupValidators<TGroupValue>,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
 > {
-  form: FormApi<TFormData, TFormErrorTypes>
+  form: FormApi<TFormData, TFormError>
   name: TGroupName
-  validators?: TGroupValidators
+  validators?: {
+    // The intersection really helps type instantiations, while
+    // the exclude part helps with additional properties not being swallowed silently.
+    // It's weird, but it works.
+    [K in keyof TGroupValidators]: TGroupValidators[K] &
+      Record<
+        Exclude<
+          keyof TGroupValidators[K],
+          keyof FormGroupValidator<TGroupValue>
+        >,
+        never
+      >
+  }
   /**
    * Called after group submission validation succeeds. The callback is awaited
    * before submission finishes.
@@ -144,7 +173,7 @@ export interface FormGroupOptions<
     TGroupName,
     TGroupValue,
     TGroupValidators,
-    TFormErrorTypes
+    TFormError
   >
   /**
    * Called when group validation fails or validation or submission throws. The
@@ -162,24 +191,22 @@ export interface FormGroupOptions<
    * }
    * ```
    */
-  onSubmitInvalid?: (
-    context: FormGroupSubmitInvalidContext<
-      TFormData,
-      TGroupName,
-      TGroupValue,
-      ToFormGroupErrorTypes<NoInfer<TGroupValidators>>,
-      TFormErrorTypes
-    >,
-  ) => void | Promise<void>
+  onSubmitInvalid?: FormGroupOnSubmitInvalidFn<
+    TFormData,
+    TGroupName,
+    TGroupValue,
+    NoInfer<ToFormGroupErrorTypes<TGroupValidators>>,
+    TFormError
+  >
 }
 
 export interface FormGroupState<
   in out TGroupValue,
-  in out TGroupErrorTypes extends FormErrorTypes,
+  in out TGroupError extends ScopedErrorTypes,
 > {
   values: TGroupValue
   meta: unknown
-  errors: FormErrors<TGroupErrorTypes>
+  errors: Array<TGroupError['selfError']>
   isTouched: boolean
   isDirty: boolean
   isPristine: boolean
@@ -196,17 +223,17 @@ export interface FormGroupApi<
   in out TFormData,
   in out TGroupName,
   in out TGroupValue,
-  in out TGroupErrorTypes extends FormErrorTypes,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TGroupError extends ScopedErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
 > {
-  readonly form: FormApi<TFormData, TFormErrorTypes>
+  readonly form: FormApi<TFormData, TFormError>
   readonly name: TGroupName
 
-  atom: ReadonlyAtom<FormGroupState<TGroupValue, TGroupErrorTypes>>
-  readonly state: FormGroupState<TGroupValue, TGroupErrorTypes>
+  atom: ReadonlyAtom<FormGroupState<TGroupValue, TGroupError>>
+  readonly state: FormGroupState<TGroupValue, TGroupError>
   readonly value: TGroupValue
   validate: (
-    signal: ConfigurableValidationTrigger | 'submit',
+    signal: ClientSideEvents,
   ) => Promise<Array<FormGroupValidateResult<TGroupValue>>>
   handleSubmit: () => Promise<Array<FormGroupValidateResult<TGroupValue>>>
   reset: () => void

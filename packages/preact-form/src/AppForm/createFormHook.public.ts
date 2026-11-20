@@ -9,7 +9,7 @@ import type {
   UseAppFormHook,
 } from './createFormHookTypes.public'
 import type { FunctionComponent } from 'preact/compat'
-import type { FormOptions } from '@tanstack/form-core'
+import type { AnyFormOptions } from '@tanstack/form-core'
 
 export function createFormHook<
   const TFormComponents extends Record<string, FunctionComponent<any>>,
@@ -22,7 +22,7 @@ export function createFormHook<
 }> {
   const initializeAppForm = createAppFormInitializer(createOptions)
 
-  function useExtendedForm(hookOptions: FormOptions<any, any, any, unknown>) {
+  function useExtendedForm(hookOptions: AnyFormOptions) {
     const form = useInternalForm(hookOptions, initializeAppForm)
     return form
   }

@@ -1,20 +1,8 @@
 import type { DeepKeys } from './deep-keys.public'
 import type { FormApi } from './FormApi/FormApi.public'
 import type { AnyFieldApi, FieldApi } from './FieldApi/FieldApi.public'
-import type { FormErrorTypes, ValidationTrigger } from './validation.public'
-
-/**
- * Events that can invoke a listener configured on a form.
- *
- * - `'change'`: A field value changed. The listener receives the updated form
- *   values.
- * - `'blur'`: A field was marked as blurred.
- * - `'submit'`: A submission attempt started. The listener runs before
- *   submission validation.
- * - `'mount'`: The component using the form was mounted.
- * - `'reset'`: The form finished resetting its values and state.
- */
-export type FormListenerTriggers = ValidationTrigger | 'mount' | 'reset'
+import type { ScopedErrorTypes } from './validation/state.public'
+import type { FormListenerTriggers } from './FormApi/formListeners.public'
 
 /**
  * Events that can invoke a listener configured on a field.
@@ -192,156 +180,20 @@ export interface Listener<
 }
 
 /**
- * Context passed to a form listener.
- *
- * @typeParam TFormData - Library-managed. Do not specify explicitly.
- * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
- */
-export interface FormListenerContext<
-  in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
-> {
-  /**
-   * The field that caused the event when available.
-   *
-   * Some form events are initiated by the form itself, so no field causes
-   * them. `triggerFieldApi` is always `undefined` for:
-   *
-   * - `'mount'`, when the component using the form is mounted.
-   * - `'reset'`, when the form is reset.
-   * - `'submit'`, when a submission attempt starts.
-   *
-   */
-  triggerFieldApi?: AnyFieldApi
-  /** The form that owns the listener. */
-  formApi: FormApi<TFormData, TFormErrorTypes>
-  /** The form values captured when the event occurred. */
-  value: TFormData
-}
-
-/**
- * A callback invoked when a form listener runs.
- *
- * The return value is ignored. A returned promise is not awaited, and a
- * rejected promise is reported to the console.
- *
- * @example
- * ```ts
- * run: ({ value }) => {
- *   saveDraft(value)
- * },
- * ```
- *
- * @typeParam TFormData - Library-managed. Do not specify explicitly.
- * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
- */
-export type FormListenerFn<
-  in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
-> = (context: FormListenerContext<TFormData, TFormErrorTypes>) => void
-
-/** A form listener with type-erased form data and error types. */
-export type AnyFormListener = FormListener<any, any>
-
-/**
- * A listener configured on a form.
- *
- * Form listeners can observe field changes and blurs as well as form
- * submission, mounting, and resetting.
- *
- * @example
- * ```ts
- * formOptions({
- *   defaultValues: { displayName: '' },
- *   listeners: [
- *     {
- *       triggers: [
- *         {
- *           trigger: 'change',
- *           when: ({ value }) => value.displayName.length > 0,
- *         },
- *       ],
- *       triggerDebounceMs: 200,
- *       run: ({ value }) => {
- *         saveDraft(value)
- *       },
- *     },
- *   ],
- * })
- * ```
- *
- * @typeParam TFormData - Library-managed. Do not specify explicitly.
- * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
- */
-export interface FormListener<
-  in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
-> extends Listener<FormListenerTriggers, TFormData, TFormData> {
-  /**
-   * Called when an enabled form trigger occurs.
-   *
-   * The return value is ignored. A returned promise is not awaited, and a
-   * rejected promise is reported to the console.
-   *
-   * @example
-   * ```ts
-   * run: ({ value }) => {
-   *   saveDraft(value)
-   * },
-   * ```
-   */
-  run: FormListenerFn<TFormData, TFormErrorTypes>
-}
-
-/**
- * Listener configurations evaluated in array order for each form event.
- *
- * A debounced listener may execute after later, non-debounced listeners.
- *
- * @example
- * ```ts
- * formOptions({
- *   defaultValues: { displayName: '' },
- *   listeners: [
- *     {
- *       triggers: [
- *         {
- *           trigger: 'change',
- *           when: ({ value }) => value.displayName.length > 0,
- *         },
- *       ],
- *       triggerDebounceMs: 200,
- *       run: ({ value }) => {
- *         saveDraft(value)
- *       },
- *     },
- *   ],
- * })
- * ```
- *
- * @typeParam TFormData - Library-managed. Do not specify explicitly.
- * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
- */
-export type FormListeners<
-  TFormData,
-  TFormErrorTypes extends FormErrorTypes,
-> = Array<FormListener<TFormData, TFormErrorTypes>>
-
-/**
  * Context passed to a field listener.
  *
  * @typeParam TFieldName - Library-managed. Do not specify explicitly.
  * @typeParam TFieldValue - Library-managed. Do not specify explicitly.
  * @typeParam TFieldError - Library-managed. Do not specify explicitly.
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
- * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
+ * @typeParam TFormError - Library-managed. Do not specify explicitly.
  */
 export interface FieldListenerContext<
   out TFieldName,
   in out TFieldValue,
   in out TFieldError,
   in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
 > {
   /** The listening field's value captured when the event occurred. */
   value: TFieldValue
@@ -356,10 +208,10 @@ export interface FieldListenerContext<
     TFieldValue,
     TFieldError,
     TFormData,
-    TFormErrorTypes
+    TFormError
   >
   /** The form that owns the field. */
-  formApi: FormApi<TFormData, TFormErrorTypes>
+  formApi: FormApi<TFormData, TFormError>
 }
 
 /**
@@ -382,21 +234,21 @@ export interface FieldListenerContext<
  * @typeParam TFieldValue - Library-managed. Do not specify explicitly.
  * @typeParam TFieldError - Library-managed. Do not specify explicitly.
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
- * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
+ * @typeParam TFormError - Library-managed. Do not specify explicitly.
  */
 export type FieldListenerFn<
   in TFieldName,
   in out TFieldValue,
   in out TFieldError,
   in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
 > = (
   context: FieldListenerContext<
     TFieldName,
     TFieldValue,
     TFieldError,
     TFormData,
-    TFormErrorTypes
+    TFormError
   >,
 ) => void
 
@@ -432,7 +284,7 @@ export type AnyFieldListener = FieldListener<any, any, any, any, any, any>
  * @typeParam TFieldValue - Library-managed. Do not specify explicitly.
  * @typeParam TFieldError - Library-managed. Do not specify explicitly.
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
- * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
+ * @typeParam TFormError - Library-managed. Do not specify explicitly.
  */
 export interface FieldListener<
   in out TFieldData,
@@ -440,7 +292,7 @@ export interface FieldListener<
   in out TFieldValue,
   in out TFieldError,
   in out TFormData,
-  in out TFormErrorTypes extends FormErrorTypes,
+  in out TFormError extends ScopedErrorTypes,
 > extends Listener<FieldListenerTriggers, TFieldData, TFieldValue> {
   /**
    * Called when an enabled field trigger occurs.
@@ -463,7 +315,7 @@ export interface FieldListener<
     TFieldValue,
     TFieldError,
     TFormData,
-    TFormErrorTypes
+    TFormError
   >
   /**
    * Other fields whose matching events should also invoke this listener.
@@ -509,7 +361,7 @@ export interface FieldListener<
  * @typeParam TFieldValue - Library-managed. Do not specify explicitly.
  * @typeParam TFieldError - Library-managed. Do not specify explicitly.
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
- * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
+ * @typeParam TFormError - Library-managed. Do not specify explicitly.
  */
 export type FieldListeners<
   TFieldData,
@@ -517,7 +369,7 @@ export type FieldListeners<
   TFieldValue,
   TFieldError,
   TFormData,
-  TFormErrorTypes extends FormErrorTypes,
+  TFormError extends ScopedErrorTypes,
 > = Array<
   FieldListener<
     TFieldData,
@@ -525,6 +377,6 @@ export type FieldListeners<
     TFieldValue,
     TFieldError,
     TFormData,
-    TFormErrorTypes
+    TFormError
   >
 >

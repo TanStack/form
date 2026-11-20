@@ -12,8 +12,7 @@ describe('field - mount validators', () => {
       validators: [
         {
           run: validator,
-          runOnMount: true,
-          triggers: [],
+          triggers: ['mount'],
         },
       ],
     })
@@ -69,8 +68,7 @@ describe('field - mount validators', () => {
       validators: [
         {
           run: () => result,
-          runOnMount: true,
-          triggers: [],
+          triggers: ['mount'],
         },
       ],
     })

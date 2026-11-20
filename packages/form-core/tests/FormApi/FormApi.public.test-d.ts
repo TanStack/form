@@ -2,11 +2,9 @@ import { describe, expectTypeOf, it } from 'vitest'
 import { formOptions } from '../../src'
 import type {
   CreateSubmitErrorMapFn,
-  OnSubmitError,
+  GetFormErrorTypes,
   ParseSubmitIssuesFn,
   StandardSchemaV1Issue,
-  ToFormErrorTypes,
-  ValidationErrorMap,
   ValidationIssue,
 } from '../../src'
 
@@ -23,10 +21,6 @@ describe('FormSubmitContext', () => {
         expectTypeOf(parseIssues).toEqualTypeOf<ParseSubmitIssuesFn<FormData>>()
 
         const errors = createErrorMap({ form: 'Submission failed' })
-        expectTypeOf(errors).toEqualTypeOf<
-          ValidationErrorMap<FormData> &
-            OnSubmitError<ValidationErrorMap<FormData>>
-        >()
 
         errors.fields.name = 'Name is required'
         errors.fields['user.age'] = { message: 'Age is required' }
@@ -43,10 +37,10 @@ describe('FormSubmitContext', () => {
 
     type SubmitReturn = ReturnType<NonNullable<typeof options.onSubmit>>
     expectTypeOf<
-      ToFormErrorTypes<[], SubmitReturn>['formError']
+      GetFormErrorTypes<[], SubmitReturn>['selfError']
     >().toEqualTypeOf<ValidationIssue>()
     expectTypeOf<
-      ToFormErrorTypes<[], SubmitReturn>['fieldError']
+      GetFormErrorTypes<[], SubmitReturn>['subfieldError']
     >().toEqualTypeOf<ValidationIssue>()
   })
 
@@ -59,10 +53,10 @@ describe('FormSubmitContext', () => {
 
     type SubmitReturn = ReturnType<NonNullable<typeof options.onSubmit>>
     expectTypeOf<
-      ToFormErrorTypes<[], SubmitReturn>['formError']
+      GetFormErrorTypes<[], SubmitReturn>['selfError']
     >().toEqualTypeOf<StandardSchemaV1Issue>()
     expectTypeOf<
-      ToFormErrorTypes<[], SubmitReturn>['fieldError']
+      GetFormErrorTypes<[], SubmitReturn>['subfieldError']
     >().toEqualTypeOf<StandardSchemaV1Issue>()
   })
 })

@@ -1,7 +1,11 @@
 import type { AnyInternalFieldApi } from './FieldApi/FieldApi.lib'
 
 // type
-import type { FieldUpdateOptions, OneOrMany, Updater } from './types.public'
+import type {
+  FieldUpdateOptions,
+  ReadonlyOneOrMany,
+  Updater,
+} from './types.public'
 import type {
   InternalFieldUpdateOptions,
   ResolvedInternalFieldUpdateOptions,
@@ -199,11 +203,11 @@ export function callUpdater<T>(updater: Updater<T>, object: T): T {
 }
 
 export function normalizeToArray<T>(
-  input: null | undefined | OneOrMany<T>,
-): Array<T> {
+  input: null | undefined | void | ReadonlyOneOrMany<T>,
+): ReadonlyArray<T> {
   if (Array.isArray(input)) return input
   if (input === null || input === undefined) return []
-  return [input]
+  return [input as T]
 }
 
 // TODO remove and import from store:
@@ -322,3 +326,10 @@ export function isPromiseLike<T>(
     typeof value.then === 'function'
   )
 }
+
+/**
+ * Just `Array.isArray`, but better typed. We *could* make this with declaration merging,
+ * but I'd prefer to avoid introducing edge cases.
+ */
+export const isReadonlyArray: (arg: any) => arg is ReadonlyArray<any> =
+  Array.isArray

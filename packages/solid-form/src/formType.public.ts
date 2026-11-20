@@ -1,21 +1,14 @@
 import type {
   AnyFormOptions,
   FormOptions,
-  FormValidators,
-  ToFormErrorTypes,
+  GetFormErrorTypes,
+  GetSharedFormErrorTypes,
 } from '@tanstack/form-core'
 import type {
   AnySolidFormComponentMap,
   DefaultSolidFormComponentMap,
 } from './AppForm/componentMap.public'
 import type { SolidFormApi } from './formApiTypes.public'
-
-type SolidFormTypeErrorTypes<
-  TFormValidators extends FormValidators<any>,
-  TSubmitReturn,
-> = unknown extends TSubmitReturn
-  ? any
-  : ToFormErrorTypes<TFormValidators, TSubmitReturn>
 
 /**
  * Derives the Solid form API type represented by a reusable options object.
@@ -49,13 +42,14 @@ type SolidFormTypeErrorTypes<
 export type SolidFormType<TOptions extends AnyFormOptions> =
   TOptions extends FormOptions<
     infer TFormData,
+    any,
     infer TFormValidators,
     infer TSubmitReturn,
     infer TComponents
   >
     ? SolidFormApi<
         TFormData,
-        SolidFormTypeErrorTypes<TFormValidators, TSubmitReturn>,
+        GetSharedFormErrorTypes<TFormValidators, TSubmitReturn>,
         TComponents extends AnySolidFormComponentMap
           ? TComponents
           : DefaultSolidFormComponentMap

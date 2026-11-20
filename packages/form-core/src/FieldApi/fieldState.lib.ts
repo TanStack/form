@@ -8,13 +8,14 @@ import type {
   FieldState as PublicFieldState,
   SubfieldsMeta,
 } from './FieldApi.public'
-import type {
-  ErrorVisibility,
-  ErrorVisibilityFieldState,
-  ValidationIssue,
-} from '../validation.public'
 import type { ValidationSourceErrorMap } from '../validation'
 import type { Atom, ReadonlyAtom } from '@tanstack/store'
+import type { ValidationIssue } from '../validation/state.public'
+import type {
+  ErrorVisibilityContext,
+  ErrorVisibilityFieldState,
+  ErrorVisibilityFn,
+} from '../FormApi/errorVisibility.public'
 
 export type ChildContributionKey =
   RootCounterContributionKey | 'dirty' | 'error'
@@ -215,12 +216,12 @@ function canReusePreviousMeta({
 
 function getErrorVisibility(
   field: AnyInternalFieldApi | undefined,
-): ErrorVisibility<any, any> | undefined {
+): ErrorVisibilityFn<any> | undefined {
   return field?._errorVisibility ?? field?.form._options.errorVisibility
 }
 
 function shouldDisplayErrors(
-  errorVisibility: ErrorVisibility<any, any> | undefined,
+  errorVisibility: ErrorVisibilityFn<any> | undefined,
   field: AnyInternalFieldApi | undefined,
   baseMeta: InternalBaseFieldMeta,
   value?: any,

@@ -7,14 +7,14 @@ import {
   createFormGroupComponent,
   createSubscribeComponent,
 } from './Components.lib'
-import type { DefaultOptions, FormOptions } from '@tanstack/form-core'
+import type { AnyFormOptions, DefaultOptions } from '@tanstack/form-core'
 import type { ReactTanStackFormComponents } from './Components.public'
 
 const useReactId =
   (React as typeof React & { useId?: () => string }).useId ?? (() => undefined)
 
 export class InternalReactFormApi
-  extends InternalFormApi<any, any, any>
+  extends InternalFormApi<any>
   implements ReactTanStackFormComponents<any, any, any>
 {
   Field: ReactTanStackFormComponents<any, any, any>['Field']
@@ -22,10 +22,7 @@ export class InternalReactFormApi
   Subscribe: ReactTanStackFormComponents<any, any, any>['Subscribe']
   FormGroup: ReactTanStackFormComponents<any, any, any>['FormGroup']
 
-  constructor(
-    options: FormOptions<any, any, any, unknown>,
-    defaultOptions?: DefaultOptions,
-  ) {
+  constructor(options: AnyFormOptions, defaultOptions?: DefaultOptions) {
     super(options, defaultOptions)
     this.Field = createFieldComponent(
       this,
@@ -39,17 +36,13 @@ export class InternalReactFormApi
   }
 }
 
-export function initializeForm(
-  options: FormOptions<any, any, any, unknown>,
-): InternalReactFormApi {
+export function initializeForm(options: AnyFormOptions): InternalReactFormApi {
   return new InternalReactFormApi(options)
 }
 
 export function useInternalForm(
-  options: FormOptions<any, any, any, unknown>,
-  initializeFn: (
-    options: FormOptions<any, any, any, unknown>,
-  ) => InternalReactFormApi,
+  options: AnyFormOptions,
+  initializeFn: (options: AnyFormOptions) => InternalReactFormApi,
 ) {
   const reactFormId = useReactId()
   const resolvedOptions =

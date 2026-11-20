@@ -11,7 +11,7 @@ function appendValidatorsWithoutTriggers(
   getLocation: (validatorIndex: number) => ValidatorLocation,
 ): void {
   validatorInstances?.forEach(({ definition: validator }, validatorIndex) => {
-    if (validator.triggers.length === 0 && !validator.runOnMount) {
+    if (!validator.triggers?.length) {
       locations.push(getLocation(validatorIndex))
     }
   })

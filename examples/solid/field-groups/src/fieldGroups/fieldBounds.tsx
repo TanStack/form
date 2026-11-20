@@ -60,11 +60,11 @@ function UpperBoundFieldComponent(props: UpperBoundFieldProps) {
         {
           triggers: ['change'],
           watchFields: ['lowerBound'],
-          run: ({ value, parseIssues }) => {
+          run: ({ value }) => {
             const upperBoundResult = boundsSchema.safeParse(value)
 
             if (!upperBoundResult.success) {
-              return parseIssues(upperBoundResult.error.issues)
+              return upperBoundResult.error.issues
             }
 
             const lowerBoundResult = boundsSchema.safeParse(

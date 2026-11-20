@@ -549,7 +549,11 @@ describe('InternalFieldApi - _update', () => {
     expect(form.state.canSubmit).toBe(true)
   })
 
-  it('uses updated listener callbacks and triggers, retains omitted listeners, and disables listeners with empty triggers', () => {
+  it('uses updated listener callbacks and triggers, retains omitted listeners, and removes listeners with an empty array', ({
+    onTestFinished,
+  }) => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    onTestFinished(() => warn.mockRestore())
     const initialListener = vi.fn()
     const updatedListener = vi.fn()
     const form = new InternalFormApi({ defaultValues: { name: '' } })
@@ -589,6 +593,14 @@ describe('InternalFieldApi - _update', () => {
     field.handleChange('disabled')
     field.handleBlur()
 
+    expect(updatedListener).not.toHaveBeenCalled()
+
+    field._update({ listeners: [] })
+    field.handleBlur()
+
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining('length of the listener array should not change'),
+    )
     expect(updatedListener).not.toHaveBeenCalled()
   })
 })

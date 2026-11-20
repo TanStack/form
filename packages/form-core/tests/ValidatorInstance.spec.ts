@@ -5,12 +5,13 @@ import {
   reconcileValidatorInstances,
 } from '../src/ValidatorInstance.lib'
 import { validationSourceScopes } from '../src/ValidationSourceInstance.lib'
+import type { FieldValidator } from '../src'
 
 type TestDebouncedFn = (value: string) => void
 
 const createDefinition = (message: string) => ({
   run: () => ({ message }),
-  triggers: ['change'] as const,
+  triggers: ['change' as const],
 })
 
 function createInstance() {
@@ -18,7 +19,7 @@ function createInstance() {
   const owner = { name: 'name' as const }
 
   return new InternalValidatorInstance<
-    typeof definition,
+    'field',
     typeof owner,
     string,
     { name: string },
@@ -50,7 +51,10 @@ describe('InternalValidatorInstance', () => {
     const second = createInstance()
 
     expect(first).not.toBe(second)
-    expect(first.definition.run()).toEqual({ message: 'initial' })
+    expect(first.definition).toMatchObject({
+      run: expect.any(Function),
+      triggers: ['change'],
+    })
     expect(first.owner).toEqual({ name: 'name' })
     expect(first.scope).toBe(validationSourceScopes.field)
     expect(first.index).toBe(0)
@@ -73,7 +77,7 @@ describe('InternalValidatorInstance', () => {
     expect(first.resolvedWatchFields).toBeNull()
 
     expectTypeOf(first.definition).toEqualTypeOf<
-      ReturnType<typeof createDefinition>
+      FieldValidator<any, any, any>
     >()
     expectTypeOf(first.owner).toEqualTypeOf<{ name: 'name' }>()
     expectTypeOf(first.errorTargets).toEqualTypeOf<Set<string> | null>()

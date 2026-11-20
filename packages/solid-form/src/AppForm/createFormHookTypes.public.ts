@@ -11,8 +11,7 @@ import type {
   DefaultFormOptions,
   FormOptions,
   FormOptionsApi,
-  FormValidators,
-  ToFormErrorTypes,
+  GetFormErrorTypes,
 } from '@tanstack/form-core'
 
 /**
@@ -97,15 +96,22 @@ export interface CreateFormHookOptions<
 
 export type UseAppFormHook<TComponents extends AnySolidFormComponentMap> = <
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
+  const TValidatorConfig extends unknown[],
+  TValidators,
   TSubmitReturn,
 >(
   options: Accessor<
-    FormOptions<TFormData, TFormValidators, TSubmitReturn, unknown>
+    FormOptions<
+      TFormData,
+      TValidatorConfig,
+      TValidators,
+      TSubmitReturn,
+      unknown
+    >
   >,
 ) => SolidAppFormApi<
   TFormData,
-  ToFormErrorTypes<TFormValidators, TSubmitReturn>,
+  GetFormErrorTypes<TValidators, TSubmitReturn>,
   TComponents
 >
 

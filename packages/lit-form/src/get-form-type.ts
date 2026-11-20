@@ -1,9 +1,10 @@
-import type { AnyFormOptions, FormOptions } from '@tanstack/form-core'
+import type {
+  AnyFormOptions,
+  FormOptions,
+  GetFormErrorTypes,
+  GetSharedFormErrorTypes,
+} from '@tanstack/form-core'
 import type { TanStackFormController } from './tanstack-form-controller.js'
-
-type LitFormTypeSubmitReturn<TSubmitReturn> = unknown extends TSubmitReturn
-  ? any
-  : TSubmitReturn
 
 /**
  * A Lit form controller whose form data, validator, and submit types are
@@ -28,7 +29,7 @@ type LitFormTypeSubmitReturn<TSubmitReturn> = unknown extends TSubmitReturn
  * }
  * ```
  */
-export type AnyLitFormApi = TanStackFormController<any, any, any>
+export type AnyLitFormApi = TanStackFormController<any, any, any, any, any>
 
 /**
  * Derives the Lit form controller type represented by a reusable options
@@ -58,23 +59,18 @@ export type AnyLitFormApi = TanStackFormController<any, any, any>
 export type LitFormType<TOptions extends AnyFormOptions> =
   TOptions extends FormOptions<
     infer TFormData,
-    infer TFormValidators,
+    any,
+    infer TValidators,
     infer TSubmitReturn,
-    unknown
+    any
   >
-    ? TanStackFormController<
+    ? // Keep option-only generics erased so component-level submit handlers remain
+      // assignable through update(), while preserving the derived public errors.
+      TanStackFormController<
         TFormData,
-        TFormValidators,
-        LitFormTypeSubmitReturn<TSubmitReturn>
+        any,
+        any,
+        any,
+        GetSharedFormErrorTypes<TValidators, TSubmitReturn>
       >
     : never
-
-/**
- * Type-only helper for declaring a child element's form property from shared
- * `formOptions`. It intentionally has no runtime value.
- */
-export function getFormType<TOptions extends AnyFormOptions>(
-  _formOptions: TOptions,
-): LitFormType<TOptions> {
-  return undefined as never
-}

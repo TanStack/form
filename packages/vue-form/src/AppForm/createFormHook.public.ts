@@ -9,7 +9,7 @@ import type {
   UseAppFormHook,
 } from './createFormHookTypes.public'
 import type { Component } from 'vue'
-import type { FormOptions } from '@tanstack/form-core'
+import type { AnyFormOptions, FormOptions } from '@tanstack/form-core'
 
 export function createFormHook<
   const TFormComponents extends Record<string, Component>,
@@ -22,7 +22,7 @@ export function createFormHook<
 }> {
   const initializeAppForm = createAppFormInitializer(createOptions)
 
-  function useExtendedForm(options: FormOptions<any, any, any, unknown>) {
+  function useExtendedForm(options: AnyFormOptions) {
     return useInternalForm(options, initializeAppForm)
   }
 

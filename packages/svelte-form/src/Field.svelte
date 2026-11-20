@@ -4,7 +4,7 @@
     FieldApi,
     FieldApiOptions,
     FieldValidators,
-    FormErrorTypes,
+    ScopedErrorTypes,
     ToFieldError,
   } from '@tanstack/form-core'
   import type {
@@ -13,8 +13,15 @@
     InternalBaseFieldMeta,
   } from '@tanstack/form-core/internals'
 
-  interface InternalFieldOptions
-    extends FieldApiOptions<any, any, any, any, any, any, any> {
+  interface InternalFieldOptions extends FieldApiOptions<
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+  > {
     form: AnyInternalFormApi
   }
 
@@ -53,26 +60,24 @@
     >,
     TGroupFieldError,
     TFormData,
-    TFormErrorTypes extends FormErrorTypes,
+    TFormError extends ScopedErrorTypes,
   >(
-    options: () =>
-      & FieldApiOptions<
-        TFieldData,
-        TFieldName,
-        TFieldValue,
-        TFieldValidators,
-        TGroupFieldError,
-        TFormData,
-        TFormErrorTypes
-      >
-      & { form: AnyInternalFormApi },
+    options: () => FieldApiOptions<
+      TFieldData,
+      TFieldName,
+      TFieldValue,
+      TFieldValidators,
+      TGroupFieldError,
+      TFormData,
+      TFormError
+    > & { form: AnyInternalFormApi },
     array = false,
   ): FieldApi<
     TFieldName,
     TFieldValue,
-    ToFieldError<TFieldValidators, TGroupFieldError, TFormErrorTypes>,
+    ToFieldError<TFieldValidators, TGroupFieldError, TFormError>,
     TFormData,
-    TFormErrorTypes
+    TFormError
   > {
     const initialForm = options().form
     const resetVersion = useSelector(initialForm._atoms.resetVersion)
@@ -148,7 +153,10 @@
     () => fieldOptions,
     untrack(() => array),
   )
-  Object.assign(fieldApi, untrack(() => fieldComponents))
+  Object.assign(
+    fieldApi,
+    untrack(() => fieldComponents),
+  )
   setContext(fieldContextKey, fieldApi)
 </script>
 

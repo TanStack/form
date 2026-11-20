@@ -15,7 +15,7 @@ const { useAppForm } = createFormHook({
   defaultFormOptions: {
     listenersMerge: 'append',
     errorVisibility: ({ state, fieldState }) => {
-      expectTypeOf(state.values).toBeUnknown()
+      expectTypeOf(state.values).toBeAny()
       expectTypeOf(fieldState.value).toBeAny()
       return true
     },
@@ -23,14 +23,14 @@ const { useAppForm } = createFormHook({
       {
         triggers: [],
         run: ({ value, formApi }) => {
-          expectTypeOf(value).toBeUnknown()
-          expectTypeOf(formApi.state.values).toBeUnknown()
+          expectTypeOf(value).toBeAny()
+          expectTypeOf(formApi.state.values).toBeAny()
         },
       },
     ],
     onSubmitInvalid: ({ value, formApi }) => {
-      expectTypeOf(value).toBeUnknown()
-      expectTypeOf(formApi.state.values).toBeUnknown()
+      expectTypeOf(value).toBeAny()
+      expectTypeOf(formApi.state.values).toBeAny()
     },
   },
   defaultFieldOptions: {

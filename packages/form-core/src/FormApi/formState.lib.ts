@@ -4,17 +4,12 @@ import {
   getValidationSourceErrors,
 } from '../validation'
 import type { FormState } from './FormApi.public'
-import type { InternalFormApi } from './FormApi.lib'
+import type { AnyInternalFormApi, InternalFormApi } from './FormApi.lib'
 import type { AnyInternalFieldApi } from '../FieldApi/FieldApi.lib'
-import type {
-  FormErrors,
-  FormValidators,
-  ToFormErrorTypes,
-  ValidationIssue,
-} from '../validation.public'
 import type { Atom } from '@tanstack/store'
 import type { AnyInternalValidationSourceInstance } from '../ValidationSourceInstance.lib'
 import type { ValidationSourceErrorMap } from '../validation'
+import type { ValidationIssue } from '../validation/state.public'
 
 export interface FormErrorMeta {
   validationSourceErrors: ValidationSourceErrorMap | null
@@ -81,8 +76,8 @@ const eagerFormStateKeys = [
   'submissionAttempts',
 ] as const
 
-function getFormErrors(
-  form: InternalFormApi<any, any, any>,
+function getFormErrors<TFormData>(
+  form: InternalFormApi<TFormData>,
 ): Array<ValidationIssue> {
   const baseFormErrors = form._atoms.meta.formErrors.get()
   let formErrors = formErrorsCache.get(baseFormErrors)
@@ -214,20 +209,12 @@ export function clearFormValidationSourceErrorsFromEvent({
 
 function getFormStateValue<
   TFormData,
-  TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
-  TKey extends keyof FormState<
-    TFormData,
-    ToFormErrorTypes<TFormValidators, TSubmitReturn>
-  >,
+  TKey extends keyof FormState<TFormData, any>,
 >(
-  form: InternalFormApi<TFormData, TFormValidators, TSubmitReturn>,
+  form: InternalFormApi<TFormData>,
   key: TKey,
   overrides: FormStateOverrides = {},
-): FormState<
-  TFormData,
-  ToFormErrorTypes<TFormValidators, TSubmitReturn>
->[TKey] {
+): FormState<TFormData, any>[TKey] {
   switch (key) {
     case 'values':
       return form._atoms.values.get() as never
@@ -243,9 +230,7 @@ function getFormStateValue<
       return (overrides.isDefaultValue?.() ??
         form._getIsDefaultValue()) as never
     case 'errors':
-      return getFormErrors(form) as FormErrors<
-        ToFormErrorTypes<TFormValidators, TSubmitReturn>
-      > as never
+      return getFormErrors(form) as never
     case 'isValid':
       return (overrides.isValid?.() ??
         (getFormErrors(form).length === 0 &&
@@ -275,18 +260,11 @@ function getFormStateValue<
   }
 }
 
-export function getFormStateSnapshot<
-  TFormData,
-  TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
->(
-  form: InternalFormApi<TFormData, TFormValidators, TSubmitReturn>,
+export function getFormStateSnapshot<TFormData>(
+  form: InternalFormApi<TFormData>,
   overrides: FormStateOverrides = {},
-): FormState<TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>> {
-  const result = {} as FormState<
-    TFormData,
-    ToFormErrorTypes<TFormValidators, TSubmitReturn>
-  >
+): FormState<TFormData, any> {
+  const result = {} as FormState<TFormData, any>
   for (const key of formStateKeys) {
     if (key === 'isDefaultValue') {
       Object.defineProperty(result, key, {
@@ -323,7 +301,7 @@ export function compareFormStateSnapshots(
 }
 
 export function createFormStateProxy(
-  form: InternalFormApi<any, any, any>,
+  form: AnyInternalFormApi,
   overrides: FormStateOverrides = {},
 ): FormState<any, any> {
   return new Proxy({} as FormState<any, any>, {

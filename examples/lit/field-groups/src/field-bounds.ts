@@ -55,9 +55,9 @@ function upperBoundField(props: {
         {
           triggers: ['change'],
           watchFields: ['lowerBound'],
-          run: ({ value, parseIssues }) => {
+          run: ({ value }) => {
             const upper = boundsSchema.safeParse(value)
-            if (!upper.success) return parseIssues(upper.error.issues)
+            if (!upper.success) return upper.error.issues
             const lower = boundsSchema.safeParse(
               props.fields.getFieldValue('lowerBound'),
             )

@@ -1,7 +1,7 @@
 import { createValidator } from '@tanstack/react-form'
 import { bookingFormSchema } from './schema'
-import type { ReactNode } from 'react'
 import type { ReactFormType } from '@tanstack/react-form'
+import type { ReactNode } from 'react'
 import { appFormOptions } from '@/components/form/app-form'
 import { FieldGroup } from '@/components/ui/field'
 

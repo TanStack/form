@@ -9,13 +9,13 @@ import { InternalFormGroupApi } from '@tanstack/form-core/internals'
 import type {
   DeepKeys,
   DeepValue,
-  FormGroupOptions,
+  FormApi,
+  FormGroupOnSubmitInvalidFn,
   FormGroupSubmitFn,
   FormGroupValidators,
-  FormValidators,
-  ToFormErrorTypes,
+  ScopedErrorTypes,
+  ToFormGroupErrorTypes,
 } from '@tanstack/form-core'
-import type { InternalFormApi } from '@tanstack/form-core/internals'
 
 @Directive({
   selector: '[tanstackFormGroup]',
@@ -27,11 +27,9 @@ export class TanStackFormGroup<
   const TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
   const TGroupValidators extends FormGroupValidators<TGroupValue>,
-  const TFormValidators extends FormValidators<TFormData>,
-  TSubmitReturn,
+  TFormError extends ScopedErrorTypes,
 > {
-  tanstackFormGroup =
-    input.required<InternalFormApi<TFormData, TFormValidators, TSubmitReturn>>()
+  tanstackFormGroup = input.required<FormApi<TFormData, TFormError>>()
   name = input.required<TGroupName>()
   validators = input<NoInfer<TGroupValidators>>()
   onSubmit =
@@ -41,18 +39,18 @@ export class TanStackFormGroup<
         TGroupName,
         TGroupValue,
         TGroupValidators,
-        ToFormErrorTypes<TFormValidators, TSubmitReturn>
+        TFormError
       >
     >()
   onSubmitInvalid =
     input<
-      FormGroupOptions<
+      FormGroupOnSubmitInvalidFn<
         TFormData,
         TGroupName,
         TGroupValue,
-        TGroupValidators,
-        ToFormErrorTypes<TFormValidators, TSubmitReturn>
-      >['onSubmitInvalid']
+        NoInfer<ToFormGroupErrorTypes<TGroupValidators>>,
+        TFormError
+      >
     >()
 
   private readonly changeDetector = inject(ChangeDetectorRef)
@@ -61,7 +59,7 @@ export class TanStackFormGroup<
     TGroupName,
     TGroupValue,
     TGroupValidators,
-    ToFormErrorTypes<TFormValidators, TSubmitReturn>
+    TFormError
   > | null = null
 
   private getOptions() {
