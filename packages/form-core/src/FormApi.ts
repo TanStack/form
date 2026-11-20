@@ -1233,11 +1233,13 @@ export class FormApi<
           // As primitives, we don't need to aggressively persist the same referential value for performance reasons
           const isFieldValid = !isNonEmptyArray(fieldErrors)
           const isFieldPristine = !currBaseMeta.isDirty
+          const fieldDefault =
+            this.getFieldInfo(fieldName).instance?.options.defaultValue
           const isDefaultValue = evaluate(
             curFieldVal,
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            this.getFieldInfo(fieldName)?.instance?.options.defaultValue ??
-              getBy(this.options.defaultValues, fieldName),
+            fieldDefault !== undefined
+              ? fieldDefault
+              : getBy(this.options.defaultValues, fieldName),
           )
 
           if (
@@ -2940,7 +2942,8 @@ export class FormApi<
       const fieldDefault =
         this.getFieldInfo(field).instance?.options.defaultValue
       const formDefault = getBy(this.options.defaultValues, field)
-      const targetValue = fieldDefault ?? formDefault
+      const targetValue =
+        fieldDefault !== undefined ? fieldDefault : formDefault
 
       return {
         ...prev,
