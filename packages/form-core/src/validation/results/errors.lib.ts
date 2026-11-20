@@ -68,7 +68,15 @@ export function formatValidationResult<TFormData>(
       const normalizedFieldError = normalizeValidationError(fieldError)
 
       if (normalizedFieldError.length > 0) {
-        subfields[fieldName] = normalizedFieldError
+        // If some moron decided to use ['__proto__'] as path,
+        // normal assignment would break. I don't think this is a hot path,
+        // so I didn't check normal assignment vs. this as benchmark.
+        Object.defineProperty(subfields, fieldName, {
+          value: normalizedFieldError,
+          enumerable: true,
+          writable: true,
+          configurable: true,
+        })
       }
     }
 
