@@ -17,10 +17,13 @@ function SubmissionFieldState({
 }) {
   useEffect(() => {
     fields.set(name, () => field.errors)
+  }, [name, field, fields])
+
+  useEffect(() => {
     return () => {
       fields.delete(name)
     }
-  }, [name, field, fields])
+  }, [name, fields])
 
   return (
     <>
