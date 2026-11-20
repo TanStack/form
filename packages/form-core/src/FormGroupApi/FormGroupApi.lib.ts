@@ -8,12 +8,12 @@ import { transformFieldOptionsFieldNames } from '../FieldApi/fieldOptions.lib'
 import {
   OnSubmitErrorSource,
   removeSourceErrors,
-  replaceSourceErrors,
 } from '../validation/errorStorage.lib'
 import {
-  getValidationErrors,
-  parseValidationResult,
-} from '../validation/results/errors.lib'
+  applyRoutedValidationResult,
+  pruneErrorTargets,
+} from '../validation/routedErrors.lib'
+import { getValidationErrors } from '../validation/results/errors.lib'
 import { visitFieldSubtree } from '../FieldApi/fieldTraversal.lib'
 import { createGroupSubmissionHandler } from '../submissionHandler.lib'
 import {
@@ -53,6 +53,7 @@ import type { FormStateOverrides } from '../FormApi/formState.lib'
 import type { PipelineResult } from '../pipeline/state.lib'
 import type { ValidatorEvents } from '../pipeline/events.public'
 import type { FormGroupSubmissionHandler } from '../submissionHandler.lib'
+import type { SubmissionAttempt } from '../submissionAttempt.lib'
 
 export type AnyInternalFormGroupApi = InternalFormGroupApi<
   any,
@@ -113,7 +114,7 @@ export class InternalFormGroupApi<
 
   _resetSubmissions(): void {
     this._submissionHandler.invalidate()
-    this.form._pruneErrorTargets(removeSourceErrors(this._onSubmitSource))
+    pruneErrorTargets(removeSourceErrors(this._onSubmitSource))
   }
   /** Invalidates group state when reset or remount replaces its trie node. */
   _groupFieldVersion = createAtom(0)
@@ -259,36 +260,39 @@ export class InternalFormGroupApi<
   _removeValidatorInstance(
     validatorInstance: InternalGroupValidatorInstance,
   ): void {
-    this.form._pruneErrorTargets(removeSourceErrors(validatorInstance))
+    pruneErrorTargets(removeSourceErrors(validatorInstance))
   }
 
   _processValidationResult(
     result: PipelineResult<InternalGroupValidatorInstance>,
     sourceEvent: ValidatorEvents,
   ): void {
-    this._applyValidationResult(
-      result.instance,
-      result.value.result,
+    this._applyValidationResult({
+      source: result.instance,
+      result: result.value.result,
       sourceEvent,
-    )
+    })
   }
 
-  _applyValidationResult(
-    source: ValidationErrorSource,
-    result: FormValidationResult<TGroupValue>,
-    sourceEvent: ValidatorEvents,
-  ): void {
-    const parsed = parseValidationResult(result)
-    const resolved = this.form._resolveRoutedFieldErrors(
-      Object.entries(parsed.subfields ?? {}),
-      this._groupField,
-    )
-    this.form._pruneErrorTargets(
-      replaceSourceErrors(source, sourceEvent, [
-        [this._groupField, parsed.self ?? []],
-        ...resolved,
-      ]),
-    )
+  _applyValidationResult({
+    source,
+    result,
+    sourceEvent,
+    submission,
+  }: {
+    source: ValidationErrorSource
+    result: FormValidationResult<TGroupValue>
+    sourceEvent: ValidatorEvents
+    submission?: SubmissionAttempt
+  }): void {
+    applyRoutedValidationResult({
+      routingRoot: this._groupField,
+      value: this.value,
+      source,
+      result,
+      sourceEvent,
+      submission,
+    })
   }
 
   _visitGroupFields(visitor: (field: AnyInternalFieldApi) => void) {
@@ -305,7 +309,7 @@ export class InternalFormGroupApi<
   _clearRoutedErrors(): void {
     batch(() => {
       for (const source of this._validatorInstances ?? [])
-        this.form._pruneErrorTargets(removeSourceErrors(source))
+        pruneErrorTargets(removeSourceErrors(source))
     })
   }
 

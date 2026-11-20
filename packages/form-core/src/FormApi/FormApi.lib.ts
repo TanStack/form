@@ -30,15 +30,15 @@ import { resolveDefaultOptions } from '../defaultOptions.lib'
 import { startFormValidation } from '../pipeline/validation/ownerValidation.lib'
 import {
   removeSourceErrors,
-  replaceSourceErrors,
   validationSourceScopes,
 } from '../validation/errorStorage.lib'
+import {
+  applyRoutedValidationResult,
+  pruneErrorTargets,
+} from '../validation/routedErrors.lib'
 import { resetFieldMeta } from '../FieldApi/fieldState.lib'
 import { runFormListenerPipeline } from '../pipeline/listeners/listeners.lib'
-import {
-  getValidationErrors,
-  parseValidationResult,
-} from '../validation/results/errors.lib'
+import { getValidationErrors } from '../validation/results/errors.lib'
 import { updateFormOptions } from './formOptions.lib'
 import { initializeForm } from './initializeForm.lib'
 import { ArrayMethods } from './array-methods.lib'
@@ -63,10 +63,7 @@ import type { DefaultOptions } from '../defaultOptions.public'
 import type { ValidatorInstances } from '../pipeline/validation/ValidatorInstance.lib'
 import type { ListenerInstances } from '../pipeline/listeners/ListenerInstance.lib'
 import type { ServerFormState } from './formServerState.public'
-import type {
-  FormValidationResult,
-  ValidationIssue,
-} from '../validation/results/results.public'
+import type { FormValidationResult } from '../validation/results/results.public'
 import type { ClientValidationRun } from '../pipeline/validation/clientValidation.lib'
 import type { FormValidationOptions } from '../pipeline/validation/ownerValidation.lib'
 import type { InternalFieldMeta } from '../FieldApi/fieldState.lib'
@@ -80,9 +77,9 @@ import type { DeepKeys } from '../deep-keys.public'
 import type {
   OnSubmitErrorSource,
   ValidationErrorSource,
-  ValidationErrorTarget,
 } from '../validation/errorStorage.lib'
 import type { FormSubmissionHandler } from '../submissionHandler.lib'
+import type { SubmissionAttempt } from '../submissionAttempt.lib'
 
 export interface FormMetaAtoms {
   isDirty: Atom<boolean>
@@ -268,7 +265,7 @@ export class InternalFormApi<TFormData> implements FormApi<
     batch(() => {
       for (const source of this._validatorInstances ?? []) {
         if (source.lastAppliedEvent === sourceEvent)
-          this._pruneErrorTargets(removeSourceErrors(source))
+          pruneErrorTargets(removeSourceErrors(source))
       }
     })
   }
@@ -339,7 +336,7 @@ export class InternalFormApi<TFormData> implements FormApi<
       owner: this,
       onBeforeDispose: (instance) => {
         const affectedTargets = removeSourceErrors(instance)
-        this._pruneErrorTargets(affectedTargets)
+        pruneErrorTargets(affectedTargets)
       },
     })
   }
@@ -684,67 +681,17 @@ export class InternalFormApi<TFormData> implements FormApi<
     )
   }
 
-  /**
-   * Resolve relative field errors from a validation scope to their concrete
-   * field targets, coalescing errors captured by the same boundary.
-   */
-  _resolveRoutedFieldErrors(
-    fieldErrors: Iterable<readonly [string, Array<ValidationIssue>]>,
-    routingRoot: AnyInternalFieldApi | InternalRootFieldApi = this
-      ._fieldRootNode,
-  ): Map<ValidationErrorTarget, Array<ValidationIssue>> {
-    const resolvedFieldErrors = new Map<
-      AnyInternalFieldApi,
-      Array<ValidationIssue>
-    >()
-
-    for (const [fieldName, errors] of fieldErrors) {
-      const segments = nameToFieldNodeSegments(fieldName)
-      let current = routingRoot
-      let boundary: AnyInternalFieldApi | null =
-        routingRoot._isRoot || !routingRoot._errorBoundary ? null : routingRoot
-
-      for (const segment of segments) {
-        const child: AnyInternalFieldApi | undefined =
-          current._getChild(segment)
-        if (!child) break
-
-        if (child._errorBoundary) {
-          boundary = child
-        }
-        current = child
-      }
-
-      const target =
-        boundary ??
-        getOrCreateFieldApi(
-          routingRoot,
-          segments.slice(),
-          this,
-          undefined,
-          'internal',
-        )
-
-      resolvedFieldErrors.set(
-        target,
-        (resolvedFieldErrors.get(target) ?? []).concat(errors),
-      )
-    }
-
-    return resolvedFieldErrors
-  }
-
-  _pruneErrorTargets(targets: Iterable<ValidationErrorTarget>): void {
-    for (const target of targets) {
-      if (target instanceof InternalFieldApi) target._pruneIfUnused()
-    }
-  }
-
-  _applyValidationResult(
-    sourceOrIndex: ValidationErrorSource | number,
-    result: FormValidationResult<TFormData>,
-    sourceEvent: ValidatorEvents,
-  ): void {
+  _applyValidationResult({
+    sourceOrIndex,
+    result,
+    sourceEvent,
+    submission,
+  }: {
+    sourceOrIndex: ValidationErrorSource | number
+    result: FormValidationResult<TFormData>
+    sourceEvent: ValidatorEvents
+    submission?: SubmissionAttempt
+  }): void {
     let source: ValidationErrorSource | undefined
     if (typeof sourceOrIndex === 'number') {
       source = this._validatorInstances?.[sourceOrIndex]
@@ -754,14 +701,14 @@ export class InternalFormApi<TFormData> implements FormApi<
 
     if (!source) return
 
-    const parsed = parseValidationResult(result)
-    const contributions = new Map(
-      this._resolveRoutedFieldErrors(Object.entries(parsed.subfields ?? {})),
-    )
-    contributions.set(this._fieldRootNode, parsed.self ?? [])
-    this._pruneErrorTargets(
-      replaceSourceErrors(source, sourceEvent, contributions),
-    )
+    applyRoutedValidationResult({
+      routingRoot: this._fieldRootNode,
+      value: this._atoms.values.get(),
+      source,
+      result,
+      sourceEvent,
+      submission,
+    })
   }
 
   _runFormValidation(

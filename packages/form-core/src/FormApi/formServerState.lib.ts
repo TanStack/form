@@ -63,11 +63,11 @@ function resetToServerState<TFormData>(
     )
 
     for (const result of serverState.validationResults) {
-      form._applyValidationResult(
-        result.validatorIndex,
-        result.result,
-        'server',
-      )
+      form._applyValidationResult({
+        sourceOrIndex: result.validatorIndex,
+        result: result.result,
+        sourceEvent: 'server',
+      })
     }
   })
 }

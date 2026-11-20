@@ -157,11 +157,11 @@ export function startFormMountValidation<TFormData>(
         createFormMountValidatorContext(definition, { value }),
       applyResult: (result) => {
         // Initial results are merged before any field targets exist.
-        form?._applyValidationResult(
-          result.instance,
-          result.value.result,
-          'mount',
-        )
+        form?._applyValidationResult({
+          sourceOrIndex: result.instance,
+          result: result.value.result,
+          sourceEvent: 'mount',
+        })
       },
       onPending: () => {
         hasPendingMount = true
@@ -189,11 +189,11 @@ export function startFormMountValidation<TFormData>(
         try {
           batch(() => {
             for (const result of initialState.validationResults) {
-              initializedForm._applyValidationResult(
-                result.validatorIndex,
-                result.result,
-                result.sourceEvent,
-              )
+              initializedForm._applyValidationResult({
+                sourceOrIndex: result.validatorIndex,
+                result: result.result,
+                sourceEvent: result.sourceEvent,
+              })
             }
           })
         } catch (error) {
@@ -274,7 +274,11 @@ export function startFormValidation(
 
   if (applyResults) {
     runOptions.applyResult = (result) =>
-      form._applyValidationResult(result.instance, result.value.result, event)
+      form._applyValidationResult({
+        sourceOrIndex: result.instance,
+        result: result.value.result,
+        sourceEvent: event,
+      })
   }
 
   return startClientValidation(runOptions)

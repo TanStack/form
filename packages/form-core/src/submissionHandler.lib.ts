@@ -110,7 +110,10 @@ interface SubmissionHandlerAdapter<
    * errors for `null`.
    * Called only while the attempt can still apply validation results.
    */
-  applySubmitError: (error: FormValidationResult<TValue>) => void
+  applySubmitError: (
+    error: FormValidationResult<TValue>,
+    submission: SubmissionAttempt<FormattedValidationError<TValue>>,
+  ) => void
 }
 
 interface SubmissionValidation<TValue> {
@@ -343,7 +346,7 @@ class SubmissionHandler<TValue, TInstance extends AnyValidatorInstance> {
         ? maybeError[submitErrorSymbol]
         : null
       if (submission.canApplyValidationResults()) {
-        this.adapter.applySubmitError(submitError)
+        this.adapter.applySubmitError(submitError, submission)
       }
     } catch (error) {
       return await finishInvalidSubmission({
@@ -411,8 +414,13 @@ export function createFormSubmissionHandler<TFormData>(
         form._options.onSubmit?.({ ...context, formApi: form as never }),
       onSubmitInvalid: (context) =>
         form._options.onSubmitInvalid?.({ ...context, formApi: form }),
-      applySubmitError: (error) =>
-        form._applyValidationResult(form._onSubmitSource, error, 'submit'),
+      applySubmitError: (error, submission) =>
+        form._applyValidationResult({
+          sourceOrIndex: form._onSubmitSource,
+          result: error,
+          sourceEvent: 'submit',
+          submission,
+        }),
     },
     initialSubmissionAttempts,
   )
@@ -469,7 +477,12 @@ export function createGroupSubmissionHandler<
         formApi: group.form,
         groupApi: group as never,
       }),
-    applySubmitError: (error) =>
-      group._applyValidationResult(group._onSubmitSource, error, 'submit'),
+    applySubmitError: (error, submission) =>
+      group._applyValidationResult({
+        source: group._onSubmitSource,
+        result: error,
+        sourceEvent: 'submit',
+        submission,
+      }),
   })
 }
