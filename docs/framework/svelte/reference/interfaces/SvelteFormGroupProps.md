@@ -3,7 +3,7 @@ id: SvelteFormGroupProps
 title: SvelteFormGroupProps
 ---
 
-Defined in: [packages/svelte-form/src/Components.public.ts:290](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L290)
+Defined in: [packages/svelte-form/src/Components.public.ts:291](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L291)
 
 ## Extends
 
@@ -43,4 +43,4 @@ Defined in: [packages/svelte-form/src/Components.public.ts:290](https://github.c
 children: Snippet<[SvelteFormGroupApi<TFormData, TGroupName, TGroupValue, ToFormGroupErrorTypes<NoInfer<TGroupValidators>>, TFormError, TFieldComponents>]>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:307](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L307)
+Defined in: [packages/svelte-form/src/Components.public.ts:308](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L308)

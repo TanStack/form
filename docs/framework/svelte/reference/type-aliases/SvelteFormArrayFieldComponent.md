@@ -7,7 +7,7 @@ title: SvelteFormArrayFieldComponent
 type SvelteFormArrayFieldComponent<TFormData, TFormError, TFieldComponents> = <TFieldName, TFieldValidators>(options) => SvelteComponent & Component<any> & WithoutFunction<Component>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:160](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L160)
+Defined in: [packages/svelte-form/src/Components.public.ts:161](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L161)
 
 ## Type Parameters
 

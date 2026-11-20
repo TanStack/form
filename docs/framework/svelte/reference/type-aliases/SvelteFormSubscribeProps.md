@@ -7,7 +7,7 @@ title: SvelteFormSubscribeProps
 type SvelteFormSubscribeProps<TFormData, TFormError, TSelected> = SvelteSubscribeProps<FormState<TFormData, TFormError>, TSelected>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:83](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L83)
+Defined in: [packages/svelte-form/src/Components.public.ts:84](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L84)
 
 ## Type Parameters
 

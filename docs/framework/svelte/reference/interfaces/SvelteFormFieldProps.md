@@ -3,7 +3,7 @@ id: SvelteFormFieldProps
 title: SvelteFormFieldProps
 ---
 
-Defined in: [packages/svelte-form/src/Components.public.ts:100](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L100)
+Defined in: [packages/svelte-form/src/Components.public.ts:101](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L101)
 
 ## Extends
 
@@ -54,4 +54,4 @@ children: Snippet<[SvelteFieldApi<TFieldName, TFieldValue, FallbackToValidationI
 | ExtractFormFieldError<TFormError>>, TFormData, TFormError, TFieldComponents>]>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:118](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L118)
+Defined in: [packages/svelte-form/src/Components.public.ts:119](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L119)

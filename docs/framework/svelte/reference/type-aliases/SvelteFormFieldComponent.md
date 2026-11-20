@@ -7,7 +7,7 @@ title: SvelteFormFieldComponent
 type SvelteFormFieldComponent<TFormData, TFormError, TFieldComponents> = <TFieldName, TFieldValidators>(options) => SvelteComponent & Component<any> & WithoutFunction<Component>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:132](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L132)
+Defined in: [packages/svelte-form/src/Components.public.ts:133](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L133)
 
 ## Type Parameters
 

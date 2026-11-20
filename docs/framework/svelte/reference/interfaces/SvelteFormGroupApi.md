@@ -3,7 +3,7 @@ id: SvelteFormGroupApi
 title: SvelteFormGroupApi
 ---
 
-Defined in: [packages/svelte-form/src/Components.public.ts:259](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L259)
+Defined in: [packages/svelte-form/src/Components.public.ts:260](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L260)
 
 ## Extends
 
@@ -43,7 +43,7 @@ Defined in: [packages/svelte-form/src/Components.public.ts:259](https://github.c
 ArrayField: SvelteFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupError, TFormError, TFieldComponents>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:280](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L280)
+Defined in: [packages/svelte-form/src/Components.public.ts:281](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L281)
 
 ***
 
@@ -53,7 +53,7 @@ Defined in: [packages/svelte-form/src/Components.public.ts:280](https://github.c
 Field: SvelteFormGroupFieldComponent<TFormData, TGroupValue, TGroupError, TFormError, TFieldComponents>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:273](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L273)
+Defined in: [packages/svelte-form/src/Components.public.ts:274](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L274)
 
 ***
 
@@ -63,4 +63,4 @@ Defined in: [packages/svelte-form/src/Components.public.ts:273](https://github.c
 Subscribe: SvelteFormGroupSubscribeComponent<TGroupValue, TGroupError>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:287](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L287)
+Defined in: [packages/svelte-form/src/Components.public.ts:288](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L288)

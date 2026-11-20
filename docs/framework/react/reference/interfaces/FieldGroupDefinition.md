@@ -3,7 +3,7 @@ id: FieldGroupDefinition
 title: FieldGroupDefinition
 ---
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:118](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L118)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:123](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L123)
 
 ## Type Parameters
 
@@ -23,7 +23,7 @@ Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:118](https:
 bindComponent: FieldGroupWithFieldsFn<ReactFieldGroup<TFields, TFieldComponents>>;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:191](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L191)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:196](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L196)
 
 Binds a component's field-group API prop to concrete paths in a parent
 form.
@@ -97,7 +97,7 @@ const PasswordSection = passwordFieldGroup.bindComponent(
 fields: ReactFieldGroup<TFields, TFieldComponents>;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:126](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L126)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:131](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L131)
 
 The virtual field-group API injected into the component passed to
 `bindComponent`.

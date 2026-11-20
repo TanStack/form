@@ -4,7 +4,7 @@ title: FieldGroupWithFieldsFn
 ---
 
 ```ts
-type FieldGroupWithFieldsFn<TFieldGroup> = <TProps, TFieldsPropName>(Component, fieldsPropName) => <TFormData>(props) => JSX.Element;
+type FieldGroupWithFieldsFn<TFieldGroup> = <TProps, TFieldsPropName>(Component, fieldsPropName) => <TFormData, TParentFieldComponents>(props) => JSX.Element;
 ```
 
 Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:49](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L49)
@@ -37,4 +37,4 @@ Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:49](https:/
 
 ## Returns
 
-\<`TFormData`\>(`props`) => `JSX.Element`
+\<`TFormData`, `TParentFieldComponents`\>(`props`) => `JSX.Element`

@@ -3,7 +3,7 @@ id: FieldGroupDefinition
 title: FieldGroupDefinition
 ---
 
-Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:95](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L95)
+Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:102](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L102)
 
 ## Type Parameters
 
@@ -23,7 +23,7 @@ Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:95](https://g
 bindComponent: FieldGroupWithFieldsFn<VueFieldGroup<TFields, TFieldComponents>>;
 ```
 
-Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:102](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L102)
+Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:109](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L109)
 
 Binds a component's virtual field API to concrete paths in a form.
 
@@ -35,6 +35,6 @@ Binds a component's virtual field API to concrete paths in a form.
 fields: VueFieldGroup<TFields, TFieldComponents>;
 ```
 
-Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:100](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L100)
+Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:107](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L107)
 
 The virtual field-group API injected into the bound component.

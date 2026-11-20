@@ -3,7 +3,7 @@ id: FieldGroupDefinition
 title: FieldGroupDefinition
 ---
 
-Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:71](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/withFields.public.ts#L71)
+Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:76](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/withFields.public.ts#L76)
 
 ## Type Parameters
 
@@ -23,7 +23,7 @@ Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:71](https:
 bindComponent: FieldGroupWithFieldsFn<PreactFieldGroup<TFields, TFieldComponents>>;
 ```
 
-Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:78](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/withFields.public.ts#L78)
+Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:83](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/withFields.public.ts#L83)
 
 Binds a component's virtual field API to concrete paths in a form.
 
@@ -35,6 +35,6 @@ Binds a component's virtual field API to concrete paths in a form.
 fields: PreactFieldGroup<TFields, TFieldComponents>;
 ```
 
-Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:76](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/withFields.public.ts#L76)
+Defined in: [packages/preact-form/src/FieldGroup/withFields.public.ts:81](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/withFields.public.ts#L81)
 
 The virtual field-group API injected into the bound component.

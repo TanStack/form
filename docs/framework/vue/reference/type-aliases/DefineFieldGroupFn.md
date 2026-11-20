@@ -7,7 +7,7 @@ title: DefineFieldGroupFn
 type DefineFieldGroupFn<TFieldComponents> = <TFields>(defineFn) => FieldGroupDefinition<TFields, TFieldComponents>;
 ```
 
-Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:108](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L108)
+Defined in: [packages/vue-form/src/FieldGroup/withFields.public.ts:115](https://github.com/TanStack/form/blob/main/packages/vue-form/src/FieldGroup/withFields.public.ts#L115)
 
 Signature shared by `defineFieldGroup` and app-form field-group definers.
 

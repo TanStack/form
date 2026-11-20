@@ -3,11 +3,11 @@ id: FieldGroupApi
 title: FieldGroupApi
 ---
 
-Defined in: [packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts:82](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts#L82)
+Defined in: [packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts:83](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts#L83)
 
 ## Extends
 
-- `FormApiFieldMethods`\<`TFieldData`\>.`FormApiArrayMethods`\<`TFieldData`\>
+- `FormApiFieldMethods`\<`TFieldData`\>.`FormApiArrayMethods`\<`TFieldData`\>.`SvelteFieldComponentsType`\<`TFieldComponents`\>
 
 ## Type Parameters
 
@@ -21,13 +21,29 @@ Defined in: [packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts:82](htt
 
 ## Properties
 
+### \[fieldComponentsSymbol\]?
+
+```ts
+readonly optional [fieldComponentsSymbol]?: TFieldComponents;
+```
+
+Defined in: [packages/svelte-form/src/fieldComponentsType.lib.ts:9](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/fieldComponentsType.lib.ts#L9)
+
+#### Inherited from
+
+```ts
+SvelteFieldComponentsType.[fieldComponentsSymbol]
+```
+
+***
+
 ### ArrayField
 
 ```ts
 ArrayField: FieldGroupArrayFieldComponent<TFieldData, TFieldComponents>;
 ```
 
-Defined in: [packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts:92](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts#L92)
+Defined in: [packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts:96](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts#L96)
 
 ***
 
@@ -37,7 +53,7 @@ Defined in: [packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts:92](htt
 atom: ReadonlyAtom<TFieldData>;
 ```
 
-Defined in: [packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts:90](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts#L90)
+Defined in: [packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts:94](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts#L94)
 
 ***
 
@@ -47,7 +63,7 @@ Defined in: [packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts:90](htt
 Field: FieldGroupFieldComponent<TFieldData, TFieldComponents>;
 ```
 
-Defined in: [packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts:91](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts#L91)
+Defined in: [packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts:95](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts#L95)
 
 ***
 
@@ -57,4 +73,4 @@ Defined in: [packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts:91](htt
 Subscribe: FieldGroupSubscribeComponent;
 ```
 
-Defined in: [packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts:93](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts#L93)
+Defined in: [packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts:97](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts#L97)

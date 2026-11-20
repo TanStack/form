@@ -4,7 +4,7 @@ title: FieldGroupWithFieldsFn
 ---
 
 ```ts
-type FieldGroupWithFieldsFn<TFieldGroup> = <TProps, TFieldsPropName>(Component, fieldsPropName) => <TFormData>(props) => ReactNode;
+type FieldGroupWithFieldsFn<TFieldGroup> = <TProps, TFieldsPropName>(Component, fieldsPropName) => <TFormData, TParentFieldComponents>(props) => ReactNode;
 ```
 
 Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:100](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L100)
@@ -47,7 +47,7 @@ Library-managed. Do not specify explicitly.
 
 ## Returns
 
-\<`TFormData`\>(`props`) => `ReactNode`
+\<`TFormData`, `TParentFieldComponents`\>(`props`) => `ReactNode`
 
 ## Example
 

@@ -7,7 +7,7 @@ title: DefineFieldGroupFn
 type DefineFieldGroupFn<TFieldComponents> = <TFields>(defineFn) => FieldGroupDefinition<TFields, TFieldComponents>;
 ```
 
-Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:80](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L80)
+Defined in: [packages/solid-form/src/FieldGroup/withFields.public.ts:85](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/withFields.public.ts#L85)
 
 Signature shared by `defineFieldGroup` and app-form field-group definers.
 
