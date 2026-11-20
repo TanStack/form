@@ -2112,7 +2112,7 @@ export class FormApi<
       if (
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         this.state.errorMap?.[submitErrKey] &&
-        cause !== 'submit' &&
+        cause === 'change' &&
         !hasErrored
       ) {
         this.baseStore.setState((prev) => ({
@@ -2132,7 +2132,7 @@ export class FormApi<
       if (
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         this.state.errorMap?.[serverErrKey] &&
-        cause !== 'server' &&
+        cause === 'change' &&
         !hasErrored
       ) {
         this.baseStore.setState((prev) => ({

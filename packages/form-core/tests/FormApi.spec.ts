@@ -2063,6 +2063,44 @@ describe('form api', () => {
     ).toBeUndefined()
   })
 
+    it('should not clear form-level onSubmit error when a field is blurred without changing its value', async () => {
+      const form = new FormApi({
+        defaultValues: {
+          firstName: '',
+        },
+        validators: {
+          onSubmit: ({ value }) => {
+            if (value.firstName.length === 0) {
+              return {
+                form: 'something went wrong',
+                fields: {
+                  firstName: 'first name is required',
+                },
+              }
+            }
+            return null
+          },
+        },
+      })
+
+      form.mount()
+
+      const field = new FieldApi({
+        form,
+        name: 'firstName',
+      })
+
+      field.mount()
+
+      await form.handleSubmit()
+
+      expect(form.state.errorMap.onSubmit).toBe('something went wrong')
+
+      field.handleBlur()
+
+      expect(form.state.errorMap.onSubmit).toBe('something went wrong')
+    })
+
   it('should validate all fields consistently - field level onChange validators', async () => {
     const form = new FormApi({
       defaultValues: {
