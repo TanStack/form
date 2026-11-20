@@ -1067,6 +1067,9 @@ export class FormApi<
    */
   private _devtoolsSubmissionOverride: boolean
 
+  /** In-flight submission guard that `reset()` cannot clear. */
+  private _submitInFlight: boolean
+
   /**
    * Constructs a new `FormApi` instance with the given form options.
    */
@@ -1095,6 +1098,7 @@ export class FormApi<
     this._formId = opts?.formId ?? uuid()
 
     this._devtoolsSubmissionOverride = false
+    this._submitInFlight = false
 
     let baseStoreVal: BaseFormState<
       TFormData,
@@ -2202,7 +2206,7 @@ export class FormApi<
       }
 
       promises.push(
-        new Promise<ValidationPromiseResult<TFormData>>(async (resolve) => {
+        (async (): Promise<ValidationPromiseResult<TFormData>> => {
           let rawError!:
             | ValidationError
             | FormValidationError<unknown>
@@ -2308,12 +2312,10 @@ export class FormApi<
             }))
           }
 
-          resolve(
-            fieldErrorsFromFormValidators
-              ? { fieldErrors: fieldErrorsFromFormValidators, errorMapKey }
-              : undefined,
-          )
-        }),
+          return fieldErrorsFromFormValidators
+            ? { fieldErrors: fieldErrorsFromFormValidators, errorMapKey }
+            : undefined
+        })(),
       )
     }
 
@@ -2418,54 +2420,82 @@ export class FormApi<
    * Handles the form submission, performs validation, and calls the appropriate onSubmit or onSubmitInvalid callbacks.
    */
   _handleSubmit = async (submitMeta?: TSubmitMeta): Promise<void> => {
-    this.baseStore.setState((old) => ({
-      ...old,
-      // Submission attempts mark the form as not submitted
-      isSubmitted: false,
-      // Count submission attempts
-      submissionAttempts: old.submissionAttempts + 1,
-      isSubmitSuccessful: false, // Reset isSubmitSuccessful at the start of submission
-    }))
+    if (this._submitInFlight) return
+    // Latch the guard before any state update so a synchronous store
+    // subscriber cannot re-enter handleSubmit and start an overlapping submit.
+    this._submitInFlight = true
 
-    batch(() => {
-      void (Object.values(this.fieldInfo) as FieldInfo<any>[]).forEach(
-        (field) => {
-          if (!field.instance) return
-          // If any fields are not touched
-          if (!field.instance.store.state.meta.isTouched) {
-            // Mark them as touched
-            field.instance.setMeta((prev) => ({ ...prev, isTouched: true }))
-          }
-        },
-      )
-    })
+    const done = () => {
+      this._submitInFlight = false
+      try {
+        this.baseStore.setState((prev) => ({ ...prev, isSubmitting: false }))
+      } catch {
+        // A throwing store subscriber must not strand the in-flight guard.
+      }
+    }
 
     const submitMetaArg =
       submitMeta ?? (this.options.onSubmitMeta as TSubmitMeta)
 
-    if (!this.state.canSubmit && !this._devtoolsSubmissionOverride) {
-      // On re-submission (submissionAttempts > 1), skip the early return so
-      // validateAllFields can re-run and clear stale field errors (e.g. from a
-      // previous onBlur validation that is no longer relevant). The
-      // isFieldsValid check below will call onSubmitInvalid if the form is
-      // still invalid after re-validation.
-      if (this.baseStore.state.submissionAttempts <= 1) {
-        this.options.onSubmitInvalid?.({
-          value: this.state.values,
-          formApi: this,
-          meta: submitMetaArg,
-        })
-        return
+    try {
+      this.baseStore.setState((old) => ({
+        ...old,
+        // Submission attempts mark the form as not submitted
+        isSubmitted: false,
+        // Count submission attempts
+        submissionAttempts: old.submissionAttempts + 1,
+        isSubmitSuccessful: false, // Reset isSubmitSuccessful at the start of submission
+      }))
+
+      batch(() => {
+        void (Object.values(this.fieldInfo) as FieldInfo<any>[]).forEach(
+          (field) => {
+            if (!field.instance) return
+            // If any fields are not touched
+            if (!field.instance.store.state.meta.isTouched) {
+              // Mark them as touched
+              field.instance.setMeta((prev) => ({ ...prev, isTouched: true }))
+            }
+          },
+        )
+      })
+
+      if (!this.state.canSubmit && !this._devtoolsSubmissionOverride) {
+        // On re-submission (submissionAttempts > 1), skip the early return so
+        // validateAllFields can re-run and clear stale field errors (e.g. from a
+        // previous onBlur validation that is no longer relevant). The
+        // isFieldsValid check below will call onSubmitInvalid if the form is
+        // still invalid after re-validation.
+        if (this.baseStore.state.submissionAttempts <= 1) {
+          this.options.onSubmitInvalid?.({
+            value: this.state.values,
+            formApi: this,
+            meta: submitMetaArg,
+          })
+          this._submitInFlight = false
+          return
+        }
+      }
+
+      this.baseStore.setState((d) => ({ ...d, isSubmitting: true }))
+    } catch (err) {
+      done()
+      throw err
+    }
+
+    // Validation and submit listeners run before the onSubmit try/catch below.
+    // A throw there must also release the in-flight flag, or the guard at the
+    // top silently drops every later submission.
+    const releaseOnThrow = async (run: () => unknown): Promise<void> => {
+      try {
+        await run()
+      } catch (err) {
+        done()
+        throw err
       }
     }
 
-    this.baseStore.setState((d) => ({ ...d, isSubmitting: true }))
-
-    const done = () => {
-      this.baseStore.setState((prev) => ({ ...prev, isSubmitting: false }))
-    }
-
-    await this.validateAllFields('submit')
+    await releaseOnThrow(() => this.validateAllFields('submit'))
 
     if (!this.state.isFieldsValid) {
       done()
@@ -2488,7 +2518,7 @@ export class FormApi<
       return
     }
 
-    await this.validate('submit')
+    await releaseOnThrow(() => this.validate('submit'))
 
     // Fields are invalid, do not submit
     if (!this.state.isValid) {
@@ -2511,15 +2541,22 @@ export class FormApi<
       return
     }
 
-    batch(() => {
-      void (Object.values(this.fieldInfo) as FieldInfo<TFormData>[]).forEach(
-        (field) => {
-          field.instance?.triggerOnSubmitListener()
-        },
-      )
-    })
+    await releaseOnThrow(() =>
+      batch(() => {
+        void (Object.values(this.fieldInfo) as FieldInfo<TFormData>[]).forEach(
+          (field) => {
+            field.instance?.triggerOnSubmitListener()
+          },
+        )
+      }),
+    )
 
-    this.options.listeners?.onSubmit?.({ formApi: this, meta: submitMetaArg })
+    await releaseOnThrow(() => {
+      this.options.listeners?.onSubmit?.({
+        formApi: this,
+        meta: submitMetaArg,
+      })
+    })
 
     try {
       // Run the submit code
@@ -2545,10 +2582,14 @@ export class FormApi<
         done()
       })
     } catch (err) {
-      this.baseStore.setState((prev) => ({
-        ...prev,
-        isSubmitSuccessful: false, // Ensure isSubmitSuccessful is false if an error occurs
-      }))
+      try {
+        this.baseStore.setState((prev) => ({
+          ...prev,
+          isSubmitSuccessful: false, // Ensure isSubmitSuccessful is false if an error occurs
+        }))
+      } catch {
+        // A throwing store subscriber must not strand the in-flight guard.
+      }
 
       formEventClient.emit('form-submission', {
         id: this._formId,

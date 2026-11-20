@@ -1991,6 +1991,218 @@ describe('form api', () => {
     expect(onSubmitInvalid).toHaveBeenCalledTimes(1) // not called again
   })
 
+  it('should not call onSubmit again while a submission is already pending', async () => {
+    vi.useRealTimers()
+    // Regression: handleSubmit skipped !canSubmit on re-submissions (submissionAttempts > 1)
+    // to clear stale onBlur errors, but canSubmit is also false while isSubmitting is true.
+    // A second handleSubmit while onSubmit was in flight would invoke onSubmit again.
+    // See: https://github.com/TanStack/form/issues/2467
+    const pending: Array<() => void> = []
+    const onSubmit = vi.fn(
+      () =>
+        new Promise<void>((resolve) => {
+          pending.push(resolve)
+        }),
+    )
+
+    const form = new FormApi({
+      defaultValues: { name: 'Ada' },
+      onSubmit,
+    })
+    form.mount()
+
+    const first = form.handleSubmit()
+    await vi.waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1))
+    expect(form.state.isSubmitting).toBe(true)
+
+    const second = form.handleSubmit()
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+    pending.forEach((resolve) => resolve())
+    await Promise.all([first, second])
+  })
+
+  it('keeps the in-flight guard after reset() clears isSubmitting', async () => {
+    vi.useRealTimers()
+    // Regression for PR #2470 bot review: reset() writes isSubmitting:false
+    // through getDefaultFormState. A reset during a pending onSubmit must not
+    // reopen the guard and allow a concurrent submission.
+    const pending: Array<() => void> = []
+    let calls = 0
+    const onSubmit = vi.fn(
+      () =>
+        new Promise<void>((resolve) => {
+          calls += 1
+          if (calls > 1) {
+            resolve()
+            return
+          }
+          pending.push(resolve)
+        }),
+    )
+
+    const form = new FormApi({ defaultValues: { name: 'Ada' }, onSubmit })
+    form.mount()
+
+    const first = form.handleSubmit()
+    await vi.waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1))
+
+    form.reset()
+    expect(form.state.isSubmitting).toBe(false)
+
+    const second = form.handleSubmit()
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+
+    pending.forEach((resolve) => resolve())
+    await Promise.all([first, second])
+    expect(form.state.isSubmitting).toBe(false)
+
+    await form.handleSubmit()
+    expect(onSubmit).toHaveBeenCalledTimes(2)
+  })
+
+  it('should release isSubmitting when a submit validator throws before the try block', async () => {
+    vi.useRealTimers()
+    // Regression for PR #2470 review: isSubmitting is set before validation,
+    // but the try/catch only wraps onSubmit. A sync validator that throws
+    // leaves the flag stuck true, so the in-flight guard silently drops every
+    // later handleSubmit(). done() must run on all throw paths after the flag.
+    // See: https://github.com/TanStack/form/pull/2470
+    let throwOnce = true
+    const onSubmit = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: { name: 'Ada' },
+      onSubmit,
+      validators: {
+        onSubmit: () => {
+          if (throwOnce) {
+            throwOnce = false
+            throw new Error('async function passed to sync validator')
+          }
+          return undefined
+        },
+      },
+    })
+    form.mount()
+
+    await expect(form.handleSubmit()).rejects.toThrow(
+      'async function passed to sync validator',
+    )
+    expect(form.state.isSubmitting).toBe(false)
+
+    await form.handleSubmit()
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+  })
+
+  it('should release isSubmitting when an onSubmit listener throws', async () => {
+    vi.useRealTimers()
+    let shouldThrow = true
+    const onSubmit = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: { name: 'Ada' },
+      onSubmit,
+      listeners: {
+        onSubmit: () => {
+          if (shouldThrow) throw new Error('listener blew up')
+        },
+      },
+    })
+    form.mount()
+
+    await expect(form.handleSubmit()).rejects.toThrow('listener blew up')
+    expect(form.state.isSubmitting).toBe(false)
+
+    shouldThrow = false
+    await form.handleSubmit()
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+  })
+
+  it('should release the in-flight guard when a baseStore subscriber throws', async () => {
+    vi.useRealTimers()
+    // Regression for PR #2470 bot review: setState notifies subscribers via
+    // flush() without isolating throws. If a subscriber throws while the
+    // isSubmitting:true state is committed (before any done() path), the
+    // in-flight guard stays latched and every later handleSubmit() is dropped.
+    const onSubmit = vi.fn()
+    const form = new FormApi({ defaultValues: { name: 'Ada' }, onSubmit })
+    form.mount()
+
+    const subscription = form.baseStore.subscribe((state) => {
+      if (state.isSubmitting) throw new Error('subscriber blew up')
+    })
+
+    await expect(form.handleSubmit()).rejects.toThrow('subscriber blew up')
+
+    subscription.unsubscribe()
+
+    expect(form.state.isSubmitting).toBe(false)
+    await form.handleSubmit()
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+  })
+
+  it('should keep the in-flight guard clean when the onSubmit catch setState throws', async () => {
+    vi.useRealTimers()
+    // Regression for PR #2470 bot review: if onSubmit throws and a store
+    // subscriber throws while the catch block commits isSubmitSuccessful:false,
+    // done() must still run and the original onSubmit error must propagate.
+    let shouldThrow = true
+    let throwOnce = false
+    const onSubmit = vi.fn(() => {
+      if (shouldThrow) {
+        shouldThrow = false
+        throwOnce = true
+        throw new Error('onSubmit blew up')
+      }
+    })
+    const form = new FormApi({ defaultValues: { name: 'Ada' }, onSubmit })
+    form.mount()
+
+    const subscription = form.baseStore.subscribe(() => {
+      if (throwOnce) {
+        throwOnce = false
+        throw new Error('catch setState subscriber blew up')
+      }
+    })
+
+    await expect(form.handleSubmit()).rejects.toThrow('onSubmit blew up')
+
+    subscription.unsubscribe()
+
+    expect(form.state.isSubmitting).toBe(false)
+    await form.handleSubmit()
+    expect(onSubmit).toHaveBeenCalledTimes(2)
+  })
+
+  it('should latch the in-flight guard before the first setState so a re-entrant submit is blocked', async () => {
+    vi.useRealTimers()
+    // Regression for PR #2470 bot review: the guard was latched only after the
+    // first baseStore.setState (submissionAttempts increment). A synchronous
+    // subscriber on that setState could re-enter handleSubmit before the guard
+    // existed and start an overlapping submission.
+    const onSubmit = vi.fn()
+    const form = new FormApi({ defaultValues: { name: 'Ada' }, onSubmit })
+    form.mount()
+
+    let reentered = false
+    const subscription = form.baseStore.subscribe((state) => {
+      if (!reentered && state.submissionAttempts === 1) {
+        reentered = true
+        void form.handleSubmit()
+      }
+    })
+
+    await form.handleSubmit()
+
+    subscription.unsubscribe()
+
+    expect(reentered).toBe(true)
+    expect(form.state.submissionAttempts).toBe(1)
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+  })
+
   it('should run all types of async validation on fields during submit', async () => {
     vi.useFakeTimers()
 
