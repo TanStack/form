@@ -2176,6 +2176,33 @@ describe('form api', () => {
     expect(onSubmit).toHaveBeenCalledTimes(2)
   })
 
+  it('should latch the in-flight guard before the first setState so a re-entrant submit is blocked', async () => {
+    vi.useRealTimers()
+    // Regression for PR #2470 bot review: the guard was latched only after the
+    // first baseStore.setState (submissionAttempts increment). A synchronous
+    // subscriber on that setState could re-enter handleSubmit before the guard
+    // existed and start an overlapping submission.
+    const onSubmit = vi.fn()
+    const form = new FormApi({ defaultValues: { name: 'Ada' }, onSubmit })
+    form.mount()
+
+    let reentered = false
+    const subscription = form.baseStore.subscribe((state) => {
+      if (!reentered && state.submissionAttempts === 1) {
+        reentered = true
+        void form.handleSubmit()
+      }
+    })
+
+    await form.handleSubmit()
+
+    subscription.unsubscribe()
+
+    expect(reentered).toBe(true)
+    expect(form.state.submissionAttempts).toBe(1)
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+  })
+
   it('should run all types of async validation on fields during submit', async () => {
     vi.useFakeTimers()
 
