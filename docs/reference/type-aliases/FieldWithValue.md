@@ -4,7 +4,7 @@ title: FieldWithValue
 ---
 
 ```ts
-type FieldWithValue<TFieldValue> = FieldApi<any, TFieldValue, any, any, any>;
+type FieldWithValue<TFieldValue> = FieldApi<string, TFieldValue, any, any, any>;
 ```
 
 Defined in: [types.public.ts:52](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.public.ts#L52)
