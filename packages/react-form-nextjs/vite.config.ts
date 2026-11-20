@@ -20,5 +20,6 @@ export default mergeConfig(
     entry: ['./src/index.ts'],
     cjs: false,
     srcDir: './src',
+    tsconfigPath: './tsconfig.dts.json',
   }),
 )
