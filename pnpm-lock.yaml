@@ -2006,8 +2006,8 @@ importers:
         specifier: ^0.9.0
         version: 0.9.0
       devalue:
-        specifier: ^5.3.2
-        version: 5.8.1
+        specifier: ^5.9.3
+        version: 5.9.4
     devDependencies:
       '@tanstack/react-start':
         specifier: ^1.168.60
@@ -9111,6 +9111,9 @@ packages:
 
   devalue@5.8.1:
     resolution: {integrity: sha512-4CXDYRBGqN+57wVJkuXBYmpAVUSg3L6JAQa/DFqm238G73E1wuyc/JhGQJzN7vUf/CMphYau2zXbfWzDR5aTEw==}
+
+  devalue@5.9.4:
+    resolution: {integrity: sha512-sPAT4pztbu6586/hrhOnMKS17IJrvg12mXiSPSS3W5qDeN2RGgvZ0diZCm31dBbnevfVmujNO3IM2wrS4Y2Rhg==}
 
   diff@5.2.2:
     resolution: {integrity: sha512-vtcDfH3TOjP8UekytvnHH1o1P4FcUdt4eQ1Y+Abap1tk/OB2MWQvcwS2ClCd1zuIhc3JKOx6p3kod8Vfys3E+A==}
@@ -23584,6 +23587,8 @@ snapshots:
   detect-node@2.1.0: {}
 
   devalue@5.8.1: {}
+
+  devalue@5.9.4: {}
 
   diff@5.2.2: {}
 
