@@ -4,7 +4,7 @@ title: CreateFormHook
 ---
 
 ```ts
-type CreateFormHook = <TFormData, TFormValidators, TSubmitReturn>(options) => SolidFormApi<TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>, DefaultSolidFormComponentMap>;
+type CreateFormHook = <TFormData, TValidatorConfig, TValidators, TSubmitReturn>(options) => SolidFormApi<TFormData, GetFormErrorTypes<TValidators, TSubmitReturn>, DefaultSolidFormComponentMap>;
 ```
 
 Defined in: [packages/solid-form/src/createForm.public.ts:11](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.public.ts#L11)
@@ -15,9 +15,13 @@ Defined in: [packages/solid-form/src/createForm.public.ts:11](https://github.com
 
 `TFormData`
 
-### TFormValidators
+### TValidatorConfig
 
-`TFormValidators` *extends* `FormValidators`\<`TFormData`\>
+`TValidatorConfig` *extends* `unknown`[]
+
+### TValidators
+
+`TValidators`
 
 ### TSubmitReturn
 
@@ -27,8 +31,8 @@ Defined in: [packages/solid-form/src/createForm.public.ts:11](https://github.com
 
 ### options
 
-`Accessor`\<`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>\>
+`Accessor`\<`FormOptions`\<`TFormData`, `TValidatorConfig`, `TValidators`, `TSubmitReturn`, `unknown`\>\>
 
 ## Returns
 
-[`SolidFormApi`](SolidFormApi.md)\<`TFormData`, `ToFormErrorTypes`\<`TFormValidators`, `TSubmitReturn`\>, [`DefaultSolidFormComponentMap`](DefaultSolidFormComponentMap.md)\>
+[`SolidFormApi`](SolidFormApi.md)\<`TFormData`, `GetFormErrorTypes`\<`TValidators`, `TSubmitReturn`\>, [`DefaultSolidFormComponentMap`](DefaultSolidFormComponentMap.md)\>

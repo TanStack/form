@@ -3,12 +3,18 @@ id: FormState
 title: FormState
 ---
 
-Defined in: [FormApi/FormApi.public.ts:426](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L426)
+Defined in: [FormApi/FormApi.public.ts:25](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L25)
 
 A snapshot of current values, validation status, and submission metadata.
 
 Read the latest snapshot from `formApi.state` or subscribe to
 `formApi.atom`.
+
+## Type Param
+
+**TFormErrorTypes**
+
+Library-managed. Do not specify explicitly.
 
 ## Type Parameters
 
@@ -18,11 +24,9 @@ Read the latest snapshot from `formApi.state` or subscribe to
 
 Library-managed. Do not specify explicitly.
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* [`FormErrorTypes`](FormErrorTypes.md)
-
-Library-managed. Do not specify explicitly.
+`TFormError` *extends* [`ScopedErrorTypes`](ScopedErrorTypes.md)
 
 ## Properties
 
@@ -32,7 +36,7 @@ Library-managed. Do not specify explicitly.
 canSubmit: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:504](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L504)
+Defined in: [FormApi/FormApi.public.ts:103](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L103)
 
 Whether no submission is running and validation state has no known errors.
 
@@ -47,10 +51,10 @@ submission validation.
 ### errors
 
 ```ts
-errors: FormErrors<TFormErrorTypes>;
+errors: FormError<TFormError>[];
 ```
 
-Defined in: [FormApi/FormApi.public.ts:478](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L478)
+Defined in: [FormApi/FormApi.public.ts:77](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L77)
 
 Form-level errors from validators and `onSubmit`.
 
@@ -66,7 +70,7 @@ and are not included here.
 isDefaultValue: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:470](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L470)
+Defined in: [FormApi/FormApi.public.ts:69](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L69)
 
 Whether current values deeply match `formApi.defaultValues`.
 
@@ -82,7 +86,7 @@ edit can make it `true` while `isDirty` remains `true`.
 isDirty: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:451](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L451)
+Defined in: [FormApi/FormApi.public.ts:50](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L50)
 
 Whether a value update has marked state as dirty.
 
@@ -101,7 +105,7 @@ values return to their defaults. `formApi.reset()` clears it.
 isInvalid: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:494](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L494)
+Defined in: [FormApi/FormApi.public.ts:93](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L93)
 
 Whether validation state contains at least one form- or field-level error.
 
@@ -118,7 +122,7 @@ affect it.
 isPristine: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:462](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L462)
+Defined in: [FormApi/FormApi.public.ts:61](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L61)
 
 Whether state has not been marked dirty.
 
@@ -137,7 +141,7 @@ if values return to their defaults. `formApi.reset()` restores it.
 isSubmitSuccessful: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:519](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L519)
+Defined in: [FormApi/FormApi.public.ts:118](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L118)
 
 Whether the latest completed submission finished without validation errors
 or an `onSubmit` failure.
@@ -153,7 +157,7 @@ It starts as `false`, updates when an attempt finishes, and is cleared by
 isSubmitting: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:511](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L511)
+Defined in: [FormApi/FormApi.public.ts:110](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L110)
 
 Whether a submission attempt is in progress.
 
@@ -168,7 +172,7 @@ or `onSubmitInvalid`.
 isTouched: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:440](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L440)
+Defined in: [FormApi/FormApi.public.ts:39](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L39)
 
 Whether at least one field is currently touched.
 
@@ -183,7 +187,7 @@ registered fields as touched. Resets clear the touched state.
 isValid: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:485](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L485)
+Defined in: [FormApi/FormApi.public.ts:84](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L84)
 
 Whether validation state contains no form- or field-level errors.
 
@@ -198,7 +202,7 @@ Whether validation state contains no form- or field-level errors.
 isValidating: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:526](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L526)
+Defined in: [FormApi/FormApi.public.ts:125](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L125)
 
 Whether any form-, group-, or field-level validation is pending.
 
@@ -213,7 +217,7 @@ canceled. Pending validation does not by itself make `canSubmit` `false`.
 submissionAttempts: number;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:533](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L533)
+Defined in: [FormApi/FormApi.public.ts:132](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L132)
 
 Number of submission attempts started since the last reset.
 
@@ -228,6 +232,6 @@ fails. `formApi.reset()` returns the count to `0`.
 values: TFormData;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:433](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L433)
+Defined in: [FormApi/FormApi.public.ts:32](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L32)
 
 Current values after field edits, resets, or default-value updates.

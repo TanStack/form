@@ -4,10 +4,10 @@ title: SvelteFormGroupFieldComponent
 ---
 
 ```ts
-type SvelteFormGroupFieldComponent<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents> = <TFieldName, TFieldValidators>(options) => SvelteComponent & Component<any> & WithoutFunction<Component>;
+type SvelteFormGroupFieldComponent<TFormData, TGroupValue, TGroupError, TFormError, TFieldComponents> = <TFieldName, TFieldValidators>(options) => SvelteComponent & Component<any> & WithoutFunction<Component>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:206](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L206)
+Defined in: [packages/svelte-form/src/Components.public.ts:199](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L199)
 
 ## Type Parameters
 
@@ -19,13 +19,13 @@ Defined in: [packages/svelte-form/src/Components.public.ts:206](https://github.c
 
 `TGroupValue`
 
-### TGroupErrorTypes
+### TGroupError
 
-`TGroupErrorTypes` *extends* `FormErrorTypes`
+`TGroupError` *extends* `ScopedErrorTypes`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 

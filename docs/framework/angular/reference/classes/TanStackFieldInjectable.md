@@ -25,7 +25,7 @@ Defined in: [injectable.ts:5](https://github.com/TanStack/form/blob/main/package
 
 ### TFormErrorTypes
 
-`TFormErrorTypes` *extends* `FormErrorTypes` = `any`
+`TFormErrorTypes` *extends* `ScopedErrorTypes` = `any`
 
 ## Constructors
 

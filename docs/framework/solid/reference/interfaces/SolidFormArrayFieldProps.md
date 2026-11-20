@@ -3,11 +3,11 @@ id: SolidFormArrayFieldProps
 title: SolidFormArrayFieldProps
 ---
 
-Defined in: [packages/solid-form/src/Components.public.ts:127](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L127)
+Defined in: [packages/solid-form/src/Components.public.ts:123](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L123)
 
 ## Extends
 
-- [`SolidFormFieldProps`](SolidFormFieldProps.md)\<`TFormData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `never`, `TFormData`, `TFormErrorTypes`, `Record`\<`never`, `never`\>\>
+- [`SolidFormFieldProps`](SolidFormFieldProps.md)\<`TFormData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `never`, `TFormData`, `TFormError`, `Record`\<`never`, `never`\>\>
 
 ## Type Parameters
 
@@ -27,9 +27,9 @@ Defined in: [packages/solid-form/src/Components.public.ts:127](https://github.co
 
 `TFieldValidators` *extends* `FieldValidators`\<`TFormData`, `TFieldName`, `TFieldValue`\>
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ## Properties
 
@@ -47,7 +47,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:111](https://github.co
 
 [`SolidFieldApi`](../type-aliases/SolidFieldApi.md)\<`TFieldName`, `TFieldValue`, `FallbackToValidationIssue`\<
   \| `ExtractValidatorFieldError`\<`NoInfer`\<`TFieldValidators`\>, `FieldValidators`\<`any`, `any`, `any`\>\>
-  \| `ExtractFormFieldError`\<`TFormErrorTypes`\>\>, `TFormData`, `TFormErrorTypes`, `Record`\<`never`, `never`\>\>
+  \| `ExtractFormFieldError`\<`TFormError`\>\>, `TFormData`, `TFormError`, `Record`\<`never`, `never`\>\>
 
 #### Returns
 

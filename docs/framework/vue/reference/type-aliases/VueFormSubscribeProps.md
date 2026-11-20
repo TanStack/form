@@ -4,7 +4,7 @@ title: VueFormSubscribeProps
 ---
 
 ```ts
-type VueFormSubscribeProps<TFormData, TFormErrorTypes, TSelected> = VueSubscribeProps<FormState<TFormData, TFormErrorTypes>, TSelected>;
+type VueFormSubscribeProps<TFormData, TFormError, TSelected> = VueSubscribeProps<FormState<TFormData, TFormError>, TSelected>;
 ```
 
 Defined in: [packages/vue-form/src/VueForm/Components.public.ts:80](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L80)
@@ -15,9 +15,9 @@ Defined in: [packages/vue-form/src/VueForm/Components.public.ts:80](https://gith
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TSelected
 

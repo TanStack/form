@@ -7,7 +7,7 @@ title: FieldGroupSubscribeComponent
 type FieldGroupSubscribeComponent = <TSelected>(props) => CrossVersionPreactNode;
 ```
 
-Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:70](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts#L70)
+Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:73](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts#L73)
 
 ## Type Parameters
 

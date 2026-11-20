@@ -3,34 +3,9 @@ id: FormListener
 title: FormListener
 ---
 
-Defined in: [listeners.public.ts:276](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L276)
+Defined in: [FormApi/formListeners.public.ts:24](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formListeners.public.ts#L24)
 
-A listener configured on a form.
-
-Form listeners can observe field changes and blurs as well as form
-submission, mounting, and resetting.
-
-## Example
-
-```ts
-formOptions({
-  defaultValues: { displayName: '' },
-  listeners: [
-    {
-      triggers: [
-        {
-          trigger: 'change',
-          when: ({ value }) => value.displayName.length > 0,
-        },
-      ],
-      triggerDebounceMs: 200,
-      run: ({ value }) => {
-        saveDraft(value)
-      },
-    },
-  ],
-})
-```
+Configuration shared by form and field listeners.
 
 ## Extends
 
@@ -44,9 +19,9 @@ formOptions({
 
 Library-managed. Do not specify explicitly.
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* [`FormErrorTypes`](FormErrorTypes.md)
+`TFormError` *extends* [`ScopedErrorTypes`](ScopedErrorTypes.md)
 
 Library-managed. Do not specify explicitly.
 
@@ -55,23 +30,10 @@ Library-managed. Do not specify explicitly.
 ### run
 
 ```ts
-run: FormListenerFn<TFormData, TFormErrorTypes>;
+run: FormListenerFn<TFormData, TFormError>;
 ```
 
-Defined in: [listeners.public.ts:293](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L293)
-
-Called when an enabled form trigger occurs.
-
-The return value is ignored. A returned promise is not awaited, and a
-rejected promise is reported to the console.
-
-#### Example
-
-```ts
-run: ({ value }) => {
-  saveDraft(value)
-},
-```
+Defined in: [FormApi/formListeners.public.ts:28](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formListeners.public.ts#L28)
 
 ***
 
@@ -83,7 +45,7 @@ optional triggerDebounceMs?:
 | ListenerDebounceFn<TFormData, TFormData>;
 ```
 
-Defined in: [listeners.public.ts:173](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L173)
+Defined in: [listeners.public.ts:161](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L161)
 
 The debounce delay in milliseconds before the listener runs.
 
@@ -110,7 +72,7 @@ run immediately.
 triggers: ListenerTriggerOption<FormListenerTriggers, TFormData, TFormData>[];
 ```
 
-Defined in: [listeners.public.ts:191](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L191)
+Defined in: [listeners.public.ts:179](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L179)
 
 The events that can invoke the listener.
 

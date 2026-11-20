@@ -4,12 +4,12 @@ title: VueFormGroupSubscribeComponent
 ---
 
 ```ts
-type VueFormGroupSubscribeComponent<TGroupValue, TGroupErrorTypes> = <TSelected>(props) => VueComponentInstance<VueFormGroupSubscribeProps<TGroupValue, TGroupErrorTypes, TSelected>, {
+type VueFormGroupSubscribeComponent<TGroupValue, TGroupError> = <TSelected>(props) => VueComponentInstance<VueFormGroupSubscribeProps<TGroupValue, TGroupError, TSelected>, {
   default: NoInfer<TSelected>;
 }>;
 ```
 
-Defined in: [packages/vue-form/src/VueForm/Components.public.ts:224](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L224)
+Defined in: [packages/vue-form/src/VueForm/Components.public.ts:223](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L223)
 
 ## Type Parameters
 
@@ -17,18 +17,18 @@ Defined in: [packages/vue-form/src/VueForm/Components.public.ts:224](https://git
 
 `TGroupValue`
 
-### TGroupErrorTypes
+### TGroupError
 
-`TGroupErrorTypes` *extends* `FormErrorTypes`
+`TGroupError` *extends* `ScopedErrorTypes`
 
 ## Parameters
 
 ### props
 
-[`VueFormGroupSubscribeProps`](VueFormGroupSubscribeProps.md)\<`TGroupValue`, `TGroupErrorTypes`, `TSelected`\> & `PublicProps`
+[`VueFormGroupSubscribeProps`](VueFormGroupSubscribeProps.md)\<`TGroupValue`, `TGroupError`, `TSelected`\> & `PublicProps`
 
 ## Returns
 
-`VueComponentInstance`\<[`VueFormGroupSubscribeProps`](VueFormGroupSubscribeProps.md)\<`TGroupValue`, `TGroupErrorTypes`, `TSelected`\>, \{
+`VueComponentInstance`\<[`VueFormGroupSubscribeProps`](VueFormGroupSubscribeProps.md)\<`TGroupValue`, `TGroupError`, `TSelected`\>, \{
   `default`: `NoInfer`\<`TSelected`\>;
 \}\>

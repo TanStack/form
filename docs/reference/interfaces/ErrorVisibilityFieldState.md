@@ -3,9 +3,7 @@ id: ErrorVisibilityFieldState
 title: ErrorVisibilityFieldState
 ---
 
-Defined in: [validation.public.ts:302](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L302)
-
-The field value and state flags available to an error visibility policy.
+Defined in: [FormApi/errorVisibility.public.ts:24](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/errorVisibility.public.ts#L24)
 
 ## Properties
 
@@ -15,9 +13,7 @@ The field value and state flags available to an error visibility policy.
 meta: ErrorVisibilityFieldMeta;
 ```
 
-Defined in: [validation.public.ts:306](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L306)
-
-State flags before the visibility policy is applied.
+Defined in: [FormApi/errorVisibility.public.ts:26](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/errorVisibility.public.ts#L26)
 
 ***
 
@@ -27,6 +23,4 @@ State flags before the visibility policy is applied.
 value: any;
 ```
 
-Defined in: [validation.public.ts:304](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L304)
-
-The current value of the field whose errors the policy controls.
+Defined in: [FormApi/errorVisibility.public.ts:25](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/errorVisibility.public.ts#L25)

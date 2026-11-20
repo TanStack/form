@@ -6,10 +6,10 @@ title: FormGroupValidationError
 ```ts
 type FormGroupValidationError<TGroupValue> = 
   | ValidationErrorInput
-| ValidationErrorMap<TGroupValue>;
+| ValidationErrorMap<TGroupValue, ValidationErrorInput, ValidationErrorInput>;
 ```
 
-Defined in: [validation.public.ts:893](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L893)
+Defined in: [validation.public.ts:610](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L610)
 
 Errors for a form group, optionally including errors at group-relative field paths.
 

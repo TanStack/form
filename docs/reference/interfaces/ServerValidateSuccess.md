@@ -3,7 +3,7 @@ id: ServerValidateSuccess
 title: ServerValidateSuccess
 ---
 
-Defined in: [ssr.public.ts:56](https://github.com/TanStack/form/blob/main/packages/form-core/src/ssr.public.ts#L56)
+Defined in: [FormApi/formServerState.public.ts:48](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formServerState.public.ts#L48)
 
 ## Type Parameters
 
@@ -11,9 +11,9 @@ Defined in: [ssr.public.ts:56](https://github.com/TanStack/form/blob/main/packag
 
 `TFormData`
 
-### TFormValidators
+### TValidators
 
-`TFormValidators` *extends* [`FormValidators`](../type-aliases/FormValidators.md)\<`TFormData`\>
+`TValidators`
 
 ## Properties
 
@@ -23,21 +23,17 @@ Defined in: [ssr.public.ts:56](https://github.com/TanStack/form/blob/main/packag
 success: true;
 ```
 
-Defined in: [ssr.public.ts:60](https://github.com/TanStack/form/blob/main/packages/form-core/src/ssr.public.ts#L60)
+Defined in: [FormApi/formServerState.public.ts:49](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formServerState.public.ts#L49)
 
 ***
 
 ### validatorOutputs
 
 ```ts
-validatorOutputs: ToServerFormOutputs<TFormValidators>;
+validatorOutputs: ServerValidatorOutputs<TValidators>;
 ```
 
-Defined in: [ssr.public.ts:67](https://github.com/TanStack/form/blob/main/packages/form-core/src/ssr.public.ts#L67)
-
-Schema outputs and `createOutput` payloads from this server validation,
-ordered by validator index. Validators without a server trigger or output
-contribute `undefined`. These are separate from client submission outputs.
+Defined in: [FormApi/formServerState.public.ts:51](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formServerState.public.ts#L51)
 
 ***
 
@@ -47,4 +43,4 @@ contribute `undefined`. These are separate from client submission outputs.
 values: TFormData;
 ```
 
-Defined in: [ssr.public.ts:61](https://github.com/TanStack/form/blob/main/packages/form-core/src/ssr.public.ts#L61)
+Defined in: [FormApi/formServerState.public.ts:50](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formServerState.public.ts#L50)

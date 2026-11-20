@@ -4,10 +4,10 @@ title: PreactFormGroupArrayFieldComponent
 ---
 
 ```ts
-type PreactFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents> = <TFieldName, TFieldValidators>(props) => ComponentChildren;
+type PreactFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupError, TFormError, TFieldComponents> = <TFieldName, TFieldValidators>(props) => ComponentChildren;
 ```
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:251](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L251)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:240](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L240)
 
 ## Type Parameters
 
@@ -19,13 +19,13 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:251](https
 
 `TGroupValue`
 
-### TGroupErrorTypes
+### TGroupError
 
-`TGroupErrorTypes` *extends* `FormErrorTypes`
+`TGroupError` *extends* `ScopedErrorTypes`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
@@ -45,7 +45,7 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:251](https
 
 ### props
 
-[`PreactFormFieldProps`](../interfaces/PreactFormFieldProps.md)\<`TGroupValue`, `TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>, `TFieldValidators`, `TGroupErrorTypes`\[`"fieldError"`\], `TFormData`, `TFormErrorTypes`, `TFieldComponents`\>
+[`PreactFormFieldProps`](../interfaces/PreactFormFieldProps.md)\<`TGroupValue`, `TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>, `TFieldValidators`, `TGroupError`\[`"subfieldError"`\], `TFormData`, `TFormError`, `TFieldComponents`\>
 
 ## Returns
 

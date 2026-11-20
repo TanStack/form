@@ -4,10 +4,10 @@ title: VueFormGroupSubscribeProps
 ---
 
 ```ts
-type VueFormGroupSubscribeProps<TGroupValue, TGroupErrorTypes, TSelected> = VueSubscribeProps<FormGroupState<TGroupValue, TGroupErrorTypes>, TSelected>;
+type VueFormGroupSubscribeProps<TGroupValue, TGroupError, TSelected> = VueSubscribeProps<FormGroupState<TGroupValue, TGroupError>, TSelected>;
 ```
 
-Defined in: [packages/vue-form/src/VueForm/Components.public.ts:218](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L218)
+Defined in: [packages/vue-form/src/VueForm/Components.public.ts:217](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L217)
 
 ## Type Parameters
 
@@ -15,9 +15,9 @@ Defined in: [packages/vue-form/src/VueForm/Components.public.ts:218](https://git
 
 `TGroupValue`
 
-### TGroupErrorTypes
+### TGroupError
 
-`TGroupErrorTypes` *extends* `FormErrorTypes`
+`TGroupError` *extends* `ScopedErrorTypes`
 
 ### TSelected
 

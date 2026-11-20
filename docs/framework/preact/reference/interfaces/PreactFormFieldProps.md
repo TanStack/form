@@ -7,7 +7,7 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:113](https
 
 ## Extends
 
-- `FieldApiOptions`\<`TFieldData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `TGroupFieldError`, `TFormData`, `TFormErrorTypes`\>
+- `FieldApiOptions`\<`TFieldData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `TGroupFieldError`, `TFormData`, `TFormError`\>
 
 ## Type Parameters
 
@@ -35,9 +35,9 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:113](https
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
@@ -57,7 +57,7 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:135](https
 
 ##### fieldApi
 
-[`PreactFieldApi`](../type-aliases/PreactFieldApi.md)\<`TFieldName`, `TFieldValue`, `ToFieldError`\<`NoInfer`\<`TFieldValidators`\>, `TGroupFieldError`, `TFormErrorTypes`\>, `TFormData`, `TFormErrorTypes`, `TFieldComponents`\>
+[`PreactFieldApi`](../type-aliases/PreactFieldApi.md)\<`TFieldName`, `TFieldValue`, `ToFieldError`\<`NoInfer`\<`TFieldValidators`\>, `TGroupFieldError`, `TFormError`\>, `TFormData`, `TFormError`, `TFieldComponents`\>
 
 #### Returns
 

@@ -4,7 +4,7 @@ title: SvelteFieldApi
 ---
 
 ```ts
-type SvelteFieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes, TFieldComponents> = FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes> & FieldComponentsMatchingType<TFieldComponents, TFieldValue>;
+type SvelteFieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormError, TFieldComponents> = FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormError> & FieldComponentsMatchingType<TFieldComponents, TFieldValue>;
 ```
 
 Defined in: [packages/svelte-form/src/Components.public.ts:67](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L67)
@@ -27,9 +27,9 @@ Defined in: [packages/svelte-form/src/Components.public.ts:67](https://github.co
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 

@@ -4,7 +4,7 @@ title: VueFormSubscribeComponent
 ---
 
 ```ts
-type VueFormSubscribeComponent<TFormData, TFormErrorTypes> = <TSelected>(props) => VueComponentInstance<VueFormSubscribeProps<TFormData, TFormErrorTypes, TSelected>, {
+type VueFormSubscribeComponent<TFormData, TFormError> = <TSelected>(props) => VueComponentInstance<VueFormSubscribeProps<TFormData, TFormError, TSelected>, {
   default: NoInfer<TSelected>;
 }>;
 ```
@@ -17,18 +17,18 @@ Defined in: [packages/vue-form/src/VueForm/Components.public.ts:86](https://gith
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ## Parameters
 
 ### props
 
-[`VueFormSubscribeProps`](VueFormSubscribeProps.md)\<`TFormData`, `TFormErrorTypes`, `TSelected`\> & `PublicProps`
+[`VueFormSubscribeProps`](VueFormSubscribeProps.md)\<`TFormData`, `TFormError`, `TSelected`\> & `PublicProps`
 
 ## Returns
 
-`VueComponentInstance`\<[`VueFormSubscribeProps`](VueFormSubscribeProps.md)\<`TFormData`, `TFormErrorTypes`, `TSelected`\>, \{
+`VueComponentInstance`\<[`VueFormSubscribeProps`](VueFormSubscribeProps.md)\<`TFormData`, `TFormError`, `TSelected`\>, \{
   `default`: `NoInfer`\<`TSelected`\>;
 \}\>

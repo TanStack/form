@@ -4,7 +4,7 @@ title: SolidFieldApi
 ---
 
 ```ts
-type SolidFieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes, TFieldComponents> = Accessor<FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes>> & FieldComponentsMatchingType<TFieldComponents, TFieldValue>;
+type SolidFieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormError, TFieldComponents> = Accessor<FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormError>> & FieldComponentsMatchingType<TFieldComponents, TFieldValue>;
 ```
 
 Defined in: [packages/solid-form/src/Components.public.ts:62](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L62)
@@ -27,9 +27,9 @@ Defined in: [packages/solid-form/src/Components.public.ts:62](https://github.com
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 

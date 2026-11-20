@@ -3,7 +3,7 @@ id: ReactFormGroupFieldComponent
 title: ReactFormGroupFieldComponent
 ---
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:221](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L221)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:214](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L214)
 
 ## Type Parameters
 
@@ -15,13 +15,13 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:221](https:/
 
 `TGroupValue`
 
-### TGroupErrorTypes
+### TGroupError
 
-`TGroupErrorTypes` *extends* `FormErrorTypes`
+`TGroupError` *extends* `ScopedErrorTypes`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
@@ -31,7 +31,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:221](https:/
 ReactFormGroupFieldComponent<TFieldName, TFieldValidators>(props): ReactNode;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:228](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L228)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:221](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L221)
 
 ## Type Parameters
 
@@ -47,7 +47,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:228](https:/
 
 ### props
 
-[`ReactFormFieldProps`](ReactFormFieldProps.md)\<`TGroupValue`, `TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>, `TFieldValidators`, `TGroupErrorTypes`\[`"fieldError"`\], `TFormData`, `TFormErrorTypes`, `TFieldComponents`\>
+[`ReactFormFieldProps`](ReactFormFieldProps.md)\<`TGroupValue`, `TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>, `TFieldValidators`, `TGroupError`\[`"subfieldError"`\], `TFormData`, `TFormError`, `TFieldComponents`\>
 
 ## Returns
 

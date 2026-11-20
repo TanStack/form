@@ -4,7 +4,7 @@ title: PreactAppFormApi
 ---
 
 ```ts
-type PreactAppFormApi<TFormData, TFormErrorTypes, TComponents> = PreactFormApi<TFormData, TFormErrorTypes, TComponents> & object;
+type PreactAppFormApi<TFormData, TFormError, TComponents> = PreactFormApi<TFormData, TFormError, TComponents> & object;
 ```
 
 Defined in: [packages/preact-form/src/AppForm/PreactAppFormApi.public.tsx:11](https://github.com/TanStack/form/blob/main/packages/preact-form/src/AppForm/PreactAppFormApi.public.tsx#L11)
@@ -23,9 +23,9 @@ AppForm: AppFormComponent;
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TComponents
 

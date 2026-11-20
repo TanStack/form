@@ -3,24 +3,16 @@ id: FormSubmitContext
 title: FormSubmitContext
 ---
 
-Defined in: [FormApi/FormApi.public.ts:105](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L105)
+Defined in: [FormApi/formSubmit.public.ts:116](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L116)
 
-Context passed to `onSubmit` after submission validation succeeds.
+Form values, validator outputs, and error helpers passed to `onSubmit` after
+submission validation succeeds.
 
-## Example
+## Type Param
 
-```ts
-{
-  // ...
-  onSubmit: async ({ value, createValidationError }) => {
-    const result = await saveUser(value)
+**TFormErrorTypes**
 
-    if (!result.ok) {
-      return createValidationError(result.error)
-    }
-  },
-}
-```
+Library-managed. Do not specify explicitly.
 
 ## Type Parameters
 
@@ -30,15 +22,9 @@ Context passed to `onSubmit` after submission validation succeeds.
 
 Library-managed. Do not specify explicitly.
 
-### TOutputs
+### TValidatorOutputs
 
-`TOutputs`
-
-Library-managed. Do not specify explicitly.
-
-### TFormErrorTypes
-
-`TFormErrorTypes` *extends* [`FormErrorTypes`](FormErrorTypes.md)
+`TValidatorOutputs` *extends* readonly `unknown`[]
 
 Library-managed. Do not specify explicitly.
 
@@ -50,7 +36,10 @@ Library-managed. Do not specify explicitly.
 createErrorMap: CreateSubmitErrorMapFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:155](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L155)
+Defined in: [FormApi/formSubmit.public.ts:171](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L171)
+
+Builds a mutable submission error map from optional initial errors. Return
+the map to apply its form and field errors. An empty map indicates success.
 
 ***
 
@@ -60,42 +49,23 @@ Defined in: [FormApi/FormApi.public.ts:155](https://github.com/TanStack/form/blo
 createValidationError: CreateValidationErrorFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:154](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L154)
+Defined in: [FormApi/formSubmit.public.ts:166](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L166)
 
-Creates a validation error that can be returned from `onSubmit`.
-
-Return the created error from `onSubmit` to add its form- and field-level
-errors to validation state.
-
-#### Example
-
-```ts
-{
-  // ...
-  onSubmit: async ({ value, createValidationError }) => {
-    const result = await saveUser(value)
-
-    if (result.status === 409) {
-      return createValidationError({
-        form: 'A user with this email already exists',
-        fields: {},
-      })
-    }
-  },
-}
-```
+Creates a validation error recognized as a submission failure when returned
+from a submission handler. Creating the error alone does not update form or
+field validation state.
 
 ***
 
 ### formApi
 
 ```ts
-formApi: FormApi<TFormData, TFormErrorTypes>;
+formApi: FormApi<TFormData, ScopedErrorTypes<never, never>>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:113](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L113)
+Defined in: [FormApi/formSubmit.public.ts:123](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L123)
 
-The form API handling this submission.
+The form instance handling this submission.
 
 ***
 
@@ -105,52 +75,55 @@ The form API handling this submission.
 parseIssues: ParseSubmitIssuesFn<TFormData>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:176](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L176)
+Defined in: [FormApi/formSubmit.public.ts:176](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L176)
 
-Parses Standard Schema issues into an error returnable from `onSubmit`.
-
-Issue paths are mapped to fields in the submitted value. Return the parsed
-error from `onSubmit` to add those errors to validation state.
-
-#### Example
-
-```ts
-{
-  // ...
-  onSubmit: async ({ value, parseIssues }) => {
-    const result = zodSchema.safeParse(value)
-
-    if (!result.success) {
-      return parseIssues(result.error.issues)
-    }
-  },
-}
-```
+Converts Standard Schema issues into a mutable submission error map using
+the submitted values. Return the map to report its form and field errors.
 
 ***
 
 ### validatorOutputs
 
 ```ts
-validatorOutputs: TOutputs;
+validatorOutputs: TValidatorOutputs;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:130](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L130)
+Defined in: [FormApi/formSubmit.public.ts:160](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L160)
 
-Schema outputs and `createOutput` payloads from this submission, ordered by
-validator index. Skipped validators and successful returns without an output
-contribute `undefined`.
+The validator outputs from this submission.
+
+Standard Schemas provide their output data automatically. Callback
+validators must return a `createOutput` result to provide output data.
+
+Outputs follow the same order as the validators array.
+
+Skipped validators and successful returns without output contribute
+`undefined`.
+
+Outputs from earlier change, blur, or mount validation are not reused.
 
 #### Example
 
 ```ts
-{
-  // ...
-  onSubmit: async ({ validatorOutputs }) => {
-    const validatedUser = validatorOutputs[0]
-    await saveUser(validatedUser)
+formOptions({
+  defaultValues: { name: '' },
+  validators: [
+    {
+      run: ({ createOutput, value }) => {
+        return createOutput({ displayName: value.name.trim() })
+      },
+    },
+    {
+      // Schemas pass their output data by default.
+      run: mySchema,
+    },
+  ],
+  onSubmit: ({ validatorOutputs }) => {
+    // Outputs follow the same order as the validators array.
+    const [customData, schemaOutput] = validatorOutputs
+    console.log(customData.displayName)
   },
-}
+})
 ```
 
 ***
@@ -161,6 +134,6 @@ contribute `undefined`.
 value: TFormData;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:111](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L111)
+Defined in: [FormApi/formSubmit.public.ts:121](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L121)
 
-The form values for this submission.
+The form values for this submission, without schema transformations applied.

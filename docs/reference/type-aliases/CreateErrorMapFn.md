@@ -4,12 +4,10 @@ title: CreateErrorMapFn
 ---
 
 ```ts
-type CreateErrorMapFn<TFormData> = typeof createErrorMap;
+type CreateErrorMapFn<TFormData> = (initial?) => ValidationErrorMapHelper<TFormData>;
 ```
 
-Defined in: [validation.public.ts:629](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L629)
-
-Creates a mutable error map with field paths inferred from the validator's value shape.
+Defined in: [validation/state.public.ts:112](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L112)
 
 ## Type Parameters
 
@@ -17,4 +15,12 @@ Creates a mutable error map with field paths inferred from the validator's value
 
 `TFormData`
 
-Library-managed. Do not specify explicitly.
+## Parameters
+
+### initial?
+
+`Partial`\<[`ValidationErrorMap`](../interfaces/ValidationErrorMap.md)\<`TFormData`, [`ValidationFailure`](ValidationFailure.md), [`ValidationFailure`](ValidationFailure.md)\>\>
+
+## Returns
+
+[`ValidationErrorMapHelper`](../interfaces/ValidationErrorMapHelper.md)\<`TFormData`\>

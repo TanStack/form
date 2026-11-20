@@ -7,6 +7,6 @@ title: ValidatorTrigger
 type ValidatorTrigger = ConfigurableValidationTrigger;
 ```
 
-Defined in: [validation.public.ts:261](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L261)
+Defined in: [validation.public.ts:264](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L264)
 
-Change and blur events accepted by shared validator configurations.
+Mount, change, and blur events accepted by shared validator configurations.

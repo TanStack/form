@@ -4,7 +4,7 @@ title: PreactFormSubscribeProps
 ---
 
 ```ts
-type PreactFormSubscribeProps<TFormData, TFormErrorTypes, TSelected> = PreactSubscribeProps<FormState<TFormData, TFormErrorTypes>, TSelected>;
+type PreactFormSubscribeProps<TFormData, TFormError, TSelected> = PreactSubscribeProps<FormState<TFormData, TFormError>, TSelected>;
 ```
 
 Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:100](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L100)
@@ -15,9 +15,9 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:100](https
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TSelected
 

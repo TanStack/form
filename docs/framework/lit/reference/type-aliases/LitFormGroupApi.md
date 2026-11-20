@@ -4,10 +4,10 @@ title: LitFormGroupApi
 ---
 
 ```ts
-type LitFormGroupApi<TFormData, TGroupName, TGroupValue, TGroupErrorTypes, TFormErrorTypes> = FormGroupApi<TFormData, TGroupName, TGroupValue, TGroupErrorTypes, TFormErrorTypes> & LitFieldMethods<TGroupValue, TGroupErrorTypes["fieldError"], TFormData, TFormErrorTypes> & LitSubscribeMethod<FormGroupState<TGroupValue, TGroupErrorTypes>>;
+type LitFormGroupApi<TFormData, TGroupName, TGroupValue, TGroupError, TFormError> = FormGroupApi<TFormData, TGroupName, TGroupValue, TGroupError, TFormError> & LitFieldMethods<TGroupValue, TGroupError["subfieldError"], TFormData, TFormError> & LitSubscribeMethod<FormGroupState<TGroupValue, TGroupError>>;
 ```
 
-Defined in: [tanstack-form-controller.ts:156](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L156)
+Defined in: [tanstack-form-controller.ts:155](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L155)
 
 ## Type Parameters
 
@@ -23,10 +23,10 @@ Defined in: [tanstack-form-controller.ts:156](https://github.com/TanStack/form/b
 
 `TGroupValue`
 
-### TGroupErrorTypes
+### TGroupError
 
-`TGroupErrorTypes` *extends* `FormErrorTypes`
+`TGroupError` *extends* `ScopedErrorTypes`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`

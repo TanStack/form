@@ -23,9 +23,9 @@ Defined in: [FieldApi/FieldApi.public.ts:123](https://github.com/TanStack/form/b
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* [`FormErrorTypes`](FormErrorTypes.md)
+`TFormError` *extends* [`ScopedErrorTypes`](ScopedErrorTypes.md)
 
 ## Properties
 
@@ -96,7 +96,7 @@ Optional update options including a custom `thisArg` for the predicate
 ### form
 
 ```ts
-form: FormApi<TFormData, TFormErrorTypes>;
+form: FormApi<TFormData, TFormError>;
 ```
 
 Defined in: [FieldApi/FieldApi.public.ts:133](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L133)

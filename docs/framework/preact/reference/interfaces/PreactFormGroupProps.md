@@ -3,11 +3,11 @@ id: PreactFormGroupProps
 title: PreactFormGroupProps
 ---
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:310](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L310)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:299](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L299)
 
 ## Extends
 
-- `Omit`\<`FormGroupOptions`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormErrorTypes`\>, `"form"`\>
+- `Omit`\<`FormGroupOptions`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormError`\>, `"form"`\>
 
 ## Type Parameters
 
@@ -27,9 +27,9 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:310](https
 
 `TGroupValidators` *extends* `FormGroupValidators`\<`TGroupValue`\>
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
@@ -43,13 +43,13 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:310](https
 children: (groupApi) => ComponentChildren;
 ```
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:327](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L327)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:316](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L316)
 
 #### Parameters
 
 ##### groupApi
 
-[`PreactFormGroupApi`](PreactFormGroupApi.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `ToFormGroupErrorTypes`\<`NoInfer`\<`TGroupValidators`\>\>, `TFormErrorTypes`, `TFieldComponents`\>
+[`PreactFormGroupApi`](PreactFormGroupApi.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `ToFormGroupErrorTypes`\<`NoInfer`\<`TGroupValidators`\>\>, `TFormError`, `TFieldComponents`\>
 
 #### Returns
 

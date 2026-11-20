@@ -4,10 +4,10 @@ title: UseAppFormHook
 ---
 
 ```ts
-type UseAppFormHook<TComponents> = <TFormData, TFormValidators, TSubmitReturn>(options) => VueAppFormApi<TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>, TComponents>;
+type UseAppFormHook<TComponents> = <TFormData, TValidatorConfig, TValidators, TSubmitReturn>(options) => VueAppFormApi<TFormData, GetFormErrorTypes<TValidators, TSubmitReturn>, TComponents>;
 ```
 
-Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:98](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/createFormHookTypes.public.ts#L98)
+Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:97](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/createFormHookTypes.public.ts#L97)
 
 ## Type Parameters
 
@@ -21,9 +21,13 @@ Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:98](htt
 
 `TFormData`
 
-### TFormValidators
+### TValidatorConfig
 
-`TFormValidators` *extends* `FormValidators`\<`TFormData`\>
+`TValidatorConfig` *extends* `unknown`[]
+
+### TValidators
+
+`TValidators`
 
 ### TSubmitReturn
 
@@ -33,8 +37,8 @@ Defined in: [packages/vue-form/src/AppForm/createFormHookTypes.public.ts:98](htt
 
 ### options
 
-`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>
+`FormOptions`\<`TFormData`, `TValidatorConfig`, `TValidators`, `TSubmitReturn`, `unknown`\>
 
 ## Returns
 
-[`VueAppFormApi`](VueAppFormApi.md)\<`TFormData`, `ToFormErrorTypes`\<`TFormValidators`, `TSubmitReturn`\>, `TComponents`\>
+[`VueAppFormApi`](VueAppFormApi.md)\<`TFormData`, `GetFormErrorTypes`\<`TValidators`, `TSubmitReturn`\>, `TComponents`\>

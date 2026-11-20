@@ -3,7 +3,7 @@ id: FormValidatorContext
 title: FormValidatorContext
 ---
 
-Defined in: [validation.public.ts:711](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L711)
+Defined in: [validation.public.ts:514](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L514)
 
 Values and helpers passed to a form validation function.
 
@@ -20,30 +20,12 @@ Library-managed. Do not specify explicitly.
 ### createErrorMap
 
 ```ts
-createErrorMap: (initial?) => ValidationErrorMap<TFormData>;
+createErrorMap: CreateErrorMapFn<TFormData>;
 ```
 
-Defined in: [validation.public.ts:725](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L725)
+Defined in: [validation.public.ts:526](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L526)
 
-Creates an error map with field paths inferred from the form values.
-
-Creates a mutable map of form errors and errors for individual field paths.
-
-Pass the completed map back from a form or group validator to report the errors.
-
-#### Parameters
-
-##### initial?
-
-`Partial`\<[`ValidationErrorMap`](ValidationErrorMap.md)\<`TFormData`\>\>
-
-An existing map to reuse. A missing `fields` object is added to it.
-
-#### Returns
-
-[`ValidationErrorMap`](ValidationErrorMap.md)\<`TFormData`\>
-
-The initial map, if supplied, or a new map with an empty `fields` object.
+Builds a mutable error map from optional form and field errors.
 
 ***
 
@@ -53,7 +35,7 @@ The initial map, if supplied, or a new map with an empty `fields` object.
 createOutput: CreateOutputFn;
 ```
 
-Defined in: [validation.public.ts:727](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L727)
+Defined in: [validation.public.ts:530](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L530)
 
 Creates a successful result to return data in this validator's `validatorOutputs` entry.
 
@@ -62,10 +44,13 @@ Creates a successful result to return data in this validator's `validatorOutputs
 ### event
 
 ```ts
-event: ValidationTrigger | "server";
+event: 
+  | "server"
+  | "mount"
+  | ValidationTrigger;
 ```
 
-Defined in: [validation.public.ts:713](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L713)
+Defined in: [validation.public.ts:516](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L516)
 
 The event that caused this validation run.
 
@@ -77,7 +62,7 @@ The event that caused this validation run.
 formApi: FormApi<TFormData, any> | undefined;
 ```
 
-Defined in: [validation.public.ts:717](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L717)
+Defined in: [validation.public.ts:520](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L520)
 
 The owning form on the client. `undefined` during server validation.
 
@@ -86,12 +71,12 @@ The owning form on the client. `undefined` during server validation.
 ### parseIssues
 
 ```ts
-parseIssues: ParseFormIssuesFn<TFormData>;
+parseIssues: ParseIssuesFn<TFormData>;
 ```
 
-Defined in: [validation.public.ts:723](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L723)
+Defined in: [validation.public.ts:528](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L528)
 
-Converts Standard Schema issues into form and field errors to return from this validator.
+Converts Standard Schema issues into a mutable error map using the form values.
 
 ***
 
@@ -101,7 +86,7 @@ Converts Standard Schema issues into form and field errors to return from this v
 signal: AbortSignal;
 ```
 
-Defined in: [validation.public.ts:715](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L715)
+Defined in: [validation.public.ts:518](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L518)
 
 Aborted when this run is cancelled. Pass it to asynchronous work such as `fetch`.
 
@@ -113,7 +98,7 @@ Aborted when this run is cancelled. Pass it to asynchronous work such as `fetch`
 optional triggerFieldApi?: AnyFieldApi;
 ```
 
-Defined in: [validation.public.ts:719](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L719)
+Defined in: [validation.public.ts:522](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L522)
 
 The field that caused validation, when available.
 
@@ -125,6 +110,6 @@ The field that caused validation, when available.
 value: TFormData;
 ```
 
-Defined in: [validation.public.ts:721](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L721)
+Defined in: [validation.public.ts:524](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L524)
 
 The complete form values being validated.

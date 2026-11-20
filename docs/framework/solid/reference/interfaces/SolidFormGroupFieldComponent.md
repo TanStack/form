@@ -3,7 +3,7 @@ id: SolidFormGroupFieldComponent
 title: SolidFormGroupFieldComponent
 ---
 
-Defined in: [packages/solid-form/src/Components.public.ts:212](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L212)
+Defined in: [packages/solid-form/src/Components.public.ts:208](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L208)
 
 ## Type Parameters
 
@@ -15,13 +15,13 @@ Defined in: [packages/solid-form/src/Components.public.ts:212](https://github.co
 
 `TGroupValue`
 
-### TGroupErrorTypes
+### TGroupError
 
-`TGroupErrorTypes` *extends* `FormErrorTypes`
+`TGroupError` *extends* `ScopedErrorTypes`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
@@ -31,7 +31,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:212](https://github.co
 SolidFormGroupFieldComponent<TFieldName, TFieldValidators>(props): Element;
 ```
 
-Defined in: [packages/solid-form/src/Components.public.ts:219](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L219)
+Defined in: [packages/solid-form/src/Components.public.ts:215](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L215)
 
 ## Type Parameters
 
@@ -47,7 +47,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:219](https://github.co
 
 ### props
 
-[`SolidFormFieldProps`](SolidFormFieldProps.md)\<`TGroupValue`, `TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>, `TFieldValidators`, `TGroupErrorTypes`\[`"fieldError"`\], `TFormData`, `TFormErrorTypes`, `TFieldComponents`\>
+[`SolidFormFieldProps`](SolidFormFieldProps.md)\<`TGroupValue`, `TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>, `TFieldValidators`, `TGroupError`\[`"subfieldError"`\], `TFormData`, `TFormError`, `TFieldComponents`\>
 
 ## Returns
 

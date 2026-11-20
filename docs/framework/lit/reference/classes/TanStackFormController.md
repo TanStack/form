@@ -3,7 +3,7 @@ id: TanStackFormController
 title: TanStackFormController
 ---
 
-Defined in: [tanstack-form-controller.ts:209](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L209)
+Defined in: [tanstack-form-controller.ts:202](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L202)
 
 Owns a form for a Lit reactive-controller host and provides Lit-specific
 field, form-group, and subscription render helpers.
@@ -33,6 +33,12 @@ class ProfileForm extends LitElement {
 }
 ```
 
+## Type Param
+
+**TFormValidators**
+
+Library-managed. Do not specify explicitly.
+
 ## Type Parameters
 
 ### TFormData
@@ -41,11 +47,13 @@ class ProfileForm extends LitElement {
 
 Library-managed. Do not specify explicitly.
 
-### TFormValidators
+### TValidatorConfig
 
-`TFormValidators` *extends* `FormValidators`\<`TFormData`\>
+`TValidatorConfig` *extends* `unknown`[]
 
-Library-managed. Do not specify explicitly.
+### TValidators
+
+`TValidators`
 
 ### TSubmitReturn
 
@@ -53,21 +61,25 @@ Library-managed. Do not specify explicitly.
 
 Library-managed. Do not specify explicitly.
 
+### TFormError
+
+`TFormError` *extends* `ScopedErrorTypes` = `GetFormErrorTypes`\<`TValidators`, `TSubmitReturn`\>
+
 ## Implements
 
 - `ReactiveController`
-- [`LitFieldMethods`](../interfaces/LitFieldMethods.md)\<`TFormData`, `never`, `TFormData`, `ToFormErrorTypes`\<`TFormValidators`, `TSubmitReturn`\>\>
-- [`LitSubscribeMethod`](../interfaces/LitSubscribeMethod.md)\<`FormState`\<`TFormData`, `ToFormErrorTypes`\<`TFormValidators`, `TSubmitReturn`\>\>\>
+- [`LitFieldMethods`](../interfaces/LitFieldMethods.md)\<`TFormData`, `never`, `TFormData`, `TFormError`\>
+- [`LitSubscribeMethod`](../interfaces/LitSubscribeMethod.md)\<`FormState`\<`TFormData`, `TFormError`\>\>
 
 ## Constructors
 
 ### Constructor
 
 ```ts
-new TanStackFormController<TFormData, TFormValidators, TSubmitReturn>(host, options): TanStackFormController<TFormData, TFormValidators, TSubmitReturn>;
+new TanStackFormController<TFormData, TValidatorConfig, TValidators, TSubmitReturn, TFormError>(host, options): TanStackFormController<TFormData, TValidatorConfig, TValidators, TSubmitReturn, TFormError>;
 ```
 
-Defined in: [tanstack-form-controller.ts:241](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L241)
+Defined in: [tanstack-form-controller.ts:229](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L229)
 
 #### Parameters
 
@@ -79,14 +91,14 @@ The Lit host that owns the controller and form lifecycle.
 
 ##### options
 
-`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>
+`FormOptions`\<`TFormData`, `TValidatorConfig`, `TValidators`, `TSubmitReturn`, `unknown`\>
 
 The initial form options. `defaultValues` drive form value
 inference.
 
 #### Returns
 
-`TanStackFormController`\<`TFormData`, `TFormValidators`, `TSubmitReturn`\>
+`TanStackFormController`\<`TFormData`, `TValidatorConfig`, `TValidators`, `TSubmitReturn`, `TFormError`\>
 
 ## Accessors
 
@@ -95,14 +107,14 @@ inference.
 #### Get Signature
 
 ```ts
-get api(): FormApi<TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>>;
+get api(): FormApi<TFormData, TFormError>;
 ```
 
-Defined in: [tanstack-form-controller.ts:229](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L229)
+Defined in: [tanstack-form-controller.ts:220](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L220)
 
 ##### Returns
 
-`FormApi`\<`TFormData`, `ToFormErrorTypes`\<`TFormValidators`, `TSubmitReturn`\>\>
+`FormApi`\<`TFormData`, `TFormError`\>
 
 ## Methods
 
@@ -128,11 +140,11 @@ Defined in: [tanstack-form-controller.ts:308](https://github.com/TanStack/form/b
 
 ##### options
 
-`LitFieldOptions`\<`TFormData`, `TFieldName`, `DeepValue`\<`TFormData`, `TFieldName`\>, `TFieldValidators`, `never`, `TFormData`, `ToFormErrorTypes`\<`TFormValidators`, `TSubmitReturn`\>\>
+`LitFieldOptions`\<`TFormData`, `TFieldName`, `DeepValue`\<`TFormData`, `TFieldName`\>, `TFieldValidators`, `never`, `TFormData`, `TFormError`\>
 
 ##### render
 
-`RenderCallback`\<`LitFieldRenderApi`\<`TFormData`, `TFieldName`, `DeepValue`\<`TFormData`, `TFieldName`\>, `TFieldValidators`, `never`, `TFormData`, `ToFormErrorTypes`\<`TFormValidators`, `TSubmitReturn`\>\>\>
+`RenderCallback`\<`LitFieldRenderApi`\<`TFormData`, `TFieldName`, `DeepValue`\<`TFormData`, `TFieldName`\>, `TFieldValidators`, `never`, `TFormData`, `TFormError`\>\>
 
 #### Returns
 
@@ -166,11 +178,11 @@ Defined in: [tanstack-form-controller.ts:271](https://github.com/TanStack/form/b
 
 ##### options
 
-`LitFieldOptions`\<`TFormData`, `TFieldName`, `DeepValue`\<`TFormData`, `TFieldName`\>, `TFieldValidators`, `never`, `TFormData`, `ToFormErrorTypes`\<`TFormValidators`, `TSubmitReturn`\>\>
+`LitFieldOptions`\<`TFormData`, `TFieldName`, `DeepValue`\<`TFormData`, `TFieldName`\>, `TFieldValidators`, `never`, `TFormData`, `TFormError`\>
 
 ##### render
 
-`RenderCallback`\<`LitFieldRenderApi`\<`TFormData`, `TFieldName`, `DeepValue`\<`TFormData`, `TFieldName`\>, `TFieldValidators`, `never`, `TFormData`, `ToFormErrorTypes`\<`TFormValidators`, `TSubmitReturn`\>\>\>
+`RenderCallback`\<`LitFieldRenderApi`\<`TFormData`, `TFieldName`, `DeepValue`\<`TFormData`, `TFieldName`\>, `TFieldValidators`, `never`, `TFormData`, `TFormError`\>\>
 
 #### Returns
 
@@ -188,7 +200,7 @@ Defined in: [tanstack-form-controller.ts:271](https://github.com/TanStack/form/b
 formGroup<TGroupName, TGroupValue, TGroupValidators>(options, render): unknown;
 ```
 
-Defined in: [tanstack-form-controller.ts:358](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L358)
+Defined in: [tanstack-form-controller.ts:353](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L353)
 
 #### Type Parameters
 
@@ -208,11 +220,11 @@ Defined in: [tanstack-form-controller.ts:358](https://github.com/TanStack/form/b
 
 ##### options
 
-`Omit`\<`FormGroupOptions`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `ToFormErrorTypes`\<`TFormValidators`, `TSubmitReturn`\>\>, `"form"`\>
+`Omit`\<`FormGroupOptions`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormError`\>, `"form"`\>
 
 ##### render
 
-`RenderCallback`\<[`LitFormGroupApi`](../type-aliases/LitFormGroupApi.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `ToFormGroupErrorTypes`\<`TGroupValidators`\>, `ToFormErrorTypes`\<`TFormValidators`, `TSubmitReturn`\>\>\>
+`RenderCallback`\<[`LitFormGroupApi`](../type-aliases/LitFormGroupApi.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `ToFormGroupErrorTypes`\<`TGroupValidators`\>, `TFormError`\>\>
 
 #### Returns
 
@@ -226,7 +238,7 @@ Defined in: [tanstack-form-controller.ts:358](https://github.com/TanStack/form/b
 hostConnected(): void;
 ```
 
-Defined in: [tanstack-form-controller.ts:250](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L250)
+Defined in: [tanstack-form-controller.ts:244](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L244)
 
 Called when the host is connected to the component tree. For custom
 element hosts, this corresponds to the `connectedCallback()` lifecycle,
@@ -250,7 +262,7 @@ ReactiveController.hostConnected
 hostDisconnected(): void;
 ```
 
-Defined in: [tanstack-form-controller.ts:255](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L255)
+Defined in: [tanstack-form-controller.ts:249](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L249)
 
 Called when the host is disconnected from the component tree. For custom
 element hosts, this corresponds to the `disconnectedCallback()` lifecycle,
@@ -316,7 +328,7 @@ Defined in: [tanstack-form-controller.ts:345](https://github.com/TanStack/form/b
 update(options): void;
 ```
 
-Defined in: [tanstack-form-controller.ts:265](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L265)
+Defined in: [tanstack-form-controller.ts:259](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L259)
 
 Updates reactive form options without replacing the form instance.
 
@@ -324,7 +336,7 @@ Updates reactive form options without replacing the form instance.
 
 ##### options
 
-`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>
+`FormOptions`\<`TFormData`, `TValidatorConfig`, `TValidators`, `TSubmitReturn`, `unknown`\>
 
 #### Returns
 

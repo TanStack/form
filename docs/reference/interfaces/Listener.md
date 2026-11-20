@@ -3,7 +3,7 @@ id: Listener
 title: Listener
 ---
 
-Defined in: [listeners.public.ts:158](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L158)
+Defined in: [listeners.public.ts:146](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L146)
 
 Configuration shared by form and field listeners.
 
@@ -42,7 +42,7 @@ optional triggerDebounceMs?:
 | ListenerDebounceFn<TFormData, TValue>;
 ```
 
-Defined in: [listeners.public.ts:173](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L173)
+Defined in: [listeners.public.ts:161](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L161)
 
 The debounce delay in milliseconds before the listener runs.
 
@@ -65,7 +65,7 @@ run immediately.
 triggers: ListenerTriggerOption<TTriggers, TFormData, TValue>[];
 ```
 
-Defined in: [listeners.public.ts:191](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L191)
+Defined in: [listeners.public.ts:179](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L179)
 
 The events that can invoke the listener.
 

@@ -7,7 +7,7 @@ title: FieldWithValue
 type FieldWithValue<TFieldValue> = FieldApi<string, TFieldValue, any, any, any>;
 ```
 
-Defined in: [types.public.ts:52](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.public.ts#L52)
+Defined in: [types.public.ts:58](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.public.ts#L58)
 
 A field API that preserves its value type while erasing its name, error, and
 owning form types.

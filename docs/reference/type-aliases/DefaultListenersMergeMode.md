@@ -7,7 +7,7 @@ title: DefaultListenersMergeMode
 type DefaultListenersMergeMode = "replace" | "append" | "prepend";
 ```
 
-Defined in: [defaultOptions.public.ts:20](https://github.com/TanStack/form/blob/main/packages/form-core/src/defaultOptions.public.ts#L20)
+Defined in: [defaultOptions.public.ts:16](https://github.com/TanStack/form/blob/main/packages/form-core/src/defaultOptions.public.ts#L16)
 
 Determines how a supplied usage-site listener array combines with default
 listeners.

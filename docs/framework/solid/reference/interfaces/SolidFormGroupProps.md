@@ -3,11 +3,11 @@ id: SolidFormGroupProps
 title: SolidFormGroupProps
 ---
 
-Defined in: [packages/solid-form/src/Components.public.ts:328](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L328)
+Defined in: [packages/solid-form/src/Components.public.ts:324](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L324)
 
 ## Extends
 
-- `Omit`\<`FormGroupOptions`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormErrorTypes`\>, `"form"`\>
+- `Omit`\<`FormGroupOptions`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormError`\>, `"form"`\>
 
 ## Type Parameters
 
@@ -27,9 +27,9 @@ Defined in: [packages/solid-form/src/Components.public.ts:328](https://github.co
 
 `TGroupValidators` *extends* `FormGroupValidators`\<`TGroupValue`\>
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
@@ -43,13 +43,13 @@ Defined in: [packages/solid-form/src/Components.public.ts:328](https://github.co
 children: (groupApi) => Element;
 ```
 
-Defined in: [packages/solid-form/src/Components.public.ts:345](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L345)
+Defined in: [packages/solid-form/src/Components.public.ts:341](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L341)
 
 #### Parameters
 
 ##### groupApi
 
-[`SolidFormGroupAccessor`](../type-aliases/SolidFormGroupAccessor.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `ToFormGroupErrorTypes`\<`NoInfer`\<`TGroupValidators`\>\>, `TFormErrorTypes`, `TFieldComponents`\>
+[`SolidFormGroupAccessor`](../type-aliases/SolidFormGroupAccessor.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `ToFormGroupErrorTypes`\<`NoInfer`\<`TGroupValidators`\>\>, `TFormError`, `TFieldComponents`\>
 
 #### Returns
 

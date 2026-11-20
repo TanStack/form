@@ -4,10 +4,10 @@ title: ReactFormFieldComponent
 ---
 
 ```ts
-type ReactFormFieldComponent<TFormData, TFormErrorTypes, TFieldComponents> = <TFieldName, TFieldValidators>(props) => ReactNode;
+type ReactFormFieldComponent<TFormData, TFormError, TFieldComponents> = <TFieldName, TFieldValidators>(props) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:153](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L153)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:149](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L149)
 
 ## Type Parameters
 
@@ -15,9 +15,9 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:153](https:/
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
@@ -37,7 +37,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:153](https:/
 
 ### props
 
-[`ReactFormFieldProps`](../interfaces/ReactFormFieldProps.md)\<`TFormData`, `TFieldName`, `DeepValue`\<`TFormData`, `TFieldName`\>, `TFieldValidators`, `never`, `TFormData`, `TFormErrorTypes`, `TFieldComponents`\>
+[`ReactFormFieldProps`](../interfaces/ReactFormFieldProps.md)\<`TFormData`, `TFieldName`, `DeepValue`\<`TFormData`, `TFieldName`\>, `TFieldValidators`, `never`, `TFormData`, `TFormError`, `TFieldComponents`\>
 
 ## Returns
 

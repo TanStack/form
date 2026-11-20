@@ -3,22 +3,10 @@ id: FormSubmitInvalidContext
 title: FormSubmitInvalidContext
 ---
 
-Defined in: [FormApi/FormApi.public.ts:220](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L220)
+Defined in: [FormApi/formSubmit.public.ts:203](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L203)
 
-Context passed to `onSubmitInvalid` when a submission fails.
-
-## Example
-
-```ts
-{
-  // ...
-  onSubmitInvalid: () => {
-    document
-      .querySelector<HTMLElement>('[aria-invalid="true"]')
-      ?.focus()
-  },
-}
-```
+The form values and form instance passed to `onSubmitInvalid` after a failed
+submission.
 
 ## Type Parameters
 
@@ -28,9 +16,9 @@ Context passed to `onSubmitInvalid` when a submission fails.
 
 Library-managed. Do not specify explicitly.
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* [`FormErrorTypes`](FormErrorTypes.md)
+`TFormError` *extends* [`ScopedErrorTypes`](ScopedErrorTypes.md)
 
 Library-managed. Do not specify explicitly.
 
@@ -39,12 +27,12 @@ Library-managed. Do not specify explicitly.
 ### formApi
 
 ```ts
-formApi: FormApi<TFormData, TFormErrorTypes>;
+formApi: FormApi<TFormData, TFormError>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:227](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L227)
+Defined in: [FormApi/formSubmit.public.ts:210](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L210)
 
-The form API handling the failed submission.
+The form instance handling the failed submission.
 
 ***
 
@@ -54,6 +42,6 @@ The form API handling the failed submission.
 value: TFormData;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:225](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L225)
+Defined in: [FormApi/formSubmit.public.ts:208](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L208)
 
-The form values for the failed submission.
+The form values for the failed submission, without schema transformations applied.

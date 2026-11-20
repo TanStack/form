@@ -4,7 +4,7 @@ title: VueAppFormApi
 ---
 
 ```ts
-type VueAppFormApi<TFormData, TFormErrorTypes, TComponents> = VueFormApi<TFormData, TFormErrorTypes, TComponents> & object;
+type VueAppFormApi<TFormData, TFormError, TComponents> = VueFormApi<TFormData, TFormError, TComponents> & object;
 ```
 
 Defined in: [packages/vue-form/src/AppForm/VueAppFormApi.public.ts:11](https://github.com/TanStack/form/blob/main/packages/vue-form/src/AppForm/VueAppFormApi.public.ts#L11)
@@ -23,9 +23,9 @@ AppForm: AppFormComponent;
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TComponents
 

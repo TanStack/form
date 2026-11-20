@@ -5,7 +5,7 @@ title: AngularFieldSource
 
 ```ts
 type AngularFieldSource = 
-  | AnyInternalFormApi
+  | AnyFormApi
 | InternalFormGroupApi<any, any, any, any, any>;
 ```
 

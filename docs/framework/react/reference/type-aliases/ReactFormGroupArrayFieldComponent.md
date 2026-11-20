@@ -4,10 +4,10 @@ title: ReactFormGroupArrayFieldComponent
 ---
 
 ```ts
-type ReactFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents> = <TFieldName, TFieldValidators>(props) => ReactNode;
+type ReactFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupError, TFormError, TFieldComponents> = <TFieldName, TFieldValidators>(props) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:249](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L249)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:242](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L242)
 
 ## Type Parameters
 
@@ -19,13 +19,13 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:249](https:/
 
 `TGroupValue`
 
-### TGroupErrorTypes
+### TGroupError
 
-`TGroupErrorTypes` *extends* `FormErrorTypes`
+`TGroupError` *extends* `ScopedErrorTypes`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
@@ -45,7 +45,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:249](https:/
 
 ### props
 
-[`ReactFormFieldProps`](../interfaces/ReactFormFieldProps.md)\<`TGroupValue`, `TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>, `TFieldValidators`, `TGroupErrorTypes`\[`"fieldError"`\], `TFormData`, `TFormErrorTypes`, `TFieldComponents`\>
+[`ReactFormFieldProps`](../interfaces/ReactFormFieldProps.md)\<`TGroupValue`, `TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>, `TFieldValidators`, `TGroupError`\[`"subfieldError"`\], `TFormData`, `TFormError`, `TFieldComponents`\>
 
 ## Returns
 

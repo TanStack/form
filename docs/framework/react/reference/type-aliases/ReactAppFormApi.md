@@ -4,7 +4,7 @@ title: ReactAppFormApi
 ---
 
 ```ts
-type ReactAppFormApi<TFormData, TFormErrorTypes, TComponents> = ReactFormApi<TFormData, TFormErrorTypes, TComponents> & object;
+type ReactAppFormApi<TFormData, TFormError, TComponents> = ReactFormApi<TFormData, TFormError, TComponents> & object;
 ```
 
 Defined in: [packages/react-form/src/AppForm/ReactAppFormApi.public.tsx:10](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/ReactAppFormApi.public.tsx#L10)
@@ -23,9 +23,9 @@ AppForm: AppFormComponent;
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TComponents
 

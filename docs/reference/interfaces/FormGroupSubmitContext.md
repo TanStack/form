@@ -3,7 +3,7 @@ id: FormGroupSubmitContext
 title: FormGroupSubmitContext
 ---
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:26](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L26)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:27](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L27)
 
 Context passed to a form group's `onSubmit` after group validation succeeds.
 
@@ -36,23 +36,23 @@ Context passed to a form group's `onSubmit` after group validation succeeds.
 
 `TOutputs`
 
-### TGroupErrorTypes
+### TGroupError
 
-`TGroupErrorTypes` *extends* [`FormErrorTypes`](FormErrorTypes.md)
+`TGroupError` *extends* [`ScopedErrorTypes`](ScopedErrorTypes.md)
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* [`FormErrorTypes`](FormErrorTypes.md)
+`TFormError` *extends* [`ScopedErrorTypes`](ScopedErrorTypes.md)
 
 ## Properties
 
 ### formApi
 
 ```ts
-formApi: FormApi<TFormData, TFormErrorTypes>;
+formApi: FormApi<TFormData, TFormError>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:37](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L37)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:38](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L38)
 
 The parent form API handling this submission.
 
@@ -61,10 +61,10 @@ The parent form API handling this submission.
 ### groupApi
 
 ```ts
-groupApi: FormGroupApi<TFormData, TGroupName, TGroupValue, TGroupErrorTypes, TFormErrorTypes>;
+groupApi: FormGroupApi<TFormData, TGroupName, TGroupValue, TGroupError, TFormError>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:39](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L39)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:40](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L40)
 
 The group API handling this submission.
 
@@ -76,7 +76,7 @@ The group API handling this submission.
 validatorOutputs: TOutputs;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:62](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L62)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:63](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L63)
 
 Schema outputs and `createOutput` payloads from this group submission,
 ordered by validator index. Skipped validators and successful returns
@@ -102,6 +102,6 @@ without an output contribute `undefined`.
 value: TGroupValue;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:35](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L35)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:36](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L36)
 
 The group values for this submission.

@@ -4,10 +4,10 @@ title: UseAppFormHook
 ---
 
 ```ts
-type UseAppFormHook<TComponents> = <TFormData, TFormValidators, TSubmitReturn>(options) => SvelteAppFormApi<TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>, TComponents>;
+type UseAppFormHook<TComponents> = <TFormData, TValidatorConfig, TValidators, TSubmitReturn>(options) => SvelteAppFormApi<TFormData, GetFormErrorTypes<TValidators, TSubmitReturn>, TComponents>;
 ```
 
-Defined in: [packages/svelte-form/src/AppForm/createFormHookTypes.public.ts:98](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/AppForm/createFormHookTypes.public.ts#L98)
+Defined in: [packages/svelte-form/src/AppForm/createFormHookTypes.public.ts:97](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/AppForm/createFormHookTypes.public.ts#L97)
 
 ## Type Parameters
 
@@ -21,9 +21,13 @@ Defined in: [packages/svelte-form/src/AppForm/createFormHookTypes.public.ts:98](
 
 `TFormData`
 
-### TFormValidators
+### TValidatorConfig
 
-`TFormValidators` *extends* `FormValidators`\<`TFormData`\>
+`TValidatorConfig` *extends* `unknown`[]
+
+### TValidators
+
+`TValidators`
 
 ### TSubmitReturn
 
@@ -33,8 +37,8 @@ Defined in: [packages/svelte-form/src/AppForm/createFormHookTypes.public.ts:98](
 
 ### options
 
-() => `FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>
+() => `FormOptions`\<`TFormData`, `TValidatorConfig`, `TValidators`, `TSubmitReturn`, `unknown`\>
 
 ## Returns
 
-[`SvelteAppFormApi`](SvelteAppFormApi.md)\<`TFormData`, `ToFormErrorTypes`\<`TFormValidators`, `TSubmitReturn`\>, `TComponents`\>
+[`SvelteAppFormApi`](SvelteAppFormApi.md)\<`TFormData`, `GetFormErrorTypes`\<`TValidators`, `TSubmitReturn`\>, `TComponents`\>

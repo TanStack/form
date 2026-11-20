@@ -4,10 +4,10 @@ title: injectForm
 ---
 
 ```ts
-function injectForm<TFormData, TFormValidators, TSubmitReturn>(options): InternalFormApi<TFormData, TFormValidators, TSubmitReturn>;
+function injectForm<TFormData, TValidatorConfig, TValidators, TSubmitReturn>(options): FormApi<TFormData, GetFormErrorTypes<TValidators, TSubmitReturn>>;
 ```
 
-Defined in: [inject-form.ts:38](https://github.com/TanStack/form/blob/main/packages/angular-form/src/inject-form.ts#L38)
+Defined in: [inject-form.ts:42](https://github.com/TanStack/form/blob/main/packages/angular-form/src/inject-form.ts#L42)
 
 Creates and mounts a form in the current Angular injection context.
 
@@ -27,11 +27,13 @@ or another active injection context.
 
 Library-managed. Do not specify explicitly.
 
-### TFormValidators
+### TValidatorConfig
 
-`TFormValidators` *extends* `FormValidators`\<`TFormData`\>
+`TValidatorConfig` *extends* `unknown`[]
 
-Library-managed. Do not specify explicitly.
+### TValidators
+
+`TValidators`
 
 ### TSubmitReturn
 
@@ -43,14 +45,14 @@ Library-managed. Do not specify explicitly.
 
 ### options
 
-`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>
+`FormOptions`\<`TFormData`, `TValidatorConfig`, `TValidators`, `TSubmitReturn`, `unknown`\>
 
 The initial form options. `defaultValues` drive form value
 inference.
 
 ## Returns
 
-`InternalFormApi`\<`TFormData`, `TFormValidators`, `TSubmitReturn`\>
+`FormApi`\<`TFormData`, `GetFormErrorTypes`\<`TValidators`, `TSubmitReturn`\>\>
 
 The mounted form API registered for injection-context cleanup.
 

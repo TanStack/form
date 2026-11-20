@@ -3,11 +3,11 @@ id: SvelteFormGroupProps
 title: SvelteFormGroupProps
 ---
 
-Defined in: [packages/svelte-form/src/Components.public.ts:297](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L297)
+Defined in: [packages/svelte-form/src/Components.public.ts:290](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L290)
 
 ## Extends
 
-- `Omit`\<`FormGroupOptions`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormErrorTypes`\>, `"form"`\>
+- `Omit`\<`FormGroupOptions`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormError`\>, `"form"`\>
 
 ## Type Parameters
 
@@ -27,9 +27,9 @@ Defined in: [packages/svelte-form/src/Components.public.ts:297](https://github.c
 
 `TGroupValidators` *extends* `FormGroupValidators`\<`TGroupValue`\>
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
@@ -40,7 +40,7 @@ Defined in: [packages/svelte-form/src/Components.public.ts:297](https://github.c
 ### children
 
 ```ts
-children: Snippet<[SvelteFormGroupApi<TFormData, TGroupName, TGroupValue, ToFormGroupErrorTypes<NoInfer<TGroupValidators>>, TFormErrorTypes, TFieldComponents>]>;
+children: Snippet<[SvelteFormGroupApi<TFormData, TGroupName, TGroupValue, ToFormGroupErrorTypes<NoInfer<TGroupValidators>>, TFormError, TFieldComponents>]>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:314](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L314)
+Defined in: [packages/svelte-form/src/Components.public.ts:307](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L307)

@@ -3,7 +3,7 @@ id: ListenerTriggerConfig
 title: ListenerTriggerConfig
 ---
 
-Defined in: [listeners.public.ts:80](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L80)
+Defined in: [listeners.public.ts:68](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L68)
 
 Configures a listener trigger with an optional condition.
 
@@ -35,7 +35,7 @@ Library-managed. Do not specify explicitly.
 trigger: TTriggers;
 ```
 
-Defined in: [listeners.public.ts:86](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L86)
+Defined in: [listeners.public.ts:74](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L74)
 
 The event to match before evaluating `when`.
 
@@ -49,7 +49,7 @@ optional when?:
 | ListenerPredicateFn<TFormData, TValue>;
 ```
 
-Defined in: [listeners.public.ts:99](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L99)
+Defined in: [listeners.public.ts:87](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L87)
 
 Whether the listener is enabled when `trigger` occurs.
 

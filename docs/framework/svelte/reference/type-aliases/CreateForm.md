@@ -4,7 +4,7 @@ title: CreateForm
 ---
 
 ```ts
-type CreateForm = <TFormData, TFormValidators, TSubmitReturn>(options) => SvelteFormApi<TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>, DefaultSvelteFormComponentMap>;
+type CreateForm = <TFormData, TValidatorConfig, TValidators, TSubmitReturn>(options) => SvelteFormApi<TFormData, GetFormErrorTypes<TValidators, TSubmitReturn>, DefaultSvelteFormComponentMap>;
 ```
 
 Defined in: [packages/svelte-form/src/createForm.public.ts:10](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/createForm.public.ts#L10)
@@ -15,9 +15,13 @@ Defined in: [packages/svelte-form/src/createForm.public.ts:10](https://github.co
 
 `TFormData`
 
-### TFormValidators
+### TValidatorConfig
 
-`TFormValidators` *extends* `FormValidators`\<`TFormData`\>
+`TValidatorConfig` *extends* `unknown`[]
+
+### TValidators
+
+`TValidators`
 
 ### TSubmitReturn
 
@@ -27,8 +31,8 @@ Defined in: [packages/svelte-form/src/createForm.public.ts:10](https://github.co
 
 ### options
 
-() => `FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>
+() => `FormOptions`\<`TFormData`, `TValidatorConfig`, `TValidators`, `TSubmitReturn`, `unknown`\>
 
 ## Returns
 
-[`SvelteFormApi`](SvelteFormApi.md)\<`TFormData`, `ToFormErrorTypes`\<`TFormValidators`, `TSubmitReturn`\>, [`DefaultSvelteFormComponentMap`](DefaultSvelteFormComponentMap.md)\>
+[`SvelteFormApi`](SvelteFormApi.md)\<`TFormData`, `GetFormErrorTypes`\<`TValidators`, `TSubmitReturn`\>, [`DefaultSvelteFormComponentMap`](DefaultSvelteFormComponentMap.md)\>

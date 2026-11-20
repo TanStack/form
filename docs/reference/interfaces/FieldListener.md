@@ -3,7 +3,7 @@ id: FieldListener
 title: FieldListener
 ---
 
-Defined in: [listeners.public.ts:437](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L437)
+Defined in: [listeners.public.ts:289](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L289)
 
 A listener configured on a field.
 
@@ -65,9 +65,9 @@ Library-managed. Do not specify explicitly.
 
 Library-managed. Do not specify explicitly.
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* [`FormErrorTypes`](FormErrorTypes.md)
+`TFormError` *extends* [`ScopedErrorTypes`](ScopedErrorTypes.md)
 
 Library-managed. Do not specify explicitly.
 
@@ -76,10 +76,10 @@ Library-managed. Do not specify explicitly.
 ### run
 
 ```ts
-run: FieldListenerFn<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes>;
+run: FieldListenerFn<TFieldName, TFieldValue, TFieldError, TFormData, TFormError>;
 ```
 
-Defined in: [listeners.public.ts:461](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L461)
+Defined in: [listeners.public.ts:313](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L313)
 
 Called when an enabled field trigger occurs.
 
@@ -107,7 +107,7 @@ optional triggerDebounceMs?:
 | ListenerDebounceFn<TFieldData, TFieldValue>;
 ```
 
-Defined in: [listeners.public.ts:173](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L173)
+Defined in: [listeners.public.ts:161](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L161)
 
 The debounce delay in milliseconds before the listener runs.
 
@@ -134,7 +134,7 @@ run immediately.
 triggers: ListenerTriggerOption<FieldListenerTriggers, TFieldData, TFieldValue>[];
 ```
 
-Defined in: [listeners.public.ts:191](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L191)
+Defined in: [listeners.public.ts:179](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L179)
 
 The events that can invoke the listener.
 
@@ -165,7 +165,7 @@ triggers: [
 optional watchFields?: DeepKeys<TFieldData>[];
 ```
 
-Defined in: [listeners.public.ts:482](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L482)
+Defined in: [listeners.public.ts:334](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L334)
 
 Other fields whose matching events should also invoke this listener.
 

@@ -3,34 +3,27 @@ id: FormOptionsApi
 title: FormOptionsApi
 ---
 
-Defined in: [utils.public.ts:205](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L205)
+Defined in: [FormApi/formOptions.public.ts:332](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formOptions.public.ts#L332)
 
-The callable API exposed by `formOptions`, including its schema-driven
-inference modes.
-
-Use `formOptions` directly instead of naming this interface in application
-code.
+The form-options helper type used by `formOptions` and adapter helpers such
+as `appFormOptions` to retain registered component types.
 
 ## Type Parameters
 
-### TComponents
+### TPayload
 
-`TComponents`
+`TPayload`
 
 Library-managed. Do not specify explicitly.
 
 ```ts
-FormOptionsApi<TFormData, TFormValidators, TSubmitReturn>(options): FormOptions<TFormData, TFormValidators, TSubmitReturn, TComponents>;
+FormOptionsApi<TFormData, TValidatorConfig, TValidators, TSubmitReturn>(options): InferredFormOptions<TFormData, TValidators, TSubmitReturn, TPayload>;
 ```
 
-Defined in: [utils.public.ts:226](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L226)
+Defined in: [FormApi/formOptions.public.ts:341](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formOptions.public.ts#L341)
 
-Keeps types inferred from `defaultValues`, validators, and submission
-callbacks when form options are declared separately.
-
-`defaultValues` determine the form data shape in this mode. At runtime,
-this returns the original options object and does not create a form or run
-validation.
+Infers form values, validator settings, and callback types for reusable
+options.
 
 ## Type Parameters
 
@@ -40,9 +33,15 @@ validation.
 
 Library-managed. Do not specify explicitly.
 
-### TFormValidators
+### TValidatorConfig
 
-`TFormValidators` *extends* [`FormValidators`](../type-aliases/FormValidators.md)\<`TFormData`\>
+`TValidatorConfig` *extends* `unknown`[]
+
+Library-managed. Do not specify explicitly.
+
+### TValidators
+
+`TValidators`
 
 Library-managed. Do not specify explicitly.
 
@@ -50,186 +49,67 @@ Library-managed. Do not specify explicitly.
 
 `TSubmitReturn`
 
-Library-managed. Do not specify explicitly.
-
 ## Parameters
 
 ### options
 
-[`FormOptions`](FormOptions.md)\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>
+[`FormOptions`](FormOptions.md)\<`TFormData`, `TValidatorConfig`, `TValidators`, `TSubmitReturn`, `unknown`\>
 
 ## Returns
 
-[`FormOptions`](FormOptions.md)\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `TComponents`\>
-
-The original options object, normalized to `FormOptions` with its
-inferred form data, validator, and submission types.
-
-## Remarks
-
-**Important:** Although this returns the original object unchanged at
-runtime, its type is normalized to `FormOptions`. Optional properties such
-as `validators` therefore remain optional even when supplied. This
-tradeoff enables safer inference and reuse.
+`InferredFormOptions`\<`TFormData`, `TValidators`, `TSubmitReturn`, `TPayload`\>
 
 ## Properties
 
 ### looseSchema
 
 ```ts
-looseSchema: FormOptionsLooseSchemaFn<TComponents>;
+looseSchema: FormOptionsLooseSchemaFn<TPayload>;
 ```
 
-Defined in: [utils.public.ts:332](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L332)
+Defined in: [FormApi/formOptions.public.ts:392](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formOptions.public.ts#L392)
 
-Infers the form data shape from a Standard Schema validator while allowing
-editable defaults to omit properties or contain `null` or `undefined`
-values.
+Defines form options from a Standard Schema's input type while allowing
+defaults to omit properties or use `null` or `undefined`.
 
-Use this when the schema represents the final valid shape but the UI needs
-intermediate empty states, such as an unselected date. Raw form state
-remains available as `value`; read each validator's parsed output from the
-corresponding `validatorOutputs` entry during submission.
+These empty states remain part of the form's value types, including inside
+callbacks. This also applies to nested objects and array items.
 
-Pass the schema as the first argument and the options as the second.
-`defaultValues` infer an editable form shape constrained by the schema
-input, and callbacks receive that shape merged with the schema input. The
-first argument is ignored at runtime; include the schema in `validators`
-when it should run.
-
-#### Remarks
-
-**Important:** Although this returns the original object unchanged at
-runtime, its type is normalized to `FormOptions`. Optional properties such
-as `validators` therefore remain optional even when supplied. This
-tradeoff enables safer inference and reuse.
+The schema supplies the value types without running validation. Add it to
+`validators` when it should also validate the form.
 
 #### Example
 
 ```ts
-const bookingSchema = z.object({ startDate: z.date() })
-const bookingOptions = formOptions.looseSchema(bookingSchema, {
-  defaultValues: { startDate: null },
-  validators: [
-    {
-      triggers: ['blur'],
-      run: bookingSchema,
-    },
-    {
-      triggers: ['change'],
-      run: ({ value }) =>
-        value.startDate === null ? 'Choose a date' : undefined,
-    },
-  ],
-  onSubmit: ({ validatorOutputs }) => saveBooking(validatorOutputs[0]),
+// schema input: { name: string; age: number }
+const profileOptions = formOptions.looseSchema(schema, {
+  defaultValues: { age: null },
+  validators: [{ run: schema }],
 })
 ```
-
-#### Returns
-
-The original options object, normalized to `FormOptions` with
-omitted, nullable, and undefined editable states merged into the schema's
-input shape.
-
-#### Type Param
-
-**TSchema**
-
-Library-managed. Do not specify explicitly.
-
-#### Type Param
-
-**TFormValidators**
-
-Library-managed. Do not specify explicitly.
-
-#### Type Param
-
-**TFormData**
-
-Library-managed. Do not specify explicitly.
-
-#### Type Param
-
-**TSubmitReturn**
-
-Library-managed. Do not specify explicitly.
 
 ***
 
 ### strictSchema
 
 ```ts
-strictSchema: FormOptionsStrictSchemaFn<TComponents>;
+strictSchema: FormOptionsStrictSchemaFn<TPayload>;
 ```
 
-Defined in: [utils.public.ts:280](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.public.ts#L280)
+Defined in: [FormApi/formOptions.public.ts:372](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formOptions.public.ts#L372)
 
-Infers the form data type from a Standard Schema validator and requires
-`defaultValues` to match the schema input.
+Defines form options whose values follow a Standard Schema's input type.
+Default values must match that type, including any required properties.
 
-Use this when the schema represents an input-to-output pipeline. Raw form
-state remains available as `value`; read each validator's parsed output
-from the corresponding `validatorOutputs` entry during submission.
-
-Pass the schema as the first argument and the options as the second. This
-fixes the form data to the schema input before the options are inferred, so
-each callback receives a typed `value`. The first argument is ignored at
-runtime; include the schema in `validators` when it should run.
-
-#### Remarks
-
-**Important:** Although this returns the original object unchanged at
-runtime, its type is normalized to `FormOptions`. Optional properties such
-as `validators` therefore remain optional even when supplied. This
-tradeoff enables safer inference and reuse.
+The schema supplies the value types without running validation. Add it to
+`validators` when it should also validate the form.
 
 #### Example
 
 ```ts
-const profileSchema = z.object({ name: z.string().min(1) })
-const profileOptions = formOptions.strictSchema(profileSchema, {
-  defaultValues: { name: '' },
-  validators: [
-    {
-      triggers: ['change'],
-      run: profileSchema,
-    },
-    {
-      triggers: ['change'],
-      run: ({ value }) =>
-        value.name.length === 0 ? 'Name is required' : undefined,
-    },
-  ],
-  onSubmit: ({ validatorOutputs }) => saveProfile(validatorOutputs[0]),
+// schema input: { name: string; age: number }
+const profileOptions = formOptions.strictSchema(schema, {
+  defaultValues: { name: '', age: 0 },
+  validators: [{ run: schema }],
 })
 ```
-
-#### Returns
-
-The original options object, normalized to `FormOptions` with the
-schema's input shape.
-
-#### Type Param
-
-**TSchema**
-
-Library-managed. Do not specify explicitly.
-
-#### Type Param
-
-**TFormValidators**
-
-Library-managed. Do not specify explicitly.
-
-#### Type Param
-
-**TFormData**
-
-Library-managed. Do not specify explicitly.
-
-#### Type Param
-
-**TSubmitReturn**
-
-Library-managed. Do not specify explicitly.

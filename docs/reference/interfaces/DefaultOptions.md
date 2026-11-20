@@ -3,7 +3,7 @@ id: DefaultOptions
 title: DefaultOptions
 ---
 
-Defined in: [defaultOptions.public.ts:132](https://github.com/TanStack/form/blob/main/packages/form-core/src/defaultOptions.public.ts#L132)
+Defined in: [defaultOptions.public.ts:128](https://github.com/TanStack/form/blob/main/packages/form-core/src/defaultOptions.public.ts#L128)
 
 Collects the reusable defaults owned by one form.
 
@@ -19,7 +19,7 @@ form, field, or group value inference.
 optional field?: DefaultFieldOptions;
 ```
 
-Defined in: [defaultOptions.public.ts:136](https://github.com/TanStack/form/blob/main/packages/form-core/src/defaultOptions.public.ts#L136)
+Defined in: [defaultOptions.public.ts:132](https://github.com/TanStack/form/blob/main/packages/form-core/src/defaultOptions.public.ts#L132)
 
 Defaults resolved against field options.
 
@@ -31,7 +31,7 @@ Defaults resolved against field options.
 optional form?: DefaultFormOptions;
 ```
 
-Defined in: [defaultOptions.public.ts:134](https://github.com/TanStack/form/blob/main/packages/form-core/src/defaultOptions.public.ts#L134)
+Defined in: [defaultOptions.public.ts:130](https://github.com/TanStack/form/blob/main/packages/form-core/src/defaultOptions.public.ts#L130)
 
 Defaults resolved against form options.
 
@@ -43,6 +43,6 @@ Defaults resolved against form options.
 optional formGroup?: DefaultFormGroupOptions;
 ```
 
-Defined in: [defaultOptions.public.ts:138](https://github.com/TanStack/form/blob/main/packages/form-core/src/defaultOptions.public.ts#L138)
+Defined in: [defaultOptions.public.ts:134](https://github.com/TanStack/form/blob/main/packages/form-core/src/defaultOptions.public.ts#L134)
 
 Defaults resolved against form-group options.

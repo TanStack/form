@@ -3,7 +3,7 @@ id: FieldListenerContext
 title: FieldListenerContext
 ---
 
-Defined in: [listeners.public.ts:339](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L339)
+Defined in: [listeners.public.ts:191](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L191)
 
 Context passed to a field listener.
 
@@ -33,9 +33,9 @@ Library-managed. Do not specify explicitly.
 
 Library-managed. Do not specify explicitly.
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* [`FormErrorTypes`](FormErrorTypes.md)
+`TFormError` *extends* [`ScopedErrorTypes`](ScopedErrorTypes.md)
 
 Library-managed. Do not specify explicitly.
 
@@ -44,10 +44,10 @@ Library-managed. Do not specify explicitly.
 ### fieldApi
 
 ```ts
-fieldApi: FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes>;
+fieldApi: FieldApi<TFieldName, TFieldValue, TFieldError, TFormData, TFormError>;
 ```
 
-Defined in: [listeners.public.ts:354](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L354)
+Defined in: [listeners.public.ts:206](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L206)
 
 The field that owns the listener.
 
@@ -59,10 +59,10 @@ This remains the listening field when an event arrives through
 ### formApi
 
 ```ts
-formApi: FormApi<TFormData, TFormErrorTypes>;
+formApi: FormApi<TFormData, TFormError>;
 ```
 
-Defined in: [listeners.public.ts:362](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L362)
+Defined in: [listeners.public.ts:214](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L214)
 
 The form that owns the field.
 
@@ -74,6 +74,6 @@ The form that owns the field.
 value: TFieldValue;
 ```
 
-Defined in: [listeners.public.ts:347](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L347)
+Defined in: [listeners.public.ts:199](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L199)
 
 The listening field's value captured when the event occurred.

@@ -3,11 +3,11 @@ id: ReactFormGroupProps
 title: ReactFormGroupProps
 ---
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:308](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L308)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:303](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L303)
 
 ## Extends
 
-- `Omit`\<`FormGroupOptions`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormErrorTypes`\>, `"form"`\>
+- `Omit`\<`FormGroupOptions`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormError`\>, `"form"`\>
 
 ## Type Parameters
 
@@ -27,9 +27,9 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:308](https:/
 
 `TGroupValidators` *extends* `FormGroupValidators`\<`TGroupValue`\>
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
@@ -43,13 +43,13 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:308](https:/
 children: (groupApi) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:325](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L325)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:320](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L320)
 
 #### Parameters
 
 ##### groupApi
 
-[`ReactFormGroupApi`](ReactFormGroupApi.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `ToFormGroupErrorTypes`\<`NoInfer`\<`TGroupValidators`\>\>, `TFormErrorTypes`, `TFieldComponents`\>
+[`ReactFormGroupApi`](ReactFormGroupApi.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `ToFormGroupErrorTypes`\<`NoInfer`\<`TGroupValidators`\>\>, `TFormError`, `TFieldComponents`\>
 
 #### Returns
 

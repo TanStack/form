@@ -7,7 +7,7 @@ title: FieldErrors
 type FieldErrors<TFieldError> = unknown extends TFieldError ? ValidationIssue : TFieldError[];
 ```
 
-Defined in: [validation.public.ts:1110](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L1110)
+Defined in: [validation.public.ts:799](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L799)
 
 A field's error array, with string messages normalized to issue objects.
 

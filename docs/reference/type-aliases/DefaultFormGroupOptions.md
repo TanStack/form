@@ -4,10 +4,10 @@ title: DefaultFormGroupOptions
 ---
 
 ```ts
-type DefaultFormGroupOptions = Pick<FormGroupOptions<unknown, string, unknown, FormGroupValidators<unknown>, FormErrorTypes>, "onSubmitInvalid">;
+type DefaultFormGroupOptions = Pick<FormGroupOptions<unknown, string, unknown, FormGroupValidators<unknown>, ScopedErrorTypes>, "onSubmitInvalid">;
 ```
 
-Defined in: [defaultOptions.public.ts:114](https://github.com/TanStack/form/blob/main/packages/form-core/src/defaultOptions.public.ts#L114)
+Defined in: [defaultOptions.public.ts:110](https://github.com/TanStack/form/blob/main/packages/form-core/src/defaultOptions.public.ts#L110)
 
 Reusable form-group behavior that does not participate in group value
 inference.

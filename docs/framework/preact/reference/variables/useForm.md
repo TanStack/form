@@ -7,7 +7,7 @@ title: useForm
 const useForm: UseFormHook<DefaultPreactFormComponentMap>;
 ```
 
-Defined in: [packages/preact-form/src/PreactForm/useForm.public.ts:63](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/useForm.public.ts#L63)
+Defined in: [packages/preact-form/src/PreactForm/useForm.public.ts:70](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/useForm.public.ts#L70)
 
 Creates a Preact form whose instance and lifecycle are owned by the current
 component.

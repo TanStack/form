@@ -4,7 +4,7 @@ title: PreactFormSubscribeComponent
 ---
 
 ```ts
-type PreactFormSubscribeComponent<TFormData, TFormErrorTypes> = <TSelected>(props) => CrossVersionPreactNode;
+type PreactFormSubscribeComponent<TFormData, TFormError> = <TSelected>(props) => CrossVersionPreactNode;
 ```
 
 Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:106](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L106)
@@ -15,9 +15,9 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:106](https
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ## Type Parameters
 
@@ -29,7 +29,7 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:106](https
 
 ### props
 
-[`PreactFormSubscribeProps`](PreactFormSubscribeProps.md)\<`TFormData`, `TFormErrorTypes`, `TSelected`\>
+[`PreactFormSubscribeProps`](PreactFormSubscribeProps.md)\<`TFormData`, `TFormError`, `TSelected`\>
 
 ## Returns
 

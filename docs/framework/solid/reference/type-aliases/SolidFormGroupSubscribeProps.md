@@ -7,7 +7,7 @@ title: SolidFormGroupSubscribeProps
 type SolidFormGroupSubscribeProps<TGroupValue, TGroupErrorTypes, TSelected> = SolidSubscribeProps<FormGroupState<TGroupValue, TGroupErrorTypes>, TSelected>;
 ```
 
-Defined in: [packages/solid-form/src/Components.public.ts:196](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L196)
+Defined in: [packages/solid-form/src/Components.public.ts:192](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L192)
 
 ## Type Parameters
 
@@ -17,7 +17,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:196](https://github.co
 
 ### TGroupErrorTypes
 
-`TGroupErrorTypes` *extends* `FormErrorTypes`
+`TGroupErrorTypes` *extends* `ScopedErrorTypes`
 
 ### TSelected
 

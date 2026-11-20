@@ -3,9 +3,7 @@ id: ErrorVisibilityFieldMeta
 title: ErrorVisibilityFieldMeta
 ---
 
-Defined in: [validation.public.ts:278](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L278)
-
-Field state flags available to an error visibility policy.
+Defined in: [FormApi/errorVisibility.public.ts:11](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/errorVisibility.public.ts#L11)
 
 ## Properties
 
@@ -15,9 +13,7 @@ Field state flags available to an error visibility policy.
 isBlurred: boolean;
 ```
 
-Defined in: [validation.public.ts:292](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L292)
-
-`true` when this field is marked as blurred.
+Defined in: [FormApi/errorVisibility.public.ts:18](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/errorVisibility.public.ts#L18)
 
 ***
 
@@ -27,9 +23,7 @@ Defined in: [validation.public.ts:292](https://github.com/TanStack/form/blob/mai
 isDefaultValue: boolean;
 ```
 
-Defined in: [validation.public.ts:290](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L290)
-
-`true` when the current value equals the field's default value.
+Defined in: [FormApi/errorVisibility.public.ts:17](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/errorVisibility.public.ts#L17)
 
 ***
 
@@ -39,9 +33,7 @@ Defined in: [validation.public.ts:290](https://github.com/TanStack/form/blob/mai
 isDirty: boolean;
 ```
 
-Defined in: [validation.public.ts:284](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L284)
-
-`true` when this field or a descendant is marked as dirty.
+Defined in: [FormApi/errorVisibility.public.ts:14](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/errorVisibility.public.ts#L14)
 
 ***
 
@@ -51,9 +43,7 @@ Defined in: [validation.public.ts:284](https://github.com/TanStack/form/blob/mai
 isPristine: boolean;
 ```
 
-Defined in: [validation.public.ts:288](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L288)
-
-`true` when neither this field nor its descendants are marked as dirty.
+Defined in: [FormApi/errorVisibility.public.ts:16](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/errorVisibility.public.ts#L16)
 
 ***
 
@@ -63,9 +53,7 @@ Defined in: [validation.public.ts:288](https://github.com/TanStack/form/blob/mai
 isSelfDirty: boolean;
 ```
 
-Defined in: [validation.public.ts:286](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L286)
-
-`true` when this field itself is marked as dirty.
+Defined in: [FormApi/errorVisibility.public.ts:15](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/errorVisibility.public.ts#L15)
 
 ***
 
@@ -75,9 +63,7 @@ Defined in: [validation.public.ts:286](https://github.com/TanStack/form/blob/mai
 isSelfTouched: boolean;
 ```
 
-Defined in: [validation.public.ts:282](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L282)
-
-`true` when this field itself is marked as touched.
+Defined in: [FormApi/errorVisibility.public.ts:13](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/errorVisibility.public.ts#L13)
 
 ***
 
@@ -87,9 +73,7 @@ Defined in: [validation.public.ts:282](https://github.com/TanStack/form/blob/mai
 isSelfValidating: boolean;
 ```
 
-Defined in: [validation.public.ts:296](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L296)
-
-`true` while this field itself is validating.
+Defined in: [FormApi/errorVisibility.public.ts:20](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/errorVisibility.public.ts#L20)
 
 ***
 
@@ -99,9 +83,7 @@ Defined in: [validation.public.ts:296](https://github.com/TanStack/form/blob/mai
 isTouched: boolean;
 ```
 
-Defined in: [validation.public.ts:280](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L280)
-
-`true` when this field or a descendant is marked as touched.
+Defined in: [FormApi/errorVisibility.public.ts:12](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/errorVisibility.public.ts#L12)
 
 ***
 
@@ -111,9 +93,7 @@ Defined in: [validation.public.ts:280](https://github.com/TanStack/form/blob/mai
 isValidating: boolean;
 ```
 
-Defined in: [validation.public.ts:294](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L294)
-
-`true` while this field or a descendant is validating.
+Defined in: [FormApi/errorVisibility.public.ts:19](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/errorVisibility.public.ts#L19)
 
 ***
 
@@ -123,6 +103,4 @@ Defined in: [validation.public.ts:294](https://github.com/TanStack/form/blob/mai
 subfields: ErrorVisibilitySubfieldsMeta;
 ```
 
-Defined in: [validation.public.ts:298](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L298)
-
-State flags for this field's descendants.
+Defined in: [FormApi/errorVisibility.public.ts:21](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/errorVisibility.public.ts#L21)

@@ -3,7 +3,7 @@ id: ListenerPredicateContext
 title: ListenerPredicateContext
 ---
 
-Defined in: [listeners.public.ts:40](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L40)
+Defined in: [listeners.public.ts:28](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L28)
 
 Context used to conditionally enable or debounce a listener.
 
@@ -29,7 +29,7 @@ Library-managed. Do not specify explicitly.
 formApi: FormApi<TFormData, any>;
 ```
 
-Defined in: [listeners.public.ts:42](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L42)
+Defined in: [listeners.public.ts:30](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L30)
 
 The form associated with the listener event.
 
@@ -41,7 +41,7 @@ The form associated with the listener event.
 optional triggerFieldApi?: AnyFieldApi;
 ```
 
-Defined in: [listeners.public.ts:50](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L50)
+Defined in: [listeners.public.ts:38](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L38)
 
 The field associated with the listener event, when available.
 
@@ -57,6 +57,6 @@ form-level `'mount'`, `'reset'`, and `'submit'` events.
 value: TValue;
 ```
 
-Defined in: [listeners.public.ts:52](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L52)
+Defined in: [listeners.public.ts:40](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L40)
 
 The value in the listener's scope when the event occurred.

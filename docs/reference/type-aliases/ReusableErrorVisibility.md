@@ -4,10 +4,10 @@ title: ReusableErrorVisibility
 ---
 
 ```ts
-type ReusableErrorVisibility = <TFormData, TFormErrorTypes>(context) => boolean;
+type ReusableErrorVisibility = <TFormData>(context) => boolean;
 ```
 
-Defined in: [validation.public.ts:372](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L372)
+Defined in: [validation.public.ts:295](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L295)
 
 An error visibility policy that accepts forms with different value and error types.
 
@@ -19,17 +19,11 @@ An error visibility policy that accepts forms with different value and error typ
 
 Library-managed. Do not specify explicitly.
 
-### TFormErrorTypes
-
-`TFormErrorTypes` *extends* [`FormErrorTypes`](../interfaces/FormErrorTypes.md)
-
-Library-managed. Do not specify explicitly.
-
 ## Parameters
 
 ### context
 
-[`ErrorVisibilityContext`](../interfaces/ErrorVisibilityContext.md)\<`TFormData`, `TFormErrorTypes`\>
+[`ErrorVisibilityContext`](../interfaces/ErrorVisibilityContext.md)\<`TFormData`\>
 
 ## Returns
 

@@ -3,14 +3,13 @@ id: BaseValidator
 title: BaseValidator
 ---
 
-Defined in: [validation.public.ts:17](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L17)
+Defined in: [validation.public.ts:30](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L30)
 
 A validation function or Standard Schema with an optional rule to stop after earlier failures.
 
 ## Extended by
 
 - [`Validator`](Validator.md)
-- [`FormValidator`](FormValidator.md)
 
 ## Type Parameters
 
@@ -30,7 +29,7 @@ Library-managed. Do not specify explicitly.
 optional bailIfInvalid?: boolean;
 ```
 
-Defined in: [validation.public.ts:29](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L29)
+Defined in: [validation.public.ts:42](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L42)
 
 If `true`, skips this and subsequent validators when earlier validation has failed.
 
@@ -50,6 +49,6 @@ false
 run: TValidator;
 ```
 
-Defined in: [validation.public.ts:21](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L21)
+Defined in: [validation.public.ts:34](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L34)
 
 The function or Standard Schema that validates the value in this validator's scope.

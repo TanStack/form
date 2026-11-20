@@ -3,7 +3,7 @@ id: SolidFormGroupComponent
 title: SolidFormGroupComponent
 ---
 
-Defined in: [packages/solid-form/src/Components.public.ts:357](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L357)
+Defined in: [packages/solid-form/src/Components.public.ts:353](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L353)
 
 ## Type Parameters
 
@@ -13,7 +13,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:357](https://github.co
 
 ### TFormErrorTypes
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormErrorTypes` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
@@ -23,7 +23,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:357](https://github.co
 SolidFormGroupComponent<TGroupName, TGroupValue, TGroupValidators>(props): Element;
 ```
 
-Defined in: [packages/solid-form/src/Components.public.ts:362](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L362)
+Defined in: [packages/solid-form/src/Components.public.ts:358](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L358)
 
 ## Type Parameters
 

@@ -4,10 +4,10 @@ title: FieldListenerFn
 ---
 
 ```ts
-type FieldListenerFn<TFieldName, TFieldValue, TFieldError, TFormData, TFormErrorTypes> = (context) => void;
+type FieldListenerFn<TFieldName, TFieldValue, TFieldError, TFormData, TFormError> = (context) => void;
 ```
 
-Defined in: [listeners.public.ts:387](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L387)
+Defined in: [listeners.public.ts:239](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L239)
 
 A callback invoked when a field listener runs.
 
@@ -40,9 +40,9 @@ Library-managed. Do not specify explicitly.
 
 Library-managed. Do not specify explicitly.
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* [`FormErrorTypes`](../interfaces/FormErrorTypes.md)
+`TFormError` *extends* [`ScopedErrorTypes`](../interfaces/ScopedErrorTypes.md)
 
 Library-managed. Do not specify explicitly.
 
@@ -50,7 +50,7 @@ Library-managed. Do not specify explicitly.
 
 ### context
 
-[`FieldListenerContext`](../interfaces/FieldListenerContext.md)\<`TFieldName`, `TFieldValue`, `TFieldError`, `TFormData`, `TFormErrorTypes`\>
+[`FieldListenerContext`](../interfaces/FieldListenerContext.md)\<`TFieldName`, `TFieldValue`, `TFieldError`, `TFormData`, `TFormError`\>
 
 ## Returns
 

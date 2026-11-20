@@ -7,7 +7,7 @@ title: useForm
 const useForm: UseFormHook<DefaultReactFormComponentMap>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/useForm.public.ts:62](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/useForm.public.ts#L62)
+Defined in: [packages/react-form/src/ReactForm/useForm.public.ts:69](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/useForm.public.ts#L69)
 
 Creates a React form whose instance and lifecycle are owned by the current
 component.

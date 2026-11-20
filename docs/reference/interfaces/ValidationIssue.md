@@ -3,9 +3,7 @@ id: ValidationIssue
 title: ValidationIssue
 ---
 
-Defined in: [validation.public.ts:579](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L579)
-
-A validation error with a display message.
+Defined in: [validation/state.public.ts:11](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L11)
 
 ## Properties
 
@@ -15,6 +13,4 @@ A validation error with a display message.
 message: string;
 ```
 
-Defined in: [validation.public.ts:581](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L581)
-
-The text to display for this error.
+Defined in: [validation/state.public.ts:12](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L12)

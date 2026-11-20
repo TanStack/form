@@ -4,10 +4,12 @@ title: CreateSubmitErrorMapFn
 ---
 
 ```ts
-type CreateSubmitErrorMapFn<TFormData> = (initial?) => ValidationErrorMap<TFormData> & OnSubmitError<ValidationErrorMap<TFormData>>;
+type CreateSubmitErrorMapFn<TFormData> = (initial?) => CreatedSubmitErrorMap<TFormData, ValidationFailureItem[], ValidationFailure>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:66](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L66)
+Defined in: [FormApi/formSubmit.public.ts:88](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L88)
+
+Builds a mutable error map to return from `onSubmit` and report validation errors.
 
 ## Type Parameters
 
@@ -15,12 +17,14 @@ Defined in: [FormApi/FormApi.public.ts:66](https://github.com/TanStack/form/blob
 
 `TFormData`
 
+Library-managed. Do not specify explicitly.
+
 ## Parameters
 
 ### initial?
 
-`Partial`\<[`ValidationErrorMap`](../interfaces/ValidationErrorMap.md)\<`TFormData`\>\>
+`Partial`\<[`ValidationErrorMap`](../interfaces/ValidationErrorMap.md)\<`TFormData`, [`ValidationFailure`](ValidationFailure.md), [`ValidationFailure`](ValidationFailure.md)\>\>
 
 ## Returns
 
-[`ValidationErrorMap`](../interfaces/ValidationErrorMap.md)\<`TFormData`\> & [`OnSubmitError`](OnSubmitError.md)\<[`ValidationErrorMap`](../interfaces/ValidationErrorMap.md)\<`TFormData`\>\>
+[`CreatedSubmitErrorMap`](CreatedSubmitErrorMap.md)\<`TFormData`, [`ValidationFailureItem`](ValidationFailureItem.md)[], [`ValidationFailure`](ValidationFailure.md)\>

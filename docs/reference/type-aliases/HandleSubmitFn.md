@@ -4,10 +4,10 @@ title: HandleSubmitFn
 ---
 
 ```ts
-type HandleSubmitFn<TFormData> = () => Promise<FormValidationError<TFormData>[]>;
+type HandleSubmitFn<TFormData> = () => Promise<FormValidationFailure<TFormData>[]>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:605](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L605)
+Defined in: [FormApi/FormApi.public.ts:205](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L205)
 
 Runs submission validation and submits current values when validation
 succeeds.
@@ -15,8 +15,8 @@ succeeds.
 Registered fields are marked touched, field validators run before form
 validators, and `onSubmit` is awaited only when validation succeeds.
 Validation error results and errors returned by `onSubmit` through
-`createValidationError` are stored as error state. `onSubmitInvalid` is
-awaited after a failed attempt.
+`createValidationError` or `createErrorMap` are stored as error state.
+`onSubmitInvalid` is awaited after a failed attempt.
 
 Calls made while an attempt is in progress return the same promise instead
 of starting another attempt.
@@ -31,8 +31,9 @@ Library-managed. Do not specify explicitly.
 
 ## Returns
 
-`Promise`\<[`FormValidationError`](FormValidationError.md)\<`TFormData`\>[]\>
+`Promise`\<[`FormValidationFailure`](FormValidationFailure.md)\<`TFormData`\>[]\>
 
 A promise resolving to the error results produced by field and
 form validation, plus any validation error returned by `onSubmit` through
-`createValidationError`. The array is empty if none are produced.
+`createValidationError` or `createErrorMap`. The array is empty if none are
+produced.

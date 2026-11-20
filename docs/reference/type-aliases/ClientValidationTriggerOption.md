@@ -7,7 +7,7 @@ title: ClientValidationTriggerOption
 type ClientValidationTriggerOption<TFormData, TValue, TScope> = ValidationTriggerOption<TFormData, TValue, ConfigurableValidationTrigger, TScope>;
 ```
 
-Defined in: [validation.public.ts:547](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L547)
+Defined in: [validation.public.ts:473](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L473)
 
 A change or blur trigger, optionally enabled by a condition.
 

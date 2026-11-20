@@ -7,7 +7,7 @@ title: ListenerDebounceFn
 type ListenerDebounceFn<TFormData, TValue> = (context) => number;
 ```
 
-Defined in: [listeners.public.ts:147](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L147)
+Defined in: [listeners.public.ts:135](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L135)
 
 Calculates a listener's debounce delay from the current event context.
 

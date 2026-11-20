@@ -4,15 +4,10 @@ title: FormListenerFn
 ---
 
 ```ts
-type FormListenerFn<TFormData, TFormErrorTypes> = (context) => void;
+type FormListenerFn<TFormData, TFormError> = (context) => void;
 ```
 
-Defined in: [listeners.public.ts:238](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L238)
-
-A callback invoked when a form listener runs.
-
-The return value is ignored. A returned promise is not awaited, and a
-rejected promise is reported to the console.
+Defined in: [FormApi/formListeners.public.ts:18](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formListeners.public.ts#L18)
 
 ## Type Parameters
 
@@ -20,28 +15,16 @@ rejected promise is reported to the console.
 
 `TFormData`
 
-Library-managed. Do not specify explicitly.
+### TFormError
 
-### TFormErrorTypes
-
-`TFormErrorTypes` *extends* [`FormErrorTypes`](../interfaces/FormErrorTypes.md)
-
-Library-managed. Do not specify explicitly.
+`TFormError` *extends* [`ScopedErrorTypes`](../interfaces/ScopedErrorTypes.md)
 
 ## Parameters
 
 ### context
 
-[`FormListenerContext`](../interfaces/FormListenerContext.md)\<`TFormData`, `TFormErrorTypes`\>
+[`FormListenerContext`](../interfaces/FormListenerContext.md)\<`TFormData`, `TFormError`\>
 
 ## Returns
 
 `void`
-
-## Example
-
-```ts
-run: ({ value }) => {
-  saveDraft(value)
-},
-```

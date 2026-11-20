@@ -4,7 +4,7 @@ title: ReactFormApi
 ---
 
 ```ts
-type ReactFormApi<TFormData, TFormErrorTypes, TComponents> = unknown extends TComponents["formComponents"] ? ExtendedFormApi<TFormData, TFormErrorTypes, TComponents["fieldComponents"]> : ExtendedFormApi<TFormData, TFormErrorTypes, TComponents["fieldComponents"]> & TComponents["formComponents"];
+type ReactFormApi<TFormData, TFormError, TComponents> = unknown extends TComponents["formComponents"] ? ExtendedFormApi<TFormData, TFormError, TComponents["fieldComponents"]> : ExtendedFormApi<TFormData, TFormError, TComponents["fieldComponents"]> & TComponents["formComponents"];
 ```
 
 Defined in: [packages/react-form/src/ReactForm/formApiTypes.public.ts:15](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/formApiTypes.public.ts#L15)
@@ -15,9 +15,9 @@ Defined in: [packages/react-form/src/ReactForm/formApiTypes.public.ts:15](https:
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TComponents
 

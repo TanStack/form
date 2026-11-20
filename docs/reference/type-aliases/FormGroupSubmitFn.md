@@ -4,10 +4,10 @@ title: FormGroupSubmitFn
 ---
 
 ```ts
-type FormGroupSubmitFn<TFormData, TGroupName, TGroupValue, TGroupValidators, TFormErrorTypes> = (context) => void | Promise<void>;
+type FormGroupSubmitFn<TFormData, TGroupName, TGroupValue, TGroupValidators, TFormError> = (context) => void | Promise<void>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:101](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L101)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:102](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L102)
 
 ## Type Parameters
 
@@ -27,15 +27,15 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:101](https://github.com/TanStac
 
 `TGroupValidators` *extends* [`FormGroupValidators`](FormGroupValidators.md)\<`TGroupValue`\>
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* [`FormErrorTypes`](../interfaces/FormErrorTypes.md)
+`TFormError` *extends* [`ScopedErrorTypes`](../interfaces/ScopedErrorTypes.md)
 
 ## Parameters
 
 ### context
 
-[`FormGroupSubmitContext`](../interfaces/FormGroupSubmitContext.md)\<`TFormData`, `TGroupName`, `TGroupValue`, [`ToFormGroupOutputs`](ToFormGroupOutputs.md)\<`NoInfer`\<`TGroupValidators`\>\>, [`ToFormGroupErrorTypes`](ToFormGroupErrorTypes.md)\<`NoInfer`\<`TGroupValidators`\>\>, `TFormErrorTypes`\>
+[`FormGroupSubmitContext`](../interfaces/FormGroupSubmitContext.md)\<`TFormData`, `TGroupName`, `TGroupValue`, [`ToFormGroupOutputs`](ToFormGroupOutputs.md)\<`NoInfer`\<`TGroupValidators`\>\>, [`ToFormGroupErrorTypes`](ToFormGroupErrorTypes.md)\<`NoInfer`\<`TGroupValidators`\>\>, `TFormError`\>
 
 ## Returns
 

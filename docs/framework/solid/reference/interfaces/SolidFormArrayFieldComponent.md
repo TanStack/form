@@ -3,7 +3,7 @@ id: SolidFormArrayFieldComponent
 title: SolidFormArrayFieldComponent
 ---
 
-Defined in: [packages/solid-form/src/Components.public.ts:170](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L170)
+Defined in: [packages/solid-form/src/Components.public.ts:166](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L166)
 
 ## Type Parameters
 
@@ -11,9 +11,9 @@ Defined in: [packages/solid-form/src/Components.public.ts:170](https://github.co
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
@@ -23,7 +23,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:170](https://github.co
 SolidFormArrayFieldComponent<TFieldName, TFieldValidators>(props): Element;
 ```
 
-Defined in: [packages/solid-form/src/Components.public.ts:175](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L175)
+Defined in: [packages/solid-form/src/Components.public.ts:171](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L171)
 
 ## Type Parameters
 
@@ -39,7 +39,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:175](https://github.co
 
 ### props
 
-[`SolidFormFieldProps`](SolidFormFieldProps.md)\<`TFormData`, `TFieldName`, `DeepValue`\<`TFormData`, `TFieldName`\>, `TFieldValidators`, `never`, `TFormData`, `TFormErrorTypes`, `TFieldComponents`\>
+[`SolidFormFieldProps`](SolidFormFieldProps.md)\<`TFormData`, `TFieldName`, `DeepValue`\<`TFormData`, `TFieldName`\>, `TFieldValidators`, `never`, `TFormData`, `TFormError`, `TFieldComponents`\>
 
 ## Returns
 

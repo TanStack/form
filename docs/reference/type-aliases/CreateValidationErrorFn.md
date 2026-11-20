@@ -7,12 +7,7 @@ title: CreateValidationErrorFn
 type CreateValidationErrorFn<TFormData> = <TError>(error) => OnSubmitError<TError>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:60](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L60)
-
-Wraps a validation error for processing as an `onSubmit` failure without mutating it.
-
-Return the result from `onSubmit` to add its form- and field-level errors to
-validation state.
+Defined in: [FormApi/formSubmit.public.ts:66](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L66)
 
 ## Type Parameters
 
@@ -20,23 +15,17 @@ validation state.
 
 `TFormData`
 
-Library-managed. Do not specify explicitly.
-
 ## Type Parameters
 
 ### TError
 
-`TError` *extends* [`FormValidationError`](FormValidationError.md)\<`TFormData`\>
-
-Library-managed. Do not specify explicitly.
+`TError` *extends* [`FormValidationFailure`](FormValidationFailure.md)\<`TFormData`\>
 
 ## Parameters
 
 ### error
 
 `TError`
-
-The form- or field-level validation error to wrap.
 
 ## Returns
 

@@ -4,12 +4,12 @@ title: ValidationTriggerOption
 ---
 
 ```ts
-type ValidationTriggerOption<TFormData, TValue, TTrigger, TScope> = 
+type ValidationTriggerOption<TFormData, TValue, TTrigger, TScope> = TTrigger extends ValidatorTrigger ? 
   | TTrigger
-| ValidationTriggerConfig<TFormData, TValue, TTrigger, TScope>;
+  | ValidationTriggerConfig<TFormData, TValue, TTrigger, TScope> : never;
 ```
 
-Defined in: [validation.public.ts:533](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L533)
+Defined in: [validation.public.ts:457](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L457)
 
 A validation event, either unconditional or configured with a `when` condition.
 

@@ -4,7 +4,7 @@ title: FieldGroupFormState
 ---
 
 ```ts
-type FieldGroupFormState = FormState<unknown, FormErrorTypes>;
+type FieldGroupFormState = FormState<unknown, ScopedErrorTypes>;
 ```
 
 Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:91](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts#L91)

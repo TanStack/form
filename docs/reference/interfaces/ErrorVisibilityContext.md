@@ -3,23 +3,13 @@ id: ErrorVisibilityContext
 title: ErrorVisibilityContext
 ---
 
-Defined in: [validation.public.ts:315](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L315)
-
-Form and field state used to decide whether to show a field's errors.
+Defined in: [FormApi/errorVisibility.public.ts:29](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/errorVisibility.public.ts#L29)
 
 ## Type Parameters
 
 ### TFormData
 
 `TFormData`
-
-Library-managed. Do not specify explicitly.
-
-### TFormErrorTypes
-
-`TFormErrorTypes` *extends* [`FormErrorTypes`](FormErrorTypes.md)
-
-Library-managed. Do not specify explicitly.
 
 ## Properties
 
@@ -29,19 +19,14 @@ Library-managed. Do not specify explicitly.
 fieldState: ErrorVisibilityFieldState;
 ```
 
-Defined in: [validation.public.ts:325](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L325)
-
-The field whose errors the policy controls.
+Defined in: [FormApi/errorVisibility.public.ts:31](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/errorVisibility.public.ts#L31)
 
 ***
 
 ### state
 
 ```ts
-state: FormState<TFormData, TFormErrorTypes>;
+state: FormState<TFormData, ScopedErrorTypes<ValidationIssue, ValidationIssue>>;
 ```
 
-Defined in: [validation.public.ts:323](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L323)
-
-Current form state. For a field in a form group, flags and submission
-counters describe that group. `values` and `errors` describe the whole form.
+Defined in: [FormApi/errorVisibility.public.ts:30](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/errorVisibility.public.ts#L30)

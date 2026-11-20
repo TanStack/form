@@ -4,7 +4,7 @@ title: injectSelector
 ---
 
 ```ts
-function injectSelector<TFormData, TFormErrorTypes, TSelected>(
+function injectSelector<TFormData, TFormError, TSelected>(
    form, 
    selector?, 
 options?): Signal<TSelected>;
@@ -20,19 +20,19 @@ Selects form state as an Angular signal.
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`\<`ValidationIssue`, `ValidationIssue`\>
+`TFormError` *extends* `ScopedErrorTypes`\<`ValidationIssue`, `ValidationIssue`\>
 
 ### TSelected
 
-`TSelected` = `NoInfer`\<`FormState`\<`TFormData`, `TFormErrorTypes`\>\>
+`TSelected` = `NoInfer`\<`FormState`\<`TFormData`, `TFormError`\>\>
 
 ## Parameters
 
 ### form
 
-`FormApi`\<`TFormData`, `TFormErrorTypes`\>
+`FormApi`\<`TFormData`, `TFormError`\>
 
 ### selector?
 

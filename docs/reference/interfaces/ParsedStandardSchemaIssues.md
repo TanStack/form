@@ -3,9 +3,11 @@ id: ParsedStandardSchemaIssues
 title: ParsedStandardSchemaIssues
 ---
 
-Defined in: [validation.public.ts:637](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L637)
+Defined in: [validation/state.public.ts:88](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L88)
 
-Standard Schema issues reported at form or group scope and routed to field paths.
+## Extends
+
+- `Required`\<[`ValidationErrorMap`](ValidationErrorMap.md)\<`TFormData`, [`StandardSchemaV1Issue`](StandardSchemaV1Issue.md)[], [`StandardSchemaV1Issue`](StandardSchemaV1Issue.md)[]\>\>
 
 ## Type Parameters
 
@@ -13,19 +15,31 @@ Standard Schema issues reported at form or group scope and routed to field paths
 
 `TFormData`
 
-Library-managed. Do not specify explicitly.
-
 ## Properties
+
+### \[PARSED\_ISSUES\]
+
+```ts
+readonly [PARSED_ISSUES]: true;
+```
+
+Defined in: [validation/state.public.ts:95](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L95)
+
+***
 
 ### fields
 
 ```ts
-fields: Partial<Record<DeepKeys<TFormData>, StandardSchemaV1Issue[]>>;
+fields: ValidationFieldMap<TFormData, TFieldError>;
 ```
 
-Defined in: [validation.public.ts:641](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L641)
+Defined in: [validation/state.public.ts:67](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L67)
 
-Issues with paths, grouped by field path relative to the validator's value.
+#### Inherited from
+
+```ts
+Required.fields
+```
 
 ***
 
@@ -35,6 +49,10 @@ Issues with paths, grouped by field path relative to the validator's value.
 form: StandardSchemaV1Issue[];
 ```
 
-Defined in: [validation.public.ts:639](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L639)
+Defined in: [validation/state.public.ts:66](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L66)
 
-All supplied issues, including those with field paths.
+#### Inherited from
+
+```ts
+Required.form
+```

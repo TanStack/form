@@ -7,7 +7,7 @@ title: ToFormGroupErrorTypes
 type ToFormGroupErrorTypes<TGroupValidators> = ToValidatorErrorTypes<TGroupValidators, FormGroupValidators<any>, never>;
 ```
 
-Defined in: [validation.public.ts:1323](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L1323)
+Defined in: [validation.public.ts:958](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L958)
 
 Infers group and routed field issue types from group validators.
 

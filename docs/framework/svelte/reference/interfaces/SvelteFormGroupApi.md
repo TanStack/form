@@ -3,11 +3,11 @@ id: SvelteFormGroupApi
 title: SvelteFormGroupApi
 ---
 
-Defined in: [packages/svelte-form/src/Components.public.ts:266](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L266)
+Defined in: [packages/svelte-form/src/Components.public.ts:259](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L259)
 
 ## Extends
 
-- `FormGroupApi`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupErrorTypes`, `TFormErrorTypes`\>
+- `FormGroupApi`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupError`, `TFormError`\>
 
 ## Type Parameters
 
@@ -23,13 +23,13 @@ Defined in: [packages/svelte-form/src/Components.public.ts:266](https://github.c
 
 `TGroupValue`
 
-### TGroupErrorTypes
+### TGroupError
 
-`TGroupErrorTypes` *extends* `FormErrorTypes`
+`TGroupError` *extends* `ScopedErrorTypes`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
@@ -40,27 +40,27 @@ Defined in: [packages/svelte-form/src/Components.public.ts:266](https://github.c
 ### ArrayField
 
 ```ts
-ArrayField: SvelteFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents>;
-```
-
-Defined in: [packages/svelte-form/src/Components.public.ts:287](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L287)
-
-***
-
-### Field
-
-```ts
-Field: SvelteFormGroupFieldComponent<TFormData, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents>;
+ArrayField: SvelteFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupError, TFormError, TFieldComponents>;
 ```
 
 Defined in: [packages/svelte-form/src/Components.public.ts:280](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L280)
 
 ***
 
+### Field
+
+```ts
+Field: SvelteFormGroupFieldComponent<TFormData, TGroupValue, TGroupError, TFormError, TFieldComponents>;
+```
+
+Defined in: [packages/svelte-form/src/Components.public.ts:273](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L273)
+
+***
+
 ### Subscribe
 
 ```ts
-Subscribe: SvelteFormGroupSubscribeComponent<TGroupValue, TGroupErrorTypes>;
+Subscribe: SvelteFormGroupSubscribeComponent<TGroupValue, TGroupError>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:294](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L294)
+Defined in: [packages/svelte-form/src/Components.public.ts:287](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L287)

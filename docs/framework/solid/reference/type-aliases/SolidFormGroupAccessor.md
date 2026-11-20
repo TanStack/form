@@ -7,7 +7,7 @@ title: SolidFormGroupAccessor
 type SolidFormGroupAccessor<TFormData, TGroupName, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents> = Accessor<SolidFormGroupApi<TFormData, TGroupName, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents>> & Pick<SolidFormGroupApi<TFormData, TGroupName, TGroupValue, TGroupErrorTypes, TFormErrorTypes, TFieldComponents>, "Field" | "ArrayField" | "Subscribe">;
 ```
 
-Defined in: [packages/solid-form/src/Components.public.ts:299](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L299)
+Defined in: [packages/solid-form/src/Components.public.ts:295](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L295)
 
 ## Type Parameters
 
@@ -25,11 +25,11 @@ Defined in: [packages/solid-form/src/Components.public.ts:299](https://github.co
 
 ### TGroupErrorTypes
 
-`TGroupErrorTypes` *extends* `FormErrorTypes`
+`TGroupErrorTypes` *extends* `ScopedErrorTypes`
 
 ### TFormErrorTypes
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormErrorTypes` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 

@@ -3,7 +3,7 @@ id: AppFormHookResult
 title: AppFormHookResult
 ---
 
-Defined in: [packages/svelte-form/src/AppForm/createFormHookTypes.public.ts:115](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/AppForm/createFormHookTypes.public.ts#L115)
+Defined in: [packages/svelte-form/src/AppForm/createFormHookTypes.public.ts:116](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/AppForm/createFormHookTypes.public.ts#L116)
 
 ## Type Parameters
 
@@ -19,7 +19,7 @@ Defined in: [packages/svelte-form/src/AppForm/createFormHookTypes.public.ts:115]
 appFormOptions: FormOptionsApi<TComponents>;
 ```
 
-Defined in: [packages/svelte-form/src/AppForm/createFormHookTypes.public.ts:118](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/AppForm/createFormHookTypes.public.ts#L118)
+Defined in: [packages/svelte-form/src/AppForm/createFormHookTypes.public.ts:119](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/AppForm/createFormHookTypes.public.ts#L119)
 
 ***
 
@@ -29,7 +29,7 @@ Defined in: [packages/svelte-form/src/AppForm/createFormHookTypes.public.ts:118]
 defineAppFieldGroup: DefineFieldGroupFn<TComponents["fieldComponents"]>;
 ```
 
-Defined in: [packages/svelte-form/src/AppForm/createFormHookTypes.public.ts:119](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/AppForm/createFormHookTypes.public.ts#L119)
+Defined in: [packages/svelte-form/src/AppForm/createFormHookTypes.public.ts:120](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/AppForm/createFormHookTypes.public.ts#L120)
 
 ***
 
@@ -39,7 +39,7 @@ Defined in: [packages/svelte-form/src/AppForm/createFormHookTypes.public.ts:119]
 useAppForm: UseAppFormHook<TComponents>;
 ```
 
-Defined in: [packages/svelte-form/src/AppForm/createFormHookTypes.public.ts:120](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/AppForm/createFormHookTypes.public.ts#L120)
+Defined in: [packages/svelte-form/src/AppForm/createFormHookTypes.public.ts:121](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/AppForm/createFormHookTypes.public.ts#L121)
 
 ***
 
@@ -49,7 +49,7 @@ Defined in: [packages/svelte-form/src/AppForm/createFormHookTypes.public.ts:120]
 useFormContext: () => SvelteAppFormApi<any, any, TComponents>;
 ```
 
-Defined in: [packages/svelte-form/src/AppForm/createFormHookTypes.public.ts:121](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/AppForm/createFormHookTypes.public.ts#L121)
+Defined in: [packages/svelte-form/src/AppForm/createFormHookTypes.public.ts:122](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/AppForm/createFormHookTypes.public.ts#L122)
 
 #### Returns
 

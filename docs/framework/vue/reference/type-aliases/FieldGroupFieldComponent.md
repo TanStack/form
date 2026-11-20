@@ -4,9 +4,9 @@ title: FieldGroupFieldComponent
 ---
 
 ```ts
-type FieldGroupFieldComponent<TFieldData, TFieldComponents> = <TFieldName>(props) => VueComponentInstance<VueFormFieldProps<TFieldData, TFieldName, DeepValue<TFieldData, TFieldName>, FieldValidators<TFieldData, TFieldName, DeepValue<TFieldData, TFieldName>>, ValidationIssue, unknown, FormErrorTypes, TFieldComponents>, {
+type FieldGroupFieldComponent<TFieldData, TFieldComponents> = <TFieldName>(props) => VueComponentInstance<VueFormFieldProps<TFieldData, TFieldName, DeepValue<TFieldData, TFieldName>, FieldValidators<TFieldData, TFieldName, DeepValue<TFieldData, TFieldName>>, ValidationIssue, unknown, ScopedErrorTypes, TFieldComponents>, {
   default: {
-     field: VueFieldApi<TFieldName, DeepValue<TFieldData, TFieldName>, ToFieldError<FieldValidators<TFieldData, TFieldName, DeepValue<TFieldData, TFieldName>>, ValidationIssue, FormErrorTypes>, unknown, FormErrorTypes, TFieldComponents>;
+     field: VueFieldApi<TFieldName, DeepValue<TFieldData, TFieldName>, ToFieldError<FieldValidators<TFieldData, TFieldName, DeepValue<TFieldData, TFieldName>>, ValidationIssue, ScopedErrorTypes>, unknown, ScopedErrorTypes, TFieldComponents>;
   };
 }>;
 ```
@@ -27,12 +27,12 @@ Defined in: [packages/vue-form/src/FieldGroup/FieldGroupApi.public.ts:22](https:
 
 ### props
 
-[`VueFormFieldProps`](../interfaces/VueFormFieldProps.md)\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `FieldValidators`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>\>, `ValidationIssue`, `unknown`, `FormErrorTypes`, `TFieldComponents`\> & `PublicProps`
+[`VueFormFieldProps`](../interfaces/VueFormFieldProps.md)\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `FieldValidators`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>\>, `ValidationIssue`, `unknown`, `ScopedErrorTypes`, `TFieldComponents`\> & `PublicProps`
 
 ## Returns
 
-`VueComponentInstance`\<[`VueFormFieldProps`](../interfaces/VueFormFieldProps.md)\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `FieldValidators`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>\>, `ValidationIssue`, `unknown`, `FormErrorTypes`, `TFieldComponents`\>, \{
+`VueComponentInstance`\<[`VueFormFieldProps`](../interfaces/VueFormFieldProps.md)\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `FieldValidators`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>\>, `ValidationIssue`, `unknown`, `ScopedErrorTypes`, `TFieldComponents`\>, \{
   `default`: \{
-     `field`: [`VueFieldApi`](VueFieldApi.md)\<`TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `ToFieldError`\<`FieldValidators`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>\>, `ValidationIssue`, `FormErrorTypes`\>, `unknown`, `FormErrorTypes`, `TFieldComponents`\>;
+     `field`: [`VueFieldApi`](VueFieldApi.md)\<`TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `ToFieldError`\<`FieldValidators`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>\>, `ValidationIssue`, `ScopedErrorTypes`\>, `unknown`, `ScopedErrorTypes`, `TFieldComponents`\>;
   \};
 \}\>

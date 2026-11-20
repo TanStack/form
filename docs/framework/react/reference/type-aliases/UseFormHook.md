@@ -4,7 +4,7 @@ title: UseFormHook
 ---
 
 ```ts
-type UseFormHook<TComponents> = <TFormData, TFormValidators, TSubmitReturn>(options) => ReactFormApi<TFormData, ToFormErrorTypes<TFormValidators, TSubmitReturn>, TComponents>;
+type UseFormHook<TComponents> = <TFormData, TValidatorConfig, TValidators, TSubmitReturn>(options) => ReactFormApi<TFormData, GetFormErrorTypes<TValidators, TSubmitReturn>, TComponents>;
 ```
 
 Defined in: [packages/react-form/src/ReactForm/useForm.public.ts:13](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/useForm.public.ts#L13)
@@ -21,9 +21,13 @@ Defined in: [packages/react-form/src/ReactForm/useForm.public.ts:13](https://git
 
 `TFormData`
 
-### TFormValidators
+### TValidatorConfig
 
-`TFormValidators` *extends* `FormValidators`\<`TFormData`\>
+`TValidatorConfig` *extends* `unknown`[]
+
+### TValidators
+
+`TValidators`
 
 ### TSubmitReturn
 
@@ -33,8 +37,8 @@ Defined in: [packages/react-form/src/ReactForm/useForm.public.ts:13](https://git
 
 ### options
 
-`FormOptions`\<`TFormData`, `TFormValidators`, `TSubmitReturn`, `unknown`\>
+`FormOptions`\<`TFormData`, `TValidatorConfig`, `TValidators`, `TSubmitReturn`, `unknown`\>
 
 ## Returns
 
-[`ReactFormApi`](ReactFormApi.md)\<`TFormData`, `ToFormErrorTypes`\<`TFormValidators`, `TSubmitReturn`\>, `TComponents`\>
+[`ReactFormApi`](ReactFormApi.md)\<`TFormData`, `GetFormErrorTypes`\<`TValidators`, `TSubmitReturn`\>, `TComponents`\>

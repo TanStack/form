@@ -4,10 +4,10 @@ title: PreactFormFieldComponent
 ---
 
 ```ts
-type PreactFormFieldComponent<TFormData, TFormErrorTypes, TFieldComponents> = <TFieldName, TFieldValidators>(props) => ComponentChildren;
+type PreactFormFieldComponent<TFormData, TFormError, TFieldComponents> = <TFieldName, TFieldValidators>(props) => ComponentChildren;
 ```
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:151](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L151)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:147](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L147)
 
 ## Type Parameters
 
@@ -15,9 +15,9 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:151](https
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
@@ -37,7 +37,7 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:151](https
 
 ### props
 
-[`PreactFormFieldProps`](../interfaces/PreactFormFieldProps.md)\<`TFormData`, `TFieldName`, `DeepValue`\<`TFormData`, `TFieldName`\>, `TFieldValidators`, `never`, `TFormData`, `TFormErrorTypes`, `TFieldComponents`\>
+[`PreactFormFieldProps`](../interfaces/PreactFormFieldProps.md)\<`TFormData`, `TFieldName`, `DeepValue`\<`TFormData`, `TFieldName`\>, `TFieldValidators`, `never`, `TFormData`, `TFormError`, `TFieldComponents`\>
 
 ## Returns
 

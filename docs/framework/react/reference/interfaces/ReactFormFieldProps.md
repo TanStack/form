@@ -7,7 +7,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:115](https:/
 
 ## Extends
 
-- `FieldApiOptions`\<`TFieldData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `TGroupFieldError`, `TFormData`, `TFormErrorTypes`\>
+- `FieldApiOptions`\<`TFieldData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `TGroupFieldError`, `TFormData`, `TFormError`\>
 
 ## Type Parameters
 
@@ -35,9 +35,9 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:115](https:/
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TFieldComponents
 
@@ -57,7 +57,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:137](https:/
 
 ##### fieldApi
 
-[`ReactFieldApi`](../type-aliases/ReactFieldApi.md)\<`TFieldName`, `TFieldValue`, `ToFieldError`\<`NoInfer`\<`TFieldValidators`\>, `TGroupFieldError`, `TFormErrorTypes`\>, `TFormData`, `TFormErrorTypes`, `TFieldComponents`\>
+[`ReactFieldApi`](../type-aliases/ReactFieldApi.md)\<`TFieldName`, `TFieldValue`, `NoInfer`\<`ToFieldError`\<`TFieldValidators`, `TGroupFieldError`, `TFormError`\>\>, `TFormData`, `TFormError`, `TFieldComponents`\>
 
 #### Returns
 

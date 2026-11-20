@@ -3,7 +3,7 @@ id: CreateFormHookOptions
 title: CreateFormHookOptions
 ---
 
-Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:56](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L56)
+Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:55](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L55)
 
 Configures the components and reusable defaults returned by
 `createFormHook`.
@@ -66,7 +66,7 @@ Library-managed. Do not specify explicitly.
 optional defaultFieldOptions?: DefaultFieldOptions;
 ```
 
-Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:89](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L89)
+Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:88](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L88)
 
 Defaults for every field and array-field component owned by the form.
 
@@ -90,7 +90,7 @@ defaultFieldOptions: {
 optional defaultFormGroupOptions?: DefaultFormGroupOptions;
 ```
 
-Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:105](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L105)
+Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:104](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L104)
 
 Defaults for every `form.FormGroup` component.
 
@@ -115,7 +115,7 @@ defaultFormGroupOptions: {
 optional defaultFormOptions?: DefaultFormOptions;
 ```
 
-Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:74](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L74)
+Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:73](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L73)
 
 Defaults for every form created by `useAppForm`.
 

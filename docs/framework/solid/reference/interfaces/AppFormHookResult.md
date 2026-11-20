@@ -3,7 +3,7 @@ id: AppFormHookResult
 title: AppFormHookResult
 ---
 
-Defined in: [packages/solid-form/src/AppForm/createFormHookTypes.public.ts:112](https://github.com/TanStack/form/blob/main/packages/solid-form/src/AppForm/createFormHookTypes.public.ts#L112)
+Defined in: [packages/solid-form/src/AppForm/createFormHookTypes.public.ts:118](https://github.com/TanStack/form/blob/main/packages/solid-form/src/AppForm/createFormHookTypes.public.ts#L118)
 
 ## Type Parameters
 
@@ -19,7 +19,7 @@ Defined in: [packages/solid-form/src/AppForm/createFormHookTypes.public.ts:112](
 appFormOptions: FormOptionsApi<TComponents>;
 ```
 
-Defined in: [packages/solid-form/src/AppForm/createFormHookTypes.public.ts:115](https://github.com/TanStack/form/blob/main/packages/solid-form/src/AppForm/createFormHookTypes.public.ts#L115)
+Defined in: [packages/solid-form/src/AppForm/createFormHookTypes.public.ts:121](https://github.com/TanStack/form/blob/main/packages/solid-form/src/AppForm/createFormHookTypes.public.ts#L121)
 
 ***
 
@@ -29,7 +29,7 @@ Defined in: [packages/solid-form/src/AppForm/createFormHookTypes.public.ts:115](
 defineAppFieldGroup: DefineFieldGroupFn<TComponents["fieldComponents"]>;
 ```
 
-Defined in: [packages/solid-form/src/AppForm/createFormHookTypes.public.ts:116](https://github.com/TanStack/form/blob/main/packages/solid-form/src/AppForm/createFormHookTypes.public.ts#L116)
+Defined in: [packages/solid-form/src/AppForm/createFormHookTypes.public.ts:122](https://github.com/TanStack/form/blob/main/packages/solid-form/src/AppForm/createFormHookTypes.public.ts#L122)
 
 ***
 
@@ -39,7 +39,7 @@ Defined in: [packages/solid-form/src/AppForm/createFormHookTypes.public.ts:116](
 useAppForm: UseAppFormHook<TComponents>;
 ```
 
-Defined in: [packages/solid-form/src/AppForm/createFormHookTypes.public.ts:117](https://github.com/TanStack/form/blob/main/packages/solid-form/src/AppForm/createFormHookTypes.public.ts#L117)
+Defined in: [packages/solid-form/src/AppForm/createFormHookTypes.public.ts:123](https://github.com/TanStack/form/blob/main/packages/solid-form/src/AppForm/createFormHookTypes.public.ts#L123)
 
 ***
 
@@ -49,7 +49,7 @@ Defined in: [packages/solid-form/src/AppForm/createFormHookTypes.public.ts:117](
 useFormContext: () => SolidAppFormApi<any, any, TComponents>;
 ```
 
-Defined in: [packages/solid-form/src/AppForm/createFormHookTypes.public.ts:118](https://github.com/TanStack/form/blob/main/packages/solid-form/src/AppForm/createFormHookTypes.public.ts#L118)
+Defined in: [packages/solid-form/src/AppForm/createFormHookTypes.public.ts:124](https://github.com/TanStack/form/blob/main/packages/solid-form/src/AppForm/createFormHookTypes.public.ts#L124)
 
 #### Returns
 

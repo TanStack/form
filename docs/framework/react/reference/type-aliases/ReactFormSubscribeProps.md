@@ -4,7 +4,7 @@ title: ReactFormSubscribeProps
 ---
 
 ```ts
-type ReactFormSubscribeProps<TFormData, TFormErrorTypes, TSelected> = ReactSubscribeProps<FormState<TFormData, TFormErrorTypes>, TSelected>;
+type ReactFormSubscribeProps<TFormData, TFormError, TSelected> = ReactSubscribeProps<FormState<TFormData, TFormError>, TSelected>;
 ```
 
 Defined in: [packages/react-form/src/ReactForm/Components.public.ts:102](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L102)
@@ -15,9 +15,9 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:102](https:/
 
 `TFormData`
 
-### TFormErrorTypes
+### TFormError
 
-`TFormErrorTypes` *extends* `FormErrorTypes`
+`TFormError` *extends* `ScopedErrorTypes`
 
 ### TSelected
 
