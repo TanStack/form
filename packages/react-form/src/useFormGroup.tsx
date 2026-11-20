@@ -580,7 +580,7 @@ export type FormGroupComponent<
     | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   in out TParentSubmitMeta,
-  in out ExtendedApi = {},
+  out ExtendedApi = {},
 > = <
   const TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,

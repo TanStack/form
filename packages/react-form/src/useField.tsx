@@ -498,7 +498,7 @@ export type FieldComponent<
     | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   in out TPatentSubmitMeta,
-  in out ExtendedApi = {},
+  out ExtendedApi = {},
 > = <
   const TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
@@ -555,7 +555,7 @@ export type FieldComponent<
 export type LensFieldComponent<
   in out TLensData,
   in out TParentSubmitMeta,
-  in out ExtendedApi = {},
+  out ExtendedApi = {},
 > = <
   const TName extends DeepKeys<TLensData>,
   TData extends DeepValue<TLensData, TName>,
