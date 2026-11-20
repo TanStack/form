@@ -56,7 +56,7 @@ export type Awaitable<TReturn> = TReturn | Promise<TReturn>
  * @typeParam TFieldValue - The value type preserved across field reads and update methods.
  */
 export type FieldWithValue<TFieldValue> = FieldApi<
-  any,
+  string,
   TFieldValue,
   any,
   any,
