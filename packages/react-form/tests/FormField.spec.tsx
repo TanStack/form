@@ -141,6 +141,83 @@ describe('Form fields', () => {
     expect(renders).toBe(replacementRenders)
   })
 
+  it('rerenders an ArrayField when its own errors change', async () => {
+    let renders = 0
+
+    function Component() {
+      const form = useForm({
+        defaultValues: { items: [{ label: 'A' }] },
+        errorVisibility: ({ state }) => state.submissionAttempts > 0,
+      })
+
+      return (
+        <>
+          <button onClick={() => form.handleSubmit()}>Submit</button>
+          <form.ArrayField
+            name="items"
+            validators={[
+              {
+                triggers: [],
+                run: ({ value }) =>
+                  value.length < 2 ? 'Add another item' : undefined,
+              },
+            ]}
+          >
+            {(field) => {
+              renders++
+              return (
+                <output data-testid="array">
+                  {field.errors.map((error) => error.message).join(',')}
+                </output>
+              )
+            }}
+          </form.ArrayField>
+          <form.Field
+            name="items[0].label"
+            validators={[
+              {
+                triggers: ['change'],
+                run: async ({ value }) =>
+                  value === 'AB' ? 'Too long' : undefined,
+              },
+            ]}
+          >
+            {(field) => (
+              <>
+                <input
+                  aria-label="label"
+                  value={field.value}
+                  onChange={(event) => field.handleChange(event.target.value)}
+                />
+                <span data-testid="label-error">
+                  {field.meta.original.errors
+                    .map((error) => error.message)
+                    .join(',')}
+                </span>
+              </>
+            )}
+          </form.Field>
+        </>
+      )
+    }
+
+    const screen = await render(<Component />)
+    const initialRenders = renders
+
+    await userEvent.type(screen.getByLabelText('label'), 'B')
+
+    await vi.waitFor(() =>
+      expect(screen.getByTestId('label-error')).toHaveTextContent('Too long'),
+    )
+    expect(renders).toBe(initialRenders)
+
+    await screen.getByRole('button', { name: 'Submit' }).click()
+
+    await vi.waitFor(() =>
+      expect(screen.getByTestId('array')).toHaveTextContent('Add another item'),
+    )
+  })
+
   it('should have the correct meta when changing the field', async () => {
     function Component() {
       const form = useForm({ defaultValues: { name: 'tony-hawk' } })
