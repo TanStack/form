@@ -566,6 +566,37 @@ describe('form api', () => {
     expect(field1.state.meta.isBlurred).toBe(true)
   })
 
+  it('should shift meta of an array nested inside another array when inserting values', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        teams: [{ members: ['a', 'b'] }],
+      },
+    })
+    form.mount()
+    new FieldApi({ form, name: 'teams' }).mount()
+    new FieldApi({ form, name: 'teams[0].members' }).mount()
+    const member0 = new FieldApi({ form, name: 'teams[0].members[0]' })
+    member0.mount()
+    const member1 = new FieldApi({ form, name: 'teams[0].members[1]' })
+    member1.mount()
+
+    member0.handleBlur()
+
+    expect(member0.state.meta.isBlurred).toBe(true)
+    expect(member1.state.meta.isBlurred).toBe(false)
+
+    await form.insertFieldValue('teams[0].members', 0, 'x')
+
+    expect(form.getFieldValue('teams[0].members')).toStrictEqual([
+      'x',
+      'a',
+      'b',
+    ])
+    // member0's meta moved onto member1 now
+    expect(member0.state.meta.isBlurred).toBe(false)
+    expect(member1.state.meta.isBlurred).toBe(true)
+  })
+
   it("should validate all shifted fields when inserting an array field's value", async () => {
     const form = new FormApi({
       defaultValues: {
@@ -732,6 +763,36 @@ describe('form api', () => {
     // field2's meta moved on field1 now
     expect(field1Name.state.meta.isBlurred).toBe(true)
     expect(field1Surname.state.meta.isBlurred).toBe(true)
+  })
+
+  it('should shift meta of an array nested inside another array when removing values', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        teams: [{ members: ['a', 'b', 'c'] }],
+      },
+    })
+    form.mount()
+    new FieldApi({ form, name: 'teams' }).mount()
+    new FieldApi({ form, name: 'teams[0].members' }).mount()
+    const member0 = new FieldApi({ form, name: 'teams[0].members[0]' })
+    member0.mount()
+    const member1 = new FieldApi({ form, name: 'teams[0].members[1]' })
+    member1.mount()
+    const member2 = new FieldApi({ form, name: 'teams[0].members[2]' })
+    member2.mount()
+
+    member2.handleBlur()
+
+    expect(member0.state.meta.isBlurred).toBe(false)
+    expect(member1.state.meta.isBlurred).toBe(false)
+    expect(member2.state.meta.isBlurred).toBe(true)
+
+    await form.removeFieldValue('teams[0].members', 0)
+
+    expect(form.getFieldValue('teams[0].members')).toStrictEqual(['b', 'c'])
+    // member2's meta moved onto member1 now
+    expect(member0.state.meta.isBlurred).toBe(false)
+    expect(member1.state.meta.isBlurred).toBe(true)
   })
 
   it("should swap an array field's value", () => {
