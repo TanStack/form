@@ -1,15 +1,15 @@
+import type {
+  ScopedErrorTypes,
+  ToFieldError,
+  FieldErrors as ValidationFieldErrors,
+} from '../validation/state.public'
 import type { TryGetArrayElementType } from '../deep-keys.public'
 import type { FieldUpdateOptions, Updater } from '../types.public'
 import type { FormApi } from '../FormApi/FormApi.public'
-import type {
-  FieldValidators,
-  ToFieldError,
-  FieldErrors as ValidationFieldErrors,
-} from '../validation.public'
-import type { FieldListeners } from '../listeners.public'
 import type { ReadonlyAtom } from '@tanstack/store'
-import type { ScopedErrorTypes } from '../validation/state.public'
+import type { FieldValidators } from '../pipeline/validation/validation.public'
 import type { ErrorVisibilityFn } from '../FormApi/errorVisibility.public'
+import type { FieldListeners } from '../pipeline/listeners/listeners.public'
 
 export interface BaseFieldMeta {
   isTouched: boolean

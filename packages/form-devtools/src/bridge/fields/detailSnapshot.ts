@@ -2,11 +2,9 @@ import { getBy, isStandardSchema } from '@tanstack/form-core/internals'
 import { compareFieldPaths } from '../utils'
 import type {
   AnyInternalFieldApi,
-  AnyInternalValidatorInstance,
-  FieldWatchingListenerFields,
-  FieldWatchingValidatorFields,
+  AnyValidatorInstance,
   InternalFieldState,
-  ValidationSourceErrorMap,
+  ValidationErrorStoreState,
 } from '@tanstack/form-core/internals'
 import type { ValidationIssue } from '@tanstack/form-core'
 import type {
@@ -51,8 +49,8 @@ function appendValidatorErrors({
   mode,
 }: {
   destination: Array<DevtoolsFieldError>
-  errorMap: ValidationSourceErrorMap | null
-  validatorInstances: ReadonlyArray<AnyInternalValidatorInstance> | null
+  errorMap: ValidationErrorStoreState
+  validatorInstances: ReadonlyArray<AnyValidatorInstance> | null
   getSource: (
     validatorIndex: number,
     sourceEvent: string,
@@ -60,10 +58,9 @@ function appendValidatorErrors({
   mode: FieldErrorPayloadMode
 }): void {
   validatorInstances?.forEach((validatorInstance, validatorIndex) => {
-    const errorState = errorMap?.get(validatorInstance)
-    if (!errorState) return
-
-    const { errors, sourceEvent } = errorState
+    const errors = errorMap?.get(validatorInstance)
+    const sourceEvent = validatorInstance.lastAppliedEvent
+    if (!errors || !sourceEvent) return
     const source = getSource(validatorIndex, sourceEvent)
 
     for (const error of errors) {
@@ -78,17 +75,16 @@ function appendValidatorErrors({
 
 export function getDevtoolsFieldErrors(
   field: AnyInternalFieldApi,
-  state: InternalFieldState,
   mode: FieldErrorPayloadMode,
 ): Array<DevtoolsFieldError> {
-  // Keep this traversal aligned with getErrorsFromBaseMeta in form-core so
+  // Keep this traversal aligned with the core error store so
   // these entries have the same order as field.state.meta.original.errors.
   const errors: Array<DevtoolsFieldError> = []
-  const meta = state.meta
+  const errorMap = field._errorStore.atom.get()
 
   appendValidatorErrors({
     destination: errors,
-    errorMap: meta._validationSourceErrors,
+    errorMap: errorMap,
     validatorInstances: field._validatorInstances,
     mode,
     getSource: (validatorIndex) => ({
@@ -100,12 +96,12 @@ export function getDevtoolsFieldErrors(
     }),
   })
 
-  if (meta._validationSourceErrors) {
+  if (errorMap) {
     const containingGroup = field._getFormGroup()
 
     appendValidatorErrors({
       destination: errors,
-      errorMap: meta._validationSourceErrors,
+      errorMap: errorMap,
       validatorInstances: containingGroup?._validatorInstances ?? null,
       mode,
       getSource: (validatorIndex) => ({
@@ -123,7 +119,7 @@ export function getDevtoolsFieldErrors(
 
   appendValidatorErrors({
     destination: errors,
-    errorMap: meta._validationSourceErrors,
+    errorMap: errorMap,
     validatorInstances: field.form._validatorInstances,
     mode,
     getSource: (validatorIndex) => ({
@@ -135,11 +131,10 @@ export function getDevtoolsFieldErrors(
     }),
   })
 
-  const onSubmitErrorState = meta._validationSourceErrors?.get(
-    field.form._onSubmitSource,
-  )
+  const onSubmitErrorState = errorMap?.get(field.form._onSubmitSource)
   if (onSubmitErrorState) {
-    const { errors: submitErrors, sourceEvent } = onSubmitErrorState
+    const submitErrors = onSubmitErrorState
+    const sourceEvent = field.form._onSubmitSource.lastAppliedEvent!
     for (const error of submitErrors) {
       errors.push({
         error: projectError(error, mode),
@@ -160,7 +155,6 @@ function getDevtoolsFieldState(
   const meta = state.meta
   const originalErrors = getDevtoolsFieldErrors(
     field,
-    state,
     descriptor.settings.errorPayloadMode,
   )
 
@@ -233,118 +227,60 @@ function addRelation(
   })
 }
 
-function addListenerListensToRelations(
+function addForwardRelations(
   relations: Map<FieldId, FieldRelationAccumulator>,
   field: AnyInternalFieldApi,
+  kind: DevtoolsFieldRelationKind,
   identity: Pick<FieldIdentityController, 'getFieldId'>,
 ): void {
-  field._listenerInstances?.forEach((listenerInstance, itemIndex) => {
-    listenerInstance.resolvedWatchFields?.forEach(
-      (sourceField, configuredPath) => {
-        addRelation(
-          relations,
-          sourceField,
-          getRelationCause(
-            'listener',
-            itemIndex,
-            configuredPath,
-            sourceField.name,
-          ),
-          identity,
-        )
-      },
-    )
-  })
-}
-
-function addListenerListenedToByRelations(
-  relations: Map<FieldId, FieldRelationAccumulator>,
-  sourceField: AnyInternalFieldApi,
-  watchingFields: FieldWatchingListenerFields | null,
-  identity: Pick<FieldIdentityController, 'getFieldId'>,
-): void {
-  watchingFields?.forEach((listenerInstances, watchingField) => {
-    if (watchingField._isKilled) return
-
-    for (const listenerInstance of listenerInstances) {
-      const itemIndex =
-        watchingField._listenerInstances?.indexOf(listenerInstance) ?? -1
-      if (itemIndex < 0) continue
-
-      let configuredPath: string | undefined
-      listenerInstance.resolvedWatchFields?.forEach((field, path) => {
-        if (field === sourceField) configuredPath = path
-      })
+  const instances =
+    kind === 'listener' ? field._listenerInstances : field._validatorInstances
+  instances?.forEach((instance, itemIndex) => {
+    for (const configuredPath of new Set(
+      instance.definition.watchFields ?? [],
+    )) {
+      const sourceField = field.form._tryGetFieldApi(configuredPath)
+      if (!sourceField) continue
       addRelation(
         relations,
-        watchingField,
-        getRelationCause(
-          'listener',
-          itemIndex,
-          configuredPath,
-          sourceField.name,
-        ),
+        sourceField,
+        getRelationCause(kind, itemIndex, configuredPath, sourceField.name),
         identity,
       )
     }
   })
 }
 
-function addValidatorListensToRelations(
-  relations: Map<FieldId, FieldRelationAccumulator>,
-  field: AnyInternalFieldApi,
-  identity: Pick<FieldIdentityController, 'getFieldId'>,
-): void {
-  field._validatorInstances?.forEach((validatorInstance, itemIndex) => {
-    validatorInstance.resolvedWatchFields?.forEach(
-      (sourceField, configuredPath) => {
-        addRelation(
-          relations,
-          sourceField,
-          getRelationCause(
-            'validator',
-            itemIndex,
-            configuredPath,
-            sourceField.name,
-          ),
-          identity,
-        )
-      },
-    )
-  })
-}
-
-function addValidatorListenedToByRelations(
+function addReverseRelations(
   relations: Map<FieldId, FieldRelationAccumulator>,
   sourceField: AnyInternalFieldApi,
-  watchingFields: FieldWatchingValidatorFields | null,
+  kind: DevtoolsFieldRelationKind,
   identity: Pick<FieldIdentityController, 'getFieldId'>,
 ): void {
-  watchingFields?.forEach((validatorInstances, watchingField) => {
-    if (watchingField._isKilled) return
-
-    for (const validatorInstance of validatorInstances) {
-      const itemIndex =
-        watchingField._validatorInstances?.indexOf(validatorInstance) ?? -1
-      if (itemIndex < 0) continue
-
-      let configuredPath: string | undefined
-      validatorInstance.resolvedWatchFields?.forEach((field, path) => {
-        if (field === sourceField) configuredPath = path
-      })
-      addRelation(
-        relations,
-        watchingField,
-        getRelationCause(
-          'validator',
-          itemIndex,
-          configuredPath,
-          sourceField.name,
-        ),
-        identity,
-      )
-    }
-  })
+  const registry =
+    kind === 'listener'
+      ? sourceField.form._watchingListenerFields
+      : sourceField.form._watchingValidatorFields
+  for (const watchingField of registry.get(sourceField.name) ?? []) {
+    if (watchingField._isKilled) continue
+    const instances =
+      kind === 'listener'
+        ? watchingField._listenerInstances
+        : watchingField._validatorInstances
+    instances?.forEach((instance, itemIndex) => {
+      for (const configuredPath of new Set(
+        instance.definition.watchFields ?? [],
+      )) {
+        if (configuredPath !== sourceField.name) continue
+        addRelation(
+          relations,
+          watchingField,
+          getRelationCause(kind, itemIndex, configuredPath, sourceField.name),
+          identity,
+        )
+      }
+    })
+  }
 }
 
 function compareRelationCauses(
@@ -381,20 +317,10 @@ function getDevtoolsFieldRelations(
   const listensTo = new Map<FieldId, FieldRelationAccumulator>()
   const listenedToBy = new Map<FieldId, FieldRelationAccumulator>()
 
-  addListenerListensToRelations(listensTo, field, identity)
-  addValidatorListensToRelations(listensTo, field, identity)
-  addListenerListenedToByRelations(
-    listenedToBy,
-    field,
-    field._watchingListenerFields,
-    identity,
-  )
-  addValidatorListenedToByRelations(
-    listenedToBy,
-    field,
-    field._watchingValidatorFields,
-    identity,
-  )
+  addForwardRelations(listensTo, field, 'listener', identity)
+  addForwardRelations(listensTo, field, 'validator', identity)
+  addReverseRelations(listenedToBy, field, 'listener', identity)
+  addReverseRelations(listenedToBy, field, 'validator', identity)
 
   return {
     directChildCount: field._children.reduce(

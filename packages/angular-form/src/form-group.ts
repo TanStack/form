@@ -28,6 +28,7 @@ export class TanStackFormGroup<
   TGroupValue extends DeepValue<TFormData, TGroupName>,
   const TGroupValidators extends FormGroupValidators<TGroupValue>,
   TFormError extends ScopedErrorTypes,
+  TSubmitReturn = void,
 > {
   tanstackFormGroup = input.required<FormApi<TFormData, TFormError>>()
   name = input.required<TGroupName>()
@@ -39,7 +40,8 @@ export class TanStackFormGroup<
         TGroupName,
         TGroupValue,
         TGroupValidators,
-        TFormError
+        TFormError,
+        TSubmitReturn
       >
     >()
   onSubmitInvalid =
@@ -48,7 +50,7 @@ export class TanStackFormGroup<
         TFormData,
         TGroupName,
         TGroupValue,
-        NoInfer<ToFormGroupErrorTypes<TGroupValidators>>,
+        NoInfer<ToFormGroupErrorTypes<TGroupValidators, TSubmitReturn>>,
         TFormError
       >
     >()
@@ -59,7 +61,8 @@ export class TanStackFormGroup<
     TGroupName,
     TGroupValue,
     TGroupValidators,
-    TFormError
+    TFormError,
+    TSubmitReturn
   > | null = null
 
   private getOptions() {

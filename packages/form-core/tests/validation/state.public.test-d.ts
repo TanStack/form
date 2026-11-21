@@ -1,9 +1,9 @@
 import { describe, expectTypeOf, it } from 'vitest'
-import type { StandardSchemaV1Issue } from '../../src/standardSchema.public'
+import type { StandardSchemaV1Issue } from '../../src/validation/results/standardSchema.public'
 import type {
   CreateErrorMapFn,
   ValidationFailureItem,
-} from '../../src/validation/state.public'
+} from '../../src/validation/results/results.public'
 
 declare const createErrorMap: CreateErrorMapFn<unknown>
 declare const createNameErrorMap: CreateErrorMapFn<{ name: string }>

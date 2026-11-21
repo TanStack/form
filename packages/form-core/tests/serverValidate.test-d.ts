@@ -6,7 +6,7 @@ import type {
   FieldValidators,
   FormApi,
   FormGroupValidators,
-  FormValidationResult,
+  FormattedValidationResult,
   ParsedStandardSchemaIssues,
   ServerFormState,
 } from '../src'
@@ -55,14 +55,14 @@ describe('server validation types', () => {
     expectTypeOf(result.serverState).toEqualTypeOf<ServerFormState<Values>>()
     expectTypeOf<
       (typeof result.serverState.validationResults)[number]['result']
-    >().toEqualTypeOf<FormValidationResult<Values>>()
+    >().toEqualTypeOf<FormattedValidationResult<Values>>()
   })
 
   it('accepts server errors independently of client validator error shapes', () => {
     const issue = { message: 'Invalid name', code: 400 }
     const serverState: ServerFormState<Values> = {
       values: { name: 'Tony' },
-      validationResults: [{ validatorIndex: 0, result: issue, output: null }],
+      validationResults: [{ validatorIndex: 0, result: [issue], output: null }],
       submissionAttempts: 1,
     }
 

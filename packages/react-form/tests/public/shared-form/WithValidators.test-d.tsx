@@ -32,7 +32,7 @@ const optsStrict = formOptions.strictSchema(schema, {
   ],
 })
 
-const optsLoose = formOptions.strictSchema(schema, {
+const optsLoose = formOptions.looseSchema(schema, {
   defaultValues,
   validators: [
     {

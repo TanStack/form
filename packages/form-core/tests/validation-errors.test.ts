@@ -1,20 +1,10 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import {
   isErrorResult,
   isValidationErrorMap,
   parseValidationResult,
-  reconcileRoutedFieldErrors,
-} from '../src/validation'
-import { InternalValidatorInstance } from '../src/ValidatorInstance.lib'
-import type { AnyInternalFieldApi } from '../src/FieldApi/FieldApi.lib'
+} from '../src/validation/results/errors.lib'
 
-function createTestValidatorInstance() {
-  return new InternalValidatorInstance({
-    definition: { run: () => null, triggers: [] },
-    owner: {},
-    scope: 'form',
-  })
-}
 describe('parseValidationResult', () => {
   it('returns no stored errors for valid results', () => {
     const validResults: Array<null | undefined | false | Array<never>> = [
@@ -111,70 +101,5 @@ describe('parseValidationResult', () => {
     })
     expect(isErrorResult(result)).toBe(false)
     expect(isErrorResult(resultWithEmptyEntries)).toBe(false)
-  })
-})
-
-describe('reconcileRoutedFieldErrors', () => {
-  it('sets errors on already-resolved field refs', () => {
-    const validatorInstance = createTestValidatorInstance()
-    const field = { name: 'name' } as AnyInternalFieldApi
-    const errors = [{ message: 'Name is required' }]
-    const setFieldError = vi.fn()
-    const result = reconcileRoutedFieldErrors(
-      validatorInstance,
-      [[field, errors]],
-      undefined,
-      setFieldError,
-      vi.fn(),
-    )
-
-    expect(setFieldError).toHaveBeenCalledWith(field, validatorInstance, errors)
-    expect(result.fieldRefs).toEqual(new Set([field]))
-    expect(result.affectedFields).toEqual(new Set([field]))
-  })
-
-  it('reports unchanged refs when no new or old field refs exist', () => {
-    const validatorInstance = createTestValidatorInstance()
-    const result = reconcileRoutedFieldErrors(
-      validatorInstance,
-      [],
-      undefined,
-      vi.fn(),
-      vi.fn(),
-    )
-
-    expect(result.didFieldRefsChange).toBe(false)
-    expect(result.fieldRefs.size).toBe(0)
-    expect(result.affectedFields.size).toBe(0)
-  })
-
-  it('reports unchanged refs when the old field ref set is empty', () => {
-    const validatorInstance = createTestValidatorInstance()
-    const result = reconcileRoutedFieldErrors(
-      validatorInstance,
-      [],
-      new Set(),
-      vi.fn(),
-      vi.fn(),
-    )
-
-    expect(result.didFieldRefsChange).toBe(false)
-  })
-
-  it('clears stale old field refs when no new refs replace them', () => {
-    const validatorInstance = createTestValidatorInstance()
-    const field = { name: 'name' } as AnyInternalFieldApi
-    const clearFieldError = vi.fn()
-    const result = reconcileRoutedFieldErrors(
-      validatorInstance,
-      [],
-      new Set([field]),
-      vi.fn(),
-      clearFieldError,
-    )
-
-    expect(result.didFieldRefsChange).toBe(true)
-    expect(result.affectedFields).toEqual(new Set([field]))
-    expect(clearFieldError).toHaveBeenCalledWith(field, validatorInstance)
   })
 })

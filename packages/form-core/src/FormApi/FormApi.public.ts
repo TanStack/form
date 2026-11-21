@@ -1,12 +1,12 @@
-import type { ReadonlyAtom } from '@tanstack/store'
-import type { FormApiArrayMethods } from './FormApiArrayMethods.types.public'
-import type { FormApiFieldMethods } from './FormApiFieldMethods.types.public'
+import type { ScopedErrorTypes } from '../validation/state.public'
 import type {
-  FormValidationFailure,
-  ScopedErrorTypes,
+  FormattedValidationError,
   ValidationIssue,
-} from '../validation/state.public'
-import type { DynamicValidatorTriggers } from '../events.public'
+} from '../validation/results/results.public'
+import type { FormApiFieldMethods } from './FormApiFieldMethods.types.public'
+import type { FormApiArrayMethods } from './FormApiArrayMethods.types.public'
+import type { ReadonlyAtom } from '@tanstack/store'
+import type { DynamicValidatorTriggers } from '../pipeline/events.public'
 
 type FormError<TFormError extends ScopedErrorTypes> =
   TFormError extends ScopedErrorTypes<infer TError extends ValidationIssue, any>
@@ -14,211 +14,194 @@ type FormError<TFormError extends ScopedErrorTypes> =
     : never
 
 /**
- * A snapshot of current values, validation status, and submission metadata.
+ * Current form values, validation status, and submission metadata.
  *
- * Read the latest snapshot from `formApi.state` or subscribe to
- * `formApi.atom`.
+ * Read the state through `formApi.state`, or subscribe to `formApi.atom` to
+ * observe changes.
  *
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
- * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
+ * @typeParam TFormError - Library-managed. Do not specify explicitly.
  */
 export interface FormState<
   in out TFormData,
   out TFormError extends ScopedErrorTypes,
 > {
   /**
-   * Current values after field edits, resets, or default-value updates.
+   * The current values of the form.
    */
   values: TFormData
   /**
-   * Whether at least one field is currently touched.
+   * Whether at least one field is touched.
    *
-   * Field changes mark fields as touched by default, and submission marks all
-   * registered fields as touched. Resets clear the touched state.
+   * - Field changes and blurs mark fields touched by default.
+   * - Attempting to submit the form touches all fields.
+   * - Resetting the form clears touched state.
    */
   isTouched: boolean
   /**
-   * Whether a value update has marked state as dirty.
+   * Whether a value update has marked the form dirty.
    *
-   * This records whether a dirty-marking update has occurred, not whether
-   * current values match their defaults. Once `true`, it remains `true` even if
-   * values return to their defaults. `formApi.reset()` clears it.
-   *
-   * * Equivalent to `!isPristine`.
-   * * Use `isDefaultValue` to check whether current values match their defaults.
+   * - Field changes mark the form dirty by default.
+   * - Returning values to their defaults leaves this `true`.
+   * - Resetting the form clears this flag.
+   * - Use `isDefaultValue` to compare current values with their defaults.
    */
   isDirty: boolean
   /**
-   * Whether state has not been marked dirty.
+   * Whether the form has not been marked dirty. Equivalent to `!isDirty`.
    *
-   * This records whether a dirty-marking update has occurred, not whether
-   * current values match their defaults. Once `false`, it remains `false` even
-   * if values return to their defaults. `formApi.reset()` restores it.
-   *
-   * * Equivalent to `!isDirty`.
-   * * Use `isDefaultValue` to check whether current values match their defaults.
+   * Use `isDefaultValue` to compare current values with their defaults.
    */
   isPristine: boolean
   /**
-   * Whether current values deeply match `formApi.defaultValues`.
+   * Whether current values deeply equal `formApi.defaultValues`.
    *
-   * Unlike `isDirty` and `isPristine`, this compares current values with their
-   * defaults rather than tracking whether edits have occurred. Reverting an
-   * edit can make it `true` while `isDirty` remains `true`.
+   * Returning values to their defaults makes this `true` even when `isDirty`
+   * remains `true`.
    */
   isDefaultValue: boolean
   /**
-   * Form-level errors from validators and `onSubmit`.
+   * Form-level validation issues from form validators and `onSubmit`.
    *
-   * Errors are flattened in validator order, with `onSubmit` errors last.
-   * Errors routed to fields are exposed through the corresponding field APIs
-   * and are not included here.
+   * - Issues are flattened in validator order, with `onSubmit` issues last.
+   * - Field and form group errors are exposed through their APIs and excluded
+   *   from this array.
    */
   errors: Array<FormError<TFormError>>
   /**
-   * Whether validation state contains no form- or field-level errors.
+   * Whether the form, its fields, and its form groups have no stored validation
+   * errors. Equivalent to `!isInvalid`.
    *
-   * * Equivalent to `!isInvalid`.
-   * * A field error hidden by `errorVisibility` still makes this `false`.
+   * - Validation does not need to have run for this to be `true`.
+   * - Field `errorVisibility` does not affect this flag.
    */
   isValid: boolean
   /**
-   * Whether validation state contains at least one form- or field-level error.
+   * Whether the form, a field, or a form group has a stored validation error.
+   * Equivalent to `!isValid`.
    *
-   * This is the exact inverse of `isValid`. Field `errorVisibility` does not
-   * affect it.
-   *
-   * * Equivalent to `!isValid`.
+   * Field `errorVisibility` does not affect this flag.
    */
   isInvalid: boolean
   /**
-   * Whether no submission is running and validation state has no known errors.
+   * Whether the form has no stored validation errors and no submission is in
+   * progress. Equivalent to `isValid && !isSubmitting`.
    *
-   * This is optimistic: validation does not need to have run, and pending
-   * validation alone does not make it `false`. `handleSubmit()` still runs
-   * submission validation.
+   * - Defaults to `true`, even when no values have changed. Check `isPristine` separately if submission requires edited values.
+   * - Pending validation alone does not make this `false`. Use `isValidating` for that instead.
    *
-   * * Equivalent to `isValid && !isSubmitting`.
+   * @remarks
+   * **Important:** `formApi.handleSubmit()` remains callable when this is `false`.
+   * Submission runs all field and form validators by default unless they set `skipOnSubmit`.
    */
   canSubmit: boolean
   /**
-   * Whether a submission attempt is in progress.
+   * Whether a form submission is in progress.
    *
-   * This includes submission validation and the time spent awaiting `onSubmit`
-   * or `onSubmitInvalid`.
+   * This includes validation and waiting for `onSubmit` or `onSubmitInvalid`
+   * to finish.
    */
   isSubmitting: boolean
   /**
-   * Whether the latest completed submission finished without validation errors
-   * or an `onSubmit` failure.
+   * Whether the last completed form submission succeeded.
    *
-   * It starts as `false`, updates when an attempt finishes, and is cleared by
-   * `formApi.reset()`.
+   * Success requires validation to pass and `onSubmit` to finish without
+   * validation errors or exceptions.
+   *
+   * - The previous result remains while a new attempt runs.
+   * - Superseded or canceled attempts cannot update this flag.
+   * - The flag starts as `false`. Resetting or unmounting the form clears it.
    */
   isSubmitSuccessful: boolean
   /**
-   * Whether any form-, group-, or field-level validation is pending.
+   * Whether any form, form group, or field validation is pending.
    *
-   * It remains `true` until all concurrent validation work finishes or is
-   * canceled. Pending validation does not by itself make `canSubmit` `false`.
+   * This remains `true` until all pending validation finishes or is canceled.
+   * Pending validation alone does not make `canSubmit` `false`.
    */
   isValidating: boolean
   /**
-   * Number of submission attempts started since the last reset.
+   * Number of form submission attempts recorded, including failed or canceled
+   * attempts.
    *
-   * An attempt is counted before validation begins, whether it succeeds or
-   * fails. `formApi.reset()` returns the count to `0`.
+   * - Each `handleSubmit()` call increments the count before validation.
+   * - `formApi.reset()` sets the count to `0`.
+   * - Form group submissions do not increment this count.
    */
   submissionAttempts: number
 }
 
 /**
- * A core form API whose value and error types are erased.
+ * A form API whose form data and error types are erased.
  *
- * Use it for reusable helpers that only need operations shared by every form.
- * Field paths and values are not type-checked through this alias, and it does
- * not include component helpers added by a framework adapter.
+ * Use it for reusable helpers that read shared form state, such as `isDirty`
+ * or `isSubmitting`, without depending on a specific form shape.
+ *
+ * @remarks
+ * **Important:** Field paths and values are not checked against a particular
+ * form shape.
  */
 export type AnyFormApi = FormApi<any, any>
 
 /**
- * Options controlling whether `reset(values)` replaces the default-value
- * baseline.
- *
- * @example
- * ```ts
- * formApi.reset(savedValues, { updateDefaultValues: false })
- * ```
+ * Controls whether {@link FormApi.reset | reset} replaces the form's default
+ * values when new values are supplied.
  */
 export interface FormResetOptions {
   /**
-   * Whether `reset(values)` should also update the form's `defaultValues`
-   * baseline.
+   * Whether the values supplied to `reset` also replace the form's `defaultValues`.
    *
-   * By default, passing values to `reset` treats those values as the new reset
-   * baseline. Future `reset()` calls will return to those values, and
-   * `state.isDefaultValue` will compare against them.
+   * When `false`, the form preserves the existing defaults.
+   * `isDefaultValue` and later `form.reset()` calls use those existing `defaultValues`.
    *
-   * Set this to `false` when you want reset semantics for form state
-   * (clearing touched, dirty, validation, submission state, and mounted fields)
-   * but want to keep comparing against the previous `defaultValues`.
+   * This option has no effect when reset values are omitted.
    *
-   * With `updateDefaultValues: false`, `state.isDirty` is reset to `false`,
-   * but `state.isDefaultValue` may be `false` if the provided reset values do
-   * not deeply equal the preserved defaults.
-   *
-   * This option is ignored when no reset values are provided.
-   *
-   * @example
-   * ```ts
-   * const originalDefaults = formApi.defaultValues
-   *
-   * formApi.reset(savedDraft, { updateDefaultValues: false })
-   * // `savedDraft` is current, but `originalDefaults` remains the baseline.
-   *
-   * formApi.reset()
-   * // Restores `originalDefaults`, not `savedDraft`.
-   * ```
+   * @default true
    */
   updateDefaultValues?: boolean
 }
 
 /**
- * Runs submission validation and submits current values when validation
- * succeeds.
+ * Validates the form and calls `onSubmit` when validation succeeds.
  *
- * Registered fields are marked touched, field validators run before form
- * validators, and `onSubmit` is awaited only when validation succeeds.
- * Validation error results and errors returned by `onSubmit` through
- * `createValidationError` or `createErrorMap` are stored as error state.
- * `onSubmitInvalid` is awaited after a failed attempt.
+ * - A submission attempt touches all fields.
+ * - Runs field validators before form validators.
+ * - Awaits `onSubmit` or, after a failed attempt, `onSubmitInvalid`.
+ * - Each call starts a separate attempt and supersedes the form's pending attempt.
+ *   Later edits do not cancel the attempt or replace its captured values.
+ * - Exceptions from validation or `onSubmit` reject the promise unless
+ *   `onSubmitInvalid` calls `preventThrow()`.
  *
- * Calls made while an attempt is in progress return the same promise instead
- * of starting another attempt.
+ * @remarks
+ * **Important:** An empty error array does not guarantee a successful submission.
+ * Supersession, reset, unmount, or server-state replacement aborts the attempt's
+ * signal and pending validation. Cancellation before callbacks start resolves
+ * with `[]`. Callbacks that already started are still awaited, but their results
+ * cannot update form state after cancellation.
  *
- * @returns A promise resolving to the error results produced by field and
- * form validation, plus any validation error returned by `onSubmit` through
- * `createValidationError` or `createErrorMap`. The array is empty if none are
- * produced.
+ * @returns A promise resolving to a flat array of issues and error maps from
+ * field and form validation, plus validation errors returned by `onSubmit`.
+ * Strings become issue objects. The array is empty if no errors are produced.
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
  */
 export type HandleSubmitFn<in out TFormData> = () => Promise<
-  Array<FormValidationFailure<TFormData>>
+  Array<FormattedValidationError<TFormData>>
 >
 
 /**
- * Resets form values, metadata, validation state, and mounted fields.
+ * Resets form values, field metadata, validation errors, and submission state.
  *
- * Calling without values restores the current `defaultValues`. Supplying
- * values sets the current values and also updates `defaultValues` to those
- * values. This can apply expected values immediately while fresh data is
- * fetched from the backend.
+ * - Omitting `values` restores the current `defaultValues`.
+ * - Supplying `values` also replaces `defaultValues` unless
+ *   `opts.updateDefaultValues` is `false`.
+ * - Results from pending validation and submission cannot update the reset state.
  *
- * Results from validation or submission work pending at reset are discarded.
+ * @remarks
+ * **Important:** Reset aborts submission signals but does not wait for callbacks
+ * that already started. Their submission promises still settle with the
+ * callbacks' results or exceptions.
  *
- * @param values - Values to apply, or omit to restore `defaultValues`.
- * @param opts - Options controlling whether supplied values replace
- * `defaultValues`.
+ * @param values - Replacement values for the entire form.
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
  */
 export type ResetFn<in out TFormData> = (
@@ -226,15 +209,6 @@ export type ResetFn<in out TFormData> = (
   opts?: FormResetOptions,
 ) => void
 
-/**
- * Core API for reading and updating state, validating values, and handling
- * submission.
- *
- * Framework adapters compose this interface with framework-specific helpers.
- *
- * @typeParam TFormData - Library-managed. Do not specify explicitly.
- * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
- */
 export interface FormApi<
   in out TFormData,
   // TODO in out?
@@ -272,30 +246,42 @@ export interface FormApi<
    * Field-level validators are not run by this method.
    *
    * @param signal - The trigger used to select validators.
-   * @returns A promise resolving to each error result from the validators that
-   * ran. Unlike `state.errors`, these results are not flattened.
+   * @returns A promise resolving to a flat array of issues and error maps from
+   * the validators that ran. Strings become issue objects; error maps retain
+   * their field paths.
    */
   validate: (
     signal: DynamicValidatorTriggers,
-  ) => Promise<Array<FormValidationFailure<TFormData>>>
+  ) => Promise<Array<FormattedValidationError<TFormData>>>
 
   /**
    * Runs submission validation and submits current values when validation
    * succeeds.
    *
-   * Registered fields are marked touched, field validators run before form
-   * validators, and `onSubmit` is awaited only when validation succeeds.
+   * A submission attempt touches all fields.
+   *
+   * Field validators run before form validators, and `onSubmit` is awaited only
+   * when validation succeeds.
    * Validation error results and errors returned by `onSubmit` through
    * `createValidationError` or `createErrorMap` are stored as error state.
    * `onSubmitInvalid` is awaited after a failed attempt.
+   * Exceptions reject after submission state is cleaned up, unless
+   * `onSubmitInvalid` calls `preventThrow()`.
    *
-   * Calls made while an attempt is in progress return the same promise instead
-   * of starting another attempt.
+   * Each call starts a fresh attempt with its own promise and captured values,
+   * superseding the form's pending attempt. Later edits do not cancel it or
+   * replace its captured values. Group submissions remain independent.
    *
-   * The returned promise resolves to the error results produced by field and
-   * form validation, plus any validation error returned by `onSubmit` through
-   * `createValidationError` or `createErrorMap`. The array is empty if none are
-   * produced.
+   * Supersession, reset, unmount, or server-state replacement aborts the attempt's
+   * callback signal and pending validation. Cancellation before callbacks start
+   * resolves with `[]`. Callbacks already started are still awaited with normal
+   * error handling, while their results cannot update form state. Submission
+   * state tracks only the current attempt.
+   *
+   * The returned promise resolves to a flat array of issues and error maps
+   * from field and form validation, plus errors returned by `onSubmit` through
+   * its validation helpers. Strings become issue objects. The array is empty
+   * if no errors are produced.
    */
   handleSubmit: HandleSubmitFn<TFormData>
   /**

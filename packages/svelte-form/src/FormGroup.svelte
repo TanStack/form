@@ -17,19 +17,21 @@
     TGroupValue,
     const TGroupValidators extends FormGroupValidators<TGroupValue>,
     TFormError extends ScopedErrorTypes,
+    TSubmitReturn = void,
   >(
     options: () => FormGroupOptions<
       TFormData,
       TGroupName,
       TGroupValue,
       TGroupValidators,
-      TFormError
+      TFormError,
+      TSubmitReturn
     >,
   ): FormGroupApi<
     TFormData,
     TGroupName,
     TGroupValue,
-    ToFormGroupErrorTypes<TGroupValidators>,
+    ToFormGroupErrorTypes<TGroupValidators, TSubmitReturn>,
     TFormError
   > {
     const group = new InternalFormGroupApi(options() as never)

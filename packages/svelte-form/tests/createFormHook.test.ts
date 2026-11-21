@@ -16,7 +16,7 @@ describe('createFormHook defaults', () => {
       .click()
 
     expect(view.getByTestId('form-calls')).toHaveTextContent(
-      'default,local,default,local,default,local,default,local',
+      'default,local,default,local',
     )
     expect(view.getByTestId('field-calls')).toHaveTextContent(
       'local:direct,default:direct,default:directArray,default:group.field,default:group.array',

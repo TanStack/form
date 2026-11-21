@@ -327,7 +327,12 @@ describe('validator outputs', () => {
         output: { name: 'Tony' },
         hasOutput: true,
       },
-      { validatorIndex: 1, result: 'Rejected', output: null, hasOutput: false },
+      {
+        validatorIndex: 1,
+        result: [{ message: 'Rejected' }],
+        output: null,
+        hasOutput: false,
+      },
     ])
   })
 })

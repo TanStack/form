@@ -1,5 +1,5 @@
-import type { ServerSideEvents } from '../events.public'
-import type { FormValidationResult } from '../validation/state.public'
+import type { FormattedValidationResult } from '../validation/results/results.public'
+import type { ServerSideEvents } from '../pipeline/events.public'
 import type { GetValidatorOutputs } from './formSubmit.public'
 
 export const initialServerFormState: ServerFormState<any> = {
@@ -8,11 +8,16 @@ export const initialServerFormState: ServerFormState<any> = {
   submissionAttempts: 0,
 }
 
+/**
+ * Server validation state with formatted error contents for hydration.
+ *
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ */
 export interface ServerFormState<TFormData> {
   values: TFormData | undefined
   validationResults: Array<{
     validatorIndex: number
-    result: FormValidationResult<TFormData>
+    result: FormattedValidationResult<TFormData>
     output: unknown | null
     hasOutput?: boolean
   }>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { createErrorMap } from '../../src/validation/createErrorMap.lib'
+import { createErrorMap } from '../../src/validation/results/createErrorMap.lib'
 
 describe('createErrorMap', () => {
   it.each([

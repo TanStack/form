@@ -151,7 +151,10 @@ describe('installDevtoolsBridge', () => {
       defaultValues: { source: '', target: 'target' },
     })
     const source = form._getOrCreateFieldApi({ name: 'source' })
-    const target = form._getOrCreateFieldApi({ name: 'target' })
+    const target = form._getOrCreateFieldApi({
+      name: 'target',
+      listeners: [{ triggers: ['change'], run: () => {} }],
+    })
     source._register()
     target._register()
     const listener = vi.fn()
@@ -167,10 +170,8 @@ describe('installDevtoolsBridge', () => {
 
     expect(fieldDependenciesChanged).toHaveBeenCalledWith([
       expect.objectContaining({
-        kind: 'listener',
-        sourceField: source,
+        sourceFieldName: 'source',
         watchingField: target,
-        listenerInstance: expect.anything(),
       }),
     ])
 
@@ -185,10 +186,8 @@ describe('installDevtoolsBridge', () => {
 
     expect(fieldDependenciesChanged).toHaveBeenCalledWith([
       expect.objectContaining({
-        kind: 'listener',
-        sourceField: source,
+        sourceFieldName: 'source',
         watchingField: target,
-        listenerInstance: expect.anything(),
       }),
     ])
 

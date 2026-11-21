@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { isStandardSchema } from '../src/standardSchema.lib'
-import type { StandardSchemaV1 } from '../src/standardSchema.public'
+import { isStandardSchema } from '../src/pipeline/validation/standardSchema.lib'
+import type { StandardSchemaV1 } from '../src/validation/results/standardSchema.public'
 
 function getSchema<TOutput>(
   validate: StandardSchemaV1<unknown, TOutput>['~standard']['validate'],

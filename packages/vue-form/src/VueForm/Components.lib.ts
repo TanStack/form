@@ -132,7 +132,7 @@ function createFormGroupComponent(form: InternalVueFormApi) {
 
 function forwardToField(
   component: Component,
-  group: InternalFormGroupApiType<any, any, any, any, any>,
+  group: InternalFormGroupApiType<any, any, any, any, any, any>,
 ) {
   return defineComponent(
     (_props, context) => () => {
@@ -151,10 +151,11 @@ function forwardToField(
 }
 
 function attachVueFormGroupComponents(
-  group: InternalFormGroupApiType<any, any, any, any, any>,
+  group: InternalFormGroupApiType<any, any, any, any, any, any>,
   form: InternalVueFormApi,
 ) {
   type GroupWithComponents = InternalFormGroupApiType<
+    any,
     any,
     any,
     any,

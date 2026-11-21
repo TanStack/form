@@ -130,16 +130,7 @@ describe('createFormHook defaults', () => {
       .getByRole('button', { name: 'Change grouped array field' })
       .click()
 
-    expect(formCalls).toEqual([
-      'default',
-      'local',
-      'default',
-      'local',
-      'default',
-      'local',
-      'default',
-      'local',
-    ])
+    expect(formCalls).toEqual(['default', 'local', 'default', 'local'])
     expect(fieldCalls).toEqual([
       'local:direct',
       'default:direct',
