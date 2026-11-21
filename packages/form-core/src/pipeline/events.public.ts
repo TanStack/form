@@ -1,28 +1,29 @@
 /**
- * Events that identify why a validator runs.
+ * Events that identify why validation runs.
  *
  * - `'change'`: A value changed.
  * - `'blur'`: A field was blurred.
  * - `'server'`: Form values are being validated on the server.
  * - `'submit'`: A client form submission was attempted.
- * - `'mount'`: Initial values are being validated.
+ * - `'mount'`: A form is being constructed, or a field or form group is being mounted.
  */
 export type ValidatorEvents = 'change' | 'blur' | 'server' | 'submit' | 'mount'
 
 // Alternative event for this: 'reset'
 /**
- * Events for validating initial values during setup.
+ * Mount events used to validate values during initialization.
  *
- * For form validators, `'mount'` runs when the form is constructed.
+ * Form-level mount validators run during form construction, before `formApi`
+ * is available in their callback context.
  */
 export type PreprocessEvents = Extract<ValidatorEvents, 'mount'>
 
-/** Events for validating form values on the server. */
+/** Events for validating complete form values on the server. */
 export type ServerSideEvents = Extract<ValidatorEvents, 'server'>
 
 /**
- * Value change, field blur, and client submission events whose validator
- * callbacks receive the form API.
+ * Value change, field blur, and client submission events whose form validator
+ * callbacks receive `formApi` and an abort `signal`.
  */
 export type ClientSideEvents = Exclude<
   ValidatorEvents,
@@ -32,13 +33,16 @@ export type ClientSideEvents = Exclude<
 /**
  * Events accepted by a validator's `triggers` array.
  *
- * Submission is controlled separately by `skipOnSubmit`.
+ * Submission runs independently of these triggers and is controlled by
+ * `skipOnSubmit`.
  */
 export type ValidatorTriggers = Exclude<ValidatorEvents, 'submit'>
 
 /**
- * Mount and server triggers that accept a boolean `when` condition.
- * Callbacks are not supported for these triggers.
+ * Mount and server triggers that accept boolean `when` conditions.
+ *
+ * A `true` condition enables the trigger, and `false` disables it.
+ * Callback conditions are not supported.
  */
 export type StaticValidatorTriggers = Extract<
   ValidatorTriggers,
@@ -46,10 +50,10 @@ export type StaticValidatorTriggers = Extract<
 >
 
 /**
- * Change and blur triggers that accept a boolean or callback `when` condition.
+ * Change and blur triggers that accept boolean or callback `when` conditions.
  *
- * A callback reads the current form values and state; return `true` to run
- * validation or `false` to skip it for the matching event.
+ * - A callback reads current values and state. The callback must be synchronous and have no side effects.
+ * - The boolean condition or callback result enables validation when `true` and disables it when `false`.
  */
 export type DynamicValidatorTriggers = Extract<
   ValidatorTriggers,
