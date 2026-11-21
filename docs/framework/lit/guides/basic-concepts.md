@@ -60,7 +60,7 @@ For Example:
           value.length < 3 ? "Not long enough" : undefined,
         },
       },
-      (field: FieldApi<Employee, "firstName">) => {
+      (field) => {
         return html` <div>
           <label class="first-name-label">First Name</label>
           <input
