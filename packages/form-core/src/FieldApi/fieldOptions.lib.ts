@@ -3,7 +3,10 @@ import { devtools } from '../devtoolsBridge.lib'
 import { resolveDefaultOptions } from '../defaultOptions.lib'
 import { ListenerInstance } from '../pipeline/listeners/ListenerInstance.lib'
 import { ValidatorInstance } from '../pipeline/validation/ValidatorInstance.lib'
-import { updateFieldWatches } from './linked-fields.lib'
+import {
+  updateFieldListenerWatches,
+  updateFieldValidatorWatches,
+} from './linked-fields.lib'
 import type {
   AnyFieldApiOptions,
   AnyFieldValidator,
@@ -113,8 +116,8 @@ export function initializeFieldOptions(
     scope: 'field',
   })
 
-  updateFieldWatches(field, 'listener')
-  updateFieldWatches(field, 'validator')
+  updateFieldListenerWatches(field)
+  updateFieldValidatorWatches(field)
 }
 
 /**
@@ -156,7 +159,7 @@ export function updateFieldOptions(
         instances: field._listenerInstances,
         scope: 'field',
       })
-      updateFieldWatches(field, 'listener', dependencyChanges)
+      updateFieldListenerWatches(field, dependencyChanges)
     }
 
     if (resolvedOptions.validators) {
@@ -183,7 +186,7 @@ export function updateFieldOptions(
         onBeforeDispose: (validatorInstance) =>
           field._removeValidatorInstance(validatorInstance),
       })
-      updateFieldWatches(field, 'validator', dependencyChanges)
+      updateFieldValidatorWatches(field, dependencyChanges)
     }
 
     if (dependencyChanges && dependencyChanges.length > 0) {

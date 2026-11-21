@@ -1,8 +1,13 @@
 import type { AnyInternalFieldApi } from './FieldApi.lib'
 import type { FieldDependencyChange } from '../devtoolsBridge.lib'
+import type { ListenerInstances } from '../pipeline/listeners/ListenerInstance.lib'
+import type { ValidatorInstances } from '../pipeline/validation/ValidatorInstance.lib'
 
 export type FieldWatchRegistry = Map<string, Set<AnyInternalFieldApi>>
-type WatchKind = 'listener' | 'validator'
+type FieldWatchChanges = {
+  added: Array<string>
+  removed: Array<string>
+}
 
 export function watchesField(
   watchFields: ReadonlyArray<string> | undefined,
@@ -11,16 +16,38 @@ export function watchesField(
   return watchFields?.includes(name) ?? false
 }
 
-function unregisterDroppedWatches(
+function getWatchChanges(
+  previous: Set<string> | null,
+  next: Set<string>,
+): FieldWatchChanges {
+  const added: Array<string> = []
+  const removed: Array<string> = []
+
+  for (const name of previous ?? []) {
+    if (next.has(name)) continue
+
+    removed.push(name)
+  }
+
+  for (const name of next) {
+    if (previous?.has(name)) continue
+
+    added.push(name)
+  }
+
+  return { added, removed }
+}
+
+function replaceRegistrations(
   field: AnyInternalFieldApi,
   registry: FieldWatchRegistry,
   previous: Set<string> | null,
   next: Set<string>,
   changes?: Array<FieldDependencyChange>,
-): void {
-  for (const name of previous ?? []) {
-    if (next.has(name)) continue
+): FieldWatchChanges {
+  const { added, removed } = getWatchChanges(previous, next)
 
+  for (const name of removed) {
     const watchingFields = registry.get(name)
     watchingFields?.delete(field)
     if (watchingFields?.size === 0) {
@@ -29,21 +56,8 @@ function unregisterDroppedWatches(
 
     changes?.push({ sourceFieldName: name, watchingField: field })
   }
-}
 
-function registerCurrentWatches(
-  field: AnyInternalFieldApi,
-  registry: FieldWatchRegistry,
-  previous: Set<string> | null,
-  next: Set<string>,
-  changes?: Array<FieldDependencyChange>,
-): void {
-  for (const name of next) {
-    // Refresh devtools: a retained path can be watched by different listener or
-    // validator entries after an options update.
-    changes?.push({ sourceFieldName: name, watchingField: field })
-    if (previous?.has(name)) continue
-
+  for (const name of added) {
     let watchingFields = registry.get(name)
     if (!watchingFields) {
       watchingFields = new Set()
@@ -51,60 +65,91 @@ function registerCurrentWatches(
     }
     watchingFields.add(field)
   }
+
+  if (changes) {
+    // Refresh devtools: a retained path can be watched by different listener or
+    // validator entries after an options update.
+    for (const name of next) {
+      changes.push({ sourceFieldName: name, watchingField: field })
+    }
+  }
+
+  return { added, removed }
 }
 
-function replaceListenerRegistrations(
+function reconcileListeners(
   field: AnyInternalFieldApi,
   next: Set<string>,
   changes?: Array<FieldDependencyChange>,
 ) {
-  const registry = field.form._watchingListenerFields
-  const previous = field._watchedListenerNames
-
-  unregisterDroppedWatches(field, registry, previous, next, changes)
-  registerCurrentWatches(field, registry, previous, next, changes)
+  const { added, removed } = replaceRegistrations(
+    field,
+    field.form._watchingListenerFields,
+    field._watchedListenerNames,
+    next,
+    changes,
+  )
 
   field._watchedListenerNames = next.size > 0 ? next : null
+
+  for (const name of added) {
+    field.form._getOrCreateFieldApi({ name }, 'internal')
+  }
+  for (const name of removed) {
+    field.form._tryGetFieldApi(name)?._pruneIfUnused()
+  }
 }
 
-function replaceValidatorRegistrations(
+function reconcileValidators(
   field: AnyInternalFieldApi,
   next: Set<string>,
   changes?: Array<FieldDependencyChange>,
 ) {
-  const registry = field.form._watchingValidatorFields
-  const previous = field._watchedValidatorNames
-
-  unregisterDroppedWatches(field, registry, previous, next, changes)
-  registerCurrentWatches(field, registry, previous, next, changes)
+  replaceRegistrations(
+    field,
+    field.form._watchingValidatorFields,
+    field._watchedValidatorNames,
+    next,
+    changes,
+  )
 
   field._watchedValidatorNames = next.size > 0 ? next : null
 }
 
-export function updateFieldWatches(
-  field: AnyInternalFieldApi,
-  kind: WatchKind,
-  changes?: Array<FieldDependencyChange>,
-): void {
-  const instances =
-    kind === 'listener' ? field._listenerInstances : field._validatorInstances
+function getWatchedNames(
+  instances: ListenerInstances<'field'> | ValidatorInstances<'field'>,
+): Set<string> {
   const names = new Set<string>()
   for (const instance of instances ?? []) {
     for (const name of instance.definition.watchFields ?? []) {
       names.add(name)
     }
   }
-  if (kind === 'listener') {
-    replaceListenerRegistrations(field, names, changes)
-  } else {
-    replaceValidatorRegistrations(field, names, changes)
-  }
+  return names
+}
+
+export function updateFieldListenerWatches(
+  field: AnyInternalFieldApi,
+  changes?: Array<FieldDependencyChange>,
+): void {
+  reconcileListeners(field, getWatchedNames(field._listenerInstances), changes)
+}
+
+export function updateFieldValidatorWatches(
+  field: AnyInternalFieldApi,
+  changes?: Array<FieldDependencyChange>,
+): void {
+  reconcileValidators(
+    field,
+    getWatchedNames(field._validatorInstances),
+    changes,
+  )
 }
 
 export function removeFieldWatches(
   field: AnyInternalFieldApi,
   changes?: Array<FieldDependencyChange>,
 ): void {
-  replaceListenerRegistrations(field, new Set(), changes)
-  replaceValidatorRegistrations(field, new Set(), changes)
+  reconcileListeners(field, new Set(), changes)
+  reconcileValidators(field, new Set(), changes)
 }

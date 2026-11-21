@@ -219,6 +219,7 @@ function canPruneField(field: AnyInternalFieldApi): boolean {
   if (field._refCount > 0) return false
   if (field._formGroup) return false
   if (field._childrenMap.size > 0) return false
+  if (field.form._watchingListenerFields.has(field.name)) return false
   if (field._watchedListenerNames || field._watchedValidatorNames) return false
   if (field._errorStore.hasErrors) return false
   const meta = field._atoms.meta?.get() ?? defaultInternalBaseFieldMeta
