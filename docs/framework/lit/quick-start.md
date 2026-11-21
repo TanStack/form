@@ -13,13 +13,13 @@ interface Employee {
   jobTitle: string
 }
 
-#form = new TanStackFormController<Employee>(this, {
+#form = new TanStackFormController(this, {
   defaultValues: {
     firstName: '',
     lastName: '',
     employed: false,
     jobTitle: '',
-  },
+  } as Employee,
 })
 ```
 
@@ -37,13 +37,13 @@ Our completed test form should look something like below. The form collects firs
 
 ```ts
 export class TestForm extends LitElement {
-  #form = new TanStackFormController<Employee>(this, {
+  #form = new TanStackFormController(this, {
     defaultValues: {
       firstName: '',
       lastName: '',
       employed: false,
       jobTitle: '',
-    },
+    } as Employee,
   })
   render() {
     return html` <p>Please enter your first name</p>
@@ -55,7 +55,7 @@ export class TestForm extends LitElement {
               value.length < 3 ? 'Not long enough' : undefined,
           },
         },
-        (field: FieldApi<Employee, 'firstName'>) => {
+        (field) => {
           return html` <div>
             <label class="first-name-label">First Name</label>
             <input
