@@ -17,12 +17,16 @@ async function validateFirstName({ value }: { value: string }) {
   await new Promise((resolve) => setTimeout(resolve, 1000))
   return value.includes('error') && 'No "error" allowed in first name'
 }
+
+function handleSubmit() {
+  form.handleSubmit().catch(console.error)
+}
 </script>
 
 <template>
   <div>
     <h1>Simple Form Example</h1>
-    <form @submit.prevent.stop="form.handleSubmit()">
+    <form @submit.prevent.stop="handleSubmit">
       <div>
         <form.Field
           name="firstName"

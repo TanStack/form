@@ -15,7 +15,7 @@ export const PeoplePage = () => {
     <form
       onSubmit={(e) => {
         e.preventDefault()
-        form.handleSubmit()
+        form.handleSubmit().catch(console.error)
       }}
     >
       <h1>Personal Information</h1>

@@ -48,9 +48,9 @@ export class StepOneComponent {
   validators = [stepValidator(step1Schema)]
   onSubmit = () => this.advance()()
 
-  submit(event: SubmitEvent, group: { handleSubmit: () => unknown }) {
+  submit(event: SubmitEvent, group: { handleSubmit: () => Promise<unknown> }) {
     event.preventDefault()
     event.stopPropagation()
-    group.handleSubmit()
+    group.handleSubmit().catch(console.error)
   }
 }

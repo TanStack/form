@@ -13,7 +13,11 @@ const props = defineProps<{
 const form = computed(() => props.form)
 
 function submitForm() {
-  void props.form.handleSubmit()
+  void props.form.handleSubmit().catch(console.error)
+}
+
+function submitGroup(group: { handleSubmit: () => Promise<unknown> }) {
+  group.handleSubmit().catch(console.error)
 }
 </script>
 
@@ -24,7 +28,7 @@ function submitForm() {
     :on-submit="submitForm"
     v-slot="{ group }"
   >
-    <form @submit.prevent.stop="group.handleSubmit()">
+    <form @submit.prevent.stop="submitGroup(group)">
       <group.Field name="name" v-slot="{ field }">
         <field.TextField label="Step 2 Name" />
       </group.Field>

@@ -50,12 +50,12 @@ export class StepTwoComponent {
   back = input.required<() => void>()
   validators = [stepValidator(step2Schema)]
   onSubmit = () => {
-    void this.form().handleSubmit()
+    void this.form().handleSubmit().catch(console.error)
   }
 
-  submit(event: SubmitEvent, group: { handleSubmit: () => unknown }) {
+  submit(event: SubmitEvent, group: { handleSubmit: () => Promise<unknown> }) {
     event.preventDefault()
     event.stopPropagation()
-    group.handleSubmit()
+    group.handleSubmit().catch(console.error)
   }
 }

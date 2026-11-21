@@ -11,6 +11,10 @@ const props = defineProps<{
 }>()
 
 const form = computed(() => props.form)
+
+function submitGroup(group: { handleSubmit: () => Promise<unknown> }) {
+  group.handleSubmit().catch(console.error)
+}
 </script>
 
 <template>
@@ -21,7 +25,7 @@ const form = computed(() => props.form)
     :on-submit-invalid="() => undefined"
     v-slot="{ group }"
   >
-    <form @submit.prevent.stop="group.handleSubmit()">
+    <form @submit.prevent.stop="submitGroup(group)">
       <group.Field name="name" v-slot="{ field }">
         <field.TextField label="Step 1 Name" />
       </group.Field>

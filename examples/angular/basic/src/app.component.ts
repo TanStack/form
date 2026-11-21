@@ -102,6 +102,6 @@ export class AppComponent {
   handleSubmit(event: SubmitEvent) {
     event.preventDefault()
     event.stopPropagation()
-    this.form.handleSubmit()
+    this.form.handleSubmit().catch(console.error)
   }
 }

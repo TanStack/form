@@ -139,7 +139,7 @@ export default function App() {
           <Button
             title={isSubmitting ? '...' : 'Submit'}
             disabled={!canSubmit}
-            onPress={() => form.handleSubmit()}
+            onPress={() => form.handleSubmit().catch(console.error)}
           />
         )}
       </form.Subscribe>

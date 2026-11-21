@@ -39,7 +39,7 @@ export class TanStackFormDemo extends LitElement {
         @submit=${(event: SubmitEvent) => {
           event.preventDefault()
           event.stopPropagation()
-          void this.form.api.handleSubmit()
+          void this.form.api.handleSubmit().catch(console.error)
         }}
       >
         <div>

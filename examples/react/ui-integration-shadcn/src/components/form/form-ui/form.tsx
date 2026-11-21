@@ -7,7 +7,7 @@ export default function TanStackFormElement(props: ComponentProps<'form'>) {
   function defaultHandler(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault()
     event.stopPropagation()
-    form.handleSubmit()
+    form.handleSubmit().catch(console.error)
   }
 
   return (

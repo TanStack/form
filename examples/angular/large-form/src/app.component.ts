@@ -62,6 +62,6 @@ export class AppComponent {
 
   handleSubmit(event: SubmitEvent) {
     event.preventDefault()
-    this.form.handleSubmit()
+    this.form.handleSubmit().catch(console.error)
   }
 }
