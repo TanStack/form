@@ -38,7 +38,6 @@ import {
 } from '../validation/routedErrors.lib'
 import { resetFieldMeta } from '../FieldApi/fieldState.lib'
 import { runFormListenerPipeline } from '../pipeline/listeners/listeners.lib'
-import { getValidationErrors } from '../validation/results/errors.lib'
 import { updateFormOptions } from './formOptions.lib'
 import { initializeForm } from './initializeForm.lib'
 import { ArrayMethods } from './array-methods.lib'
@@ -731,12 +730,7 @@ export class InternalFormApi<TFormData> implements FormApi<
   ) => {
     const run = this._runFormValidation(signal, { ...opts, catchErrors: false })
     await run?.pending
-    return (
-      run?.collector
-        .getResults()
-        .flatMap(({ value }) => getValidationErrors<TFormData>(value.result)) ??
-      []
-    )
+    return run?.collector.getErrors<TFormData>() ?? []
   }
 
   handleSubmit = () => this._submissionHandler.handleSubmit()

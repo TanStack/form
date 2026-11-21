@@ -1,6 +1,10 @@
-import { isErrorResult } from '../../validation/results/errors.lib'
+import {
+  getValidationErrors,
+  isErrorResult,
+} from '../../validation/results/errors.lib'
 import type { ValidatorExecutor } from './ValidatorInstance.lib'
 import type { PipelineResult } from '../state.lib'
+import type { FormattedValidationError } from '../../validation/results/results.public'
 
 /** Collects one run's accepted results in original validator-list order. */
 export class ValidationResultCollector<
@@ -17,6 +21,12 @@ export class ValidationResultCollector<
   getResults = (): Array<PipelineResult<TInstance>> => {
     return Array.from(this.accepted.values()).sort(
       (left, right) => left.instance.index - right.instance.index,
+    )
+  }
+
+  getErrors = <TValue>(): Array<FormattedValidationError<TValue>> => {
+    return this.getResults().flatMap(({ value }) =>
+      getValidationErrors<TValue>(value.result),
     )
   }
 

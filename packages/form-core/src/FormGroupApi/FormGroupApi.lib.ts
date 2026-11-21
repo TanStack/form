@@ -13,7 +13,6 @@ import {
   applyRoutedValidationResult,
   pruneErrorTargets,
 } from '../validation/routedErrors.lib'
-import { getValidationErrors } from '../validation/results/errors.lib'
 import { visitFieldSubtree } from '../FieldApi/fieldTraversal.lib'
 import { createGroupSubmissionHandler } from '../submissionHandler.lib'
 import {
@@ -322,13 +321,7 @@ export class InternalFormGroupApi<
       catchErrors: false,
     })
     await run?.pending
-    return (
-      run?.collector
-        .getResults()
-        .flatMap(({ value }) =>
-          getValidationErrors<TGroupValue>(value.result),
-        ) ?? []
-    )
+    return run?.collector.getErrors<TGroupValue>() ?? []
   }
 
   handleSubmit = (): Promise<Array<FormattedValidationError<TGroupValue>>> => {

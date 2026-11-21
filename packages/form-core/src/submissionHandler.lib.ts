@@ -268,16 +268,19 @@ class SubmissionHandler<TValue, TInstance extends AnyValidatorInstance> {
       }
 
       const run = this.adapter.runValidation(submission, validation.hasFailed)
-      await run?.pending
+      try {
+        await run?.pending
+      } finally {
+        if (submission.isActive() && run) {
+          validation.hasFailed ||= run.collector.hasErrors()
+
+          validation.errors = run.collector
+            .getErrors<TValue>()
+            .concat(validation.errors)
+        }
+      }
 
       if (!submission.isActive() || !run) return validation
-
-      validation.hasFailed ||= run.collector.hasErrors()
-
-      validation.errors = run.collector
-        .getResults()
-        .flatMap(({ value }) => getValidationErrors<TValue>(value.result))
-        .concat(validation.errors)
 
       if (!validation.hasFailed) {
         validation.validatorOutputs = run.collector.getOutputs(
