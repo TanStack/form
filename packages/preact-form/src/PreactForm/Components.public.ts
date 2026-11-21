@@ -119,7 +119,7 @@ export interface PreactFormFieldProps<
     TFieldName,
     TFieldValue
   >,
-  in out TGroupFieldError,
+  in out TGroupError extends ScopedErrorTypes,
   in out TFormData,
   in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends Record<string, FunctionComponent<any>>,
@@ -128,7 +128,7 @@ export interface PreactFormFieldProps<
   TFieldName,
   TFieldValue,
   TFieldValidators,
-  TGroupFieldError,
+  TGroupError,
   TFormData,
   TFormError
 > {
@@ -136,7 +136,7 @@ export interface PreactFormFieldProps<
     fieldApi: PreactFieldApi<
       TFieldName,
       TFieldValue,
-      ToFieldError<NoInfer<TFieldValidators>, TGroupFieldError, TFormError>,
+      ToFieldError<NoInfer<TFieldValidators>, TGroupError, TFormError>,
       TFormData,
       TFormError,
       TFieldComponents
@@ -229,7 +229,7 @@ export interface PreactFormGroupFieldComponent<
       TFieldName,
       DeepValue<TGroupValue, TFieldName>,
       TFieldValidators,
-      TGroupError['subfieldError'],
+      TGroupError,
       TFormData,
       TFormError,
       TFieldComponents
@@ -257,7 +257,7 @@ export type PreactFormGroupArrayFieldComponent<
       TFieldName,
       DeepValue<TGroupValue, TFieldName>,
       TFieldValidators,
-      TGroupError['subfieldError'],
+      TGroupError,
       TFormData,
       TFormError,
       TFieldComponents

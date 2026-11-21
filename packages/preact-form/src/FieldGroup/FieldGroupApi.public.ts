@@ -7,7 +7,6 @@ import type {
   FormApiFieldMethods,
   FormState,
   ScopedErrorTypes,
-  ValidationIssue,
 } from '@tanstack/form-core'
 import type { FunctionComponent } from 'preact/compat'
 import type { CrossVersionPreactNode } from '../preactTypes.public'
@@ -34,7 +33,7 @@ export interface FieldGroupFieldComponent<
         TFieldName,
         DeepValue<TFieldData, TFieldName>
       >,
-      ValidationIssue,
+      ScopedErrorTypes,
       unknown,
       ScopedErrorTypes,
       TFieldComponents
@@ -56,7 +55,7 @@ export interface FieldGroupArrayFieldComponent<
         TFieldName,
         DeepValue<TFieldData, TFieldName>
       >,
-      ValidationIssue,
+      ScopedErrorTypes,
       unknown,
       ScopedErrorTypes,
       TFieldComponents

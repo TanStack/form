@@ -140,22 +140,20 @@ type NormalizeValidationError<TError> =
         ? TError
         : ValidationIssue
 
-type ValidationErrorTarget = 'form' | 'field'
-
 type ExtractErrorMap<
   TResult,
-  TTarget extends ValidationErrorTarget,
+  TTarget extends ErrorTarget,
 > = TResult extends ValidationIssue
-  ? NormalizeValidationResult<TResult>
+  ? GetDirectError<NormalizeValidationResult<TResult>, TTarget>
   : TResult extends ValidationErrorMap<any, any, any>
-    ? TTarget extends 'form'
+    ? TTarget extends 'self'
       ? TResult extends { form?: infer TError }
         ? NormalizeValidationResult<TError>
         : never
       : TResult extends { fields: infer TFields }
         ? NormalizeValidationResult<TFields[keyof TFields]>
         : never
-    : NormalizeValidationResult<TResult>
+    : GetDirectError<NormalizeValidationResult<TResult>, TTarget>
 
 type ExtractSubmitValidationError<TSubmitReturn> =
   Awaited<TSubmitReturn> extends infer TResolved
@@ -166,12 +164,12 @@ type ExtractSubmitValidationError<TSubmitReturn> =
 
 type ParseSubmitFormError<TSubmitReturn> = ExtractErrorMap<
   ExtractSubmitValidationError<TSubmitReturn>,
-  'form'
+  'self'
 >
 
 type ParseSubmitFieldError<TSubmitReturn> = ExtractErrorMap<
   ExtractSubmitValidationError<TSubmitReturn>,
-  'field'
+  'subfield'
 >
 
 type ExtractSubmitFormError<TSubmitReturn> = unknown extends TSubmitReturn
@@ -182,10 +180,8 @@ type ExtractSubmitFieldError<TSubmitReturn> = unknown extends TSubmitReturn
   ? ValidationIssue
   : ParseSubmitFieldError<TSubmitReturn>
 
-type ExtractFormFieldError<TFormError extends ScopedErrorTypes> =
-  unknown extends TFormError['subfieldError']
-    ? never
-    : TFormError['subfieldError']
+type ExtractSubfieldError<TError extends ScopedErrorTypes> =
+  unknown extends TError['subfieldError'] ? never : TError['subfieldError']
 
 /**
  * A field's error array, with string messages normalized to issue objects.
@@ -196,46 +192,46 @@ export type FieldErrors<TFieldError> = Array<
   unknown extends TFieldError ? ValidationIssue : TFieldError
 >
 
-type TryGetFormError<TValidator> = TValidator extends {
+type TryGetSelfError<TValidator> = TValidator extends {
   readonly run: StandardSchemaV1<any, any>
 }
   ? StandardSchemaV1Issue
   : TValidator extends { readonly run: (...args: any) => infer TReturn }
-    ? ExtractErrorMap<Awaited<TReturn>, 'form'>
+    ? ExtractErrorMap<Awaited<TReturn>, 'self'>
     : never
 
-type TryGetFieldError<TValidator> = TValidator extends {
+type TryGetSubfieldError<TValidator> = TValidator extends {
   readonly run: StandardSchemaV1<any, any>
 }
   ? StandardSchemaV1Issue
   : TValidator extends { readonly run: (...args: any) => infer TReturn }
-    ? ExtractErrorMap<Awaited<TReturn>, 'field'>
+    ? ExtractErrorMap<Awaited<TReturn>, 'subfield'>
     : never
 
-type ExtractValidatorFormError<
+type ExtractValidatorSelfError<
   TValidators extends ReadonlyArray<unknown>,
   TBroadValidators extends ReadonlyArray<unknown>,
 > = unknown extends TValidators
   ? never
   : TBroadValidators extends TValidators
     ? never
-    : TryGetFormError<TValidators[number]>
+    : TryGetSelfError<TValidators[number]>
 
-type ExtractValidatorFieldError<
+type ExtractValidatorSubfieldError<
   TValidators extends ReadonlyArray<unknown>,
   TBroadValidators extends ReadonlyArray<unknown>,
 > = unknown extends TValidators
   ? never
   : TBroadValidators extends TValidators
     ? never
-    : TryGetFieldError<TValidators[number]>
+    : TryGetSubfieldError<TValidators[number]>
 
 type GetValidatorSelfErrors<
   TValidators extends ReadonlyArray<unknown>,
   TBroadValidators extends ReadonlyArray<unknown>,
   TSubmitReturn,
 > =
-  | ExtractValidatorFormError<TValidators, TBroadValidators>
+  | ExtractValidatorSelfError<TValidators, TBroadValidators>
   | ExtractSubmitFormError<TSubmitReturn>
 
 type GetValidatorSubfieldErrors<
@@ -243,7 +239,7 @@ type GetValidatorSubfieldErrors<
   TBroadValidators extends ReadonlyArray<unknown>,
   TSubmitReturn,
 > =
-  | ExtractValidatorFieldError<TValidators, TBroadValidators>
+  | ExtractValidatorSubfieldError<TValidators, TBroadValidators>
   | ExtractSubmitFieldError<TSubmitReturn>
 
 type ToValidatorErrorTypes<
@@ -279,15 +275,15 @@ type FallbackToValidationIssue<TFieldError> = [TFieldError] extends [never]
  * Falls back to `ValidationIssue` when no specific error type is inferred.
  *
  * @typeParam TFieldValidators - Library-managed. Do not specify explicitly.
- * @typeParam TGroupFieldError - Library-managed. Do not specify explicitly.
+ * @typeParam TGroupError - Library-managed. Do not specify explicitly.
  * @typeParam TFormError - Library-managed. Do not specify explicitly.
  */
 export type ToFieldError<
   TFieldValidators extends FieldValidators<any, any, any>,
-  TGroupFieldError,
+  TGroupError extends ScopedErrorTypes,
   TFormError extends ScopedErrorTypes,
 > = FallbackToValidationIssue<
-  | ExtractValidatorFieldError<TFieldValidators, FieldValidators<any, any, any>>
-  | (unknown extends TGroupFieldError ? never : TGroupFieldError)
-  | ExtractFormFieldError<TFormError>
+  | ExtractValidatorSelfError<TFieldValidators, FieldValidators<any, any, any>>
+  | ExtractSubfieldError<TGroupError>
+  | ExtractSubfieldError<TFormError>
 >

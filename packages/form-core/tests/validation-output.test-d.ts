@@ -265,7 +265,7 @@ describe('validator output types', () => {
       ToFormGroupErrorTypes<typeof validators, never>
     >().toEqualTypeOf<{
       readonly selfError: ValidationIssue
-      readonly subfieldError: ValidationIssue
+      readonly subfieldError: never
     }>()
   })
 

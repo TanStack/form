@@ -103,7 +103,7 @@ export interface SvelteFormFieldProps<
   TFieldName,
   TFieldValue,
   TFieldValidators extends FieldValidators<TFieldData, TFieldName, TFieldValue>,
-  TGroupFieldError,
+  TGroupError extends ScopedErrorTypes,
   TFormData,
   TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>>,
@@ -112,7 +112,7 @@ export interface SvelteFormFieldProps<
   TFieldName,
   TFieldValue,
   TFieldValidators,
-  TGroupFieldError,
+  TGroupError,
   TFormData,
   TFormError
 > {
@@ -121,7 +121,7 @@ export interface SvelteFormFieldProps<
       SvelteFieldApi<
         TFieldName,
         TFieldValue,
-        ToFieldError<NoInfer<TFieldValidators>, TGroupFieldError, TFormError>,
+        ToFieldError<NoInfer<TFieldValidators>, TGroupError, TFormError>,
         TFormData,
         TFormError,
         TFieldComponents
@@ -217,7 +217,7 @@ export type SvelteFormGroupFieldComponent<
       TFieldName,
       DeepValue<TGroupValue, TFieldName>,
       TFieldValidators,
-      TGroupError['subfieldError'],
+      TGroupError,
       TFormData,
       TFormError,
       TFieldComponents
@@ -247,7 +247,7 @@ export type SvelteFormGroupArrayFieldComponent<
       TFieldName,
       DeepValue<TGroupValue, TFieldName>,
       TFieldValidators,
-      TGroupError['subfieldError'],
+      TGroupError,
       TFormData,
       TFormError,
       TFieldComponents

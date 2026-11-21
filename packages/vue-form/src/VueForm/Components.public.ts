@@ -102,7 +102,7 @@ export interface VueFormFieldProps<
     TFieldName,
     TFieldValue
   >,
-  in out TGroupFieldError,
+  in out TGroupError extends ScopedErrorTypes,
   in out TFormData,
   in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends Record<string, Component>,
@@ -111,7 +111,7 @@ export interface VueFormFieldProps<
   TFieldName,
   TFieldValue,
   TFieldValidators,
-  TGroupFieldError,
+  TGroupError,
   TFormData,
   TFormError
 > {
@@ -250,7 +250,7 @@ export type VueFormGroupFieldComponent<
     TFieldName,
     DeepValue<TGroupValue, TFieldName>,
     TFieldValidators,
-    TGroupError['subfieldError'],
+    TGroupError,
     TFormData,
     TFormError,
     TFieldComponents
@@ -262,7 +262,7 @@ export type VueFormGroupFieldComponent<
     TFieldName,
     DeepValue<TGroupValue, TFieldName>,
     TFieldValidators,
-    TGroupError['subfieldError'],
+    TGroupError,
     TFormData,
     TFormError,
     TFieldComponents
@@ -272,11 +272,7 @@ export type VueFormGroupFieldComponent<
       field: VueFieldApi<
         TFieldName,
         DeepValue<TGroupValue, TFieldName>,
-        ToFieldError<
-          NoInfer<TFieldValidators>,
-          TGroupError['subfieldError'],
-          TFormError
-        >,
+        ToFieldError<NoInfer<TFieldValidators>, TGroupError, TFormError>,
         TFormData,
         TFormError,
         TFieldComponents
@@ -304,7 +300,7 @@ export type VueFormGroupArrayFieldComponent<
     TFieldName,
     DeepValue<TGroupValue, TFieldName>,
     TFieldValidators,
-    TGroupError['subfieldError'],
+    TGroupError,
     TFormData,
     TFormError,
     TFieldComponents
@@ -316,7 +312,7 @@ export type VueFormGroupArrayFieldComponent<
     TFieldName,
     DeepValue<TGroupValue, TFieldName>,
     TFieldValidators,
-    TGroupError['subfieldError'],
+    TGroupError,
     TFormData,
     TFormError,
     TFieldComponents
@@ -326,11 +322,7 @@ export type VueFormGroupArrayFieldComponent<
       field: VueFieldApi<
         TFieldName,
         DeepValue<TGroupValue, TFieldName>,
-        ToFieldError<
-          NoInfer<TFieldValidators>,
-          TGroupError['subfieldError'],
-          TFormError
-        >,
+        ToFieldError<NoInfer<TFieldValidators>, TGroupError, TFormError>,
         TFormData,
         TFormError,
         TFieldComponents

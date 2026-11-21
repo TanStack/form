@@ -8,7 +8,6 @@ import type {
   FormState,
   ScopedErrorTypes,
   ToFieldError,
-  ValidationIssue,
 } from '@tanstack/form-core'
 import type { Component, PublicProps } from 'vue'
 import type { ReadonlyAtom } from '@tanstack/vue-store'
@@ -28,7 +27,7 @@ export type FieldGroupFieldComponent<
     TFieldName,
     DeepValue<TFieldData, TFieldName>,
     FieldValidators<TFieldData, TFieldName, DeepValue<TFieldData, TFieldName>>,
-    ValidationIssue,
+    ScopedErrorTypes,
     unknown,
     ScopedErrorTypes,
     TFieldComponents
@@ -40,7 +39,7 @@ export type FieldGroupFieldComponent<
     TFieldName,
     DeepValue<TFieldData, TFieldName>,
     FieldValidators<TFieldData, TFieldName, DeepValue<TFieldData, TFieldName>>,
-    ValidationIssue,
+    ScopedErrorTypes,
     unknown,
     ScopedErrorTypes,
     TFieldComponents
@@ -56,7 +55,7 @@ export type FieldGroupFieldComponent<
             TFieldName,
             DeepValue<TFieldData, TFieldName>
           >,
-          ValidationIssue,
+          ScopedErrorTypes,
           ScopedErrorTypes
         >,
         unknown,
@@ -78,7 +77,7 @@ export type FieldGroupArrayFieldComponent<
     TFieldName,
     DeepValue<TFieldData, TFieldName>,
     FieldValidators<TFieldData, TFieldName, DeepValue<TFieldData, TFieldName>>,
-    ValidationIssue,
+    ScopedErrorTypes,
     unknown,
     ScopedErrorTypes,
     TFieldComponents
@@ -90,7 +89,7 @@ export type FieldGroupArrayFieldComponent<
     TFieldName,
     DeepValue<TFieldData, TFieldName>,
     FieldValidators<TFieldData, TFieldName, DeepValue<TFieldData, TFieldName>>,
-    ValidationIssue,
+    ScopedErrorTypes,
     unknown,
     ScopedErrorTypes,
     TFieldComponents
@@ -106,7 +105,7 @@ export type FieldGroupArrayFieldComponent<
             TFieldName,
             DeepValue<TFieldData, TFieldName>
           >,
-          ValidationIssue,
+          ScopedErrorTypes,
           ScopedErrorTypes
         >,
         unknown,

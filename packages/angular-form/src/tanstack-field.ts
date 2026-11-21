@@ -65,7 +65,7 @@ type AngularSourceFormErrorTypes<TSource extends AngularFieldSource> =
       ? TFormError
       : never
 
-type AngularSourceGroupFieldError<TSource extends AngularFieldSource> =
+type AngularSourceGroupErrorTypes<TSource extends AngularFieldSource> =
   TSource extends InternalFormGroupApi<
     any,
     any,
@@ -74,7 +74,7 @@ type AngularSourceGroupFieldError<TSource extends AngularFieldSource> =
     any,
     infer TSubmitReturn
   >
-    ? ToFormGroupErrorTypes<TGroupValidators, TSubmitReturn>['subfieldError']
+    ? ToFormGroupErrorTypes<TGroupValidators, TSubmitReturn>
     : never
 
 type AngularSourceFieldApi<
@@ -91,7 +91,7 @@ type AngularSourceFieldApi<
   TFieldValue,
   ToFieldError<
     TFieldValidators,
-    AngularSourceGroupFieldError<TSource>,
+    AngularSourceGroupErrorTypes<TSource>,
     AngularSourceFormErrorTypes<TSource>
   >,
   AngularParentFormData<TSource>,
@@ -134,7 +134,7 @@ abstract class TanStackFieldBase<
           TFieldValue,
           ToFieldError<
             TFieldValidators,
-            AngularSourceGroupFieldError<TSource>,
+            AngularSourceGroupErrorTypes<TSource>,
             AngularSourceFormErrorTypes<TSource>
           >,
           AngularParentFormData<TSource>,

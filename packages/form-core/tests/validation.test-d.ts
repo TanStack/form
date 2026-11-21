@@ -75,7 +75,7 @@ type TestFieldErrors<
 > = FieldErrors<
   ToFieldError<
     TFieldValidators,
-    ToFormGroupErrorTypes<TGroupValidators, never>['subfieldError'],
+    ToFormGroupErrorTypes<TGroupValidators, never>,
     GetFormErrorTypes<TFormValidators, TSubmitReturn>
   >
 >
@@ -400,7 +400,7 @@ describe('ErrorVisibility', () => {
       'name',
       string,
       typeof emptyFieldValidators,
-      [],
+      ScopedErrorTypes<never, never>,
       TestFormData,
       GetFormErrorTypes<typeof emptyFormValidators, unknown>
     > = {
@@ -482,7 +482,7 @@ describe('ErrorVisibility', () => {
       'name',
       string,
       typeof emptyFieldValidators,
-      [],
+      ScopedErrorTypes<never, never>,
       TestFormData,
       GetFormErrorTypes<typeof emptyFormValidators, unknown>
     > = {
@@ -1634,6 +1634,21 @@ describe('validator type transforms', () => {
     expectTypeOf<
       ToFieldError<any, any, ScopedErrorTypes<never, FormFieldError>>
     >().toEqualTypeOf<FormFieldError>()
+  })
+
+  it('extracts only subfield errors from scoped group and form errors', () => {
+    type GroupError = { message: string; groupOnly: true }
+    type GroupFieldError = { message: string; fromGroup: true }
+    type FormError = { message: string; formOnly: true }
+    type FormFieldError = { message: string; fromForm: true }
+
+    expectTypeOf<
+      ToFieldError<
+        [],
+        ScopedErrorTypes<GroupError, GroupFieldError>,
+        ScopedErrorTypes<FormError, FormFieldError>
+      >
+    >().toEqualTypeOf<GroupFieldError | FormFieldError>()
   })
 
   it('should transform group validators', () => {

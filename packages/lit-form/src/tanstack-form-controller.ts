@@ -48,7 +48,7 @@ type LitFieldOptions<
   TFieldName,
   TFieldValue,
   TFieldValidators extends FieldValidators<TFieldData, TFieldName, TFieldValue>,
-  TGroupFieldError,
+  TGroupError extends ScopedErrorTypes,
   TFormData,
   TFormError extends ScopedErrorTypes,
 > = FieldApiOptions<
@@ -56,7 +56,7 @@ type LitFieldOptions<
   TFieldName,
   TFieldValue,
   TFieldValidators,
-  TGroupFieldError,
+  TGroupError,
   TFormData,
   TFormError
 >
@@ -66,20 +66,20 @@ type LitFieldRenderApi<
   TFieldName,
   TFieldValue,
   TFieldValidators extends FieldValidators<TFieldData, TFieldName, TFieldValue>,
-  TGroupFieldError,
+  TGroupError extends ScopedErrorTypes,
   TFormData,
   TFormError extends ScopedErrorTypes,
 > = FieldApi<
   TFieldName,
   TFieldValue,
-  ToFieldError<NoInfer<TFieldValidators>, TGroupFieldError, TFormError>,
+  ToFieldError<NoInfer<TFieldValidators>, TGroupError, TFormError>,
   TFormData,
   TFormError
 >
 
 export interface LitFieldMethods<
   TFieldData,
-  TGroupFieldError,
+  TGroupError extends ScopedErrorTypes,
   TFormData,
   TFormError extends ScopedErrorTypes,
 > {
@@ -96,7 +96,7 @@ export interface LitFieldMethods<
       TFieldName,
       DeepValue<TFieldData, TFieldName>,
       TFieldValidators,
-      TGroupFieldError,
+      TGroupError,
       TFormData,
       TFormError
     >,
@@ -106,7 +106,7 @@ export interface LitFieldMethods<
         TFieldName,
         DeepValue<TFieldData, TFieldName>,
         TFieldValidators,
-        TGroupFieldError,
+        TGroupError,
         TFormData,
         TFormError
       >
@@ -126,7 +126,7 @@ export interface LitFieldMethods<
       TFieldName,
       DeepValue<TFieldData, TFieldName>,
       TFieldValidators,
-      TGroupFieldError,
+      TGroupError,
       TFormData,
       TFormError
     >,
@@ -136,7 +136,7 @@ export interface LitFieldMethods<
         TFieldName,
         DeepValue<TFieldData, TFieldName>,
         TFieldValidators,
-        TGroupFieldError,
+        TGroupError,
         TFormData,
         TFormError
       >
@@ -159,12 +159,7 @@ export type LitFormGroupApi<
   TGroupError extends ScopedErrorTypes,
   TFormError extends ScopedErrorTypes,
 > = FormGroupApi<TFormData, TGroupName, TGroupValue, TGroupError, TFormError> &
-  LitFieldMethods<
-    TGroupValue,
-    TGroupError['subfieldError'],
-    TFormData,
-    TFormError
-  > &
+  LitFieldMethods<TGroupValue, TGroupError, TFormData, TFormError> &
   LitSubscribeMethod<FormGroupState<TGroupValue, TGroupError>>
 
 /**

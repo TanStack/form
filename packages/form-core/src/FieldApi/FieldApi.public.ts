@@ -227,7 +227,7 @@ export interface FieldApiOptions<
     TFieldName,
     TFieldValue
   >,
-  in out TGroupFieldError,
+  in out TGroupError extends ScopedErrorTypes,
   in out TFormData,
   in out TFormError extends ScopedErrorTypes,
 > {
@@ -242,7 +242,7 @@ export interface FieldApiOptions<
     TFieldData,
     TFieldName,
     TFieldValue,
-    NoInfer<ToFieldError<TFieldValidators, TGroupFieldError, TFormError>>,
+    NoInfer<ToFieldError<TFieldValidators, TGroupError, TFormError>>,
     TFormData,
     TFormError
   >
