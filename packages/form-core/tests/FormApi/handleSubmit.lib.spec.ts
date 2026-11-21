@@ -9,7 +9,7 @@ describe('form submission errors', () => {
       onSubmit: ({ createErrorMap }) => {
         const errors = createErrorMap({ form: 'Initial submit error' })
         errors.form = ['Submission failed']
-        errors.fields.name = 'Name is required'
+        errors.addFieldError('name', 'Name is required')
         return errors
       },
       onSubmitInvalid,
@@ -45,7 +45,7 @@ describe('form submission errors', () => {
       defaultValues: { name: '' },
       onSubmit: ({ createErrorMap }) => {
         const errors = createErrorMap()
-        if (shouldReject) errors.fields.name = 'Name is required'
+        if (shouldReject) errors.addFieldError('name', 'Name is required')
         return errors
       },
       onSubmitInvalid,

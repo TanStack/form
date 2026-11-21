@@ -5,6 +5,7 @@ import type {
   GetFormErrorTypes,
   ParseSubmitIssuesFn,
   StandardSchemaV1Issue,
+  ValidationFailureItem,
   ValidationIssue,
 } from '../../src'
 
@@ -22,10 +23,18 @@ describe('FormSubmitContext', () => {
 
         const errors = createErrorMap({ form: 'Submission failed' })
 
-        errors.fields.name = 'Name is required'
-        errors.fields['user.age'] = { message: 'Age is required' }
+        expectTypeOf(errors.fields.name).toEqualTypeOf<
+          Array<ValidationFailureItem> | undefined
+        >()
+        errors.addFormError('Please check the form')
+        errors.addFieldError('name', 'Name is required')
+        errors.addFieldError('user.age', { message: 'Age is required' })
+        // @ts-expect-error Submission error methods require valid form field paths.
+        errors.addFieldError('missing', 'Missing')
+        errors.fields.name = ['Name is required']
+        errors.fields['user.age'] = [{ message: 'Age is required' }]
         // @ts-expect-error Submission error maps require valid form field paths.
-        errors.fields.missing = 'Missing'
+        errors.fields.missing = ['Missing']
         // @ts-expect-error Initial error maps require valid form field paths.
         createErrorMap({ fields: { missing: 'Missing' } })
         // @ts-expect-error Standard Schema issues are handled by parseIssues.

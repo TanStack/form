@@ -3,8 +3,8 @@ import type {
   FormValidationFailure,
   ParseIssuesFn,
   ValidationErrorMap,
+  ValidationErrorMapHelper,
   ValidationFailure,
-  ValidationFailureItem,
   ValidationOutput,
 } from '../validation/results/results.public'
 import type { StandardSchemaV1 } from '../validation/results/standardSchema.public'
@@ -69,14 +69,9 @@ export type CreateValidationErrorFn<TFormData> = <
 
 type ParsedSubmitIssues<TFormData> = ReturnType<ParseIssuesFn<TFormData>>
 
-export type CreatedSubmitErrorMap<
-  TFormData,
-  TFormError extends ValidationFailure,
-  TFieldError extends ValidationFailure,
-> = Required<ValidationErrorMap<TFormData, TFormError, TFieldError>> &
-  OnSubmitError<
-    Required<ValidationErrorMap<TFormData, TFormError, TFieldError>>
-  >
+export type CreatedSubmitErrorMap<TFormData> =
+  ValidationErrorMapHelper<TFormData> &
+    OnSubmitError<ValidationErrorMapHelper<TFormData>>
 
 /**
  * Builds a mutable error map to return from `onSubmit` and report validation errors.
@@ -87,11 +82,7 @@ export type CreateSubmitErrorMapFn<TFormData> = (
   initial?: Partial<
     ValidationErrorMap<TFormData, ValidationFailure, ValidationFailure>
   >,
-) => CreatedSubmitErrorMap<
-  TFormData,
-  Array<ValidationFailureItem>,
-  ValidationFailure
->
+) => CreatedSubmitErrorMap<TFormData>
 
 /**
  * Converts Standard Schema issues into a mutable error map to return from `onSubmit`.
@@ -104,42 +95,145 @@ export type ParseSubmitIssuesFn<TFormData> = (
   OnSubmitError<ParsedSubmitIssues<TFormData>>
 
 /**
- * Form values, validator outputs, and error helpers passed to `onSubmit` after
- * submission validation succeeds.
+ * Provides the cancellation signal and error helpers for form and form group
+ * `onSubmit` callbacks.
+ *
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ */
+export interface BaseSubmitContext<TFormData> {
+  /**
+   * Signals when this submission attempt is invalidated.
+   *
+   * - A newer submission of the same form or group aborts the signal.
+   * - A reset or unmount also aborts it.
+   * - Field edits during a submission do not abort the signal.
+   * - The same signal is passed to this attempt's `onSubmitInvalid`, if it runs.
+   *
+   * @remarks
+   * **Important:** Aborting prevents submission results from updating form or
+   * group state. Callbacks already started are still awaited, and their
+   * exceptions retain normal handling. Use the signal to stop external work
+   * that supports cancellation.
+   */
+  signal: AbortSignal
+  /**
+   * Wraps existing errors so `onSubmit` can return them as validation errors.
+   * Calling this helper alone does not update validation state.
+   *
+   * Accepts error messages, issue objects, arrays of errors, or an error map.
+   * For a group, field paths in an error map are relative to the group.
+   *
+   * - If you want to build or edit errors by field, use
+   *   {@link BaseSubmitContext.createErrorMap | createErrorMap}.
+   * - If you want to return Standard Schema errors, use
+   *   {@link BaseSubmitContext.parseIssues | parseIssues}.
+   *
+   * @example
+   * ```ts
+   * formOptions({
+   *   defaultValues: { name: '' },
+   *   onSubmit: async ({ value, createValidationError }) => {
+   *     if (await nameIsTaken(value.name)) {
+   *       return createValidationError('Name is already taken')
+   *     }
+   *     await saveProfile(value)
+   *   },
+   * })
+   * ```
+   */
+  createValidationError: CreateValidationErrorFn<TFormData>
+  /**
+   * Builds a mutable map of submission errors from optional initial errors.
+   *
+   * - If you already have errors ready to return, use
+   *   {@link BaseSubmitContext.createValidationError | createValidationError}.
+   * - If you want to return Standard Schema errors, use
+   *   {@link BaseSubmitContext.parseIssues | parseIssues}.
+   * - Add errors with `addFormError` and `addFieldError`.
+   * - Return the map from `onSubmit` to report its errors.
+   * - The `form` entry targets the submitting form or group.
+   * - Field paths are relative to the submitting form or group.
+   * - An empty map indicates success.
+   *
+   * @example
+   * ```ts
+   * formOptions({
+   *   defaultValues: { name: '' },
+   *   onSubmit: async ({ value, createErrorMap }) => {
+   *     const errors = createErrorMap()
+   *     if (await nameIsTaken(value.name)) {
+   *       errors.addFieldError('name', 'Name is already taken')
+   *     }
+   *     return errors
+   *   },
+   * })
+   * ```
+   */
+  createErrorMap: CreateSubmitErrorMapFn<TFormData>
+  /**
+   * Converts Standard Schema issues into a mutable error map to return from
+   * `onSubmit`.
+   *
+   * - If you want to return your own error messages or an existing error map, use
+   *   {@link BaseSubmitContext.createValidationError | createValidationError}.
+   * - If you want to build or edit errors by field, use
+   *   {@link BaseSubmitContext.createErrorMap | createErrorMap}.
+   * - Uses the captured submission values to resolve field paths.
+   * - Issues without a field path become form or group errors.
+   * - For a group, issue paths are relative to the group.
+   * - Return the map to report its errors. An empty map indicates success.
+   *
+   * @example
+   * ```ts
+   * formOptions({
+   *   defaultValues: { name: '' },
+   *   onSubmit: async ({ value, parseIssues }) => {
+   *     const result = parseSchema(mySchema, value)
+   *     if (!result.success) {
+   *       return parseIssues(result.issues)
+   *     }
+   *     await saveProfile(result.data)
+   *   },
+   * })
+   * ```
+   */
+  parseIssues: ParseSubmitIssuesFn<TFormData>
+}
+
+/**
+ * Gives the form's `onSubmit` callback its submitted values, validator outputs,
+ * form API, and error helpers after submission validation succeeds.
  *
  * @typeParam TFormData - Library-managed. Do not specify explicitly.
  * @typeParam TValidatorOutputs - Library-managed. Do not specify explicitly.
- * @typeParam TFormErrorTypes - Library-managed. Do not specify explicitly.
  */
 export interface FormSubmitContext<
   TFormData,
   TValidatorOutputs extends readonly unknown[],
-> {
-  /** The values captured when this submission started, without schema transformations. */
+> extends BaseSubmitContext<TFormData> {
+  /**
+   * The form values captured when this submission started, without schema
+   * transformations applied.
+   *
+   * Field edits made while submission is pending do not replace these values.
+   * Read transformed validator results from `validatorOutputs`.
+   */
   value: TFormData
   /**
-   * Aborted when a newer submission, reset, unmount, or server-state replacement
-   * invalidates this attempt. Later field edits do not abort it.
+   * The form handling this submission.
    *
-   * Shared with this attempt's `onSubmitInvalid` context. Aborting stops results
-   * from updating form state; callbacks already started are still awaited and
-   * their exceptions retain normal handling. It does not undo external work.
+   * @remarks
+   * **Important:** A user may edit fields during submission. `value` and `formApi.state.values` may not
+   * be equal.
    */
-  signal: AbortSignal
-  /** The form instance handling this submission. */
   formApi: FormApi<TFormData, ScopedErrorTypes<never, never>>
   /**
-   * The validator outputs from this submission.
+   * Outputs from this submission's form validators, in validators array order.
    *
-   * Standard Schemas provide their output data automatically. Callback
-   * validators must return a `createOutput` result to provide output data.
-   *
-   * Outputs follow the same order as the validators array.
-   *
-   * Skipped validators and successful returns without output contribute
-   * `undefined`.
-   *
-   * Outputs from earlier change, blur, or mount validation are not reused.
+   * - Standard Schemas provide their parsed output data automatically.
+   * - Callback validators provide the payload returned with `createOutput`.
+   * - Skipped validators contribute `undefined`.
+   * - Outputs from earlier change, blur, or mount validation are not reused.
    *
    * @example
    * ```ts
@@ -147,40 +241,20 @@ export interface FormSubmitContext<
    *   defaultValues: { name: '' },
    *   validators: [
    *     {
-   *       run: ({ createOutput, value }) => {
-   *         return createOutput({ displayName: value.name.trim() })
-   *       },
+   *       triggers: [],
+   *       run: ({ createOutput, value }) =>
+   *         createOutput({ displayName: value.name.trim() }),
    *     },
-   *     {
-   *       // Schemas pass their output data by default.
-   *       run: mySchema,
-   *     },
+   *     { triggers: [], run: mySchema },
    *   ],
-   *   onSubmit: ({ validatorOutputs }) => {
-   *     // Outputs follow the same order as the validators array.
+   *   onSubmit: async ({ validatorOutputs }) => {
    *     const [customData, schemaOutput] = validatorOutputs
-   *     console.log(customData.displayName)
+   *     await saveProfile(customData.displayName, schemaOutput)
    *   },
    * })
    * ```
    */
   validatorOutputs: TValidatorOutputs
-  /**
-   * Creates a validation error recognized as a submission failure when returned
-   * from a submission handler. Creating the error alone does not update form or
-   * field validation state.
-   */
-  createValidationError: CreateValidationErrorFn<TFormData>
-  /**
-   * Builds a mutable submission error map from optional initial errors. Return
-   * the map to apply its form and field errors. An empty map indicates success.
-   */
-  createErrorMap: CreateSubmitErrorMapFn<TFormData>
-  /**
-   * Converts Standard Schema issues into a mutable submission error map using
-   * the submitted values. Return the map to report its form and field errors.
-   */
-  parseIssues: ParseSubmitIssuesFn<TFormData>
 }
 
 /**

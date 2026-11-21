@@ -4,7 +4,7 @@ import type {
 } from '../validation/state.public'
 import type { FormApi } from '../FormApi/FormApi.public'
 import type {
-  FormSubmitContext,
+  BaseSubmitContext,
   SubmitInvalidContext,
 } from '../FormApi/formSubmit.public'
 import type {
@@ -18,17 +18,18 @@ import type { DynamicValidatorTriggers } from '../pipeline/events.public'
 import type { FormattedValidationError } from '../validation/results/results.public'
 
 /**
- * Context passed to a form group's `onSubmit` after group validation succeeds.
+ * Gives the group's `onSubmit` callback its submitted values, validator outputs,
+ * form and group APIs, and error helpers after group submission validation succeeds.
  *
- * @example
- * ```ts
- * {
- *   // ...
- *   onSubmit: async ({ value }) => {
- *     await saveGuestDetails(value)
- *   },
- * }
- * ```
+ * - Error helpers target this group.
+ * - Field paths in error maps and Standard Schema issues are relative to the group.
+ *
+ * @typeParam TFormData - Library-managed. Do not specify explicitly.
+ * @typeParam TGroupName - Library-managed. Do not specify explicitly.
+ * @typeParam TGroupValue - Library-managed. Do not specify explicitly.
+ * @typeParam TOutputs - Library-managed. Do not specify explicitly.
+ * @typeParam TGroupError - Library-managed. Do not specify explicitly.
+ * @typeParam TFormError - Library-managed. Do not specify explicitly.
  */
 export interface FormGroupSubmitContext<
   in out TFormData,
@@ -37,15 +38,30 @@ export interface FormGroupSubmitContext<
   out TOutputs,
   in out TGroupError extends ScopedErrorTypes,
   in out TFormError extends ScopedErrorTypes,
-> extends Pick<
-  FormSubmitContext<TGroupValue, readonly unknown[]>,
-  'createValidationError' | 'createErrorMap' | 'parseIssues'
-> {
-  /** The group values for this submission. */
+> extends BaseSubmitContext<TGroupValue> {
+  /**
+   * The group values captured when this submission started, without schema
+   * transformations applied.
+   *
+   * Field edits made while submission is pending do not replace these values.
+   * Read transformed group validator results from `validatorOutputs`.
+   */
   value: TGroupValue
-  /** The parent form API handling this submission. */
+  /**
+   * The form containing this group.
+   *
+   * @remarks
+   * **Important:** A user may edit fields during submission. `value` may differ
+   * from the group values in `formApi.state.values`.
+   */
   formApi: FormApi<TFormData, TFormError>
-  /** The group API handling this submission. */
+  /**
+   * The group handling this submission.
+   *
+   * @remarks
+   * **Important:** A user may edit fields during submission. `value` and `groupApi.value` may not
+   * be equal.
+   */
   groupApi: FormGroupApi<
     TFormData,
     TGroupName,
@@ -54,17 +70,28 @@ export interface FormGroupSubmitContext<
     TFormError
   >
   /**
-   * Schema outputs and `createOutput` payloads from this group submission,
-   * ordered by validator index. Skipped validators and successful returns
-   * without an output contribute `undefined`.
+   * Outputs from this submission's group validators, in validators array order.
+   *
+   * - Standard Schemas provide their parsed output data automatically.
+   * - Callback validators provide the payload returned with `createOutput`.
+   * - Skipped validators contribute `undefined`.
+   * - Outputs from earlier change, blur, or mount validation are not reused.
    *
    * @example
    * ```ts
    * {
    *   // ...
+   *   validators: [
+   *     {
+   *       triggers: [],
+   *       run: ({ createOutput, value }) =>
+   *         createOutput({ displayName: value.name.trim() }),
+   *     },
+   *     { triggers: [], run: mySchema },
+   *   ],
    *   onSubmit: async ({ validatorOutputs }) => {
-   *     const validatedGuestDetails = validatorOutputs[0]
-   *     setStep(step => step + 1)
+   *     const [customData, schemaOutput] = validatorOutputs
+   *     await saveProfile(customData.displayName, schemaOutput)
    *   },
    * }
    * ```
