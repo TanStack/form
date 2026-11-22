@@ -23,118 +23,139 @@ type PropsOf<TComponent> = TComponent extends (props: infer TProps) => ReactNode
   ? TProps
   : never
 
-type FieldValuePropKeys<TProps> = {
-  [K in keyof TProps]-?: TProps[K] extends FieldWithValue<any> ? K : never
-}[keyof TProps]
+type CheckForField<TValue, K> = unknown extends TValue
+  ? never
+  : NonNullable<TValue> extends FieldWithValue<any>
+    ? K
+    : never
+
+type FilteredValueProps<TProps> = {
+  [K in keyof TProps]-?: CheckForField<TProps[K], K>
+}
+
+type FieldValuePropKeys<TProps> = FilteredValueProps<TProps>[keyof TProps]
 
 type FieldValueFromProp<TProp> =
   TProp extends FieldWithValue<infer TValue> ? TValue : never
 
-interface FieldComponentFactory<TMode extends FieldComponentMode> {
-  (): <
+type InferredFieldValue<TProps> = [FieldValuePropKeys<TProps>] extends [never]
+  ? unknown
+  : FieldValueFromProp<TProps[FieldValuePropKeys<TProps>]>
+
+type FieldComponentValue<TExplicit, TValue, TInferredValue> =
+  TExplicit extends true ? TValue : TInferredValue
+
+type FieldComponentPropValue<TExplicit, TValue, TProp> = FieldComponentValue<
+  TExplicit,
+  TValue,
+  FieldValueFromProp<TProp>
+>
+
+// Users might explicitly specify T, or we infer. So
+// we intersect with unknown or never to make sure that
+// T agrees with the field being specified.
+type FieldInjectionConstraint<TExplicit, TValue, TProp> = [
+  FieldWithValue<FieldComponentPropValue<TExplicit, TValue, TProp>>,
+] extends [NonNullable<TProp>]
+  ? unknown
+  : never
+
+type InjectableFieldPropKey<
+  TProps,
+  TFieldPropKey extends keyof TProps,
+  TExplicit,
+  TValue,
+> = TFieldPropKey &
+  FieldInjectionConstraint<TExplicit, TValue, TProps[TFieldPropKey]>
+
+type PreservedFieldComponent<
+  TMode extends FieldComponentMode,
+  TComponent extends AnyFieldComponent,
+  TValue,
+> = NoInfer<TComponent> & FieldBrand<TMode, TValue>
+
+type InjectedFieldComponent<
+  TMode extends FieldComponentMode,
+  TProps,
+  TFieldPropKey extends keyof TProps,
+  TValue,
+> = ((props: Omit<TProps, TFieldPropKey>) => ReactNode) &
+  FieldBrand<TMode, TValue>
+
+interface FieldComponentPreparer<
+  TMode extends FieldComponentMode,
+  TValue = never,
+  TExplicit extends boolean = false,
+> {
+  <TComponent extends AnyFieldComponent>(
+    Component: TComponent,
+  ): PreservedFieldComponent<
+    TMode,
+    TComponent,
+    FieldComponentValue<
+      TExplicit,
+      TValue,
+      InferredFieldValue<PropsOf<TComponent>>
+    >
+  >
+
+  <
     TComponent extends AnyFieldComponent,
-    TProps = PropsOf<TComponent>,
-    TFieldPropKey extends FieldValuePropKeys<TProps> =
-      FieldValuePropKeys<TProps>,
+    TFieldPropKey extends FieldValuePropKeys<PropsOf<TComponent>>,
   >(
     Component: TComponent,
-    fieldPropKey: TFieldPropKey,
-  ) => ((props: Omit<TProps, TFieldPropKey>) => ReactNode) &
-    FieldBrand<TMode, FieldValueFromProp<TProps[TFieldPropKey]>>
+    fieldPropKey: InjectableFieldPropKey<
+      PropsOf<TComponent>,
+      TFieldPropKey,
+      TExplicit,
+      TValue
+    >,
+  ): InjectedFieldComponent<
+    TMode,
+    PropsOf<TComponent>,
+    TFieldPropKey,
+    FieldComponentPropValue<
+      TExplicit,
+      TValue,
+      PropsOf<TComponent>[TFieldPropKey]
+    >
+  >
+}
 
-  <TValue>(): <TComponent extends AnyFieldComponent>(
-    Component: TComponent,
-  ) => NoInfer<TComponent> & FieldBrand<TMode, TValue>
+interface FieldComponentFactory<TMode extends FieldComponentMode> {
+  (): FieldComponentPreparer<TMode>
+  <TValue>(): FieldComponentPreparer<TMode, TValue, true>
 }
 
 /**
- * Prepares components for App Form with field API injection or an explicit
- * field-value type.
+ * Prepares field components for registration with `createFormHook`.
+ *
+ * The helpers control which field value types expose each registered component
+ * in TypeScript. They can also inject the current field API into a component prop.
  */
 export interface FieldComponentHelper {
-  /**
-   * Prepares a component for fields whose value type exactly matches.
-   *
-   * Use `strict()(Component, fieldPropKey)` to infer the value type from the
-   * selected prop, omit that prop from the public props, and inject the field
-   * API from the nearest App Form field context.
-   *
-   * Use `strict<TValue>()(Component)` to keep the original component and props,
-   * including its generic signature, and only add compile-time compatibility.
-   *
-   * @example
-   * ```tsx
-   * const { fieldComponent } = getFormHookHelpers()
-   * const TextField = fieldComponent.strict()(TextInput, 'field')
-   * const StringAdornment = fieldComponent.strict<string>()(Adornment)
-   * ```
-   */
   strict: FieldComponentFactory<'strict'>
-
-  /**
-   * Prepares a component for fields whose value type is assignable to the
-   * value type accepted by the component.
-   *
-   * Use `loose()(Component, fieldPropKey)` to infer the accepted value type
-   * from the selected prop and inject the field API from field context.
-   *
-   * Use `loose<TValue>()(Component)` to keep the original component and props,
-   * including its generic signature, and only add compile-time compatibility.
-   *
-   * @example
-   * ```tsx
-   * const { fieldComponent } = getFormHookHelpers()
-   * const Errors = fieldComponent.loose()(FieldErrors, 'field')
-   * const Description = fieldComponent.loose<unknown>()(FieldDescription)
-   * ```
-   */
   loose: FieldComponentFactory<'loose'>
 }
 
 /**
- * Helpers for preparing value-compatible field components for registration
- * with `createFormHook`.
+ * Prepares reusable components for registration with `createFormHook`.
+ *
+ * Obtain these helpers from {@link getFormHookHelpers}.
  */
 export interface FormHookHelpers {
+  /**
+   * Prepares field components with value-type matching and optional field API
+   * injection. Register the results in `createFormHook`'s `fieldComponents`.
+   */
   fieldComponent: FieldComponentHelper
 }
 
-/**
- * Creates helpers that make React field components value-aware for
- * `createFormHook`.
- *
- * Supplying a prop name injects the current App Form field API into that prop.
- * Supplying an explicit value type without a prop name returns the original
- * component with compile-time field-value compatibility.
- *
- * @example
- * ```tsx
- * import { createFormHook, getFormHookHelpers } from '@tanstack/react-form'
- * import type { FieldWithValue } from '@tanstack/react-form'
- *
- * function TextInput({ field }: { field: FieldWithValue<string> }) {
- *   return (
- *     <input
- *       value={field.value}
- *       onChange={(event) => field.handleChange(event.target.value)}
- *     />
- *   )
- * }
- *
- * const { fieldComponent } = getFormHookHelpers()
- * const TextField = fieldComponent.strict()(TextInput, 'field')
- *
- * export const { useAppForm } = createFormHook({
- *   fieldComponents: { TextField },
- *   formComponents: {},
- * })
- * ```
- */
 export function getFormHookHelpers(): FormHookHelpers {
   return {
     fieldComponent: {
-      loose: fieldComponentFactory as FieldComponentHelper['loose'],
-      strict: fieldComponentFactory as FieldComponentHelper['strict'],
-    },
+      loose: fieldComponentFactory,
+      strict: fieldComponentFactory,
+    } as FieldComponentHelper,
   }
 }

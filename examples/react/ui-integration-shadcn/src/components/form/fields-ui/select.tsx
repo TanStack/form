@@ -44,13 +44,4 @@ function FormSelect<TValue extends string>({
   )
 }
 
-export default fieldComponent.loose<string>()(FormSelect)
-
-// formOptions
-// formOptions.strictSchema
-// formOptions.looseSchema
-
-// fieldComponent.loose<string>()(Comp)
-// fieldComponent.strict<string>()(Comp)
-// fieldComponent.loose()(Comp, 'field')
-// fieldComponent.strict()(Comp, 'field')
+export default fieldComponent.loose()(FormSelect)

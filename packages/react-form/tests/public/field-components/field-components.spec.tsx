@@ -24,4 +24,8 @@ it('returns the original component when no field prop is injected', () => {
 
   expect(fieldComponent.strict<string>()(Description)).toBe(Description)
   expect(fieldComponent.loose<string>()(Choices)).toBe(Choices)
+  expect(fieldComponent.strict()(Description)).toBe(Description)
+  expect(fieldComponent.loose()(Description)).toBe(Description)
+  expect(fieldComponent.strict()(Choices)).toBe(Choices)
+  expect(fieldComponent.loose()(Choices)).toBe(Choices)
 })
