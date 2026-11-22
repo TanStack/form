@@ -12,8 +12,8 @@ function FormLabel(props: TanStackFormLabelProps) {
   return <Label {...props} htmlFor={props.htmlFor ?? field.name} />
 }
 
-// We use fieldComponent instead of fieldBrand so that we don't have to pass `field` again.
+// Inject the field prop so callers do not need to pass it again.
 // This component isn't generic, so that is safe.
 
 // We don't care what type of field uses this, so loose is acceptable
-export default fieldComponent.loose(FormLabel, 'field')
+export default fieldComponent.loose()(FormLabel, 'field')

@@ -1,4 +1,4 @@
-import { fieldBrand } from '../field-brand'
+import { fieldComponent } from '../field-brand'
 import { FieldDescription } from '@/components/ui/field'
 
-export default fieldBrand.loose<any>()(FieldDescription)
+export default fieldComponent.loose<any>()(FieldDescription)

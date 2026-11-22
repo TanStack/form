@@ -21,4 +21,4 @@ function FormTextField(props: TanStackFormTextFieldProps) {
   )
 }
 
-export default fieldComponent.strict(FormTextField, 'field')
+export default fieldComponent.strict()(FormTextField, 'field')

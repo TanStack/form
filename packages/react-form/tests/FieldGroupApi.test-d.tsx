@@ -37,7 +37,7 @@ function TextFieldComponent(props: { field: FieldWithValue<string> }) {
 }
 
 const { fieldComponent } = getFormHookHelpers()
-const TextField = fieldComponent.strict(TextFieldComponent, 'field')
+const TextField = fieldComponent.strict()(TextFieldComponent, 'field')
 
 type FieldComponents = {
   TextField: typeof TextField

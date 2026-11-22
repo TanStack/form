@@ -118,9 +118,9 @@ function FieldInfoComponent(props: { field: FieldWithValue<unknown> }) {
 }
 
 const { fieldComponent } = getFormHookHelpers()
-const TextField = fieldComponent.strict(TextFieldComponent, 'field')
-const NumberField = fieldComponent.strict(NumberFieldComponent, 'field')
-const FieldInfo = fieldComponent.loose(FieldInfoComponent, 'field')
+const TextField = fieldComponent.strict()(TextFieldComponent, 'field')
+const NumberField = fieldComponent.strict()(NumberFieldComponent, 'field')
+const FieldInfo = fieldComponent.loose()(FieldInfoComponent, 'field')
 const MemoTextField = React.memo(TextField)
 const LazyTextField = React.lazy(() => Promise.resolve({ default: TextField }))
 

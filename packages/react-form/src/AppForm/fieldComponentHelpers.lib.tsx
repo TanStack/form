@@ -1,16 +1,13 @@
 import React from 'react'
 import { useFieldContext } from './contexts.lib'
-import type { FunctionComponent } from 'react'
 
 type AnyFieldComponent = (props: any) => React.ReactNode
 
-export function wrapField(
+function wrapField(
   Component: AnyFieldComponent,
   fieldPropKey: string,
 ): AnyFieldComponent {
-  const Wrapper: FunctionComponent<any> = function TanStackFormFieldWrapper(
-    props,
-  ) {
+  const Wrapper = function TanStackFormFieldWrapper(props: any) {
     const field = useFieldContext()
 
     const newProps = { ...props, [fieldPropKey]: field }
@@ -20,11 +17,13 @@ export function wrapField(
 
   Wrapper.displayName = 'TanStackForm.FieldComponent'
 
-  return Wrapper as never
+  return Wrapper
 }
 
-export function brandComponentFactory(): (
+export function fieldComponentFactory(): (
   component: AnyFieldComponent,
+  fieldPropKey?: string,
 ) => AnyFieldComponent {
-  return (component) => component
+  return (component, fieldPropKey) =>
+    fieldPropKey === undefined ? component : wrapField(component, fieldPropKey)
 }

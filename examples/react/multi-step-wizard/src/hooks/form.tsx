@@ -3,7 +3,7 @@ import { TextField } from '../components/text-fields.tsx'
 
 const { fieldComponent } = getFormHookHelpers()
 
-const AppTextField = fieldComponent.strict(TextField, 'field')
+const AppTextField = fieldComponent.strict()(TextField, 'field')
 
 function SubscribeButton({ label }: { label: string }) {
   const form = useFormContext()

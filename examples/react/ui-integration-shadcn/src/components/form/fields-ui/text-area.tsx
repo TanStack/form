@@ -23,4 +23,4 @@ function FormTextArea(props: TanStackFormTextAreaProps) {
   )
 }
 
-export default fieldComponent.strict(FormTextArea, 'field')
+export default fieldComponent.strict()(FormTextArea, 'field')

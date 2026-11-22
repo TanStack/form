@@ -24,8 +24,8 @@ function FormTextInput(props: TanStackFormTextInputProps) {
   )
 }
 
-// We use fieldComponent instead of fieldBrand so that we don't have to pass `field` again.
+// Inject the field prop so callers do not need to pass it again.
 // This component isn't generic, so that is safe.
 
 // Strict is important, because if a field is 'a' | 'b', we don't want the user to be able to use a string input
-export default fieldComponent.strict(FormTextInput, 'field')
+export default fieldComponent.strict()(FormTextInput, 'field')
