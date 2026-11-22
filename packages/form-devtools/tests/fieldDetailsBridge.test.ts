@@ -355,7 +355,7 @@ describe('field detail bridge', () => {
     )
   })
 
-  it('streams topology changes and resolves watched paths when source fields appear', async () => {
+  it('streams topology changes and resolves listener and validator watch relations', async () => {
     const disconnectEventBus = connectTestEventBus()
     const mountedForms = createMountedFormsController()
     const fields = createFieldsController(mountedForms)
@@ -405,6 +405,11 @@ describe('field detail bridge', () => {
           .directChildCount,
       ).toBe(1)
 
+      expect(
+        details.filter(({ fieldId }) => fieldId === targetId).at(-1)?.relations
+          .listensTo,
+      ).toEqual([])
+
       target._update({
         listeners: [
           {
@@ -421,12 +426,6 @@ describe('field detail bridge', () => {
           },
         ],
       })
-
-      expect(
-        details.filter(({ fieldId }) => fieldId === targetId).at(-1)?.relations
-          .listensTo,
-      ).toEqual([])
-      form.setFieldValue('source', 'created')
 
       const targetRelations = details
         .filter(({ fieldId }) => fieldId === targetId)
