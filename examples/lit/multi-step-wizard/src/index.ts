@@ -46,7 +46,7 @@ export class TanStackFormWizard extends LitElement {
           @submit=${(event: SubmitEvent) => {
             event.preventDefault()
             event.stopPropagation()
-            void group.handleSubmit()
+            void group.handleSubmit().catch(console.error)
           }}
         >
           ${group.field({ name: 'name' }, (field) =>
@@ -64,7 +64,7 @@ export class TanStackFormWizard extends LitElement {
         name: 'step2',
         validators: [stepValidator(step2Schema)],
         onSubmit: () => {
-          void this.form.api.handleSubmit()
+          void this.form.api.handleSubmit().catch(console.error)
         },
       },
       (group) => html`
@@ -72,7 +72,7 @@ export class TanStackFormWizard extends LitElement {
           @submit=${(event: SubmitEvent) => {
             event.preventDefault()
             event.stopPropagation()
-            void group.handleSubmit()
+            void group.handleSubmit().catch(console.error)
           }}
         >
           ${group.field({ name: 'name' }, (field) =>

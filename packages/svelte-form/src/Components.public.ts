@@ -103,7 +103,7 @@ export interface SvelteFormFieldProps<
   TFieldName,
   TFieldValue,
   TFieldValidators extends FieldValidators<TFieldData, TFieldName, TFieldValue>,
-  TGroupFieldError,
+  TGroupError extends ScopedErrorTypes,
   TFormData,
   TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>>,
@@ -112,7 +112,7 @@ export interface SvelteFormFieldProps<
   TFieldName,
   TFieldValue,
   TFieldValidators,
-  TGroupFieldError,
+  TGroupError,
   TFormData,
   TFormError
 > {
@@ -121,7 +121,7 @@ export interface SvelteFormFieldProps<
       SvelteFieldApi<
         TFieldName,
         TFieldValue,
-        ToFieldError<NoInfer<TFieldValidators>, TGroupFieldError, TFormError>,
+        ToFieldError<NoInfer<TFieldValidators>, TGroupError, TFormError>,
         TFormData,
         TFormError,
         TFieldComponents
@@ -217,7 +217,7 @@ export type SvelteFormGroupFieldComponent<
       TFieldName,
       DeepValue<TGroupValue, TFieldName>,
       TFieldValidators,
-      TGroupError['subfieldError'],
+      TGroupError,
       TFormData,
       TFormError,
       TFieldComponents
@@ -247,7 +247,7 @@ export type SvelteFormGroupArrayFieldComponent<
       TFieldName,
       DeepValue<TGroupValue, TFieldName>,
       TFieldValidators,
-      TGroupError['subfieldError'],
+      TGroupError,
       TFormData,
       TFormError,
       TFieldComponents
@@ -295,13 +295,15 @@ export interface SvelteFormGroupProps<
   TGroupValidators extends FormGroupValidators<TGroupValue>,
   TFormError extends ScopedErrorTypes,
   TFieldComponents extends Record<string, Component<any>>,
+  TSubmitReturn = void,
 > extends Omit<
   FormGroupOptions<
     TFormData,
     TGroupName,
     TGroupValue,
     TGroupValidators,
-    TFormError
+    TFormError,
+    TSubmitReturn
   >,
   'form'
 > {
@@ -311,7 +313,10 @@ export interface SvelteFormGroupProps<
         TFormData,
         TGroupName,
         TGroupValue,
-        ToFormGroupErrorTypes<NoInfer<TGroupValidators>>,
+        ToFormGroupErrorTypes<
+          NoInfer<TGroupValidators>,
+          NoInfer<TSubmitReturn>
+        >,
         TFormError,
         TFieldComponents
       >,
@@ -327,6 +332,7 @@ export type SvelteFormGroupComponent<
   TGroupName extends DeepKeys<TFormData>,
   TGroupValue extends DeepValue<TFormData, TGroupName>,
   const TGroupValidators extends FormGroupValidators<TGroupValue>,
+  TSubmitReturn = void,
 >(
   options: ComponentConstructorOptions<
     SvelteFormGroupProps<
@@ -335,7 +341,8 @@ export type SvelteFormGroupComponent<
       TGroupValue,
       TGroupValidators,
       TFormError,
-      TFieldComponents
+      TFieldComponents,
+      TSubmitReturn
     >
   >,
 ) => SvelteComponent) &

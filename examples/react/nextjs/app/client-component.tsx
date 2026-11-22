@@ -21,8 +21,8 @@ export const ClientComp = () => {
       action={action}
       onSubmit={async (e) => {
         e.preventDefault()
-        const errors = await form.handleSubmit()
-        if (errors.length === 0) {
+        const errors = await form.handleSubmit().catch(console.error)
+        if (errors && errors.length === 0) {
           e.target.submit()
         }
       }}

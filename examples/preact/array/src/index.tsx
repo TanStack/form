@@ -24,7 +24,7 @@ function ArrayForm({ items }: { items: Array<string> }) {
         onSubmit={(e) => {
           e.preventDefault()
           e.stopPropagation()
-          form.handleSubmit()
+          form.handleSubmit().catch(console.error)
         }}
       >
         <button type="submit">Submit</button>

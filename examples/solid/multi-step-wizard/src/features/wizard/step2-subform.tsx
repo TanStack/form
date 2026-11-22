@@ -16,7 +16,7 @@ export function Step2Form(props: Step2FormProps) {
       name="step2"
       validators={[stepValidator(step2Schema)]}
       onSubmit={() => {
-        props.form.handleSubmit()
+        props.form.handleSubmit().catch(console.error)
       }}
     >
       {(formGroup) => (
@@ -24,7 +24,7 @@ export function Step2Form(props: Step2FormProps) {
           onSubmit={(event) => {
             event.preventDefault()
             event.stopPropagation()
-            formGroup().handleSubmit()
+            formGroup().handleSubmit().catch(console.error)
           }}
         >
           <formGroup.Field name="name">

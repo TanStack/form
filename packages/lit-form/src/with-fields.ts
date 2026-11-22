@@ -15,7 +15,6 @@ import type {
   FormApiArrayMethods,
   FormApiFieldMethods,
   ScopedErrorTypes,
-  ValidationIssue,
 } from '@tanstack/form-core'
 import type { ReadonlyAtom } from '@tanstack/lit-store'
 import type { Part, PartInfo } from 'lit/directive.js'
@@ -34,7 +33,7 @@ declare const fieldGroupFieldsSymbol: unique symbol
 
 export type LitFieldGroupApi<TFieldData> = LitFieldMethods<
   TFieldData,
-  ValidationIssue,
+  ScopedErrorTypes,
   unknown,
   ScopedErrorTypes
 > &

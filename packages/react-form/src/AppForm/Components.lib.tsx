@@ -54,7 +54,7 @@ export function createFieldWithContext(
 }
 
 type AnyFormGroupComponent = FunctionComponent<
-  ReactFormGroupProps<any, any, any, any, any, any>
+  ReactFormGroupProps<any, any, any, any, any, any, any>
 >
 
 export function createFormGroupWithContext(
@@ -64,7 +64,7 @@ export function createFormGroupWithContext(
 ): AnyFormGroupComponent {
   const TanStackFormGroup: AnyFormGroupComponent = (props) => {
     const groupRef =
-      React.useRef<InternalFormGroupApi<any, any, any, any, any>>(null)
+      React.useRef<InternalFormGroupApi<any, any, any, any, any, any>>(null)
 
     if (!groupRef.current) {
       groupRef.current = attachAppFormGroupComponents(
@@ -91,11 +91,18 @@ export function createFormGroupWithContext(
 }
 
 function attachAppFormGroupComponents(
-  group: InternalFormGroupApi<any, any, any, any, any>,
+  group: InternalFormGroupApi<any, any, any, any, any, any>,
   groupField: FunctionComponent<any>,
   groupArrayField: FunctionComponent<any>,
 ) {
-  type GroupWithComponents = InternalFormGroupApi<any, any, any, any, any> & {
+  type GroupWithComponents = InternalFormGroupApi<
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+  > & {
     Field: FunctionComponent<any>
     ArrayField: FunctionComponent<any>
     Subscribe: FunctionComponent<any>

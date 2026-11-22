@@ -25,7 +25,7 @@ export class TanStackPeopleForm extends LitElement {
       <form
         @submit=${(event: SubmitEvent) => {
           event.preventDefault()
-          void this.form.api.handleSubmit()
+          void this.form.api.handleSubmit().catch(console.error)
         }}
       >
         <h1>Personal Information</h1>

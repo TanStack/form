@@ -27,7 +27,7 @@ export function Step1Form({ form, step, setStep }: Step1FormProps) {
           onSubmit={(e) => {
             e.preventDefault()
             e.stopPropagation()
-            formGroup.handleSubmit()
+            formGroup.handleSubmit().catch(console.error)
           }}
         >
           <formGroup.Field name="name">

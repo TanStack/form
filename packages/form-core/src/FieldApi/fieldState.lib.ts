@@ -1,28 +1,24 @@
 import { createFormStateProxy } from '../FormApi/formState.lib'
-import { getValidationSourceErrors } from '../validation'
-import type { RootCounterContributionKey } from './RootFieldApi.lib'
-import type { AnyInternalFieldApi } from './FieldApi.lib'
+import type { FormMetaCountKey } from './RootFieldApi.lib'
 import type {
   AnyFieldMeta as AnyPublicFieldMeta,
   BaseFieldMeta,
   FieldState as PublicFieldState,
   SubfieldsMeta,
 } from './FieldApi.public'
-import type { ValidationSourceErrorMap } from '../validation'
 import type { Atom, ReadonlyAtom } from '@tanstack/store'
-import type { ValidationIssue } from '../validation/state.public'
+import type { ValidationIssue } from '../validation/results/results.public'
+import type { AnyInternalFieldApi } from './FieldApi.lib'
 import type {
-  ErrorVisibilityContext,
   ErrorVisibilityFieldState,
   ErrorVisibilityFn,
 } from '../FormApi/errorVisibility.public'
 
-export type ChildContributionKey =
-  RootCounterContributionKey | 'dirty' | 'error'
-type ChildContributionCounts = Record<ChildContributionKey, number>
-export type ChildContributionStates = Record<ChildContributionKey, boolean>
+export type SubfieldsMetaKey = FormMetaCountKey | 'dirty' | 'error'
+type ChildMetaCounts = Record<SubfieldsMetaKey, number>
+export type SubfieldsMetaFlags = Record<SubfieldsMetaKey, boolean>
 
-export const childContributionKeys: Array<ChildContributionKey> = [
+export const subfieldsMetaKeys: Array<SubfieldsMetaKey> = [
   'touched',
   'dirty',
   'error',
@@ -30,14 +26,7 @@ export const childContributionKeys: Array<ChildContributionKey> = [
 ]
 
 interface MetaExtension {
-  /**
-   * Validation errors targeting this field, keyed by stable source instance.
-   *
-   * Derived errors are ordered by field, group, and form scope, then by each
-   * scope's validator pipeline order rather than this map's insertion order.
-   */
-  _validationSourceErrors: ValidationSourceErrorMap | null
-  childContributionCounts: ChildContributionCounts
+  childMetaCounts: ChildMetaCounts
   _validationCount: number
   /**
    * @private
@@ -67,6 +56,8 @@ export interface FieldAtoms {
   meta?: Atom<InternalBaseFieldMeta>
 }
 
+const emptyErrors: Array<ValidationIssue> = []
+
 export const defaultBaseFieldMeta: BaseFieldMeta = {
   isTouched: false,
   isDirty: false,
@@ -76,15 +67,32 @@ export const defaultBaseFieldMeta: BaseFieldMeta = {
 
 export const defaultInternalBaseFieldMeta: InternalBaseFieldMeta = {
   ...defaultBaseFieldMeta,
-  childContributionCounts: {
+  childMetaCounts: {
     touched: 0,
     dirty: 0,
     error: 0,
     validating: 0,
   },
   _validationCount: 0,
-  _validationSourceErrors: null,
   _arrayVersion: 0,
+}
+
+/** Resets interaction meta after subfields reset, retaining submitted group contributions. */
+export function resetFieldMeta(
+  meta: InternalBaseFieldMeta,
+  isSubmittedGroup = false,
+): InternalBaseFieldMeta {
+  if (!isSubmittedGroup && meta.childMetaCounts.touched === 0)
+    return defaultInternalBaseFieldMeta
+
+  return {
+    ...defaultInternalBaseFieldMeta,
+    isTouched: isSubmittedGroup,
+    childMetaCounts: {
+      ...defaultInternalBaseFieldMeta.childMetaCounts,
+      touched: meta.childMetaCounts.touched,
+    },
+  }
 }
 
 export const defaultFieldMeta: InternalFieldMeta = deriveFromBaseFieldMeta(
@@ -115,30 +123,32 @@ export function deriveFromBaseFieldMeta(
   value?: any,
   markers?: DerivedMetaMarkers,
 ): InternalFieldMeta {
+  const { isTouched, isSomeTouched } = getFieldTouchState(baseMeta, field)
   const isDefaultValue = field ? field._getIsDefaultValue(value) : true
   const errorVisibility = getErrorVisibility(field)
-  const canDisplayErrors = shouldDisplayErrors(
+  const canDisplayErrors = shouldDisplayErrors({
     errorVisibility,
     field,
     baseMeta,
     value,
     isDefaultValue,
-  )
-  const originalErrors = getErrorsFromBaseMeta(baseMeta, previousMeta)
+    isTouched,
+    isSomeTouched,
+  })
+  const originalErrors = field?._errorStore.errors ?? emptyErrors
   const errors = canDisplayErrors ? originalErrors : []
   const isSelfTouched = baseMeta.isTouched
   const isSelfDirty = baseMeta.isDirty
   const isSelfValid = errors.length === 0
   const isOriginalSelfValid = originalErrors.length === 0
   const subfields: SubfieldsMeta = {
-    isEveryValid: baseMeta.childContributionCounts.error === 0,
-    isAnyInvalid: baseMeta.childContributionCounts.error > 0,
-    isEveryPristine: baseMeta.childContributionCounts.dirty === 0,
-    isSomeDirty: baseMeta.childContributionCounts.dirty > 0,
-    isSomeTouched: baseMeta.childContributionCounts.touched > 0,
-    isSomeValidating: baseMeta.childContributionCounts.validating > 0,
+    isEveryValid: baseMeta.childMetaCounts.error === 0,
+    isAnyInvalid: baseMeta.childMetaCounts.error > 0,
+    isEveryPristine: baseMeta.childMetaCounts.dirty === 0,
+    isSomeDirty: baseMeta.childMetaCounts.dirty > 0,
+    isSomeTouched,
+    isSomeValidating: baseMeta.childMetaCounts.validating > 0,
   }
-  const isTouched = isSelfTouched || subfields.isSomeTouched
   const isDirty = isSelfDirty || subfields.isSomeDirty
   const isSelfValidating = baseMeta.isValidating
   const isValidating = isSelfValidating || subfields.isSomeValidating
@@ -153,6 +163,7 @@ export function deriveFromBaseFieldMeta(
       baseMeta,
       canDisplayErrors,
       isDefaultValue,
+      isTouched,
       markers,
       originalErrors,
       previousMeta,
@@ -195,6 +206,7 @@ function canReusePreviousMeta({
   baseMeta,
   canDisplayErrors,
   isDefaultValue,
+  isTouched,
   markers,
   originalErrors,
   previousMeta,
@@ -202,6 +214,7 @@ function canReusePreviousMeta({
   baseMeta: InternalBaseFieldMeta
   canDisplayErrors: boolean
   isDefaultValue: boolean
+  isTouched: boolean
   markers: DerivedMetaMarkers
   originalErrors: Array<ValidationIssue>
   previousMeta: InternalFieldMeta
@@ -209,6 +222,7 @@ function canReusePreviousMeta({
   if (markers.source !== baseMeta) return false
   if (markers.canDisplayErrors !== canDisplayErrors) return false
   if (previousMeta.isDefaultValue !== isDefaultValue) return false
+  if (previousMeta.isTouched !== isTouched) return false
   if (previousMeta.original.errors !== originalErrors) return false
 
   return true
@@ -220,13 +234,23 @@ function getErrorVisibility(
   return field?._errorVisibility ?? field?.form._options.errorVisibility
 }
 
-function shouldDisplayErrors(
-  errorVisibility: ErrorVisibilityFn<any> | undefined,
-  field: AnyInternalFieldApi | undefined,
-  baseMeta: InternalBaseFieldMeta,
-  value?: any,
-  isDefaultValue = true,
-): boolean {
+function shouldDisplayErrors({
+  errorVisibility,
+  field,
+  baseMeta,
+  value,
+  isDefaultValue,
+  isTouched,
+  isSomeTouched,
+}: {
+  errorVisibility: ErrorVisibilityFn<any> | undefined
+  field: AnyInternalFieldApi | undefined
+  baseMeta: InternalBaseFieldMeta
+  value: any
+  isDefaultValue: boolean
+  isTouched: boolean
+  isSomeTouched: boolean
+}): boolean {
   if (!field || !errorVisibility) return true
   const group = field._getFormGroup()
   const stateOverrides = group?._getScopedFormStateOverrides()
@@ -237,6 +261,8 @@ function shouldDisplayErrors(
       value,
       baseMeta,
       isDefaultValue,
+      isTouched,
+      isSomeTouched,
     ),
   })
 }
@@ -245,14 +271,14 @@ function createErrorVisibilityFieldState(
   value: any,
   meta: InternalBaseFieldMeta,
   isDefaultValue: boolean,
+  isTouched: boolean,
+  isSomeTouched: boolean,
 ): ErrorVisibilityFieldState {
-  const isSomeTouched = meta.childContributionCounts.touched > 0
-  const isSomeDirty = meta.childContributionCounts.dirty > 0
-  const isSomeValidating = meta.childContributionCounts.validating > 0
+  const isSomeDirty = meta.childMetaCounts.dirty > 0
+  const isSomeValidating = meta.childMetaCounts.validating > 0
   const isSelfTouched = meta.isTouched
   const isSelfDirty = meta.isDirty
   const isSelfValidating = meta.isValidating
-  const isTouched = isSelfTouched || isSomeTouched
   const isDirty = isSelfDirty || isSomeDirty
 
   return {
@@ -277,24 +303,37 @@ function createErrorVisibilityFieldState(
   }
 }
 
-export function getChildContributionStates(
+export function getFieldTouchState(
   meta: InternalBaseFieldMeta,
-): ChildContributionStates {
+  field?: AnyInternalFieldApi,
+): { isTouched: boolean; isSomeTouched: boolean } {
+  let isSubmitted = false
+
+  if (field) {
+    const formAttempts = field.form._atoms.meta.submissionAttempts.get()
+    const groupAttempts = field._getFormGroup()?._submissionAttempts.get() ?? 0
+
+    isSubmitted = formAttempts > 0 || groupAttempts > 0
+  }
+
+  const isSomeTouched = meta.childMetaCounts.touched > 0
+
   return {
-    touched: meta.isTouched || meta.childContributionCounts.touched > 0,
-    dirty: meta.isDirty || meta.childContributionCounts.dirty > 0,
-    validating:
-      meta.isValidating || meta.childContributionCounts.validating > 0,
-    error:
-      getErrorsFromBaseMeta(meta).length > 0 ||
-      meta.childContributionCounts.error > 0,
+    isTouched: meta.isTouched || isSomeTouched || isSubmitted,
+    isSomeTouched,
   }
 }
 
-function hasValidationSourceErrors(
-  errors: ValidationSourceErrorMap | null,
-): boolean {
-  return errors !== null && errors.size > 0
+export function getSubfieldsMetaFlags(
+  meta: InternalBaseFieldMeta,
+  hasOwnErrors = false,
+): SubfieldsMetaFlags {
+  return {
+    touched: meta.isTouched || meta.childMetaCounts.touched > 0,
+    dirty: meta.isDirty || meta.childMetaCounts.dirty > 0,
+    validating: meta.isValidating || meta.childMetaCounts.validating > 0,
+    error: hasOwnErrors || meta.childMetaCounts.error > 0,
+  }
 }
 
 export function isPrunableMeta(meta: InternalBaseFieldMeta): boolean {
@@ -304,31 +343,13 @@ export function isPrunableMeta(meta: InternalBaseFieldMeta): boolean {
   if (meta.isValidating) return false
   if (meta._validationCount !== 0) return false
   if (meta._arrayVersion !== 0) return false
-  if (hasValidationSourceErrors(meta._validationSourceErrors)) return false
 
-  return childContributionKeys.every(
-    (key) => meta.childContributionCounts[key] === 0,
-  )
+  return subfieldsMetaKeys.every((key) => meta.childMetaCounts[key] === 0)
 }
 
-function getErrorsFromBaseMeta(
-  baseMeta: InternalBaseFieldMeta,
-  previousMeta?: InternalFieldMeta,
-): Array<ValidationIssue> {
-  let result: Array<ValidationIssue>
-  if (
-    previousMeta?._validationSourceErrors === baseMeta._validationSourceErrors
-  ) {
-    result = previousMeta.original.errors
-  } else {
-    result = getValidationSourceErrors(baseMeta._validationSourceErrors)
-  }
-  return result
-}
-
-export function hasFieldMetaErrors(meta: InternalBaseFieldMeta): boolean {
-  return (
-    hasValidationSourceErrors(meta._validationSourceErrors) ||
-    meta.childContributionCounts.error > 0
-  )
+export function hasFieldMetaErrors(
+  meta: InternalBaseFieldMeta,
+  hasOwnErrors = false,
+): boolean {
+  return hasOwnErrors || meta.childMetaCounts.error > 0
 }

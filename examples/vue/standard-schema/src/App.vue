@@ -67,12 +67,16 @@ const form = useForm({
     console.log(value)
   },
 })
+
+function handleSubmit() {
+  form.handleSubmit().catch(console.error)
+}
 </script>
 
 <template>
   <div>
     <h1>Standard Schema Form Example</h1>
-    <form @submit.prevent.stop="form.handleSubmit()">
+    <form @submit.prevent.stop="handleSubmit">
       <div>
         <form.Field name="firstName" v-slot="{ field }">
           <label :for="field.name">First Name:</label>

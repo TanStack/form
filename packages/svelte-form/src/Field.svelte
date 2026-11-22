@@ -59,7 +59,7 @@
       TFieldName,
       TFieldValue
     >,
-    TGroupFieldError,
+    TGroupError extends ScopedErrorTypes,
     TFormData,
     TFormError extends ScopedErrorTypes,
   >(
@@ -68,7 +68,7 @@
       TFieldName,
       TFieldValue,
       TFieldValidators,
-      TGroupFieldError,
+      TGroupError,
       TFormData,
       TFormError
     > & { form: AnyInternalFormApi },
@@ -76,7 +76,7 @@
   ): FieldApi<
     TFieldName,
     TFieldValue,
-    ToFieldError<TFieldValidators, TGroupFieldError, TFormError>,
+    ToFieldError<TFieldValidators, TGroupError, TFormError>,
     TFormData,
     TFormError
   > {

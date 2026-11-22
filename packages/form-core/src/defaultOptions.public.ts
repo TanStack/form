@@ -1,8 +1,11 @@
-import type { FieldApiOptions } from './FieldApi/FieldApi.public'
 import type { AnyFormOptions } from './FormApi/formOptions.public'
-import type { FormGroupOptions } from './FormGroupApi/FormGroupApi.public'
-import type { FieldValidators, FormGroupValidators } from './validation.public'
+import type { FieldApiOptions } from './FieldApi/FieldApi.public'
+import type {
+  FieldValidators,
+  FormGroupValidators,
+} from './pipeline/validation/validation.public'
 import type { ScopedErrorTypes } from './validation/state.public'
+import type { FormGroupOptions } from './FormGroupApi/FormGroupApi.public'
 
 /**
  * Determines how a supplied usage-site listener array combines with default

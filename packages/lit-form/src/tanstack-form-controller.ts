@@ -48,7 +48,7 @@ type LitFieldOptions<
   TFieldName,
   TFieldValue,
   TFieldValidators extends FieldValidators<TFieldData, TFieldName, TFieldValue>,
-  TGroupFieldError,
+  TGroupError extends ScopedErrorTypes,
   TFormData,
   TFormError extends ScopedErrorTypes,
 > = FieldApiOptions<
@@ -56,7 +56,7 @@ type LitFieldOptions<
   TFieldName,
   TFieldValue,
   TFieldValidators,
-  TGroupFieldError,
+  TGroupError,
   TFormData,
   TFormError
 >
@@ -66,20 +66,20 @@ type LitFieldRenderApi<
   TFieldName,
   TFieldValue,
   TFieldValidators extends FieldValidators<TFieldData, TFieldName, TFieldValue>,
-  TGroupFieldError,
+  TGroupError extends ScopedErrorTypes,
   TFormData,
   TFormError extends ScopedErrorTypes,
 > = FieldApi<
   TFieldName,
   TFieldValue,
-  ToFieldError<NoInfer<TFieldValidators>, TGroupFieldError, TFormError>,
+  ToFieldError<NoInfer<TFieldValidators>, TGroupError, TFormError>,
   TFormData,
   TFormError
 >
 
 export interface LitFieldMethods<
   TFieldData,
-  TGroupFieldError,
+  TGroupError extends ScopedErrorTypes,
   TFormData,
   TFormError extends ScopedErrorTypes,
 > {
@@ -96,7 +96,7 @@ export interface LitFieldMethods<
       TFieldName,
       DeepValue<TFieldData, TFieldName>,
       TFieldValidators,
-      TGroupFieldError,
+      TGroupError,
       TFormData,
       TFormError
     >,
@@ -106,7 +106,7 @@ export interface LitFieldMethods<
         TFieldName,
         DeepValue<TFieldData, TFieldName>,
         TFieldValidators,
-        TGroupFieldError,
+        TGroupError,
         TFormData,
         TFormError
       >
@@ -126,7 +126,7 @@ export interface LitFieldMethods<
       TFieldName,
       DeepValue<TFieldData, TFieldName>,
       TFieldValidators,
-      TGroupFieldError,
+      TGroupError,
       TFormData,
       TFormError
     >,
@@ -136,7 +136,7 @@ export interface LitFieldMethods<
         TFieldName,
         DeepValue<TFieldData, TFieldName>,
         TFieldValidators,
-        TGroupFieldError,
+        TGroupError,
         TFormData,
         TFormError
       >
@@ -159,12 +159,7 @@ export type LitFormGroupApi<
   TGroupError extends ScopedErrorTypes,
   TFormError extends ScopedErrorTypes,
 > = FormGroupApi<TFormData, TGroupName, TGroupValue, TGroupError, TFormError> &
-  LitFieldMethods<
-    TGroupValue,
-    TGroupError['subfieldError'],
-    TFormData,
-    TFormError
-  > &
+  LitFieldMethods<TGroupValue, TGroupError, TFormData, TFormError> &
   LitSubscribeMethod<FormGroupState<TGroupValue, TGroupError>>
 
 /**
@@ -354,6 +349,7 @@ export class TanStackFormController<
     const TGroupName extends DeepKeys<TFormData>,
     TGroupValue extends DeepValue<TFormData, TGroupName>,
     const TGroupValidators extends FormGroupValidators<TGroupValue>,
+    TGroupSubmitReturn = void,
   >(
     options: Omit<
       FormGroupOptions<
@@ -361,7 +357,8 @@ export class TanStackFormController<
         TGroupName,
         TGroupValue,
         TGroupValidators,
-        TFormError
+        TFormError,
+        TGroupSubmitReturn
       >,
       'form'
     >,
@@ -370,7 +367,7 @@ export class TanStackFormController<
         TFormData,
         TGroupName,
         TGroupValue,
-        ToFormGroupErrorTypes<TGroupValidators>,
+        ToFormGroupErrorTypes<TGroupValidators, NoInfer<TGroupSubmitReturn>>,
         TFormError
       >
     >,
@@ -583,13 +580,20 @@ class SubscribeDirective extends AsyncDirective {
   }
 }
 
-type AnyInternalFormGroupApi = InternalFormGroupApi<any, any, any, any, any> &
+type AnyInternalFormGroupApi = InternalFormGroupApi<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+> &
   LitFieldMethods<any, any, any, any> &
   LitSubscribeMethod<any>
 
 class FormGroupDirective extends AsyncDirective {
   #form?: AnyInternalFormApi
-  #options?: Omit<FormGroupOptions<any, any, any, any, any>, 'form'>
+  #options?: Omit<FormGroupOptions<any, any, any, any, any, any>, 'form'>
   #renderCallback?: AnyRender
   #group?: AnyInternalFormGroupApi
   #unsubscribe?: () => void
@@ -615,7 +619,7 @@ class FormGroupDirective extends AsyncDirective {
 
   render(
     form: AnyInternalFormApi,
-    options: Omit<FormGroupOptions<any, any, any, any, any>, 'form'>,
+    options: Omit<FormGroupOptions<any, any, any, any, any, any>, 'form'>,
     renderCallback: AnyRender,
   ) {
     void form
@@ -682,7 +686,7 @@ class FormGroupDirective extends AsyncDirective {
 }
 
 function attachGroupMethods(
-  group: InternalFormGroupApi<any, any, any, any, any>,
+  group: InternalFormGroupApi<any, any, any, any, any, any>,
   form: AnyInternalFormApi,
 ): AnyInternalFormGroupApi {
   const result = group as AnyInternalFormGroupApi

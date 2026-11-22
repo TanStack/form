@@ -18,7 +18,6 @@ import type {
   FormOptions,
   FormOptionsValidators,
   FormState,
-  FormSubmitInvalidContext,
   GetFormErrorTypes,
   GetValidatorOutputs,
   OnSubmitError,
@@ -76,7 +75,7 @@ type TestFieldErrors<
 > = FieldErrors<
   ToFieldError<
     TFieldValidators,
-    ToFormGroupErrorTypes<TGroupValidators>['subfieldError'],
+    ToFormGroupErrorTypes<TGroupValidators, never>,
     GetFormErrorTypes<TFormValidators, TSubmitReturn>
   >
 >
@@ -401,7 +400,7 @@ describe('ErrorVisibility', () => {
       'name',
       string,
       typeof emptyFieldValidators,
-      [],
+      ScopedErrorTypes<never, never>,
       TestFormData,
       GetFormErrorTypes<typeof emptyFormValidators, unknown>
     > = {
@@ -483,7 +482,7 @@ describe('ErrorVisibility', () => {
       'name',
       string,
       typeof emptyFieldValidators,
-      [],
+      ScopedErrorTypes<never, never>,
       TestFormData,
       GetFormErrorTypes<typeof emptyFormValidators, unknown>
     > = {
@@ -730,25 +729,22 @@ describe('ValidationTriggerOption', () => {
 })
 
 describe('FormErrors', () => {
-  it('exposes only value and formApi in the invalid submit context', () => {
-    expectTypeOf<
-      keyof FormSubmitInvalidContext<TestFormData, ScopedErrorTypes>
-    >().toEqualTypeOf<'value' | 'formApi'>()
-
-    const form = new InternalFormApi({
+  it('exposes failure details and exception suppression in the invalid submit context', () => {
+    const options = formOptions({
       defaultValues: { name: '' },
       onSubmitInvalid: (context) => {
         expectTypeOf(context.value).toEqualTypeOf<{ name: string }>()
         expectTypeOf(context.formApi.state.values).toEqualTypeOf<{
           name: string
         }>()
-        expectTypeOf<keyof typeof context>().toEqualTypeOf<
-          'value' | 'formApi'
-        >()
+        expectTypeOf(context.reason).toEqualTypeOf<'validation' | 'exception'>()
+        expectTypeOf(context.source).toEqualTypeOf<'validators' | 'onSubmit'>()
+        expectTypeOf(context.error).toEqualTypeOf<unknown>()
+        expectTypeOf(context.preventThrow).toEqualTypeOf<() => void>()
       },
     })
 
-    void form
+    void options
   })
 
   it('does not infer submit errors from an unknown return', () => {
@@ -1640,6 +1636,21 @@ describe('validator type transforms', () => {
     >().toEqualTypeOf<FormFieldError>()
   })
 
+  it('extracts only subfield errors from scoped group and form errors', () => {
+    type GroupError = { message: string; groupOnly: true }
+    type GroupFieldError = { message: string; fromGroup: true }
+    type FormError = { message: string; formOnly: true }
+    type FormFieldError = { message: string; fromForm: true }
+
+    expectTypeOf<
+      ToFieldError<
+        [],
+        ScopedErrorTypes<GroupError, GroupFieldError>,
+        ScopedErrorTypes<FormError, FormFieldError>
+      >
+    >().toEqualTypeOf<GroupFieldError | FormFieldError>()
+  })
+
   it('should transform group validators', () => {
     const schema = z
       .object({ name: z.string() })
@@ -1663,7 +1674,7 @@ describe('validator type transforms', () => {
       },
     ])
 
-    type ErrorTypes = ToFormGroupErrorTypes<typeof vs>
+    type ErrorTypes = ToFormGroupErrorTypes<typeof vs, never>
     type Outputs = ToFormGroupOutputs<typeof vs>
 
     expectTypeOf<ErrorTypes>().toEqualTypeOf<
@@ -1682,11 +1693,11 @@ describe('validator type transforms', () => {
     expectTypeOf<GetFormErrorTypes<any, never>>().toEqualTypeOf<
       ScopedErrorTypes<ValidationIssue, ValidationIssue>
     >()
-    expectTypeOf<ToFormGroupErrorTypes<any>>().toEqualTypeOf<
+    expectTypeOf<ToFormGroupErrorTypes<any, never>>().toEqualTypeOf<
       ScopedErrorTypes<never, never>
     >()
     expectTypeOf<ToFormGroupOutputs<any>>().toEqualTypeOf<Array<unknown>>()
-    expectTypeOf<ToFormGroupErrorTypes<[]>>().toEqualTypeOf<
+    expectTypeOf<ToFormGroupErrorTypes<[], never>>().toEqualTypeOf<
       ScopedErrorTypes<never, never>
     >()
     expectTypeOf<ToFormGroupOutputs<[]>>().toEqualTypeOf<[]>()

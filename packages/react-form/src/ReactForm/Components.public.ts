@@ -121,7 +121,7 @@ export interface ReactFormFieldProps<
     TFieldName,
     TFieldValue
   >,
-  in out TGroupFieldError,
+  in out TGroupError extends ScopedErrorTypes,
   in out TFormData,
   in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends ReactComponentTree,
@@ -130,7 +130,7 @@ export interface ReactFormFieldProps<
   TFieldName,
   TFieldValue,
   TFieldValidators,
-  TGroupFieldError,
+  TGroupError,
   TFormData,
   TFormError
 > {
@@ -138,7 +138,7 @@ export interface ReactFormFieldProps<
     fieldApi: ReactFieldApi<
       TFieldName,
       TFieldValue,
-      NoInfer<ToFieldError<TFieldValidators, TGroupFieldError, TFormError>>,
+      NoInfer<ToFieldError<TFieldValidators, TGroupError, TFormError>>,
       TFormData,
       TFormError,
       TFieldComponents
@@ -231,7 +231,7 @@ export interface ReactFormGroupFieldComponent<
       TFieldName,
       DeepValue<TGroupValue, TFieldName>,
       TFieldValidators,
-      TGroupError['subfieldError'],
+      TGroupError,
       TFormData,
       TFormError,
       TFieldComponents
@@ -259,9 +259,7 @@ export type ReactFormGroupArrayFieldComponent<
       TFieldName,
       DeepValue<TGroupValue, TFieldName>,
       TFieldValidators,
-      // TODO this disparity between groups and forms is a bit weird.
-      // Stick to treating both the same when possible.
-      TGroupError['subfieldError'],
+      TGroupError,
       TFormData,
       TFormError,
       TFieldComponents
@@ -307,13 +305,15 @@ export interface ReactFormGroupProps<
   in out TGroupValidators extends FormGroupValidators<TGroupValue>,
   in out TFormError extends ScopedErrorTypes,
   in out TFieldComponents extends ReactComponentTree,
+  in out TSubmitReturn = void,
 > extends Omit<
   FormGroupOptions<
     TFormData,
     TGroupName,
     TGroupValue,
     TGroupValidators,
-    TFormError
+    TFormError,
+    TSubmitReturn
   >,
   'form'
 > {
@@ -322,7 +322,7 @@ export interface ReactFormGroupProps<
       TFormData,
       TGroupName,
       TGroupValue,
-      ToFormGroupErrorTypes<NoInfer<TGroupValidators>>,
+      ToFormGroupErrorTypes<NoInfer<TGroupValidators>, NoInfer<TSubmitReturn>>,
       TFormError,
       TFieldComponents
     >,
@@ -338,6 +338,7 @@ export interface ReactFormGroupComponent<
     TGroupName extends DeepKeys<TFormData>,
     TGroupValue extends DeepValue<TFormData, TGroupName>,
     const TGroupValidators extends FormGroupValidators<TGroupValue>,
+    TSubmitReturn = void,
   >(
     props: ReactFormGroupProps<
       TFormData,
@@ -345,7 +346,8 @@ export interface ReactFormGroupComponent<
       TGroupValue,
       TGroupValidators,
       TFormError,
-      TFieldComponents
+      TFieldComponents,
+      TSubmitReturn
     >,
   ): ReactNode
 }

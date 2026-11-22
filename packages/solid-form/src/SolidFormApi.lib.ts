@@ -66,7 +66,7 @@ export function attachSolidFormComponents(
   }
 
   solidFormApi.FormGroup = function TanStackFormGroup(
-    props: SolidFormGroupProps<any, any, any, any, any, any>,
+    props: SolidFormGroupProps<any, any, any, any, any, any, any>,
   ) {
     const group = attachSolidFormGroupComponents(
       new InternalFormGroupApi({ ...props, form } as never),
@@ -102,10 +102,11 @@ export function attachSolidFormComponents(
 }
 
 function attachSolidFormGroupComponents(
-  group: InternalFormGroupApiType<any, any, any, any, any>,
+  group: InternalFormGroupApiType<any, any, any, any, any, any>,
   form: InternalSolidFormApi,
 ) {
   type GroupWithComponents = InternalFormGroupApiType<
+    any,
     any,
     any,
     any,

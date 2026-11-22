@@ -7,7 +7,6 @@ import type {
   FormApiFieldMethods,
   FormState,
   ScopedErrorTypes,
-  ValidationIssue,
 } from '@tanstack/form-core'
 import type {
   Component,
@@ -36,7 +35,7 @@ export type FieldGroupFieldComponent<
         TFieldName,
         DeepValue<TFieldData, TFieldName>
       >,
-      ValidationIssue,
+      ScopedErrorTypes,
       unknown,
       ScopedErrorTypes,
       TFieldComponents
@@ -62,7 +61,7 @@ export type FieldGroupArrayFieldComponent<
         TFieldName,
         DeepValue<TFieldData, TFieldName>
       >,
-      ValidationIssue,
+      ScopedErrorTypes,
       unknown,
       ScopedErrorTypes,
       TFieldComponents

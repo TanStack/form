@@ -1,8 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import {
-  PARSED_ISSUES,
-  parseIssuesFactory,
-} from '../../src/validation/parseIssues.lib'
+import { parseIssuesFactory } from '../../src/validation/results/parseIssues.lib'
 
 describe('parseIssuesFactory - fieldErrorTarget', () => {
   it('routes field issues to their paths and keeps pathless issues on the form', () => {

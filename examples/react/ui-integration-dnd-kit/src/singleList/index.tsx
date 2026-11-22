@@ -102,7 +102,7 @@ export function SingleListExample() {
         onSubmit={(event) => {
           event.preventDefault()
           event.stopPropagation()
-          form.handleSubmit()
+          form.handleSubmit().catch(console.error)
         }}
       >
         <DragDropProvider onDragEnd={getSingleListDragEndHandler(form)}>

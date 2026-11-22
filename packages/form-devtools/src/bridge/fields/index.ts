@@ -35,37 +35,15 @@ interface FieldsController {
   ) => Array<DevtoolsMountedFieldScaffold>
 }
 
-function addListenerForwardRelations(
+function addWatchersAtPath(
   fields: Set<AnyInternalFieldApi>,
-  field: AnyInternalFieldApi,
+  form: AnyInternalFormApi,
+  path: string,
 ): void {
-  field._listenerInstances?.forEach((listenerInstance) => {
-    listenerInstance.resolvedWatchFields?.forEach((sourceField) =>
-      fields.add(sourceField),
-    )
-  })
-}
-
-function addValidatorForwardRelations(
-  fields: Set<AnyInternalFieldApi>,
-  field: AnyInternalFieldApi,
-): void {
-  field._validatorInstances?.forEach((validatorInstance) => {
-    validatorInstance.resolvedWatchFields?.forEach((sourceField) =>
-      fields.add(sourceField),
-    )
-  })
-}
-
-function addReverseRelations(
-  fields: Set<AnyInternalFieldApi>,
-  relationGroups:
-    | AnyInternalFieldApi['_watchingListenerFields']
-    | AnyInternalFieldApi['_watchingValidatorFields'],
-): void {
-  relationGroups?.forEach((_indexes, watchingField) => {
-    fields.add(watchingField)
-  })
+  for (const owner of form._watchingListenerFields.get(path) ?? [])
+    fields.add(owner)
+  for (const owner of form._watchingValidatorFields.get(path) ?? [])
+    fields.add(owner)
 }
 
 function addRelationNeighborhood(
@@ -73,10 +51,15 @@ function addRelationNeighborhood(
   field: AnyInternalFieldApi,
 ): void {
   fields.add(field)
-  addListenerForwardRelations(fields, field)
-  addValidatorForwardRelations(fields, field)
-  addReverseRelations(fields, field._watchingListenerFields)
-  addReverseRelations(fields, field._watchingValidatorFields)
+  for (const path of field._watchedListenerNames ?? []) {
+    const source = field.form._tryGetFieldApi(path)
+    if (source) fields.add(source)
+  }
+  for (const path of field._watchedValidatorNames ?? []) {
+    const source = field.form._tryGetFieldApi(path)
+    if (source) fields.add(source)
+  }
+  addWatchersAtPath(fields, field.form, field.name)
 }
 
 export function createFieldsController(
@@ -115,7 +98,10 @@ export function createFieldsController(
       if (form) identity.deleteForm(form)
     },
     mountField: fieldList.fieldMounted,
-    updateField: fieldList.fieldUpdated,
+    updateField: (field) => {
+      fieldList.fieldUpdated(field)
+      fieldDetails.fieldsUpdated([field])
+    },
     fieldAdded: (field) => {
       fieldList.fieldUpdated(field)
 
@@ -126,8 +112,9 @@ export function createFieldsController(
     },
     fieldDependenciesChanged: (changes) => {
       const updatedFields = new Set<AnyInternalFieldApi>()
-      for (const { sourceField, watchingField } of changes) {
-        updatedFields.add(sourceField)
+      for (const { sourceFieldName, watchingField } of changes) {
+        const sourceField = watchingField.form._tryGetFieldApi(sourceFieldName)
+        if (sourceField) updatedFields.add(sourceField)
         updatedFields.add(watchingField)
       }
       fieldDetails.fieldsUpdated(updatedFields)
@@ -138,6 +125,11 @@ export function createFieldsController(
       visitFieldSubtree(field, (movedField) => {
         fieldList.fieldMoved(movedField, previousPath)
         addRelationNeighborhood(updatedFields, movedField)
+        addWatchersAtPath(
+          updatedFields,
+          field.form,
+          previousPath + movedField.name.slice(field.name.length),
+        )
       })
       fieldDetails.fieldsUpdated(updatedFields)
     },
@@ -145,6 +137,8 @@ export function createFieldsController(
       const removedFields = fields.map(({ field }) => field)
       const removedFieldSet = new Set(removedFields)
       const updatedParents = new Set<AnyInternalFieldApi>()
+      for (const { previousPath } of fields)
+        addWatchersAtPath(updatedParents, form, previousPath)
       for (const removedField of removedFields) {
         const parent = removedField._parent
         if (
