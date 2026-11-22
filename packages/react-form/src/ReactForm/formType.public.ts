@@ -1,6 +1,7 @@
 import type {
   AnyFormOptions,
   FormOptions,
+  FormOptionsApi,
   GetSharedFormErrorTypes,
 } from '@tanstack/form-core'
 import type {
@@ -8,6 +9,26 @@ import type {
   DefaultReactFormComponentMap,
 } from '../AppForm/componentMap.public'
 import type { ReactFormApi } from './formApiTypes.public'
+
+type ComponentOrDefault<TComponents> =
+  TComponents extends AnyReactFormComponentMap
+    ? TComponents
+    : DefaultReactFormComponentMap
+
+type OptionsInferredForm<TOptions extends AnyFormOptions> =
+  TOptions extends FormOptions<
+    infer TFormData,
+    any,
+    infer TFormValidators,
+    infer TSubmitReturn,
+    infer TComponents
+  >
+    ? ReactFormApi<
+        TFormData,
+        GetSharedFormErrorTypes<TFormValidators, TSubmitReturn>,
+        ComponentOrDefault<TComponents>
+      >
+    : never
 
 /**
  * Derives the React form API type represented by a reusable options object.
@@ -38,19 +59,10 @@ import type { ReactFormApi } from './formApiTypes.public'
  *
  * @typeParam TOptions - The reusable form or app-form options from which the API derives its form data, error, and registered-component types.
  */
-export type ReactFormType<TOptions extends AnyFormOptions> =
-  TOptions extends FormOptions<
-    infer TFormData,
-    any,
-    infer TFormValidators,
-    infer TSubmitReturn,
-    infer TComponents
-  >
-    ? ReactFormApi<
-        TFormData,
-        GetSharedFormErrorTypes<TFormValidators, TSubmitReturn>,
-        TComponents extends AnyReactFormComponentMap
-          ? TComponents
-          : DefaultReactFormComponentMap
-      >
+export type ReactFormType<
+  TOptions extends AnyFormOptions | FormOptionsApi<unknown>,
+> = TOptions extends AnyFormOptions
+  ? OptionsInferredForm<TOptions>
+  : TOptions extends FormOptionsApi<infer TComponents>
+    ? ReactFormApi<any, any, ComponentOrDefault<TComponents>>
     : never
