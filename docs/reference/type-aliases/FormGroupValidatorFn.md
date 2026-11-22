@@ -7,7 +7,7 @@ title: FormGroupValidatorFn
 type FormGroupValidatorFn<TGroupValue> = ValidatorFn<FormGroupValidatorContext<TGroupValue>, FormGroupValidateResult<TGroupValue>>;
 ```
 
-Defined in: [validation.public.ts:626](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L626)
+Defined in: [pipeline/validation/validation.public.ts:538](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L538)
 
 Validates a group's value and can return group errors, field errors, or output data.
 

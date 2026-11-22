@@ -47,7 +47,7 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:219](https
 
 ### props
 
-[`PreactFormFieldProps`](PreactFormFieldProps.md)\<`TGroupValue`, `TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>, `TFieldValidators`, `TGroupError`\[`"subfieldError"`\], `TFormData`, `TFormError`, `TFieldComponents`\>
+[`PreactFormFieldProps`](PreactFormFieldProps.md)\<`TGroupValue`, `TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>, `TFieldValidators`, `TGroupError`, `TFormData`, `TFormError`, `TFieldComponents`\>
 
 ## Returns
 

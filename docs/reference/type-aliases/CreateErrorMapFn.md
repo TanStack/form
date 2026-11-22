@@ -7,7 +7,7 @@ title: CreateErrorMapFn
 type CreateErrorMapFn<TFormData> = (initial?) => ValidationErrorMapHelper<TFormData>;
 ```
 
-Defined in: [validation/state.public.ts:112](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L112)
+Defined in: [validation/results/results.public.ts:139](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/results/results.public.ts#L139)
 
 ## Type Parameters
 

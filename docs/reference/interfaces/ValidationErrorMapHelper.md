@@ -3,7 +3,7 @@ id: ValidationErrorMapHelper
 title: ValidationErrorMapHelper
 ---
 
-Defined in: [validation/state.public.ts:70](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L70)
+Defined in: [validation/results/results.public.ts:66](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/results/results.public.ts#L66)
 
 ## Extends
 
@@ -23,7 +23,7 @@ Defined in: [validation/state.public.ts:70](https://github.com/TanStack/form/blo
 addFieldError: (name, error) => void;
 ```
 
-Defined in: [validation/state.public.ts:78](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L78)
+Defined in: [validation/results/results.public.ts:74](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/results/results.public.ts#L74)
 
 #### Parameters
 
@@ -47,7 +47,7 @@ Defined in: [validation/state.public.ts:78](https://github.com/TanStack/form/blo
 addFormError: (error) => void;
 ```
 
-Defined in: [validation/state.public.ts:77](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L77)
+Defined in: [validation/results/results.public.ts:73](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/results/results.public.ts#L73)
 
 #### Parameters
 
@@ -67,7 +67,7 @@ Defined in: [validation/state.public.ts:77](https://github.com/TanStack/form/blo
 fields: ValidationFieldMap<TFormData, TFieldError>;
 ```
 
-Defined in: [validation/state.public.ts:67](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L67)
+Defined in: [validation/results/results.public.ts:63](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/results/results.public.ts#L63)
 
 #### Inherited from
 
@@ -83,7 +83,7 @@ Required.fields
 form: ValidationFailureItem[];
 ```
 
-Defined in: [validation/state.public.ts:66](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L66)
+Defined in: [validation/results/results.public.ts:62](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/results/results.public.ts#L62)
 
 #### Inherited from
 

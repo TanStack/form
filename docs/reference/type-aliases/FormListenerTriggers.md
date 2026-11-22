@@ -10,4 +10,4 @@ type FormListenerTriggers =
   | "reset";
 ```
 
-Defined in: [FormApi/formListeners.public.ts:7](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formListeners.public.ts#L7)
+Defined in: [pipeline/listeners/formListeners.public.ts:7](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/listeners/formListeners.public.ts#L7)

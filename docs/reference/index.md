@@ -6,6 +6,7 @@ title: "@tanstack/form-core"
 ## Interfaces
 
 - [BaseFieldMeta](interfaces/BaseFieldMeta.md)
+- [BaseSubmitContext](interfaces/BaseSubmitContext.md)
 - [BaseValidator](interfaces/BaseValidator.md)
 - [DefaultOptions](interfaces/DefaultOptions.md)
 - [ErrorVisibilityContext](interfaces/ErrorVisibilityContext.md)
@@ -27,6 +28,7 @@ title: "@tanstack/form-core"
 - [FormApi](interfaces/FormApi.md)
 - [FormApiArrayMethods](interfaces/FormApiArrayMethods.md)
 - [FormApiFieldMethods](interfaces/FormApiFieldMethods.md)
+- [FormattedValidationErrorMap](interfaces/FormattedValidationErrorMap.md)
 - [FormGroupApi](interfaces/FormGroupApi.md)
 - [FormGroupOptions](interfaces/FormGroupOptions.md)
 - [FormGroupState](interfaces/FormGroupState.md)
@@ -62,6 +64,7 @@ title: "@tanstack/form-core"
 - [ServerValidateSuccess](interfaces/ServerValidateSuccess.md)
 - [StandardSchemaV1Issue](interfaces/StandardSchemaV1Issue.md)
 - [SubfieldsMeta](interfaces/SubfieldsMeta.md)
+- [SubmitInvalidContext](interfaces/SubmitInvalidContext.md)
 - [ValidationErrorMap](interfaces/ValidationErrorMap.md)
 - [ValidationErrorMapHelper](interfaces/ValidationErrorMapHelper.md)
 - [ValidationIssue](interfaces/ValidationIssue.md)
@@ -128,6 +131,8 @@ title: "@tanstack/form-core"
 - [FieldValidators](type-aliases/FieldValidators.md)
 - [FieldWithValue](type-aliases/FieldWithValue.md)
 - [FilterFieldValuesFn](type-aliases/FilterFieldValuesFn.md)
+- [FormattedValidationError](type-aliases/FormattedValidationError.md)
+- [FormattedValidationResult](type-aliases/FormattedValidationResult.md)
 - [FormGroupOnSubmitInvalidFn](type-aliases/FormGroupOnSubmitInvalidFn.md)
 - [FormGroupSubmitFn](type-aliases/FormGroupSubmitFn.md)
 - [FormGroupValidateResult](type-aliases/FormGroupValidateResult.md)

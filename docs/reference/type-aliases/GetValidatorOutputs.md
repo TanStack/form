@@ -7,7 +7,7 @@ title: GetValidatorOutputs
 type GetValidatorOutputs<TValidators> = { [K in keyof TValidators]: GetValidatorOutput<TValidators[K]> };
 ```
 
-Defined in: [FormApi/formSubmit.public.ts:58](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L58)
+Defined in: [FormApi/formSubmit.public.ts:56](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L56)
 
 Infers form validators' submission output types in configuration order.
 

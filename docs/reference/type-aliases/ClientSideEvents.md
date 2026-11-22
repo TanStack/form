@@ -9,7 +9,7 @@ type ClientSideEvents = Exclude<ValidatorEvents,
 | PreprocessEvents>;
 ```
 
-Defined in: [events.public.ts:27](https://github.com/TanStack/form/blob/main/packages/form-core/src/events.public.ts#L27)
+Defined in: [pipeline/events.public.ts:28](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/events.public.ts#L28)
 
-Value change, field blur, and client submission events whose validator
-callbacks receive the form API.
+Value change, field blur, and client submission events whose form validator
+callbacks receive `formApi` and an abort `signal`.

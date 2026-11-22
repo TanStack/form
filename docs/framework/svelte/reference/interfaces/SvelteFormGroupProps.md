@@ -7,7 +7,7 @@ Defined in: [packages/svelte-form/src/Components.public.ts:291](https://github.c
 
 ## Extends
 
-- `Omit`\<`FormGroupOptions`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormError`\>, `"form"`\>
+- `Omit`\<`FormGroupOptions`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormError`, `TSubmitReturn`\>, `"form"`\>
 
 ## Type Parameters
 
@@ -35,12 +35,16 @@ Defined in: [packages/svelte-form/src/Components.public.ts:291](https://github.c
 
 `TFieldComponents` *extends* `Record`\<`string`, `Component`\<`any`\>\>
 
+### TSubmitReturn
+
+`TSubmitReturn` = `void`
+
 ## Properties
 
 ### children
 
 ```ts
-children: Snippet<[SvelteFormGroupApi<TFormData, TGroupName, TGroupValue, ToFormGroupErrorTypes<NoInfer<TGroupValidators>>, TFormError, TFieldComponents>]>;
+children: Snippet<[SvelteFormGroupApi<TFormData, TGroupName, TGroupValue, ToFormGroupErrorTypes<NoInfer<TGroupValidators>, NoInfer<TSubmitReturn>>, TFormError, TFieldComponents>]>;
 ```
 
-Defined in: [packages/svelte-form/src/Components.public.ts:308](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L308)
+Defined in: [packages/svelte-form/src/Components.public.ts:310](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L310)

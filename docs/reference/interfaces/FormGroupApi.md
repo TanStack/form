@@ -3,7 +3,7 @@ id: FormGroupApi
 title: FormGroupApi
 ---
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:222](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L222)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:296](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L296)
 
 ## Type Parameters
 
@@ -35,7 +35,7 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:222](https://github.com/TanStac
 atom: ReadonlyAtom<FormGroupState<TGroupValue, TGroupError>>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:232](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L232)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:306](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L306)
 
 ***
 
@@ -45,21 +45,26 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:232](https://github.com/TanStac
 readonly form: FormApi<TFormData, TFormError>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:229](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L229)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:303](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L303)
 
 ***
 
 ### handleSubmit
 
 ```ts
-handleSubmit: () => Promise<FormGroupValidateResult<TGroupValue>[]>;
+handleSubmit: () => Promise<FormattedValidationError<TGroupValue>[]>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:238](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L238)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:319](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L319)
+
+Submits the group and returns a flat array of issues and error maps.
+
+Exceptions reject after submission state is cleaned up, unless
+`onSubmitInvalid` calls `preventThrow()`.
 
 #### Returns
 
-`Promise`\<[`FormGroupValidateResult`](../type-aliases/FormGroupValidateResult.md)\<`TGroupValue`\>[]\>
+`Promise`\<[`FormattedValidationError`](../type-aliases/FormattedValidationError.md)\<`TGroupValue`\>[]\>
 
 ***
 
@@ -69,7 +74,7 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:238](https://github.com/TanStac
 readonly name: TGroupName;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:230](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L230)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:304](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L304)
 
 ***
 
@@ -79,7 +84,7 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:230](https://github.com/TanStac
 reset: () => void;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:239](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L239)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:320](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L320)
 
 #### Returns
 
@@ -93,27 +98,29 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:239](https://github.com/TanStac
 readonly state: FormGroupState<TGroupValue, TGroupError>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:233](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L233)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:307](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L307)
 
 ***
 
 ### validate
 
 ```ts
-validate: (signal) => Promise<FormGroupValidateResult<TGroupValue>[]>;
+validate: (signal) => Promise<FormattedValidationError<TGroupValue>[]>;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:235](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L235)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:310](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L310)
+
+Returns a flat array of issues and error maps with group-relative field paths.
 
 #### Parameters
 
 ##### signal
 
-[`ClientSideEvents`](../type-aliases/ClientSideEvents.md)
+[`DynamicValidatorTriggers`](../type-aliases/DynamicValidatorTriggers.md)
 
 #### Returns
 
-`Promise`\<[`FormGroupValidateResult`](../type-aliases/FormGroupValidateResult.md)\<`TGroupValue`\>[]\>
+`Promise`\<[`FormattedValidationError`](../type-aliases/FormattedValidationError.md)\<`TGroupValue`\>[]\>
 
 ***
 
@@ -123,4 +130,4 @@ Defined in: [FormGroupApi/FormGroupApi.public.ts:235](https://github.com/TanStac
 readonly value: TGroupValue;
 ```
 
-Defined in: [FormGroupApi/FormGroupApi.public.ts:234](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L234)
+Defined in: [FormGroupApi/FormGroupApi.public.ts:308](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormGroupApi/FormGroupApi.public.ts#L308)

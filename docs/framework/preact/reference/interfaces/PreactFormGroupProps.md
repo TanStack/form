@@ -7,7 +7,7 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:299](https
 
 ## Extends
 
-- `Omit`\<`FormGroupOptions`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormError`\>, `"form"`\>
+- `Omit`\<`FormGroupOptions`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormError`, `TSubmitReturn`\>, `"form"`\>
 
 ## Type Parameters
 
@@ -35,6 +35,10 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:299](https
 
 `TFieldComponents` *extends* `Record`\<`string`, `FunctionComponent`\<`any`\>\>
 
+### TSubmitReturn
+
+`TSubmitReturn` = `void`
+
 ## Properties
 
 ### children
@@ -43,13 +47,13 @@ Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:299](https
 children: (groupApi) => ComponentChildren;
 ```
 
-Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:316](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L316)
+Defined in: [packages/preact-form/src/PreactForm/Components.public.ts:318](https://github.com/TanStack/form/blob/main/packages/preact-form/src/PreactForm/Components.public.ts#L318)
 
 #### Parameters
 
 ##### groupApi
 
-[`PreactFormGroupApi`](PreactFormGroupApi.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `ToFormGroupErrorTypes`\<`NoInfer`\<`TGroupValidators`\>\>, `TFormError`, `TFieldComponents`\>
+[`PreactFormGroupApi`](PreactFormGroupApi.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `ToFormGroupErrorTypes`\<`NoInfer`\<`TGroupValidators`\>, `NoInfer`\<`TSubmitReturn`\>\>, `TFormError`, `TFieldComponents`\>
 
 #### Returns
 

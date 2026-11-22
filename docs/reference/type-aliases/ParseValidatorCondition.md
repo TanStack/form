@@ -7,7 +7,7 @@ title: ParseValidatorCondition
 type ParseValidatorCondition<TCondition> = TCondition extends (...args) => boolean ? boolean : TCondition;
 ```
 
-Defined in: [validation/formValidators.public.ts:273](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/formValidators.public.ts#L273)
+Defined in: [pipeline/validation/formValidators.public.ts:273](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/formValidators.public.ts#L273)
 
 Treats callback conditions as variable booleans when inferring validator
 events and submission outputs.

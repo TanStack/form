@@ -7,7 +7,7 @@ title: ListenerPredicateFn
 type ListenerPredicateFn<TFormData, TValue> = (context) => boolean;
 ```
 
-Defined in: [listeners.public.ts:57](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L57)
+Defined in: [pipeline/listeners/listeners.public.ts:57](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/listeners/listeners.public.ts#L57)
 
 Decides whether a listener is enabled for a matching event.
 

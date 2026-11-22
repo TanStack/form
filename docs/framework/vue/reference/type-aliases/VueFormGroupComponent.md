@@ -4,14 +4,14 @@ title: VueFormGroupComponent
 ---
 
 ```ts
-type VueFormGroupComponent<TFormData, TFormError, TFieldComponents> = <TGroupName, TGroupValue, TGroupValidators>(props) => VueComponentInstance<VueFormGroupProps<TFormData, TGroupName, TGroupValue, TGroupValidators, TFormError, TFieldComponents>, {
+type VueFormGroupComponent<TFormData, TFormError, TFieldComponents> = <TGroupName, TGroupValue, TGroupValidators, TSubmitReturn>(props) => VueComponentInstance<VueFormGroupProps<TFormData, TGroupName, TGroupValue, TGroupValidators, TFormError, TFieldComponents, TSubmitReturn>, {
   default: {
-     group: VueFormGroupApi<TFormData, TGroupName, TGroupValue, ToFormGroupErrorTypes<NoInfer<TGroupValidators>>, TFormError, TFieldComponents>;
+     group: VueFormGroupApi<TFormData, TGroupName, TGroupValue, ToFormGroupErrorTypes<NoInfer<TGroupValidators>, NoInfer<TSubmitReturn>>, TFormError, TFieldComponents>;
   };
 }>;
 ```
 
-Defined in: [packages/vue-form/src/VueForm/Components.public.ts:393](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L393)
+Defined in: [packages/vue-form/src/VueForm/Components.public.ts:387](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L387)
 
 ## Type Parameters
 
@@ -31,12 +31,12 @@ Defined in: [packages/vue-form/src/VueForm/Components.public.ts:393](https://git
 
 ### props
 
-[`VueFormGroupProps`](../interfaces/VueFormGroupProps.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormError`, `TFieldComponents`\> & `PublicProps`
+[`VueFormGroupProps`](../interfaces/VueFormGroupProps.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormError`, `TFieldComponents`, `TSubmitReturn`\> & `PublicProps`
 
 ## Returns
 
-`VueComponentInstance`\<[`VueFormGroupProps`](../interfaces/VueFormGroupProps.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormError`, `TFieldComponents`\>, \{
+`VueComponentInstance`\<[`VueFormGroupProps`](../interfaces/VueFormGroupProps.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormError`, `TFieldComponents`, `TSubmitReturn`\>, \{
   `default`: \{
-     `group`: [`VueFormGroupApi`](../interfaces/VueFormGroupApi.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `ToFormGroupErrorTypes`\<`NoInfer`\<`TGroupValidators`\>\>, `TFormError`, `TFieldComponents`\>;
+     `group`: [`VueFormGroupApi`](../interfaces/VueFormGroupApi.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `ToFormGroupErrorTypes`\<`NoInfer`\<`TGroupValidators`\>, `NoInfer`\<`TSubmitReturn`\>\>, `TFormError`, `TFieldComponents`\>;
   \};
 \}\>

@@ -7,7 +7,7 @@ title: ValidationDebounceFn
 type ValidationDebounceFn<TFormData, TValue, TScope> = (context) => number;
 ```
 
-Defined in: [validation.public.ts:412](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L412)
+Defined in: [pipeline/validation/validation.public.ts:359](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L359)
 
 Chooses the delay in milliseconds before change or blur validation runs.
 

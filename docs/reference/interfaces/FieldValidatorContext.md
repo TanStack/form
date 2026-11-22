@@ -3,7 +3,7 @@ id: FieldValidatorContext
 title: FieldValidatorContext
 ---
 
-Defined in: [validation.public.ts:660](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L660)
+Defined in: [pipeline/validation/validation.public.ts:572](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L572)
 
 Values and helpers passed to a field validation function.
 
@@ -35,7 +35,7 @@ Library-managed. Do not specify explicitly.
 event: "mount" | ValidationTrigger;
 ```
 
-Defined in: [validation.public.ts:666](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L666)
+Defined in: [pipeline/validation/validation.public.ts:578](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L578)
 
 The event that caused this validation run.
 
@@ -47,7 +47,7 @@ The event that caused this validation run.
 fieldApi: FieldApi<TFieldName, TFieldValue, any, TFormData, any>;
 ```
 
-Defined in: [validation.public.ts:672](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L672)
+Defined in: [pipeline/validation/validation.public.ts:584](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L584)
 
 The field being validated, including when a watched field caused the event.
 
@@ -59,7 +59,7 @@ The field being validated, including when a watched field caused the event.
 formApi: FormApi<TFormData, any>;
 ```
 
-Defined in: [validation.public.ts:670](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L670)
+Defined in: [pipeline/validation/validation.public.ts:582](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L582)
 
 The owning form. Read other field values here for cross-field validation.
 
@@ -71,7 +71,7 @@ The owning form. Read other field values here for cross-field validation.
 signal: AbortSignal;
 ```
 
-Defined in: [validation.public.ts:668](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L668)
+Defined in: [pipeline/validation/validation.public.ts:580](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L580)
 
 Aborted when this run is cancelled. Pass it to asynchronous work such as `fetch`.
 
@@ -83,6 +83,6 @@ Aborted when this run is cancelled. Pass it to asynchronous work such as `fetch`
 value: TFieldValue;
 ```
 
-Defined in: [validation.public.ts:674](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L674)
+Defined in: [pipeline/validation/validation.public.ts:586](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L586)
 
 The current value of the field being validated.

@@ -4,13 +4,13 @@ title: ToFieldError
 ---
 
 ```ts
-type ToFieldError<TFieldValidators, TGroupFieldError, TFormError> = FallbackToValidationIssue<
-  | ExtractValidatorFieldError<TFieldValidators, FieldValidators<any, any, any>>
-  | unknown extends TGroupFieldError ? never : TGroupFieldError
-| ExtractFormFieldError<TFormError>>;
+type ToFieldError<TFieldValidators, TGroupError, TFormError> = FallbackToValidationIssue<
+  | ExtractValidatorSelfError<TFieldValidators, FieldValidators<any, any, any>>
+  | ExtractSubfieldError<TGroupError>
+| ExtractSubfieldError<TFormError>>;
 ```
 
-Defined in: [validation.public.ts:975](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L975)
+Defined in: [validation/state.public.ts:281](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L281)
 
 Combines a field's own issue types with errors routed from its group and form.
 
@@ -24,9 +24,9 @@ Falls back to `ValidationIssue` when no specific error type is inferred.
 
 Library-managed. Do not specify explicitly.
 
-### TGroupFieldError
+### TGroupError
 
-`TGroupFieldError`
+`TGroupError` *extends* [`ScopedErrorTypes`](../interfaces/ScopedErrorTypes.md)
 
 Library-managed. Do not specify explicitly.
 

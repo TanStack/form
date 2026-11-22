@@ -3,11 +3,11 @@ id: VueFormGroupProps
 title: VueFormGroupProps
 ---
 
-Defined in: [packages/vue-form/src/VueForm/Components.public.ts:373](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L373)
+Defined in: [packages/vue-form/src/VueForm/Components.public.ts:365](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L365)
 
 ## Extends
 
-- `Omit`\<`FormGroupOptions`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormError`\>, `"form"`\>
+- `Omit`\<`FormGroupOptions`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormError`, `TSubmitReturn`\>, `"form"`\>
 
 ## Type Parameters
 
@@ -35,6 +35,10 @@ Defined in: [packages/vue-form/src/VueForm/Components.public.ts:373](https://git
 
 `TFieldComponents` *extends* `Record`\<`string`, `Component`\>
 
+### TSubmitReturn
+
+`TSubmitReturn` = `void`
+
 ## Properties
 
 ### \[fieldComponentsType\]?
@@ -43,4 +47,4 @@ Defined in: [packages/vue-form/src/VueForm/Components.public.ts:373](https://git
 readonly optional [fieldComponentsType]?: TFieldComponents;
 ```
 
-Defined in: [packages/vue-form/src/VueForm/Components.public.ts:390](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L390)
+Defined in: [packages/vue-form/src/VueForm/Components.public.ts:384](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L384)

@@ -7,6 +7,6 @@ title: ServerSideEvents
 type ServerSideEvents = Extract<ValidatorEvents, "server">;
 ```
 
-Defined in: [events.public.ts:21](https://github.com/TanStack/form/blob/main/packages/form-core/src/events.public.ts#L21)
+Defined in: [pipeline/events.public.ts:22](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/events.public.ts#L22)
 
-Events for validating form values on the server.
+Events for validating complete form values on the server.

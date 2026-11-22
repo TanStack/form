@@ -4,22 +4,20 @@ title: HandleSubmitFn
 ---
 
 ```ts
-type HandleSubmitFn<TFormData> = () => Promise<FormValidationFailure<TFormData>[]>;
+type HandleSubmitFn<TFormData> = () => Promise<FormattedValidationError<TFormData>[]>;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:205](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L205)
+Defined in: [FormApi/FormApi.public.ts:187](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L187)
 
-Runs submission validation and submits current values when validation
-succeeds.
+Validates the form and calls `onSubmit` when validation succeeds.
 
-Registered fields are marked touched, field validators run before form
-validators, and `onSubmit` is awaited only when validation succeeds.
-Validation error results and errors returned by `onSubmit` through
-`createValidationError` or `createErrorMap` are stored as error state.
-`onSubmitInvalid` is awaited after a failed attempt.
-
-Calls made while an attempt is in progress return the same promise instead
-of starting another attempt.
+- A submission attempt touches all fields.
+- Runs field validators before form validators.
+- Awaits `onSubmit` or, after a failed attempt, `onSubmitInvalid`.
+- Each call starts a separate attempt and supersedes the form's pending attempt.
+  Later edits do not cancel the attempt or replace its captured values.
+- Exceptions from validation or `onSubmit` reject the promise unless
+  `onSubmitInvalid` calls `preventThrow()`.
 
 ## Type Parameters
 
@@ -31,9 +29,16 @@ Library-managed. Do not specify explicitly.
 
 ## Returns
 
-`Promise`\<[`FormValidationFailure`](FormValidationFailure.md)\<`TFormData`\>[]\>
+`Promise`\<[`FormattedValidationError`](FormattedValidationError.md)\<`TFormData`\>[]\>
 
-A promise resolving to the error results produced by field and
-form validation, plus any validation error returned by `onSubmit` through
-`createValidationError` or `createErrorMap`. The array is empty if none are
-produced.
+A promise resolving to a flat array of issues and error maps from
+field and form validation, plus validation errors returned by `onSubmit`.
+Strings become issue objects. The array is empty if no errors are produced.
+
+## Remarks
+
+**Important:** An empty error array does not guarantee a successful submission.
+Supersession, reset, unmount, or server-state replacement aborts the attempt's
+signal and pending validation. Cancellation before callbacks start resolves
+with `[]`. Callbacks that already started are still awaited, but their results
+cannot update form state after cancellation.

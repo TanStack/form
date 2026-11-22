@@ -7,7 +7,7 @@ title: ValidationFailure
 type ValidationFailure<TItem> = ReadonlyOneOrMany<TItem>;
 ```
 
-Defined in: [validation/state.public.ts:51](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L51)
+Defined in: [validation/results/results.public.ts:47](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/results/results.public.ts#L47)
 
 ## Type Parameters
 

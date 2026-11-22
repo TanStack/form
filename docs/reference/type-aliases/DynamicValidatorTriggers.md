@@ -7,9 +7,9 @@ title: DynamicValidatorTriggers
 type DynamicValidatorTriggers = Extract<ValidatorTriggers, ClientSideEvents>;
 ```
 
-Defined in: [events.public.ts:54](https://github.com/TanStack/form/blob/main/packages/form-core/src/events.public.ts#L54)
+Defined in: [pipeline/events.public.ts:58](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/events.public.ts#L58)
 
-Change and blur triggers that accept a boolean or callback `when` condition.
+Change and blur triggers that accept boolean or callback `when` conditions.
 
-A callback reads the current form values and state; return `true` to run
-validation or `false` to skip it for the matching event.
+- A callback reads current values and state. The callback must be synchronous and have no side effects.
+- The boolean condition or callback result enables validation when `true` and disables it when `false`.

@@ -47,7 +47,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:221](https:/
 
 ### props
 
-[`ReactFormFieldProps`](ReactFormFieldProps.md)\<`TGroupValue`, `TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>, `TFieldValidators`, `TGroupError`\[`"subfieldError"`\], `TFormData`, `TFormError`, `TFieldComponents`\>
+[`ReactFormFieldProps`](ReactFormFieldProps.md)\<`TGroupValue`, `TFieldName`, `DeepValue`\<`TGroupValue`, `TFieldName`\>, `TFieldValidators`, `TGroupError`, `TFormData`, `TFormError`, `TFieldComponents`\>
 
 ## Returns
 

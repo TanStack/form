@@ -3,7 +3,7 @@ id: FormListener
 title: FormListener
 ---
 
-Defined in: [FormApi/formListeners.public.ts:24](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formListeners.public.ts#L24)
+Defined in: [pipeline/listeners/formListeners.public.ts:32](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/listeners/formListeners.public.ts#L32)
 
 Configuration shared by form and field listeners.
 
@@ -33,7 +33,7 @@ Library-managed. Do not specify explicitly.
 run: FormListenerFn<TFormData, TFormError>;
 ```
 
-Defined in: [FormApi/formListeners.public.ts:28](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formListeners.public.ts#L28)
+Defined in: [pipeline/listeners/formListeners.public.ts:36](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/listeners/formListeners.public.ts#L36)
 
 ***
 
@@ -45,14 +45,14 @@ optional triggerDebounceMs?:
 | ListenerDebounceFn<TFormData, TFormData>;
 ```
 
-Defined in: [listeners.public.ts:161](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L161)
+Defined in: [pipeline/listeners/listeners.public.ts:161](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/listeners/listeners.public.ts#L161)
 
 The debounce delay in milliseconds before the listener runs.
 
-A function recalculates the delay for each matching event. Repeated events
-restart the delay, and the listener receives the latest event context.
-Values less than or equal to `0` run immediately. `'submit'` events always
-run immediately.
+A function recalculates the delay for each matching change or blur event.
+Repeated matching events restart the delay. The callback receives current
+values when execution begins. Values less than or equal to `0` run
+immediately. Lifecycle and submission events always run immediately.
 
 #### Default
 
@@ -72,7 +72,7 @@ run immediately.
 triggers: ListenerTriggerOption<FormListenerTriggers, TFormData, TFormData>[];
 ```
 
-Defined in: [listeners.public.ts:179](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L179)
+Defined in: [pipeline/listeners/listeners.public.ts:179](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/listeners/listeners.public.ts#L179)
 
 The events that can invoke the listener.
 

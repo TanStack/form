@@ -7,7 +7,7 @@ title: FormOptionsValidators
 type FormOptionsValidators<TFormData, TValidatorConfig, TValidators> = { [K in keyof TValidatorConfig]: FormOptionsValidator<TFormData, TValidatorConfig, TValidators, K> };
 ```
 
-Defined in: [validation/formValidators.public.ts:577](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/formValidators.public.ts#L577)
+Defined in: [pipeline/validation/formValidators.public.ts:577](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/formValidators.public.ts#L577)
 
 Matches each form validator to its own trigger and submission settings so
 callback values and events are inferred for that validator.

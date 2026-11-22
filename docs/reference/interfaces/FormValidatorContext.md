@@ -3,7 +3,7 @@ id: FormValidatorContext
 title: FormValidatorContext
 ---
 
-Defined in: [validation.public.ts:514](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L514)
+Defined in: [pipeline/validation/validation.public.ts:454](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L454)
 
 Values and helpers passed to a form validation function.
 
@@ -23,7 +23,7 @@ Library-managed. Do not specify explicitly.
 createErrorMap: CreateErrorMapFn<TFormData>;
 ```
 
-Defined in: [validation.public.ts:526](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L526)
+Defined in: [pipeline/validation/validation.public.ts:466](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L466)
 
 Builds a mutable error map from optional form and field errors.
 
@@ -35,7 +35,7 @@ Builds a mutable error map from optional form and field errors.
 createOutput: CreateOutputFn;
 ```
 
-Defined in: [validation.public.ts:530](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L530)
+Defined in: [pipeline/validation/validation.public.ts:470](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L470)
 
 Creates a successful result to return data in this validator's `validatorOutputs` entry.
 
@@ -50,7 +50,7 @@ event:
   | ValidationTrigger;
 ```
 
-Defined in: [validation.public.ts:516](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L516)
+Defined in: [pipeline/validation/validation.public.ts:456](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L456)
 
 The event that caused this validation run.
 
@@ -62,7 +62,7 @@ The event that caused this validation run.
 formApi: FormApi<TFormData, any> | undefined;
 ```
 
-Defined in: [validation.public.ts:520](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L520)
+Defined in: [pipeline/validation/validation.public.ts:460](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L460)
 
 The owning form on the client. `undefined` during server validation.
 
@@ -74,7 +74,7 @@ The owning form on the client. `undefined` during server validation.
 parseIssues: ParseIssuesFn<TFormData>;
 ```
 
-Defined in: [validation.public.ts:528](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L528)
+Defined in: [pipeline/validation/validation.public.ts:468](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L468)
 
 Converts Standard Schema issues into a mutable error map using the form values.
 
@@ -86,7 +86,7 @@ Converts Standard Schema issues into a mutable error map using the form values.
 signal: AbortSignal;
 ```
 
-Defined in: [validation.public.ts:518](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L518)
+Defined in: [pipeline/validation/validation.public.ts:458](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L458)
 
 Aborted when this run is cancelled. Pass it to asynchronous work such as `fetch`.
 
@@ -98,7 +98,7 @@ Aborted when this run is cancelled. Pass it to asynchronous work such as `fetch`
 optional triggerFieldApi?: AnyFieldApi;
 ```
 
-Defined in: [validation.public.ts:522](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L522)
+Defined in: [pipeline/validation/validation.public.ts:462](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L462)
 
 The field that caused validation, when available.
 
@@ -110,6 +110,6 @@ The field that caused validation, when available.
 value: TFormData;
 ```
 
-Defined in: [validation.public.ts:524](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L524)
+Defined in: [pipeline/validation/validation.public.ts:464](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L464)
 
 The complete form values being validated.

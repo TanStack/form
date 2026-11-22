@@ -7,7 +7,7 @@ title: ValidationPredicateContext
 type ValidationPredicateContext<TFormData, TValue, TScope> = TScope extends "form" ? FormValidationPredicateContext<TFormData> : TScope extends "group" ? FormGroupValidationPredicateContext<TValue> : TScope extends "field" ? FieldValidationPredicateContext<TFormData, TValue> : never;
 ```
 
-Defined in: [validation.public.ts:379](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L379)
+Defined in: [pipeline/validation/validation.public.ts:326](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L326)
 
 Context for validator conditions and delay callbacks, narrowed by `scope`.
 

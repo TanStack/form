@@ -11,9 +11,9 @@ Defined in: [tanstack-form-controller.ts:80](https://github.com/TanStack/form/bl
 
 `TFieldData`
 
-### TGroupFieldError
+### TGroupError
 
-`TGroupFieldError`
+`TGroupError` *extends* `ScopedErrorTypes`
 
 ### TFormData
 
@@ -47,11 +47,11 @@ Defined in: [tanstack-form-controller.ts:116](https://github.com/TanStack/form/b
 
 ##### options
 
-`LitFieldOptions`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `TFieldValidators`, `TGroupFieldError`, `TFormData`, `TFormError`\>
+`LitFieldOptions`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `TFieldValidators`, `TGroupError`, `TFormData`, `TFormError`\>
 
 ##### render
 
-`RenderCallback`\<`LitFieldRenderApi`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `TFieldValidators`, `TGroupFieldError`, `TFormData`, `TFormError`\>\>
+`RenderCallback`\<`LitFieldRenderApi`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `TFieldValidators`, `TGroupError`, `TFormData`, `TFormError`\>\>
 
 #### Returns
 
@@ -81,11 +81,11 @@ Defined in: [tanstack-form-controller.ts:86](https://github.com/TanStack/form/bl
 
 ##### options
 
-`LitFieldOptions`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `TFieldValidators`, `TGroupFieldError`, `TFormData`, `TFormError`\>
+`LitFieldOptions`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `TFieldValidators`, `TGroupError`, `TFormData`, `TFormError`\>
 
 ##### render
 
-`RenderCallback`\<`LitFieldRenderApi`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `TFieldValidators`, `TGroupFieldError`, `TFormData`, `TFormError`\>\>
+`RenderCallback`\<`LitFieldRenderApi`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `TFieldValidators`, `TGroupError`, `TFormData`, `TFormError`\>\>
 
 #### Returns
 

@@ -3,7 +3,7 @@ id: FormValidatorClientContext
 title: FormValidatorClientContext
 ---
 
-Defined in: [validation/formValidators.public.ts:167](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/formValidators.public.ts#L167)
+Defined in: [pipeline/validation/formValidators.public.ts:167](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/formValidators.public.ts#L167)
 
 Form values, result helpers, and form access passed to a validator for change,
 blur, or submission events.
@@ -34,7 +34,7 @@ Library-managed. Do not specify explicitly.
 createErrorMap: CreateErrorMapFn<TFormData>;
 ```
 
-Defined in: [validation/formValidators.public.ts:70](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/formValidators.public.ts#L70)
+Defined in: [pipeline/validation/formValidators.public.ts:70](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/formValidators.public.ts#L70)
 
 Builds a mutable error map for the form and its field paths from optional
 initial errors. Return the created map to report its errors.
@@ -90,7 +90,7 @@ BaseFormValidatorContext.createErrorMap
 createOutput: CreateOutputFn;
 ```
 
-Defined in: [validation/formValidators.public.ts:117](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/formValidators.public.ts#L117)
+Defined in: [pipeline/validation/formValidators.public.ts:117](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/formValidators.public.ts#L117)
 
 Use this to return custom data when validation succeeds. The data is
 available in `validatorOutputs` during submission or server validation.
@@ -133,7 +133,7 @@ BaseFormValidatorContext.createOutput
 event: TEvents;
 ```
 
-Defined in: [validation/formValidators.public.ts:180](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/formValidators.public.ts#L180)
+Defined in: [pipeline/validation/formValidators.public.ts:180](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/formValidators.public.ts#L180)
 
 The event that caused this validation run.
 
@@ -149,7 +149,7 @@ The event that caused this validation run.
 formApi: FormApi<TFormData, any>;
 ```
 
-Defined in: [validation/formValidators.public.ts:182](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/formValidators.public.ts#L182)
+Defined in: [pipeline/validation/formValidators.public.ts:182](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/formValidators.public.ts#L182)
 
 The form instance that owns this validator.
 
@@ -161,7 +161,7 @@ The form instance that owns this validator.
 parseIssues: ParseIssuesFn<TFormData>;
 ```
 
-Defined in: [validation/formValidators.public.ts:89](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/formValidators.public.ts#L89)
+Defined in: [pipeline/validation/formValidators.public.ts:89](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/formValidators.public.ts#L89)
 
 Converts Standard Schema issues into a mutable error map to return from
 this validator.
@@ -195,7 +195,7 @@ BaseFormValidatorContext.parseIssues
 signal: AbortSignal;
 ```
 
-Defined in: [validation/formValidators.public.ts:187](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/formValidators.public.ts#L187)
+Defined in: [pipeline/validation/formValidators.public.ts:187](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/formValidators.public.ts#L187)
 
 Aborted when this validation run is cancelled. Pass it to asynchronous work
 such as `fetch` to cancel that work too.
@@ -208,7 +208,7 @@ such as `fetch` to cancel that work too.
 optional triggerFieldApi?: AnyFieldApi;
 ```
 
-Defined in: [validation/formValidators.public.ts:192](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/formValidators.public.ts#L192)
+Defined in: [pipeline/validation/formValidators.public.ts:192](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/formValidators.public.ts#L192)
 
 The field whose change or blur triggered validation. `undefined` when no
 field triggered the run.
@@ -221,6 +221,6 @@ field triggered the run.
 value: TFormData;
 ```
 
-Defined in: [validation/formValidators.public.ts:172](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/formValidators.public.ts#L172)
+Defined in: [pipeline/validation/formValidators.public.ts:172](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/formValidators.public.ts#L172)
 
 The complete form values being validated in this run.

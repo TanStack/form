@@ -7,12 +7,13 @@ title: FieldListenerFn
 type FieldListenerFn<TFieldName, TFieldValue, TFieldError, TFormData, TFormError> = (context) => void;
 ```
 
-Defined in: [listeners.public.ts:239](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L239)
+Defined in: [pipeline/listeners/listeners.public.ts:247](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/listeners/listeners.public.ts#L247)
 
 A callback invoked when a field listener runs.
 
-The return value is ignored. A returned promise is not awaited, and a
-rejected promise is reported to the console.
+The return value is ignored. A returned promise is observed without delaying
+validation or submission. Failures are reported to the console while the
+invocation is active; failures after cancellation are suppressed.
 
 ## Type Parameters
 

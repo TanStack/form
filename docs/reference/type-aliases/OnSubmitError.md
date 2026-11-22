@@ -7,7 +7,7 @@ title: OnSubmitError
 type OnSubmitError<T> = object;
 ```
 
-Defined in: [FormApi/formSubmit.public.ts:62](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L62)
+Defined in: [FormApi/formSubmit.public.ts:60](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L60)
 
 ## Type Parameters
 
@@ -23,4 +23,4 @@ Defined in: [FormApi/formSubmit.public.ts:62](https://github.com/TanStack/form/b
 readonly [submitErrorSymbol]: T;
 ```
 
-Defined in: [FormApi/formSubmit.public.ts:63](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L63)
+Defined in: [FormApi/formSubmit.public.ts:61](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L61)

@@ -3,13 +3,17 @@ id: ServerFormState
 title: ServerFormState
 ---
 
-Defined in: [FormApi/formServerState.public.ts:11](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formServerState.public.ts#L11)
+Defined in: [FormApi/formServerState.public.ts:16](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formServerState.public.ts#L16)
+
+Server validation state with formatted error contents for hydration.
 
 ## Type Parameters
 
 ### TFormData
 
 `TFormData`
+
+Library-managed. Do not specify explicitly.
 
 ## Properties
 
@@ -19,7 +23,7 @@ Defined in: [FormApi/formServerState.public.ts:11](https://github.com/TanStack/f
 submissionAttempts: number;
 ```
 
-Defined in: [FormApi/formServerState.public.ts:19](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formServerState.public.ts#L19)
+Defined in: [FormApi/formServerState.public.ts:24](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formServerState.public.ts#L24)
 
 ***
 
@@ -29,7 +33,7 @@ Defined in: [FormApi/formServerState.public.ts:19](https://github.com/TanStack/f
 validationResults: object[];
 ```
 
-Defined in: [FormApi/formServerState.public.ts:13](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formServerState.public.ts#L13)
+Defined in: [FormApi/formServerState.public.ts:18](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formServerState.public.ts#L18)
 
 #### hasOutput?
 
@@ -46,7 +50,7 @@ output: unknown;
 #### result
 
 ```ts
-result: FormValidationResult<TFormData>;
+result: FormattedValidationResult<TFormData>;
 ```
 
 #### validatorIndex
@@ -63,4 +67,4 @@ validatorIndex: number;
 values: TFormData | undefined;
 ```
 
-Defined in: [FormApi/formServerState.public.ts:12](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formServerState.public.ts#L12)
+Defined in: [FormApi/formServerState.public.ts:17](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formServerState.public.ts#L17)

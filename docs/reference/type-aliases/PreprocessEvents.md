@@ -7,8 +7,9 @@ title: PreprocessEvents
 type PreprocessEvents = Extract<ValidatorEvents, "mount">;
 ```
 
-Defined in: [events.public.ts:18](https://github.com/TanStack/form/blob/main/packages/form-core/src/events.public.ts#L18)
+Defined in: [pipeline/events.public.ts:19](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/events.public.ts#L19)
 
-Events for validating initial values during setup.
+Mount events used to validate values during initialization.
 
-For form validators, `'mount'` runs when the form is constructed.
+Form-level mount validators run during form construction, before `formApi`
+is available in their callback context.

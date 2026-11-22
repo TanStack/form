@@ -7,7 +7,7 @@ Defined in: [packages/svelte-form/src/Components.public.ts:101](https://github.c
 
 ## Extends
 
-- `FieldApiOptions`\<`TFieldData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `TGroupFieldError`, `TFormData`, `TFormError`\>
+- `FieldApiOptions`\<`TFieldData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `TGroupError`, `TFormData`, `TFormError`\>
 
 ## Type Parameters
 
@@ -27,9 +27,9 @@ Defined in: [packages/svelte-form/src/Components.public.ts:101](https://github.c
 
 `TFieldValidators` *extends* `FieldValidators`\<`TFieldData`, `TFieldName`, `TFieldValue`\>
 
-### TGroupFieldError
+### TGroupError
 
-`TGroupFieldError`
+`TGroupError` *extends* `ScopedErrorTypes`
 
 ### TFormData
 
@@ -49,9 +49,9 @@ Defined in: [packages/svelte-form/src/Components.public.ts:101](https://github.c
 
 ```ts
 children: Snippet<[SvelteFieldApi<TFieldName, TFieldValue, FallbackToValidationIssue<
-  | ExtractValidatorFieldError<NoInfer<TFieldValidators>, FieldValidators<any, any, any>>
-  | unknown extends TGroupFieldError ? never : TGroupFieldError
-| ExtractFormFieldError<TFormError>>, TFormData, TFormError, TFieldComponents>]>;
+  | ExtractValidatorSelfError<NoInfer<TFieldValidators>, FieldValidators<any, any, any>>
+  | ExtractSubfieldError<TGroupError>
+| ExtractSubfieldError<TFormError>>, TFormData, TFormError, TFieldComponents>]>;
 ```
 
 Defined in: [packages/svelte-form/src/Components.public.ts:119](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/Components.public.ts#L119)

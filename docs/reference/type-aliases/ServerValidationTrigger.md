@@ -7,6 +7,6 @@ title: ServerValidationTrigger
 type ServerValidationTrigger = "server";
 ```
 
-Defined in: [validation.public.ts:257](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L257)
+Defined in: [pipeline/validation/validation.public.ts:250](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L250)
 
 Selects a form validator for execution by `serverValidate`.

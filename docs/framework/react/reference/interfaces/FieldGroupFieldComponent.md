@@ -3,7 +3,7 @@ id: FieldGroupFieldComponent
 title: FieldGroupFieldComponent
 ---
 
-Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:20](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L20)
+Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:19](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L19)
 
 ## Type Parameters
 
@@ -19,7 +19,7 @@ Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:20](http
 FieldGroupFieldComponent<TFieldName>(props): ReactNode;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:67](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L67)
+Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:66](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L66)
 
 Renders a field from this field group.
 
@@ -36,7 +36,7 @@ field group is used.
 
 ### props
 
-[`ReactFormFieldProps`](ReactFormFieldProps.md)\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `FieldValidators`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>\>, `ValidationIssue`, `unknown`, `ScopedErrorTypes`\<`ValidationIssue`, `ValidationIssue`\>, `TFieldComponents`\>
+[`ReactFormFieldProps`](ReactFormFieldProps.md)\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `FieldValidators`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>\>, `ScopedErrorTypes`\<`ValidationIssue`, `ValidationIssue`\>, `unknown`, `ScopedErrorTypes`\<`ValidationIssue`, `ValidationIssue`\>, `TFieldComponents`\>
 
 ## Returns
 

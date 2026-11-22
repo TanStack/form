@@ -3,16 +3,14 @@ id: FormSubmitContext
 title: FormSubmitContext
 ---
 
-Defined in: [FormApi/formSubmit.public.ts:116](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L116)
+Defined in: [FormApi/formSubmit.public.ts:210](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L210)
 
-Form values, validator outputs, and error helpers passed to `onSubmit` after
-submission validation succeeds.
+Gives the form's `onSubmit` callback its submitted values, validator outputs,
+form API, and error helpers after submission validation succeeds.
 
-## Type Param
+## Extends
 
-**TFormErrorTypes**
-
-Library-managed. Do not specify explicitly.
+- [`BaseSubmitContext`](BaseSubmitContext.md)\<`TFormData`\>
 
 ## Type Parameters
 
@@ -36,10 +34,38 @@ Library-managed. Do not specify explicitly.
 createErrorMap: CreateSubmitErrorMapFn<TFormData>;
 ```
 
-Defined in: [FormApi/formSubmit.public.ts:171](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L171)
+Defined in: [FormApi/formSubmit.public.ts:172](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L172)
 
-Builds a mutable submission error map from optional initial errors. Return
-the map to apply its form and field errors. An empty map indicates success.
+Builds a mutable map of submission errors from optional initial errors.
+
+- If you already have errors ready to return, use
+  [createValidationError](BaseSubmitContext.md#createvalidationerror).
+- If you want to return Standard Schema errors, use
+  [parseIssues](BaseSubmitContext.md#parseissues).
+- Add errors with `addFormError` and `addFieldError`.
+- Return the map from `onSubmit` to report its errors.
+- The `form` entry targets the submitting form or group.
+- Field paths are relative to the submitting form or group.
+- An empty map indicates success.
+
+#### Example
+
+```ts
+formOptions({
+  defaultValues: { name: '' },
+  onSubmit: async ({ value, createErrorMap }) => {
+    const errors = createErrorMap()
+    if (await nameIsTaken(value.name)) {
+      errors.addFieldError('name', 'Name is already taken')
+    }
+    return errors
+  },
+})
+```
+
+#### Inherited from
+
+[`BaseSubmitContext`](BaseSubmitContext.md).[`createErrorMap`](BaseSubmitContext.md#createerrormap)
 
 ***
 
@@ -49,11 +75,36 @@ the map to apply its form and field errors. An empty map indicates success.
 createValidationError: CreateValidationErrorFn<TFormData>;
 ```
 
-Defined in: [FormApi/formSubmit.public.ts:166](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L166)
+Defined in: [FormApi/formSubmit.public.ts:144](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L144)
 
-Creates a validation error recognized as a submission failure when returned
-from a submission handler. Creating the error alone does not update form or
-field validation state.
+Wraps existing errors so `onSubmit` can return them as validation errors.
+Calling this helper alone does not update validation state.
+
+Accepts error messages, issue objects, arrays of errors, or an error map.
+For a group, field paths in an error map are relative to the group.
+
+- If you want to build or edit errors by field, use
+  [createErrorMap](BaseSubmitContext.md#createerrormap).
+- If you want to return Standard Schema errors, use
+  [parseIssues](BaseSubmitContext.md#parseissues).
+
+#### Example
+
+```ts
+formOptions({
+  defaultValues: { name: '' },
+  onSubmit: async ({ value, createValidationError }) => {
+    if (await nameIsTaken(value.name)) {
+      return createValidationError('Name is already taken')
+    }
+    await saveProfile(value)
+  },
+})
+```
+
+#### Inherited from
+
+[`BaseSubmitContext`](BaseSubmitContext.md).[`createValidationError`](BaseSubmitContext.md#createvalidationerror)
 
 ***
 
@@ -63,9 +114,14 @@ field validation state.
 formApi: FormApi<TFormData, ScopedErrorTypes<never, never>>;
 ```
 
-Defined in: [FormApi/formSubmit.public.ts:123](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L123)
+Defined in: [FormApi/formSubmit.public.ts:229](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L229)
 
-The form instance handling this submission.
+The form handling this submission.
+
+#### Remarks
+
+**Important:** A user may edit fields during submission. `value` and `formApi.state.values` may not
+be equal.
 
 ***
 
@@ -75,10 +131,66 @@ The form instance handling this submission.
 parseIssues: ParseSubmitIssuesFn<TFormData>;
 ```
 
-Defined in: [FormApi/formSubmit.public.ts:176](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L176)
+Defined in: [FormApi/formSubmit.public.ts:200](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L200)
 
-Converts Standard Schema issues into a mutable submission error map using
-the submitted values. Return the map to report its form and field errors.
+Converts Standard Schema issues into a mutable error map to return from
+`onSubmit`.
+
+- If you want to return your own error messages or an existing error map, use
+  [createValidationError](BaseSubmitContext.md#createvalidationerror).
+- If you want to build or edit errors by field, use
+  [createErrorMap](BaseSubmitContext.md#createerrormap).
+- Uses the captured submission values to resolve field paths.
+- Issues without a field path become form or group errors.
+- For a group, issue paths are relative to the group.
+- Return the map to report its errors. An empty map indicates success.
+
+#### Example
+
+```ts
+formOptions({
+  defaultValues: { name: '' },
+  onSubmit: async ({ value, parseIssues }) => {
+    const result = parseSchema(mySchema, value)
+    if (!result.success) {
+      return parseIssues(result.issues)
+    }
+    await saveProfile(result.data)
+  },
+})
+```
+
+#### Inherited from
+
+[`BaseSubmitContext`](BaseSubmitContext.md).[`parseIssues`](BaseSubmitContext.md#parseissues)
+
+***
+
+### signal
+
+```ts
+signal: AbortSignal;
+```
+
+Defined in: [FormApi/formSubmit.public.ts:118](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L118)
+
+Signals when this submission attempt is invalidated.
+
+- A newer submission of the same form or group aborts the signal.
+- A reset or unmount also aborts it.
+- Field edits during a submission do not abort the signal.
+- The same signal is passed to this attempt's `onSubmitInvalid`, if it runs.
+
+#### Remarks
+
+**Important:** Aborting prevents submission results from updating form or
+group state. Callbacks already started are still awaited, and their
+exceptions retain normal handling. Use the signal to stop external work
+that supports cancellation.
+
+#### Inherited from
+
+[`BaseSubmitContext`](BaseSubmitContext.md).[`signal`](BaseSubmitContext.md#signal)
 
 ***
 
@@ -88,19 +200,14 @@ the submitted values. Return the map to report its form and field errors.
 validatorOutputs: TValidatorOutputs;
 ```
 
-Defined in: [FormApi/formSubmit.public.ts:160](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L160)
+Defined in: [FormApi/formSubmit.public.ts:257](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L257)
 
-The validator outputs from this submission.
+Outputs from this submission's form validators, in validators array order.
 
-Standard Schemas provide their output data automatically. Callback
-validators must return a `createOutput` result to provide output data.
-
-Outputs follow the same order as the validators array.
-
-Skipped validators and successful returns without output contribute
-`undefined`.
-
-Outputs from earlier change, blur, or mount validation are not reused.
+- Standard Schemas provide their parsed output data automatically.
+- Callback validators provide the payload returned with `createOutput`.
+- Skipped validators contribute `undefined`.
+- Outputs from earlier change, blur, or mount validation are not reused.
 
 #### Example
 
@@ -109,19 +216,15 @@ formOptions({
   defaultValues: { name: '' },
   validators: [
     {
-      run: ({ createOutput, value }) => {
-        return createOutput({ displayName: value.name.trim() })
-      },
+      triggers: [],
+      run: ({ createOutput, value }) =>
+        createOutput({ displayName: value.name.trim() }),
     },
-    {
-      // Schemas pass their output data by default.
-      run: mySchema,
-    },
+    { triggers: [], run: mySchema },
   ],
-  onSubmit: ({ validatorOutputs }) => {
-    // Outputs follow the same order as the validators array.
+  onSubmit: async ({ validatorOutputs }) => {
     const [customData, schemaOutput] = validatorOutputs
-    console.log(customData.displayName)
+    await saveProfile(customData.displayName, schemaOutput)
   },
 })
 ```
@@ -134,6 +237,10 @@ formOptions({
 value: TFormData;
 ```
 
-Defined in: [FormApi/formSubmit.public.ts:121](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L121)
+Defined in: [FormApi/formSubmit.public.ts:221](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L221)
 
-The form values for this submission, without schema transformations applied.
+The form values captured when this submission started, without schema
+transformations applied.
+
+Field edits made while submission is pending do not replace these values.
+Read transformed validator results from `validatorOutputs`.

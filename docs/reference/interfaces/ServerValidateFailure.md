@@ -3,7 +3,7 @@ id: ServerValidateFailure
 title: ServerValidateFailure
 ---
 
-Defined in: [FormApi/formServerState.public.ts:54](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formServerState.public.ts#L54)
+Defined in: [FormApi/formServerState.public.ts:59](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formServerState.public.ts#L59)
 
 ## Type Parameters
 
@@ -19,7 +19,7 @@ Defined in: [FormApi/formServerState.public.ts:54](https://github.com/TanStack/f
 serverState: ServerFormState<TFormData>;
 ```
 
-Defined in: [FormApi/formServerState.public.ts:56](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formServerState.public.ts#L56)
+Defined in: [FormApi/formServerState.public.ts:61](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formServerState.public.ts#L61)
 
 ***
 
@@ -29,4 +29,4 @@ Defined in: [FormApi/formServerState.public.ts:56](https://github.com/TanStack/f
 success: false;
 ```
 
-Defined in: [FormApi/formServerState.public.ts:55](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formServerState.public.ts#L55)
+Defined in: [FormApi/formServerState.public.ts:60](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formServerState.public.ts#L60)

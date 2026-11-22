@@ -7,7 +7,7 @@ title: ParseSubmitIssuesFn
 type ParseSubmitIssuesFn<TFormData> = (issues) => ParsedSubmitIssues<TFormData> & OnSubmitError<ParsedSubmitIssues<TFormData>>;
 ```
 
-Defined in: [FormApi/formSubmit.public.ts:103](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L103)
+Defined in: [FormApi/formSubmit.public.ts:92](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L92)
 
 Converts Standard Schema issues into a mutable error map to return from `onSubmit`.
 

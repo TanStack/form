@@ -23,9 +23,9 @@ Defined in: [FieldApi/FieldApi.public.ts:221](https://github.com/TanStack/form/b
 
 `TFieldValidators` *extends* [`FieldValidators`](../type-aliases/FieldValidators.md)\<`TFieldData`, `TFieldName`, `TFieldValue`\>
 
-### TGroupFieldError
+### TGroupError
 
-`TGroupFieldError`
+`TGroupError` *extends* [`ScopedErrorTypes`](ScopedErrorTypes.md)
 
 ### TFormData
 
@@ -63,9 +63,9 @@ Defined in: [FieldApi/FieldApi.public.ts:235](https://github.com/TanStack/form/b
 
 ```ts
 optional listeners?: FieldListeners<TFieldData, TFieldName, TFieldValue, NoInfer<FallbackToValidationIssue<
-  | ExtractValidatorFieldError<TFieldValidators, FieldValidators<any, any, any>>
-  | unknown extends TGroupFieldError ? never : TGroupFieldError
-| ExtractFormFieldError<TFormError>>>, TFormData, TFormError>;
+  | ExtractValidatorSelfError<TFieldValidators, FieldValidators<any, any, any>>
+  | ExtractSubfieldError<TGroupError>
+| ExtractSubfieldError<TFormError>>>, TFormData, TFormError>;
 ```
 
 Defined in: [FieldApi/FieldApi.public.ts:241](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi/FieldApi.public.ts#L241)

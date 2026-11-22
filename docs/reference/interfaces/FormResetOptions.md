@@ -3,16 +3,10 @@ id: FormResetOptions
 title: FormResetOptions
 ---
 
-Defined in: [FormApi/FormApi.public.ts:153](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L153)
+Defined in: [FormApi/FormApi.public.ts:150](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L150)
 
-Options controlling whether `reset(values)` replaces the default-value
-baseline.
-
-## Example
-
-```ts
-formApi.reset(savedValues, { updateDefaultValues: false })
-```
+Controls whether [reset](FormApi.md#reset) replaces the form's default
+values when new values are supplied.
 
 ## Properties
 
@@ -22,33 +16,17 @@ formApi.reset(savedValues, { updateDefaultValues: false })
 optional updateDefaultValues?: boolean;
 ```
 
-Defined in: [FormApi/FormApi.public.ts:183](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L183)
+Defined in: [FormApi/FormApi.public.ts:161](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/FormApi.public.ts#L161)
 
-Whether `reset(values)` should also update the form's `defaultValues`
-baseline.
+Whether the values supplied to `reset` also replace the form's `defaultValues`.
 
-By default, passing values to `reset` treats those values as the new reset
-baseline. Future `reset()` calls will return to those values, and
-`state.isDefaultValue` will compare against them.
+When `false`, the form preserves the existing defaults.
+`isDefaultValue` and later `form.reset()` calls use those existing `defaultValues`.
 
-Set this to `false` when you want reset semantics for form state
-(clearing touched, dirty, validation, submission state, and mounted fields)
-but want to keep comparing against the previous `defaultValues`.
+This option has no effect when reset values are omitted.
 
-With `updateDefaultValues: false`, `state.isDirty` is reset to `false`,
-but `state.isDefaultValue` may be `false` if the provided reset values do
-not deeply equal the preserved defaults.
-
-This option is ignored when no reset values are provided.
-
-#### Example
+#### Default
 
 ```ts
-const originalDefaults = formApi.defaultValues
-
-formApi.reset(savedDraft, { updateDefaultValues: false })
-// `savedDraft` is current, but `originalDefaults` remains the baseline.
-
-formApi.reset()
-// Restores `originalDefaults`, not `savedDraft`.
+true
 ```

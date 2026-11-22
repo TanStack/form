@@ -12,4 +12,4 @@ type ValidationSuccess =
 | ValidationOutput<unknown>;
 ```
 
-Defined in: [validation/state.public.ts:54](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L54)
+Defined in: [validation/results/results.public.ts:50](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/results/results.public.ts#L50)

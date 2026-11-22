@@ -3,7 +3,7 @@ id: FormListenerContext
 title: FormListenerContext
 ---
 
-Defined in: [FormApi/formListeners.public.ts:9](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formListeners.public.ts#L9)
+Defined in: [pipeline/listeners/formListeners.public.ts:9](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/listeners/formListeners.public.ts#L9)
 
 ## Type Parameters
 
@@ -23,7 +23,22 @@ Defined in: [FormApi/formListeners.public.ts:9](https://github.com/TanStack/form
 formApi: FormApi<TFormData, TFormError>;
 ```
 
-Defined in: [FormApi/formListeners.public.ts:13](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formListeners.public.ts#L13)
+Defined in: [pipeline/listeners/formListeners.public.ts:13](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/listeners/formListeners.public.ts#L13)
+
+***
+
+### signal
+
+```ts
+signal: AbortSignal;
+```
+
+Defined in: [pipeline/listeners/formListeners.public.ts:23](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/listeners/formListeners.public.ts#L23)
+
+Aborted when this invocation is canceled or replaced by a newer one.
+
+Use this signal for cooperative early exit. Return asynchronous work's
+promise to keep it attached to this invocation's lifetime.
 
 ***
 
@@ -33,7 +48,7 @@ Defined in: [FormApi/formListeners.public.ts:13](https://github.com/TanStack/for
 optional triggerFieldApi?: AnyFieldApi;
 ```
 
-Defined in: [FormApi/formListeners.public.ts:15](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formListeners.public.ts#L15)
+Defined in: [pipeline/listeners/formListeners.public.ts:16](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/listeners/formListeners.public.ts#L16)
 
 ***
 
@@ -43,4 +58,6 @@ Defined in: [FormApi/formListeners.public.ts:15](https://github.com/TanStack/for
 value: TFormData;
 ```
 
-Defined in: [FormApi/formListeners.public.ts:14](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formListeners.public.ts#L14)
+Defined in: [pipeline/listeners/formListeners.public.ts:15](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/listeners/formListeners.public.ts#L15)
+
+The form's values when the callback begins executing.

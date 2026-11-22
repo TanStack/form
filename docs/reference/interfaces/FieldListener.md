@@ -3,7 +3,7 @@ id: FieldListener
 title: FieldListener
 ---
 
-Defined in: [listeners.public.ts:289](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L289)
+Defined in: [pipeline/listeners/listeners.public.ts:297](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/listeners/listeners.public.ts#L297)
 
 A listener configured on a field.
 
@@ -79,12 +79,13 @@ Library-managed. Do not specify explicitly.
 run: FieldListenerFn<TFieldName, TFieldValue, TFieldError, TFormData, TFormError>;
 ```
 
-Defined in: [listeners.public.ts:313](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L313)
+Defined in: [pipeline/listeners/listeners.public.ts:322](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/listeners/listeners.public.ts#L322)
 
 Called when an enabled field trigger occurs.
 
-The return value is ignored. A returned promise is not awaited, and a
-rejected promise is reported to the console.
+The return value is ignored. A returned promise is observed without delaying
+validation or submission. Failures are reported to the console while the
+invocation is active; failures after cancellation are suppressed.
 
 #### Example
 
@@ -107,14 +108,14 @@ optional triggerDebounceMs?:
 | ListenerDebounceFn<TFieldData, TFieldValue>;
 ```
 
-Defined in: [listeners.public.ts:161](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L161)
+Defined in: [pipeline/listeners/listeners.public.ts:161](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/listeners/listeners.public.ts#L161)
 
 The debounce delay in milliseconds before the listener runs.
 
-A function recalculates the delay for each matching event. Repeated events
-restart the delay, and the listener receives the latest event context.
-Values less than or equal to `0` run immediately. `'submit'` events always
-run immediately.
+A function recalculates the delay for each matching change or blur event.
+Repeated matching events restart the delay. The callback receives current
+values when execution begins. Values less than or equal to `0` run
+immediately. Lifecycle and submission events always run immediately.
 
 #### Default
 
@@ -134,7 +135,7 @@ run immediately.
 triggers: ListenerTriggerOption<FieldListenerTriggers, TFieldData, TFieldValue>[];
 ```
 
-Defined in: [listeners.public.ts:179](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L179)
+Defined in: [pipeline/listeners/listeners.public.ts:179](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/listeners/listeners.public.ts#L179)
 
 The events that can invoke the listener.
 
@@ -165,7 +166,7 @@ triggers: [
 optional watchFields?: DeepKeys<TFieldData>[];
 ```
 
-Defined in: [listeners.public.ts:334](https://github.com/TanStack/form/blob/main/packages/form-core/src/listeners.public.ts#L334)
+Defined in: [pipeline/listeners/listeners.public.ts:343](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/listeners/listeners.public.ts#L343)
 
 Other fields whose matching events should also invoke this listener.
 

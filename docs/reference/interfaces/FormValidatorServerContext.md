@@ -3,7 +3,7 @@ id: FormValidatorServerContext
 title: FormValidatorServerContext
 ---
 
-Defined in: [validation/formValidators.public.ts:126](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/formValidators.public.ts#L126)
+Defined in: [pipeline/validation/formValidators.public.ts:126](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/formValidators.public.ts#L126)
 
 Form values and result helpers passed to a validator during server validation.
 
@@ -33,7 +33,7 @@ Library-managed. Do not specify explicitly.
 createErrorMap: CreateErrorMapFn<TFormData>;
 ```
 
-Defined in: [validation/formValidators.public.ts:70](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/formValidators.public.ts#L70)
+Defined in: [pipeline/validation/formValidators.public.ts:70](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/formValidators.public.ts#L70)
 
 Builds a mutable error map for the form and its field paths from optional
 initial errors. Return the created map to report its errors.
@@ -89,7 +89,7 @@ BaseFormValidatorContext.createErrorMap
 createOutput: CreateOutputFn;
 ```
 
-Defined in: [validation/formValidators.public.ts:117](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/formValidators.public.ts#L117)
+Defined in: [pipeline/validation/formValidators.public.ts:117](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/formValidators.public.ts#L117)
 
 Use this to return custom data when validation succeeds. The data is
 available in `validatorOutputs` during submission or server validation.
@@ -132,7 +132,7 @@ BaseFormValidatorContext.createOutput
 event: TEvents;
 ```
 
-Defined in: [validation/formValidators.public.ts:137](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/formValidators.public.ts#L137)
+Defined in: [pipeline/validation/formValidators.public.ts:137](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/formValidators.public.ts#L137)
 
 The event that caused this validation run.
 
@@ -146,7 +146,7 @@ The event that caused this validation run.
 parseIssues: ParseIssuesFn<TFormData>;
 ```
 
-Defined in: [validation/formValidators.public.ts:89](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/formValidators.public.ts#L89)
+Defined in: [pipeline/validation/formValidators.public.ts:89](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/formValidators.public.ts#L89)
 
 Converts Standard Schema issues into a mutable error map to return from
 this validator.
@@ -180,6 +180,6 @@ BaseFormValidatorContext.parseIssues
 value: TFormData;
 ```
 
-Defined in: [validation/formValidators.public.ts:131](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/formValidators.public.ts#L131)
+Defined in: [pipeline/validation/formValidators.public.ts:131](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/formValidators.public.ts#L131)
 
 The complete form values decoded from `FormData` for server validation.

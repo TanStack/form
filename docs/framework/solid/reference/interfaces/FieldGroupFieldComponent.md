@@ -3,7 +3,7 @@ id: FieldGroupFieldComponent
 title: FieldGroupFieldComponent
 ---
 
-Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:19](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts#L19)
+Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:18](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts#L18)
 
 ## Type Parameters
 
@@ -19,7 +19,7 @@ Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:19](http
 FieldGroupFieldComponent<TFieldName>(props): Element;
 ```
 
-Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:23](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts#L23)
+Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:22](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts#L22)
 
 ## Type Parameters
 
@@ -31,7 +31,7 @@ Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:23](http
 
 ### props
 
-[`SolidFormFieldProps`](SolidFormFieldProps.md)\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `FieldValidators`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>\>, `ValidationIssue`, `unknown`, `ScopedErrorTypes`\<`ValidationIssue`, `ValidationIssue`\>, `TFieldComponents`\>
+[`SolidFormFieldProps`](SolidFormFieldProps.md)\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `FieldValidators`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>\>, `ScopedErrorTypes`\<`ValidationIssue`, `ValidationIssue`\>, `unknown`, `ScopedErrorTypes`\<`ValidationIssue`, `ValidationIssue`\>, `TFieldComponents`\>
 
 ## Returns
 

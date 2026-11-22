@@ -7,7 +7,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:93](https://github.com
 
 ## Extends
 
-- `FieldApiOptions`\<`TFieldData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `TGroupFieldError`, `TFormData`, `TFormError`\>
+- `FieldApiOptions`\<`TFieldData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `TGroupError`, `TFormData`, `TFormError`\>
 
 ## Extended by
 
@@ -31,9 +31,9 @@ Defined in: [packages/solid-form/src/Components.public.ts:93](https://github.com
 
 `TFieldValidators` *extends* `FieldValidators`\<`TFieldData`, `TFieldName`, `TFieldValue`\>
 
-### TGroupFieldError
+### TGroupError
 
-`TGroupFieldError`
+`TGroupError` *extends* `ScopedErrorTypes`
 
 ### TFormData
 
@@ -61,7 +61,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:111](https://github.co
 
 ##### fieldApi
 
-[`SolidFieldApi`](../type-aliases/SolidFieldApi.md)\<`TFieldName`, `TFieldValue`, `ToFieldError`\<`NoInfer`\<`TFieldValidators`\>, `TGroupFieldError`, `TFormError`\>, `TFormData`, `TFormError`, `TFieldComponents`\>
+[`SolidFieldApi`](../type-aliases/SolidFieldApi.md)\<`TFieldName`, `TFieldValue`, `ToFieldError`\<`NoInfer`\<`TFieldValidators`\>, `TGroupError`, `TFormError`\>, `TFormData`, `TFormError`, `TFieldComponents`\>
 
 #### Returns
 

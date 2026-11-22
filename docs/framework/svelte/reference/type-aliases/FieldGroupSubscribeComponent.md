@@ -7,4 +7,4 @@ title: FieldGroupSubscribeComponent
 type FieldGroupSubscribeComponent = <TSelected>(options) => SvelteComponent & Component<any> & WithoutFunction<Component>;
 ```
 
-Defined in: [packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts:75](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts#L75)
+Defined in: [packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts:74](https://github.com/TanStack/form/blob/main/packages/svelte-form/src/FieldGroup/FieldGroupApi.public.ts#L74)

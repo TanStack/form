@@ -3,7 +3,7 @@ id: ParsedStandardSchemaIssues
 title: ParsedStandardSchemaIssues
 ---
 
-Defined in: [validation/state.public.ts:88](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L88)
+Defined in: [validation/results/results.public.ts:115](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/results/results.public.ts#L115)
 
 ## Extends
 
@@ -23,7 +23,7 @@ Defined in: [validation/state.public.ts:88](https://github.com/TanStack/form/blo
 readonly [PARSED_ISSUES]: true;
 ```
 
-Defined in: [validation/state.public.ts:95](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L95)
+Defined in: [validation/results/results.public.ts:122](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/results/results.public.ts#L122)
 
 ***
 
@@ -33,7 +33,7 @@ Defined in: [validation/state.public.ts:95](https://github.com/TanStack/form/blo
 fields: ValidationFieldMap<TFormData, TFieldError>;
 ```
 
-Defined in: [validation/state.public.ts:67](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L67)
+Defined in: [validation/results/results.public.ts:63](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/results/results.public.ts#L63)
 
 #### Inherited from
 
@@ -49,7 +49,7 @@ Required.fields
 form: StandardSchemaV1Issue[];
 ```
 
-Defined in: [validation/state.public.ts:66](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L66)
+Defined in: [validation/results/results.public.ts:62](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/results/results.public.ts#L62)
 
 #### Inherited from
 

@@ -3,7 +3,7 @@ id: SolidTanStackFormComponents
 title: SolidTanStackFormComponents
 ---
 
-Defined in: [packages/solid-form/src/Components.public.ts:374](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L374)
+Defined in: [packages/solid-form/src/Components.public.ts:378](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L378)
 
 ## Type Parameters
 
@@ -27,7 +27,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:374](https://github.co
 ArrayField: SolidFormArrayFieldComponent<TFormData, TFormErrorTypes, TFieldComponents>;
 ```
 
-Defined in: [packages/solid-form/src/Components.public.ts:383](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L383)
+Defined in: [packages/solid-form/src/Components.public.ts:387](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L387)
 
 ***
 
@@ -37,7 +37,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:383](https://github.co
 Field: SolidFormFieldComponent<TFormData, TFormErrorTypes, TFieldComponents>;
 ```
 
-Defined in: [packages/solid-form/src/Components.public.ts:382](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L382)
+Defined in: [packages/solid-form/src/Components.public.ts:386](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L386)
 
 ***
 
@@ -47,7 +47,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:382](https://github.co
 FormGroup: SolidFormGroupComponent<TFormData, TFormErrorTypes, TFieldComponents>;
 ```
 
-Defined in: [packages/solid-form/src/Components.public.ts:389](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L389)
+Defined in: [packages/solid-form/src/Components.public.ts:393](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L393)
 
 ***
 
@@ -57,4 +57,4 @@ Defined in: [packages/solid-form/src/Components.public.ts:389](https://github.co
 Subscribe: SolidFormSubscribeComponent<TFormData, TFormErrorTypes>;
 ```
 
-Defined in: [packages/solid-form/src/Components.public.ts:388](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L388)
+Defined in: [packages/solid-form/src/Components.public.ts:392](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L392)

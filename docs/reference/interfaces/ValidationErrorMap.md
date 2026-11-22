@@ -3,7 +3,7 @@ id: ValidationErrorMap
 title: ValidationErrorMap
 ---
 
-Defined in: [validation/state.public.ts:61](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L61)
+Defined in: [validation/results/results.public.ts:57](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/results/results.public.ts#L57)
 
 ## Type Parameters
 
@@ -27,7 +27,7 @@ Defined in: [validation/state.public.ts:61](https://github.com/TanStack/form/blo
 fields: ValidationFieldMap<TFormData, TFieldError>;
 ```
 
-Defined in: [validation/state.public.ts:67](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L67)
+Defined in: [validation/results/results.public.ts:63](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/results/results.public.ts#L63)
 
 ***
 
@@ -37,4 +37,4 @@ Defined in: [validation/state.public.ts:67](https://github.com/TanStack/form/blo
 optional form?: TFormError;
 ```
 
-Defined in: [validation/state.public.ts:66](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L66)
+Defined in: [validation/results/results.public.ts:62](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/results/results.public.ts#L62)

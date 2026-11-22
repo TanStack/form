@@ -3,7 +3,7 @@ id: FieldGroupArrayFieldComponent
 title: FieldGroupArrayFieldComponent
 ---
 
-Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:85](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L85)
+Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:84](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L84)
 
 ## Type Parameters
 
@@ -19,7 +19,7 @@ Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:85](http
 FieldGroupArrayFieldComponent<TFieldName>(props): ReactNode;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:129](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L129)
+Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:128](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L128)
 
 Renders an array field from this field group.
 
@@ -36,7 +36,7 @@ field group is used.
 
 ### props
 
-[`ReactFormFieldProps`](ReactFormFieldProps.md)\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `FieldValidators`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>\>, `ValidationIssue`, `unknown`, `ScopedErrorTypes`\<`ValidationIssue`, `ValidationIssue`\>, `TFieldComponents`\>
+[`ReactFormFieldProps`](ReactFormFieldProps.md)\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `FieldValidators`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>\>, `ScopedErrorTypes`\<`ValidationIssue`, `ValidationIssue`\>, `unknown`, `ScopedErrorTypes`\<`ValidationIssue`, `ValidationIssue`\>, `TFieldComponents`\>
 
 ## Returns
 

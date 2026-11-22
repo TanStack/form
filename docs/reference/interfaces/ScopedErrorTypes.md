@@ -3,7 +3,7 @@ id: ScopedErrorTypes
 title: ScopedErrorTypes
 ---
 
-Defined in: [validation/state.public.ts:129](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L129)
+Defined in: [validation/state.public.ts:20](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L20)
 
 ## Type Parameters
 
@@ -23,7 +23,7 @@ Defined in: [validation/state.public.ts:129](https://github.com/TanStack/form/bl
 readonly selfError: TSelfError;
 ```
 
-Defined in: [validation/state.public.ts:133](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L133)
+Defined in: [validation/state.public.ts:24](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L24)
 
 ***
 
@@ -33,4 +33,4 @@ Defined in: [validation/state.public.ts:133](https://github.com/TanStack/form/bl
 readonly subfieldError: TSubfieldsError;
 ```
 
-Defined in: [validation/state.public.ts:134](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L134)
+Defined in: [validation/state.public.ts:25](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L25)

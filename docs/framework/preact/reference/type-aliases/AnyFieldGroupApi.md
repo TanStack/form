@@ -7,4 +7,4 @@ title: AnyFieldGroupApi
 type AnyFieldGroupApi = FieldGroupApi<any, Record<string, FunctionComponent<any>>>;
 ```
 
-Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:89](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts#L89)
+Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:88](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts#L88)

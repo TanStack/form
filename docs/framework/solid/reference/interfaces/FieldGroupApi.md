@@ -3,7 +3,7 @@ id: FieldGroupApi
 title: FieldGroupApi
 ---
 
-Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:73](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts#L73)
+Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:72](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts#L72)
 
 ## Extends
 
@@ -27,7 +27,7 @@ Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:73](http
 ArrayField: FieldGroupArrayFieldComponent<TFieldData, TFieldComponents>;
 ```
 
-Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:83](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts#L83)
+Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:82](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts#L82)
 
 ***
 
@@ -37,7 +37,7 @@ Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:83](http
 atom: ReadonlyAtom<TFieldData>;
 ```
 
-Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:81](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts#L81)
+Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:80](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts#L80)
 
 ***
 
@@ -47,7 +47,7 @@ Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:81](http
 Field: FieldGroupFieldComponent<TFieldData, TFieldComponents>;
 ```
 
-Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:82](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts#L82)
+Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:81](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts#L81)
 
 ***
 
@@ -57,4 +57,4 @@ Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:82](http
 Subscribe: FieldGroupSubscribeComponent;
 ```
 
-Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:84](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts#L84)
+Defined in: [packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts:83](https://github.com/TanStack/form/blob/main/packages/solid-form/src/FieldGroup/FieldGroupApi.public.ts#L83)

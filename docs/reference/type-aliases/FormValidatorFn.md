@@ -7,7 +7,7 @@ title: FormValidatorFn
 type FormValidatorFn<TFormData, TEvents> = (context) => Awaitable<FormValidationResult<TFormData>>;
 ```
 
-Defined in: [validation/formValidators.public.ts:217](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/formValidators.public.ts#L217)
+Defined in: [pipeline/validation/formValidators.public.ts:217](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/formValidators.public.ts#L217)
 
 Validates the complete form values with a context selected from its configured events.
 

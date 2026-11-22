@@ -4,10 +4,10 @@ title: CreateSubmitErrorMapFn
 ---
 
 ```ts
-type CreateSubmitErrorMapFn<TFormData> = (initial?) => CreatedSubmitErrorMap<TFormData, ValidationFailureItem[], ValidationFailure>;
+type CreateSubmitErrorMapFn<TFormData> = (initial?) => CreatedSubmitErrorMap<TFormData>;
 ```
 
-Defined in: [FormApi/formSubmit.public.ts:88](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L88)
+Defined in: [FormApi/formSubmit.public.ts:81](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L81)
 
 Builds a mutable error map to return from `onSubmit` and report validation errors.
 
@@ -27,4 +27,4 @@ Library-managed. Do not specify explicitly.
 
 ## Returns
 
-[`CreatedSubmitErrorMap`](CreatedSubmitErrorMap.md)\<`TFormData`, [`ValidationFailureItem`](ValidationFailureItem.md)[], [`ValidationFailure`](ValidationFailure.md)\>
+[`CreatedSubmitErrorMap`](CreatedSubmitErrorMap.md)\<`TFormData`\>

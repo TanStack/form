@@ -7,7 +7,7 @@ title: ParseIssuesFn
 type ParseIssuesFn<TFormData> = (issues) => ParsedStandardSchemaIssues<TFormData>;
 ```
 
-Defined in: [validation/state.public.ts:118](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L118)
+Defined in: [validation/results/results.public.ts:145](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/results/results.public.ts#L145)
 
 ## Type Parameters
 

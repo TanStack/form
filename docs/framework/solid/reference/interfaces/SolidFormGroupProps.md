@@ -7,7 +7,7 @@ Defined in: [packages/solid-form/src/Components.public.ts:324](https://github.co
 
 ## Extends
 
-- `Omit`\<`FormGroupOptions`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormError`\>, `"form"`\>
+- `Omit`\<`FormGroupOptions`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormError`, `TSubmitReturn`\>, `"form"`\>
 
 ## Type Parameters
 
@@ -35,6 +35,10 @@ Defined in: [packages/solid-form/src/Components.public.ts:324](https://github.co
 
 `TFieldComponents` *extends* `Record`\<`string`, `Component`\<`any`\>\>
 
+### TSubmitReturn
+
+`TSubmitReturn` = `void`
+
 ## Properties
 
 ### children
@@ -43,13 +47,13 @@ Defined in: [packages/solid-form/src/Components.public.ts:324](https://github.co
 children: (groupApi) => Element;
 ```
 
-Defined in: [packages/solid-form/src/Components.public.ts:341](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L341)
+Defined in: [packages/solid-form/src/Components.public.ts:343](https://github.com/TanStack/form/blob/main/packages/solid-form/src/Components.public.ts#L343)
 
 #### Parameters
 
 ##### groupApi
 
-[`SolidFormGroupAccessor`](../type-aliases/SolidFormGroupAccessor.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `ToFormGroupErrorTypes`\<`NoInfer`\<`TGroupValidators`\>\>, `TFormError`, `TFieldComponents`\>
+[`SolidFormGroupAccessor`](../type-aliases/SolidFormGroupAccessor.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `ToFormGroupErrorTypes`\<`NoInfer`\<`TGroupValidators`\>, `NoInfer`\<`TSubmitReturn`\>\>, `TFormError`, `TFieldComponents`\>
 
 #### Returns
 

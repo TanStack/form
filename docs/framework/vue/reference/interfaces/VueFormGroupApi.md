@@ -3,7 +3,7 @@ id: VueFormGroupApi
 title: VueFormGroupApi
 ---
 
-Defined in: [packages/vue-form/src/VueForm/Components.public.ts:342](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L342)
+Defined in: [packages/vue-form/src/VueForm/Components.public.ts:334](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L334)
 
 ## Extends
 
@@ -43,7 +43,7 @@ Defined in: [packages/vue-form/src/VueForm/Components.public.ts:342](https://git
 ArrayField: VueFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupError, TFormError, TFieldComponents>;
 ```
 
-Defined in: [packages/vue-form/src/VueForm/Components.public.ts:363](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L363)
+Defined in: [packages/vue-form/src/VueForm/Components.public.ts:355](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L355)
 
 ***
 
@@ -53,7 +53,7 @@ Defined in: [packages/vue-form/src/VueForm/Components.public.ts:363](https://git
 Field: VueFormGroupFieldComponent<TFormData, TGroupValue, TGroupError, TFormError, TFieldComponents>;
 ```
 
-Defined in: [packages/vue-form/src/VueForm/Components.public.ts:356](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L356)
+Defined in: [packages/vue-form/src/VueForm/Components.public.ts:348](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L348)
 
 ***
 
@@ -63,4 +63,4 @@ Defined in: [packages/vue-form/src/VueForm/Components.public.ts:356](https://git
 Subscribe: VueFormGroupSubscribeComponent<TGroupValue, TGroupError>;
 ```
 
-Defined in: [packages/vue-form/src/VueForm/Components.public.ts:370](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L370)
+Defined in: [packages/vue-form/src/VueForm/Components.public.ts:362](https://github.com/TanStack/form/blob/main/packages/vue-form/src/VueForm/Components.public.ts#L362)

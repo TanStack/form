@@ -7,7 +7,7 @@ title: DefaultFieldOptions
 type DefaultFieldOptions = Pick<FieldApiOptions<unknown, string, unknown, FieldValidators<unknown, string, unknown>, never, unknown, ScopedErrorTypes>, "errorVisibility" | "errorBoundary" | "listeners"> & DefaultListenersMergeOptions;
 ```
 
-Defined in: [defaultOptions.public.ts:78](https://github.com/TanStack/form/blob/main/packages/form-core/src/defaultOptions.public.ts#L78)
+Defined in: [defaultOptions.public.ts:81](https://github.com/TanStack/form/blob/main/packages/form-core/src/defaultOptions.public.ts#L81)
 
 Reusable field behavior that does not participate in form or field value
 inference.

@@ -7,4 +7,4 @@ title: ValidationFailureItem
 type ValidationFailureItem = ValidationIssue | string;
 ```
 
-Defined in: [validation/state.public.ts:50](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L50)
+Defined in: [validation/results/results.public.ts:46](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/results/results.public.ts#L46)

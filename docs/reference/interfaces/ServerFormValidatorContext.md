@@ -3,7 +3,7 @@ id: ServerFormValidatorContext
 title: ServerFormValidatorContext
 ---
 
-Defined in: [validation.public.ts:538](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L538)
+Defined in: [pipeline/validation/validation.public.ts:478](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L478)
 
 Values and helpers passed to a server form validation function.
 
@@ -23,7 +23,7 @@ Library-managed. Do not specify explicitly.
 createErrorMap: CreateErrorMapFn<TFormData>;
 ```
 
-Defined in: [validation.public.ts:550](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L550)
+Defined in: [pipeline/validation/validation.public.ts:490](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L490)
 
 Builds a mutable error map from optional form and field errors.
 
@@ -35,7 +35,7 @@ Builds a mutable error map from optional form and field errors.
 createOutput: CreateOutputFn;
 ```
 
-Defined in: [validation.public.ts:554](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L554)
+Defined in: [pipeline/validation/validation.public.ts:494](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L494)
 
 Creates a successful result to return data in this validator's server `validatorOutputs` entry.
 
@@ -47,7 +47,7 @@ Creates a successful result to return data in this validator's server `validator
 event: "server" | ValidationTrigger;
 ```
 
-Defined in: [validation.public.ts:540](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L540)
+Defined in: [pipeline/validation/validation.public.ts:480](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L480)
 
 The validation event. `serverValidate` supplies `'server'`.
 
@@ -59,7 +59,7 @@ The validation event. `serverValidate` supplies `'server'`.
 formApi: FormApi<TFormData, any> | undefined;
 ```
 
-Defined in: [validation.public.ts:544](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L544)
+Defined in: [pipeline/validation/validation.public.ts:484](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L484)
 
 `undefined` during server validation, where no client form instance exists.
 
@@ -71,7 +71,7 @@ Defined in: [validation.public.ts:544](https://github.com/TanStack/form/blob/mai
 parseIssues: ParseIssuesFn<TFormData>;
 ```
 
-Defined in: [validation.public.ts:552](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L552)
+Defined in: [pipeline/validation/validation.public.ts:492](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L492)
 
 Converts Standard Schema issues into a mutable error map using the server values.
 
@@ -83,7 +83,7 @@ Converts Standard Schema issues into a mutable error map using the server values
 signal: AbortSignal;
 ```
 
-Defined in: [validation.public.ts:542](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L542)
+Defined in: [pipeline/validation/validation.public.ts:482](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L482)
 
 Aborted when this run is cancelled. Pass it to asynchronous work such as `fetch`.
 
@@ -95,7 +95,7 @@ Aborted when this run is cancelled. Pass it to asynchronous work such as `fetch`
 optional triggerFieldApi?: AnyFieldApi;
 ```
 
-Defined in: [validation.public.ts:546](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L546)
+Defined in: [pipeline/validation/validation.public.ts:486](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L486)
 
 Absent during server validation, which is not triggered by a client field.
 
@@ -107,6 +107,6 @@ Absent during server validation, which is not triggered by a client field.
 value: TFormData;
 ```
 
-Defined in: [validation.public.ts:548](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L548)
+Defined in: [pipeline/validation/validation.public.ts:488](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L488)
 
 The complete form values passed to server validation.

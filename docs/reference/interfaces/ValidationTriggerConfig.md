@@ -3,7 +3,7 @@ id: ValidationTriggerConfig
 title: ValidationTriggerConfig
 ---
 
-Defined in: [validation.public.ts:426](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L426)
+Defined in: [pipeline/validation/validation.public.ts:373](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L373)
 
 A change or blur event with an optional condition for running validation.
 
@@ -41,7 +41,7 @@ Library-managed. Do not specify explicitly.
 trigger: TTrigger;
 ```
 
-Defined in: [validation.public.ts:433](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L433)
+Defined in: [pipeline/validation/validation.public.ts:380](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L380)
 
 The event to match before evaluating `when`.
 
@@ -55,7 +55,7 @@ optional when?:
 | TTrigger extends "mount" ? never : ValidationPredicateFn<TFormData, TValue, TScope>;
 ```
 
-Defined in: [validation.public.ts:442](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L442)
+Defined in: [pipeline/validation/validation.public.ts:389](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L389)
 
 Whether this trigger enables validation when its event occurs.
 

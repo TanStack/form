@@ -3,7 +3,7 @@ id: FieldGroupFieldComponent
 title: FieldGroupFieldComponent
 ---
 
-Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:23](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts#L23)
+Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:22](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts#L22)
 
 ## Type Parameters
 
@@ -19,7 +19,7 @@ Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:23](htt
 FieldGroupFieldComponent<TFieldName>(props): ComponentChildren;
 ```
 
-Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:27](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts#L27)
+Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:26](https://github.com/TanStack/form/blob/main/packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts#L26)
 
 ## Type Parameters
 
@@ -31,7 +31,7 @@ Defined in: [packages/preact-form/src/FieldGroup/FieldGroupApi.public.ts:27](htt
 
 ### props
 
-[`PreactFormFieldProps`](PreactFormFieldProps.md)\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `FieldValidators`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>\>, `ValidationIssue`, `unknown`, `ScopedErrorTypes`\<`ValidationIssue`, `ValidationIssue`\>, `TFieldComponents`\>
+[`PreactFormFieldProps`](PreactFormFieldProps.md)\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>, `FieldValidators`\<`TFieldData`, `TFieldName`, `DeepValue`\<`TFieldData`, `TFieldName`\>\>, `ScopedErrorTypes`\<`ValidationIssue`, `ValidationIssue`\>, `unknown`, `ScopedErrorTypes`\<`ValidationIssue`, `ValidationIssue`\>, `TFieldComponents`\>
 
 ## Returns
 

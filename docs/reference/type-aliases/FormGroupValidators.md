@@ -7,7 +7,7 @@ title: FormGroupValidators
 type FormGroupValidators<TGroupValue> = ReadonlyArray<FormGroupValidator<TGroupValue>>;
 ```
 
-Defined in: [validation.public.ts:649](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L649)
+Defined in: [pipeline/validation/validation.public.ts:561](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L561)
 
 Group validators in configuration order, which also determines their `validatorOutputs` indexes.
 

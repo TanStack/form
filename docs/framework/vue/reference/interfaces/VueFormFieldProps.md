@@ -7,7 +7,7 @@ Defined in: [packages/vue-form/src/VueForm/Components.public.ts:96](https://gith
 
 ## Extends
 
-- `FieldApiOptions`\<`TFieldData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `TGroupFieldError`, `TFormData`, `TFormError`\>
+- `FieldApiOptions`\<`TFieldData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `TGroupError`, `TFormData`, `TFormError`\>
 
 ## Type Parameters
 
@@ -27,9 +27,9 @@ Defined in: [packages/vue-form/src/VueForm/Components.public.ts:96](https://gith
 
 `TFieldValidators` *extends* `FieldValidators`\<`TFieldData`, `TFieldName`, `TFieldValue`\>
 
-### TGroupFieldError
+### TGroupError
 
-`TGroupFieldError`
+`TGroupError` *extends* `ScopedErrorTypes`
 
 ### TFormData
 

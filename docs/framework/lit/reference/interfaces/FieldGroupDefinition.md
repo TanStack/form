@@ -3,7 +3,7 @@ id: FieldGroupDefinition
 title: FieldGroupDefinition
 ---
 
-Defined in: [with-fields.ts:105](https://github.com/TanStack/form/blob/main/packages/lit-form/src/with-fields.ts#L105)
+Defined in: [with-fields.ts:104](https://github.com/TanStack/form/blob/main/packages/lit-form/src/with-fields.ts#L104)
 
 ## Type Parameters
 
@@ -19,7 +19,7 @@ Defined in: [with-fields.ts:105](https://github.com/TanStack/form/blob/main/pack
 bindComponent: FieldGroupWithFieldsFn<LitFieldGroup<TFields>>;
 ```
 
-Defined in: [with-fields.ts:109](https://github.com/TanStack/form/blob/main/packages/lit-form/src/with-fields.ts#L109)
+Defined in: [with-fields.ts:108](https://github.com/TanStack/form/blob/main/packages/lit-form/src/with-fields.ts#L108)
 
 Binds a renderer's virtual field API to concrete paths in a form.
 
@@ -31,6 +31,6 @@ Binds a renderer's virtual field API to concrete paths in a form.
 fields: LitFieldGroup<TFields>;
 ```
 
-Defined in: [with-fields.ts:107](https://github.com/TanStack/form/blob/main/packages/lit-form/src/with-fields.ts#L107)
+Defined in: [with-fields.ts:106](https://github.com/TanStack/form/blob/main/packages/lit-form/src/with-fields.ts#L106)
 
 The virtual field-group API injected into the bound renderer.

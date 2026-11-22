@@ -7,7 +7,7 @@ title: DefaultFormOptions
 type DefaultFormOptions = Pick<AnyFormOptions, "errorVisibility" | "listeners" | "onSubmitInvalid"> & DefaultListenersMergeOptions;
 ```
 
-Defined in: [defaultOptions.public.ts:54](https://github.com/TanStack/form/blob/main/packages/form-core/src/defaultOptions.public.ts#L54)
+Defined in: [defaultOptions.public.ts:57](https://github.com/TanStack/form/blob/main/packages/form-core/src/defaultOptions.public.ts#L57)
 
 Reusable form behavior that does not participate in form value inference.
 

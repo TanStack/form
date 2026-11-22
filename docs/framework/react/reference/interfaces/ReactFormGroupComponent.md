@@ -20,7 +20,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:332](https:/
 `TFieldComponents` *extends* [`ReactComponentTree`](../type-aliases/ReactComponentTree.md)
 
 ```ts
-ReactFormGroupComponent<TGroupName, TGroupValue, TGroupValidators>(props): ReactNode;
+ReactFormGroupComponent<TGroupName, TGroupValue, TGroupValidators, TSubmitReturn>(props): ReactNode;
 ```
 
 Defined in: [packages/react-form/src/ReactForm/Components.public.ts:337](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L337)
@@ -39,11 +39,15 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:337](https:/
 
 `TGroupValidators` *extends* `FormGroupValidators`\<`TGroupValue`\>
 
+### TSubmitReturn
+
+`TSubmitReturn` = `void`
+
 ## Parameters
 
 ### props
 
-[`ReactFormGroupProps`](ReactFormGroupProps.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormError`, `TFieldComponents`\>
+[`ReactFormGroupProps`](ReactFormGroupProps.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormError`, `TFieldComponents`, `TSubmitReturn`\>
 
 ## Returns
 

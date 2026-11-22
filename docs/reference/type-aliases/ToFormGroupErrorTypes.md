@@ -4,10 +4,10 @@ title: ToFormGroupErrorTypes
 ---
 
 ```ts
-type ToFormGroupErrorTypes<TGroupValidators> = ToValidatorErrorTypes<TGroupValidators, FormGroupValidators<any>, never>;
+type ToFormGroupErrorTypes<TGroupValidators, TSubmitReturn> = ToValidatorErrorTypes<TGroupValidators, FormGroupValidators<any>, TSubmitReturn>;
 ```
 
-Defined in: [validation.public.ts:958](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L958)
+Defined in: [validation/state.public.ts:259](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L259)
 
 Infers group and routed field issue types from group validators.
 
@@ -18,3 +18,7 @@ Infers group and routed field issue types from group validators.
 `TGroupValidators` *extends* [`FormGroupValidators`](FormGroupValidators.md)\<`any`\>
 
 Library-managed. Do not specify explicitly.
+
+### TSubmitReturn
+
+`TSubmitReturn`

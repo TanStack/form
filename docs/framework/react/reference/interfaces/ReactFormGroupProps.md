@@ -3,11 +3,11 @@ id: ReactFormGroupProps
 title: ReactFormGroupProps
 ---
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:303](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L303)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:301](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L301)
 
 ## Extends
 
-- `Omit`\<`FormGroupOptions`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormError`\>, `"form"`\>
+- `Omit`\<`FormGroupOptions`\<`TFormData`, `TGroupName`, `TGroupValue`, `TGroupValidators`, `TFormError`, `TSubmitReturn`\>, `"form"`\>
 
 ## Type Parameters
 
@@ -35,6 +35,10 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:303](https:/
 
 `TFieldComponents` *extends* [`ReactComponentTree`](../type-aliases/ReactComponentTree.md)
 
+### TSubmitReturn
+
+`TSubmitReturn` = `void`
+
 ## Properties
 
 ### children
@@ -49,7 +53,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:320](https:/
 
 ##### groupApi
 
-[`ReactFormGroupApi`](ReactFormGroupApi.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `ToFormGroupErrorTypes`\<`NoInfer`\<`TGroupValidators`\>\>, `TFormError`, `TFieldComponents`\>
+[`ReactFormGroupApi`](ReactFormGroupApi.md)\<`TFormData`, `TGroupName`, `TGroupValue`, `ToFormGroupErrorTypes`\<`NoInfer`\<`TGroupValidators`\>, `NoInfer`\<`TSubmitReturn`\>\>, `TFormError`, `TFieldComponents`\>
 
 #### Returns
 

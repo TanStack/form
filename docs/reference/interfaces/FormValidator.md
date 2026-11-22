@@ -3,7 +3,7 @@ id: FormValidator
 title: FormValidator
 ---
 
-Defined in: [validation/formValidators.public.ts:515](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/formValidators.public.ts#L515)
+Defined in: [pipeline/validation/formValidators.public.ts:515](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/formValidators.public.ts#L515)
 
 Validates the complete form values with a function or Standard Schema.
 
@@ -63,7 +63,7 @@ Library-managed. Do not specify explicitly.
 optional bailIfInvalid?: boolean;
 ```
 
-Defined in: [validation/formValidators.public.ts:322](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/formValidators.public.ts#L322)
+Defined in: [pipeline/validation/formValidators.public.ts:322](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/formValidators.public.ts#L322)
 
 If `true`, skips this validator and all later validators when earlier
 validation in the current run has failed.
@@ -89,10 +89,10 @@ FormValidatorRunner.bailIfInvalid
 ### fieldErrorTarget?
 
 ```ts
-optional fieldErrorTarget?: "field" | "self" | "field-and-self";
+optional fieldErrorTarget?: "field" | "field-and-self" | "self";
 ```
 
-Defined in: [validation/formValidators.public.ts:311](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/formValidators.public.ts#L311)
+Defined in: [pipeline/validation/formValidators.public.ts:311](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/formValidators.public.ts#L311)
 
 Selects where issues with field paths from a Standard Schema or
 `parseIssues` are reported.
@@ -127,7 +127,7 @@ run:
 | FormValidatorFn<TFormData, NoInfer<GetValidatorEvents<TValidatorConfig>>>;
 ```
 
-Defined in: [validation/formValidators.public.ts:293](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/formValidators.public.ts#L293)
+Defined in: [pipeline/validation/formValidators.public.ts:293](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/formValidators.public.ts#L293)
 
 Validates the complete form values with a function or Standard Schema.
 
@@ -149,7 +149,7 @@ FormValidatorRunner.run
 optional skipOnSubmit?: SkipOnSubmitConfig<TFormData, TValidatorConfig>;
 ```
 
-Defined in: [validation/formValidators.public.ts:477](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/formValidators.public.ts#L477)
+Defined in: [pipeline/validation/formValidators.public.ts:477](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/formValidators.public.ts#L477)
 
 Whether to skip this validator during a client submission attempt,
 independently of its configured triggers.
@@ -194,7 +194,7 @@ FormValidatorConfig.skipOnSubmit
 optional triggerDebounceMs?: number;
 ```
 
-Defined in: [validation/formValidators.public.ts:427](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/formValidators.public.ts#L427)
+Defined in: [pipeline/validation/formValidators.public.ts:427](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/formValidators.public.ts#L427)
 
 How long change and blur validation waits after the latest matching event
 before it runs.
@@ -226,7 +226,7 @@ FormValidatorConfig.triggerDebounceMs
 optional triggers?: TriggerConfig<TFormData, TValidatorConfig>[];
 ```
 
-Defined in: [validation/formValidators.public.ts:410](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/formValidators.public.ts#L410)
+Defined in: [pipeline/validation/formValidators.public.ts:410](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/formValidators.public.ts#L410)
 
 Events that run this validator in addition to submission, optionally with
 a `when` condition.

@@ -3,7 +3,7 @@ id: Validator
 title: Validator
 ---
 
-Defined in: [validation.public.ts:54](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L54)
+Defined in: [pipeline/validation/validation.public.ts:47](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L47)
 
 Configures validation for a form, form group, or field.
 
@@ -58,7 +58,7 @@ Library-managed. Do not specify explicitly.
 optional bailIfInvalid?: boolean;
 ```
 
-Defined in: [validation.public.ts:42](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L42)
+Defined in: [pipeline/validation/validation.public.ts:35](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L35)
 
 If `true`, skips this and subsequent validators when earlier validation has failed.
 
@@ -82,7 +82,7 @@ false
 run: TValidator;
 ```
 
-Defined in: [validation.public.ts:34](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L34)
+Defined in: [pipeline/validation/validation.public.ts:27](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L27)
 
 The function or Standard Schema that validates the value in this validator's scope.
 
@@ -100,7 +100,7 @@ optional skipOnSubmit?:
 | ValidationPredicateFn<TFormData, TContextValue, TScope>;
 ```
 
-Defined in: [validation.public.ts:69](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L69)
+Defined in: [pipeline/validation/validation.public.ts:62](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L62)
 
 Whether this validator runs during a submission attempt, independently of `triggers`.
 
@@ -123,7 +123,7 @@ optional triggerDebounceMs?:
 | ValidationDebounceFn<TFormData, TContextValue, TScope>;
 ```
 
-Defined in: [validation.public.ts:80](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L80)
+Defined in: [pipeline/validation/validation.public.ts:73](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L73)
 
 The delay in milliseconds before validation runs for change or blur events.
 
@@ -145,7 +145,7 @@ Submission validation runs immediately.
 triggers: ValidationTriggerOption<TFormData, TContextValue, TTrigger, TScope>[];
 ```
 
-Defined in: [validation.public.ts:88](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L88)
+Defined in: [pipeline/validation/validation.public.ts:81](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L81)
 
 Mount, change, and blur events that can run this validator, optionally with conditions.
 

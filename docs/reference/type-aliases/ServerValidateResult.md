@@ -9,7 +9,7 @@ type ServerValidateResult<TFormData, TValidators> =
 | ServerValidateFailure<TFormData>;
 ```
 
-Defined in: [FormApi/formServerState.public.ts:59](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formServerState.public.ts#L59)
+Defined in: [FormApi/formServerState.public.ts:64](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formServerState.public.ts#L64)
 
 ## Type Parameters
 

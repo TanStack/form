@@ -9,7 +9,7 @@ type FormValidationResult<TFormData> =
   | ValidationSuccess;
 ```
 
-Defined in: [validation/state.public.ts:85](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/state.public.ts#L85)
+Defined in: [validation/results/results.public.ts:81](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation/results/results.public.ts#L81)
 
 ## Type Parameters
 

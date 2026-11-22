@@ -7,7 +7,7 @@ title: FormOptionsOnSubmitFn
 type FormOptionsOnSubmitFn<TFormData, TValidatorOutputs, TSubmitReturn> = (context) => TSubmitReturn;
 ```
 
-Defined in: [FormApi/formSubmit.public.ts:190](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L190)
+Defined in: [FormApi/formSubmit.public.ts:271](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/formSubmit.public.ts#L271)
 
 Handles a form submission after submission validation succeeds.
 

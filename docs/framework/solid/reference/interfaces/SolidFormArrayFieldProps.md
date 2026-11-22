@@ -46,8 +46,8 @@ Defined in: [packages/solid-form/src/Components.public.ts:111](https://github.co
 ##### fieldApi
 
 [`SolidFieldApi`](../type-aliases/SolidFieldApi.md)\<`TFieldName`, `TFieldValue`, `FallbackToValidationIssue`\<
-  \| `ExtractValidatorFieldError`\<`NoInfer`\<`TFieldValidators`\>, `FieldValidators`\<`any`, `any`, `any`\>\>
-  \| `ExtractFormFieldError`\<`TFormError`\>\>, `TFormData`, `TFormError`, `Record`\<`never`, `never`\>\>
+  \| `ExtractValidatorSelfError`\<`NoInfer`\<`TFieldValidators`\>, `FieldValidators`\<`any`, `any`, `any`\>\>
+  \| `ExtractSubfieldError`\<`TFormError`\>\>, `TFormData`, `TFormError`, `Record`\<`never`, `never`\>\>
 
 #### Returns
 

@@ -7,7 +7,7 @@ title: ReusableErrorVisibility
 type ReusableErrorVisibility = <TFormData>(context) => boolean;
 ```
 
-Defined in: [validation.public.ts:295](https://github.com/TanStack/form/blob/main/packages/form-core/src/validation.public.ts#L295)
+Defined in: [FormApi/errorVisibility.public.ts:65](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi/errorVisibility.public.ts#L65)
 
 An error visibility policy that accepts forms with different value and error types.
 
