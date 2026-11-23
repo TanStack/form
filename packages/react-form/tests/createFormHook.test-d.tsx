@@ -154,14 +154,8 @@ const {
 } = createFormHook({
   fieldComponents: reusableFields,
   formComponents: {
-    actions: {
-      SubmitButton,
-    },
-    layout: {
-      status: {
-        FormStatus,
-      },
-    },
+    SubmitButton,
+    FormStatus,
   },
 })
 
@@ -170,7 +164,7 @@ const nestedAppFieldGroup = defineNestedAppFieldGroup(({ strict }) => ({
   age: strict<number>(),
 }))
 
-function NestedComponentTrees() {
+function NestedFieldComponentTrees() {
   const form = useNestedAppForm({
     defaultValues: {
       name: '',
@@ -181,8 +175,8 @@ function NestedComponentTrees() {
 
   return (
     <>
-      <form.actions.SubmitButton />
-      <form.layout.status.FormStatus />
+      <form.SubmitButton />
+      <form.FormStatus />
       <form.Field name="name">
         {(field) => {
           expectTypeOf<keyof typeof field.inputs.numbers>().toBeNever()
@@ -229,7 +223,7 @@ function NestedComponentTrees() {
   )
 }
 
-void NestedComponentTrees
+void NestedFieldComponentTrees
 
 createFormHook({
   fieldComponents: {
@@ -244,10 +238,8 @@ createFormHook({
 createFormHook({
   fieldComponents: {},
   formComponents: {
-    invalid: {
-      // @ts-expect-error component-tree leaves must be React components
-      value: 123,
-    },
+    // @ts-expect-error form components must be React components or wrapping registrations
+    invalid: 123,
   },
 })
 

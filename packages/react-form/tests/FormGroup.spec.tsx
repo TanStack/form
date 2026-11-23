@@ -92,22 +92,20 @@ describe('FormGroup', () => {
     expect(getByTestId('array')).toHaveTextContent('guestDetails.guests')
   })
 
-  it('provides AppForm field context for group fields', async () => {
+  it('provides registered field context for group fields', async () => {
     function Component() {
       const form = useAppForm({
         defaultValues: { guestDetails: { name: 'Tony' } },
       })
 
       return (
-        <form.AppForm>
-          <form.FormGroup name="guestDetails">
-            {(group) => (
-              <group.Field name="name">
-                {(field) => <field.FieldName />}
-              </group.Field>
-            )}
-          </form.FormGroup>
-        </form.AppForm>
+        <form.FormGroup name="guestDetails">
+          {(group) => (
+            <group.Field name="name">
+              {(field) => <field.FieldName />}
+            </group.Field>
+          )}
+        </form.FormGroup>
       )
     }
 
@@ -116,7 +114,7 @@ describe('FormGroup', () => {
     expect(getByTestId('app-field-name')).toHaveTextContent('guestDetails.name')
   })
 
-  it('uses one AppForm field provider subscription for field context', async () => {
+  it('uses one registered field provider subscription for field context', async () => {
     const subscribe = vi.fn()
     const unsubscribe = vi.fn()
     const instrumentedAtoms = new WeakSet<object>()
@@ -127,39 +125,37 @@ describe('FormGroup', () => {
       })
 
       return (
-        <form.AppForm>
-          <form.FormGroup name="guestDetails">
-            {(group) => (
-              <group.Field name="name">
-                {(field) => {
-                  const atom = field.atom
-                  if (!instrumentedAtoms.has(atom)) {
-                    instrumentedAtoms.add(atom)
-                    const originalSubscribe = atom.subscribe as (
-                      ...args: Array<any>
-                    ) => ReturnType<typeof atom.subscribe>
-                    atom.subscribe = (...args) => {
-                      subscribe()
-                      const subscription = originalSubscribe(...args)
-                      let isActive = true
-                      return {
-                        unsubscribe: () => {
-                          if (isActive) {
-                            isActive = false
-                            unsubscribe()
-                          }
-                          subscription.unsubscribe()
-                        },
-                      }
+        <form.FormGroup name="guestDetails">
+          {(group) => (
+            <group.Field name="name">
+              {(field) => {
+                const atom = field.atom
+                if (!instrumentedAtoms.has(atom)) {
+                  instrumentedAtoms.add(atom)
+                  const originalSubscribe = atom.subscribe as (
+                    ...args: Array<any>
+                  ) => ReturnType<typeof atom.subscribe>
+                  atom.subscribe = (...args) => {
+                    subscribe()
+                    const subscription = originalSubscribe(...args)
+                    let isActive = true
+                    return {
+                      unsubscribe: () => {
+                        if (isActive) {
+                          isActive = false
+                          unsubscribe()
+                        }
+                        subscription.unsubscribe()
+                      },
                     }
                   }
+                }
 
-                  return <field.FieldName />
-                }}
-              </group.Field>
-            )}
-          </form.FormGroup>
-        </form.AppForm>
+                return <field.FieldName />
+              }}
+            </group.Field>
+          )}
+        </form.FormGroup>
       )
     }
 
@@ -400,7 +396,7 @@ describe('FormGroup', () => {
     })
   })
 
-  it('renders Standard Schema group errors through AppForm field components', async () => {
+  it('renders Standard Schema group errors through registered field components', async () => {
     const formRef = { current: null as AnyInternalFormApi | null }
     const step1Schema = z.object({
       name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -415,32 +411,30 @@ describe('FormGroup', () => {
       formRef.current = form as never
 
       return (
-        <form.AppForm>
-          <form.FormGroup
-            name="step1"
-            validators={[
-              {
-                triggers: [],
-                run: step1Schema,
-              },
-            ]}
-          >
-            {(group) => (
-              <form
-                onSubmit={(event) => {
-                  event.preventDefault()
-                  event.stopPropagation()
-                  group.handleSubmit()
-                }}
-              >
-                <group.Field name="name">
-                  {(field) => <field.TextField label="Step 1 Name" />}
-                </group.Field>
-                <button type="submit">Submit</button>
-              </form>
-            )}
-          </form.FormGroup>
-        </form.AppForm>
+        <form.FormGroup
+          name="step1"
+          validators={[
+            {
+              triggers: [],
+              run: step1Schema,
+            },
+          ]}
+        >
+          {(group) => (
+            <form
+              onSubmit={(event) => {
+                event.preventDefault()
+                event.stopPropagation()
+                group.handleSubmit()
+              }}
+            >
+              <group.Field name="name">
+                {(field) => <field.TextField label="Step 1 Name" />}
+              </group.Field>
+              <button type="submit">Submit</button>
+            </form>
+          )}
+        </form.FormGroup>
       )
     }
 

@@ -109,9 +109,9 @@ function AppComponent() {
   >()
 
   return (
-    <form.AppForm>
+    <>
       <form.SubmitButton />
       <AppChild form={form} />
-    </form.AppForm>
+    </>
   )
 }

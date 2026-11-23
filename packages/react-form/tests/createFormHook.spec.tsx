@@ -112,13 +112,13 @@ describe('createFormHook', () => {
     expect(renders).toBe(pushRenders)
   })
 
-  it('supports nested field and form component trees', async () => {
+  it('supports nested field components alongside flat form components', async () => {
     function FieldValue({ field }: { field: FieldWithValue<string> }) {
       return <span>Field value: {field.value}</span>
     }
 
     function FormHeading() {
-      return <h1>Nested form component</h1>
+      return <h1>Form heading</h1>
     }
 
     const { fieldComponent } = getFormHookHelpers()
@@ -132,11 +132,7 @@ describe('createFormHook', () => {
         },
       },
       formComponents: {
-        layout: {
-          headings: {
-            FormHeading,
-          },
-        },
+        FormHeading,
       },
     })
 
@@ -144,18 +140,18 @@ describe('createFormHook', () => {
       const form = useAppForm({ defaultValues: { name: 'Tony' } })
 
       return (
-        <form.AppForm>
-          <form.layout.headings.FormHeading />
+        <>
+          <form.FormHeading />
           <form.Field name="name">
             {(field) => <field.display.values.FieldValue />}
           </form.Field>
-        </form.AppForm>
+        </>
       )
     }
 
     const { getByText } = await render(<Component />)
 
-    expect(getByText('Nested form component')).toBeInTheDocument()
+    expect(getByText('Form heading')).toBeInTheDocument()
     expect(getByText('Field value: Tony')).toBeInTheDocument()
   })
 
@@ -178,32 +174,6 @@ describe('createFormHook', () => {
     const { getByText } = await render(<Component />)
 
     expect(getByText('Shared component')).toBeInTheDocument()
-  })
-
-  it('renders inherited form components with per-instance AppForm context', async () => {
-    function CurrentName() {
-      const form = useFormContext()
-      return <span data-testid="current-name">{form.state.values.name}</span>
-    }
-
-    const { useAppForm, useFormContext } = createFormHook({
-      fieldComponents: {},
-      formComponents: { CurrentName },
-    })
-
-    function Component() {
-      const form = useAppForm({ defaultValues: { name: 'Tony' } })
-
-      return (
-        <form.AppForm>
-          <form.CurrentName />
-        </form.AppForm>
-      )
-    }
-
-    const { getByTestId } = await render(<Component />)
-
-    expect(getByTestId('current-name')).toHaveTextContent('Tony')
   })
 
   it('uses default form options and lets usage options override them', async () => {

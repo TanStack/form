@@ -1,4 +1,4 @@
-import { fieldComponent } from '../field-brand'
+import { fieldComponent } from '../helpers'
 import type { AnyFieldApi } from '@tanstack/react-form'
 import type { ComponentProps } from 'react'
 import { Label } from '@/components/ui/label'

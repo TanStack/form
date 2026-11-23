@@ -1,20 +1,29 @@
-import { useFormContext } from '../app-form'
+import { formComponent } from '../helpers'
+import type { AnyFormApi } from '@tanstack/react-form'
 import type { ComponentProps, SubmitEvent } from 'react'
 
-export default function TanStackFormElement(props: ComponentProps<'form'>) {
-  const form = useFormContext()
-
+function TanStackFormElementComponent({
+  formApi,
+  ...props
+}: ComponentProps<'form'> & { formApi: AnyFormApi }) {
   function defaultHandler(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault()
     event.stopPropagation()
-    form.handleSubmit().catch(console.error)
+    formApi.handleSubmit().catch(console.error)
   }
 
   return (
     <form
-      id={form.formId}
+      id={formApi.formId}
       {...props}
       onSubmit={props.onSubmit ?? defaultHandler}
     />
   )
 }
+
+const TanstackFormElement = formComponent.create(
+  TanStackFormElementComponent,
+  'formApi',
+)
+
+export default TanstackFormElement

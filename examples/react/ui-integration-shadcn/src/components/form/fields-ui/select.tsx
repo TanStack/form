@@ -1,4 +1,4 @@
-import { fieldComponent } from '../field-brand'
+import { fieldComponent } from '../helpers'
 import type { FieldWithValue } from '@tanstack/react-form'
 import {
   Select,

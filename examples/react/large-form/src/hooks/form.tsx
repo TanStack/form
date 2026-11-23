@@ -1,12 +1,18 @@
 import { createFormHook, getFormHookHelpers } from '@tanstack/react-form'
 import TextField from '../components/text-fields.tsx'
+import type { AnyReactFormApi } from '@tanstack/react-form'
 
-const { fieldComponent } = getFormHookHelpers()
+const { fieldComponent, formComponent } = getFormHookHelpers()
 
 const AppTextField = fieldComponent.strict()(TextField, 'field')
 
-function SubscribeButton({ label }: { label: string }) {
-  const form = useFormContext()
+function SubscribeButtonComponent({
+  form,
+  label,
+}: {
+  form: AnyReactFormApi
+  label: string
+}) {
   return (
     <form.Subscribe selector={(state) => state.isSubmitting}>
       {(isSubmitting) => <button disabled={isSubmitting}>{label}</button>}
@@ -14,7 +20,9 @@ function SubscribeButton({ label }: { label: string }) {
   )
 }
 
-const { appFormOptions, defineAppFieldGroup, useAppForm, useFormContext } =
+const SubscribeButton = formComponent.create(SubscribeButtonComponent, 'form')
+
+export const { appFormOptions, defineAppFieldGroup, useAppForm } =
   createFormHook({
     fieldComponents: {
       TextField: AppTextField,
@@ -23,5 +31,3 @@ const { appFormOptions, defineAppFieldGroup, useAppForm, useFormContext } =
       SubscribeButton,
     },
   })
-
-export { appFormOptions, defineAppFieldGroup, useAppForm }
