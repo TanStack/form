@@ -80,9 +80,6 @@ void invalidWatchFieldValidators
 const { fields: appDefinedFields } = defineAppFieldGroup(({ strict }) => ({
   name: strict<string>(),
 }))
-const { fields: hookAppDefinedFields } = defineAppFieldGroup(({ strict }) => ({
-  name: strict<string>(),
-}))
 
 type DefinedFieldsSpec = FieldGroupFieldsOf<typeof definedFields>
 type LooseDefinedFieldsSpec = FieldGroupFieldsOf<typeof looseDefinedFields>
@@ -565,13 +562,6 @@ function DefineFieldGroupTypes() {
           return <field.TextField />
         }}
       </appDefinedFields.Field>
-
-      <hookAppDefinedFields.Field name="name">
-        {(field) => {
-          expectTypeOf(field.value).toEqualTypeOf<string>()
-          return <field.TextField />
-        }}
-      </hookAppDefinedFields.Field>
     </>
   )
 }

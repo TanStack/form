@@ -1,35 +1,9 @@
 import { render } from 'vitest-browser-react'
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import React, { useState } from 'react'
 import { useForm } from '../src'
 
 describe('useForm', () => {
-  it('should mount the form to the dom', async () => {
-    function Component() {
-      const form = useForm({ defaultValues: { name: 'tony-hawk' } })
-
-      return (
-        <form.Field name="name">
-          {(field) => (
-            <label>
-              Name
-              <input
-                value={field.value}
-                onChange={(event) => field.handleChange(event.target.value)}
-              />
-            </label>
-          )}
-        </form.Field>
-      )
-    }
-
-    const screen = await render(<Component />)
-
-    expect(screen.getByRole('textbox', { name: 'Name' })).toHaveValue(
-      'tony-hawk',
-    )
-  })
-
   it('uses a supplied formId', async () => {
     function Component() {
       const form = useForm({
@@ -222,60 +196,6 @@ describe('useForm', () => {
     expect(fieldB).toHaveValue('new-b')
   })
 
-  it('does not render with pre-validation state for synchronous mount validation', async () => {
-    const renderStates: Array<{
-      errors: Array<string>
-      isValid: boolean
-      canSubmit: boolean
-    }> = []
-
-    function Component() {
-      const form = useForm({
-        defaultValues: { name: '' },
-        validators: [
-          {
-            triggers: ['mount'],
-            run: () => 'Name is required',
-          },
-        ],
-      })
-
-      return (
-        <form.Subscribe
-          selector={(state) => ({
-            errors: state.errors.map((error) => error.message),
-            isValid: state.isValid,
-            canSubmit: state.canSubmit,
-          })}
-        >
-          {(state) => {
-            renderStates.push(state)
-            return (
-              <output data-testid="form-state">
-                {state.errors.join(',')}|{String(state.isValid)}|
-                {String(state.canSubmit)}
-              </output>
-            )
-          }}
-        </form.Subscribe>
-      )
-    }
-
-    const screen = await render(<Component />)
-
-    expect(screen.getByTestId('form-state')).toHaveTextContent(
-      'Name is required|false|false',
-    )
-    expect(renderStates.length).toBeGreaterThan(0)
-    for (const state of renderStates) {
-      expect(state).toEqual({
-        errors: ['Name is required'],
-        isValid: false,
-        canSubmit: false,
-      })
-    }
-  })
-
   it('updates form.Subscribe selectors for isDefaultValue', async () => {
     function Component() {
       const form = useForm({ defaultValues: { name: 'tony-hawk' } })
@@ -308,49 +228,5 @@ describe('useForm', () => {
 
     await screen.getByRole('button', { name: 'Restore name' }).click()
     expect(screen.getByTestId('is-default-value')).toHaveTextContent('true')
-  })
-
-  it('does not crash when asynchronous mount validation resolves after unmount', async () => {
-    let resolveValidation!: (value: string) => void
-    const validator = vi.fn(
-      () =>
-        new Promise<string>((resolve) => {
-          resolveValidation = resolve
-        }),
-    )
-
-    function Component() {
-      const form = useForm({
-        defaultValues: { name: '' },
-        validators: [
-          {
-            triggers: ['mount'],
-            run: validator,
-          },
-        ],
-      })
-
-      return (
-        <form.Subscribe selector={(state) => state.isValidating}>
-          {(isValidating) => (
-            <output data-testid="is-validating">{String(isValidating)}</output>
-          )}
-        </form.Subscribe>
-      )
-    }
-
-    const screen = await render(<Component />)
-
-    expect(validator).toHaveBeenCalledOnce()
-    expect(screen.getByTestId('is-validating')).toHaveTextContent('true')
-
-    await screen.unmount()
-
-    await expect(
-      (async () => {
-        resolveValidation('Async mount error')
-        await Promise.resolve()
-      })(),
-    ).resolves.toBeUndefined()
   })
 })

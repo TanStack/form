@@ -24,11 +24,11 @@ function Summary({ source }: { source: FieldWithValue<unknown> }) {
   return <output aria-label="Name summary">{String(source.value)}</output>
 }
 
-export function Description({ label }: { label: string }) {
+function Description({ label }: { label: string }) {
   return <span>{label}</span>
 }
 
-export function Choices<TValue extends string>({
+function Choices<TValue extends string>({
   field,
   options,
 }: {

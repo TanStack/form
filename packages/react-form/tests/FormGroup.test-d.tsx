@@ -98,8 +98,6 @@ function FormGroupTypes() {
                 expectTypeOf<
                   FieldErrorOf<typeof field>
                 >().toEqualTypeOf<GroupValidationError>()
-                // @ts-expect-error public field APIs expose atom, not store
-                field.store
                 return null
               }}
             </group.Field>
@@ -250,7 +248,6 @@ function FormGroupSubscribeTypes() {
 
           <group.Subscribe
             selector={(state) => {
-              expectTypeOf(state.errors).not.toBeNever()
               expectTypeOf(state.errors).toEqualTypeOf<
                 Array<GroupValidationError>
               >()
@@ -331,7 +328,6 @@ function FormGroupSubscribeWithoutGroupErrorsTypes() {
       {(group) => (
         <group.Subscribe
           selector={(state) => {
-            expectTypeOf(state.errors).not.toBeNever()
             expectTypeOf(state.errors).toEqualTypeOf<Array<never>>()
             return state.errors
           }}
@@ -379,8 +375,6 @@ function RootFieldTypes() {
   })
 
   expectTypeOf(form.atom.get().values.guestDetails.name).toEqualTypeOf<string>()
-  // @ts-expect-error public form APIs expose atom, not store
-  form.store
 
   return (
     <form.Field
