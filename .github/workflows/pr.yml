@@ -70,4 +70,4 @@ jobs:
       - name: Setup Vite+
         uses: voidzero-dev/setup-vp@cab1ab9eaff52d4857875f4f2c016e36af8f2c76 # v1.22.0
       - name: Changeset Preview
-        uses: TanStack/config/.github/changeset-preview@88949c60ce4973c0aea4395a6bafb37cd7390e3b # main
+        uses: TanStack/config/.github/changeset-preview@c1ef98305f122da0257951e5e2896e143bdf8173 # main

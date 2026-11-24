@@ -41,6 +41,6 @@ jobs:
           pr-title: 'ci: Version Packages'
       - name: Comment on PRs about release
         if: steps.changesets.outputs.published == 'true'
-        uses: TanStack/config/.github/comment-on-release@88949c60ce4973c0aea4395a6bafb37cd7390e3b # main
+        uses: TanStack/config/.github/comment-on-release@c1ef98305f122da0257951e5e2896e143bdf8173 # main
         with:
           published-packages: ${{ steps.changesets.outputs.published-packages }}
