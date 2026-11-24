@@ -18,4 +18,7 @@ function FormCheckbox({ field }: TanStackFormCheckboxProps) {
   )
 }
 
-export default fieldComponent.strict()(FormCheckbox, 'field')
+export default fieldComponent.strict()({
+  component: FormCheckbox,
+  replaceProperty: 'field',
+})

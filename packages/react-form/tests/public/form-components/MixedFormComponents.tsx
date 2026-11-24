@@ -27,7 +27,10 @@ const { useAppForm } = createFormHook({
   formComponents: {
     MemoNotice,
     LazyNotice,
-    Status: formComponent.create(LazyStatus, 'form'),
+    Status: formComponent.create({
+      component: LazyStatus,
+      replaceProperty: 'form',
+    }),
   },
 })
 

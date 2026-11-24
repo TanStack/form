@@ -29,7 +29,10 @@ const { formComponent } = getFormHookHelpers()
 const { useAppForm } = createFormHook({
   fieldComponents: {},
   formComponents: {
-    FormControls: formComponent.create(FormControls, 'owner'),
+    FormControls: formComponent.create({
+      component: FormControls,
+      replaceProperty: 'owner',
+    }),
   },
 })
 

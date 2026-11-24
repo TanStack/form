@@ -44,4 +44,8 @@ function FormSelect<TValue extends string>({
   )
 }
 
-export default fieldComponent.loose()(FormSelect)
+export default fieldComponent.loose()({
+  component: FormSelect,
+  // We'd like to keep the generic, so don't replace properties
+  // replaceProperty: 'field'
+})

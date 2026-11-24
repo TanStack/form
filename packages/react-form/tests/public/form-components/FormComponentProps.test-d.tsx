@@ -68,30 +68,68 @@ function Notice<T>({
 }
 
 const { formComponent } = getFormHookHelpers()
-// @ts-expect-error non-form props are excluded from the helper's key constraint
-const InvalidFormPropKey = formComponent.create<typeof CoreForm, 'label'>
-void InvalidFormPropKey
+formComponent.create<typeof CoreForm, 'label'>({
+  component: CoreForm,
+  // @ts-expect-error a non-form prop cannot receive a form API, even with explicit generics
+  replaceProperty: 'label',
+})
 
-const Registration = formComponent.create(CoreForm, 'owner')
+const coreFormOptions = {
+  component: CoreForm,
+  replaceProperty: 'owner' as const,
+}
+const Registration = formComponent.create(coreFormOptions)
+const invalidFormOptions = {
+  component: CoreForm,
+  replaceProperty: 'label' as const,
+}
+// @ts-expect-error a replacement supplied through a variable must accept a form API
+formComponent.create(invalidFormOptions)
 const registry = {
   CoreForm: Registration,
   Notice,
   AnyProps,
-  WrappedAnyProps: formComponent.create(AnyProps, 'anyKey'),
+  WrappedAnyProps: formComponent.create({
+    component: AnyProps,
+    replaceProperty: 'anyKey',
+  }),
   OrdinaryFormProps,
   OrdinarySymbolProps,
-  ReactForm: formComponent.create(ReactForm, 'form'),
-  OptionalForm: formComponent.create(OptionalForm, 'form'),
-  NullableForm: formComponent.create(NullableForm, 'form'),
-  BroadErrors: formComponent.create(BroadErrors, 'form'),
-  SelectOwner: formComponent.create(TwoFormProps, 'owner'),
-  SelectOther: formComponent.create(TwoFormProps, 'other'),
-  MemoForm: formComponent.create(React.memo(ReactForm), 'form'),
-  MemoPrepared: React.memo(formComponent.create(CoreForm, 'owner')),
-  LazyForm: formComponent.create(
-    React.lazy(() => Promise.resolve({ default: ReactForm })),
-    'form',
+  ReactForm: formComponent.create({
+    replaceProperty: 'form',
+    component: ReactForm,
+  }),
+  OptionalForm: formComponent.create({
+    component: OptionalForm,
+    replaceProperty: 'form',
+  }),
+  NullableForm: formComponent.create({
+    component: NullableForm,
+    replaceProperty: 'form',
+  }),
+  BroadErrors: formComponent.create({
+    component: BroadErrors,
+    replaceProperty: 'form',
+  }),
+  SelectOwner: formComponent.create({
+    component: TwoFormProps,
+    replaceProperty: 'owner',
+  }),
+  SelectOther: formComponent.create({
+    component: TwoFormProps,
+    replaceProperty: 'other',
+  }),
+  MemoForm: formComponent.create({
+    component: React.memo(ReactForm),
+    replaceProperty: 'form',
+  }),
+  MemoPrepared: React.memo(
+    formComponent.create({ component: CoreForm, replaceProperty: 'owner' }),
   ),
+  LazyForm: formComponent.create({
+    component: React.lazy(() => Promise.resolve({ default: ReactForm })),
+    replaceProperty: 'form',
+  }),
   LazyPrepared: React.lazy(() => Promise.resolve({ default: Registration })),
   MemoLazyPrepared: React.memo(
     React.lazy(() => Promise.resolve({ default: Registration })),
@@ -139,27 +177,27 @@ function NonForm(_props: {
 }
 
 // @ts-expect-error concrete core form values cannot be required
-formComponent.create(SpecificCore, 'form')
+formComponent.create({ component: SpecificCore, replaceProperty: 'form' })
 // @ts-expect-error concrete React form values cannot be required
-formComponent.create(SpecificReact, 'form')
+formComponent.create({ component: SpecificReact, replaceProperty: 'form' })
 // @ts-expect-error options objects describe a concrete form
-formComponent.create(SpecificOptions, 'form')
+formComponent.create({ component: SpecificOptions, replaceProperty: 'form' })
 // @ts-expect-error specific validation errors cannot be required
-formComponent.create(SpecificErrors, 'form')
+formComponent.create({ component: SpecificErrors, replaceProperty: 'form' })
 // @ts-expect-error a state property alone does not establish a form API
-formComponent.create(NonForm, 'value')
+formComponent.create({ component: NonForm, replaceProperty: 'value' })
 // @ts-expect-error plain any provides no evidence of a form API
-formComponent.create(NonForm, 'any')
+formComponent.create({ component: NonForm, replaceProperty: 'any' })
 // @ts-expect-error inline memo inference must still reject a plain any prop
-formComponent.create(React.memo(NonForm), 'any')
+formComponent.create({ component: React.memo(NonForm), replaceProperty: 'any' })
 // @ts-expect-error unknown provides no evidence of a form API
-formComponent.create(NonForm, 'unknown')
+formComponent.create({ component: NonForm, replaceProperty: 'unknown' })
 // @ts-expect-error a non-form prop cannot receive a form API
-formComponent.create(NonForm, 'label')
+formComponent.create({ component: NonForm, replaceProperty: 'label' })
 // @ts-expect-error the selected prop must exist
-formComponent.create(CoreForm, 'missing')
+formComponent.create({ component: CoreForm, replaceProperty: 'missing' })
 // @ts-expect-error the prop key is required
-formComponent.create(CoreForm)
+formComponent.create({ component: CoreForm })
 // @ts-expect-error the component and prop key are required
 formComponent.create()
 const preparedComponent = <Registration label="Save" />

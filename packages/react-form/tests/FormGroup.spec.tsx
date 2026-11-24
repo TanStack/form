@@ -31,8 +31,14 @@ function TextFieldComp(props: {
 
 const { fieldComponent } = getFormHookHelpers()
 
-const FieldName = fieldComponent.loose()(FieldNameComp, 'field')
-const TextField = fieldComponent.strict()(TextFieldComp, 'field')
+const FieldName = fieldComponent.loose()({
+  component: FieldNameComp,
+  replaceProperty: 'field',
+})
+const TextField = fieldComponent.strict()({
+  component: TextFieldComp,
+  replaceProperty: 'field',
+})
 
 const { useAppForm } = createFormHook({
   fieldComponents: {

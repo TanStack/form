@@ -10,8 +10,8 @@ import type {
   AnyFormOptions,
   FormOptionsApi,
 } from '@tanstack/form-core'
-import type { ComponentProps, FunctionComponent, ReactNode } from 'react'
-import type { FormComponentRegistration } from './formComponent.public'
+import type { FunctionComponent, ReactNode } from 'react'
+import type { FormComponentHelper } from './formComponent.public'
 import type { ReactFormType } from '../../ReactForm/formType.public'
 import type { FormContextData } from './formContext.public'
 
@@ -34,24 +34,26 @@ function wrapField(
   return Wrapper
 }
 
-export function fieldComponentFactory(): (
-  component: AnyFieldComponent,
-  fieldPropKey?: string,
-) => AnyFieldComponent {
-  return (component, fieldPropKey) =>
-    fieldPropKey === undefined ? component : wrapField(component, fieldPropKey)
+export function fieldComponentFactory(): (options: {
+  component: AnyFieldComponent
+  replaceProperty?: string
+}) => AnyFieldComponent {
+  return ({ component, replaceProperty }) =>
+    replaceProperty === undefined
+      ? component
+      : wrapField(component, replaceProperty)
 }
 
-export function prepareFormComponent<
-  TComponent extends FunctionComponent<any>,
-  TPropKey extends keyof ComponentProps<TComponent> & string,
->(
-  Component: TComponent,
-  formPropKey: TPropKey,
-): FormComponentRegistration<TComponent, TPropKey> {
+export function prepareFormComponent({
+  component: Component,
+  replaceProperty,
+}: {
+  component: FunctionComponent<any>
+  replaceProperty: string
+}) {
   const Wrapper = function TanStackFormComponent(props: any) {
     const form = useFormComponentContext()
-    const innerProps = { ...props, [formPropKey]: form }
+    const innerProps = { ...props, [replaceProperty]: form }
     return <Component {...innerProps} />
   }
 

@@ -58,6 +58,7 @@ type InjectableFieldPropKey<
   TExplicit,
   TValue,
 > = TFieldPropKey &
+  CheckForField<TProps[TFieldPropKey], TFieldPropKey> &
   FieldInjectionConstraint<TExplicit, TValue, TProps[TFieldPropKey]>
 
 type PreservedFieldComponent<
@@ -74,33 +75,46 @@ type InjectedFieldComponent<
 > = ((props: Omit<TProps, TFieldPropKey>) => ReactNode) &
   FieldBrand<TMode, TValue>
 
+interface FieldComponentWithoutPropOptions<
+  TComponent extends AnyFieldComponent,
+> {
+  component: TComponent
+  replaceProperty?: never
+}
+
+interface FieldComponentWithPropOptions<
+  TComponent extends AnyFieldComponent,
+  TFieldPropKey extends keyof PropsOf<TComponent>,
+  TValue,
+  TExplicit extends boolean,
+> {
+  component: TComponent
+  replaceProperty: InjectableFieldPropKey<
+    PropsOf<TComponent>,
+    TFieldPropKey,
+    TExplicit,
+    TValue
+  >
+}
+
 interface FieldComponentPreparer<
   TMode extends FieldComponentMode,
   TValue = never,
   TExplicit extends boolean = false,
 > {
-  <TComponent extends AnyFieldComponent>(
-    Component: TComponent,
-  ): PreservedFieldComponent<
-    TMode,
-    TComponent,
-    FieldComponentValue<
-      TExplicit,
-      TValue,
-      InferredFieldValue<PropsOf<TComponent>>
-    >
-  >
-
   <
     TComponent extends AnyFieldComponent,
-    TFieldPropKey extends FieldValuePropKeys<PropsOf<TComponent>>,
+    // The default lets IDEs suggest autocompletes. Once the user picked a value,
+    // it'll only evaluate that one. Lets us save lots of type instantiations.
+    TFieldPropKey extends keyof PropsOf<TComponent> = FieldValuePropKeys<
+      PropsOf<TComponent>
+    >,
   >(
-    Component: TComponent,
-    fieldPropKey: InjectableFieldPropKey<
-      PropsOf<TComponent>,
+    options: FieldComponentWithPropOptions<
+      TComponent,
       TFieldPropKey,
-      TExplicit,
-      TValue
+      TValue,
+      TExplicit
     >,
   ): InjectedFieldComponent<
     TMode,
@@ -110,6 +124,18 @@ interface FieldComponentPreparer<
       TExplicit,
       TValue,
       PropsOf<TComponent>[TFieldPropKey]
+    >
+  >
+
+  <TComponent extends AnyFieldComponent>(
+    options: FieldComponentWithoutPropOptions<TComponent>,
+  ): PreservedFieldComponent<
+    TMode,
+    TComponent,
+    FieldComponentValue<
+      TExplicit,
+      TValue,
+      InferredFieldValue<PropsOf<TComponent>>
     >
   >
 }

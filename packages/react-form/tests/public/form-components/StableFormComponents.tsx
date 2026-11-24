@@ -36,7 +36,10 @@ const { formComponent } = getFormHookHelpers()
 const { useAppForm } = createFormHook({
   fieldComponents: {},
   formComponents: {
-    FormActions: formComponent.create(FormActions, 'form'),
+    FormActions: formComponent.create({
+      component: FormActions,
+      replaceProperty: 'form',
+    }),
     OrdinaryCounter,
   },
 })

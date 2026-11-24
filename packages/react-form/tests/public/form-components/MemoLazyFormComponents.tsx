@@ -4,8 +4,16 @@ import { FormComponentStatus } from './FormComponentStatus'
 
 const { formComponent } = getFormHookHelpers()
 const components = {
-  MemoInside: formComponent.create(memo(FormComponentStatus), 'owner'),
-  MemoOutside: memo(formComponent.create(FormComponentStatus, 'owner')),
+  MemoInside: formComponent.create({
+    component: memo(FormComponentStatus),
+    replaceProperty: 'owner',
+  }),
+  MemoOutside: memo(
+    formComponent.create({
+      component: FormComponentStatus,
+      replaceProperty: 'owner',
+    }),
+  ),
   LazyOutside: lazy(() => import('./LazyFormStatus')),
 }
 

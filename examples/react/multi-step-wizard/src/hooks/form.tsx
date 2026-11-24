@@ -4,7 +4,10 @@ import type { AnyReactFormApi } from '@tanstack/react-form'
 
 const { fieldComponent, formComponent } = getFormHookHelpers()
 
-const AppTextField = fieldComponent.strict()(TextField, 'field')
+const AppTextField = fieldComponent.strict()({
+  component: TextField,
+  replaceProperty: 'field',
+})
 
 function SubscribeButtonComponent({
   form,
@@ -24,7 +27,10 @@ function SubscribeButtonComponent({
   )
 }
 
-const SubscribeButton = formComponent.create(SubscribeButtonComponent, 'form')
+const SubscribeButton = formComponent.create({
+  component: SubscribeButtonComponent,
+  replaceProperty: 'form',
+})
 
 const { appFormOptions, useAppForm } = createFormHook({
   fieldComponents: {

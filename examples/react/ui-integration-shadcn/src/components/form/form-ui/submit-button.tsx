@@ -22,9 +22,9 @@ function TanStackFormSubmitButtonComponent({
   )
 }
 
-const TanStackFormSubmitButton = formComponent.create(
-  TanStackFormSubmitButtonComponent,
-  'formApi',
-)
+const TanStackFormSubmitButton = formComponent.create({
+  component: TanStackFormSubmitButtonComponent,
+  replaceProperty: 'formApi',
+})
 
 export default TanStackFormSubmitButton

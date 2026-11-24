@@ -30,61 +30,129 @@ function NonFieldProps(props: { value: { value: string }; extra: any }) {
 
 const { fieldComponent } = getFormHookHelpers()
 
-// @ts-expect-error an explicit number field cannot be injected into a string prop
-fieldComponent.strict<number>()(StringField, 'field')
-// @ts-expect-error loose preparation also checks actual field API assignability
-fieldComponent.loose<number>()(StringField, 'field')
-// @ts-expect-error field API invariance rejects narrower string unions
-fieldComponent.strict<'red' | 'blue'>()(StringField, 'field')
-// @ts-expect-error loose preparation preserves field API invariance
-fieldComponent.loose<'red' | 'blue'>()(StringField, 'field')
-// @ts-expect-error a number field is not an unknown-valued field API
-fieldComponent.strict<number>()(UnknownField, 'field')
-// @ts-expect-error loose preparation does not bypass unknown field API invariance
-fieldComponent.loose<number>()(UnknownField, 'field')
-// @ts-expect-error explicit unknown cannot be injected into a string field prop
-fieldComponent.strict<unknown>()(StringField, 'field')
-// @ts-expect-error explicit unknown cannot be injected into a string field prop
-fieldComponent.loose<unknown>()(StringField, 'field')
+fieldComponent.strict<number>()({
+  component: StringField,
+  // @ts-expect-error an explicit number field cannot be injected into a string prop
+  replaceProperty: 'field',
+})
+fieldComponent.loose<number>()({
+  component: StringField,
+  // @ts-expect-error loose preparation also checks actual field API assignability
+  replaceProperty: 'field',
+})
+fieldComponent.strict<'red' | 'blue'>()({
+  component: StringField,
+  // @ts-expect-error field API invariance rejects narrower string unions
+  replaceProperty: 'field',
+})
+fieldComponent.loose<'red' | 'blue'>()({
+  component: StringField,
+  // @ts-expect-error loose preparation preserves field API invariance
+  replaceProperty: 'field',
+})
+fieldComponent.strict<number>()({
+  component: UnknownField,
+  // @ts-expect-error a number field is not an unknown-valued field API
+  replaceProperty: 'field',
+})
+fieldComponent.loose<number>()({
+  component: UnknownField,
+  // @ts-expect-error loose preparation does not bypass unknown field API invariance
+  replaceProperty: 'field',
+})
+fieldComponent.strict<unknown>()({
+  component: StringField,
+  // @ts-expect-error explicit unknown cannot be injected into a string field prop
+  replaceProperty: 'field',
+})
+fieldComponent.loose<unknown>()({
+  component: StringField,
+  // @ts-expect-error explicit unknown cannot be injected into a string field prop
+  replaceProperty: 'field',
+})
 // @ts-expect-error a union-valued field does not satisfy separate field APIs
-fieldComponent.strict()(SeparateFields, 'field')
+fieldComponent.strict()({ component: SeparateFields, replaceProperty: 'field' })
 // @ts-expect-error inferred loose preparation also checks full field assignability
-fieldComponent.loose()(SeparateFields, 'field')
-// @ts-expect-error an explicit union-valued field does not satisfy separate APIs
-fieldComponent.strict<string | number>()(SeparateFields, 'field')
-// @ts-expect-error an explicit loose union field does not satisfy separate APIs
-fieldComponent.loose<string | number>()(SeparateFields, 'field')
+fieldComponent.loose()({ component: SeparateFields, replaceProperty: 'field' })
+fieldComponent.strict<string | number>()({
+  component: SeparateFields,
+  // @ts-expect-error an explicit union-valued field does not satisfy separate APIs
+  replaceProperty: 'field',
+})
+fieldComponent.loose<string | number>()({
+  component: SeparateFields,
+  // @ts-expect-error an explicit loose union field does not satisfy separate APIs
+  replaceProperty: 'field',
+})
 // @ts-expect-error the selected prop must exist
-fieldComponent.strict()(StringField, 'missing')
+fieldComponent.strict()({ component: StringField, replaceProperty: 'missing' })
 // @ts-expect-error the selected prop must exist
-fieldComponent.loose()(StringField, 'missing')
-// @ts-expect-error ordinary props are not fields
-fieldComponent.strict<string>()(StringField, 'label')
-// @ts-expect-error ordinary props are not fields
-fieldComponent.loose<string>()(StringField, 'label')
+fieldComponent.loose()({ component: StringField, replaceProperty: 'missing' })
+fieldComponent.strict<string>()({
+  component: StringField,
+  // @ts-expect-error ordinary props are not fields
+  replaceProperty: 'label',
+})
+fieldComponent.loose<string>()({
+  component: StringField,
+  // @ts-expect-error ordinary props are not fields
+  replaceProperty: 'label',
+})
 // @ts-expect-error a value property alone does not identify a field API
-fieldComponent.strict()(NonFieldProps, 'value')
+fieldComponent.strict()({ component: NonFieldProps, replaceProperty: 'value' })
 // @ts-expect-error a value property alone does not identify a field API
-fieldComponent.loose()(NonFieldProps, 'value')
+fieldComponent.loose()({ component: NonFieldProps, replaceProperty: 'value' })
 // @ts-expect-error plain any provides no evidence of a field API
-fieldComponent.strict()(NonFieldProps, 'extra')
+fieldComponent.strict()({ component: NonFieldProps, replaceProperty: 'extra' })
 // @ts-expect-error plain any provides no evidence of a field API
-fieldComponent.loose()(NonFieldProps, 'extra')
+fieldComponent.loose()({ component: NonFieldProps, replaceProperty: 'extra' })
+
+const invalidFieldOptions = {
+  component: StringField,
+  replaceProperty: 'label' as const,
+}
+// @ts-expect-error an invalid replacement cannot fall through to component-only registration
+fieldComponent.strict()(invalidFieldOptions)
+// @ts-expect-error loose registration must reject the same invalid replacement
+fieldComponent.loose()(invalidFieldOptions)
+
+const textFieldOptions = {
+  component: DifferentFields,
+  replaceProperty: 'text' as const,
+}
 
 const { useAppForm } = createFormHook({
   fieldComponents: {
-    StrictText: fieldComponent.strict()(DifferentFields, 'text'),
-    LooseText: fieldComponent.loose()(DifferentFields, 'text'),
-    StrictCount: fieldComponent.strict()(DifferentFields, 'count'),
-    LooseCount: fieldComponent.loose()(DifferentFields, 'count'),
-    ExplicitStrict: fieldComponent.strict<string>()(DifferentFields),
-    ExplicitLoose: fieldComponent.loose<string>()(DifferentFields),
-    RebrandedStrict: fieldComponent.strict<number>()(StringField),
-    RebrandedLoose: fieldComponent.loose<number>()(StringField),
-    StrictSeparate: fieldComponent.strict<string>()(SeparateFields, 'field'),
-    LooseSeparate: fieldComponent.loose<string>()(SeparateFields, 'field'),
-    StrictNonField: fieldComponent.strict()(NonFieldProps),
-    LooseNonField: fieldComponent.loose()(NonFieldProps),
+    StrictText: fieldComponent.strict()(textFieldOptions),
+    LooseText: fieldComponent.loose()(textFieldOptions),
+    StrictCount: fieldComponent.strict()({
+      replaceProperty: 'count',
+      component: DifferentFields,
+    }),
+    LooseCount: fieldComponent.loose()({
+      replaceProperty: 'count',
+      component: DifferentFields,
+    }),
+    ExplicitStrict: fieldComponent.strict<string>()({
+      component: DifferentFields,
+    }),
+    ExplicitLoose: fieldComponent.loose<string>()({
+      component: DifferentFields,
+    }),
+    RebrandedStrict: fieldComponent.strict<number>()({
+      component: StringField,
+    }),
+    RebrandedLoose: fieldComponent.loose<number>()({ component: StringField }),
+    StrictSeparate: fieldComponent.strict<string>()({
+      component: SeparateFields,
+      replaceProperty: 'field',
+    }),
+    LooseSeparate: fieldComponent.loose<string>()({
+      component: SeparateFields,
+      replaceProperty: 'field',
+    }),
+    StrictNonField: fieldComponent.strict()({ component: NonFieldProps }),
+    LooseNonField: fieldComponent.loose()({ component: NonFieldProps }),
   },
   formComponents: {},
 })

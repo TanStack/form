@@ -17,6 +17,12 @@ export type FormComponentProps<TForm> = {
 type GetProps<TComponent extends FunctionComponent<any>> =
   TComponent extends FunctionComponent<infer TProps> ? TProps : never
 
+type StringKeys<T> = keyof T & string
+
+type StringProps<TComponent extends FunctionComponent<any>> = StringKeys<
+  GetProps<TComponent>
+>
+
 // Small example for why the double symbol guard is needed: Record<symbol, unknown>
 type HasFormComponentProps<TProps> = symbol extends keyof TProps
   ? false
@@ -102,12 +108,25 @@ type FilteredFormProps<TProps> = {
 }
 
 type FormPropKeys<TProps> = unknown extends TProps
-  ? keyof TProps & string
+  ? StringKeys<TProps>
   : FilteredFormProps<TProps>[keyof TProps]
+
+type FormPropKeyConstraint<
+  TProps,
+  TPropKey extends StringKeys<TProps>,
+> = unknown extends TProps
+  ? // Skip validation if unknown/any
+    unknown
+  : FormPropKey<TProps[TPropKey], TPropKey>
+
+type InjectableFormPropKey<
+  TProps,
+  TPropKey extends StringKeys<TProps>,
+> = TPropKey & FormPropKeyConstraint<TProps, TPropKey>
 
 type RegisteredComponentProps<
   TComponent extends FunctionComponent<any>,
-  TPropKey extends keyof GetProps<TComponent> & string,
+  TPropKey extends StringProps<TComponent>,
 > = Omit<GetProps<TComponent>, TPropKey> &
   FormComponentProps<NonNullable<GetProps<TComponent>[TPropKey]>>
 
@@ -138,7 +157,10 @@ type RegisteredComponentProps<
  *   )
  * }
  *
- * const Save = formComponent.create(SaveButton, 'owner')
+ * const Save = formComponent.create({
+ *   component: SaveButton,
+ *   replaceProperty: 'owner',
+ * })
  *
  * const { useAppForm } = createFormHook({
  *   fieldComponents: {},
@@ -154,8 +176,16 @@ type RegisteredComponentProps<
  */
 export interface FormComponentRegistration<
   TComponent extends FunctionComponent<any>,
-  TPropKey extends keyof GetProps<TComponent> & string,
+  TPropKey extends StringProps<TComponent>,
 > extends FunctionComponent<RegisteredComponentProps<TComponent, TPropKey>> {}
+
+export interface CreateFormComponentOptions<
+  TComponent extends FunctionComponent<any>,
+  TPropKey extends StringProps<TComponent>,
+> {
+  component: TComponent
+  replaceProperty: InjectableFormPropKey<GetProps<TComponent>, TPropKey>
+}
 
 /**
  * Prepares reusable components to receive the form API from a registered form
@@ -186,7 +216,10 @@ export interface FormComponentHelper {
    *
    * const { formComponent } = getFormHookHelpers()
    *
-   * const ResetButton = formComponent.create(ResetButtonComponent, 'form')
+   * const ResetButton = formComponent.create({
+   *   component: ResetButtonComponent,
+   *   replaceProperty: 'form',
+   * })
    *
    *
    * const { useAppForm } = createFormHook({
@@ -199,9 +232,12 @@ export interface FormComponentHelper {
    */
   create<
     TComponent extends FunctionComponent<any>,
-    TPropKey extends FormPropKeys<GetProps<TComponent>>,
+    // The default lets IDEs suggest autocompletes. Once the user picked a value,
+    // it'll only evaluate that one. Lets us save lots of type instantiations.
+    TPropKey extends StringProps<TComponent> = FormPropKeys<
+      GetProps<TComponent>
+    >,
   >(
-    Component: TComponent,
-    formPropKey: TPropKey,
+    options: CreateFormComponentOptions<TComponent, TPropKey>,
   ): FormComponentRegistration<TComponent, TPropKey>
 }

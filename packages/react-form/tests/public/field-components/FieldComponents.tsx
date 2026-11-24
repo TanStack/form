@@ -58,10 +58,16 @@ function Choices<TValue extends string>({
 const { fieldComponent } = getFormHookHelpers()
 const { useAppForm } = createFormHook({
   fieldComponents: {
-    TextInput: fieldComponent.strict()(TextInput, 'field'),
-    Summary: fieldComponent.loose()(Summary, 'source'),
-    Description: fieldComponent.strict<string>()(Description),
-    Choices: fieldComponent.loose<string>()(Choices),
+    TextInput: fieldComponent.strict()({
+      component: TextInput,
+      replaceProperty: 'field',
+    }),
+    Summary: fieldComponent.loose()({
+      component: Summary,
+      replaceProperty: 'source',
+    }),
+    Description: fieldComponent.strict<string>()({ component: Description }),
+    Choices: fieldComponent.loose<string>()({ component: Choices }),
   },
   formComponents: {},
 })

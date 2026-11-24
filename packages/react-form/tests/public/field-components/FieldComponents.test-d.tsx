@@ -32,22 +32,40 @@ function Choices<TValue extends string>(props: {
 }
 
 const { fieldComponent } = getFormHookHelpers()
-const InjectedText = fieldComponent.strict()(TextInput, 'field')
-const InjectedSummary = fieldComponent.loose()(Summary, 'source')
-const BrandedText = fieldComponent.strict<string>()(TextInput)
-const BrandedSummary = fieldComponent.loose<unknown>()(Summary)
-const GenericChoices = fieldComponent.loose<string>()(Choices)
-const ExactChoices = fieldComponent.strict<'red' | 'blue'>()(Choices)
-const InferredText = fieldComponent.strict()(TextInput)
-const LooseText = fieldComponent.loose()(TextInput)
-const ExplicitInjectedText = fieldComponent.strict<string>()(TextInput, 'field')
-const ExplicitLooseText = fieldComponent.loose<string>()(TextInput, 'field')
-const InferredSummary = fieldComponent.loose()(Summary)
-const StrictSummary = fieldComponent.strict()(Summary)
-const InferredChoices = fieldComponent.loose()(Choices)
-const StrictChoices = fieldComponent.strict()(Choices)
-const InferredDefaultSummary = fieldComponent.loose()(DefaultSummary)
-const StrictDefaultSummary = fieldComponent.strict()(DefaultSummary)
+const InjectedText = fieldComponent.strict()({
+  component: TextInput,
+  replaceProperty: 'field',
+})
+const InjectedSummary = fieldComponent.loose()({
+  component: Summary,
+  replaceProperty: 'source',
+})
+const BrandedText = fieldComponent.strict<string>()({ component: TextInput })
+const BrandedSummary = fieldComponent.loose<unknown>()({ component: Summary })
+const GenericChoices = fieldComponent.loose<string>()({ component: Choices })
+const ExactChoices = fieldComponent.strict<'red' | 'blue'>()({
+  component: Choices,
+})
+const InferredText = fieldComponent.strict()({ component: TextInput })
+const LooseText = fieldComponent.loose()({ component: TextInput })
+const ExplicitInjectedText = fieldComponent.strict<string>()({
+  component: TextInput,
+  replaceProperty: 'field',
+})
+const ExplicitLooseText = fieldComponent.loose<string>()({
+  component: TextInput,
+  replaceProperty: 'field',
+})
+const InferredSummary = fieldComponent.loose()({ component: Summary })
+const StrictSummary = fieldComponent.strict()({ component: Summary })
+const InferredChoices = fieldComponent.loose()({ component: Choices })
+const StrictChoices = fieldComponent.strict()({ component: Choices })
+const InferredDefaultSummary = fieldComponent.loose()({
+  component: DefaultSummary,
+})
+const StrictDefaultSummary = fieldComponent.strict()({
+  component: DefaultSummary,
+})
 
 expectTypeOf<Parameters<typeof InjectedText>[0]>().toEqualTypeOf<{
   label: string
@@ -59,7 +77,7 @@ expectTypeOf<Parameters<typeof BrandedText>[0]>().toEqualTypeOf<{
 expectTypeOf(GenericChoices).toMatchTypeOf<typeof Choices>()
 
 // @ts-expect-error the selected prop must accept a field API
-fieldComponent.loose()(Summary, 'label')
+fieldComponent.loose()({ component: Summary, replaceProperty: 'label' })
 
 const { useAppForm } = createFormHook({
   fieldComponents: {
@@ -68,7 +86,9 @@ const { useAppForm } = createFormHook({
     BrandedText,
     BrandedSummary,
     GenericChoices,
-    InlineGenericChoices: fieldComponent.loose<string>()(Choices),
+    InlineGenericChoices: fieldComponent.loose<string>()({
+      component: Choices,
+    }),
     ExactChoices,
     InferredText,
     LooseText,
@@ -80,7 +100,7 @@ const { useAppForm } = createFormHook({
     StrictChoices,
     InferredDefaultSummary,
     StrictDefaultSummary,
-    InlineInferredChoices: fieldComponent.loose()(Choices),
+    InlineInferredChoices: fieldComponent.loose()({ component: Choices }),
   },
   formComponents: {},
 })

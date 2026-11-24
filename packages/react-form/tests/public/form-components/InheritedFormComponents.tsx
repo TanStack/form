@@ -21,7 +21,10 @@ function FormValues({ form, label }: { form: AnyReactFormApi; label: string }) {
 }
 
 const { formComponent } = getFormHookHelpers()
-const Values = formComponent.create(FormValues, 'form')
+const Values = formComponent.create({
+  component: FormValues,
+  replaceProperty: 'form',
+})
 
 function Toolbar({ label, children }: { label: string; children?: ReactNode }) {
   return (

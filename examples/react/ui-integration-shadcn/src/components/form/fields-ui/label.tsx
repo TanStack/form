@@ -16,4 +16,7 @@ function FormLabel(props: TanStackFormLabelProps) {
 // This component isn't generic, so that is safe.
 
 // We don't care what type of field uses this, so loose is acceptable
-export default fieldComponent.loose()(FormLabel, 'field')
+export default fieldComponent.loose()({
+  component: FormLabel,
+  replaceProperty: 'field',
+})

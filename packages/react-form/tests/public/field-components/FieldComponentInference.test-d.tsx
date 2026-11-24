@@ -47,42 +47,66 @@ function NullableValue(props: {
 const { fieldComponent } = getFormHookHelpers()
 const { useAppForm } = createFormHook({
   fieldComponents: {
-    StrictDescription: fieldComponent.strict()(Description),
-    LooseDescription: fieldComponent.loose()(Description),
-    StrictNumberDescription: fieldComponent.strict<number>()(Description),
-    LooseNumberDescription: fieldComponent.loose<number>()(Description),
-    StrictOptional: fieldComponent.strict()(OptionalText),
-    LooseOptional: fieldComponent.loose()(OptionalText),
-    StrictInjectedOptional: fieldComponent.strict()(OptionalText, 'source'),
-    LooseInjectedOptional: fieldComponent.loose()(OptionalText, 'source'),
-    StrictExplicitOptional: fieldComponent.strict<string>()(
-      OptionalText,
-      'source',
-    ),
-    LooseExplicitOptional: fieldComponent.loose<string>()(
-      OptionalText,
-      'source',
-    ),
-    StrictUnknown: fieldComponent.strict<unknown>()(OptionalText),
-    LooseUnknown: fieldComponent.loose<unknown>()(OptionalText),
-    StrictWithAny: fieldComponent.strict()(TextWithAnyProp),
-    LooseWithAny: fieldComponent.loose()(TextWithAnyProp),
-    StrictAny: fieldComponent.strict()(AnyField),
-    LooseAny: fieldComponent.loose()(AnyField),
-    StrictAnyField: fieldComponent.strict()(AnyField, 'field'),
-    LooseAnyField: fieldComponent.loose()(AnyField, 'field'),
-    StrictAgreeing: fieldComponent.strict()(AgreeingFields),
-    LooseAgreeing: fieldComponent.loose()(AgreeingFields),
-    StrictUnion: fieldComponent.strict()(UnionValue),
-    LooseUnion: fieldComponent.loose()(UnionValue),
-    StrictInjectedUnion: fieldComponent.strict()(UnionValue, 'field'),
-    LooseInjectedUnion: fieldComponent.loose()(UnionValue, 'field'),
-    StrictNullableValue: fieldComponent.strict()(NullableValue),
-    LooseNullableValue: fieldComponent.loose()(NullableValue),
-    StrictInjectedNullableValue: fieldComponent.strict()(
-      NullableValue,
-      'field',
-    ),
+    StrictDescription: fieldComponent.strict()({ component: Description }),
+    LooseDescription: fieldComponent.loose()({ component: Description }),
+    StrictNumberDescription: fieldComponent.strict<number>()({
+      component: Description,
+    }),
+    LooseNumberDescription: fieldComponent.loose<number>()({
+      component: Description,
+    }),
+    StrictOptional: fieldComponent.strict()({ component: OptionalText }),
+    LooseOptional: fieldComponent.loose()({ component: OptionalText }),
+    StrictInjectedOptional: fieldComponent.strict()({
+      component: OptionalText,
+      replaceProperty: 'source',
+    }),
+    LooseInjectedOptional: fieldComponent.loose()({
+      component: OptionalText,
+      replaceProperty: 'source',
+    }),
+    StrictExplicitOptional: fieldComponent.strict<string>()({
+      component: OptionalText,
+      replaceProperty: 'source',
+    }),
+    LooseExplicitOptional: fieldComponent.loose<string>()({
+      component: OptionalText,
+      replaceProperty: 'source',
+    }),
+    StrictUnknown: fieldComponent.strict<unknown>()({
+      component: OptionalText,
+    }),
+    LooseUnknown: fieldComponent.loose<unknown>()({ component: OptionalText }),
+    StrictWithAny: fieldComponent.strict()({ component: TextWithAnyProp }),
+    LooseWithAny: fieldComponent.loose()({ component: TextWithAnyProp }),
+    StrictAny: fieldComponent.strict()({ component: AnyField }),
+    LooseAny: fieldComponent.loose()({ component: AnyField }),
+    StrictAnyField: fieldComponent.strict()({
+      component: AnyField,
+      replaceProperty: 'field',
+    }),
+    LooseAnyField: fieldComponent.loose()({
+      component: AnyField,
+      replaceProperty: 'field',
+    }),
+    StrictAgreeing: fieldComponent.strict()({ component: AgreeingFields }),
+    LooseAgreeing: fieldComponent.loose()({ component: AgreeingFields }),
+    StrictUnion: fieldComponent.strict()({ component: UnionValue }),
+    LooseUnion: fieldComponent.loose()({ component: UnionValue }),
+    StrictInjectedUnion: fieldComponent.strict()({
+      component: UnionValue,
+      replaceProperty: 'field',
+    }),
+    LooseInjectedUnion: fieldComponent.loose()({
+      component: UnionValue,
+      replaceProperty: 'field',
+    }),
+    StrictNullableValue: fieldComponent.strict()({ component: NullableValue }),
+    LooseNullableValue: fieldComponent.loose()({ component: NullableValue }),
+    StrictInjectedNullableValue: fieldComponent.strict()({
+      component: NullableValue,
+      replaceProperty: 'field',
+    }),
   },
   formComponents: {},
 })

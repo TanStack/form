@@ -19,7 +19,10 @@ function IncompatibleComponent(_props: { count: number }) {
 }
 
 const { formComponent } = getFormHookHelpers()
-const SaveRegistration = formComponent.create(Save, 'form')
+const SaveRegistration = formComponent.create({
+  component: Save,
+  replaceProperty: 'form',
+})
 
 createFormHook({
   fieldComponents: {},
@@ -52,7 +55,10 @@ function RequiresComponents({
   )
 }
 
-const Consumer = formComponent.create(RequiresComponents, 'form')
+const Consumer = formComponent.create({
+  component: RequiresComponents,
+  replaceProperty: 'form',
+})
 const MemoConsumer = React.memo(Consumer)
 const LazyConsumer = React.lazy(() => Promise.resolve({ default: Consumer }))
 const MemoLazyConsumer = React.memo(LazyConsumer)

@@ -3,4 +3,7 @@ import { FormComponentStatus } from './FormComponentStatus'
 
 const { formComponent } = getFormHookHelpers()
 
-export default formComponent.create(FormComponentStatus, 'owner')
+export default formComponent.create({
+  component: FormComponentStatus,
+  replaceProperty: 'owner',
+})

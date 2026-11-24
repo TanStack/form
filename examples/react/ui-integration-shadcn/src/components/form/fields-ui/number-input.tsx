@@ -27,4 +27,7 @@ function FormNumberInput(props: TanStackFormNumberInputProps) {
   )
 }
 
-export default fieldComponent.strict()(FormNumberInput, 'field')
+export default fieldComponent.strict()({
+  component: FormNumberInput,
+  replaceProperty: 'field',
+})

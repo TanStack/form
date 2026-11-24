@@ -13,4 +13,7 @@ function FormField(props: TanStackFormFieldProps) {
   return <Field data-invalid={field.meta.isInvalid} {...fieldProps} />
 }
 
-export default fieldComponent.loose()(FormField, 'field')
+export default fieldComponent.loose()({
+  component: FormField,
+  replaceProperty: 'field',
+})

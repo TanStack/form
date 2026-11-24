@@ -21,9 +21,9 @@ function TanStackFormElementComponent({
   )
 }
 
-const TanstackFormElement = formComponent.create(
-  TanStackFormElementComponent,
-  'formApi',
-)
+const TanstackFormElement = formComponent.create({
+  component: TanStackFormElementComponent,
+  replaceProperty: 'formApi',
+})
 
 export default TanstackFormElement

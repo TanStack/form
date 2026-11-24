@@ -11,7 +11,12 @@ const hooks: AppFormHookResult<{
   fieldComponents: {}
 }> = createFormHook({
   fieldComponents: {},
-  formComponents: { Save: formComponent.create(SameHookSave, 'form') },
+  formComponents: {
+    Save: formComponent.create({
+      component: SameHookSave,
+      replaceProperty: 'form',
+    }),
+  },
 })
 
 const { appFormOptions, useAppForm } = hooks

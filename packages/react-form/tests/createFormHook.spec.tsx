@@ -46,7 +46,10 @@ describe('createFormHook', () => {
     const { fieldComponent } = getFormHookHelpers()
     const { useAppForm } = createFormHook({
       fieldComponents: {
-        ItemCount: fieldComponent.strict()(ItemCount, 'field'),
+        ItemCount: fieldComponent.strict()({
+          component: ItemCount,
+          replaceProperty: 'field',
+        }),
       },
       formComponents: {},
     })
@@ -97,7 +100,10 @@ describe('createFormHook', () => {
     }
 
     const { fieldComponent } = getFormHookHelpers()
-    const FieldValueWithContext = fieldComponent.strict()(FieldValue, 'field')
+    const FieldValueWithContext = fieldComponent.strict()({
+      component: FieldValue,
+      replaceProperty: 'field',
+    })
     const { useAppForm } = createFormHook({
       fieldComponents: {
         display: {

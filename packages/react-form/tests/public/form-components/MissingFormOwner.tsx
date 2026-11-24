@@ -3,7 +3,10 @@ import { createFormHook, getFormHookHelpers } from '../../../src'
 import { FormComponentStatus } from './FormComponentStatus'
 
 const { formComponent } = getFormHookHelpers()
-const Status = formComponent.create(FormComponentStatus, 'owner')
+const Status = formComponent.create({
+  component: FormComponentStatus,
+  replaceProperty: 'owner',
+})
 const { useAppForm } = createFormHook({
   fieldComponents: {},
   formComponents: {},

@@ -22,4 +22,7 @@ function IntegerSlider(props: IntegerSliderProps) {
   )
 }
 
-export default fieldComponent.strict()(IntegerSlider, 'field')
+export default fieldComponent.strict()({
+  component: IntegerSlider,
+  replaceProperty: 'field',
+})

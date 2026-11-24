@@ -70,4 +70,7 @@ function FormDateRangePicker(props: TanStackFormDateRangePickerProps) {
   )
 }
 
-export default fieldComponent.strict()(FormDateRangePicker, 'field')
+export default fieldComponent.strict()({
+  component: FormDateRangePicker,
+  replaceProperty: 'field',
+})
