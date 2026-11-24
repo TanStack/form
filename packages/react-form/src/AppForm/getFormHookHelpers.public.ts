@@ -1,6 +1,8 @@
 import { fieldComponentFactory } from './fieldComponentHelpers.lib'
 import { prepareFormComponent } from './formComponentHelpers.lib'
+import { createFormContext } from './formContextHelpers.lib'
 import type { FormComponentHelper } from './formComponentHelpers.public'
+import type { FormContextHelper } from './formContextHelpers.public'
 import type { FieldWithValue } from '@tanstack/form-core'
 import type { ReactNode } from 'react'
 
@@ -152,11 +154,13 @@ export interface FormHookHelpers {
    */
   fieldComponent: FieldComponentHelper
   formComponent: FormComponentHelper
+  formContext: FormContextHelper
 }
 
 export function getFormHookHelpers(): FormHookHelpers {
   return {
     formComponent: { create: prepareFormComponent },
+    formContext: { create: createFormContext },
     fieldComponent: {
       loose: fieldComponentFactory,
       strict: fieldComponentFactory,
