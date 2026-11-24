@@ -45,6 +45,8 @@ With a reactivity option in form-core, these go away:
 - `src/-private/tracked-api.ts`
 - the microtask between a store change and the render
 
+`src/-private/live-options.ts` stays. It depends on item 2, not on this item.
+
 Steps:
 
 1. Open an issue on TanStack/form that proposes the option. Use the table-core bindings as the model.
@@ -171,13 +173,18 @@ Not in this package yet:
 
 - `FormGroup`
 - `createFormCreator`, `AppForm`, and `AppField`
+- a field API for JavaScript, such as `useField` in Vue and `createField` in Solid
 
 The form composition guide shows how to write the wrapper components by hand until then.
+
+This package has only the `Field` component. A class cannot own a field without a template.
 
 Links:
 
 - [svelte-form `FormGroup.svelte`](https://github.com/TanStack/form/blob/39ded17a7d37511df835e871bc6c8f566be9ac8b/packages/svelte-form/src/FormGroup.svelte)
 - [svelte-form `createFormCreator.svelte.ts`](https://github.com/TanStack/form/blob/39ded17a7d37511df835e871bc6c8f566be9ac8b/packages/svelte-form/src/createFormCreator.svelte.ts)
+- [vue-form `useField.tsx`](https://github.com/TanStack/form/blob/39ded17a7d37511df835e871bc6c8f566be9ac8b/packages/vue-form/src/useField.tsx#L189)
+- [solid-form `createField.tsx`](https://github.com/TanStack/form/blob/39ded17a7d37511df835e871bc6c8f566be9ac8b/packages/solid-form/src/createField.tsx#L218)
 - [The Ember form composition guide](../../docs/framework/ember/guides/form-composition.md)
 
 ## 6. Release setup
@@ -201,3 +208,101 @@ The maintainers must choose the version line for the first release. After that:
 ```
 
 3. Set `version` in `package.json` to match. It is `0.1.0` now, and form-core is `1.33.5`.
+
+## 7. An array field renders again for each change in a child field
+
+form-core replaces the array each time a child field changes. This adapter tracks `value`, so a keystroke in `people[0].name` invalidates every reader of the `people` field:
+
+```gjs
+<tanstackForm.Field @name="people" @mode="array" as |field|>
+  {{! This loop compares every row on each keystroke in a child field. }}
+  {{#each field.state.value key="@index" as |_ index|}}
+    ...
+  {{/each}}
+</tanstackForm.Field>
+```
+
+`key="@index"` keeps the rows, so no DOM changes. The cost is the comparison.
+
+form-core has a counter for this case. It changes only when a row is added, removed, or moved. The other adapters track the counter and not the value:
+
+```ts
+// @tanstack/solid-form, src/createField.tsx
+const reactiveStateValue = useSelector(fieldApi.store, (state) =>
+  mode === 'array' ? state.meta._arrayVersion || 0 : state.value,
+)
+```
+
+Fix: for a field with `@mode="array"`, invalidate the `value` key in `src/-private/track-store.ts` only when `meta._arrayVersion` changes. Add a test in `tests/integration/render-passes-test.gts` that types in a child field and reads the array field.
+
+After the fix, a template that reads a child property through the array field does not update. Read it through the child field. The other adapters have the same rule.
+
+Links:
+
+- [solid-form `createField.tsx`, the selectors](https://github.com/TanStack/form/blob/39ded17a7d37511df835e871bc6c8f566be9ac8b/packages/solid-form/src/createField.tsx#L171)
+- [form-core `metaHelper.ts`, `bumpArrayVersion`](https://github.com/TanStack/form/blob/39ded17a7d37511df835e871bc6c8f566be9ac8b/packages/form-core/src/metaHelper.ts#L56)
+- [TanStack/form#1961](https://github.com/TanStack/form/issues/1961)
+- [TanStack/form#1925](https://github.com/TanStack/form/issues/1925)
+
+## 8. `meta` is one tracked key
+
+`field.state` has two tracked keys, `value` and `meta`. form-core replaces the `meta` object on each change, so a change in one part invalidates every reader of `meta`:
+
+```gjs
+{{! This reads isTouched, but it also renders again when isValidating changes. }}
+{{#if field.state.meta.isTouched}}
+  ...
+{{/if}}
+```
+
+The other adapters track six parts of `meta`, each alone:
+
+```ts
+// @tanstack/solid-form, src/createField.tsx
+const reactiveMetaIsTouched = useSelector(
+  fieldApi.store,
+  (state) => state.meta.isTouched,
+)
+// ...and the same for isBlurred, isDirty, errorMap, errorSourceMap, isValidating
+```
+
+Fix: let `trackStore` return a second view for `meta`, with one tag per key of `meta`. Keep one subscription per field. The other adapters use seven.
+
+Do this after item 7, because the two change the same function.
+
+## 9. The form id is different on the server and the client
+
+This adapter passes no `formId`, so form-core makes a random one:
+
+```ts
+// @tanstack/form-core, src/FormApi.ts
+this._formId = opts?.formId ?? uuid()
+```
+
+With a server render, `<form id={{tanstackForm.formId}}>` gets one id on the server and a different id on the client.
+
+Vue and Solid pass an id from the framework, which is the same on the two sides:
+
+```ts
+// @tanstack/solid-form, src/createForm.tsx
+const fallbackFormId = createUniqueId()
+// ...
+new FormApi({ ...options, formId: options?.formId ?? fallbackFormId })
+```
+
+Ember has no public API that gives such an id. Until it has one, an app with a server render must pass the id:
+
+```gjs
+<SignupForm @formId="signup" as |tanstackForm|>
+```
+
+Steps:
+
+1. Add this workaround to the Ember docs.
+2. Find out if Ember can supply an id that survives rehydration. If it can, use it as the default in `src/create-form.gts`.
+
+Links:
+
+- [solid-form `createForm.tsx`, the id](https://github.com/TanStack/form/blob/39ded17a7d37511df835e871bc6c8f566be9ac8b/packages/solid-form/src/createForm.tsx#L244)
+- [vue-form `useFormId.ts`](https://github.com/TanStack/form/blob/39ded17a7d37511df835e871bc6c8f566be9ac8b/packages/vue-form/src/useFormId.ts)
+- [form-core `FormApi.ts`, the default id](https://github.com/TanStack/form/blob/39ded17a7d37511df835e871bc6c8f566be9ac8b/packages/form-core/src/FormApi.ts#L1095)
