@@ -16,6 +16,17 @@ export function useFormComponentContext(): AnyFormApi {
   return form
 }
 
+export function useFormContext() {
+  const form = useContext(FormContext)
+  if (form === null) {
+    throw new Error(
+      'TanStack Form: `useFormContext()` must be used within a `Provider` returned by `formContext.create()` or a registered form component.',
+    )
+  }
+
+  return form
+}
+
 export function useFieldContext(): AnyInternalFieldApi {
   const field = useContext(FieldContext)
   if (field === null) {

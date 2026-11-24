@@ -27,8 +27,8 @@ export type ReactFormComponents = {
 }
 
 export interface ReactFormComponentMap<
-  in out TFormComponents extends ReactFormComponents,
-  in out TFieldComponents extends ReactComponentTree,
+  out TFormComponents extends ReactFormComponents,
+  out TFieldComponents extends ReactComponentTree,
 > {
   /** Components exposed on each App Form API. */
   formComponents: TFormComponents

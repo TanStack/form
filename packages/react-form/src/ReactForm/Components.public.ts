@@ -21,14 +21,10 @@ import type {
   ReactNode,
 } from 'react'
 import type { ReactComponentTree } from '../AppForm/componentMap.public'
-
-type ExactFieldBrand<out TValue> = {
-  readonly __tanstackFieldExactType: TValue
-}
-
-type AcceptsFieldBrand<out TAcceptedValue> = {
-  readonly __tanstackFieldAcceptsType: TAcceptedValue
-}
+import type {
+  AcceptsFieldBrand,
+  ExactFieldBrand,
+} from '../AppForm/helpers/fieldComponent.lib'
 
 type CompatibleFieldKey<TKey, TComponent, TTargetValue> = [TComponent] extends [
   ExactFieldBrand<infer TExact>,

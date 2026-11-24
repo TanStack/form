@@ -1,18 +1,6 @@
-import { fieldComponentFactory } from './fieldComponentHelpers.lib'
-import { prepareFormComponent } from './formComponentHelpers.lib'
-import { createFormContext } from './formContextHelpers.lib'
-import type { FormComponentHelper } from './formComponentHelpers.public'
-import type { FormContextHelper } from './formContextHelpers.public'
 import type { FieldWithValue } from '@tanstack/form-core'
 import type { ReactNode } from 'react'
-
-type ExactFieldBrand<out TValue> = {
-  readonly __tanstackFieldExactType: TValue
-}
-
-type AcceptsFieldBrand<out TAcceptedValue> = {
-  readonly __tanstackFieldAcceptsType: TAcceptedValue
-}
+import type { AcceptsFieldBrand, ExactFieldBrand } from './fieldComponent.lib'
 
 type FieldComponentMode = 'strict' | 'loose'
 
@@ -140,30 +128,4 @@ interface FieldComponentFactory<TMode extends FieldComponentMode> {
 export interface FieldComponentHelper {
   strict: FieldComponentFactory<'strict'>
   loose: FieldComponentFactory<'loose'>
-}
-
-/**
- * Prepares reusable components for registration with `createFormHook`.
- *
- * Obtain these helpers from {@link getFormHookHelpers}.
- */
-export interface FormHookHelpers {
-  /**
-   * Prepares field components with value-type matching and optional field API
-   * injection. Register the results in `createFormHook`'s `fieldComponents`.
-   */
-  fieldComponent: FieldComponentHelper
-  formComponent: FormComponentHelper
-  formContext: FormContextHelper
-}
-
-export function getFormHookHelpers(): FormHookHelpers {
-  return {
-    formComponent: { create: prepareFormComponent },
-    formContext: { create: createFormContext },
-    fieldComponent: {
-      loose: fieldComponentFactory,
-      strict: fieldComponentFactory,
-    } as FieldComponentHelper,
-  }
 }

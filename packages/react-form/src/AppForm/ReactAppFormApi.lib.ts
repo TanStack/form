@@ -6,13 +6,13 @@ import {
   createFieldWithContext,
   createFormGroupWithContext,
 } from './Components.lib'
-import { bindFormComponent } from './formComponentHelpers.lib'
+import { bindFormComponent } from './helpers/helperFactories.lib'
 import type { AnyFormOptions, DefaultOptions } from '@tanstack/form-core'
 import type {
   ReactComponentTree,
   ReactFormComponents,
 } from './componentMap.public'
-import type { BoundFormComponents } from './createFormHook.public'
+import type { BoundFormComponents } from './helpers/formComponent.public'
 
 type InternalReactAppFormApiConstructor<
   TFormComponents extends ReactFormComponents,

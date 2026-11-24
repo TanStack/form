@@ -3,13 +3,16 @@ import { useInternalForm } from '../ReactForm/ReactFormApi.lib'
 import { defineFieldGroup } from '../FieldGroup/withFields.public'
 import { createAppFormInitializer } from './initializeAppForm.lib'
 import type {
+  BoundFormComponents,
+  CompatibleFormComponents,
+} from './helpers/formComponent.public'
+import type {
   AnyReactFormComponentMap,
   ReactComponentTree,
   ReactFormComponents,
 } from './componentMap.public'
 import type { ReactFormApi } from '../ReactForm/formApiTypes.public'
 import type { DefineFieldGroupFn } from '../FieldGroup/withFields.public'
-import type { ExoticComponent, FunctionComponent, ReactNode } from 'react'
 import type {
   DefaultFieldOptions,
   DefaultFormGroupOptions,
@@ -18,68 +21,6 @@ import type {
   FormOptionsApi,
   GetFormErrorTypes,
 } from '@tanstack/form-core'
-
-declare const formComponentSymbol: unique symbol
-
-// Props keep this type-only requirement available through React.memo/lazy.
-export type FormComponentProps<TForm> = {
-  readonly [formComponentSymbol]?: TForm
-}
-
-type HasFormComponentProps<TProps> = 0 extends 1 & TProps
-  ? false
-  : symbol extends keyof TProps
-    ? false
-    : typeof formComponentSymbol extends keyof TProps
-      ? unknown extends TProps[typeof formComponentSymbol]
-        ? false
-        : true
-      : false
-
-type BoundFormComponent<TComponent> =
-  TComponent extends FunctionComponent<infer TProps>
-    ? HasFormComponentProps<TProps> extends true
-      ? (props: Omit<TProps, typeof formComponentSymbol>) => ReactNode
-      : TComponent extends ExoticComponent<any>
-        ? (props: TProps) => ReactNode
-        : TComponent
-    : never
-
-export type BoundFormComponents<TComponents extends ReactFormComponents> = {
-  [K in keyof TComponents]: BoundFormComponent<TComponents[K]>
-}
-
-type CompatibleFormComponent<
-  TComponent,
-  TFormComponents extends ReactFormComponents,
-  TFieldComponents extends ReactComponentTree,
-> =
-  TComponent extends FunctionComponent<infer TProps>
-    ? HasFormComponentProps<TProps> extends true
-      ? ReactFormApi<
-          any,
-          any,
-          {
-            formComponents: BoundFormComponents<TFormComponents>
-            fieldComponents: TFieldComponents
-          }
-        > extends NonNullable<TProps[typeof formComponentSymbol & keyof TProps]>
-        ? TComponent
-        : never
-      : TComponent
-    : never
-
-export type CompatibleFormComponents<
-  TComponents,
-  TFormComponents extends ReactFormComponents,
-  TFieldComponents extends ReactComponentTree,
-> = {
-  [K in keyof TComponents]: CompatibleFormComponent<
-    TComponents[K],
-    TFormComponents,
-    TFieldComponents
-  >
-}
 
 /**
  * Configures the components and reusable defaults returned by

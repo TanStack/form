@@ -1,6 +1,88 @@
 import type { FormApi, ScopedErrorTypes } from '@tanstack/form-core'
-import type { ComponentProps, FunctionComponent } from 'react'
-import type { FormComponentProps } from './createFormHook.public'
+import type { ExoticComponent, FunctionComponent, ReactNode } from 'react'
+import type {
+  ReactComponentTree,
+  ReactFormComponentMap,
+  ReactFormComponents,
+} from '../componentMap.public'
+import type { ReactFormApi } from '../../ReactForm/formApiTypes.public'
+
+declare const formComponentSymbol: unique symbol
+
+// Props keep this type-only requirement available through React.memo/lazy.
+export type FormComponentProps<TForm> = {
+  readonly [formComponentSymbol]?: TForm
+}
+
+type GetProps<TComponent extends FunctionComponent<any>> =
+  TComponent extends FunctionComponent<infer TProps> ? TProps : never
+
+// Small example for why the double symbol guard is needed: Record<symbol, unknown>
+type HasFormComponentProps<TProps> = symbol extends keyof TProps
+  ? false
+  : typeof formComponentSymbol extends keyof TProps
+    ? unknown extends TProps[typeof formComponentSymbol]
+      ? false
+      : true
+    : false
+
+type BoundFormComponent<TComponent> =
+  TComponent extends FunctionComponent<infer TProps>
+    ? HasFormComponentProps<TProps> extends true
+      ? (props: Omit<TProps, typeof formComponentSymbol>) => ReactNode
+      : TComponent extends ExoticComponent<any>
+        ? (props: TProps) => ReactNode
+        : TComponent
+    : never
+
+export type BoundFormComponents<TComponents extends ReactFormComponents> = {
+  [K in keyof TComponents]: BoundFormComponent<TComponents[K]>
+}
+
+type AcceptsRegisteredForm<
+  TForm,
+  TFormComponents extends ReactFormComponents,
+  TFieldComponents extends ReactComponentTree,
+> =
+  ReactFormApi<
+    any,
+    any,
+    ReactFormComponentMap<
+      BoundFormComponents<TFormComponents>,
+      TFieldComponents
+    >
+  > extends NonNullable<TForm>
+    ? true
+    : false
+
+type CompatibleFormComponent<
+  TComponent,
+  TFormComponents extends ReactFormComponents,
+  TFieldComponents extends ReactComponentTree,
+> =
+  TComponent extends FunctionComponent<infer TProps>
+    ? HasFormComponentProps<TProps> extends true
+      ? AcceptsRegisteredForm<
+          TProps[typeof formComponentSymbol & keyof TProps],
+          TFormComponents,
+          TFieldComponents
+        > extends true
+        ? TComponent
+        : never
+      : TComponent
+    : never
+
+export type CompatibleFormComponents<
+  TComponents,
+  TFormComponents extends ReactFormComponents,
+  TFieldComponents extends ReactComponentTree,
+> = {
+  [K in keyof TComponents]: CompatibleFormComponent<
+    TComponents[K],
+    TFormComponents,
+    TFieldComponents
+  >
+}
 
 type AcceptsAnyForm<T> = unknown extends T
   ? false
@@ -25,9 +107,9 @@ type FormPropKeys<TProps> = unknown extends TProps
 
 type RegisteredComponentProps<
   TComponent extends FunctionComponent<any>,
-  TPropKey extends keyof ComponentProps<TComponent> & string,
-> = Omit<ComponentProps<TComponent>, TPropKey> &
-  FormComponentProps<NonNullable<ComponentProps<TComponent>[TPropKey]>>
+  TPropKey extends keyof GetProps<TComponent> & string,
+> = Omit<GetProps<TComponent>, TPropKey> &
+  FormComponentProps<NonNullable<GetProps<TComponent>[TPropKey]>>
 
 /**
  * A component prepared by `formComponent.create()` to receive a form API through a
@@ -72,7 +154,7 @@ type RegisteredComponentProps<
  */
 export interface FormComponentRegistration<
   TComponent extends FunctionComponent<any>,
-  TPropKey extends keyof ComponentProps<TComponent> & string,
+  TPropKey extends keyof GetProps<TComponent> & string,
 > extends FunctionComponent<RegisteredComponentProps<TComponent, TPropKey>> {}
 
 /**
@@ -117,7 +199,7 @@ export interface FormComponentHelper {
    */
   create<
     TComponent extends FunctionComponent<any>,
-    TPropKey extends FormPropKeys<ComponentProps<TComponent>>,
+    TPropKey extends FormPropKeys<GetProps<TComponent>>,
   >(
     Component: TComponent,
     formPropKey: TPropKey,
