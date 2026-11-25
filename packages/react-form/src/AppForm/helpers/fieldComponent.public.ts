@@ -72,7 +72,9 @@ type InjectedFieldComponent<
   TProps,
   TFieldPropKey extends keyof TProps,
   TValue,
-> = ((props: Omit<TProps, TFieldPropKey>) => ReactNode) &
+> = ((
+  props: TProps extends unknown ? Omit<TProps, TFieldPropKey> : never,
+) => ReactNode) &
   FieldBrand<TMode, TValue>
 
 interface FieldComponentWithoutPropOptions<
