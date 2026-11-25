@@ -80,7 +80,11 @@ export function metaHelper<
     const startIndex = Math.min(fromIndex, toIndex)
     const endIndex = Math.max(fromIndex, toIndex)
     for (let i = startIndex; i <= endIndex; i++) {
-      affectedFields.push(getFieldPath(field, i))
+      const path = getFieldPath(field, i)
+
+      if (!affectedFields.includes(path)) {
+        affectedFields.push(path)
+      }
     }
 
     // Store the original field meta that will be reapplied at the destination index
