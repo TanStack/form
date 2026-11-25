@@ -31,9 +31,9 @@ export interface ReactFormComponentMap<
   out TFieldComponents extends ReactComponentTree,
 > {
   /** Components exposed on each App Form API. */
-  formComponents: TFormComponents
+  readonly formComponents: TFormComponents
   /** Components and component namespaces exposed on each App Field API. */
-  fieldComponents: TFieldComponents
+  readonly fieldComponents: TFieldComponents
 }
 
 export type AnyReactFormComponentMap = ReactFormComponentMap<
