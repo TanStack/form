@@ -1794,8 +1794,8 @@ importers:
   packages/form-core:
     dependencies:
       '@tanstack/devtools-event-client':
-        specifier: ^0.4.1
-        version: 0.4.3
+        specifier: ^0.5.1
+        version: 0.5.1
       '@tanstack/pacer-lite':
         specifier: ^0.1.1
         version: 0.1.1
@@ -7049,6 +7049,10 @@ packages:
     resolution: {integrity: sha512-OZI6QyULw0FI0wjgmeYzCIfbgPsOEzwJtCpa69XrfLMtNXLGnz3d/dIabk7frg0TmHo+Ah49w5I4KC7Tufwsvw==}
     engines: {node: '>=18'}
     hasBin: true
+
+  '@tanstack/devtools-event-client@0.5.1':
+    resolution: {integrity: sha512-MiBx6Ybr65MFatCnk8IJzhGxd4hvsvEap4aT0gXOC274rV4hm0UPNHxznB5KGYtu84aXrIAsJEBElqzdPe+eeg==}
+    engines: {node: '>=18'}
 
   '@tanstack/devtools-ui@0.5.0':
     resolution: {integrity: sha512-nNZ14054n31fWB61jtWhZYLRdQ3yceCE3G/RINoINUB0RqIGZAIm9DnEDwOTAOfqt4/a/D8vNk8pJu6RQUp74g==}
@@ -20925,6 +20929,8 @@ snapshots:
       - utf-8-validate
 
   '@tanstack/devtools-event-client@0.4.3': {}
+
+  '@tanstack/devtools-event-client@0.5.1': {}
 
   '@tanstack/devtools-ui@0.5.0(csstype@3.2.3)(solid-js@1.9.13)':
     dependencies:
