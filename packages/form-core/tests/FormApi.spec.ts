@@ -1140,6 +1140,54 @@ describe('form api', () => {
     expect(field2Surname.state.meta.isBlurred).toBe(false)
   })
 
+  it('should shift meta of an array nested inside another array when moving values', () => {
+    const form = new FormApi({
+      defaultValues: {
+        teams: [{ members: ['a', 'b', 'c'] }],
+      },
+    })
+    form.mount()
+    new FieldApi({ form, name: 'teams' }).mount()
+    new FieldApi({ form, name: 'teams[0].members' }).mount()
+    const member0 = new FieldApi({ form, name: 'teams[0].members[0]' })
+    member0.mount()
+    const member1 = new FieldApi({ form, name: 'teams[0].members[1]' })
+    member1.mount()
+    const member2 = new FieldApi({ form, name: 'teams[0].members[2]' })
+    member2.mount()
+
+    member0.handleBlur()
+    member1.handleBlur()
+
+    expect(member0.state.meta.isBlurred).toBe(true)
+    expect(member1.state.meta.isBlurred).toBe(true)
+    expect(member2.state.meta.isBlurred).toBe(false)
+
+    // Forward: 'a' moves to the end, 'b' and 'c' shift up
+    form.moveFieldValues('teams[0].members', 0, 2)
+
+    expect(form.getFieldValue('teams[0].members')).toStrictEqual([
+      'b',
+      'c',
+      'a',
+    ])
+    expect(member0.state.meta.isBlurred).toBe(true)
+    expect(member1.state.meta.isBlurred).toBe(false)
+    expect(member2.state.meta.isBlurred).toBe(true)
+
+    // Backward: 'a' moves back to the start, 'b' and 'c' shift down
+    form.moveFieldValues('teams[0].members', 2, 0)
+
+    expect(form.getFieldValue('teams[0].members')).toStrictEqual([
+      'a',
+      'b',
+      'c',
+    ])
+    expect(member0.state.meta.isBlurred).toBe(true)
+    expect(member1.state.meta.isBlurred).toBe(true)
+    expect(member2.state.meta.isBlurred).toBe(false)
+  })
+
   it('should preserve array default values when manipulating array values', () => {
     const defaultValues = {
       names: ['one', 'two', 'three'],
