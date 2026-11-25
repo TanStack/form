@@ -8,6 +8,7 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
+  "format": false,
   "fixed": [
     [
       "@tanstack/form-core",
