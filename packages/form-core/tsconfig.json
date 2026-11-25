@@ -4,5 +4,11 @@
     "moduleResolution": "Bundler"
     // "noErrorTruncation": true
   },
-  "include": ["src", "tests", "eslint.config.js", "vite.config.ts"]
+  "include": [
+    "src",
+    "tests",
+    "test-build",
+    "eslint.config.js",
+    "vite.config.ts"
+  ]
 }
