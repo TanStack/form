@@ -1,5 +1,13 @@
 # @tanstack/form-core
 
+## 1.33.6
+
+### Patch Changes
+
+- [#2473](https://github.com/TanStack/form/pull/2473) [`bc7d6f1`](https://github.com/TanStack/form/commit/bc7d6f1e133657a9f1c9ce816aac925f8f7279ed) - Bump `@tanstack/devtools-event-client` to `^0.5.1`.
+
+- [#2361](https://github.com/TanStack/form/pull/2361) [`58b9fab`](https://github.com/TanStack/form/commit/58b9fab967b63992bccbc8c6c27b2888840e1260) - Shift the correct index when an array field is nested inside another array field.
+
 ## 1.33.5
 
 ### Patch Changes
