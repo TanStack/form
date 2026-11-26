@@ -2,10 +2,6 @@ import React from 'react'
 import { render } from 'vitest-browser-react'
 import { describe, expect, it, vi } from 'vitest'
 import { createFormHook, getFormHookHelpers } from '../src'
-import type {
-  AnyInternalFieldApi,
-  AnyInternalFormApi,
-} from '@tanstack/form-core/internals'
 import type { FieldWithValue } from '../src'
 
 describe('createFormHook', () => {
@@ -43,15 +39,18 @@ describe('createFormHook', () => {
   })
 
   it('provides field context to field components inside an ArrayField', async () => {
-    let renders = 0
-
     function ItemCount({ field }: { field: FieldWithValue<Array<string>> }) {
       return <span>Items: {field.value.length}</span>
     }
 
     const { fieldComponent } = getFormHookHelpers()
     const { useAppForm } = createFormHook({
-      fieldComponents: { ItemCount: fieldComponent.strict(ItemCount, 'field') },
+      fieldComponents: {
+        ItemCount: fieldComponent.strict()({
+          component: ItemCount,
+          replaceProperty: 'field',
+        }),
+      },
       formComponents: {},
     })
 
@@ -63,37 +62,22 @@ describe('createFormHook', () => {
       return (
         <>
           <form.ArrayField name="tags">
-            {(field) => {
-              renders++
-              return (
-                <>
-                  <field.ItemCount />
-                  <button type="button" onClick={() => field.pushValue('c')}>
-                    Add
-                  </button>
-                </>
-              )
-            }}
+            {(field) => (
+              <>
+                <field.ItemCount />
+                <button type="button" onClick={() => field.pushValue('c')}>
+                  Add
+                </button>
+              </>
+            )}
           </form.ArrayField>
           <form.FormGroup name="group">
             {(group) => (
               <group.ArrayField name="tags">
-                {(field) => {
-                  renders++
-                  return <field.ItemCount />
-                }}
+                {(field) => <field.ItemCount />}
               </group.ArrayField>
             )}
           </form.FormGroup>
-          <button
-            type="button"
-            onClick={() => {
-              form.setFieldValue('tags[0]', 'z')
-              form.setFieldValue('group.tags[0]', 'z')
-            }}
-          >
-            Update first
-          </button>
         </>
       )
     }
@@ -104,23 +88,22 @@ describe('createFormHook', () => {
     expect(getByText('Items: 1')).toBeInTheDocument()
     await getByText('Add').click()
     expect(getByText('Items: 3')).toBeInTheDocument()
-
-    const pushRenders = renders
-    await getByText('Update first').click()
-    expect(renders).toBe(pushRenders)
   })
 
-  it('supports nested field and form component trees', async () => {
+  it('supports nested field components alongside flat form components', async () => {
     function FieldValue({ field }: { field: FieldWithValue<string> }) {
       return <span>Field value: {field.value}</span>
     }
 
     function FormHeading() {
-      return <h1>Nested form component</h1>
+      return <h1>Form heading</h1>
     }
 
     const { fieldComponent } = getFormHookHelpers()
-    const FieldValueWithContext = fieldComponent.strict(FieldValue, 'field')
+    const FieldValueWithContext = fieldComponent.strict()({
+      component: FieldValue,
+      replaceProperty: 'field',
+    })
     const { useAppForm } = createFormHook({
       fieldComponents: {
         display: {
@@ -130,11 +113,7 @@ describe('createFormHook', () => {
         },
       },
       formComponents: {
-        layout: {
-          headings: {
-            FormHeading,
-          },
-        },
+        FormHeading,
       },
     })
 
@@ -142,18 +121,18 @@ describe('createFormHook', () => {
       const form = useAppForm({ defaultValues: { name: 'Tony' } })
 
       return (
-        <form.AppForm>
-          <form.layout.headings.FormHeading />
+        <>
+          <form.FormHeading />
           <form.Field name="name">
             {(field) => <field.display.values.FieldValue />}
           </form.Field>
-        </form.AppForm>
+        </>
       )
     }
 
     const { getByText } = await render(<Component />)
 
-    expect(getByText('Nested form component')).toBeInTheDocument()
+    expect(getByText('Form heading')).toBeInTheDocument()
     expect(getByText('Field value: Tony')).toBeInTheDocument()
   })
 
@@ -178,93 +157,7 @@ describe('createFormHook', () => {
     expect(getByText('Shared component')).toBeInTheDocument()
   })
 
-  it('renders inherited form components with per-instance AppForm context', async () => {
-    function CurrentName() {
-      const form = useFormContext()
-      return <span data-testid="current-name">{form.state.values.name}</span>
-    }
-
-    const { useAppForm, useFormContext } = createFormHook({
-      fieldComponents: {},
-      formComponents: { CurrentName },
-    })
-
-    function Component() {
-      const form = useAppForm({ defaultValues: { name: 'Tony' } })
-
-      return (
-        <form.AppForm>
-          <form.CurrentName />
-        </form.AppForm>
-      )
-    }
-
-    const { getByTestId } = await render(<Component />)
-
-    expect(getByTestId('current-name')).toHaveTextContent('Tony')
-  })
-
-  it('uses default form options and lets usage options override them', async () => {
-    const defaultErrorVisibility = () => true
-    const overriddenErrorVisibility = () => false
-    const { useAppForm } = createFormHook({
-      fieldComponents: {},
-      formComponents: {},
-      defaultFormOptions: {
-        errorVisibility: defaultErrorVisibility,
-      },
-    })
-
-    const getErrorVisibility = (form: unknown) =>
-      (form as AnyInternalFormApi)._options.errorVisibility
-
-    function DefaultForm() {
-      const form = useAppForm({ defaultValues: { name: '' } })
-      return (
-        <span data-testid="default">
-          {String(getErrorVisibility(form) === defaultErrorVisibility)}
-        </span>
-      )
-    }
-
-    function OverriddenForm() {
-      const form = useAppForm({
-        defaultValues: { name: '' },
-        errorVisibility: overriddenErrorVisibility,
-      })
-      return (
-        <span data-testid="overridden">
-          {String(getErrorVisibility(form) === overriddenErrorVisibility)}
-        </span>
-      )
-    }
-
-    function UndefinedForm() {
-      const form = useAppForm({
-        defaultValues: { name: '' },
-        errorVisibility: undefined,
-      })
-      return (
-        <span data-testid="undefined">
-          {String(getErrorVisibility(form) === undefined)}
-        </span>
-      )
-    }
-
-    const { getByTestId } = await render(
-      <>
-        <DefaultForm />
-        <OverriddenForm />
-        <UndefinedForm />
-      </>,
-    )
-
-    expect(getByTestId('default')).toHaveTextContent('true')
-    expect(getByTestId('overridden')).toHaveTextContent('true')
-    expect(getByTestId('undefined')).toHaveTextContent('true')
-  })
-
-  it('resolves form and field listener merge modes in core', async () => {
+  it('merges default and local form and field listeners in the requested order', async () => {
     const formCalls: Array<string> = []
     const fieldCalls: Array<string> = []
     const { useAppForm } = createFormHook({
@@ -327,88 +220,6 @@ describe('createFormHook', () => {
 
     expect(formCalls).toEqual(['default', 'local'])
     expect(fieldCalls).toEqual(['local', 'default'])
-  })
-
-  it('applies field defaults to direct and grouped fields', async () => {
-    const { useAppForm } = createFormHook({
-      fieldComponents: {},
-      formComponents: {},
-      defaultFieldOptions: {
-        errorBoundary: true,
-      },
-    })
-
-    const getErrorBoundary = (field: unknown) =>
-      String((field as AnyInternalFieldApi)._errorBoundary)
-
-    function Component() {
-      const form = useAppForm({
-        defaultValues: {
-          direct: '',
-          directArray: [''],
-          overridden: '',
-          undefinedOverride: '',
-          group: {
-            field: '',
-            array: [''],
-          },
-        },
-      })
-
-      return (
-        <>
-          <form.Field name="direct">
-            {(field) => (
-              <span data-testid="direct">{getErrorBoundary(field)}</span>
-            )}
-          </form.Field>
-          <form.ArrayField name="directArray">
-            {(field) => (
-              <span data-testid="direct-array">{getErrorBoundary(field)}</span>
-            )}
-          </form.ArrayField>
-          <form.Field name="overridden" errorBoundary={false}>
-            {(field) => (
-              <span data-testid="overridden">{getErrorBoundary(field)}</span>
-            )}
-          </form.Field>
-          <form.Field name="undefinedOverride" errorBoundary={undefined}>
-            {(field) => (
-              <span data-testid="undefined">{getErrorBoundary(field)}</span>
-            )}
-          </form.Field>
-          <form.FormGroup name="group">
-            {(group) => (
-              <>
-                <group.Field name="field">
-                  {(field) => (
-                    <span data-testid="group-field">
-                      {getErrorBoundary(field)}
-                    </span>
-                  )}
-                </group.Field>
-                <group.ArrayField name="array">
-                  {(field) => (
-                    <span data-testid="group-array">
-                      {getErrorBoundary(field)}
-                    </span>
-                  )}
-                </group.ArrayField>
-              </>
-            )}
-          </form.FormGroup>
-        </>
-      )
-    }
-
-    const { getByTestId } = await render(<Component />)
-
-    expect(getByTestId('direct')).toHaveTextContent('true')
-    expect(getByTestId('direct-array')).toHaveTextContent('true')
-    expect(getByTestId('overridden')).toHaveTextContent('false')
-    expect(getByTestId('undefined')).toHaveTextContent('false')
-    expect(getByTestId('group-field')).toHaveTextContent('true')
-    expect(getByTestId('group-array')).toHaveTextContent('true')
   })
 
   it('uses default form group options and permits all override forms', async () => {

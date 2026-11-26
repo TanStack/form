@@ -38,9 +38,7 @@ export const PeoplePage = () => {
         }}
       />
 
-      <form.AppForm>
-        <form.SubscribeButton label="Submit" />
-      </form.AppForm>
+      <form.SubscribeButton label="Submit" />
     </form>
   )
 }

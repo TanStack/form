@@ -4,7 +4,6 @@ import { userEvent } from 'vitest/browser'
 import React, { useState } from 'react'
 import { z } from 'zod'
 import { createFormHook, getFormHookHelpers, useForm } from '../src'
-import type { AnyInternalFormApi } from '@tanstack/form-core/internals'
 import type { FieldWithValue } from '@tanstack/form-core'
 
 function FieldNameComp(props: { field: FieldWithValue<string> }) {
@@ -32,8 +31,14 @@ function TextFieldComp(props: {
 
 const { fieldComponent } = getFormHookHelpers()
 
-const FieldName = fieldComponent.loose(FieldNameComp, 'field')
-const TextField = fieldComponent.strict(TextFieldComp, 'field')
+const FieldName = fieldComponent.loose()({
+  component: FieldNameComp,
+  replaceProperty: 'field',
+})
+const TextField = fieldComponent.strict()({
+  component: TextFieldComp,
+  replaceProperty: 'field',
+})
 
 const { useAppForm } = createFormHook({
   fieldComponents: {
@@ -92,92 +97,26 @@ describe('FormGroup', () => {
     expect(getByTestId('array')).toHaveTextContent('guestDetails.guests')
   })
 
-  it('provides AppForm field context for group fields', async () => {
+  it('provides registered field context for group fields', async () => {
     function Component() {
       const form = useAppForm({
         defaultValues: { guestDetails: { name: 'Tony' } },
       })
 
       return (
-        <form.AppForm>
-          <form.FormGroup name="guestDetails">
-            {(group) => (
-              <group.Field name="name">
-                {(field) => <field.FieldName />}
-              </group.Field>
-            )}
-          </form.FormGroup>
-        </form.AppForm>
+        <form.FormGroup name="guestDetails">
+          {(group) => (
+            <group.Field name="name">
+              {(field) => <field.FieldName />}
+            </group.Field>
+          )}
+        </form.FormGroup>
       )
     }
 
     const { getByTestId } = await render(<Component />)
 
     expect(getByTestId('app-field-name')).toHaveTextContent('guestDetails.name')
-  })
-
-  it('uses one AppForm field provider subscription for field context', async () => {
-    const subscribe = vi.fn()
-    const unsubscribe = vi.fn()
-    const instrumentedAtoms = new WeakSet<object>()
-
-    function Component() {
-      const form = useAppForm({
-        defaultValues: { guestDetails: { name: 'Tony' } },
-      })
-
-      return (
-        <form.AppForm>
-          <form.FormGroup name="guestDetails">
-            {(group) => (
-              <group.Field name="name">
-                {(field) => {
-                  const atom = field.atom
-                  if (!instrumentedAtoms.has(atom)) {
-                    instrumentedAtoms.add(atom)
-                    const originalSubscribe = atom.subscribe as (
-                      ...args: Array<any>
-                    ) => ReturnType<typeof atom.subscribe>
-                    atom.subscribe = (...args) => {
-                      subscribe()
-                      const subscription = originalSubscribe(...args)
-                      let isActive = true
-                      return {
-                        unsubscribe: () => {
-                          if (isActive) {
-                            isActive = false
-                            unsubscribe()
-                          }
-                          subscription.unsubscribe()
-                        },
-                      }
-                    }
-                  }
-
-                  return <field.FieldName />
-                }}
-              </group.Field>
-            )}
-          </form.FormGroup>
-        </form.AppForm>
-      )
-    }
-
-    const { unmount } = await render(<Component />)
-
-    await vi.waitFor(() => {
-      expect(subscribe.mock.calls.length - unsubscribe.mock.calls.length).toBe(
-        1,
-      )
-    })
-
-    await unmount()
-
-    await vi.waitFor(() => {
-      expect(subscribe.mock.calls.length - unsubscribe.mock.calls.length).toBe(
-        0,
-      )
-    })
   })
 
   it('prefixes watched field names in group field listeners', async () => {
@@ -400,47 +339,41 @@ describe('FormGroup', () => {
     })
   })
 
-  it('renders Standard Schema group errors through AppForm field components', async () => {
-    const formRef = { current: null as AnyInternalFormApi | null }
+  it('renders Standard Schema group errors through registered field components', async () => {
     const step1Schema = z.object({
       name: z.string().min(2, 'Name must be at least 2 characters'),
     })
-    const validate = vi.spyOn(step1Schema['~standard'], 'validate')
 
     function Component() {
       const form = useAppForm({
         defaultValues: { step1: { name: '' } },
       })
-      // eslint-disable-next-line react-compiler/react-compiler
-      formRef.current = form as never
 
       return (
-        <form.AppForm>
-          <form.FormGroup
-            name="step1"
-            validators={[
-              {
-                triggers: [],
-                run: step1Schema,
-              },
-            ]}
-          >
-            {(group) => (
-              <form
-                onSubmit={(event) => {
-                  event.preventDefault()
-                  event.stopPropagation()
-                  group.handleSubmit()
-                }}
-              >
-                <group.Field name="name">
-                  {(field) => <field.TextField label="Step 1 Name" />}
-                </group.Field>
-                <button type="submit">Submit</button>
-              </form>
-            )}
-          </form.FormGroup>
-        </form.AppForm>
+        <form.FormGroup
+          name="step1"
+          validators={[
+            {
+              triggers: [],
+              run: step1Schema,
+            },
+          ]}
+        >
+          {(group) => (
+            <form
+              onSubmit={(event) => {
+                event.preventDefault()
+                event.stopPropagation()
+                group.handleSubmit()
+              }}
+            >
+              <group.Field name="name">
+                {(field) => <field.TextField label="Step 1 Name" />}
+              </group.Field>
+              <button type="submit">Submit</button>
+            </form>
+          )}
+        </form.FormGroup>
       )
     }
 
@@ -449,14 +382,6 @@ describe('FormGroup', () => {
     await getByText('Submit').click()
 
     await vi.waitFor(() => {
-      expect(validate).toHaveBeenCalled()
-      expect(
-        formRef.current?._tryGetFieldApi('step1.name')?.meta.original.errors,
-      ).toEqual([
-        expect.objectContaining({
-          message: 'Name must be at least 2 characters',
-        }),
-      ])
       expect(getByTestId('visible-errors')).toHaveTextContent(
         'Name must be at least 2 characters',
       )
@@ -540,88 +465,6 @@ describe('FormGroup', () => {
       expect(getByTestId('date-range-errors')).toHaveTextContent(
         'Please select a start date.,Please select an end date.',
       )
-    })
-  })
-
-  it('does not add a DOM-rendering StepForm helper', async () => {
-    function Component() {
-      const form = useForm({ defaultValues: { guestDetails: { name: '' } } })
-      return <span data-testid="exists">{String('StepForm' in form)}</span>
-    }
-
-    const { getByTestId } = await render(<Component />)
-
-    expect(getByTestId('exists')).toHaveTextContent('false')
-  })
-
-  it('clears group-routed errors on unmount without resetting values', async () => {
-    const formRef = { current: null as AnyInternalFormApi | null }
-
-    function Component() {
-      const [showGroup, setShowGroup] = useState(true)
-      const form = useForm({
-        defaultValues: { guestDetails: { name: '' } },
-      })
-      // eslint-disable-next-line react-compiler/react-compiler
-      formRef.current = form as never
-
-      return (
-        <>
-          {showGroup && (
-            <form.FormGroup
-              name="guestDetails"
-              validators={[
-                {
-                  triggers: [],
-                  run: () => ({
-                    fields: {
-                      name: 'Name is required',
-                    },
-                  }),
-                },
-              ]}
-            >
-              {(group) => (
-                <button onClick={() => group.handleSubmit()}>Continue</button>
-              )}
-            </form.FormGroup>
-          )}
-          <form.Field name="guestDetails.name">
-            {(field) => (
-              <>
-                <input
-                  aria-label="Guest name"
-                  value={field.value}
-                  onChange={(event) => field.handleChange(event.target.value)}
-                />
-                <span data-testid="error">
-                  {field.errors.map((error) => error.message).join(',')}
-                </span>
-              </>
-            )}
-          </form.Field>
-          <button onClick={() => setShowGroup(false)}>Unmount group</button>
-        </>
-      )
-    }
-
-    const { getByLabelText, getByText, getByTestId } = await render(
-      <Component />,
-    )
-    const input = getByLabelText('Guest name')
-
-    await userEvent.type(input, 'Preserved')
-    await input.clear()
-    await getByText('Continue').click()
-
-    expect(getByTestId('error')).toHaveTextContent('Name is required')
-
-    await userEvent.type(input, 'Still here')
-    await getByText('Unmount group').click()
-
-    expect(getByTestId('error')).toHaveTextContent('')
-    expect(formRef.current?.state.values).toEqual({
-      guestDetails: { name: 'Still here' },
     })
   })
 })

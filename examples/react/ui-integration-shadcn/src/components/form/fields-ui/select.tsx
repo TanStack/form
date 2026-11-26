@@ -1,4 +1,4 @@
-import { fieldBrand } from '../field-brand'
+import { fieldComponent } from '../helpers'
 import type { FieldWithValue } from '@tanstack/react-form'
 import {
   Select,
@@ -44,16 +44,8 @@ function FormSelect<TValue extends string>({
   )
 }
 
-export default fieldBrand.loose<string>()(FormSelect)
-
-// formOptions
-// formOptions.strictSchema
-// formOptions.looseSchema
-
-// fieldBrand.loose<string>()(Comp)
-// fieldBrand.strict<string>()(Comp)
-// fieldBrand.loose()(Comp, 'field')
-// fieldBrand.strict()(Comp, 'field')
-
-// fieldComponent.loose()(Comp, 'field')
-// fieldComponent.strict()(Comp, 'field')
+export default fieldComponent.loose()({
+  component: FormSelect,
+  // We'd like to keep the generic, so don't replace properties
+  // replaceProperty: 'field'
+})

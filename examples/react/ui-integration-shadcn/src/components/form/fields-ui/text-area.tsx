@@ -1,4 +1,4 @@
-import { fieldComponent } from '../field-brand'
+import { fieldComponent } from '../helpers'
 import type { FieldWithValue } from '@tanstack/react-form'
 import type { ComponentProps } from 'react'
 import { Textarea } from '@/components/ui/textarea'
@@ -23,4 +23,7 @@ function FormTextArea(props: TanStackFormTextAreaProps) {
   )
 }
 
-export default fieldComponent.strict(FormTextArea, 'field')
+export default fieldComponent.strict()({
+  component: FormTextArea,
+  replaceProperty: 'field',
+})

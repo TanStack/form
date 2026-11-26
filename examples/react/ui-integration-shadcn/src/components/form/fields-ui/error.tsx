@@ -1,4 +1,4 @@
-import { fieldComponent } from '../field-brand'
+import { fieldComponent } from '../helpers'
 import type { AnyFieldApi } from '@tanstack/react-form'
 import type { ComponentProps } from 'react'
 import { FieldError } from '@/components/ui/field'
@@ -12,4 +12,7 @@ function FormError(props: TanStackFormErrorProps) {
   return <FieldError {...props} errors={field.errors} />
 }
 
-export default fieldComponent.loose(FormError, 'field')
+export default fieldComponent.loose()({
+  component: FormError,
+  replaceProperty: 'field',
+})

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { CalendarIcon } from 'lucide-react'
-import { fieldComponent } from '../field-brand'
+import { fieldComponent } from '../helpers'
 import type {
   DateRange,
   PropsRange,
@@ -70,4 +70,7 @@ function FormDateRangePicker(props: TanStackFormDateRangePickerProps) {
   )
 }
 
-export default fieldComponent.strict(FormDateRangePicker, 'field')
+export default fieldComponent.strict()({
+  component: FormDateRangePicker,
+  replaceProperty: 'field',
+})

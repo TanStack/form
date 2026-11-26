@@ -1,9 +1,31 @@
 import { createContext, useContext } from 'react'
+import type { AnyFormApi } from '@tanstack/form-core'
 import type { AnyInternalFieldApi } from '@tanstack/form-core/internals'
-import type { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
 
-export const FormContext = createContext<InternalReactFormApi | null>(null)
 export const FieldContext = createContext<AnyInternalFieldApi | null>(null)
+export const FormContext = createContext<AnyFormApi | null>(null)
+
+export function useFormComponentContext(): AnyFormApi {
+  const form = useContext(FormContext)
+  if (form === null) {
+    throw new Error(
+      'TanStack Form: Components prepared with `formComponent.create()` must be rendered within a registered form component.',
+    )
+  }
+
+  return form
+}
+
+export function useFormContext() {
+  const form = useContext(FormContext)
+  if (form === null) {
+    throw new Error(
+      'TanStack Form: `useFormContext()` must be used within a `Provider` returned by `formContext.create()` or a registered form component.',
+    )
+  }
+
+  return form
+}
 
 export function useFieldContext(): AnyInternalFieldApi {
   const field = useContext(FieldContext)
@@ -14,15 +36,4 @@ export function useFieldContext(): AnyInternalFieldApi {
   }
 
   return field
-}
-
-export function useFormContext(): InternalReactFormApi {
-  const form = useContext(FormContext)
-  if (form === null) {
-    throw new Error(
-      'TanStack Form: Form components must be used within a `form.AppForm` component.',
-    )
-  }
-
-  return form
 }

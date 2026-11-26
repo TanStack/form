@@ -37,7 +37,10 @@ function TextFieldComponent(props: { field: FieldWithValue<string> }) {
 }
 
 const { fieldComponent } = getFormHookHelpers()
-const TextField = fieldComponent.strict(TextFieldComponent, 'field')
+const TextField = fieldComponent.strict()({
+  component: TextFieldComponent,
+  replaceProperty: 'field',
+})
 
 type FieldComponents = {
   TextField: typeof TextField
@@ -78,9 +81,6 @@ const invalidWatchFieldValidators: FieldValidators<
 ]
 void invalidWatchFieldValidators
 const { fields: appDefinedFields } = defineAppFieldGroup(({ strict }) => ({
-  name: strict<string>(),
-}))
-const { fields: hookAppDefinedFields } = defineAppFieldGroup(({ strict }) => ({
   name: strict<string>(),
 }))
 
@@ -565,13 +565,6 @@ function DefineFieldGroupTypes() {
           return <field.TextField />
         }}
       </appDefinedFields.Field>
-
-      <hookAppDefinedFields.Field name="name">
-        {(field) => {
-          expectTypeOf(field.value).toEqualTypeOf<string>()
-          return <field.TextField />
-        }}
-      </hookAppDefinedFields.Field>
     </>
   )
 }

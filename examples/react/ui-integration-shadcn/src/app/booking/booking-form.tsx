@@ -108,30 +108,28 @@ export function BookingForm() {
   })
 
   return (
-    <form.AppForm>
-      <BookingStepCard currentStep={step}>
-        <CardStepHeader step={step} />
-        <CardContent>
-          <CardSwitcher form={form} step={step} onNext={toNextStep} />
-        </CardContent>
-        <CardFooter className="mt-auto rounded-bl-none">
-          {!isFirstStep && (
-            <Button type="button" variant="outline" onClick={toPreviousStep}>
-              Back
-            </Button>
-          )}
-          {isLastStep && (
-            <form.SubmitButton className="ms-auto">
-              Request booking
-            </form.SubmitButton>
-          )}
-          {!isLastStep && (
-            <Button className="ms-auto" type="submit" form={formGroupId}>
-              Continue
-            </Button>
-          )}
-        </CardFooter>
-      </BookingStepCard>
-    </form.AppForm>
+    <BookingStepCard currentStep={step}>
+      <CardStepHeader step={step} />
+      <CardContent>
+        <CardSwitcher form={form} step={step} onNext={toNextStep} />
+      </CardContent>
+      <CardFooter className="mt-auto rounded-bl-none">
+        {!isFirstStep && (
+          <Button type="button" variant="outline" onClick={toPreviousStep}>
+            Back
+          </Button>
+        )}
+        {isLastStep && (
+          <form.SubmitButton className="ms-auto">
+            Request booking
+          </form.SubmitButton>
+        )}
+        {!isLastStep && (
+          <Button className="ms-auto" type="submit" form={formGroupId}>
+            Continue
+          </Button>
+        )}
+      </CardFooter>
+    </BookingStepCard>
   )
 }

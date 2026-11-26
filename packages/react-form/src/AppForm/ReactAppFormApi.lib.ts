@@ -1,28 +1,28 @@
 import { useArrayFieldSubscription } from '../ReactForm/fieldSubscriptions.lib'
 import { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
+import { defineLazyInstanceProp } from '../utils.lib'
 import { createInternalReactAppFieldApiClass } from './ReactAppFieldApi.lib'
 import {
-  createAppForm,
   createFieldWithContext,
   createFormGroupWithContext,
 } from './Components.lib'
+import { bindFormComponent } from './helpers/helperFactories.lib'
 import type { AnyFormOptions, DefaultOptions } from '@tanstack/form-core'
-import type { AppFormComponent } from './ReactAppFormApi.public'
-import type { ReactComponentTree } from './componentMap.public'
-
-interface InternalReactAppFormApiInstance extends InternalReactFormApi {
-  AppForm: AppFormComponent
-}
+import type {
+  ReactComponentTree,
+  ReactFormComponents,
+} from './componentMap.public'
+import type { BoundFormComponents } from './helpers/formComponent.public'
 
 type InternalReactAppFormApiConstructor<
-  TFormComponents extends ReactComponentTree,
+  TFormComponents extends ReactFormComponents,
 > = new (
   options: AnyFormOptions,
   defaultOptions?: DefaultOptions,
-) => InternalReactAppFormApiInstance & TFormComponents
+) => InternalReactFormApi & BoundFormComponents<TFormComponents>
 
 export function createInternalReactAppFormApiClass<
-  const TFormComponents extends ReactComponentTree,
+  const TFormComponents extends ReactFormComponents,
 >(
   formComponents: TFormComponents,
   fieldComponents: ReactComponentTree,
@@ -30,12 +30,7 @@ export function createInternalReactAppFormApiClass<
   const InternalReactAppFieldApi =
     createInternalReactAppFieldApiClass(fieldComponents)
 
-  class InternalReactAppFormApi
-    extends InternalReactFormApi
-    implements InternalReactAppFormApiInstance
-  {
-    AppForm: AppFormComponent
-
+  class InternalReactAppFormApi extends InternalReactFormApi {
     override get _FieldApi(): typeof InternalReactAppFieldApi {
       return InternalReactAppFieldApi
     }
@@ -58,7 +53,6 @@ export function createInternalReactAppFormApiClass<
       arrayField.displayName = 'TanStackForm.ArrayField'
       groupArrayField.displayName = 'TanStackForm.ArrayField'
 
-      this.AppForm = createAppForm(this)
       this.Field = field as InternalReactAppFormApi['Field']
       this.ArrayField = arrayField as InternalReactAppFormApi['ArrayField']
       this.FormGroup = createFormGroupWithContext(
@@ -69,7 +63,13 @@ export function createInternalReactAppFormApiClass<
     }
   }
 
-  Object.assign(InternalReactAppFormApi.prototype, formComponents)
+  for (const [name, component] of Object.entries(formComponents)) {
+    defineLazyInstanceProp(
+      InternalReactAppFormApi.prototype,
+      name,
+      (instance) => bindFormComponent(component, instance, name),
+    )
+  }
 
-  return InternalReactAppFormApi as unknown as InternalReactAppFormApiConstructor<TFormComponents>
+  return InternalReactAppFormApi as never
 }

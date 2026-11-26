@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { fieldComponent } from '../field-brand'
+import { fieldComponent } from '../helpers'
 import type { FieldWithValue } from '@tanstack/react-form'
 import type { ComponentProps } from 'react'
 import { Slider } from '@/components/ui/slider'
@@ -22,4 +22,7 @@ function IntegerSlider(props: IntegerSliderProps) {
   )
 }
 
-export default fieldComponent.strict(IntegerSlider, 'field')
+export default fieldComponent.strict()({
+  component: IntegerSlider,
+  replaceProperty: 'field',
+})

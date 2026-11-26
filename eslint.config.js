@@ -21,6 +21,11 @@ export default defineConfig([
       'no-restricted-syntax': [
         'error',
         {
+          selector: "Identifier[name='IsAny']",
+          message:
+            'Prefer unknown extends T. If any and unknown require different behavior, inline the exact any check.',
+        },
+        {
           selector:
             "ImportDeclaration[source.value='lucide-solid'][importKind!='type'] > ImportSpecifier[importKind!='type'][imported.name=/Icon$/]",
           message:

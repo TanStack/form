@@ -4,28 +4,14 @@ import { InternalFormGroupApi } from '@tanstack/form-core/internals'
 import { useField } from '../ReactForm/useField.lib'
 import { useValueFieldSubscription } from '../ReactForm/fieldSubscriptions.lib'
 import { Subscribe } from '../Subscribe.public'
-import { FieldContext, FormContext } from './contexts.lib'
+import { FieldContext } from './contexts.lib'
 import type { FieldOptionsScope } from '@tanstack/form-core/internals'
-import type { FunctionComponent, ReactNode } from 'react'
-import type { AppFormComponent } from './ReactAppFormApi.public'
+import type { FunctionComponent } from 'react'
 import type {
   ReactFormFieldProps,
   ReactFormGroupProps,
 } from '../ReactForm/Components.public'
 import type { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
-
-export function createAppForm(form: InternalReactFormApi): AppFormComponent {
-  const AppForm: FunctionComponent<{
-    children: Exclude<ReactNode, Promise<any>>
-  }> = function AppFormComponent(props) {
-    // eslint-disable-next-line @eslint-react/no-context-provider
-    return <FormContext.Provider value={form as never} {...props} />
-  }
-
-  AppForm.displayName = 'TanStackForm.AppForm'
-
-  return AppForm
-}
 
 type AnyFieldComponent = FunctionComponent<
   ReactFormFieldProps<any, any, any, any, never, any, any, any>

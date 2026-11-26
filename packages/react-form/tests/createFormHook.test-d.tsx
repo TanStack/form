@@ -118,9 +118,18 @@ function FieldInfoComponent(props: { field: FieldWithValue<unknown> }) {
 }
 
 const { fieldComponent } = getFormHookHelpers()
-const TextField = fieldComponent.strict(TextFieldComponent, 'field')
-const NumberField = fieldComponent.strict(NumberFieldComponent, 'field')
-const FieldInfo = fieldComponent.loose(FieldInfoComponent, 'field')
+const TextField = fieldComponent.strict()({
+  component: TextFieldComponent,
+  replaceProperty: 'field',
+})
+const NumberField = fieldComponent.strict()({
+  component: NumberFieldComponent,
+  replaceProperty: 'field',
+})
+const FieldInfo = fieldComponent.loose()({
+  component: FieldInfoComponent,
+  replaceProperty: 'field',
+})
 const MemoTextField = React.memo(TextField)
 const LazyTextField = React.lazy(() => Promise.resolve({ default: TextField }))
 
@@ -154,14 +163,8 @@ const {
 } = createFormHook({
   fieldComponents: reusableFields,
   formComponents: {
-    actions: {
-      SubmitButton,
-    },
-    layout: {
-      status: {
-        FormStatus,
-      },
-    },
+    SubmitButton,
+    FormStatus,
   },
 })
 
@@ -170,7 +173,7 @@ const nestedAppFieldGroup = defineNestedAppFieldGroup(({ strict }) => ({
   age: strict<number>(),
 }))
 
-function NestedComponentTrees() {
+function NestedFieldComponentTrees() {
   const form = useNestedAppForm({
     defaultValues: {
       name: '',
@@ -181,8 +184,8 @@ function NestedComponentTrees() {
 
   return (
     <>
-      <form.actions.SubmitButton />
-      <form.layout.status.FormStatus />
+      <form.SubmitButton />
+      <form.FormStatus />
       <form.Field name="name">
         {(field) => {
           expectTypeOf<keyof typeof field.inputs.numbers>().toBeNever()
@@ -229,7 +232,7 @@ function NestedComponentTrees() {
   )
 }
 
-void NestedComponentTrees
+void NestedFieldComponentTrees
 
 createFormHook({
   fieldComponents: {
@@ -244,10 +247,8 @@ createFormHook({
 createFormHook({
   fieldComponents: {},
   formComponents: {
-    invalid: {
-      // @ts-expect-error component-tree leaves must be React components
-      value: 123,
-    },
+    // @ts-expect-error form components must be React components or wrapping registrations
+    invalid: 123,
   },
 })
 

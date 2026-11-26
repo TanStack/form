@@ -1,4 +1,4 @@
-import { fieldComponent } from '../field-brand'
+import { fieldComponent } from '../helpers'
 import type { ComponentProps } from 'react'
 import type { AnyFieldApi } from '@tanstack/react-form'
 import { Field } from '@/components/ui/field'
@@ -13,4 +13,7 @@ function FormField(props: TanStackFormFieldProps) {
   return <Field data-invalid={field.meta.isInvalid} {...fieldProps} />
 }
 
-export default fieldComponent.loose(FormField, 'field')
+export default fieldComponent.loose()({
+  component: FormField,
+  replaceProperty: 'field',
+})
