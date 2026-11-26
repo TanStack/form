@@ -7,7 +7,7 @@ title: FieldGroupForm
 type FieldGroupForm<TFieldComponents, TFormData> = FormApi<TFormData, any> & ReactTanStackFormComponents<TFormData, any, TFieldComponents>;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:36](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L36)
+Defined in: [packages/react-form/src/FieldGroup/withFields.public.ts:37](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/withFields.public.ts#L37)
 
 ## Type Parameters
 

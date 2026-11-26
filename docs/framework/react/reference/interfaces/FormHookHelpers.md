@@ -3,36 +3,13 @@ id: FormHookHelpers
 title: FormHookHelpers
 ---
 
-Defined in: [packages/react-form/src/AppForm/getFormHookHelpers.public.ts:230](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/getFormHookHelpers.public.ts#L230)
+Defined in: [packages/react-form/src/AppForm/helpers/getFormHookHelpers.public.ts:15](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/helpers/getFormHookHelpers.public.ts#L15)
 
-Helpers for preparing value-compatible field components for registration
-with `createFormHook`.
+Prepares reusable components for registration with `createFormHook`.
 
-Use `fieldComponent` when the current field API should be injected into a
-component prop. Use `fieldBrand` when the component should retain its
-original runtime props.
-
-## Example
-
-```tsx
-import { getFormHookHelpers } from '@tanstack/react-form'
-
-const { fieldBrand, fieldComponent } = getFormHookHelpers()
-```
+Obtain these helpers from [getFormHookHelpers](../functions/getFormHookHelpers.md).
 
 ## Properties
-
-### fieldBrand
-
-```ts
-fieldBrand: FieldBrandHelper;
-```
-
-Defined in: [packages/react-form/src/AppForm/getFormHookHelpers.public.ts:232](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/getFormHookHelpers.public.ts#L232)
-
-Brands components without wrapping them or injecting a field API prop.
-
-***
 
 ### fieldComponent
 
@@ -40,6 +17,27 @@ Brands components without wrapping them or injecting a field API prop.
 fieldComponent: FieldComponentHelper;
 ```
 
-Defined in: [packages/react-form/src/AppForm/getFormHookHelpers.public.ts:234](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/getFormHookHelpers.public.ts#L234)
+Defined in: [packages/react-form/src/AppForm/helpers/getFormHookHelpers.public.ts:20](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/helpers/getFormHookHelpers.public.ts#L20)
 
-Wraps components and injects the current field API into a selected prop.
+Prepares field components with value-type matching and optional field API
+injection. Register the results in `createFormHook`'s `fieldComponents`.
+
+***
+
+### formComponent
+
+```ts
+formComponent: FormComponentHelper;
+```
+
+Defined in: [packages/react-form/src/AppForm/helpers/getFormHookHelpers.public.ts:21](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/helpers/getFormHookHelpers.public.ts#L21)
+
+***
+
+### formContext
+
+```ts
+formContext: FormContextHelper;
+```
+
+Defined in: [packages/react-form/src/AppForm/helpers/getFormHookHelpers.public.ts:22](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/helpers/getFormHookHelpers.public.ts#L22)

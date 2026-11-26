@@ -3,7 +3,7 @@ id: AppFormHookResult
 title: AppFormHookResult
 ---
 
-Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:134](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L134)
+Defined in: [packages/react-form/src/AppForm/createFormHook.public.ts:147](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHook.public.ts#L147)
 
 App Form hooks and helpers bound to the components registered with
 `createFormHook`.
@@ -24,7 +24,7 @@ Library-managed. Do not specify explicitly.
 appFormOptions: FormOptionsApi<TComponents>;
 ```
 
-Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:161](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L161)
+Defined in: [packages/react-form/src/AppForm/createFormHook.public.ts:174](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHook.public.ts#L174)
 
 Defines reusable form options that retain the components registered with
 `createFormHook`.
@@ -58,7 +58,7 @@ function NameField({ form }: { form: ProfileForm }) {
 defineAppFieldGroup: DefineFieldGroupFn<TComponents["fieldComponents"]>;
 ```
 
-Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:200](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L200)
+Defined in: [packages/react-form/src/AppForm/createFormHook.public.ts:213](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHook.public.ts#L213)
 
 Defines a field group whose fields expose the field components registered
 with `createFormHook`.
@@ -106,7 +106,7 @@ function PasswordFields({ fields }: PasswordFieldsProps) {
 useAppForm: UseAppFormHook<TComponents>;
 ```
 
-Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:225](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L225)
+Defined in: [packages/react-form/src/AppForm/createFormHook.public.ts:236](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHook.public.ts#L236)
 
 Creates a React form API extended with the field and form components
 registered with `createFormHook`.
@@ -123,48 +123,9 @@ function ProfileForm() {
   })
 
   return (
-    <form.AppForm>
-      <form.Field name="name">
-        {(field) => <field.TextField label="Name" />}
-      </form.Field>
-    </form.AppForm>
-  )
-}
-```
-
-***
-
-### useFormContext
-
-```ts
-useFormContext: () => ReactAppFormApi<any, any, TComponents>;
-```
-
-Defined in: [packages/react-form/src/AppForm/createFormHookTypes.public.ts:249](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/createFormHookTypes.public.ts#L249)
-
-Reads the current App Form API from the nearest `form.AppForm` provider.
-
-Use this hook inside form components registered with `createFormHook`. It
-throws when called outside a `form.AppForm` subtree.
-
-#### Returns
-
-[`ReactAppFormApi`](../type-aliases/ReactAppFormApi.md)\<`any`, `any`, `TComponents`\>
-
-#### Example
-
-```tsx
-function SubmitButton({ label }: { label: string }) {
-  const form = useFormContext()
-
-  return (
-    <form.Subscribe selector={(state) => state.isSubmitting}>
-      {(isSubmitting) => (
-        <button type="submit" disabled={isSubmitting}>
-          {label}
-        </button>
-      )}
-    </form.Subscribe>
+    <form.Field name="name">
+      {(field) => <field.TextField label="Name" />}
+    </form.Field>
   )
 }
 ```

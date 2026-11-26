@@ -3,7 +3,7 @@ id: ReactFormGroupProps
 title: ReactFormGroupProps
 ---
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:301](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L301)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:297](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L297)
 
 ## Extends
 
@@ -47,7 +47,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:301](https:/
 children: (groupApi) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:320](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L320)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:316](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L316)
 
 #### Parameters
 

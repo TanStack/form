@@ -3,7 +3,7 @@ id: ReactFormGroupComponent
 title: ReactFormGroupComponent
 ---
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:332](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L332)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:328](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L328)
 
 ## Type Parameters
 
@@ -23,7 +23,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:332](https:/
 ReactFormGroupComponent<TGroupName, TGroupValue, TGroupValidators, TSubmitReturn>(props): ReactNode;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:337](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L337)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:333](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L333)
 
 ## Type Parameters
 
