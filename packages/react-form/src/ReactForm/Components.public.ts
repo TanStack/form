@@ -142,6 +142,41 @@ export interface ReactFormFieldProps<
   ) => ReactNode
 }
 
+export interface ReactFormArrayFieldProps<
+  in out TFieldData,
+  in out TFieldName,
+  in out TFieldValue,
+  in out TFieldValidators extends FieldValidators<
+    TFieldData,
+    TFieldName,
+    TFieldValue
+  >,
+  in out TGroupError extends ScopedErrorTypes,
+  in out TFormData,
+  in out TFormError extends ScopedErrorTypes,
+  in out TFieldComponents extends ReactComponentTree,
+> extends ReactFormFieldProps<
+  TFieldData,
+  TFieldName,
+  TFieldValue,
+  TFieldValidators,
+  TGroupError,
+  TFormData,
+  TFormError,
+  TFieldComponents
+> {
+  /**
+   * Whether `ArrayField` also re-renders when the array field's meta changes.
+   *
+   * - Set to `true` when the render callback reads `field.meta`, including
+   *   validation errors and flags from subfields.
+   * - This option does not subscribe to every change in individual item values.
+   *
+   * @default false
+   */
+  subscribeToMeta?: boolean
+}
+
 export type ReactFormFieldComponent<
   in out TFormData,
   in out TFormError extends ScopedErrorTypes,
@@ -181,7 +216,7 @@ export type ReactFormArrayFieldComponent<
       DeepValue<TFormData, TFieldName>
     >,
   >(
-    props: ReactFormFieldProps<
+    props: ReactFormArrayFieldProps<
       TFormData,
       TFieldName,
       DeepValue<TFormData, TFieldName>,
@@ -250,7 +285,7 @@ export type ReactFormGroupArrayFieldComponent<
       DeepValue<TGroupValue, TFieldName>
     >,
   >(
-    props: ReactFormFieldProps<
+    props: ReactFormArrayFieldProps<
       TGroupValue,
       TFieldName,
       DeepValue<TGroupValue, TFieldName>,
