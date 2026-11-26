@@ -47,7 +47,7 @@ export function createArrayFieldComponent(
 ): AnyArrayFieldComponent {
   const TanStackFormArrayField: AnyArrayFieldComponent = (props) => {
     const fieldApi = useField({ ...props, form }, scope)
-    const field = useArrayFieldSubscription(fieldApi)
+    const field = useArrayFieldSubscription(fieldApi, props.subscribeToMeta)
 
     return props.children(field)
   }

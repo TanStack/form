@@ -10,6 +10,7 @@ import type {
 } from '@tanstack/form-core'
 import type { FunctionComponent, ReactNode } from 'react'
 import type {
+  ReactFormArrayFieldProps,
   ReactFormFieldProps,
   ReactFormSubscribeProps,
 } from '../ReactForm/Components.public'
@@ -126,7 +127,7 @@ export interface FieldGroupArrayFieldComponent<
    * ```
    */
   <const TFieldName extends DeepKeysWhereValueIncludes<TFieldData, Array<any>>>(
-    props: ReactFormFieldProps<
+    props: ReactFormArrayFieldProps<
       TFieldData,
       TFieldName,
       DeepValue<TFieldData, TFieldName>,
