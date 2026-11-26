@@ -1,6 +1,7 @@
 import type { FieldWithValue } from '@tanstack/form-core'
 import type { ReactNode } from 'react'
 import type { AcceptsFieldBrand, ExactFieldBrand } from './fieldComponent.lib'
+import type { OmitProps } from '../../utils.lib'
 
 type FieldComponentMode = 'strict' | 'loose'
 
@@ -72,9 +73,7 @@ type InjectedFieldComponent<
   TProps,
   TFieldPropKey extends keyof TProps,
   TValue,
-> = ((
-  props: TProps extends unknown ? Omit<TProps, TFieldPropKey> : never,
-) => ReactNode) &
+> = ((props: OmitProps<TProps, TFieldPropKey>) => ReactNode) &
   FieldBrand<TMode, TValue>
 
 interface FieldComponentWithoutPropOptions<

@@ -28,3 +28,10 @@ export function defineLazyInstanceProp<TClass extends object, TValue>(
     },
   })
 }
+
+/**
+ * Similar to `Omit`, but preserves union props.
+ */
+export type OmitProps<TProps, TKey extends PropertyKey> = TProps extends unknown
+  ? Omit<TProps, TKey>
+  : never

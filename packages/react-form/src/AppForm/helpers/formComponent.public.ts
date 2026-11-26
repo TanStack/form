@@ -6,6 +6,7 @@ import type {
   ReactFormComponents,
 } from '../componentMap.public'
 import type { ReactFormApi } from '../../ReactForm/formApiTypes.public'
+import type { OmitProps } from '../../utils.lib'
 
 declare const formComponentSymbol: unique symbol
 
@@ -35,7 +36,7 @@ type HasFormComponentProps<TProps> = symbol extends keyof TProps
 type BoundFormComponent<TComponent> =
   TComponent extends FunctionComponent<infer TProps>
     ? HasFormComponentProps<TProps> extends true
-      ? (props: Omit<TProps, typeof formComponentSymbol>) => ReactNode
+      ? (props: OmitProps<TProps, typeof formComponentSymbol>) => ReactNode
       : TComponent extends ExoticComponent<any>
         ? (props: TProps) => ReactNode
         : TComponent
@@ -127,7 +128,7 @@ type InjectableFormPropKey<
 type RegisteredComponentProps<
   TComponent extends FunctionComponent<any>,
   TPropKey extends StringProps<TComponent>,
-> = Omit<GetProps<TComponent>, TPropKey> &
+> = OmitProps<GetProps<TComponent>, TPropKey> &
   FormComponentProps<NonNullable<GetProps<TComponent>[TPropKey]>>
 
 /**

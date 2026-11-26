@@ -12,6 +12,7 @@ import type { ReactNode } from 'react'
 import type { ReactTanStackFormComponents } from '../ReactForm/Components.public'
 import type { FieldGroupApi } from './FieldGroupApi.public'
 import type { ReactComponentTree } from '../AppForm/componentMap.public'
+import type { OmitProps } from '../utils.lib'
 
 declare const fieldGroupFieldsSymbol: unique symbol
 
@@ -109,7 +110,7 @@ export type FieldGroupWithFieldsFn<
   TFormData,
   TParentFieldComponents extends FieldGroupFieldComponentsOf<TFieldGroup>,
 >(
-  props: Omit<TProps, TFieldsPropName | 'form'> & {
+  props: OmitProps<TProps, TFieldsPropName | 'form'> & {
     form:
       | FieldGroupForm<TParentFieldComponents, TFormData>
       | FieldGroupApi<TFormData, TParentFieldComponents>
