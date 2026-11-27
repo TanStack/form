@@ -7,7 +7,7 @@ title: ReactFormGroupSubscribeComponent
 type ReactFormGroupSubscribeComponent<TGroupValue, TGroupError> = <TSelected>(props) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:207](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L207)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:203](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L203)
 
 ## Type Parameters
 

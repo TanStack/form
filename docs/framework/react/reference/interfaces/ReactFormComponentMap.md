@@ -3,17 +3,13 @@ id: ReactFormComponentMap
 title: ReactFormComponentMap
 ---
 
-Defined in: [packages/react-form/src/AppForm/componentMap.public.ts:24](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/componentMap.public.ts#L24)
-
-## Extended by
-
-- [`CreateFormHookOptions`](CreateFormHookOptions.md)
+Defined in: [packages/react-form/src/AppForm/componentMap.public.ts:29](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/componentMap.public.ts#L29)
 
 ## Type Parameters
 
 ### TFormComponents
 
-`TFormComponents` *extends* [`ReactComponentTree`](../type-aliases/ReactComponentTree.md)
+`TFormComponents` *extends* [`ReactFormComponents`](../type-aliases/ReactFormComponents.md)
 
 ### TFieldComponents
 
@@ -24,10 +20,10 @@ Defined in: [packages/react-form/src/AppForm/componentMap.public.ts:24](https://
 ### fieldComponents
 
 ```ts
-fieldComponents: TFieldComponents;
+readonly fieldComponents: TFieldComponents;
 ```
 
-Defined in: [packages/react-form/src/AppForm/componentMap.public.ts:31](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/componentMap.public.ts#L31)
+Defined in: [packages/react-form/src/AppForm/componentMap.public.ts:36](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/componentMap.public.ts#L36)
 
 Components and component namespaces exposed on each App Field API.
 
@@ -36,9 +32,9 @@ Components and component namespaces exposed on each App Field API.
 ### formComponents
 
 ```ts
-formComponents: TFormComponents;
+readonly formComponents: TFormComponents;
 ```
 
-Defined in: [packages/react-form/src/AppForm/componentMap.public.ts:29](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/componentMap.public.ts#L29)
+Defined in: [packages/react-form/src/AppForm/componentMap.public.ts:34](https://github.com/TanStack/form/blob/main/packages/react-form/src/AppForm/componentMap.public.ts#L34)
 
-Components and component namespaces exposed on each App Form API.
+Components exposed on each App Form API.

@@ -7,7 +7,7 @@ title: ReactFormSubscribeComponent
 type ReactFormSubscribeComponent<TFormData, TFormError> = <TSelected>(props) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:108](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L108)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:104](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L104)
 
 ## Type Parameters
 

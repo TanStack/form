@@ -7,7 +7,7 @@ title: ReactFormGroupArrayFieldComponent
 type ReactFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupError, TFormError, TFieldComponents> = <TFieldName, TFieldValidators>(props) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:242](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L242)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:238](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L238)
 
 ## Type Parameters
 

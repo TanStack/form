@@ -7,7 +7,7 @@ title: ReactFormSubscribeProps
 type ReactFormSubscribeProps<TFormData, TFormError, TSelected> = ReactSubscribeProps<FormState<TFormData, TFormError>, TSelected>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:102](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L102)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:98](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L98)
 
 ## Type Parameters
 

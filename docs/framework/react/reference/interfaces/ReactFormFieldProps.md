@@ -3,7 +3,7 @@ id: ReactFormFieldProps
 title: ReactFormFieldProps
 ---
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:115](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L115)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:111](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L111)
 
 ## Extends
 
@@ -51,7 +51,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:115](https:/
 children: (fieldApi) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:137](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L137)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:133](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L133)
 
 #### Parameters
 

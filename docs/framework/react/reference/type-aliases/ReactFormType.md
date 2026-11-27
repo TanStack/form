@@ -4,10 +4,10 @@ title: ReactFormType
 ---
 
 ```ts
-type ReactFormType<TOptions> = TOptions extends FormOptions<infer TFormData, any, infer TFormValidators, infer TSubmitReturn, infer TComponents> ? ReactFormApi<TFormData, GetSharedFormErrorTypes<TFormValidators, TSubmitReturn>, TComponents extends AnyReactFormComponentMap ? TComponents : DefaultReactFormComponentMap> : never;
+type ReactFormType<TOptions> = TOptions extends AnyFormOptions ? OptionsInferredForm<TOptions> : TOptions extends FormOptionsApi<infer TComponents> ? ReactFormApi<any, any, ComponentOrDefault<TComponents>> : never;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/formType.public.ts:41](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/formType.public.ts#L41)
+Defined in: [packages/react-form/src/ReactForm/formType.public.ts:62](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/formType.public.ts#L62)
 
 Derives the React form API type represented by a reusable options object.
 
@@ -20,7 +20,7 @@ shared options or when the form is created in the component.
 
 ### TOptions
 
-`TOptions` *extends* `AnyFormOptions`
+`TOptions` *extends* `AnyFormOptions` \| `FormOptionsApi`\<`unknown`\>
 
 The reusable form or app-form options from which the API derives its form data, error, and registered-component types.
 
