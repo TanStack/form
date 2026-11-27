@@ -3,7 +3,7 @@ id: ReactFormGroupApi
 title: ReactFormGroupApi
 ---
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:266](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L266)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:301](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L301)
 
 ## Extends
 
@@ -43,7 +43,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:266](https:/
 ArrayField: ReactFormGroupArrayFieldComponent<TFormData, TGroupValue, TGroupError, TFormError, TFieldComponents>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:287](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L287)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:322](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L322)
 
 ***
 
@@ -53,7 +53,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:287](https:/
 Field: ReactFormGroupFieldComponent<TFormData, TGroupValue, TGroupError, TFormError, TFieldComponents>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:280](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L280)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:315](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L315)
 
 ***
 
@@ -63,4 +63,4 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:280](https:/
 Subscribe: ReactFormGroupSubscribeComponent<TGroupValue, TGroupError>;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:294](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L294)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:329](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L329)

@@ -29,6 +29,7 @@ title: "@tanstack/react-form"
 - [InternalBaseAtom](interfaces/InternalBaseAtom.md)
 - [InternalReadonlyAtom](interfaces/InternalReadonlyAtom.md)
 - [InteropSubscribable](interfaces/InteropSubscribable.md)
+- [ReactFormArrayFieldProps](interfaces/ReactFormArrayFieldProps.md)
 - [ReactFormComponentMap](interfaces/ReactFormComponentMap.md)
 - [ReactFormFieldProps](interfaces/ReactFormFieldProps.md)
 - [ReactFormGroupApi](interfaces/ReactFormGroupApi.md)
