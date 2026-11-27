@@ -43,7 +43,7 @@ Pass the options to the adapter's form creation API. Its public package can also
 
 Put the schema directly in `run`. A compatible schema needs no TanStack-specific schema adapter. `strictSchema` and `looseSchema` provide types without registering runtime validation. Read [form options](../form-options/SKILL.md) when choosing between complete and incomplete defaults.
 
-This validator runs on change and on submission. Omitting `triggers` on a form validator leaves submission validation enabled. Read [validation](../validation/SKILL.md) for scheduling and async policies.
+This validator runs on change and on submission. Omit `triggers` for submission-only validation at form, field, or form-group scope. Read [validation](../validation/SKILL.md) for scheduling and async policies.
 
 When using Valibot, ArkType, or Effect, read [schema providers](references/schema-providers.md) for the supported integration shape. Check the installed provider version for Standard Schema support.
 

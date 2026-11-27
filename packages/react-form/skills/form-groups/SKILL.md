@@ -43,7 +43,6 @@ export function CheckoutWizard() {
     },
     validators: [
       {
-        triggers: [],
         run: z.object({ shipping: addressSchema, billing: addressSchema }),
       },
     ],
@@ -132,7 +131,7 @@ export function CheckoutWizard() {
 
 The two address steps have the same value shape, so they share one rendered group and schema. Use distinct group components and schemas when steps have different fields. Keep a stable React key per step when switching group names at the same render position.
 
-`group.handleSubmit()` validates the group's fields and group validators. Invalid results prevent its `onSubmit` callback, so navigation belongs in that callback. Group submission leaves unrelated fields and parent validators out of that attempt. `triggers: []` disables interaction validation, but still runs on submission.
+`group.handleSubmit()` validates the group's fields and group validators. Invalid results prevent its `onSubmit` callback, so navigation belongs in that callback. Group submission leaves unrelated fields and parent validators out of that attempt. Omit `triggers` or use `triggers: []` for submission-only validation. This applies to form, field, and form-group validators; `skipOnSubmit` controls whether they run on submission.
 
 The last group's callback awaits `form.handleSubmit()`. Only the parent's `onSubmit` saves the complete form. A successful group submission does not prove the complete form is valid. Do not use the group's `isSubmitSuccessful` to declare the wizard complete.
 
