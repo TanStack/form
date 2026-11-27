@@ -7,7 +7,7 @@ title: createValidators
 function createValidators<TFormData, TContextValue, TOptions>(options): <TRuns>(...runs) => ValidatorsFromOptionsAndRuns<TFormData, TContextValue, TOptions, TRuns>;
 ```
 
-Defined in: [pipeline/validation/validation.public.ts:220](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L220)
+Defined in: [pipeline/validation/validation.public.ts:224](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L224)
 
 Creates a reusable configuration for an ordered set of validators.
 

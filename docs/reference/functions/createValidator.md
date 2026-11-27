@@ -7,7 +7,7 @@ title: createValidator
 function createValidator<TOptions>(options): <TValidator>(run) => CreatedValidator<TOptions, TValidator>;
 ```
 
-Defined in: [pipeline/validation/validation.public.ts:190](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L190)
+Defined in: [pipeline/validation/validation.public.ts:194](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L194)
 
 Creates a reusable configuration to apply to validation functions or Standard Schemas.
 

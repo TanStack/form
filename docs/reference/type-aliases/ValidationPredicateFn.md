@@ -7,7 +7,7 @@ title: ValidationPredicateFn
 type ValidationPredicateFn<TFormData, TValue, TScope> = (context) => boolean;
 ```
 
-Defined in: [pipeline/validation/validation.public.ts:345](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L345)
+Defined in: [pipeline/validation/validation.public.ts:349](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L349)
 
 Returns `true` to enable validation for the current event or submission attempt.
 

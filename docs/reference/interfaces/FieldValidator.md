@@ -3,7 +3,7 @@ id: FieldValidator
 title: FieldValidator
 ---
 
-Defined in: [pipeline/validation/validation.public.ts:611](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L611)
+Defined in: [pipeline/validation/validation.public.ts:615](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L615)
 
 Configures validation of a field's value, optionally reacting to related fields.
 
@@ -132,10 +132,10 @@ Submission validation runs immediately.
 
 ***
 
-### triggers
+### triggers?
 
 ```ts
-triggers: (
+optional triggers?: (
   | "change"
   | "blur"
   | "mount"
@@ -144,12 +144,18 @@ triggers: (
   | ValidationTriggerConfig<TFormData, TFieldValue, "mount", "field">)[];
 ```
 
-Defined in: [pipeline/validation/validation.public.ts:81](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L81)
+Defined in: [pipeline/validation/validation.public.ts:83](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L83)
 
 Mount, change, and blur events that can run this validator, optionally with conditions.
 
-An empty array disables mount, change, and blur validation. Configure
-submission separately with `skipOnSubmit`.
+Omitting this or passing an empty array disables mount, change, and blur
+validation. Configure submission separately with `skipOnSubmit`.
+
+#### Default
+
+```ts
+[]
+```
 
 #### Inherited from
 
@@ -163,7 +169,7 @@ submission separately with `skipOnSubmit`.
 optional watchFields?: DeepKeys<TFormData>[];
 ```
 
-Defined in: [pipeline/validation/validation.public.ts:629](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L629)
+Defined in: [pipeline/validation/validation.public.ts:633](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L633)
 
 Other field paths whose change or blur events can run this validator.
 

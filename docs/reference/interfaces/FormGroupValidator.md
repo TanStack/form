@@ -3,7 +3,7 @@ id: FormGroupValidator
 title: FormGroupValidator
 ---
 
-Defined in: [pipeline/validation/validation.public.ts:548](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L548)
+Defined in: [pipeline/validation/validation.public.ts:552](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L552)
 
 Configures validation of a form group's value.
 
@@ -120,10 +120,10 @@ Submission validation runs immediately.
 
 ***
 
-### triggers
+### triggers?
 
 ```ts
-triggers: (
+optional triggers?: (
   | "change"
   | "blur"
   | "mount"
@@ -132,12 +132,18 @@ triggers: (
   | ValidationTriggerConfig<TGroupValue, TGroupValue, "mount", "group">)[];
 ```
 
-Defined in: [pipeline/validation/validation.public.ts:81](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L81)
+Defined in: [pipeline/validation/validation.public.ts:83](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L83)
 
 Mount, change, and blur events that can run this validator, optionally with conditions.
 
-An empty array disables mount, change, and blur validation. Configure
-submission separately with `skipOnSubmit`.
+Omitting this or passing an empty array disables mount, change, and blur
+validation. Configure submission separately with `skipOnSubmit`.
+
+#### Default
+
+```ts
+[]
+```
 
 #### Inherited from
 

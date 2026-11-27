@@ -9,7 +9,7 @@ type ValidationTriggerOption<TFormData, TValue, TTrigger, TScope> = TTrigger ext
   | ValidationTriggerConfig<TFormData, TValue, TTrigger, TScope> : never;
 ```
 
-Defined in: [pipeline/validation/validation.public.ts:404](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L404)
+Defined in: [pipeline/validation/validation.public.ts:408](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L408)
 
 A validation event, either unconditional or configured with a `when` condition.
 

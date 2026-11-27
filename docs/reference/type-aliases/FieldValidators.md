@@ -7,7 +7,7 @@ title: FieldValidators
 type FieldValidators<TFormData, TFieldName, TFieldValue> = ReadonlyArray<FieldValidator<TFormData, TFieldName, TFieldValue>>;
 ```
 
-Defined in: [pipeline/validation/validation.public.ts:639](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L639)
+Defined in: [pipeline/validation/validation.public.ts:643](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L643)
 
 Field validators in configuration order.
 

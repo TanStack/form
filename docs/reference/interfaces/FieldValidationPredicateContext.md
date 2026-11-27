@@ -3,7 +3,7 @@ id: FieldValidationPredicateContext
 title: FieldValidationPredicateContext
 ---
 
-Defined in: [pipeline/validation/validation.public.ts:310](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L310)
+Defined in: [pipeline/validation/validation.public.ts:314](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L314)
 
 Current field state available to validator conditions and delay callbacks.
 
@@ -33,7 +33,7 @@ Library-managed. Do not specify explicitly.
 fieldApi: AnyFieldApi;
 ```
 
-Defined in: [pipeline/validation/validation.public.ts:316](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L316)
+Defined in: [pipeline/validation/validation.public.ts:320](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L320)
 
 The field being validated.
 
@@ -51,7 +51,7 @@ BaseValidationPredicateContext.fieldApi
 formApi: FormApi<TFormData, any>;
 ```
 
-Defined in: [pipeline/validation/validation.public.ts:269](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L269)
+Defined in: [pipeline/validation/validation.public.ts:273](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L273)
 
 The owning form, including its complete values and state.
 
@@ -69,7 +69,7 @@ BaseValidationPredicateContext.formApi
 optional groupApi?: undefined;
 ```
 
-Defined in: [pipeline/validation/validation.public.ts:314](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L314)
+Defined in: [pipeline/validation/validation.public.ts:318](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L318)
 
 ***
 
@@ -79,7 +79,7 @@ Defined in: [pipeline/validation/validation.public.ts:314](https://github.com/Ta
 scope: "field";
 ```
 
-Defined in: [pipeline/validation/validation.public.ts:267](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L267)
+Defined in: [pipeline/validation/validation.public.ts:271](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L271)
 
 Identifies whether `value` belongs to a form, form group, or field.
 
@@ -97,7 +97,7 @@ BaseValidationPredicateContext.scope
 value: TFieldValue;
 ```
 
-Defined in: [pipeline/validation/validation.public.ts:278](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L278)
+Defined in: [pipeline/validation/validation.public.ts:282](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L282)
 
 The current value in this validator's scope when the callback is evaluated.
 

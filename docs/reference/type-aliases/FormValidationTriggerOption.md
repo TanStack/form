@@ -9,7 +9,7 @@ type FormValidationTriggerOption<TFormData, TValue, TScope> =
   | ServerValidationTrigger;
 ```
 
-Defined in: [pipeline/validation/validation.public.ts:441](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L441)
+Defined in: [pipeline/validation/validation.public.ts:445](https://github.com/TanStack/form/blob/main/packages/form-core/src/pipeline/validation/validation.public.ts#L445)
 
 A client event with an optional condition, or the `'server'` event for a form validator.
 
