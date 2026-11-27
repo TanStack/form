@@ -82,4 +82,163 @@ skills:
       purpose: 'Configure validation timing, conditional and async checks, field
         errors, and error visibility through the shared form-core API.',
     },
+    {
+      name: async-initial-values,
+      slug: async-initial-values,
+      domain: form-configuration,
+      package: packages/react-form,
+      path: skills/async-initial-values/SKILL.md,
+      description: 'Use when populating a React TanStack Form from fetched data,
+        preserving edits during refetches, or switching the record being
+        edited.',
+      sources:
+        [
+          TanStack/form:docs/framework/react/guides/async-initial-values.md,
+          TanStack/form:examples/react/query-integration/src/app.tsx,
+          TanStack/form:packages/react-form/src/ReactForm/ReactFormApi.lib.tsx,
+          TanStack/form:packages/react-form/tests/public/touched-state/*,
+        ],
+      requires: [],
+      purpose: Initialize React editors from asynchronous data with deliberate
+        policies for local edits and record changes.,
+    },
+    {
+      name: app-forms,
+      slug: app-forms,
+      domain: react-composition,
+      package: packages/react-form,
+      path: skills/app-forms/SKILL.md,
+      description:
+        'Use when building an application-wide React TanStack Form hook
+        with reusable registered field and form components, value-type
+        matching, injected props, or shared defaults.',
+      sources:
+        [
+          TanStack/form:packages/react-form/src/AppForm/createFormHook.public.ts,
+          TanStack/form:packages/react-form/src/AppForm/helpers/fieldComponent.public.ts,
+          TanStack/form:packages/react-form/src/AppForm/helpers/formComponent.public.ts,
+          TanStack/form:examples/react/large-form/src/hooks/form.tsx,
+          TanStack/form:packages/react-form/tests/public/field-components/*,
+          TanStack/form:packages/react-form/tests/public/form-components/*,
+        ],
+      requires: [],
+      purpose:
+        Register reusable typed React controls and shared defaults through an
+        application form hook.,
+    },
+    {
+      name: form-context,
+      slug: form-context,
+      domain: react-composition,
+      package: packages/react-form,
+      path: skills/form-context/SKILL.md,
+      description: 'Use when sharing a typed React TanStack Form with descendant
+        components through a provider, or fixing missing-provider and
+        nonreactive context reads.',
+      sources:
+        [
+          TanStack/form:packages/react-form/src/AppForm/helpers/formContext.public.ts,
+          TanStack/form:packages/react-form/src/AppForm/helpers/getFormHookHelpers.public.ts,
+          TanStack/form:packages/react-form/src/AppForm/helpers/helperFactories.lib.tsx,
+          TanStack/form:packages/react-form/src/AppForm/contexts.lib.ts,
+          TanStack/form:packages/react-form/src/ReactForm/formType.public.ts,
+        ],
+      requires: [],
+      purpose: Share an existing typed React form with descendants while keeping
+        reactive reads explicit.,
+    },
+    {
+      name: arrays,
+      slug: arrays,
+      domain: react-fields,
+      package: packages/react-form,
+      path: skills/arrays/SKILL.md,
+      description:
+        'Use when rendering editable lists in React TanStack Form, adding
+        or reordering rows, choosing Field versus ArrayField, or displaying
+        array errors and meta state.',
+      sources:
+        [
+          TanStack/form:docs/arrays.md,
+          TanStack/form:packages/react-form/src/ReactForm/Components.public.ts,
+          TanStack/form:packages/react-form/tests/public/array-field-subscriptions/*,
+          TanStack/form:packages/form-core/src/FormApi/array-methods.lib.ts,
+          TanStack/form:packages/form-core/tests/FormApi/array-methods.lib.spec.ts,
+        ],
+      requires: [],
+      purpose:
+        Render editable React lists and change their structure while retaining
+        item identity and field state.,
+    },
+    {
+      name: field-groups,
+      slug: field-groups,
+      domain: react-composition,
+      package: packages/react-form,
+      path: skills/field-groups/SKILL.md,
+      description:
+        'Use when reusing a React TanStack Form section across different
+        form shapes, binding virtual fields to concrete paths, or composing
+        reusable sections with registered app controls.',
+      sources:
+        [
+          TanStack/form:packages/react-form/src/FieldGroup/withFields.public.ts,
+          TanStack/form:packages/react-form/src/FieldGroup/FieldGroupApi.public.ts,
+          TanStack/form:docs/framework/react/guides/field-groups.md,
+          TanStack/form:examples/react/field-groups/src/fieldGroups/*,
+          TanStack/form:examples/react/large-form/src/features/people/emergency-contact.tsx,
+          TanStack/form:packages/react-form/tests/public/field-groups/*,
+        ],
+      requires: [],
+      purpose:
+        Reuse typed React form sections by binding virtual fields to paths in
+        different parent forms.,
+    },
+    {
+      name: subscriptions,
+      slug: subscriptions,
+      domain: react-rendering,
+      package: packages/react-form,
+      path: skills/subscriptions/SKILL.md,
+      description:
+        'Use when React TanStack Form values or status do not rerender,
+        selecting reactive form state, or limiting rerenders with Subscribe,
+        useSelector, and ArrayField.',
+      sources:
+        [
+          TanStack/form:packages/react-form/src/Subscribe.public.tsx,
+          TanStack/form:packages/react-form/src/ReactForm/Components.public.ts,
+          TanStack/form:packages/react-form/src/ReactForm/Components.lib.tsx,
+          TanStack/form:packages/react-form/src/FieldGroup/FieldGroupApi.public.ts,
+          TanStack/form:docs/migrate-from-v1.md,
+          TanStack/form:packages/react-form/tests/public/array-field-subscriptions/*,
+        ],
+      requires: [],
+      purpose:
+        Render reactive React form state through focused subscriptions and the
+        correct atom shape.,
+    },
+    {
+      name: form-groups,
+      slug: form-groups,
+      domain: react-composition,
+      package: packages/react-form,
+      path: skills/form-groups/SKILL.md,
+      description:
+        'Use when building multi-step React TanStack Form wizards with
+        per-step validation, scoped form-group submission, or final validation
+        across unmounted steps.',
+      sources:
+        [
+          TanStack/form:examples/react/multi-step-wizard/src/features/wizard/*,
+          TanStack/form:packages/form-core/src/FormGroupApi/FormGroupApi.public.ts,
+          TanStack/form:packages/react-form/src/ReactForm/Components.public.ts,
+          TanStack/form:packages/react-form/tests/public/submission-handling/group-submission.spec.tsx,
+          TanStack/form:packages/react-form/tests/public/group-events/FullPathGroupField.tsx,
+        ],
+      requires: [],
+      purpose:
+        Build multi-step React forms with scoped step validation and complete
+        final submission.,
+    },
   ]

@@ -4,7 +4,6 @@ library:
   repository: https://github.com/TanStack/form
   description: Typed form state and validation shared by framework adapters.
   primary_framework: framework-agnostic
-
 domains:
   - name: Form configuration
     slug: form-configuration
@@ -12,16 +11,29 @@ domains:
   - name: Validation
     slug: validation
     description: Validate editable values, expose errors, and obtain submission output.
-
+  - name: React composition
+    slug: react-composition
+    description: Share typed form access, registered controls, reusable field sections, and scoped wizard steps.
+  - name: React fields
+    slug: react-fields
+    description: Render editable arrays with stable row identity and correct field state.
+  - name: React rendering
+    slug: react-rendering
+    description: Select reactive form state at the component that needs it.
 skills:
   - name: form-options
     slug: form-options
     domain: form-configuration
     description: Choose and reuse options while preserving inferred values and callbacks.
     type: core
-    packages: ['@tanstack/form-core']
+    packages:
+      - '@tanstack/form-core'
     covers:
-      [formOptions, strictSchema, looseSchema, defaultValues, option reuse]
+      - formOptions
+      - strictSchema
+      - looseSchema
+      - defaultValues
+      - option reuse
     tasks:
       - Choose an options helper and preserve inferred values and callbacks when reusing options across forms.
       - Type complete or incomplete defaults from a schema's input type.
@@ -44,22 +56,20 @@ skills:
         source: packages/form-core/tests/FormApi/formOptions.public.test-d.ts
         priority: HIGH
         status: active
-
   - name: schema-validation
     slug: schema-validation
     domain: validation
     description: Validate through Standard Schema and submit parsed output while retaining editable input.
     type: core
-    packages: ['@tanstack/form-core']
+    packages:
+      - '@tanstack/form-core'
     covers:
-      [
-        Standard Schema,
-        schema providers,
-        issue paths,
-        validatorOutputs,
-        parseIssues,
-        createOutput,
-      ]
+      - Standard Schema
+      - schema providers
+      - issue paths
+      - validatorOutputs
+      - parseIssues
+      - createOutput
     tasks:
       - Validate form and field values with Standard Schema and submit parsed output without changing the editable input.
       - Keep complete form validation when wizard fields unmount.
@@ -79,25 +89,23 @@ skills:
         source: packages/form-core/src/pipeline/validation/standardSchema.lib.ts
         priority: HIGH
         status: active
-
   - name: validation
     slug: validation
     domain: validation
     description: Configure interaction and submission validation independently from error visibility.
     type: core
-    packages: ['@tanstack/form-core']
+    packages:
+      - '@tanstack/form-core'
     covers:
-      [
-        validators,
-        triggers,
-        when,
-        skipOnSubmit,
-        triggerDebounceMs,
-        bailIfInvalid,
-        watchFields,
-        createErrorMap,
-        errorVisibility,
-      ]
+      - validators
+      - triggers
+      - when
+      - skipOnSubmit
+      - triggerDebounceMs
+      - bailIfInvalid
+      - watchFields
+      - createErrorMap
+      - errorVisibility
     tasks:
       - Configure interaction and submission validation without changing validator array lengths or confusing error visibility with validity.
       - Reuse scheduling policies and place expensive async checks after inexpensive validation.
@@ -122,17 +130,252 @@ skills:
         source: packages/react-form/tests/public/error-visibility/SubmissionVisibility.tsx
         priority: HIGH
         status: active
-
+  - name: async-initial-values
+    slug: async-initial-values
+    domain: form-configuration
+    description: Initialize React editors from asynchronous data with deliberate policies for local edits and record changes.
+    packages:
+      - '@tanstack/react-form'
+    tasks:
+      - Populate an editor from asynchronous data and handle refetches and record changes without mixing edits from different records.
+    covers:
+      - defaultValues
+      - asynchronous data
+      - touched values
+      - record identity
+      - reset
+    type: framework
+    failure_modes:
+      - mistake: Switch records by updating defaults alone
+        mechanism: Updated defaults preserve touched values from the previous editor.
+        correct_pattern: Remount with a record key or deliberately reset to the selected record.
+        source: docs/framework/react/guides/async-initial-values.md
+        priority: HIGH
+        status: active
+      - mistake: Reset on every background refetch
+        mechanism: Reset replaces edits instead of applying the touched-field-preserving defaults policy.
+        correct_pattern: Choose a product policy for refetches and reset only for deliberate replacement.
+        source: docs/framework/react/guides/async-initial-values.md
+        priority: HIGH
+        status: active
+  - name: app-forms
+    slug: app-forms
+    domain: react-composition
+    description: Register reusable typed React controls and shared defaults through an application form hook.
+    packages:
+      - '@tanstack/react-form'
+    tasks:
+      - Register reusable field and form controls with inferred value types and use them through a shared application form hook.
+    covers:
+      - createFormHook
+      - getFormHookHelpers
+      - fieldComponent
+      - formComponent
+      - appFormOptions
+      - shared defaults
+    type: framework
+    failure_modes:
+      - mistake: Reuse v1 app component wiring
+        mechanism: The current hook registers prepared components on field and form APIs.
+        correct_pattern: Prepare injected props with getFormHookHelpers and use field.Component and form.Component.
+        source: packages/react-form/src/AppForm/createFormHook.public.ts
+        priority: HIGH
+        status: active
+      - mistake: Erase registered component value types
+        mechanism: Unrestricted annotations or unsafe matching expose controls that cannot safely edit a field.
+        correct_pattern: Match the control value contract with strict or loose helpers and preserve inference.
+        source: packages/react-form/tests/public/field-components/FieldComponents.test-d.tsx
+        priority: HIGH
+        status: active
+  - name: form-context
+    slug: form-context
+    domain: react-composition
+    description: Share an existing typed React form with descendants while keeping reactive reads explicit.
+    packages:
+      - '@tanstack/react-form'
+    tasks:
+      - Share an existing typed form through context and render reactive field values in descendant components.
+    covers:
+      - formContext.create
+      - Provider
+      - useFormContext
+      - ReactFormType
+      - nearest form owner
+    type: framework
+    failure_modes:
+      - mistake: Treat context access as a subscription
+        mechanism: The context hook returns a form API and imperative state reads do not subscribe.
+        correct_pattern: Read rendered values through Field, Subscribe, or useSelector.
+        source: packages/react-form/src/AppForm/helpers/helperFactories.lib.tsx
+        priority: HIGH
+        status: active
+      - mistake: Assume typed helpers isolate runtime contexts
+        mechanism: Typed helpers use one underlying form context and the nearest provider wins.
+        correct_pattern: Keep each typed hook below a compatible owning provider or registered form component.
+        source: packages/react-form/src/AppForm/contexts.lib.ts
+        priority: HIGH
+        status: active
+  - name: arrays
+    slug: arrays
+    domain: react-fields
+    description: Render editable React lists and change their structure while retaining item identity and field state.
+    packages:
+      - '@tanstack/react-form'
+    tasks:
+      - Render and mutate an editable array while retaining row identity, field state, and reactive array errors.
+    covers:
+      - Field
+      - ArrayField
+      - subscribeToMeta
+      - stable React keys
+      - array mutation methods
+    type: framework
+    failure_modes:
+      - mistake: Replace array values to move rows
+        mechanism: A plain value replacement does not express registered item field movement.
+        correct_pattern: Use moveValue, swapValues, and the other structural mutation methods.
+        source: packages/form-core/src/FormApi/array-methods.lib.ts
+        priority: HIGH
+        status: active
+      - mistake: Read array metadata without subscribing
+        mechanism: ArrayField defaults to structural updates and ignores meta-only changes.
+        correct_pattern: Enable subscribeToMeta when the callback displays errors or meta flags.
+        source: packages/react-form/tests/public/array-field-subscriptions/array-field-subscriptions.spec.tsx
+        priority: HIGH
+        status: active
+  - name: field-groups
+    slug: field-groups
+    domain: react-composition
+    description: Reuse typed React form sections by binding virtual fields to paths in different parent forms.
+    packages:
+      - '@tanstack/react-form'
+    tasks:
+      - Reuse a typed field section across different form shapes and remap its reads, writes, and watched field paths.
+    covers:
+      - defineFieldGroup
+      - bindComponent
+      - strict
+      - loose
+      - virtual bindings
+      - watchFields
+      - defineAppFieldGroup
+    type: framework
+    failure_modes:
+      - mistake: Hardcode parent paths in reusable sections
+        mechanism: A section cannot bind the same behavior to differently shaped forms.
+        correct_pattern: Use virtual names throughout the section and concrete paths only in the binding map.
+        source: examples/react/field-groups/src/fieldGroups/fieldBounds.tsx
+        priority: HIGH
+        status: active
+      - mistake: Read virtual values from fields.Subscribe
+        mechanism: That selector receives parent form state with unknown values.
+        correct_pattern: Use fields.atom with useSelector for typed virtual values.
+        source: packages/react-form/src/FieldGroup/FieldGroupApi.public.ts
+        priority: HIGH
+        status: active
+  - name: subscriptions
+    slug: subscriptions
+    domain: react-rendering
+    description: Render reactive React form state through focused subscriptions and the correct atom shape.
+    packages:
+      - '@tanstack/react-form'
+    tasks:
+      - Render reactive form status and derived values with subscriptions scoped to the components that need them.
+    covers:
+      - Subscribe
+      - useSelector
+      - form.atom
+      - field.atom
+      - field-group atom
+      - selector scope
+    type: framework
+    failure_modes:
+      - mistake: Render an imperative state snapshot
+        mechanism: React does not subscribe when code reads form.state or receives form context.
+        correct_pattern: Subscribe at the output with Subscribe or useSelector and the correct atom.
+        source: docs/migrate-from-v1.md
+        priority: HIGH
+        status: active
+      - mistake: Use ArrayField as a complete value subscription
+        mechanism: Structural and optional metadata updates do not track every item edit.
+        correct_pattern: Select needed item values explicitly for totals or previews.
+        source: packages/react-form/tests/public/array-field-subscriptions/array-field-subscriptions.spec.tsx
+        priority: HIGH
+        status: active
+  - name: form-groups
+    slug: form-groups
+    domain: react-composition
+    description: Build multi-step React forms with scoped step validation and complete final submission.
+    type: framework
+    packages:
+      - '@tanstack/react-form'
+    tasks:
+      - Validate and submit the current wizard step without validating later steps.
+      - Preserve values across step navigation and validate every step before final submission.
+    covers:
+      - FormGroup
+      - group.handleSubmit
+      - group.Subscribe
+      - relative field paths
+      - step navigation
+      - complete form validation
+      - unmounted steps
+    failure_modes:
+      - mistake: Rely on step validators for final form submission
+        mechanism: Parent submission excludes group validators, and unmounted fields no longer provide validators.
+        correct_pattern: Keep a complete validator on the mounted parent form and reuse the step schemas there.
+        source: packages/react-form/tests/public/submission-handling/group-submission.spec.tsx
+        priority: HIGH
+        status: active
+      - mistake: Advance after any resolved handleSubmit promise
+        mechanism: Validation failures resolve with errors, and cancellation can resolve with an empty array.
+        correct_pattern: Advance from the group's validated onSubmit callback.
+        source: packages/form-core/src/FormGroupApi/FormGroupApi.public.ts
+        priority: HIGH
+        status: active
+      - mistake: Treat field groups as scoped submission boundaries
+        mechanism: Reusable virtual field bindings share the parent lifecycle without creating independent submission.
+        correct_pattern: Use form.FormGroup for step validation and submission, and field groups for reusable mapped sections.
+        source: packages/react-form/src/ReactForm/Components.public.ts
+        priority: HIGH
+        status: active
 tensions:
   - name: Editable input versus parsed output
-    skills: [form-options, schema-validation]
+    skills:
+      - form-options
+      - schema-validation
     description: Incomplete or transformed input differs from successful schema output.
     implication: Preserve empty input states and use validatorOutputs for parsed submission data.
   - name: Validation timing versus error visibility
-    skills: [validation, schema-validation]
+    skills:
+      - validation
+      - schema-validation
     description: Validation can fail before the application displays errors.
     implication: Hidden errors still block submission.
-
+  - name: Loaded defaults versus local edits
+    skills:
+      - async-initial-values
+      - form-options
+    description: New server data can arrive while fields are already touched.
+    implication: Choose a refetch policy and reset or remount when record identity changes.
+  - name: Typed context versus reactive state
+    skills:
+      - form-context
+      - subscriptions
+    description: A typed form API provides access without making snapshot reads reactive.
+    implication: Keep context ownership and state subscriptions explicit.
+  - name: Array structure versus live item values
+    skills:
+      - arrays
+      - subscriptions
+    description: ArrayField can keep row structure current while item-derived output remains stale.
+    implication: Subscribe to metadata or item values according to what the output reads.
+  - name: Step validation versus complete form validation
+    skills:
+      - form-groups
+      - schema-validation
+    description: A valid step does not establish the validity of the complete form.
+    implication: Reuse step schemas in a complete parent validator and save only from the parent's onSubmit callback.
 cross_references:
   - from: form-options
     to: schema-validation
@@ -143,11 +386,49 @@ cross_references:
   - from: validation
     to: form-options
     reason: Shared configuration needs contextual value and callback types.
-
+  - to: form-options
+    reason: Typed complete defaults retain useful value inference.
+    from: async-initial-values
+  - to: form-options
+    reason: Shared appFormOptions retain registered component types.
+    from: app-forms
+  - to: form-context
+    reason: Typed descendants may need the existing application form.
+    from: app-forms
+  - to: field-groups
+    reason: defineAppFieldGroup carries registered field controls into reusable sections.
+    from: app-forms
+  - to: subscriptions
+    reason: Context access alone does not subscribe a rendered component.
+    from: form-context
+  - to: subscriptions
+    reason: Metadata and derived item output need the appropriate subscriptions.
+    from: arrays
+  - to: subscriptions
+    reason: Virtual values and parent form state use different selector sources.
+    from: field-groups
+  - to: validation
+    reason: Mapped watchFields use the shared validation policies.
+    from: field-groups
+  - from: form-groups
+    to: schema-validation
+    reason: Complete form schemas retain validation for unmounted steps and provide parsed submission output.
+  - from: form-groups
+    to: validation
+    reason: Step interaction policies and error visibility use the shared validation configuration.
+  - from: form-groups
+    to: subscriptions
+    reason: Step status must subscribe to group state rather than the parent snapshot.
+  - from: form-groups
+    to: field-groups
+    reason: Reusable mapped sections are a separate task from scoped step submission.
+  - from: form-groups
+    to: app-forms
+    reason: Existing application hooks can supply registered controls within each step.
 gaps:
   - skill: future adapter batches
     question: Which adapter tasks should follow the shared core batch?
-    context: Hooks, rendering, registered components, subscriptions, and framework server integrations remain unassessed.
+    context: The React batch now covers asynchronous defaults, registered components, context, arrays, field groups, subscriptions, and form-group wizard submission. Other adapters, server integrations, and standalone listener workflows remain unassessed.
     status: open
   - skill: consumer evaluation
     question: Do fresh consumer agents discover and complete these tasks through Intent?
@@ -157,3 +438,11 @@ gaps:
     question: How do adjacent non-load tasks, repeated prompts, and other agents behave?
     context: The first evaluation covers one positive task per skill. Negative activation tasks, repeats, and a without-skill comparison remain unmeasured.
     status: open
+  - skill: React consumer evaluation
+    question: Do fresh consumers discover and complete the six React tasks?
+    context: Three fresh consumer agents discovered all six React skills through Intent in isolated projects using the packed package. Each completed one combined task, their type checks and the separate type grader passed, and 14 public browser checks passed across normal and Strict Mode. One observed attempt per combined task; negative activation and comparative runs remain unmeasured.
+    status: resolved
+  - skill: Form-group consumer evaluation
+    question: Can a fresh consumer discover scoped wizard guidance and validate all steps before saving?
+    context: One isolated consumer loaded form-groups and validation through Intent. Its TypeScript check and all eight browser checks passed across normal and Strict Mode. Adjacent negative discovery prompts, repetitions, and a without-skill comparison remain unmeasured.
+    status: resolved

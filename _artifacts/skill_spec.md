@@ -1,16 +1,23 @@
 # TanStack Form skill spec
 
-The first batch covers shared form configuration and validation in `@tanstack/form-core`. Every adapter can use this guidance through its form options and core dependency. React's public examples provide the current usage patterns.
+The first batch covers shared form configuration and validation in `@tanstack/form-core`. Every adapter can use this guidance through its form options and core dependency. React's public examples provide the current usage patterns. The second batch adds six React-specific workflows in `@tanstack/react-form`. The form-group batch adds multi-step validation and submission.
 
 ## Domains and skill inventory
 
-| Domain             | Skill               | Type | Coverage                                                                                            |
-| ------------------ | ------------------- | ---- | --------------------------------------------------------------------------------------------------- |
-| Form configuration | `form-options`      | core | Inline versus shared options, inferred defaults, strict and loose schema helpers.                   |
-| Validation         | `schema-validation` | core | Standard Schema providers, issue routing, transforms, parsed submission output.                     |
-| Validation         | `validation`        | core | Interaction and submission timing, predicates, async checks, error maps, watches, error visibility. |
+| Domain             | Skill                  | Type      | Coverage                                                                                            |
+| ------------------ | ---------------------- | --------- | --------------------------------------------------------------------------------------------------- |
+| Form configuration | `form-options`         | core      | Inline versus shared options, inferred defaults, strict and loose schema helpers.                   |
+| Validation         | `schema-validation`    | core      | Standard Schema providers, issue routing, transforms, parsed submission output.                     |
+| Validation         | `validation`           | core      | Interaction and submission timing, predicates, async checks, error maps, watches, error visibility. |
+| Form configuration | `async-initial-values` | framework | Async defaults, touched edits, refetch policies, record changes, reset.                             |
+| React composition  | `app-forms`            | framework | Registered field/form controls, injected props, value matching, shared defaults.                    |
+| React composition  | `form-context`         | framework | Typed providers and hooks, nearest owner, explicit subscriptions.                                   |
+| React fields       | `arrays`               | framework | Array-valued controls, row fields, structural methods, stable keys, meta subscriptions.             |
+| React composition  | `field-groups`         | framework | Virtual field contracts, bindings, watched paths, composition, registered controls.                 |
+| React rendering    | `subscriptions`        | framework | Subscribe and useSelector, atom shapes, snapshot reads, component scope.                            |
+| React composition  | `form-groups`          | framework | Multi-step navigation, scoped submission, relative paths, complete validation after step unmount.   |
 
-Each skill ships under `packages/form-core/skills/<name>/SKILL.md`. Provider details live in `schema-validation/references/schema-providers.md`. The skills link to each other only when another task becomes relevant; none requires loading the full batch.
+The three core skills ship under `packages/form-core/skills/<name>/SKILL.md`; React skills ship under `packages/react-form/skills/<name>/SKILL.md`. Provider details live in `schema-validation/references/schema-providers.md`. The skills link to each other only when another task becomes relevant; none requires loading the full batch.
 
 ## Consequential decisions
 
@@ -60,7 +67,7 @@ Keep task success and observed skill loading as separate results. These prompts 
 
 ## Remaining work
 
-- Adapter-specific creation, rendering, subscriptions, registered components, and server integrations remain unassessed. Array editing, groups, and listeners may justify later core tasks after source review.
+- The six React workflows are covered by the second batch, and the form-group batch covers scoped wizard validation and submission. Other adapters, server integrations, and a standalone listener workflow remain unassessed. Shared array mechanics may justify later core guidance; the React batch owns the rendering workflow.
 - The first consumer evaluation passed one positive task per skill, as recorded below. Adjacent negative activation tasks, repeated prompts, other agents or models, and a without-skill comparison remain unmeasured. These are possible follow-up evaluations.
 
 ## Coverage and batch history
@@ -100,3 +107,81 @@ Keep task success and observed skill loading as separate results. These prompts 
 - The evaluated skill hashes matched the working tree. Guidance changes were unnecessary. The domain map resolves the assessed positive-task gap and records broader evaluation as remaining work. Skill identities, prerequisites, and source mappings in the tree remain accurate without changes.
 - Temporary prompts, source fixtures, grading code, solution diffs, command traces, skill hashes, and `results.json` are under `/tmp/tanstack-form-intent-evaluation/`. They are disposable evaluation artifacts, not a permanent test suite.
 - Scope: one observed positive attempt per task with normal Intent bootstrap instructions. Adjacent negative activation prompts and a without-skill baseline were not run, so these results do not measure broader activation accuracy or improvement over unaided agents.
+
+### React workflow batch — 2026-11-27
+
+- Scope: the six React tasks agreed in the conversation. Context remains separate from app forms because sharing a concrete form and registering reusable controls are independently useful tasks. Field groups cover reusable mapped fields; scoped form-group validation and submission remain future work.
+- Evidence: source revision `161624f8048a5ec91e895ef8282644d3c101b218`, package version `2.0.0-alpha.3`, installed Intent `0.5.6`.
+- Every entry point has a complete example and no required skill dependency (`requires: []`). Core options and validation are conditional handoffs through their package-qualified Intent identities. React skills link to each other only when their task needs that guidance. No reference files or bundled scripts are needed.
+- Keep data fetching in the existing server-state layer. Updated defaults preserve touched values; switching records needs a keyed editor or deliberate reset. Do not prescribe reset on every refetch.
+- Register v2 controls through `getFormHookHelpers`, `fieldComponent`, and `formComponent`. Use the existing app hook, retain component inference, and use its `appFormOptions` and `defineAppFieldGroup` when those types matter.
+- Typed context helpers share one runtime form context. The nearest compatible owner supplies the form; a typed context is not a separate runtime channel and does not subscribe snapshot reads.
+- Use regular fields for whole-array controls and `ArrayField` for item fields. Keep stable item keys and indexed field paths. Structural methods retain item field state; array metadata requires its own subscription.
+- Field-group atoms contain typed virtual values directly. Their `Subscribe` selectors receive parent form state with unknown values. Watches and field methods use virtual paths inside the section.
+- Preserve the existing package-only distribution. The React package allowlist now includes the six skill directories. No documentation generation, dependency installation, publication, staging, or commits are part of this batch.
+- Verification: Intent structural validation passed all six skills; all eight TypeScript/TSX examples compiled against the packed public React API; React type checks passed; 64 relevant public browser tests passed across normal and Strict Mode. The local archive includes all six skills and their relative links resolve in the installed layout.
+- Consumer task checks reuse the repository's Vitest Browser Mode setup in disposable projects, following the first batch's evaluation approach instead of adding library regression tests for guidance-only changes.
+
+Representative React tasks and source checks:
+
+| Skill                  | Observable result                                                                             | Existing evidence                                                              |
+| ---------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `async-initial-values` | Loaded defaults fill untouched fields; edits survive refresh; a new record gets fresh values. | Async defaults guide, query integration example, touched-state public cases.   |
+| `app-forms`            | Registered fields preserve value types and each prepared control uses its owning form.        | Public field-components and form-components runtime and type cases.            |
+| `form-context`         | Typed descendants share the right form and subscribed previews update.                        | Public context types and factory; disposable consumer runtime and type checks. |
+| `arrays`               | Rows retain values and field state when moved or removed; meta output updates.                | Core array method cases and React array-field-subscriptions cases.             |
+| `field-groups`         | One section works across value shapes and watches the mapped dependency.                      | Public field-group cases and reusable range examples.                          |
+| `subscriptions`        | Repeated edits update previews and derived output through the right source shape.             | Public Subscribe source, migration guide, array subscription cases.            |
+
+Discovery cases retained for this batch:
+
+| Skill                  | Should load                                                                                                         | Adjacent task that should not load it                                |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `async-initial-values` | “Load the selected customer's data into this React editor, keep edits during refresh, and switch customers safely.” | “Add a required-name validator to this already populated form.”      |
+| `app-forms`            | “Share our text inputs and reset controls across React TanStack forms.”                                             | “Pass this one form to an extracted section component.”              |
+| `form-context`         | “Let deeply nested React components access the same typed form without threading it through props.”                 | “Create a reusable range section for several unrelated form shapes.” |
+| `arrays`               | “Add, remove, and reorder editable people rows while keeping the right values attached.”                            | “Add spacing between existing form fields.”                          |
+| `field-groups`         | “Reuse this date-range section when each form stores start and end at different paths.”                             | “Submit just the current wizard step.”                               |
+| `subscriptions`        | “The input changes but its name-length preview stays stale after another edit.”                                     | “Choose when the username availability check should run.”            |
+
+Positive combined tasks exercise two skills per consumer. Adjacent negative activation prompts, independent repetitions, and a without-skill comparison remain unmeasured unless explicitly recorded below.
+
+React fresh-consumer evaluation:
+
+- Three fresh subagents received only a plain developer task, the isolated project, installed public packages, and the normal Intent list/load entry point. The authoring conversation, repository, sibling consumers, reference solutions, and grader were excluded from their task context. No model override was supplied.
+- The packed React adapter includes all six skills; core skills are available through its dependency. Intent lists and loads both permitted packages. Command traces record the successful skill loads below.
+- Controls: reference solutions passed the separate type grader and all 14 browser checks. Deliberately incorrect record switching, snapshot reads, reset control, array meta subscription, and watched paths caused 12 of those checks to fail; the two unaffected row-operation checks still passed. The grader was not changed for consumer grading.
+
+| Consumer task                                                   | Observed loads                                                     | Result                                                                                                                             |
+| --------------------------------------------------------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Async record editor and derived preview                         | React `async-initial-values`, `subscriptions`                      | Untouched values refresh, local edits remain, switching records creates fresh values, repeated edits update the preview.           |
+| Shared registered controls and typed descendant access          | React `app-forms`, `form-context`                                  | String-only injected controls retain props and value types; descendants share the correct form; each reset affects its own editor. |
+| Reusable range sections in editable rows and another form shape | React `field-groups`, `arrays`, `subscriptions`; core `validation` | Row operations preserve edited values; virtual previews and array meta react; watched validation maps correctly for both shapes.   |
+
+- All three consumers' TypeScript checks passed. The separate type grader passed, including seven expected rejection cases for component props, field value types, context paths/providers, and bindings. All 14 browser checks passed in normal and Strict Mode. Inspection found no explicit library-managed call generics or `any` casts in the solutions.
+- All evaluated skill hashes match the final working tree, and relative React skill links resolve in the packed layout. No guidance changes were needed after the consumer runs.
+- Prompts, starter contracts, protected grading code, reference solutions, negative-control logs, solution diffs, successful-load traces, package archive, skill hashes, and `results.json` are under `/tmp/tanstack-react-intent-evaluation/`. They are disposable evaluation artifacts.
+- This verifies one positive combined task per consumer, covering all six React skills. Negative activation cases, repetitions, and a without-skill baseline remain unmeasured; these observations do not establish broader discovery accuracy or improvement over unaided agents.
+- Validator compatibility: the generic skill-creator checker rejects Intent's `sources` and `requires` frontmatter extensions. The installed Intent validator is authoritative for this package format and passes all six skills without warnings.
+
+### App-form default example — 2026-11-27
+
+- Maintainer feedback: use `errorVisibility` as the representative application default. The app-forms example now sets `defaultFormOptions.errorVisibility` to show field errors after blur or a submission attempt, with a reminder that hidden errors still block submission.
+- This replaces the example's `errorBoundary` setting; it changes skill guidance without changing library behavior. Skill identity, task coverage, source mappings, and prerequisites remain accurate in the domain map and tree.
+- The earlier consumer evaluation remains evidence for registered controls and form ownership. It did not exercise this default policy. The revised example is checked separately against the public API and existing visibility tests.
+- Verification: the revised example type-checks against the public React entry point; all 10 focused default-option and error-visibility browser checks pass across normal and Strict Mode; Intent validates the six React skills.
+
+### Form-group wizard skill — 2026-11-27
+
+- Scope: `@tanstack/react-form#form-groups` covers multi-step forms, step validation and submission, retained values during navigation, relative error paths, and final validation after earlier steps unmount. This completes the dedicated form-group workflow previously listed as future work.
+- Evidence: source revision `161624f8048a5ec91e895ef8282644d3c101b218`, package version `2.0.0-alpha.3`, installed Intent `0.5.6`. Sources include the multi-step wizard, public group API and components, group submission checks, and full-path group field fixture.
+- Keep one parent form mounted. Advance only from the group's validated `onSubmit`. The last step awaits parent submission, and only the parent callback saves the complete form. Reuse the step schemas in a complete parent validator because parent submission excludes group validators and earlier field validators disappear on unmount.
+- Keep `field-groups` for reusable virtual bindings and `form-groups` for scoped submission. The new skill is self-contained with `requires: []`; schema providers, advanced validation, subscriptions, registered controls, and reusable sections are conditional handoffs.
+- Package-only distribution continues. No library behavior, generated documentation, repository dependency changes, publication, staging, or commits are part of this batch.
+- Representative task: build a two-step checkout with independent validation, Back navigation, retained edits, and final validation of a value changed after its step unmounts. Should load: “Build a checkout wizard that validates each page before Next and saves all pages at the end.” Adjacent should not load: “Reuse this address section at different paths in several forms.”
+- Verification: Intent validates all seven React skills; the exact published example and adapted checkout fixture compile against the packed public API. Core and React builds pass, including publint. All 56 focused public group-submission and group-event browser checks pass across normal and Strict Mode.
+- The disposable reference checkout passes eight browser checks: invalid steps block advancement, later invalid steps do not block Next, Back retains edits, a changed value from an unmounted step blocks final saving, and asynchronous saving receives both addresses once. Removing the complete parent validator makes the unmounted-step case fail in both modes. The initial reference run exposed errors inside the input label changing its accessible name; the skill now renders errors outside the label, and all eight checks pass.
+- One fresh consumer received only the task, installed public packages, and normal Intent discovery. It selected `@tanstack/react-form#form-groups` and `@tanstack/form-core#validation`, implemented the wizard without library casts or explicit library-managed call generics, and passed its TypeScript check and all eight unchanged browser checks. It reloaded the final skill after the accessibility correction and confirmed its existing implementation already used separate labels and errors.
+- The final local package archive contains the new skill. Its relative React links resolve in the installed layout. The domain map records coverage, failure modes, relationships, and the consumer result; the tree records package ownership, sources, purpose, and no prerequisites.
+- Task prompts, reference and incorrect solutions, protected checks, consumer implementation, discovery cases, and package archive are under `/tmp/tanstack-form-groups-evaluation/`. This is one positive consumer attempt. Negative discovery cases, repeated attempts, and a without-skill comparison remain unmeasured.
+- Validator compatibility remains unchanged: skill-creator's generic checker rejects Intent's `sources` and `requires` extensions. Intent's installed validator supports this format and passes without warnings.
