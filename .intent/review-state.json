@@ -357,6 +357,261 @@
       "evidence": [
         "Verified v2.0.0-alpha.3 at 161624f8048a5ec91e895ef8282644d3c101b218 against the wizard sources, FormGroupApi.public.ts, Components.public.ts, group-submission.spec.tsx, and FullPathGroupField.tsx. Intent validates seven React skills. The exact skill example and reference/consumer checkouts pass TypeScript; 56 existing public group browser checks pass. Reference and fresh consumer each pass eight unchanged browser checks across normal and Strict Mode. Omitting parent validation fails the unmounted-step test in both modes. One fresh consumer selected form-groups and validation through Intent, then reloaded the final skill. Final archive and installed skill hashes match, and relative links resolve. Adjacent negative activation prompts, repetitions, and without-skill comparison were not run. Disposable evidence: /tmp/tanstack-form-groups-evaluation/results.json."
       ]
+    },
+    "source:knip.json": {
+      "fingerprint": "0065b69f51d5416e8cc7d9e2ba5475ef1336f969ba3b7d665819cc75d15948cc",
+      "snapshot": {
+        "knip.json": "5ef9b1779ed8e8a2ef3a99883a500a2cc507109deda94616f52e8920196dc0ab"
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "no-change",
+      "reason": "knip.json now ignores @tanstack/intent because the dependency is used as a CLI by the Check Skills workflow rather than imported by application code. This fixes dependency analysis for Intent and does not change the public form API or require skill guidance changes.",
+      "evidence": [
+        "Maintainer confirmed that Knip needed fixing for Intent.",
+        "git diff origin/alpha HEAD -- knip.json shows only the addition of @tanstack/intent to root ignoreDependencies.",
+        "package.json declares @tanstack/intent as a devDependency; .github/workflows/check-skills.yml invokes the Intent reusable workflow, which uses the repository's installed CLI.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/choosing-form-options-modes/SKILL.md": {
+      "fingerprint": "faf77345c9e7cc8f8307237302e801489f25b1f26b64acccd72a976c899980c3",
+      "snapshot": {
+        "packages/react-form/skills/choosing-form-options-modes/SKILL.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/choosing-form-options-modes/SKILL.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/choosing-form-options-modes/references/schema-option-modes.md": {
+      "fingerprint": "8077f17276b1b0c3725d506dc17167efe65a93a90de9f6ea586d444af31acf91",
+      "snapshot": {
+        "packages/react-form/skills/choosing-form-options-modes/references/schema-option-modes.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/choosing-form-options-modes/references/schema-option-modes.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/choosing-form-options-modes/references/standard-schema-library-leanings.md": {
+      "fingerprint": "9810fbe89ce3a94b58992f49415e484f6f615e678ff89b5d7e43142c461129a3",
+      "snapshot": {
+        "packages/react-form/skills/choosing-form-options-modes/references/standard-schema-library-leanings.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/choosing-form-options-modes/references/standard-schema-library-leanings.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/error-visibility-workflows/SKILL.md": {
+      "fingerprint": "7b62803b524e1510caa03daf0122fb90ab9b3a93ce238804ed450dba13a0d32d",
+      "snapshot": {
+        "packages/react-form/skills/error-visibility-workflows/SKILL.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/error-visibility-workflows/SKILL.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/error-visibility-workflows/references/error-visibility-policies.md": {
+      "fingerprint": "da9123e360033df23e78a99b1f7ad784a1dc315e09c57b5ea6a638630e10894d",
+      "snapshot": {
+        "packages/react-form/skills/error-visibility-workflows/references/error-visibility-policies.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/error-visibility-workflows/references/error-visibility-policies.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/examples-authoring/SKILL.md": {
+      "fingerprint": "ac6e9b1bbed883334e9453637e8bb6568f173b7b323cb0add08400c5ad6c1f57",
+      "snapshot": {
+        "packages/react-form/skills/examples-authoring/SKILL.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/examples-authoring/SKILL.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/examples-authoring/references/example-scenarios.md": {
+      "fingerprint": "2662b9421142d21874490663d49ae09a89d85c08dc4636068dfe2f1e7501dd09",
+      "snapshot": {
+        "packages/react-form/skills/examples-authoring/references/example-scenarios.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/examples-authoring/references/example-scenarios.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/query-backed-forms/SKILL.md": {
+      "fingerprint": "1d553d5490606193e1ab311d3793043ce04465ba4ae9a2ea370ded5f0f9fbdce",
+      "snapshot": {
+        "packages/react-form/skills/query-backed-forms/SKILL.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/query-backed-forms/SKILL.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/query-backed-forms/references/query-backed-defaults-and-submit.md": {
+      "fingerprint": "0e4d931f07cb865463bee17aef673e0d22462f66932d1e27c13401c965837495",
+      "snapshot": {
+        "packages/react-form/skills/query-backed-forms/references/query-backed-defaults-and-submit.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/query-backed-forms/references/query-backed-defaults-and-submit.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/react-form-composition-setup/SKILL.md": {
+      "fingerprint": "08cd2a5b267d384a7761436d57cf16251d15b07a71ff7eafe04a76b864a01d87",
+      "snapshot": {
+        "packages/react-form/skills/react-form-composition-setup/SKILL.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/react-form-composition-setup/SKILL.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/reusable-form-policies/SKILL.md": {
+      "fingerprint": "e31e25ff82d8f12ecceda191ea66ff38882dbd5f94dae419745e595494f8f188",
+      "snapshot": {
+        "packages/react-form/skills/reusable-form-policies/SKILL.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/reusable-form-policies/SKILL.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/reusable-form-policies/references/reusable-policy-boundaries.md": {
+      "fingerprint": "bc453d1511595e282e9e5df1ef34d6c04396bc864a8dd4385ca9cfb1d5804943",
+      "snapshot": {
+        "packages/react-form/skills/reusable-form-policies/references/reusable-policy-boundaries.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/reusable-form-policies/references/reusable-policy-boundaries.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/schema-driven-forms/SKILL.md": {
+      "fingerprint": "09941f6e6394b0f1f00aae6ed2134ab783acdfff5ce08325bb65666b1f8f1f31",
+      "snapshot": {
+        "packages/react-form/skills/schema-driven-forms/SKILL.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/schema-driven-forms/SKILL.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/schema-driven-forms/references/schema-validation-and-submit-output.md": {
+      "fingerprint": "699011649e32153054339dca5eedbee14b35b8d940fb74c2ea70fe91fc9bd312",
+      "snapshot": {
+        "packages/react-form/skills/schema-driven-forms/references/schema-validation-and-submit-output.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/schema-driven-forms/references/schema-validation-and-submit-output.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/type-error-debugging/SKILL.md": {
+      "fingerprint": "267071b59da5d3edab249e560e4d8503964ed372b0d5e8b9b8b8d484927b1d20",
+      "snapshot": {
+        "packages/react-form/skills/type-error-debugging/SKILL.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/type-error-debugging/SKILL.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/type-error-debugging/references/type-error-boundaries.md": {
+      "fingerprint": "cb7f72215f52570860e2224f1f819bd5f289a8c26e45346d3613a1ba5f7958a5",
+      "snapshot": {
+        "packages/react-form/skills/type-error-debugging/references/type-error-boundaries.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/type-error-debugging/references/type-error-boundaries.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
     }
   }
 }
