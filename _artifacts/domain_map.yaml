@@ -1,5 +1,159 @@
 library:
-  name: root
-domains: []
-skills: []
-gaps: []
+  name: TanStack Form
+  version: 2.0.0-alpha.3
+  repository: https://github.com/TanStack/form
+  description: Typed form state and validation shared by framework adapters.
+  primary_framework: framework-agnostic
+
+domains:
+  - name: Form configuration
+    slug: form-configuration
+    description: Choose editable value types and share inferred form options.
+  - name: Validation
+    slug: validation
+    description: Validate editable values, expose errors, and obtain submission output.
+
+skills:
+  - name: form-options
+    slug: form-options
+    domain: form-configuration
+    description: Choose and reuse options while preserving inferred values and callbacks.
+    type: core
+    packages: ['@tanstack/form-core']
+    covers:
+      [formOptions, strictSchema, looseSchema, defaultValues, option reuse]
+    tasks:
+      - Choose an options helper and preserve inferred values and callbacks when reusing options across forms.
+      - Type complete or incomplete defaults from a schema's input type.
+    failure_modes:
+      - mistake: Supply explicit library-managed generic arguments
+        mechanism: Form creation and options helpers infer connected value, validator, and callback types through multiple generic parameters.
+        correct_pattern: Type defaultValues or use a schema helper, then let the API infer its generic arguments.
+        source: packages/form-core/src/FormApi/formOptions.public.ts
+        priority: HIGH
+        status: active
+      - mistake: Treat schema type helpers as runtime validators
+        mechanism: All formOptions helpers return the supplied options unchanged.
+        correct_pattern: Register the schema separately in validators as run.
+        source: packages/form-core/src/FormApi/formOptions.public.ts
+        priority: HIGH
+        status: active
+      - mistake: Lose types in extracted options or narrow defaults
+        mechanism: Untyped callbacks lose context, while empty arrays and literals can restrict editable values.
+        correct_pattern: Use formOptions at declaration and widen defaults or select a schema helper.
+        source: packages/form-core/tests/FormApi/formOptions.public.test-d.ts
+        priority: HIGH
+        status: active
+
+  - name: schema-validation
+    slug: schema-validation
+    domain: validation
+    description: Validate through Standard Schema and submit parsed output while retaining editable input.
+    type: core
+    packages: ['@tanstack/form-core']
+    covers:
+      [
+        Standard Schema,
+        schema providers,
+        issue paths,
+        validatorOutputs,
+        parseIssues,
+        createOutput,
+      ]
+    tasks:
+      - Validate form and field values with Standard Schema and submit parsed output without changing the editable input.
+      - Keep complete form validation when wizard fields unmount.
+    reference_candidates:
+      - topic: Schema provider integration
+        reason: Effect requires a wrapper, while the other demonstrated providers accept direct schema runners.
+    failure_modes:
+      - mistake: Submit raw input expecting schema transforms
+        mechanism: Schema output is returned through validatorOutputs rather than replacing form values.
+        correct_pattern: Read the schema's positional output during submission.
+        source: packages/react-form/tests/public/form-options/ValidatorOutputs.test-d.tsx
+        priority: HIGH
+        status: active
+      - mistake: Return parsed data as validation success
+        mechanism: Ordinary returned objects can be interpreted as errors and lose output semantics.
+        correct_pattern: Use run with the schema directly or return createOutput from custom parsing.
+        source: packages/form-core/src/pipeline/validation/standardSchema.lib.ts
+        priority: HIGH
+        status: active
+
+  - name: validation
+    slug: validation
+    domain: validation
+    description: Configure interaction and submission validation independently from error visibility.
+    type: core
+    packages: ['@tanstack/form-core']
+    covers:
+      [
+        validators,
+        triggers,
+        when,
+        skipOnSubmit,
+        triggerDebounceMs,
+        bailIfInvalid,
+        watchFields,
+        createErrorMap,
+        errorVisibility,
+      ]
+    tasks:
+      - Configure interaction and submission validation without changing validator array lengths or confusing error visibility with validity.
+      - Reuse scheduling policies and place expensive async checks after inexpensive validation.
+      - Target field errors from form validators and watch dependencies for field rules.
+    failure_modes:
+      - mistake: Reuse v1 event-keyed validator configuration
+        mechanism: The current API uses ordered run objects and separate trigger policies.
+        correct_pattern: Configure validator arrays with run and triggers.
+        source: examples/react/basic/src/index.tsx
+        priority: HIGH
+        status: active
+        version_context: v2.0.0-alpha.3
+      - mistake: Treat empty triggers as disabling submission
+        mechanism: Submission validation runs independently of interaction triggers.
+        correct_pattern: Configure skipOnSubmit explicitly when required.
+        source: packages/form-core/src/pipeline/validation/formValidators.public.ts
+        priority: HIGH
+        status: active
+      - mistake: Treat hidden errors as successful validation
+        mechanism: Error visibility controls exposed errors without changing validity.
+        correct_pattern: Configure errorVisibility separately and check invalid submission.
+        source: packages/react-form/tests/public/error-visibility/SubmissionVisibility.tsx
+        priority: HIGH
+        status: active
+
+tensions:
+  - name: Editable input versus parsed output
+    skills: [form-options, schema-validation]
+    description: Incomplete or transformed input differs from successful schema output.
+    implication: Preserve empty input states and use validatorOutputs for parsed submission data.
+  - name: Validation timing versus error visibility
+    skills: [validation, schema-validation]
+    description: Validation can fail before the application displays errors.
+    implication: Hidden errors still block submission.
+
+cross_references:
+  - from: form-options
+    to: schema-validation
+    reason: Selecting a schema helper does not register validation.
+  - from: schema-validation
+    to: validation
+    reason: Schemas use the same scheduling and visibility policies as functions.
+  - from: validation
+    to: form-options
+    reason: Shared configuration needs contextual value and callback types.
+
+gaps:
+  - skill: future adapter batches
+    question: Which adapter tasks should follow the shared core batch?
+    context: Hooks, rendering, registered components, subscriptions, and framework server integrations remain unassessed.
+    status: open
+  - skill: consumer evaluation
+    question: Do fresh consumer agents discover and complete these tasks through Intent?
+    context: Three fresh consumer agents selected the relevant skills through Intent and completed the representative tasks. Separate type checks and eight public browser checks passed. Each task has one observed attempt.
+    status: resolved
+  - skill: broader consumer evaluation
+    question: How do adjacent non-load tasks, repeated prompts, and other agents behave?
+    context: The first evaluation covers one positive task per skill. Negative activation tasks, repeats, and a without-skill comparison remain unmeasured.
+    status: open

@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "baseline": "f8e2ce4aa3c0dd36e251892825b7e25a912cc628",
+  "items": {
+    "skill:packages/form-core/skills/form-options/SKILL.md": {
+      "fingerprint": "6a721d689a700fef421f36e97668c14dcfe1c3abf7a02105af5ae400cb8a02c2",
+      "snapshot": {
+        "examples/react/basic-splitting-form/src/sharedForm.ts": "642fed4bf62172f0b194d7671752befcf6553d16ae6de25710ca4fd90652e467",
+        "packages/form-core/skills/form-options/SKILL.md": "018cb47c5c4c5c15cc36dee19149cc7eebc14d5b0de98b780fb124d8f454c049",
+        "packages/form-core/src/FormApi/formOptions.public.ts": "fa5944475b0f4c396f22c2d9c73262fa7f6c03917c0a4e47be3db22062b069b4",
+        "packages/form-core/tests/FormApi/formOptions.public.test-d.ts": "e86cb14e4e0c360c3afe15a666b22104184519f09217dc346236cd56481be299",
+        "packages/react-form/src/ReactForm/formType.public.ts": "0ec2c88a6b793234a60b0de30b9dcbd8131d0d8f765048134290339e8a4483ba",
+        "packages/react-form/src/ReactForm/useForm.public.ts": "8cf9f0f57489bac9e6ab33b2674c6a3d49bf6e292ca074a0f1997ccb899b28ce"
+      },
+      "head": "f8e2ce4aa3c0dd36e251892825b7e25a912cc628",
+      "outcome": "updated",
+      "reason": "Made the no-explicit-generics rule explicit in form-options with a Common mistakes table, reasons, supported alternatives, and typed application defaults. Verified library-managed generic parameters in the core options API and React form creation API, and distinguished supported ReactFormType utility arguments. Reconciled the domain map and spec, and synchronized the tree source mappings. All 13 TypeScript examples compiled and Intent structural validation passed. This prose-only update leaves library behavior unchanged; prior core/React type checks and 58 public React tests remain source evidence. Fresh consumer agent behavior remains unverified.",
+      "evidence": [
+        "Changed: packages/form-core/skills/form-options/SKILL.md, packages/react-form/src/ReactForm/formType.public.ts, packages/react-form/src/ReactForm/useForm.public.ts at f8e2ce4aa3c0dd36e251892825b7e25a912cc628"
+      ]
+    },
+    "skill:packages/form-core/skills/schema-validation/SKILL.md": {
+      "fingerprint": "40b28f324eb73f22443476287685be025c0dc28ef99263521476062a5a1b2a40",
+      "snapshot": {
+        "examples/react/next-server-actions-zod/src/app/shared-code.ts": "5ab18c120bd3ac6190d8613b1ac53010225fd877438dcca00b2b859ad1e17fb8",
+        "examples/react/standard-schema/package.json": "dcf4c41100c1f67e4abe7829daf02e1863caeb24225e7b71008ac7fb6d738843",
+        "examples/react/standard-schema/src/index.tsx": "778f6a9566935d05773ca0ed37157819473f77bb69bac76a1383df6c4084eef8",
+        "packages/form-core/skills/schema-validation/SKILL.md": "78da1684ee11baab00beaaf8669815b0a44297c7d620d57ef44215c59f967a17",
+        "packages/form-core/skills/schema-validation/references/schema-providers.md": "bf19b6b3135ac2f0908e62d786153dfec4519307ab525a48e61e3885733c62e7",
+        "packages/form-core/src/pipeline/validation/standardSchema.lib.ts": "84cc59475d6e401c8c83ea593a2323e1aedc9f7bec7a134993472dae6873fc5f",
+        "packages/form-core/src/validation/results/parseIssues.lib.ts": "462173f9fedc39f83390cd4968ffd29e0763e708403466f5091f10e899737112",
+        "packages/form-core/tests/validation-output.test.ts": "2bb2d9a177a4fac12d57133d73cc122c3a57d480ccd827ad4ff54607c6e8f809",
+        "packages/react-form/tests/public/form-options/ValidatorOutputs.test-d.tsx": "0943b7b920ce0d1ce3442e31d6e89151316facf975f1e8a8418b8dfbda6c39c7",
+        "packages/react-form/tests/public/submission-handling/SubmissionWizard.tsx": "357224681ab34ce593320a50b2bb06e6df0918709e7f3b8aa26c2ddb7a55c46a",
+        "packages/react-form/tests/public/submission-handling/group-submission.spec.tsx": "36855ac232aeff68a89b645dd3ba4c2b56dbf33ff38d2c107d3cdabc813da97d"
+      },
+      "head": "f8e2ce4aa3c0dd36e251892825b7e25a912cc628",
+      "outcome": "updated",
+      "reason": "Authored the initial form-core batch for options, Standard Schema, and validation, and reconciled all three planning records against source revision f8e2ce4aa3c0dd36e251892825b7e25a912cc628 (v2.0.0-alpha.3). Intent validated 3 skills; all 12 TypeScript examples compiled with installed providers; core and React type checks passed; 58 focused public React tests passed in normal and Strict Mode. Core build and publint passed. The packed archive contains all skills and references; Intent discovers and loads them through a transitive core dependency in a disposable consumer layout. YAML, metadata, and packaged relative links passed. Fresh consumer agent task execution and activation remain unverified.",
+      "evidence": [
+        "Changed: packages/form-core/skills/schema-validation/SKILL.md, packages/form-core/skills/schema-validation/references/schema-providers.md at f8e2ce4aa3c0dd36e251892825b7e25a912cc628"
+      ]
+    },
+    "skill:packages/form-core/skills/validation/SKILL.md": {
+      "fingerprint": "ed8c04c1cab4952883461755e286ade6bbcbb553087987babb59c86a5548a5be",
+      "snapshot": {
+        "examples/react/basic/src/index.tsx": "dd77f336f998ec218737284fc0a5c99d18694ea1b0dffba49bdf0b724d5d2e61",
+        "packages/form-core/skills/validation/SKILL.md": "b620eeac7beb2dfa96d57f3df8d1ba37bc08138e705fe8831a926d3977eb9aaa",
+        "packages/form-core/src/FormApi/errorVisibility.public.ts": "58af5f76e996dec697b0ce238c77b9a8a1a578a30756020dd48c64eb9bbd11af",
+        "packages/form-core/src/pipeline/validation/formValidators.public.ts": "c77ad353c57f2b36f45ba0eedb840fcabeee7f529452143ba68483d8787756a2",
+        "packages/form-core/src/pipeline/validation/validation.public.ts": "390105cd217d03c0a5a2c79245ccadf88e584ce99f43c5f50d7c9ce905966701",
+        "packages/react-form/tests/public/error-visibility/SubmissionVisibility.tsx": "cf3663bcce0fa4edd188edc1be5644e661cc5f71bc09e56e904168f0d07fca4e",
+        "packages/react-form/tests/public/error-visibility/error-visibility.spec.tsx": "580d723ada4dde3eb3ba1f1b42c498cc3a65cdde8a3e24ad086a1def02ccd22a",
+        "packages/react-form/tests/public/submission-handling/group-submission.spec.tsx": "36855ac232aeff68a89b645dd3ba4c2b56dbf33ff38d2c107d3cdabc813da97d",
+        "packages/react-form/tests/public/validation-execution/PendingMountValidation.tsx": "ff8a0854685dc032fdb22727dc9bf395a316bb82818d1070018d00430e555d42",
+        "packages/react-form/tests/public/validation-execution/StandaloneValidation.tsx": "c214e3605472aa6453a94a50182dcfd6fe704c2a2493ec10fd90b8a6487cfaa2",
+        "packages/react-form/tests/public/validation-execution/SyncMountValidation.tsx": "4976ca71cb46ed2db53af344a24c3e8a7481757f75cba40e8aae27c026282a04",
+        "packages/react-form/tests/public/validation-execution/mount-validation.spec.tsx": "43545bff795f49478eac44c88522cf38effcbef21b39a206035349bbd5e08e05",
+        "packages/react-form/tests/public/validation-execution/standalone-validation.spec.tsx": "2c14086bf926991806d74a867b01ce79240573a4786aee276cf3b0ff287053fa"
+      },
+      "head": "f8e2ce4aa3c0dd36e251892825b7e25a912cc628",
+      "outcome": "updated",
+      "reason": "Authored the initial form-core batch for options, Standard Schema, and validation, and reconciled all three planning records against source revision f8e2ce4aa3c0dd36e251892825b7e25a912cc628 (v2.0.0-alpha.3). Intent validated 3 skills; all 12 TypeScript examples compiled with installed providers; core and React type checks passed; 58 focused public React tests passed in normal and Strict Mode. Core build and publint passed. The packed archive contains all skills and references; Intent discovers and loads them through a transitive core dependency in a disposable consumer layout. YAML, metadata, and packaged relative links passed. Fresh consumer agent task execution and activation remain unverified.",
+      "evidence": [
+        "Changed: packages/form-core/skills/validation/SKILL.md at f8e2ce4aa3c0dd36e251892825b7e25a912cc628"
+      ]
+    },
+    "planning:_artifacts": {
+      "fingerprint": "d0711e5f453b54b22808e1370144cee4f4f020086f121e1e8cebd41c19e944fd",
+      "snapshot": {
+        "_artifacts/domain_map.yaml": "1951fff03c3c8d94650e3b3d81177a5c42a62823251cb1d66e1160bb087ab5ef",
+        "_artifacts/skill_spec.md": "3b5aed8f5ceea649cb8770cf5e8a7ae68aa1de41ae009ea1ae269665922b6624",
+        "_artifacts/skill_tree.yaml": "df96cd179996f4a16872ef6336ba9a38bf4634a55882b7082978048921ff2b1f",
+        "examples/react/basic-splitting-form/src/sharedForm.ts": "642fed4bf62172f0b194d7671752befcf6553d16ae6de25710ca4fd90652e467",
+        "examples/react/basic/src/index.tsx": "dd77f336f998ec218737284fc0a5c99d18694ea1b0dffba49bdf0b724d5d2e61",
+        "examples/react/next-server-actions-zod/src/app/shared-code.ts": "5ab18c120bd3ac6190d8613b1ac53010225fd877438dcca00b2b859ad1e17fb8",
+        "examples/react/standard-schema/package.json": "dcf4c41100c1f67e4abe7829daf02e1863caeb24225e7b71008ac7fb6d738843",
+        "examples/react/standard-schema/src/index.tsx": "778f6a9566935d05773ca0ed37157819473f77bb69bac76a1383df6c4084eef8",
+        "packages/form-core/skills/form-options/SKILL.md": "018cb47c5c4c5c15cc36dee19149cc7eebc14d5b0de98b780fb124d8f454c049",
+        "packages/form-core/skills/schema-validation/SKILL.md": "78da1684ee11baab00beaaf8669815b0a44297c7d620d57ef44215c59f967a17",
+        "packages/form-core/skills/schema-validation/references/schema-providers.md": "bf19b6b3135ac2f0908e62d786153dfec4519307ab525a48e61e3885733c62e7",
+        "packages/form-core/skills/validation/SKILL.md": "b620eeac7beb2dfa96d57f3df8d1ba37bc08138e705fe8831a926d3977eb9aaa",
+        "packages/form-core/src/FormApi/errorVisibility.public.ts": "58af5f76e996dec697b0ce238c77b9a8a1a578a30756020dd48c64eb9bbd11af",
+        "packages/form-core/src/FormApi/formOptions.public.ts": "fa5944475b0f4c396f22c2d9c73262fa7f6c03917c0a4e47be3db22062b069b4",
+        "packages/form-core/src/pipeline/validation/formValidators.public.ts": "c77ad353c57f2b36f45ba0eedb840fcabeee7f529452143ba68483d8787756a2",
+        "packages/form-core/src/pipeline/validation/standardSchema.lib.ts": "84cc59475d6e401c8c83ea593a2323e1aedc9f7bec7a134993472dae6873fc5f",
+        "packages/form-core/src/pipeline/validation/validation.public.ts": "390105cd217d03c0a5a2c79245ccadf88e584ce99f43c5f50d7c9ce905966701",
+        "packages/form-core/src/validation/results/parseIssues.lib.ts": "462173f9fedc39f83390cd4968ffd29e0763e708403466f5091f10e899737112",
+        "packages/form-core/tests/FormApi/formOptions.public.test-d.ts": "e86cb14e4e0c360c3afe15a666b22104184519f09217dc346236cd56481be299",
+        "packages/form-core/tests/validation-output.test.ts": "2bb2d9a177a4fac12d57133d73cc122c3a57d480ccd827ad4ff54607c6e8f809",
+        "packages/react-form/src/ReactForm/formType.public.ts": "0ec2c88a6b793234a60b0de30b9dcbd8131d0d8f765048134290339e8a4483ba",
+        "packages/react-form/src/ReactForm/useForm.public.ts": "8cf9f0f57489bac9e6ab33b2674c6a3d49bf6e292ca074a0f1997ccb899b28ce",
+        "packages/react-form/tests/public/error-visibility/SubmissionVisibility.tsx": "cf3663bcce0fa4edd188edc1be5644e661cc5f71bc09e56e904168f0d07fca4e",
+        "packages/react-form/tests/public/error-visibility/error-visibility.spec.tsx": "580d723ada4dde3eb3ba1f1b42c498cc3a65cdde8a3e24ad086a1def02ccd22a",
+        "packages/react-form/tests/public/form-options/ValidatorOutputs.test-d.tsx": "0943b7b920ce0d1ce3442e31d6e89151316facf975f1e8a8418b8dfbda6c39c7",
+        "packages/react-form/tests/public/submission-handling/SubmissionWizard.tsx": "357224681ab34ce593320a50b2bb06e6df0918709e7f3b8aa26c2ddb7a55c46a",
+        "packages/react-form/tests/public/submission-handling/group-submission.spec.tsx": "36855ac232aeff68a89b645dd3ba4c2b56dbf33ff38d2c107d3cdabc813da97d",
+        "packages/react-form/tests/public/validation-execution/PendingMountValidation.tsx": "ff8a0854685dc032fdb22727dc9bf395a316bb82818d1070018d00430e555d42",
+        "packages/react-form/tests/public/validation-execution/StandaloneValidation.tsx": "c214e3605472aa6453a94a50182dcfd6fe704c2a2493ec10fd90b8a6487cfaa2",
+        "packages/react-form/tests/public/validation-execution/SyncMountValidation.tsx": "4976ca71cb46ed2db53af344a24c3e8a7481757f75cba40e8aae27c026282a04",
+        "packages/react-form/tests/public/validation-execution/mount-validation.spec.tsx": "43545bff795f49478eac44c88522cf38effcbef21b39a206035349bbd5e08e05",
+        "packages/react-form/tests/public/validation-execution/standalone-validation.spec.tsx": "2c14086bf926991806d74a867b01ce79240573a4786aee276cf3b0ff287053fa"
+      },
+      "head": "f8e2ce4aa3c0dd36e251892825b7e25a912cc628",
+      "outcome": "updated",
+      "reason": "Reconciled the domain map and skill spec with a fresh-consumer evaluation of all three packaged core skills at v2.0.0-alpha.3 using installed Intent 0.5.6. Three agents with no authoring conversation selected relevant skills through Intent and completed separate tasks. Successful load commands were logged. Known-good solutions passed the grader; deliberately narrow defaults failed type checks, and broken schema and scheduling solutions failed eight public browser checks. The unchanged grader passed all consumer type assertions and eight normal/Strict Mode browser checks. Skill hashes match the evaluated package; no guidance or tree mapping changes were needed. One positive attempt per task was observed. Negative activation tasks, repetitions, and a without-skill baseline remain unmeasured. Temporary artifacts and results are in /tmp/tanstack-form-intent-evaluation.",
+      "evidence": [
+        "Changed: _artifacts/domain_map.yaml, _artifacts/skill_spec.md at f8e2ce4aa3c0dd36e251892825b7e25a912cc628"
+      ]
+    }
+  }
+}

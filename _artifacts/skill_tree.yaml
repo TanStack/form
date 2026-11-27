@@ -1,6 +1,85 @@
 library:
-  name: root
+  name: TanStack Form
+  version: 2.0.0-alpha.3
 generated_from:
   domain_map: _artifacts/domain_map.yaml
   skill_spec: _artifacts/skill_spec.md
-skills: []
+skills:
+  [
+    {
+      name: form-options,
+      slug: form-options,
+      domain: form-configuration,
+      package: packages/form-core,
+      path: skills/form-options/SKILL.md,
+      description:
+        'Use when choosing or sharing typed TanStack Form options, defining
+        initial values, or deciding between formOptions, strictSchema, and
+        looseSchema in any framework adapter.',
+      sources:
+        [
+          TanStack/form:packages/form-core/src/FormApi/formOptions.public.ts,
+          TanStack/form:packages/form-core/tests/FormApi/formOptions.public.test-d.ts,
+          TanStack/form:packages/react-form/src/ReactForm/useForm.public.ts,
+          TanStack/form:packages/react-form/src/ReactForm/formType.public.ts,
+          TanStack/form:examples/react/basic-splitting-form/src/sharedForm.ts,
+        ],
+      requires: [],
+      purpose:
+        Choose reusable form options that preserve value and callback inference
+        across framework adapters.,
+    },
+    {
+      name: schema-validation,
+      slug: schema-validation,
+      domain: validation,
+      package: packages/form-core,
+      path: skills/schema-validation/SKILL.md,
+      references: [references/schema-providers.md],
+      description:
+        'Use when integrating Zod, Valibot, ArkType, Effect, or another
+        Standard Schema with TanStack Form in any adapter, routing schema
+        issues to fields, or submitting transformed schema output.',
+      sources:
+        [
+          TanStack/form:examples/react/standard-schema/src/index.tsx,
+          TanStack/form:examples/react/next-server-actions-zod/src/app/shared-code.ts,
+          TanStack/form:packages/form-core/src/pipeline/validation/standardSchema.lib.ts,
+          TanStack/form:packages/form-core/src/validation/results/parseIssues.lib.ts,
+          TanStack/form:packages/react-form/tests/public/form-options/ValidatorOutputs.test-d.tsx,
+          TanStack/form:packages/form-core/tests/validation-output.test.ts,
+          TanStack/form:packages/react-form/tests/public/submission-handling/SubmissionWizard.tsx,
+          TanStack/form:packages/react-form/tests/public/submission-handling/group-submission.spec.tsx,
+          TanStack/form:examples/react/standard-schema/package.json,
+        ],
+      requires: [],
+      purpose:
+        Integrate Standard Schema validation and use parsed submission output
+        while preserving editable form values.,
+    },
+    {
+      name: validation,
+      slug: validation,
+      domain: validation,
+      package: packages/form-core,
+      path: skills/validation/SKILL.md,
+      description:
+        'Use when configuring TanStack Form validation in any adapter:
+        submission and interaction timing, conditional checks, debouncing,
+        async checks, cross-field rules, reusable validator policies, or error
+        visibility.',
+      sources:
+        [
+          TanStack/form:examples/react/basic/src/index.tsx,
+          TanStack/form:packages/form-core/src/pipeline/validation/validation.public.ts,
+          TanStack/form:packages/form-core/src/pipeline/validation/formValidators.public.ts,
+          TanStack/form:packages/form-core/src/FormApi/errorVisibility.public.ts,
+          TanStack/form:packages/react-form/tests/public/error-visibility/*,
+          TanStack/form:packages/react-form/tests/public/validation-execution/*,
+          TanStack/form:packages/react-form/tests/public/submission-handling/group-submission.spec.tsx,
+        ],
+      requires: [],
+      purpose: 'Configure validation timing, conditional and async checks, field
+        errors, and error visibility through the shared form-core API.',
+    },
+  ]
