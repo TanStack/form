@@ -5,26 +5,32 @@ import { useField } from '../ReactForm/useField.lib'
 import { useValueFieldSubscription } from '../ReactForm/fieldSubscriptions.lib'
 import { Subscribe } from '../Subscribe.public'
 import { FieldContext } from './contexts.lib'
-import type { FieldOptionsScope } from '@tanstack/form-core/internals'
+import type {
+  AnyInternalFieldApi,
+  FieldOptionsScope,
+} from '@tanstack/form-core/internals'
 import type { FunctionComponent } from 'react'
 import type {
-  ReactFormFieldProps,
+  ReactFormArrayFieldProps,
   ReactFormGroupProps,
 } from '../ReactForm/Components.public'
 import type { InternalReactFormApi } from '../ReactForm/ReactFormApi.lib'
 
 type AnyFieldComponent = FunctionComponent<
-  ReactFormFieldProps<any, any, any, any, never, any, any, any>
+  ReactFormArrayFieldProps<any, any, any, any, never, any, any, any>
 >
 
 export function createFieldWithContext(
   form: InternalReactFormApi,
   scope: FieldOptionsScope,
-  useFieldSubscription = useValueFieldSubscription,
+  useFieldSubscription: (
+    fieldApi: AnyInternalFieldApi,
+    subscribeToMeta?: boolean,
+  ) => AnyInternalFieldApi = useValueFieldSubscription,
 ) {
   const TanStackFormField: AnyFieldComponent = (props) => {
     const fieldApi = useField({ ...props, form }, scope)
-    const field = useFieldSubscription(fieldApi)
+    const field = useFieldSubscription(fieldApi, props.subscribeToMeta)
 
     return (
       // eslint-disable-next-line @eslint-react/no-context-provider
