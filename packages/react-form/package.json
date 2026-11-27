@@ -40,7 +40,13 @@
   },
   "files": [
     "dist",
-    "skills"
+    "skills/async-initial-values",
+    "skills/app-forms",
+    "skills/form-context",
+    "skills/arrays",
+    "skills/field-groups",
+    "skills/subscriptions",
+    "skills/form-groups"
   ],
   "dependencies": {
     "@tanstack/form-core": "workspace:*",

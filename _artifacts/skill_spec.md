@@ -1,480 +1,187 @@
-# TanStack Form V2 Skill Spec
-
-Status: reviewed, Phase 5 finalized.
-
-This reviewed artifact follows the `pnpm intent:scaffold` domain-discovery workflow. It is intentionally adapter-first: user-facing guidance starts from `@tanstack/react-form`, with `@tanstack/form-core` used as the source of concepts and behavior rather than as a workflow entrypoint.
-
-## Scope
-
-In scope:
-
-- React form composition with `useForm`, `form.Field`, `form.ArrayField`, `form.Subscribe`, app-form helpers, and field groups.
-- Standard Schema-compatible schema usage.
-- Choosing between default form options, `strictSchema`, and `looseSchema`.
-- Query-like async defaults and mutation-like submit handling.
-- Error visibility callback workflows.
-- Split-form helper types and reusable validation or visibility policy modules.
-- Type error diagnosis for schema/form composition.
-- Authoring richer React examples.
-
-Out of scope for this pass:
-
-- Devtools as an entrypoint.
-- Migration guidance.
-- Schema metadata extraction, such as automatically deriving required labels.
-- TanStack Form owning transient or non-validation error state.
-- Teaching UI-library behavior as part of TanStack Form itself.
-- Solid-first coverage.
-
-## Hard Do Nots
-
-- Do not type assert to make TanStack Form code compile. The library is built around inference, and assertions are usually a sign that the code is fighting the API.
-- Do not write field names like ``name={`users[${index}].name` as const}``; `name` is inferred without the assertion.
-- Do not annotate render-prop children as `any`; field children already receive inferred field APIs.
-- Do not shim field prop types by hand, such as `{ value: string }`; use inferred render-prop types, `FieldWithValue<T>`, or `AnyFieldApi` when a reusable component needs an explicit field prop type.
-- Do not treat validation errors and transient errors as the same thing. Errors stored from validators or `onSubmit` block the user from submitting.
-- Do not store query/network/framework transient failures as form validation errors. Most query libraries already own transient error state; use that state instead.
-- Do not throw validation errors from validators or `onSubmit`; validation errors must be returned values, such as `createValidationError` or `parseIssues`.
-- Do not type a shared section as `form: FormA | FormB` where each form is a different `ReactFormType`; TypeScript cannot make sense of that union. Use field groups for shared sections that need to work across different forms.
-
-## Proposed Skills
-
-### 1. React Form Composition Setup
-
-Purpose: Help users build adapter-first React forms, reusable field components, app-form setups, field groups, arrays, and UI-library bindings.
-
-Primary APIs:
-
-- `useForm`
-- `ReactFormType`
-- `FieldWithValue`
-- `AnyFieldApi`
-- `formOptions`
-- `createFormHook`
-- `form.Field`
-- `form.ArrayField`
-- `form.Subscribe`
-- `form.FormGroup`
-- `withFields`
-
-Core guidance:
-
-- Start from `@tanstack/react-form`, not `@tanstack/form-core`.
-- Use render-prop field APIs and subscriptions for state reads.
-- Treat `useForm` and `useAppForm` as stable form creation hooks, not reactive state reads by themselves.
-- Use `useSelector` or `form.Subscribe` when component output must update in response to form state.
-- Use app-form helpers when an application wants reusable field and form components.
-- Keep shared form options submit-agnostic when child components need to accept forms with different `onSubmit` handlers.
-- Use `ReactFormType<typeof sharedFormOptions>` as one option for splitting a known form into child sections that receive the form as a prop.
-- Do not use unions like `ReactFormType<typeof formAOptions> | ReactFormType<typeof formBOptions>` for shared sections; use field groups when one section should bind into multiple different forms.
-- Use AppForm to reduce repeated field JSX boilerplate. Use split form sections to reduce component nesting. Use field groups for reusable sections that bind to different form paths or different forms.
-- Let field `name` props and render-prop children infer their types; use `FieldWithValue<T>` or `AnyFieldApi` for explicit reusable field component props.
-- `form.Field` may bind to an array value. It treats that array immutably like any other field value, so changing one element changes the field `value` and rerenders consumers of the whole array field.
-- Use `form.ArrayField` when the array is a rendering boundary for child fields or list items, and those child fields are the reactive units the example cares about.
-- Use array helpers for array mutations and reorders.
-
-Important failure modes:
-
-- Adding `as const`, `as any`, render-prop `field: any`, or other assertions to force form code to compile.
-- Shimming field prop types by hand instead of using inferred field types, `FieldWithValue<T>`, or `AnyFieldApi`.
-- Reading from the stable `useForm` or `useAppForm` return and expecting the component to re-render as form state changes.
-- Importing core directly in examples or application code.
-- Rendering app field components outside their required app-form or field context.
-- Making a reusable child form prop too specific by baking in an `onSubmit` type.
-- Splitting a form by hand-writing a large form prop type instead of deriving it from shared options with `ReactFormType`.
-- Typing a shared section as a union of multiple `ReactFormType` forms instead of using field groups.
-- Using `form.Field` to render a list of child fields, then being surprised that item changes rerender the whole array-value consumer.
-- Treating `form.ArrayField` as required for every array-typed value, instead of using it when the array will render child fields or list items.
-- Mutating arrays manually and desynchronizing values from field meta.
-
-Source trail:
-
-- `packages/react-form/src/ReactForm/Components.public.ts`
-- `packages/react-form/src/ReactForm/ReactFormApi.lib.tsx`
-- `packages/react-form/src/Subscribe.public.tsx`
-- `packages/react-form/src/ReactForm/fieldSubscriptions.lib.ts`
-- `packages/react-form/src/AppForm/createFormHook.public.ts`
-- `packages/react-form/src/AppForm/contexts.lib.ts`
-- `docs/reference/type-aliases/FieldWithValue.md`
-- `docs/reference/type-aliases/AnyFieldApi.md`
-- `docs/framework/react/reference/type-aliases/ReactFormType.md`
-- `packages/react-form/tests/submit-return.test-d.tsx`
-- `packages/form-core/src/FormApi/array-methods.lib.ts`
-- `packages/form-core/src/FormApi/FormApiArrayMethods.types.public.ts`
-- `packages/form-core/src/FieldApi/fieldState.lib.ts`
-- `examples/react/array/src/index.tsx`
-- `examples/react/basic-splitting-form/src/index.tsx`
-- `examples/react/basic-splitting-form/src/FormSection.tsx`
-- `examples/react/basic-splitting-form/src/StringField.tsx`
-- `examples/react/basic-splitting-form/src/FieldError.tsx`
-- `examples/react/ui-integration-shadcn/src/components/form/app-form.ts`
-
-### Cross-Cutting: Reusable Form Policies
-
-Purpose: Help agents recognize when form behavior should be extracted into a named reusable helper rather than repeated inline.
-
-Primary APIs:
-
-- `ReactFormType`
-- `createErrorVisibility`
-- `createValidator`
-- `createValidators`
-- shared `formOptions` / `appFormOptions`
-
-Core guidance:
-
-- Use `ReactFormType<typeof sharedFormOptions>` as the helper type for split form sections that receive a `form` prop.
-- Treat `ReactFormType` splitting as one composition option, not a general replacement for AppForm or field groups.
-- AppForm reduces repeated field JSX boilerplate; split sections reduce nesting in a known form; field groups cover shared sections across different forms or field paths.
-- Prefer form-level `errorVisibility` callbacks over scattered local patterns like `const showErrors = field.meta.isTouched && field.meta.isInvalid`.
-- Use helper functions mainly when a callback or validator config deserves a semantic name that preserves intent.
-- Extract validator configs with `createValidator` or `createValidators` when trigger timing, debounce, `bailIfInvalid`, or `skipOnSubmit` policy is complex enough to name.
-- Use comments or JSDoc on named helpers to explain behavior intent, such as why errors wait for blur or submit, or why a validator uses a `rewardEarlyPunishLate` policy.
-- Keep reusable policies value-agnostic unless they are intentionally tied to a specific form shape; inline callbacks are better when typed values are required.
-
-Important failure modes:
-
-- A split form loses field-name inference because the child prop type was hand-written.
-- A shared section accepts `FormA | FormB` and TypeScript cannot narrow field names or form methods enough to make the section usable.
-- Error display behavior is scattered through local `showErrors` variables instead of being controlled by form-level `errorVisibility`.
-- A complex visibility workflow is duplicated inline and later examples preserve code shape but lose the user-workflow reason.
-- Validator trigger settings are copied without explanation, so agents cannot tell whether `blur`, `change`, debounce, or `bailIfInvalid` is intentional.
-- A reusable visibility function tries to read a concrete `state.values.name` even though reusable visibility callbacks are form-agnostic.
-
-Source trail:
-
-- `examples/react/basic-splitting-form/src/FormSection.tsx`
-- `examples/react/basic-splitting-form/src/sharedForm.ts`
-- `packages/react-form/tests/submit-return.test-d.tsx`
-- `packages/form-core/tests/validation.test.ts`
-- `packages/form-core/tests/validation.test-d.ts`
-- `examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx`
-
-### 2. Choosing Form Options Modes
-
-Purpose: Help users decide between default `formOptions`, `strictSchema`, and `looseSchema`.
-
-Primary APIs:
-
-- `formOptions`
-- `formOptions.strictSchema`
-- `formOptions.looseSchema`
-- `appFormOptions`
-- `appFormOptions.strictSchema`
-- `appFormOptions.looseSchema`
-
-Core guidance:
-
-- Treat the option helpers as runtime identity helpers with type-level meaning.
-- Use default `formOptions` when the form should be inferred from `defaultValues`; the default values are taken at face value and that type flows into validators and callbacks.
-- Default `formOptions` is especially useful for callback-based validation because callback `value` is already typed from the form defaults.
-- Use `strictSchema` when the schema is the source of typing and acts as a transforming pipeline from input type to output type.
-- In `strictSchema`, `defaultValues` should type-check against the schema input type. If they do not align, the defaults should produce type errors.
-- Use `looseSchema` when the schema is a ruleset for confirming valid output, but editable defaults need nullable or undefined values, such as a date field that starts as `null`.
-- In `looseSchema`, default values must still align with the schema shape, but properties may also be `null` or `undefined` where editing requires it.
-- In both schema modes, callbacks may not have useful inference unless there is a schema in the validator array for the helper to infer from.
-- In both schema modes, `onSubmit` should read the parsed transform output from `validatorOutputs` rather than raw `value`.
-- Treat pipeline-vs-ruleset as TanStack Form guidance, not a Standard Schema concept. Standard Schema only gives the shared validation/typing interface.
-- Explain the mental model as: is this schema a pipeline of constraints/transforms, or a firewall that only lets valid values through?
-- List current Standard Schema-capable libraries as examples with a general leaning, not as hard categories.
-- Zod generally leans ruleset/firewall for form work, while explicit transforms/codecs can still make a Zod schema pipeline-like.
-- Valibot generally leans pipeline because its docs center `pipe` and validation/transformation actions.
-- ArkType is mixed: structural constraints often read like a firewall, while morphs/pipes can make it pipeline-like.
-- Effect Schema often leans pipeline/codec when used as an encoded-to-decoded boundary.
-
-Important failure modes:
-
-- Expecting `strictSchema` or `looseSchema` to add runtime validation by itself.
-- Using default `formOptions` while expecting the schema to be the source of the form type.
-- Using strict schema mode for a form whose editable UI states cannot satisfy the schema type.
-- Using `looseSchema` but providing default values that no longer match the schema shape at all.
-- Using schema modes without putting a schema in the validator array, then expecting callbacks to infer from that schema.
-- Using loose schema mode for a true pipeline and then reading raw `value` as if it were parsed output.
-- Reading `value` in `onSubmit` for schema-mode forms instead of reading the corresponding `validatorOutputs` entry.
-- Treating all Zod `input` and `output` differences as a real pipeline decision.
-
-Source trail:
-
-- `packages/form-core/src/utils.public.ts`
-- `packages/react-form/src/AppForm/appFormOptions.public.ts`
-- `packages/form-core/tests/validation.test.ts`
-- `packages/form-core/tests/validation.test-d.ts`
-- `examples/react/ui-integration-shadcn/src/app/booking/schema.ts`
-- `examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx`
-- `https://standardschema.dev/`
-- `https://zod.dev/library-authors`
-- `https://valibot.dev/guides/integrate-valibot/`
-- `https://arktype.io/docs/integrations`
-- `https://effect.website/docs/schema/standard-schema/`
-
-### 3. Schema Driven Forms
-
-Purpose: Help users take a Standard Schema-compatible schema and wire it into validation, field errors, submit output, and type inference.
-
-Primary APIs:
-
-- `validators`
-- `FormSubmitContext.validatorOutputs`
-- `parseIssues`
-- `createValidationError`
-
-Core guidance:
-
-- Configure schema validation through validators.
-- Extract reusable validator trigger configs with `createValidator` or `createValidators` when the behavior is complex enough to need a semantic name.
-- Read parsed schema output from `onSubmit` context's `validatorOutputs`; raw `value` remains form state.
-- Route submit validation errors as returned values through `createValidationError` or `parseIssues`; do not throw them.
-- Let Standard Schema issue paths route nested and array field errors when possible.
-- Keep UI metadata explicit or schema-library-specific; Standard Schema does not standardize it.
-
-Important failure modes:
-
-- Expecting schema output to replace form `value`.
-- Returning or throwing raw schema errors from submit code and expecting field errors.
-- Throwing validation errors instead of returning `createValidationError` or `parseIssues` values.
-- Manually mapping nested issue paths incorrectly.
-- Duplicating validator trigger, debounce, submit, or bail policy inline without documenting why that behavior exists.
-- Trying to build general UI metadata extraction from Standard Schema.
-
-Source trail:
-
-- `packages/form-core/src/standardSchema.public.ts`
-- `packages/form-core/src/standardSchema.lib.ts`
-- `packages/form-core/src/FormApi/FormApi.public.ts`
-- `packages/form-core/tests/validation.test.ts`
-- `packages/form-core/tests/FormApi/submission-handling.spec.ts`
-- `examples/react/field-groups/src/index.tsx`
-
-### 4. Query Backed Forms
-
-Purpose: Help users combine form state with query-like async defaults and mutation-like submit calls.
-
-Primary APIs:
-
-- `useForm({ defaultValues })`
-- `onSubmit`
-- `form.reset`
-- `createValidationError`
-- `parseIssues`
-
-Core guidance:
-
-- Do not feed maybe-undefined query data into the form by itself; choose an explicit default-values plan.
-- Approach 1: do not mount the fields until the query is finished. The whole form can also be gated so the first mounted form state is populated with correct data.
-- Approach 2: define a static shape-complete `emptyFormValues` object and pass defaults as `query.data ?? emptyFormValues`.
-- Neither approach is preferred globally; choose based on the desired loading and visual UI language.
-- Gating fields changes the UI because fields or the whole form appear only after data is ready. The fallback approach can render the form immediately, often with loading or placeholder state around it.
-- Update defaults when async data arrives and rely on touched-field preservation for user edits.
-- Separate transient errors from validation errors.
-- Use an async promise for the endpoint call inside `onSubmit` so `isSubmitting` reflects the request.
-- Catch submit failures only when the endpoint can return validation errors that should be converted into returned `createValidationError` or `parseIssues` values.
-- Transient submit failures may throw or reject; the form will set `isSubmitSuccessful` to false, and query/framework state should preserve the transient error details.
-- Leave transient query, network, and framework failures in the query/framework error state instead of converting them into form validation errors.
-- Use reset options deliberately when replacing both values and default baselines.
-
-Important failure modes:
-
-- Treating initial `undefined` query data as a final form shape.
-- Passing `query.data` directly as defaults without either gated mounting or an `emptyFormValues` fallback.
-- Gating fields without accounting for the different loading UI, or rendering fallback values without communicating that query data is still loading.
-- Overwriting touched user edits when async defaults arrive.
-- Starting an endpoint call inside `onSubmit` without returning or awaiting its promise, so `isSubmitting` does not cover the request.
-- Turning transient network or server failures into validation errors and accidentally blocking future submits.
-- Throwing validation errors from `onSubmit` instead of returning validation values.
-- Treating a rejected transient `onSubmit` as something that should produce visible field errors.
-
-Source trail:
-
-- `packages/react-form/tests/useForm.spec.tsx`
-- `packages/form-core/src/FormApi/FormApi.lib.ts`
-- `packages/form-core/src/FormApi/FormApi.public.ts`
-- `packages/form-core/tests/FormApi/default-value.spec.ts`
-- `packages/form-core/tests/FormApi/submission-handling.spec.ts`
-
-Open evidence gap: the IDE referenced `examples/react/tanstack-query/src/App.tsx`, but this checkout did not contain `examples/react/tanstack-query`.
-
-### 5. Error Visibility Workflows
-
-Purpose: Help users implement policies such as "show after blur", "show after submit", or "show after blur or submit".
-
-Primary APIs:
-
-- `errorVisibility`
-- `createErrorVisibility`
-- `createValidator`
-- `createValidators`
-- `fieldState.meta`
-- `state.submissionAttempts`
-- `form.FormGroup`
-
-Core guidance:
-
-- `errorVisibility` is callback-based.
-- Use form-level `errorVisibility` to control default visible-error behavior instead of scattering local checks like `field.meta.isTouched && field.meta.isInvalid`.
-- Reusable visibility policies created with `createErrorVisibility` should be value-agnostic.
-- Use `createErrorVisibility`, `createValidator`, and `createValidators` mainly when a policy benefits from a semantic name or intent-focused comments/JSDoc.
-- Inline callbacks can use the consuming form's typed values.
-- Visibility callbacks receive pre-filter field meta, not visible errors or validity.
-- Grouped forms scope submission attempts to the nearest group.
-
-Important failure modes:
-
-- Writing string presets such as `errorVisibility: 'touched'`.
-- Repeating local `showErrors` expressions across fields instead of setting the form's default error visibility behavior.
-- Inspecting `fieldState.meta.errors` or validity inside the visibility callback.
-- Expecting reusable `createErrorVisibility` callbacks to know a concrete form value shape.
-- Copying complex visibility or validator policy inline without documenting the workflow intent.
-- Forgetting group-scoped submission attempts in wizard or section-level flows.
-
-Source trail:
-
-- `packages/form-core/src/validation.public.ts`
-- `packages/form-core/src/FieldApi/fieldState.lib.ts`
-- `packages/form-core/tests/validation.test-d.ts`
-- `packages/form-core/tests/FormApi/validation.spec.ts`
-- `packages/form-core/tests/FormGroupApi/FormGroupApi.spec.ts`
-- `examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx`
-
-### 6. Type Error Debugging
-
-Purpose: Help users interpret large TypeScript errors from schemas, option modes, field groups, reusable forms, and adapter APIs.
-
-Primary APIs and concepts:
-
-- `ReactFormType`
-- `formOptions`
-- `appFormOptions`
-- `createErrorVisibility`
-- `createValidators`
-- schema `strictSchema` / `looseSchema`
-- field component `strict` / `loose`
-- field group `strict` / `loose`
-- `DeepKeys`
-- `DeepValue`
-- public `atom` APIs
-
-Core guidance:
-
-- Do not use type assertions to silence TanStack Form type errors; preserve inference and fix the mismatched boundary.
-- Classify the error by boundary: schema option mode, schema output, submit return, reusable child form props, error visibility state, validator helper arity, form group scope, field group virtual path/binding, field component brand, deep-key path, or public/private API mismatch.
-- Treat a `ReactFormType` union in a shared section as a design issue, not a TypeScript problem to assert through; reach for field groups instead.
-- Do not confuse schema strict/loose with field component or field group strict/loose.
-- For long errors, find the first concrete path, value, validator, or submit-return mismatch and ignore the expanded generic machinery around it.
-- Reusable `createErrorVisibility` callbacks are form-agnostic; if a type error mentions `unknown` values, use an inline callback for form-specific values.
-- `createValidators` type errors often mean the number of run functions does not match the number of option configs.
-- FormGroup type errors often mean the code used a root-form path/value where the group expects group-scoped paths/values.
-- Field-group type errors often mean the code used real form paths where virtual paths are expected, passed an incomplete binding map, or chose `strict` when the real path is only loosely compatible.
-- Deep-key path errors usually point to path shape: arrays use bracket segments such as `users[${number}].name`, and array helpers only accept paths whose value includes an array.
-- Look for the first meaningful generic mismatch rather than the full expanded error wall.
-- Prefer source-backed explanation over broad TypeScript folklore.
-
-Important failure modes:
-
-- Adding assertions like `as const`, `as any`, or `(field: any)` instead of letting form names and children infer.
-- Hand-writing shim field prop types instead of using inferred props, `FieldWithValue<T>`, or `AnyFieldApi`.
-- Typing a shared section as `ReactFormType<typeof formAOptions> | ReactFormType<typeof formBOptions>`.
-- Expecting a reusable `createErrorVisibility` callback to read concrete form values.
-- Calling `createValidators` with fewer or more run functions than option configs.
-- Using root-form field names or values inside a `FormGroup` validator or grouped field.
-- Passing real form paths into a field group API where virtual paths are required.
-- Providing an incomplete `withFields` binding map, passing the internal defined-fields object as a binding, or omitting the required `form` prop.
-- Reading `form.store` or `field.store` instead of public `atom` APIs.
-- Treating `fieldComponent.strict/loose` as schema mode selection.
-- Passing a submit-specific form type to a reusable child that should accept several submit handlers.
-- Binding a strict field group slot to a field path whose value is only loosely compatible.
-
-Source trail:
-
-- `packages/form-core/tests/validation.test-d.ts`
-- `packages/form-core/tests/deep-keys.test-d.ts`
-- `packages/react-form/tests/submit-return.test-d.tsx`
-- `packages/react-form/tests/FormGroup.test-d.tsx`
-- `packages/react-form/tests/FieldGroupApi.test-d.tsx`
-- `packages/react-form/src/AppForm/getFormHookHelpers.public.ts`
-- `packages/react-form/src/FieldGroup/withFields.public.ts`
-
-### 7. Examples Authoring
-
-Purpose: Help Codex scaffold substantial maintainer examples for testing, future documentation, and user reference.
-
-Primary example areas:
-
-- Basic form and submit handling.
-- Schema-driven form.
-- Query-backed form.
-- Error visibility workflow.
-- App-form and UI-library integration.
-- Field groups.
-- Arrays and reorder behavior.
-
-Core guidance:
-
-- Examples are scaffolding targets for maintainers in this private repository, and future users experience them as reference examples.
-- Examples should be adapter-first and user-journey-shaped.
-- Combine features when real workflows combine them, such as schema mode plus async defaults plus submit validation plus visibility policy.
-- Keep boundaries explicit: TanStack Form handles validation and form state; query/framework code owns transient errors; UI libraries own visual behavior.
-- Show reactive state reads with `useSelector` or `form.Subscribe`; do not imply the stable hook return is itself reactive.
-- Prefer realistic examples over minimal API proofs once behavior has test coverage.
-
-Important failure modes:
-
-- Writing barren examples that resemble core tests more than user workflows.
-- Modeling complex DnD multi-list state as a single indexed array and creating UI races.
-- Letting native reset behavior fight form reset semantics.
-- Reading form state from the stable hook return without a selector or subscription, then wondering why UI does not update.
-- Reading submit state outside `form.Subscribe` and missing updates.
-
-Source trail:
-
-- `examples/react/basic/src/index.tsx`
-- `examples/react/array/src/index.tsx`
-- `examples/react/basic-splitting-form/src/index.tsx`
-- `examples/react/field-groups/src/index.tsx`
-- `examples/react/ui-integration-shadcn/src/app/booking/shared-form.tsx`
-- `examples/react/ui-integration-shadcn/src/app/booking/booking-form.tsx`
-- `examples/react/ui-integration-dnd-kit/src/singleList/index.tsx`
-- `examples/react/ui-integration-dnd-kit/src/twoLists/index.tsx`
-
-## Cross-Skill Relationships
-
-- React Form Composition Setup is the base skill for all example work.
-- Reusable Form Policies sits between React Form Composition Setup, Error Visibility Workflows, and Type Error Debugging.
-- Choosing Form Options Modes feeds Schema Driven Forms and Type Error Debugging.
-- Schema Driven Forms feeds Query Backed Forms when submit returns server-side validation.
-- Error Visibility Workflows is often layered on top of Schema Driven Forms and Query Backed Forms.
-- Examples Authoring should compose the other skills into realistic maintainer scaffolds that can later serve as references.
-
-## Cross-Skill Tensions
-
-- Schema strictness vs editable defaults: strict schema typing helps submit output, but editable forms often need nullable or undefined intermediate values.
-- Query loading UI vs form initialization: gated mounting gives correct first form state, while `emptyFormValues` lets the UI render immediately.
-- Validation state vs transient state: validation errors block submit, while query/network/framework failures should remain outside form validation state.
-- Reuse vs inference boundaries: reusable sections are valuable, but assertions, hand-written field props, or `ReactFormType` unions break the intended inference model.
-
-## Remaining Gaps
-
-- Query Backed Forms: the IDE referenced `examples/react/tanstack-query/src/App.tsx`, but this checkout did not contain `examples/react/tanstack-query`. Query-backed guidance is reviewed from tests and maintainer interview, and should be exercised by scaffolding a realistic example later.
-
-## Phase 5 Finalization
-
-Resolved in the detail interview:
-
-- Hard do-nots, especially no type assertions and no transient errors as validation errors.
-- Schema mode wording for default `formOptions`, `strictSchema`, and `looseSchema`.
-- Query-backed default-value strategies and their visual loading language.
-- Async `onSubmit` behavior, including `isSubmitting`, `isSubmitSuccessful`, returned validation values, and thrown transient failures.
-- Reusable policy helpers as semantic names for complex callbacks/configs.
-- AppForm, `ReactFormType` split sections, and field groups as separate composition tools.
-- Field vs `ArrayField`, especially array-as-immutable-value versus array-as-child-field-rendering-boundary.
-- Type-error debugging categories derived from the type tests.
-- Examples authoring as maintainer scaffolding for testing and future reference examples.
-- Standard Schema libraries as heuristic examples, with pipeline-vs-firewall/ruleset clearly marked as TanStack Form guidance rather than a Standard Schema concept.
-
-Reviewed acceptance criteria:
-
-- Skills never make `@tanstack/form-core` the user-facing workflow entrypoint.
-- Skills explain schemas through adapter APIs while preserving core semantics.
-- Skills distinguish validation errors from transient async failures.
-- Skills do not promise schema metadata extraction.
-- Skills do not use devtools or migration as current entrypoints.
-- Examples guidance is realistic enough for agents to build non-barren examples.
+# TanStack Form skill spec
+
+The first batch covers shared form configuration and validation in `@tanstack/form-core`. Every adapter can use this guidance through its form options and core dependency. React's public examples provide the current usage patterns. The second batch adds six React-specific workflows in `@tanstack/react-form`. The form-group batch adds multi-step validation and submission.
+
+## Domains and skill inventory
+
+| Domain             | Skill                  | Type      | Coverage                                                                                            |
+| ------------------ | ---------------------- | --------- | --------------------------------------------------------------------------------------------------- |
+| Form configuration | `form-options`         | core      | Inline versus shared options, inferred defaults, strict and loose schema helpers.                   |
+| Validation         | `schema-validation`    | core      | Standard Schema providers, issue routing, transforms, parsed submission output.                     |
+| Validation         | `validation`           | core      | Interaction and submission timing, predicates, async checks, error maps, watches, error visibility. |
+| Form configuration | `async-initial-values` | framework | Async defaults, touched edits, refetch policies, record changes, reset.                             |
+| React composition  | `app-forms`            | framework | Registered field/form controls, injected props, value matching, shared defaults.                    |
+| React composition  | `form-context`         | framework | Typed providers and hooks, nearest owner, explicit subscriptions.                                   |
+| React fields       | `arrays`               | framework | Array-valued controls, row fields, structural methods, stable keys, meta subscriptions.             |
+| React composition  | `field-groups`         | framework | Virtual field contracts, bindings, watched paths, composition, registered controls.                 |
+| React rendering    | `subscriptions`        | framework | Subscribe and useSelector, atom shapes, snapshot reads, component scope.                            |
+| React composition  | `form-groups`          | framework | Multi-step navigation, scoped submission, relative paths, complete validation after step unmount.   |
+
+The three core skills ship under `packages/form-core/skills/<name>/SKILL.md`; React skills ship under `packages/react-form/skills/<name>/SKILL.md`. Provider details live in `schema-validation/references/schema-providers.md`. The skills link to each other only when another task becomes relevant; none requires loading the full batch.
+
+## Consequential decisions
+
+- Keep the first batch in form-core, as requested. Examples export configuration without framework hooks or JSX. Consumers retain their adapter and can import shared helpers from its public package.
+- Target the checked-out v2.0.0-alpha.3 API. Use ordered validator arrays with `run`, rather than v1 event-keyed validator objects.
+- Use `formOptions` for extracted options and the schema helpers when schema input types should determine values. Both schema helpers retain runtime identity and require separate validator registration.
+- Do not supply explicit generic arguments to form creation or options helpers. Type application defaults or use schema helpers to guide inference. Application data types and supported form utility types remain appropriate.
+- Preserve incomplete input types with `looseSchema`. Obtain parsed or transformed values from submission `validatorOutputs`.
+- Use the existing schema provider. Zod, Valibot, and ArkType are direct runners in the public example; Effect uses `S.standardSchemaV1`.
+- Keep scheduling independent from visibility. Use submission attempts and interaction state for predicates. Use `bailIfInvalid` for checks that depend on earlier validation succeeding. Predicate callback counts and validation-state ordering are unspecified.
+- Keep validator and listener array lengths constant. Validators must not modify form values. Abort signals support cancellation and early exits.
+- Ship skills with the owning npm package. Optional GitHub installer and native plugin distribution remain unselected. No publication is part of this batch.
+
+## Failure modes and relationships
+
+The domain map records the source and remedy for each assessed failure:
+
+| Skill               | Failure modes                                                                                                                            |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `form-options`      | Supplying library-managed generic arguments; assuming schema helpers validate; losing inference in extracted options or narrow defaults. |
+| `schema-validation` | Expecting transforms in editable values; returning parsed data without `createOutput`.                                                   |
+| `validation`        | Using v1 configuration; disabling interaction triggers while expecting submission to stop; equating hidden errors with validity.         |
+
+Editable input and parsed output have different types and lifetimes. The options and schema skills explain that boundary together. Validation timing and error visibility are separate policies, so the schema skill routes scheduling questions to the validation skill.
+
+## Representative tasks and existing checks
+
+Reuse the existing checks. This batch changes guidance and packaging, so it does not add runtime tests that duplicate established behavior.
+
+| Task                                                               | Observable success                                                                                                                   | Existing check                                                                                                      |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- |
+| Share options while allowing schema unions and incomplete defaults | Adapter callbacks retain value and output types; invalid strict defaults fail type checks.                                           | Core `FormApi/formOptions.public.test-d.ts`; React `public/shared-form/WithValidators.test-d.tsx`.                  |
+| Validate a schema and save transformed data                        | Output types differ from editable input; invalid values block submission, including values from an unmounted wizard step.            | React `public/form-options/ValidatorOutputs.test-d.tsx`; `public/submission-handling/group-submission.spec.tsx`.    |
+| Configure validation and delayed error visibility                  | Mount errors and pending validation are visible when configured; hidden errors block submission and become visible after an attempt. | React `public/validation-execution/mount-validation.spec.tsx`; `public/error-visibility/error-visibility.spec.tsx`. |
+
+Compile all TypeScript skill examples against the public core entry point and installed schema providers. Run Intent structural validation and maintainer checks separately from runtime and type checks. Record the actual outcomes below after execution.
+
+## Discovery prompts for consumer evaluation
+
+Keep task success and observed skill loading as separate results. These prompts define cases; they are not recorded activation evidence.
+
+| Skill               | Should load                                                                                                                        | Adjacent task that should not load it                     |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| `form-options`      | “Share the signup configuration across two TanStack forms. The account type can be personal or business, and age starts empty.”    | “Style this React form's submit button.”                  |
+| `schema-validation` | “Use our existing Valibot schema with TanStack Form and submit its parsed result.”                                                 | “Design a database schema for account storage.”           |
+| `validation`        | “Validate this TanStack form on blur and after the first submit, debounce the username lookup, and hide errors until interaction.” | “Replace this React input with a different UI component.” |
+
+## Remaining work
+
+- The six React workflows are covered by the second batch, and the form-group batch covers scoped wizard validation and submission. Other adapters, server integrations, and a standalone listener workflow remain unassessed. Shared array mechanics may justify later core guidance; the React batch owns the rendering workflow.
+- The first consumer evaluation passed one positive task per skill, as recorded below. Adjacent negative activation tasks, repeated prompts, other agents or models, and a without-skill comparison remain unmeasured. These are possible follow-up evaluations.
+
+## Coverage and batch history
+
+### Initial shared-core batch — 2026-11-27
+
+- Scope: the three tasks selected in the conversation, owned by form-core and usable from every adapter.
+- Evidence: source revision `f8e2ce4aa3c0dd36e251892825b7e25a912cc628`, package version `2.0.0-alpha.3`, installed Intent `0.5.6`.
+- Reviewed examples: React basic, simple, Standard Schema, basic form splitting, booking schema options, and server-action schema options. Core public types and React public tests resolve behavioral details.
+- Added the three skills, their source mappings, provider reference, and this cumulative planning record.
+- Structural checks: Intent validated all three skills, including the provider reference. All 12 TypeScript examples compiled against the public core entry point and the installed Zod, Valibot, ArkType, and Effect providers.
+- Type checks: `pnpm --dir packages/form-core test:types --pretty false` and the corresponding React command passed.
+- Runtime checks: the focused React public suites for form options, error visibility, validation execution, and group submission passed all 58 tests across normal and Strict Mode runs.
+- Packaging: the core build and publint passed. A local package archive contains all three skills and the provider reference. Intent lists the three skills from that archive in a disposable consumer layout where core is a transitive dependency and its skill source is permitted.
+- Source review and `maintainer check` complete the mechanical handoff. They record this evidence; they do not establish fresh consumer agent success. Agent selection and task execution remain unverified.
+
+### Clarify inference mistakes — 2026-11-27
+
+- Maintainer feedback: explicitly identify patterns agents should avoid, particularly generic arguments on APIs designed for inference.
+- Added a focused Common mistakes section to `form-options`, pairing each mistake with its cause and supported alternative. Added an example with typed application defaults and inferred callbacks.
+- Preserved the boundary between library-managed call generics and application or utility types. The domain map records the additional failure mode; skill identities and source mappings in the tree remain accurate.
+- Verification: all 13 TypeScript examples compiled, including the new typed-defaults example. Intent structural validation passed. No library behavior changed, so the existing runtime and type test results above remain the source evidence. Fresh consumer agent behavior remains unverified.
+
+### First consumer evaluation — 2026-11-27
+
+- Setup: three fresh subagents with no authoring conversation, one per task. Each received a plain developer task, a disposable consumer project, the packed core package, the matching built React adapter, and the installed Intent runner. Task instructions limited access to that consumer and its installed dependencies. The grader, expected solutions, other consumers, and author repository were excluded from the task context. No model override was supplied.
+- The projects permit `@tanstack/form-core` as an Intent source, with React Form as the direct dependency. Agents selected skills from `intent list`; the prompt did not identify a skill to load. The runner recorded successful `load` commands.
+- Grader controls: known-good solutions passed the type checks and eight browser checks. Deliberately incorrect defaults failed the type grader. Omitting schema registration and submitting raw values, and enabling unconditional undebounced remote validation, failed all eight browser checks. The grader remained unchanged for consumer grading.
+
+| Consumer task                                                                                    | Observed skill loads                | Result                                                                                                                                                                                |
+| ------------------------------------------------------------------------------------------------ | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Share signup options with two plans, string interests, and numeric or empty age                  | `form-options`                      | Typed defaults and inferred API generics. The adapter consumer retained exact value types and rejected invalid field values.                                                          |
+| Validate person input and save parsed values without changing editable strings                   | `schema-validation`, `form-options` | Invalid submission exposed field errors. Valid submission saved a trimmed name and numeric age while preserving input strings.                                                        |
+| Configure conditional username checks, visibility, debouncing, and cancellable availability work | `validation`, `form-options`        | Local errors blocked submission without a remote lookup. Blur and changes after submission triggered the expected availability checks, with interaction debounce and an abort signal. |
+
+- All three agents' own TypeScript checks passed. The separate consumer type grader passed. Four runtime scenarios passed in both normal and Strict Mode, for eight passing browser checks. Manual inspection found no explicit library-managed call generics or `any` casts in the solutions.
+- The evaluated skill hashes matched the working tree. Guidance changes were unnecessary. The domain map resolves the assessed positive-task gap and records broader evaluation as remaining work. Skill identities, prerequisites, and source mappings in the tree remain accurate without changes.
+- Temporary prompts, source fixtures, grading code, solution diffs, command traces, skill hashes, and `results.json` are under `/tmp/tanstack-form-intent-evaluation/`. They are disposable evaluation artifacts, not a permanent test suite.
+- Scope: one observed positive attempt per task with normal Intent bootstrap instructions. Adjacent negative activation prompts and a without-skill baseline were not run, so these results do not measure broader activation accuracy or improvement over unaided agents.
+
+### React workflow batch — 2026-11-27
+
+- Scope: the six React tasks agreed in the conversation. Context remains separate from app forms because sharing a concrete form and registering reusable controls are independently useful tasks. Field groups cover reusable mapped fields; scoped form-group validation and submission remain future work.
+- Evidence: source revision `161624f8048a5ec91e895ef8282644d3c101b218`, package version `2.0.0-alpha.3`, installed Intent `0.5.6`.
+- Every entry point has a complete example and no required skill dependency (`requires: []`). Core options and validation are conditional handoffs through their package-qualified Intent identities. React skills link to each other only when their task needs that guidance. No reference files or bundled scripts are needed.
+- Keep data fetching in the existing server-state layer. Updated defaults preserve touched values; switching records needs a keyed editor or deliberate reset. Do not prescribe reset on every refetch.
+- Register v2 controls through `getFormHookHelpers`, `fieldComponent`, and `formComponent`. Use the existing app hook, retain component inference, and use its `appFormOptions` and `defineAppFieldGroup` when those types matter.
+- Typed context helpers share one runtime form context. The nearest compatible owner supplies the form; a typed context is not a separate runtime channel and does not subscribe snapshot reads.
+- Use regular fields for whole-array controls and `ArrayField` for item fields. Keep stable item keys and indexed field paths. Structural methods retain item field state; array metadata requires its own subscription.
+- Field-group atoms contain typed virtual values directly. Their `Subscribe` selectors receive parent form state with unknown values. Watches and field methods use virtual paths inside the section.
+- Preserve the existing package-only distribution. The React package allowlist now includes the six skill directories. No documentation generation, dependency installation, publication, staging, or commits are part of this batch.
+- Verification: Intent structural validation passed all six skills; all eight TypeScript/TSX examples compiled against the packed public React API; React type checks passed; 64 relevant public browser tests passed across normal and Strict Mode. The local archive includes all six skills and their relative links resolve in the installed layout.
+- Consumer task checks reuse the repository's Vitest Browser Mode setup in disposable projects, following the first batch's evaluation approach instead of adding library regression tests for guidance-only changes.
+
+Representative React tasks and source checks:
+
+| Skill                  | Observable result                                                                             | Existing evidence                                                              |
+| ---------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `async-initial-values` | Loaded defaults fill untouched fields; edits survive refresh; a new record gets fresh values. | Async defaults guide, query integration example, touched-state public cases.   |
+| `app-forms`            | Registered fields preserve value types and each prepared control uses its owning form.        | Public field-components and form-components runtime and type cases.            |
+| `form-context`         | Typed descendants share the right form and subscribed previews update.                        | Public context types and factory; disposable consumer runtime and type checks. |
+| `arrays`               | Rows retain values and field state when moved or removed; meta output updates.                | Core array method cases and React array-field-subscriptions cases.             |
+| `field-groups`         | One section works across value shapes and watches the mapped dependency.                      | Public field-group cases and reusable range examples.                          |
+| `subscriptions`        | Repeated edits update previews and derived output through the right source shape.             | Public Subscribe source, migration guide, array subscription cases.            |
+
+Discovery cases retained for this batch:
+
+| Skill                  | Should load                                                                                                         | Adjacent task that should not load it                                |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `async-initial-values` | “Load the selected customer's data into this React editor, keep edits during refresh, and switch customers safely.” | “Add a required-name validator to this already populated form.”      |
+| `app-forms`            | “Share our text inputs and reset controls across React TanStack forms.”                                             | “Pass this one form to an extracted section component.”              |
+| `form-context`         | “Let deeply nested React components access the same typed form without threading it through props.”                 | “Create a reusable range section for several unrelated form shapes.” |
+| `arrays`               | “Add, remove, and reorder editable people rows while keeping the right values attached.”                            | “Add spacing between existing form fields.”                          |
+| `field-groups`         | “Reuse this date-range section when each form stores start and end at different paths.”                             | “Submit just the current wizard step.”                               |
+| `subscriptions`        | “The input changes but its name-length preview stays stale after another edit.”                                     | “Choose when the username availability check should run.”            |
+
+Positive combined tasks exercise two skills per consumer. Adjacent negative activation prompts, independent repetitions, and a without-skill comparison remain unmeasured unless explicitly recorded below.
+
+React fresh-consumer evaluation:
+
+- Three fresh subagents received only a plain developer task, the isolated project, installed public packages, and the normal Intent list/load entry point. The authoring conversation, repository, sibling consumers, reference solutions, and grader were excluded from their task context. No model override was supplied.
+- The packed React adapter includes all six skills; core skills are available through its dependency. Intent lists and loads both permitted packages. Command traces record the successful skill loads below.
+- Controls: reference solutions passed the separate type grader and all 14 browser checks. Deliberately incorrect record switching, snapshot reads, reset control, array meta subscription, and watched paths caused 12 of those checks to fail; the two unaffected row-operation checks still passed. The grader was not changed for consumer grading.
+
+| Consumer task                                                   | Observed loads                                                     | Result                                                                                                                             |
+| --------------------------------------------------------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Async record editor and derived preview                         | React `async-initial-values`, `subscriptions`                      | Untouched values refresh, local edits remain, switching records creates fresh values, repeated edits update the preview.           |
+| Shared registered controls and typed descendant access          | React `app-forms`, `form-context`                                  | String-only injected controls retain props and value types; descendants share the correct form; each reset affects its own editor. |
+| Reusable range sections in editable rows and another form shape | React `field-groups`, `arrays`, `subscriptions`; core `validation` | Row operations preserve edited values; virtual previews and array meta react; watched validation maps correctly for both shapes.   |
+
+- All three consumers' TypeScript checks passed. The separate type grader passed, including seven expected rejection cases for component props, field value types, context paths/providers, and bindings. All 14 browser checks passed in normal and Strict Mode. Inspection found no explicit library-managed call generics or `any` casts in the solutions.
+- All evaluated skill hashes match the final working tree, and relative React skill links resolve in the packed layout. No guidance changes were needed after the consumer runs.
+- Prompts, starter contracts, protected grading code, reference solutions, negative-control logs, solution diffs, successful-load traces, package archive, skill hashes, and `results.json` are under `/tmp/tanstack-react-intent-evaluation/`. They are disposable evaluation artifacts.
+- This verifies one positive combined task per consumer, covering all six React skills. Negative activation cases, repetitions, and a without-skill baseline remain unmeasured; these observations do not establish broader discovery accuracy or improvement over unaided agents.
+- Validator compatibility: the generic skill-creator checker rejects Intent's `sources` and `requires` frontmatter extensions. The installed Intent validator is authoritative for this package format and passes all six skills without warnings.
+
+### App-form default example — 2026-11-27
+
+- Maintainer feedback: use `errorVisibility` as the representative application default. The app-forms example now sets `defaultFormOptions.errorVisibility` to show field errors after blur or a submission attempt, with a reminder that hidden errors still block submission.
+- This replaces the example's `errorBoundary` setting; it changes skill guidance without changing library behavior. Skill identity, task coverage, source mappings, and prerequisites remain accurate in the domain map and tree.
+- The earlier consumer evaluation remains evidence for registered controls and form ownership. It did not exercise this default policy. The revised example is checked separately against the public API and existing visibility tests.
+- Verification: the revised example type-checks against the public React entry point; all 10 focused default-option and error-visibility browser checks pass across normal and Strict Mode; Intent validates the six React skills.
+
+### Form-group wizard skill — 2026-11-27
+
+- Scope: `@tanstack/react-form#form-groups` covers multi-step forms, step validation and submission, retained values during navigation, relative error paths, and final validation after earlier steps unmount. This completes the dedicated form-group workflow previously listed as future work.
+- Evidence: source revision `161624f8048a5ec91e895ef8282644d3c101b218`, package version `2.0.0-alpha.3`, installed Intent `0.5.6`. Sources include the multi-step wizard, public group API and components, group submission checks, and full-path group field fixture.
+- Keep one parent form mounted. Advance only from the group's validated `onSubmit`. The last step awaits parent submission, and only the parent callback saves the complete form. Reuse the step schemas in a complete parent validator because parent submission excludes group validators and earlier field validators disappear on unmount.
+- Keep `field-groups` for reusable virtual bindings and `form-groups` for scoped submission. The new skill is self-contained with `requires: []`; schema providers, advanced validation, subscriptions, registered controls, and reusable sections are conditional handoffs.
+- Package-only distribution continues. No library behavior, generated documentation, repository dependency changes, publication, staging, or commits are part of this batch.
+- Representative task: build a two-step checkout with independent validation, Back navigation, retained edits, and final validation of a value changed after its step unmounts. Should load: “Build a checkout wizard that validates each page before Next and saves all pages at the end.” Adjacent should not load: “Reuse this address section at different paths in several forms.”
+- Verification: Intent validates all seven React skills; the exact published example and adapted checkout fixture compile against the packed public API. Core and React builds pass, including publint. All 56 focused public group-submission and group-event browser checks pass across normal and Strict Mode.
+- The disposable reference checkout passes eight browser checks: invalid steps block advancement, later invalid steps do not block Next, Back retains edits, a changed value from an unmounted step blocks final saving, and asynchronous saving receives both addresses once. Removing the complete parent validator makes the unmounted-step case fail in both modes. The initial reference run exposed errors inside the input label changing its accessible name; the skill now renders errors outside the label, and all eight checks pass.
+- One fresh consumer received only the task, installed public packages, and normal Intent discovery. It selected `@tanstack/react-form#form-groups` and `@tanstack/form-core#validation`, implemented the wizard without library casts or explicit library-managed call generics, and passed its TypeScript check and all eight unchanged browser checks. It reloaded the final skill after the accessibility correction and confirmed its existing implementation already used separate labels and errors.
+- The final local package archive contains the new skill. Its relative React links resolve in the installed layout. The domain map records coverage, failure modes, relationships, and the consumer result; the tree records package ownership, sources, purpose, and no prerequisites.
+- Task prompts, reference and incorrect solutions, protected checks, consumer implementation, discovery cases, and package archive are under `/tmp/tanstack-form-groups-evaluation/`. This is one positive consumer attempt. Negative discovery cases, repeated attempts, and a without-skill comparison remain unmeasured.
+- Validator compatibility remains unchanged: skill-creator's generic checker rejects Intent's `sources` and `requires` extensions. Intent's installed validator supports this format and passes without warnings.

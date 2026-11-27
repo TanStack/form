@@ -175,6 +175,9 @@ importers:
       '@tanstack/eslint-config':
         specifier: 0.4.0
         version: 0.4.0(@typescript-eslint/utils@8.66.0(eslint@10.8.1(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint-import-resolver-node@0.3.10(supports-color@7.2.0))(eslint@10.8.1(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
+      '@tanstack/intent':
+        specifier: ^0.5.6
+        version: 0.5.6
       '@tanstack/typedoc-config':
         specifier: 0.3.4
         version: 0.3.4(typescript@6.0.3)
@@ -6916,6 +6919,11 @@ packages:
   '@tanstack/history@1.162.1':
     resolution: {integrity: sha512-DR9t6lfLVdrjgCwpglrR9DR7Ok8/HlXjcOE+goWXF3zyuLUO/ug7vMbSFxTqrQTtbRghJfyhmIZ0S6LhPIy44w==}
     engines: {node: '>=20.19'}
+
+  '@tanstack/intent@0.5.6':
+    resolution: {integrity: sha512-9Ta/GMGPcqBIqlbrqeYyqBVKEP7XyAXy6nn90bPiE2oHB6KPgjEweUbHNXLQ6Pim01VtMMNf0dmUFMGKKHXmlw==}
+    engines: {node: '>=20.12.0'}
+    hasBin: true
 
   '@tanstack/lit-store@0.14.1':
     resolution: {integrity: sha512-YzcmHhuH9siOvFiEH56HIQqkipkPaUJ3weC0jVKe8l3AZ2autYnpMGNvCG5tZFgmdsmvxr6W01zcW+yLlsQ9Tg==}
@@ -18072,6 +18080,8 @@ snapshots:
       - typescript
 
   '@tanstack/history@1.162.1': {}
+
+  '@tanstack/intent@0.5.6': {}
 
   '@tanstack/lit-store@0.14.1(lit@3.3.3)':
     dependencies:

@@ -1,0 +1,617 @@
+{
+  "schemaVersion": 1,
+  "baseline": "f8e2ce4aa3c0dd36e251892825b7e25a912cc628",
+  "items": {
+    "skill:packages/form-core/skills/form-options/SKILL.md": {
+      "fingerprint": "6a721d689a700fef421f36e97668c14dcfe1c3abf7a02105af5ae400cb8a02c2",
+      "snapshot": {
+        "examples/react/basic-splitting-form/src/sharedForm.ts": "642fed4bf62172f0b194d7671752befcf6553d16ae6de25710ca4fd90652e467",
+        "packages/form-core/skills/form-options/SKILL.md": "018cb47c5c4c5c15cc36dee19149cc7eebc14d5b0de98b780fb124d8f454c049",
+        "packages/form-core/src/FormApi/formOptions.public.ts": "fa5944475b0f4c396f22c2d9c73262fa7f6c03917c0a4e47be3db22062b069b4",
+        "packages/form-core/tests/FormApi/formOptions.public.test-d.ts": "e86cb14e4e0c360c3afe15a666b22104184519f09217dc346236cd56481be299",
+        "packages/react-form/src/ReactForm/formType.public.ts": "0ec2c88a6b793234a60b0de30b9dcbd8131d0d8f765048134290339e8a4483ba",
+        "packages/react-form/src/ReactForm/useForm.public.ts": "8cf9f0f57489bac9e6ab33b2674c6a3d49bf6e292ca074a0f1997ccb899b28ce"
+      },
+      "head": "f8e2ce4aa3c0dd36e251892825b7e25a912cc628",
+      "outcome": "updated",
+      "reason": "Made the no-explicit-generics rule explicit in form-options with a Common mistakes table, reasons, supported alternatives, and typed application defaults. Verified library-managed generic parameters in the core options API and React form creation API, and distinguished supported ReactFormType utility arguments. Reconciled the domain map and spec, and synchronized the tree source mappings. All 13 TypeScript examples compiled and Intent structural validation passed. This prose-only update leaves library behavior unchanged; prior core/React type checks and 58 public React tests remain source evidence. Fresh consumer agent behavior remains unverified.",
+      "evidence": [
+        "Changed: packages/form-core/skills/form-options/SKILL.md, packages/react-form/src/ReactForm/formType.public.ts, packages/react-form/src/ReactForm/useForm.public.ts at f8e2ce4aa3c0dd36e251892825b7e25a912cc628"
+      ]
+    },
+    "skill:packages/form-core/skills/schema-validation/SKILL.md": {
+      "fingerprint": "40b28f324eb73f22443476287685be025c0dc28ef99263521476062a5a1b2a40",
+      "snapshot": {
+        "examples/react/next-server-actions-zod/src/app/shared-code.ts": "5ab18c120bd3ac6190d8613b1ac53010225fd877438dcca00b2b859ad1e17fb8",
+        "examples/react/standard-schema/package.json": "dcf4c41100c1f67e4abe7829daf02e1863caeb24225e7b71008ac7fb6d738843",
+        "examples/react/standard-schema/src/index.tsx": "778f6a9566935d05773ca0ed37157819473f77bb69bac76a1383df6c4084eef8",
+        "packages/form-core/skills/schema-validation/SKILL.md": "78da1684ee11baab00beaaf8669815b0a44297c7d620d57ef44215c59f967a17",
+        "packages/form-core/skills/schema-validation/references/schema-providers.md": "bf19b6b3135ac2f0908e62d786153dfec4519307ab525a48e61e3885733c62e7",
+        "packages/form-core/src/pipeline/validation/standardSchema.lib.ts": "84cc59475d6e401c8c83ea593a2323e1aedc9f7bec7a134993472dae6873fc5f",
+        "packages/form-core/src/validation/results/parseIssues.lib.ts": "462173f9fedc39f83390cd4968ffd29e0763e708403466f5091f10e899737112",
+        "packages/form-core/tests/validation-output.test.ts": "2bb2d9a177a4fac12d57133d73cc122c3a57d480ccd827ad4ff54607c6e8f809",
+        "packages/react-form/tests/public/form-options/ValidatorOutputs.test-d.tsx": "0943b7b920ce0d1ce3442e31d6e89151316facf975f1e8a8418b8dfbda6c39c7",
+        "packages/react-form/tests/public/submission-handling/SubmissionWizard.tsx": "357224681ab34ce593320a50b2bb06e6df0918709e7f3b8aa26c2ddb7a55c46a",
+        "packages/react-form/tests/public/submission-handling/group-submission.spec.tsx": "36855ac232aeff68a89b645dd3ba4c2b56dbf33ff38d2c107d3cdabc813da97d"
+      },
+      "head": "f8e2ce4aa3c0dd36e251892825b7e25a912cc628",
+      "outcome": "updated",
+      "reason": "Authored the initial form-core batch for options, Standard Schema, and validation, and reconciled all three planning records against source revision f8e2ce4aa3c0dd36e251892825b7e25a912cc628 (v2.0.0-alpha.3). Intent validated 3 skills; all 12 TypeScript examples compiled with installed providers; core and React type checks passed; 58 focused public React tests passed in normal and Strict Mode. Core build and publint passed. The packed archive contains all skills and references; Intent discovers and loads them through a transitive core dependency in a disposable consumer layout. YAML, metadata, and packaged relative links passed. Fresh consumer agent task execution and activation remain unverified.",
+      "evidence": [
+        "Changed: packages/form-core/skills/schema-validation/SKILL.md, packages/form-core/skills/schema-validation/references/schema-providers.md at f8e2ce4aa3c0dd36e251892825b7e25a912cc628"
+      ]
+    },
+    "skill:packages/form-core/skills/validation/SKILL.md": {
+      "fingerprint": "ed8c04c1cab4952883461755e286ade6bbcbb553087987babb59c86a5548a5be",
+      "snapshot": {
+        "examples/react/basic/src/index.tsx": "dd77f336f998ec218737284fc0a5c99d18694ea1b0dffba49bdf0b724d5d2e61",
+        "packages/form-core/skills/validation/SKILL.md": "b620eeac7beb2dfa96d57f3df8d1ba37bc08138e705fe8831a926d3977eb9aaa",
+        "packages/form-core/src/FormApi/errorVisibility.public.ts": "58af5f76e996dec697b0ce238c77b9a8a1a578a30756020dd48c64eb9bbd11af",
+        "packages/form-core/src/pipeline/validation/formValidators.public.ts": "c77ad353c57f2b36f45ba0eedb840fcabeee7f529452143ba68483d8787756a2",
+        "packages/form-core/src/pipeline/validation/validation.public.ts": "390105cd217d03c0a5a2c79245ccadf88e584ce99f43c5f50d7c9ce905966701",
+        "packages/react-form/tests/public/error-visibility/SubmissionVisibility.tsx": "cf3663bcce0fa4edd188edc1be5644e661cc5f71bc09e56e904168f0d07fca4e",
+        "packages/react-form/tests/public/error-visibility/error-visibility.spec.tsx": "580d723ada4dde3eb3ba1f1b42c498cc3a65cdde8a3e24ad086a1def02ccd22a",
+        "packages/react-form/tests/public/submission-handling/group-submission.spec.tsx": "36855ac232aeff68a89b645dd3ba4c2b56dbf33ff38d2c107d3cdabc813da97d",
+        "packages/react-form/tests/public/validation-execution/PendingMountValidation.tsx": "ff8a0854685dc032fdb22727dc9bf395a316bb82818d1070018d00430e555d42",
+        "packages/react-form/tests/public/validation-execution/StandaloneValidation.tsx": "c214e3605472aa6453a94a50182dcfd6fe704c2a2493ec10fd90b8a6487cfaa2",
+        "packages/react-form/tests/public/validation-execution/SyncMountValidation.tsx": "4976ca71cb46ed2db53af344a24c3e8a7481757f75cba40e8aae27c026282a04",
+        "packages/react-form/tests/public/validation-execution/mount-validation.spec.tsx": "43545bff795f49478eac44c88522cf38effcbef21b39a206035349bbd5e08e05",
+        "packages/react-form/tests/public/validation-execution/standalone-validation.spec.tsx": "2c14086bf926991806d74a867b01ce79240573a4786aee276cf3b0ff287053fa"
+      },
+      "head": "f8e2ce4aa3c0dd36e251892825b7e25a912cc628",
+      "outcome": "updated",
+      "reason": "Authored the initial form-core batch for options, Standard Schema, and validation, and reconciled all three planning records against source revision f8e2ce4aa3c0dd36e251892825b7e25a912cc628 (v2.0.0-alpha.3). Intent validated 3 skills; all 12 TypeScript examples compiled with installed providers; core and React type checks passed; 58 focused public React tests passed in normal and Strict Mode. Core build and publint passed. The packed archive contains all skills and references; Intent discovers and loads them through a transitive core dependency in a disposable consumer layout. YAML, metadata, and packaged relative links passed. Fresh consumer agent task execution and activation remain unverified.",
+      "evidence": [
+        "Changed: packages/form-core/skills/validation/SKILL.md at f8e2ce4aa3c0dd36e251892825b7e25a912cc628"
+      ]
+    },
+    "planning:_artifacts": {
+      "fingerprint": "5f41ea3ac006ab17d0bc734594c581be1f4cdac3f9d20b00af8b09a2371ddb95",
+      "snapshot": {
+        "_artifacts/domain_map.yaml": "88500585b0255a035e9c69e232e78ab2c507acbff40826ead4145c50830644c6",
+        "_artifacts/skill_spec.md": "89fc3d60cda012bd2bba5a98c52a7ed3f5321f0f028d9acf9ca174ba4ac6237b",
+        "_artifacts/skill_tree.yaml": "0f1f0f9b369702389153e28b8123b18ee1b74282c544a5692112abaa9daa2f20",
+        "docs/arrays.md": "f62aa8f51c1317601d8dc440b924965582a1267d6e32d7606237b8e2247db469",
+        "docs/framework/react/guides/async-initial-values.md": "6535fc280ba695b8b917cbe11d2d5bee860116ddd7ed19e753fdf1e3ebadfc9d",
+        "docs/framework/react/guides/field-groups.md": "7772920189031aebf912fa46e6bf713c8989b05355b83cf4fe2e9648f4746d0f",
+        "docs/migrate-from-v1.md": "37c77dbcc536fb0d06c0cb32fa4ad02ef7374837b3c348b2ac56d7f6e4f2bd5b",
+        "examples/react/basic-splitting-form/src/sharedForm.ts": "642fed4bf62172f0b194d7671752befcf6553d16ae6de25710ca4fd90652e467",
+        "examples/react/basic/src/index.tsx": "dd77f336f998ec218737284fc0a5c99d18694ea1b0dffba49bdf0b724d5d2e61",
+        "examples/react/field-groups/src/fieldGroups/dateRange.tsx": "8fd9e8a4d365892a0f7d3be18fa25eca7c33f36f5dbf53a0743e61b9f638b45c",
+        "examples/react/field-groups/src/fieldGroups/fieldBounds.tsx": "6afc5b4a591858e8f0112be748e9fa808527050e0a037a55e12ae3a79eb6455c",
+        "examples/react/field-groups/src/fieldGroups/numberRange.tsx": "fd05d6caf09cf3f1e73450766881719250af5783ed8f3348dc0e99eed7f7d860",
+        "examples/react/large-form/src/features/people/emergency-contact.tsx": "d1711ff4981c9d914f40515f7c16e1ab9d0821427770a568c0fee24e0a5468e3",
+        "examples/react/large-form/src/hooks/form.tsx": "015e9876f64a2b6b7deffff033d47ba1920c93fe3be020864f1da75a3a50c04d",
+        "examples/react/multi-step-wizard/src/features/wizard/page.tsx": "ffa1a5c4bbb2ce41cd9d9f24e11924b9bb5c7239c657bf708796493045f24773",
+        "examples/react/multi-step-wizard/src/features/wizard/shared-form.tsx": "5102fda0362406eda755407b9a2d9b0f1cb628eabb859948fdd6ab499d3019cd",
+        "examples/react/multi-step-wizard/src/features/wizard/step1-subform.tsx": "f2315a309646db6a37b54ba50356597b6b1847ab54a018077476da904e0198d3",
+        "examples/react/multi-step-wizard/src/features/wizard/step2-subform.tsx": "00d082b60bb4d28f493f9270354f57f48b07bc1df9bbd132b77c60740e75012b",
+        "examples/react/next-server-actions-zod/src/app/shared-code.ts": "5ab18c120bd3ac6190d8613b1ac53010225fd877438dcca00b2b859ad1e17fb8",
+        "examples/react/query-integration/src/app.tsx": "515d1ef3b7fa3e4936c85c6bceac2952ccaf6c59b5e792745c5751b9e8eb7d06",
+        "examples/react/standard-schema/package.json": "dcf4c41100c1f67e4abe7829daf02e1863caeb24225e7b71008ac7fb6d738843",
+        "examples/react/standard-schema/src/index.tsx": "778f6a9566935d05773ca0ed37157819473f77bb69bac76a1383df6c4084eef8",
+        "packages/form-core/skills/form-options/SKILL.md": "018cb47c5c4c5c15cc36dee19149cc7eebc14d5b0de98b780fb124d8f454c049",
+        "packages/form-core/skills/schema-validation/SKILL.md": "78da1684ee11baab00beaaf8669815b0a44297c7d620d57ef44215c59f967a17",
+        "packages/form-core/skills/schema-validation/references/schema-providers.md": "bf19b6b3135ac2f0908e62d786153dfec4519307ab525a48e61e3885733c62e7",
+        "packages/form-core/skills/validation/SKILL.md": "b620eeac7beb2dfa96d57f3df8d1ba37bc08138e705fe8831a926d3977eb9aaa",
+        "packages/form-core/src/FormApi/array-methods.lib.ts": "64fd1f3c401f1781009a3b672048d02049d5ee3769120d228061c39ec1f82631",
+        "packages/form-core/src/FormApi/errorVisibility.public.ts": "58af5f76e996dec697b0ce238c77b9a8a1a578a30756020dd48c64eb9bbd11af",
+        "packages/form-core/src/FormApi/formOptions.public.ts": "fa5944475b0f4c396f22c2d9c73262fa7f6c03917c0a4e47be3db22062b069b4",
+        "packages/form-core/src/FormGroupApi/FormGroupApi.public.ts": "b0e0b27fcc06f5d2298bee317b6f19060c824db1163f5fa843ccd0f7417f641a",
+        "packages/form-core/src/pipeline/validation/formValidators.public.ts": "c77ad353c57f2b36f45ba0eedb840fcabeee7f529452143ba68483d8787756a2",
+        "packages/form-core/src/pipeline/validation/standardSchema.lib.ts": "84cc59475d6e401c8c83ea593a2323e1aedc9f7bec7a134993472dae6873fc5f",
+        "packages/form-core/src/pipeline/validation/validation.public.ts": "390105cd217d03c0a5a2c79245ccadf88e584ce99f43c5f50d7c9ce905966701",
+        "packages/form-core/src/validation/results/parseIssues.lib.ts": "462173f9fedc39f83390cd4968ffd29e0763e708403466f5091f10e899737112",
+        "packages/form-core/tests/FormApi/array-methods.lib.spec.ts": "0fd303e069876e7477f8f57a76b93f7aeb3d87c320ce1143dba88dee159bc2a5",
+        "packages/form-core/tests/FormApi/formOptions.public.test-d.ts": "e86cb14e4e0c360c3afe15a666b22104184519f09217dc346236cd56481be299",
+        "packages/form-core/tests/validation-output.test.ts": "2bb2d9a177a4fac12d57133d73cc122c3a57d480ccd827ad4ff54607c6e8f809",
+        "packages/react-form/skills/app-forms/SKILL.md": "3f0959569c5da8f4e17dd52f9ec3ec1999d8fe5b9ec36451df9b32d09e4d4adf",
+        "packages/react-form/skills/arrays/SKILL.md": "1ecc26df99c0bedf5abce92387076f1be2761fa092d04ab08c7628334963f012",
+        "packages/react-form/skills/async-initial-values/SKILL.md": "07b480b738e026f378709c5d6119663a8a1a130532d12bd22d9a88c55e2a8e4e",
+        "packages/react-form/skills/field-groups/SKILL.md": "86e32e5605177e572f45cb240cf3d8ab6e9b80e3fc0b2e18114a522fff63b349",
+        "packages/react-form/skills/form-context/SKILL.md": "44b5ee4e03c175f1ef85e16e8179fe3a78261fe670788fa7e469bab389c00989",
+        "packages/react-form/skills/form-groups/SKILL.md": "e368e88f8edde55be3bd418275f29958901f1eda2ba68d424719a6342e19e0c8",
+        "packages/react-form/skills/subscriptions/SKILL.md": "0ec26bfc342a28080d8b5b2420f2fe85c4fb89c380ad5720dc4ce80620ee6a18",
+        "packages/react-form/src/AppForm/contexts.lib.ts": "d200c9aa9eee48dd76cb2e57a685608a4f96aad33510408bda3ef7fd26ceda0f",
+        "packages/react-form/src/AppForm/createFormHook.public.ts": "71406c6b96d2600dccb8b15cfa323c9ce60b3cd54177ed986dda51c23db0e08f",
+        "packages/react-form/src/AppForm/helpers/fieldComponent.public.ts": "1c22cf9a8d850c5f9d41e500a30eda1878efdb767acc7ffff8613e9a58d4ce2c",
+        "packages/react-form/src/AppForm/helpers/formComponent.public.ts": "8dec34f94681867772253abec4929cca96c1b92d6da99f9bd94a24abafda7e0f",
+        "packages/react-form/src/AppForm/helpers/formContext.public.ts": "adfae599075a3831b71210ee393c8db9288bb3df09c1bd35271fbf2498621806",
+        "packages/react-form/src/AppForm/helpers/getFormHookHelpers.public.ts": "a4f7146f886ec062cc0f25c9198437367fe1aaf9a2bc1f8f887e9d20cf20df28",
+        "packages/react-form/src/AppForm/helpers/helperFactories.lib.tsx": "e767551979de0532f120351495d0917d8296d58012b3574e2cf1a47165b1f000",
+        "packages/react-form/src/FieldGroup/FieldGroupApi.public.ts": "94edfa36a4ba23132f96073168505bba3b21fa3cda274a97f025ee0af5ecb37c",
+        "packages/react-form/src/FieldGroup/withFields.public.ts": "269fe3eb2d94c773d37c30c8431c709ec1d33376fd218d891680dc3d5a2318a4",
+        "packages/react-form/src/ReactForm/Components.lib.tsx": "5a0e37e590d045ccb13f96686f0e509aaa676b20cb296be49bc4781c70293502",
+        "packages/react-form/src/ReactForm/Components.public.ts": "be39808d7cec4b814d5fcd74160a947839e3e81597e5d0fb46443c5e55f3d5ee",
+        "packages/react-form/src/ReactForm/ReactFormApi.lib.tsx": "f4c3b3dd565bef03ab62261dfddd578d8b6ec8eca499154638e55fa789257b93",
+        "packages/react-form/src/ReactForm/formType.public.ts": "0ec2c88a6b793234a60b0de30b9dcbd8131d0d8f765048134290339e8a4483ba",
+        "packages/react-form/src/ReactForm/useForm.public.ts": "8cf9f0f57489bac9e6ab33b2674c6a3d49bf6e292ca074a0f1997ccb899b28ce",
+        "packages/react-form/src/Subscribe.public.tsx": "0950e879f9d69e6168f8ce62d7bfcacfe3c60ed2daff4b1d3ded7f68dd374263",
+        "packages/react-form/tests/public/array-field-subscriptions/AppArrayMetaSubscriptions.tsx": "b1486a5bd7640494b3a53861262553cae4ebdac46747d112018ad1aa66324804",
+        "packages/react-form/tests/public/array-field-subscriptions/ArrayFieldSubscriptions.test-d.tsx": "d28e8e3dc6c16a32f82f26a4724af3cfcac46a057767b90917f8957b14ec2481",
+        "packages/react-form/tests/public/array-field-subscriptions/ArrayMetaSubscription.tsx": "9a88b9d63ef90fa9da640ef7bf3242735e9e19ca31c40a21b6a8f47f5166d330",
+        "packages/react-form/tests/public/array-field-subscriptions/GroupArrayMetaSubscriptions.tsx": "5369f1b15f0e9287b9ddbf34ecf17c4a960d9cd26e58afa80eec709a53f4ccec",
+        "packages/react-form/tests/public/array-field-subscriptions/array-field-subscriptions.spec.tsx": "5bc856ae88d2886c37b8c762f08c62cfba21bee56fd93c0e957bca93dfd7b440",
+        "packages/react-form/tests/public/error-visibility/SubmissionVisibility.tsx": "cf3663bcce0fa4edd188edc1be5644e661cc5f71bc09e56e904168f0d07fca4e",
+        "packages/react-form/tests/public/error-visibility/error-visibility.spec.tsx": "580d723ada4dde3eb3ba1f1b42c498cc3a65cdde8a3e24ad086a1def02ccd22a",
+        "packages/react-form/tests/public/field-components/DiscriminatedFieldProps.test-d.tsx": "4798972d30655cee4f7c938156f03f9422d070293a9b53481e43fbbb36f44414",
+        "packages/react-form/tests/public/field-components/FieldComponentInference.test-d.tsx": "00fde707fca380d2e0e4708b0ef4517b6ffd49bf7dfa8868ab71933e759683f6",
+        "packages/react-form/tests/public/field-components/FieldComponentInjection.test-d.tsx": "fb86e34d63414b111c8bd298cdad8a5ff5cfc6f3c3dfc99293bd28f5bbaab952",
+        "packages/react-form/tests/public/field-components/FieldComponents.test-d.tsx": "0146ea07585b396d5dd0ec0ce715ff965265c7b7c19f0d7066760a327f17143f",
+        "packages/react-form/tests/public/field-components/FieldComponents.tsx": "37ba8d7e0bd890c0ad0ffbe35cb5f0ffde18005e5eba7b918144951138c8efab",
+        "packages/react-form/tests/public/field-components/field-components.spec.tsx": "f5666cb2ca00ea029f2ae5a606130363354fad9da3c2a42d13dd25afb840002d",
+        "packages/react-form/tests/public/field-groups/BoundFieldMeta.tsx": "c911b650ae443f5fa1b7accf9e5c0917b45b57b937764bf4932691701f674094",
+        "packages/react-form/tests/public/field-groups/DiscriminatedFieldGroupProps.test-d.tsx": "c733ab3dd7b8f7016e44b1f2e68a65630035e2634e485602fb7dbc3613012ee6",
+        "packages/react-form/tests/public/field-groups/MemoizedFieldGroup.tsx": "c92a51ac28a42f337a0dce51867eb3d07773cca0ff79a39994278c087fa848dc",
+        "packages/react-form/tests/public/field-groups/field-groups.spec.tsx": "332aa8911d3e912bc5f888d1c53ac7251f2b4f9ee367eb44465de36a865bd413",
+        "packages/react-form/tests/public/form-components/DiscriminatedFormProps.test-d.tsx": "b9f68d4787a47c03a9f1a30d0e1cbfd75915eee3a2be51434aa3085a6c2aa8ba",
+        "packages/react-form/tests/public/form-components/FormComponentProps.test-d.tsx": "b6fb622e85d5e520264e9a1ff302a6d0ca1bf8cc3a61c9391127b6c13f5564b6",
+        "packages/react-form/tests/public/form-components/FormComponentStatus.tsx": "c271c41e6b485100ca0d42a54133f7abf9eeae94af02b3d33c7648a3e3d6bbf0",
+        "packages/react-form/tests/public/form-components/InheritedFormComponents.tsx": "126eaa364006d0937f61edbc1eaa14bc20ba40189673c020691253672a4489ad",
+        "packages/react-form/tests/public/form-components/LazyFormStatus.tsx": "707971a5e32e63748dd540c08e35941c30e38e191aff4a915dd5a3b1167b295c",
+        "packages/react-form/tests/public/form-components/MemoLazyFormComponents.tsx": "212368e1b34a83839304dbc824e4ac1b3de58b8fd4b43e1797035533ef529472",
+        "packages/react-form/tests/public/form-components/MissingFormOwner.tsx": "1a4b3204afbb3e4986bd235e5ba52b5a910fad454ad2ec2b51f3c90de20cbedb",
+        "packages/react-form/tests/public/form-components/MixedFormComponents.tsx": "66adb58cc8efb5c272e79929e933c7e6e382b2b78821c6a3c21881140e9cb86f",
+        "packages/react-form/tests/public/form-components/OwningForms.tsx": "f52dd771d593a64f697313899680e180c57502ade3e7ebec76721a65c86cbefb",
+        "packages/react-form/tests/public/form-components/RegisteredComponents.test-d.tsx": "e8a21420b4d2f4def3c5e4333888f38d2a23e6aeea53d02d1925db99a8d02cc3",
+        "packages/react-form/tests/public/form-components/SameHookComponents.test-d.tsx": "c6a1368c199dfe86fe047217e1b31ad99c4947a9645fe3f233bb3cb39ed72271",
+        "packages/react-form/tests/public/form-components/StableFormComponents.tsx": "8858d90b80878fac4df5aea40439fa2a9c30aeac5c7ab22702c553aacf5eb47b",
+        "packages/react-form/tests/public/form-components/form-components.spec.tsx": "0cb5305a4cf98d6d79990a12a4386eac68925d83c91b90a850d54ee5dc790759",
+        "packages/react-form/tests/public/form-options/ValidatorOutputs.test-d.tsx": "0943b7b920ce0d1ce3442e31d6e89151316facf975f1e8a8418b8dfbda6c39c7",
+        "packages/react-form/tests/public/group-events/FullPathGroupField.tsx": "ef5882921e8b6d63e6151c16fad0008075864e057a38ae4c4411af51f19ef2a2",
+        "packages/react-form/tests/public/submission-handling/SubmissionWizard.tsx": "357224681ab34ce593320a50b2bb06e6df0918709e7f3b8aa26c2ddb7a55c46a",
+        "packages/react-form/tests/public/submission-handling/group-submission.spec.tsx": "36855ac232aeff68a89b645dd3ba4c2b56dbf33ff38d2c107d3cdabc813da97d",
+        "packages/react-form/tests/public/touched-state/SubmissionTouch.tsx": "329e5d364957ba316ac08752babb1d0aff608633a120efe7b6c47bfb5122b56a",
+        "packages/react-form/tests/public/touched-state/SubmittedDefaults.tsx": "ce9656f04f81be86e886a0a8874d93079d46d611dfb675c5ba09b99242594127",
+        "packages/react-form/tests/public/touched-state/SubmittedGroupDefaults.tsx": "e243cb214cd00c11b54b00510d30bdbb7d6302b529c699d73cbfca81a87b0bd7",
+        "packages/react-form/tests/public/touched-state/touched-state.spec.tsx": "161276e68d034f5fa078f3727041dbe49bb0d0bb40ad030b8d1b9544c5503f57",
+        "packages/react-form/tests/public/validation-execution/PendingMountValidation.tsx": "ff8a0854685dc032fdb22727dc9bf395a316bb82818d1070018d00430e555d42",
+        "packages/react-form/tests/public/validation-execution/StandaloneValidation.tsx": "c214e3605472aa6453a94a50182dcfd6fe704c2a2493ec10fd90b8a6487cfaa2",
+        "packages/react-form/tests/public/validation-execution/SyncMountValidation.tsx": "4976ca71cb46ed2db53af344a24c3e8a7481757f75cba40e8aae27c026282a04",
+        "packages/react-form/tests/public/validation-execution/mount-validation.spec.tsx": "43545bff795f49478eac44c88522cf38effcbef21b39a206035349bbd5e08e05",
+        "packages/react-form/tests/public/validation-execution/standalone-validation.spec.tsx": "2c14086bf926991806d74a867b01ce79240573a4786aee276cf3b0ff287053fa"
+      },
+      "head": "161624f8048a5ec91e895ef8282644d3c101b218",
+      "outcome": "updated",
+      "reason": "Reconciled all three existing planning documents with the new React form-group workflow while preserving the prior core and six React skills, package-only distribution, evaluation history, and unassessed work.",
+      "evidence": [
+        "_artifacts/domain_map.yaml adds the form-groups tasks, sourced failure modes, related workflows, step-versus-parent validation boundary, and bounded positive consumer result. _artifacts/skill_spec.md extends the inventory and records decisions, current source/version, checks, and evaluation limits. _artifacts/skill_tree.yaml maps the new self-contained skill to packages/react-form with matching activation, purpose, sources, and no prerequisites. Intent sync reports no stale generated metadata; archive contains seven React skills. Existing entries and recorded decisions remain present."
+      ]
+    },
+    "skill:packages/react-form/skills/app-forms/SKILL.md": {
+      "fingerprint": "f8788975ef0045e00b30e7e60ad4be1cb041a9176fb8eac711d00e380a6e21ed",
+      "snapshot": {
+        "examples/react/large-form/src/hooks/form.tsx": "015e9876f64a2b6b7deffff033d47ba1920c93fe3be020864f1da75a3a50c04d",
+        "packages/react-form/skills/app-forms/SKILL.md": "3f0959569c5da8f4e17dd52f9ec3ec1999d8fe5b9ec36451df9b32d09e4d4adf",
+        "packages/react-form/src/AppForm/createFormHook.public.ts": "71406c6b96d2600dccb8b15cfa323c9ce60b3cd54177ed986dda51c23db0e08f",
+        "packages/react-form/src/AppForm/helpers/fieldComponent.public.ts": "1c22cf9a8d850c5f9d41e500a30eda1878efdb767acc7ffff8613e9a58d4ce2c",
+        "packages/react-form/src/AppForm/helpers/formComponent.public.ts": "8dec34f94681867772253abec4929cca96c1b92d6da99f9bd94a24abafda7e0f",
+        "packages/react-form/tests/public/field-components/DiscriminatedFieldProps.test-d.tsx": "4798972d30655cee4f7c938156f03f9422d070293a9b53481e43fbbb36f44414",
+        "packages/react-form/tests/public/field-components/FieldComponentInference.test-d.tsx": "00fde707fca380d2e0e4708b0ef4517b6ffd49bf7dfa8868ab71933e759683f6",
+        "packages/react-form/tests/public/field-components/FieldComponentInjection.test-d.tsx": "fb86e34d63414b111c8bd298cdad8a5ff5cfc6f3c3dfc99293bd28f5bbaab952",
+        "packages/react-form/tests/public/field-components/FieldComponents.test-d.tsx": "0146ea07585b396d5dd0ec0ce715ff965265c7b7c19f0d7066760a327f17143f",
+        "packages/react-form/tests/public/field-components/FieldComponents.tsx": "37ba8d7e0bd890c0ad0ffbe35cb5f0ffde18005e5eba7b918144951138c8efab",
+        "packages/react-form/tests/public/field-components/field-components.spec.tsx": "f5666cb2ca00ea029f2ae5a606130363354fad9da3c2a42d13dd25afb840002d",
+        "packages/react-form/tests/public/form-components/DiscriminatedFormProps.test-d.tsx": "b9f68d4787a47c03a9f1a30d0e1cbfd75915eee3a2be51434aa3085a6c2aa8ba",
+        "packages/react-form/tests/public/form-components/FormComponentProps.test-d.tsx": "b6fb622e85d5e520264e9a1ff302a6d0ca1bf8cc3a61c9391127b6c13f5564b6",
+        "packages/react-form/tests/public/form-components/FormComponentStatus.tsx": "c271c41e6b485100ca0d42a54133f7abf9eeae94af02b3d33c7648a3e3d6bbf0",
+        "packages/react-form/tests/public/form-components/InheritedFormComponents.tsx": "126eaa364006d0937f61edbc1eaa14bc20ba40189673c020691253672a4489ad",
+        "packages/react-form/tests/public/form-components/LazyFormStatus.tsx": "707971a5e32e63748dd540c08e35941c30e38e191aff4a915dd5a3b1167b295c",
+        "packages/react-form/tests/public/form-components/MemoLazyFormComponents.tsx": "212368e1b34a83839304dbc824e4ac1b3de58b8fd4b43e1797035533ef529472",
+        "packages/react-form/tests/public/form-components/MissingFormOwner.tsx": "1a4b3204afbb3e4986bd235e5ba52b5a910fad454ad2ec2b51f3c90de20cbedb",
+        "packages/react-form/tests/public/form-components/MixedFormComponents.tsx": "66adb58cc8efb5c272e79929e933c7e6e382b2b78821c6a3c21881140e9cb86f",
+        "packages/react-form/tests/public/form-components/OwningForms.tsx": "f52dd771d593a64f697313899680e180c57502ade3e7ebec76721a65c86cbefb",
+        "packages/react-form/tests/public/form-components/RegisteredComponents.test-d.tsx": "e8a21420b4d2f4def3c5e4333888f38d2a23e6aeea53d02d1925db99a8d02cc3",
+        "packages/react-form/tests/public/form-components/SameHookComponents.test-d.tsx": "c6a1368c199dfe86fe047217e1b31ad99c4947a9645fe3f233bb3cb39ed72271",
+        "packages/react-form/tests/public/form-components/StableFormComponents.tsx": "8858d90b80878fac4df5aea40439fa2a9c30aeac5c7ab22702c553aacf5eb47b",
+        "packages/react-form/tests/public/form-components/form-components.spec.tsx": "0cb5305a4cf98d6d79990a12a4386eac68925d83c91b90a850d54ee5dc790759"
+      },
+      "head": "161624f8048a5ec91e895ef8282644d3c101b218",
+      "outcome": "updated",
+      "reason": "Replaced the errorBoundary default example with defaultFormOptions.errorVisibility, showing errors after blur or a submission attempt. Explained that visibility does not permit invalid submission. The previous consumer run remains evidence for registered controls, while this example correction was verified with a public API type check and existing visibility tests.",
+      "evidence": [
+        "packages/react-form/skills/app-forms/SKILL.md and _artifacts/skill_spec.md; v2.0.0-alpha.3.",
+        "The revised full TSX example passed pnpm exec tsc --project /tmp/tanstack-app-form-default-check/tsconfig.json.",
+        "React default-options and error-visibility public suites passed all 10 checks across normal and Strict Mode.",
+        "Intent validated all 6 React skills. No library runtime code, activation descriptions, or task boundaries changed; a new consumer evaluation was not run for this illustrative default change."
+      ]
+    },
+    "skill:packages/react-form/skills/arrays/SKILL.md": {
+      "fingerprint": "50310247ea05d6741f2f6a967c789b4c392ed55d3d0fa588d7cdc620c3e6caf1",
+      "snapshot": {
+        "docs/arrays.md": "f62aa8f51c1317601d8dc440b924965582a1267d6e32d7606237b8e2247db469",
+        "packages/form-core/src/FormApi/array-methods.lib.ts": "64fd1f3c401f1781009a3b672048d02049d5ee3769120d228061c39ec1f82631",
+        "packages/form-core/tests/FormApi/array-methods.lib.spec.ts": "0fd303e069876e7477f8f57a76b93f7aeb3d87c320ce1143dba88dee159bc2a5",
+        "packages/react-form/skills/arrays/SKILL.md": "1ecc26df99c0bedf5abce92387076f1be2761fa092d04ab08c7628334963f012",
+        "packages/react-form/src/ReactForm/Components.public.ts": "be39808d7cec4b814d5fcd74160a947839e3e81597e5d0fb46443c5e55f3d5ee",
+        "packages/react-form/tests/public/array-field-subscriptions/AppArrayMetaSubscriptions.tsx": "b1486a5bd7640494b3a53861262553cae4ebdac46747d112018ad1aa66324804",
+        "packages/react-form/tests/public/array-field-subscriptions/ArrayFieldSubscriptions.test-d.tsx": "d28e8e3dc6c16a32f82f26a4724af3cfcac46a057767b90917f8957b14ec2481",
+        "packages/react-form/tests/public/array-field-subscriptions/ArrayMetaSubscription.tsx": "9a88b9d63ef90fa9da640ef7bf3242735e9e19ca31c40a21b6a8f47f5166d330",
+        "packages/react-form/tests/public/array-field-subscriptions/GroupArrayMetaSubscriptions.tsx": "5369f1b15f0e9287b9ddbf34ecf17c4a960d9cd26e58afa80eec709a53f4ccec",
+        "packages/react-form/tests/public/array-field-subscriptions/array-field-subscriptions.spec.tsx": "5bc856ae88d2886c37b8c762f08c62cfba21bee56fd93c0e957bca93dfd7b440"
+      },
+      "head": "161624f8048a5ec91e895ef8282644d3c101b218",
+      "outcome": "updated",
+      "reason": "Added the React workflow for whole-array controls versus editable rows, stable keys and indexed names, structural methods, and optional metadata subscription. Fresh consumer sections selected this skill through Intent and passed row moves/removals, empty-list insertion, and metadata displays.",
+      "evidence": [
+        "Source HEAD 161624f8048a5ec91e895ef8282644d3c101b218; @tanstack/react-form 2.0.0-alpha.3; installed Intent 0.5.6.",
+        "Intent validate packages/react-form/skills passed all 6 skills without warnings. All 8 complete TypeScript/TSX examples compiled against the packed public package. React package type check passed.",
+        "64 focused existing React public browser checks passed across normal and Strict Mode. Separate unchanged consumer grader passed its type checks (7 expected rejection cases) and all 14 browser checks across both modes.",
+        "Three fresh consumers selected all 6 React skills via normal Intent catalog/load commands. The packed skill hashes match the final working tree. Prompts, successful-load logs, reference and negative controls, solutions, and results.json are in /tmp/tanstack-react-intent-evaluation/.",
+        "Scope: one observed positive combined task per consumer, covering two React skills each. Adjacent negative activation, repetitions, and a without-skill baseline were not run."
+      ]
+    },
+    "skill:packages/react-form/skills/async-initial-values/SKILL.md": {
+      "fingerprint": "4cd344a3f9d3fbcf2aa844756fcf2ad5e9dc7121f28ec2d0e7bb4f30dd8e3c64",
+      "snapshot": {
+        "docs/framework/react/guides/async-initial-values.md": "6535fc280ba695b8b917cbe11d2d5bee860116ddd7ed19e753fdf1e3ebadfc9d",
+        "examples/react/query-integration/src/app.tsx": "515d1ef3b7fa3e4936c85c6bceac2952ccaf6c59b5e792745c5751b9e8eb7d06",
+        "packages/react-form/skills/async-initial-values/SKILL.md": "07b480b738e026f378709c5d6119663a8a1a130532d12bd22d9a88c55e2a8e4e",
+        "packages/react-form/src/ReactForm/ReactFormApi.lib.tsx": "f4c3b3dd565bef03ab62261dfddd578d8b6ec8eca499154638e55fa789257b93",
+        "packages/react-form/tests/public/touched-state/SubmissionTouch.tsx": "329e5d364957ba316ac08752babb1d0aff608633a120efe7b6c47bfb5122b56a",
+        "packages/react-form/tests/public/touched-state/SubmittedDefaults.tsx": "ce9656f04f81be86e886a0a8874d93079d46d611dfb675c5ba09b99242594127",
+        "packages/react-form/tests/public/touched-state/SubmittedGroupDefaults.tsx": "e243cb214cd00c11b54b00510d30bdbb7d6302b529c699d73cbfca81a87b0bd7",
+        "packages/react-form/tests/public/touched-state/touched-state.spec.tsx": "161276e68d034f5fa078f3727041dbe49bb0d0bb40ad030b8d1b9544c5503f57"
+      },
+      "head": "161624f8048a5ec91e895ef8282644d3c101b218",
+      "outcome": "updated",
+      "reason": "Added both supported React initialization patterns with complete defaults, touched-field-preserving refetches, and explicit record switching. Fresh consumer records selected this skill through Intent and preserved local edits while refreshing untouched values and replacing values for a new record.",
+      "evidence": [
+        "Source HEAD 161624f8048a5ec91e895ef8282644d3c101b218; @tanstack/react-form 2.0.0-alpha.3; installed Intent 0.5.6.",
+        "Intent validate packages/react-form/skills passed all 6 skills without warnings. All 8 complete TypeScript/TSX examples compiled against the packed public package. React package type check passed.",
+        "64 focused existing React public browser checks passed across normal and Strict Mode. Separate unchanged consumer grader passed its type checks (7 expected rejection cases) and all 14 browser checks across both modes.",
+        "Three fresh consumers selected all 6 React skills via normal Intent catalog/load commands. The packed skill hashes match the final working tree. Prompts, successful-load logs, reference and negative controls, solutions, and results.json are in /tmp/tanstack-react-intent-evaluation/.",
+        "Scope: one observed positive combined task per consumer, covering two React skills each. Adjacent negative activation, repetitions, and a without-skill baseline were not run."
+      ]
+    },
+    "skill:packages/react-form/skills/field-groups/SKILL.md": {
+      "fingerprint": "9bb3d9774d920fd180749dc4dd48affca80d66e77ab78d4821c43d5ebc10fd38",
+      "snapshot": {
+        "docs/framework/react/guides/field-groups.md": "7772920189031aebf912fa46e6bf713c8989b05355b83cf4fe2e9648f4746d0f",
+        "examples/react/field-groups/src/fieldGroups/dateRange.tsx": "8fd9e8a4d365892a0f7d3be18fa25eca7c33f36f5dbf53a0743e61b9f638b45c",
+        "examples/react/field-groups/src/fieldGroups/fieldBounds.tsx": "6afc5b4a591858e8f0112be748e9fa808527050e0a037a55e12ae3a79eb6455c",
+        "examples/react/field-groups/src/fieldGroups/numberRange.tsx": "fd05d6caf09cf3f1e73450766881719250af5783ed8f3348dc0e99eed7f7d860",
+        "examples/react/large-form/src/features/people/emergency-contact.tsx": "d1711ff4981c9d914f40515f7c16e1ab9d0821427770a568c0fee24e0a5468e3",
+        "packages/react-form/skills/field-groups/SKILL.md": "86e32e5605177e572f45cb240cf3d8ab6e9b80e3fc0b2e18114a522fff63b349",
+        "packages/react-form/src/FieldGroup/FieldGroupApi.public.ts": "94edfa36a4ba23132f96073168505bba3b21fa3cda274a97f025ee0af5ecb37c",
+        "packages/react-form/src/FieldGroup/withFields.public.ts": "269fe3eb2d94c773d37c30c8431c709ec1d33376fd218d891680dc3d5a2318a4",
+        "packages/react-form/tests/public/field-groups/BoundFieldMeta.tsx": "c911b650ae443f5fa1b7accf9e5c0917b45b57b937764bf4932691701f674094",
+        "packages/react-form/tests/public/field-groups/DiscriminatedFieldGroupProps.test-d.tsx": "c733ab3dd7b8f7016e44b1f2e68a65630035e2634e485602fb7dbc3613012ee6",
+        "packages/react-form/tests/public/field-groups/MemoizedFieldGroup.tsx": "c92a51ac28a42f337a0dce51867eb3d07773cca0ff79a39994278c087fa848dc",
+        "packages/react-form/tests/public/field-groups/field-groups.spec.tsx": "332aa8911d3e912bc5f888d1c53ac7251f2b4f9ee367eb44465de36a865bd413"
+      },
+      "head": "161624f8048a5ec91e895ef8282644d3c101b218",
+      "outcome": "updated",
+      "reason": "Added reusable virtual field contracts, binding maps, virtual watched paths, value subscription shapes, nested section composition, and app-field-group routing. Fresh consumer sections selected this skill through Intent and passed mapped validation and reactive previews for list rows and another form shape.",
+      "evidence": [
+        "Source HEAD 161624f8048a5ec91e895ef8282644d3c101b218; @tanstack/react-form 2.0.0-alpha.3; installed Intent 0.5.6.",
+        "Intent validate packages/react-form/skills passed all 6 skills without warnings. All 8 complete TypeScript/TSX examples compiled against the packed public package. React package type check passed.",
+        "64 focused existing React public browser checks passed across normal and Strict Mode. Separate unchanged consumer grader passed its type checks (7 expected rejection cases) and all 14 browser checks across both modes.",
+        "Three fresh consumers selected all 6 React skills via normal Intent catalog/load commands. The packed skill hashes match the final working tree. Prompts, successful-load logs, reference and negative controls, solutions, and results.json are in /tmp/tanstack-react-intent-evaluation/.",
+        "Scope: one observed positive combined task per consumer, covering two React skills each. Adjacent negative activation, repetitions, and a without-skill baseline were not run."
+      ]
+    },
+    "skill:packages/react-form/skills/form-context/SKILL.md": {
+      "fingerprint": "ee1176e1d614792157cc56198bc3e5b3825d466d1cc048958680fc6a18ce5a86",
+      "snapshot": {
+        "packages/react-form/skills/form-context/SKILL.md": "44b5ee4e03c175f1ef85e16e8179fe3a78261fe670788fa7e469bab389c00989",
+        "packages/react-form/src/AppForm/contexts.lib.ts": "d200c9aa9eee48dd76cb2e57a685608a4f96aad33510408bda3ef7fd26ceda0f",
+        "packages/react-form/src/AppForm/helpers/formContext.public.ts": "adfae599075a3831b71210ee393c8db9288bb3df09c1bd35271fbf2498621806",
+        "packages/react-form/src/AppForm/helpers/getFormHookHelpers.public.ts": "a4f7146f886ec062cc0f25c9198437367fe1aaf9a2bc1f8f887e9d20cf20df28",
+        "packages/react-form/src/AppForm/helpers/helperFactories.lib.tsx": "e767551979de0532f120351495d0917d8296d58012b3574e2cf1a47165b1f000",
+        "packages/react-form/src/ReactForm/formType.public.ts": "0ec2c88a6b793234a60b0de30b9dcbd8131d0d8f765048134290339e8a4483ba"
+      },
+      "head": "161624f8048a5ec91e895ef8282644d3c101b218",
+      "outcome": "updated",
+      "reason": "Added the typed context factory and provider workflow with registered component preservation, nearest-owner runtime scope, and explicit reactive reads. Fresh consumer composition selected this skill through Intent and passed descendant updates and independent editor resets plus context type rejection cases.",
+      "evidence": [
+        "Source HEAD 161624f8048a5ec91e895ef8282644d3c101b218; @tanstack/react-form 2.0.0-alpha.3; installed Intent 0.5.6.",
+        "Intent validate packages/react-form/skills passed all 6 skills without warnings. All 8 complete TypeScript/TSX examples compiled against the packed public package. React package type check passed.",
+        "64 focused existing React public browser checks passed across normal and Strict Mode. Separate unchanged consumer grader passed its type checks (7 expected rejection cases) and all 14 browser checks across both modes.",
+        "Three fresh consumers selected all 6 React skills via normal Intent catalog/load commands. The packed skill hashes match the final working tree. Prompts, successful-load logs, reference and negative controls, solutions, and results.json are in /tmp/tanstack-react-intent-evaluation/.",
+        "Scope: one observed positive combined task per consumer, covering two React skills each. Adjacent negative activation, repetitions, and a without-skill baseline were not run."
+      ]
+    },
+    "skill:packages/react-form/skills/subscriptions/SKILL.md": {
+      "fingerprint": "c6700c96845bc52c3eddce7771a12dbade799ab13aa0fd09ded7496e7be10f32",
+      "snapshot": {
+        "docs/migrate-from-v1.md": "37c77dbcc536fb0d06c0cb32fa4ad02ef7374837b3c348b2ac56d7f6e4f2bd5b",
+        "packages/react-form/skills/subscriptions/SKILL.md": "0ec26bfc342a28080d8b5b2420f2fe85c4fb89c380ad5720dc4ce80620ee6a18",
+        "packages/react-form/src/FieldGroup/FieldGroupApi.public.ts": "94edfa36a4ba23132f96073168505bba3b21fa3cda274a97f025ee0af5ecb37c",
+        "packages/react-form/src/ReactForm/Components.lib.tsx": "5a0e37e590d045ccb13f96686f0e509aaa676b20cb296be49bc4781c70293502",
+        "packages/react-form/src/ReactForm/Components.public.ts": "be39808d7cec4b814d5fcd74160a947839e3e81597e5d0fb46443c5e55f3d5ee",
+        "packages/react-form/src/Subscribe.public.tsx": "0950e879f9d69e6168f8ce62d7bfcacfe3c60ed2daff4b1d3ded7f68dd374263",
+        "packages/react-form/tests/public/array-field-subscriptions/AppArrayMetaSubscriptions.tsx": "b1486a5bd7640494b3a53861262553cae4ebdac46747d112018ad1aa66324804",
+        "packages/react-form/tests/public/array-field-subscriptions/ArrayFieldSubscriptions.test-d.tsx": "d28e8e3dc6c16a32f82f26a4724af3cfcac46a057767b90917f8957b14ec2481",
+        "packages/react-form/tests/public/array-field-subscriptions/ArrayMetaSubscription.tsx": "9a88b9d63ef90fa9da640ef7bf3242735e9e19ca31c40a21b6a8f47f5166d330",
+        "packages/react-form/tests/public/array-field-subscriptions/GroupArrayMetaSubscriptions.tsx": "5369f1b15f0e9287b9ddbf34ecf17c4a960d9cd26e58afa80eec709a53f4ccec",
+        "packages/react-form/tests/public/array-field-subscriptions/array-field-subscriptions.spec.tsx": "5bc856ae88d2886c37b8c762f08c62cfba21bee56fd93c0e957bca93dfd7b440"
+      },
+      "head": "161624f8048a5ec91e895ef8282644d3c101b218",
+      "outcome": "updated",
+      "reason": "Added focused Subscribe/useSelector guidance, v2 atom shapes, snapshot pitfalls, and array structure/value distinctions. Fresh consumers records and sections selected this skill through Intent and passed repeated-edit previews and derived output.",
+      "evidence": [
+        "Source HEAD 161624f8048a5ec91e895ef8282644d3c101b218; @tanstack/react-form 2.0.0-alpha.3; installed Intent 0.5.6.",
+        "Intent validate packages/react-form/skills passed all 6 skills without warnings. All 8 complete TypeScript/TSX examples compiled against the packed public package. React package type check passed.",
+        "64 focused existing React public browser checks passed across normal and Strict Mode. Separate unchanged consumer grader passed its type checks (7 expected rejection cases) and all 14 browser checks across both modes.",
+        "Three fresh consumers selected all 6 React skills via normal Intent catalog/load commands. The packed skill hashes match the final working tree. Prompts, successful-load logs, reference and negative controls, solutions, and results.json are in /tmp/tanstack-react-intent-evaluation/.",
+        "Scope: one observed positive combined task per consumer, covering two React skills each. Adjacent negative activation, repetitions, and a without-skill baseline were not run."
+      ]
+    },
+    "skill:packages/react-form/skills/form-groups/SKILL.md": {
+      "fingerprint": "5614e156792d481bd50da6b56c9ebf4b1a92bf6e4992c46aa1a3fc540a8fb060",
+      "snapshot": {
+        "examples/react/multi-step-wizard/src/features/wizard/page.tsx": "ffa1a5c4bbb2ce41cd9d9f24e11924b9bb5c7239c657bf708796493045f24773",
+        "examples/react/multi-step-wizard/src/features/wizard/shared-form.tsx": "5102fda0362406eda755407b9a2d9b0f1cb628eabb859948fdd6ab499d3019cd",
+        "examples/react/multi-step-wizard/src/features/wizard/step1-subform.tsx": "f2315a309646db6a37b54ba50356597b6b1847ab54a018077476da904e0198d3",
+        "examples/react/multi-step-wizard/src/features/wizard/step2-subform.tsx": "00d082b60bb4d28f493f9270354f57f48b07bc1df9bbd132b77c60740e75012b",
+        "packages/form-core/src/FormGroupApi/FormGroupApi.public.ts": "b0e0b27fcc06f5d2298bee317b6f19060c824db1163f5fa843ccd0f7417f641a",
+        "packages/react-form/skills/form-groups/SKILL.md": "e368e88f8edde55be3bd418275f29958901f1eda2ba68d424719a6342e19e0c8",
+        "packages/react-form/src/ReactForm/Components.public.ts": "be39808d7cec4b814d5fcd74160a947839e3e81597e5d0fb46443c5e55f3d5ee",
+        "packages/react-form/tests/public/group-events/FullPathGroupField.tsx": "ef5882921e8b6d63e6151c16fad0008075864e057a38ae4c4411af51f19ef2a2",
+        "packages/react-form/tests/public/submission-handling/group-submission.spec.tsx": "36855ac232aeff68a89b645dd3ba4c2b56dbf33ff38d2c107d3cdabc813da97d"
+      },
+      "head": "161624f8048a5ec91e895ef8282644d3c101b218",
+      "outcome": "updated",
+      "reason": "Added self-contained multi-step React form guidance: groups validate and submit individual steps, while the mounted parent validates every step and owns final saving. Paths, lifecycle, errors, navigation, and reactive group status follow the public v2 API.",
+      "evidence": [
+        "Verified v2.0.0-alpha.3 at 161624f8048a5ec91e895ef8282644d3c101b218 against the wizard sources, FormGroupApi.public.ts, Components.public.ts, group-submission.spec.tsx, and FullPathGroupField.tsx. Intent validates seven React skills. The exact skill example and reference/consumer checkouts pass TypeScript; 56 existing public group browser checks pass. Reference and fresh consumer each pass eight unchanged browser checks across normal and Strict Mode. Omitting parent validation fails the unmounted-step test in both modes. One fresh consumer selected form-groups and validation through Intent, then reloaded the final skill. Final archive and installed skill hashes match, and relative links resolve. Adjacent negative activation prompts, repetitions, and without-skill comparison were not run. Disposable evidence: /tmp/tanstack-form-groups-evaluation/results.json."
+      ]
+    },
+    "source:knip.json": {
+      "fingerprint": "0065b69f51d5416e8cc7d9e2ba5475ef1336f969ba3b7d665819cc75d15948cc",
+      "snapshot": {
+        "knip.json": "5ef9b1779ed8e8a2ef3a99883a500a2cc507109deda94616f52e8920196dc0ab"
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "no-change",
+      "reason": "knip.json now ignores @tanstack/intent because the dependency is used as a CLI by the Check Skills workflow rather than imported by application code. This fixes dependency analysis for Intent and does not change the public form API or require skill guidance changes.",
+      "evidence": [
+        "Maintainer confirmed that Knip needed fixing for Intent.",
+        "git diff origin/alpha HEAD -- knip.json shows only the addition of @tanstack/intent to root ignoreDependencies.",
+        "package.json declares @tanstack/intent as a devDependency; .github/workflows/check-skills.yml invokes the Intent reusable workflow, which uses the repository's installed CLI.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/choosing-form-options-modes/SKILL.md": {
+      "fingerprint": "faf77345c9e7cc8f8307237302e801489f25b1f26b64acccd72a976c899980c3",
+      "snapshot": {
+        "packages/react-form/skills/choosing-form-options-modes/SKILL.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/choosing-form-options-modes/SKILL.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/choosing-form-options-modes/references/schema-option-modes.md": {
+      "fingerprint": "8077f17276b1b0c3725d506dc17167efe65a93a90de9f6ea586d444af31acf91",
+      "snapshot": {
+        "packages/react-form/skills/choosing-form-options-modes/references/schema-option-modes.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/choosing-form-options-modes/references/schema-option-modes.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/choosing-form-options-modes/references/standard-schema-library-leanings.md": {
+      "fingerprint": "9810fbe89ce3a94b58992f49415e484f6f615e678ff89b5d7e43142c461129a3",
+      "snapshot": {
+        "packages/react-form/skills/choosing-form-options-modes/references/standard-schema-library-leanings.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/choosing-form-options-modes/references/standard-schema-library-leanings.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/error-visibility-workflows/SKILL.md": {
+      "fingerprint": "7b62803b524e1510caa03daf0122fb90ab9b3a93ce238804ed450dba13a0d32d",
+      "snapshot": {
+        "packages/react-form/skills/error-visibility-workflows/SKILL.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/error-visibility-workflows/SKILL.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/error-visibility-workflows/references/error-visibility-policies.md": {
+      "fingerprint": "da9123e360033df23e78a99b1f7ad784a1dc315e09c57b5ea6a638630e10894d",
+      "snapshot": {
+        "packages/react-form/skills/error-visibility-workflows/references/error-visibility-policies.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/error-visibility-workflows/references/error-visibility-policies.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/examples-authoring/SKILL.md": {
+      "fingerprint": "ac6e9b1bbed883334e9453637e8bb6568f173b7b323cb0add08400c5ad6c1f57",
+      "snapshot": {
+        "packages/react-form/skills/examples-authoring/SKILL.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/examples-authoring/SKILL.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/examples-authoring/references/example-scenarios.md": {
+      "fingerprint": "2662b9421142d21874490663d49ae09a89d85c08dc4636068dfe2f1e7501dd09",
+      "snapshot": {
+        "packages/react-form/skills/examples-authoring/references/example-scenarios.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/examples-authoring/references/example-scenarios.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/query-backed-forms/SKILL.md": {
+      "fingerprint": "1d553d5490606193e1ab311d3793043ce04465ba4ae9a2ea370ded5f0f9fbdce",
+      "snapshot": {
+        "packages/react-form/skills/query-backed-forms/SKILL.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/query-backed-forms/SKILL.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/query-backed-forms/references/query-backed-defaults-and-submit.md": {
+      "fingerprint": "0e4d931f07cb865463bee17aef673e0d22462f66932d1e27c13401c965837495",
+      "snapshot": {
+        "packages/react-form/skills/query-backed-forms/references/query-backed-defaults-and-submit.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/query-backed-forms/references/query-backed-defaults-and-submit.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/react-form-composition-setup/SKILL.md": {
+      "fingerprint": "08cd2a5b267d384a7761436d57cf16251d15b07a71ff7eafe04a76b864a01d87",
+      "snapshot": {
+        "packages/react-form/skills/react-form-composition-setup/SKILL.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/react-form-composition-setup/SKILL.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/reusable-form-policies/SKILL.md": {
+      "fingerprint": "e31e25ff82d8f12ecceda191ea66ff38882dbd5f94dae419745e595494f8f188",
+      "snapshot": {
+        "packages/react-form/skills/reusable-form-policies/SKILL.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/reusable-form-policies/SKILL.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/reusable-form-policies/references/reusable-policy-boundaries.md": {
+      "fingerprint": "bc453d1511595e282e9e5df1ef34d6c04396bc864a8dd4385ca9cfb1d5804943",
+      "snapshot": {
+        "packages/react-form/skills/reusable-form-policies/references/reusable-policy-boundaries.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/reusable-form-policies/references/reusable-policy-boundaries.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/schema-driven-forms/SKILL.md": {
+      "fingerprint": "09941f6e6394b0f1f00aae6ed2134ab783acdfff5ce08325bb65666b1f8f1f31",
+      "snapshot": {
+        "packages/react-form/skills/schema-driven-forms/SKILL.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/schema-driven-forms/SKILL.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/schema-driven-forms/references/schema-validation-and-submit-output.md": {
+      "fingerprint": "699011649e32153054339dca5eedbee14b35b8d940fb74c2ea70fe91fc9bd312",
+      "snapshot": {
+        "packages/react-form/skills/schema-driven-forms/references/schema-validation-and-submit-output.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/schema-driven-forms/references/schema-validation-and-submit-output.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/type-error-debugging/SKILL.md": {
+      "fingerprint": "267071b59da5d3edab249e560e4d8503964ed372b0d5e8b9b8b8d484927b1d20",
+      "snapshot": {
+        "packages/react-form/skills/type-error-debugging/SKILL.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/type-error-debugging/SKILL.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:packages/react-form/skills/type-error-debugging/references/type-error-boundaries.md": {
+      "fingerprint": "cb7f72215f52570860e2224f1f819bd5f289a8c26e45346d3613a1ba5f7958a5",
+      "snapshot": {
+        "packages/react-form/skills/type-error-debugging/references/type-error-boundaries.md": null
+      },
+      "head": "02f5c2cff694ef8a8d9dd5bc96c6925a6f407799",
+      "outcome": "updated",
+      "reason": "The maintainer intentionally retired the previous React skillset because its guidance was not useful and requested a clean slate. This obsolete skill or reference file was removed in b5ab3ff0d10781008116cff16a563432fb9a1ccd; the replacement skills are maintained in _artifacts/skill_tree.yaml. Its deletion is the intended guidance update.",
+      "evidence": [
+        "Maintainer confirmed that the old skillset was useless and its removal was intentional.",
+        "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/type-error-debugging/references/type-error-boundaries.md.",
+        "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
+        "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    }
+  }
+}
