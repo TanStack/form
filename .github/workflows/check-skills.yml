@@ -1,0 +1,55 @@
+# check-skills.yml — copied by `intent maintainer setup` into .github/workflows/
+#
+# Validates intent skills and recorded source reviews on pull requests. After a
+# release or manual run, writes a read-only report when guidance needs review.
+# To enable the isolated PR publisher, set the repository Actions variable
+# INTENT_REVIEW_PULL_REQUESTS to true. No write job runs by default.
+#
+# The steps live in TanStack/intent's reusable workflows, pinned below to the
+# commit of the Intent release that copied this file. Dependabot and Renovate
+# bump the pin like any other action reference; a `github-actions` entry in
+# .github/dependabot.yml is enough. Each job grants only the permissions its
+# workflow needs, and Intent runs from this repository's own lockfile-pinned
+# copy of @tanstack/intent.
+#
+# intent-workflow-version: 6
+#
+# Template variables (replaced by `intent setup`):
+#   root — e.g. @tanstack/query or my-workspace workspace
+#   b9f205d69ba2bec93954508ff76281ae2178062c # v0.5.6 — the immutable commit packaged with this Intent release
+
+name: Check Skills
+
+on:
+  pull_request: {}
+  release:
+    types: [published]
+  workflow_dispatch: {}
+
+permissions: {}
+
+jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+    uses: TanStack/intent/.github/workflows/check-skills.yml@b9f205d69ba2bec93954508ff76281ae2178062c # v0.5.6
+    with:
+      artifacts: '_artifacts'
+      repair: true
+
+  review:
+    if: github.event_name != 'pull_request'
+    permissions:
+      contents: read
+    uses: TanStack/intent/.github/workflows/review-skills.yml@b9f205d69ba2bec93954508ff76281ae2178062c # v0.5.6
+    with:
+      package-label: 'root'
+
+  publish-review:
+    needs: review
+    if: vars.INTENT_REVIEW_PULL_REQUESTS == 'true' && needs.review.outputs.has-review == 'true'
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: TanStack/intent/.github/workflows/publish-skill-review.yml@b9f205d69ba2bec93954508ff76281ae2178062c # v0.5.6
