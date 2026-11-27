@@ -1,14 +1,24 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "ignoreFiles": ["**/*.regressions.ts"],
+  "ignoreFiles": [
+    "**/*.regressions.ts"
+  ],
   "workspaces": {
     "packages/vue-form": {
-      "entry": ["tests/type-inference.vue"]
+      "entry": [
+        "tests/type-inference.vue"
+      ]
     },
     "examples/react/expo": {
-      "ignoreDependencies": ["@tanstack/react-store", "use-sync-external-store"]
+      "ignoreDependencies": [
+        "@tanstack/react-store",
+        "use-sync-external-store"
+      ]
     }
   },
+  "ignoreDependencies": [
+    "@tanstack/intent"
+  ],
   "ignoreIssues": {
     "packages/form-devtools/src/components/ui/**": [
       "exports",
