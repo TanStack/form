@@ -1330,3 +1330,55 @@ describe('form group api', () => {
     })
   })
 })
+
+describe('group membership by name prefix', () => {
+  it('should only relate fields that are inside the group when names share a prefix', () => {
+    const form = new FormApi({
+      defaultValues: {
+        profile: { name: '' },
+        profileZip: '',
+      },
+    })
+
+    const profileGroup = new FormGroupApi({ name: 'profile', form })
+    const nameField = new FieldApi({ name: 'profile.name', form })
+    const zipField = new FieldApi({ name: 'profileZip', form })
+
+    form.mount()
+    profileGroup.mount()
+    nameField.mount()
+    zipField.mount()
+
+    expect(
+      profileGroup.getRelatedFields().map((field) => field.name),
+    ).toEqual(['profile.name'])
+  })
+
+  it('should not run group validators when a field outside the group shares its name prefix', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        profile: { name: '' },
+        profileZip: '',
+      },
+    })
+
+    const groupOnChange = vi.fn()
+    const profileGroup = new FormGroupApi({
+      name: 'profile',
+      form,
+      validators: {
+        onChange: groupOnChange,
+      },
+    })
+    const zipField = new FieldApi({ name: 'profileZip', form })
+
+    form.mount()
+    profileGroup.mount()
+    zipField.mount()
+
+    zipField.handleChange('12345')
+    await new Promise((resolve) => setTimeout(resolve, 0))
+
+    expect(groupOnChange).not.toHaveBeenCalled()
+  })
+})
