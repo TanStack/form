@@ -1,5 +1,5 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "ignoreDependencies": ["@tanstack/devtools"],
-  "ignoreWorkspaces": ["examples/**"]
+  "ignoreWorkspaces": ["examples/**", "packages/ember-form"]
 }
