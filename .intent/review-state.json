@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "baseline": "f8e2ce4aa3c0dd36e251892825b7e25a912cc628",
+  "baseline": "202b4aa88b440b582d5aeabefd5e9377a6dbb43c",
   "items": {
     "skill:packages/form-core/skills/form-options/SKILL.md": {
       "fingerprint": "6a721d689a700fef421f36e97668c14dcfe1c3abf7a02105af5ae400cb8a02c2",
@@ -20,12 +20,12 @@
       ]
     },
     "skill:packages/form-core/skills/schema-validation/SKILL.md": {
-      "fingerprint": "40b28f324eb73f22443476287685be025c0dc28ef99263521476062a5a1b2a40",
+      "fingerprint": "aa3f0ece88f46c757d37749b0b47a8abb46acb7faa02c85b1e498f0723538b3e",
       "snapshot": {
         "examples/react/next-server-actions-zod/src/app/shared-code.ts": "5ab18c120bd3ac6190d8613b1ac53010225fd877438dcca00b2b859ad1e17fb8",
         "examples/react/standard-schema/package.json": "dcf4c41100c1f67e4abe7829daf02e1863caeb24225e7b71008ac7fb6d738843",
         "examples/react/standard-schema/src/index.tsx": "778f6a9566935d05773ca0ed37157819473f77bb69bac76a1383df6c4084eef8",
-        "packages/form-core/skills/schema-validation/SKILL.md": "78da1684ee11baab00beaaf8669815b0a44297c7d620d57ef44215c59f967a17",
+        "packages/form-core/skills/schema-validation/SKILL.md": "bf6d6158df4a49fc27c99fcfc7f42e03f7c5fec5164d7f43443a5773bc5ca479",
         "packages/form-core/skills/schema-validation/references/schema-providers.md": "bf19b6b3135ac2f0908e62d786153dfec4519307ab525a48e61e3885733c62e7",
         "packages/form-core/src/pipeline/validation/standardSchema.lib.ts": "84cc59475d6e401c8c83ea593a2323e1aedc9f7bec7a134993472dae6873fc5f",
         "packages/form-core/src/validation/results/parseIssues.lib.ts": "462173f9fedc39f83390cd4968ffd29e0763e708403466f5091f10e899737112",
@@ -34,42 +34,55 @@
         "packages/react-form/tests/public/submission-handling/SubmissionWizard.tsx": "357224681ab34ce593320a50b2bb06e6df0918709e7f3b8aa26c2ddb7a55c46a",
         "packages/react-form/tests/public/submission-handling/group-submission.spec.tsx": "36855ac232aeff68a89b645dd3ba4c2b56dbf33ff38d2c107d3cdabc813da97d"
       },
-      "head": "f8e2ce4aa3c0dd36e251892825b7e25a912cc628",
+      "head": "75a9c6a78631a0841b3ff0c05ac1f6a49cef26e9",
       "outcome": "updated",
-      "reason": "Authored the initial form-core batch for options, Standard Schema, and validation, and reconciled all three planning records against source revision f8e2ce4aa3c0dd36e251892825b7e25a912cc628 (v2.0.0-alpha.3). Intent validated 3 skills; all 12 TypeScript examples compiled with installed providers; core and React type checks passed; 58 focused public React tests passed in normal and Strict Mode. Core build and publint passed. The packed archive contains all skills and references; Intent discovers and loads them through a transitive core dependency in a disposable consumer layout. YAML, metadata, and packaged relative links passed. Fresh consumer agent task execution and activation remain unverified.",
+      "reason": "The schema guidance now permits omitted triggers for submission-only validation at form, field, and form-group scope. This agrees with the optional Validator.triggers and ValidatorOptions.triggers types. Schema registration, issue routing, transformed outputs, and complete parent validation remain unchanged.",
       "evidence": [
-        "Changed: packages/form-core/skills/schema-validation/SKILL.md, packages/form-core/skills/schema-validation/references/schema-providers.md at f8e2ce4aa3c0dd36e251892825b7e25a912cc628"
+        "Reviewed current working-tree content at HEAD 75a9c6a78631a0841b3ff0c05ac1f6a49cef26e9; package version 2.0.0-alpha.3; installed Intent 0.5.6.",
+        "Compared the committed skill update with 994c7cd13 using git diff; reviewed packages/form-core/src/pipeline/validation/validation.public.ts and the unchanged schema runner source snapshot.",
+        "Intent validate packages/form-core/skills passed all 3 skills.",
+        "All 10 examples in the five reviewed skills passed TypeScript with repository strictness, noImplicitReturns, and public source entry points. Core and React package test:types passed.",
+        "The existing React public submit-only-validation, group-submission, touched-state, and field-groups suites passed 54 checks across normal and Strict Mode.",
+        "No fresh consumer agent or discovery evaluation was run for this revision. Earlier evaluation records remain historical; their disposable /tmp projects are no longer available. Current deterministic fixtures are retained in /tmp/tanstack-intent-review-checks/intent-review-c_iaw43h/."
       ]
     },
     "skill:packages/form-core/skills/validation/SKILL.md": {
-      "fingerprint": "ed8c04c1cab4952883461755e286ade6bbcbb553087987babb59c86a5548a5be",
+      "fingerprint": "0910ac0972c24fc0e5659e601435c6926e90d73530b9c1f6d724bb84db73a02e",
       "snapshot": {
         "examples/react/basic/src/index.tsx": "dd77f336f998ec218737284fc0a5c99d18694ea1b0dffba49bdf0b724d5d2e61",
-        "packages/form-core/skills/validation/SKILL.md": "b620eeac7beb2dfa96d57f3df8d1ba37bc08138e705fe8831a926d3977eb9aaa",
+        "packages/form-core/skills/validation/SKILL.md": "58a8cdcfd6c8ec45d3433175c307f24c25e822b8746d6e32e225fef2cb3bb051",
         "packages/form-core/src/FormApi/errorVisibility.public.ts": "58af5f76e996dec697b0ce238c77b9a8a1a578a30756020dd48c64eb9bbd11af",
         "packages/form-core/src/pipeline/validation/formValidators.public.ts": "c77ad353c57f2b36f45ba0eedb840fcabeee7f529452143ba68483d8787756a2",
-        "packages/form-core/src/pipeline/validation/validation.public.ts": "390105cd217d03c0a5a2c79245ccadf88e584ce99f43c5f50d7c9ce905966701",
+        "packages/form-core/src/pipeline/validation/validation.public.ts": "8f6eb400ea530cdca0093cfc114d980bd1d048800a5ef62c7a2724f9d5312cdb",
         "packages/react-form/tests/public/error-visibility/SubmissionVisibility.tsx": "cf3663bcce0fa4edd188edc1be5644e661cc5f71bc09e56e904168f0d07fca4e",
         "packages/react-form/tests/public/error-visibility/error-visibility.spec.tsx": "580d723ada4dde3eb3ba1f1b42c498cc3a65cdde8a3e24ad086a1def02ccd22a",
         "packages/react-form/tests/public/submission-handling/group-submission.spec.tsx": "36855ac232aeff68a89b645dd3ba4c2b56dbf33ff38d2c107d3cdabc813da97d",
         "packages/react-form/tests/public/validation-execution/PendingMountValidation.tsx": "ff8a0854685dc032fdb22727dc9bf395a316bb82818d1070018d00430e555d42",
         "packages/react-form/tests/public/validation-execution/StandaloneValidation.tsx": "c214e3605472aa6453a94a50182dcfd6fe704c2a2493ec10fd90b8a6487cfaa2",
+        "packages/react-form/tests/public/validation-execution/SubmitOnlyValidation.tsx": "12b2dd7201feae3840719ef3edd76fdd2af02ad030901644a0d98d27ddbfb9c4",
         "packages/react-form/tests/public/validation-execution/SyncMountValidation.tsx": "4976ca71cb46ed2db53af344a24c3e8a7481757f75cba40e8aae27c026282a04",
         "packages/react-form/tests/public/validation-execution/mount-validation.spec.tsx": "43545bff795f49478eac44c88522cf38effcbef21b39a206035349bbd5e08e05",
-        "packages/react-form/tests/public/validation-execution/standalone-validation.spec.tsx": "2c14086bf926991806d74a867b01ce79240573a4786aee276cf3b0ff287053fa"
+        "packages/react-form/tests/public/validation-execution/standalone-validation.spec.tsx": "2c14086bf926991806d74a867b01ce79240573a4786aee276cf3b0ff287053fa",
+        "packages/react-form/tests/public/validation-execution/submit-only-validation.spec.tsx": "748ff2eea362005f301722e5374bff8a03dea1f33e42edb2a37d5385d5963289"
       },
-      "head": "f8e2ce4aa3c0dd36e251892825b7e25a912cc628",
+      "head": "75a9c6a78631a0841b3ff0c05ac1f6a49cef26e9",
       "outcome": "updated",
-      "reason": "Authored the initial form-core batch for options, Standard Schema, and validation, and reconciled all three planning records against source revision f8e2ce4aa3c0dd36e251892825b7e25a912cc628 (v2.0.0-alpha.3). Intent validated 3 skills; all 12 TypeScript examples compiled with installed providers; core and React type checks passed; 58 focused public React tests passed in normal and Strict Mode. Core build and publint passed. The packed archive contains all skills and references; Intent discovers and loads them through a transitive core dependency in a disposable consumer layout. YAML, metadata, and packaged relative links passed. Fresh consumer agent task execution and activation remain unverified.",
+      "reason": "The scheduling table and reusable-policy guidance now allow omitted triggers at every validator scope. Omitted, undefined, and empty triggers leave interaction validation disabled while submission validation still runs unless skipOnSubmit is true. Existing fixed-length array and predicate constraints remain accurate.",
       "evidence": [
-        "Changed: packages/form-core/skills/validation/SKILL.md at f8e2ce4aa3c0dd36e251892825b7e25a912cc628"
+        "Reviewed current working-tree content at HEAD 75a9c6a78631a0841b3ff0c05ac1f6a49cef26e9; package version 2.0.0-alpha.3; installed Intent 0.5.6.",
+        "Compared the changes since 994c7cd13 in this skill and packages/form-core/src/pipeline/validation/validation.public.ts. Reviewed SubmitOnlyValidation.tsx and submit-only-validation.spec.tsx through the public React API.",
+        "The submit-only suite passed all 6 checks (omitted, undefined, and empty triggers in normal and Strict Mode), including group versus parent submission and skipped validators.",
+        "Intent validate packages/form-core/skills passed all 3 skills.",
+        "All 10 examples in the five reviewed skills passed TypeScript with repository strictness, noImplicitReturns, and public source entry points. Core and React package test:types passed.",
+        "The existing React public submit-only-validation, group-submission, touched-state, and field-groups suites passed 54 checks across normal and Strict Mode.",
+        "No fresh consumer agent or discovery evaluation was run for this revision. Earlier evaluation records remain historical; their disposable /tmp projects are no longer available. Current deterministic fixtures are retained in /tmp/tanstack-intent-review-checks/intent-review-c_iaw43h/."
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "5f41ea3ac006ab17d0bc734594c581be1f4cdac3f9d20b00af8b09a2371ddb95",
+      "fingerprint": "7e5da549b80c9ac5e3c79a8277303ded54eba965113aa69b519f41f6f1f88630",
       "snapshot": {
-        "_artifacts/domain_map.yaml": "88500585b0255a035e9c69e232e78ab2c507acbff40826ead4145c50830644c6",
-        "_artifacts/skill_spec.md": "89fc3d60cda012bd2bba5a98c52a7ed3f5321f0f028d9acf9ca174ba4ac6237b",
+        "_artifacts/domain_map.yaml": "0ead20111f976d440ffbad9a532d9b325613bdcfbe3d79ae0e318f357b2ea85f",
+        "_artifacts/skill_spec.md": "39614950840f75f5fcdeb4f7c7be6279c6a28ad9d2ee2db9186d77795f419aef",
         "_artifacts/skill_tree.yaml": "0f1f0f9b369702389153e28b8123b18ee1b74282c544a5692112abaa9daa2f20",
         "docs/arrays.md": "f62aa8f51c1317601d8dc440b924965582a1267d6e32d7606237b8e2247db469",
         "docs/framework/react/guides/async-initial-values.md": "6535fc280ba695b8b917cbe11d2d5bee860116ddd7ed19e753fdf1e3ebadfc9d",
@@ -91,26 +104,26 @@
         "examples/react/standard-schema/package.json": "dcf4c41100c1f67e4abe7829daf02e1863caeb24225e7b71008ac7fb6d738843",
         "examples/react/standard-schema/src/index.tsx": "778f6a9566935d05773ca0ed37157819473f77bb69bac76a1383df6c4084eef8",
         "packages/form-core/skills/form-options/SKILL.md": "018cb47c5c4c5c15cc36dee19149cc7eebc14d5b0de98b780fb124d8f454c049",
-        "packages/form-core/skills/schema-validation/SKILL.md": "78da1684ee11baab00beaaf8669815b0a44297c7d620d57ef44215c59f967a17",
+        "packages/form-core/skills/schema-validation/SKILL.md": "bf6d6158df4a49fc27c99fcfc7f42e03f7c5fec5164d7f43443a5773bc5ca479",
         "packages/form-core/skills/schema-validation/references/schema-providers.md": "bf19b6b3135ac2f0908e62d786153dfec4519307ab525a48e61e3885733c62e7",
-        "packages/form-core/skills/validation/SKILL.md": "b620eeac7beb2dfa96d57f3df8d1ba37bc08138e705fe8831a926d3977eb9aaa",
+        "packages/form-core/skills/validation/SKILL.md": "58a8cdcfd6c8ec45d3433175c307f24c25e822b8746d6e32e225fef2cb3bb051",
         "packages/form-core/src/FormApi/array-methods.lib.ts": "64fd1f3c401f1781009a3b672048d02049d5ee3769120d228061c39ec1f82631",
         "packages/form-core/src/FormApi/errorVisibility.public.ts": "58af5f76e996dec697b0ce238c77b9a8a1a578a30756020dd48c64eb9bbd11af",
         "packages/form-core/src/FormApi/formOptions.public.ts": "fa5944475b0f4c396f22c2d9c73262fa7f6c03917c0a4e47be3db22062b069b4",
         "packages/form-core/src/FormGroupApi/FormGroupApi.public.ts": "b0e0b27fcc06f5d2298bee317b6f19060c824db1163f5fa843ccd0f7417f641a",
         "packages/form-core/src/pipeline/validation/formValidators.public.ts": "c77ad353c57f2b36f45ba0eedb840fcabeee7f529452143ba68483d8787756a2",
         "packages/form-core/src/pipeline/validation/standardSchema.lib.ts": "84cc59475d6e401c8c83ea593a2323e1aedc9f7bec7a134993472dae6873fc5f",
-        "packages/form-core/src/pipeline/validation/validation.public.ts": "390105cd217d03c0a5a2c79245ccadf88e584ce99f43c5f50d7c9ce905966701",
+        "packages/form-core/src/pipeline/validation/validation.public.ts": "8f6eb400ea530cdca0093cfc114d980bd1d048800a5ef62c7a2724f9d5312cdb",
         "packages/form-core/src/validation/results/parseIssues.lib.ts": "462173f9fedc39f83390cd4968ffd29e0763e708403466f5091f10e899737112",
         "packages/form-core/tests/FormApi/array-methods.lib.spec.ts": "0fd303e069876e7477f8f57a76b93f7aeb3d87c320ce1143dba88dee159bc2a5",
         "packages/form-core/tests/FormApi/formOptions.public.test-d.ts": "e86cb14e4e0c360c3afe15a666b22104184519f09217dc346236cd56481be299",
         "packages/form-core/tests/validation-output.test.ts": "2bb2d9a177a4fac12d57133d73cc122c3a57d480ccd827ad4ff54607c6e8f809",
         "packages/react-form/skills/app-forms/SKILL.md": "3f0959569c5da8f4e17dd52f9ec3ec1999d8fe5b9ec36451df9b32d09e4d4adf",
         "packages/react-form/skills/arrays/SKILL.md": "1ecc26df99c0bedf5abce92387076f1be2761fa092d04ab08c7628334963f012",
-        "packages/react-form/skills/async-initial-values/SKILL.md": "07b480b738e026f378709c5d6119663a8a1a130532d12bd22d9a88c55e2a8e4e",
-        "packages/react-form/skills/field-groups/SKILL.md": "86e32e5605177e572f45cb240cf3d8ab6e9b80e3fc0b2e18114a522fff63b349",
+        "packages/react-form/skills/async-initial-values/SKILL.md": "9a5ac22e957446cbb0d0aa3c4c72871ec9099332c01a0b57144cdb0c88a0eb54",
+        "packages/react-form/skills/field-groups/SKILL.md": "db17e3d32d9c5acd8b2c78dda014a3f95f852e8a50aa4f5521886dce0f4d17cf",
         "packages/react-form/skills/form-context/SKILL.md": "44b5ee4e03c175f1ef85e16e8179fe3a78261fe670788fa7e469bab389c00989",
-        "packages/react-form/skills/form-groups/SKILL.md": "e368e88f8edde55be3bd418275f29958901f1eda2ba68d424719a6342e19e0c8",
+        "packages/react-form/skills/form-groups/SKILL.md": "a42a15a39c0be4ab37f9fee350b1d1c23a00bafe5266a163667417a38e15e081",
         "packages/react-form/skills/subscriptions/SKILL.md": "0ec26bfc342a28080d8b5b2420f2fe85c4fb89c380ad5720dc4ce80620ee6a18",
         "packages/react-form/src/AppForm/contexts.lib.ts": "d200c9aa9eee48dd76cb2e57a685608a4f96aad33510408bda3ef7fd26ceda0f",
         "packages/react-form/src/AppForm/createFormHook.public.ts": "71406c6b96d2600dccb8b15cfa323c9ce60b3cd54177ed986dda51c23db0e08f",
@@ -167,15 +180,24 @@
         "packages/react-form/tests/public/touched-state/touched-state.spec.tsx": "161276e68d034f5fa078f3727041dbe49bb0d0bb40ad030b8d1b9544c5503f57",
         "packages/react-form/tests/public/validation-execution/PendingMountValidation.tsx": "ff8a0854685dc032fdb22727dc9bf395a316bb82818d1070018d00430e555d42",
         "packages/react-form/tests/public/validation-execution/StandaloneValidation.tsx": "c214e3605472aa6453a94a50182dcfd6fe704c2a2493ec10fd90b8a6487cfaa2",
+        "packages/react-form/tests/public/validation-execution/SubmitOnlyValidation.tsx": "12b2dd7201feae3840719ef3edd76fdd2af02ad030901644a0d98d27ddbfb9c4",
         "packages/react-form/tests/public/validation-execution/SyncMountValidation.tsx": "4976ca71cb46ed2db53af344a24c3e8a7481757f75cba40e8aae27c026282a04",
         "packages/react-form/tests/public/validation-execution/mount-validation.spec.tsx": "43545bff795f49478eac44c88522cf38effcbef21b39a206035349bbd5e08e05",
-        "packages/react-form/tests/public/validation-execution/standalone-validation.spec.tsx": "2c14086bf926991806d74a867b01ce79240573a4786aee276cf3b0ff287053fa"
+        "packages/react-form/tests/public/validation-execution/standalone-validation.spec.tsx": "2c14086bf926991806d74a867b01ce79240573a4786aee276cf3b0ff287053fa",
+        "packages/react-form/tests/public/validation-execution/submit-only-validation.spec.tsx": "748ff2eea362005f301722e5374bff8a03dea1f33e42edb2a37d5385d5963289"
       },
-      "head": "161624f8048a5ec91e895ef8282644d3c101b218",
+      "head": "75a9c6a78631a0841b3ff0c05ac1f6a49cef26e9",
       "outcome": "updated",
-      "reason": "Reconciled all three existing planning documents with the new React form-group workflow while preserving the prior core and six React skills, package-only distribution, evaluation history, and unassessed work.",
+      "reason": "Reconciled all three planning documents with the reviewed source and skill edits. The domain map now states that interaction triggers are optional. The spec corrects historical consumer-load counts and hash claims, and records the current example fixes, verification, and evaluation limits. The tree remains accurate without edits because identities, activation descriptions, purpose, prerequisites, source mappings, package ownership, and coverage are unchanged.",
       "evidence": [
-        "_artifacts/domain_map.yaml adds the form-groups tasks, sourced failure modes, related workflows, step-versus-parent validation boundary, and bounded positive consumer result. _artifacts/skill_spec.md extends the inventory and records decisions, current source/version, checks, and evaluation limits. _artifacts/skill_tree.yaml maps the new self-contained skill to packages/react-form with matching activation, purpose, sources, and no prerequisites. Intent sync reports no stale generated metadata; archive contains seven React skills. Existing entries and recorded decisions remain present."
+        "Reviewed current working-tree content at HEAD 75a9c6a78631a0841b3ff0c05ac1f6a49cef26e9; package version 2.0.0-alpha.3; installed Intent 0.5.6.",
+        "Read _artifacts/domain_map.yaml, _artifacts/skill_spec.md, and _artifacts/skill_tree.yaml. Preserved the 10-skill inventory, prior decisions, package-only distribution, historical evaluations, and remaining adapter/evaluation work.",
+        "Intent maintainer sync reported Nothing to synchronize before and after the edits. Both package skill directories passed structural validation.",
+        "The looseSchema optional-property fix restores the already documented incomplete-input contract; it needs no new skill or taxonomy change.",
+        "All 10 examples in the five reviewed skills passed TypeScript with repository strictness, noImplicitReturns, and public source entry points. Core and React package test:types passed.",
+        "The existing React public submit-only-validation, group-submission, touched-state, and field-groups suites passed 54 checks across normal and Strict Mode.",
+        "Four disposable checks of the actual React skill examples passed in both modes (8 checks): cached-data refresh failure preserves edits; initial loading/error states; mapped time preview and watched validation; independent wizard steps, retained navigation values, and final saving.",
+        "No fresh consumer agent or discovery evaluation was run for this revision. Earlier evaluation records remain historical; their disposable /tmp projects are no longer available. Current deterministic fixtures are retained in /tmp/tanstack-intent-review-checks/intent-review-c_iaw43h/."
       ]
     },
     "skill:packages/react-form/skills/app-forms/SKILL.md": {
@@ -242,37 +264,39 @@
       ]
     },
     "skill:packages/react-form/skills/async-initial-values/SKILL.md": {
-      "fingerprint": "4cd344a3f9d3fbcf2aa844756fcf2ad5e9dc7121f28ec2d0e7bb4f30dd8e3c64",
+      "fingerprint": "438e1ac62da5a802132aea3e0164b5467ef453e83fb83931e047baea846c91a0",
       "snapshot": {
         "docs/framework/react/guides/async-initial-values.md": "6535fc280ba695b8b917cbe11d2d5bee860116ddd7ed19e753fdf1e3ebadfc9d",
         "examples/react/query-integration/src/app.tsx": "515d1ef3b7fa3e4936c85c6bceac2952ccaf6c59b5e792745c5751b9e8eb7d06",
-        "packages/react-form/skills/async-initial-values/SKILL.md": "07b480b738e026f378709c5d6119663a8a1a130532d12bd22d9a88c55e2a8e4e",
+        "packages/react-form/skills/async-initial-values/SKILL.md": "9a5ac22e957446cbb0d0aa3c4c72871ec9099332c01a0b57144cdb0c88a0eb54",
         "packages/react-form/src/ReactForm/ReactFormApi.lib.tsx": "f4c3b3dd565bef03ab62261dfddd578d8b6ec8eca499154638e55fa789257b93",
         "packages/react-form/tests/public/touched-state/SubmissionTouch.tsx": "329e5d364957ba316ac08752babb1d0aff608633a120efe7b6c47bfb5122b56a",
         "packages/react-form/tests/public/touched-state/SubmittedDefaults.tsx": "ce9656f04f81be86e886a0a8874d93079d46d611dfb675c5ba09b99242594127",
         "packages/react-form/tests/public/touched-state/SubmittedGroupDefaults.tsx": "e243cb214cd00c11b54b00510d30bdbb7d6302b529c699d73cbfca81a87b0bd7",
         "packages/react-form/tests/public/touched-state/touched-state.spec.tsx": "161276e68d034f5fa078f3727041dbe49bb0d0bb40ad030b8d1b9544c5503f57"
       },
-      "head": "161624f8048a5ec91e895ef8282644d3c101b218",
+      "head": "75a9c6a78631a0841b3ff0c05ac1f6a49cef26e9",
       "outcome": "updated",
-      "reason": "Added both supported React initialization patterns with complete defaults, touched-field-preserving refetches, and explicit record switching. Fresh consumer records selected this skill through Intent and preserved local edits while refreshing untouched values and replacing values for a new record.",
+      "reason": "When data is already available, a background refresh error now renders alongside the mounted editor instead of replacing it. This preserves local edits; initial errors without a profile still show a failure, and a changed record key creates fresh form state.",
       "evidence": [
-        "Source HEAD 161624f8048a5ec91e895ef8282644d3c101b218; @tanstack/react-form 2.0.0-alpha.3; installed Intent 0.5.6.",
-        "Intent validate packages/react-form/skills passed all 6 skills without warnings. All 8 complete TypeScript/TSX examples compiled against the packed public package. React package type check passed.",
-        "64 focused existing React public browser checks passed across normal and Strict Mode. Separate unchanged consumer grader passed its type checks (7 expected rejection cases) and all 14 browser checks across both modes.",
-        "Three fresh consumers selected all 6 React skills via normal Intent catalog/load commands. The packed skill hashes match the final working tree. Prompts, successful-load logs, reference and negative controls, solutions, and results.json are in /tmp/tanstack-react-intent-evaluation/.",
-        "Scope: one observed positive combined task per consumer, covering two React skills each. Adjacent negative activation, repetitions, and a without-skill baseline were not run."
+        "Reviewed current working-tree content at HEAD 75a9c6a78631a0841b3ff0c05ac1f6a49cef26e9; package version 2.0.0-alpha.3; installed Intent 0.5.6.",
+        "Reviewed the staged diff from HEAD, the complete ProfilePage example, and the unchanged React initialization and touched-state source snapshots.",
+        "The actual ProfilePage example passed loading/error checks and an edit, failed refresh, successful refresh, and record-switch sequence in normal and Strict Mode.",
+        "Intent validate packages/react-form/skills passed all 7 skills.",
+        "All 10 examples in the five reviewed skills passed TypeScript with repository strictness, noImplicitReturns, and public source entry points. Core and React package test:types passed.",
+        "The existing React public submit-only-validation, group-submission, touched-state, and field-groups suites passed 54 checks across normal and Strict Mode.",
+        "No fresh consumer agent or discovery evaluation was run for this revision. Earlier evaluation records remain historical; their disposable /tmp projects are no longer available. Current deterministic fixtures are retained in /tmp/tanstack-intent-review-checks/intent-review-c_iaw43h/."
       ]
     },
     "skill:packages/react-form/skills/field-groups/SKILL.md": {
-      "fingerprint": "9bb3d9774d920fd180749dc4dd48affca80d66e77ab78d4821c43d5ebc10fd38",
+      "fingerprint": "79f0005b45dff8af3e5ea7e2c8fb512630334f2f07c1d06995af2f2354f39d2b",
       "snapshot": {
         "docs/framework/react/guides/field-groups.md": "7772920189031aebf912fa46e6bf713c8989b05355b83cf4fe2e9648f4746d0f",
         "examples/react/field-groups/src/fieldGroups/dateRange.tsx": "8fd9e8a4d365892a0f7d3be18fa25eca7c33f36f5dbf53a0743e61b9f638b45c",
         "examples/react/field-groups/src/fieldGroups/fieldBounds.tsx": "6afc5b4a591858e8f0112be748e9fa808527050e0a037a55e12ae3a79eb6455c",
         "examples/react/field-groups/src/fieldGroups/numberRange.tsx": "fd05d6caf09cf3f1e73450766881719250af5783ed8f3348dc0e99eed7f7d860",
         "examples/react/large-form/src/features/people/emergency-contact.tsx": "d1711ff4981c9d914f40515f7c16e1ab9d0821427770a568c0fee24e0a5468e3",
-        "packages/react-form/skills/field-groups/SKILL.md": "86e32e5605177e572f45cb240cf3d8ab6e9b80e3fc0b2e18114a522fff63b349",
+        "packages/react-form/skills/field-groups/SKILL.md": "db17e3d32d9c5acd8b2c78dda014a3f95f852e8a50aa4f5521886dce0f4d17cf",
         "packages/react-form/src/FieldGroup/FieldGroupApi.public.ts": "94edfa36a4ba23132f96073168505bba3b21fa3cda274a97f025ee0af5ecb37c",
         "packages/react-form/src/FieldGroup/withFields.public.ts": "269fe3eb2d94c773d37c30c8431c709ec1d33376fd218d891680dc3d5a2318a4",
         "packages/react-form/tests/public/field-groups/BoundFieldMeta.tsx": "c911b650ae443f5fa1b7accf9e5c0917b45b57b937764bf4932691701f674094",
@@ -280,15 +304,18 @@
         "packages/react-form/tests/public/field-groups/MemoizedFieldGroup.tsx": "c92a51ac28a42f337a0dce51867eb3d07773cca0ff79a39994278c087fa848dc",
         "packages/react-form/tests/public/field-groups/field-groups.spec.tsx": "332aa8911d3e912bc5f888d1c53ac7251f2b4f9ee367eb44465de36a865bd413"
       },
-      "head": "161624f8048a5ec91e895ef8282644d3c101b218",
+      "head": "75a9c6a78631a0841b3ff0c05ac1f6a49cef26e9",
       "outcome": "updated",
-      "reason": "Added reusable virtual field contracts, binding maps, virtual watched paths, value subscription shapes, nested section composition, and app-field-group routing. Fresh consumer sections selected this skill through Intent and passed mapped validation and reactive previews for list rows and another form shape.",
+      "reason": "The range inputs now use type=time, matching the normalized HH:mm comparison. Moved End errors outside its label so validation does not change the accessible input name. Added an explicit undefined success return required by repository noImplicitReturns. Binding, virtual preview, and watched-path behavior remain unchanged.",
       "evidence": [
-        "Source HEAD 161624f8048a5ec91e895ef8282644d3c101b218; @tanstack/react-form 2.0.0-alpha.3; installed Intent 0.5.6.",
-        "Intent validate packages/react-form/skills passed all 6 skills without warnings. All 8 complete TypeScript/TSX examples compiled against the packed public package. React package type check passed.",
-        "64 focused existing React public browser checks passed across normal and Strict Mode. Separate unchanged consumer grader passed its type checks (7 expected rejection cases) and all 14 browser checks across both modes.",
-        "Three fresh consumers selected all 6 React skills via normal Intent catalog/load commands. The packed skill hashes match the final working tree. Prompts, successful-load logs, reference and negative controls, solutions, and results.json are in /tmp/tanstack-react-intent-evaluation/.",
-        "Scope: one observed positive combined task per consumer, covering two React skills each. Adjacent negative activation, repetitions, and a without-skill baseline were not run."
+        "Reviewed current working-tree content at HEAD 75a9c6a78631a0841b3ff0c05ac1f6a49cef26e9; package version 2.0.0-alpha.3; installed Intent 0.5.6.",
+        "Reviewed the staged time-input additions and the subsequent label/success-return correction against the complete skill, public field-group API, and existing field-group tests.",
+        "The disposable example check first failed in both modes because End could no longer be found by its label after an error appeared. The unchanged check passes after moving errors outside the label; it edits normalized times, observes the virtual preview, and clears the watched error.",
+        "The extracted snippet initially failed noImplicitReturns; its explicit undefined return fixes that error.",
+        "Intent validate packages/react-form/skills passed all 7 skills.",
+        "All 10 examples in the five reviewed skills passed TypeScript with repository strictness, noImplicitReturns, and public source entry points. Core and React package test:types passed.",
+        "The existing React public submit-only-validation, group-submission, touched-state, and field-groups suites passed 54 checks across normal and Strict Mode.",
+        "No fresh consumer agent or discovery evaluation was run for this revision. Earlier evaluation records remain historical; their disposable /tmp projects are no longer available. Current deterministic fixtures are retained in /tmp/tanstack-intent-review-checks/intent-review-c_iaw43h/."
       ]
     },
     "skill:packages/react-form/skills/form-context/SKILL.md": {
@@ -339,23 +366,29 @@
       ]
     },
     "skill:packages/react-form/skills/form-groups/SKILL.md": {
-      "fingerprint": "5614e156792d481bd50da6b56c9ebf4b1a92bf6e4992c46aa1a3fc540a8fb060",
+      "fingerprint": "3eb7cd4f455507454d80d6a610deec6ad9ef86b71d05481d4c2e659162152a21",
       "snapshot": {
         "examples/react/multi-step-wizard/src/features/wizard/page.tsx": "ffa1a5c4bbb2ce41cd9d9f24e11924b9bb5c7239c657bf708796493045f24773",
         "examples/react/multi-step-wizard/src/features/wizard/shared-form.tsx": "5102fda0362406eda755407b9a2d9b0f1cb628eabb859948fdd6ab499d3019cd",
         "examples/react/multi-step-wizard/src/features/wizard/step1-subform.tsx": "f2315a309646db6a37b54ba50356597b6b1847ab54a018077476da904e0198d3",
         "examples/react/multi-step-wizard/src/features/wizard/step2-subform.tsx": "00d082b60bb4d28f493f9270354f57f48b07bc1df9bbd132b77c60740e75012b",
         "packages/form-core/src/FormGroupApi/FormGroupApi.public.ts": "b0e0b27fcc06f5d2298bee317b6f19060c824db1163f5fa843ccd0f7417f641a",
-        "packages/react-form/skills/form-groups/SKILL.md": "e368e88f8edde55be3bd418275f29958901f1eda2ba68d424719a6342e19e0c8",
+        "packages/react-form/skills/form-groups/SKILL.md": "a42a15a39c0be4ab37f9fee350b1d1c23a00bafe5266a163667417a38e15e081",
         "packages/react-form/src/ReactForm/Components.public.ts": "be39808d7cec4b814d5fcd74160a947839e3e81597e5d0fb46443c5e55f3d5ee",
         "packages/react-form/tests/public/group-events/FullPathGroupField.tsx": "ef5882921e8b6d63e6151c16fad0008075864e057a38ae4c4411af51f19ef2a2",
         "packages/react-form/tests/public/submission-handling/group-submission.spec.tsx": "36855ac232aeff68a89b645dd3ba4c2b56dbf33ff38d2c107d3cdabc813da97d"
       },
-      "head": "161624f8048a5ec91e895ef8282644d3c101b218",
+      "head": "75a9c6a78631a0841b3ff0c05ac1f6a49cef26e9",
       "outcome": "updated",
-      "reason": "Added self-contained multi-step React form guidance: groups validate and submit individual steps, while the mounted parent validates every step and owns final saving. Paths, lifecycle, errors, navigation, and reactive group status follow the public v2 API.",
+      "reason": "The wizard parent validator omits triggers instead of supplying an empty array, and the explanation now documents submission-only validation across form, field, and form-group scopes. Scoped group submission, final parent validation of unmounted steps, paths, and lifecycle constraints remain accurate.",
       "evidence": [
-        "Verified v2.0.0-alpha.3 at 161624f8048a5ec91e895ef8282644d3c101b218 against the wizard sources, FormGroupApi.public.ts, Components.public.ts, group-submission.spec.tsx, and FullPathGroupField.tsx. Intent validates seven React skills. The exact skill example and reference/consumer checkouts pass TypeScript; 56 existing public group browser checks pass. Reference and fresh consumer each pass eight unchanged browser checks across normal and Strict Mode. Omitting parent validation fails the unmounted-step test in both modes. One fresh consumer selected form-groups and validation through Intent, then reloaded the final skill. Final archive and installed skill hashes match, and relative links resolve. Adjacent negative activation prompts, repetitions, and without-skill comparison were not run. Disposable evidence: /tmp/tanstack-form-groups-evaluation/results.json."
+        "Reviewed current working-tree content at HEAD 75a9c6a78631a0841b3ff0c05ac1f6a49cef26e9; package version 2.0.0-alpha.3; installed Intent 0.5.6.",
+        "Compared the committed skill changes with 994c7cd13 and reviewed the public group API and group-submission.spec.tsx.",
+        "The existing group-submission suite passed, including complete schema enforcement before and after a wizard step unmounts. The exact CheckoutWizard example also passed independent step validation, Back navigation retaining edits, and final saving in both modes.",
+        "Intent validate packages/react-form/skills passed all 7 skills.",
+        "All 10 examples in the five reviewed skills passed TypeScript with repository strictness, noImplicitReturns, and public source entry points. Core and React package test:types passed.",
+        "The existing React public submit-only-validation, group-submission, touched-state, and field-groups suites passed 54 checks across normal and Strict Mode.",
+        "No fresh consumer agent or discovery evaluation was run for this revision. Earlier evaluation records remain historical; their disposable /tmp projects are no longer available. Current deterministic fixtures are retained in /tmp/tanstack-intent-review-checks/intent-review-c_iaw43h/."
       ]
     },
     "source:knip.json": {
@@ -611,6 +644,62 @@
         "git show b5ab3ff0d10781008116cff16a563432fb9a1ccd records the deletion of packages/react-form/skills/type-error-debugging/references/type-error-boundaries.md.",
         "git diff --name-status origin/alpha HEAD confirms this file remains deleted; _artifacts/skill_tree.yaml lists the current 3 form-core skills and 7 React skills.",
         "pnpm exec intent maintainer check --base 202b4aa88b440b582d5aeabefd5e9377a6dbb43c validated all 10 current skills, with 0 files to sync and 0 authoring issues; the command failed solely because these 17 reviews had not been recorded."
+      ]
+    },
+    "source:.changeset/quiet-keys-stay.md": {
+      "fingerprint": "f282e7aac19999c12e7d2692ea0da4341408c5f69b2ab2b72402e53568b3ec43",
+      "snapshot": {
+        ".changeset/quiet-keys-stay.md": "178f101202e971fa8fbfbc27c15fad62927b1c2d14015ea653b08db300ffce56"
+      },
+      "head": "75a9c6a78631a0841b3ff0c05ac1f6a49cef26e9",
+      "outcome": "no-change",
+      "reason": "This patch-release note describes the looseSchema optional-property fix. The existing form-options skill already documents incomplete schema defaults and separate schema registration, so the release note needs no additional skill guidance.",
+      "evidence": [
+        "Reviewed current working-tree content at HEAD 75a9c6a78631a0841b3ff0c05ac1f6a49cef26e9; package version 2.0.0-alpha.3; installed Intent 0.5.6.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c -- .changeset/quiet-keys-stay.md, the InferUnion optional-property fix, and packages/form-core/skills/form-options/SKILL.md.",
+        "Core and React package type checks passed, including the added looseSchema optional-property cases."
+      ]
+    },
+    "source:packages/form-core/src/utils.public.ts": {
+      "fingerprint": "2c4800b462a0a05ea5b32adc0c145928002fd347788ae03784fe07b848ca63da",
+      "snapshot": {
+        "packages/form-core/src/utils.public.ts": "b98a594b30380a682b82b127b66702e6588f94085653bec20a71acb289629478"
+      },
+      "head": "75a9c6a78631a0841b3ff0c05ac1f6a49cef26e9",
+      "outcome": "no-change",
+      "reason": "InferUnion now preserves optional property modifiers when combining defaults with schema input, including nested properties and defaults that supply an optional property. This restores the looseSchema behavior the existing form-options skill already describes; the implementation helper introduces no independently useful developer workflow.",
+      "evidence": [
+        "Reviewed current working-tree content at HEAD 75a9c6a78631a0841b3ff0c05ac1f6a49cef26e9; package version 2.0.0-alpha.3; installed Intent 0.5.6.",
+        "Reviewed git diff 202b4aa88b440b582d5aeabefd5e9377a6dbb43c -- packages/form-core/src/utils.public.ts and the added public formOptions.looseSchema type cases in packages/form-core/tests/validation.test-d.ts.",
+        "Core and React package type checks passed. The existing form-options examples and documented incomplete-input contract remain accurate."
+      ]
+    },
+    "source:packages/form-core/tests/validation.test-d.ts": {
+      "fingerprint": "f8599296064430f5719c524b5b95741a460939c811f77468132399b082286c40",
+      "snapshot": {
+        "packages/form-core/tests/validation.test-d.ts": "3d75d3ab8b2661579931a61d2e6ac0fe456cffad0562b792842abf36045762ea"
+      },
+      "head": "75a9c6a78631a0841b3ff0c05ac1f6a49cef26e9",
+      "outcome": "no-change",
+      "reason": "These public type regressions cover optional looseSchema properties and positional schema outputs from reusable validator policies with omitted triggers. They support the existing form-options guidance and the reviewed validation/schema guidance; no separate skill is needed for test-only changes.",
+      "evidence": [
+        "Reviewed current working-tree content at HEAD 75a9c6a78631a0841b3ff0c05ac1f6a49cef26e9; package version 2.0.0-alpha.3; installed Intent 0.5.6.",
+        "Reviewed the optional-property and reusable-policy additions in the diff from 202b4aa88b440b582d5aeabefd5e9377a6dbb43c.",
+        "pnpm --dir packages/form-core test:types passed with all assertions included."
+      ]
+    },
+    "source:packages/react-form/tests/public/validation-errors/GroupErrors.test-d.tsx": {
+      "fingerprint": "4a233bbbb729de2839d0eb47fe4f48ff4074303741c575d0d4bc091ec7fdf7b9",
+      "snapshot": {
+        "packages/react-form/tests/public/validation-errors/GroupErrors.test-d.tsx": "8ef3fad8483d86e5738abc235c3c49ff92dcd9d9bb579df4ef7cb90160edfffa"
+      },
+      "head": "75a9c6a78631a0841b3ff0c05ac1f6a49cef26e9",
+      "outcome": "no-change",
+      "reason": "The public React type fixture now omits triggers on group and field validators while asserting their inferred value types and retaining error inference. This verifies the optional-trigger guidance already updated in validation and schema-validation; the fixture requires no separate documentation.",
+      "evidence": [
+        "Reviewed current working-tree content at HEAD 75a9c6a78631a0841b3ff0c05ac1f6a49cef26e9; package version 2.0.0-alpha.3; installed Intent 0.5.6.",
+        "Reviewed the GroupValidatorErrors diff from 202b4aa88b440b582d5aeabefd5e9377a6dbb43c and the optional public Validator.triggers declaration.",
+        "pnpm --dir packages/react-form test:types passed with the value and error inference assertions included."
       ]
     }
   }
