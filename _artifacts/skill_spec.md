@@ -144,7 +144,7 @@ Discovery cases retained for this batch:
 | `field-groups`         | “Reuse this date-range section when each form stores start and end at different paths.”                             | “Submit just the current wizard step.”                               |
 | `subscriptions`        | “The input changes but its name-length preview stays stale after another edit.”                                     | “Choose when the username availability check should run.”            |
 
-Positive combined tasks exercise two skills per consumer. Adjacent negative activation prompts, independent repetitions, and a without-skill comparison remain unmeasured unless explicitly recorded below.
+Positive combined tasks loaded two, two, and four skills, respectively, as shown in the observed-load table below. Adjacent negative activation prompts, independent repetitions, and a without-skill comparison remain unmeasured unless explicitly recorded below.
 
 React fresh-consumer evaluation:
 
@@ -159,7 +159,7 @@ React fresh-consumer evaluation:
 | Reusable range sections in editable rows and another form shape | React `field-groups`, `arrays`, `subscriptions`; core `validation` | Row operations preserve edited values; virtual previews and array meta react; watched validation maps correctly for both shapes.   |
 
 - All three consumers' TypeScript checks passed. The separate type grader passed, including seven expected rejection cases for component props, field value types, context paths/providers, and bindings. All 14 browser checks passed in normal and Strict Mode. Inspection found no explicit library-managed call generics or `any` casts in the solutions.
-- All evaluated skill hashes match the final working tree, and relative React skill links resolve in the packed layout. No guidance changes were needed after the consumer runs.
+- The recorded hashes describe the React evaluation package originally stored under `/tmp/tanstack-react-intent-evaluation/`, before the app-forms example changed from `errorBoundary` to `errorVisibility`. The revised example's type and browser checks are recorded separately below; no fresh-consumer result is recorded for that revision.
 - Prompts, starter contracts, protected grading code, reference solutions, negative-control logs, solution diffs, successful-load traces, package archive, skill hashes, and `results.json` are under `/tmp/tanstack-react-intent-evaluation/`. They are disposable evaluation artifacts.
 - This verifies one positive combined task per consumer, covering all six React skills. Negative activation cases, repetitions, and a without-skill baseline remain unmeasured; these observations do not establish broader discovery accuracy or improvement over unaided agents.
 - Validator compatibility: the generic skill-creator checker rejects Intent's `sources` and `requires` frontmatter extensions. The installed Intent validator is authoritative for this package format and passes all six skills without warnings.
@@ -185,3 +185,11 @@ React fresh-consumer evaluation:
 - The final local package archive contains the new skill. Its relative React links resolve in the installed layout. The domain map records coverage, failure modes, relationships, and the consumer result; the tree records package ownership, sources, purpose, and no prerequisites.
 - Task prompts, reference and incorrect solutions, protected checks, consumer implementation, discovery cases, and package archive are under `/tmp/tanstack-form-groups-evaluation/`. This is one positive consumer attempt. Negative discovery cases, repeated attempts, and a without-skill comparison remain unmeasured.
 - Validator compatibility remains unchanged: skill-creator's generic checker rejects Intent's `sources` and `requires` extensions. Intent's installed validator supports this format and passes without warnings.
+
+### Source and example review — 2026-11-27
+
+- Evidence: source revision `75a9c6a78631a0841b3ff0c05ac1f6a49cef26e9`, package version `2.0.0-alpha.3`, installed Intent `0.5.6`, and the current skill edits.
+- Validation guidance now allows omitted `triggers` for submission-only validators at form, field, and form-group scope, including reusable validator policies. `skipOnSubmit` remains independent. The domain map reflects optional interaction triggers; tree identities, sources, prerequisites, and package placement remain accurate without changes. The optional-property fix in `looseSchema` restores the behavior already described by the form-options skill.
+- The async editor keeps loaded data and local edits visible when a background refresh fails. The reusable range example uses time inputs for normalized time values, keeps error messages outside the End label so its accessible name stays stable, and explicitly returns `undefined` on successful validation.
+- Verification: both package type checks pass. All 10 examples in the five reviewed skills type-check against the public source entry points. The existing public suites for submission-only validation, group submission, touched defaults, and field groups pass 54 browser checks. Four disposable checks of the published examples pass in normal and Strict Mode, for eight more checks. The range check failed before the label correction and passed afterward.
+- The earlier consumer results remain historical evidence. This review corrects the recorded React skill-load counts and distinguishes the evaluated package hashes from later edits. The old disposable evaluation projects are no longer present, and no fresh consumer discovery or task evaluation was run for this revision. The current checks verify the examples directly.

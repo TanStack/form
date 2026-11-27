@@ -49,6 +49,7 @@ function RangeFields({
           <label>
             Start
             <input
+              type="time"
               value={field.value}
               onChange={(event) => field.handleChange(event.target.value)}
               onBlur={field.handleBlur}
@@ -64,26 +65,31 @@ function RangeFields({
             watchFields: ['start'],
             run: ({ value }) => {
               const first = fields.getFieldValue('start')
-              if (first && value && value < first)
+              if (first && value && value < first) {
                 return 'End must follow start'
+              }
+              return undefined
             },
           },
         ]}
       >
         {(field) => (
-          <label>
-            End
-            <input
-              value={field.value}
-              onChange={(event) => field.handleChange(event.target.value)}
-              onBlur={field.handleBlur}
-            />
+          <>
+            <label>
+              End
+              <input
+                type="time"
+                value={field.value}
+                onChange={(event) => field.handleChange(event.target.value)}
+                onBlur={field.handleBlur}
+              />
+            </label>
             {field.errors.map((error) => (
               <span key={error.message} role="alert">
                 {error.message}
               </span>
             ))}
-          </label>
+          </>
         )}
       </fields.Field>
       <output aria-label={`${label} start`}>{start}</output>

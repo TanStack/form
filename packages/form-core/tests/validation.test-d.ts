@@ -777,6 +777,30 @@ describe('ValidationTriggerOption', () => {
 })
 
 describe('FormErrors', () => {
+  it('infers schema outputs when reusable validators omit triggers', () => {
+    const submitOnly = createValidator({})
+    const validators = createValidators([{}, { skipOnSubmit: true }])(
+      z.object({ name: z.string() }),
+      z.object({ name: z.string().transform((value) => value.length) }),
+    )
+
+    expectTypeOf(validators.length).toEqualTypeOf<2>()
+    expectTypeOf(validators[1].skipOnSubmit).toEqualTypeOf<true>()
+
+    formOptions({
+      defaultValues: { name: '' },
+      validators: [
+        submitOnly(z.object({ name: z.string().transform(Number) })),
+        ...validators,
+      ],
+      onSubmit: ({ validatorOutputs }) => {
+        expectTypeOf(validatorOutputs).toEqualTypeOf<
+          [{ name: number }, { name: string }, undefined]
+        >()
+      },
+    })
+  })
+
   it('exposes failure details and exception suppression in the invalid submit context', () => {
     const options = formOptions({
       defaultValues: { name: '' },

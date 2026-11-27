@@ -75,10 +75,12 @@ export interface Validator<
   /**
    * Mount, change, and blur events that can run this validator, optionally with conditions.
    *
-   * An empty array disables mount, change, and blur validation. Configure
-   * submission separately with `skipOnSubmit`.
+   * Omitting this or passing an empty array disables mount, change, and blur
+   * validation. Configure submission separately with `skipOnSubmit`.
+   *
+   * @default []
    */
-  triggers: Array<
+  triggers?: Array<
     ValidationTriggerOption<TFormData, TContextValue, TTrigger, TScope>
   >
 }
@@ -106,7 +108,9 @@ export type ValidatorOptions<
   >,
   'run' | 'triggers'
 > & {
-  triggers: Array<FormValidationTriggerOption<TFormData, TContextValue, TScope>>
+  triggers?: Array<
+    FormValidationTriggerOption<TFormData, TContextValue, TScope>
+  >
 }
 
 type ValidatorRun = StandardSchemaV1<any, any> | ValidatorFn<any, any>

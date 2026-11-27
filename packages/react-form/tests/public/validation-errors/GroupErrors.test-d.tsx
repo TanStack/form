@@ -13,8 +13,10 @@ export function GroupValidatorErrors() {
       name="details"
       validators={[
         {
-          triggers: [],
-          run: () => ({ message: 'Group error', groupOnly: true as const }),
+          run: ({ value }) => {
+            expectTypeOf(value).toEqualTypeOf<{ name: string }>()
+            return { message: 'Group error', groupOnly: true as const }
+          },
         },
         {
           triggers: [],
@@ -36,11 +38,13 @@ export function GroupValidatorErrors() {
             name="name"
             validators={[
               {
-                triggers: [],
-                run: () => ({
-                  message: 'Field error',
-                  fromField: true as const,
-                }),
+                run: ({ value }) => {
+                  expectTypeOf(value).toEqualTypeOf<string>()
+                  return {
+                    message: 'Field error',
+                    fromField: true as const,
+                  }
+                },
               },
             ]}
           >

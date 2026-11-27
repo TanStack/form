@@ -39,8 +39,13 @@ export function ProfilePage({
   error: Error | null
 }) {
   if (isPending) return <p>Loading…</p>
-  if (error || !profile) return <p role="alert">Could not load the profile.</p>
-  return <ProfileEditor key={recordId} profile={profile} />
+  if (!profile) return <p role="alert">Could not load the profile.</p>
+  return (
+    <>
+      {error && <p role="alert">Could not load the profile.</p>}
+      <ProfileEditor key={recordId} profile={profile} />
+    </>
+  )
 }
 
 function ProfileEditor({ profile }: { profile: Profile }) {

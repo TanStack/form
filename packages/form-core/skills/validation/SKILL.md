@@ -47,16 +47,16 @@ Use an ordered `validators` array of objects with `run`. This is the v2.0.0-alph
 
 ## Select events independently from submission
 
-| Configuration                                                                | Behavior                                                                  |
-| ---------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| Form validator with omitted `triggers`, or any validator with `triggers: []` | Runs on submission by default.                                            |
-| `triggers: ['change']`                                                       | Also runs on value changes.                                               |
-| `triggers: ['blur']`                                                         | Also runs on blur. Wire the input's blur handler.                         |
-| `triggers: ['mount']`                                                        | Also runs during initialization or mounting for that scope.               |
-| `skipOnSubmit: true`                                                         | Skips client submission validation independently of interaction triggers. |
-| `triggerDebounceMs: 300`                                                     | Delays change and blur validation. Submission validation is immediate.    |
+| Configuration                        | Behavior                                                                  |
+| ------------------------------------ | ------------------------------------------------------------------------- |
+| Omitted `triggers` or `triggers: []` | Runs only on submission by default.                                       |
+| `triggers: ['change']`               | Also runs on value changes.                                               |
+| `triggers: ['blur']`                 | Also runs on blur. Wire the input's blur handler.                         |
+| `triggers: ['mount']`                | Also runs during initialization or mounting for that scope.               |
+| `skipOnSubmit: true`                 | Skips client submission validation independently of interaction triggers. |
+| `triggerDebounceMs: 300`             | Delays change and blur validation. Submission validation is immediate.    |
 
-Field and group validators require `triggers`. Form validators can omit it. Do not put `'submit'` in `triggers`; submission has its own policy.
+`triggers` is optional for form, field, and form-group validators. Do not put `'submit'` in `triggers`; submission has its own policy.
 
 For validation after the first submission attempt, use a trigger condition:
 
@@ -82,7 +82,7 @@ export const contactOptions = formOptions.strictSchema(schema, {
 })
 ```
 
-`createValidator` shares one scheduling policy. `createValidators` pairs an ordered tuple of policies with the same number of runners. Keep validator and listener array lengths constant. Use `when` and `skipOnSubmit` for conditions instead of adding or removing entries.
+`createValidator` shares one scheduling policy. `createValidators` pairs an ordered tuple of policies with the same number of runners. Both helpers allow policies without `triggers` for submission-only validation. Keep validator and listener array lengths constant. Use `when` and `skipOnSubmit` for conditions instead of adding or removing entries.
 
 Predicates and debounce callbacks must be synchronous and have no side effects. They can inspect values, touched state, or submission attempts. Their call count is unspecified. Validation-state reads in predicates have no ordering guarantee. Use `bailIfInvalid` when a check depends on earlier validation succeeding.
 

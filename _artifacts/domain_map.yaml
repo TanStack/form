@@ -113,12 +113,12 @@ skills:
     failure_modes:
       - mistake: Reuse v1 event-keyed validator configuration
         mechanism: The current API uses ordered run objects and separate trigger policies.
-        correct_pattern: Configure validator arrays with run and triggers.
+        correct_pattern: Configure validator arrays with run and select interaction events with optional triggers.
         source: examples/react/basic/src/index.tsx
         priority: HIGH
         status: active
         version_context: v2.0.0-alpha.3
-      - mistake: Treat empty triggers as disabling submission
+      - mistake: Treat omitted or empty triggers as disabling submission
         mechanism: Submission validation runs independently of interaction triggers.
         correct_pattern: Configure skipOnSubmit explicitly when required.
         source: packages/form-core/src/pipeline/validation/formValidators.public.ts
