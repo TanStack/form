@@ -9,6 +9,10 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:111](https:/
 
 - `FieldApiOptions`\<`TFieldData`, `TFieldName`, `TFieldValue`, `TFieldValidators`, `TGroupError`, `TFormData`, `TFormError`\>
 
+## Extended by
+
+- [`ReactFormArrayFieldProps`](ReactFormArrayFieldProps.md)
+
 ## Type Parameters
 
 ### TFieldData

@@ -3,7 +3,7 @@ id: ReactFormGroupFieldComponent
 title: ReactFormGroupFieldComponent
 ---
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:210](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L210)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:245](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L245)
 
 ## Type Parameters
 
@@ -31,7 +31,7 @@ Defined in: [packages/react-form/src/ReactForm/Components.public.ts:210](https:/
 ReactFormGroupFieldComponent<TFieldName, TFieldValidators>(props): ReactNode;
 ```
 
-Defined in: [packages/react-form/src/ReactForm/Components.public.ts:217](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L217)
+Defined in: [packages/react-form/src/ReactForm/Components.public.ts:252](https://github.com/TanStack/form/blob/main/packages/react-form/src/ReactForm/Components.public.ts#L252)
 
 ## Type Parameters
 

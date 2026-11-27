@@ -3,7 +3,7 @@ id: FieldGroupApi
 title: FieldGroupApi
 ---
 
-Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:174](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L174)
+Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:175](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L175)
 
 ## Extends
 
@@ -27,7 +27,7 @@ Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:174](htt
 ArrayField: FieldGroupArrayFieldComponent<TFieldData, TFieldComponents>;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:181](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L181)
+Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:182](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L182)
 
 ***
 
@@ -37,7 +37,7 @@ Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:181](htt
 atom: ReadonlyAtom<TFieldData>;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:179](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L179)
+Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:180](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L180)
 
 ***
 
@@ -47,7 +47,7 @@ Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:179](htt
 Field: FieldGroupFieldComponent<TFieldData, TFieldComponents>;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:180](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L180)
+Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:181](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L181)
 
 ***
 
@@ -57,4 +57,4 @@ Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:180](htt
 Subscribe: FieldGroupSubscribeComponent;
 ```
 
-Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:182](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L182)
+Defined in: [packages/react-form/src/FieldGroup/FieldGroupApi.public.ts:183](https://github.com/TanStack/form/blob/main/packages/react-form/src/FieldGroup/FieldGroupApi.public.ts#L183)
